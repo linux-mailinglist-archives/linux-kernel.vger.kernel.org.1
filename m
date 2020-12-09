@@ -2,106 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400D32D3DF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:52:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 734762D3E00
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:57:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728277AbgLIIwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:52:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728043AbgLIIwX (ORCPT
+        id S1727559AbgLII4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:56:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36517 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727899AbgLII4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:52:23 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FB7C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 00:51:42 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id f24so1277571ljk.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 00:51:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2LZygKLdMeXtg6UECM3hwilY+T5j2Bz/7hXfM4FH8eM=;
-        b=epPtSSR/7bb7N5MVhrvn8mmG61DUhbJ5ceSBz3zdi5ttU8hgJi895CvkV+jIJ/6Elk
-         faLbAlJ0Ct8dkmLFvgIrcS2c+E739IaF5RCxecfGNHm3mm9cz8saP5sgGgYp+X1PV4bC
-         8mhsjose2UwRapucDt1waykXBayMMNhXuMNDIMFXYNitjuaFIJIsgeaGcS06BwcAfxiT
-         KnhaJQskTWoexBWR6Z8n6Tmma+HZsp8I7wCXBC5u3Xfmk6pam3fV2CZ4Ur7GSbOGsa+I
-         mOEm5C+iR1V90Ai9/YLl2ZsKt3HZkVjDOpFbulodrKnOwGlU5c4D2BW0bjsEGeVxZrhT
-         woEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2LZygKLdMeXtg6UECM3hwilY+T5j2Bz/7hXfM4FH8eM=;
-        b=YiP6iDLXO2xyQiw74wxxkP3rT/b/2AgGclQJm2X4ECys70nvSWFiT7L4D2CyHXf7bS
-         wiigH612dZClfQC0ZazS/CCjwe+v61aYmfev+kfki5sN/e2Rd2NGwrVlv4z1YDTnrLNy
-         iyGFfLkb+aJkV1velUHBgoKfohCUhU7ywp3tSHk9EAPp0D5fXqVSX/4zrSeFOMOmF6/w
-         j8628EXpUX4eqoD7XPat3bZ/tdZ+fOlCwcLdADYF6p0idqLhn1anh1C2nnS64+zbo5SV
-         ATrkssY4W7tj8FljOHxUeArxL+gG8yyPOyB25OwNLygVI3qXG9G7QoB9o9rD1rh5oNzW
-         LTZw==
-X-Gm-Message-State: AOAM5334Xcc3iyspQ5yNIptJXjOfiCc59mwsetPsqhWeOAQcVChVPWMD
-        TQqFY6eOObwtLyzZT0sMVDToaqB9s4vdxaBIB6wf5w==
-X-Google-Smtp-Source: ABdhPJzppB0j8WgWv6IdUZKKIGJXOVBgkHuLGiXKbyH9OU440iaPPvmtmnyjuDh6a/e9QQ8jwdYfQNzIxLD6F6BmUpY=
-X-Received: by 2002:a2e:910f:: with SMTP id m15mr622232ljg.467.1607503901332;
- Wed, 09 Dec 2020 00:51:41 -0800 (PST)
+        Wed, 9 Dec 2020 03:56:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607504084;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GQuK0XCWSQyntXamE1/E+qo5qV88XThCFsqHGonzaqs=;
+        b=BfLbtZzB9oZhIkVr5S3gBPM6Xl9ibOjM3pVf4wQDNzXl3CCT4YOipgL1rsQt6svD6O4s/V
+        56VyvnSfNNEnw+juSlJLMCJvQt8rkGgSRlkzdmEm1JjeU6CF5AmT/any/X7W6Iv9ZUFOAt
+        IBtUABd3vK0awgdJfiHKDBQpYkmYWq8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-nV69GPKUPJKwsyPOTsZn_A-1; Wed, 09 Dec 2020 03:54:40 -0500
+X-MC-Unique: nV69GPKUPJKwsyPOTsZn_A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C0EC192CC47;
+        Wed,  9 Dec 2020 08:54:36 +0000 (UTC)
+Received: from [10.36.114.167] (ovpn-114-167.ams2.redhat.com [10.36.114.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 78BBF5C238;
+        Wed,  9 Dec 2020 08:54:30 +0000 (UTC)
+Subject: Re: [External] Re: [PATCH v7 04/15] mm/hugetlb: Introduce
+ nr_free_vmemmap_pages in the struct hstate
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201130151838.11208-1-songmuchun@bytedance.com>
+ <20201130151838.11208-5-songmuchun@bytedance.com>
+ <8505f01c-ad26-e571-b464-aedfd1bd9280@redhat.com>
+ <CAMZfGtXXHnso53-OZNotOnkZu1VX8WbBY66z2ynwVzcTZb44tQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <03a8b8b6-5d0c-b48e-562b-61f866722a31@redhat.com>
+Date:   Wed, 9 Dec 2020 09:54:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201203191135.21576-1-info@metux.net> <20201203191135.21576-2-info@metux.net>
- <0080d492-2f07-d1c6-d18c-73d4204a5d40@metux.net> <CACRpkdb4R4yHcUV2KbGEC_RkU+QmH6Xg7X+qee8sEa9TURGr8A@mail.gmail.com>
- <51d3efb7-b7eb-83d7-673a-308dd51616d3@metux.net>
-In-Reply-To: <51d3efb7-b7eb-83d7-673a-308dd51616d3@metux.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 9 Dec 2020 09:51:30 +0100
-Message-ID: <CACRpkdbqVoT56H88hoZwDqV0kW_8XTaE5TkMQsg-RRrPqgF=cQ@mail.gmail.com>
-Subject: Re: Howto listen to/handle gpio state changes ? Re: [PATCH v2 2/2]
- drivers: gpio: add virtio-gpio guest driver
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMZfGtXXHnso53-OZNotOnkZu1VX8WbBY66z2ynwVzcTZb44tQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 3:07 PM Enrico Weigelt, metux IT consult
-<lkml@metux.net> wrote:
+On 07.12.20 14:11, Muchun Song wrote:
+> On Mon, Dec 7, 2020 at 8:36 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 30.11.20 16:18, Muchun Song wrote:
+>>> Every HugeTLB has more than one struct page structure. The 2M HugeTLB
+>>> has 512 struct page structure and 1G HugeTLB has 4096 struct page
+>>> structures. We __know__ that we only use the first 4(HUGETLB_CGROUP_MIN_ORDER)
+>>> struct page structures to store metadata associated with each HugeTLB.
+>>>
+>>> There are a lot of struct page structures(8 page frames for 2MB HugeTLB
+>>> page and 4096 page frames for 1GB HugeTLB page) associated with each
+>>> HugeTLB page. For tail pages, the value of compound_head is the same.
+>>> So we can reuse first page of tail page structures. We map the virtual
+>>> addresses of the remaining pages of tail page structures to the first
+>>> tail page struct, and then free these page frames. Therefore, we need
+>>> to reserve two pages as vmemmap areas.
+>>>
+>>> So we introduce a new nr_free_vmemmap_pages field in the hstate to
+>>> indicate how many vmemmap pages associated with a HugeTLB page that we
+>>> can free to buddy system.
+>>>
+>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>>> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+>>> ---
+>>>  include/linux/hugetlb.h |   3 ++
+>>>  mm/Makefile             |   1 +
+>>>  mm/hugetlb.c            |   3 ++
+>>>  mm/hugetlb_vmemmap.c    | 129 ++++++++++++++++++++++++++++++++++++++++++++++++
+>>>  mm/hugetlb_vmemmap.h    |  20 ++++++++
+>>>  5 files changed, 156 insertions(+)
+>>>  create mode 100644 mm/hugetlb_vmemmap.c
+>>>  create mode 100644 mm/hugetlb_vmemmap.h
+>>>
+>>> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+>>> index ebca2ef02212..4efeccb7192c 100644
+>>> --- a/include/linux/hugetlb.h
+>>> +++ b/include/linux/hugetlb.h
+>>> @@ -492,6 +492,9 @@ struct hstate {
+>>>       unsigned int nr_huge_pages_node[MAX_NUMNODES];
+>>>       unsigned int free_huge_pages_node[MAX_NUMNODES];
+>>>       unsigned int surplus_huge_pages_node[MAX_NUMNODES];
+>>> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+>>> +     unsigned int nr_free_vmemmap_pages;
+>>> +#endif
+>>>  #ifdef CONFIG_CGROUP_HUGETLB
+>>>       /* cgroup control files */
+>>>       struct cftype cgroup_files_dfl[7];
+>>> diff --git a/mm/Makefile b/mm/Makefile
+>>> index ed4b88fa0f5e..056801d8daae 100644
+>>> --- a/mm/Makefile
+>>> +++ b/mm/Makefile
+>>> @@ -71,6 +71,7 @@ obj-$(CONFIG_FRONTSWAP)     += frontswap.o
+>>>  obj-$(CONFIG_ZSWAP)  += zswap.o
+>>>  obj-$(CONFIG_HAS_DMA)        += dmapool.o
+>>>  obj-$(CONFIG_HUGETLBFS)      += hugetlb.o
+>>> +obj-$(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)      += hugetlb_vmemmap.o
+>>>  obj-$(CONFIG_NUMA)   += mempolicy.o
+>>>  obj-$(CONFIG_SPARSEMEM)      += sparse.o
+>>>  obj-$(CONFIG_SPARSEMEM_VMEMMAP) += sparse-vmemmap.o
+>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>>> index 1f3bf1710b66..25f9e8e9fc4a 100644
+>>> --- a/mm/hugetlb.c
+>>> +++ b/mm/hugetlb.c
+>>> @@ -42,6 +42,7 @@
+>>>  #include <linux/userfaultfd_k.h>
+>>>  #include <linux/page_owner.h>
+>>>  #include "internal.h"
+>>> +#include "hugetlb_vmemmap.h"
+>>>
+>>>  int hugetlb_max_hstate __read_mostly;
+>>>  unsigned int default_hstate_idx;
+>>> @@ -3206,6 +3207,8 @@ void __init hugetlb_add_hstate(unsigned int order)
+>>>       snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
+>>>                                       huge_page_size(h)/1024);
+>>>
+>>> +     hugetlb_vmemmap_init(h);
+>>> +
+>>>       parsed_hstate = h;
+>>>  }
+>>>
+>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+>>> new file mode 100644
+>>> index 000000000000..51152e258f39
+>>> --- /dev/null
+>>> +++ b/mm/hugetlb_vmemmap.c
+>>> @@ -0,0 +1,129 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +/*
+>>> + * Free some vmemmap pages of HugeTLB
+>>> + *
+>>> + * Copyright (c) 2020, Bytedance. All rights reserved.
+>>> + *
+>>> + *     Author: Muchun Song <songmuchun@bytedance.com>
+>>> + *
+>>> + * The struct page structures (page structs) are used to describe a physical
+>>> + * page frame. By default, there is a one-to-one mapping from a page frame to
+>>> + * it's corresponding page struct.
+>>> + *
+>>> + * The HugeTLB pages consist of multiple base page size pages and is supported
+>>> + * by many architectures. See hugetlbpage.rst in the Documentation directory
+>>> + * for more details. On the x86 architecture, HugeTLB pages of size 2MB and 1GB
+>>> + * are currently supported. Since the base page size on x86 is 4KB, a 2MB
+>>> + * HugeTLB page consists of 512 base pages and a 1GB HugeTLB page consists of
+>>> + * 4096 base pages. For each base page, there is a corresponding page struct.
+>>> + *
+>>> + * Within the HugeTLB subsystem, only the first 4 page structs are used to
+>>> + * contain unique information about a HugeTLB page. HUGETLB_CGROUP_MIN_ORDER
+>>> + * provides this upper limit. The only 'useful' information in the remaining
+>>> + * page structs is the compound_head field, and this field is the same for all
+>>> + * tail pages.
+>>> + *
+>>> + * By removing redundant page structs for HugeTLB pages, memory can returned to
+>>> + * the buddy allocator for other uses.
+>>> + *
+>>> + * When the system boot up, every 2M HugeTLB has 512 struct page structs which
+>>> + * size is 8 pages(sizeof(struct page) * 512 / PAGE_SIZE).
+>>
+>>
+>> You should try to generalize all descriptions regarding differing base
+>> page sizes. E.g., arm64 supports 4k, 16k, and 64k base pages.
+> 
+> Will do. Thanks.
+> 
+>>
+>> [...]
+>>
+>>> @@ -0,0 +1,20 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +/*
+>>> + * Free some vmemmap pages of HugeTLB
+>>> + *
+>>> + * Copyright (c) 2020, Bytedance. All rights reserved.
+>>> + *
+>>> + *     Author: Muchun Song <songmuchun@bytedance.com>
+>>> + */
+>>> +#ifndef _LINUX_HUGETLB_VMEMMAP_H
+>>> +#define _LINUX_HUGETLB_VMEMMAP_H
+>>> +#include <linux/hugetlb.h>
+>>> +
+>>> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+>>> +void __init hugetlb_vmemmap_init(struct hstate *h);
+>>> +#else
+>>> +static inline void hugetlb_vmemmap_init(struct hstate *h)
+>>> +{
+>>> +}
+>>> +#endif /* CONFIG_HUGETLB_PAGE_FREE_VMEMMAP */
+>>> +#endif /* _LINUX_HUGETLB_VMEMMAP_H */
+>>>
+>>
+>> This patch as it stands is rather sub-optimal. I mean, all it does is
+>> add documentation and print what could be done.
+>>
+>> Can we instead introduce the basic infrastructure and enable it via this
+>> patch on top, where we glue all the pieces together? Or is there
+>> something I am missing?
+> 
+> Maybe we can make the config of CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> default n in the Kconfig. When everything is ready, then make it
+> default to y. Right?
 
-> I've been looking for some more direct notification callback for gpio
-> consumers: here the consumer would register itself as a listener on
-> some gpio_desc and called back when something changes (with data what
-> exactly changed, eg. "gpio #3 input switched to high").
->
-> Seems we currently just have the indirect path via interrupts.
+I think it can make sense to introduce the
+CONFIG_HUGETLB_PAGE_FREE_VMEMMAP option first if necessary for other
+patches. But I think the the documentation and the dummy call should
+rather be moved to the end of the series where you glue everything you
+introduced together and officially unlock the feature. Others might
+disagree :)
 
-I don't know how indirect it is, it seems pretty direct to me. The subsystem
-was designed in response to how the hardware in front of the developers
-worked.
+BTW, I'm planning on reviewing the other parts of this series, I'm just
+fairly busy, so it might take a while (I think we're targeting 5.12
+either way as the 5.11 merge window will start fairly soon).
 
-So far we have had:
-- Cascaded interrupts
-- Dedicated (hieararchical) interrupts
-- Message Signalled Interrupts
+-- 
+Thanks,
 
-And if you now bring something else to the show then it's not like the
-subsystem was designed for some abstract quality such as
-generic notification of events that occurred, all practical instances
-have been around actual IRQs and that is why it is using
-struct irq_chip.
+David / dhildenb
 
-What we need to understand is if your new usecase is an outlier
-so it is simplest modeled by a "mock" irq_chip or we have to design
-something new altogether like notifications on changes. I suspect
-irq_chip would be best because all drivers using GPIOs for interrupts
-are expecting interrupts, and it would be an enormous task to
-change them all and really annoying to create a new mechanism
-on the side.
-
-Yours,
-Linus Walleij
