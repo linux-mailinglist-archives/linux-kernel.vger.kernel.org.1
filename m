@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A56B2D4702
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 971B92D471E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732183AbgLIQnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:43:03 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:32829 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730407AbgLIQnC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:43:02 -0500
-Received: by mail-oi1-f196.google.com with SMTP id d27so2384393oic.0;
-        Wed, 09 Dec 2020 08:42:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=T/j4UDJcNeMx/AnKgvLpxVmZNow15ACAeoiW0uvvTrA=;
-        b=HaOPUhta6RHrtBDwdQKjynOggQybbxGetThbQiEnr56vPiWtI8vDXHdhMcNDoKvbyC
-         /TaXJK+hAECvQKh5zgti5wTQITgjfc6cDGD85RJtjSzwl8uMg8cFHzxFwS/n6vUTWlL3
-         +08cSmSbaXwnqyWl4wq4z+mTCUdxiMRnE883G3gH8zVRpZKnpZRMPkjaP1d8FhQxi+zi
-         ILncL0GloW3gfOGXpGM5iYDn3mA9e1fnqhUx6yh3zRA/jyXMz1pw9+gdYuiGHtWJnWje
-         YWPvokShdyKrMbZ5Ukv1gOqCuELG1zt/mxUQ+3UnS5PgMumORCIOph2gdUGCacgwuhET
-         aX4w==
-X-Gm-Message-State: AOAM532F4WK3WODGxuwETD5FYPXXQ1K1gBJxUxK0O1QPNZYdt8/vvxOs
-        ogyT9Lk6wJiGyCUd1rYUZw==
-X-Google-Smtp-Source: ABdhPJwgfFzIzKO7Ey6pofBuMX+Ndev5HRtxxm5o2j5Y4yEX0ceDFV03frbTRG48KAXXZ97NDt/SVw==
-X-Received: by 2002:aca:ab8b:: with SMTP id u133mr2425303oie.18.1607532140894;
-        Wed, 09 Dec 2020 08:42:20 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d62sm398826oia.6.2020.12.09.08.42.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 08:42:19 -0800 (PST)
-Received: (nullmailer pid 578767 invoked by uid 1000);
-        Wed, 09 Dec 2020 16:42:17 -0000
-Date:   Wed, 9 Dec 2020 10:42:17 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-Cc:     git@xilinx.com, saikrishna12468@gmail.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 2/3] dt-bindings: pinctrl: Added binding for ZynqMP
- pinctrl driver
-Message-ID: <20201209164217.GA578453@robh.at.kernel.org>
-References: <1607503454-26503-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <1607503454-26503-3-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+        id S1730407AbgLIQse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:48:34 -0500
+Received: from foss.arm.com ([217.140.110.172]:37504 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727156AbgLIQse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:48:34 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32E961FB;
+        Wed,  9 Dec 2020 08:47:48 -0800 (PST)
+Received: from [192.168.2.21] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBBB63F68F;
+        Wed,  9 Dec 2020 08:47:45 -0800 (PST)
+Subject: Re: [PATCH 1/3] x86/resctrl: Move setting task's active CPU in a mask
+ into helpers
+To:     Reinette Chatre <reinette.chatre@intel.com>, fenghua.yu@intel.com
+Cc:     tglx@linutronix.de, bp@alien8.de, tony.luck@intel.com,
+        kuo-lang.tseng@intel.com, shakeelb@google.com,
+        valentin.schneider@arm.com, mingo@redhat.com, babu.moger@amd.com,
+        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <cover.1607036601.git.reinette.chatre@intel.com>
+ <77973e75a10bf7ef9b33c664544667deee9e1a8e.1607036601.git.reinette.chatre@intel.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <a782d2f3-d2f6-795f-f4b1-9462205fd581@arm.com>
+Date:   Wed, 9 Dec 2020 16:47:43 +0000
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607503454-26503-3-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+In-Reply-To: <77973e75a10bf7ef9b33c664544667deee9e1a8e.1607036601.git.reinette.chatre@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Dec 2020 14:14:13 +0530, Sai Krishna Potthuri wrote:
-> Added documentation and dt-bindings file which contains MIO pin
-> configuration defines for Xilinx ZynqMP pinctrl driver.
+Hi Reinette, Fenghua,
+
+On 03/12/2020 23:25, Reinette Chatre wrote:
+> From: Fenghua Yu <fenghua.yu@intel.com>
 > 
-> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-> ---
->  .../bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml | 329 ++++++++++++++++++
->  include/dt-bindings/pinctrl/pinctrl-zynqmp.h  |  29 ++
->  2 files changed, 358 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml
->  create mode 100644 include/dt-bindings/pinctrl/pinctrl-zynqmp.h
-> 
+> The code of setting the CPU on which a task is running in a CPU mask is
+> moved into a couple of helpers. The new helper task_on_cpu() will be
+> reused shortly.
+
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index 6f4ca4bea625..68db7d2dec8f 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -525,6 +525,38 @@ static void rdtgroup_remove(struct rdtgroup *rdtgrp)
+
+> +#ifdef CONFIG_SMP
+
+(using IS_ENABLED(CONFIG_SMP) lets the compiler check all the code in one go, then
+dead-code-remove the stuff that will never happen... its also easier on the eye!)
 
 
-My bot found errors running 'make dt_binding_check' on your patch:
+> +/* Get the CPU if the task is on it. */
+> +static bool task_on_cpu(struct task_struct *t, int *cpu)
+> +{
+> +	/*
+> +	 * This is safe on x86 w/o barriers as the ordering of writing to
+> +	 * task_cpu() and t->on_cpu is reverse to the reading here. The
+> +	 * detection is inaccurate as tasks might move or schedule before
+> +	 * the smp function call takes place. In such a case the function
+> +	 * call is pointless, but there is no other side effect.
+> +	 */
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml:254:49: [warning] too few spaces after comma (commas)
-./Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml:278:15: [warning] wrong indentation: expected 12 but found 14 (indentation)
+> +	if (t->on_cpu) {
 
-dtschema/dtc warnings/errors:
+kernel/sched/core.c calls out that there can be two tasks on one CPU with this set.
+(grep astute)
+I think that means this series will falsely match the old task for a CPU while the
+scheduler is running, and IPI it unnecessarily.
+
+task_curr() is the helper that knows not to do this.
 
 
-See https://patchwork.ozlabs.org/patch/1413284
+> +		*cpu = task_cpu(t);
+> +
+> +		return true;
+> +	}
+> +
+> +	return false;
+> +}
 
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Thanks,
 
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+James
