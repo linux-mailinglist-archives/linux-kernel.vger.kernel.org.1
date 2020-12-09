@@ -2,132 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F272D4951
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD042D4961
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733219AbgLISpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:45:42 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:48550 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733276AbgLISpY (ORCPT
+        id S1733298AbgLISrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733163AbgLISrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:45:24 -0500
-Date:   Wed, 09 Dec 2020 18:44:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607539481;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hFSrSCbfgqTV8Uq/be5lRFzQnIszjfWspKcqjSJrZvA=;
-        b=0/BVTm4rYyv8rJXujzTsJGlDamNAsbEPd5154QsAYgTWOUE2+GjwEe2OOEoUCaws2HNN0A
-        InNOYqKu6ncrGTutqUzrPUQb6G9+bV3paeIQnibx5fhQv0WWr3v2lo3r4/2S0lGN6DISs/
-        8fysCgDqTjgk36TB3/bxC1+CsGkePlvU258GY6CvQsy8jxQ7T7ekQcDAcGzEAkxPT++g47
-        TmEMjFmAgJmx2EGH6Qd+t3veT2RhJHyIc0NACb3q4el7OuWhbS6RS28835dPi7Qy4aodqe
-        GLR+F234BARHtLj2+v94ueSibXhZhdT2VPGlz3a7hufmye6TyIgSS/tWDestxQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607539481;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hFSrSCbfgqTV8Uq/be5lRFzQnIszjfWspKcqjSJrZvA=;
-        b=zqtxy8eXfrzaQk6OTw9+9b9eaXmHwncdvxXTyw5o/Fxm6WekvOK6JqQ1oKHRnZbHOZHKCs
-        atpcsHNGdrSInRAA==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] powerpc/8xx: Implement pXX_leaf_size() support
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201126121121.364451610@infradead.org>
-References: <20201126121121.364451610@infradead.org>
+        Wed, 9 Dec 2020 13:47:05 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5953C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:46:24 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w6so1611743pfu.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 10:46:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SLck9T+fSmc7a2TIjVWcYDoy5sXjzN2t3Wk/7vfAiNU=;
+        b=bhK6iE8+kmUpXazU8RtlUQWQoj/gYhhd10dZE+8+sfMSvHRbFPAuMemfMZJpCk7KLo
+         qxI34DHiizH6q+cv+JjdskR2bDrHOJERUYjVOoU/koSNLjgctg0ASc+O/d+o5Fy0r+DH
+         P5qzC/WyE2Q1lPKJXmbTIwcCv4Kq6A5+KZNJ8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SLck9T+fSmc7a2TIjVWcYDoy5sXjzN2t3Wk/7vfAiNU=;
+        b=pHlz/FKQ9aknl41NifVP85fWaCIa/JJcp/9UzlFSiXsQoYnfEKzIb7YviZuuiCAlGV
+         doR9JF1+RQ4x8nZzQN8FdFcAAlj6y08kPhvNdeCwMPiqej5b7UkLkFHmr6gi61bwORpx
+         dTVyBNIhWSzio39f/5JU6xmIUeyxTR0SK72NcOiscL8l4I9QdV0K9E9nM06snfHQxiOG
+         ka9RCwIyxTkdTvEttSTnm2d0ugoKnLXm5oyY+S3vTFfbIl2kun6nIN7aPaTQ/VKA3f+D
+         9LJy56pRZCWB5DqbMIcl67XKqvsExpPRGFLLfXg2rg0J1KSSdc2i8KGW1d9cZNc8GNHY
+         dZsQ==
+X-Gm-Message-State: AOAM531cjISnnxOZOeZxWjPDdTe9bb8ktIBf+DIeT5/PdHGVFOSkkM6b
+        9VEVzJRA104YwBSzTUyNQrtjrA==
+X-Google-Smtp-Source: ABdhPJxsOMJXYHgO++DFsy46q+XDaL5LbfNiKSXWrHsgDpx4L/Vpg9szW4GEOZ4o6Z++CZWZM+WnLA==
+X-Received: by 2002:a62:84ca:0:b029:19e:6f95:11b1 with SMTP id k193-20020a6284ca0000b029019e6f9511b1mr3534614pfd.68.1607539584427;
+        Wed, 09 Dec 2020 10:46:24 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w70sm3499919pfd.65.2020.12.09.10.46.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 10:46:23 -0800 (PST)
+Date:   Wed, 9 Dec 2020 10:46:22 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Marco Elver <elver@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        George Popescu <georgepope@android.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 5/7] ubsan: Enable for all*config builds
+Message-ID: <202012091045.34E3CC3FA@keescook>
+References: <20201203004437.389959-1-keescook@chromium.org>
+ <20201203004437.389959-6-keescook@chromium.org>
+ <CAK8P3a1Br8JFJX2PxyjVxMPMhi-y8mxf+vdEAZQq_Wm2wYP7ZA@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <160753948109.3364.11131685830660675965.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1Br8JFJX2PxyjVxMPMhi-y8mxf+vdEAZQq_Wm2wYP7ZA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+On Thu, Dec 03, 2020 at 09:51:40AM +0100, Arnd Bergmann wrote:
+> On Thu, Dec 3, 2020 at 1:44 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > With UBSAN_OBJECT_SIZE disabled for GCC, only UBSAN_ALIGNMENT remained
+> > a noisy UBSAN option. Disable it for COMPILE_TEST so the rest of UBSAN
+> > can be used for full all*config builds or other large combinations.
+> >
+> > Link: https://lore.kernel.org/lkml/CAHk-=wgXW=YLxGN0QVpp-1w5GDd2pf1W-FqY15poKzoVfik2qA@mail.gmail.com/
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> 
+> Have you checked if this has a notable impact on allmodconfig compile speed
+> with gcc or clang? I think I've seen significant increases in build times before
+> with this, but I don't remember the actual magnitude.
+> 
+> Making it 20% slower would probably be ok, but making it twice as slow might
+> be too much.
 
-Commit-ID:     c5eecbb58f65bf1c4effab9a7f283184b469768c
-Gitweb:        https://git.kernel.org/tip/c5eecbb58f65bf1c4effab9a7f283184b469768c
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 26 Nov 2020 11:53:33 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 09 Dec 2020 17:08:56 +01:00
+And for Clang, it's about 7m40s before and 8m30s after, so roughly 12% slower.
 
-powerpc/8xx: Implement pXX_leaf_size() support
-
-Christophe Leroy wrote:
-
-> I can help with powerpc 8xx. It is a 32 bits powerpc. The PGD has 1024
-> entries, that means each entry maps 4M.
->
-> Page sizes are 4k, 16k, 512k and 8M.
->
-> For the 8M pages we use hugepd with a single entry. The two related PGD
-> entries point to the same hugepd.
->
-> For the other sizes, they are in standard page tables. 16k pages appear
-> 4 times in the page table. 512k entries appear 128 times in the page
-> table.
->
-> When the PGD entry has _PMD_PAGE_8M bits, the PMD entry points to a
-> hugepd with holds the single 8M entry.
->
-> In the PTE, we have two bits: _PAGE_SPS and _PAGE_HUGE
->
-> _PAGE_HUGE means it is a 512k page
-> _PAGE_SPS means it is not a 4k page
->
-> The kernel can by build either with 4k pages as standard page size, or
-> 16k pages. It doesn't change the page table layout though.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201126121121.364451610@infradead.org
----
- arch/powerpc/include/asm/nohash/32/pte-8xx.h | 23 +++++++++++++++++++-
- 1 file changed, 23 insertions(+)
-
-diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
-index 1581204..fcc48d5 100644
---- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
-+++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
-@@ -135,6 +135,29 @@ static inline pte_t pte_mkhuge(pte_t pte)
- }
- 
- #define pte_mkhuge pte_mkhuge
-+
-+static inline unsigned long pgd_leaf_size(pgd_t pgd)
-+{
-+	if (pgd_val(pgd) & _PMD_PAGE_8M)
-+		return SZ_8M;
-+	return SZ_4M;
-+}
-+
-+#define pgd_leaf_size pgd_leaf_size
-+
-+static inline unsigned long pte_leaf_size(pte_t pte)
-+{
-+	pte_basic_t val = pte_val(pte);
-+
-+	if (val & _PAGE_HUGE)
-+		return SZ_512K;
-+	if (val & _PAGE_SPS)
-+		return SZ_16K;
-+	return SZ_4K;
-+}
-+
-+#define pte_leaf_size pte_leaf_size
-+
- #endif
- 
- #endif /* __KERNEL__ */
+-- 
+Kees Cook
