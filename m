@@ -2,268 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675932D3C79
+	by mail.lfdr.de (Postfix) with ESMTP id E30D62D3C7A
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:49:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728293AbgLIHr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728179AbgLIHr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 9 Dec 2020 02:47:57 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:62658 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbgLIHrv (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727961AbgLIHrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 02:47:51 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607500051; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=5p5bVCc6Vd89np+grvQdkHkHHm9hxdaW0bOw4eFXK00=;
- b=n5Ijr2UnK6z0SvgN7JweLLcGN5t1dI89eqMu1Wu+Rqmr/fhyKbLGXaYFfYcPwaAVCGWZR+PL
- TdqPQe1avRbrQhuT5nnDNtMJBan68ptJy2iE9sBv9YoOloJrDZE2BHY1OG2JiabtweFMuh5X
- NFGIjxA3qs6BO46P3iRIVG366bk=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5fd080e908e225997802318b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Dec 2020 07:46:49
- GMT
-Sender: ziqichen=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 666B4C43462; Wed,  9 Dec 2020 07:46:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: ziqichen)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 48E0AC433ED;
-        Wed,  9 Dec 2020 07:46:46 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 09 Dec 2020 15:46:46 +0800
-From:   ziqichen@codeaurora.org
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Satya Tangirala <satyat@google.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] scsi: ufs: Fix ufs power down/on specs violation
-In-Reply-To: <00c4aee20f54448e93792387b598730b@codeaurora.org>
-References: <1607497774-76579-1-git-send-email-ziqichen@codeaurora.org>
- <00c4aee20f54448e93792387b598730b@codeaurora.org>
-Message-ID: <91e355b3a6da8bb95cb493b700aec9be@codeaurora.org>
-X-Sender: ziqichen@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Wed, 9 Dec 2020 02:47:55 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9AAC0613CF;
+        Tue,  8 Dec 2020 23:47:14 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id b73so467363edf.13;
+        Tue, 08 Dec 2020 23:47:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=vUdxfkrGNNo1FQF9h31XnihJ3y4Ce36/DE99SxLOEN4=;
+        b=bGrV5DiIZKcVT0Gqqw7i2bRWbLWwLyR6mnhe+fZmJTZ8Y51HGfViIKPBFFw9tSAWao
+         L1U+AxUyCuqECRICZCdgrhQRLagai+A/HFjKWITuhjeTOHRDW6dY+yh8h0oYpDYFuN9R
+         VBCkUMm8w6zj9TA2WYPhzssQ78984Y/AshzOl4n6fj/Poq08iKKzCl3q+xRYtbmOk8y6
+         gAHj4R2I0ZO5b3oR40rap/7WLxnccrLAP6eGEjAxQWhcjayaqVFi9Q8WLCjh2C8zN6OZ
+         HHAWmsyhyXz1ht5VeMymEP78/7NBuMRWwHB+Z2Q/ZKyK0CTbswU67a0eGqOYapsMWlsw
+         1QlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vUdxfkrGNNo1FQF9h31XnihJ3y4Ce36/DE99SxLOEN4=;
+        b=Qw9LN4rMsbLikqBc+D+F+sifIw9ZtlhP1ugb/PVy+83LkFfumYcoD67JtDCRNdDtXx
+         LeHC+er8dOXvCFHTjNi4IwrSJw7WkuRUnZReaWAE5zsUQZGB8NoCMGascHdzfDdyC1jt
+         YiC157hLsXxGrqDf1foTj2pqWiFcpG28x0o8tATIJ73MKba0D3Sp8TvdKj31AyxmCN/t
+         92OBB91VtnjF/eqcU3x7ENzRcrjPodmHmydkbaSw1lFlQIZ9mBFG0jFXnU3IRJAvR54h
+         JGxhc3Q8chE5cyTyhBGogxyLWqP9EsPlrcaSrWNJdMAhOJewWYw3CwBj2c43m3RK8zqy
+         nTrA==
+X-Gm-Message-State: AOAM5301lLXYnJM7g7rHFkJMlxLa6NgaOKtPm8V6ib3TX3BYBIuZ/V07
+        8M8cKnLw1n5K2nX8Uk++uhE=
+X-Google-Smtp-Source: ABdhPJzRUVwqvvYMGn7Q5wEQjFknCl0J9KFE+fWL45OvQrRbCU6SJw0LKaabiA09tJ4CdpmT2J/TQQ==
+X-Received: by 2002:a05:6402:1d15:: with SMTP id dg21mr828807edb.280.1607500033479;
+        Tue, 08 Dec 2020 23:47:13 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2db8:be00:8188:da9:1e3d:a30d])
+        by smtp.gmail.com with ESMTPSA id eb14sm723692edb.20.2020.12.08.23.47.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 23:47:12 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org
+Cc:     Joe Perches <joe@perches.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] media: MAINTAINERS: correct entry in Amlogic GE2D driver section
+Date:   Wed,  9 Dec 2020 08:46:58 +0100
+Message-Id: <20201209074658.11557-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit aa821b2b9269 ("media: MAINTAINERS: Add myself as maintainer of the
+Amlogic GE2D driver") introduced a new MAINTAINERS section, but the file
+entry points to the wrong location.
 
-Hi Can,
+Hence, ./scripts/get_maintainer.pl --self-test=patterns warns:
 
-On 2020-12-09 15:27, Can Guo wrote:
-> On 2020-12-09 15:09, Ziqi Chen wrote:
->> As per specs, e.g, JESD220E chapter 7.2, while powering
->> off/on the ufs device, RST_N signal and REF_CLK signal
->> should be between VSS(Ground) and VCCQ/VCCQ2.
->> 
->> Power down:
->> 1. Assert RST_N low
->> 2. Turn-off REF_CLK
->> 3. Turn-off VCC
->> 4. Turn-off VCCQ/VCCQ2.
->> power on:
->> 1. Turn-on VCC
->> 2. Turn-on VCCQ/VCCQ2
->> 3. Turn-On REF_CLK
->> 4. Deassert RST_N high.
->> 
->> Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
->> ---
->>  drivers/scsi/ufs/ufs-qcom.c | 14 ++++++++++----
->>  drivers/scsi/ufs/ufshcd.c   | 19 +++++++++----------
->>  drivers/scsi/ufs/ufshcd.h   |  4 ++--
->>  3 files changed, 21 insertions(+), 16 deletions(-)
->> 
->> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
->> index 1e434cc..5ed3a63d 100644
->> --- a/drivers/scsi/ufs/ufs-qcom.c
->> +++ b/drivers/scsi/ufs/ufs-qcom.c
->> @@ -582,6 +582,9 @@ static int ufs_qcom_suspend(struct ufs_hba *hba,
->> enum ufs_pm_op pm_op)
->>  		ufs_qcom_disable_lane_clks(host);
->>  		phy_power_off(phy);
->> 
->> +		if (hba->vops && hba->vops->device_reset)
->> +			hba->vops->device_reset(hba, false);
->> +
-> 
-> Instead of doing the pull-down in ufshcd_vops_suspend(), can we do
-> it in ufshcd_suspend()? Since it is a common problem for all soc
-> vendors.
+  warning: no file matches    F:    drivers/media/meson/ge2d/
 
-Sure, agree, Thanks.
+Adjust the entry to the actual location of the driver.
 
-> 
->>  	} else if (!ufs_qcom_is_link_active(hba)) {
->>  		ufs_qcom_disable_lane_clks(host);
->>  	}
->> @@ -1400,10 +1403,11 @@ static void ufs_qcom_dump_dbg_regs(struct 
->> ufs_hba *hba)
->>  /**
->>   * ufs_qcom_device_reset() - toggle the (optional) device reset line
->>   * @hba: per-adapter instance
->> + * @toggle: need pulling up or not
->>   *
->>   * Toggles the (optional) reset line to reset the attached device.
->>   */
->> -static int ufs_qcom_device_reset(struct ufs_hba *hba)
->> +static int ufs_qcom_device_reset(struct ufs_hba *hba, bool toggle)
->>  {
->>  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->> 
->> @@ -1416,10 +1420,12 @@ static int ufs_qcom_device_reset(struct 
->> ufs_hba *hba)
->>  	 * be on the safe side.
->>  	 */
->>  	gpiod_set_value_cansleep(host->device_reset, 1);
->> -	usleep_range(10, 15);
->> 
->> -	gpiod_set_value_cansleep(host->device_reset, 0);
->> -	usleep_range(10, 15);
->> +	if (toggle) {
->> +		usleep_range(10, 15);
->> +		gpiod_set_value_cansleep(host->device_reset, 0);
->> +		usleep_range(10, 15);
->> +	}
->> 
->>  	return 0;
->>  }
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 92d433d..5ab1c02 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -8633,8 +8633,6 @@ static int ufshcd_suspend(struct ufs_hba *hba,
->> enum ufs_pm_op pm_op)
->>  	if (ret)
->>  		goto set_dev_active;
->> 
->> -	ufshcd_vreg_set_lpm(hba);
->> -
->>  disable_clks:
->>  	/*
->>  	 * Call vendor specific suspend callback. As these callbacks may 
->> access
->> @@ -8664,6 +8662,7 @@ static int ufshcd_suspend(struct ufs_hba *hba,
->> enum ufs_pm_op pm_op)
->> 
->>  	/* Put the host controller in low power mode if possible */
->>  	ufshcd_hba_vreg_set_lpm(hba);
->> +	ufshcd_vreg_set_lpm(hba);
-> 
-> Can you put ufshcd_vreg_set_lpm() before ufshcd_hba_vreg_set_lpm()?
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies on next-20201208, not on current master
 
-Sure, thanks.
+Neil, please ack.
+Hans, Mauro, please pick this minor non-urgent fix-up for your -next tree.
 
-> 
->>  	goto out;
->> 
->>  set_link_active:
->> @@ -8729,18 +8728,18 @@ static int ufshcd_resume(struct ufs_hba *hba,
->> enum ufs_pm_op pm_op)
->>  	old_link_state = hba->uic_link_state;
->> 
->>  	ufshcd_hba_vreg_set_hpm(hba);
->> +	ret = ufshcd_vreg_set_hpm(hba);
->> +	if (ret)
->> +		goto out;
->> +
->>  	/* Make sure clocks are enabled before accessing controller */
->>  	ret = ufshcd_setup_clocks(hba, true);
->>  	if (ret)
->> -		goto out;
->> +		goto disable_vreg;
->> 
->>  	/* enable the host irq as host controller would be active soon */
->>  	ufshcd_enable_irq(hba);
->> 
->> -	ret = ufshcd_vreg_set_hpm(hba);
->> -	if (ret)
->> -		goto disable_irq_and_vops_clks;
->> -
->>  	/*
->>  	 * Call vendor specific resume callback. As these callbacks may 
->> access
->>  	 * vendor specific host controller register space call them when the
->> @@ -8748,7 +8747,7 @@ static int ufshcd_resume(struct ufs_hba *hba,
->> enum ufs_pm_op pm_op)
->>  	 */
->>  	ret = ufshcd_vops_resume(hba, pm_op);
->>  	if (ret)
->> -		goto disable_vreg;
->> +		goto disable_irq_and_vops_clks;
->> 
->>  	/* For DeepSleep, the only supported option is to have the link off 
->> */
->>  	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && 
->> !ufshcd_is_link_off(hba));
->> @@ -8815,8 +8814,6 @@ static int ufshcd_resume(struct ufs_hba *hba,
->> enum ufs_pm_op pm_op)
->>  	ufshcd_link_state_transition(hba, old_link_state, 0);
->>  vendor_suspend:
->>  	ufshcd_vops_suspend(hba, pm_op);
->> -disable_vreg:
->> -	ufshcd_vreg_set_lpm(hba);
->>  disable_irq_and_vops_clks:
->>  	ufshcd_disable_irq(hba);
->>  	if (hba->clk_scaling.is_allowed)
->> @@ -8827,6 +8824,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
->> enum ufs_pm_op pm_op)
->>  		trace_ufshcd_clk_gating(dev_name(hba->dev),
->>  					hba->clk_gating.state);
->>  	}
->> +disable_vreg:
->> +	ufshcd_vreg_set_lpm(hba);
->>  out:
->>  	hba->pm_op_in_progress = 0;
->>  	if (ret)
->> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->> index 61344c4..47c7dab6 100644
->> --- a/drivers/scsi/ufs/ufshcd.h
->> +++ b/drivers/scsi/ufs/ufshcd.h
->> @@ -323,7 +323,7 @@ struct ufs_hba_variant_ops {
->>  	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
->>  	void	(*dbg_register_dump)(struct ufs_hba *hba);
->>  	int	(*phy_initialization)(struct ufs_hba *);
->> -	int	(*device_reset)(struct ufs_hba *hba);
->> +	int	(*device_reset)(struct ufs_hba *hba, bool);
->>  	void	(*config_scaling_param)(struct ufs_hba *hba,
->>  					struct devfreq_dev_profile *profile,
->>  					void *data);
->> @@ -1211,7 +1211,7 @@ static inline void
->> ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
->>  static inline void ufshcd_vops_device_reset(struct ufs_hba *hba)
->>  {
->>  	if (hba->vops && hba->vops->device_reset) {
->> -		int err = hba->vops->device_reset(hba);
->> +		int err = hba->vops->device_reset(hba, true);
->> 
->>  		if (!err)
->>  			ufshcd_set_ufs_dev_active(hba);
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5b20babb9f7b..d66bf50fc640 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11520,7 +11520,7 @@ L:	linux-amlogic@lists.infradead.org
+ S:	Supported
+ T:	git git://linuxtv.org/media_tree.git
+ F:	Documentation/devicetree/bindings/media/amlogic,axg-ge2d.yaml
+-F:	drivers/media/meson/ge2d/
++F:	drivers/media/platform/meson/ge2d/
+ 
+ MESON NAND CONTROLLER DRIVER FOR AMLOGIC SOCS
+ M:	Liang Yang <liang.yang@amlogic.com>
+-- 
+2.17.1
+
