@@ -2,172 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953342D4AF4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3C02D4AF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388014AbgLITuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:50:09 -0500
-Received: from mga03.intel.com ([134.134.136.65]:43170 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732246AbgLITty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:49:54 -0500
-IronPort-SDR: NAdF4F1YLxi8EL+iA8gmC6erF1WPr2Yiw3BEoLgh/HIgKH//xa60c+igljxxJktMIwqZs941Is
- aTPeEvX1x+KA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="174258243"
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="scan'208";a="174258243"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 11:48:05 -0800
-IronPort-SDR: nVyWExsL672aMhWBXwA4jXcXlf06S8CAlg7lJIrjfDNN3zEtmbQoEI4iIQG5i4Gtc9HqlIx/q+
- eGpWESuhu7Mw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="scan'208";a="540733091"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 09 Dec 2020 11:48:05 -0800
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
-        by linux.intel.com (Postfix) with ESMTP id 67B50580887;
-        Wed,  9 Dec 2020 11:48:05 -0800 (PST)
-Message-ID: <81f1c99fd22eb2d77fd52029e0564d1b67628671.camel@linux.intel.com>
-Subject: Re: [PATCH] PCI: Save/restore L1 PM Substate extended capability
- registers
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Vidya Sagar <vidyas@nvidia.com>, bhelgaas@google.com,
-        rafael@kernel.org
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 09 Dec 2020 11:48:05 -0800
-In-Reply-To: <d7708556-40b5-c66c-d0c7-ccfe9999691c@nvidia.com>
-References: <20201208220624.21877-1-david.e.box@linux.intel.com>
-         <d7708556-40b5-c66c-d0c7-ccfe9999691c@nvidia.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S2387406AbgLITte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:49:34 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:54675 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733110AbgLITtJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:49:09 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607543321; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=BDsqBtsR+tJlXw/x5FPrFdURybZlwARsyz23aASsQNI=; b=X2Z0kIDl5yhuMuNTVdvNcl60VbMJ1QsjJLKCD4Jkbc3B7n6bJDLw3k0yxU35s2qo3IPx25nW
+ LDqix8RiXhW4juTeRfXQrZGBys0kXhBXW06DPkBkmDcVKc+y4rMeg9pJG8x/d/Nb/8SKv+he
+ rnXFM1shqKygSgxzooOkDUuxiq8=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fd129f8c62570206cbbf4d3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Dec 2020 19:48:08
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DCAECC43463; Wed,  9 Dec 2020 19:48:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A2874C433C6;
+        Wed,  9 Dec 2020 19:48:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A2874C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH] mhi: use irq_flags if client driver configures it
+To:     Hemant Kumar <hemantk@codeaurora.org>,
+        Carl Huang <cjhuang@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201208035500.30581-1-cjhuang@codeaurora.org>
+ <fad48bcd-df5d-40e3-9d63-b45adb998445@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <bf5409bb-adaf-d2ad-8606-cd8a3df8bc5b@codeaurora.org>
+Date:   Wed, 9 Dec 2020 12:48:05 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <fad48bcd-df5d-40e3-9d63-b45adb998445@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Great. Thanks Vidya.
+On 12/9/2020 11:34 AM, Hemant Kumar wrote:
+> 
+> 
+> On 12/7/20 7:55 PM, Carl Huang wrote:
+>> If client driver has specified the irq_flags, mhi uses this specified
+>> irq_flags. Otherwise, mhi uses default irq_flags.
+>>
+>> The purpose of this change is to support one MSI vector for QCA6390.
+>> MHI will use one same MSI vector too in this scenario.
+>>
+>> In case of one MSI vector, IRQ_NO_BALANCING is needed when irq handler
+>> is requested. The reason is if irq migration happens, the msi_data may
+>> change too. However, the msi_data is already programmed to QCA6390
+>> hardware during initialization phase. This msi_data inconsistence will
+>> result in crash in kernel.
 
-On Wed, 2020-12-09 at 09:38 +0530, Vidya Sagar wrote:
-> There is a change already available for it in linux-next
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=4257f7e008ea394fcecc050f1569c3503b8bcc15
+I'm confused as to how this happens.
+
+>>
+>> Another issue is in case of one MSI vector, IRQF_NO_SUSPEND will trigger
+>> WARNINGS because QCA6390 wants to disable the IRQ during the suspend.
+>>
+>> To avoid above two issues, QCA6390 driver specifies the irq_flags in case
+>> of one MSI vector when mhi_register_controller is called.
+
+Surely this change should be in a series where there is a following 
+change which updates the QCA6390 driver?
+
+>>
+>> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+>> ---
+>>   drivers/bus/mhi/core/init.c | 9 +++++++--
+>>   include/linux/mhi.h         | 1 +
+>>   2 files changed, 8 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+>> index 0ffdebd..5f74e1e 100644
+>> --- a/drivers/bus/mhi/core/init.c
+>> +++ b/drivers/bus/mhi/core/init.c
+>> @@ -148,12 +148,17 @@ int mhi_init_irq_setup(struct mhi_controller 
+>> *mhi_cntrl)
+>>   {
+>>       struct mhi_event *mhi_event = mhi_cntrl->mhi_event;
+>>       struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>> +    unsigned long irq_flags = IRQF_SHARED | IRQF_NO_SUSPEND;
+>>       int i, ret;
+>> +    /* if client driver has set irq_flags, use it */
+>> +    if (mhi_cntrl->irq_flags)
+>> +        irq_flags = mhi_cntrl->irq_flags;
+> Jeff if i remember correctly your use case also have one dedicated irq 
+> line for all the MSIs, just want to confirm if you are fine with this 
+> change ? i was wondering if any input check is required for irq_flags 
+> passed by controller, or responsibility is on controller for any 
+> undesired behavior. Like passing IRQF_SHARED and IRQF_ONESHOT when one 
+> irq line is shared among multiple MSIs.
+
+This feels a bit weird to me, but I don't think it'll cause a problem.
+
+If we are allowing the controller to specify flags, should they be in a 
+per irq manner?
+
+>> +
+>>       /* Setup BHI_INTVEC IRQ */
+>>       ret = request_threaded_irq(mhi_cntrl->irq[0], mhi_intvec_handler,
+>>                      mhi_intvec_threaded_handler,
+>> -                   IRQF_SHARED | IRQF_NO_SUSPEND,
+>> +                   irq_flags,
+>>                      "bhi", mhi_cntrl);
+>>       if (ret)
+>>           return ret;
+>> @@ -171,7 +176,7 @@ int mhi_init_irq_setup(struct mhi_controller 
+>> *mhi_cntrl)
+>>           ret = request_irq(mhi_cntrl->irq[mhi_event->irq],
+>>                     mhi_irq_handler,
+>> -                  IRQF_SHARED | IRQF_NO_SUSPEND,
+>> +                  irq_flags,
+>>                     "mhi", mhi_event);
+>>           if (ret) {
+>>               dev_err(dev, "Error requesting irq:%d for ev:%d\n",
+>> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+>> index d4841e5..f039e58 100644
+>> --- a/include/linux/mhi.h
+>> +++ b/include/linux/mhi.h
+>> @@ -442,6 +442,7 @@ struct mhi_controller {
+>>       bool fbc_download;
+>>       bool pre_init;
+>>       bool wake_set;
+>> +    unsigned long irq_flags;
+
+You don't document this.  That gets a NACK from me.
+
+>>   };
+>>   /**
+>>
 > 
 > Thanks,
-> Vidya Sagar
+> Hemant
 > 
-> On 12/9/2020 3:36 AM, David E. Box wrote:
-> > External email: Use caution opening links or attachments
-> > 
-> > 
-> > On Intel systems that support ACPI Low Power Idle it has been
-> > observed
-> > that the L1 Substate capability can return disabled after a s2idle
-> > cycle. This causes the loss of L1 Substate support during runtime
-> > leading to higher power consumption. Add save/restore of the L1SS
-> > control registers.
-> > 
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > ---
-> >   drivers/pci/pci.c | 49
-> > +++++++++++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 49 insertions(+)
-> > 
-> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > index e578d34095e9..beee3d9952a6 100644
-> > --- a/drivers/pci/pci.c
-> > +++ b/drivers/pci/pci.c
-> > @@ -1539,6 +1539,48 @@ static void pci_restore_ltr_state(struct
-> > pci_dev *dev)
-> >          pci_write_config_word(dev, ltr + PCI_LTR_MAX_NOSNOOP_LAT,
-> > *cap++);
-> >   }
-> > 
-> > +static void pci_save_l1ss_state(struct pci_dev *dev)
-> > +{
-> > +       int l1ss;
-> > +       struct pci_cap_saved_state *save_state;
-> > +       u16 *cap;
-> > +
-> > +       if (!pci_is_pcie(dev))
-> > +               return;
-> > +
-> > +       l1ss = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_L1SS);
-> > +       if (!l1ss)
-> > +               return;
-> > +
-> > +       save_state = pci_find_saved_ext_cap(dev,
-> > PCI_EXT_CAP_ID_L1SS);
-> > +       if (!save_state) {
-> > +               pci_err(dev, "no suspend buffer for L1
-> > Substates\n");
-> > +               return;
-> > +       }
-> > +
-> > +       cap = (u16 *)&save_state->cap.data[0];
-> > +       pci_read_config_word(dev, l1ss + PCI_L1SS_CTL1, cap++);
-> > +       pci_read_config_word(dev, l1ss + PCI_L1SS_CTL1 + 2, cap++);
-> > +       pci_read_config_word(dev, l1ss + PCI_L1SS_CTL2, cap++);
-> > +}
-> > +
-> > +static void pci_restore_l1ss_state(struct pci_dev *dev)
-> > +{
-> > +       struct pci_cap_saved_state *save_state;
-> > +       int l1ss;
-> > +       u16 *cap;
-> > +
-> > +       save_state = pci_find_saved_ext_cap(dev,
-> > PCI_EXT_CAP_ID_L1SS);
-> > +       l1ss = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_L1SS);
-> > +       if (!save_state || !l1ss)
-> > +               return;
-> > +
-> > +       cap = (u16 *)&save_state->cap.data[0];
-> > +       pci_write_config_word(dev, l1ss + PCI_L1SS_CTL1, *cap++);
-> > +       pci_write_config_word(dev, l1ss + PCI_L1SS_CTL1 + 2,
-> > *cap++);
-> > +       pci_write_config_word(dev, l1ss + PCI_L1SS_CTL2, *cap++);
-> > +}
-> > +
-> >   /**
-> >    * pci_save_state - save the PCI configuration space of a device
-> > before
-> >    *                 suspending
-> > @@ -1563,6 +1605,7 @@ int pci_save_state(struct pci_dev *dev)
-> >          if (i != 0)
-> >                  return i;
-> > 
-> > +       pci_save_l1ss_state(dev);
-> >          pci_save_ltr_state(dev);
-> >          pci_save_dpc_state(dev);
-> >          pci_save_aer_state(dev);
-> > @@ -1670,6 +1713,7 @@ void pci_restore_state(struct pci_dev *dev)
-> >           */
-> >          pci_restore_ltr_state(dev);
-> > 
-> > +       pci_restore_l1ss_state(dev);
-> >          pci_restore_pcie_state(dev);
-> >          pci_restore_pasid_state(dev);
-> >          pci_restore_pri_state(dev);
-> > @@ -3332,6 +3376,11 @@ void pci_allocate_cap_save_buffers(struct
-> > pci_dev *dev)
-> >          if (error)
-> >                  pci_err(dev, "unable to allocate suspend buffer
-> > for LTR\n");
-> > 
-> > +       error = pci_add_ext_cap_save_buffer(dev,
-> > PCI_EXT_CAP_ID_L1SS,
-> > +                                           3 * sizeof(u16));
-> > +       if (error)
-> > +               pci_err(dev, "unable to allocate suspend buffer for
-> > L1 Substates\n");
-> > +
-> >          pci_allocate_vc_save_buffers(dev);
-> >   }
-> > 
-> > --
-> > 2.20.1
-> > 
 
+
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
