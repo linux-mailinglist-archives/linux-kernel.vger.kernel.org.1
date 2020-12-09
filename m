@@ -2,77 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9472D4879
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F02902D48F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731252AbgLIR75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:59:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730721AbgLIR75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:59:57 -0500
-Date:   Wed, 9 Dec 2020 09:59:16 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607536756;
-        bh=8sM2aGR0RHBZfW1NngwzFo47cupDQcvozNvQD103Fts=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=PizATpkuznwPVPKW0PBMROo2xDQ++syQfPuvuAfXp05bOloBgW3pK9kCGXaiwSgPY
-         nujEM+tLNALs4QKTXWSOOclFBBE8G3Kyf8aUSRBvATcu68KbPoqGYdCHFWWiz0uen5
-         ZvFqiUjzz83H2TNSKMLyzdHljR94w/CPeYMgMCoJpqIN/k/rbv2rxlErEQ0TyeSr3M
-         M/9q8/FhC+7zNOHiDmOrgIqa3Jck7qAJIdJwvfcfSNIYiAWXYzyl4NlrTBeGYDHdmT
-         0YtPuTpOSJK1E4zVUmbEme4fMdpZdmMyahZmllKZsdd0Rf/1FxR2L1ABa1eEWZaARX
-         a9w6mpO7OH1iQ==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        iamjoonsoo.kim@lge.com, andrii@kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
-Subject: Re: [PATCH v2 sl-b 1/5] mm: Add mem_dump_obj() to print source of
- memory block
-Message-ID: <20201209175916.GE2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
- <20201209011303.32737-1-paulmck@kernel.org>
- <20201209081710.GA17642@infradead.org>
- <20201209145702.GA2657@paulmck-ThinkPad-P72>
- <20201209175306.GC25719@infradead.org>
+        id S1732638AbgLIS0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:26:25 -0500
+Received: from server.kenspensetc.com ([185.148.128.76]:59906 "EHLO
+        server.kenspensetc.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732999AbgLIS0H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:26:07 -0500
+X-Greylist: delayed 4901 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Dec 2020 13:26:06 EST
+Received: from localhost ([127.0.0.1]:36546 helo=server.kenspensetc.com)
+        by server.kenspensetc.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <sender@ridecals.com>)
+        id 1kn2qX-0007af-VN; Wed, 09 Dec 2020 12:01:45 -0500
+Received: from [70.32.0.77] ([70.32.0.77]) by ridecals.com (Horde Framework)
+ with HTTPS; Wed, 09 Dec 2020 12:01:45 -0500
+Date:   Wed, 09 Dec 2020 12:01:45 -0500
+Message-ID: <20201209120145.Horde.J6hgwbjmHTY8hOY5rRI098A@ridecals.com>
+From:   Russell Branting <sender@ridecals.com>
+Subject: Vital
+Reply-to: Goodagent01@gmail.com
+User-Agent: Horde Application Framework 5
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209175306.GC25719@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server.kenspensetc.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - ridecals.com
+X-Get-Message-Sender-Via: server.kenspensetc.com: authenticated_id: sender9@ridecals.com
+X-Authenticated-Sender: server.kenspensetc.com: sender9@ridecals.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 05:53:06PM +0000, Christoph Hellwig wrote:
-> On Wed, Dec 09, 2020 at 06:57:02AM -0800, Paul E. McKenney wrote:
-> > On Wed, Dec 09, 2020 at 08:17:10AM +0000, Christoph Hellwig wrote:
-> > > Your two new exports don't actually seem to get used in modular code
-> > > at all in this series.
-> > 
-> > Indeed, and I either need to remove the exports or make my test code in
-> > kernel/rcu/rcuscale.o suitable for upstreaming.  Or find the appropriate
-> > mm/slab selftest location.
-> 
-> I'd rather not export something like this which pokes deep into
-> internals.  That being said I've been working on off on a
-> EXPORT_SYMBOL_FOR() that just exports a symbol to one specific module.
-> Hopefully I'll finish it for the next merge window, and with that
-> I'd feel much more comfortable with an export.
 
-That would be really useful!  I have a number of symbols that should
-only be used by a few specific in-tree modules, independent of this
-patch series.
+I am instructed to inform you of your appointment as the next of kin  
+to your deceased relative estate. Kindly indicate your acceptance by  
+reconfirming your Full Name, Address & Phone Number for immediate  
+processing of the funds release to your control OR the deceased  
+deposited funds will be declared unclaimed.
 
-For my part, I will see if there is a good mm-related location for this
-sort of selftest.
 
-							Thanx, Paul
