@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEAD2D37E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4F22D37ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731842AbgLIAg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 19:36:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
+        id S1729907AbgLIApA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 19:45:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgLIAg7 (ORCPT
+        with ESMTP id S1725940AbgLIAo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 19:36:59 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40B0C0613CF;
-        Tue,  8 Dec 2020 16:36:18 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id x16so483609ejj.7;
-        Tue, 08 Dec 2020 16:36:18 -0800 (PST)
+        Tue, 8 Dec 2020 19:44:59 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7152DC061794
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 16:44:19 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id g25so29849wmh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 16:44:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mkMFIqftA6fOka00URf8NhOMR4eJXlK1B5kNwAoNQh4=;
-        b=EuOPJQJeFYNRtbLszFRpPb7sdtooqzYIpAVUXtaqw+jHTS2+NHM8R84f6d1gEB3y2e
-         7/OVlPqVbbJnifASDQ6N/cfq5IGHfkK6PeZ3nGQ9/h+MC3w0P7sX3PsqywykDVk80bP0
-         PA+JzIElgGXUpjAYvE5wA2rZoHTRwyZnABXL0WjcN+3N8paLtbE0bhubpLYriWwThMxg
-         T4z6BziUr3UByTbWtFm7uiMqUFRfG+1iWNZcRlFs2z7Wtc+TSbohgSEKfPHCyKlIpAFs
-         fWfwKMf0bFFkk4P++vhkwgnB0gR9IBFr0VAIJkmjL4lEJqYF+AxnBfrhC3BuA4eK5HrQ
-         Wbig==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WBbHO055TDdHkxOg7jOYFdPzCq3mNcsnhSnfew3Y1EY=;
+        b=gkn9GnyQglKnUhjGGYCXIKsVi5wfV6l/qEI1a2+K2hvW+PzEBba0WRfUqG5WqleEHH
+         rYvJAfFHvVA1vSFpUDhC9St39gWYoj9oFpMSVof8etKlbdIgrXP/Fe/VJAoTRe1NW53r
+         oINMGfzdvTBk2+JPfj2iGvrr651ssjNGtsJy4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mkMFIqftA6fOka00URf8NhOMR4eJXlK1B5kNwAoNQh4=;
-        b=fG7fqTzXypiLCzKQlvJLvldLbGU0iXACuPpZX5mk2TO1qWGhRgGdykzSMKlqSLIqlA
-         75tV1BQ8gkqVAjHXG37cSuObWOPh32ztQUaJISwFzSR3E4fp1QRQZRP1NbKRXUYv3dae
-         UP73LKhM3UZ0OPRUZS4youKC9qJ8gP2EcUmAx1BjA60TkaP8l+pGgZnDX/MR8gfsTHj9
-         K/e9ENulNGx6nCMPHvtZyPb/UMBfIIc2ch4OJNC72wHABMkDOkvXwPtGr2cbcXG1Nk+z
-         YjH/bCp/2d9FAd5okjJCGVXxq0OwHs+nZPzMsFhhwgPkn6BzQ1Ah2yRLDdUfE7u3axku
-         bZYg==
-X-Gm-Message-State: AOAM530T5OXRUUerMubKOs7rc+qxNCljHCBtlJkLrNVvSpGYV+hJWA9B
-        G9kq3gj3aePPby/manJG2k/GStdLvU1e7TAJTI0=
-X-Google-Smtp-Source: ABdhPJxf5Ixnqs9paYGQBJNuLiyZHP+oImATrwLI0x1RD6F7YlOikrK9B5P/b4ND1Mim0+OfALId61aQlJ3k7JosiNo=
-X-Received: by 2002:a17:906:298c:: with SMTP id x12mr268679eje.244.1607474177673;
- Tue, 08 Dec 2020 16:36:17 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=WBbHO055TDdHkxOg7jOYFdPzCq3mNcsnhSnfew3Y1EY=;
+        b=kCFKGyQvQMJgrIQFqrkMQxnkYW98U1rE7GFmikf7ACMuKl8rACQMsiXNtNEpuWOPc+
+         EGBCXJ1K1oJs5pJoWRx4FVOMbFA4MQ7CdipTg7XtwW1GJLCf2SAq+YfEnEFgQtmUGADr
+         eiB7GJRrdqaKbPe5+d97XsssJoLTG1xC7ktySy4vKuCqW36cGKY4LfBzTyi2gkz8I3bv
+         SLH6ihwIpg58BpzhggZglA7TH0pby/FFIcZMaahoiqQtk9TnNzSQknoUIAmIiRMv9w9M
+         oZ1Vw78ljCX5cJWLSBUTYMFCa1n60RAAscU3uNnXGbUba0JUt/w1+PRPv0kEXJMcX4qD
+         WJcQ==
+X-Gm-Message-State: AOAM533pMvHoEQe9rXZA3IeuovfurUCakefi5nJgmMnCuYEeGZKn3KY9
+        rq0wh5QVdl/jtN+Qbs4MpXZOZYmvfA5JxQ==
+X-Google-Smtp-Source: ABdhPJxLmZZZDr4AskPctoFwXO0CXDkm7krmiIzueb/sJB51n47BczDttWqZl8WpkJ2EVS9oYPgS8A==
+X-Received: by 2002:a7b:c308:: with SMTP id k8mr44691wmj.76.1607474658253;
+        Tue, 08 Dec 2020 16:44:18 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id 138sm37368wma.41.2020.12.08.16.44.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 16:44:17 -0800 (PST)
+Date:   Wed, 9 Dec 2020 01:44:15 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, p.zabel@pengutronix.de,
+        airlied@linux.ie, daniel@ffwll.ch, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, robh+dt@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, laurentiu.palcu@oss.nxp.com
+Subject: Re: [PATCH v3 4/6] drm/atomic: Avoid unused-but-set-variable warning
+ on for_each_old_plane_in_state
+Message-ID: <20201209004415.GM401619@phenom.ffwll.local>
+Mail-Followup-To: Liu Ying <victor.liu@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, p.zabel@pengutronix.de,
+        airlied@linux.ie, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        robh+dt@kernel.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de,
+        laurentiu.palcu@oss.nxp.com
+References: <1607311260-13983-1-git-send-email-victor.liu@nxp.com>
+ <1607311260-13983-5-git-send-email-victor.liu@nxp.com>
 MIME-Version: 1.0
-References: <20201208124523.8169-1-ruc_zhangxiaohui@163.com>
-In-Reply-To: <20201208124523.8169-1-ruc_zhangxiaohui@163.com>
-From:   Julian Calaby <julian.calaby@gmail.com>
-Date:   Wed, 9 Dec 2020 11:36:05 +1100
-Message-ID: <CAGRGNgWzTnmyYO97MkW+biQBrs-LarknCAsM9q+-UMqcSCN3bQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mwifiex: Fix possible buffer overflows in mwifiex_config_scan
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607311260-13983-5-git-send-email-victor.liu@nxp.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiaohui,
+On Mon, Dec 07, 2020 at 11:20:58AM +0800, Liu Ying wrote:
+> Artifically use 'plane' and 'old_plane_state' to avoid 'not used' warning.
+> The precedent has already been set by other macros in the same file.
+> 
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
 
-On Wed, Dec 9, 2020 at 12:07 AM Xiaohui Zhang <ruc_zhangxiaohui@163.com> wrote:
->
-> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
->
-> mwifiex_config_scan() calls memcpy() without checking
-> the destination size may trigger a buffer overflower,
-> which a local user could use to cause denial of service
-> or the execution of arbitrary code.
-> Fix it by putting the length check before calling memcpy().
->
-> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+I'm assuming someone will push this to drm-misc or some other tree. Should
+probably land sooner than later.
+-Daniel
+
 > ---
->  drivers/net/wireless/marvell/mwifiex/scan.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/net/wireless/marvell/mwifiex/scan.c b/drivers/net/wireless/marvell/mwifiex/scan.c
-> index c2a685f63..b1d90678f 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/scan.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/scan.c
-> @@ -930,6 +930,8 @@ mwifiex_config_scan(struct mwifiex_private *priv,
->                                     "DIRECT-", 7))
->                                 wildcard_ssid_tlv->max_ssid_length = 0xfe;
->
-> +                       if (ssid_len > 1)
-> +                               ssid_len = 1;
->                         memcpy(wildcard_ssid_tlv->ssid,
->                                user_scan_in->ssid_list[i].ssid, ssid_len);
-
-Can ssid_len ever be 0 here?
-
-If it can't, should we just set ssid_len to 1 unconditionally?
-
-If it can, should we just skip the memcpy as it won't do anything?
-
-Thanks,
+> v2->v3:
+> * Add a missing blank line.
+> 
+> v1->v2:
+> * No change.
+> 
+>  include/drm/drm_atomic.h | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/drm/drm_atomic.h b/include/drm/drm_atomic.h
+> index 54e051a..2e087d7 100644
+> --- a/include/drm/drm_atomic.h
+> +++ b/include/drm/drm_atomic.h
+> @@ -888,7 +888,10 @@ void drm_state_dump(struct drm_device *dev, struct drm_printer *p);
+>  	     (__i)++)							\
+>  		for_each_if ((__state)->planes[__i].ptr &&		\
+>  			     ((plane) = (__state)->planes[__i].ptr,	\
+> -			      (old_plane_state) = (__state)->planes[__i].old_state, 1))
+> +			      (void)(plane) /* Only to avoid unused-but-set-variable warning */, \
+> +			      (old_plane_state) = (__state)->planes[__i].old_state, \
+> +			      (void)(old_plane_state) /* Only to avoid unused-but-set-variable warning */, 1))
+> +
+>  /**
+>   * for_each_new_plane_in_state - iterate over all planes in an atomic update
+>   * @__state: &struct drm_atomic_state pointer
+> -- 
+> 2.7.4
+> 
 
 -- 
-Julian Calaby
-
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
