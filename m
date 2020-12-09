@@ -2,124 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBDA2D3F91
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A14B2D3FA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729737AbgLIKJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:09:27 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8970 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728631AbgLIKJ1 (ORCPT
+        id S1729795AbgLIKMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:12:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24753 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729779AbgLIKMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:09:27 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CrXmz5MJYzhnbT;
-        Wed,  9 Dec 2020 18:08:19 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 9 Dec 2020
- 18:08:42 +0800
-Subject: Re: [PATCH v4] erofs: avoid using generic_block_bmap
-To:     Huang Jianan <huangjianan@oppo.com>, <linux-erofs@lists.ozlabs.org>
-CC:     <linux-kernel@vger.kernel.org>, <guoweichao@oppo.com>,
-        <zhangshiming@oppo.com>
-References: <20201209023930.15554-1-huangjianan@oppo.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <23527fc2-811b-321e-10f1-cb5b50affdbb@huawei.com>
-Date:   Wed, 9 Dec 2020 18:08:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Wed, 9 Dec 2020 05:12:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607508646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4TGW49VFxxgzg6HHlJEgqhfXkJr229AXz30lVfSS/wA=;
+        b=Qh7ycNgT6o6tFmOa9yt2tqhIY8fPWRGar9OWtnMgufVpHyR5QERIg6bAbx1dc0ZAN+YKk3
+        xiBqX3NXQBElrRWAdow0slfFZjsuFuW5fyrzQ6wwt0oTp7X1JFeGNZpaXIjv91vMsS8Rrb
+        096T0FBBsLVp1Q74wYBLszTnDb4b/EM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-F-PKDTCLPnu8Iu_PevaM0A-1; Wed, 09 Dec 2020 05:10:42 -0500
+X-MC-Unique: F-PKDTCLPnu8Iu_PevaM0A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4C67B8101;
+        Wed,  9 Dec 2020 10:10:37 +0000 (UTC)
+Received: from [10.36.114.167] (ovpn-114-167.ams2.redhat.com [10.36.114.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B53EA6E41C;
+        Wed,  9 Dec 2020 10:10:31 +0000 (UTC)
+Subject: Re: [External] Re: [PATCH v7 06/15] mm/hugetlb: Disable freeing
+ vmemmap if struct page size is not power of two
+From:   David Hildenbrand <david@redhat.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201130151838.11208-1-songmuchun@bytedance.com>
+ <20201130151838.11208-7-songmuchun@bytedance.com>
+ <ba57ea7d-709b-bf36-d48a-cc72a26012cc@redhat.com>
+ <CAMZfGtV5200NZXH9Z_Z9qXo5FCd9E6JOTXjQtzcF0xGi-gCuPg@mail.gmail.com>
+ <4b8a9389-1704-4d8c-ec58-abd753814dd9@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <a6d11bc6-033d-3a0b-94ce-cbd556120b6d@redhat.com>
+Date:   Wed, 9 Dec 2020 11:10:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201209023930.15554-1-huangjianan@oppo.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <4b8a9389-1704-4d8c-ec58-abd753814dd9@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/9 10:39, Huang Jianan wrote:
-> iblock indicates the number of i_blkbits-sized blocks rather than
-> sectors.
+On 09.12.20 11:06, David Hildenbrand wrote:
+> On 09.12.20 11:03, Muchun Song wrote:
+>> On Wed, Dec 9, 2020 at 5:57 PM David Hildenbrand <david@redhat.com> wrote:
+>>>
+>>> On 30.11.20 16:18, Muchun Song wrote:
+>>>> We only can free the tail vmemmap pages of HugeTLB to the buddy allocator
+>>>> when the size of struct page is a power of two.
+>>>>
+>>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>>>> ---
+>>>>  mm/hugetlb_vmemmap.c | 5 +++++
+>>>>  1 file changed, 5 insertions(+)
+>>>>
+>>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+>>>> index 51152e258f39..ad8fc61ea273 100644
+>>>> --- a/mm/hugetlb_vmemmap.c
+>>>> +++ b/mm/hugetlb_vmemmap.c
+>>>> @@ -111,6 +111,11 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
+>>>>       unsigned int nr_pages = pages_per_huge_page(h);
+>>>>       unsigned int vmemmap_pages;
+>>>>
+>>>> +     if (!is_power_of_2(sizeof(struct page))) {
+>>>> +             pr_info("disable freeing vmemmap pages for %s\n", h->name);
+>>>
+>>> I'd just drop that pr_info(). Users are able to observe that it's
+>>> working (below), so they are able to identify that it's not working as well.
+>>
+>> The below is just a pr_debug. Do you suggest converting it to pr_info?
 > 
-> In addition, considering buffer_head limits mapped size to 32-bits,
-> should avoid using generic_block_bmap.
+> Good question. I wonder if users really have to know in most cases.
+> Maybe pr_debug() is good enough in environments where we want to debug
+> why stuff is not working as expected.
 > 
-> Fixes: 9da681e017a3 ("staging: erofs: support bmap")
-> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-> ---
->   fs/erofs/data.c | 30 ++++++++++--------------------
->   1 file changed, 10 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-> index 347be146884c..d6ea0a216b57 100644
-> --- a/fs/erofs/data.c
-> +++ b/fs/erofs/data.c
-> @@ -312,36 +312,26 @@ static void erofs_raw_access_readahead(struct readahead_control *rac)
->   		submit_bio(bio);
->   }
->   
-> -static int erofs_get_block(struct inode *inode, sector_t iblock,
-> -			   struct buffer_head *bh, int create)
-> -{
-> -	struct erofs_map_blocks map = {
-> -		.m_la = iblock << 9,
-> -	};
-> -	int err;
-> -
-> -	err = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
-> -	if (err)
-> -		return err;
-> -
-> -	if (map.m_flags & EROFS_MAP_MAPPED)
-> -		bh->b_blocknr = erofs_blknr(map.m_pa);
-> -
-> -	return err;
-> -}
-> -
->   static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
->   {
->   	struct inode *inode = mapping->host;
-> +	struct erofs_map_blocks map = {
-> +		.m_la = blknr_to_addr(block),
-> +	};
-> +	sector_t blknr = 0;
 
-It could be removed?
+Oh, another thought, can we glue availability of
+HUGETLB_PAGE_FREE_VMEMMAP (or a new define based on the config and the
+size of a stuct page) to the size of struct page somehow?
 
->   
->   	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
->   		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
->   
->   		if (block >> LOG_SECTORS_PER_BLOCK >= blks)
-> -			return 0;
+I mean, it's known at compile time that this will never work.
 
-return 0;
-
-> +			goto out;
->   	}
->   
-> -	return generic_block_bmap(mapping, block, erofs_get_block);
-> +	if (!erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW))
-> +		blknr = erofs_blknr(map.m_pa);
-
-return erofs_blknr(map.m_pa);
-
-> +
-> +out:
-> +	return blknr;
-
-return 0;
-
-Anyway, LGTM.
-
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-
+-- 
 Thanks,
 
->   }
->   
->   /* for uncompressed (aligned) files and raw access for other files */
-> 
+David / dhildenb
+
