@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E772D4EA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 00:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 906612D4EA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 00:19:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388515AbgLIXRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 18:17:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52974 "EHLO mail.kernel.org"
+        id S2388591AbgLIXTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 18:19:01 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:47464 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728541AbgLIXRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 18:17:41 -0500
-Date:   Wed, 9 Dec 2020 15:16:59 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607555820;
-        bh=ohmvuSKbrDJ5z2QP7Lxb/NjUrmQI5TqmzNvkB3SHFbE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Kyed3dZ9L8UEGFa9HnulMTDycEUR7XX0LBzT3zVgfX/0Xl29Mvo63Azn/ItGfnOkX
-         DQfq2gv+diulkzqQuoa7uDz3iPnlauz/8+bZEznXgzuhTD6qjpeXf3PBe8Q5Mjz7Z0
-         cz3HrtEJD6fWqqciCqpTA2u21tL8Desw2BrU7uR+LSErSemmuRhcpZjFyCwRBVkGaR
-         JhyPoinhy5N7D4ZbhA8UIpcCbcc2FZsYjPZAlNOoksBHn5LDooTZ0GAOMZbidlAgzn
-         rdn1ThLOGysAZszDNLKbW2PF0Fdg7L7CbiWF48RJ619Y/UxTgmvb97vexymYQ4tQYC
-         rm/FtGRxjj4+g==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     <davem@davemloft.net>, SeongJae Park <sjpark@amazon.de>,
-        <kuznet@ms2.inr.ac.ru>, <paulmck@kernel.org>,
-        <netdev@vger.kernel.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] net/ipv4/inet_fragment: Batch fqdir destroy works
-Message-ID: <20201209151659.125b43da@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201208094529.23266-2-sjpark@amazon.com>
-References: <20201208094529.23266-1-sjpark@amazon.com>
-        <20201208094529.23266-2-sjpark@amazon.com>
+        id S1728504AbgLIXTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 18:19:01 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kn8iq-00B8MX-Mf; Thu, 10 Dec 2020 00:18:12 +0100
+Date:   Thu, 10 Dec 2020 00:18:12 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pavana Sharma <pavana.sharma@digi.com>
+Cc:     ashkan.boldaji@digi.com, clang-built-linux@googlegroups.com,
+        davem@davemloft.net, devicetree@vger.kernel.org,
+        f.fainelli@gmail.com, gregkh@linuxfoundation.org,
+        kbuild-all@lists.01.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, marek.behun@nic.cz,
+        netdev@vger.kernel.org, robh+dt@kernel.org,
+        vivien.didelot@gmail.com
+Subject: Re: [PATCH v11 2/4] net: phy: Add 5GBASER interface mode
+Message-ID: <20201209231812.GG2649111@lunn.ch>
+References: <cover.1607488953.git.pavana.sharma@digi.com>
+ <7d0e7609149c4e9c3295eff3323fdea92a4abc89.1607488953.git.pavana.sharma@digi.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7d0e7609149c4e9c3295eff3323fdea92a4abc89.1607488953.git.pavana.sharma@digi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 10:45:29 +0100 SeongJae Park wrote:
-> From: SeongJae Park <sjpark@amazon.de>
+On Wed, Dec 09, 2020 at 03:04:23PM +1000, Pavana Sharma wrote:
+> Add 5GBASE-R phy interface mode
 > 
-> In 'fqdir_exit()', a work for destruction of the 'fqdir' is enqueued.
-> The work function, 'fqdir_work_fn()', calls 'rcu_barrier()'.  In case of
-> intensive 'fqdir_exit()' (e.g., frequent 'unshare(CLONE_NEWNET)'
-> systemcalls), this increased contention could result in unacceptably
-> high latency of 'rcu_barrier()'.  This commit avoids such contention by
-> doing the destruction in batched manner, as similar to that of
-> 'cleanup_net()'.
+> Signed-off-by: Pavana Sharma <pavana.sharma@digi.com>
+> ---
+>  include/linux/phy.h | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> diff --git a/include/linux/phy.h b/include/linux/phy.h
+> index 56563e5e0dc7..8151e6ecf1b9 100644
+> --- a/include/linux/phy.h
+> +++ b/include/linux/phy.h
+> @@ -106,6 +106,7 @@ extern const int phy_10gbit_features_array[1];
+>   * @PHY_INTERFACE_MODE_TRGMII: Turbo RGMII
+>   * @PHY_INTERFACE_MODE_1000BASEX: 1000 BaseX
+>   * @PHY_INTERFACE_MODE_2500BASEX: 2500 BaseX
+> + * @PHY_INTERFACE_MODE_5GBASER: 5G BaseR
+>   * @PHY_INTERFACE_MODE_RXAUI: Reduced XAUI
+>   * @PHY_INTERFACE_MODE_XAUI: 10 Gigabit Attachment Unit Interface
+>   * @PHY_INTERFACE_MODE_10GBASER: 10G BaseR
+> @@ -137,6 +138,8 @@ typedef enum {
+>  	PHY_INTERFACE_MODE_TRGMII,
+>  	PHY_INTERFACE_MODE_1000BASEX,
+>  	PHY_INTERFACE_MODE_2500BASEX,
+> +	/* 5GBASE-R mode */
+> +	PHY_INTERFACE_MODE_5GBASER,
+>  	PHY_INTERFACE_MODE_RXAUI,
+>  	PHY_INTERFACE_MODE_XAUI,
 
-Looks fine to me, but you haven't CCed Florian or Eric who where the
-last two people to touch this function. Please repost CCing them and
-fixing the nit below, thanks!
+For v10 i said:
 
->  static void fqdir_work_fn(struct work_struct *work)
->  {
-> -	struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
-> -	struct inet_frags *f = fqdir->f;
-> +	struct llist_node *kill_list;
-> +	struct fqdir *fqdir;
-> +	struct inet_frags *f;
+> Again, what is the value of the comment? 10GBASE-R has a comment
+> because it is different from the rest, XFI and SFI caused a of
+> discussion, and it was used wrong. But there does not seem to be
+> anything special for 5GBASE-R.
 
-nit: reorder fqdir and f to keep reverse xmas tree variable ordering.
+Please don't ignore comments. If you don't understand, please ask. If
+you think the comments are wrong, please explain why, so we can
+discuss it.
+
+	Andrew
