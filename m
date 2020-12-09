@@ -2,112 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12792D38B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D66BC2D38C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgLICUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 21:20:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37250 "EHLO
+        id S1726738AbgLICYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 21:24:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgLICUJ (ORCPT
+        with ESMTP id S1726715AbgLICYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 21:20:09 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7B5C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 18:19:28 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607480367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WUH66b3p4Oyy+uNSwHV80Yg+yPnJEhaFd3JUf97juIg=;
-        b=MG6Scaxeoqz69Qn4x3PdnM7MabfU2oDcXXPYp4jAu3d3yUFNebEX9VoVBXuRo4gOeAmdZ0
-        DQGUXdZmxROhNn3GlsDqbiY32dfkBsdfSf3QKD44F+DgvtYgF2ULhSxaCfJNRl8iGSl1vF
-        /FJQ32kPfCmuScS9aNUKWzRqiZD/ShWv3D8/FSmHv1NRSKrk+i4WC3VNlv+JvhULvnVv5s
-        jicsYmqAn8ED10JU+B3ph/zfY42oQwARqKeKXMHbkedx8Nzey2zC5pnADHY0vUGKbmcfrq
-        6E1k0l2TDXSjg5+zDG/sFdxEIGwKNo6YUe7yS3wDROwKP6n3Fpwvp6hRx9jWgg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607480367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WUH66b3p4Oyy+uNSwHV80Yg+yPnJEhaFd3JUf97juIg=;
-        b=Ja0k+2FW4/VJMak0FEfc/yVdXVvgjKl/DfWvmnytbFuRnvQ9yXdc1Q3FuwKLJqsYYg06DV
-        ANdOo6+eMGSOaSAA==
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Jens Frederich <jfrederich@gmail.com>,
-        Daniel Drake <dsd@laptop.org>,
-        Jon Nettleton <jon.nettleton@gmail.com>
+        Tue, 8 Dec 2020 21:24:09 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE2AC0613CF;
+        Tue,  8 Dec 2020 18:23:23 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id d3so126230wmb.4;
+        Tue, 08 Dec 2020 18:23:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2oioyFLR2bFNpjjk5al2TpT+eS54q+WK5/M1bDWQq8Y=;
+        b=oDJccotZxIU1EHGzNTq4hfh5WcKNEFZmeQ3MaKAzRhp3LvOg33xVS5Zts/JLvl79bc
+         2chccfsoBYt8t4MpQJAs85iFB/9O7NAEX1IDyovACFDFoVOzZHk+GL7pWapo7oTjCVTk
+         mvBhGOBGqIAG066p4hVZcsRiD7WGBxTmTwygzPu1Q9tcNejuRfoKvsFiDlQDDyxPPLfF
+         HTycdtH0HWmnHe5nrXjGKoYySBQAoo/r69ZvKZ9lOf3hQCVrA81/Cx3sKHt5JQprbmdX
+         y34y4++GXIP9gSitcNePRN3/htCNhRuSeovkaVJSkiUHXYudshBP8lnjjElY4oKMBBKd
+         mOew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2oioyFLR2bFNpjjk5al2TpT+eS54q+WK5/M1bDWQq8Y=;
+        b=lFopdHnT+kBA95phFPK6k4Ua95CXHVpBzHnNdrG1iaLeCKGZJyWhmEOaR4TfFbb+Xr
+         ageeeYyiqr9WEzQgWoi5k6QbGj5NJ5FKaRVm34CkrXDXyXVDDThSChOVQ2onu3a0RN4G
+         mQFk6PKs5kuhLrQHaks1hKWrOlOsgkvKANin2a6MTp475aE6qft5dF/y9PpA0jlSWWHg
+         k35GTwXjtT/sSC9CKy5Wrydr2OQhll4BgKQ96xnq1lmBHa1gUj2MDta7wl8O7SBKxtDt
+         It9ZFWHmW04t6SFsZAFXJxn6OvZDaKuHu5lQU3eBg+heULq4qMc9YrE3NYCfl3nyRoHT
+         H5PA==
+X-Gm-Message-State: AOAM533EtuqduvlShegIjLaPNnb624c61eIRYJUvxAhHtuGIFDrytgGJ
+        xt8dbJKETQz9Y7DGUpALVPI=
+X-Google-Smtp-Source: ABdhPJzWr26qXVlQbn+WLoaf5ahxMb42KDZknutFM27XXfuv6U6vlI0gMQaN4rhryPfgRX53lc84dA==
+X-Received: by 2002:a1c:309:: with SMTP id 9mr303633wmd.80.1607480602202;
+        Tue, 08 Dec 2020 18:23:22 -0800 (PST)
+Received: from localhost.localdomain ([85.255.233.156])
+        by smtp.gmail.com with ESMTPSA id k64sm330606wmb.11.2020.12.08.18.23.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 18:23:21 -0800 (PST)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: [RFC 0/2] nocopy bvec for direct IO
+Date:   Wed,  9 Dec 2020 02:19:50 +0000
+Message-Id: <cover.1607477897.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Re: [PATCH] x86/apic: Fix CPU devicetree-node lookups
-In-Reply-To: <X89P7Bnw4x9i0y4Q@localhost>
-References: <20201124134247.2668-1-johan@kernel.org> <X89P7Bnw4x9i0y4Q@localhost>
-Date:   Wed, 09 Dec 2020 03:19:26 +0100
-Message-ID: <87o8j32029.fsf@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08 2020 at 11:05, Johan Hovold wrote:
+The idea is to avoid copying, merging, etc. bvec from iterator to bio
+in direct I/O and use the one we've already got. Hook it up for io_uring.
+Had an eye on it for a long, and it also was brought up by Matthew
+just recently. Let me know if I forgot or misplaced some tags.
 
-> On Tue, Nov 24, 2020 at 02:42:47PM +0100, Johan Hovold wrote:
->> Fix CPU devicetree-node lookups by implementing
->> arch_match_cpu_phys_id().
->> 
->> This allows using of_get_cpu_node() and of_cpu_device_node_get() to look
->> up CPU devicetree nodes and specifically makes sure that CPU struct
->> devices are linked to the correct devicetree nodes.
->> 
->> Note that CPUs are described in devicetree using their APIC ids and
->> that those do not generally coincide with the logical ids (e.g. used by
->> the default arch_match_cpu_phys_id() implementation).
+A benchmark got me 430KIOPS vs 540KIOPS, or +25% on bare metal. And perf
+shows that bio_iov_iter_get_pages() was taking ~20%. The test is pretty
+silly, but still imposing. I'll redo it closer to reality for next
+iteration, anyway need to double check some cases.
 
-Can you please explain why this is relevant for any of the existing few
-x86 DT users?
+If same applied to iomap, common chunck can be moved from block_dev
+into bio_iov_iter_get_pages(), but if there any benefit for filesystems,
+they should explicitly opt in with ITER_BVEC_FLAG_FIXED.
 
-The above is incoherent word salad TBH:
+# how to apply
+based on Jens' for-11/block
++ Ming's nr_vec patch,
++ io_uring fix, 9c3a205c5ffa36e96903c2 ("io_uring: fix ITER_BVEC check")
 
-    1) Fix .....
+or there:
+https://github.com/isilence/linux/commits/bvec_nocopy
 
-       without any information what is broken
+# how to reproduce
+null_blk queue_mode=2 completion_nsec=0 submit_queues=NUM_CPU
+fio/t/io_uring with null blk, no iopoll, BS=16*4096
 
-    2) This allows ...
 
-       It allows. Cool. Is it mandatory, desired or whatever?
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Ming Lei <ming.lei@redhat.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
 
-    3) Note ...
+Pavel Begunkov (2):
+  iov: introduce ITER_BVEC_FLAG_FIXED
+  block: no-copy bvec for direct IO
 
-       That might be an actual problem decsription, but I can't say for
-       sure.
+ fs/block_dev.c      | 30 +++++++++++++++++++++++++++++-
+ fs/io_uring.c       |  1 +
+ include/linux/uio.h | 14 +++++++++++---
+ 3 files changed, 41 insertions(+), 4 deletions(-)
 
-Changelog structure should be:
+-- 
+2.24.0
 
-   Set context if necessary
-
-   Describe the problem and the possible impact
-
-   Describe the solution
-
-and not:
-
-    Claim to fix something unspecified
-
-    Give some explanation how cool it is
-
-    Add random notes what might or might not be solved by that.
-
-I still have no idea what this 'Fix' is fixing if it is fixing anything
-at all. Is is a fix which needs to be backported or is it a 'fix' which
-fixes something which got changed elsewhere and forgotten.
-
-Sorry, my crystalball got lost.
-
-Thanks,
-
-        tglx
