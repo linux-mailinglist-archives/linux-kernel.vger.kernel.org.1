@@ -2,139 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930FC2D4772
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD802D4771
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732477AbgLIRGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:06:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45199 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731241AbgLIRGV (ORCPT
+        id S1732373AbgLIRGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:06:03 -0500
+Received: from us-smtp-delivery-162.mimecast.com ([63.128.21.162]:60038 "EHLO
+        us-smtp-delivery-162.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732200AbgLIRFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:06:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607533493;
+        Wed, 9 Dec 2020 12:05:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hp.com; s=mimecast20180716;
+        t=1607533461;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RVRiGPRFsIVzMD4puB2r5WoyXKpsbdUMzZ233tMp+1k=;
-        b=HkqViNXtgCzA6rk+XfzbmuRcdYnxT2HrgtDCIRiRzgaj7w+e2x7XdlTJrWyXtcq5BfcNDY
-        dumuIE7Q3X1koSdeGqm6qT0qgSIbTeG618mT5hngtIRO96OhWH6tZIt42bMY3RDGLBCZqz
-        AdJFLk+DupL3g9QMqnakpoGEf16HmXY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-583-4pjpmeKRP42fK6T_7knVAw-1; Wed, 09 Dec 2020 12:03:59 -0500
-X-MC-Unique: 4pjpmeKRP42fK6T_7knVAw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E221F1005513;
-        Wed,  9 Dec 2020 17:03:57 +0000 (UTC)
-Received: from krava (unknown [10.40.195.176])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 092EE60BFA;
-        Wed,  9 Dec 2020 17:03:55 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 18:03:55 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org
-Subject: Re: [PATCH v3 1/2] perf: support build BPF skeletons with perf
-Message-ID: <20201209170355.GE69683@krava>
-References: <20201208181646.3044417-1-songliubraving@fb.com>
- <20201208181646.3044417-2-songliubraving@fb.com>
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=n0aVWuN2PbdFYQ7gJrwLBn6XKcfljJJEu1yETgERTOE=;
+        b=hkZfahpIKRCydfqcKFDGnd16JeVfoBqUoadIBnTse0H9P7Gp6AmKi87UYf1E6z/xClDQHT
+        6V1yy7mf6rVgQbAuURPECNEcjPlapzOc26ruNEM0CmMr5uG6sdqvWlk9sXFQLgI09GddUG
+        Gj5H8DP5pFku2wEEui1kvlxGCy1Yf14=
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam10lp2102.outbound.protection.outlook.com [104.47.55.102])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-498-9vayQHv_NH-5-UVWwr9WyQ-1; Wed, 09 Dec 2020 12:04:20 -0500
+X-MC-Unique: 9vayQHv_NH-5-UVWwr9WyQ-1
+Received: from TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
+ (2a01:111:e400:7712::13) by TU4PR8401MB0432.NAMPRD84.PROD.OUTLOOK.COM
+ (2a01:111:e400:7713::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.14; Wed, 9 Dec
+ 2020 17:04:18 +0000
+Received: from TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::fd25:5d10:75b:4dc0]) by TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::fd25:5d10:75b:4dc0%11]) with mapi id 15.20.3632.023; Wed, 9 Dec 2020
+ 17:04:17 +0000
+From:   "Bhat, Jayalakshmi Manjunath" <jayalakshmi.bhat@hp.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Subject: Capabilities required by NETLINK_AUDIT socket
+Thread-Topic: Capabilities required by NETLINK_AUDIT socket
+Thread-Index: AdbOTQm3MJ84FUuXQKKbJaCoyDLMMg==
+Date:   Wed, 9 Dec 2020 17:04:17 +0000
+Message-ID: <TU4PR8401MB121665B150716C56C4EF3DDBF6CC0@TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [2401:4900:22e0:715d:5c33:1ade:2fbf:4ae5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ac70b093-6871-4fae-a8a2-08d89c6476fa
+x-ms-traffictypediagnostic: TU4PR8401MB0432:
+x-microsoft-antispam-prvs: <TU4PR8401MB0432E38F9C7C5623FE806419F6CC0@TU4PR8401MB0432.NAMPRD84.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:3173
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: hd5N1+AmuXzuIYqLx3jN8W7zXqBqCFOPfJSSZ9cL9tt9nVTWwa4n4PdvnskCHrqiNb2ARSPaOzVfiUQpSpva4RwZgrFsSTkyjDBUPSl93ZBsRiVl47iT4X1E4Ier+eMzaz9cAdTbiAiG1HHFr+yBAv+NZF/o/8fD+iCF4fpEmbSNgTRk++P8ReSGxvX+q9FD0c/p/ChuAL/XuSU+Yll+gw2Rf6No6kTFa5v2tLLqMsz7TtDWLTmPSR50/N2Og2iy8vSwaKzXo7sFJ8MhHRloDlouk/WxrnveyLoTqP+ucEyqN5KeykaBAMomIi/Z3gRXjlzYf+smwaXwPrR94s9GBw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(346002)(66556008)(33656002)(64756008)(83380400001)(558084003)(66446008)(2906002)(71200400001)(450100002)(5660300002)(9686003)(52536014)(55016002)(7696005)(6506007)(8936002)(66946007)(110136005)(8676002)(66476007)(186003)(86362001)(76116006)(508600001);DIR:OUT;SFP:1102
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?cbg4zcUsrEvqejh9PKg6bPv5nF56iK1AHOYVwCHRlemkvAhNvtTnggFYrGLp?=
+ =?us-ascii?Q?Ubgm6nlH5mnqaKyIDx2ueV5ZUHO9nTCB07/eXOAQK0x4nES1DcDMQWkdxmNn?=
+ =?us-ascii?Q?XzPusaY/cgfP7uTpdugOxrkrOAedsm5VBy42CMcgSepckI3zH4e1LsQ9i7IQ?=
+ =?us-ascii?Q?AhRsBIP8VmNOvGREI/r9bO6RlEkBIm34G/vmdRsAmfteaUftv+1tLViub8vI?=
+ =?us-ascii?Q?LwtNVDGokev9p/4CFqcylT1ahlSOyX1K3BpbqM945QdBuyytKVDtjSRQl9ZM?=
+ =?us-ascii?Q?pkES4mxtA14gR5EM3HlUIrHaUwf/cTUG6gPgJar7er0qRacHbJPKc8b5ttCZ?=
+ =?us-ascii?Q?fzwq/5B4C6u3TEUQXzeKiYa3EaakrzKRfF5YPIOZuMcydbqkE6pDNsKEPD07?=
+ =?us-ascii?Q?30wfWP7rp3Osul2w7YFI1OZib+mnsOKfQmg7bY+U41LHwY5qQ5mg5MC2PJJB?=
+ =?us-ascii?Q?V+D39C+VpIjNALslGxIierSXd2NUqd9g70ONlFlUNtEFt0HPhLbZoiTi1Ewh?=
+ =?us-ascii?Q?m6Xucr/oLdo1B/t9szAV60lgV4wPSBIpZAcq7Qj5349ngvt2L6E3ENq8QiDR?=
+ =?us-ascii?Q?Tn4q5p5hcbMQGrYI69jT+7FMUNBBAUhn9yTNTu3srb0h+DZnjJMGQrD2bgcS?=
+ =?us-ascii?Q?IBEFtnDKl3cFz9gydLW9JrEiG4gZI3ERVDTycrx/rH4MMtmvYRVcvB74N5j1?=
+ =?us-ascii?Q?bcq9uMjPvv0k3ox0Cdr4R+swbde3CdTPo+EQkpuzck1RtzWJZUcbVb6dtaxg?=
+ =?us-ascii?Q?P8nHq55Ccs7VcEFovKDJBcmWacxMria3ZW3X0Ww3+kys1UDZmdTPoVsVB+iJ?=
+ =?us-ascii?Q?niHtLk5ka5tZ1NCYmXnI5ZLtX/JAmwyiRs7ukmWDtY94V9r6PaPSToZNwH+T?=
+ =?us-ascii?Q?KVBb4wViu5YkVCwTT5qBDVxbrn4ObkRZbLy/Mz0jmHhq5YCoAYwWKbIP0iXu?=
+ =?us-ascii?Q?MjHUZrHTGyHhR3uNVWwMWawg8TRMaipHDI7hnyBEnhffVimgk4qniePyiFxh?=
+ =?us-ascii?Q?nw54hS1wDLSx5zryyYcf3Lp3NJ0t6OjvtjT556nbFgaSHBQ=3D?=
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208181646.3044417-2-songliubraving@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-OriginatorOrg: hp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac70b093-6871-4fae-a8a2-08d89c6476fa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Dec 2020 17:04:17.9076
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: ca7981a2-785a-463d-b82a-3db87dfc3ce6
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Y2d1peUHsUXY1D6gpyXRkH3799Q0jv+eHXGFFF82psfvqJNR+maOZnmcOC7WnXIHFoHcTM6RkEUncG98E2SJyQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TU4PR8401MB0432
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA62A171 smtp.mailfrom=jayalakshmi.bhat@hp.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hp.com
+Content-Language: en-US
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 10:16:45AM -0800, Song Liu wrote:
-> BPF programs are useful in perf to profile BPF programs. BPF skeleton is
-> by far the easiest way to write BPF tools. Enable building BPF skeletons
-> in util/bpf_skel. A dummy bpf skeleton is added. More bpf skeletons will
-> be added for different use cases.
-> 
-> Signed-off-by: Song Liu <songliubraving@fb.com>
+Hi All,
 
-one nit below, but other than that:
+I am trying to create NETLINK socket for type NETLINK_AUDIT. Bind fails wit=
+h error number 1. I have enabled capabilities CAP_NET_ADMIN, CAP_AUDIT_READ=
+.
+Can anyone please tell me what additional capabilities are needed?
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+Regards,
+Jayalakshmi
 
-thanks,
-jirka
-
-> ---
->  tools/bpf/bpftool/Makefile          |  3 ++
->  tools/build/Makefile.feature        |  4 ++-
->  tools/perf/Makefile.config          |  9 ++++++
->  tools/perf/Makefile.perf            | 48 +++++++++++++++++++++++++++--
->  tools/perf/util/bpf_skel/.gitignore |  3 ++
->  tools/scripts/Makefile.include      |  1 +
->  6 files changed, 65 insertions(+), 3 deletions(-)
->  create mode 100644 tools/perf/util/bpf_skel/.gitignore
-> 
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index f897cb5fb12d0..390af1a52601e 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -139,6 +139,9 @@ endif
->  BPFTOOL_BOOTSTRAP := $(BOOTSTRAP_OUTPUT)bpftool
->  
->  BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o)
-> +
-> +bootstrap: $(BPFTOOL_BOOTSTRAP)
-> +
->  OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
->  
->  VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
-> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> index 97cbfb31b7625..74e255d58d8d0 100644
-> --- a/tools/build/Makefile.feature
-> +++ b/tools/build/Makefile.feature
-> @@ -99,7 +99,9 @@ FEATURE_TESTS_EXTRA :=                  \
->           clang                          \
->           libbpf                         \
->           libpfm4                        \
-> -         libdebuginfod
-> +         libdebuginfod			\
-> +         clang-bpf-co-re
-> +
->  
->  FEATURE_TESTS ?= $(FEATURE_TESTS_BASIC)
->  
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index ce8516e4de34f..fe234b8bfeefb 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -621,6 +621,15 @@ ifndef NO_LIBBPF
->    endif
->  endif
->  
-> +ifdef BUILD_BPF_SKEL
-> +  $(call feature_check,clang-bpf-co-re)
-> +  ifeq ($(feature-clang-bpf-co-re), 0)
-> +    dummy := $(error Error: clang too old. Please install recent clang)
-> +  endif
-> +  $(call detected,CONFIG_PERF_BPF_SKEL)
-> +  CFLAGS += -DBUILD_BPF_SKEL
-
-sorry I did not notice before, but we use HAVE_* name style for these C macros 
-
-HAVE_BPF_SKEL should fit
-
-> +endif
-> +
->  dwarf-post-unwind := 1
->  dwarf-post-unwind-text := BUG
->  
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index 62f3deb1d3a8b..9ea9047a621bc 100644
-> --- a/tools/perf/Makefile.perf
-
-SNIP
 
