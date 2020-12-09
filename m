@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB182D49D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC372D49D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387590AbgLITIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:08:12 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:58843 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733296AbgLITIM (ORCPT
+        id S2387608AbgLITJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:09:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733001AbgLITJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:08:12 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0C1375C00F9;
-        Wed,  9 Dec 2020 14:07:26 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 09 Dec 2020 14:07:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=1snqE7Ftfxop2fQ2t5zP5kMfY4U
-        OOZ/fUjqKfQxRkxk=; b=is2QQ14JuNoHaJ1w1fSoa1FgWLtiSJc9bUa8U0Udm7g
-        0G77gEzTh2QCkwCOKnhhHPS2Ifzu99SrT9J+L9f2SHtGv1n8D/WYNWjBszYP3abM
-        VZTRsSsbNPvKZR2hqhc7YMQXbsHAA16Je52h0LyspjX7z+K6BbKR0KbmLDLrdzLZ
-        kxDoDYrdPvIP+zJRn0KeWXXJ74PjkrS3T8wp3PzjXIRhHFuEf+Y6KgM8oecZ3cYG
-        K/6EB2/KOxeEVNXKkguRix3njAmRUg5AQBe//PwHvIuM39EM3nD95Nx0XnKHa3Ma
-        fD1u/diyAhyRjKKeXGhTosR28FsvUcDSS06wJzaIrmA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=1snqE7
-        Ftfxop2fQ2t5zP5kMfY4UOOZ/fUjqKfQxRkxk=; b=A1Lw2Wc6L55RAmE3chrRiv
-        /KDFxiLkRgL7iyuvMR1937uj66TeO5dDuBxIEols6o5bIpo+f53b0pUrNfVx4jzP
-        1fijL9GAGKVzwJDZT1Vvnl7bNGRYLzWHi96B4D5ZIr+w5xh4AM+yhjOcWNwbETzB
-        6KzIVRNoQKDQPVm+BexYHfOntgRHwknCUbysNn08ScWJJLROtIJ14dY4bq4Al9sv
-        lmxNbu+Kr6Jadvmx53dKHRBTJ0wAdCmCcQLVZh+zjBA8ZO6mYt4TUuDPi48d+o7n
-        +jaVcyoUZgqe1q3ot/aUcEnS19TnFPjm22Rt8FvjtKBnoFq3acLeThTTlP9GAkJQ
-        ==
-X-ME-Sender: <xms:bSDRX3gRKjuFCSQ0Ii54rJtDiz1YpJ2FoYc8XAZr1Au93aSAH6wWmg>
-    <xme:bSDRX0BcMW_gHXfmJ7_Nu_zMlitSc0o6MY-zWtzzfLA-Ifn6hPqFupoAxwe_4x4XM
-    LjXVXJBTmEUZno93ic>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejkedguddvvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujggfsehttdertddtreejnecuhfhrohhmpeeuvghn
-    uceuohgvtghkvghluceomhgvsegsvghnsghovggtkhgvlhdrnhgvtheqnecuggftrfgrth
-    htvghrnhepvefftdettefgtddtkeeufeegtddttdeuueegkeegteffueetffejudeihefh
-    kedtnecukfhppedvgedrudeiledrvddtrddvheehnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepmhgvsegsvghnsghovggtkhgvlhdrnhgvth
-X-ME-Proxy: <xmx:bSDRX3EfRjNdxBrBZrzb7Y3GYlzgarGzQFKuUq97e4SBiAsiaHy-0Q>
-    <xmx:bSDRX0RVKhTl6-WWgZpJy4-JKUX764WmBC2b6qFBxBPvzF60sVPUVA>
-    <xmx:bSDRX0wqlW3Lt75oRkL3geVLmLfv9-KfEmIB8Qq3BAD_YNWF2tFEQA>
-    <xmx:biDRX_-0RtOHy9dLqEW7RXyOmJxOyKpcUQBYRXCY9qWrzWnl9io5Rg>
-Received: from localhost (unknown [24.169.20.255])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5AF591080059;
-        Wed,  9 Dec 2020 14:07:25 -0500 (EST)
-Date:   Wed, 9 Dec 2020 14:07:24 -0500
-From:   Ben Boeckel <me@benboeckel.net>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Tom Rix <trix@redhat.com>, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/18] KEYS: remove redundant memset
-Message-ID: <20201209190724.GA1448831@erythro>
-References: <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
- <160751611918.1238376.7060458630378643472.stgit@warthog.procyon.org.uk>
+        Wed, 9 Dec 2020 14:09:08 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016E7C0613D6;
+        Wed,  9 Dec 2020 11:08:28 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id m12so4608573lfo.7;
+        Wed, 09 Dec 2020 11:08:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fxoqPCiWc/8hrZVyGnb4WQe69RSDUFwDEYNSupu9kTE=;
+        b=p021/NJzb5lga2xfuZKepqETedOgd01WzHXccbDMWgRKdjLQsBwTVCTK/XCU8YqrOw
+         irgaKKjsAfOBvwH/XayYaHNLSw1HVi1z0f//SZJY8gI5O1l5Mvl/UcrYuDA6cNCGXAGs
+         /lwGdlwfo3wS7x4N4+Ivh1wlTZ5jbgTmLXGkx1PRPTUkxrF0C/Kl0IWJ4e9zWojEn/zS
+         iYJV8hMyrRkRqm95ATOOIymEm4Z7Y8CpWyPvUzdK94fElRQdBhKg6uqKQET0UXIHm7PT
+         De1aeKEVRLkjNGcLoX2j94jQmrnt+hrdHOeLBni2ppcigkbYnP+a0UeVRENlMWv/rBWc
+         pfdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fxoqPCiWc/8hrZVyGnb4WQe69RSDUFwDEYNSupu9kTE=;
+        b=G2wwAecxFPmFQizydqLVNrAzBwB7A6iR1of+M9w7K1bMd/2zYNPVx9cIkl9NK1K3Yc
+         2jGfqT097q368U83LsAxZPWAExwlHqXwijkomAEfEx5fbMMvlp51mq+kAiFKsIpjnBx2
+         A7VKHfIvkqoTxpPRDOoCPmzcZVCrqEZ3My6evuTdVEDg2V+kxqxIpxpj66P0PCoWpfg9
+         OTVQdL3A4osuAhjsKGntCqVsjZjeokN0rP5A9y870MKx4JEMjUAUSPaaVcgMfTi/ffeN
+         w4MGbGdjUPARY2KeDZ3RZR0wp8U9bzTzO245BrgC2/zNRqjIOgSFyqg9Bi95LfYrp5b/
+         NcKQ==
+X-Gm-Message-State: AOAM531xyOzuaw9XRX78/H6fF5r2H6g+oc25/QlGhhBH17liSrXwVBy1
+        xtSSyORxWFynrGAiQWkR+tg=
+X-Google-Smtp-Source: ABdhPJwAVj0KWYoPE8X87RlhX9U9TcYDY+m+hwZazqGkQzpN/orl6GwDOnli4aU2j5TqSqwu9PDwBA==
+X-Received: by 2002:a19:cbc3:: with SMTP id b186mr1441910lfg.554.1607540906424;
+        Wed, 09 Dec 2020 11:08:26 -0800 (PST)
+Received: from [192.168.1.33] (88-114-222-21.elisa-laajakaista.fi. [88.114.222.21])
+        by smtp.gmail.com with ESMTPSA id s22sm260505lfi.187.2020.12.09.11.08.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 11:08:25 -0800 (PST)
+Subject: Re: [PATCH] mm/vmalloc: randomize vmalloc() allocations
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20201201214547.9721-1-toiwoton@gmail.com>
+ <9d34fb0a-7aba-1e84-6426-006ea7c3d9f5@gmail.com>
+ <20201203065801.GH751215@kernel.org>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <26f0c73a-3a81-4ba6-2b6f-c5ca73ea866b@gmail.com>
+Date:   Wed, 9 Dec 2020 21:08:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <160751611918.1238376.7060458630378643472.stgit@warthog.procyon.org.uk>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <20201203065801.GH751215@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 12:15:19 +0000, David Howells wrote:
-> From: Tom Rix <trix@redhat.com>
+On 3.12.2020 8.58, Mike Rapoport wrote:
+> On Wed, Dec 02, 2020 at 08:49:06PM +0200, Topi Miettinen wrote:
+>> On 1.12.2020 23.45, Topi Miettinen wrote:
+>>> Memory mappings inside kernel allocated with vmalloc() are in
+>>> predictable order and packed tightly toward the low addresses. With
+>>> new kernel boot parameter 'randomize_vmalloc=1', the entire area is
+>>> used randomly to make the allocations less predictable and harder to
+>>> guess for attackers.
+>>>
+>>
+>> This also seems to randomize module addresses. I was going to check that
+>> next, so nice surprise!
 > 
-> Reviewing use of memset in keyctrl_pkey.c
+> Heh, that's because module_alloc() uses vmalloc() in that way or another :)
 
-Typo: `keyctl_pkey.c`
+The modules are still allocated from their small (1.5GB) separate area 
+instead of the much larger (32TB/12.5PB) vmalloc area, which would 
+greatly improve ASLR for the modules. To fix that, I tried to to #define 
+MODULES_VADDR to VMALLOC_START etc. like x86_32 does, but then kernel 
+dies very early without even any output.
 
---Ben
+-Topi
