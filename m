@@ -2,170 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3C02D4AF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC5B2D4AF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387406AbgLITte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:49:34 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:54675 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733110AbgLITtJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:49:09 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607543321; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=BDsqBtsR+tJlXw/x5FPrFdURybZlwARsyz23aASsQNI=; b=X2Z0kIDl5yhuMuNTVdvNcl60VbMJ1QsjJLKCD4Jkbc3B7n6bJDLw3k0yxU35s2qo3IPx25nW
- LDqix8RiXhW4juTeRfXQrZGBys0kXhBXW06DPkBkmDcVKc+y4rMeg9pJG8x/d/Nb/8SKv+he
- rnXFM1shqKygSgxzooOkDUuxiq8=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fd129f8c62570206cbbf4d3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Dec 2020 19:48:08
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DCAECC43463; Wed,  9 Dec 2020 19:48:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A2874C433C6;
-        Wed,  9 Dec 2020 19:48:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A2874C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH] mhi: use irq_flags if client driver configures it
-To:     Hemant Kumar <hemantk@codeaurora.org>,
-        Carl Huang <cjhuang@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201208035500.30581-1-cjhuang@codeaurora.org>
- <fad48bcd-df5d-40e3-9d63-b45adb998445@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <bf5409bb-adaf-d2ad-8606-cd8a3df8bc5b@codeaurora.org>
-Date:   Wed, 9 Dec 2020 12:48:05 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2388005AbgLITtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:49:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732246AbgLITt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:49:27 -0500
+Date:   Wed, 9 Dec 2020 11:48:45 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607543327;
+        bh=s6dPnE7S0yfkrHXxthmBtF0PbUYsXpjhSYfYbPAvBn8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CSRlYJtPboMHtEadKY3CRQHpZWmmzxX1d/r8ewfUwWvSkZZIkzpQ9dT2JGltDLk2g
+         HjnSo4GpMQEdzsT6N6ZFiP5jPihW4N6gKf85GkKxsfyPQDCJhpPAlnhq3lMJzCQHS8
+         2mgJLugQWlayYFZ5bbcrztFjWtBb3/vT9dueI+MqjFLqUrOIH+s0OUw7hjMezJD2lc
+         GfpgQjRLHXSpGX3REnzO5j30nWsx6Sh1dLXv3WHpAeEYLkHeWU/Si8LvXGGhXVp00L
+         6YxU0Gc3Yig9vDeLkrSD9BMGHuc2dZQhi2ZV2xk19CxUhtHGfEqTyPs8Rn3RwvZR6J
+         NUjUN8FQSwBjw==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     Geetha sowjanya <gakula@marvell.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sgoutham@marvell.com,
+        davem@davemloft.net, sbhatta@marvell.com
+Subject: Re: [PATCHv3 net-next] octeontx2-pf: Add RSS multi group support
+Message-ID: <20201209114845.61839f46@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <f47444311bc7661c6482de11d570fb815f8e7941.camel@kernel.org>
+References: <20201209170937.19548-1-gakula@marvell.com>
+        <f47444311bc7661c6482de11d570fb815f8e7941.camel@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <fad48bcd-df5d-40e3-9d63-b45adb998445@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/2020 11:34 AM, Hemant Kumar wrote:
+On Wed, 09 Dec 2020 11:08:24 -0800 Saeed Mahameed wrote:
+> > -/* Configure RSS table and hash key */
+> > -static int otx2_set_rxfh(struct net_device *dev, const u32 *indir,
+> > -			 const u8 *hkey, const u8 hfunc)
+> > +static int otx2_get_rxfh_context(struct net_device *dev, u32 *indir,
+> > +				 u8 *hkey, u8 *hfunc, u32 rss_context)
+> >  {
+> >  	struct otx2_nic *pfvf = netdev_priv(dev);
+> > +	struct otx2_rss_ctx *rss_ctx;
+> >  	struct otx2_rss_info *rss;
+> >  	int idx;
+> >  
+> > -	if (hfunc != ETH_RSS_HASH_NO_CHANGE && hfunc !=
+> > ETH_RSS_HASH_TOP)
+> > -		return -EOPNOTSUPP;
+> > -
+> >  	rss = &pfvf->hw.rss_info;
+> >  
+> >  	if (!rss->enable) {
+> > -		netdev_err(dev, "RSS is disabled, cannot change
+> > settings\n");
+> > +		netdev_err(dev, "RSS is disabled\n");
+> >  		return -EIO;
+> >  	}  
 > 
+> I see that you init/enable rss on open, is this is your way to block
+> getting rss info if device is not open ? why do you need to report an
+> error anyway, why not just report whatever default config you will be
+> setting up on next open ? 
 > 
-> On 12/7/20 7:55 PM, Carl Huang wrote:
->> If client driver has specified the irq_flags, mhi uses this specified
->> irq_flags. Otherwise, mhi uses default irq_flags.
->>
->> The purpose of this change is to support one MSI vector for QCA6390.
->> MHI will use one same MSI vector too in this scenario.
->>
->> In case of one MSI vector, IRQ_NO_BALANCING is needed when irq handler
->> is requested. The reason is if irq migration happens, the msi_data may
->> change too. However, the msi_data is already programmed to QCA6390
->> hardware during initialization phase. This msi_data inconsistence will
->> result in crash in kernel.
-
-I'm confused as to how this happens.
-
->>
->> Another issue is in case of one MSI vector, IRQF_NO_SUSPEND will trigger
->> WARNINGS because QCA6390 wants to disable the IRQ during the suspend.
->>
->> To avoid above two issues, QCA6390 driver specifies the irq_flags in case
->> of one MSI vector when mhi_register_controller is called.
-
-Surely this change should be in a series where there is a following 
-change which updates the QCA6390 driver?
-
->>
->> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
->> ---
->>   drivers/bus/mhi/core/init.c | 9 +++++++--
->>   include/linux/mhi.h         | 1 +
->>   2 files changed, 8 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
->> index 0ffdebd..5f74e1e 100644
->> --- a/drivers/bus/mhi/core/init.c
->> +++ b/drivers/bus/mhi/core/init.c
->> @@ -148,12 +148,17 @@ int mhi_init_irq_setup(struct mhi_controller 
->> *mhi_cntrl)
->>   {
->>       struct mhi_event *mhi_event = mhi_cntrl->mhi_event;
->>       struct device *dev = &mhi_cntrl->mhi_dev->dev;
->> +    unsigned long irq_flags = IRQF_SHARED | IRQF_NO_SUSPEND;
->>       int i, ret;
->> +    /* if client driver has set irq_flags, use it */
->> +    if (mhi_cntrl->irq_flags)
->> +        irq_flags = mhi_cntrl->irq_flags;
-> Jeff if i remember correctly your use case also have one dedicated irq 
-> line for all the MSIs, just want to confirm if you are fine with this 
-> change ? i was wondering if any input check is required for irq_flags 
-> passed by controller, or responsibility is on controller for any 
-> undesired behavior. Like passing IRQF_SHARED and IRQF_ONESHOT when one 
-> irq line is shared among multiple MSIs.
-
-This feels a bit weird to me, but I don't think it'll cause a problem.
-
-If we are allowing the controller to specify flags, should they be in a 
-per irq manner?
-
->> +
->>       /* Setup BHI_INTVEC IRQ */
->>       ret = request_threaded_irq(mhi_cntrl->irq[0], mhi_intvec_handler,
->>                      mhi_intvec_threaded_handler,
->> -                   IRQF_SHARED | IRQF_NO_SUSPEND,
->> +                   irq_flags,
->>                      "bhi", mhi_cntrl);
->>       if (ret)
->>           return ret;
->> @@ -171,7 +176,7 @@ int mhi_init_irq_setup(struct mhi_controller 
->> *mhi_cntrl)
->>           ret = request_irq(mhi_cntrl->irq[mhi_event->irq],
->>                     mhi_irq_handler,
->> -                  IRQF_SHARED | IRQF_NO_SUSPEND,
->> +                  irq_flags,
->>                     "mhi", mhi_event);
->>           if (ret) {
->>               dev_err(dev, "Error requesting irq:%d for ev:%d\n",
->> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
->> index d4841e5..f039e58 100644
->> --- a/include/linux/mhi.h
->> +++ b/include/linux/mhi.h
->> @@ -442,6 +442,7 @@ struct mhi_controller {
->>       bool fbc_download;
->>       bool pre_init;
->>       bool wake_set;
->> +    unsigned long irq_flags;
-
-You don't document this.  That gets a NACK from me.
-
->>   };
->>   /**
->>
+> to me reporting errors to ethtool queries when device is down is a bad
+> user experience.
 > 
-> Thanks,
-> Hemant
+> > +	if (rss_context >= MAX_RSS_GROUPS)
+> > +		return -EINVAL;
+> > +  
 > 
+> -ENOENT
+> > +	rss_ctx = rss->rss_ctx[rss_context];
+> > +	if (!rss_ctx)
+> > +		return -EINVAL;
+> >   
+> 
+> -ENOENT
 
+Plus looks like this version introduces a W=1 C=1 warning:
 
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c:768:28: warning: Using plain integer as NULL pointer
