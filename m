@@ -2,122 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1852D49C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9C12D49CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387553AbgLITGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:06:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387441AbgLITGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:06:15 -0500
-X-Gm-Message-State: AOAM532fMm5ZfeB54y7LwOzUFaQyhBGHMxp/fjmcM3NDV+rYCu/JlPh4
-        fnPvRh/LdxuzlHC8l8WxXNAZML8bt4uIEymVmyWPBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607540734;
-        bh=Ys5/DqnR+LXYOYEbV+Atqgi0hTcMkX4Hw87vBT5H5LY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DEAHk5N3hBsfXtbbl+ysa/6KNoLISlnpsalD0yMGonZv0kVQTg+eWNhKHTTBTz+FM
-         pgqZ7NPBDTFCNzLQjb8TiJNqddFwSNl1n55ul3M6ArZM2k5Togq4JU91oboVlP2CVV
-         anXx2Z18FnoO8AVobyANZmgnmExDfdHYPMBVzZ2ErEzVcmxq0Uj/hV5iuAJ4AnjmzJ
-         XUIRhTFeA+kINq5TDDT8V4iSYRehH9yxRbx6+7kigK3scMxGYcBk/3VTfYYFZAn52I
-         KShpO8OWKadpTuSqC8jFayWU8DPROWXk1IXd7q3mJsnbpIvJvgtJn5HW5YEgYPL75Q
-         J8kJwy1rRWREw==
-X-Google-Smtp-Source: ABdhPJwp523cHnPDJx7e2r/2rqIUMWCTaX5ttizRK5T+aoQipz0p8IYTh9Xjo9y32m0IFjnBm8tEZnUEXy7BRu67AOM=
-X-Received: by 2002:a5d:4e87:: with SMTP id e7mr4447345wru.70.1607540732726;
- Wed, 09 Dec 2020 11:05:32 -0800 (PST)
+        id S2387573AbgLITHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:07:42 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48758 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387423AbgLITHl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:07:41 -0500
+Date:   Wed, 09 Dec 2020 19:06:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607540819;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kI1bI5AtL9U1dWmckIrXrJ79KbBqG8wDpB1V+VlTzAQ=;
+        b=xC1cYYb8FSHabC2tBew7UI3ot8V32FucS6u5iBsO4rjw/pGijMbOT7LheFiQeP6JKuTASd
+        jaDFzvu5brvPNC3SyLQujjxY9CNtsTXToWVNEE5kb0IYsvMrviKJAUJSef99luDmgxd887
+        0+2XBPBBtLX2zrvR4fELsxxDkm/msjz7R2RnW5do5r3sV8KQ/RPGPMPq3h40CAzot55PGC
+        W1UUn1KhpBRUiBB/HFjDAk44eAnc7qhg6zc3kIuXlN9qQOK6LcUPArj7mmxX7YQcV9vmVO
+        XvoRKJX9hOJThptCdcJtg2c6xv/wMZIcG9P5bPS8uWcxF+f5THzkVRGsAqxrig==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607540819;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kI1bI5AtL9U1dWmckIrXrJ79KbBqG8wDpB1V+VlTzAQ=;
+        b=rMxAOQi11MXJY4IRr7Ig0WoR6AMwBYXnYBac0ptIrBl37kuV+hgKPqntMdUY2w3gXqymKr
+        pIDM7iH6iajmn2CQ==
+From:   "tip-bot2 for Xiaochen Shen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cache] x86/resctrl: Fix incorrect local bandwidth when
+ mba_sc is enabled
+Cc:     Xiaochen Shen <xiaochen.shen@intel.com>,
+        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1607063279-19437-1-git-send-email-xiaochen.shen@intel.com>
+References: <1607063279-19437-1-git-send-email-xiaochen.shen@intel.com>
 MIME-Version: 1.0
-References: <20201209183337.1912-1-mark.rutland@arm.com>
-In-Reply-To: <20201209183337.1912-1-mark.rutland@arm.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 9 Dec 2020 11:05:21 -0800
-X-Gmail-Original-Message-ID: <CALCETrVRiSQn9z7CG2CWHhOeQb=UJSrtPod4-8qBSFLsdYP=iQ@mail.gmail.com>
-Message-ID: <CALCETrVRiSQn9z7CG2CWHhOeQb=UJSrtPod4-8qBSFLsdYP=iQ@mail.gmail.com>
-Subject: Re: [PATCH] lockdep: report broken irq restoration
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juergen Gross <jgross@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160754081861.3364.12382697409765236626.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 10:33 AM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> We generally expect local_irq_save() and local_irq_restore() to be
-> paired and sanely nested, and so local_irq_restore() expects to be
-> called with irqs disabled. Thus, within local_irq_restore() we only
-> trace irq flag changes when unmasking irqs.
->
-> This means that a seuence such as:
->
-> | local_irq_disable();
-> | local_irq_save(flags);
-> | local_irq_enable();
-> | local_irq_restore(flags);
->
-> ... is liable to break things, as the local_irq_restore() would mask
-> IRQs without tracing this change.
->
-> We don't consider such sequences to be a good idea, so let's define
-> those as forbidden, and add tooling to detect such broken cases.
->
-> This patch adds debug code to WARN() when local_irq_restore() is called
-> with irqs enabled. As local_irq_restore() is expected to pair with
-> local_irq_save(), it should never be called with interrupts enabled.
->
-> To avoid the possibility of circular header dependencies beteen
-> irqflags.h and bug.h, the warning is handled in a separate C file.
->
-> The new code is all conditional on a new CONFIG_DEBUG_IRQFLAGS symbol
-> which is independent of CONFIG_TRACE_IRQFLAGS. As noted above such cases
-> will confuse lockdep, so CONFIG_DEBUG_LOCKDEP now selects
-> CONFIG_DEBUG_IRQFLAGS.
->
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Juergen Gross <jgross@suse.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  include/linux/irqflags.h       | 18 +++++++++++++++++-
->  kernel/locking/Makefile        |  1 +
->  kernel/locking/irqflag-debug.c | 12 ++++++++++++
->  lib/Kconfig.debug              |  7 +++++++
->  4 files changed, 37 insertions(+), 1 deletion(-)
->  create mode 100644 kernel/locking/irqflag-debug.c
->
-> Note: as things stand this'll blow up at boot-time on x86 within the io-apic
-> timer_irq_works() boot-time test. I've proposed a fix for that:
->
-> https://lore.kernel.org/lkml/20201209181514.GA14235@C02TD0UTHF1T.local/
->
-> ... which was sufficient for booting under QEMU without splats. I'm giving this
-> a soak under Syzkaller on arm64 as that booted cleanly to begin with.
->
-> Mark.
->
-> diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
-> index 3ed4e8771b64..bca3c6fa8270 100644
-> --- a/include/linux/irqflags.h
-> +++ b/include/linux/irqflags.h
-> @@ -220,10 +220,26 @@ do {                                              \
->
->  #else /* !CONFIG_TRACE_IRQFLAGS */
->
-> +#ifdef CONFIG_DEBUG_IRQFLAGS
-> +extern void warn_bogus_irq_restore(bool *warned);
-> +#define check_bogus_irq_restore()                              \
-> +       do {                                                    \
-> +               static bool __section(".data.once") __warned;   \
-> +               if (unlikely(!raw_irqs_disabled()))             \
-> +                       warn_bogus_irq_restore(&__warned);      \
-> +       } while (0)
+The following commit has been merged into the x86/cache branch of tip:
 
-What's the benefit of having a per-caller __warned instead of just
-having a single global one in warn_bogus_irq_restore()?
+Commit-ID:     2ba836dbe2467d31fffb439258c2f454c6f1a317
+Gitweb:        https://git.kernel.org/tip/2ba836dbe2467d31fffb439258c2f454c6f1a317
+Author:        Xiaochen Shen <xiaochen.shen@intel.com>
+AuthorDate:    Fri, 04 Dec 2020 14:27:59 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 09 Dec 2020 20:00:46 +01:00
+
+x86/resctrl: Fix incorrect local bandwidth when mba_sc is enabled
+
+The MBA software controller (mba_sc) is a feedback loop which periodically
+reads MBM counters and tries to restrict the bandwidth below a user
+specified bandwidth. It tags along the MBM counter overflow handler to do
+the updates with 1s interval in mbm_update() and update_mba_bw().
+
+The purpose of mbm_update() is to periodically read the MBM counters to
+make sure that the hardware counter doesn't wrap around more than once
+between user samplings. mbm_update() calls __mon_event_count() for local
+bandwidth updating when mba_sc is not enabled, but calls mbm_bw_count()
+instead when mba_sc is enabled. __mon_event_count() will not be called
+for local bandwidth updating in MBM counter overflow handler, but it is
+still called when reading MBM local bandwidth counter file
+'mbm_local_bytes', the call path is as below:
+
+  rdtgroup_mondata_show()
+    mon_event_read()
+      mon_event_count()
+        __mon_event_count()
+
+In __mon_event_count(), m->chunks is updated by delta chunks which is
+calculated from previous MSR value (m->prev_msr) and current MSR value.
+When mba_sc is enabled, m->chunks is also updated in mbm_update() by
+mistake by the delta chunks which is calculated from m->prev_bw_msr
+instead of m->prev_msr. But m->chunks is not used in update_mba_bw() in
+the mba_sc feedback loop.
+
+When reading MBM local bandwidth counter file, m->chunks was changed
+unexpectedly by mbm_bw_count(). As a result, the incorrect local
+bandwidth counter which calculated using incorrect m->chunks is shown to
+the user.
+
+Fix this by removing incorrect m->chunks updating in mbm_bw_count() in
+MBM counter overflow handler, and always calling __mon_event_count() in
+mbm_update() to make sure that the hardware local bandwidth counter
+doesn't wrap around.
+
+Test steps:
+  # Run workload with aggressive memory bandwidth (e.g., 10 GB/s)
+  git clone https://github.com/intel/intel-cmt-cat && cd intel-cmt-cat
+  && make
+  ./tools/membw/membw -c 0 -b 10000 --read
+
+  # Enable MBA software controller
+  mount -t resctrl resctrl -o mba_MBps /sys/fs/resctrl
+
+  # Create control group c1
+  mkdir /sys/fs/resctrl/c1
+
+  # Set MB throttle to 6 GB/s
+  echo "MB:0=6000;1=6000" > /sys/fs/resctrl/c1/schemata
+
+  # Write PID of the workload to tasks file
+  echo `pidof membw` > /sys/fs/resctrl/c1/tasks
+
+  # Read local bytes counters twice with 1s interval, the calculated
+  # local bandwidth is not as expected (approaching to 6 GB/s):
+  local_1=`cat /sys/fs/resctrl/c1/mon_data/mon_L3_00/mbm_local_bytes`
+  sleep 1
+  local_2=`cat /sys/fs/resctrl/c1/mon_data/mon_L3_00/mbm_local_bytes`
+  echo "local b/w (bytes/s):" `expr $local_2 - $local_1`
+
+Before fix:
+  local b/w (bytes/s): 11076796416
+
+After fix:
+  local b/w (bytes/s): 5465014272
+
+Fixes: ba0f26d8529c (x86/intel_rdt/mba_sc: Prepare for feedback loop)
+Signed-off-by: Xiaochen Shen <xiaochen.shen@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Link: https://lkml.kernel.org/r/1607063279-19437-1-git-send-email-xiaochen.shen@intel.com
+---
+ arch/x86/kernel/cpu/resctrl/monitor.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index 622073f..93a33b7 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -320,7 +320,6 @@ static int __mon_event_count(u32 rmid, struct rmid_read *rr)
+ 	}
+ 
+ 	chunks = mbm_overflow_count(m->prev_msr, tval, rr->r->mbm_width);
+-	m->chunks += chunks;
+ 	m->prev_msr = tval;
+ 
+ 	rr->val += get_corrected_mbm_count(rmid, m->chunks);
+@@ -514,15 +513,14 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d, int rmid)
+ 	}
+ 	if (is_mbm_local_enabled()) {
+ 		rr.evtid = QOS_L3_MBM_LOCAL_EVENT_ID;
++		__mon_event_count(rmid, &rr);
+ 
+ 		/*
+ 		 * Call the MBA software controller only for the
+ 		 * control groups and when user has enabled
+ 		 * the software controller explicitly.
+ 		 */
+-		if (!is_mba_sc(NULL))
+-			__mon_event_count(rmid, &rr);
+-		else
++		if (is_mba_sc(NULL))
+ 			mbm_bw_count(rmid, &rr);
+ 	}
+ }
