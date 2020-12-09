@@ -2,955 +2,1648 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D295F2D4250
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC49B2D4256
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731791AbgLIMma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 07:42:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730929AbgLIMma (ORCPT
+        id S1731817AbgLIMnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 07:43:20 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:39278 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730929AbgLIMnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 07:42:30 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3363C0613CF;
-        Wed,  9 Dec 2020 04:41:49 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id A34531F44259
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-integrity@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
-        kernel@collabora.com,
-        "dlaurie@chromium.org" <dlaurie@chromium.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: Re: [PATCH v6] char: tpm: add i2c driver for cr50
-In-Reply-To: <20201208173906.GA58213@kernel.org>
-References: <20201207142016.482122-1-adrian.ratiu@collabora.com>
- <20201208173906.GA58213@kernel.org>
-Date:   Wed, 09 Dec 2020 14:41:45 +0200
-Message-ID: <87y2i7b186.fsf@collabora.com>
+        Wed, 9 Dec 2020 07:43:10 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9CYMbO008030;
+        Wed, 9 Dec 2020 12:42:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=w1gDBVWCKh+cFlbftLIZPWbLtJjoLQRmJ2EUU1OL1D4=;
+ b=OSVG6pNvCH0/ThhYGzpdyAqsodt8t9KR1CjBOwiGVDHzOiW3hLymRCT4ChHvtCEvfIRR
+ mXvEX84gK8Q+paJZGEzOTJKFIuAIlxI4/jZnV9diRQqNVKk8j637SUxWrsf+WPRgx4ZA
+ 78DlGv4ZjY4yOpTfIcxA4EbIjvRNjCl5o1uGGS3D5QloVStU/2pt8+xYujb+4YzcMVwH
+ K4YDXbxRbqkKnyg+E9prOba9TqC0xW5B4uuZFsxwRWK9dgLGOBlDNxQEt7LOtk6tYkgr
+ jH8xaeSGhXhNkw58gBtPMdlqCXsQjysrHQBvgVH8q6SRJqhOyoMc1qNXR5MIZTQtD/jr Fg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 3581mqyun0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Dec 2020 12:42:20 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9CeYkH113241;
+        Wed, 9 Dec 2020 12:42:19 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 358m407ceq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Dec 2020 12:42:19 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B9CgHgj017230;
+        Wed, 9 Dec 2020 12:42:17 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Dec 2020 04:42:15 -0800
+Date:   Wed, 9 Dec 2020 15:42:06 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Info <info@ministro.hu>
+Cc:     "'Rob Herring'" <robh+dt@kernel.org>,
+        "'Greg Kroah-Hartman'" <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org
+Subject: Re: [PATCH] Staging: silabs si4455 serial driver
+Message-ID: <20201209124206.GG2767@kadam>
+References: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAAAJUqiRO33GQqGIHffCVyG/AQAAAAA=@ministro.hu>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAAAJUqiRO33GQqGIHffCVyG/AQAAAAA=@ministro.hu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090090
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ clxscore=1011 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Dec 2020, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> On Mon, Dec 07, 2020 at 04:20:16PM +0200, Adrian Ratiu wrote: 
->> From: "dlaurie@chromium.org" <dlaurie@chromium.org>  Add TPM 
->> 2.0 compatible I2C interface for chips with cr50 firmware. 
->> The firmware running on the currently supported H1 MCU requires 
->> a special driver to handle its specific protocol, and this 
->> makes it unsuitable to use tpm_tis_core_* and instead it must 
->> implement the underlying TPM protocol similar to the other I2C 
->> TPM drivers.   - All 4 bytes of status register must be 
->> read/written at once.  - FIFO and burst count is limited to 63 
->> and must be drained by AP.  - Provides an interrupt to indicate 
->> when read response data is ready and when the TPM is finished 
->> processing write data.   This driver is based on the existing 
->> infineon I2C TPM driver, which most closely matches the cr50 
->> i2c protocol behavior. 
-> 
-> Starts to look legit. Has anyone tested this? 
+Change the From email header to say your name.
 
-I tested on an x86_64 Chromebook EVE (aka Google Pixelbook) by 
-chainloading in legacy mode and booting into a Yocto-based 
-userspace (meta-chromebook) where I used tpm2-tools to communicate 
-with the chip and also built and tested a ChromiumOS userspace in 
-developer mode.
+The patch is corrupted and can't be applied.  Please read the first
+paragraphs of Documentation/process/email-clients.rst
 
-I do not have access to other HW which has this chip, so it is 
-about as much testing I can do to confirm the driver works on this 
-HW.
+This driver is pretty small and it might be easier to clean it up first
+before merging it into staging.  Run checkpatch.pl --strict on the
+driver.
 
-Adrian
+> --- /dev/null
+> +++ b/drivers/staging/si4455/si4455.c
+> @@ -0,0 +1,1465 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 József Horváth <info@ministro.hu>
+> + *
+> + */
+> +#include <linux/bitops.h>
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_gpio.h>
+> +#include <linux/regmap.h>
+> +#include <linux/serial_core.h>
+> +#include <linux/serial.h>
+> +#include <linux/tty.h>
+> +#include <linux/tty_flip.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/uaccess.h>
+> +#include "si4455_api.h"
+> +
+> +#define PORT_SI4455						1096
+> +#define SI4455_NAME						"si4455"
+> +#define SI4455_MAJOR						432
+> +#define SI4455_MINOR						567
+> +#define SI4455_UART_NRMAX					1
+> +#define SI4455_FIFO_SIZE					64
+> +
+> +#define SI4455_CMD_ID_EZCONFIG_CHECK				0x19
+> +#define SI4455_CMD_ID_PART_INFO					0x01
+> +#define SI4455_CMD_REPLY_COUNT_PART_INFO			9
+> +#define SI4455_CMD_ID_GET_INT_STATUS				0x20
+> +#define SI4455_CMD_REPLY_COUNT_GET_INT_STATUS			8
+> +#define SI4455_CMD_ID_FIFO_INFO					0x15
+> +#define SI4455_CMD_ARG_COUNT_FIFO_INFO				2
+> +#define SI4455_CMD_REPLY_COUNT_FIFO_INFO			2
+> +#define SI4455_CMD_FIFO_INFO_ARG_TX_BIT				0x01
+> +#define SI4455_CMD_FIFO_INFO_ARG_RX_BIT				0x02
+> +#define SI4455_CMD_ID_READ_CMD_BUFF				0x44
+> +#define SI4455_CMD_ID_READ_RX_FIFO				0x77
+> +#define SI4455_CMD_ID_WRITE_TX_FIFO				0x66
+> +#define SI4455_CMD_ID_START_RX					0x32
+> +#define SI4455_CMD_ARG_COUNT_START_RX				8
+> +#define SI4455_CMD_START_RX_ARG_RXTIMEOUT_STATE_ENUM_RX		8
+> +#define SI4455_CMD_START_RX_ARG_RXVALID_STATE_ENUM_RX		8
+> +#define SI4455_CMD_START_RX_ARG_RXINVALID_STATE_ENUM_RX		8
+> +#define SI4455_CMD_ID_START_TX					0x31
+> +#define SI4455_CMD_ARG_COUNT_START_TX				5
+> +#define SI4455_CMD_ID_CHANGE_STATE				0x34
+> +#define SI4455_CMD_ARG_COUNT_CHANGE_STATE			2
+> +#define SI4455_CMD_CHANGE_STATE_ARG_NEW_STATE_ENUM_READY	3
+> +#define SI4455_CMD_GET_CHIP_STATUS_REP_CMD_ERROR_PEND_MASK	0x08
+> +#define SI4455_CMD_GET_CHIP_STATUS_REP_CMD_ERROR_PEND_BIT	0x08
+> +#define SI4455_CMD_GET_INT_STATUS_REP_PACKET_SENT_PEND_BIT	0x20
+> +#define SI4455_CMD_GET_INT_STATUS_REP_PACKET_RX_PEND_BIT	0x10
+> +#define SI4455_CMD_GET_INT_STATUS_REP_CRC_ERROR_BIT		0x08
 
->
-> /Jarkko
->
->> 
->> Cc: Helen Koike <helen.koike@collabora.com>
->> Cc: Jarkko Sakkinen <jarkko@kernel.org>
->> Cc: Ezequiel Garcia <ezequiel@collabora.com>
->> Signed-off-by: Duncan Laurie <dlaurie@chromium.org>
->> [swboyd@chromium.org: Depend on i2c even if it's a module, replace
->> boilier plate with SPDX tag, drop asm/byteorder.h include, simplify
->> return from probe]
->> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
->> Signed-off-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
->> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
->> ---
->> Changes in v6:
->>   - Whitespace, code style and kdoc fixes (Jarkko)
->> 
->> Changes in v5:
->>   - Fix copyringht notice (Jarkko)
->>   - Drop CR50_NO/FORCE defines (Jarkko)
->>   - Rename irq handler arg dev_id -> tpm_info (Jarkko)
->>   - Whitespace, brakcets, christmas tree, `checkpatch --strict`, W=n fixes
->> 
->> Changes in v4:
->>   - Replace force_release enum with defines (Jarkko)
->> 
->> Changes in v3:
->>   - Misc small fixes (typos/renamings, comments, default values)
->>   - Moved i2c_write memcpy before lock to minimize critical section (Helen)
->>   - Dropped priv->locality because it stored a constant value (Helen)
->>   - Many kdoc, function name and style fixes in general (Jarkko)
->>   - Kept the force release enum instead of defines or bool (Ezequiel)
->> 
->> Changes in v2:
->>   - Various small fixes all over (reorder includes, MAX_BUFSIZE, comments, etc)
->>   - Reworked return values of i2c_wait_tpm_ready() to fix timeout mis-handling
->> so ret == 0 now means success, the wait period jiffies is ignored because that
->> number is meaningless and return a proper timeout error in case jiffies == 0.
->>   - Make i2c default to 1 message per transfer (requested by Helen)
->>   - Move -EIO error reporting to transfer function to cleanup transfer() itself
->> and its R/W callers
->>   - Remove magic value hardcodings and introduce enum force_release.
->> 
->> Applies on next-20201207, tested on Chromebook EVE.
->> ---
->>  drivers/char/tpm/Kconfig            |  10 +
->>  drivers/char/tpm/Makefile           |   2 +
->>  drivers/char/tpm/tpm_tis_i2c_cr50.c | 790 ++++++++++++++++++++++++++++
->>  3 files changed, 802 insertions(+)
->>  create mode 100644 drivers/char/tpm/tpm_tis_i2c_cr50.c
->> 
->> diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
->> index a18c314da211..4308f9ca7a43 100644
->> --- a/drivers/char/tpm/Kconfig
->> +++ b/drivers/char/tpm/Kconfig
->> @@ -86,6 +86,16 @@ config TCG_TIS_SYNQUACER
->>  	  To compile this driver as a module, choose  M here;
->>  	  the module will be called tpm_tis_synquacer.
->>  
->> +config TCG_TIS_I2C_CR50
->> +	tristate "TPM Interface Specification 2.0 Interface (I2C - CR50)"
->> +	depends on I2C
->> +	select TCG_CR50
->> +	help
->> +	  This is a driver for the Google cr50 I2C TPM interface which is a
->> +	  custom microcontroller and requires a custom i2c protocol interface
->> +	  to handle the limitations of the hardware.  To compile this driver
->> +	  as a module, choose M here; the module will be called tcg_tis_i2c_cr50.
->> +
->>  config TCG_TIS_I2C_ATMEL
->>  	tristate "TPM Interface Specification 1.2 Interface (I2C - Atmel)"
->>  	depends on I2C
->> diff --git a/drivers/char/tpm/Makefile b/drivers/char/tpm/Makefile
->> index 84db4fb3a9c9..66d39ea6bd10 100644
->> --- a/drivers/char/tpm/Makefile
->> +++ b/drivers/char/tpm/Makefile
->> @@ -27,6 +27,8 @@ obj-$(CONFIG_TCG_TIS_SPI) += tpm_tis_spi.o
->>  tpm_tis_spi-y := tpm_tis_spi_main.o
->>  tpm_tis_spi-$(CONFIG_TCG_TIS_SPI_CR50) += tpm_tis_spi_cr50.o
->>  
->> +obj-$(CONFIG_TCG_TIS_I2C_CR50) += tpm_tis_i2c_cr50.o
->> +
->>  obj-$(CONFIG_TCG_TIS_I2C_ATMEL) += tpm_i2c_atmel.o
->>  obj-$(CONFIG_TCG_TIS_I2C_INFINEON) += tpm_i2c_infineon.o
->>  obj-$(CONFIG_TCG_TIS_I2C_NUVOTON) += tpm_i2c_nuvoton.o
->> diff --git a/drivers/char/tpm/tpm_tis_i2c_cr50.c b/drivers/char/tpm/tpm_tis_i2c_cr50.c
->> new file mode 100644
->> index 000000000000..ec9a65e7887d
->> --- /dev/null
->> +++ b/drivers/char/tpm/tpm_tis_i2c_cr50.c
->> @@ -0,0 +1,790 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright 2020 Google Inc.
->> + *
->> + * Based on Infineon TPM driver by Peter Huewe.
->> + *
->> + * cr50 is a firmware for H1 secure modules that requires special
->> + * handling for the I2C interface.
->> + *
->> + * - Use an interrupt for transaction status instead of hardcoded delays.
->> + * - Must use write+wait+read read protocol.
->> + * - All 4 bytes of status register must be read/written at once.
->> + * - Burst count max is 63 bytes, and burst count behaves slightly differently
->> + *   than other I2C TPMs.
->> + * - When reading from FIFO the full burstcnt must be read instead of just
->> + *   reading header and determining the remainder.
->> + */
->> +
->> +#include <linux/acpi.h>
->> +#include <linux/completion.h>
->> +#include <linux/i2c.h>
->> +#include <linux/interrupt.h>
->> +#include <linux/module.h>
->> +#include <linux/pm.h>
->> +#include <linux/slab.h>
->> +#include <linux/wait.h>
->> +
->> +#include "tpm_tis_core.h"
->> +
->> +#define TPM_CR50_MAX_BUFSIZE		64
->> +#define TPM_CR50_TIMEOUT_SHORT_MS	2		/* Short timeout during transactions */
->> +#define TPM_CR50_TIMEOUT_NOIRQ_MS	20		/* Timeout for TPM ready without IRQ */
->> +#define TPM_CR50_I2C_DID_VID		0x00281ae0L	/* Device and vendor ID reg value */
->> +#define TPM_CR50_I2C_MAX_RETRIES	3		/* Max retries due to I2C errors */
->> +#define TPM_CR50_I2C_RETRY_DELAY_LO	55		/* Min usecs between retries on I2C */
->> +#define TPM_CR50_I2C_RETRY_DELAY_HI	65		/* Max usecs between retries on I2C */
->> +
->> +#define TPM_I2C_ACCESS(l)	(0x0000 | ((l) << 4))
->> +#define TPM_I2C_STS(l)		(0x0001 | ((l) << 4))
->> +#define TPM_I2C_DATA_FIFO(l)	(0x0005 | ((l) << 4))
->> +#define TPM_I2C_DID_VID(l)	(0x0006 | ((l) << 4))
->> +
->> +/**
->> + * struct tpm_i2c_cr50_priv_data - Driver private data.
->> + * @irq:	Irq number used for this chip.
->> + *		If irq <= 0, then a fixed timeout is used instead of waiting for irq.
->> + * @tpm_ready:	Struct used by irq handler to signal R/W readiness.
->> + * @buf:	Buffer used for i2c writes, with i2c address prepended to content.
->> + *
->> + * Private driver struct used by kernel threads and interrupt context.
->> + */
->> +struct tpm_i2c_cr50_priv_data {
->> +	int irq;
->> +	struct completion tpm_ready;
->> +	u8 buf[TPM_CR50_MAX_BUFSIZE];
->> +};
->> +
->> +/**
->> + * tpm_cr50_i2c_int_handler() - cr50 interrupt handler.
->> + * @dummy:	Unused parameter.
->> + * @tpm_info:	TPM chip information.
->> + *
->> + * The cr50 interrupt handler signals waiting threads that the
->> + * interrupt has been asserted. It does not do any interrupt triggered
->> + * processing but is instead used to avoid fixed delays.
->> + *
->> + * Return:
->> + *	IRQ_HANDLED signifies irq was handled by this device.
->> + */
->> +static irqreturn_t tpm_cr50_i2c_int_handler(int dummy, void *tpm_info)
->> +{
->> +	struct tpm_chip *chip = tpm_info;
->> +	struct tpm_i2c_cr50_priv_data *priv = dev_get_drvdata(&chip->dev);
->> +
->> +	complete(&priv->tpm_ready);
->> +
->> +	return IRQ_HANDLED;
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_wait_tpm_ready() - Wait for tpm to signal ready.
->> + * @chip: A TPM chip.
->> + *
->> + * Wait for completion interrupt if available, otherwise use a fixed
->> + * delay for the TPM to be ready.
->> + *
->> + * Return:
->> + * - 0:		Success.
->> + * - -errno:	A POSIX error code.
->> + */
->> +static int tpm_cr50_i2c_wait_tpm_ready(struct tpm_chip *chip)
->> +{
->> +	struct tpm_i2c_cr50_priv_data *priv = dev_get_drvdata(&chip->dev);
->> +
->> +	/* Use a safe fixed delay if interrupt is not supported */
->> +	if (priv->irq <= 0) {
->> +		msleep(TPM_CR50_TIMEOUT_NOIRQ_MS);
->> +		return 0;
->> +	}
->> +
->> +	/* Wait for interrupt to indicate TPM is ready to respond */
->> +	if (!wait_for_completion_timeout(&priv->tpm_ready,
->> +					 msecs_to_jiffies(chip->timeout_a))) {
->> +		dev_warn(&chip->dev, "Timeout waiting for TPM ready\n");
->> +		return -ETIMEDOUT;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_enable_tpm_irq() - Enable TPM irq.
->> + * @chip: A TPM chip.
->> + */
->> +static void tpm_cr50_i2c_enable_tpm_irq(struct tpm_chip *chip)
->> +{
->> +	struct tpm_i2c_cr50_priv_data *priv = dev_get_drvdata(&chip->dev);
->> +
->> +	if (priv->irq > 0) {
->> +		reinit_completion(&priv->tpm_ready);
->> +		enable_irq(priv->irq);
->> +	}
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_disable_tpm_irq() - Disable TPM irq.
->> + * @chip: A TPM chip.
->> + */
->> +static void tpm_cr50_i2c_disable_tpm_irq(struct tpm_chip *chip)
->> +{
->> +	struct tpm_i2c_cr50_priv_data *priv = dev_get_drvdata(&chip->dev);
->> +
->> +	if (priv->irq > 0)
->> +		disable_irq(priv->irq);
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_transfer_message() - Transfer a message over i2c.
->> + * @dev:	Device information.
->> + * @adapter:	I2C adapter.
->> + * @msg:	Message to transfer.
->> + *
->> + * Call unlocked i2c transfer routine with the provided parameters and
->> + * retry in case of bus errors.
->> + *
->> + * Return:
->> + * - 0:		Success.
->> + * - -errno:	A POSIX error code.
->> + */
->> +static int tpm_cr50_i2c_transfer_message(struct device *dev,
->> +					 struct i2c_adapter *adapter,
->> +					 struct i2c_msg *msg)
->> +{
->> +	unsigned int try;
->> +	int rc;
->> +
->> +	for (try = 0; try < TPM_CR50_I2C_MAX_RETRIES; try++) {
->> +		rc = __i2c_transfer(adapter, msg, 1);
->> +		if (rc == 1)
->> +			return 0; /* Successfully transferred the message */
->> +		if (try)
->> +			dev_warn(dev, "i2c transfer failed (attempt %d/%d): %d\n",
->> +				 try + 1, TPM_CR50_I2C_MAX_RETRIES, rc);
->> +		usleep_range(TPM_CR50_I2C_RETRY_DELAY_LO, TPM_CR50_I2C_RETRY_DELAY_HI);
->> +	}
->> +
->> +	/* No i2c message transferred */
->> +	return -EIO;
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_read() - Read from TPM register.
->> + * @chip:	A TPM chip.
->> + * @addr:	Register address to read from.
->> + * @buffer:	Read destination, provided by caller.
->> + * @len:	Number of bytes to read.
->> + *
->> + * Sends the register address byte to the TPM, then waits until TPM
->> + * is ready via interrupt signal or timeout expiration, then 'len'
->> + * bytes are read from TPM response into the provided 'buffer'.
->> + *
->> + * Return:
->> + * - 0:		Success.
->> + * - -errno:	A POSIX error code.
->> + */
->> +static int tpm_cr50_i2c_read(struct tpm_chip *chip, u8 addr, u8 *buffer, size_t len)
->> +{
->> +	struct i2c_client *client = to_i2c_client(chip->dev.parent);
->> +	struct i2c_msg msg_reg_addr = {
->> +		.addr = client->addr,
->> +		.len = 1,
->> +		.buf = &addr
->> +	};
->> +	struct i2c_msg msg_response = {
->> +		.addr = client->addr,
->> +		.flags = I2C_M_RD,
->> +		.len = len,
->> +		.buf = buffer
->> +	};
->> +	int rc;
->> +
->> +	i2c_lock_bus(client->adapter, I2C_LOCK_SEGMENT);
->> +
->> +	/* Prepare for completion interrupt */
->> +	tpm_cr50_i2c_enable_tpm_irq(chip);
->> +
->> +	/* Send the register address byte to the TPM */
->> +	rc = tpm_cr50_i2c_transfer_message(&chip->dev, client->adapter, &msg_reg_addr);
->> +	if (rc < 0)
->> +		goto out;
->> +
->> +	/* Wait for TPM to be ready with response data */
->> +	rc = tpm_cr50_i2c_wait_tpm_ready(chip);
->> +	if (rc < 0)
->> +		goto out;
->> +
->> +	/* Read response data from the TPM */
->> +	rc = tpm_cr50_i2c_transfer_message(&chip->dev, client->adapter, &msg_response);
->> +
->> +out:
->> +	tpm_cr50_i2c_disable_tpm_irq(chip);
->> +	i2c_unlock_bus(client->adapter, I2C_LOCK_SEGMENT);
->> +
->> +	if (rc < 0)
->> +		return rc;
->> +
->> +	return 0;
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_write()- Write to TPM register.
->> + * @chip:	A TPM chip.
->> + * @addr:	Register address to write to.
->> + * @buffer:	Data to write.
->> + * @len:	Number of bytes to write.
->> + *
->> + * The provided address is prepended to the data in 'buffer', the
->> + * cobined address+data is sent to the TPM, then wait for TPM to
->> + * indicate it is done writing.
->> + *
->> + * Return:
->> + * - 0:		Success.
->> + * - -errno:	A POSIX error code.
->> + */
->> +static int tpm_cr50_i2c_write(struct tpm_chip *chip, u8 addr, u8 *buffer,
->> +			      size_t len)
->> +{
->> +	struct tpm_i2c_cr50_priv_data *priv = dev_get_drvdata(&chip->dev);
->> +	struct i2c_client *client = to_i2c_client(chip->dev.parent);
->> +	struct i2c_msg msg = {
->> +		.addr = client->addr,
->> +		.len = len + 1,
->> +		.buf = priv->buf
->> +	};
->> +	int rc;
->> +
->> +	if (len > TPM_CR50_MAX_BUFSIZE - 1)
->> +		return -EINVAL;
->> +
->> +	/* Prepend the 'register address' to the buffer */
->> +	priv->buf[0] = addr;
->> +	memcpy(priv->buf + 1, buffer, len);
->> +
->> +	i2c_lock_bus(client->adapter, I2C_LOCK_SEGMENT);
->> +
->> +	/* Prepare for completion interrupt */
->> +	tpm_cr50_i2c_enable_tpm_irq(chip);
->> +
->> +	/* Send write request buffer with address */
->> +	rc = tpm_cr50_i2c_transfer_message(&chip->dev, client->adapter, &msg);
->> +	if (rc < 0)
->> +		goto out;
->> +
->> +	/* Wait for TPM to be ready, ignore timeout */
->> +	tpm_cr50_i2c_wait_tpm_ready(chip);
->> +
->> +out:
->> +	tpm_cr50_i2c_disable_tpm_irq(chip);
->> +	i2c_unlock_bus(client->adapter, I2C_LOCK_SEGMENT);
->> +
->> +	if (rc < 0)
->> +		return rc;
->> +
->> +	return 0;
->> +}
->> +
->> +/**
->> + * tpm_cr50_check_locality() - Verify TPM locality 0 is active.
->> + * @chip: A TPM chip.
->> + *
->> + * Return:
->> + * - 0:		Success.
->> + * - -errno:	A POSIX error code.
->> + */
->> +static int tpm_cr50_check_locality(struct tpm_chip *chip)
->> +{
->> +	u8 mask = TPM_ACCESS_VALID | TPM_ACCESS_ACTIVE_LOCALITY;
->> +	u8 buf;
->> +	int rc;
->> +
->> +	rc = tpm_cr50_i2c_read(chip, TPM_I2C_ACCESS(0), &buf, sizeof(buf));
->> +	if (rc < 0)
->> +		return rc;
->> +
->> +	if ((buf & mask) == mask)
->> +		return 0;
->> +
->> +	return -EIO;
->> +}
->> +
->> +/**
->> + * tpm_cr50_release_locality() - Release TPM locality.
->> + * @chip:	A TPM chip.
->> + * @force:	Flag to force release if set.
->> + */
->> +static void tpm_cr50_release_locality(struct tpm_chip *chip, bool force)
->> +{
->> +	u8 mask = TPM_ACCESS_VALID | TPM_ACCESS_REQUEST_PENDING;
->> +	u8 addr = TPM_I2C_ACCESS(0);
->> +	u8 buf;
->> +
->> +	if (tpm_cr50_i2c_read(chip, addr, &buf, sizeof(buf)) < 0)
->> +		return;
->> +
->> +	if (force || (buf & mask) == mask) {
->> +		buf = TPM_ACCESS_ACTIVE_LOCALITY;
->> +		tpm_cr50_i2c_write(chip, addr, &buf, sizeof(buf));
->> +	}
->> +}
->> +
->> +/**
->> + * tpm_cr50_request_locality() - Request TPM locality 0.
->> + * @chip: A TPM chip.
->> + *
->> + * Return:
->> + * - 0:		Success.
->> + * - -errno:	A POSIX error code.
->> + */
->> +static int tpm_cr50_request_locality(struct tpm_chip *chip)
->> +{
->> +	u8 buf = TPM_ACCESS_REQUEST_USE;
->> +	unsigned long stop;
->> +	int rc;
->> +
->> +	if (!tpm_cr50_check_locality(chip))
->> +		return 0;
->> +
->> +	rc = tpm_cr50_i2c_write(chip, TPM_I2C_ACCESS(0), &buf, sizeof(buf));
->> +	if (rc < 0)
->> +		return rc;
->> +
->> +	stop = jiffies + chip->timeout_a;
->> +	do {
->> +		if (!tpm_cr50_check_locality(chip))
->> +			return 0;
->> +
->> +		msleep(TPM_CR50_TIMEOUT_SHORT_MS);
->> +	} while (time_before(jiffies, stop));
->> +
->> +	return -ETIMEDOUT;
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_tis_status() - Read cr50 tis status.
->> + * @chip: A TPM chip.
->> + *
->> + * cr50 requires all 4 bytes of status register to be read.
->> + *
->> + * Return:
->> + *	TPM status byte.
->> + */
->> +static u8 tpm_cr50_i2c_tis_status(struct tpm_chip *chip)
->> +{
->> +	u8 buf[4];
->> +
->> +	if (tpm_cr50_i2c_read(chip, TPM_I2C_STS(0), buf, sizeof(buf)) < 0)
->> +		return 0;
->> +
->> +	return buf[0];
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_tis_set_ready() - Set status register to ready.
->> + * @chip: A TPM chip.
->> + *
->> + * cr50 requires all 4 bytes of status register to be written.
->> + */
->> +static void tpm_cr50_i2c_tis_set_ready(struct tpm_chip *chip)
->> +{
->> +	u8 buf[4] = { TPM_STS_COMMAND_READY };
->> +
->> +	tpm_cr50_i2c_write(chip, TPM_I2C_STS(0), buf, sizeof(buf));
->> +	msleep(TPM_CR50_TIMEOUT_SHORT_MS);
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_get_burst_and_status() - Get burst count and status.
->> + * @chip:	A TPM chip.
->> + * @mask:	Status mask.
->> + * @burst:	Return value for burst.
->> + * @status:	Return value for status.
->> + *
->> + * cr50 uses bytes 3:2 of status register for burst count and
->> + * all 4 bytes must be read.
->> + *
->> + * Return:
->> + * - 0:		Success.
->> + * - -errno:	A POSIX error code.
->> + */
->> +static int tpm_cr50_i2c_get_burst_and_status(struct tpm_chip *chip, u8 mask,
->> +					     size_t *burst, u32 *status)
->> +{
->> +	unsigned long stop;
->> +	u8 buf[4];
->> +
->> +	*status = 0;
->> +
->> +	/* wait for burstcount */
->> +	stop = jiffies + chip->timeout_b;
->> +
->> +	do {
->> +		if (tpm_cr50_i2c_read(chip, TPM_I2C_STS(0), buf, sizeof(buf)) < 0) {
->> +			msleep(TPM_CR50_TIMEOUT_SHORT_MS);
->> +			continue;
->> +		}
->> +
->> +		*status = *buf;
->> +		*burst = le16_to_cpup((__le16 *)(buf + 1));
->> +
->> +		if ((*status & mask) == mask &&
->> +		    *burst > 0 && *burst <= TPM_CR50_MAX_BUFSIZE - 1)
->> +			return 0;
->> +
->> +		msleep(TPM_CR50_TIMEOUT_SHORT_MS);
->> +	} while (time_before(jiffies, stop));
->> +
->> +	dev_err(&chip->dev, "Timeout reading burst and status\n");
->> +	return -ETIMEDOUT;
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_tis_recv() - TPM reception callback.
->> + * @chip:	A TPM chip.
->> + * @buf:	Reception buffer.
->> + * @buf_len:	Buffer length to read.
->> + *
->> + * Return:
->> + * - >= 0:	Number of read bytes.
->> + * - -errno:	A POSIX error code.
->> + */
->> +static int tpm_cr50_i2c_tis_recv(struct tpm_chip *chip, u8 *buf, size_t buf_len)
->> +{
->> +
->> +	u8 mask = TPM_STS_VALID | TPM_STS_DATA_AVAIL;
->> +	size_t burstcnt, cur, len, expected;
->> +	u8 addr = TPM_I2C_DATA_FIFO(0);
->> +	u32 status;
->> +	int rc;
->> +
->> +	if (buf_len < TPM_HEADER_SIZE)
->> +		return -EINVAL;
->> +
->> +	rc = tpm_cr50_i2c_get_burst_and_status(chip, mask, &burstcnt, &status);
->> +	if (rc < 0)
->> +		goto out_err;
->> +
->> +	if (burstcnt > buf_len || burstcnt < TPM_HEADER_SIZE) {
->> +		dev_err(&chip->dev,
->> +			"Unexpected burstcnt: %zu (max=%zu, min=%d)\n",
->> +			burstcnt, buf_len, TPM_HEADER_SIZE);
->> +		rc = -EIO;
->> +		goto out_err;
->> +	}
->> +
->> +	/* Read first chunk of burstcnt bytes */
->> +	rc = tpm_cr50_i2c_read(chip, addr, buf, burstcnt);
->> +	if (rc < 0) {
->> +		dev_err(&chip->dev, "Read of first chunk failed\n");
->> +		goto out_err;
->> +	}
->> +
->> +	/* Determine expected data in the return buffer */
->> +	expected = be32_to_cpup((__be32 *)(buf + 2));
->> +	if (expected > buf_len) {
->> +		dev_err(&chip->dev, "Buffer too small to receive i2c data\n");
->> +		goto out_err;
->> +	}
->> +
->> +	/* Now read the rest of the data */
->> +	cur = burstcnt;
->> +	while (cur < expected) {
->> +		/* Read updated burst count and check status */
->> +		rc = tpm_cr50_i2c_get_burst_and_status(chip, mask, &burstcnt, &status);
->> +		if (rc < 0)
->> +			goto out_err;
->> +
->> +		len = min_t(size_t, burstcnt, expected - cur);
->> +		rc = tpm_cr50_i2c_read(chip, addr, buf + cur, len);
->> +		if (rc < 0) {
->> +			dev_err(&chip->dev, "Read failed\n");
->> +			goto out_err;
->> +		}
->> +
->> +		cur += len;
->> +	}
->> +
->> +	/* Ensure TPM is done reading data */
->> +	rc = tpm_cr50_i2c_get_burst_and_status(chip, TPM_STS_VALID, &burstcnt, &status);
->> +	if (rc < 0)
->> +		goto out_err;
->> +	if (status & TPM_STS_DATA_AVAIL) {
->> +		dev_err(&chip->dev, "Data still available\n");
->> +		rc = -EIO;
->> +		goto out_err;
->> +	}
->> +
->> +	tpm_cr50_release_locality(chip, false);
->> +	return cur;
->> +
->> +out_err:
->> +	/* Abort current transaction if still pending */
->> +	if (tpm_cr50_i2c_tis_status(chip) & TPM_STS_COMMAND_READY)
->> +		tpm_cr50_i2c_tis_set_ready(chip);
->> +
->> +	tpm_cr50_release_locality(chip, false);
->> +	return rc;
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_tis_send() - TPM transmission callback.
->> + * @chip:	A TPM chip.
->> + * @buf:	Buffer to send.
->> + * @len:	Buffer length.
->> + *
->> + * Return:
->> + * - 0:		Success.
->> + * - -errno:	A POSIX error code.
->> + */
->> +static int tpm_cr50_i2c_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
->> +{
->> +	size_t burstcnt, limit, sent = 0;
->> +	u8 tpm_go[4] = { TPM_STS_GO };
->> +	unsigned long stop;
->> +	u32 status;
->> +	int rc;
->> +
->> +	rc = tpm_cr50_request_locality(chip);
->> +	if (rc < 0)
->> +		return rc;
->> +
->> +	/* Wait until TPM is ready for a command */
->> +	stop = jiffies + chip->timeout_b;
->> +	while (!(tpm_cr50_i2c_tis_status(chip) & TPM_STS_COMMAND_READY)) {
->> +		if (time_after(jiffies, stop)) {
->> +			rc = -ETIMEDOUT;
->> +			goto out_err;
->> +		}
->> +
->> +		tpm_cr50_i2c_tis_set_ready(chip);
->> +	}
->> +
->> +	while (len > 0) {
->> +		u8 mask = TPM_STS_VALID;
->> +
->> +		/* Wait for data if this is not the first chunk */
->> +		if (sent > 0)
->> +			mask |= TPM_STS_DATA_EXPECT;
->> +
->> +		/* Read burst count and check status */
->> +		rc = tpm_cr50_i2c_get_burst_and_status(chip, mask, &burstcnt, &status);
->> +		if (rc < 0)
->> +			goto out_err;
->> +
->> +		/*
->> +		 * Use burstcnt - 1 to account for the address byte
->> +		 * that is inserted by tpm_cr50_i2c_write()
->> +		 */
->> +		limit = min_t(size_t, burstcnt - 1, len);
->> +		rc = tpm_cr50_i2c_write(chip, TPM_I2C_DATA_FIFO(0), &buf[sent], limit);
->> +		if (rc < 0) {
->> +			dev_err(&chip->dev, "Write failed\n");
->> +			goto out_err;
->> +		}
->> +
->> +		sent += limit;
->> +		len -= limit;
->> +	}
->> +
->> +	/* Ensure TPM is not expecting more data */
->> +	rc = tpm_cr50_i2c_get_burst_and_status(chip, TPM_STS_VALID, &burstcnt, &status);
->> +	if (rc < 0)
->> +		goto out_err;
->> +	if (status & TPM_STS_DATA_EXPECT) {
->> +		dev_err(&chip->dev, "Data still expected\n");
->> +		rc = -EIO;
->> +		goto out_err;
->> +	}
->> +
->> +	/* Start the TPM command */
->> +	rc = tpm_cr50_i2c_write(chip, TPM_I2C_STS(0), tpm_go,
->> +				sizeof(tpm_go));
->> +	if (rc < 0) {
->> +		dev_err(&chip->dev, "Start command failed\n");
->> +		goto out_err;
->> +	}
->> +	return 0;
->> +
->> +out_err:
->> +	/* Abort current transaction if still pending */
->> +	if (tpm_cr50_i2c_tis_status(chip) & TPM_STS_COMMAND_READY)
->> +		tpm_cr50_i2c_tis_set_ready(chip);
->> +
->> +	tpm_cr50_release_locality(chip, false);
->> +	return rc;
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_req_canceled() - Callback to notify a request cancel.
->> + * @chip:	A TPM chip.
->> + * @status:	Status given by the cancel callback.
->> + *
->> + * Return:
->> + *	True if command is ready, False otherwise.
->> + */
->> +static bool tpm_cr50_i2c_req_canceled(struct tpm_chip *chip, u8 status)
->> +{
->> +	return status == TPM_STS_COMMAND_READY;
->> +}
->> +
->> +static const struct tpm_class_ops cr50_i2c = {
->> +	.flags = TPM_OPS_AUTO_STARTUP,
->> +	.status = &tpm_cr50_i2c_tis_status,
->> +	.recv = &tpm_cr50_i2c_tis_recv,
->> +	.send = &tpm_cr50_i2c_tis_send,
->> +	.cancel = &tpm_cr50_i2c_tis_set_ready,
->> +	.req_complete_mask = TPM_STS_DATA_AVAIL | TPM_STS_VALID,
->> +	.req_complete_val = TPM_STS_DATA_AVAIL | TPM_STS_VALID,
->> +	.req_canceled = &tpm_cr50_i2c_req_canceled,
->> +};
->> +
->> +static const struct i2c_device_id cr50_i2c_table[] = {
->> +	{"cr50_i2c", 0},
->> +	{}
->> +};
->> +MODULE_DEVICE_TABLE(i2c, cr50_i2c_table);
->> +
->> +#ifdef CONFIG_ACPI
->> +static const struct acpi_device_id cr50_i2c_acpi_id[] = {
->> +	{ "GOOG0005", 0 },
->> +	{}
->> +};
->> +MODULE_DEVICE_TABLE(acpi, cr50_i2c_acpi_id);
->> +#endif
->> +
->> +#ifdef CONFIG_OF
->> +static const struct of_device_id of_cr50_i2c_match[] = {
->> +	{ .compatible = "google,cr50", },
->> +	{}
->> +};
->> +MODULE_DEVICE_TABLE(of, of_cr50_i2c_match);
->> +#endif
->> +
->> +/**
->> + * tpm_cr50_i2c_probe() - Driver probe function.
->> + * @client:	I2C client information.
->> + * @id:		I2C device id.
->> + *
->> + * Return:
->> + * - 0:		Success.
->> + * - -errno:	A POSIX error code.
->> + */
->> +static int tpm_cr50_i2c_probe(struct i2c_client *client,
->> +			      const struct i2c_device_id *id)
->> +{
->> +	struct tpm_i2c_cr50_priv_data *priv;
->> +	struct device *dev = &client->dev;
->> +	struct tpm_chip *chip;
->> +	u32 vendor;
->> +	u8 buf[4];
->> +	int rc;
->> +
->> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
->> +		return -ENODEV;
->> +
->> +	chip = tpmm_chip_alloc(dev, &cr50_i2c);
->> +	if (IS_ERR(chip))
->> +		return PTR_ERR(chip);
->> +
->> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
->> +	if (!priv)
->> +		return -ENOMEM;
->> +
->> +	/* cr50 is a TPM 2.0 chip */
->> +	chip->flags |= TPM_CHIP_FLAG_TPM2;
->> +	chip->flags |= TPM_CHIP_FLAG_FIRMWARE_POWER_MANAGED;
->> +
->> +	/* Default timeouts */
->> +	chip->timeout_a = msecs_to_jiffies(TIS_SHORT_TIMEOUT);
->> +	chip->timeout_b = msecs_to_jiffies(TIS_LONG_TIMEOUT);
->> +	chip->timeout_c = msecs_to_jiffies(TIS_SHORT_TIMEOUT);
->> +	chip->timeout_d = msecs_to_jiffies(TIS_SHORT_TIMEOUT);
->> +
->> +	dev_set_drvdata(&chip->dev, priv);
->> +	init_completion(&priv->tpm_ready);
->> +
->> +	if (client->irq > 0) {
->> +		rc = devm_request_irq(dev, client->irq, tpm_cr50_i2c_int_handler,
->> +				      IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
->> +				      dev->driver->name, chip);
->> +		if (rc < 0) {
->> +			dev_err(dev, "Failed to probe IRQ %d\n", client->irq);
->> +			return rc;
->> +		}
->> +
->> +		disable_irq(client->irq);
->> +		priv->irq = client->irq;
->> +	} else {
->> +		dev_warn(dev, "No IRQ, will use %ums delay for TPM ready\n",
->> +			 TPM_CR50_TIMEOUT_NOIRQ_MS);
->> +	}
->> +
->> +	rc = tpm_cr50_request_locality(chip);
->> +	if (rc < 0) {
->> +		dev_err(dev, "Could not request locality\n");
->> +		return rc;
->> +	}
->> +
->> +	/* Read four bytes from DID_VID register */
->> +	rc = tpm_cr50_i2c_read(chip, TPM_I2C_DID_VID(0), buf, sizeof(buf));
->> +	if (rc < 0) {
->> +		dev_err(dev, "Could not read vendor id\n");
->> +		tpm_cr50_release_locality(chip, true);
->> +		return rc;
->> +	}
->> +
->> +	vendor = le32_to_cpup((__le32 *)buf);
->> +	if (vendor != TPM_CR50_I2C_DID_VID) {
->> +		dev_err(dev, "Vendor ID did not match! ID was %08x\n", vendor);
->> +		tpm_cr50_release_locality(chip, true);
->> +		return -ENODEV;
->> +	}
->> +
->> +	dev_info(dev, "cr50 TPM 2.0 (i2c 0x%02x irq %d id 0x%x)\n",
->> +		 client->addr, client->irq, vendor >> 16);
->> +
->> +	return tpm_chip_register(chip);
->> +}
->> +
->> +/**
->> + * tpm_cr50_i2c_remove() - Driver remove function.
->> + * @client: I2C client information.
->> + *
->> + * Return:
->> + * - 0:		Success.
->> + * - -errno:	A POSIX error code.
->> + */
->> +static int tpm_cr50_i2c_remove(struct i2c_client *client)
->> +{
->> +	struct tpm_chip *chip = i2c_get_clientdata(client);
->> +	struct device *dev = &client->dev;
->> +
->> +	if (!chip) {
->> +		dev_err(dev, "Could not get client data at remove\n");
->> +		return -ENODEV;
->> +	}
->> +
->> +	tpm_chip_unregister(chip);
->> +	tpm_cr50_release_locality(chip, true);
->> +
->> +	return 0;
->> +}
->> +
->> +static SIMPLE_DEV_PM_OPS(cr50_i2c_pm, tpm_pm_suspend, tpm_pm_resume);
->> +
->> +static struct i2c_driver cr50_i2c_driver = {
->> +	.id_table = cr50_i2c_table,
->> +	.probe = tpm_cr50_i2c_probe,
->> +	.remove = tpm_cr50_i2c_remove,
->> +	.driver = {
->> +		.name = "cr50_i2c",
->> +		.pm = &cr50_i2c_pm,
->> +		.acpi_match_table = ACPI_PTR(cr50_i2c_acpi_id),
->> +		.of_match_table = of_match_ptr(of_cr50_i2c_match),
->> +	},
->> +};
->> +
->> +module_i2c_driver(cr50_i2c_driver);
->> +
->> +MODULE_DESCRIPTION("cr50 TPM I2C Driver");
->> +MODULE_LICENSE("GPL");
->> -- 
->> 2.29.2
->> 
->> 
+These names are unreadably long and just make the code messy.
+
+> +#define SI4455_CMD_ID_GET_MODEM_STATUS				0x22
+> +#define SI4455_CMD_ARG_COUNT_GET_MODEM_STATUS			2
+> +#define SI4455_CMD_REPLY_COUNT_GET_MODEM_STATUS			8
+> +
+> +struct si4455_part_info {
+> +	u8				CHIPREV;
+> +	u16				PART;
+> +	u8				PBUILD;
+> +	u16				ID;
+> +	u8				CUSTOMER;
+> +	u8				ROMID;
+> +	u8				BOND;
+
+Also the huge gap between the type and the struct member makes it
+hard to read.
+
+	u8  chip_rev;
+	u16 part;
+	u8  pbuild;
+
+etc.
+
+> +};
+> +
+> +struct si4455_int_status {
+> +	u8				INT_PEND;
+> +	u8				INT_STATUS;
+> +	u8				PH_PEND;
+> +	u8				PH_STATUS;
+> +	u8				MODEM_PEND;
+> +	u8				MODEM_STATUS;
+> +	u8				CHIP_PEND;
+> +	u8				CHIP_STATUS;
+> +};
+> +
+> +struct si4455_modem_status {
+> +	u8				MODEM_PEND;
+> +	u8				MODEM_STATUS;
+> +	u8				CURR_RSSI;
+> +	u8				LATCH_RSSI;
+> +	u8				ANT1_RSSI;
+> +	u8				ANT2_RSSI;
+> +	u16			AFC_FREQ_OFFSET;
+> +};
+> +
+> +struct si4455_fifo_info {
+> +	u8				RX_FIFO_COUNT;
+> +	u8				TX_FIFO_SPACE;
+> +};
+> +
+> +struct si4455_one {
+> +	struct uart_port		port;
+> +	struct work_struct		tx_work;
+> +};
+> +
+> +struct si4455_port {
+> +	struct mutex			mutex;
+> +	int				power_count;
+> +	struct gpio_desc		*shdn_gpio;
+> +	struct si4455_part_info		part_info;
+> +	struct si4455_modem_status	modem_status;
+> +	struct si4455_iocbuff		configuration;
+> +	struct si4455_iocbuff		patch;
+> +	u32				tx_channel;
+> +	u32				rx_channel;
+> +	u32				package_size;
+> +	bool				configured;
+> +	bool				tx_pending;
+> +	bool				rx_pending;
+> +	u32				current_rssi;
+> +	struct si4455_one		one;
+> +};
+
+Since the struct is not defined by the spec then don't bother aligning
+the members.  It just makes changing the code complicated because you
+have to re-align stuff.  Just put a single space between the type and
+the name.
+
+
+> +
+> +static struct uart_driver si4455_uart = {
+> +	.owner			= THIS_MODULE,
+> +	.driver_name		= SI4455_NAME,
+> +#ifdef CONFIG_DEVFS_FS
+> +	.dev_name		= "ttySI%d",
+> +#else
+> +	.dev_name		= "ttySI",
+> +#endif
+> +	.major			= SI4455_MAJOR,
+> +	.minor			= SI4455_MINOR,
+> +	.nr			= SI4455_UART_NRMAX,
+> +};
+> +
+> +static int si4455_get_response(struct uart_port *port,
+> +				int length,
+> +				u8 *data);
+
+Remove unecessary declarations like this.
+
+> +static int si4455_send_command(struct uart_port *port,
+> +				int length,
+> +				u8 *data);
+> +static int si4455_send_command_get_response(struct uart_port *port,
+> +						int outLength,
+> +						u8 *outData,
+> +						int inLength,
+> +						u8 *inData);
+> +static int si4455_read_data(struct uart_port *port,
+> +				u8 command,
+> +				int pollCts,
+> +				int length,
+> +				u8 *data);
+> +static int si4455_write_data(struct uart_port *port,
+> +				u8 command,
+> +				int pollCts,
+> +				int length,
+> +				u8 *data);
+> +static int si4455_poll_cts(struct uart_port *port);
+> +static void si4455_set_power(struct si4455_port *priv,
+> +				int on);
+> +static int si4455_get_part_info(struct uart_port *port,
+> +				struct si4455_part_info *result);
+> +
+> +static int si4455_get_response(struct uart_port *port,
+> +				int length,
+> +				u8 *data)
+> +{
+> +	int ret = -EIO;
+
+Remove unecessary initializations.  It disables static checkers' ability
+to find uninitialized variable bugs so it leads to bugs.
+
+> +	u8 dataOut[] = { SI4455_CMD_ID_READ_CMD_BUFF };
+> +	u8 *dataIn = devm_kzalloc(port->dev, 1 + length, GFP_KERNEL);
+
+Never put functions which can fail in the declaration block.  It leads
+to "forgot to check for NULL bugs" which is the case here.
+
+Don't use devm_ for this.  It has a different lifetime.  Use normal
+kzalloc().
+
+> +	struct spi_transfer xfer[] = {
+> +		{
+> +			.tx_buf = dataOut,
+> +			.len = sizeof(dataOut),
+> +		}, {
+> +			.rx_buf = dataIn,
+> +			.len = 1 + length,
+> +		}
+> +	};
+> +	int errCnt = 10000;
+> +
+> +	while (errCnt > 0) {
+
+while (--cnt > 9) {
+
+> +		dataOut[0] = SI4455_CMD_ID_READ_CMD_BUFF;
+> +		ret = spi_sync_transfer(to_spi_device(port->dev),
+> +					xfer,
+> +					ARRAY_SIZE(xfer));
+> +		if (ret == 0) {
+
+Always do Error Handling as opposed to success handling.
+
+		if (ret)
+			break;
+
+> +			if (dataIn[0] == 0xFF) {
+> +				if ((length > 0) && (data != NULL)) {
+> +					memcpy(data, &dataIn[1], length);
+> +				} else {
+> +					if (length > 0)
+> +						ret = -EINVAL;
+> +				}
+> +				break;
+> +			}
+> +			usleep_range(100, 200);
+> +		} else {
+> +			break;
+> +		}
+> +		errCnt--;
+> +	}
+> +	if (errCnt == 0) {
+> +		dev_err(port->dev, "si4455_poll_cts:errCnt==%i", errCnt);
+> +		ret = -EIO;
+> +	}
+> +	if (dataIn != NULL)
+> +		devm_kfree(port->dev, dataIn);
+> +	return ret;
+> +}
+> +
+> +static int si4455_send_command(struct uart_port *port,
+> +				int length,
+> +				u8 *data)
+> +{
+> +	int ret;
+> +
+> +	ret = si4455_poll_cts(port);
+> +	if (ret == 0) {
+
+	ret = si4455_poll_cts(port);
+	if (ret) {
+		dev_err(port->dev, "%s: si4455_poll_cts error(%i)", __func__,
+			ret);
+		return ret;
+	}
+
+All the checks need to be reversed.  The printk only needs two lines.
+
+
+> +		ret = spi_write(to_spi_device(port->dev), data, length);
+> +		if (ret) {
+> +			dev_err(port->dev,
+> +				"%s: spi_write error(%i)",
+> +				__func__,
+> +				ret);
+> +		}
+> +	} else {
+> +		dev_err(port->dev,
+> +			"%s: si4455_poll_cts error(%i)",
+> +			__func__,
+> +			ret);
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int si4455_send_command_get_response(struct uart_port *port,
+> +						int outLength,
+> +						u8 *outData,
+> +						int inLength,
+> +						u8 *inData)
+> +{
+> +	int ret;
+> +
+> +	ret = si4455_send_command(port, outLength, outData);
+> +	if (!ret) {
+> +		ret = si4455_get_response(port, inLength, inData);
+> +	} else {
+> +		dev_err(port->dev,
+> +			"%s: si4455_send_command error(%i)",
+> +			__func__,
+> +			ret);
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int si4455_read_data(struct uart_port *port,
+> +				u8 command,
+> +				int pollCts,
+> +				int length,
+> +				u8 *data)
+> +{
+> +	int ret = 0;
+> +	u8 dataOut[] = { command };
+> +	struct spi_transfer xfer[] = {
+> +		{
+> +			.tx_buf = dataOut,
+> +			.len = sizeof(dataOut),
+> +		}, {
+> +			.rx_buf = data,
+> +			.len = length,
+> +		}
+> +	};
+> +
+> +	if (pollCts)
+> +		ret = si4455_poll_cts(port);
+
+	if (poll) {
+		ret = si4455_poll_cts(port);
+		if (ret)
+			return ret;
+	}
+
+> +
+> +	if (ret == 0) {
+> +		ret = spi_sync_transfer(to_spi_device(port->dev),
+> +					xfer,
+> +					ARRAY_SIZE(xfer));
+> +		if (ret) {
+> +			dev_err(port->dev,
+> +				"%s: spi_sync_transfer error(%i)",
+> +				__func__,
+> +				ret);
+> +		}
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int si4455_write_data(struct uart_port *port,
+> +				u8 command,
+> +				int pollCts,
+> +				int length,
+> +				u8 *data)
+> +{
+> +	int ret = 0;
+> +	u8 *dataOut = NULL;
+> +
+> +	if (pollCts)
+> +		ret = si4455_poll_cts(port);
+> +
+> +	if (ret == 0) {
+> +		dataOut = devm_kzalloc(port->dev, 1 + length, GFP_KERNEL);
+
+Use vanilla kzalloc().
+
+> +		if (dataOut != NULL) {
+> +			dataOut[0] = command;
+> +			memcpy(&dataOut[1], data, length);
+> +			ret = spi_write(to_spi_device(port->dev),
+> +					dataOut,
+> +					1 + length);
+> +			if (ret) {
+> +				dev_err(port->dev,
+> +					"%s: spi_write error(%i)",
+> +					__func__,
+> +					ret);
+> +			}
+> +		} else {
+> +			dev_err(port->dev,
+> +				"%s: devm_kzalloc error",
+> +				__func__);
+> +			ret = -ENOMEM;
+> +		}
+> +	}
+> +	if (dataOut != NULL)
+> +		devm_kfree(port->dev, dataOut);
+> +
+> +	return ret;
+> +}
+> +
+> +static int si4455_poll_cts(struct uart_port *port)
+> +{
+> +	return si4455_get_response(port, 0, NULL);
+> +}
+> +
+> +static void si4455_set_power(struct si4455_port *priv,
+> +				int on)
+> +{
+> +	if (priv->shdn_gpio) {
+
+Reverse this test:
+
+	if (!priv->shdn_gpio)
+		return;
+
+> +		if (on) {
+> +			gpiod_direction_output(priv->shdn_gpio, 0);
+> +			usleep_range(4000, 5000);
+> +			gpiod_set_value(priv->shdn_gpio, 1);
+> +			usleep_range(4000, 5000);
+> +		} else {
+> +			gpiod_direction_output(priv->shdn_gpio, 0);
+> +		}
+> +	}
+> +}
+> +
+> +static int si4455_s_power(struct device *dev,
+> +				int on)
+> +{
+> +	struct si4455_port *s = dev_get_drvdata(dev);
+> +
+> +	dev_dbg(dev, "%s(on=%d)\n", __func__, on);
+> +	if (s->power_count == !on)
+> +		si4455_set_power(s, on);
+> +	s->power_count += on ? 1 : -1;
+> +	WARN_ON(s->power_count < 0);
+> +
+> +	return 0;
+> +}
+> +
+> +static int si4455_get_part_info(struct uart_port *port,
+> +				struct si4455_part_info *result)
+> +{
+> +	int ret;
+> +	u8 dataOut[] = { SI4455_CMD_ID_PART_INFO };
+> +	u8 dataIn[SI4455_CMD_REPLY_COUNT_PART_INFO];
+> +
+> +	ret = si4455_send_command_get_response(port,
+> +						sizeof(dataOut),
+> +						dataOut,
+> +						sizeof(dataIn),
+> +						dataIn);
+
+This can fit on two lines:
+
+	ret = si4455_send_command_get_response(port, sizeof(dataOut), dataOut,
+					       sizeof(dataIn), dataIn);
+
+
+> +	if (ret == 0) {
+> +		result->CHIPREV = dataIn[0];
+> +		memcpy(&result->PART, &dataIn[1], sizeof(result->PART));
+> +		result->PBUILD = dataIn[3];
+> +		memcpy(&result->ID, &dataIn[4], sizeof(result->ID));
+> +		result->CUSTOMER = dataIn[6];
+> +		result->ROMID = dataIn[7];
+> +		result->BOND = dataIn[8];
+> +	} else {
+> +		dev_err(port->dev,
+> +			"%s: si4455_send_command_get_response error(%i)",
+> +			__func__,
+> +			ret);
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int si4455_get_int_status(struct uart_port *port,
+> +					u8 phClear,
+> +					u8 modemClear,
+> +					u8 chipClear,
+> +					struct si4455_int_status *result)
+> +{
+> +	int ret;
+> +	u8 dataOut[] = {
+> +		SI4455_CMD_ID_GET_INT_STATUS,
+> +		phClear,
+> +		modemClear,
+> +		chipClear
+> +	};
+> +	u8 dataIn[SI4455_CMD_REPLY_COUNT_GET_INT_STATUS];
+> +
+> +	ret = si4455_send_command_get_response(port,
+> +						sizeof(dataOut),
+> +						dataOut,
+> +						sizeof(dataIn),
+> +						dataIn);
+> +	if (ret == 0) {
+> +		result->INT_PEND       = dataIn[0];
+> +		result->INT_STATUS     = dataIn[1];
+> +		result->PH_PEND        = dataIn[2];
+> +		result->PH_STATUS      = dataIn[3];
+> +		result->MODEM_PEND     = dataIn[4];
+> +		result->MODEM_STATUS   = dataIn[5];
+> +		result->CHIP_PEND      = dataIn[6];
+> +		result->CHIP_STATUS    = dataIn[7];
+> +	} else {
+> +		dev_err(port->dev,
+> +			"%s: si4455_send_command_get_response error(%i)",
+> +			__func__,
+> +			ret);
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int si4455_get_modem_status(struct uart_port *port,
+> +					u8 modemClear,
+> +					struct si4455_modem_status *result)
+> +{
+> +	int ret;
+> +	u8 dataOut[] = {
+> +		SI4455_CMD_ID_GET_MODEM_STATUS,
+> +		modemClear,
+> +	};
+> +	u8 dataIn[SI4455_CMD_REPLY_COUNT_GET_MODEM_STATUS];
+> +
+> +	ret = si4455_send_command_get_response(port,
+> +						sizeof(dataOut),
+> +						dataOut,
+> +						sizeof(dataIn),
+> +						dataIn);
+> +	if (ret == 0) {
+> +		result->MODEM_PEND      = dataIn[0];
+> +		result->MODEM_STATUS    = dataIn[1];
+> +		result->CURR_RSSI       = dataIn[2];
+> +		result->LATCH_RSSI      = dataIn[3];
+> +		result->ANT1_RSSI       = dataIn[4];
+> +		result->ANT2_RSSI       = dataIn[5];
+> +		memcpy(&result->AFC_FREQ_OFFSET,
+> +			&dataIn[6],
+> +			sizeof(result->AFC_FREQ_OFFSET));
+> +	} else {
+> +		dev_err(port->dev,
+> +			"%s: si4455_send_command_get_response error(%i)",
+> +			__func__,
+> +			ret);
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int si4455_fifo_info(struct uart_port *port,
+> +				u8 fifo,
+> +				struct si4455_fifo_info *result)
+> +{
+> +	int ret = 0;
+> +	u8 dataOut[SI4455_CMD_ARG_COUNT_FIFO_INFO] = {
+> +		SI4455_CMD_ID_FIFO_INFO, fifo
+> +	};
+> +	u8 dataIn[SI4455_CMD_REPLY_COUNT_FIFO_INFO] = { 0 };
+> +
+> +	ret = si4455_send_command_get_response(port,
+> +						sizeof(dataOut),
+> +						dataOut,
+> +						sizeof(dataIn),
+> +						dataIn);
+> +	if (ret == 0) {
+> +		result->RX_FIFO_COUNT  = dataIn[0];
+> +		result->TX_FIFO_SPACE  = dataIn[1];
+> +	} else {
+> +		dev_err(port->dev,
+> +			"%s: si4455_send_command_get_response error(%i)",
+> +			__func__,
+> +			ret);
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int si4455_read_rx_fifo(struct uart_port *port,
+> +				int length,
+> +				u8 *data)
+> +{
+> +	return si4455_read_data(port,
+> +				SI4455_CMD_ID_READ_RX_FIFO,
+> +				0,
+> +				length,
+> +				data);
+> +}
+> +
+> +static int si4455_write_tx_fifo(struct uart_port *port,
+> +				int length,
+> +				u8 *data)
+> +{
+> +	return si4455_write_data(port,
+> +					SI4455_CMD_ID_WRITE_TX_FIFO,
+> +					0,
+> +					length,
+> +					data);
+> +}
+> +
+> +static int si4455_rx(struct uart_port *port,
+> +			u32 channel,
+> +			u8 condition,
+> +			u16 length,
+> +			u8 nextState1,
+> +			u8 nextState2,
+> +			u8 nextState3)
+> +{
+> +	u8 dataOut[SI4455_CMD_ARG_COUNT_START_RX];
+> +
+> +	dataOut[0] = SI4455_CMD_ID_START_RX;
+> +	dataOut[1] = channel;
+> +	dataOut[2] = condition;
+> +	dataOut[3] = (u8)(length >> 8);
+> +	dataOut[4] = (u8)(length);
+> +	dataOut[5] = nextState1;
+> +	dataOut[6] = nextState2;
+> +	dataOut[7] = nextState3;
+> +
+> +	return si4455_send_command(port,
+> +					SI4455_CMD_ARG_COUNT_START_RX,
+> +					dataOut);
+> +}
+> +
+> +static int si4455_tx(struct uart_port *port,
+> +			u8 channel,
+> +			u8 condition,
+> +			u16 length)
+> +{
+> +	u8 dataOut[/*6*/ SI4455_CMD_ARG_COUNT_START_TX];
+> +
+> +	dataOut[0] = SI4455_CMD_ID_START_TX;
+> +	dataOut[1] = channel;
+> +	dataOut[2] = condition;
+> +	dataOut[3] = (u8)(length >> 8);
+> +	dataOut[4] = (u8)(length);
+> +	/*TODO: radioCmd[5] = 0x44; in case of rev c2a*/
+> +
+> +	return si4455_send_command(port,
+> +					/*6*/ SI4455_CMD_ARG_COUNT_START_TX,
+> +					dataOut);
+> +}
+> +
+> +static int si4455_change_state(struct uart_port *port,
+> +				u8 nextState1)
+> +{
+> +	u8 dataOut[SI4455_CMD_ARG_COUNT_CHANGE_STATE];
+> +
+> +	dataOut[0] = SI4455_CMD_ID_CHANGE_STATE;
+> +	dataOut[1] = (u8)nextState1;
+> +
+> +	return si4455_send_command(port,
+> +					SI4455_CMD_ARG_COUNT_CHANGE_STATE,
+> +					dataOut);
+> +}
+> +
+> +static int si4455_begin_tx(struct uart_port *port,
+> +				u32 channel,
+> +				int length,
+> +				u8 *data)
+> +{
+> +	int ret = 0;
+> +	struct si4455_int_status intStatus = { 0 };
+> +	struct si4455_fifo_info fifoInfo = { 0 };
+> +
+> +	dev_dbg(port->dev, "%s(%u, %u)", __func__, channel, length);
+> +	if ((length > SI4455_FIFO_SIZE) || (length < 0))
+> +		ret = -EINVAL;
+> +
+> +	if (ret == 0) {
+> +		ret = si4455_change_state(port,
+> +			SI4455_CMD_CHANGE_STATE_ARG_NEW_STATE_ENUM_READY);
+> +		if (ret) {
+> +			dev_err(port->dev,
+> +				"%s: si4455_change_state error(%i)",
+> +				__func__,
+> +				ret);
+> +			goto end;
+> +		}
+> +		ret = si4455_get_int_status(port, 0, 0, 0, &intStatus);
+> +		if (ret) {
+> +			dev_err(port->dev,
+> +				"%s: si4455_get_int_status error(%i)",
+> +				__func__,
+> +				ret);
+> +			goto end;
+> +		}
+> +		ret = si4455_fifo_info(port,
+> +					SI4455_CMD_FIFO_INFO_ARG_TX_BIT,
+> +					&fifoInfo);
+> +		if (ret) {
+> +			dev_err(port->dev,
+> +				"%s: si4455_fifo_info error(%i)",
+> +				__func__,
+> +				ret);
+> +			goto end;
+> +		}
+> +		ret = si4455_write_tx_fifo(port, (u16)length, data);
+
+No need to cast this.
+
+> +		if (ret) {
+> +			dev_err(port->dev,
+> +				"%s: si4455_write_tx_fifo error(%i)",
+> +				__func__,
+> +				ret);
+> +			goto end;
+
+Just return directly.  Do nothing gotos just end up introducing "Forgot
+to set the error code" bugs.
+
+> +		}
+> +		ret = si4455_tx(port,
+> +				(u8)channel,
+> +				0x30,
+> +				(u16)length);
+> +		if (ret) {
+> +			dev_err(port->dev,
+> +				"%s: si4455_tx error(%i)",
+> +				__func__,
+> +				ret);
+> +			goto end;
+> +		}
+> +	}
+> +end:
+> +	return ret;
+> +}
+> +
+> +static int si4455_end_tx(struct uart_port *port)
+> +{
+> +	int ret = 0;
+> +	struct si4455_int_status intStatus = { 0 };
+> +
+> +	ret = si4455_change_state(port,
+> +			SI4455_CMD_CHANGE_STATE_ARG_NEW_STATE_ENUM_READY);
+> +	if (ret) {
+> +		dev_err(port->dev,
+> +			"%s: si4455_change_state error(%i)",
+> +			__func__,
+> +			ret);
+> +		goto end;
+> +	}
+> +	ret = si4455_get_int_status(port, 0, 0, 0, &intStatus);
+> +	if (ret) {
+> +		dev_err(port->dev,
+> +			"%s: si4455_get_int_status error(%i)",
+> +			__func__,
+> +			ret);
+> +		goto end;
+> +	}
+> +end:
+> +	return ret;
+> +}
+> +
+> +static int si4455_begin_rx(struct uart_port *port,
+> +				u32 channel,
+> +				u32 length)
+> +{
+> +	int ret = 0;
+> +	struct si4455_int_status intStatus = { 0 };
+> +	struct si4455_fifo_info fifoInfo = { 0 };
+> +
+> +	dev_dbg(port->dev, "%s(%u, %u)", __func__, channel, length);
+> +	ret = si4455_get_int_status(port, 0, 0, 0, &intStatus);
+> +	if (ret) {
+> +		dev_err(port->dev,
+> +			"%s: si4455_get_int_status error(%i)",
+> +			__func__,
+> +			ret);
+> +		goto end;
+> +	}
+> +	ret = si4455_fifo_info(port,
+> +				SI4455_CMD_FIFO_INFO_ARG_RX_BIT,
+> +				&fifoInfo);
+> +	if (ret) {
+> +		dev_err(port->dev,
+> +			"%s: si4455_fifo_info error(%i)",
+> +			__func__,
+> +			ret);
+> +		goto end;
+> +	}
+> +	ret = si4455_rx(port,
+> +			channel,
+> +			0x00,
+> +			length,
+> +			SI4455_CMD_START_RX_ARG_RXTIMEOUT_STATE_ENUM_RX,
+> +			SI4455_CMD_START_RX_ARG_RXVALID_STATE_ENUM_RX,
+> +			SI4455_CMD_START_RX_ARG_RXINVALID_STATE_ENUM_RX);
+> +	if (ret) {
+> +		dev_err(port->dev,
+> +			"%s: si4455_rx error(%i)",
+> +			__func__,
+> +			ret);
+> +		goto end;
+> +	}
+> +end:
+> +	return ret;
+> +}
+> +
+> +static int si4455_end_rx(struct uart_port *port,
+> +				u32 length,
+> +				u8 *data)
+> +{
+> +	return si4455_read_rx_fifo(port, length, data);
+> +}
+> +
+> +static int si4455_configure(struct uart_port *port,
+> +				u8 *configurationData)
+> +{
+> +	int ret = 0;
+> +	u8 col;
+> +	u8 response;
+> +	u8 numOfBytes;
+> +	struct si4455_int_status intStatus = { 0 };
+> +	u8 radioCmd[16u];
+> +
+> +	/* While cycle as far as the pointer points to a command */
+> +	while (*configurationData != 0x00) {
+> +		/* Commands structure in the array:
+> +		 * --------------------------------
+> +		 * LEN | <LEN length of data>
+> +		 */
+> +		numOfBytes = *configurationData++;
+> +		dev_dbg(port->dev,
+> +			"%s: numOfBytes(%u)",
+> +			__func__,
+> +			numOfBytes);
+> +		if (numOfBytes > 16u) {
+> +			/* Initial configuration of Si4x55 */
+> +			if (SI4455_CMD_ID_WRITE_TX_FIFO
+> +				 == *configurationData) {
+> +				if (numOfBytes > 128u) {
+> +					/* Number of command bytes exceeds
+> +					 * maximal allowable length
+> +					 */
+> +					dev_err(port->dev,
+> +						"%s: command length
+> error(%i)",
+> +						__func__,
+> +						numOfBytes);
+> +					ret = -EINVAL;
+> +					break;
+> +				}
+> +
+> +				/* Load array to the device */
+> +				configurationData++;
+> +				ret = si4455_write_data(port,
+> +						SI4455_CMD_ID_WRITE_TX_FIFO,
+> +						1,
+> +						numOfBytes - 1,
+> +						configurationData);
+> +				if (ret) {
+> +					dev_err(port->dev,
+> +						"%s: si4455_write_data
+> error(%i)",
+> +						__func__,
+> +						ret);
+> +					break;
+> +				}
+> +
+> +				/* Point to the next command */
+> +				configurationData += numOfBytes - 1;
+> +
+> +				/* Continue command interpreter */
+> +				continue;
+> +			} else {
+> +				/* Number of command bytes exceeds
+> +				 * maximal allowable length
+> +				 */
+> +				ret = -EINVAL;
+> +				break;
+> +			}
+> +		}
+> +
+> +		for (col = 0u; col < numOfBytes; col++) {
+> +			radioCmd[col] = *configurationData;
+> +			configurationData++;
+> +		}
+> +
+> +		dev_dbg(port->dev,
+> +			"%s: radioCmd[0](%u)",
+> +			__func__,
+> +			radioCmd[0]);
+> +		ret = si4455_send_command_get_response(port,
+> +							numOfBytes,
+> +							radioCmd,
+> +							1,
+> +							&response);
+> +		if (ret) {
+> +			dev_err(port->dev,
+> +				"%s: si4455_send_command_get_response
+> error(%i)",
+> +				__func__,
+> +				ret);
+> +			break;
+> +		}
+> +
+> +		/* Check response byte of EZCONFIG_CHECK command */
+> +		if (radioCmd[0] == SI4455_CMD_ID_EZCONFIG_CHECK) {
+> +			if (response) {
+> +				/* Number of command bytes exceeds
+> +				 * maximal allowable length
+> +				 */
+> +				ret = -EIO;
+> +				dev_err(port->dev,
+> +					"%s: EZConfig check error(%i)",
+> +					__func__,
+> +					radioCmd[0]);
+> +				break;
+> +			}
+> +		}
+> +
+> +		/* Get and clear all interrupts.  An error has occurred...
+> */
+> +		si4455_get_int_status(port, 0, 0, 0, &intStatus);
+> +		if (intStatus.CHIP_PEND
+> +			&
+> SI4455_CMD_GET_CHIP_STATUS_REP_CMD_ERROR_PEND_MASK) {
+> +			ret = -EIO;
+> +			dev_err(port->dev,
+> +				"%s: chip error(%i)",
+> +				__func__,
+> +				intStatus.CHIP_PEND);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int si4455_re_configure(struct uart_port *port)
+> +{
+> +	int ret = 0;
+> +	struct si4455_port *s = dev_get_drvdata(port->dev);
+> +
+> +	mutex_lock(&s->mutex);
+> +	s->configured = 0;
+> +	if (s->power_count > 0)
+> +		si4455_s_power(port->dev, 0);
+> +
+> +	si4455_s_power(port->dev, 1);
+> +	if (s->configuration.length > 0) {
+> +		ret = si4455_configure(port, s->configuration.data);
+> +		if (ret == 0)
+> +			s->configured = 1;
+> +
+> +	}
+> +	mutex_unlock(&s->mutex);
+> +	return ret;
+> +}
+> +
+> +static int si4455_do_work(struct uart_port *port)
+> +{
+> +	int ret = 0;
+> +	struct si4455_port *s = dev_get_drvdata(port->dev);
+> +	struct circ_buf *xmit = &port->state->xmit;
+> +	unsigned int tx_pending = 0;
+> +	unsigned int tx_to_end = 0;
+> +	u8 *data = NULL;
+> +
+> +	mutex_lock(&s->mutex);
+> +	if (s->configured && (s->power_count > 0)) {
+> +		if (!(uart_circ_empty(xmit)
+> +			|| uart_tx_stopped(port)
+> +			|| s->tx_pending)) {
+> +			tx_pending = uart_circ_chars_pending(xmit);
+> +			if (s->package_size > 0) {
+> +				if (tx_pending >= s->package_size) {
+> +					tx_pending = s->package_size;
+> +					data = devm_kzalloc(port->dev,
+> +						s->package_size,
+> +						GFP_KERNEL);
+> +					tx_to_end =
+> CIRC_CNT_TO_END(xmit->head,
+> +								xmit->tail,
+> +
+> UART_XMIT_SIZE);
+> +					if (tx_to_end < tx_pending) {
+> +						memcpy(data,
+> +							xmit->buf +
+> xmit->tail,
+> +							tx_to_end);
+> +						memcpy(data,
+> +							xmit->buf,
+> +							tx_pending -
+> tx_to_end);
+> +					} else {
+> +						memcpy(data,
+> +							xmit->buf +
+> xmit->tail,
+> +							tx_pending);
+> +					}
+> +					if (si4455_begin_tx(port,
+> +							s->tx_channel,
+> +							tx_pending,
+> +							data) == 0) {
+> +						s->tx_pending = true;
+> +					}
+> +					devm_kfree(port->dev, data);
+> +				}
+> +			} else {
+> +				//TODO: variable packet length
+> +			}
+> +		}
+> +		if (!s->tx_pending) {
+> +			if (s->package_size > 0) {
+> +				ret = si4455_begin_rx(port,
+> +							s->rx_channel,
+> +							s->package_size);
+> +			} else {
+> +				//TODO: variable packet length
+> +			}
+> +		}
+> +	}
+> +	mutex_unlock(&s->mutex);
+> +	return ret;
+> +}
+> +
+> +static void si4455_handle_rx_pend(struct si4455_port *s)
+> +{
+> +	struct uart_port *port = &s->one.port;
+> +	u8 *data = NULL;
+> +	int sret = 0;
+> +	int i = 0;
+> +
+> +	if (s->package_size > 0) {
+> +		data = devm_kzalloc(port->dev,
+> +					s->package_size,
+> +					GFP_KERNEL);
+> +		sret = si4455_end_rx(port,
+> +				s->package_size,
+> +				data);
+> +		if (sret == 0) {
+> +			for (i = 0; i < s->package_size; i++) {
+> +				uart_insert_char(port,
+> +					0,
+> +					0,
+> +					data[i],
+> +					TTY_NORMAL);
+> +				port->icount.rx++;
+> +			}
+> +			tty_flip_buffer_push(&port->state->port);
+> +		} else {
+> +			dev_err(port->dev,
+> +				"%s: si4455_end_rx error(%i)",
+> +				__func__,
+> +				sret);
+> +		}
+> +		devm_kfree(port->dev, data);
+> +	} else {
+> +		//TODO: variable packet length
+> +	}
+> +}
+> +
+> +static void si4455_handle_tx_pend(struct si4455_port *s)
+> +{
+> +	struct uart_port *port = &s->one.port;
+> +	struct circ_buf *xmit = &port->state->xmit;
+> +
+> +	if (s->tx_pending) {
+> +		if (s->package_size) {
+> +			port->icount.tx += s->package_size;
+> +			xmit->tail = (xmit->tail + s->package_size)
+> +					& (UART_XMIT_SIZE - 1);
+> +		} else {
+> +			//TODO: variable packet length
+> +		}
+> +		si4455_end_tx(port);
+> +		s->tx_pending = 0;
+> +	}
+> +}
+> +
+> +static irqreturn_t si4455_port_irq(struct si4455_port *s)
+> +{
+> +	struct uart_port *port = &s->one.port;
+> +	irqreturn_t ret = IRQ_NONE;
+> +	struct si4455_int_status intStatus = { 0 };
+> +	struct si4455_fifo_info fifoInfo = { 0 };
+> +
+> +	mutex_lock(&s->mutex);
+> +	if (s->configured && (s->power_count > 0)) {
+> +		if (!si4455_get_int_status(port, 0, 0, 0, &intStatus)) {
+> +			si4455_get_modem_status(port, 0, &s->modem_status);
+> +			if (intStatus.CHIP_PEND
+> +			& SI4455_CMD_GET_CHIP_STATUS_REP_CMD_ERROR_PEND_BIT)
+> {
+> +				dev_err(port->dev,
+> +					"%s: CHIP_STATUS:CMD_ERROR_PEND",
+> +					__func__);
+> +			} else if (intStatus.PH_PEND
+> +			&
+> SI4455_CMD_GET_INT_STATUS_REP_PACKET_SENT_PEND_BIT) {
+> +				dev_dbg(port->dev,
+> +					"%s: PH_STATUS:PACKET_SENT_PEND",
+> +					__func__);
+> +				si4455_handle_tx_pend(s);
+> +			} else if (intStatus.PH_PEND
+> +			& SI4455_CMD_GET_INT_STATUS_REP_PACKET_RX_PEND_BIT)
+> {
+> +				dev_dbg(port->dev,
+> +					"%s: PH_STATUS:PACKET_RX_PEND",
+> +					__func__);
+> +				s->current_rssi = s->modem_status.CURR_RSSI;
+> +				si4455_fifo_info(port, 0, &fifoInfo);
+> +				si4455_handle_rx_pend(s);
+> +			} else if (intStatus.PH_PEND
+> +			& SI4455_CMD_GET_INT_STATUS_REP_CRC_ERROR_BIT) {
+> +				dev_dbg(port->dev,
+> +					"%s: PH_STATUS:CRC_ERROR_PEND",
+> +					__func__);
+> +			}
+> +			ret = IRQ_HANDLED;
+> +		}
+> +	} else {
+> +		ret = IRQ_HANDLED;
+> +	}
+> +	mutex_unlock(&s->mutex);
+> +	si4455_do_work(port);
+> +	return ret;
+> +}
+> +
+> +static irqreturn_t si4455_ist(int irq,
+> +				void *dev_id)
+> +{
+> +	struct si4455_port *s = (struct si4455_port *)dev_id;
+> +	bool handled = false;
+> +
+> +	if (si4455_port_irq(s) == IRQ_HANDLED)
+> +		handled = true;
+> +
+> +	return IRQ_RETVAL(handled);
+> +}
+> +
+> +static void si4455_tx_proc(struct work_struct *ws)
+> +{
+> +	struct si4455_one *one = container_of(ws,
+> +					struct si4455_one,
+> +					tx_work);
+> +
+> +	si4455_do_work(&one->port);
+> +}
+> +
+> +static unsigned int si4455_tx_empty(struct uart_port *port)
+> +{
+> +	return TIOCSER_TEMT;
+> +}
+> +
+> +static unsigned int si4455_get_mctrl(struct uart_port *port)
+> +{
+> +	dev_dbg(port->dev, "%s", __func__);
+> +	return TIOCM_DSR | TIOCM_CAR;
+> +}
+> +
+> +static void si4455_set_mctrl(struct uart_port *port,
+> +				unsigned int mctrl)
+> +{
+> +	dev_dbg(port->dev, "%s", __func__);
+> +}
+
+Delete all these empty functions.
+
+> +
+> +static void si4455_break_ctl(struct uart_port *port,
+> +				int break_state)
+> +{
+> +	dev_dbg(port->dev, "%s", __func__);
+> +}
+> +
+> +static void si4455_set_termios(struct uart_port *port,
+> +				struct ktermios *termios,
+> +				struct ktermios *old)
+> +{
+> +	dev_dbg(port->dev, "%s", __func__);
+> +}
+> +
+> +static int si4455_rs485_config(struct uart_port *port,
+> +				struct serial_rs485 *rs485)
+> +{
+> +	dev_dbg(port->dev, "%s", __func__);
+> +
+> +	return 0;
+> +}
+> +
+> +static int si4455_startup(struct uart_port *port)
+> +{
+> +	dev_dbg(port->dev, "%s", __func__);
+> +	si4455_s_power(port->dev, 1);
+> +	return 0;
+> +}
+> +
+> +static void si4455_shutdown(struct uart_port *port)
+> +{
+> +	dev_dbg(port->dev, "%s", __func__);
+> +	si4455_s_power(port->dev, 0);
+> +}
+> +
+> +static const char *si4455_type(struct uart_port *port)
+> +{
+> +	struct si4455_port *s = dev_get_drvdata(port->dev);
+> +
+> +	if (port->type == PORT_SI4455) {
+
+Reverse this test.
+
+> +		if (s->part_info.ROMID == 3)
+> +			return "SI4455-B1A";
+> +		else if (s->part_info.ROMID == 6)
+> +			return "SI4455-C2A";
+> +
+> +	}
+> +	return NULL;
+> +}
+> +
+> +static int si4455_request_port(struct uart_port *port)
+> +{
+> +	/* Do nothing */
+> +	dev_dbg(port->dev, "%s", __func__);
+> +	return 0;
+> +}
+> +
+> +static void si4455_config_port(struct uart_port *port,
+> +				int flags)
+> +{
+> +	dev_dbg(port->dev, "%s", __func__);
+
+Delete all these debug statements which only print the name of the
+function.  Use ftrace for this instead.
+
+> +	if (flags & UART_CONFIG_TYPE)
+> +		port->type = PORT_SI4455;
+> +}
+> +
+> +static int si4455_verify_port(struct uart_port *port,
+> +				struct serial_struct *s)
+> +{
+> +	if ((s->type != PORT_UNKNOWN) && (s->type != PORT_SI4455))
+> +		return -EINVAL;
+> +
+> +	if (s->irq != port->irq)
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +static void si4455_start_tx(struct uart_port *port)
+> +{
+> +	struct si4455_one *one = container_of(port,
+> +					struct si4455_one,
+> +					port);
+> +
+> +	dev_dbg(port->dev, "%s", __func__);
+> +
+> +	if (!work_pending(&one->tx_work))
+> +		schedule_work(&one->tx_work);
+> +
+> +}
+> +
+> +static int si4455_ioctl(struct uart_port *port,
+> +			unsigned int cmd,
+> +			unsigned long arg)
+> +{
+> +	struct si4455_port *s = dev_get_drvdata(port->dev);
+> +	int ret = 0;
+> +
+> +	dev_dbg(port->dev, "%s(%u)", __func__, cmd);
+> +	switch (cmd) {
+> +	case SI4455_IOC_SEZC:
+> +	memcpy(&s->configuration, (void *)arg, sizeof(s->configuration));
+> +	dev_dbg(port->dev,
+> +		"%s(%u): SI4455_IOC_SEZC, length(%i)",
+> +		__func__,
+> +		cmd,
+> +		s->configuration.length);
+> +	ret = si4455_re_configure(port);
+
+This needs to indented another tab.
+
+	switch (cmd) {
+	case SI4455_IOC_SEZC:
+		memcpy(&s->configuration, (void *)arg, sizeof(s->configuration));
+
+Eep!!!
+
+Don't use memcpy() here.  Use copy_from_user().
+
+	void __user *argp = arg;
+
+		if (copy_from_user(&s->configuration, argp,
+				   sizeof(s->configuration)))
+			return -EFAULT;
+
+> +	break;
+> +	case SI4455_IOC_CEZC:
+> +	dev_dbg(port->dev,
+> +		"%s(%u): SI4455_IOC_CEZC",
+> +		__func__,
+> +		cmd);
+> +	memset(&s->configuration, 0x00, sizeof(s->configuration));
+> +	ret = si4455_re_configure(port);
+> +	break;
+> +	case SI4455_IOC_SEZP:
+> +	memcpy(&s->patch, (void *)arg, sizeof(s->patch));
+> +	dev_dbg(port->dev,
+> +		"%s(%u): SI4455_IOC_SEZP, length(%i)",
+> +		__func__,
+> +		cmd,
+> +		s->configuration.length);
+> +	break;
+> +	case SI4455_IOC_CEZP:
+> +	dev_dbg(port->dev,
+> +		"%s(%u): SI4455_IOC_CEZP",
+> +		__func__,
+> +		cmd);
+> +	memset(&s->patch, 0x00, sizeof(s->patch));
+> +	break;
+> +	case SI4455_IOC_STXC:
+> +	s->tx_channel = *((u32 *)arg);
+> +	dev_dbg(port->dev,
+> +		"%s(%u): SI4455_IOC_STXC, tx_channel(%i)",
+> +		__func__,
+> +		cmd,
+> +		s->tx_channel);
+> +	break;
+> +	case SI4455_IOC_GTXC:
+> +	dev_dbg(port->dev,
+> +		"%s(%u): SI4455_IOC_GTXC",
+> +		__func__,
+> +		cmd);
+> +	*((u32 *)arg) = s->tx_channel;
+> +	break;
+> +	case SI4455_IOC_SRXC:
+> +	s->rx_channel = *((u32 *)arg);
+> +	dev_dbg(port->dev,
+> +		"%s(%u): SI4455_IOC_SRXC, rx_channel(%i)",
+> +		__func__,
+> +		cmd,
+> +		s->rx_channel);
+> +	break;
+> +	case SI4455_IOC_GRXC:
+> +	dev_dbg(port->dev,
+> +		"%s(%u): SI4455_IOC_GRXC",
+> +		__func__,
+> +		cmd);
+> +	*((u32 *)arg) = s->rx_channel;
+> +	break;
+> +	case SI4455_IOC_SSIZ:
+> +	s->package_size = *((u32 *)arg);
+> +	dev_dbg(port->dev,
+> +		"%s(%u): SI4455_IOC_SSIZ, package_size(%i)",
+> +		__func__,
+> +		cmd,
+> +		s->package_size);
+> +	break;
+> +	case SI4455_IOC_GSIZ:
+> +	dev_dbg(port->dev,
+> +		"%s(%u): SI4455_IOC_GSIZ",
+> +		__func__,
+> +		cmd);
+> +	*((u32 *)arg) = s->package_size;
+> +	break;
+> +	case SI4455_IOC_GRSSI:
+> +	dev_dbg(port->dev,
+> +		"%s(%u): SI4455_IOC_GRSSI",
+> +		__func__,
+> +		cmd);
+> +	*((u32 *)arg) = s->current_rssi;
+> +	break;
+> +	default:
+> +		ret = -ENOIOCTLCMD;
+> +	break;
+> +	}
+> +
+> +	if (ret == 0)
+> +		si4455_do_work(port);
+> +
+> +	return ret;
+> +}
+> +
+> +
+> +static void si4455_null_void(struct uart_port *port)
+> +{
+> +	/* Do nothing */
+> +}
+> +
+> +static const struct uart_ops si4455_ops = {
+> +	.tx_empty		= si4455_tx_empty,
+> +	.set_mctrl		= si4455_set_mctrl,
+> +	.get_mctrl		= si4455_get_mctrl,
+> +	.stop_tx		= si4455_null_void,
+> +	.start_tx		= si4455_start_tx,
+> +	.stop_rx		= si4455_null_void,
+> +	.break_ctl		= si4455_break_ctl,
+> +	.startup		= si4455_startup,
+> +	.shutdown		= si4455_shutdown,
+> +	.set_termios		= si4455_set_termios,
+> +	.type			= si4455_type,
+> +	.request_port		= si4455_request_port,
+> +	.release_port		= si4455_null_void,
+> +	.config_port		= si4455_config_port,
+> +	.verify_port		= si4455_verify_port,
+> +	.ioctl			= si4455_ioctl,
+> +};
+> +
+> +static int __maybe_unused si4455_suspend(struct device *dev)
+> +{
+> +	struct si4455_port *s = dev_get_drvdata(dev);
+> +
+> +	uart_suspend_port(&si4455_uart, &s->one.port);
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused si4455_resume(struct device *dev)
+> +{
+> +	struct si4455_port *s = dev_get_drvdata(dev);
+> +
+> +	uart_resume_port(&si4455_uart, &s->one.port);
+> +
+> +	return 0;
+> +}
+> +
+> +static SIMPLE_DEV_PM_OPS(si4455_pm_ops, si4455_suspend, si4455_resume);
+> +
+> +static int si4455_probe(struct device *dev,
+> +			int irq)
+> +{
+> +	int ret;
+> +	struct si4455_port *s;
+> +
+> +	/* Alloc port structure */
+> +	dev_dbg(dev, "%s\n", __func__);
+> +	s = devm_kzalloc(dev, sizeof(*s), GFP_KERNEL);
+> +	if (!s) {
+> +		dev_err(dev, "Error allocating port structure\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	dev_set_drvdata(dev, s);
+> +	mutex_init(&s->mutex);
+> +
+> +	s->shdn_gpio = devm_gpiod_get(dev, "shdn", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(s->shdn_gpio)) {
+> +		dev_err(dev, "Unable to reguest shdn gpio\n");
+> +		ret = -EINVAL;
+
+Preserve the error code:
+
+		ret = PTR_ERR(s->shdn_gpio);
+
+> +		goto out_generic;
+> +	}
+> +
+> +	/* Initialize port data */
+> +	s->one.port.dev	= dev;
+> +	s->one.port.line = 0;
+> +	s->one.port.irq	= irq;
+> +	s->one.port.type	= PORT_SI4455;
+> +	s->one.port.fifosize	= SI4455_FIFO_SIZE;
+> +	s->one.port.flags	= UPF_FIXED_TYPE | UPF_LOW_LATENCY;
+> +	s->one.port.iotype	= UPIO_PORT;
+> +	s->one.port.iobase	= 0x00;
+> +	s->one.port.membase	= (void __iomem *)~0;
+> +	s->one.port.rs485_config = si4455_rs485_config;
+> +	s->one.port.ops	= &si4455_ops;
+> +
+> +	si4455_s_power(dev, 1);
+> +
+> +	//detect
+> +	ret = si4455_get_part_info(&s->one.port, &s->part_info);
+> +	dev_dbg(dev, "si4455_get_part_info()==%i", ret);
+> +	if (ret == 0) {
+> +		dev_dbg(dev, "partInfo.CHIPREV= %u", s->part_info.CHIPREV);
+> +		dev_dbg(dev, "partInfo.PART= %u", s->part_info.PART);
+> +		dev_dbg(dev, "partInfo.PBUILD= %u", s->part_info.PBUILD);
+> +		dev_dbg(dev, "partInfo.ID= %u", s->part_info.ID);
+> +		dev_dbg(dev, "partInfo.CUSTOMER= %u",
+> s->part_info.CUSTOMER);
+> +		dev_dbg(dev, "partInfo.ROMID= %u", s->part_info.ROMID);
+> +		dev_dbg(dev, "partInfo.BOND= %u", s->part_info.BOND);
+> +		if (s->part_info.PART != 0x5544) {
+> +			dev_err(dev, "PART(%u) error", s->part_info.PART);
+> +			ret = -ENODEV;
+> +		}
+> +	}
+> +	si4455_s_power(dev, 0);
+> +	if (ret)
+> +		goto out_generic;
+> +
+> +	/* Initialize queue for start TX */
+> +	INIT_WORK(&s->one.tx_work, si4455_tx_proc);
+> +
+> +	/* Register port */
+> +	ret = uart_add_one_port(&si4455_uart, &s->one.port);
+> +	if (ret) {
+> +		s->one.port.dev = NULL;
+> +		goto out_uart;
+> +	}
+> +
+> +	/* Setup interrupt */
+> +	ret = devm_request_threaded_irq(dev,
+> +					irq,
+> +					NULL,
+> +					si4455_ist,
+> +					IRQF_ONESHOT | IRQF_SHARED,
+> +					dev_name(dev),
+> +					s);
+> +	if (!ret)
+> +		return 0;
+
+This is "Last if condition is reversed" anti-pattern.  Always do error
+handling, never success handling.
+
+> +
+> +	dev_err(dev, "Unable to reguest IRQ %i\n", irq);
+> +
+> +out_uart:
+> +	uart_remove_one_port(&si4455_uart, &s->one.port);
+> +out_generic:
+> +	mutex_destroy(&s->mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +static int si4455_remove(struct device *dev)
+> +{
+> +	struct si4455_port *s = dev_get_drvdata(dev);
+> +
+> +	cancel_work_sync(&s->one.tx_work);
+> +	uart_remove_one_port(&si4455_uart, &s->one.port);
+> +
+> +	mutex_destroy(&s->mutex);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id __maybe_unused si4455_dt_ids[] = {
+> +	{ .compatible = "silabs,si4455" },
+> +	{ .compatible = "silabs,si4455b1a" },
+> +	{ .compatible = "silabs,si4455c2a" },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, si4455_dt_ids);
+> +
+> +static int si4455_spi_probe(struct spi_device *spi)
+> +{
+> +	int ret;
+> +
+> +	/* Setup SPI bus */
+> +	spi->bits_per_word	= 8;
+> +	spi->mode		    = SPI_MODE_0;
+> +	spi->max_speed_hz   = 100000;
+
+This white space is whacky.
+
+
+> +	ret = spi_setup(spi);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (spi->dev.of_node) {
+> +		const struct of_device_id *of_id
+> +			= of_match_device(si4455_dt_ids, &spi->dev);
+> +		if (!of_id)
+> +			return -ENODEV;
+> +
+> +	}
+> +
+> +	return si4455_probe(&spi->dev, spi->irq);
+> +}
+
+Anyway, hopefully that's some ideas.
+
+regards,
+dan carpenter
+
