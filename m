@@ -2,93 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC412D41C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5E52D41D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731360AbgLIMJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 07:09:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731350AbgLIMJH (ORCPT
+        id S1731376AbgLIMMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 07:12:09 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8972 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730385AbgLIMMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 07:09:07 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F047FC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 04:08:26 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id d189so1431469oig.11
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 04:08:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lH2aIPfGReG41oXFiTar8tydTSQbukFakurAPPWGMXA=;
-        b=AkyDU2MLEg2Ckg19uqmebMIu3iOIaW0Eg+HXBF2aHuu+PIh24fXm4VlH0AxHXe6ubn
-         b2/VGR2A7LtTAH8jMaxQiGwbCXjO50F0ySd+DRDV0jIAO8vwWOe0sSgWC2SmoUUeDLiK
-         rhk+Vwhzuq+RH3VLrRYQdxXKoih79/Rb5GORk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lH2aIPfGReG41oXFiTar8tydTSQbukFakurAPPWGMXA=;
-        b=AQUyBFcEApf8P65YslE7KIol1lleMiHYXfbV9TMawLUx69X8FBjrrR6AQW2CF/XIW9
-         6+w2nKHxA4xz7vne2YW4H9cfhzIrMX45Zgr9o4enX+21/roXHKzYK00k9F4vVyRhLWf+
-         6pAOzHn8WqoNGJRbAEtWmEJGWyWKMTEujkT0e71rpZixo3N5RutJbaz0ax7ycMSH9fkf
-         FRs4Aa0ciIIlc4QuR99LrVS9XhTUcnvugbZGOmJfq8LUteaARfzAQdup2wM9mx9Telpj
-         IE8XgIkfXxDQCXM8fJpb/m2lYQEo7c1Xrkx2l94GQvSESflbTtCmep8eYo6K3kRQEX1i
-         PqwQ==
-X-Gm-Message-State: AOAM531aCH+Dtf7MNV+iYBloBvd6zwh7cAHboAUePGmur6XetQN3Dyfb
-        uKFnOsS5ceUaJZRPZryx8E14hXLJqqSBsskhMu29lQ==
-X-Google-Smtp-Source: ABdhPJwoW0k/Ycf4RkiHqchEKdArbJsk2wgrBa641oQiDnlhnZB0lgPOzYGPaAay2fQ/XrCgU9Xx5nSGPQu7cs4taaU=
-X-Received: by 2002:aca:54d8:: with SMTP id i207mr1425847oib.101.1607515706418;
- Wed, 09 Dec 2020 04:08:26 -0800 (PST)
+        Wed, 9 Dec 2020 07:12:08 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CrbVV5wThzhXm7;
+        Wed,  9 Dec 2020 20:10:58 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.9) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Dec 2020
+ 20:11:14 +0800
+Subject: Re: [RESEND PATCH v3 3/4] iommu/iova: Flush CPU rcache for when a
+ depot fills
+To:     John Garry <john.garry@huawei.com>, <robin.murphy@arm.com>,
+        <joro@8bytes.org>, <will@kernel.org>
+CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>, <xiyou.wangcong@gmail.com>
+References: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
+ <1605608734-84416-4-git-send-email-john.garry@huawei.com>
+ <76e057e3-9db8-21fc-3a8a-b9e924a95cf4@huawei.com>
+ <851ba6cf-8f4c-74dc-3666-ee6d547999d3@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <552fd9c5-d3dd-e1b3-d7e8-2a30904f22c4@huawei.com>
+Date:   Wed, 9 Dec 2020 20:11:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-References: <1607413859-63365-1-git-send-email-tiantao6@hisilicon.com>
- <20201209004828.GN401619@phenom.ffwll.local> <06c1dee7-488d-8a74-a55c-74043cb060cd@ti.com>
- <CAKMK7uFsDPH3+CHGwkgtnDOc6pJY=_SocyaghETZda+RgjAJnQ@mail.gmail.com> <327508b7-2c63-8f2c-36a7-362c83b4243d@ti.com>
-In-Reply-To: <327508b7-2c63-8f2c-36a7-362c83b4243d@ti.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 9 Dec 2020 13:08:15 +0100
-Message-ID: <CAKMK7uH25qMZy0fLVTAu+Um5r0A-iCQtGc5yFFwNHXd3KZ3VBQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/tidss: Use the new api devm_drm_irq_install
-To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc:     Tian Tao <tiantao6@hisilicon.com>, Jyri Sarha <jsarha@ti.com>,
-        Dave Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <851ba6cf-8f4c-74dc-3666-ee6d547999d3@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 1:06 PM Tomi Valkeinen <tomi.valkeinen@ti.com> wrote:
->
-> On 09/12/2020 13:56, Daniel Vetter wrote:
-> > On Wed, Dec 9, 2020 at 12:29 PM Tomi Valkeinen <tomi.valkeinen@ti.com> wrote:
-> >>
-> >> On 09/12/2020 02:48, Daniel Vetter wrote:
-> >>> On Tue, Dec 08, 2020 at 03:50:59PM +0800, Tian Tao wrote:
-> >>>> Use devm_drm_irq_install to register interrupts so that
-> >>>> drm_irq_uninstall is not needed to be called.
-> >>>>
-> >>>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> >>>
-> >>> There's another drm_irq_install in the error path. But I'm not sure this
-> >>> is safe since you're chaning the order in which things get cleaned up now.
-> >>> So leaving this up to Tomi.
-> >>
-> >> Right, I don't think this works. tidss irq_uninstall uses runtime_get/put, which needs to happen
-> >> before pm_runtime_disable. With devm_drm_irq_install that's not the case.
-> >
-> > Hm I don't spot devm_ versions of these, surely we're not the only
-> > ones with this problem?
->
-> drm-misc-next has these. hisilicon uses it, but doesn't have an irq_uninstall hook, so possibly late
-> uninstall is fine there.
 
-I meant a devm_ version of pm_runtime_enable. Or some other way to
-make this just work.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
+On 2020/12/9 19:22, John Garry wrote:
+> On 09/12/2020 09:13, Leizhen (ThunderTown) wrote:
+>>
+>>
+>> On 2020/11/17 18:25, John Garry wrote:
+>>> Leizhen reported some time ago that IOVA performance may degrade over time
+>>> [0], but unfortunately his solution to fix this problem was not given
+>>> attention.
+>>>
+>>> To summarize, the issue is that as time goes by, the CPU rcache and depot
+>>> rcache continue to grow. As such, IOVA RB tree access time also continues
+>>> to grow.
+>>>
+>>> At a certain point, a depot may become full, and also some CPU rcaches may
+>>> also be full when inserting another IOVA is attempted. For this scenario,
+>>> currently the "loaded" CPU rcache is freed and a new one is created. This
+>>> freeing means that many IOVAs in the RB tree need to be freed, which
+>>> makes IO throughput performance fall off a cliff in some storage scenarios:
+>>>
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6314MB/0KB/0KB /s] [1616K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [5669MB/0KB/0KB /s] [1451K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6673MB/0KB/0KB /s] [1708K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6761MB/0KB/0KB /s] [1731K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6685MB/0KB/0KB /s] [1711K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6178MB/0KB/0KB /s] [1582K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6731MB/0KB/0KB /s] [1723K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2387MB/0KB/0KB /s] [611K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2689MB/0KB/0KB /s] [688K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2278MB/0KB/0KB /s] [583K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1288MB/0KB/0KB /s] [330K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1632MB/0KB/0KB /s] [418K/0/0 iops]
+>>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1765MB/0KB/0KB /s] [452K/0/0 iops]
+>>>
+>>> And continue in this fashion, without recovering. Note that in this
+>>> example it was required to wait 16 hours for this to occur. Also note that
+>>> IO throughput also becomes gradually becomes more unstable leading up to
+>>> this point.
+>>>
+>>> This problem is only seen for non-strict mode. For strict mode, the rcaches
+>>> stay quite compact.
+>>>
+>>> As a solution to this issue, judge that the IOVA caches have grown too big
+>>> when cached magazines need to be free, and just flush all the CPUs rcaches
+>>> instead.
+>>>
+>>> The depot rcaches, however, are not flushed, as they can be used to
+>>> immediately replenish active CPUs.
+>>>
+>>> In future, some IOVA compaction could be implemented to solve the
+>>> instabilty issue, which I figure could be quite complex to implement.
+>>>
+>>> [0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
+>>>
+>>> Analyzed-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>> Reported-by: Xiang Chen <chenxiang66@hisilicon.com>
+>>> Signed-off-by: John Garry <john.garry@huawei.com>
+> 
+> Thanks for having a look
+> 
+>>> ---
+>>>   drivers/iommu/iova.c | 16 ++++++----------
+>>>   1 file changed, 6 insertions(+), 10 deletions(-)
+>>>
+>>> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+>>> index 1f3f0f8b12e0..386005055aca 100644
+>>> --- a/drivers/iommu/iova.c
+>>> +++ b/drivers/iommu/iova.c
+>>> @@ -901,7 +901,6 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>>>                    struct iova_rcache *rcache,
+>>>                    unsigned long iova_pfn)
+>>>   {
+>>> -    struct iova_magazine *mag_to_free = NULL;
+>>>       struct iova_cpu_rcache *cpu_rcache;
+>>>       bool can_insert = false;
+>>>       unsigned long flags;
+>>> @@ -923,13 +922,12 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>>>                   if (cpu_rcache->loaded)
+>>>                       rcache->depot[rcache->depot_size++] =
+>>>                               cpu_rcache->loaded;
+>>> -            } else {
+>>> -                mag_to_free = cpu_rcache->loaded;
+>>> +                can_insert = true;
+>>> +                cpu_rcache->loaded = new_mag;
+>>>               }
+>>>               spin_unlock(&rcache->lock);
+>>> -
+>>> -            cpu_rcache->loaded = new_mag;
+>>> -            can_insert = true;
+>>> +            if (!can_insert)
+>>> +                iova_magazine_free(new_mag);
+>>>           }
+>>>       }
+>>>   @@ -938,10 +936,8 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>>>         spin_unlock_irqrestore(&cpu_rcache->lock, flags);
+>>>   -    if (mag_to_free) {
+>>> -        iova_magazine_free_pfns(mag_to_free, iovad);
+>>> -        iova_magazine_free(mag_to_free);
+>> mag_to_free has been stripped out, that's why lock protection is not required here.
+>>
+>>> -    }
+>>> +    if (!can_insert)
+>>> +        free_all_cpu_cached_iovas(iovad);
+>> Lock protection required.
+> 
+> But we have the per-CPU rcache locking again in free_cpu_cached_iovas() (which is called per-CPU from free_all_cpu_cached_iovas()).
+> 
+> ok? Or some other lock you mean?
+
+Oh, Sorry, think of function free_cpu_cached_iovas() as function free_iova_rcaches().
+
+Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
+
+> 
+> Cheers,
+> John
+> 
+>>
+>>>         return can_insert;
+>>>   }
+>>>
+>>
+>> .
+>>
+> 
+> 
+> .
+> 
+
