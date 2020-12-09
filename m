@@ -2,173 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE692D3ECA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389CF2D3ECD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729313AbgLIJar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:30:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46672 "EHLO
+        id S1729326AbgLIJbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:31:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728613AbgLIJal (ORCPT
+        with ESMTP id S1728446AbgLIJbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:30:41 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43667C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:30:26 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a3so896657wmb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:30:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=L61+JwkcFzkud7jR/ngEi5aVujc/do/nVLhcrDG/U8k=;
-        b=k3RHRHtV5XNvz0FnIXPif1joM+tCHTwCDBCVYI7Fkq4M8PyR36rHWwZVqjJXxHp3QR
-         bnfXyMEYEdGkGiprQvtkTXJiOtwSOC0D+O9nk5moay5UV0Ylc7q4QFxcTr2MURouNGmn
-         7C93MSB4SgsK5E4IiQ/7ZYiTAHMCh7PDCyVQbIKDKkhfWlI5MtuwgjG8aR444jtUDXDQ
-         QUpcCzgWiSEiOnkHysofod4gNjGzP/KjydFr/2dlxZIX2mUT8s66qZQXh+YYN3kO9nhj
-         p45rN2rTcRaFWn59p8ud0TXlARrXzP6mo+f9SEz8/QSzT9Vv5tWscIQHk3KAsz4Ku4i4
-         +fPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L61+JwkcFzkud7jR/ngEi5aVujc/do/nVLhcrDG/U8k=;
-        b=ciYmt3/7POxItY87R/zUO6rVjNhobWuHGHPXPePBO2jPHBMtCFO2dco7KBwftWS6P6
-         wbhHe/ee9UlpF8JSBAa4DqB0H6mDfwwG/gvJ9bJq5PEocosw8wM8375/eaAKmzKh+GaH
-         XCfrfleJds2VAPVqb6rcNapDAz8oEQI2hptPweqC1gzDG/5gknuRSUQKCysCTSRBxyAg
-         dCJyBi3KtFw5SuEY96pBUuHlLp1HetUKW5ui2xa3o+eDL82zlB+zNBT4Sj152OKX1t9k
-         bAt4m6uGml9k4gn/S2d4F/YUuHC9OO9eyVX9p6efifNh1kMczXVniT53saLKv0qceMrL
-         JaCA==
-X-Gm-Message-State: AOAM530QUIYIuNtEMePVEEZQBnMKirPyxikQALtEMWajorpAT+yfqEYG
-        MdpAsTXRDz3NMv4GsVbNzBbAPoT/mdwOnw==
-X-Google-Smtp-Source: ABdhPJwqcV0/86kY52CzPqXaDjCXA6dBC2F9HG+ByXzdzWJaOzBWEPskANgnY9UktMu/luOWbxK7Bg==
-X-Received: by 2002:a1c:55ca:: with SMTP id j193mr1734133wmb.87.1607506224513;
-        Wed, 09 Dec 2020 01:30:24 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8cf2:3820:1fbd:70ad? ([2a01:e34:ed2f:f020:8cf2:3820:1fbd:70ad])
-        by smtp.googlemail.com with ESMTPSA id d8sm2053234wrp.44.2020.12.09.01.30.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 01:30:23 -0800 (PST)
-Subject: Re: [PATCH 1/3] thermal: core: Add indication for userspace usage
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, amitk@kernel.org,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201128175450.12456-1-kai.heng.feng@canonical.com>
- <004fe225-1009-06d8-b297-c03a4c67550f@linaro.org>
- <860126B8-1152-4EE3-B15E-B4E45EFE879F@canonical.com>
- <fc67ad02826fb3adfd8457e1a0baf234a8fa3fce.camel@linux.intel.com>
- <34348B03-5E27-49A0-A704-6332BAC00758@canonical.com>
- <585bb5d3ee5bea063795682108576c3464ba72b6.camel@linux.intel.com>
- <D53454A1-5ED0-4B4D-B22F-8663C9970ECD@canonical.com>
- <f863f2e1e322a8819c660f5eefbbc4acf7522990.camel@linux.intel.com>
- <FCFE1F21-2EC6-4D3A-8B2E-32C653816D58@canonical.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <4767b493-fa24-e294-66df-3989b72bfb01@linaro.org>
-Date:   Wed, 9 Dec 2020 10:30:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 9 Dec 2020 04:31:17 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C5CC061793;
+        Wed,  9 Dec 2020 01:30:37 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrWxN6j47z9sW9;
+        Wed,  9 Dec 2020 20:30:32 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607506233;
+        bh=mTSVImBbfPaUvkMd2Y893xa7mukCBGI7gtact0vehVs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HEg3j+ZAYi42MQn2m87wPE+IM4jq18mBU8roHSkwyptQUgLLxoju85Sa+g/k6/1EG
+         rIOcKHGelVRAuXr85NHevfpkbRDKcWooTwhm9QhdKLnS8Nt1cWklyuDeY6o/z7hGS5
+         zCIs0issQM7hlR/iCmtqrGJvFzxjwvCH8ATCFPDcnc87LfTu7yyWB5wldnq3/FI9hZ
+         dBLVmwNGTTdhMhrQZ+LGd/FvpAzNo2bquJS1QYzl1rE358tL2Sh46Hd7mrtoFqxyP8
+         Idiu4QEhB0RMSpddZPalTGDFspRXRZ+FiakuZ28NAzxRZkUUaFP5eYmA73y9svTfE2
+         w7/RXBv8NCfqw==
+Date:   Wed, 9 Dec 2020 20:30:29 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Dominique Martinet <asmadeus@codewreck.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the kbuild tree
+Message-ID: <20201209203029.7f2a8db2@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <FCFE1F21-2EC6-4D3A-8B2E-32C653816D58@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/zwh5n0TTdrbMrv4w7dKnt04";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2020 06:36, Kai-Heng Feng wrote:
-> 
-> 
->> On Dec 1, 2020, at 02:39, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
->>
->> On Tue, 2020-12-01 at 02:22 +0800, Kai-Heng Feng wrote:
->>>> On Dec 1, 2020, at 02:13, Srinivas Pandruvada <
->>>> srinivas.pandruvada@linux.intel.com> wrote:
->>>
->>> [snipped] 
->>>
->>>>>> What about creating an new callback
->>>>>>
->>>>>> enum thermal_trip_status {
->>>>>> 	THERMAL_TRIP_DISABLED = 0,
->>>>>> 	THERMAL_TRIP_ENABLED,
->>>>>> };
->>>>>>
->>>>>> int get_trip_status(struct thermal_zone_device *, int trip,
->>>>>> enum
->>>>>> thermal_trip_status *state);
->>>>>>
->>>>>> Then in 
->>>>>> static void handle_thermal_trip(struct thermal_zone_device *tz,
->>>>>> int
->>>>>> trip)
->>>>>> {
->>>>>>
->>>>>> /* before tz->ops->get_trip_temp(tz, trip, &trip_temp); */
->>>>>> if (tz->ops->get_trip_status) {
->>>>>> 	enum thermal_trip_status *status;
->>>>>>
->>>>>> 	if (!tz->ops->get_trip_status(tz, trip, &status)) {
->>>>>> 		if (status == THERMAL_TRIP_DISABLED)
->>>>>> 			return;	
->>>>>> 	}
->>>>>> }
->>>>>> ...
->>>>>> ...
->>>>>>
->>>>>> }
->>>>>>
->>>>>>
->>>>>> This callback will help the cases:
->>>>>> - Allows drivers to selectively disable certain trips during
->>>>>> init
->>>>>> state
->>>>>> or system resume where there can be spikes or always. int340x
->>>>>> drivers
->>>>>> can disable always.
->>>>>
->>>>> This sounds really great. This is indeed can happen on system
->>>>> resume,
->>>>> before userspace process thaw.
->>>>>
->>>>>> - Still give options for drivers to handle critical trip even
->>>>>> if
->>>>>> they
->>>>>> are bound to user space governors. User space process may be
->>>>>> dead,
->>>>>> so
->>>>>> still allow kernel to process graceful shutdown
->>>>>
->>>>> To make the scenario happen, do we need a new sysfs to let
->>>>> usespace
->>>>> enable it with THERMAL_TRIP_ENABLED?
->>>> This should be drivers call not user space.
->>>
->>> Understood. So after thermal_zone_device_register(), the driver can
->>> decide to what to return on get_trip_temp().
->> get_trip_status()
->>
->>> Let me work on a new patch if there's no other concern.
->> Better to wait for confirmation from Daniel and others.
-> 
-> Daniel,
-> 
-> Do you like Srinivas' proposed solution?
-> 
-> I hope we can find a solution in upstream kernel soon.
+--Sig_/zwh5n0TTdrbMrv4w7dKnt04
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-(just trying to figure out the full context)
+Hi all,
 
-If the device is enumerated outside of a thermal zone, the sensor should
-not register in the thermal zone no ?
+After merging the kbuild tree, today's linux-next build (x86_64
+modules_install) produced this warning:
 
+Warning: 'make modules_install' requires depmod. Please install it.
+This is probably in the kmod package.
 
+Introduced by commit
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+  330029209513 ("kbuild: don't hardcode depmod path")
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Unfortunately for most of us (?), /sbin is not in our PATH ...
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/zwh5n0TTdrbMrv4w7dKnt04
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/QmTUACgkQAVBC80lX
+0Gw8yQf7BgY3a/Re1tDwCsbNgdMdg0B4UFU3Y1C6rjyqhVyU7Fv8HoBED9hek7vC
+6ibbVWnBcDs69tHbitZbIW+bNHmH3rKTZA2hecioPM4qtuEwDeT+PlSWFBrQuAQR
+a9lMZaYJ59GAVcPOzFutBCzag6rzCfB+pn2WzsB33sP53YAVao4LsPH7GaVSA7tr
+eyvp9B3g8Qp3s/so/Vn/qaO2KROVxp4RNmb37cmYURRbzVyWVFC3damKt/LKvOjh
++fCd0m4n4h3HVpwwmsgqD7lYtSeGM6XYzgyixkHzI+/lleuObXCnaPermnuYYq2q
+msglke4xVGkoo0g1o2vdN4Qoi9Tb7A==
+=VOl0
+-----END PGP SIGNATURE-----
+
+--Sig_/zwh5n0TTdrbMrv4w7dKnt04--
