@@ -2,230 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C588F2D3C7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96ABE2D3C83
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgLIHtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 02:49:46 -0500
-Received: from m97179.mail.qiye.163.com ([220.181.97.179]:56372 "EHLO
-        m97179.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbgLIHtq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 02:49:46 -0500
-Received: from [192.168.122.37] (unknown [218.94.118.90])
-        by m97179.mail.qiye.163.com (Hmail) with ESMTPA id 4A51EE019BC;
-        Wed,  9 Dec 2020 15:48:55 +0800 (CST)
-Subject: Re: [PATCH] bcache: consider the fragmentation when update the
- writeback rate
-To:     Dongdong Tao <dongdong.tao@canonical.com>
-Cc:     Dongdong Tao <tdd21151186@gmail.com>, Coly Li <colyli@suse.de>,
-        Gavin Guo <gavin.guo@canonical.com>,
-        Gerald Yang <gerald.yang@canonical.com>,
-        Trent Lloyd <trent.lloyd@canonical.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        "open list:BCACHE (BLOCK LAYER CACHE)" <linux-bcache@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201103124235.14440-1-tdd21151186@gmail.com>
- <89b83c00-1117-d114-2c23-7b03fc22966e@easystack.cn>
- <CAJS8hV+UmLFQVhuqUin1Ze6kLtAO7paXH95+9gaiZgM19VZe1A@mail.gmail.com>
-From:   Dongsheng Yang <dongsheng.yang@easystack.cn>
-Message-ID: <ce04461c-ca5c-781d-7aad-cdad3ebadac2@easystack.cn>
-Date:   Wed, 9 Dec 2020 15:49:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1728427AbgLIHww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 02:52:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727953AbgLIHww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 02:52:52 -0500
+X-Gm-Message-State: AOAM532CyUJejyv/56a4eKV6r93lkUDiwhRTc4MhYB3LH+X7WeahVDMt
+        h8PKLIYOiCWCJOw2ia7uSPtis2mWcD0BWpH4bwk=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607500293;
+        bh=OEQSYtYb9NVegyVw846n4Oj+FsIUHUrywKo9JP+Mzxk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Sum/Mv9KTKsuXnyljn+CR2uqjs3V8AAGrxYc3UxzU6vr6fhlgw1vr1TyrYTW4cZpw
+         fesxqOqeu5BK0zYg+Jr+uSryZSZY0BAufyEXWeKSwy4pnnAEC+dlHaLBQKdaTs3bB4
+         AiWjIC3zRoqjsHOJDAFpLzowzZQJsqYXMiUCsCdOEc1UZIR09miqTy+pS4NndVwv+d
+         /dz1lphsikuxvwoZKakZEls5khqXPy2znmOpgzGUDV99kHZP+d5Wo3t9NV/g8dKV5S
+         fD7nq6ZspYmBHjqJNydTtypd1TfUKYscG0jt94l+cGjyGMwn8nnUpqP/cSxzGWS/0T
+         EGW5cD56jh7Jg==
+X-Google-Smtp-Source: ABdhPJxW0H5yIBMW0GtzKADzByU+brtAwQ+8wQSMZwDc6hliuCHMHu4QzBZWYSE5pcmAZ+nmWyAfPGd4XL5ysSRkLwg=
+X-Received: by 2002:aca:5ec2:: with SMTP id s185mr896367oib.33.1607500292653;
+ Tue, 08 Dec 2020 23:51:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAJS8hV+UmLFQVhuqUin1Ze6kLtAO7paXH95+9gaiZgM19VZe1A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
-        oVCBIfWUFZHxofSE5ITxlLTB4dVkpNS0xOS0tKSE5NTEJVGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hOT1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Oj46EBw6Gj0wDCkNEEguOggy
-        NQkaCzRVSlVKTUtMTktLSkhOQktMVTMWGhIXVR8UFRwIEx4VHFUCGhUcOx4aCAIIDxoYEFUYFUVZ
-        V1kSC1lBWUlKQ1VCT1VKSkNVQktZV1kIAVlBQkJPTjcG
-X-HM-Tid: 0a7646797c8f20bdkuqy4a51ee019bc
+References: <20201204212847.13256-1-brijesh.singh@amd.com>
+In-Reply-To: <20201204212847.13256-1-brijesh.singh@amd.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 9 Dec 2020 08:51:21 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFkyJwZ4BGSU-4UB5VR1etJ6atb7YpWMTzzBuu9FQKagA@mail.gmail.com>
+Message-ID: <CAMj1kXFkyJwZ4BGSU-4UB5VR1etJ6atb7YpWMTzzBuu9FQKagA@mail.gmail.com>
+Subject: Re: [PATCH] KVM/SVM: add support for SEV attestation command
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     kvm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        John Allen <john.allen@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2020/12/9 星期三 下午 12:48, Dongdong Tao 写道:
-> Hi Dongsheng,
+On Fri, 4 Dec 2020 at 22:30, Brijesh Singh <brijesh.singh@amd.com> wrote:
 >
-> I'm working on it, next step I'm gathering some testing data and
-> upload (very sorry for the delay...)
-> Thanks for the comment.
-> One of the main concerns to alleviate this issue with the writeback
-> process is that we need to minimize the impact on the client IO
-> performance.
-> writeback_percent by default is 10, start writeback when dirty buckets
-> reached 10 percent might be a bit too aggressive, as the
-> writeback_cutoff_sync is 70 percent.
-> So i chose to start the writeback when dirty buckets reached 50
-> percent so that this patch will only take effect after dirty buckets
-> percent is above that
-
-Agree with that's too aggressive to reuse writeback_percent, and that's 
-less flexable.
-
-Okey, let's wait for your testing result.
-
-
-Thanx
-
+> The SEV FW version >= 0.23 added a new command that can be used to query
+> the attestation report containing the SHA-256 digest of the guest memory
+> encrypted through the KVM_SEV_LAUNCH_UPDATE_{DATA, VMSA} commands and
+> sign the report with the Platform Endorsement Key (PEK).
 >
-> Thanks,
-> Dongdong
+> See the SEV FW API spec section 6.8 for more details.
 >
+> Note there already exist a command (KVM_SEV_LAUNCH_MEASURE) that can be
+> used to get the SHA-256 digest. The main difference between the
+> KVM_SEV_LAUNCH_MEASURE and KVM_SEV_ATTESTATION_REPORT is that the later
+
+latter
+
+> can be called while the guest is running and the measurement value is
+> signed with PEK.
 >
+> Cc: James Bottomley <jejb@linux.ibm.com>
+> Cc: Tom Lendacky <Thomas.Lendacky@amd.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: John Allen <john.allen@amd.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: linux-crypto@vger.kernel.org
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  .../virt/kvm/amd-memory-encryption.rst        | 21 ++++++
+>  arch/x86/kvm/svm/sev.c                        | 71 +++++++++++++++++++
+>  drivers/crypto/ccp/sev-dev.c                  |  1 +
+>  include/linux/psp-sev.h                       | 17 +++++
+>  include/uapi/linux/kvm.h                      |  8 +++
+>  5 files changed, 118 insertions(+)
 >
+> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+> index 09a8f2a34e39..4c6685d0fddd 100644
+> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
+> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+> @@ -263,6 +263,27 @@ Returns: 0 on success, -negative on error
+>                  __u32 trans_len;
+>          };
 >
-> On Wed, Dec 9, 2020 at 10:27 AM Dongsheng Yang
-> <dongsheng.yang@easystack.cn> wrote:
->>
->> 在 2020/11/3 星期二 下午 8:42, Dongdong Tao 写道:
->>> From: dongdong tao <dongdong.tao@canonical.com>
->>>
->>> Current way to calculate the writeback rate only considered the
->>> dirty sectors, this usually works fine when the fragmentation
->>> is not high, but it will give us unreasonable small rate when
->>> we are under a situation that very few dirty sectors consumed
->>> a lot dirty buckets. In some case, the dirty bucekts can reached
->>> to CUTOFF_WRITEBACK_SYNC while the dirty data(sectors) noteven
->>> reached the writeback_percent, the writeback rate will still
->>> be the minimum value (4k), thus it will cause all the writes to be
->>> stucked in a non-writeback mode because of the slow writeback.
->>>
->>> This patch will try to accelerate the writeback rate when the
->>> fragmentation is high. It calculate the propotional_scaled value
->>> based on below:
->>> (dirty_sectors / writeback_rate_p_term_inverse) * fragment
->>> As we can see, the higher fragmentation will result a larger
->>> proportional_scaled value, thus cause a larger writeback rate.
->>> The fragment value is calculated based on below:
->>> (dirty_buckets *  bucket_size) / dirty_sectors
->>> If you think about it, the value of fragment will be always
->>> inside [1, bucket_size].
->>>
->>> This patch only considers the fragmentation when the number of
->>> dirty_buckets reached to a dirty threshold(configurable by
->>> writeback_fragment_percent, default is 50), so bcache will
->>> remain the original behaviour before the dirty buckets reached
->>> the threshold.
->>>
->>> Signed-off-by: dongdong tao <dongdong.tao@canonical.com>
->>> ---
->>>    drivers/md/bcache/bcache.h    |  1 +
->>>    drivers/md/bcache/sysfs.c     |  6 ++++++
->>>    drivers/md/bcache/writeback.c | 21 +++++++++++++++++++++
->>>    3 files changed, 28 insertions(+)
->>>
->>> diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
->>> index 1d57f48307e6..87632f7032b6 100644
->>> --- a/drivers/md/bcache/bcache.h
->>> +++ b/drivers/md/bcache/bcache.h
->>> @@ -374,6 +374,7 @@ struct cached_dev {
->>>        unsigned int            writeback_metadata:1;
->>>        unsigned int            writeback_running:1;
->>>        unsigned char           writeback_percent;
->>> +     unsigned char           writeback_fragment_percent;
->>>        unsigned int            writeback_delay;
->>>
->>>        uint64_t                writeback_rate_target;
->>> diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
->>> index 554e3afc9b68..69499113aef8 100644
->>> --- a/drivers/md/bcache/sysfs.c
->>> +++ b/drivers/md/bcache/sysfs.c
->>> @@ -115,6 +115,7 @@ rw_attribute(stop_when_cache_set_failed);
->>>    rw_attribute(writeback_metadata);
->>>    rw_attribute(writeback_running);
->>>    rw_attribute(writeback_percent);
->>> +rw_attribute(writeback_fragment_percent);
->>
->> Hi Dongdong and Coly,
->>
->>       What is the status about this patch? In my opinion, it is a problem
->> we need to solve,
->>
->> but can we just reuse the parameter of writeback_percent, rather than
->> introduce a new writeback_fragment_percent?
->>
->> That means the semantic of writeback_percent will act on dirty data
->> percent and dirty bucket percent.
->>
->> When we found there are dirty buckets more than (c->nbuckets *
->> writeback_percent), start the writeback.
->>
->>
->> Thanx
->>
->> Yang
->>
->>>    rw_attribute(writeback_delay);
->>>    rw_attribute(writeback_rate);
->>>
->>> @@ -197,6 +198,7 @@ SHOW(__bch_cached_dev)
->>>        var_printf(writeback_running,   "%i");
->>>        var_print(writeback_delay);
->>>        var_print(writeback_percent);
->>> +     var_print(writeback_fragment_percent);
->>>        sysfs_hprint(writeback_rate,
->>>                     wb ? atomic_long_read(&dc->writeback_rate.rate) << 9 : 0);
->>>        sysfs_printf(io_errors,         "%i", atomic_read(&dc->io_errors));
->>> @@ -308,6 +310,9 @@ STORE(__cached_dev)
->>>        sysfs_strtoul_clamp(writeback_percent, dc->writeback_percent,
->>>                            0, bch_cutoff_writeback);
->>>
->>> +     sysfs_strtoul_clamp(writeback_fragment_percent, dc->writeback_fragment_percent,
->>> +                         0, bch_cutoff_writeback_sync);
->>> +
->>>        if (attr == &sysfs_writeback_rate) {
->>>                ssize_t ret;
->>>                long int v = atomic_long_read(&dc->writeback_rate.rate);
->>> @@ -498,6 +503,7 @@ static struct attribute *bch_cached_dev_files[] = {
->>>        &sysfs_writeback_running,
->>>        &sysfs_writeback_delay,
->>>        &sysfs_writeback_percent,
->>> +     &sysfs_writeback_fragment_percent,
->>>        &sysfs_writeback_rate,
->>>        &sysfs_writeback_rate_update_seconds,
->>>        &sysfs_writeback_rate_i_term_inverse,
->>> diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
->>> index 3c74996978da..34babc89fdf3 100644
->>> --- a/drivers/md/bcache/writeback.c
->>> +++ b/drivers/md/bcache/writeback.c
->>> @@ -88,6 +88,26 @@ static void __update_writeback_rate(struct cached_dev *dc)
->>>        int64_t integral_scaled;
->>>        uint32_t new_rate;
->>>
->>> +     /*
->>> +      * We need to consider the number of dirty buckets as well
->>> +      * when calculating the proportional_scaled, Otherwise we might
->>> +      * have an unreasonable small writeback rate at a highly fragmented situation
->>> +      * when very few dirty sectors consumed a lot dirty buckets, the
->>> +      * worst case is when dirty_data reached writeback_percent and
->>> +      * dirty buckets reached to cutoff_writeback_sync, but the rate
->>> +      * still will be at the minimum value, which will cause the write
->>> +      * stuck at a non-writeback mode.
->>> +      */
->>> +     struct cache_set *c = dc->disk.c;
->>> +
->>> +     if (c->gc_stats.in_use > dc->writeback_fragment_percent && dirty > 0) {
->>> +             int64_t dirty_buckets = (c->gc_stats.in_use * c->nbuckets) / 100;
->>> +             int64_t fragment = (dirty_buckets *  c->cache->sb.bucket_size) / dirty;
->>> +
->>> +             proportional_scaled =
->>> +             div_s64(dirty, dc->writeback_rate_p_term_inverse) * (fragment);
->>> +     }
->>> +
->>>        if ((error < 0 && dc->writeback_rate_integral > 0) ||
->>>            (error > 0 && time_before64(local_clock(),
->>>                         dc->writeback_rate.next + NSEC_PER_MSEC))) {
->>> @@ -969,6 +989,7 @@ void bch_cached_dev_writeback_init(struct cached_dev *dc)
->>>        dc->writeback_metadata          = true;
->>>        dc->writeback_running           = false;
->>>        dc->writeback_percent           = 10;
->>> +     dc->writeback_fragment_percent  = 50;
->>>        dc->writeback_delay             = 30;
->>>        atomic_long_set(&dc->writeback_rate.rate, 1024);
->>>        dc->writeback_rate_minimum      = 8;
+> +10. KVM_SEV_GET_ATTESATION_REPORT
+
+KVM_SEV_GET_ATTESTATION_REPORT
+
+> +---------------------------------
+> +
+> +The KVM_SEV_GET_ATTESATION_REPORT command can be used by the hypervisor to query the attestation
+
+KVM_SEV_GET_ATTESTATION_REPORT
+
+> +report containing the SHA-256 digest of the guest memory and VMSA passed through the KVM_SEV_LAUNCH
+> +commands and signed with the PEK. The digest returned by the command should match the digest
+> +used by the guest owner with the KVM_SEV_LAUNCH_MEASURE.
+> +
+> +Parameters (in): struct kvm_sev_attestation
+> +
+> +Returns: 0 on success, -negative on error
+> +
+> +::
+> +
+> +        struct kvm_sev_attestation_report {
+> +                __u8 mnonce[16];        /* A random mnonce that will be placed in the report */
+> +
+> +                __u64 uaddr;            /* userspace address where the report should be copied */
+> +                __u32 len;
+> +        };
+> +
+>  References
+>  ==========
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 566f4d18185b..c4d3ee6be362 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -927,6 +927,74 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>         return ret;
+>  }
+>
+> +static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> +{
+> +       void __user *report = (void __user *)(uintptr_t)argp->data;
+> +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +       struct sev_data_attestation_report *data;
+> +       struct kvm_sev_attestation_report params;
+> +       void __user *p;
+> +       void *blob = NULL;
+> +       int ret;
+> +
+> +       if (!sev_guest(kvm))
+> +               return -ENOTTY;
+> +
+> +       if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
+> +               return -EFAULT;
+> +
+> +       data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> +       if (!data)
+> +               return -ENOMEM;
+> +
+> +       /* User wants to query the blob length */
+> +       if (!params.len)
+> +               goto cmd;
+> +
+> +       p = (void __user *)(uintptr_t)params.uaddr;
+> +       if (p) {
+> +               if (params.len > SEV_FW_BLOB_MAX_SIZE) {
+> +                       ret = -EINVAL;
+> +                       goto e_free;
+> +               }
+> +
+> +               ret = -ENOMEM;
+> +               blob = kmalloc(params.len, GFP_KERNEL);
+> +               if (!blob)
+> +                       goto e_free;
+> +
+> +               data->address = __psp_pa(blob);
+> +               data->len = params.len;
+> +               memcpy(data->mnonce, params.mnonce, sizeof(params.mnonce));
+> +       }
+> +cmd:
+> +       data->handle = sev->handle;
+> +       ret = sev_issue_cmd(kvm, SEV_CMD_ATTESTATION_REPORT, data, &argp->error);
+> +       /*
+> +        * If we query the session length, FW responded with expected data.
+> +        */
+> +       if (!params.len)
+> +               goto done;
+> +
+> +       if (ret)
+> +               goto e_free_blob;
+> +
+> +       if (blob) {
+> +               if (copy_to_user(p, blob, params.len))
+> +                       ret = -EFAULT;
+> +       }
+> +
+> +done:
+> +       params.len = data->len;
+> +       if (copy_to_user(report, &params, sizeof(params)))
+> +               ret = -EFAULT;
+> +e_free_blob:
+> +       kfree(blob);
+> +e_free:
+> +       kfree(data);
+> +       return ret;
+> +}
+> +
+>  int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>  {
+>         struct kvm_sev_cmd sev_cmd;
+> @@ -971,6 +1039,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>         case KVM_SEV_LAUNCH_SECRET:
+>                 r = sev_launch_secret(kvm, &sev_cmd);
+>                 break;
+> +       case KVM_SEV_GET_ATTESTATION_REPORT:
+> +               r = sev_get_attestation_report(kvm, &sev_cmd);
+> +               break;
+>         default:
+>                 r = -EINVAL;
+>                 goto out;
+> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> index 476113e12489..cb9b4c4e371e 100644
+> --- a/drivers/crypto/ccp/sev-dev.c
+> +++ b/drivers/crypto/ccp/sev-dev.c
+> @@ -128,6 +128,7 @@ static int sev_cmd_buffer_len(int cmd)
+>         case SEV_CMD_LAUNCH_UPDATE_SECRET:      return sizeof(struct sev_data_launch_secret);
+>         case SEV_CMD_DOWNLOAD_FIRMWARE:         return sizeof(struct sev_data_download_firmware);
+>         case SEV_CMD_GET_ID:                    return sizeof(struct sev_data_get_id);
+> +       case SEV_CMD_ATTESTATION_REPORT:        return sizeof(struct sev_data_attestation_report);
+>         default:                                return 0;
+>         }
+>
+> diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
+> index 49d155cd2dfe..b801ead1e2bb 100644
+> --- a/include/linux/psp-sev.h
+> +++ b/include/linux/psp-sev.h
+> @@ -66,6 +66,7 @@ enum sev_cmd {
+>         SEV_CMD_LAUNCH_MEASURE          = 0x033,
+>         SEV_CMD_LAUNCH_UPDATE_SECRET    = 0x034,
+>         SEV_CMD_LAUNCH_FINISH           = 0x035,
+> +       SEV_CMD_ATTESTATION_REPORT      = 0x036,
+>
+>         /* Guest migration commands (outgoing) */
+>         SEV_CMD_SEND_START              = 0x040,
+> @@ -483,6 +484,22 @@ struct sev_data_dbg {
+>         u32 len;                                /* In */
+>  } __packed;
+>
+> +/**
+> + * struct sev_data_attestation_report - SEV_ATTESTATION_REPORT command parameters
+> + *
+> + * @handle: handle of the VM
+> + * @mnonce: a random nonce that will be included in the report.
+> + * @address: physical address where the report will be copied.
+> + * @len: length of the physical buffer.
+> + */
+> +struct sev_data_attestation_report {
+> +       u32 handle;                             /* In */
+> +       u32 reserved;
+> +       u64 address;                            /* In */
+> +       u8 mnonce[16];                          /* In */
+> +       u32 len;                                /* In/Out */
+> +} __packed;
+> +
+>  #ifdef CONFIG_CRYPTO_DEV_SP_PSP
+>
+>  /**
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index ca41220b40b8..d3385f7f08a2 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1585,6 +1585,8 @@ enum sev_cmd_id {
+>         KVM_SEV_DBG_ENCRYPT,
+>         /* Guest certificates commands */
+>         KVM_SEV_CERT_EXPORT,
+> +       /* Attestation report */
+> +       KVM_SEV_GET_ATTESTATION_REPORT,
+>
+>         KVM_SEV_NR_MAX,
+>  };
+> @@ -1637,6 +1639,12 @@ struct kvm_sev_dbg {
+>         __u32 len;
+>  };
+>
+> +struct kvm_sev_attestation_report {
+> +       __u8 mnonce[16];
+> +       __u64 uaddr;
+> +       __u32 len;
+> +};
+> +
+>  #define KVM_DEV_ASSIGN_ENABLE_IOMMU    (1 << 0)
+>  #define KVM_DEV_ASSIGN_PCI_2_3         (1 << 1)
+>  #define KVM_DEV_ASSIGN_MASK_INTX       (1 << 2)
+> --
+> 2.17.1
+>
