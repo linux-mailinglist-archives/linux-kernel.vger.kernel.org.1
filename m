@@ -2,128 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F712D3D9D
+	by mail.lfdr.de (Postfix) with ESMTP id EBE0B2D3D9F
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727710AbgLIIjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:39:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgLIIjT (ORCPT
+        id S1727059AbgLIIkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:40:21 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39240 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726075AbgLIIkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:39:19 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE4AC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 00:38:39 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id w13so1988176lfd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 00:38:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m/1rj/wXg9oCi+YfUXe8gHvq4SdGjy/asRCiGbz5eYE=;
-        b=PD4HG672/N5NMIJ8j9tpQhQA4BdG6Cb8uQhXvZQtNznh2P984CpMjc9rMkiVD7YWtb
-         pdNiXfpyGdA2RBcv3Y2y6AZm8zJAA6Cls9R/ed4vspwFJgZJwEEJu2CjrCpu8Ly1coX0
-         62ptj3YVQ/oAD+aebYOKd0ZoFetjwPMDQBmOuYkdyCcqN6/oTeMnQiRRRGkl7TU9G4Tn
-         Ht0e7Vs/NKedWi5nYBVS9sjFLTU68O9DIH4LSwZjwn20VgLiAtag0dsWT7OQprnvD32h
-         V6BTBB6dNEqK2LGQyAu95rtMmxfEsajc5JRZUk2IZFMcvU2ooTxdWf0KmWvskjuP2ht3
-         4dWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m/1rj/wXg9oCi+YfUXe8gHvq4SdGjy/asRCiGbz5eYE=;
-        b=NPAyi0lg//kTFFtxdOjZxdhvEEwa+r78YDYBqnf7swo2t0arNlD6bGmqeOOMV4QiNU
-         tzQyOEACQr5EExFNkl8CSeo2s/PJm8MyzzMGn0mywwt6UcG5nhKnOptBcQG4VXK0qkw4
-         oMOPQZQ6MMs8ScrTxvTkxrMgggawURyPqA4OPAuVi0fU77BQQUSMmpTORfS10w7Wonfz
-         pufP6mixw/uq64ErwUjsxFcdaD+FZOFScdTdBxiFoN+6e2m5VwxFeZxyNMYQpUQtSeQZ
-         n4UYGApErQLMX/GqPlyl6K0TT6jF6zcWZD0AuoylR8rS1cC0jDUAQNBrnLpOcbDCyTkE
-         lYlw==
-X-Gm-Message-State: AOAM532J3RDO//9ggkI9QFDY7khc2UirskhiS4JyZZswXPJsEkORINzx
-        7J08ea3dRWO/dWHyl15IeYeuDd4+jk7pPuXOi0fP0A==
-X-Google-Smtp-Source: ABdhPJxLQ18SKij9xDzkpwGsoE6abk9C4B246bgaSE56cmuc2Xi0W2PPgg/U9tIm8q1R9aAe8By4wVq8J8FM000qusc=
-X-Received: by 2002:a05:6512:3238:: with SMTP id f24mr670420lfe.29.1607503117685;
- Wed, 09 Dec 2020 00:38:37 -0800 (PST)
+        Wed, 9 Dec 2020 03:40:21 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B98WpUF077141;
+        Wed, 9 Dec 2020 03:39:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=Zs/rcTRYxg3j8byrlx8jtSxDLbD0ZN+CN0RAAXUUh4c=;
+ b=C6FvaFhvJWMOYthpjnbV9gepKZQKhinBXLHf1QcV/bbZhN/Jq0A61zY21wJFfhVlkzMp
+ UeinhsPJiKii8WcKpRit2dlr/0SYlq88azQk03h9NT4WUvmSvjK0p2pvBSXNbtIQ7gvh
+ 2ECmBbH1XMxDgCgY5t9tiC8VYXMJ12/pw7w3eTHcdvLjt2zcgScyD69GDIwCD9OT5b+S
+ IwEv2zeEjRIFWHpT9M6GH4PLwE6Xax5vW/91qO7ZfUaGoWAaXVCLiVAKiRUGXnE4a82i
+ lkLy26VvDt6IuF6vlwHFFs/0Rj0bMfGbn1V+JusU/AS4Lo+FHqA9l7VwX8WkSB3rqU1Y ng== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35afek9x3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 03:39:29 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B98Wveq077592;
+        Wed, 9 Dec 2020 03:39:29 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35afek9x2j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 03:39:28 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B98Y8cE022565;
+        Wed, 9 Dec 2020 08:39:26 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 3581u84cmt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 08:39:26 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B98dOdi24576374
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Dec 2020 08:39:24 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4470EA4051;
+        Wed,  9 Dec 2020 08:39:24 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 427EBA4057;
+        Wed,  9 Dec 2020 08:39:22 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed,  9 Dec 2020 08:39:22 +0000 (GMT)
+Date:   Wed, 9 Dec 2020 14:09:21 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Gautham R Shenoy <ego@linux.vnet.ibm.com>
+Cc:     Anton Blanchard <anton@ozlabs.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] powerpc/cacheinfo: Print correct cache-sibling
+ map/list for L2 cache
+Message-ID: <20201209083921.GL528281@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com>
+ <1607057327-29822-4-git-send-email-ego@linux.vnet.ibm.com>
+ <20201207131138.GJ528281@linux.vnet.ibm.com>
+ <20201208175647.GC14206@in.ibm.com>
 MIME-Version: 1.0
-References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
- <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
- <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <20201201121620.GB5239@sirena.org.uk>
- <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com> <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com>
- <6283C16F-549C-4463-BC08-E2C1A1D78B2F@goldelico.com> <CAGngYiUG76Q-cb_HdDKMia5yXzv_mS+5NPeaBquK3_4b3tr-4Q@mail.gmail.com>
- <9380CE00-9CE6-4E0B-B2E1-1B534F85E47D@goldelico.com> <CAGngYiVF5yMAGPJ8xZgt=BfJ3JfBMABVC0t+dQ2oOq986T9iKg@mail.gmail.com>
- <BD3995F3-F4E6-4DC9-B0B9-5DCD6655F049@goldelico.com> <CAGngYiXWo4QEDF73wa7RDah1yUUOO1URoD_k5Fd5JMqSL2JXGg@mail.gmail.com>
- <A88317FA-52CC-41D3-B11A-BFAD36C35AE4@goldelico.com> <CAGngYiUPaR=_1NKZSjUQRK9+zUw3ztUpro7NV-O=sGAC2eOzUw@mail.gmail.com>
- <7702A943-FCC5-416B-B53A-3B0427458915@goldelico.com> <CACRpkdYgu+fyYm8aSCRuPeVe0EieyboZsWC=XsrRs5Tubog6nA@mail.gmail.com>
- <ED67B0A3-1098-4B4C-A4F4-EE52B0E5F1E3@goldelico.com>
-In-Reply-To: <ED67B0A3-1098-4B4C-A4F4-EE52B0E5F1E3@goldelico.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 9 Dec 2020 09:38:26 +0100
-Message-ID: <CACRpkdYbGBT1gYZ06W7G-tjx9J4YG1bi1g2GOAUAH0tzH8YbNw@mail.gmail.com>
-Subject: Re: [BUG] SPI broken for SPI based panel drivers
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Mark Brown <broonie@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>,
-        Andreas Kemnade <andreas@kemnade.info>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20201208175647.GC14206@in.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_07:2020-12-08,2020-12-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ priorityscore=1501 adultscore=0 mlxscore=0 bulkscore=0 spamscore=0
+ mlxlogscore=999 suspectscore=1 impostorscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 8:07 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
+* Gautham R Shenoy <ego@linux.vnet.ibm.com> [2020-12-08 23:26:47]:
 
-> I find it interesting that so far nobody wants to take responsibility
-> for a decision
-(...)
+> > The drawback of this is even if cpus 0,2,4,6 are released L1 cache will not
+> > be released. Is this as expected?
+> 
+> cacheinfo populates the cache->shared_cpu_map on the basis of which
+> CPUs share the common device-tree node for a particular cache.  There
+> is one l1-cache object in the device-tree for a CPU node corresponding
+> to a big-core. That the L1 is further split between the threads of the
+> core is shown using ibm,thread-groups.
+> 
 
-What causes some consternation in this discussion is the appeal
-to higher authority. The kernel community in general does not like
-authority/responsibility by way of formal hierarchy.
+Yes.
 
-Have you read this document? Especially point 1) Decisions:
-https://www.kernel.org/doc/html/latest/process/management-style.html
+> The ideal thing would be to add a "group_leader" field to "struct
+> cache" so that we can create separate cache objects , one per thread
+> group. I will take a stab at this in the v2.
+> 
 
-(We can have a meta-discussion about this but it is not really your
-point I believe.)
+I am not saying this needs to be done immediately. We could add a TODO and
+get it done later. Your patch is not making it worse. Its just that there is
+still something more left to be done.
 
-> > What I can do is to provide just a skeleton for the table that you or Linus
-> > can fix/fill in and make a patch out of it. Is attached and the ??? is
-> > something you should discuss and define.
->
-> Please take the attached diff, comment it here and define the question marks
-> according to your intention and then make a patch for the YAML bindings out
-> of it. (I can't do because I don't know your intentions and what to write into
-> the commit message).
-
-I'll comment what I know, then you can send a proper patch to
-Mark. But you really need more people than me to look at this.
-
-> +      device node     | cs-gpio       | CS pin state active | Note
-> +      ================+===============+=====================+=====
-> +      spi-cs-high     | -             | H                   |
-> +      -               | -             | L                   |
-> +      spi-cs-high     | ACTIVE_HIGH   | H                   |
-> +      -               | ACTIVE_HIGH   | L (or H ???)        | 1
-
-When using GPIO descriptors it will be enforced to ACTIVE_LOW (L) with an
-explicit warning in dmesg, see drivers/gpio/gpiolib-of.c
-
-When using legacy GPIOs, will be enforced ACTIVE_LOW by the SPI
-core.
-
-> +      spi-cs-high     | ACTIVE_LOW    | H (or L ???)        | 2
-
-When using GPIO descriptors it will be enforced to ACTIVE_HIGH (H) with an
-explicit warning in dmesg, see drivers/gpio/gpiolib-of.c
-
-> +      3) Effectively this rule defines that the ACTIVE level of the
-> +         gpio has to be ignored
-
-Nr 3 isn't tagged in the table.
-
-Yours,
-Linus Walleij
+-- 
+Thanks and Regards
+Srikar Dronamraju
