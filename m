@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 070062D3B17
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B60B2D3B1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727786AbgLIF4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 00:56:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727277AbgLIF4O (ORCPT
+        id S1727668AbgLIGDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 01:03:17 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:19134 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727200AbgLIGDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 00:56:14 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7D6C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 21:55:33 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id t18so381547plo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 21:55:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=e+/KQo/7uYAtbWbl+7BBpmpDWpKdkf167C04AOH3Dok=;
-        b=JX1CgT0rcU5I83EAMxlQQlIn2P+TZTwzT8eH1WZazen5EDzUw+Qypzs2cPZSnP5Zgo
-         bQ68RYrm2IrLIekpTJJYqgg4cRU1jJKExl0lfDXeEBFhc8pK8RmfSZqx/bWjwOGlxMwE
-         isiZakFhiscmIhH3DMi9tYMwpcUGMn84frNV1t/BZem5k0zmESMocz3Q3tgUWvsYF35L
-         C5ngT03ykjA1NLBnvPAss2j/2tMT5JdLoznFzCG9xaU8eYGKQXv4AUmxcxgt2NWAlHuO
-         McIPYcgetMPGoOBgD79WqB3h1mzsQQEgrVdASSblYbUAn6cWFtV5lO1oJCI7DxIe2MM2
-         Dwnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=e+/KQo/7uYAtbWbl+7BBpmpDWpKdkf167C04AOH3Dok=;
-        b=EEbpEoQB+02tiHdLzZG73dCqvcoTxojmBLKfGYA7/6Cp2irBbBgRDKbTt8JNStInVn
-         Kf0kJ2BYawEiMgacq+3dV7+H9vzyVrusWQ7SIEdY3Dwt6W2TIM3xiQhGrUZyik1YMSig
-         LcXrdSXF4WUw7yofeHuO0HVjkP4oW327H4qx1MqETfflD8T0x+1ACTu41irENtl0kJHF
-         N/Og61UPZbxecR3IShlpintWyfx3cmwF5xiUW/j8L2D42f8xV+nTGujFO6vx0jAcVY8k
-         O0M7Ztsom2rK8gbV7ydh4G9usOt+a7SbA+SdujqxzUp+bLM/LFoQc/tF9ukEbvYp3pBl
-         fbmA==
-X-Gm-Message-State: AOAM530ucgcXqojVAiKoil0nlPVCxTGXbZH/OfEc9oupMkO4wA+QWKIm
-        d2m10ni+gahU1xp/HFmgwKp0RQ0ByrP4BQ==
-X-Google-Smtp-Source: ABdhPJw/8dukRiEihHvoiCsLY5JEfe36xkD1kg7KpFx5zfiiMEXG33LbbGxomBfMnr+8CmGdVnoZWw==
-X-Received: by 2002:a17:90a:474c:: with SMTP id y12mr595152pjg.175.1607493333244;
-        Tue, 08 Dec 2020 21:55:33 -0800 (PST)
-Received: from localhost ([122.172.136.109])
-        by smtp.gmail.com with ESMTPSA id u24sm827666pfm.51.2020.12.08.21.55.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Dec 2020 21:55:32 -0800 (PST)
-Date:   Wed, 9 Dec 2020 11:25:30 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
-        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
-        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
-        chris.redpath@arm.com
-Subject: Re: [PATCH v5 0/4] CPUFreq: Add support for opp-sharing cpus
-Message-ID: <20201209055530.gadaie5lttpdprc6@vireshk-i7>
-References: <20201208174229.24323-1-nicola.mazzucato@arm.com>
+        Wed, 9 Dec 2020 01:03:17 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fd0687d0003>; Tue, 08 Dec 2020 22:02:37 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Dec
+ 2020 06:02:35 +0000
+Date:   Wed, 9 Dec 2020 08:02:30 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     <jasowang@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <lulu@redhat.com>
+Subject: Re: [PATCH] vdpa/mlx5: Use write memory barrier after updating CQ
+ index
+Message-ID: <20201209060230.GA57362@mtl-vdi-166.wap.labs.mlnx>
+References: <20201206105719.123753-1-elic@nvidia.com>
+ <20201208164356-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201208174229.24323-1-nicola.mazzucato@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20201208164356-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607493757; bh=CPDp5sL2SqKvhZg0mxRiRnuJ0QdXwiHSE4jTazP1OA8=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=E2HAOp86KwUh9tA8J7ATrlKWgvNkwiEHJoxZoJzVkbMivts5jPqfjueHBWrcF1yr3
+         7qX/8qZplACyvubWXD93ZhPcbXyBu4lHWGVG6VyPtiTJpzc+Ejz4uZBuRErEEHG6nm
+         ZU/2DOROW/CIs6lbN1j07JyuaKtugxv38B3N1P+JFrY4Ly8VTCw3aGh9FFfiR0kDUf
+         uPnsToN9PddpqQnWa44Y2RzAxgcd8EspW4Csa7aYL/iCVCLivc5SN5xFgKP5xgxNdV
+         cGAJio+sD3XJ1n4Yv7nL34IJF2covzyvq+y42mBjsbW2c2LvzH9cwuygtuaT4bXjrf
+         Z7f7GGAn2EGWg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-12-20, 17:42, Nicola Mazzucato wrote:
-> Hi All,
+On Tue, Dec 08, 2020 at 04:45:04PM -0500, Michael S. Tsirkin wrote:
+> On Sun, Dec 06, 2020 at 12:57:19PM +0200, Eli Cohen wrote:
+> > Make sure to put write memory barrier after updating CQ consumer index
+> > so the hardware knows that there are available CQE slots in the queue.
+> > 
+> > Failure to do this can cause the update of the RX doorbell record to get
+> > updated before the CQ consumer index resulting in CQ overrun.
+> > 
+> > Change-Id: Ib0ae4c118cce524c9f492b32569179f3c1f04cc1
+> > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> > Signed-off-by: Eli Cohen <elic@nvidia.com>
 > 
-> In this V5 posting I have addressed suggestions on opp/of and scmi-cpufreq
-> driver.
-> 
-> This is to support systems where exposed cpu performance controls are more
-> fine-grained that the platform's ability to scale cpus independently.
-> 
-> Nicola Mazzucato (3):
->   dt-bindings: opp: Allow empty OPP tables
->   opp/of: Allow empty opp-table with opp-shared
+> Aren't both memory writes?
 
-Applied these two for now. Please rework the other patches based on
-the feedback given on the other thread. Thanks.
+Not sure what exactly you mean here.
 
--- 
-viresh
+> And given that, isn't dma_wmb() sufficient here?
+
+I agree that dma_wmb() is more appropriate here.
+
+> 
+> 
+> > ---
+> >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > index 1f4089c6f9d7..295f46eea2a5 100644
+> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > @@ -478,6 +478,11 @@ static int mlx5_vdpa_poll_one(struct mlx5_vdpa_cq *vcq)
+> >  static void mlx5_vdpa_handle_completions(struct mlx5_vdpa_virtqueue *mvq, int num)
+> >  {
+> >  	mlx5_cq_set_ci(&mvq->cq.mcq);
+> > +
+> > +	/* make sure CQ cosumer update is visible to the hardware before updating
+> > +	 * RX doorbell record.
+> > +	 */
+> > +	wmb();
+> >  	rx_post(&mvq->vqqp, num);
+> >  	if (mvq->event_cb.callback)
+> >  		mvq->event_cb.callback(mvq->event_cb.private);
+> > -- 
+> > 2.27.0
+> 
