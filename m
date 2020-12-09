@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31AF2D3C5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 912892D3C60
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727796AbgLIHeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 02:34:14 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:48265 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728183AbgLIHdw (ORCPT
+        id S1728368AbgLIHeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 02:34:37 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:52449 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728106AbgLIHdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Dec 2020 02:33:52 -0500
-Received: by mail-io1-f71.google.com with SMTP id 191so605072iob.15
+Received: by mail-io1-f69.google.com with SMTP id b136so597756iof.19
         for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 23:33:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=P9LZMAZBHJf7O9yDXHWHSE/19zyEUKOfD7IEF1OKF14=;
-        b=T+zId1eoJkkNs1KepDpesNZqspHeBnbuoZ8Zp/Migot9gr9ZN0Lga7qtNvcS1hJmXM
-         ztxCn3z7Yi7C2BPBKWDFJE4jZEJKn5EDmA82EkQlTX/+mEXy8i40Ya9iFR+492j56rx9
-         DHIbQ8p/F6GV8gREzbkDftBFNLUERVVWvo+krTJvhJ87u5O7v+29K/reJ4MWhZDL1aag
-         BtQtelfCIaQ6Y+7JazQN9ut2MuzEtYrvsCBezQHL0azCkMtmkb+QReH6Shhd0pAtFGff
-         ZQWskhexNv8Nslmm12vTbtMBrmsmG/+NYZm9KAOHoffg7+LYH68zZx9Nhaue/blRSQGc
-         OW3Q==
-X-Gm-Message-State: AOAM530kKcUbmoSXcILbAf9FxmuGIgC6BwL+wkutEsH8DFp6PIA6TI2B
-        95iLc+EEKYYDMF9/XFSgUTTFDk6EFuDFnSeb9eEaLZVpuD1L
-X-Google-Smtp-Source: ABdhPJxeiG9pDSrKPLzAaSeLKo/j9mbJBnfYpzGtjanj1/S/ooN3PyFgINzu9pkjYBCnpJC/mqHlVwut2yh0IMMxDrRNPMYI/Hq8
+        bh=TUPvM5pjFJfI93K9gjTTWctfpryn4JBZxUDK8PvIsO0=;
+        b=dUA0oTH59lKkE55WVlVQtos2XFhdRnsro8cLCf3y1LBXDd5UJOpdH+AYu5dTgNjgYf
+         eUsteYHTocOuPLt03cIG4AZa/OXhuqcJMhQV3k0IOOHHTxQDQEbNfwJ2S1OQnbcg6Oui
+         oS4G3arvNC0gPxVtHCKPX8cV/MhNmj7L+/4AS+B85Ow2w++zXIZNa7IQfI8sWVJ1xDwD
+         6+FDIViHMaMBXZzeHbdrP+OTceje5DV3GDvwUxJkUI+C7Fp2s1Ie0tIUawnUOpN4nS6e
+         +yrM2iVB32ce1b5NJrwnrqsOUkgsU2qkyWjsQSM6dYBIEAWWHHZrMcwmKiCc3sNGX8nQ
+         8J3w==
+X-Gm-Message-State: AOAM5313Q7ZOWNxdqtSHJxEAv3mFV3qBQUGLNBdBUTv9EgdOITxAvHkj
+        yi1cXKrN/MTKPyZkkgFaH/Zv3ZbFc1+cdrTIakhCnvmvOTee
+X-Google-Smtp-Source: ABdhPJwE9NVSuQ/nGiAUa58CMZD95IFRGhRzRaHIVh6FL34U2djGPAtG0oFSmbh4t9ksrqwTWS8B+vSh/a1UUbxiCXppk6yLd7Bk
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2211:: with SMTP id n17mr1139091ion.107.1607499191889;
+X-Received: by 2002:a92:8502:: with SMTP id f2mr1087693ilh.1.1607499191697;
  Tue, 08 Dec 2020 23:33:11 -0800 (PST)
 Date:   Tue, 08 Dec 2020 23:33:11 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004f34f605b60312af@google.com>
-Subject: UBSAN: shift-out-of-bounds in parse_audio_format_i
-From:   syzbot <syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com>
-To:     alexander@tsoy.me, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, mickflemm@gmail.com, perex@perex.cz,
-        syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Message-ID: <0000000000004c471e05b60312f9@google.com>
+Subject: UBSAN: shift-out-of-bounds in option_probe
+From:   syzbot <syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, johan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,26 +50,24 @@ syzbot found the following issue on:
 
 HEAD commit:    15ac8fdb Add linux-next specific files for 20201207
 git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16d4620f500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17dc6adf500000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=3696b8138207d24d
-dashboard link: https://syzkaller.appspot.com/bug?extid=df7dc146ebdd6435eea3
+dashboard link: https://syzkaller.appspot.com/bug?extid=8881b478dad0a7971f79
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126afa13500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14389613500000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e89613500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17993623500000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com
+Reported-by: syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com
 
-usb 1-1: New USB device found, idVendor=1d6b, idProduct=0101, bcdDevice= 0.40
-usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-usb 1-1: Product: syz
-usb 1-1: Manufacturer: syz
-usb 1-1: SerialNumber: syz
-usb 1-1: 2:1 : no or invalid class specific endpoint descriptor
+usb 1-1: config 0 interface 109 has no altsetting 0
+usb 1-1: New USB device found, idVendor=12d1, idProduct=02cb, bcdDevice= 1.fb
+usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
+usb 1-1: config 0 descriptor??
 ================================================================================
-UBSAN: shift-out-of-bounds in sound/usb/format.c:44:17
-shift exponent 4098 is too large for 64-bit type 'long long unsigned int'
-CPU: 0 PID: 8656 Comm: kworker/0:4 Not tainted 5.10.0-rc6-next-20201207-syzkaller #0
+UBSAN: shift-out-of-bounds in drivers/usb/serial/option.c:2120:21
+shift exponent 109 is too large for 64-bit type 'long unsigned int'
+CPU: 0 PID: 3169 Comm: kworker/0:3 Not tainted 5.10.0-rc6-next-20201207-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Workqueue: usb_hub_wq hub_event
 Call Trace:
@@ -77,43 +75,12 @@ Call Trace:
  dump_stack+0x107/0x163 lib/dump_stack.c:120
  ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
  __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- parse_audio_format_i_type sound/usb/format.c:44 [inline]
- parse_audio_format_i.cold+0xba/0x3e2 sound/usb/format.c:653
- snd_usb_parse_audio_format+0x89/0x290 sound/usb/format.c:753
- snd_usb_get_audioformat_uac12 sound/usb/stream.c:841 [inline]
- __snd_usb_parse_audio_interface+0xce4/0x3cf0 sound/usb/stream.c:1170
- snd_usb_parse_audio_interface+0x79/0x130 sound/usb/stream.c:1240
- snd_usb_create_stream.isra.0+0x23a/0x530 sound/usb/card.c:206
- snd_usb_create_streams sound/usb/card.c:278 [inline]
- usb_audio_probe+0x93c/0x2ab0 sound/usb/card.c:802
+ option_probe.cold+0x1a/0x1f drivers/usb/serial/option.c:2120
+ usb_serial_probe+0x32d/0xef0 drivers/usb/serial/usb-serial.c:905
  usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
  really_probe+0x2b1/0xe40 drivers/base/dd.c:554
  driver_probe_device+0x285/0x3f0 drivers/base/dd.c:738
  __device_attach_driver+0x216/0x2d0 drivers/base/dd.c:844
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4c0 drivers/base/dd.c:912
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbb2/0x1ce0 drivers/base/core.c:2934
- usb_set_configuration+0x113c/0x1910 drivers/usb/core/message.c:2167
- usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
- usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
- really_probe+0x2b1/0xe40 drivers/base/dd.c:554
- driver_probe_device+0x285/0x3f0 drivers/base/dd.c:738
- __device_attach_driver+0x216/0x2d0 drivers/base/dd.c:844
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4c0 drivers/base/dd.c:912
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbb2/0x1ce0 drivers/base/core.c:2934
- usb_new_device.cold+0x725/0x1057 drivers/usb/core/hub.c:2555
- hub_port_connect drivers/usb/core/hub.c:5223 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
- port_event drivers/usb/core/hub.c:5509 [inline]
- hub_event+0x2348/0x42d0 drivers/usb/core/hub.c:5591
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-================================================================================
 
 
 ---
