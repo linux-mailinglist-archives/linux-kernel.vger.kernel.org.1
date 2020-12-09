@@ -2,76 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBC82D40EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371B32D40CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730678AbgLILVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:21:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36270 "EHLO mail.kernel.org"
+        id S1730542AbgLILQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:16:57 -0500
+Received: from mga17.intel.com ([192.55.52.151]:37324 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727013AbgLILUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:20:07 -0500
-X-Gm-Message-State: AOAM532+D1hj72eNWbigRJ36XrBNtiQmRz5DI82g8Yf9iTfbpsBahqes
-        ErwYIaeDpOESo7af9GUCqOGwN8m9PPUD1sC8EYc=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607512766;
-        bh=U8CiCE+927eWk1WjnrHEeDDVKhi+XWJxlcOhS4QhpHE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CZbfYp5eMW4vCNbBV9SJiILwyOwti8/kZsAVsYvK2NDemL3iD6lIVzx6OIJEzAsWN
-         K7x05Wm2fieBTM1ho1osVEiUn4PDp5UA/CU+Z08ZXp4Zz0dKo11UaIjzG6QhQ0V8kk
-         PtKS7Mx+K8wZf/TTtpqjFwiyKbSmLsa5ATNjqokNb/UtL8Te498LaiXp/3Sv+J7B0+
-         fEyxHwC6s2/HAlh66Tv3eglhNIQdcjWYfLF610MdIfaY8OjsdW/JTUqSY3wvAtnGAl
-         7QogIuRU22jLlxkLW6zhhTRccEomhcXrCKo8BJhDFfjA3QRJ48x00BzLy2atC0/7rv
-         gm5xle3EZOSYA==
-X-Google-Smtp-Source: ABdhPJy+RZN5YZE70pJEXGADA4yibSdAI8aJxjowtgSH9QR1iHKhytI8wUUYsRy7Qa7sG+nxaBUGbjy4r0F/blrkE+c=
-X-Received: by 2002:a9d:6317:: with SMTP id q23mr1277831otk.251.1607512765731;
- Wed, 09 Dec 2020 03:19:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20201203191135.21576-1-info@metux.net> <20201203191135.21576-2-info@metux.net>
- <0080d492-2f07-d1c6-d18c-73d4204a5d40@metux.net> <CACRpkdb4R4yHcUV2KbGEC_RkU+QmH6Xg7X+qee8sEa9TURGr8A@mail.gmail.com>
- <51d3efb7-b7eb-83d7-673a-308dd51616d3@metux.net> <CACRpkdbqVoT56H88hoZwDqV0kW_8XTaE5TkMQsg-RRrPqgF=cQ@mail.gmail.com>
-In-Reply-To: <CACRpkdbqVoT56H88hoZwDqV0kW_8XTaE5TkMQsg-RRrPqgF=cQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 9 Dec 2020 12:19:09 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1PRQGUXkjdSmqxXSONX_ZoCgsfx8hJBUdBUk14tyzErA@mail.gmail.com>
-Message-ID: <CAK8P3a1PRQGUXkjdSmqxXSONX_ZoCgsfx8hJBUdBUk14tyzErA@mail.gmail.com>
-Subject: Re: Howto listen to/handle gpio state changes ? Re: [PATCH v2 2/2]
- drivers: gpio: add virtio-gpio guest driver
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726954AbgLILQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 06:16:56 -0500
+IronPort-SDR: pX558xBZYEW9rPWkL9bBTVgrI3BPoOuWKfE2/O71OwiS/KD4yO3ROGFtLjvhT2Es456jYGmDgl
+ KNYbbYRSt6pQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="153869054"
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="153869054"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 03:16:16 -0800
+IronPort-SDR: eee8sjsM9prCLqQtVC0BnY60zaqw2Zpdbf1FUEdxvtY2pQUkOMDpP/p5Pys6PpqEvyF3EtTul9
+ NA/5xNo8/d9w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="318747975"
+Received: from unknown (HELO glass.png.intel.com) ([10.158.65.144])
+  by fmsmga007.fm.intel.com with ESMTP; 09 Dec 2020 03:16:13 -0800
+From:   Wong Vee Khee <vee.khee.wong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: [PATCH net-next 1/1] net: stmmac: allow stmmac to probe for C45 PHY devices
+Date:   Wed,  9 Dec 2020 19:19:33 +0800
+Message-Id: <20201209111933.16121-1-vee.khee.wong@intel.com>
+X-Mailer: git-send-email 2.17.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 9:51 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Tue, Dec 8, 2020 at 3:07 PM Enrico Weigelt, metux IT consult <lkml@metux.net> wrote:
+Assign stmmac's mdio_bus probe capabilities to MDIOBUS_C22_C45.
+This extends the probing of C45 PHY devices on the MDIO bus.
 
-> What we need to understand is if your new usecase is an outlier
-> so it is simplest modeled by a "mock" irq_chip or we have to design
-> something new altogether like notifications on changes. I suspect
-> irq_chip would be best because all drivers using GPIOs for interrupts
-> are expecting interrupts, and it would be an enormous task to
-> change them all and really annoying to create a new mechanism
-> on the side.
+Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I would expect the platform abstraction to actually be close enough
-to a chained irqchip that it actually works: the notification should
-come in via vring_interrupt(), which is a normal interrupt handler
-that calls vq->vq.callback(), calling generic_handle_irq() (and
-possibly chained_irq_enter()/chained_irq_exit() around it) like the
-other gpio drivers do should just work here I think, and if it did
-not, then I would expect this to be just a bug in the driver rather
-than something missing in the gpio framework.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+index b2a707e2ef43..9f96bb7d27db 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+@@ -364,6 +364,7 @@ int stmmac_mdio_register(struct net_device *ndev)
+ 		memcpy(new_bus->irq, mdio_bus_data->irqs, sizeof(new_bus->irq));
+ 
+ 	new_bus->name = "stmmac";
++	new_bus->probe_capabilities = MDIOBUS_C22_C45;
+ 
+ 	if (priv->plat->has_xgmac) {
+ 		new_bus->read = &stmmac_xgmac2_mdio_read;
+-- 
+2.17.0
 
-       Arnd
