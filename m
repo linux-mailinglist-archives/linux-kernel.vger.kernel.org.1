@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE2B2D4B60
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6102D4B68
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388185AbgLIUPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:15:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33466 "EHLO
+        id S2388281AbgLIUPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388162AbgLIUPU (ORCPT
+        with ESMTP id S2388172AbgLIUP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:15:20 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F4CC0613D6;
-        Wed,  9 Dec 2020 12:14:40 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id t8so1794061pfg.8;
-        Wed, 09 Dec 2020 12:14:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V/SB75FrytVaR1GPHJwL1aWxWJHgR7n/gB7N5XHVzZs=;
-        b=nFHwZpS17ASDY3IDfmVDOBjTnpDOZVm8vIhqlIMBdw+A3vZP9iyFeW2V7FAoijK+iP
-         LEmnyJzhH6X2DWFEjeFnCFgoAVB3GlwRu66NFkJx6gzSVrZXjJj6uM40de0JjKhAspIf
-         kYZn3M2Y76C/EIaeYTvDsVlIASjN7WLFXhXajD5b+mKOZcWL5WkaEKe04qFKcy03w2Nk
-         1sMdmj5X9hRahBrdjtX8I4N1BGSMDGKAZJk5WHbiu5TkduE+du0BnYLSVZ0rNrrAihi+
-         +n9Ylvi+N/pXrJn4B2coXgnBMTxB+0UZvQNk8OnDGr94cFdpmUZQB2l6swF3wAKEGCcI
-         pIeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V/SB75FrytVaR1GPHJwL1aWxWJHgR7n/gB7N5XHVzZs=;
-        b=FeArSS8cK8Tt1VfseQFZvAYC50/5hcrl7MewkXiQZ9DNuQ78VwVpETJiaZHlsoPyYI
-         GbMEPbJo7pI2gtBkSqDwxsEQEabfrsiA6zLF6+UPIC5mVTb735MFJwBqkdpCyMAlOZ26
-         jIxOCeIwWaHVlw7P5y6/SZ1ORQIyMwHtk4rLCw5XUMfumUqLLyPoCQtadIDox67reKEB
-         ezLa0csXU8T5ImLfPrVDytrCD+Cg8c5nOV4LjBQsJLW/YwloSIc1wRXuXvLHJk70tFPJ
-         PXvi5WuRRGeGjjNSAr+w9IGQvdFnWBephoGNv2zFNlEqIJsd62rEgKccPgAAK5Sj4WiS
-         j0zw==
-X-Gm-Message-State: AOAM531GJnBmrEPtm8HT3Hgk3GGFz1G0uc3jPnEhblnc+4KCtsSYpENz
-        jvTH2lakGgnp/jwIQjRQiDS2go4rUndaiq65Bg==
-X-Google-Smtp-Source: ABdhPJzU1Dfwb1zgY1Qu6vWMDkDTCKsLd/N9aSQfQiQFMb9tNPMERYrSIPfZ8PjLrUVbBbu3LZKQqL+mhsiwSar8GGk=
-X-Received: by 2002:aa7:9738:0:b029:19d:dce0:d8e7 with SMTP id
- k24-20020aa797380000b029019ddce0d8e7mr3564485pfg.14.1607544879848; Wed, 09
- Dec 2020 12:14:39 -0800 (PST)
+        Wed, 9 Dec 2020 15:15:29 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170ECC061793;
+        Wed,  9 Dec 2020 12:14:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=vT2LeumRVmdZuBQd+zgEqW+31k7g/hZC7ygemlxuDL0=; b=lihKyoV1WlUFcBILw6J+5RQIuy
+        TufE3r2rCPt8d+abi7LhY0S7za+9g0+/YLvCtDRarEefff/JvK+Y1/qDce+IMNoas8VaMguapYHg4
+        ru1x/RryyBNvIRwySuz8MbQZKv4sahCtfI8RltY/Eca6pyjggYl+eTYqHVvwP+RlVeRPiDh7rQMQ4
+        s8DRx3Jn6jeGXWioGBx+JlYlJ8zr2jVGAV5E2X/IINOAe5BLveaTm8S0rbcyS6dAyeT6bWwB+I+nO
+        iu83kqwxe3TumEsAeSv//bIE6a6C/yXT/p9OoKIWYk9p5KxDKqDN4DooV8jNVogDrPAZPDCYyaam7
+        eaD78qGw==;
+Received: from [2601:1c0:6280:3f0::1494]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kn5rI-0006d0-4l; Wed, 09 Dec 2020 20:14:44 +0000
+Subject: Re: linux-next: Tree for Dec 9 (ethernet/mellanox/mlx5)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20201209214447.3bfdeb87@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e5519ac6-1d25-632a-9b55-087d8ffaf386@infradead.org>
+Date:   Wed, 9 Dec 2020 12:14:39 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <CALjTZvZZZVqnoV4YFTDHogVHv77=dKfcSSBGj1zC83zpUid9+g@mail.gmail.com>
- <4eb99a1da6342999c4dca355533a0847d0e942a5.camel@intel.com>
- <CALjTZvYwccfOVTTGNo1=oLnwXG2b9Vz1nVZuvLKFV94+3fQ6EQ@mail.gmail.com> <20201209091315.2c55e1c6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201209091315.2c55e1c6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Wed, 9 Dec 2020 20:14:28 +0000
-Message-ID: <CALjTZvYfdMDLGZ8SebXT_W9Asa0fmMVhs47HVLvyDm7ao_Pbjg@mail.gmail.com>
-Subject: Re: [BUG] iwlwifi: card unusable after firmware crash
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "Coelho, Luciano" <luciano.coelho@intel.com>,
-        "Goodstein, Mordechay" <mordechay.goodstein@intel.com>,
-        "Berg, Johannes" <johannes.berg@intel.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201209214447.3bfdeb87@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, guys,
+On 12/9/20 2:44 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20201208:
+> 
 
-On Wed, 9 Dec 2020 at 17:13, Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Any luck figuring this out, Luca? If this is a 5.10 regression we need
-> to let Linus know tomorrow, so the time is ticking :(
+on i386:
 
-I don't have the possibility to test other kernels at the moment, but
-I will do so in a few days (at least to find a working version to
-bisect). Meanwhile, I don't know if this is relevant or not, but I'm
-using WPA3 PSK.
+I see this warning:/note: repeated 106 times on i386 build:
 
-Thanks,
-Rui
+                 from ../drivers/net/ethernet/mellanox/mlx5/core/alloc.c:34:
+../include/vdso/bits.h:7:26: warning: left shift count >= width of type [-Wshift-count-overflow]
+ #define BIT(nr)   (UL(1) << (nr))
+                          ^
+../include/linux/mlx5/mlx5_ifc.h:10716:46: note: in expansion of macro ‘BIT’
+  MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_SAMPLER = BIT(0x20),
+                                              ^~~
+
+
+
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
