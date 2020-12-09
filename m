@@ -2,66 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB6B2D4EB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 00:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EF22D4EB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 00:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731849AbgLIXXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 18:23:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53580 "EHLO mail.kernel.org"
+        id S1733006AbgLIXXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 18:23:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLIXWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 18:22:51 -0500
-Date:   Wed, 9 Dec 2020 15:22:09 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1607556131;
-        bh=MaYUEPvPTBBzMVc3qfNPLeNSrF7PTzU/js45QJeEGPc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UQ705txGjuzhwt5CDJ0nlYUXtNvic6KqPLjAtrMtjEl5UP+OPSwJANkpabEypQvdB
-         YglIg/sncIkn16WDYCh5A87hVldqLukKAU7fyhA1tJUKu4lYt60ptOhV07hDnxASm0
-         15s4lUy7zeNWoQRONHB/8JYoBC+WWnd0LaONbcT4=
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH mm 2/2] Revert
- "kasan, arm64: don't allow SW_TAGS with ARM64_MTE"
-Message-Id: <20201209152209.7af1e9fbe1bf523483d29539@linux-foundation.org>
-In-Reply-To: <CANpmjNM9suHQY-uQN9g5h=Vdv2wotDKNdcnHM=-RTtEb2sCZTA@mail.gmail.com>
-References: <cover.1607537948.git.andreyknvl@google.com>
-        <a6287f2b9836ba88132341766d85810096e27b8e.1607537948.git.andreyknvl@google.com>
-        <CANpmjNM9suHQY-uQN9g5h=Vdv2wotDKNdcnHM=-RTtEb2sCZTA@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725885AbgLIXXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 18:23:51 -0500
+Date:   Wed, 9 Dec 2020 15:23:10 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607556190;
+        bh=FNkanjJRiKGUHvoOf8PjH4Glcl/rM8Sr+vJWnZnM2Fg=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=kC4FMincGXAIuGjcw2vg52OYrjhASaFkyzOXsRBrhaJdTJT66PVkMuv2nu2Yp8ly1
+         Q9YR+F5unST9t6G3aED6/FvHgh0Kmel47VDVjb2nczzFdtmXyR8P+DutyqNUuBThbc
+         Hnkx9jnkwLCGh6qsqD4HGxBShJzfHoSdjqY/v/q7TrAtkxwG15emUkUxm+vGZkgC28
+         tvv2C0esuULdSJw/RgJ/M/j0SeqD6PPZ/qEirWuncC+c1QjW0kStX3yQzRpH/yEXY1
+         9/kyRHeux2lmkFLAQ19PROIKgRDJY/CuGsr4ukiEzU/Hg9r6xRyq7T7pwpMo04Tkuk
+         y7ChaDCe7CeqA==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        iamjoonsoo.kim@lge.com, andrii@kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2 sl-b 3/5] mm: Make mem_dump_obj() handle vmalloc()
+ memory
+Message-ID: <20201209232310.GI2657@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
+ <20201209011303.32737-3-paulmck@kernel.org>
+ <1c25ca09-ec43-df31-a5ba-476397637a53@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1c25ca09-ec43-df31-a5ba-476397637a53@suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Dec 2020 19:51:05 +0100 Marco Elver <elver@google.com> wrote:
-
-> > This is no logner the case: in-kernel MTE is never enabled unless the
-> > CONFIG_KASAN_HW_TAGS is enabled, so there are no more conflicts with
-> > CONFIG_KASAN_SW_TAGS.
-> >
-> > Allow CONFIG_KASAN_SW_TAGS to be enabled even when CONFIG_ARM64_MTE is
-> > enabled.
-> >
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+On Wed, Dec 09, 2020 at 06:51:20PM +0100, Vlastimil Babka wrote:
+> On 12/9/20 2:13 AM, paulmck@kernel.org wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > 
+> > This commit adds vmalloc() support to mem_dump_obj().  Note that the
+> > vmalloc_dump_obj() function combines the checking and dumping, in
+> > contrast with the split between kmem_valid_obj() and kmem_dump_obj().
+> > The reason for the difference is that the checking in the vmalloc()
+> > case involves acquiring a global lock, and redundant acquisitions of
+> > global locks should be avoided, even on not-so-fast paths.
+> > 
+> > Note that this change causes on-stack variables to be reported as
+> > vmalloc() storage from kernel_clone() or similar, depending on the degree
+> > of inlining that your compiler does.  This is likely more helpful than
+> > the earlier "non-paged (local) memory".
+> > 
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> > Cc: <linux-mm@kvack.org>
+> > Reported-by: Andrii Nakryiko <andrii@kernel.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> Reviewed-by: Marco Elver <elver@google.com>
+> ...
+> 
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -3431,6 +3431,18 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+> >  }
+> >  #endif	/* CONFIG_SMP */
+> >  
+> > +bool vmalloc_dump_obj(void *object)
+> > +{
+> > +	struct vm_struct *vm;
+> > +	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+> > +
+> > +	vm = find_vm_area(objp);
+> > +	if (!vm)
+> > +		return false;
+> > +	pr_cont(" vmalloc allocated at %pS\n", vm->caller);
+> 
+> Would it be useful to print the vm area boundaries too?
 
-Thanks.  I simply dropped
-kasan-arm64-dont-allow-sw_tags-with-arm64_mte.patch.
+Like this?
+
+I also considered instead using vm->size, but that always seems to include
+an extra page, so a 4-page span is listed as having 20480 bytes and a
+one-page span is 8192 bytes.  This might be more accurate in some sense,
+but would be quite confusing to someone trying to compare this size with
+that requested in the vmalloc() call.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 33e0469c289c2f78e5f0d0c463c8ee3357d273c0
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Wed Dec 9 15:15:27 2020 -0800
+
+    mm: Make mem_obj_dump() vmalloc() dumps include start and length
+    
+    This commit adds the starting address and number of pages to the vmalloc()
+    information dumped by way of vmalloc_dump_obj().
+    
+    Cc: Andrew Morton <akpm@linux-foundation.org>
+    Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+    Cc: <linux-mm@kvack.org>
+    Reported-by: Andrii Nakryiko <andrii@kernel.org>
+    Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 7421719..77b1100 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -3439,7 +3439,8 @@ bool vmalloc_dump_obj(void *object)
+ 	vm = find_vm_area(objp);
+ 	if (!vm)
+ 		return false;
+-	pr_cont(" vmalloc allocated at %pS\n", vm->caller);
++	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
++		vm->nr_pages, (unsigned long)vm->addr, vm->caller);
+ 	return true;
+ }
+ 
