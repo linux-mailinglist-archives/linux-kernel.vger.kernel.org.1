@@ -2,102 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5542D4825
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E48C82D482C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732897AbgLIRkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:40:04 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:43798 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732053AbgLIRjz (ORCPT
+        id S1732924AbgLIRmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:42:44 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:45712 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729544AbgLIRmn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:39:55 -0500
-Received: by mail-lj1-f196.google.com with SMTP id e7so3342892ljg.10;
-        Wed, 09 Dec 2020 09:39:38 -0800 (PST)
+        Wed, 9 Dec 2020 12:42:43 -0500
+Received: by mail-ot1-f65.google.com with SMTP id h18so2157791otq.12;
+        Wed, 09 Dec 2020 09:42:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=9tCyXmRdOVu83/SxOcTCL8+7o8DKdkiBQxL+CfYSglk=;
-        b=j9WWYuZJTWuPAzvlfaif2Np+2NAeCotFnpT83IUirczamMdRYYyNis6yK+h2ySU0Mn
-         2BcXJ+1u2BxwFwyo5te1O2Mb6GXxRHH9Kp5zHIUH3xJbXojxjdfypT5zNOaxwueRnLCr
-         Ak6o3gVb/qxdYPL+9IAJ4uiXk/Fgwn0kzwQ/2ahYF0aRKHfi5zGJTi5gAhZYqGaFfouX
-         B+I/fuA2/24KR9FZ0mxemSJikxdQKpcWmGSnmMEIfFlqJ6Y2pqN3+RL5v/7LSIwOzPyD
-         TvyMUGEseVAjD296t3sVyBGI85S1AjqT+4eoZBDTU2oxhsFgWAJ0yd90MsUWGxKdGJdi
-         icYA==
-X-Gm-Message-State: AOAM531Q62/6vXz+2O/BdQyZO9GX7ViBjRQbNFAac3wn/kUayjRcNc8C
-        15/94jzw8t2szk1qN7Z2PI/Dqsc+ZsAxVw==
-X-Google-Smtp-Source: ABdhPJwUDZpuCISqa5/rL5hBv/nBydb/m4yCJKe5M9hh3ugp/0pyiudVeoWvwWhJqGC2kkvYXj79ng==
-X-Received: by 2002:a2e:240f:: with SMTP id k15mr1500955ljk.506.1607535552842;
-        Wed, 09 Dec 2020 09:39:12 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id 141sm238224lfd.98.2020.12.09.09.39.11
+        bh=0ux4Sk94uLr3t/Ycz0/4r2TD0W2V25BvuMDypuy7cUw=;
+        b=rrsvBlbNTTgmSVy13Q1mQvNz9ohgsoshc45IwTTPOa80Mm1L1XBwdF2KN4Bjy30D9S
+         1leSAVZ39q74rKoM1cYNDx4dw+XaXxZ9yFMv055b+n4jcnPe5wogS0sjjY/El8mfRmhU
+         5ZNfmmmpRFuOrWmAzZcZCwL6eWq5nqzCEQBNVoKeuBuGc/uvf2QaMnUF0OJoJgrY9+de
+         GwESGfGtj0bNt8PkYFNuYziZwetWX2v69rrKqOIGLOewWgwp2TF+gC+9G3GnLqISbAQ7
+         Y2WBJH5eUCttR39dAOGnUsaybdQlUdpMDrUsSgHUKEncxmGOA+cUDJ8ElOlpkMvMqivD
+         wfdQ==
+X-Gm-Message-State: AOAM533G13OqnWKF73ParLw+fWD2lKCHuz5V0RUcrQrD+/nwvfTTpbOM
+        +5oSc3KrodCi2QSGP40XJ4I23TWLEQ==
+X-Google-Smtp-Source: ABdhPJyqDWbKXuuDf0HEfz8Ky1Z7aK1vmyy1JNFBJkxbozv7GaH7XFyZbqjuHFDqkDK/XUAAvmk45g==
+X-Received: by 2002:a9d:7a48:: with SMTP id z8mr2771119otm.146.1607535722765;
+        Wed, 09 Dec 2020 09:42:02 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z12sm551330oti.45.2020.12.09.09.42.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 09:39:12 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kn3RR-0006YS-3I; Wed, 09 Dec 2020 18:39:53 +0100
-Date:   Wed, 9 Dec 2020 18:39:53 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Johan Hovold <johan@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH 3/4] USB: serial: ftdi_sio: Log the CBUS GPIO validity
-Message-ID: <X9EL6SwjutCHTPO+@localhost>
-References: <20201204164739.781812-1-maz@kernel.org>
- <20201204164739.781812-4-maz@kernel.org>
- <X848LXNv3GRmmSXA@localhost>
- <02b461244a33d5eb0620cfaa13c2b03e@kernel.org>
- <X85IC5NvcWikXfZY@localhost>
- <CACRpkda+JJ9ZMmwPcA_Rc0tgqKQw+VTgfVyp8PsZG55VM82uzg@mail.gmail.com>
- <X9ED9k5gxIlQ0YJ/@localhost>
+        Wed, 09 Dec 2020 09:42:01 -0800 (PST)
+Received: (nullmailer pid 662198 invoked by uid 1000);
+        Wed, 09 Dec 2020 17:42:00 -0000
+Date:   Wed, 9 Dec 2020 11:42:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "xiao.ma" <max701@126.com>
+Cc:     devicetree@vger.kernel.org, xiao.mx.ma@deltaww.com,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, jiajia.feng@deltaww.com
+Subject: Re: [PATCH]
+ dt-bindings:<devicetree/bindings/trivial-devices.yaml>:Add compatible
+ strings
+Message-ID: <20201209174200.GA660537@robh.at.kernel.org>
+References: <20201202072610.1666-1-max701@126.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X9ED9k5gxIlQ0YJ/@localhost>
+In-Reply-To: <20201202072610.1666-1-max701@126.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 06:05:58PM +0100, Johan Hovold wrote:
-> On Wed, Dec 09, 2020 at 10:35:53AM +0100, Linus Walleij wrote:
+On Tue, 01 Dec 2020 21:26:10 -1000, xiao.ma wrote:
+> From: "xiao.ma" <xiao.mx.ma@deltaww.com>
+> 
+> Add delta,q54sj108a2 to trivial-devices.yaml.
+> 
+> Signed-off-by: xiao.ma <xiao.mx.ma@deltaww.com>
+> ---
+>  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-> > It sounds like we agree that this patch sans prints is acceptable.
-> > 
-> > It makes things better so let's go with that.
-> 
-> Sounds good.
-> 
-> I'm about to apply patches 2, 3 and 4 with some smaller changes like
-> demoting the printk messages to KERN_DEBUG and dropping the ftx-progs
-> warning.
->
-> > The problem for the user is that the line looks to be
-> > "used by the kernel" (true in some sense) but they have no
-> > idea what to do about it and that the ftx-prog will solve
-> > their hacking problem.
-> 
-> Right, it's not ideal, but the datasheets for these devices clearly
-> states that the configuration of the CBUS pins is done in EEPROM and the
-> vendor provides some tool to do that. Then there's a bunch of open
-> source implementations for the same including ftx-progs (which can only
-> be used for a subset of these devices).
-> 
-> I'd be fine with a dev_err() on the first request that fails saying that
-> the CBUS pin is not configured for GPIO use (perhaps even on every
-> request if its not something that a non-root user can trigger). But we
-> cannot have both that and have the line marked in-use through the
-> chardev interface currently.
-> 
-> I'm admittedly a bit torn on which is preferable.
+Applied with subject fixed. 'git log --oneline <file>' will give you an 
+idea of what the subject should look like.
 
-I've applied the patches now. Having this reported through the chardev
-interface must be better than having to match up a failed request with
-something in the system log.
-
-Johan
+Rob
