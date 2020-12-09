@@ -2,162 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684ED2D4680
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672E32D467A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731464AbgLIQMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:12:38 -0500
-Received: from mga05.intel.com ([192.55.52.43]:30298 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730081AbgLIQM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:12:26 -0500
-IronPort-SDR: ZUZhSwBj58owCjspooXt/wBA5BfbA/5Zo7jzDbCCRD8yuKf/8x1qmLi6qT7w9B03Y87UMONLbs
- SGKdj5DdtIPg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="258810056"
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="scan'208";a="258810056"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 08:10:36 -0800
-IronPort-SDR: ww9NHfQf5V6acgeqJE3kUaCu4k84aFN82QRBbyDjam1rF/czIY8BAH/SfQzx1nOkv5Rh00zvKG
- AvFvLRlWOBhQ==
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="scan'208";a="542442728"
-Received: from jtholmen-mobl2.amr.corp.intel.com ([10.212.122.32])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 08:10:35 -0800
-Message-ID: <5dc6ca9bf2bcb887ca21041bad60f5e9c461df88.camel@linux.intel.com>
-Subject: Re: [PATCH 1/3] thermal: core: Add indication for userspace usage
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Zhang Rui <rui.zhang@intel.com>, amitk@kernel.org,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Wed, 09 Dec 2020 08:10:35 -0800
-In-Reply-To: <4767b493-fa24-e294-66df-3989b72bfb01@linaro.org>
-References: <20201128175450.12456-1-kai.heng.feng@canonical.com>
-         <004fe225-1009-06d8-b297-c03a4c67550f@linaro.org>
-         <860126B8-1152-4EE3-B15E-B4E45EFE879F@canonical.com>
-         <fc67ad02826fb3adfd8457e1a0baf234a8fa3fce.camel@linux.intel.com>
-         <34348B03-5E27-49A0-A704-6332BAC00758@canonical.com>
-         <585bb5d3ee5bea063795682108576c3464ba72b6.camel@linux.intel.com>
-         <D53454A1-5ED0-4B4D-B22F-8663C9970ECD@canonical.com>
-         <f863f2e1e322a8819c660f5eefbbc4acf7522990.camel@linux.intel.com>
-         <FCFE1F21-2EC6-4D3A-8B2E-32C653816D58@canonical.com>
-         <4767b493-fa24-e294-66df-3989b72bfb01@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-MIME-Version: 1.0
+        id S1730905AbgLIQLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:11:48 -0500
+Received: from mail-dm6nam10on2066.outbound.protection.outlook.com ([40.107.93.66]:16961
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727415AbgLIQLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:11:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q5pS1KCK5WKJR6K+oUXWY8odqERAZ5Lnf7y26FEh/XKgvGLTpnYc8gpI0kFr7rIwzuAv/ekmfHNcO7rU+GZTiTxRa4rl1r0Xg2S5jTFzj0CP5zmHBl37wLVwJ+tO1YQAwk4RsDjFY7NOzdLWmQYgeQ4kj3gZBywyjRZ1FJnDjuz+bNbY15gm6wOQQ/7T6kFkvpSwuwnkokakPn/6UCVgVa7ynMJJMCKtHF0aMx9deiHTkp2aS4rUbKrCGN8bjekrv7qUQknyit1Nj4+/mxazZa5v8xcTFT+BCC4PyONuDsDIYtrAOPEBxvxgBe84/ptFgdB6K5bCYmJqC2XEXVor+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=w7HlXYyvyJ7UQ5TJcbB/wsgmxLfytwe9GV+qTwWdXuc=;
+ b=j9cVpDc+sxxhrNFOB/abrAuoZdhAGtCjhx8GjmWnW1Pb85YRLyPH1pb71a0U9FiG4hY4Kf6q7yxGZ72Ew05pTCb3lqN3ec2bE8sKY1PovyLOfpgNtM2XW82/bzqN1QTsg5Z591Egrxidw3RRN3pzYpBG28FciCD1Xa8E7Lpath8rsGGssZslB4B/JnJVHvgMiVovamWu63QWAxc7zAgxxxF5vHFDFUFzc5yeefsEqTmzj2ZGIRYFecaYTRuisE5aT72WB2nkSE2oGbsLdeorVibaKCoHIhi52A08oUgWz4BwvMQ9wrNS3qkmVuA3vU2w1VMC0iGjDJkC10vXl82L6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=w7HlXYyvyJ7UQ5TJcbB/wsgmxLfytwe9GV+qTwWdXuc=;
+ b=r3SrVZ9Lnmwh+ymUH410sjLAitat1iKB1dTP0MzmBdK8pUwotIbAu8HtPeJUMLmGTYTI9pCC8qh6aBOaSs6D4CBPaB1fCwFh2CJwES9IUVfaGBXbo1Xoc1BE9N91OFqrbALYPzqEMORchXnWrZCv6YhsGWGx1OghIevJhWo0kbM=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3962.namprd12.prod.outlook.com (2603:10b6:5:1ce::21)
+ by DM6PR12MB2795.namprd12.prod.outlook.com (2603:10b6:5:41::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Wed, 9 Dec
+ 2020 16:10:55 +0000
+Received: from DM6PR12MB3962.namprd12.prod.outlook.com
+ ([fe80::d055:19dc:5b0f:ed56]) by DM6PR12MB3962.namprd12.prod.outlook.com
+ ([fe80::d055:19dc:5b0f:ed56%6]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
+ 16:10:55 +0000
+Subject: Re: linux-next: build warning after merge of the drm-misc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20201209210211.306f3c61@canb.auug.org.au>
+From:   Luben Tuikov <luben.tuikov@amd.com>
+Message-ID: <4005f7bb-1a46-0357-cccd-5febae8c4fe1@amd.com>
+Date:   Wed, 9 Dec 2020 11:10:51 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
+In-Reply-To: <20201209210211.306f3c61@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.54.211]
+X-ClientProxiedBy: YT1PR01CA0149.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2f::28) To DM6PR12MB3962.namprd12.prod.outlook.com
+ (2603:10b6:5:1ce::21)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.31.18.65] (165.204.54.211) by YT1PR01CA0149.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 16:10:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 225e9c0e-38c8-4993-0969-08d89c5d01fc
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2795:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2795E3EE1FD690D8837362BC99CC0@DM6PR12MB2795.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:983;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kiDsXg3dqSJ5bdNQSX3+1KOw6CKySxc3dTRmyojkoYxkrKHoNMdfrnQvuLjDIBL30+lpxDBiB2CUWAOrpoMnGzIKzrvkGYp5sdN5hLb5pnFXZF8IWLU1d4mvfJ2UozriF672P+xUt3ZorKAmthj9edc2LWGMW/bT2WfrY8I00lE9MBjh+XrjTa5WaC3kvpyFHOgMeOvZDIObeGmkmgnFrCFdmKoRf2XBQ1fL0I0KtKLPr3pmdBwB98c3T9dcYF1TGsO1BPrvn+KcqxcWgI86uSd0EODV6XlCHFJbYv892eH3tvwdk6hjP+GqHwcfm98tV2RjeL2ZlpfoF2d0kSjBZQ0patbfuXd+vBGdLs6HGo2uDjCzwe9eD8FUQsErw06HfoCymf4Eq0pLEJb5UihgP7NhM9TE74sX4uBrGvEXKgI12oN4+3sv3UZeIBKQW/h/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3962.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(508600001)(8676002)(2906002)(4326008)(8936002)(54906003)(53546011)(34490700003)(44832011)(66946007)(66476007)(186003)(2616005)(31686004)(956004)(83380400001)(4744005)(16526019)(66556008)(110136005)(86362001)(52116002)(5660300002)(16576012)(36756003)(26005)(31696002)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?AiBLBMimMsy7ve7GfhX/rYVv2+qCEwqxsW8RzR13TTbyt3hHggdSqalG?=
+ =?Windows-1252?Q?FNRs/V+gv/inkNYTXn973NOIlprJWNdD0PlyO1Y8DByKIcrqdyROPy/L?=
+ =?Windows-1252?Q?JaE9ELYW6ev/me7msZRUN8u1dqjKJybnKTgaaa90MydmNcnJlfrSKI8d?=
+ =?Windows-1252?Q?L2XS5JUrUHJq2Bcjgno/FBjXA/tjQX5WhFISwPIOawaHUrZ5QPXU/kN+?=
+ =?Windows-1252?Q?GQFJPfa1GfyKjms2pIpHomfCEobmT71au9EuxKpKcfdsL7VqmYBXLOrJ?=
+ =?Windows-1252?Q?XT90HKoj+2TghhT0Eb4KVj4thDxMUsT3KItJYiptE3H/7U86nxMTEF2i?=
+ =?Windows-1252?Q?8xGtJGlXwWaGb7+Pp4FKvxMYJjPwMx0UIA0ikAXnwrlII0okm2X8ZMwr?=
+ =?Windows-1252?Q?kMxhaFeI7WMHp18RY4nd0bYzJE2UJO05p/6R+yB/iY8p2OUuRgog/lvp?=
+ =?Windows-1252?Q?6JO5hcJ9KwBRtMlje5viMaPdxrPGxmxncHqxoZ3qwOR34oRweaumedVZ?=
+ =?Windows-1252?Q?fTk/FcUm0LJhMV9UM36mVtQ+Caha4ZlBpi1uuGG4ria8nqoy9j1D5czn?=
+ =?Windows-1252?Q?1RJiY1ZbNt7dsyuFuUjErBVNvEt6p9omVZkKpoyd3h86TyOu7NPqD/62?=
+ =?Windows-1252?Q?khMjv4dBYIbR1Y6Ai+aBwFKmMUcccWuqq/TAk50O1oqPxI2BBZh34Ub8?=
+ =?Windows-1252?Q?Gzjwz7yZGVet7+6aQkQZZ00sSxn0ktLIsRFcmqqTUBlzIBLi8CNYoTpF?=
+ =?Windows-1252?Q?5m7Bg2y+qJQ+WJTE+Ifl+8GMlA4SFbym3omndVP9fUx5Mqt9HO663fQz?=
+ =?Windows-1252?Q?cVDo7FswhWJ462kDw3T6r3Gr5d7ta5MsyGmOfOrM0KGQ6MGgTXqr1tWl?=
+ =?Windows-1252?Q?hr6dzsg2rR4eBDPjXbLv/Gi5pFuYou3eJo/yYFhlE0oeb1Fqp7aGGUmZ?=
+ =?Windows-1252?Q?vmmSjH/ZZZWnhcfeaEbGZH+GwiKRHk80rC8fmwghBDcL9lUDnOwmHXLc?=
+ =?Windows-1252?Q?9RORjpLrFp42DV26Jle3M/roeP57L06IkY3h3yNAuRd8TiMkG0GN1YN6?=
+ =?Windows-1252?Q?AFThnY6kvhgbsuAg?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3962.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 16:10:55.1321
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 225e9c0e-38c8-4993-0969-08d89c5d01fc
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sHeQyS9spUhjaVgRB3sxP/ADhrjnj5pD+KcqaTn493f2Bc25YNS7+5Wvyqki7NjR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2795
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-09 at 10:30 +0100, Daniel Lezcano wrote:
-> On 07/12/2020 06:36, Kai-Heng Feng wrote:
-> > 
-> > > On Dec 1, 2020, at 02:39, Srinivas Pandruvada <
-> > > srinivas.pandruvada@linux.intel.com> wrote:
-> > > 
-> > > On Tue, 2020-12-01 at 02:22 +0800, Kai-Heng Feng wrote:
-> > > > > On Dec 1, 2020, at 02:13, Srinivas Pandruvada <
-> > > > > srinivas.pandruvada@linux.intel.com> wrote:
-> > > > 
-> > > > [snipped] 
-> > > > 
-> > > > > > > What about creating an new callback
-> > > > > > > 
-> > > > > > > enum thermal_trip_status {
-> > > > > > > 	THERMAL_TRIP_DISABLED = 0,
-> > > > > > > 	THERMAL_TRIP_ENABLED,
-> > > > > > > };
-> > > > > > > 
-> > > > > > > int get_trip_status(struct thermal_zone_device *, int
-> > > > > > > trip,
-> > > > > > > enum
-> > > > > > > thermal_trip_status *state);
-> > > > > > > 
-> > > > > > > Then in 
-> > > > > > > static void handle_thermal_trip(struct
-> > > > > > > thermal_zone_device *tz,
-> > > > > > > int
-> > > > > > > trip)
-> > > > > > > {
-> > > > > > > 
-> > > > > > > /* before tz->ops->get_trip_temp(tz, trip, &trip_temp);
-> > > > > > > */
-> > > > > > > if (tz->ops->get_trip_status) {
-> > > > > > > 	enum thermal_trip_status *status;
-> > > > > > > 
-> > > > > > > 	if (!tz->ops->get_trip_status(tz, trip, &status)) {
-> > > > > > > 		if (status == THERMAL_TRIP_DISABLED)
-> > > > > > > 			return;	
-> > > > > > > 	}
-> > > > > > > }
-> > > > > > > ...
-> > > > > > > ...
-> > > > > > > 
-> > > > > > > }
-> > > > > > > 
-> > > > > > > 
-> > > > > > > This callback will help the cases:
-> > > > > > > - Allows drivers to selectively disable certain trips
-> > > > > > > during
-> > > > > > > init
-> > > > > > > state
-> > > > > > > or system resume where there can be spikes or always.
-> > > > > > > int340x
-> > > > > > > drivers
-> > > > > > > can disable always.
-> > > > > > 
-> > > > > > This sounds really great. This is indeed can happen on
-> > > > > > system
-> > > > > > resume,
-> > > > > > before userspace process thaw.
-> > > > > > 
-> > > > > > > - Still give options for drivers to handle critical trip
-> > > > > > > even
-> > > > > > > if
-> > > > > > > they
-> > > > > > > are bound to user space governors. User space process may
-> > > > > > > be
-> > > > > > > dead,
-> > > > > > > so
-> > > > > > > still allow kernel to process graceful shutdown
-> > > > > > 
-> > > > > > To make the scenario happen, do we need a new sysfs to let
-> > > > > > usespace
-> > > > > > enable it with THERMAL_TRIP_ENABLED?
-> > > > > This should be drivers call not user space.
-> > > > 
-> > > > Understood. So after thermal_zone_device_register(), the driver
-> > > > can
-> > > > decide to what to return on get_trip_temp().
-> > > get_trip_status()
-> > > 
-> > > > Let me work on a new patch if there's no other concern.
-> > > Better to wait for confirmation from Daniel and others.
-> > 
-> > Daniel,
-> > 
-> > Do you like Srinivas' proposed solution?
-> > 
-> > I hope we can find a solution in upstream kernel soon.
+On 2020-12-09 05:02, Stephen Rothwell wrote:
+> Hi all,
 > 
-> (just trying to figure out the full context)
+> After merging the drm-misc tree, today's linux-next build (htmldocs)
+> produced this warning:
 > 
-> If the device is enumerated outside of a thermal zone, the sensor
-> should
-> not register in the thermal zone no ?
-
-Other trips are fine, so sensor registry is still required for passive
-and active control. We just need to ignore critical trip. These table
-are tested by OEM on Windows, where critical trip doesn't result in
-immediate shutdown.
-
-Thanks,
-Srinivas
-
+> include/drm/gpu_scheduler.h:201: warning: Function parameter or member 'list' not described in 'drm_sched_job'
 > 
+> Introduced by commit
 > 
+>   8935ff00e3b1 ("drm/scheduler: "node" --> "list"")
 > 
 
+Thanks for the notification.
+
+I'll send out a patch to fix this.
+
+Regards,
+Luben
