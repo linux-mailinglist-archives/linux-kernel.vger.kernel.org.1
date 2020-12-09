@@ -2,219 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACDB2D4EEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 00:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 098C42D4EF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 00:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388932AbgLIXpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 18:45:39 -0500
-Received: from mga05.intel.com ([192.55.52.43]:64564 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729080AbgLIXp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 18:45:29 -0500
-IronPort-SDR: kI1SQKqk39rQ33AM81qJqzch6V7zbpdlETbu0w+TtJmOxHMW+DtIVkJ8HqW4f3T+mf80pFxni5
- WXYpidC1z3qA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="258884343"
-X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="258884343"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 15:44:08 -0800
-IronPort-SDR: ONGireKW/wb6D+hePqLGWdyQ9eVz1HFUl5M1+WbN9PD8uayL3ETvvsaQeODk40HU+2kQ0PSW/B
- 3QkE3epM0wig==
-X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="333100048"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.255.229.49])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 15:44:08 -0800
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH v8 7/7] fpga: sec-mgr: expose hardware error info
-Date:   Wed,  9 Dec 2020 15:44:01 -0800
-Message-Id: <20201209234401.78668-8-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201209234401.78668-1-russell.h.weight@intel.com>
-References: <20201209234401.78668-1-russell.h.weight@intel.com>
+        id S1727938AbgLIXsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 18:48:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726627AbgLIXsK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 18:48:10 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C746BC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 15:47:29 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id b9so2412877qtr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 15:47:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fEDy9e6MULAxxvc3gfaoOMf7yXixV4MmveX5QoBc0M0=;
+        b=TFpdJEn84BFYinB2Dg6QobxTWrhtFD+bYMceAur0R4opoz8o8WgG73WauK9wx1G+6a
+         35hVLIt17CA2FOx3rKigWTYiGtllriycdvLS1XDI/dsYNZiKT6tW1pIJEPGZnUcWdJOC
+         gIBodtPVt2Ih/WvntEzQ/EwHLlJ0s36catgNg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fEDy9e6MULAxxvc3gfaoOMf7yXixV4MmveX5QoBc0M0=;
+        b=GuqOhFyKBn6C4z6+JkuPXG7ameXbZA6AyZGoWhhJoqQv4XivE05fx0dCm0RmcKWkFW
+         TpaW1tD0VKSuCLf10WjCRKuUeMPFv7N/+kr+RMYil/3p9SPmiHPnMDukkApXGnLF6CT8
+         RgJRy4YnKwix113xgjpQ6oK8wtmN5NqiTUCFJqRKBWkLW5QbbCTTsus4wwoN9E2d/PtE
+         TdhQeqwlZpPTo+c4/6rWqNUEhHwru3t3g59uW9OaOyZ6V1FY2coAuyg0/Nv1M/5bxlL5
+         ttJvN4ra8+lemRV3gcjv2RWq9Ea2fyjJpwi9RsROwb8UmpfniEna3aFsQuQqDyQqmi4c
+         tjLg==
+X-Gm-Message-State: AOAM530Vo3L5DKgBqVlVcqhnNQMxOxT5aiLQkOZse3CEGWcxVudsck99
+        4PNnEfH5dn52mxFGUxwJWpDJ/bK1C8jQK/ccA8sdVW5wMF4=
+X-Google-Smtp-Source: ABdhPJxvdtamgd/uVbuavrschkjTLxHSU+w2IYkR1tiOmF5Uv9v/Nb/UT0aOJkSqCn1q19FiNmI0A7p3JjMlem1ui90=
+X-Received: by 2002:ac8:594c:: with SMTP id 12mr6032953qtz.224.1607557648904;
+ Wed, 09 Dec 2020 15:47:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201203030846.51669-1-pmalani@chromium.org> <20201208093734.GD680328@kuha.fi.intel.com>
+ <CACeCKaehg=HTuQNLtQaJZWvTnOFYM9b1BWfM+WX_ebiZ-_i8JQ@mail.gmail.com>
+ <20201209161356.GI680328@kuha.fi.intel.com> <CACeCKacdcGi_6VW7F9agN+bgRH7gAXLDxK7DngE=fPkYT-CWNQ@mail.gmail.com>
+ <20201209171524.GK680328@kuha.fi.intel.com> <CACeCKafc6A-O09LrTsYgBTbmwVV0y-tEevj_Ci188WmT=hkjxg@mail.gmail.com>
+In-Reply-To: <CACeCKafc6A-O09LrTsYgBTbmwVV0y-tEevj_Ci188WmT=hkjxg@mail.gmail.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Wed, 9 Dec 2020 15:47:17 -0800
+Message-ID: <CACeCKafbAOQdthkafd-QQizQ=1vy4e+4KeGHfLs7JnmgSrVv6Q@mail.gmail.com>
+Subject: Re: [PATCH] usb: typec: Add bus type for plug alt modes
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Benson Leung <bleung@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the FPGA Security Manager class driver to include
-an optional update/hw_errinfo sysfs node that can be used
-to retrieve 64 bits of device specific error information
-following a secure update failure.
+On Wed, Dec 9, 2020 at 2:59 PM Prashant Malani <pmalani@chromium.org> wrote:
+>
+> Hi Heikki,
+>
+> On Wed, Dec 9, 2020 at 9:15 AM Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+> >
+> > Hi Prashant,
+> >
+> > On Wed, Dec 09, 2020 at 08:22:52AM -0800, Prashant Malani wrote:
+> > > Hi Heikki,
+> > >
+> > > On Wed, Dec 9, 2020 at 8:14 AM Heikki Krogerus
+> > > <heikki.krogerus@linux.intel.com> wrote:
+> > > >
+> > > > On Tue, Dec 08, 2020 at 03:45:19PM -0800, Prashant Malani wrote:
+> > > > > Hi Heikki,
+> > > > >
+> > > > > Thanks a lot for looking at the patch.
+> > > > >
+> > > > > On Tue, Dec 8, 2020 at 1:37 AM Heikki Krogerus <heikki.krogerus@linux.intel.com> wrote:
+> > > > > >
+> > > > > > On Wed, Dec 02, 2020 at 07:08:47PM -0800, Prashant Malani wrote:
+> > > > > > > Add the Type C bus for plug alternate modes which are being
+> > > > > > > registered via the Type C connector class. This ensures that udev events
+> > > > > > > get generated when plug alternate modes are registered (and not just for
+> > > > > > > partner/port alternate modes), even though the Type C bus doesn't link
+> > > > > > > plug alternate mode devices to alternate mode drivers.
+> > > > > >
+> > > > > > I still don't understand how is the uevent related to the bus? If you
+> > > > > > check the device_add() function, on line 2917, kobject_uevent() is
+> > > > > > called unconditionally. The device does not need a bus for that event
+> > > > > > to be generated.
+> > > > >
+> > > > > My initial thought process was to see what is the difference in the adev device
+> > > > > initialization between partner altmode and plug altmode (the only difference I saw in
+> > > > > typec_register_altmode() was regarding the bus field).
+> > > > >
+> > > > > Yes, kobject_uevent() is called unconditionally, but it's return value isn't checked,
+> > > > > so we don't know if it succeeded or not.
+> > > > >
+> > > > > In the case of cable plug altmode, I see it fail with the following error[1]:
+> > > > >
+> > > > > [  114.431409] kobject: 'port1-plug0.0' (000000004ad42956): kobject_uevent_env: filter function caused the event to drop!
+> > > > >
+> > > > > I think the filter function which is called is this one: drivers/base/core.c: dev_uevent_filter() [2]
+> > > > >
+> > > > > static int dev_uevent_filter(struct kset *kset, struct kobject *kobj)
+> > > > > {
+> > > > >       struct kobj_type *ktype = get_ktype(kobj);
+> > > > >
+> > > > >       if (ktype == &device_ktype) {
+> > > > >               struct device *dev = kobj_to_dev(kobj);
+> > > > >               if (dev->bus)
+> > > > >                       return 1;
+> > > > >               if (dev->class)
+> > > > >                       return 1;
+> > > > >       }
+> > > > >       return 0;
+> > > > > }
+> > > > >
+> > > > > So, both the "if (dev->bus)" and "if (dev->class)" checks are failing here. In the case of partner alt modes, bus is set by the class.c code
+> > > > > so this check likely returns 1 in that case.
+> > > >
+> > > > OK. I understand the issue now. So I would say that the proper
+> > > > solution to this problem is to link the alt modes with the class
+> > > > instead of the bus. That is much smaller change IMO.
+> > >
+> > > Got it. Just to confirm that I understand correctly, do you mean:
+> > > 1. Only cable plug alt modes should be linked with the class instead of the bus.
+> > >
+> > > <or>
+> > >
+> > > 2. All alt modes (cable plug, partner, port) should be linked with the
+> > > class instead of the bus
+> > >
+> > > My initial interpretation is 1.) since the bus linkage would be
+> > > necessary to match alt mode drivers to partner alt mode devices.
+> > > But, my understanding of the bus code is limited so I could be wrong;
+> > > could you kindly clarify?
+> >
+> > We don't need to care about the bus here. A device can be part of a
+> > bus and a class at the same time. I don't think there is any reason to
+> > limit the class to only plug alt modes, so let's just assign it to all
+> > of them.
+>
+> I had actually tried this earlier, but here we run into errors.
+> If we always set the class, then "partner" altmode device creation
+> fails ("port" altmode creation will likely also fail, but I haven't
+> verified that)
+>
+> The issue is that if we set both "class" and "bus", the device_add()
+> [1] code tries to create the "subsystem" symlink in the altmode
+> device's sysfs entry twice.
+>
+> The first creation is in the call to device_add_class_symlinks()[2]
+> which creates a "subsystem" file [3]. Note that if "class" is not set,
+> this code doesn't execute.
+> Next is the call to bus_add_device() [4] which again tries to create
+> the "subsystem" symlink [5] and fails since it already exists; this
+> leads to failure.
+>
+> There are 2 solutions I can see:
+> 1. Only set class for cable plug alt modes (which won't have a bus
+> set). This will avoid the double "subsystem" sysfs file creation.
+> 2. Change the bus_add_device() code to:
+>     a. use the _nowarn() option of the symlink create function which
+> prevents the warn stack traces on -EEXIST error, and
+>     b. check for -EEXIST return value and don't fail if so.
+>
+> 2.) Sounds good to me, but I'm not sure if it's alright to continue if
+> a "subsystem" symlink already exists.
 
-The underlying driver must provide a get_hw_errinfo() callback
-function to enable this feature. This data is treated as
-opaque by the class driver. It is left to user-space software
-or support personnel to interpret this data.
+It looks like the "subsystem" name depends on the bus_type.name  and
+class.name (for bus and class respectively).
+So it is possible the two symlinks will not point to the same location
+(For example, the class for typec is "typec_mux"
+but the bus is simply "typec").
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
----
-v8:
-  - No change
-v7:
-  - Changed Date in documentation file to December 2020
-v6:
-  - No change
-v5:
-  - No change
-v4:
-  - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
-    and removed unnecessary references to "Intel".
-  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
-v3:
-  - No change
-v2:
-  - Bumped documentation date and version
----
- .../ABI/testing/sysfs-class-fpga-sec-mgr      | 14 +++++++
- drivers/fpga/fpga-sec-mgr.c                   | 38 +++++++++++++++++++
- include/linux/fpga/fpga-sec-mgr.h             |  5 +++
- 3 files changed, 57 insertions(+)
+Given this, it sounds like option 1.) might be better, but I'll defer
+to your suggestions.
 
-diff --git a/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-index 96694f229aff..448651909dc6 100644
---- a/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-+++ b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-@@ -65,3 +65,17 @@ Description:	Read-only. Returns a string describing the failure
- 		idle state. If this file is read while a secure
- 		update is in progress, then the read will fail with
- 		EBUSY.
-+
-+What: 		/sys/class/fpga_sec_mgr/fpga_secX/update/hw_errinfo
-+Date:		December 2020
-+KernelVersion:  5.11
-+Contact:	Russ Weight <russell.h.weight@intel.com>
-+Description:	Read-only. Returns a 64 bit error value providing
-+		hardware specific information that may be useful in
-+		debugging errors that occur during FPGA image updates.
-+		This file is only visible if the underlying device
-+		supports it. The hw_errinfo value is only accessible
-+		when the secure update engine is in the idle state.
-+		If this file is read while a secure update is in
-+		progress, then the read will fail with EBUSY.
-+		Format: "0x%llx".
-diff --git a/drivers/fpga/fpga-sec-mgr.c b/drivers/fpga/fpga-sec-mgr.c
-index d354fe2ab582..aebe06d9a54a 100644
---- a/drivers/fpga/fpga-sec-mgr.c
-+++ b/drivers/fpga/fpga-sec-mgr.c
-@@ -38,10 +38,17 @@ static void set_error(struct fpga_sec_mgr *smgr, enum fpga_sec_err err_code)
- 	smgr->err_code = err_code;
- }
- 
-+static void set_hw_errinfo(struct fpga_sec_mgr *smgr)
-+{
-+	if (smgr->sops->get_hw_errinfo)
-+		smgr->hw_errinfo = smgr->sops->get_hw_errinfo(smgr);
-+}
-+
- static void fpga_sec_dev_error(struct fpga_sec_mgr *smgr,
- 			       enum fpga_sec_err err_code)
- {
- 	set_error(smgr, err_code);
-+	set_hw_errinfo(smgr);
- 	smgr->sops->cancel(smgr);
- }
- 
-@@ -227,6 +234,23 @@ error_show(struct device *dev, struct device_attribute *attr, char *buf)
- }
- static DEVICE_ATTR_RO(error);
- 
-+static ssize_t
-+hw_errinfo_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct fpga_sec_mgr *smgr = to_sec_mgr(dev);
-+	int ret;
-+
-+	mutex_lock(&smgr->lock);
-+	if (smgr->progress != FPGA_SEC_PROG_IDLE)
-+		ret = -EBUSY;
-+	else
-+		ret = sysfs_emit(buf, "0x%llx\n", smgr->hw_errinfo);
-+	mutex_unlock(&smgr->lock);
-+
-+	return ret;
-+}
-+static DEVICE_ATTR_RO(hw_errinfo);
-+
- static ssize_t remaining_size_show(struct device *dev,
- 				   struct device_attribute *attr, char *buf)
- {
-@@ -258,6 +282,7 @@ static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
- 	}
- 
- 	smgr->err_code = FPGA_SEC_ERR_NONE;
-+	smgr->hw_errinfo = 0;
- 	smgr->request_cancel = false;
- 	smgr->progress = FPGA_SEC_PROG_READING;
- 	reinit_completion(&smgr->update_done);
-@@ -292,18 +317,31 @@ static ssize_t cancel_store(struct device *dev, struct device_attribute *attr,
- }
- static DEVICE_ATTR_WO(cancel);
- 
-+static umode_t
-+sec_mgr_update_visible(struct kobject *kobj, struct attribute *attr, int n)
-+{
-+	struct fpga_sec_mgr *smgr = to_sec_mgr(kobj_to_dev(kobj));
-+
-+	if (attr == &dev_attr_hw_errinfo.attr && !smgr->sops->get_hw_errinfo)
-+		return 0;
-+
-+	return attr->mode;
-+}
-+
- static struct attribute *sec_mgr_update_attrs[] = {
- 	&dev_attr_filename.attr,
- 	&dev_attr_cancel.attr,
- 	&dev_attr_status.attr,
- 	&dev_attr_error.attr,
- 	&dev_attr_remaining_size.attr,
-+	&dev_attr_hw_errinfo.attr,
- 	NULL,
- };
- 
- static struct attribute_group sec_mgr_update_attr_group = {
- 	.name = "update",
- 	.attrs = sec_mgr_update_attrs,
-+	.is_visible = sec_mgr_update_visible,
- };
- 
- static ssize_t name_show(struct device *dev,
-diff --git a/include/linux/fpga/fpga-sec-mgr.h b/include/linux/fpga/fpga-sec-mgr.h
-index e63e6437f394..04235fab8667 100644
---- a/include/linux/fpga/fpga-sec-mgr.h
-+++ b/include/linux/fpga/fpga-sec-mgr.h
-@@ -40,6 +40,9 @@ enum fpga_sec_err {
-  *			    function and is called at the completion
-  *			    of the update, whether success or failure,
-  *			    if the prepare function succeeded.
-+ * @get_hw_errinfo:	    Optional: Return u64 hw specific error info.
-+ *			    The software err_code may used to determine
-+ *			    whether the hw error info is applicable.
-  */
- struct fpga_sec_mgr_ops {
- 	enum fpga_sec_err (*prepare)(struct fpga_sec_mgr *smgr);
-@@ -48,6 +51,7 @@ struct fpga_sec_mgr_ops {
- 	enum fpga_sec_err (*poll_complete)(struct fpga_sec_mgr *smgr);
- 	enum fpga_sec_err (*cancel)(struct fpga_sec_mgr *smgr);
- 	void (*cleanup)(struct fpga_sec_mgr *smgr);
-+	u64 (*get_hw_errinfo)(struct fpga_sec_mgr *smgr);
- };
- 
- /* Update progress codes */
-@@ -73,6 +77,7 @@ struct fpga_sec_mgr {
- 	enum fpga_sec_prog progress;
- 	enum fpga_sec_prog err_state;	/* progress state at time of failure */
- 	enum fpga_sec_err err_code;	/* security manager error code */
-+	u64 hw_errinfo;			/* 64 bits of HW specific error info */
- 	bool request_cancel;
- 	bool driver_unload;
- 	void *priv;
--- 
-2.25.1
 
+Best regards,
+
+-Prashant
