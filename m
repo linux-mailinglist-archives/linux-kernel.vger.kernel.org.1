@@ -2,125 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC5E2D4551
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B672B2D455F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:28:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730041AbgLIPZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:25:17 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:44573 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729949AbgLIPZQ (ORCPT
+        id S1730084AbgLIP1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:27:42 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6968 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727013AbgLIP1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:25:16 -0500
-Received: by mail-lf1-f66.google.com with SMTP id m25so3598385lfc.11;
-        Wed, 09 Dec 2020 07:24:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c82hnL+n/w5N2k4itbMOvCwk0PTaYeye6Ht48+ywYyA=;
-        b=WfVFG6SBxzj19SwB7jgFUjzCQU/xibwzzKc/mBicKBmriepuFopDC33Z9WYTpFUWEw
-         wfvZfTIaAbxztqTRJ+s4qTEYkhCh7rhBjO7k3MCSKU75RizbvoevFrUCoGr6NnVmg7hg
-         wjlvvI65wYouPxHALr8e5XtVyYaLrID0lE4M5nbwzIrsPqYikj6944kHt6cETwc/M8I9
-         4/igDarUcUhIH0T0P638l46VYESTHQ30Fn1Hg9ymMg7F77yH6aVF2a5THS8ofj/M43lW
-         IH+uPt52jQqlYO/LHE77+8M5krLq/TPFXoUPuGP2fcgN7W6ckzUh9aCpkBpmXrJXWOXi
-         pj9g==
-X-Gm-Message-State: AOAM532Uzhck6/cBEczimeywQZXzExOuV+HRoIUuW8CELebLHwm2JFTk
-        1rxPk11Wn/yib0YQG6R333s=
-X-Google-Smtp-Source: ABdhPJzCmf4UQvTZ6ImEMwUHrHuLwwO8+ABHGcKgnbs6Z5W3asrE3QVb45CQN5eEDjiXQyr+aZ2j9g==
-X-Received: by 2002:ac2:5469:: with SMTP id e9mr1107904lfn.439.1607527473924;
-        Wed, 09 Dec 2020 07:24:33 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id f15sm267706ljo.7.2020.12.09.07.24.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 07:24:33 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kn1L7-0005Wj-Sm; Wed, 09 Dec 2020 16:25:14 +0100
-Date:   Wed, 9 Dec 2020 16:25:13 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        patong.mxl@gmail.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH v5 2/3] usb: serial: xr_serial: Add gpiochip support
-Message-ID: <X9DsWahl6UDwZwBn@localhost>
-References: <20201122170822.21715-1-mani@kernel.org>
- <20201122170822.21715-3-mani@kernel.org>
- <CACRpkdbY-aZB1BAD=JkZAHA+OQvpH12AD3tLAp6Nf1hwr74s9A@mail.gmail.com>
- <X8ZmfbQp7/BGgxec@localhost>
- <CACRpkdZJdxqxUEQaKUHctHRSQAUpYZJtuxonwVd_ZFAsLBbKrA@mail.gmail.com>
- <X89OOUOG0x0SSxXA@localhost>
- <CACRpkdavm7GG8HdV1xk0W_b1EzUmvF0kKAGnp0u6t42NAWa9iA@mail.gmail.com>
+        Wed, 9 Dec 2020 10:27:42 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B9F2B1V042007;
+        Wed, 9 Dec 2020 10:26:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=bxj5CsCxtxMpz5lNlL5hbIkM0NHnfIzM5+9noRfmSSw=;
+ b=HaLFQqWWqT5z5IK/3pYdMLX4Sy3UvDFB6mNSg04S1HXhmp1puM3eaBTXs0Iol8gfYj/M
+ y6lC53euBhQTG0wNEQhvdwhpxKs3p+FvekDsBjvU/szg7rNdRvKyBGgOcTmSXGRJWaGI
+ 0FFDchQcLMbcTIGqq+pBwqWjbNqp5rpHS2YqSca9EhJTiRaKoYfd+VDZ3ZgQvPdeTfzX
+ k5pBYzuetzFII+OK0CER/xAM4uYr0auZWzOhFQOFwnHfW8ZKX1Fiq5V2vnmHdydsh1gg
+ DScEj0rAZbIbWYj0iJo0h+k/j6N37hCo+JNhSAcqayo0cGmXqunF3TkYhvl+TtBawc/m Lg== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35ay1jcxrm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 10:26:45 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B9FQPnv030224;
+        Wed, 9 Dec 2020 15:26:43 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3581u8q156-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 15:26:43 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B9FPQQr23527736
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Dec 2020 15:25:26 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 518C152057;
+        Wed,  9 Dec 2020 15:25:26 +0000 (GMT)
+Received: from thinkpad (unknown [9.171.68.150])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id D619752052;
+        Wed,  9 Dec 2020 15:25:25 +0000 (GMT)
+Date:   Wed, 9 Dec 2020 16:25:24 +0100
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        steven.price@arm.com, christophe.leroy@csgroup.eu,
+        vgupta@synopsys.com, paul.walmsley@sifive.com
+Subject: Re: [PATCH V2 0/2] mm/debug_vm_pgtable: Some minor updates
+Message-ID: <20201209162524.549de532@thinkpad>
+In-Reply-To: <5ac12290-536d-968c-1ca6-10918403bb8f@arm.com>
+References: <1606825169-5229-1-git-send-email-anshuman.khandual@arm.com>
+        <5ac12290-536d-968c-1ca6-10918403bb8f@arm.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdavm7GG8HdV1xk0W_b1EzUmvF0kKAGnp0u6t42NAWa9iA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_13:2020-12-09,2020-12-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 spamscore=0 priorityscore=1501
+ malwarescore=0 adultscore=0 clxscore=1011 mlxlogscore=725
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 01:41:52PM +0100, Linus Walleij wrote:
-> On Tue, Dec 8, 2020 at 10:57 AM Johan Hovold <johan@kernel.org> wrote:
+On Wed, 9 Dec 2020 08:11:13 +0530
+Anshuman Khandual <anshuman.khandual@arm.com> wrote:
 
-> > Well we started discussing this back when we only had the sysfs
-> > interface which suffered from the same problem. I thought the chardev
-> > interface was supposed to get rid of the assumption of a flat name
-> > space? Perhaps in v3 of the ABI. ;P
 > 
-> It's "mostly true" that the line names are unique per-chip actually,
-> because people don't like the nasty warning message. I wonder
-> if anything would really break if I go in and make a patch to
-> enforce it, since all drivers passing ->names in the gpiochip
-> are in the kernel we can check them all.
 > 
-> If the names are unique-per-chip, we can add a restriction like this
-> with the requirement:
+> On 12/1/20 5:49 PM, Anshuman Khandual wrote:
+> > This series contains some cleanups and new test suggestions from Catalin
+> > from an earlier discussion.
+> > 
+> > https://lore.kernel.org/linux-mm/20201123142237.GF17833@gaia/
+> > 
+> > This series is based on v5.10-rc6 and has been tested on arm64 and x86 but
+> > has only been build tested on riscv, s390, arc etc. It would be great if
+> > folks could test this on these platforms as well. Thank you.
+> > 
+> > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> > Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> > Cc: Vineet Gupta <vgupta@synopsys.com>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
 > 
-> depends on !GPIO_SYSFS
+> Hello Gerald/Christophe/Vineet/Paul,
 > 
-> so it can't even be compiled in if someone is using the sysfs.
->
-> That should solve the situation where people are (ab)using
-> the sysfs and getting name collisions as a result.
-
-Would it possible to set a flag to suppress just the sysfs entry
-renaming instead?
-
-Despite its flaws the sysfs interface is still very convenient and I'd
-prefer not to disable it just because of the line names.
-
-> Then it should be fine for any driver to provide a names array
-> provided all the names are unique on that gpiochip.
-
-So it sounds like there's nothing preventing per-chip-unique names in
-the rest of gpiolib and the new chardev interface then? Are the
-user-space libraries able to cope with it, etc?
-
-> I doubt it would break anything, but let's see what Geert says.
-> He has some special usecases in the gpio-aggregator driver
-> which will incidentally look for just linenames when
-> aggregating gpios, but I feel it is a bit thick for it to work
-> with multiple hot-pluggable GPIO chips as well, I don't think
-> that is its usecase. (We all want to be perfect but...)
-
-Ok.
-
-> > But what about any other non-pluggable
-> > IC, which provides a few named GPIO lines and of which there could be
-> > more than one in a system?
+> Could you please give this series a quick test on s390, ppc, arc,
+> and riscv platforms. Thank you.
 > 
-> I think if there are such, and the lines are unique per-chip
-> we should make the drivers depend on !GPIO_SYSFS.
 
-Or just suppress the sysfs-entry renaming if that's the only thing
-that's blocking this.
+Hi Anshuman, works fine for s390.
 
-Johan
+Tested-by: Gerald Schaefer <gerald.schaefer@de.ibm.com> [s390]
