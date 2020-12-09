@@ -2,144 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C152D4903
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBD82D499A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:58:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733003AbgLIS3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:29:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgLIS3b (ORCPT
+        id S1728997AbgLISzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:55:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30276 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387560AbgLISzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:29:31 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4363EC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:28:51 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607538529;
+        Wed, 9 Dec 2020 13:55:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607540057;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=1/G0px9XqDscrgZxnqctR4DOelbKvcKboOAeKPUSAvA=;
-        b=dt8QQERC9EBkIjRbXw+jnAKns/JDX0DJhw+bGqfkSZKs21QSUr9bxsOMCOH5H0BbnOu5q0
-        NvHz0r5+twmopMqXIH53hMmZnxkwAztU035bBRw7/T3CFwe7+yaBEIChoEbqTEZseLzIS2
-        LSaMk497rAssc0BtmXVzusAU/CuPteoBHIKTsFqMGiV1r+tmLAGYnkk40LL3f6IYe9yaT4
-        +A7GdiWUdhsxMrtnlbUhbHCu5X1NlZSdNSfHVYUo/u4VBVgUepXGfiJQm+6J/Dq81jhDUc
-        mvrUmH/rk4AcEwkb62WdB8BQZXZc1X/CJhc002K3hyxH1gr/W+3UG4QCBQqFag==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607538529;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1/G0px9XqDscrgZxnqctR4DOelbKvcKboOAeKPUSAvA=;
-        b=V9oddA+L1YqKVGDGcoLJ4YY+sLLaYeA6SQbksDx2ccLzboMUc+/6ciSohAV7pgAI+/OlD/
-        /ArGFKw9yciVziAQ==
-To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc:     Prarit Bhargava <prarit@redhat.com>, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>, Peter Xu <peterx@redhat.com>
-Subject: Re: "irq 4: Affinity broken due to vector space exhaustion." warning on restart of ttyS0 console
-In-Reply-To: <20201209063304.GF23060@syu-laptop>
-References: <3ba26c8d-04ac-1822-d5c2-4a8906f7fd9a@redhat.com> <871rh1gcck.fsf@nanos.tec.linutronix.de> <20201209063304.GF23060@syu-laptop>
-Date:   Wed, 09 Dec 2020 19:28:49 +0100
-Message-ID: <87wnxqzvdq.fsf@nanos.tec.linutronix.de>
+        bh=pAnzkkggIin7jYeCuo0D9ShCd/x0gLLXGM9tw9DfkJs=;
+        b=Y1n0MszPX8etkjVh0IlRVvX9JYU0U6YCd52y/2zd4/1A7WDRve9E1Gk5IO/yuWD+Nrmtqg
+        IudHFx610rWyxTTEB2EREYVp+MpTv3ozXjJmUDDnz1asxmcmvAytfkHeWgsmF2j6eojVOb
+        SVfDtjbiut1YgEGcGmG4uidY1cAKt8U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-wT7oHLPBMnq1hB-gpNuBBA-1; Wed, 09 Dec 2020 13:54:15 -0500
+X-MC-Unique: wT7oHLPBMnq1hB-gpNuBBA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4BF20966E86;
+        Wed,  9 Dec 2020 18:53:46 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-5.gru2.redhat.com [10.97.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 19EEA63B8C;
+        Wed,  9 Dec 2020 18:53:44 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 7C35C48E58F2; Wed,  9 Dec 2020 13:34:34 -0300 (-03)
+Date:   Wed, 9 Dec 2020 13:34:34 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+Message-ID: <20201209163434.GA22851@fuller.cnet>
+References: <20201203171118.372391-1-mlevitsk@redhat.com>
+ <20201203171118.372391-2-mlevitsk@redhat.com>
+ <20201207232920.GD27492@fuller.cnet>
+ <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com>
+ <87sg8g2sn4.fsf@nanos.tec.linutronix.de>
+ <20201208181107.GA31442@fuller.cnet>
+ <875z5c2db8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875z5c2db8.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shung-Hsi!
+On Tue, Dec 08, 2020 at 10:33:15PM +0100, Thomas Gleixner wrote:
+> On Tue, Dec 08 2020 at 15:11, Marcelo Tosatti wrote:
+> > On Tue, Dec 08, 2020 at 05:02:07PM +0100, Thomas Gleixner wrote:
+> >> On Tue, Dec 08 2020 at 16:50, Maxim Levitsky wrote:
+> >> > On Mon, 2020-12-07 at 20:29 -0300, Marcelo Tosatti wrote:
+> >> >> > +This ioctl allows to reconstruct the guest's IA32_TSC and TSC_ADJUST value
+> >> >> > +from the state obtained in the past by KVM_GET_TSC_STATE on the same vCPU.
+> >> >> > +
+> >> >> > +If 'KVM_TSC_STATE_TIMESTAMP_VALID' is set in flags,
+> >> >> > +KVM will adjust the guest TSC value by the time that passed since the moment
+> >> >> > +CLOCK_REALTIME timestamp was saved in the struct and current value of
+> >> >> > +CLOCK_REALTIME, and set the guest's TSC to the new value.
+> >> >> 
+> >> >> This introduces the wraparound bug in Linux timekeeping, doesnt it?
+> >> 
+> >> Which bug?
+> >
+> > max_cycles overflow. Sent a message to Maxim describing it.
+> 
+> Truly helpful. Why the hell did you not talk to me when you ran into
+> that the first time?
 
-On Wed, Dec 09 2020 at 14:33, Shung-Hsi Yu wrote:
-> On Tue, Nov 10, 2020 at 09:56:27PM +0100, Thomas Gleixner wrote:
->> The real problem is irqbalanced aggressively exhausting the vector space
->> of a _whole_ socket to the point that there is not a single vector left
->> for serial. That's the problem you want to fix.
->
-> I believe this warning also gets triggered even when there's _no_ vector
-> exhaustion.
->
-> This seem to happen when the IRQ's affinity mask is set (wrongly) to CPUs on
-> a different NUMA node (e.g. cpumask_of_node(1) when the irqd->irq == 0).
->
->   $ lscpu
->   ...
->   NUMA node0 CPU(s):   0-25,52-77
->   NUMA node1 CPU(s):   26-51,78-103
->
->   $ cat /sys/kernel/debug/tracing/trace
->            ...
->     (agetty)-3004    [047] d...    81.777152: vector_activate: irq=4 is_managed=0 can_reserve=1 reserve=0
->     (agetty)-3004    [047] d...    81.777157: vector_alloc: irq=4 vector=0 reserved=1 ret=-22
->     ----------------------------------------> irq_matrix_alloc() failed with
->                                               EINVAL because the cpumask
->                                               passed in is empty, which is a
->                                               result of affmask being
->                                               (ff,ffffc000,000fffff,fc000000)
->                                               and cpumask_of_node(node)
->                                               being
->                                               (00,00003fff,fff00000,03ffffff). 
->
->     (agetty)-3004    [047] d...    81.789349: irq_matrix_alloc: bit=33 cpu=1 online=1 avl=199 alloc=2 managed=1 online_maps=104 global_avl=20688, global_rsvd=341, total_alloc=216
->     (agetty)-3004    [047] d...    81.789351: vector_alloc: irq=4 vector=33 reserved=1 ret=0
->     (agetty)-3004    [047] d...    81.789353: vector_update: irq=4 vector=33 cpu=1 prev_vector=0 prev_cpu=26
->     (agetty)-3004    [047] d...    81.789355: vector_config: irq=4 vector=33 cpu=1 apicdest=0x00000002
->     ----------------------------------------> "irq 4: Affinity broken due to
->                                               vector space exhaustion."
->                                               warning shows up
->
+Because 
 
-Ok. That's a different story. Nice explanation!
+1) Users wanted CLOCK_BOOTTIME to stop counting while the VM 
+is paused (so we wanted to stop guest clock when VM is paused anyway).
 
-But the fix is not to tone down the warning. The proper fix is to do the
-search in the correct order.
+2) The solution to inject NMIs to the guest seemed overly
+complicated.
 
-Thanks,
+> >> For one I have no idea which bug you are talking about and if the bug is
+> >> caused by the VMM then why would you "fix" it in the guest kernel.
+> >
+> > 1) Stop guest, save TSC value of cpu-0 = V.
+> > 2) Wait for some amount of time = W.
+> > 3) Start guest, load TSC value with V+W.
+> >
+> > Can cause an overflow on Linux timekeeping.
+> 
+> Yes, because you violate the basic assumption which Linux timekeeping
+> makes. See the other mail in this thread.
+> 
+> Thanks,
+> 
+>         tglx
 
-        tglx
----
- arch/x86/kernel/apic/vector.c |   24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
-
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -273,20 +273,24 @@ static int assign_irq_vector_any_locked(
- 	const struct cpumask *affmsk = irq_data_get_affinity_mask(irqd);
- 	int node = irq_data_get_node(irqd);
- 
--	if (node == NUMA_NO_NODE)
--		goto all;
--	/* Try the intersection of @affmsk and node mask */
--	cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
--	if (!assign_vector_locked(irqd, vector_searchmask))
--		return 0;
--	/* Try the node mask */
--	if (!assign_vector_locked(irqd, cpumask_of_node(node)))
--		return 0;
--all:
-+	if (node != NUMA_NO_NODE) {
-+		/* Try the intersection of @affmsk and node mask */
-+		cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
-+		if (!assign_vector_locked(irqd, vector_searchmask))
-+			return 0;
-+	}
-+
- 	/* Try the full affinity mask */
- 	cpumask_and(vector_searchmask, affmsk, cpu_online_mask);
- 	if (!assign_vector_locked(irqd, vector_searchmask))
- 		return 0;
-+
-+	if (node != NUMA_NO_NODE) {
-+		/* Try the node mask */
-+		if (!assign_vector_locked(irqd, cpumask_of_node(node)))
-+			return 0;
-+	}
-+
- 	/* Try the full online mask */
- 	return assign_vector_locked(irqd, cpu_online_mask);
- }
