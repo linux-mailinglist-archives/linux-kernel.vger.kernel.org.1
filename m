@@ -2,96 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012332D4182
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA98D2D4192
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731151AbgLIL4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:56:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730991AbgLIL4z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:56:55 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE4D3C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 03:56:14 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id q25so1041645otn.10
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 03:56:14 -0800 (PST)
+        id S1731096AbgLIL7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:59:42 -0500
+Received: from mail-eopbgr1300042.outbound.protection.outlook.com ([40.107.130.42]:56320
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730599AbgLIL7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 06:59:42 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IYkZQiGsgMETgh0SwK3q0JEJV/6TffvrvT2J/zwAx3fCl77YY1QsVH3yqgwDzJ8aEYlRe4T1M9x5X2QobGu2Qidt4ZanD9jr/L37gM7Tc26CLVBamEXWXAHQCJZ2Psn/6KH/fHv5vIWUwUxVMf+UJ19INOMPQwmctC2XApU5/wWNPi4mzQsXL/nwmnHCW1+y1pi4/KCnb+I6o838tCN/mQLUunVkJiTLJvxaai2j6vGHI70FOcJ2IGGbLSEPXMZjl6ALm5uO0MUQYZoDNOfD6VmUjjo38P7FOSgqgMPNor2R8GnZmh/PBwyX1glpeZWRCTPRn08RL1JranlZK71nEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ke/7zqoWtPar/bnT5PwSZO//Zr9ZzmItjeD/Z4qwMIQ=;
+ b=CZCfEXCCLR11pEmZufMjBH8vtX8wzByNV1Yv27VfjZ/nrqR+kuTBZha8FWxSVlCnPoE0mDiYl+RtaM/kM8VHR6WdFegVpWXGmERfW2K5gVe1gEf1gE7yDbJ+W08ZdZF1Pq7aJ0CpVyn1SQSX3jYwBNcs3GSS0Pi5aGtcmhh9a8yVBqmwtWvJ+ycEgIkoO5kUq2SEcLyooL+zbxebzDms39n52aUmoF7rEaiUYvtKA9IszJKWULN++HaY1M60dlsR2lsHX//a/xDmOde3mhS4Le8JvCTNuvkxpep0BzFuUzdequ0b52a1nGFrgo71YPQjbX4lyL95f/Ck2yQlXUgzLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nac73jJQqwYAxYov3s+USnMs5pJwJ4HIU6DRKUk/10I=;
-        b=DShSsknGSTcO5q371O1CRAExcAHKUwPxDf9oK9toeCgNoBIYCyTa75t5R+XoxYkFFB
-         8qwuVPODWJ2c0F/Tsf7eEOd7Rbq5HErv2QRSQSBTD8yPfJ/KYl1WzNxgp5ACaz3qETgb
-         OJt6GC1HR7wF9PRpFJ22c2EgAC5PS+slv3UPc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nac73jJQqwYAxYov3s+USnMs5pJwJ4HIU6DRKUk/10I=;
-        b=QGB/ycsOK4S2FWEEoAnBVY89GF2ns5HyRogMc+Y9C93+NOqBV+o4V2z6jVRDZSOxH8
-         8aYKogc1SNaTYQmUSgk8f83WNI10zR/psEmXr43zqARW8a7Rws7J/59wjnoImcGWzHbp
-         2Az1CES9mS1wqynf5/Y0K+nXyxpG8l9+pSrD7CUBPmDjAf3ptkucU9mk1rs1BHkx/rmN
-         ebqqFWN4V5VZtf55CgG/4LJdQ1I/98ogMVl4+YCOXzDtBNsE8WY6ghcuqwRvSRqiQ3/1
-         KdIEfvY1Cr3w2w+wD2Kvcj1T6lJNacaNkOIM0aX20TmnWpJi3+fhfo1DsXbUMD7hksyk
-         2/VA==
-X-Gm-Message-State: AOAM532r/GwI0qpcrJi5PCPY7XxOeaatQtZsDzl9UCX3gNNQqvR40Ou+
-        caQp8Wi8ix9cQ4EKsw0aKD/cufYqh7MQ56B4UWgaRw==
-X-Google-Smtp-Source: ABdhPJw6OH4BZjXBnN4BhUYKez2px51Lh3nsFIdCJ03taoHzCuFYhQw/XtzIBoIWsImaCPHFBE2+ISwGnoyYO8XmtxI=
-X-Received: by 2002:a9d:23ca:: with SMTP id t68mr1378061otb.281.1607514974241;
- Wed, 09 Dec 2020 03:56:14 -0800 (PST)
+ d=oppoglobal.onmicrosoft.com; s=selector1-oppoglobal-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ke/7zqoWtPar/bnT5PwSZO//Zr9ZzmItjeD/Z4qwMIQ=;
+ b=X7OvGF6SXx3qh/Fl00mxd2zvCRq8IjCKbibJwoZkP/vurz71L24TlyNvmC7i3YI3W9qXek15TfxCiPfY/6mb4ArWSXqta+9smGxZb/g6n8zm1vgxmIRMfwObqayT8rkGJWzVGct4NsC2SQ8AZJLj6vIvtUcdHruWnk7I/slIZX0=
+Authentication-Results: lists.ozlabs.org; dkim=none (message not signed)
+ header.d=none;lists.ozlabs.org; dmarc=none action=none header.from=oppo.com;
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
+ SG2PR02MB2559.apcprd02.prod.outlook.com (2603:1096:3:27::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3632.19; Wed, 9 Dec 2020 11:58:04 +0000
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::dcd:13c1:2191:feb7]) by SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::dcd:13c1:2191:feb7%7]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
+ 11:58:04 +0000
+From:   Huang Jianan <huangjianan@oppo.com>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     huangjianan@oppo.com, guoweichao@oppo.com, zhangshiming@oppo.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5] erofs: avoid using generic_block_bmap
+Date:   Wed,  9 Dec 2020 19:57:40 +0800
+Message-Id: <20201209115740.18802-1-huangjianan@oppo.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [58.255.79.104]
+X-ClientProxiedBy: HKAPR03CA0017.apcprd03.prod.outlook.com
+ (2603:1096:203:c8::22) To SG2PR02MB4108.apcprd02.prod.outlook.com
+ (2603:1096:4:96::19)
 MIME-Version: 1.0
-References: <1607413859-63365-1-git-send-email-tiantao6@hisilicon.com>
- <20201209004828.GN401619@phenom.ffwll.local> <06c1dee7-488d-8a74-a55c-74043cb060cd@ti.com>
-In-Reply-To: <06c1dee7-488d-8a74-a55c-74043cb060cd@ti.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 9 Dec 2020 12:56:03 +0100
-Message-ID: <CAKMK7uFsDPH3+CHGwkgtnDOc6pJY=_SocyaghETZda+RgjAJnQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/tidss: Use the new api devm_drm_irq_install
-To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc:     Tian Tao <tiantao6@hisilicon.com>, Jyri Sarha <jsarha@ti.com>,
-        Dave Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (58.255.79.104) by HKAPR03CA0017.apcprd03.prod.outlook.com (2603:1096:203:c8::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.8 via Frontend Transport; Wed, 9 Dec 2020 11:58:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: db711528-6fe6-4e83-6f73-08d89c39af75
+X-MS-TrafficTypeDiagnostic: SG2PR02MB2559:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR02MB2559F9E30B888B23890DFAEAC3CC0@SG2PR02MB2559.apcprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:525;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2HwKS+MEZ94i0vPwcwZnJayUt6nROuj1ZpQAJK7eSLRxUsqytffXVOPlnIDih2Csp1p4bJJ3WmBgM+sHgkwjuwsQkS8OgKsmZ81NUdz2KJM8d5A3fMs7TkL1th6InsjPc2zoKxFftxsO0ukTy0m+PPrG+Z7HFXlhjogoXPBopoz9aObLiYH+gtkjLmE2tT+2OiqmDDHB/mOT9F/BZdLS5V7vey/EEbLvr05tOuU+o2Gw0e1UYf5M8Iyezx7HeJwYxHsElcvsPl/czilQjgkanQB/tv5Jl5RS8AgqiMvBENxrdTO8y6zhmRI699pbrp3IEXZo32MV3JMjXm/OVxwSjYth6iJEhiAUkI+zWJmof7S/ogE5KxxWd+bsYtrFPzaHEKayQ8cV0kUlVmktuuae9xuKhyNTCnii8KDAyKoQbGvIvQ1sKpCgVqSxAXEBI8im2Awb6EL46L7heL3zHuORdg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(34490700003)(5660300002)(6666004)(83380400001)(6506007)(956004)(86362001)(6512007)(1076003)(26005)(186003)(36756003)(16526019)(508600001)(69590400008)(6916009)(8936002)(66556008)(4326008)(6486002)(2906002)(66946007)(52116002)(2616005)(66476007)(8676002)(41533002)(11606006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?NCdQ2pmYLE1Fkn+s2tUDay9eDzaZKvv/gooToXVBoAzd248hBYax04siopoc?=
+ =?us-ascii?Q?0b/04vtphPTUx/IHjUNzBlrkQerBxdLmx4r5honjw2/mE3LXRe1oGafzb8V+?=
+ =?us-ascii?Q?WVvxC/utd68y+G29NEueVXgF4emA8+WIscjEIxj1eJg91P0ylbq5SdhNxfnb?=
+ =?us-ascii?Q?TC3iSLEjeuXq4I7aRMR6wsXRjCqoIU/g30AG2O/mWHxArjFli+tBTmk0V2jM?=
+ =?us-ascii?Q?poMmCYmB7b8EIKlfxIqb5t8D89/CXuNMGE9+f3W037zaZ8dueXKwjvk0SuUu?=
+ =?us-ascii?Q?sBrzqpUhMguWes6jfy4bgoBuzM4trvRbsWhX+an2EgAwBTH9QVRjJNK9Umx7?=
+ =?us-ascii?Q?6aV8LmrwLLHqOcAlZt54toCHCZKAA3Aj0k18mzcHtogZDniSx9E3mqT795Jk?=
+ =?us-ascii?Q?AoGY6b25rMKXldVmiNUtSUzXUf6NjSG+TI2xLSX7R4y0eL3qtqn0pvEiwENJ?=
+ =?us-ascii?Q?DK6oZC6HIlvTilSmGE+G3C6elMGIkgUBeWbzFVtTCLOnQKcyMWxhFlfMyODM?=
+ =?us-ascii?Q?ziGbYcdhHJEHFO6FVxUmH+qv3tY/72cWrpR8yBqsFRlu0B/wl7E6BpQ4eQff?=
+ =?us-ascii?Q?Sl1QChSJ4vUt9qgCCt+pKbvfASCZJD5pMuXm8FfxIs8/jE55e3u7AJFaFSG3?=
+ =?us-ascii?Q?xNYWx66/vlUR2sA8JGuDfUNFryvcekAQoYI8/3fatIkMyE1p9AQYdBoKuA9z?=
+ =?us-ascii?Q?J0+FSqA3ulNDgTaZjU+o6tIet211OuGvgX5+CPiemZzaFlphIVml4KRQnunm?=
+ =?us-ascii?Q?tv+tzU+8j4p7fF7uWlO/6Q6eTV5zhGrKhGjKZDCmVukDz0rcXa8Bq7wEq+Aj?=
+ =?us-ascii?Q?Jt9uffCms/ZHA6j9k7KltVSypgY07ZD0sTS6I4qU9RIOH2JKKgp7pTSzJOjI?=
+ =?us-ascii?Q?eQ6PMk5VNkjp6JXi7udKu56jVDzEkUiXUmS7Jbljd3zDqAY0WVB78voRULVt?=
+ =?us-ascii?Q?FjtF+UY/UxspUO6HP2/Bfdz75DIC3gOVSW3gXkV0MorfiPlyooLf9YxjQywX?=
+ =?us-ascii?Q?lVPu?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 11:58:04.2923
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-Network-Message-Id: db711528-6fe6-4e83-6f73-08d89c39af75
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LeTszkJlMiT3zDi5URFHdw3GjYvsKBe2O7GrZ4bUdlWBBEmssjrcjvKDV4J3cRzayPXVD4KndkGlAy6AvSv/RQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB2559
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 12:29 PM Tomi Valkeinen <tomi.valkeinen@ti.com> wrote:
->
-> On 09/12/2020 02:48, Daniel Vetter wrote:
-> > On Tue, Dec 08, 2020 at 03:50:59PM +0800, Tian Tao wrote:
-> >> Use devm_drm_irq_install to register interrupts so that
-> >> drm_irq_uninstall is not needed to be called.
-> >>
-> >> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> >
-> > There's another drm_irq_install in the error path. But I'm not sure this
-> > is safe since you're chaning the order in which things get cleaned up now.
-> > So leaving this up to Tomi.
->
-> Right, I don't think this works. tidss irq_uninstall uses runtime_get/put, which needs to happen
-> before pm_runtime_disable. With devm_drm_irq_install that's not the case.
+iblock indicates the number of i_blkbits-sized blocks rather than
+sectors.
 
-Hm I don't spot devm_ versions of these, surely we're not the only
-ones with this problem?
--Daniel
+In addition, considering buffer_head limits mapped size to 32-bits,
+should avoid using generic_block_bmap.
 
->  Tomi
->
-> --
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Fixes: 9da681e017a3 ("staging: erofs: support bmap")
+Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+---
+ fs/erofs/data.c | 26 +++++++-------------------
+ 1 file changed, 7 insertions(+), 19 deletions(-)
 
-
-
+diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+index 347be146884c..ea4f693bee22 100644
+--- a/fs/erofs/data.c
++++ b/fs/erofs/data.c
+@@ -312,27 +312,12 @@ static void erofs_raw_access_readahead(struct readahead_control *rac)
+ 		submit_bio(bio);
+ }
+ 
+-static int erofs_get_block(struct inode *inode, sector_t iblock,
+-			   struct buffer_head *bh, int create)
+-{
+-	struct erofs_map_blocks map = {
+-		.m_la = iblock << 9,
+-	};
+-	int err;
+-
+-	err = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
+-	if (err)
+-		return err;
+-
+-	if (map.m_flags & EROFS_MAP_MAPPED)
+-		bh->b_blocknr = erofs_blknr(map.m_pa);
+-
+-	return err;
+-}
+-
+ static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
+ {
+ 	struct inode *inode = mapping->host;
++	struct erofs_map_blocks map = {
++		.m_la = blknr_to_addr(block),
++	};
+ 
+ 	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
+ 		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
+@@ -341,7 +326,10 @@ static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
+ 			return 0;
+ 	}
+ 
+-	return generic_block_bmap(mapping, block, erofs_get_block);
++	if (!erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW))
++		return erofs_blknr(map.m_pa);
++
++	return 0;
+ }
+ 
+ /* for uncompressed (aligned) files and raw access for other files */
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.25.1
+
