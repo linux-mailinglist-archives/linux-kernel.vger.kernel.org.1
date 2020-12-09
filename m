@@ -2,83 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCD72D4D84
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 854E22D4DA1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388621AbgLIWYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:24:03 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:40916 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388604AbgLIWXv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:23:51 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <seth.forshee@canonical.com>)
-        id 1kn7rW-0008DE-P6
-        for linux-kernel@vger.kernel.org; Wed, 09 Dec 2020 22:23:06 +0000
-Received: by mail-io1-f72.google.com with SMTP id t23so2495266ioh.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 14:23:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=nCPT21aBYHK+VmSNH6RsExkU8pXC3B3JSnVf9A2XUAw=;
-        b=VlCchNEpxb0RiLFZymnTstdml18zKCl9c26T53Z0qzsBYLB4DjE+ls5mwlv+iwYAZ0
-         QC8S1fuVknyB1kK8rkjvZXkFH6QLtQW049Ep0YkPgbbF7h/CFb+BoUS0ZUSzsCiUB2fO
-         renvyjq47oSQWGUDYduu4Cqt2O7fEFaz8rw41D6asZ/adoBlo3jceF0IOPRtw+iDITPD
-         LDfbnKL5asvUsFvIrjElAbbm3RzzZ5YM051fidTplIvS7SFn5/V89Ns5pkB8I2lO7YrA
-         m+hlNdNxL662eHcxxK+M6BYKCCM2aMHTkx9/WMEizkTwbDPASXOKVAiUOUBVNTy6ceq7
-         S15A==
-X-Gm-Message-State: AOAM530ep3Ip5R1YsUg2GHftE5GKupDhiIASdvUMdpGUEjXXcbw8RQC1
-        pigHLE0j8tT4dWcoPq4Jwoh0En2c4fUTB4IpECY9jBrK+VYmo+sDUnWs4kWvp2jhBfLe2/hjHBX
-        vuB42vEXJWYwjLpE8Cqcq+A6QysYY0xuagbFdfFLbWg==
-X-Received: by 2002:a5d:9507:: with SMTP id d7mr5636562iom.32.1607552585835;
-        Wed, 09 Dec 2020 14:23:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxPHEVz4M/SVZNUt1nS2IcUlOCb7v1fywa1vG7vTZjQwq6m0YhMMXsMPX3MpNt78iFWUndNBA==
-X-Received: by 2002:a5d:9507:: with SMTP id d7mr5636527iom.32.1607552585581;
-        Wed, 09 Dec 2020 14:23:05 -0800 (PST)
-Received: from localhost ([2605:a601:ac0f:820:f6e7:e083:7e01:5905])
-        by smtp.gmail.com with ESMTPSA id e1sm1528753iod.17.2020.12.09.14.23.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 14:23:05 -0800 (PST)
-Date:   Wed, 9 Dec 2020 16:23:04 -0600
-From:   Seth Forshee <seth.forshee@canonical.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: BPF selftests build failure in 5.10-rc
-Message-ID: <X9FOSImMbu0/SV5B@ubuntu-x1>
+        id S2388794AbgLIW0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:26:12 -0500
+Received: from mga18.intel.com ([134.134.136.126]:14575 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388691AbgLIWZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 17:25:05 -0500
+IronPort-SDR: iZHq93F+BqXqCbGc4DVgpccVzUMX7Dqdxr+oG+T7cnYUtnJv3tNY5NXc3mgvumKPYNeOCgso/G
+ AJeZccPBNf8w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="161918087"
+X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
+   d="scan'208";a="161918087"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:23:49 -0800
+IronPort-SDR: OamW4pYyTSz0ZhOUmwFPRhgHCsZR41BIf0AjT3cOqRtoFj4wOq1r8A2yBMwJm+x1Z8ggzPa/VP
+ TpuEkmiewkuA==
+X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
+   d="scan'208";a="318543548"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:23:49 -0800
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v16 12/26] mm: Introduce VM_SHSTK for shadow stack memory
+Date:   Wed,  9 Dec 2020 14:23:06 -0800
+Message-Id: <20201209222320.1724-13-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20201209222320.1724-1-yu-cheng.yu@intel.com>
+References: <20201209222320.1724-1-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Building the BPF selftests with clang 11, I'm getting the following
-error:
+A shadow stack PTE must be read-only and have _PAGE_DIRTY set.  However,
+read-only and Dirty PTEs also exist for copy-on-write (COW) pages.  These
+two cases are handled differently for page faults.  Introduce VM_SHSTK to
+track shadow stack VMAs.
 
-   CLNG-LLC [test_maps] profiler1.o
- In file included from progs/profiler1.c:6:
- progs/profiler.inc.h:260:17: error: use of unknown builtin '__builtin_preserve_enum_value' [-Wimplicit-function-declaration]
-                 int cgrp_id = bpf_core_enum_value(enum cgroup_subsys_id___local,
-                               ^
- /home/ubuntu/unstable/tools/testing/selftests/bpf/tools/include/bpf/bpf_core_read.h:179:2: note: expanded from macro 'bpf_core_enum_value'
-         __builtin_preserve_enum_value(*(typeof(enum_type) *)enum_value, BPF_ENUMVAL_VALUE)
-         ^
- 1 error generated.
- llc: error: llc: <stdin>:1:1: error: expected top-level entity
- BPF obj compilation failed
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+---
+ arch/x86/mm/mmap.c | 2 ++
+ fs/proc/task_mmu.c | 3 +++
+ include/linux/mm.h | 8 ++++++++
+ 3 files changed, 13 insertions(+)
 
-I see that test_core_reloc_enumval.c takes precautions around the use of
-__builtin_preserve_enum_value as it is currently only available in clang
-12 nightlies. Is it possible to do something similar here? Though I see
-that the use of the builtin is not nearly so neatly localized as it is
-in test_core_reloc_enumval.c.
+diff --git a/arch/x86/mm/mmap.c b/arch/x86/mm/mmap.c
+index c90c20904a60..a22c6b6fc607 100644
+--- a/arch/x86/mm/mmap.c
++++ b/arch/x86/mm/mmap.c
+@@ -165,6 +165,8 @@ unsigned long get_mmap_base(int is_legacy)
+ 
+ const char *arch_vma_name(struct vm_area_struct *vma)
+ {
++	if (vma->vm_flags & VM_SHSTK)
++		return "[shadow stack]";
+ 	return NULL;
+ }
+ 
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index 217aa2705d5d..5fc5c3b6ea31 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -661,6 +661,9 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
+ 		[ilog2(VM_PKEY_BIT4)]	= "",
+ #endif
+ #endif /* CONFIG_ARCH_HAS_PKEYS */
++#ifdef CONFIG_X86_CET_USER
++		[ilog2(VM_SHSTK)]	= "ss",
++#endif
+ 	};
+ 	size_t i;
+ 
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index db6ae4d3fb4e..ab11e47945ee 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -304,11 +304,13 @@ extern unsigned int kobjsize(const void *objp);
+ #define VM_HIGH_ARCH_BIT_2	34	/* bit only usable on 64-bit architectures */
+ #define VM_HIGH_ARCH_BIT_3	35	/* bit only usable on 64-bit architectures */
+ #define VM_HIGH_ARCH_BIT_4	36	/* bit only usable on 64-bit architectures */
++#define VM_HIGH_ARCH_BIT_5	37	/* bit only usable on 64-bit architectures */
+ #define VM_HIGH_ARCH_0	BIT(VM_HIGH_ARCH_BIT_0)
+ #define VM_HIGH_ARCH_1	BIT(VM_HIGH_ARCH_BIT_1)
+ #define VM_HIGH_ARCH_2	BIT(VM_HIGH_ARCH_BIT_2)
+ #define VM_HIGH_ARCH_3	BIT(VM_HIGH_ARCH_BIT_3)
+ #define VM_HIGH_ARCH_4	BIT(VM_HIGH_ARCH_BIT_4)
++#define VM_HIGH_ARCH_5	BIT(VM_HIGH_ARCH_BIT_5)
+ #endif /* CONFIG_ARCH_USES_HIGH_VMA_FLAGS */
+ 
+ #ifdef CONFIG_ARCH_HAS_PKEYS
+@@ -324,6 +326,12 @@ extern unsigned int kobjsize(const void *objp);
+ #endif
+ #endif /* CONFIG_ARCH_HAS_PKEYS */
+ 
++#ifdef CONFIG_X86_CET_USER
++# define VM_SHSTK	VM_HIGH_ARCH_5
++#else
++# define VM_SHSTK	VM_NONE
++#endif
++
+ #if defined(CONFIG_X86)
+ # define VM_PAT		VM_ARCH_1	/* PAT reserves whole VMA at once (x86) */
+ #elif defined(CONFIG_PPC)
+-- 
+2.21.0
 
-Thanks,
-Seth
