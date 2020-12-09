@@ -2,202 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9F32D3B8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:39:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156EE2D3B74
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:31:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgLIGiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 01:38:08 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52186 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726437AbgLIGiI (ORCPT
+        id S1727892AbgLIGam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 01:30:42 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9558 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgLIGam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 01:38:08 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B96YYW5112139;
-        Wed, 9 Dec 2020 01:37:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=XiMdUiW/Z+awuZ/fbPA1OWDrBX07RpPtQsrXhAFeXSA=;
- b=FEpEAECD+QCgjSrhNC2Z+78eiHRzqHLFlgohJx+8odIMtFNG1KR1p1GvTwszUPpMiGeH
- RZwmWCjXf7dO9vrw1D2svcEVN1oR+81XayxM5/9Q9ZqGOtVt/0uK1O8vmCgt5xh5/txf
- v5PsaS6BhF8RTgohCmix7+/u1ZYn4Zi9S1Y/Ato9ry7N2QawKfEAXZ+xkrB528o3DrD5
- gkrIWGIfy234idQQXgLGq17X8mYJFF0cQO43dctTTEurIDs2yRFdpeYq4tIYSvVfxZdC
- UQrFTdsKfwiAP2CWLmYTksr/GzHdnmde3J8uUyUUz+9gE5HiQQHdjoRMAnEB8AOY7Z7j 8g== 
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35a5t4xkb1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 01:35:51 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B96QfCP009994;
-        Wed, 9 Dec 2020 06:29:50 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma02wdc.us.ibm.com with ESMTP id 3581u9dd2r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 06:29:50 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B96TnVu22216996
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Dec 2020 06:29:49 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8FE2A6E050;
-        Wed,  9 Dec 2020 06:29:49 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 248A36E04C;
-        Wed,  9 Dec 2020 06:29:47 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.85.103.212])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Dec 2020 06:29:46 +0000 (GMT)
-X-Mailer: emacs 27.1 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/mm: Refactor the floor/ceiling check in hugetlb
- range freeing functions
-In-Reply-To: <16a571bb32eb6e8cd44bda484c8d81cd8a25e6d7.1604668827.git.christophe.leroy@csgroup.eu>
-References: <16a571bb32eb6e8cd44bda484c8d81cd8a25e6d7.1604668827.git.christophe.leroy@csgroup.eu>
-Date:   Wed, 09 Dec 2020 11:59:44 +0530
-Message-ID: <87360febl3.fsf@linux.ibm.com>
+        Wed, 9 Dec 2020 01:30:42 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CrRwG0gyQzM06d;
+        Wed,  9 Dec 2020 14:29:18 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 9 Dec 2020
+ 14:29:56 +0800
+Subject: Re: [f2fs-dev] [PATCH v4] f2fs: compress: support chksum
+From:   Chao Yu <yuchao0@huawei.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20201208031437.56627-1-yuchao0@huawei.com>
+ <22ac4df6-53ec-fb7c-c4dd-26435352a701@huawei.com>
+ <X9A7Jn+cHRRcAmIi@google.com>
+ <37d89d34-add1-5254-380b-233ef7a460d4@huawei.com>
+ <X9BKX9PUMFkts9bI@google.com>
+ <5398c880-d4d3-81b9-f3c9-765ba1470e96@huawei.com>
+Message-ID: <0d4a20ec-f6e4-ff24-8733-94cc3762195d@huawei.com>
+Date:   Wed, 9 Dec 2020 14:29:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-09_06:2020-12-08,2020-12-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- spamscore=0 suspectscore=2 mlxlogscore=999 phishscore=0 adultscore=0
- bulkscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090042
+In-Reply-To: <5398c880-d4d3-81b9-f3c9-765ba1470e96@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+On 2020/12/9 12:28, Chao Yu wrote:
+> On 2020/12/9 11:54, Jaegeuk Kim wrote:
+>> Ah, could you please write another patch to adjust the new changes?
+> 
+> No problem, will drop "f2fs: compress:support chksum" based on your dev branch, and
+> apply all compress related patches on top of dev branch.
 
-> All hugetlb range freeing functions have a verification like the following,
-> which only differs by the mask used, depending on the page table level.
->
-> 	start &= MASK;
-> 	if (start < floor)
-> 		return;
-> 	if (ceiling) {
-> 		ceiling &= MASK;
-> 		if (! ceiling)
-> 			return;
-> 		}
-> 	if (end - 1 > ceiling - 1)
-> 		return;
->
-> Refactor that into a helper function which takes the mask as
-> an argument, returning true when [start;end[ is not fully
-> contained inside [floor;ceiling[
->
+Jaegeuk, could you please
+- drop "f2fs: compress:support chksum",
+- manually fix conflict when applying "f2fs: add compress_mode mount option"
+- and then apply last my resent patches.
 
-Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/mm/hugetlbpage.c | 56 ++++++++++++-----------------------
->  1 file changed, 19 insertions(+), 37 deletions(-)
->
-> diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
-> index 36c3800769fb..f8d8a4988e15 100644
-> --- a/arch/powerpc/mm/hugetlbpage.c
-> +++ b/arch/powerpc/mm/hugetlbpage.c
-> @@ -294,6 +294,21 @@ static void hugepd_free(struct mmu_gather *tlb, void *hugepte)
->  static inline void hugepd_free(struct mmu_gather *tlb, void *hugepte) {}
->  #endif
->  
-> +/* Return true when the entry to be freed maps more than the area being freed */
-> +static bool range_is_outside_limits(unsigned long start, unsigned long end,
-> +				    unsigned long floor, unsigned long ceiling,
-> +				    unsigned long mask)
-> +{
-> +	if ((start & mask) < floor)
-> +		return true;
-> +	if (ceiling) {
-> +		ceiling &= mask;
-> +		if (!ceiling)
-> +			return true;
-> +	}
-> +	return end - 1 > ceiling - 1;
-> +}
-> +
->  static void free_hugepd_range(struct mmu_gather *tlb, hugepd_t *hpdp, int pdshift,
->  			      unsigned long start, unsigned long end,
->  			      unsigned long floor, unsigned long ceiling)
-> @@ -309,15 +324,7 @@ static void free_hugepd_range(struct mmu_gather *tlb, hugepd_t *hpdp, int pdshif
->  	if (shift > pdshift)
->  		num_hugepd = 1 << (shift - pdshift);
->  
-> -	start &= pdmask;
-> -	if (start < floor)
-> -		return;
-> -	if (ceiling) {
-> -		ceiling &= pdmask;
-> -		if (! ceiling)
-> -			return;
-> -	}
-> -	if (end - 1 > ceiling - 1)
-> +	if (range_is_outside_limits(start, end, floor, ceiling, pdmask))
->  		return;
->  
->  	for (i = 0; i < num_hugepd; i++, hpdp++)
-> @@ -334,18 +341,9 @@ static void hugetlb_free_pte_range(struct mmu_gather *tlb, pmd_t *pmd,
->  				   unsigned long addr, unsigned long end,
->  				   unsigned long floor, unsigned long ceiling)
->  {
-> -	unsigned long start = addr;
->  	pgtable_t token = pmd_pgtable(*pmd);
->  
-> -	start &= PMD_MASK;
-> -	if (start < floor)
-> -		return;
-> -	if (ceiling) {
-> -		ceiling &= PMD_MASK;
-> -		if (!ceiling)
-> -			return;
-> -	}
-> -	if (end - 1 > ceiling - 1)
-> +	if (range_is_outside_limits(addr, end, floor, ceiling, PMD_MASK))
->  		return;
->  
->  	pmd_clear(pmd);
-> @@ -395,15 +393,7 @@ static void hugetlb_free_pmd_range(struct mmu_gather *tlb, pud_t *pud,
->  				  addr, next, floor, ceiling);
->  	} while (addr = next, addr != end);
->  
-> -	start &= PUD_MASK;
-> -	if (start < floor)
-> -		return;
-> -	if (ceiling) {
-> -		ceiling &= PUD_MASK;
-> -		if (!ceiling)
-> -			return;
-> -	}
-> -	if (end - 1 > ceiling - 1)
-> +	if (range_is_outside_limits(start, end, floor, ceiling, PUD_MASK))
->  		return;
->  
->  	pmd = pmd_offset(pud, start);
-> @@ -446,15 +436,7 @@ static void hugetlb_free_pud_range(struct mmu_gather *tlb, p4d_t *p4d,
->  		}
->  	} while (addr = next, addr != end);
->  
-> -	start &= PGDIR_MASK;
-> -	if (start < floor)
-> -		return;
-> -	if (ceiling) {
-> -		ceiling &= PGDIR_MASK;
-> -		if (!ceiling)
-> -			return;
-> -	}
-> -	if (end - 1 > ceiling - 1)
-> +	if (range_is_outside_limits(start, end, floor, ceiling, PGDIR_MASK))
->  		return;
->  
->  	pud = pud_offset(p4d, start);
-> -- 
-> 2.25.0
+Thanks,
