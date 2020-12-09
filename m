@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F20A2D4E0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD362D4DD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:32:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389003AbgLIWha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:37:30 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:46993 "EHLO ozlabs.org"
+        id S2388895AbgLIW3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:29:31 -0500
+Received: from mga01.intel.com ([192.55.52.88]:7773 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388697AbgLIWZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:25:24 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Crs6X0GD4z9sW9;
-        Thu, 10 Dec 2020 09:24:36 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607552676;
-        bh=eD9NmmPLfPrzRjcCyxUuWyfspWk7eDWvfnBR1mLbYaE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AObb2KGsGKpSOxhuBKtuCXVomssgi2HG5rVoZS5kbFB2hXb3Yv5qxCbsDhgUXpWH0
-         qw3oHSg6iol+gmzTEx9chG4FyjWuvxJcnWR5v7soZigTBDfEmTqR7XqV7Jlpor13kl
-         Z3/3j0wSW0As2GBoNAL/zk1gLn3P0JHQarLObXp1uVb5WPUArfqXRBwJXHHq804n9Z
-         N6yxLYIVhoik9P08W0KgJNZ6Knu5u4kcu2DYcKmnlM0fDaxkKwvUYnDmTPINqwr7Rl
-         7SR8vgH8mJjswANQkRWGx6PruA4Ml+ek7UYFBU87Ol3mO/IG2dxerziJbSUZ31ziW3
-         MaB7N969VCuvA==
-Date:   Thu, 10 Dec 2020 09:24:35 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Luben Tuikov <luben.tuikov@amd.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Subject: Re: [PATCH] drm/sched: Add missing structure comment
-Message-ID: <20201210092435.253b12aa@canb.auug.org.au>
-In-Reply-To: <20201209215807.75983-1-luben.tuikov@amd.com>
-References: <20201209210211.306f3c61@canb.auug.org.au>
-        <20201209215807.75983-1-luben.tuikov@amd.com>
+        id S2388699AbgLIW3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 17:29:16 -0500
+IronPort-SDR: mpy0vBMjrtUgYTf3i+lA9/75C2qLn/ye1K6a3JkxxmTWdO45lTx6KmI5txzHYW005Iqhhtk2wK
+ K8ocrgn98wUQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="192468353"
+X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
+   d="scan'208";a="192468353"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:28:10 -0800
+IronPort-SDR: Q68EBq02wyhMX6tVMQGq6R1dG5qjEMZ0OYfHaX1NQOpCdtDXy0RPDX8mowHOa+7bBZPjkHkme4
+ aXHH+VSnGGfQ==
+X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
+   d="scan'208";a="364333612"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:28:10 -0800
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v16 1/7] x86/cet/ibt: Update Kconfig for user-mode Indirect Branch Tracking
+Date:   Wed,  9 Dec 2020 14:27:46 -0800
+Message-Id: <20201209222752.2911-2-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20201209222752.2911-1-yu-cheng.yu@intel.com>
+References: <20201209222752.2911-1-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iZBsxxsKc+8aoxExqRynEoN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/iZBsxxsKc+8aoxExqRynEoN
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Indirect branch tracking is a hardware security feature that verifies near
+indirect call/jump instructions arrive at intended targets, which are
+labeled by the compiler with ENDBR opcodes.  If such instructions reach
+unlabeled locations, the processor raises control-protection faults.
 
-Hi Luben,
+Check the compiler is up-to-date at config time.
 
-On Wed,  9 Dec 2020 16:58:07 -0500 Luben Tuikov <luben.tuikov@amd.com> wrot=
-e:
->
-> Add a missing structure comment for the recently
-> added @list member.
->=20
-> Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
->=20
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+---
+ arch/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-The commit message tags should all be together at the end of the commit
-message (probably with your SoB last).  Also:
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 264de177a721..d08c0eb563da 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1942,6 +1942,7 @@ config X86_CET_USER
+ 	def_bool n
+ 	depends on CPU_SUP_INTEL && X86_64
+ 	depends on AS_WRUSS
++	depends on $(cc-option,-fcf-protection)
+ 	select ARCH_USES_HIGH_VMA_FLAGS
+ 	select ARCH_HAS_SHADOW_STACK
+ 	select ARCH_MAYBE_MKWRITE
+-- 
+2.21.0
 
-Fixes:  8935ff00e3b1 ("drm/scheduler: "node" --> "list"")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-
-Thanks
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/iZBsxxsKc+8aoxExqRynEoN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/RTqMACgkQAVBC80lX
-0GzvvAf9GDpGt0VwRySC78qWiw0UCoft1kDhmL80tGvkQMWChGLzHDLPwEzlkTk6
-6HoF2UUmHSezITb+TQyStq/ckofIWorPHVw4ANagCy7OJ+CY2jVXtvZgjsQ55iRj
-WtrtznFi9NKLVB7wvsgEd7gLZlTpfvSAT0Fq+BtAV44Fyq32IninTiT9devkru3m
-Ubw1XV7sHWN/sKy03+yrbS3mBBLjFTxkkBTJ7IIvoTAEWmc6YBBYOl+e9uJ2eZW5
-2XMJPCtK8fGJWLiKpSLKJv9yZWJQSylmnlLS17/RRTw9L3TVOi5Z39xJBfIv1PSL
-BY6grzGQPvw+HBJshU3vFARfRLp3dw==
-=X8oC
------END PGP SIGNATURE-----
-
---Sig_/iZBsxxsKc+8aoxExqRynEoN--
