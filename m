@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2292D4C5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 824152D4C5E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731895AbgLIU7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:59:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40400 "EHLO
+        id S2387842AbgLIVAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 16:00:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726501AbgLIU7q (ORCPT
+        with ESMTP id S1728183AbgLIVAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:59:46 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01A8C0613CF;
-        Wed,  9 Dec 2020 12:59:05 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id l7so1324149qvt.4;
-        Wed, 09 Dec 2020 12:59:05 -0800 (PST)
+        Wed, 9 Dec 2020 16:00:03 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C973C0613D6;
+        Wed,  9 Dec 2020 12:59:23 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id d2so1918036pfq.5;
+        Wed, 09 Dec 2020 12:59:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hLr4IoNk4mXvkDggJZgGkE0Lh0R6y+fsYHaJEGIfuuc=;
-        b=gphtz3zP8o+6zS3N+NSHv4/V28d6PSJir32f2MrZa2gKRKJDXP6TvwxbeBOq3deiDV
-         LlTp1Xc1fAAHw05jQqUsRiHBgY+ruguxqVbvb5cIlP3sy2WcS9YLU0Q5r6+dgB/iJTKB
-         vXdpg4K3iNVlSaW+QLGwC6orshyfnLvJ2mg0jYpB8AYnV66ox0Dd0Tv1asOBtczplSjD
-         YDAeLZ7WJooce78KC5lMONcwo6GD3XoXqxfLF58l8ufOJZp/UuMkKulOibk9ILEZpfhj
-         AkwSNALY3spqQNHSCUdoyrkmftK/32r7rM91m9khiDAb+5KieKcWlZ8xJIKJ13BZCNCP
-         oSGg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pYWbWncWHL5hPUtr0/h39G2nFyFj5DZJ+1NpptfUOGE=;
+        b=qT81RrUelSi4/9CGafxmK+ntZGoAphMgJz0lBOeFpN3C60ZLVZglbdD1va6XQWsZlX
+         2WCX4IBP+W4m0JM3FvevJc050fRyP9kdAUPqRi9p9jkLvWiTA/YVHjLxhI1eHYlIGg6M
+         B+NNGssSvi1qsa54mziU8lbu8JCSuZi/FA3msuK40BX+B9UcqRtHVPEW2imISObDrBV+
+         BUqB024a9NyQEFiVSvAShjT4gbCCFtH4JqBTOw8i5WnTeeRWHsidllpZ5UckgW/4pmsd
+         dw1DLTaQ5mzOWw+qSee0Ku5S0TXglz06ZHSaUezYzGCrZUxjrXM68rdwn2GTMRaHoH1F
+         AlKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=hLr4IoNk4mXvkDggJZgGkE0Lh0R6y+fsYHaJEGIfuuc=;
-        b=sMiJld+mKPSEiab5L9VVUpfoI4QMQXez3EYYuCh7A/HVfx6VfY49p9B519aPlCzrgz
-         k/XSEUEIwKzHm2N8Qx/9cuDZgZ90b2uOqBooCOJ1pr5MjuhuUUOATNLS8knHRB+u2u4K
-         EiXofb+1CzvPdoyfGMv5txTVTruMzSF+rPX/9gTRHdOodTt1pwivscJEbvSkWWFrqIXJ
-         wjHtXWIubw84ep9AMiCW5m3LoNOmSpJFmSTDVgwLwBy1fV+55X9Fj0mjXlDqybHhgo5j
-         j/7QNq1atbuIS78niFDvHb+2IOfgwHmkRhVL+W44i0peh8oUDPe9bXcs+mGBaJSgTw7M
-         BcJQ==
-X-Gm-Message-State: AOAM533F3D6rIWACzMtRKjcct3pXNoSUbMt9Nwcem4MjJpWc2SO3Hcxh
-        LjA+cy7IK2Xg6zeA/cD7B0M=
-X-Google-Smtp-Source: ABdhPJzok1orIEivGtZa4Drbbb5H+ooHUn+MU52a1sHSyGUAYRV1MwsFMFwtfkzWtn77HZnXC/7jYQ==
-X-Received: by 2002:a0c:8e47:: with SMTP id w7mr4983903qvb.55.1607547544798;
-        Wed, 09 Dec 2020 12:59:04 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:9bbd])
-        by smtp.gmail.com with ESMTPSA id f185sm1971959qkb.119.2020.12.09.12.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 12:59:04 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 9 Dec 2020 15:58:33 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch v3 0/2] cgroup: KVM: New Encryption IDs cgroup controller
-Message-ID: <X9E6eZaIFDhzrqWO@mtj.duckdns.org>
-References: <20201209205413.3391139-1-vipinsh@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pYWbWncWHL5hPUtr0/h39G2nFyFj5DZJ+1NpptfUOGE=;
+        b=Lk98twughkZQnxWKKIbkMTwbLHEiU2WrCYD795/cUlMqIRlYx9719wWH5rfT3HjsrO
+         hbvAi8IU34AqcMdkt/eOXzgp87GHF79+UHjWOcP1dvslznEWUH8+q0kWG/5mY11jzNAO
+         QIXL93eLZ5hZbWSiQiTKbanWLoeI2tX+4hFej97s0q7/Or+V8YMPuWR7KQs3dPDfc3aP
+         2oqoBcZAIBjofa5GXFaAyxX77FzDNZIYlyYqWw5YwvYk2jynOMrTJdWSi664+EY+xS+J
+         FBRsRcDxVhglk0d+t3J2ykyYTt8iMfXglC4s4JTOBUyeid0LV5Xl76+G/oHe8Pc8kuev
+         +B+w==
+X-Gm-Message-State: AOAM533swLLjdKqO+Fxp80Toz5SYlXXkg5IjRUDoO3LJbxgL3Vi6NOnn
+        Tnebxvzl/2/iKhoJ4gdVR/7y8HpuPMkBSqfEYNM=
+X-Google-Smtp-Source: ABdhPJwJqp11WPmMBZbUh5oaeLciMyK4cwqSph9CTeKi9zlgKVe4qyo4RcU2rt3kmRYA+yUTAYEjbif1YrqDluzctI8=
+X-Received: by 2002:a63:e30b:: with SMTP id f11mr3611905pgh.149.1607547562970;
+ Wed, 09 Dec 2020 12:59:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209205413.3391139-1-vipinsh@google.com>
+References: <1604661895-5495-1-git-send-email-alex.shi@linux.alibaba.com>
+ <CAFqt6zZU76NOF6uD_c1vRPmEHwOzLp9wEWAmSX2ficpQb0zf6g@mail.gmail.com>
+ <20201110115037.f6a53faec8d65782ab65d8b4@linux-foundation.org>
+ <ddca2a9e-ed89-5dec-b1af-4f2fd2c99b57@linux.alibaba.com> <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
+ <CAFxkdApgQ4RCt-J43cK4_128pXr=Xn5jw+q0kOaP-TYufk_tPA@mail.gmail.com>
+ <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com> <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz>
+In-Reply-To: <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz>
+From:   Tony Luck <tony.luck@gmail.com>
+Date:   Wed, 9 Dec 2020 12:59:12 -0800
+Message-ID: <CA+8MBbLLcNwnegX9eA2AP8ymbbS28ivVeoQntKKsM4MfGzYw+g@mail.gmail.com>
+Subject: Re: [PATCH] mm/filemap: add static for function __add_to_page_cache_locked
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        bpf <bpf@vger.kernel.org>, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Josef Bacik <josef@toxicpanda.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Dec 7, 2020 at 4:36 PM Michal Kubecek <mkubecek@suse.cz> wrote:
+> Not removal, commit 3351b16af494 ("mm/filemap: add static for function
+> __add_to_page_cache_locked") made the function static which breaks the
+> build in btfids phase - but it seems to happen only on some
+> architectures. In our case, ppc64, ppc64le and riscv64 are broken,
+> x86_64, i586 and s390x succeed. (I made a mistake above, aarch64 did not
+> fail - but only because it was not built at all.)
 
-Rough take after skimming:
+x86_64 fails for me:
 
-* I don't have an overall objection. In terms of behavior, the only thing
-  which stood out was input rejection depending on the current usage. The
-  preferred way of handling that is rejecting future allocations rather than
-  failing configuration as that makes it impossible e.g. to lower limit and
-  drain existing usages from outside the container.
-
-* However, the boilerplate to usefulness ratio doesn't look too good and I
-  wonder whether what we should do is adding a generic "misc" controller
-  which can host this sort of static hierarchical counting. I'll think more
-  on it.
-
-Thanks.
-
--- 
-tejun
+  LD      vmlinux
+  BTFIDS  vmlinux
+FAILED unresolved symbol __add_to_page_cache_locked
+make: *** [Makefile:1170: vmlinux] Error 255
