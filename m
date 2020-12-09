@@ -2,116 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4242F2D472A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 971EA2D472D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731867AbgLIQvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:51:36 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26846 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727156AbgLIQvf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:51:35 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B9GWbLp073428;
-        Wed, 9 Dec 2020 11:50:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Odsb8xyjIIIVuDCTk0SLDsR/3RdCoFAvh4mqCubQ+2A=;
- b=sou2VVe58bYe8S9Xkbe77OrgSXLpzFqyoHcV1WfYtP4zZZ0WjphhwqtJOy0oiQw7krQr
- EIWJzOIkE6p0zcdVpRRJjChuM5iWd+aMN4OJMCs3nBAXeW+SBwjx/l4HtdmDvusCJtQ+
- gdf0L3OhNN1SL3kFRCvDK4O+COOLYf6bN260MytuXNWezpa7FNTAdm6SiP4JF2R5NIux
- Xld2anv19DBl9Zbn6AaG01fSo1lyJEQoJspk6VR9zzlHakjbsWX/hH21fyn8BoBmelxW
- +6LkLmyoVapnZ39qMZP7JnERgLOAz5o39m69oBFF0n6C2tkfJOnlIdTQHbQqklG1UNeo kA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35b1gxhm0y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 11:50:31 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B9GWh8i074282;
-        Wed, 9 Dec 2020 11:50:30 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35b1gxhkyy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 11:50:30 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B9Gmomc002346;
-        Wed, 9 Dec 2020 16:50:28 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 3581u8q49p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 16:50:27 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B9GoOJI47120874
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Dec 2020 16:50:25 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D2A744C046;
-        Wed,  9 Dec 2020 16:50:24 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 248254C044;
-        Wed,  9 Dec 2020 16:50:20 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.20.48])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Dec 2020 16:50:19 +0000 (GMT)
-Message-ID: <b2465d27f3683331019c5a9b6d0856304d992a0a.camel@linux.ibm.com>
-Subject: Re: [PATCH v8 3/4] doc: trusted-encrypted: updates with TEE as a
- new trust source
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>, sumit.garg@linaro.org
-Cc:     Elaine Palmer <erpalmerny@gmail.com>,
-        jarkko.sakkinen@linux.intel.com, jejb@linux.ibm.com,
-        dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
-        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
-        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
-        Markus.Wamser@mixed-mode.de, lhinds@redhat.com,
-        keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org,
-        Kenneth Goldman <kgoldman@us.ibm.com>, gcwilson@linux.ibm.com,
-        zgu@us.ibm.com, stefanb@us.ibm.com, NAYNA JAIN1 <naynjain@ibm.com>
-Date:   Wed, 09 Dec 2020 11:50:19 -0500
-In-Reply-To: <20201208174906.GA58572@kernel.org>
-References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
-         <1604419306-26105-4-git-send-email-sumit.garg@linaro.org>
-         <81A6B61D-3811-4957-B270-52AE5FA6DE4F@gmail.com>
-         <20201204153037.GC4922@kernel.org>
-         <ba6cd934bf7460cf6e9fc101a759a63fdd4e6e9b.camel@linux.ibm.com>
-         <20201208174906.GA58572@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
+        id S1731919AbgLIQwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:52:11 -0500
+Received: from foss.arm.com ([217.140.110.172]:37546 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729345AbgLIQwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:52:05 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 538871FB;
+        Wed,  9 Dec 2020 08:51:19 -0800 (PST)
+Received: from [192.168.2.21] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F70D3F68F;
+        Wed,  9 Dec 2020 08:51:17 -0800 (PST)
+Subject: Re: [PATCH 2/3] x86/resctrl: Update PQR_ASSOC MSR synchronously when
+ moving task to resource group
+To:     Reinette Chatre <reinette.chatre@intel.com>, fenghua.yu@intel.com
+Cc:     tglx@linutronix.de, bp@alien8.de, tony.luck@intel.com,
+        kuo-lang.tseng@intel.com, shakeelb@google.com,
+        valentin.schneider@arm.com, mingo@redhat.com, babu.moger@amd.com,
+        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <cover.1607036601.git.reinette.chatre@intel.com>
+ <c8eebc438e057e4bc2ce00256664b7bb0561b323.1607036601.git.reinette.chatre@intel.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <97610014-12a8-c389-e7e6-f655caf61d0d@arm.com>
+Date:   Wed, 9 Dec 2020 16:51:15 +0000
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <c8eebc438e057e4bc2ce00256664b7bb0561b323.1607036601.git.reinette.chatre@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-09_13:2020-12-09,2020-12-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- adultscore=0 suspectscore=0 phishscore=0 bulkscore=0 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 clxscore=1015 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-08 at 19:49 +0200, Jarkko Sakkinen wrote:
-> On Tue, Dec 08, 2020 at 10:02:57AM -0500, Mimi Zohar wrote:
+Hi Reinette, Fenghua,
 
-> > > Please also use a proper email client and split your paragraphs into
-> > > at most 80 character lines with new line characters when writing email.
-> > > I prefer to use 72 character line length so that there's some space
-> > > for longer email threads.
-> > 
-> > Sure, we'll re-post the suggested documentation changes/additions.
-> > 
-> > Mimi
+Subject nit: I think 'use IPI instead of task_work() to update PQR_ASSOC_MSR' conveys the
+guts of this change more quickly!
+
+On 03/12/2020 23:25, Reinette Chatre wrote:
+> From: Fenghua Yu <fenghua.yu@intel.com>
 > 
-> So. Wouldn't it be a better idea to post a patch that Sumit could
-> squash to his (and add co-developed-by tag)?
+> Currently when moving a task to a resource group the PQR_ASSOC MSR
+> is updated with the new closid and rmid in an added task callback.
+> If the task is running the work is run as soon as possible. If the
+> task is not running the work is executed later
 
-I just posted it on Elaine's behalf.
-  
-Mimi
+> in the kernel exit path when the kernel returns to the task again.
 
+kernel exit makes me thing of user-space... is it enough to just say:
+"by __switch_to() when task is next run"?
+
+
+> Updating the PQR_ASSOC MSR as soon as possible on the CPU a moved task
+> is running is the right thing to do. Queueing work for a task that is
+> not running is unnecessary (the PQR_ASSOC MSR is already updated when the
+> task is scheduled in) and causing system resource waste with the way in
+> which it is implemented: Work to update the PQR_ASSOC register is queued
+> every time the user writes a task id to the "tasks" file, even if the task
+> already belongs to the resource group. This could result in multiple pending
+> work items associated with a single task even if they are all identical and
+> even though only a single update with most recent values is needed.
+> Specifically, even if a task is moved between different resource groups
+> while it is sleeping then it is only the last move that is relevant but
+> yet a work item is queued during each move.
+> This unnecessary queueing of work items could result in significant system
+> resource waste, especially on tasks sleeping for a long time. For example,
+> as demonstrated by Shakeel Butt in [1] writing the same task id to the
+> "tasks" file can quickly consume significant memory. The same problem
+> (wasted system resources) occurs when moving a task between different
+> resource groups.
+> 
+> As pointed out by Valentin Schneider in [2] there is an additional issue with
+> the way in which the queueing of work is done in that the task_struct update
+> is currently done after the work is queued, resulting in a race with the
+> register update possibly done before the data needed by the update is available.
+> 
+> To solve these issues, the PQR_ASSOC MSR is updated in a synchronous way
+> right after the new closid and rmid are ready during the task movement,
+> only if the task is running. If a moved task is not running nothing is
+> done since the PQR_ASSOC MSR will be updated next time the task is scheduled.
+> This is the same way used to update the register when tasks are moved as
+> part of resource group removal.
+
+(as t->on_cpu is already used...)
+
+Reviewed-by: James Morse <james.morse@arm.com>
+
+
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index 68db7d2dec8f..9d62f1fadcc3 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -525,6 +525,16 @@ static void rdtgroup_remove(struct rdtgroup *rdtgrp)
+
+
+> +static void update_task_closid_rmid(struct task_struct *t)
+>  {
+> +	int cpu;
+>  
+> +	if (task_on_cpu(t, &cpu))
+> +		smp_call_function_single(cpu, _update_task_closid_rmid, t, 1);
+
+
+I think:
+|	if (task_curr(t))
+|		smp_call_function_single(task_cpu(t), _update_task_closid_rmid, t, 1);
+
+here would make for an easier backport as it doesn't depend on the previous patch.
+
+
+> +}
+
+[...]
+
+>  static int __rdtgroup_move_task(struct task_struct *tsk,
+>  				struct rdtgroup *rdtgrp)
+>  {
+
+> +	if (rdtgrp->type == RDTCTRL_GROUP) {
+> +		tsk->closid = rdtgrp->closid;
+> +		tsk->rmid = rdtgrp->mon.rmid;
+> +	} else if (rdtgrp->type == RDTMON_GROUP) {
+
+[...]
+
+> +	} else {
+
+> +		rdt_last_cmd_puts("Invalid resource group type\n");
+> +		return -EINVAL;
+
+Wouldn't this be a kernel bug?
+I'd have thought there would be a WARN_ON_ONCE() here to make it clear this isn't
+user-space's fault!
+
+
+>  	}
+> -	return ret;
+> +
+> +	/*
+> +	 * By now, the task's closid and rmid are set. If the task is current
+> +	 * on a CPU, the PQR_ASSOC MSR needs to be updated to make the resource
+> +	 * group go into effect. If the task is not current, the MSR will be
+> +	 * updated when the task is scheduled in.
+> +	 */
+> +	update_task_closid_rmid(tsk);
+> +
+> +	return 0;
+>  }
+
+
+Thanks,
+
+James
