@@ -2,87 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA74C2D4CEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9144F2D4CF1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388202AbgLIVe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 16:34:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45812 "EHLO
+        id S2388215AbgLIVe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 16:34:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387893AbgLIVe5 (ORCPT
+        with ESMTP id S2388151AbgLIVe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Dec 2020 16:34:57 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FBAC0613CF
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6EBC061794
         for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 13:34:17 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id w135so2682474ybg.13
+Received: by mail-pl1-x641.google.com with SMTP id t6so1668537plq.1
         for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 13:34:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WoBbCW1j0xXBMJt/PT/2gTRPKTDTWPngtH0+ZXt3d6c=;
-        b=RwoRHgTy+IuZ6UWgisfK9RVBoQr1osv+GkgdBadEFRg7/Q+XNonWDvgCNCtYa3V2V8
-         v0v9DgbyfjusCfAG6DLmY06TjbkZiNwuUYSJtD4NtLOycTapfhuQs6rnNVqw/NuA0cxE
-         oqkwx5ceKPOnkpM1W0NWSefUhW89pEwHVqR+Tyi6w/zfACeRkTrQwn6UbAEaNz9nQMiQ
-         5/O1qyf5atirDnGT5QYhDXmCbdLvXC2t2poZwxFZbb5YMGltS3pHrKJB1pE+HDte7J3t
-         SCzbkN6Yy3FPwCHGD/gHRFTEbG2kNM9M0VKjXu4nBihI6BwJfBu7E17pG4NXSFoBteTk
-         JkhQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/CP4s6SojSgYG10MkCPVL6HnkSBBBlayu1v2Y56FpY0=;
+        b=Nvilxii2ih8HpVvwYvc725FHmv7+nzj/P5QoRc7regGsPHJGY6XiwBaLLzPwpsG7xJ
+         vpNxXrIf3hxbPoXtpxOi6c3Pzak7AX0vsELLFHDGjdTH4voAumEDfQ3vyDYUBMrlNpj2
+         Ot4EKJT292mVQ/r/YHBNFVlngeEmHl8uLFsKgk8uz/rh7ubf8JGxlfFvkb+Pu7pLCPDP
+         6XQeCOMKG4xZZEsg3ZU2aInj4He4v9Iky6+ofHfpJLkQYKQjuHfO3AegKTiqcnIb4cjY
+         8DPtz2hcUJ1QwIPVCztIl19IImFLbyC2k+nyvKfgaGhcoh4p3KL5BD6DIUMMY952IH7P
+         Vs2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WoBbCW1j0xXBMJt/PT/2gTRPKTDTWPngtH0+ZXt3d6c=;
-        b=Y2WusuOyARrvtr1lg0hiFGHYJ0Cenr7xYiJkothjK5XIqHA80f+OC4tMninwva5kaq
-         Cg5q20bym6hML6GjYkD4sBfDSO7pC0rHfzzJSj0t+ppZkMlhnLSm+4huLSBS4jUXo3Rv
-         GWd5jbExZbhBI5v7FJPFl+f0qfUyxTWY1zJ77BfvumKdL74cp/KQvaC5vOg1LonMjVhS
-         yEYp+uR/vzw2rpthM9heuMXqEbDAth9lykR83ba4/Z2WoBo+z+5vMXs5UN1RWeJ7HaUj
-         WhLYz3HlykvFdNSUfU0wQDTEYj+kaEWG1vwKbm+LtCUZ8EcOPlil5olysyLKvSxWrz+g
-         xOkQ==
-X-Gm-Message-State: AOAM531s97NelP4ctGDmULIkSXDCDLgzGNdaWTA7qKq8MR07S8Tw7dp6
-        iU8WA5cuI5HA+s24Eyq1stYbGGuAhMjvxq0zIaIPcw==
-X-Google-Smtp-Source: ABdhPJwuapOrBFJ9X7Jy0LnnrbSGVSx0sVQ5aZeHVIo3eraDHa2ESu3HF6TKTzB4RAZmXwejsYnjUIRDCFT5PTJ0LTk=
-X-Received: by 2002:a25:3ac3:: with SMTP id h186mr6095641yba.155.1607549656265;
- Wed, 09 Dec 2020 13:34:16 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/CP4s6SojSgYG10MkCPVL6HnkSBBBlayu1v2Y56FpY0=;
+        b=l2pgUs0aDScNUxunxDX+/dc3YZVZNVxhjEmQ2i1A0+dmyHQK17Yfr8/EVaDtKX19vz
+         eltAfuVgvWqAgjr7R3msBXGzPYt6wBQiP3MhhkNxAjd5yG8+VrUAAtwmRySH0TrmAkCo
+         eRdtjzpHSBw2Z+FR13zDuD46v8XYV/10I0MlrBnrGH72Sx+gIa1lnU//R9PaMWOCmcOd
+         Q3J2+Gdr6oGCdnz8EFDLdwLhvUHZ4J1ABaFAHgbNUg7xFX//RI6XO6j5c0e6XBJvWkuA
+         63LwP6MOfkGRnCgAd1/8D9RdJ0Bitwluc/3INfncN8ilwsZeN/Wjm3gjITJRlbPoLBon
+         P6qg==
+X-Gm-Message-State: AOAM531SWMq9EHOXxqCqAnFv1mw4RFfVbileqenzoYtmyrNvge1VF0Tl
+        w9MeXJVjgyIp4GRMYn+Wm2fhsw==
+X-Google-Smtp-Source: ABdhPJyGx811k4FRsxwZkIRLkksTiPKB/X7yArWMjw3PV5M2e9Xf/AM8UB0gUVNeYFqtiWA1xs4knA==
+X-Received: by 2002:a17:902:c395:b029:da:9aca:c972 with SMTP id g21-20020a170902c395b02900da9acac972mr4032095plg.32.1607549656808;
+        Wed, 09 Dec 2020 13:34:16 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id p6sm3160715pjt.13.2020.12.09.13.34.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 13:34:16 -0800 (PST)
+Date:   Wed, 9 Dec 2020 14:34:14 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 15/15] remoteproc: Refactor rproc delete and cdev
+ release path
+Message-ID: <20201209213414.GB1814981@xps15>
+References: <20201126210642.897302-1-mathieu.poirier@linaro.org>
+ <20201126210642.897302-16-mathieu.poirier@linaro.org>
+ <00422e08-3acc-1e5e-3d1d-f9c332256a1f@st.com>
 MIME-Version: 1.0
-References: <20200429165347.48909-1-rminnich@google.com> <2124367.HovnAMPojK@sven-edge>
- <CAP6exYJ7QR+Y7Vsumecx_3rUC4cNY4xJj4e6759S8US6FX7ADg@mail.gmail.com>
- <2560223.mvXUDI8C0e@ripper> <CAP6exYK75zwqhtrMykMqPepPfq=S95UEByy61D136aPKCBBSRQ@mail.gmail.com>
-In-Reply-To: <CAP6exYK75zwqhtrMykMqPepPfq=S95UEByy61D136aPKCBBSRQ@mail.gmail.com>
-From:   Ron Minnich <rminnich@google.com>
-Date:   Wed, 9 Dec 2020 13:34:05 -0800
-Message-ID: <CAPAv03O2-hgx=-5bKcBy9hdK4apb9wzeO3nbLNT_ZJuJgTQWhw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: parser: cmdline: Support MTD names containing one or
- more colons
-To:     ron minnich <rminnich@gmail.com>
-Cc:     Sven Eckelmann <sven@narfation.org>, linux-mtd@lists.infradead.org,
-        John Audia <graysky@archlinux.us>,
-        Adrian Schmutzler <freifunk@adrianschmutzler.de>,
-        jstefek@datto.com, Richard Weinberger <richard@nod.at>,
-        Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Brian Norris <computersforpeace@gmail.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00422e08-3acc-1e5e-3d1d-f9c332256a1f@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested-by: Ian Goegebuer <goegebuer@google.com>
+On Wed, Dec 09, 2020 at 11:13:07AM +0100, Arnaud POULIQUEN wrote:
+> 
+> 
+> On 11/26/20 10:06 PM, Mathieu Poirier wrote:
+> > Refactor function rproc_del() and rproc_cdev_release() to take
+> > into account the policy specified in the device tree.
+> > 
+> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > ---
+> >  drivers/remoteproc/remoteproc_cdev.c | 13 +++++++++++-
+> >  drivers/remoteproc/remoteproc_core.c | 30 ++++++++++++++++++++++++++--
+> >  include/linux/remoteproc.h           |  4 ++++
+> >  3 files changed, 44 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
+> > index f7645f289563..3dfe555dfc07 100644
+> > --- a/drivers/remoteproc/remoteproc_cdev.c
+> > +++ b/drivers/remoteproc/remoteproc_cdev.c
+> > @@ -88,7 +88,18 @@ static int rproc_cdev_release(struct inode *inode, struct file *filp)
+> >  {
+> >  	struct rproc *rproc = container_of(inode->i_cdev, struct rproc, cdev);
+> >  
+> > -	if (rproc->cdev_put_on_release && rproc->state == RPROC_RUNNING)
+> > +	if (!rproc->cdev_put_on_release)
+> > +		return 0;
+> > +
+> > +	/*
+> > +	 * The application has crashed or is releasing its file handle.  Detach
+> > +	 * or shutdown the remote processor based on the policy specified in the
+> > +	 * DT.  No need to check rproc->state right away, it will be done
+> > +	 * in either rproc_detach() or rproc_shutdown().
+> > +	 */
+> > +	if (rproc->autonomous_on_core_shutdown)
+> > +		rproc_detach(rproc);
+> > +	else
+> >  		rproc_shutdown(rproc);
+> 
+> A reason to not propagate the return of functions?
 
-On Mon, Dec 7, 2020 at 7:24 AM ron minnich <rminnich@gmail.com> wrote:
->
-> I pinged the person again. Hope to hear today. Sorry for delay.
->
-> On Sun, Dec 6, 2020 at 11:52 PM Sven Eckelmann <sven@narfation.org> wrote:
-> >
-> > On Friday, 27 November 2020 19:54:30 CET ron minnich wrote:
-> > > Thanks, Sven, for your patience, I will indeed try to test this next week.
-> >
-> > Any test results?
-> >
-> > Kind regards,
-> >         Sven
+A valid observation...  I'll fix it.
+
+> 
+> >  
+> >  	return 0;
+> > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> > index 3d7d245edc4e..1a170103bf27 100644
+> > --- a/drivers/remoteproc/remoteproc_core.c
+> > +++ b/drivers/remoteproc/remoteproc_core.c
+> > @@ -2294,6 +2294,22 @@ static int rproc_alloc_ops(struct rproc *rproc, const struct rproc_ops *ops)
+> >  	return 0;
+> >  }
+> >  
+> > +static void rproc_set_automation_flags(struct rproc *rproc)
+> > +{
+> > +	struct device *dev = rproc->dev.parent;
+> > +	struct device_node *np = dev->of_node;
+> > +	bool core_shutdown;
+> > +
+> > +	/*
+> > +	 * When function rproc_cdev_release() or rproc_del() are called and
+> > +	 * the remote processor has been attached to, it will be detached from
+> > +	 * (rather than turned off) if "autonomous-on-core-shutdown is specified
+> > +	 * in the DT.
+> > +	 */
+> > +	core_shutdown = of_property_read_bool(np, "autonomous-on-core-shutdown");
+> > +	rproc->autonomous_on_core_shutdown = core_shutdown;
+> > +}
+> > +
+> >  /**
+> >   * rproc_alloc() - allocate a remote processor handle
+> >   * @dev: the underlying device
+> > @@ -2352,6 +2368,8 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+> >  	if (rproc_alloc_ops(rproc, ops))
+> >  		goto put_device;
+> >  
+> > +	rproc_set_automation_flags(rproc);
+> > +
+> >  	/* Assign a unique device index and name */
+> >  	rproc->index = ida_simple_get(&rproc_dev_index, 0, 0, GFP_KERNEL);
+> >  	if (rproc->index < 0) {
+> > @@ -2435,8 +2453,16 @@ int rproc_del(struct rproc *rproc)
+> >  	if (!rproc)
+> >  		return -EINVAL;
+> >  
+> > -	/* TODO: make sure this works with rproc->power > 1 */
+> > -	rproc_shutdown(rproc);
+> > +	/*
+> > +	 * TODO: make sure this works with rproc->power > 1
+> > +	 *
+> > +	 * No need to check rproc->state right away, it will be done in either
+> > +	 * rproc_detach() or rproc_shutdown().
+> > +	 */
+> > +	if (rproc->autonomous_on_core_shutdown)
+> > +		rproc_detach(rproc);
+> > +	else
+> > +		rproc_shutdown(rproc);
+> 
+> same here
+> 
+> >  
+> >  	mutex_lock(&rproc->lock);
+> >  	rproc->state = RPROC_DELETED;
+> > diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> > index 02312096d59f..5702f630d810 100644
+> > --- a/include/linux/remoteproc.h
+> > +++ b/include/linux/remoteproc.h
+> > @@ -516,6 +516,9 @@ struct rproc_dump_segment {
+> >   * @nb_vdev: number of vdev currently handled by rproc
+> >   * @char_dev: character device of the rproc
+> >   * @cdev_put_on_release: flag to indicate if remoteproc should be shutdown on @char_dev release
+> > + * @autonomous_on_core_shutdown: true if the remote processor should be detached
+> > + *				 from (rather than turned off) when the remoteproc
+> > + *				 core goes away.
+> >   */
+> >  struct rproc {
+> >  	struct list_head node;
+> > @@ -554,6 +557,7 @@ struct rproc {
+> >  	u16 elf_machine;
+> >  	struct cdev cdev;
+> >  	bool cdev_put_on_release;
+> > +	bool autonomous_on_core_shutdown;
+> >  };
+> >  
+> >  /**
+> > 
