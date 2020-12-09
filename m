@@ -2,310 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841872D382D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 604222D382B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgLIBPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 20:15:41 -0500
-Received: from mga12.intel.com ([192.55.52.136]:23828 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726508AbgLIBPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 20:15:41 -0500
-IronPort-SDR: XTIf0oOHbRuQJ78EF83nMm2JDElHK8yO596rMtV4NV77t1zS4Gd6bAdOBAcLsB2ShoxU/drR81
- exYw9p+EQ2Aw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="153237778"
-X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
-   d="scan'208";a="153237778"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 17:15:00 -0800
-IronPort-SDR: 6nmEDJfbcEqS8TfaFRAyCUTv8DeNwwKzHyaYS/X/h6iLuLDwgxXexZNPWVJ7iOb5sk9V2w4kGn
- WsaOv+FbYBGw==
-X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
-   d="scan'208";a="363908160"
-Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.117])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 17:14:58 -0800
-Date:   Wed, 9 Dec 2020 09:14:18 +0800
-From:   kernel test robot <rong.a.chen@intel.com>
-To:     Denis Straghkov <d.straghkov@ispras.ru>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <error27@gmail.com>
-Subject: drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1380:30: warning:
- Either the condition 'p' is redundant or there is pointer arithmetic with
- NULL pointer.
-Message-ID: <20201209011418.GB67148@shao2-debian>
+        id S1727229AbgLIBP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 20:15:58 -0500
+Received: from mail-eopbgr760049.outbound.protection.outlook.com ([40.107.76.49]:65164
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725789AbgLIBP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 20:15:58 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dM6uoBgVIeqpr0EUzAgg/b4whdXGj+RO3KId+QvvrOfb3roGGf5tVSGV0Vjy/s6DL/QdZkSU2tgpvPuIRvUCTIMmORuDrdGJEPLfEzao4c2PZrycbPq0GtxgPl68dPLynXwZ7pZDNsVbGuQj7X+1Q67ltkk7KojepwLyxrV8H6W0hdoPCmdeZw3kMNAztvQl3rapNyMm5SgLAfEefj1LvsiX1sRvYD+OI9ef0BelirgWzVR1Jo8IKigAegmvglbH84ypT3ZEfsRtkerMSt60pXl/voDJavZpIAw8Ws7EknIoFWrU73Hou36/aUq4o6hOYDePFbK7gkC92MQDFy7KwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sVObYYsyjj+cFmsjKD9DZIvxQ+ZFGP5/3XMVod8VKL0=;
+ b=l8Fxk8Zg1ne7B9gSfea5afSvpYPGdad3UkShW2Wt6KnAVcfE+1hG7nW3SXUmc216McGNh1alZl+9BJ6eVajSyDlUHFifc8kQOIN78/oWJIzUC+HL2QO5naGLbxerlNsrkOPoHDRuCBfLWHERzUFJ6UOIAuzotwiyo/2Bg5fD1yloT4g3MRmqBlsixVz/4WfGTF/EmdhUKsoE3KAtxWykE58shASe/QAmSu2e1qUBNEGtVPrLMcEphAlgDnA7JoB8jDc7puXs88Ygs7kRB9xt1rcH7JdiHkXhiejijBTfKI2siSTUGtxbMBs8lyFnvCii2Xq85XyF/x+xHJG+J0A7Cg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sVObYYsyjj+cFmsjKD9DZIvxQ+ZFGP5/3XMVod8VKL0=;
+ b=eFQvgErvbKVhsheYyvS2POeqe0WZ0ny9/EBlpGZ/1sniGqsnpnCfC3ZIgV9YNV9W5OyA+iWW4GpJzg6YfYF3DdtJOtMHh+Z2WA+n7r8qK4gi1nnrqzG7PNLYumFCYpmytHvFS4D2AlwQpEQPuHZuMXuKP2gOaWsps7i2TesE8Rw=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
+ by CY4PR11MB1527.namprd11.prod.outlook.com (2603:10b6:910:c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19; Wed, 9 Dec
+ 2020 01:15:14 +0000
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::501b:362c:9295:dad0]) by CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::501b:362c:9295:dad0%5]) with mapi id 15.20.3632.021; Wed, 9 Dec 2020
+ 01:15:14 +0000
+Subject: Re: [PATCH] clk: zynqmp: enable COMMON_CLK_ZYNQMP for ARCH_ZYNQMP
+ automatically
+To:     Michal Simek <michal.simek@xilinx.com>, mturquette@baylibre.com,
+        sboyd@kernel.org
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20201208123508.998073-1-quanyang.wang@windriver.com>
+ <0a0d16a7-0d49-3a89-76a1-141758b138e7@xilinx.com>
+From:   "quanyang.wang" <quanyang.wang@windriver.com>
+Message-ID: <d41c7f60-c9ea-f37b-65ed-4c9b4f5703a0@windriver.com>
+Date:   Wed, 9 Dec 2020 09:14:47 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <0a0d16a7-0d49-3a89-76a1-141758b138e7@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR02CA0176.apcprd02.prod.outlook.com
+ (2603:1096:201:21::12) To CY4PR11MB0071.namprd11.prod.outlook.com
+ (2603:10b6:910:7a::30)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.199] (60.247.85.82) by HK2PR02CA0176.apcprd02.prod.outlook.com (2603:1096:201:21::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 01:15:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 80aa6f90-a681-4fc3-bec1-08d89bdfe238
+X-MS-TrafficTypeDiagnostic: CY4PR11MB1527:
+X-Microsoft-Antispam-PRVS: <CY4PR11MB152716E7D4D5C8D4DC951CDFF0CC0@CY4PR11MB1527.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lfWs336yo+Ok+nIIrc4qruKZwOeDD2njURCRxuDjK3s0BfgD9Im2M0lM+H9wW3UMo/CFahzgVAyLtDuRdnAHvK89LRsRxTI6XDWDXZrl7wAojmdk/zxzdUdOacQ/YmmmySP0OB3WP+w4tGs31nHGyzCHgmFc9IfG8lh/3cWGYEy3i6bhta0+y5oAfgkB6kfogp7IYDx2nYf1/48oyIq2+b6kx2EWY4WfNdFGvaO9rEywaAdogTW6kdU9TVURRBUMndtAWKT6583eps3+Rh7hkQK5QpNaYwkK+QwlxPgp90H0ryaVs8YQ8Ful2s8nq20rpQgN5tQG8LsLf9LbEeoqqr0bLr8DHqgY+NMPnB7n54AGkS5pRRb6FUL7aDbTYMwgVtbBtsvfFPxR7fOOXQ8c5ZP78leaW13mhzXTXm3X12oDToXkmWnsGjyB4wTGcPImRkVFJ5lw5DcjtiefAjrg6g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(366004)(53546011)(66556008)(86362001)(83380400001)(16576012)(66476007)(6666004)(31686004)(508600001)(6486002)(66946007)(2906002)(8676002)(34490700003)(52116002)(4326008)(8936002)(2616005)(36756003)(956004)(31696002)(186003)(26005)(6706004)(16526019)(5660300002)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?c0hrbnBDK0o2aXVrdjZZZXY1RjlxMmNJWGs0aHJYUG5RL2NrbGpsNFVPYlh3?=
+ =?utf-8?B?TDZBWmNSQ05NZk5mM25MM0dNKzBOZGwxU1dGVEJDRE1BUzhiQnhFc3lsM2dW?=
+ =?utf-8?B?UUdoWjUrcjZWdVJPTlhrSHVZRTdpY3JLWjZpSXpKSTZ3WXIrRU13WWFoZjJ6?=
+ =?utf-8?B?c3JvSVJlRVR5VmRqaHNXY1dxdXQ2b055cXlNdEJhdkpTT2hQeTBDdGk5dVQz?=
+ =?utf-8?B?K2VvMk04YzBIdXEwcWU4eW1ObTNRM3RIdi9IWHJkc3RZTHZhbU9HSFVTYkJu?=
+ =?utf-8?B?ZmJSVHQvVWxlcUxxQldmckhjRE85Z2YzWEp5cmwvVjhpK1NXbldJZ2pHVWNr?=
+ =?utf-8?B?NmlXR28vSStUWXhObmwwWlEzb3ZYaG5pWnRjSVBVOFZMRFdINW9QZUs0eDZu?=
+ =?utf-8?B?ZHlIS3F1c2ZVNWxOSlpmVkJRMXhnS1FJdUVNRmFYdHM1SjJlaExPY1RQb2lN?=
+ =?utf-8?B?d0ROYWh2SC9MSE04SW1rSGxrd0hYTjRVbXBOUDRjYjFndkFoNktMTEtVcmM3?=
+ =?utf-8?B?bzJnWmhsbHp0MGFIM2pQSHhrT28wL04zdTFuUnMrMXUwVFgrdlQwazQvVkNv?=
+ =?utf-8?B?Q2cxeGVpb0Y2RnZRcFFqMUJqRjVoNnlPSXpBZENLUWZaL3lGOEg3SENUU3FB?=
+ =?utf-8?B?RUNXUDNuWnZYMHAwaEYwbmptdkN4RDljNW1jMVBkUnpHOGVwanFsNlAwSWFq?=
+ =?utf-8?B?VnMrTTdCQ2tsKzgvalNnT0VoU2hhRmp6M0lVSGNyaHpSMU1xOVZhcVFnQzVl?=
+ =?utf-8?B?NTFZb1RsbXRkczlQQjEwTWt0ZHVBTDh3TUdSVGs4dmFjdjBxM1FicGNtdlJ3?=
+ =?utf-8?B?c2NBb0p2cFg1ZWl1azVqaE95WjBielFkL3QvTlkxU2t5a1dwR1N6V0tDYnhk?=
+ =?utf-8?B?NXl2VkoySTlhN2FsYXhUMHlmOXdRYlpaaEtuTlM4K2JET2YwMkNiRHZuSnZE?=
+ =?utf-8?B?V1FNWStVVmlqSkRENUdDZ0V4NTBNem9ZUThQdHNFYnhreWl2TFVDT28yeVYr?=
+ =?utf-8?B?V2JRUldKL0RUR1JPRk1uQlNzMldHeHQ4ZGJ6d0NyYmMvN2hnZThtSUxxd1Rp?=
+ =?utf-8?B?SUZvV3huV0pPN1A1eStFTkh5M2NwRmFWSDBCYWJIc2FwR3kvc25pQzlVYTda?=
+ =?utf-8?B?ZC9aMExZMUhmQWkvVi9qcGJ1NTZsUVd0ak9zYlhYRW9TYzNpeVF0Ykw3QjZV?=
+ =?utf-8?B?QWxFYlpaYytBTXBOUFEyeHlNQitmTmJ6VUZrVEtiSUlDKzNBQTdMZVZnSFY0?=
+ =?utf-8?B?cllTMGtpaFFGWGxjZjdiWERROE9XTkZsSk14NHJ6RTB4cmJnVlE2bEtWdUJG?=
+ =?utf-8?Q?4i1megBjOKmKE=3D?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 01:15:14.6997
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80aa6f90-a681-4fc3-bec1-08d89bdfe238
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rvwpGvdzUVDg4FjhEoage8uDVIBDCYe+1ZS8yb74cyYt72bzgwu1gYvUR+g8wGkNOrBbSmm62GaTbKkrNsmtoUMSLzWaPVLxheob6pVJnNs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1527
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   cd796ed3345030aa1bb332fe5c793b3dddaf56e7
-commit: 370730894bece52b2bbd4eb727fbb39840cc0e14 Staging: rtl8723bs: rtw_wlan_util: Add size check of SSID IE
-compiler: or1k-linux-gcc (GCC) 9.3.0
+Hi Michal,
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <rong.a.chen@intel.com>
+On 12/8/20 8:42 PM, Michal Simek wrote:
+> Hi,
+>
+> On 08. 12. 20 13:35, quanyang.wang@windriver.com wrote:
+>> From: Quanyang Wang <quanyang.wang@windriver.com>
+>>
+>> The Zynqmp Ultrascale clock controller generates clocks for peripherals,
+>> so we need to enable it when ARCH_ZYNQMP is selected.
+>>
+>> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+>> ---
+>>   drivers/clk/zynqmp/Kconfig | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/clk/zynqmp/Kconfig b/drivers/clk/zynqmp/Kconfig
+>> index 17086059be8b..a8aa58bbb790 100644
+>> --- a/drivers/clk/zynqmp/Kconfig
+>> +++ b/drivers/clk/zynqmp/Kconfig
+>> @@ -4,6 +4,7 @@ config COMMON_CLK_ZYNQMP
+>>   	bool "Support for Xilinx ZynqMP Ultrascale+ clock controllers"
+>>   	depends on ARCH_ZYNQMP || COMPILE_TEST
+>>   	depends on ZYNQMP_FIRMWARE
+>> +	default ARCH_ZYNQMP
+> This is not right. If you look 2 lines above.
+>
+>>   	help
+>>   	  Support for the Zynqmp Ultrascale clock controller.
+>>   	  It has a dependency on the PMU firmware.
+>>
+> And we were talking about enabling this driver in defconfig. Not via
+> Kconfig. This fragment was designed in a way that this clock controller
+> doesn't need to be used. It is our default but if you want to use for
+> example fixed clock you also can.
+> This enables space for being able to use for example different firmware.
 
+Thanks for your reply. I will enable this driver in defconfig.
 
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+Best Regards
 
->> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1380:30: warning: Either the condition 'p' is redundant or there is pointer arithmetic with NULL pointer. [nullPointerArithmeticRedundantCheck]
-    memcpy(bssid->Ssid.Ssid, (p + 2), ssid_len);
-                                ^
-   drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1375:6: note: Assuming that condition 'p' is not redundant
-    if (p) {
-        ^
-   drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1380:30: note: Null pointer addition
-    memcpy(bssid->Ssid.Ssid, (p + 2), ssid_len);
-                                ^
->> drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c:201:3: warning: Assignment of function parameter has no effect outside the function. Did you forget dereferencing it? [uselessAssignmentPtrArg]
-     pframe = rtw_set_ie(pframe, _EXT_SUPPORTEDRATES_IE_, (rate_len - 8), (cur_network->SupportedRates + 8), &pktlen);
-     ^
-   drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c:816:4: warning: Assignment of function parameter has no effect outside the function. Did you forget dereferencing it? [uselessAssignmentPtrArg]
-      pframe += ssid_ielen_diff;
-      ^
-   drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c:706:3: warning: Assignment of function parameter has no effect outside the function. Did you forget dereferencing it? [uselessAssignmentPtrArg]
-     pframe = rtw_set_ie(pframe, _SUPPORTEDRATES_IE_, bssrate_len, bssrate, &pktlen);
-     ^
->> drivers/staging/rtl8723bs/os_dep/ioctl_linux.c:2930:23: warning: Expression '(X & 0x3) > 0x3' is always false. [comparisonError]
-          if ((extra_arg & 0x03) > 0x03)
-                         ^
+Quanyang
 
-vim +/p +1380 drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-
-554c0a3abf216c Hans de Goede       2017-03-29  1259  
-554c0a3abf216c Hans de Goede       2017-03-29  1260  int rtw_check_bcn_info(struct adapter *Adapter, u8 *pframe, u32 packet_len)
-554c0a3abf216c Hans de Goede       2017-03-29  1261  {
-554c0a3abf216c Hans de Goede       2017-03-29  1262  	unsigned int		len;
-554c0a3abf216c Hans de Goede       2017-03-29  1263  	unsigned char 	*p;
-554c0a3abf216c Hans de Goede       2017-03-29  1264  	unsigned short	val16, subtype;
-554c0a3abf216c Hans de Goede       2017-03-29  1265  	struct wlan_network *cur_network = &(Adapter->mlmepriv.cur_network);
-554c0a3abf216c Hans de Goede       2017-03-29  1266  	/* u8 wpa_ie[255], rsn_ie[255]; */
-554c0a3abf216c Hans de Goede       2017-03-29  1267  	u16 wpa_len = 0, rsn_len = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1268  	u8 encryp_protocol = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1269  	struct wlan_bssid_ex *bssid;
-554c0a3abf216c Hans de Goede       2017-03-29  1270  	int group_cipher = 0, pairwise_cipher = 0, is_8021x = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1271  	unsigned char *pbuf;
-554c0a3abf216c Hans de Goede       2017-03-29  1272  	u32 wpa_ielen = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1273  	u8 *pbssid = GetAddr3Ptr(pframe);
-554c0a3abf216c Hans de Goede       2017-03-29  1274  	struct HT_info_element *pht_info = NULL;
-554c0a3abf216c Hans de Goede       2017-03-29  1275  	struct rtw_ieee80211_ht_cap *pht_cap = NULL;
-554c0a3abf216c Hans de Goede       2017-03-29  1276  	u32 bcn_channel;
-554c0a3abf216c Hans de Goede       2017-03-29  1277  	unsigned short	ht_cap_info;
-554c0a3abf216c Hans de Goede       2017-03-29  1278  	unsigned char ht_info_infos_0;
-554c0a3abf216c Hans de Goede       2017-03-29  1279  	struct mlme_priv *pmlmepriv = &Adapter->mlmepriv;
-370730894bece5 Denis Straghkov     2020-04-22  1280  	int ssid_len;
-554c0a3abf216c Hans de Goede       2017-03-29  1281  
-554c0a3abf216c Hans de Goede       2017-03-29  1282  	if (is_client_associated_to_ap(Adapter) == false)
-554c0a3abf216c Hans de Goede       2017-03-29  1283  		return true;
-554c0a3abf216c Hans de Goede       2017-03-29  1284  
-554c0a3abf216c Hans de Goede       2017-03-29  1285  	len = packet_len - sizeof(struct ieee80211_hdr_3addr);
-554c0a3abf216c Hans de Goede       2017-03-29  1286  
-554c0a3abf216c Hans de Goede       2017-03-29  1287  	if (len > MAX_IE_SZ) {
-554c0a3abf216c Hans de Goede       2017-03-29  1288  		DBG_871X("%s IE too long for survey event\n", __func__);
-554c0a3abf216c Hans de Goede       2017-03-29  1289  		return _FAIL;
-554c0a3abf216c Hans de Goede       2017-03-29  1290  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1291  
-554c0a3abf216c Hans de Goede       2017-03-29  1292  	if (memcmp(cur_network->network.MacAddress, pbssid, 6)) {
-554c0a3abf216c Hans de Goede       2017-03-29  1293  		DBG_871X("Oops: rtw_check_network_encrypt linked but recv other bssid bcn\n" MAC_FMT MAC_FMT,
-554c0a3abf216c Hans de Goede       2017-03-29  1294  				MAC_ARG(pbssid), MAC_ARG(cur_network->network.MacAddress));
-554c0a3abf216c Hans de Goede       2017-03-29  1295  		return true;
-554c0a3abf216c Hans de Goede       2017-03-29  1296  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1297  
-2ef2b7c21fc877 Joe Perches         2017-09-09  1298  	bssid = rtw_zmalloc(sizeof(struct wlan_bssid_ex));
-c9d19e68a7963f Michael Straube     2018-07-11  1299  	if (!bssid) {
-554c0a3abf216c Hans de Goede       2017-03-29  1300  		DBG_871X("%s rtw_zmalloc fail !!!\n", __func__);
-554c0a3abf216c Hans de Goede       2017-03-29  1301  		return true;
-554c0a3abf216c Hans de Goede       2017-03-29  1302  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1303  
-554c0a3abf216c Hans de Goede       2017-03-29  1304  	if ((pmlmepriv->timeBcnInfoChkStart != 0) && (jiffies_to_msecs(jiffies - pmlmepriv->timeBcnInfoChkStart) > DISCONNECT_BY_CHK_BCN_FAIL_OBSERV_PERIOD_IN_MS)) {
-554c0a3abf216c Hans de Goede       2017-03-29  1305  		pmlmepriv->timeBcnInfoChkStart = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1306  		pmlmepriv->NumOfBcnInfoChkFail = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1307  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1308  
-554c0a3abf216c Hans de Goede       2017-03-29  1309  	subtype = GetFrameSubType(pframe) >> 4;
-554c0a3abf216c Hans de Goede       2017-03-29  1310  
-554c0a3abf216c Hans de Goede       2017-03-29  1311  	if (subtype == WIFI_BEACON)
-554c0a3abf216c Hans de Goede       2017-03-29  1312  		bssid->Reserved[0] = 1;
-554c0a3abf216c Hans de Goede       2017-03-29  1313  
-554c0a3abf216c Hans de Goede       2017-03-29  1314  	bssid->Length = sizeof(struct wlan_bssid_ex) - MAX_IE_SZ + len;
-554c0a3abf216c Hans de Goede       2017-03-29  1315  
-554c0a3abf216c Hans de Goede       2017-03-29  1316  	/* below is to copy the information element */
-554c0a3abf216c Hans de Goede       2017-03-29  1317  	bssid->IELength = len;
-554c0a3abf216c Hans de Goede       2017-03-29  1318  	memcpy(bssid->IEs, (pframe + sizeof(struct ieee80211_hdr_3addr)), bssid->IELength);
-554c0a3abf216c Hans de Goede       2017-03-29  1319  
-554c0a3abf216c Hans de Goede       2017-03-29  1320  	/* check bw and channel offset */
-554c0a3abf216c Hans de Goede       2017-03-29  1321  	/* parsing HT_CAP_IE */
-554c0a3abf216c Hans de Goede       2017-03-29  1322  	p = rtw_get_ie(bssid->IEs + _FIXED_IE_LENGTH_, _HT_CAPABILITY_IE_, &len, bssid->IELength - _FIXED_IE_LENGTH_);
-554c0a3abf216c Hans de Goede       2017-03-29  1323  	if (p && len > 0) {
-554c0a3abf216c Hans de Goede       2017-03-29  1324  			pht_cap = (struct rtw_ieee80211_ht_cap *)(p + 2);
-554c0a3abf216c Hans de Goede       2017-03-29  1325  			ht_cap_info = le16_to_cpu(pht_cap->cap_info);
-554c0a3abf216c Hans de Goede       2017-03-29  1326  	} else {
-554c0a3abf216c Hans de Goede       2017-03-29  1327  			ht_cap_info = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1328  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1329  	/* parsing HT_INFO_IE */
-554c0a3abf216c Hans de Goede       2017-03-29  1330  	p = rtw_get_ie(bssid->IEs + _FIXED_IE_LENGTH_, _HT_ADD_INFO_IE_, &len, bssid->IELength - _FIXED_IE_LENGTH_);
-554c0a3abf216c Hans de Goede       2017-03-29  1331  	if (p && len > 0) {
-554c0a3abf216c Hans de Goede       2017-03-29  1332  			pht_info = (struct HT_info_element *)(p + 2);
-554c0a3abf216c Hans de Goede       2017-03-29  1333  			ht_info_infos_0 = pht_info->infos[0];
-554c0a3abf216c Hans de Goede       2017-03-29  1334  	} else {
-554c0a3abf216c Hans de Goede       2017-03-29  1335  			ht_info_infos_0 = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1336  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1337  	if (ht_cap_info != cur_network->BcnInfo.ht_cap_info ||
-554c0a3abf216c Hans de Goede       2017-03-29  1338  		((ht_info_infos_0&0x03) != (cur_network->BcnInfo.ht_info_infos_0&0x03))) {
-554c0a3abf216c Hans de Goede       2017-03-29  1339  			DBG_871X("%s bcn now: ht_cap_info:%x ht_info_infos_0:%x\n", __func__,
-554c0a3abf216c Hans de Goede       2017-03-29  1340  							ht_cap_info, ht_info_infos_0);
-554c0a3abf216c Hans de Goede       2017-03-29  1341  			DBG_871X("%s bcn link: ht_cap_info:%x ht_info_infos_0:%x\n", __func__,
-554c0a3abf216c Hans de Goede       2017-03-29  1342  							cur_network->BcnInfo.ht_cap_info, cur_network->BcnInfo.ht_info_infos_0);
-554c0a3abf216c Hans de Goede       2017-03-29  1343  			DBG_871X("%s bw mode change\n", __func__);
-554c0a3abf216c Hans de Goede       2017-03-29  1344  			{
-554c0a3abf216c Hans de Goede       2017-03-29  1345  				/* bcn_info_update */
-554c0a3abf216c Hans de Goede       2017-03-29  1346  				cur_network->BcnInfo.ht_cap_info = ht_cap_info;
-554c0a3abf216c Hans de Goede       2017-03-29  1347  				cur_network->BcnInfo.ht_info_infos_0 = ht_info_infos_0;
-554c0a3abf216c Hans de Goede       2017-03-29  1348  				/* to do : need to check that whether modify related register of BB or not */
-554c0a3abf216c Hans de Goede       2017-03-29  1349  			}
-554c0a3abf216c Hans de Goede       2017-03-29  1350  			/* goto _mismatch; */
-554c0a3abf216c Hans de Goede       2017-03-29  1351  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1352  
-554c0a3abf216c Hans de Goede       2017-03-29  1353  	/* Checking for channel */
-554c0a3abf216c Hans de Goede       2017-03-29  1354  	p = rtw_get_ie(bssid->IEs + _FIXED_IE_LENGTH_, _DSSET_IE_, &len, bssid->IELength - _FIXED_IE_LENGTH_);
-554c0a3abf216c Hans de Goede       2017-03-29  1355  	if (p) {
-554c0a3abf216c Hans de Goede       2017-03-29  1356  			bcn_channel = *(p + 2);
-554c0a3abf216c Hans de Goede       2017-03-29  1357  	} else {/* In 5G, some ap do not have DSSET IE checking HT info for channel */
-554c0a3abf216c Hans de Goede       2017-03-29  1358  			rtw_get_ie(bssid->IEs + _FIXED_IE_LENGTH_, _HT_ADD_INFO_IE_, &len, bssid->IELength - _FIXED_IE_LENGTH_);
-554c0a3abf216c Hans de Goede       2017-03-29  1359  			if (pht_info) {
-554c0a3abf216c Hans de Goede       2017-03-29  1360  					bcn_channel = pht_info->primary_channel;
-554c0a3abf216c Hans de Goede       2017-03-29  1361  			} else { /* we don't find channel IE, so don't check it */
-554c0a3abf216c Hans de Goede       2017-03-29  1362  					/* DBG_871X("Oops: %s we don't find channel IE, so don't check it\n", __func__); */
-554c0a3abf216c Hans de Goede       2017-03-29  1363  					bcn_channel = Adapter->mlmeextpriv.cur_channel;
-554c0a3abf216c Hans de Goede       2017-03-29  1364  			}
-554c0a3abf216c Hans de Goede       2017-03-29  1365  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1366  	if (bcn_channel != Adapter->mlmeextpriv.cur_channel) {
-554c0a3abf216c Hans de Goede       2017-03-29  1367  			DBG_871X("%s beacon channel:%d cur channel:%d disconnect\n", __func__,
-554c0a3abf216c Hans de Goede       2017-03-29  1368  						   bcn_channel, Adapter->mlmeextpriv.cur_channel);
-554c0a3abf216c Hans de Goede       2017-03-29  1369  			goto _mismatch;
-554c0a3abf216c Hans de Goede       2017-03-29  1370  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1371  
-554c0a3abf216c Hans de Goede       2017-03-29  1372  	/* checking SSID */
-370730894bece5 Denis Straghkov     2020-04-22  1373  	ssid_len = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1374  	p = rtw_get_ie(bssid->IEs + _FIXED_IE_LENGTH_, _SSID_IE_, &len, bssid->IELength - _FIXED_IE_LENGTH_);
-370730894bece5 Denis Straghkov     2020-04-22  1375  	if (p) {
-370730894bece5 Denis Straghkov     2020-04-22  1376  		ssid_len = *(p + 1);
-370730894bece5 Denis Straghkov     2020-04-22  1377  		if (ssid_len > NDIS_802_11_LENGTH_SSID)
-370730894bece5 Denis Straghkov     2020-04-22  1378  			ssid_len = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1379  	}
-370730894bece5 Denis Straghkov     2020-04-22 @1380  	memcpy(bssid->Ssid.Ssid, (p + 2), ssid_len);
-370730894bece5 Denis Straghkov     2020-04-22  1381  	bssid->Ssid.SsidLength = ssid_len;
-554c0a3abf216c Hans de Goede       2017-03-29  1382  
-554c0a3abf216c Hans de Goede       2017-03-29  1383  	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s bssid.Ssid.Ssid:%s bssid.Ssid.SsidLength:%d "
-554c0a3abf216c Hans de Goede       2017-03-29  1384  				"cur_network->network.Ssid.Ssid:%s len:%d\n", __func__, bssid->Ssid.Ssid,
-554c0a3abf216c Hans de Goede       2017-03-29  1385  				bssid->Ssid.SsidLength, cur_network->network.Ssid.Ssid,
-554c0a3abf216c Hans de Goede       2017-03-29  1386  				cur_network->network.Ssid.SsidLength));
-554c0a3abf216c Hans de Goede       2017-03-29  1387  
-554c0a3abf216c Hans de Goede       2017-03-29  1388  	if (memcmp(bssid->Ssid.Ssid, cur_network->network.Ssid.Ssid, 32) ||
-554c0a3abf216c Hans de Goede       2017-03-29  1389  			bssid->Ssid.SsidLength != cur_network->network.Ssid.SsidLength) {
-554c0a3abf216c Hans de Goede       2017-03-29  1390  		if (bssid->Ssid.Ssid[0] != '\0' && bssid->Ssid.SsidLength != 0) { /* not hidden ssid */
-554c0a3abf216c Hans de Goede       2017-03-29  1391  			DBG_871X("%s(), SSID is not match\n", __func__);
-554c0a3abf216c Hans de Goede       2017-03-29  1392  			goto _mismatch;
-554c0a3abf216c Hans de Goede       2017-03-29  1393  		}
-554c0a3abf216c Hans de Goede       2017-03-29  1394  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1395  
-554c0a3abf216c Hans de Goede       2017-03-29  1396  	/* check encryption info */
-554c0a3abf216c Hans de Goede       2017-03-29  1397  	val16 = rtw_get_capability((struct wlan_bssid_ex *)bssid);
-554c0a3abf216c Hans de Goede       2017-03-29  1398  
-554c0a3abf216c Hans de Goede       2017-03-29  1399  	if (val16 & BIT(4))
-554c0a3abf216c Hans de Goede       2017-03-29  1400  		bssid->Privacy = 1;
-554c0a3abf216c Hans de Goede       2017-03-29  1401  	else
-554c0a3abf216c Hans de Goede       2017-03-29  1402  		bssid->Privacy = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1403  
-554c0a3abf216c Hans de Goede       2017-03-29  1404  	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_,
-554c0a3abf216c Hans de Goede       2017-03-29  1405  			("%s(): cur_network->network.Privacy is %d, bssid.Privacy is %d\n",
-554c0a3abf216c Hans de Goede       2017-03-29  1406  			 __func__, cur_network->network.Privacy, bssid->Privacy));
-554c0a3abf216c Hans de Goede       2017-03-29  1407  	if (cur_network->network.Privacy != bssid->Privacy) {
-554c0a3abf216c Hans de Goede       2017-03-29  1408  		DBG_871X("%s(), privacy is not match\n", __func__);
-554c0a3abf216c Hans de Goede       2017-03-29  1409  		goto _mismatch;
-554c0a3abf216c Hans de Goede       2017-03-29  1410  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1411  
-554c0a3abf216c Hans de Goede       2017-03-29  1412  	rtw_get_sec_ie(bssid->IEs, bssid->IELength, NULL, &rsn_len, NULL, &wpa_len);
-554c0a3abf216c Hans de Goede       2017-03-29  1413  
-554c0a3abf216c Hans de Goede       2017-03-29  1414  	if (rsn_len > 0) {
-554c0a3abf216c Hans de Goede       2017-03-29  1415  		encryp_protocol = ENCRYP_PROTOCOL_WPA2;
-554c0a3abf216c Hans de Goede       2017-03-29  1416  	} else if (wpa_len > 0) {
-554c0a3abf216c Hans de Goede       2017-03-29  1417  		encryp_protocol = ENCRYP_PROTOCOL_WPA;
-554c0a3abf216c Hans de Goede       2017-03-29  1418  	} else {
-554c0a3abf216c Hans de Goede       2017-03-29  1419  		if (bssid->Privacy)
-554c0a3abf216c Hans de Goede       2017-03-29  1420  			encryp_protocol = ENCRYP_PROTOCOL_WEP;
-554c0a3abf216c Hans de Goede       2017-03-29  1421  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1422  
-554c0a3abf216c Hans de Goede       2017-03-29  1423  	if (cur_network->BcnInfo.encryp_protocol != encryp_protocol) {
-554c0a3abf216c Hans de Goede       2017-03-29  1424  		DBG_871X("%s(): enctyp is not match\n", __func__);
-554c0a3abf216c Hans de Goede       2017-03-29  1425  		goto _mismatch;
-554c0a3abf216c Hans de Goede       2017-03-29  1426  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1427  
-554c0a3abf216c Hans de Goede       2017-03-29  1428  	if (encryp_protocol == ENCRYP_PROTOCOL_WPA || encryp_protocol == ENCRYP_PROTOCOL_WPA2) {
-554c0a3abf216c Hans de Goede       2017-03-29  1429  		pbuf = rtw_get_wpa_ie(&bssid->IEs[12], &wpa_ielen, bssid->IELength-12);
-554c0a3abf216c Hans de Goede       2017-03-29  1430  		if (pbuf && (wpa_ielen > 0)) {
-554c0a3abf216c Hans de Goede       2017-03-29  1431  			if (_SUCCESS == rtw_parse_wpa_ie(pbuf, wpa_ielen+2, &group_cipher, &pairwise_cipher, &is_8021x)) {
-554c0a3abf216c Hans de Goede       2017-03-29  1432  				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_,
-554c0a3abf216c Hans de Goede       2017-03-29  1433  						("%s pnetwork->pairwise_cipher: %d, group_cipher is %d, is_8021x is %d\n", __func__,
-554c0a3abf216c Hans de Goede       2017-03-29  1434  						 pairwise_cipher, group_cipher, is_8021x));
-554c0a3abf216c Hans de Goede       2017-03-29  1435  			}
-554c0a3abf216c Hans de Goede       2017-03-29  1436  		} else {
-554c0a3abf216c Hans de Goede       2017-03-29  1437  			pbuf = rtw_get_wpa2_ie(&bssid->IEs[12], &wpa_ielen, bssid->IELength-12);
-554c0a3abf216c Hans de Goede       2017-03-29  1438  
-554c0a3abf216c Hans de Goede       2017-03-29  1439  			if (pbuf && (wpa_ielen > 0)) {
-554c0a3abf216c Hans de Goede       2017-03-29  1440  				if (_SUCCESS == rtw_parse_wpa2_ie(pbuf, wpa_ielen+2, &group_cipher, &pairwise_cipher, &is_8021x)) {
-554c0a3abf216c Hans de Goede       2017-03-29  1441  					RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_,
-554c0a3abf216c Hans de Goede       2017-03-29  1442  							("%s pnetwork->pairwise_cipher: %d, pnetwork->group_cipher is %d, is_802x is %d\n",
-554c0a3abf216c Hans de Goede       2017-03-29  1443  							 __func__, pairwise_cipher, group_cipher, is_8021x));
-554c0a3abf216c Hans de Goede       2017-03-29  1444  				}
-554c0a3abf216c Hans de Goede       2017-03-29  1445  			}
-554c0a3abf216c Hans de Goede       2017-03-29  1446  		}
-554c0a3abf216c Hans de Goede       2017-03-29  1447  
-554c0a3abf216c Hans de Goede       2017-03-29  1448  		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_,
-554c0a3abf216c Hans de Goede       2017-03-29  1449  				("%s cur_network->group_cipher is %d: %d\n", __func__, cur_network->BcnInfo.group_cipher, group_cipher));
-554c0a3abf216c Hans de Goede       2017-03-29  1450  		if (pairwise_cipher != cur_network->BcnInfo.pairwise_cipher || group_cipher != cur_network->BcnInfo.group_cipher) {
-554c0a3abf216c Hans de Goede       2017-03-29  1451  			DBG_871X("%s pairwise_cipher(%x:%x) or group_cipher(%x:%x) is not match\n", __func__,
-554c0a3abf216c Hans de Goede       2017-03-29  1452  					pairwise_cipher, cur_network->BcnInfo.pairwise_cipher,
-554c0a3abf216c Hans de Goede       2017-03-29  1453  					group_cipher, cur_network->BcnInfo.group_cipher);
-554c0a3abf216c Hans de Goede       2017-03-29  1454  			goto _mismatch;
-554c0a3abf216c Hans de Goede       2017-03-29  1455  		}
-554c0a3abf216c Hans de Goede       2017-03-29  1456  
-554c0a3abf216c Hans de Goede       2017-03-29  1457  		if (is_8021x != cur_network->BcnInfo.is_8021x) {
-554c0a3abf216c Hans de Goede       2017-03-29  1458  			DBG_871X("%s authentication is not match\n", __func__);
-554c0a3abf216c Hans de Goede       2017-03-29  1459  			goto _mismatch;
-554c0a3abf216c Hans de Goede       2017-03-29  1460  		}
-554c0a3abf216c Hans de Goede       2017-03-29  1461  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1462  
-2dac96b334aad2 Nachammai Karuppiah 2019-10-08  1463  	kfree(bssid);
-554c0a3abf216c Hans de Goede       2017-03-29  1464  	return _SUCCESS;
-554c0a3abf216c Hans de Goede       2017-03-29  1465  
-554c0a3abf216c Hans de Goede       2017-03-29  1466  _mismatch:
-2dac96b334aad2 Nachammai Karuppiah 2019-10-08  1467  	kfree(bssid);
-554c0a3abf216c Hans de Goede       2017-03-29  1468  
-554c0a3abf216c Hans de Goede       2017-03-29  1469  	if (pmlmepriv->NumOfBcnInfoChkFail == 0)
-554c0a3abf216c Hans de Goede       2017-03-29  1470  		pmlmepriv->timeBcnInfoChkStart = jiffies;
-554c0a3abf216c Hans de Goede       2017-03-29  1471  
-554c0a3abf216c Hans de Goede       2017-03-29  1472  	pmlmepriv->NumOfBcnInfoChkFail++;
-554c0a3abf216c Hans de Goede       2017-03-29  1473  	DBG_871X("%s by "ADPT_FMT" - NumOfChkFail = %d (SeqNum of this Beacon frame = %d).\n", __func__, ADPT_ARG(Adapter), pmlmepriv->NumOfBcnInfoChkFail, GetSequence(pframe));
-554c0a3abf216c Hans de Goede       2017-03-29  1474  
-554c0a3abf216c Hans de Goede       2017-03-29  1475  	if ((pmlmepriv->timeBcnInfoChkStart != 0) && (jiffies_to_msecs(jiffies - pmlmepriv->timeBcnInfoChkStart) <= DISCONNECT_BY_CHK_BCN_FAIL_OBSERV_PERIOD_IN_MS)
-554c0a3abf216c Hans de Goede       2017-03-29  1476  		&& (pmlmepriv->NumOfBcnInfoChkFail >= DISCONNECT_BY_CHK_BCN_FAIL_THRESHOLD)) {
-554c0a3abf216c Hans de Goede       2017-03-29  1477  		DBG_871X("%s by "ADPT_FMT" - NumOfChkFail = %d >= threshold : %d (in %d ms), return FAIL.\n", __func__, ADPT_ARG(Adapter), pmlmepriv->NumOfBcnInfoChkFail,
-554c0a3abf216c Hans de Goede       2017-03-29  1478  			DISCONNECT_BY_CHK_BCN_FAIL_THRESHOLD, jiffies_to_msecs(jiffies - pmlmepriv->timeBcnInfoChkStart));
-554c0a3abf216c Hans de Goede       2017-03-29  1479  		pmlmepriv->timeBcnInfoChkStart = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1480  		pmlmepriv->NumOfBcnInfoChkFail = 0;
-554c0a3abf216c Hans de Goede       2017-03-29  1481  		return _FAIL;
-554c0a3abf216c Hans de Goede       2017-03-29  1482  	}
-554c0a3abf216c Hans de Goede       2017-03-29  1483  
-554c0a3abf216c Hans de Goede       2017-03-29  1484  	return _SUCCESS;
-554c0a3abf216c Hans de Goede       2017-03-29  1485  }
-554c0a3abf216c Hans de Goede       2017-03-29  1486  
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> Thanks,
+> Michal
