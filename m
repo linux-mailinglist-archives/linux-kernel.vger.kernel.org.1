@@ -2,100 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810BC2D4329
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B0C2D432C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732209AbgLIN0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:26:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732188AbgLIN0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:26:02 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0167123101;
-        Wed,  9 Dec 2020 13:25:21 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kmzT4-00HOUv-VX; Wed, 09 Dec 2020 13:25:19 +0000
+        id S1732299AbgLIN05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:26:57 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:36241 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729522AbgLIN0s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 08:26:48 -0500
+Received: by mail-ot1-f68.google.com with SMTP id y24so1315501otk.3;
+        Wed, 09 Dec 2020 05:26:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mamLawiN11ABz2XuVq8yaJNvT+Fm8wDsG4g1Km1hYrU=;
+        b=l2PiuElzKZnDOmos4PMpZMvq/amR/HmCBfOk/6wZRTqm8z9CsjGUh2vUd376aXJVTn
+         0/2lSe17vjbFxz0HkkUXIR9M3PS7iFWsMZ13Wu18fsxPdLjeGTxP0tKF23O355ochns3
+         XA4rjKNEgxE8tAX6o7Dgc9zFSWtn+A3FQpENFd/JLk/1pyXyZO9kXPMTmyZFvJngWQAW
+         CRH92kdVfz7+i4anZA0WwqSRgYWwFeH3it26o6aGUT31YkYEw2B0e8zRt6rorAWgP49s
+         D2Xmey3NfSdFfZMumPz3TIIbWAKYOTuUKyNQD6Fk3ZrMJVAifYg6vX93rDfJMbqGCzzm
+         zjfQ==
+X-Gm-Message-State: AOAM531GT42YnSJM3vQrWmDa4B4nqgsiyTpy1pnnEXqX8qBnA+jzDVOd
+        +NgZxmlmwZs0ClD0EqiOpVp+FWUVFqhEfroMkac=
+X-Google-Smtp-Source: ABdhPJzzcNwVu471rdJ74/UbqE9hJomMz89dFg65fDg+6bJHLKNXcwU4xX3JUli1g+A3gbf5CbKTioOn4+8geuyA7Zs=
+X-Received: by 2002:a9d:2203:: with SMTP id o3mr1708035ota.107.1607520367412;
+ Wed, 09 Dec 2020 05:26:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 09 Dec 2020 13:25:18 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Steven Price <steven.price@arm.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <haibo.xu@linaro.org>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Dave Martin <Dave.Martin@arm.com>
-Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
-In-Reply-To: <20201209124443.GB13566@gaia>
-References: <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
- <CAJc+Z1H7akXwDtVvQLiGVVyZ0DfmsxyJQhE7Sno6aAO9GaafEA@mail.gmail.com>
- <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
- <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
- <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
- <0d0eb6da6a11f76d10e532c157181985@kernel.org> <20201207163405.GD1526@gaia>
- <874kkx5thq.wl-maz@kernel.org> <20201208172143.GB13960@gaia>
- <7ff14490e253878d0735633b792e1ea9@kernel.org> <20201209124443.GB13566@gaia>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <ef14a5158fc65c00f6c3c842cfa83b2c@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: catalin.marinas@arm.com, steven.price@arm.com, peter.maydell@linaro.org, haibo.xu@linaro.org, linux-kernel@vger.kernel.org, quintela@redhat.com, richard.henderson@linaro.org, qemu-devel@nongnu.org, dgilbert@redhat.com, tglx@linutronix.de, will@kernel.org, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, Dave.Martin@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <1607414643-25498-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1607414643-25498-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+In-Reply-To: <1607414643-25498-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 9 Dec 2020 14:25:56 +0100
+Message-ID: <CAMuHMdXr1kDaXF7FFowq5CSVHzyima2fbF1fJUOowUEb88dOTA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mfd: bd9571mwv: Make the driver more generic
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Khiem Nguyen <khiem.nguyen.xt@renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09 12:44, Catalin Marinas wrote:
-> On Tue, Dec 08, 2020 at 06:21:12PM +0000, Marc Zyngier wrote:
->> On 2020-12-08 17:21, Catalin Marinas wrote:
->> > On Mon, Dec 07, 2020 at 07:03:13PM +0000, Marc Zyngier wrote:
->> > > I wonder whether we will have to have something kernel side to
->> > > dump/reload tags in a way that matches the patterns used by live
->> > > migration.
->> >
->> > We have something related - ptrace dumps/resores the tags. Can the same
->> > concept be expanded to a KVM ioctl?
->> 
->> Yes, although I wonder whether we should integrate this deeply into
->> the dirty-log mechanism: it would be really interesting to dump the
->> tags at the point where the page is flagged as clean from a dirty-log
->> point of view. As the page is dirtied, discard the saved tags.
-> 
-> From the VMM perspective, the tags can be treated just like additional
-> (meta)data in a page. We'd only need the tags when copying over. It can
-> race with the VM dirtying the page (writing tags would dirty it) but I
-> don't think the current migration code cares about this. If dirtied, it
-> copies it again.
-> 
-> The only downside I see is an extra syscall per page both on the origin
-> VMM and the destination one to dump/restore the tags. Is this a
-> performance issue?
+Hi Shimoda-san,
 
-I'm not sure. Migrating VMs already has a massive overhead, so an extra
-syscall per page isn't terrifying. But that's the point where I admit
-not knowing enough about what the VMM expects, nor whether that matches
-what happens on other architectures that deal with per-page metadata.
+On Tue, Dec 8, 2020 at 9:06 AM Yoshihiro Shimoda
+<yoshihiro.shimoda.uh@renesas.com> wrote:
+> From: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
+>
+> Since the driver supports BD9571MWV PMIC only,
+> this patch makes the functions and data structure become more generic
+> so that it can support other PMIC variants as well.
+>
+> Signed-off-by: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
+> [shimoda: rebase and refactor]
+> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-Would this syscall operate on the guest address space? Or on the VMM's
-own mapping?
+Thanks for your patch!
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> index 80c6ef0..57bdb6a 100644
+> --- a/drivers/mfd/bd9571mwv.c
+> +++ b/drivers/mfd/bd9571mwv.c
+
+> @@ -127,13 +137,12 @@ static int bd9571mwv_identify(struct bd9571mwv *bd)
+>                         ret);
+>                 return ret;
+>         }
+> -
+> -       if (value != BD9571MWV_PRODUCT_CODE_VAL) {
+> +       /* Confirm the product code */
+> +       if (value != bd->data->product_code_val) {
+>                 dev_err(dev, "Invalid product code ID %02x (expected %02x)\n",
+> -                       value, BD9571MWV_PRODUCT_CODE_VAL);
+> +                       value, bd->data->product_code_val);
+>                 return -EINVAL;
+>         }
+
+Reading the product code register, and checking the product code value
+can be removed, as bd9571mwv_probe() has verified it already.
+
+> @@ -150,6 +160,7 @@ static int bd9571mwv_probe(struct i2c_client *client,
+>                           const struct i2c_device_id *ids)
+>  {
+>         struct bd9571mwv *bd;
+> +       unsigned int product_code;
+
+No need for a new variable...
+
+>         int ret;
+>
+>         bd = devm_kzalloc(&client->dev, sizeof(*bd), GFP_KERNEL);
+> @@ -160,7 +171,25 @@ static int bd9571mwv_probe(struct i2c_client *client,
+>         bd->dev = &client->dev;
+>         bd->irq = client->irq;
+>
+> -       bd->regmap = devm_regmap_init_i2c(client, &bd9571mwv_regmap_config);
+> +       /* Read the PMIC product code */
+> +       ret = i2c_smbus_read_byte_data(client, BD9571MWV_PRODUCT_CODE);
+> +       if (ret < 0) {
+> +               dev_err(&client->dev, "failed reading at 0x%02x\n",
+> +                       BD9571MWV_PRODUCT_CODE);
+> +               return ret;
+> +       }
+> +
+> +       product_code = (unsigned int)ret;
+> +       if (product_code == BD9571MWV_PRODUCT_CODE_VAL)
+
+... as you can just check if ret == BD9571MWV_PRODUCT_CODE_VAL here.
+
+> +               bd->data = &bd9571mwv_data;
+> +
+> +       if (!bd->data) {
+> +               dev_err(bd->dev, "No found supported device %d\n",
+
+"Unsupported device 0x%x"?
+
+> +                       product_code);
+> +               return -ENOENT;
+> +       }
+
+The construct above may be easier to read and extend by using a switch()
+statement, with a default case for unsupported devices.
+
+> --- a/include/linux/mfd/bd9571mwv.h
+> +++ b/include/linux/mfd/bd9571mwv.h
+
+> @@ -83,6 +85,8 @@
+>
+>  #define BD9571MWV_ACCESS_KEY                   0xff
+>
+> +#define BD9571MWV_PART_NUMBER                  "BD9571MWV"
+
+BD9571MWV_PART_NAME?
+
+> +
+>  /* Define the BD9571MWV IRQ numbers */
+>  enum bd9571mwv_irqs {
+>         BD9571MWV_IRQ_MD1,
+> @@ -96,6 +100,20 @@ enum bd9571mwv_irqs {
+>  };
+>
+>  /**
+> + * struct bd957x_data - internal data for the bd957x driver
+> + *
+> + * Internal data to distinguish bd9571mwv chip and bd9574mwf chip
+
+... distinguish bd957x variants?
+
+> + */
+> +struct bd957x_data {
+> +       int product_code_val;
+
+unsigned int?
+
+> +       char *part_number;
+
+part_name?
+
+> +       const struct regmap_config *regmap_config;
+> +       const struct regmap_irq_chip *irq_chip;
+> +       const struct mfd_cell *cells;
+> +       int num_cells;
+
+I'd say "unsigned int", but mfd_add_devices() takes plain "int".
+
+Please put the "product_code_val" and "num_cells" fields next to
+each other, to avoid two 4-byte gaps on 64-bit platforms.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
