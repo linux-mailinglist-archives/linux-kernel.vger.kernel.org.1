@@ -2,357 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEDF2D3C45
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5652F2D3C5B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbgLIHbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 02:31:46 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35430 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727835AbgLIHbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 02:31:43 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607499055; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BGmU10Ccy1IYdgF9pruKnoo3bFbtLiADIpY7MKZDn4U=;
-        b=UKdm82/P/I+41Vt6FKZLzvwNykB+hEKMXh5aZqq5yudUO+YmFjqCJcqVYF44a4rAvq3UCP
-        Nag65QqHWulJX4CxotdQUmoQyezXHBWv/Fjus9v2QMcGfwtv4N7AEVFu4cVgYdV4vHhUdJ
-        9KxYQa032LCgEZb+AR4NAFnwymzIgxs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0AEC7AC94;
-        Wed,  9 Dec 2020 07:30:55 +0000 (UTC)
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-8-jgross@suse.com> <20201208184315.GE27920@zn.tnic>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Subject: Re: [PATCH v2 07/12] x86: add new features for paravirt patching
-Message-ID: <2510752e-5d3d-f71c-8a4c-a5d2aae0075e@suse.com>
-Date:   Wed, 9 Dec 2020 08:30:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728302AbgLIHd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 02:33:59 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:35770 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727212AbgLIHdw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 02:33:52 -0500
+Received: by mail-io1-f70.google.com with SMTP id z10so624243iol.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 23:33:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=eStcawb44va1PiUp6/gLCccvFdDf+NyB7gv2v4oCOEA=;
+        b=XOSq6vBQr5X9wcaNVfePn44rEmEct3h2RXfqLs57PLEkeFOkjbaOiJV6N3nm2nAexx
+         Bmg7nL1A5qLRcJq+GIHRlcBwZykodkAgH3AIpuGbUTkaOZLsNdH9zgmu+FaYJmyr7a9B
+         7YMx5suqj+7CExmKWKEgKg504seF0CfASCLm4PKr84Tj5sphoyKwHWQ77L2c6ZzEnSum
+         5MoCP7gt5lMTUtgwYScOlNOg0Z7+0a/TQyaG98MUEWOutjHj3Za/+1uBn4o5tQXgiLuI
+         685ryBvk8yaiFWv1oDgKLHttvY1v1s9aYns31RASPob+gMYJw9nuFvs7btwa0Nv7An2l
+         zXJg==
+X-Gm-Message-State: AOAM533JiRG3be7NnQuv+52mraY9DLMgrML/Ct1VV9eCbrJzUDbpzfVG
+        i/vBtEVB3ChQQbq86gE0GFwHbsnLVP5OUFnxjymbl4yrgYfi
+X-Google-Smtp-Source: ABdhPJwmAYRmZZ86Jb0ZNdjkn3rp9WZx01fiHADUt8KCjBhTC1T6D1UJofF+UBslJD7tYDB6AY1yRULR30+vBL2xmwIWvuVSHA06
 MIME-Version: 1.0
-In-Reply-To: <20201208184315.GE27920@zn.tnic>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="vGZzNM2H5synFpsP7FReEyUMxt3ir0vhv"
+X-Received: by 2002:a5d:85c7:: with SMTP id e7mr1147485ios.162.1607499191235;
+ Tue, 08 Dec 2020 23:33:11 -0800 (PST)
+Date:   Tue, 08 Dec 2020 23:33:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000045373e05b603126f@google.com>
+Subject: UBSAN: shift-out-of-bounds in intel_pmu_refresh
+From:   syzbot <syzbot+ae488dc136a4cc6ba32b@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com, seanjc@google.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---vGZzNM2H5synFpsP7FReEyUMxt3ir0vhv
-Content-Type: multipart/mixed; boundary="zEkN86S7Ztx9Wlh91q0PqkQHgAmyleFIX";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: xen-devel@lists.xenproject.org, x86@kernel.org,
- linux-kernel@vger.kernel.org, peterz@infradead.org, luto@kernel.org,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <2510752e-5d3d-f71c-8a4c-a5d2aae0075e@suse.com>
-Subject: Re: [PATCH v2 07/12] x86: add new features for paravirt patching
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-8-jgross@suse.com> <20201208184315.GE27920@zn.tnic>
-In-Reply-To: <20201208184315.GE27920@zn.tnic>
+Hello,
 
---zEkN86S7Ztx9Wlh91q0PqkQHgAmyleFIX
-Content-Type: multipart/mixed;
- boundary="------------674AAB7D9F3E491CB4034860"
-Content-Language: en-US
+syzbot found the following issue on:
 
-This is a multi-part message in MIME format.
---------------674AAB7D9F3E491CB4034860
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+HEAD commit:    15ac8fdb Add linux-next specific files for 20201207
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10e6b923500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3696b8138207d24d
+dashboard link: https://syzkaller.appspot.com/bug?extid=ae488dc136a4cc6ba32b
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=168d927b500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11e0f703500000
 
-On 08.12.20 19:43, Borislav Petkov wrote:
-> On Fri, Nov 20, 2020 at 12:46:25PM +0100, Juergen Gross wrote:
->> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm=
-/cpufeatures.h
->> index dad350d42ecf..ffa23c655412 100644
->> --- a/arch/x86/include/asm/cpufeatures.h
->> +++ b/arch/x86/include/asm/cpufeatures.h
->> @@ -237,6 +237,9 @@
->>   #define X86_FEATURE_VMCALL		( 8*32+18) /* "" Hypervisor supports the=
- VMCALL instruction */
->>   #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMM=
-CALL hypercall instruction */
->>   #define X86_FEATURE_SEV_ES		( 8*32+20) /* AMD Secure Encrypted Virtu=
-alization - Encrypted State */
->> +#define X86_FEATURE_NOT_XENPV		( 8*32+21) /* "" Inverse of X86_FEATUR=
-E_XENPV */
->> +#define X86_FEATURE_NO_PVUNLOCK		( 8*32+22) /* "" No PV unlock functi=
-on */
->> +#define X86_FEATURE_NO_VCPUPREEMPT	( 8*32+23) /* "" No PV vcpu_is_pre=
-empted function */
->=20
-> Ew, negative features. ;-\
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ae488dc136a4cc6ba32b@syzkaller.appspotmail.com
 
-Hey, I already suggested to use ~FEATURE for that purpose (see
-https://lore.kernel.org/lkml/f105a63d-6b51-3afb-83e0-e899ea40813e@suse.co=
-m/=20
-).
-
->=20
-> /me goes forward and looks at usage sites:
->=20
-> +	ALTERNATIVE_2 "jmp *paravirt_iret(%rip);",			\
-> +		      "jmp native_iret;", X86_FEATURE_NOT_XENPV,	\
-> +		      "jmp xen_iret;", X86_FEATURE_XENPV
->=20
-> Can we make that:
->=20
-> 	ALTERNATIVE_TERNARY "jmp *paravirt_iret(%rip);",
-> 		      "jmp xen_iret;", X86_FEATURE_XENPV,
-> 		      "jmp native_iret;", X86_FEATURE_XENPV,
-
-Would we really want to specify the feature twice?
-
-I'd rather make the syntax:
-
-ALTERNATIVE_TERNARY <initial-code> <feature> <code-for-feature-set>
-                                              <code-for-feature-unset>
-
-as this ...
-
->=20
-> where the last two lines are supposed to mean
->=20
-> 			    X86_FEATURE_XENPV ? "jmp xen_iret;" : "jmp native_iret;"
-
-=2E.. would match perfectly to this interpretation.
-
->=20
-> Now, in order to convey that logic to apply_alternatives(), you can do:=
-
->=20
-> struct alt_instr {
->          s32 instr_offset;       /* original instruction */
->          s32 repl_offset;        /* offset to replacement instruction *=
-/
->          u16 cpuid;              /* cpuid bit set for replacement */
->          u8  instrlen;           /* length of original instruction */
->          u8  replacementlen;     /* length of new instruction */
->          u8  padlen;             /* length of build-time padding */
-> 	u8  flags;		/* patching flags */ 			<--- THIS
-> } __packed;
-
-Hmm, using flags is an alternative (pun intended :-) ).
-
->=20
-> and yes, we have had the flags thing in a lot of WIP diffs over the
-> years but we've never come to actually needing it.
->=20
-> Anyway, then, apply_alternatives() will do:
->=20
-> 	if (flags & ALT_NOT_FEATURE)
->=20
-> or something like that - I'm bad at naming stuff - then it should patch=
-
-> only when the feature is NOT set and vice versa.
->=20
-> There in that
->=20
-> 	if (!boot_cpu_has(a->cpuid)) {
->=20
-> branch.
->=20
-> Hmm?
-
-Fine with me (I'd prefer my ALTERNATIVE_TERNARY syntax, though).
-
->=20
->>   /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word =
-9 */
->>   #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGS=
-BASE, WRGSBASE instructions*/
->> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternati=
-ve.c
->> index 2400ad62f330..f8f9700719cf 100644
->> --- a/arch/x86/kernel/alternative.c
->> +++ b/arch/x86/kernel/alternative.c
->> @@ -593,6 +593,18 @@ int alternatives_text_reserved(void *start, void =
-*end)
->>   #endif /* CONFIG_SMP */
->>  =20
->>   #ifdef CONFIG_PARAVIRT
->> +static void __init paravirt_set_cap(void)
->> +{
->> +	if (!boot_cpu_has(X86_FEATURE_XENPV))
->> +		setup_force_cpu_cap(X86_FEATURE_NOT_XENPV);
->> +
->> +	if (pv_is_native_spin_unlock())
->> +		setup_force_cpu_cap(X86_FEATURE_NO_PVUNLOCK);
->> +
->> +	if (pv_is_native_vcpu_is_preempted())
->> +		setup_force_cpu_cap(X86_FEATURE_NO_VCPUPREEMPT);
->> +}
->> +
->>   void __init_or_module apply_paravirt(struct paravirt_patch_site *sta=
-rt,
->>   				     struct paravirt_patch_site *end)
->>   {
->> @@ -616,6 +628,8 @@ void __init_or_module apply_paravirt(struct paravi=
-rt_patch_site *start,
->>   }
->>   extern struct paravirt_patch_site __start_parainstructions[],
->>   	__stop_parainstructions[];
->> +#else
->> +static void __init paravirt_set_cap(void) { }
->>   #endif	/* CONFIG_PARAVIRT */
->>  =20
->>   /*
->> @@ -723,6 +737,18 @@ void __init alternative_instructions(void)
->>   	 * patching.
->>   	 */
->>  =20
->> +	paravirt_set_cap();
->=20
-> Can that be called from somewhere in the Xen init path and not from
-> here? Somewhere before check_bugs() gets called.
-
-No, this is needed for non-Xen cases, too (especially pv spinlocks).
-
->=20
->> +	/*
->> +	 * First patch paravirt functions, such that we overwrite the indire=
-ct
->> +	 * call with the direct call.
->> +	 */
->> +	apply_paravirt(__parainstructions, __parainstructions_end);
->> +
->> +	/*
->> +	 * Then patch alternatives, such that those paravirt calls that are =
-in
->> +	 * alternatives can be overwritten by their immediate fragments.
->> +	 */
->>   	apply_alternatives(__alt_instructions, __alt_instructions_end);
->=20
-> Can you give an example here pls why the paravirt patching needs to run=
-
-> first?
-
-Okay.
+================================================================================
+UBSAN: shift-out-of-bounds in arch/x86/kvm/vmx/pmu_intel.c:348:45
+shift exponent 197 is too large for 64-bit type 'long long unsigned int'
+CPU: 0 PID: 8491 Comm: syz-executor902 Not tainted 5.10.0-rc6-next-20201207-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ intel_pmu_refresh.cold+0x75/0x99 arch/x86/kvm/vmx/pmu_intel.c:348
+ kvm_vcpu_after_set_cpuid+0x65a/0xf80 arch/x86/kvm/cpuid.c:177
+ kvm_vcpu_ioctl_set_cpuid2+0x160/0x440 arch/x86/kvm/cpuid.c:308
+ kvm_arch_vcpu_ioctl+0x11b6/0x2d70 arch/x86/kvm/x86.c:4709
+ kvm_vcpu_ioctl+0x7b9/0xdb0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3386
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x448f39
+Code: e8 3c ab 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 4b ff fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fdfd8aadd98 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00000000006ddc68 RCX: 0000000000448f39
+RDX: 0000000020000480 RSI: 000000004008ae90 RDI: 0000000000000008
+RBP: 00000000006ddc60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006ddc6c
+R13: ddd82e0065000000 R14: 099a300f0078010f R15: 2e320fc0000080b9
+================================================================================
 
 
-Juergen
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
---------------674AAB7D9F3E491CB4034860
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------674AAB7D9F3E491CB4034860--
-
---zEkN86S7Ztx9Wlh91q0PqkQHgAmyleFIX--
-
---vGZzNM2H5synFpsP7FReEyUMxt3ir0vhv
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/QfS4FAwAAAAAACgkQsN6d1ii/Ey8/
-lAf/QNrDeVJIsiWDsuQ/oBFqwXuVFoFGJMXJCcMNwDkIpmyXdAz1wdSj5MoOiiTg2mPr40nja7r8
-YApOj1Rcbnd42IcJiFn4UjTvjqH8JKkF4CMSiNjQrgJ5y9R5iP8CpHuIcpxSUYkxI76U4f1zbiJk
-p2r5fKNt4xTU+LhE3kjnc7dLA/5MLJsz/k6EBUNnpBnC4vv1Ah/aHOvlgJmGZih1O4Tke5Nmjg8R
-XPhNz2iQsu6WIoEaAoXPPSE5X8HEvEm4/nHI+Jq8nxFS05Z+D6C6Uq4ymx3d8ZAiOKYz8pNhl76I
-/CVt+O2olDWrRt37HVzjl2kF0SrtQ9EaWn6OtAsfPg==
-=QPJL
------END PGP SIGNATURE-----
-
---vGZzNM2H5synFpsP7FReEyUMxt3ir0vhv--
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
