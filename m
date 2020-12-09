@@ -2,412 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0406C2D4D5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70AB02D4D6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388621AbgLIWNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:13:06 -0500
-Received: from mail-out.m-online.net ([212.18.0.10]:43756 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388416AbgLIWNG (ORCPT
+        id S2388349AbgLIWSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:18:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727030AbgLIWR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:13:06 -0500
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Crrqy309Sz1rvmJ;
-        Wed,  9 Dec 2020 23:11:58 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Crrqy2g4wz1qy6P;
-        Wed,  9 Dec 2020 23:11:58 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id P4tnd8YDrXZr; Wed,  9 Dec 2020 23:11:56 +0100 (CET)
-X-Auth-Info: 6ZyaVV4+iteM/o8rKuHO3oBl0sZLI3dyIld6DEs7Y20=
-Received: from jawa (89-64-25-12.dynamic.chello.pl [89.64.25.12])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed,  9 Dec 2020 23:11:56 +0100 (CET)
-Date:   Wed, 9 Dec 2020 23:11:41 +0100
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Wed, 9 Dec 2020 17:17:56 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C61C061793
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 14:17:16 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id i9so3428042wrc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 14:17:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=79KmwtjGYcYf9XiMvPhz4ZWUJEGfLsXRhQWD7gmiScs=;
+        b=XLibbmtJVcyb9IQyblkkdG+HmmOyY34UgFZe2EWav2EYy8vQntysX5S44/cqSRqXI/
+         WbxNLNHVD2qVwZl9/pLdM+b/Xxxj7bfJcveeh6XUx43Fsceznqw32/O3vm5pN/fKswhM
+         nZ2ZYCVJxruUjAhp6rT7Ags4QDp+hL96as8QU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=79KmwtjGYcYf9XiMvPhz4ZWUJEGfLsXRhQWD7gmiScs=;
+        b=mdkDYm0wfaKPmE1GIdGiVctYwEgPgC3r7gTF49O5PMn9NKkCl0Kq7qRqIUvcPwUp/t
+         CHSLertKLMv16r9HN27IWbUjRsTwddbeJN7IpIiYHi2b/Qcujed4jeVFX9qBgCvStEey
+         c3csjVP+digZSnMQWYu6hk/wBBLYAe41hNu8xJz5IvrZLezI6I8fmO/amXjuJ1fQ6o80
+         kjiGlMFGqtQuGkYSpcFpCKCjrMNZUYPfrdR+Jh3SeMpqLSD69oHod1oF5eA/dBkMWp+V
+         8m6s01c2Nr2VqQlRC4MK6nwlf/iUdTUcuK0Z9yikQEQ5bUsn82R/xsxij4oSbBgvQREN
+         9dMw==
+X-Gm-Message-State: AOAM5326Cp8ojMizlf0YQmQ/UExZzNSvpE//4h4fyprFYR4Tm7CgWsCT
+        Wa/f5D8GCmfw5iy/xO2MUBzFoQ==
+X-Google-Smtp-Source: ABdhPJzpEoul1GN1qEB+vlnjNX2OsBJ/3OG5hYZd35Shr1mkpe0IGwF4WK5RjVsEHBVLInviEAGw3g==
+X-Received: by 2002:adf:e705:: with SMTP id c5mr4709810wrm.303.1607552234937;
+        Wed, 09 Dec 2020 14:17:14 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id r2sm5802355wrn.83.2020.12.09.14.17.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 14:17:13 -0800 (PST)
+Date:   Wed, 9 Dec 2020 23:17:11 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
+Cc:     melissa.srw@gmail.com, daniel@ffwll.ch, hamohammed.sa@gmail.com,
+        rodrigosiqueiramelo@gmail.com, airlied@linux.ie,
+        mripard@kernel.org, maarten.lankhorst@linux.intel.com,
+        tzimmermann@suse.de, corbet@lwn.net,
+        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] ARM: dts: imx28: Add DTS description of imx28 based
- XEA board
-Message-ID: <20201209231141.377af967@jawa>
-In-Reply-To: <20201125161815.2361-3-lukma@denx.de>
-References: <20201125161815.2361-1-lukma@denx.de>
-        <20201125161815.2361-3-lukma@denx.de>
-Organization: denx.de
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Subject: Re: [PATCH v3] drm/vkms: Add setup and testing information
+Message-ID: <20201209221711.GC401619@phenom.ffwll.local>
+Mail-Followup-To: Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
+        rodrigosiqueiramelo@gmail.com, airlied@linux.ie, mripard@kernel.org,
+        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+        corbet@lwn.net, dri-devel@lists.freedesktop.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201209190453.c6kp5winikr55n3i@adolin>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/wGh62ngx4Pm6qkbsFLfqVps"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209190453.c6kp5winikr55n3i@adolin>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/wGh62ngx4Pm6qkbsFLfqVps
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Dec 10, 2020 at 12:34:53AM +0530, Sumera Priyadarsini wrote:
+> Update the vkms documentation to contain steps to:
+> 
+>  - setup the vkms driver
+>  - run tests using igt
+> 
+> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+> ___
+> Changes in v2:
+>  - Change heading to title case (Daniel)
+>  - Add examples to run tests directly (Daniel)
+>  - Add examples to run subtests (Melissa)
+> 
+> Changes in v3:
+>  - Add example using run-tests.sh script(Daniel)
 
-Dear Community,
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-> This patch adds DTS definition of the imx278 based XEA board.
->=20
-> Signed-off-by: Lukasz Majewski <lukma@denx.de>
 > ---
->  arch/arm/boot/dts/Makefile       |   3 +-
->  arch/arm/boot/dts/imx28-lwe.dtsi | 185
-> +++++++++++++++++++++++++++++++ arch/arm/boot/dts/imx28-xea.dts  |
-> 99 +++++++++++++++++ 3 files changed, 286 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm/boot/dts/imx28-lwe.dtsi
->  create mode 100644 arch/arm/boot/dts/imx28-xea.dts
->=20
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 4572db3fa5ae..c7c95ddc648b 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -702,7 +702,8 @@ dtb-$(CONFIG_ARCH_MXS) +=3D \
->  	imx28-m28evk.dtb \
->  	imx28-sps1.dtb \
->  	imx28-ts4600.dtb \
-> -	imx28-tx28.dtb
-> +	imx28-tx28.dtb \
-> +	imx28-xea.dtb
->  dtb-$(CONFIG_ARCH_NOMADIK) +=3D \
->  	ste-nomadik-s8815.dtb \
->  	ste-nomadik-nhk15.dtb
-> diff --git a/arch/arm/boot/dts/imx28-lwe.dtsi
-> b/arch/arm/boot/dts/imx28-lwe.dtsi new file mode 100644
-> index 000000000000..cb2eb4377d9c
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/imx28-lwe.dtsi
-> @@ -0,0 +1,185 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/*
-> + * Copyright 2020
-> + * Lukasz Majewski, DENX Software Engineering, lukma@denx.de
-> + */
+>  Documentation/gpu/vkms.rst | 70 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+> 
+> diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
+> index 13bab1d93bb3..9e030c74a82e 100644
+> --- a/Documentation/gpu/vkms.rst
+> +++ b/Documentation/gpu/vkms.rst
+> @@ -7,6 +7,76 @@
+>  .. kernel-doc:: drivers/gpu/drm/vkms/vkms_drv.c
+>     :doc: vkms (Virtual Kernel Modesetting)
+>  
+> +Setup
+> +=====
 > +
-> +/dts-v1/;
-> +#include "imx28.dtsi"
+> +The VKMS driver can be setup with the following steps:
 > +
-> +/ {
-> +	compatible =3D "fsl,imx28";
+> +To check if VKMS is loaded, run::
 > +
-> +	aliases {
-> +		spi2 =3D &ssp3;
-> +	};
+> +  lsmod | grep vkms
 > +
-> +	chosen {
-> +		bootargs =3D "root=3D/dev/mmcblk0p2 rootfstype=3Dext4 ro
-> rootwait console=3DttyAMA0,115200 panic=3D1";
-> +	};
+> +This should list the VKMS driver. If no output is obtained, then
+> +you need to enable and/or load the VKMS driver.
+> +Ensure that the VKMS driver has been set as a loadable module in your
+> +kernel config file. Do::
 > +
-> +	memory {
-> +		reg =3D <0x40000000 0x08000000>;
-> +	};
+> +  make nconfig
 > +
-> +	regulators {
-> +		compatible =3D "simple-bus";
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <0>;
+> +  Go to `Device Drivers> Graphics support`
 > +
-> +		reg_3v3: regulator@0 {
-> +			compatible =3D "regulator-fixed";
-> +			reg =3D <0>;
-> +			regulator-name =3D "3V3";
-> +			regulator-min-microvolt =3D <3300000>;
-> +			regulator-max-microvolt =3D <3300000>;
-> +			regulator-always-on;
-> +		};
+> +  Enable `Virtual KMS (EXPERIMENTAL)`
 > +
-> +		reg_usb_5v: regulator@1 {
-> +			compatible =3D "regulator-fixed";
-> +			reg =3D <1>;
-> +			regulator-name =3D "usb_vbus";
-> +			regulator-min-microvolt =3D <5000000>;
-> +			regulator-max-microvolt =3D <5000000>;
-> +			enable-active-high;
-> +		};
+> +Compile and build the kernel for the changes to get reflected.
+> +Now, to load the driver, use::
 > +
-> +		reg_fec_3v3: regulator@2 {
-> +			compatible =3D "regulator-fixed";
-> +			reg =3D <2>;
-> +			regulator-name =3D "fec-phy";
-> +			regulator-min-microvolt =3D <3300000>;
-> +			regulator-max-microvolt =3D <3300000>;
-> +			enable-active-high;
-> +			regulator-boot-on;
-> +		};
-> +	};
-> +};
+> +  sudo modprobe vkms
 > +
-> +&duart {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&duart_pins_a>;
-> +	status =3D "okay";
-> +};
+> +On running the lsmod command now, the VKMS driver will appear listed.
+> +You can also observe the driver being loaded in the dmesg logs.
 > +
-> +&i2c0 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&i2c0_pins_a>;
-> +	status =3D "okay";
-> +};
+> +To disable the driver, use ::
 > +
-> +&saif0 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&saif0_pins_a>;
-> +	#sound-dai-cells =3D <0>;
-> +	assigned-clocks =3D <&clks 53>;
-> +	assigned-clock-rates =3D <12000000>;
-> +	status =3D "okay";
-> +};
+> +  sudo modprobe -r vkms
 > +
-> +&saif1 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&saif1_pins_a>;
-> +	fsl,saif-master =3D <&saif0>;
-> +	#sound-dai-cells =3D <0>;
-> +	status =3D "okay";
-> +};
+> +Testing With IGT
+> +================
 > +
-> +&spi3_pins_a {
-> +	fsl,pinmux-ids =3D <
-> +		MX28_PAD_AUART2_RX__SSP3_D4
-> +		MX28_PAD_AUART2_TX__SSP3_D5
-> +		MX28_PAD_SSP3_SCK__SSP3_SCK
-> +		MX28_PAD_SSP3_MOSI__SSP3_CMD
-> +		MX28_PAD_SSP3_MISO__SSP3_D0
-> +		MX28_PAD_SSP3_SS0__SSP3_D3
-> +		MX28_PAD_AUART2_TX__GPIO_3_9
-> +	>;
-> +};
+> +The IGT GPU Tools is a test suite used specifically for debugging and
+> +development of the DRM drivers.
+> +The IGT Tools can be installed from
+> +`here <https://gitlab.freedesktop.org/drm/igt-gpu-tools>`_ .
 > +
-> +&ssp3 {
-> +	compatible =3D "fsl,imx28-spi";
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&spi3_pins_a>;
-> +	status =3D "okay";
+> +The tests need to be run without a compositor, so you need to switch to text
+> +only mode. You can do this by::
 > +
-> +	flash0: s25fl256s0@0 {
-> +		compatible =3D "s25fl256s1", "jedec,spi-nor";
-> +		spi-max-frequency =3D <40000000>;
-> +		reg =3D <0>;
+> +  sudo systemctl isolate multi-user.target
 > +
-> +		partitions {
-> +			compatible =3D "fixed-partitions";
-> +			#address-cells =3D <1>;
-> +			#size-cells =3D <1>;
+> +To return to graphical mode, do::
 > +
-> +			partition@0 {
-> +				label =3D "u-boot";
-> +				reg =3D <0 0x80000>;
-> +				read-only;
-> +			};
+> +  sudo systemctl isolate graphical.target
 > +
-> +			partition@80000 {
-> +				label =3D "env0";
-> +				reg =3D <0x80000 0x10000>;
-> +			};
+> +Once you are in text only mode, you can run tests using the --device switch
+> +or IGT_DEVICE variable to specify the device filter for the driver we want
+> +to test. IGT_DEVICE can also be used with the run-test.sh script to run the
+> +tests for a specific driver::
 > +
-> +			partition@90000 {
-> +				label =3D "env1";
-> +				reg =3D <0x90000 0x10000>;
-> +			};
+> +  sudo ./build/tests/<name of test> --device "sys:/sys/devices/platform/vkms"
+> +  sudo IGT_DEVICE="sys:/sys/devices/platform/vkms" ./build/tests/<name of test>
+> +  sudo IGT_DEVICE="sys:/sys/devices/platform/vkms" ./scripts/run-tests.sh -t <name of test>
 > +
-> +			partition@100000 {
-> +				label =3D "kernel";
-> +				reg =3D <0x100000 0x400000>;
-> +			};
+> +For example, to test the functionality of the writeback library,
+> +we can run the kms_writeback test::
 > +
-> +			partition@500000 {
-> +				label =3D "swupdate";
-> +				reg =3D <0x500000 0x800000>;
-> +			};
-> +		};
-> +	};
-> +};
+> +  sudo ./build/tests/kms_writeback --device "sys:/sys/devices/platform/vkms"
+> +  sudo IGT_DEVICE="sys:/sys/devices/platform/vkms" ./build/tests/kms_writeback
+> +  sudo IGT_DEVICE="sys:/sys/devices/platform/vkms" ./scripts/run-tests.sh -t kms_writeback
 > +
-> +&ssp2 {
-> +	compatible =3D "fsl,imx28-spi";
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&spi2_pins_a>;
-> +	status =3D "okay";
-> +};
+> +You can also run subtests if you do not want to run the entire test::
 > +
-> +&ssp0 {
-> +	compatible =3D "fsl,imx28-mmc";
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mmc0_8bit_pins_a>;
-> +	bus-width =3D <8>;
-> +	vmmc-supply =3D <&reg_3v3>;
-> +	non-removable;
-> +	status =3D "okay";
-> +};
+> +  sudo ./build/tests/kms_flip --run-subtest basic-plain-flip --device "sys:/sys/devices/platform/vkms"
+> +  sudo IGT_DEVICE="sys:/sys/devices/platform/vkms" ./build/tests/kms_flip --run-subtest basic-plain-flip
 > +
-> +&usb0 {
-> +	vbus-supply =3D <&reg_usb_5v>;
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&usb0_pins_b>, <&usb0_id_pins_a>;
-> +	dr_mode =3D "host";
-> +	status =3D "okay";
-> +};
-> +
-> +&usbphy0 {
-> +	status =3D "okay";
-> +};
-> +
-> +&usb1 {
-> +	vbus-supply =3D <&reg_usb_5v>;
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&usb1_pins_b>;
-> +	dr_mode =3D "host";
-> +	status =3D "okay";
-> +};
-> +
-> +&usbphy1 {
-> +	status =3D "okay";
-> +};
-> diff --git a/arch/arm/boot/dts/imx28-xea.dts
-> b/arch/arm/boot/dts/imx28-xea.dts new file mode 100644
-> index 000000000000..672080485b78
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/imx28-xea.dts
-> @@ -0,0 +1,99 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/*
-> + * Copyright 2020
-> + * Lukasz Majewski, DENX Software Engineering, lukma@denx.de
-> + */
-> +
-> +/dts-v1/;
-> +#include "imx28-lwe.dtsi"
-> +
-> +/ {
-> +	model =3D "XEA";
-> +};
-> +
-> +&can0 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&can1_pins_a>;
-> +	status =3D "okay";
-> +};
-> +
-> +&i2c1 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&i2c1_pins_b>;
-> +	status =3D "okay";
-> +};
-> +
-> +&pinctrl {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&hog_pins_a &hog_pins_tiva>;
-> +
-> +	hog_pins_a: hog@0 {
-> +		reg =3D <0>;
-> +		fsl,pinmux-ids =3D <
-> +			MX28_PAD_GPMI_D00__GPIO_0_0
-> +			MX28_PAD_GPMI_D02__GPIO_0_2
-> +			MX28_PAD_GPMI_D05__GPIO_0_5
-> +			MX28_PAD_GPMI_CE1N__GPIO_0_17
-> +			MX28_PAD_GPMI_RDY0__GPIO_0_20
-> +			MX28_PAD_GPMI_RDY1__GPIO_0_21
-> +			MX28_PAD_GPMI_RDY2__GPIO_0_22
-> +			MX28_PAD_GPMI_RDN__GPIO_0_24
-> +			MX28_PAD_GPMI_CLE__GPIO_0_27
-> +			MX28_PAD_LCD_VSYNC__GPIO_1_28
-> +			MX28_PAD_SSP1_SCK__GPIO_2_12
-> +			MX28_PAD_SSP1_CMD__GPIO_2_13
-> +			MX28_PAD_SSP2_SS1__GPIO_2_20
-> +			MX28_PAD_SSP2_SS2__GPIO_2_21
-> +			MX28_PAD_LCD_D00__GPIO_1_0
-> +			MX28_PAD_LCD_D01__GPIO_1_1
-> +			MX28_PAD_LCD_D02__GPIO_1_2
-> +			MX28_PAD_LCD_D03__GPIO_1_3
-> +			MX28_PAD_LCD_D04__GPIO_1_4
-> +			MX28_PAD_LCD_D05__GPIO_1_5
-> +			MX28_PAD_LCD_D06__GPIO_1_6
-> +		>;
-> +		fsl,drive-strength =3D <MXS_DRIVE_4mA>;
-> +		fsl,voltage =3D <MXS_VOLTAGE_HIGH>;
-> +		fsl,pull-up =3D <MXS_PULL_DISABLE>;
-> +	};
-> +
-> +	hog_pins_tiva: hog@1 {
-> +		reg =3D <1>;
-> +		fsl,pinmux-ids =3D <
-> +			MX28_PAD_GPMI_RDY3__GPIO_0_23
-> +			MX28_PAD_GPMI_WRN__GPIO_0_25
-> +		>;
-> +		fsl,voltage =3D <MXS_VOLTAGE_HIGH>;
-> +		fsl,pull-up =3D <MXS_PULL_DISABLE>;
-> +	};
-> +
-> +	hog_pins_coding: hog@2 {
-> +		reg =3D <2>;
-> +		fsl,pinmux-ids =3D <
-> +			MX28_PAD_GPMI_D01__GPIO_0_1
-> +			MX28_PAD_GPMI_D03__GPIO_0_3
-> +			MX28_PAD_GPMI_D04__GPIO_0_4
-> +			MX28_PAD_GPMI_D06__GPIO_0_6
-> +			MX28_PAD_GPMI_D07__GPIO_0_7
-> +		>;
-> +		fsl,voltage =3D <MXS_VOLTAGE_HIGH>;
-> +		fsl,pull-up =3D <MXS_PULL_DISABLE>;
-> +	};
-> +};
-> +
-> +&reg_fec_3v3 {
-> +	gpio =3D <&gpio0 0 0>;
-> +};
-> +
-> +&reg_usb_5v {
-> +	gpio =3D <&gpio0 2 0>;
-> +};
-> +
-> +&spi2_pins_a {
-> +	fsl,pinmux-ids =3D <
-> +		MX28_PAD_SSP2_SCK__SSP2_SCK
-> +		MX28_PAD_SSP2_MOSI__SSP2_CMD
-> +		MX28_PAD_SSP2_MISO__SSP2_D0
-> +		MX28_PAD_SSP2_SS0__GPIO_2_19
-> +	>;
-> +};
+>  TODO
+>  ====
+>  
+> -- 
+> 2.25.1
+> 
 
-Gentle ping on this patch.
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/wGh62ngx4Pm6qkbsFLfqVps
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAl/RS54ACgkQAR8vZIA0
-zr0TTgf+NYg+kbK6xfYBiXdU4+OELxmBdgX7RQZy2scyDkdbvwd9Nrd1SIcKNIgj
-uWG61SNjFyhoQVy3e0W38c7QOurr9oyNAfdJ98O6poelnAN9zl9WkXt67G5EyLVi
-lH9z5wpbrKkqIHgRd5r+ozFqNjtY3JC3ieJ5tTPw8vJJf1z0sLlJoktZJOWwBsQg
-e4Gb/dtF1GEiatNb2JZYaOS7HSGySDTBpnyraC7mz4UFclJles6TVXlH74ji9Y8+
-89YFTfME8OA+CAm9iQLXjM6KZ1T9BnpXwCYRcvzQFteTttooHsbFPxtfPmouF0I6
-8tFqOgmbkBeMFp5EUbG+n8njPnmoiA==
-=6j1b
------END PGP SIGNATURE-----
-
---Sig_/wGh62ngx4Pm6qkbsFLfqVps--
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
