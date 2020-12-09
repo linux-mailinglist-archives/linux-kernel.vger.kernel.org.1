@@ -2,158 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CA62D499F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C742D49AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387570AbgLIS47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:56:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49512 "EHLO
+        id S2387590AbgLIS6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733050AbgLIS45 (ORCPT
+        with ESMTP id S2387443AbgLIS6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:56:57 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F404C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:56:16 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id t18so1444286plo.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 10:56:16 -0800 (PST)
+        Wed, 9 Dec 2020 13:58:30 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D246C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:57:50 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id u4so1420756plr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 10:57:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=pDJdJ9jg4hC1Qi0/LCWeL6vCBADxdHWZeYcpiMBLSJc=;
-        b=nVp8+U0Qroi2FT7wnDNiFbiJGQRepo6/TYrAIEWpub49d3b1Rf71FHqsD/IV1eDXAA
-         vDl526q7G5TlunnyghLgc/5lsVrl47BiOypoqpedCRuFKslDZK9BLsAk2ITcKrcxhfUE
-         2N6mg+W4189MzMrHgSOsirbNic+iWTEixACsU=
+        bh=HbHFCoB8R2U+BDcqEYlrw7gF+YPMUNiEZ6niPgfo8aU=;
+        b=cYU5nt87wRIfKVzsnNYau87fOCH5z/sRa7i126s9aDxDevOruw8u0Wun06dvfr8MB4
+         BZAVrqG1azlGhSARjEeNsk7FEsiRw8yHKU96+YrUTIjaq+L4gA6028Te9sIqgyK7XVFW
+         kq1oLl8XtVSa5BunNWismJAYzWLJMoJ1YfWB8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=pDJdJ9jg4hC1Qi0/LCWeL6vCBADxdHWZeYcpiMBLSJc=;
-        b=LEqTwcAfJMG9kQS2bRoo6/AT2xE4V3yUPAGNhPWO10B+VLJHfos4PPiUBTC9HKUkPS
-         1jfafjNZoJJDvmOCLDPvSX0hePkZukFxTCRZPabIbeiMlxI1PabcqAkAtxV4heD3rVta
-         LVTiqjEVQlOi1usnVcj64P8UJg/IhjGvfKCTPnXyLFyXwWJFsCvDkgEEf19aLq/zp+oT
-         +tVcCJJwN4eZ1ruNcf1l1sRRiPl6JuZ3dpJJUFc2He7ki4xDUMSMgLuO5YGh7lZSX9ks
-         8/zOOpuGFtHV0xmbPfoV7O+xEE75aE6OHp6jFcT+B+3D1z2EVyU2kdOYZQqjDgCT6x2y
-         869w==
-X-Gm-Message-State: AOAM533CsGpo2d4Z0ekM9hv3spioZ3dmawUEYoib+Spux71TTR45FwXz
-        NZBqN+SqE6pI45g5srl/hAl6qA==
-X-Google-Smtp-Source: ABdhPJwo9EOLqYY/MKKwWwHzNMGDiczNMJB9r3poznesxukytTaNX7puzjij+8ktvXmFygnKe8zSjg==
-X-Received: by 2002:a17:90b:1294:: with SMTP id fw20mr3388768pjb.187.1607540176026;
-        Wed, 09 Dec 2020 10:56:16 -0800 (PST)
+        bh=HbHFCoB8R2U+BDcqEYlrw7gF+YPMUNiEZ6niPgfo8aU=;
+        b=qDFzr5zorS4/2sgk49xgk86LXkiRN0nD0yjvLHbal3lbZw4D1PTxER04Nvu5b7M2xk
+         aWNmY8J4RbnhEZelDAWjhyJmYoRWRzm5CUbonAmFrAhljAzKNvgJGlGALlruaO16OfbY
+         pCabcPte9vg5HPHBv26i0ZqbzsNHT+kE5eDMu3Fek3HZULwTc3O3BPoXwucN7y3dMI+Q
+         dTRHzP3vyB60u8CitYaMmeZVF00PhSrWHFiryOgtptHb5za8Y7ykecGzsDF+e8PYsh+H
+         M2bp2xSyxHocd60w2x4a/fc1XdbY6TYnsK4GjqkC2r3J72fNU8Bi5L1Sw1eE91kw+OtC
+         8PNw==
+X-Gm-Message-State: AOAM5311HhJ7Mqjko2EHvt2OAyHDupfLIzll9dkgosMdbRutkm05ra+G
+        CFCH7BrqapAv3xtI3521fEGPSQ==
+X-Google-Smtp-Source: ABdhPJw2aa8C8TQ0+dmgkCMPI+5W/moQ9A40sIYwl6R66lVUZVCsXzeGdFRGPrHB712GP6vnJfvpEQ==
+X-Received: by 2002:a17:902:bf44:b029:da:d0ee:cef with SMTP id u4-20020a170902bf44b02900dad0ee0cefmr283733pls.12.1607540269922;
+        Wed, 09 Dec 2020 10:57:49 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g85sm3347584pfb.4.2020.12.09.10.56.14
+        by smtp.gmail.com with ESMTPSA id y21sm3609122pfr.90.2020.12.09.10.57.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 10:56:15 -0800 (PST)
-Date:   Wed, 9 Dec 2020 10:56:14 -0800
+        Wed, 09 Dec 2020 10:57:49 -0800 (PST)
+Date:   Wed, 9 Dec 2020 10:57:48 -0800
 From:   Kees Cook <keescook@chromium.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Mathieu Malaterre <malat@debian.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: linux-next: build warning after merge of the akpm tree
-Message-ID: <202012091055.09D611EF31@keescook>
-References: <20201204210000.660293c6@canb.auug.org.au>
- <20201208230157.42c42789@canb.auug.org.au>
+To:     Marco Elver <elver@google.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH mm 1/2] kasan: don't use read-only static keys
+Message-ID: <202012091057.50DEDCC@keescook>
+References: <cover.1607537948.git.andreyknvl@google.com>
+ <f2ded589eba1597f7360a972226083de9afd86e2.1607537948.git.andreyknvl@google.com>
+ <CANpmjNMf1tOYTFojUQrHoscFxPPEed_vkBufgxVLduQ6dBvCUA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201208230157.42c42789@canb.auug.org.au>
+In-Reply-To: <CANpmjNMf1tOYTFojUQrHoscFxPPEed_vkBufgxVLduQ6dBvCUA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 11:01:57PM +1100, Stephen Rothwell wrote:
-> Hi Stephen,
-> 
-> On Fri, 4 Dec 2020 21:00:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Wed, Dec 09, 2020 at 07:49:36PM +0100, Marco Elver wrote:
+> On Wed, 9 Dec 2020 at 19:24, Andrey Konovalov <andreyknvl@google.com> wrote:
+> > __ro_after_init static keys are incompatible with usage in loadable kernel
+> > modules and cause crashes. Don't use those, use normal static keys.
 > >
-> > Hi all,
-> > 
-> > After merging the akpm tree, today's linux-next build (powerpc
-> > allyesconfig) produced warnings like this:
-> > 
-> > ld: warning: orphan section `.data..Lubsan_data177' from `arch/powerpc/oprofile/op_model_pa6t.o' being placed in section `.data..Lubsan_data177'
-> > 
-> > (lots of these latter ones)
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 > 
-> 781584 of them today!
+> Reviewed-by: Marco Elver <elver@google.com>
 > 
-> > I don't know what produced these, but it is in the akpm-current or
-> > akpm trees.
+> > ---
+> >
+> > This fix can be squashed into
+> > "kasan: add and integrate kasan boot parameters".
+> >
+> > ---
+> >  mm/kasan/hw_tags.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+> > index c91f2c06ecb5..55bd6f09c70f 100644
+> > --- a/mm/kasan/hw_tags.c
+> > +++ b/mm/kasan/hw_tags.c
+> > @@ -43,11 +43,11 @@ static enum kasan_arg_stacktrace kasan_arg_stacktrace __ro_after_init;
+> >  static enum kasan_arg_fault kasan_arg_fault __ro_after_init;
+> >
+> >  /* Whether KASAN is enabled at all. */
+> > -DEFINE_STATIC_KEY_FALSE_RO(kasan_flag_enabled);
+> > +DEFINE_STATIC_KEY_FALSE(kasan_flag_enabled);
 > 
-> Presumably the result of commit
+> Side-node: This appears to be just a bad interface; I think the macro
+> DEFINE_STATIC_KEY_FALSE_RO() is error-prone, if it can't be guaranteed
+> that this is always safe, since the presence of the macro encourages
+> its use and we'll inevitably run into this problem again.
 > 
->   186c3e18dba3 ("ubsan: enable for all*config builds")
+> >  EXPORT_SYMBOL(kasan_flag_enabled);
 > 
-> from the akpm-current tree.
-> 
-> arch/powerpc/kernel/vmlinux.lds.S has:
-> 
-> #ifdef CONFIG_PPC32
->         .data : AT(ADDR(.data) - LOAD_OFFSET) {
->                 DATA_DATA
-> #ifdef CONFIG_UBSAN
->                 *(.data..Lubsan_data*)
->                 *(.data..Lubsan_type*)
-> #endif
->                 *(.data.rel*)
->                 *(SDATA_MAIN)
-> 
-> added by commit
-> 
->   beba24ac5913 ("powerpc/32: Add .data..Lubsan_data*/.data..Lubsan_type* sections explicitly")
-> 
-> in 2018, but no equivalent for 64 bit.
-> 
-> I will try the following patch tomorrow:
-> 
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 8 Dec 2020 22:58:24 +1100
-> Subject: [PATCH] powerpc: Add .data..Lubsan_data*/.data..Lubsan_type* sections explicitly
-> 
-> Similarly to commit
-> 
->   beba24ac5913 ("powerpc/32: Add .data..Lubsan_data*/.data..Lubsan_type* sections explicitly")
-> 
-> since CONFIG_UBSAN bits can now be enabled for all*config.
-> 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  arch/powerpc/kernel/vmlinux.lds.S | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
-> index 3b4c26e94328..0318ba436f34 100644
-> --- a/arch/powerpc/kernel/vmlinux.lds.S
-> +++ b/arch/powerpc/kernel/vmlinux.lds.S
-> @@ -296,6 +296,10 @@ SECTIONS
->  #else
->  	.data : AT(ADDR(.data) - LOAD_OFFSET) {
->  		DATA_DATA
-> +#ifdef CONFIG_UBSAN
-> +		*(.data..Lubsan_data*)
-> +		*(.data..Lubsan_type*)
-> +#endif
->  		*(.data.rel*)
->  		*(.toc1)
->  		*(.branch_lt)
-> -- 
-> 2.29.2
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
+> DEFINE_STATIC_KEY_FALSE_RO() + EXPORT_SYMBOL() is an immediate bug.
+> Given its use has not increased substantially since its introduction,
+> it may be safer to consider its removal.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
-Thanks for figuring this one out. :) Andrew, can you add this to your
-ubsan patch stack, or do you want me to resend it to you directly?
-
+Right -- it seems the export is the problem, not the RO-ness. What is
+actually trying to change the flag after __init?
 
 -- 
 Kees Cook
