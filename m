@@ -2,195 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A897B2D38E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B822D38D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgLICjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 21:39:39 -0500
-Received: from m97179.mail.qiye.163.com ([220.181.97.179]:8263 "EHLO
-        m97179.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgLICjj (ORCPT
+        id S1726519AbgLIC3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 21:29:53 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:23488 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725796AbgLIC3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 21:39:39 -0500
-X-Greylist: delayed 688 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Dec 2020 21:39:37 EST
-Received: from [192.168.122.37] (unknown [218.94.118.90])
-        by m97179.mail.qiye.163.com (Hmail) with ESMTPA id DD3EFE02905;
-        Wed,  9 Dec 2020 10:27:20 +0800 (CST)
-Subject: Re: [PATCH] bcache: consider the fragmentation when update the
- writeback rate
-To:     Dongdong Tao <tdd21151186@gmail.com>, colyli@suse.de
-Cc:     gavin.guo@canonical.com, gerald.yang@canonical.com,
-        trent.lloyd@canonical.com,
-        dongdong tao <dongdong.tao@canonical.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        "open list:BCACHE (BLOCK LAYER CACHE)" <linux-bcache@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201103124235.14440-1-tdd21151186@gmail.com>
-From:   Dongsheng Yang <dongsheng.yang@easystack.cn>
-Message-ID: <89b83c00-1117-d114-2c23-7b03fc22966e@easystack.cn>
-Date:   Wed, 9 Dec 2020 10:27:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Tue, 8 Dec 2020 21:29:53 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B92PVvg024070;
+        Tue, 8 Dec 2020 18:28:59 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=oB2by1Ra07Mac1TV4ubkEGeWAms1163mRFDXdVWzvBI=;
+ b=E5Kq6SKS3iSIUv61ab5rnDkuLl8gNkMQnh99e6JPlKfrevrqHFTChHbSnOi8lETFgK0W
+ wrhDq0hIw1ZUoB3EfVQNq7rQZa4BvcdiZggD/p1P7JXk+RKQ657GzQJV8V/Cb4HbZhMw
+ XZeyBsHsj8JcofWd3LoyEF/If9X9BvUMQAg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 35a0k5s62d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 08 Dec 2020 18:28:59 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 8 Dec 2020 18:28:58 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IYrrcpCG2cBFrZpgZWLnEaNWFJnYf0liKNrd4NQ8J/2GMHAeVOs/F/W4q2qzQPKSRj8yoTt9c0IxY4wxfa/2gOnm3heXnOgYwTrFJp7Qa6PQ59C7dCpO92FV0j2MlTWS99iiL2ltarKUhckMa0NNub/gU9mGV7dSJRit8jK/NtwvTJH474Nff3K0lpzGWTFYDYof2ijNuV30owa/fSqeuylUUH8+ohwQnAts9rArFpVUoKn8K7iWFVsY63doMoFIdzU0KY4rrWUBhdqCaDkthirV+ohiHVxBu5l/rFiilQY71vn/TRMa7YLc7rQu+9rhn6RFrjeyVu6ebdDZZq6QVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oB2by1Ra07Mac1TV4ubkEGeWAms1163mRFDXdVWzvBI=;
+ b=Wxnydc4AOmqXzmCqTB+QqRfsbyVaTUBVYwqQ9j5oEkfWCHnK1uzcsSH3xFTPEMWeoCYGoixwol7I6tEoV+Ptnb5TMy+jP2a2cDb5Ok/OjNn7Ar7MXV+OXCcrYOmAom3L7VLQQ7N7UZ16xelEeFIMbu8kINw8r+gCcKK0O9PdJwIqIW6L5zeAuLULjwIdOxf7TELdseuOq+TJDRFLRjN3QRAf+LNOCdGY+D/ssXe4IhYRvz1rmoczr2nNVVc5ZEDZAz+2DNnyB9G+2YZyaM6o4BKAzi3jQO6CelGlRnZCPpl/cdKu7SjF0sHg12jinbSPhKCdnqWM2gGT7GNSBuLv6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oB2by1Ra07Mac1TV4ubkEGeWAms1163mRFDXdVWzvBI=;
+ b=fNFDbVP0l4WuVoaIQuuZBF9gDqUohtITiaKvZxszipBlbAYFdsLk1eqBqCsIl6uLSwM0MqV12Dz/1hQ00+nZpZhARiyxMC2M6OilWOoU28FZURbnKlg6V++vOJF7yL39MzuK2L36Goz649+/Yx1CJURYpFXmZkY5ad9OZ4GNasQ=
+Authentication-Results: bytedance.com; dkim=none (message not signed)
+ header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2341.namprd15.prod.outlook.com (2603:10b6:a02:81::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Wed, 9 Dec
+ 2020 02:28:56 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396%6]) with mapi id 15.20.3632.024; Wed, 9 Dec 2020
+ 02:28:56 +0000
+Date:   Tue, 8 Dec 2020 18:28:50 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
+        <shakeelb@google.com>, <sfr@canb.auug.org.au>,
+        <chris@chrisdown.name>, <laoar.shao@gmail.com>,
+        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH v2] mm: memcontrol: optimize per-lruvec stats counter
+ memory usage
+Message-ID: <20201209022850.GC2385286@carbon.DHCP.thefacebook.com>
+References: <20201208095132.79383-1-songmuchun@bytedance.com>
+ <20201209022118.GB2385286@carbon.DHCP.thefacebook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209022118.GB2385286@carbon.DHCP.thefacebook.com>
+X-Originating-IP: [2620:10d:c090:400::5:129c]
+X-ClientProxiedBy: MWHPR2001CA0010.namprd20.prod.outlook.com
+ (2603:10b6:301:15::20) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-In-Reply-To: <20201103124235.14440-1-tdd21151186@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
-        oVCBIfWUFZQ0lKTkxDSBhMGkhNVkpNS0xPQ0tDT0pISkhVGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hOT1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ORw6ETo5OD0yNikTOkgwFEIN
-        MRIaCj5VSlVKTUtMT0NLQ09KTkJCVTMWGhIXVR8UFRwIEx4VHFUCGhUcOx4aCAIIDxoYEFUYFUVZ
-        V1kSC1lBWUlKQ1VCT1VKSkNVQktZV1kIAVlBTENPSTcG
-X-HM-Tid: 0a76455313ed20bdkuqydd3efe02905
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:129c) by MWHPR2001CA0010.namprd20.prod.outlook.com (2603:10b6:301:15::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 02:28:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6778b9b2-30ef-4b14-520f-08d89bea2dca
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2341:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2341635D1962DDDFC11AF86DBECC0@BYAPR15MB2341.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vt/4cDhJsLy1RJ3IZdARyTHNlq9dIRUi/81HS2kBRs4FMcS4TMgtvK13i2PtWcE0dRlvbd/4v2ZQchXb/qyp9AOk8lqEWjhLUNBECvQBHBsA0yJH5gYnPNgdq5lqK4st5wzlto5hgBPJ47Nc3HujgMhFFZEpN4c1ntijfjT20xrHeRjDZgW9CQv69LFTD8dAegICDoSGtPZY07SNsTaAaUEXf2EUExuIoP8DnTJ+mtTCK+ojK4dpcqHcdXK3YT46hb4cws/xOsz+VODbsaNzk+A0+zq7p/bKumXCphsqs0Ftq0yh4OQItw3smOSBC1kuTKqYWX34nWKRuTTF7Y0uEA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(366004)(346002)(2906002)(4326008)(33656002)(6666004)(55016002)(7416002)(5660300002)(86362001)(9686003)(7696005)(52116002)(508600001)(186003)(1076003)(66556008)(66476007)(66946007)(6506007)(8676002)(6916009)(16526019)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bQUSNkeCRGQXiowYc8q29tTZI7w9PC2zDWhzl7xdJdrqPrXbeuUAlo9BN/Em?=
+ =?us-ascii?Q?nvZ2atESkCixJYHkCin4/MoW8SMrMD59NJtTerFusiGSUot33yo9+1OVJyNP?=
+ =?us-ascii?Q?szav5zqrFWtmm10cNp/+5WKW3N/j/UIMWKbEphVjO5cejZsak68ABspK2MEu?=
+ =?us-ascii?Q?JSFdQhyxzhRQe7wcAhKyPSWr8ee2WYxUSyM/R35MEh7Oh8idX72KLE+oEEjK?=
+ =?us-ascii?Q?Ck6HeMR0Q3PZj5/zP4WToMbo76tcFykNkaNx2Hajl4SnOsRzaCa9lRnGE/Mt?=
+ =?us-ascii?Q?5+F6OcjdnSpLAKVJkLwxFQo+GOZ2EWCEl7zO00us2QyREUUfcWtHs0xZkAu6?=
+ =?us-ascii?Q?Y1DV2ZxmUT+qAv2UHCaG/hkoIPTE2AG1j0eqKZjQIf18X6CFrL+TifzFByuf?=
+ =?us-ascii?Q?LS/S0twgVC0/CsA83qhZaTpD+kHoUS2TiDlpkQT4lszzQeDrYNaxPOyW6w3W?=
+ =?us-ascii?Q?ex4/48h4DSeAfFz9We+zL0lWTjEdWlCo2IRtqOwyI83LcrHeeZ7lVASlaasW?=
+ =?us-ascii?Q?fRQOcLzWMkMMYPEdHHVnF+ie8HlWHvZw+J6Shxm7eS8R1M9T/jaAuSEDajym?=
+ =?us-ascii?Q?Ur6JG/foYz0wUv8RnqjG/QIFVEJ88ukAMjR8m7oJ4nMq4DPvQaAyAtrrx68N?=
+ =?us-ascii?Q?F35wSdQRZV+h7u8wWYbHZAB1RAAYGKym8iw1um9YKL0W12OCv2Ewo1RRJ2ay?=
+ =?us-ascii?Q?nhgq4yO1XJAtLdBmqGYoWOBDy/mk490EHsEkHo3zQQ8AYjnRLLQnrYl/r9hP?=
+ =?us-ascii?Q?Naqh3KV93R8/b8v7IYQ74LvTPtgjNAA1cgcImAG7DGhWteCj5h2X1BiYSRD8?=
+ =?us-ascii?Q?yr0u6BGpbBrP+5NH6BL+U5+lXAmYNh3aioyMwad7vpBUiF/e6e2P6NYbEuS3?=
+ =?us-ascii?Q?yHK1qMPmdbvvD5RmojtDDiTjvKDPmpBWG9pJjWJXaoeB6tQb82cHtIHvlTTa?=
+ =?us-ascii?Q?zJq3vdLRrY5/BljwpxRA+hqZfVnWa90w5xxtGd7f+DVaTchFVXBfzonLvKCq?=
+ =?us-ascii?Q?4X4jSAt9weMQO5lXu3JwMHdbbQ=3D=3D?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 02:28:56.5082
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6778b9b2-30ef-4b14-520f-08d89bea2dca
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9zoT5dD9zdhGRaeAGyDZR1WuhTzM49z67U0VicXUW0h8rHkIrayAzY297kQETQqy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2341
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_02:2020-12-08,2020-12-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ suspectscore=1 bulkscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0
+ spamscore=0 adultscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090014
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 08, 2020 at 06:21:18PM -0800, Roman Gushchin wrote:
+> On Tue, Dec 08, 2020 at 05:51:32PM +0800, Muchun Song wrote:
+> > The vmstat threshold is 32 (MEMCG_CHARGE_BATCH), so the type of s32
+> > of lruvec_stat_cpu is enough. And introduce struct per_cpu_lruvec_stat
+> > to optimize memory usage.
+> > 
+> > The size of struct lruvec_stat is 304 bytes on 64 bits system. As it
+> > is a per-cpu structure. So with this patch, we can save 304 / 2 * ncpu
+> > bytes per-memcg per-node where ncpu is the number of the possible CPU.
+> > If there are c memory cgroup (include dying cgroup) and n NUMA node in
+> > the system. Finally, we can save (152 * ncpu * c * n) bytes.
+> 
+> Honestly, I'm not convinced.
+> Say, ncpu = 32, n = 2, c = 500. We're saving <5Mb of memory.
+> If the machine has 128Gb of RAM, it's .000000003%.
 
-在 2020/11/3 星期二 下午 8:42, Dongdong Tao 写道:
-> From: dongdong tao <dongdong.tao@canonical.com>
->
-> Current way to calculate the writeback rate only considered the
-> dirty sectors, this usually works fine when the fragmentation
-> is not high, but it will give us unreasonable small rate when
-> we are under a situation that very few dirty sectors consumed
-> a lot dirty buckets. In some case, the dirty bucekts can reached
-> to CUTOFF_WRITEBACK_SYNC while the dirty data(sectors) noteven
-> reached the writeback_percent, the writeback rate will still
-> be the minimum value (4k), thus it will cause all the writes to be
-> stucked in a non-writeback mode because of the slow writeback.
->
-> This patch will try to accelerate the writeback rate when the
-> fragmentation is high. It calculate the propotional_scaled value
-> based on below:
-> (dirty_sectors / writeback_rate_p_term_inverse) * fragment
-> As we can see, the higher fragmentation will result a larger
-> proportional_scaled value, thus cause a larger writeback rate.
-> The fragment value is calculated based on below:
-> (dirty_buckets *  bucket_size) / dirty_sectors
-> If you think about it, the value of fragment will be always
-> inside [1, bucket_size].
->
-> This patch only considers the fragmentation when the number of
-> dirty_buckets reached to a dirty threshold(configurable by
-> writeback_fragment_percent, default is 50), so bcache will
-> remain the original behaviour before the dirty buckets reached
-> the threshold.
->
-> Signed-off-by: dongdong tao <dongdong.tao@canonical.com>
-> ---
->   drivers/md/bcache/bcache.h    |  1 +
->   drivers/md/bcache/sysfs.c     |  6 ++++++
->   drivers/md/bcache/writeback.c | 21 +++++++++++++++++++++
->   3 files changed, 28 insertions(+)
->
-> diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
-> index 1d57f48307e6..87632f7032b6 100644
-> --- a/drivers/md/bcache/bcache.h
-> +++ b/drivers/md/bcache/bcache.h
-> @@ -374,6 +374,7 @@ struct cached_dev {
->   	unsigned int		writeback_metadata:1;
->   	unsigned int		writeback_running:1;
->   	unsigned char		writeback_percent;
-> +	unsigned char		writeback_fragment_percent;
->   	unsigned int		writeback_delay;
->   
->   	uint64_t		writeback_rate_target;
-> diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
-> index 554e3afc9b68..69499113aef8 100644
-> --- a/drivers/md/bcache/sysfs.c
-> +++ b/drivers/md/bcache/sysfs.c
-> @@ -115,6 +115,7 @@ rw_attribute(stop_when_cache_set_failed);
->   rw_attribute(writeback_metadata);
->   rw_attribute(writeback_running);
->   rw_attribute(writeback_percent);
-> +rw_attribute(writeback_fragment_percent);
+My bad, it's actually
+(32*2*500*152)/(128*1024*1024*1024) = .0035%
+
+but it's still in the noise.
 
 
-Hi Dongdong and Coly,
-
-     What is the status about this patch? In my opinion, it is a problem 
-we need to solve,
-
-but can we just reuse the parameter of writeback_percent, rather than 
-introduce a new writeback_fragment_percent?
-
-That means the semantic of writeback_percent will act on dirty data 
-percent and dirty bucket percent.
-
-When we found there are dirty buckets more than (c->nbuckets * 
-writeback_percent), start the writeback.
-
-
-Thanx
-
-Yang
-
->   rw_attribute(writeback_delay);
->   rw_attribute(writeback_rate);
->   
-> @@ -197,6 +198,7 @@ SHOW(__bch_cached_dev)
->   	var_printf(writeback_running,	"%i");
->   	var_print(writeback_delay);
->   	var_print(writeback_percent);
-> +	var_print(writeback_fragment_percent);
->   	sysfs_hprint(writeback_rate,
->   		     wb ? atomic_long_read(&dc->writeback_rate.rate) << 9 : 0);
->   	sysfs_printf(io_errors,		"%i", atomic_read(&dc->io_errors));
-> @@ -308,6 +310,9 @@ STORE(__cached_dev)
->   	sysfs_strtoul_clamp(writeback_percent, dc->writeback_percent,
->   			    0, bch_cutoff_writeback);
->   
-> +	sysfs_strtoul_clamp(writeback_fragment_percent, dc->writeback_fragment_percent,
-> +			    0, bch_cutoff_writeback_sync);
-> +
->   	if (attr == &sysfs_writeback_rate) {
->   		ssize_t ret;
->   		long int v = atomic_long_read(&dc->writeback_rate.rate);
-> @@ -498,6 +503,7 @@ static struct attribute *bch_cached_dev_files[] = {
->   	&sysfs_writeback_running,
->   	&sysfs_writeback_delay,
->   	&sysfs_writeback_percent,
-> +	&sysfs_writeback_fragment_percent,
->   	&sysfs_writeback_rate,
->   	&sysfs_writeback_rate_update_seconds,
->   	&sysfs_writeback_rate_i_term_inverse,
-> diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
-> index 3c74996978da..34babc89fdf3 100644
-> --- a/drivers/md/bcache/writeback.c
-> +++ b/drivers/md/bcache/writeback.c
-> @@ -88,6 +88,26 @@ static void __update_writeback_rate(struct cached_dev *dc)
->   	int64_t integral_scaled;
->   	uint32_t new_rate;
->   
-> +	/*
-> +	 * We need to consider the number of dirty buckets as well
-> +	 * when calculating the proportional_scaled, Otherwise we might
-> +	 * have an unreasonable small writeback rate at a highly fragmented situation
-> +	 * when very few dirty sectors consumed a lot dirty buckets, the
-> +	 * worst case is when dirty_data reached writeback_percent and
-> +	 * dirty buckets reached to cutoff_writeback_sync, but the rate
-> +	 * still will be at the minimum value, which will cause the write
-> +	 * stuck at a non-writeback mode.
-> +	 */
-> +	struct cache_set *c = dc->disk.c;
-> +
-> +	if (c->gc_stats.in_use > dc->writeback_fragment_percent && dirty > 0) {
-> +		int64_t dirty_buckets = (c->gc_stats.in_use * c->nbuckets) / 100;
-> +		int64_t fragment = (dirty_buckets *  c->cache->sb.bucket_size) / dirty;
-> +
-> +		proportional_scaled =
-> +		div_s64(dirty, dc->writeback_rate_p_term_inverse) * (fragment);
-> +	}
-> +
->   	if ((error < 0 && dc->writeback_rate_integral > 0) ||
->   	    (error > 0 && time_before64(local_clock(),
->   			 dc->writeback_rate.next + NSEC_PER_MSEC))) {
-> @@ -969,6 +989,7 @@ void bch_cached_dev_writeback_init(struct cached_dev *dc)
->   	dc->writeback_metadata		= true;
->   	dc->writeback_running		= false;
->   	dc->writeback_percent		= 10;
-> +	dc->writeback_fragment_percent	= 50;
->   	dc->writeback_delay		= 30;
->   	atomic_long_set(&dc->writeback_rate.rate, 1024);
->   	dc->writeback_rate_minimum	= 8;
+> 
+> Using longs (s64) allows not to think too much about overflows
+> and can also be slightly faster on 64-bit machines.
+> 
+> Thanks!
