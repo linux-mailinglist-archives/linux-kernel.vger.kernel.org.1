@@ -2,68 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B057A2D4593
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C392D4597
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729598AbgLIPiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:38:46 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:43905 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgLIPiq (ORCPT
+        id S1728840AbgLIPjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:39:47 -0500
+Received: from mail-02.mail-europe.com ([51.89.119.103]:59732 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726431AbgLIPjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:38:46 -0500
-Received: by mail-oi1-f194.google.com with SMTP id q25so2105775oij.10;
-        Wed, 09 Dec 2020 07:38:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wVhLWCywNbWI0H/GiKYo0zz2L9PGx0dVA5c51bASIyw=;
-        b=syNCe86C3S9civGcUT1E1qyi1O/7Udt/+I+Fxw/aD6xsz9WiH11+hOsFdT4WNlklve
-         zmFaH+JlBROpkmIiFFzd2Jq8Hm9+W9Rp9Ftl2VK6WzsyaRkWWipwAc4R2FBDS42sckyb
-         SjyQLu4TYI1OsfA2I4eroiDUG9tsbjMd0nPZnA5FPuFhp8IjdAbr9DJUdfkEi7ii6XDi
-         zzSxUQdh/QnMRP4bcMRRLuNaRGxh0rpm7ne0np8Wb1l7TuwC/f19nE+4JNRWXgpD0Dec
-         WPi05a/qM8bnfu8oPEkxwv92JEpHTGiQFTSakIr9jxNILNgRP2APt96hHpfx3eCk/JCl
-         r55A==
-X-Gm-Message-State: AOAM531u3jjQ4KvZg6fU/9e0HchBOOogjph4p7VqbAwbU8Gg8nrtkP1w
-        0ovE6A9QmDsT59p/AdsJ5w==
-X-Google-Smtp-Source: ABdhPJyk4nlvC4/cpNox4CgcwSixjr8L/4JQEndQLX/f5MWrDHdpXmdfehztc8032azHMs/gTGdZMA==
-X-Received: by 2002:aca:4006:: with SMTP id n6mr2120641oia.22.1607528285074;
-        Wed, 09 Dec 2020 07:38:05 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f67sm441795otb.60.2020.12.09.07.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 07:38:03 -0800 (PST)
-Received: (nullmailer pid 493431 invoked by uid 1000);
-        Wed, 09 Dec 2020 15:38:02 -0000
-Date:   Wed, 9 Dec 2020 09:38:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH] dt-bindings: qcom,pdc: Add compatible for SM8250
-Message-ID: <20201209153802.GA493340@robh.at.kernel.org>
-References: <20201201053537.2134991-1-vkoul@kernel.org>
+        Wed, 9 Dec 2020 10:39:47 -0500
+Date:   Wed, 09 Dec 2020 15:38:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1607528297;
+        bh=wdJCyYk1f38GX5JvsezuTqDeFPgJXHx/BdZltjPklBA=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=ZzIQYxx70gKFm2N/jzgQd3dZxYzeo+dyYLsbsRTILwu3UiKgA9juRLSpncZiWsDMB
+         P2ul/Csk1luCpRbSfHaXglKka7qPcm5NY72u5vCNJFxw+g5PJxPCgwYGZ+72l41m00
+         4UNU+Brvu31D/+9aO4IyT/TlSjMDdmbHXTrCAenQ=
+To:     Greg KH <gregkh@linuxfoundation.org>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     Coiby Xu <coiby.xu@gmail.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Helmut Stult <helmut.stult@schinfo.de>,
+        Baq Domalaq <domalak@gmail.com>,
+        Pedro Ribeiro <pedrib@gmail.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v4] HID: i2c-hid: add polling mode based on connected GPIO chip's pin status
+Message-ID: <CHTa60htGkyHzaM2En-TPXqyk1v3jVJUolGOMfHphEr_mMG5Z5f2K4mHTFilYR73bgpGEKNcGM1LFstJ7UhvbuJrgqr1-J2-YTZJenhK83Q=@protonmail.com>
+In-Reply-To: <X9B2B6KuzbP8Is+W@kroah.com>
+References: <20201125141022.321643-1-coiby.xu@gmail.com> <X75zL12q+FF6KBHi@kroah.com> <B3Hx1v5x_ZWS8XSi8-0vZov1KLuINEHyS5yDUGBaoBN4d9wTi9OlCoFX1h6sqYG8dCZr_OKcKeImWX9eyKh8X4X3ZMdAUQ-KVwmG5e9LJeI=@protonmail.com> <X9B2B6KuzbP8Is+W@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201053537.2134991-1-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 01 Dec 2020 11:05:37 +0530, Vinod Koul wrote:
-> Add the compatible string for SM8250 SoC from Qualcomm. This compatible
-> is used already in DTS files but not documented yet
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->  .../devicetree/bindings/interrupt-controller/qcom,pdc.txt        | 1 +
->  1 file changed, 1 insertion(+)
-> 
+2020. december 9., szerda 8:00 keltez=C3=A9ssel, Greg KH =C3=ADrta:
 
-Acked-by: Rob Herring <robh@kernel.org>
+> On Tue, Dec 08, 2020 at 09:59:20PM +0000, Barnab=C3=A1s P=C5=91cze wrote:
+>
+> > 2020.  november 25., szerda 16:07 keltez=C3=A9ssel, Greg KH =C3=ADrta:
+> >
+> > > [...]
+> > >
+> > > > +static u8 polling_mode;
+> > > > +module_param(polling_mode, byte, 0444);
+> > > > +MODULE_PARM_DESC(polling_mode, "How to poll (default=3D0) - 0 disa=
+bled; 1 based on GPIO pin's status");
+> > >
+> > > Module parameters are for the 1990's, they are global and horrible to
+> > > try to work with. You should provide something on a per-device basis,
+> > > as what happens if your system requires different things here for
+> > > different devices? You set this for all devices :(
+> > > [...]
+> >
+> > Hi
+> > do you think something like what the usbcore has would be better?
+> > A module parameter like "quirks=3D<vendor-id>:<product-id>:<flags>[,<ve=
+ndor-id>:<product-id>:<flags>]*"?
+>
+> Not really, that's just for debugging, and asking users to test
+> something, not for a final solution to anything.
+
+My understanding is that this polling mode option is by no means intended
+as a final solution, it's purely for debugging/fallback:
+
+"Polling mode could be a fallback solution for enthusiastic Linux users
+when they have a new laptop. It also acts like a debugging feature. If
+polling mode works for a broken touchpad, we can almost be certain
+the root cause is related to the interrupt or power setting."
+
+What would you suggest instead of the module parameter?
+
+
+Regards,
+Barnab=C3=A1s P=C5=91cze
