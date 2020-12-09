@@ -2,110 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 725582D4081
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 756092D4083
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730310AbgLILAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:00:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25637 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728392AbgLILAD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:00:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607511516;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CgtH182QZzc921P4YWhD7Eorh+vwR+HI0Yw44CrRtXQ=;
-        b=PL6b+CBYjAn1sM/TC5hhGhBGNLXBTr+ewSBSe5soHOBjpV2c6qYnvXib5CH4mI++6vvyvF
-        AfbUe01dU2gHd0LZYLkcS812WIL2D3Bg+UZFslDA+v6f12ouHgPf0AAKRqRuF9UjGtJHtK
-        QQwZr7U5U8BKExSZDh7DpoHtB9PGNQE=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-544-C2Ht6tyKO-Gknfkj0UCP6Q-1; Wed, 09 Dec 2020 05:58:34 -0500
-X-MC-Unique: C2Ht6tyKO-Gknfkj0UCP6Q-1
-Received: by mail-wm1-f71.google.com with SMTP id f12so411069wmf.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 02:58:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=CgtH182QZzc921P4YWhD7Eorh+vwR+HI0Yw44CrRtXQ=;
-        b=fwUFXS3DIyiaG71Jjj7rVKOqGIWYdEufJ/632Qo1ZaDvFGYMUMuaR94zUC6vG/2UM9
-         0k6/NWGAW617Uw8wB1Igr9PCAXmoYKNKQ63AAStBMRhAoDwLxgctSRn7IGAZSsSCz3wT
-         HxrMUFOA7gbRJy8utt3i9lZd6dHBqf7YaFZzLc2QNcnW6D7G1Re9E98cTZzN/gXHaQT0
-         cpUspFEJLqvwaaAJBIWjsnIZR5RznooFcDb+jb2nJVSPhbx7HcksB2hYEOdU4nilGLcq
-         oxI+G4gPc2lGRqz45hzWc4MzZwYuQgzgjHQbEj32SUtXVWZwqwThSXiR8kUyRb0GhXZM
-         pn1Q==
-X-Gm-Message-State: AOAM530YZ3M51t4FOjhPnNZiKXBEnbs4srvdlfixojECgEjtYsjfiTOE
-        TAccHX83J7N9FeBAWD3mzXlcj9u4VegBQnpYudp9hkAi3L8dHS1XondAuu3GPRWxkCv13R7xc4e
-        LGCi1ZyaJCKvkAHlEk0p/V4/F
-X-Received: by 2002:a1c:f715:: with SMTP id v21mr2176959wmh.2.1607511513089;
-        Wed, 09 Dec 2020 02:58:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJylVz5XgOq9GoSUV1WCVxh13tyn/JWweRYpU6YEyg62wzZGma1ZTEe30MQA34D+nNxhUwSVyQ==
-X-Received: by 2002:a1c:f715:: with SMTP id v21mr2176936wmh.2.1607511512924;
-        Wed, 09 Dec 2020 02:58:32 -0800 (PST)
-Received: from steredhat (host-79-24-227-66.retail.telecomitalia.it. [79.24.227.66])
-        by smtp.gmail.com with ESMTPSA id 35sm2621611wro.71.2020.12.09.02.58.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 02:58:32 -0800 (PST)
-Date:   Wed, 9 Dec 2020 11:58:29 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, Oren Duer <oren@nvidia.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Shahaf Shuler <shahafs@nvidia.com>, Eli Cohen <elic@nvidia.com>
-Subject: Re: [PATCH v3 05/19] vdpa_sim: remove the limit of IOTLB entries
-Message-ID: <20201209105829.6l6ie7xqp2eycds6@steredhat>
-References: <20201203170511.216407-1-sgarzare@redhat.com>
- <20201203170511.216407-6-sgarzare@redhat.com>
- <d7b00b70-9785-db1f-1e42-7b9172b7ad90@redhat.com>
+        id S1730324AbgLILAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:00:39 -0500
+Received: from mga17.intel.com ([192.55.52.151]:36037 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730217AbgLILAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 06:00:22 -0500
+IronPort-SDR: RA3GdOa9d7Cgs2h4RzjE1HZkpitqMFxZpsyjlhTWxytBzlxTbah1GCuLJUap4V5lPvD1LVpJ09
+ 2eCzUuFP/a3w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="153867202"
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="153867202"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 02:58:36 -0800
+IronPort-SDR: CPCxkLmChPoM5e4QFmYfcGOW5yUiFtnaK0ITNI0OTtEZeuCo84sss8H6Zj74JbXmGAUyZs+JTy
+ xCsoi2mfqTvA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="368142995"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by fmsmga004.fm.intel.com with ESMTP; 09 Dec 2020 02:58:33 -0800
+Subject: Re: [RFC PATCH v7] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        mgorman@techsingularity.net, valentin.schneider@arm.com,
+        qais.yousef@arm.com, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+        bsegall@google.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, Mel Gorman <mgorman@suse.de>,
+        Jiang Biao <benbjiang@gmail.com>
+References: <20201209062404.175565-1-aubrey.li@linux.intel.com>
+ <20201209081541.GA5071@vingu-book>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <1e68b6fe-2f22-2fbd-3f6b-645994854918@linux.intel.com>
+Date:   Wed, 9 Dec 2020 18:58:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
+In-Reply-To: <20201209081541.GA5071@vingu-book>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d7b00b70-9785-db1f-1e42-7b9172b7ad90@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 12:00:07PM +0800, Jason Wang wrote:
->
->On 2020/12/4 上午1:04, Stefano Garzarella wrote:
->>The simulated devices can support multiple queues, so this limit
->>should be defined according to the number of queues supported by
->>the device.
+On 2020/12/9 16:15, Vincent Guittot wrote:
+> Le mercredi 09 déc. 2020 à 14:24:04 (+0800), Aubrey Li a écrit :
+>> Add idle cpumask to track idle cpus in sched domain. Every time
+>> a CPU enters idle, the CPU is set in idle cpumask to be a wakeup
+>> target. And if the CPU is not in idle, the CPU is cleared in idle
+>> cpumask during scheduler tick to ratelimit idle cpumask update.
 >>
->>Since we are in a simulator, let's simply remove that limit.
+>> When a task wakes up to select an idle cpu, scanning idle cpumask
+>> has lower cost than scanning all the cpus in last level cache domain,
+>> especially when the system is heavily loaded.
 >>
->>Suggested-by: Jason Wang <jasowang@redhat.com>
->>Acked-by: Jason Wang <jasowang@redhat.com>
->>Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
->
->
->Rethink about this, since simulator can be used by VM, so the 
->allocation is actually guest trigger-able when vIOMMU is enabled.
->
->This means we need a limit somehow, (e.g I remember swiotlb is about 
->64MB by default). Or having a module parameter for this.
->
->Btw, have you met any issue when using 2048, I guess it can happen 
->when we run several processes in parallel?
->
+>> Benchmarks including hackbench, schbench, uperf, sysbench mysql
+>> and kbuild were tested on a x86 4 socket system with 24 cores per
+>> socket and 2 hyperthreads per core, total 192 CPUs, no regression
+>> found.
+>>
+>> v6->v7:
+>> - place the whole idle cpumask mechanism under CONFIG_SMP.
+>>
+>> v5->v6:
+>> - decouple idle cpumask update from stop_tick signal, set idle CPU
+>>   in idle cpumask every time the CPU enters idle
+>>
+>> v4->v5:
+>> - add update_idle_cpumask for s2idle case
+>> - keep the same ordering of tick_nohz_idle_stop_tick() and update_
+>>   idle_cpumask() everywhere
+>>
+>> v3->v4:
+>> - change setting idle cpumask from every idle entry to tickless idle
+>>   if cpu driver is available.
+>> - move clearing idle cpumask to scheduler_tick to decouple nohz mode.
+>>
+>> v2->v3:
+>> - change setting idle cpumask to every idle entry, otherwise schbench
+>>   has a regression of 99th percentile latency.
+>> - change clearing idle cpumask to nohz_balancer_kick(), so updating
+>>   idle cpumask is ratelimited in the idle exiting path.
+>> - set SCHED_IDLE cpu in idle cpumask to allow it as a wakeup target.
+>>
+>> v1->v2:
+>> - idle cpumask is updated in the nohz routines, by initializing idle
+>>   cpumask with sched_domain_span(sd), nohz=off case remains the original
+>>   behavior.
+>>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Mel Gorman <mgorman@suse.de>
+>> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+>> Cc: Qais Yousef <qais.yousef@arm.com>
+>> Cc: Valentin Schneider <valentin.schneider@arm.com>
+>> Cc: Jiang Biao <benbjiang@gmail.com>
+>> Cc: Tim Chen <tim.c.chen@linux.intel.com>
+>> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+>> ---
+>>  include/linux/sched/topology.h | 13 +++++++++
+>>  kernel/sched/core.c            |  2 ++
+>>  kernel/sched/fair.c            | 51 +++++++++++++++++++++++++++++++++-
+>>  kernel/sched/idle.c            |  5 ++++
+>>  kernel/sched/sched.h           |  4 +++
+>>  kernel/sched/topology.c        |  3 +-
+>>  6 files changed, 76 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+>> index 820511289857..b47b85163607 100644
+>> --- a/include/linux/sched/topology.h
+>> +++ b/include/linux/sched/topology.h
+>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
+>>  	atomic_t	ref;
+>>  	atomic_t	nr_busy_cpus;
+>>  	int		has_idle_cores;
+>> +	/*
+>> +	 * Span of all idle CPUs in this domain.
+>> +	 *
+>> +	 * NOTE: this field is variable length. (Allocated dynamically
+>> +	 * by attaching extra space to the end of the structure,
+>> +	 * depending on how many CPUs the kernel has booted up with)
+>> +	 */
+>> +	unsigned long	idle_cpus_span[];
+>>  };
+>>  
+>> +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
+>> +{
+>> +	return to_cpumask(sds->idle_cpus_span);
+>> +}
+>> +
+>>  struct sched_domain {
+>>  	/* These fields must be setup */
+>>  	struct sched_domain __rcu *parent;	/* top domain must be null terminated */
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index c4da7e17b906..c4c51ff3402a 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -4011,6 +4011,7 @@ void scheduler_tick(void)
+>>  
+>>  #ifdef CONFIG_SMP
+>>  	rq->idle_balance = idle_cpu(cpu);
+>> +	update_idle_cpumask(cpu, false);
+> 
+> Test rq->idle_balance here instead of adding the test in update_idle_cpumask which is only
+> relevant for this situation.
 
-No, I didn't try with the limit.
-This came from the reviews to Max's patches.
+If called from idle path, because !set_idle is false, rq->idle_balance won't be tested actually.
 
-Anyway I can add a module parameter to control that limit, do you think 
-is better to set a limit per queue (the parameter per number of queues), 
-or just a value for the entire device?
+	if (!set_idle && rq->idle_balance)
+		return;
+
+So is it okay to leave it here to keep scheduler_tick a bit concise?
 
 Thanks,
-Stefano
-
+-Aubrey
