@@ -2,254 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 734762D3E00
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B542D3DFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727559AbgLII4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:56:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36517 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727899AbgLII4M (ORCPT
+        id S1727339AbgLIIzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:55:14 -0500
+Received: from smtprelay0013.hostedemail.com ([216.40.44.13]:51764 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727156AbgLIIzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:56:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607504084;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GQuK0XCWSQyntXamE1/E+qo5qV88XThCFsqHGonzaqs=;
-        b=BfLbtZzB9oZhIkVr5S3gBPM6Xl9ibOjM3pVf4wQDNzXl3CCT4YOipgL1rsQt6svD6O4s/V
-        56VyvnSfNNEnw+juSlJLMCJvQt8rkGgSRlkzdmEm1JjeU6CF5AmT/any/X7W6Iv9ZUFOAt
-        IBtUABd3vK0awgdJfiHKDBQpYkmYWq8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-nV69GPKUPJKwsyPOTsZn_A-1; Wed, 09 Dec 2020 03:54:40 -0500
-X-MC-Unique: nV69GPKUPJKwsyPOTsZn_A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C0EC192CC47;
-        Wed,  9 Dec 2020 08:54:36 +0000 (UTC)
-Received: from [10.36.114.167] (ovpn-114-167.ams2.redhat.com [10.36.114.167])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 78BBF5C238;
-        Wed,  9 Dec 2020 08:54:30 +0000 (UTC)
-Subject: Re: [External] Re: [PATCH v7 04/15] mm/hugetlb: Introduce
- nr_free_vmemmap_pages in the struct hstate
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <20201130151838.11208-5-songmuchun@bytedance.com>
- <8505f01c-ad26-e571-b464-aedfd1bd9280@redhat.com>
- <CAMZfGtXXHnso53-OZNotOnkZu1VX8WbBY66z2ynwVzcTZb44tQ@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <03a8b8b6-5d0c-b48e-562b-61f866722a31@redhat.com>
-Date:   Wed, 9 Dec 2020 09:54:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 9 Dec 2020 03:55:14 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 16D1B1802CCD2;
+        Wed,  9 Dec 2020 08:54:33 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:967:973:979:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1719:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2691:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4383:4388:4395:5007:8985:9025:10004:10400:10848:11232:11658:11914:12043:12050:12297:12663:12679:12740:12760:12895:13069:13255:13311:13357:13439:14093:14096:14097:14180:14181:14659:14721:14764:21067:21080:21433:21450:21451:21627:21790:30041:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bikes20_0a0b5de273ee
+X-Filterd-Recvd-Size: 3371
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  9 Dec 2020 08:54:31 +0000 (UTC)
+Message-ID: <42a599d0f5e4c677648b5e6de8083feb8723a558.camel@perches.com>
+Subject: Re: [Ksummit-discuss] crediting bug reports and fixes folded into
+ original patch
+From:   Joe Perches <joe@perches.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "ksummit-discuss@lists.linuxfoundation.org" 
+        <ksummit-discuss@lists.linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Date:   Wed, 09 Dec 2020 00:54:30 -0800
+In-Reply-To: <20201209075849.GD2767@kadam>
+References: <ea32eb02-5e44-0469-772b-34b5cb882543@suse.cz>
+         <CAPcyv4jDHMt4PpR2Htvw27rn5i5sCkwXtoZH-rFbtG8Hj7x1sg@mail.gmail.com>
+         <20201203093458.GA16543@unreal>
+         <CAMuHMdVcPELarE=eJEc-=AdyfmhhZQsYtUggWCaetuEdk=VpMQ@mail.gmail.com>
+         <20201203104047.GD16543@unreal> <X8ku1MmZeeIaMRF4@kroah.com>
+         <202012081619.6593C87D3@keescook>
+         <13d04c4cc769ebd1dd58470f4d22ada5c9cd28e7.camel@perches.com>
+         <20201209075849.GD2767@kadam>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <CAMZfGtXXHnso53-OZNotOnkZu1VX8WbBY66z2ynwVzcTZb44tQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.12.20 14:11, Muchun Song wrote:
-> On Mon, Dec 7, 2020 at 8:36 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 30.11.20 16:18, Muchun Song wrote:
->>> Every HugeTLB has more than one struct page structure. The 2M HugeTLB
->>> has 512 struct page structure and 1G HugeTLB has 4096 struct page
->>> structures. We __know__ that we only use the first 4(HUGETLB_CGROUP_MIN_ORDER)
->>> struct page structures to store metadata associated with each HugeTLB.
->>>
->>> There are a lot of struct page structures(8 page frames for 2MB HugeTLB
->>> page and 4096 page frames for 1GB HugeTLB page) associated with each
->>> HugeTLB page. For tail pages, the value of compound_head is the same.
->>> So we can reuse first page of tail page structures. We map the virtual
->>> addresses of the remaining pages of tail page structures to the first
->>> tail page struct, and then free these page frames. Therefore, we need
->>> to reserve two pages as vmemmap areas.
->>>
->>> So we introduce a new nr_free_vmemmap_pages field in the hstate to
->>> indicate how many vmemmap pages associated with a HugeTLB page that we
->>> can free to buddy system.
->>>
->>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->>> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
->>> ---
->>>  include/linux/hugetlb.h |   3 ++
->>>  mm/Makefile             |   1 +
->>>  mm/hugetlb.c            |   3 ++
->>>  mm/hugetlb_vmemmap.c    | 129 ++++++++++++++++++++++++++++++++++++++++++++++++
->>>  mm/hugetlb_vmemmap.h    |  20 ++++++++
->>>  5 files changed, 156 insertions(+)
->>>  create mode 100644 mm/hugetlb_vmemmap.c
->>>  create mode 100644 mm/hugetlb_vmemmap.h
->>>
->>> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
->>> index ebca2ef02212..4efeccb7192c 100644
->>> --- a/include/linux/hugetlb.h
->>> +++ b/include/linux/hugetlb.h
->>> @@ -492,6 +492,9 @@ struct hstate {
->>>       unsigned int nr_huge_pages_node[MAX_NUMNODES];
->>>       unsigned int free_huge_pages_node[MAX_NUMNODES];
->>>       unsigned int surplus_huge_pages_node[MAX_NUMNODES];
->>> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
->>> +     unsigned int nr_free_vmemmap_pages;
->>> +#endif
->>>  #ifdef CONFIG_CGROUP_HUGETLB
->>>       /* cgroup control files */
->>>       struct cftype cgroup_files_dfl[7];
->>> diff --git a/mm/Makefile b/mm/Makefile
->>> index ed4b88fa0f5e..056801d8daae 100644
->>> --- a/mm/Makefile
->>> +++ b/mm/Makefile
->>> @@ -71,6 +71,7 @@ obj-$(CONFIG_FRONTSWAP)     += frontswap.o
->>>  obj-$(CONFIG_ZSWAP)  += zswap.o
->>>  obj-$(CONFIG_HAS_DMA)        += dmapool.o
->>>  obj-$(CONFIG_HUGETLBFS)      += hugetlb.o
->>> +obj-$(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)      += hugetlb_vmemmap.o
->>>  obj-$(CONFIG_NUMA)   += mempolicy.o
->>>  obj-$(CONFIG_SPARSEMEM)      += sparse.o
->>>  obj-$(CONFIG_SPARSEMEM_VMEMMAP) += sparse-vmemmap.o
->>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->>> index 1f3bf1710b66..25f9e8e9fc4a 100644
->>> --- a/mm/hugetlb.c
->>> +++ b/mm/hugetlb.c
->>> @@ -42,6 +42,7 @@
->>>  #include <linux/userfaultfd_k.h>
->>>  #include <linux/page_owner.h>
->>>  #include "internal.h"
->>> +#include "hugetlb_vmemmap.h"
->>>
->>>  int hugetlb_max_hstate __read_mostly;
->>>  unsigned int default_hstate_idx;
->>> @@ -3206,6 +3207,8 @@ void __init hugetlb_add_hstate(unsigned int order)
->>>       snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
->>>                                       huge_page_size(h)/1024);
->>>
->>> +     hugetlb_vmemmap_init(h);
->>> +
->>>       parsed_hstate = h;
->>>  }
->>>
->>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
->>> new file mode 100644
->>> index 000000000000..51152e258f39
->>> --- /dev/null
->>> +++ b/mm/hugetlb_vmemmap.c
->>> @@ -0,0 +1,129 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + * Free some vmemmap pages of HugeTLB
->>> + *
->>> + * Copyright (c) 2020, Bytedance. All rights reserved.
->>> + *
->>> + *     Author: Muchun Song <songmuchun@bytedance.com>
->>> + *
->>> + * The struct page structures (page structs) are used to describe a physical
->>> + * page frame. By default, there is a one-to-one mapping from a page frame to
->>> + * it's corresponding page struct.
->>> + *
->>> + * The HugeTLB pages consist of multiple base page size pages and is supported
->>> + * by many architectures. See hugetlbpage.rst in the Documentation directory
->>> + * for more details. On the x86 architecture, HugeTLB pages of size 2MB and 1GB
->>> + * are currently supported. Since the base page size on x86 is 4KB, a 2MB
->>> + * HugeTLB page consists of 512 base pages and a 1GB HugeTLB page consists of
->>> + * 4096 base pages. For each base page, there is a corresponding page struct.
->>> + *
->>> + * Within the HugeTLB subsystem, only the first 4 page structs are used to
->>> + * contain unique information about a HugeTLB page. HUGETLB_CGROUP_MIN_ORDER
->>> + * provides this upper limit. The only 'useful' information in the remaining
->>> + * page structs is the compound_head field, and this field is the same for all
->>> + * tail pages.
->>> + *
->>> + * By removing redundant page structs for HugeTLB pages, memory can returned to
->>> + * the buddy allocator for other uses.
->>> + *
->>> + * When the system boot up, every 2M HugeTLB has 512 struct page structs which
->>> + * size is 8 pages(sizeof(struct page) * 512 / PAGE_SIZE).
->>
->>
->> You should try to generalize all descriptions regarding differing base
->> page sizes. E.g., arm64 supports 4k, 16k, and 64k base pages.
+On Wed, 2020-12-09 at 10:58 +0300, Dan Carpenter wrote:
+> On Tue, Dec 08, 2020 at 09:01:49PM -0800, Joe Perches wrote:
+> > On Tue, 2020-12-08 at 16:34 -0800, Kees Cook wrote:
+> > 
+> > > If not "Adjusted-by", what about "Tweaked-by", "Helped-by",
+> > > "Corrected-by"?
+> > 
+> > Improved-by: / Enhanced-by: / Revisions-by: 
+> > 
 > 
-> Will do. Thanks.
-> 
->>
->> [...]
->>
->>> @@ -0,0 +1,20 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + * Free some vmemmap pages of HugeTLB
->>> + *
->>> + * Copyright (c) 2020, Bytedance. All rights reserved.
->>> + *
->>> + *     Author: Muchun Song <songmuchun@bytedance.com>
->>> + */
->>> +#ifndef _LINUX_HUGETLB_VMEMMAP_H
->>> +#define _LINUX_HUGETLB_VMEMMAP_H
->>> +#include <linux/hugetlb.h>
->>> +
->>> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
->>> +void __init hugetlb_vmemmap_init(struct hstate *h);
->>> +#else
->>> +static inline void hugetlb_vmemmap_init(struct hstate *h)
->>> +{
->>> +}
->>> +#endif /* CONFIG_HUGETLB_PAGE_FREE_VMEMMAP */
->>> +#endif /* _LINUX_HUGETLB_VMEMMAP_H */
->>>
->>
->> This patch as it stands is rather sub-optimal. I mean, all it does is
->> add documentation and print what could be done.
->>
->> Can we instead introduce the basic infrastructure and enable it via this
->> patch on top, where we glue all the pieces together? Or is there
->> something I am missing?
-> 
-> Maybe we can make the config of CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> default n in the Kconfig. When everything is ready, then make it
-> default to y. Right?
+> I don't think we should give any credit for improvements or enhancements,
+> only for fixes.
 
-I think it can make sense to introduce the
-CONFIG_HUGETLB_PAGE_FREE_VMEMMAP option first if necessary for other
-patches. But I think the the documentation and the dummy call should
-rather be moved to the end of the series where you glue everything you
-introduced together and officially unlock the feature. Others might
-disagree :)
+Hey Dan.
 
-BTW, I'm planning on reviewing the other parts of this series, I'm just
-fairly busy, so it might take a while (I think we're targeting 5.12
-either way as the 5.11 merge window will start fairly soon).
+I do.  If a patch isn't comprehensive and a reviewer notices some
+missing coverage or algorithmic performance enhancement, I think that
+should be noted.
 
--- 
-Thanks,
+> Complaining about style is its own reward.
 
-David / dhildenb
+<chuckle, maybe so. I view it more like coaching...>
+
+I believe I've said multiple times that style changes shouldn't require
+additional commentary added to a patch.
+
+I'm not making any suggestion to comment for style, only logic or defect
+reduction/improvements as described above.
+
+> Having to redo a patch is already a huge headache.  Normally, I already
+> considered the reviewer's prefered style and decided I didn't like it.
+
+Example please.  We both seem to prefer consistent style.
+
+> Then to make me redo the patch in an ugly style and say thank you on
+> top of that???  Forget about it.
+
+Not a thing I've asked for.
+
+>  Plus, as a reviewer I hate reviewing patches over and over.
+
+interdiff could be improved.
+
+> I've argued for years that we should have a Fixes-from: tag.  The zero
+> day bot is already encouraging people to add Reported-by tags for this
+> and a lot of people do.
+
+It's still a question of what fixes means in any context.
+
+https://www.google.com/search?q=%27fixes-from%3A%27%20carpenter%20site%3Alore.kernel.org
+gives:
+It looks like there aren't many great matches for your search
+
+And I'm rather in favor of letting people make up their own
+<whatever>-by: uses and not being too concerned about the specific
+whatever word or phrase used.  Postel's law and such.
+
 
