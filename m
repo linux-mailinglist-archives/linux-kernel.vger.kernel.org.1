@@ -2,226 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A31502D3BF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D19D2D3BF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbgLIHGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 02:06:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52618 "EHLO
+        id S1727141AbgLIHHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 02:07:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbgLIHGI (ORCPT
+        with ESMTP id S1726129AbgLIHHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 02:06:08 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCA6C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 23:05:27 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kmtXK-0007ZR-4Q; Wed, 09 Dec 2020 08:05:18 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kmtXI-0005LE-Iu; Wed, 09 Dec 2020 08:05:16 +0100
-Date:   Wed, 9 Dec 2020 08:05:16 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sean@mess.org, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201209070516.yw5bpsh474k7mnfx@pengutronix.de>
-References: <1607464905-16630-1-git-send-email-LinoSanfilippo@gmx.de>
+        Wed, 9 Dec 2020 02:07:08 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B728AC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 23:06:28 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id h7so299101pjk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 23:06:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kkn786HNMnRJCcN2vJ93qEyfsAgh7pkxJtiGF06J3yU=;
+        b=JXrRB0nWVA5bEbEvNjxEzu/NNeNa7aKnAuns8JTBIx/sW/F+SxwH6QRAtQ0iiTX8h0
+         Pac4yR3jIe7TZKkrxsjkSHBXB2sYr2OJpHc4wBiXDQyKPB3oQF+wkfxiqHFAC5c0jW7g
+         yo4V3RXknI3qJ4Zrh7cHk1tdTj2f/wUWuSdQ0Liblz9+qjFB+QluSTdO+wyA/78lMxRC
+         4SI1SKgLSphvUkVovLeGAhK4IvUiJWFmOARy7q+vYzadZQLrsrDAK5jLog+gVokidCMh
+         31bF/AgWkPzKCdrxRNqlXaWLaA7X84nL2vH4nv0L3kZXAoY4FkkzIMz2vDn4MF3KTUap
+         yVnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kkn786HNMnRJCcN2vJ93qEyfsAgh7pkxJtiGF06J3yU=;
+        b=CZE1b8Ib2YbrmsuNAeKxIfDt3s0UOfVKroKAlkoFqnQKfiZDV7xdgvIfSSG2qFYTtC
+         uXMSqfZB6WyBJCh9c9JKmEjJgYRUIL54wHZwIFiFybv4t2C/hPVnIEifV4bSrY1G5cDt
+         uxihGrBOjuJTCBCA+YAMN4d7kl+sa8NbMFQoRfWTLQNhNHf4dPYdomBoR7EDDaX6JahG
+         hfr+RVS2A3wdOsyDhYBFmR+7jc1CmMgEu/NCe4QXXYdBAiyC+PSm4fPg97VmuQumb4v/
+         FZOsB3KKtVavSc5Ldzp4zf1Fl3OTobEN9rj+N20vtdTjssXPBDKgbPO8xyHX4c4N+btW
+         Wo6w==
+X-Gm-Message-State: AOAM533vb+qQmm81QuXng6VVtHRAilTGnVU3o43lBwXHb3P5O1QlUkxV
+        WHwAh+SDKKDhRwXlqoG+0jKvzkU/0gl4zz6Tslso+w==
+X-Google-Smtp-Source: ABdhPJyqvToolagl8ieU1B5JnTy01mh7I3u/Qdo1C4b/4NaYIk2VlSrMTXjvguF/PaTMidy6INo/h29mnjEw/Azl95c=
+X-Received: by 2002:a17:902:bb92:b029:d9:e9bf:b775 with SMTP id
+ m18-20020a170902bb92b02900d9e9bfb775mr1108490pls.24.1607497587958; Tue, 08
+ Dec 2020 23:06:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2dgo6pzrzz5yxyxt"
-Content-Disposition: inline
-In-Reply-To: <1607464905-16630-1-git-send-email-LinoSanfilippo@gmx.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201208095132.79383-1-songmuchun@bytedance.com>
+ <20201209022118.GB2385286@carbon.DHCP.thefacebook.com> <CAMZfGtUMP6mz3DE7DHS55fyto=LZuQpcitt59WuwhZw8m2LqBg@mail.gmail.com>
+ <20201209031115.GA2390587@carbon.lan>
+In-Reply-To: <20201209031115.GA2390587@carbon.lan>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 9 Dec 2020 15:05:49 +0800
+Message-ID: <CAMZfGtVJnZESZQZmPzk=mBqK0KH4L=-s_+ebTr-6Z76zdXXn7g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] mm: memcontrol: optimize per-lruvec
+ stats counter memory usage
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>, richard.weiyang@gmail.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 9, 2020 at 11:52 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Wed, Dec 09, 2020 at 10:31:55AM +0800, Muchun Song wrote:
+> > On Wed, Dec 9, 2020 at 10:21 AM Roman Gushchin <guro@fb.com> wrote:
+> > >
+> > > On Tue, Dec 08, 2020 at 05:51:32PM +0800, Muchun Song wrote:
+> > > > The vmstat threshold is 32 (MEMCG_CHARGE_BATCH), so the type of s32
+> > > > of lruvec_stat_cpu is enough.
+>
+> Actually the threshold can be as big as MEMCG_CHARGE_BATCH * PAGE_SIZE.
+> It still fits into s32, but without explicitly saying it it's hard to
+> understand why not choosing s8, as in vmstat.c.
 
---2dgo6pzrzz5yxyxt
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah, here I need to update the commit log.
 
-Hello Lino,
+>
+> > > >
+> > > > The size of struct lruvec_stat is 304 bytes on 64 bits system. As it
+> > > > is a per-cpu structure. So with this patch, we can save 304 / 2 * ncpu
+> > > > bytes per-memcg per-node where ncpu is the number of the possible CPU.
+> > > > If there are c memory cgroup (include dying cgroup) and n NUMA node in
+> > > > the system. Finally, we can save (152 * ncpu * c * n) bytes.
+> > >
+> > > Honestly, I'm not convinced.
+> > > Say, ncpu = 32, n = 2, c = 500. We're saving <5Mb of memory.
+> > > If the machine has 128Gb of RAM, it's .000000003%.
+> >
+> > Hi Roman,
+> >
+> > When the cpu hotplug is enabled, the ncpu can be 256 on
+> > some configurations. Also, the c can be more large when
+> > there are many dying cgroup in the system.
+> >
+> > So the savings depends on the environment and
+> > configurations. Right?
+>
+> Of course, but machines with more CPUs tend to have more RAM as well.
 
-On Tue, Dec 08, 2020 at 11:01:45PM +0100, Lino Sanfilippo wrote:
-> Use the newer .apply function of pwm_ops instead of .config, .enable,
-> .disable and .set_polarity. This guarantees atomic changes of the pwm
-> controller configuration. It also reduces the size of the driver.
->=20
-> Since now period is a 64 bit value, add an extra check to reject periods
-> that exceed the possible max value for the 32 bit register.
->=20
-> This has been tested on a Raspberry PI 4.
+Here I mean possible CPU not online CPU. The number of possible
+CPUs may be greater than online CPUs. The per-cpu allocator is based
+on the number of possible CPUs. Right?
 
-This looks right, just two small nitpicks below.
+Thanks.
 
-> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-> ---
->=20
-> v3: Check against period truncation (based on a review by Uwe Kleine-K=F6=
-nig)
-> v2: Fix compiler error for 64 bit builds
->=20
->  drivers/pwm/pwm-bcm2835.c | 72 +++++++++++++++++------------------------=
-------
->  1 file changed, 26 insertions(+), 46 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-bcm2835.c b/drivers/pwm/pwm-bcm2835.c
-> index 6841dcf..d339898 100644
-> --- a/drivers/pwm/pwm-bcm2835.c
-> +++ b/drivers/pwm/pwm-bcm2835.c
-> @@ -58,13 +58,15 @@ static void bcm2835_pwm_free(struct pwm_chip *chip, s=
-truct pwm_device *pwm)
->  	writel(value, pc->base + PWM_CONTROL);
->  }
-> =20
-> -static int bcm2835_pwm_config(struct pwm_chip *chip, struct pwm_device *=
-pwm,
-> -			      int duty_ns, int period_ns)
-> +static int bcm2835_pwm_apply(struct pwm_chip *chip, struct pwm_device *p=
-wm,
-> +			     const struct pwm_state *state)
->  {
-> +
->  	struct bcm2835_pwm *pc =3D to_bcm2835_pwm(chip);
->  	unsigned long rate =3D clk_get_rate(pc->clk);
-> +	unsigned long long period;
->  	unsigned long scaler;
-> -	u32 period;
-> +	u32 val;
-> =20
->  	if (!rate) {
->  		dev_err(pc->dev, "failed to get clock rate\n");
-> @@ -72,65 +74,43 @@ static int bcm2835_pwm_config(struct pwm_chip *chip, =
-struct pwm_device *pwm,
->  	}
-> =20
->  	scaler =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, rate);
-> -	period =3D DIV_ROUND_CLOSEST(period_ns, scaler);
-> +	/* set period */
-> +	period =3D DIV_ROUND_CLOSEST_ULL(state->period, scaler);
-> =20
-> -	if (period < PERIOD_MIN)
-> +	/* dont accept a period that is too small or has been truncated */
-> +	if ((period < PERIOD_MIN) || (period > U32_MAX))
->  		return -EINVAL;
-> =20
-> -	writel(DIV_ROUND_CLOSEST(duty_ns, scaler),
-> -	       pc->base + DUTY(pwm->hwpwm));
-> -	writel(period, pc->base + PERIOD(pwm->hwpwm));
-> -
-> -	return 0;
-> -}
-> -
-> -static int bcm2835_pwm_enable(struct pwm_chip *chip, struct pwm_device *=
-pwm)
-> -{
-> -	struct bcm2835_pwm *pc =3D to_bcm2835_pwm(chip);
-> -	u32 value;
-> -
-> -	value =3D readl(pc->base + PWM_CONTROL);
-> -	value |=3D PWM_ENABLE << PWM_CONTROL_SHIFT(pwm->hwpwm);
-> -	writel(value, pc->base + PWM_CONTROL);
-> -
-> -	return 0;
-> -}
-> -
-> -static void bcm2835_pwm_disable(struct pwm_chip *chip, struct pwm_device=
- *pwm)
-> -{
-> -	struct bcm2835_pwm *pc =3D to_bcm2835_pwm(chip);
-> -	u32 value;
-> +	writel((u32) period, pc->base + PERIOD(pwm->hwpwm));
+>
+> Thanks!
 
-This cast isn't necessary. (And if it was, I *think* the space between
-"(u32)" and "period" is wrong. But my expectation that checkpatch warns
-about this is wrong, so take this with a grain of salt.)
 
-> -	value =3D readl(pc->base + PWM_CONTROL);
-> -	value &=3D ~(PWM_ENABLE << PWM_CONTROL_SHIFT(pwm->hwpwm));
-> -	writel(value, pc->base + PWM_CONTROL);
-> -}
-> +	/* set duty cycle */
-> +	val =3D DIV_ROUND_CLOSEST_ULL(state->duty_cycle, scaler);
-> +	writel(val, pc->base + DUTY(pwm->hwpwm));
-> =20
-> -static int bcm2835_set_polarity(struct pwm_chip *chip, struct pwm_device=
- *pwm,
-> -				enum pwm_polarity polarity)
-> -{
-> -	struct bcm2835_pwm *pc =3D to_bcm2835_pwm(chip);
-> -	u32 value;
-> +	/* set polarity */
-> +	val =3D readl(pc->base + PWM_CONTROL);
-> =20
-> -	value =3D readl(pc->base + PWM_CONTROL);
-> +	if (state->polarity =3D=3D PWM_POLARITY_NORMAL)
-> +		val &=3D ~(PWM_POLARITY << PWM_CONTROL_SHIFT(pwm->hwpwm));
-> +	else
-> +		val |=3D PWM_POLARITY << PWM_CONTROL_SHIFT(pwm->hwpwm);
-> =20
-> -	if (polarity =3D=3D PWM_POLARITY_NORMAL)
-> -		value &=3D ~(PWM_POLARITY << PWM_CONTROL_SHIFT(pwm->hwpwm));
-> +	/* enable/disable */
-> +	if (state->enabled)
-> +		val |=3D PWM_ENABLE << PWM_CONTROL_SHIFT(pwm->hwpwm);
->  	else
-> -		value |=3D PWM_POLARITY << PWM_CONTROL_SHIFT(pwm->hwpwm);
-> +		val &=3D ~(PWM_ENABLE << PWM_CONTROL_SHIFT(pwm->hwpwm));
-> =20
-> -	writel(value, pc->base + PWM_CONTROL);
-> +	writel(val, pc->base + PWM_CONTROL);
-> =20
->  	return 0;
->  }
-> =20
-> +
 
-I wouldn't have added this empty line. But I guess that's subjective. Or
-did you add this by mistake?
-
->  static const struct pwm_ops bcm2835_pwm_ops =3D {
->  	.request =3D bcm2835_pwm_request,
->  	.free =3D bcm2835_pwm_free,
-> -	.config =3D bcm2835_pwm_config,
-> -	.enable =3D bcm2835_pwm_enable,
-> -	.disable =3D bcm2835_pwm_disable,
-> -	.set_polarity =3D bcm2835_set_polarity,
-> +	.apply =3D bcm2835_pwm_apply,
->  	.owner =3D THIS_MODULE,
->  };
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---2dgo6pzrzz5yxyxt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/QdykACgkQwfwUeK3K
-7AkPywf8Dzj3PZCI1FXSSWq7XojtMiHYjfwbB9wbON6qdC6v66hq0X5HMJyZj5qZ
-uxtVSIA5Q5v5x6OFWVlezzeMapIux09Qyit5m53C67orAVXoW7vgi41n5An158oj
-/KixR6hhj7SOn0YCYP/PFON4ve15vdlspDLFPhP2vcfnaxdjqLGO3zctlsEreZSQ
-cBDDop3dSZvwxHCssqFD9JwHNka2z3Gko3bJRrGBTGNkNGioZGfn43/igU1u/YPY
-UM1xMQWF3hjIvmtWjUQ9UrX4aolVM7LVN3ecrui+Ag0JdxvlNOKvPw2h/q7Uc04A
-77Rmu+XD8LH4xs1yMppmSDNP16QxLA==
-=wwYJ
------END PGP SIGNATURE-----
-
---2dgo6pzrzz5yxyxt--
+-- 
+Yours,
+Muchun
