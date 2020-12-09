@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762252D4817
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 605DA2D4822
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732429AbgLIRiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:38:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732321AbgLIRiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:38:15 -0500
-Date:   Wed, 9 Dec 2020 14:37:43 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607535454;
-        bh=lUHJqhuIA3sDRrFDDIRZHT2mURVMt9o5kThEgQGifhk=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hORScaubAB2Dw3xq5K6JppzZdyguaTZn7xUDqDpIJSbi5cJmWA3vWqKcjZWzqvt5e
-         32k3295NDqmWYfA1ae5wy92GhcxJzECqyDFxxHCjmCMOZkLtaL7w7DvMnzFhcwuq0R
-         1pme2FLfpcMZV3T/7EH1L5pxGgdE/WdSCB0hMxzjneZjh4vaMJa6BrQEts8rkRctBO
-         FILFMkpnR9a2lUnNI3V2zTbUItf1llSOvgM2vUk+Zjv2jD8Bcd4Z+FL5SRiCfBW0dH
-         RES3W4kvKM703U48CY+mugesKbeltjhRpKBRdU8Ob+O8VfxS2mDsTVgtANP84zH/PC
-         y7ztU6rqhT3kw==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Thomas Richter <tmricht@linux.ibm.com>
-Cc:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Kajol Jain <kjain@linux.ibm.com>, jolsa@redhat.com,
-        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, irogers@google.com,
-        rbernon@codeweavers.com, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com
-Subject: Re: [PATCH] perf test: Skip test 68 for Powerpc
-Message-ID: <20201209173743.GB185686@kernel.org>
-References: <20201104082954.57338-1-tmricht@linux.ibm.com>
- <20201119135022.36340-1-kjain@linux.ibm.com>
- <4a2908ca-6b75-c688-ec3b-7f37783f08cc@linux.ibm.com>
- <20201207163524.GF125383@kernel.org>
- <763d4593-d581-0971-338c-b811925be45b@linux.ibm.com>
+        id S1732858AbgLIRj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:39:26 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2236 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732053AbgLIRjZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:39:25 -0500
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CrkkC2Gbfz67Mb9;
+        Thu, 10 Dec 2020 01:36:35 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 9 Dec 2020 18:38:41 +0100
+Received: from [10.210.171.175] (10.210.171.175) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 9 Dec 2020 17:38:40 +0000
+Subject: Re: [PATCH v2 1/1] hisi_sas: Fix possible buffer overflows in
+ prep_ssp_v3_hw
+To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20201209124818.25122-1-ruc_zhangxiaohui@163.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <87979504-6540-6b38-88df-938390ae5d3c@huawei.com>
+Date:   Wed, 9 Dec 2020 17:38:05 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <763d4593-d581-0971-338c-b811925be45b@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20201209124818.25122-1-ruc_zhangxiaohui@163.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.171.175]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Dec 08, 2020 at 03:43:17PM +0100, Thomas Richter escreveu:
-> On 12/7/20 5:35 PM, Arnaldo Carvalho de Melo wrote:
-> > Em Tue, Nov 24, 2020 at 03:04:53PM +0530, Ravi Bangoria escreveu:
-> >>
-> >>
-> >> On 11/19/20 7:20 PM, Kajol Jain wrote:
-> >>> Commit ed21d6d7c48e6e ("perf tests: Add test for PE binary format support")
-> >>> adds a WINDOWS EXE file named tests/pe-file.exe, which is
-> >>> examined by the test case 'PE file support'. As powerpc doesn't support
-> >>> it, we are skipping this test.
-> >>>
-> >>> Result in power9 platform before this patach:
-> >>> [command]# ./perf test -F 68
-> >>> 68: PE file support                               : Failed!
-> >>>
-> >>> Result in power9 platform after this patch:
-> >>> [command]# ./perf test -F 68
-> >>> 68: PE file support                               : Skip
-> >>>
-> >>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-> >>
-> >> Reviewed-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-> > 
-> > But why is it failing? I.e. what is that
-> > 
-> >  perf test -v -F 68
-> > 
-> > outputs?
-> > 
-> > Using 'perf report' on a perf.data file containing samples in such
-> > binaries, collected on x86 should work on whatever workstation a
-> > developer uses.
-> > 
-> > Say, on a MacBook aarch64 one can look at a perf.data file collected on
-> > a x86_64 system where Wine running a PE binary was present.
-> > 
-> > - Arnaldo
-> > 
+On 09/12/2020 12:48, Xiaohui Zhang wrote:
+> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
 > 
-> Hi 
+> prep_ssp_v3_hw() calls memcpy() without checking the destination
+> size may trigger a buffer overflower.
 > 
-> What is the distro you are using?
-> I observed the same issue on s390 but this was fixed for fedora33 somehow.
-> The error just went away after a dnf update....
-> 
-> [root@m35lp76 perf]# cat /etc/fedora-release 
-> Fedora release 33 (Thirty Three)
-> [root@m35lp76 perf]# ./perf test -F 68
-> 68: PE file support                                                 : Ok
-> [root@m35lp76 perf]# 
-> 
-> 
-> However on my fedora32 machine it still fails:
-> [root@t35lp46 perf]# cat /etc/fedora-release 
-> Fedora release 32 (Thirty Two)
-> [root@t35lp46 perf]# ./perf test -F 68
-> 68: PE file support                                                 : FAILED!
-> [root@t35lp46 perf]# 
-> 
-> Note that I am running the same kernel on both machines: linux 5.10.0rc7 downloaded
-> this morning.
+> buf_cmd should be a ssp_tmf_iu struct through the analysis of
 
-Fedora 33.
+hmmm... but you change the !tmf path.
 
-What does 'perf test -v -F 68' says?
+> the command below:
+> buf_cmd = hisi_sas_cmd_hdr_addr_mem(slot) +
+>          sizeof(struct ssp_frame_hdr);
+> 
+> Then buf_cmd + 12 should point to tag, so the length parameter
+> of memcpy() should not exceed sizeof(__be16)+sizeof(u8)*14):
+> struct ssp_tmf_iu {
+>      u8     lun[8];
+>      u16    _r_a;
+>      u8     tmf;
+>      u8     _r_b;
+>      __be16 tag;
+>      u8     _r_c[14];
+> } __attribute__ ((packed));
+> 
+> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+> ---
+>   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> index 7133ca859..d02831c17 100644
+> --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> @@ -1267,7 +1267,9 @@ static void prep_ssp_v3_hw(struct hisi_hba *hisi_hba,
+>   	memcpy(buf_cmd, &task->ssp_task.LUN, 8);
+>   	if (!tmf) {
+>   		buf_cmd[9] = ssp_task->task_attr | (ssp_task->task_prio << 3);
+> -		memcpy(buf_cmd + 12, scsi_cmnd->cmnd, scsi_cmnd->cmd_len);
+> +		memcpy(buf_cmd + 12, scsi_cmnd->cmnd,
+> +		       min_t(unsigned short, scsi_cmnd->cmd_len,
+> +			     sizeof(__be16) + sizeof(u8) * 14));
 
-- Arnaldo
+Again, this is not the right thing to do, and I don't think that this 
+code needs fixing at all.
+
+There should be a contract already that the driver is not sent cdb len > 
+16, and this is sizeof(ssp_command_iu.cdb).
+
+And, if we were sent too much data, then we would/should error.
+
+Thanks,
+John
