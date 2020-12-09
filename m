@@ -2,89 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E9F2D4572
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D21B2D4578
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730469AbgLIPbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:31:18 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:41441 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726555AbgLIPbS (ORCPT
+        id S1729685AbgLIPc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:32:59 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:46767 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726555AbgLIPc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:31:18 -0500
-Received: by mail-lj1-f195.google.com with SMTP id f11so2838309ljm.8;
-        Wed, 09 Dec 2020 07:31:01 -0800 (PST)
+        Wed, 9 Dec 2020 10:32:58 -0500
+Received: by mail-oi1-f195.google.com with SMTP id k2so2074133oic.13;
+        Wed, 09 Dec 2020 07:32:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TGmJfop0poAU5I2zMh4LF9CytL92M/ZbRIts/6La8S8=;
-        b=O+hro+BhSrULCa0sGCaEacrQbXV4ZoPAUHSb0wg+FM5ZsonOiBZGmDdt8+y8f2pLSO
-         EqACZRogA8xsa9QGBPxRu0An79VRAmXhExcWlYkFcOxDhIzeGpHEILxYmJDBv7NRMmPZ
-         WNBzbIdE9cO2OdL+oE904GUMk7mmlcxYxiNkP/noKHhallQ7lwYglXmVcmhzQcakuZ54
-         0TUawDxAqYCexxl+TlTM7nRD3FHFnOPJHHP08vom7UziPaxTPOJo3ClkBUtzC7sP4UnD
-         sM6R0bB5PZSZp/YxLSJgcrohHGyRDyl1Y3kR0GwalxSScpXlaK6vH1ThMTj0UOXAbcSt
-         Q3zA==
-X-Gm-Message-State: AOAM530MVrEty4fO+1c9lgBHECBZlmimYcD7flSOtckTY7dk5QUUOlY7
-        0baIfWomZiyOOfCf27+TqwE=
-X-Google-Smtp-Source: ABdhPJzvCEsXNgtdPAfi+q1QYxF873m6Him6AopB6fOxqG4qytxYpPRsRFLTa2231EvbJuGH7UnXWg==
-X-Received: by 2002:a2e:88d6:: with SMTP id a22mr1323029ljk.150.1607527835523;
-        Wed, 09 Dec 2020 07:30:35 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id b5sm206311lfg.13.2020.12.09.07.30.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 07:30:34 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kn1Qy-0005YD-7s; Wed, 09 Dec 2020 16:31:16 +0100
-Date:   Wed, 9 Dec 2020 16:31:16 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Johan Hovold <johan@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        patong.mxl@gmail.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH v5 2/3] usb: serial: xr_serial: Add gpiochip support
-Message-ID: <X9DtxFgrkFIUIzyv@localhost>
-References: <20201122170822.21715-1-mani@kernel.org>
- <20201122170822.21715-3-mani@kernel.org>
- <CACRpkdbY-aZB1BAD=JkZAHA+OQvpH12AD3tLAp6Nf1hwr74s9A@mail.gmail.com>
- <X8ZmfbQp7/BGgxec@localhost>
- <CACRpkdZJdxqxUEQaKUHctHRSQAUpYZJtuxonwVd_ZFAsLBbKrA@mail.gmail.com>
- <X89OOUOG0x0SSxXA@localhost>
- <CACRpkdavm7GG8HdV1xk0W_b1EzUmvF0kKAGnp0u6t42NAWa9iA@mail.gmail.com>
- <20201208125250.GB9925@work>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ymMWquIrotxyInQP6qyo10dYrPww4c4U8Yy+Xq4TdD8=;
+        b=tuL1Bf01S9IhQiclq+Ptcjt6GywSl4vv+hz7wJnfFBvmUZWi+cOKpSpm7MgPkGt5sq
+         oUHq54fL8QDwqgsGbADtqnasxNpZtaiqUXYxTADhnX421PlUmg7bjCyrzYuOt6GIA2ri
+         41iD16OhJmBBCuj0Ox1ReG7n2vEPJ2pYoreW8VcB8FvQr0jN2lSI0lfu8Bwuqw+IMzN8
+         HKhb7qD5lN0vcUITlJRMA+b2sR+TpFMLfD/xkvSYTUzCfMdeZ98LV/qLa7UK8X7XXnC3
+         l/sM2YTQROR857ROw+kdiDK2qlskuj8h0aykUCGsWNjecck7bpnGFhpQQS4yaA9Nn2Xe
+         Bpxw==
+X-Gm-Message-State: AOAM533Deilv4+Ej9q70BoZcabHS0/hmW5KAQRrHasIminO9JDTROwoR
+        FiR+VQ1FEMgnPiKemE+q370Wz0m0gFlSbTqYQTW3oKLB
+X-Google-Smtp-Source: ABdhPJzHp+7AnGDlGTvZqgoXLhJzfyXNLy5rd4xz5GMBSNiDSLQF6wSWRQxHlmV3dy5oru7Ieanq6VyLnGp/tMuPNAA=
+X-Received: by 2002:aca:5197:: with SMTP id f145mr2150312oib.71.1607527937662;
+ Wed, 09 Dec 2020 07:32:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208125250.GB9925@work>
+References: <20360841.iInq7taT2Z@kreacher> <1916732.tSaCp9PeQq@kreacher>
+ <20201208085146.pzem6t3mt44xwxkm@vireshk-i7> <CAJZ5v0idoNOPU5-toOw+uTRvjJz60Ddc2xV7rMQeufY_EW58uQ@mail.gmail.com>
+ <20201209051642.ddwgds4gznxt3lfn@vireshk-i7>
+In-Reply-To: <20201209051642.ddwgds4gznxt3lfn@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 9 Dec 2020 16:32:06 +0100
+Message-ID: <CAJZ5v0iOvG0PNQDXN00oKCzyZmaF71UB+DJ+zHL5P3xRCAk1tQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/4] cpufreq: schedutil: Adjust utilization instead of frequency
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 06:22:50PM +0530, Manivannan Sadhasivam wrote:
-> On Tue, Dec 08, 2020 at 01:41:52PM +0100, Linus Walleij wrote:
-> > On Tue, Dec 8, 2020 at 10:57 AM Johan Hovold <johan@kernel.org> wrote:
+On Wed, Dec 9, 2020 at 6:16 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 08-12-20, 18:01, Rafael J. Wysocki wrote:
+> > On Tue, Dec 8, 2020 at 9:52 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >
+> > > On 07-12-20, 17:29, Rafael J. Wysocki wrote:
+> > > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > >
+> > > > When avoiding reduction of the frequency after the target CPU has
+> > > > been busy since the previous frequency update, adjust the utilization
+> > > > instead of adjusting the frequency, because doing so is more prudent
+> > > > (it is done to counter a possible utilization deficit after all) and
+> > > > it will allow some code to be shared after a subsequent change.
+> > > >
+> > > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > > ---
+> > > >  kernel/sched/cpufreq_schedutil.c |   11 ++++-------
+> > > >  1 file changed, 4 insertions(+), 7 deletions(-)
+> > > >
+> > > > Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+> > > > ===================================================================
+> > > > --- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
+> > > > +++ linux-pm/kernel/sched/cpufreq_schedutil.c
+> > > > @@ -437,7 +437,7 @@ static void sugov_update_single(struct u
+> > > >  {
+> > > >       struct sugov_cpu *sg_cpu = container_of(hook, struct sugov_cpu, update_util);
+> > > >       struct sugov_policy *sg_policy = sg_cpu->sg_policy;
+> > > > -     unsigned int cached_freq = sg_policy->cached_raw_freq;
+> > > > +     unsigned long prev_util = sg_cpu->util;
+> > > >       unsigned int next_f;
+> > > >
+> > > >       sugov_iowait_boost(sg_cpu, time, flags);
+> > > > @@ -451,17 +451,14 @@ static void sugov_update_single(struct u
+> > > >       sugov_get_util(sg_cpu);
+> > > >       sugov_iowait_apply(sg_cpu, time);
+> > > >
+> > > > -     next_f = get_next_freq(sg_policy, sg_cpu->util, sg_cpu->max);
+> > > >       /*
+> > > >        * Do not reduce the frequency if the CPU has not been idle
+> > > >        * recently, as the reduction is likely to be premature then.
+> > > >        */
+> > > > -     if (sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
+> > > > -             next_f = sg_policy->next_freq;
+> > > > +     if (sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
+> > > > +             sg_cpu->util = prev_util;
+> > > >
+> > > > -             /* Restore cached freq as next_freq has changed */
+> > > > -             sg_policy->cached_raw_freq = cached_freq;
+> > > > -     }
+> > > > +     next_f = get_next_freq(sg_policy, sg_cpu->util, sg_cpu->max);
+> > >
+> > > I don't think we can replace freq comparison by util, or at least it will give
+> > > us a different final frequency and the behavior is changed.
+> > >
+> > > Lets take an example, lets say current freq is 1 GHz and max is 1024.
 
-> > I think if this driver already has unique line-names per-gpiochip
-> > we could actually make it depend on !GPIO_SYSFS and
-> > just add the names.
-> 
-> Sure thing.
-> 
-> Johan, if you are okay with this I can resubmit incorporating Linus's
-> suggestion.
+Ah, so that's in the freq-dependent case.
 
-Let's wait a bit with adding the names.
+In the freq-invariant case next_f doesn't depend on the current frequency.
 
-That can possibly be done as a follow-up too even if removing GPIO_SYSFS
-support later is not ideal in case that's the path chosen (we'd have a
-similar problem with the existing USB-serial GPIO implementations though).
+> > > Round 1: Lets say util is 1000
+> > >
+> > > next_f = 1GHz * 1.25 * 1000/1024 = 1.2 GHz
+> > >
+> > > Round 2: Lets say util has come down to 900 here,
+> > >
+> > > before the patch:
+> > >
+> > > next_f = 1.2 GHz * 1.25 * 900/1024 = 1.31 GHz
+> > >
+> > > after the patch:
+> > >
+> > > next_f = 1.2 GHz * 1.25 * 1000/1024 = 1.45 GHz
+> > >
+> > > Or did I make a mistake here ?
+> >
+> > I think so, if my understanding is correct.
+> >
+> > Without the patch, next_f will be reset to the previous value
+> > (sq_policy->next_freq) if the CPU has been busy and the (new) next_f
+> > is less than that value.
+> >
+> > So the "new" next_f before the patch is 1.31 GHz, but because it is
+> > less than the previous value (1.45 GHz), it will be reset to that
+> > value, unless I'm missing something.
+>
+> The prev frequency here was 1.2 GHz (after Round 1). 1.45 GHz is the
+> value we get after this patch, as we take the earlier utilization
+> (1000) into account instead of 900.
 
-Johan
+So I have misunderstood your example.
+
+In the non-invariant case (which is or shortly will be relevant for
+everybody interested) cpuinfo.max_freq goes into the calculation
+instead of the current frequency and the mapping between util and freq
+is linear.  In the freq-dependent case it is not linear, of course.
+
+So I guess the concern is that this changes the behavior in the
+freq-dependent case which may not be desirable.
+
+Fair enough, but I'm not sure if that is enough of a reason to avoid
+sharing the code between the "perf" and "freq" paths.
