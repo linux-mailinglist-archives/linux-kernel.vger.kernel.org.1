@@ -2,130 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC8A2D3E57
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:18:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E8A2D3E63
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728587AbgLIJRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:17:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44668 "EHLO
+        id S1728740AbgLIJSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:18:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727665AbgLIJRs (ORCPT
+        with ESMTP id S1726044AbgLIJSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:17:48 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF58C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:17:08 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id x16so1048547ejj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:17:08 -0800 (PST)
+        Wed, 9 Dec 2020 04:18:15 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33917C0617A6;
+        Wed,  9 Dec 2020 01:17:35 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id f14so540804pju.4;
+        Wed, 09 Dec 2020 01:17:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=javigon-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=rhhiMX6lpyZpBTo++Wq1vgh3A63oG1sQxoZyJsc1aQg=;
-        b=P8oh5+/uu8rb5ugbhTx6O474H6hkBIwZA2qWENj5ag15EIY80CWadHdfGxQnhTAuMR
-         kbNk5JfBb6loUdVGVyaPVhWtBQ1NjpEdFVcn9tYOFB+qOgEbDjlfscYtu/qIoCbb5Chz
-         7CiywHUQ67e3O04cgul518A1o0MfGZcqFpTZZnlXt5erd32JVIX/kIoOcJ7E6df5xpPw
-         s6IYn+e1e1RXF/Z/qwRHiSnu9S2JvHXZspsCFFn7MliNwtnecrsJyM+LopbOJALx3N8D
-         G9qQkXTWUv6aPxfla3mKnk96yIxMBMESNCDYDoAhR8RSGIVe6yWfam74imuEnHfJJPwT
-         XFCg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i2g8fi2sxo+IYXz2d5FDftsnAsDKdKjxlec5gNvekGY=;
+        b=V6/jPHRRgiTymHfuMZyb/AiGMPLMq+CJU0v27LXBnECGFfDkcLWpUWzuJXZptEj92B
+         kLleVEeTmpKMCxuM8yxikC5Eb6kxkos7EbpTdLM/aMHiWnydV1WdV3H9pj2LdkMNY5Ma
+         OhwXxVniM2lO1tXypIYpCRMTpX7L2uan0DOdds81TrHybMVcOePo1PmZ42e3zjiDM2Oq
+         cNjinS5DydvEKhlN03NSvTQ4qFMLilhKTMyuRsjSPY2CvhWqiX5qfOl72dVtMBNpmknx
+         CK19ZEaD7LOaGhSoPouHVLzwmbEBJYCrFXA8VXeNfU7dbWsoxEYxYIA+zEFa5DC5LF+Z
+         HzOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=rhhiMX6lpyZpBTo++Wq1vgh3A63oG1sQxoZyJsc1aQg=;
-        b=Mc6ghSRdwB3A6i4FSLPNl8yFlBjpWCkcO2a9uRv6wHNFAtxwTx2R/JQBYJHWCM8oRu
-         NU8M2SPmrILOXLn+UWiPxluGY/+im4qpEIYugqxKWxrszv1bBeCDCozLh+T/TCi4X+wO
-         duqg8et65Nn/T41spsrxfNG3LDFxSUx89O09bpCpaCStnB6zfsT+YnU/ng0sDuYloi0U
-         UeFkE6fZ5heLRacWVM7OagclwiMtuF9QnusHpjASj9qQMO5tdYG88vvTuJgVzFvyPg2g
-         1pklqICpyJZlXkXTP6o1EHUUF7vMwl3kojAXQxlx18L6nRH4oglXLE9acDl0YvfzGG5y
-         W/NQ==
-X-Gm-Message-State: AOAM531GsGzCGWzG2TQhdafp+3sFnS0UmHRiTEMRZWixjWGROH4wNfL5
-        OT6E+nUO/rFRc79EtEbYxLVT3g==
-X-Google-Smtp-Source: ABdhPJxbBbOAPum4JxhLDvVO8oH4bCpyUFUBf6xuJ19RfGwEp+yksU2UBrKm/QCGpkEPA7yZYkCfcA==
-X-Received: by 2002:a17:906:a857:: with SMTP id dx23mr1242029ejb.189.1607505427041;
-        Wed, 09 Dec 2020 01:17:07 -0800 (PST)
-Received: from localhost (5.186.124.214.cgn.fibianet.dk. [5.186.124.214])
-        by smtp.gmail.com with ESMTPSA id j20sm874968ejy.124.2020.12.09.01.17.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 01:17:06 -0800 (PST)
-Date:   Wed, 9 Dec 2020 10:17:05 +0100
-From:   Javier =?utf-8?B?R29uesOhbGV6?= <javier@javigon.com>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
-        SelvaKumar S <selvakuma.s1@samsung.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "selvajove@gmail.com" <selvajove@gmail.com>,
-        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
-        "joshi.k@samsung.com" <joshi.k@samsung.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 0/2] add simple copy support
-Message-ID: <20201209091705.brzbbqedavtxvhms@mpHalley>
-References: <CGME20201204094719epcas5p23b3c41223897de3840f92ae3c229cda5@epcas5p2.samsung.com>
- <20201204094659.12732-1-selvakuma.s1@samsung.com>
- <20201207141123.GC31159@lst.de>
- <01fe46ac-16a5-d4db-f23d-07a03d3935f3@suse.de>
- <20201207192453.vc6clbdhz73hzs7l@mpHalley>
- <SN4PR0401MB35988951265391511EBC8C6E9BCD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <20201208122248.utv7pqthmmn6uwv6@mpHalley>
- <SN4PR0401MB35983464199FB173FB0C29479BCD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <20201208131333.xoxincxcnh7iz33z@mpHalley>
- <SN4PR0401MB3598226CD4A32F65320A47379BCD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i2g8fi2sxo+IYXz2d5FDftsnAsDKdKjxlec5gNvekGY=;
+        b=IyCLI5q779av7zWaEe4IX8obSWm5FHpClYHEfPSixWHLxMGh9s1lR6gTGORgTNMNPp
+         w97eJM0Qwf67HGod8m/LFN3WHGNKtbJTuQ6G5Ekx0QrV1AB7eg+QurazYSEQKP4LwlK8
+         XGEMwt7+GskHPf0czzG/SgaA4g458NuqzlAVKixvCF6gRYdZbjDo8r5IQpnRJA+zYvqN
+         qOz7PeMZtdsBgCSAjX5tOcpiGvLnvFFzZTgKF5ltaeFtwx62atep8Mge3KQmQ1GBdp9/
+         5QwpBh/8o9sSyG/8asDxbYgHb8aPVrqpiz+EZEL/0cBVCXVbso+6kzvGtH2JerdIoDGJ
+         MHtQ==
+X-Gm-Message-State: AOAM5309bp7roXWpNzXhB98iFcsnpu048twjivyvDM55kINC63ZMpyQN
+        QqlhMk8kzIzepReU37Wu+jTCwW+TJJFof+nD6Bk=
+X-Google-Smtp-Source: ABdhPJydnttj2HP+zryV972A1lZBqSE8aPXL4ogf/X4ErYcEWyz7giGIZGF0j9NUg92kj7u4adoUYYJFL22VLxjqDcQ=
+X-Received: by 2002:a17:90a:6ac5:: with SMTP id b5mr1380925pjm.210.1607505454793;
+ Wed, 09 Dec 2020 01:17:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <SN4PR0401MB3598226CD4A32F65320A47379BCD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20201126063557.1283-1-ms@dev.tdt.de> <20201126063557.1283-5-ms@dev.tdt.de>
+ <CAJht_EMZqcPdE5n3Vp+jJa1sVk9+vbwd-Gbi8Xqy19bEdbNNuA@mail.gmail.com>
+In-Reply-To: <CAJht_EMZqcPdE5n3Vp+jJa1sVk9+vbwd-Gbi8Xqy19bEdbNNuA@mail.gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Wed, 9 Dec 2020 01:17:23 -0800
+Message-ID: <CAJht_ENukJrnh6m8FLrHBwnKKyZpzk6uGWhS4_eUCyDzrCG3eA@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 4/5] net/x25: fix restart request/confirm handling
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.12.2020 13:24, Johannes Thumshirn wrote:
->On 08/12/2020 14:13, Javier González wrote:
->> On 08.12.2020 12:37, Johannes Thumshirn wrote:
->>> On 08/12/2020 13:22, Javier González wrote:
->>>> Good idea. Are you thinking of a sysfs entry to select the backend?
->>>
->>> Not sure on this one, initially I thought of a sysfs file, but then
->>> how would you do it. One "global" sysfs entry is probably a bad idea.
->>> Having one per block device to select native vs emulation maybe? And
->>> a good way to benchmark.
->>
->> I was thinking a per block device to target the use case where a certain
->> implementation / workload is better one way or the other.
+On Wed, Dec 9, 2020 at 1:01 AM Xie He <xie.he.0141@gmail.com> wrote:
 >
->Yes something along those lines.
+> On Wed, Nov 25, 2020 at 10:36 PM Martin Schiller <ms@dev.tdt.de> wrote:
+> >
+> >         switch (nb->state) {
+> >         case X25_LINK_STATE_0:
+> > -               nb->state = X25_LINK_STATE_2;
+> > -               break;
+> >         case X25_LINK_STATE_1:
+> >                 x25_transmit_restart_request(nb);
+> >                 nb->state = X25_LINK_STATE_2;
 >
->>>
->>> The other idea would be a benchmark loop on boot like the raid library
->>> does.
->>>
->>> Then on the other hand, there might be workloads that run faster with
->>> the emulation and some that run faster with the hardware acceleration.
->>>
->>> I think these points are the reason the last attempts got stuck.
->>
->> Yes. I believe that any benchmark we run would be biased in a certain
->> way. If we can move forward with a sysfs entry and default to legacy
->> path, we would not alter current behavior and enable NVMe copy offload
->> (for now) for those that want to use it. We can then build on top of it.
->>
->> Does this sound like a reasonable approach?
->>
->
->Yes this sounds like a reasonable approach to me.
+> What is the reason for this change? Originally only the connecting
+> side will transmit a Restart Request; the connected side will not and
+> will only wait for the Restart Request to come. Now both sides will
+> transmit Restart Requests at the same time. I think we should better
+> avoid collision situations like this.
 
-Cool. We will add this to the V3 then.
-
-Thanks Johannes!
+Oh. I see. Because in other patches we are giving L2 the ability to
+connect by itself, both sides can now appear here to be the
+"connected" side. So we can't make the "connected" side wait as we did
+before.
