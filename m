@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0452D4039
+	by mail.lfdr.de (Postfix) with ESMTP id CA9A72D403A
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728751AbgLIKnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:43:40 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:44303 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgLIKnj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:43:39 -0500
-Received: by mail-lj1-f194.google.com with SMTP id m13so1678571ljo.11;
-        Wed, 09 Dec 2020 02:43:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2TWyg17NnUW58DhZ5qDtIXMIaRhd3ro9uofVZ6ZkZRA=;
-        b=qGqHJG2dUDv9qYNYLZ8rMQKm7CRemE5UsVML7t4qO5WeEPPdjeBekYg7FJovGEJbiQ
-         koV5X3AOQY9ZntZ5h/LOQhFydVoqxG/VvpTngFnoayJPo1ipILIk25TJr85nJkAfv/bN
-         78BQ/LtaLnvxbeONPQr9Axfm4sIzFhHs0hBvLakqy+t9omr4c/od2mwQafx5UUz+uvzV
-         mZqbMT22XbCHbBnvcFH2k5vxLMThdah/t5y7IgwIilPMlWFEznqxccwkqpdNnmZhe32E
-         VnWOluZu0SpuSejAQXASFWjaWsHg4T9gRF8uHjVqzmyCXEGFHXMAMYGsMIlOSu16LMaV
-         UJPg==
-X-Gm-Message-State: AOAM533VJXQdPO62+RuzsqBR5HHXSLBqYljE5XRUSaWHV/w1Z76dkr+O
-        TTJXqQ3Nhm58Anwse7SXxK34d5TmzHkaiw==
-X-Google-Smtp-Source: ABdhPJxs81CCMiEa13cgz+Qtuz/KDh/fT5zQvZ/1I1ebTywAqcNnz+Gl7TtU/mIiXFrlrX3U6rJjnQ==
-X-Received: by 2002:a2e:584:: with SMTP id 126mr815675ljf.485.1607510576374;
-        Wed, 09 Dec 2020 02:42:56 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id g15sm129747lfd.42.2020.12.09.02.42.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 02:42:55 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@xi.terra>)
-        id 1kmwwZ-0003SH-Q2; Wed, 09 Dec 2020 11:43:36 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com,
-        stable@vger.kernel.org
-Subject: [PATCH] USB: serial: option: add interface-number sanity check to flag handling
-Date:   Wed,  9 Dec 2020 11:42:21 +0100
-Message-Id: <20201209104221.13223-1-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <0000000000004c471e05b60312f9@google.com>
-References: <0000000000004c471e05b60312f9@google.com>
+        id S1729220AbgLIKn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:43:57 -0500
+Received: from ozlabs.org ([203.11.71.1]:51425 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728826AbgLIKn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 05:43:56 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrYYG00B8z9sWK;
+        Wed,  9 Dec 2020 21:43:13 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1607510594;
+        bh=d/2hwEKTej3A6ApbAVKvrzfLbuFZYvZ+Dxm11f9CVXc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=mJm5JN5nKw5tNNd0wZO3p2zbByxKyS+lkztuaSmHm9Dm+kee8TL+ZnZ0kzHBPIHl1
+         0elRk88MHkwYr/kCH5XzHhYRMXAKuAEraQ/RkpmwAZBm3GwXN1taLKCYim2sh/XcI0
+         B/w5FykIMaOo1K1XZy17ZCxbAMXs3FGGCWskwHUekJeSeFbia2YuGlszhOUQNsxlz2
+         EtWmrckWjwv90A8pOWGnlU2KLOTQm6lzQ6MjBrQGPZNSJB3zOtslOUDcYQwXKdzJqk
+         V/KykCSl5YnVY/HQa0QtaCuU+ZBM8zwuQNa1+W1jmqkvlawpq3xxHdamS+O3nB62bB
+         UYxGDeoYJUp1g==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v1 2/6] powerpc/8xx: Always pin kernel text TLB
+In-Reply-To: <203b89de491e1379f1677a2685211b7c32adfff0.1606231483.git.christophe.leroy@csgroup.eu>
+References: <e796c5fcb5898de827c803cf1ab8ba1d7a5d4b76.1606231483.git.christophe.leroy@csgroup.eu> <203b89de491e1379f1677a2685211b7c32adfff0.1606231483.git.christophe.leroy@csgroup.eu>
+Date:   Wed, 09 Dec 2020 21:43:12 +1100
+Message-ID: <87lfe7s1j3.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an interface-number sanity check before testing the device flags to
-avoid relying on undefined behaviour when left shifting in case a device
-uses an interface number greater than or equal to BITS_PER_LONG (i.e. 64
-or 32).
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> There is no big poing in not pinning kernel text anymore, as now
+> we can keep pinned TLB even with things like DEBUG_PAGEALLOC.
+>
+> Remove CONFIG_PIN_TLB_TEXT, making it always right.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/Kconfig               |  3 +--
+>  arch/powerpc/kernel/head_8xx.S     | 20 +++-----------------
+>  arch/powerpc/mm/nohash/8xx.c       |  3 +--
+>  arch/powerpc/platforms/8xx/Kconfig |  7 -------
+>  4 files changed, 5 insertions(+), 28 deletions(-)
+>
+...
+> diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
+> index 231ca95f9ffb..19a3eec1d8c5 100644
+> --- a/arch/powerpc/mm/nohash/8xx.c
+> +++ b/arch/powerpc/mm/nohash/8xx.c
+> @@ -186,8 +186,7 @@ void mmu_mark_initmem_nx(void)
+>  	mmu_mapin_ram_chunk(0, boundary, PAGE_KERNEL_TEXT, false);
+>  	mmu_mapin_ram_chunk(boundary, einittext8, PAGE_KERNEL, false);
+>  
+> -	if (IS_ENABLED(CONFIG_PIN_TLB_TEXT))
+> -		mmu_pin_tlb(block_mapped_ram, false);
+> +	mmu_pin_tlb(block_mapped_ram, false);
+>  }
 
-Reported-by: syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com
-Fixes: c3a65808f04a ("USB: serial: option: reimplement interface masking")
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/option.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+This broke mpc885_ads_defconfig with:
 
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 2a3bfd6f867e..c5908c4f2046 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -561,6 +561,9 @@ static void option_instat_callback(struct urb *urb);
- 
- /* Device flags */
- 
-+/* Highest interface number which can be used with NCTRL() and RSVD() */
-+#define FLAG_IFNUM_MAX	7
-+
- /* Interface does not support modem-control requests */
- #define NCTRL(ifnum)	((BIT(ifnum) & 0xff) << 8)
- 
-@@ -2089,6 +2092,14 @@ static struct usb_serial_driver * const serial_drivers[] = {
- 
- module_usb_serial_driver(serial_drivers, option_ids);
- 
-+static bool iface_is_reserved(unsigned long device_flags, u8 ifnum)
-+{
-+	if (ifnum > FLAG_IFNUM_MAX)
-+		return false;
-+
-+	return device_flags & RSVD(ifnum);
-+}
-+
- static int option_probe(struct usb_serial *serial,
- 			const struct usb_device_id *id)
- {
-@@ -2105,7 +2116,7 @@ static int option_probe(struct usb_serial *serial,
- 	 * the same class/subclass/protocol as the serial interfaces.  Look at
- 	 * the Windows driver .INF files for reserved interface numbers.
- 	 */
--	if (device_flags & RSVD(iface_desc->bInterfaceNumber))
-+	if (iface_is_reserved(device_flags, iface_desc->bInterfaceNumber))
- 		return -ENODEV;
- 
- 	/*
-@@ -2121,6 +2132,14 @@ static int option_probe(struct usb_serial *serial,
- 	return 0;
- }
- 
-+static bool iface_no_modem_control(unsigned long device_flags, u8 ifnum)
-+{
-+	if (ifnum > FLAG_IFNUM_MAX)
-+		return false;
-+
-+	return device_flags & NCTRL(ifnum);
-+}
-+
- static int option_attach(struct usb_serial *serial)
- {
- 	struct usb_interface_descriptor *iface_desc;
-@@ -2136,7 +2155,7 @@ static int option_attach(struct usb_serial *serial)
- 
- 	iface_desc = &serial->interface->cur_altsetting->desc;
- 
--	if (!(device_flags & NCTRL(iface_desc->bInterfaceNumber)))
-+	if (!iface_no_modem_control(device_flags, iface_desc->bInterfaceNumber))
- 		data->use_send_setup = 1;
- 
- 	if (device_flags & ZLP)
--- 
-2.26.2
+  ld: arch/powerpc/mm/nohash/8xx.o: in function `mmu_mark_initmem_nx':
+  /home/michael/linux/arch/powerpc/mm/nohash/8xx.c:189: undefined reference to `mmu_pin_tlb'
+  make[1]: *** [/home/michael/linux/Makefile:1164: vmlinux] Error 1
+  make: *** [Makefile:185: __sub-make] Error 2
 
+Fixed by:
+
+diff --git a/arch/powerpc/kernel/head_8xx.S b/arch/powerpc/kernel/head_8xx.S
+index 35707e86c5f3..52702f3db6df 100644
+--- a/arch/powerpc/kernel/head_8xx.S
++++ b/arch/powerpc/kernel/head_8xx.S
+@@ -702,7 +702,6 @@ FixupDAR:/* Entry point for dcbx workaround. */
+ 	mtspr	SPRN_DER, r8
+ 	blr
+ 
+-#ifdef CONFIG_PIN_TLB
+ _GLOBAL(mmu_pin_tlb)
+ 	lis	r9, (1f - PAGE_OFFSET)@h
+ 	ori	r9, r9, (1f - PAGE_OFFSET)@l
+@@ -802,7 +801,6 @@ _GLOBAL(mmu_pin_tlb)
+ 	mtspr	SPRN_SRR1, r10
+ 	mtspr	SPRN_SRR0, r11
+ 	rfi
+-#endif /* CONFIG_PIN_TLB */
+ 
+ /*
+  * We put a few things here that have to be page-aligned.
+
+
+cheers
