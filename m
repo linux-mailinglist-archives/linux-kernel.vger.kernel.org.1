@@ -2,288 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19702D3B70
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E3D2D3B6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727807AbgLIG0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727904AbgLIG0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 01:26:11 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9402 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbgLIG0K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Dec 2020 01:26:10 -0500
-Received: from mga11.intel.com ([192.55.52.93]:34343 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727662AbgLIG0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 01:26:09 -0500
-IronPort-SDR: KIpI+iaiA8Avd4dc/jNYR9evXcJrOkrWbgag+rC4i7EzJ4td0cAfUwQPrORyGxbWsUKquyeAWE
- 61HhX/9LuhgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="170516332"
-X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
-   d="scan'208";a="170516332"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 22:24:24 -0800
-IronPort-SDR: F0+iLRricuDD4oz6Ib2oxIrLblbysI4EBeJMCjc1C7/3LrLC7+ED5/tgsQ1kwODcH5T7ZH/qN0
- O5xpqWukkW0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
-   d="scan'208";a="437666253"
-Received: from aubrey-work.sh.intel.com ([10.239.53.113])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Dec 2020 22:24:20 -0800
-From:   Aubrey Li <aubrey.li@linux.intel.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, mgorman@techsingularity.net,
-        valentin.schneider@arm.com, qais.yousef@arm.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com
-Cc:     tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
-Subject: [RFC PATCH v7] sched/fair: select idle cpu from idle cpumask for task wakeup
-Date:   Wed,  9 Dec 2020 14:24:04 +0800
-Message-Id: <20201209062404.175565-1-aubrey.li@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CrRq85JpCz7Bk1;
+        Wed,  9 Dec 2020 14:24:52 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 9 Dec 2020 14:25:14 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH RESEND 1/6] f2fs: compress: support chksum
+Date:   Wed, 9 Dec 2020 14:24:52 +0800
+Message-ID: <20201209062457.111907-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add idle cpumask to track idle cpus in sched domain. Every time
-a CPU enters idle, the CPU is set in idle cpumask to be a wakeup
-target. And if the CPU is not in idle, the CPU is cleared in idle
-cpumask during scheduler tick to ratelimit idle cpumask update.
+This patch supports to store chksum value with compressed
+data, and verify the integrality of compressed data while
+reading the data.
 
-When a task wakes up to select an idle cpu, scanning idle cpumask
-has lower cost than scanning all the cpus in last level cache domain,
-especially when the system is heavily loaded.
+The feature can be enabled through specifying mount option
+'compress_chksum'.
 
-Benchmarks including hackbench, schbench, uperf, sysbench mysql
-and kbuild were tested on a x86 4 socket system with 24 cores per
-socket and 2 hyperthreads per core, total 192 CPUs, no regression
-found.
-
-v6->v7:
-- place the whole idle cpumask mechanism under CONFIG_SMP.
-
-v5->v6:
-- decouple idle cpumask update from stop_tick signal, set idle CPU
-  in idle cpumask every time the CPU enters idle
-
-v4->v5:
-- add update_idle_cpumask for s2idle case
-- keep the same ordering of tick_nohz_idle_stop_tick() and update_
-  idle_cpumask() everywhere
-
-v3->v4:
-- change setting idle cpumask from every idle entry to tickless idle
-  if cpu driver is available.
-- move clearing idle cpumask to scheduler_tick to decouple nohz mode.
-
-v2->v3:
-- change setting idle cpumask to every idle entry, otherwise schbench
-  has a regression of 99th percentile latency.
-- change clearing idle cpumask to nohz_balancer_kick(), so updating
-  idle cpumask is ratelimited in the idle exiting path.
-- set SCHED_IDLE cpu in idle cpumask to allow it as a wakeup target.
-
-v1->v2:
-- idle cpumask is updated in the nohz routines, by initializing idle
-  cpumask with sched_domain_span(sd), nohz=off case remains the original
-  behavior.
-
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Qais Yousef <qais.yousef@arm.com>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Jiang Biao <benbjiang@gmail.com>
-Cc: Tim Chen <tim.c.chen@linux.intel.com>
-Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
 ---
- include/linux/sched/topology.h | 13 +++++++++
- kernel/sched/core.c            |  2 ++
- kernel/sched/fair.c            | 51 +++++++++++++++++++++++++++++++++-
- kernel/sched/idle.c            |  5 ++++
- kernel/sched/sched.h           |  4 +++
- kernel/sched/topology.c        |  3 +-
- 6 files changed, 76 insertions(+), 2 deletions(-)
+ Documentation/filesystems/f2fs.rst |  1 +
+ fs/f2fs/compress.c                 | 22 ++++++++++++++++++++++
+ fs/f2fs/f2fs.h                     | 16 ++++++++++++++--
+ fs/f2fs/inode.c                    |  3 +++
+ fs/f2fs/super.c                    |  9 +++++++++
+ include/linux/f2fs_fs.h            |  2 +-
+ 6 files changed, 50 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 820511289857..b47b85163607 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -65,8 +65,21 @@ struct sched_domain_shared {
- 	atomic_t	ref;
- 	atomic_t	nr_busy_cpus;
- 	int		has_idle_cores;
-+	/*
-+	 * Span of all idle CPUs in this domain.
-+	 *
-+	 * NOTE: this field is variable length. (Allocated dynamically
-+	 * by attaching extra space to the end of the structure,
-+	 * depending on how many CPUs the kernel has booted up with)
-+	 */
-+	unsigned long	idle_cpus_span[];
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index 5eb8d63439ec..41de149f11cb 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -267,6 +267,7 @@ compress_mode=%s	 Control file compression mode. This supports "fs" and "user"
+ 			 choosing the target file and the timing. The user can do manual
+ 			 compression/decompression on the compression enabled files using
+ 			 ioctls.
++compress_chksum		 Support verifying chksum of raw data in compressed cluster.
+ inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
+ 			 files using the blk-crypto framework rather than
+ 			 filesystem-layer encryption. This allows the use of
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 708a563583db..4bcbacfe3325 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -602,6 +602,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+ 				f2fs_cops[fi->i_compress_algorithm];
+ 	unsigned int max_len, new_nr_cpages;
+ 	struct page **new_cpages;
++	u32 chksum = 0;
+ 	int i, ret;
+ 
+ 	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
+@@ -655,6 +656,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+ 
+ 	cc->cbuf->clen = cpu_to_le32(cc->clen);
+ 
++	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
++		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
++					cc->cbuf->cdata, cc->clen);
++	cc->cbuf->chksum = cpu_to_le32(chksum);
++
+ 	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
+ 		cc->cbuf->reserved[i] = cpu_to_le32(0);
+ 
+@@ -790,6 +796,22 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+ 
+ 	ret = cops->decompress_pages(dic);
+ 
++	if (!ret && (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)) {
++		u32 provided = le32_to_cpu(dic->cbuf->chksum);
++		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
++
++		if (provided != calculated) {
++			if (!is_inode_flag_set(dic->inode, FI_COMPRESS_CORRUPT)) {
++				set_inode_flag(dic->inode, FI_COMPRESS_CORRUPT);
++				printk_ratelimited(
++					"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
++					KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
++					provided, calculated);
++			}
++			set_sbi_flag(sbi, SBI_NEED_FSCK);
++		}
++	}
++
+ out_vunmap_cbuf:
+ 	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
+ out_vunmap_rbuf:
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 6edb2adc410e..7364d453783f 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -145,7 +145,8 @@ struct f2fs_mount_info {
+ 
+ 	/* For compression */
+ 	unsigned char compress_algorithm;	/* algorithm type */
+-	unsigned compress_log_size;		/* cluster log size */
++	unsigned char compress_log_size;	/* cluster log size */
++	bool compress_chksum;			/* compressed data chksum */
+ 	unsigned char compress_ext_cnt;		/* extension count */
+ 	int compress_mode;			/* compression mode */
+ 	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
+@@ -675,6 +676,7 @@ enum {
+ 	FI_ATOMIC_REVOKE_REQUEST, /* request to drop atomic data */
+ 	FI_VERITY_IN_PROGRESS,	/* building fs-verity Merkle tree */
+ 	FI_COMPRESSED_FILE,	/* indicate file's data can be compressed */
++	FI_COMPRESS_CORRUPT,	/* indicate compressed cluster is corrupted */
+ 	FI_MMAP_FILE,		/* indicate file was mmapped */
+ 	FI_ENABLE_COMPRESS,	/* enable compression in "user" compression mode */
+ 	FI_MAX,			/* max flag, never be used */
+@@ -733,6 +735,7 @@ struct f2fs_inode_info {
+ 	atomic_t i_compr_blocks;		/* # of compressed blocks */
+ 	unsigned char i_compress_algorithm;	/* algorithm type */
+ 	unsigned char i_log_cluster_size;	/* log of cluster size */
++	unsigned short i_compress_flag;		/* compress flag */
+ 	unsigned int i_cluster_size;		/* cluster size */
  };
  
-+static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
-+{
-+	return to_cpumask(sds->idle_cpus_span);
-+}
+@@ -1290,9 +1293,15 @@ enum compress_algorithm_type {
+ 	COMPRESS_MAX,
+ };
+ 
+-#define COMPRESS_DATA_RESERVED_SIZE		5
++enum compress_flag {
++	COMPRESS_CHKSUM,
++	COMPRESS_MAX_FLAG,
++};
 +
- struct sched_domain {
- 	/* These fields must be setup */
- 	struct sched_domain __rcu *parent;	/* top domain must be null terminated */
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index c4da7e17b906..c4c51ff3402a 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4011,6 +4011,7 @@ void scheduler_tick(void)
- 
- #ifdef CONFIG_SMP
- 	rq->idle_balance = idle_cpu(cpu);
-+	update_idle_cpumask(cpu, false);
- 	trigger_load_balance(rq);
- #endif
- }
-@@ -7186,6 +7187,7 @@ void __init sched_init(void)
- 		rq->idle_stamp = 0;
- 		rq->avg_idle = 2*sysctl_sched_migration_cost;
- 		rq->max_idle_balance_cost = sysctl_sched_migration_cost;
-+		rq->last_idle_state = 1;
- 
- 		INIT_LIST_HEAD(&rq->cfs_tasks);
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index c0c4d9ad7da8..7306f8886120 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6146,7 +6146,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 
- 	time = cpu_clock(this);
- 
--	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-+	/*
-+	 * sched_domain_shared is set only at shared cache level,
-+	 * this works only because select_idle_cpu is called with
-+	 * sd_llc.
-+	 */
-+	cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
- 
- 	for_each_cpu_wrap(cpu, cpus, target) {
- 		if (!--nr)
-@@ -6806,6 +6811,50 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 
- 	return newidle_balance(rq, rf) != 0;
- }
-+
-+/*
-+ * Update cpu idle state and record this information
-+ * in sd_llc_shared->idle_cpus_span.
-+ */
-+void update_idle_cpumask(int cpu, bool set_idle)
-+{
-+	struct sched_domain *sd;
-+	struct rq *rq = cpu_rq(cpu);
-+	int idle_state;
-+
-+	/*
-+	 * If called from scheduler tick, only update
-+	 * idle cpumask if the CPU is busy, as idle
-+	 * cpumask is also updated on idle entry.
-+	 *
-+	 */
-+	if (!set_idle && rq->idle_balance)
-+		return;
-+	/*
-+	 * Also set SCHED_IDLE cpu in idle cpumask to
-+	 * allow SCHED_IDLE cpu as a wakeup target
-+	 */
-+	idle_state = set_idle || sched_idle_cpu(cpu);
-+	/*
-+	 * No need to update idle cpumask if the state
-+	 * does not change.
-+	 */
-+	if (rq->last_idle_state == idle_state)
-+		return;
-+	/*
-+	 * Called with irq disabled, rcu_read_lock() is not needed.
-+	 */
-+	sd = rcu_dereference(per_cpu(sd_llc, cpu));
-+	if (unlikely(!sd))
-+		return;
-+
-+	if (idle_state)
-+		cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
-+	else
-+		cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
-+
-+	rq->last_idle_state = idle_state;
-+}
- #endif /* CONFIG_SMP */
- 
- static unsigned long wakeup_gran(struct sched_entity *se)
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index f324dc36fc43..2c517d6a061a 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -257,6 +257,11 @@ static void do_idle(void)
- 			cpuhp_report_idle_dead();
- 			arch_cpu_idle_dead();
++#define COMPRESS_DATA_RESERVED_SIZE		4
+ struct compress_data {
+ 	__le32 clen;			/* compressed data size */
++	__le32 chksum;			/* compressed data chksum */
+ 	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
+ 	u8 cdata[];			/* compressed data */
+ };
+@@ -3918,6 +3927,9 @@ static inline void set_compress_context(struct inode *inode)
+ 			F2FS_OPTION(sbi).compress_algorithm;
+ 	F2FS_I(inode)->i_log_cluster_size =
+ 			F2FS_OPTION(sbi).compress_log_size;
++	F2FS_I(inode)->i_compress_flag =
++			F2FS_OPTION(sbi).compress_chksum ?
++				1 << COMPRESS_CHKSUM : 0;
+ 	F2FS_I(inode)->i_cluster_size =
+ 			1 << F2FS_I(inode)->i_log_cluster_size;
+ 	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index 657db2fb6739..349d9cb933ee 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
+ 					le64_to_cpu(ri->i_compr_blocks));
+ 			fi->i_compress_algorithm = ri->i_compress_algorithm;
+ 			fi->i_log_cluster_size = ri->i_log_cluster_size;
++			fi->i_compress_flag = le16_to_cpu(ri->i_compress_flag);
+ 			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
+ 			set_inode_flag(inode, FI_COMPRESSED_FILE);
  		}
-+		/*
-+		 * The CPU is about to go idle, set it in idle cpumask
-+		 * to be a wake up target.
-+		 */
-+		update_idle_cpumask(cpu, true);
- 
- 		arch_cpu_idle_enter();
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 8d1ca65db3b0..2167ca48f3aa 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -976,6 +976,7 @@ struct rq {
- 
- 	unsigned char		nohz_idle_balance;
- 	unsigned char		idle_balance;
-+	unsigned char		last_idle_state;
- 
- 	unsigned long		misfit_task_load;
- 
-@@ -1516,6 +1517,8 @@ static inline unsigned int group_first_cpu(struct sched_group *group)
- 
- extern int group_balance_cpu(struct sched_group *sg);
- 
-+void update_idle_cpumask(int cpu, bool set_idle);
-+
- #if defined(CONFIG_SCHED_DEBUG) && defined(CONFIG_SYSCTL)
- void register_sched_domain_sysctl(void);
- void dirty_sched_domain_sysctl(int cpu);
-@@ -1536,6 +1539,7 @@ extern void flush_smp_call_function_from_idle(void);
- 
- #else /* !CONFIG_SMP: */
- static inline void flush_smp_call_function_from_idle(void) { }
-+static inline void update_idle_cpumask(int cpu, bool set_idle) { }
+@@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
+ 					&F2FS_I(inode)->i_compr_blocks));
+ 			ri->i_compress_algorithm =
+ 				F2FS_I(inode)->i_compress_algorithm;
++			ri->i_compress_flag =
++				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
+ 			ri->i_log_cluster_size =
+ 				F2FS_I(inode)->i_log_cluster_size;
+ 		}
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 1610d38ed83b..53c84eb9c330 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -147,6 +147,7 @@ enum {
+ 	Opt_compress_log_size,
+ 	Opt_compress_extension,
+ 	Opt_compress_mode,
++	Opt_compress_chksum,
+ 	Opt_atgc,
+ 	Opt_err,
+ };
+@@ -216,6 +217,7 @@ static match_table_t f2fs_tokens = {
+ 	{Opt_compress_log_size, "compress_log_size=%u"},
+ 	{Opt_compress_extension, "compress_extension=%s"},
+ 	{Opt_compress_mode, "compress_mode=%s"},
++	{Opt_compress_chksum, "compress_chksum"},
+ 	{Opt_atgc, "atgc"},
+ 	{Opt_err, NULL},
+ };
+@@ -950,11 +952,15 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 			}
+ 			kfree(name);
+ 			break;
++		case Opt_compress_chksum:
++			F2FS_OPTION(sbi).compress_chksum = true;
++			break;
+ #else
+ 		case Opt_compress_algorithm:
+ 		case Opt_compress_log_size:
+ 		case Opt_compress_extension:
+ 		case Opt_compress_mode:
++		case Opt_compress_chksum:
+ 			f2fs_info(sbi, "compression options not supported");
+ 			break;
  #endif
+@@ -1545,6 +1551,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+ 		seq_printf(seq, ",compress_mode=%s", "fs");
+ 	else if (F2FS_OPTION(sbi).compress_mode == COMPR_MODE_USER)
+ 		seq_printf(seq, ",compress_mode=%s", "user");
++
++	if (F2FS_OPTION(sbi).compress_chksum)
++		seq_puts(seq, ",compress_chksum");
+ }
  
- #include "stats.h"
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 1bd7e3af904f..541bd3a7de4d 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1407,6 +1407,7 @@ sd_init(struct sched_domain_topology_level *tl,
- 		sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
- 		atomic_inc(&sd->shared->ref);
- 		atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
-+		cpumask_copy(sds_idle_cpus(sd->shared), sched_domain_span(sd));
- 	}
- 
- 	sd->private = sdd;
-@@ -1769,7 +1770,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
- 
- 			*per_cpu_ptr(sdd->sd, j) = sd;
- 
--			sds = kzalloc_node(sizeof(struct sched_domain_shared),
-+			sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
- 					GFP_KERNEL, cpu_to_node(j));
- 			if (!sds)
- 				return -ENOMEM;
+ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+index a5dbb57a687f..7dc2a06cf19a 100644
+--- a/include/linux/f2fs_fs.h
++++ b/include/linux/f2fs_fs.h
+@@ -273,7 +273,7 @@ struct f2fs_inode {
+ 			__le64 i_compr_blocks;	/* # of compressed blocks */
+ 			__u8 i_compress_algorithm;	/* compress algorithm */
+ 			__u8 i_log_cluster_size;	/* log of cluster size */
+-			__le16 i_padding;		/* padding */
++			__le16 i_compress_flag;		/* compress flag */
+ 			__le32 i_extra_end[0];	/* for attribute size calculation */
+ 		} __packed;
+ 		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
 -- 
-2.25.1
+2.29.2
 
