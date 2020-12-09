@@ -2,200 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DBE2D48F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F652D4902
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733001AbgLIS1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:27:25 -0500
-Received: from mail-dm6nam12on2100.outbound.protection.outlook.com ([40.107.243.100]:35681
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732914AbgLIS1X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:27:23 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VEUKWtC02/rCYUXD3SKJt8ToeiMCEv1YRe9CA/p7N51RnRaAPX1pU5PxQaCwgAlmkZvIXMfK9rI/EbMSEqca49wtwxb43FporA0i/LRSs5Wkz3fItH2TSywfZrVc1Z93bDNwxpdz8epl0bOMWx48JAKQ8MkB3bdfCp0TuOtMljNYLTpdv9F1LPoMuQWS1cgGYnakXUDPRubSc6qjUmBpcN/Q70WYC0X4sTOcDqddJ7FRYfXYUue098LEOzX+WsgEv0Q8J3JI2iSOdqmQF2TNiOrE9/1h4mS/9j4aCf6iBFpzDh9izZ0N4Nv8M4vRnWPJLTsES5awUf5gGRdq2alJFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OI3zSIclEUyOq2Tu0lD7E7xedrR84ZGQSoLWTvxVjWQ=;
- b=YxTrdWDw0Qv7mdZVF6Ddqxd+0IR4s2nx22hDhCTRuBDbTfvgNCwmEPWFo28vVtyRdj8R0W7VzsAnbuYxiyMLd+ozd9LLvzBMRJt4K9KlpoETrXj2bx/H9iFYajV2UBuF7dgXqVou0WIXj5E1Rj6J3ckZ0N4Zv4qBBhdfmVdd9JlmxgQczmFNUdAGlJYBiwD/5OJr5vUN3HpUWRe0c1xOomg3HbrgSTKWdQl2xRnrC7IHkXfR/yjE3BbngMeRyN6b2hOLjz8Ebb72zhin/Ow5mwN7mUllP9jcomWgLX8KTtb0IvjR8ybddnSx6kA+K/lTe5ZhEnXUVqI+5v8Ha+o1dA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OI3zSIclEUyOq2Tu0lD7E7xedrR84ZGQSoLWTvxVjWQ=;
- b=S8PfSsoOUkfjiPhjIxPOcRu9DOcagQvEOVcd84hzum5YVF0YrP7xc9gxRUSFX2NFd1PdQ4jf0SxXxEZm78wuRbHpoY4iwrF8UzDGeFo+hrWFqu1XmAYIWu4vKt/UCM5rnBCCfNKKWFin7XcwVDuUg37nJ5xU0otjmHFw/HoekSg=
-Received: from (2603:10b6:805:6::17) by
- SN6PR2101MB1344.namprd21.prod.outlook.com (2603:10b6:805:107::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.2; Wed, 9 Dec
- 2020 18:26:53 +0000
-Received: from SN6PR2101MB1056.namprd21.prod.outlook.com
- ([fe80::901:94fd:4c64:2ccf]) by SN6PR2101MB1056.namprd21.prod.outlook.com
- ([fe80::901:94fd:4c64:2ccf%9]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
- 18:26:52 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>
-Subject: RE: [PATCH v3 3/6] Drivers: hv: vmbus: Copy the hv_message in
- vmbus_on_msg_dpc()
-Thread-Topic: [PATCH v3 3/6] Drivers: hv: vmbus: Copy the hv_message in
- vmbus_on_msg_dpc()
-Thread-Index: AQHWzfo7XYcvIEgiAUq2bY/ygsWxmanvFaBg
-Date:   Wed, 9 Dec 2020 18:26:52 +0000
-Message-ID: <SN6PR2101MB105650A9F99114255998FB3BD7CC1@SN6PR2101MB1056.namprd21.prod.outlook.com>
-References: <20201209070827.29335-1-parri.andrea@gmail.com>
- <20201209070827.29335-4-parri.andrea@gmail.com>
-In-Reply-To: <20201209070827.29335-4-parri.andrea@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-09T18:26:51Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=e6ca392b-d0b4-4c30-9891-82419cce7d7d;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1d7295be-cc2e-4a91-555d-08d89c700065
-x-ms-traffictypediagnostic: SN6PR2101MB1344:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR2101MB1344CF21786E5878B4FD7E25D7CC1@SN6PR2101MB1344.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1201;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mfcb1/zBZCAPxNNuM5fnilkTbA42S663B55QNe2SG1n+OuK6GvOrRV3SypXLqIeSvq/5zTfzj4o/+r88BdurZDDJlU9MTe4bM+JWkbBgLRpqZwb18erQju/hh7bF3llGZb5gK0weldUWpSepbwN2L0FmIkSXWwlx6S7CxFGCboR+BC8JWLGVGuY8+XFTNchYwBD71nApWVklhwM4Gk/L2PvfglhUyPHDBn4R+X+e1KhkOIuzkHAjIJktbSw6tH3Wlrbu5gGiL3K6yaZX49kjhSk4Mjv3rTUfQbXXAv9Ol1hZ0Vzh+GCN7mWCcrLy7NJuEEa49Xqm53irFDS+e7iVwQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR2101MB1056.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(2906002)(8990500004)(107886003)(4326008)(8676002)(8936002)(33656002)(82960400001)(83380400001)(86362001)(82950400001)(9686003)(508600001)(186003)(110136005)(54906003)(55016002)(7696005)(6506007)(66946007)(10290500003)(76116006)(26005)(5660300002)(66476007)(52536014)(66556008)(64756008)(66446008)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?IQ/gwn99SjAcnDARr5uDnZM3K2HMf9RqRYw0RviUgW5eytLitjnjjxonjdOL?=
- =?us-ascii?Q?5DKe30hk2udEmii9VNvzAeXLyH3RTWrsTwctWmv6yJgR4fjTjIzjA4q4Jwp3?=
- =?us-ascii?Q?4zifcYVWQ2ootULw3gtrm8zHyYphnJgfYrgNZjqc8f2MBotQmP5pc2V2YWm5?=
- =?us-ascii?Q?IYzG5iW3DJ09achlYj/Yn0JpLghYWqxhs+CzdvBz5IYpnT9uCBkdw0DvLhT7?=
- =?us-ascii?Q?vFUG4wz67Wd0boZFykCK+K9oKaj2MTVY92DhlkIF2M4ce2hwFVmRDOH7X5Ih?=
- =?us-ascii?Q?KlPArL3CL6ktGGvcySAbVd9oeNfqdx6Da56RhuOgxnJeaGNdbzK9dOqatjsf?=
- =?us-ascii?Q?Y9zorIHT2dPclsXAHetPFAorEtQyseNOk4nNl1BeZGLfi0X31VBMtyaGApR7?=
- =?us-ascii?Q?5q9GzJdX9qOllNd6IAqeJH6yMJZWlP5P6KxccYyEjFLvGjIdOx6g8543whWn?=
- =?us-ascii?Q?loCOT2GzTYDDmJ02GdAKcOR3FZqKJlr/Pvv52ArSTNm8DPU0YKbc16uQ0CxI?=
- =?us-ascii?Q?yIbw9MRLj7g0BzeVarHQVg3ZiZK2J8eGnBlt1s2WzmkDWvnUA7dWQBRNe6qU?=
- =?us-ascii?Q?0tEaqJ7n+CfChisUdbKxKdP5OQksgnhukNCFdUAPkucGpO90+vDJl46cZ+Ho?=
- =?us-ascii?Q?hl+Q/uvMce5QPILr7fMegeGDG07fKbmToG/T5myIATwr17W3JjLbP5NiIvbt?=
- =?us-ascii?Q?q16YxLDavBD5OenGsytFUNVyczzy1P8Ey7xNY8jFaQ8tiTX3JL3I06xF+gxD?=
- =?us-ascii?Q?AIQjQLjQS8N+1cs0faCw2/ddeP5E2WYpRPi7mzGwnk3U4GI+tg0wOemoytCi?=
- =?us-ascii?Q?EbAXd+XIUh8KxjIXMGufR25q+EftSMd55eH8oBTV1BH5pw8JhJ9h2G+jkYg4?=
- =?us-ascii?Q?0LuyZXheY0tC82woMq8ZGeB7TKoDi3UHJvc5WX28DO0MsfKhC/IAQ1s4h2Ai?=
- =?us-ascii?Q?O2IgcOcm5IfyheZcpifVGdAmlX6jEBO0sPrH+dBmfEQ=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1733096AbgLIS2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:28:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726449AbgLIS2q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:28:46 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629ADC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:28:06 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id v85so2742659oia.6
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 10:28:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EMdXn/we+ASAb31gRQdJr6+sKTP4Qjrqm7l5vM7/2N0=;
+        b=uBjDfzU8tJe6+V30aOzUET0Fi/1DWGtprJdABI/JEt+ZE2s94Y30fhKOBxmqCUuDeF
+         fCcuThp2wkHoxOI9GJmd/AiRPoHa0OZCK5WvKsYdMHLxuoZqZkPae4ik5Rs50LTv7UeP
+         WBe9p+LoNI1L76wVobsLQC868+hlmkTN5wIhYZYSXca0eIiTDq7OWBi6ZpodCQNmeqSp
+         f9iV5sMKIXZ7cde2m1WxX3kjYqxldYCrtpw2IF15hMkzldHDeUBuifaPwEl/hkntsmNy
+         KxRuzDUyZHihNDp5TVjZ9G5WE5RYOOhQgQS2IIcd5F33cWzTIOb/CxOyKXAwwGHpqBlh
+         CLpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EMdXn/we+ASAb31gRQdJr6+sKTP4Qjrqm7l5vM7/2N0=;
+        b=OoeqMZTVCG0f90Qf2UZXwgzjbxaQSH/44nmKPmvr0woWpC8MRx9i2KCHwR+GBzUUX4
+         eZ3+3lMqYOv8RekSuFl+keezT+oBsBID/JxZXfIXGPzWm5OYX/HuDDTO7MkaFKtbnRvn
+         aUIx541tBY2J65KRYE8IF/CJqPCEyZ4rC7PKotVo2KuqjiPFUUZPVhcNsYWzO50x1kUY
+         e/RqS0A8TLXtlKhuZRp8D9bFO2lINH+RJG+c7wuvgHqzP4ETxuE3WtkaVMbhiBA6V/Re
+         lS2lFW2FqbW0j0xv5oTQrl8pSWWRKjZAuy1xvXod/blImniKmem0v73Ai07GAhsJRdzy
+         UMxw==
+X-Gm-Message-State: AOAM531ruf9knW/H1cgaLRVVuZpNOH5RigvPCQFK3IH+6fliLU9VF/Gw
+        BsOtJVPX2itZySxvrrIAMVKm/g==
+X-Google-Smtp-Source: ABdhPJwXF7F87GnE1UfMS2EBOABWhLPgRg1PmpgpVMqLuUiQHVmPOMnB+cm8yzRRg6ho4iiOn74A4w==
+X-Received: by 2002:aca:5889:: with SMTP id m131mr2737051oib.41.1607538485699;
+        Wed, 09 Dec 2020 10:28:05 -0800 (PST)
+Received: from [10.10.121.52] (fixed-187-189-51-144.totalplay.net. [187.189.51.144])
+        by smtp.gmail.com with ESMTPSA id k5sm461045oot.30.2020.12.09.10.28.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 10:28:04 -0800 (PST)
+Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <haibo.xu@linaro.org>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Juan Quintela <quintela@redhat.com>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Dave Martin <Dave.Martin@arm.com>
+References: <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
+ <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
+ <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
+ <0d0eb6da6a11f76d10e532c157181985@kernel.org> <20201207163405.GD1526@gaia>
+ <874kkx5thq.wl-maz@kernel.org> <20201208172143.GB13960@gaia>
+ <7ff14490e253878d0735633b792e1ea9@kernel.org> <20201209124443.GB13566@gaia>
+ <ef14a5158fc65c00f6c3c842cfa83b2c@kernel.org> <20201209152741.GC13566@gaia>
+From:   Richard Henderson <richard.henderson@linaro.org>
+Message-ID: <8c39b104-39c3-7cca-82b9-2e47d7cb9a9a@linaro.org>
+Date:   Wed, 9 Dec 2020 12:27:59 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR2101MB1056.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d7295be-cc2e-4a91-555d-08d89c700065
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Dec 2020 18:26:52.7917
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: v79I4WWuzyvRDs88xUTKD6xXnhRZ4sth2fOrT962HVuBgkJCkCOc9NxYAZehqMV9FKJO2sKRi3jRz25GYuRyBj82ykAjxIJQuSRRxJzZY8Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR2101MB1344
+In-Reply-To: <20201209152741.GC13566@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Tuesday, Dece=
-mber 8, 2020 11:08 PM
->=20
-> Since the message is in memory shared with the host, an erroneous or a
-> malicious Hyper-V could 'corrupt' the message while vmbus_on_msg_dpc()
-> or individual message handlers are executing.  To prevent it, copy the
-> message into private memory.
->=20
-> Reported-by: Juan Vazquez <juvazq@microsoft.com>
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> ---
-> Changes since v2:
->   - Revisit commit message and inline comment
->=20
->  drivers/hv/vmbus_drv.c | 19 ++++++++++++++-----
->  1 file changed, 14 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-> index 44bcf9ccdaf5f..b1c5a89d75f9d 100644
-> --- a/drivers/hv/vmbus_drv.c
-> +++ b/drivers/hv/vmbus_drv.c
-> @@ -1054,14 +1054,14 @@ void vmbus_on_msg_dpc(unsigned long data)
->  {
->  	struct hv_per_cpu_context *hv_cpu =3D (void *)data;
->  	void *page_addr =3D hv_cpu->synic_message_page;
-> -	struct hv_message *msg =3D (struct hv_message *)page_addr +
-> +	struct hv_message msg_copy, *msg =3D (struct hv_message *)page_addr +
->  				  VMBUS_MESSAGE_SINT;
->  	struct vmbus_channel_message_header *hdr;
->  	enum vmbus_channel_message_type msgtype;
->  	const struct vmbus_channel_message_table_entry *entry;
->  	struct onmessage_work_context *ctx;
-> -	u32 message_type =3D msg->header.message_type;
->  	__u8 payload_size;
-> +	u32 message_type;
->=20
->  	/*
->  	 * 'enum vmbus_channel_message_type' is supposed to always be 'u32' as
-> @@ -1070,11 +1070,20 @@ void vmbus_on_msg_dpc(unsigned long data)
->  	 */
->  	BUILD_BUG_ON(sizeof(enum vmbus_channel_message_type) !=3D sizeof(u32));
->=20
-> +	/*
-> +	 * Since the message is in memory shared with the host, an erroneous or
-> +	 * malicious Hyper-V could modify the message while vmbus_on_msg_dpc()
-> +	 * or individual message handlers are executing; to prevent this, copy
-> +	 * the message into private memory.
-> +	 */
-> +	memcpy(&msg_copy, msg, sizeof(struct hv_message));
-> +
-> +	message_type =3D msg_copy.header.message_type;
->  	if (message_type =3D=3D HVMSG_NONE)
->  		/* no msg */
->  		return;
->=20
-> -	hdr =3D (struct vmbus_channel_message_header *)msg->u.payload;
-> +	hdr =3D (struct vmbus_channel_message_header *)msg_copy.u.payload;
->  	msgtype =3D hdr->msgtype;
->=20
->  	trace_vmbus_on_msg_dpc(hdr);
-> @@ -1084,7 +1093,7 @@ void vmbus_on_msg_dpc(unsigned long data)
->  		goto msg_handled;
->  	}
->=20
-> -	payload_size =3D msg->header.payload_size;
-> +	payload_size =3D msg_copy.header.payload_size;
->  	if (payload_size > HV_MESSAGE_PAYLOAD_BYTE_COUNT) {
->  		WARN_ONCE(1, "payload size is too large (%d)\n", payload_size);
->  		goto msg_handled;
-> @@ -1106,7 +1115,7 @@ void vmbus_on_msg_dpc(unsigned long data)
->  			return;
->=20
->  		INIT_WORK(&ctx->work, vmbus_onmessage_work);
-> -		memcpy(&ctx->msg, msg, sizeof(msg->header) + payload_size);
-> +		memcpy(&ctx->msg, &msg_copy, sizeof(msg->header) + payload_size);
->=20
->  		/*
->  		 * The host can generate a rescind message while we
-> --
-> 2.25.1
+On 12/9/20 9:27 AM, Catalin Marinas wrote:
+> On Wed, Dec 09, 2020 at 01:25:18PM +0000, Marc Zyngier wrote:
+>> Would this syscall operate on the guest address space? Or on the VMM's
+>> own mapping?
+...
+> Whatever is easier for the VMM, I don't think it matters as long as the
+> host kernel can get the actual physical address (and linear map
+> correspondent). Maybe simpler if it's the VMM address space as the
+> kernel can check the access permissions in case you want to hide the
+> guest memory from the VMM for other reasons (migration is also off the
+> table).
 
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Indeed, such a syscall is no longer specific to vmm's and may be used for any
+bulk move of tags that userland might want.
 
+> Without syscalls, an option would be for the VMM to create two mappings:
+> one with PROT_MTE for migration and the other without for normal DMA
+> etc. That's achievable using memfd_create() or shm_open() and two mmap()
+> calls, only one having PROT_MTE. The VMM address space should be
+> sufficiently large to map two guest IPAs.
+
+I would have thought that the best way is to use TCO, so that we don't have to
+have dual mappings (and however many MB of extra page tables that might imply).
+
+
+r~
