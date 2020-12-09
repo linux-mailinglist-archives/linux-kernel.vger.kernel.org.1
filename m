@@ -2,120 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2AD2D3BA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9AE2D3BA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgLIGsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 01:48:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41990 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725892AbgLIGsB (ORCPT
+        id S1728231AbgLIGtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 01:49:51 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:46624 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728030AbgLIGtu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 01:48:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607496390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JWegwtDJ2omVRz2Kp6FHFNujjEo+eYTsjLuIyLZ+Tmg=;
-        b=RrKhhwk2BZZKdUur+g/oi6un9ZRdnfcEzLso7rP8hOE2eAU4Wvp9GHWBbB3vEXc1fbr1B8
-        Fw9mc7MoVRHGeiJ4wQq2oYMHoKpcaRfdSiuu2IaaDGbfozOOo6SDrX0GdJwIcXLdlmnNM/
-        TB7a+IONKavJzmchVKXENSpu9eO6EvY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-103-4_03uNudNxaAPWNcjxvmCA-1; Wed, 09 Dec 2020 01:46:28 -0500
-X-MC-Unique: 4_03uNudNxaAPWNcjxvmCA-1
-Received: by mail-wm1-f70.google.com with SMTP id a205so36325wme.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 22:46:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JWegwtDJ2omVRz2Kp6FHFNujjEo+eYTsjLuIyLZ+Tmg=;
-        b=i3uO3GngmzHYrA7NRkF9SVk5HQNGyYeZu6n+qIueeD15smBnq/3Cay/Sx7rS+pVfx7
-         /KgRteIn/oD9tSm+60c9hXuDEzwbenvlO42N2SYBjaW8eTrBi80fjr47ZdGkw7bgSsVg
-         rQ/d9rxx1tFJZGumOCa/To9JiSeik3UxEWiVqfqhsFXNmKhqTh90F8cdDOF8w15q4LFW
-         7GKtSZm9t4oIqYak34/0Y6AcI1mgVX92RTFFTJSzkQ4l/KVwOZYa4pLRExyUqYVGlX38
-         3uBxUTrQ8CLabeU5HEwKUkYbfUyBDQOqoJ+WR/jdAcz4J56Yc56zPgos31swiinmVCON
-         2Exg==
-X-Gm-Message-State: AOAM5318tmDSd1chSZQaowSNn+gr3aIqCpWjvDU+Ov4xmX/v+rKGIyip
-        jEbLRf3NIZ0dReKlnnUc5MVPcI6GY5MxLfMudRq5LTScxu333atONwiR5cYWvFXGHq/4eQPFPZq
-        IQRRhE584bf0FGcwtxFOl28i1
-X-Received: by 2002:a5d:4d88:: with SMTP id b8mr903705wru.134.1607496387253;
-        Tue, 08 Dec 2020 22:46:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwnALlGGbRyalUyQiiAMD7PPni/fY1a6aRhLxMF3Q+mP8mccZfLMhdqrEwUXVX4ohHXuNvquQ==
-X-Received: by 2002:a5d:4d88:: with SMTP id b8mr903690wru.134.1607496387039;
-        Tue, 08 Dec 2020 22:46:27 -0800 (PST)
-Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
-        by smtp.gmail.com with ESMTPSA id j13sm1379338wmi.36.2020.12.08.22.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 22:46:25 -0800 (PST)
-Date:   Wed, 9 Dec 2020 01:46:22 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, lulu@redhat.com
-Subject: Re: [PATCH] vdpa/mlx5: Use write memory barrier after updating CQ
- index
-Message-ID: <20201209014547-mutt-send-email-mst@kernel.org>
-References: <20201206105719.123753-1-elic@nvidia.com>
- <20201208164356-mutt-send-email-mst@kernel.org>
- <20201209060230.GA57362@mtl-vdi-166.wap.labs.mlnx>
+        Wed, 9 Dec 2020 01:49:50 -0500
+X-UUID: 8fbaf453778946c7b5edae647397d99f-20201209
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=/BNwn7ZnxvpJrjyggPTyczK8/eauiOe9smE73GyHAnA=;
+        b=WfcPMQOlt8JpDtufkVRzQFajY4rMNmVCrYyNiyG9foDwfDQdbOT83mo44VstCUcyCRRkEr/g3iHyVR9TbMHLBS/Vw5sV0I6XfYYUS9bUwWRWvQAgHSw+6C1WbmLRnSiHKZqSSsydB31qZvT3D+sZI/JA+3i0e8Xk8ZRbhO6w1yo=;
+X-UUID: 8fbaf453778946c7b5edae647397d99f-20201209
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 270000220; Wed, 09 Dec 2020 14:48:59 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 9 Dec 2020 14:48:54 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 9 Dec 2020 14:48:58 +0800
+Message-ID: <1607496538.3580.31.camel@mtkswgap22>
+Subject: Re: [PATCH 1/1] scsi: ufs-mediatek: use correct path to fix
+ compiling error
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+CC:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-mediatek <linux-mediatek@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Wed, 9 Dec 2020 14:48:58 +0800
+In-Reply-To: <20201209063144.1840-2-thunder.leizhen@huawei.com>
+References: <20201209063144.1840-1-thunder.leizhen@huawei.com>
+         <20201209063144.1840-2-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209060230.GA57362@mtl-vdi-166.wap.labs.mlnx>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 08:02:30AM +0200, Eli Cohen wrote:
-> On Tue, Dec 08, 2020 at 04:45:04PM -0500, Michael S. Tsirkin wrote:
-> > On Sun, Dec 06, 2020 at 12:57:19PM +0200, Eli Cohen wrote:
-> > > Make sure to put write memory barrier after updating CQ consumer index
-> > > so the hardware knows that there are available CQE slots in the queue.
-> > > 
-> > > Failure to do this can cause the update of the RX doorbell record to get
-> > > updated before the CQ consumer index resulting in CQ overrun.
-> > > 
-> > > Change-Id: Ib0ae4c118cce524c9f492b32569179f3c1f04cc1
-> > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> > > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> > 
-> > Aren't both memory writes?
-> 
-> Not sure what exactly you mean here.
-
-Both updates are CPU writes into RAM that hardware then reads
-using DMA.
-
-> > And given that, isn't dma_wmb() sufficient here?
-> 
-> I agree that dma_wmb() is more appropriate here.
-> 
-> > 
-> > 
-> > > ---
-> > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > > 
-> > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > index 1f4089c6f9d7..295f46eea2a5 100644
-> > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > @@ -478,6 +478,11 @@ static int mlx5_vdpa_poll_one(struct mlx5_vdpa_cq *vcq)
-> > >  static void mlx5_vdpa_handle_completions(struct mlx5_vdpa_virtqueue *mvq, int num)
-> > >  {
-> > >  	mlx5_cq_set_ci(&mvq->cq.mcq);
-> > > +
-> > > +	/* make sure CQ cosumer update is visible to the hardware before updating
-> > > +	 * RX doorbell record.
-> > > +	 */
-> > > +	wmb();
-> > >  	rx_post(&mvq->vqqp, num);
-> > >  	if (mvq->event_cb.callback)
-> > >  		mvq->event_cb.callback(mvq->event_cb.private);
-> > > -- 
-> > > 2.27.0
-> > 
+SGkgWmhlbiwNCg0KT24gV2VkLCAyMDIwLTEyLTA5IGF0IDE0OjMxICswODAwLCBaaGVuIExlaSB3
+cm90ZToNCj4gV2hlbiB0aGUga2VybmVsIGlzIGNvbXBpbGVkIHdpdGggYWxsbW9kY29uZmlnLCB0
+aGUgZm9sbG93aW5nIGVycm9yIGlzDQo+IHJlcG9ydGVkOg0KPiBJbiBmaWxlIGluY2x1ZGVkIGZy
+b20gZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWstdHJhY2UuaDozNjowLA0KPiAgICAgICAg
+ICAgICAgICAgIGZyb20gZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYzoyODoNCj4gLi9p
+bmNsdWRlL3RyYWNlL2RlZmluZV90cmFjZS5oOjk1OjQyOiBmYXRhbCBlcnJvcjogLi91ZnMtbWVk
+aWF0ZWstdHJhY2UuaDogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQ0KPiAgI2luY2x1ZGUgVFJB
+Q0VfSU5DTFVERShUUkFDRV9JTkNMVURFX0ZJTEUpDQo+IA0KPiBUaGUgY29tbWVudCBpbiBpbmNs
+dWRlL3RyYWNlL2RlZmluZV90cmFjZS5oIHNwZWNpZmllcyB0aGF0Og0KPiBUUkFDRV9JTkNMVURF
+X1BBVEg6IE5vdGUsIHRoZSBwYXRoIGlzIHJlbGF0aXZlIHRvIGRlZmluZV90cmFjZS5oLCBub3Qg
+dGhlDQo+IGZpbGUgaW5jbHVkaW5nIGl0LiBGdWxsIHBhdGggbmFtZXMgZm9yIG91dCBvZiB0cmVl
+IG1vZHVsZXMgbXVzdCBiZSB1c2VkLg0KPiANCj4gU28gd2l0aG91dCAiQ0ZMQUdTX3Vmcy1tZWRp
+YXRlay5vIDo9IC1JJChzcmMpIiwgdGhlIGN1cnJlbnQgZGlyZWN0b3J5ICIuIg0KPiBpcyAiaW5j
+bHVkZS90cmFjZS8iLCB0aGUgcmVsYXRpdmUgcGF0aCBvZiB1ZnMtbWVkaWF0ZWstdHJhY2UuaCBp
+cw0KPiAiLi4vLi4vZHJpdmVycy9zY3NpL3Vmcy8iLg0KPiANCj4gRml4ZXM6IGNhMWJiMDYxZDY0
+NCAoInNjc2k6IHVmcy1tZWRpYXRlazogSW50cm9kdWNlIGV2ZW50X25vdGlmeSBpbXBsZW1lbnRh
+dGlvbiIpDQo+IFNpZ25lZC1vZmYtYnk6IFpoZW4gTGVpIDx0aHVuZGVyLmxlaXpoZW5AaHVhd2Vp
+LmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay10cmFjZS5oIHwg
+MiArLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+
+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWstdHJhY2UuaCBi
+L2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLXRyYWNlLmgNCj4gaW5kZXggZmQ2Zjg0YzFi
+NGUyMjU2Li44OTVlODJlYTZlY2U1NTEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc2NzaS91ZnMv
+dWZzLW1lZGlhdGVrLXRyYWNlLmgNCj4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0
+ZWstdHJhY2UuaA0KPiBAQCAtMzEsNiArMzEsNiBAQCBUUkFDRV9FVkVOVCh1ZnNfbXRrX2V2ZW50
+LA0KPiAgDQo+ICAjdW5kZWYgVFJBQ0VfSU5DTFVERV9QQVRIDQo+ICAjdW5kZWYgVFJBQ0VfSU5D
+TFVERV9GSUxFDQo+IC0jZGVmaW5lIFRSQUNFX0lOQ0xVREVfUEFUSCAuDQo+ICsjZGVmaW5lIFRS
+QUNFX0lOQ0xVREVfUEFUSCAuLi8uLi9kcml2ZXJzL3Njc2kvdWZzLw0KPiAgI2RlZmluZSBUUkFD
+RV9JTkNMVURFX0ZJTEUgdWZzLW1lZGlhdGVrLXRyYWNlDQo+ICAjaW5jbHVkZSA8dHJhY2UvZGVm
+aW5lX3RyYWNlLmg+DQoNClRoYW5rcyBmb3IgdGhpcyBmaXguDQoNClJldmlld2VkLWJ5OiBTdGFu
+bGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KDQoNCg0KDQoNCg==
 
