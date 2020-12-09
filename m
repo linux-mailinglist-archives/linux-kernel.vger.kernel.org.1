@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6D52D3B81
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B05CE2D3B85
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgLIGeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 01:34:15 -0500
+        id S1728173AbgLIGet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 01:34:49 -0500
 Received: from mail-db8eur05on2066.outbound.protection.outlook.com ([40.107.20.66]:57952
         "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725892AbgLIGeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 01:34:15 -0500
+        id S1727765AbgLIGei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 01:34:38 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bR2B5zcl5I+q8O5wQnu6Wdz/x8ROf6IY5YzHz88iDMPG8N19y6kf70lBR1Akl4oKJE1Rvc3OveJACd9dndIVWNExjXbwJ0z1QIDgV1/uk2GYXPS5Ect15EcoL2uuhsXVQI+kheNN+nJ98r32tqKD6peRK7um54MwBER+VtUsaWhvxIUN6xEHoOPqV6gT5oLRk0b0uk/InmWdCEM52NGahCahQLLg49M182tI+pE80med7i0P4oRK6xE0UdPydpu98QdWvQMx5ue3083gZ35Kb9x4OhSg0OlQBsenj6MofgotVIwNNRPXJyvox2UgKwxUs4i1efTjtzoC4Y/lOtETng==
+ b=MkfVZQzp53Hpp9zuMIFLiP2NE66oBgAHSMBSQH/zJjoIj/F601PxFY+LJ/oWvUB8We3me89Bpxjk2kExKO+FacoBsuO2qHK9xGrak0sBKPrFX+hpjqETWhZ5SUAL16mJFR6uc1aKNSEsQVq11Ra3PN9QKP+c/5yNFpGgm8U9CcegphqYttUg2Y+Y+rLpwWbgF/+/jWSzh6W34g6iAfCFX1YwPVPLmglJO5rjYa7CUNyzXYlAovLR3tOBY76r2f8cUivIUBYROUi/nxHkXrnEhLBT8MuiPsy7KM8STnRYxMnOoRgL4+JihFoVlB51V3gTv83OcN65gmw7Hjh8dnU0DA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UlVIqCF3ResnuFKj8jDnBInEWttMi/afewLrFoCzYy4=;
- b=D7FOnCQ8qjzcYs2Mc9k+xOeu5TZH+2VSEVIqNiOtq2tFome2DueVuEs5ySH5j+934bgYCr+70l6WpqYPCkuhzMYm68NFHU/PC1pkYTP3uAeOj1kuHt2e3OiNGPbLE0al4o3geDZ4lDWGL8TCP7Gyc3BLJ7EB8Dmcpis+auKTJIXX1IGcu3j+h2VvFp/APEF0Vd2AWgYTUQxPgbtF50m3xxse1bFL3Z2rL11A+Ra63Dolfl3O8XWmwk/KlwqexFffWe4Gd5vtRwtwUnoi1WWtFNVF+fzueMDqz2NNRVeK0oxOvZBLMn6+F1IFd+Lu1PPvbitI+3zDvDJSJ854yL+VLQ==
+ bh=kEsZvVVMgoy/JmFSnfE3Xg6oPLliZDQ74ZOmZfzTvxk=;
+ b=LrCGYA9tTVKhzWNCAmTMQjs5zEwBAfs9dnsYFK/yWdeYtMiezs9z7OXO199jm/mtrSCPwz6nNzoN4gyuXtzsJEVV7oP5/Lo2NjxTVcOfp1iUZQFGmVKRTvvBJ2GqoOtBb+o8h0VWMWyt8Nh8Wl1U1jMltJxQ1A1OSieXcszvsKCk6Ey5wrmrdFWupty70/VUPOCcTF5l+2VTw5lL3eK6xwqc0mWyrOk9CxeY2wILF6daPVFPFkQhvkzbQ0lPUHFMvtt2Nwg/hw8yi5XOHKTgHI+2iZ49TkRKhSrCJ1tbMWqOocfaac+prqGbpb5MmOHCb5G67R30hMHI6Vi5P1ejdg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UlVIqCF3ResnuFKj8jDnBInEWttMi/afewLrFoCzYy4=;
- b=fEUQU7RQI+WArBmlZ/GNwvM0GZV/4wfiMMe4KYdyJKfL527lCGriBfz6JhFGDwWSYiGHR1dXwhVpQ7C49aJ89mPwp+yiB/Cq5gnrKKmDNQTgk4zpgebcb+TlkHE5ZQ/nKCquvuPHEwZ2Nb5CSxI6P0VJO/pqeSw/uFCzrKERvAs=
+ bh=kEsZvVVMgoy/JmFSnfE3Xg6oPLliZDQ74ZOmZfzTvxk=;
+ b=Ab3u5bMhQ0mQiX26qFJsIq6aUsW2/9qrSPdLaL7Z9/CY7n9C8KFXIFbeaTt9L5zX0cX0OBMMf9FVwW39DmNz5f6SZI08mFs9DylflWrQyxZyWNAiTv7g3t91diQNJUaTgiA+Gg1V7fUawLKGvSgjEiw+hrrMTRQfgH84Brm4smk=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
 Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
  by VI1PR04MB6144.eurprd04.prod.outlook.com (2603:10a6:803:fd::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Wed, 9 Dec
- 2020 06:33:12 +0000
+ 2020 06:33:19 +0000
 Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
  ([fe80::dcb7:6117:3def:2685]) by VI1PR04MB3983.eurprd04.prod.outlook.com
  ([fe80::dcb7:6117:3def:2685%7]) with mapi id 15.20.3632.023; Wed, 9 Dec 2020
- 06:33:12 +0000
+ 06:33:19 +0000
 From:   Liu Ying <victor.liu@nxp.com>
 To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         dri-devel@lists.freedesktop.org,
@@ -48,9 +48,9 @@ Cc:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
         shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
         festevam@gmail.com, linux-imx@nxp.com, agx@sigxcpu.org,
         robert.chiras@nxp.com, martin.kepplinger@puri.sm
-Subject: [PATCH v2 3/5] dt-bindings: phy: Convert mixel,mipi-dsi-phy to json-schema
-Date:   Wed,  9 Dec 2020 14:24:26 +0800
-Message-Id: <1607495069-10946-4-git-send-email-victor.liu@nxp.com>
+Subject: [PATCH v2 4/5] dt-bindings: phy: mixel: mipi-dsi-phy: Add Mixel combo PHY support for i.MX8qxp
+Date:   Wed,  9 Dec 2020 14:24:27 +0800
+Message-Id: <1607495069-10946-5-git-send-email-victor.liu@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1607495069-10946-1-git-send-email-victor.liu@nxp.com>
 References: <1607495069-10946-1-git-send-email-victor.liu@nxp.com>
@@ -62,67 +62,58 @@ X-ClientProxiedBy: SG2PR06CA0148.apcprd06.prod.outlook.com
  (2603:10a6:803:4c::16)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR06CA0148.apcprd06.prod.outlook.com (2603:1096:1:1f::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 06:33:06 +0000
+Received: from localhost.localdomain (119.31.174.66) by SG2PR06CA0148.apcprd06.prod.outlook.com (2603:1096:1:1f::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 06:33:13 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: aa97d772-ec87-404b-5f87-08d89c0c4da5
+X-MS-Office365-Filtering-Correlation-Id: d3f85ab4-6ac3-40a8-fb45-08d89c0c51bb
 X-MS-TrafficTypeDiagnostic: VI1PR04MB6144:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB6144A1CD0F2072BB52382B5F98CC0@VI1PR04MB6144.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-Microsoft-Antispam-PRVS: <VI1PR04MB614441C7348B121ADE784AE698CC0@VI1PR04MB6144.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ckiPI9h8cplZwygdNyDWwmzuNIvMKcthP3hxpFsxSW55Nd82vHYjDfk4fjmKpt+8BCyycF3D06cw77kkOCMvEAJLkYCLGTkhYtjBsHfmS3qhM4qaTaPWJ9LwUP/yxEWIhF5mhJVTYIChDpdAPPA6aaGDWvxYggplrGHcpVkzG3mAcqssY0VVtYqQhTy0QlLDJbvxlOlA7dhMog3FJvoW2yMfy6WRLC8D9Jjx67f87JFQVB1tpleLRTzA8K98D5gwR96wlaFuRkORQ0E06ERtCSDBuQYGVjTuSs7vo/Mvc/SAu+ON2D5nBv885lUiB4aJ+nuYMBF2nfZhEMjsWO4vS1ODuycHytwzhlVfb+PBJUmoC5gAjpZS6HQRQso9zd3i5KjvFIc8tWEDkKoY0p11naRv4yoAQFxAGEqOZFGBKt+TYog5Vsz5577CnYC53AttJEsSO8PCLsao5YDvfoywpQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(376002)(2616005)(26005)(52116002)(5660300002)(186003)(16526019)(34490700003)(8936002)(8676002)(6486002)(66574015)(6666004)(66476007)(2906002)(7416002)(956004)(36756003)(6512007)(508600001)(66946007)(83380400001)(4326008)(6506007)(86362001)(66556008)(966005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?d2htanFNTUZGWm8rU0pjYUIrZUJORWV5THlQSnFXQ0J2c3AxQlE3N0llYlo2?=
- =?utf-8?B?NmhoL3ZjRXprME5WMmhTRkpIdXF2d25makhyNVI4L3FTbGRibTY2Lyt0NDE0?=
- =?utf-8?B?eWk1c2llTXA2NXQ3TzkrRU5MUUVROUwweDlha2RtNUJrWFJQb05HRGRQTng4?=
- =?utf-8?B?NHNnQkVhbFl2bmlxcDFFMFFja0ZkdW8wRXE0RFgrOXpKc0ZueU5wVVJzbXg5?=
- =?utf-8?B?ZmZvT25rN0oveklZdUx5bGdZU0pFTENGN2ZLQS9PVE5rdkNFNkloUnFwdmwy?=
- =?utf-8?B?WDFYamZ5U2FrVk90eW9mYXRkcHRVWVB1dDlKV1F5U0tqOC84L2kwSUxKbjEv?=
- =?utf-8?B?dXBSTUZVTHBuTHVVbzNrM1lOVkFRWXpnT0hZcWVRSU4xTHVQcHJXMU9xUVRo?=
- =?utf-8?B?WDl4WkUwYVFTQlIyNWtjRjJJZG9rSVRDNmJVZDBjOUppdjB6d1F2ckpMcHNO?=
- =?utf-8?B?ODFxUlB1M1NuY21Ga2dmM3hGMmtWUTN4YXJaTmlmbXpXTlliVmtNMUh5L2tw?=
- =?utf-8?B?WDZVY0FtRUNsRFg5bjZQdzBLSVJYcFNhZ3RtcGdOYmVJUHZ3SWxBKzg3clg2?=
- =?utf-8?B?dTdjT3U3REhHUXU0OE9CZTZ5TjkwUlkvWGwxR2pBZnFWWVpJMTlLcDNyZ3JW?=
- =?utf-8?B?T2xER0hTRjRQVWZUQ3J0TnJEcTI0OFpvVzZFNzNPWmJEc0JiYWxCeGg2SXZ3?=
- =?utf-8?B?aExLTEwyUGhwc0RqbFU4ck5mZEN0K0Yrc3VsdTE3UUhaWlBRdVZHZEdmUHBx?=
- =?utf-8?B?K1BVOWRMYlFEeUE3Z3R2bGNmajFheXJaNTBFZDcrSC9YTzdhVEJHU2Z4bnlI?=
- =?utf-8?B?eTU3bXpDeGRZZHVCTkE0bFNUWFFkOGhnS1dCQ3BqTVpFUXdMV1FTWHBkZXk1?=
- =?utf-8?B?Si94YzF2YzVKeVdMWGRDcTN2R3BpZTNrbE1IaS8vNjNBSEN3UUJOdUFNVG5x?=
- =?utf-8?B?Z1ZrU1RRdzQ4REdJYkwreTJEaEgyMHNERnU0UWl4bVJyZTlwS2s0RUxvZHRq?=
- =?utf-8?B?VjNqYmovT1lrTzB6VkdHRUR4TTZaMTVMOUtGaGV4VTlDaXYvNkYzam1YSzNU?=
- =?utf-8?B?OG9vTkZJT0FEWnQzSUZUbWk2QUJ3Qis4aHhaNzdJbmdCT3pFTUV5ajY3WENX?=
- =?utf-8?B?cmVIT3ZCSzRPNE14UjRzY3pnRmgvakJGUEJaQ1ViZTU4RGdLbDZpQ3FMWGdD?=
- =?utf-8?B?RWNSTmxrVnFON1MxQTRXTzVPeXErdzRTeHJucXdMdEREbVpPNVRJVkl0M2JK?=
- =?utf-8?B?Mi8rdTNRQXBHVU56cklleWdieGZkUEx2UkpCUHFPT2dLd2pJNkx4djZ3Q1Jk?=
- =?utf-8?Q?g/2XC/huPaUHhiyyau+zzrLoCrqZZ/oSz8?=
+X-Microsoft-Antispam-Message-Info: SJQkCpR6BwPOcU0zERKKTFSing0AcpEEFOTCp9azpwEnFTetInBT8e870CqLd/d0YhZZdBA4Jk3fC+gumAfF5rtm/o9aBkBXVzS5CfBwuaHFXseTx9Bzf2LeyK0x/OOsz1aQZokU89ZQo6/m6MpUt2IdmJvgrWqb1aaLDKbTulr+bhy0NM1r1YofEWeKgRhO7TYawUkGwSEiQ2aVOZukv+FJkkxq48/QxfT34ofn3QLY+d4vNRwMZRa+NamS3Ua+xahaTrbUI0v+p50PjFf+4Rp9MAa+tk1JVeNzozcrxqDblt+lfxmy7GNpqp3CollZNXeQPxCW9tS23dPzwj0bMnm1EKJNc50/6irNmB3qlixX6ySGOGN6ugxKCKkxGWnA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(376002)(2616005)(26005)(52116002)(5660300002)(186003)(16526019)(34490700003)(8936002)(8676002)(6486002)(6666004)(66476007)(2906002)(7416002)(956004)(36756003)(6512007)(508600001)(66946007)(83380400001)(4326008)(6506007)(86362001)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RFB2R1MwVDBtaTVGWS9LTURRK3JwU0gyR25jaGFBWlJZOTJBbll0UnF1NVF6?=
+ =?utf-8?B?aFFYY01ld1JyL2g4cDFtTERoeDRXUUtPSUtqeG82Njg0Mm84d3hhajZpcDN6?=
+ =?utf-8?B?elppSzRJdnhFWXd4Zmhma21Cd2ZQSFZzS2JadVpWOUtTbGczaDJ2cW10QjFm?=
+ =?utf-8?B?WVFvWTV4V2hDcU4wbkp0S0NDNnp1OFR1NEd3dUgrLzY2dDMzTml6bEZucnFo?=
+ =?utf-8?B?RS9DcFBhY3VkUjhNbVE1UWh2TjQ2endMYk5DaFV3UVRONjcxTFcza1l4RGhx?=
+ =?utf-8?B?UUFueUtHZlRoVlRpU053WjNKNnhQU0xIaW5rTGhVWDFURWZYelIxei9GVnps?=
+ =?utf-8?B?MWNab0UxUXhHS2xMdzRtaCtGaWsvNk5IZXRzdmdWTVNmZWR3aEtibmo5cE1q?=
+ =?utf-8?B?Wk1xeERZajM1clBvZ3ZZVVJNZnRvZWc2ZWFGcVk4OUxxSXIvRWpkOGh2TTZD?=
+ =?utf-8?B?R1hxSWFXaEEveit6VzhCdXZ6aVlpbStFdWpsbGN4Tys1VFhpeGI3ZWdaV1cz?=
+ =?utf-8?B?RUlYWHloeC82NzVlay9Tb3BkU1pEWC9sM2l1Q212elRlMHo2R1c0eVVGTWtv?=
+ =?utf-8?B?SU1qVW5lTzlsQlNteURIUjMwbHArOE0vb29aM1hGaDdRR0FJTzljVGtnMW5O?=
+ =?utf-8?B?aEtzdDFPWDR6SmlYa2NWRU04TFczc3B6K1NYVkxucTkxM1BWamxrOXJOR0lJ?=
+ =?utf-8?B?clU5ZFBqZnRmbG1kMS9qdG9Ock9NTTI4aE8rd2p4cnZHbTJTUzI3U1h3RXFi?=
+ =?utf-8?B?cGxpWGNqSEhnR01ZTVhFMDhWVUtKRXJOWTBEcUcrQkkwditjRWQwdnZvaW00?=
+ =?utf-8?B?VzhnOGRUSitWdWhHRVZWRkdzRnpjZ0dsRVU3Q2l2dzdoWmVWSG1EeGhjeXV1?=
+ =?utf-8?B?c0g2M0l1OXptYmUvOXhySHdGOVhSckh2WUU4QnNUa2N6eHJ2WVdpN2wySFFC?=
+ =?utf-8?B?cEtYWHhqMDBNMmVCYVBudDFzWnNCRXBQcjZ3OWpSTlluMXJjMm5jSTg1alVa?=
+ =?utf-8?B?OVNSa21SQU9VZllqdGRoOGt0Wm9OU3BhczhWYTcwQndLYTBML243c01ZQXlT?=
+ =?utf-8?B?MFRwell5b0dyNDVyanhLd3VneFlvNGRSMWt1VnU4REE0R3pBQTJ5NlZOTDdo?=
+ =?utf-8?B?bFBzTHc4am9FNkdaeGt3WDlVc3dQTnpiQmVEb291K1pOVDBTaU9HZ0FrN2xR?=
+ =?utf-8?B?VTl0TlVNVUc2TVlOSm16LzBkRkhlM1NaTndRVmcrbzdXZzk1TVRZUXdCL2VR?=
+ =?utf-8?B?MnZrWHJCWjB6NFordXB6cCtCWWhIWlRKcDJMQUdqbmp5RFhGS0piWjNNb2tX?=
+ =?utf-8?Q?+akkk8D7xnSGsvBOgsxj++wixnoF8M5pnk?=
 X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 06:33:12.7900
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 06:33:19.6590
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa97d772-ec87-404b-5f87-08d89c0c4da5
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3f85ab4-6ac3-40a8-fb45-08d89c0c51bb
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UgTEC7ApeNUlHaFBAwqMfGR+avdiS/zROMyKI7rsCKbxrC9VXlpeu7fxySebPeBBb3T4DFaLiaWwcCO4D4MM/g==
+X-MS-Exchange-CrossTenant-UserPrincipalName: DyZh6JqqErHrG4AXHDkvP/CpdjHEUaVkkFOasUMFfjsid52a4GJZ+S0u+D+GTI2bscQsnfx4+PGzlMWmXENG8A==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6144
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch converts the mixel,mipi-dsi-phy binding to
-DT schema format using json-schema.
-
-Comparing to the plain text version, the new binding adds
-the 'assigned-clocks', 'assigned-clock-parents' and
-'assigned-clock-rates' properites, otherwise 'make dtbs_check'
-would complain that there are mis-matches.  Also, the new
-binding requires the 'power-domains' property since all potential
-SoCs that embed this PHY would provide a power domain for it.
-The example of the new binding takes reference to the latest
-dphy node in imx8mq.dtsi.
+Add support for Mixel MIPI DPHY + LVDS PHY combo IP
+as found on Freescale i.MX8qxp SoC.
 
 Cc: Guido Günther <agx@sigxcpu.org>
 Cc: Kishon Vijay Abraham I <kishon@ti.com>
@@ -132,128 +123,85 @@ Cc: NXP Linux Team <linux-imx@nxp.com>
 Signed-off-by: Liu Ying <victor.liu@nxp.com>
 ---
 v1->v2:
-* Newly introduced in v2.  (Guido)
+* Add the binding for i.MX8qxp Mixel combo PHY based on the converted binding.
+  (Guido)
 
- .../devicetree/bindings/phy/mixel,mipi-dsi-phy.txt | 29 ---------
- .../bindings/phy/mixel,mipi-dsi-phy.yaml           | 73 ++++++++++++++++++++++
- 2 files changed, 73 insertions(+), 29 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt
- create mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
+ .../bindings/phy/mixel,mipi-dsi-phy.yaml           | 41 ++++++++++++++++++++--
+ 1 file changed, 38 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt b/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt
-deleted file mode 100644
-index 9b23407..00000000
---- a/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt
-+++ /dev/null
-@@ -1,29 +0,0 @@
--Mixel DSI PHY for i.MX8
--
--The Mixel MIPI-DSI PHY IP block is e.g. found on i.MX8 platforms (along the
--MIPI-DSI IP from Northwest Logic). It represents the physical layer for the
--electrical signals for DSI.
--
--Required properties:
--- compatible: Must be:
--  - "fsl,imx8mq-mipi-dphy"
--- clocks: Must contain an entry for each entry in clock-names.
--- clock-names: Must contain the following entries:
--  - "phy_ref": phandle and specifier referring to the DPHY ref clock
--- reg: the register range of the PHY controller
--- #phy-cells: number of cells in PHY, as defined in
--  Documentation/devicetree/bindings/phy/phy-bindings.txt
--  this must be <0>
--
--Optional properties:
--- power-domains: phandle to power domain
--
--Example:
--	dphy: dphy@30a0030 {
--		compatible = "fsl,imx8mq-mipi-dphy";
--		clocks = <&clk IMX8MQ_CLK_DSI_PHY_REF>;
--		clock-names = "phy_ref";
--		reg = <0x30a00300 0x100>;
--		power-domains = <&pd_mipi0>;
--		#phy-cells = <0>;
--        };
 diff --git a/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml b/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
-new file mode 100644
-index 00000000..f869fd2
---- /dev/null
+index f869fd2..07b9849 100644
+--- a/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
 +++ b/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
-@@ -0,0 +1,73 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/mixel,mipi-dsi-phy.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+@@ -14,10 +14,14 @@ description: |
+   MIPI-DSI IP from Northwest Logic). It represents the physical layer for the
+   electrical signals for DSI.
+ 
++  The Mixel PHY IP block found on i.MX8qxp is a combo PHY that can work
++  in either MIPI-DSI PHY mode or LVDS PHY mode.
 +
-+title: Mixel DSI PHY for i.MX8
+ properties:
+   compatible:
+     enum:
+       - fsl,imx8mq-mipi-dphy
++      - fsl,imx8qxp-mipi-dphy
+ 
+   reg:
+     maxItems: 1
+@@ -41,6 +45,11 @@ properties:
+   "#phy-cells":
+     const: 0
+ 
++  fsl,syscon:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: |
++      A phandle which points to Control and Status Registers(CSR) module.
 +
-+maintainers:
-+  - Guido Günther <agx@sigxcpu.org>
+   power-domains:
+     maxItems: 1
+ 
+@@ -49,12 +58,38 @@ required:
+   - reg
+   - clocks
+   - clock-names
+-  - assigned-clocks
+-  - assigned-clock-parents
+-  - assigned-clock-rates
+   - "#phy-cells"
+   - power-domains
+ 
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: fsl,imx8mq-mipi-dphy
++    then:
++      properties:
++        fsl,syscon: false
 +
-+description: |
-+  The Mixel MIPI-DSI PHY IP block is e.g. found on i.MX8 platforms (along the
-+  MIPI-DSI IP from Northwest Logic). It represents the physical layer for the
-+  electrical signals for DSI.
++      required:
++        - assigned-clocks
++        - assigned-clock-parents
++        - assigned-clock-rates
 +
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx8mq-mipi-dphy
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: fsl,imx8qxp-mipi-dphy
++    then:
++      properties:
++        assigned-clocks: false
++        assigned-clock-parents: false
++        assigned-clock-rates: false
 +
-+  reg:
-+    maxItems: 1
++      required:
++        - fsl,syscon
 +
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: phy_ref
-+
-+  assigned-clocks:
-+    maxItems: 1
-+
-+  assigned-clock-parents:
-+    maxItems: 1
-+
-+  assigned-clock-rates:
-+    maxItems: 1
-+
-+  "#phy-cells":
-+    const: 0
-+
-+  power-domains:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - assigned-clocks
-+  - assigned-clock-parents
-+  - assigned-clock-rates
-+  - "#phy-cells"
-+  - power-domains
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx8mq-clock.h>
-+    dphy: dphy@30a0030 {
-+        compatible = "fsl,imx8mq-mipi-dphy";
-+        reg = <0x30a00300 0x100>;
-+        clocks = <&clk IMX8MQ_CLK_DSI_PHY_REF>;
-+        clock-names = "phy_ref";
-+        assigned-clocks = <&clk IMX8MQ_CLK_DSI_PHY_REF>;
-+        assigned-clock-parents = <&clk IMX8MQ_VIDEO_PLL1_OUT>;
-+        assigned-clock-rates = <24000000>;
-+        #phy-cells = <0>;
-+        power-domains = <&pgc_mipi>;
-+    };
+ additionalProperties: false
+ 
+ examples:
 -- 
 2.7.4
 
