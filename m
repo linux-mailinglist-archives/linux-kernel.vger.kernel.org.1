@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623B82D43CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F572D43D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732796AbgLIOCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 09:02:13 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:36407 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728647AbgLIOCH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 09:02:07 -0500
-Received: by mail-ot1-f67.google.com with SMTP id y24so1422817otk.3;
-        Wed, 09 Dec 2020 06:01:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Sd8fD1HP0AJEeyA8TsTzLacJZWO7kg+ENpBmK4/xaNo=;
-        b=Sluj24ioysUnqXOmhaqb1/A4DoBeNm+3DrIY1mjXdjWzk6ii7cIVqGR5GI/Pt4csa4
-         ZtIYuB2hJLGCrGJuj9zYxdphrHLtU/K3PafYafD99V8xd7auSspXdY+EXIbM9Rd/Zz23
-         ephZv6faNmh4cF4cnUBxMXnSQA755hotKN4H/+fAPpnYqkPlmG+amk4419+VNBZ2fNUJ
-         bdK3jY9F7aNAA2ew/GB1/mR0xtSpHBlIs7RSqZqcUFcC5q2xLvwA9BY8n4//hZndjliv
-         C8KHW/DFAstkyXEBCWzz63phq6+26xIftQ96U2XFms+svo4XTSxUsNra8jwU8pvbR4rt
-         dOIg==
-X-Gm-Message-State: AOAM533m34pqtBaLR7N7MPE299sCw/0GJxDTVNAoQUbzqYMl916KBp/t
-        Fwc54gQs0mhtGn7q4R/qdQ==
-X-Google-Smtp-Source: ABdhPJxxByan/XxZfDBvM7WtqrrDz3cgG+EGv1aSP5GqQ6pLfOTSPfezLRRpIurHDrQAWtJS5RHxkQ==
-X-Received: by 2002:a9d:10d:: with SMTP id 13mr1861699otu.8.1607522484611;
-        Wed, 09 Dec 2020 06:01:24 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m10sm348276oig.27.2020.12.09.06.01.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 06:01:23 -0800 (PST)
-Received: (nullmailer pid 360450 invoked by uid 1000);
-        Wed, 09 Dec 2020 14:01:22 -0000
-Date:   Wed, 9 Dec 2020 08:01:22 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        broonie@kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP
- voltage regulators
-Message-ID: <20201209140122.GA331678@robh.at.kernel.org>
-References: <20201130211145.3012-1-james.quinlan@broadcom.com>
- <20201130211145.3012-2-james.quinlan@broadcom.com>
+        id S1728929AbgLIODb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 09:03:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:35004 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726730AbgLIODR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 09:03:17 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EAFD31FB;
+        Wed,  9 Dec 2020 06:02:31 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.26.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 067D13F66B;
+        Wed,  9 Dec 2020 06:02:28 -0800 (PST)
+Date:   Wed, 9 Dec 2020 14:02:21 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "VMware, Inc." <pv-drivers@vmware.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        xen-devel <xen-devel@lists.xenproject.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: Re: [PATCH v2 05/12] x86: rework arch_local_irq_restore() to not use
+ popf
+Message-ID: <20201209140221.GA9087@C02TD0UTHF1T.local>
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120114630.13552-6-jgross@suse.com>
+ <20201120115943.GD3021@hirez.programming.kicks-ass.net>
+ <eb05e878-6334-8d19-496b-6572df67fc56@suse.com>
+ <CALCETrXOGhXoOJpzhAMqD7iibi09WzbGk9SWVH7JzA=d5uarWA@mail.gmail.com>
+ <20201209132710.GA8566@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201130211145.3012-2-james.quinlan@broadcom.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201209132710.GA8566@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 04:11:38PM -0500, Jim Quinlan wrote:
-> Quite similar to the regulator bindings found in "rockchip-pcie-host.txt",
-> this allows optional regulators to be attached and controlled by the
-> PCIe RC driver.
+On Wed, Dec 09, 2020 at 01:27:10PM +0000, Mark Rutland wrote:
+> On Sun, Nov 22, 2020 at 01:44:53PM -0800, Andy Lutomirski wrote:
+> > On Sat, Nov 21, 2020 at 10:55 PM Jürgen Groß <jgross@suse.com> wrote:
+> > > On 20.11.20 12:59, Peter Zijlstra wrote:
+> > > > If someone were to write horrible code like:
+> > > >
+> > > >       local_irq_disable();
+> > > >       local_irq_save(flags);
+> > > >       local_irq_enable();
+> > > >       local_irq_restore(flags);
+> > > >
+> > > > we'd be up some creek without a paddle... now I don't _think_ we have
+> > > > genius code like that, but I'd feel saver if we can haz an assertion in
+> > > > there somewhere...
+
+> I was just talking to Peter on IRC about implementing the same thing for
+> arm64, so could we put this in the generic irqflags code? IIUC we can
+> use raw_irqs_disabled() to do the check.
 > 
-> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> ---
->  .../devicetree/bindings/pci/brcm,stb-pcie.yaml       | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+> As this isn't really entry specific (and IIUC the cases this should
+> catch would break lockdep today), maybe we should add a new
+> DEBUG_IRQFLAGS for this, that DEBUG_LOCKDEP can also select?
 > 
-> diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> index 807694b4f41f..baacc3d7ec87 100644
-> --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> @@ -85,6 +85,18 @@ properties:
->        minItems: 1
->        maxItems: 3
->  
-> +  vpcie12v-supply:
-> +    description: 12v regulator phandle for the endpoint device
-> +
-> +  vpcie3v3-supply:
-> +    description: 3.3v regulator phandle for the endpoint device
+> Something like:
+> 
+> #define local_irq_restore(flags)                               \
+>        do {                                                    \
+>                if (!raw_irqs_disabled_flags(flags)) {          \
+>                        trace_hardirqs_on();                    \
+>                } else if (IS_ENABLED(CONFIG_DEBUG_IRQFLAGS) {  \
+>                        if (unlikely(raw_irqs_disabled())       \
 
-12V and 3.3V are standard slot supplies, can you add them to 
-pci-bus.yaml. Then some day maybe we can have common slot handling code.
- 
-With that, here you just need:
+Whoops; that should be !raw_irqs_disabled().
 
-vpcie3v3-supply: true
+>                                warn_bogus_irqrestore();        \
+>                }                                               \
+>                raw_local_irq_restore(flags);                   \
+>         } while (0)
+> 
+> ... perhaps? (ignoring however we deal with once-ness).
 
-> +
-> +  vpcie1v8-supply:
-> +    description: 1.8v regulator phandle for the endpoint device
-> +
-> +  vpcie0v9-supply:
-> +    description: 0.9v regulator phandle for the endpoint device
+If no-one shouts in the next day or two I'll spin this as its own patch.
 
-These are not standard. They go to a soldered down device or 
-non-standard connector? For the former, the device should really be 
-described in DT and the supplies added there.
-
-Mini PCIe connector also has 1.5V supply.
-
-Rob
+Mark.
