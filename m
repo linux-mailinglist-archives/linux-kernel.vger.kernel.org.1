@@ -2,96 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF84F2D3A3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5D42D3A6D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbgLIFYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 00:24:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
+        id S1727404AbgLIFZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 00:25:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgLIFYL (ORCPT
+        with ESMTP id S1726943AbgLIFZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 00:24:11 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7F6C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 21:23:31 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id v29so444542pgk.12
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 21:23:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3Tqs2Bz7msoUPZyObgWN3xF+h9p+l/eCjvEQpWbPSSU=;
-        b=OxsOUIM85/FYIPIB2R8Z1zNH6hhLEXdXRuOIyltjsnOhdz5a0A9+eE5h1rpwrsrPQr
-         1bXqCha3Xg+zai8ciecNwe/HLZ3kOOJP34uXiIE8cSOdtq2rNDHl9X6xyg/E9r9wlBvh
-         PmbqoP3V2IMQ7i2Obc87ZNu55h0VtVcejwoZzw07sPSZggoVY09+XnnId1dIIrxpBqvD
-         jLrlbGRCUmCESTmyCYxcy89c+6kuLUnt/ZQYafUPlcP9pJgaTXuHm50LIKQls5hoiude
-         YACweNLn3mWmGyxYsuIAPBe1LR/5D4OrYpBsn36s47Sw7LuDo+GFIB6j9dcOyrWEgeju
-         FFFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3Tqs2Bz7msoUPZyObgWN3xF+h9p+l/eCjvEQpWbPSSU=;
-        b=hxYWSIVRzcQczPB4rwPjRrwxe1R0LBDvKMPPmW4t8O72paLuxzP6NfW8oOBA349NHn
-         iYtM+eP+rbI0FxlMwIRweUs4u0pAuQnU7nCzmhlZ6Rn+SwmTNCtkhj7yBg1spcXClix8
-         ygiBCXqkAdS8dW2+FiSL/lU0lDi5abzoSfC/vc/ipVFRlpVGevUwdSsPcEMKj3eKHG6N
-         w7+L7qdbHltI2o2+VV7Vtmpq0imGQ9KZltyzAEGJvlETUPPMYziM8hADzlXO7Zkaxmei
-         SzhXDPrWl+7esPDOYbxNnEaj4R4WQ8WCxs50iuOqahJmVlu5/eICOqKk/ZMfsBowcv2J
-         0z+w==
-X-Gm-Message-State: AOAM5316os4ULdrAZq6sFDgzp0kgSRWyFkBn67vEr4OSPKwCTgAMrpPC
-        l26iK1+eoivtqA/EP9bbgR2l1q9mzog+sQufih+JXQ==
-X-Google-Smtp-Source: ABdhPJxqk+LGhDRPp0umcyl3h6fe4zAxBkF8KehhsBTBAZyCA/jdz6XKfvdMdjdIFiZftrcAFMyYhQT0xlTg5L2ZAXg=
-X-Received: by 2002:a05:6a00:acc:b029:198:2ba6:c0f6 with SMTP id
- c12-20020a056a000accb02901982ba6c0f6mr782498pfl.53.1607491410514; Tue, 08 Dec
- 2020 21:23:30 -0800 (PST)
-MIME-Version: 1.0
-References: <20201201213707.541432-1-samitolvanen@google.com>
- <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
- <CABCJKueCHo2RYfx_A21m+=d1gQLR9QsOOxCsHFeicCqyHkb-Kg@mail.gmail.com>
- <CAK8P3a1Xfpt7QLkvxjtXKcgzcWkS8g9bmxD687+rqjTafTzKrg@mail.gmail.com> <CAK8P3a3O65m6Us=YvCP3QA+0kqAeEqfi-DLOJa+JYmBqs8-JcA@mail.gmail.com>
-In-Reply-To: <CAK8P3a3O65m6Us=YvCP3QA+0kqAeEqfi-DLOJa+JYmBqs8-JcA@mail.gmail.com>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Tue, 8 Dec 2020 21:23:18 -0800
-Message-ID: <CAFP8O3L35sj117VJeE3pUPE2H4++z2g48Gfd-8Ca=CUtP1LVWw@mail.gmail.com>
-Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Wed, 9 Dec 2020 00:25:55 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CB2C0613D6;
+        Tue,  8 Dec 2020 21:25:15 -0800 (PST)
+Received: from ip4d149f6e.dynamic.kabel-deutschland.de ([77.20.159.110] helo=[192.168.66.101]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1kmryS-00025T-Qr; Wed, 09 Dec 2020 06:25:12 +0100
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1607063223.git.linux@leemhuis.info>
+ <20201208104445.0f82ae78@lwn.net>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [PATCH v4 0/3] New documentation text describing how to report
+ issues (aka "reporting-bugs rewritten")
+Message-ID: <578165ed-a62d-17df-32ba-188248639d12@leemhuis.info>
+Date:   Wed, 9 Dec 2020 06:25:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20201208104445.0f82ae78@lwn.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1607491515;bbc4c3aa;
+X-HE-SMSGID: 1kmryS-00025T-Qr
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 1:02 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Tue, Dec 8, 2020 at 9:59 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > Attaching the config for "ld.lld: error: Never resolved function from
-> >   blockaddress (Producer: 'LLVM12.0.0' Reader: 'LLVM 12.0.0')"
->
-> And here is a new one: "ld.lld: error: assignment to symbol
-> init_pg_end does not converge"
->
->       Arnd
->
+Am 08.12.20 um 18:44 schrieb Jonathan Corbet:
+> On Fri,  4 Dec 2020 07:43:47 +0100
+> Thorsten Leemhuis <linux@leemhuis.info> wrote:
+> 
+>> This series adds a new and mostly finished document describing how to report
+>> issues with the Linux kernel to its developers.
+> OK, I have applied this series.
 
-This is interesting. I changed the symbol assignment to a separate
-loop in https://reviews.llvm.org/D66279
-Does raising the limit help? Sometimes the kernel linker script can be
-rewritten to be more friendly to the linker...
+Great, many thx! When I sent the first rfc I had expected it would take 
+a lot longer to reach this point. But well, there is still a lot to do, 
+just that it will happen in-tree now. Will keep an eye on things and 
+work towards getting the remaining issues resolved.
+
+Side note: Just sent the first (brown paper bag) patch for the text[1], 
+as I messed up in one of the last few changes I did -- and obviously I 
+only noticed this stupid mistake after you merged it. :-/ Sorry for the 
+trouble.
+
+Ciao, Thorsten
+
+https://lore.kernel.org/linux-doc/d3894ba4a302beed661304cbcdc062c6dcfe3e58.1607489877.git.linux@leemhuis.info/
