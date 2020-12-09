@@ -2,376 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48E22D3940
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 04:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0572D3945
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 04:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726209AbgLIDd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 22:33:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
+        id S1726385AbgLIDei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 22:34:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgLIDd5 (ORCPT
+        with ESMTP id S1725915AbgLIDei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 22:33:57 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739F3C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 19:33:17 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id ce23so11668ejb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 19:33:17 -0800 (PST)
+        Tue, 8 Dec 2020 22:34:38 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3B2C0617A6;
+        Tue,  8 Dec 2020 19:33:49 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id lb18so135817pjb.5;
+        Tue, 08 Dec 2020 19:33:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qiuT8EvTc+3FGSCQWBE7WNq9viwXOcS0VjwxrbSTTo8=;
-        b=bOPR9Y70bkACf0PWS89sm3EUxvMBa50oBlo/t2UMA9vsFziqjlbQdcdspZ0VWI5KSV
-         W7WXx3Q1P/w639n9xMQGMoIsaK1GlTEXufKD7N5W0nY65PCsiQCfQ6WXGM4a/yRpVGO6
-         HDRqzsErXKPTuLj2R5ssNGB9iz3jkdJG8lWKLxL07dywQctrYmtzw44QAy+5eF816D27
-         2ipU5asezRmX7uz7/Hq68c0BH8mPYcIeBBFqaZk38kLorwc9HNyjFxwB/cImUPG6suxp
-         BmVujwSXlVO5C6zWCrrmUQQHreNNiy8v6h/LTyQTjj8u94dxnjLi3V9zFUBXWyp/Qy6D
-         Lt3g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a83b//FaNAazZrbKxCVDpq5sDqquOZMLq79muQFPdAk=;
+        b=YjwpSU8/1igV9WXVOWfx2ksH7iKlybNu4gKje6vY5aJRFrtZWHKtAOxFssptlAjnPy
+         tsj/5lH9nSndDdHtRVcf+Eznr2JSQCvmXpw9bhPJ8mxc287L956Y7PFhOknFEOgnIo1n
+         wxXa9GDqsTDX2nhkvIc4NQhwSjYEogqB2uIIwvbN+x58FWjTSQ7xTiGs2b/p/hqnrJcR
+         BIAjolYlo9CT88D9Np7bBjunXmut9HzRQPL7lj2fEyYs1HE+4JMHkJcll1eWVAYxQHiz
+         YldXcGgsARI02+CwQdljjK+utq9k24pDEOQ6h565q6SzKaP2xtD0SX/fYjrWwSbGk3F4
+         BJJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qiuT8EvTc+3FGSCQWBE7WNq9viwXOcS0VjwxrbSTTo8=;
-        b=ER2inJaZlsT7ESSDZAYJ9qis0VoC6K/+iMgQzgrYtUDuMIBLI9zerHKiS+5pNokrIz
-         256V5QNqbZTNJLxt30ft5GQEQqmymaGqlts9P7Qd/Fs853jk0I2LPCVc30xiARG0Z12W
-         /9rK+jh15w/BGhYi/ygtkJAyHneWjlqN2I9QxXjVpn/cg34k5yxEg+NPx8CbR7v6DPw+
-         Jehh2ruefhbEjFu0iafT2B06rvoiF4xYQdyFOLM6HZ27JOUr2utDvV0/hu0BTWIaZW3s
-         m9mS6B8AvgiXlQcNEOwc95PNS7Ib4E3IJ6AOpcRsEN9zYkp3Y/SYFrbWQazkCHAp144r
-         4bdA==
-X-Gm-Message-State: AOAM531s5WbQYI3LDfA14OxKZyQBl6NMnGKb5jawdl/nIYAydqQeDotT
-        0gnTeIL42p/PgSNw5ZA6/zS1im5VjXTpp4hJdiCrDQ==
-X-Google-Smtp-Source: ABdhPJzcdNOFLkidvFyTC46AhVFJAlgCwph/VoUM1mbCA+THGRfuoMtHe+UZwXlsIgtTTWr+18KsrHPlueY+IFuQypc=
-X-Received: by 2002:a17:906:a29a:: with SMTP id i26mr386829ejz.45.1607484795950;
- Tue, 08 Dec 2020 19:33:15 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a83b//FaNAazZrbKxCVDpq5sDqquOZMLq79muQFPdAk=;
+        b=tOJP820/J4i3liCjamR97N02v+P7GUMEk3YEZX00Js7StRxC+fjGFTks922M9jWuBe
+         W6MmcqRh5aDP97efXGPWcmstJ7q/IrcAsQtJyn9Te5jfeSe+uEBLXfipeEpxd4A5oA5z
+         Cp7zOIx+YMpmoe469uxeSaxzeUWRD+NS1aQU6LKg9zAWhQC0VBZdGAVRrE1E0u2bJN8d
+         1MLI4bqSwW16Ab5eTZsLt0kW0Jd2kpCV+N9OtCRNrpd5XZvFVATkH9ATpBJ9vHkymelR
+         fc9nRvdXxTT+6ymLfX1bB19rQZiwK9lTELr8NLzYN5vzd1GlMaaxMlKZAzb1o5PlFRR+
+         lXNQ==
+X-Gm-Message-State: AOAM532JAiqcpFA9kJLlgehvt3uRPZGTn72xq/CF4IXoWeGFUgd2sjqz
+        dvcobM8ACx0BKdEAcoNoFwLQ6ELS28Q=
+X-Google-Smtp-Source: ABdhPJxIddU0mSWzil8yak7Mc5Hej7XVdSdgXzsWjlsVDgkVTeFLr9SFDiGxsExLV0uqP5hDulwaQQ==
+X-Received: by 2002:a17:90b:4a81:: with SMTP id lp1mr367767pjb.55.1607484829218;
+        Tue, 08 Dec 2020 19:33:49 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:ac46:48a7:8096:18f5])
+        by smtp.gmail.com with ESMTPSA id y5sm314371pfp.45.2020.12.08.19.33.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 19:33:48 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Schiller <ms@dev.tdt.de>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net-next] net: x25: Remove unimplemented X.25-over-LLC code stubs
+Date:   Tue,  8 Dec 2020 19:33:46 -0800
+Message-Id: <20201209033346.83742-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201209002418.1976362-1-ben.widawsky@intel.com>
- <20201209002418.1976362-10-ben.widawsky@intel.com> <CAPcyv4ipGMsKegzWtd+W8wr4mG7X9DtVeQYvL24Eyu1fB3AN=A@mail.gmail.com>
- <20201209021254.ne42jy6ovn2rk3cf@intel.com>
-In-Reply-To: <20201209021254.ne42jy6ovn2rk3cf@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 8 Dec 2020 19:33:13 -0800
-Message-ID: <CAPcyv4jJWYacUd_xCio29uAUPHzs7Ez9pCC1PpWF3iWHD+XAaw@mail.gmail.com>
-Subject: Re: [RFC PATCH 09/14] cxl/mem: Add basic IOCTL interface
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 6:13 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
->
-> On 20-12-08 17:37:50, Dan Williams wrote:
-> > On Tue, Dec 8, 2020 at 4:24 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
-> > >
-> > > Add a straightforward IOCTL that provides a mechanism for userspace to
-> > > query the supported memory device commands.
-> > >
-> > > Memory device commands are specified in 8.2.9 of the CXL 2.0
-> > > specification. They are submitted through a mailbox mechanism specified
-> > > in 8.2.8.4.
-> > >
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > >
-> > > ---
-> > >
-> > > I did attempt to use the same struct for querying commands as well as
-> > > sending commands (upcoming patch). The number of unused fields between
-> > > the two made for a bad fit IMO.
-> > >
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > ---
-> > >  Documentation/cxl/memory-devices.rst |   9 +++
-> > >  drivers/cxl/mem.c                    |  89 +++++++++++++++++++++++
-> > >  include/uapi/linux/cxl_mem.h         | 102 +++++++++++++++++++++++++++
-> > >  3 files changed, 200 insertions(+)
-> > >  create mode 100644 include/uapi/linux/cxl_mem.h
-> > >
-> > > diff --git a/Documentation/cxl/memory-devices.rst b/Documentation/cxl/memory-devices.rst
-> > > index 5f723c25382b..ec54674b3822 100644
-> > > --- a/Documentation/cxl/memory-devices.rst
-> > > +++ b/Documentation/cxl/memory-devices.rst
-> > > @@ -32,6 +32,15 @@ CXL Memory Device
-> > >  .. kernel-doc:: drivers/cxl/mem.c
-> > >     :internal:
-> > >
-> > > +CXL IOCTL Interface
-> > > +-------------------
-> > > +
-> > > +.. kernel-doc:: include/uapi/linux/cxl_mem.h
-> > > +   :doc: UAPI
-> > > +
-> > > +.. kernel-doc:: include/uapi/linux/cxl_mem.h
-> > > +   :internal:
-> > > +
-> > >  External Interfaces
-> > >  ===================
-> > >
-> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > index bb6ea58f6c7b..2c4aadcea0e4 100644
-> > > --- a/drivers/cxl/mem.c
-> > > +++ b/drivers/cxl/mem.c
-> > > @@ -7,6 +7,7 @@
-> > >  #include <linux/idr.h>
-> > >  #include <linux/pci.h>
-> > >  #include <linux/io.h>
-> > > +#include <uapi/linux/cxl_mem.h>
-> > >  #include "acpi.h"
-> > >  #include "pci.h"
-> > >  #include "cxl.h"
-> > > @@ -73,6 +74,49 @@ static DEFINE_IDR(cxl_mem_idr);
-> > >  /* protect cxl_mem_idr allocations */
-> > >  static DEFINE_MUTEX(cxl_memdev_lock);
-> > >
-> > > +/*
-> > > + * This table defines the supported mailboxes commands for the driver. The id is
-> > > + * ordinal and thus gaps in this table aren't allowed. This table is made up of
-> > > + * a UAPI structure. Non-negative values in the table will be validated against
-> > > + * the user's input. For example, if size_in is 0, and the user passed in 1, it
-> > > + * is an error.
-> > > + */
-> > > +#define CXL_CMD(_id, _flags, sin, sout, _name, _enable, op)                    \
-> > > +       {                                                                      \
-> > > +               { .id = CXL_MEM_COMMAND_ID_##_id,                              \
-> > > +                 .flags = CXL_MEM_COMMAND_FLAG_##_flags,                      \
-> > > +                 .size_in = sin,                                              \
-> > > +                 .size_out = sout,                                            \
-> > > +                 .name = _name },                                             \
-> > > +                       .enable = _enable, .opcode = op                        \
-> > > +       }
-> >
-> > Seems the ordinality requirement could be dropped if the definition was:
-> >
-> > #define CXL_CMD(_id, _flags, sin, sout, _name, _enable, op)                    \
-> >        [CXL_MEM_COMMAND_ID_##_id] = {
-> >                              \
-> >                { .id = CXL_MEM_COMMAND_ID_##_id,                              \
-> > ...
-> >
-> > Then command 0 and 42 could be defined out of order in the table.
-> > Especially if we need to config-disable or deprecate commands, I think
-> > it would be useful if this table was tolerant to being sparse.
-> >
->
-> How sparse are we talking? The current form does support sparseness, but
-> obviously gets quite large if the ID numbering is similar to random
-> distribution.
+According to the X.25 documentation, there was a plan to implement
+X.25-over-802.2-LLC. It never finished but left various code stubs in the
+X.25 code. At this time it is unlikely that it would ever finish so it
+may be better to remove those code stubs.
 
-"Sparse" may have been the wrong word to use. I was implying sparse
-enough that if I add command N+1 I don't need to be careful where I
-put it in mem_commands, but still be able to rely on lookups into
-mem_commands being indexed by the command-id.
+Also change the documentation to make it clear that this is not a ongoing
+plan anymore. Change words like "will" to "could", "would", etc.
 
-> I think if we do see this being more like random distribution, it can be
-> supported, but I think it adds a decent amount of complexity for what I see as
-> not much reward - unless you know of a fairly simple way to create this data
-> structure with full sparse ID support?
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+ Documentation/networking/x25.rst | 12 +++++-------
+ net/x25/af_x25.c                 |  6 +-----
+ net/x25/x25_dev.c                | 13 -------------
+ net/x25/x25_route.c              |  7 +------
+ 4 files changed, 7 insertions(+), 31 deletions(-)
 
-I'm expecting the command distribution to be mostly uniform, it's more
-of the lookup property that I think would be useful especially for the
-dynamic case of walking mem_commands to update it relative to what the
-hardware supports or other metadata. Speaking of which I think @enable
-should be turned into @flags of which 'enable' is one, in case we want
-to define more flags in the future.
+diff --git a/Documentation/networking/x25.rst b/Documentation/networking/x25.rst
+index 00e45d384ba0..e11d9ebdf9a3 100644
+--- a/Documentation/networking/x25.rst
++++ b/Documentation/networking/x25.rst
+@@ -19,13 +19,11 @@ implementation of LAPB. Therefore the LAPB modules would be called by
+ unintelligent X.25 card drivers and not by intelligent ones, this would
+ provide a uniform device driver interface, and simplify configuration.
+ 
+-To confuse matters a little, an 802.2 LLC implementation for Linux is being
+-written which will allow X.25 to be run over an Ethernet (or Token Ring) and
+-conform with the JNT "Pink Book", this will have a different interface to
+-the Packet Layer but there will be no confusion since the class of device
+-being served by the LLC will be completely separate from LAPB. The LLC
+-implementation is being done as part of another protocol project (SNA) and
+-by a different author.
++To confuse matters a little, an 802.2 LLC implementation is also possible
++which could allow X.25 to be run over an Ethernet (or Token Ring) and
++conform with the JNT "Pink Book", this would have a different interface to
++the Packet Layer but there would be no confusion since the class of device
++being served by the LLC would be completely separate from LAPB.
+ 
+ Just when you thought that it could not become more confusing, another
+ option appeared, XOT. This allows X.25 Packet Layer frames to operate over
+diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
+index d41fffb2507b..ff687b97b2d9 100644
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -211,11 +211,7 @@ static int x25_device_event(struct notifier_block *this, unsigned long event,
+ 	if (!net_eq(dev_net(dev), &init_net))
+ 		return NOTIFY_DONE;
+ 
+-	if (dev->type == ARPHRD_X25
+-#if IS_ENABLED(CONFIG_LLC)
+-	 || dev->type == ARPHRD_ETHER
+-#endif
+-	 ) {
++	if (dev->type == ARPHRD_X25) {
+ 		switch (event) {
+ 		case NETDEV_REGISTER:
+ 		case NETDEV_POST_TYPE_CHANGE:
+diff --git a/net/x25/x25_dev.c b/net/x25/x25_dev.c
+index 25bf72ee6cad..5259ef8f5242 100644
+--- a/net/x25/x25_dev.c
++++ b/net/x25/x25_dev.c
+@@ -160,10 +160,6 @@ void x25_establish_link(struct x25_neigh *nb)
+ 		*ptr = X25_IFACE_CONNECT;
+ 		break;
+ 
+-#if IS_ENABLED(CONFIG_LLC)
+-	case ARPHRD_ETHER:
+-		return;
+-#endif
+ 	default:
+ 		return;
+ 	}
+@@ -179,10 +175,6 @@ void x25_terminate_link(struct x25_neigh *nb)
+ 	struct sk_buff *skb;
+ 	unsigned char *ptr;
+ 
+-#if IS_ENABLED(CONFIG_LLC)
+-	if (nb->dev->type == ARPHRD_ETHER)
+-		return;
+-#endif
+ 	if (nb->dev->type != ARPHRD_X25)
+ 		return;
+ 
+@@ -212,11 +204,6 @@ void x25_send_frame(struct sk_buff *skb, struct x25_neigh *nb)
+ 		*dptr = X25_IFACE_DATA;
+ 		break;
+ 
+-#if IS_ENABLED(CONFIG_LLC)
+-	case ARPHRD_ETHER:
+-		kfree_skb(skb);
+-		return;
+-#endif
+ 	default:
+ 		kfree_skb(skb);
+ 		return;
+diff --git a/net/x25/x25_route.c b/net/x25/x25_route.c
+index ec2a39e9b3e6..9fbe4bb38d94 100644
+--- a/net/x25/x25_route.c
++++ b/net/x25/x25_route.c
+@@ -124,12 +124,7 @@ struct net_device *x25_dev_get(char *devname)
+ {
+ 	struct net_device *dev = dev_get_by_name(&init_net, devname);
+ 
+-	if (dev &&
+-	    (!(dev->flags & IFF_UP) || (dev->type != ARPHRD_X25
+-#if IS_ENABLED(CONFIG_LLC)
+-					&& dev->type != ARPHRD_ETHER
+-#endif
+-					))){
++	if (dev && (!(dev->flags & IFF_UP) || dev->type != ARPHRD_X25)) {
+ 		dev_put(dev);
+ 		dev = NULL;
+ 	}
+-- 
+2.27.0
 
->
-> > > +
-> > > +/**
-> > > + * struct cxl_mem_command - Driver representation of a memory device command
-> > > + * @info: Command information as it exists for the UAPI
-> > > + * @opcode: The actual bits used for the mailbox protocol
-> > > + * @enable: Whether the command is enabled. The driver may support a large set
-> > > + *         of commands that may not be enabled. The primary reason a command
-> > > + *         would not be enabled is for commands that are specified as optional
-> > > + *         and the hardware doesn't support the command.
-> > > + *
-> > > + * The cxl_mem_command is the driver's internal representation of commands that
-> > > + * are supported by the driver. Some of these commands may not be supported by
-> > > + * the hardware (!@enable). The driver will use @info to validate the fields
-> > > + * passed in by the user then submit the @opcode to the hardware.
-> > > + *
-> > > + * See struct cxl_command_info.
-> > > + */
-> > > +struct cxl_mem_command {
-> > > +       const struct cxl_command_info info;
-> > > +       const u16 opcode;
-> > > +       bool enable;
-> > > +};
-> > > +
-> > > +static struct cxl_mem_command mem_commands[] = {
-> > > +       CXL_CMD(INVALID, NONE, 0, 0, "Reserved", false, 0),
-> > > +};
-> > > +
-> > >  static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
-> > >  {
-> > >         const int timeout = msecs_to_jiffies(2000);
-> > > @@ -268,8 +312,53 @@ static int cxl_mem_open(struct inode *inode, struct file *file)
-> > >         return 0;
-> > >  }
-> > >
-> > > +static int cxl_mem_count_commands(void)
-> > > +{
-> > > +       int i, n = 0;
-> > > +
-> > > +       for (i = 0; i < ARRAY_SIZE(mem_commands); i++) {
-> > > +               struct cxl_mem_command *c = &mem_commands[i];
-> > > +
-> > > +               if (c->enable)
-> > > +                       n++;
-> > > +       }
-> > > +
-> > > +       return n;
-> > > +}
-> > > +
-> > >  static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> > >  {
-> > > +       if (cmd == CXL_MEM_QUERY_COMMANDS) {
-> > > +               struct cxl_mem_query_commands __user *q = (void __user *)arg;
-> > > +               u32 n_commands;
-> > > +               int i, j;
-> > > +
-> > > +               if (get_user(n_commands, (u32 __user *)arg))
-> > > +                       return -EFAULT;
-> > > +
-> > > +               if (n_commands == 0)
-> > > +                       return put_user(cxl_mem_count_commands(),
-> > > +                                       (u32 __user *)arg);
-> > > +
-> > > +               for (i = 0, j = 0;
-> > > +                    i < ARRAY_SIZE(mem_commands) && j < n_commands; i++) {
-> > > +                       struct cxl_mem_command *c = &mem_commands[i];
-> > > +                       const struct cxl_command_info *info = &c->info;
-> > > +
-> > > +                       if (!c->enable)
-> > > +                               continue;
-> > > +
-> > > +                       if (copy_to_user(&q->commands[j], info, sizeof(*info)))
-> > > +                               return -EFAULT;
-> > > +
-> > > +                       if (copy_to_user(&q->commands[j].name, info->name,
-> > > +                                        strlen(info->name)))
-> > > +                               return -EFAULT;
-> >
-> > Not sure why this is needed, see comment below about @name in
-> > cxl_mem_query_commands.
-> >
-> > > +
-> > > +                       j++;
-> > > +               }
-> > > +       }
-> > > +
-> > >         return -ENOTTY;
-> > >  }
-> > >
-> > > diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
-> > > new file mode 100644
-> > > index 000000000000..1d1e143f98ec
-> > > --- /dev/null
-> > > +++ b/include/uapi/linux/cxl_mem.h
-> > > @@ -0,0 +1,102 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > +/*
-> > > + * CXL IOCTLs for Memory Devices
-> > > + */
-> > > +
-> > > +#ifndef _UAPI_CXL_MEM_H_
-> > > +#define _UAPI_CXL_MEM_H_
-> > > +
-> > > +#if defined(__cplusplus)
-> > > +extern "C" {
-> > > +#endif
-> > > +
-> > > +/**
-> > > + * DOC: UAPI
-> > > + *
-> > > + * CXL memory devices expose UAPI to have a standard user interface.
-> > > + * Userspace can refer to these structure definitions and UAPI formats
-> > > + * to communicate to driver
-> > > + */
-> > > +
-> > > +#define CXL_MEM_QUERY_COMMANDS _IOR('C', 1, struct cxl_mem_query_commands)
-> > > +
-> > > +#define CXL_MEM_COMMAND_NAME_LENGTH 32
-> > > +
-> > > +/**
-> > > + * struct cxl_command_info - Command information returned from a query.
-> > > + * @id: ID number for the command.
-> > > + * @flags: Flags that specify command behavior.
-> > > + *
-> > > + *          - CXL_MEM_COMMAND_FLAG_TAINT: Using this command will taint the kernel.
-> > > + * @size_in: Expected input size, or -1 if variable length.
-> > > + * @size_out: Expected output size, or -1 if variable length.
-> > > + * @name: Name describing the command.
-> > > + *
-> > > + * Represents a single command that is supported by both the driver and the
-> > > + * hardware. The is returned as part of an array from the query ioctl. The
-> > > + * following would be a command named "foobar" that takes a variable length
-> > > + * input and returns 0 bytes of output.
-> > > + *
-> > > + *  - @id = 10
-> > > + *  - @name = foobar
-> > > + *  - @flags = 0
-> > > + *  - @size_in = -1
-> > > + *  - @size_out = 0
-> > > + *
-> > > + * See struct cxl_mem_query_commands.
-> > > + */
-> > > +struct cxl_command_info {
-> > > +       __u32 id;
-> > > +#define CXL_MEM_COMMAND_ID_INVALID 0
-> > > +
-> > > +       __u32 flags;
-> > > +#define CXL_MEM_COMMAND_FLAG_NONE 0
-> > > +#define CXL_MEM_COMMAND_FLAG_TAINT BIT(0)
-> > > +
-> > > +       __s32 size_in;
-> > > +       __s32 size_out;
-> > > +
-> > > +       char name[32];
-> >
-> > Why does the name for a command need to be shuffled back and forth
-> > over the ioctl interface. Can't this be handled by a static lookup
-> > table defined in the header?
-> >
->
-> I was thinking of cases where the userspace application doesn't match the
-> current kernel's UAPI and giving the driver flexibility to return whatever.
-
-How / why would the application by looking at @name for UAPI compatibility?
-
-> OTTOMH, I also can't think of a way to do this if you want to do define the
-> table sparsely though. Do you have ideas for that?
-
-I don't think the name lookup would be sparse. i.e. it would be ok for
-mem_commands to not have an entry for everything in the name lookup
-table. As for defining the table it could use C preprocessor trick
-popularized by Steven Rostedt:
-
-#define CMDS                                                     \
-        C(CMD1, "command one"),     \
-        C(CMD2, "command two")     \
-#undef C
-#define C(a, b) a
-enum commands_enum { CMDS };
-#undef C
-#define C(a, b) { b }
-static struct {
-        const char *name;
-} commands[] = { CMDS };
-#undef C
-
-...then there's no way for the command ids to get out of sync with the names.
