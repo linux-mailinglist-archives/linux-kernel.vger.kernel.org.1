@@ -2,215 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622472D42F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAC32D430E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732079AbgLINOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:14:12 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:43957 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732252AbgLINNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:13:39 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Crcst1hXKz9v00K;
-        Wed,  9 Dec 2020 14:12:50 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id j-1bdTUSGWVi; Wed,  9 Dec 2020 14:12:50 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Crcst0spJz9tyyq;
-        Wed,  9 Dec 2020 14:12:50 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8EEA18B7F2;
-        Wed,  9 Dec 2020 14:12:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id BOHLcSt14tY2; Wed,  9 Dec 2020 14:12:51 +0100 (CET)
-Received: from localhost.localdomain (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 15C048B7F0;
-        Wed,  9 Dec 2020 14:12:51 +0100 (CET)
-Received: by localhost.localdomain (Postfix, from userid 0)
-        id 8EDF7606AF; Wed,  9 Dec 2020 13:12:50 +0000 (UTC)
-Message-Id: <5e968da2216f4d2d8da521498dad6870fcaa4e11.1607519517.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <0de931e8cce4358ef892e1afa283503476293094.1607519516.git.christophe.leroy@csgroup.eu>
-References: <0de931e8cce4358ef892e1afa283503476293094.1607519516.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [RESEND v1 5/5] powerpc/platforms: Move files from 4xx to 44x
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed,  9 Dec 2020 13:12:50 +0000 (UTC)
+        id S1731986AbgLINRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:17:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727156AbgLINRj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 08:17:39 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88FFCC0613CF;
+        Wed,  9 Dec 2020 05:16:59 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmzKu-0003xz-BA; Wed, 09 Dec 2020 13:16:52 +0000
+Date:   Wed, 9 Dec 2020 13:16:52 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Yahu Gao <yahu.gao@windriver.com>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] fs/proc: Fix NULL pointer dereference in
+ pid_delete_dentry
+Message-ID: <20201209131652.GM3579531@ZenIV.linux.org.uk>
+References: <20201209112100.47653-1-yahu.gao@windriver.com>
+ <20201209112100.47653-2-yahu.gao@windriver.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209112100.47653-2-yahu.gao@windriver.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only 44x uses 4xx now, so only keep one directory.
+On Wed, Dec 09, 2020 at 07:21:00PM +0800, Yahu Gao wrote:
+> Get the staus of task from the pointer of proc inode directly is not
+> safe. The function get_proc_task make it happen in RCU protection.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/platforms/44x/Makefile           |  9 +++++++-
- arch/powerpc/platforms/{4xx => 44x}/cpm.c     |  0
- arch/powerpc/platforms/{4xx => 44x}/gpio.c    |  0
- .../powerpc/platforms/{4xx => 44x}/hsta_msi.c |  0
- arch/powerpc/platforms/44x/machine_check.c    | 14 +++++++++++
- arch/powerpc/platforms/{4xx => 44x}/msi.c     |  0
- arch/powerpc/platforms/{4xx => 44x}/pci.c     |  0
- arch/powerpc/platforms/{4xx => 44x}/pci.h     |  0
- arch/powerpc/platforms/{4xx => 44x}/soc.c     |  0
- arch/powerpc/platforms/{4xx => 44x}/uic.c     |  0
- arch/powerpc/platforms/4xx/Makefile           |  8 -------
- arch/powerpc/platforms/4xx/machine_check.c    | 23 -------------------
- arch/powerpc/platforms/Makefile               |  2 +-
- 13 files changed, 23 insertions(+), 33 deletions(-)
- rename arch/powerpc/platforms/{4xx => 44x}/cpm.c (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/gpio.c (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/hsta_msi.c (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/msi.c (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/pci.c (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/pci.h (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/soc.c (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/uic.c (100%)
- delete mode 100644 arch/powerpc/platforms/4xx/Makefile
- delete mode 100644 arch/powerpc/platforms/4xx/machine_check.c
+This is completely broken,  get_proc_task() acquires a reference to
+task_struct; your patch is an instant leak.
 
-diff --git a/arch/powerpc/platforms/44x/Makefile b/arch/powerpc/platforms/44x/Makefile
-index 5ba031f57652..ce6989a70b99 100644
---- a/arch/powerpc/platforms/44x/Makefile
-+++ b/arch/powerpc/platforms/44x/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--obj-y	+= misc_44x.o machine_check.o
-+obj-y	+= misc_44x.o machine_check.o uic.o
- ifneq ($(CONFIG_PPC4xx_CPM),y)
- obj-y	+= idle.o
- endif
-@@ -12,3 +12,10 @@ obj-$(CONFIG_CANYONLANDS)+= canyonlands.o
- obj-$(CONFIG_CURRITUCK)	+= ppc476.o
- obj-$(CONFIG_AKEBONO)	+= ppc476.o
- obj-$(CONFIG_FSP2)	+= fsp2.o
-+
-+obj-$(CONFIG_4xx_SOC)		+= soc.o
-+obj-$(CONFIG_PCI)		+= pci.o
-+obj-$(CONFIG_PPC4xx_HSTA_MSI)	+= hsta_msi.o
-+obj-$(CONFIG_PPC4xx_MSI)	+= msi.o
-+obj-$(CONFIG_PPC4xx_CPM)	+= cpm.o
-+obj-$(CONFIG_PPC4xx_GPIO)	+= gpio.o
-diff --git a/arch/powerpc/platforms/4xx/cpm.c b/arch/powerpc/platforms/44x/cpm.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/cpm.c
-rename to arch/powerpc/platforms/44x/cpm.c
-diff --git a/arch/powerpc/platforms/4xx/gpio.c b/arch/powerpc/platforms/44x/gpio.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/gpio.c
-rename to arch/powerpc/platforms/44x/gpio.c
-diff --git a/arch/powerpc/platforms/4xx/hsta_msi.c b/arch/powerpc/platforms/44x/hsta_msi.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/hsta_msi.c
-rename to arch/powerpc/platforms/44x/hsta_msi.c
-diff --git a/arch/powerpc/platforms/44x/machine_check.c b/arch/powerpc/platforms/44x/machine_check.c
-index a5c898bb9bab..d5be7c03e1f6 100644
---- a/arch/powerpc/platforms/44x/machine_check.c
-+++ b/arch/powerpc/platforms/44x/machine_check.c
-@@ -9,6 +9,20 @@
- #include <asm/reg.h>
- #include <asm/cacheflush.h>
- 
-+int machine_check_4xx(struct pt_regs *regs)
-+{
-+	unsigned long reason = regs->dsisr;
-+
-+	if (reason & ESR_IMCP) {
-+		printk("Instruction");
-+		mtspr(SPRN_ESR, reason & ~ESR_IMCP);
-+	} else
-+		printk("Data");
-+	printk(" machine check in kernel mode.\n");
-+
-+	return 0;
-+}
-+
- int machine_check_440A(struct pt_regs *regs)
- {
- 	unsigned long reason = regs->dsisr;
-diff --git a/arch/powerpc/platforms/4xx/msi.c b/arch/powerpc/platforms/44x/msi.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/msi.c
-rename to arch/powerpc/platforms/44x/msi.c
-diff --git a/arch/powerpc/platforms/4xx/pci.c b/arch/powerpc/platforms/44x/pci.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/pci.c
-rename to arch/powerpc/platforms/44x/pci.c
-diff --git a/arch/powerpc/platforms/4xx/pci.h b/arch/powerpc/platforms/44x/pci.h
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/pci.h
-rename to arch/powerpc/platforms/44x/pci.h
-diff --git a/arch/powerpc/platforms/4xx/soc.c b/arch/powerpc/platforms/44x/soc.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/soc.c
-rename to arch/powerpc/platforms/44x/soc.c
-diff --git a/arch/powerpc/platforms/4xx/uic.c b/arch/powerpc/platforms/44x/uic.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/uic.c
-rename to arch/powerpc/platforms/44x/uic.c
-diff --git a/arch/powerpc/platforms/4xx/Makefile b/arch/powerpc/platforms/4xx/Makefile
-deleted file mode 100644
-index d009d2e0b9e8..000000000000
---- a/arch/powerpc/platforms/4xx/Makefile
-+++ /dev/null
-@@ -1,8 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--obj-y				+= uic.o machine_check.o
--obj-$(CONFIG_4xx_SOC)		+= soc.o
--obj-$(CONFIG_PCI)		+= pci.o
--obj-$(CONFIG_PPC4xx_HSTA_MSI)	+= hsta_msi.o
--obj-$(CONFIG_PPC4xx_MSI)	+= msi.o
--obj-$(CONFIG_PPC4xx_CPM)	+= cpm.o
--obj-$(CONFIG_PPC4xx_GPIO)	+= gpio.o
-diff --git a/arch/powerpc/platforms/4xx/machine_check.c b/arch/powerpc/platforms/4xx/machine_check.c
-deleted file mode 100644
-index a71c29892a91..000000000000
---- a/arch/powerpc/platforms/4xx/machine_check.c
-+++ /dev/null
-@@ -1,23 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- */
--
--#include <linux/kernel.h>
--#include <linux/printk.h>
--#include <linux/ptrace.h>
--
--#include <asm/reg.h>
--
--int machine_check_4xx(struct pt_regs *regs)
--{
--	unsigned long reason = regs->dsisr;
--
--	if (reason & ESR_IMCP) {
--		printk("Instruction");
--		mtspr(SPRN_ESR, reason & ~ESR_IMCP);
--	} else
--		printk("Data");
--	printk(" machine check in kernel mode.\n");
--
--	return 0;
--}
-diff --git a/arch/powerpc/platforms/Makefile b/arch/powerpc/platforms/Makefile
-index f67b7fabac4e..5621cd0edfab 100644
---- a/arch/powerpc/platforms/Makefile
-+++ b/arch/powerpc/platforms/Makefile
-@@ -4,7 +4,7 @@ obj-$(CONFIG_FSL_ULI1575)	+= fsl_uli1575.o
- 
- obj-$(CONFIG_PPC_PMAC)		+= powermac/
- obj-$(CONFIG_PPC_CHRP)		+= chrp/
--obj-$(CONFIG_44x)		+= 4xx/ 44x/
-+obj-$(CONFIG_44x)		+= 44x/
- obj-$(CONFIG_PPC_MPC512x)	+= 512x/
- obj-$(CONFIG_PPC_MPC52xx)	+= 52xx/
- obj-$(CONFIG_PPC_8xx)		+= 8xx/
--- 
-2.25.0
-
+> Signed-off-by: Yahu Gao <yahu.gao@windriver.com>
+> ---
+>  fs/proc/base.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/proc/base.c b/fs/proc/base.c
+> index 1bc9bcdef09f..05f33bb35067 100644
+> --- a/fs/proc/base.c
+> +++ b/fs/proc/base.c
+> @@ -1994,7 +1994,7 @@ static int pid_revalidate(struct dentry *dentry, unsigned int flags)
+>  
+>  static inline bool proc_inode_is_dead(struct inode *inode)
+>  {
+> -	return !proc_pid(inode)->tasks[PIDTYPE_PID].first;
+> +	return !get_proc_task(inode);
+>  }
+>  
+>  int pid_delete_dentry(const struct dentry *dentry)
+> -- 
+> 2.25.1
+> 
