@@ -2,148 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E104F2D3CF4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4712D3D17
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728859AbgLIIHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:07:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30575 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725840AbgLIIHV (ORCPT
+        id S1728957AbgLIIIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:08:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728329AbgLIIIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:07:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607501148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8XGWI5wSao3/PxGjyLqO/yukXOyTn0nluQXLKuxJ7t0=;
-        b=WVM/4Cyx19l7YERcgxnpdzrWNc1yMcbiqyLOwi2NKtI9/R2yIaWmXhBpRCqMQJMq4N0ys7
-        qjTneYnKdZZQdFxVU0sHv42U4kfpflB15z3L47C0UjhnEPbfoetdfcjpQgsFSeKdPHBFZM
-        WSbjGhu4vyl3oFManpsR+zzC31rb8DY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-413-j_yWmRSlNCSoRiEt4W0fWw-1; Wed, 09 Dec 2020 03:05:47 -0500
-X-MC-Unique: j_yWmRSlNCSoRiEt4W0fWw-1
-Received: by mail-wm1-f70.google.com with SMTP id 4so79072wmj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 00:05:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8XGWI5wSao3/PxGjyLqO/yukXOyTn0nluQXLKuxJ7t0=;
-        b=ZTgbPR8hkBcZKzhMGjgYFLW834hsISpPuVbDslmU+FF4vPklr8mNpERaEmBhZfvvUn
-         R+HqaW1H7VnZUmad1qjI+hZ1R9VO3kStRUIpOcZMr+4D5QVkRMGP6uaMPZRiTgSjIzh5
-         v4yd8ITBeaR/sUDnZPAQ6MPK3Jyz6R6OjFt9YTfCmr1MkfEl0AoZN4JlJ2/WU6oRhnbq
-         GW2DtwKSOjfrYsLNP2UYNnjBn821k140WwD8VdcM2E+ugaYSeZGElh9TTqE93YrCRi3A
-         4uwvkLRxUBQ5lYiF//DfwxUW2vKzppwJ5YTJaGmVSZyLYG3KND+lnJzY3kJFnGFpfeSE
-         lF0g==
-X-Gm-Message-State: AOAM531jZJtCulU3IlSGtVNPZQpDNALMRge/SCvjlFVG6Bdlb1w91qX1
-        nn8v+o/XS8XpOg3hTqGweESsKv+0fRhcMJg7bQ9oQIIuHIseE9jaIS+/9ad5v69bnD1gChI/FXc
-        dfmYU5lF1gNu6dugg65Emw5ZK
-X-Received: by 2002:adf:e80d:: with SMTP id o13mr1187769wrm.293.1607501145705;
-        Wed, 09 Dec 2020 00:05:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzJIAu1vWBA+r2wX4ZJfAzo706Nz5I/D16aUvlbJX00UPorHTDuUbdtBWsTwD92l77bMHDKBA==
-X-Received: by 2002:adf:e80d:: with SMTP id o13mr1187741wrm.293.1607501145512;
-        Wed, 09 Dec 2020 00:05:45 -0800 (PST)
-Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
-        by smtp.gmail.com with ESMTPSA id e17sm1564481wrw.84.2020.12.09.00.05.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 00:05:44 -0800 (PST)
-Date:   Wed, 9 Dec 2020 03:05:42 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, lulu@redhat.com
-Subject: Re: [PATCH] vdpa/mlx5: Use write memory barrier after updating CQ
- index
-Message-ID: <20201209025712-mutt-send-email-mst@kernel.org>
-References: <20201206105719.123753-1-elic@nvidia.com>
- <20201208164356-mutt-send-email-mst@kernel.org>
- <20201209060230.GA57362@mtl-vdi-166.wap.labs.mlnx>
- <20201209014547-mutt-send-email-mst@kernel.org>
- <20201209065846.GA59515@mtl-vdi-166.wap.labs.mlnx>
+        Wed, 9 Dec 2020 03:08:31 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05173C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 00:07:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PqMS5S7XjAIlxl6JeUYeGzLqUJQmKwtWVexDfjcXEGA=; b=dFhM7Xct/GxeNM4/8NPOtMs+fA
+        bCxaioDPFF6rpiMcL6a4J+cYUuYby6Ua9t8CaPtRfGg8SlEsMDGd9lmUYzGLF1kcZt50xISyDDDv0
+        Vxxn+NXopMPWRVYbh7ql/FKrdxhJRD68+YkqXgpyQz68EKcqGDRPcj2HaFOwozUOSoZAfOnuMt9OB
+        nK8e6CNDM/bF6iTQEzOPOUAx53TkHW3uKH2Il9gyyJ0fNZOzUPzvQ8gdLIfFbqsa+ihMan4rqmBa0
+        8UwBJYOyveXUsfCDopyPbPFc+1Sb0yHXr+3OQbygoRK2DeE9b8VMvjOTfwHPYhavH7m96l0hKe+fs
+        yFEBIzJQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmuVf-00043D-1I; Wed, 09 Dec 2020 08:07:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 09AB830477A;
+        Wed,  9 Dec 2020 09:07:35 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E405820812951; Wed,  9 Dec 2020 09:07:35 +0100 (CET)
+Date:   Wed, 9 Dec 2020 09:07:35 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH next v2 2/3] printk: change @clear_seq to atomic64_t
+Message-ID: <20201209080735.GH2414@hirez.programming.kicks-ass.net>
+References: <20201201205341.3871-1-john.ogness@linutronix.de>
+ <20201201205341.3871-3-john.ogness@linutronix.de>
+ <X8n9a2DWUFE/giyB@alley>
+ <X8/jS9k/eMIL+Acw@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209065846.GA59515@mtl-vdi-166.wap.labs.mlnx>
+In-Reply-To: <X8/jS9k/eMIL+Acw@jagdpanzerIV.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 08:58:46AM +0200, Eli Cohen wrote:
-> On Wed, Dec 09, 2020 at 01:46:22AM -0500, Michael S. Tsirkin wrote:
-> > On Wed, Dec 09, 2020 at 08:02:30AM +0200, Eli Cohen wrote:
-> > > On Tue, Dec 08, 2020 at 04:45:04PM -0500, Michael S. Tsirkin wrote:
-> > > > On Sun, Dec 06, 2020 at 12:57:19PM +0200, Eli Cohen wrote:
-> > > > > Make sure to put write memory barrier after updating CQ consumer index
-> > > > > so the hardware knows that there are available CQE slots in the queue.
-> > > > > 
-> > > > > Failure to do this can cause the update of the RX doorbell record to get
-> > > > > updated before the CQ consumer index resulting in CQ overrun.
-> > > > > 
-> > > > > Change-Id: Ib0ae4c118cce524c9f492b32569179f3c1f04cc1
-> > > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> > > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> > > > 
-> > > > Aren't both memory writes?
+On Wed, Dec 09, 2020 at 05:34:19AM +0900, Sergey Senozhatsky wrote:
+> On (20/12/04 10:12), Petr Mladek wrote:
+> > On Tue 2020-12-01 21:59:40, John Ogness wrote:
+> > > Currently @clear_seq access is protected by @logbuf_lock. Once
+> > > @logbuf_lock is removed some other form of synchronization will be
+> > > required. Change the type of @clear_seq to atomic64_t to provide the
+> > > synchronization.
 > > > 
-> > > Not sure what exactly you mean here.
+> > > diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> > > index fc5e3a7d6d89..e9018c4e1b66 100644
+> > > --- a/kernel/printk/printk.c
+> > > +++ b/kernel/printk/printk.c
+> > > @@ -3412,7 +3418,7 @@ EXPORT_SYMBOL_GPL(kmsg_dump_get_buffer);
+> > >   */
+> > >  void kmsg_dump_rewind_nolock(struct kmsg_dumper *dumper)
+> > >  {
+> > > -	dumper->cur_seq = clear_seq;
+> > > +	dumper->cur_seq = atomic64_read(&clear_seq);
 > > 
-> > Both updates are CPU writes into RAM that hardware then reads
-> > using DMA.
-> > 
+> > Sigh, atomic64_read() uses a spin lock in the generic implementation
+> > that is used on some architectures.
 > 
-> You mean why I did not put a memory barrier right after updating the
-> recieve doorbell record?
+> Oh... So on those archs prb is not lockless in fact, it actually
+> takes the spin_lock each time we read the descriptor state?
 
-Sorry about being unclear.  I just tried to give justification for why
-dma_wmb seems more appropriate than wmb here. If you need to
-order memory writes wrt writes to card, that is different, but generally
-writeX and friends will handle the ordering for you, except when
-using relaxed memory mappings - then wmb is generally necessary.
+Yeah, many 32bit archs cannot natively do 64bit atomics and get to use
+the horrible hashed spinlock crap.
 
-> I thought about this and I think it is not required. Suppose it takes a
-> very long time till the hardware can actually see this update. The worst
-> effect would be that the hardware will drop received packets if it does
-> sees none available due to the delayed update. Eventually it will see
-> the update and will continue working.
-> 
-> If I put a memory barrier, I put some delay waiting for the CPU to flush
-> the write before continuing. I tried both options while checking packet
-> rate on couldn't see noticable difference in either case.
+But it gets even worse, we have a few architectures that cannot do
+atomics _at_all_ and _always_ use the horrible hashed spinlock crap for
+all atomics, even native word length ones.
 
-
-makes sense.
-
-> > > > And given that, isn't dma_wmb() sufficient here?
-> > > 
-> > > I agree that dma_wmb() is more appropriate here.
-> > > 
-> > > > 
-> > > > 
-> > > > > ---
-> > > > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +++++
-> > > > >  1 file changed, 5 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > index 1f4089c6f9d7..295f46eea2a5 100644
-> > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > @@ -478,6 +478,11 @@ static int mlx5_vdpa_poll_one(struct mlx5_vdpa_cq *vcq)
-> > > > >  static void mlx5_vdpa_handle_completions(struct mlx5_vdpa_virtqueue *mvq, int num)
-> > > > >  {
-> > > > >  	mlx5_cq_set_ci(&mvq->cq.mcq);
-> > > > > +
-> > > > > +	/* make sure CQ cosumer update is visible to the hardware before updating
-> > > > > +	 * RX doorbell record.
-> > > > > +	 */
-> > > > > +	wmb();
-> > > > >  	rx_post(&mvq->vqqp, num);
-> > > > >  	if (mvq->event_cb.callback)
-> > > > >  		mvq->event_cb.callback(mvq->event_cb.private);
-> > > > > -- 
-> > > > > 2.27.0
-> > > > 
-> > 
-
+I consider these architectures broken crap, and they work mostly by
+accident than anything else, but we have them :/ The good new is that
+they don't have NMIs either, so that helps.
