@@ -2,158 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604222D382B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC2D2D3830
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727229AbgLIBP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 20:15:58 -0500
-Received: from mail-eopbgr760049.outbound.protection.outlook.com ([40.107.76.49]:65164
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        id S1726138AbgLIBRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 20:17:20 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:37516 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725789AbgLIBP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 20:15:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dM6uoBgVIeqpr0EUzAgg/b4whdXGj+RO3KId+QvvrOfb3roGGf5tVSGV0Vjy/s6DL/QdZkSU2tgpvPuIRvUCTIMmORuDrdGJEPLfEzao4c2PZrycbPq0GtxgPl68dPLynXwZ7pZDNsVbGuQj7X+1Q67ltkk7KojepwLyxrV8H6W0hdoPCmdeZw3kMNAztvQl3rapNyMm5SgLAfEefj1LvsiX1sRvYD+OI9ef0BelirgWzVR1Jo8IKigAegmvglbH84ypT3ZEfsRtkerMSt60pXl/voDJavZpIAw8Ws7EknIoFWrU73Hou36/aUq4o6hOYDePFbK7gkC92MQDFy7KwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sVObYYsyjj+cFmsjKD9DZIvxQ+ZFGP5/3XMVod8VKL0=;
- b=l8Fxk8Zg1ne7B9gSfea5afSvpYPGdad3UkShW2Wt6KnAVcfE+1hG7nW3SXUmc216McGNh1alZl+9BJ6eVajSyDlUHFifc8kQOIN78/oWJIzUC+HL2QO5naGLbxerlNsrkOPoHDRuCBfLWHERzUFJ6UOIAuzotwiyo/2Bg5fD1yloT4g3MRmqBlsixVz/4WfGTF/EmdhUKsoE3KAtxWykE58shASe/QAmSu2e1qUBNEGtVPrLMcEphAlgDnA7JoB8jDc7puXs88Ygs7kRB9xt1rcH7JdiHkXhiejijBTfKI2siSTUGtxbMBs8lyFnvCii2Xq85XyF/x+xHJG+J0A7Cg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sVObYYsyjj+cFmsjKD9DZIvxQ+ZFGP5/3XMVod8VKL0=;
- b=eFQvgErvbKVhsheYyvS2POeqe0WZ0ny9/EBlpGZ/1sniGqsnpnCfC3ZIgV9YNV9W5OyA+iWW4GpJzg6YfYF3DdtJOtMHh+Z2WA+n7r8qK4gi1nnrqzG7PNLYumFCYpmytHvFS4D2AlwQpEQPuHZuMXuKP2gOaWsps7i2TesE8Rw=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR11MB1527.namprd11.prod.outlook.com (2603:10b6:910:c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19; Wed, 9 Dec
- 2020 01:15:14 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::501b:362c:9295:dad0]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::501b:362c:9295:dad0%5]) with mapi id 15.20.3632.021; Wed, 9 Dec 2020
- 01:15:14 +0000
-Subject: Re: [PATCH] clk: zynqmp: enable COMMON_CLK_ZYNQMP for ARCH_ZYNQMP
- automatically
-To:     Michal Simek <michal.simek@xilinx.com>, mturquette@baylibre.com,
-        sboyd@kernel.org
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20201208123508.998073-1-quanyang.wang@windriver.com>
- <0a0d16a7-0d49-3a89-76a1-141758b138e7@xilinx.com>
-From:   "quanyang.wang" <quanyang.wang@windriver.com>
-Message-ID: <d41c7f60-c9ea-f37b-65ed-4c9b4f5703a0@windriver.com>
-Date:   Wed, 9 Dec 2020 09:14:47 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <0a0d16a7-0d49-3a89-76a1-141758b138e7@xilinx.com>
+        id S1725995AbgLIBRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 20:17:20 -0500
+Received: from [10.130.0.52] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxitBrJdBfB90aAA--.43975S3;
+        Wed, 09 Dec 2020 09:16:29 +0800 (CST)
+Subject: Re: [PATCH v2 2/4] spi: Add devicetree bindings documentation for
+ Loongson SPI
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1607413467-17698-1-git-send-email-zhangqing@loongson.cn>
+ <1607413467-17698-2-git-send-email-zhangqing@loongson.cn>
+ <b97c4d59-3279-f67d-d951-1e9436faa640@gmail.com>
+ <20e7dafc-8c67-79e4-e64a-a08e21101678@loongson.cn>
+ <3f5a7d26-e78a-b02e-5fc2-c241547c683d@gmail.com>
+Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gaojuxin@loongson.cn,
+        yangtiezhu@loongson.cn
+From:   zhangqing <zhangqing@loongson.cn>
+Message-ID: <0732b18d-cff4-6556-cf80-395ff8e9b15b@loongson.cn>
+Date:   Wed, 9 Dec 2020 09:16:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <3f5a7d26-e78a-b02e-5fc2-c241547c683d@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR02CA0176.apcprd02.prod.outlook.com
- (2603:1096:201:21::12) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.199] (60.247.85.82) by HK2PR02CA0176.apcprd02.prod.outlook.com (2603:1096:201:21::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 01:15:12 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 80aa6f90-a681-4fc3-bec1-08d89bdfe238
-X-MS-TrafficTypeDiagnostic: CY4PR11MB1527:
-X-Microsoft-Antispam-PRVS: <CY4PR11MB152716E7D4D5C8D4DC951CDFF0CC0@CY4PR11MB1527.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lfWs336yo+Ok+nIIrc4qruKZwOeDD2njURCRxuDjK3s0BfgD9Im2M0lM+H9wW3UMo/CFahzgVAyLtDuRdnAHvK89LRsRxTI6XDWDXZrl7wAojmdk/zxzdUdOacQ/YmmmySP0OB3WP+w4tGs31nHGyzCHgmFc9IfG8lh/3cWGYEy3i6bhta0+y5oAfgkB6kfogp7IYDx2nYf1/48oyIq2+b6kx2EWY4WfNdFGvaO9rEywaAdogTW6kdU9TVURRBUMndtAWKT6583eps3+Rh7hkQK5QpNaYwkK+QwlxPgp90H0ryaVs8YQ8Ful2s8nq20rpQgN5tQG8LsLf9LbEeoqqr0bLr8DHqgY+NMPnB7n54AGkS5pRRb6FUL7aDbTYMwgVtbBtsvfFPxR7fOOXQ8c5ZP78leaW13mhzXTXm3X12oDToXkmWnsGjyB4wTGcPImRkVFJ5lw5DcjtiefAjrg6g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(366004)(53546011)(66556008)(86362001)(83380400001)(16576012)(66476007)(6666004)(31686004)(508600001)(6486002)(66946007)(2906002)(8676002)(34490700003)(52116002)(4326008)(8936002)(2616005)(36756003)(956004)(31696002)(186003)(26005)(6706004)(16526019)(5660300002)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?c0hrbnBDK0o2aXVrdjZZZXY1RjlxMmNJWGs0aHJYUG5RL2NrbGpsNFVPYlh3?=
- =?utf-8?B?TDZBWmNSQ05NZk5mM25MM0dNKzBOZGwxU1dGVEJDRE1BUzhiQnhFc3lsM2dW?=
- =?utf-8?B?UUdoWjUrcjZWdVJPTlhrSHVZRTdpY3JLWjZpSXpKSTZ3WXIrRU13WWFoZjJ6?=
- =?utf-8?B?c3JvSVJlRVR5VmRqaHNXY1dxdXQ2b055cXlNdEJhdkpTT2hQeTBDdGk5dVQz?=
- =?utf-8?B?K2VvMk04YzBIdXEwcWU4eW1ObTNRM3RIdi9IWHJkc3RZTHZhbU9HSFVTYkJu?=
- =?utf-8?B?ZmJSVHQvVWxlcUxxQldmckhjRE85Z2YzWEp5cmwvVjhpK1NXbldJZ2pHVWNr?=
- =?utf-8?B?NmlXR28vSStUWXhObmwwWlEzb3ZYaG5pWnRjSVBVOFZMRFdINW9QZUs0eDZu?=
- =?utf-8?B?ZHlIS3F1c2ZVNWxOSlpmVkJRMXhnS1FJdUVNRmFYdHM1SjJlaExPY1RQb2lN?=
- =?utf-8?B?d0ROYWh2SC9MSE04SW1rSGxrd0hYTjRVbXBOUDRjYjFndkFoNktMTEtVcmM3?=
- =?utf-8?B?bzJnWmhsbHp0MGFIM2pQSHhrT28wL04zdTFuUnMrMXUwVFgrdlQwazQvVkNv?=
- =?utf-8?B?Q2cxeGVpb0Y2RnZRcFFqMUJqRjVoNnlPSXpBZENLUWZaL3lGOEg3SENUU3FB?=
- =?utf-8?B?RUNXUDNuWnZYMHAwaEYwbmptdkN4RDljNW1jMVBkUnpHOGVwanFsNlAwSWFq?=
- =?utf-8?B?VnMrTTdCQ2tsKzgvalNnT0VoU2hhRmp6M0lVSGNyaHpSMU1xOVZhcVFnQzVl?=
- =?utf-8?B?NTFZb1RsbXRkczlQQjEwTWt0ZHVBTDh3TUdSVGs4dmFjdjBxM1FicGNtdlJ3?=
- =?utf-8?B?c2NBb0p2cFg1ZWl1azVqaE95WjBielFkL3QvTlkxU2t5a1dwR1N6V0tDYnhk?=
- =?utf-8?B?NXl2VkoySTlhN2FsYXhUMHlmOXdRYlpaaEtuTlM4K2JET2YwMkNiRHZuSnZE?=
- =?utf-8?B?V1FNWStVVmlqSkRENUdDZ0V4NTBNem9ZUThQdHNFYnhreWl2TFVDT28yeVYr?=
- =?utf-8?B?V2JRUldKL0RUR1JPRk1uQlNzMldHeHQ4ZGJ6d0NyYmMvN2hnZThtSUxxd1Rp?=
- =?utf-8?B?SUZvV3huV0pPN1A1eStFTkh5M2NwRmFWSDBCYWJIc2FwR3kvc25pQzlVYTda?=
- =?utf-8?B?ZC9aMExZMUhmQWkvVi9qcGJ1NTZsUVd0ak9zYlhYRW9TYzNpeVF0Ykw3QjZV?=
- =?utf-8?B?QWxFYlpaYytBTXBOUFEyeHlNQitmTmJ6VUZrVEtiSUlDKzNBQTdMZVZnSFY0?=
- =?utf-8?B?cllTMGtpaFFGWGxjZjdiWERROE9XTkZsSk14NHJ6RTB4cmJnVlE2bEtWdUJG?=
- =?utf-8?Q?4i1megBjOKmKE=3D?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 01:15:14.6997
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-Network-Message-Id: 80aa6f90-a681-4fc3-bec1-08d89bdfe238
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rvwpGvdzUVDg4FjhEoage8uDVIBDCYe+1ZS8yb74cyYt72bzgwu1gYvUR+g8wGkNOrBbSmm62GaTbKkrNsmtoUMSLzWaPVLxheob6pVJnNs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1527
+X-CM-TRANSID: AQAAf9AxitBrJdBfB90aAA--.43975S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr48Aw1DuF4xGF48CF17Wrg_yoW8Kr1kpF
+        1UCF45tF4kJw17Ca1aq3WxCwnxtr95uF4UWFn2qryUAryDK3Zxt3W5trWUury8WF48AFW0
+        vrZ7GFWfKry5J3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_KwCF04k20xvY0x0EwI
+        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
+        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
+        6cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbLiSPUUUUU==
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
 
-On 12/8/20 8:42 PM, Michal Simek wrote:
-> Hi,
+
+On 12/08/2020 10:48 PM, Sergei Shtylyov wrote:
+> On 12/8/20 1:47 PM, zhangqing wrote:
 >
-> On 08. 12. 20 13:35, quanyang.wang@windriver.com wrote:
->> From: Quanyang Wang <quanyang.wang@windriver.com>
->>
->> The Zynqmp Ultrascale clock controller generates clocks for peripherals,
->> so we need to enable it when ARCH_ZYNQMP is selected.
->>
->> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
->> ---
->>   drivers/clk/zynqmp/Kconfig | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/clk/zynqmp/Kconfig b/drivers/clk/zynqmp/Kconfig
->> index 17086059be8b..a8aa58bbb790 100644
->> --- a/drivers/clk/zynqmp/Kconfig
->> +++ b/drivers/clk/zynqmp/Kconfig
->> @@ -4,6 +4,7 @@ config COMMON_CLK_ZYNQMP
->>   	bool "Support for Xilinx ZynqMP Ultrascale+ clock controllers"
->>   	depends on ARCH_ZYNQMP || COMPILE_TEST
->>   	depends on ZYNQMP_FIRMWARE
->> +	default ARCH_ZYNQMP
-> This is not right. If you look 2 lines above.
+>>>> Add spi-ls7a binding documentation.
+>>>>
+>>>> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+>>>> ---
+>>>>    Documentation/devicetree/bindings/spi/spi-ls7a.txt | 31 ++++++++++++++++++++++
+>>>>    1 file changed, 31 insertions(+)
+>>>>    create mode 100644 Documentation/devicetree/bindings/spi/spi-ls7a.txt
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/spi/spi-ls7a.txt b/Documentation/devicetree/bindings/spi/spi-ls7a.txt
+>>>> new file mode 100644
+>>>> index 0000000..56247b5
+>>>> --- /dev/null
+>>>> +++ b/Documentation/devicetree/bindings/spi/spi-ls7a.txt
+>>>> @@ -0,0 +1,31 @@
+>>>> +Binding for LOONGSON LS7A SPI controller
+>>>> +
+>>>> +Required properties:
+>>>> +- compatible: should be "pci0014,7a0b.0","pci0014,7a0b","pciclass088000","pciclass0880".
+>>>> +- reg: reference IEEE Std 1275-1994.
+>>>> +- #address-cells: <1>, as required by generic SPI binding.
+>>>> +- #size-cells: <0>, also as required by generic SPI binding.
+>>>> +- #interrupts: No hardware interrupt.
+>>>     You say it's a required prop, yet yuoe example doesn't have it...
+>>          I want to emphasize here that LS7A SPI has no hardware interrupts, and DT is not actually used.
+>     The why document the property at all?
+           Thank you for your reply again,
+
+           I will remove the #interrupt attribute in the third edition.
 >
->>   	help
->>   	  Support for the Zynqmp Ultrascale clock controller.
->>   	  It has a dependency on the PMU firmware.
->>
-> And we were talking about enabling this driver in defconfig. Not via
-> Kconfig. This fragment was designed in a way that this clock controller
-> doesn't need to be used. It is our default but if you want to use for
-> example fixed clock you also can.
-> This enables space for being able to use for example different firmware.
-
-Thanks for your reply. I will enable this driver in defconfig.
-
-Best Regards
-
-Quanyang
-
+>>>> +
+>>>> +Child nodes as per the generic SPI binding.
+>>>> +
+>>>> +Example:
+>>>> +
+>>>> +            spi@16,0 {
+>>>> +                compatible = "pci0014,7a0b.0",
+>>>> +                        "pci0014,7a0b",
+>>>> +                        "pciclass088000",
+>>>> +                        "pciclass0880";
+>>>> +
+>>>> +                #address-cells = <1>;
+>>>> +                #size-cells = <0>;
+>>>> +                reg = <0xb000 0x0 0x0 0x0 0x0>;
+>>>> +                num-chipselects = <0>;
+>>>> +                spiflash: s25fl016k@0 {
+>>>> +                #address-cells = <1>;
+>>>> +                #size-cells = <1>;
+>>>     Once more?
+>>>
+>>>> +                compatible ="spansion,s25fl016k","jedec,spi-nor";
+>>>     Once more?
+>>>
+>>>> + spi-max-frequency=<50000000>;
+>>>> +                reg=<0>;
+>>>     Once more? Did you mean this for a child node?
+>>         Yes, these are child node attributes, the child node splash is not necessary.
+>     You should indent the child nodes with 1 more tab...
+         I will do it and send the v3 in the soon.
 >
-> Thanks,
-> Michal
+>>>> +                };
+>>>> +            };
+>>       Thanks
+>>
+>>       -Qing
+> MBR, Sergei
+
