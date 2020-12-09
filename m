@@ -2,69 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6712D46F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:42:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A382F2D46FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732085AbgLIQlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:41:20 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:44207 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732076AbgLIQlG (ORCPT
+        id S1732131AbgLIQmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:42:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732118AbgLIQl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:41:06 -0500
-Received: by mail-ot1-f66.google.com with SMTP id f16so1945706otl.11;
-        Wed, 09 Dec 2020 08:40:50 -0800 (PST)
+        Wed, 9 Dec 2020 11:41:59 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A100C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 08:41:19 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id t16so2459191wra.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 08:41:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZtyuRdRz8sBuacydQZ1U8sV8ePK6VljMJ9YQuTchpwE=;
+        b=SGRrDcXx7kpNQT8MctEfTnNV6tsVPXc+l1wPopGzlWU4Bryx5Upueed8qDVEzdrVs8
+         GUP3ovO4MBPcAd81XrTibO5WDjJMDmALAps7mLG2kRr/coRbR7IDRt6qbOcXvaN1VCtH
+         j22C1KQ1P8v5mmfS7Wt6KQ/FNoZ6QsUZ8zcrA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=76GLuSgEXPDcyKb7N3Q5y1o3y89KP4AUudXkwxJo8dQ=;
-        b=CFK/+L+9Ohn59qFQWxPJ2WvO1cxWK+gay7wmAghekKBjFlwYc7H9awqJ4tYvzsoa2B
-         8evaE4SR3EAvGI+aLy3EHtik21sR8VkebVSCQsrS+tlLExjnQRnK1sxLsgQu19qgqGnl
-         JFWvYCyngHMUMz02Xt35LcXrlPEHWJODsEVCGR+dWdvzXC8H56FB6BiyE1OwN0yfjz0C
-         Jw6Ae2Xv2Pig1pnpyhPb2PUyLtlFgjVArEUgktGRdB6YNoALntnT7MMHPudkmHqmlLQZ
-         iAFYy4i3iGY01RPBoqlmZjBCjTFxjAWreADGtN2Q1ZwUM6z9WeNnsKcpPzCDVQYb6MF6
-         +wSA==
-X-Gm-Message-State: AOAM5313IGf6mkCgzPAJ0qlEH/rDdwmn3Ph08hTst31nYf2FL5EMcVKO
-        Tio3dV3AGXR7qo6MxNGQ3w==
-X-Google-Smtp-Source: ABdhPJwqTKQEExoNaEC0bd6PjShLUq2KaKIuWpOksgt6D+G+oflq4/HyGZ39ka9YnN54hGKXJMi90A==
-X-Received: by 2002:a9d:470f:: with SMTP id a15mr2441280otf.303.1607532024796;
-        Wed, 09 Dec 2020 08:40:24 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q77sm415355ooq.15.2020.12.09.08.40.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 08:40:23 -0800 (PST)
-Received: (nullmailer pid 575852 invoked by uid 1000);
-        Wed, 09 Dec 2020 16:40:21 -0000
-Date:   Wed, 9 Dec 2020 10:40:21 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, punit1.agrawal@toshiba.co.jp
-Subject: Re: [PATCH v3 1/4] dt-bindings: gpio: Add bindings for Toshiba
- Visconti GPIO Controller
-Message-ID: <20201209164021.GA575805@robh.at.kernel.org>
-References: <20201201181406.2371881-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20201201181406.2371881-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZtyuRdRz8sBuacydQZ1U8sV8ePK6VljMJ9YQuTchpwE=;
+        b=oamuMi58Tn+In3BghyfpR0dYyAJd+Za32oVGj/wSSyrFBooPuNtao1avhARncPamHD
+         4BprzLopFEngXKuDGm4KnT12L1hnU+uK81MyDUWGVSLsRKTmvG0uCIod5sx3F2qgw+be
+         yBQLGzDqYjQJ5vA4YRtl8LRzzhgt42nKqPWVH4nvkeWs6cUnVCWsTs5aOjxPPfc3jxrQ
+         1tjHok/H/sTPUEKrj/ALmrTJDUFvNjYX6QSeUIZjdBjdW+gycruf8Ysk3sVHnSIdTBu9
+         K3qpwN0od3PSvIlJV2gCYNKUAGgfOYqgir0Fv12R+M0ilfyo6M4ipiILiOCkHuHcs2xo
+         fYNw==
+X-Gm-Message-State: AOAM530LM94ZdJiGKKwjaXeMLQGlib9kZWbMRw/EZOzzS/jcueF+pk2s
+        ePayaCcNtPYyAgy5QSF/fXE6f7UB/WfMIUjdqz1h1A==
+X-Google-Smtp-Source: ABdhPJwEg372av2KNxoGuDDVEL4uVw1qajfMrJ17k9OJ6CGdKJDuSuYJ/scAeKBtFnzbgJfJw2ScvoDjE6gpSjHwQ+A=
+X-Received: by 2002:a5d:5146:: with SMTP id u6mr3839567wrt.66.1607532077897;
+ Wed, 09 Dec 2020 08:41:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201181406.2371881-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+References: <20201204193540.3047030-1-swboyd@chromium.org> <20201204193540.3047030-3-swboyd@chromium.org>
+In-Reply-To: <20201204193540.3047030-3-swboyd@chromium.org>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Wed, 9 Dec 2020 09:41:06 -0700
+Message-ID: <CAPnjgZ3d4pvp1ZMFeSf1zc7oVgUsVYDR-Q8bbQouwowS8jon+Q@mail.gmail.com>
+Subject: Re: [PATCH 2/3] platform/chrome: cros_ec_spi: Drop bits_per_word assignment
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Mark Brown <broonie@kernel.org>, lk <linux-kernel@vger.kernel.org>,
+        linux-spi@vger.kernel.org, Benson Leung <bleung@chromium.org>,
+        linux-arm-msm@vger.kernel.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Alexandru M Stan <amstan@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Dec 2020 03:14:03 +0900, Nobuhiro Iwamatsu wrote:
-> Add bindings for the Toshiba Visconti GPIO Controller.
-> 
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+On Fri, 4 Dec 2020 at 12:35, Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> This is already handed by default in spi_setup() if the bits_per_word is
+> 0, so just drop it to shave off a line.
+>
+> Cc: Simon Glass <sjg@chromium.org>
+> Cc: Gwendal Grignou <gwendal@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Tested-by: Douglas Anderson <dianders@chromium.org>
+> Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Cc: Alexandru M Stan <amstan@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 > ---
->  .../bindings/gpio/toshiba,gpio-visconti.yaml  | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-> 
+>  drivers/platform/chrome/cros_ec_spi.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Simon Glass <sjg@chromium.org>
+
+
+>
+> diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chrome/cros_ec_spi.c
+> index f9df218fc2bb..14c4046fa04d 100644
+> --- a/drivers/platform/chrome/cros_ec_spi.c
+> +++ b/drivers/platform/chrome/cros_ec_spi.c
+> @@ -741,7 +741,6 @@ static int cros_ec_spi_probe(struct spi_device *spi)
+>         struct cros_ec_spi *ec_spi;
+>         int err;
+>
+> -       spi->bits_per_word = 8;
+>         spi->rt = true;
+>         err = spi_setup(spi);
+>         if (err < 0)
+> --
+> https://chromeos.dev
+>
