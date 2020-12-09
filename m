@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59982D480A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B992D4815
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732723AbgLIRhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:37:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732511AbgLIRgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:36:55 -0500
-Date:   Wed, 9 Dec 2020 14:36:23 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607535374;
-        bh=mKqfw4LlvC4BHb2SUf1RPWCFLYHqYWBkz7CS9om+lb4=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DVCy33vSNw3lnA7uU9vL3kD/HFlMfxb0lqTaz/dXjnhbVTf0RXvkXLbXT8MY4KSu5
-         6rZYGTlZe+dNCCtwEYpIC8JOtybal+yup5Y3jvGT47CNJ4d+akZ4sLNIZyeKVWUzWT
-         X6M3sQRh6ge9O5vDuaqG4rYsJT0Y0NIF5f6dTIsT9KdG731qafMFNvNNTboF/wFU5r
-         ki1EwBKjYFfQrZrwIsi5Zekvs38wnYjmjAJDOyTrgtvSrukQY+SbbROPCz4af4zgNj
-         Bzh4fXmF9HF6MWOAWstuIbJb8+ZODxAnBcjianxToKmAqzXzgN+JDtZ+EtSzaxSx1M
-         yrJzoSBAnUM7Q==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org
-Subject: Re: [PATCH v3 0/2] Introduce perf-stat -b for BPF programs
-Message-ID: <20201209173623.GA185686@kernel.org>
-References: <20201208181646.3044417-1-songliubraving@fb.com>
+        id S1732783AbgLIRhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:37:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732511AbgLIRhc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:37:32 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17981C0613D6;
+        Wed,  9 Dec 2020 09:36:52 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id h6so1332765vsr.6;
+        Wed, 09 Dec 2020 09:36:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TcJtMb//+EPfBx4dkxoUg6Ti+FH+RqCACCceANTeFy8=;
+        b=Y78dYeBP7Q3T+CZ7oPp1D3rcvQi/waVMWIF+w3pAi7brg3wNNafn8JIS67BxeVwv2K
+         7lZVmVk1jL61cfm9Ik/fYSk/77szyAdSK70gZTl3Eue2yR2ULQAsdBGM0ryZGM20Z60W
+         OnQr5uUuUCk9zwtUSyL309h5D3zbynTXImgBulKek4ur6L6ySOeVSpmfjHuBYLkHbq4q
+         x51Ho944IUqt/5oVe9NQ+582Jrl2wP4oa9IW4X0BkDOXrmN4kGz50waz9H0QcrK4nH8n
+         61jvylCVQF0cXalElntPiknOj1NUC2RhxjpKrlWl6AZ66HTdf2bNRo36zDkT/SOVv/Fg
+         g4aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TcJtMb//+EPfBx4dkxoUg6Ti+FH+RqCACCceANTeFy8=;
+        b=kPBxqlXqWTqFFnf7lVmFRDbCNgPJ9l+9LuHU3WDf4vmDkfXOIIeWpe9ddHMJRM59U+
+         Q1ojWvHuh225UODnUiUSh59XUA3/x2SluSvKCJdILOyNscXllDer2au51Hhv1QOR99hS
+         8/NlGs12ODgYcDxTCiWQaSf8LVkjvdeygLehq1MCWIgMUuOiR6OBsZVlTdG93YlYdT6I
+         vC2DHAkdXEfwalkoukvy7mvrOwkCvd35rDB4dmJOqmwb6/n+VtLVrsqzcgEew9yDr7R5
+         9mvrl1Zgx80wlk9RSS/bK6sPIykVkl5CPrTY95Vn4RUyUi2xW+qTn5/0unkwiZWUxS6i
+         gvyg==
+X-Gm-Message-State: AOAM530709D4SeejG9UVSxQg2C4rs7EBD0RIW0w8ibLXfO2NuBjNORrx
+        AnzOSsCZ1lBPxic9rTVsbRUBMbUwDmRs4ZPnjyg=
+X-Google-Smtp-Source: ABdhPJwdex5HVUanotpQ+6UbaDV8Uz9CWq3GGsSLjV+gUdwtL3LLT+5Ll6mHB/s2OioozhetwkqYJSZSytkssiQo26U=
+X-Received: by 2002:a67:d319:: with SMTP id a25mr3032095vsj.57.1607535411238;
+ Wed, 09 Dec 2020 09:36:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208181646.3044417-1-songliubraving@fb.com>
-X-Url:  http://acmel.wordpress.com
+References: <3bed61807fff6268789e7d411412fbc5cd6ffe2a.1607507863.git.hns@goldelico.com>
+In-Reply-To: <3bed61807fff6268789e7d411412fbc5cd6ffe2a.1607507863.git.hns@goldelico.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Wed, 9 Dec 2020 12:36:40 -0500
+Message-ID: <CAGngYiVKHoXPGxmScCnb-R6xoo9GNw5pG8V8Cpyk3meoJbskiw@mail.gmail.com>
+Subject: Re: [PATCH] spi: dt-bindings: clarify CS behavior for spi-cs-high and
+ gpio descriptors
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andreas Kemnade <andreas@kemnade.info>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Dec 08, 2020 at 10:16:44AM -0800, Song Liu escreveu:
-> This set introduces perf-stat -b option to count events for BPF programs.
-> This is similar to bpftool-prog-profile. But perf-stat makes it much more
-> flexible.
-> 
-> Changes v2 => v3:
->   1. Small fixes in Makefile.perf and bpf_counter.c (Jiri)
->   2. Rebased on top of bpf-next. This is because 1/2 conflicts with some
->      patches in bpftool/Makefile.
+On Wed, Dec 9, 2020 at 4:57 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
+>
+> +
+> +      device node     | cs-gpio       | CS pin state active | Note
+> +      ================+===============+=====================+=====
+> +      spi-cs-high     | -             | H                   |
+> +      -               | -             | L                   |
+> +      spi-cs-high     | ACTIVE_HIGH   | H                   |
+> +      -               | ACTIVE_HIGH   | L                   | 1
+> +      spi-cs-high     | ACTIVE_LOW    | H                   | 2
+> +      -               | ACTIVE_LOW    | L                   |
+> +
 
-Can't you split that up so that I can process the perf part and the
-bpftool goes via the bpf-next tree?
+Doesn't this table simply say:
+- specify   'spi-cs-high' for an active-high chip select
+- leave out 'spi-cs-high' for an active-low  chip select
+- the gpio active high/active low consumer flags are ignored
+?
 
-- Arnaldo
- 
-> Changes PATCH v1 => PATCH v2:
->   1. Various fixes in Makefiles. (Jiri)
->   2. Fix an build warning/error with gcc-10. (Jiri)
-> 
-> Changes RFC v2 => PATCH v1:
->   1. Support counting on multiple BPF programs.
->   2. Add BPF handling to target__validate().
->   3. Improve Makefile. (Jiri)
-> 
-> Changes RFC v1 => RFC v2:
->   1. Use bootstrap version of bpftool. (Jiri)
->   2. Set default to not building bpf skeletons. (Jiri)
->   3. Remove util/bpf_skel/Makefile, keep all the logic in Makefile.perf.
->      (Jiri)
->   4. Remove dependency to vmlinux.h in the two skeletons. The goal here is
->      to enable building perf without building kernel (vmlinux) first.
->      Note: I also removed the logic that build vmlinux.h. We can add that
->      back when we have to use it (to access big kernel structures).
-> 
-> Song Liu (2):
->   perf: support build BPF skeletons with perf
->   perf-stat: enable counting events for BPF programs
-> 
->  tools/bpf/bpftool/Makefile                    |   3 +
->  tools/build/Makefile.feature                  |   4 +-
->  tools/perf/Makefile.config                    |   9 +
->  tools/perf/Makefile.perf                      |  48 ++-
->  tools/perf/builtin-stat.c                     |  77 ++++-
->  tools/perf/util/Build                         |   1 +
->  tools/perf/util/bpf_counter.c                 | 297 ++++++++++++++++++
->  tools/perf/util/bpf_counter.h                 |  73 +++++
->  tools/perf/util/bpf_skel/.gitignore           |   3 +
->  .../util/bpf_skel/bpf_prog_profiler.bpf.c     |  93 ++++++
->  tools/perf/util/evsel.c                       |  11 +
->  tools/perf/util/evsel.h                       |   6 +
->  tools/perf/util/stat-display.c                |   4 +-
->  tools/perf/util/target.c                      |  34 +-
->  tools/perf/util/target.h                      |  10 +
->  tools/scripts/Makefile.include                |   1 +
->  16 files changed, 655 insertions(+), 19 deletions(-)
->  create mode 100644 tools/perf/util/bpf_counter.c
->  create mode 100644 tools/perf/util/bpf_counter.h
->  create mode 100644 tools/perf/util/bpf_skel/.gitignore
->  create mode 100644 tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
-> 
-> --
-> 2.24.1
-
--- 
-
-- Arnaldo
+If so, then I would simply document it that way.
+Simple is beautiful.
