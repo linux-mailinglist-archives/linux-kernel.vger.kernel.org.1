@@ -2,129 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46FB2D3949
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 04:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDEE2D394E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 04:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbgLIDhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 22:37:18 -0500
-Received: from mga05.intel.com ([192.55.52.43]:1427 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725816AbgLIDhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 22:37:18 -0500
-IronPort-SDR: HYDZp1Qucgr5Qzk/Bnjkbah6rTrjZgFyC/Y96IZYJMr6TGIGiIzuX8GANrcxGw4OL32Smtr6wk
- RJeFeyQzG9HQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="258721297"
-X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
-   d="scan'208";a="258721297"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 19:36:37 -0800
-IronPort-SDR: fUDnQiybMdWEkEik1h1xeS5ZsNCtycoeucoCN9cGmNq2bIvQh1iPcxjR3NFVsDx72vGkZcAkx7
- 39KeV+l1Zo9A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
-   d="scan'208";a="370653648"
-Received: from lkp-server01.sh.intel.com (HELO 4e633a5ce5ea) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Dec 2020 19:36:36 -0800
-Received: from kbuild by 4e633a5ce5ea with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kmqHL-00006p-IV; Wed, 09 Dec 2020 03:36:35 +0000
-Date:   Wed, 09 Dec 2020 11:35:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:auto-latest] BUILD SUCCESS
- 2521bfed6027330d9e0ab10a6b00eff01f45001c
-Message-ID: <5fd04617.BwD6hmIFweJt8Gey%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726523AbgLIDrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 22:47:11 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:37871 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726247AbgLIDrE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 22:47:04 -0500
+Received: from mail-pg1-f197.google.com ([209.85.215.197])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <matthew.ruffell@canonical.com>)
+        id 1kmqQm-00060X-Ti
+        for linux-kernel@vger.kernel.org; Wed, 09 Dec 2020 03:46:21 +0000
+Received: by mail-pg1-f197.google.com with SMTP id j30so238643pgj.17
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 19:46:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=LqsfjdpvRBrJPnLpBLMyDBgFdfBa9hHPug34fwUzfwc=;
+        b=NOAtRNlymwHHtJNZB6TChF1R8lNr4jXNFzvcFcXbU24W9iMPDu7ow38CUbq1gLwKNo
+         Z8L1HBacnPicptRSsQ5jDjTZ+BzJMXbL13uI7hkGmOkQn7Ug7PAB9Vy2fAyJLOxgYg64
+         LnI/vypNIwHyw3lMbwVbJtFSw8FePDgy7MdtfflmrT7ObnbseScCITALDqwHp33lHcqN
+         MQrXuQulGxMFdFusoWpW+tEW+e9uJhDbSja6TQ9DasKehHvv/x4rsoMucJ0C/GdszXlu
+         81izWlR9r+KP99ngJIgfC2HnA96tAkeXmxyUJjLZbEy9jbljuRYUflk1WlUXAAcYi7SM
+         TikQ==
+X-Gm-Message-State: AOAM532+8CbbHw3yHjvvTlHqpIzBVcyKqXbeJFB1PJe8da1euN6g9aiq
+        N6rJ1Q63jXQqS5wo6KV/mUfSQ0ohTbdjIL+KIWklE7rEqJJzVt6tWff76gHBmvb6E3HqGFMMyWE
+        mtYJtfxJClTdyqmD/GkJnkzedV+vXENmxOvKqLHsYjA==
+X-Received: by 2002:a65:414d:: with SMTP id x13mr215038pgp.226.1607485578569;
+        Tue, 08 Dec 2020 19:46:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw3iA2Op3W2abvcsx1yFM+J9B0Hqz9B8+s1CTmq5LiCD6qd4eM8vmhS3TmHfkHMS5rMWdqmWg==
+X-Received: by 2002:a65:414d:: with SMTP id x13mr215015pgp.226.1607485578220;
+        Tue, 08 Dec 2020 19:46:18 -0800 (PST)
+Received: from [192.168.1.107] (222-152-178-139-fibre.sparkbb.co.nz. [222.152.178.139])
+        by smtp.gmail.com with ESMTPSA id jz20sm291676pjb.4.2020.12.08.19.46.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 19:46:17 -0800 (PST)
+To:     xni@redhat.com, linux-raid@vger.kernel.org
+Cc:     song@kernel.org, linux-kernel@vger.kernel.org, colyli@suse.de,
+        guoqing.jiang@cloud.ionos.com, songliubraving@fb.com,
+        khalid.elmously@canonical.com, jay.vosburgh@canonical.com
+From:   Matthew Ruffell <matthew.ruffell@canonical.com>
+Subject: PROBLEM: Recent raid10 block discard patchset causes filesystem
+ corruption on fstrim
+Message-ID: <dbd2761e-cd7d-d60a-f769-ecc8c6335814@canonical.com>
+Date:   Wed, 9 Dec 2020 16:46:11 +1300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  auto-latest
-branch HEAD: 2521bfed6027330d9e0ab10a6b00eff01f45001c  Merge branch 'linus' into auto-latest
+Hello,
 
-elapsed time: 725m
+I recently backported the following patches into the Ubuntu stable kernels:
 
-configs tested: 69
-configs skipped: 2
+md: add md_submit_discard_bio() for submitting discard bio
+md/raid10: extend r10bio devs to raid disks
+md/raid10: pull codes that wait for blocked dev into one function
+md/raid10: improve raid10 discard request
+md/raid10: improve discard request for far layout
+dm raid: fix discard limits for raid1 and raid10
+dm raid: remove unnecessary discard limits for raid10
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+and this morning, a user reported the following downstream bug:
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                          g5_defconfig
-powerpc                     skiroot_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                     magicpanelr2_defconfig
-sh                          rsk7264_defconfig
-arc                     haps_hs_smp_defconfig
-sh                           se7724_defconfig
-powerpc                     ep8248e_defconfig
-arm                         assabet_defconfig
-sh                           se7721_defconfig
-mips                        omega2p_defconfig
-arm                            dove_defconfig
-mips                          ath79_defconfig
-powerpc                     kmeter1_defconfig
-mips                      maltaaprp_defconfig
-sh                          sdk7786_defconfig
-powerpc                        cell_defconfig
-arm                            mps2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1907262/
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Their weekly cronjob that runs fstrim had run, and their raid10 array has
+extensive data corruption. 
+
+The issue is reproducible on the latest 5.10-rc7 mainline kernel, steps are
+below.
+
+I used a m5d.4xlarge instance on AWS to ultilise 2x 300GB SSDs that support
+block discard. You will want to select small disks to lower the time needed
+to reproduce.
+
+$ uname -rv
+5.10.0-rc7+ #1 SMP Wed Dec 9 01:15:27 UTC 2020
+
+Create a raid10 array, with LVM:
+
+$ lsblk
+NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+nvme0n1     259:0    0     8G  0 disk 
+└─nvme0n1p1 259:1    0     8G  0 part /
+nvme1n1     259:2    0 279.4G  0 disk 
+nvme2n1     259:3    0 279.4G  0 disk
+
+$ sudo -s
+# mdadm -C -v -l10 -n2 -N "lv-raid" -R /dev/md0 /dev/nvme1n1 /dev/nvme2n1
+mdadm: layout defaults to n2
+mdadm: layout defaults to n2
+mdadm: chunk size defaults to 512K
+mdadm: size set to 292836352K
+mdadm: automatically enabling write-intent bitmap on large array
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md0 started.
+# pvcreate -ff -y /dev/md0
+  Physical volume "/dev/md0" successfully created.
+# vgcreate -f -y VolGroup /dev/md0
+  Volume group "VolGroup" successfully created
+# lvcreate -n root -L 100G -ay -y VolGroup
+  Logical volume "root" created.
+# mkfs.ext4 /dev/VolGroup/root
+mke2fs 1.44.1 (24-Mar-2018)
+Discarding device blocks: done                            
+Creating filesystem with 26214400 4k blocks and 6553600 inodes
+Filesystem UUID: d7be2e14-fa4d-4489-884b-3bef63b1e1db
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 
+	4096000, 7962624, 11239424, 20480000, 23887872
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (131072 blocks): done
+Writing superblocks and filesystem accounting information: done
+# mount /dev/VolGroup/root /mnt
+
+Next, wait for the disk check to complete, 25 minutes on m5d.4xlarge instance.
+
+# cat /proc/mdstat
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10] 
+md0 : active raid10 nvme2n1[1] nvme1n1[0]
+      292836352 blocks super 1.2 2 near-copies [2/2] [UU]
+      [==>..................]  resync = 12.0% (35211392/292836352) finish=21.4min speed=200340K/sec
+      bitmap: 3/3 pages [12KB], 65536KB chunk
+
+unused devices: <none>
+# cat /sys/block/md0/md/mismatch_cnt
+76918016
+
+# cat /proc/mdstat
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10] 
+md0 : active raid10 nvme2n1[1] nvme1n1[0]
+      292836352 blocks super 1.2 2 near-copies [2/2] [UU]
+      bitmap: 0/3 pages [0KB], 65536KB chunk
+
+unused devices: <none>
+# cat /sys/block/md0/md/mismatch_cnt
+582330240
+
+Now that the check is complete, create a file, sync and delete it:
+
+# dd if=/dev/zero of=/mnt/data.raw bs=4K count=1M
+1048576+0 records in
+1048576+0 records out
+4294967296 bytes (4.3 GB, 4.0 GiB) copied, 3.95974 s, 1.1 GB/s
+# sync
+# rm /mnt/data.raw
+
+Perform a check:
+
+# echo check > /sys/block/md0/md/sync_action
+
+Again, wait 25 minutes for it to complete:
+
+# cat /proc/mdstat
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10] 
+md0 : active raid10 nvme1n1[1] nvme2n1[0]
+      292836352 blocks super 1.2 2 near-copies [2/2] [UU]
+      [==>..................]  check = 13.7% (40356224/292836352) finish=20.8min speed=201707K/sec
+      bitmap: 0/3 pages [0KB], 65536KB chunk
+
+unused devices: <none>
+# cat /sys/block/md0/md/mismatch_cnt
+1469696
+
+# cat /proc/mdstat
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10] 
+md0 : active raid10 nvme1n1[1] nvme2n1[0]
+      292836352 blocks super 1.2 2 near-copies [2/2] [UU]
+      bitmap: 0/3 pages [0KB], 65536KB chunk
+
+unused devices: <none>
+# cat /sys/block/md0/md/mismatch_cnt
+1469696
+
+Now, perform the fstrim:
+
+# fstrim /mnt --verbose
+/mnt: 97.9 GiB (105089236992 bytes) trimmed
+
+Go for another check:
+
+# echo check >/sys/block/md0/md/sync_action
+# cat /proc/mdstat
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10] 
+md0 : active raid10 nvme1n1[1] nvme2n1[0]
+      292836352 blocks super 1.2 2 near-copies [2/2] [UU]
+      [========>............]  check = 40.3% (118270848/292836352) finish=14.4min speed=200963K/sec
+      bitmap: 0/3 pages [0KB], 65536KB chunk
+
+unused devices: <none>
+# cat /sys/block/md0/md/mismatch_cnt
+205324928
+
+# cat /proc/mdstat
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10] 
+md0 : active raid10 nvme1n1[1] nvme2n1[0]
+      292836352 blocks super 1.2 2 near-copies [2/2] [UU]
+      bitmap: 0/3 pages [0KB], 65536KB chunk
+
+unused devices: <none>
+# cat /sys/block/md0/md/mismatch_cnt
+205324928
+
+Now, we need to take the raid10 array down, and perform a fsck on one disk at
+a time:
+
+# umount /mnt
+# vgchange -a n /dev/VolGroup
+  0 logical volume(s) in volume group "VolGroup" now active
+# mdadm --stop /dev/md0
+mdadm: stopped /dev/md0
+
+Let's do first disk;
+
+# mdadm --assemble /dev/md127 /dev/nvme1n1 
+mdadm: /dev/md1 assembled from 1 drive - need all 2 to start it (use --run to insist).
+# mdadm --run /dev/md127
+mdadm: started array /dev/md/lv-raid
+# vgchange -a y /dev/VolGroup
+  1 logical volume(s) in volume group "VolGroup" now active
+# fsck.ext4 -n -f /dev/VolGroup/root
+e2fsck 1.44.1 (24-Mar-2018)
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+/dev/VolGroup/root: 11/6553600 files (0.0% non-contiguous), 557848/26214400 blocks
+# vgchange -a n /dev/VolGroup
+  0 logical volume(s) in volume group "VolGroup" now active
+# mdadm --stop /dev/md127
+mdadm: stopped /dev/md127
+
+The second disk:
+
+# mdadm --assemble /dev/md127 /dev/nvme2n1
+mdadm: /dev/md1 assembled from 1 drive - need all 2 to start it (use --run to insist).
+# mdadm --run /dev/md127
+mdadm: started array /dev/md/lv-raid
+# vgchange -a y /dev/VolGroup
+  1 logical volume(s) in volume group "VolGroup" now active
+# fsck.ext4 -n -f /dev/VolGroup/root
+e2fsck 1.44.1 (24-Mar-2018)
+Resize inode not valid.  Recreate? no
+
+Pass 1: Checking inodes, blocks, and sizes
+Inode 7 has illegal block(s).  Clear? no
+
+Illegal indirect block (1714656753) in inode 7.  IGNORED.
+Error while iterating over blocks in inode 7: Illegal indirect block found
+
+/dev/VolGroup/root: ********** WARNING: Filesystem still has errors **********
+
+e2fsck: aborted
+
+/dev/VolGroup/root: ********** WARNING: Filesystem still has errors **********
+
+# vgchange -a n /dev/VolGroup
+  0 logical volume(s) in volume group "VolGroup" now active
+# mdadm --stop /dev/md127
+mdadm: stopped /dev/md127
+
+There are no panics or anything in dmesg. The directory structure of the first
+disk is intact, but the second disk only has Lost+Found present.
+
+I can confirm it is the patches listed at the top of the email, but I have not
+had an opportunity to bisect to find the exact root cause. I will do that once
+we confirm what Ubuntu stable kernels are affected and begin reverting the
+patches.
+
+Let me know if you need any more details.
+
+Thanks,
+Matthew Ruffell
