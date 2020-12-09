@@ -2,148 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831BD2D380C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10CF2D3810
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:04:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbgLIBB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 20:01:28 -0500
-Received: from mga05.intel.com ([192.55.52.43]:61594 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726311AbgLIBB2 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 20:01:28 -0500
-IronPort-SDR: WVuX/Iee7s03oV+sKxk56WxXer0SW+sFaop2Xp8fGTHPTuXITpU5LMXy2zuHzKj1i7OatyqoL/
- LdaLN+veZULA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="258706187"
-X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
-   d="scan'208";a="258706187"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 16:59:42 -0800
-IronPort-SDR: Znt0f+tA88AUoOjOZnd7+GIUu2jgaTthcQhr2GvsusyxrS981yAueZRVwDBCl7M+kT7HsmTVNA
- +J5HkSAsYi6A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
-   d="scan'208";a="437593786"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Dec 2020 16:59:40 -0800
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        adrian.hunter@intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2] perf script: Fix overrun issue for dynamically-allocated pmu type number
-Date:   Wed,  9 Dec 2020 08:58:28 +0800
-Message-Id: <20201209005828.21302-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726110AbgLIBCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 20:02:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48710 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725877AbgLIBCs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 20:02:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607475681;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pHSLKEYPkZSLVPn0PMFtupg/ADvjQnsxqHg4D8q8Ep8=;
+        b=XXcpy7zY9XTp6uXLSeKrLFUgShDIQJB7WyJx172jbV2wdiNN0tI7MVosII9u01FqOKxp7c
+        LQARLz6HfpmTjEFyjZRNCsMcJBbne4+Xt6LwshkyxswnuDONjSsXznCWgHLgIWuhgYYcuI
+        nkCxJce4aX+TwZ3x8COGzxO6ILLItMs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-wGboA2NIPAypn2AgzECzhQ-1; Tue, 08 Dec 2020 20:01:17 -0500
+X-MC-Unique: wGboA2NIPAypn2AgzECzhQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3AAC8800D55;
+        Wed,  9 Dec 2020 01:01:15 +0000 (UTC)
+Received: from T590 (ovpn-12-139.pek2.redhat.com [10.72.12.139])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 490BC19C78;
+        Wed,  9 Dec 2020 01:01:06 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 09:01:02 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hch@lst.de, hare@suse.de,
+        ppvk@codeaurora.org, bvanassche@acm.org, kashyap.desai@broadcom.com
+Subject: Re: [RFC PATCH] blk-mq: Clean up references when freeing rqs
+Message-ID: <20201209010102.GA1217988@T590>
+References: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
+ <20201202033134.GD494805@T590>
+ <aaf77015-3039-6b04-3417-d376e3467444@huawei.com>
+ <20201203005505.GB540033@T590>
+ <fa222311-2184-0041-61ab-b3d70fb92585@huawei.com>
+ <7beb86a2-5c4b-bdc0-9fce-1b583548c6d0@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7beb86a2-5c4b-bdc0-9fce-1b583548c6d0@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When unpacking the event which is from dynamic pmu, the array
-output[OUTPUT_TYPE_MAX] may be overrun. For example, type number of
-SKL uncore_imc is 10, but OUTPUT_TYPE_MAX is 7 now (OUTPUT_TYPE_MAX =
-PERF_TYPE_MAX + 1).
+On Tue, Dec 08, 2020 at 11:36:58AM +0000, John Garry wrote:
+> On 03/12/2020 09:26, John Garry wrote:
+> > On 03/12/2020 00:55, Ming Lei wrote:
+> > 
+> > Hi Ming,
+> > 
+> > > > Yeah, so I said that was another problem which you mentioned
+> > > > there, which
+> > > > I'm not addressing, but I don't think that I'm making thing worse here.
+> > > The thing is that this patch does not fix the issue completely.
+> > > 
+> > > > So AFAICS, the blk-mq/sched code doesn't wait for any "readers" to be
+> > > > finished, such as those running blk_mq_queue_tag_busy_iter or
+> > > > blk_mq_tagset_busy_iter() in another context.
+> > > > 
+> > > > So how about the idea of introducing some synchronization
+> > > > primitive, such as
+> > > > semaphore, which those "readers" must grab and release at start
+> > > > and end (of
+> > > > iter), to ensure the requests are not freed during the iteration?
+> > > It looks good, however devil is in details, please make into patch for
+> > > review.
+> > 
+> > OK, but another thing to say is that I need to find a somewhat reliable
+> > reproducer for the potential problem you mention. So far this patch
+> > solves the issue I see (in that kasan stops warning). Let me analyze
+> > this a bit further.
+> > 
+> 
+> Hi Ming,
+> 
+> I am just looking at this again, and have some doubt on your concern [0].
+> 
+> From checking blk_mq_queue_tag_busy_iter() specifically, don't we actually
+> guard against this with the q->q_usage_counter mechanism? That is, an agent
+> needs to grab a q counter ref when attempting the iter. This will fail when
+> the queue IO sched is being changed, as we freeze the queue during this
+> time, which is when the requests are freed, so no agent can hold a reference
+> to a freed request then. And same goes for blk_mq_update_nr_requests(),
+> where we freeze the queue.
 
-/* In builtin-script.c */
-process_event()
-{
-        unsigned int type = output_type(attr->type);
+blk_mq_queue_tag_busy_iter() can be run on another request queue just
+between one driver tag is allocated and updating the request map, so one
+extra request reference still can be grabbed.
 
-        if (output[type].fields == 0)
-                return;
-}
+So looks only holding one queue's usage_counter doesn't help this issue, since
+bt_for_each() always iterates on driver tags wide.
 
-output[10] is overrun.
+> 
+> But I didn't see such a guard for blk_mq_tagset_busy_iter().
 
-Create a type OUTPUT_TYPE_OTHER for dynamic pmu events, then
-output_type(attr->type) will return OUTPUT_TYPE_OTHER here.
+IMO there isn't real difference between the two iteration.
 
-Note that if PERF_TYPE_MAX ever changed, then there would be a conflict
-between old perf.data files that had a dynamicaliy allocated PMU number
-that would then be the same as a fixed PERF_TYPE.
 
-Example:
-
-perf record --switch-events -C 0 -e "{cpu-clock,uncore_imc/data_reads/,uncore_imc/data_writes/}:SD" -a -- sleep 1
-perf script
-
-Before:
-         swapper     0 [000] 1479253.987551:     277766               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.987797:     246709               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.988127:     329883               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.988273:     146393               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.988523:     249977               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.988877:     354090               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.989023:     145940               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.989383:     359856               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.989523:     140082               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-
-After:
-         swapper     0 [000] 1397040.402011:     272384               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1397040.402011:       5396  uncore_imc/data_reads/:
-         swapper     0 [000] 1397040.402011:        967 uncore_imc/data_writes/:
-         swapper     0 [000] 1397040.402259:     249153               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1397040.402259:       7231  uncore_imc/data_reads/:
-         swapper     0 [000] 1397040.402259:       1297 uncore_imc/data_writes/:
-         swapper     0 [000] 1397040.402508:     249108               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1397040.402508:       5333  uncore_imc/data_reads/:
-         swapper     0 [000] 1397040.402508:       1008 uncore_imc/data_writes/:
-
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
-v2:
-  Remove Fixes tag because this issue has always been here, not caused by
-  1405720d4f26 ("perf script: Add 'synth' event type for synthesized events").
-  No functional change in v2. 
- 
- tools/perf/builtin-script.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 1c322c129185..5d8a64836228 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -183,6 +183,7 @@ struct output_option {
- 
- enum {
- 	OUTPUT_TYPE_SYNTH = PERF_TYPE_MAX,
-+	OUTPUT_TYPE_OTHER,
- 	OUTPUT_TYPE_MAX
- };
- 
-@@ -279,6 +280,18 @@ static struct {
- 
- 		.invalid_fields = PERF_OUTPUT_TRACE | PERF_OUTPUT_BPF_OUTPUT,
- 	},
-+
-+	[OUTPUT_TYPE_OTHER] = {
-+		.user_set = false,
-+
-+		.fields = PERF_OUTPUT_COMM | PERF_OUTPUT_TID |
-+			      PERF_OUTPUT_CPU | PERF_OUTPUT_TIME |
-+			      PERF_OUTPUT_EVNAME | PERF_OUTPUT_IP |
-+			      PERF_OUTPUT_SYM | PERF_OUTPUT_SYMOFFSET |
-+			      PERF_OUTPUT_DSO | PERF_OUTPUT_PERIOD,
-+
-+		.invalid_fields = PERF_OUTPUT_TRACE | PERF_OUTPUT_BPF_OUTPUT,
-+	},
- };
- 
- struct evsel_script {
-@@ -339,8 +352,11 @@ static inline int output_type(unsigned int type)
- 	case PERF_TYPE_SYNTH:
- 		return OUTPUT_TYPE_SYNTH;
- 	default:
--		return type;
-+		if (type < PERF_TYPE_MAX)
-+			return type;
- 	}
-+
-+	return OUTPUT_TYPE_OTHER;
- }
- 
- static inline unsigned int attr_type(unsigned int type)
--- 
-2.17.1
+Thanks, 
+Ming
 
