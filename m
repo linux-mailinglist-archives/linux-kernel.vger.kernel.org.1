@@ -2,121 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26932D4BAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2022D4BA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387525AbgLIUYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:24:24 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:58502 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730039AbgLIUYX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:24:23 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B9KMYrS093383;
-        Wed, 9 Dec 2020 14:22:34 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607545354;
-        bh=0YOr/KkSEFpTKDVBe5HkrfTXFveoPFaa5XWm7Svxg7A=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=nJBYIQZr0v6lufvH0ZaFAm1rXVXE8Y46IxZPkAIl62WLJ1VxUa2c66AtQB25EgYiV
-         nL/a9qPUfn/JWmUpXk432xiAzXPWCSW+BNipBHHz1h0qVhdb2zU6coRwYG5Sla+gst
-         JWg7Xk7Z6MfewE8yF3BpQi9dZr39egrZldmiauW0=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B9KMYbu010807
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Dec 2020 14:22:34 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 9 Dec
- 2020 14:22:34 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 9 Dec 2020 14:22:34 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B9KMTT1020549;
-        Wed, 9 Dec 2020 14:22:31 -0600
-Subject: Re: Howto listen to/handle gpio state changes ? Re: [PATCH v2 2/2]
- drivers: gpio: add virtio-gpio guest driver
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@kernel.org>
-CC:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-References: <20201203191135.21576-1-info@metux.net>
- <20201203191135.21576-2-info@metux.net>
- <0080d492-2f07-d1c6-d18c-73d4204a5d40@metux.net>
- <CACRpkdb4R4yHcUV2KbGEC_RkU+QmH6Xg7X+qee8sEa9TURGr8A@mail.gmail.com>
- <51d3efb7-b7eb-83d7-673a-308dd51616d3@metux.net>
- <CACRpkdbqVoT56H88hoZwDqV0kW_8XTaE5TkMQsg-RRrPqgF=cQ@mail.gmail.com>
- <CAK8P3a1PRQGUXkjdSmqxXSONX_ZoCgsfx8hJBUdBUk14tyzErA@mail.gmail.com>
- <CACRpkdbNAeDsi9B14kbkAeoqX7NE_Ua_yOX1iNF75oNK0ELefQ@mail.gmail.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <2827855a-dc4f-2e17-aca3-4b1b9f0d5084@ti.com>
-Date:   Wed, 9 Dec 2020 22:22:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1733305AbgLIUXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:23:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731168AbgLIUXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 15:23:17 -0500
+Date:   Wed, 9 Dec 2020 21:22:33 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607545356;
+        bh=Sj/Ifkegpq5pOyTqYEaA1ENoKNQ9a1WpWcnJklEhcOM=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LRvK+5q5Vfgz0cOXi2iKNFotQFdGHWWqBTHffZVRbvv1PtfAu+kJXzNmgfDUnqFVA
+         4Ioe96uzenZ1M/N5XPPfuTER6KMVP+41delGzOYVPu/OncMjDOGx84KVQTVX9rKEor
+         townxC9ZBF8rV9kuSfYOcQl75QQBQKRnE2WxghTnH4WAKAfX2Iz+u0lzlN0Zy6a0IU
+         w1Jb/ok3aOfBff/VWjOs5YMOEQDx4GK0YitM1/4wdRDeg2WB72DZQ0DAnZYA9D9nff
+         quzLWp70kAl2O1JLjvEUhgzD7nb1COTU9ygkWQXFelZbarExWqz6ch50j4wtb1RWJC
+         bhZ5wHO6XhXnw==
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v2 10/18] dt-bindings: i2c: owl: Convert Actions Semi Owl
+ binding to a schema
+Message-ID: <20201209202233.GA3499@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
+ <2521d2e63efcd125a4fe93ee55435f399157ab39.1605823502.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdbNAeDsi9B14kbkAeoqX7NE_Ua_yOX1iNF75oNK0ELefQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
+Content-Disposition: inline
+In-Reply-To: <2521d2e63efcd125a4fe93ee55435f399157ab39.1605823502.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--C7zPtVaVf+AK4Oqc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 09/12/2020 14:53, Linus Walleij wrote:
-> On Wed, Dec 9, 2020 at 12:19 PM Arnd Bergmann <arnd@kernel.org> wrote:
->> On Wed, Dec 9, 2020 at 9:51 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->>> On Tue, Dec 8, 2020 at 3:07 PM Enrico Weigelt, metux IT consult <lkml@metux.net> wrote:
->>
->>> What we need to understand is if your new usecase is an outlier
->>> so it is simplest modeled by a "mock" irq_chip or we have to design
->>> something new altogether like notifications on changes. I suspect
->>> irq_chip would be best because all drivers using GPIOs for interrupts
->>> are expecting interrupts, and it would be an enormous task to
->>> change them all and really annoying to create a new mechanism
->>> on the side.
->>
->> I would expect the platform abstraction to actually be close enough
->> to a chained irqchip that it actually works: the notification should
->> come in via vring_interrupt(), which is a normal interrupt handler
->> that calls vq->vq.callback(), calling generic_handle_irq() (and
->> possibly chained_irq_enter()/chained_irq_exit() around it) like the
->> other gpio drivers do should just work here I think, and if it did
->> not, then I would expect this to be just a bug in the driver rather
->> than something missing in the gpio framework.
-> 
-> Performance/latency-wise that would also be strongly encouraged.
-> 
-> Tglx isn't super-happy about the chained interrupts at times, as they
-> can create really nasty bugs, but a pure IRQ in fastpath of some
-> kinde is preferable and intuitive either way.
+On Fri, Nov 20, 2020 at 01:56:04AM +0200, Cristian Ciocaltea wrote:
+> Convert the Actions Semi Owl I2C DT binding to a YAML schema for
+> enabling DT validation.
+>=20
+> Additionally, add a new compatible string corresponding to the I2C
+> controller found in the S500 variant of the Actions Semi Owl SoCs
+> family.
+>=20
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-In my opinion the problem here is that proposed patch somehow describes Front end, but
-says nothing about Backend and overall design.
+Applied to for-next, thanks!
 
-What is expected to be virtualized? whole GPIO chip? or set of GPIOs from different GPIO chips?
-Most often nobody want to give Guest access to the whole GPIO chip, so, most probably, smth. similar to
-GPIO Aggregator will be needed.
 
-How is situation going to be resolved that GPIO framework and IRQ framework are independent, but intersect, and
-GPIO controller drivers have no idea who and how requesting GPIO IRQ - threaded vs non-threaded vs oneshot.
-So, some information need to be transferred to Back end  - at minimum IRQ triggering type.
+--C7zPtVaVf+AK4Oqc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Overall, it might be better to start from pure gpio and leave GPIO IRQ aside.
--- 
-Best regards,
-grygorii
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/RMgUACgkQFA3kzBSg
+Kbah6xAApvbjrFXBo/w96ABjNYKPV1ycWExS0wGShqyQ8XHj8l4Z0aQsoHVMvIfc
+Q0v1Tf8bd0q9PfK1IMw4Lry6ssBoiTrqQ/SIIorOK9G/zkkcBcGWv9nUQcExN8hZ
+MT+zwkvDC6aiwsED9yHLRJmvTXDV4esRK0FBmBzZoZUx6QLTW0+wkhQdB7ou7N8Q
+DKIUlh3Dud2UD2JIE+E7BGZQOaYLbt6YVt3/8Ye7QIH40dVSFAe25QIX+KNewKc5
+ewwQz9GCJAX8Jt9Kyq6hDbry03rac72s8mKZEhNkkZrPe46SE64/8n0Dsfze+9r8
+iCI64JngP7Dm2D28s1lO35k7HhCHw0IWzxVWkBZXhcKCHeVlTLpWue3hjBSEL3F+
+Nu/SGHaMszca4G59O7blvtZcZo6tQ9YI9yUpGY6902KzY/w0IMmIDwGVeeb0vNBi
+yt8vP5X4sBm8aC1QohKqpmkNtlySCfuj7RO69myLF9h7EBwZAPUgakYBV5Jit+nK
+9YsMrWCGAgyNxp1jVIhQ39Av+FQM7NinhuOMn6Ep0t8gfpMB0WqXUrxHM0SxBnG7
+wdVeGp9W330YVzDd2AGhB5G+33hDFE4JFDxlXm8wMNfCGaMHK180OX13JTZ2Rj4r
+VibyNh1BdXIfMgEbKsXt2GTU5bnwWPnxznSrl/QHiqYuChHLPtQ=
+=Vs7O
+-----END PGP SIGNATURE-----
+
+--C7zPtVaVf+AK4Oqc--
