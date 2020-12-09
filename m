@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB172D4C52
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D24C42D4C54
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:59:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387804AbgLIU5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:57:42 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:33181 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387759AbgLIU5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:57:30 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Crq9B6JRYz9sWC;
-        Thu, 10 Dec 2020 07:56:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607547407;
-        bh=9MIT3Mrz0MFy2FIDZIdXtlPxRD3KD5unqUU6/WfP09o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dBzV381r/+XcHlidcUI0Hr6Wh691MZQzSyzzU4Fx4K2J3Mva7QIbmghA6beXhm4XE
-         XO81tdrOcTFgZpXTpkW7xuPmUggvyp8TmhkVeqmKZlk4WD1YdW24an+TeE2tV7ld1W
-         HsK19uCHRb/Qhsumft9AKa4yW2mKm0nVOeQ3HwvwflKTRGYv0InIk6UkLE+F/e+dEB
-         5PJfbFpfu5teLX4tZ177juLspNuftxLtcSgdK2UrBp7nWXQTLaUT+XPyQueqONJNvt
-         oG9LOVBj3PCXiScP3bL4hduwt8KpOk+DaDxInFtRMwI38I5CHHL7TjqvY9UsZMZK8a
-         5Vbl+d+/R8wBg==
-Date:   Thu, 10 Dec 2020 07:56:45 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the kbuild tree
-Message-ID: <20201210075645.234a735d@canb.auug.org.au>
-In-Reply-To: <20201209130130.GA15469@nautica>
-References: <20201209203029.7f2a8db2@canb.auug.org.au>
-        <20201209130130.GA15469@nautica>
+        id S1731285AbgLIU7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:59:06 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:49336 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726501AbgLIU7G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 15:59:06 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607547503;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U8FXkEeLmw4j1ELROJYnBZRGobC61UbHYQBmnv42St8=;
+        b=fwE70pYwh2irwmwye2/3/Z34cz2hThNe+ULaC9eo2FGfieOgkb89CdwAi3x0fYvhlf3Ou4
+        mYWRrOsdlmF5zj5vi8mokDrqWSblAl/mrVGCJUi4JBDVTN3SMiSVM+WpNOd5woQXyiDieN
+        hLFCjiN6nri5od9k5b4g4TVRhu6oIaAAScpuFXyyvjgkMozsDZXxN72YNyOkJcuHfXnD88
+        5wJul+IQfljI2YnFlQtP6GoZSW73FMATu4Yes0wkHEspqE/Svs6x2ljDq5Yru/2q3Q22Ac
+        gj+SvwzADuANXLa2OpSYhatT/jb56ictDYI3iygTZxqy5R6BLUVT4OC8wXXmQA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607547503;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U8FXkEeLmw4j1ELROJYnBZRGobC61UbHYQBmnv42St8=;
+        b=f4NE+mMs/ZqUUwRSXrP7yHu0BlPfcW+WM93A0rcst4gtUNAmF2pEncgBHUV2Qd4+bA2m26
+        KFfU0BOrLpgo2dDg==
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+In-Reply-To: <20201209163434.GA22851@fuller.cnet>
+References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com> <20201207232920.GD27492@fuller.cnet> <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com> <87sg8g2sn4.fsf@nanos.tec.linutronix.de> <20201208181107.GA31442@fuller.cnet> <875z5c2db8.fsf@nanos.tec.linutronix.de> <20201209163434.GA22851@fuller.cnet>
+Date:   Wed, 09 Dec 2020 21:58:23 +0100
+Message-ID: <87r1nyzogg.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/A2irkfzbcHRq4y/y=/zDUup";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/A2irkfzbcHRq4y/y=/zDUup
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Marcelo,
 
-Hi Dominique,
-
-On Wed, 9 Dec 2020 14:01:30 +0100 Dominique Martinet <asmadeus@codewreck.or=
-g> wrote:
+On Wed, Dec 09 2020 at 13:34, Marcelo Tosatti wrote:
+> On Tue, Dec 08, 2020 at 10:33:15PM +0100, Thomas Gleixner wrote:
+>> On Tue, Dec 08 2020 at 15:11, Marcelo Tosatti wrote:
+>> > max_cycles overflow. Sent a message to Maxim describing it.
+>> 
+>> Truly helpful. Why the hell did you not talk to me when you ran into
+>> that the first time?
 >
-> I guess it's possible to make kbuild check both sbin and PATH, would
-> that be acceptable?
+> Because 
+>
+> 1) Users wanted CLOCK_BOOTTIME to stop counting while the VM 
+> is paused (so we wanted to stop guest clock when VM is paused anyway).
 
-I guess so.  But, have you actually found any setup where depmod is not
-/sbin/depmod?  i.e. what problem are you trying to solve.  As far as I
-can see all this change does is (ever so slightly) slow down the build
-for no gain.
+How is that supposed to work w/o the guest kernels help if you have to
+keep clock realtime up to date? 
 
---=20
-Cheers,
-Stephen Rothwell
+> 2) The solution to inject NMIs to the guest seemed overly
+> complicated.
 
---Sig_/A2irkfzbcHRq4y/y=/zDUup
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Why do you need NMIs?
 
------BEGIN PGP SIGNATURE-----
+All you need is a way to communicate to the guest that it should prepare
+for clock madness to happen. Whether that's an IPI or a bit in a
+hyperpage which gets checked during the update of the guest timekeeping
+does not matter at all.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/ROg0ACgkQAVBC80lX
-0GxExQf/YrVur6DxSRinoU8w7M5QTzXrQWZR1sIQ1SSD6Mf7UrRVqBDf/QSFDegS
-eHr7vG6V48sRkXf9ZCHtG7lqAFMe2bQY6jNVzzJg2LwgkJ5RB3D/b/CA50PDLvQy
-Iel7S8mB7tsbcztCwqr0SgY2Dtn33YucpCpieRf/sTrqMEPWT7s+v9GIVOTqJ12W
-wjuGWcGY1FBTukpy6tDGplKaqXnJDcbgvwDpLfpIjX5PlyIdu6FCa4zWPXLuCuOp
-Uy6lsPMagIGA2ifdm0vhdfY52D84/lK7XdasIEpCEWsqQmryN8JSYI1Z6UY7qyXr
-LQJbn6xiuiuZdZ9n2rwKIg3egAe75Q==
-=foDb
------END PGP SIGNATURE-----
+But you certainly do not need an NMI because there is nothing useful you
+can do within an NMI.
 
---Sig_/A2irkfzbcHRq4y/y=/zDUup--
+Thanks,
+
+        tglx
