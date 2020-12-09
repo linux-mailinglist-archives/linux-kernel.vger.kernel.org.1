@@ -2,80 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520152D377A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D092D377E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730983AbgLIASR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 19:18:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730236AbgLIASQ (ORCPT
+        id S1730680AbgLIATr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 19:19:47 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:34331 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgLIATq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 19:18:16 -0500
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822C8C0613CF;
-        Tue,  8 Dec 2020 16:17:36 -0800 (PST)
-Received: by mail-vk1-xa42.google.com with SMTP id u67so131881vkb.5;
-        Tue, 08 Dec 2020 16:17:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CvJ9oxgZGuLdmONciPenun/XEjnFDxPC4BpIda05bBA=;
-        b=W+X9DvLZSrT92p0S/60Fxz7I4UCUxRtIeWddqYq0PB9oqbEDlPvHTDaUsamCpDWZl5
-         K5NYg+1VZMUvg1I9aci1F/f/fxtspgegJBuxe2CSwkNBf7Q1dp7pnKlEcZKODgFU+6mH
-         t2nFyAs/n3YQDY3fu2iS/tQOeaTW9oYHk/Bm3kF9DYsapYakN+7vkVuyUczmY467BXt0
-         /WwUsGrdkGMaVc2zKbFPQ8lP9Li+IwFUinuxLe8LbETairUQJHuw33P7cJUaNwZmi91l
-         0i7yL6Q6PWP/AX9+Dam5BXvLvSryv3o7cGFy1f+fA1BVS9yxEZCLbh/Cwoe3eTNhc6oQ
-         V47w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CvJ9oxgZGuLdmONciPenun/XEjnFDxPC4BpIda05bBA=;
-        b=h0TPrwpvw40t40PGXcuV+n/2rmb0tIlBnVWLRByNiiiRUeukOnhuVsxyyIDLopgYVB
-         uM5wHiV+DqnXnL1OpxFOi73UvWRUBQCk93y6dZkKs7omsRwQjcYZhueSc8WCbj3TYDAH
-         uvh8satJWy493TVs4z1YEeFSDFM9MeVY2SynhcL+6fKSAup154neX6Py4KyHzxdNpWih
-         5ZKfI4pccL/JHikA7lpjQh9tTyUDYCPuCqTORuBoYQR1l38ZqrcD5IK9WiUXRfGx2vWj
-         06+fFVEH7JJY+I3PUaEeUjwaQebXMNo7jkvM2ujyajwGrJ4F5ZF/dhkPednJ7Uly5EFS
-         WOUQ==
-X-Gm-Message-State: AOAM530EQ6S+8uGPK+PUgYjmqk1/iCgXdulFTZNBA3ZlVtito1ztTo4v
-        X55j0O4jrjVFZVG5DOLUKoxhC4zBvYeVAzqY7/g=
-X-Google-Smtp-Source: ABdhPJyMQ09LtgkLU2C4n7OXLJH58ZtfShUNwrGeDfKJMRzol1JpkGk6nE2WrxaoNXcsN7bJQXCKLsNmYow/Apbks4c=
-X-Received: by 2002:a05:6122:69c:: with SMTP id n28mr398873vkq.21.1607473055679;
- Tue, 08 Dec 2020 16:17:35 -0800 (PST)
+        Tue, 8 Dec 2020 19:19:46 -0500
+Received: from static-50-53-41-238.bvtn.or.frontiernet.net ([50.53.41.238] helo=[192.168.192.153])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <john.johansen@canonical.com>)
+        id 1kmnC9-0000hA-Dl; Wed, 09 Dec 2020 00:19:01 +0000
+Subject: Re: [PATCH v1] apparmor: Remove duplicate macro list_entry_is_head()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>
+References: <20201208100639.88182-1-andriy.shevchenko@linux.intel.com>
+From:   John Johansen <john.johansen@canonical.com>
+Autocrypt: addr=john.johansen@canonical.com; prefer-encrypt=mutual; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUlOQkU1bXJQb0JFQURB
+ azE5UHNnVmdCS2tJbW1SMmlzUFE2bzdLSmhUVEtqSmR3VmJrV1NuTm4rbzZVcDVrCm5LUDFm
+ NDlFQlFsY2VXZzF5cC9Od2JSOGFkK2VTRU8vdW1hL0srUHFXdkJwdEtDOVNXRDk3Rkc0dUI0
+ L2Nhb20KTEVVOTdzTFFNdG52R1dkeHJ4VlJHTTRhbnpXWU1neno1VFptSWlWVFo0M091NVZw
+ YVMxVnoxWlN4UDNoL3hLTgpaci9UY1c1V1FhaTh1M1BXVm5ia2poU1pQSHYxQmdoTjY5cXhF
+ UG9tckpCbTFnbXR4M1ppVm1GWGx1d1RtVGdKCk9rcEZvbDduYkowaWxuWUhyQTdTWDNDdFIx
+ dXBlVXBNYS9XSWFuVk85NldkVGpISElhNDNmYmhtUXViZTR0eFMKM0ZjUUxPSlZxUXN4NmxF
+ OUI3cUFwcG05aFExMHFQV3dkZlB5LyswVzZBV3ROdTVBU2lHVkNJbld6bDJIQnFZZAovWmxs
+ OTN6VXErTklvQ244c0RBTTlpSCt3dGFHRGNKeXdJR0luK2VkS050SzcyQU1nQ2hUZy9qMVpv
+ V0g2WmVXClBqdVVmdWJWelp0bzFGTW9HSi9TRjRNbWRRRzFpUU50ZjRzRlpiRWdYdXk5Y0dp
+ MmJvbUYwenZ5QkpTQU5weGwKS05CRFlLek42S3owOUhVQWtqbEZNTmdvbUwvY2pxZ0FCdEF4
+ NTlMK2RWSVpmYUYyODFwSWNVWnp3dmg1K0pvRwplT1c1dUJTTWJFN0wzOG5zem9veWtJSjVY
+ ckFjaGtKeE5mejdrK0ZuUWVLRWtOekVkMkxXYzNRRjRCUVpZUlQ2ClBISGdhM1JneWtXNSsx
+ d1RNcUpJTGRtdGFQYlhyRjNGdm5WMExSUGN2NHhLeDdCM2ZHbTd5Z2Rvb3dBUkFRQUIKdEIx
+ S2IyaHVJRXB2YUdGdWMyVnVJRHhxYjJodVFHcHFiWGd1Ym1WMFBva0NPZ1FUQVFvQUpBSWJB
+ d1VMQ1FnSApBd1VWQ2drSUN3VVdBZ01CQUFJZUFRSVhnQVVDVG8wWVZ3SVpBUUFLQ1JBRkx6
+ WndHTlhEMkx4SkQvOVRKWkNwCndsbmNUZ1llcmFFTWVEZmtXdjhjMUlzTTFqMEFtRTRWdEwr
+ ZkU3ODBaVlA5Z2tqZ2tkWVN4dDdlY0VUUFRLTWEKWlNpc3JsMVJ3cVUwb29nWGRYUVNweHJH
+ SDAxaWN1LzJuMGpjWVNxWUtnZ1B4eTc4QkdzMkxacTRYUGZKVFptSApaR25YR3EvZURyL21T
+ bmowYWF2QkptTVo2amJpUHo2eUh0QllQWjlmZG84YnRjendQNDFZZVdvSXUyNi84SUk2CmYw
+ WG0zVkM1b0FhOHY3UmQrUldaYThUTXdsaHpIRXh4ZWwzanRJN0l6ek9zbm1FOS84RG0wQVJE
+ NWlUTENYd1IKMWN3SS9KOUJGL1MxWHY4UE4xaHVUM0l0Q05kYXRncDh6cW9Ka2dQVmptdnlM
+ NjRRM2ZFa1liZkhPV3NhYmE5LwprQVZ0Qk56OVJURmg3SUhEZkVDVmFUb3VqQmQ3QnRQcXIr
+ cUlqV0ZhZEpEM0k1ZUxDVkp2VnJyb2xyQ0FUbEZ0Ck4zWWtRczZKbjFBaUlWSVUzYkhSOEdq
+ ZXZnejVMbDZTQ0dIZ1Jya3lScG5TWWFVL3VMZ24zN042QVl4aS9RQUwKK2J5M0N5RUZManpX
+ QUV2eVE4YnEzSXVjbjdKRWJoUy9KLy9kVXFMb2VVZjh0c0dpMDB6bXJJVFpZZUZZQVJoUQpN
+ dHNmaXpJclZEdHoxaVBmL1pNcDVnUkJuaXlqcFhuMTMxY20zTTNndjZIclFzQUdubjhBSnJ1
+ OEdEaTVYSllJCmNvLzEreC9xRWlOMm5DbGFBT3BiaHpOMmVVdlBEWTVXMHEzYkEvWnAybWZH
+ NTJ2YlJJK3RRMEJyMUhkL3ZzbnQKVUhPOTAzbU1aZXAyTnpOM0JaNXFFdlB2RzRyVzVacTJE
+ cHliV2JRclNtOW9iaUJLYjJoaGJuTmxiaUE4YW05bwpiaTVxYjJoaGJuTmxia0JqWVc1dmJt
+ bGpZV3d1WTI5dFBva0NOd1FUQVFvQUlRVUNUbzBYV2dJYkF3VUxDUWdICkF3VVZDZ2tJQ3dV
+ V0FnTUJBQUllQVFJWGdBQUtDUkFGTHpad0dOWEQySXRNRC85anliYzg3ZE00dUFIazZ5Tk0K
+ TjBZL0JGbW10VFdWc09CaHFPbm9iNGkzOEJyRE8yQzFoUUNQQ1FlNExMczEvNHB0ZW92UXQ4
+ QjJGeXJQVmp3Zwo3alpUSE5LNzRyNmxDQ1Z4eDN5dTFCN1U5UG80VlRrY3NsVmIxL3FtV3V4
+ OFhXY040eXZrVHFsTCtHeHB5Sm45CjlaWmZmWEpjNk9oNlRtT2ZiS0d2TXV1djVhclNJQTNK
+ SEZMZjlhTHZadEExaXNKVXI3cFM5YXBnOXVUVUdVcDcKd2ZWMFdUNlQzZUczbXRVVTJ1cDVK
+ VjQ4NTBMMDVqSFM2dVdpZS9ZK3lmSk9iaXlyeE4vNlpxVzVHb25oTEJxLwptc3pjVjV2QlQz
+ QkRWZTNSdkY2WGRNOU9oUG4xK1k4MXg1NCt2UTExM044aUx3RjdHR2ExNFp5SVZBTlpEMEkw
+ CkhqUnZhMmsvUnFJUlR6S3l1UEg1cGtsY0tIVlBFRk1tT3pNVCtGT294Tmp2Uys3K3dHMktN
+ RFlFbUhQcjFQSkIKWlNaZUh6SzE5dGZhbFBNcHBGeGkrc3lZTGFnTjBtQjdKSFF3WTdjclV1
+ T0RoeWNxNjBZVnoxdGFFeWd1M1l2MgoyL0kxRUNHSHZLSEc2d2M5MG80M0MvZWxIRUNYbkVo
+ N3RLcGxEY3BJQytPQ21NeEtIaFI0NitYY1p2Z3c0RGdiCjdjYTgzZVFSM0NHODlMdlFwVzJM
+ TEtFRUJEajdoWmhrTGJra1BSWm0zdzhKWTQ0YXc4VnRneFdkblNFTUNMeEwKSU9OaDZ1Wjcv
+ L0RZVnRjSWFNSllrZWJhWnRHZENwMElnVVpiMjQvVmR2WkNZYk82MkhrLzNWbzFuWHdIVUVz
+ Mwo2RC92MWJUMFJaRmk2OUxnc0NjT2N4NGdZTGtDRFFST1pxejZBUkFBb3F3NmtrQmhXeU0x
+ ZnZnYW1BVmplWjZuCktFZm5SV2JrQzk0TDFFc0pMdXAzV2IyWDBBQk5PSFNrYlNENHBBdUMy
+ dEtGL0VHQnQ1Q1A3UWRWS1JHY1F6QWQKNmIyYzFJZHk5Ukx3Nnc0Z2krbm4vZDFQbTFra1lo
+ a1NpNXpXYUlnMG01UlFVaytFbDh6a2Y1dGNFLzFOMFo1TwpLMkpoandGdTViWDBhMGw0Y0ZH
+ V1ZRRWNpVk1ES1J0eE1qRXRrM1N4RmFsbTZaZFEycHAyODIyY2xucTR6WjltCld1MWQyd2F4
+ aXorYjVJYTR3ZURZYTduNDFVUmNCRVViSkFnbmljSmtKdENUd3lJeElXMktuVnlPcmp2a1F6
+ SUIKdmFQMEZkUDJ2dlpvUE1kbENJek9sSWtQTGd4RTBJV3VlVFhlQkpoTnMwMXBiOGJMcW1U
+ SU1sdTRMdkJFTEEvdgplaWFqajVzOHk1NDJIL2FIc2ZCZjRNUVVoSHhPL0JaVjdoMDZLU1Vm
+ SWFZN09nQWdLdUdOQjNVaWFJVVM1K2E5CmduRU9RTER4S1J5L2E3UTF2OVMrTnZ4KzdqOGlI
+ M2prUUpoeFQ2WkJoWkdSeDBna0gzVCtGMG5ORG01TmFKVXMKYXN3Z0pycUZaa1VHZDJNcm0x
+ cW5Ld1hpQXQ4U0ljRU5kcTMzUjBLS0tSQzgwWGd3ajhKbjMwdlhMU0crTk8xRwpIMFVNY0F4
+ TXd5L3B2azZMVTVKR2paUjczSjVVTFZoSDRNTGJEZ2dEM21QYWlHOCtmb3RUckpVUHFxaGc5
+ aHlVCkVQcFlHN3NxdDc0WG43OStDRVpjakxIenlsNnZBRkUyVzBreGxMdFF0VVpVSE8zNmFm
+ RnY4cUdwTzNacVB2akIKVXVhdFhGNnR2VVFDd2YzSDZYTUFFUUVBQVlrQ0h3UVlBUW9BQ1FV
+ Q1RtYXMrZ0liREFBS0NSQUZMelp3R05YRAoyRC9YRC8wZGRNLzRhaTFiK1RsMWp6bkthalgz
+ a0crTWVFWWVJNGY0MHZjbzNyT0xyblJHRk9jYnl5ZlZGNjlNCktlcGllNE93b0kxamNUVTBB
+ RGVjbmJXbkROSHByMFNjenhCTXJvM2Juckxoc212anVuVFlJdnNzQlp0QjRhVkoKanVMSUxQ
+ VWxuaEZxYTdmYlZxMFpRamJpVi9ydDJqQkVOZG05cGJKWjZHam5wWUljQWJQQ0NhL2ZmTDQv
+ U1FSUwpZSFhvaEdpaVM0eTVqQlRtSzVsdGZld0xPdzAyZmtleEgrSUpGcnJHQlhEU2c2bjJT
+ Z3hubisrTkYzNGZYY205CnBpYXczbUtzSUNtKzBoZE5oNGFmR1o2SVdWOFBHMnRlb29WRHA0
+ ZFlpaCsreFgvWFM4ekJDYzFPOXc0bnpsUDIKZ0t6bHFTV2JoaVdwaWZSSkJGYTRXdEFlSlRk
+ WFlkMzdqL0JJNFJXV2hueXc3YUFQTkdqMzN5dEdITlVmNlJvMgovanRqNHRGMXkvUUZYcWpK
+ Ry93R2pwZHRSZmJ0VWpxTEhJc3ZmUE5OSnEvOTU4cDc0bmRBQ2lkbFdTSHpqK09wCjI2S3Bi
+ Rm5td05PMHBzaVVzbmh2SEZ3UE8vdkFibDNSc1I1KzBSbytodnMyY0VtUXV2OXIvYkRsQ2Zw
+ enAydDMKY0srcmh4VXFpc094OERaZnoxQm5rYW9DUkZidnZ2ays3TC9mb21QbnRHUGtxSmNp
+ WUU4VEdIa1p3MWhPa3UrNApPb00yR0I1bkVEbGorMlRGL2pMUStFaXBYOVBrUEpZdnhmUmxD
+ NmRLOFBLS2ZYOUtkZm1BSWNnSGZuVjFqU24rCjh5SDJkakJQdEtpcVcwSjY5YUlzeXg3aVYv
+ MDNwYVBDakpoN1hxOXZBenlkTjVVL1VBPT0KPTZQL2IKLS0tLS1FTkQgUEdQIFBVQkxJQyBL
+ RVkgQkxPQ0stLS0tLQo=
+Organization: Canonical
+Message-ID: <6c72b22b-4dca-8a77-4b56-f2314307e6d6@canonical.com>
+Date:   Tue, 8 Dec 2020 16:18:58 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201206034408.31492-1-TheSven73@gmail.com> <20201208115035.74221c31@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <CAGngYiVpToas=offBuPgQ6t8wru64__NQ7MnNDYb0i0E+m6ebw@mail.gmail.com>
- <20201208152948.006606b3@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com> <CANn89iKxjQawkMBCg5Mt=eMgqvD_cpYSs4664GoGZFrMTgWJFw@mail.gmail.com>
-In-Reply-To: <CANn89iKxjQawkMBCg5Mt=eMgqvD_cpYSs4664GoGZFrMTgWJFw@mail.gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Tue, 8 Dec 2020 19:17:24 -0500
-Message-ID: <CAGngYiXa+RS0tnu6VzVKgCJH8mqiY-9Q-f210D_i=J=NHHYBNw@mail.gmail.com>
-Subject: Re: [PATCH net v1 1/2] lan743x: improve performance: fix
- rx_napi_poll/interrupt ping-pong
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201208100639.88182-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 6:50 PM Eric Dumazet <edumazet@google.com> wrote:
->
-> Driver could be called with an arbitrary budget (of 64),
-> and if its ring buffer has been depleted, return @budget instead of skb counts,
-> and not ream the interrupt
->
+On 12/8/20 2:06 AM, Andy Shevchenko wrote:
+> Strangely I hadn't had noticed the existence of the list_entry_is_head() in
+> apparmor code when added the same one in the list.h. Luckily it's fully
+> identical and didn't break builds. In any case we don't need a duplicate
+> anymore, thus remove it from apparmor code.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Aha, so the decision to re-arm the interrupts is made by looking
-at whether the device has run out of ring buffers to fill... instead
-of checking whether the weight was reached !
+oh nice,
 
-That makes complete sense.
-Thank you Eric and Jakub for your expert suggestions.
+I will pull into the apparmor tree
+
+Acked-by: John Johansen <john.johansen@canonical.com>
+
+> ---
+>  security/apparmor/apparmorfs.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/security/apparmor/apparmorfs.c b/security/apparmor/apparmorfs.c
+> index 5fd4a64e431f..f95c6bfa8b8e 100644
+> --- a/security/apparmor/apparmorfs.c
+> +++ b/security/apparmor/apparmorfs.c
+> @@ -2046,9 +2046,6 @@ int __aafs_ns_mkdir(struct aa_ns *ns, struct dentry *parent, const char *name,
+>  	return error;
+>  }
+>  
+> -
+> -#define list_entry_is_head(pos, head, member) (&pos->member == (head))
+> -
+>  /**
+>   * __next_ns - find the next namespace to list
+>   * @root: root namespace to stop search at (NOT NULL)
+> 
+
