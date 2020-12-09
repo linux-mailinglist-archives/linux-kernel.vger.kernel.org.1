@@ -2,162 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971EA2D472D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 829052D4738
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731919AbgLIQwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:52:11 -0500
-Received: from foss.arm.com ([217.140.110.172]:37546 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729345AbgLIQwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:52:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 538871FB;
-        Wed,  9 Dec 2020 08:51:19 -0800 (PST)
-Received: from [192.168.2.21] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F70D3F68F;
-        Wed,  9 Dec 2020 08:51:17 -0800 (PST)
-Subject: Re: [PATCH 2/3] x86/resctrl: Update PQR_ASSOC MSR synchronously when
- moving task to resource group
-To:     Reinette Chatre <reinette.chatre@intel.com>, fenghua.yu@intel.com
-Cc:     tglx@linutronix.de, bp@alien8.de, tony.luck@intel.com,
-        kuo-lang.tseng@intel.com, shakeelb@google.com,
-        valentin.schneider@arm.com, mingo@redhat.com, babu.moger@amd.com,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <cover.1607036601.git.reinette.chatre@intel.com>
- <c8eebc438e057e4bc2ce00256664b7bb0561b323.1607036601.git.reinette.chatre@intel.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <97610014-12a8-c389-e7e6-f655caf61d0d@arm.com>
-Date:   Wed, 9 Dec 2020 16:51:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1732146AbgLIQxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:53:55 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:3726 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730807AbgLIQxz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:53:55 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B9GkO9u001716;
+        Wed, 9 Dec 2020 08:53:10 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0220;
+ bh=1Qs6jmtWvJOyUXv8bOiiyNdprMDKCRZ7q266HV/Mft8=;
+ b=DwOVguec2DXU/rMfAHgEU7TAVxW7GLXvhm0N8sEw9fuyWZPDFWXBNrj2PhkMLKcHepTN
+ Q823tAN6KWld34G4dyh9NDpL3T+cv5q2bW+K8U1fcwRUTUdm4kqr5OD1HWdEZ5V9CRpf
+ X/gZQ03vn75uxCSzEWnDi9II0pvhxKLsbIo5Lj3iztdS8b4p1ney3V3hqpd5f76uZet2
+ 5sVFnOAMMVPzYe7OXN8nlXcOTwc+J5+cfKEPPOzXJMCvp3q1gd1aAT48qTSfcZ3Ma/lH
+ uzL07cvMC/PEMrL0tBcXUNa4NIwaiwyLQIW/pRXRZ34Qf2NdcrmqXUayNANh9RgzrTCC BA== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 3588etcmf4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 08:53:10 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 9 Dec
+ 2020 08:53:09 -0800
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 9 Dec
+ 2020 08:53:09 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.172)
+ by SC-EXCH01.marvell.com (10.93.176.81) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Wed, 9 Dec 2020 08:53:09 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NhC873ytVum/Jwg9X3m5grPNNQTeUykL1uBZ52wbO0VWgs7Jh/xMOuIkGkwdy/DurDjjtlm2nrJ81FmgseF2c1lXLn74JAqazF7C4cJKJgQ8ZBl6B5YSc3vtt7FPEjt9iZgdD+jQ26ksAsxGuF4+hk0uiz66yz2DnboNusHJJrayaTmYvOEzpvfBaoRzeBzsXC7YHvw9ApXfNg8f7nkEOkuDx5ah0zSst7pT864jR5sofYo6LQWbCsS5y9L+KDDREMlA46wU0qsvOeNwRFxjiJrbBiqEj1rJ9rB5XDrPETr31OFCS6BTCnjvBhsV9WfLKUjFY4Mt8wdIS0g3a9V3OQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1Qs6jmtWvJOyUXv8bOiiyNdprMDKCRZ7q266HV/Mft8=;
+ b=GIfbzbYtcpYbYa0ytq6vTQoeIRlnM5QyKw31RJGoqUadQpAqmHapQ/f38fAD9M+XPT2hLt1pze+SneGklpTfq8tSAv1TOT9mZmNzIZD+xf+mnduLsYdKkMRd2W+70obdNXvthwyOXHF2UM5kOt+4W/9FvbgZufa7J/MO9nhXSCy6a9w2+MGz9ml+oScxvyXspejHQ6jRE7v0ySDDJKXXem8gHEM/iaNow0UpkJ3Otc4oXrlVKL4YxLoh7T0S0cL09ikpOzcwOCzNlMacTrECYeaVk4/ohfvahDKnY9WKi3hFCa+d6bYpOjAveL07oe+8zGwq0yYtNHFVKh2GI/3Q/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1Qs6jmtWvJOyUXv8bOiiyNdprMDKCRZ7q266HV/Mft8=;
+ b=D6gt1xuJczW72socoqncLC/bJzjenAG48ciWTZu47iQOQbNYf1XG0fZqVHHGhLPV7fx7dBkGj9/af4iSrHyBxm3Fey2pkR9HTDHf+bBH1XwirTqvZc5S2wOJ0iZHeThr4bRcrWWeJ4mKQSDnn+7n/piWnvWq8zCPeoxlMVjIjwQ=
+Received: from DM6PR18MB2602.namprd18.prod.outlook.com (2603:10b6:5:15d::25)
+ by DM5PR18MB1564.namprd18.prod.outlook.com (2603:10b6:3:14b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Wed, 9 Dec
+ 2020 16:53:08 +0000
+Received: from DM6PR18MB2602.namprd18.prod.outlook.com
+ ([fe80::c4e7:19ce:d712:bd91]) by DM6PR18MB2602.namprd18.prod.outlook.com
+ ([fe80::c4e7:19ce:d712:bd91%5]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
+ 16:53:08 +0000
+From:   Geethasowjanya Akula <gakula@marvell.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Sunil Kovvuri Goutham" <sgoutham@marvell.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
+Subject: Re: [EXT] Re: [PATCH v2] octeontx2-pf: Add RSS multi group support
+Thread-Topic: [EXT] Re: [PATCH v2] octeontx2-pf: Add RSS multi group support
+Thread-Index: AQHWzLOHe2bt26aup0yK7Ag+C7GeYantunwAgAFDOLg=
+Date:   Wed, 9 Dec 2020 16:53:08 +0000
+Message-ID: <DM6PR18MB2602BAD0AE2BAA007EDC1345CDCC0@DM6PR18MB2602.namprd18.prod.outlook.com>
+References: <20201207161018.25127-1-gakula@marvell.com>,<20201208133444.62618a42@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201208133444.62618a42@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [103.248.210.142]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6d62c665-f53c-4027-80c4-08d89c62e7b1
+x-ms-traffictypediagnostic: DM5PR18MB1564:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR18MB156459F3A8E01716514C6A4CCDCC0@DM5PR18MB1564.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fEPPfoXpgHLKgL85vRKQ716Vv5cnxd93x8HexGhly7wKfNH7LXqMSjsJzdjnbN8ie7owtagxCUOH6AYpSUuSoLgbLR2nu0mSbxX7qjO9H1BgjlIIh0hLda4eDQhzTJo1HLyRC4ndHQKwBuyZpn7yTexjMzPjTJBJi4wvpB0GEFfQAdrYU9vxjDIP7gqbe9XfTVjRhinfdDRF25xb275izE7c32gYYxGsJ1iGGJ1srIyOpI9/iGOzuftzqtKzuPMxXhnJQxnOBurew/pPpPowxqP/oFT7txMhLRFgGkQTOg4H9Qu007EK+MeptwCNe1erIROXgwnhAc18HHIZyWP/1g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR18MB2602.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(346002)(66476007)(7696005)(55016002)(54906003)(5660300002)(71200400001)(86362001)(76116006)(66946007)(66446008)(33656002)(6916009)(9686003)(508600001)(91956017)(107886003)(8676002)(186003)(64756008)(53546011)(83380400001)(26005)(4326008)(8936002)(2906002)(66556008)(52536014)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?cuGF2puvQwkPl2L6B9EvQ1UhJv2SLtwBuG7NaqASKlx/lULH96iqAew42MIi?=
+ =?us-ascii?Q?rC66oe6jlPRxZ121xO+Mm8RaloDSgMsk/V8SToN7yDb3LUPp9Gyox4Sz0B07?=
+ =?us-ascii?Q?6xJG2hm2yZvwwDRi4Qqwgn5QqyYUIx6YR3QPXtCqOfmZWpAPxr2gxXH37CBM?=
+ =?us-ascii?Q?t3JKEsn39nCXdiFttRFEvgPg5qfJMUq8Uve0b6jvmHl/m2q5cpqi+Qm6CCZI?=
+ =?us-ascii?Q?V+gZuTejsqrFpFdNVXc84WPLT5l7mK2RwtayXXHarGEInvg4QngqcVeO5s+l?=
+ =?us-ascii?Q?fyHyW39U306E619P4ARB0k7TSd8+teqhemxTs7dJz+C8lb3xBb5iHLjR3YaC?=
+ =?us-ascii?Q?o4AHIKN8FcX+72BZn/VuW4R8fFX0aqm3QXitHoW73cOD9iIvggc+cXojwzsp?=
+ =?us-ascii?Q?tcxfxWXjpqBSPEP2kb1NTWjIboZCZlsyq8kOyHcYCIGgNoKQIpaDdXKImqwi?=
+ =?us-ascii?Q?fSdrbSeYXLVsgcnuDvSjjvFD0Q1lrT58gwFLON6Qv/1Voq7vE3DtPgd5kxHi?=
+ =?us-ascii?Q?f/U9GiacqlaGordaoMqFEkJPZy+dx4Q4mxHwKHqPD6SnuFxcgs5t2/59ff3L?=
+ =?us-ascii?Q?w0jtAJ2v1fXxGpU952Jkc66fyJKuF6DpftvX3cGThEp3FqfDJ1VPSp2dCjCn?=
+ =?us-ascii?Q?7OBUw9NF09xtfe5nnMdselvvJC+cRXqiugBwMLjgAZ7qNQKsPnLwxQ6yUQOH?=
+ =?us-ascii?Q?UbVoSx+EZ8ACSTkLU8MKaLSckzHi/WZwfSKvwdifaUqvmcXLYOXFRMzq2MZA?=
+ =?us-ascii?Q?NLLs7VQm35U1Y/3bYgNcj1hEpTvJE9F2JLiQJ5018zUeyPJjFPJNm9G+Wpk5?=
+ =?us-ascii?Q?DAzZCTNiIRC48ULLvjGZBULk172/s7ZFRer1lDj3MqfnewXTDwlsTMlWN6nK?=
+ =?us-ascii?Q?mF+u6ZY9SYCfGd9eINrRFIPlNFYspDFnUUiLGALFbajRvcYLuHgkPgWW63cF?=
+ =?us-ascii?Q?QJY1DaAIoz5WmVGvgPh+GO8/JnH+vRl/kYrtnaJoo0Y=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <c8eebc438e057e4bc2ce00256664b7bb0561b323.1607036601.git.reinette.chatre@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR18MB2602.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d62c665-f53c-4027-80c4-08d89c62e7b1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Dec 2020 16:53:08.0383
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dr3TwJIAOkXxqDy4+DV7NEsGwmZm/nKe69oOfe7eqsxpBoCaagy8tZlK4fgoRMswTQduKas0SxftIpogc8Vuhw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR18MB1564
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_14:2020-12-09,2020-12-09 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette, Fenghua,
-
-Subject nit: I think 'use IPI instead of task_work() to update PQR_ASSOC_MSR' conveys the
-guts of this change more quickly!
-
-On 03/12/2020 23:25, Reinette Chatre wrote:
-> From: Fenghua Yu <fenghua.yu@intel.com>
-> 
-> Currently when moving a task to a resource group the PQR_ASSOC MSR
-> is updated with the new closid and rmid in an added task callback.
-> If the task is running the work is run as soon as possible. If the
-> task is not running the work is executed later
-
-> in the kernel exit path when the kernel returns to the task again.
-
-kernel exit makes me thing of user-space... is it enough to just say:
-"by __switch_to() when task is next run"?
+Thanks, Jakub. Will address your comments in next version.
 
 
-> Updating the PQR_ASSOC MSR as soon as possible on the CPU a moved task
-> is running is the right thing to do. Queueing work for a task that is
-> not running is unnecessary (the PQR_ASSOC MSR is already updated when the
-> task is scheduled in) and causing system resource waste with the way in
-> which it is implemented: Work to update the PQR_ASSOC register is queued
-> every time the user writes a task id to the "tasks" file, even if the task
-> already belongs to the resource group. This could result in multiple pending
-> work items associated with a single task even if they are all identical and
-> even though only a single update with most recent values is needed.
-> Specifically, even if a task is moved between different resource groups
-> while it is sleeping then it is only the last move that is relevant but
-> yet a work item is queued during each move.
-> This unnecessary queueing of work items could result in significant system
-> resource waste, especially on tasks sleeping for a long time. For example,
-> as demonstrated by Shakeel Butt in [1] writing the same task id to the
-> "tasks" file can quickly consume significant memory. The same problem
-> (wasted system resources) occurs when moving a task between different
-> resource groups.
-> 
-> As pointed out by Valentin Schneider in [2] there is an additional issue with
-> the way in which the queueing of work is done in that the task_struct update
-> is currently done after the work is queued, resulting in a race with the
-> register update possibly done before the data needed by the update is available.
-> 
-> To solve these issues, the PQR_ASSOC MSR is updated in a synchronous way
-> right after the new closid and rmid are ready during the task movement,
-> only if the task is running. If a moved task is not running nothing is
-> done since the PQR_ASSOC MSR will be updated next time the task is scheduled.
-> This is the same way used to update the register when tasks are moved as
-> part of resource group removal.
+________________________________________
+From: Jakub Kicinski <kuba@kernel.org>
+Sent: Wednesday, December 9, 2020 3:04 AM
+To: Geethasowjanya Akula
+Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Sunil Kovvuri Gou=
+tham; davem@davemloft.net; Subbaraya Sundeep Bhatta
+Subject: [EXT] Re: [PATCH v2] octeontx2-pf: Add RSS multi group support
 
-(as t->on_cpu is already used...)
+External Email
 
-Reviewed-by: James Morse <james.morse@arm.com>
+----------------------------------------------------------------------
+On Mon, 7 Dec 2020 21:40:18 +0530 Geetha sowjanya wrote:
+> Hardware supports 8 RSS groups per interface. Currently we are using
+> only group '0'. This patch allows user to create new RSS groups/contexts
+> and use the same as destination for flow steering rules.
+>
+> usage:
+> To steer the traffic to RQ 2,3
+>
+> ethtool -X eth0 weight 0 0 1 1 context new
+> (It will print the allocated context id number)
+> New RSS context is 1
+>
+> ethtool -N eth0 flow-type tcp4 dst-port 80 context 1 loc 1
+>
+> To delete the context
+> ethtool -X eth0 context 1 delete
+>
+> When an RSS context is removed, the active classification
+> rules using this context are also removed.
+>
+> Change-log:
+> v2
+> - Removed unrelated whitespace
+> - Coverted otx2_get_rxfh() to use new function.
 
-
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index 68db7d2dec8f..9d62f1fadcc3 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -525,6 +525,16 @@ static void rdtgroup_remove(struct rdtgroup *rdtgrp)
-
-
-> +static void update_task_closid_rmid(struct task_struct *t)
->  {
-> +	int cpu;
->  
-> +	if (task_on_cpu(t, &cpu))
-> +		smp_call_function_single(cpu, _update_task_closid_rmid, t, 1);
-
-
-I think:
-|	if (task_curr(t))
-|		smp_call_function_single(task_cpu(t), _update_task_closid_rmid, t, 1);
-
-here would make for an easier backport as it doesn't depend on the previous patch.
-
-
-> +}
-
-[...]
-
->  static int __rdtgroup_move_task(struct task_struct *tsk,
->  				struct rdtgroup *rdtgrp)
->  {
-
-> +	if (rdtgrp->type == RDTCTRL_GROUP) {
-> +		tsk->closid = rdtgrp->closid;
-> +		tsk->rmid = rdtgrp->mon.rmid;
-> +	} else if (rdtgrp->type == RDTMON_GROUP) {
-
-[...]
-
-> +	} else {
-
-> +		rdt_last_cmd_puts("Invalid resource group type\n");
-> +		return -EINVAL;
-
-Wouldn't this be a kernel bug?
-I'd have thought there would be a WARN_ON_ONCE() here to make it clear this isn't
-user-space's fault!
-
-
->  	}
-> -	return ret;
-> +
-> +	/*
-> +	 * By now, the task's closid and rmid are set. If the task is current
-> +	 * on a CPU, the PQR_ASSOC MSR needs to be updated to make the resource
-> +	 * group go into effect. If the task is not current, the MSR will be
-> +	 * updated when the task is scheduled in.
-> +	 */
-> +	update_task_closid_rmid(tsk);
-> +
-> +	return 0;
->  }
-
-
-Thanks,
-
-James
+Thanks, I gave otx2_get_rxfh() as an example, please also convert
+otx2_set_rxfh().
