@@ -2,126 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275442D4937
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8201F2D4931
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733109AbgLISjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:39:48 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:48386 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732979AbgLISjd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:39:33 -0500
-Date:   Wed, 09 Dec 2020 18:38:49 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607539129;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mAL2zMzkTh6hP3MISpcsyU2YzUhyhDailjudNGYtL/0=;
-        b=rWBsZ1k/V228JhVcgFOEux7nq8aMZAQleUQLxBYdiVTgleO7j4h29AWe2BaBTMWKOf7Vli
-        XRpvR/mJRP3FaeFu4FKUM2S4YroE4n2ES3XjXN8u7wb036LB0s42OhBVPICZix/+Sd8fTA
-        mmhG1RZq/7228nH8rbjY23scRDhW2vsccqpMv7nqZkOrkB5wUrwHBmUG7mIVeL0Qjc/03m
-        aXqZUOPVzuJR7kcq9SCSfPxakAyQi04NW3Jcbtxsar4Cj8i2FLwlApceT54iFuQ3u/NnZ3
-        HFxGaynzV0v+6yEbWojgJYS6qrPXwebQkSWMTR5BcBJftUbjSrEAsQCHxbPeOw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607539129;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mAL2zMzkTh6hP3MISpcsyU2YzUhyhDailjudNGYtL/0=;
-        b=JmhyTd98QN7PZNdb24Q2lBmmMkBdGRfAw0UhvkuN+UNrfOdr0lWGugGVKuvGC8xoN9FToj
-        vnFXQQOANS8C84CQ==
-From:   "tip-bot2 for Eric W. Biederman" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] rwsem: Implement down_read_killable_nested
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <87o8jabqh3.fsf@x220.int.ebiederm.org>
-References: <87o8jabqh3.fsf@x220.int.ebiederm.org>
+        id S1733259AbgLISkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:40:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733214AbgLISkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:40:05 -0500
+Date:   Wed, 9 Dec 2020 18:39:20 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Richard Henderson <richard.henderson@linaro.org>
+Cc:     Marc Zyngier <maz@kernel.org>, Steven Price <steven.price@arm.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <haibo.xu@linaro.org>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Juan Quintela <quintela@redhat.com>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Dave Martin <Dave.Martin@arm.com>
+Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
+Message-ID: <20201209183920.GI13566@gaia>
+References: <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
+ <0d0eb6da6a11f76d10e532c157181985@kernel.org>
+ <20201207163405.GD1526@gaia>
+ <874kkx5thq.wl-maz@kernel.org>
+ <20201208172143.GB13960@gaia>
+ <7ff14490e253878d0735633b792e1ea9@kernel.org>
+ <20201209124443.GB13566@gaia>
+ <ef14a5158fc65c00f6c3c842cfa83b2c@kernel.org>
+ <20201209152741.GC13566@gaia>
+ <8c39b104-39c3-7cca-82b9-2e47d7cb9a9a@linaro.org>
 MIME-Version: 1.0
-Message-ID: <160753912926.3364.11774141440383901114.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8c39b104-39c3-7cca-82b9-2e47d7cb9a9a@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+On Wed, Dec 09, 2020 at 12:27:59PM -0600, Richard Henderson wrote:
+> On 12/9/20 9:27 AM, Catalin Marinas wrote:
+> > On Wed, Dec 09, 2020 at 01:25:18PM +0000, Marc Zyngier wrote:
+> >> Would this syscall operate on the guest address space? Or on the VMM's
+> >> own mapping?
+> ...
+> > Whatever is easier for the VMM, I don't think it matters as long as the
+> > host kernel can get the actual physical address (and linear map
+> > correspondent). Maybe simpler if it's the VMM address space as the
+> > kernel can check the access permissions in case you want to hide the
+> > guest memory from the VMM for other reasons (migration is also off the
+> > table).
+> 
+> Indeed, such a syscall is no longer specific to vmm's and may be used for any
+> bulk move of tags that userland might want.
 
-Commit-ID:     0f9368b5bf6db0c04afc5454b1be79022a681615
-Gitweb:        https://git.kernel.org/tip/0f9368b5bf6db0c04afc5454b1be79022a681615
-Author:        Eric W. Biederman <ebiederm@xmission.com>
-AuthorDate:    Thu, 03 Dec 2020 14:10:32 -06:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 09 Dec 2020 17:08:41 +01:00
+For CRIU, I think the current ptrace interface would do. With VMMs, the
+same remote VM model doesn't apply (the "remote" VM is actually the
+guest memory). I'd keep this under a KVM ioctl() number rather than a
+new, specific syscall.
 
-rwsem: Implement down_read_killable_nested
+> > Without syscalls, an option would be for the VMM to create two mappings:
+> > one with PROT_MTE for migration and the other without for normal DMA
+> > etc. That's achievable using memfd_create() or shm_open() and two mmap()
+> > calls, only one having PROT_MTE. The VMM address space should be
+> > sufficiently large to map two guest IPAs.
+> 
+> I would have thought that the best way is to use TCO, so that we don't have to
+> have dual mappings (and however many MB of extra page tables that might imply).
 
-In preparation for converting exec_update_mutex to a rwsem so that
-multiple readers can execute in parallel and not deadlock, add
-down_read_killable_nested.  This is needed so that kcmp_lock
-can be converted from working on a mutexes to working on rw_semaphores.
+The problem appears when the VMM wants to use MTE itself (e.g. linked
+against an MTE-aware glibc), toggling TCO is no longer generic enough,
+especially when it comes to device emulation.
 
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/87o8jabqh3.fsf@x220.int.ebiederm.org
----
- include/linux/rwsem.h  |  2 ++
- kernel/locking/rwsem.c | 14 ++++++++++++++
- 2 files changed, 16 insertions(+)
-
-diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
-index 25e3fde..13021b0 100644
---- a/include/linux/rwsem.h
-+++ b/include/linux/rwsem.h
-@@ -171,6 +171,7 @@ extern void downgrade_write(struct rw_semaphore *sem);
-  * See Documentation/locking/lockdep-design.rst for more details.)
-  */
- extern void down_read_nested(struct rw_semaphore *sem, int subclass);
-+extern int __must_check down_read_killable_nested(struct rw_semaphore *sem, int subclass);
- extern void down_write_nested(struct rw_semaphore *sem, int subclass);
- extern int down_write_killable_nested(struct rw_semaphore *sem, int subclass);
- extern void _down_write_nest_lock(struct rw_semaphore *sem, struct lockdep_map *nest_lock);
-@@ -191,6 +192,7 @@ extern void down_read_non_owner(struct rw_semaphore *sem);
- extern void up_read_non_owner(struct rw_semaphore *sem);
- #else
- # define down_read_nested(sem, subclass)		down_read(sem)
-+# define down_read_killable_nested(sem, subclass)	down_read_killable(sem)
- # define down_write_nest_lock(sem, nest_lock)	down_write(sem)
- # define down_write_nested(sem, subclass)	down_write(sem)
- # define down_write_killable_nested(sem, subclass)	down_write_killable(sem)
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index f11b9bd..54d11cb 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -1605,6 +1605,20 @@ void down_read_nested(struct rw_semaphore *sem, int subclass)
- }
- EXPORT_SYMBOL(down_read_nested);
- 
-+int down_read_killable_nested(struct rw_semaphore *sem, int subclass)
-+{
-+	might_sleep();
-+	rwsem_acquire_read(&sem->dep_map, subclass, 0, _RET_IP_);
-+
-+	if (LOCK_CONTENDED_RETURN(sem, __down_read_trylock, __down_read_killable)) {
-+		rwsem_release(&sem->dep_map, _RET_IP_);
-+		return -EINTR;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(down_read_killable_nested);
-+
- void _down_write_nest_lock(struct rw_semaphore *sem, struct lockdep_map *nest)
- {
- 	might_sleep();
+-- 
+Catalin
