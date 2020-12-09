@@ -2,173 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90EA2D46EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B462D46EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731838AbgLIQjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:39:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59240 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726227AbgLIQjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:39:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C964EAB63;
-        Wed,  9 Dec 2020 16:38:27 +0000 (UTC)
-Subject: Re: [PATCH v2] mm/page_owner: Record timestamp and pid
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lmark@codeaurora.org
-References: <20201209125153.10533-1-georgi.djakov@linaro.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <20f7fb50-5e21-3ad8-50cd-81b56c9e45b1@suse.cz>
-Date:   Wed, 9 Dec 2020 17:38:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1730678AbgLIQka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:40:30 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:36413 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726227AbgLIQk3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:40:29 -0500
+Received: by mail-oi1-f194.google.com with SMTP id x16so2365990oic.3;
+        Wed, 09 Dec 2020 08:40:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FocGLexWGAbPIltwYbZRe/myrDdStcHxJvLxzUzr35E=;
+        b=OToxeQqSANfULIjF8Q5omwuqFh//7incHl9BsFByt4gdzibXue8LWmK74e7OCUCuRZ
+         T4OwltqsTrif2eOyk9vx3Ycof9XT8+Uw6NEA54P0S/6cVqRjJRGXYsfLaYZX97caIGq7
+         jPqUn27pIkIH6TB0igpAoo4DBNCbRxeVxvFuk7VrPCfqaRwJ2OrU63RHY5uPdvA+DsSJ
+         xE8/GO7lhylRw5/Bmra43vr+lLTKt4GfW95gjKBR8rU0CSVYgvNraLqTRVB584ThMItx
+         89liumN++R2qQ9BfkrnVzoUTHRUjjFNDyPsr5pg5hAeQCK/E/ypDmkQrihXZptN0mAqj
+         vtzg==
+X-Gm-Message-State: AOAM532VmtgINNke2XvpciZoWdzFFgAV5kRbL218sPKZZGVx3eON14C4
+        mjTHaPWtFFzlv+cT3C5+wA==
+X-Google-Smtp-Source: ABdhPJz4cfCCgnE1x+yTrKorMizmKZCIJU5rV5EqmIQdFKa8GGCmyCcCeXu8B4SZzCSeoqvaPbPCzA==
+X-Received: by 2002:aca:504e:: with SMTP id e75mr2436452oib.170.1607531988076;
+        Wed, 09 Dec 2020 08:39:48 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y18sm414349ooj.20.2020.12.09.08.39.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 08:39:47 -0800 (PST)
+Received: (nullmailer pid 575032 invoked by uid 1000);
+        Wed, 09 Dec 2020 16:39:45 -0000
+Date:   Wed, 9 Dec 2020 10:39:45 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, yuji2.ishikawa@toshiba.co.jp,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/4] dt-bindings: gpio: Add bindings for Toshiba
+ Visconti GPIO Controller
+Message-ID: <20201209163945.GA570905@robh.at.kernel.org>
+References: <20201201181406.2371881-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20201201181406.2371881-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <87sg8n483w.fsf@kokedama.swc.toshiba.co.jp>
 MIME-Version: 1.0
-In-Reply-To: <20201209125153.10533-1-georgi.djakov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sg8n483w.fsf@kokedama.swc.toshiba.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/20 1:51 PM, Georgi Djakov wrote:
-> From: Liam Mark <lmark@codeaurora.org>
+On Thu, Dec 03, 2020 at 05:16:51PM +0900, Punit Agrawal wrote:
+> Iwamatsu-san,
 > 
-> Collect the time for each allocation recorded in page owner so that
-> allocation "surges" can be measured.
+> Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp> writes:
 > 
-> Record the pid for each allocation recorded in page owner so that
-> the source of allocation "surges" can be better identified.
+> > Add bindings for the Toshiba Visconti GPIO Controller.
+> >
+> > Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> > ---
+> >  .../bindings/gpio/toshiba,gpio-visconti.yaml  | 85 +++++++++++++++++++
+> >  1 file changed, 85 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml b/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
+> > new file mode 100644
+> > index 000000000000..5168a15b90e1
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
+> > @@ -0,0 +1,85 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/gpio/toshiba,gpio-visconti.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Toshiba Visconti ARM SoCs GPIO controller
+> > +
+> > +maintainers:
+> > +  - Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: toshiba,gpio-tmpv7708
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  "#gpio-cells":
+> > +    const: 2
+> > +
+> > +  gpio-ranges: true
 > 
-> The above is very useful when doing memory analysis. On a crash for
-> example, we can get this information from kdump (or ramdump) and parse
-> it to figure out memory allocation problems.
+> I am not sure I have a good handle on the yaml schema definitions but
+> "gpio-ranges" feels like it should be a list of ranges not a boolean.
+> 
+> Something like -
+> 
+>     gpio-ranges:
+>       maxItems: 1
+> 
+> feels more appropriate.
+> 
+> I see both the usages in gpio bindings and for other range properties so
+> maybe it's OK. I hope Rob or somebody more knowledgeable on this can
+> clarify the usage.
 
-Yes, I can imagine this to be useful.
+If you know how many (or a range) entries there are for gpio-ranges, 
+then maxItems is good. If you don't, then 'gpio-ranges: true' is fine. 
+That doesn't make the property a boolean, but just says the property can 
+be present.
 
-> Please note that on x86_64 this increases the size of struct page_owner
-> from 16 bytes to 32.
-
-That's the tradeoff, but it's not a functionality intended for production, so
-unless somebody says they need to enable page_owner for debugging and this
-increase prevents them from fitting into available memory, let's not complicate
-things with making this optional.
-
-> Signed-off-by: Liam Mark <lmark@codeaurora.org>
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-> ---
-> 
-> v2:
-> - Improve the commit message (Andrew and Vlastimil)
-> - Update page_owner.rst with more recent object size information (Andrew)
-> - Use pid_t for the pid (Andrew)
-> - Print the info also in __dump_page_owner() (Vlastimil)
-> 
-> v1: https://lore.kernel.org/r/20201112184106.733-1-georgi.djakov@linaro.org/
-> 
-> 
->  Documentation/vm/page_owner.rst | 12 ++++++------
->  mm/page_owner.c                 | 17 +++++++++++++----
->  2 files changed, 19 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/vm/page_owner.rst b/Documentation/vm/page_owner.rst
-> index 02deac76673f..cf7c0c361621 100644
-> --- a/Documentation/vm/page_owner.rst
-> +++ b/Documentation/vm/page_owner.rst
-> @@ -41,17 +41,17 @@ size change due to this facility.
->  - Without page owner::
->  
->     text    data     bss     dec     hex filename
-> -   40662   1493     644   42799    a72f mm/page_alloc.o
-> +  48392    2333     644   51369    c8a9 mm/page_alloc.o
->  
->  - With page owner::
->  
->     text    data     bss     dec     hex filename
-> -   40892   1493     644   43029    a815 mm/page_alloc.o
-> -   1427      24       8    1459     5b3 mm/page_ext.o
-> -   2722      50       0    2772     ad4 mm/page_owner.o
-> +  48800    2445     644   51889    cab1 mm/page_alloc.o
-> +   6574     108      29    6711    1a37 mm/page_owner.o
-> +   1025       8       8    1041     411 mm/page_ext.o
->  
-> -Although, roughly, 4 KB code is added in total, page_alloc.o increase by
-> -230 bytes and only half of it is in hotpath. Building the kernel with
-> +Although, roughly, 8 KB code is added in total, page_alloc.o increase by
-> +520 bytes and less than half of it is in hotpath. Building the kernel with
->  page owner and turning it on if needed would be great option to debug
->  kernel memory problem.
->  
-> diff --git a/mm/page_owner.c b/mm/page_owner.c
-> index b735a8eafcdb..af464bb7fbe7 100644
-> --- a/mm/page_owner.c
-> +++ b/mm/page_owner.c
-> @@ -10,6 +10,7 @@
->  #include <linux/migrate.h>
->  #include <linux/stackdepot.h>
->  #include <linux/seq_file.h>
-> +#include <linux/sched/clock.h>
->  
->  #include "internal.h"
->  
-> @@ -25,6 +26,8 @@ struct page_owner {
->  	gfp_t gfp_mask;
->  	depot_stack_handle_t handle;
->  	depot_stack_handle_t free_handle;
-> +	u64 ts_nsec;
-> +	pid_t pid;
->  };
->  
->  static bool page_owner_enabled = false;
-> @@ -172,6 +175,8 @@ static inline void __set_page_owner_handle(struct page *page,
->  		page_owner->order = order;
->  		page_owner->gfp_mask = gfp_mask;
->  		page_owner->last_migrate_reason = -1;
-> +		page_owner->pid = current->pid;
-> +		page_owner->ts_nsec = local_clock();
->  		__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
->  		__set_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
->  
-> @@ -236,6 +241,8 @@ void __copy_page_owner(struct page *oldpage, struct page *newpage)
->  	new_page_owner->last_migrate_reason =
->  		old_page_owner->last_migrate_reason;
->  	new_page_owner->handle = old_page_owner->handle;
-> +	new_page_owner->pid = old_page_owner->pid;
-> +	new_page_owner->ts_nsec = old_page_owner->ts_nsec;
->  
->  	/*
->  	 * We don't clear the bit on the oldpage as it's going to be freed
-> @@ -349,9 +356,10 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
->  		return -ENOMEM;
->  
->  	ret = snprintf(kbuf, count,
-> -			"Page allocated via order %u, mask %#x(%pGg)\n",
-> +			"Page allocated via order %u, mask %#x(%pGg), pid %d, ts %llu ns\n",
->  			page_owner->order, page_owner->gfp_mask,
-> -			&page_owner->gfp_mask);
-> +			&page_owner->gfp_mask, page_owner->pid,
-> +			page_owner->ts_nsec);
->  
->  	if (ret >= count)
->  		goto err;
-> @@ -427,8 +435,9 @@ void __dump_page_owner(struct page *page)
->  	else
->  		pr_alert("page_owner tracks the page as freed\n");
->  
-> -	pr_alert("page last allocated via order %u, migratetype %s, gfp_mask %#x(%pGg)\n",
-> -		 page_owner->order, migratetype_names[mt], gfp_mask, &gfp_mask);
-> +	pr_alert("page last allocated via order %u, migratetype %s, gfp_mask %#x(%pGg), pid %d, ts %llu\n",
-> +		 page_owner->order, migratetype_names[mt], gfp_mask, &gfp_mask,
-> +		 page_owner->pid, page_owner->ts_nsec);
->  
->  	handle = READ_ONCE(page_owner->handle);
->  	if (!handle) {
-> 
-
+Rob
