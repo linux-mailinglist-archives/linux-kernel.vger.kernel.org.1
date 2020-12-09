@@ -2,99 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8272D4D39
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E25C92D4D2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388442AbgLIWFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:05:04 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:27608 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388421AbgLIWEv (ORCPT
+        id S2388398AbgLIWB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:01:27 -0500
+Received: from 9.mo69.mail-out.ovh.net ([46.105.56.78]:34044 "EHLO
+        9.mo69.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388392AbgLIWB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:04:51 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B9LmOSH011265
-        for <linux-kernel@vger.kernel.org>; Wed, 9 Dec 2020 14:04:09 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=Kt4gFE5XwRUbIun+h1fyNNxFgIka9LB8tZNlBDhL61w=;
- b=QN8bXjjMa/3Oq1mMdLd367L3cCecd/KrPnu81vEMgP+BIB2aI6pIIaArBbbVMosgRTqy
- PJpBeXx+GVeyfpwkNADz0S5C+/q67hKKrCRHRPZ3txLXYjp+16xcwTDW4r1mxERGRMRF
- Kwq5XrH7/l9e+cvOOCIDxPFAbMq01wohkt4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35b685gb3w-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 14:04:09 -0800
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 9 Dec 2020 13:58:45 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 9C5F362E51F1; Wed,  9 Dec 2020 13:58:22 -0800 (PST)
-From:   Song Liu <songliubraving@fb.com>
-To:     <linux-raid@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dm-devel@redhat.com>
-CC:     Song Liu <songliubraving@fb.com>,
-        Matthew Ruffell <matthew.ruffell@canonical.com>,
-        Xiao Ni <xni@redhat.com>, Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH] Revert "dm raid: remove unnecessary discard limits for raid10"
-Date:   Wed, 9 Dec 2020 13:58:14 -0800
-Message-ID: <20201209215814.2623617-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-X-FB-Internal: Safe
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 9 Dec 2020 17:01:26 -0500
+X-Greylist: delayed 80110 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Dec 2020 17:01:25 EST
+Received: from player787.ha.ovh.net (unknown [10.109.143.249])
+        by mo69.mail-out.ovh.net (Postfix) with ESMTP id D8FEEA594D
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 23:00:43 +0100 (CET)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player787.ha.ovh.net (Postfix) with ESMTPSA id C87E51931C761;
+        Wed,  9 Dec 2020 22:00:37 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-96R0015a9f0d6f-a3f8-409a-918c-52812c8d5d66,
+                    8622D3A4C020BD08BE34C4B7C738CCED01E4E747) smtp.auth=steve@sk2.org
+From:   Stephen Kitt <steve@sk2.org>
+To:     linux-man@vger.kernel.org,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: [PATCH v2] close_range.2: new page documenting close_range(2)
+Date:   Wed,  9 Dec 2020 23:00:23 +0100
+Message-Id: <20201209220023.17912-1-steve@sk2.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-09_18:2020-12-09,2020-12-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=822 clxscore=1015 mlxscore=0
- phishscore=0 bulkscore=0 spamscore=0 suspectscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090150
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 5263300591903526162
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudejkedgudehjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejkeejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit f0e90b6c663a7e3b4736cb318c6c7c589f152c28.
+This documents close_range(2) based on information in
+278a5fbaed89dacd04e9d052f4594ffd0e0585de and
+60997c3d45d9a67daf01c56d805ae4fec37e0bd8.
 
-Matthew Ruffell reported data corruption in raid10 due to the changes
-in discard handling [1]. Revert these changes before we find a proper fix.
-
-[1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1907262/
-Cc: Matthew Ruffell <matthew.ruffell@canonical.com>
-Cc: Xiao Ni <xni@redhat.com>
-Cc: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Stephen Kitt <steve@sk2.org>
 ---
- drivers/md/dm-raid.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+V2: unsigned int to match the kernel declarations
+    groff and grammar tweaks
+    CLOSE_RANGE_UNSHARE unshares *and* closes
+    Explain that EMFILE and ENOMEM can occur with C_R_U
+    "Conforming to" phrasing
+    Detailed explanation of CLOSE_RANGE_UNSHARE
+    Reading /proc isn't common
 
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index 9c1f7c4de65b3..dc8568ab96f24 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -3728,6 +3728,17 @@ static void raid_io_hints(struct dm_target *ti, stru=
-ct queue_limits *limits)
-=20
- 	blk_limits_io_min(limits, chunk_size_bytes);
- 	blk_limits_io_opt(limits, chunk_size_bytes * mddev_data_stripes(rs));
-+
-+	/*
-+	 * RAID10 personality requires bio splitting,
-+	 * RAID0/1/4/5/6 don't and process large discard bios properly.
-+	 */
-+	if (rs_is_raid10(rs)) {
-+		limits->discard_granularity =3D max(chunk_size_bytes,
-+						  limits->discard_granularity);
-+		limits->max_discard_sectors =3D min_not_zero(rs->md.chunk_sectors,
-+							   limits->max_discard_sectors);
-+	}
- }
-=20
- static void raid_postsuspend(struct dm_target *ti)
---=20
-2.24.1
+ man2/close_range.2 | 138 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 138 insertions(+)
+ create mode 100644 man2/close_range.2
+
+diff --git a/man2/close_range.2 b/man2/close_range.2
+new file mode 100644
+index 000000000..403142b33
+--- /dev/null
++++ b/man2/close_range.2
+@@ -0,0 +1,138 @@
++.\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
++.\"
++.\" %%%LICENSE_START(VERBATIM)
++.\" Permission is granted to make and distribute verbatim copies of this
++.\" manual provided the copyright notice and this permission notice are
++.\" preserved on all copies.
++.\"
++.\" Permission is granted to copy and distribute modified versions of this
++.\" manual under the conditions for verbatim copying, provided that the
++.\" entire resulting derived work is distributed under the terms of a
++.\" permission notice identical to this one.
++.\"
++.\" Since the Linux kernel and libraries are constantly changing, this
++.\" manual page may be incorrect or out-of-date.  The author(s) assume no
++.\" responsibility for errors or omissions, or for damages resulting from
++.\" the use of the information contained herein.  The author(s) may not
++.\" have taken the same level of care in the production of this manual,
++.\" which is licensed free of charge, as they might when working
++.\" professionally.
++.\"
++.\" Formatted or processed versions of this manual, if unaccompanied by
++.\" the source, must acknowledge the copyright and authors of this work.
++.\" %%%LICENSE_END
++.\"
++.TH CLOSE_RANGE 2 2020-12-08 "Linux" "Linux Programmer's Manual"
++.SH NAME
++close_range \- close all file descriptors in a given range
++.SH SYNOPSIS
++.nf
++.B #include <linux/close_range.h>
++.PP
++.BI "int close_range(unsigned int " first ", unsigned int " last ", unsigned int " flags );
++.fi
++.SH DESCRIPTION
++The
++.BR close_range ()
++system call closes all open file descriptors from
++.I first
++to
++.I last
++(included).
++.PP
++Errors closing a given file descriptor are currently ignored.
++.PP
++.I flags
++can be set to
++.B CLOSE_RANGE_UNSHARE
++to unshare the range of file descriptors from any other processes,
++before closing them, avoiding races with other threads sharing the
++file descriptor table.
++.SH RETURN VALUE
++On success,
++.BR close_range ()
++returns 0.
++On error, \-1 is returned and
++.I errno
++is set to indicate the cause of the error.
++.SH ERRORS
++.TP
++.B EINVAL
++.I flags
++is not valid, or
++.I first
++is greater than
++.IR last .
++.PP
++The following can occur with
++.B CLOSE_RANGE_UNSHARE
++(when constructing the new descriptor table):
++.TP
++.B EMFILE
++The per-process limit on the number of open file descriptors has been reached
++(see the description of
++.B RLIMIT_NOFILE
++in
++.BR getrlimit (2)).
++.TP
++.B ENOMEM
++Insufficient kernel memory was available.
++.SH VERSIONS
++.BR close_range ()
++first appeared in Linux 5.9.
++.SH CONFORMING TO
++.BR close_range ()
++is a nonstandard function that is also present on FreeBSD.
++.SH NOTES
++Currently, there is no glibc wrapper for this system call; call it using
++.BR syscall (2).
++.PP
++.B CLOSE_RANGE_UNSHARE
++is conceptually equivalent to
++.PP
++.in +4n
++.EX
++unshare(CLONE_FILES);
++close_range(first, last, 0);
++.EE
++.in
++.PP
++but can be more efficient: if the unshared range extends past the
++current maximum number of file descriptors allocated in the caller's
++file descriptor table (the common case when
++.I last
++is
++.BR ~0U ),
++the kernel will unshare a new file descriptor
++table for the caller up to
++.IR first .
++This avoids subsequent close calls entirely; the whole operation is
++complete once the table is unshared.
++.SH USE CASES
++.\" 278a5fbaed89dacd04e9d052f4594ffd0e0585de
++.\" 60997c3d45d9a67daf01c56d805ae4fec37e0bd8
++.SS Closing file descriptors before exec
++File descriptors can be closed safely using
++.PP
++.in +4n
++.EX
++/* we don't want anything past stderr here */
++close_range(3, ~0U, CLOSE_RANGE_UNSHARE);
++execve(....);
++.EE
++.in
++.SS Closing all open file descriptors
++To avoid blindly closing file descriptors in the range of possible
++file descriptors, this is sometimes implemented (on Linux) by listing
++open file descriptors in
++.I /proc/self/fd/
++and calling
++.BR close (2)
++on each one.
++.BR close_range ()
++can take care of this without requiring
++.I /proc
++and with a single system call, which provides significant performance
++benefits.
++.SH SEE ALSO
++.BR close (2)
+
+base-commit: b5dae3959625f5ff378e9edf9139057d1c06bb55
+-- 
+2.20.1
 
