@@ -2,124 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006772D3EFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C06AD2D3F07
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729436AbgLIJl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:41:27 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:47380 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728634AbgLIJl1 (ORCPT
+        id S1729084AbgLIJm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:42:56 -0500
+Received: from mxout70.expurgate.net ([91.198.224.70]:30637 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728509AbgLIJmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:41:27 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kmvxf-0006TM-Ro; Wed, 09 Dec 2020 09:40:39 +0000
-Date:   Wed, 9 Dec 2020 10:40:39 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Stephen Kitt <steve@sk2.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [patch] close_range.2: new page documenting close_range(2)
-Message-ID: <20201209094039.ksqlt7g5mq7mp4mq@wittgenstein>
-References: <20201208215133.30575-1-steve@sk2.org>
- <CAKgNAki3jRYmTzCMXgBzXTz9LEmmAfRE5VuMOhnDbVmiJU=asg@mail.gmail.com>
+        Wed, 9 Dec 2020 04:42:55 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kmvy1-000Ksk-Tg; Wed, 09 Dec 2020 10:41:01 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kmvy1-000XDP-1s; Wed, 09 Dec 2020 10:41:01 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 961A5240041;
+        Wed,  9 Dec 2020 10:41:00 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 18B8A240040;
+        Wed,  9 Dec 2020 10:41:00 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id B4BE020897;
+        Wed,  9 Dec 2020 10:40:59 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKgNAki3jRYmTzCMXgBzXTz9LEmmAfRE5VuMOhnDbVmiJU=asg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 09 Dec 2020 10:40:59 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v7 4/5] net/x25: fix restart request/confirm
+ handling
+Organization: TDT AG
+In-Reply-To: <CAJht_ENukJrnh6m8FLrHBwnKKyZpzk6uGWhS4_eUCyDzrCG3eA@mail.gmail.com>
+References: <20201126063557.1283-1-ms@dev.tdt.de>
+ <20201126063557.1283-5-ms@dev.tdt.de>
+ <CAJht_EMZqcPdE5n3Vp+jJa1sVk9+vbwd-Gbi8Xqy19bEdbNNuA@mail.gmail.com>
+ <CAJht_ENukJrnh6m8FLrHBwnKKyZpzk6uGWhS4_eUCyDzrCG3eA@mail.gmail.com>
+Message-ID: <3e314d2786857cbd5aaee8b83a0e6daa@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.15
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-ID: 151534::1607506861-00001F6B-18FBB75D/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 09:50:38AM +0100, Michael Kerrisk (man-pages) wrote:
-> Hello Stephen
+On 2020-12-09 10:17, Xie He wrote:
+> On Wed, Dec 9, 2020 at 1:01 AM Xie He <xie.he.0141@gmail.com> wrote:
+>> 
+>> On Wed, Nov 25, 2020 at 10:36 PM Martin Schiller <ms@dev.tdt.de> 
+>> wrote:
+>> >
+>> >         switch (nb->state) {
+>> >         case X25_LINK_STATE_0:
+>> > -               nb->state = X25_LINK_STATE_2;
+>> > -               break;
+>> >         case X25_LINK_STATE_1:
+>> >                 x25_transmit_restart_request(nb);
+>> >                 nb->state = X25_LINK_STATE_2;
+>> 
+>> What is the reason for this change? Originally only the connecting
+>> side will transmit a Restart Request; the connected side will not and
+>> will only wait for the Restart Request to come. Now both sides will
+>> transmit Restart Requests at the same time. I think we should better
+>> avoid collision situations like this.
 > 
-> Thank you for writing this page! Some comments/questions below.
-> 
-> On Tue, 8 Dec 2020 at 22:51, Stephen Kitt <steve@sk2.org> wrote:
-> >
-> > This documents close_range(2) based on information in
-> > 278a5fbaed89dacd04e9d052f4594ffd0e0585de and
-> > 60997c3d45d9a67daf01c56d805ae4fec37e0bd8.
-> 
-> (Thanks for noting these commit IDs.)
-> 
-> > Signed-off-by: Stephen Kitt <steve@sk2.org>
-> > ---
-> >  man2/close_range.2 | 112 +++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 112 insertions(+)
-> >  create mode 100644 man2/close_range.2
-> >
-> > diff --git a/man2/close_range.2 b/man2/close_range.2
-> > new file mode 100644
-> > index 000000000..62167d9b0
-> > --- /dev/null
-> > +++ b/man2/close_range.2
-> > @@ -0,0 +1,112 @@
-> > +.\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
-> > +.\"
-> > +.\" %%%LICENSE_START(VERBATIM)
-> > +.\" Permission is granted to make and distribute verbatim copies of this
-> > +.\" manual provided the copyright notice and this permission notice are
-> > +.\" preserved on all copies.
-> > +.\"
-> > +.\" Permission is granted to copy and distribute modified versions of this
-> > +.\" manual under the conditions for verbatim copying, provided that the
-> > +.\" entire resulting derived work is distributed under the terms of a
-> > +.\" permission notice identical to this one.
-> > +.\"
-> > +.\" Since the Linux kernel and libraries are constantly changing, this
-> > +.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-> > +.\" responsibility for errors or omissions, or for damages resulting from
-> > +.\" the use of the information contained herein.  The author(s) may not
-> > +.\" have taken the same level of care in the production of this manual,
-> > +.\" which is licensed free of charge, as they might when working
-> > +.\" professionally.
-> > +.\"
-> > +.\" Formatted or processed versions of this manual, if unaccompanied by
-> > +.\" the source, must acknowledge the copyright and authors of this work.
-> > +.\" %%%LICENSE_END
-> > +.\"
-> > +.TH CLOSE_RANGE 2 2020-12-08 "Linux" "Linux Programmer's Manual"
-> > +.SH NAME
-> > +close_range \- close all file descriptors in a given range
-> > +.SH SYNOPSIS
-> > +.nf
-> > +.B #include <linux/close_range.h>
-> > +.PP
-> > +.BI "int close_range(int " first ", int " last ", unsigned int " flags );
-> > +.fi
-> > +.SH DESCRIPTION
-> > +The
-> > +.BR close_range ()
-> > +system call closes all open file descriptors from
-> > +.I first
-> > +to
-> > +.IR last
-> > +(included).
-> > +.PP
-> > +Errors closing a given file descriptor are currently ignored.
-> > +.PP
-> > +.I flags
-> > +can be set to
-> > +.B CLOSE_RANGE_UNSHARE
-> > +to unshare the range of file descriptors from any other processes,
-> > +.I instead
-> > +of closing them.
-> 
-> Really "instead of closing them"? I had supposed that rather that this
-> should be "before closing them". That's also how the kernel code reads
-> to me, from a quick glance.
+> Oh. I see. Because in other patches we are giving L2 the ability to
+> connect by itself, both sides can now appear here to be the
+> "connected" side. So we can't make the "connected" side wait as we did
+> before.
 
-It's also mentioned in the commit message. Basically setting
-CLOSE_RANGE_UNSHARE is equivalent to:
-
-unshare(CLONE_FILES);
-close_range(<start>, <end>);
-
-Christian
+Right.
+By the way: A "Restart Collision" is in practice a very common event to
+establish the Layer 3.
