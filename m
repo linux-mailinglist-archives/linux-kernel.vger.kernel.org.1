@@ -2,85 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23C42D4D5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CEC2D4D56
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388606AbgLIWLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:11:08 -0500
-Received: from mail-out.m-online.net ([212.18.0.9]:49506 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388338AbgLIWLH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:11:07 -0500
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Crrnh14rGz1qs0j;
-        Wed,  9 Dec 2020 23:10:00 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Crrnh014pz1qy6P;
-        Wed,  9 Dec 2020 23:09:59 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id 71vQKepPl3AN; Wed,  9 Dec 2020 23:09:58 +0100 (CET)
-X-Auth-Info: R4odLXJlFmOWfIxE8bkmUpJu6bfcjzVB0W9OybxRqrY=
-Received: from localhost.localdomain (89-64-25-12.dynamic.chello.pl [89.64.25.12])
+        id S2388492AbgLIWK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:10:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388515AbgLIWKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 17:10:10 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed,  9 Dec 2020 23:09:58 +0100 (CET)
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Mans Rullgard <mans@mansr.com>,
-        Lukasz Majewski <lukma@denx.de>
-Subject: [PATCH v2] ARM: dts: imx28: add pinmux for USB1 overcurrent on pwm2
-Date:   Wed,  9 Dec 2020 23:09:03 +0100
-Message-Id: <20201209220903.27058-1-lukma@denx.de>
-X-Mailer: git-send-email 2.20.1
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FDAA23D1C;
+        Wed,  9 Dec 2020 22:09:29 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 17:09:28 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-fsdevel@vger.kernel.org
+Subject: [PATCH v2] fs/namei.c: Remove unlikely of status being -ECHILD in
+ lookup_fast()
+Message-ID: <20201209170928.26b4cda7@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mans Rullgard <mans@mansr.com>
+From:  Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Add pinmux setting for USB1 overcurrent on pwm2 pad.
+Running my yearly branch profiling code, it detected a 100% wrong branch
+condition in name.c for lookup_fast(). The code in question has:
 
-Signed-off-by: Mans Rullgard <mans@mansr.com>
-Signed-off-by: Lukasz Majewski <lukma@denx.de>
+		status = d_revalidate(dentry, nd->flags);
+		if (likely(status > 0))
+			return dentry;
+		if (unlazy_child(nd, dentry, seq))
+			return ERR_PTR(-ECHILD);
+		if (unlikely(status == -ECHILD))
+			/* we'd been told to redo it in non-rcu mode */
+			status = d_revalidate(dentry, nd->flags);
+
+If the status of the d_revalidate() is greater than zero, then the function
+finishes. Otherwise, if it is an "unlazy_child" it returns with -ECHILD.
+After the above two checks, the status is compared to -ECHILD, as that is
+what is returned if the original d_revalidate() needed to be done in a
+non-rcu mode.
+
+Especially this path is called in a condition of:
+
+	if (nd->flags & LOOKUP_RCU) {
+
+And most of the d_revalidate() functions have:
+
+	if (flags & LOOKUP_RCU)
+		return -ECHILD;
+
+It appears that that is the only case that this if statement is triggered
+on two of my machines, running in production.
+
+As it is dependent on what filesystem mix is configured in the running
+kernel, simply remove the unlikely() from the if statement.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
-Changes for v2:
-- Add S-o-B
----
- arch/arm/boot/dts/imx28.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Changes since v1:
 
-diff --git a/arch/arm/boot/dts/imx28.dtsi b/arch/arm/boot/dts/imx28.dtsi
-index bbe52150b165..84d0176d5193 100644
---- a/arch/arm/boot/dts/imx28.dtsi
-+++ b/arch/arm/boot/dts/imx28.dtsi
-@@ -948,6 +948,16 @@
- 					fsl,pull-up = <MXS_PULL_DISABLE>;
- 				};
- 
-+				usb1_pins_b: usb1@1 {
-+					reg = <1>;
-+					fsl,pinmux-ids = <
-+						MX28_PAD_PWM2__USB1_OVERCURRENT
-+					>;
-+					fsl,drive-strength = <MXS_DRIVE_12mA>;
-+					fsl,voltage = <MXS_VOLTAGE_HIGH>;
-+					fsl,pull-up = <MXS_PULL_DISABLE>;
-+				};
-+
- 				usb0_id_pins_a: usb0id@0 {
- 					reg = <0>;
- 					fsl,pinmux-ids = <
--- 
-2.20.1
+ - Remove unlikely() instead of making it a likely()
 
+diff --git a/fs/namei.c b/fs/namei.c
+index d4a6dd772303..c7b7e83853f3 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -1495,7 +1495,7 @@ static struct dentry *lookup_fast(struct nameidata *nd,
+ 			return dentry;
+ 		if (unlazy_child(nd, dentry, seq))
+ 			return ERR_PTR(-ECHILD);
+-		if (unlikely(status == -ECHILD))
++		if (status == -ECHILD)
+ 			/* we'd been told to redo it in non-rcu mode */
+ 			status = d_revalidate(dentry, nd->flags);
+ 	} else {
