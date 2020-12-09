@@ -2,85 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34692D4E16
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62D62D4E2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389030AbgLIWiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388779AbgLIWhx (ORCPT
+        id S2389056AbgLIWjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:39:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38691 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389044AbgLIWjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:37:53 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE72CC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 14:37:12 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id c12so1801066pgm.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 14:37:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nrxLdcl3wsizq7pZZrg/1JXYlLLqDsCOszWw99iRRjU=;
-        b=naurhE36/fB0M2XuesmB/J+IagQviYVLh0EuRnH5J7Rrkt/kxFq69tpFR/r7AQrDaR
-         84rYTtJUmHPG6LkeTvQwbJmrroKcvZg0VMNZd9ywZz/BTGW7ZB68JFAxg1NRLZyT0lWR
-         42zqERaw/3RsiQLyJq+GQnC6b1XfQk7q0uWxY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nrxLdcl3wsizq7pZZrg/1JXYlLLqDsCOszWw99iRRjU=;
-        b=M5MPCHfMpD1ql7JRaSLRSP3kvn1cKFR0CFpWVZInZhKpfGquWr4Zw10juHy7DDmfDU
-         oUQPbtIFRJAYmIILnW9A3dnFzOh3AnJ+t9IA1O09Khi8X48VYuShJQkr5SKYiRGibv/A
-         f0w8u6KGYpUNb7/wnBIMWx8/j9cAQDnnA8HTdc1YkeauIJjyBn2E87Wpj2XbUR6JzBAh
-         zjJs7k7aXIxQpBWwF+EbK0Vq1HT9xgWI0JFzHSxFsbzbQpG5DplesNzXfcO1uhhynciq
-         TksI068ncULpqaJqbv14Z2W1yqBkJAx95789EhP4gus8SlOQXmLtJJvVbQXrgpRkLTAC
-         2c8w==
-X-Gm-Message-State: AOAM532vZesnCkG48xkw+0wYIuQ50XPAb9ggMAF3xlvKef00wWxjo1HE
-        e170gMd5pAoQ17qUTZ9veHIY8A==
-X-Google-Smtp-Source: ABdhPJz7nnGhsSPeg6rC2QtW2vzcTbAwcCTjtvRiGZUXMbiCMAyA+80bB6OYm3LTFUG7Ncm/wZSy6w==
-X-Received: by 2002:a62:62c7:0:b029:18b:c7ae:934a with SMTP id w190-20020a6262c70000b029018bc7ae934amr4123549pfb.18.1607553432392;
-        Wed, 09 Dec 2020 14:37:12 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:8edc:d4ff:fe53:350d])
-        by smtp.gmail.com with ESMTPSA id t15sm3375324pja.4.2020.12.09.14.37.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 14:37:11 -0800 (PST)
-Date:   Wed, 9 Dec 2020 14:37:09 -0800
-From:   Brian Norris <briannorris@chromium.org>
-To:     Evan Benn <evanbenn@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH 1/2] platform/chrome: cros_ec_proto: Use
- EC_HOST_EVENT_MASK not BIT
-Message-ID: <X9FRlTDVXtj6uFQb@google.com>
-References: <20201209220306.1.I6133572c0ab3c6b95426f804bac2d3833e24acb1@changeid>
+        Wed, 9 Dec 2020 17:39:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607553503;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pLh08CODrTtOHr1xQAUm+7JhxhEsEXmLpw4HRIcM1tc=;
+        b=eIdevc2h+X38oXj8nZiNyVvrKd+20hGcX3WsT3sR6Cajf7ezWTHl7xFA8rx4tCc2TELZgQ
+        cojXGjCvW55cRXfblHoloFUyLOdSEZr+QnUzZM35+0iNBaEJ05vmE/86lF9RQZieDbiNTh
+        8r4u+qY66t1l2fztnNvpkAuhR9vvKpo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437-NybBHuTDMeSb_WVQBgiOJA-1; Wed, 09 Dec 2020 17:38:22 -0500
+X-MC-Unique: NybBHuTDMeSb_WVQBgiOJA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E56866D53C;
+        Wed,  9 Dec 2020 22:38:14 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CA4216F990;
+        Wed,  9 Dec 2020 22:38:02 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 17:38:02 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Song Liu <songliubraving@fb.com>, axboe@kernel.dk
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com,
+        Matthew Ruffell <matthew.ruffell@canonical.com>,
+        Xiao Ni <xni@redhat.com>
+Subject: Re: Revert "dm raid: remove unnecessary discard limits for raid10"
+Message-ID: <20201209223801.GB2752@redhat.com>
+References: <20201209215814.2623617-1-songliubraving@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209220306.1.I6133572c0ab3c6b95426f804bac2d3833e24acb1@changeid>
+In-Reply-To: <20201209215814.2623617-1-songliubraving@fb.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 10:03:54PM +0000, Evan Benn wrote:
-> The host_event_code enum is 1-based, use EC_HOST_EVENT_MASK not BIT to
-> generate the intended mask. This patch changes the behaviour of the
-> mask, a following patch will restore the intended behaviour:
-> 'Add LID and BATTERY to default mask'
+On Wed, Dec 09 2020 at  4:58pm -0500,
+Song Liu <songliubraving@fb.com> wrote:
+
+> This reverts commit f0e90b6c663a7e3b4736cb318c6c7c589f152c28.
 > 
-> Fixes: c214e564acb2ad9463293ab9c109bfdae91fbeaf
+> Matthew Ruffell reported data corruption in raid10 due to the changes
+> in discard handling [1]. Revert these changes before we find a proper fix.
+> 
+> [1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1907262/
+> Cc: Matthew Ruffell <matthew.ruffell@canonical.com>
+> Cc: Xiao Ni <xni@redhat.com>
+> Cc: Mike Snitzer <snitzer@redhat.com>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  drivers/md/dm-raid.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
+> index 9c1f7c4de65b3..dc8568ab96f24 100644
+> --- a/drivers/md/dm-raid.c
+> +++ b/drivers/md/dm-raid.c
+> @@ -3728,6 +3728,17 @@ static void raid_io_hints(struct dm_target *ti, struct queue_limits *limits)
+>  
+>  	blk_limits_io_min(limits, chunk_size_bytes);
+>  	blk_limits_io_opt(limits, chunk_size_bytes * mddev_data_stripes(rs));
+> +
+> +	/*
+> +	 * RAID10 personality requires bio splitting,
+> +	 * RAID0/1/4/5/6 don't and process large discard bios properly.
+> +	 */
+> +	if (rs_is_raid10(rs)) {
+> +		limits->discard_granularity = max(chunk_size_bytes,
+> +						  limits->discard_granularity);
+> +		limits->max_discard_sectors = min_not_zero(rs->md.chunk_sectors,
+> +							   limits->max_discard_sectors);
+> +	}
+>  }
+>  
+>  static void raid_postsuspend(struct dm_target *ti)
+> -- 
+> 2.24.1
+> 
 
-Normally the short hash + commit title are used here, so:
+Short of you sending a v2 pull request to Jens...
 
-Fixes: c214e564acb2 ("platform/chrome: cros_ec_proto: ignore unnecessary wakeups on old ECs")
+Jens please pick this up once you pull Song's MD pull that reverts all
+the MD raid10 discard changes.
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-changes
+Thanks!
 
-With luck, maintainers can fix that up when applying, so you don't need
-to resend.
+Acked-by: Mike Snitzer <snitzer@redhat.com>
 
-Otherwise, both patches look good to me, thanks!
-
-Reviewed-by: Brian Norris <briannorris@chromium.org>
