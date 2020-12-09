@@ -2,112 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FAE2D45C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E8A2D45C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730862AbgLIPqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:46:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727008AbgLIPqB (ORCPT
+        id S1730058AbgLIPuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:50:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33242 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729668AbgLIPuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:46:01 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B4DC061793;
-        Wed,  9 Dec 2020 07:45:21 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id n4so2048316iow.12;
-        Wed, 09 Dec 2020 07:45:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=06Y3p4pFgwU8f+X60rwMLY/HKPxnBiWvgG/RLlTl2BE=;
-        b=GDomIyC9M9rnoB4CURLuz8vYpZAbsZjiLOHhEdncxBic28IauotV8cpQohn+4xGAkU
-         TZvBt7FAo7IgKOZI1GqXMzCiXNbcg2p86vvYBJQ4KUrKreXNHBnpXqetE+qDZVq4cIjm
-         m89qoB8apcQgNaYsxjQIjpohvA30ZhjlmKCQYA25WtxHqVxPUNZnNQ9uNOK33xjHRHaZ
-         JEC+92OG7HTZZmllNHcrnr+bppbYtEcm9IeyIk1lFWTPD/qMA/BHZSVMR+aVPMcCBSyU
-         cqV2El1g3ORZwVo43rSkiTX4CichAwU9F/q/b+C96l0GjGDSODwwWedGgjmBiDbCQgrH
-         40UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=06Y3p4pFgwU8f+X60rwMLY/HKPxnBiWvgG/RLlTl2BE=;
-        b=FMy0v/pLb2ZWsfzKfb2xsZM7FHQoii0+d0XTk1JyPssGjBkJg4zPftzjlqfdt5d/Mk
-         xqyBpwzqi7xPeCi09gaf3W7HvRBtpjYr8iIIrHqlA1hxGwof4JJct+ZsyszoHSH/LqTv
-         BfPsroURhMrjZCNmwbYGNf8bV0VK310bKg2cPD/FpjUp3GNGd9ZfPnUBamoPD2XJH0b3
-         dR46FdQk9DCtCR1+Zi3qhRK2Ukb/Sk8rN561UqTNBBKhgEVTVdnstadfTxaD5zeTh9sj
-         QJOS70iDoi+aVgFHhAX/yC25AsOkzRoQvNFUYkRdM9RLBHA0xJfhkpSl1e6xofaCqJ1h
-         gvHA==
-X-Gm-Message-State: AOAM532uFPp6quhqSSuUBj1INJZXX7BIlMHYXjyDwPPengc1Q8PE1r5h
-        tAhfQp1Aw/J3p65SwYIYoz+iRTSeGlBOeMiMPcs=
-X-Google-Smtp-Source: ABdhPJxSWDbBxLeai2a8Nlg7PX5hOf0KE4P98MHitmgzdHjDi0D4r0xYCYXQAbpi/rBgm6iRilyCzBb3vGuqAuplFMU=
-X-Received: by 2002:a02:3213:: with SMTP id j19mr3842018jaa.79.1607528720593;
- Wed, 09 Dec 2020 07:45:20 -0800 (PST)
+        Wed, 9 Dec 2020 10:50:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607528922;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FAsAkjC0ZKqfT8nIOeG7vx7V2m4q/wdL4+UBTIQYf7s=;
+        b=FziFlAmK6XZkalhobYFVEbjNC7YAdwga/RmZLWU0WRP4dLa30sFJZUyYdt5LSwa/VTKdC3
+        gRlI/pDqrQDbbvmQjzZH2ZPc1KWN+PgNZr7gM9VrzU75u38939VAh0lWKNuPS5hnJzank8
+        69TL7NZX7051rCAb7Yo2Yn2M0W1ThgI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-qPQfirWWMnaXvDC8Ww-bRQ-1; Wed, 09 Dec 2020 10:48:38 -0500
+X-MC-Unique: qPQfirWWMnaXvDC8Ww-bRQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D4748049F8;
+        Wed,  9 Dec 2020 15:47:31 +0000 (UTC)
+Received: from [10.36.113.30] (ovpn-113-30.ams2.redhat.com [10.36.113.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 731295D9D3;
+        Wed,  9 Dec 2020 15:47:23 +0000 (UTC)
+Subject: Re: [External] Re: [PATCH v7 06/15] mm/hugetlb: Disable freeing
+ vmemmap if struct page size is not power of two
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201130151838.11208-1-songmuchun@bytedance.com>
+ <20201130151838.11208-7-songmuchun@bytedance.com>
+ <ba57ea7d-709b-bf36-d48a-cc72a26012cc@redhat.com>
+ <CAMZfGtV5200NZXH9Z_Z9qXo5FCd9E6JOTXjQtzcF0xGi-gCuPg@mail.gmail.com>
+ <4b8a9389-1704-4d8c-ec58-abd753814dd9@redhat.com>
+ <a6d11bc6-033d-3a0b-94ce-cbd556120b6d@redhat.com>
+ <CAMZfGtWfz8DcwKBLdf3j0x9Dt6ZvOd+MvjX6yXrAoKDeXxW95w@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <33779de1-7a7a-aa5c-e756-92925d4b097d@redhat.com>
+Date:   Wed, 9 Dec 2020 16:47:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201203095342.73591-1-alexandru.ardelean@analog.com> <CAHp75VffjpFyh0G3F6v0j5tXrURA2pCtWsSztC7KejhBFuLTvw@mail.gmail.com>
-In-Reply-To: <CAHp75VffjpFyh0G3F6v0j5tXrURA2pCtWsSztC7KejhBFuLTvw@mail.gmail.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Wed, 9 Dec 2020 17:45:09 +0200
-Message-ID: <CA+U=DsoNHebsuGDhGnJOwFbkYtGY+1Gs_mhCssH+FYk3Y05eZA@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: core: register chardev only if needed
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMZfGtWfz8DcwKBLdf3j0x9Dt6ZvOd+MvjX6yXrAoKDeXxW95w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 5:37 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Thu, Dec 3, 2020 at 11:55 AM Alexandru Ardelean
-> <alexandru.ardelean@analog.com> wrote:
-> >
-> > We only need a chardev if we need to support buffers and/or events.
-> >
-> > With this change, a chardev will be created only if an IIO buffer is
-> > attached OR an event_interface is configured.
-> >
-> > Otherwise, no chardev will be created, and the IIO device will get
-> > registered with the 'device_add()' call.
-> >
-> > Quite a lot of IIO devices don't really need a chardev, so this is a minor
-> > improvement to the IIO core, as the IIO device will take up (slightly)
-> > fewer resources.
-> >
-> > In order to not create a chardev, we mostly just need to not initialize the
-> > indio_dev->dev.devt field. If that is un-initialized, cdev_device_add()
->
-> un-initialized -> uninitialized
->
-> > behaves like device_add().
->
-> Are you sure there is no user space application that doesn't rely on
-> character device to be always present?
+On 09.12.20 16:13, Muchun Song wrote:
+> On Wed, Dec 9, 2020 at 6:10 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 09.12.20 11:06, David Hildenbrand wrote:
+>>> On 09.12.20 11:03, Muchun Song wrote:
+>>>> On Wed, Dec 9, 2020 at 5:57 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>
+>>>>> On 30.11.20 16:18, Muchun Song wrote:
+>>>>>> We only can free the tail vmemmap pages of HugeTLB to the buddy allocator
+>>>>>> when the size of struct page is a power of two.
+>>>>>>
+>>>>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>>>>>> ---
+>>>>>>  mm/hugetlb_vmemmap.c | 5 +++++
+>>>>>>  1 file changed, 5 insertions(+)
+>>>>>>
+>>>>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+>>>>>> index 51152e258f39..ad8fc61ea273 100644
+>>>>>> --- a/mm/hugetlb_vmemmap.c
+>>>>>> +++ b/mm/hugetlb_vmemmap.c
+>>>>>> @@ -111,6 +111,11 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
+>>>>>>       unsigned int nr_pages = pages_per_huge_page(h);
+>>>>>>       unsigned int vmemmap_pages;
+>>>>>>
+>>>>>> +     if (!is_power_of_2(sizeof(struct page))) {
+>>>>>> +             pr_info("disable freeing vmemmap pages for %s\n", h->name);
+>>>>>
+>>>>> I'd just drop that pr_info(). Users are able to observe that it's
+>>>>> working (below), so they are able to identify that it's not working as well.
+>>>>
+>>>> The below is just a pr_debug. Do you suggest converting it to pr_info?
+>>>
+>>> Good question. I wonder if users really have to know in most cases.
+>>> Maybe pr_debug() is good enough in environments where we want to debug
+>>> why stuff is not working as expected.
+>>>
+>>
+>> Oh, another thought, can we glue availability of
+>> HUGETLB_PAGE_FREE_VMEMMAP (or a new define based on the config and the
+>> size of a stuct page) to the size of struct page somehow?
+>>
+>> I mean, it's known at compile time that this will never work.
+> 
+> I want to define a macro which indicates the size of the
+> struct page. There is place (kernel/bounds.c) where can
+> do similar things. When I added the following code in
+> that file.
+> 
+>         DEFINE(STRUCT_PAGE_SIZE, sizeof(struct page));
+> 
+> Then the compiler will output a message like:
+> 
 
-Nope.
-I'm not sure.
-I'm also not completely sure how Jonathan feels about this patch being
-added now [so late].
+Hm, from what I understand you cannot use sizeof() in #if etc. So it
+might not be possible after all. At least the compiler should optimize
+code like
 
-Though, technically if the chardev was already there, without all the
-control in place [to enable IIO buffers and other stuff through the
-chardev] then it's technically just a "marker" file.
-Which arguably is a lot to have (i.e. chardev that should be unusable).
+if (!is_power_of_2(sizeof(struct page))) {
+	// either this
+} else {
+	// or that
+}
 
-If it is usable with no control in place for buffers or other stuff
-(i.e. I missed something), then I also don't know.
+that can never be reached
 
-So, this patch on it's own can still be interpreted as an RFC.
-See:
-https://lore.kernel.org/linux-iio/20201121180246.772ad299@archlinux/
+-- 
+Thanks,
 
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+David / dhildenb
+
