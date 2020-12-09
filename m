@@ -2,153 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26CD2D4AC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:46:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD862D4ABE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387790AbgLITnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:43:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43344 "EHLO mail.kernel.org"
+        id S2387978AbgLITow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:44:52 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:36810 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387873AbgLITnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:43:20 -0500
-Date:   Wed, 9 Dec 2020 11:42:39 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607542959;
-        bh=7iFrWD0GhmOKVrp+RF5EBq1l/SLFCT+Au3bEhC/pRSI=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UvOkcEgozn0thI74AugbRWokEZTllnGGBrbwwzK1pmmzcLCKqDaQOnYJla+yoP6Zn
-         VgeAcUqfMrbPfD46Hpbvjs1PkH3n4QrX2mQldkwUpz4CUAa4OhFiD8+gCiyo/GmNxQ
-         1tglt2/y1p6r0716vWmOD9wvjkgeSK2q+8zOQMnozQT68rOdceDJd0xeeZE2BG8VxH
-         8XQHryZ7rKa98xzsQBFq4WraG2DoYNzvxMWB/tXsmrlBertJyaQsghZJQWrP3ncnVv
-         o88inUcpP/LNIDk22Y7ymCYzd20aOCPApHL68iG98u2IdCQhmuC2BvFGJK4PpQitrW
-         mvf3bhRt6TquA==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        iamjoonsoo.kim@lge.com, andrii@kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 sl-b 3/5] mm: Make mem_dump_obj() handle vmalloc()
- memory
-Message-ID: <20201209194239.GG2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
- <20201209011303.32737-3-paulmck@kernel.org>
- <20201209193637.GA5757@pc638.lan>
+        id S2387936AbgLITos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:44:48 -0500
+Received: from zn.tnic (p200300ec2f0f480094b14cbb76d70e52.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:4800:94b1:4cbb:76d7:e52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B24C41EC0554;
+        Wed,  9 Dec 2020 20:44:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607543043;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=clZvtADPHLsnbhIEOKq+ZZYNEVnzxTgG9yjyoKhNTw0=;
+        b=kzI0F107nxnZfGWBmCmsUwN9Slp0hL2W3106LtLwPhG6sfJ7Q+aSz+T5RF66GWL8EU2zy0
+        N7pWEw46bLEwl7UMJvRApAfnRJP2l+kiW4R1/f6hS1DwG6KA+9q68TXiN5sujZUo6Fc9Zk
+        zmHQmfIINJ9Wk62Aj5nfpEVhs3dTo70=
+Date:   Wed, 9 Dec 2020 20:43:58 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     konrad.wilk@oracle.com, hch@lst.de, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org, dave.hansen@linux-intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, Thomas.Lendacky@amd.com, Jon.Grimm@amd.com,
+        rientjes@google.com
+Subject: Re: [PATCH v8] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Message-ID: <20201209194358.GA20638@zn.tnic>
+References: <20201207231057.26403-1-Ashish.Kalra@amd.com>
+ <20201209110115.GA18203@zn.tnic>
+ <20201209122907.GA6258@ashkalra_ubuntu_server>
+ <20201209125442.GC18203@zn.tnic>
+ <20201209131946.GA6495@ashkalra_ubuntu_server>
+ <20201209175105.GD18203@zn.tnic>
+ <20201209193416.GA6807@ashkalra_ubuntu_server>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201209193637.GA5757@pc638.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201209193416.GA6807@ashkalra_ubuntu_server>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 08:36:37PM +0100, Uladzislau Rezki wrote:
-> On Tue, Dec 08, 2020 at 05:13:01PM -0800, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > This commit adds vmalloc() support to mem_dump_obj().  Note that the
-> > vmalloc_dump_obj() function combines the checking and dumping, in
-> > contrast with the split between kmem_valid_obj() and kmem_dump_obj().
-> > The reason for the difference is that the checking in the vmalloc()
-> > case involves acquiring a global lock, and redundant acquisitions of
-> > global locks should be avoided, even on not-so-fast paths.
-> > 
-> > Note that this change causes on-stack variables to be reported as
-> > vmalloc() storage from kernel_clone() or similar, depending on the degree
-> > of inlining that your compiler does.  This is likely more helpful than
-> > the earlier "non-paged (local) memory".
-> > 
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > Cc: <linux-mm@kvack.org>
-> > Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  include/linux/vmalloc.h |  6 ++++++
-> >  mm/util.c               | 12 +++++++-----
-> >  mm/vmalloc.c            | 12 ++++++++++++
-> >  3 files changed, 25 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> > index 938eaf9..c89c2be 100644
-> > --- a/include/linux/vmalloc.h
-> > +++ b/include/linux/vmalloc.h
-> > @@ -248,4 +248,10 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
-> >  int register_vmap_purge_notifier(struct notifier_block *nb);
-> >  int unregister_vmap_purge_notifier(struct notifier_block *nb);
-> >  
-> > +#ifdef CONFIG_MMU
-> > +bool vmalloc_dump_obj(void *object);
-> > +#else
-> > +static inline bool vmalloc_dump_obj(void *object) { return false; }
-> > +#endif
-> > +
-> >  #endif /* _LINUX_VMALLOC_H */
-> > diff --git a/mm/util.c b/mm/util.c
-> > index 8c2449f..ee99a0a 100644
-> > --- a/mm/util.c
-> > +++ b/mm/util.c
-> > @@ -984,6 +984,12 @@ int __weak memcmp_pages(struct page *page1, struct page *page2)
-> >   */
-> >  void mem_dump_obj(void *object)
-> >  {
-> > +	if (kmem_valid_obj(object)) {
-> > +		kmem_dump_obj(object);
-> > +		return;
-> > +	}
-> > +	if (vmalloc_dump_obj(object))
-> > +		return;
-> >  	if (!virt_addr_valid(object)) {
-> >  		if (object == NULL)
-> >  			pr_cont(" NULL pointer.\n");
-> > @@ -993,10 +999,6 @@ void mem_dump_obj(void *object)
-> >  			pr_cont(" non-paged (local) memory.\n");
-> >  		return;
-> >  	}
-> > -	if (kmem_valid_obj(object)) {
-> > -		kmem_dump_obj(object);
-> > -		return;
-> > -	}
-> > -	pr_cont(" non-slab memory.\n");
-> > +	pr_cont(" non-slab/vmalloc memory.\n");
-> >  }
-> >  EXPORT_SYMBOL_GPL(mem_dump_obj);
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index 6ae491a..7421719 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -3431,6 +3431,18 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
-> >  }
-> >  #endif	/* CONFIG_SMP */
-> >  
-> > +bool vmalloc_dump_obj(void *object)
-> > +{
-> > +	struct vm_struct *vm;
-> > +	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
-> >
-> Paul, vmalloced addresses are already aligned to PAGE_SIZE, so that one
-> is odd.
+On Wed, Dec 09, 2020 at 07:34:16PM +0000, Ashish Kalra wrote:
+> This should work, but i am concerned about making IO_TLB_DEFAULT_SIZE
+> (which is pretty much private to generic swiotlb code) to be visible
+> externally, i don't know if there are any concerns with that ?
 
-They are, but this is to handle things like this:
+Meh, it's just a define and it is not a secret that swiotlb size by
+default is 64M.
 
-	struct foo {
-		int a;
-		struct rcu_head rh;
-	};
+Btw, pls trim your reply by removing quoted text you're not responding
+to.
 
-	void silly(struct foo *fp)
-	{
-		call_rcu(&fp->rh, my_rcu_cb);
-		call_rcu(&fp->rh, my_other_rcu_cb);
-	}
+Thx.
 
-In kernels built with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y, this would
-result in a call to mem_dump_obj() and then to vmalloc_dump_obj()
-with a non-page-aligned pointer.
+-- 
+Regards/Gruss,
+    Boris.
 
-							Thanx, Paul
+https://people.kernel.org/tglx/notes-about-netiquette
