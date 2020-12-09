@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23CA62D47FB
+	by mail.lfdr.de (Postfix) with ESMTP id 938B52D47FC
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732839AbgLIRae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:30:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39862 "EHLO mail.kernel.org"
+        id S1732880AbgLIRbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:31:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729855AbgLIRaZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:30:25 -0500
-Content-Type: text/plain; charset="utf-8"
+        id S1730557AbgLIRbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:31:01 -0500
+Date:   Wed, 9 Dec 2020 09:30:19 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607534984;
-        bh=X3mrye1KXGcDNVeDxCVeGHxOE9WePBKAXTYWezNgwdw=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=X5w+RnP9Xg+bFUlLwlLPQpCBrQ5xqjKLesd9e+6aGdwrZIXjkTSNtpxmwF0zy1UAz
-         pQvfLuT1IJXM5vR4NaCAXzWRJUVqh567p64Ssuggv9GI85fbWGd9FAHF9k3My8jr6t
-         ojF3/i5zjhQGEFkbe6s8qLyAJJ7L/eV8pPdMJ3ai4GiZhk6v3A0ThFTX0WZQMcBpb5
-         L4bw3mRq7EbzYOUXHmw4d/BrPRJPdSHLkn9cauEPrEip5h/bgh3FCnJ9gMs4VPj2NF
-         Enj1ZoNSx0DuE2VPApG9YjGQJiQeQhbR66oF5pgtU45aieOa/U8/MZpwRUZvB9OLtc
-         qHMiwvBioe04g==
+        s=k20201202; t=1607535020;
+        bh=Bbrzj01ZfSyc3zurT/13804zu1FtDXKIyP3uYFUIMrk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=olfavIKOeosdwBo2O6z6nWXqXd1Rbt310WInzuv8Tqxl1uL9FnKegA8FBZDzF1Fwf
+         rC/N4Uu0vgDhS9tFvwSQSYTYc/dlt1y5tP6m63/u3HArICCWHGaE/4M0RSTURt1iby
+         vVxUA2ShC4gU97ubc52pB524KJcvljhQEigLtzMR6sD7biAnUpHtGkNp6u8nNY7Wlb
+         e5W4mhe4vt+jvVZfIh3Ml/l6U0hpCB6jp1BHBvocVy64BsXnf9YDWK8poY+Ocj7wKf
+         ko+WqWdldxM9qX3rSn8mhiSld6oaepwKvAwgVuUZiqhBKhAvT9Kz2n1sPs/T2P1n4p
+         71go1ZDPEpzQg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Cc:     Stefano Garzarella <sgarzare@redhat.com>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH net-next v2 1/4] vm_sockets: Include flags field in the
+ vsock address data structure
+Message-ID: <20201209093019.1caae20e@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <4f2a1ac5-68c7-190f-6abf-452f67b3a7f4@amazon.com>
+References: <20201204170235.84387-1-andraprs@amazon.com>
+        <20201204170235.84387-2-andraprs@amazon.com>
+        <20201207132908.130a5f24@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        <73ff948f-f455-7205-bfaa-5b468b2528c2@amazon.com>
+        <20201208104222.605bb669@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        <20201209104806.qbuemoz3oy6d3v3b@steredhat>
+        <4f2a1ac5-68c7-190f-6abf-452f67b3a7f4@amazon.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAMuHMdVYoxUOUL0zNAPzTJUSR3vGzcJWMzvtCKK=ZxyM=8hk+A@mail.gmail.com>
-References: <20201208090555.7159b138@canb.auug.org.au> <CAMuHMdVYoxUOUL0zNAPzTJUSR3vGzcJWMzvtCKK=ZxyM=8hk+A@mail.gmail.com>
-Subject: Re: linux-next: Fixes tag needs some work in the clk tree
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Mike Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Date:   Wed, 09 Dec 2020 09:29:43 -0800
-Message-ID: <160753498332.1580929.15118515893187584689@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Geert Uytterhoeven (2020-12-08 00:37:00)
-> Hi Stephen,
->=20
-> On Mon, Dec 7, 2020 at 11:06 PM Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
-> > In commit
+On Wed, 9 Dec 2020 17:17:56 +0200 Paraschiv, Andra-Irina wrote:
+> > I agree that could be a problem, but here some considerations:
+> > - I checked some applications (qemu-guest-agent, ncat, iperf-vsock) and
+> > =C2=A0 all use the same pattern: allocate memory, initialize all the
+> > =C2=A0 sockaddr_vm to zero (to be sure to initialize the svm_zero), set=
+ the
+> > =C2=A0 cid and port fields.
+> > =C2=A0 So we should be safe, but of course it may not always be true.
 > >
-> >   c3f207f6d23d ("clk: renesas: r8a779a0: Make rcar_r8a779a0_cpg_clk_reg=
-ister() static")
+> > - For now the issue could affect only nested VMs. We introduced this
+> > =C2=A0 support one year ago, so it's something new and maybe we don't c=
+ause
+> > =C2=A0 too many problems.
 > >
-> > Fixes tag
-> >
-> >   Fixes: c07439dea94050b6 ("clk: renesas: cpg-mssr: Add support for R-C=
-ar V3U")
-> >
-> > has these problem(s):
-> >
-> >   - Target SHA1 does not exist
+> > As an alternative, what about using 1 or 2 bytes from svm_zero[]?
+> > These must be set at zero, even if we only check the first byte in the
+> > kernel. =20
 >=20
-> Oops, my bad.
+> Thanks for the follow-up info.
 >=20
-> > Maybe you meant
-> >
-> > Fixes: 17bcc8035d2d ("clk: renesas: cpg-mssr: Add support for R-Car V3U=
-")
->=20
-> Yes I did.
->=20
-> Mike/Stephen: do you want me to respin my pull requests?
->=20
+> We can also consider the "svm_zero" option and could use 2 bytes from=20
+> that field for "svm_flags", keeping the same "unsigned short" type.
 
-Sure a respin is fine. I can fix it up in clk tree. Any chance your
-trees can be pulled into linux-next? That would find this earlier.
+Or use svm_zero as a gate for interpreting other fields?
+If svm_zero[0]* =3D=3D something start checking the value of reserved1?
+* in practice the name can be unioned to something more palatable ;)
