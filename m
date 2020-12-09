@@ -2,104 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B862D4D53
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E23C42D4D5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:12:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388427AbgLIWJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:09:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388292AbgLIWJc (ORCPT
+        id S2388606AbgLIWLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:11:08 -0500
+Received: from mail-out.m-online.net ([212.18.0.9]:49506 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388338AbgLIWLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:09:32 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A76C0613CF;
-        Wed,  9 Dec 2020 14:08:51 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id h16so3306301edt.7;
-        Wed, 09 Dec 2020 14:08:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gTPM8owPg4KHLk7mw/dSVPYEe8lfzBgm5ehHl0CdL3k=;
-        b=TUrf/f7C2p1tLXtCa0MBWz0IOriWcbgsJ5mkf/v4ovUrWYfxJ/kgphXXbBUucEnFcD
-         n0TRTslG9RXB05aDskvYpZEtWTUIBypRb7UsQLVEKEn5Qrx2Bzstop6YtaNsHbAqIt/I
-         5zIpJNloR8pUEm8/DLw6nIUloitsDTOjs9jrgs0Ls4FIo0aFc6Boc1ibc1yjYCsEg90i
-         TLe+gPvf01qeNxWjpwi20at5FnO6t8Sys+VN3O8cPt0xZ3PohvLrXtz80JRJwJ5iey6j
-         iwnzUEg3f3n3iDeX7pz/TPNOhrPjBsAJlJSUkeCudY0Ziq8FCFPT3wihvaT3l1zgmr3T
-         4r7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gTPM8owPg4KHLk7mw/dSVPYEe8lfzBgm5ehHl0CdL3k=;
-        b=rwumGhXwj8fZnbfdyIQbQYZ68N1bsf54pjeVMojyREiZHyi7KTwDFTufZG2eRFdX7D
-         o07kkZxbeskZsdbSeALutmHsb6qWsqD3EhzMfbo7fxc4HE87YIWAHb6KlDZx2MWqeYzq
-         jYMfTRRcLBpwVEO4CxQoUfreNK31HJatfSixvIgQM3ZDjBCWGfhu0GTC9zW3wbHEf3bE
-         M4vuUPfEe8PD82esd0X96Gn3y72uGR9wwGDSQnLKEHJAJOtRVUF398xJ2AhoEwhT5QwT
-         7hagZWBlD93C8dMTlf4ACJi2a770OaQJ6c9Mfk/Gqr41hzXBZIP/R6j4JkhQauVXVhgF
-         aI/Q==
-X-Gm-Message-State: AOAM530ErEnbI3EYLd1tYEVKOgfJ8KiJYRdaT1fgQTPMIVqCnCDE0aJ5
-        Hcxr44VMxf6B4w+OjQ0ReWY=
-X-Google-Smtp-Source: ABdhPJylyY+2dsfkfrSmLw74jj4bZHS11cM+UcXOzQ8Jhv6o5Esrxxb1l03IIZU8f0gWJH8W8wWAbw==
-X-Received: by 2002:a50:9e8b:: with SMTP id a11mr3901460edf.276.1607551730377;
-        Wed, 09 Dec 2020 14:08:50 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id z10sm2597154ejl.30.2020.12.09.14.08.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 09 Dec 2020 14:08:49 -0800 (PST)
-Message-ID: <9fedcb0301c44e03a21bc5deba83c09e1d64b3f4.camel@gmail.com>
-Subject: Re: [PATCH v3 2/3] scsi: ufs: Keep device active mode only
- fWriteBoosterBufferFlushDuringHibernate == 1
-From:   Bean Huo <huobean@gmail.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Wed, 09 Dec 2020 23:08:48 +0100
-In-Reply-To: <DM6PR04MB6575B928898B319E8ACF1395FCCC0@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20201208210941.2177-1-huobean@gmail.com>
-         <20201208210941.2177-3-huobean@gmail.com>
-         <DM6PR04MB6575B928898B319E8ACF1395FCCC0@DM6PR04MB6575.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Wed, 9 Dec 2020 17:11:07 -0500
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4Crrnh14rGz1qs0j;
+        Wed,  9 Dec 2020 23:10:00 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4Crrnh014pz1qy6P;
+        Wed,  9 Dec 2020 23:09:59 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id 71vQKepPl3AN; Wed,  9 Dec 2020 23:09:58 +0100 (CET)
+X-Auth-Info: R4odLXJlFmOWfIxE8bkmUpJu6bfcjzVB0W9OybxRqrY=
+Received: from localhost.localdomain (89-64-25-12.dynamic.chello.pl [89.64.25.12])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Wed,  9 Dec 2020 23:09:58 +0100 (CET)
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Mans Rullgard <mans@mansr.com>,
+        Lukasz Majewski <lukma@denx.de>
+Subject: [PATCH v2] ARM: dts: imx28: add pinmux for USB1 overcurrent on pwm2
+Date:   Wed,  9 Dec 2020 23:09:03 +0100
+Message-Id: <20201209220903.27058-1-lukma@denx.de>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-09 at 07:40 +0000, Avri Altman wrote:
-> > From: Bean Huo <beanhuo@micron.com>
-> > 
-> > According to the JEDEC UFS 3.1 Spec, If
-> > fWriteBoosterBufferFlushDuringHibernate
-> > is set to one, the device flushes the WriteBooster Buffer data
-> > automatically
-> > whenever the link enters the hibernate (HIBERN8) state. While the
-> > flushing
-> > operation is in progress, the device should be kept in Active power
-> > mode.
-> > Currently, we set this flag during the UFSHCD probe stage, but we
-> > didn't deal
-> > with its programming failure. Even this failure is less likely to
-> > occur, but
-> > still it is possible.
+From: Mans Rullgard <mans@mansr.com>
 
-Hi, Can and Stanley
-Please review this patch, and leave your comments.
-or if you look good, leave your review-tag, in order that Martin can
-accept this series patch easily.
+Add pinmux setting for USB1 overcurrent on pwm2 pad.
 
-Thanks,
-Bean
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
+---
+Changes for v2:
+- Add S-o-B
+---
+ arch/arm/boot/dts/imx28.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
+diff --git a/arch/arm/boot/dts/imx28.dtsi b/arch/arm/boot/dts/imx28.dtsi
+index bbe52150b165..84d0176d5193 100644
+--- a/arch/arm/boot/dts/imx28.dtsi
++++ b/arch/arm/boot/dts/imx28.dtsi
+@@ -948,6 +948,16 @@
+ 					fsl,pull-up = <MXS_PULL_DISABLE>;
+ 				};
+ 
++				usb1_pins_b: usb1@1 {
++					reg = <1>;
++					fsl,pinmux-ids = <
++						MX28_PAD_PWM2__USB1_OVERCURRENT
++					>;
++					fsl,drive-strength = <MXS_DRIVE_12mA>;
++					fsl,voltage = <MXS_VOLTAGE_HIGH>;
++					fsl,pull-up = <MXS_PULL_DISABLE>;
++				};
++
+ 				usb0_id_pins_a: usb0id@0 {
+ 					reg = <0>;
+ 					fsl,pinmux-ids = <
+-- 
+2.20.1
 
