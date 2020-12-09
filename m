@@ -2,85 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55512D4527
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607FA2D452B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730765AbgLIPKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:10:54 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:38759 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727242AbgLIPKx (ORCPT
+        id S1729258AbgLIPOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:14:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727925AbgLIPOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:10:53 -0500
-Received: by mail-lf1-f68.google.com with SMTP id w13so3557548lfd.5;
-        Wed, 09 Dec 2020 07:10:36 -0800 (PST)
+        Wed, 9 Dec 2020 10:14:23 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EEFC061793
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 07:13:42 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id 4so1083577plk.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 07:13:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MH2oBtgG7SM/WEjQVktVm6vzkLZc11BiXccpenn6u5w=;
+        b=veTVgAoUehNGrKZIOLlBn2vp5nNt2WZg/o23lwAg/fsGibfKfMJcJw3iWo+tUytQzS
+         Q4IKHPYhpizNVCD+7+LDs72sFFQSnpYnN33k3SGvTMThqaycRloc+azGCc4UyljH+T8r
+         Lg8DJ+rmLIYj1t4VvDnE9WiGPAYNBrOS1EJEtwPaVe6dIXfaq/fettA58rI8RN7EkBUN
+         //DVuFJbb92zLltzHOC7cZlRv7a6Gbm3vuhDYlcp+W8gNyPb3fEAqNtyHwcxQ1Jp3cLT
+         g0hiyRFhL6I4ib0Ov1mP/mQNVH3ImSWHVnYAt/LYj94DdLGjf0C/E9rzx3kdj1EvzFM5
+         c9mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jP1J4ziuKFQP6qMuiqWuGJM1FU49hl1u2cz1iOJBsj8=;
-        b=JQuSljS8mKxLlwIEHKUN9YZxqusyNsd3JWtS0Ud3NymglFFvTbiYIrJjOTyS4KSKw/
-         ZyvAgpBo5OUi9G7vAxYhqXn5TnP14HtJBxppv0r7ARtAjXerGf9qy+QtTRWXlmT8zFCc
-         vjnlwgmhCNcSObWR3Hi5aCT83vyJGZsC73LvugHxmWznJxWXKqhXp7S5ZO62/nFs6f9G
-         /sAmvv79Ts7s5pYg59s/VzEp3Ish0zCesGl/xed5APeHGqvVomObuB2Wx7SGMJI0XReG
-         XBNbzuxrL7oSAsHiyGnUcGGBz0/cOINccuyccyNL9lQIrmgfhFboffZ15QLNB/UMN9vM
-         rNCw==
-X-Gm-Message-State: AOAM531LnFNB00cgh1KXe64aNPehZDIVdIrUM00PK8RLPmw7pSJ1pxb3
-        hl0HrkUds+Gs6/YS33gqa40=
-X-Google-Smtp-Source: ABdhPJx6r7UsgNFRDx+GjQcmhqBhZNSgKGaFvGgnz7h5ra+ZYzTzU4VS8PNJ4WfsOMLtLQe0yrUtwA==
-X-Received: by 2002:a19:197:: with SMTP id 145mr1112949lfb.483.1607526609405;
-        Wed, 09 Dec 2020 07:10:09 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id b12sm263014ljj.133.2020.12.09.07.10.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 07:10:08 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kn17B-0005TG-CV; Wed, 09 Dec 2020 16:10:50 +0100
-Date:   Wed, 9 Dec 2020 16:10:49 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Johan Hovold <johan@kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] tty: add flag to suppress ready signalling on open
-Message-ID: <X9Do+b5+xxjrywVN@localhost>
-References: <20201202113942.27024-1-johan@kernel.org>
- <X9Dficb8sQGRut+S@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MH2oBtgG7SM/WEjQVktVm6vzkLZc11BiXccpenn6u5w=;
+        b=j4FlzieBxDb6i/DKnDtDzFsaftXFYJt9k0OC/tpY3O8ZZ8izU2p8elBkv0dQwBdAUs
+         1vcWHEHk3NNvAPyOnSJqFJvMR9of8YwWVzEpL3UqA6glRs1ADns+WbNRTeWeYvVisOD8
+         EQYoUbM3nJyoRWQWdAiE3OvpCjOEoAaxSFKveN6NDlBxgmJlMcgvVubar/GlRGIJMJOn
+         yC8l8gXqnPQH1ZpE5siX77+uiifid5+l8lEJRwH09+VhsswD5LuMUT2VKNcdPTwKUhuo
+         ITrEv+mCoz5LVAQMxL6fIa+QYDj5gZV8Ht8bCjdkBB2NW5D7kweklUmtumyMCyklWyoK
+         reGA==
+X-Gm-Message-State: AOAM531uSPTyX53km5Hh39+Yv0B9Mm8M6pZ19F+yvS+oPbmaGQQoMle9
+        Hhljx/lBwMZy4urgq4arIRLzEkLf0XbBBJH1CKojqQ==
+X-Google-Smtp-Source: ABdhPJzy9V7tyAUDxcV027ueD0F0tNTha+NK7Tvb0IvWRd4/heU72ewIi40CX5slgfRaL4RB5vtjw1qzSz/Nznch+dw=
+X-Received: by 2002:a17:902:bb92:b029:d9:e9bf:b775 with SMTP id
+ m18-20020a170902bb92b02900d9e9bfb775mr2657733pls.24.1607526822541; Wed, 09
+ Dec 2020 07:13:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X9Dficb8sQGRut+S@kroah.com>
+References: <20201130151838.11208-1-songmuchun@bytedance.com>
+ <20201130151838.11208-7-songmuchun@bytedance.com> <ba57ea7d-709b-bf36-d48a-cc72a26012cc@redhat.com>
+ <CAMZfGtV5200NZXH9Z_Z9qXo5FCd9E6JOTXjQtzcF0xGi-gCuPg@mail.gmail.com>
+ <4b8a9389-1704-4d8c-ec58-abd753814dd9@redhat.com> <a6d11bc6-033d-3a0b-94ce-cbd556120b6d@redhat.com>
+In-Reply-To: <a6d11bc6-033d-3a0b-94ce-cbd556120b6d@redhat.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 9 Dec 2020 23:13:06 +0800
+Message-ID: <CAMZfGtWfz8DcwKBLdf3j0x9Dt6ZvOd+MvjX6yXrAoKDeXxW95w@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v7 06/15] mm/hugetlb: Disable freeing
+ vmemmap if struct page size is not power of two
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 03:30:33PM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Dec 02, 2020 at 12:39:35PM +0100, Johan Hovold wrote:
-> > This series adds a new NORDY port flag to suppress raising the
-> > modem-control lines on open to signal DTE readiness.
-> > 
-> > This can be used to implement a NORDY termios control flag to complement
-> > HUPCL, which controls lowering of the modem-control lines on final
-> > close.
-> > 
-> > Initially drivers can export the flag through sysfs, which also allows
-> > control over the lines on first open. Such an interface is implemented
-> > for serial core and USB serial.
+On Wed, Dec 9, 2020 at 6:10 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 09.12.20 11:06, David Hildenbrand wrote:
+> > On 09.12.20 11:03, Muchun Song wrote:
+> >> On Wed, Dec 9, 2020 at 5:57 PM David Hildenbrand <david@redhat.com> wrote:
+> >>>
+> >>> On 30.11.20 16:18, Muchun Song wrote:
+> >>>> We only can free the tail vmemmap pages of HugeTLB to the buddy allocator
+> >>>> when the size of struct page is a power of two.
+> >>>>
+> >>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >>>> ---
+> >>>>  mm/hugetlb_vmemmap.c | 5 +++++
+> >>>>  1 file changed, 5 insertions(+)
+> >>>>
+> >>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> >>>> index 51152e258f39..ad8fc61ea273 100644
+> >>>> --- a/mm/hugetlb_vmemmap.c
+> >>>> +++ b/mm/hugetlb_vmemmap.c
+> >>>> @@ -111,6 +111,11 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
+> >>>>       unsigned int nr_pages = pages_per_huge_page(h);
+> >>>>       unsigned int vmemmap_pages;
+> >>>>
+> >>>> +     if (!is_power_of_2(sizeof(struct page))) {
+> >>>> +             pr_info("disable freeing vmemmap pages for %s\n", h->name);
+> >>>
+> >>> I'd just drop that pr_info(). Users are able to observe that it's
+> >>> working (below), so they are able to identify that it's not working as well.
+> >>
+> >> The below is just a pr_debug. Do you suggest converting it to pr_info?
+> >
+> > Good question. I wonder if users really have to know in most cases.
+> > Maybe pr_debug() is good enough in environments where we want to debug
+> > why stuff is not working as expected.
+> >
+>
+> Oh, another thought, can we glue availability of
+> HUGETLB_PAGE_FREE_VMEMMAP (or a new define based on the config and the
+> size of a stuct page) to the size of struct page somehow?
+>
+> I mean, it's known at compile time that this will never work.
 
-> > Also let me know if you prefer to hold this off for 5.12. The change is
-> > minimal, self-contained and low-risk, but it is a new interface and late
-> > in the release cycle as Andy pointed out.
-> 
-> I took the first 2 patches now, that was easy :)
-> 
-> I think we need more review for the rest of the series.  This does
-> change the way serial ports work in a non-traditional way (i.e. using
-> sysfs instead of terminal settings).  So I want to get a bunch of people
-> to agree that this is ok to do things this way now before taking this
-> new user-visible api.
+I want to define a macro which indicates the size of the
+struct page. There is place (kernel/bounds.c) where can
+do similar things. When I added the following code in
+that file.
 
-Sounds good, thanks.
+        DEFINE(STRUCT_PAGE_SIZE, sizeof(struct page));
 
-Johan
+Then the compiler will output a message like:
+
+       make[2]: Circular kernel/bounds.s <- include/generated/bounds.h
+dependency dropped.
+
+Then I realise that the size of the struct page also depends
+on include/generated/bounds.h. But this file is not generated.
+
+Hi David,
+
+Do you have some idea about this?
+
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
+
+
+-- 
+Yours,
+Muchun
