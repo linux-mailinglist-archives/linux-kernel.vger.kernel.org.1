@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10CF2D3810
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6F22D3812
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726110AbgLIBCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 20:02:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48710 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725877AbgLIBCs (ORCPT
+        id S1726147AbgLIBEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 20:04:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbgLIBEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 20:02:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607475681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pHSLKEYPkZSLVPn0PMFtupg/ADvjQnsxqHg4D8q8Ep8=;
-        b=XXcpy7zY9XTp6uXLSeKrLFUgShDIQJB7WyJx172jbV2wdiNN0tI7MVosII9u01FqOKxp7c
-        LQARLz6HfpmTjEFyjZRNCsMcJBbne4+Xt6LwshkyxswnuDONjSsXznCWgHLgIWuhgYYcuI
-        nkCxJce4aX+TwZ3x8COGzxO6ILLItMs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-441-wGboA2NIPAypn2AgzECzhQ-1; Tue, 08 Dec 2020 20:01:17 -0500
-X-MC-Unique: wGboA2NIPAypn2AgzECzhQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3AAC8800D55;
-        Wed,  9 Dec 2020 01:01:15 +0000 (UTC)
-Received: from T590 (ovpn-12-139.pek2.redhat.com [10.72.12.139])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 490BC19C78;
-        Wed,  9 Dec 2020 01:01:06 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 09:01:02 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hch@lst.de, hare@suse.de,
-        ppvk@codeaurora.org, bvanassche@acm.org, kashyap.desai@broadcom.com
-Subject: Re: [RFC PATCH] blk-mq: Clean up references when freeing rqs
-Message-ID: <20201209010102.GA1217988@T590>
-References: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
- <20201202033134.GD494805@T590>
- <aaf77015-3039-6b04-3417-d376e3467444@huawei.com>
- <20201203005505.GB540033@T590>
- <fa222311-2184-0041-61ab-b3d70fb92585@huawei.com>
- <7beb86a2-5c4b-bdc0-9fce-1b583548c6d0@huawei.com>
+        Tue, 8 Dec 2020 20:04:46 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F03C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 17:04:06 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id y10so43124plr.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 17:04:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tt5NYYW3eD0CdG20YGbejb4+Hp9N0V37FHt2G4ZFsdk=;
+        b=oyVudvZzPBxsLchBZ1RZ/5QowY9BdvvIe7OLQf2UDsbBXc7aYgEddgLgwUcOeUYl0J
+         ZWfeTd/a9TEv5XYDG9XNXnry0r+TOeCEXSOumRtCXHkFyp68Uq/W5HYXRQaPdAMbQm+r
+         Jkq4EPXkHa+gG0+KaUCAJjydTChXQnaDG8aorcaRXejDdzsb1NvrP25eF9zHvp3+RPqL
+         F/BJZ9UHbgl5dA88CJlvXKIL4E+2KpPjttxAjshgJvmB+n8ElMInplyTp68ocr4kQ0MJ
+         4y3fbaSl3aStgBCYVWXnovLQ4ikUaRAXdBudH+LrlIkaxsNs+SZVGqazNclxMxjuP0CY
+         x/3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tt5NYYW3eD0CdG20YGbejb4+Hp9N0V37FHt2G4ZFsdk=;
+        b=KCXRE4P4ErUpZlQiKkUD5x7CvGVWpvvVZssUm17KRC1pJGiV066VcyZPDNx34RDIYv
+         KlY1s641PEuyaqNY7bx5QShaAQz7CvrxiGXgJGlwUtW7tvNlGciMbA/ydSqiiWbTo9Pn
+         q/e+Ioh6hl0WRinWUZX+IEgC0lBHpUDwXyTWJVMN5grpNv5Z4cDgsB3hCFysl9ELtfYH
+         Do23w0JZ2MXuJHhib9QIHb+chZXibFHIbxDOoDER4SfHPJbzFVrbdszFFjN8JJZ3v6QB
+         mVp5MWT4Q4X8QIx5bL2idaRKxJOmLtggCMzJPj5BQjuT/IYkeNmjFoFoqfT459UFtASh
+         mJyw==
+X-Gm-Message-State: AOAM530gh9XBQ5qQNX9MGVxaSDfChjl+G6Lp+oflhRUkn60GmcygiC5c
+        bUbZaP/ZEu0n2PLF7VePVLo=
+X-Google-Smtp-Source: ABdhPJy0+zbewDlJmiKqfyXzKu3doGknUn+AKerzZRVTMbOnpCaVnO9XNvo8QY5yr7VH+hCUIginAg==
+X-Received: by 2002:a17:902:848e:b029:d6:d2c9:1d4c with SMTP id c14-20020a170902848eb02900d6d2c91d4cmr172237plo.40.1607475846101;
+        Tue, 08 Dec 2020 17:04:06 -0800 (PST)
+Received: from localhost ([2401:fa00:8f:203:a6ae:11ff:fe11:4b46])
+        by smtp.gmail.com with ESMTPSA id y24sm9467pfn.176.2020.12.08.17.04.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 17:04:05 -0800 (PST)
+Date:   Wed, 9 Dec 2020 10:04:03 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH next v2 2/3] printk: change @clear_seq to atomic64_t
+Message-ID: <20201209010403.GC1667627@google.com>
+References: <20201201205341.3871-1-john.ogness@linutronix.de>
+ <20201201205341.3871-3-john.ogness@linutronix.de>
+ <X8n9a2DWUFE/giyB@alley>
+ <X8/jS9k/eMIL+Acw@jagdpanzerIV.localdomain>
+ <875z5c9bhn.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7beb86a2-5c4b-bdc0-9fce-1b583548c6d0@huawei.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <875z5c9bhn.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 11:36:58AM +0000, John Garry wrote:
-> On 03/12/2020 09:26, John Garry wrote:
-> > On 03/12/2020 00:55, Ming Lei wrote:
-> > 
-> > Hi Ming,
-> > 
-> > > > Yeah, so I said that was another problem which you mentioned
-> > > > there, which
-> > > > I'm not addressing, but I don't think that I'm making thing worse here.
-> > > The thing is that this patch does not fix the issue completely.
-> > > 
-> > > > So AFAICS, the blk-mq/sched code doesn't wait for any "readers" to be
-> > > > finished, such as those running blk_mq_queue_tag_busy_iter or
-> > > > blk_mq_tagset_busy_iter() in another context.
-> > > > 
-> > > > So how about the idea of introducing some synchronization
-> > > > primitive, such as
-> > > > semaphore, which those "readers" must grab and release at start
-> > > > and end (of
-> > > > iter), to ensure the requests are not freed during the iteration?
-> > > It looks good, however devil is in details, please make into patch for
-> > > review.
-> > 
-> > OK, but another thing to say is that I need to find a somewhat reliable
-> > reproducer for the potential problem you mention. So far this patch
-> > solves the issue I see (in that kasan stops warning). Let me analyze
-> > this a bit further.
-> > 
+On (20/12/08 23:36), John Ogness wrote:
+> On 2020-12-09, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
+> >> Sigh, atomic64_read() uses a spin lock in the generic implementation
+> >> that is used on some architectures.
+> >
+> > Oh... So on those archs prb is not lockless in fact, it actually
+> > takes the spin_lock each time we read the descriptor state?
+> >
+> > 	desc_read()
+> > 	  atomic_long_read(state_var)
+> > 	    atomic64_read()
+> > 	      raw_spin_lock_irqsave(lock, flags)
+> > 	        << NMI panic >>
+> >
+> > Am I missing something?
 > 
-> Hi Ming,
-> 
-> I am just looking at this again, and have some doubt on your concern [0].
-> 
-> From checking blk_mq_queue_tag_busy_iter() specifically, don't we actually
-> guard against this with the q->q_usage_counter mechanism? That is, an agent
-> needs to grab a q counter ref when attempting the iter. This will fail when
-> the queue IO sched is being changed, as we freeze the queue during this
-> time, which is when the requests are freed, so no agent can hold a reference
-> to a freed request then. And same goes for blk_mq_update_nr_requests(),
-> where we freeze the queue.
+> For the state variable we chose atomic_long_t instead of atomic64_t for
+> this reason. atomic_long_t operations are available atomically on all
+> architectures.
 
-blk_mq_queue_tag_busy_iter() can be run on another request queue just
-between one driver tag is allocated and updating the request map, so one
-extra request reference still can be grabbed.
+Right. Looking more at Kconfigs, it seems that when atomic_long_t is
+atomic64 (64BIT) then GENERIC_ATOMIC64 is not selected. Those archs
+that select GENERIC_ATOMIC64 unconditionally all seem to be 32-bit.
 
-So looks only holding one queue's usage_counter doesn't help this issue, since
-bt_for_each() always iterates on driver tags wide.
+Thanks.
 
-> 
-> But I didn't see such a guard for blk_mq_tagset_busy_iter().
-
-IMO there isn't real difference between the two iteration.
-
-
-Thanks, 
-Ming
-
+	-ss
