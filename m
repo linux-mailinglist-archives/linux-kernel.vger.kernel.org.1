@@ -2,112 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329C82D447C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1922D447B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733099AbgLIOhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 09:37:23 -0500
-Received: from outbound-smtp20.blacknight.com ([46.22.139.247]:60987 "EHLO
-        outbound-smtp20.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731331AbgLIOhW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 09:37:22 -0500
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp20.blacknight.com (Postfix) with ESMTPS id 49D3C1C3F43
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 14:36:23 +0000 (GMT)
-Received: (qmail 10606 invoked from network); 9 Dec 2020 14:36:23 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Dec 2020 14:36:22 -0000
-Date:   Wed, 9 Dec 2020 14:36:21 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Aubrey Li <aubrey.li@linux.intel.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, valentin.schneider@arm.com,
-        qais.yousef@arm.com, dietmar.eggemann@arm.com, rostedt@goodmis.org,
-        bsegall@google.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, Mel Gorman <mgorman@suse.de>,
-        Jiang Biao <benbjiang@gmail.com>
-Subject: Re: [RFC PATCH v7] sched/fair: select idle cpu from idle cpumask for
- task wakeup
-Message-ID: <20201209143510.GO3371@techsingularity.net>
-References: <20201209062404.175565-1-aubrey.li@linux.intel.com>
+        id S1733093AbgLIOhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 09:37:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733089AbgLIOg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 09:36:56 -0500
+Date:   Wed, 9 Dec 2020 15:37:31 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607524575;
+        bh=kemi8VBZWzi4vAreXmc9NmHn5a1r/gNWTl7K6/ZZM9g=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a8rEg4TTt3a9MqZCEVhZhlVqdjvJAo+zjVXYIWf0vPfBJj1tazVWMcGNYhaOx9TE2
+         9NkyhZ2F/x7lHmLuE+Sbwk3hXX1irKKp898ky0cEvy1PwQx3V6tjHyoup7jNbhrxUK
+         0Pt6J4NuxZagWHZNkY9RvwKK2Quaa3i14Ldl0X0w=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Yan.Gao" <gao.yanB@h3c.com>
+Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+        tian.xianting@h3c.com
+Subject: Re: [PATCH] tty: Protect disc_data in n_tty_close and
+ n_tty_flush_buffer
+Message-ID: <X9DhK9Sc6JVnLQLK@kroah.com>
+References: <20201209095921.40248-1-gao.yanB@h3c.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209062404.175565-1-aubrey.li@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201209095921.40248-1-gao.yanB@h3c.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 02:24:04PM +0800, Aubrey Li wrote:
-> Add idle cpumask to track idle cpus in sched domain. Every time
-> a CPU enters idle, the CPU is set in idle cpumask to be a wakeup
-> target. And if the CPU is not in idle, the CPU is cleared in idle
-> cpumask during scheduler tick to ratelimit idle cpumask update.
+On Wed, Dec 09, 2020 at 05:59:21PM +0800, Yan.Gao wrote:
+> n_tty_flush_buffer can happen in parallel with n_tty_close that the
+> tty->disc_data will be set to NULL. n_tty_flush_buffer accesses
+> tty->disc_data, so we must prevent n_tty_close clear tty->disc_data
+> while n_tty_flush_buffer  has a non-NULL view of tty->disc_data.
 > 
-> When a task wakes up to select an idle cpu, scanning idle cpumask
-> has lower cost than scanning all the cpus in last level cache domain,
-> especially when the system is heavily loaded.
+> So we need to make sure that accesses to disc_data are atomic using
+> spinlock.
 > 
-> Benchmarks including hackbench, schbench, uperf, sysbench mysql
-> and kbuild were tested on a x86 4 socket system with 24 cores per
-> socket and 2 hyperthreads per core, total 192 CPUs, no regression
-> found.
+> There is an example I meet:
+> When n_tty_flush_buffer accesses tty struct, the disc_data is right.
+> However, then reset_buffer_flags accesses tty->disc_data, disc_data
+> become NULL, So kernel crash when accesses tty->disc_data->real_tail.
+> I guess there could be another thread change tty->disc_data to NULL,
+> and during N_TTY line discipline, n_tty_close will set tty->disc_data
+> to be NULL. So add spinlock to protect disc_data between close and
+> flush_buffer.
 > 
+> IP: reset_buffer_flags+0x9/0xf0
+> PGD 0 P4D 0
+> Oops: 0002 [#1] SMP
+> CPU: 23 PID: 2087626 Comm: (agetty) Kdump: loaded Tainted: G
+> Hardware name: UNISINSIGHT X3036P-G3/ST01M2C7S, BIOS 2.00.13 01/11/2019
+> task: ffff9c4e9da71e80 task.stack: ffffb30cfe898000
+> RIP: 0010:reset_buffer_flags+0x9/0xf0
+> RSP: 0018:ffffb30cfe89bca8 EFLAGS: 00010246
+> RAX: ffff9c4e9da71e80 RBX: ffff9c368d1bac00 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: ffff9c4ea17b50f0 RDI: 0000000000000000
+> RBP: ffffb30cfe89bcc8 R08: 0000000000000100 R09: 0000000000000001
+> R10: 0000000000000001 R11: 0000000000000000 R12: ffff9c368d1bacc0
+> R13: ffff9c20cfd18428 R14: ffff9c4ea17b50f0 R15: ffff9c368d1bac00
+> FS:  00007f9fbbe97940(0000) GS:ffff9c375c740000(0000)
+> knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000002260 CR3: 0000002f72233003 CR4: 00000000007606e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+> Call Trace:
+> ? n_tty_flush_buffer+0x2a/0x60
+> tty_buffer_flush+0x76/0x90
+> tty_ldisc_flush+0x22/0x40
+> vt_ioctl+0x5a7/0x10b0
+> ? n_tty_ioctl_helper+0x27/0x110
+> tty_ioctl+0xef/0x8c0
+> do_vfs_ioctl+0xa7/0x5e0
+> ? __audit_syscall_entry+0xaf/0x100
+> ? syscall_trace_enter+0x1d0/0x2b0
+> SyS_ioctl+0x79/0x90
+> do_syscall_64+0x6c/0x1b0
+> entry_SYSCALL64_slow_path+0x25/0x25
+> 
+> n_tty_flush_buffer			--->tty->disc_data is OK
+> 	->reset_buffer_flags		 -->tty->disc_data is NULL
+> 
+> Signed-off-by: Yan.Gao <gao.yanB@h3c.com>
+> Reviewed-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>  drivers/tty/n_tty.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+> index 7e5e36315..f4b152f20 100644
+> --- a/drivers/tty/n_tty.c
+> +++ b/drivers/tty/n_tty.c
+> @@ -87,6 +87,8 @@
+>  # define n_tty_trace(f, args...)	no_printk(f, ##args)
+>  #endif
+>  
+> +static DEFINE_SPINLOCK(disc_data_lock);
 
-I ran this patch with tbench on top of of the schedstat patches that
-track SIS efficiency. The tracking adds overhead so it's not a perfect
-performance comparison but the expectation would be that the patch reduces
-the number of runqueues that are scanned
+We want to lock data, not code, and this is locking code.
 
-tbench4
-                          5.10.0-rc6             5.10.0-rc6
-                      schedstat-v1r1          idlemask-v7r1
-Hmean     1        504.76 (   0.00%)      500.14 *  -0.91%*
-Hmean     2       1001.22 (   0.00%)      970.37 *  -3.08%*
-Hmean     4       1930.56 (   0.00%)     1880.96 *  -2.57%*
-Hmean     8       3688.05 (   0.00%)     3537.72 *  -4.08%*
-Hmean     16      6352.71 (   0.00%)     6439.53 *   1.37%*
-Hmean     32     10066.37 (   0.00%)    10124.65 *   0.58%*
-Hmean     64     12846.32 (   0.00%)    11627.27 *  -9.49%*
-Hmean     128    22278.41 (   0.00%)    22304.33 *   0.12%*
-Hmean     256    21455.52 (   0.00%)    20900.13 *  -2.59%*
-Hmean     320    21802.38 (   0.00%)    21928.81 *   0.58%*
+Why can't we use the tty's lock here?
 
-Not very optimistic result. The schedstats indicate;
+> +
+>  struct n_tty_data {
+>  	/* producer-published */
+>  	size_t read_head;
+> @@ -371,8 +373,10 @@ static void n_tty_packet_mode_flush(struct tty_struct *tty)
+>  static void n_tty_flush_buffer(struct tty_struct *tty)
+>  {
+>  	down_write(&tty->termios_rwsem);
+> +	spin_lock(&disc_data_lock);
+>  	reset_buffer_flags(tty->disc_data);
+>  	n_tty_kick_worker(tty);
+> +	spin_unlock(&disc_data_lock);
 
-                                5.10.0-rc6     5.10.0-rc6
-                            schedstat-v1r1  idlemask-v7r1
-Ops TTWU Count               5599714302.00  5589495123.00
-Ops TTWU Local               2687713250.00  2563662550.00
-Ops SIS Search               5596677950.00  5586381168.00
-Ops SIS Domain Search        3268344934.00  3229088045.00
-Ops SIS Scanned             15909069113.00 16568899405.00
-Ops SIS Domain Scanned      13580736097.00 14211606282.00
-Ops SIS Failures             2944874939.00  2843113421.00
-Ops SIS Core Search           262853975.00   311781774.00
-Ops SIS Core Hit              185189656.00   216097102.00
-Ops SIS Core Miss              77664319.00    95684672.00
-Ops SIS Recent Used Hit       124265515.00   146021086.00
-Ops SIS Recent Used Miss      338142547.00   403547579.00
-Ops SIS Recent Attempts       462408062.00   549568665.00
-Ops SIS Search Efficiency            35.18          33.72
-Ops SIS Domain Search Eff            24.07          22.72
-Ops SIS Fast Success Rate            41.60          42.20
-Ops SIS Success Rate                 47.38          49.11
-Ops SIS Recent Success Rate          26.87          26.57
+We already have the termios_rwsem lock here, why do we need another one?
 
-The field I would expect to decrease is SIS Domain Scanned -- the number
-of runqueues that were examined but it's actually worse and graphing over
-time shows it's worse for the client thread counts.  select_idle_cpu()
-is definitely being called because "Domain Search" is 10 times higher than
-"Core Search" and there "Core Miss" is non-zero.
+>  
+>  	if (tty->link)
+>  		n_tty_packet_mode_flush(tty);
+> @@ -1892,8 +1896,10 @@ static void n_tty_close(struct tty_struct *tty)
+>  	if (tty->link)
+>  		n_tty_packet_mode_flush(tty);
+>  
+> +	spin_lock_irq(&disc_data_lock);
+>  	vfree(ldata);
+>  	tty->disc_data = NULL;
+> +	spin_unlock_irq(&disc_data_lock);
 
-I suspect the issue is that the mask is only marked busy from the tick
-context which is a very wide window. If select_idle_cpu() picks an idle
-CPU from the mask, it's still marked as idle in the mask.
+Why can't you just grab the termios_rwsem lock?
 
--- 
-Mel Gorman
-SUSE Labs
+thanks,
+
+greg k-h
