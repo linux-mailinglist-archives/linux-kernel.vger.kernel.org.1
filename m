@@ -2,123 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80452D3B07
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5794D2D3B09
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727730AbgLIFme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 00:42:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
+        id S1727325AbgLIFpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 00:45:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727009AbgLIFmd (ORCPT
+        with ESMTP id S1726437AbgLIFpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 00:42:33 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68725C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 21:41:53 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id z9so217600qtn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 21:41:53 -0800 (PST)
+        Wed, 9 Dec 2020 00:45:47 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27E7C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 21:45:06 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id 131so284881pfb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 21:45:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=i8ZJuoDJybHp2tzVONMGuofWcZ7p2pBjclZqoID/hEc=;
-        b=UOXSCoJxmnpVjuMvUpp9guycLEE9pkjcVxY9md2+onQ1/ecp1Hi+vcYRfU3bgQSiTH
-         FziOD9AYxPqW2NiWirjt0PlziMyMbmRpP+pbqFB99E5rYU777pTYACGKI0RpCF2c9BRo
-         NIJYT6J1DaJD+i1uxYNzqd5IK4o7lp3SjuAu41rH0pEihjr5k4oVSIyeZmSuI48S6a/4
-         lf7Eg9l27J5ARK9y0vhVPx5QvCOtxV4iNf6PO4ClZ10PXsQFpszITQcubScGmUNUUZZl
-         IlGCHvHktRn31X5o8iDr8mhWI0yZv9RpHMLkiGWr0vh8QMQ7JO5k+mYqw7z4f14+oXW7
-         vGUw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=gkAVVTUigtx9djSLmC0VmKkWujGnySrPDSmbQuF+oss=;
+        b=YDdKWGk4U83JFSsIfm8j7A6mUPCnx0lHl1appmGPhh6RVSCTo9RYy14ORXwdG3gq/7
+         Q4suKpSuGUXXW2m8rW/cmSgQSCJDOPw05/AHxk15yaaIK8s0BlNhd6a4AMe+MgBH8/OL
+         OmUbnqE4bWJ+fTWChBnbhkAGbywOa6EDqKkd75mfd/xpODvkiVF69x4cIpH9Px2bzZCt
+         cjwPZukzbPi26EprAAGzndbaW3ptNSTgCwWw2QtwqK1B/4/nTnD9ReQ3JTbM1DdoJLPc
+         9+0y1O631QwzqdlCl8wFi6nHS85CXn8cUrdUm8B8PVDYpUpzPAzi6tFmpkadMOBMO7ct
+         i5kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=i8ZJuoDJybHp2tzVONMGuofWcZ7p2pBjclZqoID/hEc=;
-        b=K+m+/2ul7/45b5mX3NiQFV/swJxVFcHvrDcNZkabGybV7rkkJp+o2M7oGRvpfVgXEV
-         T7t95WaoJRRQXRQDLB2j4diQgyAal/JRjwpEOFgyvtLkgr8tJDOLG9L8JuYeKiSvyN+B
-         CX5jmOffIXLOXKShTtIg+nID5RTZ8QGne/0R5sPgvYTEidbGs5HgUNLnF0mxnjufysbg
-         DFH+KpFYnNIwc+v9wA2YXqFg+KmzvMw6VEPilU8G2LDWB3g6pyHP6ojnjDBBilEVErW9
-         BYU1QvK0I88t3c56Yr6n5ETpZl9iD2gndn+UVSA5OlQcWuOVaGtpToUK761NsZO4aWJd
-         MJ4w==
-X-Gm-Message-State: AOAM533gZJSdG3pL5yScdlpmOYhL/s6QWu1MT20B1vtBL+mLr5H4nu1s
-        f8fYHuDDBhT1swH2iIRnao0=
-X-Google-Smtp-Source: ABdhPJzZUuf2XsInUB3Fx8zqDdvZHWKQUIW5Gw5sT1OV3zktLeXI8yB9W4KtQpq/Gp48DlAV7nptBw==
-X-Received: by 2002:ac8:4648:: with SMTP id f8mr1305258qto.5.1607492512637;
-        Tue, 08 Dec 2020 21:41:52 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id h9sm522190qkk.33.2020.12.08.21.41.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 21:41:52 -0800 (PST)
-Subject: Re: [SPECIFICATION RFC] The firmware and bootloader log specification
-To:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Wim Vervoorn <wvervoorn@eltan.com>,
-        The development of GNU GRUB <grub-devel@gnu.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>
-Cc:     coreboot@coreboot.org, LKML <linux-kernel@vger.kernel.org>,
-        systemd-devel@lists.freedesktop.org,
-        trenchboot-devel@googlegroups.com,
-        U-Boot Mailing List <u-boot@lists.denx.de>, x86@kernel.org,
-        xen-devel@lists.xenproject.org, alecb@umass.edu,
-        alexander.burmashev@oracle.com, allen.cryptic@gmail.com,
-        andrew.cooper3@citrix.com, ard.biesheuvel@linaro.org,
-        "btrotter@gmail.com" <btrotter@gmail.com>,
-        dpsmith@apertussolutions.com, eric.devolder@oracle.com,
-        eric.snowberg@oracle.com, hpa@zytor.com, hun@n-dimensional.de,
-        javierm@redhat.com, joao.m.martins@oracle.com,
-        kanth.ghatraju@oracle.com, konrad.wilk@oracle.com,
-        krystian.hebel@3mdeb.com, leif@nuviainc.com,
-        lukasz.hawrylko@intel.com, luto@amacapital.net,
-        michal.zygowski@3mdeb.com, Matthew Garrett <mjg59@google.com>,
-        mtottenh@akamai.com,
-        Vladimir 'phcoder' Serbinenko <phcoder@gmail.com>,
-        piotr.krol@3mdeb.com, pjones@redhat.com, roger.pau@citrix.com,
-        ross.philipson@oracle.com, tyhicks@linux.microsoft.com,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>
-References: <20201113235242.k6fzlwmwm2xqhqsi@tomti.i.net-space.pl>
- <CAODwPW9dxvMfXY=92pJNGazgYqcynAk72EkzOcmF7JZXhHTwSQ@mail.gmail.com>
- <6c1e79be210549949c30253a6cfcafc1@Eltsrv03.Eltan.local>
- <9b614471-0395-88a5-1347-66417797e39d@molgen.mpg.de>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <a173867b-49db-8147-de55-8d601f033036@gmail.com>
-Date:   Tue, 8 Dec 2020 23:41:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gkAVVTUigtx9djSLmC0VmKkWujGnySrPDSmbQuF+oss=;
+        b=MIZ1Rp8UDQEAv4qSB/oeirYTsLvbK1be4nedXkswKs1I8WglS4KsGRNBJm7cwLXdGj
+         C9rWdl300Wc/ABYypZ5bf0YJWcX9tAf1IN/IML37ABo73Sk0hzafVknynfSO7jOb70tC
+         VDNdF/4ra7ApnZorNSszmjJrDP/AOoi/sdN2it96D2j1AkaYTm0SeodIiWoC8ACbT5DU
+         CQq/y7HSovMXc0fKOnguWLUF5rf0yfpUF5N/81hoGhw17ewVEtjWJSvnsW5Oq62Yyl2e
+         ZqwA2EMwpctCWJLcPTv7eCyjJEsWzMVhVy9Esw6/7IiP291ZkTqvR1UgsaKLX+OrrvJf
+         7saw==
+X-Gm-Message-State: AOAM531qIorsOev2MFmoPjCWHf8VhE3xiaCrwQwN6nynwUXtH6AFg+If
+        OPXvVwOY4gavlw77GUqvuxxAI8nShSsoXg==
+X-Google-Smtp-Source: ABdhPJxWx86juiJTf/9quW+T1YcP6CcrdYE27gVJoN8CrFUTzwsrytwDX48IHtIBjqHn0cJAEEDbfw==
+X-Received: by 2002:a62:445:0:b029:19c:162b:bbef with SMTP id 66-20020a6204450000b029019c162bbbefmr893855pfe.40.1607492706206;
+        Tue, 08 Dec 2020 21:45:06 -0800 (PST)
+Received: from localhost ([122.172.136.109])
+        by smtp.gmail.com with ESMTPSA id fv22sm662181pjb.14.2020.12.08.21.45.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Dec 2020 21:45:05 -0800 (PST)
+Date:   Wed, 9 Dec 2020 11:15:02 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        rjw@rjwysocki.net, vireshk@kernel.org, robh+dt@kernel.org,
+        sboyd@kernel.org, nm@ti.com, daniel.lezcano@linaro.org,
+        morten.rasmussen@arm.com, chris.redpath@arm.com
+Subject: Re: [PATCH v4 3/4] scmi-cpufreq: get opp_shared_cpus from opp-v2 for
+ EM
+Message-ID: <20201209054502.ajomw6glcxx5hue2@vireshk-i7>
+References: <20201202172356.10508-1-nicola.mazzucato@arm.com>
+ <20201202172356.10508-4-nicola.mazzucato@arm.com>
+ <20201208055053.kggxw26kxtnpneua@vireshk-i7>
+ <0e4d3134-f9b2-31fa-b454-fb30265a80b5@arm.com>
+ <20201208072611.ptsqupv4y2wybs6p@vireshk-i7>
+ <20201208112008.niesjrunxq2jz3kt@bogus>
 MIME-Version: 1.0
-In-Reply-To: <9b614471-0395-88a5-1347-66417797e39d@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208112008.niesjrunxq2jz3kt@bogus>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/20 7:23 AM, Paul Menzel wrote:
-> Dear Wim, dear Daniel,
+On 08-12-20, 11:20, Sudeep Holla wrote:
+> It is because of per-CPU vs per domain drama here. Imagine a system with
+> 4 CPUs which the firmware puts in individual domains while they all are
+> in the same perf domain and hence OPP is marked shared in DT.
 > 
-> 
-> First, thank you for including all parties in the discussion.
-> Am 04.12.20 um 13:52 schrieb Wim Vervoorn:
-> 
->> I agree with you. Using an existing standard is better than inventing
->> a new one in this case. I think using the coreboot logging is a good
->> idea as there is indeed a lot of support already available and it is
->> lightweight and simple.
-> In my opinion coreboot’s format is lacking, that it does not record the timestamp, and the log level is not stored as metadata, but (in coreboot) only used to decide if to print the message or not.
-> 
-> I agree with you, that an existing standard should be used, and in my opinion it’s Linux message format. That is most widely supported, and existing tools could then also work with pre-Linux messages.
-> 
-> Sean Hudson from Mentor Graphics presented that idea at Embedded Linux Conference Europe 2016 [1]. No idea, if anything came out of that effort. (Unfortunately, I couldn’t find an email. Does somebody have contacts at Mentor to find out, how to reach him?)
+> Since this probe gets called for all the cpus, we need to skip adding
+> OPPs for the last 3(add only for 1st one and mark others as shared).
 
-I forwarded this to Sean.
+Okay and this wasn't happening before this series because the firmware
+was only returning the current CPU from scmi_get_sharing_cpus() ?
 
--Frank
+Is this driver also used for the cases where we have multiple CPUs in
+a policy ? Otherwise we won't be required to call
+dev_pm_opp_set_sharing_cpus().
 
-> 
-> 
-> Kind regards,
-> 
-> Paul
-> 
-> 
-> [1]: http://events17.linuxfoundation.org/sites/events/files/slides/2016-10-12%20-%20ELCE%20-%20Shared%20Logging%20-%20Part%20Deux.pdf
+So I assume that we want to support both the cases here ?
 
+> If we attempt to add OPPs on second cpu probe, it *will* shout as duplicate
+> OPP as we would have already marked it as shared table with the first cpu.
+> Am I missing anything ? I suggested this as Nicola saw OPP duplicate
+> warnings when he was hacking up this patch.
+
+The common stuff (for all the CPUs) is better moved to probe() in this
+case, instead of the ->init() callback. Otherwise it will always be
+messy. You can initialize the OPP and cpufreq tables in probe()
+itself, save the pointer somewhere and then just use it here in
+->init().
+
+Also do EM registration from there.
+
+> > > otherwise no need as they would be duplicated.
+> > > > And we don't check the return value of
+> > > > the below call anymore, moreover we have to call it twice now.
+> 
+> Yes, that looks wrong, we need to add the check for non zero values, but ....
+> 
+> > > 
+> > > This second get_opp_count is required such that we register em with the correct
+> > > opp number after having added them. Without this the opp_count would not be correct.
+> >
+> 
+> ... I have a question here. Why do you need to call
+> 
+> em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, opp_shared_cpus..)
+> 
+> on each CPU ? Why can't that be done once for unique opp_shared_cpus ?
+> 
+> The whole drama of per-CPU vs perf domain is to have energy model and
+> if feeding it opp_shared_cpus once is not sufficient, then something is
+> wrong or simply duplicated or just not necessary IMO.
+> 
+> > What if the count is still 0 ? What about deferred probe we were doing earlier ?
+> 
+> OK, you made me think with that question. I think the check was original
+> added for deferred probe but then scmi core was changed to add the cpufreq
+> device only after everything needed is ready. So the condition must never
+> occur now.
+
+The deferred probe shall be handled in a different patch in that case.
+
+Nicola, please break the patch into multiple patches, with one patch
+dealing only with one task.
+
+-- 
+viresh
