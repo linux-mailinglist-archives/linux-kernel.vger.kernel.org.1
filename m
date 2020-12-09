@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7752D468F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE2C2D4684
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731711AbgLIQQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:16:25 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:47040 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728404AbgLIQQF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:16:05 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9G9MnR083781;
-        Wed, 9 Dec 2020 16:15:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=86yS5ZSEM4uLoGDP4K4dfalOsPgydZF3kRohkHa788k=;
- b=OEWxn/8v3C0lRN470tEn+9GKAsOfbGeBngvE0EwG4JpCfeyL+cqztxrxumCrtv2F51zs
- j6sC19bk2GQns84sKXvvRw0YuyR9a4sqDpndz2EZj/jDM6WdbRaT1vcfFLeMhgxn+L/E
- pL1NjR61rmKp2TRc+b5A80VNzYMoqb6F6vhot65LI+jRsRN1P7he1heQ/0l7kgZUMw2k
- PrYGuhboP9FkE4K3nlV9I1WtziuzjbrTSzgYyPD7214iHw8zQeWtdbBMfiN6HrLQIntx
- f0OBKIUALFsoSsGvl+wtFesu/WjUbMbYUtq3GmwE0B8rDFzcDZgGD4iyu1NA1aN4K16/ oQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 357yqc13jt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 16:15:07 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9GAil4111778;
-        Wed, 9 Dec 2020 16:13:07 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 358kyuwg06-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 16:13:07 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B9GD3f3012679;
-        Wed, 9 Dec 2020 16:13:03 GMT
-Received: from [10.175.160.66] (/10.175.160.66)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Dec 2020 08:13:02 -0800
-Subject: Re: [PATCH RFC 10/39] KVM: x86/xen: support upcall vector
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>, karahmed@amazon.de
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20190220201609.28290-1-joao.m.martins@oracle.com>
- <20190220201609.28290-11-joao.m.martins@oracle.com>
- <71753a370cd6f9dd147427634284073b78679fa6.camel@infradead.org>
- <53baeaa7-0fed-d22c-7767-09ae885d13a0@oracle.com>
- <4ad0d157c5c7317a660cd8d65b535d3232f9249d.camel@infradead.org>
- <c43024b3-6508-3b77-870c-da81e74284a4@oracle.com>
- <052867ae1c997487d85c21e995feb5647ac6c458.camel@infradead.org>
- <6a6b5806be1fe4c0fe96c0b664710d1ce614f29d.camel@infradead.org>
- <1af00fa4-03b8-a059-d859-5cfd71ef10f4@oracle.com>
- <0eb8c2ef01b77af0d288888f200e812d374beada.camel@infradead.org>
- <f7dec3f1-aadc-bda5-f4dc-7185ffd9c1a6@oracle.com>
- <db4ea3bd6ebec53c40526d67273ccfba38982811.camel@infradead.org>
- <35165dbc-73d0-21cd-0baf-db4ffb55fc47@oracle.com>
- <2E57982D-6508-4850-ABA5-67592381379D@infradead.org>
-From:   Joao Martins <joao.m.martins@oracle.com>
-Message-ID: <f92d0cfa-f1fe-9339-e319-946f6475131d@oracle.com>
-Date:   Wed, 9 Dec 2020 16:12:58 +0000
+        id S1731546AbgLIQPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:15:45 -0500
+Received: from mga01.intel.com ([192.55.52.88]:42263 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730122AbgLIQPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:15:45 -0500
+IronPort-SDR: qhAQ9V4Boh4uBpx0YNL/irxMbiGn8GKEFJ9ANBaBOI06RE4kF08V9z8M5jo0gmtm1+egbUz3b2
+ 35PQETpUp93g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="192405890"
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="192405890"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 08:13:59 -0800
+IronPort-SDR: nDfX4tYjT8ZYFGG8XF2PmutHkMhsyiA+r1JGwdPpFqhYyDcKiGLPDtuMLvOl0vVQSBK0L05XKQ
+ uGzn7QomKmbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="437847788"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 09 Dec 2020 08:13:56 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 09 Dec 2020 18:13:56 +0200
+Date:   Wed, 9 Dec 2020 18:13:56 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Benson Leung <bleung@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: typec: Add bus type for plug alt modes
+Message-ID: <20201209161356.GI680328@kuha.fi.intel.com>
+References: <20201203030846.51669-1-pmalani@chromium.org>
+ <20201208093734.GD680328@kuha.fi.intel.com>
+ <CACeCKaehg=HTuQNLtQaJZWvTnOFYM9b1BWfM+WX_ebiZ-_i8JQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2E57982D-6508-4850-ABA5-67592381379D@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
- malwarescore=0 suspectscore=1 mlxlogscore=999 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=999
- clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
- spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090113
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACeCKaehg=HTuQNLtQaJZWvTnOFYM9b1BWfM+WX_ebiZ-_i8JQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/20 3:41 PM, David Woodhouse wrote:
-> On 9 December 2020 13:26:55 GMT, Joao Martins <joao.m.martins@oracle.com> wrote:
->> On 12/9/20 11:39 AM, David Woodhouse wrote:
->>> As far as I can tell, Xen's hvm_vcpu_has_pending_irq() will still
->>> return the domain-wide vector in preference to the one in the LAPIC,
->> if
->>> it actually gets invoked. 
->>
->> Only if the callback installed is HVMIRQ_callback_vector IIUC.
->>
->> Otherwise the vector would be pending like any other LAPIC vector.
+On Tue, Dec 08, 2020 at 03:45:19PM -0800, Prashant Malani wrote:
+> Hi Heikki,
 > 
-> Ah, right.
+> Thanks a lot for looking at the patch.
 > 
-> For some reason I had it in my head that you could only set the per-vCPU lapic vector if the domain was set to HVMIRQ_callback_vector. If the domain is set to HVMIRQ_callback_none, that clearly makes more sense.
+> On Tue, Dec 8, 2020 at 1:37 AM Heikki Krogerus <heikki.krogerus@linux.intel.com> wrote:
+> >
+> > On Wed, Dec 02, 2020 at 07:08:47PM -0800, Prashant Malani wrote:
+> > > Add the Type C bus for plug alternate modes which are being
+> > > registered via the Type C connector class. This ensures that udev events
+> > > get generated when plug alternate modes are registered (and not just for
+> > > partner/port alternate modes), even though the Type C bus doesn't link
+> > > plug alternate mode devices to alternate mode drivers.
+> >
+> > I still don't understand how is the uevent related to the bus? If you
+> > check the device_add() function, on line 2917, kobject_uevent() is
+> > called unconditionally. The device does not need a bus for that event
+> > to be generated.
 > 
-> Still, my patch should do the same as Xen does in the case where a guest does set both, I think.
+> My initial thought process was to see what is the difference in the adev device
+> initialization between partner altmode and plug altmode (the only difference I saw in
+> typec_register_altmode() was regarding the bus field).
 > 
-> Faithful compatibility with odd Xen behaviour FTW :)
+> Yes, kobject_uevent() is called unconditionally, but it's return value isn't checked,
+> so we don't know if it succeeded or not.
 > 
-Ah, yes. In that case, HVMIRQ_callback_vector does take precedence.
+> In the case of cable plug altmode, I see it fail with the following error[1]:
+> 
+> [  114.431409] kobject: 'port1-plug0.0' (000000004ad42956): kobject_uevent_env: filter function caused the event to drop!
+> 
+> I think the filter function which is called is this one: drivers/base/core.c: dev_uevent_filter() [2]
+> 
+> static int dev_uevent_filter(struct kset *kset, struct kobject *kobj)
+> {
+> 	struct kobj_type *ktype = get_ktype(kobj);
+> 
+> 	if (ktype == &device_ktype) {
+> 		struct device *dev = kobj_to_dev(kobj);
+> 		if (dev->bus)
+> 			return 1;
+> 		if (dev->class)
+> 			return 1;
+> 	}
+> 	return 0;
+> }
+> 
+> So, both the "if (dev->bus)" and "if (dev->class)" checks are failing here. In the case of partner alt modes, bus is set by the class.c code
+> so this check likely returns 1 in that case.
 
-But it would be very weird for a guest to setup two callback vectors :)
+OK. I understand the issue now. So I would say that the proper
+solution to this problem is to link the alt modes with the class
+instead of the bus. That is much smaller change IMO.
+
+
+thanks,
+
+-- 
+heikki
