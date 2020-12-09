@@ -2,264 +2,366 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAFB2D3853
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A802D3856
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726117AbgLIBiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 20:38:07 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9039 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgLIBiH (ORCPT
+        id S1726162AbgLIBif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 20:38:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgLIBie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 20:38:07 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CrKQs1gtrzhYl0;
-        Wed,  9 Dec 2020 09:36:53 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 9 Dec 2020
- 09:37:19 +0800
-Subject: Re: [PATCH v4] f2fs: compress: support chksum
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20201208031437.56627-1-yuchao0@huawei.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <22ac4df6-53ec-fb7c-c4dd-26435352a701@huawei.com>
-Date:   Wed, 9 Dec 2020 09:37:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 8 Dec 2020 20:38:34 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E224C061794
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 17:37:54 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id r5so251727eda.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 17:37:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IR/ciPzsJP2zinpYwlzKQlqBHL3lpgKHD7z7eLRGyiM=;
+        b=Ufqos9qtSmc/97iCL7vJhwI6lTmVulLK6aNmclMKp3m33id+77EetJSDxjRpE3cdYc
+         w/v6u9RgwyFXJ26lZj3jRGUZSyouHpbtpmlV0NsEG4OeOaPzcpeLTJT6LU54eT52YXue
+         Aowsf8OC4uo52R0Dx+z+aHDXPai9SUhPQtZ7d2BNCJzNSHUBDFmLOHz9MwLjo3G0nXdq
+         1hMvl6pfCfRrdrwVBoHWUWMnd2Lw2ADMzMwpNvfFrSlKCTlH6aSd1PA9Dl1AV2DsBdsQ
+         WQz7jZga5F04Ajh4gvZ6pw4221o/8rQfnxLxyYmmt9pChI+4Yl+aVA03W8ssU5Fgs/it
+         uHvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IR/ciPzsJP2zinpYwlzKQlqBHL3lpgKHD7z7eLRGyiM=;
+        b=SC2YTdIXFaFzZkmsKSy4NXALxBXTj8mcOFdLvOJ9YXkjryGryjGzgAGFzCswOK85bc
+         gE4AbhD+SpkgGS5OT5vyNhG2h84ieSW2e2Xh/XIyCcxsXAzA+tfXD69WDInRJm0XKXen
+         9Q06JS7CmDaR2TCOwYoro77Ble7C6tuGjQp2SYEs7V7vOvGgI3aR0CzUBER8c44K9exP
+         TTnRd8X9RsCY/L2S4ej0KfApfECWsoIBYQq5nq7rvVP1UM3BS3fTABdaQwBREhbqllGF
+         gKnTNCED3D0frV+JYd6Shst/NCplSCUCPkQPvZoO55K8Fw0dHLJ7ohH+98rAAeo/VD9+
+         RTZw==
+X-Gm-Message-State: AOAM5309mCggJkmJP2NxwVp011Fgaber0uCDl+AbqACDqkF9oTORsNrB
+        S0pOiQ3eUtTFfpu0dNEyqFFAhuLkfc9DfaDSqMVrbg==
+X-Google-Smtp-Source: ABdhPJwRg+5iR3ReNv65OTNw/+dy6+hweaDWvfh6iDhvDG4FZ1nRYIMkGpm7llMHdBWSJjnsjSvVhULOtHlj+ofVviQ=
+X-Received: by 2002:aa7:c2d8:: with SMTP id m24mr678734edp.300.1607477872697;
+ Tue, 08 Dec 2020 17:37:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201208031437.56627-1-yuchao0@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+References: <20201209002418.1976362-1-ben.widawsky@intel.com> <20201209002418.1976362-10-ben.widawsky@intel.com>
+In-Reply-To: <20201209002418.1976362-10-ben.widawsky@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 8 Dec 2020 17:37:50 -0800
+Message-ID: <CAPcyv4ipGMsKegzWtd+W8wr4mG7X9DtVeQYvL24Eyu1fB3AN=A@mail.gmail.com>
+Subject: Re: [RFC PATCH 09/14] cxl/mem: Add basic IOCTL interface
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello guys,
-
-Any further comments on compress related patches?
-
-Jaegeuk, could you please queue these patches in dev-test? let me know
-if there is any problem.
-
-On 2020/12/8 11:14, Chao Yu wrote:
-> This patch supports to store chksum value with compressed
-> data, and verify the integrality of compressed data while
-> reading the data.
-> 
-> The feature can be enabled through specifying mount option
-> 'compress_chksum'.
-> 
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+On Tue, Dec 8, 2020 at 4:24 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> Add a straightforward IOCTL that provides a mechanism for userspace to
+> query the supported memory device commands.
+>
+> Memory device commands are specified in 8.2.9 of the CXL 2.0
+> specification. They are submitted through a mailbox mechanism specified
+> in 8.2.8.4.
+>
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+>
 > ---
-> v4:
-> - enhance readability
-> - remove WARN_ON_ONCE()
->   Documentation/filesystems/f2fs.rst |  1 +
->   fs/f2fs/compress.c                 | 22 ++++++++++++++++++++++
->   fs/f2fs/f2fs.h                     | 16 ++++++++++++++--
->   fs/f2fs/inode.c                    |  3 +++
->   fs/f2fs/super.c                    |  9 +++++++++
->   include/linux/f2fs_fs.h            |  2 +-
->   6 files changed, 50 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> index b8ee761c9922..985ae7d35066 100644
-> --- a/Documentation/filesystems/f2fs.rst
-> +++ b/Documentation/filesystems/f2fs.rst
-> @@ -260,6 +260,7 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
->   			 For other files, we can still enable compression via ioctl.
->   			 Note that, there is one reserved special extension '*', it
->   			 can be set to enable compression for all files.
-> +compress_chksum		 Support verifying chksum of raw data in compressed cluster.
->   inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
->   			 files using the blk-crypto framework rather than
->   			 filesystem-layer encryption. This allows the use of
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index 14262e0f1cd6..9313c8695855 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -602,6 +602,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->   				f2fs_cops[fi->i_compress_algorithm];
->   	unsigned int max_len, new_nr_cpages;
->   	struct page **new_cpages;
-> +	u32 chksum = 0;
->   	int i, ret;
->   
->   	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
-> @@ -655,6 +656,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->   
->   	cc->cbuf->clen = cpu_to_le32(cc->clen);
->   
-> +	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
-> +		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
-> +					cc->cbuf->cdata, cc->clen);
-> +	cc->cbuf->chksum = cpu_to_le32(chksum);
+>
+> I did attempt to use the same struct for querying commands as well as
+> sending commands (upcoming patch). The number of unused fields between
+> the two made for a bad fit IMO.
+>
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> ---
+>  Documentation/cxl/memory-devices.rst |   9 +++
+>  drivers/cxl/mem.c                    |  89 +++++++++++++++++++++++
+>  include/uapi/linux/cxl_mem.h         | 102 +++++++++++++++++++++++++++
+>  3 files changed, 200 insertions(+)
+>  create mode 100644 include/uapi/linux/cxl_mem.h
+>
+> diff --git a/Documentation/cxl/memory-devices.rst b/Documentation/cxl/memory-devices.rst
+> index 5f723c25382b..ec54674b3822 100644
+> --- a/Documentation/cxl/memory-devices.rst
+> +++ b/Documentation/cxl/memory-devices.rst
+> @@ -32,6 +32,15 @@ CXL Memory Device
+>  .. kernel-doc:: drivers/cxl/mem.c
+>     :internal:
+>
+> +CXL IOCTL Interface
+> +-------------------
 > +
->   	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
->   		cc->cbuf->reserved[i] = cpu_to_le32(0);
->   
-> @@ -790,6 +796,22 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
->   
->   	ret = cops->decompress_pages(dic);
->   
-> +	if (!ret && (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)) {
-> +		u32 provided = le32_to_cpu(dic->cbuf->chksum);
-> +		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
+> +.. kernel-doc:: include/uapi/linux/cxl_mem.h
+> +   :doc: UAPI
 > +
-> +		if (provided != calculated) {
-> +			if (!is_inode_flag_set(dic->inode, FI_COMPRESS_CORRUPT)) {
-> +				set_inode_flag(dic->inode, FI_COMPRESS_CORRUPT);
-> +				printk_ratelimited(
-> +					"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
-> +					KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
-> +					provided, calculated);
-> +			}
-> +			set_sbi_flag(sbi, SBI_NEED_FSCK);
-> +		}
-> +	}
+> +.. kernel-doc:: include/uapi/linux/cxl_mem.h
+> +   :internal:
 > +
->   out_vunmap_cbuf:
->   	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
->   out_vunmap_rbuf:
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index 0d25f5ca5618..0b314b2034d8 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -147,7 +147,8 @@ struct f2fs_mount_info {
->   
->   	/* For compression */
->   	unsigned char compress_algorithm;	/* algorithm type */
-> -	unsigned compress_log_size;		/* cluster log size */
-> +	unsigned char compress_log_size;	/* cluster log size */
-> +	bool compress_chksum;			/* compressed data chksum */
->   	unsigned char compress_ext_cnt;		/* extension count */
->   	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
->   };
-> @@ -676,6 +677,7 @@ enum {
->   	FI_ATOMIC_REVOKE_REQUEST, /* request to drop atomic data */
->   	FI_VERITY_IN_PROGRESS,	/* building fs-verity Merkle tree */
->   	FI_COMPRESSED_FILE,	/* indicate file's data can be compressed */
-> +	FI_COMPRESS_CORRUPT,	/* indicate compressed cluster is corrupted */
->   	FI_MMAP_FILE,		/* indicate file was mmapped */
->   	FI_MAX,			/* max flag, never be used */
->   };
-> @@ -733,6 +735,7 @@ struct f2fs_inode_info {
->   	atomic_t i_compr_blocks;		/* # of compressed blocks */
->   	unsigned char i_compress_algorithm;	/* algorithm type */
->   	unsigned char i_log_cluster_size;	/* log of cluster size */
-> +	unsigned short i_compress_flag;		/* compress flag */
->   	unsigned int i_cluster_size;		/* cluster size */
->   };
->   
-> @@ -1272,9 +1275,15 @@ enum compress_algorithm_type {
->   	COMPRESS_MAX,
->   };
->   
-> -#define COMPRESS_DATA_RESERVED_SIZE		5
-> +enum compress_flag {
-> +	COMPRESS_CHKSUM,
-> +	COMPRESS_MAX_FLAG,
+>  External Interfaces
+>  ===================
+>
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index bb6ea58f6c7b..2c4aadcea0e4 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/idr.h>
+>  #include <linux/pci.h>
+>  #include <linux/io.h>
+> +#include <uapi/linux/cxl_mem.h>
+>  #include "acpi.h"
+>  #include "pci.h"
+>  #include "cxl.h"
+> @@ -73,6 +74,49 @@ static DEFINE_IDR(cxl_mem_idr);
+>  /* protect cxl_mem_idr allocations */
+>  static DEFINE_MUTEX(cxl_memdev_lock);
+>
+> +/*
+> + * This table defines the supported mailboxes commands for the driver. The id is
+> + * ordinal and thus gaps in this table aren't allowed. This table is made up of
+> + * a UAPI structure. Non-negative values in the table will be validated against
+> + * the user's input. For example, if size_in is 0, and the user passed in 1, it
+> + * is an error.
+> + */
+> +#define CXL_CMD(_id, _flags, sin, sout, _name, _enable, op)                    \
+> +       {                                                                      \
+> +               { .id = CXL_MEM_COMMAND_ID_##_id,                              \
+> +                 .flags = CXL_MEM_COMMAND_FLAG_##_flags,                      \
+> +                 .size_in = sin,                                              \
+> +                 .size_out = sout,                                            \
+> +                 .name = _name },                                             \
+> +                       .enable = _enable, .opcode = op                        \
+> +       }
+
+Seems the ordinality requirement could be dropped if the definition was:
+
+#define CXL_CMD(_id, _flags, sin, sout, _name, _enable, op)                    \
+       [CXL_MEM_COMMAND_ID_##_id] = {
+                             \
+               { .id = CXL_MEM_COMMAND_ID_##_id,                              \
+...
+
+Then command 0 and 42 could be defined out of order in the table.
+Especially if we need to config-disable or deprecate commands, I think
+it would be useful if this table was tolerant to being sparse.
+
+> +
+> +/**
+> + * struct cxl_mem_command - Driver representation of a memory device command
+> + * @info: Command information as it exists for the UAPI
+> + * @opcode: The actual bits used for the mailbox protocol
+> + * @enable: Whether the command is enabled. The driver may support a large set
+> + *         of commands that may not be enabled. The primary reason a command
+> + *         would not be enabled is for commands that are specified as optional
+> + *         and the hardware doesn't support the command.
+> + *
+> + * The cxl_mem_command is the driver's internal representation of commands that
+> + * are supported by the driver. Some of these commands may not be supported by
+> + * the hardware (!@enable). The driver will use @info to validate the fields
+> + * passed in by the user then submit the @opcode to the hardware.
+> + *
+> + * See struct cxl_command_info.
+> + */
+> +struct cxl_mem_command {
+> +       const struct cxl_command_info info;
+> +       const u16 opcode;
+> +       bool enable;
 > +};
 > +
-> +#define COMPRESS_DATA_RESERVED_SIZE		4
->   struct compress_data {
->   	__le32 clen;			/* compressed data size */
-> +	__le32 chksum;			/* compressed data chksum */
->   	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
->   	u8 cdata[];			/* compressed data */
->   };
-> @@ -3888,6 +3897,9 @@ static inline void set_compress_context(struct inode *inode)
->   			F2FS_OPTION(sbi).compress_algorithm;
->   	F2FS_I(inode)->i_log_cluster_size =
->   			F2FS_OPTION(sbi).compress_log_size;
-> +	F2FS_I(inode)->i_compress_flag =
-> +			F2FS_OPTION(sbi).compress_chksum ?
-> +				1 << COMPRESS_CHKSUM : 0;
->   	F2FS_I(inode)->i_cluster_size =
->   			1 << F2FS_I(inode)->i_log_cluster_size;
->   	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
-> diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-> index 657db2fb6739..349d9cb933ee 100644
-> --- a/fs/f2fs/inode.c
-> +++ b/fs/f2fs/inode.c
-> @@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
->   					le64_to_cpu(ri->i_compr_blocks));
->   			fi->i_compress_algorithm = ri->i_compress_algorithm;
->   			fi->i_log_cluster_size = ri->i_log_cluster_size;
-> +			fi->i_compress_flag = le16_to_cpu(ri->i_compress_flag);
->   			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
->   			set_inode_flag(inode, FI_COMPRESSED_FILE);
->   		}
-> @@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
->   					&F2FS_I(inode)->i_compr_blocks));
->   			ri->i_compress_algorithm =
->   				F2FS_I(inode)->i_compress_algorithm;
-> +			ri->i_compress_flag =
-> +				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
->   			ri->i_log_cluster_size =
->   				F2FS_I(inode)->i_log_cluster_size;
->   		}
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 82baaa89c893..f3d919ee4dee 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -146,6 +146,7 @@ enum {
->   	Opt_compress_algorithm,
->   	Opt_compress_log_size,
->   	Opt_compress_extension,
-> +	Opt_compress_chksum,
->   	Opt_atgc,
->   	Opt_err,
->   };
-> @@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
->   	{Opt_compress_algorithm, "compress_algorithm=%s"},
->   	{Opt_compress_log_size, "compress_log_size=%u"},
->   	{Opt_compress_extension, "compress_extension=%s"},
-> +	{Opt_compress_chksum, "compress_chksum"},
->   	{Opt_atgc, "atgc"},
->   	{Opt_err, NULL},
->   };
-> @@ -934,10 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->   			F2FS_OPTION(sbi).compress_ext_cnt++;
->   			kfree(name);
->   			break;
-> +		case Opt_compress_chksum:
-> +			F2FS_OPTION(sbi).compress_chksum = true;
-> +			break;
->   #else
->   		case Opt_compress_algorithm:
->   		case Opt_compress_log_size:
->   		case Opt_compress_extension:
-> +		case Opt_compress_chksum:
->   			f2fs_info(sbi, "compression options not supported");
->   			break;
->   #endif
-> @@ -1523,6 +1529,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
->   		seq_printf(seq, ",compress_extension=%s",
->   			F2FS_OPTION(sbi).extensions[i]);
->   	}
+> +static struct cxl_mem_command mem_commands[] = {
+> +       CXL_CMD(INVALID, NONE, 0, 0, "Reserved", false, 0),
+> +};
 > +
-> +	if (F2FS_OPTION(sbi).compress_chksum)
-> +		seq_puts(seq, ",compress_chksum");
->   }
->   
->   static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
-> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-> index a5dbb57a687f..7dc2a06cf19a 100644
-> --- a/include/linux/f2fs_fs.h
-> +++ b/include/linux/f2fs_fs.h
-> @@ -273,7 +273,7 @@ struct f2fs_inode {
->   			__le64 i_compr_blocks;	/* # of compressed blocks */
->   			__u8 i_compress_algorithm;	/* compress algorithm */
->   			__u8 i_log_cluster_size;	/* log of cluster size */
-> -			__le16 i_padding;		/* padding */
-> +			__le16 i_compress_flag;		/* compress flag */
->   			__le32 i_extra_end[0];	/* for attribute size calculation */
->   		} __packed;
->   		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
-> 
+>  static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
+>  {
+>         const int timeout = msecs_to_jiffies(2000);
+> @@ -268,8 +312,53 @@ static int cxl_mem_open(struct inode *inode, struct file *file)
+>         return 0;
+>  }
+>
+> +static int cxl_mem_count_commands(void)
+> +{
+> +       int i, n = 0;
+> +
+> +       for (i = 0; i < ARRAY_SIZE(mem_commands); i++) {
+> +               struct cxl_mem_command *c = &mem_commands[i];
+> +
+> +               if (c->enable)
+> +                       n++;
+> +       }
+> +
+> +       return n;
+> +}
+> +
+>  static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>  {
+> +       if (cmd == CXL_MEM_QUERY_COMMANDS) {
+> +               struct cxl_mem_query_commands __user *q = (void __user *)arg;
+> +               u32 n_commands;
+> +               int i, j;
+> +
+> +               if (get_user(n_commands, (u32 __user *)arg))
+> +                       return -EFAULT;
+> +
+> +               if (n_commands == 0)
+> +                       return put_user(cxl_mem_count_commands(),
+> +                                       (u32 __user *)arg);
+> +
+> +               for (i = 0, j = 0;
+> +                    i < ARRAY_SIZE(mem_commands) && j < n_commands; i++) {
+> +                       struct cxl_mem_command *c = &mem_commands[i];
+> +                       const struct cxl_command_info *info = &c->info;
+> +
+> +                       if (!c->enable)
+> +                               continue;
+> +
+> +                       if (copy_to_user(&q->commands[j], info, sizeof(*info)))
+> +                               return -EFAULT;
+> +
+> +                       if (copy_to_user(&q->commands[j].name, info->name,
+> +                                        strlen(info->name)))
+> +                               return -EFAULT;
+
+Not sure why this is needed, see comment below about @name in
+cxl_mem_query_commands.
+
+> +
+> +                       j++;
+> +               }
+> +       }
+> +
+>         return -ENOTTY;
+>  }
+>
+> diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
+> new file mode 100644
+> index 000000000000..1d1e143f98ec
+> --- /dev/null
+> +++ b/include/uapi/linux/cxl_mem.h
+> @@ -0,0 +1,102 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +/*
+> + * CXL IOCTLs for Memory Devices
+> + */
+> +
+> +#ifndef _UAPI_CXL_MEM_H_
+> +#define _UAPI_CXL_MEM_H_
+> +
+> +#if defined(__cplusplus)
+> +extern "C" {
+> +#endif
+> +
+> +/**
+> + * DOC: UAPI
+> + *
+> + * CXL memory devices expose UAPI to have a standard user interface.
+> + * Userspace can refer to these structure definitions and UAPI formats
+> + * to communicate to driver
+> + */
+> +
+> +#define CXL_MEM_QUERY_COMMANDS _IOR('C', 1, struct cxl_mem_query_commands)
+> +
+> +#define CXL_MEM_COMMAND_NAME_LENGTH 32
+> +
+> +/**
+> + * struct cxl_command_info - Command information returned from a query.
+> + * @id: ID number for the command.
+> + * @flags: Flags that specify command behavior.
+> + *
+> + *          - CXL_MEM_COMMAND_FLAG_TAINT: Using this command will taint the kernel.
+> + * @size_in: Expected input size, or -1 if variable length.
+> + * @size_out: Expected output size, or -1 if variable length.
+> + * @name: Name describing the command.
+> + *
+> + * Represents a single command that is supported by both the driver and the
+> + * hardware. The is returned as part of an array from the query ioctl. The
+> + * following would be a command named "foobar" that takes a variable length
+> + * input and returns 0 bytes of output.
+> + *
+> + *  - @id = 10
+> + *  - @name = foobar
+> + *  - @flags = 0
+> + *  - @size_in = -1
+> + *  - @size_out = 0
+> + *
+> + * See struct cxl_mem_query_commands.
+> + */
+> +struct cxl_command_info {
+> +       __u32 id;
+> +#define CXL_MEM_COMMAND_ID_INVALID 0
+> +
+> +       __u32 flags;
+> +#define CXL_MEM_COMMAND_FLAG_NONE 0
+> +#define CXL_MEM_COMMAND_FLAG_TAINT BIT(0)
+> +
+> +       __s32 size_in;
+> +       __s32 size_out;
+> +
+> +       char name[32];
+
+Why does the name for a command need to be shuffled back and forth
+over the ioctl interface. Can't this be handled by a static lookup
+table defined in the header?
+
+> +};
+> +
+> +/**
+> + * struct cxl_mem_query_commands - Query supported commands.
+> + * @n_commands: In/out parameter. When @n_commands is > 0, the driver will
+> + *             return min(num_support_commands, n_commands). When @n_commands
+> + *             is 0, driver will return the number of total supported commands.
+> + * @rsvd: Reserved for future use.
+> + * @commands: Output array of supported commands. This array must be allocated
+> + *            by userspace to be at least min(num_support_commands, @n_commands)
+> + *
+> + * Allow userspace to query the available commands supported by both the driver,
+> + * and the hardware. Commands that aren't supported by either the driver, or the
+> + * hardware are not returned in the query.
+> + *
+> + * Examples:
+> + *
+> + *  - { .n_commands = 0 } // Get number of supported commands
+> + *  - { .n_commands = 15, .commands = buf } // Return first 15 (or less)
+> + *    supported commands
+> + *
+> + *  See struct cxl_command_info.
+> + */
+> +struct cxl_mem_query_commands {
+> +       /*
+> +        * Input: Number of commands to return (space allocated by user)
+> +        * Output: Number of commands supported by the driver/hardware
+> +        *
+> +        * If n_commands is 0, kernel will only return number of commands and
+> +        * not try to populate commands[], thus allowing userspace to know how
+> +        * much space to allocate
+> +        */
+> +       __u32 n_commands;
+> +       __u32 rsvd;
+> +
+> +       struct cxl_command_info __user commands[]; /* out: supported commands */
+> +};
+> +
+> +#if defined(__cplusplus)
+> +}
+> +#endif
+> +
+> +#endif
+> --
+> 2.29.2
+>
