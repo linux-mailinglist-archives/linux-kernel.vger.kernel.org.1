@@ -2,177 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE1D2D3807
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4ED2D37DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgLIA4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 19:56:17 -0500
-Received: from 11.mo6.mail-out.ovh.net ([188.165.38.119]:44544 "EHLO
-        11.mo6.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgLIA4Q (ORCPT
+        id S1731067AbgLIAdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 19:33:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730759AbgLIAdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 19:56:16 -0500
-X-Greylist: delayed 9599 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Dec 2020 19:56:15 EST
-Received: from player691.ha.ovh.net (unknown [10.108.35.90])
-        by mo6.mail-out.ovh.net (Postfix) with ESMTP id 0ED4A234E91
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 22:51:48 +0100 (CET)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player691.ha.ovh.net (Postfix) with ESMTPSA id E733B190DB0A8;
-        Tue,  8 Dec 2020 21:51:42 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-105G006f6ee3649-1f08-4f40-bb1f-df51397b003c,
-                    F7F8495E9FE719388847EB9DDB8A3A77E3CADC2E) smtp.auth=steve@sk2.org
-X-OVh-ClientIp: 82.65.25.201
-From:   Stephen Kitt <steve@sk2.org>
-To:     linux-man@vger.kernel.org,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [patch] close_range.2: new page documenting close_range(2)
-Date:   Tue,  8 Dec 2020 22:51:33 +0100
-Message-Id: <20201208215133.30575-1-steve@sk2.org>
-X-Mailer: git-send-email 2.20.1
+        Tue, 8 Dec 2020 19:33:51 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0369C0613CF;
+        Tue,  8 Dec 2020 16:33:10 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607473988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hgQpIUc63mDLW0den1AS8FxhMR0Jrh1CG+uMhsbuxUI=;
+        b=KLnSRU8ddKIlu8HHC+KCk5y2Gb3j6DjqbEpNIjpb3BiZn5Af8I3A/0HAvHsHwUv9M3Jj3K
+        RGV/f2d1qdsVoxZ01lgQQnqV51LVD4xfCrRcc3lTPZ4MAhkRQE+2/dB014b2k45m2cN32j
+        ZMnjEWa2x7WbqjwQdI3OAqF8JdH/ZuZGFnib7dluHeHyl4iuTTaNnNEZd4+MDvSUthq2el
+        0ETLqzPYPb017Lrb1Z4RiVCM1jFahrIH2SR93dv5XWBx34xPx1L8Lw3Ww1AsLAAOj8Hdi5
+        51G2I3lqslnHjMmVz//Bnc7jJHwjOQE4VZl0KifOqBWr7Xs9jYhbEh7w7DnbZQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607473988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hgQpIUc63mDLW0den1AS8FxhMR0Jrh1CG+uMhsbuxUI=;
+        b=Bt6VK/OQlIx814XTZLYEm4kp1BRbJLhVsNbwnDY0mJb1AyJITSa4AUHXQUtTgREXHEPhop
+        jHee7DbttqqFYmDQ==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [patch 0/8] ntp/rtc: Fixes and cleanups
+In-Reply-To: <20201206214613.444124194@linutronix.de>
+References: <20201206214613.444124194@linutronix.de>
+Date:   Wed, 09 Dec 2020 01:33:08 +0100
+Message-ID: <87sg8f24zf.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 17686761638867717394
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedgudehiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheiledurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This documents close_range(2) based on information in
-278a5fbaed89dacd04e9d052f4594ffd0e0585de and
-60997c3d45d9a67daf01c56d805ae4fec37e0bd8.
+Alexandre,
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
- man2/close_range.2 | 112 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 112 insertions(+)
- create mode 100644 man2/close_range.2
+On Sun, Dec 06 2020 at 22:46, Thomas Gleixner wrote:
+> Miroslav ran into a situation where the periodic RTC synchronization almost
+> never was able to hit the time window for the update. That happens due the
+> usage of delayed_work and the properties of the timer wheel.
+>
+> While that particular problem is halfways simple to fix this started to
+> unearth other problems with that code particularly with rtc_set_npt_time()
+> but expanded into other things as well.
+>
+>   1) The update offset for rtc-cmos is off by a full second
+>
+>   2) The readout of MC146818 (rtc-cmos and arch code) is broken and can
+>      return garbage.
+>
+>   2) Alexandre questioned the approach in general and wants to get rid of
+>      it. Of course there are better methods to do that and it can be
+>      completely done in user space.
+>
+>      Unfortunately it's not that simple as this would be a user visible
+>      change, so making it at least halfways correct.
+>
+>   3) Alexandre requested to move that code into the NTP code as this is not
+>      really RTC functionality and just usage of the RTC API.
+>
+>   4) The update offset itself was questioned, but the time between the
+>      write and the next seconds increment in the RTC is fundamentaly a
+>      hardware property. The transport time, which is pretty irrelevant for
+>      direct accessible RTCs (rtc-cmos), but relevant for RTC behind i2c/SPI
+>      needs to be added on top.
+>
+>      It's undebated that this transport time cannot be correctly estimated,
+>      but right now it's 500ms which is far off. The correct transport time
+>      can be calibrated, a halfways correct value supplied via DT, but
+>      that's an orthogonal problem.
+>
+> The following series addresses the above:
+>
+>     1) Fix the readout function of MC146818
+>     2) Fix the rtc-cmos offset
+>     3) Reduce the default transport time
+>
+>     4) Switch the NTP periodic sync code to a hrtimer/work combo
+>
+>     5) Move rtc_set_npt_time() to the ntp code
+>     6) Make the update offset more intuitive
+>     7) Simplify the whole machinery
 
-diff --git a/man2/close_range.2 b/man2/close_range.2
-new file mode 100644
-index 000000000..62167d9b0
---- /dev/null
-+++ b/man2/close_range.2
-@@ -0,0 +1,112 @@
-+.\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
-+.\"
-+.\" %%%LICENSE_START(VERBATIM)
-+.\" Permission is granted to make and distribute verbatim copies of this
-+.\" manual provided the copyright notice and this permission notice are
-+.\" preserved on all copies.
-+.\"
-+.\" Permission is granted to copy and distribute modified versions of this
-+.\" manual under the conditions for verbatim copying, provided that the
-+.\" entire resulting derived work is distributed under the terms of a
-+.\" permission notice identical to this one.
-+.\"
-+.\" Since the Linux kernel and libraries are constantly changing, this
-+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-+.\" responsibility for errors or omissions, or for damages resulting from
-+.\" the use of the information contained herein.  The author(s) may not
-+.\" have taken the same level of care in the production of this manual,
-+.\" which is licensed free of charge, as they might when working
-+.\" professionally.
-+.\"
-+.\" Formatted or processed versions of this manual, if unaccompanied by
-+.\" the source, must acknowledge the copyright and authors of this work.
-+.\" %%%LICENSE_END
-+.\"
-+.TH CLOSE_RANGE 2 2020-12-08 "Linux" "Linux Programmer's Manual"
-+.SH NAME
-+close_range \- close all file descriptors in a given range
-+.SH SYNOPSIS
-+.nf
-+.B #include <linux/close_range.h>
-+.PP
-+.BI "int close_range(int " first ", int " last ", unsigned int " flags );
-+.fi
-+.SH DESCRIPTION
-+The
-+.BR close_range ()
-+system call closes all open file descriptors from
-+.I first
-+to
-+.IR last
-+(included).
-+.PP
-+Errors closing a given file descriptor are currently ignored.
-+.PP
-+.I flags
-+can be set to
-+.B CLOSE_RANGE_UNSHARE
-+to unshare the range of file descriptors from any other processes,
-+.I instead
-+of closing them.
-+.SH RETURN VALUE
-+On success,
-+.BR close_range ()
-+return 0.
-+On error, \-1 is returned and
-+.I errno
-+is set to indicate the cause of the error.
-+.SH ERRORS
-+.TP
-+.B EINVAL
-+.I flags
-+is not valid, or
-+.I first
-+is greater than
-+.IR last .
-+.TP
-+.B EMFILE
-+The per-process limit on the number of open file descriptors has been reached
-+(see the description of
-+.BR RLIMIT_NOFILE
-+in
-+.BR getrlimit (2)).
-+.TP
-+.B ENOMEM
-+Insufficient kernel memory was available.
-+.SH VERSIONS
-+.BR close_range ()
-+first appeared in Linux 5.9.
-+.SH CONFORMING TO
-+.BR close_range ()
-+is available on Linux and FreeBSD.
-+.SH NOTES
-+Currently, there is no glibc wrapper for this system call; call it using
-+.BR syscall (2).
-+.SH USE CASES
-+.\" 278a5fbaed89dacd04e9d052f4594ffd0e0585de
-+.\" 60997c3d45d9a67daf01c56d805ae4fec37e0bd8
-+.SS Closing file descriptors before exec
-+File descriptors can be closed safely using
-+.PP
-+.in +4n
-+.EX
-+/* we don't want anything past stderr here */
-+close_range(3, ~0U, CLOSE_RANGE_UNSHARE);
-+execve(....);
-+.EE
-+.in
-+.PP
-+.SS Closing all open file descriptors
-+This is commonly implemented (on Linux) by listing open file
-+descriptors in
-+.B /proc/self/fd/
-+and calling
-+.BR close (2)
-+on each one.
-+.BR close_range ()
-+can take care of this without requiring
-+.B /proc
-+and with a single system call, which provides significant performance
-+benefits.
-+.SH SEE ALSO
-+.BR close (2)
+any opinion on this?
 
-base-commit: b5dae3959625f5ff378e9edf9139057d1c06bb55
--- 
-2.20.1
+Thanks,
 
+        tglx
