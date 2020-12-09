@@ -2,144 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BA02D4521
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A55512D4527
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730664AbgLIPJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:09:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729941AbgLIPJq (ORCPT
+        id S1730765AbgLIPKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:10:54 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:38759 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727242AbgLIPKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:09:46 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C232C061794
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 07:09:06 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id f23so2609969ejk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 07:09:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=79/2jrypfqHh2ex0HWeRFQIgc+5jz50G2Xkqb1V3C4s=;
-        b=AxsF0AS/C2w6AQnjQjWH1ODawHIswlZmOmW8/ig0ZhTpPtMMgmL5hT7o1UGDZnchpX
-         QaTx7l01DuBOK+09rpybArRBMOGjKkESF80bpdK6JfIwi55OZ6njUkp4wBzgGnDG/5/N
-         qc0XQ2iWIPYp0KWmSdfnnD8MGqLYI6/lDaO5xqqwtFcdt2hvczUG5VLSN9CkoPkf11FK
-         CdonBLwwb3BUH07KlgXKfzWJmSDlaYpimyI3PNTAp8nXIMIdv4ggVIkDMYDDhJGNPe78
-         mZTFMjLIr6/DGPW0qb+/p7DDhKWneMGpo13QOWjieOWcwgry5lXfYFrzm2xiXkyZNaXv
-         oCIQ==
+        Wed, 9 Dec 2020 10:10:53 -0500
+Received: by mail-lf1-f68.google.com with SMTP id w13so3557548lfd.5;
+        Wed, 09 Dec 2020 07:10:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=79/2jrypfqHh2ex0HWeRFQIgc+5jz50G2Xkqb1V3C4s=;
-        b=rbb2bAmNq2ETnWz0caUiQpK02nIXf3KusIdJGLf2oCDOLTfdDk4ZleiSSpZgQNP9fk
-         EhQdTozPdXGxnve50200hcMwr4M4IhZ/ph/XVMiArHnEF1PmAfF+fxXcPCBB7OnGWgjv
-         OecCaeqRpj6niqgz4DtcT5KZcedT9HUKMa/K5YUbP0pCE2L3F9KWAyj8d16x2GJZGfQ6
-         uvY92F7Lh1AUDtIbwP5+ZtjlDvHlLSb3uxHFHRVQm3aVfHJeKsnKr3MfZ6ZPzldRZbX+
-         qLt4MsdQBMCZJl23wHQkKHtkNMABTE0+cQwdcCw6bFt63KYMAd4OXC27jqQ4nM7goTzZ
-         rCLw==
-X-Gm-Message-State: AOAM531mPUWdt0k2kBnO0bkT7nSxiCc2B161DZmpTCWgzop0x155/qCJ
-        e42b1wjVPs65zk+CJExTZsLEKiLxzFJR/JO2bZbkMQ==
-X-Google-Smtp-Source: ABdhPJwsrAbx//pTmhaEk+6TPSWTGQ8c5D5jVVHlcwz650vAClP+F5Qece/SACvDa7prNfMlOUffaj3C5a8Ys/aTm9o=
-X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr2386437eju.375.1607526544599;
- Wed, 09 Dec 2020 07:09:04 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jP1J4ziuKFQP6qMuiqWuGJM1FU49hl1u2cz1iOJBsj8=;
+        b=JQuSljS8mKxLlwIEHKUN9YZxqusyNsd3JWtS0Ud3NymglFFvTbiYIrJjOTyS4KSKw/
+         ZyvAgpBo5OUi9G7vAxYhqXn5TnP14HtJBxppv0r7ARtAjXerGf9qy+QtTRWXlmT8zFCc
+         vjnlwgmhCNcSObWR3Hi5aCT83vyJGZsC73LvugHxmWznJxWXKqhXp7S5ZO62/nFs6f9G
+         /sAmvv79Ts7s5pYg59s/VzEp3Ish0zCesGl/xed5APeHGqvVomObuB2Wx7SGMJI0XReG
+         XBNbzuxrL7oSAsHiyGnUcGGBz0/cOINccuyccyNL9lQIrmgfhFboffZ15QLNB/UMN9vM
+         rNCw==
+X-Gm-Message-State: AOAM531LnFNB00cgh1KXe64aNPehZDIVdIrUM00PK8RLPmw7pSJ1pxb3
+        hl0HrkUds+Gs6/YS33gqa40=
+X-Google-Smtp-Source: ABdhPJx6r7UsgNFRDx+GjQcmhqBhZNSgKGaFvGgnz7h5ra+ZYzTzU4VS8PNJ4WfsOMLtLQe0yrUtwA==
+X-Received: by 2002:a19:197:: with SMTP id 145mr1112949lfb.483.1607526609405;
+        Wed, 09 Dec 2020 07:10:09 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id b12sm263014ljj.133.2020.12.09.07.10.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 07:10:08 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kn17B-0005TG-CV; Wed, 09 Dec 2020 16:10:50 +0100
+Date:   Wed, 9 Dec 2020 16:10:49 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Johan Hovold <johan@kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/7] tty: add flag to suppress ready signalling on open
+Message-ID: <X9Do+b5+xxjrywVN@localhost>
+References: <20201202113942.27024-1-johan@kernel.org>
+ <X9Dficb8sQGRut+S@kroah.com>
 MIME-Version: 1.0
-References: <1606410037-11436-1-git-send-email-agordeev@linux.ibm.com>
-In-Reply-To: <1606410037-11436-1-git-send-email-agordeev@linux.ibm.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 9 Dec 2020 20:38:52 +0530
-Message-ID: <CA+G9fYuK9a7gSWBmcc9DZ+sJEKYBhSLVYib5Qxk_+EC1ow_PyA@mail.gmail.com>
-Subject: Re: [PATCH v3] s390/pci: fix CPU address in MSI for directed IRQ
-To:     Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        linux-s390@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        linux-stable <stable@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X9Dficb8sQGRut+S@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020 at 22:32, Alexander Gordeev <agordeev@linux.ibm.com> wrote:
->
-> The directed MSIs are delivered to CPUs whose address is
-> written to the MSI message data. The current code assumes
-> that a CPU logical number (as it is seen by the kernel)
-> is also that CPU address.
->
-> The above assumption is not correct, as the CPU address
-> is rather the value returned by STAP instruction. That
-> value does not necessarily match the kernel logical CPU
-> number.
->
-> Fixes: e979ce7bced2 ("s390/pci: provide support for CPU directed interrupts")
-> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> ---
->  arch/s390/pci/pci_irq.c | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/s390/pci/pci_irq.c b/arch/s390/pci/pci_irq.c
-> index 743f257cf2cb..75217fb63d7b 100644
-> --- a/arch/s390/pci/pci_irq.c
-> +++ b/arch/s390/pci/pci_irq.c
-> @@ -103,9 +103,10 @@ static int zpci_set_irq_affinity(struct irq_data *data, const struct cpumask *de
->  {
->         struct msi_desc *entry = irq_get_msi_desc(data->irq);
->         struct msi_msg msg = entry->msg;
-> +       int cpu_addr = smp_cpu_get_cpu_address(cpumask_first(dest));
+On Wed, Dec 09, 2020 at 03:30:33PM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Dec 02, 2020 at 12:39:35PM +0100, Johan Hovold wrote:
+> > This series adds a new NORDY port flag to suppress raising the
+> > modem-control lines on open to signal DTE readiness.
+> > 
+> > This can be used to implement a NORDY termios control flag to complement
+> > HUPCL, which controls lowering of the modem-control lines on final
+> > close.
+> > 
+> > Initially drivers can export the flag through sysfs, which also allows
+> > control over the lines on first open. Such an interface is implemented
+> > for serial core and USB serial.
 
-While building S390 the following kernel warning / error noticed
-on stable -rc 5.4 branch with gcc-8, gcc-9 and gcc-10 and defconfig
+> > Also let me know if you prefer to hold this off for 5.12. The change is
+> > minimal, self-contained and low-risk, but it is a new interface and late
+> > in the release cycle as Andy pointed out.
+> 
+> I took the first 2 patches now, that was easy :)
+> 
+> I think we need more review for the rest of the series.  This does
+> change the way serial ports work in a non-traditional way (i.e. using
+> sysfs instead of terminal settings).  So I want to get a bunch of people
+> to agree that this is ok to do things this way now before taking this
+> new user-visible api.
 
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/6/tmp ARCH=s390
-CROSS_COMPILE=s390x-linux-gnu- 'CC=sccache s390x-linux-gnu-gcc'
-'HOSTCC=sccache gcc' vmlinux
-arch/s390/pci/pci_irq.c: In function 'zpci_set_irq_affinity':
-arch/s390/pci/pci_irq.c:106:17: error: implicit declaration of
-function 'smp_cpu_get_cpu_address'
-[-Werror=implicit-function-declaration]
-  106 |  int cpu_addr = smp_cpu_get_cpu_address(cpumask_first(dest));
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~
+Sounds good, thanks.
 
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-steps to reproduce:
---------------------------
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
-
-tuxmake --runtime docker --target-arch s390 --toolchain gcc-9
---kconfig defconfig
-
-
-metadata:
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-    target_arch: s390
-    toolchain: gcc-9
-    git_describe: v5.4.82-36-gc45075765dae
-    kernel_version: 5.4.83-rc1
-
-
-full build log link,
-https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/899272224
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+Johan
