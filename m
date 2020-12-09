@@ -2,119 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B112D374D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E249C2D3757
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730784AbgLIAAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 19:00:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
+        id S1730807AbgLIADW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 19:03:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730255AbgLIAAa (ORCPT
+        with ESMTP id S1725906AbgLIADV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 19:00:30 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D070C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 15:59:50 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id t4so54517wrr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 15:59:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jlUeL94EMQ2mw/JUtxwCrK3jcneUAYJBBgQnd4y+zNg=;
-        b=Edq1CVvPQKilfg2eDpW2y/52GBtWVJoIisqFyyH4DiApGXBvGccrYZnb4ppeJREqR7
-         3PUoGbsEeb9wev7096enOgV+BT6P9oNUGTZUxnQdtg7eWts6tYgZ6nZ+e9ur/fIcajhX
-         5DqIYLAYauN54V4uaCEp5/EK0rMZB3AawHE/aQKf/+m5xxd3/3fiJECHLKADzmRb6/nz
-         ugiCHzkpN7TbNyk6Cj+kZMQCQtZ6OAm8GCmKxlMA5ZuSiF3UDJbWKyeMwVhQp0Vr9dR6
-         ESYN4wHypyOw/kE4fXkrUhGE+dPCIwqLdKMnfujJLrDCjo2bBm7pAg7RqqOAIn8xUQVM
-         8isQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jlUeL94EMQ2mw/JUtxwCrK3jcneUAYJBBgQnd4y+zNg=;
-        b=RiOLGsTpKOzNFpIzm8AytDduu0Ex8pOcN36HxsMdiS5918aYMd/PJjZxBV0GQcoQRt
-         KOp6wEX/cleX/TFrEawQDPDePIq+ViZAaB3B1oXUqWpn8mqu+Evvlf6yFRk/sf0cCH/W
-         1w2+lI5FY8HcDul9azmVkQ541j2vvSIbURsNgJzVV9H9vrl7OIxlD1TzE9kK8BptJ72t
-         Lhs77RXAARselFrgqh3/yiU33kTYJNTE5qJZntYGsLCrU3/TB1xuH0C0EiQIzIYYTCx2
-         N63lNtRYAjX1kZBCamJ849X/AYNUEpcGBfEq9hwpUm2oNY6z/61NrCXnJYNvdWws8FWV
-         TP3A==
-X-Gm-Message-State: AOAM530f6GAmFyF+cEfpsw1P4HiniOpJEijLC1JTq5y+/HhU6CkVgn1V
-        fA45vg4hridJwZswrVNY9nr0n20BkO1gIS3vTWIcqQ==
-X-Google-Smtp-Source: ABdhPJx/e96M5QxZfOV2yS34D1ceLVp3WIR5bIkqmCEwBy7gwJnwcD76VCWHfNTmg9pVDdfSVhJMj0viccbvch35sog=
-X-Received: by 2002:a5d:51d2:: with SMTP id n18mr575805wrv.92.1607471989205;
- Tue, 08 Dec 2020 15:59:49 -0800 (PST)
-MIME-Version: 1.0
-References: <20201124053943.1684874-1-surenb@google.com> <20201124053943.1684874-3-surenb@google.com>
- <CAG48ez1M5tT=4T2RREhs1U3yMJH2N7HPWySBnMJyMSg0WtdD2A@mail.gmail.com>
-In-Reply-To: <CAG48ez1M5tT=4T2RREhs1U3yMJH2N7HPWySBnMJyMSg0WtdD2A@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 8 Dec 2020 15:59:38 -0800
-Message-ID: <CAJuCfpFJFZyOANvmOn0sw-sDDrk4WFgtLcRtQBKOSELohWaDuA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm/madvise: add process_madvise MADV_DONTNEER support
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 8 Dec 2020 19:03:21 -0500
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB373C0613CF;
+        Tue,  8 Dec 2020 16:02:41 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id DA85F4D248DBE;
+        Tue,  8 Dec 2020 16:02:40 -0800 (PST)
+Date:   Tue, 08 Dec 2020 16:02:40 -0800 (PST)
+Message-Id: <20201208.160240.1143892573333954730.davem@davemloft.net>
+To:     colin.king@canonical.com
+Cc:     kuba@kernel.org, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
+        jiri@resnulli.us, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: sched: fix spelling mistake in Kconfig "trys" ->
+ "tries"
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20201207161231.173234-1-colin.king@canonical.com>
+References: <20201207161231.173234-1-colin.king@canonical.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Tue, 08 Dec 2020 16:02:41 -0800 (PST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 3:40 PM Jann Horn <jannh@google.com> wrote:
->
-> On Tue, Nov 24, 2020 at 6:50 AM Suren Baghdasaryan <surenb@google.com> wrote:
-> > In modern systems it's not unusual to have a system component monitoring
-> > memory conditions of the system and tasked with keeping system memory
-> > pressure under control. One way to accomplish that is to kill
-> > non-essential processes to free up memory for more important ones.
-> > Examples of this are Facebook's OOM killer daemon called oomd and
-> > Android's low memory killer daemon called lmkd.
-> > For such system component it's important to be able to free memory
-> > quickly and efficiently. Unfortunately the time process takes to free
-> > up its memory after receiving a SIGKILL might vary based on the state
-> > of the process (uninterruptible sleep), size and OPP level of the core
-> > the process is running.
-> > In such situation it is desirable to be able to free up the memory of the
-> > process being killed in a more controlled way.
-> > Enable MADV_DONTNEED to be used with process_madvise when applied to a
-> > dying process to reclaim its memory. This would allow userspace system
-> > components like oomd and lmkd to free memory of the target process in
-> > a more predictable way.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> [...]
-> > @@ -1239,6 +1256,23 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
-> >                 goto release_task;
-> >         }
-> >
-> > +       if (madvise_destructive(behavior)) {
-> > +               /* Allow destructive madvise only on a dying processes */
-> > +               if (!signal_group_exit(task->signal)) {
-> > +                       ret = -EINVAL;
-> > +                       goto release_mm;
-> > +               }
->
-> Technically Linux allows processes to share mm_struct without being in
-> the same thread group, so I'm not sure whether this check is good
-> enough? AFAICS the normal OOM killer deals with this case by letting
-> __oom_kill_process() always kill all tasks that share the mm_struct.
+From: Colin King <colin.king@canonical.com>
+Date: Mon,  7 Dec 2020 16:12:31 +0000
 
-Thanks for the comment Jann.
-You are right. I think replacing !signal_group_exit(task->signal) with
-task_will_free_mem(task) would address both your and Oleg's comments.
-IIUC, task_will_free_mem() calls __task_will_free_mem() on the task
-itself and on all processes sharing the mm_struct ensuring that they
-are all dying.
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in the Kconfig help text. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Applied, thanks.
