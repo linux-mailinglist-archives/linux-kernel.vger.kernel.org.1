@@ -2,98 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B10E2D39DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 05:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D142D39E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 05:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727534AbgLIEpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 23:45:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727293AbgLIEpV (ORCPT
+        id S1727431AbgLIEtI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Dec 2020 23:49:08 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:38854 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726943AbgLIEtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 23:45:21 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12491C0613CF;
-        Tue,  8 Dec 2020 20:44:41 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrPbV2x6Zz9sWL;
-        Wed,  9 Dec 2020 15:44:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1607489078;
-        bh=KZ5wgpAwKiYgJzOPspqhqBP0PP7NjKGB38+vQR6Jig0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=PlVCAeMh/RycrGV8mp4Iyl0iSEjrcAbVXERIan3iGmed1cXLHg63sSOUhoT4rsYFt
-         O7bFKxlRsLDQFLNGTxk/sQllwvTvCUhTIrjwPgFaiA3x/3bHKMNZxRHnfg1yh81kP0
-         GOmJdJ4ypiy4toslx5oJBqNnNa/rcm4EW+1q1OK9XJG2p7dBr+0NXuxe+rZMcsofyp
-         bzC1lOSWALJzrCu5k5BsbJBm3qXvoQca3byDNHO5HqHc0Q/+j10NDktlmjWyHGHXbv
-         g8QYV0ptd6or9kPK+7lPPqddeP+qx+ddjPxQYglcMmwDUttorPjt7VNhgeyJY8PEEs
-         qzYcHg8pZv3Ug==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Mathieu Malaterre <malat@debian.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: linux-next: build warning after merge of the akpm tree
-In-Reply-To: <20201208230157.42c42789@canb.auug.org.au>
-References: <20201204210000.660293c6@canb.auug.org.au> <20201208230157.42c42789@canb.auug.org.au>
-Date:   Wed, 09 Dec 2020 15:44:35 +1100
-Message-ID: <87r1nzsi4s.fsf@mpe.ellerman.id.au>
+        Tue, 8 Dec 2020 23:49:08 -0500
+Received: from mail-oo1-f69.google.com ([209.85.161.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <dongdong.tao@canonical.com>)
+        id 1kmrOq-0001gs-Ta
+        for linux-kernel@vger.kernel.org; Wed, 09 Dec 2020 04:48:25 +0000
+Received: by mail-oo1-f69.google.com with SMTP id a5so162505oob.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 20:48:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PA0L/fZ0FdycoQ0Pt5PVvbAssW0hPSIaj0d5Ro06HDU=;
+        b=OlsbB4sBUrw8ni/XG8MJ1pFOwQMy9uBE2MJ9KHYSn8dtii5/OqvnxWI9Sqg6LgF6TB
+         7ZYoKJ/EGCSIIR3NJbQ35P0IkRef5GdiAQSLKelofOenCVz0JYRJye4mVb7cBkwrPlNc
+         yHhHRSQG29uSDVIN5TF9ncZ3175vbmEBKnKIdIVWMZQxf0If4COdS6mRMe8fKrpD4AkI
+         9ZGrmpBlRs9z9st3U5VMv48xipwOrP3o0p/4xp7ygddCMwlHnfd/hy7pQ3dkDNeHcPgU
+         3Lzl1lFJnhbpAAqNt2NFhbH7wOL1+0CIf6CCOCTjnmE7DupOBVsOliRa1FLeRsMwwU4B
+         kldg==
+X-Gm-Message-State: AOAM533JFyRV25vFeB/4K6ujveIHp8IEg60qGghBKVEWYoPqHan9uXOI
+        xJJ4LVBCzzCaNKsYbjIn8adhv4qzXL4niSCwvEj5jtJar9V1NF+wi9hf1OVmWv4LSDkP5jiJiFe
+        9Qyqp+gQkABD4VyBpIBh9NONIGVBz49h00V6+01FP1eT8hrUimEEzEnz0kg==
+X-Received: by 2002:a9d:620f:: with SMTP id g15mr310325otj.361.1607489303693;
+        Tue, 08 Dec 2020 20:48:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy/7JVsm4TZTwCoEmiToTTLsiZPGhAgD37BJBqY2i99MjqwGW8RkwDdtuD3yKtjGfkHRGiSqoeP2lVqkZLX19o=
+X-Received: by 2002:a9d:620f:: with SMTP id g15mr310312otj.361.1607489303428;
+ Tue, 08 Dec 2020 20:48:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201103124235.14440-1-tdd21151186@gmail.com> <89b83c00-1117-d114-2c23-7b03fc22966e@easystack.cn>
+In-Reply-To: <89b83c00-1117-d114-2c23-7b03fc22966e@easystack.cn>
+From:   Dongdong Tao <dongdong.tao@canonical.com>
+Date:   Wed, 9 Dec 2020 12:48:12 +0800
+Message-ID: <CAJS8hV+UmLFQVhuqUin1Ze6kLtAO7paXH95+9gaiZgM19VZe1A@mail.gmail.com>
+Subject: Re: [PATCH] bcache: consider the fragmentation when update the
+ writeback rate
+To:     Dongsheng Yang <dongsheng.yang@easystack.cn>
+Cc:     Dongdong Tao <tdd21151186@gmail.com>, Coly Li <colyli@suse.de>,
+        Gavin Guo <gavin.guo@canonical.com>,
+        Gerald Yang <gerald.yang@canonical.com>,
+        Trent Lloyd <trent.lloyd@canonical.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        "open list:BCACHE (BLOCK LAYER CACHE)" <linux-bcache@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> Hi Stephen,
->
-> On Fri, 4 Dec 2020 21:00:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> Hi all,
->> 
->> After merging the akpm tree, today's linux-next build (powerpc
->> allyesconfig) produced warnings like this:
->> 
->> ld: warning: orphan section `.data..Lubsan_data177' from `arch/powerpc/oprofile/op_model_pa6t.o' being placed in section `.data..Lubsan_data177'
->> 
->> (lots of these latter ones)
->
-> 781584 of them today!
->
->> I don't know what produced these, but it is in the akpm-current or
->> akpm trees.
->
-> Presumably the result of commit
->
->   186c3e18dba3 ("ubsan: enable for all*config builds")
->
-> from the akpm-current tree.
->
-> arch/powerpc/kernel/vmlinux.lds.S has:
->
-> #ifdef CONFIG_PPC32
->         .data : AT(ADDR(.data) - LOAD_OFFSET) {
->                 DATA_DATA
-> #ifdef CONFIG_UBSAN
->                 *(.data..Lubsan_data*)
->                 *(.data..Lubsan_type*)
-> #endif
->                 *(.data.rel*)
->                 *(SDATA_MAIN)
->
-> added by commit
->
->   beba24ac5913 ("powerpc/32: Add .data..Lubsan_data*/.data..Lubsan_type* sections explicitly")
->
-> in 2018, but no equivalent for 64 bit.
+Hi Dongsheng,
 
-They should really be in DATA_DATA or similar shouldn't they?
+I'm working on it, next step I'm gathering some testing data and
+upload (very sorry for the delay...)
+Thanks for the comment.
+One of the main concerns to alleviate this issue with the writeback
+process is that we need to minimize the impact on the client IO
+performance.
+writeback_percent by default is 10, start writeback when dirty buckets
+reached 10 percent might be a bit too aggressive, as the
+writeback_cutoff_sync is 70 percent.
+So i chose to start the writeback when dirty buckets reached 50
+percent so that this patch will only take effect after dirty buckets
+percent is above that
 
-cheers
+Thanks,
+Dongdong
+
+
+
+
+On Wed, Dec 9, 2020 at 10:27 AM Dongsheng Yang
+<dongsheng.yang@easystack.cn> wrote:
+>
+>
+> 在 2020/11/3 星期二 下午 8:42, Dongdong Tao 写道:
+> > From: dongdong tao <dongdong.tao@canonical.com>
+> >
+> > Current way to calculate the writeback rate only considered the
+> > dirty sectors, this usually works fine when the fragmentation
+> > is not high, but it will give us unreasonable small rate when
+> > we are under a situation that very few dirty sectors consumed
+> > a lot dirty buckets. In some case, the dirty bucekts can reached
+> > to CUTOFF_WRITEBACK_SYNC while the dirty data(sectors) noteven
+> > reached the writeback_percent, the writeback rate will still
+> > be the minimum value (4k), thus it will cause all the writes to be
+> > stucked in a non-writeback mode because of the slow writeback.
+> >
+> > This patch will try to accelerate the writeback rate when the
+> > fragmentation is high. It calculate the propotional_scaled value
+> > based on below:
+> > (dirty_sectors / writeback_rate_p_term_inverse) * fragment
+> > As we can see, the higher fragmentation will result a larger
+> > proportional_scaled value, thus cause a larger writeback rate.
+> > The fragment value is calculated based on below:
+> > (dirty_buckets *  bucket_size) / dirty_sectors
+> > If you think about it, the value of fragment will be always
+> > inside [1, bucket_size].
+> >
+> > This patch only considers the fragmentation when the number of
+> > dirty_buckets reached to a dirty threshold(configurable by
+> > writeback_fragment_percent, default is 50), so bcache will
+> > remain the original behaviour before the dirty buckets reached
+> > the threshold.
+> >
+> > Signed-off-by: dongdong tao <dongdong.tao@canonical.com>
+> > ---
+> >   drivers/md/bcache/bcache.h    |  1 +
+> >   drivers/md/bcache/sysfs.c     |  6 ++++++
+> >   drivers/md/bcache/writeback.c | 21 +++++++++++++++++++++
+> >   3 files changed, 28 insertions(+)
+> >
+> > diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
+> > index 1d57f48307e6..87632f7032b6 100644
+> > --- a/drivers/md/bcache/bcache.h
+> > +++ b/drivers/md/bcache/bcache.h
+> > @@ -374,6 +374,7 @@ struct cached_dev {
+> >       unsigned int            writeback_metadata:1;
+> >       unsigned int            writeback_running:1;
+> >       unsigned char           writeback_percent;
+> > +     unsigned char           writeback_fragment_percent;
+> >       unsigned int            writeback_delay;
+> >
+> >       uint64_t                writeback_rate_target;
+> > diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
+> > index 554e3afc9b68..69499113aef8 100644
+> > --- a/drivers/md/bcache/sysfs.c
+> > +++ b/drivers/md/bcache/sysfs.c
+> > @@ -115,6 +115,7 @@ rw_attribute(stop_when_cache_set_failed);
+> >   rw_attribute(writeback_metadata);
+> >   rw_attribute(writeback_running);
+> >   rw_attribute(writeback_percent);
+> > +rw_attribute(writeback_fragment_percent);
+>
+>
+> Hi Dongdong and Coly,
+>
+>      What is the status about this patch? In my opinion, it is a problem
+> we need to solve,
+>
+> but can we just reuse the parameter of writeback_percent, rather than
+> introduce a new writeback_fragment_percent?
+>
+> That means the semantic of writeback_percent will act on dirty data
+> percent and dirty bucket percent.
+>
+> When we found there are dirty buckets more than (c->nbuckets *
+> writeback_percent), start the writeback.
+>
+>
+> Thanx
+>
+> Yang
+>
+> >   rw_attribute(writeback_delay);
+> >   rw_attribute(writeback_rate);
+> >
+> > @@ -197,6 +198,7 @@ SHOW(__bch_cached_dev)
+> >       var_printf(writeback_running,   "%i");
+> >       var_print(writeback_delay);
+> >       var_print(writeback_percent);
+> > +     var_print(writeback_fragment_percent);
+> >       sysfs_hprint(writeback_rate,
+> >                    wb ? atomic_long_read(&dc->writeback_rate.rate) << 9 : 0);
+> >       sysfs_printf(io_errors,         "%i", atomic_read(&dc->io_errors));
+> > @@ -308,6 +310,9 @@ STORE(__cached_dev)
+> >       sysfs_strtoul_clamp(writeback_percent, dc->writeback_percent,
+> >                           0, bch_cutoff_writeback);
+> >
+> > +     sysfs_strtoul_clamp(writeback_fragment_percent, dc->writeback_fragment_percent,
+> > +                         0, bch_cutoff_writeback_sync);
+> > +
+> >       if (attr == &sysfs_writeback_rate) {
+> >               ssize_t ret;
+> >               long int v = atomic_long_read(&dc->writeback_rate.rate);
+> > @@ -498,6 +503,7 @@ static struct attribute *bch_cached_dev_files[] = {
+> >       &sysfs_writeback_running,
+> >       &sysfs_writeback_delay,
+> >       &sysfs_writeback_percent,
+> > +     &sysfs_writeback_fragment_percent,
+> >       &sysfs_writeback_rate,
+> >       &sysfs_writeback_rate_update_seconds,
+> >       &sysfs_writeback_rate_i_term_inverse,
+> > diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
+> > index 3c74996978da..34babc89fdf3 100644
+> > --- a/drivers/md/bcache/writeback.c
+> > +++ b/drivers/md/bcache/writeback.c
+> > @@ -88,6 +88,26 @@ static void __update_writeback_rate(struct cached_dev *dc)
+> >       int64_t integral_scaled;
+> >       uint32_t new_rate;
+> >
+> > +     /*
+> > +      * We need to consider the number of dirty buckets as well
+> > +      * when calculating the proportional_scaled, Otherwise we might
+> > +      * have an unreasonable small writeback rate at a highly fragmented situation
+> > +      * when very few dirty sectors consumed a lot dirty buckets, the
+> > +      * worst case is when dirty_data reached writeback_percent and
+> > +      * dirty buckets reached to cutoff_writeback_sync, but the rate
+> > +      * still will be at the minimum value, which will cause the write
+> > +      * stuck at a non-writeback mode.
+> > +      */
+> > +     struct cache_set *c = dc->disk.c;
+> > +
+> > +     if (c->gc_stats.in_use > dc->writeback_fragment_percent && dirty > 0) {
+> > +             int64_t dirty_buckets = (c->gc_stats.in_use * c->nbuckets) / 100;
+> > +             int64_t fragment = (dirty_buckets *  c->cache->sb.bucket_size) / dirty;
+> > +
+> > +             proportional_scaled =
+> > +             div_s64(dirty, dc->writeback_rate_p_term_inverse) * (fragment);
+> > +     }
+> > +
+> >       if ((error < 0 && dc->writeback_rate_integral > 0) ||
+> >           (error > 0 && time_before64(local_clock(),
+> >                        dc->writeback_rate.next + NSEC_PER_MSEC))) {
+> > @@ -969,6 +989,7 @@ void bch_cached_dev_writeback_init(struct cached_dev *dc)
+> >       dc->writeback_metadata          = true;
+> >       dc->writeback_running           = false;
+> >       dc->writeback_percent           = 10;
+> > +     dc->writeback_fragment_percent  = 50;
+> >       dc->writeback_delay             = 30;
+> >       atomic_long_set(&dc->writeback_rate.rate, 1024);
+> >       dc->writeback_rate_minimum      = 8;
