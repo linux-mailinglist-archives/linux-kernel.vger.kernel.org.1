@@ -2,113 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8172D3E51
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC8A2D3E57
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728504AbgLIJQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:16:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44494 "EHLO
+        id S1728587AbgLIJRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:17:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727505AbgLIJQm (ORCPT
+        with ESMTP id S1727665AbgLIJRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:16:42 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DC4C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:16:02 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id t7so614812pfh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:16:02 -0800 (PST)
+        Wed, 9 Dec 2020 04:17:48 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF58C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:17:08 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id x16so1048547ejj.7
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:17:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=CfSADqT0HSLujKNKLc4JwSCyEpro2H+j9Ao48CTHNHs=;
-        b=aDWi2OusThg+yOP1g8PFOq/W+RruCrJiybVmCk/iQX9b/X6JSSSVINLFcX01wyQJUO
-         GOst8VkDqy2Pd2YPjkHfdQHhMVDy2ISUeZGAurUC42C8c3OlN7tTJl9BEXAGXfNASCEn
-         LK1jvS3x5QfHQLrnzemU3+z2l7OW1PTAP1U1GT45rk5pgtnmaTFKuBHZZyJemiBj6Swt
-         CGGYSoGy2yfKZeg+rLoMwrTsjhlVyqoK7UCUwuKgpZ2kj451Vz+9bqPYJD9LWzcmaPRp
-         ahlMb/O1wXFuN4HMKqmxVxAd/3K28XpLB1QY9okMECRES1Y67EAvUAUXEHiwKujMjHE0
-         gElQ==
+        d=javigon-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=rhhiMX6lpyZpBTo++Wq1vgh3A63oG1sQxoZyJsc1aQg=;
+        b=P8oh5+/uu8rb5ugbhTx6O474H6hkBIwZA2qWENj5ag15EIY80CWadHdfGxQnhTAuMR
+         kbNk5JfBb6loUdVGVyaPVhWtBQ1NjpEdFVcn9tYOFB+qOgEbDjlfscYtu/qIoCbb5Chz
+         7CiywHUQ67e3O04cgul518A1o0MfGZcqFpTZZnlXt5erd32JVIX/kIoOcJ7E6df5xpPw
+         s6IYn+e1e1RXF/Z/qwRHiSnu9S2JvHXZspsCFFn7MliNwtnecrsJyM+LopbOJALx3N8D
+         G9qQkXTWUv6aPxfla3mKnk96yIxMBMESNCDYDoAhR8RSGIVe6yWfam74imuEnHfJJPwT
+         XFCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=CfSADqT0HSLujKNKLc4JwSCyEpro2H+j9Ao48CTHNHs=;
-        b=CZVkv8Bbl4JaX+r6YJ08Jsq0AqBBI7plxTOsbkjpqGyzFYwxBwXG3vqPXI+6v2FTpJ
-         M+kgGnaJLTTiWqpbSu89FFEWR1k325oj512/rPDBGZN+OXtNMm1pqbJLmpCodw9OPfbh
-         ZUBDAsPaX5DYuMABx57KiNIBT60TENx5Bz2qNu5EatoaABtmm1IMk2e55d+JxMwtHAVW
-         rs0V86x9xrUh1Ew990xALzqUF4/SoGHp0DZABE5rmhVOUIrFjV78Wm5gZ8Sd7FH1O/xA
-         A9ZDbHPnaXE77sbL8CQC45q/jQZFUKk1fSEoaASM5MSZqrwAKUKHwrlccGzCUXWslTaa
-         pY6w==
-X-Gm-Message-State: AOAM533Fv1mcq5Zqxhwd4diLb91RUNCLBJILjcAPbYiuMtMKCK6jetc/
-        T6y6hOkXkVlKMOsxy+sBhL/UPzIU5wz0L+IJGCc=
-X-Google-Smtp-Source: ABdhPJyOcSWgSLCoUTvZ7J6hJW/wHFNGOxoHS7JcSR1xTEYU+XoypIt5Mru+ad8UcHmCDwalp7FlfWraCk4n5XjhL7w=
-X-Received: by 2002:aa7:978d:0:b029:197:fd52:ee48 with SMTP id
- o13-20020aa7978d0000b0290197fd52ee48mr1471051pfp.13.1607505361579; Wed, 09
- Dec 2020 01:16:01 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=rhhiMX6lpyZpBTo++Wq1vgh3A63oG1sQxoZyJsc1aQg=;
+        b=Mc6ghSRdwB3A6i4FSLPNl8yFlBjpWCkcO2a9uRv6wHNFAtxwTx2R/JQBYJHWCM8oRu
+         NU8M2SPmrILOXLn+UWiPxluGY/+im4qpEIYugqxKWxrszv1bBeCDCozLh+T/TCi4X+wO
+         duqg8et65Nn/T41spsrxfNG3LDFxSUx89O09bpCpaCStnB6zfsT+YnU/ng0sDuYloi0U
+         UeFkE6fZ5heLRacWVM7OagclwiMtuF9QnusHpjASj9qQMO5tdYG88vvTuJgVzFvyPg2g
+         1pklqICpyJZlXkXTP6o1EHUUF7vMwl3kojAXQxlx18L6nRH4oglXLE9acDl0YvfzGG5y
+         W/NQ==
+X-Gm-Message-State: AOAM531GsGzCGWzG2TQhdafp+3sFnS0UmHRiTEMRZWixjWGROH4wNfL5
+        OT6E+nUO/rFRc79EtEbYxLVT3g==
+X-Google-Smtp-Source: ABdhPJxbBbOAPum4JxhLDvVO8oH4bCpyUFUBf6xuJ19RfGwEp+yksU2UBrKm/QCGpkEPA7yZYkCfcA==
+X-Received: by 2002:a17:906:a857:: with SMTP id dx23mr1242029ejb.189.1607505427041;
+        Wed, 09 Dec 2020 01:17:07 -0800 (PST)
+Received: from localhost (5.186.124.214.cgn.fibianet.dk. [5.186.124.214])
+        by smtp.gmail.com with ESMTPSA id j20sm874968ejy.124.2020.12.09.01.17.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 01:17:06 -0800 (PST)
+Date:   Wed, 9 Dec 2020 10:17:05 +0100
+From:   Javier =?utf-8?B?R29uesOhbGV6?= <javier@javigon.com>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
+        SelvaKumar S <selvakuma.s1@samsung.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "selvajove@gmail.com" <selvajove@gmail.com>,
+        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
+        "joshi.k@samsung.com" <joshi.k@samsung.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 0/2] add simple copy support
+Message-ID: <20201209091705.brzbbqedavtxvhms@mpHalley>
+References: <CGME20201204094719epcas5p23b3c41223897de3840f92ae3c229cda5@epcas5p2.samsung.com>
+ <20201204094659.12732-1-selvakuma.s1@samsung.com>
+ <20201207141123.GC31159@lst.de>
+ <01fe46ac-16a5-d4db-f23d-07a03d3935f3@suse.de>
+ <20201207192453.vc6clbdhz73hzs7l@mpHalley>
+ <SN4PR0401MB35988951265391511EBC8C6E9BCD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20201208122248.utv7pqthmmn6uwv6@mpHalley>
+ <SN4PR0401MB35983464199FB173FB0C29479BCD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20201208131333.xoxincxcnh7iz33z@mpHalley>
+ <SN4PR0401MB3598226CD4A32F65320A47379BCD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Sender: madamhismlati@gmail.com
-Received: by 2002:a17:90a:6a82:0:0:0:0 with HTTP; Wed, 9 Dec 2020 01:16:01
- -0800 (PST)
-From:   Esther Gabriel <esthergebrael22@gmail.com>
-Date:   Wed, 9 Dec 2020 01:16:01 -0800
-X-Google-Sender-Auth: 7-NVFXkq6YZw3ke3nvo_WjVenXA
-Message-ID: <CAF5HdHiGn63xEKx601h5k7dqUuiwKtrM7dtWCB=D2e1u7RsMcw@mail.gmail.com>
-Subject: From Esther Gabriel
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <SN4PR0401MB3598226CD4A32F65320A47379BCD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greeting to you my Dearest,
+On 08.12.2020 13:24, Johannes Thumshirn wrote:
+>On 08/12/2020 14:13, Javier González wrote:
+>> On 08.12.2020 12:37, Johannes Thumshirn wrote:
+>>> On 08/12/2020 13:22, Javier González wrote:
+>>>> Good idea. Are you thinking of a sysfs entry to select the backend?
+>>>
+>>> Not sure on this one, initially I thought of a sysfs file, but then
+>>> how would you do it. One "global" sysfs entry is probably a bad idea.
+>>> Having one per block device to select native vs emulation maybe? And
+>>> a good way to benchmark.
+>>
+>> I was thinking a per block device to target the use case where a certain
+>> implementation / workload is better one way or the other.
+>
+>Yes something along those lines.
+>
+>>>
+>>> The other idea would be a benchmark loop on boot like the raid library
+>>> does.
+>>>
+>>> Then on the other hand, there might be workloads that run faster with
+>>> the emulation and some that run faster with the hardware acceleration.
+>>>
+>>> I think these points are the reason the last attempts got stuck.
+>>
+>> Yes. I believe that any benchmark we run would be biased in a certain
+>> way. If we can move forward with a sysfs entry and default to legacy
+>> path, we would not alter current behavior and enable NVMe copy offload
+>> (for now) for those that want to use it. We can then build on top of it.
+>>
+>> Does this sound like a reasonable approach?
+>>
+>
+>Yes this sounds like a reasonable approach to me.
 
-Please I need your help and Assistance. Permit me to inform you of my
-desire of going into business relationship with you. I am Miss. Esther
-Gabriel, the only Daughter of late Mr. and Mrs. Gabriel Kadjo. My
-father was a very wealthy cocoa merchant in Abidjan; the economic
-capital of Ivory Coast, my father was poisoned to death by his
-business associates on one of their outings on a business trip.
+Cool. We will add this to the V3 then.
 
-My mother died when I was a baby and since then my father took me so
-special. Before the death of my father in a private hospital here in
-Abidjan he secretly called me on his bed side and told me that he has
-the sum of TWENTY FIVE Million United State Dollars (USD. $25.000,000)
-deposited in one of the largest security company here in Abidjan, that
-he used my name as his only Daughter for the next of Kin in depositing
-of the fund to the security company.
-
-He also explained to me that it was because of this wealth that he was
-poisoned by his business associates. That I should seek for a look
-foreign partner in a country of my choice who will assist me for
-investment purpose. And the money is in six 6 trunk boxes there in the
-security company now.
-
-I am deeply here seeking your assistance in the following ways:
-
-(1) To stand as my late father's foreign partner before the security
-company for them to deliver the 6 six trunk boxes that contain the
-found to you in your country.
-
-(2) To serve as a guardian of this fund in the trunk box and invest
-them into a good business investments that can benefit you and me
-since I am only 24 years old girl, I do not have any idea of any
-business investment!
-
-(3) To make arrangement for me to come over to your country to further
-my education/study and to secure a resident permit and my travelling
-Visa to come over and stay in your country.
-
-Moreover, I am willing to offer you 20% percent of the total sum as
-compensation for your effort/input after the successful delivering of
-the trunk boxes from the security company While 80% percent will be
-for me and my Education in your country.
-
-Furthermore, please indicate your interest off helping me out for I
-believe that this transaction would be concluded within fourteen (14)
-days from the day you signify your interest to assist me.
-
-Anticipating to hearing from you soon.
-
-Thanks.
-Best regards,
-
-Miss.Esther.
+Thanks Johannes!
