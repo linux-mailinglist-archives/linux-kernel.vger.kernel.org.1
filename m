@@ -2,187 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F6A2D4E6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 00:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9212D4E70
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 00:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387972AbgLIXAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 18:00:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727709AbgLIXAW (ORCPT
+        id S2388169AbgLIXCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 18:02:23 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:46916 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727978AbgLIXCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 18:00:22 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604D4C061793
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 14:59:42 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id d14so2412538qkc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 14:59:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qGVpH46Y7Ns607Ym8+8VlXliCHyKOwhz1ihyoKRqkgA=;
-        b=JAf4R4DdRjm0G9P817PRtU4y28lwz4LVe/ebp1hiuMjKGYGdC3D4dk9e6uaGKIDhfr
-         kX5MP3muxV7N6NUoicnNC8n83neusTxe8kW+n+qdE9ZHzVGaKmWo7pJ3bzBZ9tkqznA8
-         rFj2Ou7Np6prwsc7wNFUDF0hJ19W9xS8EHg34=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qGVpH46Y7Ns607Ym8+8VlXliCHyKOwhz1ihyoKRqkgA=;
-        b=eksSY9VJBdFuj3n4n0U7qlDR8W4bh+3RweZhOhnFGl4Sv/DzoTHhk0qfIVlqc4zRuE
-         bcxh6VxKUcVxnc8a7GAxgo104Frvwp9UNoFKdZL4JayCIDJ83SmZe35CNOCL01AVv9Fx
-         7/Vgkw2yTxT3eWWPHMCCzsSdn4ftIzlCjtNtPIk4tEKPoKbL0e0DUB2ZOWuDPHBiaaQS
-         TOJVXEWAOuRtlJLZiJBozi7M36KpUzeMwpPU68mVEh0iRNsoM6ZmYE8J83IpBvQQz0l3
-         zXYP/oXz6LQFA4xs9jtJxDCghjIAmiDld2RIaSWqseHEXavAN0ON0AVlJ7BNLvBxjIX5
-         +ujg==
-X-Gm-Message-State: AOAM533VDAkC3C84xjoOyrm30tvCUY4HPqz7BPDeChK0lT9P6eyz1rP8
-        1Iw024IjZv44SY1qeZUDffw72pL4gZH2dZsPP3RgdQ==
-X-Google-Smtp-Source: ABdhPJyHxwWBajJb9vFDUnfaQR80KHMaN9kN3HFayyO1ax2QQlpRCsQji50AaT2tljlbbtpt6swwpryLzj6puHoyrW8=
-X-Received: by 2002:a37:744:: with SMTP id 65mr5224292qkh.71.1607554781012;
- Wed, 09 Dec 2020 14:59:41 -0800 (PST)
+        Wed, 9 Dec 2020 18:02:15 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9MxajI033824;
+        Wed, 9 Dec 2020 23:01:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=9QWI+7ihNGdD7szLffSO2nbJojU6tCKTKIyvT3UlYJY=;
+ b=w3Rb5q0a6A2pRfpm1JhIid6JF+K3D7l16Y19wsU470CQvsK0Qej7JFs22cYEKbjufTTM
+ 4nn7B3wr3xkZI0ecYpKfC2WmpRRz3ZOlSJ/JrUnaoilDChvvQYZqD4AJRGrYDeTo1KjC
+ NasdBY1Fq+8h7pX8IyibzFlo8UUcH9yov71xnv4A8t6UVLjoOvXi5gy0ycMmiZTflHH+
+ IUK9b85H0AsfNCx94Ht1oskI6aJZqznMY5LRFhpeK3xR4w0DPmJNhAPs6G3UYqfWhQkK
+ PwYI/2WHdg42aP618D+gvniKvF45SUFp38N9wyOS9qvM3b7t/tAm40JqZsu9LMRO71St +g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 357yqc2vsy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Dec 2020 23:01:27 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9N0qxB095436;
+        Wed, 9 Dec 2020 23:01:27 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 358ksqsjp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Dec 2020 23:01:27 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B9N1OXf020270;
+        Wed, 9 Dec 2020 23:01:25 GMT
+Received: from dhcp-10-159-152-235.vpn.oracle.com (/10.159.152.235)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Dec 2020 15:01:24 -0800
+Subject: Re: [PATCH RFC 0/8] dcache: increase poison resistance
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Waiman Long <longman@redhat.com>,
+        Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>,
+        matthew.wilcox@oracle.com
+References: <158893941613.200862.4094521350329937435.stgit@buzz>
+From:   Junxiao Bi <junxiao.bi@oracle.com>
+Message-ID: <97ece625-2799-7ae6-28b5-73c52c7c497b@oracle.com>
+Date:   Wed, 9 Dec 2020 15:01:11 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201203030846.51669-1-pmalani@chromium.org> <20201208093734.GD680328@kuha.fi.intel.com>
- <CACeCKaehg=HTuQNLtQaJZWvTnOFYM9b1BWfM+WX_ebiZ-_i8JQ@mail.gmail.com>
- <20201209161356.GI680328@kuha.fi.intel.com> <CACeCKacdcGi_6VW7F9agN+bgRH7gAXLDxK7DngE=fPkYT-CWNQ@mail.gmail.com>
- <20201209171524.GK680328@kuha.fi.intel.com>
-In-Reply-To: <20201209171524.GK680328@kuha.fi.intel.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Wed, 9 Dec 2020 14:59:29 -0800
-Message-ID: <CACeCKafc6A-O09LrTsYgBTbmwVV0y-tEevj_Ci188WmT=hkjxg@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: Add bus type for plug alt modes
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Benson Leung <bleung@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <158893941613.200862.4094521350329937435.stgit@buzz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9830 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=3
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090158
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9830 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 mlxlogscore=999
+ clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090158
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
+Hi Konstantin,
 
-On Wed, Dec 9, 2020 at 9:15 AM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
+We tested this patch set recently and found it limiting negative dentry 
+to a small part of total memory. And also we don't see any performance 
+regression on it. Do you have any plan to integrate it into mainline? It 
+will help a lot on memory fragmentation issue causing by dentry slab, 
+there were a lot of customer cases where sys% was very high since most 
+cpu were doing memory compaction, dentry slab was taking too much memory 
+and nearly all dentry there were negative.
+
+The following is test result we run on two types of servers, one is 256G 
+memory with 24 CPUS and another is 3T memory with 384 CPUS. The test 
+case is using a lot of processes to generate negative dentry in 
+parallel, the following is the test result after 72 hours, the negative 
+dentry number is stable around that number even running longer time. If 
+without the patch set, in less than half an hour 197G was took by 
+negative dentry on 256G system, in 1 day 2.4T was took on 3T system.
+
+                 neg-dentry-number        neg-dentry-mem-usage
+
+256G 55259084 10.6G
+
+3T 202306756 38.8G
+
+For perf test, we run the following, and no regression found.
+
+- create 1M negative dentry and then touch them to convert them to 
+positive dentry
+
+- create 10K/100K/1M files
+
+- remove 10K/100K/1M files
+
+- kernel compile
+
+To verify the fsnotify fix, we used inotifywait to watch file 
+create/open in some directory where there is a lot of negative dentry, 
+without the patch set, the system will run into soft lockup, with it, no 
+soft lockup.
+
+We also try to defeat the limitation by making different processes 
+generating negative dentry with the same naming way, that will make one 
+negative dentry being accessed couple times around same time, 
+DCACHE_REFERENCED will be set on it and then it can't be trimmed easily. 
+We do see negative dentry will take all the memory slowly from one of 
+our system with 120G memory, for above two system, we see the memory 
+usage were increased, but still a small part of total memory. This looks 
+ok, since the common negative dentry user case will be create some temp 
+files and then remove it, it will be rare to access same negative dentry 
+around same time.
+
+Thanks,
+
+Junxiao.
+
+
+On 5/8/20 5:23 AM, Konstantin Khlebnikov wrote:
+> For most filesystems result of every negative lookup is cached, content of
+> directories is usually cached too. Production of negative dentries isn't
+> limited with disk speed. It's really easy to generate millions of them if
+> system has enough memory.
 >
-> Hi Prashant,
+> Getting this memory back ins't that easy because slab frees pages only when
+> all related objects are gone. While dcache shrinker works in LRU order.
 >
-> On Wed, Dec 09, 2020 at 08:22:52AM -0800, Prashant Malani wrote:
-> > Hi Heikki,
-> >
-> > On Wed, Dec 9, 2020 at 8:14 AM Heikki Krogerus
-> > <heikki.krogerus@linux.intel.com> wrote:
-> > >
-> > > On Tue, Dec 08, 2020 at 03:45:19PM -0800, Prashant Malani wrote:
-> > > > Hi Heikki,
-> > > >
-> > > > Thanks a lot for looking at the patch.
-> > > >
-> > > > On Tue, Dec 8, 2020 at 1:37 AM Heikki Krogerus <heikki.krogerus@linux.intel.com> wrote:
-> > > > >
-> > > > > On Wed, Dec 02, 2020 at 07:08:47PM -0800, Prashant Malani wrote:
-> > > > > > Add the Type C bus for plug alternate modes which are being
-> > > > > > registered via the Type C connector class. This ensures that udev events
-> > > > > > get generated when plug alternate modes are registered (and not just for
-> > > > > > partner/port alternate modes), even though the Type C bus doesn't link
-> > > > > > plug alternate mode devices to alternate mode drivers.
-> > > > >
-> > > > > I still don't understand how is the uevent related to the bus? If you
-> > > > > check the device_add() function, on line 2917, kobject_uevent() is
-> > > > > called unconditionally. The device does not need a bus for that event
-> > > > > to be generated.
-> > > >
-> > > > My initial thought process was to see what is the difference in the adev device
-> > > > initialization between partner altmode and plug altmode (the only difference I saw in
-> > > > typec_register_altmode() was regarding the bus field).
-> > > >
-> > > > Yes, kobject_uevent() is called unconditionally, but it's return value isn't checked,
-> > > > so we don't know if it succeeded or not.
-> > > >
-> > > > In the case of cable plug altmode, I see it fail with the following error[1]:
-> > > >
-> > > > [  114.431409] kobject: 'port1-plug0.0' (000000004ad42956): kobject_uevent_env: filter function caused the event to drop!
-> > > >
-> > > > I think the filter function which is called is this one: drivers/base/core.c: dev_uevent_filter() [2]
-> > > >
-> > > > static int dev_uevent_filter(struct kset *kset, struct kobject *kobj)
-> > > > {
-> > > >       struct kobj_type *ktype = get_ktype(kobj);
-> > > >
-> > > >       if (ktype == &device_ktype) {
-> > > >               struct device *dev = kobj_to_dev(kobj);
-> > > >               if (dev->bus)
-> > > >                       return 1;
-> > > >               if (dev->class)
-> > > >                       return 1;
-> > > >       }
-> > > >       return 0;
-> > > > }
-> > > >
-> > > > So, both the "if (dev->bus)" and "if (dev->class)" checks are failing here. In the case of partner alt modes, bus is set by the class.c code
-> > > > so this check likely returns 1 in that case.
-> > >
-> > > OK. I understand the issue now. So I would say that the proper
-> > > solution to this problem is to link the alt modes with the class
-> > > instead of the bus. That is much smaller change IMO.
-> >
-> > Got it. Just to confirm that I understand correctly, do you mean:
-> > 1. Only cable plug alt modes should be linked with the class instead of the bus.
-> >
-> > <or>
-> >
-> > 2. All alt modes (cable plug, partner, port) should be linked with the
-> > class instead of the bus
-> >
-> > My initial interpretation is 1.) since the bus linkage would be
-> > necessary to match alt mode drivers to partner alt mode devices.
-> > But, my understanding of the bus code is limited so I could be wrong;
-> > could you kindly clarify?
+> Typical scenario is an idle system where some process periodically creates
+> temporary files and removes them. After some time, memory will be filled
+> with negative dentries for these random file names.
 >
-> We don't need to care about the bus here. A device can be part of a
-> bus and a class at the same time. I don't think there is any reason to
-> limit the class to only plug alt modes, so let's just assign it to all
-> of them.
-
-I had actually tried this earlier, but here we run into errors.
-If we always set the class, then "partner" altmode device creation
-fails ("port" altmode creation will likely also fail, but I haven't
-verified that)
-
-The issue is that if we set both "class" and "bus", the device_add()
-[1] code tries to create the "subsystem" symlink in the altmode
-device's sysfs entry twice.
-
-The first creation is in the call to device_add_class_symlinks()[2]
-which creates a "subsystem" file [3]. Note that if "class" is not set,
-this code doesn't execute.
-Next is the call to bus_add_device() [4] which again tries to create
-the "subsystem" symlink [5] and fails since it already exists; this
-leads to failure.
-
-There are 2 solutions I can see:
-1. Only set class for cable plug alt modes (which won't have a bus
-set). This will avoid the double "subsystem" sysfs file creation.
-2. Change the bus_add_device() code to:
-    a. use the _nowarn() option of the symlink create function which
-prevents the warn stack traces on -EEXIST error, and
-    b. check for -EEXIST return value and don't fail if so.
-
-2.) Sounds good to me, but I'm not sure if it's alright to continue if
-a "subsystem" symlink already exists.
-
-If 2.) is OK with you, I will upload a patch to implement it and make
-a series with that patch and this one.
-
-Best regards,
-
--Prashant
-
-[1]: https://elixir.bootlin.com/linux/v5.10-rc7/source/drivers/base/core.c#L2884
-[2]: https://elixir.bootlin.com/linux/v5.10-rc7/source/drivers/base/core.c#L2955
-[3]: https://elixir.bootlin.com/linux/v5.10-rc7/source/drivers/base/core.c#L2722
-[4]: https://elixir.bootlin.com/linux/v5.10-rc7/source/drivers/base/core.c#L2961
-[5]: https://elixir.bootlin.com/linux/v5.10-rc7/source/drivers/base/bus.c#L471
+> Simple lookup of random names also generates negative dentries very fast.
+> Constant flow of such negative denries drains all other inactive caches.
+>
+> Negative dentries are linked into siblings list along with normal positive
+> dentries. Some operations walks dcache tree but looks only for positive
+> dentries: most important is fsnotify/inotify. Hordes of negative dentries
+> slow down these operations significantly.
+>
+> Time of dentry lookup is usually unaffected because hash table grows along
+> with size of memory. Unless somebody especially crafts hash collisions.
+>
+> This patch set solves all of these problems:
+>
+> Move negative denries to the end of sliblings list, thus walkers could
+> skip them at first sight (patches 3-6).
+>
+> Keep in dcache at most three unreferenced negative denties in row in each
+> hash bucket (patches 7-8).
+>
+> ---
+>
+> Konstantin Khlebnikov (8):
+>        dcache: show count of hash buckets in sysctl fs.dentry-state
+>        selftests: add stress testing tool for dcache
+>        dcache: sweep cached negative dentries to the end of list of siblings
+>        fsnotify: stop walking child dentries if remaining tail is negative
+>        dcache: add action D_WALK_SKIP_SIBLINGS to d_walk()
+>        dcache: stop walking siblings if remaining dentries all negative
+>        dcache: push releasing dentry lock into sweep_negative
+>        dcache: prevent flooding with negative dentries
+>
+>
+>   fs/dcache.c                                   | 144 +++++++++++-
+>   fs/libfs.c                                    |  10 +-
+>   fs/notify/fsnotify.c                          |   6 +-
+>   include/linux/dcache.h                        |   6 +
+>   tools/testing/selftests/filesystems/Makefile  |   1 +
+>   .../selftests/filesystems/dcache_stress.c     | 210 ++++++++++++++++++
+>   6 files changed, 370 insertions(+), 7 deletions(-)
+>   create mode 100644 tools/testing/selftests/filesystems/dcache_stress.c
+>
+> --
+> Signature
