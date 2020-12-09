@@ -2,86 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7052D4012
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 213842D4005
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730003AbgLIKgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:36:36 -0500
-Received: from mout.kundenserver.de ([212.227.17.13]:57923 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727836AbgLIKgg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:36:36 -0500
-Received: from [192.168.1.155] ([77.2.91.93]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MpDeD-1kM7Qx2oGd-00qfIe; Wed, 09 Dec 2020 11:33:48 +0100
-Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
-To:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org, corbet@lwn.net,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org, stefanha@redhat.com,
-        msuchanek@suse.de
-References: <20201203191135.21576-1-info@metux.net>
- <20201203191135.21576-2-info@metux.net>
- <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
- <96aca1e6-2d5a-deb1-2444-88f938c7a9de@metux.net>
- <20201205142218-mutt-send-email-mst@kernel.org>
- <842519cc-94ca-3c11-ddd6-543e5a89c998@redhat.com>
- <20201207085247-mutt-send-email-mst@kernel.org>
- <0a9c19bd-0d25-1035-57e3-b1f5f204c309@redhat.com>
- <500d0c68-0c6d-f5fb-665b-74aec6d59f99@metux.net>
- <9e11f1ab-6b7c-d50e-d7db-633ebc3d358c@redhat.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <02dd5afb-5e62-0c38-88c2-a37531180e06@metux.net>
-Date:   Wed, 9 Dec 2020 11:33:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730133AbgLIKev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:34:51 -0500
+Received: from ozlabs.org ([203.11.71.1]:53623 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729804AbgLIKeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 05:34:37 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrYLV1YdKz9sWK;
+        Wed,  9 Dec 2020 21:33:54 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607510035;
+        bh=lDtWS6916nfgO2k9JHjSAC4AyMJW4Ynnt9/fbcCFIIs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qeOf3EUGaDLjcUzBJ5frHJIkfp9HzLZG3ipYtY+xVRMXod7+2agnxAcYZja/jpvVE
+         h9Jbb8hgYVUCO0B83C9/j3rYJrYIGA5sOvsfut6/LacMlmGP5juxwUmfUCZp5Zd9as
+         QfJP/iSOrniiukmOEzLtaLyAcJsnwfCYZZCHtU0+/E7R+lemQcnx4X+WV2DOLaul93
+         DoLiltlXPtUx7AAUYpSM7S+c1V6FRn9fRUYsJHWE/TGDsMspBgps2E+/pnO6C3xeD3
+         1rWRAZBa9PUKNgkuNwMyMVmgQkU2N3443ijKS1tCAm/C5A/3sRPAdbK9N96VpcDm8y
+         UsdvrUHy32CbA==
+Date:   Wed, 9 Dec 2020 21:33:52 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Mathieu Malaterre <malat@debian.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: linux-next: build warning after merge of the akpm tree
+Message-ID: <20201209213352.15487d56@canb.auug.org.au>
+In-Reply-To: <20201208230157.42c42789@canb.auug.org.au>
+References: <20201204210000.660293c6@canb.auug.org.au>
+        <20201208230157.42c42789@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <9e11f1ab-6b7c-d50e-d7db-633ebc3d358c@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:6IBOdJ3Pw3iu1MA21dwXanEXus7g8p1ep+GkGt9zVIbhxhZx7Kf
- jiiT9jUHC2ZzHCmY2HNp5e7SosSLryMqody8olJ3KO/KGIWk81GbzazHXz4geIZ1BDAIhaz
- O8m+3MwjyC39TfP3KI6umd7EFHWVbx0KiKNiUK1cxON6xTUIZESLpMjOonPjPOKV9Yj7Oae
- unBSQwjogiQhVFADVN+ZA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NIdITOosddQ=:P8JLLlTSzK2CBNVBgIMqUV
- UpiIQoKs9//rlDBkl+fCiRfYISscyoor6jO2Rq0dZxW1574ox9nuQeFZh0lQ3t4Fg4KZJ73nl
- 41qNdWYboci98BEv99ALc1TYA0fKsHeWhU5snts4GVf/6JzUk3Ai/7nvlwxO8EUlrS98ve4AU
- rI6fhXFXfj1fboAkITyOq3VnBUDeBi+RaGhxi6RpZGLJtb0Z0h0qBu55Em4JCCTGiPADYnwP6
- lzAPldZb40Qo9c9jGzFfRHv0rpkY6Iz8ykrHP2X+9/ovFK8cd3W3afEGqL5u7WD21fL4xKx4F
- xULPKia5OMoBCbT/QAtq6rJSobc7bghBqWPj+dWQw5gpqdSg3gF3XUyJrKOiyhHv7nNuFKb2P
- UiQJ0QH/1E6BdqPqNGy0nE++XxDrfkdrCx+6S7OgeJW70XM8Yn4EpqSHtnt+FNE7rtD/jazD6
- FWcB0/8kvkVwAOZ9iUV1+Nk3uXO893cxNPA2qUkzF2FGXpgA9bpG
+Content-Type: multipart/signed; boundary="Sig_/bdi+83aaJMmJE5.FFGG7Z2U";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.12.20 10:31, Jason Wang wrote:
+--Sig_/bdi+83aaJMmJE5.FFGG7Z2U
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi all,
 
->> And even if some USB-HA driver is enabled, the actualy machine doesn't
->> necessarily have the corresponding device.
-> 
-> Ok, then select works for me.
+On Tue, 8 Dec 2020 23:01:57 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> I will try the following patch tomorrow:
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 8 Dec 2020 22:58:24 +1100
+> Subject: [PATCH] powerpc: Add .data..Lubsan_data*/.data..Lubsan_type* sec=
+tions explicitly
+>=20
+> Similarly to commit
+>=20
+>   beba24ac5913 ("powerpc/32: Add .data..Lubsan_data*/.data..Lubsan_type* =
+sections explicitly")
+>=20
+> since CONFIG_UBSAN bits can now be enabled for all*config.
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  arch/powerpc/kernel/vmlinux.lds.S | 4 ++++
+>  1 file changed, 4 insertions(+)
+>=20
+> diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmli=
+nux.lds.S
+> index 3b4c26e94328..0318ba436f34 100644
+> --- a/arch/powerpc/kernel/vmlinux.lds.S
+> +++ b/arch/powerpc/kernel/vmlinux.lds.S
+> @@ -296,6 +296,10 @@ SECTIONS
+>  #else
+>  	.data : AT(ADDR(.data) - LOAD_OFFSET) {
+>  		DATA_DATA
+> +#ifdef CONFIG_UBSAN
+> +		*(.data..Lubsan_data*)
+> +		*(.data..Lubsan_type*)
+> +#endif
+>  		*(.data.rel*)
+>  		*(.toc1)
+>  		*(.branch_lt)
+> --=20
+> 2.29.2
 
-Great, so does everybody aggree on my patch ?
-https://lore.kernel.org/lkml/20201204131221.2827-1-info@metux.net/
+This got rid of all the warnings.
 
---mtx
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+--Sig_/bdi+83aaJMmJE5.FFGG7Z2U
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/QqBAACgkQAVBC80lX
+0Gz0nQf/RNqrsicIbLqfHos/jyBwGt9KwnDnfb11T7O3k2/CcVfVxmsaXKUcChqK
+I3tFKW4L5uHGiz8+TPPqvUnalGzWgcCh4DVHcc0VC3i8ZK/6hFbDJ6aisMkdmi1V
+axmEFnMEQ3P4Cu4bE+cndCJ96C3Z+c+9/p/H0pxuB28MKnO8/uib2fKX+p2xOCkk
+vMiKfBwBCAuIru1BT3oHsC9w4G8OlpkdlFh6bGDsPwfVXc8XiB4U3rGJJDu2nLXh
+nylmt3Ar7azYDwzab79wiRIgC2H2L9oF9pNj8TESW/nu1AioWvwyskJJ01h6emV5
+bNvp1k1WZubZjHAiCazBYnRjxYQU8g==
+=D7y+
+-----END PGP SIGNATURE-----
+
+--Sig_/bdi+83aaJMmJE5.FFGG7Z2U--
