@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDBA2D3F76
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:04:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A452D3F78
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729658AbgLIKC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:02:58 -0500
-Received: from ozlabs.org ([203.11.71.1]:57019 "EHLO ozlabs.org"
+        id S1729661AbgLIKD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:03:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44978 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729051AbgLIKC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:02:57 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrXdy61tfz9sW9;
-        Wed,  9 Dec 2020 21:02:12 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607508135;
-        bh=8SjBJC3enLh3C+xvok+MiLcCtIZVyD81LmzuiIuJ3cA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hidnZwe9EELIeCt7sTHpZVUWam7dglNl6ATyqnkcFjbChIofmY8o54kv81Nr31j+o
-         0YKJ8zBxEBNMF88rdNcHIt+ENjrKgbpfNR4BeTuh9rPypw5KrVn8OLPwZgbOTYV6wa
-         3KNH0hwy6PQ3vlw5Kio3XLxXolrqqUQK1oFj5Nw2OYdd+IrGSfwsaS8g1Qb9JtAgIV
-         L2vNe2SQUE7QgovX+dRiq9PAfyQqQ702PrUtD1Ub57t6CfjVw/od/quJ4IJc6zuu/P
-         8+oFgueGS0c7eMSm4N4stwvhEJPmwjzeole1T/qQzTXmOohfSLdEMNYLalacklsExb
-         vS1s7L6iSOpNw==
-Date:   Wed, 9 Dec 2020 21:02:11 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drm-misc tree
-Message-ID: <20201209210211.306f3c61@canb.auug.org.au>
+        id S1729051AbgLIKD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 05:03:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 46372AB63;
+        Wed,  9 Dec 2020 10:02:45 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 11:02:43 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     mhocko@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, vbabka@suse.cz, pasha.tatashin@soleen.com
+Subject: Re: [RFC PATCH v3 4/4] mm,memory_hotplug: Add mhp_memmap_on_memory
+ boot option
+Message-ID: <20201209100239.GB30892@linux>
+References: <20201201115158.22638-1-osalvador@suse.de>
+ <20201201115158.22638-5-osalvador@suse.de>
+ <1cb78e59-d97c-f252-7d1b-e8e9bad38ddd@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0lxQX6ywS7+eQSbvvKXaRXv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1cb78e59-d97c-f252-7d1b-e8e9bad38ddd@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0lxQX6ywS7+eQSbvvKXaRXv
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Dec 02, 2020 at 10:42:18AM +0100, David Hildenbrand wrote:
+> I have another memhp tunable in the works. I suggest doing it like
+> page_shuffling and using, module parameters instead. Makes this
+> a bit nicer IMHO.
 
-Hi all,
+Does that have any impact?
 
-After merging the drm-misc tree, today's linux-next build (htmldocs)
-produced this warning:
+> diff --git a/mm/Makefile b/mm/Makefile
+> index 069f216e109e..ba7714b5eaa1 100644
+> --- a/mm/Makefile
+> +++ b/mm/Makefile
+> @@ -58,9 +58,13 @@ obj-y                        := filemap.o mempool.o oom_kill.o fadvise.o \
+>  page-alloc-y := page_alloc.o
+>  page-alloc-$(CONFIG_SHUFFLE_PAGE_ALLOCATOR) += shuffle.o
+>  
+> +# Give "memory_hotplug" its own module-parameter namespace
+> +memory-hotplug-$(CONFIG_MEMORY_HOTPLUG) := memory_hotplug.o
+> +
+>  obj-y += page-alloc.o
+>  obj-y += init-mm.o
+>  obj-y += memblock.o
+> +obj-y += $(memory-hotplug-y)
+>  
+>  ifdef CONFIG_MMU
+>         obj-$(CONFIG_ADVISE_SYSCALLS)   += madvise.o
+> @@ -82,7 +86,6 @@ obj-$(CONFIG_SLAB) += slab.o
+>  obj-$(CONFIG_SLUB) += slub.o
+>  obj-$(CONFIG_KASAN)    += kasan/
+>  obj-$(CONFIG_FAILSLAB) += failslab.o
+> -obj-$(CONFIG_MEMORY_HOTPLUG) += memory_hotplug.o
+>  obj-$(CONFIG_MEMTEST)          += memtest.o
+>  obj-$(CONFIG_MIGRATION) += migrate.o
+>  obj-$(CONFIG_TRANSPARENT_HUGEPAGE) += huge_memory.o khugepaged.o
+> 
+> 
+> The you can just use module_param/MODULE_PARM_DESC and set the parameter via
+> 
+> "memory_hotplug.memmap_on_memory"
 
-include/drm/gpu_scheduler.h:201: warning: Function parameter or member 'lis=
-t' not described in 'drm_sched_job'
+I have to confess that I was not aware of this trick, but looks cleaner
+overall.
 
-Introduced by commit
+Thanks
 
-  8935ff00e3b1 ("drm/scheduler: "node" --> "list"")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/0lxQX6ywS7+eQSbvvKXaRXv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/QoKQACgkQAVBC80lX
-0Gzo3wf/b98Htxe7h38fl2KCe5idJnjdkTJOApijxO/rukHJqw7tFyErFM5OlrIc
-NtweqOSbmE6w2BJySSVEnMf/mPtrNym8DlvnnhTJeQgVtRcudz3BWSAMr2E9seK9
-j4isxTieAFM7Qv3Nd8dG9gE8siL9d1EhnohQxoMLUDUSoagBthOTWKbhxUWRGWpi
-JQ/s1BZlKO9zMPglBtqkW1l+olJvkOMcAN3e9o6SL8y+jTJdlQEZrBWbD+2FrmAt
-nB1dGl1Q92XrVmlnQ2w2cvf3QuONCeFG/RCAHGUdBiSenRwS3KOGtQIf9too44j5
-tywpkaatKs6FvIfE3pFGb2GovxwR0A==
-=29MF
------END PGP SIGNATURE-----
-
---Sig_/0lxQX6ywS7+eQSbvvKXaRXv--
+-- 
+Oscar Salvador
+SUSE L3
