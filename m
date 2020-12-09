@@ -2,75 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73752D4404
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 276012D4409
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732673AbgLIONi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 09:13:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60430 "EHLO mail.kernel.org"
+        id S1732869AbgLIOQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 09:16:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41156 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727090AbgLIONX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 09:13:23 -0500
-Date:   Wed, 9 Dec 2020 14:12:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607523163;
-        bh=FAI/30k4kJrlpskHB/PfBKqSeCQ0aih1cBOMGE821UE=;
-        h=From:To:Cc:Subject:From;
-        b=Jwed7xDpuN9x4w57KLlIz4Z0VcspD08U6jWr2hmBYNIkFB47HgyWWxZmIkIL3BZo1
-         5/l0U7I2Uia4pTcNoHfpvpgtzQM+1srtYEurcc5MKnXo+eCF9SrMEpsP0gGgvG1xrp
-         WoKLv0sQlBjo0kmISb+FTRiIdo3xmVwt7Fwv8XcM3I5v2LZHbEVqmsnMC3y8V//q6P
-         dTXiD/tQFBxu3aM/35XS20idj2VJHXB0yrmZu8oVeOF/iwXdLB8y57HtRqeQ02JZVa
-         NtJ5Ub0vf4iCslV73T2F2oP+ouuM1RVj2J1lE7Oqjw0T/7AP7j/xDeNtobmjPQ0/9Z
-         tPdlf1ZK/xYEg==
-From:   Will Deacon <will@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        joro@8bytes.org, Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [GIT PULL] IOMMU fix for 5.10 (-final)
-Message-ID: <20201209141237.GA8092@willie-the-truck>
+        id S1729725AbgLIOQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 09:16:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607523345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8ZGK7g35Goq64Ci9MeapPBQgkMe+5KSgf3nOc5lvEFA=;
+        b=R47mLGAr7aLiQsrHNJH+SRoAOoJ5WYQZd5B2ksYtQu9uFF57MTwsYvxkG2obJg051NemD3
+        clV59YMSpHdpqnN4q+j/bZAUTinYcY5tmjd9e0JQi3Xml0td8ftMSjVy5XgSNdAPjpzJqP
+        4GZ6VwuFWZyTsJz/xMVIlB5+ecMEc9I=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F016AB2DC;
+        Wed,  9 Dec 2020 14:15:44 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 15:15:44 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        shuah@kernel.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] lib: test_scanf: Add tests for sscanf number
+ conversion
+Message-ID: <X9DcEL54k0qRayr+@alley>
+References: <20201130145800.19960-1-rf@opensource.cirrus.com>
+ <20201130145800.19960-2-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201130145800.19960-2-rf@opensource.cirrus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon 2020-11-30 14:57:58, Richard Fitzgerald wrote:
+> Adds test_sscanf to test various number conversion cases, as
+> number conversion was previously broken.
+> 
+> This also tests the simple_strtoxxx() functions exported from
+> vsprintf.c.
 
-Please pull this one-liner AMD IOMMU fix for 5.10. It's actually a fix
-for a fix, where the size of the interrupt remapping table was increased
-but a related constant for the size of the interrupt table was forgotten.
+It is impressive.
 
-Cheers,
+Honestly, I do not feel to be expert on testing and mathematics.
+I am not sure how comprehensive the test is. Also I am not
+sure what experts would say about the tricks with random
+numbers.
 
-Will
+Anyway, this is much more than what I have expected. And it checks
+great number of variants and corner cases.
 
---->8
+I suggest only one small change, see below.
 
-The following changes since commit d76b42e92780c3587c1a998a3a943b501c137553:
+> --- /dev/null
+> +++ b/lib/test_scanf.c
+> @@ -0,0 +1,747 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Test cases for sscanf facility.
+> + */
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+> +#include <linux/bitops.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/overflow.h>
+> +#include <linux/printk.h>
+> +#include <linux/random.h>
+> +#include <linux/slab.h>
+> +#include <linux/string.h>
+> +
+> +#include "../tools/testing/selftests/kselftest_module.h"
+> +
+> +#define BUF_SIZE 1024
+> +
+> +static unsigned total_tests __initdata;
+> +static unsigned failed_tests __initdata;
+> +static char *test_buffer __initdata;
+> +static char *fmt_buffer __initdata;
+> +static struct rnd_state rnd_state __initdata;
+> +
+> +typedef int (*check_fn)(const void *check_data, const char *string,
+> +			const char *fmt, int n_args, va_list ap);
+> +
+> +static void __scanf(4, 6) __init
+> +_test(check_fn fn, const void *check_data, const char *string, const char *fmt,
+> +	int n_args, ...)
+> +{
+> +	va_list ap, ap_copy;
+> +	int ret;
+> +
+> +	total_tests++;
+> +
+> +	va_start(ap, n_args);
+> +	va_copy(ap_copy, ap);
+> +	ret = vsscanf(string, fmt, ap_copy);
+> +	va_end(ap_copy);
+> +
+> +	if (ret != n_args) {
+> +		pr_warn("vsscanf(\"%s\", \"%s\", ...) returned %d expected %d\n",
+> +			string, fmt, ret, n_args);
+> +		goto fail;
+> +	}
+> +
+> +	ret = (*fn)(check_data, string, fmt, n_args, ap);
+> +	if (ret)
+> +		goto fail;
+> +
+> +	va_end(ap);
+> +
+> +	return;
+> +
+> +fail:
+> +	failed_tests++;
+> +	va_end(ap);
+> +}
+> +
+> +#define test_one_number(T, gen_fmt, scan_fmt, val, fn)			\
+> +do {									\
+> +	const T expect_val = (T)(val);					\
+> +	T result = ~expect_val; /* should be overwritten */		\
 
-  iommu/vt-d: Don't read VCCAP register unless it exists (2020-11-26 14:50:24 +0000)
+If I get it correctly, this is supposed to initialize the temporary
+variable with a value that is different from the expected value.
+It will cause test failure when it is not updated by vsscanf().
 
-are available in the Git repository at:
+It does not work for zero value. A better solution might be to add
+a constant, for example:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/iommu-fixes
+	T result = expect_val + 3; /* do not match when not overwritten */ \
 
-for you to fetch changes up to 4165bf015ba9454f45beaad621d16c516d5c5afe:
+I did not use "+ 1" intentionally because it might hide some overflow
+issues.
 
-  iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs (2020-12-07 11:00:24 +0000)
+> +									\
+> +	snprintf(test_buffer, BUF_SIZE, gen_fmt, expect_val);		\
+> +	_test(fn, &expect_val, test_buffer, "%" scan_fmt, 1, &result);	\
+> +} while (0)
 
-----------------------------------------------------------------
-iommu fix for 5.10
+Otherwise, it looks good to me.
 
-- Fix interrupt table length definition for AMD IOMMU
-
-----------------------------------------------------------------
-Suravee Suthikulpanit (1):
-      iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs
-
- drivers/iommu/amd/amd_iommu_types.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
+Best Regards,
+Petr
