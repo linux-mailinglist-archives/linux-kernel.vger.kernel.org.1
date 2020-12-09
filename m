@@ -2,145 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44112D3A98
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:35:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B6E2D3AB5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727218AbgLIFfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 00:35:16 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:35689 "EHLO pegase1.c-s.fr"
+        id S1727678AbgLIFgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 00:36:55 -0500
+Received: from mga04.intel.com ([192.55.52.120]:56107 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgLIFfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 00:35:16 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CrQj52MGdz9txjs;
-        Wed,  9 Dec 2020 06:34:33 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id sRPpDmrjf2vd; Wed,  9 Dec 2020 06:34:33 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CrQj51P8wz9txjr;
-        Wed,  9 Dec 2020 06:34:33 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E4B2A8B77C;
-        Wed,  9 Dec 2020 06:34:33 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id K0tXGl0O9eAo; Wed,  9 Dec 2020 06:34:33 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 070FC8B768;
-        Wed,  9 Dec 2020 06:34:32 +0100 (CET)
-Subject: Re: [PATCH v3 4/5] powerpc/fault: Avoid heavy
- search_exception_tables() verification
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <0d37490a067840f53fc5b118869917c0aec9ab87.1607416578.git.christophe.leroy@csgroup.eu>
- <731bdee26a5a5c81cd815ed624a6fb3bdef8b4db.1607416578.git.christophe.leroy@csgroup.eu>
- <87lfe8qrik.fsf@linux.ibm.com>
- <b532a9c6-97de-031d-f880-901a117cc95c@csgroup.eu>
-Message-ID: <9b5a6420-afa4-0f9d-3aa5-5374f9ce252d@csgroup.eu>
-Date:   Wed, 9 Dec 2020 06:34:21 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
-MIME-Version: 1.0
-In-Reply-To: <b532a9c6-97de-031d-f880-901a117cc95c@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        id S1727475AbgLIFgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 00:36:55 -0500
+IronPort-SDR: Ik/jp20VcjluR0F3eCz7lFIu5VbP2CSqF/wvxo/dwH4vE0m4Rs9pWezovbF9AC3wOK+hBzrDDv
+ hJ8F7hiYTWjA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="171449601"
+X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
+   d="scan'208";a="171449601"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 21:35:09 -0800
+IronPort-SDR: 9BujQTugYI4F6TxRMgLypp+yg5AquOmJmtBNYa8+psoQM10SUE7R/27xy3kOR51Ps0LlZ5beao
+ dZhZd2We/tUg==
+X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
+   d="scan'208";a="363989360"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 21:35:06 -0800
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
+        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: [PATCH v2 0/9] soundwire/regmap: use _no_pm routines
+Date:   Wed,  9 Dec 2020 13:34:50 +0800
+Message-Id: <20201209053459.5515-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When a Slave device is resumed, it may resume the bus and restart the
+enumeration. And Slave drivers will wait for initialization_complete
+complete in their resume function, however initialization_complete will
+complete after sdw_update_slave_status function is finished and codec
+driver usually call some IO functions in the update_status callback
+function.
+It will become a deadlock if we use regular read/write routines during
+the resuming process.
 
+This series touches both soundwire and regmap trees.
+commit fb5103f9d6ce ("regmap/SoundWire: sdw: add support for SoundWire 1.2 MBQ")
+is needed for soundwire tree to complie.
+On the other hands,
+commit 6e06a85556f9 ("soundwire: bus: add comments to explain interrupt loop filter")
+to
+commit 47b8520997a8 ("soundwire: bus: only clear valid DPN interrupts")
+are needed for regmap tree.
 
-Le 08/12/2020 à 16:07, Christophe Leroy a écrit :
-> 
-> 
-> Le 08/12/2020 à 15:52, Aneesh Kumar K.V a écrit :
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>
->>> search_exception_tables() is an heavy operation, we have to avoid it.
->>> When KUAP is selected, we'll know the fault has been blocked by KUAP.
->>> Otherwise, it behaves just as if the address was already in the TLBs
->>> and no fault was generated.
->>>
->>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>> Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
->>> ---
->>> v3: rebased
->>> v2: Squashed with the preceeding patch which was re-ordering tests that get removed in this patch.
->>> ---
->>>   arch/powerpc/mm/fault.c | 23 +++++++----------------
->>>   1 file changed, 7 insertions(+), 16 deletions(-)
->>>
->>> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
->>> index 3fcd34c28e10..1770b41e4730 100644
->>> --- a/arch/powerpc/mm/fault.c
->>> +++ b/arch/powerpc/mm/fault.c
->>> @@ -210,28 +210,19 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
->>>           return true;
->>>       }
->>> -    if (!is_exec && address < TASK_SIZE && (error_code & (DSISR_PROTFAULT | DSISR_KEYFAULT)) &&
->>> -        !search_exception_tables(regs->nip)) {
->>> -        pr_crit_ratelimited("Kernel attempted to access user page (%lx) - exploit attempt? (uid: 
->>> %d)\n",
->>> -                    address,
->>> -                    from_kuid(&init_user_ns, current_uid()));
->>> -    }
->>> -
->>>       // Kernel fault on kernel address is bad
->>>       if (address >= TASK_SIZE)
->>>           return true;
->>> -    // Fault on user outside of certain regions (eg. copy_tofrom_user()) is bad
->>> -    if (!search_exception_tables(regs->nip))
->>> -        return true;
->>> -
->>> -    // Read/write fault in a valid region (the exception table search passed
->>> -    // above), but blocked by KUAP is bad, it can never succeed.
->>> -    if (bad_kuap_fault(regs, address, is_write))
->>> +    // Read/write fault blocked by KUAP is bad, it can never succeed.
->>> +    if (bad_kuap_fault(regs, address, is_write)) {
->>> +        pr_crit_ratelimited("Kernel attempted to %s user page (%lx) - exploit attempt? (uid: 
->>> %d)\n",
->>> +                    is_write ? "write" : "read", address,
->>> +                    from_kuid(&init_user_ns, current_uid()));
->>>           return true;
->>> +    }
->>
->>
->> With this I am wondering whether the WARN() in bad_kuap_fault() is
->> needed. A direct access of userspace address will trigger this, whereas
->> previously we used bad_kuap_fault() only to identify incorrect restore
->> of AMR register (ie, to identify kernel bugs). Hence a WARN() there was
->> useful. We loose that differentiation now?
-> 
-> Yes, I wanted to remove the WARN(), see 
-> https://patchwork.ozlabs.org/project/linuxppc-dev/patch/cc9129bdda1dbc2f0a09cf45fece7d0b0e690784.1605541983.git.christophe.leroy@csgroup.eu/ 
-> 
-> but I understood from Michael that maybe it was not a good idea, so I left it aside for now when 
-> rebasing to v3.
-> 
-> Yes previously we were able to differentiate between a direct access of userspace and a valid access 
-> triggering a KUAP fault, but at the cost of the heavy search_exception_tables().
-> The issue was reported by Nick through https://github.com/linuxppc/issues/issues/317
-> 
-> Should be perform the search_exception_tables() once we have hit the KUAP fault and WARN() only in 
-> that case ?
+v2:
+ - Separate commits according to maintainer's comments.
 
-I sent out v4 which does that: only emit the warning once we know it is a KUAP fault within an 
-uaccess routine. With that, we should be back more or less as before: warning only if we hit KUAP 
-fault AND it is a place where a userspace access should be granted.
-We are not anymore in the fast hot path, so calling search_exception_tables() there should be a 
-performance issue.
+Bard Liao (4):
+  soundwire: export sdw_write/read_no_pm functions
+  regmap: sdw: use _no_pm functions in regmap_read/write
+  regmap: sdw: use no_pm routines for SoundWire 1.2 MBQ
+  regmap: sdw-mbq: use MODULE_LICENSE("GPL")
 
-Christophe
+Pierre-Louis Bossart (5):
+  soundwire: bus: use sdw_update_no_pm when initializing a device
+  soundwire: bus: use sdw_write_no_pm when setting the bus scale
+    registers
+  soundwire: bus: use no_pm IO routines for all interrupt handling
+  soundwire: bus: fix confusion on device used by pm_runtime
+  soundwire: bus: clarify dev_err/dbg device references
 
+ drivers/base/regmap/regmap-sdw-mbq.c |  10 +-
+ drivers/base/regmap/regmap-sdw.c     |   4 +-
+ drivers/soundwire/bus.c              | 136 +++++++++++++++------------
+ include/linux/soundwire/sdw.h        |   2 +
+ 4 files changed, 85 insertions(+), 67 deletions(-)
 
-> 
-> I was wondering also if we should keep the WARN() only when CONFIG_PPC_KUAP_DEBUG is set ?
-> 
+-- 
+2.17.1
+
