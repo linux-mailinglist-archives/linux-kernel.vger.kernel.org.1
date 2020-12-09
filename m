@@ -2,182 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DE02D3E52
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8172D3E51
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728010AbgLIJQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:16:54 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12898 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727665AbgLIJQx (ORCPT
+        id S1728504AbgLIJQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:16:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727505AbgLIJQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:16:53 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B993Cwp034240;
-        Wed, 9 Dec 2020 04:15:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=OUtnX1xWfkGMVaDSZjdSLkzl+kWnd4BJdWJwy6bdJjs=;
- b=MUaROpBH57+TaLj07MoKv4oPJblZB9pCaZUD9m/NcP9Emu9iJXvDrTLfNqORgCzmeeiS
- lohj2a0/9vTxBaQ0cw94+55dfS5Bc+gwYiXl/KjWC7Ev06whC7goKgtWsag6iWTCAn+S
- RZ5HSyAKS3DePYTfGecaEWoBE/EP38deneSVXNjStmXVakPJ8V8FKRYTK/KIeXga3K2f
- t5Q3bwriH0/8qjqcEbZOynGKUT8X4vbr2AWBXYZIs7QsFI9aUIXEtfWiPDb363p9Bt04
- /kIHpwNXC9ke++SetrIHv5qSvLLBW6rhMtPBW+ooJUxgtC+uMTuJzHkbb1uiUxvld/uE wQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35aab9ecmd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 04:15:58 -0500
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B994lAl043893;
-        Wed, 9 Dec 2020 04:15:57 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35aab9ecjf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 04:15:57 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B99CJGK000367;
-        Wed, 9 Dec 2020 09:15:53 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 3581u8ph7u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 09:15:53 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B99EaXv8585844
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Dec 2020 09:14:36 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2F63AA4062;
-        Wed,  9 Dec 2020 09:14:36 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 173B4A405B;
-        Wed,  9 Dec 2020 09:14:34 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed,  9 Dec 2020 09:14:33 +0000 (GMT)
-Date:   Wed, 9 Dec 2020 14:44:33 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc:     Anton Blanchard <anton@ozlabs.org>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] powerpc/smp: Add support detecting thread-groups
- sharing L2 cache
-Message-ID: <20201209091433.GM528281@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com>
- <1607057327-29822-3-git-send-email-ego@linux.vnet.ibm.com>
- <20201207124039.GI528281@linux.vnet.ibm.com>
- <20201208174237.GB14206@in.ibm.com>
+        Wed, 9 Dec 2020 04:16:42 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DC4C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:16:02 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id t7so614812pfh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:16:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=CfSADqT0HSLujKNKLc4JwSCyEpro2H+j9Ao48CTHNHs=;
+        b=aDWi2OusThg+yOP1g8PFOq/W+RruCrJiybVmCk/iQX9b/X6JSSSVINLFcX01wyQJUO
+         GOst8VkDqy2Pd2YPjkHfdQHhMVDy2ISUeZGAurUC42C8c3OlN7tTJl9BEXAGXfNASCEn
+         LK1jvS3x5QfHQLrnzemU3+z2l7OW1PTAP1U1GT45rk5pgtnmaTFKuBHZZyJemiBj6Swt
+         CGGYSoGy2yfKZeg+rLoMwrTsjhlVyqoK7UCUwuKgpZ2kj451Vz+9bqPYJD9LWzcmaPRp
+         ahlMb/O1wXFuN4HMKqmxVxAd/3K28XpLB1QY9okMECRES1Y67EAvUAUXEHiwKujMjHE0
+         gElQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=CfSADqT0HSLujKNKLc4JwSCyEpro2H+j9Ao48CTHNHs=;
+        b=CZVkv8Bbl4JaX+r6YJ08Jsq0AqBBI7plxTOsbkjpqGyzFYwxBwXG3vqPXI+6v2FTpJ
+         M+kgGnaJLTTiWqpbSu89FFEWR1k325oj512/rPDBGZN+OXtNMm1pqbJLmpCodw9OPfbh
+         ZUBDAsPaX5DYuMABx57KiNIBT60TENx5Bz2qNu5EatoaABtmm1IMk2e55d+JxMwtHAVW
+         rs0V86x9xrUh1Ew990xALzqUF4/SoGHp0DZABE5rmhVOUIrFjV78Wm5gZ8Sd7FH1O/xA
+         A9ZDbHPnaXE77sbL8CQC45q/jQZFUKk1fSEoaASM5MSZqrwAKUKHwrlccGzCUXWslTaa
+         pY6w==
+X-Gm-Message-State: AOAM533Fv1mcq5Zqxhwd4diLb91RUNCLBJILjcAPbYiuMtMKCK6jetc/
+        T6y6hOkXkVlKMOsxy+sBhL/UPzIU5wz0L+IJGCc=
+X-Google-Smtp-Source: ABdhPJyOcSWgSLCoUTvZ7J6hJW/wHFNGOxoHS7JcSR1xTEYU+XoypIt5Mru+ad8UcHmCDwalp7FlfWraCk4n5XjhL7w=
+X-Received: by 2002:aa7:978d:0:b029:197:fd52:ee48 with SMTP id
+ o13-20020aa7978d0000b0290197fd52ee48mr1471051pfp.13.1607505361579; Wed, 09
+ Dec 2020 01:16:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20201208174237.GB14206@in.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-09_07:2020-12-08,2020-12-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- bulkscore=0 phishscore=0 spamscore=0 adultscore=0 suspectscore=1
- malwarescore=0 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090064
+Sender: madamhismlati@gmail.com
+Received: by 2002:a17:90a:6a82:0:0:0:0 with HTTP; Wed, 9 Dec 2020 01:16:01
+ -0800 (PST)
+From:   Esther Gabriel <esthergebrael22@gmail.com>
+Date:   Wed, 9 Dec 2020 01:16:01 -0800
+X-Google-Sender-Auth: 7-NVFXkq6YZw3ke3nvo_WjVenXA
+Message-ID: <CAF5HdHiGn63xEKx601h5k7dqUuiwKtrM7dtWCB=D2e1u7RsMcw@mail.gmail.com>
+Subject: From Esther Gabriel
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Gautham R Shenoy <ego@linux.vnet.ibm.com> [2020-12-08 23:12:37]:
+Greeting to you my Dearest,
 
-> 
-> > For L2 we have thread_group_l2_cache_map to store the tasks from the thread
-> > group.  but cpu_l2_cache_map for keeping track of tasks.
-> 
-> > 
-> > I think we should do some renaming to keep the names consistent.
-> > I would say probably say move the current cpu_l2_cache_map to
-> > cpu_llc_cache_map and move the new aka  thread_group_l2_cache_map as
-> > cpu_l2_cache_map to be somewhat consistent.
-> 
-> Hmm.. cpu_llc_cache_map is still very generic. We want to have
-> something that defines l2 map.
-> 
-> I agree that we need to keep it consistent. How about renaming
-> cpu_l1_cache_map to thread_groups_l1_cache_map ?
-> 
-> That way thread_groups_l1_cache_map and thread_groups_l2_cache_map
-> refer to the corresponding L1 and L2 siblings as discovered from
-> ibm,thread-groups property.
+Please I need your help and Assistance. Permit me to inform you of my
+desire of going into business relationship with you. I am Miss. Esther
+Gabriel, the only Daughter of late Mr. and Mrs. Gabriel Kadjo. My
+father was a very wealthy cocoa merchant in Abidjan; the economic
+capital of Ivory Coast, my father was poisoned to death by his
+business associates on one of their outings on a business trip.
 
-I am fine with this.
+My mother died when I was a baby and since then my father took me so
+special. Before the death of my father in a private hospital here in
+Abidjan he secretly called me on his bed side and told me that he has
+the sum of TWENTY FIVE Million United State Dollars (USD. $25.000,000)
+deposited in one of the largest security company here in Abidjan, that
+he used my name as his only Daughter for the next of Kin in depositing
+of the fund to the security company.
 
-> > > +
-> > > +	for_each_possible_cpu(cpu) {
-> > > +		int err = init_cpu_cache_map(cpu, THREAD_GROUP_SHARE_L2);
-> > > +
-> > > +		if (err)
-> > > +			return err;
-> > > +	}
-> > > +
-> > > +	thread_group_shares_l2 = true;
-> > 
-> > Why do we need a separate loop. Why cant we merge this in the above loop
-> > itself?
-> 
-> No, there are platforms where one THREAD_GROUP_SHARE_L1 exists while
-> THREAD_GROUP_SHARE_L2 doesn't exist. It becomes easier if these are
-> separately tracked. Also, what do we gain if we put this in the same
-> loop? It will be (nr_possible_cpus * 2 * invocations of
-> init_cpu_cache_map()) as opposed to 2 * (nr_possible_cpus *
-> invocations of init_cpu_cache_map()). Isn't it ?
-> 
-Its not about the number of invocations but per-cpu thread group list
-that would need not be loaded again. Currently they would probably be in the
-cache-line, but get dropped to be loaded again in the next loop.
-And we still can support platforms with only THREAD_GROUP_SHARE_L1 since
-parse_thread_groups would have given us how many levels of thread groups are
-supported on a platform.
+He also explained to me that it was because of this wealth that he was
+poisoned by his business associates. That I should seek for a look
+foreign partner in a country of my choice who will assist me for
+investment purpose. And the money is in six 6 trunk boxes there in the
+security company now.
 
-> > 
-> > > +	pr_info("Thread-groups in a core share L2-cache\n");
-> > 
-> > Can this be moved to a pr_debug? Does it help any regular user/admins to
-> > know if thread-groups shared l2 cache. Infact it may confuse users on what
-> > thread groups are and which thread groups dont share cache.
-> > I would prefer some other name than thread_group_shares_l2 but dont know any
-> > better alternatives and may be my choices are even worse.
-> 
-> Would you be ok with "L2 cache shared by threads of the small core" ?
+I am deeply here seeking your assistance in the following ways:
 
-Sounds better to me. I would still think pr_debug is better since regular
-Admins/users may not make too much information from this.
-> 
-> > 
-> > Ah this can be simplified to:
-> > if (thread_group_shares_l2) {
-> > 	cpumask_set_cpu(cpu, cpu_l2_cache_mask(cpu));
-> > 
-> > 	for_each_cpu(i, per_cpu(thread_group_l2_cache_map, cpu)) {
-> > 		if (cpu_online(i))
-> > 			set_cpus_related(i, cpu, cpu_l2_cache_mask);
-> > 	}
-> 
-> Don't we want to enforce that the siblings sharing L1 be a subset of
-> the siblings sharing L2 ? Or do you recommend putting in a check for
-> that somewhere ?
-> 
-I didnt think about the case where the device-tree could show L2 to be a
-subset of L1.
+(1) To stand as my late father's foreign partner before the security
+company for them to deliver the 6 six trunk boxes that contain the
+found to you in your country.
 
-How about initializing thread_group_l2_cache_map itself with
-cpu_l1_cache_map. It would be a simple one time operation and reduce the
-overhead here every CPU online.
-And it would help in your subsequent patch too. We dont want the cacheinfo
-for L1 showing CPUs not present in L2.
+(2) To serve as a guardian of this fund in the trunk box and invest
+them into a good business investments that can benefit you and me
+since I am only 24 years old girl, I do not have any idea of any
+business investment!
 
--- 
-Thanks and Regards
-Srikar Dronamraju
+(3) To make arrangement for me to come over to your country to further
+my education/study and to secure a resident permit and my travelling
+Visa to come over and stay in your country.
+
+Moreover, I am willing to offer you 20% percent of the total sum as
+compensation for your effort/input after the successful delivering of
+the trunk boxes from the security company While 80% percent will be
+for me and my Education in your country.
+
+Furthermore, please indicate your interest off helping me out for I
+believe that this transaction would be concluded within fourteen (14)
+days from the day you signify your interest to assist me.
+
+Anticipating to hearing from you soon.
+
+Thanks.
+Best regards,
+
+Miss.Esther.
