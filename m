@@ -2,160 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638572D3A24
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D3C2D3A22
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgLIFH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 00:07:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727087AbgLIFH5 (ORCPT
+        id S1727063AbgLIFHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 00:07:37 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:40248 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725765AbgLIFHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 00:07:57 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC5EC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 21:07:17 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id g20so274525ejb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 21:07:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q3NLgFg9+0RUlIIykuKLWs9CjD4F435j35iR2qAmKLE=;
-        b=NxGkpUi/oOts1K+HQSMMHnnn+b8Y+8y6ViAjMpa+UMz0Lkfj3C4lCDwNfKpX7hpU69
-         Y2JH7fXNBhnthgZQpr9PyPyu1OVysoq6+lMZ8QkM/nk0C9lAGjEc8UbJSZ8pgv7iDU+Y
-         r1Zc2in6pxy8+ig3ljiDeAHzT+NoC07QkFixw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q3NLgFg9+0RUlIIykuKLWs9CjD4F435j35iR2qAmKLE=;
-        b=LEEAAjJV7O/rYONSA/pz+/1TyyPlWChUAahog/u5lwuG2trAgupoHPWwEWCSMjKK16
-         boWaErCC9daJfem9YxKAmEqwS3sM444TTude+rgZ7oOtsxcT7Wp+Noyy9GFOgS2AH3h/
-         t2eTqEsbC/Qsba5vU4P0FIUz7M9NmN/bCFb1Cf4CvRPVT+nR7Z2ky5zqkl/Y9OrO67Hn
-         nbVZb0vKgGwrbNYpSd/XhjwOQvCpT9Rl0kVFB016ZSNnwf7nURo0WE4ca9ZSkCIf3Igi
-         G4+LjKviT4q4dOJ1aJBlkchOJeZ8MSkTiUqEMlSlXjU9VFbCEH9zj/ifJmWFNNvo5xNu
-         qoNA==
-X-Gm-Message-State: AOAM530dV6ZW763WddQKgCwIi9yJHgKmpfv+ATNEMyN8EEbwOJaHh3Wb
-        BAhkTXu9hyMZubX4iaUkrTcUA7DO30dWiw==
-X-Google-Smtp-Source: ABdhPJzdDkO7NzfFUFoLh6pk6/54o/Vfy+8mRGbD+dMmeNzTwJtgAegGP1oMeZ1T3HvMr8Lq7NXiZg==
-X-Received: by 2002:a17:906:68d1:: with SMTP id y17mr579241ejr.447.1607490435475;
-        Tue, 08 Dec 2020 21:07:15 -0800 (PST)
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
-        by smtp.gmail.com with ESMTPSA id z26sm365014edl.71.2020.12.08.21.07.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 21:07:14 -0800 (PST)
-Received: by mail-wr1-f41.google.com with SMTP id r7so301563wrc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 21:07:13 -0800 (PST)
-X-Received: by 2002:adf:bb0e:: with SMTP id r14mr543768wrg.159.1607490433220;
- Tue, 08 Dec 2020 21:07:13 -0800 (PST)
+        Wed, 9 Dec 2020 00:07:37 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607490431; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=bKlS13OKovC/hMZP80c7Hc1j/4EzBCGWuZwSdCxtfdc=; b=F6onVl1SCsp2DiL7K3sl05+pKeAZ1gcEsQ0bxl15FlRawTpJOSUrQ4lIdsX3oUmFIM903H0+
+ sh6UknNIHpaXSPyO2CR09S5w8hPCIgwYLhy4TNUIIeGeCXG1V1BtIlrLGIlEFcTurP/Djhc2
+ sRsylcS6sLlk41CNbbmgysiGpqc=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fd05b7ed5b4c78a8fd33a90 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Dec 2020 05:07:10
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8E1A7C433ED; Wed,  9 Dec 2020 05:07:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.77.97])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E55DEC433C6;
+        Wed,  9 Dec 2020 05:07:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E55DEC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+Subject: Re: [PATCH v2 1/3] irqchip: qcom-pdc: Fix phantom irq when changing
+ between rising/falling
+To:     Douglas Anderson <dianders@chromium.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-gpio@vger.kernel.org,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Archana Sathyakumar <asathyak@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>, linux-kernel@vger.kernel.org
+References: <20201124094636.v2.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <a12d1451-4d17-10b1-22bf-30714d0335d4@codeaurora.org>
+Date:   Wed, 9 Dec 2020 10:37:01 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201116155008.118124-1-robert.foss@linaro.org>
- <cf0b935d-3ccd-8360-1b52-89fab0b181eb@linux.intel.com> <CAG3jFyssMMHpi4WgWmeDjuVYKz12UwJoBT0WoOsdB4PZxnuqSw@mail.gmail.com>
- <e132769f-cfb5-141a-6cd1-603d82a92b9e@linux.intel.com> <CAAFQd5A=kYufStO7ni4j6f+grDpsoigskcj1LdiG9NRN=cvviQ@mail.gmail.com>
- <CAG3jFyuzTPzgTWCHOc1cpXeSe7GyCET0cTYF9r3aOPXdCuZTsw@mail.gmail.com>
- <CAAFQd5AVs4EeV+q87SSdUW3uW_LComGV=HG5J2XaacDvbAgYXg@mail.gmail.com> <CAG3jFyvxLCk=U7Dt8O3poja7yHiRR5B3jq9Xbh_Nsigrjrckcw@mail.gmail.com>
-In-Reply-To: <CAG3jFyvxLCk=U7Dt8O3poja7yHiRR5B3jq9Xbh_Nsigrjrckcw@mail.gmail.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Wed, 9 Dec 2020 14:07:01 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5CkTx6MwSw8NXjV6xb5Xj5fn_M8ON7YtgvVDhFiY-qx_Q@mail.gmail.com>
-Message-ID: <CAAFQd5CkTx6MwSw8NXjV6xb5Xj5fn_M8ON7YtgvVDhFiY-qx_Q@mail.gmail.com>
-Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Bingbu Cao <bingbu.cao@linux.intel.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Ben Kao <ben.kao@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201124094636.v2.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 10:38 PM Robert Foss <robert.foss@linaro.org> wrote:
+Hi Doug,
+
+On 11/24/2020 11:17 PM, Douglas Anderson wrote:
+> We have a problem if we use gpio-keys and configure wakeups such that
+> we only want one edge to wake us up.  AKA:
+>    wakeup-event-action = <EV_ACT_DEASSERTED>;
+>    wakeup-source;
 >
-> Thanks for digging into this everyone!
+> Specifically we end up with a phantom interrupt that blocks suspend if
+> the line was already high and we want wakeups on rising edges (AKA we
+> want the GPIO to go low and then high again before we wake up).  The
+> opposite is also problematic.
 >
-> Assuming Tomasz doesn't find any stretching, I think we can conclude
-> that this mode works, and should be kept. Thanks Dongchun for parsing
-> the datasheet and finding the Bayer mode issue for the two other
-> recently added resolutions.
-
-I checked the raw output and it actually seems to have 3296x2464
-non-black pixels. The rightmost 16 ones seem a copy of the ones from
-3248. That might be just some padding from the output DMA, though.
-
-Generally all the datasheets I've seen still suggest that only the
-middle 3264x2448 are active pixels to be output, so this warrants
-double checking this with Omnivision. Let me see what we can do about
-this.
-
-Best regards,
-Tomasz
-
+> Specifically, here's what's happening today:
+> 1. Normally, gpio-keys configures to look for both edges.  Due to the
+>     current workaround introduced in commit c3c0c2e18d94 ("pinctrl:
+>     qcom: Handle broken/missing PDC dual edge IRQs on sc7180"), if the
+>     line was high we'd configure for falling edges.
+> 2. At suspend time, we change to look for rising edges.
+> 3. After qcom_pdc_gic_set_type() runs, we get a phantom interrupt.
 >
-> On Fri, 27 Nov 2020 at 11:26, Tomasz Figa <tfiga@chromium.org> wrote:
-> >
-> > On Thu, Nov 26, 2020 at 7:00 PM Robert Foss <robert.foss@linaro.org> wrote:
-> > >
-> > > On Wed, 25 Nov 2020 at 08:32, Tomasz Figa <tfiga@chromium.org> wrote:
-> > > >
-> > > > Hi Bingbu,
-> > > >
-> > > > On Wed, Nov 25, 2020 at 1:15 PM Bingbu Cao <bingbu.cao@linux.intel.com> wrote:
-> > > > >
-> > > > >
-> > > > >
-> > > > > On 11/24/20 6:20 PM, Robert Foss wrote:
-> > > > > > On Tue, 24 Nov 2020 at 10:42, Bingbu Cao <bingbu.cao@linux.intel.com> wrote:
-> > > > > >>
-> > > > > >> Hi, Robert
-> > > > > >>
-> > > > > >> I remember that the full size of ov8856 image sensor is 3296x2480 and we can get the 3280x2464
-> > > > > >> frames based on current settings.
-> > > > > >>
-> > > > > >> Do you have any issues with this mode?
-> > > > > >
-> > > > > > As far as I can tell using the 3280x2464 mode actually yields an
-> > > > > > output resolution that is 3264x2448.
-> > > > > >
-> > > > > > What does your hardware setup look like? And which revision of the
-> > > > > > sensor are you using?
-> > > > > >
-> > > > >
-> > > > > Robert, the sensor revision I am using is v1.1. I just checked the actual output pixels on our
-> > > > > hardware, the output resolution with 2464 mode is 3280x2464, no black pixels.
-> > > > >
-> > > > > As Tomasz said, some ISP has the requirement of extra pixel padding, From the ov8856 datasheet,
-> > > > > the central 3264x2448 pixels are *suggested* to be output from the pixel array and the boundary
-> > > > > pixels can be used for additional processing. In my understanding, the 32 dummy lines are not
-> > > > > black lines.
-> > > >
-> > > > The datasheet says that only 3264x2448 are active pixels. What pixel
-> > > > values are you seeing outside of that central area? In the datasheet,
-> > > > those look like "optically black" pixels, which are not 100% black,
-> > > > but rather as if the sensor cells didn't receive any light - noise can
-> > > > be still there.
-> > > >
-> > >
-> > > I've been developing support for some Qcom ISP functionality, and
-> > > during the course of this I ran into the issue I was describing, where
-> > > the 3280x2464 mode actually outputs 3264x2448.
-> > >
-> > > I can think of two reasons for this, either ISP driver bugs on my end
-> > > or the fact that the sensor is being run outside of the specification
-> > > and which could be resulting in differences between how the ov8856
-> > > sensors behave.
-> >
-> > I just confirmed and we're indeed using this mode in a number of our
-> > projects based on the Intel ISP and it seems to be producing a proper
-> > image with all pixels of the 3280x2464 matrix having proper values.
-> > I'm now double checking whether this isn't some processing done by the
-> > ISP, but I suspect the quality would be bad if it stretched the
-> > central 3264x2448 part into the 3280x2464 frame.
-> >
-> > Best regards,
-> > Tomasz
+> We can solve this by just clearing the phantom interrupt.
+>
+> NOTE: it is possible that this could cause problems for a client with
+> very specific needs, but there's not much we can do with this
+> hardware.  As an example, let's say the interrupt signal is currently
+> high and the client is looking for falling edges.  The client now
+> changes to look for rising edges.  The client could possibly expect
+> that if the line has a short pulse low (and back high) that it would
+> always be detected.  Specifically no matter when the pulse happened,
+> it should either have tripped the (old) falling edge trigger or the
+> (new) rising edge trigger.  We will simply not trip it.  We could
+> narrow down the race a bit by polling our parent before changing
+> types, but no matter what we do there will still be a period of time
+> where we can't tell the difference between a real transition (or more
+> than one transition) and the phantom.
+>
+> Fixes: f55c73aef890 ("irqchip/pdc: Add PDC interrupt controller for QCOM SoCs")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
+> Tested-by: Maulik Shah <mkshah@codeaurora.org>
+> ---
+> There are no dependencies between this patch and patch #2/#3.  It can
+> go in by itself.  Patches are only grouped together in one series
+> because they address similar issues.
+>
+> Changes in v2:
+> - 0 => false
+> - If irq_chip_set_type_parent() fails don't bother clearing.
+> - Add Fixes tag.
+>
+>   drivers/irqchip/qcom-pdc.c | 21 ++++++++++++++++++++-
+>   1 file changed, 20 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
+> index bd39e9de6ecf..f91e7d5aea25 100644
+> --- a/drivers/irqchip/qcom-pdc.c
+> +++ b/drivers/irqchip/qcom-pdc.c
+> @@ -159,6 +159,8 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
+>   {
+>   	int pin_out = d->hwirq;
+>   	enum pdc_irq_config_bits pdc_type;
+> +	enum pdc_irq_config_bits old_pdc_type;
+> +	int ret;
+>   
+>   	if (pin_out == GPIO_NO_WAKE_IRQ)
+>   		return 0;
+> @@ -187,9 +189,26 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
+>   		return -EINVAL;
+>   	}
+>   
+> +	old_pdc_type = pdc_reg_read(IRQ_i_CFG, pin_out);
+>   	pdc_reg_write(IRQ_i_CFG, pin_out, pdc_type);
+>   
+> -	return irq_chip_set_type_parent(d, type);
+> +	ret = irq_chip_set_type_parent(d, type);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/*
+> +	 * When we change types the PDC can give a phantom interrupt.
+> +	 * Clear it.  Specifically the phantom shows up if a line is already
+> +	 * high and we change to rising or if a line is already low and we
+> +	 * change to falling but let's be consistent and clear it always.
+> +	 *
+> +	 * Doing this works because we have IRQCHIP_SET_TYPE_MASKED so the
+> +	 * interrupt will be cleared before the rest of the system sees it.
+> +	 */
+Got confirmation that the phantom can show up when we change the 
+polarity of the interrupt without changing the state of the signal.
+
+Can you please change above comment to include above when you spin v3.
+
+  * When we change types the PDC can give a phantom interrupt.
+  * Clear it.  Specifically the phantom shows up when reconfiguring
+  * polarity of interrupt without changing the state of the signal
+  * but let's be consistent and clear it always.
+  *
+  * Doing this works because ....
+
+Thanks,
+Maulik
+> +	if (old_pdc_type != pdc_type)
+> +		irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, false);
+> +
+> +	return 0;
+>   }
+>   
+>   static struct irq_chip qcom_pdc_gic_chip = {
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+
