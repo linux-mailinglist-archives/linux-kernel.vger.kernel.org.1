@@ -2,71 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1E92D41A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0672D41AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731224AbgLIMBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 07:01:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731046AbgLIMBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 07:01:46 -0500
-Date:   Wed, 9 Dec 2020 13:02:22 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607515266;
-        bh=SxUcCOk6EABV426Vv5fQLgQpTaXc7Q0vhKOIeg7/cVo=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pfoslDmSETsL8y+eBGotK+t74xmX2D24QCVPYznbkYgpPxigNCNOCmmJT99TFtnca
-         d/etSQ5pXonj6iqBTNuW8/7KeTrBKMlGvO5DbJB7ILvjO4YICzj8FsEro+A5z3JqDQ
-         hJgrqwOjWLaCQNBPihkh59k2KfeXL+2n9uIcnImM=
-From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-To:     Info <info@ministro.hu>
-Cc:     'Rob Herring' <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
-Subject: Re: [PATCH] Staging: silabs si4455 serial driver
-Message-ID: <X9C8zlCMvTev7ELE@kroah.com>
-References: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAAAJUqiRO33GQqGIHffCVyG/AQAAAAA=@ministro.hu>
+        id S1731244AbgLIMEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 07:04:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730910AbgLIMDx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 07:03:53 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA68C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 04:03:13 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0f480029f89b316a92fa4b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:4800:29f8:9b31:6a92:fa4b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7B28D1EC0118;
+        Wed,  9 Dec 2020 13:03:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607515391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MkDF2BGW53pllBVxbrp35zb7hHGQHDWR/sD7dvFz1IY=;
+        b=HEfZeiKQCt2C7bZJNE6U0ObntUyi1mhN9sU2Pi4U4OH50xzO7goM8aBTpCO/vHZW/T20UL
+        gCvwseWgnBUqsp6rixMDsQe46s2seaCU7GZWJG73Sb5KWEHRfSUOdQYEOF8C/pR3Li6VPM
+        DksKCjaHWoiL91XA/+XuLCu+FKdjEN8=
+Date:   Wed, 9 Dec 2020 13:03:07 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 07/12] x86: add new features for paravirt patching
+Message-ID: <20201209120307.GB18203@zn.tnic>
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120114630.13552-8-jgross@suse.com>
+ <20201208184315.GE27920@zn.tnic>
+ <2510752e-5d3d-f71c-8a4c-a5d2aae0075e@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAAAJUqiRO33GQqGIHffCVyG/AQAAAAA=@ministro.hu>
+In-Reply-To: <2510752e-5d3d-f71c-8a4c-a5d2aae0075e@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 12:09:58PM +0100, Info wrote:
-> This is a serial port driver for
-> Silicon Labs Si4455 Sub-GHz transciver.
+On Wed, Dec 09, 2020 at 08:30:53AM +0100, JÃ¼rgen GroÃŸ wrote:
+> Hey, I already suggested to use ~FEATURE for that purpose (see
+> https://lore.kernel.org/lkml/f105a63d-6b51-3afb-83e0-e899ea40813e@suse.com/
+
+Great minds think alike!
+
+:-P
+
+> I'd rather make the syntax:
 > 
-> Signed-off-by: József Horváth <info@ministro.hu>
+> ALTERNATIVE_TERNARY <initial-code> <feature> <code-for-feature-set>
+>                                              <code-for-feature-unset>
+> 
+> as this ...
 
-Note, your From: line does not match this line, so I can't take this.
+Sure, that is ok too.
 
-But:
+> ... would match perfectly to this interpretation.
 
-> ---
->  .../bindings/staging/serial/silabs,si4455.txt |   39 +
+Yap.
 
-staging drivers need to be self-contained, so this should be here.  It
-needs to be reviewed by the DT maintainers when moving out of staging.
+> Hmm, using flags is an alternative (pun intended :-) ).
 
-> index 000000000000..aee5c7613b31
-> --- /dev/null
-> +++ b/drivers/staging/si4455/TODO
-> @@ -0,0 +1,3 @@
-> +TODO:
-> +        - add variable packet length support
-> +        - add firmware patching support in case of Si4455-C2A
+LOL!
 
-Why are these a requirement to get it out of staging?  Why go into
-staging at all?  Why not go into the 'real' part of the kernel directly?
-What is keeping that from happening today?
+Btw, pls do check how much the vmlinux size of an allyesconfig grows
+with this as we will be adding a byte per patch site. Not that it would
+matter too much - the flags are a long way a comin'. :-)
 
-These look like new features that you can add later, and shouldn't be a
-requirement for acceptance into the normal part of the kernel for this
-driver.  Why have you not tried doing that first?
+> No, this is needed for non-Xen cases, too (especially pv spinlocks).
 
-thanks,
+I see.
 
-greg k-h
+> > Can you give an example here pls why the paravirt patching needs to run
+> > first?
+> 
+> Okay.
+
+I meant an example for me to have a look at. :)
+
+If possible pls.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
