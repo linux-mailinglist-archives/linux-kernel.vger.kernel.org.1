@@ -2,129 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E0C2D3E18
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:05:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EFE02D3E24
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:05:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728711AbgLIJD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:03:57 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:45902 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728626AbgLIJDw (ORCPT
+        id S1728767AbgLIJEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:04:22 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9562 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728740AbgLIJEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:03:52 -0500
-Received: by mail-io1-f71.google.com with SMTP id x7so739863ion.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:03:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=pCg9ztFovQSMSdHHqXzDsgJzAHlx4/5H0ssw+mDzOcM=;
-        b=ZuPnwcAeL6W7mVUABK/fwPrFInPlo8xMWQH41nTBFbwZhZASw9Mahz56T8PMKvv11y
-         5iqYH4ZhYI8UshIDz6pdaPdPg9TqBuMBleVdtKktugj59aldHaMyB/057yx1fFrSJAjv
-         mXqTdv5+tansAN79FDqEOHeoP2+3VFTorNGGbJ7MRo6WdHFNoP8WA4rTo4ZoEjFJT1en
-         G2rSKwKVvXxjgsT1O0j0+msGiggjwBCZve9DmLUzU4JKmpNFjX7VzAh0HPVww0bBf8N6
-         /+suBafDAmxGXFuAEbrcXB4XxuMWkp7ZnZGyU8YwGwzasCVraavwZDIbATPGNARmqbi3
-         5fVg==
-X-Gm-Message-State: AOAM533kpUz8+s80Hf5Lc1fiIpDb0Ok8VpPvhLHFyoFRbuc9iMzb8Ksa
-        2HKJiDCT5VUinkAUvlfJbWY4jhWcA7TFfGSAcg9vy6h4wEU0
-X-Google-Smtp-Source: ABdhPJyLvpOsROcoK5EDCWBWV0mBhklN7V2CXAzU92Btl9jwqKU9+Ht0vkdSKshvgTS8ZLkhHz8WbeGWxGEtqjXROXowso+PQlTF
+        Wed, 9 Dec 2020 04:04:14 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CrWKQ3ZT5zM1q1;
+        Wed,  9 Dec 2020 17:02:50 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.9) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Dec 2020
+ 17:03:25 +0800
+Subject: Re: [RESEND PATCH v3 2/4] iommu/iova: Avoid double-negatives in
+ magazine helpers
+To:     John Garry <john.garry@huawei.com>, <robin.murphy@arm.com>,
+        <joro@8bytes.org>, <will@kernel.org>
+CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>, <xiyou.wangcong@gmail.com>
+References: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
+ <1605608734-84416-3-git-send-email-john.garry@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <7eb70f4b-b050-24ca-f1fa-d8f3c9ddce65@huawei.com>
+Date:   Wed, 9 Dec 2020 17:03:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-X-Received: by 2002:a5e:9906:: with SMTP id t6mr1514061ioj.183.1607504591672;
- Wed, 09 Dec 2020 01:03:11 -0800 (PST)
-Date:   Wed, 09 Dec 2020 01:03:11 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002959f405b604541c@google.com>
-Subject: KMSAN: uninit-value in smsc75xx_read_eeprom (2)
-From:   syzbot <syzbot+341170ccba949fac01a2@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, steve.glendinning@shawell.net,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1605608734-84416-3-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1256cc13500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=eef728deea880383
-dashboard link: https://syzkaller.appspot.com/bug?extid=341170ccba949fac01a2
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+341170ccba949fac01a2@syzkaller.appspotmail.com
-
-cdc_ether: probe of 5-1:1.0 failed with error -22
-smsc75xx v1.0.0
-=====================================================
-BUG: KMSAN: uninit-value in smsc75xx_eeprom_confirm_not_busy drivers/net/usb/smsc75xx.c:333 [inline]
-BUG: KMSAN: uninit-value in smsc75xx_read_eeprom+0x266/0xa10 drivers/net/usb/smsc75xx.c:352
-CPU: 1 PID: 8502 Comm: kworker/1:0 Not tainted 5.10.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
- smsc75xx_eeprom_confirm_not_busy drivers/net/usb/smsc75xx.c:333 [inline]
- smsc75xx_read_eeprom+0x266/0xa10 drivers/net/usb/smsc75xx.c:352
- smsc75xx_init_mac_address drivers/net/usb/smsc75xx.c:771 [inline]
- smsc75xx_bind+0xc71/0x13f0 drivers/net/usb/smsc75xx.c:1489
- usbnet_probe+0x1169/0x3e90 drivers/net/usb/usbnet.c:1712
- usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
- really_probe+0xebd/0x2420 drivers/base/dd.c:558
- driver_probe_device+0x293/0x390 drivers/base/dd.c:738
- __device_attach_driver+0x63f/0x830 drivers/base/dd.c:844
- bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
- __device_attach+0x538/0x860 drivers/base/dd.c:912
- device_initial_probe+0x4a/0x60 drivers/base/dd.c:959
- bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
- device_add+0x399e/0x3f20 drivers/base/core.c:2936
- usb_set_configuration+0x39cf/0x4010 drivers/usb/core/message.c:2159
- usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
- usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
- really_probe+0xebd/0x2420 drivers/base/dd.c:558
- driver_probe_device+0x293/0x390 drivers/base/dd.c:738
- __device_attach_driver+0x63f/0x830 drivers/base/dd.c:844
- bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
- __device_attach+0x538/0x860 drivers/base/dd.c:912
- device_initial_probe+0x4a/0x60 drivers/base/dd.c:959
- bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
- device_add+0x399e/0x3f20 drivers/base/core.c:2936
- usb_new_device+0x1bd6/0x2a30 drivers/usb/core/hub.c:2554
- hub_port_connect drivers/usb/core/hub.c:5222 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
- port_event drivers/usb/core/hub.c:5508 [inline]
- hub_event+0x5bc9/0x8890 drivers/usb/core/hub.c:5590
- process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
- worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
- kthread+0x51c/0x560 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-Local variable ----buf.i.i92@smsc75xx_read_eeprom created at:
- __smsc75xx_read_reg drivers/net/usb/smsc75xx.c:322 [inline]
- smsc75xx_read_reg drivers/net/usb/smsc75xx.c:147 [inline]
- smsc75xx_eeprom_confirm_not_busy drivers/net/usb/smsc75xx.c:327 [inline]
- smsc75xx_read_eeprom+0x124/0xa10 drivers/net/usb/smsc75xx.c:352
- __smsc75xx_read_reg drivers/net/usb/smsc75xx.c:322 [inline]
- smsc75xx_read_reg drivers/net/usb/smsc75xx.c:147 [inline]
- smsc75xx_eeprom_confirm_not_busy drivers/net/usb/smsc75xx.c:327 [inline]
- smsc75xx_read_eeprom+0x124/0xa10 drivers/net/usb/smsc75xx.c:352
-=====================================================
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 2020/11/17 18:25, John Garry wrote:
+> A similar crash to the following could be observed if initial CPU rcache
+> magazine allocations fail in init_iova_rcaches():
+> 
+> Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+> Mem abort info:
+>    ESR = 0x96000004
+>    EC = 0x25: DABT (current EL), IL = 32 bits
+>    SET = 0, FnV = 0
+>    EA = 0, S1PTW = 0
+> Data abort info:
+>    ISV = 0, ISS = 0x00000004
+>    CM = 0, WnR = 0
+> [0000000000000000] user address but active_mm is swapper
+> Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> Modules linked in:
+> CPU: 11 PID: 696 Comm: irq/40-hisi_sas Not tainted 5.9.0-rc7-dirty #109
+> Hardware name: Huawei D06 /D06, BIOS Hisilicon D06 UEFI RC0 - V1.16.01 03/15/2019
+> Call trace:
+>   free_iova_fast+0xfc/0x280
+>   iommu_dma_free_iova+0x64/0x70
+>   __iommu_dma_unmap+0x9c/0xf8
+>   iommu_dma_unmap_sg+0xa8/0xc8
+>   dma_unmap_sg_attrs+0x28/0x50
+>   cq_thread_v3_hw+0x2dc/0x528
+>   irq_thread_fn+0x2c/0xa0
+>   irq_thread+0x130/0x1e0
+>   kthread+0x154/0x158
+>   ret_from_fork+0x10/0x34
+> 
+> Code: f9400060 f102001f 54000981 d4210000 (f9400043)
+> 
+>  ---[ end trace 4afcbdfc61b60467 ]---
+> 
+> The issue is that expression !iova_magazine_full(NULL) evaluates true; this
+> falls over in in __iova_rcache_insert() when we attempt to cache a mag
+> and cpu_rcache->loaded == NULL:
+> 
+> if (!iova_magazine_full(cpu_rcache->loaded)) {
+> 	can_insert = true;
+> ...
+> 
+> if (can_insert)
+> 	iova_magazine_push(cpu_rcache->loaded, iova_pfn);
+> 
+> As above, can_insert is evaluated true, which it shouldn't be, and we try
+> to insert pfns in a NULL mag, which is not safe.
+> 
+> To avoid this, stop using double-negatives, like !iova_magazine_full() and
+> !iova_magazine_empty(), and use positive tests, like
+> iova_magazine_has_space() and iova_magazine_has_pfns(), respectively; these
+> can safely deal with cpu_rcache->{loaded, prev} = NULL.
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>  drivers/iommu/iova.c | 29 +++++++++++++++++------------
+>  1 file changed, 17 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index 81b7399dd5e8..1f3f0f8b12e0 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -827,14 +827,18 @@ iova_magazine_free_pfns(struct iova_magazine *mag, struct iova_domain *iovad)
+>  	mag->size = 0;
+>  }
+>  
+> -static bool iova_magazine_full(struct iova_magazine *mag)
+> +static bool iova_magazine_has_space(struct iova_magazine *mag)
+>  {
+> -	return (mag && mag->size == IOVA_MAG_SIZE);
+> +	if (!mag)
+> +		return false;
+> +	return mag->size < IOVA_MAG_SIZE;
+>  }
+>  
+> -static bool iova_magazine_empty(struct iova_magazine *mag)
+> +static bool iova_magazine_has_pfns(struct iova_magazine *mag)
+>  {
+> -	return (!mag || mag->size == 0);
+> +	if (!mag)
+> +		return false;
+> +	return mag->size;
+>  }
+>  
+>  static unsigned long iova_magazine_pop(struct iova_magazine *mag,
+> @@ -843,7 +847,7 @@ static unsigned long iova_magazine_pop(struct iova_magazine *mag,
+>  	int i;
+>  	unsigned long pfn;
+>  
+> -	BUG_ON(iova_magazine_empty(mag));
+> +	BUG_ON(!iova_magazine_has_pfns(mag));
+>  
+>  	/* Only fall back to the rbtree if we have no suitable pfns at all */
+>  	for (i = mag->size - 1; mag->pfns[i] > limit_pfn; i--)
+> @@ -859,7 +863,7 @@ static unsigned long iova_magazine_pop(struct iova_magazine *mag,
+>  
+>  static void iova_magazine_push(struct iova_magazine *mag, unsigned long pfn)
+>  {
+> -	BUG_ON(iova_magazine_full(mag));
+> +	BUG_ON(!iova_magazine_has_space(mag));
+>  
+>  	mag->pfns[mag->size++] = pfn;
+>  }
+> @@ -905,9 +909,9 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>  	cpu_rcache = raw_cpu_ptr(rcache->cpu_rcaches);
+>  	spin_lock_irqsave(&cpu_rcache->lock, flags);
+>  
+> -	if (!iova_magazine_full(cpu_rcache->loaded)) {
+> +	if (iova_magazine_has_space(cpu_rcache->loaded)) {
+>  		can_insert = true;
+> -	} else if (!iova_magazine_full(cpu_rcache->prev)) {
+> +	} else if (iova_magazine_has_space(cpu_rcache->prev)) {
+>  		swap(cpu_rcache->prev, cpu_rcache->loaded);
+>  		can_insert = true;
+>  	} else {
+> @@ -916,8 +920,9 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>  		if (new_mag) {
+>  			spin_lock(&rcache->lock);
+>  			if (rcache->depot_size < MAX_GLOBAL_MAGS) {
+> -				rcache->depot[rcache->depot_size++] =
+> -						cpu_rcache->loaded;
+> +				if (cpu_rcache->loaded)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Looks like it just needs to change this place. Compiler ensures that mag->size
+will not be accessed when mag is NULL.
+
+static bool iova_magazine_full(struct iova_magazine *mag)
+{
+        return (mag && mag->size == IOVA_MAG_SIZE);
+}
+
+static bool iova_magazine_empty(struct iova_magazine *mag)
+{
+        return (!mag || mag->size == 0);
+}
+
+
+> +					rcache->depot[rcache->depot_size++] =
+> +							cpu_rcache->loaded;
+>  			} else {
+>  				mag_to_free = cpu_rcache->loaded;
+>  			}
+> @@ -968,9 +973,9 @@ static unsigned long __iova_rcache_get(struct iova_rcache *rcache,
+>  	cpu_rcache = raw_cpu_ptr(rcache->cpu_rcaches);
+>  	spin_lock_irqsave(&cpu_rcache->lock, flags);
+>  
+> -	if (!iova_magazine_empty(cpu_rcache->loaded)) {
+> +	if (iova_magazine_has_pfns(cpu_rcache->loaded)) {
+>  		has_pfn = true;
+> -	} else if (!iova_magazine_empty(cpu_rcache->prev)) {
+> +	} else if (iova_magazine_has_pfns(cpu_rcache->prev)) {
+>  		swap(cpu_rcache->prev, cpu_rcache->loaded);
+>  		has_pfn = true;
+>  	} else {
+> 
+
