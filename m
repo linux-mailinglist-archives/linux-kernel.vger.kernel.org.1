@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619E62D49E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:15:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 250D72D49DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387606AbgLITON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:14:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22508 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387579AbgLITOG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:14:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607541156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qu+X+CU3l3H2nboXtsm0ks4Jayrw6j8ysSQm3Vmo8QQ=;
-        b=FI12E+VIHhmj1ykSGSUnFpVxy7TTl2Qyat1o5nnBnwnj0fGW2GYwUWojjA3WzkKEZBkQlV
-        +JoFIz4kVOzDsGMdaDtyq05tMRor+GjJSQmh8X6FQf9t3/ZAAqg87RSIvynRNYHCCNrYa3
-        HVEimdH7iW34YBT8qDhf6jH3PU7gs0o=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-FHdsyY6CPRmS0j_4ekbpyA-1; Wed, 09 Dec 2020 14:12:34 -0500
-X-MC-Unique: FHdsyY6CPRmS0j_4ekbpyA-1
-Received: by mail-qv1-f72.google.com with SMTP id m8so1932817qvk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 11:12:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=qu+X+CU3l3H2nboXtsm0ks4Jayrw6j8ysSQm3Vmo8QQ=;
-        b=KEbFn9fe2fSQRRdK/ufRZ9kaE9pJYwHvrqSkyjnQPndF9Cmk27konBClLatEgD705M
-         k6trgmzkxPG9KAuKm9IyjUoib6borSm15nNuqVX2m2frKmKIRef3OQbY+Z/T+zphL4Ii
-         pMweDUHlrYmrHd/1gDSD07Or6MgHj/SBcgSrKpiC9jDjfnSUbaHlS3usnz2EvRKufZbF
-         0Y0mXwsDjdTU+9wHGs45cOW9dm6BCYl8IPqPr6JsJpnsfZcv6IWIFDYZ14V+c3/kckq0
-         zGkUpSchc4IC+r0RawcdKLWSElfg1a6jqDxA92GACka+vB2BhikMRPprojIFDIzCSzz2
-         8eZw==
-X-Gm-Message-State: AOAM5313HlHVeEXOX+Qq4E572P0/o//dIV5YSC+lTUMk/f9HtmelpJsY
-        ke4kbh7zscx5KmMn+D1TCM2/j5CmOZfIsD59bLPf5h4etzbY+OPB56N+35BuHMmy0VpZ7RFHHY7
-        CtvFDnH7ubKm0nKP4+mVoQgVW
-X-Received: by 2002:aed:3865:: with SMTP id j92mr4525992qte.318.1607541153515;
-        Wed, 09 Dec 2020 11:12:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyD5VkRlGtdmY9MNkqm989yDI1f88xyqMGWR0Ad7zHxikNoNxEdgjy2+C5NrghMgOUe2XDj0Q==
-X-Received: by 2002:aed:3865:: with SMTP id j92mr4525974qte.318.1607541153320;
-        Wed, 09 Dec 2020 11:12:33 -0800 (PST)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id y6sm1703316qki.115.2020.12.09.11.12.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 11:12:32 -0800 (PST)
-References: <20201209141237.GA8092@willie-the-truck>
- <CAHk-=wht4inbTVVMt2TNDxR_cVjSNaBU3JYyKtRMVovWePb65g@mail.gmail.com>
- <20201209185020.GC8778@willie-the-truck>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org
-Subject: Re: [GIT PULL] IOMMU fix for 5.10 (-final)
-In-reply-to: <20201209185020.GC8778@willie-the-truck>
-Date:   Wed, 09 Dec 2020 12:12:31 -0700
-Message-ID: <87tusulrog.fsf@redhat.com>
+        id S2387493AbgLITMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:12:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733106AbgLITMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:12:41 -0500
+Date:   Wed, 9 Dec 2020 20:13:15 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607541120;
+        bh=/mn3c6w2OPat8G5RrVOMs8d5tNT7UBX9UCtL1Xa3wVM=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xXVbbdebrU4oDwvk6TgHPsMVqPYEX4Ads4xOd07yxERxy+sHqh8vZScvYuAIfb8Fv
+         dW22xclN90RfewBFKTiT6ABXB7378+Rk6QTFSdf8YwOnocDXg2xxN/g3OnXV0JDCFm
+         EkjGcRIRXchuRsCVmuFtChHaSQOpQmLEXZI2uX1Y=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com, lenb@kernel.org,
+        rjw@rjwysocki.net, tglx@linutronix.de, maz@kernel.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, linux-acpi@vger.kernel.org, dwagner@suse.de
+Subject: Re: [PATCH v5 4/5] Driver core: platform: Add
+ devm_platform_get_irqs_affinity()
+Message-ID: <X9Ehy28876ezAOLH@kroah.com>
+References: <1606905417-183214-1-git-send-email-john.garry@huawei.com>
+ <1606905417-183214-5-git-send-email-john.garry@huawei.com>
+ <X9EYRNDXS1Xcy4iU@kroah.com>
+ <36730230-9fd7-8c6c-b997-328beea2fc31@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <36730230-9fd7-8c6c-b997-328beea2fc31@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 09, 2020 at 07:04:02PM +0000, John Garry wrote:
+> On 09/12/2020 18:32, Greg KH wrote:
+> > On Wed, Dec 02, 2020 at 06:36:56PM +0800, John Garry wrote:
+> > > Drivers for multi-queue platform devices may also want managed interrupts
+> > > for handling HW queue completion interrupts, so add support.
+> > 
+> 
+> Hi Greg,
+> 
+> > Why would a platform device want all of this?  Shouldn't such a device
+> > be on a "real" bus instead?
+> 
+> For this HW version, the device is on the system bus, directly addressable
+> by the CPU.
 
-Will Deacon @ 2020-12-09 11:50 MST:
+What do you mean by "system bus"?
 
-> On Wed, Dec 09, 2020 at 10:07:46AM -0800, Linus Torvalds wrote:
->> On Wed, Dec 9, 2020 at 6:12 AM Will Deacon <will@kernel.org> wrote:
->> >
->> > Please pull this one-liner AMD IOMMU fix for 5.10. It's actually a fix
->> > for a fix, where the size of the interrupt remapping table was increased
->> > but a related constant for the size of the interrupt table was forgotten.
->> 
->> Pulled.
->
-> Thanks.
->
->> However, why didn't this then add some sanity checking for the two
->> different #defines to be in sync?
->> 
->> IOW, something like
->> 
->>    #define AMD_IOMMU_IRQ_TABLE_SHIFT 9
->> 
->>    #define MAX_IRQS_PER_TABLE (1 << AMD_IOMMU_IRQ_TABLE_SHIFT)
->>    #define DTE_IRQ_TABLE_LEN ((u64)AMD_IOMMU_IRQ_TABLE_SHIFT << 1)
+> Motivation is that I wanted to switch the HW completion queues to use
+> managed interrupts.
 
-Since the field in the device table entry format expects it to be n
-where there are 2^n entries in the table I guess it should be:
+Fair enough, seems like overkill for a "platform" bus though :)
 
-#define DTE_IRQ_TABLE_LEN 9
-#define MAX_IRQS_PER_TABLE (1 << DTE_IRQ_TABLE_LEN)
+> > What in-kernel driver needs this complexity?  I can't take new apis
+> > without a real user in the tree, sorry.
+> 
+> It's in the final patch in the series https://lore.kernel.org/linux-scsi/1606905417-183214-1-git-send-email-john.garry@huawei.com/T/#m0df7e7cd6f0819b99aaeb6b7f8939ef1e17b8a83.
 
->> 
->> or whatever. Hmm?
->
-> This looks like a worthwhile change to me, but I don't have any hardware
-> so I've been very reluctant to make even "obvious" driver changes here.
->
-> Suravee -- please can you post a patch implementing the above?
->
->> That way this won't happen again, but perhaps equally importantly the
->> linkage will be more clear, and there won't be those random constants.
->> 
->> Naming above is probably garbage - I assume there's some actual
->> architectural name for that irq table length field in the DTE?
->
-> The one in the spec is even better: "IntTabLen".
->
-> Will
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+Ah, I missed that, I thought that was some high-speed scsi thing, not a
+tiny platform driver...
 
+> I don't anticipate a huge number of users of this API in future, as most
+> multi-queue devices are PCI devices; so we could do the work of this API in
+> the driver itself, but the preference was not to export genirq functions
+> like irq_update_affinity_desc() or irq_create_affinity_masks(), and rather
+> have a common helper in the core platform code.
+
+Ok, I'd like to have the irq maintainers/developers ack this before
+taking it in the driver core, as someone is going to have to maintain
+this crazy thing for forever if it gets merged.
+
+thanks,
+
+greg k-h
