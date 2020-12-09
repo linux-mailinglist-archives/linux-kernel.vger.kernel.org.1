@@ -2,86 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41BEC2D381D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 275172D381F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgLIBKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 20:10:16 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:35620 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725283AbgLIBKQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 20:10:16 -0500
-X-UUID: a1407086ce824a7e9a1672c86b6b4868-20201209
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3KvKaE23ExOsMFcllhdIYY82q3GKWl+g+3RXbSqg8X0=;
-        b=r8w9Q7f58s5+h5YfJMC33Zbl5xWtpoYaYOmdLWOMHOQN9rD9HaJH65i5zmIFrfWH/0hpShd8IH4f0I6SgTAIuUJ+zT8NiVH235kyUNkICpjIDuahUXQlc9PrKsan7p3OCGVz1Z7Rip23Ejy7jzNHpQaaKRIuRU42qCG0+zUWvtI=;
-X-UUID: a1407086ce824a7e9a1672c86b6b4868-20201209
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 240736098; Wed, 09 Dec 2020 09:09:32 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 9 Dec 2020 09:09:26 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 9 Dec 2020 09:09:26 +0800
-Message-ID: <1607476170.3580.29.camel@mtkswgap22>
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Re-enable WriteBooster after device
- reset
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Bean Huo <huobean@gmail.com>
-CC:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
-        <asutoshd@codeaurora.org>, <cang@codeaurora.org>,
-        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <nguyenb@codeaurora.org>,
-        <bjorn.andersson@linaro.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>
-Date:   Wed, 9 Dec 2020 09:09:30 +0800
-In-Reply-To: <970af8b1abf565184bf37c3c055bf42ad760201a.camel@gmail.com>
-References: <20201208135635.15326-1-stanley.chu@mediatek.com>
-         <20201208135635.15326-2-stanley.chu@mediatek.com>
-         <970af8b1abf565184bf37c3c055bf42ad760201a.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1726621AbgLIBMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 20:12:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725881AbgLIBMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 20:12:06 -0500
+Date:   Tue, 8 Dec 2020 17:11:24 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607476285;
+        bh=86Y3uT99F3tJGRc8oJiWdNyf9+evidkYld7zLrp6oNc=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=X9rmamK9/+r5LLPPa/TL37AwFxp6X6oP1JIacIvrCcMDjjwlOglfnuHCO84ayub71
+         KaWsORbxvFMIcoRRtKtOVNFb410+Fn5aJLHg7nqpC6qnirjOzMPDtqkNujtWKLAFZN
+         XyeYHG7Fb4wCSowZ1Z4CGKWvFb4j4dvsdJrNpKOJcYGc3Yh+wGnB4flcDIfoEtFSSa
+         efICFCjAIqBcAqEnEI84d75l1I46LeWTFmVLUjF+YgwgOPzanHogQpQj40gKhgUDMc
+         qWQGgepKxwAI+58/QoA90Ul/IOD/UyvA/BL0ltwGj7zelIYy1dF4nAVPgfYSRkjPvN
+         ro6qSb5bGe32A==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH RFC v2 sl-b] Export return addresses etc. for better
+ diagnostics
+Message-ID: <20201209011124.GA31164@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201205004022.GA31166@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 2F6065CCECF27701609747200FC9A5B0DE2F5181C9B2FFF1E34952CB6403D5522000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201205004022.GA31166@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTEyLTA4IGF0IDE1OjEzICswMTAwLCBCZWFuIEh1byB3cm90ZToNCj4gT24g
-VHVlLCAyMDIwLTEyLTA4IGF0IDIxOjU2ICswODAwLCBTdGFubGV5IENodSB3cm90ZToNCj4gPiBp
-bmRleCAwOGM4YTU5MWU2YjAuLjM2ZDM2N2ViODEzOSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJz
-L3Njc2kvdWZzL3Vmc2hjZC5oDQo+ID4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuaA0K
-PiA+IEBAIC0xMjIxLDggKzEyMjEsMTMgQEAgc3RhdGljIGlubGluZSB2b2lkDQo+ID4gdWZzaGNk
-X3ZvcHNfZGV2aWNlX3Jlc2V0KHN0cnVjdCB1ZnNfaGJhICpoYmEpDQo+ID4gICAgICAgICBpZiAo
-aGJhLT52b3BzICYmIGhiYS0+dm9wcy0+ZGV2aWNlX3Jlc2V0KSB7DQo+ID4gICAgICAgICAgICAg
-ICAgIGludCBlcnIgPSBoYmEtPnZvcHMtPmRldmljZV9yZXNldChoYmEpOw0KPiA+ICANCj4gPiAt
-ICAgICAgICAgICAgICAgaWYgKCFlcnIpDQo+ID4gKyAgICAgICAgICAgICAgIGlmICghZXJyKSB7
-DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgdWZzaGNkX3NldF91ZnNfZGV2X2FjdGl2ZSho
-YmEpOw0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGlmICh1ZnNoY2RfaXNfd2JfYWxsb3dl
-ZChoYmEpKSB7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBoYmEtPndiX2Vu
-YWJsZWQgPSBmYWxzZTsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGhiYS0+
-d2JfYnVmX2ZsdXNoX2VuYWJsZWQgPSBmYWxzZTsNCj4gPiArICAgICAgICAgICAgICAgICAgICAg
-ICB9DQo+ID4gKyAgICAgICAgICAgICAgIH0NCj4gDQo+IFN0YW5sZXksDQo+IGhvdyBkbyB5b3Ug
-dGhpbmsgZ3JvdXAgd2JfYnVmX2ZsdXNoX2VuYWJsZWQgYW5kIHdiX2VuYWJsZWQgdG8gdGhlDQo+
-IGRldl9pbmZvLCBzaW5jZSB0aGV5IGFyZSBVRlMgZGV2aWNlIGF0dHJpYnV0ZXMuIG1lYW5zIHRo
-ZXkgYXJlIHNldCBvbmx5DQo+IHdoZW4gVUZTIGRldmljZSBmbGFncyBiZWluZyBzZXQuDQoNCkhp
-IEJlYW4sDQoNClRoYW5rcyBmb3IgeW91ciByZXZpZXcuDQoNClllcywgSSBhZ3JlZWQgdGhhdCB3
-YiByZWxhdGVkIHZhcmlhYmxlcyBpcyBhIG1lc3MgY3VycmVudGx5LiBJIHdvdWxkDQpsaWtlIHRv
-IGNsZWFuIHRoZW0gdXAgb25jZSBJIGhhdmUgdGltZS4gRmVlbCBmcmVlIHRvIHBvc3QgeW91ciBw
-YXRjaCBpZg0KeW91IHdhbnQgdG8gdGFrZSBpdCB1cCA6ICkNCg0KVGhhbmtzLA0KU3RhbmxleSBD
-aHUNCg0KPiANCj4gUmV2aWV3ZWQtYnk6IEJlYW4gSHVvIDxiZWFuaHVvQG1pY3Jvbi5jb20+DQo+
-IA0KDQo=
+Hello!
 
+This is v2 of the series the improves diagnostics by providing access to
+additional information including the return addresses collected by the
+sl*b allocators and by vmalloc().  If the allocator is not configured
+to collect this information, the diagnostics fall back to a reasonable
+approximation of their earlier state.
+
+One use case is the queue_rcu_work() function, which might be used
+by any number of kernel subsystems.  If the caller does back-to-back
+invocations of queue_rcu_work(), this constitutes a double-free bug,
+and (if so configured) the debug-objects system will flag this, printing
+the callback function.  In most cases, printing this function suffices.
+However, for double-free bugs involving queue_rcu_work(), the RCU callback
+function will always be rcu_work_rcufn(), which provides almost no help to
+the poor person trying to find this double-free bug.  The return address
+from the allocator of the memory containing the rcu_work structure can
+provide an additional valuable clue.
+
+Another use case is the percpu_ref_switch_to_atomic_rcu() function,
+which detects percpu_ref reference-count underflow.  Unfortunately,
+the only data that this function has access to doesn't have much in the
+way of identifying characteristics.  Yes, it might be possible to gain
+more information from a crash dump, but it is more convenient for the
+needed hints to be in the console log.
+
+Unfortunately, printing the return address in this case is of little help
+because this object is allocated from percpu_ref_init(), regardless of
+what part of the kernel is responsible for the reference-count underflow.
+However, CONFIG_STACKTRACE=y kernels (such as those enabling ftrace)
+using slub with debugging enabled also collect stack traces.  This series
+therefore also provides a way of extracting these stack traces to provide
+additional information to those debugging percpu_ref reference-count
+underflows.
+
+The patches are as follows:
+
+1.	Add mem_dump_obj() to print source of memory block.
+
+2.	Make mem_dump_obj() handle NULL and zero-sized pointers.
+
+3.	Make mem_dump_obj() handle vmalloc() memory.
+
+4.	Make call_rcu() print mem_dump_obj() info for double-freed
+	callback.
+
+5.	Dump mem_dump_obj() info upon reference-count underflow.
+
+						Thanx, Paul
+
+
+Changes since v1:
+
+o	Apply feedback from Joonsoo Kim, mostly around naming and
+	code structure.
+
+o	Apply fix suggested by Stephen Rothwell for a bug that was
+	also located by kbuild test robot.
+
+o	Add support for vmalloc().
+
+o	Add support for special pointers.
+
+o	Additional rework simplifying use of mem_dump_obj(), which
+	simplifies both the RCU and the percpu_ref uses.
+
+------------------------------------------------------------------------
+
+ include/linux/mm.h      |    2 +
+ include/linux/slab.h    |    2 +
+ include/linux/vmalloc.h |    6 ++++
+ kernel/rcu/tree.c       |    7 +++-
+ lib/percpu-refcount.c   |   12 ++++++--
+ mm/slab.c               |   28 +++++++++++++++++++
+ mm/slab.h               |   11 +++++++
+ mm/slab_common.c        |   69 ++++++++++++++++++++++++++++++++++++++++++++++++
+ mm/slob.c               |    7 ++++
+ mm/slub.c               |   40 +++++++++++++++++++++++++++
+ mm/util.c               |   44 ++++++++++++++++++++++++++----
+ mm/vmalloc.c            |   12 ++++++++
+ 12 files changed, 229 insertions(+), 11 deletions(-)
