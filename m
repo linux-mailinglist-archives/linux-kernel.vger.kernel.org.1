@@ -2,91 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392E02D479A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF4B2D479E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732392AbgLIRNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:13:16 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:50068 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbgLIRNQ (ORCPT
+        id S1732617AbgLIRNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:13:52 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:50848 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732409AbgLIRNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:13:16 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9H9vOA047456;
-        Wed, 9 Dec 2020 17:12:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=Wucwn6QESXraR5YDfQ3+qZuJ9R/NnVq54XD1k3uySBE=;
- b=sHVa17eGBnxU/vNfSzQvaPkOFJx4lSoe95KuAo5vugYfbFCmhg7VYQYXjwzVS6zt+odP
- 1LQbudC0DQIEx4UCOpmj9qyC2048+l6CSOqFvTStzMvXcOt37nhe7h2QCRzMNWhiXXER
- DKE2ciadEW7myEXPNmeYx1UPDcp9tb9hvB0G1suZJxV8YN7XCk1AHVd/tfFhUpVXbkuy
- PwMXhBNH21a2UaoROEfh/3dG5FEsprisef4da6fXD7guX/awfyZklY9CdRJzE1lxp1YZ
- ebjyR+rxO2H+DsNr2Gk6Zq+Ux5ItlY54ahn12ZhikufNP2WxW4+qwORSOl5ohpd/lv7s 9g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 3581mr1888-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 17:12:15 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HBuWU054557;
-        Wed, 9 Dec 2020 17:12:15 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 358m50w22w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 17:12:15 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B9HC90C010234;
-        Wed, 9 Dec 2020 17:12:10 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Dec 2020 09:12:09 -0800
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
-        <asutoshd@codeaurora.org>, <cang@codeaurora.org>,
-        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <nguyenb@codeaurora.org>,
-        <bjorn.andersson@linaro.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>
-Subject: Re: [PATCH v2 0/2] scsi: ufs: Re-enable WB after device reset
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1blf2rjj6.fsf@ca-mkp.ca.oracle.com>
-References: <20201208135635.15326-1-stanley.chu@mediatek.com>
-Date:   Wed, 09 Dec 2020 12:12:05 -0500
-In-Reply-To: <20201208135635.15326-1-stanley.chu@mediatek.com> (Stanley Chu's
-        message of "Tue, 8 Dec 2020 21:56:33 +0800")
+        Wed, 9 Dec 2020 12:13:52 -0500
+Received: by mail-io1-f72.google.com with SMTP id l5so1715675ioj.17
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 09:13:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=uTT0y5Nz9NOP7sMbpRnqT8y6zo7MZEhRe2Khd85knH4=;
+        b=Ag9wB/87tUGLf066qKYyxZEgBpCc+8IqCirHnmuSVU7Y230WMPh8W+pe2/sQj0GQSK
+         /lXPaA4TEUjkTzU/tPhABVXgsnVXoCViOK4RO/0XPsmHHj8m9twlkO6F49qLLiZxaADM
+         ZfZUXucCwFqqny92JsUq112vTRc9KDO2m0xbYQ6iUkjXFRzORuvPaoMPpOJa2tljJ4QU
+         jd2wi+SB15AXlC9XXWepBFIzRTTA97frSGnmjJABK29zJLlB4g2YcRGxXwKdNoYEhcDE
+         uAaNRwZZWpwG6eqhi9UZyqNUzPhBYtANtJcFyVeyTGNnA39692gW7L0C9kDXOU2kdZ8V
+         1Rkw==
+X-Gm-Message-State: AOAM533QX/jcv9U8lW/W7Hb1nXaGPkNFzIZ+LYPe3z1LsDJAGDFHcTgF
+        x0zs374Y8EJIVmqCsowF1liSku03q9YFVX8ItxbJSPruGzIP
+X-Google-Smtp-Source: ABdhPJxylq4V3p6fnj7Omw7lvfBWkiL4T32Vk2N22Tc0sZ0G8J6rUyk8fYNVjcopXH89x7dwIWASek+rTI/J9Cf5LLUEUsIddlt+
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=1
- bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090121
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=999
- clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090121
+X-Received: by 2002:a02:8790:: with SMTP id t16mr4403722jai.80.1607533991526;
+ Wed, 09 Dec 2020 09:13:11 -0800 (PST)
+Date:   Wed, 09 Dec 2020 09:13:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008789b505b60b2c3d@google.com>
+Subject: linux-next build error (11)
+From:   syzbot <syzbot+79023dbd85f19ddbe8cc@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-Stanley,
+syzbot found the following issue on:
 
-> This series fixes up an issue that WB is not re-enabled after device
-> reset.
+HEAD commit:    2f1d5c77 Add linux-next specific files for 20201209
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13aa845b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fcc0aafc1380dee5
+dashboard link: https://syzkaller.appspot.com/bug?extid=79023dbd85f19ddbe8cc
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Applied to 5.11/scsi-staging, thanks!
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+79023dbd85f19ddbe8cc@syzkaller.appspotmail.com
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+failed to run ["make" "-j" "64" "ARCH=x86_64" "CC=/syzkaller/gcc/bin/gcc" "oldconfig"]: exit status 2
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
