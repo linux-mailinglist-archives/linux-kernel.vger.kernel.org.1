@@ -2,195 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864062D417D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F282D417E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731105AbgLILzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:55:53 -0500
-Received: from mail-eopbgr1320045.outbound.protection.outlook.com ([40.107.132.45]:20555
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730891AbgLILzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:55:52 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dqrmApDU5onsrWsJ2JsarTNNZNqDQk82gzsVDkjcY6CW9t7klwe8G8SBGS0mfSL0qce6KfhuczUD1aNNDd5WaJhw41ZjNIkTiEQMt7UJPsOSpe/zKqjBsKzH3aJEbDpcVf/SdzcaCAr/8Ejr0dRqcoBUCO2AygvSvy21iatossOVLuzctISLreHZrRY2O7/zjRFC/piPE7qiLrWPyTnuTrWjeSzcVS1rk8I0AeYOg9BfsMuGGX+/19luvKY4+1TkigGv/QmKR52eWqLWZSCnZI9L72PqmBkWtVn/q5KMXk4KlMQlyGU7bIJfg3lvpsWMT6hfJZbmIWgwbXXZdrFcYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o97pzVBlTB7Cx/WOvQLiv64xtY8R28bhlc8fvJ1zT34=;
- b=YmlTwznZ8twuiv9gOsb+2950ZNpZF4xdFpUiWri+NHiDERANM2df2Ad7XGyxZ395SjEWCDAbLUyrkvZj5Z3rMy9ywzKXEd2sO9/Yz/FVs7u6L5XifD49FCwGvBVTdrR6zkParRSBog/f48sOq12XDZROtFyy7BYzlFA8ktA6ZOpmUc6Bg/sxxTpJFMywEPpzB/slyLyUd+z7fkIGIbBI7rrCElmpUEUqYbcparLvMajRW4u3/uEGqTyMrlf6snjtZsvQxBPPvGUR0QG7Kx/gSR5geHIqEUQdMYjvFi8g0Lm3Zzkj3mlLUxGQfC3VkC/R+lAgay4BnB4Ir8X4jCBW5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oppoglobal.onmicrosoft.com; s=selector1-oppoglobal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o97pzVBlTB7Cx/WOvQLiv64xtY8R28bhlc8fvJ1zT34=;
- b=ibQ7U5TwkdPTLJ7qG+jJ5+6fNw3WQXsI7dxvqBpkLP91Fm3BjJvRjq2/5v9Ynmv0tTeUihvaImNVeqkJyymajWNPIBCL6SyMkBD6PMKtAf66DiUKhJnqQVoLNGjAHeMbbKq9yoXaIiy86r3Aj2oQMh68lTbnhiiIJ2MNZfHyQ0M=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oppo.com;
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
- SG2PR02MB2778.apcprd02.prod.outlook.com (2603:1096:4:59::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.12; Wed, 9 Dec 2020 11:54:15 +0000
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::dcd:13c1:2191:feb7]) by SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::dcd:13c1:2191:feb7%7]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
- 11:54:15 +0000
-Subject: Re: [PATCH v4] erofs: avoid using generic_block_bmap
-To:     Gao Xiang <hsiangkao@redhat.com>, Chao Yu <yuchao0@huawei.com>
-Cc:     linux-erofs@lists.ozlabs.org, zhangshiming@oppo.com,
-        guoweichao@oppo.com, linux-kernel@vger.kernel.org
-References: <20201209023930.15554-1-huangjianan@oppo.com>
- <23527fc2-811b-321e-10f1-cb5b50affdbb@huawei.com>
- <20201209113941.GB105731@xiangao.remote.csb>
-From:   Huang Jianan <huangjianan@oppo.com>
-Message-ID: <140a1614-bd76-6196-c63f-cec8e287b4d0@oppo.com>
-Date:   Wed, 9 Dec 2020 19:54:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
-In-Reply-To: <20201209113941.GB105731@xiangao.remote.csb>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [58.255.79.104]
-X-ClientProxiedBy: HK2PR0302CA0012.apcprd03.prod.outlook.com
- (2603:1096:202::22) To SG2PR02MB4108.apcprd02.prod.outlook.com
- (2603:1096:4:96::19)
+        id S1731117AbgLIL4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:56:11 -0500
+Received: from mail-03.mail-europe.com ([91.134.188.129]:59114 "EHLO
+        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730891AbgLIL4A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 06:56:00 -0500
+Date:   Wed, 09 Dec 2020 11:54:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1607514873;
+        bh=Am0wfylruDvvobV80Pi9fvVjNOBPb92unpvDC6wBAgE=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=RCaqQUBsKJwS4CA4BlHNqA4xQR6PyhGBqvJzlWDyhD/eQDEIUyCkmZ6jCwY1C2ozU
+         dDGPmzpXGorWwYNcVmfCTHoc2CekOLqyXZRogVAnmrlzm4y5xVZjdqpruCqasIm2W4
+         ThdJtDEK/wkDj9Ra/4LJ9ex/XU5Cej/Su275dFF0=
+To:     Vladimir Oltean <olteanv@gmail.com>
+From:   Aswin C <realc@protonmail.com>
+Cc:     Aswin C <aswinraman2013@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+Reply-To: Aswin C <realc@protonmail.com>
+Subject: Re: [PATCH] net: dsa: sja1105: Remove an unprofessional word from the code comments
+Message-ID: <-gMuTlvCAcfhIMqI1V4ylxBXKdWffUwznP_0cODJaam4l3hyfEFTLkZUZMLQV23BCeO8S6vTh1OfN0yOi7M5PhfX0rOX8SkL9JknVM2nKOA=@protonmail.com>
+In-Reply-To: <20201208123515.wb72g6zwtxlawp34@skbuf>
+References: <20201208103332.5095-1-realc@protonmail.com> <20201208123515.wb72g6zwtxlawp34@skbuf>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.118.0.32] (58.255.79.104) by HK2PR0302CA0012.apcprd03.prod.outlook.com (2603:1096:202::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Wed, 9 Dec 2020 11:54:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 31bc16fe-b715-48a8-9e77-08d89c392711
-X-MS-TrafficTypeDiagnostic: SG2PR02MB2778:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR02MB2778106683FC3292CD0D9F8AC3CC0@SG2PR02MB2778.apcprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KZtj5h9kTdydQmczzG6+dCTvDnbDTWeZNu+ak5cyg6Utayy4N7TI5gRoWSr3kfTelB3X9Kyslj99hxJ8dXeinYnfJ9ld0BOnusykFDD6T6+tYr1u9K7De7T8R6iAzw3oW80ZxgZph9Gjd44Z3PF58lm2+XogkI2OtZPn6YMQSg7FwqtbYvzcOjqSbp0N42msnfP1Lq1lbncPmO4wN+m0HlWXbpZ1m832v1iNGTufxIlUbWK01EOO8u0gFXHPnPhvuQntud4/edAknNOvuEivbsSg8XqoVe6PRbUezTeCF2WnKjVa9YqyEf59jLxtxqA0DpG3ZwjZrSqB+CKQotbNnOGYWHTCX9owZx5XOe8lbZ0ygcgJjFczCfAdSDweSGY/uSMZYSifOuGsG94K3n/YSGyFuyPXrX/nDmRrd3jY/6JWkcSruC1lirg1P+MS/r1RgCneukTu/CcBpENrk63t9A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(346002)(136003)(39860400002)(186003)(26005)(2906002)(4326008)(16526019)(52116002)(53546011)(8936002)(36756003)(6486002)(6666004)(5660300002)(83380400001)(31686004)(86362001)(2616005)(956004)(8676002)(316002)(66946007)(66556008)(16576012)(478600001)(66476007)(31696002)(110136005)(41533002)(11606006)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZWk4UWxkbkhmcnZseHpYMFBmNnRQMnB6R2RzTGNIZVJiK0ZkQXkxc1BDOU9s?=
- =?utf-8?B?MC9oeWVvdEE3cEYydWlNNkY0S1Z6TUdkQ1hhNnRFRE0yNzVJM3VSOWoyWGRL?=
- =?utf-8?B?ekFYWXlXaGxJbzlLcms0eVVtUURqU0tBMitRZE1pK3BQdlJ6VWNzbE5nb0k5?=
- =?utf-8?B?NEdoc0tUVVRzSVd4OFhNNEQ2YkVrdWZkRjgvM0JXQnV6WktSV0xLZkl0a0Iz?=
- =?utf-8?B?ZTNDaGJEY09VN0c5ZHp1bzlQVEhHQmVDaHJ2aVlaaEkzczFMNkZid08yYzZ3?=
- =?utf-8?B?VTEwTEJTeURkVWhuQlpXcGYzL0hxSFByUjlVb1JINzE1WnFpUW1BdHZQaW14?=
- =?utf-8?B?MFVKT29rMmlMN0hxVTlUMzhDcHQwQnVCT2t5WGRyd01QRXZySWtzVkFvejVR?=
- =?utf-8?B?dnA4bUE4NmorOGZBUEJzSmh2dEpJRFRaMk9TaEZMMVdJWFNpb3JWd1d5WVF4?=
- =?utf-8?B?TDNGRGxYT1l3T3pRMnNkbzM3RmJuc3hkT0FmSE9SeFVvME8rcmpSMndJdTNG?=
- =?utf-8?B?bnJJNDI2dlFsbzhCbVRmUm5vaCtRSzlRZEUwbjVmd2VHNFM2bXU2RlNQbXR5?=
- =?utf-8?B?SG9RTFFId1A1T3pKNGxabnQ1N1c3dlRaaFV2ZXFxVDhBU214K24wUjBFNjEx?=
- =?utf-8?B?VlhYQ2dHQ0R4Smt2eU83ZGVlei8rdGJCVWFGTE5tQStMeUNidmxIZWkwTGJn?=
- =?utf-8?B?UDQwemg1VE8zRXdVK1o3MEhlY0Z2c3d2Ui80TzZlaXhaTjZETWVTSU1MRkpx?=
- =?utf-8?B?VTQ2em40M2N5RityQXlpaWRxTkJkemg5cmxFamxHbnRkS1czRmkwTm8xMXNX?=
- =?utf-8?B?c1BYMC9jUk1UUHozQ2QxcE1kaEJ1c0Iva0VUNVo3VURDZjUvcG9XVmx3MU9r?=
- =?utf-8?B?ejN5OVRnMThrYnM1RTJMeUQ1YjVnYUs4RXY0Q3BNdWd4ODBTanRqQ0kxbVQr?=
- =?utf-8?B?bXFOc25ib3hVRE9TYmdXZE1SaDUrK1BkL0ZnakwyZkluNUdjTlNWNG9Iajc0?=
- =?utf-8?B?NWN2ZXBsYTFsY2Zpajg3elFIY09GSGszY1V3aDRscHArUWg2SGRhUlU0SGdE?=
- =?utf-8?B?MUdIUDdRWE0vdTV6TDNtaWJxSWJXRHR3ME1kWS9xYWFNVEFDNE5oMGlWVXFB?=
- =?utf-8?B?UjkrVDBCc1g5NXZ2Wk5OZCtLQU0vTUhUdEpNMjhZUTFMWlk4STdaSDAyNUdp?=
- =?utf-8?B?YUNlWkFkOWVJcDk1am5uSkoyQTJEeEkwU2JjVHZ1SHhrbGV4VS93azFqaGpZ?=
- =?utf-8?B?T3hlVm5hY3JRbjk0eDRQWVMyaHB1WENJazdoN2ZZZEVwVzJQL3dBSWhUaU53?=
- =?utf-8?Q?2Zsoe8sh30z5KrzV7UuFMXChyQdVodnoIN?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 11:54:15.4300
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31bc16fe-b715-48a8-9e77-08d89c392711
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pz8UWE7s/Lo6ap38o5f8fQtGm/e8PisU69AMAu0tnpqOOng1h404fG2RDixfZScQwC6nsCJeIzQfjlSpgmk/aw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB2778
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for review, i will update it soon.
+Hello. Thank you very much for the reply.
 
-在 2020/12/9 19:39, Gao Xiang 写道:
-> Hi Jianan,
->
-> On Wed, Dec 09, 2020 at 06:08:41PM +0800, Chao Yu wrote:
->> On 2020/12/9 10:39, Huang Jianan wrote:
->>> iblock indicates the number of i_blkbits-sized blocks rather than
->>> sectors.
->>>
->>> In addition, considering buffer_head limits mapped size to 32-bits,
->>> should avoid using generic_block_bmap.
->>>
->>> Fixes: 9da681e017a3 ("staging: erofs: support bmap")
->>> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
->>> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-> Could you send out an updated version? I might get a point to freeze
-> dev branch since it needs some time on linux-next....
->
-> Thanks,
-> Gao Xiang
->
->>> ---
->>>    fs/erofs/data.c | 30 ++++++++++--------------------
->>>    1 file changed, 10 insertions(+), 20 deletions(-)
->>>
->>> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
->>> index 347be146884c..d6ea0a216b57 100644
->>> --- a/fs/erofs/data.c
->>> +++ b/fs/erofs/data.c
->>> @@ -312,36 +312,26 @@ static void erofs_raw_access_readahead(struct readahead_control *rac)
->>>    		submit_bio(bio);
->>>    }
->>> -static int erofs_get_block(struct inode *inode, sector_t iblock,
->>> -			   struct buffer_head *bh, int create)
->>> -{
->>> -	struct erofs_map_blocks map = {
->>> -		.m_la = iblock << 9,
->>> -	};
->>> -	int err;
->>> -
->>> -	err = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
->>> -	if (err)
->>> -		return err;
->>> -
->>> -	if (map.m_flags & EROFS_MAP_MAPPED)
->>> -		bh->b_blocknr = erofs_blknr(map.m_pa);
->>> -
->>> -	return err;
->>> -}
->>> -
->>>    static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
->>>    {
->>>    	struct inode *inode = mapping->host;
->>> +	struct erofs_map_blocks map = {
->>> +		.m_la = blknr_to_addr(block),
->>> +	};
->>> +	sector_t blknr = 0;
->> It could be removed?
->>
->>>    	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
->>>    		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
->>>    		if (block >> LOG_SECTORS_PER_BLOCK >= blks)
->>> -			return 0;
->> return 0;
->>
->>> +			goto out;
->>>    	}
->>> -	return generic_block_bmap(mapping, block, erofs_get_block);
->>> +	if (!erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW))
->>> +		blknr = erofs_blknr(map.m_pa);
->> return erofs_blknr(map.m_pa);
->>
->>> +
->>> +out:
->>> +	return blknr;
->> return 0;
->>
->> Anyway, LGTM.
->>
->> Reviewed-by: Chao Yu <yuchao0@huawei.com>
->>
->> Thanks,
->>
->>>    }
->>>    /* for uncompressed (aligned) files and raw access for other files */
->>>
+Firstly, yes, it's my first contribution and apologies for making some mist=
+akes and I'd like to thank you for being kind and pointing it out.
+
+I came to know about this driver in a casual discussion among my peers when=
+ one of them pointed out the presence of this particular word on the driver=
+. I just thought that I'd try to help and get rid of that, if possible. Not=
+hing more.
+
+As you mentioned, I ran my eyes over drivers/net/dsa/sja1105/sja1105_tas.c =
+and the other files. Other than a very minor spelling error, I didn't come =
+across wording conventions like the one we are discussing about.
+
+And yes, as you mentioned, "poorly organized" sounds perfect, too.
+
+I believe that not signing off and not sending it to all maintainers is all=
+, in the things I did wrong. So, I hope I can fix them and send the patch a=
+s a reply to this thread.
+
+Thank you.
+
+=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
+ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
+On Tuesday, December 8, 2020 6:05 PM, Vladimir Oltean <olteanv@gmail.com> w=
+rote:
+
+&gt; Hi Aswin,
+&gt;
+&gt; On Tue, Dec 08, 2020 at 04:03:32PM +0530, Aswin C wrote:
+&gt;
+&gt; &gt; Remove the word 'retarded' from the code comments with a more pro=
+fessional word
+&gt; &gt; 'erroneous' to make it less profane.
+&gt; &gt;
+&gt; &gt; -----------------------------------------------------------------=
+----------------------------------------------------
+&gt; &gt;
+&gt; &gt; drivers/net/dsa/sja1105/sja1105_dynamic_config.c | 2 +-
+&gt; &gt; 1 file changed, 1 insertion(+), 1 deletion(-)
+&gt; &gt; diff --git a/drivers/net/dsa/sja1105/sja1105_dynamic_config.c b/d=
+rivers/net/dsa/sja1105/sja1105_dynamic_config.c
+&gt; &gt; index b777d3f37..7a76180f3 100644
+&gt; &gt; --- a/drivers/net/dsa/sja1105/sja1105_dynamic_config.c
+&gt; &gt; +++ b/drivers/net/dsa/sja1105/sja1105_dynamic_config.c
+&gt; &gt; @@ -250,7 +250,7 @@ sja1105pqrs_l2_lookup_cmd_packing(void *buf, =
+struct sja1105_dyn_cmd *cmd,
+&gt; &gt; SJA1105PQRS_SIZE_L2_LOOKUP_ENTRY, op);
+&gt; &gt; }
+&gt; &gt; -/* The switch is so retarded that it makes our command/entry abs=
+traction
+&gt; &gt; +/* The switch is so erroneous that it makes our command/entry ab=
+straction
+&gt; &gt;
+&gt; &gt; -   crumble apart.
+&gt; &gt; -
+&gt; &gt; -   On P/Q/R/S, the switch tries to say whether a FDB entry
+&gt; &gt;     --
+&gt; &gt;     2.29.2
+&gt; &gt;
+&gt;
+&gt; Thank you for the patch and for what looks like your first contributio=
+n
+&gt; to the kernel. First of all, when you submit a patch, you should follo=
+w
+&gt; the development process at:
+&gt; https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+&gt; https://www.kernel.org/doc/Documentation/networking/netdev-FAQ.rst
+&gt;
+&gt; You should use ./scripts/get_maintainer.pl and send the email to all
+&gt; maintainers that get listed there, plus the mailing list.
+&gt;
+&gt; I don't feel that "erroneous" is the right replacement. Maybe "poorly =
+organized".
+&gt;
+&gt; Although I am not sure that "professional" is something that I was goi=
+ng
+&gt; for when I wrote this driver.
+&gt;
+&gt; This makes me curious what exactly motivated you to make the change? D=
+o
+&gt; you feel offended by the use of profanity when used to describe hardwa=
+re?
+&gt; How did you even pick the sja1105 driver. I can think of two possibili=
+ties:
+&gt;
+&gt; -   You are working with it. But in this case, I do wonder how you fee=
+l by
+&gt;     the larger amount of profanity in drivers/net/dsa/sja1105/sja1105_=
+tas.c.
+&gt;     Are you planning further patches for that?
+&gt;
+&gt; -   You just searched the kernel sources for profanity, or, putting it
+&gt;     differently, you were actively trying to be offended.
+&gt;
+
+</olteanv@gmail.com>
