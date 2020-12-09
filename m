@@ -2,143 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3462D3D93
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED9E2D3D94
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727273AbgLIIgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:36:52 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10870 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725765AbgLIIgv (ORCPT
+        id S1727665AbgLIIh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:37:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbgLIIh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:36:51 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B98X9Ql042967;
-        Wed, 9 Dec 2020 03:35:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=b2CYOgliUsTrUudXjwmcbLAvbceX0i5fNWL84kZqJWA=;
- b=ipGoZ5lNkO6gsv/YDpHe+0z7kiFplPwJJjvl8/pQ4yn/6zu7IetFd/2xVa0g6brR5+2y
- mTIY22XBJKJtNqiOQ5UkUtZ5Cy6DbKN5rCWpdCrxYRgAOmfVAGcfPr+ipp64M+UnhExV
- jO9o2DXXK2OpeDKzfSjVvaKh6o4CEWpYyrsQ4p3oJv4tGaQrwJeJlmL1TJCXt0u7qREe
- xoV+vZB8KDwf6YAcQxVJyaJUOAxtfDc7UZwOgDl2J0+h7qRJ3UByh3WClXV5Vg2Yx+yV
- XZ4HB1HO0yHIsp3daE1OyGZcZQLAIl083lQUKlTZn9vPXvm4H5ohV1KA5l2cqCb/7j1w mw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35ateq99dt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 03:35:49 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B98X9jA042950;
-        Wed, 9 Dec 2020 03:35:49 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35ateq99cs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 03:35:48 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B98W4s3010015;
-        Wed, 9 Dec 2020 08:35:46 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3583svm9f8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 08:35:46 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B98Zinr56033754
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Dec 2020 08:35:44 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 762F14C059;
-        Wed,  9 Dec 2020 08:35:44 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7518F4C05A;
-        Wed,  9 Dec 2020 08:35:42 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed,  9 Dec 2020 08:35:42 +0000 (GMT)
-Date:   Wed, 9 Dec 2020 14:05:41 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc:     Anton Blanchard <anton@ozlabs.org>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] powerpc/smp: Parse ibm,thread-groups with multiple
- properties
-Message-ID: <20201209083541.GK528281@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com>
- <1607057327-29822-2-git-send-email-ego@linux.vnet.ibm.com>
- <20201207121042.GH528281@linux.vnet.ibm.com>
- <20201208172540.GA14206@in.ibm.com>
+        Wed, 9 Dec 2020 03:37:27 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C86C0613CF;
+        Wed,  9 Dec 2020 00:36:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fFBLWtE5GQnPWQPUq4v3Pa18IITk1EO6tqIDlf9HX0w=; b=CsJe9uSK26NLRe+nRPEL3mhs2+
+        z28woCi5opznzDTPcWEr7i0AqWMdYRqa1Qvzy01m97ObPPoNIsiaYf1nR4naGlbWBm1s9epTv+/WA
+        RtOwwjnmIrPGYOT6YR8dPamcK99HpV8C6qcKO8r+o4Y0pFdHX4LwOJ9vFfnHCkNetZrNjMsVjhKva
+        I7nx0suHRNwg6HwDVf4494nunTJY4cBJrqcI1vXEvpSZYR0Am2E/bzZk9qc9FnwU8lCCiSrSMhqep
+        daIobpGLtlCawki12rclHntB4QBuJp49v/pR5577U7iZ9PfqiZWXwX6AXrFUIp3wRpfNeAbNU8d2X
+        /N1dOzig==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmuxp-00063F-Cw; Wed, 09 Dec 2020 08:36:45 +0000
+Date:   Wed, 9 Dec 2020 08:36:45 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] iov: introduce ITER_BVEC_FLAG_FIXED
+Message-ID: <20201209083645.GB21968@infradead.org>
+References: <cover.1607477897.git.asml.silence@gmail.com>
+ <de27dbca08f8005a303e5efd81612c9a5cdcf196.1607477897.git.asml.silence@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201208172540.GA14206@in.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-09_07:2020-12-08,2020-12-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- suspectscore=1 lowpriorityscore=0 mlxscore=0 bulkscore=0 malwarescore=0
- adultscore=0 impostorscore=0 priorityscore=1501 phishscore=0 spamscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090060
+In-Reply-To: <de27dbca08f8005a303e5efd81612c9a5cdcf196.1607477897.git.asml.silence@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Gautham R Shenoy <ego@linux.vnet.ibm.com> [2020-12-08 22:55:40]:
+Ok, seems like the patches made it to the lists, while oyu only
+send the cover letter to my address which is very strange.
 
-> > 
-> > NIT:
-> > tglx mentions in one of his recent comments to try keep a reverse fir tree
-> > ordering of variables where possible.
-> 
-> I suppose you mean moving the longer local variable declarations to to
-> the top and shorter ones to the bottom. Thanks. Will fix this.
-> 
+> diff --git a/include/linux/uio.h b/include/linux/uio.h
+> index 72d88566694e..af626eb970cf 100644
+> --- a/include/linux/uio.h
+> +++ b/include/linux/uio.h
+> @@ -18,6 +18,8 @@ struct kvec {
+>  };
+>  
+>  enum iter_type {
+> +	ITER_BVEC_FLAG_FIXED = 2,
+> +
+>  	/* iter types */
+>  	ITER_IOVEC = 4,
+>  	ITER_KVEC = 8,
 
-Yes.
+This is making the iter type even more of a mess than it already is.
+I think we at least need placeholders for 0/1 here and an explicit
+flags namespace, preferably after the types.
 
-> > > +	}
-> > > +
-> > > +	if (!tg)
-> > > +		return -EINVAL;
-> > > +
-> > > +	cpu_group_start = get_cpu_thread_group_start(cpu, tg);
-> > 
-> > This whole hunk should be moved to a new function and called before
-> > init_cpu_cache_map. It will simplify the logic to great extent.
-> 
-> I suppose you are referring to the part where we select the correct
-> tg. Yeah, that can move to a different helper.
-> 
+Then again I'd much prefer if we didn't even add the flag or at best
+just add it for a short-term transition and move everyone over to the
+new scheme.  Otherwise the amount of different interfaces and supporting
+code keeps exploding.
 
-Yes, I would prefer if we could call this new helper outside
-init_cpu_cache_map.
+> @@ -29,8 +31,9 @@ enum iter_type {
+>  struct iov_iter {
+>  	/*
+>  	 * Bit 0 is the read/write bit, set if we're writing.
+> -	 * Bit 1 is the BVEC_FLAG_NO_REF bit, set if type is a bvec and
+> -	 * the caller isn't expecting to drop a page reference when done.
+> +	 * Bit 1 is the BVEC_FLAG_FIXED bit, set if type is a bvec and the
+> +	 * caller ensures that page references and memory baking bvec won't
+> +	 * go away until callees finish with them.
+>  	 */
+>  	unsigned int type;
 
-> > > 
-> > > -	zalloc_cpumask_var_node(&per_cpu(cpu_l1_cache_map, cpu),
-> > > -				GFP_KERNEL, cpu_to_node(cpu));
-> > > +	mask = &per_cpu(cpu_l1_cache_map, cpu);
-> > > +
-> > > +	zalloc_cpumask_var_node(mask, GFP_KERNEL, cpu_to_node(cpu));
-> > > 
-> > 
-> > This hunk (and the next hunk) should be moved to next patch.
-> >
-> 
-> The next patch is only about introducing  THREAD_GROUP_SHARE_L2. Hence
-> I put in any other code in this patch, since it seems to be a logical
-> place to collate whatever we have in a generic form.
-> 
-
-While I am fine with it, having a pointer that always points to the same
-mask looks wierd.
-
--- 
-Thanks and Regards
-Srikar Dronamraju
+I think the comment needs to move to the enum.
