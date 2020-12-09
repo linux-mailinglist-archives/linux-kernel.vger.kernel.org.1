@@ -2,168 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B3E2D495E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F272D4951
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733187AbgLISqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:46:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727559AbgLISqB (ORCPT
+        id S1733219AbgLISpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:45:42 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48550 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733276AbgLISpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:46:01 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB307C0617A7;
-        Wed,  9 Dec 2020 10:44:42 -0800 (PST)
-Date:   Wed, 09 Dec 2020 18:44:40 -0000
+        Wed, 9 Dec 2020 13:45:24 -0500
+Date:   Wed, 09 Dec 2020 18:44:41 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1607539481;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=oXlGArNIcJiVj/apzfam6J6e9UjkwrUOdyJf3vg2ulU=;
-        b=cHpiBn0oGmcrfAUx047u1XEF9gb0Fu+bRDl9OE/uTuaw1OD0aHA9dcdzAJbDHt4GCHQGEN
-        t4pQj7SOMv2O7iIyPn5hf2ANgwAe7aB9Jgb5f+zqVZP8/xUXojiG1m3bzC41XjyAjLi8GA
-        vsHPyTYHHYQCtzCCswaXLHMseKsxfRsWQZk354PWdimp6iFdvhMz7wTj4qlYK7ZB3GR4Gs
-        g+lKb/EVbF1rxlCrSLE5BYVyMPlQeC8dWx+n9WkN/0KK6I3H7Z4vmivbT5Gm9AZitpFEQo
-        zm9Osb8so3pEErLBOMEJg71QaFAVJk/TFMLmz67yzC4QjHe+HLFft3yg90Io9Q==
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hFSrSCbfgqTV8Uq/be5lRFzQnIszjfWspKcqjSJrZvA=;
+        b=0/BVTm4rYyv8rJXujzTsJGlDamNAsbEPd5154QsAYgTWOUE2+GjwEe2OOEoUCaws2HNN0A
+        InNOYqKu6ncrGTutqUzrPUQb6G9+bV3paeIQnibx5fhQv0WWr3v2lo3r4/2S0lGN6DISs/
+        8fysCgDqTjgk36TB3/bxC1+CsGkePlvU258GY6CvQsy8jxQ7T7ekQcDAcGzEAkxPT++g47
+        TmEMjFmAgJmx2EGH6Qd+t3veT2RhJHyIc0NACb3q4el7OuWhbS6RS28835dPi7Qy4aodqe
+        GLR+F234BARHtLj2+v94ueSibXhZhdT2VPGlz3a7hufmye6TyIgSS/tWDestxQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1607539481;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=oXlGArNIcJiVj/apzfam6J6e9UjkwrUOdyJf3vg2ulU=;
-        b=cuHc9/OD3BQ0qbO3ylofRGng81Seprdby+GohHxGhDpoMqlsdtZ2wZxSa0Kv4UM9qIyF70
-        KRYOpDtOthyzyZCg==
-From:   "tip-bot2 for peterz@infradead.org" <tip-bot2@linutronix.de>
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hFSrSCbfgqTV8Uq/be5lRFzQnIszjfWspKcqjSJrZvA=;
+        b=zqtxy8eXfrzaQk6OTw9+9b9eaXmHwncdvxXTyw5o/Fxm6WekvOK6JqQ1oKHRnZbHOZHKCs
+        atpcsHNGdrSInRAA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf: Break deadlock involving exec_update_mutex
-Cc:     syzbot+db9cdf3dd1f64252c6ef@syzkaller.appspotmail.com,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: perf/core] powerpc/8xx: Implement pXX_leaf_size() support
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
+In-Reply-To: <20201126121121.364451610@infradead.org>
+References: <20201126121121.364451610@infradead.org>
 MIME-Version: 1.0
-Message-ID: <160753948058.3364.18125735729862993179.tip-bot2@tip-bot2>
+Message-ID: <160753948109.3364.11131685830660675965.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     78af4dc949daaa37b3fcd5f348f373085b4e858f
-Gitweb:        https://git.kernel.org/tip/78af4dc949daaa37b3fcd5f348f373085b4e858f
-Author:        peterz@infradead.org <peterz@infradead.org>
-AuthorDate:    Fri, 28 Aug 2020 14:37:20 +02:00
+Commit-ID:     c5eecbb58f65bf1c4effab9a7f283184b469768c
+Gitweb:        https://git.kernel.org/tip/c5eecbb58f65bf1c4effab9a7f283184b469768c
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Thu, 26 Nov 2020 11:53:33 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 09 Dec 2020 17:08:57 +01:00
+CommitterDate: Wed, 09 Dec 2020 17:08:56 +01:00
 
-perf: Break deadlock involving exec_update_mutex
+powerpc/8xx: Implement pXX_leaf_size() support
 
-Syzbot reported a lock inversion involving perf. The sore point being
-perf holding exec_update_mutex() for a very long time, specifically
-across a whole bunch of filesystem ops in pmu::event_init() (uprobes)
-and anon_inode_getfile().
+Christophe Leroy wrote:
 
-This then inverts against procfs code trying to take
-exec_update_mutex.
+> I can help with powerpc 8xx. It is a 32 bits powerpc. The PGD has 1024
+> entries, that means each entry maps 4M.
+>
+> Page sizes are 4k, 16k, 512k and 8M.
+>
+> For the 8M pages we use hugepd with a single entry. The two related PGD
+> entries point to the same hugepd.
+>
+> For the other sizes, they are in standard page tables. 16k pages appear
+> 4 times in the page table. 512k entries appear 128 times in the page
+> table.
+>
+> When the PGD entry has _PMD_PAGE_8M bits, the PMD entry points to a
+> hugepd with holds the single 8M entry.
+>
+> In the PTE, we have two bits: _PAGE_SPS and _PAGE_HUGE
+>
+> _PAGE_HUGE means it is a 512k page
+> _PAGE_SPS means it is not a 4k page
+>
+> The kernel can by build either with 4k pages as standard page size, or
+> 16k pages. It doesn't change the page table layout though.
 
-Move the permission checks later, such that we need to hold the mutex
-over less code.
-
-Reported-by: syzbot+db9cdf3dd1f64252c6ef@syzkaller.appspotmail.com
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20201126121121.364451610@infradead.org
 ---
- kernel/events/core.c | 46 +++++++++++++++++++++----------------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+ arch/powerpc/include/asm/nohash/32/pte-8xx.h | 23 +++++++++++++++++++-
+ 1 file changed, 23 insertions(+)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index a21b0be..19ae6c9 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -11832,24 +11832,6 @@ SYSCALL_DEFINE5(perf_event_open,
- 		goto err_task;
- 	}
+diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+index 1581204..fcc48d5 100644
+--- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
++++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+@@ -135,6 +135,29 @@ static inline pte_t pte_mkhuge(pte_t pte)
+ }
  
--	if (task) {
--		err = mutex_lock_interruptible(&task->signal->exec_update_mutex);
--		if (err)
--			goto err_task;
--
--		/*
--		 * Preserve ptrace permission check for backwards compatibility.
--		 *
--		 * We must hold exec_update_mutex across this and any potential
--		 * perf_install_in_context() call for this new event to
--		 * serialize against exec() altering our credentials (and the
--		 * perf_event_exit_task() that could imply).
--		 */
--		err = -EACCES;
--		if (!perfmon_capable() && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS))
--			goto err_cred;
--	}
--
- 	if (flags & PERF_FLAG_PID_CGROUP)
- 		cgroup_fd = pid;
- 
-@@ -11857,7 +11839,7 @@ SYSCALL_DEFINE5(perf_event_open,
- 				 NULL, NULL, cgroup_fd);
- 	if (IS_ERR(event)) {
- 		err = PTR_ERR(event);
--		goto err_cred;
-+		goto err_task;
- 	}
- 
- 	if (is_sampling_event(event)) {
-@@ -11976,6 +11958,24 @@ SYSCALL_DEFINE5(perf_event_open,
- 		goto err_context;
- 	}
- 
-+	if (task) {
-+		err = mutex_lock_interruptible(&task->signal->exec_update_mutex);
-+		if (err)
-+			goto err_file;
+ #define pte_mkhuge pte_mkhuge
 +
-+		/*
-+		 * Preserve ptrace permission check for backwards compatibility.
-+		 *
-+		 * We must hold exec_update_mutex across this and any potential
-+		 * perf_install_in_context() call for this new event to
-+		 * serialize against exec() altering our credentials (and the
-+		 * perf_event_exit_task() that could imply).
-+		 */
-+		err = -EACCES;
-+		if (!perfmon_capable() && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS))
-+			goto err_cred;
-+	}
++static inline unsigned long pgd_leaf_size(pgd_t pgd)
++{
++	if (pgd_val(pgd) & _PMD_PAGE_8M)
++		return SZ_8M;
++	return SZ_4M;
++}
 +
- 	if (move_group) {
- 		gctx = __perf_event_ctx_lock_double(group_leader, ctx);
++#define pgd_leaf_size pgd_leaf_size
++
++static inline unsigned long pte_leaf_size(pte_t pte)
++{
++	pte_basic_t val = pte_val(pte);
++
++	if (val & _PAGE_HUGE)
++		return SZ_512K;
++	if (val & _PAGE_SPS)
++		return SZ_16K;
++	return SZ_4K;
++}
++
++#define pte_leaf_size pte_leaf_size
++
+ #endif
  
-@@ -12151,7 +12151,10 @@ err_locked:
- 	if (move_group)
- 		perf_event_ctx_unlock(group_leader, gctx);
- 	mutex_unlock(&ctx->mutex);
--/* err_file: */
-+err_cred:
-+	if (task)
-+		mutex_unlock(&task->signal->exec_update_mutex);
-+err_file:
- 	fput(event_file);
- err_context:
- 	perf_unpin_context(ctx);
-@@ -12163,9 +12166,6 @@ err_alloc:
- 	 */
- 	if (!event_file)
- 		free_event(event);
--err_cred:
--	if (task)
--		mutex_unlock(&task->signal->exec_update_mutex);
- err_task:
- 	if (task)
- 		put_task_struct(task);
+ #endif /* __KERNEL__ */
