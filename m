@@ -2,187 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 778292D4B34
+	by mail.lfdr.de (Postfix) with ESMTP id E34E92D4B35
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388083AbgLIUFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:05:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729464AbgLIUFC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:05:02 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C303C0613CF;
-        Wed,  9 Dec 2020 12:04:22 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id y22so3888111ljn.9;
-        Wed, 09 Dec 2020 12:04:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jThNqa4kYRCZdjnOkpYIJI1VUK4ZX4r0JpcMOpJzikc=;
-        b=Sp8Zy1Cf6jXe0X3fbl+7IviHFDqEKuqftvqFSshE3LKkNi58+X+wAqVfyxR66/Cuoz
-         T0i78NoHMaB47cj/79lOGGccZZLkFLDpxdkjj6+Jzf+jVlJKU+8y2FLFtu9hxeyBZg4+
-         Q+axKuCY2F2aDmBA2o+GxutDBTvRmoF9kjO6LYDUQ2tNR5jNDGbV7PLymLCVOG3W38MK
-         NiahQqFHN04F1AII6nbnXt3i8kVyqH33O5V+jr13tAHKPeg6S4oiAYhCWDdQQd4VbWZD
-         fvNwA62J5vg3VrlptWx5DwjEKZCCW2ob84srgFyLA6efd24UxIpZtglhbGyvJTqN6JuR
-         +CaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jThNqa4kYRCZdjnOkpYIJI1VUK4ZX4r0JpcMOpJzikc=;
-        b=YukZbJ1Oxo0vbT5/LOb5wE/PGSwyrsrankdmhoqmaaBmnDHLRc2GTKqAs7M+QOp3N1
-         qe/dqPlt+faGo3hgANPLQHzifXALQrdGxstX75yNDDbwnTh4do7+4ydgbCDcJodmq+ln
-         11RTVPSUSXYD7BhIl9m7TH5rLCtsjFOjeRRVygJdqs09U7fyyyrAXdlUuJk+wmQEZ//e
-         kW73+dHADV4exp/u4JL4NqN3WjzNbthunhBS9ToCN0Tsi06vnviqzY0cEJW1puHlH0mT
-         ZWIOOjJOJdVvzX9Z+i0yc2cygpTeRIb66XDnySI53uMmN+4J9JwC1qAqx7LrNtH8rQJU
-         NxYw==
-X-Gm-Message-State: AOAM53075yNVI7ok8djNhm8pLSQmQFk1MSW8dow3N75nnNKz/dTmrxMj
-        EM63wWJ1QewvLU3T+9IRMH/4OtgvmIPT0g==
-X-Google-Smtp-Source: ABdhPJyVhJpaEzrzJ+F34jwVDRJU2akMg6kiuTVDHVbcBAfVXyDYvM+2uYUpXdd9YmZdb68Gx3NNxw==
-X-Received: by 2002:a2e:b0d8:: with SMTP id g24mr1722701ljl.351.1607544260980;
-        Wed, 09 Dec 2020 12:04:20 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id a15sm272131lfo.299.2020.12.09.12.04.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 12:04:19 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 9 Dec 2020 21:04:17 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, iamjoonsoo.kim@lge.com,
-        andrii@kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 sl-b 3/5] mm: Make mem_dump_obj() handle vmalloc()
- memory
-Message-ID: <20201209200417.GA5804@pc638.lan>
-References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
- <20201209011303.32737-3-paulmck@kernel.org>
- <20201209193637.GA5757@pc638.lan>
- <20201209194239.GG2657@paulmck-ThinkPad-P72>
+        id S2388088AbgLIUFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:05:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388085AbgLIUFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 15:05:14 -0500
+Date:   Wed, 9 Dec 2020 12:04:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607544273;
+        bh=AYuF3zfMHlMRG7rqQ/XhTpbeydCAtLhXUZNwC6Y4Dls=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=usqqVeA6HplSf1vklVlq65i2RCRYcEymek+ZyFE8GqQw52zjdav6CketDbyUUTe4M
+         5eBC9PJ5om9qquS4biFLlhaMb5m47nlsnHdWAxfrKR1ny7nLqohDltIZUZvP3R/Eci
+         PUXig5zm/A0CP54u0fCsmuU9x/NfHzXYy9iSmH6xqBbV2nU+1/HrAH+69iT45hkreB
+         hNUFSxEyqXseYdpbdV7codIpSzmx6PpsFXvfpX3yC/Zmnvu6VkK9NHBIKkhA8i9zIt
+         Ju2eF+7RkZolrLg1aVllIT9ja4sCQCDNMRm3l7piyCNh8CYTHDCn+DtZl0c6jDoA8/
+         a+0l3cbD67YLg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     David Ahern <dsahern@gmail.com>,
+        Andrea Mayer <andrea.mayer@uniroma2.it>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH net-next] vrf: handle CONFIG_IPV6 not set for
+ vrf_add_mac_header_if_unset()
+Message-ID: <20201209120432.08ad638b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <30116173-cc7f-f492-f290-faa24db28864@gmail.com>
+References: <20201208175210.8906-1-andrea.mayer@uniroma2.it>
+        <30116173-cc7f-f492-f290-faa24db28864@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209194239.GG2657@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 11:42:39AM -0800, Paul E. McKenney wrote:
-> On Wed, Dec 09, 2020 at 08:36:37PM +0100, Uladzislau Rezki wrote:
-> > On Tue, Dec 08, 2020 at 05:13:01PM -0800, paulmck@kernel.org wrote:
-> > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > > 
-> > > This commit adds vmalloc() support to mem_dump_obj().  Note that the
-> > > vmalloc_dump_obj() function combines the checking and dumping, in
-> > > contrast with the split between kmem_valid_obj() and kmem_dump_obj().
-> > > The reason for the difference is that the checking in the vmalloc()
-> > > case involves acquiring a global lock, and redundant acquisitions of
-> > > global locks should be avoided, even on not-so-fast paths.
-> > > 
-> > > Note that this change causes on-stack variables to be reported as
-> > > vmalloc() storage from kernel_clone() or similar, depending on the degree
-> > > of inlining that your compiler does.  This is likely more helpful than
-> > > the earlier "non-paged (local) memory".
-> > > 
-> > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > > Cc: <linux-mm@kvack.org>
-> > > Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > ---
-> > >  include/linux/vmalloc.h |  6 ++++++
-> > >  mm/util.c               | 12 +++++++-----
-> > >  mm/vmalloc.c            | 12 ++++++++++++
-> > >  3 files changed, 25 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> > > index 938eaf9..c89c2be 100644
-> > > --- a/include/linux/vmalloc.h
-> > > +++ b/include/linux/vmalloc.h
-> > > @@ -248,4 +248,10 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
-> > >  int register_vmap_purge_notifier(struct notifier_block *nb);
-> > >  int unregister_vmap_purge_notifier(struct notifier_block *nb);
-> > >  
-> > > +#ifdef CONFIG_MMU
-> > > +bool vmalloc_dump_obj(void *object);
-> > > +#else
-> > > +static inline bool vmalloc_dump_obj(void *object) { return false; }
-> > > +#endif
-> > > +
-> > >  #endif /* _LINUX_VMALLOC_H */
-> > > diff --git a/mm/util.c b/mm/util.c
-> > > index 8c2449f..ee99a0a 100644
-> > > --- a/mm/util.c
-> > > +++ b/mm/util.c
-> > > @@ -984,6 +984,12 @@ int __weak memcmp_pages(struct page *page1, struct page *page2)
-> > >   */
-> > >  void mem_dump_obj(void *object)
-> > >  {
-> > > +	if (kmem_valid_obj(object)) {
-> > > +		kmem_dump_obj(object);
-> > > +		return;
-> > > +	}
-> > > +	if (vmalloc_dump_obj(object))
-> > > +		return;
-> > >  	if (!virt_addr_valid(object)) {
-> > >  		if (object == NULL)
-> > >  			pr_cont(" NULL pointer.\n");
-> > > @@ -993,10 +999,6 @@ void mem_dump_obj(void *object)
-> > >  			pr_cont(" non-paged (local) memory.\n");
-> > >  		return;
-> > >  	}
-> > > -	if (kmem_valid_obj(object)) {
-> > > -		kmem_dump_obj(object);
-> > > -		return;
-> > > -	}
-> > > -	pr_cont(" non-slab memory.\n");
-> > > +	pr_cont(" non-slab/vmalloc memory.\n");
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(mem_dump_obj);
-> > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > > index 6ae491a..7421719 100644
-> > > --- a/mm/vmalloc.c
-> > > +++ b/mm/vmalloc.c
-> > > @@ -3431,6 +3431,18 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
-> > >  }
-> > >  #endif	/* CONFIG_SMP */
-> > >  
-> > > +bool vmalloc_dump_obj(void *object)
-> > > +{
-> > > +	struct vm_struct *vm;
-> > > +	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
-> > >
-> > Paul, vmalloced addresses are already aligned to PAGE_SIZE, so that one
-> > is odd.
+On Tue, 8 Dec 2020 12:51:55 -0700 David Ahern wrote:
+> On 12/8/20 10:52 AM, Andrea Mayer wrote:
+> > The vrf_add_mac_header_if_unset() is defined within a conditional
+> > compilation block which depends on the CONFIG_IPV6 macro.
+> > However, the vrf_add_mac_header_if_unset() needs to be called also by IPv4
+> > related code and when the CONFIG_IPV6 is not set, this function is missing.
+> > As a consequence, the build process stops reporting the error:
+> > 
+> >  ERROR: implicit declaration of function 'vrf_add_mac_header_if_unset'
+> > 
+> > The problem is solved by *only* moving functions
+> > vrf_add_mac_header_if_unset() and vrf_prepare_mac_header() out of the
+> > conditional block.
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Fixes: 0489390882202 ("vrf: add mac header for tunneled packets when sniffer is attached")
+> > Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
+>
+> I should have caught that in my review.
 > 
-> They are, but this is to handle things like this:
-> 
-> 	struct foo {
-> 		int a;
-> 		struct rcu_head rh;
-> 	};
-> 
-> 	void silly(struct foo *fp)
-> 	{
-> 		call_rcu(&fp->rh, my_rcu_cb);
-> 		call_rcu(&fp->rh, my_other_rcu_cb);
-> 	}
-> 
-> In kernels built with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y, this would
-> result in a call to mem_dump_obj() and then to vmalloc_dump_obj()
-> with a non-page-aligned pointer.
-> 
-OK, i got it. I thought the functions deals with original vmalloc
-pointer. In fact it is not :)
+> Reviewed-by: David Ahern <dsahern@kernel.org>
 
---
-Vlad Rezki
+Applied, thank you!
