@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61C52D469F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC2B2D46A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731957AbgLIQVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:21:37 -0500
-Received: from nautica.notk.org ([91.121.71.147]:43620 "EHLO nautica.notk.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731338AbgLIQVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:21:21 -0500
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id 33C14C009; Wed,  9 Dec 2020 17:20:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1607530835; bh=keyoWzApK04/Bs9zCELFJu/kJwHnZGUNf7oCPH/UEoU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yZWf3cTDPiCpzyz1E21AfgwszWxOKRIc3SGpOdKG92wbSuOqyswoELlXOhBA9x6wz
-         i2qmRj5vltbWK/V/hMBJe1ug4F1XqoNY+ENI9oBUBeYVKWCrG4YtulddGBN/3OMNDf
-         zA4VkSni3oSfPc9F3+160zuFkaNh+QdVljP6LH+b1MFaFZnEoS5uGNWgRzM8mhN6BY
-         1ij9Z2KoluBQ/odFJcQd/yV2Elzqig2GfZ3p1gqlgQhGc/LyszqId3pnI4qswt4Bbz
-         2Xt/Z0pWnEP0W+OO3Gg92N/qP3m7XuRIyejvR7k88I3HASK6eU/QURwBFnhcz5uaNp
-         xEU5BrD7MLTrw==
-Date:   Wed, 9 Dec 2020 17:20:20 +0100
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org
-Subject: Re: Broken /usr/bin/env (invalid option)
-Message-ID: <20201209162020.GA15684@nautica>
-References: <20201209122437.GA26815@kozik-lap>
- <20201209130709.GB15469@nautica>
- <CAJKOXPfXkZdVUuunpvLOCEim0TfRwG62hvrZu_R8vGkA+ZOapQ@mail.gmail.com>
+        id S1732019AbgLIQVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:21:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731905AbgLIQVf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:21:35 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D3FC0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 08:20:54 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id r24so1177289vsg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 08:20:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ftrjIMacRnCDUW60B5wDdWIgLtC6j6ITMAxZ0z4dcsk=;
+        b=HgrvSW72NUDBACx2rcJOdsk9j2ywqmTiRhxzfml2ObmeS9/p68ApjmmEUiVuFFixel
+         U8V/3sWV/jT/RnYtuN76/jqqa0beH35lqx0GkOdrSQB8kmGRwv6xH/mpxgBW9stqYh98
+         TB1KeZ8zKUBTeHyC8I0eCxJ7EFkcfOUQYVVWk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ftrjIMacRnCDUW60B5wDdWIgLtC6j6ITMAxZ0z4dcsk=;
+        b=KraaKTiJ04lA+pW9XaTODe085f1ZVMGOd3Sz8+o3ugD/DviyWQEXry9Z4yIqUEJa0y
+         FKHSaY1ie0r5NWFGYOkzUs2SM7qr1L66+El/B0h/dqZn+/Q72NxBZH3/k7RghEYSfEmz
+         eNuIPOoOYycPaCVTbk6t2CFcfDYwrn8Kipkj+qF3c0z3ruBB4PUPDjvneVlfm0/zi7hj
+         tWSeHHERs9v/i9E9QJfxjfYtTJ0DdGDx+xTTCecf6d1j0fNtZikiDGWbVZkb/oEplc/Q
+         Dg3+c/26sYkiD/p03VLwpOzvAO5SNJkVVjELqA3n6Nhw/LJoyJZjx/B6uAR+prXf6DsL
+         k/Lw==
+X-Gm-Message-State: AOAM5332Be+5F9kmy1RKdGXfFiexE9mZdLmgBA6DRZDSritMCED8GhDK
+        lgj8pkNNEUY4Q6QJvvDkfuch8PNN5l0g14GyK/UI9w==
+X-Google-Smtp-Source: ABdhPJzZZ3IkQz7rOL8NyykGCELcBs/amTcJ+Xv2OgUQT+RVIeDoKVuHGvs38tWdvxSIhPXmjhSG0BuRFZBayhnap/U=
+X-Received: by 2002:a67:ed57:: with SMTP id m23mr2755029vsp.7.1607530854236;
+ Wed, 09 Dec 2020 08:20:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJKOXPfXkZdVUuunpvLOCEim0TfRwG62hvrZu_R8vGkA+ZOapQ@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20201207163255.564116-1-mszeredi@redhat.com> <20201207163255.564116-4-mszeredi@redhat.com>
+ <CAOQ4uxhti+COYB3GhfMcPFwpfBRYQvr98oCO9wwS029W5e0A5g@mail.gmail.com> <CAJfpegsGpS=cym2NpnS6H-uMyLMKdbLpE1QxiDz4GQU1s-dYfg@mail.gmail.com>
+In-Reply-To: <CAJfpegsGpS=cym2NpnS6H-uMyLMKdbLpE1QxiDz4GQU1s-dYfg@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 9 Dec 2020 17:20:43 +0100
+Message-ID: <CAJfpeguvt-Mia9YmT55q3R9tSFocpgq7FzjDKJgnaOEQsaBNVA@mail.gmail.com>
+Subject: Re: [PATCH v2 03/10] ovl: check privs before decoding file handle
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Krzysztof Kozlowski wrote on Wed, Dec 09, 2020:
-> > Hm, what version of env is that?
-> > I only checked on a couple of systems that env -S exists, but it might
-> > not be available (e.g. now I'm looking, at least busybox env does not
-> > provide -S)
-> 
-> $ env --version
-> env (GNU coreutils) 8.25
+On Wed, Dec 9, 2020 at 11:13 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-Ok, so this is a much newer option than I thought it was, sorry for my
-lack of checking.
-I know we no longer support older gccs but it's probably best to keep
-supporting this.
+> Hard link indexing should work without fh decoding, since it is only
+> encoding the file handle to search for the index entry, and encoding
+> is not privileged.
 
-> > I don't see any way to make this work out of the box for me (awk not in
-> > /usr/bin) and you (env not supporting -S), but I guess I can keep that
-> > patch around locally...
-> 
-> You could add a wrapper which uses PATH or searches for the awk...
-> kind of reimplement other tools. Another solution is to clearly
-> document the requirements for the build system and explicitly say that
-> older systems like four-year Ubuntu are not supported.
+Tested this a bit and while hard link indexing does work,  inode
+lookup is broken since it uses the origin inode as a key (which is not
+available) instead of using the origin value directly.  This is
+fixable, but needs a fair amount of restructuring, so let's just
+postpone this and disable index for now, as you suggested.
 
-Well there definitely are ways, but I'm not sure it's worth it...
-For example another idea is just to use /bin/sh (which is mandated to
-exist) and have it invoke awk, the script is short enough to just quote
-it.
-
-
-Yamada-san, how about this instead?
-But to be honest I'm fine with dropping my patch altogether, I'll work
-around it locally if it's too much.
----
-From d53ef3b4c55aa2ea5f9ae887b3e1ace368f30f66 Mon Sep 17 00:00:00 2001
-From: Dominique Martinet <asmadeus@codewreck.org>
-Date: Wed, 15 Jul 2020 16:00:13 +0200
-Subject: [PATCH] ld-version: use /bin/sh then awk for shebank
-
-/usr/bin/awk is not garanteed to exist (and doesn't on e.g. nixos),
-using /bin/sh and invoking awk to have it look in PATH is more robust.
-
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
-
-diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-index f2be0ff9a738..02dbad7b5613 100755
---- a/scripts/ld-version.sh
-+++ b/scripts/ld-version.sh
-@@ -1,11 +1,11 @@
--#!/usr/bin/awk -f
-+#!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
- # extract linker version number from stdin and turn into single number
--       {
-+awk '{
-        gsub(".*\\)", "");
-        gsub(".*version ", "");
-        gsub("-.*", "");
-        split($1,a, ".");
-        print a[1]*100000000 + a[2]*1000000 + a[3]*10000;
-        exit
--       }
-+}'
-
+Thanks,
+Miklos
