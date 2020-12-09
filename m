@@ -2,90 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D722D47E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF0A2D47EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730966AbgLIR1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:27:31 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:35080 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731615AbgLIR1E (ORCPT
+        id S1732795AbgLIR14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:27:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732762AbgLIR1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:27:04 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HPOWg116856;
-        Wed, 9 Dec 2020 17:26:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=CRW9AtLAh8tamm5b9BCkJhbAH/VTBnS52ibbt6AVf38=;
- b=C8K/GS2u8VienUkz2gG649yQYdDbAFpxhhoF89c+aE4UA8od+X4LgsbxhRJwes7tYx0X
- Vr1qXEJIBh5ESArU4sC4aMqh/eTk4pgQcdeirLnedf6ugSaOqhYEwRBmObFbgweYqWpI
- jrqh2r1tCUkPGI1b9rhi5MnXLnwATwZFLVY81lIw0iNU5JV0dp0TX/Gr1pLH0umv6Q1m
- +BlSvNhS+qZan8R+f+lFyrqMpwKyVV+AJYYrnr0avV9qFDpD8lF3TOBxDXTGL8EuNKDV
- XgO6gZxw7p4nTM/UjC3+rWQWrP/cbnrAZqkS3zuULHM2mkIS8dk511spFElAOdbV39wX 1g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35825m9d6u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 17:26:10 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HKiQJ142075;
-        Wed, 9 Dec 2020 17:24:09 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 358kyv0hbm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 17:24:09 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B9HO7u6014463;
-        Wed, 9 Dec 2020 17:24:07 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Dec 2020 09:24:07 -0800
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Mike Christie <michaelc@cs.wisc.edu>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Satish Kharat <satishkh@cisco.com>,
-        Joe Eykholt <jeykholt@cisco.com>,
-        Abhijeet Joglekar <abjoglek@cisco.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: fnic: fix error return code in fnic_probe()
-Date:   Wed,  9 Dec 2020 12:23:26 -0500
-Message-Id: <160753457755.14816.621209546530451406.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com>
-References: <1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com>
+        Wed, 9 Dec 2020 12:27:35 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D27C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 09:26:55 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id v22so2430648edt.9
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 09:26:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=SbpP1XQ1shPBp8DaFALcEJRwJn/qLid/T4j1wfzXX2o=;
+        b=RX/3O64wEoA8L5MH4PpczX1DZlxGQaB+9SAa011g5eFqqIvulSZZtV9MPQ1tEUQnki
+         0mNybMGkFsBxQl6ei1ZepCoPCgpqoCLHHydoOy1jLf5HJpTROpiBPBmHlt3ed5F6K6Sl
+         NxUAdwkIMXrJxrwQd5+z9I/AujZMb6/VnMkcL84PBecYOagcC0wF7maC5LP5OS/RXbA3
+         uBHNvUm5NKsAHgC254QDtXXkm6cFpMB1Msxj7yG7yeEvxT8UjdPiGXGlZnWqXYhgszEp
+         snm2BZ27CeKdjtJ1U6LjlKQeymX+KjO37ZUufaVA+xIq2ogLR1l/BbZP4yp9oTzU0PhV
+         Wyig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=SbpP1XQ1shPBp8DaFALcEJRwJn/qLid/T4j1wfzXX2o=;
+        b=CV29PpoxGUJadkz7OmMLhJRP54B/+eNrMroOX73LkaMk1VityMH/eU+WVKQLfZxd8S
+         0wigF2QVHdjJDxyw/4LDGPeNVKkcqblJaBaeXhFan2khg2VeabuDrlbGIzNj5bLKXewt
+         4NbnOodROfJZMgFiQpPQFyYM890Gb8yTGzRKdx5fUVqzMt/fjSyClM+6OxQOIp2VSZxk
+         ZpH4/BUPVce2xvEpCdTrNjfapvaLVVAkLAqTSzeDkQEWQYlcoaQXAyhNFVju3yN5m+4a
+         RPVueHDXxigtNMUgne9VeNFIcFkFaULjDdhjr64Pzm6/b7L5QjMhsLeSEzT60MDcFjYt
+         n5YQ==
+X-Gm-Message-State: AOAM532VcUTWIxBGYZ7aZEP7El26vYHZIMU+IW5aCSkD0UMi8TNBvijJ
+        rhLltb0iiY+1xVxtFEYQl/ble4CJY2Ia5LaW1Py1YadqWd4UGosC
+X-Google-Smtp-Source: ABdhPJxtFSQIIMnrBsJ0bpGv4WvcU1daI5mAFaXtkcrw7IxWFgjZZ1oHf1G7LYYXJd2CgIGahoa8K9Jf5BHuyZLhA7k=
+X-Received: by 2002:aa7:d75a:: with SMTP id a26mr2931708eds.230.1607534813254;
+ Wed, 09 Dec 2020 09:26:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090122
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090123
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 9 Dec 2020 22:56:42 +0530
+Message-ID: <CA+G9fYuNKqyvku1im6_zS5PjK9nG3Jf6qNwpQjaB8WRWO5BXzA@mail.gmail.com>
+Subject: [sh] smp-shx3.c: error: ignoring return value of 'request_irq',
+ declared with attribute warn_unused_result
+To:     open list <linux-kernel@vger.kernel.org>, linux-sh@vger.kernel.org,
+        lkft-triage@lists.linaro.org
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 15:47:39 +0800, Zhang Changzhong wrote:
+Linux next 20201209 tag the arch 'sh' defconfig build failed to build with
+gcc-8, gcc-9 and gcc-10.
 
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
+arch/sh/kernel/cpu/sh4a/smp-shx3.c: In function 'shx3_prepare_cpus':
+arch/sh/kernel/cpu/sh4a/smp-shx3.c:76:3: error: ignoring return value
+of 'request_irq', declared with attribute warn_unused_result
+[-Werror=unused-result]
+   request_irq(104 + i, ipi_interrupt_handler,
+   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        IRQF_PERCPU, "IPI", (void *)(long)i);
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Applied to 5.11/scsi-queue, thanks!
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-[1/1] scsi: fnic: fix error return code in fnic_probe()
-      https://git.kernel.org/mkp/scsi/c/d4fc94fe6557
+steps to reproduce:
+-------------------
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
+
+tuxmake --runtime docker --target-arch sh --toolchain gcc-9 --kconfig defconfig
+
+metadata:
+    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+    target_arch: sh
+    toolchain: gcc-9
+    git_short_log: 2f1d5c77f13f (\Add linux-next specific files for 20201209\)
+    git_sha: 2f1d5c77f13fe64497c2e2601605f7d7ec4da9b1
+    git_describe: next-20201209
+    download_url: https://builds.tuxbuild.com/1lPwmsuPj4eW5gsLeObYvbXC3fw/
+
+Full build log,
+https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/jobs/899463251
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+Linaro LKFT
+https://lkft.linaro.org
