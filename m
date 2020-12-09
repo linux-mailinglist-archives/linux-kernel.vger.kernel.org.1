@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE1F2D456F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E9F2D4572
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730256AbgLIP2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:28:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730205AbgLIP22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:28:28 -0500
-Date:   Wed, 9 Dec 2020 15:27:41 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <haibo.xu@linaro.org>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Dave Martin <Dave.Martin@arm.com>
-Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
-Message-ID: <20201209152741.GC13566@gaia>
-References: <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
- <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
- <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
- <0d0eb6da6a11f76d10e532c157181985@kernel.org>
- <20201207163405.GD1526@gaia>
- <874kkx5thq.wl-maz@kernel.org>
- <20201208172143.GB13960@gaia>
- <7ff14490e253878d0735633b792e1ea9@kernel.org>
- <20201209124443.GB13566@gaia>
- <ef14a5158fc65c00f6c3c842cfa83b2c@kernel.org>
+        id S1730469AbgLIPbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:31:18 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:41441 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726555AbgLIPbS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 10:31:18 -0500
+Received: by mail-lj1-f195.google.com with SMTP id f11so2838309ljm.8;
+        Wed, 09 Dec 2020 07:31:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TGmJfop0poAU5I2zMh4LF9CytL92M/ZbRIts/6La8S8=;
+        b=O+hro+BhSrULCa0sGCaEacrQbXV4ZoPAUHSb0wg+FM5ZsonOiBZGmDdt8+y8f2pLSO
+         EqACZRogA8xsa9QGBPxRu0An79VRAmXhExcWlYkFcOxDhIzeGpHEILxYmJDBv7NRMmPZ
+         WNBzbIdE9cO2OdL+oE904GUMk7mmlcxYxiNkP/noKHhallQ7lwYglXmVcmhzQcakuZ54
+         0TUawDxAqYCexxl+TlTM7nRD3FHFnOPJHHP08vom7UziPaxTPOJo3ClkBUtzC7sP4UnD
+         sM6R0bB5PZSZp/YxLSJgcrohHGyRDyl1Y3kR0GwalxSScpXlaK6vH1ThMTj0UOXAbcSt
+         Q3zA==
+X-Gm-Message-State: AOAM530MVrEty4fO+1c9lgBHECBZlmimYcD7flSOtckTY7dk5QUUOlY7
+        0baIfWomZiyOOfCf27+TqwE=
+X-Google-Smtp-Source: ABdhPJzvCEsXNgtdPAfi+q1QYxF873m6Him6AopB6fOxqG4qytxYpPRsRFLTa2231EvbJuGH7UnXWg==
+X-Received: by 2002:a2e:88d6:: with SMTP id a22mr1323029ljk.150.1607527835523;
+        Wed, 09 Dec 2020 07:30:35 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id b5sm206311lfg.13.2020.12.09.07.30.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 07:30:34 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kn1Qy-0005YD-7s; Wed, 09 Dec 2020 16:31:16 +0100
+Date:   Wed, 9 Dec 2020 16:31:16 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Johan Hovold <johan@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        patong.mxl@gmail.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH v5 2/3] usb: serial: xr_serial: Add gpiochip support
+Message-ID: <X9DtxFgrkFIUIzyv@localhost>
+References: <20201122170822.21715-1-mani@kernel.org>
+ <20201122170822.21715-3-mani@kernel.org>
+ <CACRpkdbY-aZB1BAD=JkZAHA+OQvpH12AD3tLAp6Nf1hwr74s9A@mail.gmail.com>
+ <X8ZmfbQp7/BGgxec@localhost>
+ <CACRpkdZJdxqxUEQaKUHctHRSQAUpYZJtuxonwVd_ZFAsLBbKrA@mail.gmail.com>
+ <X89OOUOG0x0SSxXA@localhost>
+ <CACRpkdavm7GG8HdV1xk0W_b1EzUmvF0kKAGnp0u6t42NAWa9iA@mail.gmail.com>
+ <20201208125250.GB9925@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ef14a5158fc65c00f6c3c842cfa83b2c@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201208125250.GB9925@work>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 01:25:18PM +0000, Marc Zyngier wrote:
-> On 2020-12-09 12:44, Catalin Marinas wrote:
-> > On Tue, Dec 08, 2020 at 06:21:12PM +0000, Marc Zyngier wrote:
-> > > On 2020-12-08 17:21, Catalin Marinas wrote:
-> > > > On Mon, Dec 07, 2020 at 07:03:13PM +0000, Marc Zyngier wrote:
-> > > > > I wonder whether we will have to have something kernel side to
-> > > > > dump/reload tags in a way that matches the patterns used by live
-> > > > > migration.
-> > > >
-> > > > We have something related - ptrace dumps/resores the tags. Can the same
-> > > > concept be expanded to a KVM ioctl?
-> > > 
-> > > Yes, although I wonder whether we should integrate this deeply into
-> > > the dirty-log mechanism: it would be really interesting to dump the
-> > > tags at the point where the page is flagged as clean from a dirty-log
-> > > point of view. As the page is dirtied, discard the saved tags.
-> > 
-> > From the VMM perspective, the tags can be treated just like additional
-> > (meta)data in a page. We'd only need the tags when copying over. It can
-> > race with the VM dirtying the page (writing tags would dirty it) but I
-> > don't think the current migration code cares about this. If dirtied, it
-> > copies it again.
-> > 
-> > The only downside I see is an extra syscall per page both on the origin
-> > VMM and the destination one to dump/restore the tags. Is this a
-> > performance issue?
+On Tue, Dec 08, 2020 at 06:22:50PM +0530, Manivannan Sadhasivam wrote:
+> On Tue, Dec 08, 2020 at 01:41:52PM +0100, Linus Walleij wrote:
+> > On Tue, Dec 8, 2020 at 10:57 AM Johan Hovold <johan@kernel.org> wrote:
+
+> > I think if this driver already has unique line-names per-gpiochip
+> > we could actually make it depend on !GPIO_SYSFS and
+> > just add the names.
 > 
-> I'm not sure. Migrating VMs already has a massive overhead, so an extra
-> syscall per page isn't terrifying. But that's the point where I admit
-> not knowing enough about what the VMM expects, nor whether that matches
-> what happens on other architectures that deal with per-page metadata.
+> Sure thing.
 > 
-> Would this syscall operate on the guest address space? Or on the VMM's
-> own mapping?
+> Johan, if you are okay with this I can resubmit incorporating Linus's
+> suggestion.
 
-Whatever is easier for the VMM, I don't think it matters as long as the
-host kernel can get the actual physical address (and linear map
-correspondent). Maybe simpler if it's the VMM address space as the
-kernel can check the access permissions in case you want to hide the
-guest memory from the VMM for other reasons (migration is also off the
-table).
+Let's wait a bit with adding the names.
 
-Without syscalls, an option would be for the VMM to create two mappings:
-one with PROT_MTE for migration and the other without for normal DMA
-etc. That's achievable using memfd_create() or shm_open() and two mmap()
-calls, only one having PROT_MTE. The VMM address space should be
-sufficiently large to map two guest IPAs.
+That can possibly be done as a follow-up too even if removing GPIO_SYSFS
+support later is not ideal in case that's the path chosen (we'd have a
+similar problem with the existing USB-serial GPIO implementations though).
 
--- 
-Catalin
+Johan
