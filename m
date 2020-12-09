@@ -2,270 +2,429 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E082D4D11
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5A92D4D1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388284AbgLIVoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 16:44:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388024AbgLIVoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 16:44:01 -0500
-From:   Mike Rapoport <rppt@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org
-Subject: [PATCH v2 2/2] mm: fix initialization of struct page for holes in memory layout
-Date:   Wed,  9 Dec 2020 23:43:04 +0200
-Message-Id: <20201209214304.6812-3-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201209214304.6812-1-rppt@kernel.org>
-References: <20201209214304.6812-1-rppt@kernel.org>
+        id S2388223AbgLIVsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 16:48:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727030AbgLIVsF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 16:48:05 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0344C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 13:47:24 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id f132so3363618oib.12
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 13:47:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=pwCUH49fVUFbxLs3AmViLHi2PCjEJq12uGKdYxre9Bg=;
+        b=BspLMgJinmRzVFbbn6PNvVojIA03MUcWolzknnBLj5U3Ytl/UYR6HnadQuAbC2FgGH
+         sKPlJaplcjmNYobtJReo6FZuFV9bFcBxG6VuCUR/TMkh4C69BA+gpAgXEpnpF/SK6oB+
+         8ydCeeKXh4m7MPtDKiTb/gnq6+Xy5ATYc4MVk4aWAVumReGPN2KBo/8v/oLTaQojSOCs
+         Eh2UhU0f4IHZ3RHw6kNDde/hjv9kgms/e47OIKWU46Kn026aeY+MngaUp1NLyZ1ZQFWg
+         Wcop3f1zveYmPBTZsmAeSNWJNbEhaI1jIxJ6i8GmzKJKSxr3c8GQMzc+HdMnEFdAikJG
+         9OEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=pwCUH49fVUFbxLs3AmViLHi2PCjEJq12uGKdYxre9Bg=;
+        b=lWGiZMMNdV8dmqvdQtKZe/oB+1gQ/11Y9vEh0uzntpuQfPZz/da4zYYT59PbDqY8fB
+         Uml3cLKNYt+Ym6WYGVY9naCwkZXvkfDyvfaPR4iUK0j8DvlR0XSvm+vtKB/tZ8XQzOuG
+         p/aLJ9qQ1BrleuyWxq3emQX4j8RPvjEBEL0cN/jWeRAWOOto97jQmQTphgG/B/mIs5Wb
+         lva1KlceqFjClIy7VPznLHVyinTXAd4vRzIgHxUkX8dceBseT6SY9e+sBevJ99Dqz7dx
+         10qkYlrzKWqAabheIuce/8atMO1LRFyWg+1+95H0CRSUTuJQwuw8c/ksjaRaaqIUadO1
+         8ScQ==
+X-Gm-Message-State: AOAM5309+XznZjAkA4dIVhCuw26xkNL+2/Zh7MryGhCA39dTdQRTJ+3B
+        om13JlhM75hcqw6u06udKa4GIw==
+X-Google-Smtp-Source: ABdhPJx0WNLo9S3T32e1UAtJL+g0rWFENM7Hgz1uN7UnR+PAT+k7ugNymFSIME8pAl0O9gae8yU7JA==
+X-Received: by 2002:aca:eb41:: with SMTP id j62mr3302234oih.88.1607550443870;
+        Wed, 09 Dec 2020 13:47:23 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id y8sm336230oix.43.2020.12.09.13.47.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 13:47:23 -0800 (PST)
+Date:   Wed, 9 Dec 2020 15:47:20 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
+Message-ID: <X9FF6Jg8SkSwMHuK@builder.lan>
+References: <20201208044022.972872-1-bjorn.andersson@linaro.org>
+ <20201208080433.szy7dek2qvn3d4vb@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201208080433.szy7dek2qvn3d4vb@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Tue 08 Dec 02:04 CST 2020, Uwe Kleine-K?nig wrote:
 
-There could be struct pages that are not backed by actual physical memory.
-This can happen when the actual memory bank is not a multiple of
-SECTION_SIZE or when an architecture does not register memory holes
-reserved by the firmware as memblock.memory.
+> Hello,
+> 
+> On Mon, Dec 07, 2020 at 10:40:22PM -0600, Bjorn Andersson wrote:
+> > The SN65DSI86 provides the ability to supply a PWM signal on GPIO 4,
+> > with the primary purpose of controlling the backlight of the attached
+> > panel. Add an implementation that exposes this using the standard PWM
+> > framework, to allow e.g. pwm-backlight to expose this to the user.
+> > 
+> > Special thanks to Doug Anderson for suggestions related to the involved
+> > math.
+> 
+> Did you test this with CONFIG_PWM_DEBUG? (I think you didn't, because
+> otherwise there would be a .get_state callback.)
+> 
 
-Such pages are currently initialized using init_unavailable_mem() function
-that iterated through PFNs in holes in memblock.memory and if there is a
-struct page corresponding to a PFN, the fields if this page are set to
-default values and it is marked as Reserved.
+I had not, but have now explored this further and will follow up with a
+get_state implementation :)
 
-init_unavailable_mem() does not take into account zone and node the page
-belongs to and sets both zone and node links in struct page to zero.
+> > @@ -162,6 +171,12 @@ struct ti_sn_bridge {
+> >  	struct gpio_chip		gchip;
+> >  	DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
+> >  #endif
+> > +#if defined(CONFIG_PWM)
+> 
+> Would it make sense to introduce a separate config symbol for this?
+> Something like CONFIG_PWM_SN65DSI87?
+> 
 
-On a system that has firmware reserved holes in a zone above ZONE_DMA, for
-instance in a configuration below:
+I don't think it adds much value at this point in time, if anyone needs
+to squeeze those extra few bytes out of the kernel it's an easy change
+to do later.
 
-	# grep -A1 E820 /proc/iomem
-	7a17b000-7a216fff : Unknown E820 type
-	7a217000-7bffffff : System RAM
+> > +	struct pwm_chip			pchip;
+> > +	bool				pwm_enabled;
+> > +	unsigned int			pwm_refclk;
+> > +	atomic_t			pwm_pin_busy;
+> 
+> struct ti_sn_bridge has a kernel doc comment describing all members,
+> please add a description of the members you introduced here. Please also
+> point out that you use pwm_pin_busy to protect against concurrent use of
+> the pin as PWM and GPIO.
+> 
 
-unset zone link in struct page will trigger
+Yes, sorry for missing this.
 
-	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+> > +#endif
+> >  };
+> >  
+> >  static const struct regmap_range ti_sn_bridge_volatile_ranges[] = {
+> > @@ -499,6 +514,14 @@ static void ti_sn_bridge_set_refclk_freq(struct ti_sn_bridge *pdata)
+> >  
+> >  	regmap_update_bits(pdata->regmap, SN_DPPLL_SRC_REG, REFCLK_FREQ_MASK,
+> >  			   REFCLK_FREQ(i));
+> > +
+> > +#if defined(CONFIG_PWM)
+> > +	/*
+> > +	 * The PWM refclk is based on the value written to SN_DPPLL_SRC_REG,
+> > +	 * regardless of its actual sourcing.
+> > +	 */
+> > +	pdata->pwm_refclk = ti_sn_bridge_refclk_lut[i];
+> > +#endif
+> 
+> I don't understand this code. 'i' seems to be something more special
+> than a counter variable, so I wonder if it should have a better name.
+> (This is however an issue separate from this patch, but it would be
+> great to first make the code a bit better understandable. Or is this
+> only me?)
+> 
 
-because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link in
-struct page) in the same pageblock.
+The sn65dsi86 can either run off an external "reference clock" or
+derive the clock from the video signal (afaict). In both cases 3 bits
+are used to inform the chip about this clock rate - and the two
+possible lists of frequencies are defined in ti_sn_bridge_refclk_lut[]
+and ti_sn_bridge_dsiclk_lut[] above.
 
-Interleave initialization of pages that correspond to holes with the
-initialization of memory map, so that zone and node information will be
-properly set on such pages.
+i is the index into these arrays, and the value being programmed into
+this register. (And yes, that might not be the best named variable...)
 
-Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather
-that check each PFN")
-Reported-by: Andrea Arcangeli <aarcange@redhat.com>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- mm/page_alloc.c | 152 +++++++++++++++++++++---------------------------
- 1 file changed, 65 insertions(+), 87 deletions(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index dbc57dbbacd8..ea5aefef0004 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6185,24 +6185,85 @@ static void __meminit zone_init_free_lists(struct zone *zone)
- 	}
- }
- 
--void __meminit __weak memmap_init(unsigned long size, int nid,
--				  unsigned long zone,
--				  unsigned long range_start_pfn)
-+#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
-+/*
-+ * Only struct pages that are backed by physical memory available to the
-+ * kernel are zeroed and initialized by memmap_init_zone().
-+ * But, there are some struct pages that are either reserved by firmware or
-+ * do not correspond to physical page frames becuase the actual memory bank
-+ * is not a multiple of SECTION_SIZE.
-+ * Fields of those struct pages may be accessed (for example page_to_pfn()
-+ * on some configuration accesses page flags) so we must explicitly
-+ * initialize those struct pages.
-+ */
-+static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn,
-+					 int zone, int node)
- {
--	unsigned long start_pfn, end_pfn;
-+	unsigned long pfn;
-+	u64 pgcnt = 0;
-+
-+	for (pfn = spfn; pfn < epfn; pfn++) {
-+		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
-+			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
-+				+ pageblock_nr_pages - 1;
-+			continue;
-+		}
-+		__init_single_page(pfn_to_page(pfn), pfn, zone, node);
-+		__SetPageReserved(pfn_to_page(pfn));
-+		pgcnt++;
-+	}
-+
-+	return pgcnt;
-+}
-+#else
-+static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
-+					 int zone, int node)
-+{
-+	return 0;
-+}
-+#endif
-+
-+void __init __weak memmap_init(unsigned long size, int nid,
-+			       unsigned long zone,
-+			       unsigned long range_start_pfn)
-+{
-+	unsigned long start_pfn, end_pfn, hole_start_pfn = 0;
- 	unsigned long range_end_pfn = range_start_pfn + size;
-+	u64 pgcnt = 0;
- 	int i;
- 
- 	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
- 		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
- 		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
-+		hole_start_pfn = clamp(hole_start_pfn, range_start_pfn,
-+				       range_end_pfn);
- 
- 		if (end_pfn > start_pfn) {
- 			size = end_pfn - start_pfn;
- 			memmap_init_zone(size, nid, zone, start_pfn,
- 					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 		}
-+
-+		if (hole_start_pfn < start_pfn)
-+			pgcnt += init_unavailable_range(hole_start_pfn,
-+							start_pfn, zone, nid);
-+		hole_start_pfn = end_pfn;
- 	}
-+
-+	/*
-+	 * Early sections always have a fully populated memmap for the whole
-+	 * section - see pfn_valid(). If the last section has holes at the
-+	 * end and that section is marked "online", the memmap will be
-+	 * considered initialized. Make sure that memmap has a well defined
-+	 * state.
-+	 */
-+	if (hole_start_pfn < range_end_pfn)
-+		pgcnt += init_unavailable_range(hole_start_pfn, range_end_pfn,
-+						zone, nid);
-+
-+	if (pgcnt)
-+		pr_info("%s: Zeroed struct page in unavailable ranges: %lld\n",
-+			zone_names[zone], pgcnt);
- }
- 
- static int zone_batchsize(struct zone *zone)
-@@ -6995,88 +7056,6 @@ void __init free_area_init_memoryless_node(int nid)
- 	free_area_init_node(nid);
- }
- 
--#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
--/*
-- * Initialize all valid struct pages in the range [spfn, epfn) and mark them
-- * PageReserved(). Return the number of struct pages that were initialized.
-- */
--static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
--{
--	unsigned long pfn;
--	u64 pgcnt = 0;
--
--	for (pfn = spfn; pfn < epfn; pfn++) {
--		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
--			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
--				+ pageblock_nr_pages - 1;
--			continue;
--		}
--		/*
--		 * Use a fake node/zone (0) for now. Some of these pages
--		 * (in memblock.reserved but not in memblock.memory) will
--		 * get re-initialized via reserve_bootmem_region() later.
--		 */
--		__init_single_page(pfn_to_page(pfn), pfn, 0, 0);
--		__SetPageReserved(pfn_to_page(pfn));
--		pgcnt++;
--	}
--
--	return pgcnt;
--}
--
--/*
-- * Only struct pages that are backed by physical memory are zeroed and
-- * initialized by going through __init_single_page(). But, there are some
-- * struct pages which are reserved in memblock allocator and their fields
-- * may be accessed (for example page_to_pfn() on some configuration accesses
-- * flags). We must explicitly initialize those struct pages.
-- *
-- * This function also addresses a similar issue where struct pages are left
-- * uninitialized because the physical address range is not covered by
-- * memblock.memory or memblock.reserved. That could happen when memblock
-- * layout is manually configured via memmap=, or when the highest physical
-- * address (max_pfn) does not end on a section boundary.
-- */
--static void __init init_unavailable_mem(void)
--{
--	phys_addr_t start, end;
--	u64 i, pgcnt;
--	phys_addr_t next = 0;
--
--	/*
--	 * Loop through unavailable ranges not covered by memblock.memory.
--	 */
--	pgcnt = 0;
--	for_each_mem_range(i, &start, &end) {
--		if (next < start)
--			pgcnt += init_unavailable_range(PFN_DOWN(next),
--							PFN_UP(start));
--		next = end;
--	}
--
--	/*
--	 * Early sections always have a fully populated memmap for the whole
--	 * section - see pfn_valid(). If the last section has holes at the
--	 * end and that section is marked "online", the memmap will be
--	 * considered initialized. Make sure that memmap has a well defined
--	 * state.
--	 */
--	pgcnt += init_unavailable_range(PFN_DOWN(next),
--					round_up(max_pfn, PAGES_PER_SECTION));
--
--	/*
--	 * Struct pages that do not have backing memory. This could be because
--	 * firmware is using some of this memory, or for some other reasons.
--	 */
--	if (pgcnt)
--		pr_info("Zeroed struct page in unavailable ranges: %lld pages", pgcnt);
--}
--#else
--static inline void __init init_unavailable_mem(void)
--{
--}
--#endif /* !CONFIG_FLAT_NODE_MEM_MAP */
--
- #if MAX_NUMNODES > 1
- /*
-  * Figure out the number of possible node ids.
-@@ -7507,7 +7486,6 @@ void __init free_area_init(unsigned long *max_zone_pfn)
- 	/* Initialise every node */
- 	mminit_verify_pageflags_layout();
- 	setup_nr_node_ids();
--	init_unavailable_mem();
- 	for_each_online_node(nid) {
- 		pg_data_t *pgdat = NODE_DATA(nid);
- 		free_area_init_node(nid);
--- 
-2.28.0
+The specification states that the PWM refclk is either straight off
+the external refclk, in which case it's ti_sn_bridge_refclk_lut[i] or
+somehow derived from the video signal down to
+ti_sn_bridge_refclk_lut[i].
+
+So this would be slightly cleaner if I just read SN_DPPLL_SRC_REG,
+masked out the bits and did a lookup in ti_sn_pwm_apply(). But I wanted
+to avoid the extra i2c read...
+
+> >  }
+> >  
+> >  static void ti_sn_bridge_set_dsi_rate(struct ti_sn_bridge *pdata)
+> > @@ -981,6 +1004,161 @@ static int ti_sn_bridge_parse_dsi_host(struct ti_sn_bridge *pdata)
+> >  	return 0;
+> >  }
+> >  
+> > +#if defined(CONFIG_PWM)
+> > +static int ti_sn_pwm_pin_request(struct ti_sn_bridge *pdata)
+> > +{
+> > +	return atomic_xchg(&pdata->pwm_pin_busy, 1) ? -EBUSY : 0;
+> > +}
+> > +
+> > +static void ti_sn_pwm_pin_release(struct ti_sn_bridge *pdata)
+> > +{
+> > +	atomic_set(&pdata->pwm_pin_busy, 0);
+> > +}
+> > +
+> > +static struct ti_sn_bridge *
+> > +pwm_chip_to_ti_sn_bridge(struct pwm_chip *chip)
+> 
+> All your functions share the same function prefix (which is fine), but
+> this one doesn't.
+> 
+
+I'll fix that.
+
+> > +{
+> > +	return container_of(chip, struct ti_sn_bridge, pchip);
+> > +}
+> > [...]
+> > +	if (state->enabled) {
+> > +		/*
+> > +		 * Per the datasheet the PWM frequency is given by:
+> > +		 *
+> > +		 * PWM_FREQ = REFCLK_FREQ / (PWM_PRE_DIV * BACKLIGHT_SCALE + 1)
+> > +		 *
+> > +		 * In order to find the PWM_FREQ that best suits the requested
+> > +		 * state->period, the PWM_PRE_DIV is calculated with the
+> > +		 * maximum possible number of steps (BACKLIGHT_SCALE_MAX). The
+> > +		 * actual BACKLIGHT_SCALE is then adjusted down to match the
+> > +		 * requested period.
+> > +		 *
+> > +		 * The BACKLIGHT value is then calculated against the
+> > +		 * BACKLIGHT_SCALE, based on the requested duty_cycle and
+> > +		 * period.
+> > +		 */
+> > +		pwm_freq = NSEC_PER_SEC / state->period;
+> 
+> Here you should better have some range checking. Consider for example
+> state->period being > NSEC_PER_SEC. (Hint: This makes pwm_freq = 0 and
+> in the next line you divide by pwm_freq.)
+> 
+
+I didn't consider the case where someone would drive their backlight <
+1Hz. But given that this is a generic pwm_chip now I should do something
+about it - or reject it...
+
+> > +		pre_div = DIV_ROUND_UP(pdata->pwm_refclk / pwm_freq - 1, BACKLIGHT_SCALE_MAX);
+> > +		scale = (pdata->pwm_refclk / pwm_freq - 1) / pre_div;
+> 
+> I'm still trying to wrap my head around this calculation, but dividing
+> by the result of a division is always loosing precision. This is really
+> involved and I'm willing to bet this can be done easier and with more
+> precision.
+> 
+> ... some time later ...
+> 
+> You wrote "PWM_FREQ = REFCLK_FREQ / (PWM_PRE_DIV * BACKLIGHT_SCALE + 1)",
+> so (I think) that means you have:
+> 
+> 	period = (PWM_PRE_DIV * BACKLIGHT_SCALE + 1) / refclk
+> 
+
+Yes, this matches my math.
+
+Which would imply that the PWM period is (PRE_DIV * SCALE + 1) ticks of
+the refclk.
+
+> right? I deduce from your formula how the duty_cycle is defined and I
+> think it's:
+> 
+> 	duty_cycle = (PWM_PRE_DIV * BACKLIGHT + 1) / refclk
+> 
+> is this right? And now your idea to "best suite the requested period" is
+> to select a small divider such that you can still use a big value in
+> SCALE to define the period and so have a fine separation for the
+> duty_cycle, right?
+> 
+
+Above formula helps us calculate the period if we know the PRE_DIV and
+SCALE, but what I'm given is the period by the framework and I need to
+find suitable values for PRE_DIV and SCALE.
+
+With the purpose of maximizing the resolution of duty_cycle (i.e.
+[0, SCALE]) the SCALE is fixed to 65535 and the smallest PRE_DIV that
+results in a period larger than the requested one is calculated.
+
+With this PRE_DIV determined SCALE is then adjusted to match the
+requested period. The duty_cycle is then just calculated as a fraction
+of this.
+
+> I will stop doing maths here now until you confirm my steps up to now
+> are right.
+> 
+> > +		backlight = scale * state->duty_cycle / state->period;
+> 
+> This is an u64 division, you must use do_div for that. Also you're
+> losing precision here.
+> 
+
+Are you suggesting that it would be better to just calculate the
+backlight the same way as scale is calculated, rather then just scale
+it? I.e:
+		duty_freq = NSEC_PER_SEC / state->duty_cycle;
+		backlight = (pdata->pwm_refclk / duty_freq - 1) / pre_div;
+
+> > +		ret = regmap_write(pdata->regmap, SN_PWM_PRE_DIV_REG, pre_div);
+> > +		if (ret) {
+> > +			dev_err(pdata->dev, "failed to update PWM_PRE_DIV\n");
+> > +			goto out;
+> > +		}
+> > +
+> > +		ti_sn_bridge_write_u16(pdata, SN_BACKLIGHT_SCALE_REG, scale);
+> > +		ti_sn_bridge_write_u16(pdata, SN_BACKLIGHT_REG, backlight);
+> 
+> How does the PWM behave in between these writes? Are the register values
+> shadowed until the third write happens (which would be the optimum), or
+> does this result in (maybe) emitting an output wave that doesn't
+> correspond to the requested setting (assuming the PWM is already enabled
+> of course)?
+> 
+> What happens if the value written to SN_BACKLIGHT_SCALE_REG is less than
+> the previous value in SN_BACKLIGHT_REG? ti_sn_bridge_write_u16 wraps two
+> regmap writes, is there a race, too?
+> 
+
+I have no idea, I don't find anything about this in the datasheet:
+https://www.ti.com/lit/ds/symlink/sn65dsi86.pdf?ts=1607491553008
+
+> > +	}
+> > +
+> > +	pwm_en_inv = FIELD_PREP(BIT(1), !!state->enabled) |
+> > +		     FIELD_PREP(BIT(0), state->polarity == PWM_POLARITY_INVERSED);
+> 
+> Please introduce symbolic names for BIT(1) and BIT(0) here.
+> 
+
+Okay, will do.
+
+> How does the hardware behave with the enable bit unset? Does it emit the
+> inactive level according to the polarity bit?
+> 
+
+I'm doing this work on a consumer device, so unfortunately I have no way
+to scope the signal. But as far as I can tell from my testing the
+inverse bit does nothing when the PWM enabled bit is not set.
+
+And clearing the PWM enable bit results in max brightness on the
+display.
+
+> > +	ret = regmap_write(pdata->regmap, SN_PWM_EN_INV_REG, pwm_en_inv);
+> > +	if (ret) {
+> > +		dev_err(pdata->dev, "failed to update PWM_EN/PWM_INV\n");
+> > +		goto out;
+> > +	}
+> > +
+> > +	pdata->pwm_enabled = !!state->enabled;
+> > +out:
+> > +
+> > +	if (!pdata->pwm_enabled)
+> > +		pm_runtime_put_sync(pdata->dev);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > [...]
+> > +static struct pwm_device *ti_sn_pwm_of_xlate(struct pwm_chip *pc,
+> > +					     const struct of_phandle_args *args)
+> > +{
+> > +	struct pwm_device *pwm;
+> > +
+> > +	if (args->args_count != 1)
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	pwm = pwm_request_from_chip(pc, 0, NULL);
+> > +	if (IS_ERR(pwm))
+> > +		return pwm;
+> > +
+> > +	pwm->args.period = args->args[0];
+> > +
+> > +	return pwm;
+> > +}
+> 
+> This is done to optimise away the 0 needed in each phandle to implement
+> the "usual" pwm binding. IMHO this function should either move into the
+> pwm core, or you should stick to the usual binding.
+> 
+
+You're right and I'd be happy to post a of_pwm_single_xlate() helper to
+the PWM core.
+
+> Apropos binding: Is there already a binding document for the hardware?
+> You should expand it to describe your additions.
+> 
+
+The #pwm-cells = <1> was included in the DT binding from the beginning,
+just no one ever implemented it in the driver.
+
+> > @@ -1282,6 +1476,12 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
+> >  		return ret;
+> >  	}
+> >  
+> > +	ret = ti_sn_setup_pwmchip(pdata);
+> > +	if (ret)  {
+> > +		pm_runtime_disable(pdata->dev);
+> > +		return ret;
+> > +	}
+> 
+> I'm not sure about the purpose of the containing hardware, but I wonder
+> if it would be saner to not break probing of the device if adding the
+> PWM functionality fails. Ideally the driver would provide an mfd driver
+> that allows its components to be probed independently.
+> 
+
+Due to the possible circular dependency between this bridge driver and
+the associated panel's dependency on the pwm_chip the suggestion of
+splitting the driver in more pieces did came up. So I'm looking into
+this now.
+
+That said, the first issue I ran into while looking at this is how to
+register a pwm_chip associated to the child's struct device and have
+of_pwm_get() be allowed to find it (this made up node does not have an
+of_node and there's no way to specify that the parent's of_node should
+be used in the lookup).
+
+
+Thanks for the review.
+
+Regards,
+Bjorn
+
+> >  	i2c_set_clientdata(client, pdata);
+> >  
+> >  	pdata->aux.name = "ti-sn65dsi86-aux";
+> > @@ -1320,6 +1520,8 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
+> >  
+> >  	drm_bridge_remove(&pdata->bridge);
+> >  
+> > +	ti_sn_remove_pwmchip(pdata);
+> > +
+> >  	return 0;
+> 
+> Best regards
+> Uwe
+> 
+> -- 
+> Pengutronix e.K.                           | Uwe Kleine-König            |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
 
