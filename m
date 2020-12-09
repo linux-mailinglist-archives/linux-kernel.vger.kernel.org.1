@@ -2,204 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4482D4844
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B26012D4857
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728230AbgLIRuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:50:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727894AbgLIRtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:49:42 -0500
-Date:   Wed, 9 Dec 2020 14:49:10 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607536141;
-        bh=g9dGx1sfBfj6LVoySFl/0KfqVoAZqY8Q4b/cyCZSIx4=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ppuqGLDhnRrGAnmbGGI2AG/lvtJGkbjufRuYKHBGvjxIaG2hd3our5/6dGRLekd1G
-         skzEZUQefTTNnjS9k6tXOXIJMpLPUaAXXU1eVIStjkAiSbpzNOGzhEXAc6zWkSTMGf
-         d1o5+/O1Yqpe7voMSP1rMssYqg/4tNwjD9bD7ttsZNPjHFt4VAkVMWL0c1J4ndDRr8
-         nFA/pt9xsGWU9uqSUcllIwWOxWDzDsXtDVaI4QNhw0XbkHZUUnPqmbw3wE5/ZMmNG4
-         KT88uGASSuAFDQvx3GsU5aYB1WiNbhEuXO/wZwRP1LppwX5CvAjCEqDwRqG0BGRQp+
-         QoeAhV/wJbMDg==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     Thomas Richter <tmricht@linux.ibm.com>,
-        Kajol Jain <kjain@linux.ibm.com>, jolsa@redhat.com,
-        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, irogers@google.com,
-        rbernon@codeweavers.com, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com
-Subject: Re: [PATCH] perf test: Skip test 68 for Powerpc
-Message-ID: <20201209174910.GC185686@kernel.org>
-References: <20201104082954.57338-1-tmricht@linux.ibm.com>
- <20201119135022.36340-1-kjain@linux.ibm.com>
- <4a2908ca-6b75-c688-ec3b-7f37783f08cc@linux.ibm.com>
- <20201207163524.GF125383@kernel.org>
- <763d4593-d581-0971-338c-b811925be45b@linux.ibm.com>
- <29a77348-2ab7-1235-3fcf-c505dab1f1a1@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <29a77348-2ab7-1235-3fcf-c505dab1f1a1@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+        id S1728868AbgLIRvM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Dec 2020 12:51:12 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:34089 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728723AbgLIRvM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:51:12 -0500
+Received: from mail-pj1-f69.google.com ([209.85.216.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kn3bh-0007iU-De
+        for linux-kernel@vger.kernel.org; Wed, 09 Dec 2020 17:50:29 +0000
+Received: by mail-pj1-f69.google.com with SMTP id hg11so1246785pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 09:50:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=WOZeix5vvOQuXdsJGlu4vfA3jFYuqZ94agmcIqxRVFU=;
+        b=iehlgCpTGKNqxdQlNnUCPVKu3IkGSSR3MQgOBi1j1mXbFeeGRJsKVMfcSqld5e7j69
+         79Ie1/uFlsIf8OBgCTtvZSEaSbNF6Oh5w/A0Jh7Bxq6wswcnVaVvymdeS4Zu6LRtLrzL
+         rmsVy5MQ5OZhPSnZ2ui0ZwFr7OCWeve8u7cYtEu+mRKJGTtp1wzB6ckDgA9uGWVaX7yn
+         0DDwMw2X3S7su+5pKZDMCoe68Hh7Fb2iF210ihflML7DBdkpNxaCmvjmh3Q0rqRv9ncm
+         DI/qg+8S9XeEGpif0ngUm2z93vdszcH7kygOIE7LzUg0ctYghfB2kLyImkcZrxNZG2kR
+         w38g==
+X-Gm-Message-State: AOAM530EhUF+l2k8ODw83qF9AhVO0ttFFenox6cOzcf5HEJ/Rv2gRLiK
+        1Sxzi8kEKGpmm2SMhO9IiaWDoGmVo1SNBLIbVbWuutSo8JCnodd5Dy1MRPt12iCHKVo1ub7wU2A
+        bg6XUBHJWy/+hgF7iaidfVdlJiZRRt+mcZvM+/247Uw==
+X-Received: by 2002:a17:90a:4606:: with SMTP id w6mr3270205pjg.10.1607536228056;
+        Wed, 09 Dec 2020 09:50:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz34otOSKLC+yozh4uJrqTPVGFLz9S5cc+kJIyEW3ahDVXVzCsbgQkM99FpSo3ULeNg3c6Mvg==
+X-Received: by 2002:a17:90a:4606:: with SMTP id w6mr3270185pjg.10.1607536227740;
+        Wed, 09 Dec 2020 09:50:27 -0800 (PST)
+Received: from [192.168.1.104] (36-229-231-79.dynamic-ip.hinet.net. [36.229.231.79])
+        by smtp.gmail.com with ESMTPSA id z65sm3525325pfz.126.2020.12.09.09.50.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Dec 2020 09:50:27 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
+Subject: Re: [PATCH 2/2] PCI/ASPM: Use capability to override ASPM via sysfs
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <d47544b3-b9a0-609c-fc97-527c9416f9a0@gmail.com>
+Date:   Thu, 10 Dec 2020 01:50:23 +0800
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <F3AF37E2-AC64-470D-B489-7FE16AC4C943@canonical.com>
+References: <20201208082534.2460215-1-kai.heng.feng@canonical.com>
+ <20201208082534.2460215-2-kai.heng.feng@canonical.com>
+ <d47544b3-b9a0-609c-fc97-527c9416f9a0@gmail.com>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+X-Mailer: Apple Mail (2.3654.20.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Dec 08, 2020 at 10:32:33PM +0530, Ravi Bangoria escreveu:
-> On 12/8/20 8:13 PM, Thomas Richter wrote:
-> > On 12/7/20 5:35 PM, Arnaldo Carvalho de Melo wrote:
-> > > Em Tue, Nov 24, 2020 at 03:04:53PM +0530, Ravi Bangoria escreveu:
-> > > > On 11/19/20 7:20 PM, Kajol Jain wrote:
-> > > > > Commit ed21d6d7c48e6e ("perf tests: Add test for PE binary format support")
-> > > > > adds a WINDOWS EXE file named tests/pe-file.exe, which is
-> > > > > examined by the test case 'PE file support'. As powerpc doesn't support
-> > > > > it, we are skipping this test.
 
-> > > > > Result in power9 platform before this patach:
-> > > > > [command]# ./perf test -F 68
-> > > > > 68: PE file support                               : Failed!
 
-> > > > > Result in power9 platform after this patch:
-> > > > > [command]# ./perf test -F 68
-> > > > > 68: PE file support                               : Skip
-
-> > > > > Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-
-> > > > Reviewed-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-
-> > > But why is it failing? I.e. what is that
-
-> > >   perf test -v -F 68
-
-> > > outputs?
-
-> > > Using 'perf report' on a perf.data file containing samples in such
-> > > binaries, collected on x86 should work on whatever workstation a
-> > > developer uses.
-
-> > > Say, on a MacBook aarch64 one can look at a perf.data file collected on
-> > > a x86_64 system where Wine running a PE binary was present.
-
-> > What is the distro you are using?
-> > I observed the same issue on s390 but this was fixed for fedora33 somehow.
-> > The error just went away after a dnf update....
-
-> > [root@m35lp76 perf]# cat /etc/fedora-release
-> > Fedora release 33 (Thirty Three)
-> > [root@m35lp76 perf]# ./perf test -F 68
-> > 68: PE file support                                                 : Ok
-> > [root@m35lp76 perf]#
-
-> > However on my fedora32 machine it still fails:
-> > [root@t35lp46 perf]# cat /etc/fedora-release
-> > Fedora release 32 (Thirty Two)
-> > [root@t35lp46 perf]# ./perf test -F 68
-> > 68: PE file support                                                 : FAILED!
-> > [root@t35lp46 perf]#
-> > 
-> > Note that I am running the same kernel on both machines: linux 5.10.0rc7 downloaded
-> > this morning.
-> > 
+> On Dec 9, 2020, at 01:18, Heiner Kallweit <hkallweit1@gmail.com> wrote:
 > 
-> Ok that's interesting. I don't see that on powerpc.
+> Am 08.12.2020 um 09:25 schrieb Kai-Heng Feng:
+>> If we are to use sysfs to change ASPM settings, we may want to override
+>> the default ASPM policy.
+>> 
+>> So use ASPM capability, instead of default policy, to be able to use all
+>> possible ASPM states.
+>> 
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>> ---
+>> drivers/pci/pcie/aspm.c | 3 +--
+>> 1 file changed, 1 insertion(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+>> index 2ea9fddadfad..326da7bbc84d 100644
+>> --- a/drivers/pci/pcie/aspm.c
+>> +++ b/drivers/pci/pcie/aspm.c
+>> @@ -1239,8 +1239,7 @@ static ssize_t aspm_attr_store_common(struct device *dev,
+>> 
+>> 		link->aspm_disable |= state;
+>> 	}
+>> -
+>> -	pcie_config_aspm_link(link, policy_to_aspm_state(link));
+>> +	pcie_config_aspm_link(link, link->aspm_capable);
+>> 
+> I like the idea, because the policy can be changed by the user anyway.
+> Therefore I don't see it as a hard system limit.
 > 
-> Fedora 32 with 5.10.0-rc2+ kernel:
+> However I think this change is not sufficient. Each call to
+> pcie_config_aspm_link(link, policy_to_aspm_state(link)), e.g. in path
+> pcie_aspm_pm_state_change -> pcie_config_aspm_path will reset the
+> enabled states to the policy.
+
+That's right, let me work this in v2.
+
+Kai-Heng
+
 > 
->   $ ./perf test -vv -F 68
->   68: PE file support                                                 :
->   --- start ---
->   filename__read_build_id: cannot read ./tests/pe-file.exe bfd file.
->   FAILED tests/pe-file-parsing.c:40 Failed to read build_id
->   ---- end ----
->   PE file support: FAILED!
+>> 	mutex_unlock(&aspm_lock);
+>> 	up_read(&pci_bus_sem);
+>> 
 > 
-> Fedora 33 with 5.10.0-rc3 kernel:
-> 
->   $ ./perf test -vv -F 68
->   68: PE file support                                                 :
->   --- start ---
->   filename__read_build_id: cannot read ./tests/pe-file.exe bfd file.
->   FAILED tests/pe-file-parsing.c:40 Failed to read build_id
->   ---- end ----
->   PE file support: FAILED!
-> 
-> Ubuntu 18.04.5 with 4.15.0-126-generic kernel:
-> 
->   $ ./perf test -vv -F 68
->   68: PE file support                                                 :
->   --- start ---
->   filename__read_build_id: cannot read ./tests/pe-file.exe bfd file.
->   FAILED tests/pe-file-parsing.c:41 Failed to read build_id
->   ---- end ----
->   PE file support: FAILED!
-> 
-> 
-> I assumed bfd is not capable to parse PE files on powerpc. Though,
-> I didn't check it in more detail. I'll look into it tomorrow.
 
-Humm, so this is something related to installation? I.e. that
-pe-file.exe isn't being found...
-
-It first assumes that the developers are in the tools/perf/ directory,
-can you please add the patch below and see if it helps?
-
-Without it and without having actually installed perf (for instance with
-'make -C tools/perf install' I get:
-
-[acme@five perf]$ perf test -F 68
-68: PE file support                                                 : FAILED!
-[acme@five perf]$
-
-[acme@five perf]$ perf test -F -v 68
-Couldn't bump rlimit(MEMLOCK), failures may take place when creating BPF maps, etc
-68: PE file support                                                 :
---- start ---
-FAILED tests/pe-file-parsing.c:40 Failed to read build_id
----- end ----
-PE file support: FAILED!
-[acme@five perf]$
-
-If I go to tools/perf:
-
-[acme@five perf]$ perf test 68
-68: PE file support                                                 : Ok
-[acme@five perf]$
-
-With the patch below it works both at the top level dir and at
-tools/perf/ on a system without a perf installation containing these
-PE files.
-
-We have this in tools/perf/Makefile.perf:
-
-install-tests: all install-gtk
-        $(call QUIET_INSTALL, tests) \
-                $(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/tests'; \
-                $(INSTALL) tests/attr.py '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/tests'; \
-                $(INSTALL) tests/pe-file.exe* '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/tests'; \    <---------------------------------------------
-                $(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/tests/attr'; \
-                $(INSTALL) tests/attr/* '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/tests/attr'; \
-                $(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/tests/shell'; \
-                $(INSTALL) tests/shell/*.sh '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/tests/shell'; \
-                $(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/tests/shell/lib'; \
-                $(INSTALL) tests/shell/lib/*.sh '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/tests/shell/lib'
-
-install-bin: install-tools install-tests install-traceevent-plugins
-
-- Arnaldo
-
-diff --git a/tools/perf/tests/pe-file-parsing.c b/tools/perf/tests/pe-file-parsing.c
-index 58b90c42eb38c1b9..a380d31b645b58dd 100644
---- a/tools/perf/tests/pe-file-parsing.c
-+++ b/tools/perf/tests/pe-file-parsing.c
-@@ -78,6 +78,9 @@ int test__pe_file_parsing(struct test *test __maybe_unused,
- 	if (!lstat("./tests", &st))
- 		return run_dir("./tests");
- 
-+	if (!lstat("./tools/perf/tests", &st))
-+		return run_dir("./tools/perf/tests");
-+
- 	/* Then installed path. */
- 	snprintf(path_dir, PATH_MAX, "%s/tests", get_argv_exec_path());
- 
