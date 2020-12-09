@@ -2,211 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70AD02D3A16
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 638572D3A24
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726624AbgLIFG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 00:06:56 -0500
-Received: from mail-bn8nam11on2061.outbound.protection.outlook.com ([40.107.236.61]:58753
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726500AbgLIFG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 00:06:56 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W8USPr9UBs5zjGkKE2Mhp0U7XOfNaHAmLyfHGxM0S2YDX6Knf4EWwWoONebwC9iITJdmjQCfDld/0T4w+tVlobq/oBsfNwwKUdS9fZkuij3STQ0w6CuVqTZE1I2gh+ysDEloBMINeIGs3MzhlCJkef4/pQ6wCfKuZr147jIe76KSAP4AGo0nc+eB9H6qj8jSdaBcyO2Xl6OXtqehgvqAE8ar+7JpYttOnJ+BPMoEXDBPC3jnAFjSn/0ier1SafOoXzzgpbe/L9YDICT+vJvsJibpDa3lxV79iUk9EzO3o7JGjFhKDVFXON/Q1cTSZrgTPQZP9xq0fJUx9TJ74eglYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p805tCp2TUAnR3/njo4dwJs7iOJBYmBOaz98gOp0laU=;
- b=E5ZE5PqQytZzx6oNqeNn1xs4i4l1rDv9hDTh2ZhmwvQyM6ImPQmlTKr6s39BxJW9vRpCiiMgcpWTl1oT/stRM+ENRMFujegrXlMEZkmeGXGPbEclbn6Fbph06AaN02PYj8ta/11Fxu4xWr2SjxAm1XQt9Rp9J2/3hg/GjPRhqGhazXx3hnO+P7pdQgCY+aoOowc6UY5BwkBFR5jcKYLjAimkbOzb0mA6Qnb6q+oywEgs2EpLWfPoYtFN+3x+3J7hbYDZEcAkEtHKWRAYrFl4shS/xvZeJyUpMiHusRBkC8YgTbl/g6V68CCGRxe67f9fjPl1/0NUg8mpNV5mbjgliQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=openfive.com;
- dkim=pass header.d=openfive.com; arc=none
+        id S1727124AbgLIFH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 00:07:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727087AbgLIFH5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 00:07:57 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC5EC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 21:07:17 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id g20so274525ejb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 21:07:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=osportal.onmicrosoft.com; s=selector2-osportal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p805tCp2TUAnR3/njo4dwJs7iOJBYmBOaz98gOp0laU=;
- b=QRxvglH+HBxYKEDgoKiRqXN+eVSZ0RChL10w489zhLIhUiO45TsyzIyJeF9NWjSJK8UidzepBiPHm9z5rh5KNbSAYcZoXokfTCflyesmeQcggbAkhl06dc/gVL+CJg82/1p4T13BxxftwclqspbRj9MQoqzQVPbIOaAsm5I6zL8=
-Received: from BY5PR13MB4453.namprd13.prod.outlook.com (2603:10b6:a03:1d1::19)
- by BY5PR13MB4471.namprd13.prod.outlook.com (2603:10b6:a03:1db::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.9; Wed, 9 Dec
- 2020 05:06:02 +0000
-Received: from BY5PR13MB4453.namprd13.prod.outlook.com
- ([fe80::7c13:1ac6:9f2a:5eae]) by BY5PR13MB4453.namprd13.prod.outlook.com
- ([fe80::7c13:1ac6:9f2a:5eae%8]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
- 05:06:01 +0000
-From:   Yash Shah <yash.shah@openfive.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "bp@suse.de" <bp@suse.de>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "sam@ravnborg.org" <sam@ravnborg.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "Paul Walmsley ( Sifive)" <paul.walmsley@sifive.com>,
-        Sagar Kadam <sagar.kadam@openfive.com>,
-        Sachin Ghadi <sachin.ghadi@openfive.com>
-Subject: RE: [PATCH v2 1/2] RISC-V: Update l2 cache DT documentation to add
- support for SiFive FU740
-Thread-Topic: [PATCH v2 1/2] RISC-V: Update l2 cache DT documentation to add
- support for SiFive FU740
-Thread-Index: AQHWxtu9bQuNh+qvKEyj5EgsQbzkSant5A2AgABWksA=
-Date:   Wed, 9 Dec 2020 05:06:01 +0000
-Message-ID: <BY5PR13MB445346E7FA969CC485B2A8CA82CC0@BY5PR13MB4453.namprd13.prod.outlook.com>
-References: <1606714984-16593-1-git-send-email-yash.shah@sifive.com>
- <20201208232141.GA3292265@robh.at.kernel.org>
-In-Reply-To: <20201208232141.GA3292265@robh.at.kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=openfive.com;
-x-originating-ip: [103.109.13.228]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c33ca181-1a07-4f6e-066a-08d89c001fc1
-x-ms-traffictypediagnostic: BY5PR13MB4471:
-x-ld-processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR13MB4471020AF79C488D8B8AED5882CC0@BY5PR13MB4471.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Oibhql9I/NzFlxrui5afJHwvuezfPmPguFg6IvEwAbJksknDpitFZ8bDVHpweksf4a+ai5Iq+AI3S5MVxX8xXlpx4uPluKfFrYVf47mR2H7u67FkYSEcHgTvmWUCQqfdOpzPVBNLUdtLkZlgg9u5C9sbCnqJHJD3Y2LJjjmQL0fQGLaf8Z4HPc02Z0uZx/nL77vmq74EJt0EXv2CW6FEnkqfoX0Tu9grXkHyPLvjmQMiLtY75bBZw6Y2VVtluhyEYIjWb+NPy9jMwxsUQO17fOxZwroH/5VfoXqAdS8kZ54S1JakCOMtC+XHg3PyGZ3g9rjYtYRICkqrFn6enE2EfA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR13MB4453.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(366004)(346002)(376002)(136003)(52536014)(55016002)(66446008)(107886003)(15650500001)(2906002)(508600001)(8676002)(7416002)(53546011)(83380400001)(86362001)(26005)(33656002)(76116006)(6506007)(4326008)(66946007)(54906003)(6916009)(5660300002)(9686003)(186003)(66556008)(8936002)(71200400001)(44832011)(64756008)(66476007)(7696005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ypD3urPrEIOUSr1lVsyCuXwXBkYYKVOxy4I00+AnWCLBpygOZHUTnGxGkWQx?=
- =?us-ascii?Q?9k1rsQiHuoged1wTmIS/mU4xEg9pJCPj0bJO4DGxsLV3nlzejWtUasnJwxoe?=
- =?us-ascii?Q?H67Pdfej0GsFvoIqBQSCZB93eudSzz0U9VVl6OTwEQEs+ztqslJk+/ixVdSr?=
- =?us-ascii?Q?IXKlq6riPWqPK8MH8Cl3VsuseqOdyHFTHjLKNx7BxCnwXpivcIz5zODCpBlz?=
- =?us-ascii?Q?xFNkop1eeAyU3JPmO5FPP2hHMzq+b6Gtf29EnMC6ZplW0uwei98tPKnHOfM+?=
- =?us-ascii?Q?iyULiUbYb2wuhnAyTl0zu3E6l+X/kvhRWoTr0NAORXw9juGZ0p/zJpnUzk3F?=
- =?us-ascii?Q?XQa5T4MUXPbSGcgm+6tUrO0snpzbuZXi6t30+VYZPab2JMOvXu4Dtxlvn2F/?=
- =?us-ascii?Q?dRDbwItYqAJ0yTSBSzuiZ6NFhk3oY+bw+XS4mtY264hwgqWMEvwpc+um4eZ5?=
- =?us-ascii?Q?0PtUkv3vJv8XBT0nEcZvJQkIqCI/dllaCSeSOLWqkWVbZwFY5UwpRnSEujKT?=
- =?us-ascii?Q?gC88H/woyGfWFLPj0al/qlSFrGsldCtzCcvfKV5aCm1vYfxpqmi75xPUssmS?=
- =?us-ascii?Q?ThZIUM9gC/9zcRdZr6pqtN76ZzpueTq7Eg1Ba1fx5srZn/Svz9JoVumxQcxj?=
- =?us-ascii?Q?WuEwmJdNlSe1DHpZSt0VOblpFUtCvm6KUUFxNJsyWrjhkA7fk9jUiGg9FCvY?=
- =?us-ascii?Q?DqWHR5bJ9VTD+YCuA5yaJBJV3mhnXCWnz6tzYAciY1jW/ejcIFo4TEYKz69r?=
- =?us-ascii?Q?FRxEavYftcXHZGe4Hyn0Ual3q/03KdnnGHmXqQ3gXmj2e2iGcH/XTdL5fD7P?=
- =?us-ascii?Q?7Bj2dU349zUW2FHmHdnAoEwcLT+FezFkNP9bvioWP0gdG7eKRn1bJy71hLbu?=
- =?us-ascii?Q?0J7jJbzDV9GTWBzgOdwz1CdIfE/KKylgesZhktWr1uoHKl6rWYCP5enH0gG4?=
- =?us-ascii?Q?HRJzmJSpg7V3AMTVzU5tXYoGDGDXPk04GdC6662srOc=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q3NLgFg9+0RUlIIykuKLWs9CjD4F435j35iR2qAmKLE=;
+        b=NxGkpUi/oOts1K+HQSMMHnnn+b8Y+8y6ViAjMpa+UMz0Lkfj3C4lCDwNfKpX7hpU69
+         Y2JH7fXNBhnthgZQpr9PyPyu1OVysoq6+lMZ8QkM/nk0C9lAGjEc8UbJSZ8pgv7iDU+Y
+         r1Zc2in6pxy8+ig3ljiDeAHzT+NoC07QkFixw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q3NLgFg9+0RUlIIykuKLWs9CjD4F435j35iR2qAmKLE=;
+        b=LEEAAjJV7O/rYONSA/pz+/1TyyPlWChUAahog/u5lwuG2trAgupoHPWwEWCSMjKK16
+         boWaErCC9daJfem9YxKAmEqwS3sM444TTude+rgZ7oOtsxcT7Wp+Noyy9GFOgS2AH3h/
+         t2eTqEsbC/Qsba5vU4P0FIUz7M9NmN/bCFb1Cf4CvRPVT+nR7Z2ky5zqkl/Y9OrO67Hn
+         nbVZb0vKgGwrbNYpSd/XhjwOQvCpT9Rl0kVFB016ZSNnwf7nURo0WE4ca9ZSkCIf3Igi
+         G4+LjKviT4q4dOJ1aJBlkchOJeZ8MSkTiUqEMlSlXjU9VFbCEH9zj/ifJmWFNNvo5xNu
+         qoNA==
+X-Gm-Message-State: AOAM530dV6ZW763WddQKgCwIi9yJHgKmpfv+ATNEMyN8EEbwOJaHh3Wb
+        BAhkTXu9hyMZubX4iaUkrTcUA7DO30dWiw==
+X-Google-Smtp-Source: ABdhPJzdDkO7NzfFUFoLh6pk6/54o/Vfy+8mRGbD+dMmeNzTwJtgAegGP1oMeZ1T3HvMr8Lq7NXiZg==
+X-Received: by 2002:a17:906:68d1:: with SMTP id y17mr579241ejr.447.1607490435475;
+        Tue, 08 Dec 2020 21:07:15 -0800 (PST)
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
+        by smtp.gmail.com with ESMTPSA id z26sm365014edl.71.2020.12.08.21.07.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 21:07:14 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id r7so301563wrc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 21:07:13 -0800 (PST)
+X-Received: by 2002:adf:bb0e:: with SMTP id r14mr543768wrg.159.1607490433220;
+ Tue, 08 Dec 2020 21:07:13 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: openfive.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR13MB4453.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c33ca181-1a07-4f6e-066a-08d89c001fc1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Dec 2020 05:06:01.7929
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lHWwA7HvbZc030riZxta7xexmVkPmozMUKV8G0F8jT3RN/AGJMM+Vlqi6yrbk8nzhF4pOso/YRq0HRAo5yjiOA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR13MB4471
+References: <20201116155008.118124-1-robert.foss@linaro.org>
+ <cf0b935d-3ccd-8360-1b52-89fab0b181eb@linux.intel.com> <CAG3jFyssMMHpi4WgWmeDjuVYKz12UwJoBT0WoOsdB4PZxnuqSw@mail.gmail.com>
+ <e132769f-cfb5-141a-6cd1-603d82a92b9e@linux.intel.com> <CAAFQd5A=kYufStO7ni4j6f+grDpsoigskcj1LdiG9NRN=cvviQ@mail.gmail.com>
+ <CAG3jFyuzTPzgTWCHOc1cpXeSe7GyCET0cTYF9r3aOPXdCuZTsw@mail.gmail.com>
+ <CAAFQd5AVs4EeV+q87SSdUW3uW_LComGV=HG5J2XaacDvbAgYXg@mail.gmail.com> <CAG3jFyvxLCk=U7Dt8O3poja7yHiRR5B3jq9Xbh_Nsigrjrckcw@mail.gmail.com>
+In-Reply-To: <CAG3jFyvxLCk=U7Dt8O3poja7yHiRR5B3jq9Xbh_Nsigrjrckcw@mail.gmail.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Wed, 9 Dec 2020 14:07:01 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5CkTx6MwSw8NXjV6xb5Xj5fn_M8ON7YtgvVDhFiY-qx_Q@mail.gmail.com>
+Message-ID: <CAAFQd5CkTx6MwSw8NXjV6xb5Xj5fn_M8ON7YtgvVDhFiY-qx_Q@mail.gmail.com>
+Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     Bingbu Cao <bingbu.cao@linux.intel.com>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Ben Kao <ben.kao@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: 09 December 2020 04:52
-> To: Yash Shah <yash.shah@openfive.com>
-> Cc: linux-kernel@vger.kernel.org; linux-riscv@lists.infradead.org;
-> devicetree@vger.kernel.org; bp@suse.de; anup@brainfault.org;
-> Jonathan.Cameron@huawei.com; wsa@kernel.org; sam@ravnborg.org;
-> aou@eecs.berkeley.edu; palmer@dabbelt.com; Paul Walmsley ( Sifive)
-> <paul.walmsley@sifive.com>; Sagar Kadam <sagar.kadam@openfive.com>;
-> Sachin Ghadi <sachin.ghadi@openfive.com>
-> Subject: Re: [PATCH v2 1/2] RISC-V: Update l2 cache DT documentation to
-> add support for SiFive FU740
->=20
-> [External Email] Do not click links or attachments unless you recognize t=
-he
-> sender and know the content is safe
->=20
-> On Mon, Nov 30, 2020 at 11:13:03AM +0530, Yash Shah wrote:
-> > The L2 cache controller in SiFive FU740 has 4 ECC interrupt sources as
-> > compared to 3 in FU540. Update the DT documentation accordingly with
-> > "compatible" and "interrupt" property changes.
->=20
-> 'dt-bindings: riscv: ...' for the subject.
->=20
+On Fri, Nov 27, 2020 at 10:38 PM Robert Foss <robert.foss@linaro.org> wrote:
+>
+> Thanks for digging into this everyone!
+>
+> Assuming Tomasz doesn't find any stretching, I think we can conclude
+> that this mode works, and should be kept. Thanks Dongchun for parsing
+> the datasheet and finding the Bayer mode issue for the two other
+> recently added resolutions.
+
+I checked the raw output and it actually seems to have 3296x2464
+non-black pixels. The rightmost 16 ones seem a copy of the ones from
+3248. That might be just some padding from the output DMA, though.
+
+Generally all the datasheets I've seen still suggest that only the
+middle 3264x2448 are active pixels to be output, so this warrants
+double checking this with Omnivision. Let me see what we can do about
+this.
+
+Best regards,
+Tomasz
+
+>
+> On Fri, 27 Nov 2020 at 11:26, Tomasz Figa <tfiga@chromium.org> wrote:
 > >
-> > Signed-off-by: Yash Shah <yash.shah@sifive.com>
-> > ---
-> > Changes in v2:
-> > - Changes as per Rob Herring's request on v1
-> > ---
-> >  .../devicetree/bindings/riscv/sifive-l2-cache.yaml | 35
-> > ++++++++++++++++++++--
-> >  1 file changed, 32 insertions(+), 3 deletions(-)
+> > On Thu, Nov 26, 2020 at 7:00 PM Robert Foss <robert.foss@linaro.org> wrote:
+> > >
+> > > On Wed, 25 Nov 2020 at 08:32, Tomasz Figa <tfiga@chromium.org> wrote:
+> > > >
+> > > > Hi Bingbu,
+> > > >
+> > > > On Wed, Nov 25, 2020 at 1:15 PM Bingbu Cao <bingbu.cao@linux.intel.com> wrote:
+> > > > >
+> > > > >
+> > > > >
+> > > > > On 11/24/20 6:20 PM, Robert Foss wrote:
+> > > > > > On Tue, 24 Nov 2020 at 10:42, Bingbu Cao <bingbu.cao@linux.intel.com> wrote:
+> > > > > >>
+> > > > > >> Hi, Robert
+> > > > > >>
+> > > > > >> I remember that the full size of ov8856 image sensor is 3296x2480 and we can get the 3280x2464
+> > > > > >> frames based on current settings.
+> > > > > >>
+> > > > > >> Do you have any issues with this mode?
+> > > > > >
+> > > > > > As far as I can tell using the 3280x2464 mode actually yields an
+> > > > > > output resolution that is 3264x2448.
+> > > > > >
+> > > > > > What does your hardware setup look like? And which revision of the
+> > > > > > sensor are you using?
+> > > > > >
+> > > > >
+> > > > > Robert, the sensor revision I am using is v1.1. I just checked the actual output pixels on our
+> > > > > hardware, the output resolution with 2464 mode is 3280x2464, no black pixels.
+> > > > >
+> > > > > As Tomasz said, some ISP has the requirement of extra pixel padding, From the ov8856 datasheet,
+> > > > > the central 3264x2448 pixels are *suggested* to be output from the pixel array and the boundary
+> > > > > pixels can be used for additional processing. In my understanding, the 32 dummy lines are not
+> > > > > black lines.
+> > > >
+> > > > The datasheet says that only 3264x2448 are active pixels. What pixel
+> > > > values are you seeing outside of that central area? In the datasheet,
+> > > > those look like "optically black" pixels, which are not 100% black,
+> > > > but rather as if the sensor cells didn't receive any light - noise can
+> > > > be still there.
+> > > >
+> > >
+> > > I've been developing support for some Qcom ISP functionality, and
+> > > during the course of this I ran into the issue I was describing, where
+> > > the 3280x2464 mode actually outputs 3264x2448.
+> > >
+> > > I can think of two reasons for this, either ISP driver bugs on my end
+> > > or the fact that the sensor is being run outside of the specification
+> > > and which could be resulting in differences between how the ov8856
+> > > sensors behave.
 > >
-> > diff --git
-> > a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> > b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> > index efc0198..749265c 100644
-> > --- a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> > +++ b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> > @@ -27,6 +27,7 @@ select:
-> >        items:
-> >          - enum:
-> >              - sifive,fu540-c000-ccache
-> > +            - sifive,fu740-c000-ccache
+> > I just confirmed and we're indeed using this mode in a number of our
+> > projects based on the Intel ISP and it seems to be producing a proper
+> > image with all pixels of the 3280x2464 matrix having proper values.
+> > I'm now double checking whether this isn't some processing done by the
+> > ISP, but I suspect the quality would be bad if it stretched the
+> > central 3264x2448 part into the 3280x2464 frame.
 > >
-> >    required:
-> >      - compatible
-> > @@ -34,7 +35,9 @@ select:
-> >  properties:
-> >    compatible:
-> >      items:
-> > -      - const: sifive,fu540-c000-ccache
-> > +      - enum:
-> > +          - sifive,fu540-c000-ccache
-> > +          - sifive,fu740-c000-ccache
-> >        - const: cache
-> >
-> >    cache-block-size:
-> > @@ -53,9 +56,15 @@ properties:
-> >
-> >    interrupts:
-> >      description: |
-> > -      Must contain entries for DirError, DataError and DataFail signal=
-s.
-> > +      Must contain 3 entries for FU540 (DirError, DataError and DataFa=
-il) or
-> 4
-> > +      entries for other chips (DirError, DirFail, DataError, DataFail
-> > + signals)
->=20
-> While below is wrong, don't give descriptions that just repeat what the
-> schema says.
-
-Ok will remove the above description.
-
->=20
-> >      minItems: 3
-> > -    maxItems: 3
-> > +    maxItems: 4
-> > +    items:
-> > +      - description: DirError interrupt
-> > +      - description: DirFail interrupt
-> > +      - description: DataError interrupt
-> > +      - description: DataFail interrupt
->=20
-> This says DataFail is optional.
-
-I will move back to your initial suggestion to add the new entry "DirFail" =
-as the last index to keep the order same.
-Will make the corresponding changes in the driver and send a v3 patch.
-
-Thanks for your review.
-
-- Yash
-
+> > Best regards,
+> > Tomasz
