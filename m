@@ -2,145 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF9C2D4165
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA49F2D416C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730959AbgLILto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:49:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730948AbgLILtd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:49:33 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF67EC06179C
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 03:48:53 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id n4so1316862iow.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 03:48:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2HvHOHaWkWz9f5uu3P40vdNt+6mzTeQgyoxLze+Dl0g=;
-        b=I1eki8GcBzKwc6xYmgWPjUTM/SWL2w2UhFFkCM1ywq45hiSOF27YK1Ttq2UCWWlLep
-         WRiFmxJ7zST0ftQ+RvwBCKJr3+2kGLcCqq/lUtKokZ4wtM7hXm0kZze+MnsOEHvSPRaY
-         sCrSFQ24hoHl0uVoCY+9dL+jB5aamzpjmWOdcE//9+6iVXt3rndDMtB+ppknznc9pCK5
-         NAn0kgH1hLrm+h/aElA7Tc/co6LaYTiBSqO3zAZdFZXofejG/GjjFNWUjDDK00Q//m0k
-         yBHxuH2/vFrcU637DPm7wjocdhyLrINFue9373MoeDs2rcfCryJSZJQ8jcluQxsFR6OU
-         cAgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2HvHOHaWkWz9f5uu3P40vdNt+6mzTeQgyoxLze+Dl0g=;
-        b=SFeYvulQJwojXwHcftHf2r425ULEhhtH5cpGh9tJ6aGRPggXi+VZnYMnaWwkIi7IzB
-         nwvcC/mt+hHFOc7ScdcK6tzmFOWF0FxKJT41fjNQF1TMUx5R6yNKdqd+luN64S3sOw6S
-         nmET6KGA7I5ki3cMaVPmdq/P35xpf+NehmG6+WuOBs0icfi0vW3LEAcHm/cKtktJxH+h
-         tYIoT+Jw0ebAx/bp1P884UwO9Invdy4bn9W7yuDSoC+aPHxXi0I6UMeBcyq7xZWpwL1G
-         pGYQFP2KgJiNbG84OyBGz+UYYG0SfDKrTxeUynVbwuu7xVCln8IA89sipJMKu01smH4N
-         acPA==
-X-Gm-Message-State: AOAM533GqGST7d0E0/+2kTapzmakF+tUHXX28mmaE+KWOEOBEn1B7fft
-        5qUvrtH5P6MSagh1XI4dSkoL+SFOmVfTQUzmZqrt9g==
-X-Google-Smtp-Source: ABdhPJzDuGvTStBIZ/1Plqa1/cjaQJaRQHy1Es4XzEExZpLWTqkchkuQiCQdQ3DGAuzdUI1gqcAhktveSbV1z55+Bs0=
-X-Received: by 2002:a05:6602:13c5:: with SMTP id o5mr2294111iov.46.1607514533155;
- Wed, 09 Dec 2020 03:48:53 -0800 (PST)
+        id S1730842AbgLILwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:52:05 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:63180 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730684AbgLILvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 06:51:47 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Crb3W3LDYz9vBMV;
+        Wed,  9 Dec 2020 12:51:03 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id PpTAKL4yDMRD; Wed,  9 Dec 2020 12:51:03 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Crb3W2CJGz9vBMT;
+        Wed,  9 Dec 2020 12:51:03 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1CC498B7E6;
+        Wed,  9 Dec 2020 12:51:04 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id NZt4qmfxD-eb; Wed,  9 Dec 2020 12:51:04 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6657E8B7DB;
+        Wed,  9 Dec 2020 12:51:03 +0100 (CET)
+Subject: Re: [PATCH v1 2/6] powerpc/8xx: Always pin kernel text TLB
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <e796c5fcb5898de827c803cf1ab8ba1d7a5d4b76.1606231483.git.christophe.leroy@csgroup.eu>
+ <203b89de491e1379f1677a2685211b7c32adfff0.1606231483.git.christophe.leroy@csgroup.eu>
+ <87lfe7s1j3.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <a726961f-f440-b553-6c46-341a860dc90a@csgroup.eu>
+Date:   Wed, 9 Dec 2020 12:50:09 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201209114440.62950-1-fparent@baylibre.com> <20201209114440.62950-2-fparent@baylibre.com>
-In-Reply-To: <20201209114440.62950-2-fparent@baylibre.com>
-From:   Fabien Parent <fparent@baylibre.com>
-Date:   Wed, 9 Dec 2020 12:48:42 +0100
-Message-ID: <CAOwMV_yFukOeH9k3DDWJv3RWYV3-VEgQR=xS7art2VR421Ynjw@mail.gmail.com>
-Subject: =?UTF-8?Q?Re=3A_=5BPATCH_v2_2=2F2=5D_=F0=9F=93=A4_arm64=3A_dts=3A_mediatek=3A_mt8516?=
-        =?UTF-8?Q?=3A_add_support_for_APDMA?=
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87lfe7s1j3.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, resending without the unicode symbol in the title
 
-On Wed, Dec 9, 2020 at 12:44 PM Fabien Parent <fparent@baylibre.com> wrote:
->
-> Add support the APDMA IP on MT8516. APDMA is a DMA controller
-> for UARTs.
->
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
->
-> V2: Add missing dma-names properties on uart nodes
->
->  arch/arm64/boot/dts/mediatek/mt8516.dtsi | 30 ++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8516.dtsi b/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-> index e6e4d9d60094..b80e95574bef 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-> @@ -276,6 +276,27 @@ gic: interrupt-controller@10310000 {
->                                 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
->                 };
->
-> +               apdma: dma-controller@11000480 {
-> +                       compatible = "mediatek,mt8516-uart-dma",
-> +                                    "mediatek,mt6577-uart-dma";
-> +                       reg = <0 0x11000480 0 0x80>,
-> +                             <0 0x11000500 0 0x80>,
-> +                             <0 0x11000580 0 0x80>,
-> +                             <0 0x11000600 0 0x80>,
-> +                             <0 0x11000980 0 0x80>,
-> +                             <0 0x11000a00 0 0x80>;
-> +                       interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>,
-> +                                    <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>,
-> +                                    <GIC_SPI 98 IRQ_TYPE_LEVEL_LOW>,
-> +                                    <GIC_SPI 99 IRQ_TYPE_LEVEL_LOW>,
-> +                                    <GIC_SPI 100 IRQ_TYPE_LEVEL_LOW>,
-> +                                    <GIC_SPI 101 IRQ_TYPE_LEVEL_LOW>;
-> +                       dma-requests = <6>;
-> +                       clocks = <&topckgen CLK_TOP_APDMA>;
-> +                       clock-names = "apdma";
-> +                       #dma-cells = <1>;
-> +               };
-> +
->                 uart0: serial@11005000 {
->                         compatible = "mediatek,mt8516-uart",
->                                      "mediatek,mt6577-uart";
-> @@ -284,6 +305,9 @@ uart0: serial@11005000 {
->                         clocks = <&topckgen CLK_TOP_UART0_SEL>,
->                                  <&topckgen CLK_TOP_UART0>;
->                         clock-names = "baud", "bus";
-> +                       dmas = <&apdma 0
-> +                               &apdma 1>;
-> +                       dma-names = "tx", "rx";
->                         status = "disabled";
->                 };
->
-> @@ -295,6 +319,9 @@ uart1: serial@11006000 {
->                         clocks = <&topckgen CLK_TOP_UART1_SEL>,
->                                  <&topckgen CLK_TOP_UART1>;
->                         clock-names = "baud", "bus";
-> +                       dmas = <&apdma 2
-> +                               &apdma 3>;
-> +                       dma-names = "tx", "rx";
->                         status = "disabled";
->                 };
->
-> @@ -306,6 +333,9 @@ uart2: serial@11007000 {
->                         clocks = <&topckgen CLK_TOP_UART2_SEL>,
->                                  <&topckgen CLK_TOP_UART2>;
->                         clock-names = "baud", "bus";
-> +                       dmas = <&apdma 4
-> +                               &apdma 5>;
-> +                       dma-names = "tx", "rx";
->                         status = "disabled";
->                 };
->
-> --
-> 2.29.2
->
+
+Le 09/12/2020 à 11:43, Michael Ellerman a écrit :
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>> There is no big poing in not pinning kernel text anymore, as now
+>> we can keep pinned TLB even with things like DEBUG_PAGEALLOC.
+>>
+>> Remove CONFIG_PIN_TLB_TEXT, making it always right.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/powerpc/Kconfig               |  3 +--
+>>   arch/powerpc/kernel/head_8xx.S     | 20 +++-----------------
+>>   arch/powerpc/mm/nohash/8xx.c       |  3 +--
+>>   arch/powerpc/platforms/8xx/Kconfig |  7 -------
+>>   4 files changed, 5 insertions(+), 28 deletions(-)
+>>
+> ...
+>> diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
+>> index 231ca95f9ffb..19a3eec1d8c5 100644
+>> --- a/arch/powerpc/mm/nohash/8xx.c
+>> +++ b/arch/powerpc/mm/nohash/8xx.c
+>> @@ -186,8 +186,7 @@ void mmu_mark_initmem_nx(void)
+>>   	mmu_mapin_ram_chunk(0, boundary, PAGE_KERNEL_TEXT, false);
+>>   	mmu_mapin_ram_chunk(boundary, einittext8, PAGE_KERNEL, false);
+>>   
+>> -	if (IS_ENABLED(CONFIG_PIN_TLB_TEXT))
+>> -		mmu_pin_tlb(block_mapped_ram, false);
+>> +	mmu_pin_tlb(block_mapped_ram, false);
+>>   }
+> 
+> This broke mpc885_ads_defconfig with:
+
+:surprise:
+
+How did I get it working ? Anyway, thanks for fixing it.
+
+Christophe
+
+
+> 
+>    ld: arch/powerpc/mm/nohash/8xx.o: in function `mmu_mark_initmem_nx':
+>    /home/michael/linux/arch/powerpc/mm/nohash/8xx.c:189: undefined reference to `mmu_pin_tlb'
+>    make[1]: *** [/home/michael/linux/Makefile:1164: vmlinux] Error 1
+>    make: *** [Makefile:185: __sub-make] Error 2
+> 
+> Fixed by:
+> 
+> diff --git a/arch/powerpc/kernel/head_8xx.S b/arch/powerpc/kernel/head_8xx.S
+> index 35707e86c5f3..52702f3db6df 100644
+> --- a/arch/powerpc/kernel/head_8xx.S
+> +++ b/arch/powerpc/kernel/head_8xx.S
+> @@ -702,7 +702,6 @@ FixupDAR:/* Entry point for dcbx workaround. */
+>   	mtspr	SPRN_DER, r8
+>   	blr
+>   
+> -#ifdef CONFIG_PIN_TLB
+>   _GLOBAL(mmu_pin_tlb)
+>   	lis	r9, (1f - PAGE_OFFSET)@h
+>   	ori	r9, r9, (1f - PAGE_OFFSET)@l
+> @@ -802,7 +801,6 @@ _GLOBAL(mmu_pin_tlb)
+>   	mtspr	SPRN_SRR1, r10
+>   	mtspr	SPRN_SRR0, r11
+>   	rfi
+> -#endif /* CONFIG_PIN_TLB */
+>   
+>   /*
+>    * We put a few things here that have to be page-aligned.
+> 
+> 
+> cheers
+> 
