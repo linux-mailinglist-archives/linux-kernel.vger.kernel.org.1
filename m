@@ -2,141 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A21F2D431F
+	by mail.lfdr.de (Postfix) with ESMTP id C6FA62D4320
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732257AbgLINVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:21:51 -0500
-Received: from mout.gmx.net ([212.227.17.20]:37853 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728121AbgLINVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:21:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1607520006;
-        bh=zAnsVzlKtDFf8rlLGKNYmI2t6mkp8AFROP2Nh83D9wg=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=EouvbU0ImX2++An5OBOZFOm10xCDo4svsKIWRMjnRTchfoQkTZGKKuKUrErkghdFS
-         JBhXToGhRjPH+dr73QGZBHjiSLW2QJp7sF5yWkr13gz9WA8k/flCOtnNGVyT1vDBzI
-         +9+FhCUSE5Ia5nsiiuN85XM5k/q4VDPyuSn/6lCs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [87.130.101.138] ([87.130.101.138]) by web-mail.gmx.net
- (3c-app-gmx-bap29.server.lan [172.19.172.99]) (via HTTP); Wed, 9 Dec 2020
- 14:20:05 +0100
+        id S1732339AbgLINWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:22:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728121AbgLINV4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 08:21:56 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A15C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 05:21:15 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id jx16so2055657ejb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 05:21:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IyiTZpFMWvho+JM2+aig10THM9jkmZ2YbNfJyb9npHk=;
+        b=e+keF/stQgGiu+hxG7sTEMXYfX4O61ecoiPDsUDGl3dOrWutrsLAhY/lDNFIcB7aoR
+         Pb6hl5Z/QbIGpUtieTf0/gvDkDxoU8RbG1JpTH86/55vEwQLnufSeZgc3oszltnWZTtY
+         sPmHXotGIeyyf6NVDT8FFLHv0Hkhc9TlY+JNg0BGxRsq9H+Z4thgiRgtC96fSFVGiv0z
+         dCg4N1ghLuefyX4zqAilkFhreeOWjqOgBfxNEHwFK4qA85n47gRCd3FH5iPLwH7bsYoq
+         lsPIWWgVc0/aoIr2a2UFtPrTlFEClKiBA6IsqxJgB312ZjUvR0CXZEw9gvlJBjKOaFPo
+         6sWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IyiTZpFMWvho+JM2+aig10THM9jkmZ2YbNfJyb9npHk=;
+        b=HR3lmQA+2t2cYobZMchxTwx4FyHBAorbLr0Fd7nhp35uYPzmwbNqc242tlhiv+ZOBw
+         R4+/DjzsCzIbLbFC9pfEiNA2NDXiT0AJ/9OwlrbSb+Poe81CaIzTFjBZ827couSQgZ2i
+         I4JINW0PUet9o+5BqmOBXYngwqIReML+AqRwp5i1T/jQTmS8ehQdlRhe06DyhI3ofI2S
+         xe6q45ns3xcLS/KBrZg28/++/8rxTYBTLVV1J2x5dY5kS7gl9Ko0KUQxVR8z1jLGhcWP
+         DpWbtIVG8d/tLd/ywMtlO+daMyKvGBKw7AF7zCeHhHiAIkQAPQwV184wfEXI0Usb8Gt+
+         A9Nw==
+X-Gm-Message-State: AOAM533a+fkvVq5nU5sn0w6aHsZyzD7ScpFCRPfG5fJvbDy06FjLKrol
+        6kC4HgOvAUEUbZV4LhBIWD9bVYrGU6I=
+X-Google-Smtp-Source: ABdhPJwI+x4mpGBusS3qLS30R3YRoEABqmd7Fq3rlTuowRM0vtGfvezAW23It/hbYBGzknQcuz9lkA==
+X-Received: by 2002:a17:906:2445:: with SMTP id a5mr2100219ejb.330.1607520074363;
+        Wed, 09 Dec 2020 05:21:14 -0800 (PST)
+Received: from skbuf ([188.25.2.120])
+        by smtp.gmail.com with ESMTPSA id o11sm1525640ejh.55.2020.12.09.05.21.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 05:21:13 -0800 (PST)
+Date:   Wed, 9 Dec 2020 15:21:11 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Aswin C <realc@protonmail.com>
+Cc:     Aswin C <aswinraman2013@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+Subject: Re: [PATCH] net: dsa: sja1105: Remove an unprofessional word from
+ the code comments
+Message-ID: <20201209132111.ofpwfofsu5yiuetw@skbuf>
+References: <20201208103332.5095-1-realc@protonmail.com>
+ <20201208123515.wb72g6zwtxlawp34@skbuf>
+ <-gMuTlvCAcfhIMqI1V4ylxBXKdWffUwznP_0cODJaam4l3hyfEFTLkZUZMLQV23BCeO8S6vTh1OfN0yOi7M5PhfX0rOX8SkL9JknVM2nKOA=@protonmail.com>
 MIME-Version: 1.0
-Message-ID: <trinity-d6d039f6-44e5-4c30-ad17-7fa4dbedcf7e-1607520005953@3c-app-gmx-bap29>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sean@mess.org, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Aw: Re: [PATCH v3] pwm: bcm2835: Support apply function for atomic
- configuration
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 9 Dec 2020 14:20:05 +0100
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20201209070516.yw5bpsh474k7mnfx@pengutronix.de>
-References: <1607464905-16630-1-git-send-email-LinoSanfilippo@gmx.de>
- <20201209070516.yw5bpsh474k7mnfx@pengutronix.de>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:NeLwQDnZjDRL8pPhrfxRVEcfkhdsfwiPMYeKrVMjV4HKBqVeDxW4BRQnyU3BTU4pwIzdo
- qwj/9n0s31LBsymOdTEFiRxbi6ryFNc1khyxzDSHWG8JFR9G+VcblhAMo5xQUakJ/WdZ7D/39/qi
- PhhxzrZU4SwT0RW3mp/UVKYYh3LJagKxsMMMR3yWv7KGJZXmt+SdndWlfMykGEM9HkU3ZXazsCcs
- Hc6MyAghCIIa7VrXzxjOYzobL3sRWtrsOHxpOQW+QHI/Bve4opN+yDkJp4VeILr8jRX1Z+OUjdKG
- ek=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QFlLyWexZ84=:MoIzZjYkgsnTrcAqSQR4Zl
- n8e2SQ8lc9qo1MUO9BzPwcAIJjDb0D3lU9Kg6vdzuCfHjRI3V1rb8YO2WkhT1Se4oEB9DTaOT
- wE5X1if1qsuVz9nS75O4BJO3W24V2hlswA+7LDA0x/2rdwyLkZ0SqCROlyJTklIsbnQvp+CUk
- be80Xo3sOSBVet7IXChXIlkFmQRSTBfcvlehJ749JAIqvGBPokNi5Mz+IH7yYWB5d+PXkE/xo
- ffhHBrT7RwoYlraojMj6i2ypXOaFYg4YexjJvIPRJphV7SuMtGhHDCumbEOKgr0NOmWPhsryo
- 9lPhMgW2193bh0NprsWxplha9HNVJIKt6fgHzhluWJIGeKAXGKdBAi5I9OtuYfKc3sI1VvsO/
- rmSdTz7j+SozQ+cxLu0QInfr+g2EUj+s0FszW4xPr07t/kKs/Uh4SyD2yTE9+TB/oWU7qvwyM
- B+KJ6D+BbZwW5gkzZnFQ/7OcWv9Jt/E/35HR/DuHpVyhi8fGqWXmLZG14/NR421TCIj9F+4E2
- 7J5/FApM9vANn0NuDHtkjr7choqazVRx8vxqLS/Z53uCV+GOxLkmDVqbTEpQ44RLPYp0c/Yo7
- 20aKSxAMq/BBQ=
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <-gMuTlvCAcfhIMqI1V4ylxBXKdWffUwznP_0cODJaam4l3hyfEFTLkZUZMLQV23BCeO8S6vTh1OfN0yOi7M5PhfX0rOX8SkL9JknVM2nKOA=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uwe
+Hi Aswin,
 
-> Hello Lino,
+On Wed, Dec 09, 2020 at 11:54:20AM +0000, Aswin C wrote:
+> Hello. Thank you very much for the reply.
 >
-> On Tue, Dec 08, 2020 at 11:01:45PM +0100, Lino Sanfilippo wrote:
-> > Use the newer .apply function of pwm_ops instead of .config, .enable,
-> > .disable and .set_polarity. This guarantees atomic changes of the pwm
-> > controller configuration. It also reduces the size of the driver.
-> >
-> > Since now period is a 64 bit value, add an extra check to reject perio=
-ds
-> > that exceed the possible max value for the 32 bit register.
-> >
-> > This has been tested on a Raspberry PI 4.
->
-> This looks right, just two small nitpicks below.
->
+> Firstly, yes, it's my first contribution and apologies for making some
+> mistakes and I'd like to thank you for being kind and pointing it out.
 
->
-> This cast isn't necessary. (And if it was, I *think* the space between
-> "(u32)" and "period" is wrong. But my expectation that checkpatch warns
-> about this is wrong, so take this with a grain of salt.)
+No problem. Nobody is born educated, it is through mistakes that we learn.
+There is also a convention for replying to email, I might add. It is to
+trim down the quoted portion only to what you are replying to, and to
+reply below it (and not above, aka top-posting), and to use plain text
+and not HTML. This is how your email looks like in plain text. It
+doesn't look pleasant to read:
+https://lore.kernel.org/lkml/-gMuTlvCAcfhIMqI1V4ylxBXKdWffUwznP_0cODJaam4l3hyfEFTLkZUZMLQV23BCeO8S6vTh1OfN0yOi7M5PhfX0rOX8SkL9JknVM2nKOA=@protonmail.com/
+Try to configure your email client to use plain text.
 
-OK, I will omit the cast in the next patch version (it was primarily
-meant for documentation purposes but now it seems to me rather
-unusual for kernel code)
+> I came to know about this driver in a casual discussion among my peers
+> when one of them pointed out the presence of this particular word on
+> the driver.
 
->
-> > -	value =3D readl(pc->base + PWM_CONTROL);
-> > -	value &=3D ~(PWM_ENABLE << PWM_CONTROL_SHIFT(pwm->hwpwm));
-> > -	writel(value, pc->base + PWM_CONTROL);
-> > -}
-> > +	/* set duty cycle */
-> > +	val =3D DIV_ROUND_CLOSEST_ULL(state->duty_cycle, scaler);
-> > +	writel(val, pc->base + DUTY(pwm->hwpwm));
-> >
-> > -static int bcm2835_set_polarity(struct pwm_chip *chip, struct pwm_dev=
-ice *pwm,
-> > -				enum pwm_polarity polarity)
-> > -{
-> > -	struct bcm2835_pwm *pc =3D to_bcm2835_pwm(chip);
-> > -	u32 value;
-> > +	/* set polarity */
-> > +	val =3D readl(pc->base + PWM_CONTROL);
-> >
-> > -	value =3D readl(pc->base + PWM_CONTROL);
-> > +	if (state->polarity =3D=3D PWM_POLARITY_NORMAL)
-> > +		val &=3D ~(PWM_POLARITY << PWM_CONTROL_SHIFT(pwm->hwpwm));
-> > +	else
-> > +		val |=3D PWM_POLARITY << PWM_CONTROL_SHIFT(pwm->hwpwm);
-> >
-> > -	if (polarity =3D=3D PWM_POLARITY_NORMAL)
-> > -		value &=3D ~(PWM_POLARITY << PWM_CONTROL_SHIFT(pwm->hwpwm));
-> > +	/* enable/disable */
-> > +	if (state->enabled)
-> > +		val |=3D PWM_ENABLE << PWM_CONTROL_SHIFT(pwm->hwpwm);
-> >  	else
-> > -		value |=3D PWM_POLARITY << PWM_CONTROL_SHIFT(pwm->hwpwm);
-> > +		val &=3D ~(PWM_ENABLE << PWM_CONTROL_SHIFT(pwm->hwpwm));
-> >
-> > -	writel(value, pc->base + PWM_CONTROL);
-> > +	writel(val, pc->base + PWM_CONTROL);
-> >
-> >  	return 0;
-> >  }
-> >
-> > +
->
-> I wouldn't have added this empty line. But I guess that's subjective. Or
-> did you add this by mistake?
+Who are your peers and why do they care about the Linux driver for an
+automotive Ethernet switch?
 
-I cannot remember that the line was added by intention, so I am fine to re=
-move it.
+> I just thought that I'd try to help and get rid of that, if possible.
+> Nothing more.
 
-Thanks and regards,
-Lino
+So you do consider that getting rid of it is helpful. Please elaborate.
+
+> As you mentioned, I ran my eyes over drivers/net/dsa/sja1105/sja1105_tas.c
+> and the other files. Other than a very minor spelling error, I didn't
+> come across wording conventions like the one we are discussing about.
+
+Read more.
+
+> And yes, as you mentioned, "poorly organized" sounds perfect, too.
+
+Well, even though it may sound better to you, I am still not sure I
+agree with the change. To reiterate, "professional" was not a goal of
+this driver. There are other professional drivers for this hardware.
+It is all for fun.
+
+I find that suppressing negative emotions, anger, frustration, is not
+helpful, as it tends to only amplify them over time. Instead, learning
+to disguise aggressivity, controlling it, making it more subtle and
+never directing it towards people can be good ways to let it out.
+If I wasn't subtle enough or it really bothered you, I'm open to improve
+and do better next time, but you'll have to convince me.
+
+And this is not only about me. In general I believe that you will not
+receive a positive reaction from people when you point out to them that
+they should watch out for their language in circumstances that really do
+not make any difference to you. The linux mailing lists are an amazing
+place to learn from people. But engineers do not have good social
+skills. You need to make concessions to others' personalities before you
+could focus on the good part and learn from them. I think it would be a
+shame to start your contributions to the Linux kernel in this way, by
+making the language less vulgar. You sure won't be making any friends.
+There are plenty of other areas you could concentrate on.
+
+> I believe that not signing off and not sending it to all maintainers
+> is all, in the things I did wrong. So, I hope I can fix them and send
+> the patch as a reply to this thread.
+
+Do not send follow-up patches in reply to existing threads. They get
+lost by maintainers.
+Instead, use git send-email --cover-letter="PATCH v2 net-next" and be
+sure to send it to the maintainers and the networking mailing list.
