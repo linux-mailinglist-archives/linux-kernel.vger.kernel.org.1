@@ -2,186 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0112D4BD4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DB12D4BC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgLIU3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:29:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387727AbgLIU3C (ORCPT
+        id S2388478AbgLIU2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:28:41 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4239 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728450AbgLIU2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:29:02 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87255C061793
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 12:28:22 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id a109so2713599otc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 12:28:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a9oodgx96dNE52G7HAnQoVS4BjUM+0QDI3RZyqRo6JQ=;
-        b=W187LOtE+RHCqwlNXiHpy3CdUMT0GCU02YuJP39fNyxI/tNje4TnbFUawd0jTYkIFp
-         bvmiDH0g4Z1jTfGgO1/kDzoz4xo5kX1ihX+UkO4XXeM3i8uuvVBWJYEiQn5fu2gbv4vw
-         tIBMKUE10LuxhfE66JpOXlBAgfjzdxnS+Ooc9+PgfQprLX0pxAO48amtyIsjatHaHhcg
-         7gHHR4Cf3bRnBtKeg9+XZlBJK0bmI9CBvl49EUvxStFBCeqtujaiNHbqLnEZ4ejexuac
-         7dBhOLXaKTbO5RsEMhpI+VjDoo2kTkuII3x9xN54G7gSd+inXFdI44wUQA+pE6GVTLPG
-         aiGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a9oodgx96dNE52G7HAnQoVS4BjUM+0QDI3RZyqRo6JQ=;
-        b=AYLIy1dzJabX1OfBhw9665B22VnQplqBP003Z5nue+IJca7BtCjbsuhoEQYNumwp/d
-         QIMTMkoVakzH1w1H1f5dC/AJS3Krl4FMUz7KnwBjwxSTgaAknXcZdcKQvwWUZjzrJNx9
-         QoHa/yQxfgi5GbB5EqYzVGG72N+4IIHGm2SP6ZeXAUDnclUE+dCFeA82MadcyMc3AM5C
-         1fJhVphD+qX3cF1D6MmwoNRnGdeehsdJ6rIpcha91MZUzPjfLsAOVGUhQzARMQ7pbJLP
-         kaSdAOkCAfviD4sYQ6UDpMZVMUUiBDQX6S3QAG/3b47rvaiYcESEPiFHvyEYBLZQIukH
-         IQ/A==
-X-Gm-Message-State: AOAM530ydkTMalkHrnY/QEAtt+hsPCgNvVOyIwvuCckWA75c9qKSoof2
-        mcTb8X7lF2q2hvQ1YKduVO4ECg==
-X-Google-Smtp-Source: ABdhPJxLeRoMsBE6D7ok4ULm9GgSEBt+PzF/4irRRS7oD2zpgkJoDZIZHIb8/FvNGaUJfndGFLa6zA==
-X-Received: by 2002:a05:6830:1c62:: with SMTP id s2mr3364351otg.177.1607545701571;
-        Wed, 09 Dec 2020 12:28:21 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id y10sm601332ota.42.2020.12.09.12.28.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 12:28:20 -0800 (PST)
-Date:   Wed, 9 Dec 2020 14:28:18 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] drm/panel: Make backlight attachment lazy
-Message-ID: <X9EzYtuR+EwliYrv@builder.lan>
-References: <20201208044446.973238-1-bjorn.andersson@linaro.org>
- <X891/LvEJT1bLtjH@ulmo>
- <X8/36HXL1IYPXA0J@builder.lan>
- <20201208235249.GD401619@phenom.ffwll.local>
+        Wed, 9 Dec 2020 15:28:40 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fd133500001>; Wed, 09 Dec 2020 12:28:00 -0800
+Received: from [10.2.90.244] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Dec
+ 2020 20:27:59 +0000
+Subject: Re: [PATCH v1 2/7] dt-bindings: spi: Add Tegra QSPI device tree
+ binding
+To:     Rob Herring <robh@kernel.org>
+CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <1606857168-5839-1-git-send-email-skomatineni@nvidia.com>
+ <1606857168-5839-3-git-send-email-skomatineni@nvidia.com>
+ <20201209172643.GA638607@robh.at.kernel.org>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <1a9f0391-321d-2463-827b-284bba38e07d@nvidia.com>
+Date:   Wed, 9 Dec 2020 12:28:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208235249.GD401619@phenom.ffwll.local>
+In-Reply-To: <20201209172643.GA638607@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607545680; bh=a+YYFPeNAX9ceupGi7mBDJuGY63SjjffyHHchHc5KX8=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=hua9Xkyt6+aiMEOH4HBXf5O9Vzj41eAyftRgSv8h23S9VNLzYbbuJGRDFgu5AgdQX
+         VTHR3xS6dby6Obx+AHJItteN5Smb+i2FQbJ+Xr/65Pb7F6zG8Jm1tNtefH2HLn9cQ5
+         EzcNR3j23l0mttyWY7DdKVlbxQukTtgOXUanIuQtsjF4ReJtX9GwaKBsMhuYLo2Lga
+         FoXaBb7c3+Uwqp/xfuTVxuapPJyh4NC5jdkfQAocs8CSK49yQ4nqMBUD4ESmu5FLYa
+         zCL3YJxIUzhu0aAa3AJLLSVwrkLotacjz8R/jQ8jdiGHKKdItkomFdcSuXVjG0Qykx
+         D9a8UI5P2THIA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 08 Dec 17:52 CST 2020, Daniel Vetter wrote:
 
-> On Tue, Dec 08, 2020 at 04:02:16PM -0600, Bjorn Andersson wrote:
-> > On Tue 08 Dec 06:47 CST 2020, Thierry Reding wrote:
-> > 
-> > > On Mon, Dec 07, 2020 at 10:44:46PM -0600, Bjorn Andersson wrote:
-> > > > Some bridge chips, such as the TI SN65DSI86 DSI/eDP bridge, provides
-> > > > means of generating a PWM signal for backlight control of the attached
-> > > > panel. The provided PWM chip is typically controlled by the
-> > > > pwm-backlight driver, which if tied to the panel will provide DPMS.
-> > > > 
-> > > > But with the current implementation the panel will refuse to probe
-> > > > because the bridge driver has yet to probe and register the PWM chip,
-> > > > and the bridge driver will refuse to probe because it's unable to find
-> > > > the panel.
-> > > 
-> > > What you're describing is basically a circular dependency. Can't we get
-> > > rid of that in some other way? Why exactly does the bridge driver refuse
-> > > to probe if the panel can't be found?
-> > > 
-> > > In other words, I see how the bridge would /use/ the panel in that it
-> > > forward a video stream to it. But how does the panel /use/ the bridge?
-> > > 
-> > 
-> > Yes, this is indeed a circular dependency between the components.
-> > 
-> > The involved parts are:
-> > * the bridge driver that implements the PWM chip probe defers on
-> >   drm_of_find_panel_or_bridge() failing to find the panel.
-> > * the pwm-backlight driver that consumes the PWM channel probe defer
-> >   because the pwm_chip was not registered by the bridge.
-> > * the panel that uses the backlight for DPMS purposes probe defer
-> >   because drm_panel_of_backlight() fails to find the pwm-backlight.
-> > 
-> > I looked at means of postponing drm_of_find_panel_or_bridge() to
-> > drm_bridge_funcs->attach(), but at that time "deferral" would be fatal.
-> > I looked at registering the pwm_chip earlier, but that would depend on a
-> > guarantee of the pwm-backlight and panel driver to probe concurrently.
-> > And the current solution of not tying the backlight to the panel means
-> > that when userspace decides to DPMS the display the backlight stays on.
-> > 
-> > 
-> > The proposed solution (hack?) means that DPMS operations happening
-> > before the pwm-backlight has probed will be missed, so it's not perfect.
-> > It does however allow the backlight on my laptop to turn off, which is a
-> > big improvement.
-> > 
-> > But I'm certainly welcome to suggestions.
-> 
-> Entirely hand-waving, why doesn't the following work:
-> 
-> 1. driver for the platform device which is the bridge loads
-> 2. that platform driver registers the pwm
-> 3. it registers some magic for later on (more below)
-> 4. panel driver has deferred loading until step 2 happened
-> 5. panel driver registers drm_panel
-> 6. the magic from step 3 picks up (after having been deferred for a few
-> times probably) grabs the panel, and sets up the actual drm_bridge driver
-> 
-> Everyone happy, or not? From the description it looks like the problem
-> that the pwm that we need for the backlight is tied to the same driver as
-> the drm_bridge, and always torn down too if the drm_bridge setup fails
-> somehow for a reason. And that reason is the circular dependency this
-> creates.
-> 
-> Now for the magic in step 3, there's options:
-> - change DT to split out that pwm as a separate platform_device, that way
->   bridge and panel can load indepedently (hopefully)
-> 
-
-This is an i2c device, so describing it multiple times would mean we
-have multiple devices with the same address...
-
-> - convert bridge to a multi-function device (mfd), essentially a way to
->   instantiate more devices with their drivers at runtime. Then the actual
->   pwm and drm_bridge parts of your bridge driver bind against those
->   sub-functions, and can defer indepedently
-> 
-
-But, this sounds reasonable and would rely on the existing probe
-deferral logic and if there's ever any improvements in this area we
-would directly benefit from it.
-
-> - we could create a callback/wait function for "pls wait for any panel to
->   show up". Then your bridge driver could launch a work_struct with that
->   wait function, which will do the bridge setup once the panel has shown
->   up. The pwm will be registered right away. It's essentially hand-rolling
->   EPROBE_DEFERRED for work_struct in drm/panel. Maybe we might even have
->   that exported from the driver core, e.g.
-> 
-> register_bridge_fn(struct work *)
-> {
-> 	do_wait_probe_defer();
-> 	panel = drm_of_find_panel_or_bridge();
-> 	if (!panel) {
-> 		schedule_work(); /* want to restart the work so it can be stopped on driver unload */
-> 		return;
-> 	}
-> 
-> 	/* we have the panel now, register drm_bridge */
-> }
-> 
-> - cobble something together with component.c, but that's more for
->   collecting unrelated struct device into a logical one than splitting it
->   up more.
-> 
-> tldr; I think you can split this loop here at the bridge by untangling the
-> pwm from the drm_bridge part sufficiently.
-
-Yes, it seems like a reasonable path forward. But I wanted some input
-before refactoring the whole thing.
-
-Thank you,
-Bjorn
+On 12/9/20 9:26 AM, Rob Herring wrote:
+> On Tue, Dec 01, 2020 at 01:12:43PM -0800, Sowjanya Komatineni wrote:
+>> This patch adds YAML based device tree binding document for Tegra
+>> QSPI driver.
+>>
+>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>> ---
+>>   .../devicetree/bindings/spi/nvidia,tegra-qspi.yaml | 77 ++++++++++++++++++++++
+>>   1 file changed, 77 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra-qspi.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/spi/nvidia,tegra-qspi.yaml b/Documentation/devicetree/bindings/spi/nvidia,tegra-qspi.yaml
+>> new file mode 100644
+>> index 0000000..038a085
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/spi/nvidia,tegra-qspi.yaml
+>> @@ -0,0 +1,77 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/spi/nvidia,tegra-qspi.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Tegra Quad SPI Controller
+>> +
+>> +maintainers:
+>> +  - Thierry Reding <thierry.reding@gmail.com>
+>> +  - Jonathan Hunter <jonathanh@nvidia.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - nvidia,tegra210-qspi
+>> +      - nvidia,tegra186-qspi
+>> +      - nvidia,tegra194-qspi
+>> +
+>> +  reg:
+>> +    items:
+>> +      - description: QSPI registers
+> Just 'maxItems: 1'
+>
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +  clock-names:
+>> +    items:
+>> +      - const: qspi
+> Kind of a pointless name.
+Thanks Rob for feedback. Do you mean to change name something like 
+qspi-clk instead of qspi?
+>
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +
+>> +  reset-names:
+>> +    minItems: 1
+>> +    items:
+>> +      - const: qspi
+> Same here.
+>
+>> +
+>> +  resets:
+>> +    maxItems: 1
+>> +
+>> +  dmas:
+>> +    maxItems: 2
+>> +
+>> +  dma-names:
+>> +    items:
+>> +      - const: rx
+>> +      - const: tx
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - interrupts
+>> +  - clock-names
+>> +  - clocks
+>> +  - reset-names
+>> +  - resets
+>> +
+>> +additionalProperties: true
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/clock/tegra210-car.h>
+>> +    #include <dt-bindings/reset/tegra210-car.h>
+>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +
+>> +    spi@70410000 {
+>> +            compatible = "nvidia,tegra210-qspi";
+>> +            reg = <0x70410000 0x1000>;
+>> +            interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+>> +            clocks = <&tegra_car TEGRA210_CLK_QSPI>;
+>> +            clock-names = "qspi";
+>> +            resets = <&tegra_car 211>;
+>> +            reset-names = "qspi";
+>> +            dmas = <&apbdma 5>, <&apbdma 5>;
+>> +            dma-names = "rx", "tx";
+>> +    };
+>> -- 
+>> 2.7.4
+>>
