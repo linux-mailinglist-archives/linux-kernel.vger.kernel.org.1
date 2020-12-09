@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246892D3CEA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F14042D3CF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbgLIIGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:06:09 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:47508 "EHLO
+        id S1728904AbgLIIGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:06:21 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:47650 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728843AbgLIIFt (ORCPT
+        with ESMTP id S1728860AbgLIIGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:05:49 -0500
-X-UUID: 3a67baf3d30d431cb8864dbbde3868c5-20201209
-X-UUID: 3a67baf3d30d431cb8864dbbde3868c5-20201209
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        Wed, 9 Dec 2020 03:06:02 -0500
+X-UUID: 98d6b5e88fc4486ea459ffa97c9c8ccf-20201209
+X-UUID: 98d6b5e88fc4486ea459ffa97c9c8ccf-20201209
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
         (envelope-from <yong.wu@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2053061292; Wed, 09 Dec 2020 16:05:11 +0800
+        with ESMTP id 2117350880; Wed, 09 Dec 2020 16:05:20 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 9 Dec 2020 16:05:07 +0800
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 9 Dec 2020 16:05:18 +0800
 Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 9 Dec 2020 16:05:10 +0800
+ Transport; Wed, 9 Dec 2020 16:05:18 +0800
 From:   Yong Wu <yong.wu@mediatek.com>
 To:     Joerg Roedel <joro@8bytes.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -40,9 +40,9 @@ CC:     Krzysztof Kozlowski <krzk@kernel.org>,
         <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
         <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
         <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
-Subject: [PATCH v5 25/27] iommu/mediatek: Adjust the structure
-Date:   Wed, 9 Dec 2020 16:01:00 +0800
-Message-ID: <20201209080102.26626-26-yong.wu@mediatek.com>
+Subject: [PATCH v5 26/27] iommu/mediatek: Add mt8192 support
+Date:   Wed, 9 Dec 2020 16:01:01 +0800
+Message-ID: <20201209080102.26626-27-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20201209080102.26626-1-yong.wu@mediatek.com>
 References: <20201209080102.26626-1-yong.wu@mediatek.com>
@@ -53,94 +53,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "struct mtk_iommu_data *" in the "struct mtk_iommu_domain",
-reduce the call mtk_iommu_get_m4u_data().
-No functional change.
+Add mt8192 iommu support.
+
+For multi domain, Add 1M gap for the vdec domain size. That is because
+vdec HW has a end address register which require (start_addr +
+len) rather than (start_addr + len - 1). Take a example, if the start_addr
+is 0xfff00000, size is 0x100000, then the end_address is 0xfff00000 +
+0x100000 = 0x1 0000 0000. but the register only is 32bit. thus HW will get
+the end address is 0. To avoid this issue, I add 1M gap for this.
 
 Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 ---
- drivers/iommu/mtk_iommu.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/iommu/mtk_iommu.c | 22 ++++++++++++++++++++++
+ drivers/iommu/mtk_iommu.h |  1 +
+ 2 files changed, 23 insertions(+)
 
 diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index 160690d56bd2..92c1e2f0af89 100644
+index 92c1e2f0af89..799adf7b39d3 100644
 --- a/drivers/iommu/mtk_iommu.c
 +++ b/drivers/iommu/mtk_iommu.c
-@@ -126,6 +126,7 @@ struct mtk_iommu_domain {
- 	struct io_pgtable_cfg		cfg;
- 	struct io_pgtable_ops		*iop;
- 
-+	struct mtk_iommu_data		*data;
- 	struct iommu_domain		domain;
+@@ -174,6 +174,16 @@ static const struct mtk_iommu_iova_region single_domain[] = {
+ 	{.iova_base = 0,		.size = SZ_4G},
  };
  
-@@ -353,7 +354,7 @@ static void mtk_iommu_config(struct mtk_iommu_data *data,
- 
- static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom)
- {
--	struct mtk_iommu_data *data = mtk_iommu_get_m4u_data();
-+	struct mtk_iommu_data *data = dom->data;
- 
- 	/* Use the exist domain as there is only one m4u pgtable here. */
- 	if (data->m4u_dom) {
-@@ -402,6 +403,7 @@ static struct iommu_domain *mtk_iommu_domain_alloc(unsigned type)
- 	if (iommu_get_dma_cookie(&dom->domain))
- 		goto  free_dom;
- 
-+	dom->data = data;
- 	if (mtk_iommu_domain_finalise(dom))
- 		goto  put_dma_cookie;
- 
-@@ -482,10 +484,9 @@ static int mtk_iommu_map(struct iommu_domain *domain, unsigned long iova,
- 			 phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
- {
- 	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
--	struct mtk_iommu_data *data = mtk_iommu_get_m4u_data();
- 
- 	/* The "4GB mode" M4U physically can not use the lower remap of Dram. */
--	if (data->enable_4GB)
-+	if (dom->data->enable_4GB)
- 		paddr |= BIT_ULL(32);
- 
- 	/* Synchronize with the tlb_lock */
-@@ -503,31 +504,32 @@ static size_t mtk_iommu_unmap(struct iommu_domain *domain,
- 
- static void mtk_iommu_flush_iotlb_all(struct iommu_domain *domain)
- {
--	mtk_iommu_tlb_flush_all(mtk_iommu_get_m4u_data());
-+	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
++static const struct mtk_iommu_iova_region mt8192_multi_dom[] = {
++	{ .iova_base = 0x0,		.size = SZ_4G},		/* disp: 0 ~ 4G */
++	#if IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT)
++	{ .iova_base = SZ_4G,		.size = SZ_4G - SZ_1M},	/* vdec: 4G ~ 8G gap: 1M */
++	{ .iova_base = SZ_4G * 2,	.size = SZ_4G - SZ_1M},	/* CAM/MDP: 8G ~ 12G */
++	{ .iova_base = 0x240000000ULL,	.size = 0x4000000},	/* CCU0 */
++	{ .iova_base = 0x244000000ULL,	.size = 0x4000000},	/* CCU1 */
++	#endif
++};
 +
-+	mtk_iommu_tlb_flush_all(dom->data);
- }
+ /*
+  * There may be 1 or 2 M4U HWs, But we always expect they are in the same domain
+  * for the performance.
+@@ -1035,12 +1045,24 @@ static const struct mtk_iommu_plat_data mt8183_data = {
+ 	.larbid_remap = {{0}, {4}, {5}, {6}, {7}, {2}, {3}, {1}},
+ };
  
- static void mtk_iommu_iotlb_sync(struct iommu_domain *domain,
- 				 struct iommu_iotlb_gather *gather)
- {
--	struct mtk_iommu_data *data = mtk_iommu_get_m4u_data();
-+	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
- 	size_t length = gather->end - gather->start;
++static const struct mtk_iommu_plat_data mt8192_data = {
++	.m4u_plat       = M4U_MT8192,
++	.flags          = HAS_BCLK | HAS_SUB_COMM | OUT_ORDER_WR_EN |
++			  WR_THROT_EN | IOVA_34_EN,
++	.inv_sel_reg    = REG_MMU_INV_SEL_GEN2,
++	.iova_region    = mt8192_multi_dom,
++	.iova_region_nr = ARRAY_SIZE(mt8192_multi_dom),
++	.larbid_remap   = {{0}, {1}, {4, 5}, {7}, {2}, {9, 11, 19, 20},
++			   {0, 14, 16}, {0, 13, 18, 17}},
++};
++
+ static const struct of_device_id mtk_iommu_of_ids[] = {
+ 	{ .compatible = "mediatek,mt2712-m4u", .data = &mt2712_data},
+ 	{ .compatible = "mediatek,mt6779-m4u", .data = &mt6779_data},
+ 	{ .compatible = "mediatek,mt8167-m4u", .data = &mt8167_data},
+ 	{ .compatible = "mediatek,mt8173-m4u", .data = &mt8173_data},
+ 	{ .compatible = "mediatek,mt8183-m4u", .data = &mt8183_data},
++	{ .compatible = "mediatek,mt8192-m4u", .data = &mt8192_data},
+ 	{}
+ };
  
- 	if (gather->start == ULONG_MAX)
- 		return;
+diff --git a/drivers/iommu/mtk_iommu.h b/drivers/iommu/mtk_iommu.h
+index b54862307128..e96b1b8639f4 100644
+--- a/drivers/iommu/mtk_iommu.h
++++ b/drivers/iommu/mtk_iommu.h
+@@ -43,6 +43,7 @@ enum mtk_iommu_plat {
+ 	M4U_MT8167,
+ 	M4U_MT8173,
+ 	M4U_MT8183,
++	M4U_MT8192,
+ };
  
- 	mtk_iommu_tlb_flush_range_sync(gather->start, length, gather->pgsize,
--				       data);
-+				       dom->data);
- }
- 
- static phys_addr_t mtk_iommu_iova_to_phys(struct iommu_domain *domain,
- 					  dma_addr_t iova)
- {
- 	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
--	struct mtk_iommu_data *data = mtk_iommu_get_m4u_data();
- 	phys_addr_t pa;
- 
- 	pa = dom->iop->iova_to_phys(dom->iop, iova);
--	if (data->enable_4GB && pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
-+	if (dom->data->enable_4GB && pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
- 		pa &= ~BIT_ULL(32);
- 
- 	return pa;
+ struct mtk_iommu_iova_region;
 -- 
 2.18.0
 
