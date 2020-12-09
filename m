@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1432D3819
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41BEC2D381D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbgLIBIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 20:08:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLIBIn (ORCPT
+        id S1726405AbgLIBKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 20:10:16 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:35620 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725283AbgLIBKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 20:08:43 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59732C0613CF;
-        Tue,  8 Dec 2020 17:08:03 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id t8so356471pfg.8;
-        Tue, 08 Dec 2020 17:08:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FVaaFvhma/LtEAgKTLdfxnHOJeqm88SA5H4iaroEpmA=;
-        b=pHv4Lz0bvbALDlTuzU3DzO1yRj45wGco2lMyBbQcVGGneEc4ltghcPwzhj4k57Qnsz
-         yUWDsqtAVbeUyWs5zUlsloiCsdz9QTwvCPRURsGGhq1qoelXXARmcEWIrtc4pLMKx+zY
-         g4gqHg6D9173SsOYDA+EPkiuv65RTXZYurNxpMyb+dKdNoqCTyIQXOGbQ9EGwXamY8Sv
-         Oc0jNISmPDN+3dfJbhy5S4Maz/YNNxDVfh1gTxE+hz4p3b+R0GdTpWx82Eupg8oDSeze
-         hRJ+K0JyMCORbYoG0qW/0htHNH7OCowGTCRnizbLWCXirZwUqpi7N6qAJKy0ajWL+0iI
-         YuSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FVaaFvhma/LtEAgKTLdfxnHOJeqm88SA5H4iaroEpmA=;
-        b=EZisswWcozkpsHYtVl0aS8e47MXZmDtioO5GKGXnAmnnmHeB2vngBtjtfUY2HE/hK1
-         tJtQkCY8ocW3ien3Hx+4a35gAcbABy5QPPZ2gekAGSdf0lk5UrdolH1udQqXxiqN+hpn
-         w4vSwo9PcYda7Mr/eP9WwzhoScP8Lm5JG5DO3oEI2abwipbG209910/KfqE2F2xcN6le
-         1GmSt8yF/FBEmrrmvjVj1hT04kIbI9jGBgqqu0h7uL0Y2TNt6Bs36vliKrj1IM2qBREv
-         ZiAlp0OZmoP3BQ0OjFCZ4BCT+RS1Dd6GC801v7HPKh80mN8vjSid1LADXG9AeZRB/I9R
-         3oSA==
-X-Gm-Message-State: AOAM530bItwcwmS8+7V7lR/tHjNtlyLVSgkBB4ZJSZvPBPWMq0kHJHde
-        TxpbZZUBrDBVwhCbpvJlPlQ=
-X-Google-Smtp-Source: ABdhPJwCQd+avrsd3DtcFKdSpMlr/Nc+tBhs6yqerolExTUh+1sp/IE4LFM4FXI3mibasPl6pVmdoQ==
-X-Received: by 2002:a17:90b:1c0d:: with SMTP id oc13mr209715pjb.113.1607476082915;
-        Tue, 08 Dec 2020 17:08:02 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:ac46:48a7:8096:18f5])
-        by smtp.gmail.com with ESMTPSA id az19sm112702pjb.24.2020.12.08.17.08.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 17:08:02 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next] net: hdlc_x25: Remove unnecessary skb_reset_network_header calls
-Date:   Tue,  8 Dec 2020 17:07:58 -0800
-Message-Id: <20201209010758.3408-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 8 Dec 2020 20:10:16 -0500
+X-UUID: a1407086ce824a7e9a1672c86b6b4868-20201209
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3KvKaE23ExOsMFcllhdIYY82q3GKWl+g+3RXbSqg8X0=;
+        b=r8w9Q7f58s5+h5YfJMC33Zbl5xWtpoYaYOmdLWOMHOQN9rD9HaJH65i5zmIFrfWH/0hpShd8IH4f0I6SgTAIuUJ+zT8NiVH235kyUNkICpjIDuahUXQlc9PrKsan7p3OCGVz1Z7Rip23Ejy7jzNHpQaaKRIuRU42qCG0+zUWvtI=;
+X-UUID: a1407086ce824a7e9a1672c86b6b4868-20201209
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 240736098; Wed, 09 Dec 2020 09:09:32 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 9 Dec 2020 09:09:26 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 9 Dec 2020 09:09:26 +0800
+Message-ID: <1607476170.3580.29.camel@mtkswgap22>
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Re-enable WriteBooster after device
+ reset
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Bean Huo <huobean@gmail.com>
+CC:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
+        <asutoshd@codeaurora.org>, <cang@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <nguyenb@codeaurora.org>,
+        <bjorn.andersson@linaro.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>
+Date:   Wed, 9 Dec 2020 09:09:30 +0800
+In-Reply-To: <970af8b1abf565184bf37c3c055bf42ad760201a.camel@gmail.com>
+References: <20201208135635.15326-1-stanley.chu@mediatek.com>
+         <20201208135635.15326-2-stanley.chu@mediatek.com>
+         <970af8b1abf565184bf37c3c055bf42ad760201a.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: 2F6065CCECF27701609747200FC9A5B0DE2F5181C9B2FFF1E34952CB6403D5522000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. In x25_xmit, skb_reset_network_header is not necessary before we call
-lapb_data_request. The lapb module doesn't need skb->network_header.
-So there is no need to set skb->network_header before calling
-lapb_data_request.
-
-2. In x25_data_indication (called by the lapb module after it has
-processed the skb), skb_reset_network_header is not necessary before we
-call netif_rx. After we call netif_rx, the code in net/core/dev.c will
-call skb_reset_network_header before handing the skb to upper layers
-(in __netif_receive_skb_core, called by __netif_receive_skb_one_core,
-called by __netif_receive_skb, called by process_backlog). So we don't
-need to call skb_reset_network_header by ourselves.
-
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- drivers/net/wan/hdlc_x25.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/net/wan/hdlc_x25.c b/drivers/net/wan/hdlc_x25.c
-index f52b9fed0593..bb164805804e 100644
---- a/drivers/net/wan/hdlc_x25.c
-+++ b/drivers/net/wan/hdlc_x25.c
-@@ -77,7 +77,6 @@ static int x25_data_indication(struct net_device *dev, struct sk_buff *skb)
- 	}
- 
- 	skb_push(skb, 1);
--	skb_reset_network_header(skb);
- 
- 	ptr  = skb->data;
- 	*ptr = X25_IFACE_DATA;
-@@ -118,7 +117,6 @@ static netdev_tx_t x25_xmit(struct sk_buff *skb, struct net_device *dev)
- 	switch (skb->data[0]) {
- 	case X25_IFACE_DATA:	/* Data to be transmitted */
- 		skb_pull(skb, 1);
--		skb_reset_network_header(skb);
- 		if ((result = lapb_data_request(dev, skb)) != LAPB_OK)
- 			dev_kfree_skb(skb);
- 		return NETDEV_TX_OK;
--- 
-2.27.0
+T24gVHVlLCAyMDIwLTEyLTA4IGF0IDE1OjEzICswMTAwLCBCZWFuIEh1byB3cm90ZToNCj4gT24g
+VHVlLCAyMDIwLTEyLTA4IGF0IDIxOjU2ICswODAwLCBTdGFubGV5IENodSB3cm90ZToNCj4gPiBp
+bmRleCAwOGM4YTU5MWU2YjAuLjM2ZDM2N2ViODEzOSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJz
+L3Njc2kvdWZzL3Vmc2hjZC5oDQo+ID4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuaA0K
+PiA+IEBAIC0xMjIxLDggKzEyMjEsMTMgQEAgc3RhdGljIGlubGluZSB2b2lkDQo+ID4gdWZzaGNk
+X3ZvcHNfZGV2aWNlX3Jlc2V0KHN0cnVjdCB1ZnNfaGJhICpoYmEpDQo+ID4gICAgICAgICBpZiAo
+aGJhLT52b3BzICYmIGhiYS0+dm9wcy0+ZGV2aWNlX3Jlc2V0KSB7DQo+ID4gICAgICAgICAgICAg
+ICAgIGludCBlcnIgPSBoYmEtPnZvcHMtPmRldmljZV9yZXNldChoYmEpOw0KPiA+ICANCj4gPiAt
+ICAgICAgICAgICAgICAgaWYgKCFlcnIpDQo+ID4gKyAgICAgICAgICAgICAgIGlmICghZXJyKSB7
+DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgdWZzaGNkX3NldF91ZnNfZGV2X2FjdGl2ZSho
+YmEpOw0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGlmICh1ZnNoY2RfaXNfd2JfYWxsb3dl
+ZChoYmEpKSB7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBoYmEtPndiX2Vu
+YWJsZWQgPSBmYWxzZTsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGhiYS0+
+d2JfYnVmX2ZsdXNoX2VuYWJsZWQgPSBmYWxzZTsNCj4gPiArICAgICAgICAgICAgICAgICAgICAg
+ICB9DQo+ID4gKyAgICAgICAgICAgICAgIH0NCj4gDQo+IFN0YW5sZXksDQo+IGhvdyBkbyB5b3Ug
+dGhpbmsgZ3JvdXAgd2JfYnVmX2ZsdXNoX2VuYWJsZWQgYW5kIHdiX2VuYWJsZWQgdG8gdGhlDQo+
+IGRldl9pbmZvLCBzaW5jZSB0aGV5IGFyZSBVRlMgZGV2aWNlIGF0dHJpYnV0ZXMuIG1lYW5zIHRo
+ZXkgYXJlIHNldCBvbmx5DQo+IHdoZW4gVUZTIGRldmljZSBmbGFncyBiZWluZyBzZXQuDQoNCkhp
+IEJlYW4sDQoNClRoYW5rcyBmb3IgeW91ciByZXZpZXcuDQoNClllcywgSSBhZ3JlZWQgdGhhdCB3
+YiByZWxhdGVkIHZhcmlhYmxlcyBpcyBhIG1lc3MgY3VycmVudGx5LiBJIHdvdWxkDQpsaWtlIHRv
+IGNsZWFuIHRoZW0gdXAgb25jZSBJIGhhdmUgdGltZS4gRmVlbCBmcmVlIHRvIHBvc3QgeW91ciBw
+YXRjaCBpZg0KeW91IHdhbnQgdG8gdGFrZSBpdCB1cCA6ICkNCg0KVGhhbmtzLA0KU3RhbmxleSBD
+aHUNCg0KPiANCj4gUmV2aWV3ZWQtYnk6IEJlYW4gSHVvIDxiZWFuaHVvQG1pY3Jvbi5jb20+DQo+
+IA0KDQo=
 
