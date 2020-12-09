@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BBF2D46C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 205BB2D46D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgLIQaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:30:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46928 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727370AbgLIQaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:30:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607531376; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9xUW8Dmv5mRMmD07Vnox+GxN1NtoZFKgjjUp7YIwwjg=;
-        b=fUEW8+h0L6wEknj3P4q4OGgeLzaYH6bXInbPHNzFUGnBNwx2u5SY2U0Vp2ojubvOSS8UPQ
-        dbrYzPBlWEgXsxbYF3CSHKzt1Afgu+6JKmrSCPmi6W0n5jsvJGGHIMSuTAP23LXrVlKjHw
-        PWjfU96c+eRvRKqGTBYVIOlCCO/i6Ik=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7C279AD71;
-        Wed,  9 Dec 2020 16:29:36 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 17:29:35 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Hui Su <sh_def@163.com>, LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mm/page_alloc: simplify kmem cgroup charge/uncharge code
-Message-ID: <20201209162935.GD26090@dhcp22.suse.cz>
-References: <20201207142204.GA18516@rlk>
- <CALvZod45tRyx+7VagQQ=9SqabNR5Y=f0U0T0AFtOFWdzUgJbxQ@mail.gmail.com>
- <20201208060747.GA56968@rlk>
- <CALvZod56cWta66q4w4ndiPmgfVGkViAFfivh8L8eUBPqJRWFCg@mail.gmail.com>
+        id S1729711AbgLIQex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:34:53 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:35267 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727894AbgLIQex (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:34:53 -0500
+Received: by mail-ot1-f65.google.com with SMTP id i6so1953847otr.2;
+        Wed, 09 Dec 2020 08:34:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9amksMRaTre1TKphGMa6RukD/0UXnG4x5MJc8xzPF+8=;
+        b=L5oczlRG2CKvs59LsTiMpaUtxfaWgRe36GLHu12kFAq3FA0C1sOrv2z1beR3vF+hKr
+         lF0ulA0N0IPyUs0BA5nuDOp1kpIDbxHPK91cB2czuT8OxCBcUiNmuA06WuRR7oKOtKtg
+         n6NP0dQNKQNgckKiU7XObT9sBIhyBLc4hvPBUzgf/mSduDRydEJtZj50AK4SSsv4CWtv
+         IWXoEWJ9jQkE8+ATNPKc/DVKyWirA9MBqTuUm5zllsgY4rLJIQoZaU5CJJ5cEgqtCji+
+         HoyQdz63FxhS6q0ybEv3nvOu8VnHH4+tP3803ezaEnIK9boThuSI4wJw/FPiZBcd8XM6
+         CYJg==
+X-Gm-Message-State: AOAM5337veQxI7aGlc2Tpw2NHqIJEzNfoiWfVI3Eimff5avWDAUYhgHL
+        v8EJ2q+ngjyuilAPlENSlw==
+X-Google-Smtp-Source: ABdhPJw079OcH9Wx/tOkfeG7V+did7VdjHcLMAldhzxsI94Q/ADO9vhyb7XLabLtHUSZaUYxtlnBlg==
+X-Received: by 2002:a05:6830:1011:: with SMTP id a17mr2440801otp.97.1607531651586;
+        Wed, 09 Dec 2020 08:34:11 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h2sm480685otn.15.2020.12.09.08.34.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 08:34:10 -0800 (PST)
+Received: (nullmailer pid 567548 invoked by uid 1000);
+        Wed, 09 Dec 2020 16:34:09 -0000
+Date:   Wed, 9 Dec 2020 10:34:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     devicetree@vger.kernel.org, soc@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        olof@lixom.net, arnd@arndb.de, w@1wt.eu
+Subject: Re: [PATCH v2 02/10] dt-bindings: vendor-prefixes: Add honestar
+ vendor prefix
+Message-ID: <20201209163409.GA566058@robh.at.kernel.org>
+References: <20201201134330.3037007-1-daniel@0x0f.com>
+ <20201201134330.3037007-3-daniel@0x0f.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod56cWta66q4w4ndiPmgfVGkViAFfivh8L8eUBPqJRWFCg@mail.gmail.com>
+In-Reply-To: <20201201134330.3037007-3-daniel@0x0f.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 08-12-20 09:12:23, Shakeel Butt wrote:
-> +Michal Hocko
+On Tue, Dec 01, 2020 at 10:43:22PM +0900, Daniel Palmer wrote:
+> Add prefix for Honestar Technologies Co., Ltd.
 > 
-> Message starts at https://lkml.kernel.org/r/20201207142204.GA18516@rlk
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> On Mon, Dec 7, 2020 at 10:08 PM Hui Su <sh_def@163.com> wrote:
-> >
-> > On Mon, Dec 07, 2020 at 09:28:46AM -0800, Shakeel Butt wrote:
-> > > On Mon, Dec 7, 2020 at 6:22 AM Hui Su <sh_def@163.com> wrote:
-> > >
-> > > The reason to keep __memcg_kmem_[un]charge_page functions is that they
-> > > were called in the very hot path. Can you please check the performance
-> > > impact of your change and if the generated code is actually same or
-> > > different.
-> >
-> > Hi, Shakeel:
-> >
-> > I objdump the mm/page_alloc.o and comapre them, it change the assemble code
-> > indeed. In fact, it change some code order, which i personally think won't have
-> > impact on performance. And i ran the ltp mm and conatiner test, it seems nothing
-> > abnormal.
-> 
-> Did you run the tests in a memcg? The change is behind a static key of
-> kmem accounting which is enabled for subcontainers.
-> 
-> >
-> > BUT i still want to check whether this change will have negative impact on
-> > perforance due to this change code was called in the very hot path like you
-> > said, AND saddly i did not find a way to quantify the impact on performance.
-> > Can you give me some suggestion about how to quantify the performance or some
-> > tool?
-> >
-> 
-> At least I think we can try with a simple page allocation in a loop
-> i.e. alloc_page(GFP_KERNEL_ACCOUNT). I will think of any existing
-> benchmark which exercises this code path.
-> 
-> Michal, do you have any suggestions?
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index 2735be1a8470..a6cf2cef6f89 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -451,6 +451,8 @@ patternProperties:
+>      description: Holt Integrated Circuits, Inc.
+>    "^honeywell,.*":
+>      description: Honeywell
+> +  "^honestar,.*":
+> +    description: Honestar Technologies Co., Ltd.
 
-I have to say I do not see any big benefit from the patch and it alters
-a real hot path to check for the flag even in cases where kmem
-accounting is not enabled, unless I am misreading the code.
+Alphabetical order please.
 
--- 
-Michal Hocko
-SUSE Labs
+>    "^hoperun,.*":
+>      description: Jiangsu HopeRun Software Co., Ltd.
+>    "^hp,.*":
+> -- 
+> 2.29.2
+> 
