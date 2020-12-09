@@ -2,115 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751402D45A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E19D72D45AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729859AbgLIPmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:42:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726431AbgLIPmN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:42:13 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FC6C061793;
-        Wed,  9 Dec 2020 07:41:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Message-ID:From:CC:To:Subject:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:
-        Date:Sender:Reply-To:Content-ID:Content-Description;
-        bh=6r9heBjzWXYJc89ySTWF0dstHk+7cI5ZT6+P8OGgWRk=; b=m+D2g1sGexb0Y8RFn4mA4QNiNl
-        oDT3PmXNumeabAlzk0BkSisiByiKbz5fmEFipdVq2YGitAr55xt05Rer6S6A+ESAd9uqDYfwaKFKQ
-        SJNcnXfua//C/WmH+xsop61sFpVpVMxO1fqGpdhXbxn60w/YLNhb8ZiviUQzT16S77BVBcA5dNNom
-        iX0NSBQpHLzMmCEZ+aQnvBR2VYiBzfw45f1M7RZwIGVqNwf3ONWVdjKFyu6ZrzNvc57wwox65s7gk
-        CXzof3lalgMWS8tZGViU8Rms39jIEoGoRHbAT/8ZTm0kKfvHG6FPtgvMJE4JaNOTkIh75+wxXwjgb
-        D1xmYY5w==;
-Received: from [2a01:4c8:1485:1509:f1a9:965:876e:14dd]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kn1ac-00061D-Su; Wed, 09 Dec 2020 15:41:15 +0000
-Date:   Wed, 09 Dec 2020 15:41:10 +0000
-User-Agent: K-9 Mail for Android
-In-Reply-To: <35165dbc-73d0-21cd-0baf-db4ffb55fc47@oracle.com>
-References: <20190220201609.28290-1-joao.m.martins@oracle.com> <20190220201609.28290-11-joao.m.martins@oracle.com> <71753a370cd6f9dd147427634284073b78679fa6.camel@infradead.org> <53baeaa7-0fed-d22c-7767-09ae885d13a0@oracle.com> <4ad0d157c5c7317a660cd8d65b535d3232f9249d.camel@infradead.org> <c43024b3-6508-3b77-870c-da81e74284a4@oracle.com> <052867ae1c997487d85c21e995feb5647ac6c458.camel@infradead.org> <6a6b5806be1fe4c0fe96c0b664710d1ce614f29d.camel@infradead.org> <1af00fa4-03b8-a059-d859-5cfd71ef10f4@oracle.com> <0eb8c2ef01b77af0d288888f200e812d374beada.camel@infradead.org> <f7dec3f1-aadc-bda5-f4dc-7185ffd9c1a6@oracle.com> <db4ea3bd6ebec53c40526d67273ccfba38982811.camel@infradead.org> <35165dbc-73d0-21cd-0baf-db4ffb55fc47@oracle.com>
+        id S1730388AbgLIPmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:42:53 -0500
+Received: from relay.sw.ru ([185.231.240.75]:45694 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726431AbgLIPmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 10:42:46 -0500
+Received: from [192.168.15.177]
+        by relay3.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1kn1b1-00CQdb-IE; Wed, 09 Dec 2020 18:41:39 +0300
+Subject: Re: [PATCH 6/9] mm: vmscan: use per memcg nr_deferred of shrinker
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>, Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201202182725.265020-1-shy828301@gmail.com>
+ <20201202182725.265020-7-shy828301@gmail.com>
+ <49464720-675d-5144-043c-eba6852a9c06@virtuozzo.com>
+ <CAHbLzkoiTmNLXj1Tx0-PggEdcYQ6nj71DUX3ya6mj3VNZ5ho4A@mail.gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <d5454f6d-6739-3252-fba0-ac39c6c526c4@virtuozzo.com>
+Date:   Wed, 9 Dec 2020 18:41:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH RFC 10/39] KVM: x86/xen: support upcall vector
-To:     Joao Martins <joao.m.martins@oracle.com>,
-        Ankur Arora <ankur.a.arora@oracle.com>, karahmed@amazon.de
-CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   David Woodhouse <dwmw2@infradead.org>
-Message-ID: <2E57982D-6508-4850-ABA5-67592381379D@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAHbLzkoiTmNLXj1Tx0-PggEdcYQ6nj71DUX3ya6mj3VNZ5ho4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9 December 2020 13:26:55 GMT, Joao Martins <joao=2Em=2Emartins@oracle=
-=2Ecom> wrote:
->On 12/9/20 11:39 AM, David Woodhouse wrote:
->> On Wed, 2020-12-09 at 10:51 +0000, Joao Martins wrote:
->>> Isn't this what the first half of this patch was doing initially
->(minus the
->>> irq routing) ? Looks really similar:
+On 08.12.2020 20:13, Yang Shi wrote:
+> On Thu, Dec 3, 2020 at 3:40 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>>
+>> On 02.12.2020 21:27, Yang Shi wrote:
+>>> Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
+>>> will be used in the following cases:
+>>>     1. Non memcg aware shrinkers
+>>>     2. !CONFIG_MEMCG
+>>>     3. memcg is disabled by boot parameter
 >>>
+>>> Signed-off-by: Yang Shi <shy828301@gmail.com>
+>>> ---
+>>>  mm/vmscan.c | 88 +++++++++++++++++++++++++++++++++++++++++++++++++----
+>>>  1 file changed, 82 insertions(+), 6 deletions(-)
 >>>
->https://lore=2Ekernel=2Eorg/kvm/20190220201609=2E28290-11-joao=2Em=2Emart=
-ins@oracle=2Ecom/
->>=20
->> Absolutely! This thread is in reply to your original posting of
->> precisely that patch, and I've had your tree open in gitk to crib
->from
->> for most of the last week=2E
->>=20
->I forgot about this patch given all the discussion so far and I had to
->re-look given that
->it resembled me from your snippet=2E But I ended up being a little
->pedantic -- sorry about that=2E
+>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>>> index cba0bc8d4661..d569fdcaba79 100644
+>>> --- a/mm/vmscan.c
+>>> +++ b/mm/vmscan.c
+>>> @@ -203,6 +203,12 @@ static DECLARE_RWSEM(shrinker_rwsem);
+>>>  static DEFINE_IDR(shrinker_idr);
+>>>  static int shrinker_nr_max;
+>>>
+>>> +static inline bool is_deferred_memcg_aware(struct shrinker *shrinker)
+>>> +{
+>>> +     return (shrinker->flags & SHRINKER_MEMCG_AWARE) &&
+>>> +             !mem_cgroup_disabled();
+>>> +}
+>>> +
+>>>  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+>>>  {
+>>>       int id, ret = -ENOMEM;
+>>> @@ -271,7 +277,58 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+>>>  #endif
+>>>       return false;
+>>>  }
+>>> +
+>>> +static inline long count_nr_deferred(struct shrinker *shrinker,
+>>> +                                  struct shrink_control *sc)
+>>> +{
+>>> +     bool per_memcg_deferred = is_deferred_memcg_aware(shrinker) && sc->memcg;
+>>> +     struct memcg_shrinker_deferred *deferred;
+>>> +     struct mem_cgroup *memcg = sc->memcg;
+>>> +     int nid = sc->nid;
+>>> +     int id = shrinker->id;
+>>> +     long nr;
+>>> +
+>>> +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+>>> +             nid = 0;
+>>> +
+>>> +     if (per_memcg_deferred) {
+>>> +             deferred = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_deferred,
+>>> +                                                  true);
+>>
+>> My comment is about both 5/9 and 6/9 patches.
+> 
+> Sorry for the late reply, I don't know why Gmail filtered this out to spam.
+> 
+>>
+>> shrink_slab_memcg() races with mem_cgroup_css_online(). A visibility of CSS_ONLINE flag
+>> in shrink_slab_memcg()->mem_cgroup_online() does not guarantee that you will see
+>> memcg->nodeinfo[nid]->shrinker_deferred != NULL in count_nr_deferred(). This may occur
+>> because of processor reordering on !x86 (there is no a common lock or memory barriers).
+>>
+>> Regarding to shrinker_map this is not a problem due to map check in shrink_slab_memcg().
+>> The map can't be NULL there.
+>>
+>> Regarding to shrinker_deferred you should prove either this is not a problem too,
+>> or to add proper synchronization (maybe, based on barriers) or to add some similar check
+>> (maybe, in shrink_slab_memcg() too).
+> 
+> It seems shrink_slab_memcg() might see shrinker_deferred as NULL
+> either due to the same reason. I don't think there is a guarantee it
+> won't happen.
+> 
+> We just need guarantee CSS_ONLINE is seen after shrinker_maps and
+> shrinker_deferred are allocated, so I'm supposed barriers before
+> "css->flags |= CSS_ONLINE" should work.
+> 
+> So the below patch may be ok:
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index df128cab900f..9f7fb0450d69 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5539,6 +5539,12 @@ static int mem_cgroup_css_online(struct
+> cgroup_subsys_state *css)
+>                 return -ENOMEM;
+>         }
+> 
+> 
+> +       /*
+> +        * Barrier for CSS_ONLINE, so that shrink_slab_memcg() sees
+> shirnker_maps
+> +        * and shrinker_deferred before CSS_ONLINE.
+> +        */
+> +       smp_mb();
+> +
+>         /* Online state pins memcg ID, memcg ID pins CSS */
+>         refcount_set(&memcg->id.ref, 1);
+>         css_get(css);
 
-Nah, pedantry is good :)
+smp barriers synchronize data access from different cpus. They should go in a pair.
+In case of you add the smp barrier into mem_cgroup_css_online(), we should also
+add one more smp barrier in another place, which we want to synchonize with this.
+Also, every place should contain a comment referring to its pair: "Pairs with...".
 
->> At most, we just need to make sure that kvm_xen_has_interrupt()
->returns
->> false if the per-vCPU LAPIC vector is configured=2E But I didn't do
->that
->> because I checked Xen and it doesn't do it either=2E
->>=20
->Oh! I have this strange recollection that it was, when we were looking
->at the Xen
->implementation=2E
-
-Hm, maybe I missed it=2E Will stare at it harder, although looking at Xen =
-code tends to make my brain hurt :)
-
->> As far as I can tell, Xen's hvm_vcpu_has_pending_irq() will still
->> return the domain-wide vector in preference to the one in the LAPIC,
->if
->> it actually gets invoked=2E=20
->
->Only if the callback installed is HVMIRQ_callback_vector IIUC=2E
->
->Otherwise the vector would be pending like any other LAPIC vector=2E
-
-Ah, right=2E
-
-For some reason I had it in my head that you could only set the per-vCPU l=
-apic vector if the domain was set to HVMIRQ_callback_vector=2E If the domai=
-n is set to HVMIRQ_callback_none, that clearly makes more sense=2E
-
-Still, my patch should do the same as Xen does in the case where a guest d=
-oes set both, I think=2E
-
-Faithful compatibility with odd Xen behaviour FTW :)
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+Kirill
