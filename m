@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEB52D3F73
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDBA2D3F76
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:04:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729642AbgLIKCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:02:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729229AbgLIKCh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:02:37 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24306C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 02:01:57 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id e13so698088qvl.19
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 02:01:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=tU0bH/ZopN0B+Ye8Q+EH0DzWrhlff2/lJmGr/Ir10cg=;
-        b=jbjrQ7nKnTCEa9Q/zsYxYG1cRke4B6Nx3Kj8ebj1UTdl+dpvUQOXTDtZQ4g5Rt5lxF
-         F1MEfFGvmfBY9nWVV9+kQqW1hfvZTLaVfrLi86O5MjUzEFQqFCi3SJ4CDN8VcE8M6ZFC
-         oHN/xghGYIv4xgC+ZMCS98O2IF16MXznMrlI49mPJ+CoJ535BnDRRf1MfJjo0IIx2YoF
-         9Ec5G0CfRG6MuNu8x7WW9hTeGt/xpH7PH36J/Mv35Jlmyj4geDvi44v3yJwgoDnJr2Zn
-         YEaY12kVpBFLJflIBcKbF1Us1T4EUdkVo6YJVRTLK6WRhajTs3d2aUnPI+eJsHxY/hW/
-         5wmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=tU0bH/ZopN0B+Ye8Q+EH0DzWrhlff2/lJmGr/Ir10cg=;
-        b=EIIs5Mowi1GNm3NxlmaMBBG+jKHs8ARUFI0bfjeZ6sjeHLGej0c77BXgA+D/JJozoU
-         eXQOJlYyvlNGyIyACRgHDuqx/xfVPmTd6nau3L9/gN+mAJ1NraKLoX1j1wNbeDAhEyrp
-         Q/Dxks3J4Uqak7s5Q64P3ZMJ0a0/bAuDhzwGZ40nTpz8CgMpLIzqVtc4f1v+uMTE5+4w
-         +cstK3FtZ/7I5KiuPdp6nRMNRbb8XVZ7d1NN5ZZh0Y2XG+t9LiolqF6GMpqV9sCo6+Dz
-         GTC/7UKkGpAFayfnkSnID8KphNUBv6NQJABy74VX+ZeyYDrIJVA/idielBFob+tr+QGW
-         lqbA==
-X-Gm-Message-State: AOAM531jU5xfMBNeeb+w3WC0Th0NBX3TV0q9N/ZLg9Qz63+90eLHqOiP
-        yhdodDZt0wFWm6NecYfbeKSvGnaFgj5C
-X-Google-Smtp-Source: ABdhPJz1ztB2YS7DZ6K0X7ovGKfEW5/GocUTsWl5sXT9phgWkOUSXmjUvJkOXtzSvjImYEGO22JvrhVTpalN
-Sender: "dvyukov via sendgmr" <dvyukov@dvyukov-desk.muc.corp.google.com>
-X-Received: from dvyukov-desk.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:a2ec])
- (user=dvyukov job=sendgmr) by 2002:ad4:4ee3:: with SMTP id
- dv3mr2224365qvb.58.1607508116142; Wed, 09 Dec 2020 02:01:56 -0800 (PST)
-Date:   Wed,  9 Dec 2020 11:01:52 +0100
-Message-Id: <20201209100152.2492072-1-dvyukov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH] kcov: don't instrument with UBSAN
-From:   Dmitry Vyukov <dvyukov@google.com>
-To:     akpm@linux-foundation.org
-Cc:     andreyknvl@google.com, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729658AbgLIKC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:02:58 -0500
+Received: from ozlabs.org ([203.11.71.1]:57019 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729051AbgLIKC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 05:02:57 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrXdy61tfz9sW9;
+        Wed,  9 Dec 2020 21:02:12 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607508135;
+        bh=8SjBJC3enLh3C+xvok+MiLcCtIZVyD81LmzuiIuJ3cA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hidnZwe9EELIeCt7sTHpZVUWam7dglNl6ATyqnkcFjbChIofmY8o54kv81Nr31j+o
+         0YKJ8zBxEBNMF88rdNcHIt+ENjrKgbpfNR4BeTuh9rPypw5KrVn8OLPwZgbOTYV6wa
+         3KNH0hwy6PQ3vlw5Kio3XLxXolrqqUQK1oFj5Nw2OYdd+IrGSfwsaS8g1Qb9JtAgIV
+         L2vNe2SQUE7QgovX+dRiq9PAfyQqQ702PrUtD1Ub57t6CfjVw/od/quJ4IJc6zuu/P
+         8+oFgueGS0c7eMSm4N4stwvhEJPmwjzeole1T/qQzTXmOohfSLdEMNYLalacklsExb
+         vS1s7L6iSOpNw==
+Date:   Wed, 9 Dec 2020 21:02:11 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the drm-misc tree
+Message-ID: <20201209210211.306f3c61@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/0lxQX6ywS7+eQSbvvKXaRXv";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both KCOV and UBSAN use compiler instrumentation. If UBSAN detects a bug
-in KCOV, it may cause infinite recursion via printk and other common
-functions. We already don't instrument KCOV with KASAN/KCSAN for this
-reason, don't instrument it with UBSAN as well.
+--Sig_/0lxQX6ywS7+eQSbvvKXaRXv
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-As a side effect this also resolves the following gcc warning:
+Hi all,
 
-conflicting types for built-in function '__sanitizer_cov_trace_switch';
-expected 'void(long unsigned int,  void *)' [-Wbuiltin-declaration-mismatch]
+After merging the drm-misc tree, today's linux-next build (htmldocs)
+produced this warning:
 
-It's only reported when kcov.c is compiled with any of the sanitizers
-enabled. Size of the arguments is correct, it's just that gcc uses 'long'
-on 64-bit arches and 'long long' on 32-bit arches, while kernel type is
-always 'long long'.
+include/drm/gpu_scheduler.h:201: warning: Function parameter or member 'lis=
+t' not described in 'drm_sched_job'
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Suggested-by: Marco Elver <elver@google.com>
-Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
----
- kernel/Makefile | 3 +++
- 1 file changed, 3 insertions(+)
+Introduced by commit
 
-diff --git a/kernel/Makefile b/kernel/Makefile
-index aac15aeb9d69..efa42857532b 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -34,8 +34,11 @@ KCOV_INSTRUMENT_extable.o := n
- KCOV_INSTRUMENT_stacktrace.o := n
- # Don't self-instrument.
- KCOV_INSTRUMENT_kcov.o := n
-+# If sanitizers detect any issues in kcov, it may lead to recursion
-+# via printk, etc.
- KASAN_SANITIZE_kcov.o := n
- KCSAN_SANITIZE_kcov.o := n
-+UBSAN_SANITIZE_kcov.o := n
- CFLAGS_kcov.o := $(call cc-option, -fno-conserve-stack) -fno-stack-protector
- 
- obj-y += sched/
--- 
-2.29.2.576.ga3fc446d84-goog
+  8935ff00e3b1 ("drm/scheduler: "node" --> "list"")
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/0lxQX6ywS7+eQSbvvKXaRXv
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/QoKQACgkQAVBC80lX
+0Gzo3wf/b98Htxe7h38fl2KCe5idJnjdkTJOApijxO/rukHJqw7tFyErFM5OlrIc
+NtweqOSbmE6w2BJySSVEnMf/mPtrNym8DlvnnhTJeQgVtRcudz3BWSAMr2E9seK9
+j4isxTieAFM7Qv3Nd8dG9gE8siL9d1EhnohQxoMLUDUSoagBthOTWKbhxUWRGWpi
+JQ/s1BZlKO9zMPglBtqkW1l+olJvkOMcAN3e9o6SL8y+jTJdlQEZrBWbD+2FrmAt
+nB1dGl1Q92XrVmlnQ2w2cvf3QuONCeFG/RCAHGUdBiSenRwS3KOGtQIf9too44j5
+tywpkaatKs6FvIfE3pFGb2GovxwR0A==
+=29MF
+-----END PGP SIGNATURE-----
+
+--Sig_/0lxQX6ywS7+eQSbvvKXaRXv--
