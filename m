@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191E22D4C8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFD92D4C9B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729617AbgLIVNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 16:13:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgLIVNK (ORCPT
+        id S2388035AbgLIVPt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Dec 2020 16:15:49 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:59286 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388027AbgLIVPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 16:13:10 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F65C0613CF;
-        Wed,  9 Dec 2020 13:12:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=gS0VLE/3Ng4U2SxkbHkG9CNtkXAr3yvJos8iwhaz6f8=; b=khzpdumaWG5wnv6HYv+lMM/TUG
-        F/Sy61OYE7cV/UH83JYY4h/phIO5J7+BpJnUJBV/y5DUEyCAMEOoN8aNA4UsFnJROv85KEqNpgW2P
-        f8ky3rBC+uUjAdk6J0igI4j/EkIVjP/H7dRpujvbzaR8HwMWS82QOpRg8kzNK7jIKO+3xZMhco6NV
-        2Oe0FB/R492jpNxWZG0xuWC/4/9cYxjnGdwPMAH+c4Iim/yvTcOObczjUiiRUA9RtVSVbEweMEI29
-        Cvbx/IUreAkEQxNrDhjGPJ6L6n5LOsrqop+Yd5xosPZ98N5TBkvigXIugA6kUa5HPvjr2wlpvYqRr
-        aasBbY5Q==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kn6l5-0001xS-Ha; Wed, 09 Dec 2020 21:12:24 +0000
-Subject: Re: [PATCH] usb: cdns3: Fixed kernel test robot warning
-To:     Souptick Joarder <jrdr.linux@gmail.com>, pawell@cadence.com,
-        peter.chen@nxp.com, rogerq@ti.com, a-govindraju@ti.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1607544952-4891-1-git-send-email-jrdr.linux@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ae8cd88c-ea5d-a045-c6cd-2579a55f88d2@infradead.org>
-Date:   Wed, 9 Dec 2020 13:12:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 9 Dec 2020 16:15:35 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id uk-mta-1-vL2RsGv_OTGtY0uYhYIEhw-1;
+ Wed, 09 Dec 2020 21:13:55 +0000
+X-MC-Unique: vL2RsGv_OTGtY0uYhYIEhw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 9 Dec 2020 21:13:54 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 9 Dec 2020 21:13:54 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Pavel Begunkov' <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: RE: [PATCH 2/2] block: no-copy bvec for direct IO
+Thread-Topic: [PATCH 2/2] block: no-copy bvec for direct IO
+Thread-Index: AQHWzdK4ncolaTTBdk+ENIJV/tZKlanvQ9gw
+Date:   Wed, 9 Dec 2020 21:13:54 +0000
+Message-ID: <9e80d0f0adc84cc9995e58e2d6aad580@AcuMS.aculab.com>
+References: <cover.1607477897.git.asml.silence@gmail.com>
+ <51905c4fcb222e14a1d5cb676364c1b4f177f582.1607477897.git.asml.silence@gmail.com>
+In-Reply-To: <51905c4fcb222e14a1d5cb676364c1b4f177f582.1607477897.git.asml.silence@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <1607544952-4891-1-git-send-email-jrdr.linux@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/20 12:15 PM, Souptick Joarder wrote:
-> Kernel test robot throws below warning ->
+From: Pavel Begunkov
+> Sent: 09 December 2020 02:20
 > 
-> In file included from drivers/usb/cdns3/core.c:23:
->>> drivers/usb/cdns3/host-export.h:27:51: warning: 'struct usb_hcd'
->>> declared inside parameter list will not be visible outside of this
->>> definition or declaration
->       27 | static inline int xhci_cdns3_suspend_quirk(struct usb_hcd
-> *hcd)
->          |                                                   ^~~~~~~
+> The block layer spends quite a while in blkdev_direct_IO() to copy and
+> initialise bio's bvec. However, if we've already got a bvec in the input
+> iterator it might be reused in some cases, i.e. when new
+> ITER_BVEC_FLAG_FIXED flag is set. Simple tests show considerable
+> performance boost, and it also reduces memory footprint.
+...
+> @@ -398,7 +422,11 @@ __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter, int nr_vecs)
+>  		bio->bi_end_io = blkdev_bio_end_io;
+>  		bio->bi_ioprio = iocb->ki_ioprio;
 > 
-> This patch will silence it.
+> -		ret = bio_iov_iter_get_pages(bio, iter);
+> +		if (iov_iter_is_bvec(iter) && iov_iter_bvec_fixed(iter))
+> +			ret = bio_iov_fixed_bvec_get_pages(bio, iter);
+> +		else
+> +			ret = bio_iov_iter_get_pages(bio, iter);
+> +
 
-Really?  Didn't silence it for me when I tested this patch.
+Is it necessary to check iov_iter_is_bvec() as well as iov_iter_bvec_fixed() ?
+If so it is probably worth using & not && so the compiler stands
+a chance of generating a & (B | C) == B instead of 2 conditionals.
+(I think I saw the bits in the same field being tested.
 
-Also, please see
+	David
 
-https://lore.kernel.org/linux-usb/DBBPR04MB7979502194410BB1AE96DF038BCC0@DBBPR04MB7979.eurprd04.prod.outlook.com/T/#m7f73fdd57c0f1577fb610dcaf28646b53fa7dc26
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-(what a strange URL)
-
-I now get these 2 warnings:
-
-In file included from ../drivers/usb/cdns3/core.c:23:0:
-../drivers/usb/cdns3/host-export.h:27:44: warning: ‘struct usb_hcd’ declared inside parameter list will not be visible outside of this definition or declaration
- static int xhci_cdns3_suspend_quirk(struct usb_hcd *hcd)
-                                            ^~~~~~~
-  CC [M]  drivers/usb/gadget/function/uvc_queue.o
-../drivers/usb/cdns3/host-export.h:27:12: warning: ‘xhci_cdns3_suspend_quirk’ defined but not used [-Wunused-function]
- static int xhci_cdns3_suspend_quirk(struct usb_hcd *hcd)
-            ^~~~~~~~~~~~~~~~~~~~~~~~
-
-
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> ---
->  drivers/usb/cdns3/host-export.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/cdns3/host-export.h b/drivers/usb/cdns3/host-export.h
-> index fb8541b..c1259af 100644
-> --- a/drivers/usb/cdns3/host-export.h
-> +++ b/drivers/usb/cdns3/host-export.h
-> @@ -24,7 +24,7 @@ static inline int cdns_host_init(struct cdns *cdns)
->  }
->  
->  static inline void cdns_host_exit(struct cdns *cdns) { }
-> -static inline int xhci_cdns3_suspend_quirk(struct usb_hcd *hcd)
-> +static int xhci_cdns3_suspend_quirk(struct usb_hcd *hcd)
->  {
->  	return 0;
->  }
-> 
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
