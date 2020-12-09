@@ -2,124 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662AC2D49F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 302E72D49F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387630AbgLITRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:17:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37923 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733106AbgLITRW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:17:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607541356;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PjbYSkTUKJTra9F+rU4vKjR/ApBdCFoCJ6AA7j7gnIY=;
-        b=UCGeKEzliNliiuGDVp8uOIWIw9n6OznEVbUJRMA1ePZaeKHfZXf2U89VYRyDvc0QfbVcot
-        x5JjJ+zXmVor0KoYQ0rSfzfM+TbOP3qfFMI5lZ51LU3ScPmYSGWZgZuPQ4wniM8f/8QRDg
-        jRDOjfTjX3dFvljzJRgYZNaDlwYXHEM=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-383-GUDrdtb-M9CtiR62oaMt3Q-1; Wed, 09 Dec 2020 14:15:54 -0500
-X-MC-Unique: GUDrdtb-M9CtiR62oaMt3Q-1
-Received: by mail-lj1-f199.google.com with SMTP id z26so2564198ljm.18
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 11:15:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PjbYSkTUKJTra9F+rU4vKjR/ApBdCFoCJ6AA7j7gnIY=;
-        b=mIq//zpLsYsei6vqxx377qfSH3Sh+m1vOhX0lYtoiuUt8u1BXaP0Pv2cm3my4vRCLh
-         dZ22MX97rOSGtj5xHlZzIzyh7aq1Y0Gbafct0ZpVxgFQA370S2688TM6psJ94/di/x8o
-         YKpVCWZly3sME/BZWc1cJrxgQxHqX35XO6+Imi58HBF0sMGa++zjXzT8bf6HfeVGcT+6
-         jLBr3A8L32UU9opEpChA2KGGnJq7nnV3yD3UriMw58uP10W9Kt/BqTnl7aybmALieQHr
-         jiAB0oQTFNbBqxXoT1/TiEwNLrPscU35SYnO3zumXRhLRx+I4giUVVMmhDbxnFdqphOj
-         lbWQ==
-X-Gm-Message-State: AOAM533c0GhMRPGoEzkzfiplSBxFpUTk85ZRUReY7LKjHpqL16pizaXc
-        w3pmp6VotpI7tggIL6PEW5FmP3yp92X7YxH2rvri8Qd1CBxC4PXzjxD1Y3kMC1cnJt+uL5v5IfH
-        vgttFPzyOPbQyE6x3nnCNkNRPU6FF2rBeoldbvFqn
-X-Received: by 2002:a05:651c:10c:: with SMTP id a12mr1658535ljb.414.1607541352071;
-        Wed, 09 Dec 2020 11:15:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz9/CimOc3N+72fFhCbbXRSFzpfZduUqobE3ByMI+lzkU6larzWtaAlzRFEmIhhoEYzS/VQ4tAHzGnleY0WZpw=
-X-Received: by 2002:a05:651c:10c:: with SMTP id a12mr1658530ljb.414.1607541351897;
- Wed, 09 Dec 2020 11:15:51 -0800 (PST)
+        id S2387636AbgLITRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:17:44 -0500
+Received: from foss.arm.com ([217.140.110.172]:39164 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387527AbgLITRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:17:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6C2A1FB;
+        Wed,  9 Dec 2020 11:16:57 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AE77A3F68F;
+        Wed,  9 Dec 2020 11:16:55 -0800 (PST)
+References: <20201023101158.088940906@infradead.org> <20201023102347.067278757@infradead.org> <ff62e3ee994efb3620177bf7b19fab16f4866845.camel@redhat.com> <jhjpn4bwznx.mognet@arm.com> <c2c013282faf278ee6e0fc66deefbab165ff4e88.camel@redhat.com> <jhjsg8hto03.mognet@arm.com> <589c684a04b4e91e99b22409c614baea35dc93ad.camel@redhat.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Qian Cai <qcai@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org, ouwen210@hotmail.com
+Subject: Re: [PATCH v4 11/19] sched/core: Make migrate disable and CPU hotplug cooperative
+In-reply-to: <589c684a04b4e91e99b22409c614baea35dc93ad.camel@redhat.com>
+Date:   Wed, 09 Dec 2020 19:16:50 +0000
+Message-ID: <jhjpn3iu6vx.mognet@arm.com>
 MIME-Version: 1.0
-References: <20201209141237.GA8092@willie-the-truck> <CAHk-=wht4inbTVVMt2TNDxR_cVjSNaBU3JYyKtRMVovWePb65g@mail.gmail.com>
- <20201209185020.GC8778@willie-the-truck> <87tusulrog.fsf@redhat.com>
-In-Reply-To: <87tusulrog.fsf@redhat.com>
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-Date:   Wed, 9 Dec 2020 12:15:25 -0700
-Message-ID: <CALzcdduYs4dng6R9j_dFFE5O13Kbpq9Rg05EFaQS1RSCHebYqg@mail.gmail.com>
-Subject: Re: [GIT PULL] IOMMU fix for 5.10 (-final)
-To:     Will Deacon <will@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 12:12 PM Jerry Snitselaar <jsnitsel@redhat.com> wrote:
->
->
-> Will Deacon @ 2020-12-09 11:50 MST:
->
-> > On Wed, Dec 09, 2020 at 10:07:46AM -0800, Linus Torvalds wrote:
-> >> On Wed, Dec 9, 2020 at 6:12 AM Will Deacon <will@kernel.org> wrote:
-> >> >
-> >> > Please pull this one-liner AMD IOMMU fix for 5.10. It's actually a fix
-> >> > for a fix, where the size of the interrupt remapping table was increased
-> >> > but a related constant for the size of the interrupt table was forgotten.
-> >>
-> >> Pulled.
-> >
-> > Thanks.
-> >
-> >> However, why didn't this then add some sanity checking for the two
-> >> different #defines to be in sync?
-> >>
-> >> IOW, something like
-> >>
-> >>    #define AMD_IOMMU_IRQ_TABLE_SHIFT 9
-> >>
-> >>    #define MAX_IRQS_PER_TABLE (1 << AMD_IOMMU_IRQ_TABLE_SHIFT)
-> >>    #define DTE_IRQ_TABLE_LEN ((u64)AMD_IOMMU_IRQ_TABLE_SHIFT << 1)
->
-> Since the field in the device table entry format expects it to be n
-> where there are 2^n entries in the table I guess it should be:
->
-> #define DTE_IRQ_TABLE_LEN 9
-> #define MAX_IRQS_PER_TABLE (1 << DTE_IRQ_TABLE_LEN)
->
-No, ignore that. I'm being stupid.
 
-
-> >>
-> >> or whatever. Hmm?
-> >
-> > This looks like a worthwhile change to me, but I don't have any hardware
-> > so I've been very reluctant to make even "obvious" driver changes here.
-> >
-> > Suravee -- please can you post a patch implementing the above?
-> >
-> >> That way this won't happen again, but perhaps equally importantly the
-> >> linkage will be more clear, and there won't be those random constants.
-> >>
-> >> Naming above is probably garbage - I assume there's some actual
-> >> architectural name for that irq table length field in the DTE?
-> >
-> > The one in the spec is even better: "IntTabLen".
-> >
-> > Will
-> > _______________________________________________
-> > iommu mailing list
-> > iommu@lists.linux-foundation.org
-> > https://lists.linuxfoundation.org/mailman/listinfo/iommu
+On 08/12/20 13:46, Qian Cai wrote:
+> On Mon, 2020-12-07 at 19:27 +0000, Valentin Schneider wrote:
+>> Ok, can reproduce this on a TX2 on next-20201207. I didn't use your config,
+>> I oldconfig'd my distro config and only modified it to CONFIG_PREEMPT_NONE.
+>> Interestingly the BUG happens on CPU127 here too...
 >
+> I think that number is totally random. For example, on this x86, it could happen
+> for CPU8 or CPU111.
 
+Actually on the TX2 it seems to *always* happen on CPU127. Your hotplug
+script sequentially offlines CPUs in increasing id values, so when CPU127
+gets hotplugged it is the last online CPU of NUMA node 0.
+
+I've been staring at traces collected via
+
+  echo 2 > /proc/sys/kernel/ftrace_dump_on_oops
+  trace-cmd start -e 'sched:*' -e 'cpuhp:*' -e 'workqueue:*'
+  ./hotplug.sh
+
+but it's still not entirely clear to me WTH is going on. I do see kworkers
+getting their affinity reset in workqueue_offline_cpu(), but for some
+reason there's a new one that wakes up on CPU127 sometime later. I haven't
+been able to figure out where it comes from - it obviously isn't part of
+the percpu worker pools, as it isn't handled during
+workqueue_offline_cpu(), but it still ends up affined to a single CPU...
+
+It looks something like this; traces are only from CPU127
+
+  cpuhp:sched_cpu_wait_empty() # Resets the affinity of some kworker/127:x<2
+
+  sched_switch(idle)
+
+  sched_wakeup(kworker/127:2) # picks CPU127
+  sched_switch(kworker/127:2)
+  # maybe_create_worker() -> creates kworker/127:3
+  sched_wakeup(kworker/127:3) # picks CPU127
+
+  sched_switch(kworker/127:3)
+  # maybe_create_worker() -> creates kworker/127:4
+  sched_wakeup(kworker/127:4) # picks CPU127
+
+  sched_switch(kworker/127:4)
+  # maybe_create_worker() -> creates kworker/127:5
+  sched_wakeup(kworker/127:5) # picks CPU127
+  sched_wakeup(migration/127)
+
+  sched_switch(migration/127)
+  cpuhp:take_cpu_down()
+
+  BUG
