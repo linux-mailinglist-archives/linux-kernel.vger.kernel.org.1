@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7412D3F6C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BC62D3F6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729635AbgLIKBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:01:02 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:8314 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729523AbgLIKBB (ORCPT
+        id S1729624AbgLIKAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:00:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47654 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729523AbgLIKAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:01:01 -0500
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1mfYzBGHXH6HGqpg2w="
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-        by smtp.strato.de (RZmta 47.6.2 DYNA|AUTH)
-        with ESMTPSA id 908871wB99vi5Sm
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Wed, 9 Dec 2020 10:57:44 +0100 (CET)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linus.walleij@linaro.org
-Cc:     linux-spi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, kernel@pyra-handheld.com,
-        Maxime Ripard <maxime.ripard@bootlin.com>, thesven73@gmail.com,
-        lukas@wunner.de, laurent.pinchart@ideasonboard.com,
-        andreas@kemnade.info, "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [PATCH] spi: dt-bindings: clarify CS behavior for spi-cs-high and gpio descriptors
-Date:   Wed,  9 Dec 2020 10:57:44 +0100
-Message-Id: <3bed61807fff6268789e7d411412fbc5cd6ffe2a.1607507863.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 9 Dec 2020 05:00:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607507949;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2GxwxnmMdHRae5ypkeJWwVKnRG7S2cikV1jPIplwOtU=;
+        b=BBDc1pXyebAUrxDCC4PobBNCn+IwcfaNv4+2XBDXhKdcPoo5LpMq4tV+Tx6EAh47PvzKOi
+        N/xHSvj9lwFVTPWOyJgiec/WIVOda3Cso/BZS3a4aV76UGJkBCEFZC5sc6jEga96VOLibF
+        aeEOHxpQzKBafKLC53OeCmnGReXJmRE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-501-EElVnxAvOXaOgb6CSy9r8A-1; Wed, 09 Dec 2020 04:59:07 -0500
+X-MC-Unique: EElVnxAvOXaOgb6CSy9r8A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6447210054FF;
+        Wed,  9 Dec 2020 09:59:06 +0000 (UTC)
+Received: from [10.36.114.167] (ovpn-114-167.ams2.redhat.com [10.36.114.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0D3555D9E4;
+        Wed,  9 Dec 2020 09:59:04 +0000 (UTC)
+Subject: Re: [PATCH] mm,hwpoison: Return -EBUSY when migration fails
+To:     Oscar Salvador <osalvador@suse.de>, akpm@linux-foundation.org
+Cc:     n-horiguchi@ah.jp.nec.com, vbabka@suse.cz, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20201209092818.30417-1-osalvador@suse.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <a30f4786-7c54-9fa8-0d39-6ae4d10f93c2@redhat.com>
+Date:   Wed, 9 Dec 2020 10:59:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201209092818.30417-1-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Behavior of CS signal in combination of spi-cs-high and gpio descriptors
-is not clearly defined and documented. So clarify the documentation
+On 09.12.20 10:28, Oscar Salvador wrote:
+> Currently, we return -EIO when we fail to migrate the page.
+> 
+> Migrations' failures are rather transient as they can happen due to
+> several reasons, e.g: high page refcount bump, mapping->migrate_page
+> failing etc.
+> All meaning that at that time the page could not be migrated, but
+> that has nothing to do with an EIO error.
+> 
+> Let us return -EBUSY instead, as we do in case we failed to isolate
+> the page.
+> 
+> While are it, let us remove the "ret" print as its value does not change.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> ---
+>  mm/memory-failure.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index 428991e297e2..1942fb83ac64 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -1849,11 +1849,11 @@ static int __soft_offline_page(struct page *page)
+>  			pr_info("soft offline: %#lx: %s migration failed %d, type %lx (%pGp)\n",
+>  				pfn, msg_page[huge], ret, page->flags, &page->flags);
+>  			if (ret > 0)
+> -				ret = -EIO;
+> +				ret = -EBUSY;
 
-Cc: linus.walleij@linaro.org
-Cc: linux-gpio@vger.kernel.org
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
- .../bindings/spi/spi-controller.yaml          | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Do we expect callers to retry immediately? -EAGAIN might make also
+sense. But -EBUSY is an obvious improvement. Do we have callers relying
+on this behavior?
 
-diff --git a/Documentation/devicetree/bindings/spi/spi-controller.yaml b/Documentation/devicetree/bindings/spi/spi-controller.yaml
-index 1b56d5e40f1fc..5f505810104dd 100644
---- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
-+++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
-@@ -42,6 +42,33 @@ properties:
-         cs2 : &gpio1 1 0
-         cs3 : &gpio1 2 0
- 
-+      The second flag of a gpio descriptor can be GPIO_ACTIVE_HIGH (0)
-+      or GPIO_ACTIVE_LOW(1). Legacy device trees often use 0.
-+
-+      There is a special rule set for combining the second flag of an
-+      cs-gpio with the optional spi-cs-high flag for SPI slaves.
-+
-+      Each table entry defines how the CS pin is to be physically
-+      driven (not considering potential gpio inversions by pinmux):
-+
-+      device node     | cs-gpio       | CS pin state active | Note
-+      ================+===============+=====================+=====
-+      spi-cs-high     | -             | H                   |
-+      -               | -             | L                   |
-+      spi-cs-high     | ACTIVE_HIGH   | H                   |
-+      -               | ACTIVE_HIGH   | L                   | 1
-+      spi-cs-high     | ACTIVE_LOW    | H                   | 2
-+      -               | ACTIVE_LOW    | L                   |
-+
-+      Notes:
-+      1) Should print a warning about polarity inversion.
-+         Here it would be wise to avoid and define the gpio as
-+         ACTIVE_LOW.
-+      2) Should print a warning about polarity inversion
-+         because ACTIVE_LOW is overridden by spi-cs-high.
-+         Should be generally avoided and be replaced by
-+         spi-cs-high + ACTIVE_HIGH.
-+
-   num-cs:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description:
+
 -- 
-2.26.2
+Thanks,
+
+David / dhildenb
 
