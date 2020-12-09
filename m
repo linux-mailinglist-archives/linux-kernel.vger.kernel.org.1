@@ -2,152 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19D72D45AA
+	by mail.lfdr.de (Postfix) with ESMTP id 083022D45A8
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730388AbgLIPmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:42:53 -0500
-Received: from relay.sw.ru ([185.231.240.75]:45694 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726431AbgLIPmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:42:46 -0500
-Received: from [192.168.15.177]
-        by relay3.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1kn1b1-00CQdb-IE; Wed, 09 Dec 2020 18:41:39 +0300
-Subject: Re: [PATCH 6/9] mm: vmscan: use per memcg nr_deferred of shrinker
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201202182725.265020-1-shy828301@gmail.com>
- <20201202182725.265020-7-shy828301@gmail.com>
- <49464720-675d-5144-043c-eba6852a9c06@virtuozzo.com>
- <CAHbLzkoiTmNLXj1Tx0-PggEdcYQ6nj71DUX3ya6mj3VNZ5ho4A@mail.gmail.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <d5454f6d-6739-3252-fba0-ac39c6c526c4@virtuozzo.com>
-Date:   Wed, 9 Dec 2020 18:41:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1730238AbgLIPmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:42:33 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:39344 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726431AbgLIPmX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 10:42:23 -0500
+Received: by mail-lf1-f67.google.com with SMTP id a12so3699769lfl.6;
+        Wed, 09 Dec 2020 07:42:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xHtJdl5wRPnIFMBx2cuWtaxIr4kDVs8SuLeP7y0WSmY=;
+        b=DLW3pn/5TdXySKs2PgdPIVarz/4hvE9vvRUBkhMLSp3HD3m/i16tAv0aPyZSO216Gk
+         oZ6gWEgEceuQjnW8EYUiajCJyWWbqHTd2zZgE/69fvcvrQPhAJ0KDhTuuhHSxjLHg0Yd
+         EZ0DqgQ5GcJzUECr0a3AhJp5/0W0x9GAi8XHYACNtMhNjQQ/ghEw1c1FE9oZT7vLaETX
+         PxEj54Mm2jfTmxJZPGMGI6jSArHN1d+tdodSPaF0SlEPa6qGry4gaoaZUPsnO0ejDs7J
+         NFcrMSsnpY9VhPgMCwcFfC3GBr1ph7MUVOXIpo8qJlwj2py8KLZPq9NuVl2ctExCOx2g
+         voDA==
+X-Gm-Message-State: AOAM531NBhFqU0RmvifMOKPtFyROvE/3b5wszkPp7xahCSZpJmd2vMRg
+        Cf/rKuNEHhpOeKCXbXI/X3Y=
+X-Google-Smtp-Source: ABdhPJw9ljZ7MRhYTQbmC7vjfq9B+Ozu4VAas+KoVlY+wzQhnTq7ZPUTzns8ekRUWpKUG+89P88iuw==
+X-Received: by 2002:a19:8c0f:: with SMTP id o15mr1261240lfd.126.1607528501264;
+        Wed, 09 Dec 2020 07:41:41 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id x20sm208612lfq.86.2020.12.09.07.41.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 07:41:40 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kn1bh-0005bT-5o; Wed, 09 Dec 2020 16:42:21 +0100
+Date:   Wed, 9 Dec 2020 16:42:21 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Johan Hovold <johan@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 0/4] USB: ftdio_sio: GPIO validity fixes
+Message-ID: <X9DwXS2xaiOs033B@localhost>
+References: <20201204164739.781812-1-maz@kernel.org>
+ <X841xwCChUEqi5Ad@localhost>
+ <73d57fe9fefe50955771846ea52004fb@kernel.org>
+ <X85FVc07Hc7LQQU8@localhost>
+ <d5fa2065009d5854b4c719003ebcb255@kernel.org>
+ <X85O9GoDcbiDp97j@localhost>
+ <CACRpkdZ06vWY+mqR7bYd_WcEM6+N6v5GgTAYhr0p0KkNLa3Qnw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzkoiTmNLXj1Tx0-PggEdcYQ6nj71DUX3ya6mj3VNZ5ho4A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdZ06vWY+mqR7bYd_WcEM6+N6v5GgTAYhr0p0KkNLa3Qnw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.12.2020 20:13, Yang Shi wrote:
-> On Thu, Dec 3, 2020 at 3:40 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
->>
->> On 02.12.2020 21:27, Yang Shi wrote:
->>> Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
->>> will be used in the following cases:
->>>     1. Non memcg aware shrinkers
->>>     2. !CONFIG_MEMCG
->>>     3. memcg is disabled by boot parameter
->>>
->>> Signed-off-by: Yang Shi <shy828301@gmail.com>
->>> ---
->>>  mm/vmscan.c | 88 +++++++++++++++++++++++++++++++++++++++++++++++++----
->>>  1 file changed, 82 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/mm/vmscan.c b/mm/vmscan.c
->>> index cba0bc8d4661..d569fdcaba79 100644
->>> --- a/mm/vmscan.c
->>> +++ b/mm/vmscan.c
->>> @@ -203,6 +203,12 @@ static DECLARE_RWSEM(shrinker_rwsem);
->>>  static DEFINE_IDR(shrinker_idr);
->>>  static int shrinker_nr_max;
->>>
->>> +static inline bool is_deferred_memcg_aware(struct shrinker *shrinker)
->>> +{
->>> +     return (shrinker->flags & SHRINKER_MEMCG_AWARE) &&
->>> +             !mem_cgroup_disabled();
->>> +}
->>> +
->>>  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
->>>  {
->>>       int id, ret = -ENOMEM;
->>> @@ -271,7 +277,58 @@ static bool writeback_throttling_sane(struct scan_control *sc)
->>>  #endif
->>>       return false;
->>>  }
->>> +
->>> +static inline long count_nr_deferred(struct shrinker *shrinker,
->>> +                                  struct shrink_control *sc)
->>> +{
->>> +     bool per_memcg_deferred = is_deferred_memcg_aware(shrinker) && sc->memcg;
->>> +     struct memcg_shrinker_deferred *deferred;
->>> +     struct mem_cgroup *memcg = sc->memcg;
->>> +     int nid = sc->nid;
->>> +     int id = shrinker->id;
->>> +     long nr;
->>> +
->>> +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
->>> +             nid = 0;
->>> +
->>> +     if (per_memcg_deferred) {
->>> +             deferred = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_deferred,
->>> +                                                  true);
->>
->> My comment is about both 5/9 and 6/9 patches.
+On Wed, Dec 09, 2020 at 10:20:38AM +0100, Linus Walleij wrote:
+> On Mon, Dec 7, 2020 at 4:48 PM Johan Hovold <johan@kernel.org> wrote:
+> > On Mon, Dec 07, 2020 at 03:34:23PM +0000, Marc Zyngier wrote:
 > 
-> Sorry for the late reply, I don't know why Gmail filtered this out to spam.
+> > > If they claim that their lines are available, and then refuse to
+> > > let the user play with it, that's just a bug willing to be fixed.
+> >
+> > My point was that this is how *all* gpio drivers work, and that muxing
+> > is somewhat orthogonal to the gpio controller implementation.
 > 
->>
->> shrink_slab_memcg() races with mem_cgroup_css_online(). A visibility of CSS_ONLINE flag
->> in shrink_slab_memcg()->mem_cgroup_online() does not guarantee that you will see
->> memcg->nodeinfo[nid]->shrinker_deferred != NULL in count_nr_deferred(). This may occur
->> because of processor reordering on !x86 (there is no a common lock or memory barriers).
->>
->> Regarding to shrinker_map this is not a problem due to map check in shrink_slab_memcg().
->> The map can't be NULL there.
->>
->> Regarding to shrinker_deferred you should prove either this is not a problem too,
->> or to add proper synchronization (maybe, based on barriers) or to add some similar check
->> (maybe, in shrink_slab_memcg() too).
+> This is true. It's because it is orthogonal that the separate subsystem
+> for pin control including pin muxing exists.
 > 
-> It seems shrink_slab_memcg() might see shrinker_deferred as NULL
-> either due to the same reason. I don't think there is a guarantee it
-> won't happen.
-> 
-> We just need guarantee CSS_ONLINE is seen after shrinker_maps and
-> shrinker_deferred are allocated, so I'm supposed barriers before
-> "css->flags |= CSS_ONLINE" should work.
-> 
-> So the below patch may be ok:
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index df128cab900f..9f7fb0450d69 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5539,6 +5539,12 @@ static int mem_cgroup_css_online(struct
-> cgroup_subsys_state *css)
->                 return -ENOMEM;
->         }
-> 
-> 
-> +       /*
-> +        * Barrier for CSS_ONLINE, so that shrink_slab_memcg() sees
-> shirnker_maps
-> +        * and shrinker_deferred before CSS_ONLINE.
-> +        */
-> +       smp_mb();
-> +
->         /* Online state pins memcg ID, memcg ID pins CSS */
->         refcount_set(&memcg->id.ref, 1);
->         css_get(css);
+> Should I be really overly picky, the drivers that can mux lines like
+> this should be implementing the pin control mux driver side as
+> well just to make Linux aware of this. But if the muxing cannot
+> be changed by the kernel (albeit with special tools) then it would
+> be pretty overengineered for this case. Things would be much
+> easier if this wasn't some flashing configuration but more of a
+> runtime thing (which is kind of the implicit assumption in pin
+> control land).
 
-smp barriers synchronize data access from different cpus. They should go in a pair.
-In case of you add the smp barrier into mem_cgroup_css_online(), we should also
-add one more smp barrier in another place, which we want to synchonize with this.
-Also, every place should contain a comment referring to its pair: "Pairs with...".
+We'd still have problem of how to configure these hot-pluggable devices
+at runtime, so it's not necessarily easier.
 
-Kirill
+If I remember correctly the xr_serial driver under review is doing
+something like muxing at runtime, but by simply having whichever
+interface (tty or gpio) that claims the resource first implicitly set
+the mux configuration. I have to revisit that.
+
+> We don't really have many drivers that are "muxable by
+> (intrusive) flashing" as opposed to "muxable by setting some
+> bits" so in that way these FTDI drivers and siblings are special.
+
+Yeah, but the gpio-reserved-range (valid-mask) feature which Marc used
+comes close here.
+
+Johan
