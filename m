@@ -2,104 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9A72D403A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 102692D403F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729220AbgLIKn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:43:57 -0500
-Received: from ozlabs.org ([203.11.71.1]:51425 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728826AbgLIKn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:43:56 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrYYG00B8z9sWK;
-        Wed,  9 Dec 2020 21:43:13 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1607510594;
-        bh=d/2hwEKTej3A6ApbAVKvrzfLbuFZYvZ+Dxm11f9CVXc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=mJm5JN5nKw5tNNd0wZO3p2zbByxKyS+lkztuaSmHm9Dm+kee8TL+ZnZ0kzHBPIHl1
-         0elRk88MHkwYr/kCH5XzHhYRMXAKuAEraQ/RkpmwAZBm3GwXN1taLKCYim2sh/XcI0
-         B/w5FykIMaOo1K1XZy17ZCxbAMXs3FGGCWskwHUekJeSeFbia2YuGlszhOUQNsxlz2
-         EtWmrckWjwv90A8pOWGnlU2KLOTQm6lzQ6MjBrQGPZNSJB3zOtslOUDcYQwXKdzJqk
-         V/KykCSl5YnVY/HQa0QtaCuU+ZBM8zwuQNa1+W1jmqkvlawpq3xxHdamS+O3nB62bB
-         UYxGDeoYJUp1g==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v1 2/6] powerpc/8xx: Always pin kernel text TLB
-In-Reply-To: <203b89de491e1379f1677a2685211b7c32adfff0.1606231483.git.christophe.leroy@csgroup.eu>
-References: <e796c5fcb5898de827c803cf1ab8ba1d7a5d4b76.1606231483.git.christophe.leroy@csgroup.eu> <203b89de491e1379f1677a2685211b7c32adfff0.1606231483.git.christophe.leroy@csgroup.eu>
-Date:   Wed, 09 Dec 2020 21:43:12 +1100
-Message-ID: <87lfe7s1j3.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1730054AbgLIKpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:45:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729382AbgLIKpI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 05:45:08 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0824C061793
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 02:44:27 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id s2so711384plr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 02:44:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Een9d7veFiTsOXmEKXm9zr8seLLZa1UZOWp04RSXu8E=;
+        b=Y7RF0e7kCH5C1MTyPtcgosScjTKq1bzIKM0c7nwWsg8CkbGs3PMhomO9Yq//415SwX
+         jhdm5jruxKvcUmO2UIaqgLtpHoh9IwawO0cfMZA9bIjFvPmbtc73dKlosHILHcr/Q1Sm
+         MNzlwLlqiPfdC14FrAMgrH7UXcVOZ4wrM728huRaA5ALKj2lI6BQL1ZLN7O/WNGojnag
+         JWpQyQlZi2Uz0JeI83CAyikazFE/N46+Q6MY3I5x0+9Udlx0hMhwDOpP0ld7phwqUB/5
+         suSTlEOO1YQq8j7foGhBb4sIzkA8Uod+XMBRjHOfuOadl4K240bTt/PdK40eq2gdADXM
+         FlTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Een9d7veFiTsOXmEKXm9zr8seLLZa1UZOWp04RSXu8E=;
+        b=hLQPik6zWWESGUQhwyzFkPVvEMZMS38kFs9b38zr1DQFgbTOebOJseyR/V5PBKLP/p
+         I0W8/fRv4nG8vqBBSLfcMhHxs+RoLwyPFcSovtJWql5/18/wabE1/fO84i3tJ3KCkx9W
+         9oCi/RITSyUmVVuSWI+sWregeyDVax7d7KR5Cm4jIwEpDvMIEt8qN2QlQnXZd8Pc1KQq
+         DGl+gHKRKiIy9JO2RjgBGOwNMNBu8Lyxn+OKGZzckCkHy4VLNCWcDk2+CxzEfTngTRav
+         jBexR2ZmugnzIZ74zuGUIrBDfa+nALUKkMCf/fcuK/0Sj/gKCvq8WvtPppy8RrBTEQjk
+         MtEg==
+X-Gm-Message-State: AOAM532ktKnWL8jFEM+2fqgo5ZpXAzGBYOT3relBllUtaxb5M08gb5+f
+        eXCRDedt6uBSeQyrblBSQyflEkP5FUSdqlmM
+X-Google-Smtp-Source: ABdhPJwjGP5GKbDfB3VJs+ilffjR4A7rqYEeSXBahZw8bCysea5xSnOhyXnLA3kbpmTlKXHZQzeobg==
+X-Received: by 2002:a17:90a:b794:: with SMTP id m20mr1625412pjr.47.1607510667539;
+        Wed, 09 Dec 2020 02:44:27 -0800 (PST)
+Received: from bj10918pcu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id y69sm2096554pfb.64.2020.12.09.02.44.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Dec 2020 02:44:26 -0800 (PST)
+From:   Xuewen Yan <xuewen.yan94@gmail.com>
+X-Google-Original-From: Xuewen Yan <xuewen.yan@unisoc.com>
+To:     patrick.bellasi@arm.com, vincent.guittot@linaro.org,
+        peterz@infradead.org
+Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        Xuewen.Yan@unisoc.com, xuewyan@foxmail.com,
+        Xuewen Yan <xuewen.yan@unisoc.com>
+Subject: [PATCH] fair/util_est: Separate util_est_dequeue() for cfs_rq_util_change
+Date:   Wed,  9 Dec 2020 18:44:16 +0800
+Message-Id: <1607510656-22990-1-git-send-email-xuewen.yan@unisoc.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> There is no big poing in not pinning kernel text anymore, as now
-> we can keep pinned TLB even with things like DEBUG_PAGEALLOC.
->
-> Remove CONFIG_PIN_TLB_TEXT, making it always right.
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/Kconfig               |  3 +--
->  arch/powerpc/kernel/head_8xx.S     | 20 +++-----------------
->  arch/powerpc/mm/nohash/8xx.c       |  3 +--
->  arch/powerpc/platforms/8xx/Kconfig |  7 -------
->  4 files changed, 5 insertions(+), 28 deletions(-)
->
-...
-> diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
-> index 231ca95f9ffb..19a3eec1d8c5 100644
-> --- a/arch/powerpc/mm/nohash/8xx.c
-> +++ b/arch/powerpc/mm/nohash/8xx.c
-> @@ -186,8 +186,7 @@ void mmu_mark_initmem_nx(void)
->  	mmu_mapin_ram_chunk(0, boundary, PAGE_KERNEL_TEXT, false);
->  	mmu_mapin_ram_chunk(boundary, einittext8, PAGE_KERNEL, false);
->  
-> -	if (IS_ENABLED(CONFIG_PIN_TLB_TEXT))
-> -		mmu_pin_tlb(block_mapped_ram, false);
-> +	mmu_pin_tlb(block_mapped_ram, false);
->  }
+when a task dequeued, it will update it's util, and cfs_rq_util_change
+would check rq's util, if the cfs_rq->avg.util_est.enqueued is bigger
+than  cfs_rq->avg.util_avg, but because the cfs_rq->avg.util_est.enqueued
+didn't be decreased, this would cause bigger cfs_rq_util by mistake,
+as a result, cfs_rq_util_change may change freq unreasonablely.
 
-This broke mpc885_ads_defconfig with:
+separate the util_est_dequeue() into util_est_dequeue() and
+util_est_update(), and dequeue the _task_util_est(p) before update util.
 
-  ld: arch/powerpc/mm/nohash/8xx.o: in function `mmu_mark_initmem_nx':
-  /home/michael/linux/arch/powerpc/mm/nohash/8xx.c:189: undefined reference to `mmu_pin_tlb'
-  make[1]: *** [/home/michael/linux/Makefile:1164: vmlinux] Error 1
-  make: *** [Makefile:185: __sub-make] Error 2
+Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+---
+ kernel/sched/fair.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
-Fixed by:
-
-diff --git a/arch/powerpc/kernel/head_8xx.S b/arch/powerpc/kernel/head_8xx.S
-index 35707e86c5f3..52702f3db6df 100644
---- a/arch/powerpc/kernel/head_8xx.S
-+++ b/arch/powerpc/kernel/head_8xx.S
-@@ -702,7 +702,6 @@ FixupDAR:/* Entry point for dcbx workaround. */
- 	mtspr	SPRN_DER, r8
- 	blr
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index ae7ceba..20ecfd5 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3946,11 +3946,9 @@ static inline bool within_margin(int value, int margin)
+ }
  
--#ifdef CONFIG_PIN_TLB
- _GLOBAL(mmu_pin_tlb)
- 	lis	r9, (1f - PAGE_OFFSET)@h
- 	ori	r9, r9, (1f - PAGE_OFFSET)@l
-@@ -802,7 +801,6 @@ _GLOBAL(mmu_pin_tlb)
- 	mtspr	SPRN_SRR1, r10
- 	mtspr	SPRN_SRR0, r11
- 	rfi
--#endif /* CONFIG_PIN_TLB */
+ static void
+-util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
++util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p)
+ {
+-	long last_ewma_diff;
+ 	struct util_est ue;
+-	int cpu;
  
- /*
-  * We put a few things here that have to be page-aligned.
+ 	if (!sched_feat(UTIL_EST))
+ 		return;
+@@ -3961,6 +3959,17 @@ static inline bool within_margin(int value, int margin)
+ 	WRITE_ONCE(cfs_rq->avg.util_est.enqueued, ue.enqueued);
+ 
+ 	trace_sched_util_est_cfs_tp(cfs_rq);
++}
++
++static void
++util_est_update(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
++{
++	long last_ewma_diff;
++	struct util_est ue;
++	int cpu;
++
++	if (!sched_feat(UTIL_EST))
++		return;
+ 
+ 	/*
+ 	 * Skip update of task's estimated utilization when the task has not
+@@ -4085,7 +4094,10 @@ static inline int newidle_balance(struct rq *rq, struct rq_flags *rf)
+ util_est_enqueue(struct cfs_rq *cfs_rq, struct task_struct *p) {}
+ 
+ static inline void
+-util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p,
++util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p) {}
++
++static inline void
++util_est_update(struct cfs_rq *cfs_rq, struct task_struct *p,
+ 		 bool task_sleep) {}
+ static inline void update_misfit_status(struct task_struct *p, struct rq *rq) {}
+ 
+@@ -5589,6 +5601,8 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+ 	int idle_h_nr_running = task_has_idle_policy(p);
+ 	bool was_sched_idle = sched_idle_rq(rq);
+ 
++	util_est_dequeue(&rq->cfs, p);
++
+ 	for_each_sched_entity(se) {
+ 		cfs_rq = cfs_rq_of(se);
+ 		dequeue_entity(cfs_rq, se, flags);
+@@ -5639,7 +5653,7 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+ 		rq->next_balance = jiffies;
+ 
+ dequeue_throttle:
+-	util_est_dequeue(&rq->cfs, p, task_sleep);
++	util_est_update(&rq->cfs, p, task_sleep);
+ 	hrtick_update(rq);
+ }
+ 
+-- 
+1.9.1
 
-
-cheers
