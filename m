@@ -2,71 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AB42D3EB7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EAC2D3EC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729249AbgLIJ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:27:49 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9045 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728986AbgLIJ1s (ORCPT
+        id S1729278AbgLIJ3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:29:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729261AbgLIJ3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:27:48 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CrWrp525Gzhnlx;
-        Wed,  9 Dec 2020 17:26:34 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Dec 2020 17:26:58 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] net: marvell: octeontx2: simplify the otx2_ptp_adjfine()
-Date:   Wed, 9 Dec 2020 17:27:26 +0800
-Message-ID: <20201209092726.20576-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Wed, 9 Dec 2020 04:29:12 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7E5C061793
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:28:32 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id m5so583924pjv.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:28:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WsSEK/1lQys4f3k0r77VatoUEROr27bK7pEGb3ZWvEY=;
+        b=wipE/khVDeAnJmNEVwHzkW9iOVCz6HcWy6EHW1iuHqRAC/pe03j/jKi6hFUkxb0dle
+         kzqEisQKKVgvPZqGweplyjPZnPyaZTSSESwF+nnR86DvckjZI65ctK5ImgEEnNsHYAzW
+         7DB48GzfxAkUk4u3iDlZP7nD/qpzattmkTN5VLYRRtZFUA5wK6sMc0Hz8YOzE402FLS/
+         iva3r85sty6YwiHohY957Lw3uRIRmh0ARijxJ/4bFONFbWSsGoNclKnO9L7sv4bmgItk
+         e4Mp8wzdeZ3xZ8YObDJo3H6rrRpu3qw3lP0t+IIJiTO+i+vANn4Wbx/N66HVR5Nvhkl0
+         fYmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WsSEK/1lQys4f3k0r77VatoUEROr27bK7pEGb3ZWvEY=;
+        b=TO7Q6QdvreDEZvS54NElEQPxQ1XzrjlXC02rkHXOIAe8DIIww8OQNifv/0/BOGERz8
+         MGlHGMN00114fSh4FgtZfbb2C52shjKLMYgJQafT/YQLBCrh18LbZPaNNka3x8xl+tkW
+         HggxHPvNA7KiUrgQlYN0hwlANiF6pE1Niav97jx87PJNPCFeasKXZRkUQfgi9js8T4vN
+         9RB1oEGDsGVSHXMltHe1ZGhRTR3Q0GHDDHJcCLaUrM978jxmmnLWjnJlbc5zjx7bnSwP
+         Yae/jalXUUiM8RKAs5VfRo+yXq/Nq1uzmFlNAv2zZaoYLeCrzUOCVeBDcnU9Q2NXK0e9
+         +BRA==
+X-Gm-Message-State: AOAM533G1jU0DmFYl7eetq/bcLoakEvobdGvjvMomT/k2cVc95L3iWIP
+        vC4iydtKTqtkx7GUfXIMaxd5oxIew59vSECVG1KBTA==
+X-Google-Smtp-Source: ABdhPJx9p4s8VACyyjkO2EcX0fOHY1QkiO0ZrHvdv1RvzRS3tKP8O8Zi0yLW2mSgEmTj63tkQUlxEt3kvRqQGlkiTUY=
+X-Received: by 2002:a17:902:76c8:b029:d9:d6c3:357d with SMTP id
+ j8-20020a17090276c8b02900d9d6c3357dmr1227075plt.34.1607506111556; Wed, 09 Dec
+ 2020 01:28:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+References: <20201130151838.11208-1-songmuchun@bytedance.com>
+ <20201130151838.11208-5-songmuchun@bytedance.com> <8505f01c-ad26-e571-b464-aedfd1bd9280@redhat.com>
+ <CAMZfGtXXHnso53-OZNotOnkZu1VX8WbBY66z2ynwVzcTZb44tQ@mail.gmail.com> <03a8b8b6-5d0c-b48e-562b-61f866722a31@redhat.com>
+In-Reply-To: <03a8b8b6-5d0c-b48e-562b-61f866722a31@redhat.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 9 Dec 2020 17:27:54 +0800
+Message-ID: <CAMZfGtV8kG8MjfOZoVNGfLYgiRziG_YgeW+C6tKcUALj-xsJfg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v7 04/15] mm/hugetlb: Introduce
+ nr_free_vmemmap_pages in the struct hstate
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
+On Wed, Dec 9, 2020 at 4:54 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 07.12.20 14:11, Muchun Song wrote:
+> > On Mon, Dec 7, 2020 at 8:36 PM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> On 30.11.20 16:18, Muchun Song wrote:
+> >>> Every HugeTLB has more than one struct page structure. The 2M HugeTLB
+> >>> has 512 struct page structure and 1G HugeTLB has 4096 struct page
+> >>> structures. We __know__ that we only use the first 4(HUGETLB_CGROUP_MIN_ORDER)
+> >>> struct page structures to store metadata associated with each HugeTLB.
+> >>>
+> >>> There are a lot of struct page structures(8 page frames for 2MB HugeTLB
+> >>> page and 4096 page frames for 1GB HugeTLB page) associated with each
+> >>> HugeTLB page. For tail pages, the value of compound_head is the same.
+> >>> So we can reuse first page of tail page structures. We map the virtual
+> >>> addresses of the remaining pages of tail page structures to the first
+> >>> tail page struct, and then free these page frames. Therefore, we need
+> >>> to reserve two pages as vmemmap areas.
+> >>>
+> >>> So we introduce a new nr_free_vmemmap_pages field in the hstate to
+> >>> indicate how many vmemmap pages associated with a HugeTLB page that we
+> >>> can free to buddy system.
+> >>>
+> >>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >>> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+> >>> ---
+> >>>  include/linux/hugetlb.h |   3 ++
+> >>>  mm/Makefile             |   1 +
+> >>>  mm/hugetlb.c            |   3 ++
+> >>>  mm/hugetlb_vmemmap.c    | 129 ++++++++++++++++++++++++++++++++++++++++++++++++
+> >>>  mm/hugetlb_vmemmap.h    |  20 ++++++++
+> >>>  5 files changed, 156 insertions(+)
+> >>>  create mode 100644 mm/hugetlb_vmemmap.c
+> >>>  create mode 100644 mm/hugetlb_vmemmap.h
+> >>>
+> >>> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> >>> index ebca2ef02212..4efeccb7192c 100644
+> >>> --- a/include/linux/hugetlb.h
+> >>> +++ b/include/linux/hugetlb.h
+> >>> @@ -492,6 +492,9 @@ struct hstate {
+> >>>       unsigned int nr_huge_pages_node[MAX_NUMNODES];
+> >>>       unsigned int free_huge_pages_node[MAX_NUMNODES];
+> >>>       unsigned int surplus_huge_pages_node[MAX_NUMNODES];
+> >>> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> >>> +     unsigned int nr_free_vmemmap_pages;
+> >>> +#endif
+> >>>  #ifdef CONFIG_CGROUP_HUGETLB
+> >>>       /* cgroup control files */
+> >>>       struct cftype cgroup_files_dfl[7];
+> >>> diff --git a/mm/Makefile b/mm/Makefile
+> >>> index ed4b88fa0f5e..056801d8daae 100644
+> >>> --- a/mm/Makefile
+> >>> +++ b/mm/Makefile
+> >>> @@ -71,6 +71,7 @@ obj-$(CONFIG_FRONTSWAP)     += frontswap.o
+> >>>  obj-$(CONFIG_ZSWAP)  += zswap.o
+> >>>  obj-$(CONFIG_HAS_DMA)        += dmapool.o
+> >>>  obj-$(CONFIG_HUGETLBFS)      += hugetlb.o
+> >>> +obj-$(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)      += hugetlb_vmemmap.o
+> >>>  obj-$(CONFIG_NUMA)   += mempolicy.o
+> >>>  obj-$(CONFIG_SPARSEMEM)      += sparse.o
+> >>>  obj-$(CONFIG_SPARSEMEM_VMEMMAP) += sparse-vmemmap.o
+> >>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> >>> index 1f3bf1710b66..25f9e8e9fc4a 100644
+> >>> --- a/mm/hugetlb.c
+> >>> +++ b/mm/hugetlb.c
+> >>> @@ -42,6 +42,7 @@
+> >>>  #include <linux/userfaultfd_k.h>
+> >>>  #include <linux/page_owner.h>
+> >>>  #include "internal.h"
+> >>> +#include "hugetlb_vmemmap.h"
+> >>>
+> >>>  int hugetlb_max_hstate __read_mostly;
+> >>>  unsigned int default_hstate_idx;
+> >>> @@ -3206,6 +3207,8 @@ void __init hugetlb_add_hstate(unsigned int order)
+> >>>       snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
+> >>>                                       huge_page_size(h)/1024);
+> >>>
+> >>> +     hugetlb_vmemmap_init(h);
+> >>> +
+> >>>       parsed_hstate = h;
+> >>>  }
+> >>>
+> >>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> >>> new file mode 100644
+> >>> index 000000000000..51152e258f39
+> >>> --- /dev/null
+> >>> +++ b/mm/hugetlb_vmemmap.c
+> >>> @@ -0,0 +1,129 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >>> +/*
+> >>> + * Free some vmemmap pages of HugeTLB
+> >>> + *
+> >>> + * Copyright (c) 2020, Bytedance. All rights reserved.
+> >>> + *
+> >>> + *     Author: Muchun Song <songmuchun@bytedance.com>
+> >>> + *
+> >>> + * The struct page structures (page structs) are used to describe a physical
+> >>> + * page frame. By default, there is a one-to-one mapping from a page frame to
+> >>> + * it's corresponding page struct.
+> >>> + *
+> >>> + * The HugeTLB pages consist of multiple base page size pages and is supported
+> >>> + * by many architectures. See hugetlbpage.rst in the Documentation directory
+> >>> + * for more details. On the x86 architecture, HugeTLB pages of size 2MB and 1GB
+> >>> + * are currently supported. Since the base page size on x86 is 4KB, a 2MB
+> >>> + * HugeTLB page consists of 512 base pages and a 1GB HugeTLB page consists of
+> >>> + * 4096 base pages. For each base page, there is a corresponding page struct.
+> >>> + *
+> >>> + * Within the HugeTLB subsystem, only the first 4 page structs are used to
+> >>> + * contain unique information about a HugeTLB page. HUGETLB_CGROUP_MIN_ORDER
+> >>> + * provides this upper limit. The only 'useful' information in the remaining
+> >>> + * page structs is the compound_head field, and this field is the same for all
+> >>> + * tail pages.
+> >>> + *
+> >>> + * By removing redundant page structs for HugeTLB pages, memory can returned to
+> >>> + * the buddy allocator for other uses.
+> >>> + *
+> >>> + * When the system boot up, every 2M HugeTLB has 512 struct page structs which
+> >>> + * size is 8 pages(sizeof(struct page) * 512 / PAGE_SIZE).
+> >>
+> >>
+> >> You should try to generalize all descriptions regarding differing base
+> >> page sizes. E.g., arm64 supports 4k, 16k, and 64k base pages.
+> >
+> > Will do. Thanks.
+> >
+> >>
+> >> [...]
+> >>
+> >>> @@ -0,0 +1,20 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >>> +/*
+> >>> + * Free some vmemmap pages of HugeTLB
+> >>> + *
+> >>> + * Copyright (c) 2020, Bytedance. All rights reserved.
+> >>> + *
+> >>> + *     Author: Muchun Song <songmuchun@bytedance.com>
+> >>> + */
+> >>> +#ifndef _LINUX_HUGETLB_VMEMMAP_H
+> >>> +#define _LINUX_HUGETLB_VMEMMAP_H
+> >>> +#include <linux/hugetlb.h>
+> >>> +
+> >>> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> >>> +void __init hugetlb_vmemmap_init(struct hstate *h);
+> >>> +#else
+> >>> +static inline void hugetlb_vmemmap_init(struct hstate *h)
+> >>> +{
+> >>> +}
+> >>> +#endif /* CONFIG_HUGETLB_PAGE_FREE_VMEMMAP */
+> >>> +#endif /* _LINUX_HUGETLB_VMEMMAP_H */
+> >>>
+> >>
+> >> This patch as it stands is rather sub-optimal. I mean, all it does is
+> >> add documentation and print what could be done.
+> >>
+> >> Can we instead introduce the basic infrastructure and enable it via this
+> >> patch on top, where we glue all the pieces together? Or is there
+> >> something I am missing?
+> >
+> > Maybe we can make the config of CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > default n in the Kconfig. When everything is ready, then make it
+> > default to y. Right?
+>
+> I think it can make sense to introduce the
+> CONFIG_HUGETLB_PAGE_FREE_VMEMMAP option first if necessary for other
+> patches. But I think the the documentation and the dummy call should
+> rather be moved to the end of the series where you glue everything you
+> introduced together and officially unlock the feature. Others might
+> disagree :)
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_ptp.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+I see. Thanks for your suggestions.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ptp.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ptp.c
-index 7bcf5246350f..56390a664517 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ptp.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ptp.c
-@@ -12,7 +12,6 @@ static int otx2_ptp_adjfine(struct ptp_clock_info *ptp_info, long scaled_ppm)
- 	struct otx2_ptp *ptp = container_of(ptp_info, struct otx2_ptp,
- 					    ptp_info);
- 	struct ptp_req *req;
--	int err;
- 
- 	if (!ptp->nic)
- 		return -ENODEV;
-@@ -24,11 +23,7 @@ static int otx2_ptp_adjfine(struct ptp_clock_info *ptp_info, long scaled_ppm)
- 	req->op = PTP_OP_ADJFINE;
- 	req->scaled_ppm = scaled_ppm;
- 
--	err = otx2_sync_mbox_msg(&ptp->nic->mbox);
--	if (err)
--		return err;
--
--	return 0;
-+	return otx2_sync_mbox_msg(&ptp->nic->mbox);
- }
- 
- static u64 ptp_cc_read(const struct cyclecounter *cc)
+>
+> BTW, I'm planning on reviewing the other parts of this series, I'm just
+> fairly busy, so it might take a while (I think we're targeting 5.12
+> either way as the 5.11 merge window will start fairly soon).
+>
+
+Very thanks.
+
+> --
+> Thanks,
+>
+> David / dhildenb
+>
+
+
 -- 
-2.22.0
-
+Yours,
+Muchun
