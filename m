@@ -2,326 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893C62D3D2D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A272D3D2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgLIIQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:16:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35238 "EHLO
+        id S1726885AbgLIIQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:16:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgLIIQ0 (ORCPT
+        with ESMTP id S1725765AbgLIIQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:16:26 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2646EC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 00:15:46 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id g185so680302wmf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 00:15:46 -0800 (PST)
+        Wed, 9 Dec 2020 03:16:49 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA58CC061793;
+        Wed,  9 Dec 2020 00:16:09 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id w6so534291pfu.1;
+        Wed, 09 Dec 2020 00:16:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=+EBAMKQfu9uxdGLL7ad9C++uCGmU6KMz6ZVwSzSDIvo=;
-        b=rcQ/GRT3SQTlkVYKjzsg24YfDcevyGzwRysGfd55uIxz2gS2K0/WR7Q2EUkwOBrfzx
-         3G9NyaKB38jASjtZlkMlRlSU1VRRPxUOahkaMW3KO5DY3/Uz/VbvzRzFRJlOIX9v6IAw
-         qcJb1jR11UoljoQ2cJQG1XasPO3U0l+xsnCcQ3CHafmeW38QjpHMpQQNeoEVo5CLdFmX
-         ZBzR6UGg84xfCXmtOgN+Ia1FpHDSNuKIiax9EpKL1P0X8/GXx9l3fRTwaQDdIoksC+KB
-         ciqWaHDNRjZVIXIerNPi1zmu4sPszQC7FNQ4FGp3DDT5o0olcyPgcbN++D5779+AHeOj
-         ljlQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fixlBjRW2kL0YWNC9K96DmtICObU9iPBUY8f82+kwnQ=;
+        b=TrReyXGijHi4qX1gffQA287sRLgrEyWVqW6+UeQsOJNt69VPFiKTjwJAOuJHL+XdPF
+         6OxxV/MAPyLN23bwoYNL6A4JVCRlo2oWv4RVfYrT2Ug3EZMslV00XwXeN8xyp1pDcMdM
+         UIyb9GBUSZYgqAGwukI82h7pPhkfr0xRlAaQ1cYUqHR0Ap3+SfAE+1wmbc2b+Fbf3bQv
+         GqhbxUzwTPx1D6zA6vOZcn0U2CqIlQ0ZHIZnWyxa3TGqQVzBydDyAh+vgriWOCMHfmJT
+         qHnDOmaeOkpewzL6bVp7yB53160hOewXhV94eaFBkbDDI+sZACXo825ckKZYKAKhP590
+         Go4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=+EBAMKQfu9uxdGLL7ad9C++uCGmU6KMz6ZVwSzSDIvo=;
-        b=rSSL41S/w1B+Eg4EpyUXzdeHQ+isruKnyvRCgMSbhQfIhWGncVk/oOFGhKcB6K5olG
-         LnFDE+BAL0Bawyqq7KnRWKs2/hasipw4Mxvm9dXb79+rit4Evhm0seV64trYtv4POxoF
-         P8dWl0wN6mSQTQu9lfUzZAbhFvVqCFRbCpDTWnTJ/EGgB8p8Unl4QdYcC+5xuQfYep2E
-         eMQ337q3X8Sv9dvQl6LAbGpKAoxkNf164xvf8yvf6HjsY6IVNkD0rsk8Tyw1DQCvzlfo
-         /rCrfKxkLRcGyNW0JhuJL0FYqMyhw57P7e6eQSHo2MfgFgz3zgtyzYzbVljMQJeXssR5
-         h4Mw==
-X-Gm-Message-State: AOAM5336U0hs75R616yXE77HT3ti/wzYH3n2II5RGY1jQ4FwzETTGob+
-        zf3dHbCfaJSLqgfrI5Kl22Kuzw==
-X-Google-Smtp-Source: ABdhPJxDfBs3ICM2pdsvYVCcvFMmPfSMa+X8lh4jyakZS4ljZz6Ig4JEHY0l1ZooUGqGKPAZDbI+nA==
-X-Received: by 2002:a1c:c2d4:: with SMTP id s203mr1427836wmf.58.1607501744668;
-        Wed, 09 Dec 2020 00:15:44 -0800 (PST)
-Received: from vingu-book ([2a01:e0a:f:6020:2095:66e9:5a3f:72dd])
-        by smtp.gmail.com with ESMTPSA id g184sm1823079wma.16.2020.12.09.00.15.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 09 Dec 2020 00:15:43 -0800 (PST)
-Date:   Wed, 9 Dec 2020 09:15:41 +0100
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     Aubrey Li <aubrey.li@linux.intel.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        mgorman@techsingularity.net, valentin.schneider@arm.com,
-        qais.yousef@arm.com, dietmar.eggemann@arm.com, rostedt@goodmis.org,
-        bsegall@google.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, Mel Gorman <mgorman@suse.de>,
-        Jiang Biao <benbjiang@gmail.com>
-Subject: Re: [RFC PATCH v7] sched/fair: select idle cpu from idle cpumask for
- task wakeup
-Message-ID: <20201209081541.GA5071@vingu-book>
-References: <20201209062404.175565-1-aubrey.li@linux.intel.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fixlBjRW2kL0YWNC9K96DmtICObU9iPBUY8f82+kwnQ=;
+        b=Ah6EyqZp/4BMSJ0oy2hcPEvBSxd98X2BM1IJyD+C4iE2BGaBd1dFZmeSTPiPkXaLe7
+         H1b95cOrTbOpHzyzbkMKvGy0XGzxLYtdFBUNngEehYXjamcGDMQ+/hkn0KMQ0AmaA667
+         wRKpeskYP12EgmJOvTEzcv3N2XLICLvNENi66iZUQpAJop0+P32fpz7PUkkajakQui57
+         Oqx9kfWsvT6us8KekazOQOaEEwiCtSiW77kGGrj0nmakAeKo4IybRVOfpk1DKe1Tk5S7
+         EOHomaRQf3yVbdomZ6g7a1gEfYQdsEaSfJo2g9SCJGGJDkHRY4lxgjnjGvk9wDrQXtZH
+         OiSA==
+X-Gm-Message-State: AOAM531xf4JZWC2qaN0i7SZBneQF3U4oJ/fUnzsy8ZHtb8IWIIRoKotf
+        F0Uk5oDwIdlP2gvUMp2YLLOzxbgAE04=
+X-Google-Smtp-Source: ABdhPJxLaN0OtY1x/XUZLanliKgvcwNVRf4J3ol/EVWF75A/NBasJvrUvm7AGWl5/yvT8U2Ol1TXPQ==
+X-Received: by 2002:a63:e94f:: with SMTP id q15mr951518pgj.401.1607501769313;
+        Wed, 09 Dec 2020 00:16:09 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:ac46:48a7:8096:18f5])
+        by smtp.gmail.com with ESMTPSA id f21sm1389206pgk.18.2020.12.09.00.16.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 00:16:08 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Schiller <ms@dev.tdt.de>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net-next] net: x25: Fix handling of Restart Request and Restart Confirmation
+Date:   Wed,  9 Dec 2020 00:16:04 -0800
+Message-Id: <20201209081604.464084-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201209062404.175565-1-aubrey.li@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mercredi 09 déc. 2020 à 14:24:04 (+0800), Aubrey Li a écrit :
-> Add idle cpumask to track idle cpus in sched domain. Every time
-> a CPU enters idle, the CPU is set in idle cpumask to be a wakeup
-> target. And if the CPU is not in idle, the CPU is cleared in idle
-> cpumask during scheduler tick to ratelimit idle cpumask update.
-> 
-> When a task wakes up to select an idle cpu, scanning idle cpumask
-> has lower cost than scanning all the cpus in last level cache domain,
-> especially when the system is heavily loaded.
-> 
-> Benchmarks including hackbench, schbench, uperf, sysbench mysql
-> and kbuild were tested on a x86 4 socket system with 24 cores per
-> socket and 2 hyperthreads per core, total 192 CPUs, no regression
-> found.
-> 
-> v6->v7:
-> - place the whole idle cpumask mechanism under CONFIG_SMP.
-> 
-> v5->v6:
-> - decouple idle cpumask update from stop_tick signal, set idle CPU
->   in idle cpumask every time the CPU enters idle
-> 
-> v4->v5:
-> - add update_idle_cpumask for s2idle case
-> - keep the same ordering of tick_nohz_idle_stop_tick() and update_
->   idle_cpumask() everywhere
-> 
-> v3->v4:
-> - change setting idle cpumask from every idle entry to tickless idle
->   if cpu driver is available.
-> - move clearing idle cpumask to scheduler_tick to decouple nohz mode.
-> 
-> v2->v3:
-> - change setting idle cpumask to every idle entry, otherwise schbench
->   has a regression of 99th percentile latency.
-> - change clearing idle cpumask to nohz_balancer_kick(), so updating
->   idle cpumask is ratelimited in the idle exiting path.
-> - set SCHED_IDLE cpu in idle cpumask to allow it as a wakeup target.
-> 
-> v1->v2:
-> - idle cpumask is updated in the nohz routines, by initializing idle
->   cpumask with sched_domain_span(sd), nohz=off case remains the original
->   behavior.
-> 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Qais Yousef <qais.yousef@arm.com>
-> Cc: Valentin Schneider <valentin.schneider@arm.com>
-> Cc: Jiang Biao <benbjiang@gmail.com>
-> Cc: Tim Chen <tim.c.chen@linux.intel.com>
-> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-> ---
->  include/linux/sched/topology.h | 13 +++++++++
->  kernel/sched/core.c            |  2 ++
->  kernel/sched/fair.c            | 51 +++++++++++++++++++++++++++++++++-
->  kernel/sched/idle.c            |  5 ++++
->  kernel/sched/sched.h           |  4 +++
->  kernel/sched/topology.c        |  3 +-
->  6 files changed, 76 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-> index 820511289857..b47b85163607 100644
-> --- a/include/linux/sched/topology.h
-> +++ b/include/linux/sched/topology.h
-> @@ -65,8 +65,21 @@ struct sched_domain_shared {
->  	atomic_t	ref;
->  	atomic_t	nr_busy_cpus;
->  	int		has_idle_cores;
-> +	/*
-> +	 * Span of all idle CPUs in this domain.
-> +	 *
-> +	 * NOTE: this field is variable length. (Allocated dynamically
-> +	 * by attaching extra space to the end of the structure,
-> +	 * depending on how many CPUs the kernel has booted up with)
-> +	 */
-> +	unsigned long	idle_cpus_span[];
->  };
->  
-> +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
-> +{
-> +	return to_cpumask(sds->idle_cpus_span);
-> +}
-> +
->  struct sched_domain {
->  	/* These fields must be setup */
->  	struct sched_domain __rcu *parent;	/* top domain must be null terminated */
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index c4da7e17b906..c4c51ff3402a 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -4011,6 +4011,7 @@ void scheduler_tick(void)
->  
->  #ifdef CONFIG_SMP
->  	rq->idle_balance = idle_cpu(cpu);
-> +	update_idle_cpumask(cpu, false);
+1. When the x25 module gets loaded, layer 2 may already be running and
+connected. In this case, although we are in X25_LINK_STATE_0, we still
+need to handle the Restart Request received, rather than ignore it.
 
-Test rq->idle_balance here instead of adding the test in update_idle_cpumask which is only
-relevant for this situation.
+2. When we are in X25_LINK_STATE_2, we have already sent a Restart Request
+and is waiting for the Restart Confirmation with t20timer. t20timer will
+restart itself repeatedly forever so it will always be there, as long as we
+are in State 2. So we don't need to check x25_t20timer_pending again.
 
-if (!rq->idle_balance)
-    update_idle_cpumask(cpu, false);
+Fixes: d023b2b9ccc2 ("net/x25: fix restart request/confirm handling")
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+ net/x25/x25_link.c | 25 +++++++++----------------
+ 1 file changed, 9 insertions(+), 16 deletions(-)
 
->  	trigger_load_balance(rq);
->  #endif
->  }
-> @@ -7186,6 +7187,7 @@ void __init sched_init(void)
->  		rq->idle_stamp = 0;
->  		rq->avg_idle = 2*sysctl_sched_migration_cost;
->  		rq->max_idle_balance_cost = sysctl_sched_migration_cost;
-> +		rq->last_idle_state = 1;
->  
->  		INIT_LIST_HEAD(&rq->cfs_tasks);
->  
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index c0c4d9ad7da8..7306f8886120 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6146,7 +6146,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->  
->  	time = cpu_clock(this);
->  
-> -	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> +	/*
-> +	 * sched_domain_shared is set only at shared cache level,
-> +	 * this works only because select_idle_cpu is called with
-> +	 * sd_llc.
-> +	 */
-> +	cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
->  
->  	for_each_cpu_wrap(cpu, cpus, target) {
->  		if (!--nr)
-> @@ -6806,6 +6811,50 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  
->  	return newidle_balance(rq, rf) != 0;
->  }
-> +
-> +/*
-> + * Update cpu idle state and record this information
-> + * in sd_llc_shared->idle_cpus_span.
-> + */
-> +void update_idle_cpumask(int cpu, bool set_idle)
-> +{
-> +	struct sched_domain *sd;
-> +	struct rq *rq = cpu_rq(cpu);
-> +	int idle_state;
-> +
-> +	/*
-> +	 * If called from scheduler tick, only update
-> +	 * idle cpumask if the CPU is busy, as idle
-> +	 * cpumask is also updated on idle entry.
-> +	 *
-> +	 */
-> +	if (!set_idle && rq->idle_balance)
-> +		return;
-> +	/*
-> +	 * Also set SCHED_IDLE cpu in idle cpumask to
-> +	 * allow SCHED_IDLE cpu as a wakeup target
-> +	 */
-> +	idle_state = set_idle || sched_idle_cpu(cpu);
-> +	/*
-> +	 * No need to update idle cpumask if the state
-> +	 * does not change.
-> +	 */
-> +	if (rq->last_idle_state == idle_state)
-> +		return;
-> +	/*
-> +	 * Called with irq disabled, rcu_read_lock() is not needed.
-> +	 */
-> +	sd = rcu_dereference(per_cpu(sd_llc, cpu));
-> +	if (unlikely(!sd))
-> +		return;
-> +
-> +	if (idle_state)
-> +		cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
-> +	else
-> +		cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
-> +
-> +	rq->last_idle_state = idle_state;
-> +}
->  #endif /* CONFIG_SMP */
->  
->  static unsigned long wakeup_gran(struct sched_entity *se)
-> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-> index f324dc36fc43..2c517d6a061a 100644
-> --- a/kernel/sched/idle.c
-> +++ b/kernel/sched/idle.c
-> @@ -257,6 +257,11 @@ static void do_idle(void)
->  			cpuhp_report_idle_dead();
->  			arch_cpu_idle_dead();
->  		}
-> +		/*
-> +		 * The CPU is about to go idle, set it in idle cpumask
-> +		 * to be a wake up target.
-> +		 */
-> +		update_idle_cpumask(cpu, true);
->  
->  		arch_cpu_idle_enter();
->  
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 8d1ca65db3b0..2167ca48f3aa 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -976,6 +976,7 @@ struct rq {
->  
->  	unsigned char		nohz_idle_balance;
->  	unsigned char		idle_balance;
-> +	unsigned char		last_idle_state;
->  
->  	unsigned long		misfit_task_load;
->  
-> @@ -1516,6 +1517,8 @@ static inline unsigned int group_first_cpu(struct sched_group *group)
->  
->  extern int group_balance_cpu(struct sched_group *sg);
->  
-> +void update_idle_cpumask(int cpu, bool set_idle);
-> +
->  #if defined(CONFIG_SCHED_DEBUG) && defined(CONFIG_SYSCTL)
->  void register_sched_domain_sysctl(void);
->  void dirty_sched_domain_sysctl(int cpu);
-> @@ -1536,6 +1539,7 @@ extern void flush_smp_call_function_from_idle(void);
->  
->  #else /* !CONFIG_SMP: */
->  static inline void flush_smp_call_function_from_idle(void) { }
-> +static inline void update_idle_cpumask(int cpu, bool set_idle) { }
->  #endif
->  
->  #include "stats.h"
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 1bd7e3af904f..541bd3a7de4d 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -1407,6 +1407,7 @@ sd_init(struct sched_domain_topology_level *tl,
->  		sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
->  		atomic_inc(&sd->shared->ref);
->  		atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
-> +		cpumask_copy(sds_idle_cpus(sd->shared), sched_domain_span(sd));
->  	}
->  
->  	sd->private = sdd;
-> @@ -1769,7 +1770,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
->  
->  			*per_cpu_ptr(sdd->sd, j) = sd;
->  
-> -			sds = kzalloc_node(sizeof(struct sched_domain_shared),
-> +			sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
->  					GFP_KERNEL, cpu_to_node(j));
->  			if (!sds)
->  				return -ENOMEM;
-> -- 
-> 2.25.1
-> 
+diff --git a/net/x25/x25_link.c b/net/x25/x25_link.c
+index f92073f3cb11..57a81100c5da 100644
+--- a/net/x25/x25_link.c
++++ b/net/x25/x25_link.c
+@@ -58,11 +58,6 @@ static inline void x25_stop_t20timer(struct x25_neigh *nb)
+ 	del_timer(&nb->t20timer);
+ }
+ 
+-static inline int x25_t20timer_pending(struct x25_neigh *nb)
+-{
+-	return timer_pending(&nb->t20timer);
+-}
+-
+ /*
+  *	This handles all restart and diagnostic frames.
+  */
+@@ -70,17 +65,20 @@ void x25_link_control(struct sk_buff *skb, struct x25_neigh *nb,
+ 		      unsigned short frametype)
+ {
+ 	struct sk_buff *skbn;
+-	int confirm;
+ 
+ 	switch (frametype) {
+ 	case X25_RESTART_REQUEST:
+ 		switch (nb->state) {
++		case X25_LINK_STATE_0:
++			/* This can happen when the x25 module just gets loaded
++			 * and doesn't know layer 2 has already connected
++			 */
++			nb->state = X25_LINK_STATE_3;
++			x25_transmit_restart_confirmation(nb);
++			break;
+ 		case X25_LINK_STATE_2:
+-			confirm = !x25_t20timer_pending(nb);
+ 			x25_stop_t20timer(nb);
+ 			nb->state = X25_LINK_STATE_3;
+-			if (confirm)
+-				x25_transmit_restart_confirmation(nb);
+ 			break;
+ 		case X25_LINK_STATE_3:
+ 			/* clear existing virtual calls */
+@@ -94,13 +92,8 @@ void x25_link_control(struct sk_buff *skb, struct x25_neigh *nb,
+ 	case X25_RESTART_CONFIRMATION:
+ 		switch (nb->state) {
+ 		case X25_LINK_STATE_2:
+-			if (x25_t20timer_pending(nb)) {
+-				x25_stop_t20timer(nb);
+-				nb->state = X25_LINK_STATE_3;
+-			} else {
+-				x25_transmit_restart_request(nb);
+-				x25_start_t20timer(nb);
+-			}
++			x25_stop_t20timer(nb);
++			nb->state = X25_LINK_STATE_3;
+ 			break;
+ 		case X25_LINK_STATE_3:
+ 			/* clear existing virtual calls */
+-- 
+2.27.0
+
