@@ -2,217 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E10A2D42BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:11:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9802D42BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732085AbgLINFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:05:47 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:42192 "EHLO pegase1.c-s.fr"
+        id S1732171AbgLINHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:07:46 -0500
+Received: from foss.arm.com ([217.140.110.172]:34310 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732038AbgLINFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:05:39 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Crchf6NB3z9tx0P;
-        Wed,  9 Dec 2020 14:04:50 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 4Kfh1mQvICmR; Wed,  9 Dec 2020 14:04:50 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Crchf2wKvz9tx0J;
-        Wed,  9 Dec 2020 14:04:50 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 66C8A8B7F1;
-        Wed,  9 Dec 2020 14:04:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 0GQFCI28StGy; Wed,  9 Dec 2020 14:04:51 +0100 (CET)
-Received: from localhost.localdomain (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C80428B7F0;
-        Wed,  9 Dec 2020 14:04:50 +0100 (CET)
-Received: by localhost.localdomain (Postfix, from userid 0)
-        id 7D172606AF; Wed,  9 Dec 2020 13:04:50 +0000 (UTC)
-Message-Id: <672a89f002195f717fa6f7efd2bbfa2793fca72b.1607519069.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <8f378fb93b8b180501443056a4d791b8d8335339.1607519069.git.christophe.leroy@csgroup.eu>
-References: <8f378fb93b8b180501443056a4d791b8d8335339.1607519069.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 5/5] powerpc/platforms: Move files from 4xx to 44x
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed,  9 Dec 2020 13:04:50 +0000 (UTC)
+        id S1732116AbgLINGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 08:06:07 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D4AC31B;
+        Wed,  9 Dec 2020 05:05:16 -0800 (PST)
+Received: from [10.57.61.6] (unknown [10.57.61.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB3F73F66B;
+        Wed,  9 Dec 2020 05:05:14 -0800 (PST)
+Subject: Re: [PATCH v3 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
+To:     Christoph Hellwig <hch@lst.de>, Tomasz Figa <tfiga@chromium.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>
+References: <20201125221917.150463-1-ribalda@chromium.org>
+ <20201130083410.GD32234@lst.de> <20201201033658.GE3723071@google.com>
+ <20201201144916.GA14682@lst.de>
+ <CAAFQd5BBEbmENrrZ-vMK9cKOap19XWmfcxwrxKfjWx-wEew8rg@mail.gmail.com>
+ <20201209111235.GA22806@lst.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <6b34596d-34c4-bd99-c5a7-5a4742c5b886@arm.com>
+Date:   Wed, 9 Dec 2020 13:05:11 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <20201209111235.GA22806@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@c-s.fr>
+On 2020-12-09 11:12, Christoph Hellwig wrote:
+> On Tue, Dec 08, 2020 at 01:54:00PM +0900, Tomasz Figa wrote:
+>> >From the media perspective, it would be good to have the vmap
+>> optional, similarly to the DMA_ATTR_NO_KERNEL_MAPPING attribute for
+>> coherent allocations. Actually, in the media drivers, the need to have
+>> a kernel mapping of the DMA buffers corresponds to a minority of the
+>> drivers. Most of them only need to map them to the userspace.
+>>
+>> Nevertheless, that minority actually happens to be quite widely used,
+>> e.g. the uvcvideo driver, so we can't go to the other extreme and just
+>> drop the vmap at all.
+> 
+> My main problem is that the DMA_ATTR_NO_KERNEL_MAPPING makes a mess
+> of an API.  I'd much rather have low-level API that returns the
+> discontiguous allocations and another one that vmaps them rather
+> than starting to overload arguments like in dma_alloc_attrs with
+> DMA_ATTR_NO_KERNEL_MAPPING.
 
-Only 44x uses 4xx now, so only keep one directory.
+Agreed - if iommu-dma's dma_alloc_coherent() ends up as little more than 
+a thin wrapper around those two functions I think that would be a good 
+sign. It also seems like it might be a good idea for this API to use 
+scatterlists rather than page arrays as it's fundamental format, to help 
+reduce impedance with dma-buf - if we can end up with a wider redesign 
+that also gets rid of dma_get_sgtable(), all the better!
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/platforms/44x/Makefile           |  9 +++++++-
- arch/powerpc/platforms/{4xx => 44x}/cpm.c     |  0
- arch/powerpc/platforms/{4xx => 44x}/gpio.c    |  0
- .../powerpc/platforms/{4xx => 44x}/hsta_msi.c |  0
- arch/powerpc/platforms/44x/machine_check.c    | 14 +++++++++++
- arch/powerpc/platforms/{4xx => 44x}/msi.c     |  0
- arch/powerpc/platforms/{4xx => 44x}/pci.c     |  0
- arch/powerpc/platforms/{4xx => 44x}/pci.h     |  0
- arch/powerpc/platforms/{4xx => 44x}/soc.c     |  0
- arch/powerpc/platforms/{4xx => 44x}/uic.c     |  0
- arch/powerpc/platforms/4xx/Makefile           |  8 -------
- arch/powerpc/platforms/4xx/machine_check.c    | 23 -------------------
- arch/powerpc/platforms/Makefile               |  2 +-
- 13 files changed, 23 insertions(+), 33 deletions(-)
- rename arch/powerpc/platforms/{4xx => 44x}/cpm.c (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/gpio.c (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/hsta_msi.c (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/msi.c (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/pci.c (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/pci.h (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/soc.c (100%)
- rename arch/powerpc/platforms/{4xx => 44x}/uic.c (100%)
- delete mode 100644 arch/powerpc/platforms/4xx/Makefile
- delete mode 100644 arch/powerpc/platforms/4xx/machine_check.c
-
-diff --git a/arch/powerpc/platforms/44x/Makefile b/arch/powerpc/platforms/44x/Makefile
-index 5ba031f57652..ce6989a70b99 100644
---- a/arch/powerpc/platforms/44x/Makefile
-+++ b/arch/powerpc/platforms/44x/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--obj-y	+= misc_44x.o machine_check.o
-+obj-y	+= misc_44x.o machine_check.o uic.o
- ifneq ($(CONFIG_PPC4xx_CPM),y)
- obj-y	+= idle.o
- endif
-@@ -12,3 +12,10 @@ obj-$(CONFIG_CANYONLANDS)+= canyonlands.o
- obj-$(CONFIG_CURRITUCK)	+= ppc476.o
- obj-$(CONFIG_AKEBONO)	+= ppc476.o
- obj-$(CONFIG_FSP2)	+= fsp2.o
-+
-+obj-$(CONFIG_4xx_SOC)		+= soc.o
-+obj-$(CONFIG_PCI)		+= pci.o
-+obj-$(CONFIG_PPC4xx_HSTA_MSI)	+= hsta_msi.o
-+obj-$(CONFIG_PPC4xx_MSI)	+= msi.o
-+obj-$(CONFIG_PPC4xx_CPM)	+= cpm.o
-+obj-$(CONFIG_PPC4xx_GPIO)	+= gpio.o
-diff --git a/arch/powerpc/platforms/4xx/cpm.c b/arch/powerpc/platforms/44x/cpm.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/cpm.c
-rename to arch/powerpc/platforms/44x/cpm.c
-diff --git a/arch/powerpc/platforms/4xx/gpio.c b/arch/powerpc/platforms/44x/gpio.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/gpio.c
-rename to arch/powerpc/platforms/44x/gpio.c
-diff --git a/arch/powerpc/platforms/4xx/hsta_msi.c b/arch/powerpc/platforms/44x/hsta_msi.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/hsta_msi.c
-rename to arch/powerpc/platforms/44x/hsta_msi.c
-diff --git a/arch/powerpc/platforms/44x/machine_check.c b/arch/powerpc/platforms/44x/machine_check.c
-index a5c898bb9bab..d5be7c03e1f6 100644
---- a/arch/powerpc/platforms/44x/machine_check.c
-+++ b/arch/powerpc/platforms/44x/machine_check.c
-@@ -9,6 +9,20 @@
- #include <asm/reg.h>
- #include <asm/cacheflush.h>
- 
-+int machine_check_4xx(struct pt_regs *regs)
-+{
-+	unsigned long reason = regs->dsisr;
-+
-+	if (reason & ESR_IMCP) {
-+		printk("Instruction");
-+		mtspr(SPRN_ESR, reason & ~ESR_IMCP);
-+	} else
-+		printk("Data");
-+	printk(" machine check in kernel mode.\n");
-+
-+	return 0;
-+}
-+
- int machine_check_440A(struct pt_regs *regs)
- {
- 	unsigned long reason = regs->dsisr;
-diff --git a/arch/powerpc/platforms/4xx/msi.c b/arch/powerpc/platforms/44x/msi.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/msi.c
-rename to arch/powerpc/platforms/44x/msi.c
-diff --git a/arch/powerpc/platforms/4xx/pci.c b/arch/powerpc/platforms/44x/pci.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/pci.c
-rename to arch/powerpc/platforms/44x/pci.c
-diff --git a/arch/powerpc/platforms/4xx/pci.h b/arch/powerpc/platforms/44x/pci.h
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/pci.h
-rename to arch/powerpc/platforms/44x/pci.h
-diff --git a/arch/powerpc/platforms/4xx/soc.c b/arch/powerpc/platforms/44x/soc.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/soc.c
-rename to arch/powerpc/platforms/44x/soc.c
-diff --git a/arch/powerpc/platforms/4xx/uic.c b/arch/powerpc/platforms/44x/uic.c
-similarity index 100%
-rename from arch/powerpc/platforms/4xx/uic.c
-rename to arch/powerpc/platforms/44x/uic.c
-diff --git a/arch/powerpc/platforms/4xx/Makefile b/arch/powerpc/platforms/4xx/Makefile
-deleted file mode 100644
-index d009d2e0b9e8..000000000000
---- a/arch/powerpc/platforms/4xx/Makefile
-+++ /dev/null
-@@ -1,8 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--obj-y				+= uic.o machine_check.o
--obj-$(CONFIG_4xx_SOC)		+= soc.o
--obj-$(CONFIG_PCI)		+= pci.o
--obj-$(CONFIG_PPC4xx_HSTA_MSI)	+= hsta_msi.o
--obj-$(CONFIG_PPC4xx_MSI)	+= msi.o
--obj-$(CONFIG_PPC4xx_CPM)	+= cpm.o
--obj-$(CONFIG_PPC4xx_GPIO)	+= gpio.o
-diff --git a/arch/powerpc/platforms/4xx/machine_check.c b/arch/powerpc/platforms/4xx/machine_check.c
-deleted file mode 100644
-index a71c29892a91..000000000000
---- a/arch/powerpc/platforms/4xx/machine_check.c
-+++ /dev/null
-@@ -1,23 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- */
--
--#include <linux/kernel.h>
--#include <linux/printk.h>
--#include <linux/ptrace.h>
--
--#include <asm/reg.h>
--
--int machine_check_4xx(struct pt_regs *regs)
--{
--	unsigned long reason = regs->dsisr;
--
--	if (reason & ESR_IMCP) {
--		printk("Instruction");
--		mtspr(SPRN_ESR, reason & ~ESR_IMCP);
--	} else
--		printk("Data");
--	printk(" machine check in kernel mode.\n");
--
--	return 0;
--}
-diff --git a/arch/powerpc/platforms/Makefile b/arch/powerpc/platforms/Makefile
-index f67b7fabac4e..5621cd0edfab 100644
---- a/arch/powerpc/platforms/Makefile
-+++ b/arch/powerpc/platforms/Makefile
-@@ -4,7 +4,7 @@ obj-$(CONFIG_FSL_ULI1575)	+= fsl_uli1575.o
- 
- obj-$(CONFIG_PPC_PMAC)		+= powermac/
- obj-$(CONFIG_PPC_CHRP)		+= chrp/
--obj-$(CONFIG_44x)		+= 4xx/ 44x/
-+obj-$(CONFIG_44x)		+= 44x/
- obj-$(CONFIG_PPC_MPC512x)	+= 512x/
- obj-$(CONFIG_PPC_MPC52xx)	+= 52xx/
- obj-$(CONFIG_PPC_8xx)		+= 8xx/
--- 
-2.25.0
-
+Robin.
