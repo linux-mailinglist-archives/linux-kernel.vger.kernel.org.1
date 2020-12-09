@@ -2,71 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC602D3E6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 083C12D3E77
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgLIJTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:19:07 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9405 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727348AbgLIJTH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:19:07 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CrWfm25M0z79bB;
-        Wed,  9 Dec 2020 17:17:52 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Dec 2020 17:18:17 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] net: marvell: octeontx2: simplify the return expression of rvu_npa_init()
-Date:   Wed, 9 Dec 2020 17:18:44 +0800
-Message-ID: <20201209091844.20151-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S1729007AbgLIJUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:20:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728168AbgLIJUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 04:20:43 -0500
+X-Gm-Message-State: AOAM531J7Vg2u3e+CBbPAenvEGJyNqC8iDKRrnvpUX2SnKx7dTPh5H8g
+        dh9avPGHi+9OQW0Tjk25o6W1etXtw4fXqm8t5tI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607505602;
+        bh=sq+XLLMMI02zOMjuS3XQlCpve1fu802tRE6ExZV+b3g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mz1eKySbhCwGkbLV5t4HHdidZSNRp8ep2zj81vQ3dh0zvGWrkZC0vdC/U4Z5jPmAH
+         RsnTv6T8UkgUu3/DI8noayHdoA5IW63jffV5Yigv6x4ThqUS8S8XXZBgjRo6/2V22P
+         Neet2n07dy7/2tSKL+VrUxyP820lngLG2tooHpd+2HtBgqaq710EfFpFaqc523AR0p
+         aKPqdimRV+XlnE7kRLf2ZjBWup+qF8eoxeo74A3Zu9WXLDv+QFuqON9l++c0Zo8DMI
+         XEzYRXAuANnx15CcJncBhcD2Qvq/D17T937D5R9aqTdMwgRshpTexvfuqVGmqAwMey
+         nLGve9ysgUwXw==
+X-Google-Smtp-Source: ABdhPJzy1WH7QEwYKyjZFMswZieiJpvEKVPf4nSKGRTcgXdAouLHKE27qdaJY2tvlSq5f0mibXd6i944QYu2cZlqE1k=
+X-Received: by 2002:aca:44d:: with SMTP id 74mr1104225oie.4.1607505601280;
+ Wed, 09 Dec 2020 01:20:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
+ <CABCJKueCHo2RYfx_A21m+=d1gQLR9QsOOxCsHFeicCqyHkb-Kg@mail.gmail.com> <20201209045554.fxlzrmxknakl2gdr@google.com>
+In-Reply-To: <20201209045554.fxlzrmxknakl2gdr@google.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 9 Dec 2020 10:19:44 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1p8yKMKXB1cUpy-5PjehJGPX0SPNEx4VsMmqgOeR6fZg@mail.gmail.com>
+Message-ID: <CAK8P3a1p8yKMKXB1cUpy-5PjehJGPX0SPNEx4VsMmqgOeR6fZg@mail.gmail.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+To:     Fangrui Song <maskray@google.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
+On Wed, Dec 9, 2020 at 5:56 AM 'Fangrui Song' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+> On 2020-12-08, 'Sami Tolvanen' via Clang Built Linux wrote:
+> >On Tue, Dec 8, 2020 at 4:15 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >> So far I have
+> >> not managed to get a working build out of it, the main problem so far being
+> >> that it is really slow to build because the link stage only uses one CPU.
+> >> These are the other issues I've seen so far:
+>
+> ld.lld ThinLTO uses the number of (physical cores enabled by affinity) by default.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_npa.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+Ah, I see.  Do you know if it's also possible to do something like
+-flto=jobserver
+to integrate better with the kernel build system?
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npa.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npa.c
-index 67471cb2b129..24c2bfdfec4e 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npa.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npa.c
-@@ -497,18 +497,14 @@ static int npa_aq_init(struct rvu *rvu, struct rvu_block *block)
- int rvu_npa_init(struct rvu *rvu)
- {
- 	struct rvu_hwinfo *hw = rvu->hw;
--	int blkaddr, err;
-+	int blkaddr;
- 
- 	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NPA, 0);
- 	if (blkaddr < 0)
- 		return 0;
- 
- 	/* Initialize admin queue */
--	err = npa_aq_init(rvu, &hw->block[blkaddr]);
--	if (err)
--		return err;
--
--	return 0;
-+	return npa_aq_init(rvu, &hw->block[blkaddr]);
- }
- 
- void rvu_npa_freemem(struct rvu *rvu)
--- 
-2.22.0
+I tend to run multiple builds under a top-level makefile with 'make
+-j30' in order
+to use 30 of the 32 threads and leave the scheduling to jobserver instead of
+the kernel. If the linker itself is multithreaded but the jobserver
+thinks it is a
+single thread, could end up with 30 concurrent linkers each trying to use
+16 cores.
 
+> >> - CONFIG_CPU_BIG_ENDIAN doesn't seem to work with lld, and LTO
+> >>   doesn't work with ld.bfd.
+> >>   I've added a CPU_LITTLE_ENDIAN dependency to
+> >>   ARCH_SUPPORTS_LTO_CLANG{,THIN}
+> >
+> >Ah, good point. I'll fix this in v9.
+>
+> Full/Thin LTO should work with GNU ld and gold with LLVMgold.so built from
+> llvm-project (https://llvm.org/docs/GoldPlugin.html ). You'll need to make sure
+> that LLVMgold.so is newer than clang. (Newer clang may introduce bitcode
+> attributes which are unrecognizable by older LLVMgold.so/ld.lld)
+
+The current patch series requires LLD:
+
+config HAS_LTO_CLANG
+       def_bool y
+       depends on CC_IS_CLANG && CLANG_VERSION >= 110000 && LD_IS_LLD
+
+Is this something we should change then, or try to keep it simple with the
+current approach, leaving LTO disabled for big-endian builds and hosts without
+a working lld?
+
+       Arnd
