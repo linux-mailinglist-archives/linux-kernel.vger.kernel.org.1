@@ -2,130 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9DF2D3FA0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:12:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 957DF2D3F9D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729790AbgLIKMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:12:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53174 "EHLO
+        id S1729761AbgLIKLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:11:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729775AbgLIKMH (ORCPT
+        with ESMTP id S1729628AbgLIKLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:12:07 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0635C061794
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 02:11:26 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id m5so643241pjv.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 02:11:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d8yNDgYWASv11UhUw/bWcMz19H0C2yz7qXfuD0bhUn0=;
-        b=dmAazBXoyUeAWM3edEVyWfiXKxv66KTgKIwyOz0VOteoRRUk7F3ylzt43TAE3VMM8Q
-         1sFsmFSjj63jlXMen3WT9Urn7Q2qLWZlj/66N9zfy28SAr77QjrM/kjt9v6gTeAZ2/2Q
-         DxWcZVRg8JuBlOn1nCXBjiwDKXFW2UrRAxKKutGUL0No8NJ0uU46GIErudp/1bpk2YOV
-         3iug93DTUMEW2TAmeCsIw3wEhf9IHF6uOKwqCNO1Hpl26TMxv9bmpX9TmdEvCRvUfsXA
-         OCgNgwTE8xwzTzA2JxXQOVrq4aT16xBpCrfgLj1GoHU8UovIah/xqh1uMCcQl+Rf6li8
-         QDoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d8yNDgYWASv11UhUw/bWcMz19H0C2yz7qXfuD0bhUn0=;
-        b=aWJnCkM+FtV6jmojKMg7tbS60X7TIz7JYHe6BFFUCawroQVVNQHcjnqvB8n2EAw82N
-         PY1L9Tyri7Qa+YRUfGmDEBUZKTPvkdrUffwTN0WT70e20e2BAcElnaRMF+MT3X7sSVtJ
-         CY3kjwq+lnQhExNbMqlLG7tm7BRbLY0/K9sEraakEnRulVwdpC5h8SR1mGjS3ipGSmxN
-         HWyqu8SnpR7c/Pir7WzxctLCVxxrV9PHbSoJncocBNjuOfdUXyDpkqLlmdLBxf0Md2fI
-         5XbuxM2JKONEoAOGhrNX0ribZgQiNYGsQUtWMnexyUtHQi1wiUxw7Jf87DEUXDksZGvD
-         ZK1w==
-X-Gm-Message-State: AOAM533bDi6p9qGM88S5ZWpDZ5CuxMqwMRmzHNDUDjt/BKAzpXPOYm/Y
-        pE2cUJhD4nWskYTjPRoBXCQTMoEkVIn4TVBwoBn5vA==
-X-Google-Smtp-Source: ABdhPJyZbpmo6sQ/giSzPaUJeLNjnQbqSMGyDjlFlX08gqr+lliLp5PTVbu7rjbOxMBdYCStZdmNjSw4u/bBranfZic=
-X-Received: by 2002:a17:90a:ae14:: with SMTP id t20mr1578160pjq.13.1607508686459;
- Wed, 09 Dec 2020 02:11:26 -0800 (PST)
+        Wed, 9 Dec 2020 05:11:52 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505C0C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 02:11:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=x0VZ08ZyDvqYZ0g3miV9tckufVtVAHqucqobOSyGKtw=; b=ov0FanHmetPX7i1lNqw3IRvo5G
+        sgHiQnbopg+J5Bxmr2NDmq8B7iWnSfzgRV1dswAeIYooN1KXkoNNf7J3bYaOPB2jpTHo202+XVFY3
+        a79ED0556A0KENdYU+urEml4Lf9Yag2dtFPo/kJljSx8L9I5HB2sgbSeMGYI5M8rAIA5gD3qXfBdl
+        u8mJyTALNEq/dxEys77/tQXHn0RjF4VnPyt4izAefjVkWL9dowyNgzsyIin3cUn5cWuUeQB4FFUlq
+        35rAGsIPMZike39xxNBjC5ldxfu9NsnfdFkINZF2wWHPsSO8n3OgybuoSrV1LiMbl2z5pJr7BSaZN
+        IMRv1mXw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmwR9-0007Af-FY; Wed, 09 Dec 2020 10:11:07 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C9B16305C1C;
+        Wed,  9 Dec 2020 11:11:02 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B2FAA20819094; Wed,  9 Dec 2020 11:11:02 +0100 (CET)
+Date:   Wed, 9 Dec 2020 11:11:02 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>
+Subject: Re: [patch V2 4/9] softirq: Make softirq control and processing RT
+ aware
+Message-ID: <20201209101102.GJ2414@hirez.programming.kicks-ass.net>
+References: <20201204170151.960336698@linutronix.de>
+ <20201204170805.114951971@linutronix.de>
 MIME-Version: 1.0
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <20201130151838.11208-7-songmuchun@bytedance.com> <ba57ea7d-709b-bf36-d48a-cc72a26012cc@redhat.com>
- <CAMZfGtV5200NZXH9Z_Z9qXo5FCd9E6JOTXjQtzcF0xGi-gCuPg@mail.gmail.com> <4b8a9389-1704-4d8c-ec58-abd753814dd9@redhat.com>
-In-Reply-To: <4b8a9389-1704-4d8c-ec58-abd753814dd9@redhat.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 9 Dec 2020 18:10:50 +0800
-Message-ID: <CAMZfGtURKbRingD28boJoZ+MjMTcr7L8mOWPX+hQF9nVLV6S9w@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v7 06/15] mm/hugetlb: Disable freeing
- vmemmap if struct page size is not power of two
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204170805.114951971@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 6:06 PM David Hildenbrand <david@redhat.com> wrote:
->
-> On 09.12.20 11:03, Muchun Song wrote:
-> > On Wed, Dec 9, 2020 at 5:57 PM David Hildenbrand <david@redhat.com> wrote:
-> >>
-> >> On 30.11.20 16:18, Muchun Song wrote:
-> >>> We only can free the tail vmemmap pages of HugeTLB to the buddy allocator
-> >>> when the size of struct page is a power of two.
-> >>>
-> >>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> >>> ---
-> >>>  mm/hugetlb_vmemmap.c | 5 +++++
-> >>>  1 file changed, 5 insertions(+)
-> >>>
-> >>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> >>> index 51152e258f39..ad8fc61ea273 100644
-> >>> --- a/mm/hugetlb_vmemmap.c
-> >>> +++ b/mm/hugetlb_vmemmap.c
-> >>> @@ -111,6 +111,11 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
-> >>>       unsigned int nr_pages = pages_per_huge_page(h);
-> >>>       unsigned int vmemmap_pages;
-> >>>
-> >>> +     if (!is_power_of_2(sizeof(struct page))) {
-> >>> +             pr_info("disable freeing vmemmap pages for %s\n", h->name);
-> >>
-> >> I'd just drop that pr_info(). Users are able to observe that it's
-> >> working (below), so they are able to identify that it's not working as well.
-> >
-> > The below is just a pr_debug. Do you suggest converting it to pr_info?
->
-> Good question. I wonder if users really have to know in most cases.
-> Maybe pr_debug() is good enough in environments where we want to debug
-> why stuff is not working as expected.
+On Fri, Dec 04, 2020 at 06:01:55PM +0100, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> Provide a local lock based serialization for soft interrupts on RT which
+> allows the local_bh_disabled() sections and servicing soft interrupts to be
+> preemptible.
+> 
+> Provide the necessary inline helpers which allow to reuse the bulk of the
+> softirq processing code.
 
-When someone enables this feature via the boot cmdline, maybe he should
-want to know whether this feature works. From this point of view, the pr_info
-is necessary. Right?
+> +struct softirq_ctrl {
+> +	local_lock_t	lock;
+> +	int		cnt;
+> +};
+> +
+> +static DEFINE_PER_CPU(struct softirq_ctrl, softirq_ctrl) = {
+> +	.lock	= INIT_LOCAL_LOCK(softirq_ctrl.lock),
+> +};
+> +
+> +void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
+> +{
+> +	unsigned long flags;
+> +	int newcnt;
+> +
+> +	WARN_ON_ONCE(in_hardirq());
+> +
+> +	/* First entry of a task into a BH disabled section? */
+> +	if (!current->softirq_disable_cnt) {
+> +		if (preemptible()) {
+> +			local_lock(&softirq_ctrl.lock);
 
->
-> --
-> Thanks,
->
-> David / dhildenb
->
+AFAICT this significantly changes the locking rules.
+
+Where previously we could do:
+
+	spin_lock(&ponies)
+	spin_lock_bh(&foo);
+
+vs
+
+	spin_lock_bh(&bar);
+	spin_lock(&ponies)
+
+provided the rest of the code observed: bar -> ponies -> foo
+and never takes ponies from in-softirq.
+
+This is now a genuine deadlock on RT.
+
+Also see:
+
+  https://lkml.kernel.org/r/X9CheYjuXWc75Spa@hirez.programming.kicks-ass.net
+
+> +			/* Required to meet the RCU bottomhalf requirements. */
+> +			rcu_read_lock();
+> +		} else {
+> +			DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt));
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * Track the per CPU softirq disabled state. On RT this is per CPU
+> +	 * state to allow preemption of bottom half disabled sections.
+> +	 */
+> +	newcnt = __this_cpu_add_return(softirq_ctrl.cnt, cnt);
+> +	/*
+> +	 * Reflect the result in the task state to prevent recursion on the
+> +	 * local lock and to make softirq_count() & al work.
+> +	 */
+> +	current->softirq_disable_cnt = newcnt;
+> +
+> +	if (IS_ENABLED(CONFIG_TRACE_IRQFLAGS) && newcnt == cnt) {
+> +		raw_local_irq_save(flags);
+> +		lockdep_softirqs_off(ip);
+> +		raw_local_irq_restore(flags);
+> +	}
+> +}
 
 
--- 
-Yours,
-Muchun
