@@ -2,179 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536982D3B82
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C802D3B8B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgLIGe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 01:34:28 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:57470 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727765AbgLIGe1 (ORCPT
+        id S1728218AbgLIGg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 01:36:57 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:57812 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgLIGg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 01:34:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1607495598;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E66XTuF9S6V6oDfPaAuyEjQFA8d+e4b2TR44kS+gsBU=;
-        b=dzoZy86bCYIRCnKfA74PasAv64LUjJuKkxl3uINaKl8um6jSerOQBMTgEeYUbtdfVakHcI
-        KcQS+TyiMlsdAYr6HXJIDkFqWFGhvyvGQY/yGhTtwhB2ti3OyOCDS15TNeA8QYV9WbwkUg
-        mszQAFewxxN47BQKbswtVHM+5Nf37T0=
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com
- (mail-am6eur05lp2107.outbound.protection.outlook.com [104.47.18.107])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-26-SdgT_GUlPmG1JmvbHrYu1Q-1; Wed, 09 Dec 2020 07:33:16 +0100
-X-MC-Unique: SdgT_GUlPmG1JmvbHrYu1Q-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lroR34DRnfX6oM1+39Xy3fiRKsaAYrh518/IkKtNmDAOmOE5d1wWR0Xe/Qo2g42hR/hO5JyTUZORAvZWU5G2W1ccq863aZnimbHOV9GTvsXGFVQxSLaaJ98jZiE0/8igm1SvbIczZCNGpSJWudfV+7fgWVbORAqAZY5WkfX3bZ7k7EntIVfVX+GyBExiHHuQaj7jDkbqooNqVwpfRaLSTLI68xYeZy3leTQP4I04EXBCGUcdt0x65+luEPiisi8Lsq2EVNDt+I5J2CvzZBCgadOMcTBUKV4p6WazFdiLZ9sGQzL8mLTYTFoL8MNDLV5G/RgRw6Z7dikbUYNsRFuSCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E66XTuF9S6V6oDfPaAuyEjQFA8d+e4b2TR44kS+gsBU=;
- b=Y3addAchJM/Dn4Kt6MBFaWQh54nGAPGWIDdRfaEQK3CLDGGk77y69lREwHmShjy3nIuc7qPfSxEQ61WqA/cZFxiDsAAi79utOxJCcAbrH6ak0igO9U51KrVCcPr9uVOZ/3Pj24iLpsGDimKrcHr+Wdz5lCC2vT7y5+kjl4+TE14J8T44xla+ni3aMuvn7ZwN/wWTs6px5miSRlhp9Cqu24i2xmBMhTykUHFtyxlnE2JCq08Xil15KZeVUQJA3dr8zIRvJqwZLxrBKbq3J16ss3JQz94zTP41yyiJatC/42qtcWLKh4iva/HBJaC9Si8ck+5pdsGo3PR5mN25qGUROQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none header.from=suse.com;
-Received: from DB7PR04MB5177.eurprd04.prod.outlook.com (2603:10a6:10:20::21)
- by DBBPR04MB6236.eurprd04.prod.outlook.com (2603:10a6:10:c3::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Wed, 9 Dec
- 2020 06:33:14 +0000
-Received: from DB7PR04MB5177.eurprd04.prod.outlook.com
- ([fe80::7585:5b21:1072:f5ff]) by DB7PR04MB5177.eurprd04.prod.outlook.com
- ([fe80::7585:5b21:1072:f5ff%7]) with mapi id 15.20.3632.023; Wed, 9 Dec 2020
- 06:33:14 +0000
-Date:   Wed, 9 Dec 2020 14:33:04 +0800
-From:   Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Prarit Bhargava <prarit@redhat.com>, linux-kernel@vger.kernel.org,
+        Wed, 9 Dec 2020 01:36:57 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B96Y9b9027361;
+        Wed, 9 Dec 2020 06:35:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=QlN5WVvN+EUMDdZSXbrBXnrkaAXBmi3yGLPASyio3EM=;
+ b=CJ3TXV2gzrxS3BKqETMESZZKuQx5G9qw2crLYMi3oCmfTiclyIAdOSEhjx3bkaX/ABlJ
+ JJOh5CLMLdxlhk2ZxFIGtUx48JdBXFY5HwqWuFaZqAizgP8JzDSS5Kb98N1Kvzm6ZP36
+ Shjf01s20j0AorF0e/4gP9l9W7liHQ0LkewMAGDwfJxm2X1Izbp/mSdZPRBwkhUfWevl
+ YG2XM9PVemgIVg9f0Q17z34uRAaQ+62VFLq9lF85m2MpMyvJyVR81OsMPUu16ke+sutX
+ kjOFYrcDSkZXuXjKtTP+B27LYywmp5OUINzSQRUsRvjSTpTbVpmkMXAhL3XBDOtqSn4p XA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 3581mqxecc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Dec 2020 06:35:53 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B96UW08089705;
+        Wed, 9 Dec 2020 06:35:52 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 358m3yt1fr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Dec 2020 06:35:52 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B96Zl4h032015;
+        Wed, 9 Dec 2020 06:35:47 GMT
+Received: from [10.159.229.96] (/10.159.229.96)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 08 Dec 2020 22:35:47 -0800
+From:   Ankur Arora <ankur.a.arora@oracle.com>
+Subject: Re: [PATCH RFC 10/39] KVM: x86/xen: support upcall vector
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Joao Martins <joao.m.martins@oracle.com>, karahmed@amazon.de
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>, Peter Xu <peterx@redhat.com>
-Subject: Re: "irq 4: Affinity broken due to vector space exhaustion." warning
- on restart of ttyS0 console
-Message-ID: <20201209063304.GF23060@syu-laptop>
-References: <3ba26c8d-04ac-1822-d5c2-4a8906f7fd9a@redhat.com>
- <871rh1gcck.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <871rh1gcck.fsf@nanos.tec.linutronix.de>
-X-Originating-IP: [39.12.134.194]
-X-ClientProxiedBy: AM4PR0701CA0038.eurprd07.prod.outlook.com
- (2603:10a6:200:42::48) To DB7PR04MB5177.eurprd04.prod.outlook.com
- (2603:10a6:10:20::21)
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20190220201609.28290-1-joao.m.martins@oracle.com>
+ <20190220201609.28290-11-joao.m.martins@oracle.com>
+ <71753a370cd6f9dd147427634284073b78679fa6.camel@infradead.org>
+ <53baeaa7-0fed-d22c-7767-09ae885d13a0@oracle.com>
+ <4ad0d157c5c7317a660cd8d65b535d3232f9249d.camel@infradead.org>
+ <c43024b3-6508-3b77-870c-da81e74284a4@oracle.com>
+ <052867ae1c997487d85c21e995feb5647ac6c458.camel@infradead.org>
+ <6a6b5806be1fe4c0fe96c0b664710d1ce614f29d.camel@infradead.org>
+Message-ID: <1af00fa4-03b8-a059-d859-5cfd71ef10f4@oracle.com>
+Date:   Tue, 8 Dec 2020 22:35:45 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from syu-laptop (39.12.134.194) by AM4PR0701CA0038.eurprd07.prod.outlook.com (2603:10a6:200:42::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.8 via Frontend Transport; Wed, 9 Dec 2020 06:33:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 760acda8-59c7-450e-794a-08d89c0c4e93
-X-MS-TrafficTypeDiagnostic: DBBPR04MB6236:
-X-Microsoft-Antispam-PRVS: <DBBPR04MB62364DCB15ECBCC159BD9C40BFCC0@DBBPR04MB6236.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2043;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3nW2CkWZEW+hFVF7324YyEEdqWqnHm9MvlNjmXNNNXtcdDT/4pFjm2Ij5qcgGVO3qkRLo18BWeI/BQafCf0xnwo6OrUbobiF6kFDaNYhh4CTUvmyZnpFw8Jvj3k53SsYn1CLl44OPQoSJkk8N/+/mK+MkrbJh8GdwsJKmqqO+7DSQL7rWTmcmjO70aaIuird22wwuK6Inn+vIotFR/2R2S6UdpZD6TsxQdw/IcPNTf4vtt0sIEYDX1qwpQWcQ1Z1fmx+F/9UqlG9rpeIrxh8daUvmMsabCho8ttE4YZpYyGDWkJRU+hX2izuX+oJjbZH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5177.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(366004)(6666004)(54906003)(33656002)(7416002)(26005)(83380400001)(8676002)(4326008)(6916009)(6496006)(52116002)(1076003)(66946007)(66556008)(33716001)(2906002)(66476007)(5660300002)(186003)(956004)(55016002)(16526019)(9686003)(86362001)(508600001)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TkdjaGVqcWE2eWplWlljck51VTYrbXdDZHREWFduNlBpblF4UkxnODl3MnBs?=
- =?utf-8?B?dGc4VzBaZURXcjJkN3RnSUxvRlR5SzhMeHg4NjJ0TE5hNkdINnNpWFRsRTBi?=
- =?utf-8?B?VVQyVnVxbXRaZk5tVjAyaXpZekpmeUtIVGRFYUNERmRmQ3RrSUcxaTBucHB3?=
- =?utf-8?B?R1hqVWoybzlxUVUvSWlmY1lSZDJmREJya2VwUmpkSjdiSG1Xdzh3SHQxd3pw?=
- =?utf-8?B?WDlxSit1UUlMaWluVmozdk41ZGo2akM4aHJIUlBVa0kwbU5GOFRyc2Q4SzFY?=
- =?utf-8?B?MTlYejFNUjVWdnViMXlscWU0VlVMbUpqbHZBbERLNGNNamhuYjE3NWNTa0J1?=
- =?utf-8?B?dE9JbTNybFBzeDNoMkZ5U0F1VEZTTE53TkR4SXFnbWFrMlFzakt3MjM3NldM?=
- =?utf-8?B?RjFKbjNwVTJFbXhoYmdkK1VVT3A0MG9ST0U4VE9OdWhsVlgyU21RUitWUE95?=
- =?utf-8?B?aDBTM0Y1bE5UNldORXdPSnFaM0xzbVRJYkRFS2FKMEJpa1VYTGNTN2NXdVZh?=
- =?utf-8?B?d1BXeW9nMmdjcTkrclFBdjBrN3hiOWpCaFhSbjRDc09tOUN2NkhOUm0vWnVX?=
- =?utf-8?B?STVwZGYyVmRLQ0MvSkpiQUtVMWtRdkkyM09GckJaaEZwTmZkRHd5MzlYaVVk?=
- =?utf-8?B?Qk9VcUwySXFkMVNtVzRjYXB5MTJoR1JZR1NzckdJaTBSQkdxMkVWQTZVb3NO?=
- =?utf-8?B?b2J3eWdPSG9tMC9MMTlwVzVhZVVkKzgyalExN2R2VmQ4cEwzdDZ3dHdkZjEv?=
- =?utf-8?B?VC93aVVUMTExcmZjck9SYTVEdXBGMnB2bG1nNkd4UG8zSzhldFBDeEFlZk1J?=
- =?utf-8?B?eVVPZUpVTktjakdEdWVBSUc1RktZWWMyMVFuMjlIeFUrb0FzVFYvTkRnWUs2?=
- =?utf-8?B?V3AvcnQyMk1XK0NiWFdtWmpuQlBteWNHczZ1dG8wLy9OakV0T1FqdnVVeFlH?=
- =?utf-8?B?dVBkLzd5ZVZDMURocEZ1YjlQQ1NXdHBxNWNicm9td092ZXc0TFY2NFFOaGor?=
- =?utf-8?B?Q1RjQ21ZNHhCcTFJd0Z0eWJGcGx5Y01SUTJWbXdtQitRTGFPMFRURFpEcE5N?=
- =?utf-8?B?VHpUWXpVYTROL1RZbTc2cVpuVlVTY1lhZU8vejdsbE1yWG5MOWFGYXRwZjhm?=
- =?utf-8?B?R2lHdFRIaEJzT2lOTU92bzVnbDJLUXFUeWZwSENBTXZqZHNMOHBldlI2aWU3?=
- =?utf-8?B?SjJJVDVMTHkzMVVHY3J2SlYyR1hhWklQc0pzMW1McG1nYXFEOTV6dyt3MUNR?=
- =?utf-8?B?Qm9SeUQ5L0tiaW83TTdDY2lIdW1RYllhUUM1TnBvd1o5cXJ6U1hiamtMS0dN?=
- =?utf-8?Q?THj9BTFNdkfBOMaEJDQICqvuagkeasgBR2?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5177.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 06:33:14.3604
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-Network-Message-Id: 760acda8-59c7-450e-794a-08d89c0c4e93
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kFq+mdbXV6GXiCKBPgdooaFsv1zZ5CwqzwJ9O7HtpjmiyGQ7XLZjE4YZRdDi7lBqGWGKvIZEF6Gdi/nkqA/Zrg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB6236
+In-Reply-To: <6a6b5806be1fe4c0fe96c0b664710d1ce614f29d.camel@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090045
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ clxscore=1011 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On 2020-12-08 8:08 a.m., David Woodhouse wrote:
+> On Wed, 2020-12-02 at 19:02 +0000, David Woodhouse wrote:
+>>
+>>> I feel we could just accommodate it as subtype in KVM_XEN_ATTR_TYPE_CALLBACK_VIA.
+>>> Don't see the adavantage in having another xen attr type.
+>>
+>> Yeah, fair enough.
+>>
+>>> But kinda have mixed feelings in having kernel handling all event channels ABI,
+>>> as opposed to only the ones userspace asked to offload. It looks a tad unncessary besides
+>>> the added gain to VMMs that don't need to care about how the internals of event channels.
+>>> But performance-wise it wouldn't bring anything better. But maybe, the former is reason
+>>> enough to consider it.
+>>
+>> Yeah, we'll see. Especially when it comes to implementing FIFO event
+>> channels, I'd rather just do it in one place — and if the kernel does
+>> it anyway then it's hardly difficult to hook into that.
+>>
+>> But I've been about as coherent as I can be in email, and I think we're
+>> generally aligned on the direction. I'll do some more experiments and
+>> see what I can get working, and what it looks like.
+> 
+> 
+> So... I did some more typing, and revived our completely userspace
+> based implementation of event channels. I wanted to declare that such
+> was *possible*, and that using the kernel for IPI and VIRQ was just a
+> very desirable optimisation.
+> 
+> It looks like Linux doesn't use the per-vCPU upcall vector that you
+> called 'KVM_XEN_CALLBACK_VIA_EVTCHN'. So I'm delivering interrupts via
+> KVM_INTERRUPT as if they were ExtINT....
+> 
+> ... except I'm not. Because the kernel really does expect that to be an
+> ExtINT from a legacy PIC, and kvm_apic_accept_pic_intr() only returns
+> true if LVT0 is set up for EXTINT and unmasked.
+> 
+> I messed around with this hack and increasingly desperate variations on
+> the theme (since this one doesn't cause the IRQ window to be opened to
+> userspace in the first place), but couldn't get anything working:
 
-On Tue, Nov 10, 2020 at 09:56:27PM +0100, Thomas Gleixner wrote:
-> The real problem is irqbalanced aggressively exhausting the vector space
-> of a _whole_ socket to the point that there is not a single vector left
-> for serial. That's the problem you want to fix.
+Increasingly desperate variations,  about sums up my process as well while
+trying to get the upcall vector working.
 
-I believe this warning also gets triggered even when there's _no_ vector
-exhaustion.
+> 
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -2380,6 +2380,9 @@ int kvm_apic_accept_pic_intr(struct kvm_vcpu *vcpu)
+>          if ((lvt0 & APIC_LVT_MASKED) == 0 &&
+>              GET_APIC_DELIVERY_MODE(lvt0) == APIC_MODE_EXTINT)
+>                  r = 1;
+> +       /* Shoot me. */
+> +       if (vcpu->arch.pending_external_vector == 243)
+> +               r = 1;
+>          return r;
+>   }
+>   
+> 
+> Eventually I resorted to delivering the interrupt through the lapic
+> *anyway* (through KVM_SIGNAL_MSI with an MSI message constructed for
+> the appropriate vCPU/vector) and the following hack to auto-EOI:
+> 
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -2416,7 +2419,7 @@ int kvm_get_apic_interrupt(struct kvm_vcpu *vcpu)
+>           */
+>   
+>          apic_clear_irr(vector, apic);
+> -       if (test_bit(vector, vcpu_to_synic(vcpu)->auto_eoi_bitmap)) {
+> +       if (vector == 243 || test_bit(vector, vcpu_to_synic(vcpu)->auto_eoi_bitmap)) {
+>                  /*
+>                   * For auto-EOI interrupts, there might be another pending
+>                   * interrupt above PPR, so check whether to raise another
+> 
+> 
+> That works, and now my guest finishes the SMP bringup (and gets as far
+> as waiting on the XenStore implementation that I haven't put back yet).
+> 
+> So I think we need at least a tiny amount of support in-kernel for
+> delivering event channel interrupt vectors, even if we wanted to allow
+> for a completely userspace implementation.
+> 
+> Unless I'm missing something?
 
-This seem to happen when the IRQ's affinity mask is set (wrongly) to CPUs on
-a different NUMA node (e.g. cpumask_of_node(1) when the irqd->irq == 0).
+I did use the auto_eoi hack as well. So, yeah, I don't see any way of
+getting around this.
 
-  $ lscpu
-  ...
-  NUMA node0 CPU(s):   0-25,52-77
-  NUMA node1 CPU(s):   26-51,78-103
+Also, IIRC we had eventually gotten rid of the auto_eoi approach
+because that wouldn't work with APICv. At that point we resorted to
+direct queuing for vectored callbacks which was a hack that I never
+grew fond of...
+  
+> I will get on with implementing the in-kernel handling with IRQ routing
+> entries targeting a given { port, vcpu }. And I'm kind of vacillating
+> about whether the mode/vector should be separately configured, or
+> whether they might as well be in the IRQ routing table too, even if
+> it's kind of redundant because it's specified the same for *every* port
+> targeting the same vCPU. I *think* I prefer that redundancy over having
+> a separate configuration mechanism to set the vector for each vCPU. But
+> we'll see what happens when my fingers do the typing...
+> 
 
-  $ cat /sys/kernel/debug/tracing/trace
-           ...
-  irqbalance-1994    [017] d...    74.912799: irq_matrix_alloc: bit=33 cpu=26 online=1 avl=198 alloc=3 managed=1 online_maps=104 global_avl=20687, global_rsvd=341, total_alloc=217
-  irqbalance-1994    [017] d...    74.912802: vector_alloc: irq=4 vector=33 reserved=0 ret=0
-  irqbalance-1994    [017] d...    74.912804: vector_update: irq=4 vector=33 cpu=26 prev_vector=33 prev_cpu=7
-  irqbalance-1994    [017] d...    74.912805: vector_config: irq=4 vector=33 cpu=26 apicdest=0x00000040
-      <idle>-0       [007] d.h.    74.970733: vector_free_moved: irq=4 cpu=7 vector=33 is_managed=0
-      <idle>-0       [007] d.h.    74.970738: irq_matrix_free: bit=33 cpu=7 online=1 avl=200 alloc=1 managed=1 online_maps=104 global_avl=20687, global_rsvd=341, total_alloc=217
-           ...
-    (agetty)-3004    [047] d...    81.731231: vector_deactivate: irq=4 is_managed=0 can_reserve=1 reserve=0
-    (agetty)-3004    [047] d...    81.738035: vector_clear: irq=4 vector=33 cpu=26 prev_vector=0 prev_cpu=7
-    (agetty)-3004    [047] d...    81.738040: irq_matrix_free: bit=33 cpu=26 online=1 avl=199 alloc=2 managed=1 online_maps=104 global_avl=20689, global_rsvd=341, total_alloc=215
-    (agetty)-3004    [047] d...    81.738046: irq_matrix_reserve: online_maps=104 global_avl=20689, global_rsvd=342, total_alloc=215
-    (agetty)-3004    [047] d...    81.766739: vector_reserve: irq=4 ret=0
-    (agetty)-3004    [047] d...    81.766741: vector_config: irq=4 vector=239 cpu=0 apicdest=0x00000000
-    (agetty)-3004    [047] d...    81.777152: vector_activate: irq=4 is_managed=0 can_reserve=1 reserve=0
-    (agetty)-3004    [047] d...    81.777157: vector_alloc: irq=4 vector=0 reserved=1 ret=-22
-    ----------------------------------------> irq_matrix_alloc() failed with
-                                              EINVAL because the cpumask
-                                              passed in is empty, which is a
-                                              result of affmask being
-                                              (ff,ffffc000,000fffff,fc000000)
-                                              and cpumask_of_node(node)
-                                              being
-                                              (00,00003fff,fff00000,03ffffff). 
+Good luck to your fingers!
 
-    (agetty)-3004    [047] d...    81.789349: irq_matrix_alloc: bit=33 cpu=1 online=1 avl=199 alloc=2 managed=1 online_maps=104 global_avl=20688, global_rsvd=341, total_alloc=216
-    (agetty)-3004    [047] d...    81.789351: vector_alloc: irq=4 vector=33 reserved=1 ret=0
-    (agetty)-3004    [047] d...    81.789353: vector_update: irq=4 vector=33 cpu=1 prev_vector=0 prev_cpu=26
-    (agetty)-3004    [047] d...    81.789355: vector_config: irq=4 vector=33 cpu=1 apicdest=0x00000002
-    ----------------------------------------> "irq 4: Affinity broken due to
-                                              vector space exhaustion."
-                                              warning shows up
-
-    (agetty)-3004    [047] d...    81.900783: irq_matrix_alloc: bit=33 cpu=26 online=1 avl=198 alloc=3 managed=1 online_maps=104 global_avl=20687, global_rsvd=341, total_alloc=217
-    (agetty)-3004    [047] d...    82.053535: vector_alloc: irq=4 vector=33 reserved=0 ret=0
-    (agetty)-3004    [047] d...    82.053536: vector_update: irq=4 vector=33 cpu=26 prev_vector=33 prev_cpu=1
-    (agetty)-3004    [047] d...    82.053538: vector_config: irq=4 vector=33 cpu=26 apicdest=0x00000040
-
-
-Shung-Hsi Yu
-
+Ankur
