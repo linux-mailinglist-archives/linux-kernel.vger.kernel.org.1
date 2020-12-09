@@ -2,190 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D3C2D3A22
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496F72D3A2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgLIFHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 00:07:37 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:40248 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgLIFHh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 00:07:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607490431; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=bKlS13OKovC/hMZP80c7Hc1j/4EzBCGWuZwSdCxtfdc=; b=F6onVl1SCsp2DiL7K3sl05+pKeAZ1gcEsQ0bxl15FlRawTpJOSUrQ4lIdsX3oUmFIM903H0+
- sh6UknNIHpaXSPyO2CR09S5w8hPCIgwYLhy4TNUIIeGeCXG1V1BtIlrLGIlEFcTurP/Djhc2
- sRsylcS6sLlk41CNbbmgysiGpqc=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fd05b7ed5b4c78a8fd33a90 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Dec 2020 05:07:10
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8E1A7C433ED; Wed,  9 Dec 2020 05:07:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.77.97])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E55DEC433C6;
-        Wed,  9 Dec 2020 05:07:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E55DEC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-Subject: Re: [PATCH v2 1/3] irqchip: qcom-pdc: Fix phantom irq when changing
- between rising/falling
-To:     Douglas Anderson <dianders@chromium.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-gpio@vger.kernel.org,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Archana Sathyakumar <asathyak@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>, linux-kernel@vger.kernel.org
-References: <20201124094636.v2.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <a12d1451-4d17-10b1-22bf-30714d0335d4@codeaurora.org>
-Date:   Wed, 9 Dec 2020 10:37:01 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1726354AbgLIFOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 00:14:43 -0500
+Received: from mga04.intel.com ([192.55.52.120]:26818 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725765AbgLIFOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 00:14:43 -0500
+IronPort-SDR: 5u7pBuW1+D0AsKwn1DWpHUMB1GuWDdOByjQpUxdzj9ETppKXbfekGN3jIJCYgrihjzKPZSzcsk
+ Mda7MUxBMV+Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="171448042"
+X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
+   d="scan'208";a="171448042"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 21:14:03 -0800
+IronPort-SDR: iJF68Iogu7Awd297quq/5qGbK1KJI3yUTYkcGGikoOkCcqyp6qSouH7X4nXJuGK8j+irLzgaDt
+ YRZM87ITPHjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
+   d="scan'208";a="407917783"
+Received: from unknown (HELO [10.239.160.37]) ([10.239.160.37])
+  by orsmga001.jf.intel.com with ESMTP; 08 Dec 2020 21:14:01 -0800
+Reply-To: Colin.Xu@intel.com
+Subject: Re: [RFC PATCH] vfio/pci: Allow force needs_pm_restore as specified
+ by device:vendor
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Fonn, Swee Yee" <swee.yee.fonn@intel.com>
+References: <20201125021824.27411-1-colin.xu@intel.com>
+ <20201125085312.63510f9f@w520.home>
+ <7e7a83ca-8530-1afa-4b85-2ef76fb99a5c@intel.com>
+ <20201127083529.6c4a780c@x1.home>
+From:   Colin Xu <Colin.Xu@intel.com>
+Message-ID: <29124528-f02a-008e-fab1-60f6b6e643b7@intel.com>
+Date:   Wed, 9 Dec 2020 13:14:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <20201124094636.v2.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+In-Reply-To: <20201127083529.6c4a780c@x1.home>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
 
-On 11/24/2020 11:17 PM, Douglas Anderson wrote:
-> We have a problem if we use gpio-keys and configure wakeups such that
-> we only want one edge to wake us up.  AKA:
->    wakeup-event-action = <EV_ACT_DEASSERTED>;
->    wakeup-source;
+On 11/27/20 11:35 PM, Alex Williamson wrote:
+> On Fri, 27 Nov 2020 11:53:39 +0800
+> Colin Xu <Colin.Xu@intel.com> wrote:
 >
-> Specifically we end up with a phantom interrupt that blocks suspend if
-> the line was already high and we want wakeups on rising edges (AKA we
-> want the GPIO to go low and then high again before we wake up).  The
-> opposite is also problematic.
+>> On 11/25/20 11:53 PM, Alex Williamson wrote:
+>>> On Wed, 25 Nov 2020 10:18:24 +0800
+>>> Colin Xu <colin.xu@intel.com> wrote:
+>>>   
+>>>> Force specific device listed in params pm_restore_ids to follow
+>>>> device state save/restore as needs_pm_restore.
+>>>> Some device has NoSoftRst so will skip current state save/restore enabled
+>>>> by needs_pm_restore. However once the device experienced power state
+>>>> D3<->D0 transition, either by idle_d3 or the guest driver changes PM_CTL,
+>>>> the guest driver won't get correct devie state although the configure
+>>>> space doesn't change.
+>>> It sounds like you're describing a device that incorrectly exposes
+>>> NoSoftRst when there is in fact some sort of internal reset that
+>>> requires reprogramming config space.  What device requires this?  How
+>>> is a user to know when this option is required?  It seems like this
+>>> would be better handled via a quirk in PCI core that sets a device flag
+>>> that the NoSoftRst value is incorrect for the specific affected
+>>> devices.  Thanks,
+>>>
+>>> Alex
+>> Thanks for the feedback.
+>>
+>> The device found are: Comet Lake PCH Serial IO I2C Controller
+>> [8086:06e8]
+>> [8086:06e9]
+>>
+>> Yes you're right, there is no straight way for user to know the device.
+>> The above device I found is during pass through them to VM. Although
+>> adding such param may help in certain scenario, it still too
+>> device-specific but not common in most cases.
 >
-> Specifically, here's what's happening today:
-> 1. Normally, gpio-keys configures to look for both edges.  Due to the
->     current workaround introduced in commit c3c0c2e18d94 ("pinctrl:
->     qcom: Handle broken/missing PDC dual edge IRQs on sc7180"), if the
->     line was high we'd configure for falling edges.
-> 2. At suspend time, we change to look for rising edges.
-> 3. After qcom_pdc_gic_set_type() runs, we get a phantom interrupt.
+> The chipset i2c controller seems like a pretty suspicious device for
+> Intel to advocate assigning to a VM.  Are you assigning this to satisfy
+> the isolation issue that we often see where a device like a NIC is
+> grouped together with platform management devices due to lack of
+> multifunction ACS?  If that's the case, I would think it would make
+> more sense to investigate from the perspective of whether there is
+> actually DMA isolation between those integrated, multifunction devices
+> and if so, implement ACS quirks to expose that isolation.  Thanks,
 >
-> We can solve this by just clearing the phantom interrupt.
->
-> NOTE: it is possible that this could cause problems for a client with
-> very specific needs, but there's not much we can do with this
-> hardware.  As an example, let's say the interrupt signal is currently
-> high and the client is looking for falling edges.  The client now
-> changes to look for rising edges.  The client could possibly expect
-> that if the line has a short pulse low (and back high) that it would
-> always be detected.  Specifically no matter when the pulse happened,
-> it should either have tripped the (old) falling edge trigger or the
-> (new) rising edge trigger.  We will simply not trip it.  We could
-> narrow down the race a bit by polling our parent before changing
-> types, but no matter what we do there will still be a period of time
-> where we can't tell the difference between a real transition (or more
-> than one transition) and the phantom.
->
-> Fixes: f55c73aef890 ("irqchip/pdc: Add PDC interrupt controller for QCOM SoCs")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
-> Tested-by: Maulik Shah <mkshah@codeaurora.org>
-> ---
-> There are no dependencies between this patch and patch #2/#3.  It can
-> go in by itself.  Patches are only grouped together in one series
-> because they address similar issues.
->
-> Changes in v2:
-> - 0 => false
-> - If irq_chip_set_type_parent() fails don't bother clearing.
-> - Add Fixes tag.
->
->   drivers/irqchip/qcom-pdc.c | 21 ++++++++++++++++++++-
->   1 file changed, 20 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
-> index bd39e9de6ecf..f91e7d5aea25 100644
-> --- a/drivers/irqchip/qcom-pdc.c
-> +++ b/drivers/irqchip/qcom-pdc.c
-> @@ -159,6 +159,8 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
->   {
->   	int pin_out = d->hwirq;
->   	enum pdc_irq_config_bits pdc_type;
-> +	enum pdc_irq_config_bits old_pdc_type;
-> +	int ret;
->   
->   	if (pin_out == GPIO_NO_WAKE_IRQ)
->   		return 0;
-> @@ -187,9 +189,26 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
->   		return -EINVAL;
->   	}
->   
-> +	old_pdc_type = pdc_reg_read(IRQ_i_CFG, pin_out);
->   	pdc_reg_write(IRQ_i_CFG, pin_out, pdc_type);
->   
-> -	return irq_chip_set_type_parent(d, type);
-> +	ret = irq_chip_set_type_parent(d, type);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * When we change types the PDC can give a phantom interrupt.
-> +	 * Clear it.  Specifically the phantom shows up if a line is already
-> +	 * high and we change to rising or if a line is already low and we
-> +	 * change to falling but let's be consistent and clear it always.
-> +	 *
-> +	 * Doing this works because we have IRQCHIP_SET_TYPE_MASKED so the
-> +	 * interrupt will be cleared before the rest of the system sees it.
-> +	 */
-Got confirmation that the phantom can show up when we change the 
-polarity of the interrupt without changing the state of the signal.
+> Alex
 
-Can you please change above comment to include above when you spin v3.
+Hi Alex,
 
-  * When we change types the PDC can give a phantom interrupt.
-  * Clear it.  Specifically the phantom shows up when reconfiguring
-  * polarity of interrupt without changing the state of the signal
-  * but let's be consistent and clear it always.
-  *
-  * Doing this works because ....
+Sorry for late reply. E-mail incorrectly filtered so didn't see this one 
+until manual search.
 
-Thanks,
-Maulik
-> +	if (old_pdc_type != pdc_type)
-> +		irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, false);
-> +
-> +	return 0;
->   }
->   
->   static struct irq_chip qcom_pdc_gic_chip = {
+The mentioned two I2C controller are in same iommu group and there is NO 
+other device in the same group. The I2C controller is integrated in PCH 
+chipset and there are other devices integrated too, but in different 
+group. When assigning them to a VM, both are assigned, and function 0 is 
+set with multifunction=on. If iommu driver group no other device in the 
+same group, could we assume there is no DMA isolation issue?
+
+>
+>>>> Cc: Swee Yee Fonn <swee.yee.fonn@intel.com>
+>>>> Signed-off-by: Colin Xu <colin.xu@intel.com>
+>>>> ---
+>>>>    drivers/vfio/pci/vfio_pci.c | 66 ++++++++++++++++++++++++++++++++++++-
+>>>>    1 file changed, 65 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+>>>> index e6190173482c..50a4141c9e1d 100644
+>>>> --- a/drivers/vfio/pci/vfio_pci.c
+>>>> +++ b/drivers/vfio/pci/vfio_pci.c
+>>>> @@ -34,6 +34,15 @@
+>>>>    #define DRIVER_AUTHOR   "Alex Williamson <alex.williamson@redhat.com>"
+>>>>    #define DRIVER_DESC     "VFIO PCI - User Level meta-driver"
+>>>>    
+>>>> +#define VFIO_MAX_PM_DEV 32
+>>>> +struct vfio_pm_devs {
+>>>> +	struct {
+>>>> +		unsigned short  vendor;
+>>>> +		unsigned short  device;
+>>>> +	} ids[VFIO_MAX_PM_DEV];
+>>>> +	u32 count;
+>>>> +};
+>>>> +
+>>>>    static char ids[1024] __initdata;
+>>>>    module_param_string(ids, ids, sizeof(ids), 0);
+>>>>    MODULE_PARM_DESC(ids, "Initial PCI IDs to add to the vfio driver, format is \"vendor:device[:subvendor[:subdevice[:class[:class_mask]]]]\" and multiple comma separated entries can be specified");
+>>>> @@ -64,6 +73,10 @@ static bool disable_denylist;
+>>>>    module_param(disable_denylist, bool, 0444);
+>>>>    MODULE_PARM_DESC(disable_denylist, "Disable use of device denylist. Disabling the denylist allows binding to devices with known errata that may lead to exploitable stability or security issues when accessed by untrusted users.");
+>>>>    
+>>>> +static char pm_restore_ids[1024] __initdata;
+>>>> +module_param_string(pm_restore_ids, pm_restore_ids, sizeof(pm_restore_ids), 0);
+>>>> +MODULE_PARM_DESC(pm_restore_ids, "comma separated device in format of \"vendor:device\"");
+>>>> +
+>>>>    static inline bool vfio_vga_disabled(void)
+>>>>    {
+>>>>    #ifdef CONFIG_VFIO_PCI_VGA
+>>>> @@ -260,10 +273,50 @@ static bool vfio_pci_nointx(struct pci_dev *pdev)
+>>>>    	return false;
+>>>>    }
+>>>>    
+>>>> +static struct vfio_pm_devs pm_devs = {0};
+>>>> +static void __init vfio_pci_fill_pm_ids(void)
+>>>> +{
+>>>> +	char *p, *id;
+>>>> +	int idx = 0;
+>>>> +
+>>>> +	/* no ids passed actually */
+>>>> +	if (pm_restore_ids[0] == '\0')
+>>>> +		return;
+>>>> +
+>>>> +	/* add ids specified in the module parameter */
+>>>> +	p = pm_restore_ids;
+>>>> +	while ((id = strsep(&p, ","))) {
+>>>> +		unsigned int vendor, device = PCI_ANY_ID;
+>>>> +		int fields;
+>>>> +
+>>>> +		if (!strlen(id))
+>>>> +			continue;
+>>>> +
+>>>> +		fields = sscanf(id, "%x:%x", &vendor, &device);
+>>>> +
+>>>> +		if (fields != 2) {
+>>>> +			pr_warn("invalid vendor:device string \"%s\"\n", id);
+>>>> +			continue;
+>>>> +		}
+>>>> +
+>>>> +		if (idx < VFIO_MAX_PM_DEV) {
+>>>> +			pm_devs.ids[idx].vendor = vendor;
+>>>> +			pm_devs.ids[idx].device = device;
+>>>> +			pm_devs.count++;
+>>>> +			idx++;
+>>>> +			pr_info("add [%04x:%04x] for needs_pm_restore\n",
+>>>> +				vendor, device);
+>>>> +		} else {
+>>>> +			pr_warn("Exceed maximum %d, skip adding [%04x:%04x] for needs_pm_restore\n",
+>>>> +				VFIO_MAX_PM_DEV, vendor, device);
+>>>> +		}
+>>>> +	}
+>>>> +}
+>>>> +
+>>>>    static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
+>>>>    {
+>>>>    	struct pci_dev *pdev = vdev->pdev;
+>>>> -	u16 pmcsr;
+>>>> +	u16 pmcsr, idx;
+>>>>    
+>>>>    	if (!pdev->pm_cap)
+>>>>    		return;
+>>>> @@ -271,6 +324,16 @@ static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
+>>>>    	pci_read_config_word(pdev, pdev->pm_cap + PCI_PM_CTRL, &pmcsr);
+>>>>    
+>>>>    	vdev->needs_pm_restore = !(pmcsr & PCI_PM_CTRL_NO_SOFT_RESET);
+>>>> +
+>>>> +	for (idx = 0; idx < pm_devs.count; idx++) {
+>>>> +		if (vdev->pdev->vendor == pm_devs.ids[idx].vendor &&
+>>>> +		    vdev->pdev->device == pm_devs.ids[idx].device) {
+>>>> +			vdev->needs_pm_restore = true;
+>>>> +			pr_info("force [%04x:%04x] to needs_pm_restore\n",
+>>>> +				vdev->pdev->vendor, vdev->pdev->device);
+>>>> +			break;
+>>>> +		}
+>>>> +	}
+>>>>    }
+>>>>    
+>>>>    /*
+>>>> @@ -2423,6 +2486,7 @@ static int __init vfio_pci_init(void)
+>>>>    		goto out_driver;
+>>>>    
+>>>>    	vfio_pci_fill_ids();
+>>>> +	vfio_pci_fill_pm_ids();
+>>>>    
+>>>>    	if (disable_denylist)
+>>>>    		pr_warn("device denylist disabled.\n");
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+Best Regards,
+Colin Xu
 
