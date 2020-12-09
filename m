@@ -2,73 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70552D3EAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC272D3EB0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729200AbgLIJZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:25:38 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9044 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728990AbgLIJZ2 (ORCPT
+        id S1727904AbgLIJ0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:26:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728860AbgLIJ0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:25:28 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CrWp56nXzzhnlx;
-        Wed,  9 Dec 2020 17:24:13 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Dec 2020 17:24:38 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <netdev@vger.kernel.org>
-CC:     <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <olteanv@gmail.com>, <andrew@lunn.ch>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, "Zheng Yongjun" <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] net: sja1105: simplify the return sja1105_cls_flower_stats()
-Date:   Wed, 9 Dec 2020 17:25:04 +0800
-Message-ID: <20201209092504.20470-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Wed, 9 Dec 2020 04:26:32 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E31BCC06179C
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:25:51 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id e2so823161pgi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:25:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dXhJecn2ypVF83qY85JZPNhQKUDimjCGcH0BANuxqD8=;
+        b=btZEszo399nkRw0hQGx4M+kOmKh7hLcMACNMz9aihZjqLTbhaJ1SiNfiWEnnRwziq6
+         LQAMzNVQWBRegOB1UJ38wyODwmjFmq97Xg702dKnZ1hxSMRRvAJScqM314jD3c9D3+A5
+         28jwacShlzrw2crSNaf5KeYDHR1pph6kXdGCfAA/G24sWvdNLBGV5PLKcpqrqa9W1D2I
+         vLrwrLcE076E+cvCo1ZVvPycwMbJk+oupiVfBTocPAmtsSpj/oClwnPkYodzcfthEST/
+         qrfTPrSS6vkn4QNC0Fj9qlOHSWqnfjoKqu06jzvuSnNtE+3hhWXdk/3tjV28anSJqhGK
+         DnGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dXhJecn2ypVF83qY85JZPNhQKUDimjCGcH0BANuxqD8=;
+        b=mPwJ1jcrin/X3jNtixqV7gVgLAZ4+es+5+Fux7LTkyf9zP/Duk2vcdiH7X5/7/26Nj
+         aogk5otIkWJYK2iVwnkA08FbR8RQAQbKMqdMbbWEjQnWZ2Sg1aKApYA64nv0Blt2Ixof
+         LBsxo+SBUA5HW+OhuzyzVkQrNrmqviCKHy90HQHqbHgLEfGkxW/Y+mO9XDC6+Hrv+bi6
+         VQRhfqUNQs9Q7+qvragAoaH+LHnWO+XHYnclspgqrxMqHTjsyByITrFQovCAt12bt2sf
+         oKWfDDx2jGbK6DvwmcBTt2dy44fHh8OP6CxmoAPJDu4CxlW4VE4UkMdONzKsNgfGmnjR
+         5kFw==
+X-Gm-Message-State: AOAM532Fd5rvBRHUWUr18xGCLb+iFO/PmqBVTULRmCML4fzQbA5dtxtC
+        W49xNYxKEhjFHuzFCHu8JWSS3IqdqiD2xkJ/p6YqYA==
+X-Google-Smtp-Source: ABdhPJwFLbBXb64wStSXcxtAKbqPsWO/Ku4ocEbgmI3UBNMsXCLDqKy1pLDkd8jG2nmEHH9Rn3i1dKvP2PftcKqDUlo=
+X-Received: by 2002:a63:1203:: with SMTP id h3mr1140479pgl.273.1607505951447;
+ Wed, 09 Dec 2020 01:25:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+References: <20201130151838.11208-1-songmuchun@bytedance.com>
+ <20201130151838.11208-6-songmuchun@bytedance.com> <17abb7bb-de39-7580-b020-faec58032de9@redhat.com>
+ <CAMZfGtWepk0EXc_fCtS83gvhfKpMrXxP8k3oWwfhWKmPJ3jjwA@mail.gmail.com> <096ee806-b371-c22b-9066-8891935fbd5e@redhat.com>
+In-Reply-To: <096ee806-b371-c22b-9066-8891935fbd5e@redhat.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 9 Dec 2020 17:25:14 +0800
+Message-ID: <CAMZfGtU-zpPRkSikcYZUhKvWhpwZ+cspXNhoaok9e6MCE2pk-g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v7 05/15] mm/bootmem_info: Introduce {free,prepare}_vmemmap_page()
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
+On Wed, Dec 9, 2020 at 4:50 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 09.12.20 08:36, Muchun Song wrote:
+> > On Mon, Dec 7, 2020 at 8:39 PM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> On 30.11.20 16:18, Muchun Song wrote:
+> >>> In the later patch, we can use the free_vmemmap_page() to free the
+> >>> unused vmemmap pages and initialize a page for vmemmap page using
+> >>> via prepare_vmemmap_page().
+> >>>
+> >>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >>> ---
+> >>>  include/linux/bootmem_info.h | 24 ++++++++++++++++++++++++
+> >>>  1 file changed, 24 insertions(+)
+> >>>
+> >>> diff --git a/include/linux/bootmem_info.h b/include/linux/bootmem_info.h
+> >>> index 4ed6dee1adc9..239e3cc8f86c 100644
+> >>> --- a/include/linux/bootmem_info.h
+> >>> +++ b/include/linux/bootmem_info.h
+> >>> @@ -3,6 +3,7 @@
+> >>>  #define __LINUX_BOOTMEM_INFO_H
+> >>>
+> >>>  #include <linux/mmzone.h>
+> >>> +#include <linux/mm.h>
+> >>>
+> >>>  /*
+> >>>   * Types for free bootmem stored in page->lru.next. These have to be in
+> >>> @@ -22,6 +23,29 @@ void __init register_page_bootmem_info_node(struct pglist_data *pgdat);
+> >>>  void get_page_bootmem(unsigned long info, struct page *page,
+> >>>                     unsigned long type);
+> >>>  void put_page_bootmem(struct page *page);
+> >>> +
+> >>> +static inline void free_vmemmap_page(struct page *page)
+> >>> +{
+> >>> +     VM_WARN_ON(!PageReserved(page) || page_ref_count(page) != 2);
+> >>> +
+> >>> +     /* bootmem page has reserved flag in the reserve_bootmem_region */
+> >>> +     if (PageReserved(page)) {
+> >>> +             unsigned long magic = (unsigned long)page->freelist;
+> >>> +
+> >>> +             if (magic == SECTION_INFO || magic == MIX_SECTION_INFO)
+> >>> +                     put_page_bootmem(page);
+> >>> +             else
+> >>> +                     WARN_ON(1);
+> >>> +     }
+> >>> +}
+> >>> +
+> >>> +static inline void prepare_vmemmap_page(struct page *page)
+> >>> +{
+> >>> +     unsigned long section_nr = pfn_to_section_nr(page_to_pfn(page));
+> >>> +
+> >>> +     get_page_bootmem(section_nr, page, SECTION_INFO);
+> >>> +     mark_page_reserved(page);
+> >>> +}
+> >>
+> >> Can you clarify in the description when exactly these functions are
+> >> called and on which type of pages?
+> >>
+> >> Would indicating "bootmem" in the function names make it clearer what we
+> >> are dealing with?
+> >>
+> >> E.g., any memory allocated via the memblock allocator and not via the
+> >> buddy will be makred reserved already in the memmap. It's unclear to me
+> >> why we need the mark_page_reserved() here - can you enlighten me? :)
+> >
+> > Sorry for ignoring this question. Because the vmemmap pages are allocated
+> > from the bootmem allocator which is marked as PG_reserved. For those bootmem
+> > pages, we should call put_page_bootmem for free. You can see that we
+> > clear the PG_reserved in the put_page_bootmem. In order to be consistent,
+> > the prepare_vmemmap_page also marks the page as PG_reserved.
+>
+> I don't think that really makes sense.
+>
+> After put_page_bootmem() put the last reference, it clears PG_reserved
+> and hands the page over to the buddy via free_reserved_page(). From that
+> point on, further get_page_bootmem() would be completely wrong and
+> dangerous.
+>
+> Both, put_page_bootmem() and get_page_bootmem() rely on the fact that
+> they are dealing with memblock allcoations - marked via PG_reserved. If
+> prepare_vmemmap_page() would be called on something that's *not* coming
+> from the memblock allocator, it would be completely broken - or am I
+> missing something?
+>
+> AFAIKT, there should rather be a BUG_ON(!PageReserved(page)) in
+> prepare_vmemmap_page() - or proper handling to deal with !memblock
+> allocations.
+>
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/net/dsa/sja1105/sja1105_flower.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+I want to allocate some pages as the vmemmap when
+we free a HugeTLB page to the buddy allocator. So I use
+the prepare_vmemmap_page() to initialize the page (which
+allocated from buddy allocator) and make it as the vmemmap
+of the freed HugeTLB page.
 
-diff --git a/drivers/net/dsa/sja1105/sja1105_flower.c b/drivers/net/dsa/sja1105/sja1105_flower.c
-index 12e76020bea3..e9617782e0d0 100644
---- a/drivers/net/dsa/sja1105/sja1105_flower.c
-+++ b/drivers/net/dsa/sja1105/sja1105_flower.c
-@@ -458,7 +458,6 @@ int sja1105_cls_flower_stats(struct dsa_switch *ds, int port,
- {
- 	struct sja1105_private *priv = ds->priv;
- 	struct sja1105_rule *rule = sja1105_rule_find(priv, cls->cookie);
--	int rc;
- 
- 	if (!rule)
- 		return 0;
-@@ -466,12 +465,8 @@ int sja1105_cls_flower_stats(struct dsa_switch *ds, int port,
- 	if (rule->type != SJA1105_RULE_VL)
- 		return 0;
- 
--	rc = sja1105_vl_stats(priv, port, rule, &cls->stats,
-+	return sja1105_vl_stats(priv, port, rule, &cls->stats,
- 				cls->common.extack);
--	if (rc)
--		return rc;
--
--	return 0;
- }
- 
- void sja1105_flower_setup(struct dsa_switch *ds)
+Any suggestions to deal with this case?
+
+I have a solution to address this. When the pages allocated
+from the buddy as vmemmap pages,  we do not call
+prepare_vmemmap_page().
+
+When we free some vmemmap pages of a HugeTLB
+page, if the PG_reserved of the vmemmap page is set,
+we call free_vmemmap_page() to free it to buddy,
+otherwise call free_page(). What is your opinion?
+
+>
+> And as I said, indicating "bootmem" as part of the function names might
+> make it clearer that this is not for getting any vmemmap pages (esp.
+> allocated when hotplugging memory).
+
+Agree. I am doing that for the next version.
+
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
+
+
 -- 
-2.22.0
-
+Yours,
+Muchun
