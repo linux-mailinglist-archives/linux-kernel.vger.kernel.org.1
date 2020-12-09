@@ -2,142 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336E12D48BC
+	by mail.lfdr.de (Postfix) with ESMTP id 9F49A2D48BD
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732892AbgLISQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:16:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:38436 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729021AbgLISQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:16:12 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0928F1FB;
-        Wed,  9 Dec 2020 10:15:26 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.26.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B118B3F68F;
-        Wed,  9 Dec 2020 10:15:22 -0800 (PST)
-Date:   Wed, 9 Dec 2020 18:15:14 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, luto@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: Re: [PATCH v2 05/12] x86: rework arch_local_irq_restore() to not use
- popf
-Message-ID: <20201209181514.GA14235@C02TD0UTHF1T.local>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-6-jgross@suse.com>
- <20201120115943.GD3021@hirez.programming.kicks-ass.net>
+        id S1732906AbgLISQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:16:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732900AbgLISQS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:16:18 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45493C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:15:38 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id y22so3488938ljn.9
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 10:15:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KluCAXOoeTByOW4lbF1nsTzKouIPlFqCCzlWQb43QOg=;
+        b=G1DWLyDpSMpgCLWxke7kh+OuNepikj8P4XS/mbzBAYlG01dvOyMfqZPnbeX75tqdPS
+         rA7X9Q7otSrrcbsP4jK3fBD2ZFjV6oEzUjHS8u6ebS2/aJBNVPGkIoA9myOR9SxGflxD
+         gsSjbHG8/8IjiKaKQ4Opa0NNUtJanvAX6pObWjcnFsH8uxumt8qOhtMTu7BFi81O2FOB
+         174ye8QXtiFhF7PIcxA4KC1X4D/7CR9JCKDwHuqXxOJ1vJmktzhHxyX79uVABxGrdCDc
+         3DAVdRUxxz8IG2MwQqGDf+aIa5BnVgBRtrWAyZ6JC6JHIubX33hxb0cx/mz6NRHmutEN
+         IWZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KluCAXOoeTByOW4lbF1nsTzKouIPlFqCCzlWQb43QOg=;
+        b=dx35okqQGS6wEz0WPZAg+NuwdlUs3bHpaKdCw2lK4j/wSAiAFKbgQ7NEmFPcSIfkw0
+         JHnhRuRdZqC+lPhz+KiT+Na1PoNL3Zdx7zvga9i/17lKDRofry7U/UENAzVMfwHDaqg4
+         2qo/Vl/i5NMzXoZzStoLxF5e3V5GrnYA5a8UM6pA8L4kbVX4p04ZwEMRmOOWAzPm8dGX
+         tyjg/22PbVbI+BVrFLQne1p1F11ZYuQQgaoL2MirEBiT9n72eq2syHYqvbmkZoWuiPEn
+         D6RaWXdo68e90E6ge4ELJfP0X7rMa+tMK06jyy2EiBaytHmhc3ZRhL+aii26pq73XzOs
+         9ZAA==
+X-Gm-Message-State: AOAM530tu+E3W1/G4ICJ2JBu5R3RDHDvcWXqBriSkuGWc4nsONjKr8ei
+        swlfoPCsfkVP6Yo0FsuZyK4ZewbfcsFkJo4nsE7IWg==
+X-Google-Smtp-Source: ABdhPJwytoCPwmwAMxFotUSDq6urZ308NhRwONKnwMRqCKVi1Qfyo/IQNkR8v/jXrjQhxtgu3/SrVUzfGE68GQnAZ70=
+X-Received: by 2002:a2e:975a:: with SMTP id f26mr1576542ljj.81.1607537736484;
+ Wed, 09 Dec 2020 10:15:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120115943.GD3021@hirez.programming.kicks-ass.net>
+References: <20201207142204.GA18516@rlk> <CALvZod45tRyx+7VagQQ=9SqabNR5Y=f0U0T0AFtOFWdzUgJbxQ@mail.gmail.com>
+ <20201208060747.GA56968@rlk> <CALvZod56cWta66q4w4ndiPmgfVGkViAFfivh8L8eUBPqJRWFCg@mail.gmail.com>
+ <20201209162935.GD26090@dhcp22.suse.cz>
+In-Reply-To: <20201209162935.GD26090@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 9 Dec 2020 10:15:25 -0800
+Message-ID: <CALvZod6Z8S4BDD23kwhhF+EYciA6iu8bbac1UJZKwO2T-+96XA@mail.gmail.com>
+Subject: Re: [PATCH] mm/page_alloc: simplify kmem cgroup charge/uncharge code
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Hui Su <sh_def@163.com>, LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:59:43PM +0100, Peter Zijlstra wrote:
-> On Fri, Nov 20, 2020 at 12:46:23PM +0100, Juergen Gross wrote:
-> > +static __always_inline void arch_local_irq_restore(unsigned long flags)
-> > +{
-> > +	if (!arch_irqs_disabled_flags(flags))
-> > +		arch_local_irq_enable();
-> > +}
-> 
-> If someone were to write horrible code like:
-> 
-> 	local_irq_disable();
-> 	local_irq_save(flags);
-> 	local_irq_enable();
-> 	local_irq_restore(flags);
-> 
-> we'd be up some creek without a paddle... now I don't _think_ we have
-> genius code like that, but I'd feel saver if we can haz an assertion in
-> there somewhere...
+On Wed, Dec 9, 2020 at 8:29 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Tue 08-12-20 09:12:23, Shakeel Butt wrote:
+> > +Michal Hocko
+> >
+> > Message starts at https://lkml.kernel.org/r/20201207142204.GA18516@rlk
+> >
+> > On Mon, Dec 7, 2020 at 10:08 PM Hui Su <sh_def@163.com> wrote:
+> > >
+> > > On Mon, Dec 07, 2020 at 09:28:46AM -0800, Shakeel Butt wrote:
+> > > > On Mon, Dec 7, 2020 at 6:22 AM Hui Su <sh_def@163.com> wrote:
+> > > >
+> > > > The reason to keep __memcg_kmem_[un]charge_page functions is that they
+> > > > were called in the very hot path. Can you please check the performance
+> > > > impact of your change and if the generated code is actually same or
+> > > > different.
+> > >
+> > > Hi, Shakeel:
+> > >
+> > > I objdump the mm/page_alloc.o and comapre them, it change the assemble code
+> > > indeed. In fact, it change some code order, which i personally think won't have
+> > > impact on performance. And i ran the ltp mm and conatiner test, it seems nothing
+> > > abnormal.
+> >
+> > Did you run the tests in a memcg? The change is behind a static key of
+> > kmem accounting which is enabled for subcontainers.
+> >
+> > >
+> > > BUT i still want to check whether this change will have negative impact on
+> > > perforance due to this change code was called in the very hot path like you
+> > > said, AND saddly i did not find a way to quantify the impact on performance.
+> > > Can you give me some suggestion about how to quantify the performance or some
+> > > tool?
+> > >
+> >
+> > At least I think we can try with a simple page allocation in a loop
+> > i.e. alloc_page(GFP_KERNEL_ACCOUNT). I will think of any existing
+> > benchmark which exercises this code path.
+> >
+> > Michal, do you have any suggestions?
+>
+> I have to say I do not see any big benefit from the patch and it alters
+> a real hot path to check for the flag even in cases where kmem
+> accounting is not enabled, unless I am misreading the code.
+>
 
-I've cobbled that together locally (i'll post it momentarily), and gave it a
-spin on both arm64 and x86, whereupon it exploded at boot time on x86.
-
-In arch/x86/kernel/apic/io_apic.c's timer_irq_works() we do:
-
-	local_irq_save(flags);
-	local_irq_enable();
-
-	[ trigger an IRQ here ]
-
-	local_irq_restore(flags);
-
-... and in check_timer() we call that a number of times after either a
-local_irq_save() or local_irq_disable(), eventually trailing with a
-local_irq_disable() that will balance things up before calling
-local_irq_restore().
-
-I guess that timer_irq_works() should instead do:
-
-	local_irq_save(flags);
-	local_irq_enable();
-	...
-	local_irq_disable();
-	local_irq_restore(flags);
-
-... assuming we consider that legitimate?
-
-With that, and all the calls to local_irq_disable() in check_timer() removed
-(diff below) I get a clean boot under QEMU with the assertion hacked in and
-DEBUG_LOCKDEP enabled.
-
-Thanks
-Mark.
-
----->8----
-diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
-index 7b3c7e0d4a09..e79e665a3aeb 100644
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -1631,6 +1631,7 @@ static int __init timer_irq_works(void)
-        else
-                delay_without_tsc();
- 
-+       local_irq_disable();
-        local_irq_restore(flags);
- 
-        /*
-@@ -2191,7 +2192,6 @@ static inline void __init check_timer(void)
-                        goto out;
-                }
-                panic_if_irq_remap("timer doesn't work through Interrupt-remapped IO-APIC");
--               local_irq_disable();
-                clear_IO_APIC_pin(apic1, pin1);
-                if (!no_pin1)
-                        apic_printk(APIC_QUIET, KERN_ERR "..MP-BIOS bug: "
-@@ -2215,7 +2215,6 @@ static inline void __init check_timer(void)
-                /*
-                 * Cleanup, just in case ...
-                 */
--               local_irq_disable();
-                legacy_pic->mask(0);
-                clear_IO_APIC_pin(apic2, pin2);
-                apic_printk(APIC_QUIET, KERN_INFO "....... failed.\n");
-@@ -2232,7 +2231,6 @@ static inline void __init check_timer(void)
-                apic_printk(APIC_QUIET, KERN_INFO "..... works.\n");
-                goto out;
-        }
--       local_irq_disable();
-        legacy_pic->mask(0);
-        apic_write(APIC_LVT0, APIC_LVT_MASKED | APIC_DM_FIXED | cfg->vector);
-        apic_printk(APIC_QUIET, KERN_INFO "..... failed.\n");
-@@ -2251,7 +2249,6 @@ static inline void __init check_timer(void)
-                apic_printk(APIC_QUIET, KERN_INFO "..... works.\n");
-                goto out;
-        }
--       local_irq_disable();
-        apic_printk(APIC_QUIET, KERN_INFO "..... failed :(.\n");
-        if (apic_is_x2apic_enabled())
-                apic_printk(APIC_QUIET, KERN_INFO
+Yes you are right unless the super intelligent compiler re-arranges
+the checks and puts the static key check at front to optimize the
+non-kmem-accounting mode.
