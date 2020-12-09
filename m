@@ -2,269 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088E02D3CC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9438E2D3D03
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728531AbgLIIDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:03:01 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:23381 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728488AbgLIICu (ORCPT
+        id S1728464AbgLIICc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:02:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726073AbgLIICW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:02:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607500940; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=2K04sH2o7E+7Xad82QadBqnzfPh01tJKf3TiTO1/FtI=;
- b=dwoueyLWkYU9UwO9AeIPJNMXVJd6FYckVbgwdKV/wvLHsfct1FhUa8ySQevbG/NlNDKCA4rJ
- 0Nt2d69eyS5J+FaF8YSrJrDiG5gIpTcXaY7FTh5jMSfTyYewTEnQ3iHI38XimyQGAnx+pGe4
- cda5V1C0cVPDF8UaEvkW02+fNHI=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5fd0844e395c822bfe698e15 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Dec 2020 08:01:18
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 47D0CC43466; Wed,  9 Dec 2020 08:01:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 60CCDC433C6;
-        Wed,  9 Dec 2020 08:01:16 +0000 (UTC)
+        Wed, 9 Dec 2020 03:02:22 -0500
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96EC8C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 00:01:40 -0800 (PST)
+Received: by mail-qv1-xf43.google.com with SMTP id a13so201295qvv.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 00:01:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=2ipbFz3QMr0/xWp6RobQtyDVjSogGPWtNBaUhHk98bc=;
+        b=MrCPcfMxW1DWU5/S+BLMNJPNdcVvci9nFtanPQqbClmMh9ia9qJkivgTkF1rWXf/oP
+         TgB4K5JPAXzoAGFkXDBDQPgRkqxwJZv/mnb6bBiVNZn7XBKRms1bRdPGSBInmM0AduXW
+         KZGMSwbJoRscGS+Pbb+iYbRVVQ7bnk4XwcWFStg34ETvspb4Lcwo6ZX/p1t108YsFcMx
+         QrEVufGa82LXRGa17RCUlOJdkbHLElJg6kSqKodQ8wdDWAQM2gvIuyWyhLW3uqlek3ZG
+         s2tKVRk66s5wcHBFl6unp2eetvs1jBYbSwJsJW8jEwb8SR91sLY+9jxoIxoU13+BGupT
+         l6kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=2ipbFz3QMr0/xWp6RobQtyDVjSogGPWtNBaUhHk98bc=;
+        b=QvqV9+ylaYIw2rN8spAMHs0BVohoMvQcEOrvtTl4MSymF3WtXv8W03XNdPIi96Nl87
+         qKHnnCH1Nyha+SX5XNLOpV8ReDAlg/MYVYywlEbEuk52N+hGSjUNLujAZandBw+MEp/Z
+         CGp9JBAQWEXqw/MVpmjdDrodr3a6Ma/xwQJh0HhJIPvRm9d3F2VhouMMrXM1DQhAvgKa
+         EHT+delphxdSu2gHA9dltVJjxDpgBrWOBExd0sSdqqC72ItQlZFMm4wO8i9kn5o/v3a5
+         H/4pj83wptY8Gq5IXAUBFYv4cDhJmUJk/nBndvRpyDoIpn6TZEcmYdJZr0BxtvdtIQOt
+         UfBg==
+X-Gm-Message-State: AOAM531VhZZNvTZgZqQlpm+Zkd8nQ3ycC1mtcWVBa0CKiH+39fi9WswM
+        PZh5bz65vudtwVCbH4RdEujnJ1qNqxmbhmLAwPa8kA==
+X-Google-Smtp-Source: ABdhPJy/bDUsKLLIkOQfEZdJ5xCTpuXY05aNCkpcxB3hVFg3wwhEy7saeDLBEzh8UvjEDtvEFpp709X7/7chV/O/FcY=
+X-Received: by 2002:a0c:edab:: with SMTP id h11mr1958804qvr.23.1607500899578;
+ Wed, 09 Dec 2020 00:01:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 09 Dec 2020 16:01:16 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Ziqi Chen <ziqichen@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Satya Tangirala <satyat@google.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] scsi: ufs: Fix ufs power down/on specs violation
-In-Reply-To: <1607497774-76579-1-git-send-email-ziqichen@codeaurora.org>
-References: <1607497774-76579-1-git-send-email-ziqichen@codeaurora.org>
-Message-ID: <6105ea481f6a42fb0e5133e442a51549@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <0000000000009ea5720595dc03a3@google.com>
+In-Reply-To: <0000000000009ea5720595dc03a3@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 9 Dec 2020 09:01:28 +0100
+Message-ID: <CACT4Y+avvqLabSr+4GL-GSah5YMxvM+u2_yTcjT=xtA14YXS_w@mail.gmail.com>
+Subject: Re: BUG: MAX_LOCKDEP_KEYS too low!
+To:     syzbot <syzbot+692f39f040c1f415567b@syzkaller.appspotmail.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09 15:09, Ziqi Chen wrote:
-> As per specs, e.g, JESD220E chapter 7.2, while powering
-> off/on the ufs device, RST_N signal and REF_CLK signal
-> should be between VSS(Ground) and VCCQ/VCCQ2.
-> 
-> Power down:
-> 1. Assert RST_N low
-> 2. Turn-off REF_CLK
-> 3. Turn-off VCC
-> 4. Turn-off VCCQ/VCCQ2.
-> power on:
-> 1. Turn-on VCC
-> 2. Turn-on VCCQ/VCCQ2
-> 3. Turn-On REF_CLK
-> 4. Deassert RST_N high.
-> 
-> Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
+On Sun, Oct 27, 2019 at 4:31 AM syzbot
+<syzbot+692f39f040c1f415567b@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following crash on:
+>
+> HEAD commit:    65921376 Merge branch 'net-fix-nested-device-bugs'
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1637fdc0e00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e0ac4d9b35046343
+> dashboard link: https://syzkaller.appspot.com/bug?extid=692f39f040c1f415567b
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+>
+> Unfortunately, I don't have any reproducer for this crash yet.
+>
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+692f39f040c1f415567b@syzkaller.appspotmail.com
+
+This stopped happening a while ago, let's close this to get
+notifications about new instances.
+One of likely candidates:
+
+#syz fix: net: partially revert dynamic lockdep key changes
+
+
+> BUG: MAX_LOCKDEP_KEYS too low!
+> turning off the locking correctness validator.
+> CPU: 0 PID: 15175 Comm: syz-executor.5 Not tainted 5.4.0-rc3+ #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> Google 01/01/2011
+> Call Trace:
+>   __dump_stack lib/dump_stack.c:77 [inline]
+>   dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+>   register_lock_class.cold+0x1b/0x27 kernel/locking/lockdep.c:1222
+>   __lock_acquire+0xf4/0x4a00 kernel/locking/lockdep.c:3837
+>   lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4487
+>   __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+>   _raw_spin_lock_bh+0x33/0x50 kernel/locking/spinlock.c:175
+>   spin_lock_bh include/linux/spinlock.h:343 [inline]
+>   netif_addr_lock_bh include/linux/netdevice.h:4055 [inline]
+>   __dev_mc_add+0x2e/0xd0 net/core/dev_addr_lists.c:765
+>   dev_mc_add+0x20/0x30 net/core/dev_addr_lists.c:783
+>   igmp6_group_added+0x3b5/0x460 net/ipv6/mcast.c:672
+>   __ipv6_dev_mc_inc+0x727/0xa60 net/ipv6/mcast.c:931
+>   ipv6_dev_mc_inc+0x20/0x30 net/ipv6/mcast.c:938
+>   ipv6_add_dev net/ipv6/addrconf.c:456 [inline]
+>   ipv6_add_dev+0xa3d/0x10b0 net/ipv6/addrconf.c:363
+>   addrconf_notify+0x97d/0x23b0 net/ipv6/addrconf.c:3491
+>   notifier_call_chain+0xc2/0x230 kernel/notifier.c:95
+>   __raw_notifier_call_chain kernel/notifier.c:396 [inline]
+>   raw_notifier_call_chain+0x2e/0x40 kernel/notifier.c:403
+>   call_netdevice_notifiers_info+0x3f/0x90 net/core/dev.c:1668
+>   call_netdevice_notifiers_extack net/core/dev.c:1680 [inline]
+>   call_netdevice_notifiers net/core/dev.c:1694 [inline]
+>   register_netdevice+0x950/0xeb0 net/core/dev.c:9114
+>   ieee80211_if_add+0xf51/0x1730 net/mac80211/iface.c:1881
+>   ieee80211_register_hw+0x36e6/0x3ac0 net/mac80211/main.c:1256
+>   mac80211_hwsim_new_radio+0x20d9/0x4360
+> drivers/net/wireless/mac80211_hwsim.c:3031
+>   hwsim_new_radio_nl+0x9e3/0x1070 drivers/net/wireless/mac80211_hwsim.c:3586
+>   genl_family_rcv_msg+0x74b/0xf90 net/netlink/genetlink.c:629
+>   genl_rcv_msg+0xca/0x170 net/netlink/genetlink.c:654
+>   netlink_rcv_skb+0x177/0x450 net/netlink/af_netlink.c:2477
+>   genl_rcv+0x29/0x40 net/netlink/genetlink.c:665
+>   netlink_unicast_kernel net/netlink/af_netlink.c:1302 [inline]
+>   netlink_unicast+0x531/0x710 net/netlink/af_netlink.c:1328
+>   netlink_sendmsg+0x8a5/0xd60 net/netlink/af_netlink.c:1917
+>   sock_sendmsg_nosec net/socket.c:637 [inline]
+>   sock_sendmsg+0xd7/0x130 net/socket.c:657
+>   ___sys_sendmsg+0x803/0x920 net/socket.c:2311
+>   __sys_sendmsg+0x105/0x1d0 net/socket.c:2356
+>   __do_sys_sendmsg net/socket.c:2365 [inline]
+>   __se_sys_sendmsg net/socket.c:2363 [inline]
+>   __x64_sys_sendmsg+0x78/0xb0 net/socket.c:2363
+>   do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+>   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> RIP: 0033:0x459f39
+> Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7
+> 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff
+> ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007fd0af43ac78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000459f39
+> RDX: 0000000000000000 RSI: 0000000020000180 RDI: 0000000000000003
+> RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00007fd0af43b6d4
+> R13: 00000000004c82f8 R14: 00000000004de3f0 R15: 00000000ffffffff
+> kobject: 'batman_adv' (000000009392522f): kobject_add_internal:
+> parent: 'wlan1810', set: '<NULL>'
+>
+>
 > ---
->  drivers/scsi/ufs/ufs-qcom.c | 14 ++++++++++----
->  drivers/scsi/ufs/ufshcd.c   | 19 +++++++++----------
->  drivers/scsi/ufs/ufshcd.h   |  4 ++--
->  3 files changed, 21 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-> index 1e434cc..5ed3a63d 100644
-> --- a/drivers/scsi/ufs/ufs-qcom.c
-> +++ b/drivers/scsi/ufs/ufs-qcom.c
-> @@ -582,6 +582,9 @@ static int ufs_qcom_suspend(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  		ufs_qcom_disable_lane_clks(host);
->  		phy_power_off(phy);
-> 
-> +		if (hba->vops && hba->vops->device_reset)
-> +			hba->vops->device_reset(hba, false);
-> +
->  	} else if (!ufs_qcom_is_link_active(hba)) {
->  		ufs_qcom_disable_lane_clks(host);
->  	}
-> @@ -1400,10 +1403,11 @@ static void ufs_qcom_dump_dbg_regs(struct 
-> ufs_hba *hba)
->  /**
->   * ufs_qcom_device_reset() - toggle the (optional) device reset line
->   * @hba: per-adapter instance
-> + * @toggle: need pulling up or not
->   *
->   * Toggles the (optional) reset line to reset the attached device.
->   */
-> -static int ufs_qcom_device_reset(struct ufs_hba *hba)
-> +static int ufs_qcom_device_reset(struct ufs_hba *hba, bool toggle)
->  {
->  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> 
-> @@ -1416,10 +1420,12 @@ static int ufs_qcom_device_reset(struct ufs_hba 
-> *hba)
->  	 * be on the safe side.
->  	 */
->  	gpiod_set_value_cansleep(host->device_reset, 1);
-> -	usleep_range(10, 15);
-> 
-> -	gpiod_set_value_cansleep(host->device_reset, 0);
-> -	usleep_range(10, 15);
-> +	if (toggle) {
-> +		usleep_range(10, 15);
-> +		gpiod_set_value_cansleep(host->device_reset, 0);
-> +		usleep_range(10, 15);
-> +	}
-> 
->  	return 0;
->  }
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 92d433d..5ab1c02 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -8633,8 +8633,6 @@ static int ufshcd_suspend(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  	if (ret)
->  		goto set_dev_active;
-> 
-> -	ufshcd_vreg_set_lpm(hba);
-> -
->  disable_clks:
->  	/*
->  	 * Call vendor specific suspend callback. As these callbacks may 
-> access
-> @@ -8664,6 +8662,7 @@ static int ufshcd_suspend(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
-> 
->  	/* Put the host controller in low power mode if possible */
->  	ufshcd_hba_vreg_set_lpm(hba);
-> +	ufshcd_vreg_set_lpm(hba);
->  	goto out;
-> 
->  set_link_active:
-> @@ -8729,18 +8728,18 @@ static int ufshcd_resume(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  	old_link_state = hba->uic_link_state;
-> 
->  	ufshcd_hba_vreg_set_hpm(hba);
-> +	ret = ufshcd_vreg_set_hpm(hba);
-> +	if (ret)
-> +		goto out;
-> +
->  	/* Make sure clocks are enabled before accessing controller */
->  	ret = ufshcd_setup_clocks(hba, true);
->  	if (ret)
-> -		goto out;
-> +		goto disable_vreg;
-> 
->  	/* enable the host irq as host controller would be active soon */
->  	ufshcd_enable_irq(hba);
-> 
-> -	ret = ufshcd_vreg_set_hpm(hba);
-> -	if (ret)
-> -		goto disable_irq_and_vops_clks;
-> -
->  	/*
->  	 * Call vendor specific resume callback. As these callbacks may 
-> access
->  	 * vendor specific host controller register space call them when the
-> @@ -8748,7 +8747,7 @@ static int ufshcd_resume(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  	 */
->  	ret = ufshcd_vops_resume(hba, pm_op);
->  	if (ret)
-> -		goto disable_vreg;
-> +		goto disable_irq_and_vops_clks;
-> 
->  	/* For DeepSleep, the only supported option is to have the link off 
-> */
->  	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && 
-> !ufshcd_is_link_off(hba));
-> @@ -8815,8 +8814,6 @@ static int ufshcd_resume(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  	ufshcd_link_state_transition(hba, old_link_state, 0);
->  vendor_suspend:
->  	ufshcd_vops_suspend(hba, pm_op);
-> -disable_vreg:
-> -	ufshcd_vreg_set_lpm(hba);
->  disable_irq_and_vops_clks:
->  	ufshcd_disable_irq(hba);
->  	if (hba->clk_scaling.is_allowed)
-> @@ -8827,6 +8824,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  		trace_ufshcd_clk_gating(dev_name(hba->dev),
->  					hba->clk_gating.state);
->  	}
-> +disable_vreg:
-> +	ufshcd_vreg_set_lpm(hba);
->  out:
->  	hba->pm_op_in_progress = 0;
->  	if (ret)
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 61344c4..47c7dab6 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -323,7 +323,7 @@ struct ufs_hba_variant_ops {
->  	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
->  	void	(*dbg_register_dump)(struct ufs_hba *hba);
->  	int	(*phy_initialization)(struct ufs_hba *);
-> -	int	(*device_reset)(struct ufs_hba *hba);
-> +	int	(*device_reset)(struct ufs_hba *hba, bool);
->  	void	(*config_scaling_param)(struct ufs_hba *hba,
->  					struct devfreq_dev_profile *profile,
->  					void *data);
-> @@ -1211,7 +1211,7 @@ static inline void
-> ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
->  static inline void ufshcd_vops_device_reset(struct ufs_hba *hba)
->  {
->  	if (hba->vops && hba->vops->device_reset) {
-> -		int err = hba->vops->device_reset(hba);
-> +		int err = hba->vops->device_reset(hba, true);
-> 
->  		if (!err)
->  			ufshcd_set_ufs_dev_active(hba);
-
-
-Please check Stanley's new change 
-https://lore.kernel.org/patchwork/patch/1350843/.
-
-You may want to re-name the func ufschd_vops_device_reset() to
-ufshcd_vops_toggle_device_reset(sturct ufs_hba *hba, bool up) and
-similarly re-name device_reset() to toggle_device_reset(hba, up).
-Then in the new func ufshcd_device_reset(), call 
-ufshcd_vops_toggle_device_reset()
-twice, once to toggle up, once to toggle down. In this way, you will be
-able to use ufshcd_vops_toggle_device_reset() in ufshcd_suspend().
-
-This is just a rough idea.
-
-Thanks,
-
-Can Guo.
-
-
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000009ea5720595dc03a3%40google.com.
