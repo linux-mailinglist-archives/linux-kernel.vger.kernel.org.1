@@ -2,127 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7502D4CAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A943A2D4CB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388036AbgLIVRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 16:17:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
+        id S2388197AbgLIVSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 16:18:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728003AbgLIVRh (ORCPT
+        with ESMTP id S2388182AbgLIVSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 16:17:37 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081D0C0613CF;
-        Wed,  9 Dec 2020 13:16:57 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id s21so1931900pfu.13;
-        Wed, 09 Dec 2020 13:16:56 -0800 (PST)
+        Wed, 9 Dec 2020 16:18:52 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E41C06179C
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 13:18:11 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id t7so1950163pfh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 13:18:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Kde5qioibKFTqTbk8Z1S5mJRQCZZsheqyuONyQlU+mM=;
-        b=NavI8S8HeiEzZ7/x1B3Hvj28veiDLwqcUfiG/BQJ/mnHp7AF5+4fF+8b0Oc60tZXQo
-         XteJGO5fVhfE8TVfZ6EjB+noAShoAflt5JSccAkzPuhhznVp6+7zYz8PpQHjKoPTpa0K
-         2KQ7i3+My0sKbPdJ4s2/oD8CMkOwInpRXdWK7g9dj+HRoU0GInqkJQLoc9xhevkh7yZZ
-         kFAmBAU9o6P04sAz6IQnC75FbF6JF+ln9A6liI2YHdeYwDtrFsKsByOaAwYoYns4Brg8
-         7cY/jZjRbXWbWjKC9cg3i7IYAsbffQVXavNFq/v3GaI3ilf/9/YuqqYyynTecxm6jBST
-         RStA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w/DYax7thFnuwm2FQ5QUjbL4cH5hF8rW9xsPTe7EeuI=;
+        b=chTQi2gTSyTpjwnqFlxgpp6TGvcWmisae66yaqpOfmqP5BhPneH4UNeu73s7zC76J0
+         kQ0PROsVMFM+6Ef6QqC05LrnNjgRrqdx8Wj0eOXcwqj/QxtsBCa00ta8p7OLS5taaPMQ
+         R50UNp92SoaeWwYNGcDc2Yan+b5sJ6852NEKD1flLrK0qd5FqOiRJdvdpygtx3I3aKjz
+         KUbOfOv5c17m89EvsYkQo0/lOCZfB+7M1+Si4AMgx3EvomEAoB3vTaIq2qOn5uQBXelz
+         p5+Kw33Mk1B+OSj1Y2E9IHxMoAh6G5foAfuRFMBCUVcGDIC55gBylZ2Ec1NwOw5LpA5h
+         GxNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Kde5qioibKFTqTbk8Z1S5mJRQCZZsheqyuONyQlU+mM=;
-        b=L8E3NmpEJKwYt9FTvlpxowt/kJPV/GKohZD4IRyxBvptf2/EfFGxjEDc8B+Gdq4X5i
-         LHCZZGNoZsI1zIwNZy5fc7AUOYIBhLPr81wOfwsrcYGVqDtIXt0J+pUbxwF5xbSdFrMq
-         42J2Qm/izcIObLmnhFhXp2r0fJwvGl41iGmfuCcgoztNQ0dcTV8n1njexCQ0+RgG4AqZ
-         R3+dzpOrzl7B6PQDRqcGEhVecxtewqzopKv7Lr/IsfhLA3fXsqMxZ0dMnS9maPblwGqC
-         HVx1x61MD7Vu82MuRTOY3NkqGuw4nbeDiGKdwDQPkR7WOW6u/6GsOEP/Wck5d+7U/rlc
-         fmaw==
-X-Gm-Message-State: AOAM530uOBdxYul8g9YpGASfxHQXM+mg8+uuTLF9dyP6Gy1FVMidOM1D
-        O388Y1QwiD8869mAkGgu6HlXUvvtfKuZgS7XjQ==
-X-Google-Smtp-Source: ABdhPJy4pfGvQB2Kq/WKK3w+RgvNCa1tQEKOHNTNej4Ix2zGetKCzZpOGGMwlCc07q4zDTK3QS35eHXJswYLS8y+aVw=
-X-Received: by 2002:a17:90a:f0c1:: with SMTP id fa1mr3867972pjb.148.1607548616356;
- Wed, 09 Dec 2020 13:16:56 -0800 (PST)
-MIME-Version: 1.0
-References: <CALjTZvZZZVqnoV4YFTDHogVHv77=dKfcSSBGj1zC83zpUid9+g@mail.gmail.com>
- <4eb99a1da6342999c4dca355533a0847d0e942a5.camel@intel.com>
- <CALjTZvYwccfOVTTGNo1=oLnwXG2b9Vz1nVZuvLKFV94+3fQ6EQ@mail.gmail.com>
- <20201209091315.2c55e1c6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <CANUX_P1=yuPkK5BzJ99oniMiCgB0z98yNYUSw4_qk2Vg7ucoRQ@mail.gmail.com>
- <CALjTZvYZEbgfLEzxQdafJT6CFz76prA4+YM2EGA8k5Dgn3gigw@mail.gmail.com>
- <CANUX_P1YWSudJfwyuFVg-qdBHwQvQJiZayZBMY8E4it0qwB5Hw@mail.gmail.com> <CANUX_P0sOAdRjOgg=ogAHmQdTXp5UKyW2XQQRComa4Rv3Y-toQ@mail.gmail.com>
-In-Reply-To: <CANUX_P0sOAdRjOgg=ogAHmQdTXp5UKyW2XQQRComa4Rv3Y-toQ@mail.gmail.com>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Wed, 9 Dec 2020 21:16:45 +0000
-Message-ID: <CALjTZvYfJVjxRO4Avc3rV+W+HO-vBABxwF=UUETzDeNv_QBbhg@mail.gmail.com>
-Subject: Re: [BUG] iwlwifi: card unusable after firmware crash
-To:     Emmanuel Grumbach <egrumbach@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "Coelho, Luciano" <luciano.coelho@intel.com>,
-        "Goodstein, Mordechay" <mordechay.goodstein@intel.com>,
-        "Berg, Johannes" <johannes.berg@intel.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w/DYax7thFnuwm2FQ5QUjbL4cH5hF8rW9xsPTe7EeuI=;
+        b=OMU63gRvUNa/chBZ9M1wIl9CFi+IBzM3GsrXMaiFNGzNj76hatTORS4ohEWUlx83Nt
+         aqXiie+jhWfZYuv9CSKggSCfZtnLp+kDaEIA5tdGyLzfmtjZBDXDwhyxXSWO1Qa6pcWm
+         kgfW/1r1smTa5p4+JaC11IAGIjXYQSqUaODWEH39QdVqNseEOlVzB1my/Y9iMBsXTNlh
+         NuwfNqAPglzOmtlFbJRN7Ry8whhgOeVSoYxCqksDnfaly2PhE9VrUoRH6WzTap7uKY6D
+         uyPqVST7Bwxo+pY0FK1JqXxSplaSgRTUlWEr1kDbF7SyYT2Oy+KewfDPfZcSiyjPgVYt
+         7umA==
+X-Gm-Message-State: AOAM533rjEf0h7Sszrv12cEkJwqeV2sY4N5fWhFRx26aYVkJdrvoKFNN
+        kLh0He43xqCSz3IUvE/pQFljbg==
+X-Google-Smtp-Source: ABdhPJxEmArGBR2jk+kwM3ndMfrjBTEDFLYLc5UMaLVZvZ+euDzrQXu/i73LgNyKsS0pGTA4zvO6Sw==
+X-Received: by 2002:a63:1a13:: with SMTP id a19mr3651086pga.146.1607548691344;
+        Wed, 09 Dec 2020 13:18:11 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id e4sm3607376pfh.206.2020.12.09.13.18.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 13:18:10 -0800 (PST)
+Date:   Wed, 9 Dec 2020 14:18:08 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v3 09/15] remoteproc: Introduce function rproc_detach()
+Message-ID: <20201209211808.GA1814981@xps15>
+References: <20201126210642.897302-1-mathieu.poirier@linaro.org>
+ <20201126210642.897302-10-mathieu.poirier@linaro.org>
+ <0e705760-b69a-d872-9770-c03dde85ab1c@st.com>
+ <20201209005311.GB1601690@xps15>
+ <cb959e29-65eb-ae89-0c53-cdbc4c7bc77a@st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cb959e29-65eb-ae89-0c53-cdbc4c7bc77a@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi again, Emmanuel,
+On Wed, Dec 09, 2020 at 09:45:32AM +0100, Arnaud POULIQUEN wrote:
+> 
+> 
+> On 12/9/20 1:53 AM, Mathieu Poirier wrote:
+> > On Tue, Dec 08, 2020 at 07:35:18PM +0100, Arnaud POULIQUEN wrote:
+> >> Hi Mathieu,
+> >>
+> >>
+> >> On 11/26/20 10:06 PM, Mathieu Poirier wrote:
+> >>> Introduce function rproc_detach() to enable the remoteproc
+> >>> core to release the resources associated with a remote processor
+> >>> without stopping its operation.
+> >>>
+> >>> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> >>> Reviewed-by: Peng Fan <peng.fan@nxp.com>
+> >>> ---
+> >>>  drivers/remoteproc/remoteproc_core.c | 65 +++++++++++++++++++++++++++-
+> >>>  include/linux/remoteproc.h           |  1 +
+> >>>  2 files changed, 65 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> >>> index 928b3f975798..f5adf05762e9 100644
+> >>> --- a/drivers/remoteproc/remoteproc_core.c
+> >>> +++ b/drivers/remoteproc/remoteproc_core.c
+> >>> @@ -1667,7 +1667,7 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
+> >>>  /*
+> >>>   * __rproc_detach(): Does the opposite of rproc_attach()
+> >>>   */
+> >>> -static int __maybe_unused __rproc_detach(struct rproc *rproc)
+> >>> +static int __rproc_detach(struct rproc *rproc)
+> >>>  {
+> >>>  	struct device *dev = &rproc->dev;
+> >>>  	int ret;
+> >>> @@ -1910,6 +1910,69 @@ void rproc_shutdown(struct rproc *rproc)
+> >>>  }
+> >>>  EXPORT_SYMBOL(rproc_shutdown);
+> >>>  
+> >>> +/**
+> >>> + * rproc_detach() - Detach the remote processor from the
+> >>> + * remoteproc core
+> >>> + *
+> >>> + * @rproc: the remote processor
+> >>> + *
+> >>> + * Detach a remote processor (previously attached to with rproc_actuate()).
+> >>> + *
+> >>> + * In case @rproc is still being used by an additional user(s), then
+> >>> + * this function will just decrement the power refcount and exit,
+> >>> + * without disconnecting the device.
+> >>> + *
+> >>> + * Function rproc_detach() calls __rproc_detach() in order to let a remote
+> >>> + * processor know that services provided by the application processor are
+> >>> + * no longer available.  From there it should be possible to remove the
+> >>> + * platform driver and even power cycle the application processor (if the HW
+> >>> + * supports it) without needing to switch off the remote processor.
+> >>> + */
+> >>> +int rproc_detach(struct rproc *rproc)
+> >>> +{
+> >>> +	struct device *dev = &rproc->dev;
+> >>> +	int ret;
+> >>> +
+> >>> +	ret = mutex_lock_interruptible(&rproc->lock);
+> >>> +	if (ret) {
+> >>> +		dev_err(dev, "can't lock rproc %s: %d\n", rproc->name, ret);
+> >>> +		return ret;
+> >>> +	}
+> >>> +
+> >>> +	if (rproc->state != RPROC_RUNNING && rproc->state != RPROC_ATTACHED) {
+> >>> +		ret = -EPERM;
+> >>> +		goto out;
+> >>> +	}
+> >>> +
+> >>> +	/* if the remote proc is still needed, bail out */
+> >>> +	if (!atomic_dec_and_test(&rproc->power)) {
+> >>> +		ret = -EBUSY;
+> >>> +		goto out;
+> >>> +	}
+> >>> +
+> >>> +	ret = __rproc_detach(rproc);
+> >>> +	if (ret) {
+> >>> +		atomic_inc(&rproc->power);
+> >>> +		goto out;
+> >>> +	}
+> >>> +
+> >>> +	/* clean up all acquired resources */
+> >>> +	rproc_resource_cleanup(rproc);
+> >>
+> >> I started to test the series, I found 2 problems testing in STM32P1 board.
+> >>
+> >> 1) the resource_table pointer is unmapped if the firmware has been booted by the
+> >> Linux, generating a crash in rproc_free_vring.
+> >> I attached a fix at the end of the mail.
+> >>
+> > 
+> > I have reproduced the condition on my side and confirm that your solution is
+> > correct.  See below for a minor comment. 
+> > 
+> >> 2) After the detach, the rproc state is "detached"
+> >> but it is no longer possible to re-attach to it correctly.
+> >> Neither if the firmware is standalone, nor if it has been booted
+> >> by the Linux.
+> >>
+> > 
+> > Did you update your FW image?  If so, I need to run the same one.
+> > 
+> >> I did not investigate, but the issue is probably linked to the resource
+> >> table address which is set to NULL.
+> >>
+> >> So we either have to fix the problem in order to attach or forbid the transition.
+> >>
+> >>
+> >> Regards,
+> >> Arnaud
+> >>
+> >>> +
+> >>> +	rproc_disable_iommu(rproc);
+> >>> +
+> >>> +	/*
+> >>> +	 * Set the remote processor's table pointer to NULL.  Since mapping
+> >>> +	 * of the resource table to a virtual address is done in the platform
+> >>> +	 * driver, unmapping should also be done there.
+> >>> +	 */
+> >>> +	rproc->table_ptr = NULL;
+> >>> +out:
+> >>> +	mutex_unlock(&rproc->lock);
+> >>> +	return ret;
+> >>> +}
+> >>> +EXPORT_SYMBOL(rproc_detach);
+> >>> +
+> >>>  /**
+> >>>   * rproc_get_by_phandle() - find a remote processor by phandle
+> >>>   * @phandle: phandle to the rproc
+> >>> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> >>> index da15b77583d3..329c1c071dcf 100644
+> >>> --- a/include/linux/remoteproc.h
+> >>> +++ b/include/linux/remoteproc.h
+> >>> @@ -656,6 +656,7 @@ rproc_of_resm_mem_entry_init(struct device *dev, u32 of_resm_idx, size_t len,
+> >>>  
+> >>>  int rproc_boot(struct rproc *rproc);
+> >>>  void rproc_shutdown(struct rproc *rproc);
+> >>> +int rproc_detach(struct rproc *rproc);
+> >>>  int rproc_set_firmware(struct rproc *rproc, const char *fw_name);
+> >>>  void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type);
+> >>>  int rproc_coredump_add_segment(struct rproc *rproc, dma_addr_t da, size_t size);
+> >>>
+> >>
+> >> From: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
+> >> Date: Tue, 8 Dec 2020 18:54:51 +0100
+> >> Subject: [PATCH] remoteproc: core: fix detach for unmapped table_ptr
+> >>
+> >> If the firmware has been loaded and started by the kernel, the
+> >> resource table has probably been mapped by the carveout allocation
+> >> (see rproc_elf_find_loaded_rsc_table).
+> >> In this case the memory can have been unmapped before the vrings are free.
+> >> The result is a crash that occurs in rproc_free_vring while try to use the
+> >> unmapped pointer.
+> >>
+> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
+> >> ---
+> >>  drivers/remoteproc/remoteproc_core.c | 17 ++++++++++++++---
+> >>  1 file changed, 14 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/drivers/remoteproc/remoteproc_core.c
+> >> b/drivers/remoteproc/remoteproc_core.c
+> >> index 2b0a52fb3398..3508ffba4a2a 100644
+> >> --- a/drivers/remoteproc/remoteproc_core.c
+> >> +++ b/drivers/remoteproc/remoteproc_core.c
+> >> @@ -1964,6 +1964,13 @@ int rproc_detach(struct rproc *rproc)
+> >>  		goto out;
+> >>  	}
+> >>
+> >> +	/*
+> >> +	 * Prevent case that the installed resource table is no longer
+> >> +	 * accessible (e.g. memory unmapped), use the cache if available
+> >> +	 */
+> >> +	if (rproc->cached_table)
+> >> +		rproc->table_ptr = rproc->cached_table;
+> > 
+> > I don't think there is an explicit need to check ->cached_table.  If the remote
+> > processor has been started by the remoteproc core it is valid anyway.  And below
+> > kfree() is called invariably. 
+> 
+> The condition is needed, the  rproc->cached_table is null if the firmware as
+> been preloaded and the Linux remote proc just attaches to it.
+> The cached is used only when Linux loads the firmware, as the resource table is
+> extracted from the elf file to parse resource before the load of the firmware.
 
-On Wed, 9 Dec 2020 at 21:07, Emmanuel Grumbach <egrumbach@gmail.com> wrote:
->
-> Indeed, the bit is reverse logic. So we can put that aside.
-> Frankly, I have no clue. You can try our backport tree to bisect,
-> should be easier..
-> What I see here is that your GP_CTRL value is 080003d8
->
-> #define CSR_GP_CNTRL_REG_FLAG_HW_RF_KILL_SW          (0x08000000)
-> which means sense since apparently, HW RF-Kill was asserted.
-> #define CSR_GP_CNTRL_REG_FLAG_GOING_TO_SLEEP         (0x00000010)
-> Which means that the device is going to sleep... And that's the problem:
->
-> iwl_trans_pcie_grab_nic_access:
->         ret = iwl_poll_bit(trans, CSR_GP_CNTRL,
->                            CSR_GP_CNTRL_REG_VAL_MAC_ACCESS_EN,
->                            (CSR_GP_CNTRL_REG_FLAG_MAC_CLOCK_READY |
->                             CSR_GP_CNTRL_REG_FLAG_GOING_TO_SLEEP), 15000);
->         if (unlikely(ret < 0)) {
->                 u32 cntrl = iwl_read32(trans, CSR_GP_CNTRL);
->
->                 WARN_ONCE(1,
->                           "Timeout waiting for hardware access
-> (CSR_GP_CNTRL 0x%08x)\n",
->                           cntrl);
->
-> but I'd expect the splat in your log...
-> Or maybe you can't load the firmware?
+I have taken another look at this and you are correct. The if() condition is
+needed because ->table_ptr is set only once when the platform driver is
+probed.  See further down...
 
-Well, my kernel doesn't have any modules, it's all built-in. The
-firmware is obviously loading fine, otherwise the card wouldn't work,
-but yeah, that WARN_ONCE hasn't triggered at all.
+> 
+> > 
+> > So that problem is fixed.  Let me know about your FW image and we'll pick it up
+> > from there.
+> 
+> I use the following example available on the stm32mp1 image:
+> /usr/local/Cube-M4-examples/STM32MP157C-DK2/Applications/OpenAMP/OpenAMP_TTY_echo_wakeup/lib/firmware/
+> This exemple use the RPMsg and also blink a LED when while running.
+> 
+> Don't hesitate if you need me to send it to you by mail.
+> 
+> Thank,
+> Arnaud
+> 
+> > 
+> > Mathieu
+> > 
+> >> +
+> >>  	ret = __rproc_detach(rproc);
+> >>  	if (ret) {
+> >>  		atomic_inc(&rproc->power);
+> >> @@ -1975,10 +1982,14 @@ int rproc_detach(struct rproc *rproc)
+> >>
+> >>  	rproc_disable_iommu(rproc);
+> >>
+> >> +	/* Free the chached table memory that can has been allocated*/
+> >> +	kfree(rproc->cached_table);
+> >> +	rproc->cached_table = NULL;
+> >>  	/*
+> >> -	 * Set the remote processor's table pointer to NULL.  Since mapping
+> >> -	 * of the resource table to a virtual address is done in the platform
+> >> -	 * driver, unmapping should also be done there.
+> >> +	 * Set the remote processor's table pointer to NULL. If mapping
+> >> +	 * of the resource table to a virtual address has been done in the
+> >> +	 * platform driver(attachment to an existing firmware),
+> >> +	 * unmapping should also be done there.
+> >>  	 */
+> >>  	rproc->table_ptr = NULL;
 
-> Can you try this:
-> diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-> b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-> index 2fffbbc8462f..748300752630 100644
-> --- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-> +++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-> @@ -2121,6 +2121,7 @@ static bool
-> iwl_trans_pcie_grab_nic_access(struct iwl_trans *trans,
->          * track nic_access anyway.
->          */
->         __release(&trans_pcie->reg_lock);
-> +       mdelay(1);
->         return true;
->  }
->
-> If that helps, then... I'd have no clue why it helps, but this
-> specific device caused us trouble like bad timing after
-> grab_nic_access..
+With the above in mind we can't to that, otherwise trying to re-attach with
+rproc_attach() won't work because ->table_ptr will be NULL.
 
-I'll give it a spin. Nasty hack, but if it works, it works. :)
+I wasn't able to test that code path because I didn't have the FW that supported
+detaching.  Now that the feature is maturing it needs to be done.  
 
-Thanks,
-Rui
+> >>  out:
+> >> -- 
+> >> 2.17.1
+> >>
+> >>
+> >>
