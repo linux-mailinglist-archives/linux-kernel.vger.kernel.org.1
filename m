@@ -2,104 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EF92D4582
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7EB2D4585
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730313AbgLIPfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:35:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
+        id S1730402AbgLIPf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:35:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730267AbgLIPfh (ORCPT
+        with ESMTP id S1730320AbgLIPfj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:35:37 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A5EC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 07:34:57 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id t4so2192933wrr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 07:34:57 -0800 (PST)
+        Wed, 9 Dec 2020 10:35:39 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0773BC061794
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 07:34:59 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id k14so2228516wrn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 07:34:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=9lzHda3DkRGsaAMWdU4VLGvm72yuNdC03lUHj7g0BKQ=;
-        b=GhhAbALhf3of5VkM2LzUNsHuJej/dySMGdw+z4MhNerh+DyFl2VMiQPQUKh+LaYUmI
-         VpJhaNHjrf/rXuhqRsIUFXqGRMyBc6xDLtKhYCXxFumdI6xus4ampbKpcW20dT21uhzo
-         NzBSm6B/tkCCC+Jw2zUB1nHjRbrennKfbarqT5q41Echd4XojfMpSnYvtDXTDIc8lL9X
-         Jw4nuFMB49N82BkXjTUHAhxnZABYDRwvuiDR4greQsliJsT3hp/tR1x8VgoJOqECP4jD
-         HLR1s/5OJyl0P6PJ16FWcE7y5ASg2d+foQGcIDjmcH2rXRL3Pn4thGD3T4wgEXWp5RUs
-         wkWQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=uZgB0leTvg1UsktdCSGjVr/1XPMUvecMHEZ3uvN+Jrs=;
+        b=F1tBk6wprLcmk00DtZQ6R59rv3L46LFPHO/2ciwFjtLCuYm5PJP0BjZN4ZOJbYJgfk
+         H+jHuOwBy7yYnV/eHCtyHzb5MNgnKRgRypI7xtZw7QyBVbpKHa3/v/cEneGshwiT4ORO
+         jiwS1ZCM+oriLm2b/XBhvEd5T9UeaPSUYY3Sl8UpbziFCxn7v4vWvfG8he27OrfNlrX+
+         cm3Ow40123cgL/PEMHbD1hTWhHs1BdQHdjX9eVmJ/Aa7MKFTvQHMpP9V4konws4JGJ56
+         oZASkqVYSa1HrFWDsawVvObROGi7fH+VBAVuuDAgruicHOBx3gfcuVrP4KMSLxXH9v7N
+         MCdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=9lzHda3DkRGsaAMWdU4VLGvm72yuNdC03lUHj7g0BKQ=;
-        b=sKxANEhi7IlwJtZvZ3pRgzWIiIkk9tPQcJea6zIkikKT7ihyxskQz8wQmQH6YE3EO2
-         MM3yYs/j5XmNxhFtLWq+f2HXo8VM7fp7EmzNCUmCSFDXFVqszwI6kwaw2iCBUMKE8h/i
-         ocYWmzb49j1M4Pl8K5hv9F4Gl/tZPxqRpl++51abrEIsah6tXVcrWOZUgDpQ+21sQb5j
-         GrlpntszmssGrVtuhfGfe1EHnqL4MSxTl7Ymb5CYE3utztcNbOdY+rHsAYMwzKA5YK2J
-         wTj0WaI+I6x6n2Oueg9skn4oFrbvaBzJbIx9op3dfxYxUwqg4dQAf9yUKytKqVpLg4GH
-         rRzQ==
-X-Gm-Message-State: AOAM5320o9buyujJ+N4EGOjoWXcrBbKF8jSeYe3hCV5cDlZq9Mx2E2xp
-        Zt+LpSPpjAhNkwkC8w/NNFzv0Q==
-X-Google-Smtp-Source: ABdhPJwMMEV5xlT/R6GGJNxJr+haT149CRPQ8WSzZh1u8ASFibjqhff9sF5ZEHnkRZ4dAoBB8NWUEg==
-X-Received: by 2002:a5d:5604:: with SMTP id l4mr3317757wrv.127.1607528095968;
-        Wed, 09 Dec 2020 07:34:55 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=uZgB0leTvg1UsktdCSGjVr/1XPMUvecMHEZ3uvN+Jrs=;
+        b=MUxQFjj1QhiVveLA5raChhf7VCMvfmCLkFSvnSp2bj8lRVyzCPzHcRfZHwJg4M3kH0
+         E4hcz12HI9/X2tWtpBM/XdR7ZAuQDb/ibJ+DNpybhKExwV3mRfUjrDAdxNqCKS+90cUu
+         D+Tm1Kml7JLZc94Lo5UPX4DKA5R08vwMU/yaeroUIdtB6HQ93Hfm0y97/ZxWo2SgLrAe
+         rZeXOw6dA0QvLXuu/wK8nUlyk0os7YyXyzLIXT202XEu2UG+dntQ3LXNN4f3gNv9As6h
+         nNW329gRQSx24YWuvLfOXRxiri/Jn3n5bV8g/pa+iqzd7CCaatjDFYWT8fDHrmPsslUK
+         rb2g==
+X-Gm-Message-State: AOAM533MqEs1q7OVC2bP0eSj9QJf6Yz6CyvsjloqND11A0+8xvLNMOTD
+        wyFCmPnD6Ho3JgukPfM53ndjtw==
+X-Google-Smtp-Source: ABdhPJwts5nMbUNGzsJ4nNFs5CfRAK9GZpqy5qdJinoGxWkaHiPg4d2b8UZAC1Puq1n0+v0elCrLoQ==
+X-Received: by 2002:adf:dd04:: with SMTP id a4mr3364031wrm.77.1607528097603;
+        Wed, 09 Dec 2020 07:34:57 -0800 (PST)
 Received: from localhost.localdomain (lns-bzn-59-82-252-158-132.adsl.proxad.net. [82.252.158.132])
-        by smtp.gmail.com with ESMTPSA id l8sm4208382wmf.35.2020.12.09.07.34.54
+        by smtp.gmail.com with ESMTPSA id l8sm4208382wmf.35.2020.12.09.07.34.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 07:34:55 -0800 (PST)
+        Wed, 09 Dec 2020 07:34:56 -0800 (PST)
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
 To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
 Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         lukasz.luba@arm.com, srinivas.pandruvada@linux.intel.com,
         kai.heng.feng@canonical.com
-Subject: [PATCH RFC 1/4] thermal/core: Emit a warning if the thermal zone is updated without ops
-Date:   Wed,  9 Dec 2020 16:34:37 +0100
-Message-Id: <20201209153440.27643-1-daniel.lezcano@linaro.org>
+Subject: [PATCH RFC 2/4] thermal/core: Add critical and hot ops
+Date:   Wed,  9 Dec 2020 16:34:38 +0100
+Message-Id: <20201209153440.27643-2-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201209153440.27643-1-daniel.lezcano@linaro.org>
+References: <20201209153440.27643-1-daniel.lezcano@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The actual code is silently ignoring a thermal zone update when a
-driver is requesting it without a get_temp ops set.
+Currently there is no way to the sensors to directly call an ops in
+interrupt mode without calling thermal_zone_device_update assuming all
+the trip points are defined.
 
-That looks not correct, as the caller should not have called this
-function if the thermal zone is unable to read the temperature.
+A sensor may want to do something special if a trip point is hot or
+critical.
 
-That makes the code less robust as the check won't detect the driver
-is inconsistently using the thermal API and that does not help to
-improve the framework as these circumvolutions hide the problem at the
-source.
+This patch adds the critical and hot ops to the thermal zone device,
+so a sensor can directly invoke them or let the thermal framework to
+call the sensor specific ones.
 
-In order to detect the situation when it happens, let's add a warning
-when the update is requested without the get_temp() ops set.
-
-Any warning emitted will have to be fixed at the source of the
-problem: the caller must not call thermal_zone_device_update if there
-is not get_temp callback set.
-
-Cc: Thara Gopinath <thara.gopinath@linaro.org>
-Cc: Amit Kucheria <amitk@kernel.org>
-Cc: linux-pm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- drivers/thermal/thermal_core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/thermal/thermal_core.c | 42 +++++++++++++++++++++-------------
+ include/linux/thermal.h        |  3 +++
+ 2 files changed, 29 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index dee40ff41177..afc02e7d1045 100644
+index afc02e7d1045..0366f3f076cc 100644
 --- a/drivers/thermal/thermal_core.c
 +++ b/drivers/thermal/thermal_core.c
-@@ -548,7 +548,8 @@ void thermal_zone_device_update(struct thermal_zone_device *tz,
- 	if (atomic_read(&in_suspend))
- 		return;
+@@ -375,6 +375,24 @@ static void thermal_emergency_poweroff(void)
+ 			      msecs_to_jiffies(poweroff_delay_ms));
+ }
  
--	if (!tz->ops->get_temp)
-+	if (WARN_ONCE(!tz->ops->get_temp, "'%s' must not be called without "
-+		      "'get_temp' ops set\n", __FUNCTION__))
- 		return;
++void thermal_zone_device_critical(struct thermal_zone_device *tz)
++{
++	dev_emerg(&tz->device, "%s: critical temperature reached, "
++		  "shutting down\n", tz->type);
++
++	mutex_lock(&poweroff_lock);
++	if (!power_off_triggered) {
++		/*
++		 * Queue a backup emergency shutdown in the event of
++		 * orderly_poweroff failure
++		 */
++		thermal_emergency_poweroff();
++		orderly_poweroff(true);
++		power_off_triggered = true;
++	}
++	mutex_unlock(&poweroff_lock);
++}
++
+ static void handle_critical_trips(struct thermal_zone_device *tz,
+ 				  int trip, enum thermal_trip_type trip_type)
+ {
+@@ -391,22 +409,10 @@ static void handle_critical_trips(struct thermal_zone_device *tz,
+ 	if (tz->ops->notify)
+ 		tz->ops->notify(tz, trip, trip_type);
  
- 	update_temperature(tz);
+-	if (trip_type == THERMAL_TRIP_CRITICAL) {
+-		dev_emerg(&tz->device,
+-			  "critical temperature reached (%d C), shutting down\n",
+-			  tz->temperature / 1000);
+-		mutex_lock(&poweroff_lock);
+-		if (!power_off_triggered) {
+-			/*
+-			 * Queue a backup emergency shutdown in the event of
+-			 * orderly_poweroff failure
+-			 */
+-			thermal_emergency_poweroff();
+-			orderly_poweroff(true);
+-			power_off_triggered = true;
+-		}
+-		mutex_unlock(&poweroff_lock);
+-	}
++	if (trip_type == THERMAL_TRIP_HOT && tz->ops->hot)
++		tz->ops->hot(tz);
++	else if (trip_type == THERMAL_TRIP_CRITICAL)
++		tz->ops->critical(tz);
+ }
+ 
+ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
+@@ -1331,6 +1337,10 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+ 
+ 	tz->id = id;
+ 	strlcpy(tz->type, type, sizeof(tz->type));
++
++	if (!ops->critical)
++		ops->critical = thermal_zone_device_critical;
++
+ 	tz->ops = ops;
+ 	tz->tzp = tzp;
+ 	tz->device.class = &thermal_class;
+diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+index f23a388ded15..125c8a4d52e6 100644
+--- a/include/linux/thermal.h
++++ b/include/linux/thermal.h
+@@ -79,6 +79,8 @@ struct thermal_zone_device_ops {
+ 			  enum thermal_trend *);
+ 	int (*notify) (struct thermal_zone_device *, int,
+ 		       enum thermal_trip_type);
++	void (*hot)(struct thermal_zone_device *);
++	void (*critical)(struct thermal_zone_device *);
+ };
+ 
+ struct thermal_cooling_device_ops {
+@@ -399,6 +401,7 @@ void thermal_cdev_update(struct thermal_cooling_device *);
+ void thermal_notify_framework(struct thermal_zone_device *, int);
+ int thermal_zone_device_enable(struct thermal_zone_device *tz);
+ int thermal_zone_device_disable(struct thermal_zone_device *tz);
++void thermal_zone_device_critical(struct thermal_zone_device *tz);
+ #else
+ static inline struct thermal_zone_device *thermal_zone_device_register(
+ 	const char *type, int trips, int mask, void *devdata,
 -- 
 2.17.1
 
