@@ -2,145 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0C42D48FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 357342D48EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:28:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733056AbgLIS2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:28:09 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9414 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732863AbgLIS14 (ORCPT
+        id S1732934AbgLISZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:25:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726449AbgLISZE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:27:56 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Crlr04tb8z7ByW;
-        Thu, 10 Dec 2020 02:26:40 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 10 Dec 2020 02:27:03 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <joro@8bytes.org>, <will@kernel.org>
-CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <robin.murphy@arm.com>,
-        <thunder.leizhen@huawei.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH v4 3/3] iommu/iova: Flush CPU rcache for when a depot fills
-Date:   Thu, 10 Dec 2020 02:23:09 +0800
-Message-ID: <1607538189-237944-4-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1607538189-237944-1-git-send-email-john.garry@huawei.com>
-References: <1607538189-237944-1-git-send-email-john.garry@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+        Wed, 9 Dec 2020 13:25:04 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F23C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:24:24 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id k128so884591wme.7
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 10:24:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=MhUwCIKPiL199xHdJxg2Ck7LBpRQrLyYixHELfUbAyc=;
+        b=WwUpx13KzT7qOuh5g3F9arl34WO+3CEjo/xR1WuMOSPXo/tEePsrWHUOxKM8SeWrer
+         oc97FEvV7huA5J8WVbQqeV7U7XdAZPlCzGSIA9JDGaZS49fHd8vDjzRHc4g/o3MLuaOp
+         w0G8HZDuwyCOmg+iiNXmZTgEj4ks3HeXYCrSBlm1Km5S0Ykyv9B2X/nZvDddOFQAuj2W
+         cxoG4tuWhXgAInrUQ36TGYi4ml1TgwCiIbgraTstErdTKeyKfHlBKL+KroiHh8id9hgs
+         1f4Xe/1Bz/EySnkrE5BgmQpYX4QvlsR1cKO7j2V2W7duM880zotL9YwY1Coi8URFNSe1
+         9uxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=MhUwCIKPiL199xHdJxg2Ck7LBpRQrLyYixHELfUbAyc=;
+        b=JJi9xmLEltj0q5WNI1clJaRgZ8R1rdhKBn3BxlaccPKuIoD3OGmAH6QOz6A5kxFQJJ
+         s6ivk1L9azXvvf4RPeN9JJnCmpOjZrH4+b8SVvYItjLFYb1577DI2aJNPq3BP67xQHZu
+         l7t9BGP062kHXiP9MeTlyx2PblHK/HK6ImmiYBezpF0ZcytijeKIfL/bOMxt6NivUoPE
+         Ofxtvu/NYJEqz0LrPF1lDQWJG64Vs1UPf+omEqkd9SgZoKlYPVhQKiiU62Pa015qw1KC
+         vCbVkNsUYb/r4VD+wZtlKgP5WlqefNpzwwKmnM2kFk4XlWLk18s0sK+eupfRzwRJaxcu
+         24IA==
+X-Gm-Message-State: AOAM5319arkeubFaNwlEatMFfeh6dY900Z1XJEqXLS01mB/Hco7aM1+c
+        hbZfIquVk9WYKCwbTXPf9KywpggEu3jlrN/A
+X-Google-Smtp-Source: ABdhPJxVgIzNZ4y2IZ7rX1yQCGfd8xeHX7ymrOfJX6tpGlbqXBEsN+PMj0WMsF1BoYGzxQp7HlG7PLCDe82wejay
+Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
+ (user=andreyknvl job=sendgmr) by 2002:a1c:2e16:: with SMTP id
+ u22mr4177436wmu.149.1607538262970; Wed, 09 Dec 2020 10:24:22 -0800 (PST)
+Date:   Wed,  9 Dec 2020 19:24:14 +0100
+Message-Id: <cover.1607537948.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH mm 0/2] kasan: a few HW_TAGS fixes
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Leizhen reported some time ago that IOVA performance may degrade over time
-[0], but unfortunately his solution to fix this problem was not given
-attention.
+Hi Andrew,
 
-To summarize, the issue is that as time goes by, the CPU rcache and depot
-rcache continue to grow. As such, IOVA RB tree access time also continues
-to grow.
+Could you please squash the first one into
+"kasan: add and integrate kasan boot parameters".
 
-At a certain point, a depot may become full, and also some CPU rcaches may
-also be full when inserting another IOVA is attempted. For this scenario,
-currently the "loaded" CPU rcache is freed and a new one is created. This
-freeing means that many IOVAs in the RB tree need to be freed, which
-makes IO throughput performance fall off a cliff in some storage scenarios:
+And instead of applying the second one, it's better to just drop
+"kasan, arm64: don't allow SW_TAGS with ARM64_MTE".
 
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6314MB/0KB/0KB /s] [1616K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [5669MB/0KB/0KB /s] [1451K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6673MB/0KB/0KB /s] [1708K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6761MB/0KB/0KB /s] [1731K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6685MB/0KB/0KB /s] [1711K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6178MB/0KB/0KB /s] [1582K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6731MB/0KB/0KB /s] [1723K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2387MB/0KB/0KB /s] [611K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2689MB/0KB/0KB /s] [688K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2278MB/0KB/0KB /s] [583K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1288MB/0KB/0KB /s] [330K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1632MB/0KB/0KB /s] [418K/0/0 iops]
-Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1765MB/0KB/0KB /s] [452K/0/0 iops]
+Thanks!
 
-And continue in this fashion, without recovering. Note that in this
-example it was required to wait 16 hours for this to occur. Also note that
-IO throughput also becomes gradually becomes more unstable leading up to
-this point.
+Andrey Konovalov (2):
+  kasan: don't use read-only static keys
+  Revert "kasan, arm64: don't allow SW_TAGS with ARM64_MTE"
 
-This problem is only seen for non-strict mode. For strict mode, the rcaches
-stay quite compact.
+ arch/arm64/Kconfig | 2 +-
+ mm/kasan/hw_tags.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-As a solution to this issue, judge that the IOVA caches have grown too big
-when cached magazines need to be free, and just flush all the CPUs rcaches
-instead.
-
-The depot rcaches, however, are not flushed, as they can be used to
-immediately replenish active CPUs.
-
-In future, some IOVA compaction could be implemented to solve the
-instability issue, which I figure could be quite complex to implement.
-
-[0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
-
-Analyzed-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reported-by: Xiang Chen <chenxiang66@hisilicon.com>
-Tested-by: Xiang Chen <chenxiang66@hisilicon.com>
-Signed-off-by: John Garry <john.garry@huawei.com>
-Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/iommu/iova.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-index 732ee687e0e2..39b7488de8bb 100644
---- a/drivers/iommu/iova.c
-+++ b/drivers/iommu/iova.c
-@@ -841,7 +841,6 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
- 				 struct iova_rcache *rcache,
- 				 unsigned long iova_pfn)
- {
--	struct iova_magazine *mag_to_free = NULL;
- 	struct iova_cpu_rcache *cpu_rcache;
- 	bool can_insert = false;
- 	unsigned long flags;
-@@ -863,13 +862,12 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
- 				if (cpu_rcache->loaded)
- 					rcache->depot[rcache->depot_size++] =
- 							cpu_rcache->loaded;
--			} else {
--				mag_to_free = cpu_rcache->loaded;
-+				can_insert = true;
-+				cpu_rcache->loaded = new_mag;
- 			}
- 			spin_unlock(&rcache->lock);
--
--			cpu_rcache->loaded = new_mag;
--			can_insert = true;
-+			if (!can_insert)
-+				iova_magazine_free(new_mag);
- 		}
- 	}
- 
-@@ -878,10 +876,8 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
- 
- 	spin_unlock_irqrestore(&cpu_rcache->lock, flags);
- 
--	if (mag_to_free) {
--		iova_magazine_free_pfns(mag_to_free, iovad);
--		iova_magazine_free(mag_to_free);
--	}
-+	if (!can_insert)
-+		free_all_cpu_cached_iovas(iovad);
- 
- 	return can_insert;
- }
 -- 
-2.26.2
+2.29.2.576.ga3fc446d84-goog
 
