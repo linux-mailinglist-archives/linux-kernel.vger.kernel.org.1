@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BEE12D4929
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 552862D4942
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732952AbgLISj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:39:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
+        id S2387423AbgLISnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:43:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728997AbgLISj3 (ORCPT
+        with ESMTP id S1728997AbgLISja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:39:29 -0500
+        Wed, 9 Dec 2020 13:39:30 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1016CC0613CF;
-        Wed,  9 Dec 2020 10:38:49 -0800 (PST)
-Date:   Wed, 09 Dec 2020 18:38:46 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE02C0613D6;
+        Wed,  9 Dec 2020 10:38:50 -0800 (PST)
+Date:   Wed, 09 Dec 2020 18:38:47 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607539127;
+        s=2020; t=1607539128;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=U8ItWNThca6KPkdlpq5Bor2HOLrs0TWGDCTrSos999k=;
-        b=iVZpdVyInC/lgDhmRseAQFri24TM0//aghQmEM5OxJ9ojm6CfxzfTXcx9XU7L5yjxo8/vX
-        yZnWAAQng8SC4Jp2343L81Vww7VWYlidd8K/9zqEkp+URi46c6Kgg1ZINOvNxEssLSSjkd
-        2ztAB1AGUOebDEpyePPnCtzRTHrFMPamX3UBmtYd8ze5R6T+p70LYTp+EuYhAk+XwwoylM
-        XKtnrENg9828rQipXyvN0NWl0U/ebSw5gwNco8SQJWUJfSylTRGhaddpkWP+E+UUHYKjwu
-        LcqTN0QKmK2H/avBdnHhbKHAtfOQfR1kYv5aVxo9+6RsO52F15S+8KBzzLwK6g==
+        bh=TcV8BJ/omVvrB3Axifuak69PnU7W6cTm9AfQijivhLY=;
+        b=zLIweO/9cHztXuWdnhznL7bnx1ezX4xf59K8KCbSsw/gO32P4tda4R9ZzdkgSLqoDWyQmU
+        annw/2LGybNuFiwuZ1oWKvuWLiV47G/hnMjrWb0o029/fkIxQURy3H9Q/Et/ptH5+aLvoY
+        mU4AAcguGQ5m1F8UBfk62GGH0Vg2e9e6lhMpb2+2J231pQrW+lny5KMNCuOaSTpwoOmvPq
+        s3FmLVNMkPF9v3CZGFUTPHzeDm6LjBvDfezG5AuRunmn4WnLh/F5tZbL2Xe1qRuH9lyaE6
+        QRm8P6zv0U0v7NUbRLDkTikO6ocRDc2ttMuUOf/QSozl2yxETeUoQoXS6BCQEQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607539127;
+        s=2020e; t=1607539128;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=U8ItWNThca6KPkdlpq5Bor2HOLrs0TWGDCTrSos999k=;
-        b=xk3Km7W1+Tl0oKcCTKoEQRkCgTi7/Cd1M7kuIq587GoZShKB9ESD/415EWbkzMgYCd21g9
-        aj5GhnWw4GLqYlCg==
-From:   "tip-bot2 for Ahmed S. Darwish" <tip-bot2@linutronix.de>
+        bh=TcV8BJ/omVvrB3Axifuak69PnU7W6cTm9AfQijivhLY=;
+        b=l0ObtSSPJw8gpia911IDSerAr5mYQeoGEvyA1mer4WU9KgsSCDbCJF99wELrYLy3bgdO62
+        dmzNXzMh9LrzSLBQ==
+From:   "tip-bot2 for Waiman Long" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] Documentation: seqlock: s/LOCKTYPE/LOCKNAME/g
-Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+Subject: [tip: locking/core] locking/rwsem: Prevent potential lock starvation
+Cc:     Waiman Long <longman@redhat.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        stable@vger.kernel.org, x86@kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201206162143.14387-2-a.darwish@linutronix.de>
-References: <20201206162143.14387-2-a.darwish@linutronix.de>
+In-Reply-To: <20201121041416.12285-3-longman@redhat.com>
+References: <20201121041416.12285-3-longman@redhat.com>
 MIME-Version: 1.0
-Message-ID: <160753912693.3364.7415240565588650319.tip-bot2@tip-bot2>
+Message-ID: <160753912781.3364.7199376060300852014.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,77 +62,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     cf48647243cc28d15280600292db5777592606c5
-Gitweb:        https://git.kernel.org/tip/cf48647243cc28d15280600292db5777592606c5
-Author:        Ahmed S. Darwish <a.darwish@linutronix.de>
-AuthorDate:    Sun, 06 Dec 2020 17:21:41 +01:00
+Commit-ID:     2f06f702925b512a95b95dca3855549c047eef58
+Gitweb:        https://git.kernel.org/tip/2f06f702925b512a95b95dca3855549c047eef58
+Author:        Waiman Long <longman@redhat.com>
+AuthorDate:    Fri, 20 Nov 2020 23:14:13 -05:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 09 Dec 2020 17:08:49 +01:00
+CommitterDate: Wed, 09 Dec 2020 17:08:48 +01:00
 
-Documentation: seqlock: s/LOCKTYPE/LOCKNAME/g
+locking/rwsem: Prevent potential lock starvation
 
-Sequence counters with an associated write serialization lock are called
-seqcount_LOCKNAME_t. Fix the documentation accordingly.
+The lock handoff bit is added in commit 4f23dbc1e657 ("locking/rwsem:
+Implement lock handoff to prevent lock starvation") to avoid lock
+starvation. However, allowing readers to do optimistic spinning does
+introduce an unlikely scenario where lock starvation can happen.
 
-While at it, remove a paragraph that inappropriately discussed a
-seqlock.h implementation detail.
+The lock handoff bit may only be set when a waiter is being woken up.
+In the case of reader unlock, wakeup happens only when the reader count
+reaches 0. If there is a continuous stream of incoming readers acquiring
+read lock via optimistic spinning, it is possible that the reader count
+may never reach 0 and so the handoff bit will never be asserted.
 
-Fixes: 6dd699b13d53 ("seqlock: seqcount_LOCKNAME_t: Standardize naming convention")
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+One way to prevent this scenario from happening is to disallow optimistic
+spinning if the rwsem is currently owned by readers. If the previous
+or current owner is a writer, optimistic spinning will be allowed.
+
+If the previous owner is a reader but the reader count has reached 0
+before, a wakeup should have been issued. So the handoff mechanism
+will be kicked in to prevent lock starvation. As a result, it should
+be OK to do optimistic spinning in this case.
+
+This patch may have some impact on reader performance as it reduces
+reader optimistic spinning especially if the lock critical sections
+are short the number of contending readers are small.
+
+Signed-off-by: Waiman Long <longman@redhat.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20201206162143.14387-2-a.darwish@linutronix.de
+Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
+Link: https://lkml.kernel.org/r/20201121041416.12285-3-longman@redhat.com
 ---
- Documentation/locking/seqlock.rst | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+ kernel/locking/rwsem.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/locking/seqlock.rst b/Documentation/locking/seqlock.rst
-index a334b58..64405e5 100644
---- a/Documentation/locking/seqlock.rst
-+++ b/Documentation/locking/seqlock.rst
-@@ -89,7 +89,7 @@ Read path::
+diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+index 5768b90..c055f4b 100644
+--- a/kernel/locking/rwsem.c
++++ b/kernel/locking/rwsem.c
+@@ -1010,16 +1010,27 @@ rwsem_spin_on_owner(struct rw_semaphore *sem, unsigned long nonspinnable)
+ static struct rw_semaphore __sched *
+ rwsem_down_read_slowpath(struct rw_semaphore *sem, long count, int state)
+ {
+-	long adjustment = -RWSEM_READER_BIAS;
++	long owner, adjustment = -RWSEM_READER_BIAS;
++	long rcnt = (count >> RWSEM_READER_SHIFT);
+ 	struct rwsem_waiter waiter;
+ 	DEFINE_WAKE_Q(wake_q);
+ 	bool wake = false;
  
- .. _seqcount_locktype_t:
- 
--Sequence counters with associated locks (``seqcount_LOCKTYPE_t``)
-+Sequence counters with associated locks (``seqcount_LOCKNAME_t``)
- -----------------------------------------------------------------
- 
- As discussed at :ref:`seqcount_t`, sequence count write side critical
-@@ -115,27 +115,26 @@ The following sequence counters with associated locks are defined:
-   - ``seqcount_mutex_t``
-   - ``seqcount_ww_mutex_t``
- 
--The plain seqcount read and write APIs branch out to the specific
--seqcount_LOCKTYPE_t implementation at compile-time. This avoids kernel
--API explosion per each new seqcount LOCKTYPE.
-+The sequence counter read and write APIs can take either a plain
-+seqcount_t or any of the seqcount_LOCKNAME_t variants above.
- 
--Initialization (replace "LOCKTYPE" with one of the supported locks)::
-+Initialization (replace "LOCKNAME" with one of the supported locks)::
- 
- 	/* dynamic */
--	seqcount_LOCKTYPE_t foo_seqcount;
--	seqcount_LOCKTYPE_init(&foo_seqcount, &lock);
-+	seqcount_LOCKNAME_t foo_seqcount;
-+	seqcount_LOCKNAME_init(&foo_seqcount, &lock);
- 
- 	/* static */
--	static seqcount_LOCKTYPE_t foo_seqcount =
--		SEQCNT_LOCKTYPE_ZERO(foo_seqcount, &lock);
-+	static seqcount_LOCKNAME_t foo_seqcount =
-+		SEQCNT_LOCKNAME_ZERO(foo_seqcount, &lock);
- 
- 	/* C99 struct init */
- 	struct {
--		.seq   = SEQCNT_LOCKTYPE_ZERO(foo.seq, &lock),
-+		.seq   = SEQCNT_LOCKNAME_ZERO(foo.seq, &lock),
- 	} foo;
- 
- Write path: same as in :ref:`seqcount_t`, while running from a context
--with the associated LOCKTYPE lock acquired.
-+with the associated write serialization lock acquired.
- 
- Read path: same as in :ref:`seqcount_t`.
+ 	/*
++	 * To prevent a constant stream of readers from starving a sleeping
++	 * waiter, don't attempt optimistic spinning if the lock is currently
++	 * owned by readers.
++	 */
++	owner = atomic_long_read(&sem->owner);
++	if ((owner & RWSEM_READER_OWNED) && (rcnt > 1) &&
++	   !(count & RWSEM_WRITER_LOCKED))
++		goto queue;
++
++	/*
+ 	 * Save the current read-owner of rwsem, if available, and the
+ 	 * reader nonspinnable bit.
+ 	 */
+-	waiter.last_rowner = atomic_long_read(&sem->owner);
++	waiter.last_rowner = owner;
+ 	if (!(waiter.last_rowner & RWSEM_READER_OWNED))
+ 		waiter.last_rowner &= RWSEM_RD_NONSPINNABLE;
  
