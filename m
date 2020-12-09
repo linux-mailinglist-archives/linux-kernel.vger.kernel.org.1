@@ -2,75 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6102D4B68
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 421032D4B89
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388281AbgLIUPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:15:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388172AbgLIUP3 (ORCPT
+        id S2388298AbgLIUQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:16:22 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:38997 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388112AbgLIUQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:15:29 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170ECC061793;
-        Wed,  9 Dec 2020 12:14:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=vT2LeumRVmdZuBQd+zgEqW+31k7g/hZC7ygemlxuDL0=; b=lihKyoV1WlUFcBILw6J+5RQIuy
-        TufE3r2rCPt8d+abi7LhY0S7za+9g0+/YLvCtDRarEefff/JvK+Y1/qDce+IMNoas8VaMguapYHg4
-        ru1x/RryyBNvIRwySuz8MbQZKv4sahCtfI8RltY/Eca6pyjggYl+eTYqHVvwP+RlVeRPiDh7rQMQ4
-        s8DRx3Jn6jeGXWioGBx+JlYlJ8zr2jVGAV5E2X/IINOAe5BLveaTm8S0rbcyS6dAyeT6bWwB+I+nO
-        iu83kqwxe3TumEsAeSv//bIE6a6C/yXT/p9OoKIWYk9p5KxDKqDN4DooV8jNVogDrPAZPDCYyaam7
-        eaD78qGw==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kn5rI-0006d0-4l; Wed, 09 Dec 2020 20:14:44 +0000
-Subject: Re: linux-next: Tree for Dec 9 (ethernet/mellanox/mlx5)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20201209214447.3bfdeb87@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e5519ac6-1d25-632a-9b55-087d8ffaf386@infradead.org>
-Date:   Wed, 9 Dec 2020 12:14:39 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 9 Dec 2020 15:16:12 -0500
+Received: by mail-ot1-f65.google.com with SMTP id d8so2661225otq.6;
+        Wed, 09 Dec 2020 12:15:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HkZkOlvU17tWN9kGhwEHEyzk6vBPnUYvFHyetdZXKVA=;
+        b=tA/i7RnmWDmwrK7r+NW9/AQrGHqd/VxnZG/MQmFiulzPxS6ihR2PIXOZSwo4a3bP55
+         85X/FJ4mQzH6EU8haMSo/o5mKzZ8CE2Vw8Uv9aJSyX/537Qe3ZXlYCfRsZgeG+jAtPbf
+         oNWZWDTJJqUkfO+Or1fsdbsurD6x3qMFYttJxuCiZgOK3R2WHmqarw6NlTCAFN5yjz/t
+         wtXYdDBdCSFgkw8Qj5smSEJK8Xf4mpdo1ApqligZesDhlaKBJbZVRRj3QM9Y5e6DAGUs
+         P6gPlHtYSQp+XOGg6ALh2JkwDybd6QsdkYRiewFsc0bYi9PvLe7ejuTCPLqMutcsGhq3
+         Plrw==
+X-Gm-Message-State: AOAM532iYVHRNtFTp1ZWbZ0K/HaCh5YV8VZud1CLP0IchFL8qe6YC5xk
+        z5u4GquODPWqAvaECC9KLDz7pFtuyA==
+X-Google-Smtp-Source: ABdhPJz6SA76JGYn9n/Qh4vb6FiikJm900RuCu35Bj3qJ5ugpBm0a7qioElUowlY/gcxRlS7VcXqAQ==
+X-Received: by 2002:a9d:7f84:: with SMTP id t4mr3198018otp.302.1607544930935;
+        Wed, 09 Dec 2020 12:15:30 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i1sm518487ool.43.2020.12.09.12.15.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 12:15:29 -0800 (PST)
+Received: (nullmailer pid 867331 invoked by uid 1000);
+        Wed, 09 Dec 2020 20:15:28 -0000
+Date:   Wed, 9 Dec 2020 14:15:28 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     thierry.reding@gmail.com, robh+dt@kernel.org, broonie@kernel.org,
+        linux-tegra@vger.kernel.org, sharadg@nvidia.com,
+        linux-kernel@vger.kernel.org, jonathanh@nvidia.com,
+        devicetree@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [RESEND PATCH 1/2] dt-bindings: tegra: Convert HDA doc to
+ json-schema
+Message-ID: <20201209201528.GA867274@robh.at.kernel.org>
+References: <1607006202-4078-1-git-send-email-spujar@nvidia.com>
+ <1607006202-4078-2-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20201209214447.3bfdeb87@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607006202-4078-2-git-send-email-spujar@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/20 2:44 AM, Stephen Rothwell wrote:
-> Hi all,
+On Thu, 03 Dec 2020 20:06:41 +0530, Sameer Pujar wrote:
+> Convert Tegra HDA doc to YAML format.
 > 
-> Changes since 20201208:
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> ---
+>  .../bindings/sound/nvidia,tegra30-hda.txt          | 35 --------
+>  .../bindings/sound/nvidia,tegra30-hda.yaml         | 98 ++++++++++++++++++++++
+>  2 files changed, 98 insertions(+), 35 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.yaml
 > 
 
-on i386:
-
-I see this warning:/note: repeated 106 times on i386 build:
-
-                 from ../drivers/net/ethernet/mellanox/mlx5/core/alloc.c:34:
-../include/vdso/bits.h:7:26: warning: left shift count >= width of type [-Wshift-count-overflow]
- #define BIT(nr)   (UL(1) << (nr))
-                          ^
-../include/linux/mlx5/mlx5_ifc.h:10716:46: note: in expansion of macro ‘BIT’
-  MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_SAMPLER = BIT(0x20),
-                                              ^~~
-
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
