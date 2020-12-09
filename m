@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26742D4C2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD62A2D4C2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729048AbgLIUra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:47:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726227AbgLIUr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:47:29 -0500
-Date:   Wed, 9 Dec 2020 21:46:45 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607546808;
-        bh=mgWZJMnlHPNKk3G+8BwkQUcX4IRQNVusX1bax+wFkBY=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JNO3XBKSlWouy47UmeJO4vI4b1M4+hFzwEQsyqogkXyZyy2GwHlfW74/cNAoORePW
-         OCNiGIX+Yr5/3R/uYdT7TMZnIMKWQQ+Fj+nUoLC5I6I+8H2tsdO/thqpdmlrcty+z4
-         zQs51lZf8YUhKQwE3Dsn8x3vZNUQmXlCeWkCSbTRmmUITyRxZaJN/RrSobn2m5q1pK
-         gO3U2XMm+FzMTKEsrgYC0EuNdSwd4OAIT+LG+omJ4NfKvi5p4vRHMeGSJ7X1+h9397
-         vaL0R86hISbRhrAEgZug4Y9WFxVPkYLB5uPhHgUlSTY6mg9eRVE8ucIG2mD9tVhx39
-         2DxY3XYOK72gA==
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, rmk+kernel@armlinux.org.uk,
-        alpawi@amazon.com
-Subject: Re: [PATCH v3] i2c: pxa: move to generic GPIO recovery
-Message-ID: <20201209204645.GF3499@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, rmk+kernel@armlinux.org.uk,
-        alpawi@amazon.com
-References: <20201004100711.1093343-1-codrin.ciubotariu@microchip.com>
+        id S1730910AbgLIUry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:47:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726576AbgLIUrp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 15:47:45 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F10C0613CF;
+        Wed,  9 Dec 2020 12:47:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=62AZlsv1U7MmdVe+7QYsPomj1JbAvEv3m2KxaRaeI1s=; b=hnZkNtmsN+Zz+Ytw6E4aGAbna1
+        50wtz8CxIexVZtnl+Am89O17KjRJbEM3ppv3yXxfAtzQ8LROIcox4JTDkfN+qe1NrO0I1pUwFq2KH
+        xE6JfRIN9CWWEF29Vo3IM/IvNSlv2Vfth/02i+Gvh/U4om04u3n4Z88dKRE6PMRLoK/06RDT3eR7K
+        u9/TMbM9mUOXR6YKj20a79N+iC6rMYv/7W79phklo/NrFwG1Y084O99Ty0D1qQLwDHPtrfr1b7nBn
+        08rVRIsZTHTUACtucWqy0mnP5uMSpBnUoFlCrcIG+8A6l9blLiv/zU2sbc8ptaTX+T3XhJ85D2Xpu
+        2qVgA+ng==;
+Received: from [2601:1c0:6280:3f0::1494] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kn6MX-0000N6-Q8; Wed, 09 Dec 2020 20:47:02 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Tejun Heo <tj@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        linux-c6x-dev@linux-c6x.org
+Subject: [PATCH] block: blk-iocost: fix build for ARCH with missing local64.h files
+Date:   Wed,  9 Dec 2020 12:46:57 -0800
+Message-Id: <20201209204657.6676-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ChQOR20MqfxkMJg9"
-Content-Disposition: inline
-In-Reply-To: <20201004100711.1093343-1-codrin.ciubotariu@microchip.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When building block/blk-iocost.c on arch/x6x/ or arch/nios2/, the
+build fails due to missing the <asm/local64.h> file.
 
---ChQOR20MqfxkMJg9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fix this by adding local64.h as a "generic-y" file in their respective
+Kbuild files, so that they will use a copy of <asm-generic/local64.h>
+instead (copied to arch/*/include/generated/local64.h by the
+build system).
 
-On Sun, Oct 04, 2020 at 01:07:11PM +0300, Codrin Ciubotariu wrote:
-> Starting with
-> commit 75820314de26 ("i2c: core: add generic I2C GPIO recovery")
-> GPIO bus recovery is supported by the I2C core, so we can remove the
-> driver implementation and use that one instead.
->=20
-> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+c6x or nios2 build error:
+../block/blk-iocost.c:183:10: fatal error: asm/local64.h: No such file or directory
+  183 | #include <asm/local64.h>
 
-Applied to for-next, thanks!
+Fixes: 5e124f74325d ("blk-iocost: use local[64]_t for percpu stat")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: linux-block@vger.kernel.org
+Cc: Ley Foon Tan <ley.foon.tan@intel.com>
+Cc: Mark Salter <msalter@redhat.com>
+Cc: Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+Cc: linux-c6x-dev@linux-c6x.org
+---
+ arch/c6x/include/asm/Kbuild   |    1 +
+ arch/nios2/include/asm/Kbuild |    1 +
+ 2 files changed, 2 insertions(+)
 
-> ---
->=20
-> patch not tested.
-
-LGTM. In case we missed a glitch, we can still revert the patch later.
-
-
---ChQOR20MqfxkMJg9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/RN7UACgkQFA3kzBSg
-KbYc2BAAiiCx5TicTmnQ2Y3k/DLOHrMguzZe+dJVoOagrXFM8iTo121597Ocjzi+
-vmrpwv7W4lYJ9KTBpxNTz7h8l6KmfPozHqHttzGqVzjMFhYljadCxcnnDgqwQd+y
-UvSawLOVOroFpfwoi0wqyk4KM8NF7LcWvOI/0c80UkVD2178hh5n4aKoHFE7fyCR
-2LPfh/rf7R9wEJ3Krttp34m77prtHCn1sLt32d63qcmY5hPwsiSV3NkZX8b/uiFD
-UX458zJIMtq05IF/LKAYnheSeOCJ6wyoIz0ohyVr9a+wuU3QpDRkKnGu7bRBi2IP
-JcKt5GVcSFp7hVvbgwF8X0D48VedT0S3Lar/G2Ki+nbOi75b4ljfVlALksHENRtA
-DTzLKE20M+2NIb289hTMdR6Q6RHtBdWhSfYmrIzr1qqT0pO86OBWRsrLdOvNfcea
-Ot8YLickpAkoDMSrbk5xp23eiIXi640i2U8RyfQStDI/qe3iHHkDXeaJnx2y6MkO
-GwwTzASevlnggEuynjhIdypT6wVma1IbZGjhkq0FT9yypk1xgZPaxlXbSQRMLoiL
-IHbF0NygVesPowHecHfrc2ALw7iRjQap3xDtiDH6S/x3xvAI+GFcldxJtIP8V35l
-BE/PqpYspIIMaJ0vqsVS8y+jhxX5twY9UAvR6wDbFpdJXpm9oUQ=
-=2eVC
------END PGP SIGNATURE-----
-
---ChQOR20MqfxkMJg9--
+--- linux-next-20201208.orig/arch/c6x/include/asm/Kbuild
++++ linux-next-20201208/arch/c6x/include/asm/Kbuild
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generic-y += extable.h
+ generic-y += kvm_para.h
++generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += user.h
+--- linux-next-20201208.orig/arch/nios2/include/asm/Kbuild
++++ linux-next-20201208/arch/nios2/include/asm/Kbuild
+@@ -2,6 +2,7 @@
+ generic-y += cmpxchg.h
+ generic-y += extable.h
+ generic-y += kvm_para.h
++generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += spinlock.h
+ generic-y += user.h
