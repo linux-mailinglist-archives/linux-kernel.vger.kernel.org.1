@@ -2,134 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8B62D47AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:18:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 223C42D47B9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732622AbgLIRRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:17:14 -0500
-Received: from mga09.intel.com ([134.134.136.24]:45059 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730313AbgLIRRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:17:14 -0500
-IronPort-SDR: y/vqRmtrvoIxDU4GVtZ49tl6G2vEtbc5hXXmB/C1UAF75/W/wL0muqkbHZL2Kn+RYNV2lPrONe
- 0PY2u5wCRR6g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="174257010"
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="scan'208";a="174257010"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 09:15:27 -0800
-IronPort-SDR: q7zIyuVIcEnae6mwQz9ohdlc4C19lujeNhJs+YXiBQyEnlH3Mg7MhKBmBnN2SRf4rxqh+ALpvr
- s48AF+/Vr5TQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="scan'208";a="437868841"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 09 Dec 2020 09:15:24 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 09 Dec 2020 19:15:24 +0200
-Date:   Wed, 9 Dec 2020 19:15:24 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Benson Leung <bleung@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: typec: Add bus type for plug alt modes
-Message-ID: <20201209171524.GK680328@kuha.fi.intel.com>
-References: <20201203030846.51669-1-pmalani@chromium.org>
- <20201208093734.GD680328@kuha.fi.intel.com>
- <CACeCKaehg=HTuQNLtQaJZWvTnOFYM9b1BWfM+WX_ebiZ-_i8JQ@mail.gmail.com>
- <20201209161356.GI680328@kuha.fi.intel.com>
- <CACeCKacdcGi_6VW7F9agN+bgRH7gAXLDxK7DngE=fPkYT-CWNQ@mail.gmail.com>
+        id S1732591AbgLIRSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:18:44 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:35357 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730084AbgLIRSn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:18:43 -0500
+Received: by mail-oi1-f193.google.com with SMTP id s2so2514264oij.2;
+        Wed, 09 Dec 2020 09:18:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SoQj+QbF0ONNi1OIKLfA3VzTncbES0l8Ii5LI408HQ8=;
+        b=I+OqeO+RBIxXXu5EhyA+teu6wKnDTpmn2DWaTiguNlGGLRi8XVx+DOMDrSophB9C8I
+         w52M41uDn7eCAR+bgZmfMHTabgDtZrcZCk15+09jywif8xsUEqrHiiqANs+Yd/4qcM9s
+         do56mTUtBbAtHk2J/gWFo7enz9NeXMjy8Revkyaw/o+8nsV5xMUE+luDZb3jVISrdEu8
+         W9oJEHznrIpeZkm8ttEYxSxhjtic2GW0fVrK2pHeLFKhsaJJ2xlw4vjK1g478la0Vqg3
+         Ql1IEsrEYVRE8y3AZimt5uFvzePcjA2tDLprzwVU78D9wEWxFI27+At+iVVoCYr5ttfe
+         rIKg==
+X-Gm-Message-State: AOAM533HON0EkvTaB1SCWNfYwu+y7AUsePg0piEdykEaMKljAsHiAVGV
+        qcewUB8kSkbDFrFVPSRzer7sCywXS/KuJgki5nw=
+X-Google-Smtp-Source: ABdhPJyp0O7GqQJ3Ip38zyNmK56FEBQ2JjKPPK+jNvBlZenNQYtaxXl29+H+JEOVRtR4csC4lJC1DkY+0zO20jHYQ1A=
+X-Received: by 2002:aca:5197:: with SMTP id f145mr2532130oib.71.1607534282442;
+ Wed, 09 Dec 2020 09:18:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACeCKacdcGi_6VW7F9agN+bgRH7gAXLDxK7DngE=fPkYT-CWNQ@mail.gmail.com>
+References: <20360841.iInq7taT2Z@kreacher> <2344038.BgO4qI7qUv@kreacher> <20201208083344.s67kalyxuui3ia4q@vireshk-i7>
+In-Reply-To: <20201208083344.s67kalyxuui3ia4q@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 9 Dec 2020 18:17:51 +0100
+Message-ID: <CAJZ5v0gT1fOOFc_JtidRz4W6osAER+96p8o2X7TS_wUPk2+sVQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/4] cpufreq: schedutil: Add util to struct sg_cpu
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prashant,
-
-On Wed, Dec 09, 2020 at 08:22:52AM -0800, Prashant Malani wrote:
-> Hi Heikki,
-> 
-> On Wed, Dec 9, 2020 at 8:14 AM Heikki Krogerus
-> <heikki.krogerus@linux.intel.com> wrote:
+On Tue, Dec 8, 2020 at 9:34 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 07-12-20, 17:28, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > >
-> > On Tue, Dec 08, 2020 at 03:45:19PM -0800, Prashant Malani wrote:
-> > > Hi Heikki,
-> > >
-> > > Thanks a lot for looking at the patch.
-> > >
-> > > On Tue, Dec 8, 2020 at 1:37 AM Heikki Krogerus <heikki.krogerus@linux.intel.com> wrote:
-> > > >
-> > > > On Wed, Dec 02, 2020 at 07:08:47PM -0800, Prashant Malani wrote:
-> > > > > Add the Type C bus for plug alternate modes which are being
-> > > > > registered via the Type C connector class. This ensures that udev events
-> > > > > get generated when plug alternate modes are registered (and not just for
-> > > > > partner/port alternate modes), even though the Type C bus doesn't link
-> > > > > plug alternate mode devices to alternate mode drivers.
-> > > >
-> > > > I still don't understand how is the uevent related to the bus? If you
-> > > > check the device_add() function, on line 2917, kobject_uevent() is
-> > > > called unconditionally. The device does not need a bus for that event
-> > > > to be generated.
-> > >
-> > > My initial thought process was to see what is the difference in the adev device
-> > > initialization between partner altmode and plug altmode (the only difference I saw in
-> > > typec_register_altmode() was regarding the bus field).
-> > >
-> > > Yes, kobject_uevent() is called unconditionally, but it's return value isn't checked,
-> > > so we don't know if it succeeded or not.
-> > >
-> > > In the case of cable plug altmode, I see it fail with the following error[1]:
-> > >
-> > > [  114.431409] kobject: 'port1-plug0.0' (000000004ad42956): kobject_uevent_env: filter function caused the event to drop!
-> > >
-> > > I think the filter function which is called is this one: drivers/base/core.c: dev_uevent_filter() [2]
-> > >
-> > > static int dev_uevent_filter(struct kset *kset, struct kobject *kobj)
-> > > {
-> > >       struct kobj_type *ktype = get_ktype(kobj);
-> > >
-> > >       if (ktype == &device_ktype) {
-> > >               struct device *dev = kobj_to_dev(kobj);
-> > >               if (dev->bus)
-> > >                       return 1;
-> > >               if (dev->class)
-> > >                       return 1;
-> > >       }
-> > >       return 0;
-> > > }
-> > >
-> > > So, both the "if (dev->bus)" and "if (dev->class)" checks are failing here. In the case of partner alt modes, bus is set by the class.c code
-> > > so this check likely returns 1 in that case.
+> > Instead of passing util and max between functions while computing the
+> > utilization and capacity, store the former in struct sg_cpu (along
+> > with the latter and bw_dl).
 > >
-> > OK. I understand the issue now. So I would say that the proper
-> > solution to this problem is to link the alt modes with the class
-> > instead of the bus. That is much smaller change IMO.
-> 
-> Got it. Just to confirm that I understand correctly, do you mean:
-> 1. Only cable plug alt modes should be linked with the class instead of the bus.
-> 
-> <or>
-> 
-> 2. All alt modes (cable plug, partner, port) should be linked with the
-> class instead of the bus
-> 
-> My initial interpretation is 1.) since the bus linkage would be
-> necessary to match alt mode drivers to partner alt mode devices.
-> But, my understanding of the bus code is limited so I could be wrong;
-> could you kindly clarify?
+> > This will allow the current utilization value to be compared with the
+> > one obtained previously (which is requisite for some code changes to
+> > follow this one), but also it makes the code look slightly more
+> > consistent and clean.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >  kernel/sched/cpufreq_schedutil.c |   42 ++++++++++++++++++---------------------
+> >  1 file changed, 20 insertions(+), 22 deletions(-)
+> >
+> > Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+> > ===================================================================
+> > --- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
+> > +++ linux-pm/kernel/sched/cpufreq_schedutil.c
+> > @@ -53,6 +53,7 @@ struct sugov_cpu {
+> >       unsigned int            iowait_boost;
+> >       u64                     last_update;
+> >
+> > +     unsigned long           util;
+> >       unsigned long           bw_dl;
+> >       unsigned long           max;
+> >
+> > @@ -276,16 +277,15 @@ unsigned long schedutil_cpu_util(int cpu
+> >       return min(max, util);
+> >  }
+> >
+> > -static unsigned long sugov_get_util(struct sugov_cpu *sg_cpu)
+> > +static void sugov_get_util(struct sugov_cpu *sg_cpu)
+>
+> Maybe name it sugov_update_util() ?
 
-We don't need to care about the bus here. A device can be part of a
-bus and a class at the same time. I don't think there is any reason to
-limit the class to only plug alt modes, so let's just assign it to all
-of them.
+That might be somewhat confusing due to the existing meaning of "update_util".
 
-thanks,
+> Otherwise,
+>
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
--- 
-heikki
+Thanks!
