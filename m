@@ -2,122 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A16742D4AEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953342D4AF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733112AbgLITtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:49:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727848AbgLITsk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:48:40 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16436C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 11:48:00 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id f23so3902433ejk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 11:48:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dsll6aprTPCbO5sTOq3PqZayd/y4SfYjxDP+csUrtX4=;
-        b=06AsXUG6DFkUZdeym5IUJf5akhsWQWaGOarJsg3OZdNkLNQSeAcU8oTGFenI+cm8au
-         tEirEk7bmHNQCIqJOK5J0Z20mWnml6/IsYhAoVEJJN4+yekg90X398kci4VxdZi83Tst
-         RTD6NL9bNQFQUsxvTFRbjMzTDltf1rL1FmCuQf9cURXgbdKD825/Rkcd9Dc8OTyrJh21
-         ijoF//0UdWodetZLQCVANlUGfGa2Izs4VDPKYZ8sEeEelkk+ZjaM9pKDn/XzYBRfWRkQ
-         2/W79SnraP4NANLAixBmzv9g7e6INw8FcRHbhILTDKrxI3aGXSVWxQwsufRZgQknhv+k
-         wvoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dsll6aprTPCbO5sTOq3PqZayd/y4SfYjxDP+csUrtX4=;
-        b=pdxwaYqkO0F9uNN+mUgvLJQJUyYv3xOr4Tiyw4mWVdyob7WXyfBZC3Fbu08ZsmZrcP
-         4SS4gVpd4XgVlehAucQ5ECnn+p+QY+DnSruyoAoQWL1f3ErjV6k801g83/kscYMAWkOB
-         u6mDj3egD/7UQAChl9MpJHkqzaMt5JuInYfHN9+R2dyg/znuVCzvxL8SkflsvY/TeNEu
-         ppWQWqpc447zk1nQ2aL5hF4TJnkOhZ4nQOKE9bdJ1iseWCBzoHc/D35cXus/V0s2qClF
-         wryGRapGgS+faztPqvHFLBQ4cuZ2DKr9ciHNpCLx4DHctko0l0sbRQHIPS1rHkm6S8l8
-         p5bg==
-X-Gm-Message-State: AOAM533Tjkvl9HiW2UkQo/WF1/VVhPKd61Zvvj7j96jAHg5Sd5XoCOrQ
-        zTvwZCpNCWuFjAWwjq0hKCC9t1SRSYewsHfRSM/JJw==
-X-Google-Smtp-Source: ABdhPJyfJT6jQ/kpMwEgKSHnj04XzX0kf/syoi9lWAFNYIq5dzVNx4rn3/59EYVkJHFFyY2aooKjUhQ0DmDhXJhR6Aw=
-X-Received: by 2002:a17:906:518a:: with SMTP id y10mr3497106ejk.323.1607543278769;
- Wed, 09 Dec 2020 11:47:58 -0800 (PST)
-MIME-Version: 1.0
-References: <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
- <20201207234008.GE7338@casper.infradead.org> <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
- <20201208213255.GO1563847@iweiny-DESK2.sc.intel.com> <20201208215028.GK7338@casper.infradead.org>
- <CAPcyv4irF7YoEjOZ1iOrPPJDsw_-j4kiaqz_6Gf=cz1y3RpdoQ@mail.gmail.com>
- <20201208223234.GL7338@casper.infradead.org> <20201208224555.GA605321@magnolia>
- <CAPcyv4jEmdfAz8foEUtDw4GEm2-+7J-4GULZ=6tCD+9K5CFzRw@mail.gmail.com>
- <20201209022250.GP1563847@iweiny-DESK2.sc.intel.com> <20201209040312.GN7338@casper.infradead.org>
-In-Reply-To: <20201209040312.GN7338@casper.infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 9 Dec 2020 11:47:56 -0800
-Message-ID: <CAPcyv4iD0eprWC_kMOdYdX-GvT-72OjZB-CKA9b5qV8BwNQ+6A@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+        id S2388014AbgLITuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:50:09 -0500
+Received: from mga03.intel.com ([134.134.136.65]:43170 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732246AbgLITty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:49:54 -0500
+IronPort-SDR: NAdF4F1YLxi8EL+iA8gmC6erF1WPr2Yiw3BEoLgh/HIgKH//xa60c+igljxxJktMIwqZs941Is
+ aTPeEvX1x+KA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="174258243"
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="174258243"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 11:48:05 -0800
+IronPort-SDR: nVyWExsL672aMhWBXwA4jXcXlf06S8CAlg7lJIrjfDNN3zEtmbQoEI4iIQG5i4Gtc9HqlIx/q+
+ eGpWESuhu7Mw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="540733091"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 09 Dec 2020 11:48:05 -0800
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
+        by linux.intel.com (Postfix) with ESMTP id 67B50580887;
+        Wed,  9 Dec 2020 11:48:05 -0800 (PST)
+Message-ID: <81f1c99fd22eb2d77fd52029e0564d1b67628671.camel@linux.intel.com>
+Subject: Re: [PATCH] PCI: Save/restore L1 PM Substate extended capability
+ registers
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Vidya Sagar <vidyas@nvidia.com>, bhelgaas@google.com,
+        rafael@kernel.org
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 09 Dec 2020 11:48:05 -0800
+In-Reply-To: <d7708556-40b5-c66c-d0c7-ccfe9999691c@nvidia.com>
+References: <20201208220624.21877-1-david.e.box@linux.intel.com>
+         <d7708556-40b5-c66c-d0c7-ccfe9999691c@nvidia.com>
+Organization: David E. Box
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 8:03 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Tue, Dec 08, 2020 at 06:22:50PM -0800, Ira Weiny wrote:
-> > Right now we have a mixed bag.  zero_user() [and it's variants, circa 2008]
-> > does a BUG_ON.[0]  While the other ones do nothing; clear_highpage(),
-> > clear_user_highpage(), copy_user_highpage(), and copy_highpage().
->
-> Erm, those functions operate on the entire PAGE_SIZE.  There's nothing
-> for them to check.
->
-> > While continuing to audit the code I don't see any users who would violating
-> > the API with a simple conversion of the code.  The calls which I have worked on
-> > [which is many at this point] all have checks in place which are well aware of
-> > page boundaries.
->
-> Oh good, then this BUG_ON won't trigger.
->
-> > Therefore, I tend to agree with Dan that if anything is to be done it should be
-> > a WARN_ON() which is only going to throw an error that something has probably
-> > been wrong all along and should be fixed but continue running as before.
->
-> Silent data corruption is for ever.  Are you absolutely sure nobody has
-> done:
->
->         page = alloc_pages(GFP_HIGHUSER_MOVABLE, 3);
->         memcpy_to_page(page, PAGE_SIZE * 2, p, PAGE_SIZE * 2);
->
-> because that will work fine if the pages come from ZONE_NORMAL and fail
-> miserably if they came from ZONE_HIGHMEM.
+Great. Thanks Vidya.
 
-...and violently regress with the BUG_ON.
+On Wed, 2020-12-09 at 09:38 +0530, Vidya Sagar wrote:
+> There is a change already available for it in linux-next
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=4257f7e008ea394fcecc050f1569c3503b8bcc15
+> 
+> Thanks,
+> Vidya Sagar
+> 
+> On 12/9/2020 3:36 AM, David E. Box wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > On Intel systems that support ACPI Low Power Idle it has been
+> > observed
+> > that the L1 Substate capability can return disabled after a s2idle
+> > cycle. This causes the loss of L1 Substate support during runtime
+> > leading to higher power consumption. Add save/restore of the L1SS
+> > control registers.
+> > 
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > ---
+> >   drivers/pci/pci.c | 49
+> > +++++++++++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 49 insertions(+)
+> > 
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > index e578d34095e9..beee3d9952a6 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -1539,6 +1539,48 @@ static void pci_restore_ltr_state(struct
+> > pci_dev *dev)
+> >          pci_write_config_word(dev, ltr + PCI_LTR_MAX_NOSNOOP_LAT,
+> > *cap++);
+> >   }
+> > 
+> > +static void pci_save_l1ss_state(struct pci_dev *dev)
+> > +{
+> > +       int l1ss;
+> > +       struct pci_cap_saved_state *save_state;
+> > +       u16 *cap;
+> > +
+> > +       if (!pci_is_pcie(dev))
+> > +               return;
+> > +
+> > +       l1ss = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_L1SS);
+> > +       if (!l1ss)
+> > +               return;
+> > +
+> > +       save_state = pci_find_saved_ext_cap(dev,
+> > PCI_EXT_CAP_ID_L1SS);
+> > +       if (!save_state) {
+> > +               pci_err(dev, "no suspend buffer for L1
+> > Substates\n");
+> > +               return;
+> > +       }
+> > +
+> > +       cap = (u16 *)&save_state->cap.data[0];
+> > +       pci_read_config_word(dev, l1ss + PCI_L1SS_CTL1, cap++);
+> > +       pci_read_config_word(dev, l1ss + PCI_L1SS_CTL1 + 2, cap++);
+> > +       pci_read_config_word(dev, l1ss + PCI_L1SS_CTL2, cap++);
+> > +}
+> > +
+> > +static void pci_restore_l1ss_state(struct pci_dev *dev)
+> > +{
+> > +       struct pci_cap_saved_state *save_state;
+> > +       int l1ss;
+> > +       u16 *cap;
+> > +
+> > +       save_state = pci_find_saved_ext_cap(dev,
+> > PCI_EXT_CAP_ID_L1SS);
+> > +       l1ss = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_L1SS);
+> > +       if (!save_state || !l1ss)
+> > +               return;
+> > +
+> > +       cap = (u16 *)&save_state->cap.data[0];
+> > +       pci_write_config_word(dev, l1ss + PCI_L1SS_CTL1, *cap++);
+> > +       pci_write_config_word(dev, l1ss + PCI_L1SS_CTL1 + 2,
+> > *cap++);
+> > +       pci_write_config_word(dev, l1ss + PCI_L1SS_CTL2, *cap++);
+> > +}
+> > +
+> >   /**
+> >    * pci_save_state - save the PCI configuration space of a device
+> > before
+> >    *                 suspending
+> > @@ -1563,6 +1605,7 @@ int pci_save_state(struct pci_dev *dev)
+> >          if (i != 0)
+> >                  return i;
+> > 
+> > +       pci_save_l1ss_state(dev);
+> >          pci_save_ltr_state(dev);
+> >          pci_save_dpc_state(dev);
+> >          pci_save_aer_state(dev);
+> > @@ -1670,6 +1713,7 @@ void pci_restore_state(struct pci_dev *dev)
+> >           */
+> >          pci_restore_ltr_state(dev);
+> > 
+> > +       pci_restore_l1ss_state(dev);
+> >          pci_restore_pcie_state(dev);
+> >          pci_restore_pasid_state(dev);
+> >          pci_restore_pri_state(dev);
+> > @@ -3332,6 +3376,11 @@ void pci_allocate_cap_save_buffers(struct
+> > pci_dev *dev)
+> >          if (error)
+> >                  pci_err(dev, "unable to allocate suspend buffer
+> > for LTR\n");
+> > 
+> > +       error = pci_add_ext_cap_save_buffer(dev,
+> > PCI_EXT_CAP_ID_L1SS,
+> > +                                           3 * sizeof(u16));
+> > +       if (error)
+> > +               pci_err(dev, "unable to allocate suspend buffer for
+> > L1 Substates\n");
+> > +
+> >          pci_allocate_vc_save_buffers(dev);
+> >   }
+> > 
+> > --
+> > 2.20.1
+> > 
 
-The question to me is: which is more likely that any bad usages have
-been covered up by being limited to ZONE_NORMAL / 64-bit only, or that
-silent data corruption has been occurring with no ill effects?
-
-> > FWIW I think this is a 'bad BUG_ON' use because we are "checking something that
-> > we know we might be getting wrong".[1]  And because, "BUG() is only good for
-> > something that never happens and that we really have no other option for".[2]
->
-> BUG() is our only option here.  Both limiting how much we copy or
-> copying the requested amount result in data corruption or leaking
-> information to a process that isn't supposed to see it.
-
-At a minimum I think this should be debated in a follow on patch to
-add assertion checking where there was none before. There is no
-evidence of a page being overrun in the audit Ira performed.
