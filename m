@@ -2,76 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C49F2D43A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B1E2D43AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgLIN5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:57:14 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:36980 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgLIN5N (ORCPT
+        id S1732671AbgLIN6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:58:01 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9572 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732065AbgLIN5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:57:13 -0500
-Received: by mail-lf1-f65.google.com with SMTP id o17so289597lfg.4;
-        Wed, 09 Dec 2020 05:56:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nKMw5RYGFYod1XmnmmfSFaCVF49QburHqLYV97RSZZ4=;
-        b=HylMic9rY2mLUt102TfKMYFWtAuJCNHQxjzeFF2MOPzQGD3kJoiOaB8ZpXofsTM1+a
-         F/EI9RsdlsR4OLSRo8zGa/4YAq7Oa6z7Cl9PWcTIy9s4tNcLGX3zHZPDoF2LWkqXziPF
-         toqD7pPLdbp3JTZArTju7pY+FxbErVSWIbE36EPKbPgC+JnD+J+IFpowc2XgO+QY7ueZ
-         u4ptMwwshzkeaABCuil2M9AagA79pyeo8vrJdFU/PhGDkKCIgO7POG5mn8Z+xtEfq8Tj
-         DSPE2jdOJY8VoTbaeywS9rpYte6xnPKNiEVEb5EJs93LKgjiDdjgcIfVq5QT74nmB66A
-         XYcQ==
-X-Gm-Message-State: AOAM533QMTKgomnwoyZlVcnnbHnyZCVsDnCr21z9/riR4zct4ySFXYiN
-        rQt15fDiIYiLpcT6GrZBV1Q=
-X-Google-Smtp-Source: ABdhPJzZmFUWWSiHN3jGJf3IX2WPPnsr6qp9wtv4DCM5pXBEpkLsY/qfaF+vaN8EgaE4msboDTITyA==
-X-Received: by 2002:a19:cb05:: with SMTP id b5mr962752lfg.61.1607522191324;
-        Wed, 09 Dec 2020 05:56:31 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id t2sm180909lfd.59.2020.12.09.05.56.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 05:56:30 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kmzxu-0004r5-PM; Wed, 09 Dec 2020 14:57:11 +0100
-Date:   Wed, 9 Dec 2020 14:57:10 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] USB: serial: option: add interface-number sanity check
- to flag handling
-Message-ID: <X9DXttJjg2aNqIZ8@localhost>
-References: <0000000000004c471e05b60312f9@google.com>
- <20201209104221.13223-1-johan@kernel.org>
- <X9CsfckIiLGSrK/o@kroah.com>
+        Wed, 9 Dec 2020 08:57:40 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Crdr022HlzM2RQ;
+        Wed,  9 Dec 2020 21:56:16 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 9 Dec 2020 21:56:49 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <nbd@nbd.name>, <lorenzo.bianconi83@gmail.com>,
+        <ryder.lee@mediatek.com>, <linux-wireless@vger.kernel.org>,
+        <pizza@shaftnet.org>, <kvalo@codeaurora.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH wireless -next] mt76: mt7915: convert comma to semicolon
+Date:   Wed, 9 Dec 2020 21:57:17 +0800
+Message-ID: <20201209135717.2110-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X9CsfckIiLGSrK/o@kroah.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 11:52:45AM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Dec 09, 2020 at 11:42:21AM +0100, Johan Hovold wrote:
-> > Add an interface-number sanity check before testing the device flags to
-> > avoid relying on undefined behaviour when left shifting in case a device
-> > uses an interface number greater than or equal to BITS_PER_LONG (i.e. 64
-> > or 32).
-> > 
-> > Reported-by: syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com
-> > Fixes: c3a65808f04a ("USB: serial: option: reimplement interface masking")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Johan Hovold <johan@kernel.org>
-> 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Replace a comma between expression statements by a semicolon.
 
-Thanks for reviewing. Now applied.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Johan
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
+index a3ccc1785661..0fd3a16f736a 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
+@@ -1148,7 +1148,7 @@ mt7915_mcu_sta_ba_tlv(struct sk_buff *skb,
+ 	tlv = mt7915_mcu_add_tlv(skb, STA_REC_BA, sizeof(*ba));
+ 
+ 	ba = (struct sta_rec_ba *)tlv;
+-	ba->ba_type = tx ? MT_BA_TYPE_ORIGINATOR : MT_BA_TYPE_RECIPIENT,
++	ba->ba_type = tx ? MT_BA_TYPE_ORIGINATOR : MT_BA_TYPE_RECIPIENT;
+ 	ba->winsize = cpu_to_le16(params->buf_size);
+ 	ba->ssn = cpu_to_le16(params->ssn);
+ 	ba->ba_en = enable << params->tid;
+-- 
+2.22.0
+
