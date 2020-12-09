@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCCFB2D386B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5662D386E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbgLIBv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 20:51:26 -0500
-Received: from mga04.intel.com ([192.55.52.120]:63607 "EHLO mga04.intel.com"
+        id S1726307AbgLIBvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 20:51:33 -0500
+Received: from mga11.intel.com ([192.55.52.93]:50279 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725940AbgLIBvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 20:51:25 -0500
-IronPort-SDR: WhCsNp1SlJJ6vFnbi96Imf0ye3Yx/7nTdGxS42sFZOcdhoLlqr57u66ToqZxap2krrPk/peaWr
- 2R3FyUh0f5Vg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="171430553"
+        id S1725940AbgLIBv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 20:51:26 -0500
+IronPort-SDR: qRiumOC68OzkaQ6R9y8JKqtfjsDD47lQCYHHAiFeV+tXfHPZvtC2U7tX2yVbxRF9rcCX8kiN4q
+ Q87hCMNb9PzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="170493288"
 X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
-   d="scan'208";a="171430553"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 17:50:45 -0800
-IronPort-SDR: adVCmc0/DLKgje21CiV9OnQPq3qriqkFrEJaCtpF81oiZsGqWWM6U4klPnLQrItq1wNBhNsdoQ
- sqN2VO+7eTrA==
+   d="scan'208";a="170493288"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 17:50:45 -0800
+IronPort-SDR: p/ncTIdi+1bLAXRyGr5c4rYDBvyH5k9HaRYhhjxrgUJJoUMQ2+F+gEFMTP+wKThCUyDIwsLnSv
+ J5B3O8L5PtZA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
-   d="scan'208";a="375363584"
+   d="scan'208";a="483837578"
 Received: from lkp-server01.sh.intel.com (HELO 4e633a5ce5ea) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 08 Dec 2020 17:50:43 -0800
+  by orsmga004.jf.intel.com with ESMTP; 08 Dec 2020 17:50:44 -0800
 Received: from kbuild by 4e633a5ce5ea with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kmoct-00004Q-66; Wed, 09 Dec 2020 01:50:43 +0000
-Date:   Wed, 09 Dec 2020 09:50:19 +0800
+        id 1kmoct-00004H-25; Wed, 09 Dec 2020 01:50:43 +0000
+Date:   Wed, 09 Dec 2020 09:50:20 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/core] BUILD SUCCESS
- d55863db1dfec8845067f5625f1b0ab18c8948be
-Message-ID: <5fd02d5b.jCWi6BNuwqivoIs4%lkp@intel.com>
+Subject: [tip:x86/misc] BUILD SUCCESS
+ f77f420d34754b8d08ac6ebf094ff7193023196a
+Message-ID: <5fd02d5c.eBx2R3MPZxdvxGyQ%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,41 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  perf/core
-branch HEAD: d55863db1dfec8845067f5625f1b0ab18c8948be  arm64/mm: Implement pXX_leaf_size() support
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/misc
+branch HEAD: f77f420d34754b8d08ac6ebf094ff7193023196a  x86/msr: Add a pointer to an URL which contains further details
 
 elapsed time: 722m
 
-configs tested: 93
+configs tested: 109
 configs skipped: 2
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
 gcc tested configs:
+arm                                 defconfig
 arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-arm                                 defconfig
-mips                         tb0287_defconfig
-xtensa                         virt_defconfig
-powerpc                     tqm5200_defconfig
-mips                          ath79_defconfig
+powerpc                          g5_defconfig
+powerpc                     skiroot_defconfig
+sh                   rts7751r2dplus_defconfig
+sh                     magicpanelr2_defconfig
+powerpc64                           defconfig
+powerpc                     pseries_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                         wii_defconfig
+powerpc                     mpc83xx_defconfig
+powerpc                     mpc5200_defconfig
+sh                      rts7751r2d1_defconfig
+sh                          polaris_defconfig
+arm                        keystone_defconfig
+ia64                            zx1_defconfig
+arm                          simpad_defconfig
 sh                         apsh4a3a_defconfig
 mips                      bmips_stb_defconfig
 arm                          ep93xx_defconfig
 mips                  decstation_64_defconfig
-arm                           corgi_defconfig
-c6x                        evmc6678_defconfig
-m68k                         apollo_defconfig
-powerpc                     ep8248e_defconfig
-sh                           se7343_defconfig
-arm                            qcom_defconfig
-powerpc                      mgcoge_defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
 sh                             espt_defconfig
-mips                        maltaup_defconfig
-m68k                          sun3x_defconfig
+x86_64                           alldefconfig
+mips                        jmr3927_defconfig
+xtensa                         virt_defconfig
+m68k                       m5475evb_defconfig
+mips                         mpc30x_defconfig
+h8300                               defconfig
+openrisc                 simple_smp_defconfig
+s390                       zfcpdump_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                      ppc64e_defconfig
+arm                         lubbock_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
