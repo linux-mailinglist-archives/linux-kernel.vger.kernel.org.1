@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CC62D45B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A13C32D45BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgLIPop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:44:45 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:36954 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730753AbgLIPod (ORCPT
+        id S1730829AbgLIPpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:45:12 -0500
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:43921
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728082AbgLIPpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:44:33 -0500
-Received: by mail-ot1-f65.google.com with SMTP id o11so1763800ote.4;
-        Wed, 09 Dec 2020 07:44:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zcGcVsxIiI9hodbdc2AAWPzpVhPj/YsdgMaqJc66cSM=;
-        b=oCfC47fBIlB7aZpISOPSWsIXqVQBDzyKwppVmkHrZtAQJkxN8xbEVxb3w9cm5h6goI
-         NdDWD8aWMFAkui1LqZ0+EXrlVRPPv0emGwatxP1m5pnBe4uu14+PcPsXfC59IUQBQGGY
-         Gg7z4H8EAb//mhTeGDrEMUjhw9+uuEBVPzIFt3XjcSQvSVQJLbbzF3PCshH4wyF7ajd5
-         mSxnvVa0pFyRkJuicV0PnmVmRBUz5gsDVmw3UFuso07ZMRGcBy7coPWeoLqcSpdyBR90
-         tsUw7/WdBIMtMDW/9zfC/Sb4e7Y9Ze913WRFNZW0vhU85TC86xGdBhv9z8KsXYjHlbjt
-         6dRA==
-X-Gm-Message-State: AOAM531REP2Qsi2/fkyT6PcEQPQ79WvWZS4M7Vcmav1ximLbTWToaxNM
-        fFijSu/tWr4cKcMXVVenTg==
-X-Google-Smtp-Source: ABdhPJy0c0hrjctbbcOPvOYisd2yCo+/X2EAU9BABx1eTO4blOeTarRIsb9ltlmTf1yOCgp1rpzqJw==
-X-Received: by 2002:a9d:1d43:: with SMTP id m61mr2349827otm.231.1607528632800;
-        Wed, 09 Dec 2020 07:43:52 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a24sm376932oop.40.2020.12.09.07.43.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 07:43:52 -0800 (PST)
-Received: (nullmailer pid 501262 invoked by uid 1000);
-        Wed, 09 Dec 2020 15:43:50 -0000
-Date:   Wed, 9 Dec 2020 09:43:50 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        David Jander <david@protonic.nl>,
-        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: fsl: add Protonic MVT board
-Message-ID: <20201209154350.GA501215@robh.at.kernel.org>
-References: <20201201074125.11806-1-o.rempel@pengutronix.de>
- <20201201074125.11806-2-o.rempel@pengutronix.de>
+        Wed, 9 Dec 2020 10:45:12 -0500
+X-IronPort-AV: E=Sophos;i="5.78,405,1599516000"; 
+   d="scan'208";a="367056589"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 16:44:29 +0100
+Date:   Wed, 9 Dec 2020 16:44:29 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     John Garry <john.garry@huawei.com>
+cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nicolas.palix@univ-grenoble-alpes.fr,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Ming Lei <ming.lei@redhat.com>
+Subject: Re: problem booting 5.10
+In-Reply-To: <4f3cd4d4-87d3-dc9a-027d-293cba469d5a@huawei.com>
+Message-ID: <alpine.DEB.2.22.394.2012091644010.2691@hadrien>
+References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien> <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com> <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com> <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
+ <9106e994-bb4b-4148-1280-f08f71427420@huawei.com> <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com> <alpine.DEB.2.22.394.2012082339470.16458@hadrien> <yq1sg8fud7y.fsf@ca-mkp.ca.oracle.com>
+ <4f3cd4d4-87d3-dc9a-027d-293cba469d5a@huawei.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201074125.11806-2-o.rempel@pengutronix.de>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 01 Dec 2020 08:41:24 +0100, Oleksij Rempel wrote:
-> Add Protonic MVT imx6dl based board
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+
+On Tue, 8 Dec 2020, John Garry wrote:
+
+> On 08/12/2020 22:51, Martin K. Petersen wrote:
+> >
+> > Julia,
+> >
+> > > This solves the problem.  Starting from 5.10-rc7 and doing this revert, I
+> > > get a kernel that boots.
+> >
+>
+> Hi Julia,
+>
+> Can you also please test Ming's patchset here (without the megaraid sas
+> revert) when you get a chance:
+> https://lore.kernel.org/linux-block/20201203012638.543321-1-ming.lei@redhat.com/
+
+5.10-rc7 plus these three commits boots fine.
+
+thanks,
+julia
+
+>
+> And please also share your .config, as I guess that it is not mainline vanilla
+> and we will want to recreate this to be sure for future. Qian's issue was only
+> exposed with a specific .config enabling lots of heavy debug options.
+>
+> Thanks,
+> John
+>
+> > Thanks for testing!
+> >
+> > I'll go ahead and revert 103fbf8e4020 in 5.10/scsi-fixes. We can revisit
+> > this change in 5.11 when Ming's fixes are in place.
+> >
+>
