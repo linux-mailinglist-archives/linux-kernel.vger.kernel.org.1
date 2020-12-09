@@ -2,106 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62D62D4E2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD532D4E2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389056AbgLIWjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2388865AbgLIWjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 9 Dec 2020 17:39:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38691 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389044AbgLIWjv (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388716AbgLIWje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:39:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607553503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pLh08CODrTtOHr1xQAUm+7JhxhEsEXmLpw4HRIcM1tc=;
-        b=eIdevc2h+X38oXj8nZiNyVvrKd+20hGcX3WsT3sR6Cajf7ezWTHl7xFA8rx4tCc2TELZgQ
-        cojXGjCvW55cRXfblHoloFUyLOdSEZr+QnUzZM35+0iNBaEJ05vmE/86lF9RQZieDbiNTh
-        8r4u+qY66t1l2fztnNvpkAuhR9vvKpo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-NybBHuTDMeSb_WVQBgiOJA-1; Wed, 09 Dec 2020 17:38:22 -0500
-X-MC-Unique: NybBHuTDMeSb_WVQBgiOJA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E56866D53C;
-        Wed,  9 Dec 2020 22:38:14 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CA4216F990;
-        Wed,  9 Dec 2020 22:38:02 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 17:38:02 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Song Liu <songliubraving@fb.com>, axboe@kernel.dk
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com,
-        Matthew Ruffell <matthew.ruffell@canonical.com>,
-        Xiao Ni <xni@redhat.com>
-Subject: Re: Revert "dm raid: remove unnecessary discard limits for raid10"
-Message-ID: <20201209223801.GB2752@redhat.com>
-References: <20201209215814.2623617-1-songliubraving@fb.com>
+        Wed, 9 Dec 2020 17:39:34 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486A9C061794
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 14:38:53 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id q16so3369142edv.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 14:38:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pIQL03/zPKLYNtedDsrbaZi2weGw3ezzccqUR9STUu4=;
+        b=l2Ft/LcFTKYXO8IPePZ2BYv+uOHAjdrRbZntfnElLBHe0ZXC/kvJFcPyKVcvQ7D6OC
+         Ue0zE1ERVHPYKqttcjjlWhTf2s0uaI5dGJX558cBCfmdBjJ1YhR2q9I4hcqFMIhCBYy3
+         f92ybU4JscstvCIPyOrP6FDwNOMpHmExMR79vy/Pj4pPSKHqUT3P0bs8gtHYCzBIqPXn
+         Fy4Z9nV18PfB+jKufBdaYSEikISgiHZEhse+SqEI80SzefwRNMqhuD6qnXj77wM3zLRv
+         x0eFWyAqda4DUVZB8Kibs4DJcmJymY00M84nFgWTcUnME/v7ZzJHl5gekjJF+o7j1PCB
+         TvVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pIQL03/zPKLYNtedDsrbaZi2weGw3ezzccqUR9STUu4=;
+        b=aJ2qxJZ9ihHnovkTrCy+TsTgewsEAfAZWv4czCo9WzHiGIpOHIiQlm5oWDuKyrbjRa
+         YiiSbRuGPRu6T0w7iirNS1UL5FwYoayFREU6izLsP7dK8wu0J7rFJaiTy3aHqTCRgagN
+         45eThaITn3fKnflXdzh5v1emHqnTN6FpULrNPA+51HC1zUwtFuKahrW4jcP2WNJZHlOM
+         8pUnQmwJKwAy9QQ+igWkFS95+6z/BgsAZRljRJaWXzOmSM48OAkmGEy7gDF/BM/Ip+s5
+         2s0zIqfPSDbPmWeUDSe7pew99So49Vji9E/fsyKSOTOfmZvgFi/RRE5cts/2iK3XZ1+a
+         elSQ==
+X-Gm-Message-State: AOAM532JwYlQ95l6HnGTGW2DxZtOBNzDFhwsEddE3FGjcLLeF5Yw3f7h
+        ggDh6vNBW2JM+vF5DhHtD/pLYnBajPPKGsJTM7koBw==
+X-Google-Smtp-Source: ABdhPJzvDmJdBGoIr2bpKyfdZskmwNIku+gIOLs9wv4Je7JCUxMR5i7LKYt13r8VyhBfLKCIGVO74IGD7Ytc27nWDtM=
+X-Received: by 2002:aa7:cdc3:: with SMTP id h3mr4022893edw.52.1607553531849;
+ Wed, 09 Dec 2020 14:38:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209215814.2623617-1-songliubraving@fb.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20201209002418.1976362-1-ben.widawsky@intel.com> <20201209002418.1976362-12-ben.widawsky@intel.com>
+In-Reply-To: <20201209002418.1976362-12-ben.widawsky@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 9 Dec 2020 14:38:49 -0800
+Message-ID: <CAPcyv4hRJRP+55QHxQYsAoE7V601+YMWgtEvzLimKRO8b4Jrjg@mail.gmail.com>
+Subject: Re: [RFC PATCH 11/14] cxl/mem: Add a "RAW" send command
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09 2020 at  4:58pm -0500,
-Song Liu <songliubraving@fb.com> wrote:
-
-> This reverts commit f0e90b6c663a7e3b4736cb318c6c7c589f152c28.
-> 
-> Matthew Ruffell reported data corruption in raid10 due to the changes
-> in discard handling [1]. Revert these changes before we find a proper fix.
-> 
-> [1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1907262/
-> Cc: Matthew Ruffell <matthew.ruffell@canonical.com>
-> Cc: Xiao Ni <xni@redhat.com>
-> Cc: Mike Snitzer <snitzer@redhat.com>
-> Signed-off-by: Song Liu <songliubraving@fb.com>
+On Tue, Dec 8, 2020 at 4:24 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> The CXL memory device send interface will have a number of supported
+> commands. The raw command is not such a command. Raw commands allow
+> userspace to send a specified opcode to the underlying hardware and
+> bypass all driver checks on the command. This is useful for a couple of
+> usecases, mainly:
+> 1. Undocumented vendor specific hardware commands
+> 2. Prototyping new hardware commands not yet supported by the driver
+>
+> While this all sounds very powerful it comes with a couple of caveats:
+> 1. Bug reports using raw commands will not get the same level of
+>    attention as bug reports using supported commands (via taint).
+> 2. Supported commands will be rejected by the RAW command.
+>
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
 > ---
->  drivers/md/dm-raid.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-> index 9c1f7c4de65b3..dc8568ab96f24 100644
-> --- a/drivers/md/dm-raid.c
-> +++ b/drivers/md/dm-raid.c
-> @@ -3728,6 +3728,17 @@ static void raid_io_hints(struct dm_target *ti, struct queue_limits *limits)
->  
->  	blk_limits_io_min(limits, chunk_size_bytes);
->  	blk_limits_io_opt(limits, chunk_size_bytes * mddev_data_stripes(rs));
+>  drivers/cxl/mem.c            | 32 ++++++++++++++++++++++++++++++++
+>  include/uapi/linux/cxl_mem.h | 14 ++++++++++++--
+>  2 files changed, 44 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index 0bf03afc0c80..a2cea7ac7cc6 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -115,6 +115,7 @@ struct cxl_mem_command {
+>
+>  static struct cxl_mem_command mem_commands[] = {
+>         CXL_CMD(INVALID, NONE, 0, 0, "Reserved", false, 0),
+> +       CXL_CMD(RAW, TAINT, ~0, ~0, "Raw", true, 0),
+
+Why is the taint indication in the ABI? It seems like it only needs to
+be documented.
+
+>  };
+>
+>  static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
+> @@ -326,6 +327,20 @@ static int cxl_mem_count_commands(void)
+>         return n;
+>  };
+>
+> +static struct cxl_mem_command *cxl_mem_find_command(u16 opcode)
+> +{
+> +       int i;
 > +
-> +	/*
-> +	 * RAID10 personality requires bio splitting,
-> +	 * RAID0/1/4/5/6 don't and process large discard bios properly.
-> +	 */
-> +	if (rs_is_raid10(rs)) {
-> +		limits->discard_granularity = max(chunk_size_bytes,
-> +						  limits->discard_granularity);
-> +		limits->max_discard_sectors = min_not_zero(rs->md.chunk_sectors,
-> +							   limits->max_discard_sectors);
-> +	}
->  }
->  
->  static void raid_postsuspend(struct dm_target *ti)
-> -- 
-> 2.24.1
-> 
+> +       for (i = 0; i < ARRAY_SIZE(mem_commands); i++) {
+> +               struct cxl_mem_command *c = &mem_commands[i];
+> +
+> +               if (c->opcode == opcode)
+> +                       return c;
+> +       }
+> +
+> +       return NULL;
+> +};
+> +
+>  /**
+>   * handle_mailbox_cmd_from_user() - Dispatch a mailbox command.
+>   * @cxlmd: The CXL memory device to communicate with.
+> @@ -421,6 +436,23 @@ static int cxl_validate_cmd_from_user(struct cxl_send_command __user *user_cmd,
+>         c = &mem_commands[cmd.id];
+>         info = &c->info;
+>
+> +       /* Checks are bypassed for raw commands but along comes the taint! */
+> +       if (cmd.id == CXL_MEM_COMMAND_ID_RAW) {
+> +               struct cxl_mem_command temp =
+> +                       CXL_CMD(RAW, NONE, cmd.size_in, cmd.size_out, "Raw",
+> +                               true, cmd.raw.opcode);
 
-Short of you sending a v2 pull request to Jens...
+Oh, I thought CXL_CMD() was only used to populate the mem_commands
+array. Feels out of place to use it here when all it is doing is
+updating the size_{in,out} and opcode fields. Mainly I'm interested in
+CXL_CMD() enforcing that the command-id is the mem_commands index.
 
-Jens please pick this up once you pull Song's MD pull that reverts all
-the MD raid10 discard changes.
+> +
+> +               if (cmd.raw.rsvd)
+> +                       return -EINVAL;
+> +
+> +               if (cxl_mem_find_command(cmd.raw.opcode))
+> +                       return -EPERM;
+> +
+> +               add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
 
-Thanks!
-
-Acked-by: Mike Snitzer <snitzer@redhat.com>
-
+TAINT_WARN seems the wrong value, especially since no WARN has
+occurred. I feel that this is more in the spirit of
+TAINT_PROPRIETARY_MODULE, TAINT_OVERRIDDEN_ACPI_TABLE, and
+TAINT_OOT_MODULE. How about a new TAINT_RAW_PASSTHROUGH? I could use
+this for the acpi/nfit driver as well to disclaim responsibility for
+system errors that can result from not using the nominal
+kernel-provided commands.
