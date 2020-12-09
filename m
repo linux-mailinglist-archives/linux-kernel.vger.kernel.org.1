@@ -2,84 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A452D485C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1782D4862
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729456AbgLIRwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:52:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728375AbgLIRwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:52:34 -0500
-X-Gm-Message-State: AOAM530y4QUf0cGgU8zIRU8GLYcT9iFMN2zPz6qZljF3tBpaqdUei+kM
-        PYF8OBSdIJK0mBtVaUng82kgkNjcDBZ33/ojEgA=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607536312;
-        bh=PkhafiKufzKb4ug4EZv6MWBGYou8NhXyEMjpgO/uc5E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nO+yHSD0aD/myoaEBloVJSGAXz/9Z9jr2v13Ie8CZZquSOaxn9x54EWCBKPspHYr9
-         C7ov27bcIKqHGqsw0G2b+SRoGTpaMyzBiPtAowkH+Ri14rs1FZxhzgI1YDBJU3B6Yh
-         wsPQInRPENeXuhDzJK8x93nWLhePtzQbjVQ4JCq8GZAw33D4KaIEBkodUp45W78tZY
-         oMFyQlU9exNc1aSWvJld48xqQbYIdgpTXz8nY/aMrldCE2NXZTQj2Tn4uTZWfo1B5Q
-         6pvYNvOpCKBRZd+m8zIp2GDb95NKAzMEotGY/d8IZOzA4HjydrO2M2hq91pKktRA4J
-         D4lKm4IJ0IP/Q==
-X-Google-Smtp-Source: ABdhPJwZtZIjXcrCwL02Q3BtuaRQhJR6T9E0Dq/dAi3/J5U0ZXsANoGU6mTtSwfetrFJDwqXgvlouDcEx+44OiL8SQA=
-X-Received: by 2002:aca:bd0b:: with SMTP id n11mr2533645oif.11.1607536311473;
- Wed, 09 Dec 2020 09:51:51 -0800 (PST)
+        id S1728306AbgLIRx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:53:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726449AbgLIRx5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:53:57 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8737FC0613CF;
+        Wed,  9 Dec 2020 09:53:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fL27NHJJV4o8PPIFazAlhTrb/LmmYuac+t8OjbZn+1I=; b=NFu5MdxXrbYUn+dYqC7lYaYIxy
+        tS8OKT7nzU72PAjOqUpTcLwWH7TJVo9HlBW+hHrZvOlVh4tXQpImBZ3coyvNKuj72XJzyq2FIDFas
+        L6F5o3eE3+Fi2evfrHjJRSCK4cROrZsAvuO+1Cp4J8HiedF+GXWIeKNEY199cBW86e/qi9183/Gmu
+        aqrB+pfEMZl7uREbVep5Pyg7jCxRDyc9pJBtGc8ihD60Gjcc5wPYILfejLpbO15bnwYQpFDxiH4DO
+        7l9JI1ojkhcD1tdcxxQj31lObxUC9DYZWz+LT1ZPDjNgkQuCOcrqoAtG4nmXvDCl/Mjjz0M+R/+zE
+        NVbVEQVw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kn3eE-0006pM-UG; Wed, 09 Dec 2020 17:53:07 +0000
+Date:   Wed, 9 Dec 2020 17:53:06 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org, iamjoonsoo.kim@lge.com,
+        andrii@kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
+Subject: Re: [PATCH v2 sl-b 1/5] mm: Add mem_dump_obj() to print source of
+ memory block
+Message-ID: <20201209175306.GC25719@infradead.org>
+References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
+ <20201209011303.32737-1-paulmck@kernel.org>
+ <20201209081710.GA17642@infradead.org>
+ <20201209145702.GA2657@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20201201213707.541432-1-samitolvanen@google.com>
- <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
- <CAK8P3a2DYDCjkqf7oqWFfBT_=rjyJGgnh6kBzUkR8GyvxsB6uQ@mail.gmail.com> <CABCJKud7ZC7_rXVmrF5PnDOMZTJX9iB7uYAa03YF-dkEojnBxg@mail.gmail.com>
-In-Reply-To: <CABCJKud7ZC7_rXVmrF5PnDOMZTJX9iB7uYAa03YF-dkEojnBxg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 9 Dec 2020 18:51:34 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a04nQwJkK-CPWNzvfKavZnHQYzKX5OGB7Rm3Ee_62oXhA@mail.gmail.com>
-Message-ID: <CAK8P3a04nQwJkK-CPWNzvfKavZnHQYzKX5OGB7Rm3Ee_62oXhA@mail.gmail.com>
-Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209145702.GA2657@paulmck-ThinkPad-P72>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 5:25 PM 'Sami Tolvanen' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> On Wed, Dec 9, 2020 at 4:36 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > On Tue, Dec 8, 2020 at 1:15 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> >
-> > It seems to happen because of CONFIG_TRIM_UNUSED_KSYMS,
-> > which is a shame, since I think that is an option we'd always want to
-> > have enabled with LTO, to allow more dead code to be eliminated.
->
-> Ah yes, this is a known issue. We use TRIM_UNUSED_KSYMS with LTO in
-> Android's Generic Kernel Image and the problem is that bitcode doesn't
-> yet contain calls to these functions, so autoksyms won't see them. The
-> solution is to use a symbol whitelist with LTO to prevent these from
-> being trimmed. I suspect we would need a default whitelist for LTO
-> builds.
+On Wed, Dec 09, 2020 at 06:57:02AM -0800, Paul E. McKenney wrote:
+> On Wed, Dec 09, 2020 at 08:17:10AM +0000, Christoph Hellwig wrote:
+> > Your two new exports don't actually seem to get used in modular code
+> > at all in this series.
+> 
+> Indeed, and I either need to remove the exports or make my test code in
+> kernel/rcu/rcuscale.o suitable for upstreaming.  Or find the appropriate
+> mm/slab selftest location.
 
-A built-in allowlist sounds good to me. FWIW, in the randconfigs so far, I only
-saw five symbols that would need to be on it:
-
-memcpy(), memmove(), memset(), __stack_chk_fail() and __stack_chk_guard
-
-       Arnd
+I'd rather not export something like this which pokes deep into
+internals.  That being said I've been working on off on a
+EXPORT_SYMBOL_FOR() that just exports a symbol to one specific module.
+Hopefully I'll finish it for the next merge window, and with that
+I'd feel much more comfortable with an export.
