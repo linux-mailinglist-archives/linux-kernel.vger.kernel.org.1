@@ -2,66 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61CE2D4BFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A752D4C0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387929AbgLIUfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:35:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387806AbgLIUfx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:35:53 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97DCC0613CF;
-        Wed,  9 Dec 2020 12:35:12 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kn6Au-0009Lu-Nb; Wed, 09 Dec 2020 20:35:00 +0000
-Date:   Wed, 9 Dec 2020 20:35:00 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org
-Subject: Re: fs/namei.c: Make status likely to be ECHILD in lookup_fast()
-Message-ID: <20201209203500.GQ3579531@ZenIV.linux.org.uk>
-References: <20201209152403.6d6cf9ba@gandalf.local.home>
+        id S2387893AbgLIUij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:38:39 -0500
+Received: from mga04.intel.com ([192.55.52.120]:10548 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729213AbgLIUii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 15:38:38 -0500
+IronPort-SDR: 7giOMYbGVopHkmni2utGr3G5+ExGrdo8XsGwLQZelc2ZBvQg5emAEvIlAuNESXZxRGFIMnfh8/
+ wVf6qW/6GLuw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="171570350"
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="171570350"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 12:36:46 -0800
+IronPort-SDR: FeNYAK3Gyy9HFFGiBtyTiMiIK1351ysdS6Fwu4Q7OrbwlpLs2gX2ZKgIkft8+dRAEFoSAR07FS
+ SNLGDb5nusIA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="542523753"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 09 Dec 2020 12:36:44 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 7C8641C8; Wed,  9 Dec 2020 22:36:43 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        kvm@vger.kernel.org, linux-usb@vger.kernel.org,
+        Peng Hao <peng.hao2@zte.com.cn>, Arnd Bergmann <arnd@arndb.de>,
+        Cornelia Huck <cohuck@redhat.com>
+Subject: [PATCH v2 1/5] driver core: platform: Introduce platform_get_mem_or_io()
+Date:   Wed,  9 Dec 2020 22:36:38 +0200
+Message-Id: <20201209203642.27648-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209152403.6d6cf9ba@gandalf.local.home>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 03:24:03PM -0500, Steven Rostedt wrote:
-> From:  Steven Rostedt (VMware) <rostedt@goodmis.org>
-> 
-> Running my yearly branch profiling code, it detected a 100% wrong branch
-> condition in name.c for lookup_fast(). The code in question has:
-> 
-> 		status = d_revalidate(dentry, nd->flags);
-> 		if (likely(status > 0))
-> 			return dentry;
-> 		if (unlazy_child(nd, dentry, seq))
-> 			return ERR_PTR(-ECHILD);
-> 		if (unlikely(status == -ECHILD))
-> 			/* we'd been told to redo it in non-rcu mode */
-> 			status = d_revalidate(dentry, nd->flags);
-> 
-> If the status of the d_revalidate() is greater than zero, then the function
-> finishes. Otherwise, if it is an "unlazy_child" it returns with -ECHILD.
-> After the above two checks, the status is compared to -ECHILD, as that is
-> what is returned if the original d_revalidate() needed to be done in a
-> non-rcu mode.
-> 
-> Especially this path is called in a condition of:
-> 
-> 	if (nd->flags & LOOKUP_RCU) {
-> 
-> And most of the d_revalidate() functions have:
-> 
-> 	if (flags & LOOKUP_RCU)
-> 		return -ECHILD;
+There are at least few existing users of the proposed API which
+retrieves either MEM or IO resource from platform device.
 
-Umm...  That depends upon the filesystem mix involved; said that, I'd rather
-drop that "unlikely"...
+Make it common to utilize in the existing and new users.
+
+Cc: Eric Auger <eric.auger@redhat.com>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Cc: Peng Hao <peng.hao2@zte.com.cn>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+---
+v2: moved to C-file and renamed for the sake of consistency with the rest
+    platform code
+
+ drivers/base/platform.c         | 15 +++++++++++++++
+ include/linux/platform_device.h |  3 +++
+ 2 files changed, 18 insertions(+)
+
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 88aef93eb4dd..af0c37f720e6 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -63,6 +63,21 @@ struct resource *platform_get_resource(struct platform_device *dev,
+ }
+ EXPORT_SYMBOL_GPL(platform_get_resource);
+ 
++struct resource *platform_get_mem_or_io(struct platform_device *dev,
++					unsigned int num)
++{
++	u32 i;
++
++	for (i = 0; i < dev->num_resources; i++) {
++		struct resource *r = &dev->resource[i];
++
++		if ((resource_type(r) & (IORESOURCE_MEM|IORESOURCE_IO)) && num-- == 0)
++			return r;
++	}
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(platform_get_mem_or_io);
++
+ #ifdef CONFIG_HAS_IOMEM
+ /**
+  * devm_platform_get_and_ioremap_resource - call devm_ioremap_resource() for a
+diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+index 77a2aada106d..ee6a9f10c2c7 100644
+--- a/include/linux/platform_device.h
++++ b/include/linux/platform_device.h
+@@ -52,6 +52,9 @@ extern struct device platform_bus;
+ 
+ extern struct resource *platform_get_resource(struct platform_device *,
+ 					      unsigned int, unsigned int);
++extern struct resource *platform_get_mem_or_io(struct platform_device *,
++					       unsigned int);
++
+ extern struct device *
+ platform_find_device_by_driver(struct device *start,
+ 			       const struct device_driver *drv);
+-- 
+2.29.2
+
