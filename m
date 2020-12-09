@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C942D4D3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9302D4D38
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388458AbgLIWF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:05:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
+        id S2388431AbgLIWFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:05:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388437AbgLIWFC (ORCPT
+        with ESMTP id S2388410AbgLIWEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:05:02 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6F8C061793
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 14:04:22 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id p4so2078099pfg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 14:04:22 -0800 (PST)
+        Wed, 9 Dec 2020 17:04:45 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8961AC0613CF;
+        Wed,  9 Dec 2020 14:04:04 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id n26so4414822eju.6;
+        Wed, 09 Dec 2020 14:04:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1cejsIcZLseHYK63Fvaj59f3q4suFE7vRtGd0lpkzUk=;
-        b=DSziPw0o3aFSd0+SpaTtBzBiLJ+BW3CWWbjH+Uf6Et3hrEogWU3Y55tkPgtUZOyi4m
-         1fNS4eaYk5ox1PA5z4/TppDWUJf+qsBgjyFcUxf1OphRqNMNJLCblUUTupT5igMi/zmZ
-         5A0ZQaBigqRw5ByIKL5cj0nhP0Rrg4nFw3r1U=
+        bh=KbgQU9crSSKMI3WB4Hb7AvXbtn3o3JSe9ktRkCdRqIY=;
+        b=POyEN/dsgfu2zRG3mv00xUXzVN2f4g8dTfAThMUG+K9hJ/iDpEo2Hg05IJyWUQsdA/
+         SuIuJHGf0/We4B2vIouOng08tqghpKrGTzHZeRQxCiwI68wdIdDHuQSx9EaCHPMXL1R5
+         VXSO+D+czQaCf4qcvCMgiGcvOsdH2b7Ox3+1gSu2CLF0nCa3VGSiOF2FsT1HuDFgPpF8
+         1ojyin2AkfDiWIA1ElK3hbEbYSsT3XeF0+gqXtnHXvXaC0yLORVXGjHa3puh0/WsvU4T
+         zrrKfRsDbxfkNfbwFvKpNDKypi45gBy18SXJlP5yQpUSFdqIVuVXP16Q1HpFswewhISH
+         9Apg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1cejsIcZLseHYK63Fvaj59f3q4suFE7vRtGd0lpkzUk=;
-        b=bWWG+OinfQ43JvmUZpB3hSv+nOUY+opU9o+WdFFDJYZFLevHFqwbpLNyZdp+SOBQME
-         TmnU8hS1Lt+0+XdKBrZfKpDFjtWAaXNi8ZJuHRmrlkFrTEQCd8Tu2Gbm3X9/wUQOrofJ
-         UTVhmQjh6jDLjtIvvgE4NNFVPdViK5L3DqxjHQiRZt37//OXbXXsEG5q1HL55kt9Z8qm
-         5Y5W8kPHH3dtKuNhONh8ffIyu1l7P5J30+FXJ+rpNuOa0AMYmVPnFb9dG5gGuQvBAqF2
-         TOjiAfrR4wwPdBAK5fMKeq4y5qYbtbQv/G0pwfJQ3AzvDTPLiM3kSLBb0BnsXtlIfxfo
-         q7fA==
-X-Gm-Message-State: AOAM5305IBvKm0xFPNz2YNNE1V20Nkkdb+btQBNSKTSJte8dbKqQNbqJ
-        sEWr+ER3aqXXPczNwTJx7PUlEWmlyrV32Q==
-X-Google-Smtp-Source: ABdhPJxVTUaoO0RBoih6dgR6TEIMeORkDAvRm4OUX5KNffqC5Ex6Rxjb9Vmaqd16XtQ0pCHePvz4rA==
-X-Received: by 2002:a63:af50:: with SMTP id s16mr3841833pgo.448.1607551461727;
-        Wed, 09 Dec 2020 14:04:21 -0800 (PST)
-Received: from linux.australia-southeast1-a.c.zinc-computer-272222.internal. (181.178.197.35.bc.googleusercontent.com. [35.197.178.181])
-        by smtp.gmail.com with ESMTPSA id u25sm3361123pfn.170.2020.12.09.14.04.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 14:04:21 -0800 (PST)
-From:   Evan Benn <evanbenn@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     briannorris@chromium.org, Evan Benn <evanbenn@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: [PATCH 2/2] platform/chrome: cros_ec_proto: Add LID and BATTERY to default mask
-Date:   Wed,  9 Dec 2020 22:03:55 +0000
-Message-Id: <20201209220306.2.I3291bf83e4884c206b097ede34780e014fa3e265@changeid>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201209220306.1.I6133572c0ab3c6b95426f804bac2d3833e24acb1@changeid>
-References: <20201209220306.1.I6133572c0ab3c6b95426f804bac2d3833e24acb1@changeid>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        bh=KbgQU9crSSKMI3WB4Hb7AvXbtn3o3JSe9ktRkCdRqIY=;
+        b=Gdd8IG1CeCaJsTc0u85Ma+NQhKL3TYiW0CP5coUynQi5zjX5WxxSrJvXSCEO+EaTqM
+         7i4eL/QGWFnKaaDYyUm0cljXViPDhN0VPQjK1mmM3Y39V5CEFTKfWqhQEarrPemJODyd
+         cXMKMNjqGEIft/bg5E6ry0ZA4kJTAv+yx8FeWYj6v0EC0jlKK1fPh+gzLA4RtAA9LyZB
+         eVFgoEqgfPl8OHh0RtxQFlvx9h4Toka1wSy2ib5mRPkzbpVTrS0f4lMESeK41c4SJFzW
+         QqohQu8JvDT8jc4GjeLsmfXlyeHXrUX8t5PRaXtp6HWM/qmr4Hw0cHZjfVu2t2BavsU0
+         0+Tg==
+X-Gm-Message-State: AOAM532mv5twf/2jDQiB4AriuPme7UyMFzju0JYZv/NiZIi1AYaS0drU
+        HLOjDptzzYdsCXuxplsjqts=
+X-Google-Smtp-Source: ABdhPJy2qinC9zSv0AgbvyN91FLKOFuwEfaYAR4H40IjXSPEB1C9ITsg9aNnsOTFHgwF1Ua1XZNn+g==
+X-Received: by 2002:a17:906:f9da:: with SMTP id lj26mr3727964ejb.467.1607551443327;
+        Wed, 09 Dec 2020 14:04:03 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id z26sm3004027edl.71.2020.12.09.14.04.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 09 Dec 2020 14:04:02 -0800 (PST)
+Message-ID: <c95e0518fd5c73dead0139054c04dda2243af620.camel@gmail.com>
+Subject: Re: [PATCH v3 2/3] scsi: ufs: Keep device active mode only
+ fWriteBoosterBufferFlushDuringHibernate == 1
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Wed, 09 Dec 2020 23:03:59 +0100
+In-Reply-To: <DM6PR04MB6575B928898B319E8ACF1395FCCC0@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201208210941.2177-1-huobean@gmail.com>
+         <20201208210941.2177-3-huobean@gmail.com>
+         <DM6PR04MB6575B928898B319E8ACF1395FCCC0@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After 'platform/chrome: cros_ec_proto: Use EC_HOST_EVENT_MASK not BIT'
-some of the flags are not quite correct.
-LID_CLOSED is used to suspend the device, so it makes sense to ignore that.
-BATTERY events are also frequent and causing spurious wakes on elm/hana
-mt8173 devices.
+On Wed, 2020-12-09 at 07:40 +0000, Avri Altman wrote:
+> > According to the JEDEC UFS 3.1 Spec, If
+> > fWriteBoosterBufferFlushDuringHibernate
+> > is set to one, the device flushes the WriteBooster Buffer data
+> > automatically
+> > whenever the link enters the hibernate (HIBERN8) state. While the
+> > flushing
+> > operation is in progress, the device should be kept in Active power
+> > mode.
+> > Currently, we set this flag during the UFSHCD probe stage, but we
+> > didn't deal
+> > with its programming failure. Even this failure is less likely to
+> > occur, but
+> > still it is possible.
+> 
+> How about reading it on every ufshcd_wb_need_flush?
+> 
+> Thanks,
+> Avri
 
-Fixes: c214e564acb2ad9463293ab9c109bfdae91fbeaf
-Signed-off-by: Evan Benn <evanbenn@chromium.org>
----
 
- drivers/platform/chrome/cros_ec_proto.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Hi Avri
+I was using that way, no different from the current my way. Instead,
+reading on every time will add some delay. As long as the UFS device
+returns the successful, we assume that this flag has been properly
+set.  so, just keeping is_hibern8_wb_flush if set, I think it is
+enough.
 
-diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-index 4e442175612d..ea5149efcbea 100644
---- a/drivers/platform/chrome/cros_ec_proto.c
-+++ b/drivers/platform/chrome/cros_ec_proto.c
-@@ -526,9 +526,11 @@ int cros_ec_query_all(struct cros_ec_device *ec_dev)
- 		 * power), not wake up.
- 		 */
- 		ec_dev->host_event_wake_mask = U32_MAX &
--			~(EC_HOST_EVENT_MASK(EC_HOST_EVENT_AC_DISCONNECTED) |
-+			~(EC_HOST_EVENT_MASK(EC_HOST_EVENT_LID_CLOSED) |
-+			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_AC_DISCONNECTED) |
- 			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_BATTERY_LOW) |
- 			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_BATTERY_CRITICAL) |
-+			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_BATTERY) |
- 			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_PD_MCU) |
- 			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_BATTERY_STATUS));
- 		/*
--- 
-2.20.1
+Thanks,
+Bean
 
