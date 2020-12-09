@@ -2,132 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EB32D3D68
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A882D3D73
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbgLIIax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:30:53 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:32139 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbgLIIax (ORCPT
+        id S1727431AbgLIIcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:32:35 -0500
+Received: from smtprelay0236.hostedemail.com ([216.40.44.236]:48406 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726075AbgLIIcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:30:53 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607502629; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=US7I9Jxk2V33c8DwknWZ5ZyHOLeSlMGpz/OnKDqm8xs=;
- b=lpGPR7Bc1eS3WobsFQrEig78AqOYKofHSKFZveJDOspk85sRxbMCcLxWDPsoKGZF38mwCIuX
- TCZA6Znjh6m72kRhSWlJzQ1o3qrpZeszaUFegPdhjJN7l6VWDqYBX0bL8+i/v+rtwj/kDkbl
- WbkkoUvPRE8Qymf+mHMO9PK+zx4=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5fd08b02395c822bfe738e24 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Dec 2020 08:29:54
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E0A36C43465; Wed,  9 Dec 2020 08:29:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AF386C433C6;
-        Wed,  9 Dec 2020 08:29:52 +0000 (UTC)
+        Wed, 9 Dec 2020 03:32:24 -0500
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave04.hostedemail.com (Postfix) with ESMTP id 07A3E1801999C
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 08:31:43 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 0AA3F837F24C;
+        Wed,  9 Dec 2020 08:31:02 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:4605:5007:6737:7901:7903:8603:8660:10004:10400:10471:10848:11026:11232:11473:11658:11914:12043:12048:12109:12296:12297:12438:12679:12740:12760:12895:13148:13161:13229:13230:13255:13439:14181:14659:14721:21080:21433:21451:21627:21939:21990:30003:30012:30029:30051:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: plot14_2110887273ee
+X-Filterd-Recvd-Size: 4116
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  9 Dec 2020 08:30:59 +0000 (UTC)
+Message-ID: <f54fcb1e9f90b529826d8d6abb2ae99b15108d16.camel@perches.com>
+Subject: Re: [PATCH 22/22] xlink-core: factorize xlink_ioctl function by
+ creating sub-functions for each ioctl command
+From:   Joe Perches <joe@perches.com>
+To:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        leonard.crestez@nxp.com, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
+        shawnguo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Seamus Kelly <seamus.kelly@intel.com>
+In-Reply-To: <20201201223511.65542-23-mgross@linux.intel.com>
+References: <20201201223511.65542-1-mgross@linux.intel.com>
+         <20201201223511.65542-23-mgross@linux.intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Date:   Wed, 09 Dec 2020 00:30:46 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Evolution 3.38.1-1 
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 09 Dec 2020 16:29:52 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/2] scsi: ufs: Clean up some lines from
- ufshcd_hba_exit()
-In-Reply-To: <1607502147.3580.33.camel@mtkswgap22>
-References: <1607497100-27570-1-git-send-email-cang@codeaurora.org>
- <1607497100-27570-3-git-send-email-cang@codeaurora.org>
- <1607502147.3580.33.camel@mtkswgap22>
-Message-ID: <527089ac0a43d9095131103f7a274cf1@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09 16:22, Stanley Chu wrote:
-> Hi Can,
-> 
-> On Tue, 2020-12-08 at 22:58 -0800, Can Guo wrote:
->> ufshcd_hba_exit() is always called after ufshcd_exit_clk_scaling() and
->> ufshcd_exit_clk_gating(), so no need to suspend clock scaling again in
->> ufshcd_hba_exit().
->> 
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> ---
->>  drivers/scsi/ufs/ufshcd.c | 5 +----
->>  1 file changed, 1 insertion(+), 4 deletions(-)
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 12266bd..0a5b197 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -7765,6 +7765,7 @@ static void ufshcd_async_scan(void *data, 
->> async_cookie_t cookie)
->>  	if (ret) {
->>  		pm_runtime_put_sync(hba->dev);
->>  		ufshcd_exit_clk_scaling(hba);
->> +		ufshcd_exit_clk_gating(hba);
-> 
-> How about moving above two lines to ufshcd_hba_exit()?
-> 
-> Otherwise looks good to me!
-> Reviewed-by: Stanley Chu <stanleyc.chu@mediatek.com>
+On Tue, 2020-12-01 at 14:35 -0800, mgross@linux.intel.com wrote:
+> Refactor the too large IOCTL function to call helper functions.
+[]
+> diff --git a/drivers/misc/xlink-core/xlink-ioctl.c b/drivers/misc/xlink-core/xlink-ioctl.c
+[]
+> +int ioctl_write_data(unsigned long arg)
+> +{
+> +	struct xlink_handle	devh	= {0};
+> +	struct xlinkwritedata		wr	= {0};
+> +	int rc = 0;
+> +
+> +	if (copy_from_user(&wr, (void __user *)arg,
+> +			   sizeof(struct xlinkwritedata)))
+> +		return -EFAULT;
+> +	if (copy_from_user(&devh, (void __user *)wr.handle,
+> +			   sizeof(struct xlink_handle)))
+> +		return -EFAULT;
+> +	if (wr.size <= XLINK_MAX_DATA_SIZE) {
+> +		rc = xlink_write_data_user(&devh, wr.chan, wr.pmessage,
+> +					   wr.size);
+> +		if (copy_to_user((void __user *)wr.return_code, (void *)&rc,
+> +				 sizeof(rc)))
+> +			return -EFAULT;
+> +	} else {
+> +		return -EFAULT;
+> +	}
 
-You read my mind - I thought about that too, but in ufshcd_init(),
-they are separately called on different error out paths.
+Please reverse the test to reduce indentation
 
-11232 exit_gating:
-11233 	ufshcd_exit_clk_scaling(hba);
-11234 	ufshcd_exit_clk_gating(hba);
-11235 out_disable:
-11236 	hba->is_irq_enabled = false;
-11237 	ufshcd_hba_exit(hba);
+	if (wr.size > XLINK_MAX_DATA_SIZE)
+		return -EFAULT;
+	rc = xlink_write_data_user(&devh, wr.chan, wr.pmessage, wr.size);
+	if (copy_to_user((void __user *)wr.return_code, (void *)&rc, sizeof(rc)))
+		return -EFAULT;
+	return rc;
 
-Thanks,
+The last 3 lines here are repeated multiple times in many functions.
+It might be sensible to add something like:
 
-Can Guo.
+int copy_result_to_user(u32 *where, int rc)
+{
+	if (copy_to_user((void __user *)where, &rc, sizeof(rc)))
+		return -EFAULT;
+	return rc;
+}
 
-> 
->>  		ufshcd_hba_exit(hba);
->>  	}
->>  }
->> @@ -8203,10 +8204,6 @@ static void ufshcd_hba_exit(struct ufs_hba 
->> *hba)
->>  	if (hba->is_powered) {
->>  		ufshcd_variant_hba_exit(hba);
->>  		ufshcd_setup_vreg(hba, false);
->> -		ufshcd_suspend_clkscaling(hba);
->> -		if (ufshcd_is_clkscaling_supported(hba))
->> -			if (hba->devfreq)
->> -				ufshcd_suspend_clkscaling(hba);
->>  		ufshcd_setup_clocks(hba, false);
->>  		ufshcd_setup_hba_vreg(hba, false);
->>  		hba->is_powered = false;
+so this could be written
+
+	rc = xlink_write_data_user(&devh, wr.chan, wr.pmessage, wr.size);
+
+	return copy_result_to_user(wr.return_code, rc);
+
+IMO: return_code isn't a great name for a pointer as it rather
+indicates a value not an address and there's an awful lot of
+casting to __user in all this code that perhaps should be marked
+in the struct definitions rather than inside the function uses.
+
+> +}
+> +
+> +int ioctl_write_control_data(unsigned long arg)
+> +{
+> +	struct xlink_handle	devh	= {0};
+
+All of these initializations with {0} should use {} instead as
+the first element of whatever struct is not guaranteed to be
+assignable as an int and gcc/clang guarantee 0 initialization
+
+> +	struct xlinkwritedata		wr	= {0};
+> +	u8 volbuf[XLINK_MAX_BUF_SIZE];
+> +	int rc = 0;
+> +
+> +	if (copy_from_user(&wr, (void __user *)arg,
+> +			   sizeof(struct xlinkwritedata)))
+> +		return -EFAULT;
+> +	if (copy_from_user(&devh, (void __user *)wr.handle,
+> +			   sizeof(struct xlink_handle)))
+> +		return -EFAULT;
+> +	if (wr.size <= XLINK_MAX_CONTROL_DATA_SIZE) {
+> +		if (copy_from_user(volbuf, (void __user *)wr.pmessage,
+> +				   wr.size))
+> +			return -EFAULT;
+> +		rc = xlink_write_control_data(&devh, wr.chan, volbuf,
+> +					      wr.size);
+> +		if (copy_to_user((void __user *)wr.return_code,
+> +				 (void *)&rc, sizeof(rc)))
+> +			return -EFAULT;
+> +	} else {
+> +		return -EFAULT;
+
+Same test reversal and deindentation please.
+
+> +	}
+> +	return rc;
+> +}
+> +
+
+
