@@ -2,152 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410D52D3E30
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 113E72D3E33
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728807AbgLIJGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:06:44 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29638 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727339AbgLIJGo (ORCPT
+        id S1728810AbgLIJH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:07:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727339AbgLIJH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:06:44 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B991r9G034086;
-        Wed, 9 Dec 2020 04:05:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=I3DP+EooTBbUgiEInnr4ZpkHrpM8cLPtd5Lu6BGAUxA=;
- b=NNWmv2Prr/VCROsncPoPs+g/3sxMIk3wvtFIb8PR7XIB21m3QmcbgRtbpLQDac70XLMm
- 4cS4gmPdwxDYD3I5y+kTQbyfjnJdlyD13vzJ3MEbmTYUFxenZG+PORbtnsRC8Ys46jKx
- EpPuZhTXrK9zk4SucszRbBTJbYE3DGysgg841/m+S1ENv2rnSBqqWbj5Ta6+aNN2WhJ0
- hAKnPUHvsgvdKQ7oiS0O2cUk2QMiwQU/1ijlWeHZGPk71S0Ki9peacEgrbI39wNVi6kq
- PJmMoO+KA5WNssPbcRAhvT63gE1i2CYYIBg2m4wX/FRW4Qa3gXwsG0ELMQXcfDRx/OVV Bw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35afekanay-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 04:05:51 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B992jrr037913;
-        Wed, 9 Dec 2020 04:05:50 -0500
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35afekan9j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 04:05:50 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B98qU56000780;
-        Wed, 9 Dec 2020 09:05:48 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma03dal.us.ibm.com with ESMTP id 3581u9dq7v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 09:05:48 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B995lMx25625020
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Dec 2020 09:05:47 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DF96B6A057;
-        Wed,  9 Dec 2020 09:05:46 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E4A36A054;
-        Wed,  9 Dec 2020 09:05:46 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.199.49.37])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Dec 2020 09:05:46 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id ADB912E35A0; Wed,  9 Dec 2020 14:35:41 +0530 (IST)
-Date:   Wed, 9 Dec 2020 14:35:41 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] powerpc/smp: Parse ibm,thread-groups with multiple
- properties
-Message-ID: <20201209090541.GA13125@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com>
- <1607057327-29822-2-git-send-email-ego@linux.vnet.ibm.com>
- <20201207121042.GH528281@linux.vnet.ibm.com>
- <20201208172540.GA14206@in.ibm.com>
- <20201209083541.GK528281@linux.vnet.ibm.com>
+        Wed, 9 Dec 2020 04:07:29 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5465C0613D6;
+        Wed,  9 Dec 2020 01:06:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MNMpVWDVu1xKs8I0T0Bns+VkPimcOASCojWukxDS8ng=; b=IpPbZN2f78dxphMHqQpYHqe58S
+        vw4NwnQ+Xz59+sElzQ/B5L3eRJkdnRh6BnNVuFZ5y34CD+z1GqrWUYj06V+i7uo3q/XpaDl+cG884
+        drRT2Fl5JdUamqqF/e3c5FVm4cZdv6ufagIWq3l2FmDBRTe88w+7D76jqPZ+a/1/2aZbc/Kq3RR8b
+        AW1FVBy6gWIDlGSu1r/dQhnWUKxtmBmSBD63N8Y1uTWHiW0k+fHm0hzv4digf/kQigNWvUXpNwcCN
+        p7YE1vjhW3f9nlvBiwMKeZthCUjMehbPAaFYLfvK5cVKrRzzP+XOPQDrNS+A5UhEbrU/2s3/fcJsv
+        mt+CWOYQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmvQs-00089J-7s; Wed, 09 Dec 2020 09:06:46 +0000
+Date:   Wed, 9 Dec 2020 09:06:46 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] iov: introduce ITER_BVEC_FLAG_FIXED
+Message-ID: <20201209090646.GA28832@infradead.org>
+References: <cover.1607477897.git.asml.silence@gmail.com>
+ <de27dbca08f8005a303e5efd81612c9a5cdcf196.1607477897.git.asml.silence@gmail.com>
+ <20201209083645.GB21968@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209083541.GK528281@linux.vnet.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-09_07:2020-12-08,2020-12-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- priorityscore=1501 adultscore=0 mlxscore=0 bulkscore=0 spamscore=0
- mlxlogscore=999 suspectscore=0 impostorscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090060
+In-Reply-To: <20201209083645.GB21968@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 02:05:41PM +0530, Srikar Dronamraju wrote:
-> * Gautham R Shenoy <ego@linux.vnet.ibm.com> [2020-12-08 22:55:40]:
+On Wed, Dec 09, 2020 at 08:36:45AM +0000, Christoph Hellwig wrote:
+> This is making the iter type even more of a mess than it already is.
+> I think we at least need placeholders for 0/1 here and an explicit
+> flags namespace, preferably after the types.
 > 
-> > > 
-> > > NIT:
-> > > tglx mentions in one of his recent comments to try keep a reverse fir tree
-> > > ordering of variables where possible.
-> > 
-> > I suppose you mean moving the longer local variable declarations to to
-> > the top and shorter ones to the bottom. Thanks. Will fix this.
-> > 
-> 
-> Yes.
-> 
-> > > > +	}
-> > > > +
-> > > > +	if (!tg)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	cpu_group_start = get_cpu_thread_group_start(cpu, tg);
-> > > 
-> > > This whole hunk should be moved to a new function and called before
-> > > init_cpu_cache_map. It will simplify the logic to great extent.
-> > 
-> > I suppose you are referring to the part where we select the correct
-> > tg. Yeah, that can move to a different helper.
-> > 
-> 
-> Yes, I would prefer if we could call this new helper outside
-> init_cpu_cache_map.
-> 
-> > > > 
-> > > > -	zalloc_cpumask_var_node(&per_cpu(cpu_l1_cache_map, cpu),
-> > > > -				GFP_KERNEL, cpu_to_node(cpu));
-> > > > +	mask = &per_cpu(cpu_l1_cache_map, cpu);
-> > > > +
-> > > > +	zalloc_cpumask_var_node(mask, GFP_KERNEL, cpu_to_node(cpu));
-> > > > 
-> > > 
-> > > This hunk (and the next hunk) should be moved to next patch.
-> > >
-> > 
-> > The next patch is only about introducing  THREAD_GROUP_SHARE_L2. Hence
-> > I put in any other code in this patch, since it seems to be a logical
-> > place to collate whatever we have in a generic form.
-> > 
-> 
-> While I am fine with it, having a pointer that always points to the same
-> mask looks wierd.
+> Then again I'd much prefer if we didn't even add the flag or at best
+> just add it for a short-term transition and move everyone over to the
+> new scheme.  Otherwise the amount of different interfaces and supporting
+> code keeps exploding.
 
-Sure. Moving some of this to a separate preparatory patch.
+Note that the only other callers that use iov_iter_bvec and asynchronous
+read/write are loop, target and nvme-target, so this should actually
+be pretty simple.  Out of these only target needs something like this
+trivial change to keep the bvec available over the duration of the I/O,
+the other two should be fine already:
 
-> 
-> -- 
-> Thanks and Regards
-> Srikar Dronamraju
+---
+From 581a8eabbb1759e3dcfee4b1d2e419f814a8cb80 Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Wed, 9 Dec 2020 10:05:04 +0100
+Subject: target/file: allocate the bvec array as part of struct target_core_file_cmd
+
+This saves one memory allocation, and ensures the bvecs aren't freed
+before the AIO completion.  This will allow the lower level code to be
+optimized so that it can avoid allocating another bvec array.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/target/target_core_file.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/target/target_core_file.c b/drivers/target/target_core_file.c
+index 7143d03f0e027e..ed0c39a1f7c649 100644
+--- a/drivers/target/target_core_file.c
++++ b/drivers/target/target_core_file.c
+@@ -241,6 +241,7 @@ struct target_core_file_cmd {
+ 	unsigned long	len;
+ 	struct se_cmd	*cmd;
+ 	struct kiocb	iocb;
++	struct bio_vec	bvecs[];
+ };
+ 
+ static void cmd_rw_aio_complete(struct kiocb *iocb, long ret, long ret2)
+@@ -268,29 +269,22 @@ fd_execute_rw_aio(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
+ 	struct target_core_file_cmd *aio_cmd;
+ 	struct iov_iter iter = {};
+ 	struct scatterlist *sg;
+-	struct bio_vec *bvec;
+ 	ssize_t len = 0;
+ 	int ret = 0, i;
+ 
+-	aio_cmd = kmalloc(sizeof(struct target_core_file_cmd), GFP_KERNEL);
++	aio_cmd = kmalloc(struct_size(aio_cmd, bvecs, sgl_nents), GFP_KERNEL);
+ 	if (!aio_cmd)
+ 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
+ 
+-	bvec = kcalloc(sgl_nents, sizeof(struct bio_vec), GFP_KERNEL);
+-	if (!bvec) {
+-		kfree(aio_cmd);
+-		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
+-	}
+-
+ 	for_each_sg(sgl, sg, sgl_nents, i) {
+-		bvec[i].bv_page = sg_page(sg);
+-		bvec[i].bv_len = sg->length;
+-		bvec[i].bv_offset = sg->offset;
++		aio_cmd->bvecs[i].bv_page = sg_page(sg);
++		aio_cmd->bvecs[i].bv_len = sg->length;
++		aio_cmd->bvecs[i].bv_offset = sg->offset;
+ 
+ 		len += sg->length;
+ 	}
+ 
+-	iov_iter_bvec(&iter, is_write, bvec, sgl_nents, len);
++	iov_iter_bvec(&iter, is_write, aio_cmd->bvecs, sgl_nents, len);
+ 
+ 	aio_cmd->cmd = cmd;
+ 	aio_cmd->len = len;
+@@ -307,8 +301,6 @@ fd_execute_rw_aio(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
+ 	else
+ 		ret = call_read_iter(file, &aio_cmd->iocb, &iter);
+ 
+-	kfree(bvec);
+-
+ 	if (ret != -EIOCBQUEUED)
+ 		cmd_rw_aio_complete(&aio_cmd->iocb, ret, 0);
+ 
+-- 
+2.29.2
+
