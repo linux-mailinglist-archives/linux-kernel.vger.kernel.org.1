@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CEC2D4D56
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2D92D4D5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388492AbgLIWK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:10:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388515AbgLIWKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:10:10 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FDAA23D1C;
-        Wed,  9 Dec 2020 22:09:29 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 17:09:28 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2] fs/namei.c: Remove unlikely of status being -ECHILD in
- lookup_fast()
-Message-ID: <20201209170928.26b4cda7@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2388616AbgLIWMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:12:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388308AbgLIWMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 17:12:17 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9825C0613CF;
+        Wed,  9 Dec 2020 14:11:36 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id g20so868620plo.2;
+        Wed, 09 Dec 2020 14:11:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uvqGywsXM1Q06kTXA1nF8b4vLpxDf9nEtyONmvLvXGM=;
+        b=Zq+Yu3XA+wvyZdRM8e4Pv4WUDnljBil3Rdnd5/iH1zHyhnKqVybEqrRx39Zz63QOcb
+         p0ihDZQ9gbeQttpFWswj/2RwondenZznIseagFYmycOS/WcZXmAZcTeqfIM5JP80ysK7
+         a+35kvUWUcpCxllNG7OTejzO+GfGoCpUWv/U+SPJFCwobrKM7EIq/upg5QXtxNmzyQfT
+         idKz6Z3fA0R8/rsWf28z81yHBfu78y1wfeDjoRvmDwUvWUmYOhKjhxAYIS9BnQGABdtI
+         ISeSeMSLO6Wboq1aweV691RbGSHBJgxp/prfpPf/vxY6IV21QIPLpJz7OViXY6Ecmyp/
+         lQlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uvqGywsXM1Q06kTXA1nF8b4vLpxDf9nEtyONmvLvXGM=;
+        b=JJfW7UnV4vHUn1VKqEd9xNERoCCqn2uNNpXWPj3EMsyMccj5WRuq2irBeQwM2AgKWI
+         TWz3HjXiq4QCi7bMQIrGmC7m5NEdqPp1sXgXaKotCx6vW6IImBB41hyQv07kXKETpTD9
+         bb0vVF4jU7rKjE4vvAqUsKKMm6EZiIpShGwu+wQcLg2VbtueqCsDpYZPoPwbZF02FKGI
+         DJdWipeQl5Uh5moj8i5fJ60ciTmQxd8vepwQXXGRYOblhKlgnR9BW4WHuj9qjQ6o7aKx
+         u3kKivhTf09kLKw/gXaDPVwFlUNgO7lXeT6SvQHdslvLWbNeQE9N+8mSjSdsYgZkuhY3
+         vg2Q==
+X-Gm-Message-State: AOAM533iO763QwIFhsdTvId1zehLKSChFAUGqdxFYfFozl0P2UWS4AjW
+        vaMkzPL/UEI6XlD1fqS7FLDoPumQ/MpjTqSVyYc=
+X-Google-Smtp-Source: ABdhPJybMiLB3zOCDvBDCHWNbqcFGl7t6+NdL85nhwmvdBI3ckmyzlz6A0GyjHO14bZReQdljGH0wJfxQUx6wOuAuGc=
+X-Received: by 2002:a17:902:6b45:b029:d6:c43e:ad13 with SMTP id
+ g5-20020a1709026b45b02900d6c43ead13mr3967084plt.77.1607551896394; Wed, 09 Dec
+ 2020 14:11:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201126063557.1283-1-ms@dev.tdt.de> <20201126063557.1283-5-ms@dev.tdt.de>
+ <CAJht_EMZqcPdE5n3Vp+jJa1sVk9+vbwd-Gbi8Xqy19bEdbNNuA@mail.gmail.com>
+ <CAJht_ENukJrnh6m8FLrHBwnKKyZpzk6uGWhS4_eUCyDzrCG3eA@mail.gmail.com>
+ <3e314d2786857cbd5aaee8b83a0e6daa@dev.tdt.de> <CAJht_ENOhnS7A6997CAP5qhn10NMYSVD3xOxcbPGQFLGb8z_Sg@mail.gmail.com>
+In-Reply-To: <CAJht_ENOhnS7A6997CAP5qhn10NMYSVD3xOxcbPGQFLGb8z_Sg@mail.gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Wed, 9 Dec 2020 14:11:25 -0800
+Message-ID: <CAJht_EPj-4bv6D=Ojz5KCbk0NTVfjRyEA3NmMw7etxrq8GKu8Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 4/5] net/x25: fix restart request/confirm handling
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:  Steven Rostedt (VMware) <rostedt@goodmis.org>
+On Wed, Dec 9, 2020 at 1:47 AM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> On Wed, Dec 9, 2020 at 1:41 AM Martin Schiller <ms@dev.tdt.de> wrote:
+> >
+> > Right.
+> > By the way: A "Restart Collision" is in practice a very common event to
+> > establish the Layer 3.
+>
+> Oh, I see. Thanks!
 
-Running my yearly branch profiling code, it detected a 100% wrong branch
-condition in name.c for lookup_fast(). The code in question has:
+Hi Martin,
 
-		status = d_revalidate(dentry, nd->flags);
-		if (likely(status > 0))
-			return dentry;
-		if (unlazy_child(nd, dentry, seq))
-			return ERR_PTR(-ECHILD);
-		if (unlikely(status == -ECHILD))
-			/* we'd been told to redo it in non-rcu mode */
-			status = d_revalidate(dentry, nd->flags);
-
-If the status of the d_revalidate() is greater than zero, then the function
-finishes. Otherwise, if it is an "unlazy_child" it returns with -ECHILD.
-After the above two checks, the status is compared to -ECHILD, as that is
-what is returned if the original d_revalidate() needed to be done in a
-non-rcu mode.
-
-Especially this path is called in a condition of:
-
-	if (nd->flags & LOOKUP_RCU) {
-
-And most of the d_revalidate() functions have:
-
-	if (flags & LOOKUP_RCU)
-		return -ECHILD;
-
-It appears that that is the only case that this if statement is triggered
-on two of my machines, running in production.
-
-As it is dependent on what filesystem mix is configured in the running
-kernel, simply remove the unlikely() from the if statement.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
-Changes since v1:
-
- - Remove unlikely() instead of making it a likely()
-
-diff --git a/fs/namei.c b/fs/namei.c
-index d4a6dd772303..c7b7e83853f3 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -1495,7 +1495,7 @@ static struct dentry *lookup_fast(struct nameidata *nd,
- 			return dentry;
- 		if (unlazy_child(nd, dentry, seq))
- 			return ERR_PTR(-ECHILD);
--		if (unlikely(status == -ECHILD))
-+		if (status == -ECHILD)
- 			/* we'd been told to redo it in non-rcu mode */
- 			status = d_revalidate(dentry, nd->flags);
- 	} else {
+When you submit future patch series, can you try ensuring the code to
+be in a completely working state after each patch in the series? This
+makes reviewing the patches easier. After the patches get applied,
+this also makes tracing bugs (for example, with "git bisect") through
+the commit history easier.
