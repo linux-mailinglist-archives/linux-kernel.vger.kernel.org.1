@@ -2,54 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7092D42CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:11:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF02B2D42D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732200AbgLINIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:08:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52070 "EHLO
+        id S1732057AbgLINKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:10:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732178AbgLINIL (ORCPT
+        with ESMTP id S1731847AbgLINKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:08:11 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39598C0613D6;
-        Wed,  9 Dec 2020 05:07:31 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmzBj-0003sZ-21; Wed, 09 Dec 2020 13:07:23 +0000
-Date:   Wed, 9 Dec 2020 13:07:23 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] iov: introduce ITER_BVEC_FLAG_FIXED
-Message-ID: <20201209130723.GL3579531@ZenIV.linux.org.uk>
-References: <cover.1607477897.git.asml.silence@gmail.com>
- <de27dbca08f8005a303e5efd81612c9a5cdcf196.1607477897.git.asml.silence@gmail.com>
- <20201209083645.GB21968@infradead.org>
+        Wed, 9 Dec 2020 08:10:13 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 198B7C061793
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 05:09:33 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kmzDf-00063F-7e; Wed, 09 Dec 2020 14:09:23 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kmzDd-0001av-0w; Wed, 09 Dec 2020 14:09:21 +0100
+Date:   Wed, 9 Dec 2020 14:09:21 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH net v1] net: dsa: qca: ar9331: fix sleeping function
+ called from invalid context bug
+Message-ID: <20201209130920.hjjnfh2ioc33yd2y@pengutronix.de>
+References: <20201204145751.13166-1-o.rempel@pengutronix.de>
+ <8f44d5cb-fa99-b004-078e-078241f265a0@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201209083645.GB21968@infradead.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <8f44d5cb-fa99-b004-078e-078241f265a0@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:08:43 up 7 days,  3:15, 25 users,  load average: 0.01, 0.05, 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 08:36:45AM +0000, Christoph Hellwig wrote:
+On Fri, Dec 04, 2020 at 04:00:35PM +0100, Marc Kleine-Budde wrote:
+> On 12/4/20 3:57 PM, Oleksij Rempel wrote:
+> [...]
 > 
-> This is making the iter type even more of a mess than it already is.
-> I think we at least need placeholders for 0/1 here and an explicit
-> flags namespace, preferably after the types.
 > 
-> Then again I'd much prefer if we didn't even add the flag or at best
-> just add it for a short-term transition and move everyone over to the
-> new scheme.  Otherwise the amount of different interfaces and supporting
-> code keeps exploding.
+> > +static void ar9331_sw_irq_bus_sync_unlock(struct irq_data *d)
+> >  {
+> >  	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
+> >  	struct regmap *regmap = priv->regmap;
+> >  	int ret;
+> >  
+> >  	ret = regmap_update_bits(regmap, AR9331_SW_REG_GINT_MASK,
+> > -				 AR9331_SW_GINT_PHY_INT,
+> > -				 AR9331_SW_GINT_PHY_INT);
+> > +				 AR9331_SW_GINT_PHY_INT, priv->irq_mask);
+> >  	if (ret)
+> > -		dev_err(priv->dev, "could not unmask IRQ\n");
+> > +		dev_err(priv->dev, "could not mask IRQ\n");
+> 
+> Technically this could be a mask or unmask operation. What about changing the
+> error message to: "faild to change IRQ mask"?
 
-Yes.  The only problem I see is how to describe the rules - "bdev-backed
-iterators need the bvec array to stay allocated until IO completes"?
-And one way or another, that needs to be documented - D/f/porting with
-"mandatory" for priority.
+OK, it make sense. I'll fix it.
+
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
