@@ -2,155 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DBC2D4613
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6161A2D462E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732360AbgLIP4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:56:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:36524 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729694AbgLIP4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:56:22 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 071471FB;
-        Wed,  9 Dec 2020 07:55:36 -0800 (PST)
-Received: from [10.57.24.55] (unknown [10.57.24.55])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C20013F68F;
-        Wed,  9 Dec 2020 07:55:34 -0800 (PST)
-Subject: Re: [PATCH] thermal/core: Emit a warning if the thermal zone is
- updated without ops
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rui.zhang@intel.com, Thara Gopinath <thara.gopinath@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201207190530.30334-1-daniel.lezcano@linaro.org>
- <2b8ce280-cb91-fb23-d19a-00dcee2a3e5a@arm.com>
- <81e25f27-344e-f6c2-5f08-68068348f7ba@linaro.org>
- <dd5f9f97-ab30-5bb0-1211-66d211035968@arm.com>
- <7dff767d-3089-584e-f77d-33018faa38ea@linaro.org>
- <90989e59-f880-93df-7fbf-74c26fa8258f@arm.com>
- <652ae54b-45aa-eef2-bf96-b4eae941ef04@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <aa40f440-7b1e-1220-1719-e396ea7390ae@arm.com>
-Date:   Wed, 9 Dec 2020 15:55:33 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1732383AbgLIP5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:57:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33591 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731477AbgLIP52 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 10:57:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607529361;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uFaK2xHbBrVxZ0l3Z3kyZu5KCrvdAykdVCt3rt7oNiI=;
+        b=BRKN+eg2eFy3fEcQQKr8JKrj6O2nA9tBdK3vyQzqPD9KNVedI5SGCB05E2YzqsZtrtg6hg
+        RpddphcP3CaHbehMAYju1aLFmTd5HWk+uFIc6uat4QToITkbVv0nd7wT3G8X7eTVkwawI3
+        ngG/US7fjPStEddopwXPDXze73AdKzs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-177-vgW0b2qZMw-rswXel0oqEw-1; Wed, 09 Dec 2020 10:55:57 -0500
+X-MC-Unique: vgW0b2qZMw-rswXel0oqEw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A01CD879500;
+        Wed,  9 Dec 2020 15:55:55 +0000 (UTC)
+Received: from krava (unknown [10.40.195.176])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B15FA60BF1;
+        Wed,  9 Dec 2020 15:55:53 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 16:55:52 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>
+Subject: Re: [PATCH v2 2/2] perf-stat: enable counting events for BPF programs
+Message-ID: <20201209155552.GC69683@krava>
+References: <20201204061310.3196812-1-songliubraving@fb.com>
+ <20201204061310.3196812-3-songliubraving@fb.com>
+ <20201207220703.GA4116109@krava>
+ <C94864E9-CE05-4AEA-A986-731BFC0C95FF@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <652ae54b-45aa-eef2-bf96-b4eae941ef04@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C94864E9-CE05-4AEA-A986-731BFC0C95FF@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 08, 2020 at 01:36:57AM +0000, Song Liu wrote:
 
+SNIP
 
-On 12/9/20 12:20 PM, Daniel Lezcano wrote:
-> On 09/12/2020 11:41, Lukasz Luba wrote:
->>
->>
->> On 12/8/20 3:19 PM, Daniel Lezcano wrote:
->>> On 08/12/2020 15:37, Lukasz Luba wrote:
->>>>
->>>>
->>>> On 12/8/20 1:51 PM, Daniel Lezcano wrote:
->>>>>
->>>>> Hi Lukasz,
->>>>>
->>>>> On 08/12/2020 10:36, Lukasz Luba wrote:
->>>>>> Hi Daniel,
->>>>>
->>>>> [ ... ]
->>>>>
->>>>>>>        static void thermal_zone_device_init(struct thermal_zone_device
->>>>>>> *tz)
->>>>>>> @@ -553,11 +555,9 @@ void thermal_zone_device_update(struct
->>>>>>> thermal_zone_device *tz,
->>>>>>>          if (atomic_read(&in_suspend))
->>>>>>>              return;
->>>>>>>      -    if (!tz->ops->get_temp)
->>>>>>> +    if (update_temperature(tz))
->>>>>>>              return;
->>>>>>>      -    update_temperature(tz);
->>>>>>> -
->>>>>>
->>>>>> I think the patch does a bit more. Previously we continued running the
->>>>>> code below even when the thermal_zone_get_temp() returned an error
->>>>>> (due
->>>>>> to various reasons). Now we stop and probably would not schedule next
->>>>>> polling, not calling:
->>>>>> handle_thermal_trip() and monitor_thermal_zone()
->>>>>
->>>>> I agree there is a change in the behavior.
->>>>>
->>>>>> I would left update_temperature(tz) as it was and not check the
->>>>>> return.
->>>>>> The function thermal_zone_get_temp() can protect itself from missing
->>>>>> tz->ops->get_temp(), so we should be safe.
->>>>>>
->>>>>> What do you think?
->>>>>
->>>>> Does it make sense to handle the trip point if we are unable to read
->>>>> the
->>>>> temperature?
->>>>>
->>>>> The lines following the update_temperature() are:
->>>>>
->>>>>     - thermal_zone_set_trips() which needs a correct tz->temperature
->>>>>
->>>>>     - handle_thermal_trip() which needs a correct tz->temperature to
->>>>> compare with
->>>>>
->>>>>     - monitor_thermal_zone() which needs a consistent tz->passive.
->>>>> This one
->>>>> is updated by the governor which is in an inconsistent state because
->>>>> the
->>>>> temperature is not updated.
->>>>>
->>>>> The problem I see here is how the interrupt mode and the polling mode
->>>>> are existing in the same code path.
->>>>>
->>>>> The interrupt mode can call thermal_notify_framework() for critical/hot
->>>>> trip points without being followed by a monitoring. But for the other
->>>>> trip points, the get_temp is needed.
->>>>
->>>> Yes, I agree that we can bail out when there is no .get_temp() callback
->>>> and even not schedule next polling in such case.
->>>> But I am just not sure if we can bail out and not schedule the next
->>>> polling, when there is .get_temp() populated and the driver returned
->>>> an error only at that moment, e.g. indicating some internal temporary,
->>>> issue like send queue full, so such as -EBUSY, or -EAGAIN, etc.
->>>> The thermal_zone_get_temp() would pass the error to update_temperature()
->>>> but we return, losing the next try. We would not check the temperature
->>>> again.
->>>
->>> Hmm, right. I agree with your point.
->>>
->>> What about the following changes:
->>>
->>>    - Add the new APIs:
->>>
->>>      thermal_zone_device_critical(struct thermal_zone_device *tz);
->>>        => emergency poweroff
->>>
->>>      thermal_zone_device_hot(struct thermal_zone_device *tz);
->>>        => userspace notification
->>
->> They look promising, I have to look into the existing code.
->> When they would be called?
+> > SNIP
+> > 
+> >> +static int bpf_program_profiler__read(struct evsel *evsel)
+> >> +{
+> >> +	int num_cpu = evsel__nr_cpus(evsel);
+> >> +	struct bpf_perf_event_value values[num_cpu];
+> >> +	struct bpf_counter *counter;
+> >> +	int reading_map_fd;
+> >> +	__u32 key = 0;
+> >> +	int err, cpu;
+> >> +
+> >> +	if (list_empty(&evsel->bpf_counter_list))
+> >> +		return -EAGAIN;
+> >> +
+> >> +	for (cpu = 0; cpu < num_cpu; cpu++) {
+> >> +		perf_counts(evsel->counts, cpu, 0)->val = 0;
+> >> +		perf_counts(evsel->counts, cpu, 0)->ena = 0;
+> >> +		perf_counts(evsel->counts, cpu, 0)->run = 0;
+> >> +	}
+> >> +	list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
+> >> +		struct bpf_prog_profiler_bpf *skel = counter->skel;
+> >> +
+> >> +		reading_map_fd = bpf_map__fd(skel->maps.accum_readings);
+> >> +
+> >> +		err = bpf_map_lookup_elem(reading_map_fd, &key, values);
+> >> +		if (err) {
+> >> +			fprintf(stderr, "failed to read value\n");
+> >> +			return err;
+> >> +		}
+> >> +
+> >> +		for (cpu = 0; cpu < num_cpu; cpu++) {
+> >> +			perf_counts(evsel->counts, cpu, 0)->val += values[cpu].counter;
+> >> +			perf_counts(evsel->counts, cpu, 0)->ena += values[cpu].enabled;
+> >> +			perf_counts(evsel->counts, cpu, 0)->run += values[cpu].running;
+> >> +		}
+> > 
+> > so we sum everything up for all provided bpf IDs,
+> > should we count/display them separately?
 > 
-> They can be called directly by the driver when there is no get_temp
-> callback instead of calling thermal_zone_device_update, and by the usual
-> code path via handle_critical_trip function.
-> 
-> Also that can solve the issue [1] when registering a device which is
-> already too hot [1] by adding the ops in the thermal zone.
-> 
-> [1] https://lkml.org/lkml/2020/11/28/166
-> 
+> I think that's the default behavior with --pid x,y,z or --cpu a,b,c. 
+> Do we need to separate them?
 
+ah right, and we have --per-thread that splits the output
+for specified pids
 
-Thank you for the link. I went through these discussions. Let me add
-some comment below your posted RFC.
+I think we should add something like that for bpf, so we
+could see stats for specific programs
+
+it's ok to do this as a follow up patch in future
+
+thanks,
+jirka
 
