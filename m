@@ -2,128 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672E32D467A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 826CC2D467E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:15:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730905AbgLIQLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:11:48 -0500
-Received: from mail-dm6nam10on2066.outbound.protection.outlook.com ([40.107.93.66]:16961
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727415AbgLIQLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:11:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q5pS1KCK5WKJR6K+oUXWY8odqERAZ5Lnf7y26FEh/XKgvGLTpnYc8gpI0kFr7rIwzuAv/ekmfHNcO7rU+GZTiTxRa4rl1r0Xg2S5jTFzj0CP5zmHBl37wLVwJ+tO1YQAwk4RsDjFY7NOzdLWmQYgeQ4kj3gZBywyjRZ1FJnDjuz+bNbY15gm6wOQQ/7T6kFkvpSwuwnkokakPn/6UCVgVa7ynMJJMCKtHF0aMx9deiHTkp2aS4rUbKrCGN8bjekrv7qUQknyit1Nj4+/mxazZa5v8xcTFT+BCC4PyONuDsDIYtrAOPEBxvxgBe84/ptFgdB6K5bCYmJqC2XEXVor+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w7HlXYyvyJ7UQ5TJcbB/wsgmxLfytwe9GV+qTwWdXuc=;
- b=j9cVpDc+sxxhrNFOB/abrAuoZdhAGtCjhx8GjmWnW1Pb85YRLyPH1pb71a0U9FiG4hY4Kf6q7yxGZ72Ew05pTCb3lqN3ec2bE8sKY1PovyLOfpgNtM2XW82/bzqN1QTsg5Z591Egrxidw3RRN3pzYpBG28FciCD1Xa8E7Lpath8rsGGssZslB4B/JnJVHvgMiVovamWu63QWAxc7zAgxxxF5vHFDFUFzc5yeefsEqTmzj2ZGIRYFecaYTRuisE5aT72WB2nkSE2oGbsLdeorVibaKCoHIhi52A08oUgWz4BwvMQ9wrNS3qkmVuA3vU2w1VMC0iGjDJkC10vXl82L6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1731338AbgLIQMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:12:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731095AbgLIQLz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:11:55 -0500
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25BCC061793
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 08:11:14 -0800 (PST)
+Received: by mail-ua1-x944.google.com with SMTP id 4so657740uap.8
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 08:11:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w7HlXYyvyJ7UQ5TJcbB/wsgmxLfytwe9GV+qTwWdXuc=;
- b=r3SrVZ9Lnmwh+ymUH410sjLAitat1iKB1dTP0MzmBdK8pUwotIbAu8HtPeJUMLmGTYTI9pCC8qh6aBOaSs6D4CBPaB1fCwFh2CJwES9IUVfaGBXbo1Xoc1BE9N91OFqrbALYPzqEMORchXnWrZCv6YhsGWGx1OghIevJhWo0kbM=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM6PR12MB3962.namprd12.prod.outlook.com (2603:10b6:5:1ce::21)
- by DM6PR12MB2795.namprd12.prod.outlook.com (2603:10b6:5:41::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Wed, 9 Dec
- 2020 16:10:55 +0000
-Received: from DM6PR12MB3962.namprd12.prod.outlook.com
- ([fe80::d055:19dc:5b0f:ed56]) by DM6PR12MB3962.namprd12.prod.outlook.com
- ([fe80::d055:19dc:5b0f:ed56%6]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
- 16:10:55 +0000
-Subject: Re: linux-next: build warning after merge of the drm-misc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20201209210211.306f3c61@canb.auug.org.au>
-From:   Luben Tuikov <luben.tuikov@amd.com>
-Message-ID: <4005f7bb-1a46-0357-cccd-5febae8c4fe1@amd.com>
-Date:   Wed, 9 Dec 2020 11:10:51 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
-In-Reply-To: <20201209210211.306f3c61@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.54.211]
-X-ClientProxiedBy: YT1PR01CA0149.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2f::28) To DM6PR12MB3962.namprd12.prod.outlook.com
- (2603:10b6:5:1ce::21)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RAzf84xm2mgxYvHDSz3COzuojd6IcnSxMMVRpqKMx58=;
+        b=gIACvSNIaNgfk8yYU6S+oPUv61DEJWlMah84jEakzPWNcyXSQgGfZRUQCmTA2z2H68
+         OBzeyFblbpXMDN4KMc97LtU39WqbsHFa8AfAomXUSKTieYHPNM7GEZ6ZC1XAJfkKWHDD
+         N/rGmO7I1HBChFKlMvhDUHT+DD0u7soRUGjQ6XTsXx6XX9hNVWvtKbx0EmKVXSx0x63q
+         uSx0K2QC6qZIjcT/Vy+GTkse17WcJ35wK97vuG6odXGIYTCqk24f8kQwlYGGa1smU8sB
+         zozuG5IW1kXDMdiObqppDeT7967KYlhg+uX66AupNL004gGWmHXS7ElwVjsdgyVqwHeF
+         qKYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RAzf84xm2mgxYvHDSz3COzuojd6IcnSxMMVRpqKMx58=;
+        b=fAXnMALUhi8hxF24ZP0gvT7ikL6GyaIj0EGb3TQ29pT7efda4q8YR2N57kCr/nV+Xa
+         Ri9MZH1jO2mWyUiXjxO7YYeHVYXt+cLWFlElEMJ6knenyRtGpxf+N2Wsw9KYAn38vrlS
+         /0xKjnYYq6ApDpOVcxD//vwIzTflrCX+N0mOQkQJ/hw4mHgCCd26i+mTJXzGFzLjYS8A
+         CPf19OOXTLBu1YOrUi5deZhpLESoaKzPgKk4YgJ2k58ZIUz8fc0pSTs62OJAFIOSi6bw
+         hD8Xi7BNCQ4kPWYt2mbZDAtEMdhuLZ/oVIfIfnPTSWWxdu8Jia92ryI9rY/+irgxJIVw
+         3cxg==
+X-Gm-Message-State: AOAM530so+ifgvdgZqWFlM5BMIv/KohWR/qghkBXbWli8T6UOvK/i9gd
+        7uoQpe6gM3MvltQ29zcXR1Xv94WTDxrbwVvvJvq8Xg==
+X-Google-Smtp-Source: ABdhPJxCOtYM6wE6I23ECIs2Qe4RqO9Fsld+KWhukNaUvLqxacy6A4k/Hk6QX5PPXhxx/JBHh4wZPl2Wms4urz4X8pg=
+X-Received: by 2002:ab0:1c0a:: with SMTP id a10mr2343531uaj.89.1607530273519;
+ Wed, 09 Dec 2020 08:11:13 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.31.18.65] (165.204.54.211) by YT1PR01CA0149.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 16:10:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 225e9c0e-38c8-4993-0969-08d89c5d01fc
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2795:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2795E3EE1FD690D8837362BC99CC0@DM6PR12MB2795.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:983;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kiDsXg3dqSJ5bdNQSX3+1KOw6CKySxc3dTRmyojkoYxkrKHoNMdfrnQvuLjDIBL30+lpxDBiB2CUWAOrpoMnGzIKzrvkGYp5sdN5hLb5pnFXZF8IWLU1d4mvfJ2UozriF672P+xUt3ZorKAmthj9edc2LWGMW/bT2WfrY8I00lE9MBjh+XrjTa5WaC3kvpyFHOgMeOvZDIObeGmkmgnFrCFdmKoRf2XBQ1fL0I0KtKLPr3pmdBwB98c3T9dcYF1TGsO1BPrvn+KcqxcWgI86uSd0EODV6XlCHFJbYv892eH3tvwdk6hjP+GqHwcfm98tV2RjeL2ZlpfoF2d0kSjBZQ0patbfuXd+vBGdLs6HGo2uDjCzwe9eD8FUQsErw06HfoCymf4Eq0pLEJb5UihgP7NhM9TE74sX4uBrGvEXKgI12oN4+3sv3UZeIBKQW/h/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3962.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(508600001)(8676002)(2906002)(4326008)(8936002)(54906003)(53546011)(34490700003)(44832011)(66946007)(66476007)(186003)(2616005)(31686004)(956004)(83380400001)(4744005)(16526019)(66556008)(110136005)(86362001)(52116002)(5660300002)(16576012)(36756003)(26005)(31696002)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?AiBLBMimMsy7ve7GfhX/rYVv2+qCEwqxsW8RzR13TTbyt3hHggdSqalG?=
- =?Windows-1252?Q?FNRs/V+gv/inkNYTXn973NOIlprJWNdD0PlyO1Y8DByKIcrqdyROPy/L?=
- =?Windows-1252?Q?JaE9ELYW6ev/me7msZRUN8u1dqjKJybnKTgaaa90MydmNcnJlfrSKI8d?=
- =?Windows-1252?Q?L2XS5JUrUHJq2Bcjgno/FBjXA/tjQX5WhFISwPIOawaHUrZ5QPXU/kN+?=
- =?Windows-1252?Q?GQFJPfa1GfyKjms2pIpHomfCEobmT71au9EuxKpKcfdsL7VqmYBXLOrJ?=
- =?Windows-1252?Q?XT90HKoj+2TghhT0Eb4KVj4thDxMUsT3KItJYiptE3H/7U86nxMTEF2i?=
- =?Windows-1252?Q?8xGtJGlXwWaGb7+Pp4FKvxMYJjPwMx0UIA0ikAXnwrlII0okm2X8ZMwr?=
- =?Windows-1252?Q?kMxhaFeI7WMHp18RY4nd0bYzJE2UJO05p/6R+yB/iY8p2OUuRgog/lvp?=
- =?Windows-1252?Q?6JO5hcJ9KwBRtMlje5viMaPdxrPGxmxncHqxoZ3qwOR34oRweaumedVZ?=
- =?Windows-1252?Q?fTk/FcUm0LJhMV9UM36mVtQ+Caha4ZlBpi1uuGG4ria8nqoy9j1D5czn?=
- =?Windows-1252?Q?1RJiY1ZbNt7dsyuFuUjErBVNvEt6p9omVZkKpoyd3h86TyOu7NPqD/62?=
- =?Windows-1252?Q?khMjv4dBYIbR1Y6Ai+aBwFKmMUcccWuqq/TAk50O1oqPxI2BBZh34Ub8?=
- =?Windows-1252?Q?Gzjwz7yZGVet7+6aQkQZZ00sSxn0ktLIsRFcmqqTUBlzIBLi8CNYoTpF?=
- =?Windows-1252?Q?5m7Bg2y+qJQ+WJTE+Ifl+8GMlA4SFbym3omndVP9fUx5Mqt9HO663fQz?=
- =?Windows-1252?Q?cVDo7FswhWJ462kDw3T6r3Gr5d7ta5MsyGmOfOrM0KGQ6MGgTXqr1tWl?=
- =?Windows-1252?Q?hr6dzsg2rR4eBDPjXbLv/Gi5pFuYou3eJo/yYFhlE0oeb1Fqp7aGGUmZ?=
- =?Windows-1252?Q?vmmSjH/ZZZWnhcfeaEbGZH+GwiKRHk80rC8fmwghBDcL9lUDnOwmHXLc?=
- =?Windows-1252?Q?9RORjpLrFp42DV26Jle3M/roeP57L06IkY3h3yNAuRd8TiMkG0GN1YN6?=
- =?Windows-1252?Q?AFThnY6kvhgbsuAg?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3962.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 16:10:55.1321
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 225e9c0e-38c8-4993-0969-08d89c5d01fc
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sHeQyS9spUhjaVgRB3sxP/ADhrjnj5pD+KcqaTn493f2Bc25YNS7+5Wvyqki7NjR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2795
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
+ <CABCJKueCHo2RYfx_A21m+=d1gQLR9QsOOxCsHFeicCqyHkb-Kg@mail.gmail.com>
+ <CAK8P3a1Xfpt7QLkvxjtXKcgzcWkS8g9bmxD687+rqjTafTzKrg@mail.gmail.com>
+ <CAKwvOd=hL=Vt1ATYqky9jmv+tM5hpTnLRuZudG-7ki0EYoFGJQ@mail.gmail.com> <CAK8P3a1k_cq3NOUeuQC4-uKDBaGq49GSjAMSiS_M9AVMBxv51g@mail.gmail.com>
+In-Reply-To: <CAK8P3a1k_cq3NOUeuQC4-uKDBaGq49GSjAMSiS_M9AVMBxv51g@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Wed, 9 Dec 2020 08:11:02 -0800
+Message-ID: <CABCJKucn6HnOw+oonjGU8q7w3uC0H727JZ30LzTbXx9BVLb0Zg@mail.gmail.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09 05:02, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the drm-misc tree, today's linux-next build (htmldocs)
-> produced this warning:
-> 
-> include/drm/gpu_scheduler.h:201: warning: Function parameter or member 'list' not described in 'drm_sched_job'
-> 
-> Introduced by commit
-> 
->   8935ff00e3b1 ("drm/scheduler: "node" --> "list"")
-> 
+On Tue, Dec 8, 2020 at 2:20 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Tue, Dec 8, 2020 at 10:10 PM 'Nick Desaulniers' via Clang Built
+> Linux <clang-built-linux@googlegroups.com> wrote:
+> >
+> > On Tue, Dec 8, 2020 at 1:00 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > >
+> > > On Tue, Dec 8, 2020 at 5:43 PM 'Sami Tolvanen' via Clang Built Linux
+> > > <clang-built-linux@googlegroups.com> wrote:
+> > > >
+> > > > On Tue, Dec 8, 2020 at 4:15 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> > > > >
+> > > > > - one build seems to take even longer to link. It's currently at 35GB RAM
+> > > > >   usage and 40 minutes into the final link, but I'm worried it might
+> > > > > not complete
+> > > > >   before it runs out of memory.  I only have 128GB installed, and google-chrome
+> > > > >   uses another 30GB of that, and I'm also doing some other builds in parallel.
+> > > > >   Is there a minimum recommended amount of memory for doing LTO builds?
+> > > >
+> > > > When building arm64 defconfig, the maximum memory usage I measured
+> > > > with ThinLTO was 3.5 GB, and with full LTO 20.3 GB. I haven't measured
+> > > > larger configurations, but I believe LLD can easily consume 3-4x that
+> > > > much with full LTO allyesconfig.
+> > >
+> > > Ok, that's not too bad then. Is there actually a reason to still
+> > > support full-lto
+> > > in your series? As I understand it, full LTO was the initial approach and
+> > > used to work better, but thin LTO is actually what we want to use in the
+> > > long run. Perhaps dropping the full LTO option from your series now
+> > > that thin LTO works well enough and uses less resources would help
+> > > avoid some of the problems.
+> >
+> > While all developers agree that ThinLTO is a much more palatable
+> > experience than full LTO; our product teams prefer the excessive build
+> > time and memory high water mark (at build time) costs in exchange for
+> > slightly better performance than ThinLTO in <benchmarks that I've been
+> > told are important>.  Keeping support for full LTO in tree would help
+> > our product teams reduce the amount of out of tree code they have.  As
+> > long as <benchmarks that I've been told are important> help
+> > sell/differentiate phones, I suspect our product teams will continue
+> > to ship full LTO in production.
+>
+> Ok, fair enough. How about marking FULL_LTO as 'depends on
+> !COMPILE_TEST' then? I'll do that locally for my randconfig tests,
+> but it would help the other build bots that also force-enable
+> COMPILE_TEST.
 
-Thanks for the notification.
+Sure, that sounds reasonable to me. I'll add it in v9.
 
-I'll send out a patch to fix this.
-
-Regards,
-Luben
+Sami
