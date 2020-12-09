@@ -2,133 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC2D2D3830
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A272B2D3833
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:18:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbgLIBRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 20:17:20 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:37516 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725995AbgLIBRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 20:17:20 -0500
-Received: from [10.130.0.52] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxitBrJdBfB90aAA--.43975S3;
-        Wed, 09 Dec 2020 09:16:29 +0800 (CST)
-Subject: Re: [PATCH v2 2/4] spi: Add devicetree bindings documentation for
- Loongson SPI
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1607413467-17698-1-git-send-email-zhangqing@loongson.cn>
- <1607413467-17698-2-git-send-email-zhangqing@loongson.cn>
- <b97c4d59-3279-f67d-d951-1e9436faa640@gmail.com>
- <20e7dafc-8c67-79e4-e64a-a08e21101678@loongson.cn>
- <3f5a7d26-e78a-b02e-5fc2-c241547c683d@gmail.com>
-Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gaojuxin@loongson.cn,
-        yangtiezhu@loongson.cn
-From:   zhangqing <zhangqing@loongson.cn>
-Message-ID: <0732b18d-cff4-6556-cf80-395ff8e9b15b@loongson.cn>
-Date:   Wed, 9 Dec 2020 09:16:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1726010AbgLIBSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 20:18:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725942AbgLIBSU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 20:18:20 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56C1C061794
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 17:17:39 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id q16so221046edv.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 17:17:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7fIOzCvpd6aSP3MBc1QUX2SNDA47p2Jnl5uGB646gB4=;
+        b=swFJsHPTureZg+ccHNrZKz0Ay6MPRyHrYK561JfYX8lByhLMlQt/+fMH6u8y4qqbEw
+         VYmoZB25A6sG0S2neeGtA6Gc407XbR8j8yVhJmpqypbPJYSH1qdo/njjEKYWtjNWxqhu
+         Wao+dMIbW/kdfe0UmeYmX6XdyVZotXSdPYuf5io+ZsxETGDvxdkE0hPA0cBd5Jq4f4Ud
+         bM9LawcpsCm13fCdas2EBJ3ZQH2lxCPm9DT8sQdYzvuWQgNOmce6A8OGOEc2pyMxBCa0
+         wyeHZoCqxkacBcxMGHzxgw2nsknYfYOnmQA/Is/6FqI6b1OV79guRBXGSZPNlumpM+Ha
+         AW4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7fIOzCvpd6aSP3MBc1QUX2SNDA47p2Jnl5uGB646gB4=;
+        b=jZzdYlZe8K6xigLAFwPG13jKACtFRBTQRg8zEaqBjwU7rJaAdC9c22SaxMRv6dTPFQ
+         9qYmAna0KK4HxxB07upiYIdyVP8pfWuYl1uaMftPqkuH6lPKsxfPPG/N3nrj9vwJFTue
+         ZnOLR3ky40d5CLtw5Zm9dHuuzbDM74Zi+NQOhq3fX4RacVlBkiEoEorV6o/YCbfCIaQJ
+         1x3lOuZ6kMZtctkLaPWSNI0/3RlXDMOzU8pZJ2YhTi5LHslSHqOFvDAfcUBH5WFexljo
+         pskXNW6Pb80v68zm+kx20Z8ef/HaVhZCJA8NU49Jhg90Fpq5OCYZ8CPs80kY5+91nOd/
+         p3pw==
+X-Gm-Message-State: AOAM532VkutXsIHcjSrYicvnRdeVI+hTWqaeLlm5JzqgrQAj396KO9NR
+        E015HlStVmYT4NgU0pBzQfXUE4G2GEbW1ORUtTytWw==
+X-Google-Smtp-Source: ABdhPJzxVnQtRyJI4S2IHeWKfYBJCVMTSxNCGUnGWc8AdVYhwvSrNC/IyV+FIez7TrBAryxGqC3ACKxHaNpVNQOeJSU=
+X-Received: by 2002:a50:e0ce:: with SMTP id j14mr652719edl.18.1607476658534;
+ Tue, 08 Dec 2020 17:17:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <3f5a7d26-e78a-b02e-5fc2-c241547c683d@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxitBrJdBfB90aAA--.43975S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr48Aw1DuF4xGF48CF17Wrg_yoW8Kr1kpF
-        1UCF45tF4kJw17Ca1aq3WxCwnxtr95uF4UWFn2qryUAryDK3Zxt3W5trWUury8WF48AFW0
-        vrZ7GFWfKry5J3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
-        WUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_KwCF04k20xvY0x0EwI
-        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
-        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-        6cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbLiSPUUUUU==
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+References: <20201209002418.1976362-1-ben.widawsky@intel.com> <20201209002418.1976362-13-ben.widawsky@intel.com>
+In-Reply-To: <20201209002418.1976362-13-ben.widawsky@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 8 Dec 2020 17:17:36 -0800
+Message-ID: <CAPcyv4gW8H1wNVDFhSt1SFbU=mcNZFKBve4xG24rGJaJg1wQZA@mail.gmail.com>
+Subject: Re: [RFC PATCH 12/14] cxl: Add basic debugging
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/08/2020 10:48 PM, Sergei Shtylyov wrote:
-> On 12/8/20 1:47 PM, zhangqing wrote:
+On Tue, Dec 8, 2020 at 4:24 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
 >
->>>> Add spi-ls7a binding documentation.
->>>>
->>>> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
->>>> ---
->>>>    Documentation/devicetree/bindings/spi/spi-ls7a.txt | 31 ++++++++++++++++++++++
->>>>    1 file changed, 31 insertions(+)
->>>>    create mode 100644 Documentation/devicetree/bindings/spi/spi-ls7a.txt
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/spi/spi-ls7a.txt b/Documentation/devicetree/bindings/spi/spi-ls7a.txt
->>>> new file mode 100644
->>>> index 0000000..56247b5
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/spi/spi-ls7a.txt
->>>> @@ -0,0 +1,31 @@
->>>> +Binding for LOONGSON LS7A SPI controller
->>>> +
->>>> +Required properties:
->>>> +- compatible: should be "pci0014,7a0b.0","pci0014,7a0b","pciclass088000","pciclass0880".
->>>> +- reg: reference IEEE Std 1275-1994.
->>>> +- #address-cells: <1>, as required by generic SPI binding.
->>>> +- #size-cells: <0>, also as required by generic SPI binding.
->>>> +- #interrupts: No hardware interrupt.
->>>     You say it's a required prop, yet yuoe example doesn't have it...
->>          I want to emphasize here that LS7A SPI has no hardware interrupts, and DT is not actually used.
->     The why document the property at all?
-           Thank you for your reply again,
-
-           I will remove the #interrupt attribute in the third edition.
+> Provide a standard debug function for use throughout the driver.
 >
->>>> +
->>>> +Child nodes as per the generic SPI binding.
->>>> +
->>>> +Example:
->>>> +
->>>> +            spi@16,0 {
->>>> +                compatible = "pci0014,7a0b.0",
->>>> +                        "pci0014,7a0b",
->>>> +                        "pciclass088000",
->>>> +                        "pciclass0880";
->>>> +
->>>> +                #address-cells = <1>;
->>>> +                #size-cells = <0>;
->>>> +                reg = <0xb000 0x0 0x0 0x0 0x0>;
->>>> +                num-chipselects = <0>;
->>>> +                spiflash: s25fl016k@0 {
->>>> +                #address-cells = <1>;
->>>> +                #size-cells = <1>;
->>>     Once more?
->>>
->>>> +                compatible ="spansion,s25fl016k","jedec,spi-nor";
->>>     Once more?
->>>
->>>> + spi-max-frequency=<50000000>;
->>>> +                reg=<0>;
->>>     Once more? Did you mean this for a child node?
->>         Yes, these are child node attributes, the child node splash is not necessary.
->     You should indent the child nodes with 1 more tab...
-         I will do it and send the v3 in the soon.
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> ---
+>  drivers/cxl/cxl.h |  3 +++
+>  drivers/cxl/mem.c | 26 +++++++++++++++++++++++++-
+>  2 files changed, 28 insertions(+), 1 deletion(-)
 >
->>>> +                };
->>>> +            };
->>       Thanks
->>
->>       -Qing
-> MBR, Sergei
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index 77c2dee6843c..e5afb89dab0b 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -9,6 +9,9 @@
+>  #include <linux/bitops.h>
+>  #include <linux/io.h>
+>
+> +#define cxl_debug(fmt, ...)                                                    \
+> +       pr_debug("CXL DEBUG: %s: " fmt, __func__, ##__VA_ARGS__)
+> +
 
+This should be dev_dbg(), then you don't need the CXL DEBUG prefix. In
+fact you don't need a cxl_debug() macro at all in that case. cxl_mem
+might need a ->dev attribute for this purpose.
+
+>  #define CXL_SET_FIELD(value, field)                                            \
+>         ({                                                                     \
+>                 WARN_ON(!FIELD_FIT(field##_MASK, value));                      \
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index a2cea7ac7cc6..6b2f8d3776b5 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -122,9 +122,12 @@ static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
+>  {
+>         const int timeout = msecs_to_jiffies(2000);
+>         const unsigned long start = jiffies;
+> +       unsigned long end = start;
+>
+>         while (cxl_doorbell_busy(cxlm)) {
+> -               if (time_after(jiffies, start + timeout)) {
+> +               end = jiffies;
+> +
+> +               if (time_after(end, start + timeout)) {
+>                         /* Check again in case preempted before timeout test */
+>                         if (!cxl_doorbell_busy(cxlm))
+>                                 break;
+> @@ -133,6 +136,8 @@ static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
+>                 cpu_relax();
+>         }
+>
+> +       cxl_debug("Doorbell wait took %dms",
+> +                 jiffies_to_msecs(end) - jiffies_to_msecs(start));
+>         return 0;
+>  }
+>
+> @@ -180,6 +185,8 @@ static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
+>         }
+>
+>         /* #4 */
+> +       cxl_debug("Sending command to %s\n",
+> +                 dev_driver_string(&cxlm->pdev->dev));
+
+dev_dbg() already includes dev_driver_string().
+
+>         cxl_write_mbox_reg32(cxlm, CXLDEV_MB_CTRL_OFFSET,
+>                              CXLDEV_MB_CTRL_DOORBELL);
+>
+> @@ -308,6 +315,8 @@ static int cxl_mem_open(struct inode *inode, struct file *file)
+>         if (!cxlmd)
+>                 return -ENXIO;
+>
+> +       cxl_debug("Opened %pD\n", file);
+> +
+>         file->private_data = cxlmd;
+>
+>         return 0;
+> @@ -383,6 +392,10 @@ static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
+>                 .size_in = cmd->info.size_in,
+>                 .size_out = size_out,
+>         };
+> +       cxl_debug("Submitting command for user\n"
+> +                 "\topcode: %x\n"
+> +                 "\tsize: %zub/%zub\n",
+> +                 mbox_cmd.opcode, mbox_cmd.size_in, mbox_cmd.size_out);
+>         rc = cxl_mem_mbox_send_cmd(cxlmd->cxlm, &mbox_cmd);
+>         cxl_mem_mbox_put(cxlmd->cxlm);
+>         if (rc)
+> @@ -479,6 +492,8 @@ static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg
+>                 u32 n_commands;
+>                 int i, j;
+>
+> +               cxl_debug("Query IOCTL\n");
+> +
+>                 if (get_user(n_commands, (u32 __user *)arg))
+>                         return -EFAULT;
+>
+> @@ -511,6 +526,8 @@ static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg
+>                 struct cxl_mem_command c;
+>                 int rc;
+>
+> +               cxl_debug("Send IOCTL\n");
+> +
+>                 rc = cxl_validate_cmd_from_user(u, &c);
+>                 if (rc)
+>                         return rc;
+> @@ -843,6 +860,13 @@ static int cxl_mem_identify(struct cxl_mem *cxlm)
+>
+>         id = (struct cxl_mbox_identify *)mbox_cmd.payload;
+>
+> +       cxl_debug("Driver identify command\n"
+> +                 "\tFirmware Version: %s\n"
+> +                 "\tTotal Capacity: %llu (%llu persistent)\n"
+> +                 "\tLSA size: %u\n",
+> +                 id->fw_revision, id->total_capacity, id->persistent_capacity,
+> +                 id->lsa_size);
+> +
+
+Seems not necessary for details that are published in sysfs?
