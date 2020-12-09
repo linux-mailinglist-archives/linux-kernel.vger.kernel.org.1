@@ -2,71 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4982D46E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0372D46E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731664AbgLIQhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:37:18 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:34309 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729767AbgLIQhO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:37:14 -0500
-Received: by mail-ot1-f67.google.com with SMTP id a109so1961595otc.1;
-        Wed, 09 Dec 2020 08:36:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6Nrvk3PUoM6SzdFghQZEGJk8ahD1T69zwk8JW2tlVaQ=;
-        b=nGVVnbSE9vkUAX9uHmMkyMPGVfVznWfaD3iD/VE7wRlhGHGa+h07DqGWG67qYtsuOh
-         nMDVP9G3rZNLO9S3r/6CtG6cO5jiUDTASTs8vFdHVTLRawCJtFh9zdcm3N0AsPaEtUu1
-         TiSUT9JZkqo5IF+jCDUNpuniKO0X/QFaBEP6xFGf6agnMcj7OTtE8HnMi+o4H3G2twTz
-         15JcD1Vw3FdjtoJh9lIq7/zva6dGBW1kWRKBT+hfbX4eHrxH5ES/tipSxKtGgYf6x6m+
-         +QfbxEfN9vxHt0Yf1DTw1qHhmxdCt6aOAOdhZLVJx8myQmJrvINNy04VrAXxd1NYahf+
-         7dWg==
-X-Gm-Message-State: AOAM531qZHTs8IdoVOdBIH0vAV1sMFKxzIKrRm6NDAeVQpJxv3ukxGM6
-        yG4iVC9yjF2+mFFQdQVoGw==
-X-Google-Smtp-Source: ABdhPJyESP95Acad+YcdIIO2pMEpSKBJsfzgBnAA2l+p3gk8d9NrU8YIa9Fq2cFt2jMoPuJAz8jHKQ==
-X-Received: by 2002:a9d:3b36:: with SMTP id z51mr2500260otb.272.1607531793795;
-        Wed, 09 Dec 2020 08:36:33 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b25sm447323ooe.18.2020.12.09.08.36.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 08:36:31 -0800 (PST)
-Received: (nullmailer pid 570767 invoked by uid 1000);
-        Wed, 09 Dec 2020 16:36:30 -0000
-Date:   Wed, 9 Dec 2020 10:36:30 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     linux-kernel@vger.kernel.org, w@1wt.eu, olof@lixom.net,
-        devicetree@vger.kernel.org, soc@kernel.org,
-        linux-arm-kernel@lists.infradead.org, arnd@arndb.de
-Subject: Re: [PATCH v2 03/10] dt-bindings: mstar: Add Honestar SSD201_HT_V2
- to mstar boards
-Message-ID: <20201209163630.GA570737@robh.at.kernel.org>
-References: <20201201134330.3037007-1-daniel@0x0f.com>
- <20201201134330.3037007-4-daniel@0x0f.com>
+        id S1731711AbgLIQhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:37:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56192 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729012AbgLIQhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:37:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607531828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZVwPeZe+K1uTe80npboLjwJwLum31MbCHyq8Bs1n6Us=;
+        b=jfB75bKYTmF3ZlJNb7d+m0GZ+aC6yuqOStmEeVBxJECpJnAmliYMMiJgN7Oq9aISHb/s5P
+        GrZwMbJK9kns2omwSJni7LhySsNeY+gY6Rm/LZ8OKrNUo1FEdTZJ4bK5rz/qlsOhsrV9Rp
+        nOGKS9ORwey6AM1agzd8F1bpBlsA1Sg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 20CD4AC9A;
+        Wed,  9 Dec 2020 16:37:08 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 17:37:07 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>
+Subject: Re: [PATCH 0/3] clear_warn_once: add timed interval resetting
+Message-ID: <X9D9MwJzUCuwQPNb@alley>
+References: <20201126063029.2030-1-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201134330.3037007-4-daniel@0x0f.com>
+In-Reply-To: <20201126063029.2030-1-paul.gortmaker@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 01 Dec 2020 22:43:23 +0900, Daniel Palmer wrote:
-> The Honestar SSD201_HT_V2 is a full size devkit for the SigmaStar
-> SSD201 or SSD202D (they are pin compatible).
+On Thu 2020-11-26 01:30:26, Paul Gortmaker wrote:
+> The existing clear_warn_once functionality is currently a manually
+> issued state reset via the file /sys/kernel/debug/clear_warn_once when
+> debugfs is mounted.  The idea being that a developer would be running
+> some tests, like LTP or similar, and want to check reproducibility
+> without having to reboot.
 > 
-> Currently only the SSD202D version is supported as that's the one
-> I have.
+> But you currently can't make use of clear_warn_once unless you've got
+> debugfs enabled and mounted - which may not be desired by some people
+> in some deployment situations.
 > 
-> Link: https://linux-chenxing.org/infinity2/ssd201_ht_v2/
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-> ---
->  Documentation/devicetree/bindings/arm/mstar/mstar.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
+> The functionality added here allows for periodic resets in addition to
+> the one-shot reset it already had.  Then we allow for a boot-time setting
+> of the periodic resets so it can be used even when debugfs isn't mounted.
 > 
+> By having a periodic reset, we also open the door for having the various
+> "once" functions act as long period ratelimited messages, where a sysadmin
+> can pick an hour or a day reset if they are facing an issue and are
+> wondering "did this just happen once, or am I only being informed once?"
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+OK, I though more about it and I NACK this patchset.
+
+My reason:
+
+1. The primary purpose was to provide a way to reset warn_once() without
+   debugfs. From this POV, the solution is rather complicated: timers
+   and another kernel parameter.
+
+2. I am not aware of any convincing argument why debugfs could not be
+   mounted on the debugged system.
+
+3. Debugfs provides many more debugging facilities. It is designed for
+   this purpose. It does not look like a good strategy to provide
+   alternative interfaces just to avoid it.
+
+4. There were mentioned several other use cases for this feature,
+   like RT systems. But it was not clear that it was really needed
+   or that people would really use it.
+
+5. Some code might even rely on that it is called only once, see commit
+   dfbf2897d00499f94cd ("bug: set warn variable before calling
+   WARN()") or the recent
+   https://lore.kernel.org/r/20201029142406.3c46855a@gandalf.local.home
+
+   It should better stay as debugging feature that should be used with
+   care.
+
+
+6. It creates system wide ratelimited printk().
+
+   We have printk_ratelimited() for this. And it is quite problematic.
+   It is supposed to prevent flood of printk() messages. But it does
+   not work well because the limits depend on more factors, like:
+   system size, conditions, console speed.
+
+   Yes, the proposed feature is supposed to solve another problem
+   (lack of messages). But it is a global action that would
+    re-enable >1000 messages that were limited to be printed
+    only once because they could be too frequent. As a result:
+
+	+ it might cause flood of printk() messages
+
+	+ it is hard to define a good system wide time limit;
+	  it was even unclear what should be the lower limit.
+
+	+ it will restart the messages at some "random" point,
+	  so that the relation of the reported events would
+	  be unclear.
+
+  From the API point of view:
+
+	+ printk_ratelimited() is used when we want to see that a
+	  problem is still there. It is per-message setting.
+
+	+ printk_once() is used when even printk_ratelimited() would
+	  be too much. It is per-message setting.
+
+	+ The new printk_repeated_once() is a strange mix of this two
+	  with the global setting. It does not fit much.
+
+
+Best Regards,
+Petr
+
+PS: I did not answer your last mail because it looked like an endless
+    fight over words or point of views. I decided to make a summary
+    of my view instead. These are reason why I nacked it.
+
+    I know that there might be different views but so far no arguments
+    changed mine. And I do not know how to explain it better.
