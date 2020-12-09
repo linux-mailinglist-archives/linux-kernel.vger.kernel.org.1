@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0A12D4536
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:21:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C1B2D454D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:25:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729859AbgLIPTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:19:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgLIPTG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:19:06 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FFB4C0613D6;
-        Wed,  9 Dec 2020 07:18:26 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id f17so1378724pge.6;
-        Wed, 09 Dec 2020 07:18:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u1Wg1rt4Jt/BWrp83EFWowdTA+qCFgUamRbqvrf56/U=;
-        b=IRm3NuJAgtHlcMXYdLyOqVfBzN3lWG8N9YwZeMO6cfwhjuN+JSSydhWQixXuDAZdTY
-         OPBe79Il04B+yKzEoK3h4disTvFqJXXoK2G0qu25JQtgOtwmdfe0o3DLDa51t+YMOKY2
-         cfvIZ9I3SUEu/ioAmTNYpWBeG3M7pa78KoE34MaiudaAcMGbgW/EZNUzeCQLjuMOHjVg
-         Y2ggJEC+lyoUBvvRCY2fP0BG/pOhwgHSiHjXaMm65BKmNeYjEt8qi3Me9cIkMj4aSsCf
-         h30voP08uRVrhT46GQRMTl+QlscCDjfuSHgablY9fcgquIgkEiIP9LDgrJLrEcWawKXU
-         8e5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u1Wg1rt4Jt/BWrp83EFWowdTA+qCFgUamRbqvrf56/U=;
-        b=d6sXAUZ38D5iNBPaPdo1kkCIV7NFwSiUiTIXPEL8SctU+Ja8w8BtRkHfuo3r0xVRUe
-         tlcQsbwUvyT7oU8UxgnfQyHvWUnZOzHrFEXLPUi354hq2Nhf6CuNErVGwrU1mGeeeDCa
-         JqxU5oX4zYBvTMx6wgSQIJ8dvJSPDkAptLxVeSGtzJqu7hV+3uArYVLmCTAsEOV7hqwL
-         5ku/3Nzoa23taYBp95PVawIOaiHeD+w0nY+IUV/+YSvBJ+q+ElIBBblj8TBe11lbTwrq
-         iQVYEVr3CnD/USY2HMl2cas0euKySEQUNO13GypA7c75x1zh5WNWuVygVzjZOOZgt8ZO
-         Q5tQ==
-X-Gm-Message-State: AOAM533RveYIK5gef0yZeIwbjgo36d6M3+cP9JtbsCYi3Iu+/WyCud2D
-        qn/kI1KwDLYIYDgEjxHxdI2srNtHiccCqmwmpZE=
-X-Google-Smtp-Source: ABdhPJyYhKdbim01GsJEsVCbc9j9WBAczYUzP3i80F/rOuP9yYzYAZBUzPxDMFAE0laLA8Coqki2Qqg8sesoWqjwOmc=
-X-Received: by 2002:a63:b1e:: with SMTP id 30mr2372559pgl.203.1607527105528;
- Wed, 09 Dec 2020 07:18:25 -0800 (PST)
+        id S1729725AbgLIPYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:24:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727090AbgLIPYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 10:24:32 -0500
+From:   Mark Brown <broonie@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        od@zcrc.me
+In-Reply-To: <20201207125338.119397-1-paul@crapouillou.net>
+References: <20201207125338.119397-1-paul@crapouillou.net>
+Subject: Re: [PATCH 1/5] ASoC: codecs/jz47xx: Use regmap_{set,clear}_bits
+Message-Id: <160752715602.48520.8596440910035760463.b4-ty@kernel.org>
+Date:   Wed, 09 Dec 2020 15:19:16 +0000
 MIME-Version: 1.0
-References: <20201203095342.73591-1-alexandru.ardelean@analog.com>
-In-Reply-To: <20201203095342.73591-1-alexandru.ardelean@analog.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 9 Dec 2020 17:19:13 +0200
-Message-ID: <CAHp75VffjpFyh0G3F6v0j5tXrURA2pCtWsSztC7KejhBFuLTvw@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: core: register chardev only if needed
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 11:55 AM Alexandru Ardelean
-<alexandru.ardelean@analog.com> wrote:
->
-> We only need a chardev if we need to support buffers and/or events.
->
-> With this change, a chardev will be created only if an IIO buffer is
-> attached OR an event_interface is configured.
->
-> Otherwise, no chardev will be created, and the IIO device will get
-> registered with the 'device_add()' call.
->
-> Quite a lot of IIO devices don't really need a chardev, so this is a minor
-> improvement to the IIO core, as the IIO device will take up (slightly)
-> fewer resources.
->
-> In order to not create a chardev, we mostly just need to not initialize the
-> indio_dev->dev.devt field. If that is un-initialized, cdev_device_add()
+On Mon, 7 Dec 2020 12:53:33 +0000, Paul Cercueil wrote:
+> Use regmap_{set,clear}_bits instead of regmap_update_bits, when
+> applicable.
 
-un-initialized -> uninitialized
+Applied to
 
-> behaves like device_add().
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Are you sure there is no user space application that doesn't rely on
-character device to be always present?
+Thanks!
 
--- 
-With Best Regards,
-Andy Shevchenko
+[1/5] ASoC: codecs/jz47xx: Use regmap_{set,clear}_bits
+      commit: ad13c835442cdb2a964588fd03327f51dbcd4dfa
+[2/5] ASoC: codecs/jz4770: Reset interrupt flags in bias PREPARE
+      commit: a346c77836183f6e3e054c5da022e0fde2773683
+[3/5] ASoC: codecs/jz4770: Adjust timeouts for cap-coupled outputs
+      commit: 6b4da5374b10a48be18df26288125746f1858507
+[4/5] ASoC: codecs/jz4770: Don't change cap-couple setting in HP PMU/PMD
+      commit: 4f293dfea9f6d23a972be0e38556f5b0c02c2d4e
+[5/5] ASoC: codecs/jz4770: Add DAPM widget to set HP out to cap-less mode
+      commit: e648e3f1165354f04a4deed1f41152a287b68d59
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
