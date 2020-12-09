@@ -2,123 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F932D3E68
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA5D2D3E6F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728879AbgLIJSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:18:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727348AbgLIJSv (ORCPT
+        id S1728968AbgLIJT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:19:29 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:46939 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728950AbgLIJTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:18:51 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586FCC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:18:11 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id x15so925179ilq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:18:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7CkfJi6sc/FeD7aSF5fhUIMGNUBYFXWr8w4D6JpX9yk=;
-        b=s5+73UfrzC+gL+7fhdcbObb6Xg95cXP50hbwAsent4EkVkpTgshprfX9zIN4PDZ2cf
-         epa56Prb4eWSClYC6WfF2V3dTkAxlI+RlrOlJaDErKeW8svqnCtUz3hDA8yGFXtdyij5
-         ZgXIxJ4c38UnUpXxF/KTwdxd/BFLAzLctjYj6h0GhMbvqQHG2Xp7lxNByt3Qg0A5bSY1
-         dPIfyMwwUnZQxQtih652kHebss6lhfhLQ+1rqT0ZXvi9mGfJc9qTrYN/ofCEv9hm1F7l
-         Qq8QO56N0kwTHkV15CfkIZkRiAevx8TJyV4CBPAwXA8yXA/N6QWmNiZuZ6jA1l0Ce6b+
-         YRNA==
+        Wed, 9 Dec 2020 04:19:21 -0500
+Received: by mail-ot1-f66.google.com with SMTP id w3so663644otp.13
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:19:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7CkfJi6sc/FeD7aSF5fhUIMGNUBYFXWr8w4D6JpX9yk=;
-        b=mH04Y7StmpDsI+eloRwF5aaADFJ1rctc4zJv9EGmSBtAQNxPYecui/zRL7zT8l2Q/s
-         dNo64D3LcDBtE6LcFlgLUIGfimGgcO5xCslEacLnB9dhpzVSQa2QdYN03okOi0l6u3In
-         A1vK979zKY0m/5zGq5qTHJW/O9ObDWKw8MxnGSZe8lpWUtjvj0f7dNLD81OoVF7ohyF/
-         KKRn9rbsPrVO2H5KjBwYsmPSaYbovTYnDeoMRlm0DsZGjdvd+5OjAHiTA3XhSO3JkxW9
-         vd+5krUbPoUYVHpBfsrRFxEYVjCPDwbLoZ7uOGzwWwyp+gWEsEYa9c6fy7C/9nHB6Cxw
-         WCvA==
-X-Gm-Message-State: AOAM5307rg/+fO7JpXwCby3oXbqOmrOKWWH3mp2C3obB/O+gP3GwUHdp
-        +6AVeNTgTTgQWIQMdbsJRWtqASWcvGCl3QPgQaEgBVzCZCs=
-X-Google-Smtp-Source: ABdhPJx0Eg8jg6IjzgqxFMP5Mmyij323C17Wn7vGbRaNsalDIezY3F6tehHKnPjYW7Ofr5n88uer6yOSsua7KWPy7t8=
-X-Received: by 2002:a92:8587:: with SMTP id f129mr1523030ilh.251.1607505490660;
- Wed, 09 Dec 2020 01:18:10 -0800 (PST)
+        bh=a4nn+85WfZz1IIZTvFFrEl51XM3m+HvNSslhv6pMm04=;
+        b=smAliysNoO4T5jntVVicb/7lkM9DvLuufNkhEqaYxG/TyusdK14mkMHIkmrb4IBbbA
+         c15Go1HdrOrhmEURuBEKuVbRGymLuQWVqb9TSx3sC0ID6AR6d8ytvRmSjSQnips0qJ73
+         z/mdFTP533yqNznqU9gjx22Q9BBoOc7IwahdAFYBV3DU2clLF9izTkpoHc1jq+psnsfz
+         cKlHd4BGZJSTl74ndnCF8filzWYf9PihArWw1Yntr6Ke8DP0xhB1hpMclcboYLUqXkyt
+         9njHL4RIffgEPGef95e6rXSKE3T2e9qGzq+XnD4tH/aog8juXWKWEM58zl2n/S5GsP3S
+         PFlQ==
+X-Gm-Message-State: AOAM5328o0Q9q37FcNPA5yXh9l5aFp+tWXSWs+s8Mw/eCQCKMhEUsxxY
+        fMZ5ZRXN83nU4/A3s2Q04WnCbyHL6RDeUIhcr58=
+X-Google-Smtp-Source: ABdhPJyaQvoIu2F0E+occhOnj1kS4x9aI1lKpD2DaqLRfZGiwoY1S4sSlQagNnAEnx7OXKB6oGOa0N6DV+/mxrLEIXQ=
+X-Received: by 2002:a9d:2203:: with SMTP id o3mr935809ota.107.1607505520523;
+ Wed, 09 Dec 2020 01:18:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20201206152352.35026-1-dwaipayanray1@gmail.com>
-In-Reply-To: <20201206152352.35026-1-dwaipayanray1@gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Wed, 9 Dec 2020 10:17:59 +0100
-Message-ID: <CAKXUXMxD9wyaKf1TrZchOY1NBkFKSrHhFefQc9AK-bfH8fu8oA@mail.gmail.com>
-Subject: Re: [PATCH v3] checkpatch: add --fix option to include linux checks
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     Joe Perches <joe@perches.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <ea32eb02-5e44-0469-772b-34b5cb882543@suse.cz> <CAPcyv4jDHMt4PpR2Htvw27rn5i5sCkwXtoZH-rFbtG8Hj7x1sg@mail.gmail.com>
+ <20201203093458.GA16543@unreal> <CAMuHMdVcPELarE=eJEc-=AdyfmhhZQsYtUggWCaetuEdk=VpMQ@mail.gmail.com>
+ <20201203104047.GD16543@unreal> <X8ku1MmZeeIaMRF4@kroah.com>
+ <202012081619.6593C87D3@keescook> <13d04c4cc769ebd1dd58470f4d22ada5c9cd28e7.camel@perches.com>
+ <20201209075849.GD2767@kadam> <a6dfe760-c3b4-8bc4-3c7f-cc1208b626fa@suse.cz>
+In-Reply-To: <a6dfe760-c3b4-8bc4-3c7f-cc1208b626fa@suse.cz>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 9 Dec 2020 10:18:29 +0100
+Message-ID: <CAMuHMdWtJnkK5LP+_YLWvZ5knnd+i72h60PA+Z-EqjNYdEN3SA@mail.gmail.com>
+Subject: Re: [Ksummit-discuss] crediting bug reports and fixes folded into
+ original patch
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Joe Perches <joe@perches.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        "ksummit-discuss@lists.linuxfoundation.org" 
+        <ksummit-discuss@lists.linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 6, 2020 at 4:24 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
+On Wed, Dec 9, 2020 at 9:45 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+> On 12/9/20 8:58 AM, Dan Carpenter wrote:
+> > On Tue, Dec 08, 2020 at 09:01:49PM -0800, Joe Perches wrote:
+> >> On Tue, 2020-12-08 at 16:34 -0800, Kees Cook wrote:
+> >>
+> >> > If not "Adjusted-by", what about "Tweaked-by", "Helped-by",
+> >> > "Corrected-by"?
+> >>
+> >> Improved-by: / Enhanced-by: / Revisions-by:
+> >>
+> >
+> > I don't think we should give any credit for improvements or enhancements,
 >
-> Add fix option to INCLUDE_LINUX and ARCH_INCLUDE_LINUX
-> checks to replace asm includes.
+> Well, some are actually useful and not about reviewer's preferred style :) But
+> if an author redoes the patch as a result, it's their choice to mention useful
+> improvements in the next version's change log.
 >
-> Macros of type:
->  #include <asm/percpu.h>
->  #include <asm/processor.h>
+> > only for fixes.  Complaining about style is its own reward.
 >
-> are corrected to:
->  #include <linux/percpu.h>
->  #include <linux/processor.h>
+> Right, let's focus on fixes and reports of bugs, that would have resulted in a
+> standalone commit, but don't.
 >
-> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> > Having to redo a patch is already a huge headache.  Normally, I already
+> > considered the reviewer's prefered style and decided I didn't like it.
+> > Then to make me redo the patch in an ugly style and say thankyou on
+> > top of that???  Forget about it.  Plus, as a reviewer I hate reviewing
+> > patches over and over.
+> >
+> > I've argued for years that we should have a Fixes-from: tag.  The zero
+>
+> Standardizing the Fixes-from: tag (or any better name) would be a forward
+> progress, yes.
+>
+> > day bot is already encouraging people to add Reported-by tags for this
+> > and a lot of people do.
+>
+> "Reported-by:" becomes ambiguous once the bugfix for the reported issue in the
+> patch is folded, as it's no longer clear whether the bot reported the original
+> issue the patch is fixing, or a bug in the fix. So we should have a different
+> variant. "Fixes-reported-by:" so it has the same prefix?
 
-Dwaipayan, can you run this rule from checkpatch.pl on all files in
-the current linux-next tree and share all findings with me?
+Taken-into-account-comments-from:
 
-Maybe, we can fix a few places and improve the rule.
+Any terse English word for that?
 
-Lukas
+Gr{oetje,eeting}s,
 
-> ---
-> Changes in v3:
-> - Add --fix option to ARCH_INCLUDE_LINUX check
->
-> Changes in v2:
-> - Use \Q..\E quoting
-> - Use @ as regex delimiter
->
->  scripts/checkpatch.pl | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
->
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 7b086d1cd6c2..4aecc237ed38 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -5558,11 +5558,17 @@ sub process {
->                                 my $asminclude = `grep -Ec "#include\\s+<asm/$file>" $root/$checkfile`;
->                                 if ($asminclude > 0) {
->                                         if ($realfile =~ m{^arch/}) {
-> -                                               CHK("ARCH_INCLUDE_LINUX",
-> -                                                   "Consider using #include <linux/$file> instead of <asm/$file>\n" . $herecurr);
-> +                                               if (CHK("ARCH_INCLUDE_LINUX",
-> +                                                       "Consider using #include <linux/$file> instead of <asm/$file>\n" . $herecurr) &&
-> +                                                   $fix) {
-> +                                                       $fixed[$fixlinenr] =~ s@\Q<asm/$file>\E@<linux/$file>@;
-> +                                               }
->                                         } else {
-> -                                               WARN("INCLUDE_LINUX",
-> -                                                    "Use #include <linux/$file> instead of <asm/$file>\n" . $herecurr);
-> +                                               if (WARN("INCLUDE_LINUX",
-> +                                                        "Use #include <linux/$file> instead of <asm/$file>\n" . $herecurr) &&
-> +                                                   $fix) {
-> +                                                       $fixed[$fixlinenr] =~ s@\Q<asm/$file>\E@<linux/$file>@;
-> +                                               }
->                                         }
->                                 }
->                         }
-> --
-> 2.27.0
->
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
