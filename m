@@ -2,276 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A4B2D395D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 04:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C902D3961
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 05:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgLIDyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 22:54:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726510AbgLIDyv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 22:54:51 -0500
-Date:   Tue, 8 Dec 2020 19:54:07 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607486049;
-        bh=1ChwpTu2ugzatPiOPZ+16AxMsjbL80C0N8xZ1jqn/j8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fRcFX8w9pprZvSHYLY45IyddF9UoUredwzoL43NBiYE6KAR3psnzsPv7Z8k33MppG
-         NfrMJ4a/IbBL8t03KJrInG8dv3PQQt2VMukSzzN/zMgpfoVUMl7hxCDk/1IRkfzkWx
-         2govk0NcdFNVxL13rz81UgmIdEDqbCHvoOXXZ5vL9moCAkVidrS7xuhuacUtHqlPnN
-         LnQ7W82GeQSy/23LZxV0r24jFAPtgBXDpITbt6OY4dj1E013hmfz8fhGUQEpWNBDhA
-         U3Tm1ZGMjclHQyTNKKEkgeNQhpEv+ABcXK0OtDL/Ab1eW1fRgdp4zbK9opDHUVBkgz
-         flI0W2+sdD/FA==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH v4] f2fs: compress: support chksum
-Message-ID: <X9BKX9PUMFkts9bI@google.com>
-References: <20201208031437.56627-1-yuchao0@huawei.com>
- <22ac4df6-53ec-fb7c-c4dd-26435352a701@huawei.com>
- <X9A7Jn+cHRRcAmIi@google.com>
- <37d89d34-add1-5254-380b-233ef7a460d4@huawei.com>
+        id S1726611AbgLIEAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 23:00:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725942AbgLIEAK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 23:00:10 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27F5C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 19:59:29 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrNbK1Gwvz9sWC;
+        Wed,  9 Dec 2020 14:59:25 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1607486366;
+        bh=83V+Va2FNLgnoBV3YAia+6UJv+qGMO3fTqLdZkCP+C4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Yt24v0LCtsKwWGXCurr8VaFtMo5RmrQKPnR9mW5NtbRlzdHpZ46yELwnVAisTASgG
+         fITRNt534cteOwIkr8yluYbJwiwnNFssp0dnxIwDFak9yz/aOZeuoBSBqCAiESKgAL
+         yfbZ5FkAPg1QOaUMqBeAUBjcyFFlcIEXVdnR7jG5H96Xpt6TO+9AyXhT5Nl+7GR5vZ
+         cTH3ovccMRffeawB3BFNwkIoE2KngtZBDjsrWioLXuhqlNLlIByayl6ltlnb4bkTe3
+         e3r+1xg3XAKXlLy6GgnE4o7XbMPdRPDQS9JnPjoITklFF9OSifjZQ1xWXlYmuE6BDx
+         jmWLAUp7V8rTg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] powerpc/smp: Parse ibm,thread-groups with multiple properties
+In-Reply-To: <20201208172540.GA14206@in.ibm.com>
+References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com> <1607057327-29822-2-git-send-email-ego@linux.vnet.ibm.com> <20201207121042.GH528281@linux.vnet.ibm.com> <20201208172540.GA14206@in.ibm.com>
+Date:   Wed, 09 Dec 2020 14:59:22 +1100
+Message-ID: <87v9dbsk85.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37d89d34-add1-5254-380b-233ef7a460d4@huawei.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09, Chao Yu wrote:
-> On 2020/12/9 10:49, Jaegeuk Kim wrote:
-> > On 12/09, Chao Yu wrote:
-> > > Hello guys,
-> > > 
-> > > Any further comments on compress related patches?
-> > > 
-> > > Jaegeuk, could you please queue these patches in dev-test? let me know
-> > > if there is any problem.
-> > 
-> > Chao, could you please rebase and post them in a series? I lost the patch order
-> > and got some conflicts when trying to merge.
-> 
-> I can't rebase on your dev branch, because in your branch, there is old version
-> of "f2fs: compress:support chksum", could you please drop old one and apply last
-> v4 one in the same place? and push to kernel.org.
+Gautham R Shenoy <ego@linux.vnet.ibm.com> writes:
+> Hello Srikar,
+>
+> Thanks for taking a look at the patch.
+>
+> On Mon, Dec 07, 2020 at 05:40:42PM +0530, Srikar Dronamraju wrote:
+>> * Gautham R. Shenoy <ego@linux.vnet.ibm.com> [2020-12-04 10:18:45]:
+>> 
+>> > From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+>> 
+>> <snipped>
+>> 
+>> > 
+>> >  static int parse_thread_groups(struct device_node *dn,
+>> > -			       struct thread_groups *tg,
+>> > -			       unsigned int property)
+>> > +			       struct thread_groups_list *tglp)
+>> >  {
+>> > -	int i;
+>> > -	u32 thread_group_array[3 + MAX_THREAD_LIST_SIZE];
+>> > +	int i = 0;
+>> > +	u32 *thread_group_array;
+>> >  	u32 *thread_list;
+>> >  	size_t total_threads;
+>> > -	int ret;
+>> > +	int ret = 0, count;
+>> > +	unsigned int property_idx = 0;
+>> 
+>> NIT:
+>> tglx mentions in one of his recent comments to try keep a reverse fir tree
+>> ordering of variables where possible.
+>
+> I suppose you mean moving the longer local variable declarations to to
+> the top and shorter ones to the bottom. Thanks. Will fix this.
 
-Ah, could you please write another patch to adjust the new changes?
+Yeah. It's called "reverse christmas tree", that's googleable.
 
-> 
-> Then I can rebase and resend patches.
-> 
-> Thanks,
-> 
-> > 
-> > > 
-> > > On 2020/12/8 11:14, Chao Yu wrote:
-> > > > This patch supports to store chksum value with compressed
-> > > > data, and verify the integrality of compressed data while
-> > > > reading the data.
-> > > > 
-> > > > The feature can be enabled through specifying mount option
-> > > > 'compress_chksum'.
-> > > > 
-> > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > > > ---
-> > > > v4:
-> > > > - enhance readability
-> > > > - remove WARN_ON_ONCE()
-> > > >    Documentation/filesystems/f2fs.rst |  1 +
-> > > >    fs/f2fs/compress.c                 | 22 ++++++++++++++++++++++
-> > > >    fs/f2fs/f2fs.h                     | 16 ++++++++++++++--
-> > > >    fs/f2fs/inode.c                    |  3 +++
-> > > >    fs/f2fs/super.c                    |  9 +++++++++
-> > > >    include/linux/f2fs_fs.h            |  2 +-
-> > > >    6 files changed, 50 insertions(+), 3 deletions(-)
-> > > > 
-> > > > diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> > > > index b8ee761c9922..985ae7d35066 100644
-> > > > --- a/Documentation/filesystems/f2fs.rst
-> > > > +++ b/Documentation/filesystems/f2fs.rst
-> > > > @@ -260,6 +260,7 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
-> > > >    			 For other files, we can still enable compression via ioctl.
-> > > >    			 Note that, there is one reserved special extension '*', it
-> > > >    			 can be set to enable compression for all files.
-> > > > +compress_chksum		 Support verifying chksum of raw data in compressed cluster.
-> > > >    inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
-> > > >    			 files using the blk-crypto framework rather than
-> > > >    			 filesystem-layer encryption. This allows the use of
-> > > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > > > index 14262e0f1cd6..9313c8695855 100644
-> > > > --- a/fs/f2fs/compress.c
-> > > > +++ b/fs/f2fs/compress.c
-> > > > @@ -602,6 +602,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
-> > > >    				f2fs_cops[fi->i_compress_algorithm];
-> > > >    	unsigned int max_len, new_nr_cpages;
-> > > >    	struct page **new_cpages;
-> > > > +	u32 chksum = 0;
-> > > >    	int i, ret;
-> > > >    	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
-> > > > @@ -655,6 +656,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
-> > > >    	cc->cbuf->clen = cpu_to_le32(cc->clen);
-> > > > +	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
-> > > > +		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
-> > > > +					cc->cbuf->cdata, cc->clen);
-> > > > +	cc->cbuf->chksum = cpu_to_le32(chksum);
-> > > > +
-> > > >    	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
-> > > >    		cc->cbuf->reserved[i] = cpu_to_le32(0);
-> > > > @@ -790,6 +796,22 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
-> > > >    	ret = cops->decompress_pages(dic);
-> > > > +	if (!ret && (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)) {
-> > > > +		u32 provided = le32_to_cpu(dic->cbuf->chksum);
-> > > > +		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
-> > > > +
-> > > > +		if (provided != calculated) {
-> > > > +			if (!is_inode_flag_set(dic->inode, FI_COMPRESS_CORRUPT)) {
-> > > > +				set_inode_flag(dic->inode, FI_COMPRESS_CORRUPT);
-> > > > +				printk_ratelimited(
-> > > > +					"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
-> > > > +					KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
-> > > > +					provided, calculated);
-> > > > +			}
-> > > > +			set_sbi_flag(sbi, SBI_NEED_FSCK);
-> > > > +		}
-> > > > +	}
-> > > > +
-> > > >    out_vunmap_cbuf:
-> > > >    	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
-> > > >    out_vunmap_rbuf:
-> > > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > > > index 0d25f5ca5618..0b314b2034d8 100644
-> > > > --- a/fs/f2fs/f2fs.h
-> > > > +++ b/fs/f2fs/f2fs.h
-> > > > @@ -147,7 +147,8 @@ struct f2fs_mount_info {
-> > > >    	/* For compression */
-> > > >    	unsigned char compress_algorithm;	/* algorithm type */
-> > > > -	unsigned compress_log_size;		/* cluster log size */
-> > > > +	unsigned char compress_log_size;	/* cluster log size */
-> > > > +	bool compress_chksum;			/* compressed data chksum */
-> > > >    	unsigned char compress_ext_cnt;		/* extension count */
-> > > >    	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
-> > > >    };
-> > > > @@ -676,6 +677,7 @@ enum {
-> > > >    	FI_ATOMIC_REVOKE_REQUEST, /* request to drop atomic data */
-> > > >    	FI_VERITY_IN_PROGRESS,	/* building fs-verity Merkle tree */
-> > > >    	FI_COMPRESSED_FILE,	/* indicate file's data can be compressed */
-> > > > +	FI_COMPRESS_CORRUPT,	/* indicate compressed cluster is corrupted */
-> > > >    	FI_MMAP_FILE,		/* indicate file was mmapped */
-> > > >    	FI_MAX,			/* max flag, never be used */
-> > > >    };
-> > > > @@ -733,6 +735,7 @@ struct f2fs_inode_info {
-> > > >    	atomic_t i_compr_blocks;		/* # of compressed blocks */
-> > > >    	unsigned char i_compress_algorithm;	/* algorithm type */
-> > > >    	unsigned char i_log_cluster_size;	/* log of cluster size */
-> > > > +	unsigned short i_compress_flag;		/* compress flag */
-> > > >    	unsigned int i_cluster_size;		/* cluster size */
-> > > >    };
-> > > > @@ -1272,9 +1275,15 @@ enum compress_algorithm_type {
-> > > >    	COMPRESS_MAX,
-> > > >    };
-> > > > -#define COMPRESS_DATA_RESERVED_SIZE		5
-> > > > +enum compress_flag {
-> > > > +	COMPRESS_CHKSUM,
-> > > > +	COMPRESS_MAX_FLAG,
-> > > > +};
-> > > > +
-> > > > +#define COMPRESS_DATA_RESERVED_SIZE		4
-> > > >    struct compress_data {
-> > > >    	__le32 clen;			/* compressed data size */
-> > > > +	__le32 chksum;			/* compressed data chksum */
-> > > >    	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
-> > > >    	u8 cdata[];			/* compressed data */
-> > > >    };
-> > > > @@ -3888,6 +3897,9 @@ static inline void set_compress_context(struct inode *inode)
-> > > >    			F2FS_OPTION(sbi).compress_algorithm;
-> > > >    	F2FS_I(inode)->i_log_cluster_size =
-> > > >    			F2FS_OPTION(sbi).compress_log_size;
-> > > > +	F2FS_I(inode)->i_compress_flag =
-> > > > +			F2FS_OPTION(sbi).compress_chksum ?
-> > > > +				1 << COMPRESS_CHKSUM : 0;
-> > > >    	F2FS_I(inode)->i_cluster_size =
-> > > >    			1 << F2FS_I(inode)->i_log_cluster_size;
-> > > >    	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
-> > > > diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-> > > > index 657db2fb6739..349d9cb933ee 100644
-> > > > --- a/fs/f2fs/inode.c
-> > > > +++ b/fs/f2fs/inode.c
-> > > > @@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
-> > > >    					le64_to_cpu(ri->i_compr_blocks));
-> > > >    			fi->i_compress_algorithm = ri->i_compress_algorithm;
-> > > >    			fi->i_log_cluster_size = ri->i_log_cluster_size;
-> > > > +			fi->i_compress_flag = le16_to_cpu(ri->i_compress_flag);
-> > > >    			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
-> > > >    			set_inode_flag(inode, FI_COMPRESSED_FILE);
-> > > >    		}
-> > > > @@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
-> > > >    					&F2FS_I(inode)->i_compr_blocks));
-> > > >    			ri->i_compress_algorithm =
-> > > >    				F2FS_I(inode)->i_compress_algorithm;
-> > > > +			ri->i_compress_flag =
-> > > > +				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
-> > > >    			ri->i_log_cluster_size =
-> > > >    				F2FS_I(inode)->i_log_cluster_size;
-> > > >    		}
-> > > > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> > > > index 82baaa89c893..f3d919ee4dee 100644
-> > > > --- a/fs/f2fs/super.c
-> > > > +++ b/fs/f2fs/super.c
-> > > > @@ -146,6 +146,7 @@ enum {
-> > > >    	Opt_compress_algorithm,
-> > > >    	Opt_compress_log_size,
-> > > >    	Opt_compress_extension,
-> > > > +	Opt_compress_chksum,
-> > > >    	Opt_atgc,
-> > > >    	Opt_err,
-> > > >    };
-> > > > @@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
-> > > >    	{Opt_compress_algorithm, "compress_algorithm=%s"},
-> > > >    	{Opt_compress_log_size, "compress_log_size=%u"},
-> > > >    	{Opt_compress_extension, "compress_extension=%s"},
-> > > > +	{Opt_compress_chksum, "compress_chksum"},
-> > > >    	{Opt_atgc, "atgc"},
-> > > >    	{Opt_err, NULL},
-> > > >    };
-> > > > @@ -934,10 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
-> > > >    			F2FS_OPTION(sbi).compress_ext_cnt++;
-> > > >    			kfree(name);
-> > > >    			break;
-> > > > +		case Opt_compress_chksum:
-> > > > +			F2FS_OPTION(sbi).compress_chksum = true;
-> > > > +			break;
-> > > >    #else
-> > > >    		case Opt_compress_algorithm:
-> > > >    		case Opt_compress_log_size:
-> > > >    		case Opt_compress_extension:
-> > > > +		case Opt_compress_chksum:
-> > > >    			f2fs_info(sbi, "compression options not supported");
-> > > >    			break;
-> > > >    #endif
-> > > > @@ -1523,6 +1529,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
-> > > >    		seq_printf(seq, ",compress_extension=%s",
-> > > >    			F2FS_OPTION(sbi).extensions[i]);
-> > > >    	}
-> > > > +
-> > > > +	if (F2FS_OPTION(sbi).compress_chksum)
-> > > > +		seq_puts(seq, ",compress_chksum");
-> > > >    }
-> > > >    static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
-> > > > diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-> > > > index a5dbb57a687f..7dc2a06cf19a 100644
-> > > > --- a/include/linux/f2fs_fs.h
-> > > > +++ b/include/linux/f2fs_fs.h
-> > > > @@ -273,7 +273,7 @@ struct f2fs_inode {
-> > > >    			__le64 i_compr_blocks;	/* # of compressed blocks */
-> > > >    			__u8 i_compress_algorithm;	/* compress algorithm */
-> > > >    			__u8 i_log_cluster_size;	/* log of cluster size */
-> > > > -			__le16 i_padding;		/* padding */
-> > > > +			__le16 i_compress_flag;		/* compress flag */
-> > > >    			__le32 i_extra_end[0];	/* for attribute size calculation */
-> > > >    		} __packed;
-> > > >    		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
-> > > > 
-> > .
-> > 
+I also prefer that style, it makes the locals visually sit with the
+beginning of the function body.
+
+cheers
