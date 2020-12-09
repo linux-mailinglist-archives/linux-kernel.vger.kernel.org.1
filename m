@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93B62D4934
+	by mail.lfdr.de (Postfix) with ESMTP id 04CA22D4932
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732900AbgLISkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:40:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
+        id S1733279AbgLISkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:40:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733214AbgLISkJ (ORCPT
+        with ESMTP id S1733267AbgLISkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Dec 2020 13:40:09 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37ECFC0617A6;
-        Wed,  9 Dec 2020 10:38:52 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8421FC0617A7;
+        Wed,  9 Dec 2020 10:38:53 -0800 (PST)
 Date:   Wed, 09 Dec 2020 18:38:48 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1607539129;
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0y3sceUgBRhZYZVpiBwCuyuF9u3CjWj1N+sKMh5dPcU=;
-        b=PgEMM9Ma4YkuhJUD80T4S5loKR5ENnXpzi/D5JTP7pny+3KTgsSareXrm870R02RR9qT95
-        jVjm4OmkliYdjRB0aVyiXrr1t+Zj+C8ZGmEfjl5Fkxj1JCYhHriZN1VyC+Agq7eS2deDtn
-        2FBk8ObmvEXFC9dDIQHWxVXatzLlvzyonQce0bULAjzr4Z8EUx3bZOh6q+PTqLwMq4dP2W
-        hI3o6nPugiI4t674mNaaoIEwjj6a98KygMgnyTahkF2bY6JQCqJ3IjiRL14liz4COPoCB+
-        CKAHho+LvL9XWm6dquHA/NypX/sBCUUYlxWpDprfV/bnSvBJEX7YWnB5z32+hg==
+        bh=piXY0GyN2JaiC4fVOFbAGREbLm9q1/m6T+tF64E3wzM=;
+        b=X7jTIWn/BF9VBM73dFJUKCIMBiYp5yZ87xJ4FWZiF+TVo98ScJukPBnHxHpNJKx6Qs41w4
+        TTontJybDD636pe6Fp91+thssfY+dQ8EmAYQ4kDDoxWFS36wiX86QeHPI2kAOVsJ9INu8X
+        fy2VGEwqrTKNf/cU6j5/SF9ubvw6iDmm9mcRH8BwrAi9mhQrNeJZLvpKGbfPBHiR8x045n
+        xRqmAYtu6Jsx2enUufn44GC1vEn/TcVo3hEJORtdsalEt4N8X8Z19Sie84aw+vnSPXJl+n
+        8cgQDmJrD25Fg/6yqp97VAvSWsiBG9xyhFmLStoSZ58mWt5kmq/o8ApqK6YeHg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1607539129;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,20 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0y3sceUgBRhZYZVpiBwCuyuF9u3CjWj1N+sKMh5dPcU=;
-        b=WQZPUqHAd5gMiRkRg9I4vfQb+CEn5bKR7lRszxl2MOmx3GeCzZJW9fW2xbQB6ceBmME3cX
-        OlrdptxkRS/rceCQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+        bh=piXY0GyN2JaiC4fVOFbAGREbLm9q1/m6T+tF64E3wzM=;
+        b=ne80XH8e0xcWOf0CmvauDoBCCoB6lGSaw5XCwnjXDYCLHyv1VcxXHMI6Q7WiEZl3ap8pF5
+        9RuyNFIcw+mlgCBw==
+From:   "tip-bot2 for Eric W. Biederman" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/rwsem: Better collate rwsem_read_trylock()
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: locking/core] rwsem: Implement down_read_interruptible
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201207090243.GE3040@hirez.programming.kicks-ass.net>
-References: <20201207090243.GE3040@hirez.programming.kicks-ass.net>
+In-Reply-To: <87k0tybqfy.fsf@x220.int.ebiederm.org>
+References: <87k0tybqfy.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Message-ID: <160753912872.3364.17787139748341246196.tip-bot2@tip-bot2>
+Message-ID: <160753912899.3364.3947297068679861678.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,70 +61,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     3379116a0ca965b00e6522c7ea3f16c9dbd8f9f9
-Gitweb:        https://git.kernel.org/tip/3379116a0ca965b00e6522c7ea3f16c9dbd8f9f9
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Tue, 08 Dec 2020 10:22:16 +01:00
+Commit-ID:     31784cff7ee073b34d6eddabb95e3be2880a425c
+Gitweb:        https://git.kernel.org/tip/31784cff7ee073b34d6eddabb95e3be2880a425c
+Author:        Eric W. Biederman <ebiederm@xmission.com>
+AuthorDate:    Thu, 03 Dec 2020 14:11:13 -06:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 09 Dec 2020 17:08:47 +01:00
+CommitterDate: Wed, 09 Dec 2020 17:08:42 +01:00
 
-locking/rwsem: Better collate rwsem_read_trylock()
+rwsem: Implement down_read_interruptible
 
-All users of rwsem_read_trylock() do rwsem_set_reader_owned(sem) on
-success, move it into rwsem_read_trylock() proper.
+In preparation for converting exec_update_mutex to a rwsem so that
+multiple readers can execute in parallel and not deadlock, add
+down_read_interruptible.  This is needed for perf_event_open to be
+converted (with no semantic changes) from working on a mutex to
+wroking on a rwsem.
 
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201207090243.GE3040@hirez.programming.kicks-ass.net
+Link: https://lkml.kernel.org/r/87k0tybqfy.fsf@x220.int.ebiederm.org
 ---
- kernel/locking/rwsem.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ include/linux/rwsem.h  |  1 +
+ kernel/locking/rwsem.c | 26 ++++++++++++++++++++++++++
+ 2 files changed, 27 insertions(+)
 
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index a163542..5c0dc7e 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -273,9 +273,16 @@ static inline void rwsem_set_nonspinnable(struct rw_semaphore *sem)
- static inline bool rwsem_read_trylock(struct rw_semaphore *sem)
- {
- 	long cnt = atomic_long_add_return_acquire(RWSEM_READER_BIAS, &sem->count);
-+
- 	if (WARN_ON_ONCE(cnt < 0))
- 		rwsem_set_nonspinnable(sem);
--	return !(cnt & RWSEM_READ_FAILED_MASK);
-+
-+	if (!(cnt & RWSEM_READ_FAILED_MASK)) {
-+		rwsem_set_reader_owned(sem);
-+		return true;
-+	}
-+
-+	return false;
- }
+diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
+index 13021b0..4c715be 100644
+--- a/include/linux/rwsem.h
++++ b/include/linux/rwsem.h
+@@ -123,6 +123,7 @@ static inline int rwsem_is_contended(struct rw_semaphore *sem)
+  * lock for reading
+  */
+ extern void down_read(struct rw_semaphore *sem);
++extern int __must_check down_read_interruptible(struct rw_semaphore *sem);
+ extern int __must_check down_read_killable(struct rw_semaphore *sem);
  
  /*
-@@ -1340,8 +1347,6 @@ static inline void __down_read(struct rw_semaphore *sem)
- 	if (!rwsem_read_trylock(sem)) {
- 		rwsem_down_read_slowpath(sem, TASK_UNINTERRUPTIBLE);
- 		DEBUG_RWSEMS_WARN_ON(!is_rwsem_reader_owned(sem), sem);
--	} else {
--		rwsem_set_reader_owned(sem);
+diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+index 54d11cb..a163542 100644
+--- a/kernel/locking/rwsem.c
++++ b/kernel/locking/rwsem.c
+@@ -1345,6 +1345,18 @@ static inline void __down_read(struct rw_semaphore *sem)
  	}
  }
  
-@@ -1351,8 +1356,6 @@ static inline int __down_read_interruptible(struct rw_semaphore *sem)
- 		if (IS_ERR(rwsem_down_read_slowpath(sem, TASK_INTERRUPTIBLE)))
- 			return -EINTR;
- 		DEBUG_RWSEMS_WARN_ON(!is_rwsem_reader_owned(sem), sem);
--	} else {
--		rwsem_set_reader_owned(sem);
- 	}
- 	return 0;
++static inline int __down_read_interruptible(struct rw_semaphore *sem)
++{
++	if (!rwsem_read_trylock(sem)) {
++		if (IS_ERR(rwsem_down_read_slowpath(sem, TASK_INTERRUPTIBLE)))
++			return -EINTR;
++		DEBUG_RWSEMS_WARN_ON(!is_rwsem_reader_owned(sem), sem);
++	} else {
++		rwsem_set_reader_owned(sem);
++	}
++	return 0;
++}
++
+ static inline int __down_read_killable(struct rw_semaphore *sem)
+ {
+ 	if (!rwsem_read_trylock(sem)) {
+@@ -1495,6 +1507,20 @@ void __sched down_read(struct rw_semaphore *sem)
  }
-@@ -1363,8 +1366,6 @@ static inline int __down_read_killable(struct rw_semaphore *sem)
- 		if (IS_ERR(rwsem_down_read_slowpath(sem, TASK_KILLABLE)))
- 			return -EINTR;
- 		DEBUG_RWSEMS_WARN_ON(!is_rwsem_reader_owned(sem), sem);
--	} else {
--		rwsem_set_reader_owned(sem);
- 	}
- 	return 0;
- }
+ EXPORT_SYMBOL(down_read);
+ 
++int __sched down_read_interruptible(struct rw_semaphore *sem)
++{
++	might_sleep();
++	rwsem_acquire_read(&sem->dep_map, 0, 0, _RET_IP_);
++
++	if (LOCK_CONTENDED_RETURN(sem, __down_read_trylock, __down_read_interruptible)) {
++		rwsem_release(&sem->dep_map, _RET_IP_);
++		return -EINTR;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(down_read_interruptible);
++
+ int __sched down_read_killable(struct rw_semaphore *sem)
+ {
+ 	might_sleep();
