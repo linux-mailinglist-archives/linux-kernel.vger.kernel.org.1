@@ -2,243 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861142D431C
+	by mail.lfdr.de (Postfix) with ESMTP id F31B52D431D
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732336AbgLINUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:20:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732306AbgLINTT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:19:19 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1B0C061282
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 05:18:10 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id t4so1695455wrr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 05:18:10 -0800 (PST)
+        id S1732223AbgLINUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:20:52 -0500
+Received: from mail-co1nam11on2044.outbound.protection.outlook.com ([40.107.220.44]:21505
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732215AbgLINUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 08:20:49 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VjGYCuP4yg+yI+9O4vVp2419j7BVCuV+lfvq3UyEdp7ny1+CgubzDGpcRxuETWAGJUmc3rofsUiDL6iicDYEOAlNu2ipIHFgNb9adm2ZX3C89Zoi3ftHU2IVjHI7wvVmD7gcNrXoco0/bY9El+L9xAMcFEMPwzyiG4mkoTcGiJPtRx3Uw/68V5C7cSxg6PtiHIDgdh+hSB/F+42Amd8CTeH3s0PTVfGf/fzi4dpEJPIi7YsSDDz4DjqTPOEMlKcNG66TUBn+suRGVTAeEU1fpZJP25SyER/fsHWxezROnDJiooavN4xSZcTwnMOHgnkYItixKczWdKI6lRcvLuTJ6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7YvmQJB6de1eTxFqtRnGhb+Nxqia3MhBC+YkPpythlQ=;
+ b=RqbQf7hHmJs4+/P64M3lqtvea6SaHBE162x6xF9IEhMuYi32aBkw7cOrYijoWtt/TbF0OL7EOJEJPiHthIrRdorG6u24yNqXFdd3/S4JsErwlYiZgX3g/YF0cMxvckDCd+hLWjrQ3D0SYqGlKFOOM6nAjSmHYKPgRCGCaP1N0YrJH0wne7H/eo8zN+PM72AEurvQChOtWOV9pnFD4FQlWu0RXcC/UqOJTjb0oORk7NpyOtiQBal2jAP7TPRw04GWXwuswQ4igCpUfrp1J0jfCP9uBAVn/FwlgQLyvxUhscM50ETtmhbL9Ga2RL3J/1WhQ4hu05gpaIZHkIqtK/bnGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=w6vSHAYoQKu8XGlm7CRNOjlMO18mzd4d/VT7UzJjsWc=;
-        b=M2EjPjYaPTZQdOf4ksEbBwAQW94UxN9wS929V4aj5l6pAeXJokz3aZyp7xjnRcNiMG
-         NKGLB/sX55udo5pfl2U52FthoDQzEdWWwqRiQEPxOHwWZ/rX2iVZmt2LOmX6nHfh8uHh
-         R3EKiTz+TOxLmuhtEYHFPgPSsvsO0OLJcj97R8WlvFlor4NaGA2wiuAsTZ3Y40dthg1h
-         2AzE3Yhh1mJGmwVlXAdzxpUDJxBMzLsGjTMzkWDhUpYOogFH5yQ3IY/qJhIi08uEDH3q
-         bhyZ2WoLFJLdPkrVQNtrLITs1ByMKmo2BAqzibbJ+hhvH8EuvBDBeMf1VNIiEmCv0k+z
-         ADuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=w6vSHAYoQKu8XGlm7CRNOjlMO18mzd4d/VT7UzJjsWc=;
-        b=NgkiTIbXEEuhu7zFhLGMuN5GJTPwxgXDAXfGwe2Ak9suRX0yYL0RAqaYHKKKv2nHCx
-         tyUzwrEbcnBJB12hawgFNTU9GmoU8fa8Q6txI8fHoeYgbEt4MxCeBicBWA0ksGn6bYok
-         EVlfdQZo/COfj0N4agNWqdylmdRlheH+lHEmG/F61o76Mor+XHJmA7K+F+eQZDWKDdX0
-         Gy1fQ2x5jLQpVwEnjxiApvHZl0F9ATRLjIE6+QAxy9CARwxqnGJqhkR+JegEfXSy/3ut
-         xgzuRfUnLWRuJ4vPgEbhY9dpu61hWuuwNHhNpyP0qtpR017HbgV76MyWMEfpl11Iwd6p
-         XbxQ==
-X-Gm-Message-State: AOAM533JMfL7GqUAy/wtZAQtL563x2Mvc41C6IUMVfqLjhGkTTekIIen
-        HALl9j0BAEfrJS5ofnahBwyryA==
-X-Google-Smtp-Source: ABdhPJyvB9EL367TzDMyOMYd5F+ScAh1vR3kafMvhosXFATpK1QBNQ3dG7m4JoGBD31iEAkyLXYwaw==
-X-Received: by 2002:a5d:4d88:: with SMTP id b8mr2668962wru.134.1607519889197;
-        Wed, 09 Dec 2020 05:18:09 -0800 (PST)
-Received: from localhost ([2a01:4b00:8523:2d03:9d1b:d0eb:db43:6cd2])
-        by smtp.gmail.com with ESMTPSA id o83sm3205019wme.21.2020.12.09.05.18.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 05:18:08 -0800 (PST)
-From:   David Brazdil <dbrazdil@google.com>
-To:     kvmarm@lists.cs.columbia.edu
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH 9/9] KVM: arm64: Remove hyp_symbol_addr
-Date:   Wed,  9 Dec 2020 13:17:46 +0000
-Message-Id: <20201209131746.85622-10-dbrazdil@google.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201209131746.85622-1-dbrazdil@google.com>
-References: <20201209131746.85622-1-dbrazdil@google.com>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7YvmQJB6de1eTxFqtRnGhb+Nxqia3MhBC+YkPpythlQ=;
+ b=ViSRKxkxF+NzsrdWCd8B7UY4FySijIYQJWNVY1abot6d58k9Ep6gvBXQPDSb1Cv0jTFHBnjNmPAw+dwag3a/FFN3DvUp6+p38ep7oFD/2Gq9JbjFgYI11/71wURFQxitIK2qab0T6DL/Ny2pncAJaG+B54s1o5UV70WHxVyaZqM=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SN1PR12MB2416.namprd12.prod.outlook.com (2603:10b6:802:2f::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Wed, 9 Dec
+ 2020 13:19:55 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3632.021; Wed, 9 Dec 2020
+ 13:19:55 +0000
+Date:   Wed, 9 Dec 2020 13:19:46 +0000
+From:   Ashish Kalra <ashish.kalra@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     konrad.wilk@oracle.com, hch@lst.de, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org, dave.hansen@linux-intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, Thomas.Lendacky@amd.com, Jon.Grimm@amd.com,
+        rientjes@google.com
+Subject: Re: [PATCH v8] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Message-ID: <20201209131946.GA6495@ashkalra_ubuntu_server>
+References: <20201207231057.26403-1-Ashish.Kalra@amd.com>
+ <20201209110115.GA18203@zn.tnic>
+ <20201209122907.GA6258@ashkalra_ubuntu_server>
+ <20201209125442.GC18203@zn.tnic>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209125442.GC18203@zn.tnic>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: CH2PR20CA0030.namprd20.prod.outlook.com
+ (2603:10b6:610:58::40) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server (165.204.77.1) by CH2PR20CA0030.namprd20.prod.outlook.com (2603:10b6:610:58::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 13:19:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 38ba3745-a1a5-4892-8ef9-08d89c451e7b
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2416:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB2416584A1E362E7D58457BB48ECC0@SN1PR12MB2416.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TGunzsuMDnsRF30ql6Y5J93DxDe/syvgWDnKPsklQCoYyGXvBUcjS7ZXFehnTkXFNBdVy/updh3NDmMsobscGGwfZ8X+bbZNmoVjI0SbQjFwnUewNr1bYk5AVaNgxoJXUKMpK+WxurENet6fRaeo3vAZha0us/lmUdRdGN0pXSDUSKTG9I9qiKjGiFvuHJe0nYumDbOlnIo4qgRMhH4YAXGAT6bP7j3NY22tE+17mNNHKOH7n5SPJp7T3h6TAE3T8YoCFCMH2Wqr8zsfUlRLnhLJnwdIncGPWQFnpO6U0I6wH3RkS7POOcG0FsogQBXVA73hdHJnF/GjzBjr5TgkodNtQMI9OYKfUxYAeSfgY/62VA7qyLSGdaHrJl1BNUJk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(136003)(8936002)(2906002)(8676002)(33656002)(83380400001)(5660300002)(16526019)(52116002)(508600001)(4326008)(9686003)(6916009)(86362001)(956004)(1076003)(44832011)(33716001)(55016002)(26005)(6666004)(7416002)(6496006)(66946007)(186003)(66556008)(34490700003)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?E08KMGFOBsVuBzDGelwUDrIxjTjbf+SzXwV4T2A3BxSNI6V+cJBfeQh/t7aO?=
+ =?us-ascii?Q?ACIrNqpKyW0HUvFJLrXeZKrYnP2k9OoHx7o6jFbR/d1gFQPSoEB1TkwMKHNe?=
+ =?us-ascii?Q?VWUY6OOV2bt5I+oOjL2WVfyqRzbVZDvGJ2XvVjTHTtyHqoVuGSA0clJxxxQv?=
+ =?us-ascii?Q?Zfb8jo5Lns1h6pfunU6ZwsftL4gUXyzA8vNL5BwNQOvAmd+U9GxZUdA/NRGQ?=
+ =?us-ascii?Q?7MZgggYczyhtv7jYGHgZfSX+N+8488b1nnW5dCY37frI2wW2veS8Rcl6edse?=
+ =?us-ascii?Q?2VT7Mdvwyl10NEEoMWLtoiRgdSS7Bh1o+kQuL2AHiohcMUQQlcXcd3grlHyU?=
+ =?us-ascii?Q?jNfK/EXJooqm7ACL7wk6S4SSFX6CdRqpYR6pmlnHCQAQ7g9vkWXMIRnQwjl1?=
+ =?us-ascii?Q?noCPeDx8itpAHg7zxAtNF2wrUQGAfG/xMj5sILoRc0HRp/TzLZDi3pfhSPof?=
+ =?us-ascii?Q?iM8HUgy6azbcHlNAv66vAqVLwvyAUyBRJGH0I5r32WE/+mXrmpZilvJh8+jW?=
+ =?us-ascii?Q?0Ptcm+1MrjxOSkE/sM/O7RUs9cLNB8QQ/VJFZ7s1JSBPaLcHtEVj13o8DUpo?=
+ =?us-ascii?Q?CwlLXzE0sYkU3fOIIMwFfHciroFLVYbSpC2muPBLW2YczUQhPhXs0HU/SDWS?=
+ =?us-ascii?Q?k+l8sFJCeWfYtriiITQpOKlyA62qPqzUBuoJFqNurbU7lwV4nx4bTKI8X54K?=
+ =?us-ascii?Q?L2b5d0sfhJ6AN3N9n2w8sX60qSW+u5JUZ26grsVj3Cgt8+wXSayJ4NfNLkOz?=
+ =?us-ascii?Q?53fkwmw3eLyP3IXW9WETzskZOF5pN6M+Rs56NjsL7s6wTPjLqzXj0MTw3EUi?=
+ =?us-ascii?Q?+83rVShoyojVMds36DKM3XI1Jg3gXtIWIVd1skn9QrosFNW8KOQxMPv0GmVB?=
+ =?us-ascii?Q?jOtXsGmNEPsYyneDLMAlef5Dp9jcB35zbUHteg9DQz1PZSfaJVOZGl7Eeaoc?=
+ =?us-ascii?Q?ua+19ckLL1SVF+WKpmEQJyH4e9W5ayYvVrGL2rnO1staGmQ2+yZ5XixliL0f?=
+ =?us-ascii?Q?u64l?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 13:19:54.9996
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38ba3745-a1a5-4892-8ef9-08d89c451e7b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gQRhB7EGaj2ahcEpUlJiZE8Y8L/FWD1uXyPh4EYy5DnlF+7qYXfWMHieshX5VJUl/ygZBvEikOSrKOKP0sbhSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2416
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hyp code used the hyp_symbol_addr helper to force PC-relative addressing
-because absolute addressing results in kernel VAs due to the way hyp
-code is linked. This is not true anymore, so remove the helper and
-update all of its users.
+On Wed, Dec 09, 2020 at 01:54:42PM +0100, Borislav Petkov wrote:
+> On Wed, Dec 09, 2020 at 12:29:07PM +0000, Ashish Kalra wrote:
+> > As i mentioned in the main comments above, this cannot be called in
+> > mem_encrypt_init() as that breaks reserve_crashkernel() which depends
+> > on SWIOTLB buffer size
+> 
+> Please elaborate how does it break.
+> 
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: David Brazdil <dbrazdil@google.com>
----
- arch/arm64/include/asm/kvm_asm.h         | 20 --------------------
- arch/arm64/kvm/hyp/include/hyp/switch.h  |  4 ++--
- arch/arm64/kvm/hyp/nvhe/hyp-smp.c        |  4 ++--
- arch/arm64/kvm/hyp/nvhe/psci-relay.c     | 24 ++++++++++++------------
- arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c |  2 +-
- 5 files changed, 17 insertions(+), 37 deletions(-)
+reserve_crashkernel() calls swiotlb_size_or_default() to get SWIOTLB
+buffer size and then accordingly allocates low memory for crashkernel. 
+If SWIOTLB buffer size is adjusted after reserve_crashkernel() and
+swiotlb_size_or_default(), then SWIOTLB buffers will overlap the memory
+reserved for crashkernel. Hence any SWIOTLB buffer adjustment needs to
+be done before or in swiotlb_size_or_default(), but Konrad is not in
+favor of modifying swiotlb_size_or_default(), hence this separate
+swiotlb_adjust() interface is introduced. 
 
-diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
-index 7ccf770c53d9..22d933e9b59e 100644
---- a/arch/arm64/include/asm/kvm_asm.h
-+++ b/arch/arm64/include/asm/kvm_asm.h
-@@ -199,26 +199,6 @@ extern void __vgic_v3_init_lrs(void);
- 
- extern u32 __kvm_get_mdcr_el2(void);
- 
--/*
-- * Obtain the PC-relative address of a kernel symbol
-- * s: symbol
-- *
-- * The goal of this macro is to return a symbol's address based on a
-- * PC-relative computation, as opposed to a loading the VA from a
-- * constant pool or something similar. This works well for HYP, as an
-- * absolute VA is guaranteed to be wrong. Only use this if trying to
-- * obtain the address of a symbol (i.e. not something you obtained by
-- * following a pointer).
-- */
--#define hyp_symbol_addr(s)						\
--	({								\
--		typeof(s) *addr;					\
--		asm("adrp	%0, %1\n"				\
--		    "add	%0, %0, :lo12:%1\n"			\
--		    : "=r" (addr) : "S" (&s));				\
--		addr;							\
--	})
--
- #define __KVM_EXTABLE(from, to)						\
- 	"	.pushsection	__kvm_ex_table, \"a\"\n"		\
- 	"	.align		3\n"					\
-diff --git a/arch/arm64/kvm/hyp/include/hyp/switch.h b/arch/arm64/kvm/hyp/include/hyp/switch.h
-index 84473574c2e7..54f4860cd87c 100644
---- a/arch/arm64/kvm/hyp/include/hyp/switch.h
-+++ b/arch/arm64/kvm/hyp/include/hyp/switch.h
-@@ -505,8 +505,8 @@ static inline void __kvm_unexpected_el2_exception(void)
- 	struct exception_table_entry *entry, *end;
- 	unsigned long elr_el2 = read_sysreg(elr_el2);
- 
--	entry = hyp_symbol_addr(__start___kvm_ex_table);
--	end = hyp_symbol_addr(__stop___kvm_ex_table);
-+	entry = &__start___kvm_ex_table;
-+	end = &__stop___kvm_ex_table;
- 
- 	while (entry < end) {
- 		addr = (unsigned long)&entry->insn + entry->insn;
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-index cbab0c6246e2..2048725517f8 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-@@ -33,8 +33,8 @@ unsigned long __hyp_per_cpu_offset(unsigned int cpu)
- 	if (cpu >= ARRAY_SIZE(kvm_arm_hyp_percpu_base))
- 		hyp_panic();
- 
--	cpu_base_array = (unsigned long *)hyp_symbol_addr(kvm_arm_hyp_percpu_base);
-+	cpu_base_array = (unsigned long *)&kvm_arm_hyp_percpu_base;
- 	this_cpu_base = kern_hyp_va(cpu_base_array[cpu]);
--	elf_base = (unsigned long)hyp_symbol_addr(__per_cpu_start);
-+	elf_base = (unsigned long)&__per_cpu_start;
- 	return this_cpu_base - elf_base;
- }
-diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-index 08dc9de69314..746fb7079581 100644
---- a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-+++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-@@ -151,8 +151,8 @@ static int psci_cpu_on(u64 func_id, struct kvm_cpu_context *host_ctxt)
- 	if (cpu_id == INVALID_CPU_ID)
- 		return PSCI_RET_INVALID_PARAMS;
- 
--	boot_args = per_cpu_ptr(hyp_symbol_addr(cpu_on_args), cpu_id);
--	init_params = per_cpu_ptr(hyp_symbol_addr(kvm_init_params), cpu_id);
-+	boot_args = per_cpu_ptr(&cpu_on_args, cpu_id);
-+	init_params = per_cpu_ptr(&kvm_init_params, cpu_id);
- 
- 	/* Check if the target CPU is already being booted. */
- 	if (!try_acquire_boot_args(boot_args))
-@@ -163,7 +163,7 @@ static int psci_cpu_on(u64 func_id, struct kvm_cpu_context *host_ctxt)
- 	wmb();
- 
- 	ret = psci_call(func_id, mpidr,
--			__hyp_pa(hyp_symbol_addr(kvm_hyp_cpu_entry)),
-+			__hyp_pa(&kvm_hyp_cpu_entry),
- 			__hyp_pa(init_params));
- 
- 	/* If successful, the lock will be released by the target CPU. */
-@@ -182,8 +182,8 @@ static int psci_cpu_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
- 	struct psci_boot_args *boot_args;
- 	struct kvm_nvhe_init_params *init_params;
- 
--	boot_args = this_cpu_ptr(hyp_symbol_addr(suspend_args));
--	init_params = this_cpu_ptr(hyp_symbol_addr(kvm_init_params));
-+	boot_args = this_cpu_ptr(&suspend_args);
-+	init_params = this_cpu_ptr(&kvm_init_params);
- 
- 	/*
- 	 * No need to acquire a lock before writing to boot_args because a core
-@@ -197,7 +197,7 @@ static int psci_cpu_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
- 	 * point if it is a deep sleep state.
- 	 */
- 	return psci_call(func_id, power_state,
--			 __hyp_pa(hyp_symbol_addr(kvm_hyp_cpu_resume)),
-+			 __hyp_pa(&kvm_hyp_cpu_resume),
- 			 __hyp_pa(init_params));
- }
- 
-@@ -209,8 +209,8 @@ static int psci_system_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
- 	struct psci_boot_args *boot_args;
- 	struct kvm_nvhe_init_params *init_params;
- 
--	boot_args = this_cpu_ptr(hyp_symbol_addr(suspend_args));
--	init_params = this_cpu_ptr(hyp_symbol_addr(kvm_init_params));
-+	boot_args = this_cpu_ptr(&suspend_args);
-+	init_params = this_cpu_ptr(&kvm_init_params);
- 
- 	/*
- 	 * No need to acquire a lock before writing to boot_args because a core
-@@ -221,7 +221,7 @@ static int psci_system_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
- 
- 	/* Will only return on error. */
- 	return psci_call(func_id,
--			 __hyp_pa(hyp_symbol_addr(kvm_hyp_cpu_resume)),
-+			 __hyp_pa(&kvm_hyp_cpu_resume),
- 			 __hyp_pa(init_params), 0);
- }
- 
-@@ -230,12 +230,12 @@ asmlinkage void __noreturn kvm_host_psci_cpu_entry(bool is_cpu_on)
- 	struct psci_boot_args *boot_args;
- 	struct kvm_cpu_context *host_ctxt;
- 
--	host_ctxt = &this_cpu_ptr(hyp_symbol_addr(kvm_host_data))->host_ctxt;
-+	host_ctxt = &this_cpu_ptr(&kvm_host_data)->host_ctxt;
- 
- 	if (is_cpu_on)
--		boot_args = this_cpu_ptr(hyp_symbol_addr(cpu_on_args));
-+		boot_args = this_cpu_ptr(&cpu_on_args);
- 	else
--		boot_args = this_cpu_ptr(hyp_symbol_addr(suspend_args));
-+		boot_args = this_cpu_ptr(&suspend_args);
- 
- 	cpu_reg(host_ctxt, 0) = boot_args->r0;
- 	write_sysreg_el2(boot_args->pc, SYS_ELR);
-diff --git a/arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c b/arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c
-index 8f0585640241..87a54375bd6e 100644
---- a/arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c
-+++ b/arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c
-@@ -64,7 +64,7 @@ int __vgic_v2_perform_cpuif_access(struct kvm_vcpu *vcpu)
- 	}
- 
- 	rd = kvm_vcpu_dabt_get_rd(vcpu);
--	addr  = hyp_symbol_addr(kvm_vgic_global_state)->vcpu_hyp_va;
-+	addr  = kvm_vgic_global_state.vcpu_hyp_va;
- 	addr += fault_ipa - vgic->vgic_cpu_base;
- 
- 	if (kvm_vcpu_dabt_iswrite(vcpu)) {
--- 
-2.29.2.576.ga3fc446d84-goog
+> > and is called before mem_encrypt_init(), therefore, it needs to be
+> > called from setup_atch() before reserve_crashkernel().
+> 
+> I know you have your requirements what needs to be called when like all
+> the other vendors who want to run stuff early in a particular order but
+> our boot init order is a single fragile mess. So this better be done
+> right!
+> 
+> Also,
+> 
+> [    0.016630] software IO TLB: swiotlb_adjust:
+> [    0.017005] reserve_crashkernel:
+> [    0.050523] software IO TLB: swiotlb_init:
+> 
+> this looks strange - we're doing a swiotlb size adjust before init.
+> 
+> It probably makes sense as in: adjust the size before the SWIOTLB is
+> initialized so that it uses the correct size but this better be spelled
+> out.
+> 
+
+Yes the adjustment is done before init. 
+
+> > I believe that other memory encryption architectures such as s390 are
+> > also looking for something similar to be available.
+> 
+> Until you have something more palpable than belief, "let the others
+> extend it when they really need it." as I already mentioned.
+
+There is a need to introduce an architecture specific callback
+for swiotlb_adjust() because of the following reason :
+
+The sev_active() function is only available to x86, so this will break
+other archs, if we use this function in generic swiotlb code.
+
+Therefore, we need arch-specific callback/interface to be invoked from
+generic swiotlb code to do the SEV specific actions such as SWIOTLB
+buffer size adjustment.
+
+Thanks,
+Ashish
 
