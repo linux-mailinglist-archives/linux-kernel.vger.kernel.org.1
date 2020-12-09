@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2275E2D40D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBC82D40EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730563AbgLILRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:17:23 -0500
-Received: from verein.lst.de ([213.95.11.211]:49769 "EHLO verein.lst.de"
+        id S1730678AbgLILVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:21:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726954AbgLILRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:17:23 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id B68FB68AFE; Wed,  9 Dec 2020 12:16:39 +0100 (CET)
-Date:   Wed, 9 Dec 2020 12:16:39 +0100
-From:   ". Christoph Hellwig" <hch@lst.de>
-To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        ". Christoph Hellwig" <hch@lst.de>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>
-Subject: Re: [PATCH v3 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
-Message-ID: <20201209111639.GB22806@lst.de>
-References: <20201125221917.150463-1-ribalda@chromium.org> <20201130083410.GD32234@lst.de> <20201201033658.GE3723071@google.com> <20201201144916.GA14682@lst.de> <CAAFQd5BBEbmENrrZ-vMK9cKOap19XWmfcxwrxKfjWx-wEew8rg@mail.gmail.com> <20201208071320.GA1667627@google.com>
+        id S1727013AbgLILUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 06:20:07 -0500
+X-Gm-Message-State: AOAM532+D1hj72eNWbigRJ36XrBNtiQmRz5DI82g8Yf9iTfbpsBahqes
+        ErwYIaeDpOESo7af9GUCqOGwN8m9PPUD1sC8EYc=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607512766;
+        bh=U8CiCE+927eWk1WjnrHEeDDVKhi+XWJxlcOhS4QhpHE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CZbfYp5eMW4vCNbBV9SJiILwyOwti8/kZsAVsYvK2NDemL3iD6lIVzx6OIJEzAsWN
+         K7x05Wm2fieBTM1ho1osVEiUn4PDp5UA/CU+Z08ZXp4Zz0dKo11UaIjzG6QhQ0V8kk
+         PtKS7Mx+K8wZf/TTtpqjFwiyKbSmLsa5ATNjqokNb/UtL8Te498LaiXp/3Sv+J7B0+
+         fEyxHwC6s2/HAlh66Tv3eglhNIQdcjWYfLF610MdIfaY8OjsdW/JTUqSY3wvAtnGAl
+         7QogIuRU22jLlxkLW6zhhTRccEomhcXrCKo8BJhDFfjA3QRJ48x00BzLy2atC0/7rv
+         gm5xle3EZOSYA==
+X-Google-Smtp-Source: ABdhPJy+RZN5YZE70pJEXGADA4yibSdAI8aJxjowtgSH9QR1iHKhytI8wUUYsRy7Qa7sG+nxaBUGbjy4r0F/blrkE+c=
+X-Received: by 2002:a9d:6317:: with SMTP id q23mr1277831otk.251.1607512765731;
+ Wed, 09 Dec 2020 03:19:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208071320.GA1667627@google.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20201203191135.21576-1-info@metux.net> <20201203191135.21576-2-info@metux.net>
+ <0080d492-2f07-d1c6-d18c-73d4204a5d40@metux.net> <CACRpkdb4R4yHcUV2KbGEC_RkU+QmH6Xg7X+qee8sEa9TURGr8A@mail.gmail.com>
+ <51d3efb7-b7eb-83d7-673a-308dd51616d3@metux.net> <CACRpkdbqVoT56H88hoZwDqV0kW_8XTaE5TkMQsg-RRrPqgF=cQ@mail.gmail.com>
+In-Reply-To: <CACRpkdbqVoT56H88hoZwDqV0kW_8XTaE5TkMQsg-RRrPqgF=cQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 9 Dec 2020 12:19:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1PRQGUXkjdSmqxXSONX_ZoCgsfx8hJBUdBUk14tyzErA@mail.gmail.com>
+Message-ID: <CAK8P3a1PRQGUXkjdSmqxXSONX_ZoCgsfx8hJBUdBUk14tyzErA@mail.gmail.com>
+Subject: Re: Howto listen to/handle gpio state changes ? Re: [PATCH v2 2/2]
+ drivers: gpio: add virtio-gpio guest driver
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 04:13:20PM +0900, Sergey Senozhatsky wrote:
-> On (20/12/08 13:54), Tomasz Figa wrote:
-> > 
-> > In any case, Sergey is going to share a preliminary patch on how the
-> > current API would be used in the V4L2 videobuf2 framework. That should
-> > give us more input on how such a helper could look.
-> 
-> HUGE apologies for the previous screw up! I replied in the
-> gmail web-interface and that did not work out as expected
-> (at all, big times).
+On Wed, Dec 9, 2020 at 9:51 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Tue, Dec 8, 2020 at 3:07 PM Enrico Weigelt, metux IT consult <lkml@metux.net> wrote:
 
-Actually the previous mail was a mime multipart one, and the plain text
-version displayed just fine here.  My the gmail engineers finally learned
-something after all.
+> What we need to understand is if your new usecase is an outlier
+> so it is simplest modeled by a "mock" irq_chip or we have to design
+> something new altogether like notifications on changes. I suspect
+> irq_chip would be best because all drivers using GPIOs for interrupts
+> are expecting interrupts, and it would be an enormous task to
+> change them all and really annoying to create a new mechanism
+> on the side.
 
-> Another thing to notice is that the new API requires us to have two execution branches
-> in allocators - one for the current API; and one for the new API (if it's supported and
-> if user-space requested non-coherent allocation).
+I would expect the platform abstraction to actually be close enough
+to a chained irqchip that it actually works: the notification should
+come in via vring_interrupt(), which is a normal interrupt handler
+that calls vq->vq.callback(), calling generic_handle_irq() (and
+possibly chained_irq_enter()/chained_irq_exit() around it) like the
+other gpio drivers do should just work here I think, and if it did
+not, then I would expect this to be just a bug in the driver rather
+than something missing in the gpio framework.
 
-So I think we do want these branches for coherent vs non-coherent as they
-have very different semantics and I do not think that hiding them under
-the same API helps people to understand those vastly different semantics.
-
-OTOH we should look into a fallback for DMA API instances that do not
-support the discontigous allocations.
-
-I think between your comments and those from Ricardo I have a good idea
-for a somewhat updated API.  I'll try to post something in the next days.
+       Arnd
