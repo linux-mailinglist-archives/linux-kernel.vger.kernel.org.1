@@ -2,162 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089FF2D4A82
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A7F2D4A8D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729686AbgLIThg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:37:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729787AbgLIThW (ORCPT
+        id S2387834AbgLITiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:38:14 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2238 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387804AbgLITiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:37:22 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7BFC0613CF;
-        Wed,  9 Dec 2020 11:36:41 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id l11so4757997lfg.0;
-        Wed, 09 Dec 2020 11:36:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jH8OAw8LOFPt4TBxe6UIavXjQgmgainyU9Gu6QLTrig=;
-        b=hb8Lr9Yx4FJ/a+SiBXO8oYZ1m2D0teBFqYcwE5wF9/4sMBUlqxKy4aVmU4JW4wvCNx
-         /MyFbrAFFPIZd5rr10DcE2+t+9pfz1EXvllvsTmgItnvzRK4LSavxLSWD55uR0nENhDk
-         x2Pfu+SoMW+pk+aIX8yEmeu5d2s7urXul+KiXDU2oJmZ7sMbHi8sxDhFeaQoglmAq0Vz
-         W1+gGJnKy4g+qf8bnnpkal1nlAoj8lmUtwaJmz23o611lvCjw5zNyjLafZXRgPyKv2qs
-         1VqyDPS/n/+dwDZwuGkHnxuBMUPOdckWlR1/4QqA/Ndzw/0KQOOC15Ydo43sfZbmsEYA
-         +efg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jH8OAw8LOFPt4TBxe6UIavXjQgmgainyU9Gu6QLTrig=;
-        b=YjEdSclnfEKAZCwWXhvKajpN0JvF74Gd7KHQhzUHvoz0UyTuis3CuyQWaSVNI3w4Uw
-         y71C5zXyzmDiBRYRu6jcuytjKFNP/vq4A4gT5ZcaRdao9HdF0t3pLVW6JzphGxHMGx+9
-         gWJG9eJmBipITta44ILdCiLiAGQ6I8Ew8cBkC6+HIy6V/SFelyc0tO2AbBx88sAmR3Un
-         ghHCtzNnJvJF/b0E1kK/CxP8asId+t71HZU5IObuVv0nZ6eEFZ1SQOFG+Ue3knhv/l6G
-         r3oWKcwS0VBPQgASxCcJGHp8HdQ/oxwvTi/F3Gl/oH4WE4CoO2sP4Aq/IjHRfEFsS5fd
-         brhQ==
-X-Gm-Message-State: AOAM533NXTctC71yD+UPFhTzaz/UGL5evL4Zx+yeZl4nixZ0KBihYyNM
-        654MdbH3hvrI6HsBEEoPXhs=
-X-Google-Smtp-Source: ABdhPJwD0jJ9vjUSqq3WubuwfRikcevWsrxGJZH7no9Hfhbtk7jPSvjE+PijSgnWRvaBMZvC7s3evQ==
-X-Received: by 2002:ac2:5f63:: with SMTP id c3mr1355372lfc.451.1607542600079;
-        Wed, 09 Dec 2020 11:36:40 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id u11sm267162lfq.142.2020.12.09.11.36.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 11:36:39 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 9 Dec 2020 20:36:37 +0100
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        iamjoonsoo.kim@lge.com, andrii@kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 sl-b 3/5] mm: Make mem_dump_obj() handle vmalloc()
- memory
-Message-ID: <20201209193637.GA5757@pc638.lan>
-References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
- <20201209011303.32737-3-paulmck@kernel.org>
+        Wed, 9 Dec 2020 14:38:12 -0500
+Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CrnKr5Hmkz67NYm;
+        Thu, 10 Dec 2020 03:34:08 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 9 Dec 2020 20:37:29 +0100
+Received: from [10.210.171.175] (10.210.171.175) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 9 Dec 2020 19:37:27 +0000
+Subject: Re: [PATCH v5 4/5] Driver core: platform: Add
+ devm_platform_get_irqs_affinity()
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <lenb@kernel.org>, <rjw@rjwysocki.net>, <tglx@linutronix.de>,
+        <maz@kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linux-acpi@vger.kernel.org>, <dwagner@suse.de>
+References: <1606905417-183214-1-git-send-email-john.garry@huawei.com>
+ <1606905417-183214-5-git-send-email-john.garry@huawei.com>
+ <X9EYRNDXS1Xcy4iU@kroah.com>
+ <36730230-9fd7-8c6c-b997-328beea2fc31@huawei.com>
+ <X9Ehy28876ezAOLH@kroah.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <0fa6487e-d225-dde6-f23f-f955d87ee706@huawei.com>
+Date:   Wed, 9 Dec 2020 19:36:52 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209011303.32737-3-paulmck@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <X9Ehy28876ezAOLH@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.171.175]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 05:13:01PM -0800, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
-> 
-> This commit adds vmalloc() support to mem_dump_obj().  Note that the
-> vmalloc_dump_obj() function combines the checking and dumping, in
-> contrast with the split between kmem_valid_obj() and kmem_dump_obj().
-> The reason for the difference is that the checking in the vmalloc()
-> case involves acquiring a global lock, and redundant acquisitions of
-> global locks should be avoided, even on not-so-fast paths.
-> 
-> Note that this change causes on-stack variables to be reported as
-> vmalloc() storage from kernel_clone() or similar, depending on the degree
-> of inlining that your compiler does.  This is likely more helpful than
-> the earlier "non-paged (local) memory".
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> Cc: <linux-mm@kvack.org>
-> Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  include/linux/vmalloc.h |  6 ++++++
->  mm/util.c               | 12 +++++++-----
->  mm/vmalloc.c            | 12 ++++++++++++
->  3 files changed, 25 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> index 938eaf9..c89c2be 100644
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -248,4 +248,10 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
->  int register_vmap_purge_notifier(struct notifier_block *nb);
->  int unregister_vmap_purge_notifier(struct notifier_block *nb);
->  
-> +#ifdef CONFIG_MMU
-> +bool vmalloc_dump_obj(void *object);
-> +#else
-> +static inline bool vmalloc_dump_obj(void *object) { return false; }
-> +#endif
-> +
->  #endif /* _LINUX_VMALLOC_H */
-> diff --git a/mm/util.c b/mm/util.c
-> index 8c2449f..ee99a0a 100644
-> --- a/mm/util.c
-> +++ b/mm/util.c
-> @@ -984,6 +984,12 @@ int __weak memcmp_pages(struct page *page1, struct page *page2)
->   */
->  void mem_dump_obj(void *object)
->  {
-> +	if (kmem_valid_obj(object)) {
-> +		kmem_dump_obj(object);
-> +		return;
-> +	}
-> +	if (vmalloc_dump_obj(object))
-> +		return;
->  	if (!virt_addr_valid(object)) {
->  		if (object == NULL)
->  			pr_cont(" NULL pointer.\n");
-> @@ -993,10 +999,6 @@ void mem_dump_obj(void *object)
->  			pr_cont(" non-paged (local) memory.\n");
->  		return;
->  	}
-> -	if (kmem_valid_obj(object)) {
-> -		kmem_dump_obj(object);
-> -		return;
-> -	}
-> -	pr_cont(" non-slab memory.\n");
-> +	pr_cont(" non-slab/vmalloc memory.\n");
->  }
->  EXPORT_SYMBOL_GPL(mem_dump_obj);
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 6ae491a..7421719 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -3431,6 +3431,18 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
->  }
->  #endif	/* CONFIG_SMP */
->  
-> +bool vmalloc_dump_obj(void *object)
-> +{
-> +	struct vm_struct *vm;
-> +	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
->
-Paul, vmalloced addresses are already aligned to PAGE_SIZE, so that one
-is odd.
+On 09/12/2020 19:13, Greg KH wrote:
 
---
-Vlad Rezki
+Hi Greg,
+
+>> For this HW version, the device is on the system bus, directly addressable
+>> by the CPU.
+> What do you mean by "system bus"?
+
+Maybe my terminology is wrong, the point is that we have a platform 
+device driver.
+
+> 
+>> Motivation is that I wanted to switch the HW completion queues to use
+>> managed interrupts.
+> Fair enough, seems like overkill for a "platform" bus though:)
+> 
+>>> What in-kernel driver needs this complexity?  I can't take new apis
+>>> without a real user in the tree, sorry.
+>> It's in the final patch in the serieshttps://lore.kernel.org/linux-scsi/1606905417-183214-1-git-send-email-john.garry@huawei.com/T/#m0df7e7cd6f0819b99aaeb6b7f8939ef1e17b8a83.
+> Ah, I missed that, I thought that was some high-speed scsi thing, not a
+> tiny platform driver...
+
+It is actually is a high-speed SCSI thing also, SAS 3.0 :)
+
+> 
+>> I don't anticipate a huge number of users of this API in future, as most
+>> multi-queue devices are PCI devices; so we could do the work of this API in
+>> the driver itself, but the preference was not to export genirq functions
+>> like irq_update_affinity_desc() or irq_create_affinity_masks(), and rather
+>> have a common helper in the core platform code.
+> Ok, I'd like to have the irq maintainers/developers ack this before
+> taking it in the driver core, as someone is going to have to maintain
+> this crazy thing for forever if it gets merged.
+> 
+
+irq experts are cc'ed and have been very helpful here
+
+So the API mushroomed a bit over time, as I realized that we need to 
+support tearing down the irq mapping, make as devm method, use 
+irq_calc_affinity_vectors(). Not sure how we could factor any of it out 
+to become less of your problem.
+
+Thanks,
+John
