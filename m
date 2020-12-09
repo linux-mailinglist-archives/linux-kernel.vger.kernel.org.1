@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269642D44FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A502D451C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733269AbgLIPCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:02:23 -0500
-Received: from smtp21.cstnet.cn ([159.226.251.21]:45720 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726555AbgLIPCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:02:22 -0500
-Received: from localhost (unknown [125.120.23.64])
-        by APP-01 (Coremail) with SMTP id qwCowADHz0_G5tBfB490AQ--.7550S2;
-        Wed, 09 Dec 2020 23:01:27 +0800 (CST)
-From:   shaojie.dong@isrc.iscas.ac.cn
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        shaojie.dong@isrc.iscas.ac.cn
-Subject: [PATCH] staging: rtl8712: check register_netdev() return value
-Date:   Wed,  9 Dec 2020 23:01:24 +0800
-Message-Id: <20201209150124.23446-1-shaojie.dong@isrc.iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: qwCowADHz0_G5tBfB490AQ--.7550S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKr1rWr1kCr4UCr47Jry7KFg_yoWfKwcE9w
-        1I9r97Grs8Ca45u3WUAr13AryxZaykWw4vqF1jgFWrGryxKws5XrykWFn8Gay8Z3sFyrZr
-        Aw12gr1Syr47WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbI8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_
-        Gr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Jr0_Gr
-        1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
-        cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
-        ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lw4CEc2x0rVAKj4xxMxkI
-        ecxEwVAFwVW5WwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
-        fU1jg4UUUUU
-X-Originating-IP: [125.120.23.64]
-X-CM-SenderInfo: pvkd0ytlhov01qj6x21ufox2xfdvhtffof0/
+        id S1729926AbgLIPJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:09:34 -0500
+Received: from mail1.bemta23.messagelabs.com ([67.219.246.113]:62520 "EHLO
+        mail1.bemta23.messagelabs.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726456AbgLIPJQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 10:09:16 -0500
+Received: from [100.112.4.31] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
+        by server-2.bemta.az-c.us-east-1.aws.symcld.net id 00/05-29078-287E0DF5; Wed, 09 Dec 2020 15:04:34 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpjleJIrShJLcpLzFFi42JJl3vFrlv7/EK
+  8we9GY4snB9oZLd4cn85kcXnXHDaLgwvbGC3OnL7EarF171V2BzaPxhs32DwW901m9Xi/7yqb
+  x5ar7SwenzfJBbBGsWbmJeVXJLBmbHnxha3gGmfF3GvNbA2MT9m7GLk4hAT+M0pc37qfCcJ5z
+  iix4fQnIIeDQ1jAR+Lb/wwQU0RAReJVZxhICbPAG0aJ/c9fMXYxcgLV9zBKHOgUBLHZBLQltm
+  z5xQZi8wrYSmxavooRpJcFqHfVZF2QsKhAuMT6JSsZIUoEJU7OfMICYnMK6Else74TbCuzgKb
+  E+l36IGFmAXGJW0/mM0HY8hLb385hBrElBBQk+t/0sUPYCRLLXt5hnsAoOAvJ1FkIk2YhmTQL
+  yaQFjCyrGM2SijLTM0pyEzNzdA0NDHQNDY10TXQNTY31Eqt0k/VKi3VTE4tLdA31EsuL9Yorc
+  5NzUvTyUks2MQKjJ6WAZeYOxrY3H/QOMUpyMCmJ8k69dCFeiC8pP6UyI7E4I76oNCe1+BCjDA
+  eHkgTvtmdAOcGi1PTUirTMHGAkw6QlOHiURHj3gKR5iwsSc4sz0yFSpxgVpcR57z0FSgiAJDJ
+  K8+DaYMnjEqOslDAvIwMDgxBPQWpRbmYJqvwrRnEORiVh3lMgU3gy80rgpr8CWswEtJjn0nmQ
+  xSWJCCmpBqbQfu68r23bHrx8nu12xPdN5a07X5r/sFqy7o/y35X0qnGVyu7NHe51qhdMgtvio
+  tpTXU+9vvuRQ5BB8HhNW2ocS9tmhzWBDmd8vMufXLha/8LjlYfUduajKjJdXQ2LRNSebjt1IC
+  j6r4/sjrkH4/f/E+Ni3rjk7vXe+SG+auJvjN5/SZu5nstDu7LwpPV/t+dn98be6N/QcF1x7dG
+  aj4+83HP/GqXknQmewsrmqjZbZX1VwUcz/qqHL122OK46J1VaqNWs3fP41KKatZwSFvuDX7of
+  Pl74c5aXRNlez/iNzTxP1sg+9gz4/oyRa6WCw/5dc/UW/pXW0nVRWn9mdsYk1wDtZ8o/Df/Z6
+  wRdY1RiKc5INNRiLipOBAAZFfAPmQMAAA==
+X-Env-Sender: markpearson@lenovo.com
+X-Msg-Ref: server-4.tower-415.messagelabs.com!1607526267!80840!1
+X-Originating-IP: [103.30.234.7]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.60.3; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 21445 invoked from network); 9 Dec 2020 15:04:29 -0000
+Received: from unknown (HELO lenovo.com) (103.30.234.7)
+  by server-4.tower-415.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 9 Dec 2020 15:04:29 -0000
+Received: from reswpmail04.lenovo.com (unknown [10.62.32.23])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by Forcepoint Email with ESMTPS id D2755ED5D3E749A687E0;
+        Wed,  9 Dec 2020 23:04:25 +0800 (CST)
+Received: from localhost.localdomain (10.38.54.222) by reswpmail04.lenovo.com
+ (10.62.32.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2044.4; Wed, 9 Dec 2020
+ 07:04:23 -0800
+Subject: Re: [External] linux-next: build failure after merge of the pm tree
+To:     Jonathan Corbet <corbet@lwn.net>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20201209205754.41ac2424@canb.auug.org.au>
+ <203934b6-dd68-b02d-757f-c0336352d397@lenovo.com>
+ <20201209073352.178d5027@lwn.net>
+From:   Mark Pearson <markpearson@lenovo.com>
+Message-ID: <8e670c7b-b7e7-80aa-343b-4e9d429b61ec@lenovo.com>
+Date:   Wed, 9 Dec 2020 10:04:22 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20201209073352.178d5027@lwn.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.38.54.222]
+X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
+ reswpmail04.lenovo.com (10.62.32.23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "shaojie.dong" <shaojie.dong@isrc.iscas.ac.cn>
+Hi Jon,
 
-Function register_netdev() can fail, so we should check it's return value
+On 09/12/2020 09:33, Jonathan Corbet wrote:
+> On Wed, 9 Dec 2020 08:56:31 -0500 Mark Pearson
+> <markpearson@lenovo.com> wrote:
+> 
+>> I do see: WARNING: document isn't included in any toctree but I
+>> think this is benign - I believe I'm getting it just because I 
+>> converted the file to .rst (as requested by Andy Shevchenko). If
+>> this is important and needs to be addressed urgently as well let me
+>> know.
+> 
+> Normally this is solved by adding the newly created document to the 
+> index.rst file in the same directory.
+> 
+> There isn't one in Documentation/ABI/testing, though; in fact, there
+> are no RST files there.  Files in Documentation/ABI are in a special
+> format that is processed into RST during the docs build.  If we want
+> to add information outside of any specific ABI entry there, we're
+> going to have to decide how we want to do that.  It may well be,
+> though, that the introductory information just belongs in the admin
+> guide instead.
+> 
 
-Signed-off-by: shaojie.dong <shaojie.dong@isrc.iscas.ac.cn>
----
- drivers/staging/rtl8712/hal_init.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Should I just revert this file to plain text format?
 
-diff --git a/drivers/staging/rtl8712/hal_init.c b/drivers/staging/rtl8712/hal_init.c
-index 715f1fe8b..38a3e3d44 100644
---- a/drivers/staging/rtl8712/hal_init.c
-+++ b/drivers/staging/rtl8712/hal_init.c
-@@ -45,7 +45,10 @@ static void rtl871x_load_fw_cb(const struct firmware *firmware, void *context)
- 	}
- 	adapter->fw = firmware;
- 	/* firmware available - start netdev */
--	register_netdev(adapter->pnetdev);
-+	if (register_netdev(adapter->pnetdev) != 0) {
-+		netdev_err(adapter->pnetdev, "register_netdev() failed\n");
-+		free_netdev(adapter->pnetdev);
-+	}
- 	complete(&adapter->rtl8712_fw_ready);
- }
- 
--- 
-2.17.1
+I converted it to rst (as was requested) but I'm wondering if I'm just
+causing a bunch of headaches and people are going to be cursing the one
+weird random rst file in that directory going forwards :)
 
+Mark
