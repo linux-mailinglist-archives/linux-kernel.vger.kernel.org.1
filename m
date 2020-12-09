@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C752D4E3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C745D2D4E01
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388661AbgLIWYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:24:35 -0500
-Received: from mga18.intel.com ([134.134.136.126]:14580 "EHLO mga18.intel.com"
+        id S2388706AbgLIWZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:25:24 -0500
+Received: from mga18.intel.com ([134.134.136.126]:14593 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388639AbgLIWYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:24:30 -0500
-IronPort-SDR: Mx53IUsyXR5JmTKr+ayHHjWStJ8dsZnDVty1g/mNWTeIvxfLduqY0p01+8pK4dG5RWS2RTau6w
- mGxm/bwMz/FA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="161918055"
+        id S2388257AbgLIWYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 17:24:37 -0500
+IronPort-SDR: 8vuBj69WIbhAtw6PPJ+pkDWW/8ErpfUmHfCcSml2B7HV19Kk4esVKrfTaxG6902d0Ac2bKDZ2X
+ WNSrAhw2trFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="161918059"
 X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="161918055"
+   d="scan'208";a="161918059"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:23:47 -0800
-IronPort-SDR: uclimdvVR2tD5wF0nf91TYXck+W/PPf4mnEQLUGLoYy68dqMmFwq7ldTI6YTy1s+ftRXAmW1LR
- Ir9wdLNWFfEQ==
+IronPort-SDR: CP6PZcmeVwvtbtuAKyd6lJn0X6rH0mwteYnL87xSNlF+yNPFTZt/Vg6lnnJN8q39PdtkULzflC
+ WO5xYnJkdV+Q==
 X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="318543510"
+   d="scan'208";a="318543516"
 Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:23:46 -0800
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:23:47 -0800
 From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
 To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -52,9 +52,9 @@ To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Weijiang Yang <weijiang.yang@intel.com>,
         Pengfei Xu <pengfei.xu@intel.com>
 Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v16 02/26] x86/cet/shstk: Add Kconfig option for user-mode control-flow protection
-Date:   Wed,  9 Dec 2020 14:22:56 -0800
-Message-Id: <20201209222320.1724-3-yu-cheng.yu@intel.com>
+Subject: [PATCH v16 04/26] x86/cpufeatures: Introduce X86_FEATURE_CET and setup functions
+Date:   Wed,  9 Dec 2020 14:22:58 -0800
+Message-Id: <20201209222320.1724-5-yu-cheng.yu@intel.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20201209222320.1724-1-yu-cheng.yu@intel.com>
 References: <20201209222320.1724-1-yu-cheng.yu@intel.com>
@@ -64,64 +64,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shadow Stack provides protection against function return address
-corruption.  It is active when the processor supports it, the kernel has
-CONFIG_X86_CET_USER, and the application is built for the feature.
-This is only implemented for the 64-bit kernel.  When it is enabled, legacy
-non-Shadow Stack applications continue to work, but without protection.
+Introduce a software-defined X86_FEATURE_CET, which indicates either Shadow
+Stack or Indirect Branch Tracking (or both) is present.  Also introduce
+related cpu init/setup functions.
 
 Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 ---
- arch/x86/Kconfig           | 22 ++++++++++++++++++++++
- arch/x86/Kconfig.assembler |  5 +++++
- 2 files changed, 27 insertions(+)
+ arch/x86/include/asm/cpufeatures.h          |  2 +-
+ arch/x86/include/asm/disabled-features.h    |  5 ++-
+ arch/x86/include/uapi/asm/processor-flags.h |  2 ++
+ arch/x86/kernel/cpu/common.c                | 40 ++++++++++++++++++++-
+ 4 files changed, 46 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index fbf26e0f7a6a..78b4b5bb1272 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1931,6 +1931,28 @@ config X86_INTEL_TSX_MODE_AUTO
- 	  side channel attacks- equals the tsx=auto command line parameter.
- endchoice
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index c9f6d62da463..16d445e6fa6b 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -108,7 +108,7 @@
+ #define X86_FEATURE_EXTD_APICID		( 3*32+26) /* Extended APICID (8 bits) */
+ #define X86_FEATURE_AMD_DCM		( 3*32+27) /* AMD multi-node processor */
+ #define X86_FEATURE_APERFMPERF		( 3*32+28) /* P-State hardware coordination feedback capability (APERF/MPERF MSRs) */
+-/* free					( 3*32+29) */
++#define X86_FEATURE_CET			( 3*32+29) /* Control-flow enforcement */
+ #define X86_FEATURE_NONSTOP_TSC_S3	( 3*32+30) /* TSC doesn't stop in S3 state */
+ #define X86_FEATURE_TSC_KNOWN_FREQ	( 3*32+31) /* TSC has known frequency */
  
-+config ARCH_HAS_SHADOW_STACK
-+	def_bool n
+diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
+index b22ba3db6b25..e4d5ca2ba5c6 100644
+--- a/arch/x86/include/asm/disabled-features.h
++++ b/arch/x86/include/asm/disabled-features.h
+@@ -65,9 +65,11 @@
+ #ifdef CONFIG_X86_CET_USER
+ #define DISABLE_SHSTK	0
+ #define DISABLE_IBT	0
++#define DISABLE_CET	0
+ #else
+ #define DISABLE_SHSTK	(1 << (X86_FEATURE_SHSTK & 31))
+ #define DISABLE_IBT	(1 << (X86_FEATURE_IBT & 31))
++#define DISABLE_CET	(1 << (X86_FEATURE_CET & 31))
+ #endif
+ 
+ /*
+@@ -76,7 +78,8 @@
+ #define DISABLED_MASK0	(DISABLE_VME)
+ #define DISABLED_MASK1	0
+ #define DISABLED_MASK2	0
+-#define DISABLED_MASK3	(DISABLE_CYRIX_ARR|DISABLE_CENTAUR_MCR|DISABLE_K6_MTRR)
++#define DISABLED_MASK3	(DISABLE_CYRIX_ARR|DISABLE_CENTAUR_MCR|DISABLE_K6_MTRR| \
++			 DISABLE_CET)
+ #define DISABLED_MASK4	(DISABLE_PCID)
+ #define DISABLED_MASK5	0
+ #define DISABLED_MASK6	0
+diff --git a/arch/x86/include/uapi/asm/processor-flags.h b/arch/x86/include/uapi/asm/processor-flags.h
+index bcba3c643e63..a8df907e8017 100644
+--- a/arch/x86/include/uapi/asm/processor-flags.h
++++ b/arch/x86/include/uapi/asm/processor-flags.h
+@@ -130,6 +130,8 @@
+ #define X86_CR4_SMAP		_BITUL(X86_CR4_SMAP_BIT)
+ #define X86_CR4_PKE_BIT		22 /* enable Protection Keys support */
+ #define X86_CR4_PKE		_BITUL(X86_CR4_PKE_BIT)
++#define X86_CR4_CET_BIT		23 /* enable Control-flow Enforcement */
++#define X86_CR4_CET		_BITUL(X86_CR4_CET_BIT)
+ 
+ /*
+  * x86-64 Task Priority Register, CR8
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 35ad8480c464..03c367f79adc 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -510,6 +510,14 @@ static __init int setup_disable_pku(char *arg)
+ __setup("nopku", setup_disable_pku);
+ #endif /* CONFIG_X86_64 */
+ 
++static __always_inline void setup_cet(struct cpuinfo_x86 *c)
++{
++	if (!cpu_feature_enabled(X86_FEATURE_CET))
++		return;
 +
-+config X86_CET_USER
-+	prompt "Intel Control-flow protection for user-mode"
-+	def_bool n
-+	depends on CPU_SUP_INTEL && X86_64
-+	depends on AS_WRUSS
-+	select ARCH_USES_HIGH_VMA_FLAGS
-+	select ARCH_HAS_SHADOW_STACK
-+	help
-+	  Control-flow protection is a hardware security hardening feature
-+	  that detects function-return address or jump target changes by
-+	  malicious code.  Applications must be enabled to use it, and old
-+	  userspace does not get protection "for free".
-+	  Support for this feature is present on processors released in
-+	  2020 or later.  Enabling this feature increases kernel text size
-+	  by 3.7 KB.
-+	  See Documentation/x86/intel_cet.rst for more information.
++	cr4_set_bits(X86_CR4_CET);
++}
 +
-+	  If unsure, say N.
+ /*
+  * Some CPU features depend on higher CPUID levels, which may not always
+  * be available due to CPUID level capping or broken virtualization
+@@ -895,6 +903,12 @@ static void init_speculation_control(struct cpuinfo_x86 *c)
+ 	}
+ }
+ 
++static void init_cet_features(struct cpuinfo_x86 *c)
++{
++	if (cpu_has(c, X86_FEATURE_SHSTK) || cpu_has(c, X86_FEATURE_IBT))
++		set_cpu_cap(c, X86_FEATURE_CET);
++}
 +
- config EFI
- 	bool "EFI runtime service support"
- 	depends on ACPI
-diff --git a/arch/x86/Kconfig.assembler b/arch/x86/Kconfig.assembler
-index 26b8c08e2fc4..00c79dd93651 100644
---- a/arch/x86/Kconfig.assembler
-+++ b/arch/x86/Kconfig.assembler
-@@ -19,3 +19,8 @@ config AS_TPAUSE
- 	def_bool $(as-instr,tpause %ecx)
- 	help
- 	  Supported by binutils >= 2.31.1 and LLVM integrated assembler >= V7
+ void get_cpu_cap(struct cpuinfo_x86 *c)
+ {
+ 	u32 eax, ebx, ecx, edx;
+@@ -960,6 +974,7 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
+ 	if (c->extended_cpuid_level >= 0x8000000a)
+ 		c->x86_capability[CPUID_8000_000A_EDX] = cpuid_edx(0x8000000a);
+ 
++	init_cet_features(c);
+ 	init_scattered_cpuid_features(c);
+ 	init_speculation_control(c);
+ 
+@@ -1221,6 +1236,15 @@ static void detect_nopl(void)
+ #endif
+ }
+ 
++static void adjust_combined_cpu_features(void)
++{
++#ifdef CONFIG_X86_CET_USER
++	if (test_bit(X86_FEATURE_SHSTK, (unsigned long *)cpu_caps_cleared) &&
++	    test_bit(X86_FEATURE_IBT, (unsigned long *)cpu_caps_cleared))
++		setup_clear_cpu_cap(X86_FEATURE_CET);
++#endif
++}
 +
-+config AS_WRUSS
-+	def_bool $(as-instr,wrussq %rax$(comma)(%rbx))
-+	help
-+	  Supported by binutils >= 2.31 and LLVM integrated assembler
+ /*
+  * We parse cpu parameters early because fpu__init_system() is executed
+  * before parse_early_param().
+@@ -1252,9 +1276,19 @@ static void __init cpu_parse_early_param(void)
+ 	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
+ 		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
+ 
++	/*
++	 * CET states are XSAVES states and options must be parsed early.
++	 */
++#ifdef CONFIG_X86_CET_USER
++	if (cmdline_find_option_bool(boot_command_line, "no_user_shstk"))
++		setup_clear_cpu_cap(X86_FEATURE_SHSTK);
++	if (cmdline_find_option_bool(boot_command_line, "no_user_ibt"))
++		setup_clear_cpu_cap(X86_FEATURE_IBT);
++#endif
++
+ 	arglen = cmdline_find_option(boot_command_line, "clearcpuid", arg, sizeof(arg));
+ 	if (arglen <= 0)
+-		return;
++		goto done;
+ 
+ 	pr_info("Clearing CPUID bits:");
+ 	do {
+@@ -1272,6 +1306,9 @@ static void __init cpu_parse_early_param(void)
+ 		}
+ 	} while (res == 2);
+ 	pr_cont("\n");
++
++done:
++	adjust_combined_cpu_features();
+ }
+ 
+ /*
+@@ -1591,6 +1628,7 @@ static void identify_cpu(struct cpuinfo_x86 *c)
+ 
+ 	x86_init_rdrand(c);
+ 	setup_pku(c);
++	setup_cet(c);
+ 
+ 	/*
+ 	 * Clear/Set all flags overridden by options, need do it
 -- 
 2.21.0
 
