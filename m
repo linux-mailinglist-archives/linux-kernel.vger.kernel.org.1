@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F88D2D3BF6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:08:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A47352D3BF9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727800AbgLIHHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 02:07:48 -0500
-Received: from ozlabs.org ([203.11.71.1]:33595 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726431AbgLIHHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 02:07:48 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrSls3kbVz9sW9;
-        Wed,  9 Dec 2020 18:07:05 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607497626;
-        bh=y/7AxITvnZjCAk7hXsrFICRcD4MaIkQMcAoXL89bsy4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AbGdFvekqDdywfKyedVnYsS6DszF3DGKyEhnfrUaNxF7I85AhybRUQ7+GrmZ+Cu/u
-         9dThE8/5mnORzUFIt2UKr1R99E4kBxVEPRgZr9gH5iqWG0SzxyY1Ofqk78gl4YVdUC
-         MSki2Vzj6EVkCn+YM/WwUsIkxKnCzOgv8mk1lh8K1GfQstBWcY3//CvbghZZpztLvR
-         97eTA6AuoyKFBbvJnIs+3HegHhhYcNZsywihOC27x8txYBcy7tpAWVq1oHLO+/ROzp
-         c0AL0ObpZpgCd9OMnkCJrfzexfAvxPXkaboyKsm+YjfSo9pnCNh5rPkoUkwqfzXXlG
-         7jDBrnELWuChg==
-Date:   Wed, 9 Dec 2020 18:07:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Mathieu Malaterre <malat@debian.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: linux-next: build warning after merge of the akpm tree
-Message-ID: <20201209180703.404eb4cb@canb.auug.org.au>
-In-Reply-To: <87r1nzsi4s.fsf@mpe.ellerman.id.au>
-References: <20201204210000.660293c6@canb.auug.org.au>
-        <20201208230157.42c42789@canb.auug.org.au>
-        <87r1nzsi4s.fsf@mpe.ellerman.id.au>
+        id S1727164AbgLIHJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 02:09:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgLIHJl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 02:09:41 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39A6C0613CF;
+        Tue,  8 Dec 2020 23:09:00 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id a12so514347wrv.8;
+        Tue, 08 Dec 2020 23:09:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4rQ/ZNUdmFU7oDkw5NtjKgkVVT3OTRORzHlb5LdRReo=;
+        b=n5iW5B90gp6ggoyILoLSD7BBJzFpQQMkLn2k+R3MF05cYARnPaTjBJPp4UlDiwrATG
+         h9oRzdsEJQTAXMA86V4VFrL1AcW4UQuNS16yfN1ZRcMurjfso18n/ArKeOeawu+N93+5
+         XJ/ynJrRA6obNpYwF4mWSONH0yJzKPY5rD2lF17Ruvjr1g7cp67pUYtWcPVND/vWcIrt
+         fjrD/8Wu1ou8sILx+TvuXM6+mi7ashO7DKf7ibjjyp3nxQKtqeQPRrZRM3FmxZzl+XV3
+         O3RD3cYR0xMlIbVA9j35YQ+K90AL+glkz+ljiLjZH5ktiPTvZpKFkvxVW5x1HogKfakN
+         ihcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4rQ/ZNUdmFU7oDkw5NtjKgkVVT3OTRORzHlb5LdRReo=;
+        b=Hhdxh1vXrVrALKNjR+3of/6BnBx0W9i488PR74sBOp3WZZ3tiMvdHEi2SHSL07AIdv
+         VF0BCIrlUATxPwPloscx+blpOSJP9FUg/DOWtYrPg+k+06WXggpHjH2Dbhuk0KOdJRgM
+         FsZu6wfcHLQFSSqzvwynmN2pgwGvr8WXEGlMcoUIS4Vo/5SkScHPeLSZfI/D5sNqnu5k
+         2I7rJ9uwNCkvU/XPY/28yQxputmp+FIIg5dbLFV7kLASqdwrWNhbhXYfk0b5U7R4DOqi
+         hbxN0FMbv0OaLivwMZNQCQBnIirqHqTnuLUF9482jY8hvivl/qfOM+UXkevH6bbk6ncm
+         sFFw==
+X-Gm-Message-State: AOAM532YeWvMdQYNgpPJd7DMVrMBqPTzB8QyMk018T1bNG+vuFc7/eBd
+        0pAdUTXvThVsCo61htd+8Acfe4oUVIxbIA==
+X-Google-Smtp-Source: ABdhPJxeLpRClh2EhtswTaGwRoTrQASGOKBzVPPpmonz5vCGN1UJ2mBbDOEeEpfsfEAjwisw/Bn1Yg==
+X-Received: by 2002:a5d:6191:: with SMTP id j17mr945121wru.299.1607497739263;
+        Tue, 08 Dec 2020 23:08:59 -0800 (PST)
+Received: from andrea.corp.microsoft.com (host-95-239-64-30.retail.telecomitalia.it. [95.239.64.30])
+        by smtp.gmail.com with ESMTPSA id p3sm1449122wrs.50.2020.12.08.23.08.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 23:08:58 -0800 (PST)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+Subject: [PATCH v3 0/6] Drivers: hv: vmbus: More VMBus-hardening changes
+Date:   Wed,  9 Dec 2020 08:08:21 +0100
+Message-Id: <20201209070827.29335-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/HLUhotdS6r8oYyBamqDPwLP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/HLUhotdS6r8oYyBamqDPwLP
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Integrating feedback from Juan, Michael and Wei. [1]  Changelogs are
+inline/in the patches.
 
-Hi Michael,
+Thanks,
+  Andrea
 
-On Wed, 09 Dec 2020 15:44:35 +1100 Michael Ellerman <mpe@ellerman.id.au> wr=
-ote:
->
-> They should really be in DATA_DATA or similar shouldn't they?
+[1] https://lkml.kernel.org/r/20201202092214.13520-1-parri.andrea@gmail.com
 
-No other architecture appears t need them ...
+Andrea Parri (Microsoft) (6):
+  Drivers: hv: vmbus: Initialize memory to be sent to the host
+  Drivers: hv: vmbus: Reduce number of references to message in
+    vmbus_on_msg_dpc()
+  Drivers: hv: vmbus: Copy the hv_message in vmbus_on_msg_dpc()
+  Drivers: hv: vmbus: Avoid use-after-free in vmbus_onoffer_rescind()
+  Drivers: hv: vmbus: Resolve race condition in vmbus_onoffer_rescind()
+  Drivers: hv: vmbus: Do not allow overwriting
+    vmbus_connection.channels[]
 
---=20
-Cheers,
-Stephen Rothwell
+ drivers/hv/channel.c      |  4 +--
+ drivers/hv/channel_mgmt.c | 55 +++++++++++++++++++++++++++------------
+ drivers/hv/hyperv_vmbus.h |  2 +-
+ drivers/hv/vmbus_drv.c    | 43 ++++++++++++++++++------------
+ include/linux/hyperv.h    |  1 +
+ 5 files changed, 69 insertions(+), 36 deletions(-)
 
---Sig_/HLUhotdS6r8oYyBamqDPwLP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+-- 
+2.25.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Qd5cACgkQAVBC80lX
-0GyQKQf+IQ7APd2lQVndfNhpMSaNqgjyM50ktUG4sbEP9NurjHT7RytwNfLgSPds
-Tw+WEUKkkQ3tavRvf1jai+OKM/hpY/B8hKH7Kbzsl7WcPuGptAe/mKmTa0NO7Esr
-gwDQoZbyrZ5vRYik99t7ozP8w67KrARiYLqKNqZYLTMRUPndMQ+OLcj8Pqb2Tqyb
-IbFJaVpHo7b6bjUl/ZB0dmoUvx/7ApKijNTlWnRfg22hmN5km6lig5QTX1Qy1NXZ
-UvWPtoWMdnMziy8Bw7pu2vq2Kk3XhJa2rykkB395QKOcnDTHtS2sBu2G8PQ0xG1k
-k7cJRMZxz2nBd6FCJ7uSmlMxYy/gWg==
-=fQhx
------END PGP SIGNATURE-----
-
---Sig_/HLUhotdS6r8oYyBamqDPwLP--
