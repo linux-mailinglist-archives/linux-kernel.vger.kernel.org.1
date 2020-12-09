@@ -2,517 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43E82D4C30
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B4B2D4C3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732302AbgLIUtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:49:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728298AbgLIUtd (ORCPT
+        id S1733097AbgLIUxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:53:31 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5624 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726227AbgLIUxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:49:33 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A81C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 12:48:52 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id k10so2733414wmi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 12:48:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kX7zScDbofoaTppiAVEA+NNo1io0xNrRQ/3QcrGG5ec=;
-        b=A9uvP+HBExS6gyiT3SlcOTOsi9NOHpgtK7l6D61xmzftg/6sXTd6EfTM22kRYOR88Z
-         +wgmyS8iAVGKwAkcD9w3oOVQ//sCc1O7C352gqP7Gt/MpdUsVztlAX8cpah1oHjaCHaM
-         50FvjOPgp78zt1UXMg0TrFoLyFpG/WhtnhlENWWhaFhyabyvMqbvd3nku0MHAKFUqDwo
-         tjZPqfR5fSzgvHUfaOr9cwZISV8kEZyl4rZ9HJ0psWdmnS8bY16TCW+pO6Ip7qM3XaAM
-         kEXxhH7QHKr1rsUocW9l7W+TMZE2MpI/CfFEwLe6+l1SXfBUmauwGUnEgbJWSTahY5V6
-         jwwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kX7zScDbofoaTppiAVEA+NNo1io0xNrRQ/3QcrGG5ec=;
-        b=kn0aXluyj2p2yzPBbeaqUcvk1O+JHGju96dx9QQ2QSA39L+NEkYGSndt61XXsRyKwm
-         EZYq/FgVtlsvTmnAUEhYPvViWDbK0ZzECXxARCB9jzFSCi7/eFWV+coaOSJPHrhOsC4I
-         4NAZ7uy9tVtGiiX4AzWKt+qwxE62UDydJ9lkvueN/gUsI2styEbg5951ebQUR86idazW
-         yAeLfUZhNszdB0GolVLHa1yOu9r5AhJ/Qnsd77UK1MuCFgAG/bsMDGg4wXoJe4JryRVX
-         lI+LMJESl3hx9Upe6uVUEQRKowp5xoAvCR8yhtPoZhQHCGzuDHlPPqNxWYoRVUdeQAr0
-         iibw==
-X-Gm-Message-State: AOAM532VGqzhZtYluq25cG18h38jg/3rLGrLurKNazVIY5YWVmU7cnm2
-        dCi0m2lAR1UDrfU4i9DrhORT1FZ8SZ6XGQ==
-X-Google-Smtp-Source: ABdhPJys3belKSn56cqYy0S9OIdme+S3S7hGPoaT/DgbYhL0CH8mKvvkStKs/TDzOmISfAna6ClMkw==
-X-Received: by 2002:a1c:f203:: with SMTP id s3mr4661128wmc.14.1607546931282;
-        Wed, 09 Dec 2020 12:48:51 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8cf2:3820:1fbd:70ad? ([2a01:e34:ed2f:f020:8cf2:3820:1fbd:70ad])
-        by smtp.googlemail.com with ESMTPSA id c190sm5782280wme.19.2020.12.09.12.48.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 12:48:50 -0800 (PST)
-Subject: Re: [PATCH 3/4] thermal: int340x: processor_thermal: Add RFIM driver
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        rui.zhang@intel.com, amitk@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20201126171829.945969-1-srinivas.pandruvada@linux.intel.com>
- <20201126171829.945969-3-srinivas.pandruvada@linux.intel.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <8cf8cad2-688d-b290-9a13-fcf9801f9acd@linaro.org>
-Date:   Wed, 9 Dec 2020 21:48:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 9 Dec 2020 15:53:31 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B9KWXIf021859;
+        Wed, 9 Dec 2020 15:52:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=10ioeuJE2bkIm5pz7lZv+a8MyIhqu9LDDDbuOWf3B44=;
+ b=JV9ylOWsAq310dSSCBQWT7GzkjabPwzoaG1fErUCfQQxJidadMDUgTT0b2JL6FMDGl9b
+ jI+5OfQaHVAIZT7WHwplqvVN6Ri7C9inUjnTzlQ6ukHA8Lv9uHX57gwJ04kF+7IdXSkD
+ Il9rrx2gPdU3rP8/q268YDv3KCsBs0NhM5XO03vLufwmMe5VnJDjRCHWZ2nvo+paG7T8
+ cNK1jtriDcVyoUv3ysHsu15b3xNw9UT5gL0zRx7XeO215ClTMMgn4kG7GydUKgF5fExu
+ j9kSxGESLhyzPFWESOtnKHxpsq0NcvINaVk5Ss2S7aygm0BFH/ywWfTfobVEFbk6m8BK 7g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35ayxnc2fj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 15:52:50 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B9Kph8f104760;
+        Wed, 9 Dec 2020 15:52:50 -0500
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35ayxnc2f9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 15:52:49 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B9Kl1RD004138;
+        Wed, 9 Dec 2020 20:52:49 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma04dal.us.ibm.com with ESMTP id 3581u9u0b1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 20:52:49 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B9KqlVB32768278
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Dec 2020 20:52:47 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F2880112061;
+        Wed,  9 Dec 2020 20:52:46 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A686112062;
+        Wed,  9 Dec 2020 20:52:44 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.163.37.122])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  9 Dec 2020 20:52:44 +0000 (GMT)
+Subject: Re: [RFC 0/4] vfio-pci/zdev: Fixing s390 vfio-pci ISM support
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+To:     alex.williamson@redhat.com, cohuck@redhat.com,
+        schnelle@linux.ibm.com
+Cc:     pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1607545670-1557-1-git-send-email-mjrosato@linux.ibm.com>
+Message-ID: <765a8b73-a879-ea96-d13e-8fd574b363be@linux.ibm.com>
+Date:   Wed, 9 Dec 2020 15:52:43 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201126171829.945969-3-srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1607545670-1557-1-git-send-email-mjrosato@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_16:2020-12-09,2020-12-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ mlxscore=0 spamscore=0 lowpriorityscore=0 phishscore=0 impostorscore=0
+ adultscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/2020 18:18, Srinivas Pandruvada wrote:
-> Add support for RFIM (Radio Frequency Interference Mitigation) support
-> via processor thermal PCI device. This drivers allows adjustment of
-> FIVR (Fully Integrated Voltage Regulator) and DDR (Double Data Rate)
-> frequencies to avoid RF interference with WiFi and 5G.
+On 12/9/20 3:27 PM, Matthew Rosato wrote:
+> Today, ISM devices are completely disallowed for vfio-pci passthrough as
+> QEMU will reject the device due to an (inappropriate) MSI-X check.
+> However, in an effort to enable ISM device passthrough, I realized that the
+> manner in which ISM performs block write operations is highly incompatible
+> with the way that QEMU s390 PCI instruction interception and
+> vfio_pci_bar_rw break up I/O operations into 8B and 4B operations -- ISM
+> devices have particular requirements in regards to the alignment, size and
+> order of writes performed.  Furthermore, they require that legacy/non-MIO
+> s390 PCI instructions are used, which is also not guaranteed when the I/O
+> is passed through the typical userspace channels.
 > 
-> Switching voltage regulators (VR) generate radiated EMI or RFI at the
-> fundamental frequency and its harmonics. Some harmonics may interfere
-> with very sensitive wireless receivers such as Wi-Fi and cellular that
-> are integrated into host systems like notebook PCs.  One of mitigation
-> methods is requesting SOC integrated VR (IVR) switching frequency to a
-> small % and shift away the switching noise harmonic interference from
-> radio channels.  OEM or ODMs can use the driver to control SOC IVR
-> operation within the range where it does not impact IVR performance.
+> As a result, this patchset proposes a new VFIO region to allow a guest to
+> pass certain PCI instruction intercepts directly to the s390 host kernel
+> PCI layer for exeuction, pinning the guest buffer in memory briefly in
+> order to execute the requested PCI instruction.
 > 
-> DRAM devices of DDR IO interface and their power plane can generate EMI
-> at the data rates. Similar to IVR control mechanism, Intel offers a
-> mechanism by which DDR data rates can be changed if several conditions
-> are met: there is strong RFI interference because of DDR; CPU power
-> management has no other restriction in changing DDR data rates;
-> PC ODMs enable this feature (real time DDR RFI Mitigation referred to as
-> DDR-RFIM) for Wi-Fi from BIOS.
-
-Thanks for the technical details, it is interesting.
-
-May be I missed something but how this is related to thermal?
-
-
-> This change exports two folders under /sys/bus/pci/devices/0000:00:04.0.
-> One folder "fivr" contains all attributes exposed for controling FIVR
-> features. The other folder "dvfs" contains all attributes for DDR
-> features.
+> Matthew Rosato (4):
+>    s390/pci: track alignment/length strictness for zpci_dev
+>    vfio-pci/zdev: Pass the relaxed alignment flag
+>    s390/pci: Get hardware-reported max store block length
+>    vfio-pci/zdev: Introduce the zPCI I/O vfio region
 > 
-> Changes done to implement:
-> - New module for rfim interfaces
-> - Two new per processor features for DDR and FIVR
-> - Enable feature for Tiger Lake (FIVR only) and Alder Lake
-> 
-> The attributes exposed and explanation:
-> 
-> FIVR attributes
-> 
-> vco_ref_code_lo (RW): The VCO reference code is an 11-bit field and
-> controls the FIVR switching frequency. This is the 3-bit LSB field.
-> 
-> vco_ref_code_hi (RW): The VCO reference code is an 11-bit field and
-> controls the FIVR switching frequency. This is the 8-bit MSB field.
-> 
-> spread_spectrum_pct (RW): Set the FIVR spread spectrum clocking
-> percentage
-> 
-> spread_spectrum_clk_enable (RW): Enable/disable of the FIVR spread
-> spectrum clocking feature
-> 
-> rfi_vco_ref_code (RW): This field is a read only status register which
-> reflects the current FIVR switching frequency
-> 
-> fivr_fffc_rev (RW): This field indicated the revision of the FIVR HW.
-> 
-> DVFS attributes
-> 
-> rfi_restriction_run_busy (RW): Request the restriction of specific DDR
-> data rate and set this value 1. Self reset to 0 after operation.
-> 
-> rfi_restriction_err_code (RW): Values:  0 :Request is accepted, 1:Feature
-> disabled, 2: the request restricts more points than it is allowed
-> 
-> rfi_restriction_data_rate_Delta (RW): Restricted DDR data rate for RFI
-> protection: Lower Limit
-> 
-> rfi_restriction_data_rate_Base (RW): Restricted DDR data rate for RFI
-> protection: Upper Limit
-> 
-> ddr_data_rate_point_0 (RO): DDR data rate selection 1st point
-> 
-> ddr_data_rate_point_1 (RO): DDR data rate selection 2nd point
-> 
-> ddr_data_rate_point_2 (RO): DDR data rate selection 3rd point
-> 
-> ddr_data_rate_point_3 (RO): DDR data rate selection 4th point
-> 
-> rfi_disable (RW): Disable DDR rate change feature
-> 
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
->  .../thermal/intel/int340x_thermal/Makefile    |   1 +
->  .../processor_thermal_device.c                |  23 +-
->  .../processor_thermal_device.h                |   5 +
->  .../int340x_thermal/processor_thermal_rfim.c  | 244 ++++++++++++++++++
->  4 files changed, 270 insertions(+), 3 deletions(-)
->  create mode 100644 drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c
-> 
-> diff --git a/drivers/thermal/intel/int340x_thermal/Makefile b/drivers/thermal/intel/int340x_thermal/Makefile
-> index 86e8d3c87df7..f4e2eb7d9606 100644
-> --- a/drivers/thermal/intel/int340x_thermal/Makefile
-> +++ b/drivers/thermal/intel/int340x_thermal/Makefile
-> @@ -5,5 +5,6 @@ obj-$(CONFIG_INT340X_THERMAL)	+= int3402_thermal.o
->  obj-$(CONFIG_INT340X_THERMAL)	+= int3403_thermal.o
->  obj-$(CONFIG_INT340X_THERMAL)	+= processor_thermal_device.o
->  obj-$(CONFIG_PROC_THERMAL_MMIO_RAPL) += processor_thermal_rapl.o
-> +obj-$(CONFIG_INT340X_THERMAL)	+= processor_thermal_rfim.o
->  obj-$(CONFIG_INT3406_THERMAL)	+= int3406_thermal.o
->  obj-$(CONFIG_ACPI_THERMAL_REL)	+= acpi_thermal_rel.o
-> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-> index 589ac7deec02..b6a7358b989d 100644
-> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-> @@ -429,6 +429,8 @@ static int proc_thermal_mmio_add(struct pci_dev *pdev,
->  {
->  	int ret;
->  
-> +	proc_priv->mmio_feature_mask = feature_mask;
-> +
->  	if (feature_mask) {
->  		ret = proc_thermal_set_mmio_base(pdev, proc_priv);
->  		if (ret)
-> @@ -443,9 +445,21 @@ static int proc_thermal_mmio_add(struct pci_dev *pdev,
->  		}
->  	}
->  
-> -	proc_priv->mmio_feature_mask = feature_mask;
-> +	if (feature_mask & PROC_THERMAL_FEATURE_FIVR ||
-> +	    feature_mask & PROC_THERMAL_FEATURE_DVFS) {
-> +		ret = proc_thermal_rfim_add(pdev, proc_priv);
-> +		if (ret) {
-> +			dev_err(&pdev->dev, "failed to add RFIM interface\n");
-> +			goto err_rem_rapl;
-> +		}
-> +	}
->  
->  	return 0;
-> +
-> +err_rem_rapl:
-> +	proc_thermal_rapl_remove();
-> +
-> +	return ret;
->  }
->  
->  static void proc_thermal_mmio_remove(struct pci_dev *pdev)
-> @@ -455,6 +469,9 @@ static void proc_thermal_mmio_remove(struct pci_dev *pdev)
->  	if (proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_RAPL)
->  		proc_thermal_rapl_remove();
->  
-> +	if (proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_FIVR ||
-> +	    proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_DVFS)
-> +		proc_thermal_rfim_remove(pdev);
->  }
->  
->  static int  proc_thermal_pci_probe(struct pci_dev *pdev,
-> @@ -566,7 +583,7 @@ static int proc_thermal_resume(struct device *dev)
->  static SIMPLE_DEV_PM_OPS(proc_thermal_pm, NULL, proc_thermal_resume);
->  
->  static const struct pci_device_id proc_thermal_pci_ids[] = {
-> -	{ PCI_DEVICE_DATA(INTEL, ADL_THERMAL, PROC_THERMAL_FEATURE_RAPL) },
-> +	{ PCI_DEVICE_DATA(INTEL, ADL_THERMAL, PROC_THERMAL_FEATURE_RAPL | PROC_THERMAL_FEATURE_FIVR | PROC_THERMAL_FEATURE_DVFS) },
->  	{ PCI_DEVICE_DATA(INTEL, BDW_THERMAL, 0) },
->  	{ PCI_DEVICE_DATA(INTEL, BSW_THERMAL, 0) },
->  	{ PCI_DEVICE_DATA(INTEL, BXT0_THERMAL, 0) },
-> @@ -580,7 +597,7 @@ static const struct pci_device_id proc_thermal_pci_ids[] = {
->  	{ PCI_DEVICE_DATA(INTEL, ICL_THERMAL, PROC_THERMAL_FEATURE_RAPL) },
->  	{ PCI_DEVICE_DATA(INTEL, JSL_THERMAL, 0) },
->  	{ PCI_DEVICE_DATA(INTEL, SKL_THERMAL, PROC_THERMAL_FEATURE_RAPL) },
-> -	{ PCI_DEVICE_DATA(INTEL, TGL_THERMAL, PROC_THERMAL_FEATURE_RAPL) },
-> +	{ PCI_DEVICE_DATA(INTEL, TGL_THERMAL, PROC_THERMAL_FEATURE_RAPL | PROC_THERMAL_FEATURE_FIVR) },
->  	{ },
->  };
->  
-> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-> index 45214571e00d..4bbb88f6b4a7 100644
-> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-> @@ -54,6 +54,8 @@ struct rapl_mmio_regs {
->  
->  #define PROC_THERMAL_FEATURE_NONE	0x00
->  #define PROC_THERMAL_FEATURE_RAPL	0x01
-> +#define PROC_THERMAL_FEATURE_FIVR	0x02
-> +#define PROC_THERMAL_FEATURE_DVFS	0x04
->  
->  #if IS_ENABLED(CONFIG_PROC_THERMAL_MMIO_RAPL)
->  int proc_thermal_rapl_add(struct pci_dev *pdev, struct proc_thermal_device *proc_priv);
-> @@ -70,4 +72,7 @@ static void __maybe_unused proc_thermal_rapl_remove(void)
->  }
->  #endif
->  
-> +int proc_thermal_rfim_add(struct pci_dev *pdev, struct proc_thermal_device *proc_priv);
-> +void proc_thermal_rfim_remove(struct pci_dev *pdev);
-> +
->  #endif
-> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c
-> new file mode 100644
-> index 000000000000..aef993a813e2
-> --- /dev/null
-> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c
-> @@ -0,0 +1,244 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * processor thermal device RFIM control
-> + * Copyright (c) 2020, Intel Corporation.
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include "processor_thermal_device.h"
-> +
-> +struct mmio_reg {
-> +	int read_only;
-> +	u32 offset;
-> +	int bits;
-> +	u16 mask;
-> +	u16 shift;
-> +};
-> +
-> +/* These will represent sysfs attribute names */
-> +static const char * const fivr_strings[] = {
-> +	"vco_ref_code_lo",
-> +	"vco_ref_code_hi",
-> +	"spread_spectrum_pct",
-> +	"spread_spectrum_clk_enable",
-> +	"rfi_vco_ref_code",
-> +	"fivr_fffc_rev",
-> +	NULL
-> +};
-> +
-> +static const struct mmio_reg tgl_fivr_mmio_regs[] = {
-> +	{ 0, 0x5A18, 3, 0x7, 12}, /* vco_ref_code_lo */
-> +	{ 0, 0x5A18, 8, 0xFF, 16}, /* vco_ref_code_hi */
-> +	{ 0, 0x5A08, 8, 0xFF, 0}, /* spread_spectrum_pct */
-> +	{ 0, 0x5A08, 1, 0x1, 8}, /* spread_spectrum_clk_enable */
-> +	{ 1, 0x5A10, 12, 0xFFF, 0}, /* rfi_vco_ref_code */
-> +	{ 1, 0x5A14, 2, 0x3, 1}, /* fivr_fffc_rev */
-> +};
-> +
-> +/* These will represent sysfs attribute names */
-> +static const char * const dvfs_strings[] = {
-> +	"rfi_restriction_run_busy",
-> +	"rfi_restriction_err_code",
-> +	"rfi_restriction_data_rate",
-> +	"rfi_restriction_data_rate_base",
-> +	"ddr_data_rate_point_0",
-> +	"ddr_data_rate_point_1",
-> +	"ddr_data_rate_point_2",
-> +	"ddr_data_rate_point_3",
-> +	"rfi_disable",
-> +	NULL
-> +};
-> +
-> +static const struct mmio_reg adl_dvfs_mmio_regs[] = {
-> +	{ 0, 0x5A38, 1, 0x1, 31}, /* rfi_restriction_run_busy */
-> +	{ 0, 0x5A38, 7, 0x7F, 24}, /* rfi_restriction_err_code */
-> +	{ 0, 0x5A38, 8, 0xFF, 16}, /* rfi_restriction_data_rate */
-> +	{ 0, 0x5A38, 16, 0xFFFF, 0}, /* rfi_restriction_data_rate_base */
-> +	{ 0, 0x5A30, 10, 0x3FF, 0}, /* ddr_data_rate_point_0 */
-> +	{ 0, 0x5A30, 10, 0x3FF, 10}, /* ddr_data_rate_point_1 */
-> +	{ 0, 0x5A30, 10, 0x3FF, 20}, /* ddr_data_rate_point_2 */
-> +	{ 0, 0x5A30, 10, 0x3FF, 30}, /* ddr_data_rate_point_3 */
-> +	{ 0, 0x5A40, 1, 0x1, 0}, /* rfi_disable */
-> +};
-> +
-> +#define RFIM_SHOW(suffix, table)\
-> +static ssize_t suffix##_show(struct device *dev,\
-> +			      struct device_attribute *attr,\
-> +			      char *buf)\
-> +{\
-> +	struct proc_thermal_device *proc_priv;\
-> +	struct pci_dev *pdev = to_pci_dev(dev);\
-> +	const struct mmio_reg *mmio_regs;\
-> +	const char **match_strs;\
-> +	u32 reg_val;\
-> +	int ret;\
-> +\
-> +	proc_priv = pci_get_drvdata(pdev);\
-> +	if (table) {\
-> +		match_strs = (const char **)dvfs_strings;\
-> +		mmio_regs = adl_dvfs_mmio_regs;\
-> +	} else { \
-> +		match_strs = (const char **)fivr_strings;\
-> +		mmio_regs = tgl_fivr_mmio_regs;\
-> +	} \
-> +	\
-> +	ret = match_string(match_strs, -1, attr->attr.name);\
-> +	if (ret < 0)\
-> +		return ret;\
-> +	reg_val = readl((void __iomem *) (proc_priv->mmio_base + mmio_regs[ret].offset));\
-> +	ret = (reg_val >> mmio_regs[ret].shift) & mmio_regs[ret].mask;\
-> +	return sprintf(buf, "%u\n", ret);\
-> +}
-> +
-> +#define RFIM_STORE(suffix, table)\
-> +static ssize_t suffix##_store(struct device *dev,\
-> +			       struct device_attribute *attr,\
-> +			       const char *buf, size_t count)\
-> +{\
-> +	struct proc_thermal_device *proc_priv;\
-> +	struct pci_dev *pdev = to_pci_dev(dev);\
-> +	unsigned int input;\
-> +	const char **match_strs;\
-> +	const struct mmio_reg *mmio_regs;\
-> +	int ret, err;\
-> +	u32 reg_val;\
-> +	u32 mask;\
-> +\
-> +	proc_priv = pci_get_drvdata(pdev);\
-> +	if (table) {\
-> +		match_strs = (const char **)dvfs_strings;\
-> +		mmio_regs = adl_dvfs_mmio_regs;\
-> +	} else { \
-> +		match_strs = (const char **)fivr_strings;\
-> +		mmio_regs = tgl_fivr_mmio_regs;\
-> +	} \
-> +	\
-> +	ret = match_string(match_strs, -1, attr->attr.name);\
-> +	if (ret < 0)\
-> +		return ret;\
-> +	if (mmio_regs[ret].read_only)\
-> +		return -EPERM;\
-> +	err = kstrtouint(buf, 10, &input);\
-> +	if (err)\
-> +		return err;\
-> +	mask = GENMASK(mmio_regs[ret].shift + mmio_regs[ret].bits - 1, mmio_regs[ret].shift);\
-> +	reg_val = readl((void __iomem *) (proc_priv->mmio_base + mmio_regs[ret].offset));\
-> +	reg_val &= ~mask;\
-> +	reg_val |= (input << mmio_regs[ret].shift);\
-> +	writel(reg_val, (void __iomem *) (proc_priv->mmio_base + mmio_regs[ret].offset));\
-> +	return count;\
-> +}
-> +
-> +RFIM_SHOW(vco_ref_code_lo, 0)
-> +RFIM_SHOW(vco_ref_code_hi, 0)
-> +RFIM_SHOW(spread_spectrum_pct, 0)
-> +RFIM_SHOW(spread_spectrum_clk_enable, 0)
-> +RFIM_SHOW(rfi_vco_ref_code, 0)
-> +RFIM_SHOW(fivr_fffc_rev, 0)
-> +
-> +RFIM_STORE(vco_ref_code_lo, 0)
-> +RFIM_STORE(vco_ref_code_hi, 0)
-> +RFIM_STORE(spread_spectrum_pct, 0)
-> +RFIM_STORE(spread_spectrum_clk_enable, 0)
-> +RFIM_STORE(rfi_vco_ref_code, 0)
-> +RFIM_STORE(fivr_fffc_rev, 0)
-> +
-> +static DEVICE_ATTR_RW(vco_ref_code_lo);
-> +static DEVICE_ATTR_RW(vco_ref_code_hi);
-> +static DEVICE_ATTR_RW(spread_spectrum_pct);
-> +static DEVICE_ATTR_RW(spread_spectrum_clk_enable);
-> +static DEVICE_ATTR_RW(rfi_vco_ref_code);
-> +static DEVICE_ATTR_RW(fivr_fffc_rev);
-> +
-> +static struct attribute *fivr_attrs[] = {
-> +	&dev_attr_vco_ref_code_lo.attr,
-> +	&dev_attr_vco_ref_code_hi.attr,
-> +	&dev_attr_spread_spectrum_pct.attr,
-> +	&dev_attr_spread_spectrum_clk_enable.attr,
-> +	&dev_attr_rfi_vco_ref_code.attr,
-> +	&dev_attr_fivr_fffc_rev.attr,
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group fivr_attribute_group = {
-> +	.attrs = fivr_attrs,
-> +	.name = "fivr"
-> +};
-> +
-> +RFIM_SHOW(rfi_restriction_run_busy, 1)
-> +RFIM_SHOW(rfi_restriction_err_code, 1)
-> +RFIM_SHOW(rfi_restriction_data_rate, 1)
-> +RFIM_SHOW(ddr_data_rate_point_0, 1)
-> +RFIM_SHOW(ddr_data_rate_point_1, 1)
-> +RFIM_SHOW(ddr_data_rate_point_2, 1)
-> +RFIM_SHOW(ddr_data_rate_point_3, 1)
-> +RFIM_SHOW(rfi_disable, 1)
-> +
-> +RFIM_STORE(rfi_restriction_run_busy, 1)
-> +RFIM_STORE(rfi_restriction_err_code, 1)
-> +RFIM_STORE(rfi_restriction_data_rate, 1)
-> +RFIM_STORE(rfi_disable, 1)
-> +
-> +static DEVICE_ATTR_RW(rfi_restriction_run_busy);
-> +static DEVICE_ATTR_RW(rfi_restriction_err_code);
-> +static DEVICE_ATTR_RW(rfi_restriction_data_rate);
-> +static DEVICE_ATTR_RO(ddr_data_rate_point_0);
-> +static DEVICE_ATTR_RO(ddr_data_rate_point_1);
-> +static DEVICE_ATTR_RO(ddr_data_rate_point_2);
-> +static DEVICE_ATTR_RO(ddr_data_rate_point_3);
-> +static DEVICE_ATTR_RW(rfi_disable);
-> +
-> +static struct attribute *dvfs_attrs[] = {
-> +	&dev_attr_rfi_restriction_run_busy.attr,
-> +	&dev_attr_rfi_restriction_err_code.attr,
-> +	&dev_attr_rfi_restriction_data_rate.attr,
-> +	&dev_attr_ddr_data_rate_point_0.attr,
-> +	&dev_attr_ddr_data_rate_point_1.attr,
-> +	&dev_attr_ddr_data_rate_point_2.attr,
-> +	&dev_attr_ddr_data_rate_point_3.attr,
-> +	&dev_attr_rfi_disable.attr,
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group dvfs_attribute_group = {
-> +	.attrs = dvfs_attrs,
-> +	.name = "dvfs"
-> +};
-> +
-> +int proc_thermal_rfim_add(struct pci_dev *pdev, struct proc_thermal_device *proc_priv)
-> +{
-> +	int ret;
-> +
-> +	if (proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_FIVR) {
-> +		ret = sysfs_create_group(&pdev->dev.kobj, &fivr_attribute_group);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	if (proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_DVFS) {
-> +		ret = sysfs_create_group(&pdev->dev.kobj, &dvfs_attribute_group);
-> +		if (ret && proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_FIVR) {
-> +			sysfs_remove_group(&pdev->dev.kobj, &fivr_attribute_group);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(proc_thermal_rfim_add);
-> +
-> +void proc_thermal_rfim_remove(struct pci_dev *pdev)
-> +{
-> +	struct proc_thermal_device *proc_priv = pci_get_drvdata(pdev);
-> +
-> +	if (proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_FIVR)
-> +		sysfs_remove_group(&pdev->dev.kobj, &fivr_attribute_group);
-> +
-> +	if (proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_DVFS)
-> +		sysfs_remove_group(&pdev->dev.kobj, &dvfs_attribute_group);
-> +}
-> +EXPORT_SYMBOL_GPL(proc_thermal_rfim_remove);
-> +
-> +MODULE_LICENSE("GPL v2");
+>   arch/s390/include/asm/pci.h         |   4 +-
+>   arch/s390/include/asm/pci_clp.h     |   7 +-
+>   arch/s390/pci/pci_clp.c             |   2 +
+>   drivers/vfio/pci/vfio_pci.c         |   8 ++
+>   drivers/vfio/pci/vfio_pci_private.h |   6 ++
+>   drivers/vfio/pci/vfio_pci_zdev.c    | 160 ++++++++++++++++++++++++++++++++++++
+>   include/uapi/linux/vfio.h           |   4 +
+>   include/uapi/linux/vfio_zdev.h      |  33 ++++++++
+>   8 files changed, 221 insertions(+), 3 deletions(-)
 > 
 
+Associated qemu patchset:
+https://lists.gnu.org/archive/html/qemu-devel/2020-12/msg02377.html
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
