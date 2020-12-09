@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DAC32D430E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A1B2D4311
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731986AbgLINRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:17:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727156AbgLINRj (ORCPT
+        id S1732060AbgLINSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:18:12 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34882 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731919AbgLINSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:17:39 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88FFCC0613CF;
-        Wed,  9 Dec 2020 05:16:59 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmzKu-0003xz-BA; Wed, 09 Dec 2020 13:16:52 +0000
-Date:   Wed, 9 Dec 2020 13:16:52 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Yahu Gao <yahu.gao@windriver.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] fs/proc: Fix NULL pointer dereference in
- pid_delete_dentry
-Message-ID: <20201209131652.GM3579531@ZenIV.linux.org.uk>
-References: <20201209112100.47653-1-yahu.gao@windriver.com>
- <20201209112100.47653-2-yahu.gao@windriver.com>
+        Wed, 9 Dec 2020 08:18:03 -0500
+Received: by mail-wr1-f67.google.com with SMTP id r3so1721399wrt.2;
+        Wed, 09 Dec 2020 05:17:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BDEwH2poPEgF9/H6H1mvb3OMGZ5ivX5NVZHxhkZl44A=;
+        b=paXBdYjGsAIcZgC7vXuDD9jsq3p0Xx7oCMYp0wwtS+5K3dMR5+zBbs7avzxffDSP0Q
+         iQyvQUAdDVvNqXuymQLCXYPOPJyWhQi6Y51CMsemDk0Uh4O+7m0YyWUHsZj21LpCN5g5
+         VRf71c3cESKm6WqSGv36udH5DAzuuEIH/zWX8WrWiZfcEZ/TprOeV6quMZkz0INZMWra
+         eRG2mewAKeYvlSCVCOICLV6i/DybH1zjXSHAGUotKT24lV+gb8K+8qru6+VW+etlA9ha
+         FFaiInEq4binK4di1uuiRYQYNl0cJgE2+nJ6YDGvUwyRxTGb+t4mue1EEuuF14gBgRDI
+         13jg==
+X-Gm-Message-State: AOAM531OxxeHEPwdXcC0szegMNpHkticOI0l1Pp6Ebiez66DUf+7JDZT
+        kwQCCBOB2yfkV27Il5AjZ88=
+X-Google-Smtp-Source: ABdhPJw33StJvMdidRu+qGNHmFFP3Io5tSs4/JVbX7jTwY5Y9fCczKb/T0AhPTVoAS16SpTzS8ICKQ==
+X-Received: by 2002:a5d:5147:: with SMTP id u7mr2726692wrt.114.1607519841005;
+        Wed, 09 Dec 2020 05:17:21 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id b14sm3439908wrx.77.2020.12.09.05.17.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 05:17:20 -0800 (PST)
+Date:   Wed, 9 Dec 2020 13:17:18 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     linux-hyperv@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        David Hildenbrand <david@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 0/2] hv_balloon: hide ballooned out memory in stats
+Message-ID: <20201209131718.aqy6uddgqivgiglj@liuwe-devbox-debian-v2>
+References: <20201202161245.2406143-1-vkuznets@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209112100.47653-2-yahu.gao@windriver.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20201202161245.2406143-1-vkuznets@redhat.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 07:21:00PM +0800, Yahu Gao wrote:
-> Get the staus of task from the pointer of proc inode directly is not
-> safe. The function get_proc_task make it happen in RCU protection.
-
-This is completely broken,  get_proc_task() acquires a reference to
-task_struct; your patch is an instant leak.
-
-> Signed-off-by: Yahu Gao <yahu.gao@windriver.com>
-> ---
->  fs/proc/base.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Dec 02, 2020 at 05:12:43PM +0100, Vitaly Kuznetsov wrote:
+> It was noticed that 'free' information on a Hyper-V guest reports ballooned
+> out memory in 'total' and this contradicts what other ballooning drivers 
+> (e.g. virtio-balloon/virtio-mem/xen balloon) do.
 > 
-> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> index 1bc9bcdef09f..05f33bb35067 100644
-> --- a/fs/proc/base.c
-> +++ b/fs/proc/base.c
-> @@ -1994,7 +1994,7 @@ static int pid_revalidate(struct dentry *dentry, unsigned int flags)
->  
->  static inline bool proc_inode_is_dead(struct inode *inode)
->  {
-> -	return !proc_pid(inode)->tasks[PIDTYPE_PID].first;
-> +	return !get_proc_task(inode);
->  }
->  
->  int pid_delete_dentry(const struct dentry *dentry)
-> -- 
-> 2.25.1
-> 
+> Vitaly Kuznetsov (2):
+>   hv_balloon: simplify math in alloc_balloon_pages()
+>   hv_balloon: do adjust_managed_page_count() when
+>     ballooning/un-ballooning
+
+LGTM.
+
+I will wait for a few more days before applying this series to
+hyperv-next.
+
+Wei.
