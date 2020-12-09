@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B3D2D4ECA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 00:30:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 505672D4ECD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 00:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388390AbgLIXaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 18:30:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729888AbgLIXaL (ORCPT
+        id S2388736AbgLIXaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 18:30:55 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:43498 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730320AbgLIXaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 18:30:11 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CCAC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 15:29:31 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id a12so5534387lfl.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 15:29:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tK1dNqT3jQGAmChAlinVWTgrR1JdnxmqJloiOP6lwEU=;
-        b=A8HsndfHAvTYs2HvwgUgXhOqFZxJ9ELeVJwC5xp21VpL9arouT4PjAEwMM5v5BDs13
-         dUKoMdDWwu1LmotRCyc9uS/ins946pYI/cSQ1EmHGVerAqe1aqU+v/sBGBjsfJzgosja
-         xYNEBw+or30zs0YyXLTkNY+hgxij7vKLn6L2A=
+        Wed, 9 Dec 2020 18:30:55 -0500
+Received: by mail-ot1-f67.google.com with SMTP id q25so3148975otn.10;
+        Wed, 09 Dec 2020 15:30:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tK1dNqT3jQGAmChAlinVWTgrR1JdnxmqJloiOP6lwEU=;
-        b=D1o3HgwBW4w68+uXtOSarlG9Pq41A2LgZAzWxbZdz2iuroJvprA5Mx+TgC9n5E6SxT
-         5PhSE5XA9ED0bC7C1U0NyTHEZZUSwsByb10R5uitEMkYlIVbO8q5jxbwj9vtQHwvhIHo
-         WS+gDbQGw0SyBtMtjCxq02ycugzlSEAxtN7SqmGOQEKiebH95RENk0M4pCW1sdmbAoEU
-         PAxUIZ5E5MBX7G66AtOjmN39lGWf12NUs0JzEK08ZbQxL99ch48C5/doy7IYIFVnmyAZ
-         kKqY/STbn4bgEIKr1HvzsxYWwTpSl+serwqNBTklUzuYFC0zvEMtm30YC3Lg06nnpGMM
-         Gj5g==
-X-Gm-Message-State: AOAM532a46xa2oi1D16N+hoNjAcdlU6+bqZ2KdinVXm8NkXaTG2deXFq
-        PHXlvkWEbS3/hiUXX8cEj7pF5nv+WH+GkA==
-X-Google-Smtp-Source: ABdhPJy8BzfiL75UAbvIfeGS7bRE6JfXRKTGH6LNtqc+i8iBJNduwspl7cexXYD7PDNZv91QUFadIQ==
-X-Received: by 2002:a19:e04c:: with SMTP id g12mr1751571lfj.261.1607556569079;
-        Wed, 09 Dec 2020 15:29:29 -0800 (PST)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id h21sm396441ljb.122.2020.12.09.15.29.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 15:29:28 -0800 (PST)
-Received: by mail-lj1-f172.google.com with SMTP id b10so2208893ljp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 15:29:27 -0800 (PST)
-X-Received: by 2002:a2e:9d89:: with SMTP id c9mr2081690ljj.220.1607556567421;
- Wed, 09 Dec 2020 15:29:27 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B0Asjv3XbyAFTbDKBsljyKhv/NpTZ/vtxsoSKiwLJis=;
+        b=fGnoPUdonFAEfqh3NQnR94TGoLYvSapGKAu/xYLms7qVN+s1xBBCy8Hf93f7sRVtA7
+         sv+zQWX9EfuIkaXXez1McZD3guubMUxM65uv7effelVI4MZtXQMOkf0EDP0F7Eq/3+Ev
+         YwKiqaOVaGUv94rWbpuyNbnojQNdIhkBNvZ4Z7dt/rinl2Vf4xHo5kJtNS5PMDMZiu4q
+         is7Pb6vcYCA0VwZwt1hVuXqJL24lOroVCQXnRrpbiJPCqn1DE0yxXCwoHOphguxrBj8K
+         phq1CTvYj2kN6jqE6AAEaafkxChpYSTADOusfn7Hd6BgYYLyhsb9cuPVM9XZnOF8Dkuu
+         /GSQ==
+X-Gm-Message-State: AOAM530bMjPqP1sF1JW5q0SGTmN26xSdHjrGDs/AaLBH/VHpjXA+aeux
+        WzOcJUY5Un+iHL7LWwkMug==
+X-Google-Smtp-Source: ABdhPJyebnMDO1idYvlHeSFT8mQf086CjkENt81nzyUnEjEz9CGaSHhlfhM4muLZ79s59u3SrEfCxQ==
+X-Received: by 2002:a9d:479a:: with SMTP id b26mr3786121otf.297.1607556614465;
+        Wed, 09 Dec 2020 15:30:14 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t19sm753901otp.36.2020.12.09.15.30.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 15:30:13 -0800 (PST)
+Received: (nullmailer pid 1281044 invoked by uid 1000);
+        Wed, 09 Dec 2020 23:30:11 -0000
+Date:   Wed, 9 Dec 2020 17:30:11 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Bin Meng <bin.meng@windriver.com>, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Ivan.Griffin@microchip.com, Cyril.Jean@microchip.com,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor.Dooley@microchip.com
+Subject: Re: [PATCH v3 2/5] dt-bindings: riscv: microchip: Add YAML
+ documentation for the PolarFire SoC
+Message-ID: <20201209233011.GA1276461@robh.at.kernel.org>
+References: <20201204085835.2406541-1-atish.patra@wdc.com>
+ <20201204085835.2406541-3-atish.patra@wdc.com>
 MIME-Version: 1.0
-References: <20201120231441.29911-15-ebiederm@xmission.com>
- <20201207232900.GD4115853@ZenIV.linux.org.uk> <877dprvs8e.fsf@x220.int.ebiederm.org>
- <20201209040731.GK3579531@ZenIV.linux.org.uk> <877dprtxly.fsf@x220.int.ebiederm.org>
- <20201209142359.GN3579531@ZenIV.linux.org.uk> <87o8j2svnt.fsf_-_@x220.int.ebiederm.org>
- <20201209194938.GS7338@casper.infradead.org> <20201209225828.GR3579531@ZenIV.linux.org.uk>
- <CAHk-=wi7MDO7hSK9-7pbfuwb0HOkMQF1fXyidxR=sqrFG-ZQJg@mail.gmail.com> <20201209230755.GV7338@casper.infradead.org>
-In-Reply-To: <20201209230755.GV7338@casper.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 9 Dec 2020 15:29:09 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wg3FFGZO6hgo-L0gSA4Vjv=B8uwa5N8P6SeJR5KbU5qBA@mail.gmail.com>
-Message-ID: <CAHk-=wg3FFGZO6hgo-L0gSA4Vjv=B8uwa5N8P6SeJR5KbU5qBA@mail.gmail.com>
-Subject: Re: [PATCH] files: rcu free files_struct
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jann@thejh.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204085835.2406541-3-atish.patra@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 3:07 PM Matthew Wilcox <willy@infradead.org> wrote:
->
->  #. It is not necessary to use rcu_assign_pointer() when creating
->     linked structures that are to be published via a single external
-> -   pointer. The RCU_INIT_POINTER() macro is provided for this task
-> -   and also for assigning ``NULL`` pointers at runtime.
-> +   pointer. The RCU_INIT_POINTER() macro is provided for this task.
-> +   It used to be more efficient to use RCU_INIT_POINTER() to store a
-> +   ``NULL`` pointer, but rcu_assign_pointer() now optimises for a constant
-> +   ``NULL`` pointer itself.
+On Fri, Dec 04, 2020 at 12:58:32AM -0800, Atish Patra wrote:
+> Add YAML DT binding documentation for the Microchip PolarFire SoC.
+> It is documented at:
+> 
+> https://www.microsemi.com/products/fpga-soc/polarfire-soc-icicle-quick-start-guide
+> 
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> ---
+>  .../devicetree/bindings/riscv/microchip.yaml  | 28 +++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/riscv/microchip.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/riscv/microchip.yaml b/Documentation/devicetree/bindings/riscv/microchip.yaml
+> new file mode 100644
+> index 000000000000..66e63c2bf359
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/riscv/microchip.yaml
+> @@ -0,0 +1,28 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR MIT)
 
-I would just remove the historical note about "It used to be more
-efficient ..". It's not really helpful.
+See what checkpatch.pl says.
 
-If somebody wants to dig into the history, it's there in git.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/riscv/microchip.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip PolarFire SoC-based boards device tree bindings
+> +
+> +maintainers:
+> +  - Cyril Jean <Cyril.Jean@microchip.com>
+> +  - Lewis Hanly <lewis.hanly@microchip.com>
+> +
+> +description:
+> +  Microchip PolarFire SoC-based boards
+> +
+> +properties:
+> +  $nodename:
+> +    const: '/'
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - microchip,mpfs-icicle-kit
+> +      - const: microchip,polarfire-soc
+> +      - const: microchip,mpfs
 
-Maybe the note could be part of the commit message for the comment
-update, explaining that it used to be more efficient but no longer is.
-Because commit messages are about the explanation for the change.
+Is this last compatible really useful? Usually better to just have SoC 
+and board (or SoM plus baseboard) compatibles.
 
-But I don't feel it makes any sense in the source code.
-
-             Linus
+Rob
