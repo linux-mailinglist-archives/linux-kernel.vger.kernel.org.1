@@ -2,131 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8422D4216
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BF82D421A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731509AbgLIMVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 07:21:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731495AbgLIMVn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 07:21:43 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104C2C061794
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 04:21:03 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kmySm-0001Qs-R2; Wed, 09 Dec 2020 13:20:56 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kmySi-0006qb-Q4; Wed, 09 Dec 2020 13:20:52 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: [PATCH v1] ARM: imx: mach-imx6ul: remove 14x14 EVK specific PHY fixup
-Date:   Wed,  9 Dec 2020 13:20:51 +0100
-Message-Id: <20201209122051.26151-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
+        id S1731577AbgLIMXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 07:23:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53306 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730948AbgLIMXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 07:23:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607516545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d6BLSrmEsvAmBCGh/lx0C5ZfrqtSEHsMuHBG2XnZ/Ro=;
+        b=ncPpEGPcbHUJafnkDYQ/1H+ADDcCm5mL63ULlOfqMBhAnbc4yg/Gky2O5504x9o/tZrBrw
+        DP7jhSJhM4Fpz8OxbijA5E0XwoPASgyWTUDdc+ATpiMeMmSQpO0kHNOkr8o9+l+8OPlFsh
+        ixuwSO3VZGgWks6WWKL58SRm0h4vXUU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2AE30ACEB;
+        Wed,  9 Dec 2020 12:22:25 +0000 (UTC)
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120114630.13552-8-jgross@suse.com> <20201208184315.GE27920@zn.tnic>
+ <2510752e-5d3d-f71c-8a4c-a5d2aae0075e@suse.com>
+ <20201209120307.GB18203@zn.tnic>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Subject: Re: [PATCH v2 07/12] x86: add new features for paravirt patching
+Message-ID: <9e989b07-84e8-b07b-ba6e-c2a3ed19d7b1@suse.com>
+Date:   Wed, 9 Dec 2020 13:22:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201209120307.GB18203@zn.tnic>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="qobO3V9L9yPkUmsoDuHQESsEkFOc5p2K2"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove board specific PHY fixup introduced by commit:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--qobO3V9L9yPkUmsoDuHQESsEkFOc5p2K2
+Content-Type: multipart/mixed; boundary="j7y3yD5DTlqLcvANFz2bK4alg1dWK3UG5";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: xen-devel@lists.xenproject.org, x86@kernel.org,
+ linux-kernel@vger.kernel.org, peterz@infradead.org, luto@kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <9e989b07-84e8-b07b-ba6e-c2a3ed19d7b1@suse.com>
+Subject: Re: [PATCH v2 07/12] x86: add new features for paravirt patching
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120114630.13552-8-jgross@suse.com> <20201208184315.GE27920@zn.tnic>
+ <2510752e-5d3d-f71c-8a4c-a5d2aae0075e@suse.com>
+ <20201209120307.GB18203@zn.tnic>
+In-Reply-To: <20201209120307.GB18203@zn.tnic>
 
-| 709bc0657fe6f9f5 ("ARM: imx6ul: add fec MAC refrence clock and phy fixup init")
+--j7y3yD5DTlqLcvANFz2bK4alg1dWK3UG5
+Content-Type: multipart/mixed;
+ boundary="------------CA72DA38978A6BC0090784A9"
+Content-Language: en-US
 
-This fixup addresses boards with a specific configuration: a KSZ8081RNA
-PHY with attached clock source to XI (Pin 8) of the PHY equal to 50MHz.
+This is a multi-part message in MIME format.
+--------------CA72DA38978A6BC0090784A9
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-For the KSZ8081RND PHY, the meaning of the reg 0x1F bit 7 is different
-(compared to the KSZ8081RNA). A set bit means:
+On 09.12.20 13:03, Borislav Petkov wrote:
+> On Wed, Dec 09, 2020 at 08:30:53AM +0100, J=C3=BCrgen Gro=C3=9F wrote:
+>> Hey, I already suggested to use ~FEATURE for that purpose (see
+>> https://lore.kernel.org/lkml/f105a63d-6b51-3afb-83e0-e899ea40813e@suse=
+=2Ecom/
+>=20
+> Great minds think alike!
+>=20
+> :-P
+>=20
+>> I'd rather make the syntax:
+>>
+>> ALTERNATIVE_TERNARY <initial-code> <feature> <code-for-feature-set>
+>>                                               <code-for-feature-unset>=
 
-- KSZ8081RNA: clock input to XI (Pin 8) is 50MHz for RMII
-- KSZ8081RND: clock input to XI (Pin 8) is 25MHz for RMII
+>>
+>> as this ...
+>=20
+> Sure, that is ok too.
+>=20
+>> ... would match perfectly to this interpretation.
+>=20
+> Yap.
+>=20
+>> Hmm, using flags is an alternative (pun intended :-) ).
+>=20
+> LOL!
+>=20
+> Btw, pls do check how much the vmlinux size of an allyesconfig grows
+> with this as we will be adding a byte per patch site. Not that it would=
 
-In other configurations, for example a KSZ8081RND PHY or a KSZ8081RNA
-with 25Mhz clock source, the PHY will glitch and stay in not recoverable
-state.
+> matter too much - the flags are a long way a comin'. :-)
+>=20
+>> No, this is needed for non-Xen cases, too (especially pv spinlocks).
+>=20
+> I see.
+>=20
+>>> Can you give an example here pls why the paravirt patching needs to r=
+un
+>>> first?
+>>
+>> Okay.
+>=20
+> I meant an example for me to have a look at. :)
+>=20
+> If possible pls.
 
-It is not possible to detect the clock source frequency of the PHY. And
-it is not possible to automatically detect KSZ8081 PHY variant - both
-have same PHY ID. It is not possible to overwrite the fixup
-configuration by providing proper device tree description. The only way
-is to remove this fixup.
+Ah, okay.
 
-If this patch breaks network functionality on your board, fix it by
-adding PHY node with following properties:
+Lets take the spin_unlock() case. With patch 11 of the series this is
 
-	ethernet-phy@x {
-		...
-		micrel,led-mode = <1>;
-		clocks = <&clks IMX6UL_CLK_ENET_REF>;
-		clock-names = "rmii-ref";
-		...
-	};
+PVOP_ALT_VCALLEE1(lock.queued_spin_unlock, lock,
+                   "movb $0, (%%" _ASM_ARG1 ");",
+                   X86_FEATURE_NO_PVUNLOCK);
 
-The board which was referred in the initial patch is already fixed.
-See: arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
+which boils down to ALTERNATIVE "call *lock.queued_spin_unlock"
+                                 "movb $0,(%rdi)" X86_FEATURE_NO_PVUNLOCK=
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- arch/arm/mach-imx/mach-imx6ul.c | 21 ---------------------
- 1 file changed, 21 deletions(-)
 
-diff --git a/arch/arm/mach-imx/mach-imx6ul.c b/arch/arm/mach-imx/mach-imx6ul.c
-index e018e716735f..eabcd35c01a5 100644
---- a/arch/arm/mach-imx/mach-imx6ul.c
-+++ b/arch/arm/mach-imx/mach-imx6ul.c
-@@ -27,30 +27,9 @@ static void __init imx6ul_enet_clk_init(void)
- 		pr_err("failed to find fsl,imx6ul-iomux-gpr regmap\n");
- }
- 
--static int ksz8081_phy_fixup(struct phy_device *dev)
--{
--	if (dev && dev->interface == PHY_INTERFACE_MODE_MII) {
--		phy_write(dev, 0x1f, 0x8110);
--		phy_write(dev, 0x16, 0x201);
--	} else if (dev && dev->interface == PHY_INTERFACE_MODE_RMII) {
--		phy_write(dev, 0x1f, 0x8190);
--		phy_write(dev, 0x16, 0x202);
--	}
--
--	return 0;
--}
--
--static void __init imx6ul_enet_phy_init(void)
--{
--	if (IS_BUILTIN(CONFIG_PHYLIB))
--		phy_register_fixup_for_uid(PHY_ID_KSZ8081, MICREL_PHY_ID_MASK,
--					   ksz8081_phy_fixup);
--}
--
- static inline void imx6ul_enet_init(void)
- {
- 	imx6ul_enet_clk_init();
--	imx6ul_enet_phy_init();
- }
- 
- static void __init imx6ul_init_machine(void)
--- 
-2.29.2
+The initial (paravirt) code is an indirect call in order to allow
+spin_unlock() before paravirt/alternative patching takes place.
 
+Paravirt patching will then replace the indirect call with a direct call
+to the correct unlock function. Then alternative patching might replace
+the direct call to the bare metal unlock with a plain "movb $0,(%rdi)"
+in case pvlocks are not enabled.
+
+In case alternative patching would occur first, the indirect call might
+be replaced with the "movb ...", and then paravirt patching would
+clobber that with the direct call, resulting in the bare metal
+optimization being removed again.
+
+
+Juergen
+
+--------------CA72DA38978A6BC0090784A9
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------CA72DA38978A6BC0090784A9--
+
+--j7y3yD5DTlqLcvANFz2bK4alg1dWK3UG5--
+
+--qobO3V9L9yPkUmsoDuHQESsEkFOc5p2K2
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/QwYAFAwAAAAAACgkQsN6d1ii/Ey8C
+rwgAjKCTh8rwB+MLx5PuBMufLtRi8vf4GP26O85xV8wEvfWhch7/qy70h5Gw5A6BOCCxQLWZSINQ
+ufDERwJjYhLC6lWo60Twwu3XlwUy3XC3/OC2xMrCeFGb6aoPL7Cis1jgNN+Rv3sBDx5y5doXRQZI
+uQTYdLfiUnFW8Gow9yS0sofiHJjgcpzkF/kgft19MRGadRYH/AIJhLUko8bHBptLLkwSbqzZWKBP
+pXOdsFjwYHLJkCog8GqKVx4pTgBmJGuDHh9stdFY7co9u3nLz4jISxEgEoPrl/cRD+JKeTkSkiPm
+mVjAzQ02EJP47h09rTGf0nTohZHBTjzJVqDg/yeeLw==
+=MeHc
+-----END PGP SIGNATURE-----
+
+--qobO3V9L9yPkUmsoDuHQESsEkFOc5p2K2--
