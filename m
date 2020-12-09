@@ -2,137 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DFD2D3F57
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:59:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 751FA2D3F54
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgLIJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:59:08 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:47801 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729580AbgLIJ7D (ORCPT
+        id S1729575AbgLIJ6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:58:55 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:16281 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729007AbgLIJ6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:59:03 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kmwEk-0007nz-Ds; Wed, 09 Dec 2020 09:58:18 +0000
-Date:   Wed, 9 Dec 2020 10:58:17 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Stephen Kitt <steve@sk2.org>
-Cc:     linux-man@vger.kernel.org,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [patch] close_range.2: new page documenting close_range(2)
-Message-ID: <20201209095817.7ksihhftmnd3c3hi@wittgenstein>
-References: <20201208215133.30575-1-steve@sk2.org>
+        Wed, 9 Dec 2020 04:58:55 -0500
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id DA8FB240004;
+        Wed,  9 Dec 2020 09:58:09 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 10:58:19 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     kholk11@gmail.com
+Cc:     mchehab@kernel.org, robh+dt@kernel.org,
+        marijn.suijten@somainline.org, konrad.dybcio@somainline.org,
+        martin.botka@somainline.org, devicetree@vger.kernel.org,
+        linux-media@vger.kernel.org, phone-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sakari.ailus@iki.fi,
+        andrey.konovalov@linaro.org,
+        angelogioacchino.delregno@somainline.org
+Subject: Re: [PATCH v3 1/2] media: i2c: Add driver for the Sony Exmor-RS
+ IMX300 camera sensor
+Message-ID: <20201209095819.w6lfpga2gqvu2ujn@uno.localdomain>
+References: <20201127223047.2764643-1-kholk11@gmail.com>
+ <20201127223047.2764643-2-kholk11@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201208215133.30575-1-steve@sk2.org>
+In-Reply-To: <20201127223047.2764643-2-kholk11@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 10:51:33PM +0100, Stephen Kitt wrote:
-> This documents close_range(2) based on information in
-> 278a5fbaed89dacd04e9d052f4594ffd0e0585de and
-> 60997c3d45d9a67daf01c56d805ae4fec37e0bd8.
-> 
-> Signed-off-by: Stephen Kitt <steve@sk2.org>
+Hello,
+
+On Fri, Nov 27, 2020 at 11:30:46PM +0100, kholk11@gmail.com wrote:
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+>
+> This is a custom multi-aspect 25MegaPixels sensor from Sony,
+> found in many Sony Xperia smartphones from various eras.
+>
+> The camera assembly for this sensor usually (at least in Xperia
+> phones) has a lens that does not cover the entire sensor area,
+> which means that the real corners are blind and that, in many
+> lighting conditions, some more pixels in the corners are very
+> getting obscured (as no decent amount of light can get in)...
+> so, the maximum resolution that can produce a good image is:
+> - In 4:3 aspect ratio, 5520x4160 (23.0MP)
+> - In 16:9 aspect ratio, 5984x3392 (20.3MP).
+>
+> This sensor supports high frame rates (>=60FPS) when in binning
+> mode and both RAW8 and RAW10 output modes.
+> In this version of the driver, support has been provided for the
+> following resolutions:
+>     W x H     SZ   MAX_FPS  BINNING
+> - 5520x4160 23.0MP   23       No
+> - 5984x3392 20.3MP   26       No
+> - 2992x1696  3.8MP   60       Yes
+> - 1424x800   1.2MP   120      Yes
+>
+> Note 1: The "standard" camera assy for IMX300 also contains an
+> actuator (to focus the image), but this driver only manages the
+> actual image sensor.
+>
+> Note 2: The command tables for this sensor were reverse
+> engineered from a downstream "userspace driver" that has been
+> released in various versions on various Xperia smartphones.
+> Register layout seems to be only vaguely similar to IMX219,
+> which has a public datasheet from where some names for the
+> figured out registers were taken and added to the driver:
+> these names are probably not the right ones, but they surely
+> represent the intended thing.
+>
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+
+Just a few drive-by comments, as I'm looking at selection targets for
+other imx sensors and I've noticed this one on the list
+
 > ---
+>  drivers/media/i2c/Kconfig  |   13 +
+>  drivers/media/i2c/Makefile |    1 +
+>  drivers/media/i2c/imx300.c | 3081 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 3095 insertions(+)
+>  create mode 100644 drivers/media/i2c/imx300.c
+>
 
-Hey Stephen,
+[snip]
 
-Thanks for working on this that's an early Christmas present as it gets
-an item off my todo list!
+> +/*
+> + * ** IMX300 native and active pixel array size **
+> + *
+> + * Being this a multi-aspect sensor, the following native W/H apply, but
+> + * beware: the module assembly usually has a (round) lens that is shadowing
+> + * or covering the corners of the (square) image sensor, so the maximum
+> + * output resolution must be lower than the maximum sensor resolution
+> + * otherwise we get something like a view from a porthole... :)
+> + *
+> + * For 4:3  aspect ratio, max is: 5984x4140 (25MP)
+> + * For 16:9 aspect ratio, max is: 5984x3392 (20.3MP)
+> + */
 
->  man2/close_range.2 | 112 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 112 insertions(+)
->  create mode 100644 man2/close_range.2
-> 
-> diff --git a/man2/close_range.2 b/man2/close_range.2
-> new file mode 100644
-> index 000000000..62167d9b0
-> --- /dev/null
-> +++ b/man2/close_range.2
-> @@ -0,0 +1,112 @@
-> +.\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
-> +.\"
-> +.\" %%%LICENSE_START(VERBATIM)
-> +.\" Permission is granted to make and distribute verbatim copies of this
-> +.\" manual provided the copyright notice and this permission notice are
-> +.\" preserved on all copies.
-> +.\"
-> +.\" Permission is granted to copy and distribute modified versions of this
-> +.\" manual under the conditions for verbatim copying, provided that the
-> +.\" entire resulting derived work is distributed under the terms of a
-> +.\" permission notice identical to this one.
-> +.\"
-> +.\" Since the Linux kernel and libraries are constantly changing, this
-> +.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-> +.\" responsibility for errors or omissions, or for damages resulting from
-> +.\" the use of the information contained herein.  The author(s) may not
-> +.\" have taken the same level of care in the production of this manual,
-> +.\" which is licensed free of charge, as they might when working
-> +.\" professionally.
-> +.\"
-> +.\" Formatted or processed versions of this manual, if unaccompanied by
-> +.\" the source, must acknowledge the copyright and authors of this work.
-> +.\" %%%LICENSE_END
-> +.\"
-> +.TH CLOSE_RANGE 2 2020-12-08 "Linux" "Linux Programmer's Manual"
-> +.SH NAME
-> +close_range \- close all file descriptors in a given range
-> +.SH SYNOPSIS
-> +.nf
-> +.B #include <linux/close_range.h>
-> +.PP
-> +.BI "int close_range(int " first ", int " last ", unsigned int " flags );
+These are the sizes
 
-Note, the kernel prototype uses unsigned int as the type for file
-descriptor arguments. As does the close() syscall itself. Only glibc
-wrappers expose file descriptor types (at least in close variants) as
-int.
-Since this is a manpage about the syscall not the wrapper it might make
-sense to note the correct types.
+> +#define IMX300_NATIVE_WIDTH		5980U
+> +#define IMX300_NATIVE_HEIGHT		4140U
+> +#define IMX300_PIXEL_ARRAY_LEFT		0U
+> +#define IMX300_PIXEL_ARRAY_TOP		0U
+> +#define IMX300_PIXEL_ARRAY_WIDTH	5520U
+> +#define IMX300_PIXEL_ARRAY_HEIGHT	4160U
 
-> +.fi
-> +.SH DESCRIPTION
-> +The
-> +.BR close_range ()
-> +system call closes all open file descriptors from
-> +.I first
-> +to
-> +.IR last
-> +(included).
-> +.PP
-> +Errors closing a given file descriptor are currently ignored.
-> +.PP
-> +.I flags
-> +can be set to
-> +.B CLOSE_RANGE_UNSHARE
-> +to unshare the range of file descriptors from any other processes,
-> +.I instead
-> +of closing them.
+And here is how they are applied to selection targets
 
-As Michael has noted, this needs to be reworded. A few things to note:
-- CLOSE_RANGE_UNSHARE will ensure that the calling process will have a
-  private file descriptor table. This ensures that other threads opening
-  files cannot inject new file descriptors into the caller's file
-  descriptor table to e.g. make the caller inherit unwanted file
-  descriptors.
-- CLOSE_RANGE_UNSHARE is conceptually equivalent to:
-  unshare(CLONE_FILES);
-  close_range(3, ~0U);
-- Whenever the requested range @last is greater than the current maximum
-  number of file descriptors allocated in the caller's file descriptor
-  table the kernel will only unshare a new file descriptor table for the
-  caller up to @first, i.e. the new file descriptor table will be 0 up
-  to and including @first not 0 up to and including @last. Which means
-  that the kernel will not have to do any costly filp_close() calls at
-  all. In essence, the close_range() operation is finished after the
-  in-kernel unshare call in such cases.
+> +	case V4L2_SEL_TGT_CROP: {
+> +		struct imx300 *imx300 = to_imx300(sd);
+> +
+> +		mutex_lock(&imx300->mutex);
+> +		sel->r = *__imx300_get_pad_crop(imx300, cfg, sel->pad,
+> +						sel->which);
+> +		mutex_unlock(&imx300->mutex);
+> +
+> +		return 0;
+> +	}
+> +
+> +	case V4L2_SEL_TGT_NATIVE_SIZE:
+> +		sel->r.top = 0;
+> +		sel->r.left = 0;
+> +		sel->r.width = IMX300_NATIVE_WIDTH;
+> +		sel->r.height = IMX300_NATIVE_HEIGHT;
+> +
+> +		return 0;
+> +
+> +	case V4L2_SEL_TGT_CROP_DEFAULT:
+> +		sel->r.top = IMX300_PIXEL_ARRAY_TOP;
+> +		sel->r.left = IMX300_PIXEL_ARRAY_LEFT;
+> +		sel->r.width = IMX300_PIXEL_ARRAY_WIDTH;
+> +		sel->r.height = IMX300_PIXEL_ARRAY_HEIGHT;
+> +
+> +		return 0;
+> +	}
+> +
 
-Christian
+1) CROP_DEFAULT should be contained in NATIVE_SIZE (actually all
+targets are contained in NATIVE_SIZE, and are defined relatively to
+it). This means that IMX300_PIXEL_ARRAY_HEIGHT > IMX300_NATIVE_HEIGHT
+is probably wrong.
+
+2) You need to specify CROP_BOUNDS too. If the driver does not support
+reading optically black pixels using the selection API, it should be
+identical to CROP_DEFAULT (v4l2-compliance should report that, see
+https://git.linuxtv.org/media_tree.git/commit/?id=1ed36ecd1459b653cced8929bfb37dba94b64c5d
+
+3) CROP_DEFAULT (and BOUNDS) should report the sensor readable active
+area. You have one mode where the TGT_CROP rectangle width is bigger
+than the CROP_DEFAULT (and BOUNDS) rectangle width (5984 > 5520). I
+think 5984 should probably be made the CROP_DEFAULT (and BOUNDS) width
+then, as the 5984 mode's width implies the 464 pixels exceeding 5520
+are readable and valid for image capture.
+
+It's not easy to get these right with a datasheet sometimes, without
+one it quickly becomes a matter of guessing. But even if the values are
+computed as 'best effort' we should try to respect the relationships
+between the different selection targets.
+
+Thanks
+  j
