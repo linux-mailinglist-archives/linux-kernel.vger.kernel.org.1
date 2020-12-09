@@ -2,86 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389CF2D3ECD
+	by mail.lfdr.de (Postfix) with ESMTP id A5C882D3ECE
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729326AbgLIJbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:31:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728446AbgLIJbR (ORCPT
+        id S1729331AbgLIJba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:31:30 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8736 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728446AbgLIJb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:31:17 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C5CC061793;
-        Wed,  9 Dec 2020 01:30:37 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrWxN6j47z9sW9;
-        Wed,  9 Dec 2020 20:30:32 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607506233;
-        bh=mTSVImBbfPaUvkMd2Y893xa7mukCBGI7gtact0vehVs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HEg3j+ZAYi42MQn2m87wPE+IM4jq18mBU8roHSkwyptQUgLLxoju85Sa+g/k6/1EG
-         rIOcKHGelVRAuXr85NHevfpkbRDKcWooTwhm9QhdKLnS8Nt1cWklyuDeY6o/z7hGS5
-         zCIs0issQM7hlR/iCmtqrGJvFzxjwvCH8ATCFPDcnc87LfTu7yyWB5wldnq3/FI9hZ
-         dBLVmwNGTTdhMhrQZ+LGd/FvpAzNo2bquJS1QYzl1rE358tL2Sh46Hd7mrtoFqxyP8
-         Idiu4QEhB0RMSpddZPalTGDFspRXRZ+FiakuZ28NAzxRZkUUaFP5eYmA73y9svTfE2
-         w7/RXBv8NCfqw==
-Date:   Wed, 9 Dec 2020 20:30:29 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Dominique Martinet <asmadeus@codewreck.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the kbuild tree
-Message-ID: <20201209203029.7f2a8db2@canb.auug.org.au>
+        Wed, 9 Dec 2020 04:31:27 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CrWwr0JddzknSf;
+        Wed,  9 Dec 2020 17:30:04 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 9 Dec 2020 17:30:35 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] mtd: rawnand: simplify the cs553x_write_ctrl_byte()
+Date:   Wed, 9 Dec 2020 17:31:03 +0800
+Message-ID: <20201209093103.20742-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zwh5n0TTdrbMrv4w7dKnt04";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zwh5n0TTdrbMrv4w7dKnt04
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Simplify the return expression.
 
-Hi all,
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/mtd/nand/raw/cs553x_nand.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-After merging the kbuild tree, today's linux-next build (x86_64
-modules_install) produced this warning:
+diff --git a/drivers/mtd/nand/raw/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
+index 282203debd0c..a616aaa2e3dc 100644
+--- a/drivers/mtd/nand/raw/cs553x_nand.c
++++ b/drivers/mtd/nand/raw/cs553x_nand.c
+@@ -105,17 +105,12 @@ static int cs553x_write_ctrl_byte(struct cs553x_nand_controller *cs553x,
+ 				  u32 ctl, u8 data)
+ {
+ 	u8 status;
+-	int ret;
+ 
+ 	writeb(ctl, cs553x->mmio + MM_NAND_CTL);
+ 	writeb(data, cs553x->mmio + MM_NAND_IO);
+-	ret = readb_poll_timeout_atomic(cs553x->mmio + MM_NAND_STS, status,
+-					!(status & CS_NAND_CTLR_BUSY), 1,
+-					100000);
+-	if (ret)
+-		return ret;
+-
+-	return 0;
++	return readb_poll_timeout_atomic(cs553x->mmio + MM_NAND_STS, status,
++					 !(status & CS_NAND_CTLR_BUSY), 1,
++					 100000);
+ }
+ 
+ static void cs553x_data_in(struct cs553x_nand_controller *cs553x, void *buf,
+-- 
+2.22.0
 
-Warning: 'make modules_install' requires depmod. Please install it.
-This is probably in the kmod package.
-
-Introduced by commit
-
-  330029209513 ("kbuild: don't hardcode depmod path")
-
-Unfortunately for most of us (?), /sbin is not in our PATH ...
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/zwh5n0TTdrbMrv4w7dKnt04
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/QmTUACgkQAVBC80lX
-0Gw8yQf7BgY3a/Re1tDwCsbNgdMdg0B4UFU3Y1C6rjyqhVyU7Fv8HoBED9hek7vC
-6ibbVWnBcDs69tHbitZbIW+bNHmH3rKTZA2hecioPM4qtuEwDeT+PlSWFBrQuAQR
-a9lMZaYJ59GAVcPOzFutBCzag6rzCfB+pn2WzsB33sP53YAVao4LsPH7GaVSA7tr
-eyvp9B3g8Qp3s/so/Vn/qaO2KROVxp4RNmb37cmYURRbzVyWVFC3damKt/LKvOjh
-+fCd0m4n4h3HVpwwmsgqD7lYtSeGM6XYzgyixkHzI+/lleuObXCnaPermnuYYq2q
-msglke4xVGkoo0g1o2vdN4Qoi9Tb7A==
-=VOl0
------END PGP SIGNATURE-----
-
---Sig_/zwh5n0TTdrbMrv4w7dKnt04--
