@@ -2,88 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC5B2D4AF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A12B2D4AF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388005AbgLITtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:49:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732246AbgLITt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:49:27 -0500
-Date:   Wed, 9 Dec 2020 11:48:45 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607543327;
-        bh=s6dPnE7S0yfkrHXxthmBtF0PbUYsXpjhSYfYbPAvBn8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CSRlYJtPboMHtEadKY3CRQHpZWmmzxX1d/r8ewfUwWvSkZZIkzpQ9dT2JGltDLk2g
-         HjnSo4GpMQEdzsT6N6ZFiP5jPihW4N6gKf85GkKxsfyPQDCJhpPAlnhq3lMJzCQHS8
-         2mgJLugQWlayYFZ5bbcrztFjWtBb3/vT9dueI+MqjFLqUrOIH+s0OUw7hjMezJD2lc
-         GfpgQjRLHXSpGX3REnzO5j30nWsx6Sh1dLXv3WHpAeEYLkHeWU/Si8LvXGGhXVp00L
-         6YxU0Gc3Yig9vDeLkrSD9BMGHuc2dZQhi2ZV2xk19CxUhtHGfEqTyPs8Rn3RwvZR6J
-         NUjUN8FQSwBjw==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Geetha sowjanya <gakula@marvell.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sgoutham@marvell.com,
-        davem@davemloft.net, sbhatta@marvell.com
-Subject: Re: [PATCHv3 net-next] octeontx2-pf: Add RSS multi group support
-Message-ID: <20201209114845.61839f46@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <f47444311bc7661c6482de11d570fb815f8e7941.camel@kernel.org>
-References: <20201209170937.19548-1-gakula@marvell.com>
-        <f47444311bc7661c6482de11d570fb815f8e7941.camel@kernel.org>
+        id S2388022AbgLITub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:50:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732246AbgLITuY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:50:24 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D9FC0613CF;
+        Wed,  9 Dec 2020 11:49:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=owvt0VPnkLv7CCz/UAulq+0d45ny1JQwNUHbwby6R2I=; b=PkPcG8fMbD4hffflurftNPDruU
+        Ezi6gMw61uAhgAvkowNvRTku1Kn/D8l9YogS7ASjyAhoEDMROvP/5rRROgbFsfqXYw8acJvfu6iCE
+        ACP6J/oToKc/G6O6cXzOSZ4Jb0ImsyzRJMdg3EJd1uAzPiuiqYPjyR+d/SaOney0KKEQakfOCiBh6
+        X1k5H0P6mpwejT/8P/MDXWKhnHcil/7SbXa4ZZbhorPqr05KL8kD58UOtX6gar23IKWwxXG2MWccH
+        G+MuaXgo7nhVTkWRb7TzasE5NW2sk7u7TzqGhPTqaYEw1UnOfiqy5crpHyqEBRjOwhp+8801SRCLr
+        iJ4zHpfQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kn5T0-0005BT-TS; Wed, 09 Dec 2020 19:49:38 +0000
+Date:   Wed, 9 Dec 2020 19:49:38 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jann@thejh.net>
+Subject: Re: [PATCH] files: rcu free files_struct
+Message-ID: <20201209194938.GS7338@casper.infradead.org>
+References: <87r1on1v62.fsf@x220.int.ebiederm.org>
+ <20201120231441.29911-15-ebiederm@xmission.com>
+ <20201207232900.GD4115853@ZenIV.linux.org.uk>
+ <877dprvs8e.fsf@x220.int.ebiederm.org>
+ <20201209040731.GK3579531@ZenIV.linux.org.uk>
+ <877dprtxly.fsf@x220.int.ebiederm.org>
+ <20201209142359.GN3579531@ZenIV.linux.org.uk>
+ <87o8j2svnt.fsf_-_@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o8j2svnt.fsf_-_@x220.int.ebiederm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Dec 2020 11:08:24 -0800 Saeed Mahameed wrote:
-> > -/* Configure RSS table and hash key */
-> > -static int otx2_set_rxfh(struct net_device *dev, const u32 *indir,
-> > -			 const u8 *hkey, const u8 hfunc)
-> > +static int otx2_get_rxfh_context(struct net_device *dev, u32 *indir,
-> > +				 u8 *hkey, u8 *hfunc, u32 rss_context)
-> >  {
-> >  	struct otx2_nic *pfvf = netdev_priv(dev);
-> > +	struct otx2_rss_ctx *rss_ctx;
-> >  	struct otx2_rss_info *rss;
-> >  	int idx;
-> >  
-> > -	if (hfunc != ETH_RSS_HASH_NO_CHANGE && hfunc !=
-> > ETH_RSS_HASH_TOP)
-> > -		return -EOPNOTSUPP;
-> > -
-> >  	rss = &pfvf->hw.rss_info;
-> >  
-> >  	if (!rss->enable) {
-> > -		netdev_err(dev, "RSS is disabled, cannot change
-> > settings\n");
-> > +		netdev_err(dev, "RSS is disabled\n");
-> >  		return -EIO;
-> >  	}  
-> 
-> I see that you init/enable rss on open, is this is your way to block
-> getting rss info if device is not open ? why do you need to report an
-> error anyway, why not just report whatever default config you will be
-> setting up on next open ? 
-> 
-> to me reporting errors to ethtool queries when device is down is a bad
-> user experience.
-> 
-> > +	if (rss_context >= MAX_RSS_GROUPS)
-> > +		return -EINVAL;
-> > +  
-> 
-> -ENOENT
-> > +	rss_ctx = rss->rss_ctx[rss_context];
-> > +	if (!rss_ctx)
-> > +		return -EINVAL;
-> >   
-> 
-> -ENOENT
+On Wed, Dec 09, 2020 at 12:04:38PM -0600, Eric W. Biederman wrote:
+> @@ -397,8 +397,9 @@ static struct fdtable *close_files(struct files_struct * files)
+>  		set = fdt->open_fds[j++];
+>  		while (set) {
+>  			if (set & 1) {
+> -				struct file * file = xchg(&fdt->fd[i], NULL);
+> +				struct file * file = fdt->fd[i];
+>  				if (file) {
+> +					rcu_assign_pointer(fdt->fd[i], NULL);
 
-Plus looks like this version introduces a W=1 C=1 warning:
+Assuming this is safe, you can use RCU_INIT_POINTER() here because you're
+storing NULL, so you don't need the wmb() before storing the pointer.
 
-drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c:768:28: warning: Using plain integer as NULL pointer
