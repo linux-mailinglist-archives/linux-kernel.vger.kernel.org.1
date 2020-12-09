@@ -2,129 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D952D436D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B572D4375
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732530AbgLINi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:38:27 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:39931 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732122AbgLINi1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:38:27 -0500
-Received: by mail-lj1-f193.google.com with SMTP id b10so33809ljp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 05:38:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IukETWfqH6ox1WbzVI/W4GyBftlO5/jzl1XbHNhzids=;
-        b=h1pSfqRc8xy/kNvkcPJH9lzU0xu84E6WMq6Uqj+lbPC0xqLHPeJmTVykYS0EhpVLgY
-         cOMmLdQukj9di3+vrnbB4Z6Sld8Ty/f8ZJ+PqWVyyxP76e9IJSgvHnXvm6l1gFb6QzTb
-         N4LZklCUC0rbYUps6qVYwvo5tAwpvT3/GuUcBsKh2uSBn2GJkLfHyog3800ZHpPmoHZp
-         instlO/skNeV/iHUFzWZKV/g6BSpMkXgOxrr6W9P4nHgmxdeXPdkAHg8NhS/iSffXee2
-         iFHCa7pnXPxGEBVwtgA+k1CqwSseaD+pkNWFmQ4nSCfvCe4ZUd2dyP3+vk/fp/VqSVl5
-         Ko7Q==
-X-Gm-Message-State: AOAM53058lveOjXXP04+tsoqvMxrbXW4vRtgxeynqcyVKDPG8MSFE9yA
-        2w7jebvPyX8w7hfqM8jzIA4=
-X-Google-Smtp-Source: ABdhPJzpXh4/ZwCGPTjjjyDp7SEcDXSACHCaJ8Aowc6tdpacI7TnYh9VtFnKvju8bCpYY82NZUEvsw==
-X-Received: by 2002:a2e:3a02:: with SMTP id h2mr1030942lja.137.1607521064729;
-        Wed, 09 Dec 2020 05:37:44 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id j22sm176296lfr.6.2020.12.09.05.37.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 05:37:43 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kmzfk-0003t3-7o; Wed, 09 Dec 2020 14:38:24 +0100
-Date:   Wed, 9 Dec 2020 14:38:24 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Johan Hovold <johan@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Rob Herring <robh@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Jens Frederich <jfrederich@gmail.com>,
-        Daniel Drake <dsd@laptop.org>,
-        Jon Nettleton <jon.nettleton@gmail.com>
-Subject: Re: [PATCH] x86/apic: Fix CPU devicetree-node lookups
-Message-ID: <X9DTUIkBSfsfSQMR@localhost>
-References: <20201124134247.2668-1-johan@kernel.org>
- <X89P7Bnw4x9i0y4Q@localhost>
- <87o8j32029.fsf@nanos.tec.linutronix.de>
+        id S1732587AbgLINjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:39:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38714 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732565AbgLINjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 08:39:25 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C7974AC9A;
+        Wed,  9 Dec 2020 13:38:42 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 6D7281E133E; Wed,  9 Dec 2020 14:38:42 +0100 (CET)
+Date:   Wed, 9 Dec 2020 14:38:42 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     syzbot <syzbot+f427adf9324b92652ccc@syzkaller.appspotmail.com>
+Cc:     amir73il@gmail.com, jack@suse.cz, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Miklos Szeredi <miklos@szeredi.hu>
+Subject: Re: kernel BUG at fs/notify/dnotify/dnotify.c:LINE! (2)
+Message-ID: <20201209133842.GA28118@quack2.suse.cz>
+References: <000000000000be4c9505b4c35420@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87o8j32029.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <000000000000be4c9505b4c35420@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 03:19:26AM +0100, Thomas Gleixner wrote:
-> On Tue, Dec 08 2020 at 11:05, Johan Hovold wrote:
+Hello!
+
+so I was debugging the dnotify crash below (it's 100% reproducible for me)
+and I came to the following. The reproducer opens 'file0' on FUSE
+filesystem which is a directory at that point. Then it attached dnotify
+mark to the directory 'file0' and then it does something to the FUSE fs
+which I don't understand but the result is that when FUSE is unmounted the
+'file0' inode is actually a regular file (note that I've verified this is
+really the same inode pointer). This then confuses dnotify which doesn't
+tear down its structures properly and eventually crashes. So my question
+is: How can an inode on FUSE filesystem morph from a dir to a regular file?
+I presume this could confuse much more things than just dnotify?
+
+Before I dwelve more into FUSE internals, any idea Miklos what could have
+gone wrong and how to debug this further?
+
+								Honza
+
+On Mon 23-11-20 02:05:16, syzbot wrote:
+> syzbot found the following issue on:
 > 
-> > On Tue, Nov 24, 2020 at 02:42:47PM +0100, Johan Hovold wrote:
-> >> Fix CPU devicetree-node lookups by implementing
-> >> arch_match_cpu_phys_id().
-> >> 
-> >> This allows using of_get_cpu_node() and of_cpu_device_node_get() to look
-> >> up CPU devicetree nodes and specifically makes sure that CPU struct
-> >> devices are linked to the correct devicetree nodes.
-> >> 
-> >> Note that CPUs are described in devicetree using their APIC ids and
-> >> that those do not generally coincide with the logical ids (e.g. used by
-> >> the default arch_match_cpu_phys_id() implementation).
+> HEAD commit:    27bba9c5 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11b82225500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=330f3436df12fd44
+> dashboard link: https://syzkaller.appspot.com/bug?extid=f427adf9324b92652ccc
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d3f015500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17162d4d500000
 > 
-> Can you please explain why this is relevant for any of the existing few
-> x86 DT users?
-
-Let me try to break it down.
-
-> The above is incoherent word salad TBH:
+> Bisection is inconclusive: the issue happens on the oldest tested release.
 > 
->     1) Fix .....
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16570525500000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=15570525500000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11570525500000
 > 
->        without any information what is broken
-
-CPU device-tree node lookups are broken as the subject and introductory
-paragraph indicates.
-
->     2) This allows ...
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+f427adf9324b92652ccc@syzkaller.appspotmail.com
 > 
->        It allows. Cool. Is it mandatory, desired or whatever?
-
-It is mandatory in that any arch with devicetree support which does not
-have an identity mapping between physical and logical CPU ids need to
-override the default implementation of arch_match_cpu_phys_id().
-
-Failing to do so breaks the lookups done using the above mentioned
-helpers and also results in in the CPU struct devices pointing to the
-wrong devicetree node (e.g. exported through sysfs).
-
->     3) Note ...
+> wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
+> ------------[ cut here ]------------
+> kernel BUG at fs/notify/dnotify/dnotify.c:118!
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 1 PID: 648 Comm: kworker/u4:4 Not tainted 5.10.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: events_unbound fsnotify_mark_destroy_workfn
+> RIP: 0010:dnotify_free_mark fs/notify/dnotify/dnotify.c:118 [inline]
+> RIP: 0010:dnotify_free_mark+0x4b/0x60 fs/notify/dnotify/dnotify.c:112
+> Code: 80 3c 02 00 75 26 48 83 bd 80 00 00 00 00 75 15 e8 0a d3 a0 ff 48 89 ee 48 8b 3d 68 8c 1d 0b 5d e9 aa 06 e2 ff e8 f5 d2 a0 ff <0f> 0b e8 ae 4d e2 ff eb d3 66 90 66 2e 0f 1f 84 00 00 00 00 00 41
+> RSP: 0018:ffffc90002f1fc38 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: ffffffff8958ae60 RCX: 1ffff920005e3f95
+> RDX: ffff888012601a40 RSI: ffffffff81cf5ceb RDI: ffff88801aea2080
+> RBP: ffff88801aea2000 R08: 0000000000000001 R09: ffffffff8ebb170f
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880171a2000
+> R13: ffffc90002f1fc98 R14: ffff88801aea2010 R15: ffff88801aea2018
+> FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000056045fa95978 CR3: 0000000012121000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  fsnotify_final_mark_destroy+0x71/0xb0 fs/notify/mark.c:205
+>  fsnotify_mark_destroy_workfn+0x1eb/0x340 fs/notify/mark.c:840
+>  process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+>  kthread+0x3af/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> Modules linked in:
 > 
->        That might be an actual problem decsription, but I can't say for
->        sure.
-
-Yeah, that is why this is needed on x86 and also explains why this isn't
-an issue on a UP system where the physical and logical id of CPU0
-coincides.
-
-I agree that this is unnecessarily terse.
-
-> I still have no idea what this 'Fix' is fixing if it is fixing anything
-> at all. Is is a fix which needs to be backported or is it a 'fix' which
-> fixes something which got changed elsewhere and forgotten.
-
-The only in-tree devicetree source for x86 is for a UP system where CPU0
-has APIC id 0 and the initial code didn't even fetch the APIC id from
-devicetree (even if the CPU was described in DT).
-
-Support for SMP was later added by added by commit 4e07db9c8db8
-("x86/devicetree: Use CPU description from Device Tree") and since then
-we need to provide an arch_match_cpu_phys_id() implementation.
-
-I'll resend with a better explanation.
-
-Johan
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
