@@ -2,85 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79ED72D38DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D96AF2D38E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgLIChw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 21:37:52 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:44694 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgLIChw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 21:37:52 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B92Yogx151683;
-        Wed, 9 Dec 2020 02:37:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=r/Lh49/O2EZr6JB2u3epTpgfpKC+u36DuUavw2fVJ5o=;
- b=tCsmcjxQTQSWWdj1qCU7IxjVvC493QHkXcydTtpZSeVVoFWHI9DBzzmcJevuTyHVMTw/
- sXKmXKnkGMGvXie54A6bqI0ZkCE7YxvSrY+iu4lJLo+beCtZnxr1rITpxYt0h7fQeDwM
- z0quhxiAMhs0McYhPc0j5K0Gv37z6ZuuyJtzpXlk1ru43KCOGry9UCYHzrELrh9NFmjB
- Frwsu3yeWR1t9ImQ/X7hJoYY/bBLxjW7egbp44r/igs+fxMKML01+iAz1cEEzdaFLcFS
- KvpV7Pmef0ugGtz89FDHcmo0Ouy5iHgfinzYE0yyya4Y69MNcGMJR6SD/qHTagjEosy8 jg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 3581mqwvy7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 02:37:00 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B92YnR3174630;
-        Wed, 9 Dec 2020 02:37:00 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 358kspf2ry-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 02:37:00 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B92aukJ022294;
-        Wed, 9 Dec 2020 02:36:57 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Dec 2020 18:36:56 -0800
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, cang@codeaurora.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        Randall Huang <huangrandall@google.com>,
-        Leo Liou <leoliou@google.com>
-Subject: Re: [PATCH v2] scsi: ufs: clear uac for RPMB after ufshcd resets
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1zh2nso1v.fsf@ca-mkp.ca.oracle.com>
-References: <20201201041402.3860525-1-jaegeuk@kernel.org>
-        <X8/1U8+Dd3UJjKA/@google.com>
-Date:   Tue, 08 Dec 2020 21:36:53 -0500
-In-Reply-To: <X8/1U8+Dd3UJjKA/@google.com> (Jaegeuk Kim's message of "Tue, 8
-        Dec 2020 13:51:15 -0800")
+        id S1726730AbgLICiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 21:38:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:56814 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725796AbgLICiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 21:38:01 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28D0D1042;
+        Tue,  8 Dec 2020 18:37:12 -0800 (PST)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 264253F66B;
+        Tue,  8 Dec 2020 18:37:07 -0800 (PST)
+Subject: Re: [PATCH 3/3] s390/mm: Define arch_get_mappable_range()
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
+        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <1607400978-31595-1-git-send-email-anshuman.khandual@arm.com>
+ <1607400978-31595-4-git-send-email-anshuman.khandual@arm.com>
+ <20201208152709.GA26979@osiris>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <7484e153-6c77-8325-6195-621fe144011e@arm.com>
+Date:   Wed, 9 Dec 2020 08:07:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=841 suspectscore=1
- bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090015
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=871
- clxscore=1011 malwarescore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090015
+In-Reply-To: <20201208152709.GA26979@osiris>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Jaegeuk,
 
-> If RPMB is not provisioned, we may see RPMB failure after UFS suspend/resume.
-> Inject request_sense to clear uac in ufshcd reset flow.
+On 12/8/20 8:57 PM, Heiko Carstens wrote:
+> On Tue, Dec 08, 2020 at 09:46:18AM +0530, Anshuman Khandual wrote:
+>> This overrides arch_get_mappabble_range() on s390 platform which will be
+>> used with recently added generic framework. It drops a redundant similar
+>> check in vmem_add_mapping() while compensating __segment_load() with a new
+>> address range check to preserve the existing functionality. It also adds a
+>> VM_BUG_ON() check that would ensure that memhp_range_allowed() has already
+>> been called on the hotplug path.
+>>
+>> Cc: Heiko Carstens <hca@linux.ibm.com>
+>> Cc: Vasily Gorbik <gor@linux.ibm.com>
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: linux-s390@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  arch/s390/mm/extmem.c |  5 +++++
+>>  arch/s390/mm/init.c   | 10 ++++++++++
+>>  arch/s390/mm/vmem.c   |  4 ----
+>>  3 files changed, 15 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/s390/mm/extmem.c b/arch/s390/mm/extmem.c
+>> index 5060956b8e7d..cc055a78f7b6 100644
+>> --- a/arch/s390/mm/extmem.c
+>> +++ b/arch/s390/mm/extmem.c
+>> @@ -337,6 +337,11 @@ __segment_load (char *name, int do_nonshared, unsigned long *addr, unsigned long
+>>  		goto out_free_resource;
+>>  	}
+>>  
+>> +	if (seg->end + 1 > VMEM_MAX_PHYS || seg->end + 1 < seg->start_addr) {
+>> +		rc = -ERANGE;
+>> +		goto out_resource;
+>> +	}
+>> +
+>>  	rc = vmem_add_mapping(seg->start_addr, seg->end - seg->start_addr + 1);
+>>  	if (rc)
+>>  		goto out_resource;
+>> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
+>> index 77767850d0d0..64937baabf93 100644
+>> --- a/arch/s390/mm/init.c
+>> +++ b/arch/s390/mm/init.c
+>> @@ -278,6 +278,15 @@ device_initcall(s390_cma_mem_init);
+>>  
+>>  #endif /* CONFIG_CMA */
+>>  
+>> +struct range arch_get_mappable_range(void)
+>> +{
+>> +	struct range memhp_range;
+>> +
+>> +	memhp_range.start = 0;
+>> +	memhp_range.end =  VMEM_MAX_PHYS;
+>> +	return memhp_range;
+>> +}
+>> +
+>>  int arch_add_memory(int nid, u64 start, u64 size,
+>>  		    struct mhp_params *params)
+>>  {
+>> @@ -291,6 +300,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
+>>  	if (WARN_ON_ONCE(params->pgprot.pgprot != PAGE_KERNEL.pgprot))
+>>  		return -EINVAL;
+>>  
+>> +	VM_BUG_ON(!memhp_range_allowed(start, size, 1));
+>>  	rc = vmem_add_mapping(start, size);
+>>  	if (rc)
+>>  		return rc;
+>> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
+>> index b239f2ba93b0..749eab43aa93 100644
+>> --- a/arch/s390/mm/vmem.c
+>> +++ b/arch/s390/mm/vmem.c
+>> @@ -536,10 +536,6 @@ int vmem_add_mapping(unsigned long start, unsigned long size)
+>>  {
+>>  	int ret;
+>>  
+>> -	if (start + size > VMEM_MAX_PHYS ||
+>> -	    start + size < start)
+>> -		return -ERANGE;
+>> -
+> 
+> Is there a reason why you added the memhp_range_allowed() check call
+> to arch_add_memory() instead of vmem_add_mapping()? If you would do
 
-Applied to 5.11/scsi-staging, thanks!
+As I had mentioned previously, memhp_range_allowed() is available with
+CONFIG_MEMORY_HOTPLUG but vmem_add_mapping() is always available. Hence
+there will be a build failure in vmem_add_mapping() for the range check
+memhp_range_allowed() without memory hotplug enabled.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+> that, then the extra code in __segment_load() wouldn't be
+> required.
+> Even though the error message from memhp_range_allowed() might be
+> highly confusing.
+Alternatively leaving __segment_load() and vmem_add_memory() unchanged
+will create three range checks i.e two memhp_range_allowed() and the
+existing VMEM_MAX_PHYS check in vmem_add_mapping() on all the hotplug
+paths, which is not optimal.
