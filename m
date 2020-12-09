@@ -2,48 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9112D4A88
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D492D4A98
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387827AbgLITiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:38:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40912 "EHLO mail.kernel.org"
+        id S1731953AbgLITjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:39:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387803AbgLITiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:38:10 -0500
-Date:   Wed, 9 Dec 2020 11:37:27 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607542649;
-        bh=6Us6fY/6rkYgkZHdQt/DFMvdhHWAXIdbJPZtbrUcdjU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PhJMBnLltgKtJSzXrachkqadwU9+zvyq4Vpgai8lqsTNnn2OcjTP5liuyMnfBLd0A
-         lsqW03huClsWzfjOKDvG1LHRxlnDyybblLkhgycOLCyADiowk/Reoi8oJ/brH6NqG6
-         tGUjwAxZ41+k4M6BIkUwXw/7B7Rltgn4/ylAFUiI6WrxMRt5A+mCqYhJUpY74ts6L8
-         GhWbKoGuS4d98gvIzgGJN17pO3yNbEs7zDd3vs/f9dt3rJ9t3DLnmIDVww6f/ci7fu
-         WZYa30f5y6oS20as4ict2OEECGMXNOICBCzUeAfFrWfZW2v/zjqHs40CYLKCpfF1uh
-         7e/1DA4LutTvA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Pavana Sharma <pavana.sharma@digi.com>
-Cc:     andrew@lunn.ch, ashkan.boldaji@digi.com,
-        clang-built-linux@googlegroups.com, davem@davemloft.net,
-        devicetree@vger.kernel.org, f.fainelli@gmail.com,
-        gregkh@linuxfoundation.org, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com, marek.behun@nic.cz,
-        netdev@vger.kernel.org, robh+dt@kernel.org,
-        vivien.didelot@gmail.com
-Subject: Re: [PATCH v11 0/4] Add support for mv88e6393x family of Marvell
-Message-ID: <20201209113727.1b4bd319@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <cover.1607488953.git.pavana.sharma@digi.com>
-References: <20201120015436.GC1804098@lunn.ch>
-        <cover.1607488953.git.pavana.sharma@digi.com>
+        id S1730981AbgLITjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:39:46 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21BDB23BC6;
+        Wed,  9 Dec 2020 19:39:06 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kn5Il-00HSt3-S7; Wed, 09 Dec 2020 19:39:04 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 09 Dec 2020 19:39:03 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     John Garry <john.garry@huawei.com>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, lenb@kernel.org, rjw@rjwysocki.net,
+        tglx@linutronix.de, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        linux-acpi@vger.kernel.org, dwagner@suse.de
+Subject: Re: [PATCH v5 4/5] Driver core: platform: Add
+ devm_platform_get_irqs_affinity()
+In-Reply-To: <X9Ehy28876ezAOLH@kroah.com>
+References: <1606905417-183214-1-git-send-email-john.garry@huawei.com>
+ <1606905417-183214-5-git-send-email-john.garry@huawei.com>
+ <X9EYRNDXS1Xcy4iU@kroah.com>
+ <36730230-9fd7-8c6c-b997-328beea2fc31@huawei.com>
+ <X9Ehy28876ezAOLH@kroah.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <ed238cc6e4a6b865b2dc965f52fe0550@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: gregkh@linuxfoundation.org, john.garry@huawei.com, jejb@linux.ibm.com, martin.petersen@oracle.com, lenb@kernel.org, rjw@rjwysocki.net, tglx@linutronix.de, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, linuxarm@huawei.com, linux-acpi@vger.kernel.org, dwagner@suse.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  9 Dec 2020 15:02:54 +1000 Pavana Sharma wrote:
-> Updated patchset after incorporating feedback.
+On 2020-12-09 19:13, Greg KH wrote:
+> On Wed, Dec 09, 2020 at 07:04:02PM +0000, John Garry wrote:
+>> On 09/12/2020 18:32, Greg KH wrote:
+>> > On Wed, Dec 02, 2020 at 06:36:56PM +0800, John Garry wrote:
+>> > > Drivers for multi-queue platform devices may also want managed interrupts
+>> > > for handling HW queue completion interrupts, so add support.
+>> >
+>> 
+>> Hi Greg,
+>> 
+>> > Why would a platform device want all of this?  Shouldn't such a device
+>> > be on a "real" bus instead?
+>> 
+>> For this HW version, the device is on the system bus, directly 
+>> addressable
+>> by the CPU.
+> 
+> What do you mean by "system bus"?
+> 
+>> Motivation is that I wanted to switch the HW completion queues to use
+>> managed interrupts.
+> 
+> Fair enough, seems like overkill for a "platform" bus though :)
 
-This set does not apply to net-next. Please rebase.
+You should see the box, really... ;-)
+
+> 
+>> > What in-kernel driver needs this complexity?  I can't take new apis
+>> > without a real user in the tree, sorry.
+>> 
+>> It's in the final patch in the series 
+>> https://lore.kernel.org/linux-scsi/1606905417-183214-1-git-send-email-john.garry@huawei.com/T/#m0df7e7cd6f0819b99aaeb6b7f8939ef1e17b8a83.
+> 
+> Ah, I missed that, I thought that was some high-speed scsi thing, not a
+> tiny platform driver...
+> 
+>> I don't anticipate a huge number of users of this API in future, as 
+>> most
+>> multi-queue devices are PCI devices; so we could do the work of this 
+>> API in
+>> the driver itself, but the preference was not to export genirq 
+>> functions
+>> like irq_update_affinity_desc() or irq_create_affinity_masks(), and 
+>> rather
+>> have a common helper in the core platform code.
+> 
+> Ok, I'd like to have the irq maintainers/developers ack this before
+> taking it in the driver core, as someone is going to have to maintain
+> this crazy thing for forever if it gets merged.
+
+I'm actually quite happy with this, and as it turns out, the crazy
+system that has this SAS thing keeps my backside warm all year long.
+As long as this machine keeps ticking, I'm happy to help with this.
+
+So if that helps:
+
+Acked-by: Marc Zyngier <maz@kernel.org>
+
+We need to work out the merge strategy for the whole lot though, given
+that it crosses 3 subsystems over two series...
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
