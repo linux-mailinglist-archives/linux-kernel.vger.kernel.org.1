@@ -2,140 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96AF2D38E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A66992D38E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:44:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgLICiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 21:38:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:56814 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725796AbgLICiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 21:38:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28D0D1042;
-        Tue,  8 Dec 2020 18:37:12 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 264253F66B;
-        Tue,  8 Dec 2020 18:37:07 -0800 (PST)
-Subject: Re: [PATCH 3/3] s390/mm: Define arch_get_mappable_range()
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
-        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1607400978-31595-1-git-send-email-anshuman.khandual@arm.com>
- <1607400978-31595-4-git-send-email-anshuman.khandual@arm.com>
- <20201208152709.GA26979@osiris>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <7484e153-6c77-8325-6195-621fe144011e@arm.com>
-Date:   Wed, 9 Dec 2020 08:07:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726855AbgLICl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 21:41:26 -0500
+Received: from mail-eopbgr1300087.outbound.protection.outlook.com ([40.107.130.87]:38880
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726604AbgLIClT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 21:41:19 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lZKhLrxO/IFVolIJ8sZlBToxGNvOd2Hol6yJaUrRhb861yqJJ1SWbosyano1tW/4wxmaBvr6zgSFxOjUgXwXRfS2zl40Sl1jnaHF1XkflrtBCTfLmgD5BoLxNvAJqUdh3s9Ad3PYaJCasjYYCL1sLXc9SbZGTqlfzznZmtSjN7MDi2UwBU7qR+69m4yGB8Ghk4XpOEgOm8vsktd+f9Pu7hM72KoMWdyn3qmyn4TBzJULk8bco+l1+ZsTJJKG9iF2DryOcdfHgSdsoCl1EA3Gbxp9lzqPjtOuMAvbgxdflom37irOpR1ovJtXmI99e1fwdpgb0sGnKA/F2HeCOReeJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AMxXvGBy2MWXqsETDuiVKEL/Re0aGOm0lekuBhQnTEo=;
+ b=Qq0Kr5fQMUdGhovJSg9L261k2sHTLyn/q5L7yPpiuVcsaIgumbDmMN5UFIwdOuvBP1PUR5qTegtp6wurwXXjiKH7V7t0HDW30oPgyRJCOdtKDBc372PT0WP1SkFW4JgrspgVLsP/dsRWJHZqLgxB+wRsUkMtsYd+iFMA+nt0BR6O3B55GSu1O/e0Ut5icEpOyCSTzE8T4gHl45U0gY9fW6XQ9O9UneYchC/0mSqiqG3dSC6qlmCwCtXORhp9wRpr0L8jpWxRUr/phTrbfxcC03ymPPuxtI9aRxnVX5qbfobueZfYCjR9YSE6UBoj9q2MGzDXdqKTRLlSQOJxTLZmHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oppoglobal.onmicrosoft.com; s=selector1-oppoglobal-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AMxXvGBy2MWXqsETDuiVKEL/Re0aGOm0lekuBhQnTEo=;
+ b=r3HejG/BqV6ywKMLAt9zIWtCUoCVIBPTkjIpAs61FkFPbNO4YTPk/7C3NDMtWWzF0jkysnf/qB5hS89P83mr2PuUcykb9Zp8FHotb0nmUXkl7/QVzaVDpqJ0Shl31pxgprAw3PNQT7seoxw0l5yOK8vqROiHU8umbz3piEo8M6k=
+Authentication-Results: lists.ozlabs.org; dkim=none (message not signed)
+ header.d=none;lists.ozlabs.org; dmarc=none action=none header.from=oppo.com;
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
+ SG2PR02MB2461.apcprd02.prod.outlook.com (2603:1096:3:1d::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3654.12; Wed, 9 Dec 2020 02:39:42 +0000
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::dcd:13c1:2191:feb7]) by SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::dcd:13c1:2191:feb7%7]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
+ 02:39:42 +0000
+From:   Huang Jianan <huangjianan@oppo.com>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     huangjianan@oppo.com, guoweichao@oppo.com, zhangshiming@oppo.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] erofs: avoid using generic_block_bmap
+Date:   Wed,  9 Dec 2020 10:39:30 +0800
+Message-Id: <20201209023930.15554-1-huangjianan@oppo.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [58.252.5.72]
+X-ClientProxiedBy: HK2PR04CA0088.apcprd04.prod.outlook.com
+ (2603:1096:202:15::32) To SG2PR02MB4108.apcprd02.prod.outlook.com
+ (2603:1096:4:96::19)
 MIME-Version: 1.0
-In-Reply-To: <20201208152709.GA26979@osiris>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (58.252.5.72) by HK2PR04CA0088.apcprd04.prod.outlook.com (2603:1096:202:15::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 02:39:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7ee02ae2-80fb-4aa6-9e8a-08d89bebaeb3
+X-MS-TrafficTypeDiagnostic: SG2PR02MB2461:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR02MB24618AD06128FC0F50BF98C4C3CC0@SG2PR02MB2461.apcprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:525;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: haN0CUqS0dZNJ46+tAr+aA5y4WB/YUne4cGMrg7R0wGMWjBVRwBTRqLDiq5sbv/YdDzZjpZX5oY77+kACxnaZjgteTKXRK4r8FTVEuhcDlZPDnYiOPdRgPrhU9S6L/9Lqs/BHYXqOVi0l6Uf372OUKpI68KWlB/yEnqSJAYMYDu04JQqzxr51KFwZKRA4J2Aw5A6hrKpzhEd3+IokeG9lTdsqOQASyCFJa44o2N+sXVUz606WNGRP2roOH55crXp/tCykYwe10m8/aDq1FKxudRvczs8VKEIo4oCslVmB2nq8sggBul/YudXLQfoaQBqOhu2ESJH9sPY1lI7eGbdKE5CyxC84EBHibF4Bi8K0USUh0IGn1c+5YwNulzZVf7lluGLB7oAkzTucoe3y63tdvy32zfpayNcy7JZiXV3WKgPt8+y+p2ha1TgycT/qMxtNBGadiJWs03QGa7xC225vQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(346002)(34490700003)(508600001)(86362001)(36756003)(5660300002)(956004)(8676002)(8936002)(2616005)(1076003)(69590400008)(6666004)(16526019)(6506007)(52116002)(2906002)(83380400001)(6916009)(6486002)(66946007)(66556008)(66476007)(6512007)(4326008)(186003)(26005)(11606006)(41533002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?F+TcP43WRdo7TYsMALSg34AijSzvZI26eCJV67wjZzMomwpbqt0w7WM53G/6?=
+ =?us-ascii?Q?m3pr8z167t1ymZT3ypmf8obJT8B1hPAtV8upob/q5n50ov41lWvu/fvOSBgk?=
+ =?us-ascii?Q?24FP2oqp6NW1wueZPG92aMRskzAtV034OvOKi2wxOujOw8oi0cR53MX4CtqI?=
+ =?us-ascii?Q?Qi9OO1g5zxxvHssStOxzM4xEyIt4cRhu5s6Vf/+VS2vMuNc86yJ95MrTxINI?=
+ =?us-ascii?Q?9UZ5i1hopcBRP3bAkhAwHCs+n5ALwbLu6LyAXmAlc9CHUxpWs89ucfsh7sGj?=
+ =?us-ascii?Q?Mr2HBs/7r3OlS4f9S0gFjgy6w7j7DXLHXh+2ecUUQvM/rW+jVgiaE3ygEP/c?=
+ =?us-ascii?Q?Dmo/vIjjcMu0XzYZ6OoEDZCZvb6NgR6Qk0QKobEuelLdIXPjiUUEOqzvEIgf?=
+ =?us-ascii?Q?l0OYRQrQaO3HFsmhjUjuhBLKwQJ31qzDjZftw72Lc6qzvP5iBJVEoqwZAsRI?=
+ =?us-ascii?Q?lbr/8gZBC0yf9caRTHc7rktP5yYsceuD72fJAEDBxzTiocKr0x10WsYqYluy?=
+ =?us-ascii?Q?bjWoKMR7V4k+Z/65YDY5IZqmVKh/24pf78qF0whuqc6pL9AqUUFRaaczOh42?=
+ =?us-ascii?Q?qECCr+QyiBPB4JUXeAK6Ihsqm71+yGJnRkoj/VGSkYKKcb8gclVeKRoFJPVf?=
+ =?us-ascii?Q?94kPmzc/UNTgBUeUgqcBJwVt8mNpaOHv6Vr+zSKwEvRJoQEIGECCNnHvlNJC?=
+ =?us-ascii?Q?QaCBBJu7cH0d4F+2+DXkPSDYl0VlRfc4qHTWx3tvfVCyB79xTd3OWH2PAtU4?=
+ =?us-ascii?Q?rzCWnZJua2LkiTHw7A0Tax66IOTrJ+gmFxDBvglThX2Ibbq1eoYWZxYDjpqn?=
+ =?us-ascii?Q?h5FYIP7Ye3MdpBX13edpMbxdZpnwRifd2IQj15wDLd1jCGbMc7sw8Gcyux06?=
+ =?us-ascii?Q?Kevt41aKU94C5Q85uHfTwq3kDExGBdBUzHbXLpSOEBZkSyx4qY+QRHFFj9Iz?=
+ =?us-ascii?Q?KD0o7fUvqRhW0OIGl2kvtj7ldpf0B6P3EC7Jn/CodBQ=3D?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 02:39:42.2162
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ee02ae2-80fb-4aa6-9e8a-08d89bebaeb3
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QLK65YAX5i8bP3wTHDkHtkayf2VUJjPuLZdgq9FLoTID45wLjOHcRKmxeKXVz5nHo3xjMcep7nCpKx0qbrb/bw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB2461
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+iblock indicates the number of i_blkbits-sized blocks rather than
+sectors.
 
+In addition, considering buffer_head limits mapped size to 32-bits,
+should avoid using generic_block_bmap.
 
-On 12/8/20 8:57 PM, Heiko Carstens wrote:
-> On Tue, Dec 08, 2020 at 09:46:18AM +0530, Anshuman Khandual wrote:
->> This overrides arch_get_mappabble_range() on s390 platform which will be
->> used with recently added generic framework. It drops a redundant similar
->> check in vmem_add_mapping() while compensating __segment_load() with a new
->> address range check to preserve the existing functionality. It also adds a
->> VM_BUG_ON() check that would ensure that memhp_range_allowed() has already
->> been called on the hotplug path.
->>
->> Cc: Heiko Carstens <hca@linux.ibm.com>
->> Cc: Vasily Gorbik <gor@linux.ibm.com>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: linux-s390@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  arch/s390/mm/extmem.c |  5 +++++
->>  arch/s390/mm/init.c   | 10 ++++++++++
->>  arch/s390/mm/vmem.c   |  4 ----
->>  3 files changed, 15 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/s390/mm/extmem.c b/arch/s390/mm/extmem.c
->> index 5060956b8e7d..cc055a78f7b6 100644
->> --- a/arch/s390/mm/extmem.c
->> +++ b/arch/s390/mm/extmem.c
->> @@ -337,6 +337,11 @@ __segment_load (char *name, int do_nonshared, unsigned long *addr, unsigned long
->>  		goto out_free_resource;
->>  	}
->>  
->> +	if (seg->end + 1 > VMEM_MAX_PHYS || seg->end + 1 < seg->start_addr) {
->> +		rc = -ERANGE;
->> +		goto out_resource;
->> +	}
->> +
->>  	rc = vmem_add_mapping(seg->start_addr, seg->end - seg->start_addr + 1);
->>  	if (rc)
->>  		goto out_resource;
->> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
->> index 77767850d0d0..64937baabf93 100644
->> --- a/arch/s390/mm/init.c
->> +++ b/arch/s390/mm/init.c
->> @@ -278,6 +278,15 @@ device_initcall(s390_cma_mem_init);
->>  
->>  #endif /* CONFIG_CMA */
->>  
->> +struct range arch_get_mappable_range(void)
->> +{
->> +	struct range memhp_range;
->> +
->> +	memhp_range.start = 0;
->> +	memhp_range.end =  VMEM_MAX_PHYS;
->> +	return memhp_range;
->> +}
->> +
->>  int arch_add_memory(int nid, u64 start, u64 size,
->>  		    struct mhp_params *params)
->>  {
->> @@ -291,6 +300,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
->>  	if (WARN_ON_ONCE(params->pgprot.pgprot != PAGE_KERNEL.pgprot))
->>  		return -EINVAL;
->>  
->> +	VM_BUG_ON(!memhp_range_allowed(start, size, 1));
->>  	rc = vmem_add_mapping(start, size);
->>  	if (rc)
->>  		return rc;
->> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
->> index b239f2ba93b0..749eab43aa93 100644
->> --- a/arch/s390/mm/vmem.c
->> +++ b/arch/s390/mm/vmem.c
->> @@ -536,10 +536,6 @@ int vmem_add_mapping(unsigned long start, unsigned long size)
->>  {
->>  	int ret;
->>  
->> -	if (start + size > VMEM_MAX_PHYS ||
->> -	    start + size < start)
->> -		return -ERANGE;
->> -
-> 
-> Is there a reason why you added the memhp_range_allowed() check call
-> to arch_add_memory() instead of vmem_add_mapping()? If you would do
+Fixes: 9da681e017a3 ("staging: erofs: support bmap")
+Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+---
+ fs/erofs/data.c | 30 ++++++++++--------------------
+ 1 file changed, 10 insertions(+), 20 deletions(-)
 
-As I had mentioned previously, memhp_range_allowed() is available with
-CONFIG_MEMORY_HOTPLUG but vmem_add_mapping() is always available. Hence
-there will be a build failure in vmem_add_mapping() for the range check
-memhp_range_allowed() without memory hotplug enabled.
+diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+index 347be146884c..d6ea0a216b57 100644
+--- a/fs/erofs/data.c
++++ b/fs/erofs/data.c
+@@ -312,36 +312,26 @@ static void erofs_raw_access_readahead(struct readahead_control *rac)
+ 		submit_bio(bio);
+ }
+ 
+-static int erofs_get_block(struct inode *inode, sector_t iblock,
+-			   struct buffer_head *bh, int create)
+-{
+-	struct erofs_map_blocks map = {
+-		.m_la = iblock << 9,
+-	};
+-	int err;
+-
+-	err = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
+-	if (err)
+-		return err;
+-
+-	if (map.m_flags & EROFS_MAP_MAPPED)
+-		bh->b_blocknr = erofs_blknr(map.m_pa);
+-
+-	return err;
+-}
+-
+ static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
+ {
+ 	struct inode *inode = mapping->host;
++	struct erofs_map_blocks map = {
++		.m_la = blknr_to_addr(block),
++	};
++	sector_t blknr = 0;
+ 
+ 	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
+ 		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
+ 
+ 		if (block >> LOG_SECTORS_PER_BLOCK >= blks)
+-			return 0;
++			goto out;
+ 	}
+ 
+-	return generic_block_bmap(mapping, block, erofs_get_block);
++	if (!erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW))
++		blknr = erofs_blknr(map.m_pa);
++
++out:
++	return blknr;
+ }
+ 
+ /* for uncompressed (aligned) files and raw access for other files */
+-- 
+2.25.1
 
-> that, then the extra code in __segment_load() wouldn't be
-> required.
-> Even though the error message from memhp_range_allowed() might be
-> highly confusing.
-Alternatively leaving __segment_load() and vmem_add_memory() unchanged
-will create three range checks i.e two memhp_range_allowed() and the
-existing VMEM_MAX_PHYS check in vmem_add_mapping() on all the hotplug
-paths, which is not optimal.
