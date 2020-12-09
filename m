@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819742D4B76
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5C82D4B7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388359AbgLIUR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388353AbgLIUR1 (ORCPT
+        id S2388195AbgLIUSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:18:13 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:38429 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388162AbgLIURy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:17:27 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2672CC0613CF;
-        Wed,  9 Dec 2020 12:16:47 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id c79so1808353pfc.2;
-        Wed, 09 Dec 2020 12:16:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/Gb52rLFb1PoO6DXkpk5zljkzOIofHR52NXCKENCFa4=;
-        b=kehc2ECdte20dcviA2sV5xZ+n4UnvafAMyDlCabErXP1uJWSICsH9t++c5icoDpNi9
-         6rZYh6ltHdQLf9Z6mllOQPSis08jMwvjqG0QjbvByKrqo8TcDZJ2XNbLtGNS5cQnniRi
-         /atttUalbx6kjjwpQN4oePMgYOjEd5LpRKl84ht2vGfJJ5dRs3s4I1HeEXpdw+EHzWqR
-         qfGOGSILO+68813rMDjYYMziIlDf1u0T83ZarRi9dGEGvbAyn4yPvbt9aYo33trQtowm
-         VSo+R5xDwBzItoPz4G+0/LJYePQjW0TSk1d6RZN9khZD2/LOySBAAsbbRWiL5JwscLpM
-         cJKw==
+        Wed, 9 Dec 2020 15:17:54 -0500
+Received: by mail-ot1-f68.google.com with SMTP id b62so2667366otc.5;
+        Wed, 09 Dec 2020 12:17:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/Gb52rLFb1PoO6DXkpk5zljkzOIofHR52NXCKENCFa4=;
-        b=EnFVIpRczONx4Uj2H0mqBoRiv/SrWCirGqPLGE6jPH595xrUCtcYQKC0VKMA0vWGcH
-         yakUBYpIseb8/4WnSRqZFn4lzhdD4jbb2BYlXQgZPezU2AVqgM28qAUT+Rn+lAA/63o6
-         EIFrgDfY+K3fyngyamLWOnlZU9mT82MXQOcUf3T7qg8Rh/5qBjqPQcStRdMNmGoR3+M6
-         5eC101epyiW2YyQxfgK8wUDAYeIIOqoNEWWlPSCAj3062K3tiAGo8kixjal076F3cEkk
-         BM9JuVSTjav8asU6LHb2nXemFjd0ZbLsjNl4C5c/8QkAtyc88TGbp1fZNhRmmOUakL/t
-         v9Kg==
-X-Gm-Message-State: AOAM530ZiPdbGBoAUjtRAAQO7PVa7NC9TxXMdRDIulTV6b7RBEqspe+Z
-        4RBEoQvbQt1rRDXHLFl4hOsyPVyWI44dxyUdJdg=
-X-Google-Smtp-Source: ABdhPJz/aOF4GeS39n75c1q1nNxSyZ9i0t1HDZUpqvPZbEXooO6+WxHvYOXA1hAynAphTeORR8rwu4IuMtheOB4YnoM=
-X-Received: by 2002:a17:90b:1987:: with SMTP id mv7mr3776215pjb.66.1607545006673;
- Wed, 09 Dec 2020 12:16:46 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LQJE8H8jL0GuVk4uta0YS9al3HMoyg6NYYR824t9oo4=;
+        b=jaDVgY2oWTSQLJ3u6gU3QzSK7j42Y/xCyhSthGMvye4FS9CKjoNdShiFaN9Hq5v+4E
+         t9G7iJlzgIJcjxrZO6DMOhhJqzoSz7EFO92aT18qhkLGKlspFVq0sG1jWPOpTUd+pLdM
+         YgbY2F84Cs8gTQh9cXt2lAZo9KGo5JBRrftjwEkZsihvboEp/LCafZ+puinvynnA7xPh
+         1q+L6jPSj0QeJ5VttgGI9wR/V2lEvhbUdmPa/9i5ouDsT1Y8WOGTuSnjTjU3pYNfUejB
+         qxkpSHB3/19q8Ztb8ce1scQu+J8nwdCA8EMyhEMb0RFsvcO2ESHmuL3tvmCdLZ4DcQJo
+         PSgQ==
+X-Gm-Message-State: AOAM530N5i5Ge1woNF8vFaCeDumnMGaQzIeOd/JE/WXTsFaq3g2XSrdD
+        9UFvW71XqXU8Q0OhnoOrpA==
+X-Google-Smtp-Source: ABdhPJzdsQhV4dln150sXm2W8SFoCWPsrRVllQ2LeGuEnPn5uQhzfTQIRRsvSJDo1MvP2BtF8BbYew==
+X-Received: by 2002:a05:6830:3151:: with SMTP id c17mr3317872ots.336.1607545032918;
+        Wed, 09 Dec 2020 12:17:12 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 11sm595360otg.34.2020.12.09.12.17.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 12:17:12 -0800 (PST)
+Received: (nullmailer pid 869734 invoked by uid 1000);
+        Wed, 09 Dec 2020 20:17:09 -0000
+Date:   Wed, 9 Dec 2020 14:17:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        devicetree@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-tegra@vger.kernel.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-pm@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        dri-devel@lists.freedesktop.org,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>, linux-kernel@vger.kernel.org,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: Re: [PATCH v11 01/10] dt-bindings: memory: tegra20: emc: Document
+ opp-supported-hw property
+Message-ID: <20201209201709.GA869677@robh.at.kernel.org>
+References: <20201203192439.16177-1-digetx@gmail.com>
+ <20201203192439.16177-2-digetx@gmail.com>
 MIME-Version: 1.0
-References: <20201209081604.464084-1-xie.he.0141@gmail.com>
- <7aed2f12bd42013e2d975280a3242136@dev.tdt.de> <dde53213f7e297690e054d01d815957f@dev.tdt.de>
-In-Reply-To: <dde53213f7e297690e054d01d815957f@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Wed, 9 Dec 2020 12:16:35 -0800
-Message-ID: <CAJht_EPk4uzA+QeL0_nHBhNoaro48ieF1vTwxQihk5_D66GTEA@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: x25: Fix handling of Restart Request and
- Restart Confirmation
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203192439.16177-2-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 2:31 AM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> >> 1. When the x25 module gets loaded, layer 2 may already be running and
-> >> connected. In this case, although we are in X25_LINK_STATE_0, we still
-> >> need to handle the Restart Request received, rather than ignore it.
-> >
-> > Hmm... I've never loaded the X.25 module after the interface is UP, but
-> > in this case we really have to fix it.
-> >
->
-> This seems to be a regression caused by moving the Layer2 link handling
-> into the lapb driver, which wasn't intended in my original patchset.
->
-> I also have another patch on my todo list which aims orphan packet
-> handling in the x25_receive_data() function. Maybe it is better to catch
-> the whole thing there.
+On Thu, 03 Dec 2020 22:24:30 +0300, Dmitry Osipenko wrote:
+> Document opp-supported-hw property, which is not strictly necessary to
+> have on Tegra20, but it's very convenient to have because all other SoC
+> core devices will use hardware versioning, and thus, it's good to maintain
+> the consistency.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../bindings/memory-controllers/nvidia,tegra20-emc.txt      | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
 
-OK..
-
-Currently it's not clear to me what your future patches would be.
-Maybe we can first have this patch applied? Because based on the
-current code I think this patch is necessary. When you are ready to
-submit your patches, you can replace my code and we can discuss
-further.
+Acked-by: Rob Herring <robh@kernel.org>
