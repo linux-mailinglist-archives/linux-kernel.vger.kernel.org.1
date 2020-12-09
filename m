@@ -2,75 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDFF2D3F41
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C96902D3F55
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729536AbgLIJ4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:56:49 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2229 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727273AbgLIJ4t (ORCPT
+        id S1729548AbgLIJ6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:58:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728613AbgLIJ6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:56:49 -0500
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CrXSS3MGBz67NqT;
-        Wed,  9 Dec 2020 17:54:00 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Wed, 9 Dec 2020 10:56:05 +0100
-Received: from [10.210.171.175] (10.210.171.175) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 9 Dec 2020 09:56:05 +0000
-Subject: Re: [RFC PATCH] blk-mq: Clean up references when freeing rqs
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <hch@lst.de>, <hare@suse.de>,
-        <ppvk@codeaurora.org>, <bvanassche@acm.org>,
-        <kashyap.desai@broadcom.com>
-References: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
- <20201202033134.GD494805@T590>
- <aaf77015-3039-6b04-3417-d376e3467444@huawei.com>
- <20201203005505.GB540033@T590>
- <fa222311-2184-0041-61ab-b3d70fb92585@huawei.com>
- <7beb86a2-5c4b-bdc0-9fce-1b583548c6d0@huawei.com>
- <20201209010102.GA1217988@T590>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <13327a68-6f86-96da-0c5f-5fa0be326d6f@huawei.com>
-Date:   Wed, 9 Dec 2020 09:55:30 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Wed, 9 Dec 2020 04:58:39 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98F4C0613CF;
+        Wed,  9 Dec 2020 01:57:58 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrXXz6c7gz9sW9;
+        Wed,  9 Dec 2020 20:57:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607507876;
+        bh=7bTqQY2Bw5OuvnieZpKVgk+ANaIaWZn/UZwAIeXDG5Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=d1fCGf0fma3oehetnw6MKc+c0xe8pL8r+iEDWB7VdPCsXjZH4q6+7YjkGImgyv7Zl
+         eFw97nr5uWDfcl4i2x5wmTrEj3LQnzfagsuDEDGya7+1aCDTS/2BG5yPbg+LTi3u42
+         Gp0z2zjbsmE9IZKB2TzrnNxwY4VBWSy98yajLQwBYHv8qgQM2rgxLMRDaNpwvOnhKI
+         xHZYTRU/N42NBSmYoLJsfVhBIfGDn+fE0xvmQKw6nhhItywDZylIVf/9yVb8B40a/s
+         hIJV4guLGubPf4kllb5N1QYMMP/smApjSPwB448BYa79wvru5Yj/8jgI3jE7nNlVxj
+         dfF0JqDjwRYIg==
+Date:   Wed, 9 Dec 2020 20:57:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Pearson <markpearson@lenovo.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the pm tree
+Message-ID: <20201209205754.41ac2424@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201209010102.GA1217988@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.171.175]
-X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/GBWtwE=0wr3p2aPCNnpjwYP";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12/2020 01:01, Ming Lei wrote:
-> blk_mq_queue_tag_busy_iter() can be run on another request queue just
-> between one driver tag is allocated and updating the request map, so one
-> extra request reference still can be grabbed.
-> 
-> So looks only holding one queue's usage_counter doesn't help this issue, since
-> bt_for_each() always iterates on driver tags wide.
-> 
->> But I didn't see such a guard for blk_mq_tagset_busy_iter().
-> IMO there isn't real difference between the two iteration.
+--Sig_/GBWtwE=0wr3p2aPCNnpjwYP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-ok, I see. Let me try to recreate that one, which will prob again 
-require artificial delays added.
+Hi all,
 
-Apart from this, my concern is that we come with for a solution, but 
-it's a complicated solution and may not be accepted as this issue is not 
-seen as a problem in practice.
+After merging the pm tree, today's linux-next build (htmldocs) failed
+like this:
 
-Thanks,
-John
+Sphinx parallel build error:
+docutils.utils.SystemMessage: /home/sfr/next/next/Documentation/ABI/testing=
+/sysfs-platform_profile.rst:1: (SEVERE/4) Missing matching underline for se=
+ction title overline.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+ Platform Profile Selection (e.g. :ref:`\/sys\/firmware\/acpi\/platform_pro=
+file <abi_sys_firmware_acpi_platform_profile>`)
+
+Caused by commit
+
+  ff950bebd0e0 ("Documentation: Add documentation for new platform_profile =
+sysfs attribute")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/GBWtwE=0wr3p2aPCNnpjwYP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Qn6IACgkQAVBC80lX
+0Gx7iwf+IMrk4Pl2JS1ix6OdcSuPL46e8qgaoz3l4wkIB9oD3hhpZ5hIdjV0m4U3
+++t3dsjMWpWTjGkIr9Y1lpWPYC1MoDxjk0HkATiOQMcR591jsqNJ4y3vz7eNaKoI
+NYd1aIpPfzTEAEswp6sEfO6NepxMlyvwGaEe2or//J8wKU3V8AJYLbn6M/wlpvA5
+4OFoC6HZvtm+oDlGTeplu+E4ggSdrNQVEDDOkWk5nYyyxg7k3P+ckKC9yIuFnlrD
+ZqD6CcZ4wIhA9jRQCHujfXDw5tCCRNigKvUPwAoSRTVxYsmiSw2S+lPyAjb/TEDC
+vLgQn0aN2OOvNMzyZBdtJiFunH7/tw==
+=06jS
+-----END PGP SIGNATURE-----
+
+--Sig_/GBWtwE=0wr3p2aPCNnpjwYP--
