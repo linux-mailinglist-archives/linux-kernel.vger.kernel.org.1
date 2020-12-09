@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE36D2D3E0A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:02:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F152D3E0E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgLIJAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:00:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
+        id S1728519AbgLIJCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:02:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727273AbgLII76 (ORCPT
+        with ESMTP id S1725942AbgLIJCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:59:58 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857E0C061793
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 00:59:17 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id m19so2085168lfb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 00:59:17 -0800 (PST)
+        Wed, 9 Dec 2020 04:02:03 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0ABEC061793;
+        Wed,  9 Dec 2020 01:01:22 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id t6so599052plq.1;
+        Wed, 09 Dec 2020 01:01:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=H4kdQcRfSBCbx7zGvesxGrfsAKDF4OGfaGjXFodrO74=;
-        b=Nb0GkKIAm7dcqrmgsyIwJo38tasdPxkgHvt7bM04JX1NUdKS1KKXWNZ/f1q8kNK1Ak
-         N5piWHNnX1Ci4zcrfsLQfTjHEvJ/nD7wBMuCwCjaCvGv6ziWmZjleawa5O6pjphDSdsx
-         SZHGexSXGx7joKlWC0+GmJadETuk7cE+aZxxI+QktTZNcYwngVb50wGvJgU3u+7U6lCO
-         ZJp9X+6uNncgp5DHiOIlBqPJFb1+PzoLTqIZmqqRtEk7rymNffpILx7NxzchmVAHxMNf
-         cVl7zKsW3ByehxmxckIgQJ7UAl2YrgYuKzEemokel2bLqdnx+H4VEDE0vc799ZVn7PLh
-         XX8A==
+        bh=4rpxUTzufCBNH+H443ssFvPa1VAOqL2A+09wFH4lKh0=;
+        b=F3F81rp1cViSLFdGeG2bug5lkQlam3ZHbEAUyzrcWeM/gI0NEtEZZXHyrwJ3Ulkosn
+         jVgolld4KbCsggi7SOrMYNXOscoEvfTxYUkfezHpuU4amZfIS65HvXWIpVQP8xMgLN6E
+         fEn6sPNfqD/NtOaSKfSca+RuXE717Gys8spVQWWeFcTn/jhU7Nj9uzUPhixUToCSbCJv
+         Y91q3KMRmXIA7dJ4hbGqrXzJaL7zP+jh6MB2kzsG9/TmdCleVtTlIzhCBwTKDmeCg0Ju
+         wadrJaXDxo5p3XgwY255Uzh83K8UeWFbisbOXq1B8XvHK5FXWcRxf/TJZ0/mIe0m0vP5
+         qhxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=H4kdQcRfSBCbx7zGvesxGrfsAKDF4OGfaGjXFodrO74=;
-        b=fXYVVsi6sqRLgKH6RkaiY6OidinqNKTbVNlGvIUzQA7BlUb3e/9VGsjh9DM1nl0eCS
-         VVbA1z97f9EUoEP/31XFi5YBaNTthoYKIuoopaA9t+E6NQjDA90xJEpw0NZ9knqOdkJW
-         LfbYab3FvSfQZYAmFbkxIemhnBPgv6Be5yU8skGnvN5MazZTrJpSdDkxyTa5zBB0VM42
-         BpryU1zf0vQkLSi3KSKQe2cx8KVLHpqCf2DH82k2x5VOLyDwrhmuRe38XWv2JrbWVVhe
-         q/ZcZXx0/nYBEL83cIbcqOjEQI4DZnFJ56L2Wn6y4YZIe0HIuCmlO2+QrLAHI22N9n02
-         5GCA==
-X-Gm-Message-State: AOAM5310uMWyKU2grnt34i01kti1LEKVXHOZYAPuntKUT7eL7IPlbqLe
-        rLUTQiX2Duq4bdIterwcP8chMfmPX8ilBgw4zY8KNg==
-X-Google-Smtp-Source: ABdhPJwHqLtksYEjPqnWu5i18QEvgN1JTjuURx6ecahj7/3lHvD3YQFzYlCPm2SD6tcxLCaRX/CcWXKFnMfDOnQpDeg=
-X-Received: by 2002:a19:6557:: with SMTP id c23mr627191lfj.157.1607504355994;
- Wed, 09 Dec 2020 00:59:15 -0800 (PST)
+        bh=4rpxUTzufCBNH+H443ssFvPa1VAOqL2A+09wFH4lKh0=;
+        b=fFdAEivD6uUYF/AnSgoTuhOR3kDPFxOdhjlZocK5gXYEKjlvvYGDTJ2YH28eDXKEM7
+         iKsEorzm/C/7ZvGeqznRBxeQts8Za6B9wN3Zvc3CWRVwq9pAv/jog6O0DkIED8GKOaJ9
+         fttJwhqRMSKqfq9pqrzxiwWkb+LUBZTpKS8BJSOz/MiF4A20nERVrvr+lw2vy0G5ATNY
+         ya1mpeq9YA9OUY7TAJ3SS7fsJaTtCqT6SOYOZy+TlZap7Rtm7sqlmH2sAZuOYwZYJ1qy
+         wNYwMwfOey2EneHTZDE4MmyTe1B7esBXilleV2KYRqnc87Hj6FgGVoJtm5wHGF5CCltX
+         GU9A==
+X-Gm-Message-State: AOAM531afNa4VeBaLU8U48O2TPkJc6Zq1krqayWxLhMDCeCRMEe7Gq3m
+        DeS7x/4amqvE8rncYFgBhQM62wVg+Yt19bv/pvUWub2zJSU=
+X-Google-Smtp-Source: ABdhPJya6CPNDm6u6Q88+qkHSL+3Hd7CtAzbVrhtsbLS6TnqWcBtx5PjcO3KK3KTEpgU3UPBZzHxtgG9NTvvnyM9IwA=
+X-Received: by 2002:a17:902:aa4b:b029:d8:f87e:1f3c with SMTP id
+ c11-20020a170902aa4bb02900d8f87e1f3cmr1127419plr.23.1607504482489; Wed, 09
+ Dec 2020 01:01:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20201208164821.2686082-1-paul@crapouillou.net>
-In-Reply-To: <20201208164821.2686082-1-paul@crapouillou.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 9 Dec 2020 09:59:05 +0100
-Message-ID: <CACRpkdZFy8bvsV+HkzWsu0OKjg6i82o-mL+7v3_Ev5h_QR=xiA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] if_enabled.h: Add IF_ENABLED_OR_ELSE() and
- IF_ENABLED() macros
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Arnd Bergmann <arnd@kernel.org>, od@zcrc.me,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mips@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201126063557.1283-1-ms@dev.tdt.de> <20201126063557.1283-5-ms@dev.tdt.de>
+In-Reply-To: <20201126063557.1283-5-ms@dev.tdt.de>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Wed, 9 Dec 2020 01:01:11 -0800
+Message-ID: <CAJht_EMZqcPdE5n3Vp+jJa1sVk9+vbwd-Gbi8Xqy19bEdbNNuA@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 4/5] net/x25: fix restart request/confirm handling
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 5:48 PM Paul Cercueil <paul@crapouillou.net> wrote:
+On Wed, Nov 25, 2020 at 10:36 PM Martin Schiller <ms@dev.tdt.de> wrote:
+>
+> We have to take the actual link state into account to handle
+> restart requests/confirms well.
+>
+> @@ -214,8 +241,6 @@ void x25_link_established(struct x25_neigh *nb)
+>  {
+>         switch (nb->state) {
+>         case X25_LINK_STATE_0:
+> -               nb->state = X25_LINK_STATE_2;
+> -               break;
+>         case X25_LINK_STATE_1:
+>                 x25_transmit_restart_request(nb);
+>                 nb->state = X25_LINK_STATE_2;
 
-> Introduce a new header <linux/if_enabled.h>, that brings two new macros:
-> IF_ENABLED_OR_ELSE() and IF_ENABLED().
-
-I understand what the patch is trying to do, but when we already have
-IS_ENABLED() in <linux/kconfig.h> this syntax becomes a big cognitive
-confusion for the mind.
-
-At least the commit needs to explain why it doesn't work to use
-IS_ENABLED() instead so that this is needed.
-
-Certainly the build failures must be possible to solve so that this
-can live with the sibling IS_ENABLED() inside <linux/kconfig.h>,
-it can't be too hard.
-
-Yours,
-Linus Walleij
+What is the reason for this change? Originally only the connecting
+side will transmit a Restart Request; the connected side will not and
+will only wait for the Restart Request to come. Now both sides will
+transmit Restart Requests at the same time. I think we should better
+avoid collision situations like this.
