@@ -2,103 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5526B2D3E26
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCEA22D3E2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbgLIJE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:04:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727536AbgLIJEw (ORCPT
+        id S1728792AbgLIJGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:06:02 -0500
+Received: from outbound-smtp35.blacknight.com ([46.22.139.218]:48829 "EHLO
+        outbound-smtp35.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727339AbgLIJGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:04:52 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBEEC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:04:11 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id m12so2066593lfo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:04:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u8KKN6kEP37Zb7PmsnDAFaBNjQZ74PfUTCo3xpIHe+4=;
-        b=tjbgpYtBD9Cp3oZ/+ZqVBgK6uC90kg/92F0++7454fg6X8Y045ejX12IJi61RR56Tn
-         CSR2t9R1X3AqFKJ5434ULkCLTHbcDD9pJTJudwHZdYfCIGntqZx13i38HAnQmDCw/5ep
-         0GAnISEMnHP26rv0VZkfAcbZW3CFFErixasIE+i6SQQ6HINGDEKY5sWz/cjrlRHseQK/
-         TybZFQwME9Ej/CANfPWjJabsFL3zHvJyzfmMbVT6efU7iFMWW43/ldBZ0K2GjnbH/zi9
-         AwN44apWWTMptUo6wJak/8T3RnkS3mZWJScdeCj/Zm9HYSoXlkTnG1kA/r1UGLcosH58
-         c1EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u8KKN6kEP37Zb7PmsnDAFaBNjQZ74PfUTCo3xpIHe+4=;
-        b=KtbZh3ZADHmiXp2wM88RSdAroGjJzBaZ7v2kWNU6sUQnR7rO0pYEHpsu+DrCy9K+rS
-         WemH/b8Dr4TJIdbr0DojcCSa6O5qVHfL9E6OueXRg1Ky4JtrUJ2AkC202rKrIoMdvrih
-         yR+C+dtltuIp5l6p7fnQpg77tXScrzI1cVdfR0GZN1fYEVOgjBlPgZ5Fl9UME6tne3P8
-         +wAOkq1Afy4Cxxou0fiXWnkHNlwiOQhP5nPHTj52kEf3v+aXSBjyLQKBVaAyHyfhwqoP
-         PF3r2dGaDGxtfNL0DY7IlurtDa7+H2FFvRnHsDU+z6m89I5916KdSMnd+r6KB2OwEbq0
-         JU+w==
-X-Gm-Message-State: AOAM530ij3RK7pkUrssmVcsKLoknCGbNIlmGyJan+TjJsoB9Q2MX80cc
-        TZrVaMWBYnYu8h4Pw/ZjYnVSuXiLZ0A27q37inj8ag==
-X-Google-Smtp-Source: ABdhPJwuKkyip48lpOSEFICnOa696vlq3QGttzrv7MSDYITrNbVRdD+irJ6V6I1ixXgelIrnyZ0MGPhltSqo1zq38bI=
-X-Received: by 2002:a19:6557:: with SMTP id c23mr633204lfj.157.1607504650310;
- Wed, 09 Dec 2020 01:04:10 -0800 (PST)
+        Wed, 9 Dec 2020 04:06:02 -0500
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp35.blacknight.com (Postfix) with ESMTPS id 20B8C1ADB
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 09:05:10 +0000 (GMT)
+Received: (qmail 7118 invoked from network); 9 Dec 2020 09:05:09 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Dec 2020 09:05:09 -0000
+Date:   Wed, 9 Dec 2020 09:05:07 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 2/4] sched/fair: Move avg_scan_cost calculations under
+ SIS_PROP
+Message-ID: <20201209090507.GM3371@techsingularity.net>
+References: <20201208153501.1467-1-mgorman@techsingularity.net>
+ <20201208153501.1467-3-mgorman@techsingularity.net>
+ <CAKfTPtBGghbKimO17UTPUHQGZc=GkY849HFrkqqojirPhJKFoQ@mail.gmail.com>
+ <3255625e-fa92-dc09-9fab-5621122f4af0@linux.intel.com>
 MIME-Version: 1.0
-References: <1606901543-8957-1-git-send-email-luojiaxing@huawei.com>
- <1606901543-8957-2-git-send-email-luojiaxing@huawei.com> <CACRpkdbodato7AL4xv-oEO9+-Mo9fDaH+jZh+6T=3urE0tbULw@mail.gmail.com>
- <5955bd97-046c-8ac3-f66e-ea967e8f9128@huawei.com>
-In-Reply-To: <5955bd97-046c-8ac3-f66e-ea967e8f9128@huawei.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 9 Dec 2020 10:03:59 +0100
-Message-ID: <CACRpkdZPmVWHV9Rbpfma3gDic=fmQQ9B0oQ0HsqwnJ0EpoGENA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] gpio: gpio-hisi: Add HiSilicon GPIO support
-To:     luojiaxing <luojiaxing@huawei.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <3255625e-fa92-dc09-9fab-5621122f4af0@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiaxing,
+On Wed, Dec 09, 2020 at 01:28:11PM +0800, Li, Aubrey wrote:
+> >>                         nr = div_u64(span_avg, avg_cost);
+> >>                 else
+> >>                         nr = 4;
+> >> -       }
+> >> -
+> >> -       time = cpu_clock(this);
+> >>
+> >> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> >> +               time = cpu_clock(this);
+> >> +       }
+> >>
+> >>         for_each_cpu_wrap(cpu, cpus, target) {
+> >>                 if (!--nr)
+> 
+> nr is the key of this throttling mechanism, need to be placed under sched_feat(SIS_PROP) as well.
+> 
 
-thanks! waiting for the new patch!
+It isn't necessary as nr in initialised to INT_MAX if !SIS_PROP.
 
-On Wed, Dec 9, 2020 at 9:19 AM luojiaxing <luojiaxing@huawei.com> wrote:
-
-> >> +static void hisi_gpio_irq_disable(struct irq_data *d)
-> >> +{
-> >> +       struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
-> >> +
-> >> +       hisi_gpio_irq_set_mask(d);
-> >> +       hisi_gpio_write_reg(chip, HISI_GPIO_INTEN_CLR_WX, BIT(irqd_to_hwirq(d)));
-> >> +}
-> >
-> > Interesting with a GPIO hardware that both as enable and mask
-> > bits. I can't see why, usually they just have masks but I suppose
-> > there is some reason.
->
-> I see gpio-dwapb.c distinguishes between enable and mask too.
->
-> In my opinion, enable indicates that the user uses the GPIO line as the
-> interrupt trigger source,
->
-> and mask indicates that the user does not want to see an interrupts for
-> a while.
->
-> The difference between the two types of flag is that interrupts
-> generated during masking are recorded but not lost,
->
-> however, if interrupts are disabled, interrupts will lost.
-
-Ah, that makes perfect sense! Thanks for explaining.
-
-Yours,
-Linus Walleij
+-- 
+Mel Gorman
+SUSE Labs
