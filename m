@@ -2,126 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271742D4520
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7BA2D451A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730345AbgLIPJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:09:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60228 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728593AbgLIPJn (ORCPT
+        id S1728874AbgLIPJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:09:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726660AbgLIPJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:09:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607526496;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xlCuNhyg8UPyeR0OIa80s3EAeM8QXW2ZJz4Mla5QY7w=;
-        b=Egy2/a/miyxiBP9WyqBqZnoBoEOX/tfDLHSVTR9OZxB76WITYZyEVyusQfMAaTTxBpIH/1
-        8Ny+jHzWrOj/VLcoVFUknz6UBC0tweJysqWYqwIOUxNKZfkZTap7JJ/+TJuP/g7HQC3orm
-        Ab0I2MhLaJFvzyLIV60szfrRsc4idBA=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-dD6E3rbxOaeySWpqrxWpHw-1; Wed, 09 Dec 2020 10:08:15 -0500
-X-MC-Unique: dD6E3rbxOaeySWpqrxWpHw-1
-Received: by mail-oo1-f70.google.com with SMTP id p32so906006ooi.19
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 07:08:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xlCuNhyg8UPyeR0OIa80s3EAeM8QXW2ZJz4Mla5QY7w=;
-        b=REfTIFLZbIGLV3z+KOOfvZo28egjNl7bwskQu+dUbagADX9BmgwrfcrteWmiJ/wock
-         l0r20GNceq5GslPt/kgWds110lXu7fIVspNriuJ3YFzuJFs8KP20u+0sgRzFC2tW9lni
-         8p8B9huotC3ewgZ1EuvOKh2gZ5x5WAX6LUKMHO4fNy1YKka/ZsUJ5a1iLv8ZATi7242x
-         SghUn+s1Ob8UkQraMAvBqrqi+DUuvX9YjxF+kIodnmRwuOR3l2aCwNUUSuYhgsq8Z22s
-         UqskfQ02PrIYODX5yK92vLiC11tXMw+jPb4qxaJyhdqaWkyD7XBsvRSBhkzbCf0oE1ha
-         VGdA==
-X-Gm-Message-State: AOAM530673unZT3Aatq2D/bVAWE8AsO60xjJ+cl6ltmy48FdXW69BM66
-        96UjpYWplroNhmRxGxzuF2couPpggdtubCKvmgbsWudmYl2gWgXtKFoacL6aHxbn6AijMNsl6KU
-        uJe90qRtiAIxo1Ha20WDDV96Rrh2axexAPrTUjbRt
-X-Received: by 2002:a9d:6642:: with SMTP id q2mr2099032otm.172.1607526494564;
-        Wed, 09 Dec 2020 07:08:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxxEf/UEjzXAFpYgMIza30IQJ6ydfWBGKkP+VB9KkIFoD89iMMwB8+euqGo84lFPEoO4zS3AadAdoDeKFmo26g=
-X-Received: by 2002:a9d:6642:: with SMTP id q2mr2099001otm.172.1607526494280;
- Wed, 09 Dec 2020 07:08:14 -0800 (PST)
+        Wed, 9 Dec 2020 10:09:15 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B518C0613CF;
+        Wed,  9 Dec 2020 07:08:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KmfM0dz9aaWaeZPra6pVjVS4g9ep1l744z/4R96Ui3M=; b=fKfdu1e6Ef5Bpq8BX9sCBr+tUY
+        M4m9JESfmi+ue+BUSliO/MnXrGCgke/bHGWZAminabL+uWeZpoYPeUESXedSSW6ZYg5G2t6QGAwfQ
+        UGGGVW0ubs7ikPD74DUhssG/PYrOUtoPU6imLXFH4klaVVqblTH8W32f7bM2KIwnmTbUPdgx3ku8L
+        H4Zi3RtjNol5wuHqTHF+vY9IXtZ5cyexGKG3QIRezCDMdfzj6j9qzQZAQxikeBw/IDZdBcF5TYL8I
+        p0d3USXWXkdaEAjeaLxSrg6OYxEffWrEj3efEqKLGBPp01AUvk95tFgAeFS07cDh8Z+eMLXptis4T
+        oNeMutpw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kn14s-0005Hf-Kd; Wed, 09 Dec 2020 15:08:26 +0000
+Date:   Wed, 9 Dec 2020 15:08:26 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Stanislaw Gruszka <stf_xl@wp.pl>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        bpf <bpf@vger.kernel.org>, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH] mm/filemap: add static for function
+ __add_to_page_cache_locked
+Message-ID: <20201209150826.GP7338@casper.infradead.org>
+References: <CAFqt6zZU76NOF6uD_c1vRPmEHwOzLp9wEWAmSX2ficpQb0zf6g@mail.gmail.com>
+ <20201110115037.f6a53faec8d65782ab65d8b4@linux-foundation.org>
+ <ddca2a9e-ed89-5dec-b1af-4f2fd2c99b57@linux.alibaba.com>
+ <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
+ <CAFxkdApgQ4RCt-J43cK4_128pXr=Xn5jw+q0kOaP-TYufk_tPA@mail.gmail.com>
+ <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com>
+ <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz>
+ <CAADnVQJARx6sKF-30YsabCd1W+MFDMmfxY+2u0Pm40RHHHQZ6Q@mail.gmail.com>
+ <CAADnVQJ6tmzBXvtroBuEH6QA0H+q7yaSKxrVvVxhqr3KBZdEXg@mail.gmail.com>
+ <20201209144628.GA3474@wp.pl>
 MIME-Version: 1.0
-References: <20201205234354.1710-1-jarod@redhat.com> <20201208113820.179ed5ca@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201208113820.179ed5ca@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-From:   Jarod Wilson <jarod@redhat.com>
-Date:   Wed, 9 Dec 2020 10:08:05 -0500
-Message-ID: <CAKfmpSe1o9_eFu70PPHT9MF5tMYjZqgajCfpDHCnsHQBUdcW0Q@mail.gmail.com>
-Subject: Re: [PATCH net] bonding: reduce rtnl lock contention in mii monitor thread
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209144628.GA3474@wp.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 2:38 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Sat,  5 Dec 2020 18:43:54 -0500 Jarod Wilson wrote:
-> > I'm seeing a system get stuck unable to bring a downed interface back up
-> > when it's got an updelay value set, behavior which ceased when logging
-> > spew was removed from bond_miimon_inspect(). I'm monitoring logs on this
-> > system over another network connection, and it seems that the act of
-> > spewing logs at all there increases rtnl lock contention, because
-> > instrumented code showed bond_mii_monitor() never able to succeed in it's
-> > attempts to call rtnl_trylock() to actually commit link state changes,
-> > leaving the downed link stuck in BOND_LINK_DOWN. The system in question
-> > appears to be fine with the log spew being moved to
-> > bond_commit_link_state(), which is called after the successful
-> > rtnl_trylock().
->
-> But it's not called under rtnl_lock AFAICT. So something else is also
-> spewing messages?
->
-> While bond_commit_link_state() _is_ called under the lock. So you're
-> increasing the retry rate, by putting the slow operation under the
-> lock, is that right?
+On Wed, Dec 09, 2020 at 03:46:28PM +0100, Stanislaw Gruszka wrote:
+> At this point of release cycle we should probably go with revert,
+> but I think the main problem is that BPF and ERROR_INJECTION use
+> function that is not intended to be used externally. For external users
+> add_to_page_cache_lru() and add_to_page_cache_locked() are exported
+> and I think those should be used (see the patch below).
 
-Partially, yes. I probably should have tagged this with RFC instead of
-PATCH, tbh. My theory was that the log spew, being sent out *other*
-network interfaces when monitoring the system or remote syslog or ssh
-was potentially causing some rtnl_lock() calls, so not spewing until
-after actually being able to grab the lock would lessen the problem
-w/actually acquiring the lock, but I ... don't know offhand how to
-verify that theory.
-
-
-> Also isn't bond_commit_link_state() called from many more places?
-> So we're adding new prints, effectively?
-
-Ah. Crap. Yes. bond_set_slave_link_state() is called quite a few
-places, and that in turn calls bond_commit_link_state().
-
-
-> > I'm actually wondering if perhaps we ultimately need/want
-> > some bond-specific lock here to prevent racing with bond_close() instead
-> > of using rtnl, but this shift of the output appears to work. I believe
-> > this started happening when de77ecd4ef02 ("bonding: improve link-status
-> > update in mii-monitoring") went in, but I'm not 100% on that.
-> >
-> > The addition of a case BOND_LINK_BACK in bond_miimon_inspect() is somewhat
-> > separate from the fix for the actual hang, but it eliminates a constant
-> > "invalid new link 3 on slave" message seen related to this issue, and it's
-> > not actually an invalid state here, so we shouldn't be reporting it as an
-> > error.
->
-> Let's make it a separate patch, then.
-
-Sounds like Jay is confident that bit is valid, and I shouldn't be
-ending up in that state, unless something else is going wrong.
-
--- 
-Jarod Wilson
-jarod@redhat.com
-
+FWIW, I intend to do some consolidation/renaming in this area.  I
+trust that will not be a problem?
