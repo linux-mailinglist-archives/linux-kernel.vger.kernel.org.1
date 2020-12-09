@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED582D4C07
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1ABC2D4C14
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgLIUiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725816AbgLIUiN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:38:13 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015B6C0613CF;
-        Wed,  9 Dec 2020 12:37:33 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id a1so4046923ljq.3;
-        Wed, 09 Dec 2020 12:37:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ps0HzLtO3/TtXEsM+0xqsO+WH9Hy/vF5yoyOtvGwKBo=;
-        b=C/NJfjCLOVMQTNTll13YnI2VM861tvCvtdfWqsFnEAgKqf/2C8R5ru2XqXL+zXqEtv
-         MhVEo3ThrC06oREomIrSUlWFiDqrvm63wdTwlJUqIt1L3jkgByDdcTN+sUvpGt8zgiKS
-         YraPECtNAb3ib3jli0j26aHQjOdKKQeaIioNES8mokBC+h+C7eIoVQ434Fgvgb86ifqf
-         pP/tKqsxlrMNcFL48s9Jvgc5GKv2xPFVwCsW36ojsAKE/hbxwuH5R48n/LXFa316p/gi
-         qNNUUmzFdwqXojDuim86DnxU2gdS7ERQu3TD1rSLeO/m5uTd4PDLaTo/F2LTiAm38s+Z
-         IbQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ps0HzLtO3/TtXEsM+0xqsO+WH9Hy/vF5yoyOtvGwKBo=;
-        b=IaKBa14vfNYIkLV3BVybXbbjP/YiV4mtWt1iwqM/bg0fUREcqkf+/lGnJw/OS+OvRj
-         +C26eppbFgLIhOv1HCMcvLoSRyPlw+Ji6xLS4df7j/D4qqdclxvmmpv3mF3AhMRnVp1S
-         NQVnPclTkK27N1nHJYSoCdOFqszpbuQOQQUMzTtHd4QlKgg/Gr5CeLc9COnNTZntZhBR
-         sTXB2BQ7OdCGEpAuEzkHPHxDx5sSlcdwgjWbB/Ia4GH3guwZylRXFdKntilQdvpMUiwn
-         1O36qSTy7KjYJikaj3jBXcv9nT21fVeKzZYeecDHAvj+y3wA2DPKDz49wrRe0TzL+9zf
-         ZB5A==
-X-Gm-Message-State: AOAM532fDd1I5yVKBfy3qIceJdq9aCezAqLn9YUbMR3d6TjqlP+K6tmn
-        L80dXw4AoembXFpHh6MmvhA=
-X-Google-Smtp-Source: ABdhPJw3x0eNA6Rcna39d8jOJX4JMaSXTUwe6m1UNhsiWRa2C0VxoXuTcznqcZzTqXDDlC2ZiJdQTA==
-X-Received: by 2002:a2e:81cc:: with SMTP id s12mr1767394ljg.39.1607546251467;
-        Wed, 09 Dec 2020 12:37:31 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id m21sm362816ljb.108.2020.12.09.12.37.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 12:37:30 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 9 Dec 2020 21:37:28 +0100
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Daniel Axtens <dja@axtens.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/2] rcu-tasks: move RCU-tasks initialization out of
- core_initcall()
-Message-ID: <20201209203728.GA5972@pc638.lan>
-References: <20201209202732.5896-1-urezki@gmail.com>
+        id S1732198AbgLIUjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:39:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728508AbgLIUjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 15:39:20 -0500
+X-Gm-Message-State: AOAM531bf7FqyU+G1r0+QRPNn5r+N6GGPsQjCork7EQrw+7LiU09Or1Q
+        zfLboIJKOT9iklMBouZqK14YMUvw1jLNlVBgvcI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607546320;
+        bh=Ha7lLzOpXQ1X99veTNG7S+85hi9hDdUnwFrOdFxJkFY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=m2wotAQGycNW3fNMRpvScONvUE+gNQJa/7UXeuv/E5/eArPXRVUCPnYQLNrImG/mi
+         EJQV7WMwocrOB73rk8fCLhZCKjNIIiR/bzljek61mxBTwLpxZP82Xn6jRhlnEUKATY
+         iEBAwk/CSGD9Xo47fY9oJGPZG78DcYthsCzyjY+hsWhf7D9e50RNKkGKje4//M6lnX
+         86DGjo+2ZTer6Q7yhGH0UvyBu2prkduSQAGOLKN5qBU3EyEyp7I4BzaQZcPiejMXMM
+         6hNi9fuj/ykVQO5y8Oy4vK4OaddGLZhWOG0zHrOv8NhJ1xIkzjm0yvECImZOpff6AX
+         yJ8H5FndHMpDA==
+X-Google-Smtp-Source: ABdhPJx9b5wUc4ET8rElWbclWiQSLM9K0iZJ/2Q/ZLrhCrcYkZDXsayj9l5KMwDCDCiFnl6/qW8E7Vk6lrA60XCvUYc=
+X-Received: by 2002:a9d:6317:: with SMTP id q23mr3381889otk.251.1607546319268;
+ Wed, 09 Dec 2020 12:38:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209202732.5896-1-urezki@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201203191135.21576-1-info@metux.net> <20201203191135.21576-2-info@metux.net>
+ <0080d492-2f07-d1c6-d18c-73d4204a5d40@metux.net> <CACRpkdb4R4yHcUV2KbGEC_RkU+QmH6Xg7X+qee8sEa9TURGr8A@mail.gmail.com>
+ <51d3efb7-b7eb-83d7-673a-308dd51616d3@metux.net> <CACRpkdbqVoT56H88hoZwDqV0kW_8XTaE5TkMQsg-RRrPqgF=cQ@mail.gmail.com>
+ <CAK8P3a1PRQGUXkjdSmqxXSONX_ZoCgsfx8hJBUdBUk14tyzErA@mail.gmail.com>
+ <CACRpkdbNAeDsi9B14kbkAeoqX7NE_Ua_yOX1iNF75oNK0ELefQ@mail.gmail.com> <2827855a-dc4f-2e17-aca3-4b1b9f0d5084@ti.com>
+In-Reply-To: <2827855a-dc4f-2e17-aca3-4b1b9f0d5084@ti.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 9 Dec 2020 21:38:22 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a30=AcEZAZ2yNUgctj=4YM6FhS1ZXB4ts7a7WV=gBcatA@mail.gmail.com>
+Message-ID: <CAK8P3a30=AcEZAZ2yNUgctj=4YM6FhS1ZXB4ts7a7WV=gBcatA@mail.gmail.com>
+Subject: Re: Howto listen to/handle gpio state changes ? Re: [PATCH v2 2/2]
+ drivers: gpio: add virtio-gpio guest driver
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Initialize the RCU-tasks earlier, before *_initcall() callbacks are
-> invoked. Do it after the workqueue subsytem is up and running. That
-> gives us a possibility to make use of synchronize_rcu_tasks*() wait
-> API in early_initcall() callbacks.
-> 
-> Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
->  include/linux/rcupdate.h |  6 ++++++
->  init/main.c              |  1 +
->  kernel/rcu/tasks.h       | 26 ++++++++++++++++++++++----
->  3 files changed, 29 insertions(+), 4 deletions(-)
-> 
-I still don't have a powerPC hw so far, even though i have sent a request
-to the osuosl.org. It would be appreciated if Michael or Daniel could run
-and verify it.
+On Wed, Dec 9, 2020 at 9:22 PM Grygorii Strashko
+<grygorii.strashko@ti.com> wrote:
+> On 09/12/2020 14:53, Linus Walleij wrote:
+> > On Wed, Dec 9, 2020 at 12:19 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >> On Wed, Dec 9, 2020 at 9:51 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> >>> On Tue, Dec 8, 2020 at 3:07 PM Enrico Weigelt, metux IT consult <lkml@metux.net> wrote:
+> >>
+> >>> What we need to understand is if your new usecase is an outlier
+> >>> so it is simplest modeled by a "mock" irq_chip or we have to design
+> >>> something new altogether like notifications on changes. I suspect
+> >>> irq_chip would be best because all drivers using GPIOs for interrupts
+> >>> are expecting interrupts, and it would be an enormous task to
+> >>> change them all and really annoying to create a new mechanism
+> >>> on the side.
+> >>
+> >> I would expect the platform abstraction to actually be close enough
+> >> to a chained irqchip that it actually works: the notification should
+> >> come in via vring_interrupt(), which is a normal interrupt handler
+> >> that calls vq->vq.callback(), calling generic_handle_irq() (and
+> >> possibly chained_irq_enter()/chained_irq_exit() around it) like the
+> >> other gpio drivers do should just work here I think, and if it did
+> >> not, then I would expect this to be just a bug in the driver rather
+> >> than something missing in the gpio framework.
+> >
+> > Performance/latency-wise that would also be strongly encouraged.
+> >
+> > Tglx isn't super-happy about the chained interrupts at times, as they
+> > can create really nasty bugs, but a pure IRQ in fastpath of some
+> > kinde is preferable and intuitive either way.
+>
+> In my opinion the problem here is that proposed patch somehow describes Front end, but
+> says nothing about Backend and overall design.
+>
+> What is expected to be virtualized? whole GPIO chip? or set of GPIOs from different GPIO chips?
+> Most often nobody want to give Guest access to the whole GPIO chip, so, most probably, smth. similar to
+> GPIO Aggregator will be needed.
 
-Thank you in advance!
+I would argue that it does not matter, the virtual GPIO chip could really
+be anything. Certain functions such as a gpio based keyboard require
+interrupts, so it sounds useful to make them work.
 
---
-Vlad Rezki
+     Arnd
