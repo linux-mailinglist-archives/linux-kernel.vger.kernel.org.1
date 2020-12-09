@@ -2,60 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2652D40B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:09:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D032D40B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730418AbgLILHl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Dec 2020 06:07:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730261AbgLILHk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:07:40 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C304C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 03:07:00 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kmxJC-0001oa-8Z; Wed, 09 Dec 2020 12:06:58 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kmxJ9-0007SO-UW; Wed, 09 Dec 2020 12:06:55 +0100
-Message-ID: <bee260570c3afbc3d4c49b0a9cd07077ae7b5f2a.camel@pengutronix.de>
-Subject: Re: [PATCH 1/2] dt-bindings: reset: document Broadcom's BCM4908
- PCIe reset binding
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-Date:   Wed, 09 Dec 2020 12:06:55 +0100
-In-Reply-To: <20201127111442.1096-1-zajec5@gmail.com>
-References: <20201127111442.1096-1-zajec5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S1730375AbgLILJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:09:00 -0500
+Received: from mga18.intel.com ([134.134.136.126]:56178 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730293AbgLILJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 06:09:00 -0500
+IronPort-SDR: UDTqgdOxXc+t/5S6EaxgMaQTJF//wo/FjidutNXliAqPNoVM05qkj7cCdsIBqV7FnMxHYiwntf
+ sTrDFpp6YcGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="161820012"
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="161820012"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 03:07:13 -0800
+IronPort-SDR: yZa7ZtHtUe6//RozZZ56tglrZmSEcywDG+CV72UCg22NMhAhNUbteiTiJ8aaK3Dy0oNI6oXlw9
+ WOtCH0LUz+Dg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="368145092"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by fmsmga004.fm.intel.com with ESMTP; 09 Dec 2020 03:07:11 -0800
+Subject: Re: [PATCH 2/4] sched/fair: Move avg_scan_cost calculations under
+ SIS_PROP
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+References: <20201208153501.1467-1-mgorman@techsingularity.net>
+ <20201208153501.1467-3-mgorman@techsingularity.net>
+ <CAKfTPtBGghbKimO17UTPUHQGZc=GkY849HFrkqqojirPhJKFoQ@mail.gmail.com>
+ <3255625e-fa92-dc09-9fab-5621122f4af0@linux.intel.com>
+ <20201209090507.GM3371@techsingularity.net>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <14963d1e-02ea-c298-d6b4-2db637913ee3@linux.intel.com>
+Date:   Wed, 9 Dec 2020 19:07:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201209090507.GM3371@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-27 at 12:14 +0100, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On 2020/12/9 17:05, Mel Gorman wrote:
+> On Wed, Dec 09, 2020 at 01:28:11PM +0800, Li, Aubrey wrote:
+>>>>                         nr = div_u64(span_avg, avg_cost);
+>>>>                 else
+>>>>                         nr = 4;
+>>>> -       }
+>>>> -
+>>>> -       time = cpu_clock(this);
+>>>>
+>>>> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+>>>> +               time = cpu_clock(this);
+>>>> +       }
+>>>>
+>>>>         for_each_cpu_wrap(cpu, cpus, target) {
+>>>>                 if (!--nr)
+>>
+>> nr is the key of this throttling mechanism, need to be placed under sched_feat(SIS_PROP) as well.
+>>
 > 
-> BCM4908 was built using older PCIe hardware block that requires using
-> external reset block controlling PERST# signals.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> It isn't necessary as nr in initialised to INT_MAX if !SIS_PROP.
+>If !SIS_PROP, nr need to -1 then tested in the loop, instead of testing directly.
+But with SIS_PROP, need adding a test in the loop.
+Since SIS_PROP is default true, I think it's okay to keep the current way.
 
-Thank you, both applied to reset/next.
-
-regards
-Philipp
+Thanks,
+-Aubrey
