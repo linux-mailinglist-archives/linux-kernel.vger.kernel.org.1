@@ -2,76 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036D42D4BF0
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7072D4BF1
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:33:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387671AbgLIUct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:32:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
+        id S2388540AbgLIUdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:33:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728070AbgLIUcs (ORCPT
+        with ESMTP id S1729056AbgLIUdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:32:48 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E17C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 12:32:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bGzrld7wr84RrSgEszhR+wmk08YFGa6cLi6pnZc4i/0=; b=QaMIoLxvrAk+bVYa5OQVotE5Fc
-        Z1ucapu5XB9I19/2+q9oJ/oXw2s4AAf+/aFypyM5ukgfHHzhsxu6bhWSLEJMll9S65wTjSLPtvU4Q
-        e3xF3Y+A/Oef0602EVYxB4cYNjv1IUBbj8FSla0mNhJ217jHOFm/NgN3bjRhaqxtxxC45shK4lpYo
-        rDnhULs6H5LISfoOOlofa/K5CiZBMyRux/qMHXB5I/9VkXhZKIpLHBs1Lp07P/Do1fCzf/jq9hRUY
-        vQL3G487WOceGg6FvaaVdigeo4TmuwPaKnajJY6ROPQz3AzNouMSTE2HOQYguKRofkVBoJvrWdRCq
-        vjhcjcxg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kn683-0007vi-5V; Wed, 09 Dec 2020 20:32:03 +0000
-Date:   Wed, 9 Dec 2020 20:32:03 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries
- when prefaulting
-Message-ID: <20201209203203.GU7338@casper.infradead.org>
-References: <20201209163950.8494-1-will@kernel.org>
- <20201209163950.8494-2-will@kernel.org>
- <CAHk-=wgos=vgteG52=J=rVSeq6-Y2g2+Kn1=xV=wYjVzM6O9UQ@mail.gmail.com>
- <20201209184049.GA8778@willie-the-truck>
- <CAHk-=wgVqGh402dxfhR=bx2QSH=+4kq9doarNmD77baqDKdiUg@mail.gmail.com>
+        Wed, 9 Dec 2020 15:33:13 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6740FC061794;
+        Wed,  9 Dec 2020 12:32:33 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id w18so1622398vsk.12;
+        Wed, 09 Dec 2020 12:32:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zYNuf9TPPL2Gkke0FwSu03mIQpNY4jdeufGJOa9M/LI=;
+        b=GJRhejTNxoO780Y7N1nma/TzQy/hX/vBDRu51iQQsccHb2QeOVvzgIrDWAOa/IfsER
+         D3vRJL42+IEqviXVNPEhyOEBajYapv9u+UJRTyx6pqd8xv3DQaqhLNESFtspOwzVIRem
+         tAqDqheudP2DzgDis9g1hznOIdTkRU4UAMuhw1mPfB98fHqjttar/3gtq4p4hHQVo2db
+         8t3x00d60P9q47MkDnpmdTSH0i4F0qi0xRK8rELf/FuVHr6ZggPjqvfQu+bbV1/mrHxL
+         2FpAxY5eai25/2SkcEN8op9fTUHNOPqBDDe59CjUw6RpbuC+KQFfCBStx+eHbro4oHDM
+         TB4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zYNuf9TPPL2Gkke0FwSu03mIQpNY4jdeufGJOa9M/LI=;
+        b=mmvhadvdfto+RSZteixd5IWN/hubHVRF1IxlfgCPxv+HiIRW8zreJKNTLzdves2Dfr
+         BN0sgPviHmYpaFkzrkY0Bq0C9YWl1ACU+eiXKaIW4H2GPhAPvoY5C1UsEXOWmhLZjQZX
+         dF0sQPFNZxFMd0aZtx8GSPLMmjsdM/twzMteay7SCp6ifbwy5DFPF9aCZGIeEIKMizIK
+         hHiJHP2qsqhQhuGf/O7hfe5fPOWTrzm8RLZgzTj799q71odA/0mQ2G1Lrv3xST8EPYDp
+         1Hfk/hnfYiwxQI34otjAVsRoMpAlsnOQdagLaXL6fccFlB34b3XfVKUY6ZLajg7l4T8t
+         /FkQ==
+X-Gm-Message-State: AOAM531X4L6uzDA1Mrplo6u9Jn+K+3HfMtYV3rELnOPcxwk2miO+rVqv
+        diIiuQG1LZsscLWW/G3Vcu4QwmZIoXz0hYs0vk4=
+X-Google-Smtp-Source: ABdhPJxd3g5bh8C+kelYGzPd2siGAo7ulmCoOYes8dKSNmtiOXwxZW/g3H/hF0X+SgL5M4MP1fPCspVaZxK4joTn0wc=
+X-Received: by 2002:a67:ad0f:: with SMTP id t15mr4175739vsl.24.1607545952601;
+ Wed, 09 Dec 2020 12:32:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgVqGh402dxfhR=bx2QSH=+4kq9doarNmD77baqDKdiUg@mail.gmail.com>
+References: <CALjTZvZZZVqnoV4YFTDHogVHv77=dKfcSSBGj1zC83zpUid9+g@mail.gmail.com>
+ <4eb99a1da6342999c4dca355533a0847d0e942a5.camel@intel.com>
+ <CALjTZvYwccfOVTTGNo1=oLnwXG2b9Vz1nVZuvLKFV94+3fQ6EQ@mail.gmail.com> <20201209091315.2c55e1c6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201209091315.2c55e1c6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+From:   Emmanuel Grumbach <egrumbach@gmail.com>
+Date:   Wed, 9 Dec 2020 22:32:20 +0200
+Message-ID: <CANUX_P1=yuPkK5BzJ99oniMiCgB0z98yNYUSw4_qk2Vg7ucoRQ@mail.gmail.com>
+Subject: Re: [BUG] iwlwifi: card unusable after firmware crash
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Coelho, Luciano" <luciano.coelho@intel.com>,
+        Rui Salvaterra <rsalvaterra@gmail.com>,
+        "Goodstein, Mordechay" <mordechay.goodstein@intel.com>,
+        "Berg, Johannes" <johannes.berg@intel.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 11:04:13AM -0800, Linus Torvalds wrote:
-> In particular, it made it a nightmare to read what do_fault_around()
-> does: it does that odd
-> 
->         if (pmd_none(*vmf->pmd)) {
->                 vmf->prealloc_pte = pte_alloc_one(vmf->vma->vm_mm);
-> 
-> and then it calls ->map_pages() (which is always filemap_map_pages(),
-> except for xfs, where it is also always filemap_map_pages but it takes
-> a lock first).
+On Wed, Dec 9, 2020 at 7:19 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Tue, 8 Dec 2020 23:17:48 +0000 Rui Salvaterra wrote:
+> > Hi, Luca,
+> >
+> > On Tue, 8 Dec 2020 at 16:27, Coelho, Luciano <luciano.coelho@intel.com> wrote:
+> > > On Tue, 2020-12-08 at 11:27 +0000, Rui Salvaterra wrote:
+> > > >
+> > > > [ 3174.003910] iwlwifi 0000:02:00.0: RF_KILL bit toggled to disable radio.
+> > > > [ 3174.003913] iwlwifi 0000:02:00.0: reporting RF_KILL (radio disabled)
+> > >
+> > > It looks like your machine is reporting RF-Kill to the WiFi device.
+> >
+> > Yes, that's an artifact of how I tested: I rebooted the router, the
+> > Wi-Fi interface disassociated and the dmesg was clean. However, after
+> > the router came up, the laptop didn't reconnect (and the connection
+> > had completely disappeared from nmtui). Afterwards, I did the rfkill
+> > cycle you see, and only then I got the register dump.
+> >
+> > > There seems to be some sort of race there that is causing us to still
+> > > try to communicate with the device (and thus you see the transaction
+> > > failed dump), but that will obviously fail when RF-Kill is enabled.
+> >
+> > I'm not sure about that, the card was already dead before the rfkill cycle.
+>
+> Any luck figuring this out, Luca? If this is a 5.10 regression we need
+> to let Linus know tomorrow, so the time is ticking :(
 
-... which is wrong.  Dave's paranoia around other people
-introducing bugs into XFS made him do this, but we should revert
-cd647d5651c0b0deaa26c1acb9e1789437ba9bc7.  Those operations he's
-worried about are protected by the page lock.
-
-If a filesystem has put an Uptodate page into the page cache, the
-rest of the kernel can read it without telling the filesystem.
-
+Rui, I looked at the register dump and looks like you're using AMT on
+your system?
+Can you confirm?
