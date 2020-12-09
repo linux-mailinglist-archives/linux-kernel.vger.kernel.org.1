@@ -2,139 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC3C2D3998
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 05:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA38D2D399A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 05:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727339AbgLIEUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 23:20:48 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:35594 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbgLIEUr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 23:20:47 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B949u0E131946;
-        Wed, 9 Dec 2020 04:19:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=Ep5p4WguGIxmqM0JCUhPZOzQgsjp0oCH6k9sBId5oWo=;
- b=gl2ipg+Tm8sUO1pBILyyw7c41EYC8ReHRi4MFDRleivboQYW23bVGzQPRRP0otm7A6fw
- C8yc+1vNxep0dDAnFwwkRcchMj/3AccRCVrC7/ijl7WMs+nPiRqL05A3hbHCBzvoG8kJ
- wczzy/7oMyl1OUMyn7VKIIYNL1KvOT8rs+LTzD5a5a4FIvvkj0vW6N6+Hi0J97xY65qw
- 9jvcZrtOck7VBaA7e0YP71dqmBvPt/USIib3UfCZJyO8yuueNFm6jb+6b0IMfl7H5/Gj
- 6dr6QpNDzFFyqIX3qa0WAXA77liVrAG1IggFjcNKH//f1c0LMCDlMeeBKyB43XHr25Bp mA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 3581mqx3qy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 04:19:47 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B94Anxw018646;
-        Wed, 9 Dec 2020 04:19:46 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 358ksphs6c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 04:19:46 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B94Jh8Y005517;
-        Wed, 9 Dec 2020 04:19:44 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Dec 2020 20:19:43 -0800
-To:     SelvaKumar S <selvakuma.s1@samsung.com>
-Cc:     linux-nvme@lists.infradead.org, axboe@kernel.dk,
-        damien.lemoal@wdc.com, sagi@grimberg.me, snitzer@redhat.com,
-        selvajove@gmail.com, linux-kernel@vger.kernel.org,
-        nj.shetty@samsung.com, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, joshi.k@samsung.com, kbusch@kernel.org,
-        javier.gonz@samsung.com, hch@lst.de
-Subject: Re: [dm-devel] [RFC PATCH v2 1/2] block: add simple copy support
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1blf3smcl.fsf@ca-mkp.ca.oracle.com>
-References: <20201204094659.12732-1-selvakuma.s1@samsung.com>
-        <CGME20201204094731epcas5p307fe5a0b9360c5057cd48e42c9300053@epcas5p3.samsung.com>
-        <20201204094659.12732-2-selvakuma.s1@samsung.com>
-Date:   Tue, 08 Dec 2020 23:19:40 -0500
-In-Reply-To: <20201204094659.12732-2-selvakuma.s1@samsung.com> (SelvaKumar
-        S.'s message of "Fri, 4 Dec 2020 15:16:58 +0530")
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=1
- bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090028
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=999
- clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090028
+        id S1727242AbgLIEZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 23:25:56 -0500
+Received: from mga05.intel.com ([192.55.52.43]:46202 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726303AbgLIEZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 23:25:56 -0500
+IronPort-SDR: hIRMB28bGSF/40ceza1UZNQ8r/P1MnLpyf6TYdblIZkqJuMxbW6JJ5zV9lEgo7glXycAwJSb3/
+ UAbOVCfFl2Pw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="258725300"
+X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
+   d="scan'208";a="258725300"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 20:25:15 -0800
+IronPort-SDR: yIG/H2Ov61hebtY62L0PKVYih8ymVYJnO8k4m58Ou5011xwutPTNEdPa0lc6Su5MOzxyjbJ5xV
+ CpWrwVg7BsSQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
+   d="scan'208";a="376205731"
+Received: from uhpatel-desk4.jf.intel.com ([10.23.15.15])
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Dec 2020 20:25:15 -0800
+From:   Utkarsh Patel <utkarsh.h.patel@intel.com>
+To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com, pmalani@chromium.org,
+        enric.balletbo@collabora.com, rajmohan.mani@intel.com,
+        azhar.shaikh@intel.com, Utkarsh Patel <utkarsh.h.patel@intel.com>
+Subject: [PATCH v4 0/1] Thunderbolt3/USB4 cable rounded and active cable plug link training support
+Date:   Tue,  8 Dec 2020 20:24:07 -0800
+Message-Id: <20201209042408.23079-1-utkarsh.h.patel@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series adds the support for Thunderbolt3/USB4 rounded and
+non-rounded frequencies cables and fixes the active cable plug link
+training support
 
-SelvaKumar,
+Changes in v4:
+- Removed patches 1/4, 2/4 and 4/4 as the implementation of tbt_mode_vdo
+  from Enter_USB message is not needed.
+- With that there are no changes in active cable plug link training 
+  support.
+- Previous version can be found here: 
+  https://www.spinics.net/lists/linux-usb/msg204914.html
+* Patch 1: "usb: typec: intel_pmc_mux: Configure cable generation value
+  for USB4"
+  - Removed usage of tbt_mode_vdo since data rates should always be rounded
+    in the case of USB4.
+  - Updated commit message to reflect the change.
 
-> Add new BLKCOPY ioctl that offloads copying of multiple sources
-> to a destination to the device.
+Changes in v3:
+- First four patches of this series have been queued by Greg to usb-testing
+  branch. https://www.spinics.net/lists/linux-usb/msg204880.html
+- Changed commit message and description in header file in patch 1/4.
+- Added a check for Cable's TBT support in patch 2/4
+- Moved TBT_CABLE_ROUNDED_SUPPORT assignment to same line in patch 3/4.
+- Rebased and added Reviewed-by tag in patch 4/4.
 
-Your patches are limited in scope to what is currently possible with
-NVMe. I.e. multiple source ranges to a single destination within the
-same device. That's fine, I think the garbage collection use case is
-valid and worth pursuing.
+Changes in v2:
+- Removed the fixes tag as there is no functional implication from patches
+  1/8, 2/8 and 4/8.
 
-I just wanted to go over what the pain points were for the various
-attempts in SCSI over the years.
 
-The main headache was due the stacking situation with DM and MD.
-Restricting offload to raw SCSI disks would have been simple but not
-really a good fit for most real world developments that often use DM or
-MD to provision the storage.
+Utkarsh Patel (1):
+  usb: typec: intel_pmc_mux: Configure cable generation value for USB4
 
-Things are simple for DM/MD with reads and writes because you have one
-bio as parent that may get split into many clones that complete
-individually prior to the parent being marked as completed.
-
-In the copy offload scenario things quickly become complex once both
-source and destination ranges have to be split into multiple commands
-for potentially multiple devices. And these clones then need to be
-correctly paired at the bottom of the stack. There's also no guarantee
-that a 1MB source range maps to a single 1MB destination range. So you
-could end up with an M:N relationship to resolve.
-
-After a few failed attempts we focused on single source range/single
-destination range. Just to simplify the slicing and dicing. That worked
-reasonably well. However, then came along the token-based commands in
-SCSI and those threw a wrench in the gears. Now the block layer plumbing
-had to support two completely different semantic approaches.
-
-Inspired by a combination of Mikulas' efforts with pointer matching and
-the token-based approach in SCSI I switched the block layer
-implementation from a single operation (REQ_COPY) to something similar
-to the SCSI token approach with a REQ_COPY_IN and a REQ_COPY_OUT.
-
-The premise being that you would send a command to the source device and
-"get" the data. In the EXTENDED COPY scenario, the data wasn't really
-anything but a confirmation from the SCSI disk driver that the I/O had
-reached the bottom of the stack without being split by DM/MD. And once
-completion of the REQ_COPY_IN reached blk-lib, a REQ_COPY_OUT would be
-issued and, if that arrived unchanged in the disk driver, get turned
-into an EXTENDED COPY sent to the destination.
-
-In the token-based scenario the same thing happened except POPULATE
-TOKEN was sent all the way out to the device to receive a cookie
-representing the source block ranges. Upon completion, that cookie was
-used by blk-lib to issue a REQ_COPY_OUT command which was then sent to
-the destination device. Again only if the REQ_COPY_OUT I/O hadn't been
-split traversing the stack.
-
-The idea was to subsequently leverage the separation of REQ_COPY_IN and
-REQ_COPY_OUT to permit a DM/MD iterative approach to both stages of the
-operation. That seemed to me like the only reasonable way to approach
-the M:N splitting problem (if at all)...
+ drivers/usb/typec/mux/intel_pmc_mux.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.17.1
+
