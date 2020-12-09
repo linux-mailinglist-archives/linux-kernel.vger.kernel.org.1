@@ -2,124 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD20D2D40FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C362D4107
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730729AbgLILWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:22:33 -0500
-Received: from mail-bn8nam11on2073.outbound.protection.outlook.com ([40.107.236.73]:46049
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730694AbgLILWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:22:18 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DHh41nGi063lAaBv2Q0ycDFfHcEta/irCuQafcW84yg/lMb9FtnJhyakcsO9NleSqTXknicuJBlBQlnLi1CDN84E+uSf2tQUts9Hk/mwYcLDndqoVd6FFjelEfC80pvRADsPscQJAzFgTw0lKiGOnvEl6AVSbqK4hYzNbmKTsR9OK3vPBkj83N65o5Tl9Y5ek3fvgMtcysd5DIVmulkOj0KZ/haLV2ISZIJ0OHNJ0Uv8zuFNRdHX7g6VgGienLF+YYNa0iMPtEajvH1CnVDTGbmmE/L0ZgDoINyPJ+fayoAZBbp/3jPC3dGmLkBhQtnLiJIFIkMwwsrTqZp5Hlqfkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4gyKXYNpWM3ZfMulhNf5jSBot0agrlG8oUqHzsor/Ag=;
- b=BPbA/VStJCM9ibiuEw+LR37xBsp07CXMsWtw/NNEm2OjgMjcLNekmFCulJHK8tr+g9sEnubHD8m4Ni6bQPlDO8RlGkXWHSc2fO99SLSaoR95G+HtvvbFbv4gwOdfBiWavuc09EJWY5+DvMyh6XLdCgR5EEYLvCJJmt17qoB6wOET3cXVK5B2EgLgZZcMGoHOSMazngyA7FYDIEl/XEnStJ9IOHOp1WLnwEt+658AacwbiIdzMYyLSNRJSB/ra4KMZ0E+fZTGg7Y/NL8km5UQdsj9L37aToX2BTqZhDEoRRBIJrb8GAJ5c9k7BXocfSpM76Y0qEx/PIbB5wqUgVURTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4gyKXYNpWM3ZfMulhNf5jSBot0agrlG8oUqHzsor/Ag=;
- b=HkrqrxpDUyl49o15FM4U9jJPWFJ5s6JRnQshkOZTsLIT5CtTv6Q9AQHV8YeycrFXWmwoiA8uvzw3eHeV3hUr6NaQehhsrwvoKSn/5KAYmUk9/HHcuMc4yAgA1nvQcJ0eHF61EzvXJI7nL8gGRoYg+2TvW366u6BCjCfQJzEjZD0=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
-Received: from DM5PR11MB1674.namprd11.prod.outlook.com (2603:10b6:4:b::8) by
- DM6PR11MB3515.namprd11.prod.outlook.com (2603:10b6:5:6c::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3632.17; Wed, 9 Dec 2020 11:21:56 +0000
-Received: from DM5PR11MB1674.namprd11.prod.outlook.com
- ([fe80::b41f:d3df:5f86:58f7]) by DM5PR11MB1674.namprd11.prod.outlook.com
- ([fe80::b41f:d3df:5f86:58f7%10]) with mapi id 15.20.3632.018; Wed, 9 Dec 2020
- 11:21:56 +0000
-From:   Yahu Gao <yahu.gao@windriver.com>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        yahu.gao@windriver.com
-Subject: [PATCH] fs/proc: Fix NULL pointer dereference in pid_delete_dentry
-Date:   Wed,  9 Dec 2020 19:21:00 +0800
-Message-Id: <20201209112100.47653-2-yahu.gao@windriver.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201209112100.47653-1-yahu.gao@windriver.com>
-References: <20201209112100.47653-1-yahu.gao@windriver.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: SJ0PR13CA0086.namprd13.prod.outlook.com
- (2603:10b6:a03:2c4::31) To DM5PR11MB1674.namprd11.prod.outlook.com
- (2603:10b6:4:b::8)
+        id S1730735AbgLILYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:24:18 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2230 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730235AbgLILYE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 06:24:04 -0500
+Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CrZMj2kzKz67Nq4;
+        Wed,  9 Dec 2020 19:20:01 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 9 Dec 2020 12:23:20 +0100
+Received: from [10.210.171.175] (10.210.171.175) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 9 Dec 2020 11:23:19 +0000
+Subject: Re: [RESEND PATCH v3 3/4] iommu/iova: Flush CPU rcache for when a
+ depot fills
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        <robin.murphy@arm.com>, <joro@8bytes.org>, <will@kernel.org>
+CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>, <xiyou.wangcong@gmail.com>
+References: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
+ <1605608734-84416-4-git-send-email-john.garry@huawei.com>
+ <76e057e3-9db8-21fc-3a8a-b9e924a95cf4@huawei.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <851ba6cf-8f4c-74dc-3666-ee6d547999d3@huawei.com>
+Date:   Wed, 9 Dec 2020 11:22:45 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-ygao-d1.wrs.com (60.247.85.82) by SJ0PR13CA0086.namprd13.prod.outlook.com (2603:10b6:a03:2c4::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Wed, 9 Dec 2020 11:21:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dd525bc8-68e9-4654-2527-08d89c34a363
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3515:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR11MB3515C650B3BC4A910191680999CC0@DM6PR11MB3515.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Lt431TYiK765ZumgCWChNSIXDBdx61RTEQG49CE0xjqRD9itQYrO1ZvV9yZKOr371fmgDHcs9F1VdLf6rWTCThZJAgFK7xq/9NC8h1LIgS3Y2kLIn6rm8rtuv7MaOUxV9Mf2Rc/Zkjo092pJjBeb/H/xgAt8JnO9rZzYUWWjrq3bH0VobjbNA5BHGK25qXW8g5T56tSuQ0N8BgFqw5M/GSyaa42ZeTOVapuiTE8JxxWMIaQonMahc4fBlu+I4oGE9Hsax+ZroBToW024nCdTmJsHeadxWLGAw/RkGt/o9yjPN7mWMTlIbPxInWzdIJHjWHV1PPHMN/w5YPpEmbdR2LZdU7KKpk8XrUQduKeeSs57DXf7CQ8yhHjnE2Uv8Ae6iCUtT9zpMbSP4iUICOzrfw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1674.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(376002)(5660300002)(66946007)(44832011)(16526019)(6916009)(508600001)(66476007)(26005)(186003)(6512007)(86362001)(4326008)(6506007)(4744005)(2906002)(52116002)(66556008)(2616005)(8676002)(34490700003)(6486002)(107886003)(36756003)(6666004)(1076003)(956004)(83380400001)(8936002)(358055004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?zd80dHIZVNsXQFXN6IspMBrojv13n8FRDUviwWeYjoXeC6I3ZojaXFKNtEu3?=
- =?us-ascii?Q?KtpmiXOLUoy3OR9J0dTmK2vr7tzgzVPAbcW06yWYuXpagixkxPrGBwbr9lAU?=
- =?us-ascii?Q?NT3PJ3e0R3BxHLoFxL3ntFsMxfJRt9n0PV16jcUpF/xga1lC7fq33pXlSSZN?=
- =?us-ascii?Q?8iav5UWUxPlinq9EwkmftliF1VNwlptNEqdTMtz9VApZ+lFQA9tSsJ3oriL7?=
- =?us-ascii?Q?xL2aRrqjg/WJeNSet7TYwZPiODCeH/zO+AY0bKxRoY93qBKAEmn0DoDQHaeB?=
- =?us-ascii?Q?kicMWhqOu4f8viG0higJNSFkwTCOMNlac/i+nA89frzbV8ns3w8ZkeoBk7u8?=
- =?us-ascii?Q?rjnGoCIKH5OceJEXY2LJiR5qD4aZszfXm3XTP2GzQ1Wr09XVnsqeNMoP/U7h?=
- =?us-ascii?Q?SCuAPpKeZcYbgR5djEJJIN/VCw+cPGpRRTfuosRuqPsUvpTFPgFZJRFpR+ZT?=
- =?us-ascii?Q?tn3Ki0cBEkDpH8ukkAmE3yxSs0GyqC8c94V7busYpBYiXVemf4YmCc+OWAJJ?=
- =?us-ascii?Q?WB9oeD3FWDfpplLPF2jBk1U1D9qyRD6jHg/lmRQNHi9VktyY70slGM6CyG7H?=
- =?us-ascii?Q?PRsX5lhR7CzU9tbmEou0FF71VJgzDFhNTWPvuTUwe2uMm0ktuAwCnV1mmvW0?=
- =?us-ascii?Q?xtOjmt0tMZ9uc3wLb6AzIIDaH4Hnv0rmhGZh102Ed1DtBLdBcXk7Xhss+uVV?=
- =?us-ascii?Q?o30s1/cEcrJb5LOBMI/QIbiIxHA3PBfc1aFJQNb0Sqy+NeyrqAkMiKsdkk66?=
- =?us-ascii?Q?6vEnJmWUqQRhrpRHJrf7CyMaceSzVPjvBaylPBgQBCEbxy2o8qegU7t2Iedq?=
- =?us-ascii?Q?S7iHARXb5qn+nnl6VXBVpagn9lRXovujwHvMuQ4S5nq5UEc06s+OMET3mkjD?=
- =?us-ascii?Q?CZGTju7wxGXAeLT3D04cRx/saTw1xTnBmExPijz/v3wXWFtpmyWPl+XCKQzx?=
- =?us-ascii?Q?EeTTkpFkTdfbwx5H1ovtD6jhScRsapSdzXEHBNRpBWo=3D?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1674.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 11:21:56.5331
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd525bc8-68e9-4654-2527-08d89c34a363
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: klULGsn2Zwcgvska0mcMhuO3sr+dSFNIUmxozHf69Jj0EL8gtYrLWxnBcZAWKh9QukiqwrnwBJ6C3SsxK2zQQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3515
+In-Reply-To: <76e057e3-9db8-21fc-3a8a-b9e924a95cf4@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.171.175]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get the staus of task from the pointer of proc inode directly is not
-safe. The function get_proc_task make it happen in RCU protection.
+On 09/12/2020 09:13, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2020/11/17 18:25, John Garry wrote:
+>> Leizhen reported some time ago that IOVA performance may degrade over time
+>> [0], but unfortunately his solution to fix this problem was not given
+>> attention.
+>>
+>> To summarize, the issue is that as time goes by, the CPU rcache and depot
+>> rcache continue to grow. As such, IOVA RB tree access time also continues
+>> to grow.
+>>
+>> At a certain point, a depot may become full, and also some CPU rcaches may
+>> also be full when inserting another IOVA is attempted. For this scenario,
+>> currently the "loaded" CPU rcache is freed and a new one is created. This
+>> freeing means that many IOVAs in the RB tree need to be freed, which
+>> makes IO throughput performance fall off a cliff in some storage scenarios:
+>>
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6314MB/0KB/0KB /s] [1616K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [5669MB/0KB/0KB /s] [1451K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6673MB/0KB/0KB /s] [1708K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6761MB/0KB/0KB /s] [1731K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6685MB/0KB/0KB /s] [1711K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6178MB/0KB/0KB /s] [1582K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6731MB/0KB/0KB /s] [1723K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2387MB/0KB/0KB /s] [611K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2689MB/0KB/0KB /s] [688K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2278MB/0KB/0KB /s] [583K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1288MB/0KB/0KB /s] [330K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1632MB/0KB/0KB /s] [418K/0/0 iops]
+>> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1765MB/0KB/0KB /s] [452K/0/0 iops]
+>>
+>> And continue in this fashion, without recovering. Note that in this
+>> example it was required to wait 16 hours for this to occur. Also note that
+>> IO throughput also becomes gradually becomes more unstable leading up to
+>> this point.
+>>
+>> This problem is only seen for non-strict mode. For strict mode, the rcaches
+>> stay quite compact.
+>>
+>> As a solution to this issue, judge that the IOVA caches have grown too big
+>> when cached magazines need to be free, and just flush all the CPUs rcaches
+>> instead.
+>>
+>> The depot rcaches, however, are not flushed, as they can be used to
+>> immediately replenish active CPUs.
+>>
+>> In future, some IOVA compaction could be implemented to solve the
+>> instabilty issue, which I figure could be quite complex to implement.
+>>
+>> [0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
+>>
+>> Analyzed-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> Reported-by: Xiang Chen <chenxiang66@hisilicon.com>
+>> Signed-off-by: John Garry <john.garry@huawei.com>
 
-Signed-off-by: Yahu Gao <yahu.gao@windriver.com>
----
- fs/proc/base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for having a look
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 1bc9bcdef09f..05f33bb35067 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -1994,7 +1994,7 @@ static int pid_revalidate(struct dentry *dentry, unsigned int flags)
- 
- static inline bool proc_inode_is_dead(struct inode *inode)
- {
--	return !proc_pid(inode)->tasks[PIDTYPE_PID].first;
-+	return !get_proc_task(inode);
- }
- 
- int pid_delete_dentry(const struct dentry *dentry)
--- 
-2.25.1
+>> ---
+>>   drivers/iommu/iova.c | 16 ++++++----------
+>>   1 file changed, 6 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+>> index 1f3f0f8b12e0..386005055aca 100644
+>> --- a/drivers/iommu/iova.c
+>> +++ b/drivers/iommu/iova.c
+>> @@ -901,7 +901,6 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>>   				 struct iova_rcache *rcache,
+>>   				 unsigned long iova_pfn)
+>>   {
+>> -	struct iova_magazine *mag_to_free = NULL;
+>>   	struct iova_cpu_rcache *cpu_rcache;
+>>   	bool can_insert = false;
+>>   	unsigned long flags;
+>> @@ -923,13 +922,12 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>>   				if (cpu_rcache->loaded)
+>>   					rcache->depot[rcache->depot_size++] =
+>>   							cpu_rcache->loaded;
+>> -			} else {
+>> -				mag_to_free = cpu_rcache->loaded;
+>> +				can_insert = true;
+>> +				cpu_rcache->loaded = new_mag;
+>>   			}
+>>   			spin_unlock(&rcache->lock);
+>> -
+>> -			cpu_rcache->loaded = new_mag;
+>> -			can_insert = true;
+>> +			if (!can_insert)
+>> +				iova_magazine_free(new_mag);
+>>   		}
+>>   	}
+>>   
+>> @@ -938,10 +936,8 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>>   
+>>   	spin_unlock_irqrestore(&cpu_rcache->lock, flags);
+>>   
+>> -	if (mag_to_free) {
+>> -		iova_magazine_free_pfns(mag_to_free, iovad);
+>> -		iova_magazine_free(mag_to_free);
+> mag_to_free has been stripped out, that's why lock protection is not required here.
+> 
+>> -	}
+>> +	if (!can_insert)
+>> +		free_all_cpu_cached_iovas(iovad);
+> Lock protection required.
+
+But we have the per-CPU rcache locking again in free_cpu_cached_iovas() 
+(which is called per-CPU from free_all_cpu_cached_iovas()).
+
+ok? Or some other lock you mean?
+
+Cheers,
+John
+
+> 
+>>   
+>>   	return can_insert;
+>>   }
+>>
+> 
+> .
+> 
 
