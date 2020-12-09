@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1ABC2D4C14
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:41:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC692D4C15
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732198AbgLIUjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:39:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728508AbgLIUjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:39:20 -0500
-X-Gm-Message-State: AOAM531bf7FqyU+G1r0+QRPNn5r+N6GGPsQjCork7EQrw+7LiU09Or1Q
-        zfLboIJKOT9iklMBouZqK14YMUvw1jLNlVBgvcI=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607546320;
-        bh=Ha7lLzOpXQ1X99veTNG7S+85hi9hDdUnwFrOdFxJkFY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=m2wotAQGycNW3fNMRpvScONvUE+gNQJa/7UXeuv/E5/eArPXRVUCPnYQLNrImG/mi
-         EJQV7WMwocrOB73rk8fCLhZCKjNIIiR/bzljek61mxBTwLpxZP82Xn6jRhlnEUKATY
-         iEBAwk/CSGD9Xo47fY9oJGPZG78DcYthsCzyjY+hsWhf7D9e50RNKkGKje4//M6lnX
-         86DGjo+2ZTer6Q7yhGH0UvyBu2prkduSQAGOLKN5qBU3EyEyp7I4BzaQZcPiejMXMM
-         6hNi9fuj/ykVQO5y8Oy4vK4OaddGLZhWOG0zHrOv8NhJ1xIkzjm0yvECImZOpff6AX
-         yJ8H5FndHMpDA==
-X-Google-Smtp-Source: ABdhPJx9b5wUc4ET8rElWbclWiQSLM9K0iZJ/2Q/ZLrhCrcYkZDXsayj9l5KMwDCDCiFnl6/qW8E7Vk6lrA60XCvUYc=
-X-Received: by 2002:a9d:6317:: with SMTP id q23mr3381889otk.251.1607546319268;
- Wed, 09 Dec 2020 12:38:39 -0800 (PST)
+        id S2387863AbgLIUlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:41:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726227AbgLIUlC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 15:41:02 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62370C0613CF;
+        Wed,  9 Dec 2020 12:40:22 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id w18so1635630vsk.12;
+        Wed, 09 Dec 2020 12:40:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qVNbsG951grAa0nngTk546R3mqEcKdjGCQfl3jglux0=;
+        b=tsEHJhG0MkjRSVhOuGlMI9bocHZIgrB7Q4F3SNPCijIGdImGYy9q0X6kIOcVmW7rRU
+         83vq6mTuCwIAaqAHvB4BTx+irBq3DhKLBB/4H7y6TYyL4dy1SU13CdZjMyeV+G8kJ89i
+         zMCkH/O6Ojuzd4Eg9vheu5ibeIamHEOl8VsehZ9sGmc9McbVOnMClj6ZUhFA+fmGLpQS
+         iOONj9fNvlaP6lycp3I7m4DBKOrCjQWl+ufNy2dHnZcB6C58Yi8bCHLacBk/LIvzfvBj
+         Py9UQOiW0sPnwl17sbKkQRlS1AzsBAPWT5OPIIxq5moGxHlrQW3fl4XFgGMC+SGHxqbZ
+         36mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qVNbsG951grAa0nngTk546R3mqEcKdjGCQfl3jglux0=;
+        b=KMlze6bUkxVid1uN5DqH3cwXH7f1ANL/v7SikpoZbmot1hcYziUUSvyuqFQeVmVX71
+         8Arpoj0s1sUo4lgPWJ7ypS3sSbtX51nvz7bKQ5WMxUoJVCV6m6SrI3plL+BVwOinWHuS
+         gSWXz2jOjaMUreLyGpCw4iQjLUEJET41CQYn10rz//3lX1CK/KjKEV+lXg9yfMo/qQdN
+         IDjGC7JM6MF3TM9bWpfVxy+RqISGyA1ITRmeyCyonKVJtlvEcI8Y1DSs8Zl3h6vuoxvj
+         Rze2ZG70l2+e9tZMDRJZSsQxB5/pvQaiSFFQfmX5mmG/TpxTgX2ogMYde7TWeO4Ka0At
+         LRyA==
+X-Gm-Message-State: AOAM533ulgwkHjEPFfcqSRQ9wx2VzL+vqk5nhNd8BXSbEsCjz5haZB5N
+        6zKFRCtYsgZaj9/axaVi2/d2ViH/0DamHrafErI=
+X-Google-Smtp-Source: ABdhPJyqjMVe8NitGvgS1YWJWfuzp2U4pAPXcbQPYhNjW+c3+yy3hA1aaS6r3ue8GgWP+vsAf0HNZ4DBfYmvfFlKRVI=
+X-Received: by 2002:a67:eb88:: with SMTP id e8mr4214547vso.28.1607546421585;
+ Wed, 09 Dec 2020 12:40:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203191135.21576-1-info@metux.net> <20201203191135.21576-2-info@metux.net>
- <0080d492-2f07-d1c6-d18c-73d4204a5d40@metux.net> <CACRpkdb4R4yHcUV2KbGEC_RkU+QmH6Xg7X+qee8sEa9TURGr8A@mail.gmail.com>
- <51d3efb7-b7eb-83d7-673a-308dd51616d3@metux.net> <CACRpkdbqVoT56H88hoZwDqV0kW_8XTaE5TkMQsg-RRrPqgF=cQ@mail.gmail.com>
- <CAK8P3a1PRQGUXkjdSmqxXSONX_ZoCgsfx8hJBUdBUk14tyzErA@mail.gmail.com>
- <CACRpkdbNAeDsi9B14kbkAeoqX7NE_Ua_yOX1iNF75oNK0ELefQ@mail.gmail.com> <2827855a-dc4f-2e17-aca3-4b1b9f0d5084@ti.com>
-In-Reply-To: <2827855a-dc4f-2e17-aca3-4b1b9f0d5084@ti.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 9 Dec 2020 21:38:22 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a30=AcEZAZ2yNUgctj=4YM6FhS1ZXB4ts7a7WV=gBcatA@mail.gmail.com>
-Message-ID: <CAK8P3a30=AcEZAZ2yNUgctj=4YM6FhS1ZXB4ts7a7WV=gBcatA@mail.gmail.com>
-Subject: Re: Howto listen to/handle gpio state changes ? Re: [PATCH v2 2/2]
- drivers: gpio: add virtio-gpio guest driver
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
+References: <CALjTZvZZZVqnoV4YFTDHogVHv77=dKfcSSBGj1zC83zpUid9+g@mail.gmail.com>
+ <4eb99a1da6342999c4dca355533a0847d0e942a5.camel@intel.com>
+ <CALjTZvYwccfOVTTGNo1=oLnwXG2b9Vz1nVZuvLKFV94+3fQ6EQ@mail.gmail.com>
+ <20201209091315.2c55e1c6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com> <CANUX_P1=yuPkK5BzJ99oniMiCgB0z98yNYUSw4_qk2Vg7ucoRQ@mail.gmail.com>
+In-Reply-To: <CANUX_P1=yuPkK5BzJ99oniMiCgB0z98yNYUSw4_qk2Vg7ucoRQ@mail.gmail.com>
+From:   Emmanuel Grumbach <egrumbach@gmail.com>
+Date:   Wed, 9 Dec 2020 22:40:10 +0200
+Message-ID: <CANUX_P3S-Dt2homERtXgxQuh+q=xCTDvqx2ZwOXvZfjMrBY-9w@mail.gmail.com>
+Subject: Re: [BUG] iwlwifi: card unusable after firmware crash
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Coelho, Luciano" <luciano.coelho@intel.com>,
+        Rui Salvaterra <rsalvaterra@gmail.com>,
+        "Goodstein, Mordechay" <mordechay.goodstein@intel.com>,
+        "Berg, Johannes" <johannes.berg@intel.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 9:22 PM Grygorii Strashko
-<grygorii.strashko@ti.com> wrote:
-> On 09/12/2020 14:53, Linus Walleij wrote:
-> > On Wed, Dec 9, 2020 at 12:19 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> >> On Wed, Dec 9, 2020 at 9:51 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> >>> On Tue, Dec 8, 2020 at 3:07 PM Enrico Weigelt, metux IT consult <lkml@metux.net> wrote:
-> >>
-> >>> What we need to understand is if your new usecase is an outlier
-> >>> so it is simplest modeled by a "mock" irq_chip or we have to design
-> >>> something new altogether like notifications on changes. I suspect
-> >>> irq_chip would be best because all drivers using GPIOs for interrupts
-> >>> are expecting interrupts, and it would be an enormous task to
-> >>> change them all and really annoying to create a new mechanism
-> >>> on the side.
-> >>
-> >> I would expect the platform abstraction to actually be close enough
-> >> to a chained irqchip that it actually works: the notification should
-> >> come in via vring_interrupt(), which is a normal interrupt handler
-> >> that calls vq->vq.callback(), calling generic_handle_irq() (and
-> >> possibly chained_irq_enter()/chained_irq_exit() around it) like the
-> >> other gpio drivers do should just work here I think, and if it did
-> >> not, then I would expect this to be just a bug in the driver rather
-> >> than something missing in the gpio framework.
-> >
-> > Performance/latency-wise that would also be strongly encouraged.
-> >
-> > Tglx isn't super-happy about the chained interrupts at times, as they
-> > can create really nasty bugs, but a pure IRQ in fastpath of some
-> > kinde is preferable and intuitive either way.
+On Wed, Dec 9, 2020 at 10:32 PM Emmanuel Grumbach <egrumbach@gmail.com> wrote:
 >
-> In my opinion the problem here is that proposed patch somehow describes Front end, but
-> says nothing about Backend and overall design.
+> On Wed, Dec 9, 2020 at 7:19 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > On Tue, 8 Dec 2020 23:17:48 +0000 Rui Salvaterra wrote:
+> > > Hi, Luca,
+> > >
+> > > On Tue, 8 Dec 2020 at 16:27, Coelho, Luciano <luciano.coelho@intel.com> wrote:
+> > > > On Tue, 2020-12-08 at 11:27 +0000, Rui Salvaterra wrote:
+> > > > >
+> > > > > [ 3174.003910] iwlwifi 0000:02:00.0: RF_KILL bit toggled to disable radio.
+> > > > > [ 3174.003913] iwlwifi 0000:02:00.0: reporting RF_KILL (radio disabled)
+> > > >
+> > > > It looks like your machine is reporting RF-Kill to the WiFi device.
+> > >
+> > > Yes, that's an artifact of how I tested: I rebooted the router, the
+> > > Wi-Fi interface disassociated and the dmesg was clean. However, after
+> > > the router came up, the laptop didn't reconnect (and the connection
+> > > had completely disappeared from nmtui). Afterwards, I did the rfkill
+> > > cycle you see, and only then I got the register dump.
+> > >
+> > > > There seems to be some sort of race there that is causing us to still
+> > > > try to communicate with the device (and thus you see the transaction
+> > > > failed dump), but that will obviously fail when RF-Kill is enabled.
+> > >
+> > > I'm not sure about that, the card was already dead before the rfkill cycle.
+> >
+> > Any luck figuring this out, Luca? If this is a 5.10 regression we need
+> > to let Linus know tomorrow, so the time is ticking :(
 >
-> What is expected to be virtualized? whole GPIO chip? or set of GPIOs from different GPIO chips?
-> Most often nobody want to give Guest access to the whole GPIO chip, so, most probably, smth. similar to
-> GPIO Aggregator will be needed.
+> Rui, I looked at the register dump and looks like you're using AMT on
+> your system?
+> Can you confirm?
 
-I would argue that it does not matter, the virtual GPIO chip could really
-be anything. Certain functions such as a gpio based keyboard require
-interrupts, so it sounds useful to make them work.
-
-     Arnd
+Besides, don't you get a stack dump in the vicinity of this register
+dump? That's be helpful to see.
