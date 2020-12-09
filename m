@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3AC2D375A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFCF2D375E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730857AbgLIADr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 19:03:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730770AbgLIADr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 19:03:47 -0500
-Date:   Tue, 8 Dec 2020 16:03:06 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607472186;
-        bh=tsbHTtA1h77+5t5JMRQdlcl1i8nDNeuMrZZuZvaqp8g=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JUnC0OYLB2rkwXp2OGatU0Ye3o9J/VcmTbWGVYikCuUnvICd+mp2HvbsscjACo9XH
-         EiODDj6tpOwtwE0nEVcrVb1fJZ8CUUc8IxFW4eQBiDS5eg3tix2XGUijpDglbhqjRN
-         u1AXMizC28yrwwm1aHNs5O09EkRv8Bhw/05ZUtZygQhXk0Z8Awcsya8MSx6vD2hAN2
-         ZdWRjs7//SxQCXQMmuZ1LLA0qv5mY6ePx9/3Z4sWo5fF0xIJMqDGdvv1sXlEKR8iO9
-         u6qvIO2VO2fe1T/sWj6dZshW254gbiEnbJXWQ8kZH9TWYyC1VR8I8iSMFEOhoERiTp
-         8zR3qJupSat/g==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     boqun.feng@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: One potential issue with concurrent execution of RCU callbacks...
-Message-ID: <20201209000306.GZ2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201208145810.GA4875@paulmck-ThinkPad-P72>
- <20201208155457.GA3916@lothringen>
- <20201208171927.GS2657@paulmck-ThinkPad-P72>
- <20201208175230.GB3916@lothringen>
- <20201208182409.GT2657@paulmck-ThinkPad-P72>
- <20201208220438.GC3916@lothringen>
+        id S1730972AbgLIAEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 19:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730910AbgLIAEB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 19:04:01 -0500
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD11C061794
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 16:03:20 -0800 (PST)
+Received: by mail-ua1-x942.google.com with SMTP id x13so6792uar.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 16:03:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/3H87YNewa28HS/51RzM52tdlWwhr3JM0Cl8TdNECZk=;
+        b=tTmEtpzaPLr7N5FkWlMdTZ0eOXIYj3/bTcr+D2KJ4dPXw1l6Rh3k+aVctzFhvbTDYL
+         oBUG4vWFPUOKtZYk97pkM4u3b2Y7GK8mVX28UHk9BMndq8sBgfOHDa+tJEvhGCfD1//y
+         DhPXUOfXwcjipJib6DsHQ7d6aEjBcp2Nxbkbr1xWbe/CeRqGqAIYetATe7OMcGElAimr
+         2naHTH1LXUWbQnVxwk3A7dYzJMKocu6tphAcQSFefEVWpLIpKF2PCqBMbk5B2NFTJgcC
+         NINrC4JDPfZBYnXlv5Ssh00vv5qPjN5IkiG0nBElMc1xblHPljC6yPTYnIJebk12nxkd
+         DXsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/3H87YNewa28HS/51RzM52tdlWwhr3JM0Cl8TdNECZk=;
+        b=I6uJ1vyCcf9roXswwJ0mZHKaPKcHmzumbpMQgzXC/O8VoueBNknA7rmqtCXwmE9Z0s
+         6r9PGrR0A88diJipQNTZNdLlLTSYG/Xor+b6KWUhIXwjUAwCxw/MwzLhciC2X8orkjtD
+         65A2RNCwc2X9AGiV4XDmU8mGQ9+UqWAaeXfRgHo5iTR9DRBGu9kelkoqcDim+Wq+LHeI
+         8CFxw6WPPUqARzwO4ZrdtDtepwLVIkwD2KZPLlohKo/JtSDE3vTWn3xCDTtmLUz62Rn7
+         85qqUVztp5/4xxrYoGhlJtC/RCfuAHZhhp1QfIFQCoXMw10rSjhMXsTybUoMyOgDYEvD
+         3CFg==
+X-Gm-Message-State: AOAM531HNJp82ucICyr/rYGzqK9QNnqqdF+ElqcJuWzRtyvGc5bxxvIj
+        TSy5wxF36WC9mVt8IwUkMZcf39wumYn32fNf+VY=
+X-Google-Smtp-Source: ABdhPJyCWb9XOdfEPamRgMPZrePF9fhpZIkiVHbGg+Qp7awHYZ4KSsqbIkMITOhd/kUiMkpj1nh5WAMx+buhOekkerU=
+X-Received: by 2002:ab0:486:: with SMTP id 6mr233022uaw.6.1607472200160; Tue,
+ 08 Dec 2020 16:03:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208220438.GC3916@lothringen>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Received: by 2002:a67:1141:0:0:0:0:0 with HTTP; Tue, 8 Dec 2020 16:03:19 -0800 (PST)
+Reply-To: sisterkatehary100@gmail.com
+From:   Sister Rose Hary <sisterkatehary100@gmail.com>
+Date:   Tue, 8 Dec 2020 16:03:19 -0800
+Message-ID: <CAKLvZdrhPY+jrqW=cMcahqrnY_Wj2d1F+3jhXWzioJpJCx9svQ@mail.gmail.com>
+Subject: Greeting in Jesus name!!!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 11:04:38PM +0100, Frederic Weisbecker wrote:
-> On Tue, Dec 08, 2020 at 10:24:09AM -0800, Paul E. McKenney wrote:
-> > > It reduces the code scope running with BH disabled.
-> > > Also narrowing down helps to understand what it actually protects.
-> > 
-> > I thought that you would call out unnecessarily delaying other softirq
-> > handlers.  ;-)
-> > 
-> > But if such delays are a problem (and they might well be), then to
-> > avoid them on non-rcu_nocb CPUs would instead/also require changing the
-> > early-exit checks to check for other pending softirqs to the existing
-> > checks involving time, need_resched, and idle.  At which point, entering and
-> > exiting BH-disabled again doesn't help, other than your point about the
-> > difference in BH-disabled scopes on rcu_nocb and non-rcu_nocb CPUs.
-> 
-> Wise observation!
-> 
-> > Would it make sense to exit rcu_do_batch() if more than some amount
-> > of time had elapsed and there was some non-RCU softirq pending?
-> > 
-> > My guess is that the current tlimit checks in rcu_do_batch() make this
-> > unnecessary.
-> 
-> Right and nobody has complained about it so far.
+-- 
 
-If they did, my thought would be to add another early-exit check,
-but under the tlimit check, so that pending non-RCU softirqs might
-set a shorter time limit.  For example, instead of allowing up to the
-current one second in rcu_do_batch(), allow only up to 100 milliseconds
-or whatever.  But there are lots of choices, which is one reason to wait
-until it becomes a problem.
 
-> But I should add a comment explaining the reason for the BH-disabled
-> section in my series.
+-- 
 
-That sounds like a most excellent idea, please do!
 
-							Thanx, Paul
+-- 
+
+Greeting in Jesus name!!!
+
+Claim of donation funds!!! My name is, Sister Rose Hary from United
+States, I'm a widow suffering from Breast Cancer and Stroke, which denied
+me a child as a result i may not last till the next two months according
+to my doctor report. I'm married to late Pastor Bailey James, and we were
+married for many years without any issue child before his death. I'm 68
+years old woman. I have some funds i inherited from my late husband the
+sum of (5.8 million dollars) which i needed a very honest and God fearing
+person who will claim the funds from the bank and use the funds for work
+of God Affair donation in the house of God, like propagating the good news
+of God and to endeavor God worshiping place and help less-privileged. I
+found your profile and i decided to contact you for the donation work of
+God Affair.
+
+I don't need any telephone communication in this regards because of my
+health according to my doctor report, please if you would be able to use
+the funds for the work of God Affair as i stated contact me back  so i
+will lead you to Ally  Bank   International in Washington DC where this
+funds was deposited by my late husband Pastor Bailey James , for you to
+retrieve the funds in my name as the next of kin for work of God Affair.
+
+
+
+I will stop here until i hear from you.
+
+Always pray for my health.
+May God bless you In Jesus name Amen!!!
+Sister Rose Hary !!!
