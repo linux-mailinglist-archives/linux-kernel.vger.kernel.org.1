@@ -2,106 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD8C2D3FAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 964CC2D3FB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729802AbgLIKOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:14:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53488 "EHLO
+        id S1729814AbgLIKOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:14:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729639AbgLIKOJ (ORCPT
+        with ESMTP id S1729178AbgLIKOt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:14:09 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56048C06179C
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 02:13:29 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id x4so572919vsp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 02:13:29 -0800 (PST)
+        Wed, 9 Dec 2020 05:14:49 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6F9C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 02:14:07 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id z11so692151qkj.7
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 02:14:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
+        d=0x0f.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GQQ1cftUs+z76vK6Lt731SlO6kCrFdJIO/2nHU2yT40=;
-        b=o/bXVedngN5pBxJH9KaF1htfa8gkhRjfiZvttaWZRToXJRtG+QqS8OSvQkhoND4ds6
-         8gLvFQLHhyGLVUZNOAdOIMFep9yf6detoqQLZk944USazgAMRCEgAuMgdlpjrMWdeGNF
-         ZdmnLWUhd+cDms8Du28ybWfG6vGi9quEFLNrc=
+        bh=8rjD7IseveSeNkH6VF4Nm3t/LEPLDkcL2AIVZGOLwaQ=;
+        b=bYuZo14ICpkzNIN2VbO0nSMeZMGOGObypWmZnDScE4IKQfy4mYHoZcgftoPAN+UE1A
+         8yEkNLgXB4AFkEeX8yrTLyy7c9I9fsZRmybhtJsMPtb1Gm1sEMn9vITJP8Ht5hW03BcV
+         CTzKi9lp5VbX1ngvVito4r3LNXJ6laM1+JGNM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GQQ1cftUs+z76vK6Lt731SlO6kCrFdJIO/2nHU2yT40=;
-        b=CshtrgIslh+Eaczsm+KR84Z0Hp1M3BgHRECKIt8Bk5ws4OSoBkpYnYxQ7Q8wT0rz8Z
-         6UZzp6KDR9QHQ1+et7DRnakhfNmAoR+HQJ+L2c68oBXAgSDBQM1v4Ovg23EGm224mJfY
-         1jXxbv3gmzxGgkUw+GmQymU6aNCI0k9qTvxXSjHKVdAzoWHSyx6A5UqHV55LyFeWyP5G
-         D7OgZFq7/xguRF301atx5vqubG002EtqXjQQ/vuIoubD7cO6USDUR9/S7HC/hOsRlmMl
-         rEP40uyVzNeA+84+6zMKtHYQHgMlyog3qHApOTInIHjgQBYefErfSo6vmpwAsbnAZMGn
-         b1ng==
-X-Gm-Message-State: AOAM533YnDt1/3FVc2KtTNhxhRiz0cl/GI5zITHy8vcl3GQjpGtVZC2n
-        fNJQu+2mIa8WBHSXd1MEFP6kQJh9blzOjwRr/LcRdg==
-X-Google-Smtp-Source: ABdhPJzREqcFmVRiyHTHLToKAaVH2NKuecCoZyx8wfazBSxTrTVhIRS7jyFnBaKgTWOjW7kai9p6aOWj8y5f7/0D+t0=
-X-Received: by 2002:a67:ed57:: with SMTP id m23mr926246vsp.7.1607508808505;
- Wed, 09 Dec 2020 02:13:28 -0800 (PST)
+        bh=8rjD7IseveSeNkH6VF4Nm3t/LEPLDkcL2AIVZGOLwaQ=;
+        b=EBcXNNyaBms7sAXF6S2rKDqrTcb6mi2Aj5Ou982zrvRVgWz/ywncg4pOGELDKZB6Jj
+         5yCcuhNwfncML+oNAwJzeub/egiqnQNoM5bziqg1E8/0ztIPlJNovwKkcM1dLCaarHay
+         HJ30vjmnwg7D+1bwvUIjsgrnw0EkFR9bntYLCdvIkSBNdCxlfkBtVqfWswnxq0+SK85r
+         QwIcSv2cNdB35BtWloG8+NdqRxH6l6ooo/uue4o3XNjv2mbq8b6G1LZC6bmFh5DAuS1G
+         YT4QrOAYNhR9Cru3952QR1z8RAdhXA0FsLkEu5CFhFS9jfKqiM/NGr+yC+eO7DgxGspI
+         htjQ==
+X-Gm-Message-State: AOAM531B8CQVaDHdWSHNxuEJUPSg+KKlWMYXrqnfnS+wAaKU1Oc6Ol/Y
+        tG8nwhv++P6poA5KNyZ7nBRMWsCthmTHCI/2V6J9Kw==
+X-Google-Smtp-Source: ABdhPJwcx3VJ+/O9OTm1VhxGxVov7pwPjx8v0ff+R6oPDxN+CsTklvE1tvNVoov8YhiobB7/4plhzBsdvvM280GFLbM=
+X-Received: by 2002:a37:7c07:: with SMTP id x7mr2165263qkc.159.1607508846374;
+ Wed, 09 Dec 2020 02:14:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20201207163255.564116-1-mszeredi@redhat.com> <20201207163255.564116-4-mszeredi@redhat.com>
- <CAOQ4uxhti+COYB3GhfMcPFwpfBRYQvr98oCO9wwS029W5e0A5g@mail.gmail.com>
-In-Reply-To: <CAOQ4uxhti+COYB3GhfMcPFwpfBRYQvr98oCO9wwS029W5e0A5g@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 9 Dec 2020 11:13:17 +0100
-Message-ID: <CAJfpegsGpS=cym2NpnS6H-uMyLMKdbLpE1QxiDz4GQU1s-dYfg@mail.gmail.com>
-Subject: Re: [PATCH v2 03/10] ovl: check privs before decoding file handle
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201208164821.2686082-1-paul@crapouillou.net> <20201208164821.2686082-2-paul@crapouillou.net>
+In-Reply-To: <20201208164821.2686082-2-paul@crapouillou.net>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Wed, 9 Dec 2020 19:13:55 +0900
+Message-ID: <CAFr9PX=EgQSXeATLn++DSHkkQar35rpLGh978J5Lnw9jS8XMrw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] pinctrl: ingenic: Only support SoCs enabled in config
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@kernel.org>, od@zcrc.me,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 2:53 PM Amir Goldstein <amir73il@gmail.com> wrote:
->
-> On Mon, Dec 7, 2020 at 6:36 PM Miklos Szeredi <mszeredi@redhat.com> wrote:
-> >
-> > CAP_DAC_READ_SEARCH is required by open_by_handle_at(2) so check it in
-> > ovl_decode_real_fh() as well to prevent privilege escalation for
-> > unprivileged overlay mounts.
-> >
-> > Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-> > ---
-> >  fs/overlayfs/namei.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
-> > index a6162c4076db..82a55fdb1e7a 100644
-> > --- a/fs/overlayfs/namei.c
-> > +++ b/fs/overlayfs/namei.c
-> > @@ -156,6 +156,9 @@ struct dentry *ovl_decode_real_fh(struct ovl_fh *fh, struct vfsmount *mnt,
-> >         struct dentry *real;
-> >         int bytes;
-> >
-> > +       if (!capable(CAP_DAC_READ_SEARCH))
-> > +               return NULL;
-> > +
->
-> If the mounter is not capable in init ns, ovl_check_origin() and
-> ovl_verify_index()
-> will not function as expected and this will break index and nfs export features.
+Hi Paul and others,
 
-NFS export is clear-cut.
-
-Hard link indexing should work without fh decoding, since it is only
-encoding the file handle to search for the index entry, and encoding
-is not privileged.
-
-Not sure how ovl_verify_index will choke on that, will have to try...
-but worse case we just need to disable verification.
-
-And yeah, using .overlay.origin attribute for inode number consistency
-won't work either, but it should fail silently (which is probably a
-good thing).  Haven't tested this yet, though.
+Sorry to hijack this but I actually want to do something similar to
+this in some other drivers.
+The targets I'm working with have only 64MB of ram so I want to remove
+code wherever possible.
+Is there any reason to do it like this instead of wrapping the whole
+unneeded of_device_id struct in an #ifdef?
+For example there is a rule that the compatible strings have to be
+present even if the driver isn't usable or something?
 
 Thanks,
-Miklos
+
+Daniel
