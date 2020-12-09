@@ -2,146 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102692D403F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BE72D403D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730054AbgLIKpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:45:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+        id S1730043AbgLIKpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729382AbgLIKpI (ORCPT
+        with ESMTP id S1729382AbgLIKpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:45:08 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0824C061793
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 02:44:27 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id s2so711384plr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 02:44:27 -0800 (PST)
+        Wed, 9 Dec 2020 05:45:06 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D44FC0613D6;
+        Wed,  9 Dec 2020 02:44:26 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id l9so1173402wrt.13;
+        Wed, 09 Dec 2020 02:44:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Een9d7veFiTsOXmEKXm9zr8seLLZa1UZOWp04RSXu8E=;
-        b=Y7RF0e7kCH5C1MTyPtcgosScjTKq1bzIKM0c7nwWsg8CkbGs3PMhomO9Yq//415SwX
-         jhdm5jruxKvcUmO2UIaqgLtpHoh9IwawO0cfMZA9bIjFvPmbtc73dKlosHILHcr/Q1Sm
-         MNzlwLlqiPfdC14FrAMgrH7UXcVOZ4wrM728huRaA5ALKj2lI6BQL1ZLN7O/WNGojnag
-         JWpQyQlZi2Uz0JeI83CAyikazFE/N46+Q6MY3I5x0+9Udlx0hMhwDOpP0ld7phwqUB/5
-         suSTlEOO1YQq8j7foGhBb4sIzkA8Uod+XMBRjHOfuOadl4K240bTt/PdK40eq2gdADXM
-         FlTA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=e9U14YbvPQ65OpVh9QyrJJaUt+mKvoE8C0Y0f02ixB8=;
+        b=rdUwne1A+4a4WU3fu2Ua/8s6HdxJWXvV63jmt5PQ/bid8f+M6MPNES6HxHukqCsNVv
+         h45zlHSRDbAV5AsmOtNtyrNspJBtIuPQzkqDNjdd3MKMrRNREfErX5Y+KOJ7XMJ8cD+o
+         ldaHkmFZXmcaHDWcAgROqddd1pyPQG0Qy42+52kDwKs5jtpnmUrr9oXAkqiyYhij0p8T
+         ISKfeQFvgRSApK4Ny+1CufDOHZ3ncghx+Cfi8QMmTfmfh5j4BrrR5zVFbcTGw5GRhIua
+         tH3hJ2QBPsyVqp5LNgXGPSh4slTFVemaYbIy9tVmd2+7g/jXSyxznmalwip8wNs+PYFs
+         FjMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Een9d7veFiTsOXmEKXm9zr8seLLZa1UZOWp04RSXu8E=;
-        b=hLQPik6zWWESGUQhwyzFkPVvEMZMS38kFs9b38zr1DQFgbTOebOJseyR/V5PBKLP/p
-         I0W8/fRv4nG8vqBBSLfcMhHxs+RoLwyPFcSovtJWql5/18/wabE1/fO84i3tJ3KCkx9W
-         9oCi/RITSyUmVVuSWI+sWregeyDVax7d7KR5Cm4jIwEpDvMIEt8qN2QlQnXZd8Pc1KQq
-         DGl+gHKRKiIy9JO2RjgBGOwNMNBu8Lyxn+OKGZzckCkHy4VLNCWcDk2+CxzEfTngTRav
-         jBexR2ZmugnzIZ74zuGUIrBDfa+nALUKkMCf/fcuK/0Sj/gKCvq8WvtPppy8RrBTEQjk
-         MtEg==
-X-Gm-Message-State: AOAM532ktKnWL8jFEM+2fqgo5ZpXAzGBYOT3relBllUtaxb5M08gb5+f
-        eXCRDedt6uBSeQyrblBSQyflEkP5FUSdqlmM
-X-Google-Smtp-Source: ABdhPJwjGP5GKbDfB3VJs+ilffjR4A7rqYEeSXBahZw8bCysea5xSnOhyXnLA3kbpmTlKXHZQzeobg==
-X-Received: by 2002:a17:90a:b794:: with SMTP id m20mr1625412pjr.47.1607510667539;
-        Wed, 09 Dec 2020 02:44:27 -0800 (PST)
-Received: from bj10918pcu.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id y69sm2096554pfb.64.2020.12.09.02.44.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Dec 2020 02:44:26 -0800 (PST)
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-X-Google-Original-From: Xuewen Yan <xuewen.yan@unisoc.com>
-To:     patrick.bellasi@arm.com, vincent.guittot@linaro.org,
-        peterz@infradead.org
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        Xuewen.Yan@unisoc.com, xuewyan@foxmail.com,
-        Xuewen Yan <xuewen.yan@unisoc.com>
-Subject: [PATCH] fair/util_est: Separate util_est_dequeue() for cfs_rq_util_change
-Date:   Wed,  9 Dec 2020 18:44:16 +0800
-Message-Id: <1607510656-22990-1-git-send-email-xuewen.yan@unisoc.com>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e9U14YbvPQ65OpVh9QyrJJaUt+mKvoE8C0Y0f02ixB8=;
+        b=IXG84fMQiGw3sceZ3ufCx6w87prUvS+FuLqLFIybZIOjb7EGPeCrXuGFJWsgY6LttE
+         dKVhaAIzR5q30OIz0US32qNy5tlEdmhM4800Uwe26a4p7sVfqRS0umHzkN32xd09nQio
+         EwIs3HEZyaTWKmqT4q68klWbdfOVjA7BoaCB8tlf2uoon6nEN4TrK3Z46VoPrzK4nXZ3
+         R5lvepW1YnkuXS8bKG9Ma8BzITQC7B85oP6R9UdQMl3djXedlUfjpTrN+y+g6657tIkQ
+         7GCYsY4KFIzuMyM9UEv0vs2YbeFGig03qkIUcDL44NcZDJqjETZ/0Gkn2ZcyBEXUwMug
+         vReQ==
+X-Gm-Message-State: AOAM533DpTgG8Fllv2wYpAhyVtHRPw/AqGbqiah/TlvhV1n9qru9CCsl
+        o+voFkLgfL94LAAVgNe4RGnRRKABzj/cGg==
+X-Google-Smtp-Source: ABdhPJzOJ3IkoPp2j9FdlXjWeLwGt3aK7bZ31z40KjIzv62CXeeOMndxYJx+HpoiBOoMVc4hCRV1kw==
+X-Received: by 2002:adf:c589:: with SMTP id m9mr1960375wrg.370.1607510663842;
+        Wed, 09 Dec 2020 02:44:23 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id d187sm2777012wmd.8.2020.12.09.02.44.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 02:44:23 -0800 (PST)
+Subject: Re: [patch] close_range.2: new page documenting close_range(2)
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Stephen Kitt <steve@sk2.org>
+Cc:     linux-man@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-kernel@vger.kernel.org
+References: <20201208215133.30575-1-steve@sk2.org>
+ <20201209095817.7ksihhftmnd3c3hi@wittgenstein>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <5f69d42d-c36d-b98a-3d00-7a5e7f489a07@gmail.com>
+Date:   Wed, 9 Dec 2020 11:44:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20201209095817.7ksihhftmnd3c3hi@wittgenstein>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-when a task dequeued, it will update it's util, and cfs_rq_util_change
-would check rq's util, if the cfs_rq->avg.util_est.enqueued is bigger
-than  cfs_rq->avg.util_avg, but because the cfs_rq->avg.util_est.enqueued
-didn't be decreased, this would cause bigger cfs_rq_util by mistake,
-as a result, cfs_rq_util_change may change freq unreasonablely.
+Hey Christian,
 
-separate the util_est_dequeue() into util_est_dequeue() and
-util_est_update(), and dequeue the _task_util_est(p) before update util.
+I have a question for you below.
 
-Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
----
- kernel/sched/fair.c | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+Thanks,
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index ae7ceba..20ecfd5 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3946,11 +3946,9 @@ static inline bool within_margin(int value, int margin)
- }
- 
- static void
--util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
-+util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p)
- {
--	long last_ewma_diff;
- 	struct util_est ue;
--	int cpu;
- 
- 	if (!sched_feat(UTIL_EST))
- 		return;
-@@ -3961,6 +3959,17 @@ static inline bool within_margin(int value, int margin)
- 	WRITE_ONCE(cfs_rq->avg.util_est.enqueued, ue.enqueued);
- 
- 	trace_sched_util_est_cfs_tp(cfs_rq);
-+}
-+
-+static void
-+util_est_update(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
-+{
-+	long last_ewma_diff;
-+	struct util_est ue;
-+	int cpu;
-+
-+	if (!sched_feat(UTIL_EST))
-+		return;
- 
- 	/*
- 	 * Skip update of task's estimated utilization when the task has not
-@@ -4085,7 +4094,10 @@ static inline int newidle_balance(struct rq *rq, struct rq_flags *rf)
- util_est_enqueue(struct cfs_rq *cfs_rq, struct task_struct *p) {}
- 
- static inline void
--util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p,
-+util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p) {}
-+
-+static inline void
-+util_est_update(struct cfs_rq *cfs_rq, struct task_struct *p,
- 		 bool task_sleep) {}
- static inline void update_misfit_status(struct task_struct *p, struct rq *rq) {}
- 
-@@ -5589,6 +5601,8 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 	int idle_h_nr_running = task_has_idle_policy(p);
- 	bool was_sched_idle = sched_idle_rq(rq);
- 
-+	util_est_dequeue(&rq->cfs, p);
-+
- 	for_each_sched_entity(se) {
- 		cfs_rq = cfs_rq_of(se);
- 		dequeue_entity(cfs_rq, se, flags);
-@@ -5639,7 +5653,7 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 		rq->next_balance = jiffies;
- 
- dequeue_throttle:
--	util_est_dequeue(&rq->cfs, p, task_sleep);
-+	util_est_update(&rq->cfs, p, task_sleep);
- 	hrtick_update(rq);
- }
- 
+Alex
+
+On 12/9/20 10:58 AM, Christian Brauner wrote:
+> On Tue, Dec 08, 2020 at 10:51:33PM +0100, Stephen Kitt wrote:
+>> This documents close_range(2) based on information in
+>> 278a5fbaed89dacd04e9d052f4594ffd0e0585de and
+>> 60997c3d45d9a67daf01c56d805ae4fec37e0bd8.
+>>
+>> Signed-off-by: Stephen Kitt <steve@sk2.org>
+>> ---
+> 
+> Hey Stephen,
+> 
+> Thanks for working on this that's an early Christmas present as it gets
+> an item off my todo list!
+> 
+>>  man2/close_range.2 | 112 +++++++++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 112 insertions(+)
+>>  create mode 100644 man2/close_range.2
+>>
+>> diff --git a/man2/close_range.2 b/man2/close_range.2
+>> new file mode 100644
+>> index 000000000..62167d9b0
+>> --- /dev/null
+>> +++ b/man2/close_range.2
+>> @@ -0,0 +1,112 @@
+>> +.\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
+>> +.\"
+>> +.\" %%%LICENSE_START(VERBATIM)
+>> +.\" Permission is granted to make and distribute verbatim copies of this
+>> +.\" manual provided the copyright notice and this permission notice are
+>> +.\" preserved on all copies.
+>> +.\"
+>> +.\" Permission is granted to copy and distribute modified versions of this
+>> +.\" manual under the conditions for verbatim copying, provided that the
+>> +.\" entire resulting derived work is distributed under the terms of a
+>> +.\" permission notice identical to this one.
+>> +.\"
+>> +.\" Since the Linux kernel and libraries are constantly changing, this
+>> +.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+>> +.\" responsibility for errors or omissions, or for damages resulting from
+>> +.\" the use of the information contained herein.  The author(s) may not
+>> +.\" have taken the same level of care in the production of this manual,
+>> +.\" which is licensed free of charge, as they might when working
+>> +.\" professionally.
+>> +.\"
+>> +.\" Formatted or processed versions of this manual, if unaccompanied by
+>> +.\" the source, must acknowledge the copyright and authors of this work.
+>> +.\" %%%LICENSE_END
+>> +.\"
+>> +.TH CLOSE_RANGE 2 2020-12-08 "Linux" "Linux Programmer's Manual"
+>> +.SH NAME
+>> +close_range \- close all file descriptors in a given range
+>> +.SH SYNOPSIS
+>> +.nf
+>> +.B #include <linux/close_range.h>
+>> +.PP
+>> +.BI "int close_range(int " first ", int " last ", unsigned int " flags );
+> 
+> Note, the kernel prototype uses unsigned int as the type for file
+> descriptor arguments. As does the close() syscall itself. Only glibc
+> wrappers expose file descriptor types (at least in close variants) as
+> int.
+> Since this is a manpage about the syscall not the wrapper it might make
+> sense to note the correct types.
+> 
+>> +.fi
+>> +.SH DESCRIPTION
+>> +The
+>> +.BR close_range ()
+>> +system call closes all open file descriptors from
+>> +.I first
+>> +to
+>> +.IR last
+>> +(included).
+>> +.PP
+>> +Errors closing a given file descriptor are currently ignored.
+>> +.PP
+>> +.I flags
+>> +can be set to
+>> +.B CLOSE_RANGE_UNSHARE
+>> +to unshare the range of file descriptors from any other processes,
+>> +.I instead
+>> +of closing them.
+> 
+> As Michael has noted, this needs to be reworded. A few things to note:
+> - CLOSE_RANGE_UNSHARE will ensure that the calling process will have a
+>   private file descriptor table. This ensures that other threads opening
+>   files cannot inject new file descriptors into the caller's file
+>   descriptor table to e.g. make the caller inherit unwanted file
+>   descriptors.
+> - CLOSE_RANGE_UNSHARE is conceptually equivalent to:
+>   unshare(CLONE_FILES);
+>   close_range(3, ~0U);
+
+AFAICS after reading the code, if the unsharing fails,
+it will not close any file descriptors (please correct me if I'm wrong).
+
+Just wanted to be sure that it was the intended behavior with you,
+and if so, it would be good to document it in the page.
+
+> - Whenever the requested range @last is greater than the current maximum
+>   number of file descriptors allocated in the caller's file descriptor
+>   table the kernel will only unshare a new file descriptor table for the
+>   caller up to @first, i.e. the new file descriptor table will be 0 up
+>   to and including @first not 0 up to and including @last. Which means
+>   that the kernel will not have to do any costly filp_close() calls at
+>   all. In essence, the close_range() operation is finished after the
+>   in-kernel unshare call in such cases.
+> 
+> Christian
+> 
+
 -- 
-1.9.1
-
+Alejandro Colomar
+Linux man-pages comaintainer; http://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es
