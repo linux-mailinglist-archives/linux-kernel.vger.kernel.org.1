@@ -2,71 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D392D3EC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:31:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE692D3ECA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729289AbgLIJ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:29:40 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9140 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727273AbgLIJ3j (ORCPT
+        id S1729313AbgLIJar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:30:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728613AbgLIJal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:29:39 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CrWtw3ZdRz15YWk;
-        Wed,  9 Dec 2020 17:28:24 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Dec 2020 17:28:48 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <johan@kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] usb: serial: simplify the ark3116_write_reg()
-Date:   Wed, 9 Dec 2020 17:29:17 +0800
-Message-ID: <20201209092917.20681-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Wed, 9 Dec 2020 04:30:41 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43667C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:30:26 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id a3so896657wmb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:30:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=L61+JwkcFzkud7jR/ngEi5aVujc/do/nVLhcrDG/U8k=;
+        b=k3RHRHtV5XNvz0FnIXPif1joM+tCHTwCDBCVYI7Fkq4M8PyR36rHWwZVqjJXxHp3QR
+         bnfXyMEYEdGkGiprQvtkTXJiOtwSOC0D+O9nk5moay5UV0Ylc7q4QFxcTr2MURouNGmn
+         7C93MSB4SgsK5E4IiQ/7ZYiTAHMCh7PDCyVQbIKDKkhfWlI5MtuwgjG8aR444jtUDXDQ
+         QUpcCzgWiSEiOnkHysofod4gNjGzP/KjydFr/2dlxZIX2mUT8s66qZQXh+YYN3kO9nhj
+         p45rN2rTcRaFWn59p8ud0TXlARrXzP6mo+f9SEz8/QSzT9Vv5tWscIQHk3KAsz4Ku4i4
+         +fPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L61+JwkcFzkud7jR/ngEi5aVujc/do/nVLhcrDG/U8k=;
+        b=ciYmt3/7POxItY87R/zUO6rVjNhobWuHGHPXPePBO2jPHBMtCFO2dco7KBwftWS6P6
+         wbhHe/ee9UlpF8JSBAa4DqB0H6mDfwwG/gvJ9bJq5PEocosw8wM8375/eaAKmzKh+GaH
+         XCfrfleJds2VAPVqb6rcNapDAz8oEQI2hptPweqC1gzDG/5gknuRSUQKCysCTSRBxyAg
+         dCJyBi3KtFw5SuEY96pBUuHlLp1HetUKW5ui2xa3o+eDL82zlB+zNBT4Sj152OKX1t9k
+         bAt4m6uGml9k4gn/S2d4F/YUuHC9OO9eyVX9p6efifNh1kMczXVniT53saLKv0qceMrL
+         JaCA==
+X-Gm-Message-State: AOAM530QUIYIuNtEMePVEEZQBnMKirPyxikQALtEMWajorpAT+yfqEYG
+        MdpAsTXRDz3NMv4GsVbNzBbAPoT/mdwOnw==
+X-Google-Smtp-Source: ABdhPJwqcV0/86kY52CzPqXaDjCXA6dBC2F9HG+ByXzdzWJaOzBWEPskANgnY9UktMu/luOWbxK7Bg==
+X-Received: by 2002:a1c:55ca:: with SMTP id j193mr1734133wmb.87.1607506224513;
+        Wed, 09 Dec 2020 01:30:24 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8cf2:3820:1fbd:70ad? ([2a01:e34:ed2f:f020:8cf2:3820:1fbd:70ad])
+        by smtp.googlemail.com with ESMTPSA id d8sm2053234wrp.44.2020.12.09.01.30.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 01:30:23 -0800 (PST)
+Subject: Re: [PATCH 1/3] thermal: core: Add indication for userspace usage
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>, amitk@kernel.org,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201128175450.12456-1-kai.heng.feng@canonical.com>
+ <004fe225-1009-06d8-b297-c03a4c67550f@linaro.org>
+ <860126B8-1152-4EE3-B15E-B4E45EFE879F@canonical.com>
+ <fc67ad02826fb3adfd8457e1a0baf234a8fa3fce.camel@linux.intel.com>
+ <34348B03-5E27-49A0-A704-6332BAC00758@canonical.com>
+ <585bb5d3ee5bea063795682108576c3464ba72b6.camel@linux.intel.com>
+ <D53454A1-5ED0-4B4D-B22F-8663C9970ECD@canonical.com>
+ <f863f2e1e322a8819c660f5eefbbc4acf7522990.camel@linux.intel.com>
+ <FCFE1F21-2EC6-4D3A-8B2E-32C653816D58@canonical.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <4767b493-fa24-e294-66df-3989b72bfb01@linaro.org>
+Date:   Wed, 9 Dec 2020 10:30:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+In-Reply-To: <FCFE1F21-2EC6-4D3A-8B2E-32C653816D58@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
+On 07/12/2020 06:36, Kai-Heng Feng wrote:
+> 
+> 
+>> On Dec 1, 2020, at 02:39, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
+>>
+>> On Tue, 2020-12-01 at 02:22 +0800, Kai-Heng Feng wrote:
+>>>> On Dec 1, 2020, at 02:13, Srinivas Pandruvada <
+>>>> srinivas.pandruvada@linux.intel.com> wrote:
+>>>
+>>> [snipped] 
+>>>
+>>>>>> What about creating an new callback
+>>>>>>
+>>>>>> enum thermal_trip_status {
+>>>>>> 	THERMAL_TRIP_DISABLED = 0,
+>>>>>> 	THERMAL_TRIP_ENABLED,
+>>>>>> };
+>>>>>>
+>>>>>> int get_trip_status(struct thermal_zone_device *, int trip,
+>>>>>> enum
+>>>>>> thermal_trip_status *state);
+>>>>>>
+>>>>>> Then in 
+>>>>>> static void handle_thermal_trip(struct thermal_zone_device *tz,
+>>>>>> int
+>>>>>> trip)
+>>>>>> {
+>>>>>>
+>>>>>> /* before tz->ops->get_trip_temp(tz, trip, &trip_temp); */
+>>>>>> if (tz->ops->get_trip_status) {
+>>>>>> 	enum thermal_trip_status *status;
+>>>>>>
+>>>>>> 	if (!tz->ops->get_trip_status(tz, trip, &status)) {
+>>>>>> 		if (status == THERMAL_TRIP_DISABLED)
+>>>>>> 			return;	
+>>>>>> 	}
+>>>>>> }
+>>>>>> ...
+>>>>>> ...
+>>>>>>
+>>>>>> }
+>>>>>>
+>>>>>>
+>>>>>> This callback will help the cases:
+>>>>>> - Allows drivers to selectively disable certain trips during
+>>>>>> init
+>>>>>> state
+>>>>>> or system resume where there can be spikes or always. int340x
+>>>>>> drivers
+>>>>>> can disable always.
+>>>>>
+>>>>> This sounds really great. This is indeed can happen on system
+>>>>> resume,
+>>>>> before userspace process thaw.
+>>>>>
+>>>>>> - Still give options for drivers to handle critical trip even
+>>>>>> if
+>>>>>> they
+>>>>>> are bound to user space governors. User space process may be
+>>>>>> dead,
+>>>>>> so
+>>>>>> still allow kernel to process graceful shutdown
+>>>>>
+>>>>> To make the scenario happen, do we need a new sysfs to let
+>>>>> usespace
+>>>>> enable it with THERMAL_TRIP_ENABLED?
+>>>> This should be drivers call not user space.
+>>>
+>>> Understood. So after thermal_zone_device_register(), the driver can
+>>> decide to what to return on get_trip_temp().
+>> get_trip_status()
+>>
+>>> Let me work on a new patch if there's no other concern.
+>> Better to wait for confirmation from Daniel and others.
+> 
+> Daniel,
+> 
+> Do you like Srinivas' proposed solution?
+> 
+> I hope we can find a solution in upstream kernel soon.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/usb/serial/ark3116.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+(just trying to figure out the full context)
 
-diff --git a/drivers/usb/serial/ark3116.c b/drivers/usb/serial/ark3116.c
-index 71a9206ea1e2..0f9fa0e7c50e 100644
---- a/drivers/usb/serial/ark3116.c
-+++ b/drivers/usb/serial/ark3116.c
-@@ -77,16 +77,11 @@ struct ark3116_private {
- static int ark3116_write_reg(struct usb_serial *serial,
- 			     unsigned reg, __u8 val)
- {
--	int result;
- 	 /* 0xfe 0x40 are magic values taken from original driver */
--	result = usb_control_msg(serial->dev,
--				 usb_sndctrlpipe(serial->dev, 0),
--				 0xfe, 0x40, val, reg,
--				 NULL, 0, ARK_TIMEOUT);
--	if (result)
--		return result;
--
--	return 0;
-+	return usb_control_msg(serial->dev,
-+			       usb_sndctrlpipe(serial->dev, 0),
-+			       0xfe, 0x40, val, reg,
-+			       NULL, 0, ARK_TIMEOUT);
- }
- 
- static int ark3116_read_reg(struct usb_serial *serial,
+If the device is enumerated outside of a thermal zone, the sensor should
+not register in the thermal zone no ?
+
+
+
 -- 
-2.22.0
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
