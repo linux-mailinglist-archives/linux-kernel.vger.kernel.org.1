@@ -2,111 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D8B2D4611
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DBC2D4613
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732321AbgLIP4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:56:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729694AbgLIP4O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:56:14 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02421C0613CF;
+        id S1732360AbgLIP4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:56:35 -0500
+Received: from foss.arm.com ([217.140.110.172]:36524 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729694AbgLIP4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 10:56:22 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 071471FB;
+        Wed,  9 Dec 2020 07:55:36 -0800 (PST)
+Received: from [10.57.24.55] (unknown [10.57.24.55])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C20013F68F;
         Wed,  9 Dec 2020 07:55:34 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id i9so2111307ioo.2;
-        Wed, 09 Dec 2020 07:55:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zstl4VMCs3G0pjLC+YkVEZlA8OjymAgEot08kHBSROY=;
-        b=Ps/O8JbVjcLvhENJ6G5iO5LjxQRI9d44KSY76AZDDx4+fBxdIT+F6zb+dkcOkxFUJ+
-         q24xNlQI1ClpR2xjkPa+Axetxu2YMNN1gF9+ipc3ij9aAVI8g2QITfbXy3aH0rJkLuUU
-         4Qkr2fM38w0i65NJut0uIKl1FeKVsr0sSNKVXh4GjY7q0U36DZMCGaOPoPDKhmE/K3RH
-         jALcnBSKnXh2cUnNB9tsLNyVjhBzc1qcCqbWsI1/XaisxY0dk3j0Mf0swJBiV6hRfEi4
-         b1dHjrDNjpEfplLORoTVv4lg63jeSq22E+BT4IxEqugcLx4asOzgU56L27ZpRckP76c7
-         LpTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zstl4VMCs3G0pjLC+YkVEZlA8OjymAgEot08kHBSROY=;
-        b=lWsFfEiFXNaxbw85L+28SpsHkLuL2WGRyEb5JzOhGsM8sx/BMrtOT7yJVff0cdquZ9
-         gMhQcKAFsP8qifHYo7JXXCoe9q2ljRvgg0vW+WTqndFa2ZQ91a+O5i1N6lKwbDXDLzbn
-         eGDx23y60MR1eK7MlkVlJtjtWrF9RMAMsfWvRn9xelay9oCnp+mXRk+q+HrUDngLb95e
-         hOv6udYBmwASh9aVxvmfgTIO06ir4GJSsZ5MKw0TCtYtUMEFqSFPaPmaDYsXDWB/Lf7v
-         EO3EgEsEzZQeaHjvavJaveM42U3nDDFaAD0vhFAmY1Ejv2l8pUlQIwcMAbGBGCQuCLK1
-         h+vQ==
-X-Gm-Message-State: AOAM530tRIRNqZWjf4pDRepxPLmkKQAPi2WyDwojV59Xplha2Sbtb1kF
-        c72VdnX7+JQCMQi1KNrR4UgmYZSkleDdjnlITxk=
-X-Google-Smtp-Source: ABdhPJxiZHRuphbkyQLwzgeJDOAAnf7/ySDTEIkbqmrtxhI/URFIExXjE1IzV9OSURgtsO4HF/M0c94HnPIXwXiuWVQ=
-X-Received: by 2002:a05:6638:5b2:: with SMTP id b18mr3900596jar.69.1607529333389;
- Wed, 09 Dec 2020 07:55:33 -0800 (PST)
+Subject: Re: [PATCH] thermal/core: Emit a warning if the thermal zone is
+ updated without ops
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rui.zhang@intel.com, Thara Gopinath <thara.gopinath@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201207190530.30334-1-daniel.lezcano@linaro.org>
+ <2b8ce280-cb91-fb23-d19a-00dcee2a3e5a@arm.com>
+ <81e25f27-344e-f6c2-5f08-68068348f7ba@linaro.org>
+ <dd5f9f97-ab30-5bb0-1211-66d211035968@arm.com>
+ <7dff767d-3089-584e-f77d-33018faa38ea@linaro.org>
+ <90989e59-f880-93df-7fbf-74c26fa8258f@arm.com>
+ <652ae54b-45aa-eef2-bf96-b4eae941ef04@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <aa40f440-7b1e-1220-1719-e396ea7390ae@arm.com>
+Date:   Wed, 9 Dec 2020 15:55:33 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20201203095342.73591-1-alexandru.ardelean@analog.com>
- <CAHp75VffjpFyh0G3F6v0j5tXrURA2pCtWsSztC7KejhBFuLTvw@mail.gmail.com>
- <CA+U=DsoNHebsuGDhGnJOwFbkYtGY+1Gs_mhCssH+FYk3Y05eZA@mail.gmail.com> <CAHp75VcxZd1xW+ayi_km3zCYKV3aC1VRJ5bwyVpevZkvgg_ipw@mail.gmail.com>
-In-Reply-To: <CAHp75VcxZd1xW+ayi_km3zCYKV3aC1VRJ5bwyVpevZkvgg_ipw@mail.gmail.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Wed, 9 Dec 2020 17:55:22 +0200
-Message-ID: <CA+U=DspEg=XpOUKqtammKqOoLXoXEDKWQHqSauM1xna_Y+eqjA@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: core: register chardev only if needed
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <652ae54b-45aa-eef2-bf96-b4eae941ef04@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 5:53 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Wed, Dec 9, 2020 at 5:45 PM Alexandru Ardelean
-> <ardeleanalex@gmail.com> wrote:
-> > On Wed, Dec 9, 2020 at 5:37 PM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > > On Thu, Dec 3, 2020 at 11:55 AM Alexandru Ardelean
-> > > <alexandru.ardelean@analog.com> wrote:
->
-> ...
->
-> > > Are you sure there is no user space application that doesn't rely on
-> > > character device to be always present?
-> >
-> > Nope.
-> > I'm not sure.
-> > I'm also not completely sure how Jonathan feels about this patch being
-> > added now [so late].
-> >
-> > Though, technically if the chardev was already there, without all the
-> > control in place [to enable IIO buffers and other stuff through the
-> > chardev] then it's technically just a "marker" file.
-> > Which arguably is a lot to have (i.e. chardev that should be unusable).
-> >
-> > If it is usable with no control in place for buffers or other stuff
-> > (i.e. I missed something), then I also don't know.
-> >
-> > So, this patch on it's own can still be interpreted as an RFC.
-> > See:
-> > https://lore.kernel.org/linux-iio/20201121180246.772ad299@archlinux/
->
-> Don't take me wrong, I'm not against a good change (I doesn't like
-> dangling files), but it might break some use cases.
 
-Yeah I know.
-But how else do you know if a dangling file might break some use cases?
 
-The worst that would happen is that we get a report and create a Fixes
-tag and we know.
-But if we don't try it, we're stuck with it, and will never know.
+On 12/9/20 12:20 PM, Daniel Lezcano wrote:
+> On 09/12/2020 11:41, Lukasz Luba wrote:
+>>
+>>
+>> On 12/8/20 3:19 PM, Daniel Lezcano wrote:
+>>> On 08/12/2020 15:37, Lukasz Luba wrote:
+>>>>
+>>>>
+>>>> On 12/8/20 1:51 PM, Daniel Lezcano wrote:
+>>>>>
+>>>>> Hi Lukasz,
+>>>>>
+>>>>> On 08/12/2020 10:36, Lukasz Luba wrote:
+>>>>>> Hi Daniel,
+>>>>>
+>>>>> [ ... ]
+>>>>>
+>>>>>>>        static void thermal_zone_device_init(struct thermal_zone_device
+>>>>>>> *tz)
+>>>>>>> @@ -553,11 +555,9 @@ void thermal_zone_device_update(struct
+>>>>>>> thermal_zone_device *tz,
+>>>>>>>          if (atomic_read(&in_suspend))
+>>>>>>>              return;
+>>>>>>>      -    if (!tz->ops->get_temp)
+>>>>>>> +    if (update_temperature(tz))
+>>>>>>>              return;
+>>>>>>>      -    update_temperature(tz);
+>>>>>>> -
+>>>>>>
+>>>>>> I think the patch does a bit more. Previously we continued running the
+>>>>>> code below even when the thermal_zone_get_temp() returned an error
+>>>>>> (due
+>>>>>> to various reasons). Now we stop and probably would not schedule next
+>>>>>> polling, not calling:
+>>>>>> handle_thermal_trip() and monitor_thermal_zone()
+>>>>>
+>>>>> I agree there is a change in the behavior.
+>>>>>
+>>>>>> I would left update_temperature(tz) as it was and not check the
+>>>>>> return.
+>>>>>> The function thermal_zone_get_temp() can protect itself from missing
+>>>>>> tz->ops->get_temp(), so we should be safe.
+>>>>>>
+>>>>>> What do you think?
+>>>>>
+>>>>> Does it make sense to handle the trip point if we are unable to read
+>>>>> the
+>>>>> temperature?
+>>>>>
+>>>>> The lines following the update_temperature() are:
+>>>>>
+>>>>>     - thermal_zone_set_trips() which needs a correct tz->temperature
+>>>>>
+>>>>>     - handle_thermal_trip() which needs a correct tz->temperature to
+>>>>> compare with
+>>>>>
+>>>>>     - monitor_thermal_zone() which needs a consistent tz->passive.
+>>>>> This one
+>>>>> is updated by the governor which is in an inconsistent state because
+>>>>> the
+>>>>> temperature is not updated.
+>>>>>
+>>>>> The problem I see here is how the interrupt mode and the polling mode
+>>>>> are existing in the same code path.
+>>>>>
+>>>>> The interrupt mode can call thermal_notify_framework() for critical/hot
+>>>>> trip points without being followed by a monitoring. But for the other
+>>>>> trip points, the get_temp is needed.
+>>>>
+>>>> Yes, I agree that we can bail out when there is no .get_temp() callback
+>>>> and even not schedule next polling in such case.
+>>>> But I am just not sure if we can bail out and not schedule the next
+>>>> polling, when there is .get_temp() populated and the driver returned
+>>>> an error only at that moment, e.g. indicating some internal temporary,
+>>>> issue like send queue full, so such as -EBUSY, or -EAGAIN, etc.
+>>>> The thermal_zone_get_temp() would pass the error to update_temperature()
+>>>> but we return, losing the next try. We would not check the temperature
+>>>> again.
+>>>
+>>> Hmm, right. I agree with your point.
+>>>
+>>> What about the following changes:
+>>>
+>>>    - Add the new APIs:
+>>>
+>>>      thermal_zone_device_critical(struct thermal_zone_device *tz);
+>>>        => emergency poweroff
+>>>
+>>>      thermal_zone_device_hot(struct thermal_zone_device *tz);
+>>>        => userspace notification
+>>
+>> They look promising, I have to look into the existing code.
+>> When they would be called?
+> 
+> They can be called directly by the driver when there is no get_temp
+> callback instead of calling thermal_zone_device_update, and by the usual
+> code path via handle_critical_trip function.
+> 
+> Also that can solve the issue [1] when registering a device which is
+> already too hot [1] by adding the ops in the thermal zone.
+> 
+> [1] https://lkml.org/lkml/2020/11/28/166
+> 
 
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+
+Thank you for the link. I went through these discussions. Let me add
+some comment below your posted RFC.
+
