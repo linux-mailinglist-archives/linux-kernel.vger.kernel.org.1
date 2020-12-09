@@ -2,71 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C882D3ECE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:31:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C92B2D3EDC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729331AbgLIJba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:31:30 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8736 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728446AbgLIJb1 (ORCPT
+        id S1729345AbgLIJd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:33:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45139 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729010AbgLIJd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:31:27 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CrWwr0JddzknSf;
-        Wed,  9 Dec 2020 17:30:04 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Dec 2020 17:30:35 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] mtd: rawnand: simplify the cs553x_write_ctrl_byte()
-Date:   Wed, 9 Dec 2020 17:31:03 +0800
-Message-ID: <20201209093103.20742-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Wed, 9 Dec 2020 04:33:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607506320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W6cW4CaC6vRkex8b1uivDQizxuPVFLQvTcxdJxTGoT8=;
+        b=K2Uiw9dZilQ2X1+V/uyTV4YpTKZVoyBBey6dpC/xGr3NpBciJnWS4C/ic3Qtxx6lAxT2Is
+        VK7ZnY91rw14Kl9Uigq+4dNp7NKJhhgn6/F7qZAsHTQtVmXx0M+PbK++nWKgeBJZhc2mMG
+        p3nbAt92NtSaTBLTVahqmXZLi+jnfLg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-mt-nlmTxMZmaliXtXLKgmg-1; Wed, 09 Dec 2020 04:31:58 -0500
+X-MC-Unique: mt-nlmTxMZmaliXtXLKgmg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A079802B40;
+        Wed,  9 Dec 2020 09:31:56 +0000 (UTC)
+Received: from [10.72.12.31] (ovpn-12-31.pek2.redhat.com [10.72.12.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 89EBE5275D;
+        Wed,  9 Dec 2020 09:31:42 +0000 (UTC)
+Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org, corbet@lwn.net,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv@lists.infradead.org, stefanha@redhat.com,
+        msuchanek@suse.de
+References: <20201203191135.21576-1-info@metux.net>
+ <20201203191135.21576-2-info@metux.net>
+ <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
+ <96aca1e6-2d5a-deb1-2444-88f938c7a9de@metux.net>
+ <20201205142218-mutt-send-email-mst@kernel.org>
+ <842519cc-94ca-3c11-ddd6-543e5a89c998@redhat.com>
+ <20201207085247-mutt-send-email-mst@kernel.org>
+ <0a9c19bd-0d25-1035-57e3-b1f5f204c309@redhat.com>
+ <500d0c68-0c6d-f5fb-665b-74aec6d59f99@metux.net>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <9e11f1ab-6b7c-d50e-d7db-633ebc3d358c@redhat.com>
+Date:   Wed, 9 Dec 2020 17:31:41 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+In-Reply-To: <500d0c68-0c6d-f5fb-665b-74aec6d59f99@metux.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/mtd/nand/raw/cs553x_nand.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+On 2020/12/8 下午3:02, Enrico Weigelt, metux IT consult wrote:
+> On 08.12.20 03:36, Jason Wang wrote:
+>
+> Hi,
+>
+>> So we endup with two solutions (without a prompt):
+>>
+>> 1) using select, user may end up with driver without transport
+> IMHO not an entirely unusual situation in other places of the kernel,
+> eg. one can enable USB devices, w/o having an usb host adapter enabled.
+>
+> And even if some USB-HA driver is enabled, the actualy machine doesn't
+> necessarily have the corresponding device.
 
-diff --git a/drivers/mtd/nand/raw/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
-index 282203debd0c..a616aaa2e3dc 100644
---- a/drivers/mtd/nand/raw/cs553x_nand.c
-+++ b/drivers/mtd/nand/raw/cs553x_nand.c
-@@ -105,17 +105,12 @@ static int cs553x_write_ctrl_byte(struct cs553x_nand_controller *cs553x,
- 				  u32 ctl, u8 data)
- {
- 	u8 status;
--	int ret;
- 
- 	writeb(ctl, cs553x->mmio + MM_NAND_CTL);
- 	writeb(data, cs553x->mmio + MM_NAND_IO);
--	ret = readb_poll_timeout_atomic(cs553x->mmio + MM_NAND_STS, status,
--					!(status & CS_NAND_CTLR_BUSY), 1,
--					100000);
--	if (ret)
--		return ret;
--
--	return 0;
-+	return readb_poll_timeout_atomic(cs553x->mmio + MM_NAND_STS, status,
-+					 !(status & CS_NAND_CTLR_BUSY), 1,
-+					 100000);
- }
- 
- static void cs553x_data_in(struct cs553x_nand_controller *cs553x, void *buf,
--- 
-2.22.0
+
+Ok, then select works for me.
+
+
+>
+>> 2) using depends, user need to enable at least one transport
+>>
+>> 2) looks a little bit better I admit.
+> So, all virtio devices should depend on TRANSPORT_A || TRANSPORT_B ||
+> TRANSPORT_C || ... ? (and also change all these places if another
+> transport is added) ?
+
+
+I think not. The idea is, if none of the transport (select VIRTIO) is 
+enabled, user can not enable any virtio drivers (depends on VIRTIO).
+
+Thanks
+
+
+>
+> --mtx
+>
 
