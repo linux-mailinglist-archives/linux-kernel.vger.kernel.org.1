@@ -2,93 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300A52D3A39
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF84F2D3A3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbgLIFT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 00:19:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
+        id S1726146AbgLIFYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 00:24:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbgLIFT7 (ORCPT
+        with ESMTP id S1725995AbgLIFYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 00:19:59 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549FDC0613CF;
-        Tue,  8 Dec 2020 21:19:19 -0800 (PST)
-Received: from ip4d149f6e.dynamic.kabel-deutschland.de ([77.20.159.110] helo=truhe.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1kmrsg-0005wp-FX; Wed, 09 Dec 2020 06:19:14 +0100
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: reporting-issues: move 'outdated, need help' note to proper place
-Date:   Wed,  9 Dec 2020 06:19:14 +0100
-Message-Id: <d3894ba4a302beed661304cbcdc062c6dcfe3e58.1607489877.git.linux@leemhuis.info>
-X-Mailer: git-send-email 2.29.2
+        Wed, 9 Dec 2020 00:24:11 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7F6C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 21:23:31 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id v29so444542pgk.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 21:23:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3Tqs2Bz7msoUPZyObgWN3xF+h9p+l/eCjvEQpWbPSSU=;
+        b=OxsOUIM85/FYIPIB2R8Z1zNH6hhLEXdXRuOIyltjsnOhdz5a0A9+eE5h1rpwrsrPQr
+         1bXqCha3Xg+zai8ciecNwe/HLZ3kOOJP34uXiIE8cSOdtq2rNDHl9X6xyg/E9r9wlBvh
+         PmbqoP3V2IMQ7i2Obc87ZNu55h0VtVcejwoZzw07sPSZggoVY09+XnnId1dIIrxpBqvD
+         jLrlbGRCUmCESTmyCYxcy89c+6kuLUnt/ZQYafUPlcP9pJgaTXuHm50LIKQls5hoiude
+         YACweNLn3mWmGyxYsuIAPBe1LR/5D4OrYpBsn36s47Sw7LuDo+GFIB6j9dcOyrWEgeju
+         FFFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3Tqs2Bz7msoUPZyObgWN3xF+h9p+l/eCjvEQpWbPSSU=;
+        b=hxYWSIVRzcQczPB4rwPjRrwxe1R0LBDvKMPPmW4t8O72paLuxzP6NfW8oOBA349NHn
+         iYtM+eP+rbI0FxlMwIRweUs4u0pAuQnU7nCzmhlZ6Rn+SwmTNCtkhj7yBg1spcXClix8
+         ygiBCXqkAdS8dW2+FiSL/lU0lDi5abzoSfC/vc/ipVFRlpVGevUwdSsPcEMKj3eKHG6N
+         w7+L7qdbHltI2o2+VV7Vtmpq0imGQ9KZltyzAEGJvlETUPPMYziM8hADzlXO7Zkaxmei
+         SzhXDPrWl+7esPDOYbxNnEaj4R4WQ8WCxs50iuOqahJmVlu5/eICOqKk/ZMfsBowcv2J
+         0z+w==
+X-Gm-Message-State: AOAM5316os4ULdrAZq6sFDgzp0kgSRWyFkBn67vEr4OSPKwCTgAMrpPC
+        l26iK1+eoivtqA/EP9bbgR2l1q9mzog+sQufih+JXQ==
+X-Google-Smtp-Source: ABdhPJxqk+LGhDRPp0umcyl3h6fe4zAxBkF8KehhsBTBAZyCA/jdz6XKfvdMdjdIFiZftrcAFMyYhQT0xlTg5L2ZAXg=
+X-Received: by 2002:a05:6a00:acc:b029:198:2ba6:c0f6 with SMTP id
+ c12-20020a056a000accb02901982ba6c0f6mr782498pfl.53.1607491410514; Tue, 08 Dec
+ 2020 21:23:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1607491159;8cd44f12;
-X-HE-SMSGID: 1kmrsg-0005wp-FX
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
+ <CABCJKueCHo2RYfx_A21m+=d1gQLR9QsOOxCsHFeicCqyHkb-Kg@mail.gmail.com>
+ <CAK8P3a1Xfpt7QLkvxjtXKcgzcWkS8g9bmxD687+rqjTafTzKrg@mail.gmail.com> <CAK8P3a3O65m6Us=YvCP3QA+0kqAeEqfi-DLOJa+JYmBqs8-JcA@mail.gmail.com>
+In-Reply-To: <CAK8P3a3O65m6Us=YvCP3QA+0kqAeEqfi-DLOJa+JYmBqs8-JcA@mail.gmail.com>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Tue, 8 Dec 2020 21:23:18 -0800
+Message-ID: <CAFP8O3L35sj117VJeE3pUPE2H4++z2g48Gfd-8Ca=CUtP1LVWw@mail.gmail.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the 'this section is a placeholder for now and needs help by
-someone with domain knowledge' note one section upwards to the place
-where it belongs: the 'Decode failure messages' section.
+On Tue, Dec 8, 2020 at 1:02 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Tue, Dec 8, 2020 at 9:59 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > Attaching the config for "ld.lld: error: Never resolved function from
+> >   blockaddress (Producer: 'LLVM12.0.0' Reader: 'LLVM 12.0.0')"
+>
+> And here is a new one: "ld.lld: error: assignment to symbol
+> init_pg_end does not converge"
+>
+>       Arnd
+>
 
-Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
----
-Brown paper bag fixup :-/
-
----
- .../admin-guide/reporting-issues.rst          | 24 +++++++++----------
- 1 file changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documentation/admin-guide/reporting-issues.rst
-index 5cbb1b5f4a52..07879d01fe68 100644
---- a/Documentation/admin-guide/reporting-issues.rst
-+++ b/Documentation/admin-guide/reporting-issues.rst
-@@ -923,18 +923,6 @@ instead you can join.
- Decode failure messages
- -----------------------
- 
--    *If the failure includes a stack dump, like an Oops does, consider decoding
--    it to find the offending line of code.*
--
--When the kernel detects an error, it will print a stack dump that allows to
--identify the exact line of code where the issue happens. But that information
--sometimes needs to get decoded to be readable, which is explained in
--admin-guide/bug-hunting.rst.
--
--
--Special care for regressions
------------------------------
--
- .. note::
- 
-    FIXME: The text in this section is a placeholder for now and quite similar to
-@@ -953,6 +941,18 @@ Special care for regressions
- 
- ..
- 
-+    *If the failure includes a stack dump, like an Oops does, consider decoding
-+    it to find the offending line of code.*
-+
-+When the kernel detects an error, it will print a stack dump that allows to
-+identify the exact line of code where the issue happens. But that information
-+sometimes needs to get decoded to be readable, which is explained in
-+admin-guide/bug-hunting.rst.
-+
-+
-+Special care for regressions
-+----------------------------
-+
-     *If your problem is a regression, try to narrow down when the issue was
-     introduced as much as possible.*
- 
-
-base-commit: 547f574fd9d5e3925d47fd44decbf6ab6df94b0e
--- 
-2.29.2
-
+This is interesting. I changed the symbol assignment to a separate
+loop in https://reviews.llvm.org/D66279
+Does raising the limit help? Sometimes the kernel linker script can be
+rewritten to be more friendly to the linker...
