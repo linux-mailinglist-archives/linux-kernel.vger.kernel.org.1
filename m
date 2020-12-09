@@ -2,164 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66992D38E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6292D38E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgLICl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 21:41:26 -0500
-Received: from mail-eopbgr1300087.outbound.protection.outlook.com ([40.107.130.87]:38880
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        id S1726828AbgLIClS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 21:41:18 -0500
+Received: from mail-am6eur05on2084.outbound.protection.outlook.com ([40.107.22.84]:57189
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726604AbgLIClT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 21:41:19 -0500
+        id S1725283AbgLIClS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 21:41:18 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lZKhLrxO/IFVolIJ8sZlBToxGNvOd2Hol6yJaUrRhb861yqJJ1SWbosyano1tW/4wxmaBvr6zgSFxOjUgXwXRfS2zl40Sl1jnaHF1XkflrtBCTfLmgD5BoLxNvAJqUdh3s9Ad3PYaJCasjYYCL1sLXc9SbZGTqlfzznZmtSjN7MDi2UwBU7qR+69m4yGB8Ghk4XpOEgOm8vsktd+f9Pu7hM72KoMWdyn3qmyn4TBzJULk8bco+l1+ZsTJJKG9iF2DryOcdfHgSdsoCl1EA3Gbxp9lzqPjtOuMAvbgxdflom37irOpR1ovJtXmI99e1fwdpgb0sGnKA/F2HeCOReeJg==
+ b=XEDhdMKErHNRrWreT4RXjjgJVffpOyaaLLgRyMQT08WIQmvgtFeX8n7L9Cag+EzWMyOdrbGBK0ow76nZ9sp3kFTckz7OfPPGA3AFkXpDzL0WUw8ds0hTYVKqAhlbDZoN/s/4pq8Z8uxK8iKHIr8Er4RAnDdVk1LCrqG8TLsIGt4xS1zguF1m/vmu8IYzhGK7l12bX+h+/yU5f/t7zTs+NQ67pOHWNr875FOHOcLH1a9F4XMe55gOWUfCuwygE2b9/SOc+78SxzJwRnfgzutPPUXtmJEUrwoxeyMkXtMuvD8Yv8EpSBUGKXKqWQxKQA+l/8SQt7ORqtUO6iRBWdYbEQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AMxXvGBy2MWXqsETDuiVKEL/Re0aGOm0lekuBhQnTEo=;
- b=Qq0Kr5fQMUdGhovJSg9L261k2sHTLyn/q5L7yPpiuVcsaIgumbDmMN5UFIwdOuvBP1PUR5qTegtp6wurwXXjiKH7V7t0HDW30oPgyRJCOdtKDBc372PT0WP1SkFW4JgrspgVLsP/dsRWJHZqLgxB+wRsUkMtsYd+iFMA+nt0BR6O3B55GSu1O/e0Ut5icEpOyCSTzE8T4gHl45U0gY9fW6XQ9O9UneYchC/0mSqiqG3dSC6qlmCwCtXORhp9wRpr0L8jpWxRUr/phTrbfxcC03ymPPuxtI9aRxnVX5qbfobueZfYCjR9YSE6UBoj9q2MGzDXdqKTRLlSQOJxTLZmHA==
+ bh=vDEJM/T8ODn12NbYgr9fl8BAeXmGMe+ID5TR6cMNDUA=;
+ b=cY/NpXy6trAYgYBmarHEL4U2XRoDFG85FNBOAbanCENV6Lsvpg8k2o6mJ8FqQwFG9MC+GeqTo5DDa1O3k1mhQ/QAxoIRxv6B31FPnyomO+jpiWOf4ctxzxG6XzIB3AK8dK84575PXzi1WTor34oJIu6s/x2/OGyK7l99zxdTVkZOTokY+Cpmqzzj9hqeUdIrwUtXfkLoXqPmyHsnykcGnVIuxqb3X6IS5LDhSzT9HnPlDz4vLY2Yv8uHHt2XbpMgTmOOU8zqRJHjU+O6HmEkCE4/2Xh/E4L+OJIfSjAtg7fpO5OwlGqwPqm6fzfHuxkRhPoJ/CcrrO0GIAMVcQRczA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oppoglobal.onmicrosoft.com; s=selector1-oppoglobal-onmicrosoft-com;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AMxXvGBy2MWXqsETDuiVKEL/Re0aGOm0lekuBhQnTEo=;
- b=r3HejG/BqV6ywKMLAt9zIWtCUoCVIBPTkjIpAs61FkFPbNO4YTPk/7C3NDMtWWzF0jkysnf/qB5hS89P83mr2PuUcykb9Zp8FHotb0nmUXkl7/QVzaVDpqJ0Shl31pxgprAw3PNQT7seoxw0l5yOK8vqROiHU8umbz3piEo8M6k=
-Authentication-Results: lists.ozlabs.org; dkim=none (message not signed)
- header.d=none;lists.ozlabs.org; dmarc=none action=none header.from=oppo.com;
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
- SG2PR02MB2461.apcprd02.prod.outlook.com (2603:1096:3:1d::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.12; Wed, 9 Dec 2020 02:39:42 +0000
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::dcd:13c1:2191:feb7]) by SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::dcd:13c1:2191:feb7%7]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
- 02:39:42 +0000
-From:   Huang Jianan <huangjianan@oppo.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     huangjianan@oppo.com, guoweichao@oppo.com, zhangshiming@oppo.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] erofs: avoid using generic_block_bmap
-Date:   Wed,  9 Dec 2020 10:39:30 +0800
-Message-Id: <20201209023930.15554-1-huangjianan@oppo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [58.252.5.72]
-X-ClientProxiedBy: HK2PR04CA0088.apcprd04.prod.outlook.com
- (2603:1096:202:15::32) To SG2PR02MB4108.apcprd02.prod.outlook.com
- (2603:1096:4:96::19)
+ bh=vDEJM/T8ODn12NbYgr9fl8BAeXmGMe+ID5TR6cMNDUA=;
+ b=mJcTify98Cx+auC77py6AcEFfmxHWzkqcDrGagrkyLBhWSUly+z88udqASX/0bBxF3EtqHaDTPkB7xRtyy4XqDHANknjBhvmRYFe93/DW0xvOjLX/pbe9O9C2b/HyB+EE/77WSH6egu1aDdU6yvHPIUH2dxdesgufWeLsxaDyZs=
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9)
+ by DB6PR0402MB2758.eurprd04.prod.outlook.com (2603:10a6:4:96::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19; Wed, 9 Dec
+ 2020 02:40:28 +0000
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c]) by DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c%5]) with mapi id 15.20.3632.023; Wed, 9 Dec 2020
+ 02:40:28 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Zou Wei <zou_wei@huawei.com>
+CC:     "pawell@cadence.com" <pawell@cadence.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] usb: cdnsp: Mark cdnsp_gadget_ops with static
+ keyword
+Thread-Topic: [PATCH -next] usb: cdnsp: Mark cdnsp_gadget_ops with static
+ keyword
+Thread-Index: AQHWzVyuwhB38e6st02GMKSdkSAp5anuDnKA
+Date:   Wed, 9 Dec 2020 02:40:28 +0000
+Message-ID: <20201209023958.GB995@b29397-desktop>
+References: <1607430649-116383-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1607430649-116383-1-git-send-email-zou_wei@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mutt/1.9.4 (2018-02-28)
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b07f78f2-f8ff-4176-c2d3-08d89bebca4a
+x-ms-traffictypediagnostic: DB6PR0402MB2758:
+x-microsoft-antispam-prvs: <DB6PR0402MB27588ABA67EBBFB2D17D6A748BCC0@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2399;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wcevAvUDR8OJjiIEJEWzg2Sk0J7O4bp3CfP3KWgpyFtUt7sypel9sBiGJBzO811GrafeQCvwQQHx5jFxSu+aE6Fsu1hyH3KTPyGSI8n3Iz/nl16Uei/MLf3npitZxxIMWV5GK58EnWlPWl0RjNGH0rcNeyTfYXGliBcypF5SbyDa+BfHvQbxbjQN9sv6sObMCEuMGckGWPRpLps7jVH3TxS7SdjzDDSkeu+5bd/Y0Jy/5wsjOR3La7/vLqQo1dfC/Y1sTnXL+a85pojF50SqFWZi+DoO7T+kq4lqvHZWFUCLMbYv+llxtbzSs/gYyZ0iRzMeLY2VsSZ73rN5aWWGWQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7979.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(346002)(136003)(376002)(2906002)(4326008)(8676002)(33716001)(26005)(83380400001)(6916009)(1076003)(33656002)(508600001)(71200400001)(44832011)(9686003)(53546011)(6506007)(86362001)(6512007)(6486002)(54906003)(186003)(4744005)(8936002)(91956017)(66446008)(64756008)(76116006)(66946007)(66476007)(66556008)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?lWrGzY2jF8jwdQ8s9/bL4qpVp9bFc7UJ+5cpBh9Fgkm+SHcdRMmi5VWqail2?=
+ =?us-ascii?Q?2gV+K0fEoMHLKaJetRdI1KR1Be1mTZTf6Mat7hq1cQntcibGCDf/X8qXngMk?=
+ =?us-ascii?Q?E5LaQH9QpIKs22CBqxTNDwQHygg+/incXO3o034wzYSpAAs+EnKYMzWjRJeq?=
+ =?us-ascii?Q?m7LxO9nLtQUl1HOIX2dTKufFBU6BwLFREKrqtX6p+z6p217fidOrUm1eJ6Ty?=
+ =?us-ascii?Q?UIdrrIvp/QC1k3dVjK+IiqeD5QEs6FlQxNtSbC0oGTdwsYk7PGOOivUvomTt?=
+ =?us-ascii?Q?IbI8i1f1GpAaW8COV14VRGsg5vEGiU4uFiDY+xAZbBXhdPWtbU9puu7cVgWp?=
+ =?us-ascii?Q?gLa0DF2lPkcfPeXqR8CgYabBiwpX1yxOXjMc/GkoXs+6ngJARFb/vymWVB9h?=
+ =?us-ascii?Q?QmL3tFCrbV3IlNzqJEtto7EbLFFK32vjUrG6kBaVbiOBxPkxEMWvoWM6RrKZ?=
+ =?us-ascii?Q?8GvnvaAxO6ECSJhIWnjDQj2CwAT3OpOdbbpCLfiroNyX3qB2rGKUXy0VtYm3?=
+ =?us-ascii?Q?TNb0R+baxibjsNssz8Oo3qYSaPChiis6eAq757x0yrXjxdna+AqvROYZ0KV0?=
+ =?us-ascii?Q?akXeMHDIB9DV1NJ4mEEkGdvbmWYGYCXAG5HkoMcTnDeG8DCba0k1c8mfIxDX?=
+ =?us-ascii?Q?xhwnaHNLrLJcZboSDu9LIsjKMq0feMcBkLokcak4nmowosTHgDLO90Xn4sox?=
+ =?us-ascii?Q?SauZ5CEdxrkTNosVioHdIWPQtyHa5HDz/Q52stChJrNjke7y/ZDTHeKZhtwk?=
+ =?us-ascii?Q?151I8D3qQptLvEe7s8yFCB+I6FZCXc6Hk1Uke+05NXx0BWen9/HUh4A+1n6j?=
+ =?us-ascii?Q?Cu8rFseIUi0vLwbDMCc83yeX/NDc1m2VBnFWh/gLNq3MnwSgzrMsTSvMXoSX?=
+ =?us-ascii?Q?eJDmxzZ/O3FNcZ1sPskmTcqVhOqDV1z8f3l8p9PASwnRQQLrOQVPONbrLSkY?=
+ =?us-ascii?Q?AzhdLi/jrTgxrH0XzyaOfASnZLuZhm6KrPotiw4OH2WzX9ilm6w+XY2RmwmH?=
+ =?us-ascii?Q?2xU/?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B8344A71C7110447AC89B34304F6E489@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (58.252.5.72) by HK2PR04CA0088.apcprd04.prod.outlook.com (2603:1096:202:15::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 02:39:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7ee02ae2-80fb-4aa6-9e8a-08d89bebaeb3
-X-MS-TrafficTypeDiagnostic: SG2PR02MB2461:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR02MB24618AD06128FC0F50BF98C4C3CC0@SG2PR02MB2461.apcprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:525;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: haN0CUqS0dZNJ46+tAr+aA5y4WB/YUne4cGMrg7R0wGMWjBVRwBTRqLDiq5sbv/YdDzZjpZX5oY77+kACxnaZjgteTKXRK4r8FTVEuhcDlZPDnYiOPdRgPrhU9S6L/9Lqs/BHYXqOVi0l6Uf372OUKpI68KWlB/yEnqSJAYMYDu04JQqzxr51KFwZKRA4J2Aw5A6hrKpzhEd3+IokeG9lTdsqOQASyCFJa44o2N+sXVUz606WNGRP2roOH55crXp/tCykYwe10m8/aDq1FKxudRvczs8VKEIo4oCslVmB2nq8sggBul/YudXLQfoaQBqOhu2ESJH9sPY1lI7eGbdKE5CyxC84EBHibF4Bi8K0USUh0IGn1c+5YwNulzZVf7lluGLB7oAkzTucoe3y63tdvy32zfpayNcy7JZiXV3WKgPt8+y+p2ha1TgycT/qMxtNBGadiJWs03QGa7xC225vQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(346002)(34490700003)(508600001)(86362001)(36756003)(5660300002)(956004)(8676002)(8936002)(2616005)(1076003)(69590400008)(6666004)(16526019)(6506007)(52116002)(2906002)(83380400001)(6916009)(6486002)(66946007)(66556008)(66476007)(6512007)(4326008)(186003)(26005)(11606006)(41533002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?F+TcP43WRdo7TYsMALSg34AijSzvZI26eCJV67wjZzMomwpbqt0w7WM53G/6?=
- =?us-ascii?Q?m3pr8z167t1ymZT3ypmf8obJT8B1hPAtV8upob/q5n50ov41lWvu/fvOSBgk?=
- =?us-ascii?Q?24FP2oqp6NW1wueZPG92aMRskzAtV034OvOKi2wxOujOw8oi0cR53MX4CtqI?=
- =?us-ascii?Q?Qi9OO1g5zxxvHssStOxzM4xEyIt4cRhu5s6Vf/+VS2vMuNc86yJ95MrTxINI?=
- =?us-ascii?Q?9UZ5i1hopcBRP3bAkhAwHCs+n5ALwbLu6LyAXmAlc9CHUxpWs89ucfsh7sGj?=
- =?us-ascii?Q?Mr2HBs/7r3OlS4f9S0gFjgy6w7j7DXLHXh+2ecUUQvM/rW+jVgiaE3ygEP/c?=
- =?us-ascii?Q?Dmo/vIjjcMu0XzYZ6OoEDZCZvb6NgR6Qk0QKobEuelLdIXPjiUUEOqzvEIgf?=
- =?us-ascii?Q?l0OYRQrQaO3HFsmhjUjuhBLKwQJ31qzDjZftw72Lc6qzvP5iBJVEoqwZAsRI?=
- =?us-ascii?Q?lbr/8gZBC0yf9caRTHc7rktP5yYsceuD72fJAEDBxzTiocKr0x10WsYqYluy?=
- =?us-ascii?Q?bjWoKMR7V4k+Z/65YDY5IZqmVKh/24pf78qF0whuqc6pL9AqUUFRaaczOh42?=
- =?us-ascii?Q?qECCr+QyiBPB4JUXeAK6Ihsqm71+yGJnRkoj/VGSkYKKcb8gclVeKRoFJPVf?=
- =?us-ascii?Q?94kPmzc/UNTgBUeUgqcBJwVt8mNpaOHv6Vr+zSKwEvRJoQEIGECCNnHvlNJC?=
- =?us-ascii?Q?QaCBBJu7cH0d4F+2+DXkPSDYl0VlRfc4qHTWx3tvfVCyB79xTd3OWH2PAtU4?=
- =?us-ascii?Q?rzCWnZJua2LkiTHw7A0Tax66IOTrJ+gmFxDBvglThX2Ibbq1eoYWZxYDjpqn?=
- =?us-ascii?Q?h5FYIP7Ye3MdpBX13edpMbxdZpnwRifd2IQj15wDLd1jCGbMc7sw8Gcyux06?=
- =?us-ascii?Q?Kevt41aKU94C5Q85uHfTwq3kDExGBdBUzHbXLpSOEBZkSyx4qY+QRHFFj9Iz?=
- =?us-ascii?Q?KD0o7fUvqRhW0OIGl2kvtj7ldpf0B6P3EC7Jn/CodBQ=3D?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
+X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 02:39:42.2162
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7979.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b07f78f2-f8ff-4176-c2d3-08d89bebca4a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Dec 2020 02:40:28.5078
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7ee02ae2-80fb-4aa6-9e8a-08d89bebaeb3
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QLK65YAX5i8bP3wTHDkHtkayf2VUJjPuLZdgq9FLoTID45wLjOHcRKmxeKXVz5nHo3xjMcep7nCpKx0qbrb/bw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB2461
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: q9EAPnaZg+QGrg4lmRUXt26Z98QZwsOVztBP2RYmstesBwm577bUb1vU7mCH3b+y0NI495wrsdQ3V3TmjnLFHg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2758
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-iblock indicates the number of i_blkbits-sized blocks rather than
-sectors.
+On 20-12-08 20:30:49, Zou Wei wrote:
+> Fix the following sparse warning:
+>=20
+> drivers/usb/cdns3/cdnsp-gadget.c:1546:29: warning: symbol 'cdnsp_gadget_o=
+ps' was not declared. Should it be static?
+>=20
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+>  drivers/usb/cdns3/cdnsp-gadget.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/usb/cdns3/cdnsp-gadget.c b/drivers/usb/cdns3/cdnsp-g=
+adget.c
+> index 9716273..c7c5d0a 100644
+> --- a/drivers/usb/cdns3/cdnsp-gadget.c
+> +++ b/drivers/usb/cdns3/cdnsp-gadget.c
+> @@ -1543,7 +1543,7 @@ static int cdnsp_gadget_pullup(struct usb_gadget *g=
+adget, int is_on)
+>  	return 0;
+>  }
+> =20
+> -const struct usb_gadget_ops cdnsp_gadget_ops =3D {
+> +static const struct usb_gadget_ops cdnsp_gadget_ops =3D {
+>  	.get_frame		=3D cdnsp_gadget_get_frame,
+>  	.wakeup			=3D cdnsp_gadget_wakeup,
+>  	.set_selfpowered	=3D cdnsp_gadget_set_selfpowered,
+> --=20
 
-In addition, considering buffer_head limits mapped size to 32-bits,
-should avoid using generic_block_bmap.
+Applied, thanks.
 
-Fixes: 9da681e017a3 ("staging: erofs: support bmap")
-Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-Signed-off-by: Guo Weichao <guoweichao@oppo.com>
----
- fs/erofs/data.c | 30 ++++++++++--------------------
- 1 file changed, 10 insertions(+), 20 deletions(-)
+--=20
 
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index 347be146884c..d6ea0a216b57 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -312,36 +312,26 @@ static void erofs_raw_access_readahead(struct readahead_control *rac)
- 		submit_bio(bio);
- }
- 
--static int erofs_get_block(struct inode *inode, sector_t iblock,
--			   struct buffer_head *bh, int create)
--{
--	struct erofs_map_blocks map = {
--		.m_la = iblock << 9,
--	};
--	int err;
--
--	err = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
--	if (err)
--		return err;
--
--	if (map.m_flags & EROFS_MAP_MAPPED)
--		bh->b_blocknr = erofs_blknr(map.m_pa);
--
--	return err;
--}
--
- static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
- {
- 	struct inode *inode = mapping->host;
-+	struct erofs_map_blocks map = {
-+		.m_la = blknr_to_addr(block),
-+	};
-+	sector_t blknr = 0;
- 
- 	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
- 		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
- 
- 		if (block >> LOG_SECTORS_PER_BLOCK >= blks)
--			return 0;
-+			goto out;
- 	}
- 
--	return generic_block_bmap(mapping, block, erofs_get_block);
-+	if (!erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW))
-+		blknr = erofs_blknr(map.m_pa);
-+
-+out:
-+	return blknr;
- }
- 
- /* for uncompressed (aligned) files and raw access for other files */
--- 
-2.25.1
-
+Thanks,
+Peter Chen=
