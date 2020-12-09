@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379B32D4859
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A452D485C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:52:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729177AbgLIRwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:52:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59520 "EHLO mx2.suse.de"
+        id S1729456AbgLIRwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:52:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726449AbgLIRwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:52:03 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD245AD3F;
-        Wed,  9 Dec 2020 17:51:20 +0000 (UTC)
-Subject: Re: [PATCH v2 sl-b 3/5] mm: Make mem_dump_obj() handle vmalloc()
- memory
-To:     paulmck@kernel.org, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, iamjoonsoo.kim@lge.com,
-        andrii@kernel.org, linux-mm@kvack.org
-References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
- <20201209011303.32737-3-paulmck@kernel.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <1c25ca09-ec43-df31-a5ba-476397637a53@suse.cz>
-Date:   Wed, 9 Dec 2020 18:51:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1728375AbgLIRwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:52:34 -0500
+X-Gm-Message-State: AOAM530y4QUf0cGgU8zIRU8GLYcT9iFMN2zPz6qZljF3tBpaqdUei+kM
+        PYF8OBSdIJK0mBtVaUng82kgkNjcDBZ33/ojEgA=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607536312;
+        bh=PkhafiKufzKb4ug4EZv6MWBGYou8NhXyEMjpgO/uc5E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nO+yHSD0aD/myoaEBloVJSGAXz/9Z9jr2v13Ie8CZZquSOaxn9x54EWCBKPspHYr9
+         C7ov27bcIKqHGqsw0G2b+SRoGTpaMyzBiPtAowkH+Ri14rs1FZxhzgI1YDBJU3B6Yh
+         wsPQInRPENeXuhDzJK8x93nWLhePtzQbjVQ4JCq8GZAw33D4KaIEBkodUp45W78tZY
+         oMFyQlU9exNc1aSWvJld48xqQbYIdgpTXz8nY/aMrldCE2NXZTQj2Tn4uTZWfo1B5Q
+         6pvYNvOpCKBRZd+m8zIp2GDb95NKAzMEotGY/d8IZOzA4HjydrO2M2hq91pKktRA4J
+         D4lKm4IJ0IP/Q==
+X-Google-Smtp-Source: ABdhPJwZtZIjXcrCwL02Q3BtuaRQhJR6T9E0Dq/dAi3/J5U0ZXsANoGU6mTtSwfetrFJDwqXgvlouDcEx+44OiL8SQA=
+X-Received: by 2002:aca:bd0b:: with SMTP id n11mr2533645oif.11.1607536311473;
+ Wed, 09 Dec 2020 09:51:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201209011303.32737-3-paulmck@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
+ <CAK8P3a2DYDCjkqf7oqWFfBT_=rjyJGgnh6kBzUkR8GyvxsB6uQ@mail.gmail.com> <CABCJKud7ZC7_rXVmrF5PnDOMZTJX9iB7uYAa03YF-dkEojnBxg@mail.gmail.com>
+In-Reply-To: <CABCJKud7ZC7_rXVmrF5PnDOMZTJX9iB7uYAa03YF-dkEojnBxg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 9 Dec 2020 18:51:34 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a04nQwJkK-CPWNzvfKavZnHQYzKX5OGB7Rm3Ee_62oXhA@mail.gmail.com>
+Message-ID: <CAK8P3a04nQwJkK-CPWNzvfKavZnHQYzKX5OGB7Rm3Ee_62oXhA@mail.gmail.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/20 2:13 AM, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
-> 
-> This commit adds vmalloc() support to mem_dump_obj().  Note that the
-> vmalloc_dump_obj() function combines the checking and dumping, in
-> contrast with the split between kmem_valid_obj() and kmem_dump_obj().
-> The reason for the difference is that the checking in the vmalloc()
-> case involves acquiring a global lock, and redundant acquisitions of
-> global locks should be avoided, even on not-so-fast paths.
-> 
-> Note that this change causes on-stack variables to be reported as
-> vmalloc() storage from kernel_clone() or similar, depending on the degree
-> of inlining that your compiler does.  This is likely more helpful than
-> the earlier "non-paged (local) memory".
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> Cc: <linux-mm@kvack.org>
-> Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+On Wed, Dec 9, 2020 at 5:25 PM 'Sami Tolvanen' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> On Wed, Dec 9, 2020 at 4:36 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > On Tue, Dec 8, 2020 at 1:15 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> >
+> > It seems to happen because of CONFIG_TRIM_UNUSED_KSYMS,
+> > which is a shame, since I think that is an option we'd always want to
+> > have enabled with LTO, to allow more dead code to be eliminated.
+>
+> Ah yes, this is a known issue. We use TRIM_UNUSED_KSYMS with LTO in
+> Android's Generic Kernel Image and the problem is that bitcode doesn't
+> yet contain calls to these functions, so autoksyms won't see them. The
+> solution is to use a symbol whitelist with LTO to prevent these from
+> being trimmed. I suspect we would need a default whitelist for LTO
+> builds.
 
-...
+A built-in allowlist sounds good to me. FWIW, in the randconfigs so far, I only
+saw five symbols that would need to be on it:
 
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -3431,6 +3431,18 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
->  }
->  #endif	/* CONFIG_SMP */
->  
-> +bool vmalloc_dump_obj(void *object)
-> +{
-> +	struct vm_struct *vm;
-> +	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
-> +
-> +	vm = find_vm_area(objp);
-> +	if (!vm)
-> +		return false;
-> +	pr_cont(" vmalloc allocated at %pS\n", vm->caller);
+memcpy(), memmove(), memset(), __stack_chk_fail() and __stack_chk_guard
 
-Would it be useful to print the vm area boundaries too?
-
-> +	return true;
-> +}
-> +
->  #ifdef CONFIG_PROC_FS
->  static void *s_start(struct seq_file *m, loff_t *pos)
->  	__acquires(&vmap_purge_lock)
-> 
-
+       Arnd
