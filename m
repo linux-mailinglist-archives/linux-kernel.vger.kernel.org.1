@@ -2,862 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B982D4D7E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EAB2D4D92
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388504AbgLIWVi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Dec 2020 17:21:38 -0500
-Received: from mailoutvs49.siol.net ([185.57.226.240]:50370 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388281AbgLIWVh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:21:37 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 8FCD3520757;
-        Wed,  9 Dec 2020 23:20:49 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id L1AS0_vcW5Bk; Wed,  9 Dec 2020 23:20:47 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id D6B765225AD;
-        Wed,  9 Dec 2020 23:20:47 +0100 (CET)
-Received: from jernej-laptop.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id 61F965216E1;
-        Wed,  9 Dec 2020 23:20:46 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     =?ISO-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
-        =?ISO-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yangtao Li <frank@allwinnertech.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>
-Subject: Re: [linux-sunxi] [PATCH 5/8] clk: sunxi-ng: Add support for the Allwinner H616 CCU
-Date:   Wed, 09 Dec 2020 23:20:46 +0100
-Message-ID: <9923889.3IKZAPC0Rj@jernej-laptop>
-In-Reply-To: <3b6150a3-09a2-affc-9092-8c325765994a@arm.com>
-References: <20201202135409.13683-1-andre.przywara@arm.com> <CAJiuCcewhVeHCDcMHY75mSqu33YEVoav2bAdVuc87Ek+LrujRA@mail.gmail.com> <3b6150a3-09a2-affc-9092-8c325765994a@arm.com>
+        id S2388676AbgLIWYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:24:54 -0500
+Received: from mga18.intel.com ([134.134.136.126]:14579 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388638AbgLIWYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 17:24:30 -0500
+IronPort-SDR: AiLs0oe3r+gZPB8LYA0GFmkVYjokSMQRuBYwnwZCLxoihExBht/4UWneT4t8tRzsVDugBWDgyq
+ q1RAzHguv9Sg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="161918050"
+X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
+   d="scan'208";a="161918050"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:23:46 -0800
+IronPort-SDR: +zKmNy3RFFKlJ9BVXS7s89Qg0S5JK5g9WfK+mR5AilkAAkVq6Szw23tpvAIbgkx639/fHXWmWr
+ 7Rv83dmxyE8A==
+X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
+   d="scan'208";a="318543504"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:23:46 -0800
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v16 00/26] Control-flow Enforcement: Shadow Stack
+Date:   Wed,  9 Dec 2020 14:22:54 -0800
+Message-Id: <20201209222320.1724-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sreda, 09. december 2020 ob 22:35:51 CET je André Przywara napisal(a):
-> On 09/12/2020 14:33, Clément Péron wrote:
-> 
-> Hi,
-> 
-> > I try to review this, and compare against the vendor Kernel>
-> > 
-> > On Wed, 2 Dec 2020 at 14:54, Andre Przywara <andre.przywara@arm.com> 
-wrote:
-> >> While the clocks are fairly similar to the H6, many differ in tiny
-> >> details, so a separate clock driver seems indicated.
-> >> 
-> >> Derived from the H6 clock driver, and adjusted according to the manual.
-> >> 
-> >> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> >> ---
-> >> 
-> >>  drivers/clk/sunxi-ng/Kconfig                |    7 +-
-> >>  drivers/clk/sunxi-ng/Makefile               |    1 +
-> >>  drivers/clk/sunxi-ng/ccu-sun50i-h616.c      | 1134 +++++++++++++++++++
-> >>  drivers/clk/sunxi-ng/ccu-sun50i-h616.h      |   58 +
-> >>  include/dt-bindings/clock/sun50i-h616-ccu.h |  110 ++
-> >>  include/dt-bindings/reset/sun50i-h616-ccu.h |   67 ++
-> >>  6 files changed, 1376 insertions(+), 1 deletion(-)
-> >>  create mode 100644 drivers/clk/sunxi-ng/ccu-sun50i-h616.c
-> >>  create mode 100644 drivers/clk/sunxi-ng/ccu-sun50i-h616.h
-> >>  create mode 100644 include/dt-bindings/clock/sun50i-h616-ccu.h
-> >>  create mode 100644 include/dt-bindings/reset/sun50i-h616-ccu.h
-> >> 
-> >> diff --git a/drivers/clk/sunxi-ng/Kconfig b/drivers/clk/sunxi-ng/Kconfig
-> >> index ce5f5847d5d3..cd46d8853876 100644
-> >> --- a/drivers/clk/sunxi-ng/Kconfig
-> >> +++ b/drivers/clk/sunxi-ng/Kconfig
-> >> @@ -32,8 +32,13 @@ config SUN50I_H6_CCU
-> >> 
-> >>         default ARM64 && ARCH_SUNXI
-> >>         depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
-> >> 
-> >> +config SUN50I_H616_CCU
-> >> +       bool "Support for the Allwinner H616 CCU"
-> >> +       default ARM64 && ARCH_SUNXI
-> >> +       depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
-> >> +
-> >> 
-> >>  config SUN50I_H6_R_CCU
-> >> 
-> >> -       bool "Support for the Allwinner H6 PRCM CCU"
-> >> +       bool "Support for the Allwinner H6 and H616 PRCM CCU"
-> >> 
-> >>         default ARM64 && ARCH_SUNXI
-> >>         depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
-> >> 
-> >> diff --git a/drivers/clk/sunxi-ng/Makefile
-> >> b/drivers/clk/sunxi-ng/Makefile
-> >> index 3eb5cff40eac..96c324306d97 100644
-> >> --- a/drivers/clk/sunxi-ng/Makefile
-> >> +++ b/drivers/clk/sunxi-ng/Makefile
-> >> @@ -26,6 +26,7 @@ obj-$(CONFIG_SUN50I_A64_CCU)  += ccu-sun50i-a64.o
-> >> 
-> >>  obj-$(CONFIG_SUN50I_A100_CCU)  += ccu-sun50i-a100.o
-> >>  obj-$(CONFIG_SUN50I_A100_R_CCU)        += ccu-sun50i-a100-r.o
-> >>  obj-$(CONFIG_SUN50I_H6_CCU)    += ccu-sun50i-h6.o
-> >> 
-> >> +obj-$(CONFIG_SUN50I_H616_CCU)  += ccu-sun50i-h616.o
-> >> 
-> >>  obj-$(CONFIG_SUN50I_H6_R_CCU)  += ccu-sun50i-h6-r.o
-> >>  obj-$(CONFIG_SUN4I_A10_CCU)    += ccu-sun4i-a10.o
-> >>  obj-$(CONFIG_SUN5I_CCU)                += ccu-sun5i.o
-> >> 
-> >> diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h616.c
-> >> b/drivers/clk/sunxi-ng/ccu-sun50i-h616.c new file mode 100644
-> >> index 000000000000..3fbb258f0354
-> >> --- /dev/null
-> >> +++ b/drivers/clk/sunxi-ng/ccu-sun50i-h616.c
-> >> @@ -0,0 +1,1134 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +/*
-> >> + * Copyright (c) 2020 Arm Ltd.
-> >> + * Based on the H6 CCU driver, which is:
-> >> + *   Copyright (c) 2017 Icenowy Zheng <icenowy@aosc.io>
-> >> + */
-> >> +
-> >> +#include <linux/clk-provider.h>
-> >> +#include <linux/io.h>
-> >> +#include <linux/of_address.h>
-> >> +#include <linux/platform_device.h>
-> >> +
-> >> +#include "ccu_common.h"
-> >> +#include "ccu_reset.h"
-> >> +
-> >> +#include "ccu_div.h"
-> >> +#include "ccu_gate.h"
-> >> +#include "ccu_mp.h"
-> >> +#include "ccu_mult.h"
-> >> +#include "ccu_nk.h"
-> >> +#include "ccu_nkm.h"
-> >> +#include "ccu_nkmp.h"
-> >> +#include "ccu_nm.h"
-> >> +
-> >> +#include "ccu-sun50i-h616.h"
-> >> +
-> >> +/*
-> >> + * The CPU PLL is actually NP clock, with P being /1, /2 or /4. However
-> >> + * P should only be used for output frequencies lower than 288 MHz.
-> >> + *
-> >> + * For now we can just model it as a multiplier clock, and force P to
-> >> /1.
-> >> + *
-> >> + * The M factor is present in the register's description, but not in the
-> >> + * frequency formula, and it's documented as "M is only used for
-> >> backdoor
-> >> + * testing", so it's not modelled and then force to 0.
-> >> + */
-> >> +#define SUN50I_H616_PLL_CPUX_REG       0x000
-> >> +static struct ccu_mult pll_cpux_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .lock           = BIT(28),
-> >> +       .mult           = _SUNXI_CCU_MULT_MIN(8, 8, 12),
-> >> +       .common         = {
-> >> +               .reg            = 0x000,
-> >> +               .hw.init        = CLK_HW_INIT("pll-cpux", "osc24M",
-> >> +                                             &ccu_mult_ops,
-> >> +                                             CLK_SET_RATE_UNGATE),
-> >> +       },
-> >> +};
-> >> +
-> >> +/* Some PLLs are input * N / div1 / P. Model them as NKMP with no K */
-> >> +#define SUN50I_H616_PLL_DDR0_REG       0x010
-> >> +static struct ccu_nkmp pll_ddr0_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .lock           = BIT(28),
-> >> +       .n              = _SUNXI_CCU_MULT_MIN(8, 8, 12),
-> >> +       .m              = _SUNXI_CCU_DIV(1, 1), /* input divider */
-> >> +       .p              = _SUNXI_CCU_DIV(0, 1), /* output divider */
-> >> +       .common         = {
-> >> +               .reg            = 0x010,
-> >> +               .hw.init        = CLK_HW_INIT("pll-ddr0", "osc24M",
-> >> +                                             &ccu_nkmp_ops,
-> >> +                                             CLK_SET_RATE_UNGATE),
-> >> +       },
-> >> +};
-> >> +
-> >> +#define SUN50I_H616_PLL_DDR1_REG       0x018
-> >> +static struct ccu_nkmp pll_ddr1_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .lock           = BIT(28),
-> >> +       .n              = _SUNXI_CCU_MULT_MIN(8, 8, 12),
-> >> +       .m              = _SUNXI_CCU_DIV(1, 1), /* input divider */
-> >> +       .p              = _SUNXI_CCU_DIV(0, 1), /* output divider */
-> >> +       .common         = {
-> >> +               .reg            = 0x018,
-> >> +               .hw.init        = CLK_HW_INIT("pll-ddr1", "osc24M",
-> >> +                                             &ccu_nkmp_ops,
-> >> +                                             CLK_SET_RATE_UNGATE),
-> >> +       },
-> >> +};
-> >> +
-> >> +#define SUN50I_H616_PLL_PERIPH0_REG    0x020
-> >> +static struct ccu_nkmp pll_periph0_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .lock           = BIT(28),
-> >> +       .n              = _SUNXI_CCU_MULT_MIN(8, 8, 12),
-> >> +       .m              = _SUNXI_CCU_DIV(1, 1), /* input divider */
-> >> +       .p              = _SUNXI_CCU_DIV(0, 1), /* output divider */
-> >> +       .fixed_post_div = 4,
-> >> +       .common         = {
-> >> +               .reg            = 0x020,
-> >> +               .features       = CCU_FEATURE_FIXED_POSTDIV,
-> >> +               .hw.init        = CLK_HW_INIT("pll-periph0", "osc24M",
-> >> +                                             &ccu_nkmp_ops,
-> >> +                                             CLK_SET_RATE_UNGATE),
-> >> +       },
-> >> +};
-> >> +
-> >> +#define SUN50I_H616_PLL_PERIPH1_REG    0x028
-> >> +static struct ccu_nkmp pll_periph1_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .lock           = BIT(28),
-> >> +       .n              = _SUNXI_CCU_MULT_MIN(8, 8, 12),
-> >> +       .m              = _SUNXI_CCU_DIV(1, 1), /* input divider */
-> >> +       .p              = _SUNXI_CCU_DIV(0, 1), /* output divider */
-> >> +       .fixed_post_div = 4,
-> >> +       .common         = {
-> >> +               .reg            = 0x028,
-> >> +               .features       = CCU_FEATURE_FIXED_POSTDIV,
-> >> +               .hw.init        = CLK_HW_INIT("pll-periph1", "osc24M",
-> >> +                                             &ccu_nkmp_ops,
-> >> +                                             CLK_SET_RATE_UNGATE),
-> >> +       },
-> >> +};
-> >> +
-> >> +#define SUN50I_H616_PLL_GPU_REG                0x030
-> >> +static struct ccu_nkmp pll_gpu_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .lock           = BIT(28),
-> >> +       .n              = _SUNXI_CCU_MULT_MIN(8, 8, 12),
-> >> +       .m              = _SUNXI_CCU_DIV(1, 1), /* input divider */
-> >> +       .p              = _SUNXI_CCU_DIV(0, 1), /* output divider */
-> >> +       .common         = {
-> >> +               .reg            = 0x030,
-> >> +               .hw.init        = CLK_HW_INIT("pll-gpu", "osc24M",
-> >> +                                             &ccu_nkmp_ops,
-> >> +                                             CLK_SET_RATE_UNGATE),
-> >> +       },
-> >> +};
-> >> +
-> >> +/*
-> >> + * For Video PLLs, the output divider is described as "used for testing"
-> >> + * in the user manual. So it's not modelled and forced to 0.
-> >> + */
-> >> +#define SUN50I_H616_PLL_VIDEO0_REG     0x040
-> >> +static struct ccu_nm pll_video0_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .lock           = BIT(28),
-> >> +       .n              = _SUNXI_CCU_MULT_MIN(8, 8, 12),
-> >> +       .m              = _SUNXI_CCU_DIV(1, 1), /* input divider */
-> >> +       .fixed_post_div = 4,
-> >> +       .min_rate       = 288000000,
-> >> +       .max_rate       = 2400000000UL,
-> >> +       .common         = {
-> >> +               .reg            = 0x040,
-> >> +               .features       = CCU_FEATURE_FIXED_POSTDIV,
-> >> +               .hw.init        = CLK_HW_INIT("pll-video0", "osc24M",
-> >> +                                             &ccu_nm_ops,
-> >> +                                             CLK_SET_RATE_UNGATE),
-> >> +       },
-> >> +};
-> > 
-> > FYI the PLL video0 in your code is similar between H6/H616 but it's not
-> > the
-> > same in the vendor kernel.
-> > Vendor says for H6:
-> > pll_video0/pll_video1: 24*N/D1/4
-> > for H616:
-> > pll_video0x4 24*N/D1
-> > pll_video1/pll_video2: 24*N/D1/4
-> 
-> I don't see any particular problem with this? I mean we pretty surely
-> have the x4 clock on the H6, and for the H616 the manual agrees to your
-> findings?
-> 
-> > I'm not sure if this comment is correct or not.
-> > 
-> >> +
-> >> +#define SUN50I_H616_PLL_VIDEO1_REG     0x048
-> >> +static struct ccu_nm pll_video1_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .lock           = BIT(28),
-> >> +       .n              = _SUNXI_CCU_MULT_MIN(8, 8, 12),
-> >> +       .m              = _SUNXI_CCU_DIV(1, 1), /* input divider */
-> >> +       .fixed_post_div = 4,
-> >> +       .min_rate       = 288000000,
-> >> +       .max_rate       = 2400000000UL,
-> >> +       .common         = {
-> >> +               .reg            = 0x048,
-> >> +               .features       = CCU_FEATURE_FIXED_POSTDIV,
-> >> +               .hw.init        = CLK_HW_INIT("pll-video1", "osc24M",
-> >> +                                             &ccu_nm_ops,
-> >> +                                             CLK_SET_RATE_UNGATE),
-> >> +       },
-> >> +};
-> >> +
-> >> +#define SUN50I_H616_PLL_VIDEO2_REG     0x050
-> >> +static struct ccu_nm pll_video2_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .lock           = BIT(28),
-> >> +       .n              = _SUNXI_CCU_MULT_MIN(8, 8, 12),
-> >> +       .m              = _SUNXI_CCU_DIV(1, 1), /* input divider */
-> >> +       .fixed_post_div = 4,
-> >> +       .min_rate       = 288000000,
-> >> +       .max_rate       = 2400000000UL,
-> >> +       .common         = {
-> >> +               .reg            = 0x050,
-> >> +               .features       = CCU_FEATURE_FIXED_POSTDIV,
-> >> +               .hw.init        = CLK_HW_INIT("pll-video2", "osc24M",
-> >> +                                             &ccu_nm_ops,
-> >> +                                             CLK_SET_RATE_UNGATE),
-> >> +       },
-> >> +};
-> > 
-> > There is also a PLL_CSI. And all the CSI / LCD clocks but they are no
-> > output pins available in the H616.
-> > Maybe we can introduced these clocks later.
-> 
-> I don't see good reasons to introduce undocumented and useless clocks at
-> this point.
-> So I will leave this out unless someone protests.
+Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+return/jump-oriented programming attacks.  Details are in "Intel 64 and
+IA-32 Architectures Software Developer's Manual" [1].
 
-I'm pretty sure that H616 datasheet describes only subset of functionality 
-supported by die and BSP drivers cover full die functionality. Not only here, 
-but everywhere. We can leave them out for now.
+CET can protect applications and the kernel.  This series enables only
+application-level protection, and has three parts:
 
-> 
-> >> +
-> >> +#define SUN50I_H616_PLL_VE_REG         0x058
-> >> +static struct ccu_nkmp pll_ve_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .lock           = BIT(28),
-> >> +       .n              = _SUNXI_CCU_MULT_MIN(8, 8, 12),
-> >> +       .m              = _SUNXI_CCU_DIV(1, 1), /* input divider */
-> >> +       .p              = _SUNXI_CCU_DIV(0, 1), /* output divider */
-> >> +       .common         = {
-> >> +               .reg            = 0x058,
-> >> +               .hw.init        = CLK_HW_INIT("pll-ve", "osc24M",
-> >> +                                             &ccu_nkmp_ops,
-> >> +                                             CLK_SET_RATE_UNGATE),
-> >> +       },
-> >> +};
-> >> +
-> >> +#define SUN50I_H616_PLL_DE_REG         0x060
-> >> +static struct ccu_nkmp pll_de_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .lock           = BIT(28),
-> >> +       .n              = _SUNXI_CCU_MULT_MIN(8, 8, 12),
-> >> +       .m              = _SUNXI_CCU_DIV(1, 1), /* input divider */
-> >> +       .p              = _SUNXI_CCU_DIV(0, 1), /* output divider */
-> >> +       .common         = {
-> >> +               .reg            = 0x060,
-> >> +               .hw.init        = CLK_HW_INIT("pll-de", "osc24M",
-> >> +                                             &ccu_nkmp_ops,
-> >> +                                             CLK_SET_RATE_UNGATE),
-> >> +       },
-> >> +};
-> >> +
-> >> +/*
-> >> + * TODO: Determine SDM settings for the audio PLL. The manual suggests
-> >> + * PLL_FACTOR_N=16, PLL_POST_DIV_P=2, OUTPUT_DIV=2, pattern=0xe000c49b
-> >> + * for 24.576 MHz, and PLL_FACTOR_N=22, PLL_POST_DIV_P=3, OUTPUT_DIV=2,
-> >> + * pattern=0xe001288c for 22.5792 MHz.
-> >> + * This clashes with our fixed PLL_POST_DIV_P.
-> >> + */
-> >> +#define SUN50I_H616_PLL_AUDIO_REG      0x078
-> >> +static struct ccu_nm pll_audio_hs_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .lock           = BIT(28),
-> >> +       .n              = _SUNXI_CCU_MULT_MIN(8, 8, 12),
-> >> +       .m              = _SUNXI_CCU_DIV(1, 1), /* input divider */
-> >> +       .common         = {
-> >> +               .reg            = 0x078,
-> >> +               .hw.init        = CLK_HW_INIT("pll-audio-hs", "osc24M",
-> >> +                                             &ccu_nm_ops,
-> >> +                                             CLK_SET_RATE_UNGATE),
-> >> +       },
-> >> +};
-> >> +
-> >> +static const char * const cpux_parents[] = { "osc24M", "osc32k",
-> >> +                                       "iosc", "pll-cpux", "pll-periph0"
-> >> }; +static SUNXI_CCU_MUX(cpux_clk, "cpux", cpux_parents,
-> >> +                    0x500, 24, 3, CLK_SET_RATE_PARENT |
-> >> CLK_IS_CRITICAL);
-> >> +static SUNXI_CCU_M(axi_clk, "axi", "cpux", 0x500, 0, 2, 0);
-> >> +static SUNXI_CCU_M(cpux_apb_clk, "cpux-apb", "cpux", 0x500, 8, 2, 0);
-> >> +
-> >> +static const char * const psi_ahb1_ahb2_parents[] = { "osc24M",
-> >> "osc32k",
-> >> +                                                     "iosc",
-> >> "pll-periph0" }; +static SUNXI_CCU_MP_WITH_MUX(psi_ahb1_ahb2_clk,
-> >> "psi-ahb1-ahb2",
-> >> +                            psi_ahb1_ahb2_parents,
-> >> +                            0x510,
-> >> +                            0, 2,      /* M */
-> >> +                            8, 2,      /* P */
-> >> +                            24, 2,     /* mux */
-> >> +                            0);
-> >> +
-> >> +static const char * const ahb3_apb1_apb2_parents[] = { "osc24M",
-> >> "osc32k",
-> >> +                                                      "psi-ahb1-ahb2",
-> >> +                                                      "pll-periph0" };
-> >> +static SUNXI_CCU_MP_WITH_MUX(ahb3_clk, "ahb3", ahb3_apb1_apb2_parents,
-> >> 0x51c, +                            0, 2,      /* M */
-> >> +                            8, 2,      /* P */
-> >> +                            24, 2,     /* mux */
-> >> +                            0);
-> >> +
-> >> +static SUNXI_CCU_MP_WITH_MUX(apb1_clk, "apb1", ahb3_apb1_apb2_parents,
-> >> 0x520, +                            0, 2,      /* M */
-> >> +                            8, 2,      /* P */
-> >> +                            24, 2,     /* mux */
-> >> +                            0);
-> >> +
-> >> +static SUNXI_CCU_MP_WITH_MUX(apb2_clk, "apb2", ahb3_apb1_apb2_parents,
-> >> 0x524, +                            0, 2,      /* M */
-> >> +                            8, 2,      /* P */
-> >> +                            24, 2,     /* mux */
-> >> +                            0);
-> >> +
-> >> +static const char * const mbus_parents[] = { "osc24M", "pll-periph0-2x",
-> >> +                                            "pll-ddr0", "pll-ddr1" };
-> >> +static SUNXI_CCU_M_WITH_MUX_GATE(mbus_clk, "mbus", mbus_parents, 0x540,
-> >> +                                       0, 3,   /* M */
-> >> +                                       24, 2,  /* mux */
-> >> +                                       BIT(31),        /* gate */
-> >> +                                       CLK_IS_CRITICAL);
-> >> +
-> >> +static const char * const de_parents[] = { "pll-de", "pll-periph0-2x" };
-> >> +static SUNXI_CCU_M_WITH_MUX_GATE(de_clk, "de", de_parents, 0x600,
-> >> +                                      0, 4,    /* M */
-> >> +                                      24, 1,   /* mux */
-> >> +                                      BIT(31), /* gate */
-> >> +                                      CLK_SET_RATE_PARENT);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_de_clk, "bus-de", "psi-ahb1-ahb2",
-> >> +                     0x60c, BIT(0), 0);
-> >> +
-> >> +static SUNXI_CCU_M_WITH_MUX_GATE(deinterlace_clk, "deinterlace",
-> >> +                                      de_parents,
-> >> +                                      0x620,
-> >> +                                      0, 4,    /* M */
-> >> +                                      24, 1,   /* mux */
-> >> +                                      BIT(31), /* gate */
-> >> +                                      0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_deinterlace_clk, "bus-deinterlace",
-> >> "psi-ahb1-ahb2", +                     0x62c, BIT(0), 0);
-> >> +
-> >> +static SUNXI_CCU_M_WITH_MUX_GATE(g2d_clk, "g2d", de_parents, 0x630,
-> >> +                                      0, 4,    /* M */
-> >> +                                      24, 1,   /* mux */
-> >> +                                      BIT(31), /* gate */
-> >> +                                      0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_g2d_clk, "bus-g2d", "psi-ahb1-ahb2",
-> >> +                     0x63c, BIT(0), 0);
-> >> +
-> >> +static const char * const gpu0_parents[] = { "pll-gpu", "gpu1" };
-> >> +static SUNXI_CCU_M_WITH_MUX_GATE(gpu0_clk, "gpu0", gpu0_parents, 0x670,
-> >> +                                      0, 2,    /* M */
-> >> +                                      24, 1,   /* mux */
-> >> +                                      BIT(31), /* gate */
-> >> +                                      CLK_SET_RATE_PARENT);
-> >> +static SUNXI_CCU_M_WITH_GATE(gpu1_clk, "gpu1", "pll-periph0-2x", 0x674,
-> >> +                                       0, 3,   /* M */
-> > 
-> > M here should be 0,2
-> 
-> Right, good catch.
-> 
-> >> +                                       BIT(31),/* gate */
-> >> +                                       0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_gpu_clk, "bus-gpu", "psi-ahb1-ahb2",
-> >> +                     0x67c, BIT(0), 0);
-> >> +
-> >> +static const char * const ce_parents[] = { "osc24M", "pll-periph0-2x" };
-> >> +static SUNXI_CCU_MP_WITH_MUX_GATE(ce_clk, "ce", ce_parents, 0x680,
-> >> +                                       0, 4,   /* M */
-> >> +                                       8, 2,   /* N */
-> >> +                                       24, 1,  /* mux */
-> >> +                                       BIT(31),/* gate */
-> >> +                                       0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_ce_clk, "bus-ce", "psi-ahb1-ahb2",
-> >> +                     0x68c, BIT(0), 0);
-> >> +
-> >> +static const char * const ve_parents[] = { "pll-ve" };
-> >> +static SUNXI_CCU_M_WITH_MUX_GATE(ve_clk, "ve", ve_parents, 0x690,
-> >> +                                      0, 3,    /* M */
-> >> +                                      24, 1,   /* mux */
-> >> +                                      BIT(31), /* gate */
-> >> +                                      CLK_SET_RATE_PARENT);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_ve_clk, "bus-ve", "psi-ahb1-ahb2",
-> >> +                     0x69c, BIT(0), 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_dma_clk, "bus-dma", "psi-ahb1-ahb2",
-> >> +                     0x70c, BIT(0), 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_hstimer_clk, "bus-hstimer", "psi-ahb1-ahb2",
-> >> +                     0x73c, BIT(0), 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(avs_clk, "avs", "osc24M", 0x740, BIT(31), 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_dbg_clk, "bus-dbg", "psi-ahb1-ahb2",
-> >> +                     0x78c, BIT(0), 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_psi_clk, "bus-psi", "psi-ahb1-ahb2",
-> >> +                     0x79c, BIT(0), 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_pwm_clk, "bus-pwm", "apb1", 0x7ac, BIT(0), 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_iommu_clk, "bus-iommu", "apb1", 0x7bc, BIT(0),
-> >> 0); +
-> >> +static const char * const dram_parents[] = { "pll-ddr0", "pll-ddr1" };
-> >> +static struct ccu_div dram_clk = {
-> >> +       .div            = _SUNXI_CCU_DIV(0, 2),
-> >> +       .mux            = _SUNXI_CCU_MUX(24, 2),
-> >> +       .common = {
-> >> +               .reg            = 0x800,
-> >> +               .hw.init        = CLK_HW_INIT_PARENTS("dram",
-> >> +                                                     dram_parents,
-> >> +                                                     &ccu_div_ops,
-> >> +                                                     CLK_IS_CRITICAL),
-> >> +       },
-> >> +};
-> >> +
-> >> +static SUNXI_CCU_GATE(mbus_dma_clk, "mbus-dma", "mbus",
-> >> +                     0x804, BIT(0), 0);
-> >> +static SUNXI_CCU_GATE(mbus_ve_clk, "mbus-ve", "mbus",
-> >> +                     0x804, BIT(1), 0);
-> >> +static SUNXI_CCU_GATE(mbus_ce_clk, "mbus-ce", "mbus",
-> >> +                     0x804, BIT(2), 0);
-> >> +static SUNXI_CCU_GATE(mbus_ts_clk, "mbus-ts", "mbus",
-> >> +                     0x804, BIT(3), 0);
-> >> +static SUNXI_CCU_GATE(mbus_nand_clk, "mbus-nand", "mbus",
-> >> +                     0x804, BIT(5), 0);
-> > 
-> > Compare to H6, you drop mbus-deinterlace but it is present in the vendor
-> > kernel.
-> It's not in the manual (which is what I look at). Not sure I can trust
-> the vendor kernel more here.
+  - Shadow stack [2],
+  - Indirect branch tracking [3], and
+  - Selftests [4].
 
-This would need some experimenting.
+I have run tests on these patches for quite some time, and they have been
+very stable.  Linux distributions with CET are available now, and Intel
+processors with CET are already on the market.  It would be nice if CET
+support can be accepted into the kernel.  I will be working to address any
+issues should they come up.
 
-Best regards,
-Jernej
+Changes in v16:
+- Rebase to v5.10-rc7.
+- Replace Kconfig options for Shadow Stack and IBT with just one option,
+  and fix some small issues (AS dependency check, wording).
+- Create a software-defined X86_FEATURE_CET to indicate either Shadow Stack
+  or IBT is present, simplify XSAVES dependency check.  Move parameter
+  parsing to cpu_parse_early_param().
+- Fix control-protection fault handling for kernel-mode faults.
+- Drop the patch that changes _PAGE_DIRTY to _PAGE_DIRTY_HW.
+- Small changes to the documentation to reflect Kconfig changes and add
+  LLVM information.
 
-> 
-> >> +static SUNXI_CCU_GATE(mbus_g2d_clk, "mbus-g2d", "mbus",
-> >> +                     0x804, BIT(10), 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_dram_clk, "bus-dram", "psi-ahb1-ahb2",
-> >> +                     0x80c, BIT(0), CLK_IS_CRITICAL);
-> >> +
-> >> +static const char * const nand_spi_parents[] = { "osc24M",
-> >> "pll-periph0",
-> >> +                                            "pll-periph1",
-> >> "pll-periph0-2x", +                                           
-> >> "pll-periph1-2x" };
-> >> +static SUNXI_CCU_MP_WITH_MUX_GATE(nand0_clk, "nand0", nand_spi_parents,
-> >> 0x810, +                                       0, 4,   /* M */
-> >> +                                       8, 2,   /* N */
-> >> +                                       24, 3,  /* mux */
-> >> +                                       BIT(31),/* gate */
-> >> +                                       0);
-> >> +
-> >> +static SUNXI_CCU_MP_WITH_MUX_GATE(nand1_clk, "nand1", nand_spi_parents,
-> >> 0x814, +                                       0, 4,   /* M */
-> >> +                                       8, 2,   /* N */
-> >> +                                       24, 3,  /* mux */
-> >> +                                       BIT(31),/* gate */
-> >> +                                       0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_nand_clk, "bus-nand", "ahb3", 0x82c, BIT(0),
-> >> 0);
-> >> +
-> >> +static const char * const mmc_parents[] = { "osc24M", "pll-periph0-2x",
-> >> +                                           "pll-periph1-2x" };
-> >> +static SUNXI_CCU_MP_WITH_MUX_GATE_POSTDIV(mmc0_clk, "mmc0", mmc_parents,
-> >> 0x830, +                                         0, 4,         /* M */
-> >> +                                         8, 2,         /* N */
-> >> +                                         24, 2,        /* mux */
-> >> +                                         BIT(31),      /* gate */
-> >> +                                         2,            /* post-div */
-> >> +                                         0);
-> >> +
-> >> +static SUNXI_CCU_MP_WITH_MUX_GATE_POSTDIV(mmc1_clk, "mmc1", mmc_parents,
-> >> 0x834, +                                         0, 4,         /* M */
-> >> +                                         8, 2,         /* N */
-> >> +                                         24, 2,        /* mux */
-> >> +                                         BIT(31),      /* gate */
-> >> +                                         2,            /* post-div */
-> >> +                                         0);
-> >> +
-> >> +static SUNXI_CCU_MP_WITH_MUX_GATE_POSTDIV(mmc2_clk, "mmc2", mmc_parents,
-> >> 0x838, +                                         0, 4,         /* M */
-> >> +                                         8, 2,         /* N */
-> >> +                                         24, 2,        /* mux */
-> >> +                                         BIT(31),      /* gate */
-> >> +                                         2,            /* post-div */
-> >> +                                         0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_mmc0_clk, "bus-mmc0", "ahb3", 0x84c, BIT(0),
-> >> 0);
-> >> +static SUNXI_CCU_GATE(bus_mmc1_clk, "bus-mmc1", "ahb3", 0x84c, BIT(1),
-> >> 0);
-> >> +static SUNXI_CCU_GATE(bus_mmc2_clk, "bus-mmc2", "ahb3", 0x84c, BIT(2),
-> >> 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_uart0_clk, "bus-uart0", "apb2", 0x90c, BIT(0),
-> >> 0); +static SUNXI_CCU_GATE(bus_uart1_clk, "bus-uart1", "apb2", 0x90c,
-> >> BIT(1), 0); +static SUNXI_CCU_GATE(bus_uart2_clk, "bus-uart2", "apb2",
-> >> 0x90c, BIT(2), 0); +static SUNXI_CCU_GATE(bus_uart3_clk, "bus-uart3",
-> >> "apb2", 0x90c, BIT(3), 0); +static SUNXI_CCU_GATE(bus_uart4_clk,
-> >> "bus-uart4", "apb2", 0x90c, BIT(4), 0); +static
-> >> SUNXI_CCU_GATE(bus_uart5_clk, "bus-uart5", "apb2", 0x90c, BIT(5), 0); +
-> >> +static SUNXI_CCU_GATE(bus_i2c0_clk, "bus-i2c0", "apb2", 0x91c, BIT(0),
-> >> 0);
-> >> +static SUNXI_CCU_GATE(bus_i2c1_clk, "bus-i2c1", "apb2", 0x91c, BIT(1),
-> >> 0);
-> >> +static SUNXI_CCU_GATE(bus_i2c2_clk, "bus-i2c2", "apb2", 0x91c, BIT(2),
-> >> 0);
-> >> +static SUNXI_CCU_GATE(bus_i2c3_clk, "bus-i2c3", "apb2", 0x91c, BIT(3),
-> >> 0);
-> >> +static SUNXI_CCU_GATE(bus_i2c4_clk, "bus-i2c4", "apb2", 0x91c, BIT(4),
-> >> 0);
-> >> +
-> >> +static SUNXI_CCU_MP_WITH_MUX_GATE(spi0_clk, "spi0", nand_spi_parents,
-> >> 0x940, +                                       0, 4,   /* M */
-> >> +                                       8, 2,   /* N */
-> >> +                                       24, 3,  /* mux */
-> >> +                                       BIT(31),/* gate */
-> >> +                                       0);
-> >> +
-> >> +static SUNXI_CCU_MP_WITH_MUX_GATE(spi1_clk, "spi1", nand_spi_parents,
-> >> 0x944, +                                       0, 4,   /* M */
-> >> +                                       8, 2,   /* N */
-> >> +                                       24, 3,  /* mux */
-> >> +                                       BIT(31),/* gate */
-> >> +                                       0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_spi0_clk, "bus-spi0", "ahb3", 0x96c, BIT(0),
-> >> 0);
-> >> +static SUNXI_CCU_GATE(bus_spi1_clk, "bus-spi1", "ahb3", 0x96c, BIT(1),
-> >> 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(emac_25m_clk, "emac-25m", "ahb3", 0x970,
-> >> +                     BIT(31) | BIT(30), 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_emac0_clk, "bus-emac0", "ahb3", 0x97c, BIT(0),
-> >> 0); +static SUNXI_CCU_GATE(bus_emac1_clk, "bus-emac1", "ahb3", 0x97c,
-> >> BIT(1), 0); +
-> >> +static const char * const ts_parents[] = { "osc24M", "pll-periph0" };
-> >> +static SUNXI_CCU_MP_WITH_MUX_GATE(ts_clk, "ts", ts_parents, 0x9b0,
-> >> +                                       0, 4,   /* M */
-> >> +                                       8, 2,   /* N */
-> >> +                                       24, 1,  /* mux */
-> >> +                                       BIT(31),/* gate */
-> >> +                                       0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_ts_clk, "bus-ts", "ahb3", 0x9bc, BIT(0), 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_ths_clk, "bus-ths", "apb1", 0x9fc, BIT(0), 0);
-> >> +
-> >> +static const char * const audio_parents[] = { "pll-audio-1x",
-> >> "pll-audio-2x", +                                            
-> >> "pll-audio-4x", "pll-audio-hs" }; +static struct ccu_div spdif_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .div            = _SUNXI_CCU_DIV_FLAGS(8, 2,
-> >> CLK_DIVIDER_POWER_OF_TWO), +       .mux            = _SUNXI_CCU_MUX(24,
-> >> 2),
-> >> +       .common         = {
-> >> +               .reg            = 0xa20,
-> >> +               .hw.init        = CLK_HW_INIT_PARENTS("spdif",
-> >> +                                                     audio_parents,
-> >> +                                                     &ccu_div_ops,
-> >> +                                                     0),
-> >> +       },
-> >> +};
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_spdif_clk, "bus-spdif", "apb1", 0xa2c, BIT(0),
-> >> 0); +
-> >> +static struct ccu_div dmic_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .div            = _SUNXI_CCU_DIV_FLAGS(8, 2,
-> >> CLK_DIVIDER_POWER_OF_TWO), +       .mux            = _SUNXI_CCU_MUX(24,
-> >> 2),
-> >> +       .common         = {
-> >> +               .reg            = 0xa40,
-> >> +               .hw.init        = CLK_HW_INIT_PARENTS("dmic",
-> >> +                                                     audio_parents,
-> >> +                                                     &ccu_div_ops,
-> >> +                                                     0),
-> >> +       },
-> >> +};
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_dmic_clk, "bus-dmic", "apb1", 0xa4c, BIT(0),
-> >> 0);
-> >> +
-> >> +static SUNXI_CCU_M_WITH_MUX_GATE(audio_codec_1x_clk, "audio-codec-1x",
-> >> +                                audio_parents, 0xa50,
-> >> +                                0, 4,  /* M */
-> >> +                                24, 2, /* mux */
-> >> +                                BIT(31),       /* gate */
-> >> +                                CLK_SET_RATE_PARENT);
-> >> +static SUNXI_CCU_M_WITH_MUX_GATE(audio_codec_4x_clk, "audio-codec-4x",
-> >> +                                audio_parents, 0xa54,
-> >> +                                0, 4,  /* M */
-> >> +                                24, 2, /* mux */
-> >> +                                BIT(31),       /* gate */
-> >> +                                CLK_SET_RATE_PARENT);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_audio_codec_clk, "bus-audio-codec", "apb1",
-> >> 0xa5c, +               BIT(0), 0);
-> >> +
-> >> +static struct ccu_div audio_hub_clk = {
-> >> +       .enable         = BIT(31),
-> >> +       .div            = _SUNXI_CCU_DIV_FLAGS(8, 2,
-> >> CLK_DIVIDER_POWER_OF_TWO), +       .mux            = _SUNXI_CCU_MUX(24,
-> >> 2),
-> >> +       .common         = {
-> >> +               .reg            = 0xa60,
-> >> +               .hw.init        = CLK_HW_INIT_PARENTS("audio-hub",
-> >> +                                                     audio_parents,
-> >> +                                                     &ccu_div_ops,
-> >> +                                                     0),
-> >> +       },
-> >> +};
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_audio_hub_clk, "bus-audio-hub", "apb1", 0xa6c,
-> >> BIT(0), 0); +
-> >> +/*
-> >> + * There are OHCI 12M clock source selection bits for 2 USB 2.0 ports.
-> >> + * We will force them to 0 (12M divided from 48M).
-> >> + */
-> >> +#define SUN50I_H616_USB0_CLK_REG               0xa70
-> >> +#define SUN50I_H616_USB1_CLK_REG               0xa74
-> >> +#define SUN50I_H616_USB2_CLK_REG               0xa78
-> >> +#define SUN50I_H616_USB3_CLK_REG               0xa7c
-> >> +
-> >> +static SUNXI_CCU_GATE(usb_ohci0_clk, "usb-ohci0", "osc12M", 0xa70,
-> >> BIT(31), 0); +static SUNXI_CCU_GATE(usb_phy0_clk, "usb-phy0", "osc24M",
-> >> 0xa70, BIT(29), 0); +
-> >> +static SUNXI_CCU_GATE(usb_ohci1_clk, "usb-ohci1", "osc12M", 0xa74,
-> >> BIT(31), 0); +static SUNXI_CCU_GATE(usb_phy1_clk, "usb-phy1", "osc24M",
-> >> 0xa74, BIT(29), 0); +
-> >> +static SUNXI_CCU_GATE(usb_ohci2_clk, "usb-ohci2", "osc12M", 0xa78,
-> >> BIT(31), 0); +static SUNXI_CCU_GATE(usb_phy2_clk, "usb-phy2", "osc24M",
-> >> 0xa78, BIT(29), 0); +
-> >> +static SUNXI_CCU_GATE(usb_ohci3_clk, "usb-ohci3", "osc12M", 0xa7c,
-> >> BIT(31), 0); +static SUNXI_CCU_GATE(usb_phy3_clk, "usb-phy3", "osc12M",
-> >> 0xa7c, BIT(29), 0); +
-> >> +static SUNXI_CCU_GATE(bus_ohci0_clk, "bus-ohci0", "ahb3", 0xa8c, BIT(0),
-> >> 0); +static SUNXI_CCU_GATE(bus_ohci1_clk, "bus-ohci1", "ahb3", 0xa8c,
-> >> BIT(1), 0); +static SUNXI_CCU_GATE(bus_ohci2_clk, "bus-ohci2", "ahb3",
-> >> 0xa8c, BIT(2), 0); +static SUNXI_CCU_GATE(bus_ohci3_clk, "bus-ohci3",
-> >> "ahb3", 0xa8c, BIT(3), 0); +static SUNXI_CCU_GATE(bus_ehci0_clk,
-> >> "bus-ehci0", "ahb3", 0xa8c, BIT(4), 0); +static
-> >> SUNXI_CCU_GATE(bus_ehci1_clk, "bus-ehci1", "ahb3", 0xa8c, BIT(5), 0);
-> >> +static SUNXI_CCU_GATE(bus_ehci2_clk, "bus-ehci2", "ahb3", 0xa8c,
-> >> BIT(6), 0); +static SUNXI_CCU_GATE(bus_ehci3_clk, "bus-ehci3", "ahb3",
-> >> 0xa8c, BIT(7), 0); +static SUNXI_CCU_GATE(bus_otg_clk, "bus-otg",
-> >> "ahb3", 0xa8c, BIT(8), 0); +
-> >> +static SUNXI_CCU_GATE(bus_keyadc_clk, "bus-keyadc", "apb1", 0xa9c,
-> >> BIT(0), 0); +
-> >> +static struct clk_fixed_factor pll_periph0_4x_clk;
-> >> +
-> >> +static const char * const hdmi_parents[] = { "pll-video0",
-> >> "pll-video0-4x", +                                           
-> >> "pll-video2", "pll-video2-4x" }; +static
-> >> SUNXI_CCU_M_WITH_MUX_GATE(hdmi_clk, "hdmi", hdmi_parents, 0xb00, +      
-> >>                          0, 4,          /* M */
-> >> +                                24, 2,         /* mux */
-> >> +                                BIT(31),       /* gate */
-> >> +                                0);
-> >> +
-> >> +static SUNXI_CCU_GATE(hdmi_slow_clk, "hdmi-slow", "osc24M", 0xb04,
-> >> BIT(31), 0); +
-> >> +static const char * const hdmi_cec_parents[] = { "osc32k",
-> >> "pll-periph0-2x" }; +static const struct ccu_mux_fixed_prediv
-> >> hdmi_cec_predivs[] = {
-> >> +       { .index = 1, .div = 36621 },
-> >> +};
-> >> +
-> >> +#define SUN50I_H616_HDMI_CEC_CLK_REG           0xb10
-> >> +static struct ccu_mux hdmi_cec_clk = {
-> >> +       .enable         = BIT(31),
-> >> +
-> >> +       .mux            = {
-> >> +               .shift  = 24,
-> >> +               .width  = 2,
-> >> +
-> >> +               .fixed_predivs  = hdmi_cec_predivs,
-> >> +               .n_predivs      = ARRAY_SIZE(hdmi_cec_predivs),
-> >> +       },
-> >> +
-> >> +       .common         = {
-> >> +               .reg            = 0xb10,
-> >> +               .features       = CCU_FEATURE_VARIABLE_PREDIV,
-> >> +               .hw.init        = CLK_HW_INIT_PARENTS("hdmi-cec",
-> >> +                                                     hdmi_cec_parents,
-> >> +                                                     &ccu_mux_ops,
-> >> +                                                     0),
-> >> +       },
-> >> +};
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_hdmi_clk, "bus-hdmi", "ahb3", 0xb1c, BIT(0),
-> >> 0);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_tcon_top_clk, "bus-tcon-top", "ahb3",
-> >> +                     0xb5c, BIT(0), 0);
-> >> +
-> >> +static const char * const tcon_tv0_parents[] = { "pll-video0",
-> >> +                                                "pll-video0-4x",
-> >> +                                                "pll-video1",
-> >> +                                                "pll-video1-4x" };
-> >> +static SUNXI_CCU_MP_WITH_MUX_GATE(tcon_tv0_clk, "tcon-tv0",
-> >> +                                 tcon_tv0_parents, 0xb80,
-> >> +                                 0, 4,         /* M */
-> >> +                                 8, 2,         /* P */
-> >> +                                 24, 3,        /* mux */
-> >> +                                 BIT(31),      /* gate */
-> >> +                                 CLK_SET_RATE_PARENT);
-> >> +
-> >> +static SUNXI_CCU_GATE(bus_tcon_tv0_clk, "bus-tcon-tv0", "ahb3",
-> >> +                     0xb9c, BIT(0), 0);
-> > 
-> > The TV1 clk is missing here
-> 
-> Right, and some more TV encoder related.
-> 
-> Cheers,
-> Andre
+[1] Intel 64 and IA-32 Architectures Software Developer's Manual:
 
+    https://software.intel.com/en-us/download/intel-64-and-ia-32-
+    architectures-sdm-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4
 
+[2] CET Shadow Stack patches v15:
 
+    https://lkml.kernel.org/r/20201110162211.9207-1-yu-cheng.yu@intel.com/
 
+[3] Indirect Branch Tracking patches v15.
+
+    https://lkml.kernel.org/r/20201110162448.9846-1-yu-cheng.yu@intel.com/
+
+[4] I am holding off the selftests changes and working to get Acked-by's.
+    The earlier version of the selftests patches:
+
+    https://lkml.kernel.org/r/20200521211720.20236-1-yu-cheng.yu@intel.com/
+
+[5] The kernel ptrace patch is tested with an Intel-internal updated GDB.
+    I am holding off the kernel ptrace patch to re-test it with my earlier
+    patch for fixing regset holes.
+
+Yu-cheng Yu (26):
+  Documentation/x86: Add CET description
+  x86/cet/shstk: Add Kconfig option for user-mode control-flow
+    protection
+  x86/cpufeatures: Add CET CPU feature flags for Control-flow
+    Enforcement Technology (CET)
+  x86/cpufeatures: Introduce X86_FEATURE_CET and setup functions
+  x86/fpu/xstate: Introduce CET MSR and XSAVES supervisor states
+  x86/cet: Add control-protection fault handler
+  x86/mm: Remove _PAGE_DIRTY from kernel RO pages
+  x86/mm: Introduce _PAGE_COW
+  drm/i915/gvt: Change _PAGE_DIRTY to _PAGE_DIRTY_BITS
+  x86/mm: Update pte_modify for _PAGE_COW
+  x86/mm: Update ptep_set_wrprotect() and pmdp_set_wrprotect() for
+    transition from _PAGE_DIRTY to _PAGE_COW
+  mm: Introduce VM_SHSTK for shadow stack memory
+  x86/mm: Shadow Stack page fault error checking
+  x86/mm: Update maybe_mkwrite() for shadow stack
+  mm: Fixup places that call pte_mkwrite() directly
+  mm: Add guard pages around a shadow stack.
+  mm/mmap: Add shadow stack pages to memory accounting
+  mm: Update can_follow_write_pte() for shadow stack
+  mm: Re-introduce vm_flags to do_mmap()
+  x86/cet/shstk: User-mode shadow stack support
+  x86/cet/shstk: Handle signals for shadow stack
+  binfmt_elf: Define GNU_PROPERTY_X86_FEATURE_1_AND properties
+  ELF: Introduce arch_setup_elf_property()
+  x86/cet/shstk: Handle thread shadow stack
+  x86/cet/shstk: Add arch_prctl functions for shadow stack
+  mm: Introduce PROT_SHSTK for shadow stack
+
+ .../admin-guide/kernel-parameters.txt         |   6 +
+ Documentation/x86/index.rst                   |   1 +
+ Documentation/x86/intel_cet.rst               | 136 +++++++
+ arch/arm64/include/asm/elf.h                  |   5 +
+ arch/x86/Kconfig                              |  28 ++
+ arch/x86/Kconfig.assembler                    |   5 +
+ arch/x86/ia32/ia32_signal.c                   |  17 +
+ arch/x86/include/asm/cet.h                    |  42 +++
+ arch/x86/include/asm/cpufeatures.h            |   4 +-
+ arch/x86/include/asm/disabled-features.h      |  17 +-
+ arch/x86/include/asm/elf.h                    |  13 +
+ arch/x86/include/asm/fpu/internal.h           |  10 +
+ arch/x86/include/asm/fpu/types.h              |  23 +-
+ arch/x86/include/asm/fpu/xstate.h             |   6 +-
+ arch/x86/include/asm/idtentry.h               |   4 +
+ arch/x86/include/asm/mman.h                   |  83 +++++
+ arch/x86/include/asm/mmu_context.h            |   3 +
+ arch/x86/include/asm/msr-index.h              |  19 +
+ arch/x86/include/asm/page_64_types.h          |  10 +
+ arch/x86/include/asm/pgtable.h                | 202 ++++++++++-
+ arch/x86/include/asm/pgtable_types.h          |  48 ++-
+ arch/x86/include/asm/processor.h              |   5 +
+ arch/x86/include/asm/special_insns.h          |  32 ++
+ arch/x86/include/asm/trap_pf.h                |   2 +
+ arch/x86/include/uapi/asm/mman.h              |  28 +-
+ arch/x86/include/uapi/asm/prctl.h             |   4 +
+ arch/x86/include/uapi/asm/processor-flags.h   |   2 +
+ arch/x86/include/uapi/asm/sigcontext.h        |   9 +
+ arch/x86/kernel/Makefile                      |   2 +
+ arch/x86/kernel/cet.c                         | 343 ++++++++++++++++++
+ arch/x86/kernel/cet_prctl.c                   |  68 ++++
+ arch/x86/kernel/cpu/common.c                  |  40 +-
+ arch/x86/kernel/cpu/cpuid-deps.c              |   2 +
+ arch/x86/kernel/fpu/signal.c                  | 100 +++++
+ arch/x86/kernel/fpu/xstate.c                  |  10 +-
+ arch/x86/kernel/idt.c                         |   4 +
+ arch/x86/kernel/process.c                     |  14 +-
+ arch/x86/kernel/process_64.c                  |  32 ++
+ arch/x86/kernel/signal.c                      |  10 +
+ arch/x86/kernel/signal_compat.c               |   2 +-
+ arch/x86/kernel/traps.c                       |  59 +++
+ arch/x86/mm/fault.c                           |  19 +
+ arch/x86/mm/mmap.c                            |   2 +
+ arch/x86/mm/pat/set_memory.c                  |   2 +-
+ arch/x86/mm/pgtable.c                         |  25 ++
+ drivers/gpu/drm/i915/gvt/gtt.c                |   2 +-
+ fs/aio.c                                      |   2 +-
+ fs/binfmt_elf.c                               |   4 +
+ fs/proc/task_mmu.c                            |   3 +
+ include/linux/elf.h                           |   6 +
+ include/linux/mm.h                            |  38 +-
+ include/linux/pgtable.h                       |  35 ++
+ include/uapi/asm-generic/siginfo.h            |   3 +-
+ include/uapi/linux/elf.h                      |   9 +
+ ipc/shm.c                                     |   2 +-
+ mm/gup.c                                      |   8 +-
+ mm/huge_memory.c                              |  10 +-
+ mm/memory.c                                   |   5 +-
+ mm/migrate.c                                  |   3 +-
+ mm/mmap.c                                     |  23 +-
+ mm/mprotect.c                                 |   2 +-
+ mm/nommu.c                                    |   4 +-
+ mm/util.c                                     |   2 +-
+ 63 files changed, 1576 insertions(+), 83 deletions(-)
+ create mode 100644 Documentation/x86/intel_cet.rst
+ create mode 100644 arch/x86/include/asm/cet.h
+ create mode 100644 arch/x86/include/asm/mman.h
+ create mode 100644 arch/x86/kernel/cet.c
+ create mode 100644 arch/x86/kernel/cet_prctl.c
+
+-- 
+2.21.0
 
