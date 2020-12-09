@@ -2,201 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFE02D3E24
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5526B2D3E26
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgLIJEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:04:22 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9562 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728740AbgLIJEO (ORCPT
+        id S1728392AbgLIJE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727536AbgLIJEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:04:14 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CrWKQ3ZT5zM1q1;
-        Wed,  9 Dec 2020 17:02:50 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.9) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Dec 2020
- 17:03:25 +0800
-Subject: Re: [RESEND PATCH v3 2/4] iommu/iova: Avoid double-negatives in
- magazine helpers
-To:     John Garry <john.garry@huawei.com>, <robin.murphy@arm.com>,
-        <joro@8bytes.org>, <will@kernel.org>
-CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <iommu@lists.linux-foundation.org>, <xiyou.wangcong@gmail.com>
-References: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
- <1605608734-84416-3-git-send-email-john.garry@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <7eb70f4b-b050-24ca-f1fa-d8f3c9ddce65@huawei.com>
-Date:   Wed, 9 Dec 2020 17:03:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 9 Dec 2020 04:04:52 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBEEC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:04:11 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id m12so2066593lfo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:04:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u8KKN6kEP37Zb7PmsnDAFaBNjQZ74PfUTCo3xpIHe+4=;
+        b=tjbgpYtBD9Cp3oZ/+ZqVBgK6uC90kg/92F0++7454fg6X8Y045ejX12IJi61RR56Tn
+         CSR2t9R1X3AqFKJ5434ULkCLTHbcDD9pJTJudwHZdYfCIGntqZx13i38HAnQmDCw/5ep
+         0GAnISEMnHP26rv0VZkfAcbZW3CFFErixasIE+i6SQQ6HINGDEKY5sWz/cjrlRHseQK/
+         TybZFQwME9Ej/CANfPWjJabsFL3zHvJyzfmMbVT6efU7iFMWW43/ldBZ0K2GjnbH/zi9
+         AwN44apWWTMptUo6wJak/8T3RnkS3mZWJScdeCj/Zm9HYSoXlkTnG1kA/r1UGLcosH58
+         c1EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u8KKN6kEP37Zb7PmsnDAFaBNjQZ74PfUTCo3xpIHe+4=;
+        b=KtbZh3ZADHmiXp2wM88RSdAroGjJzBaZ7v2kWNU6sUQnR7rO0pYEHpsu+DrCy9K+rS
+         WemH/b8Dr4TJIdbr0DojcCSa6O5qVHfL9E6OueXRg1Ky4JtrUJ2AkC202rKrIoMdvrih
+         yR+C+dtltuIp5l6p7fnQpg77tXScrzI1cVdfR0GZN1fYEVOgjBlPgZ5Fl9UME6tne3P8
+         +wAOkq1Afy4Cxxou0fiXWnkHNlwiOQhP5nPHTj52kEf3v+aXSBjyLQKBVaAyHyfhwqoP
+         PF3r2dGaDGxtfNL0DY7IlurtDa7+H2FFvRnHsDU+z6m89I5916KdSMnd+r6KB2OwEbq0
+         JU+w==
+X-Gm-Message-State: AOAM530ij3RK7pkUrssmVcsKLoknCGbNIlmGyJan+TjJsoB9Q2MX80cc
+        TZrVaMWBYnYu8h4Pw/ZjYnVSuXiLZ0A27q37inj8ag==
+X-Google-Smtp-Source: ABdhPJwuKkyip48lpOSEFICnOa696vlq3QGttzrv7MSDYITrNbVRdD+irJ6V6I1ixXgelIrnyZ0MGPhltSqo1zq38bI=
+X-Received: by 2002:a19:6557:: with SMTP id c23mr633204lfj.157.1607504650310;
+ Wed, 09 Dec 2020 01:04:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1605608734-84416-3-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
+References: <1606901543-8957-1-git-send-email-luojiaxing@huawei.com>
+ <1606901543-8957-2-git-send-email-luojiaxing@huawei.com> <CACRpkdbodato7AL4xv-oEO9+-Mo9fDaH+jZh+6T=3urE0tbULw@mail.gmail.com>
+ <5955bd97-046c-8ac3-f66e-ea967e8f9128@huawei.com>
+In-Reply-To: <5955bd97-046c-8ac3-f66e-ea967e8f9128@huawei.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 9 Dec 2020 10:03:59 +0100
+Message-ID: <CACRpkdZPmVWHV9Rbpfma3gDic=fmQQ9B0oQ0HsqwnJ0EpoGENA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] gpio: gpio-hisi: Add HiSilicon GPIO support
+To:     luojiaxing <luojiaxing@huawei.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jiaxing,
 
+thanks! waiting for the new patch!
 
-On 2020/11/17 18:25, John Garry wrote:
-> A similar crash to the following could be observed if initial CPU rcache
-> magazine allocations fail in init_iova_rcaches():
-> 
-> Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-> Mem abort info:
->    ESR = 0x96000004
->    EC = 0x25: DABT (current EL), IL = 32 bits
->    SET = 0, FnV = 0
->    EA = 0, S1PTW = 0
-> Data abort info:
->    ISV = 0, ISS = 0x00000004
->    CM = 0, WnR = 0
-> [0000000000000000] user address but active_mm is swapper
-> Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> Modules linked in:
-> CPU: 11 PID: 696 Comm: irq/40-hisi_sas Not tainted 5.9.0-rc7-dirty #109
-> Hardware name: Huawei D06 /D06, BIOS Hisilicon D06 UEFI RC0 - V1.16.01 03/15/2019
-> Call trace:
->   free_iova_fast+0xfc/0x280
->   iommu_dma_free_iova+0x64/0x70
->   __iommu_dma_unmap+0x9c/0xf8
->   iommu_dma_unmap_sg+0xa8/0xc8
->   dma_unmap_sg_attrs+0x28/0x50
->   cq_thread_v3_hw+0x2dc/0x528
->   irq_thread_fn+0x2c/0xa0
->   irq_thread+0x130/0x1e0
->   kthread+0x154/0x158
->   ret_from_fork+0x10/0x34
-> 
-> Code: f9400060 f102001f 54000981 d4210000 (f9400043)
-> 
->  ---[ end trace 4afcbdfc61b60467 ]---
-> 
-> The issue is that expression !iova_magazine_full(NULL) evaluates true; this
-> falls over in in __iova_rcache_insert() when we attempt to cache a mag
-> and cpu_rcache->loaded == NULL:
-> 
-> if (!iova_magazine_full(cpu_rcache->loaded)) {
-> 	can_insert = true;
-> ...
-> 
-> if (can_insert)
-> 	iova_magazine_push(cpu_rcache->loaded, iova_pfn);
-> 
-> As above, can_insert is evaluated true, which it shouldn't be, and we try
-> to insert pfns in a NULL mag, which is not safe.
-> 
-> To avoid this, stop using double-negatives, like !iova_magazine_full() and
-> !iova_magazine_empty(), and use positive tests, like
-> iova_magazine_has_space() and iova_magazine_has_pfns(), respectively; these
-> can safely deal with cpu_rcache->{loaded, prev} = NULL.
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->  drivers/iommu/iova.c | 29 +++++++++++++++++------------
->  1 file changed, 17 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> index 81b7399dd5e8..1f3f0f8b12e0 100644
-> --- a/drivers/iommu/iova.c
-> +++ b/drivers/iommu/iova.c
-> @@ -827,14 +827,18 @@ iova_magazine_free_pfns(struct iova_magazine *mag, struct iova_domain *iovad)
->  	mag->size = 0;
->  }
->  
-> -static bool iova_magazine_full(struct iova_magazine *mag)
-> +static bool iova_magazine_has_space(struct iova_magazine *mag)
->  {
-> -	return (mag && mag->size == IOVA_MAG_SIZE);
-> +	if (!mag)
-> +		return false;
-> +	return mag->size < IOVA_MAG_SIZE;
->  }
->  
-> -static bool iova_magazine_empty(struct iova_magazine *mag)
-> +static bool iova_magazine_has_pfns(struct iova_magazine *mag)
->  {
-> -	return (!mag || mag->size == 0);
-> +	if (!mag)
-> +		return false;
-> +	return mag->size;
->  }
->  
->  static unsigned long iova_magazine_pop(struct iova_magazine *mag,
-> @@ -843,7 +847,7 @@ static unsigned long iova_magazine_pop(struct iova_magazine *mag,
->  	int i;
->  	unsigned long pfn;
->  
-> -	BUG_ON(iova_magazine_empty(mag));
-> +	BUG_ON(!iova_magazine_has_pfns(mag));
->  
->  	/* Only fall back to the rbtree if we have no suitable pfns at all */
->  	for (i = mag->size - 1; mag->pfns[i] > limit_pfn; i--)
-> @@ -859,7 +863,7 @@ static unsigned long iova_magazine_pop(struct iova_magazine *mag,
->  
->  static void iova_magazine_push(struct iova_magazine *mag, unsigned long pfn)
->  {
-> -	BUG_ON(iova_magazine_full(mag));
-> +	BUG_ON(!iova_magazine_has_space(mag));
->  
->  	mag->pfns[mag->size++] = pfn;
->  }
-> @@ -905,9 +909,9 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->  	cpu_rcache = raw_cpu_ptr(rcache->cpu_rcaches);
->  	spin_lock_irqsave(&cpu_rcache->lock, flags);
->  
-> -	if (!iova_magazine_full(cpu_rcache->loaded)) {
-> +	if (iova_magazine_has_space(cpu_rcache->loaded)) {
->  		can_insert = true;
-> -	} else if (!iova_magazine_full(cpu_rcache->prev)) {
-> +	} else if (iova_magazine_has_space(cpu_rcache->prev)) {
->  		swap(cpu_rcache->prev, cpu_rcache->loaded);
->  		can_insert = true;
->  	} else {
-> @@ -916,8 +920,9 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->  		if (new_mag) {
->  			spin_lock(&rcache->lock);
->  			if (rcache->depot_size < MAX_GLOBAL_MAGS) {
-> -				rcache->depot[rcache->depot_size++] =
-> -						cpu_rcache->loaded;
-> +				if (cpu_rcache->loaded)
+On Wed, Dec 9, 2020 at 9:19 AM luojiaxing <luojiaxing@huawei.com> wrote:
 
-Looks like it just needs to change this place. Compiler ensures that mag->size
-will not be accessed when mag is NULL.
+> >> +static void hisi_gpio_irq_disable(struct irq_data *d)
+> >> +{
+> >> +       struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
+> >> +
+> >> +       hisi_gpio_irq_set_mask(d);
+> >> +       hisi_gpio_write_reg(chip, HISI_GPIO_INTEN_CLR_WX, BIT(irqd_to_hwirq(d)));
+> >> +}
+> >
+> > Interesting with a GPIO hardware that both as enable and mask
+> > bits. I can't see why, usually they just have masks but I suppose
+> > there is some reason.
+>
+> I see gpio-dwapb.c distinguishes between enable and mask too.
+>
+> In my opinion, enable indicates that the user uses the GPIO line as the
+> interrupt trigger source,
+>
+> and mask indicates that the user does not want to see an interrupts for
+> a while.
+>
+> The difference between the two types of flag is that interrupts
+> generated during masking are recorded but not lost,
+>
+> however, if interrupts are disabled, interrupts will lost.
 
-static bool iova_magazine_full(struct iova_magazine *mag)
-{
-        return (mag && mag->size == IOVA_MAG_SIZE);
-}
+Ah, that makes perfect sense! Thanks for explaining.
 
-static bool iova_magazine_empty(struct iova_magazine *mag)
-{
-        return (!mag || mag->size == 0);
-}
-
-
-> +					rcache->depot[rcache->depot_size++] =
-> +							cpu_rcache->loaded;
->  			} else {
->  				mag_to_free = cpu_rcache->loaded;
->  			}
-> @@ -968,9 +973,9 @@ static unsigned long __iova_rcache_get(struct iova_rcache *rcache,
->  	cpu_rcache = raw_cpu_ptr(rcache->cpu_rcaches);
->  	spin_lock_irqsave(&cpu_rcache->lock, flags);
->  
-> -	if (!iova_magazine_empty(cpu_rcache->loaded)) {
-> +	if (iova_magazine_has_pfns(cpu_rcache->loaded)) {
->  		has_pfn = true;
-> -	} else if (!iova_magazine_empty(cpu_rcache->prev)) {
-> +	} else if (iova_magazine_has_pfns(cpu_rcache->prev)) {
->  		swap(cpu_rcache->prev, cpu_rcache->loaded);
->  		has_pfn = true;
->  	} else {
-> 
-
+Yours,
+Linus Walleij
