@@ -2,104 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF0A2D47EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E40D92D47EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732795AbgLIR14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:27:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732762AbgLIR1f (ORCPT
+        id S1732422AbgLIR1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:27:44 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:44237 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732758AbgLIR11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:27:35 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D27C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 09:26:55 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id v22so2430648edt.9
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 09:26:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=SbpP1XQ1shPBp8DaFALcEJRwJn/qLid/T4j1wfzXX2o=;
-        b=RX/3O64wEoA8L5MH4PpczX1DZlxGQaB+9SAa011g5eFqqIvulSZZtV9MPQ1tEUQnki
-         0mNybMGkFsBxQl6ei1ZepCoPCgpqoCLHHydoOy1jLf5HJpTROpiBPBmHlt3ed5F6K6Sl
-         NxUAdwkIMXrJxrwQd5+z9I/AujZMb6/VnMkcL84PBecYOagcC0wF7maC5LP5OS/RXbA3
-         uBHNvUm5NKsAHgC254QDtXXkm6cFpMB1Msxj7yG7yeEvxT8UjdPiGXGlZnWqXYhgszEp
-         snm2BZ27CeKdjtJ1U6LjlKQeymX+KjO37ZUufaVA+xIq2ogLR1l/BbZP4yp9oTzU0PhV
-         Wyig==
+        Wed, 9 Dec 2020 12:27:27 -0500
+Received: by mail-ot1-f65.google.com with SMTP id f16so2106026otl.11;
+        Wed, 09 Dec 2020 09:27:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=SbpP1XQ1shPBp8DaFALcEJRwJn/qLid/T4j1wfzXX2o=;
-        b=CV29PpoxGUJadkz7OmMLhJRP54B/+eNrMroOX73LkaMk1VityMH/eU+WVKQLfZxd8S
-         0wigF2QVHdjJDxyw/4LDGPeNVKkcqblJaBaeXhFan2khg2VeabuDrlbGIzNj5bLKXewt
-         4NbnOodROfJZMgFiQpPQFyYM890Gb8yTGzRKdx5fUVqzMt/fjSyClM+6OxQOIp2VSZxk
-         ZpH4/BUPVce2xvEpCdTrNjfapvaLVVAkLAqTSzeDkQEWQYlcoaQXAyhNFVju3yN5m+4a
-         RPVueHDXxigtNMUgne9VeNFIcFkFaULjDdhjr64Pzm6/b7L5QjMhsLeSEzT60MDcFjYt
-         n5YQ==
-X-Gm-Message-State: AOAM532VcUTWIxBGYZ7aZEP7El26vYHZIMU+IW5aCSkD0UMi8TNBvijJ
-        rhLltb0iiY+1xVxtFEYQl/ble4CJY2Ia5LaW1Py1YadqWd4UGosC
-X-Google-Smtp-Source: ABdhPJxtFSQIIMnrBsJ0bpGv4WvcU1daI5mAFaXtkcrw7IxWFgjZZ1oHf1G7LYYXJd2CgIGahoa8K9Jf5BHuyZLhA7k=
-X-Received: by 2002:aa7:d75a:: with SMTP id a26mr2931708eds.230.1607534813254;
- Wed, 09 Dec 2020 09:26:53 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dJcplb3slY1dsoFAl6yxoDTBG+DHfog6F6dFhpVHk9A=;
+        b=JKBBhpm/xGYFLyIaJpMhYhdXoKaVBh2nhVS18ayRiDMmzVB6oSfZdOyGdKyvJLgKvm
+         5is3EIYQr8SOSy85+1Y2QabXlmlYjEwtJFgh85o5yZcO0NhKQ5P/6wmvsgZT56n/VRIs
+         JUb/z49cW0Y+5zVbG1HgCtulagzykvZqjDvUU2oiFAdUeW1t5HilLD+9RBSKyFM9sYpf
+         13B6MCsD/XcFJwy02lw7v8jGrbc79tLxThvWoMr39PDhyTxoyMlcKy1JK918MX1+vc4M
+         JneoQAuLhW9TcWfMeQJAgdkieAGcIhl4M95SQFwTTRKmLa0o051BWseRxCFAJxEfXQ7k
+         uvGg==
+X-Gm-Message-State: AOAM531V1XdB+YMbsMJQBUHDo+hlyEY2EuVJrPAzMmaYdo1qkwWz3P6f
+        AZuA8vXkv6aRG7/KfmBjJ3LpHGILvQ==
+X-Google-Smtp-Source: ABdhPJwINWASDIcbnAlPGTqU1d+qKbxekVgnOt54abWpI7enCFjTH9b++DgZI0VBTn7SapNG6EEqVw==
+X-Received: by 2002:a9d:63c6:: with SMTP id e6mr2657288otl.326.1607534805803;
+        Wed, 09 Dec 2020 09:26:45 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k13sm537363otl.72.2020.12.09.09.26.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 09:26:45 -0800 (PST)
+Received: (nullmailer pid 641351 invoked by uid 1000);
+        Wed, 09 Dec 2020 17:26:43 -0000
+Date:   Wed, 9 Dec 2020 11:26:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, broonie@kernel.org,
+        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 2/7] dt-bindings: spi: Add Tegra QSPI device tree
+ binding
+Message-ID: <20201209172643.GA638607@robh.at.kernel.org>
+References: <1606857168-5839-1-git-send-email-skomatineni@nvidia.com>
+ <1606857168-5839-3-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 9 Dec 2020 22:56:42 +0530
-Message-ID: <CA+G9fYuNKqyvku1im6_zS5PjK9nG3Jf6qNwpQjaB8WRWO5BXzA@mail.gmail.com>
-Subject: [sh] smp-shx3.c: error: ignoring return value of 'request_irq',
- declared with attribute warn_unused_result
-To:     open list <linux-kernel@vger.kernel.org>, linux-sh@vger.kernel.org,
-        lkft-triage@lists.linaro.org
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606857168-5839-3-git-send-email-skomatineni@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux next 20201209 tag the arch 'sh' defconfig build failed to build with
-gcc-8, gcc-9 and gcc-10.
+On Tue, Dec 01, 2020 at 01:12:43PM -0800, Sowjanya Komatineni wrote:
+> This patch adds YAML based device tree binding document for Tegra
+> QSPI driver.
+> 
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  .../devicetree/bindings/spi/nvidia,tegra-qspi.yaml | 77 ++++++++++++++++++++++
+>  1 file changed, 77 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra-qspi.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/nvidia,tegra-qspi.yaml b/Documentation/devicetree/bindings/spi/nvidia,tegra-qspi.yaml
+> new file mode 100644
+> index 0000000..038a085
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/nvidia,tegra-qspi.yaml
+> @@ -0,0 +1,77 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/nvidia,tegra-qspi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Tegra Quad SPI Controller
+> +
+> +maintainers:
+> +  - Thierry Reding <thierry.reding@gmail.com>
+> +  - Jonathan Hunter <jonathanh@nvidia.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nvidia,tegra210-qspi
+> +      - nvidia,tegra186-qspi
+> +      - nvidia,tegra194-qspi
+> +
+> +  reg:
+> +    items:
+> +      - description: QSPI registers
 
-arch/sh/kernel/cpu/sh4a/smp-shx3.c: In function 'shx3_prepare_cpus':
-arch/sh/kernel/cpu/sh4a/smp-shx3.c:76:3: error: ignoring return value
-of 'request_irq', declared with attribute warn_unused_result
-[-Werror=unused-result]
-   request_irq(104 + i, ipi_interrupt_handler,
-   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        IRQF_PERCPU, "IPI", (void *)(long)i);
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Just 'maxItems: 1'
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: qspi
 
-steps to reproduce:
--------------------
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
+Kind of a pointless name. 
 
-tuxmake --runtime docker --target-arch sh --toolchain gcc-9 --kconfig defconfig
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    minItems: 1
+> +    items:
+> +      - const: qspi
 
-metadata:
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-    target_arch: sh
-    toolchain: gcc-9
-    git_short_log: 2f1d5c77f13f (\Add linux-next specific files for 20201209\)
-    git_sha: 2f1d5c77f13fe64497c2e2601605f7d7ec4da9b1
-    git_describe: next-20201209
-    download_url: https://builds.tuxbuild.com/1lPwmsuPj4eW5gsLeObYvbXC3fw/
+Same here.
 
-Full build log,
-https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/jobs/899463251
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  dmas:
+> +    maxItems: 2
+> +
+> +  dma-names:
+> +    items:
+> +      - const: rx
+> +      - const: tx
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clock-names
+> +  - clocks
+> +  - reset-names
+> +  - resets
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/tegra210-car.h>
+> +    #include <dt-bindings/reset/tegra210-car.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    spi@70410000 {
+> +            compatible = "nvidia,tegra210-qspi";
+> +            reg = <0x70410000 0x1000>;
+> +            interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+> +            clocks = <&tegra_car TEGRA210_CLK_QSPI>;
+> +            clock-names = "qspi";
+> +            resets = <&tegra_car 211>;
+> +            reset-names = "qspi";
+> +            dmas = <&apbdma 5>, <&apbdma 5>;
+> +            dma-names = "rx", "tx";
+> +    };
+> -- 
+> 2.7.4
+> 
