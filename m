@@ -2,210 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627EF2D3C04
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B202D3C0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728400AbgLIHKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 02:10:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728368AbgLIHKV (ORCPT
+        id S1726825AbgLIHTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 02:19:03 -0500
+Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227]:24118 "EHLO
+        alexa-out-tai-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725283AbgLIHTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 02:10:21 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8B7C0617A7;
-        Tue,  8 Dec 2020 23:09:31 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id t4so503276wrr.12;
-        Tue, 08 Dec 2020 23:09:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Bx5zsXWq2TsLd1av5cUuK12+/TfvUph8JxWJR1Ftl9c=;
-        b=B1ZPSOnvzc3vi5Oza+xt41d7q5Pjb0QbFoflEqhnn5fngkm+kSyQNGRZLSic5IHUSd
-         4NTmTwz4yg0YbGZ5iB2NZWdnYNDGP2WdxEkzTDOIWioUHEfTOkI4n6NKmtewB+0uScfv
-         c2SPoUMYn/4kbm8ghoaKVPH6GXowcyd48hfRNany/2vkYvLTiKK08ziUdHY6e8ItwyII
-         mfwVbxz66U58Sc3ir4iVXFbPHX8uVGSBaR3Poxa+J+a80XPYQ9mdwE1sr0blvbqrMDPN
-         Pgu+ZsSKRVOparLSTz/PTpRkrfxTCy0Yfv62m8acYTUUAslPwKD434dhbP1qdeTIRSdN
-         vbSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Bx5zsXWq2TsLd1av5cUuK12+/TfvUph8JxWJR1Ftl9c=;
-        b=a9yK1ziMeV8lK08ne/iJFzQkc1UCD3KQbCI3EN0gCgqueuA9S6iiutWxliGB/3Yftn
-         lSUClvVVHkn7SbbhNbyQLZRT+lQq/xqcd+LIRP/F4bBPiW//A0jCbmj+Md7/BnCE/EEJ
-         JSzI0jfn0dOFsUQV5CQ+xVWWp05782mr1+scVlwyMND8PDZ75ZCV16hlbYp2+Hr4zmEU
-         WRuhnfWM9H1OZ7mrbemnl435khsh/DBv/QYCAhWUTi7phaWa6Tz8opTsmwwxXDeVli9o
-         fhYGqt/uyAm/+pAwiZ5uY18AUHaz7L+dTrGV9hTzDAg1UqK7YEei0UbEwDAc3vrIrpiv
-         nmRA==
-X-Gm-Message-State: AOAM533ofHLkglmpNP9U26pLs9hb8QflEiYi7yj08YU/hlt0Nyau1fym
-        TKZnP+wZU4leDvG42WGlPwy6USQ+lPzckw==
-X-Google-Smtp-Source: ABdhPJw0hkgqKETPcvYNSUHOX8eYBtVQ4Koxw++mUsqW/GG3L4pvteWFHt9FUhGA/l3xU4fbpmVLjg==
-X-Received: by 2002:adf:e801:: with SMTP id o1mr982221wrm.3.1607497769450;
-        Tue, 08 Dec 2020 23:09:29 -0800 (PST)
-Received: from andrea.corp.microsoft.com (host-95-239-64-30.retail.telecomitalia.it. [95.239.64.30])
-        by smtp.gmail.com with ESMTPSA id p3sm1449122wrs.50.2020.12.08.23.09.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 23:09:29 -0800 (PST)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-Subject: [PATCH v3 6/6] Drivers: hv: vmbus: Do not allow overwriting vmbus_connection.channels[]
-Date:   Wed,  9 Dec 2020 08:08:27 +0100
-Message-Id: <20201209070827.29335-7-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201209070827.29335-1-parri.andrea@gmail.com>
-References: <20201209070827.29335-1-parri.andrea@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 9 Dec 2020 02:19:03 -0500
+X-Greylist: delayed 446 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Dec 2020 02:19:02 EST
+Received: from ironmsg03-tai.qualcomm.com ([10.249.140.8])
+  by alexa-out-tai-02.qualcomm.com with ESMTP; 09 Dec 2020 15:10:55 +0800
+X-QCInternal: smtphost
+Received: from cbsp-sh-gv.ap.qualcomm.com (HELO cbsp-sh-gv.qualcomm.com) ([10.231.249.68])
+  by ironmsg03-tai.qualcomm.com with ESMTP; 09 Dec 2020 15:10:26 +0800
+Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 393357)
+        id 5B353232E; Wed,  9 Dec 2020 15:10:25 +0800 (CST)
+From:   Ziqi Chen <ziqichen@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        cang@codeaurora.org, hongwus@codeaurora.org, rnayak@codeaurora.org,
+        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        ziqichen@codeaurora.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Satya Tangirala <satyat@google.com>,
+        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v1 1/1] scsi: ufs: Fix ufs power down/on specs violation
+Date:   Wed,  9 Dec 2020 15:09:28 +0800
+Message-Id: <1607497774-76579-1-git-send-email-ziqichen@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, vmbus_onoffer() and vmbus_process_offer() are not validating
-whether a given entry in the vmbus_connection.channels[] array is empty
-before filling the entry with a call of vmbus_channel_map_relid().  An
-erroneous or malicious host could rely on this to leak channel objects.
-Do not allow overwriting an entry vmbus_connection.channels[].
+As per specs, e.g, JESD220E chapter 7.2, while powering
+off/on the ufs device, RST_N signal and REF_CLK signal
+should be between VSS(Ground) and VCCQ/VCCQ2.
 
-Reported-by: Juan Vazquez <juvazq@microsoft.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+Power down:
+1. Assert RST_N low
+2. Turn-off REF_CLK
+3. Turn-off VCC
+4. Turn-off VCCQ/VCCQ2.
+power on:
+1. Turn-on VCC
+2. Turn-on VCCQ/VCCQ2
+3. Turn-On REF_CLK
+4. Deassert RST_N high.
+
+Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
 ---
-Changes since v2:
-  - Release channel_mutex before 'return' in vmbus_onoffer() error path
+ drivers/scsi/ufs/ufs-qcom.c | 14 ++++++++++----
+ drivers/scsi/ufs/ufshcd.c   | 19 +++++++++----------
+ drivers/scsi/ufs/ufshcd.h   |  4 ++--
+ 3 files changed, 21 insertions(+), 16 deletions(-)
 
- drivers/hv/channel_mgmt.c | 40 +++++++++++++++++++++++++--------------
- drivers/hv/hyperv_vmbus.h |  2 +-
- 2 files changed, 27 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-index 68950a1e4b638..2c15693b86f1e 100644
---- a/drivers/hv/channel_mgmt.c
-+++ b/drivers/hv/channel_mgmt.c
-@@ -354,10 +354,12 @@ static void free_channel(struct vmbus_channel *channel)
- 	kobject_put(&channel->kobj);
- }
+diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+index 1e434cc..5ed3a63d 100644
+--- a/drivers/scsi/ufs/ufs-qcom.c
++++ b/drivers/scsi/ufs/ufs-qcom.c
+@@ -582,6 +582,9 @@ static int ufs_qcom_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		ufs_qcom_disable_lane_clks(host);
+ 		phy_power_off(phy);
  
--void vmbus_channel_map_relid(struct vmbus_channel *channel)
-+int vmbus_channel_map_relid(struct vmbus_channel *channel)
- {
--	if (WARN_ON(channel->offermsg.child_relid >= MAX_CHANNEL_RELIDS))
--		return;
-+	u32 relid = channel->offermsg.child_relid;
++		if (hba->vops && hba->vops->device_reset)
++			hba->vops->device_reset(hba, false);
 +
-+	if (WARN_ON(relid >= MAX_CHANNEL_RELIDS || vmbus_connection.channels[relid] != NULL))
-+		return -EINVAL;
- 	/*
- 	 * The mapping of the channel's relid is visible from the CPUs that
- 	 * execute vmbus_chan_sched() by the time that vmbus_chan_sched() will
-@@ -383,18 +385,17 @@ void vmbus_channel_map_relid(struct vmbus_channel *channel)
- 	 *      of the VMBus driver and vmbus_chan_sched() can not run before
- 	 *      vmbus_bus_resume() has completed execution (cf. resume_noirq).
- 	 */
--	smp_store_mb(
--		vmbus_connection.channels[channel->offermsg.child_relid],
--		channel);
-+	smp_store_mb(vmbus_connection.channels[relid], channel);
-+	return 0;
- }
- 
- void vmbus_channel_unmap_relid(struct vmbus_channel *channel)
- {
--	if (WARN_ON(channel->offermsg.child_relid >= MAX_CHANNEL_RELIDS))
-+	u32 relid = channel->offermsg.child_relid;
-+
-+	if (WARN_ON(relid >= MAX_CHANNEL_RELIDS))
- 		return;
--	WRITE_ONCE(
--		vmbus_connection.channels[channel->offermsg.child_relid],
--		NULL);
-+	WRITE_ONCE(vmbus_connection.channels[relid], NULL);
- }
- 
- static void vmbus_release_relid(u32 relid)
-@@ -601,6 +602,12 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
- 	 */
- 	atomic_dec(&vmbus_connection.offer_in_progress);
- 
-+	if (vmbus_channel_map_relid(newchannel)) {
-+		mutex_unlock(&vmbus_connection.channel_mutex);
-+		kfree(newchannel);
-+		return;
-+	}
-+
- 	list_for_each_entry(channel, &vmbus_connection.chn_list, listentry) {
- 		if (guid_equal(&channel->offermsg.offer.if_type,
- 			       &newchannel->offermsg.offer.if_type) &&
-@@ -619,6 +626,7 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
- 		 * Check to see if this is a valid sub-channel.
- 		 */
- 		if (newchannel->offermsg.offer.sub_channel_index == 0) {
-+			vmbus_channel_unmap_relid(newchannel);
- 			mutex_unlock(&vmbus_connection.channel_mutex);
- 			/*
- 			 * Don't call free_channel(), because newchannel->kobj
-@@ -635,8 +643,6 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
- 		list_add_tail(&newchannel->sc_list, &channel->sc_list);
+ 	} else if (!ufs_qcom_is_link_active(hba)) {
+ 		ufs_qcom_disable_lane_clks(host);
  	}
+@@ -1400,10 +1403,11 @@ static void ufs_qcom_dump_dbg_regs(struct ufs_hba *hba)
+ /**
+  * ufs_qcom_device_reset() - toggle the (optional) device reset line
+  * @hba: per-adapter instance
++ * @toggle: need pulling up or not
+  *
+  * Toggles the (optional) reset line to reset the attached device.
+  */
+-static int ufs_qcom_device_reset(struct ufs_hba *hba)
++static int ufs_qcom_device_reset(struct ufs_hba *hba, bool toggle)
+ {
+ 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
  
--	vmbus_channel_map_relid(newchannel);
+@@ -1416,10 +1420,12 @@ static int ufs_qcom_device_reset(struct ufs_hba *hba)
+ 	 * be on the safe side.
+ 	 */
+ 	gpiod_set_value_cansleep(host->device_reset, 1);
+-	usleep_range(10, 15);
+ 
+-	gpiod_set_value_cansleep(host->device_reset, 0);
+-	usleep_range(10, 15);
++	if (toggle) {
++		usleep_range(10, 15);
++		gpiod_set_value_cansleep(host->device_reset, 0);
++		usleep_range(10, 15);
++	}
+ 
+ 	return 0;
+ }
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 92d433d..5ab1c02 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -8633,8 +8633,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	if (ret)
+ 		goto set_dev_active;
+ 
+-	ufshcd_vreg_set_lpm(hba);
 -
- 	mutex_unlock(&vmbus_connection.channel_mutex);
- 	cpus_read_unlock();
+ disable_clks:
+ 	/*
+ 	 * Call vendor specific suspend callback. As these callbacks may access
+@@ -8664,6 +8662,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
  
-@@ -920,6 +926,8 @@ static void vmbus_onoffer(struct vmbus_channel_message_header *hdr)
- 	oldchannel = find_primary_channel_by_offer(offer);
+ 	/* Put the host controller in low power mode if possible */
+ 	ufshcd_hba_vreg_set_lpm(hba);
++	ufshcd_vreg_set_lpm(hba);
+ 	goto out;
  
- 	if (oldchannel != NULL) {
-+		u32 relid = offer->child_relid;
+ set_link_active:
+@@ -8729,18 +8728,18 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	old_link_state = hba->uic_link_state;
+ 
+ 	ufshcd_hba_vreg_set_hpm(hba);
++	ret = ufshcd_vreg_set_hpm(hba);
++	if (ret)
++		goto out;
 +
- 		/*
- 		 * We're resuming from hibernation: all the sub-channel and
- 		 * hv_sock channels we had before the hibernation should have
-@@ -954,8 +962,12 @@ static void vmbus_onoffer(struct vmbus_channel_message_header *hdr)
- 		atomic_dec(&vmbus_connection.offer_in_progress);
+ 	/* Make sure clocks are enabled before accessing controller */
+ 	ret = ufshcd_setup_clocks(hba, true);
+ 	if (ret)
+-		goto out;
++		goto disable_vreg;
  
- 		WARN_ON(oldchannel->offermsg.child_relid != INVALID_RELID);
-+		if (WARN_ON(vmbus_connection.channels[relid] != NULL)) {
-+			mutex_unlock(&vmbus_connection.channel_mutex);
-+			return;
-+		}
- 		/* Fix up the relid. */
--		oldchannel->offermsg.child_relid = offer->child_relid;
-+		oldchannel->offermsg.child_relid = relid;
+ 	/* enable the host irq as host controller would be active soon */
+ 	ufshcd_enable_irq(hba);
  
- 		offer_sz = sizeof(*offer);
- 		if (memcmp(offer, &oldchannel->offermsg, offer_sz) != 0) {
-@@ -967,7 +979,7 @@ static void vmbus_onoffer(struct vmbus_channel_message_header *hdr)
- 			 * reoffers the device upon resume.
- 			 */
- 			pr_debug("vmbus offer changed: relid=%d\n",
--				 offer->child_relid);
-+				 relid);
+-	ret = ufshcd_vreg_set_hpm(hba);
+-	if (ret)
+-		goto disable_irq_and_vops_clks;
+-
+ 	/*
+ 	 * Call vendor specific resume callback. As these callbacks may access
+ 	 * vendor specific host controller register space call them when the
+@@ -8748,7 +8747,7 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	 */
+ 	ret = ufshcd_vops_resume(hba, pm_op);
+ 	if (ret)
+-		goto disable_vreg;
++		goto disable_irq_and_vops_clks;
  
- 			print_hex_dump_debug("Old vmbus offer: ",
- 					     DUMP_PREFIX_OFFSET, 16, 4,
-diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
-index 42f3d9d123a12..3222fbf2a21c6 100644
---- a/drivers/hv/hyperv_vmbus.h
-+++ b/drivers/hv/hyperv_vmbus.h
-@@ -337,7 +337,7 @@ int vmbus_add_channel_kobj(struct hv_device *device_obj,
+ 	/* For DeepSleep, the only supported option is to have the link off */
+ 	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && !ufshcd_is_link_off(hba));
+@@ -8815,8 +8814,6 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	ufshcd_link_state_transition(hba, old_link_state, 0);
+ vendor_suspend:
+ 	ufshcd_vops_suspend(hba, pm_op);
+-disable_vreg:
+-	ufshcd_vreg_set_lpm(hba);
+ disable_irq_and_vops_clks:
+ 	ufshcd_disable_irq(hba);
+ 	if (hba->clk_scaling.is_allowed)
+@@ -8827,6 +8824,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		trace_ufshcd_clk_gating(dev_name(hba->dev),
+ 					hba->clk_gating.state);
+ 	}
++disable_vreg:
++	ufshcd_vreg_set_lpm(hba);
+ out:
+ 	hba->pm_op_in_progress = 0;
+ 	if (ret)
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 61344c4..47c7dab6 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -323,7 +323,7 @@ struct ufs_hba_variant_ops {
+ 	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
+ 	void	(*dbg_register_dump)(struct ufs_hba *hba);
+ 	int	(*phy_initialization)(struct ufs_hba *);
+-	int	(*device_reset)(struct ufs_hba *hba);
++	int	(*device_reset)(struct ufs_hba *hba, bool);
+ 	void	(*config_scaling_param)(struct ufs_hba *hba,
+ 					struct devfreq_dev_profile *profile,
+ 					void *data);
+@@ -1211,7 +1211,7 @@ static inline void ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
+ static inline void ufshcd_vops_device_reset(struct ufs_hba *hba)
+ {
+ 	if (hba->vops && hba->vops->device_reset) {
+-		int err = hba->vops->device_reset(hba);
++		int err = hba->vops->device_reset(hba, true);
  
- void vmbus_remove_channel_attr_group(struct vmbus_channel *channel);
- 
--void vmbus_channel_map_relid(struct vmbus_channel *channel);
-+int vmbus_channel_map_relid(struct vmbus_channel *channel);
- void vmbus_channel_unmap_relid(struct vmbus_channel *channel);
- 
- struct vmbus_channel *relid2channel(u32 relid);
+ 		if (!err)
+ 			ufshcd_set_ufs_dev_active(hba);
 -- 
-2.25.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
