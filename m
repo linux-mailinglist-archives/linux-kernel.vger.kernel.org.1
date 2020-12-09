@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A382F2D46FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE932D46FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732131AbgLIQmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:42:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
+        id S1732153AbgLIQmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:42:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732118AbgLIQl7 (ORCPT
+        with ESMTP id S1730388AbgLIQmo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:41:59 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A100C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 08:41:19 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id t16so2459191wra.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 08:41:19 -0800 (PST)
+        Wed, 9 Dec 2020 11:42:44 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A132C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 08:41:21 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id x6so2436872wro.11
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 08:41:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZtyuRdRz8sBuacydQZ1U8sV8ePK6VljMJ9YQuTchpwE=;
-        b=SGRrDcXx7kpNQT8MctEfTnNV6tsVPXc+l1wPopGzlWU4Bryx5Upueed8qDVEzdrVs8
-         GUP3ovO4MBPcAd81XrTibO5WDjJMDmALAps7mLG2kRr/coRbR7IDRt6qbOcXvaN1VCtH
-         j22C1KQ1P8v5mmfS7Wt6KQ/FNoZ6QsUZ8zcrA=
+        bh=G7EU11PHgFsJFA5nDKbU03Fk+7GyGqDKScGIXgeNQqU=;
+        b=eG+oWcIvbvjeSujB8w9rC9FysPL6rBXwMAfVo+NMk/6Vn5Myb8MwqqPgOooFPsZ/uV
+         F3mZu/o6uqakiRyeYYzyVDrlewRY41v1pg/KMxL2jGhKoZO8r32FikNzZL9F7NnxW2xT
+         WtfBARKMIm2z1zU5M6Bvhn4czPwUeXdSJm0Xg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZtyuRdRz8sBuacydQZ1U8sV8ePK6VljMJ9YQuTchpwE=;
-        b=oamuMi58Tn+In3BghyfpR0dYyAJd+Za32oVGj/wSSyrFBooPuNtao1avhARncPamHD
-         4BprzLopFEngXKuDGm4KnT12L1hnU+uK81MyDUWGVSLsRKTmvG0uCIod5sx3F2qgw+be
-         yBQLGzDqYjQJ5vA4YRtl8LRzzhgt42nKqPWVH4nvkeWs6cUnVCWsTs5aOjxPPfc3jxrQ
-         1tjHok/H/sTPUEKrj/ALmrTJDUFvNjYX6QSeUIZjdBjdW+gycruf8Ysk3sVHnSIdTBu9
-         K3qpwN0od3PSvIlJV2gCYNKUAGgfOYqgir0Fv12R+M0ilfyo6M4ipiILiOCkHuHcs2xo
-         fYNw==
-X-Gm-Message-State: AOAM530LM94ZdJiGKKwjaXeMLQGlib9kZWbMRw/EZOzzS/jcueF+pk2s
-        ePayaCcNtPYyAgy5QSF/fXE6f7UB/WfMIUjdqz1h1A==
-X-Google-Smtp-Source: ABdhPJwEg372av2KNxoGuDDVEL4uVw1qajfMrJ17k9OJ6CGdKJDuSuYJ/scAeKBtFnzbgJfJw2ScvoDjE6gpSjHwQ+A=
-X-Received: by 2002:a5d:5146:: with SMTP id u6mr3839567wrt.66.1607532077897;
- Wed, 09 Dec 2020 08:41:17 -0800 (PST)
+        bh=G7EU11PHgFsJFA5nDKbU03Fk+7GyGqDKScGIXgeNQqU=;
+        b=clMlu8py+9QpiE59lxy0tCYjS3bIoes/zR7wjZY7TgZF4/4XmBGvgEgpEAGfLBqy7B
+         hx3+k3oCMrp51F2ek5EH2PI24eBtwbp03Cc/wynwpiXt5rINj2zBmOfRWdOW5XeGkHip
+         WpDxwo09/uQ7HVEVKKAXEj+2mCULs+C7r9ZwVknJfVipioIDKq6xSETnAxTx1Qe0jrDV
+         X5IM3hlnQKE2F15iH3PGuM+Olq3YofufSzZn2NeoGyi4n1IQrjWcD+VHRekUt/LHfnzc
+         fnJ/3VkF9+YbGJ1Bo9W5ja/rMMDj1t/nJVuUDQDaGGkj0hDqRN8lbHwI1WqUnfxx+V0g
+         kTLw==
+X-Gm-Message-State: AOAM53353/vSsRW3Jh0tanNFSYl0gldStHEUeCydYByxlbPFgaEh2cpd
+        qR1KMmMI7L/PeMf/UJPobzpogafZ8/+ffDdDfUxpTAP0Jp9lnA==
+X-Google-Smtp-Source: ABdhPJxEl7OMQ/htwgbOiYGTRVp2/9MuAsCc5a1dKA3v6HasSTKSz48ecmPqg7FmN5ROLORNuwCpkQnYAmtTmfvAthU=
+X-Received: by 2002:adf:82c8:: with SMTP id 66mr3598316wrc.420.1607532079884;
+ Wed, 09 Dec 2020 08:41:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20201204193540.3047030-1-swboyd@chromium.org> <20201204193540.3047030-3-swboyd@chromium.org>
-In-Reply-To: <20201204193540.3047030-3-swboyd@chromium.org>
+References: <20201204193540.3047030-1-swboyd@chromium.org> <20201204193540.3047030-2-swboyd@chromium.org>
+In-Reply-To: <20201204193540.3047030-2-swboyd@chromium.org>
 From:   Simon Glass <sjg@chromium.org>
-Date:   Wed, 9 Dec 2020 09:41:06 -0700
-Message-ID: <CAPnjgZ3d4pvp1ZMFeSf1zc7oVgUsVYDR-Q8bbQouwowS8jon+Q@mail.gmail.com>
-Subject: Re: [PATCH 2/3] platform/chrome: cros_ec_spi: Drop bits_per_word assignment
+Date:   Wed, 9 Dec 2020 09:41:08 -0700
+Message-ID: <CAPnjgZ1nV4FTvA9zAh046Vpki01WfVcowP8CPxrx1b3dONM-Og@mail.gmail.com>
+Subject: Re: [PATCH 1/3] platform/chrome: cros_ec_spi: Don't overwrite spi::mode
 To:     Stephen Boyd <swboyd@chromium.org>
 Cc:     Mark Brown <broonie@kernel.org>, lk <linux-kernel@vger.kernel.org>,
         linux-spi@vger.kernel.org, Benson Leung <bleung@chromium.org>,
@@ -63,9 +63,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, 4 Dec 2020 at 12:35, Stephen Boyd <swboyd@chromium.org> wrote:
 >
-> This is already handed by default in spi_setup() if the bits_per_word is
-> 0, so just drop it to shave off a line.
+> There isn't any need to overwrite the mode here in the driver with what
+> has been detected by the firmware, such as DT or ACPI. In fact, if we
+> use the SPI CS gpio descriptor feature we will overwrite the mode with
+> SPI_MODE_0 where it already contains SPI_MODE_0 and more importantly
+> SPI_CS_HIGH. Clearing the SPI_CS_HIGH bit causes the CS line to toggle
+> when the device is probed when it shouldn't change, confusing the driver
+> and making it fail to probe. Drop the assignment and let the spi core
+> take care of it.
 >
+> Fixes: a17d94f0b6e1 ("mfd: Add ChromeOS EC SPI driver")
 > Cc: Simon Glass <sjg@chromium.org>
 > Cc: Gwendal Grignou <gwendal@chromium.org>
 > Reviewed-by: Douglas Anderson <dianders@chromium.org>
@@ -77,19 +84,21 @@ On Fri, 4 Dec 2020 at 12:35, Stephen Boyd <swboyd@chromium.org> wrote:
 >  drivers/platform/chrome/cros_ec_spi.c | 1 -
 >  1 file changed, 1 deletion(-)
 
+
 Reviewed-by: Simon Glass <sjg@chromium.org>
 
 
 >
+>
 > diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chrome/cros_ec_spi.c
-> index f9df218fc2bb..14c4046fa04d 100644
+> index dfa1f816a45f..f9df218fc2bb 100644
 > --- a/drivers/platform/chrome/cros_ec_spi.c
 > +++ b/drivers/platform/chrome/cros_ec_spi.c
-> @@ -741,7 +741,6 @@ static int cros_ec_spi_probe(struct spi_device *spi)
->         struct cros_ec_spi *ec_spi;
+> @@ -742,7 +742,6 @@ static int cros_ec_spi_probe(struct spi_device *spi)
 >         int err;
 >
-> -       spi->bits_per_word = 8;
+>         spi->bits_per_word = 8;
+> -       spi->mode = SPI_MODE_0;
 >         spi->rt = true;
 >         err = spi_setup(spi);
 >         if (err < 0)
