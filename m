@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278602D47DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7142D47D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732392AbgLIRYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:24:50 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:60296 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731346AbgLIRYV (ORCPT
+        id S1732680AbgLIRZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:25:09 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:34698 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732438AbgLIRYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:24:21 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HJWlv111588;
-        Wed, 9 Dec 2020 17:23:34 GMT
+        Wed, 9 Dec 2020 12:24:54 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HJMiq058822;
+        Wed, 9 Dec 2020 17:23:56 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=VnN6soBlGi/0SCbEGBCIPTtcbq0lk8ftwSQHlFY9W2c=;
- b=bdiS+b4cqUlD4wyfQqnFY5YvZBEbEoh/ZZGJ6+URhC8NQhdy+bg2hFbd8/VJ+ih+D1Qt
- oDbydpYRZrTKIhgfrMl/XVE/mWsOM03iQ45AP0mcQ2WPhvS2keZ/XyL69of7Fg2j/rqp
- YlD7KtUIEPNkhxX9d0ul0KeUpOtVGNWMoBSoh0juoUzWFP7tSQooq2Rb6ueuV/7xqK+E
- bKnqy2qLzU4ZJe7KVlTZuaFpUQY8u9et3z0hodsV+560nJgV7Ba5xm8aVLVIua8BgmWK
- necrH5Bs2Q+6m83Uuca2cPcARWI+o5fJ2BarwULvLZ9TivGIZuqk/4prfolcHtHhHcMF hw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35825m9ct1-1
+ bh=rMmfjPpxsr6u3sGGRuFzxzF7rzYtcwNYg6utZgeCcbo=;
+ b=ZfWAyWE8xo9ePF1XSFwOvCkZo87iIeRxm/yWkDXRN/T7qL5JaXgwcQJAyJJEEw1EuAO6
+ yLHpeJcRwyxv3bTSwIIMH9ZAsZ2bG4awXBICfOjsuUNNfRcP/24i/LlmPRXVGqn3PNXw
+ MmgR+xP1Zx5sJzlbapByMIKhBmxYQ5geCZ5Q8QQvhp6zU9bhB41uI4xjOIDJ30EIaSfJ
+ zL92ffeE/CxDzz42zKRN2HVHwlJ7xXVut68/vg4CNUVoGhQZxMEupS20pkpWYHCjue7z
+ +7ogJ/yCLaC2XMwXl01lD57PYO9u8iyOc+s/PsnaUx3Hi56j/fgzX6ThbHPzwJOuhmiK KQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 357yqc1fne-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 17:23:34 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HKjkd142185;
-        Wed, 9 Dec 2020 17:23:33 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 358kyv0gr1-1
+        Wed, 09 Dec 2020 17:23:56 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HJmkf075867;
+        Wed, 9 Dec 2020 17:23:55 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 358m50wgyt-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 17:23:33 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B9HNWs7022582;
-        Wed, 9 Dec 2020 17:23:32 GMT
+        Wed, 09 Dec 2020 17:23:55 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B9HNsB9014315;
+        Wed, 9 Dec 2020 17:23:54 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Dec 2020 09:23:32 -0800
+        with ESMTP ; Wed, 09 Dec 2020 09:23:54 -0800
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Nilesh Javali <njavali@marvell.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        Colin King <colin.king@canonical.com>,
-        linux-scsi@vger.kernel.org, GR-QLogic-Storage-Upstream@marvell.com
+To:     Chris Leech <cleech@redhat.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Lee Duncan <lduncan@suse.com>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: qla4xxx: remove redundant assignment to variable rval
-Date:   Wed,  9 Dec 2020 12:23:16 -0500
-Message-Id: <160753457756.14816.15596316150027507404.b4-ty@oracle.com>
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        open-iscsi@googlegroups.com
+Subject: Re: [PATCH] scsi: iscsi: fix inappropriate use of put_device
+Date:   Wed,  9 Dec 2020 12:23:18 -0500
+Message-Id: <160753457753.14816.8140218142483943973.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201204191810.1150995-1-colin.king@canonical.com>
-References: <20201204191810.1150995-1-colin.king@canonical.com>
+In-Reply-To: <20201120074852.31658-1-miaoqinglang@huawei.com>
+References: <20201120074852.31658-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=931
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2012090122
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090122
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=945
+ clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 19:18:10 +0000, Colin King wrote:
+On Fri, 20 Nov 2020 15:48:52 +0800, Qinglang Miao wrote:
 
-> The variable rval is being initialized with a value that is never read
-> and it is being updated later with a new value.  The initialization is
-> redundant and can be removed.
+> kfree(conn) is called inside put_device(&conn->dev) so that
+> another one would cause use-after-free. Besides, device_unregister
+> should be used here rather than put_device.
 
 Applied to 5.11/scsi-queue, thanks!
 
-[1/1] scsi: qla4xxx: remove redundant assignment to variable rval
-      https://git.kernel.org/mkp/scsi/c/3a5b9fa2cc5f
+[1/1] scsi: iscsi: fix inappropriate use of put_device
+      https://git.kernel.org/mkp/scsi/c/6dc1c7ab6f04
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
