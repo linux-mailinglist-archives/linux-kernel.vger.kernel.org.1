@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA652D49D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5412D49E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387598AbgLITJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:09:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733001AbgLITJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:09:07 -0500
-Message-ID: <f47444311bc7661c6482de11d570fb815f8e7941.camel@kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607540907;
-        bh=MZoHqy8IDSGzdgkpc0oauuGyvv+fzNC267tZh0farKc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=vPVoR+yr9Irrh4vZvZhRF7yzxMdjKL8IJL6xAJj+2hpkMQuUvOlNGsB/zdXAdJrnf
-         G1d95aKPLd8DjKSMXVM7U4aIqTPmYZUhKrBM4BX5IQhzUPYoy68UPSZyPhqmBsYD9I
-         LwQ+Ir0SNSfYN8cNw0u9nPfel734j7BdCWjz2BwVV/UQifaiRbHbVWFhGcmXYINhJ4
-         Jr+sMzueG7eNx7LH/i8qtt0HmzFFRK80XB+KToWv+1eJf4U9m2XbgNW0NhM9ex6Pgs
-         NmQirD8+GSWg+ugJkqDQlTUIcyV79SOZqt5j583avk5K98QabQLRpNwsE5zSjmMEX/
-         IH3WjRqTnPvfg==
-Subject: Re: [PATCHv3 net-next] octeontx2-pf: Add RSS multi group support
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Geetha sowjanya <gakula@marvell.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     sgoutham@marvell.com, davem@davemloft.net, kuba@kernel.org,
-        sbhatta@marvell.com
-Date:   Wed, 09 Dec 2020 11:08:24 -0800
-In-Reply-To: <20201209170937.19548-1-gakula@marvell.com>
-References: <20201209170937.19548-1-gakula@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S2387561AbgLITNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:13:30 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:46315 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732900AbgLITNS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:13:18 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 15DB0580233;
+        Wed,  9 Dec 2020 14:12:09 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 09 Dec 2020 14:12:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=xqge9GL++YyfKHKH4XONW7ozJfi
+        dwx7PvG5HtEjyOe0=; b=m3gY3WLVBfZGq/irJNiytLeMlzk/M5NTAAR/FH5jqHr
+        /0SmipuGZSJkkQHLZy03t4wdKQvKtNeyujVLs3QQvKg6JLC/JC0a4gxkEUkHjs/Y
+        6D28H4EaRr2kgLZg6QDgPG1GbppiuyflIO60t5BbxiK/X8UBOA/Y/utQsYwo1wtJ
+        Uh6IVwdCDmCplnnZi2RYkaZZdVHvDiCzM9vgsik+LUr8tl89CYu6l37DLHwPsktL
+        o+UB6Wp5njGfoUq7L/dB7O8Z+etIcobJUMMMBQX8yvNJJ7vFhPuM6PUORuTqjA4g
+        bs1GVO/iitBXudSv17VToLBGbG+ClYFILvVkN2z71BA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=xqge9G
+        L++YyfKHKH4XONW7ozJfidwx7PvG5HtEjyOe0=; b=ft6xD5Jxyu6vQl4RKJVLj6
+        JjuBWCO35p679lel5YZypf0d3CtLZ+mofFE6diDitfM4SIMkMmFL/S7pjyDaLBd0
+        FXRc5mXE8TbnacwOXp0V3eNzaEiZ8iley6vbY+XNGup1dzyU4XZuoEFbHnik06h7
+        oLjFf2pXRaFhCOAlgLGuQ4UN79LKgLzyx2k+Akqm0kiVvN+yGalW9Y9iMNwfKusB
+        FcaoX5E8ePqrDtY9yVUbSY+zJT/IBVBeKN5Pw0jAupaAm3oEWuj+ffPZSVQmwp4Y
+        CPzH0vzicO6eyFiXK3c+P9oINGZ2cNv1Zd7alLZV1r9ZRUjggyH8LhmRRhZtPBrA
+        ==
+X-ME-Sender: <xms:hCHRX66wOUyGK3PYwc_CEMwTAwRa3uQT0kiIgZHjHC1DLGz8t2w8Mg>
+    <xme:hCHRXz6qqlU5fATQNBifjZZ39A4oKbEqYwrL3zJb1wJaLpcZD3AJz8dxOExZHru6i
+    miQsrAYtmxxRnrhOp8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejkedguddvfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujggfsehttdertddtreejnecuhfhrohhmpeeuvghn
+    uceuohgvtghkvghluceomhgvsegsvghnsghovggtkhgvlhdrnhgvtheqnecuggftrfgrth
+    htvghrnhepudffjeegieefudelveekueffkeffjeeiledvgfeiffekkeeihedvveejledt
+    tddtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepvdegrdduieelrddvtd
+    drvdehheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pehmvgessggvnhgsohgvtghkvghlrdhnvght
+X-ME-Proxy: <xmx:hCHRX5eIJntLG4IlKcBofqVmsx_lVi7N7qKKRe4dfnqeBDeIZUicpw>
+    <xmx:hCHRX3I-NzDLPiJ_DoGzTobgwfd_YWlR25la3yv4MNdyvl8c5C25jw>
+    <xmx:hCHRX-LG-9KAiEVWQ-Vh0exrJZqz9or-NauN9V41178F7D0uOAXq8w>
+    <xmx:iSHRX2DloI69yDVccwBkLxgeeTdCTFaaRs4phr7s_Un6Q6v7to5v-w>
+Received: from localhost (unknown [24.169.20.255])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 622931080066;
+        Wed,  9 Dec 2020 14:12:04 -0500 (EST)
+Date:   Wed, 9 Dec 2020 14:12:04 -0500
+From:   Ben Boeckel <me@benboeckel.net>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Petko Manolov <petkan@mip-labs.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org,
+        YueHaibing <yuehaibing@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jann Horn <jannh@google.com>, linux-crypto@vger.kernel.org,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Ben Boeckel <mathstuf@gmail.com>, keyrings@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        linux-security-module@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        Tom Rix <trix@redhat.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@iki.fi>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Denis Efremov <efremov@linux.com>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: Re: [PATCH 00/18] keys: Miscellaneous fixes
+Message-ID: <20201209191204.GB1448831@erythro>
+References: <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-09 at 22:39 +0530, Geetha sowjanya wrote:
-> Hardware supports 8 RSS groups per interface. Currently we are using
-> only group '0'. This patch allows user to create new RSS
-> groups/contexts
-> and use the same as destination for flow steering rules.
+On Wed, Dec 09, 2020 at 12:14:24 +0000, David Howells wrote:
+> I've extended my collection of minor keyrings fixes for the next merge
+> window.  Anything else I should add (or anything I should drop)?
 > 
-> usage:
-> To steer the traffic to RQ 2,3
+> The patches can be found on the following branch:
 > 
-> ethtool -X eth0 weight 0 0 1 1 context new
-> (It will print the allocated context id number)
-> New RSS context is 1
-> 
-> ethtool -N eth0 flow-type tcp4 dst-port 80 context 1 loc 1
-> 
-> To delete the context
-> ethtool -X eth0 context 1 delete
-> 
-> When an RSS context is removed, the active classification
-> rules using this context are also removed.
-> 
-> Change-log:
-> v2
-> - Removed unrelated whitespace
-> - Coverted otx2_get_rxfh() to use new function.
-> 
-> v3
-> - Coverted otx2_set_rxfh() to use new function.
-> 
-> Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
-> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-> ---
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=keys-fixes
 
-...
+1-16 LGTM (modulo the typo in patch 7's commit message). 17 and 18 are
+outside my knowledge right now.
 
-> -/* Configure RSS table and hash key */
-> -static int otx2_set_rxfh(struct net_device *dev, const u32 *indir,
-> -			 const u8 *hkey, const u8 hfunc)
-> +static int otx2_get_rxfh_context(struct net_device *dev, u32 *indir,
-> +				 u8 *hkey, u8 *hfunc, u32 rss_context)
->  {
->  	struct otx2_nic *pfvf = netdev_priv(dev);
-> +	struct otx2_rss_ctx *rss_ctx;
->  	struct otx2_rss_info *rss;
->  	int idx;
->  
-> -	if (hfunc != ETH_RSS_HASH_NO_CHANGE && hfunc !=
-> ETH_RSS_HASH_TOP)
-> -		return -EOPNOTSUPP;
-> -
->  	rss = &pfvf->hw.rss_info;
->  
->  	if (!rss->enable) {
-> -		netdev_err(dev, "RSS is disabled, cannot change
-> settings\n");
-> +		netdev_err(dev, "RSS is disabled\n");
->  		return -EIO;
->  	}
+Reviewed-by: Ben Boeckel <mathstuf@gmail.com>
 
-I see that you init/enable rss on open, is this is your way to block
-getting rss info if device is not open ? why do you need to report an
-error anyway, why not just report whatever default config you will be
-setting up on next open ? 
-
-to me reporting errors to ethtool queries when device is down is a bad
-user experience.
-
-> +	if (rss_context >= MAX_RSS_GROUPS)
-> +		return -EINVAL;
-> +
-
--ENOENT
-> +	rss_ctx = rss->rss_ctx[rss_context];
-> +	if (!rss_ctx)
-> +		return -EINVAL;
-> 
-
--ENOENT
-
-
+--Ben
