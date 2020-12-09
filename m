@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DA52D4735
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235F22D473C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732079AbgLIQxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:53:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730461AbgLIQxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:53:14 -0500
-Date:   Wed, 9 Dec 2020 17:53:45 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607532754;
-        bh=FDDBiLQb2dVjoSLhKuuYxRuHAeK2uDAa1OmNYumqiCc=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g8Uh1BgweQQPLTapykYMYc6xMcjapbd0ZgGQwVObEWxJ2sH6zsWiv1H8upqoC2SpL
-         zv7UA6QEsNQsXvYFK4ZmSNf9RpJ+zpDxHLz1MzfVGJIzjSxsX09thMUrtqPQxEBg65
-         lKVQ+Gop96/kghWp/CskH36UEPRQko8E3QyO2Lc8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Auger Eric <eric.auger@redhat.com>, linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org
-Subject: Re: [PATCH v1 2/5] vfio: platform: Switch to use
- platform_get_mem_or_io_resource()
-Message-ID: <X9EBGV/Tnuk/HzOH@kroah.com>
-References: <20201027175806.20305-1-andriy.shevchenko@linux.intel.com>
- <20201027175806.20305-2-andriy.shevchenko@linux.intel.com>
- <fb0b02a0-d672-0ff8-be80-b95bdbb58e57@redhat.com>
- <20201203130719.GX4077@smile.fi.intel.com>
- <X9Djagfnvsr7V6Ey@kroah.com>
- <20201209164816.GS4077@smile.fi.intel.com>
+        id S1730792AbgLIQye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:54:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729730AbgLIQyc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:54:32 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C04DC061794
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 08:53:52 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id u12so2145730ilv.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 08:53:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pFrCVN6Gn+ZyEFuOYf0G1cqZKi+SMHYMwyy/Z9Ayq2A=;
+        b=mZRI3YhmR5R/0CaDyOv1WOHWk21Oa2uAoEJRpiBgsKRS0Zq3ZP8tqXNE+iPO/vaIJk
+         cdzM5Vqe1Rek8FTcSpl1QA8bG4SF5tsBZaRhkwd5p+HHSSQdQn1hz40UZJjEQAtWWQxh
+         D4oVNrgDtlELXrT1dpfLc5G5JLX/LpNpdlnKg+K2jt3p1wHM69QXKoC3qOVhVj0atwe8
+         LhOXGAddX6vUSoVOzPE1bcTaxJzAJwoQdvbNgqBWwFIH3TANWny1QJkqpftz4LKhBHOS
+         bl5NHaV+I+kXTjwuVwR1b845uYTbfWleV4nVveGywUaRoEqpvaXUOZEf4roZ+SbWYPPF
+         9ydQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pFrCVN6Gn+ZyEFuOYf0G1cqZKi+SMHYMwyy/Z9Ayq2A=;
+        b=oBSyABhYJgUrU3Mcvb+X69mz6ayb5qOlriVOsml001XbLgPheenDusVQzkoKHQq7rQ
+         3w+OWZyojdhBQZI5Nx94wPIHPQjxUTCmK6qU21+hxPzTy62/EBR1FIry4UAV+AVTC75A
+         zrIAELlT4rHG5a1RnKvrXUmytusgK7Uqwbd8bSOSAA67Emt1X2GsO3Qax8CkWsOc35LI
+         i8UsC1sInAzcSeH6+SIE00jl2oEDE2BOkxnoFyD2NfLwkUeBDqLsoAq7Qjaef6p6tyUF
+         J42RHSibupQ397AeLApVuLsQfoWVeP0y1UVkOquRNllYLQlFZdsgNIQo0brB/3qKd3DY
+         9P/w==
+X-Gm-Message-State: AOAM531x5+HEVWoXBzTM49PkxlQkKC8ga2Zac2dfEZOPY5rzcQ42N1X9
+        pjoqDv4yL3XWs9Zs0zORJ4EALA==
+X-Google-Smtp-Source: ABdhPJzbPYzKTjLVZ7r5OyKSMssKQp99fwx2+5ZR2KRfl0z16NRiaF3hFXMPafTr4IwB2IkW3ePnxQ==
+X-Received: by 2002:a92:d44f:: with SMTP id r15mr4160637ilm.237.1607532831277;
+        Wed, 09 Dec 2020 08:53:51 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id e25sm943626iom.40.2020.12.09.08.53.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 08:53:50 -0800 (PST)
+Subject: Re: [RFC 0/2] nocopy bvec for direct IO
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+References: <cover.1607477897.git.asml.silence@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b165cd42-be79-69ed-ae06-a3f3ff633c62@kernel.dk>
+Date:   Wed, 9 Dec 2020 09:53:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209164816.GS4077@smile.fi.intel.com>
+In-Reply-To: <cover.1607477897.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 06:48:16PM +0200, Andy Shevchenko wrote:
-> On Wed, Dec 09, 2020 at 03:47:06PM +0100, Greg Kroah-Hartman wrote:
-> > On Thu, Dec 03, 2020 at 03:07:19PM +0200, Andy Shevchenko wrote:
-> > > On Thu, Dec 03, 2020 at 01:54:38PM +0100, Auger Eric wrote:
-> > > > On 10/27/20 6:58 PM, Andy Shevchenko wrote:
-> > > > > Switch to use new platform_get_mem_or_io_resource() instead of
-> > > > > home grown analogue.
-> > > > > 
-> > > > > Cc: Eric Auger <eric.auger@redhat.com>
-> > > > > Cc: Alex Williamson <alex.williamson@redhat.com>
-> > > > > Cc: Cornelia Huck <cohuck@redhat.com>
-> > > > > Cc: kvm@vger.kernel.org
-> > > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > > Acked-by: Eric Auger <eric.auger@redhat.com>
-> > > 
-> > > Thanks!
-> > > 
-> > > Greg, do I need to do anything else with this series?
-> > 
-> > Have them taken by the vfio maintainers?  I'm not that person :)
+On 12/8/20 7:19 PM, Pavel Begunkov wrote:
+> The idea is to avoid copying, merging, etc. bvec from iterator to bio
+> in direct I/O and use the one we've already got. Hook it up for io_uring.
+> Had an eye on it for a long, and it also was brought up by Matthew
+> just recently. Let me know if I forgot or misplaced some tags.
 > 
-> But it can't be done with a first patch that provides a new API.
-> The rest seems under your realm, if I didn't miss anything.
-> Btw, VFIO agreed on the change (as per given tags).
+> A benchmark got me 430KIOPS vs 540KIOPS, or +25% on bare metal. And perf
+> shows that bio_iov_iter_get_pages() was taking ~20%. The test is pretty
+> silly, but still imposing. I'll redo it closer to reality for next
+> iteration, anyway need to double check some cases.
+> 
+> If same applied to iomap, common chunck can be moved from block_dev
+> into bio_iov_iter_get_pages(), but if there any benefit for filesystems,
+> they should explicitly opt in with ITER_BVEC_FLAG_FIXED.
 
-Ok, can you resend all of these, with the vfio tags added, so I know to
-take them all?
+Ran this on a real device, and I get a 10% bump in performance with it.
+That's pretty amazing! So please do pursue this one and pull it to
+completion.
 
-thanks,
+-- 
+Jens Axboe
 
-greg k-h
