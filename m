@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA522D4B3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A602D4B4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731791AbgLIUHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:07:17 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:35610 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728197AbgLIUHR (ORCPT
+        id S2388102AbgLIUKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:10:34 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:37023 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730016AbgLIUKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:07:17 -0500
-Received: by mail-ot1-f65.google.com with SMTP id i6so2647350otr.2;
-        Wed, 09 Dec 2020 12:07:01 -0800 (PST)
+        Wed, 9 Dec 2020 15:10:33 -0500
+Received: by mail-ot1-f66.google.com with SMTP id o11so2652505ote.4;
+        Wed, 09 Dec 2020 12:10:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=1HYLsU5STC7VJ/5b/CCDAd83oFpysf8ukWCgZzpkajw=;
-        b=ODhUBWEkqDHe1S1TbWIbB6qYr/xwIxCAh/0pwJz0LZ9VjnVb+kd3mQOtf2sn5Fsgyk
-         Z0vO/Jioa5bNXj+RTRsF+8HzQCW2sZoUsZrgKADJFNW/nbSRkV8CvyWuhr+qhC1DSWDW
-         e7rGpZo4+w4PhdbhMxz9cMiiUY6fEhQqabE9nlDqynHCutWPF9HhshHDKyiOgtLmwAZs
-         uPXtzemgLkB1uk6ZQ6FSvHe3bV/oUCoeRDrkx8Pin8+VF1EYu+JR+jZAg1+1PwIQFhL2
-         7BcpVQ4CZKTIIk0jFd0utTh/rwba8IygoqhOFZyKQvni+CMZgKsz2jF2M+5Yq+mtTKvs
-         l6tQ==
-X-Gm-Message-State: AOAM531AMiJyRgnw39DIpnP3Oq2u+ufbdFr0gfOS0E7FzSZHDMyh942J
-        PFy9WWwEKfDgpq2NWMM+Aw==
-X-Google-Smtp-Source: ABdhPJxOThJOKUGLNNKnA40U7hoYgiUoo0PMRXTR8QsxpXqzTs5LHfDKWfPAWRI5HkfXBrHXfL6l/Q==
-X-Received: by 2002:a9d:6414:: with SMTP id h20mr3238999otl.28.1607544395563;
-        Wed, 09 Dec 2020 12:06:35 -0800 (PST)
+        bh=CnQIK7QLR9HIawmYxyGceI161sRy0+j+9gk2A0bDIrk=;
+        b=d4pdTNdXuiR1MTFwORavkR07ScgS+8jGt0Gs07xCdAeqU25kb0e/kg+gG1c+u6lAtY
+         FGuM1PFMP5c8YvtCR8CX5hZnu2UbcyRK7Vmk52SbFkIqbMCiaN+B/fMwb9DnBpipRzBg
+         DwndXPu4zl/zw4Sn56o0BJznTz7gYMEjaZeOzt6ysvzKCowli0fccflUoOtBECVhLYn1
+         lTXDz4UiurDvo1yFHHF1sC6X65z96tQe1DwYxE1Fc2avt8FVh1DhgNwp8gY1S/PSmug1
+         iBorl8GSp9vwNBJsYFcx4Z33lBnDUVZoh2/mbb3ikY5F+s1+ET7jLK8p3UmdJaJQMLLl
+         QHzg==
+X-Gm-Message-State: AOAM531F5qRDO9CusmYvM653F8TLDr0dT47PUFhVx4017mUuZGRQ0eGe
+        WxJLKZPqARBuBJm+ua9rvw==
+X-Google-Smtp-Source: ABdhPJzNnYvkdIKSeo62KHjX3cKdszP5u/d50c6QRfsYBIAge5xj1cbzPbbBYdbNxcg1ltnjrhXpNg==
+X-Received: by 2002:a9d:7490:: with SMTP id t16mr3236135otk.323.1607544592511;
+        Wed, 09 Dec 2020 12:09:52 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c1sm585262ots.68.2020.12.09.12.06.33
+        by smtp.gmail.com with ESMTPSA id b82sm501669oif.49.2020.12.09.12.09.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 12:06:34 -0800 (PST)
-Received: (nullmailer pid 854981 invoked by uid 1000);
-        Wed, 09 Dec 2020 20:06:32 -0000
-Date:   Wed, 9 Dec 2020 14:06:32 -0600
+        Wed, 09 Dec 2020 12:09:51 -0800 (PST)
+Received: (nullmailer pid 859544 invoked by uid 1000);
+        Wed, 09 Dec 2020 20:09:49 -0000
+Date:   Wed, 9 Dec 2020 14:09:49 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Kun Yi <kunyi@google.com>
-Cc:     openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jdelvare@suse.com,
-        supreeth.venkatesh@amd.com, robh+dt@kernel.org, linux@roeck-us.net,
-        mark.rutland@arm.com, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH linux hwmon-next v4 3/3] dt-bindings: (hwmon/sbtsi_tmep)
- Add SB-TSI hwmon driver bindings
-Message-ID: <20201209200632.GA854934@robh.at.kernel.org>
-References: <20201202165601.1532213-1-kunyi@google.com>
- <20201202165601.1532213-4-kunyi@google.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Paul Barker <pbarker@konsulko.com>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        netdev@vger.kernel.org,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        George McCollister <george.mccollister@gmail.com>
+Subject: Re: [PATCH net-next v5 2/9] dt-bindings: net: dsa: microchip,ksz:
+ add interrupt property
+Message-ID: <20201209200949.GA859466@robh.at.kernel.org>
+References: <20201203102117.8995-1-ceggers@arri.de>
+ <20201203102117.8995-3-ceggers@arri.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201202165601.1532213-4-kunyi@google.com>
+In-Reply-To: <20201203102117.8995-3-ceggers@arri.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Dec 2020 08:56:01 -0800, Kun Yi wrote:
-> Document device tree bindings for AMD SB-TSI emulated temperature
-> sensor.
+On Thu, 03 Dec 2020 11:21:10 +0100, Christian Eggers wrote:
+> The devices have an optional interrupt line.
 > 
-> Signed-off-by: Kun Yi <kunyi@google.com>
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
 > ---
->  .../devicetree/bindings/hwmon/amd,sbtsi.yaml  | 54 +++++++++++++++++++
->  1 file changed, 54 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml
+>  .../devicetree/bindings/net/dsa/microchip,ksz.yaml         | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
