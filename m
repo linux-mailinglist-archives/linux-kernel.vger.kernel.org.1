@@ -2,157 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009CA2D48C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336E12D48BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732934AbgLISQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:16:49 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:27749 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732910AbgLISQt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:16:49 -0500
-X-Greylist: delayed 29744 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Dec 2020 13:16:43 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1607537630;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:From:
-        Subject:Sender;
-        bh=385GotCTTVp6WiXp7P/PPzEqWXNcE+6k1Muc5VljLWs=;
-        b=BvdBAgYuw6xhVZz5S4NYc/xYpdRwes3c94gVBDDxUzC/dXuUZ/CaPgquS9zO9VdPZ1
-        mfi69MFsee5oJ0fzoc9cmCM4ebfptW5ZAfW3ob2NscV10onmXQN+r36kDeh2QreG39cD
-        P3nuXZLtMlHoT/zhshJ+JeWZBeOoaQyDtB1jzh22iz8Y3NdTuv02R9RGhc0Jv2yinIYc
-        eXFLKdeTZAJGT139yvwdMc6pixcgO2yPkxhEmZHJ9zwut2Gs+V5eIAr2V9yDxm2dO/vP
-        bTCMCy01Nw6lSHQNVF3lFjKLqJCJE7FTDgSIx2nTNzTX5wsrdfLwtTmaJSKnbv0CL2B0
-        0RsA==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlafXAoNHQ=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 47.6.2 DYNA|AUTH)
-        with ESMTPSA id 908871wB9IDe86J
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Wed, 9 Dec 2020 19:13:40 +0100 (CET)
-Subject: Re: [PATCH] spi: dt-bindings: clarify CS behavior for spi-cs-high and gpio descriptors
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+        id S1732892AbgLISQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:16:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:38436 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729021AbgLISQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:16:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0928F1FB;
+        Wed,  9 Dec 2020 10:15:26 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.26.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B118B3F68F;
+        Wed,  9 Dec 2020 10:15:22 -0800 (PST)
+Date:   Wed, 9 Dec 2020 18:15:14 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, luto@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: Re: [PATCH v2 05/12] x86: rework arch_local_irq_restore() to not use
+ popf
+Message-ID: <20201209181514.GA14235@C02TD0UTHF1T.local>
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120114630.13552-6-jgross@suse.com>
+ <20201120115943.GD3021@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <CAGngYiVKHoXPGxmScCnb-R6xoo9GNw5pG8V8Cpyk3meoJbskiw@mail.gmail.com>
-Date:   Wed, 9 Dec 2020 19:13:39 +0100
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Maxime Ripard <maxime@cerno.tech>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3FA1D050-3BD5-4A97-9D83-520CCF75D147@goldelico.com>
-References: <3bed61807fff6268789e7d411412fbc5cd6ffe2a.1607507863.git.hns@goldelico.com> <CAGngYiVKHoXPGxmScCnb-R6xoo9GNw5pG8V8Cpyk3meoJbskiw@mail.gmail.com>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-X-Mailer: Apple Mail (2.3124)
+Content-Disposition: inline
+In-Reply-To: <20201120115943.GD3021@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 20, 2020 at 12:59:43PM +0100, Peter Zijlstra wrote:
+> On Fri, Nov 20, 2020 at 12:46:23PM +0100, Juergen Gross wrote:
+> > +static __always_inline void arch_local_irq_restore(unsigned long flags)
+> > +{
+> > +	if (!arch_irqs_disabled_flags(flags))
+> > +		arch_local_irq_enable();
+> > +}
+> 
+> If someone were to write horrible code like:
+> 
+> 	local_irq_disable();
+> 	local_irq_save(flags);
+> 	local_irq_enable();
+> 	local_irq_restore(flags);
+> 
+> we'd be up some creek without a paddle... now I don't _think_ we have
+> genius code like that, but I'd feel saver if we can haz an assertion in
+> there somewhere...
 
-> Am 09.12.2020 um 18:36 schrieb Sven Van Asbroeck =
-<thesven73@gmail.com>:
->=20
-> On Wed, Dec 9, 2020 at 4:57 AM H. Nikolaus Schaller =
-<hns@goldelico.com> wrote:
->>=20
->> +
->> +      device node     | cs-gpio       | CS pin state active | Note
->> +      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D
->> +      spi-cs-high     | -             | H                   |
->> +      -               | -             | L                   |
->> +      spi-cs-high     | ACTIVE_HIGH   | H                   |
->> +      -               | ACTIVE_HIGH   | L                   | 1
->> +      spi-cs-high     | ACTIVE_LOW    | H                   | 2
->> +      -               | ACTIVE_LOW    | L                   |
->> +
->=20
-> Doesn't this table simply say:
-> - specify   'spi-cs-high' for an active-high chip select
-> - leave out 'spi-cs-high' for an active-low  chip select
-> - the gpio active high/active low consumer flags are ignored
-> ?
+I've cobbled that together locally (i'll post it momentarily), and gave it a
+spin on both arm64 and x86, whereupon it exploded at boot time on x86.
 
-Yes it does, but I don't know if it is what we want to have. Linus =
-confirmed
-and you also seem to agree. Let's wait for other verdicts.
+In arch/x86/kernel/apic/io_apic.c's timer_irq_works() we do:
 
-This is also what made me wonder if that is really intended because then
-the whole discussion about the cs-gpio-flags and inversion and the fixes
-would not have been needed. The current code and fixes are all about
-not ignoring the flags...
+	local_irq_save(flags);
+	local_irq_enable();
 
-And I am sure the code would be much simpler than currently for treating
-special cases. Code would simply be: make any spi driver look at the =
-gpio
-descriptor and undo any inversion that gpiod_set_value() will do in
-gpiod_set_value_nocheck() so that we can really control the physical
-state by spi-cs-high instead of the logical gpio activity.
+	[ trigger an IRQ here ]
 
-Something like:
+	local_irq_restore(flags);
 
-static void spi_gpio_chipselect(struct spi_device *spi, int is_active)
-{
-	struct spi_gpio *spi_gpio =3D spi_to_spi_gpio(spi);
+... and in check_timer() we call that a number of times after either a
+local_irq_save() or local_irq_disable(), eventually trailing with a
+local_irq_disable() that will balance things up before calling
+local_irq_restore().
 
-	/* set initial clock line level */
-	if (is_active)
-		gpiod_set_value_cansleep(spi_gpio->sck, spi->mode & =
-SPI_CPOL);
+I guess that timer_irq_works() should instead do:
 
-	/* Drive chip select line, if we have one */
+	local_irq_save(flags);
+	local_irq_enable();
+	...
+	local_irq_disable();
+	local_irq_restore(flags);
 
-	if (spi_gpio->cs_gpios) {
-		struct gpio_desc *cs =3D =
-spi_gpio->cs_gpios[spi->chip_select];
+... assuming we consider that legitimate?
 
-		/* check if gpiod_set_value_nocheck() will invert */
-		if (test_bit(FLAG_ACTIVE_LOW, &cs->flags)
-			is_active =3D !is_active;
+With that, and all the calls to local_irq_disable() in check_timer() removed
+(diff below) I get a clean boot under QEMU with the assertion hacked in and
+DEBUG_LOCKDEP enabled.
 
-		/* SPI chip selects are normally active-low */=09
-		gpiod_set_value_cansleep(cs, (spi->mode & SPI_CS_HIGH) ? =
-is_active : !is_active);
-	}
-}
+Thanks
+Mark.
 
-There would be no need to detect spi-cs-high etc. in gpio-lib or
-elsewhere. Only for printing warnings as suggested by Notes 1 and 2.
-
->=20
-> If so, then I would simply document it that way.
-> Simple is beautiful.
-
-Firstly, I would only think about collapsing the table if we agree that
-it is correct. Beauty is IMHO not a reason to declare the table to be
-correct.
-
-Secondly, please imagine some reader of a device tree who finds
-
-	cs-gpios =3D <&gpio 7 ACTIVE_LOW>;
-	spi-cs-high;
-
-Documentation should work well and be helpful especially in such a case.
-Otherwise you don't need documentation.
-
-Saying that the gpio flags are ignored would be helpful but a full table
-with Notes and recommendations how to resolve is even more helpful and
-unambiguous - even if it tells the same.
-
-BR and thanks,
-Nikolaus
-
-
+---->8----
+diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
+index 7b3c7e0d4a09..e79e665a3aeb 100644
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -1631,6 +1631,7 @@ static int __init timer_irq_works(void)
+        else
+                delay_without_tsc();
+ 
++       local_irq_disable();
+        local_irq_restore(flags);
+ 
+        /*
+@@ -2191,7 +2192,6 @@ static inline void __init check_timer(void)
+                        goto out;
+                }
+                panic_if_irq_remap("timer doesn't work through Interrupt-remapped IO-APIC");
+-               local_irq_disable();
+                clear_IO_APIC_pin(apic1, pin1);
+                if (!no_pin1)
+                        apic_printk(APIC_QUIET, KERN_ERR "..MP-BIOS bug: "
+@@ -2215,7 +2215,6 @@ static inline void __init check_timer(void)
+                /*
+                 * Cleanup, just in case ...
+                 */
+-               local_irq_disable();
+                legacy_pic->mask(0);
+                clear_IO_APIC_pin(apic2, pin2);
+                apic_printk(APIC_QUIET, KERN_INFO "....... failed.\n");
+@@ -2232,7 +2231,6 @@ static inline void __init check_timer(void)
+                apic_printk(APIC_QUIET, KERN_INFO "..... works.\n");
+                goto out;
+        }
+-       local_irq_disable();
+        legacy_pic->mask(0);
+        apic_write(APIC_LVT0, APIC_LVT_MASKED | APIC_DM_FIXED | cfg->vector);
+        apic_printk(APIC_QUIET, KERN_INFO "..... failed.\n");
+@@ -2251,7 +2249,6 @@ static inline void __init check_timer(void)
+                apic_printk(APIC_QUIET, KERN_INFO "..... works.\n");
+                goto out;
+        }
+-       local_irq_disable();
+        apic_printk(APIC_QUIET, KERN_INFO "..... failed :(.\n");
+        if (apic_is_x2apic_enabled())
+                apic_printk(APIC_QUIET, KERN_INFO
