@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83B92D4DCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 686912D4DCC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388938AbgLIWaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:30:16 -0500
+        id S2388948AbgLIWaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:30:21 -0500
 Received: from mga01.intel.com ([192.55.52.88]:7816 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388899AbgLIW3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:29:41 -0500
-IronPort-SDR: OktQprmVl6z2WXi/hOaw0hNrwOmoMhq42ujnFpfnLhoAgF0qmgK506Yi47bg2lRXV5JBAOH6ih
- y5JtZNjJbVmw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="192468360"
+        id S2388920AbgLIW35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 17:29:57 -0500
+IronPort-SDR: Bu62h1c6hM6wH0QsIrvrpa6G3qcCO0AMgFw1kZUmuGPd2TO3NWOHwULIawy+4bs0g02Rj0lcrc
+ Pm9Fzy16/FrA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="192468369"
 X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="192468360"
+   d="scan'208";a="192468369"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:28:12 -0800
-IronPort-SDR: Tq77sKR9YMDGQOY2b4nEdkdE8fGIpI2EAa8XpG1Gckejh2u8jT1hhEGtHEhb9rgyY9BRaBGTBj
- chIpoeKORN9g==
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:28:13 -0800
+IronPort-SDR: DHHz8kgAXo4VNUR8QOh42hxlS2HgUkx7U9nsCdI95w3oxm+vdsmARqQIOWxZZJ9X2FqpnbH9Hp
+ i/apbNVvofFQ==
 X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="364333619"
+   d="scan'208";a="364333632"
 Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:28:11 -0800
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 14:28:12 -0800
 From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
 To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -52,9 +52,9 @@ To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Weijiang Yang <weijiang.yang@intel.com>,
         Pengfei Xu <pengfei.xu@intel.com>
 Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v16 3/7] x86/cet/ibt: Handle signals for Indirect Branch Tracking
-Date:   Wed,  9 Dec 2020 14:27:48 -0800
-Message-Id: <20201209222752.2911-4-yu-cheng.yu@intel.com>
+Subject: [PATCH v16 5/7] x86/cet/ibt: Update arch_prctl functions for Indirect Branch Tracking
+Date:   Wed,  9 Dec 2020 14:27:50 -0800
+Message-Id: <20201209222752.2911-6-yu-cheng.yu@intel.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20201209222752.2911-1-yu-cheng.yu@intel.com>
 References: <20201209222752.2911-1-yu-cheng.yu@intel.com>
@@ -64,98 +64,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When an indirect CALL/JMP instruction is executed and before it reaches
-the target, it is in 'WAIT_ENDBR' status, which can be read from
-MSR_IA32_U_CET.  The status is part of a task's status before a signal is
-raised and preserved in the signal frame.  It is restored for sigreturn.
+From: "H.J. Lu" <hjl.tools@gmail.com>
 
-IBT state machine is described in Intel SDM Vol. 1, Sec. 18.3.
+Update ARCH_X86_CET_STATUS and ARCH_X86_CET_DISABLE for Indirect Branch
+Tracking.
 
+Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
 Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 ---
- arch/x86/kernel/cet.c        | 27 +++++++++++++++++++++++++--
- arch/x86/kernel/fpu/signal.c |  8 +++++---
- 2 files changed, 30 insertions(+), 5 deletions(-)
+ arch/x86/kernel/cet_prctl.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/x86/kernel/cet.c b/arch/x86/kernel/cet.c
-index e8871bccce65..d23f68074ab6 100644
---- a/arch/x86/kernel/cet.c
-+++ b/arch/x86/kernel/cet.c
-@@ -295,6 +295,13 @@ void cet_restore_signal(struct sc_ext *sc_ext)
- 		msr_val |= CET_SHSTK_EN;
+diff --git a/arch/x86/kernel/cet_prctl.c b/arch/x86/kernel/cet_prctl.c
+index 4197d985b5ff..92120d8bdd9f 100644
+--- a/arch/x86/kernel/cet_prctl.c
++++ b/arch/x86/kernel/cet_prctl.c
+@@ -22,6 +22,9 @@ static int copy_status_to_user(struct cet_status *cet, u64 arg2)
+ 		buf[2] = (u64)cet->shstk_size;
  	}
  
-+	if (cet->ibt_enabled) {
-+		msr_val |= (CET_ENDBR_EN | CET_NO_TRACK_EN);
++	if (cet->ibt_enabled)
++		buf[0] |= GNU_PROPERTY_X86_FEATURE_1_IBT;
 +
-+		if (sc_ext->wait_endbr)
-+			msr_val |= CET_WAIT_ENDBR;
-+	}
-+
- 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
- 		cet_user_state->user_cet = msr_val;
- 	else
-@@ -335,9 +342,25 @@ int cet_setup_signal(bool ia32, unsigned long rstor_addr, struct sc_ext *sc_ext)
- 		sc_ext->ssp = new_ssp;
- 	}
+ 	return copy_to_user((u64 __user *)arg2, buf, sizeof(buf));
+ }
  
--	if (ssp) {
-+	if (ssp || cet->ibt_enabled) {
-+
- 		start_update_msrs();
--		wrmsrl(MSR_IA32_PL3_SSP, ssp);
-+
-+		if (ssp)
-+			wrmsrl(MSR_IA32_PL3_SSP, ssp);
-+
-+		if (cet->ibt_enabled) {
-+			u64 r;
-+
-+			rdmsrl(MSR_IA32_U_CET, r);
-+
-+			if (r & CET_WAIT_ENDBR) {
-+				sc_ext->wait_endbr = 1;
-+				r &= ~CET_WAIT_ENDBR;
-+				wrmsrl(MSR_IA32_U_CET, r);
-+			}
-+		}
-+
- 		end_update_msrs();
- 	}
- 
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index d5d02b34f516..50f28b37e093 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -57,7 +57,8 @@ int save_cet_to_sigframe(int ia32, void __user *fp, unsigned long restorer)
- {
- 	int err = 0;
- 
--	if (!current->thread.cet.shstk_size)
-+	if (!current->thread.cet.shstk_size &&
-+	    !current->thread.cet.ibt_enabled)
+@@ -56,6 +59,8 @@ int prctl_cet(int option, u64 arg2)
+ 			return -EINVAL;
+ 		if (features & GNU_PROPERTY_X86_FEATURE_1_SHSTK)
+ 			cet_disable_shstk();
++		if (features & GNU_PROPERTY_X86_FEATURE_1_IBT)
++			cet_disable_ibt();
  		return 0;
  
- 	if (fp) {
-@@ -89,7 +90,8 @@ static int get_cet_from_sigframe(int ia32, void __user *fp, struct sc_ext *ext)
- 
- 	memset(ext, 0, sizeof(*ext));
- 
--	if (!current->thread.cet.shstk_size)
-+	if (!current->thread.cet.shstk_size &&
-+	    !current->thread.cet.ibt_enabled)
- 		return 0;
- 
- 	if (fp) {
-@@ -577,7 +579,7 @@ static unsigned long fpu__alloc_sigcontext_ext(unsigned long sp)
- 	 * sigcontext_ext is at: fpu + fpu_user_xstate_size +
- 	 * FP_XSTATE_MAGIC2_SIZE, then aligned to 8.
- 	 */
--	if (cet->shstk_size)
-+	if (cet->shstk_size || cet->ibt_enabled)
- 		sp -= (sizeof(struct sc_ext) + 8);
- 
- 	return sp;
+ 	case ARCH_X86_CET_LOCK:
 -- 
 2.21.0
 
