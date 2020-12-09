@@ -2,96 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8342D3E8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:23:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4377C2D3E99
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:24:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728971AbgLIJWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:22:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
+        id S1729127AbgLIJX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:23:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728703AbgLIJWr (ORCPT
+        with ESMTP id S1729103AbgLIJXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:22:47 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20F7C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:22:07 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id c79so634909pfc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:22:07 -0800 (PST)
+        Wed, 9 Dec 2020 04:23:50 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9975DC0617B0
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:22:29 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id c198so790427wmd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:22:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lJ/NDJbgWxcT6fOKhdSAr+cmsq+iCmYq+jJ18WX01uM=;
-        b=q4DFmtZmDIeK7nwfYx25OR1+aH2qoW24T+oe6su3FMSA9/oU6eB5lElVij6YaLzIDy
-         bPeeEaJoK/BMnOsivoj2a0IY0WUKPgzofs5DHDEqXLgIAg/leBQNRwsUIc3Z6tMseXAI
-         yP02oU8PHxkmr+aHihvxvcahuJTggr+8COCyG+jypXD/xxgG52mKgTKMdk4M3PLV1zN1
-         QgLX3RGoPAkZjf8VdII79LTEMf3Lho4o3mXkiQgMpSNOiaR0uxL6ShBcCJsz8nv/shsL
-         /EOlFd5s60KF8/fyjix6MUZ+TMQnLsOPqqShi0ppfiQNwpgmVgsv0Hf5MW+m3ok7915a
-         E2Sg==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Mx+SSux44r2ybzN5uouGLt8Nyz1sei2BYkCtNp5/Q1U=;
+        b=BrjxDVk7vGKmI9PkGvFwQ3GU2hA8fRK99GdYe9yoQ15TohZrTt4oqHD6OJjC7O2Y29
+         Chb5nVLxZZJ763fumMNZyor5i0DCuYNiOyFihpca10BMIb1ohsXsz09u0P1vg/3Y4wru
+         /HosQ+j/nJKg+Kb+VfMQ6iRzO9Ksrxt4boRjpyTNIDUxJxpoaP7HSd/o8wqF6tKHpXWD
+         E9/XDzI1UQLDSZoCAoiupyT5JBoQJV5od2iZrHzUHJs78vFF3R+ebTCCmlvtW6+qeIJY
+         pc8bEy4zn9Rx1qyn/Mz6/xDVOGssQXFa05U5P1JqV/VRBQNo6n94KA9rzgGhjXo1uV4o
+         a5jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lJ/NDJbgWxcT6fOKhdSAr+cmsq+iCmYq+jJ18WX01uM=;
-        b=aRUvzXLqy97UOk8q/W9xv1nEGMKujhJHxxVa0M76SPlVtZ8whfSZyvaKIm2UrJnIGG
-         Rw0q2CJiNr1phxY9visTLrwi0n7/GybEB0ma7IvcQqd6dEejBK1wgTwKKiDHMLvFWJdz
-         Lr/0jHE0IcvyKgZqYIw6OUBwpuhSMA6BV0OHDXtFB3Tyo5wtSAIXXUaGpKWmab5h8VaC
-         YjpJDAA6PR844UXG4ANuQAPsoieCS3wu8Qwm1qcoW+YiNn6KQ+/HtAWj0c8XpFmDtuyn
-         h1CxQEhUe66bMfYiFyuP53RoZIO3NbsXnDRGEqeR0OeYlvfbXFymgapY2WV9YDFUYSzb
-         sT1g==
-X-Gm-Message-State: AOAM533hu6tYZFlGwhTB3SxNoVkts6X0XN8Vyya5frYZcsZlmBppoqVd
-        f5Ze8we/YdBH67spRBHKpd8=
-X-Google-Smtp-Source: ABdhPJynHp+3TusYEjZjW6pvV7nVcsoGw/4RRSwuBIAQBzpPsUc3f8BKUyCmed/dGJbHCN03pECF8A==
-X-Received: by 2002:a62:f901:0:b029:160:b5d:fc40 with SMTP id o1-20020a62f9010000b02901600b5dfc40mr1428247pfh.55.1607505727285;
-        Wed, 09 Dec 2020 01:22:07 -0800 (PST)
-Received: from localhost ([2401:fa00:8f:203:a6ae:11ff:fe11:4b46])
-        by smtp.gmail.com with ESMTPSA id 188sm1711319pfd.188.2020.12.09.01.22.05
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Mx+SSux44r2ybzN5uouGLt8Nyz1sei2BYkCtNp5/Q1U=;
+        b=c+0Hkx2eoWUt3OGggr28y0J1epuZmclE8TpZmeSRHADvtPuKQLWZiqGK6ArL2n61F2
+         p0/JtTyEkW1vmrSuYqPYq5N2MM37Y/qqH6devA86R0YASbPMpyVzqXk18mPUK0MEWAkU
+         aGIzZH6LGB/bSiM8423+GAsmfGaKEiGmDn8wlOaNqGMq97GLpisusDiC6MqNSSvYF2/H
+         mz9hhyOJWsc7xnXieCFeDjeYMX5zQTFo6SUg5i6U0Gm0uMqCJdx2W4FgJjkQ3Uoaml89
+         f4fAs4C7M7q2Crt9RB6M90mlwWPcPeqj1DqWiiF7aNgEp1ODkLuDeAVyWXmUceGGEY/S
+         qj3Q==
+X-Gm-Message-State: AOAM530+X2OJKxqHlrrrQx3QZ11GuvZHRnTo9ZwMqsXDb/LaG6m17Mwp
+        9Xq2ZKFeV2kbOnR/AZrVuWrPNA==
+X-Google-Smtp-Source: ABdhPJxTlBVIxgjkiki4YjzApRPAYuKQcRCroZoMD5M27K7cz8VwDwS82eqt/XFzqMY5viPlsgQuUQ==
+X-Received: by 2002:a1c:40c:: with SMTP id 12mr1687015wme.40.1607505748074;
+        Wed, 09 Dec 2020 01:22:28 -0800 (PST)
+Received: from dell ([91.110.221.209])
+        by smtp.gmail.com with ESMTPSA id z8sm2247120wmg.17.2020.12.09.01.22.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 01:22:06 -0800 (PST)
-Date:   Wed, 9 Dec 2020 18:22:04 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        Wed, 09 Dec 2020 01:22:27 -0800 (PST)
+Date:   Wed, 9 Dec 2020 09:22:24 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Ion Badulescu <ionut@badula.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Adam Radford <aradford@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v2 2/3] printk: change @clear_seq to atomic64_t
-Message-ID: <20201209092204.GD1667627@google.com>
-References: <20201201205341.3871-1-john.ogness@linutronix.de>
- <20201201205341.3871-3-john.ogness@linutronix.de>
- <X8n9a2DWUFE/giyB@alley>
- <X8/jS9k/eMIL+Acw@jagdpanzerIV.localdomain>
- <875z5c9bhn.fsf@jogness.linutronix.de>
- <20201209081623.GI2414@hirez.programming.kicks-ass.net>
+        Jiri Slaby <jirislaby@kernel.org>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        linux-parisc@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        SCSI development list <linux-scsi@vger.kernel.org>,
+        linux-serial@vger.kernel.org,
+        Linux USB Mailing List <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH] PCI: Remove pci_try_set_mwi
+Message-ID: <20201209092224.GU4801@dell>
+References: <4d535d35-6c8c-2bd8-812b-2b53194ce0ec@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201209081623.GI2414@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4d535d35-6c8c-2bd8-812b-2b53194ce0ec@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/12/09 09:16), Peter Zijlstra wrote:
-> On Tue, Dec 08, 2020 at 11:36:44PM +0106, John Ogness wrote:
-> > For the state variable we chose atomic_long_t instead of atomic64_t for
-> > this reason. atomic_long_t operations are available atomically on all
-> > architectures.
+On Wed, 09 Dec 2020, Heiner Kallweit wrote:
+
+> pci_set_mwi() and pci_try_set_mwi() do exactly the same, just that the
+> former one is declared as __must_check. However also some callers of
+> pci_set_mwi() have a comment that it's an optional feature. I don't
+> think there's much sense in this separation and the use of
+> __must_check. Therefore remove pci_try_set_mwi() and remove the
+> __must_check attribute from pci_set_mwi().
+> I don't expect either function to be used in new code anyway.
 > 
-> Please put on your eye cancer gear and inspect the atomic implementation
-> of PA-RISC, Sparc32, feh, I forgot who else.
-> 
-> Those SMP capable architectures are gifted with just one XCHG like
-> atomic instruction :/ Anyway, as said in the other email, they also
-> don't have NMIs so it mostly works.
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> ---
+> patch applies on top of pci/misc for v5.11
+> ---
+>  Documentation/PCI/pci.rst                     |  5 +----
+>  drivers/ata/pata_cs5530.c                     |  2 +-
+>  drivers/ata/sata_mv.c                         |  2 +-
+>  drivers/dma/dw/pci.c                          |  2 +-
+>  drivers/dma/hsu/pci.c                         |  2 +-
+>  drivers/ide/cs5530.c                          |  2 +-
 
-Hmm, wow. OK, I definitely want to look further.
+>  drivers/mfd/intel-lpss-pci.c                  |  2 +-
 
-When some CONFIG_DEBUG_FOO_BAR code wants to pr_err from prb->atomic_op
-on those archs then we deadlock in printk once again?
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
-	-ss
+>  drivers/net/ethernet/adaptec/starfire.c       |  2 +-
+>  drivers/net/ethernet/alacritech/slicoss.c     |  2 +-
+>  drivers/net/ethernet/dec/tulip/tulip_core.c   |  5 +----
+>  drivers/net/ethernet/sun/cassini.c            |  4 ++--
+>  drivers/net/wireless/intersil/p54/p54pci.c    |  2 +-
+>  .../intersil/prism54/islpci_hotplug.c         |  3 +--
+>  .../wireless/realtek/rtl818x/rtl8180/dev.c    |  2 +-
+>  drivers/pci/pci.c                             | 19 -------------------
+>  drivers/scsi/3w-9xxx.c                        |  4 ++--
+>  drivers/scsi/3w-sas.c                         |  4 ++--
+>  drivers/scsi/csiostor/csio_init.c             |  2 +-
+>  drivers/scsi/lpfc/lpfc_init.c                 |  2 +-
+>  drivers/scsi/qla2xxx/qla_init.c               |  8 ++++----
+>  drivers/scsi/qla2xxx/qla_mr.c                 |  2 +-
+>  drivers/tty/serial/8250/8250_lpss.c           |  2 +-
+>  drivers/usb/chipidea/ci_hdrc_pci.c            |  2 +-
+>  drivers/usb/gadget/udc/amd5536udc_pci.c       |  2 +-
+>  drivers/usb/gadget/udc/net2280.c              |  2 +-
+>  drivers/usb/gadget/udc/pch_udc.c              |  2 +-
+>  include/linux/pci.h                           |  5 ++---
+>  27 files changed, 33 insertions(+), 60 deletions(-)
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
