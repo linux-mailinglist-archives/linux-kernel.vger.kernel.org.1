@@ -2,112 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB442D483B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:48:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBF92D4842
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:50:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbgLIRr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:47:26 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:55512 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgLIRr0 (ORCPT
+        id S1727782AbgLIRtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725972AbgLIRtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:47:26 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HjMPG156339;
-        Wed, 9 Dec 2020 17:46:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=0KsIGX1ORHzxyvZHspVuYUfgAjIts9odHQEERpyqU/s=;
- b=j1HAxznXNnMAnDFce4sgM04MGFUDjF0jU+zzwdEVSKBPiTxsI/EcRM4Xm5fYCeTgws/R
- wPicFPPIbgYalwGgq43LlYh2jkV1YX20CroGoTGJaRuMsTdJK1YDzxOGaVo8acOwbtrh
- /3UiH623w7ZLzmGfhnSVqFWy7anrZOzoETkGKIJFguPtwXV6/Z9vPRIKzJX0ZIc5tvOc
- aHvaa7tCQ7TcC7OKqd68BEa46KQxGb+Q51ITc1PzghhMhl/U0IYsBJwXay7MAuKN5Foz
- vi+e21kip3h0g0Qg8ehn5xqmaPlWyupXQBpyPoaU5zs0YPFMEfKaLlnq7cXOj4bUR90X aA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 35825m9ggh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 17:46:35 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HkYqJ064639;
-        Wed, 9 Dec 2020 17:46:35 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 358m40krm3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 17:46:35 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B9HkNxQ028711;
-        Wed, 9 Dec 2020 17:46:24 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Dec 2020 09:46:23 -0800
-Date:   Wed, 9 Dec 2020 20:46:15 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     shaojie.dong@isrc.iscas.ac.cn
-Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8712: check register_netdev() return value
-Message-ID: <20201209174615.GI2767@kadam>
-References: <20201209150124.23446-1-shaojie.dong@isrc.iscas.ac.cn>
+        Wed, 9 Dec 2020 12:49:23 -0500
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFB9C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 09:48:43 -0800 (PST)
+Received: by mail-vk1-xa42.google.com with SMTP id v3so542604vkb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 09:48:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DjObpwsQOixsfClK1GgVMLvQ0A3T3bBbvQfg+er+Umo=;
+        b=dKYrNjElh2XhBB8xtEQ46H/YwUSv0U490Ae4dDyAL9H9xieG8SyD6a4duzxrP1ddpo
+         nTdpn3gnbZScP+/8wIekuvzI8x601Grr7pjDvbRj8Ewf1Ic7EhjWGsuQSnRonPPNdPfq
+         LLIV7a5EkySZDMfEYVZfzXFS1yxVjcm1BlHdU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DjObpwsQOixsfClK1GgVMLvQ0A3T3bBbvQfg+er+Umo=;
+        b=K2i5JC045uEIaMITqqhQ4XNmQZAtoZBBZ5dPoy8roFDKH4J9ujks1ezXINZg81QCl+
+         vuTPpr0QpSBrv5WhuIqC0hahtQE9ViXk4pXGsj6db11rKLIZhM/42Ue1s75RGlF6uOaC
+         0b/bDCjMo5nElXuVAEKBZt6U5rCF56VicXwKDssG+S8DKbNIHr7cZyZP0hSKjIu3bwO+
+         kNmQ6TYnQ/KgrvD/jyOIOlUHYOzYE/mH9gEPmhLk9FSo0VaqEx4vd6BlCaHlKx32b7E3
+         y0/zdyV2syiX3Qp/md3pPZSmGyvTX65PxZOdsi7CKahu9J65nwpuABWjtZR130CDLVnX
+         piWg==
+X-Gm-Message-State: AOAM530MsGaK54J50bXm64e7tlw7kRb1sGBBNr5d3tizSIMopL1H03aM
+        Jzsiy/LPJDkA+6/rQmamFYLS2kn6awOf6g==
+X-Google-Smtp-Source: ABdhPJxli5cNGCZL4A77cul6bO0oW+DjPTTDyiNR6VcQkEDScUEk+ElpkrmIbWFpKVkusyavW5puOw==
+X-Received: by 2002:a1f:34d5:: with SMTP id b204mr3295515vka.15.1607536122408;
+        Wed, 09 Dec 2020 09:48:42 -0800 (PST)
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com. [209.85.217.50])
+        by smtp.gmail.com with ESMTPSA id f70sm196686vke.56.2020.12.09.09.48.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 09:48:41 -0800 (PST)
+Received: by mail-vs1-f50.google.com with SMTP id w18so1343519vsk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 09:48:41 -0800 (PST)
+X-Received: by 2002:a67:8c41:: with SMTP id o62mr3244996vsd.49.1607536121097;
+ Wed, 09 Dec 2020 09:48:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209150124.23446-1-shaojie.dong@isrc.iscas.ac.cn>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=67 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090125
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=67 adultscore=0
- bulkscore=0 phishscore=0 mlxlogscore=999 clxscore=1011 priorityscore=1501
- mlxscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090125
+References: <20201209020757.5917-1-chris.ruehl@gtsys.com.hk>
+In-Reply-To: <20201209020757.5917-1-chris.ruehl@gtsys.com.hk>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 9 Dec 2020 09:48:29 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UESmNc5w6b3rXV9+1UteQYN7NBY7sqNzvjgcbbJBFusw@mail.gmail.com>
+Message-ID: <CAD=FV=UESmNc5w6b3rXV9+1UteQYN7NBY7sqNzvjgcbbJBFusw@mail.gmail.com>
+Subject: Re: [PATCH v2] phy: rockchip-emmc: emmc_phy_init() always return 0
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Cc:     "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 11:01:24PM +0800, shaojie.dong@isrc.iscas.ac.cn wrote:
-> From: "shaojie.dong" <shaojie.dong@isrc.iscas.ac.cn>
-> 
-> Function register_netdev() can fail, so we should check it's return value
-> 
-> Signed-off-by: shaojie.dong <shaojie.dong@isrc.iscas.ac.cn>
+Hi,
+
+On Tue, Dec 8, 2020 at 6:08 PM Chris Ruehl <chris.ruehl@gtsys.com.hk> wrote:
+>
+> rockchip_emmc_phy_init() return variable is not set with the error value
+> if clk_get() failed. 'emmcclk' is optional, thus use clk_get_optional()
+> and if the return value != NULL make error processing and set the
+> return code accordingly.
+>
+> Fixes: 52c0624a10cce phy: rockchip-emmc: Set phyctrl_frqsel based on card clock
+>
+> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
 > ---
->  drivers/staging/rtl8712/hal_init.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/rtl8712/hal_init.c b/drivers/staging/rtl8712/hal_init.c
-> index 715f1fe8b..38a3e3d44 100644
-> --- a/drivers/staging/rtl8712/hal_init.c
-> +++ b/drivers/staging/rtl8712/hal_init.c
-> @@ -45,7 +45,10 @@ static void rtl871x_load_fw_cb(const struct firmware *firmware, void *context)
->  	}
->  	adapter->fw = firmware;
->  	/* firmware available - start netdev */
-> -	register_netdev(adapter->pnetdev);
-> +	if (register_netdev(adapter->pnetdev) != 0) {
-> +		netdev_err(adapter->pnetdev, "register_netdev() failed\n");
-> +		free_netdev(adapter->pnetdev);
-> +	}
+>  drivers/phy/rockchip/phy-rockchip-emmc.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/phy/rockchip/phy-rockchip-emmc.c b/drivers/phy/rockchip/phy-rockchip-emmc.c
+> index 48e2d75b1004..a23034416481 100644
+> --- a/drivers/phy/rockchip/phy-rockchip-emmc.c
+> +++ b/drivers/phy/rockchip/phy-rockchip-emmc.c
+> @@ -245,15 +245,17 @@ static int rockchip_emmc_phy_init(struct phy *phy)
+>          * - SDHCI driver to get the PHY
+>          * - SDHCI driver to init the PHY
+>          *
+> -        * The clock is optional, so upon any error we just set to NULL.
+> +        * The clock is optional, using clk_get_optional() to get the clock
+> +        * and do error processing if the return value != NULL
+>          *
+>          * NOTE: we don't do anything special for EPROBE_DEFER here.  Given the
+>          * above expected use case, EPROBE_DEFER isn't sensible to expect, so
+>          * it's just like any other error.
+>          */
+> -       rk_phy->emmcclk = clk_get(&phy->dev, "emmcclk");
+> -       if (IS_ERR(rk_phy->emmcclk)) {
+> -               dev_dbg(&phy->dev, "Error getting emmcclk: %d\n", ret);
+> +       rk_phy->emmcclk = clk_get_optional(&phy->dev, "emmcclk");
+> +       if (rk_phy->emmcclk && IS_ERR(rk_phy->emmcclk)) {
 
-This function should not be calling register_netdev().  What does that
-have to do with firmware?  It should also not free_netdev() because
-that will just lead to a use after free in the caller.
+nit: no need to check for "rk_phy->emmcclk".  IS_ERR() will return
+false for NULL.
 
-regards,
-dan carpenter
+Other than that, this looks fine to me.
 
->  	complete(&adapter->rtl8712_fw_ready);
->  }
->  
-> -- 
-> 2.17.1
-> 
-> _______________________________________________
-> devel mailing list
-> devel@linuxdriverproject.org
-> http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
