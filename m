@@ -2,154 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE812D487D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 151FF2D487F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731797AbgLISBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:01:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727905AbgLISBo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:01:44 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26144C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:01:04 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id fh13so1306015pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 10:01:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=np6y/90WZ0jov8mQi+nBfEvz1hgvvktXYNQalTN2VOA=;
-        b=z2OaNa0ZCJay85YKUnmgykcwdwgU529ig8NEhpJl4gi8tTJYO22Wv1PX4faCZqxRFm
-         ngS8OCYbEwNHWyaazGl3Vx27plBCYWXFHVCg6tQHYUlFoCXd47gzgmV9bNDhg1Wbsf2t
-         xxWfidLgAibRrDl8Pizvru/KHa93taeyVsmQY2INyTAF02jKertWJnw6EuWVd+Usxzvc
-         5BFbhJfDDmLWTiVH8u7/MNLzujS7euBb2VqD3blTlMPpeZpCGZhAXsnECcA5mTM5rCat
-         AJWsGZJe9LKYBnKdMzkXMSVr2ObpKuSwC+rhYyvDNy6WmmPPbWjSp7e/S2pP339Uaopj
-         73Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=np6y/90WZ0jov8mQi+nBfEvz1hgvvktXYNQalTN2VOA=;
-        b=ZHV1mD0sjPvNdtiIta14zZ8QjdEdD3Jjvp+WzwL5BweIEwwooY8Z0KVoR+9NziqOQl
-         FOrtKQSF1Ak+GX1WnnzeOjW0FCkelVnzG9IYaL2OpRrEr35Ct5KWnvcSIqZmVRtG6IV7
-         LqaQmdWTsQy376ezXvFWUXrvChna05oFAB2NM+CmGbvbx/ONd/vvPoFCQPaX66NgUGDz
-         ZxQDUCVVMsDy6sYbkVcAfg0JaJ3Prv6kl233LzjRbjspjy2jLuyH/cl3O4uJgE7fSSWt
-         CA1/XUGKhHLZYl4TB9WMcfp9kHxo0+pqmpWQ8jh/1FID0VTt9PSpeRAQplGEW9wchXLW
-         IDrA==
-X-Gm-Message-State: AOAM532p9ApNsuAKA2yaE8SItfg3vEC1DbBz+dkv8Cx6lGklD83dOHwL
-        12GY6xoqAs9kJkAa6VdqLvyadV3IsuV05g==
-X-Google-Smtp-Source: ABdhPJzhG8+Gjb+Rl8ulzdWuzOtn6Rg5AAbTLhU/msat9UkjDbjuN9Ma1kT0DktaZoaLkcOWqxkzGA==
-X-Received: by 2002:a17:902:aa8b:b029:da:ef22:8675 with SMTP id d11-20020a170902aa8bb02900daef228675mr3228705plr.15.1607536863321;
-        Wed, 09 Dec 2020 10:01:03 -0800 (PST)
-Received: from Shannons-MacBook-Pro.local (static-50-53-47-17.bvtn.or.frontiernet.net. [50.53.47.17])
-        by smtp.gmail.com with ESMTPSA id 14sm2806685pjm.21.2020.12.09.10.01.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 10:01:02 -0800 (PST)
-Subject: Re: [PATCH 1/1] fix possible array overflow on receiving too many
- fragments for a packet
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Pensando Drivers <drivers@pensando.io>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201208040638.40627-1-ruc_zhangxiaohui@163.com>
-From:   Shannon Nelson <snelson@pensando.io>
-Message-ID: <fcf79346-5463-b736-c109-44db76eec1c9@pensando.io>
-Date:   Wed, 9 Dec 2020 10:01:00 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.1
+        id S1732112AbgLISCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:02:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728099AbgLISCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:02:19 -0500
+Date:   Wed, 9 Dec 2020 15:01:47 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607536899;
+        bh=YkDIffOrd4YjHYDteG42fXPxp5LD271yGDalbafSdOw=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RwMWg2vh4jdD1M3CmObhFWfTVC05SAP4FolhKw6f6a8iZ4+1Lwv9tER04yEyTiSDV
+         hH2Ew2MiwfJizuUJfnNCvEcKd2ImNBMQcM11lczLGe6u2868x5AQdR9JtmefVMLc62
+         V8lI0DIXZVyO8sEfRPbDcRk6BlvXirc8blss9G1Rc+OmutDKyOnoGWJQ4bA2nMlH4F
+         miTswvTh1kqfxfcMf4yEnKC1Ykz3jKcdE8nOFsmxhvg3u5o3ZOjObkRYzNx7Nvys8x
+         xezvT//oWg1Qqb+QuK2k4JgbMyewGtObOQbE38aGj2TnJuYvGG7OwFS1GDYuesoq8k
+         TJThOwG/fsExQ==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        tip-bot2 for Masami Hiramatsu <tip-bot2@linutronix.de>,
+        linux-tip-commits@vger.kernel.org,
+        syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>, x86@kernel.org
+Subject: Re: [tip: x86/urgent] x86/uprobes: Do not use prefixes.nbytes when
+ looping over prefixes.bytes
+Message-ID: <20201209180147.GD185686@kernel.org>
+References: <160697103739.3146288.7437620795200799020.stgit@devnote2>
+ <160709424307.3364.5849503551045240938.tip-bot2@tip-bot2>
+ <20201205091256.14161a2e1606c527131efc06@kernel.org>
+ <20201205101704.GB26409@zn.tnic>
+ <20201206125325.d676906774c2329742746005@kernel.org>
+ <20201206090250.GA10741@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20201208040638.40627-1-ruc_zhangxiaohui@163.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201206090250.GA10741@zn.tnic>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/20 8:06 PM, Xiaohui Zhang wrote:
-> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
->
-> If the hardware receives an oversized packet with too many rx fragments,
-> skb_shinfo(skb)->frags can overflow and corrupt memory of adjacent pages.
-> This becomes especially visible if it corrupts the freelist pointer of
-> a slab page.
-> I found these two code fragments were very similar to the vulnerable code
-> in CVE-2020-12465, so I submitted these two patches.
->
-> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-> ---
->   drivers/net/ethernet/intel/ice/ice_txrx.c        | 4 +++-
->   drivers/net/ethernet/pensando/ionic/ionic_txrx.c | 4 +++-
->   2 files changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> index eae75260f..f0a252208 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> @@ -821,9 +821,11 @@ ice_add_rx_frag(struct ice_ring *rx_ring, struct ice_rx_buf *rx_buf,
->   	unsigned int truesize = ice_rx_pg_size(rx_ring) / 2;
->   #endif
->   
-> +	struct skb_shared_info *shinfo = skb_shinfo(skb);
+Em Sun, Dec 06, 2020 at 10:02:50AM +0100, Borislav Petkov escreveu:
+> ( drop stable@ )
+> 
+> On Sun, Dec 06, 2020 at 12:53:25PM +0900, Masami Hiramatsu wrote:
+> > On Sat, 5 Dec 2020 11:17:04 +0100
+> > Borislav Petkov <bp@alien8.de> wrote:
+> > 
+> > > On Sat, Dec 05, 2020 at 09:12:56AM +0900, Masami Hiramatsu wrote:
+> > > > This may break tools/objtool build. Please keep "inat.h".
+> > > 
+> > > How? Please elaborate.
+> > > 
+> > > Build tests are fine here.
+> > 
+> > Oops, sorry, it was for perf build.
+> > 
+> > Please refer commit 00a263902ac3 ("perf intel-pt: Use shared x86 insn decoder").
+> 
+> Oh wow:
+> 
+> "This way we continue to be able to process perf.data files with Intel PT
+>  traces in distros other than x86."
+> 
+> acme, why is that? Can you explain pls?
+> 
+> It probably would be better to fix this so that copying insn.h to keep
+> it in sync won't cause any future breakages. Or the diffing check should
+> verify whether header paths are wrong in the tools/ version and fail if
+> so, so that we don't break it.
 
-This declaration should be up directly below the #endif and a blank line 
-inserted before the code.
+Trying to swap this back into my brain...
 
->   	if (!size)
->   		return;
-> -	skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buf->page,
-> +	if (shinfo->nr_frags < ARRAY_SIZE(shinfo->frags))
-> +		skb_add_rx_frag(skb, shinfo, rx_buf->page,
->   			rx_buf->page_offset, size, truesize);
->   
->   	/* page is being used so we must update the page offset */
-> diff --git a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
-> index 169ac4f54..d30e83a4b 100644
-> --- a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
-> +++ b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
-> @@ -74,6 +74,7 @@ static struct sk_buff *ionic_rx_frags(struct ionic_queue *q,
->   	struct device *dev = q->lif->ionic->dev;
->   	struct ionic_page_info *page_info;
->   	struct sk_buff *skb;
-> +	struct skb_shared_info *shinfo = skb_shinfo(skb);
+Humm, if I'm building this on, say, aarch64 then asm/ will not be
+pointing to x86, right? Intel PT needs the x86 instruction decoder,
+right?
 
-As the kernel test robot has suggested, this is using an uninitialized 
-skb and will likely cause great unhappiness.
+I should've have wrote in the cset comment log if this was related to
+cross build failures I encountered, can't remember now :-\
 
-Also, this needs to follow the "reverse xmas tree" formatting style for 
-declarations.
-
-
->   	unsigned int i;
->   	u16 frag_len;
->   	u16 len;
-> @@ -102,7 +103,8 @@ static struct sk_buff *ionic_rx_frags(struct ionic_queue *q,
->   
->   		dma_unmap_page(dev, dma_unmap_addr(page_info, dma_addr),
->   			       PAGE_SIZE, DMA_FROM_DEVICE);
-> -		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
-> +		if (shinfo->nr_frags < ARRAY_SIZE(shinfo->frags))
-> +			skb_add_rx_frag(skb, shinfo->nr_frags,
->   				page_info->page, 0, frag_len, PAGE_SIZE);
-
-I'm still not convinced this is necessary here, and I'm still not 
-thrilled with the result of just quietly dropping the fragments.
-
-A better answer here might be to check the ARRAY_SIZE against 
-comp->num_sg_elements before allocating the skb, and if too big, then 
-return NULL - this gets the check done before any allocations are made, 
-and the packet will be properly dropped and the drop statistic incremented.
-
-sln
-
->   		page_info->page = NULL;
->   		page_info++;
-
+- Arnaldo
