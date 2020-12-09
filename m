@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E81F2D42A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:05:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3D02D42A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:05:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731979AbgLINDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:03:07 -0500
-Received: from mx4.veeam.com ([104.41.138.86]:57800 "EHLO mx4.veeam.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731957AbgLINCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:02:44 -0500
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx4.veeam.com (Postfix) with ESMTPS id 3DC1EB9A70;
-        Wed,  9 Dec 2020 16:01:51 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
-        t=1607518911; bh=0VJVTYnwywkBKk78AS5Fzh0t8RXgLPu9+5VtBk69i48=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-        b=V+FoJBufCIi0qZlI0GhB6OJyIcYg5CmDMYCn6F6kR+4IE0gE0r+nRjT9krg1qGGBr
-         xt5kZUEF6GLBvzba5maQ3J8RA7NJxgMTFlIn1JZSaY+mIaqeWVe0+tvmOVw2x5Q/D+
-         zadgfM9C3J7rGm9TaxRKzgYzzIC+QS8hlVjtp3tc=
-Received: from prgdevlinuxpatch01.amust.local (172.24.14.5) by
- prgmbx01.amust.local (172.24.0.171) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Wed, 9 Dec 2020 14:01:50 +0100
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     <axboe@kernel.dk>, <johannes.thumshirn@wdc.com>,
-        <koct9i@gmail.com>, <ming.lei@redhat.com>, <snitzer@redhat.com>,
-        <hare@suse.de>, <josef@toxicpanda.com>, <steve@sk2.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <pavel.tide@veeam.com>, <sergei.shtepa@veeam.com>
-Subject: [PATCH 3/3] block: blk_interposer - sample config
-Date:   Wed, 9 Dec 2020 16:01:51 +0300
-Message-ID: <1607518911-30692-4-git-send-email-sergei.shtepa@veeam.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
-References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
+        id S1732000AbgLINFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:05:06 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:25093 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728256AbgLINFE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 08:05:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1607519104; x=1639055104;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=3VEArB5XibEoHcgKryL5dGKaMkyVbmz94yJ+wDtew58=;
+  b=Z2Awfb7Yr77RkVoykWAbkT7MsMjRxakOxyCC9l5d7HJ8GDgG3Dv9slwH
+   QlI3Z9zT0uz/P2vtJxUmOPWqlyKkh92dheEEYd6uw4KQlEVM15qpN0YoL
+   kxnAJWDiVkceaC8vJcNp2C761ddtNVCpdCQ6QzNdgnDkSyF34NqteBERl
+   VYD81NUkLFa81FnAcR3OrLZIwHKdpdTo+JMAsTjyCnKLs2yKPr5nt7D4h
+   +ht3G+mq4tSHSCitBVQl47HQ6aEIS/hKOJYAQ17jolELfKWmfbpTFDdH9
+   wDrKlMzq6S9Wy5IRSA4Qtn6YJGOZTwlatvaKiFIws+EhIlxCoBA6z6ECh
+   g==;
+IronPort-SDR: Wb3mz58QsGLlyO+n8Tfn+3uH/qd/+27a1Wmk46njoyUg7qfNEHTuQExbcDBADE08JOAVYc1Fdh
+ I5zunxGPGffVEd1DJR+u1iJRTwXNg2X1C9z26KUrhkMxVANvWwg2esPGkATW2RkiNb9luuK8eZ
+ lqyxYjtvXohowwBHWcCyQgba9raXLYhzt1Jns/MMjDc7d+KSIh73AY3Tyq8TxSmQ034k4+rxWf
+ YGNFefzji9rMOaIiJfbsaAPwkyymMjL4BSvyXbTnuRdPsqCIMjIXjb1zPL6YiieDFUGnCEYkTA
+ 2Go=
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="96475062"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Dec 2020 06:03:47 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 9 Dec 2020 06:03:47 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 9 Dec 2020 06:03:41 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
+        <nicolas.ferre@microchip.com>, <linux@armlinux.org.uk>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <natechancellor@gmail.com>, <ndesaulniers@google.com>
+CC:     <yash.shah@sifive.com>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>,
+        <clang-built-linux@googlegroups.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v3 0/8] net: macb: add support for sama7g5
+Date:   Wed, 9 Dec 2020 15:03:31 +0200
+Message-ID: <1607519019-19103-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29C604D26A627160
-X-Veeam-MMEX: True
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attaches the blk_interposer sample to the kernel assembly.
+Hi,
 
-Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
----
- samples/Kconfig  | 7 +++++++
- samples/Makefile | 1 +
- 2 files changed, 8 insertions(+)
+This series adds support for SAMA7G5 Ethernet interfaces: one 10/100Mbps
+and one 1Gbps interfaces.
 
-diff --git a/samples/Kconfig b/samples/Kconfig
-index 0ed6e4d71d87..72e2a9399e10 100644
---- a/samples/Kconfig
-+++ b/samples/Kconfig
-@@ -216,4 +216,11 @@ config SAMPLE_WATCH_QUEUE
- 	  Build example userspace program to use the new mount_notify(),
- 	  sb_notify() syscalls and the KEYCTL_WATCH_KEY keyctl() function.
- 
-+config SAMPLE_BLK_INTERPOSER
-+	tristate "Builds the sample block layer interposer -- loadable module only"
-+	depends on m
-+	help
-+	  Builds the sample block layer interposer kernel module to illustrate
-+	  the use of blk_interposer feature.
-+
- endif # SAMPLES
-diff --git a/samples/Makefile b/samples/Makefile
-index c3392a595e4b..953082c17249 100644
---- a/samples/Makefile
-+++ b/samples/Makefile
-@@ -29,3 +29,4 @@ obj-$(CONFIG_SAMPLE_INTEL_MEI)		+= mei/
- subdir-$(CONFIG_SAMPLE_WATCHDOG)	+= watchdog
- subdir-$(CONFIG_SAMPLE_WATCH_QUEUE)	+= watch_queue
- obj-$(CONFIG_DEBUG_KMEMLEAK_TEST)	+= kmemleak/
-+obj-$(CONFIG_SAMPLE_BLK_INTERPOSER)	+= blk_interposer/
+Along with it I also included a fix to disable clocks for SiFive FU540-C000
+on failure path of fu540_c000_clk_init().
+
+Thank you,
+Claudiu Beznea
+
+Changed in v3:
+- use clk_bulk_disable_unprepare in patch 3/8
+- corrected clang compilation warning in patch 3/8
+- revert changes in macb_clk_init() in patch 3/8
+
+Changes in v2:
+- introduced patch "net: macb: add function to disable all macb clocks" and
+  update patch "net: macb: unprepare clocks in case of failure" accordingly
+- collected tags
+
+Claudiu Beznea (8):
+  net: macb: add userio bits as platform configuration
+  net: macb: add capability to not set the clock rate
+  net: macb: add function to disable all macb clocks
+  net: macb: unprepare clocks in case of failure
+  dt-bindings: add documentation for sama7g5 ethernet interface
+  dt-bindings: add documentation for sama7g5 gigabit ethernet interface
+  net: macb: add support for sama7g5 gem interface
+  net: macb: add support for sama7g5 emac interface
+
+ Documentation/devicetree/bindings/net/macb.txt |   2 +
+ drivers/net/ethernet/cadence/macb.h            |  11 ++
+ drivers/net/ethernet/cadence/macb_main.c       | 134 ++++++++++++++++++-------
+ 3 files changed, 111 insertions(+), 36 deletions(-)
+
 -- 
-2.20.1
+2.7.4
 
