@@ -2,68 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4C12D4129
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FDA2D412F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730796AbgLILcf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Dec 2020 06:32:35 -0500
-Received: from aposti.net ([89.234.176.197]:33654 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727970AbgLILce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:32:34 -0500
-Date:   Wed, 09 Dec 2020 11:31:41 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 1/2] if_enabled.h: Add IF_ENABLED_OR_ELSE()
- =?UTF-8?Q?and=0D=0A?= IF_ENABLED() macros
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, od@zcrc.me,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <TCL2LQ.PG7DIQPDDGUT1@crapouillou.net>
-In-Reply-To: <CACRpkdZFy8bvsV+HkzWsu0OKjg6i82o-mL+7v3_Ev5h_QR=xiA@mail.gmail.com>
-References: <20201208164821.2686082-1-paul@crapouillou.net>
-        <CACRpkdZFy8bvsV+HkzWsu0OKjg6i82o-mL+7v3_Ev5h_QR=xiA@mail.gmail.com>
+        id S1730804AbgLILdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:33:54 -0500
+Received: from outbound-smtp15.blacknight.com ([46.22.139.232]:33277 "EHLO
+        outbound-smtp15.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729988AbgLILdy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 06:33:54 -0500
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id 93DE71C3E97
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 11:33:02 +0000 (GMT)
+Received: (qmail 24101 invoked from network); 9 Dec 2020 11:33:02 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Dec 2020 11:33:02 -0000
+Date:   Wed, 9 Dec 2020 11:33:00 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 2/4] sched/fair: Move avg_scan_cost calculations under
+ SIS_PROP
+Message-ID: <20201209113300.GN3371@techsingularity.net>
+References: <20201208153501.1467-1-mgorman@techsingularity.net>
+ <20201208153501.1467-3-mgorman@techsingularity.net>
+ <CAKfTPtBGghbKimO17UTPUHQGZc=GkY849HFrkqqojirPhJKFoQ@mail.gmail.com>
+ <3255625e-fa92-dc09-9fab-5621122f4af0@linux.intel.com>
+ <20201209090507.GM3371@techsingularity.net>
+ <14963d1e-02ea-c298-d6b4-2db637913ee3@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <14963d1e-02ea-c298-d6b4-2db637913ee3@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-Le mer. 9 déc. 2020 à 9:59, Linus Walleij <linus.walleij@linaro.org> 
-a écrit :
-> On Tue, Dec 8, 2020 at 5:48 PM Paul Cercueil <paul@crapouillou.net> 
-> wrote:
+On Wed, Dec 09, 2020 at 07:07:11PM +0800, Li, Aubrey wrote:
+> On 2020/12/9 17:05, Mel Gorman wrote:
+> > On Wed, Dec 09, 2020 at 01:28:11PM +0800, Li, Aubrey wrote:
+> >>>>                         nr = div_u64(span_avg, avg_cost);
+> >>>>                 else
+> >>>>                         nr = 4;
+> >>>> -       }
+> >>>> -
+> >>>> -       time = cpu_clock(this);
+> >>>>
+> >>>> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> >>>> +               time = cpu_clock(this);
+> >>>> +       }
+> >>>>
+> >>>>         for_each_cpu_wrap(cpu, cpus, target) {
+> >>>>                 if (!--nr)
+> >>
+> >> nr is the key of this throttling mechanism, need to be placed under sched_feat(SIS_PROP) as well.
+> >>
+> > 
+> > It isn't necessary as nr in initialised to INT_MAX if !SIS_PROP.
+> >If !SIS_PROP, nr need to -1 then tested in the loop, instead of testing directly.
+> But with SIS_PROP, need adding a test in the loop.
+> Since SIS_PROP is default true, I think it's okay to keep the current way.
 > 
->>  Introduce a new header <linux/if_enabled.h>, that brings two new 
->> macros:
->>  IF_ENABLED_OR_ELSE() and IF_ENABLED().
-> 
-> I understand what the patch is trying to do, but when we already have
-> IS_ENABLED() in <linux/kconfig.h> this syntax becomes a big cognitive
-> confusion for the mind.
-> 
-> At least the commit needs to explain why it doesn't work to use
-> IS_ENABLED() instead so that this is needed.
 
-You can use IS_ENABLED(). Then you'd write:
+It's because it's default true and the cost is negligible that I'm leaving
+it alone. The branch cost and nr accounting cost is negligible and it
+avoids peppering select_idle_cpu() with too many SIS_PROP checks.
 
-field = IS_ENABLED(CONFIG_FOO) ? &my_ptr : NULL,
-
-the IF_ENABLED() macro makes it a bit cleaner by allowing you to write:
-
-field = IF_ENABLED(CONFIG_FOO, &my_ptr),
-
-Cheers,
--Paul
-
-> Certainly the build failures must be possible to solve so that this
-> can live with the sibling IS_ENABLED() inside <linux/kconfig.h>,
-> it can't be too hard.
-> 
-> Yours,
-> Linus Walleij
-
-
+-- 
+Mel Gorman
+SUSE Labs
