@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505F32D41F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CACD72D41F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731554AbgLIMRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1731569AbgLIMRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 9 Dec 2020 07:17:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50235 "EHLO
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29317 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731538AbgLIMR2 (ORCPT
+        by vger.kernel.org with ESMTP id S1731551AbgLIMRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 07:17:28 -0500
+        Wed, 9 Dec 2020 07:17:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607516162;
+        s=mimecast20190719; t=1607516172;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=StPZWFO2ooUkaCfWPBeP0KHyeWMeGp90us4ehUWeUXU=;
-        b=IL9qTU6hdYoM/cB1sipUfvFpJn1okwKW9LfK/l9TCdoCgcGrz55udEl/Xg/AYbRqnO9g/z
-        foSS9kIOA5UClPSR8lP+FGELaDjzAZ56xDThGhwry4mliLlSG83CTYZE0EWEF77uCMJCtG
-        cW3+JDFarL08GcszcJe57D8Kmi1Mtfk=
+        bh=uq8L5ulWBHSgEgLynQAoC8tpMqn1Ti7SvvLNdWjWHao=;
+        b=XzsFUHY0ZNYWnF3LvsJ6+D3wyFb/xfaUk4FQGNFHrHPZlvwxEIxPwZunzP3UumhVgXL+do
+        sgDGuMqnU+0YGEkpcVINZ7kbLIUFg9ke+rsjPX8It4v8l2xingFvi65yazqh8RWx3CzbyT
+        8JYOlzHJNW3JneKjyw04r4TqRsQGoZk=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-65-NoAMSQEDMdWGQhmptBYKAQ-1; Wed, 09 Dec 2020 07:16:00 -0500
-X-MC-Unique: NoAMSQEDMdWGQhmptBYKAQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-334-w78lxvIPNmGeVCt0sgu6oQ-1; Wed, 09 Dec 2020 07:16:09 -0500
+X-MC-Unique: w78lxvIPNmGeVCt0sgu6oQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B9521005504;
-        Wed,  9 Dec 2020 12:15:59 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BEAD01800D42;
+        Wed,  9 Dec 2020 12:16:08 +0000 (UTC)
 Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6236360C7B;
-        Wed,  9 Dec 2020 12:15:58 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CB8C41F436;
+        Wed,  9 Dec 2020 12:16:05 +0000 (UTC)
 Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
         Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
         Kingdom.
         Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 12/18] keys: remove trailing semicolon in macro definition
+Subject: [PATCH 13/18] crypto: public_key: Remove redundant header file from
+ public_key.h
 From:   David Howells <dhowells@redhat.com>
 To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Tom Rix <trix@redhat.com>, Jarkko Sakkinen <jarkko@kernel.org>,
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
         dhowells@redhat.com, keyrings@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Wed, 09 Dec 2020 12:15:57 +0000
-Message-ID: <160751615760.1238376.13792183884684466805.stgit@warthog.procyon.org.uk>
+Date:   Wed, 09 Dec 2020 12:16:04 +0000
+Message-ID: <160751616472.1238376.7922728253720706756.stgit@warthog.procyon.org.uk>
 In-Reply-To: <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
 References: <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
 User-Agent: StGit/0.23
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-The macro use will already have a semicolon.
+The akcipher.h header file was originally introduced in SM2, and
+then the definition of SM2 was moved to the existing code. This
+header file is left and should be removed.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 Signed-off-by: David Howells <dhowells@redhat.com>
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
 
- include/linux/key.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/crypto/public_key.h |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/key.h b/include/linux/key.h
-index 0f2e24f13c2b..1b0837c975b9 100644
---- a/include/linux/key.h
-+++ b/include/linux/key.h
-@@ -360,7 +360,7 @@ static inline struct key *request_key(struct key_type *type,
-  * completion of keys undergoing construction with a non-interruptible wait.
-  */
- #define request_key_net(type, description, net, callout_info) \
--	request_key_tag(type, description, net->key_domain, callout_info);
-+	request_key_tag(type, description, net->key_domain, callout_info)
+diff --git a/include/crypto/public_key.h b/include/crypto/public_key.h
+index 948c5203ca9c..47accec68cb0 100644
+--- a/include/crypto/public_key.h
++++ b/include/crypto/public_key.h
+@@ -12,7 +12,6 @@
  
- /**
-  * request_key_net_rcu - Request a key for a net namespace under RCU conditions
-@@ -372,7 +372,7 @@ static inline struct key *request_key(struct key_type *type,
-  * network namespace are used.
-  */
- #define request_key_net_rcu(type, description, net) \
--	request_key_rcu(type, description, net->key_domain);
-+	request_key_rcu(type, description, net->key_domain)
- #endif /* CONFIG_NET */
+ #include <linux/keyctl.h>
+ #include <linux/oid_registry.h>
+-#include <crypto/akcipher.h>
  
- extern int wait_for_key_construction(struct key *key, bool intr);
+ /*
+  * Cryptographic data for the public-key subtype of the asymmetric key type.
 
 
