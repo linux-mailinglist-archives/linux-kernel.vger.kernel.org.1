@@ -2,91 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76ED02D42CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7092D42CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732193AbgLINIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:08:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
+        id S1732200AbgLINIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:08:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732177AbgLINIG (ORCPT
+        with ESMTP id S1732178AbgLINIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:08:06 -0500
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC95BC0613CF;
-        Wed,  9 Dec 2020 05:07:25 -0800 (PST)
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id B056CC01B; Wed,  9 Dec 2020 14:07:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1607519244; bh=XWg47bgxAj8nQZjE0IGan2QQPTetflZ/x0QygfsXtHw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H9bt2GdanC69DfdfCbF7ucTssXSoXeC+arfv7Hl3DbXxw3pk3DxadlTliEllMecCc
-         3A5N8Y6ROH2vD879DWIk5kSKpeelX+1TbC4GtNN3npmGpgnF72Cr4DOQsem0ZbLkm1
-         OhWEk3BkQu4yoYdc4ZEl/yix524KAPOs2wLyAMmdVCmML1VYiS8bbtHkisbboX0KOx
-         UQKGdCNXk4dP6Gy/IvV845woK3e72Nxypix//fuV1jELNcd+JjchnW+3VjX6EVuPdD
-         NzJZuWZUJzOMdVXYG5Q31deQ3ghgT1omRSzVxslcG2vtdvdA+ScBcy+zcZV+f1xqQ1
-         ozR1YvgeFmJPA==
-Date:   Wed, 9 Dec 2020 14:07:09 +0100
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org
-Subject: Re: Broken /usr/bin/env (invalid option)
-Message-ID: <20201209130709.GB15469@nautica>
-References: <20201209122437.GA26815@kozik-lap>
+        Wed, 9 Dec 2020 08:08:11 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39598C0613D6;
+        Wed,  9 Dec 2020 05:07:31 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmzBj-0003sZ-21; Wed, 09 Dec 2020 13:07:23 +0000
+Date:   Wed, 9 Dec 2020 13:07:23 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] iov: introduce ITER_BVEC_FLAG_FIXED
+Message-ID: <20201209130723.GL3579531@ZenIV.linux.org.uk>
+References: <cover.1607477897.git.asml.silence@gmail.com>
+ <de27dbca08f8005a303e5efd81612c9a5cdcf196.1607477897.git.asml.silence@gmail.com>
+ <20201209083645.GB21968@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209122437.GA26815@kozik-lap>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20201209083645.GB21968@infradead.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Krzysztof Kozlowski wrote on Wed, Dec 09, 2020:
-> Your commit ece075366294 ("ld-version: use /usr/bin/env awk for
-> shebank") breaks current linux-next on Ubuntu 16.04:
+On Wed, Dec 09, 2020 at 08:36:45AM +0000, Christoph Hellwig wrote:
 > 
->     $ make defconfig
+> This is making the iter type even more of a mess than it already is.
+> I think we at least need placeholders for 0/1 here and an explicit
+> flags namespace, preferably after the types.
 > 
->     make[1]: Entering directory '/mnt/data2/linux/linux-upstream/out'
->       GEN     Makefile
->     *** Default configuration is based on 'multi_v7_defconfig'
->     /usr/bin/env: invalid option -- 'S'
->     Try '/usr/bin/env --help' for more information.
->     init/Kconfig:39: syntax error
->     init/Kconfig:38: invalid statement
->     ../scripts/kconfig/Makefile:80: recipe for target 'defconfig' failed
->     make[2]: *** [defconfig] Error 1
->     /mnt/data2/linux/linux-upstream/Makefile:602: recipe for target 'defconfig' failed
->     make[1]: *** [defconfig] Error 2
->     make[1]: Leaving directory '/mnt/data2/linux/linux-upstream/out'
->     Makefile:185: recipe for target '__sub-make' failed
->     make: *** [__sub-make] Error 2
-> 
-> https://krzk.eu/#/builders/12/builds/1170/steps/4/logs/stdio
-> 
-> It's not possible to build anything...
+> Then again I'd much prefer if we didn't even add the flag or at best
+> just add it for a short-term transition and move everyone over to the
+> new scheme.  Otherwise the amount of different interfaces and supporting
+> code keeps exploding.
 
-Hm, what version of env is that?
-I only checked on a couple of systems that env -S exists, but it might
-not be available (e.g. now I'm looking, at least busybox env does not
-provide -S)
-
-OTOH, we need -S to split arguments because the kernel splits the
-shebang as [binary, single argument], so without it awk wouldn't work.
-
-Apparently gawk can work without an explicit -f is invoked as gawk (so
-could be used without -S), but that won't be much better wrt
-compatibility in my opinion.
-
-
-I don't see any way to make this work out of the box for me (awk not in
-/usr/bin) and you (env not supporting -S), but I guess I can keep that
-patch around locally...
-
-Sorry for the trouble.
--- 
-Dominique
+Yes.  The only problem I see is how to describe the rules - "bdev-backed
+iterators need the bvec array to stay allocated until IO completes"?
+And one way or another, that needs to be documented - D/f/porting with
+"mandatory" for priority.
