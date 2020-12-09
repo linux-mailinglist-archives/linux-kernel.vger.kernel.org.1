@@ -2,137 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE602D464E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1052D466E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731095AbgLIQE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:04:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728464AbgLIQEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:04:47 -0500
-Date:   Wed, 9 Dec 2020 08:04:05 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607529846;
-        bh=NtDeZWyjkDu4jWhhZPvnO8Q28JxAL5KgBjE0Xw0loxM=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fa79wWW6HqVFAWyF0PPeCMB3jzRdDsH3bc6mtfiCGvW62HvPMHdoz8v9swq3maXQT
-         R2i5D78ex/QFcTssEFv631HS0YRIw9JQdsGKdbOZcfCCxc+ht9Sr4RDheCOo34jVuj
-         040QklunRogmVq+Q/9Xhj90k/y3JcS6FHeduPGIJKWcxYwtkCo2Nc+XqMHVIkIgD8X
-         +rHSvC/uhAnoFX0ZYPXG2SOxZNAnPigqJ+l4OvR+GECSmtVJmyWGpzc4sa2xOVNzQE
-         B8b4O6UWD7KCxPLcw3wqBoUGdz12OA1G21/gz/Nr3YAfkM4W7AzSL5ilLswOscfxL4
-         F7SM2GHNISjxw==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH RESEND v2 5/5] f2fs: introduce sb_status sysfs node
-Message-ID: <X9D1dXVwKFvfHpP9@google.com>
-References: <20201209084328.30416-1-yuchao0@huawei.com>
- <20201209084328.30416-5-yuchao0@huawei.com>
+        id S1729522AbgLIQKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:10:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726076AbgLIQKL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:10:11 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A58EC061793
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 08:09:31 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id q5so1174052vsg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 08:09:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nqyEOFHVM5Ky3nbjp7naROpurgTB2x9ZG+Hz5wH8wPU=;
+        b=enl+HYZfvbCMKTqutKGkL4DEIVorJ/taYS/JJw+IfqHlE5cVy/zslMzRYwk2VdL0wr
+         s43qvZaWjhm/0laGuZtBRiui2gDEsXPAouZwsdj9LIev9pb2X/bwrRXUz4XQTOg3gVSD
+         oU/wAXdv54FAHrtCWR59AqwHnZVb1iQ5qyFEXrsxKVlxFgEsa1wy3FjVzPGnpuhILmIW
+         zeGKaFuVPAWhnS6yaQBw6k4xASuW/5YzXjkd2dqGVGtP6DkVDRKUww9R9SaonJ1JE+Q9
+         lzNtBdhD0wjbRFTlp/UFs5dlfE7SYVAYipT8+m8J2FPZ6M4UOJscZl9ID0t64scrmJIq
+         Nq6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nqyEOFHVM5Ky3nbjp7naROpurgTB2x9ZG+Hz5wH8wPU=;
+        b=bDxmbZLDYlPLMM4X3lsXuawgYiyLGtwLnjUn966618CbpJRN+LMxT6mwhzM0+lqgpe
+         wOfdfoG7aHEyalw2ylOmBbpoPe8fLEORxVIs1Wn6/DxNnkA7gizC3A/59NSAkDKJta/g
+         sxH43Qx3U7E3AZuHZHvaJeA/2doQtqfWv4huYyJKRzvGnzyGjYRmTJZMEIUCbpweJ4PZ
+         +8hvkzlcxSGmfbXCRlJQE+3/Njir6KH9HZyWKktlL5B8cFCZarLNq0V0OJM1zKpxXj23
+         tRDcuRRw2krVajo6jSu6f5bytxpSZfugsgdsHXy+dRfA9yp8yDVZMKUOkS8dKZfKyPJI
+         GaLw==
+X-Gm-Message-State: AOAM5302Ei8Igy4zxiioBg/1BmgQFsGEBja0kpQM83HKPHLo+AGVsHC7
+        fC792frpnBgnqG8yJyW7zWET0oYCZGU4i11hmhrphg==
+X-Google-Smtp-Source: ABdhPJygyHjARSrnsdIbp51NuTL1nsIMlAfXLy2zaWgCIgwi3WqDnANYwazmXhxW1QwBlbPUShTlfc50yzUmoDM5q7s=
+X-Received: by 2002:a67:4341:: with SMTP id q62mr2124127vsa.14.1607530169863;
+ Wed, 09 Dec 2020 08:09:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209084328.30416-5-yuchao0@huawei.com>
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
+ <CABCJKueCHo2RYfx_A21m+=d1gQLR9QsOOxCsHFeicCqyHkb-Kg@mail.gmail.com>
+ <CAK8P3a1Xfpt7QLkvxjtXKcgzcWkS8g9bmxD687+rqjTafTzKrg@mail.gmail.com> <CAK8P3a3O65m6Us=YvCP3QA+0kqAeEqfi-DLOJa+JYmBqs8-JcA@mail.gmail.com>
+In-Reply-To: <CAK8P3a3O65m6Us=YvCP3QA+0kqAeEqfi-DLOJa+JYmBqs8-JcA@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Wed, 9 Dec 2020 08:09:18 -0800
+Message-ID: <CABCJKud-4p2CnTyC5qjREL+Z_q8sD6cYE-0QU7poVKALgoVcNQ@mail.gmail.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09, Chao Yu wrote:
-> Introduce /sys/fs/f2fs/<devname>/stat/sb_status to show superblock
-> status in real time as below:
-> 
-> IS_DIRTY:		no
-> IS_CLOSE:		no
-> IS_SHUTDOWN:		no
-> IS_RECOVERED:		no
-> IS_RESIZEFS:		no
-> NEED_FSCK:		no
-> POR_DOING:		no
-> NEED_SB_WRITE:		no
-> NEED_CP:		no
-> CP_DISABLED:		no
-> CP_DISABLED_QUICK:	no
-> QUOTA_NEED_FLUSH:	no
-> QUOTA_SKIP_FLUSH:	no
-> QUOTA_NEED_REPAIR:	no
+On Tue, Dec 8, 2020 at 1:02 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Tue, Dec 8, 2020 at 9:59 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > Attaching the config for "ld.lld: error: Never resolved function from
+> >   blockaddress (Producer: 'LLVM12.0.0' Reader: 'LLVM 12.0.0')"
+>
+> And here is a new one: "ld.lld: error: assignment to symbol
+> init_pg_end does not converge"
 
-Wait, this is breaking a sysfs rule where one entry should show one value.
+Thanks for these. I can reproduce the "Never resolved function from
+blockaddress" issue with full LTO, but I couldn't reproduce this one
+with ToT Clang, and the config doesn't have LTO enabled:
 
-> 
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> ---
->  Documentation/ABI/testing/sysfs-fs-f2fs |  5 ++++
->  fs/f2fs/sysfs.c                         | 36 +++++++++++++++++++++++++
->  2 files changed, 41 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-> index 3dfee94e0618..57ab839dc3a2 100644
-> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
-> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-> @@ -377,3 +377,8 @@ Description:	This gives a control to limit the bio size in f2fs.
->  		Default is zero, which will follow underlying block layer limit,
->  		whereas, if it has a certain bytes value, f2fs won't submit a
->  		bio larger than that size.
-> +
-> +What:		/sys/fs/f2fs/<disk>/stat/sb_status
-> +Date:		December 2020
-> +Contact:	"Chao Yu" <yuchao0@huawei.com>
-> +Description:	Show status of f2fs superblock in real time.
-> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> index ebca0b4961e8..1b85e6d16a94 100644
-> --- a/fs/f2fs/sysfs.c
-> +++ b/fs/f2fs/sysfs.c
-> @@ -101,6 +101,40 @@ static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
->  				sbi->sectors_written_start) >> 1)));
->  }
->  
-> +#define	SB_STATUS(s)	(s ? "yes" : "no")
-> +static ssize_t sb_status_show(struct f2fs_attr *a,
-> +		struct f2fs_sb_info *sbi, char *buf)
-> +{
-> +	return sprintf(buf, "IS_DIRTY:		%s\n"
-> +				"IS_CLOSE:		%s\n"
-> +				"IS_SHUTDOWN:		%s\n"
-> +				"IS_RECOVERED:		%s\n"
-> +				"IS_RESIZEFS:		%s\n"
-> +				"NEED_FSCK:		%s\n"
-> +				"POR_DOING:		%s\n"
-> +				"NEED_SB_WRITE:		%s\n"
-> +				"NEED_CP:		%s\n"
-> +				"CP_DISABLED:		%s\n"
-> +				"CP_DISABLED_QUICK:	%s\n"
-> +				"QUOTA_NEED_FLUSH:	%s\n"
-> +				"QUOTA_SKIP_FLUSH:	%s\n"
-> +				"QUOTA_NEED_REPAIR:	%s\n",
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_DIRTY)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_CLOSE)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_SHUTDOWN)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_RECOVERED)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_RESIZEFS)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_NEED_FSCK)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_POR_DOING)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_NEED_SB_WRITE)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_NEED_CP)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_CP_DISABLED)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_CP_DISABLED_QUICK)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_QUOTA_NEED_FLUSH)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_QUOTA_SKIP_FLUSH)),
-> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_QUOTA_NEED_REPAIR)));
-> +}
-> +
->  static ssize_t features_show(struct f2fs_attr *a,
->  		struct f2fs_sb_info *sbi, char *buf)
->  {
-> @@ -711,7 +745,9 @@ static struct attribute *f2fs_feat_attrs[] = {
->  };
->  ATTRIBUTE_GROUPS(f2fs_feat);
->  
-> +F2FS_GENERAL_RO_ATTR(sb_status);
->  static struct attribute *f2fs_stat_attrs[] = {
-> +	ATTR_LIST(sb_status),
->  	NULL,
->  };
->  ATTRIBUTE_GROUPS(f2fs_stat);
-> -- 
-> 2.29.2
+$ grep LTO 0x2824F594_defconfig
+CONFIG_ARCH_SUPPORTS_LTO_CLANG_THIN=y
+
+Is this the correct config file?
+
+Sami
