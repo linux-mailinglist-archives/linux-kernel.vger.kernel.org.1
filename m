@@ -2,157 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46ED82D396F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 05:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E6C2D3973
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 05:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbgLIEIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 23:08:52 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16259 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgLIEIw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 23:08:52 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fd04dab0000>; Tue, 08 Dec 2020 20:08:11 -0800
-Received: from [10.25.97.15] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Dec
- 2020 04:08:04 +0000
-Subject: Re: [PATCH] PCI: Save/restore L1 PM Substate extended capability
- registers
-To:     "David E. Box" <david.e.box@linux.intel.com>,
-        <bhelgaas@google.com>, <rafael@kernel.org>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201208220624.21877-1-david.e.box@linux.intel.com>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <d7708556-40b5-c66c-d0c7-ccfe9999691c@nvidia.com>
-Date:   Wed, 9 Dec 2020 09:38:00 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1726880AbgLIEJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 23:09:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726822AbgLIEJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 23:09:50 -0500
+X-Gm-Message-State: AOAM531yAOAbqK3eiwQewH/ruQ/f+9VyUuJLxLH4Gp6l4RmGFAVflB4J
+        bz8vT2W0lfgD85uA1FNWNu0r9A3wFLrxa2zex7gzGw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607486949;
+        bh=oYWxHXQ62C0mJPCCULJOFjbEn8mPiFRGhNAfsRwo+mY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gZUlSCsh09rf2zhL5Bh0chn4eXVlp7Awkzq0RldKYyb9pnGpVpj4rBL3vKOYRzg9f
+         bVt7+1tmu2vRnb8/dV+EAWWnGnSVHs7erF15Vl/9Vm7eyf/+uhC1xAAqVN9D+Q8ebR
+         yswYQwBqFuj2KX+FHAsKN9Wr7ORUdO/IsQwJLozT3EIqveFEX27nuo3N3ophCC0hHw
+         nPYh+hlRw4oJkZhUUeOIczvCbP8t5c2a3wwnzFq4972o382rIKInykpxPejxpn5ZbK
+         4RK+Ddim/dJzBLZLje0OdZ0mfm6hOw8p0O2GwaANO1d/7jX4/MrFz93HeSqY7m70u7
+         K+9+PPDq36H/g==
+X-Google-Smtp-Source: ABdhPJyPreMEtl1P7lQQQDkaaodeKWAa7yzPM9UvV4cRoYUa/4FCUz55VfV8kjpchfi0VRMnuLRmsm2k3UBpYxyIZ1k=
+X-Received: by 2002:a5d:4a10:: with SMTP id m16mr403401wrq.18.1607486947915;
+ Tue, 08 Dec 2020 20:09:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201208220624.21877-1-david.e.box@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607486891; bh=tKNGbJ7HdwulcixuNe1lidHwvhj6kJsJOljpK1qtsoI=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=DnSa1mZuCpmEuoQ1WmKpXoVgPVcTFnjYPFp4ho6iHjjTKtxX42y325nNnUqrNdk+d
-         ngY6A7SePH1JADN/Dj1n2mk0fi2dUk3TGL7qpwNS4YJtOGmeASmtn/0h1XXLLq2lm6
-         yZQc0rzwP7AUJVm4jUoF083Nn5bDt7/lR7MJtDZSOTH0pILa+MhZhDYzIDAxsjO7Po
-         yO58ArA97iIumY4dkozGmtlSJy5kVV2HZBQCoEmf713+nYFh986AI0rhF/xKp6unQ+
-         g2PHnQRSQM5gBUD/Wn1tDbJXqxOBFlVcNUFja6wu9wmoAevWCbmwMKQbpPBnuhkXRk
-         MPEtfeXUL5yCw==
+References: <87h7ow2j91.fsf@nanos.tec.linutronix.de> <301491B7-DEB6-41ED-B8FD-657B864696CF@amacapital.net>
+ <87v9db25me.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87v9db25me.fsf@nanos.tec.linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 8 Dec 2020 20:08:56 -0800
+X-Gmail-Original-Message-ID: <CALCETrXeXCvbxAuRuLwWoF3-zvjhzzjj46VZ3RfgUEhb0SeK6A@mail.gmail.com>
+Message-ID: <CALCETrXeXCvbxAuRuLwWoF3-zvjhzzjj46VZ3RfgUEhb0SeK6A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a change already available for it in linux-next
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=4257f7e008ea394fcecc050f1569c3503b8bcc15
+On Tue, Dec 8, 2020 at 4:19 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> On Tue, Dec 08 2020 at 12:32, Andy Lutomirski wrote:
+> >> On Dec 8, 2020, at 11:25 AM, Thomas Gleixner <tglx@linutronix.de> wrot=
+e:
+> >> One issue here is that guests might want to run their own NTP/PTP. One
+> >> reason to do that is that some people prefer the leap second smearing
+> >> NTP servers.
+> >
+> > I would hope that using this part would be optional on the guest=E2=80=
+=99s
+> > part. Guests should be able to use just the CLOCK_MONOTONIC_RAW part
+> > or fancier stuff at their option.
+> >
+> > (Hmm, it would, in principle, be possible for a guest to use the
+> > host=E2=80=99s TAI but still smear leap seconds. Even without virt, sme=
+aring
+> > could be a per-timens option.)
+>
+> No. Don't even think about it. Read the thread:
+>
+>   https://lore.kernel.org/r/20201030110229.43f0773b@jawa
+>
+> all the way through the end and then come up with a real proposal which
+> solves all of the issues mentioned there.
 
-Thanks,
-Vidya Sagar
+You're misunderstanding me, which is entirely reasonable, since my
+description was crap.  In particular, what I meant by smearing is not
+at all what's done today.  Let me try again.  The thing below is my
+proposal, not necessarily a description of exactly what happens now.
 
-On 12/9/2020 3:36 AM, David E. Box wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On Intel systems that support ACPI Low Power Idle it has been observed
-> that the L1 Substate capability can return disabled after a s2idle
-> cycle. This causes the loss of L1 Substate support during runtime
-> leading to higher power consumption. Add save/restore of the L1SS
-> control registers.
-> 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
->   drivers/pci/pci.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 49 insertions(+)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index e578d34095e9..beee3d9952a6 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -1539,6 +1539,48 @@ static void pci_restore_ltr_state(struct pci_dev *dev)
->          pci_write_config_word(dev, ltr + PCI_LTR_MAX_NOSNOOP_LAT, *cap++);
->   }
-> 
-> +static void pci_save_l1ss_state(struct pci_dev *dev)
-> +{
-> +       int l1ss;
-> +       struct pci_cap_saved_state *save_state;
-> +       u16 *cap;
-> +
-> +       if (!pci_is_pcie(dev))
-> +               return;
-> +
-> +       l1ss = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_L1SS);
-> +       if (!l1ss)
-> +               return;
-> +
-> +       save_state = pci_find_saved_ext_cap(dev, PCI_EXT_CAP_ID_L1SS);
-> +       if (!save_state) {
-> +               pci_err(dev, "no suspend buffer for L1 Substates\n");
-> +               return;
-> +       }
-> +
-> +       cap = (u16 *)&save_state->cap.data[0];
-> +       pci_read_config_word(dev, l1ss + PCI_L1SS_CTL1, cap++);
-> +       pci_read_config_word(dev, l1ss + PCI_L1SS_CTL1 + 2, cap++);
-> +       pci_read_config_word(dev, l1ss + PCI_L1SS_CTL2, cap++);
-> +}
-> +
-> +static void pci_restore_l1ss_state(struct pci_dev *dev)
-> +{
-> +       struct pci_cap_saved_state *save_state;
-> +       int l1ss;
-> +       u16 *cap;
-> +
-> +       save_state = pci_find_saved_ext_cap(dev, PCI_EXT_CAP_ID_L1SS);
-> +       l1ss = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_L1SS);
-> +       if (!save_state || !l1ss)
-> +               return;
-> +
-> +       cap = (u16 *)&save_state->cap.data[0];
-> +       pci_write_config_word(dev, l1ss + PCI_L1SS_CTL1, *cap++);
-> +       pci_write_config_word(dev, l1ss + PCI_L1SS_CTL1 + 2, *cap++);
-> +       pci_write_config_word(dev, l1ss + PCI_L1SS_CTL2, *cap++);
-> +}
-> +
->   /**
->    * pci_save_state - save the PCI configuration space of a device before
->    *                 suspending
-> @@ -1563,6 +1605,7 @@ int pci_save_state(struct pci_dev *dev)
->          if (i != 0)
->                  return i;
-> 
-> +       pci_save_l1ss_state(dev);
->          pci_save_ltr_state(dev);
->          pci_save_dpc_state(dev);
->          pci_save_aer_state(dev);
-> @@ -1670,6 +1713,7 @@ void pci_restore_state(struct pci_dev *dev)
->           */
->          pci_restore_ltr_state(dev);
-> 
-> +       pci_restore_l1ss_state(dev);
->          pci_restore_pcie_state(dev);
->          pci_restore_pasid_state(dev);
->          pci_restore_pri_state(dev);
-> @@ -3332,6 +3376,11 @@ void pci_allocate_cap_save_buffers(struct pci_dev *dev)
->          if (error)
->                  pci_err(dev, "unable to allocate suspend buffer for LTR\n");
-> 
-> +       error = pci_add_ext_cap_save_buffer(dev, PCI_EXT_CAP_ID_L1SS,
-> +                                           3 * sizeof(u16));
-> +       if (error)
-> +               pci_err(dev, "unable to allocate suspend buffer for L1 Substates\n");
-> +
->          pci_allocate_vc_save_buffers(dev);
->   }
-> 
-> --
-> 2.20.1
-> 
+(I read most of that thread, and I read most of this thread, and I've
+hacked on the time code, cursed at the KVM code, modified the KVM
+code, cursed at the KVM code some more, etc.  None of which is to say
+that I have a full understanding of every possible timekeeping nuance,
+but I'm pretty sure I can at least pretend to understand some of it.)
+
+We have some time source that we can read (e.g. TSC).  Let's call it
+read_time().  It returns an integer (64-bits would be nice, but we'll
+take what we can get).  From the output of read_time(), Linux user
+programs, and the kernel itself (and guests perhaps, see below) would
+like to produce various outputs.  Each of them is protected by a
+seqlock that I'll omit in the descriptions below.  The operations
+below are all protected by a seqlock retry loop.  Also, when I say *
+below, I mean the usual calculation with a multiplication and a shift.
+
+All of these are only valid if t_start <=3D read_time() <=3D t_end and,
+and they all assume that read_time() hasn't wrapped and gotten into
+that interval again.  There is nothing at all we can do in software if
+we wrap like this.  t_end isn't necessarily something we compute
+explicitly --- it might just be the case that, if read_time() > t_end,
+our arithmetic overflows and we return garbage.  But t_end might be a
+real thing on architectures where vdso_cycles_ok() actually does
+something (sigh, x86).
+
+CLOCK_MONOTONIC_RAW: not affected by NTP, adjtimex, etc.
+return mult[monotonic_raw] * (read_time() - t_start) + offset[monotonic_raw=
+];
+
+CLOCK_MONOTONIC:  This is never affected by leap-second smearing.  If
+userspace tries to smear it in the new mode, userspace gets to keep
+all the pieces.
+return mult[monotonic] * (read_time() - t_start) + offset[monotonic];
+
+CLOCK_TAI:  This is not smeared.
+return mult[tai] * (read_time() - t_start) + offset[tai];
+
+CLOCK_SANE_REALTIME: This is not smeared either.
+return mult[sane_realtime] * (read_time() - t_start) + offset[sane_realtime=
+];
+
+And yes, we require that mult[monotonic] =3D=3D mult[tai] =3D=3D mult[sane_=
+realtime].
+
+CLOCK_SMEARED_REALTIME:
+return mult[smeared_realtime] * (read_time() - t_start) +
+offset[smeared_realtime]
+This is a leap-second-smeared variant of CLOCK_SANE_REALTIME.
+
+CLOCK_REALTIME: maps to CLOCK_SANE_REALTIME or CLOCK_SMEARED_REALTIME
+depending on user preference.  Doing this without an extra branch
+somewhere might take a bit of thought.
+
+If t > t_end, then we fall back to a syscall if we're in user mode and
+we fall back to hypercall or we just spin if we're in the kernel.  But
+see below.
+
+As far as I can tell, if the kernel were to do something utterly
+asinine like adding some arbitrary value to TSC_ADJUST on all CPUs,
+the kernel could do so correctly by taking the seqlock, making the
+change, updating everything, and releasing the seqlock.  This would be
+nuts, but it's more or less the same thing that happens when a VM
+migrates.  So I think a VM could migrate a guest without any
+particular magic, except that there's a potential race if the old and
+new systems happen to have close enough seqlock values that the guest
+might start reading on the old host, finish on the new host, see the
+same seqlock value, and end up with utter garbage.  One way to
+mitigate this would be, in paravirt mode, to have an extra per-guest
+page that contains a count of how many times the guest has migrated.
+
+Timens would work a lot like it does today, but the mechanism that
+tells the vdso code to use timens might need tweaking.
+
+I could easily be missing something that prevents this from working,
+but I'm not seeing any fundamental problems.
+
+If we want to get fancy, we can make a change that I've contemplated
+for a while -- we could make t_end explicit and have two copies of all
+these data structures.  The reader would use one copy if t < t_change
+and a different copy if t >=3D t_change.  This would allow NTP-like code
+in usermode to schedule a frequency shift to start at a specific time.
+With some care, it would also allow the timekeeping code to update the
+data structures without causing clock_gettime() to block while the
+timekeeping code is running on a different CPU.
+
+One other thing that might be worth noting: there's another thread
+about "vmgenid".  It's plausible that it's worth considering stopping
+the guest or perhaps interrupting all vCPUs to allow it to take some
+careful actions on migration for reasons that have nothing to do with
+timekeeping.
