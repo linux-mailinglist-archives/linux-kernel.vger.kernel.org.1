@@ -2,154 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA772D3E4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DE02D3E52
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728751AbgLIJOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:14:16 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9563 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728711AbgLIJOP (ORCPT
+        id S1728010AbgLIJQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:16:54 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12898 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727665AbgLIJQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:14:15 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CrWXx03ptzM2Rx;
-        Wed,  9 Dec 2020 17:12:49 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.9) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Dec 2020
- 17:13:24 +0800
-Subject: Re: [RESEND PATCH v3 3/4] iommu/iova: Flush CPU rcache for when a
- depot fills
-To:     John Garry <john.garry@huawei.com>, <robin.murphy@arm.com>,
-        <joro@8bytes.org>, <will@kernel.org>
-CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <iommu@lists.linux-foundation.org>, <xiyou.wangcong@gmail.com>
-References: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
- <1605608734-84416-4-git-send-email-john.garry@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <76e057e3-9db8-21fc-3a8a-b9e924a95cf4@huawei.com>
-Date:   Wed, 9 Dec 2020 17:13:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 9 Dec 2020 04:16:53 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B993Cwp034240;
+        Wed, 9 Dec 2020 04:15:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=OUtnX1xWfkGMVaDSZjdSLkzl+kWnd4BJdWJwy6bdJjs=;
+ b=MUaROpBH57+TaLj07MoKv4oPJblZB9pCaZUD9m/NcP9Emu9iJXvDrTLfNqORgCzmeeiS
+ lohj2a0/9vTxBaQ0cw94+55dfS5Bc+gwYiXl/KjWC7Ev06whC7goKgtWsag6iWTCAn+S
+ RZ5HSyAKS3DePYTfGecaEWoBE/EP38deneSVXNjStmXVakPJ8V8FKRYTK/KIeXga3K2f
+ t5Q3bwriH0/8qjqcEbZOynGKUT8X4vbr2AWBXYZIs7QsFI9aUIXEtfWiPDb363p9Bt04
+ /kIHpwNXC9ke++SetrIHv5qSvLLBW6rhMtPBW+ooJUxgtC+uMTuJzHkbb1uiUxvld/uE wQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35aab9ecmd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 04:15:58 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B994lAl043893;
+        Wed, 9 Dec 2020 04:15:57 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35aab9ecjf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 04:15:57 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B99CJGK000367;
+        Wed, 9 Dec 2020 09:15:53 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 3581u8ph7u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 09:15:53 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B99EaXv8585844
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Dec 2020 09:14:36 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2F63AA4062;
+        Wed,  9 Dec 2020 09:14:36 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 173B4A405B;
+        Wed,  9 Dec 2020 09:14:34 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed,  9 Dec 2020 09:14:33 +0000 (GMT)
+Date:   Wed, 9 Dec 2020 14:44:33 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Gautham R Shenoy <ego@linux.vnet.ibm.com>
+Cc:     Anton Blanchard <anton@ozlabs.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] powerpc/smp: Add support detecting thread-groups
+ sharing L2 cache
+Message-ID: <20201209091433.GM528281@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com>
+ <1607057327-29822-3-git-send-email-ego@linux.vnet.ibm.com>
+ <20201207124039.GI528281@linux.vnet.ibm.com>
+ <20201208174237.GB14206@in.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <1605608734-84416-4-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20201208174237.GB14206@in.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_07:2020-12-08,2020-12-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ bulkscore=0 phishscore=0 spamscore=0 adultscore=0 suspectscore=1
+ malwarescore=0 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Gautham R Shenoy <ego@linux.vnet.ibm.com> [2020-12-08 23:12:37]:
 
+> 
+> > For L2 we have thread_group_l2_cache_map to store the tasks from the thread
+> > group.  but cpu_l2_cache_map for keeping track of tasks.
+> 
+> > 
+> > I think we should do some renaming to keep the names consistent.
+> > I would say probably say move the current cpu_l2_cache_map to
+> > cpu_llc_cache_map and move the new aka  thread_group_l2_cache_map as
+> > cpu_l2_cache_map to be somewhat consistent.
+> 
+> Hmm.. cpu_llc_cache_map is still very generic. We want to have
+> something that defines l2 map.
+> 
+> I agree that we need to keep it consistent. How about renaming
+> cpu_l1_cache_map to thread_groups_l1_cache_map ?
+> 
+> That way thread_groups_l1_cache_map and thread_groups_l2_cache_map
+> refer to the corresponding L1 and L2 siblings as discovered from
+> ibm,thread-groups property.
 
-On 2020/11/17 18:25, John Garry wrote:
-> Leizhen reported some time ago that IOVA performance may degrade over time
-> [0], but unfortunately his solution to fix this problem was not given
-> attention.
-> 
-> To summarize, the issue is that as time goes by, the CPU rcache and depot
-> rcache continue to grow. As such, IOVA RB tree access time also continues
-> to grow.
-> 
-> At a certain point, a depot may become full, and also some CPU rcaches may
-> also be full when inserting another IOVA is attempted. For this scenario,
-> currently the "loaded" CPU rcache is freed and a new one is created. This
-> freeing means that many IOVAs in the RB tree need to be freed, which
-> makes IO throughput performance fall off a cliff in some storage scenarios:
-> 
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6314MB/0KB/0KB /s] [1616K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [5669MB/0KB/0KB /s] [1451K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6673MB/0KB/0KB /s] [1708K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6761MB/0KB/0KB /s] [1731K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6685MB/0KB/0KB /s] [1711K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6178MB/0KB/0KB /s] [1582K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6731MB/0KB/0KB /s] [1723K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2387MB/0KB/0KB /s] [611K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2689MB/0KB/0KB /s] [688K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2278MB/0KB/0KB /s] [583K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1288MB/0KB/0KB /s] [330K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1632MB/0KB/0KB /s] [418K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1765MB/0KB/0KB /s] [452K/0/0 iops]
-> 
-> And continue in this fashion, without recovering. Note that in this
-> example it was required to wait 16 hours for this to occur. Also note that
-> IO throughput also becomes gradually becomes more unstable leading up to
-> this point.
-> 
-> This problem is only seen for non-strict mode. For strict mode, the rcaches
-> stay quite compact.
-> 
-> As a solution to this issue, judge that the IOVA caches have grown too big
-> when cached magazines need to be free, and just flush all the CPUs rcaches
-> instead.
-> 
-> The depot rcaches, however, are not flushed, as they can be used to
-> immediately replenish active CPUs.
-> 
-> In future, some IOVA compaction could be implemented to solve the
-> instabilty issue, which I figure could be quite complex to implement.
-> 
-> [0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
-> 
-> Analyzed-by: Zhen Lei <thunder.leizhen@huawei.com>
-> Reported-by: Xiang Chen <chenxiang66@hisilicon.com>
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->  drivers/iommu/iova.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> index 1f3f0f8b12e0..386005055aca 100644
-> --- a/drivers/iommu/iova.c
-> +++ b/drivers/iommu/iova.c
-> @@ -901,7 +901,6 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->  				 struct iova_rcache *rcache,
->  				 unsigned long iova_pfn)
->  {
-> -	struct iova_magazine *mag_to_free = NULL;
->  	struct iova_cpu_rcache *cpu_rcache;
->  	bool can_insert = false;
->  	unsigned long flags;
-> @@ -923,13 +922,12 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->  				if (cpu_rcache->loaded)
->  					rcache->depot[rcache->depot_size++] =
->  							cpu_rcache->loaded;
-> -			} else {
-> -				mag_to_free = cpu_rcache->loaded;
-> +				can_insert = true;
-> +				cpu_rcache->loaded = new_mag;
->  			}
->  			spin_unlock(&rcache->lock);
-> -
-> -			cpu_rcache->loaded = new_mag;
-> -			can_insert = true;
-> +			if (!can_insert)
-> +				iova_magazine_free(new_mag);
->  		}
->  	}
->  
-> @@ -938,10 +936,8 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->  
->  	spin_unlock_irqrestore(&cpu_rcache->lock, flags);
->  
-> -	if (mag_to_free) {
-> -		iova_magazine_free_pfns(mag_to_free, iovad);
-> -		iova_magazine_free(mag_to_free);
-mag_to_free has been stripped out, that's why lock protection is not required here.
+I am fine with this.
 
-> -	}
-> +	if (!can_insert)
-> +		free_all_cpu_cached_iovas(iovad);
-Lock protection required.
-
->  
->  	return can_insert;
->  }
+> > > +
+> > > +	for_each_possible_cpu(cpu) {
+> > > +		int err = init_cpu_cache_map(cpu, THREAD_GROUP_SHARE_L2);
+> > > +
+> > > +		if (err)
+> > > +			return err;
+> > > +	}
+> > > +
+> > > +	thread_group_shares_l2 = true;
+> > 
+> > Why do we need a separate loop. Why cant we merge this in the above loop
+> > itself?
 > 
+> No, there are platforms where one THREAD_GROUP_SHARE_L1 exists while
+> THREAD_GROUP_SHARE_L2 doesn't exist. It becomes easier if these are
+> separately tracked. Also, what do we gain if we put this in the same
+> loop? It will be (nr_possible_cpus * 2 * invocations of
+> init_cpu_cache_map()) as opposed to 2 * (nr_possible_cpus *
+> invocations of init_cpu_cache_map()). Isn't it ?
+> 
+Its not about the number of invocations but per-cpu thread group list
+that would need not be loaded again. Currently they would probably be in the
+cache-line, but get dropped to be loaded again in the next loop.
+And we still can support platforms with only THREAD_GROUP_SHARE_L1 since
+parse_thread_groups would have given us how many levels of thread groups are
+supported on a platform.
 
+> > 
+> > > +	pr_info("Thread-groups in a core share L2-cache\n");
+> > 
+> > Can this be moved to a pr_debug? Does it help any regular user/admins to
+> > know if thread-groups shared l2 cache. Infact it may confuse users on what
+> > thread groups are and which thread groups dont share cache.
+> > I would prefer some other name than thread_group_shares_l2 but dont know any
+> > better alternatives and may be my choices are even worse.
+> 
+> Would you be ok with "L2 cache shared by threads of the small core" ?
+
+Sounds better to me. I would still think pr_debug is better since regular
+Admins/users may not make too much information from this.
+> 
+> > 
+> > Ah this can be simplified to:
+> > if (thread_group_shares_l2) {
+> > 	cpumask_set_cpu(cpu, cpu_l2_cache_mask(cpu));
+> > 
+> > 	for_each_cpu(i, per_cpu(thread_group_l2_cache_map, cpu)) {
+> > 		if (cpu_online(i))
+> > 			set_cpus_related(i, cpu, cpu_l2_cache_mask);
+> > 	}
+> 
+> Don't we want to enforce that the siblings sharing L1 be a subset of
+> the siblings sharing L2 ? Or do you recommend putting in a check for
+> that somewhere ?
+> 
+I didnt think about the case where the device-tree could show L2 to be a
+subset of L1.
+
+How about initializing thread_group_l2_cache_map itself with
+cpu_l1_cache_map. It would be a simple one time operation and reduce the
+overhead here every CPU online.
+And it would help in your subsequent patch too. We dont want the cacheinfo
+for L1 showing CPUs not present in L2.
+
+-- 
+Thanks and Regards
+Srikar Dronamraju
