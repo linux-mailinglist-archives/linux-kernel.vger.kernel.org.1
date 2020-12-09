@@ -2,218 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACB42D4336
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3ABD2D4338
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732368AbgLIN2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:28:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728141AbgLIN2B (ORCPT
+        id S1732071AbgLIN2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:28:18 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:41406 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731923AbgLIN2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:28:01 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB1CC0617A7
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 05:26:43 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id t16so1750542wra.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 05:26:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=O9mDZF7etgTn6tPi+wLjx4mpeEvfX0cxhDjOxW77JZw=;
-        b=UiQzniNMGcPQKLgMJ0EzSi2Kxaf6qlPnE0Z6wiBoM3oMicnTBdvuSw0E9lg/rVc5fS
-         8CSHJj6Txg/LTewz8bLBQXPXghERXgK8ndh/sScGDtcUWDffh+3JJoh1b+xBlfBVig8C
-         9rvjTFdpOX3JqtGYTIwNO7j21vBUFP13Oa6i4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=O9mDZF7etgTn6tPi+wLjx4mpeEvfX0cxhDjOxW77JZw=;
-        b=JG55Y0peg5yU1Q8vhxg7NlVSPe6/X11/QII2W+7KbL23aSOH/2qIgxLEDEi9mg52Al
-         hDcqMP6BkbZl5QQukca7G6XO+Rp0qsVbHIrfmLV4E9XDBluydNerOK620mII4A7/In+t
-         ndj0xHAuoNZyRG9hgKafQNmabFka+mC5oLah17/J92plVKUEIYSojjRgzWMv8WEdfqdy
-         TGGTCw8EyHsucdaFwTUvDK13e9QwCWvLiOI5QCRZ/7FKzAra7fk9+5uGIXLqOCvaRDVv
-         cjSwtEP2DnfpnkcNkGNBRusxFoJHe84CnVnXsw0vbH4ICzCLPzmHwYxo6WbwvILJPHkA
-         ozGg==
-X-Gm-Message-State: AOAM530RQaQLgZ31ul+3VRHWoctJtS9Uk+G86VTdfZL9yHZeiNTDjptK
-        lYJEJXRHa0CFbFDqRtOz5u0jzZ6Lf5uqdw==
-X-Google-Smtp-Source: ABdhPJyJQpvCFFprTl21K/OpcEuA7dY8Og5NuNzUxF1gbNOZpbuDZNIoWdLZ8aANWO/x2NGPBJz52Q==
-X-Received: by 2002:adf:d081:: with SMTP id y1mr2734830wrh.388.1607520402020;
-        Wed, 09 Dec 2020 05:26:42 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
-        by smtp.gmail.com with ESMTPSA id t16sm3631490wri.42.2020.12.09.05.26.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 05:26:41 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, kafai@fb.com, linux-kernel@vger.kernel.org,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v4 4/4] selftests/bpf: Add a selftest for the tracing bpf_get_socket_cookie
-Date:   Wed,  9 Dec 2020 14:26:36 +0100
-Message-Id: <20201209132636.1545761-4-revest@chromium.org>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-In-Reply-To: <20201209132636.1545761-1-revest@chromium.org>
-References: <20201209132636.1545761-1-revest@chromium.org>
+        Wed, 9 Dec 2020 08:28:02 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9DJLTc100471;
+        Wed, 9 Dec 2020 13:27:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=tjJR8fSxsRpHHh112eeug597rvZIcr/UPaqj+1uZMTE=;
+ b=VChZvb1HfZEriXvryyq6/7jPfxwZe13KqHeF/07oZ8old5sjHbEQ3e3G5I50jzLpnHGD
+ n1ysSe7miljDHKqG3IZvXke5nJurcaWDCFbu2v4KZsO1crNjz63/XJHxa+u6z4CSGn20
+ OkvH9KuscQHWH4Bgtd/zLttdnNJ2+FEidMUyunHWFXBlEgHB/Lz9WJYFtAmh9x44bZJc
+ 2t7GxUvgwu5lG4L9GKy9qy+WKsvONMcI6oaKt6JuIFjxwXtUOmi+VVci73VHpbBAuRkV
+ lw2/H0+Dj6b4gaj0Vfo0sXkMUMNppPKq7clnRPQCEGvI40Yyhiq8rQZDeITgBcq7RAAn Yw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 357yqc06sq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Dec 2020 13:27:04 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9DKYjF026594;
+        Wed, 9 Dec 2020 13:27:03 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 358m409awy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Dec 2020 13:27:03 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B9DR0ct032643;
+        Wed, 9 Dec 2020 13:27:00 GMT
+Received: from [10.175.160.66] (/10.175.160.66)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Dec 2020 05:27:00 -0800
+Subject: Re: [PATCH RFC 10/39] KVM: x86/xen: support upcall vector
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>, karahmed@amazon.de
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20190220201609.28290-1-joao.m.martins@oracle.com>
+ <20190220201609.28290-11-joao.m.martins@oracle.com>
+ <71753a370cd6f9dd147427634284073b78679fa6.camel@infradead.org>
+ <53baeaa7-0fed-d22c-7767-09ae885d13a0@oracle.com>
+ <4ad0d157c5c7317a660cd8d65b535d3232f9249d.camel@infradead.org>
+ <c43024b3-6508-3b77-870c-da81e74284a4@oracle.com>
+ <052867ae1c997487d85c21e995feb5647ac6c458.camel@infradead.org>
+ <6a6b5806be1fe4c0fe96c0b664710d1ce614f29d.camel@infradead.org>
+ <1af00fa4-03b8-a059-d859-5cfd71ef10f4@oracle.com>
+ <0eb8c2ef01b77af0d288888f200e812d374beada.camel@infradead.org>
+ <f7dec3f1-aadc-bda5-f4dc-7185ffd9c1a6@oracle.com>
+ <db4ea3bd6ebec53c40526d67273ccfba38982811.camel@infradead.org>
+From:   Joao Martins <joao.m.martins@oracle.com>
+Message-ID: <35165dbc-73d0-21cd-0baf-db4ffb55fc47@oracle.com>
+Date:   Wed, 9 Dec 2020 13:26:55 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <db4ea3bd6ebec53c40526d67273ccfba38982811.camel@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090095
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This builds up on the existing socket cookie test which checks whether
-the bpf_get_socket_cookie helpers provide the same value in
-cgroup/connect6 and sockops programs for a socket created by the
-userspace part of the test.
+On 12/9/20 11:39 AM, David Woodhouse wrote:
+> On Wed, 2020-12-09 at 10:51 +0000, Joao Martins wrote:
+>> Isn't this what the first half of this patch was doing initially (minus the
+>> irq routing) ? Looks really similar:
+>>
+>> https://lore.kernel.org/kvm/20190220201609.28290-11-joao.m.martins@oracle.com/
+> 
+> Absolutely! This thread is in reply to your original posting of
+> precisely that patch, and I've had your tree open in gitk to crib from
+> for most of the last week.
+> 
+I forgot about this patch given all the discussion so far and I had to re-look given that
+it resembled me from your snippet. But I ended up being a little pedantic -- sorry about that.
 
-Adding a tracing program to the existing objects requires a different
-attachment strategy and different headers.
+> There's a *reason* why my tree looks like yours, and why more than half
+> of the patches in it still show you as being the author :)
+> 
+Btw, in this patch it would be Ankur's.
 
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- .../selftests/bpf/prog_tests/socket_cookie.c  | 24 +++++++----
- .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
- 2 files changed, 52 insertions(+), 13 deletions(-)
+More importantly, thanks a lot for picking it up and for all the awesome stuff you're
+doing with it.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-index 53d0c44e7907..e5c5e2ea1deb 100644
---- a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-@@ -15,8 +15,8 @@ struct socket_cookie {
- 
- void test_socket_cookie(void)
- {
-+	struct bpf_link *set_link, *update_sockops_link, *update_tracing_link;
- 	socklen_t addr_len = sizeof(struct sockaddr_in6);
--	struct bpf_link *set_link, *update_link;
- 	int server_fd, client_fd, cgroup_fd;
- 	struct socket_cookie_prog *skel;
- 	__u32 cookie_expected_value;
-@@ -39,15 +39,21 @@ void test_socket_cookie(void)
- 		  PTR_ERR(set_link)))
- 		goto close_cgroup_fd;
- 
--	update_link = bpf_program__attach_cgroup(skel->progs.update_cookie,
--						 cgroup_fd);
--	if (CHECK(IS_ERR(update_link), "update-link-cg-attach", "err %ld\n",
--		  PTR_ERR(update_link)))
-+	update_sockops_link = bpf_program__attach_cgroup(
-+		skel->progs.update_cookie_sockops, cgroup_fd);
-+	if (CHECK(IS_ERR(update_sockops_link), "update-sockops-link-cg-attach",
-+		  "err %ld\n", PTR_ERR(update_sockops_link)))
- 		goto free_set_link;
- 
-+	update_tracing_link = bpf_program__attach(
-+		skel->progs.update_cookie_tracing);
-+	if (CHECK(IS_ERR(update_tracing_link), "update-tracing-link-attach",
-+		  "err %ld\n", PTR_ERR(update_tracing_link)))
-+		goto free_update_sockops_link;
-+
- 	server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
- 	if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
--		goto free_update_link;
-+		goto free_update_tracing_link;
- 
- 	client_fd = connect_to_fd(server_fd, 0);
- 	if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
-@@ -71,8 +77,10 @@ void test_socket_cookie(void)
- 	close(client_fd);
- close_server_fd:
- 	close(server_fd);
--free_update_link:
--	bpf_link__destroy(update_link);
-+free_update_tracing_link:
-+	bpf_link__destroy(update_tracing_link);
-+free_update_sockops_link:
-+	bpf_link__destroy(update_sockops_link);
- free_set_link:
- 	bpf_link__destroy(set_link);
- close_cgroup_fd:
-diff --git a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-index 81e84be6f86d..1f770b732cb1 100644
---- a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-+++ b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-@@ -1,11 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2018 Facebook
- 
--#include <linux/bpf.h>
--#include <sys/socket.h>
-+#include "vmlinux.h"
- 
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define AF_INET6 10
- 
- struct socket_cookie {
- 	__u64 cookie_key;
-@@ -19,6 +21,14 @@ struct {
- 	__type(value, struct socket_cookie);
- } socket_cookies SEC(".maps");
- 
-+/*
-+ * These three programs get executed in a row on connect() syscalls. The
-+ * userspace side of the test creates a client socket, issues a connect() on it
-+ * and then checks that the local storage associated with this socket has:
-+ * cookie_value == local_port << 8 | 0xFF
-+ * The different parts of this cookie_value are appended by those hooks if they
-+ * all agree on the output of bpf_get_socket_cookie().
-+ */
- SEC("cgroup/connect6")
- int set_cookie(struct bpf_sock_addr *ctx)
- {
-@@ -32,14 +42,14 @@ int set_cookie(struct bpf_sock_addr *ctx)
- 	if (!p)
- 		return 1;
- 
--	p->cookie_value = 0xFF;
-+	p->cookie_value = 0xF;
- 	p->cookie_key = bpf_get_socket_cookie(ctx);
- 
- 	return 1;
- }
- 
- SEC("sockops")
--int update_cookie(struct bpf_sock_ops *ctx)
-+int update_cookie_sockops(struct bpf_sock_ops *ctx)
- {
- 	struct bpf_sock *sk;
- 	struct socket_cookie *p;
-@@ -60,9 +70,30 @@ int update_cookie(struct bpf_sock_ops *ctx)
- 	if (p->cookie_key != bpf_get_socket_cookie(ctx))
- 		return 1;
- 
--	p->cookie_value = (ctx->local_port << 8) | p->cookie_value;
-+	p->cookie_value |= (ctx->local_port << 8);
- 
- 	return 1;
- }
- 
-+SEC("fexit/inet_stream_connect")
-+int BPF_PROG(update_cookie_tracing, struct socket *sock,
-+	     struct sockaddr *uaddr, int addr_len, int flags)
-+{
-+	struct socket_cookie *p;
-+
-+	if (uaddr->sa_family != AF_INET6)
-+		return 0;
-+
-+	p = bpf_sk_storage_get(&socket_cookies, sock->sk, 0, 0);
-+	if (!p)
-+		return 0;
-+
-+	if (p->cookie_key != bpf_get_socket_cookie(sock->sk))
-+		return 0;
-+
-+	p->cookie_value |= 0xF0;
-+
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.29.2.576.ga3fc446d84-goog
+>> Albeit, I gotta after seeing the irq routing removed it ends much simpler, if we just
+>> replace the irq routing with a domain-wide upcall vector ;)
+> 
+> I like "simpler".
+> 
+> I also killed the ->cb.queued flag you had because I think it's
+> redundant with evtchn_upcall_pending anyway.
+> 
+Yeap, indeed.
 
+>> Albeit it wouldn't cover the Windows Xen open source drivers which use the EVTCHN method
+>> (which is a regular LAPIC vector) [to answer your question on what uses it] For the EVTCHN
+>> you can just inject a regular vector through lapic deliver, and guest acks it. Sadly Linux
+>> doesn't use it,
+>> and if it was the case we would probably get faster upcalls with APICv/AVIC.
+> 
+> It doesn't need to, because those can just be injected with
+> KVM_SIGNAL_MSI.
+> 
+/me nods
+
+> At most, we just need to make sure that kvm_xen_has_interrupt() returns
+> false if the per-vCPU LAPIC vector is configured. But I didn't do that
+> because I checked Xen and it doesn't do it either.
+> 
+Oh! I have this strange recollection that it was, when we were looking at the Xen
+implementation.
+
+> As far as I can tell, Xen's hvm_vcpu_has_pending_irq() will still
+> return the domain-wide vector in preference to the one in the LAPIC, if
+> it actually gets invoked. 
+
+Only if the callback installed is HVMIRQ_callback_vector IIUC.
+
+Otherwise the vector would be pending like any other LAPIC vector.
+
+> And if the guest sets ->evtchn_upcall_pending
+> to reinject the IRQ (as Linux does on unmask) Xen won't use the per-
+> vCPU vector to inject that; it'll use the domain-wide vector.
+> Right -- I don't think Linux even installs a per-CPU upcall LAPIC vector other than the
+domain's callback irq.
+
+>>> I'm not sure that condition wasn't *already* broken some cases for
+>>> KVM_INTERRUPT anyway. In kvm_vcpu_ioctl_interrupt() we set
+>>> vcpu->arch.pending_userspace_vector and we *do* request KVM_REQ_EVENT,
+>>> sure.
+>>>
+>>> But what if vcpu_enter_guest() processes that the first time (and
+>>> clears KVM_REQ_EVENT), and then exits for some *other* reason with
+>>> interrupts still disabled? Next time through vcpu_enter_guest(), even
+>>> though kvm_cpu_has_injectable_intr() is still true, we don't enable the
+>>> IRQ windowvmexit because KVM_REQ_EVENT got lost so we don't even call
+>>> inject_pending_event().
+>>>
+>>> So instead of just kvm_xen_has_interrupt() in my patch below, I wonder
+>>> if we need to use kvm_cpu_has_injectable_intr() to fix the existing
+>>> bug? Or am I missing something there and there isn't a bug after all?
+>>
+>> Given that the notion of an event channel pending is Xen specific handling, I am not sure
+>> we can remove the kvm_xen_has_interrupt()/kvm_xen_get_interrupt() logic. Much of the
+>> reason that we ended up checking on vmenter that checks event channels pendings..
+> 
+> Sure, we definitely need the check I added in vcpu_enter_guest() for
+> Xen unless I'm going to come up with a way to set KVM_REQ_EVENT at the
+> appropriate time.
+> 
+> But I'm looking at the ExtINT handling and as far as I can tell it's
+> buggy. So I didn't want to use it as a model for setting KVM_REQ_EVENT
+> for Xen events.
+> 
+/me nods
