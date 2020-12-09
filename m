@@ -2,161 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD532D4E2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4222D4E31
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388865AbgLIWjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:39:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388716AbgLIWje (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:39:34 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486A9C061794
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 14:38:53 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id q16so3369142edv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 14:38:53 -0800 (PST)
+        id S2389098AbgLIWko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:40:44 -0500
+Received: from mail-bn8nam08on2077.outbound.protection.outlook.com ([40.107.100.77]:55521
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388245AbgLIWk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 17:40:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GGqf2iBR3h4v7BqQXw+oEIFqBUApJx5SJkDz9mZ9BQwTJS6pGoyOqsoQY4RuCg+QvWiG3f3nV2I/uJIycz1v/O9Om1+4+bDcSPDLN1GM3j1iLO9ESFifd/hIdHF+D8Anv2gajisaN7j5F70p/3ravwJbxi/9hwp0Tp0U2lDxIdjJu/NsIfFXtZzspNsuoEQlegTWzIwyLreEl1fUgyp8YJxD+ka+owoHAhygn/xqUjUdtOkhb6KzQ+1G+Cegg67Qfdft5kKJBzZJzObPlQHSF4kNk/lUxLmERiN6xTyj+dl8cWynzzEw9mUk5qlcSbc6lChym8wSx0Plt/J/Uy7HsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qbUIlLsBpkYZFIdIIk74PxMOFo7yO6GRaTGg+jCmNng=;
+ b=OftboyQzf00uKmB3bx+NzcR2HoZlNDJfiY4ZZFwu++sWJfBNcZ6xq34jE5pOW3lEKwalu/A3ioS/wl6oa+zu5IgJ7kxhlnJ4xp4v38n/j6zr/GuHjNEjrkUHhp7pGXVBEZXdeiBV+CoEjoIpjmrEiUljGaW01AlSgqqU1Y95vAXEXf/BkIEvY6O7Uhri383wyl4oyewxeICufRkBesTHsqNUIHfOEqVxHwrmUse+/ORvqKah4ouLvS5d1x7dKmtsZiNaX7iIKn41KNb+HG//8CpY1jUyWVKrgAfFU8lN3iIm/1U47hKjnDUPpSgVXGsusNepRwvrsjZJKL0VgiysLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pIQL03/zPKLYNtedDsrbaZi2weGw3ezzccqUR9STUu4=;
-        b=l2Ft/LcFTKYXO8IPePZ2BYv+uOHAjdrRbZntfnElLBHe0ZXC/kvJFcPyKVcvQ7D6OC
-         Ue0zE1ERVHPYKqttcjjlWhTf2s0uaI5dGJX558cBCfmdBjJ1YhR2q9I4hcqFMIhCBYy3
-         f92ybU4JscstvCIPyOrP6FDwNOMpHmExMR79vy/Pj4pPSKHqUT3P0bs8gtHYCzBIqPXn
-         Fy4Z9nV18PfB+jKufBdaYSEikISgiHZEhse+SqEI80SzefwRNMqhuD6qnXj77wM3zLRv
-         x0eFWyAqda4DUVZB8Kibs4DJcmJymY00M84nFgWTcUnME/v7ZzJHl5gekjJF+o7j1PCB
-         TvVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pIQL03/zPKLYNtedDsrbaZi2weGw3ezzccqUR9STUu4=;
-        b=aJ2qxJZ9ihHnovkTrCy+TsTgewsEAfAZWv4czCo9WzHiGIpOHIiQlm5oWDuKyrbjRa
-         YiiSbRuGPRu6T0w7iirNS1UL5FwYoayFREU6izLsP7dK8wu0J7rFJaiTy3aHqTCRgagN
-         45eThaITn3fKnflXdzh5v1emHqnTN6FpULrNPA+51HC1zUwtFuKahrW4jcP2WNJZHlOM
-         8pUnQmwJKwAy9QQ+igWkFS95+6z/BgsAZRljRJaWXzOmSM48OAkmGEy7gDF/BM/Ip+s5
-         2s0zIqfPSDbPmWeUDSe7pew99So49Vji9E/fsyKSOTOfmZvgFi/RRE5cts/2iK3XZ1+a
-         elSQ==
-X-Gm-Message-State: AOAM532JwYlQ95l6HnGTGW2DxZtOBNzDFhwsEddE3FGjcLLeF5Yw3f7h
-        ggDh6vNBW2JM+vF5DhHtD/pLYnBajPPKGsJTM7koBw==
-X-Google-Smtp-Source: ABdhPJzvDmJdBGoIr2bpKyfdZskmwNIku+gIOLs9wv4Je7JCUxMR5i7LKYt13r8VyhBfLKCIGVO74IGD7Ytc27nWDtM=
-X-Received: by 2002:aa7:cdc3:: with SMTP id h3mr4022893edw.52.1607553531849;
- Wed, 09 Dec 2020 14:38:51 -0800 (PST)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qbUIlLsBpkYZFIdIIk74PxMOFo7yO6GRaTGg+jCmNng=;
+ b=fWzEYOzyDzPYC8SrH6LpyOb7P3A4lla8s5DF44F622PH6rc1kuwQvprZSYHATUf7xrZ6M4Mrm3HcafaG3064cqVc70pzhWNKpxW05KqJ54j59FZ/weELIwClkmSjrrVdg2vYaucHTlx7nlVF+HOuI3ObOYCuJwtVypFu9Ny8AmQ=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
+ by SN1PR12MB2591.namprd12.prod.outlook.com (2603:10b6:802:30::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.23; Wed, 9 Dec
+ 2020 22:39:35 +0000
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::d877:baf6:9425:ece]) by SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::d877:baf6:9425:ece%3]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
+ 22:39:35 +0000
+Subject: Re: [PATCH 1/2] x86/cpufeatures: Add the Virtual SPEC_CTRL feature
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        kyung.min.park@intel.com, LKML <linux-kernel@vger.kernel.org>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, mgross@linux.intel.com,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kim.phillips@amd.com,
+        wei.huang2@amd.com
+References: <160738054169.28590.5171339079028237631.stgit@bmoger-ubuntu>
+ <160738067105.28590.10158084163761735153.stgit@bmoger-ubuntu>
+ <CALMp9eTk6B2832EN8EhL51m8UqmHLTfeOjdKs8TvFSSAUxGk2Q@mail.gmail.com>
+From:   Babu Moger <babu.moger@amd.com>
+Message-ID: <2e929c9a-9da9-e7da-9fd4-8e0ea2163a19@amd.com>
+Date:   Wed, 9 Dec 2020 16:39:31 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <CALMp9eTk6B2832EN8EhL51m8UqmHLTfeOjdKs8TvFSSAUxGk2Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: CH2PR07CA0027.namprd07.prod.outlook.com
+ (2603:10b6:610:20::40) To SN1PR12MB2560.namprd12.prod.outlook.com
+ (2603:10b6:802:26::19)
 MIME-Version: 1.0
-References: <20201209002418.1976362-1-ben.widawsky@intel.com> <20201209002418.1976362-12-ben.widawsky@intel.com>
-In-Reply-To: <20201209002418.1976362-12-ben.widawsky@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 9 Dec 2020 14:38:49 -0800
-Message-ID: <CAPcyv4hRJRP+55QHxQYsAoE7V601+YMWgtEvzLimKRO8b4Jrjg@mail.gmail.com>
-Subject: Re: [RFC PATCH 11/14] cxl/mem: Add a "RAW" send command
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.136] (165.204.77.1) by CH2PR07CA0027.namprd07.prod.outlook.com (2603:10b6:610:20::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 22:39:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 8575c9d5-007e-4061-eac2-08d89c934e12
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2591:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB259187778B8777D8317264CD95CC0@SN1PR12MB2591.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cEWEnFXotWmvZYadkauTxxI522IJ6Svy0moxToL1cZBp2Oxn1FpcDVsTaKzzxGwg+PBTIM0ilw8AE6vFrt0brKRyrSFDeADyR9ip9xnh66ogAGF9TNqypE9rAUbNW4iF51bWPwaqJkWpMCar7nuHPPPYYz/nOXSF2t9W0cAQWZZ1v8pb4z7BFMWe1K8QYboK5Fu79PJYUeafrsyLfo2DwU2rXdb2yNr1krFFZz9F2N8kCrZ8SsO63bJYzD8GePKwnpr06q72GwBOJh8lDo7HgeS1E0/UPldUYSafF2SDbMGIXvgNbZgJZJtAxbXSSCc2N96cmU4uoywNppKKf4NnLTpwdbB3VG/OlMvQDWXVobDz2dRya+4Z82JrfZ9EwGsoyUKutxLkbV1ZOoRDaU8PBYbczHuVxB6ElB3B3f//HRr798qNUIL6Vy8hXa7Omo5R
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(8936002)(16526019)(26005)(52116002)(4326008)(53546011)(7416002)(34490700003)(2906002)(186003)(8676002)(54906003)(66556008)(16576012)(66476007)(44832011)(956004)(6916009)(66946007)(5660300002)(2616005)(31696002)(86362001)(6486002)(508600001)(31686004)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dlovcnBYY1kvblFHZ2ZuT2pwNHVOM1BSU3g4cmRjaWk2MEt2NzhQRmwzVEMz?=
+ =?utf-8?B?NHpmN2ZWM2YyT1RJQ3dROVdyVk11eDZMME1oZkN6L3lKZUFuMVl4OHVtQVN1?=
+ =?utf-8?B?bXo3eTZ3TTVCZ1JEYTVsbXYrSGszTHcvT0hxQTNhQTZnalAvek9YeWFuaGth?=
+ =?utf-8?B?TW9CWDBCQkg4M3Ivd2ptcjBadXBQMFRiQUdLRjBKQUNCNVFuVnFhMGR1dis1?=
+ =?utf-8?B?TXIwTVNaU2RvZmlwZXdOUlhpQzhRZDYwNTYvekl3Rm5haEFzRVFxdThlVkhU?=
+ =?utf-8?B?Mmkxak50N3RNNGtVK01WTmtGMGxycHljbmRBUTN0bmRHWFZLdzVrWGQxenY5?=
+ =?utf-8?B?M09TRnVKclBQZHBJR1h6UjVMVHY1UGtIWWVkSitqeDdFUXZZd1diSkpPREFZ?=
+ =?utf-8?B?VVdpKzFyMHpGWjIyaXZaOUNVRTlnUm55NTNGT255MHNLRDdyV2N0L3JzTU1j?=
+ =?utf-8?B?VmVEYkcva3FxcTBrUFNoYzFwTThvRmx2YnJBWU9xYWZHRWVmUld6OWxuTTBR?=
+ =?utf-8?B?SkFiakZvRDQvTHdvbE9SWW5nb04vK3NaQkNXWi9GT3M3NUlCSUZGYVg4ZFNU?=
+ =?utf-8?B?dzRwL2IzWkhxWjhsSUZWbFk3VTJubWd5Q2RqWjduNExteDFMYngyMnJmRXZa?=
+ =?utf-8?B?bEZYa1Z3ZnMyR2lKcEtHbitRajY2TC83cDhFU2M0c0grOWh0VktTZFREbEly?=
+ =?utf-8?B?QUROdTg1Qlh6NXlhYWpPZiswRUlKZ28yTE5uOXhtQ1l0K2FobThPVUs3SklN?=
+ =?utf-8?B?MlRxYzQ2bVhWcEVQZEJhR0MyODFQNWQxSlhoSG9jcHJzankxRytnbHpjQk1S?=
+ =?utf-8?B?RjZWejJOTWJBM3lxQ1daV1JXUGZJTVlmV040a0prTDJ3b205TFNMZE8rSHBr?=
+ =?utf-8?B?cERYMmVZc2IzY05YQmdkaEJrK2tjek9YeXpEcXdVWmVoK2lIVC9EUEFUZ0xq?=
+ =?utf-8?B?amllWXRNNGhaR0NwdHIyUkJFRzdIMWg2N0c4MDgvU1BkYWt0MHFaSklHWERn?=
+ =?utf-8?B?WXc0QUFQV0N1L2xKT3NPZ2RoSzFUOE5HRVVXcHlvdTNTVjZ5ZzZGS2djdjlN?=
+ =?utf-8?B?ZnJibFoyZE4zRHJOUkFLbDdEQXFPVmkyVnFOU2xscHBLU1NqaXBMclhlVmxa?=
+ =?utf-8?B?ZGZCcUhMMnorb1BYNGpUU2RJSmphazIwWEx1OHJOd0tEWDRNbStYbHNwMU9H?=
+ =?utf-8?B?MkFzTFpWQ2JaQ0NCS3hRMmNjM0NwVnZiQjZMVGxOenRmQVFUNFpHSnE1REZD?=
+ =?utf-8?B?Ym1OWlpyaHdHRHY4YUp4V29wN09sU2JPd1FTSG9UYzNKZkpSZ2tadWtPZGNa?=
+ =?utf-8?Q?mTIgwFvWCcffQCKGImWfpcH5eT5oorwACA?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2560.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 22:39:35.5204
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8575c9d5-007e-4061-eac2-08d89c934e12
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HIuAJg2NMPtcFCkREflAsZAl2yJWpOeylXDd5adnR4a1CtedH0dbjrAmJARFBq+o
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2591
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 4:24 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
->
-> The CXL memory device send interface will have a number of supported
-> commands. The raw command is not such a command. Raw commands allow
-> userspace to send a specified opcode to the underlying hardware and
-> bypass all driver checks on the command. This is useful for a couple of
-> usecases, mainly:
-> 1. Undocumented vendor specific hardware commands
-> 2. Prototyping new hardware commands not yet supported by the driver
->
-> While this all sounds very powerful it comes with a couple of caveats:
-> 1. Bug reports using raw commands will not get the same level of
->    attention as bug reports using supported commands (via taint).
-> 2. Supported commands will be rejected by the RAW command.
->
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> ---
->  drivers/cxl/mem.c            | 32 ++++++++++++++++++++++++++++++++
->  include/uapi/linux/cxl_mem.h | 14 ++++++++++++--
->  2 files changed, 44 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index 0bf03afc0c80..a2cea7ac7cc6 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -115,6 +115,7 @@ struct cxl_mem_command {
->
->  static struct cxl_mem_command mem_commands[] = {
->         CXL_CMD(INVALID, NONE, 0, 0, "Reserved", false, 0),
-> +       CXL_CMD(RAW, TAINT, ~0, ~0, "Raw", true, 0),
 
-Why is the taint indication in the ABI? It seems like it only needs to
-be documented.
 
->  };
->
->  static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
-> @@ -326,6 +327,20 @@ static int cxl_mem_count_commands(void)
->         return n;
->  };
->
-> +static struct cxl_mem_command *cxl_mem_find_command(u16 opcode)
-> +{
-> +       int i;
-> +
-> +       for (i = 0; i < ARRAY_SIZE(mem_commands); i++) {
-> +               struct cxl_mem_command *c = &mem_commands[i];
-> +
-> +               if (c->opcode == opcode)
-> +                       return c;
-> +       }
-> +
-> +       return NULL;
-> +};
-> +
->  /**
->   * handle_mailbox_cmd_from_user() - Dispatch a mailbox command.
->   * @cxlmd: The CXL memory device to communicate with.
-> @@ -421,6 +436,23 @@ static int cxl_validate_cmd_from_user(struct cxl_send_command __user *user_cmd,
->         c = &mem_commands[cmd.id];
->         info = &c->info;
->
-> +       /* Checks are bypassed for raw commands but along comes the taint! */
-> +       if (cmd.id == CXL_MEM_COMMAND_ID_RAW) {
-> +               struct cxl_mem_command temp =
-> +                       CXL_CMD(RAW, NONE, cmd.size_in, cmd.size_out, "Raw",
-> +                               true, cmd.raw.opcode);
+On 12/7/20 5:22 PM, Jim Mattson wrote:
+> On Mon, Dec 7, 2020 at 2:38 PM Babu Moger <babu.moger@amd.com> wrote:
+>>
+>> Newer AMD processors have a feature to virtualize the use of the SPEC_CTRL
+>> MSR. This feature is identified via CPUID 0x8000000A_EDX[20]. When present,
+>> the SPEC_CTRL MSR is automatically virtualized and no longer requires
+>> hypervisor intervention.
+>>
+>> Signed-off-by: Babu Moger <babu.moger@amd.com>
+>> ---
+>>  arch/x86/include/asm/cpufeatures.h |    1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+>> index dad350d42ecf..d649ac5ed7c7 100644
+>> --- a/arch/x86/include/asm/cpufeatures.h
+>> +++ b/arch/x86/include/asm/cpufeatures.h
+>> @@ -335,6 +335,7 @@
+>>  #define X86_FEATURE_AVIC               (15*32+13) /* Virtual Interrupt Controller */
+>>  #define X86_FEATURE_V_VMSAVE_VMLOAD    (15*32+15) /* Virtual VMSAVE VMLOAD */
+>>  #define X86_FEATURE_VGIF               (15*32+16) /* Virtual GIF */
+>> +#define X86_FEATURE_V_SPEC_CTRL                (15*32+20) /* Virtual SPEC_CTRL */
+> 
+> Shouldn't this bit be reported by KVM_GET_SUPPORTED_CPUID when it's
+> enumerated on the host?
 
-Oh, I thought CXL_CMD() was only used to populate the mem_commands
-array. Feels out of place to use it here when all it is doing is
-updating the size_{in,out} and opcode fields. Mainly I'm interested in
-CXL_CMD() enforcing that the command-id is the mem_commands index.
+Jim, I am not sure if this needs to be reported by
+KVM_GET_SUPPORTED_CPUID. I dont see V_VMSAVE_VMLOAD or VGIF being reported
+via KVM_GET_SUPPORTED_CPUID. Do you see the need for that?
 
-> +
-> +               if (cmd.raw.rsvd)
-> +                       return -EINVAL;
-> +
-> +               if (cxl_mem_find_command(cmd.raw.opcode))
-> +                       return -EPERM;
-> +
-> +               add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
 
-TAINT_WARN seems the wrong value, especially since no WARN has
-occurred. I feel that this is more in the spirit of
-TAINT_PROPRIETARY_MODULE, TAINT_OVERRIDDEN_ACPI_TABLE, and
-TAINT_OOT_MODULE. How about a new TAINT_RAW_PASSTHROUGH? I could use
-this for the acpi/nfit driver as well to disclaim responsibility for
-system errors that can result from not using the nominal
-kernel-provided commands.
+>>  /* Intel-defined CPU features, CPUID level 0x00000007:0 (ECX), word 16 */
+>>  #define X86_FEATURE_AVX512VBMI         (16*32+ 1) /* AVX512 Vector Bit Manipulation instructions*/
+>>
