@@ -2,71 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB12B2D3BCD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:00:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B182D3BAA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:51:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728359AbgLIG7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 01:59:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728341AbgLIG7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 01:59:47 -0500
-Date:   Wed, 9 Dec 2020 08:00:23 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607497146;
-        bh=7nHAfEfm1CHzNsPGKp3jAJdYE9lEuX3kGqfC8DN3i6Y=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tX5SqM7jTd3o0VwpPnIVa4ks4vrh+DmP+v93i7jDs7l23Skviu3SYkXdUt0r3PbtY
-         jtytAbivnLDoPINhdIJp0t1DZ3Iz2y1LpKXo4vMKXL7BploHALocbcEg2DOG7zXdfQ
-         XuXqwLHt7V2zQ/EScEVReNez9riBz13/mHQfyS9Y=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     Coiby Xu <coiby.xu@gmail.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Helmut Stult <helmut.stult@schinfo.de>,
-        Baq Domalaq <domalak@gmail.com>,
-        Pedro Ribeiro <pedrib@gmail.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] HID: i2c-hid: add polling mode based on connected
- GPIO chip's pin status
-Message-ID: <X9B2B6KuzbP8Is+W@kroah.com>
-References: <20201125141022.321643-1-coiby.xu@gmail.com>
- <X75zL12q+FF6KBHi@kroah.com>
- <B3Hx1v5x_ZWS8XSi8-0vZov1KLuINEHyS5yDUGBaoBN4d9wTi9OlCoFX1h6sqYG8dCZr_OKcKeImWX9eyKh8X4X3ZMdAUQ-KVwmG5e9LJeI=@protonmail.com>
+        id S1728256AbgLIGuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 01:50:54 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9135 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728238AbgLIGuy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 01:50:54 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CrSMg5lRGz15ZbZ;
+        Wed,  9 Dec 2020 14:49:35 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 9 Dec 2020 14:50:01 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <saeedm@nvidia.com>, <leon@kernel.org>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next v2] net/mlx5_core: remove unused including <generated/utsrelease.h>
+Date:   Wed, 9 Dec 2020 15:01:32 +0800
+Message-ID: <1607497292-121156-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <B3Hx1v5x_ZWS8XSi8-0vZov1KLuINEHyS5yDUGBaoBN4d9wTi9OlCoFX1h6sqYG8dCZr_OKcKeImWX9eyKh8X4X3ZMdAUQ-KVwmG5e9LJeI=@protonmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 09:59:20PM +0000, Barnabás Pőcze wrote:
-> 2020. november 25., szerda 16:07 keltezéssel, Greg KH írta:
-> 
-> > [...]
-> > > +static u8 polling_mode;
-> > > +module_param(polling_mode, byte, 0444);
-> > > +MODULE_PARM_DESC(polling_mode, "How to poll (default=0) - 0 disabled; 1 based on GPIO pin's status");
-> >
-> > Module parameters are for the 1990's, they are global and horrible to
-> > try to work with. You should provide something on a per-device basis,
-> > as what happens if your system requires different things here for
-> > different devices? You set this for all devices :(
-> > [...]
-> 
-> Hi
-> 
-> do you think something like what the usbcore has would be better?
-> A module parameter like "quirks=<vendor-id>:<product-id>:<flags>[,<vendor-id>:<product-id>:<flags>]*"?
+Remove including <generated/utsrelease.h> that don't need it.
 
-Not really, that's just for debugging, and asking users to test
-something, not for a final solution to anything.
+Fixes: 17a7612b99e6 ("net/mlx5_core: Clean driver version and name")
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-thanks,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+index 989c70c..82ecc161 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+@@ -30,7 +30,6 @@
+  * SOFTWARE.
+  */
+ 
+-#include <generated/utsrelease.h>
+ #include <linux/mlx5/fs.h>
+ #include <net/switchdev.h>
+ #include <net/pkt_cls.h>
+-- 
+2.6.2
 
-greg k-h
