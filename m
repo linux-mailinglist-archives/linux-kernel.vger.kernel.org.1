@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A132D48C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC202D48B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732953AbgLISRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:17:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732687AbgLISRC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:17:02 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A9FC0613CF;
-        Wed,  9 Dec 2020 10:16:22 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id z5so2568621iob.11;
-        Wed, 09 Dec 2020 10:16:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0bnqZJonPm2Y5rYBHlDQYhPCxMpoVcbNGKebJQlZK0o=;
-        b=qkhZTAiGze98uNr1WjA5/wLIhNSehJmfMFfgUD8xlmDDr9V5Y5ZFHpFEBWs8n3Qtkg
-         Y9SwVVaRMH+qBNyqfLpdTWFiXNXpP0624tfi5xJoWMBwM9cuwiupVIc8yMENklBLFcrl
-         CAZj3uSVxZqNZUO3QE9P0de9IyZiM/heJRCLkyQFvXQoJe2tog+vie3Wphrf1FsWtVQO
-         nz6eB9kyg67GbIG+w9PSSAF600D6UfMxu2RVSn8fmUCj2WBYI44stH8X+LHqxLij0+Xh
-         Ky/1rHICxjYGenItETlfONNeIclnT7lh+yn5OXElreSOQcv+7fdp5xlqxBNRQNI8s4zP
-         +kXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0bnqZJonPm2Y5rYBHlDQYhPCxMpoVcbNGKebJQlZK0o=;
-        b=hM4OEK+u8ZK304Bi3+u6YhyvneHnHSq+wezUyHS1uzj972uG7EpEvSxQfutg+mMHwa
-         5NdPy0LzIjMeJzRjy6FU8o1ukkAFQa0Xr2zLVCO4DUq/TN3tUeVXcJoEPWIcVowHef4Q
-         ZdnE60ZkkktbuoUAUfdpYtwm1OLFmZ6oUsVY0TKtsndgHJDI0gQTbpwg8ygyI7tpN4tD
-         1iCcK2+B0whVJ8moIOAVe9CvkEDGo6IJDF2RtCGumqp7JJIX7XYq5xX05vQjFtv9Z4U6
-         1XBcwBhuQ81E/Vqsdo0/IukfZ+f3KN/n49SLZ+PaYFy8B8Tf4FdruO1lVqCB304B++wc
-         Ltcg==
-X-Gm-Message-State: AOAM533oYGMfsl7fQq/oCHe+cRS7uTYgvzZ+PN/JwncxiEF27Kj2nja0
-        Fvve38YJ7gKYFseOFsCsvzc+wXYPgnlyfx7UQfM=
-X-Google-Smtp-Source: ABdhPJwA+AlarNaiEaz4q0T5sNgD9fSqisBJmFpg0z0xOmYs0H+it97uPc7KbcQZq+nqKtOfuo1PK6oNjMjpnlB3/lQ=
-X-Received: by 2002:a02:a60a:: with SMTP id c10mr4606978jam.123.1607537781901;
- Wed, 09 Dec 2020 10:16:21 -0800 (PST)
+        id S1732863AbgLISPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:15:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731866AbgLISPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:15:39 -0500
+Date:   Wed, 9 Dec 2020 19:16:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607537698;
+        bh=Awgb97eqMBhLF2z692oQRlyuDrGF+9hPTYxSsdle5bA=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b0PaQLP6use6Dz/Xo4q+WevXeigi0daf/C/knM3UQ5XhYuOFNjPo8xFgM2DSu3cZx
+         GCMLSFEf1C/ASc63Chak8CwVO/V80jSRzdqDe2wZUWf1EXG17XlAx87NKAchGuL/20
+         XWG80R7mN+rWEbVOJytVmM5Khg4lTm2Vb/LYAt7Q=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        kernel-team@android.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 00/17] Refactor fw_devlink to significantly improve
+ boot time
+Message-ID: <X9EUbji0tILG6PvX@kroah.com>
+References: <20201121020232.908850-1-saravanak@google.com>
 MIME-Version: 1.0
-References: <20201207163255.564116-1-mszeredi@redhat.com> <20201207163255.564116-4-mszeredi@redhat.com>
- <CAOQ4uxhti+COYB3GhfMcPFwpfBRYQvr98oCO9wwS029W5e0A5g@mail.gmail.com>
- <CAJfpegsGpS=cym2NpnS6H-uMyLMKdbLpE1QxiDz4GQU1s-dYfg@mail.gmail.com> <CAJfpeguvt-Mia9YmT55q3R9tSFocpgq7FzjDKJgnaOEQsaBNVA@mail.gmail.com>
-In-Reply-To: <CAJfpeguvt-Mia9YmT55q3R9tSFocpgq7FzjDKJgnaOEQsaBNVA@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 9 Dec 2020 20:16:10 +0200
-Message-ID: <CAOQ4uxjDEVnz3Y_BqH41J4+E5dWRPyut_VPokEeMBNALx9oQhw@mail.gmail.com>
-Subject: Re: [PATCH v2 03/10] ovl: check privs before decoding file handle
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201121020232.908850-1-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 6:20 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> On Wed, Dec 9, 2020 at 11:13 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> > Hard link indexing should work without fh decoding, since it is only
-> > encoding the file handle to search for the index entry, and encoding
-> > is not privileged.
->
-> Tested this a bit and while hard link indexing does work,  inode
-> lookup is broken since it uses the origin inode as a key (which is not
+On Fri, Nov 20, 2020 at 06:02:15PM -0800, Saravana Kannan wrote:
+> The current implementation of fw_devlink is very inefficient because it
+> tries to get away without creating fwnode links in the name of saving
+> memory usage. Past attempts to optimize runtime at the cost of memory
+> usage were blocked with request for data showing that the optimization
+> made significant improvement for real world scenarios.
+> 
+> We have those scenarios now. There have been several reports of boot
+> time increase in the order of seconds in this thread [1]. Several OEMs
+> and SoC manufacturers have also privately reported significant
+> (350-400ms) increase in boot time due to all the parsing done by
+> fw_devlink.
+> 
+> So this patch series refactors fw_devlink to be more efficient. The key
+> difference now is the addition of support for fwnode links -- just a few
+> simple APIs. This also allows most of the code to be moved out of
+> firmware specific (DT mostly) code into driver core.
+> 
+> This brings the following benefits:
+> - Instead of parsing the device tree multiple times (complexity was
+>   close to O(N^3) where N in the number of properties) during bootup,
+>   fw_devlink parses each fwnode node/property only once and creates
+>   fwnode links. The rest of the fw_devlink code then just looks at these
+>   fwnode links to do rest of the work.
+> 
+> - Makes it much easier to debug probe issue due to fw_devlink in the
+>   future. fw_devlink=on blocks the probing of devices if they depend on
+>   a device that hasn't been added yet. With this refactor, it'll be very
+>   easy to tell what that device is because we now have a reference to
+>   the fwnode of the device.
+> 
+> - Much easier to add fw_devlink support to ACPI and other firmware
+>   types. A refactor to move the common bits from DT specific code to
+>   driver core was in my TODO list as a prerequisite to adding ACPI
+>   support to fw_devlink. This series gets that done.
+> 
+> Laurent and Grygorii tested the v1 series and they saw boot time
+> improvment of about 12 seconds and 3 seconds, respectively.
 
-Yes, that is what I meant by ovl_check_origin() is broken.
+Now queued up to my tree.  Note, I had to hand-apply patches 13 and 16
+due to some reason (for 13, I have no idea, for 16 it was due to a
+previous patch applied to my tree that I cc:ed you on.)
 
-> available) instead of using the origin value directly.  This is
-> fixable, but needs a fair amount of restructuring, so let's just
+Verifying I got it all correct would be great :)
 
-Maybe it also requires on-disk changes.
-We should be able to use the origin fh as the key for lower inode,
-but we need the lower st_inode for initializing the ovl inode with
-correct ino. If we cannot decode lower inode from origin fh, I think
-we would need to store the ino in user.overlay.ino on copy up or
-maintain redirect, but redirect is not supported either with user ns mount...
+thanks,
 
-> postpone this and disable index for now, as you suggested.
->
-
-Nobody seems to be enabling it anyway :-/
-
-Thanks,
-Amir.
+greg k-h
