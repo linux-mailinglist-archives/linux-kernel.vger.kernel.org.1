@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A7F2D4A8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3290D2D4A87
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387834AbgLITiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:38:14 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2238 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387804AbgLITiM (ORCPT
+        id S2387798AbgLIThq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:37:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729747AbgLIThc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:38:12 -0500
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CrnKr5Hmkz67NYm;
-        Thu, 10 Dec 2020 03:34:08 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 9 Dec 2020 20:37:29 +0100
-Received: from [10.210.171.175] (10.210.171.175) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 9 Dec 2020 19:37:27 +0000
-Subject: Re: [PATCH v5 4/5] Driver core: platform: Add
- devm_platform_get_irqs_affinity()
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <lenb@kernel.org>, <rjw@rjwysocki.net>, <tglx@linutronix.de>,
-        <maz@kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-acpi@vger.kernel.org>, <dwagner@suse.de>
-References: <1606905417-183214-1-git-send-email-john.garry@huawei.com>
- <1606905417-183214-5-git-send-email-john.garry@huawei.com>
- <X9EYRNDXS1Xcy4iU@kroah.com>
- <36730230-9fd7-8c6c-b997-328beea2fc31@huawei.com>
- <X9Ehy28876ezAOLH@kroah.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <0fa6487e-d225-dde6-f23f-f955d87ee706@huawei.com>
-Date:   Wed, 9 Dec 2020 19:36:52 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
-MIME-Version: 1.0
-In-Reply-To: <X9Ehy28876ezAOLH@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.171.175]
-X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+        Wed, 9 Dec 2020 14:37:32 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4185FC0613D6;
+        Wed,  9 Dec 2020 11:36:52 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id 4so1494197plk.5;
+        Wed, 09 Dec 2020 11:36:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=CyWgjPy4I+HbjxDbhT+g/PzO0BxXYU1ulWjOU7DYulU=;
+        b=TPJg7bYIXiUHQ6rRirpCUnu5kGZXP8cRVZwlsH7HBXNcp88TOTj5vkuPs0iczU1dve
+         Duw9uO+PmjYt7zP/gqTJMmAonixhykINDhVdskZQzxQ7KB8/8xCFEzW6Q1AGn08kLU5G
+         4KkVKOxacMcwgPnn3MqjHUu4iE2u4FfEDKtNUQH9fqQqdN5fJejMpPm03ERAWQqTDgjF
+         bPUcJsqN1sjlGDyy1XIRMjgKZHRPfCrholGqi+lVhL+tE3f9tAFZry1sWDL02uWlfEaz
+         t7WL5eoMio0ZdlzpVcDG+G35xhGECJ4223Ke3C87s4FbARmG9uDq5ferawYdpjjW0sd/
+         Rnlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=CyWgjPy4I+HbjxDbhT+g/PzO0BxXYU1ulWjOU7DYulU=;
+        b=pu3m7nh/51JE0eeDibh3UHk1GIfqcOM6r1pwjarRDsWab2eZ0fpBdJBxtRr7m/ktKd
+         S/SCAQ0GaJ+Smfrrq5I37O/ExbIVjx1sdUGC3F2Ph3Zb90zZLfLlm5/0gjUjiKk4Y4Yb
+         gJfpm/tsXFLgSu6ATQheJGC1Y0umqwLGRDOzCkEvv+1/3Ng/UPg3BMQTkss4EVhSQNVp
+         eDACPLW8ztsUChKNSzJ0PKyQRAAg2rWTiGWWVMS7TgEWQGRynvdUjA5qK9tzqUG1GhZ5
+         tf6u6ahmeMPnShwuHGDPcD58ETvkUr4aGruXKp+1ue6q9KVz1/tU6Ex42uoQC7jpsUPW
+         cdHw==
+X-Gm-Message-State: AOAM532lhJopTimFIkQlg+AeFsj5hiaDklYeUj4vxSiy+GuD3W78VGYK
+        PW6XyNfD8gsheEI+/EefOnM=
+X-Google-Smtp-Source: ABdhPJxwT/EueNc5KNGRYj9S8wYQiuJE2KBwKMWVjhaF+uU06n8Ti11ncw8BL0PtBi4etdv40vsqpQ==
+X-Received: by 2002:a17:902:9f8b:b029:da:726d:3f17 with SMTP id g11-20020a1709029f8bb02900da726d3f17mr3358980plq.35.1607542611741;
+        Wed, 09 Dec 2020 11:36:51 -0800 (PST)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.179.87.107])
+        by smtp.gmail.com with ESMTPSA id fv22sm3079552pjb.14.2020.12.09.11.36.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Dec 2020 11:36:51 -0800 (PST)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     nbd@nbd.name, lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        matthias.bgg@gmail.com
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH] mt76: Fixed kernel test robot warning
+Date:   Thu, 10 Dec 2020 01:06:57 +0530
+Message-Id: <1607542617-4005-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12/2020 19:13, Greg KH wrote:
+Kernel test robot throws below warning ->
 
-Hi Greg,
+   drivers/net/wireless/mediatek/mt76/tx.c: In function
+'mt76_txq_schedule':
+>> drivers/net/wireless/mediatek/mt76/tx.c:499:21: warning: variable 'q'
+>> set but not used [-Wunused-but-set-variable]
+     499 |  struct mt76_queue *q;
+         |                     ^
 
->> For this HW version, the device is on the system bus, directly addressable
->> by the CPU.
-> What do you mean by "system bus"?
+This patch will silence this warning.
 
-Maybe my terminology is wrong, the point is that we have a platform 
-device driver.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+---
+ drivers/net/wireless/mediatek/mt76/tx.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-> 
->> Motivation is that I wanted to switch the HW completion queues to use
->> managed interrupts.
-> Fair enough, seems like overkill for a "platform" bus though:)
-> 
->>> What in-kernel driver needs this complexity?  I can't take new apis
->>> without a real user in the tree, sorry.
->> It's in the final patch in the serieshttps://lore.kernel.org/linux-scsi/1606905417-183214-1-git-send-email-john.garry@huawei.com/T/#m0df7e7cd6f0819b99aaeb6b7f8939ef1e17b8a83.
-> Ah, I missed that, I thought that was some high-speed scsi thing, not a
-> tiny platform driver...
+diff --git a/drivers/net/wireless/mediatek/mt76/tx.c b/drivers/net/wireless/mediatek/mt76/tx.c
+index 1e20afb..25627e7 100644
+--- a/drivers/net/wireless/mediatek/mt76/tx.c
++++ b/drivers/net/wireless/mediatek/mt76/tx.c
+@@ -504,14 +504,11 @@ void mt76_tx_complete_skb(struct mt76_dev *dev, u16 wcid_idx, struct sk_buff *sk
+ 
+ void mt76_txq_schedule(struct mt76_phy *phy, enum mt76_txq_id qid)
+ {
+-	struct mt76_queue *q;
+ 	int len;
+ 
+ 	if (qid >= 4)
+ 		return;
+ 
+-	q = phy->q_tx[qid];
+-
+ 	rcu_read_lock();
+ 
+ 	do {
+-- 
+1.9.1
 
-It is actually is a high-speed SCSI thing also, SAS 3.0 :)
-
-> 
->> I don't anticipate a huge number of users of this API in future, as most
->> multi-queue devices are PCI devices; so we could do the work of this API in
->> the driver itself, but the preference was not to export genirq functions
->> like irq_update_affinity_desc() or irq_create_affinity_masks(), and rather
->> have a common helper in the core platform code.
-> Ok, I'd like to have the irq maintainers/developers ack this before
-> taking it in the driver core, as someone is going to have to maintain
-> this crazy thing for forever if it gets merged.
-> 
-
-irq experts are cc'ed and have been very helpful here
-
-So the API mushroomed a bit over time, as I realized that we need to 
-support tearing down the irq mapping, make as devm method, use 
-irq_calc_affinity_vectors(). Not sure how we could factor any of it out 
-to become less of your problem.
-
-Thanks,
-John
