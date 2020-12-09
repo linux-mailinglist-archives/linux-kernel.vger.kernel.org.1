@@ -2,341 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BAE2D3B05
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9BA2D3B04
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbgLIFlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 00:41:04 -0500
-Received: from mga04.intel.com ([192.55.52.120]:56107 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727645AbgLIFk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 00:40:56 -0500
-IronPort-SDR: uUOnoayt/UNOLsj5yX6NRUZ1jA72rX8PU5/e//F/IBQDF9hJnLVz+4VNEbmyVd+yZeC5OwR4Jn
- uyV8RKBmqzpg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="171449666"
-X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
-   d="scan'208";a="171449666"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 21:35:43 -0800
-IronPort-SDR: hyBDRjPO2MNNj5K6sZmyMPXSmMKSaF50DIJ8jl2wzp/JtqraoImBtJLQLc0Yo0ImcZUfond7qu
- Kh5W28AR/P0A==
-X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
-   d="scan'208";a="363989605"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 21:35:39 -0800
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH v2 9/9] soundwire: bus: clarify dev_err/dbg device references
-Date:   Wed,  9 Dec 2020 13:34:59 +0800
-Message-Id: <20201209053459.5515-10-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201209053459.5515-1-yung-chuan.liao@linux.intel.com>
-References: <20201209053459.5515-1-yung-chuan.liao@linux.intel.com>
+        id S1727872AbgLIFky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 00:40:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727645AbgLIFkx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 00:40:53 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECFCC0613CF;
+        Tue,  8 Dec 2020 21:40:13 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id a109so276156otc.1;
+        Tue, 08 Dec 2020 21:40:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=z6JGKBHPAN6pNta50XqRFUPJ38/LJ/rWm+SV+OmNwnY=;
+        b=MneNY57C8ATW72aGVSjho5XUG1L7xqirqc1sTdP4RN33aq8KWb9nkxKhf0FEFIvRJi
+         OpJeMOhRRO2EFN6JgK1S4Oguxg7hJOLTTGm1uM43lVwjbla1/1XDqkQcjvtH18KTe7aM
+         4eDScKlxkhMVDylgFgyixbFXIIbKDePXe4y2cPnDVkt92EwOAv91dafSLMMcx8gvK1va
+         w3Kz6fP+azVEkGiTZgWbW23ubg0SyuwWN8SnAFGXNAFOKKh7/cgyTTwHzJtJuFux0OJV
+         FtNwBQudiCreJJbu8Gct62938yETQkvqeFzpn4zpuceE2kmCJJnl8yD+nbJmirsZ01zM
+         3m9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=z6JGKBHPAN6pNta50XqRFUPJ38/LJ/rWm+SV+OmNwnY=;
+        b=M1LEveM1PCZ0Yfj//ur3kHeUiTpc8Uq3bccBXf7r/8yGOyXcyjVPf707Pby6pVi2uw
+         5lPf4FfSAvvebrKcXnlt7uS2P1cZboVg82s+ojTzwBqYtoL9cLnHEQ0nIegv8qHQ3yK5
+         7ckH0widgOF8yeKp9PSP+audqCANqPTUYB5fnFMCf+BBD8S4BBTQ3OuZ5bspohEVAihU
+         +SQ2aE9UUPfUSoya1MLKD+TBV3aG9JqP/R8vthxuGXdLVNWxWU/0GkPsffZVsd3hJPuq
+         /43LV+uCGHh4WLHmPv8zEJ99/G/A4WzgJj28P856me5MlPKmvTQ0sQd1NfVWkTRlU79f
+         UQmQ==
+X-Gm-Message-State: AOAM5338wkJbXQLHTgOc8K8ZX3f2iRhI0Gq7pA3S4bYTeTFXqAZ6qTtU
+        TW8obDz5QOM+07sWmHhbh+Y=
+X-Google-Smtp-Source: ABdhPJw4kCLKL2ZxUNf4vAOiVmBNAxbmCI1Uz9FvDsRVqKDNgWG2zd6jEqP7lqWFPOXE/J51mCvbpw==
+X-Received: by 2002:a05:6830:22eb:: with SMTP id t11mr487039otc.114.1607492413043;
+        Tue, 08 Dec 2020 21:40:13 -0800 (PST)
+Received: from localhost ([184.21.204.5])
+        by smtp.gmail.com with ESMTPSA id z9sm174527otj.67.2020.12.08.21.40.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 21:40:12 -0800 (PST)
+Date:   Tue, 08 Dec 2020 21:40:03 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Brendan Jackman <jackmanb@google.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Message-ID: <5fd06333d11ff_50ce2082d@john-XPS-13-9370.notmuch>
+In-Reply-To: <X89G2kItO2o60+A6@google.com>
+References: <20201207160734.2345502-1-jackmanb@google.com>
+ <20201207160734.2345502-5-jackmanb@google.com>
+ <5fcea525c4971_5a96208bd@john-XPS-13-9370.notmuch>
+ <X89G2kItO2o60+A6@google.com>
+Subject: Re: [PATCH bpf-next v4 04/11] bpf: Rename BPF_XADD and prepare to
+ encode other atomics in .imm
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Brendan Jackman wrote:
+> Hi John, thanks a lot for the reviews!
+> 
+> On Mon, Dec 07, 2020 at 01:56:53PM -0800, John Fastabend wrote:
+> > Brendan Jackman wrote:
+> > > A subsequent patch will add additional atomic operations. These new
+> > > operations will use the same opcode field as the existing XADD, with
+> > > the immediate discriminating different operations.
+> > > 
+> > > In preparation, rename the instruction mode BPF_ATOMIC and start
+> > > calling the zero immediate BPF_ADD.
+> > > 
+> > > This is possible (doesn't break existing valid BPF progs) because the
+> > > immediate field is currently reserved MBZ and BPF_ADD is zero.
+> > > 
+> > > All uses are removed from the tree but the BPF_XADD definition is
+> > > kept around to avoid breaking builds for people including kernel
+> > > headers.
+> > > 
+> > > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > > ---
 
-The SoundWire bus code confuses bus and Slave device levels for
-dev_err/dbg logs. That's not impacting functionality but the accuracy
-of kernel logs.
+[...]
 
-We should only use bus->dev for bus-level operations and handling of
-Device0. For all other logs where the device number is not zero, we
-should use &slave->dev to provide more precisions to the
-user/integrator.
+> > > +	case BPF_STX | BPF_ATOMIC | BPF_W:
+> > > +	case BPF_STX | BPF_ATOMIC | BPF_DW:
+> > > +		if (insn->imm != BPF_ADD) {
+> > > +			pr_err("bpf-jit: not supported: atomic operation %02x ***\n",
+> > > +			       insn->imm);
+> > > +			return -EINVAL;
+> > > +		}
+> > 
+> > Can we standardize the error across jits and the error return code? It seems
+> > odd that we use pr_err, pr_info_once, pr_err_ratelimited and then return
+> > ENOTSUPP, EFAULT or EINVAL.
+> 
+> That would be a noble cause but I don't think it makes sense in this
+> patchset: they are already inconsistent, so here I've gone for intra-JIT
+> consistency over inter-JIT consistency.
+> 
+> I think it would be more annoying, for example, if the s390 JIT returned
+> -EOPNOTSUPP for a bad atomic but -1 for other unsupported ops, than it
+> is already that the s390 JIT returns -1 where the MIPS returns -EINVAL.
 
-Reported-by: Rander Wang <rander.wang@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/bus.c | 63 +++++++++++++++++++++--------------------
- 1 file changed, 33 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 7c4717dd9a34..39edf87cf832 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -636,6 +636,7 @@ static int sdw_get_device_num(struct sdw_slave *slave)
- 
- static int sdw_assign_device_num(struct sdw_slave *slave)
- {
-+	struct sdw_bus *bus = slave->bus;
- 	int ret, dev_num;
- 	bool new_device = false;
- 
-@@ -646,7 +647,7 @@ static int sdw_assign_device_num(struct sdw_slave *slave)
- 			dev_num = sdw_get_device_num(slave);
- 			mutex_unlock(&slave->bus->bus_lock);
- 			if (dev_num < 0) {
--				dev_err(slave->bus->dev, "Get dev_num failed: %d\n",
-+				dev_err(bus->dev, "Get dev_num failed: %d\n",
- 					dev_num);
- 				return dev_num;
- 			}
-@@ -659,7 +660,7 @@ static int sdw_assign_device_num(struct sdw_slave *slave)
- 	}
- 
- 	if (!new_device)
--		dev_dbg(slave->bus->dev,
-+		dev_dbg(bus->dev,
- 			"Slave already registered, reusing dev_num:%d\n",
- 			slave->dev_num);
- 
-@@ -669,7 +670,7 @@ static int sdw_assign_device_num(struct sdw_slave *slave)
- 
- 	ret = sdw_write_no_pm(slave, SDW_SCP_DEVNUMBER, dev_num);
- 	if (ret < 0) {
--		dev_err(&slave->dev, "Program device_num %d failed: %d\n",
-+		dev_err(bus->dev, "Program device_num %d failed: %d\n",
- 			dev_num, ret);
- 		return ret;
- 	}
-@@ -748,7 +749,7 @@ static int sdw_program_device_num(struct sdw_bus *bus)
- 				 */
- 				ret = sdw_assign_device_num(slave);
- 				if (ret) {
--					dev_err(slave->bus->dev,
-+					dev_err(bus->dev,
- 						"Assign dev_num failed:%d\n",
- 						ret);
- 					return ret;
-@@ -788,9 +789,11 @@ static int sdw_program_device_num(struct sdw_bus *bus)
- static void sdw_modify_slave_status(struct sdw_slave *slave,
- 				    enum sdw_slave_status status)
- {
--	mutex_lock(&slave->bus->bus_lock);
-+	struct sdw_bus *bus = slave->bus;
- 
--	dev_vdbg(&slave->dev,
-+	mutex_lock(&bus->bus_lock);
-+
-+	dev_vdbg(bus->dev,
- 		 "%s: changing status slave %d status %d new status %d\n",
- 		 __func__, slave->dev_num, slave->status, status);
- 
-@@ -811,7 +814,7 @@ static void sdw_modify_slave_status(struct sdw_slave *slave,
- 		complete(&slave->enumeration_complete);
- 	}
- 	slave->status = status;
--	mutex_unlock(&slave->bus->bus_lock);
-+	mutex_unlock(&bus->bus_lock);
- }
- 
- static enum sdw_clk_stop_mode sdw_get_clk_stop_mode(struct sdw_slave *slave)
-@@ -1140,7 +1143,7 @@ int sdw_configure_dpn_intr(struct sdw_slave *slave,
- 
- 	ret = sdw_update(slave, addr, (mask | SDW_DPN_INT_PORT_READY), val);
- 	if (ret < 0)
--		dev_err(slave->bus->dev,
-+		dev_err(&slave->dev,
- 			"SDW_DPN_INTMASK write failed:%d\n", val);
- 
- 	return ret;
-@@ -1271,7 +1274,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
- 	/* Enable SCP interrupts */
- 	ret = sdw_update_no_pm(slave, SDW_SCP_INTMASK1, val, val);
- 	if (ret < 0) {
--		dev_err(slave->bus->dev,
-+		dev_err(&slave->dev,
- 			"SDW_SCP_INTMASK1 write failed:%d\n", ret);
- 		return ret;
- 	}
-@@ -1286,7 +1289,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
- 
- 	ret = sdw_update_no_pm(slave, SDW_DP0_INTMASK, val, val);
- 	if (ret < 0)
--		dev_err(slave->bus->dev,
-+		dev_err(&slave->dev,
- 			"SDW_DP0_INTMASK read failed:%d\n", ret);
- 	return ret;
- }
-@@ -1298,7 +1301,7 @@ static int sdw_handle_dp0_interrupt(struct sdw_slave *slave, u8 *slave_status)
- 
- 	status = sdw_read_no_pm(slave, SDW_DP0_INT);
- 	if (status < 0) {
--		dev_err(slave->bus->dev,
-+		dev_err(&slave->dev,
- 			"SDW_DP0_INT read failed:%d\n", status);
- 		return status;
- 	}
-@@ -1337,7 +1340,7 @@ static int sdw_handle_dp0_interrupt(struct sdw_slave *slave, u8 *slave_status)
- 		/* clear the interrupts but don't touch reserved and SDCA_CASCADE fields */
- 		ret = sdw_write_no_pm(slave, SDW_DP0_INT, clear);
- 		if (ret < 0) {
--			dev_err(slave->bus->dev,
-+			dev_err(&slave->dev,
- 				"SDW_DP0_INT write failed:%d\n", ret);
- 			return ret;
- 		}
-@@ -1345,7 +1348,7 @@ static int sdw_handle_dp0_interrupt(struct sdw_slave *slave, u8 *slave_status)
- 		/* Read DP0 interrupt again */
- 		status2 = sdw_read_no_pm(slave, SDW_DP0_INT);
- 		if (status2 < 0) {
--			dev_err(slave->bus->dev,
-+			dev_err(&slave->dev,
- 				"SDW_DP0_INT read failed:%d\n", status2);
- 			return status2;
- 		}
-@@ -1358,7 +1361,7 @@ static int sdw_handle_dp0_interrupt(struct sdw_slave *slave, u8 *slave_status)
- 	} while ((status & SDW_DP0_INTERRUPTS) && (count < SDW_READ_INTR_CLEAR_RETRY));
- 
- 	if (count == SDW_READ_INTR_CLEAR_RETRY)
--		dev_warn(slave->bus->dev, "Reached MAX_RETRY on DP0 read\n");
-+		dev_warn(&slave->dev, "Reached MAX_RETRY on DP0 read\n");
- 
- 	return ret;
- }
-@@ -1376,7 +1379,7 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
- 	addr = SDW_DPN_INT(port);
- 	status = sdw_read_no_pm(slave, addr);
- 	if (status < 0) {
--		dev_err(slave->bus->dev,
-+		dev_err(&slave->dev,
- 			"SDW_DPN_INT read failed:%d\n", status);
- 
- 		return status;
-@@ -1410,7 +1413,7 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
- 		/* clear the interrupt but don't touch reserved fields */
- 		ret = sdw_write_no_pm(slave, addr, clear);
- 		if (ret < 0) {
--			dev_err(slave->bus->dev,
-+			dev_err(&slave->dev,
- 				"SDW_DPN_INT write failed:%d\n", ret);
- 			return ret;
- 		}
-@@ -1418,7 +1421,7 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
- 		/* Read DPN interrupt again */
- 		status2 = sdw_read_no_pm(slave, addr);
- 		if (status2 < 0) {
--			dev_err(slave->bus->dev,
-+			dev_err(&slave->dev,
- 				"SDW_DPN_INT read failed:%d\n", status2);
- 			return status2;
- 		}
-@@ -1431,7 +1434,7 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
- 	} while ((status & SDW_DPN_INTERRUPTS) && (count < SDW_READ_INTR_CLEAR_RETRY));
- 
- 	if (count == SDW_READ_INTR_CLEAR_RETRY)
--		dev_warn(slave->bus->dev, "Reached MAX_RETRY on port read");
-+		dev_warn(&slave->dev, "Reached MAX_RETRY on port read");
- 
- 	return ret;
- }
-@@ -1460,7 +1463,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 	/* Read Intstat 1, Intstat 2 and Intstat 3 registers */
- 	ret = sdw_read_no_pm(slave, SDW_SCP_INT1);
- 	if (ret < 0) {
--		dev_err(slave->bus->dev,
-+		dev_err(&slave->dev,
- 			"SDW_SCP_INT1 read failed:%d\n", ret);
- 		goto io_err;
- 	}
-@@ -1468,7 +1471,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 
- 	ret = sdw_nread_no_pm(slave, SDW_SCP_INTSTAT2, 2, buf2);
- 	if (ret < 0) {
--		dev_err(slave->bus->dev,
-+		dev_err(&slave->dev,
- 			"SDW_SCP_INT2/3 read failed:%d\n", ret);
- 		goto io_err;
- 	}
-@@ -1476,7 +1479,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 	if (slave->prop.is_sdca) {
- 		ret = sdw_read_no_pm(slave, SDW_DP0_INT);
- 		if (ret < 0) {
--			dev_err(slave->bus->dev,
-+			dev_err(&slave->dev,
- 				"SDW_DP0_INT read failed:%d\n", ret);
- 			goto io_err;
- 		}
-@@ -1573,7 +1576,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		/* Ack interrupt */
- 		ret = sdw_write_no_pm(slave, SDW_SCP_INT1, clear);
- 		if (ret < 0) {
--			dev_err(slave->bus->dev,
-+			dev_err(&slave->dev,
- 				"SDW_SCP_INT1 write failed:%d\n", ret);
- 			goto io_err;
- 		}
-@@ -1587,7 +1590,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		 */
- 		ret = sdw_read_no_pm(slave, SDW_SCP_INT1);
- 		if (ret < 0) {
--			dev_err(slave->bus->dev,
-+			dev_err(&slave->dev,
- 				"SDW_SCP_INT1 read failed:%d\n", ret);
- 			goto io_err;
- 		}
-@@ -1595,7 +1598,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 
- 		ret = sdw_nread_no_pm(slave, SDW_SCP_INTSTAT2, 2, _buf2);
- 		if (ret < 0) {
--			dev_err(slave->bus->dev,
-+			dev_err(&slave->dev,
- 				"SDW_SCP_INT2/3 read failed:%d\n", ret);
- 			goto io_err;
- 		}
-@@ -1603,7 +1606,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		if (slave->prop.is_sdca) {
- 			ret = sdw_read_no_pm(slave, SDW_DP0_INT);
- 			if (ret < 0) {
--				dev_err(slave->bus->dev,
-+				dev_err(&slave->dev,
- 					"SDW_DP0_INT read failed:%d\n", ret);
- 				goto io_err;
- 			}
-@@ -1629,7 +1632,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 	} while (stat != 0 && count < SDW_READ_INTR_CLEAR_RETRY);
- 
- 	if (count == SDW_READ_INTR_CLEAR_RETRY)
--		dev_warn(slave->bus->dev, "Reached MAX_RETRY on alert read\n");
-+		dev_warn(&slave->dev, "Reached MAX_RETRY on alert read\n");
- 
- io_err:
- 	pm_runtime_mark_last_busy(&slave->dev);
-@@ -1735,7 +1738,7 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
- 		case SDW_SLAVE_ALERT:
- 			ret = sdw_handle_slave_alerts(slave);
- 			if (ret)
--				dev_err(bus->dev,
-+				dev_err(&slave->dev,
- 					"Slave %d alert handling failed: %d\n",
- 					i, ret);
- 			break;
-@@ -1754,21 +1757,21 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
- 
- 			ret = sdw_initialize_slave(slave);
- 			if (ret)
--				dev_err(bus->dev,
-+				dev_err(&slave->dev,
- 					"Slave %d initialization failed: %d\n",
- 					i, ret);
- 
- 			break;
- 
- 		default:
--			dev_err(bus->dev, "Invalid slave %d status:%d\n",
-+			dev_err(&slave->dev, "Invalid slave %d status:%d\n",
- 				i, status[i]);
- 			break;
- 		}
- 
- 		ret = sdw_update_slave_status(slave, status[i]);
- 		if (ret)
--			dev_err(slave->bus->dev,
-+			dev_err(&slave->dev,
- 				"Update Slave status failed:%d\n", ret);
- 		if (attached_initializing)
- 			complete(&slave->initialization_complete);
--- 
-2.17.1
-
+ok works for me thanks for the explanation.
