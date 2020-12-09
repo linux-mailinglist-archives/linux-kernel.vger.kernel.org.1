@@ -2,175 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE702D4892
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE1B2D489B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732638AbgLISFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:05:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732461AbgLISFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:05:52 -0500
-Date:   Wed, 9 Dec 2020 15:05:19 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607537111;
-        bh=w7bipq0SUrgQUd+zYlUutmyVUYkj9IYNtEEIakkju00=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TzQPzdOUOxcyIc1xXcd8aFfbBjmgjwHcEFVSmNHZ4/SgH1MOhpGr5erjq2K+yDltT
-         v/FT2W447p4ywB9IA8WYpmuRQE4VGGqDsBpKE3GBlmMWzgzQ+S4Z7AL6XUmW6whPfG
-         ydTtw+qrBQj9k/vckLJa7wZv0DVDvdr0/T3Oi0xlzM7a8FCOwl1jNgFhVB9KLIOEWo
-         m2uk3AeSD+VOCNm6ixR/JnKKDSsUJe357tpORZQvfLrdTterugYcV0IZm4vC/QPDwH
-         LZ2pGkAExPuibwB0uNOVBTz2K+dRh/wq1aiRDErNYqazlL8EEib0/k1AUOsgRsIqgt
-         Uf3r7oLbEDV+g==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        tip-bot2 for Masami Hiramatsu <tip-bot2@linutronix.de>,
-        linux-tip-commits@vger.kernel.org,
-        syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
-        Borislav Petkov <bp@suse.de>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        stable@vger.kernel.org, x86@kernel.org
-Subject: Re: [tip: x86/urgent] x86/uprobes: Do not use prefixes.nbytes when
- looping over prefixes.bytes
-Message-ID: <20201209180519.GE185686@kernel.org>
-References: <160697103739.3146288.7437620795200799020.stgit@devnote2>
- <160709424307.3364.5849503551045240938.tip-bot2@tip-bot2>
- <20201205091256.14161a2e1606c527131efc06@kernel.org>
+        id S1732790AbgLISGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:06:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732757AbgLISGh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:06:37 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5013CC0613D6;
+        Wed,  9 Dec 2020 10:05:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=12hoQABG9FckSJ5OF/hyVqUM6/uXu85LiNPYtk8cpMI=; b=KOFYpz3RqQPlHcHKG+ldL7fwiD
+        EBZrIoPnC6678N22HWrStGRcaNFqMuAKDX+c7AXHDobF4zvNKem7Nc6+7tRp0ns0QxsbXkRt9gqni
+        ZMcfHsgE0J2S3DqFYPzx86o4GWRpq2WCz8qXwTfEUgSC/aZ3deUsXyp5JBz34nLjRputdUuOcbkgz
+        KrtZsou0i1VpJhhWcxDSqjpvii23UJ7pLGahIeV3dlvry3RtMN6q/72lpUhQoiC7iOt1cRHb961QP
+        MrIvoK0eTuAF31bqurJWyQK7bNyBhuW9D9stCIYSytyX6YdJyw6KD2Trpo49InOPcQbCSH5BPTrRO
+        ROt5xuIA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kn3qa-0007ZP-5Q; Wed, 09 Dec 2020 18:05:52 +0000
+Date:   Wed, 9 Dec 2020 18:05:52 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Stanislaw Gruszka <stf_xl@wp.pl>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        bpf <bpf@vger.kernel.org>, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH] mm/filemap: add static for function
+ __add_to_page_cache_locked
+Message-ID: <20201209180552.GA28692@infradead.org>
+References: <ddca2a9e-ed89-5dec-b1af-4f2fd2c99b57@linux.alibaba.com>
+ <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
+ <CAFxkdApgQ4RCt-J43cK4_128pXr=Xn5jw+q0kOaP-TYufk_tPA@mail.gmail.com>
+ <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com>
+ <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz>
+ <CAADnVQJARx6sKF-30YsabCd1W+MFDMmfxY+2u0Pm40RHHHQZ6Q@mail.gmail.com>
+ <CAADnVQJ6tmzBXvtroBuEH6QA0H+q7yaSKxrVvVxhqr3KBZdEXg@mail.gmail.com>
+ <20201209144628.GA3474@wp.pl>
+ <20201209150826.GP7338@casper.infradead.org>
+ <20201209155148.GA5552@wp.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201205091256.14161a2e1606c527131efc06@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20201209155148.GA5552@wp.pl>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Dec 05, 2020 at 09:12:56AM +0900, Masami Hiramatsu escreveu:
-> On Fri, 04 Dec 2020 15:04:03 -0000
-> "tip-bot2 for Masami Hiramatsu" <tip-bot2@linutronix.de> wrote:
+On Wed, Dec 09, 2020 at 04:51:48PM +0100, Stanislaw Gruszka wrote:
+> On Wed, Dec 09, 2020 at 03:08:26PM +0000, Matthew Wilcox wrote:
+> > On Wed, Dec 09, 2020 at 03:46:28PM +0100, Stanislaw Gruszka wrote:
+> > > At this point of release cycle we should probably go with revert,
+> > > but I think the main problem is that BPF and ERROR_INJECTION use
+> > > function that is not intended to be used externally. For external users
+> > > add_to_page_cache_lru() and add_to_page_cache_locked() are exported
+> > > and I think those should be used (see the patch below).
+> > 
+> > FWIW, I intend to do some consolidation/renaming in this area.  I
+> > trust that will not be a problem?
 > 
-> > The following commit has been merged into the x86/urgent branch of tip:
-> > 
-> > Commit-ID:     9dc23f960adb9ce410ef835b32a2398fdb09c828
-> > Gitweb:        https://git.kernel.org/tip/9dc23f960adb9ce410ef835b32a2398fdb09c828
-> > Author:        Masami Hiramatsu <mhiramat@kernel.org>
-> > AuthorDate:    Thu, 03 Dec 2020 13:50:37 +09:00
-> > Committer:     Borislav Petkov <bp@suse.de>
-> > CommitterDate: Fri, 04 Dec 2020 14:32:57 +01:00
-> > 
-> > x86/uprobes: Do not use prefixes.nbytes when looping over prefixes.bytes
-> > 
-> > Since insn.prefixes.nbytes can be bigger than the size of
-> > insn.prefixes.bytes[] when a prefix is repeated, the proper check must
-> > be
-> > 
-> >   insn.prefixes.bytes[i] != 0 and i < 4
-> > 
-> > instead of using insn.prefixes.nbytes.
-> > 
-> > Introduce a for_each_insn_prefix() macro for this purpose. Debugged by
-> > Kees Cook <keescook@chromium.org>.
-> > 
-> >  [ bp: Massage commit message, sync with the respective header in tools/
-> >    and drop "we". ]
-> > 
-> > Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install and remove uprobes breakpoints")
-> > Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > Signed-off-by: Borislav Petkov <bp@suse.de>
-> > Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> > Cc: stable@vger.kernel.org
-> > Link: https://lkml.kernel.org/r/160697103739.3146288.7437620795200799020.stgit@devnote2
-> > ---
-> >  arch/x86/include/asm/insn.h       | 15 +++++++++++++++
-> >  arch/x86/kernel/uprobes.c         | 10 ++++++----
-> >  tools/arch/x86/include/asm/insn.h | 17 ++++++++++++++++-
-> >  3 files changed, 37 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
-> > index 5c1ae3e..a8c3d28 100644
-> > --- a/arch/x86/include/asm/insn.h
-> > +++ b/arch/x86/include/asm/insn.h
-> > @@ -201,6 +201,21 @@ static inline int insn_offset_immediate(struct insn *insn)
-> >  	return insn_offset_displacement(insn) + insn->displacement.nbytes;
-> >  }
-> >  
-> > +/**
-> > + * for_each_insn_prefix() -- Iterate prefixes in the instruction
-> > + * @insn: Pointer to struct insn.
-> > + * @idx:  Index storage.
-> > + * @prefix: Prefix byte.
-> > + *
-> > + * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
-> > + * and the index is stored in @idx (note that this @idx is just for a cursor,
-> > + * do not change it.)
-> > + * Since prefixes.nbytes can be bigger than 4 if some prefixes
-> > + * are repeated, it cannot be used for looping over the prefixes.
-> > + */
-> > +#define for_each_insn_prefix(insn, idx, prefix)	\
-> > +	for (idx = 0; idx < ARRAY_SIZE(insn->prefixes.bytes) && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
-> > +
-> >  #define POP_SS_OPCODE 0x1f
-> >  #define MOV_SREG_OPCODE 0x8e
-> >  
-> > diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-> > index 3fdaa04..138bdb1 100644
-> > --- a/arch/x86/kernel/uprobes.c
-> > +++ b/arch/x86/kernel/uprobes.c
-> > @@ -255,12 +255,13 @@ static volatile u32 good_2byte_insns[256 / 32] = {
-> >  
-> >  static bool is_prefix_bad(struct insn *insn)
-> >  {
-> > +	insn_byte_t p;
-> >  	int i;
-> >  
-> > -	for (i = 0; i < insn->prefixes.nbytes; i++) {
-> > +	for_each_insn_prefix(insn, i, p) {
-> >  		insn_attr_t attr;
-> >  
-> > -		attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
-> > +		attr = inat_get_opcode_attribute(p);
-> >  		switch (attr) {
-> >  		case INAT_MAKE_PREFIX(INAT_PFX_ES):
-> >  		case INAT_MAKE_PREFIX(INAT_PFX_CS):
-> > @@ -715,6 +716,7 @@ static const struct uprobe_xol_ops push_xol_ops = {
-> >  static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
-> >  {
-> >  	u8 opc1 = OPCODE1(insn);
-> > +	insn_byte_t p;
-> >  	int i;
-> >  
-> >  	switch (opc1) {
-> > @@ -746,8 +748,8 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
-> >  	 * Intel and AMD behavior differ in 64-bit mode: Intel ignores 66 prefix.
-> >  	 * No one uses these insns, reject any branch insns with such prefix.
-> >  	 */
-> > -	for (i = 0; i < insn->prefixes.nbytes; i++) {
-> > -		if (insn->prefixes.bytes[i] == 0x66)
-> > +	for_each_insn_prefix(insn, i, p) {
-> > +		if (p == 0x66)
-> >  			return -ENOTSUPP;
-> >  	}
-> >  
-> > diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
-> > index 568854b..a8c3d28 100644
-> > --- a/tools/arch/x86/include/asm/insn.h
-> > +++ b/tools/arch/x86/include/asm/insn.h
-> > @@ -8,7 +8,7 @@
-> >   */
-> >  
-> >  /* insn_attr_t is defined in inat.h */
-> > -#include "inat.h"
-> > +#include <asm/inat.h>
+> If it does not break anything, it will be not a problem ;-)
 > 
-> This may break tools/objtool build. Please keep "inat.h".
+> It's possible that __add_to_page_cache_locked() can be a global symbol
+> with add_to_page_cache_lru() + add_to_page_cache_locked() being just
+> static/inline wrappers around it.
 
-And also it would be interesting to avoid updating both the kernel and
-the tools/ copy, otherwise one would have to test the tools build, which
-may break with such updates.
-
-The whole point of the copy is to avoid that, otherwise we could just
-use the kernel files directly.
-
-- Arnaldo
+So what happens to BTF if we change this area entirely?  Your IDs
+sound like some kind of ABI to me, which is extremely scary.
