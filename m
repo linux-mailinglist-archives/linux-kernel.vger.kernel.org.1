@@ -2,120 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43912D4804
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:35:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3842D4806
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731919AbgLIReV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:34:21 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:36068 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729833AbgLIReU (ORCPT
+        id S1732200AbgLIRfF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Dec 2020 12:35:05 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:33615 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728369AbgLIRfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:34:20 -0500
-Received: by mail-ot1-f67.google.com with SMTP id y24so2150650otk.3;
-        Wed, 09 Dec 2020 09:34:04 -0800 (PST)
+        Wed, 9 Dec 2020 12:35:05 -0500
+Received: from mail-pf1-f198.google.com ([209.85.210.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kn3M6-000612-JN
+        for linux-kernel@vger.kernel.org; Wed, 09 Dec 2020 17:34:22 +0000
+Received: by mail-pf1-f198.google.com with SMTP id f3so1508019pfa.13
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 09:34:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lwd8/l7feZCwoHFobcRWjKb7ZJVB2/QEsYxX7pRhBns=;
-        b=Qie8maX/syVTDsD44v+8C/vK2e40+KreAlcjgsgGum0PJ3yHi8I3wCc9omss9Upcpi
-         kVZcHotWWHTfRpLYFakWgLuepJRM1IutHbtSxdnE878quJ2mjOGM0qvzBF51g/iRv3xd
-         B7CrlaIZPcMOY/0FW//RyS7dMqw5vLexppF66IMswSAPkU1Z7P5SScdJIiD0MxZhAg6R
-         ZtiVXdHBDQa9mUIa/enPNNOMnFKUFaCwryeZqK1fh3ygs+ebZ5lq8tbX40bGN1Re57CI
-         +uJyH6dbq0Ntcx5vgE396LIG9dPu3EqWizxcH3H3TcVhRGJ29zELXSMdV1tYuksSwY3U
-         PqAQ==
-X-Gm-Message-State: AOAM531UgtUcw1crR48b+W+BlgH5iFLOKLN1ZuvdlkqSfv88mQR10pci
-        3RYdsMcZ8M4lBRO7rmTQ/g==
-X-Google-Smtp-Source: ABdhPJz7fUonVxT0gZyV3veQWVtgfz40eGN12mJ23xkoOpk54Vde7VP/YSHxQb4AU/l2IfWl57cL9g==
-X-Received: by 2002:a9d:be1:: with SMTP id 88mr2739822oth.210.1607535218842;
-        Wed, 09 Dec 2020 09:33:38 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o63sm452791ooa.10.2020.12.09.09.33.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 09:33:37 -0800 (PST)
-Received: (nullmailer pid 650380 invoked by uid 1000);
-        Wed, 09 Dec 2020 17:33:35 -0000
-Date:   Wed, 9 Dec 2020 11:33:35 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-Cc:     mgross@linux.intel.com, daniele.alessandrelli@intel.com,
-        markgross@kernel.org, arnd@arndb.de, bp@suse.de,
-        damien.lemoal@wdc.com, gregkh@linuxfoundation.org, corbet@lwn.net,
-        leonard.crestez@nxp.com, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, peng.fan@nxp.com, shawnguo@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 02/22] dt-bindings: Add bindings for Keem Bay IPC driver
-Message-ID: <20201209173335.GA644399@robh.at.kernel.org>
-References: <20201201223511.65542-1-mgross@linux.intel.com>
- <20201201223511.65542-3-mgross@linux.intel.com>
- <20201207160152.GB351233@robh.at.kernel.org>
- <ca099c0833dc79f0a88edecd9fb949157eacbf46.camel@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca099c0833dc79f0a88edecd9fb949157eacbf46.camel@linux.intel.com>
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=+gPKRugdm71QnmWaeU7WUMU+tuEzJUxN9TQyRCaiSac=;
+        b=AdzOGDVZLh33B4fsNPYxWFmmK1npbt3yZzIq5IHacKDDU0Q1ZXhzYJpVBhIJ/I8F8j
+         80dIc3offgLmJ2CuGl+abSWs06m3LxCvkEH2Si570iWDZJB0mtV50+st0q/V7ajYltQ5
+         /Rskx4gvq4BShDcRHzW4SA+aSQPst/Y29JAl+lZyt7mrW5DH1btoQOox1TCaaRXvF3nC
+         WWXM/hEuKwuARtQW+HCBSBSPraiiBwfBm86/senPs1WaA4D9YraIXD7GwyjDkpomIrgD
+         ACByka5xcthitDTIYHPTsV1GwnFqpvsNxi8N6GDjkEBtQJiAUso5JWKiVAe0RkYrivsK
+         46Zw==
+X-Gm-Message-State: AOAM532Zw2eltW6TMpWmyr0yjKJnY83EwAI66d82IW1TzQoI5oYfahgP
+        O9WdNdRYPzTOpJoRUjfkiqWCFaQFLSFGRIWVrKQSYrL+ashKoKPHIMwmqZUANZqcRBA6J78pB1y
+        NCTP4hkHpSMsyA/8J5h3A5peyty0JRgNPzPfVG25Z2A==
+X-Received: by 2002:a17:902:7606:b029:da:246c:5bd8 with SMTP id k6-20020a1709027606b02900da246c5bd8mr3127784pll.27.1607535261053;
+        Wed, 09 Dec 2020 09:34:21 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz58EauBrALh6R+Sji7FCL62IXSQrfiUaCgkaopANqGC9jgUCDSMkb4Vyi7oK9amueBmSx37A==
+X-Received: by 2002:a17:902:7606:b029:da:246c:5bd8 with SMTP id k6-20020a1709027606b02900da246c5bd8mr3127751pll.27.1607535260705;
+        Wed, 09 Dec 2020 09:34:20 -0800 (PST)
+Received: from [192.168.1.104] (36-229-231-79.dynamic-ip.hinet.net. [36.229.231.79])
+        by smtp.gmail.com with ESMTPSA id w11sm3364558pfi.162.2020.12.09.09.34.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Dec 2020 09:34:19 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
+Subject: Re: [PATCH 1/2] PCI/ASPM: Store disabled ASPM states
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <4212dca6-233b-4d6c-0182-1e7912a05b3f@gmail.com>
+Date:   Thu, 10 Dec 2020 01:34:15 +0800
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <54178B64-25A7-48AA-8836-D48900A4DA2F@canonical.com>
+References: <20201208082534.2460215-1-kai.heng.feng@canonical.com>
+ <4212dca6-233b-4d6c-0182-1e7912a05b3f@gmail.com>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+X-Mailer: Apple Mail (2.3654.20.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 06:42:07PM +0000, Daniele Alessandrelli wrote:
-> Hi Rob,
-> 
-> Thanks for the feedback.
-> 
-> On Mon, 2020-12-07 at 10:01 -0600, Rob Herring wrote:
-> > On Tue, Dec 01, 2020 at 02:34:51PM -0800, mgross@linux.intel.com wrote:
-> > > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> > > 
-> > > Add DT binding documentation for the Intel Keem Bay IPC driver, which
-> > > enables communication between the Computing Sub-System (CSS) and the
-> > > Multimedia Sub-System (MSS) of the Intel Movidius SoC code named Keem
-> > > Bay.
-> > > 
-> 
-> [cut]
-> 
-> > > +
-> > > +description:
-> > > +  The Keem Bay IPC driver enables Inter-Processor Communication (IPC) with the
-> > > +  Visual Processor Unit (VPU) embedded in the Intel Movidius SoC code named
-> > > +  Keem Bay.
-> > 
-> > Sounds like a mailbox.
-> 
-> We did consider using the mailbox framework, but eventually decided
-> against it; mainly because of the following two reasons:
-> 
-> 1. The channel concept in the Mailbox framework is different than the
->    channel concept in Keem Bay IPC:
-> 
->    a. My understanding is that Mailbox channels are meant to be SW
->       representation of physical HW channels, while in Keem Bay IPC
->       channels are software abstractions to achieve communication
->       multiplexing over a single HW link
-> 
->    b. Additionally, Keem Bay IPC has two different classes of channels 
->       (high-speed channels and general-purpose channels) that need to
->       access the same HW link with different priorities.
-> 
-> 2. The blocking / non-blocking TX behavior of mailbox channels is
->    defined at channel creation time (by the tx_block value of the
->    mailbox client passed to mbox_request_channel(); my understanding 
->    is that the tx_block value cannot be modified after the channel is
->    created), while in Keem Bay IPC the same channel can be used for
->    both blocking and non-blocking TX (behavior is controlled by the
->    timeout argument passed to keembay_ipc_send()).
-> 
-> Having said that, I guess that it could be possible to create a Mailbox
-> driver implementing the core communication mechanism used by the Keem
-> Bay IPC and then build our API around it (basically having two
-> drivers). But I'm not sure that would make the code simpler or easier
-> to maintain. Any thoughts on this?
 
-The use of the mailbox binding and the kernel's mailbox framework are 
-independent questions. I'm only concerned with the former (for purposes 
-of this review).
 
-Rob
+> On Dec 9, 2020, at 01:11, Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> 
+> Am 08.12.2020 um 09:25 schrieb Kai-Heng Feng:
+>> If we use sysfs to disable L1 ASPM, then enable one L1 ASPM substate
+>> again, all other substates will also be enabled too:
+>> 
+>> link# grep . *
+>> clkpm:1
+>> l0s_aspm:1
+>> l1_1_aspm:1
+>> l1_1_pcipm:1
+>> l1_2_aspm:1
+>> l1_2_pcipm:1
+>> l1_aspm:1
+>> 
+>> link# echo 0 > l1_aspm
+>> 
+>> link# grep . *
+>> clkpm:1
+>> l0s_aspm:1
+>> l1_1_aspm:0
+>> l1_1_pcipm:0
+>> l1_2_aspm:0
+>> l1_2_pcipm:0
+>> l1_aspm:0
+>> 
+>> link# echo 1 > l1_2_aspm
+>> 
+>> link# grep . *
+>> clkpm:1
+>> l0s_aspm:1
+>> l1_1_aspm:1
+>> l1_1_pcipm:1
+>> l1_2_aspm:1
+>> l1_2_pcipm:1
+>> l1_aspm:1
+>> 
+>> This is because disabled ASPM states weren't saved, so enable any of the
+>> substate will also enable others.
+>> 
+>> So store the disabled ASPM states for consistency.
+>> 
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>> ---
+>> drivers/pci/pcie/aspm.c | 10 ++++++++--
+>> 1 file changed, 8 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+>> index ac0557a305af..2ea9fddadfad 100644
+>> --- a/drivers/pci/pcie/aspm.c
+>> +++ b/drivers/pci/pcie/aspm.c
+>> @@ -658,6 +658,8 @@ static void pcie_aspm_cap_init(struct pcie_link_state *link, int blacklist)
+>> 	/* Setup initial capable state. Will be updated later */
+>> 	link->aspm_capable = link->aspm_support;
+>> 
+>> +	link->aspm_disable = link->aspm_capable & ~link->aspm_default;
+>> +
+> 
+> This makes sense only in combination with patch 2. However I think patch 1
+> should be independent of patch 2. Especially if we consider patch 1 a fix
+> that is applied to stable whilst patch 2 is an improvement for next.
+> 
+>> 	/* Get and check endpoint acceptable latencies */
+>> 	list_for_each_entry(child, &linkbus->devices, bus_list) {
+>> 		u32 reg32, encoding;
+>> @@ -1226,11 +1228,15 @@ static ssize_t aspm_attr_store_common(struct device *dev,
+>> 	mutex_lock(&aspm_lock);
+>> 
+>> 	if (state_enable) {
+>> -		link->aspm_disable &= ~state;
+>> 		/* need to enable L1 for substates */
+>> 		if (state & ASPM_STATE_L1SS)
+>> -			link->aspm_disable &= ~ASPM_STATE_L1;
+>> +			state |= ASPM_STATE_L1;
+>> +
+>> +		link->aspm_disable &= ~state;
+> 
+> I don't see what this part of the patch changes. Can you elaborate on why
+> this is needed?
+
+No this is just a cosmetic change. Of course "cosmetic" is really subjective.
+I'll drop this part in v2.
+
+> 
+>> 	} else {
+>> +		if (state == ASPM_STATE_L1)
+>> +			state |= ASPM_STATE_L1SS;
+>> +
+> 
+> I think this part should be sufficient to fix the behavior. because what
+> I think currently happens:
+> 
+> 1. original status: policy powersupersave, nothing disabled -> L1 + L1SS active
+> 2. disable L1: L1 disabled, pcie_config_aspm_link() disabled L1 and L1SS
+>   w/o adding L1SS to link-> aspm_disabled
+> 3. enable one L1SS state: aspm_attr_store_common() removes L1 from
+>   link->aspm_disabled -> link->aspm_disabled is empty, resulting in
+>   L1 + L1SS being active
+
+Yes. This is the case the patch solves.
+
+Kai-Heng
+
+> 
+>> 		link->aspm_disable |= state;
+>> 	}
+
