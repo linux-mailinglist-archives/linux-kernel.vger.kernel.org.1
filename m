@@ -2,914 +2,2370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD03C2D43D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F37022D43BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728154AbgLIOFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 09:05:11 -0500
-Received: from mga18.intel.com ([134.134.136.126]:37882 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727992AbgLIOAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 09:00:06 -0500
-IronPort-SDR: YueLz1bXNIr9/4PqNvjFSeRXJcmWi9kD3OuhH/ovZUoMM2uGczrCvWmu4aFXRtoQ7S+HuuykT8
- fXrX95MkO1JA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="161838501"
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="gz'50?scan'50,208,50";a="161838501"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 05:59:23 -0800
-IronPort-SDR: wjxYm6AX8sZepWMnEfz1UeiXoGigOb01HTQ4XBa2Ts5bU8nrN9lNqUzbTOd0Z7JEuXSNQBTPuu
- WbuPKAYUG2fA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="gz'50?scan'50,208,50";a="338003003"
-Received: from lkp-server01.sh.intel.com (HELO 2bbb63443648) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 09 Dec 2020 05:59:21 -0800
-Received: from kbuild by 2bbb63443648 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kn000-0000Ir-CG; Wed, 09 Dec 2020 13:59:20 +0000
-Date:   Wed, 9 Dec 2020 21:59:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizf.kern@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     kbuild-all@lists.01.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: Re: [PATCH] cgroup: Fix memory leak when parsing multiple source
- parameters
-Message-ID: <202012092119.i6e9saCf-lkp@intel.com>
-References: <20201209121322.77665-1-miaoqinglang@huawei.com>
+        id S1728642AbgLIOAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 09:00:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728571AbgLIOAJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 09:00:09 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DAFC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 05:59:27 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id h16so1646769edt.7
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 05:59:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=AywCHhpIJ3sB1kUjhQf6O5kXexibNYwgXI2uRlaAuXc=;
+        b=QOhKPRwoSREJ4CxBq6Yitq5qXTMSyztaNcEARYNNDX1UB2N9ys1Ij56hoAcibD//hw
+         ngGj/fFj0iPqIy1s0xGjbHJM6Hndt6ANfOWQEr2FtzZ5st5hfPdgSTWU0iqukm+yo+V3
+         9Q6Y151tR9kPLwkHA63Y8K1PIkw9NFhUNEkWYVf79cmBcy2zrWRA5rMgayfAg46d6Rtd
+         ufFudsnrGTHE8iILBuy4zF4O/ifKwUU/DLAsZqeb5WICWK/Loh01UcoeubVAkXFNvYUa
+         ISGMKBXVKqGoRtzzn/LQJr4ltW1ai2S1GDCY2GTeSHmJgNU2hS0UAd+ASK9v7ZB/htqc
+         l4TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AywCHhpIJ3sB1kUjhQf6O5kXexibNYwgXI2uRlaAuXc=;
+        b=DeHE7NbNQ2LilEFV6NUnHBZdSIBc7eAluDYiPK15+3HsP1ViGwVaJU3KHawl6ld4HU
+         mNZ8/d42Ok+WN6hnJ3i5IKre6kSPwvb5i7l1WyuTG7K0n06FeWJgUiCnlqPu2U9FBasX
+         NqiT+uS2qu3kw3uikci2poPHu+o0fsMl7Po1sfsRTAVqvVLgAzECVKxsvL+ceoPoAFmS
+         PlcEiUjeMp9DO70HUpU56JXh/T+A//kz11UqZfJvp4LGibaGu2/3z53y33TKkzPzVxhi
+         CMDGaUzH8jbOhMIJBkqC0i4DJdridXk+c9S9GLOBnIaAir8jKR/NiFUdJg9VcNGTug3m
+         VUYg==
+X-Gm-Message-State: AOAM5333GEr1H7CcOW4klu1H9RvyxAe6e+7f9v3dbufrCratoLksNsLn
+        HXvEWmQ/Lurjr2V7mtIdDmZOaKI7ZUYaNDVir5l15yrHZo0MYg==
+X-Google-Smtp-Source: ABdhPJw/aCKxrI2CV4QgvlqLi9b6Bi0jUrFo30f9pVOauZjeqgJvJYjSptb7edrEKSbYWfEF4mvw9YePvo6p0XkPn48=
+X-Received: by 2002:aa7:c2d8:: with SMTP id m24mr2115640edp.300.1607522364981;
+ Wed, 09 Dec 2020 05:59:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MGYHOYXEY6WxJCY8"
-Content-Disposition: inline
-In-Reply-To: <20201209121322.77665-1-miaoqinglang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <43486cab370e0c0a79860120b71e0caac75a7e44.1606397528.git.michal.simek@xilinx.com>
+In-Reply-To: <43486cab370e0c0a79860120b71e0caac75a7e44.1606397528.git.michal.simek@xilinx.com>
+From:   Michal Simek <monstr@monstr.eu>
+Date:   Wed, 9 Dec 2020 14:59:13 +0100
+Message-ID: <CAHTX3dKHLtz86zKr1nhP=JPMg6TPQwu+i5HeHA7gjHp_LJ7ASQ@mail.gmail.com>
+Subject: Re: [PATCH v2] microblaze: Remove noMMU code
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Michal Simek <monstr@monstr.eu>, git <git@xilinx.com>
+Cc:     Mike Rapoport <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Baoquan He <bhe@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Helge Deller <deller@gmx.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ira Weiny <ira.weiny@intel.com>, Jens Axboe <axboe@kernel.dk>,
+        Joe Perches <joe@perches.com>,
+        Manish Narani <manish.narani@xilinx.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rob Herring <robh@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Stefan Asserhall <stefan.asserhall@xilinx.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+=C4=8Dt 26. 11. 2020 v 14:32 odes=C3=ADlatel Michal Simek
+<michal.simek@xilinx.com> napsal:
+>
+> This configuration is obsolete and likely none is really using it. That's
+> why remove it to simplify code.
+>
+> Note about CONFIG_MMU in hw_exception_handler.S is left intentionally
+> for better comment understanding.
+>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> ---
+>
+> Changes in v2:
+> - Remove also configs around CONFIG_MICROBLAZE_X_PAGES
+>
+> If anybody is using this configuration please let me know.
+>
+> ---
+>  arch/microblaze/Kconfig                       |  53 +-
+>  arch/microblaze/Makefile                      |  11 +-
+>  arch/microblaze/configs/mmu_defconfig         |   1 -
+>  arch/microblaze/configs/nommu_defconfig       |  90 ---
+>  arch/microblaze/include/asm/dma.h             |   6 -
+>  arch/microblaze/include/asm/exceptions.h      |   5 -
+>  arch/microblaze/include/asm/io.h              |   3 -
+>  arch/microblaze/include/asm/mmu.h             |   4 -
+>  arch/microblaze/include/asm/mmu_context.h     |   4 -
+>  arch/microblaze/include/asm/page.h            |  59 --
+>  arch/microblaze/include/asm/pgalloc.h         |   4 -
+>  arch/microblaze/include/asm/pgtable.h         |  43 --
+>  arch/microblaze/include/asm/processor.h       |  37 --
+>  arch/microblaze/include/asm/registers.h       |   2 -
+>  arch/microblaze/include/asm/setup.h           |   2 -
+>  arch/microblaze/include/asm/tlbflush.h        |  14 -
+>  arch/microblaze/include/asm/uaccess.h         |  27 -
+>  arch/microblaze/kernel/Makefile               |   4 +-
+>  arch/microblaze/kernel/asm-offsets.c          |   2 -
+>  arch/microblaze/kernel/entry-nommu.S          | 622 ------------------
+>  arch/microblaze/kernel/exceptions.c           |   5 -
+>  arch/microblaze/kernel/head.S                 |  12 -
+>  arch/microblaze/kernel/hw_exception_handler.S | 130 +---
+>  arch/microblaze/kernel/microblaze_ksyms.c     |   2 -
+>  arch/microblaze/kernel/process.c              |  10 -
+>  arch/microblaze/kernel/setup.c                |   2 -
+>  arch/microblaze/kernel/signal.c               |   7 -
+>  arch/microblaze/kernel/unwind.c               |  19 -
+>  arch/microblaze/mm/Makefile                   |   2 +-
+>  arch/microblaze/mm/consistent.c               |  29 -
+>  arch/microblaze/mm/init.c                     |  49 --
+>  arch/microblaze/pci/pci-common.c              |   2 -
+>  32 files changed, 11 insertions(+), 1251 deletions(-)
+>  delete mode 100644 arch/microblaze/configs/nommu_defconfig
+>  delete mode 100644 arch/microblaze/kernel/entry-nommu.S
+>
+> diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
+> index 33925ffed68f..32739ab2af25 100644
+> --- a/arch/microblaze/Kconfig
+> +++ b/arch/microblaze/Kconfig
+> @@ -3,19 +3,17 @@ config MICROBLAZE
+>         def_bool y
+>         select ARCH_32BIT_OFF_T
+>         select ARCH_NO_SWAP
+> -       select ARCH_HAS_BINFMT_FLAT if !MMU
+>         select ARCH_HAS_DMA_PREP_COHERENT
+>         select ARCH_HAS_GCOV_PROFILE_ALL
+>         select ARCH_HAS_SYNC_DMA_FOR_CPU
+>         select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+> -       select ARCH_HAS_DMA_SET_UNCACHED if !MMU
+>         select ARCH_MIGHT_HAVE_PC_PARPORT
+>         select ARCH_WANT_IPC_PARSE_VERSION
+>         select BUILDTIME_TABLE_SORT
+>         select TIMER_OF
+>         select CLONE_BACKWARDS3
+>         select COMMON_CLK
+> -       select DMA_DIRECT_REMAP if MMU
+> +       select DMA_DIRECT_REMAP
+>         select GENERIC_ATOMIC64
+>         select GENERIC_CLOCKEVENTS
+>         select GENERIC_CPU_DEVICES
+> @@ -45,7 +43,7 @@ config MICROBLAZE
+>         select TRACING_SUPPORT
+>         select VIRT_TO_BUS
+>         select CPU_NO_EFFICIENT_FFS
+> -       select MMU_GATHER_NO_RANGE if MMU
+> +       select MMU_GATHER_NO_RANGE
+>         select SPARSE_IRQ
+>         select SET_FS
+>
+> @@ -96,8 +94,7 @@ menu "Processor type and features"
+>  source "kernel/Kconfig.hz"
+>
+>  config MMU
+> -       bool "MMU support"
+> -       default n
+> +       def_bool y
+>
+>  comment "Boot options"
+>
+> @@ -143,18 +140,8 @@ config ADVANCED_OPTIONS
+>  comment "Default settings for advanced configuration options are used"
+>         depends on !ADVANCED_OPTIONS
+>
+> -config XILINX_UNCACHED_SHADOW
+> -       bool "Are you using uncached shadow for RAM ?"
+> -       depends on ADVANCED_OPTIONS && !MMU
+> -       default n
+> -       help
+> -         This is needed to be able to allocate uncachable memory regions=
+.
+> -         The feature requires the design to define the RAM memory contro=
+ller
+> -         window to be twice as large as the actual physical memory.
+> -
+>  config HIGHMEM
+>         bool "High memory support"
+> -       depends on MMU
+>         help
+>           The address space of Microblaze processors is only 4 Gigabytes =
+large
+>           and it has to accommodate user address space, kernel address
+> @@ -167,7 +154,7 @@ config HIGHMEM
+>
+>  config LOWMEM_SIZE_BOOL
+>         bool "Set maximum low memory"
+> -       depends on ADVANCED_OPTIONS && MMU
+> +       depends on ADVANCED_OPTIONS
+>         help
+>           This option allows you to set the maximum amount of memory whic=
+h
+>           will be used as "low memory", that is, memory which the kernel =
+can
+> @@ -205,12 +192,11 @@ config KERNEL_START_BOOL
+>
+>  config KERNEL_START
+>         hex "Virtual address of kernel base" if KERNEL_START_BOOL
+> -       default "0xc0000000" if MMU
+> -       default KERNEL_BASE_ADDR if !MMU
+> +       default "0xc0000000"
+>
+>  config TASK_SIZE_BOOL
+>         bool "Set custom user task size"
+> -       depends on ADVANCED_OPTIONS && MMU
+> +       depends on ADVANCED_OPTIONS
+>         help
+>           This option allows you to set the amount of virtual address spa=
+ce
+>           allocated to user tasks.  This can be useful in optimizing the
+> @@ -222,33 +208,6 @@ config TASK_SIZE
+>         hex "Size of user task space" if TASK_SIZE_BOOL
+>         default "0x80000000"
+>
+> -choice
+> -       prompt "Page size"
+> -       default MICROBLAZE_4K_PAGES
+> -       depends on ADVANCED_OPTIONS && !MMU
+> -       help
+> -         Select the kernel logical page size. Increasing the page size
+> -         will reduce software overhead at each page boundary, allow
+> -         hardware prefetch mechanisms to be more effective, and allow
+> -         larger dma transfers increasing IO efficiency and reducing
+> -         overhead. However the utilization of memory will increase.
+> -         For example, each cached file will using a multiple of the
+> -         page size to hold its contents and the difference between the
+> -         end of file and the end of page is wasted.
+> -
+> -         If unsure, choose 4K_PAGES.
+> -
+> -config MICROBLAZE_4K_PAGES
+> -       bool "4k page size"
+> -
+> -config MICROBLAZE_16K_PAGES
+> -       bool "16k page size"
+> -
+> -config MICROBLAZE_64K_PAGES
+> -       bool "64k page size"
+> -
+> -endchoice
+> -
+>  endmenu
+>
+>  menu "Bus Options"
+> diff --git a/arch/microblaze/Makefile b/arch/microblaze/Makefile
+> index 7b340a35b194..bb980891816d 100644
+> --- a/arch/microblaze/Makefile
+> +++ b/arch/microblaze/Makefile
+> @@ -1,11 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  KBUILD_DEFCONFIG :=3D mmu_defconfig
+>
+> -ifeq ($(CONFIG_MMU),y)
+>  UTS_SYSNAME =3D -DUTS_SYSNAME=3D\"Linux\"
+> -else
+> -UTS_SYSNAME =3D -DUTS_SYSNAME=3D\"uClinux\"
+> -endif
+>
+>  # What CPU vesion are we building for, and crack it open
+>  # as major.minor.rev
+> @@ -67,12 +63,7 @@ DTB:=3D$(subst simpleImage.,,$(filter simpleImage.%, $=
+(MAKECMDGOALS)))
+>
+>  core-y +=3D $(boot)/dts/
+>
+> -# defines filename extension depending memory management type
+> -ifeq ($(CONFIG_MMU),)
+> -MMU :=3D -nommu
+> -endif
+> -
+> -export MMU DTB
+> +export DTB
+>
+>  all: linux.bin
+>
+> diff --git a/arch/microblaze/configs/mmu_defconfig b/arch/microblaze/conf=
+igs/mmu_defconfig
+> index 9b8a50f30662..51337fffb947 100644
+> --- a/arch/microblaze/configs/mmu_defconfig
+> +++ b/arch/microblaze/configs/mmu_defconfig
+> @@ -16,7 +16,6 @@ CONFIG_XILINX_MICROBLAZE0_USE_DIV=3D1
+>  CONFIG_XILINX_MICROBLAZE0_USE_HW_MUL=3D2
+>  CONFIG_XILINX_MICROBLAZE0_USE_FPU=3D2
+>  CONFIG_HZ_100=3Dy
+> -CONFIG_MMU=3Dy
+>  CONFIG_CMDLINE_BOOL=3Dy
+>  CONFIG_CMDLINE_FORCE=3Dy
+>  CONFIG_HIGHMEM=3Dy
+> diff --git a/arch/microblaze/configs/nommu_defconfig b/arch/microblaze/co=
+nfigs/nommu_defconfig
+> deleted file mode 100644
+> index 8c420782d6e4..000000000000
+> --- a/arch/microblaze/configs/nommu_defconfig
+> +++ /dev/null
+> @@ -1,90 +0,0 @@
+> -CONFIG_SYSVIPC=3Dy
+> -CONFIG_POSIX_MQUEUE=3Dy
+> -CONFIG_AUDIT=3Dy
+> -CONFIG_BSD_PROCESS_ACCT=3Dy
+> -CONFIG_BSD_PROCESS_ACCT_V3=3Dy
+> -CONFIG_IKCONFIG=3Dy
+> -CONFIG_IKCONFIG_PROC=3Dy
+> -CONFIG_SYSFS_DEPRECATED=3Dy
+> -CONFIG_SYSFS_DEPRECATED_V2=3Dy
+> -# CONFIG_BASE_FULL is not set
+> -CONFIG_KALLSYMS_ALL=3Dy
+> -CONFIG_EMBEDDED=3Dy
+> -CONFIG_SLAB=3Dy
+> -CONFIG_XILINX_MICROBLAZE0_USE_MSR_INSTR=3D1
+> -CONFIG_XILINX_MICROBLAZE0_USE_PCMP_INSTR=3D1
+> -CONFIG_XILINX_MICROBLAZE0_USE_BARREL=3D1
+> -CONFIG_XILINX_MICROBLAZE0_USE_DIV=3D1
+> -CONFIG_XILINX_MICROBLAZE0_USE_HW_MUL=3D2
+> -CONFIG_XILINX_MICROBLAZE0_USE_FPU=3D2
+> -CONFIG_HZ_100=3Dy
+> -CONFIG_CMDLINE_BOOL=3Dy
+> -CONFIG_CMDLINE_FORCE=3Dy
+> -CONFIG_PCI_XILINX=3Dy
+> -CONFIG_MODULES=3Dy
+> -CONFIG_MODULE_UNLOAD=3Dy
+> -# CONFIG_BLK_DEV_BSG is not set
+> -CONFIG_PARTITION_ADVANCED=3Dy
+> -# CONFIG_EFI_PARTITION is not set
+> -CONFIG_NET=3Dy
+> -CONFIG_PACKET=3Dy
+> -CONFIG_UNIX=3Dy
+> -CONFIG_INET=3Dy
+> -# CONFIG_IPV6 is not set
+> -CONFIG_PCI=3Dy
+> -CONFIG_MTD=3Dy
+> -CONFIG_MTD_CMDLINE_PARTS=3Dy
+> -CONFIG_MTD_BLOCK=3Dy
+> -CONFIG_MTD_CFI=3Dy
+> -CONFIG_MTD_CFI_INTELEXT=3Dy
+> -CONFIG_MTD_CFI_AMDSTD=3Dy
+> -CONFIG_MTD_RAM=3Dy
+> -CONFIG_MTD_UCLINUX=3Dy
+> -CONFIG_BLK_DEV_RAM=3Dy
+> -CONFIG_BLK_DEV_RAM_SIZE=3D8192
+> -CONFIG_NETDEVICES=3Dy
+> -CONFIG_XILINX_EMACLITE=3Dy
+> -CONFIG_XILINX_LL_TEMAC=3Dy
+> -# CONFIG_INPUT is not set
+> -# CONFIG_SERIO is not set
+> -# CONFIG_VT is not set
+> -CONFIG_SERIAL_8250=3Dy
+> -CONFIG_SERIAL_8250_CONSOLE=3Dy
+> -CONFIG_SERIAL_OF_PLATFORM=3Dy
+> -CONFIG_SERIAL_UARTLITE=3Dy
+> -CONFIG_SERIAL_UARTLITE_CONSOLE=3Dy
+> -# CONFIG_HW_RANDOM is not set
+> -CONFIG_XILINX_HWICAP=3Dy
+> -CONFIG_I2C=3Dy
+> -CONFIG_I2C_XILINX=3Dy
+> -CONFIG_SPI=3Dy
+> -CONFIG_SPI_XILINX=3Dy
+> -CONFIG_GPIOLIB=3Dy
+> -CONFIG_GPIO_SYSFS=3Dy
+> -CONFIG_GPIO_XILINX=3Dy
+> -CONFIG_POWER_RESET=3Dy
+> -CONFIG_POWER_RESET_GPIO_RESTART=3Dy
+> -# CONFIG_HWMON is not set
+> -CONFIG_WATCHDOG=3Dy
+> -CONFIG_XILINX_WATCHDOG=3Dy
+> -CONFIG_FB=3Dy
+> -CONFIG_FB_XILINX=3Dy
+> -# CONFIG_USB_SUPPORT is not set
+> -CONFIG_EXT3_FS=3Dy
+> -# CONFIG_DNOTIFY is not set
+> -CONFIG_CRAMFS=3Dy
+> -CONFIG_ROMFS_FS=3Dy
+> -CONFIG_NFS_FS=3Dy
+> -CONFIG_NFS_V3_ACL=3Dy
+> -CONFIG_NLS=3Dy
+> -CONFIG_KEYS=3Dy
+> -CONFIG_ENCRYPTED_KEYS=3Dy
+> -CONFIG_CRYPTO_ECB=3Dy
+> -CONFIG_CRYPTO_MD4=3Dy
+> -CONFIG_CRYPTO_MD5=3Dy
+> -CONFIG_CRYPTO_ARC4=3Dy
+> -CONFIG_CRYPTO_DES=3Dy
+> -CONFIG_DEBUG_INFO=3Dy
+> -CONFIG_DEBUG_SLAB=3Dy
+> -CONFIG_DETECT_HUNG_TASK=3Dy
+> -CONFIG_DEBUG_SPINLOCK=3Dy
+> diff --git a/arch/microblaze/include/asm/dma.h b/arch/microblaze/include/=
+asm/dma.h
+> index e6cb6d0725af..f801582be912 100644
+> --- a/arch/microblaze/include/asm/dma.h
+> +++ b/arch/microblaze/include/asm/dma.h
+> @@ -6,14 +6,8 @@
+>  #ifndef _ASM_MICROBLAZE_DMA_H
+>  #define _ASM_MICROBLAZE_DMA_H
+>
+> -#ifndef CONFIG_MMU
+> -/* we don't have dma address limit. define it as zero to be
+> - * unlimited. */
+> -#define MAX_DMA_ADDRESS                (0)
+> -#else
+>  /* Virtual address corresponding to last available physical memory addre=
+ss.  */
+>  #define MAX_DMA_ADDRESS (CONFIG_KERNEL_START + memory_size - 1)
+> -#endif
+>
+>  #ifdef CONFIG_PCI
+>  extern int isa_dma_bridge_buggy;
+> diff --git a/arch/microblaze/include/asm/exceptions.h b/arch/microblaze/i=
+nclude/asm/exceptions.h
+> index d67e65b72215..967f175173e1 100644
+> --- a/arch/microblaze/include/asm/exceptions.h
+> +++ b/arch/microblaze/include/asm/exceptions.h
+> @@ -11,11 +11,6 @@
+>  #define _ASM_MICROBLAZE_EXCEPTIONS_H
+>
+>  #ifdef __KERNEL__
+> -
+> -#ifndef CONFIG_MMU
+> -#define EX_HANDLER_STACK_SIZ   (4*19)
+> -#endif
+> -
+>  #ifndef __ASSEMBLY__
+>
+>  /* Macros to enable and disable HW exceptions in the MSR */
+> diff --git a/arch/microblaze/include/asm/io.h b/arch/microblaze/include/a=
+sm/io.h
+> index 1dd6fae41897..b6a57f8468f0 100644
+> --- a/arch/microblaze/include/asm/io.h
+> +++ b/arch/microblaze/include/asm/io.h
+> @@ -30,15 +30,12 @@ extern resource_size_t isa_mem_base;
+>  #define PCI_IOBASE     ((void __iomem *)_IO_BASE)
+>  #define IO_SPACE_LIMIT (0xFFFFFFFF)
+>
+> -#ifdef CONFIG_MMU
+>  #define page_to_bus(page)      (page_to_phys(page))
+>
+>  extern void iounmap(volatile void __iomem *addr);
+>
+>  extern void __iomem *ioremap(phys_addr_t address, unsigned long size);
+>
+> -#endif /* CONFIG_MMU */
+> -
+>  /* Big Endian */
+>  #define out_be32(a, v) __raw_writel((v), (void __iomem __force *)(a))
+>  #define out_be16(a, v) __raw_writew((v), (a))
+> diff --git a/arch/microblaze/include/asm/mmu.h b/arch/microblaze/include/=
+asm/mmu.h
+> index 97f1243101cc..b928a87c0076 100644
+> --- a/arch/microblaze/include/asm/mmu.h
+> +++ b/arch/microblaze/include/asm/mmu.h
+> @@ -8,9 +8,6 @@
+>  #ifndef _ASM_MICROBLAZE_MMU_H
+>  #define _ASM_MICROBLAZE_MMU_H
+>
+> -# ifndef CONFIG_MMU
+> -#  include <asm-generic/mmu.h>
+> -# else /* CONFIG_MMU */
+>  #  ifdef __KERNEL__
+>  #   ifndef __ASSEMBLY__
+>
+> @@ -119,5 +116,4 @@ extern u32 tlb_skip;
+>  #  define TLB_G                        0x00000001 /* Memory is guarded f=
+rom prefetch */
+>
+>  #  endif /* __KERNEL__ */
+> -# endif /* CONFIG_MMU */
+>  #endif /* _ASM_MICROBLAZE_MMU_H */
+> diff --git a/arch/microblaze/include/asm/mmu_context.h b/arch/microblaze/=
+include/asm/mmu_context.h
+> index f74f9da07fdc..866e52da5eb9 100644
+> --- a/arch/microblaze/include/asm/mmu_context.h
+> +++ b/arch/microblaze/include/asm/mmu_context.h
+> @@ -1,6 +1,2 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> -#ifdef CONFIG_MMU
+>  # include <asm/mmu_context_mm.h>
+> -#else
+> -# include <asm-generic/mmu_context.h>
+> -#endif
+> diff --git a/arch/microblaze/include/asm/page.h b/arch/microblaze/include=
+/asm/page.h
+> index b13463d39b38..bf681f272f72 100644
+> --- a/arch/microblaze/include/asm/page.h
+> +++ b/arch/microblaze/include/asm/page.h
+> @@ -20,13 +20,7 @@
+>  #ifdef __KERNEL__
+>
+>  /* PAGE_SHIFT determines the page size */
+> -#if defined(CONFIG_MICROBLAZE_64K_PAGES)
+> -#define PAGE_SHIFT             16
+> -#elif defined(CONFIG_MICROBLAZE_16K_PAGES)
+> -#define PAGE_SHIFT             14
+> -#else
+>  #define PAGE_SHIFT             12
+> -#endif
+>  #define PAGE_SIZE      (ASM_CONST(1) << PAGE_SHIFT)
+>  #define PAGE_MASK      (~(PAGE_SIZE-1))
+>
+> @@ -44,17 +38,6 @@
+>  #define PAGE_UP(addr)  (((addr)+((PAGE_SIZE)-1))&(~((PAGE_SIZE)-1)))
+>  #define PAGE_DOWN(addr)        ((addr)&(~((PAGE_SIZE)-1)))
+>
+> -#ifndef CONFIG_MMU
+> -/*
+> - * PAGE_OFFSET -- the first address of the first page of memory. When no=
+t
+> - * using MMU this corresponds to the first free page in physical memory =
+(aligned
+> - * on a page boundary).
+> - */
+> -extern unsigned int __page_offset;
+> -#define PAGE_OFFSET __page_offset
+> -
+> -#else /* CONFIG_MMU */
+> -
+>  /*
+>   * PAGE_OFFSET -- the first address of the first page of memory. With MM=
+U
+>   * it is set to the kernel start address (aligned on a page boundary).
+> @@ -70,8 +53,6 @@ extern unsigned int __page_offset;
+>  typedef unsigned long pte_basic_t;
+>  #define PTE_FMT                "%.8lx"
+>
+> -#endif /* CONFIG_MMU */
+> -
+>  # define copy_page(to, from)                   memcpy((to), (from), PAGE=
+_SIZE)
+>  # define clear_page(pgaddr)                    memset((pgaddr), 0, PAGE_=
+SIZE)
+>
+> @@ -86,25 +67,12 @@ typedef struct page *pgtable_t;
+>  typedef struct { unsigned long pte; }          pte_t;
+>  typedef struct { unsigned long pgprot; }       pgprot_t;
+>  /* FIXME this can depend on linux kernel version */
+> -#   ifdef CONFIG_MMU
+>  typedef struct { unsigned long pgd; } pgd_t;
+> -#   else /* CONFIG_MMU */
+> -typedef struct { unsigned long ste[64]; }      pmd_t;
+> -typedef struct { pmd_t         pue[1]; }       pud_t;
+> -typedef struct { pud_t         p4e[1]; }       p4d_t;
+> -typedef struct { p4d_t         pge[1]; }       pgd_t;
+> -#   endif /* CONFIG_MMU */
+>
+>  # define pte_val(x)    ((x).pte)
+>  # define pgprot_val(x) ((x).pgprot)
+>
+> -#   ifdef CONFIG_MMU
+>  #   define pgd_val(x)      ((x).pgd)
+> -#   else  /* CONFIG_MMU */
+> -#   define pmd_val(x)  ((x).ste[0])
+> -#   define pud_val(x)  ((x).pue[0])
+> -#   define pgd_val(x)  ((x).pge[0])
+> -#   endif  /* CONFIG_MMU */
+>
+>  # define __pte(x)      ((pte_t) { (x) })
+>  # define __pgd(x)      ((pgd_t) { (x) })
+> @@ -142,28 +110,12 @@ extern int page_is_ram(unsigned long pfn);
+>  # define virt_to_pfn(vaddr)    (phys_to_pfn((__pa(vaddr))))
+>  # define pfn_to_virt(pfn)      __va(pfn_to_phys((pfn)))
+>
+> -#  ifdef CONFIG_MMU
+> -
+>  #  define virt_to_page(kaddr)  (pfn_to_page(__pa(kaddr) >> PAGE_SHIFT))
+>  #  define page_to_virt(page)   __va(page_to_pfn(page) << PAGE_SHIFT)
+>  #  define page_to_phys(page)     (page_to_pfn(page) << PAGE_SHIFT)
+>
+> -#  else /* CONFIG_MMU */
+> -#  define virt_to_page(vaddr)  (pfn_to_page(virt_to_pfn(vaddr)))
+> -#  define page_to_virt(page)   (pfn_to_virt(page_to_pfn(page)))
+> -#  define page_to_phys(page)   (pfn_to_phys(page_to_pfn(page)))
+> -#  define page_to_bus(page)    (page_to_phys(page))
+> -#  define phys_to_page(paddr)  (pfn_to_page(phys_to_pfn(paddr)))
+> -#  endif /* CONFIG_MMU */
+> -
+> -#  ifndef CONFIG_MMU
+> -#  define pfn_valid(pfn)       (((pfn) >=3D min_low_pfn) && \
+> -                               ((pfn) <=3D (min_low_pfn + max_mapnr)))
+> -#  define ARCH_PFN_OFFSET      (PAGE_OFFSET >> PAGE_SHIFT)
+> -#  else /* CONFIG_MMU */
+>  #  define ARCH_PFN_OFFSET      (memory_start >> PAGE_SHIFT)
+>  #  define pfn_valid(pfn)       ((pfn) < (max_mapnr + ARCH_PFN_OFFSET))
+> -#  endif /* CONFIG_MMU */
+>
+>  # endif /* __ASSEMBLY__ */
+>
+> @@ -174,12 +126,6 @@ extern int page_is_ram(unsigned long pfn);
+>
+>  /* Convert between virtual and physical address for MMU. */
+>  /* Handle MicroBlaze processor with virtual memory. */
+> -#ifndef CONFIG_MMU
+> -#define __virt_to_phys(addr)   addr
+> -#define __phys_to_virt(addr)   addr
+> -#define tophys(rd, rs) addik rd, rs, 0
+> -#define tovirt(rd, rs) addik rd, rs, 0
+> -#else
+>  #define __virt_to_phys(addr) \
+>         ((addr) + CONFIG_KERNEL_BASE_ADDR - CONFIG_KERNEL_START)
+>  #define __phys_to_virt(addr) \
+> @@ -188,14 +134,9 @@ extern int page_is_ram(unsigned long pfn);
+>         addik rd, rs, (CONFIG_KERNEL_BASE_ADDR - CONFIG_KERNEL_START)
+>  #define tovirt(rd, rs) \
+>         addik rd, rs, (CONFIG_KERNEL_START - CONFIG_KERNEL_BASE_ADDR)
+> -#endif /* CONFIG_MMU */
+>
+>  #define TOPHYS(addr)  __virt_to_phys(addr)
+>
+> -#ifdef CONFIG_MMU
+> -
+> -#endif /* CONFIG_MMU */
+> -
+>  #endif /* __KERNEL__ */
+>
+>  #include <asm-generic/memory_model.h>
+> diff --git a/arch/microblaze/include/asm/pgalloc.h b/arch/microblaze/incl=
+ude/asm/pgalloc.h
+> index 8839ce00ea05..d56b9f670ad1 100644
+> --- a/arch/microblaze/include/asm/pgalloc.h
+> +++ b/arch/microblaze/include/asm/pgalloc.h
+> @@ -8,8 +8,6 @@
+>  #ifndef _ASM_MICROBLAZE_PGALLOC_H
+>  #define _ASM_MICROBLAZE_PGALLOC_H
+>
+> -#ifdef CONFIG_MMU
+> -
+>  #include <linux/kernel.h>      /* For min/max macros */
+>  #include <linux/highmem.h>
+>  #include <linux/pgtable.h>
+> @@ -42,6 +40,4 @@ extern pte_t *pte_alloc_one_kernel(struct mm_struct *mm=
+);
+>  #define pmd_populate_kernel(mm, pmd, pte) \
+>                 (pmd_val(*(pmd)) =3D (unsigned long) (pte))
+>
+> -#endif /* CONFIG_MMU */
+> -
+>  #endif /* _ASM_MICROBLAZE_PGALLOC_H */
+> diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/incl=
+ude/asm/pgtable.h
+> index 3fa1df90925e..9ae8d2c17dd5 100644
+> --- a/arch/microblaze/include/asm/pgtable.h
+> +++ b/arch/microblaze/include/asm/pgtable.h
+> @@ -14,47 +14,6 @@
+>  extern int mem_init_done;
+>  #endif
+>
+> -#ifndef CONFIG_MMU
+> -
+> -#define pgd_present(pgd)       (1) /* pages are always present on non MM=
+U */
+> -#define pgd_none(pgd)          (0)
+> -#define pgd_bad(pgd)           (0)
+> -#define pgd_clear(pgdp)
+> -#define kern_addr_valid(addr)  (1)
+> -
+> -#define PAGE_NONE              __pgprot(0) /* these mean nothing to non =
+MMU */
+> -#define PAGE_SHARED            __pgprot(0) /* these mean nothing to non =
+MMU */
+> -#define PAGE_COPY              __pgprot(0) /* these mean nothing to non =
+MMU */
+> -#define PAGE_READONLY          __pgprot(0) /* these mean nothing to non =
+MMU */
+> -#define PAGE_KERNEL            __pgprot(0) /* these mean nothing to non =
+MMU */
+> -
+> -#define pgprot_noncached(x)    (x)
+> -#define pgprot_writecombine    pgprot_noncached
+> -#define pgprot_device          pgprot_noncached
+> -
+> -#define __swp_type(x)          (0)
+> -#define __swp_offset(x)                (0)
+> -#define __swp_entry(typ, off)  ((swp_entry_t) { ((typ) | ((off) << 7)) }=
+)
+> -#define __pte_to_swp_entry(pte)        ((swp_entry_t) { pte_val(pte) })
+> -#define __swp_entry_to_pte(x)  ((pte_t) { (x).val })
+> -
+> -#define ZERO_PAGE(vaddr)       ({ BUG(); NULL; })
+> -
+> -#define swapper_pg_dir ((pgd_t *) NULL)
+> -
+> -#define arch_enter_lazy_cpu_mode()     do {} while (0)
+> -
+> -#define pgprot_noncached_wc(prot)      prot
+> -
+> -/*
+> - * All 32bit addresses are effectively valid for vmalloc...
+> - * Sort of meaningless for non-VM targets.
+> - */
+> -#define        VMALLOC_START   0
+> -#define        VMALLOC_END     0xffffffff
+> -
+> -#else /* CONFIG_MMU */
+> -
+>  #include <asm-generic/pgtable-nopmd.h>
+>
+>  #ifdef __KERNEL__
+> @@ -491,8 +450,6 @@ void __init *early_get_page(void);
+>  #endif /* __ASSEMBLY__ */
+>  #endif /* __KERNEL__ */
+>
+> -#endif /* CONFIG_MMU */
+> -
+>  #ifndef __ASSEMBLY__
+>  extern unsigned long ioremap_bot, ioremap_base;
+>
+> diff --git a/arch/microblaze/include/asm/processor.h b/arch/microblaze/in=
+clude/asm/processor.h
+> index 1ff5a82b76b6..f4f3048cde4c 100644
+> --- a/arch/microblaze/include/asm/processor.h
+> +++ b/arch/microblaze/include/asm/processor.h
+> @@ -31,42 +31,6 @@ extern void ret_from_kernel_thread(void);
+>
+>  # endif /* __ASSEMBLY__ */
+>
+> -# ifndef CONFIG_MMU
+> -/*
+> - * User space process size: memory size
+> - *
+> - * TASK_SIZE on MMU cpu is usually 1GB. However, on no-MMU arch, both
+> - * user processes and the kernel is on the same memory region. They
+> - * both share the memory space and that is limited by the amount of
+> - * physical memory. thus, we set TASK_SIZE =3D=3D amount of total memory=
+.
+> - */
+> -# define TASK_SIZE     (0x81000000 - 0x80000000)
+> -
+> -/*
+> - * This decides where the kernel will search for a free chunk of vm
+> - * space during mmap's. We won't be using it
+> - */
+> -# define TASK_UNMAPPED_BASE    0
+> -
+> -/* definition in include/linux/sched.h */
+> -struct task_struct;
+> -
+> -/* thread_struct is gone. use thread_info instead. */
+> -struct thread_struct { };
+> -# define INIT_THREAD   { }
+> -
+> -/* Free all resources held by a thread. */
+> -static inline void release_thread(struct task_struct *dead_task)
+> -{
+> -}
+> -
+> -extern unsigned long get_wchan(struct task_struct *p);
+> -
+> -# define KSTK_EIP(tsk) (0)
+> -# define KSTK_ESP(tsk) (0)
+> -
+> -# else /* CONFIG_MMU */
+> -
+>  /*
+>   * This is used to define STACK_TOP, and with MMU it must be below
+>   * kernel base to select the correct PGD when handling MMU exceptions.
+> @@ -133,5 +97,4 @@ extern struct dentry *of_debugfs_root;
+>  #endif
+>
+>  #  endif /* __ASSEMBLY__ */
+> -# endif /* CONFIG_MMU */
+>  #endif /* _ASM_MICROBLAZE_PROCESSOR_H */
+> diff --git a/arch/microblaze/include/asm/registers.h b/arch/microblaze/in=
+clude/asm/registers.h
+> index ee81e1cba008..6b36693fc621 100644
+> --- a/arch/microblaze/include/asm/registers.h
+> +++ b/arch/microblaze/include/asm/registers.h
+> @@ -27,7 +27,6 @@
+>  #define FSR_UF         (1<<1) /* Underflow */
+>  #define FSR_DO         (1<<0) /* Denormalized operand error */
+>
+> -# ifdef CONFIG_MMU
+>  /* Machine State Register (MSR) Fields */
+>  # define MSR_UM                (1<<11) /* User Mode */
+>  # define MSR_UMS       (1<<12) /* User Mode Save */
+> @@ -43,5 +42,4 @@
+>  # define         ESR_DIZ       (1<<11) /* Zone Protection */
+>  # define         ESR_S         (1<<10) /* Store instruction */
+>
+> -# endif /* CONFIG_MMU */
+>  #endif /* _ASM_MICROBLAZE_REGISTERS_H */
+> diff --git a/arch/microblaze/include/asm/setup.h b/arch/microblaze/includ=
+e/asm/setup.h
+> index be10da9d87cb..a06cc1f97aa9 100644
+> --- a/arch/microblaze/include/asm/setup.h
+> +++ b/arch/microblaze/include/asm/setup.h
+> @@ -14,9 +14,7 @@ extern char cmd_line[COMMAND_LINE_SIZE];
+>
+>  extern char *klimit;
+>
+> -#   ifdef CONFIG_MMU
+>  extern void mmu_reset(void);
+> -#   endif /* CONFIG_MMU */
+>
+>  void time_init(void);
+>  void init_IRQ(void);
+> diff --git a/arch/microblaze/include/asm/tlbflush.h b/arch/microblaze/inc=
+lude/asm/tlbflush.h
+> index 1200e2bf14bb..2038168ed128 100644
+> --- a/arch/microblaze/include/asm/tlbflush.h
+> +++ b/arch/microblaze/include/asm/tlbflush.h
+> @@ -8,8 +8,6 @@
+>  #ifndef _ASM_MICROBLAZE_TLBFLUSH_H
+>  #define _ASM_MICROBLAZE_TLBFLUSH_H
+>
+> -#ifdef CONFIG_MMU
+> -
+>  #include <linux/sched.h>
+>  #include <linux/threads.h>
+>  #include <asm/processor.h>     /* For TASK_SIZE */
+> @@ -50,16 +48,4 @@ static inline void local_flush_tlb_range(struct vm_are=
+a_struct *vma,
+>  static inline void flush_tlb_pgtables(struct mm_struct *mm,
+>         unsigned long start, unsigned long end) { }
+>
+> -#else /* CONFIG_MMU */
+> -
+> -#define flush_tlb()                            BUG()
+> -#define flush_tlb_all()                                BUG()
+> -#define flush_tlb_mm(mm)                       BUG()
+> -#define flush_tlb_page(vma, addr)              BUG()
+> -#define flush_tlb_range(mm, start, end)                BUG()
+> -#define flush_tlb_pgtables(mm, start, end)     BUG()
+> -#define flush_tlb_kernel_range(start, end)     BUG()
+> -
+> -#endif /* CONFIG_MMU */
+> -
+>  #endif /* _ASM_MICROBLAZE_TLBFLUSH_H */
+> diff --git a/arch/microblaze/include/asm/uaccess.h b/arch/microblaze/incl=
+ude/asm/uaccess.h
+> index 304b04ffea2f..c44b59470e45 100644
+> --- a/arch/microblaze/include/asm/uaccess.h
+> +++ b/arch/microblaze/include/asm/uaccess.h
+> @@ -30,35 +30,14 @@
+>   */
+>  # define MAKE_MM_SEG(s)       ((mm_segment_t) { (s) })
+>
+> -#  ifndef CONFIG_MMU
+> -#  define KERNEL_DS    MAKE_MM_SEG(0)
+> -#  define USER_DS      KERNEL_DS
+> -#  else
+>  #  define KERNEL_DS    MAKE_MM_SEG(0xFFFFFFFF)
+>  #  define USER_DS      MAKE_MM_SEG(TASK_SIZE - 1)
+> -#  endif
+>
+>  # define get_fs()      (current_thread_info()->addr_limit)
+>  # define set_fs(val)   (current_thread_info()->addr_limit =3D (val))
+>
+>  # define uaccess_kernel()      (get_fs().seg =3D=3D KERNEL_DS.seg)
+>
+> -#ifndef CONFIG_MMU
+> -
+> -/* Check against bounds of physical memory */
+> -static inline int ___range_ok(unsigned long addr, unsigned long size)
+> -{
+> -       return ((addr < memory_start) ||
+> -               ((addr + size - 1) > (memory_start + memory_size - 1)));
+> -}
+> -
+> -#define __range_ok(addr, size) \
+> -               ___range_ok((unsigned long)(addr), (unsigned long)(size))
+> -
+> -#define access_ok(addr, size) (__range_ok((addr), (size)) =3D=3D 0)
+> -
+> -#else
+> -
+>  static inline int access_ok(const void __user *addr, unsigned long size)
+>  {
+>         if (!size)
+> @@ -77,15 +56,9 @@ static inline int access_ok(const void __user *addr, u=
+nsigned long size)
+>                         (u32)get_fs().seg);
+>         return 1;
+>  }
+> -#endif
+>
+> -#ifdef CONFIG_MMU
+>  # define __FIXUP_SECTION       ".section .fixup,\"ax\"\n"
+>  # define __EX_TABLE_SECTION    ".section __ex_table,\"a\"\n"
+> -#else
+> -# define __FIXUP_SECTION       ".section .discard,\"ax\"\n"
+> -# define __EX_TABLE_SECTION    ".section .discard,\"ax\"\n"
+> -#endif
+>
+>  extern unsigned long __copy_tofrom_user(void __user *to,
+>                 const void __user *from, unsigned long size);
+> diff --git a/arch/microblaze/kernel/Makefile b/arch/microblaze/kernel/Mak=
+efile
+> index dd71637437f4..15a20eb814ce 100644
+> --- a/arch/microblaze/kernel/Makefile
+> +++ b/arch/microblaze/kernel/Makefile
+> @@ -22,9 +22,9 @@ obj-y +=3D dma.o exceptions.o \
+>  obj-y +=3D cpu/
+>
+>  obj-$(CONFIG_MODULES)          +=3D microblaze_ksyms.o module.o
+> -obj-$(CONFIG_MMU)              +=3D misc.o
+> +obj-y                          +=3D misc.o
+>  obj-$(CONFIG_STACKTRACE)       +=3D stacktrace.o
+>  obj-$(CONFIG_FUNCTION_TRACER)  +=3D ftrace.o mcount.o
+>  obj-$(CONFIG_KGDB)             +=3D kgdb.o
+>
+> -obj-y  +=3D entry$(MMU).o
+> +obj-y  +=3D entry.o
+> diff --git a/arch/microblaze/kernel/asm-offsets.c b/arch/microblaze/kerne=
+l/asm-offsets.c
+> index c1b459c97571..6c69ce7be2e8 100644
+> --- a/arch/microblaze/kernel/asm-offsets.c
+> +++ b/arch/microblaze/kernel/asm-offsets.c
+> @@ -70,7 +70,6 @@ int main(int argc, char *argv[])
+>
+>         /* struct task_struct */
+>         DEFINE(TS_THREAD_INFO, offsetof(struct task_struct, stack));
+> -#ifdef CONFIG_MMU
+>         DEFINE(TASK_STATE, offsetof(struct task_struct, state));
+>         DEFINE(TASK_FLAGS, offsetof(struct task_struct, flags));
+>         DEFINE(TASK_PTRACE, offsetof(struct task_struct, ptrace));
+> @@ -84,7 +83,6 @@ int main(int argc, char *argv[])
+>
+>         DEFINE(PGDIR, offsetof(struct thread_struct, pgdir));
+>         BLANK();
+> -#endif
+>
+>         /* struct thread_info */
+>         DEFINE(TI_TASK, offsetof(struct thread_info, task));
+> diff --git a/arch/microblaze/kernel/entry-nommu.S b/arch/microblaze/kerne=
+l/entry-nommu.S
+> deleted file mode 100644
+> index 7e394fc2c439..000000000000
+> --- a/arch/microblaze/kernel/entry-nommu.S
+> +++ /dev/null
+> @@ -1,622 +0,0 @@
+> -/*
+> - * Copyright (C) 2007-2009 Michal Simek <monstr@monstr.eu>
+> - * Copyright (C) 2007-2009 PetaLogix
+> - * Copyright (C) 2006 Atmark Techno, Inc.
+> - *
+> - * This file is subject to the terms and conditions of the GNU General P=
+ublic
+> - * License. See the file "COPYING" in the main directory of this archive
+> - * for more details.
+> - */
+> -
+> -#include <linux/linkage.h>
+> -#include <asm/thread_info.h>
+> -#include <linux/errno.h>
+> -#include <asm/entry.h>
+> -#include <asm/asm-offsets.h>
+> -#include <asm/registers.h>
+> -#include <asm/unistd.h>
+> -#include <asm/percpu.h>
+> -#include <asm/signal.h>
+> -
+> -#if CONFIG_XILINX_MICROBLAZE0_USE_MSR_INSTR
+> -       .macro  disable_irq
+> -       msrclr r0, MSR_IE
+> -       .endm
+> -
+> -       .macro  enable_irq
+> -       msrset r0, MSR_IE
+> -       .endm
+> -
+> -       .macro  clear_bip
+> -       msrclr r0, MSR_BIP
+> -       .endm
+> -#else
+> -       .macro  disable_irq
+> -       mfs r11, rmsr
+> -       andi r11, r11, ~MSR_IE
+> -       mts rmsr, r11
+> -       .endm
+> -
+> -       .macro  enable_irq
+> -       mfs r11, rmsr
+> -       ori r11, r11, MSR_IE
+> -       mts rmsr, r11
+> -       .endm
+> -
+> -       .macro  clear_bip
+> -       mfs r11, rmsr
+> -       andi r11, r11, ~MSR_BIP
+> -       mts rmsr, r11
+> -       .endm
+> -#endif
+> -
+> -ENTRY(_interrupt)
+> -       swi     r1, r0, PER_CPU(ENTRY_SP)       /* save the current sp */
+> -       swi     r11, r0, PER_CPU(R11_SAVE)      /* temporarily save r11 *=
+/
+> -       lwi     r11, r0, PER_CPU(KM)            /* load mode indicator */
+> -       beqid   r11, 1f
+> -       nop
+> -       brid    2f                              /* jump over */
+> -       addik   r1, r1, (-PT_SIZE)      /* room for pt_regs (delay slot) =
+*/
+> -1:                                             /* switch to kernel stack=
+ */
+> -       lwi     r1, r0, PER_CPU(CURRENT_SAVE)   /* get the saved current =
+*/
+> -       lwi     r1, r1, TS_THREAD_INFO          /* get the thread info */
+> -       /* calculate kernel stack pointer */
+> -       addik   r1, r1, THREAD_SIZE - PT_SIZE
+> -2:
+> -       swi     r11, r1, PT_MODE                /* store the mode */
+> -       lwi     r11, r0, PER_CPU(R11_SAVE)      /* reload r11 */
+> -       swi     r2, r1, PT_R2
+> -       swi     r3, r1, PT_R3
+> -       swi     r4, r1, PT_R4
+> -       swi     r5, r1, PT_R5
+> -       swi     r6, r1, PT_R6
+> -       swi     r7, r1, PT_R7
+> -       swi     r8, r1, PT_R8
+> -       swi     r9, r1, PT_R9
+> -       swi     r10, r1, PT_R10
+> -       swi     r11, r1, PT_R11
+> -       swi     r12, r1, PT_R12
+> -       swi     r13, r1, PT_R13
+> -       swi     r14, r1, PT_R14
+> -       swi     r14, r1, PT_PC
+> -       swi     r15, r1, PT_R15
+> -       swi     r16, r1, PT_R16
+> -       swi     r17, r1, PT_R17
+> -       swi     r18, r1, PT_R18
+> -       swi     r19, r1, PT_R19
+> -       swi     r20, r1, PT_R20
+> -       swi     r21, r1, PT_R21
+> -       swi     r22, r1, PT_R22
+> -       swi     r23, r1, PT_R23
+> -       swi     r24, r1, PT_R24
+> -       swi     r25, r1, PT_R25
+> -       swi     r26, r1, PT_R26
+> -       swi     r27, r1, PT_R27
+> -       swi     r28, r1, PT_R28
+> -       swi     r29, r1, PT_R29
+> -       swi     r30, r1, PT_R30
+> -       swi     r31, r1, PT_R31
+> -       /* special purpose registers */
+> -       mfs     r11, rmsr
+> -       swi     r11, r1, PT_MSR
+> -       mfs     r11, rear
+> -       swi     r11, r1, PT_EAR
+> -       mfs     r11, resr
+> -       swi     r11, r1, PT_ESR
+> -       mfs     r11, rfsr
+> -       swi     r11, r1, PT_FSR
+> -       /* reload original stack pointer and save it */
+> -       lwi     r11, r0, PER_CPU(ENTRY_SP)
+> -       swi     r11, r1, PT_R1
+> -       /* update mode indicator we are in kernel mode */
+> -       addik   r11, r0, 1
+> -       swi     r11, r0, PER_CPU(KM)
+> -       /* restore r31 */
+> -       lwi     r31, r0, PER_CPU(CURRENT_SAVE)
+> -       /* prepare the link register, the argument and jump */
+> -       addik   r15, r0, ret_from_intr - 8
+> -       addk    r6, r0, r15
+> -       braid   do_IRQ
+> -       add     r5, r0, r1
+> -
+> -ret_from_intr:
+> -       lwi     r11, r1, PT_MODE
+> -       bneid   r11, no_intr_resched
+> -
+> -3:
+> -       lwi     r6, r31, TS_THREAD_INFO /* get thread info */
+> -       lwi     r19, r6, TI_FLAGS       /* get flags in thread info */
+> -                               /* do an extra work if any bits are set *=
+/
+> -
+> -       andi    r11, r19, _TIF_NEED_RESCHED
+> -       beqi    r11, 1f
+> -       bralid  r15, schedule
+> -       nop
+> -       bri     3b
+> -1:     andi    r11, r19, _TIF_SIGPENDING | _TIF_NOTIFY_RESUME
+> -       beqid   r11, no_intr_resched
+> -       addk    r5, r1, r0
+> -       bralid  r15, do_notify_resume
+> -       addk    r6, r0, r0
+> -       bri     3b
+> -
+> -no_intr_resched:
+> -       /* Disable interrupts, we are now committed to the state restore =
+*/
+> -       disable_irq
+> -
+> -       /* save mode indicator */
+> -       lwi     r11, r1, PT_MODE
+> -       swi     r11, r0, PER_CPU(KM)
+> -
+> -       /* save r31 */
+> -       swi     r31, r0, PER_CPU(CURRENT_SAVE)
+> -restore_context:
+> -       /* special purpose registers */
+> -       lwi     r11, r1, PT_FSR
+> -       mts     rfsr, r11
+> -       lwi     r11, r1, PT_ESR
+> -       mts     resr, r11
+> -       lwi     r11, r1, PT_EAR
+> -       mts     rear, r11
+> -       lwi     r11, r1, PT_MSR
+> -       mts     rmsr, r11
+> -
+> -       lwi     r31, r1, PT_R31
+> -       lwi     r30, r1, PT_R30
+> -       lwi     r29, r1, PT_R29
+> -       lwi     r28, r1, PT_R28
+> -       lwi     r27, r1, PT_R27
+> -       lwi     r26, r1, PT_R26
+> -       lwi     r25, r1, PT_R25
+> -       lwi     r24, r1, PT_R24
+> -       lwi     r23, r1, PT_R23
+> -       lwi     r22, r1, PT_R22
+> -       lwi     r21, r1, PT_R21
+> -       lwi     r20, r1, PT_R20
+> -       lwi     r19, r1, PT_R19
+> -       lwi     r18, r1, PT_R18
+> -       lwi     r17, r1, PT_R17
+> -       lwi     r16, r1, PT_R16
+> -       lwi     r15, r1, PT_R15
+> -       lwi     r14, r1, PT_PC
+> -       lwi     r13, r1, PT_R13
+> -       lwi     r12, r1, PT_R12
+> -       lwi     r11, r1, PT_R11
+> -       lwi     r10, r1, PT_R10
+> -       lwi     r9, r1, PT_R9
+> -       lwi     r8, r1, PT_R8
+> -       lwi     r7, r1, PT_R7
+> -       lwi     r6, r1, PT_R6
+> -       lwi     r5, r1, PT_R5
+> -       lwi     r4, r1, PT_R4
+> -       lwi     r3, r1, PT_R3
+> -       lwi     r2, r1, PT_R2
+> -       lwi     r1, r1, PT_R1
+> -       rtid    r14, 0
+> -       nop
+> -
+> -ENTRY(_reset)
+> -       brai    0;
+> -
+> -ENTRY(_user_exception)
+> -       swi     r1, r0, PER_CPU(ENTRY_SP)       /* save the current sp */
+> -       swi     r11, r0, PER_CPU(R11_SAVE)      /* temporarily save r11 *=
+/
+> -       lwi     r11, r0, PER_CPU(KM)            /* load mode indicator */
+> -       beqid   r11, 1f                         /* Already in kernel mode=
+? */
+> -       nop
+> -       brid    2f                              /* jump over */
+> -       addik   r1, r1, (-PT_SIZE)      /* Room for pt_regs (delay slot) =
+*/
+> -1:                                             /* Switch to kernel stack=
+ */
+> -       lwi     r1, r0, PER_CPU(CURRENT_SAVE)   /* get the saved current =
+*/
+> -       lwi     r1, r1, TS_THREAD_INFO          /* get the thread info */
+> -       /* calculate kernel stack pointer */
+> -       addik   r1, r1, THREAD_SIZE - PT_SIZE
+> -2:
+> -       swi     r11, r1, PT_MODE                /* store the mode */
+> -       lwi     r11, r0, PER_CPU(R11_SAVE)      /* reload r11 */
+> -       /* save them on stack */
+> -       swi     r2, r1, PT_R2
+> -       swi     r3, r1, PT_R3 /* r3: _always_ in clobber list; see unistd=
+.h */
+> -       swi     r4, r1, PT_R4 /* r4: _always_ in clobber list; see unistd=
+.h */
+> -       swi     r5, r1, PT_R5
+> -       swi     r6, r1, PT_R6
+> -       swi     r7, r1, PT_R7
+> -       swi     r8, r1, PT_R8
+> -       swi     r9, r1, PT_R9
+> -       swi     r10, r1, PT_R10
+> -       swi     r11, r1, PT_R11
+> -       /* r12: _always_ in clobber list; see unistd.h */
+> -       swi     r12, r1, PT_R12
+> -       swi     r13, r1, PT_R13
+> -       /* r14: _always_ in clobber list; see unistd.h */
+> -       swi     r14, r1, PT_R14
+> -       /* but we want to return to the next inst. */
+> -       addik   r14, r14, 0x4
+> -       swi     r14, r1, PT_PC          /* increment by 4 and store in pc=
+ */
+> -       swi     r15, r1, PT_R15
+> -       swi     r16, r1, PT_R16
+> -       swi     r17, r1, PT_R17
+> -       swi     r18, r1, PT_R18
+> -       swi     r19, r1, PT_R19
+> -       swi     r20, r1, PT_R20
+> -       swi     r21, r1, PT_R21
+> -       swi     r22, r1, PT_R22
+> -       swi     r23, r1, PT_R23
+> -       swi     r24, r1, PT_R24
+> -       swi     r25, r1, PT_R25
+> -       swi     r26, r1, PT_R26
+> -       swi     r27, r1, PT_R27
+> -       swi     r28, r1, PT_R28
+> -       swi     r29, r1, PT_R29
+> -       swi     r30, r1, PT_R30
+> -       swi     r31, r1, PT_R31
+> -
+> -       disable_irq
+> -       nop             /* make sure IE bit is in effect */
+> -       clear_bip       /* once IE is in effect it is safe to clear BIP *=
+/
+> -       nop
+> -
+> -       /* special purpose registers */
+> -       mfs     r11, rmsr
+> -       swi     r11, r1, PT_MSR
+> -       mfs     r11, rear
+> -       swi     r11, r1, PT_EAR
+> -       mfs     r11, resr
+> -       swi     r11, r1, PT_ESR
+> -       mfs     r11, rfsr
+> -       swi     r11, r1, PT_FSR
+> -       /* reload original stack pointer and save it */
+> -       lwi     r11, r0, PER_CPU(ENTRY_SP)
+> -       swi     r11, r1, PT_R1
+> -       /* update mode indicator we are in kernel mode */
+> -       addik   r11, r0, 1
+> -       swi     r11, r0, PER_CPU(KM)
+> -       /* restore r31 */
+> -       lwi     r31, r0, PER_CPU(CURRENT_SAVE)
+> -       /* re-enable interrupts now we are in kernel mode */
+> -       enable_irq
+> -
+> -       /* See if the system call number is valid. */
+> -       addi    r11, r12, -__NR_syscalls
+> -       bgei    r11, 1f                 /* return to user if not valid */
+> -       /* Figure out which function to use for this system call. */
+> -       /* Note Microblaze barrel shift is optional, so don't rely on it =
+*/
+> -       add     r12, r12, r12                   /* convert num -> ptr */
+> -       addik   r30, r0, 1                      /* restarts allowed */
+> -       add     r12, r12, r12
+> -       lwi     r12, r12, sys_call_table        /* Get function pointer *=
+/
+> -       addik   r15, r0, ret_to_user-8          /* set return address */
+> -       bra     r12                             /* Make the system call. =
+*/
+> -       bri     0                               /* won't reach here */
+> -1:
+> -       brid    ret_to_user                     /* jump to syscall epilog=
+ue */
+> -       addi    r3, r0, -ENOSYS                 /* set errno in delay slo=
+t */
+> -
+> -/*
+> - * Debug traps are like a system call, but entered via brki r14, 0x60
+> - * All we need to do is send the SIGTRAP signal to current, ptrace and
+> - * do_notify_resume will handle the rest
+> - */
+> -ENTRY(_debug_exception)
+> -       swi     r1, r0, PER_CPU(ENTRY_SP)       /* save the current sp */
+> -       lwi     r1, r0, PER_CPU(CURRENT_SAVE)   /* get the saved current =
+*/
+> -       lwi     r1, r1, TS_THREAD_INFO          /* get the thread info */
+> -       addik   r1, r1, THREAD_SIZE - PT_SIZE   /* get the kernel stack *=
+/
+> -       swi     r11, r0, PER_CPU(R11_SAVE)      /* temporarily save r11 *=
+/
+> -       lwi     r11, r0, PER_CPU(KM)            /* load mode indicator */
+> -//save_context:
+> -       swi     r11, r1, PT_MODE        /* store the mode */
+> -       lwi     r11, r0, PER_CPU(R11_SAVE)      /* reload r11 */
+> -       /* save them on stack */
+> -       swi     r2, r1, PT_R2
+> -       swi     r3, r1, PT_R3 /* r3: _always_ in clobber list; see unistd=
+.h */
+> -       swi     r4, r1, PT_R4 /* r4: _always_ in clobber list; see unistd=
+.h */
+> -       swi     r5, r1, PT_R5
+> -       swi     r6, r1, PT_R6
+> -       swi     r7, r1, PT_R7
+> -       swi     r8, r1, PT_R8
+> -       swi     r9, r1, PT_R9
+> -       swi     r10, r1, PT_R10
+> -       swi     r11, r1, PT_R11
+> -       /* r12: _always_ in clobber list; see unistd.h */
+> -       swi     r12, r1, PT_R12
+> -       swi     r13, r1, PT_R13
+> -       /* r14: _always_ in clobber list; see unistd.h */
+> -       swi     r14, r1, PT_R14
+> -       swi     r14, r1, PT_PC /* Will return to interrupted instruction =
+*/
+> -       swi     r15, r1, PT_R15
+> -       swi     r16, r1, PT_R16
+> -       swi     r17, r1, PT_R17
+> -       swi     r18, r1, PT_R18
+> -       swi     r19, r1, PT_R19
+> -       swi     r20, r1, PT_R20
+> -       swi     r21, r1, PT_R21
+> -       swi     r22, r1, PT_R22
+> -       swi     r23, r1, PT_R23
+> -       swi     r24, r1, PT_R24
+> -       swi     r25, r1, PT_R25
+> -       swi     r26, r1, PT_R26
+> -       swi     r27, r1, PT_R27
+> -       swi     r28, r1, PT_R28
+> -       swi     r29, r1, PT_R29
+> -       swi     r30, r1, PT_R30
+> -       swi     r31, r1, PT_R31
+> -
+> -       disable_irq
+> -       nop             /* make sure IE bit is in effect */
+> -       clear_bip       /* once IE is in effect it is safe to clear BIP *=
+/
+> -       nop
+> -
+> -       /* special purpose registers */
+> -       mfs     r11, rmsr
+> -       swi     r11, r1, PT_MSR
+> -       mfs     r11, rear
+> -       swi     r11, r1, PT_EAR
+> -       mfs     r11, resr
+> -       swi     r11, r1, PT_ESR
+> -       mfs     r11, rfsr
+> -       swi     r11, r1, PT_FSR
+> -       /* reload original stack pointer and save it */
+> -       lwi     r11, r0, PER_CPU(ENTRY_SP)
+> -       swi     r11, r1, PT_R1
+> -       /* update mode indicator we are in kernel mode */
+> -       addik   r11, r0, 1
+> -       swi     r11, r0, PER_CPU(KM)
+> -       /* restore r31 */
+> -       lwi     r31, r0, PER_CPU(CURRENT_SAVE)
+> -       /* re-enable interrupts now we are in kernel mode */
+> -       enable_irq
+> -
+> -       addi    r5, r0, SIGTRAP                 /* sending the trap signa=
+l */
+> -       add     r6, r0, r31                     /* to current */
+> -       bralid  r15, send_sig
+> -       add     r7, r0, r0                      /* 3rd param zero */
+> -
+> -       addik   r30, r0, 1                      /* restarts allowed ??? *=
+/
+> -       /* Restore r3/r4 to work around how ret_to_user works */
+> -       lwi     r3, r1, PT_R3
+> -       lwi     r4, r1, PT_R4
+> -       bri     ret_to_user
+> -
+> -ENTRY(_break)
+> -       bri     0
+> -
+> -/* struct task_struct *_switch_to(struct thread_info *prev,
+> -                                       struct thread_info *next); */
+> -ENTRY(_switch_to)
+> -       /* prepare return value */
+> -       addk    r3, r0, r31
+> -
+> -       /* save registers in cpu_context */
+> -       /* use r11 and r12, volatile registers, as temp register */
+> -       addik   r11, r5, TI_CPU_CONTEXT
+> -       swi     r1, r11, CC_R1
+> -       swi     r2, r11, CC_R2
+> -       /* skip volatile registers.
+> -        * they are saved on stack when we jumped to _switch_to() */
+> -       /* dedicated registers */
+> -       swi     r13, r11, CC_R13
+> -       swi     r14, r11, CC_R14
+> -       swi     r15, r11, CC_R15
+> -       swi     r16, r11, CC_R16
+> -       swi     r17, r11, CC_R17
+> -       swi     r18, r11, CC_R18
+> -       /* save non-volatile registers */
+> -       swi     r19, r11, CC_R19
+> -       swi     r20, r11, CC_R20
+> -       swi     r21, r11, CC_R21
+> -       swi     r22, r11, CC_R22
+> -       swi     r23, r11, CC_R23
+> -       swi     r24, r11, CC_R24
+> -       swi     r25, r11, CC_R25
+> -       swi     r26, r11, CC_R26
+> -       swi     r27, r11, CC_R27
+> -       swi     r28, r11, CC_R28
+> -       swi     r29, r11, CC_R29
+> -       swi     r30, r11, CC_R30
+> -       /* special purpose registers */
+> -       mfs     r12, rmsr
+> -       swi     r12, r11, CC_MSR
+> -       mfs     r12, rear
+> -       swi     r12, r11, CC_EAR
+> -       mfs     r12, resr
+> -       swi     r12, r11, CC_ESR
+> -       mfs     r12, rfsr
+> -       swi     r12, r11, CC_FSR
+> -
+> -       /* update r31, the current */
+> -       lwi     r31, r6, TI_TASK
+> -       swi     r31, r0, PER_CPU(CURRENT_SAVE)
+> -
+> -       /* get new process' cpu context and restore */
+> -       addik   r11, r6, TI_CPU_CONTEXT
+> -
+> -       /* special purpose registers */
+> -       lwi     r12, r11, CC_FSR
+> -       mts     rfsr, r12
+> -       lwi     r12, r11, CC_ESR
+> -       mts     resr, r12
+> -       lwi     r12, r11, CC_EAR
+> -       mts     rear, r12
+> -       lwi     r12, r11, CC_MSR
+> -       mts     rmsr, r12
+> -       /* non-volatile registers */
+> -       lwi     r30, r11, CC_R30
+> -       lwi     r29, r11, CC_R29
+> -       lwi     r28, r11, CC_R28
+> -       lwi     r27, r11, CC_R27
+> -       lwi     r26, r11, CC_R26
+> -       lwi     r25, r11, CC_R25
+> -       lwi     r24, r11, CC_R24
+> -       lwi     r23, r11, CC_R23
+> -       lwi     r22, r11, CC_R22
+> -       lwi     r21, r11, CC_R21
+> -       lwi     r20, r11, CC_R20
+> -       lwi     r19, r11, CC_R19
+> -       /* dedicated registers */
+> -       lwi     r18, r11, CC_R18
+> -       lwi     r17, r11, CC_R17
+> -       lwi     r16, r11, CC_R16
+> -       lwi     r15, r11, CC_R15
+> -       lwi     r14, r11, CC_R14
+> -       lwi     r13, r11, CC_R13
+> -       /* skip volatile registers */
+> -       lwi     r2, r11, CC_R2
+> -       lwi     r1, r11, CC_R1
+> -
+> -       rtsd    r15, 8
+> -       nop
+> -
+> -ENTRY(ret_from_fork)
+> -       addk    r5, r0, r3
+> -       brlid   r15, schedule_tail
+> -       nop
+> -       swi     r31, r1, PT_R31         /* save r31 in user context. */
+> -                       /* will soon be restored to r31 in ret_to_user */
+> -       addk    r3, r0, r0
+> -       brid    ret_to_user
+> -       nop
+> -
+> -ENTRY(ret_from_kernel_thread)
+> -       brlid   r15, schedule_tail
+> -       addk    r5, r0, r3
+> -       brald   r15, r20
+> -       addk    r5, r0, r19
+> -       brid    ret_to_user
+> -       addk    r3, r0, r0
+> -
+> -work_pending:
+> -       lwi     r11, r1, PT_MODE
+> -       bneid   r11, 2f
+> -3:
+> -       enable_irq
+> -       andi    r11, r19, _TIF_NEED_RESCHED
+> -       beqi    r11, 1f
+> -       bralid  r15, schedule
+> -       nop
+> -       bri     4f
+> -1:     andi    r11, r19, _TIF_SIGPENDING | _TIF_NOTIFY_RESUME
+> -       beqi    r11, no_work_pending
+> -       addk    r5, r30, r0
+> -       bralid  r15, do_notify_resume
+> -       addik   r6, r0, 1
+> -       addk    r30, r0, r0     /* no restarts from now on */
+> -4:
+> -       disable_irq
+> -       lwi     r6, r31, TS_THREAD_INFO /* get thread info */
+> -       lwi     r19, r6, TI_FLAGS /* get flags in thread info */
+> -       bri     3b
+> -
+> -ENTRY(ret_to_user)
+> -       disable_irq
+> -
+> -       swi     r4, r1, PT_R4           /* return val */
+> -       swi     r3, r1, PT_R3           /* return val */
+> -
+> -       lwi     r6, r31, TS_THREAD_INFO /* get thread info */
+> -       lwi     r19, r6, TI_FLAGS /* get flags in thread info */
+> -       bnei    r19, work_pending /* do an extra work if any bits are set=
+ */
+> -no_work_pending:
+> -       disable_irq
+> -
+> -2:
+> -       /* save r31 */
+> -       swi     r31, r0, PER_CPU(CURRENT_SAVE)
+> -       /* save mode indicator */
+> -       lwi     r18, r1, PT_MODE
+> -       swi     r18, r0, PER_CPU(KM)
+> -//restore_context:
+> -       /* special purpose registers */
+> -       lwi     r18, r1, PT_FSR
+> -       mts     rfsr, r18
+> -       lwi     r18, r1, PT_ESR
+> -       mts     resr, r18
+> -       lwi     r18, r1, PT_EAR
+> -       mts     rear, r18
+> -       lwi     r18, r1, PT_MSR
+> -       mts     rmsr, r18
+> -
+> -       lwi     r31, r1, PT_R31
+> -       lwi     r30, r1, PT_R30
+> -       lwi     r29, r1, PT_R29
+> -       lwi     r28, r1, PT_R28
+> -       lwi     r27, r1, PT_R27
+> -       lwi     r26, r1, PT_R26
+> -       lwi     r25, r1, PT_R25
+> -       lwi     r24, r1, PT_R24
+> -       lwi     r23, r1, PT_R23
+> -       lwi     r22, r1, PT_R22
+> -       lwi     r21, r1, PT_R21
+> -       lwi     r20, r1, PT_R20
+> -       lwi     r19, r1, PT_R19
+> -       lwi     r18, r1, PT_R18
+> -       lwi     r17, r1, PT_R17
+> -       lwi     r16, r1, PT_R16
+> -       lwi     r15, r1, PT_R15
+> -       lwi     r14, r1, PT_PC
+> -       lwi     r13, r1, PT_R13
+> -       lwi     r12, r1, PT_R12
+> -       lwi     r11, r1, PT_R11
+> -       lwi     r10, r1, PT_R10
+> -       lwi     r9, r1, PT_R9
+> -       lwi     r8, r1, PT_R8
+> -       lwi     r7, r1, PT_R7
+> -       lwi     r6, r1, PT_R6
+> -       lwi     r5, r1, PT_R5
+> -       lwi     r4, r1, PT_R4           /* return val */
+> -       lwi     r3, r1, PT_R3           /* return val */
+> -       lwi     r2, r1, PT_R2
+> -       lwi     r1, r1, PT_R1
+> -
+> -       rtid    r14, 0
+> -       nop
+> -
+> -sys_rt_sigreturn_wrapper:
+> -       addk    r30, r0, r0             /* no restarts for this one */
+> -       brid    sys_rt_sigreturn
+> -       addk    r5, r1, r0
+> -
+> -       /* Interrupt vector table */
+> -       .section        .init.ivt, "ax"
+> -       .org 0x0
+> -       brai    _reset
+> -       brai    _user_exception
+> -       brai    _interrupt
+> -       brai    _break
+> -       brai    _hw_exception_handler
+> -       .org 0x60
+> -       brai    _debug_exception
+> -
+> -.section .rodata,"a"
+> -#include "syscall_table.S"
+> -
+> -syscall_table_size=3D(.-sys_call_table)
+> -
+> -type_SYSCALL:
+> -       .ascii "SYSCALL\0"
+> -type_IRQ:
+> -       .ascii "IRQ\0"
+> -type_IRQ_PREEMPT:
+> -       .ascii "IRQ (PREEMPTED)\0"
+> -type_SYSCALL_PREEMPT:
+> -       .ascii " SYSCALL (PREEMPTED)\0"
+> -
+> -       /*
+> -        * Trap decoding for stack unwinder
+> -        * Tuples are (start addr, end addr, string)
+> -        * If return address lies on [start addr, end addr],
+> -        * unwinder displays 'string'
+> -        */
+> -
+> -       .align 4
+> -.global microblaze_trap_handlers
+> -microblaze_trap_handlers:
+> -       /* Exact matches come first */
+> -       .word ret_to_user  ; .word ret_to_user    ; .word type_SYSCALL
+> -       .word ret_from_intr; .word ret_from_intr  ; .word type_IRQ
+> -       /* Fuzzy matches go here */
+> -       .word ret_from_intr; .word no_intr_resched; .word type_IRQ_PREEMP=
+T
+> -       .word work_pending ; .word no_work_pending; .word type_SYSCALL_PR=
+EEMPT
+> -       /* End of table */
+> -       .word 0             ; .word 0               ; .word 0
+> diff --git a/arch/microblaze/kernel/exceptions.c b/arch/microblaze/kernel=
+/exceptions.c
+> index cf99c411503e..908788497b28 100644
+> --- a/arch/microblaze/kernel/exceptions.c
+> +++ b/arch/microblaze/kernel/exceptions.c
+> @@ -69,9 +69,7 @@ void _exception(int signr, struct pt_regs *regs, int co=
+de, unsigned long addr)
+>  asmlinkage void full_exception(struct pt_regs *regs, unsigned int type,
+>                                                         int fsr, int addr=
+)
+>  {
+> -#ifdef CONFIG_MMU
+>         addr =3D regs->pc;
+> -#endif
+>
+>  #if 0
+>         pr_warn("Exception %02x in %s mode, FSR=3D%08x PC=3D%08x ESR=3D%0=
+8x\n",
+> @@ -132,13 +130,10 @@ asmlinkage void full_exception(struct pt_regs *regs=
+, unsigned int type,
+>                         fsr =3D FPE_FLTRES;
+>                 _exception(SIGFPE, regs, fsr, addr);
+>                 break;
+> -
+> -#ifdef CONFIG_MMU
+>         case MICROBLAZE_PRIVILEGED_EXCEPTION:
+>                 pr_debug("Privileged exception\n");
+>                 _exception(SIGILL, regs, ILL_PRVOPC, addr);
+>                 break;
+> -#endif
+>         default:
+>         /* FIXME what to do in unexpected exception */
+>                 pr_warn("Unexpected exception %02x PC=3D%08x in %s mode\n=
+",
+> diff --git a/arch/microblaze/kernel/head.S b/arch/microblaze/kernel/head.=
+S
+> index 14b276406153..ec2fcb545e64 100644
+> --- a/arch/microblaze/kernel/head.S
+> +++ b/arch/microblaze/kernel/head.S
+> @@ -34,7 +34,6 @@
+>  #include <asm/page.h>
+>  #include <linux/of_fdt.h>              /* for OF_DT_HEADER */
+>
+> -#ifdef CONFIG_MMU
+>  #include <asm/setup.h> /* COMMAND_LINE_SIZE */
+>  #include <asm/mmu.h>
+>  #include <asm/processor.h>
+> @@ -48,8 +47,6 @@ empty_zero_page:
+>  swapper_pg_dir:
+>         .space  PAGE_SIZE
+>
+> -#endif /* CONFIG_MMU */
+> -
+>  .section .rodata
+>  .align 4
+>  endian_check:
+> @@ -108,8 +105,6 @@ _copy_fdt:
+>         addik   r3, r3, -4 /* descrement loop */
+>  no_fdt_arg:
+>
+> -#ifdef CONFIG_MMU
+> -
+>  #ifndef CONFIG_CMDLINE_BOOL
+>  /*
+>   * handling command line
+> @@ -329,7 +324,6 @@ turn_on_mmu:
+>         nop
+>
+>  start_here:
+> -#endif /* CONFIG_MMU */
+>
+>         /* Initialize small data anchors */
+>         addik   r13, r0, _KERNEL_SDA_BASE_
+> @@ -345,11 +339,6 @@ start_here:
+>         brald   r15, r11
+>         nop
+>
+> -#ifndef CONFIG_MMU
+> -       addik   r15, r0, machine_halt
+> -       braid   start_kernel
+> -       nop
+> -#else
+>         /*
+>          * Initialize the MMU.
+>          */
+> @@ -383,4 +372,3 @@ kernel_load_context:
+>         nop
+>         rted    r17, 0          /* enable MMU and jump to start_kernel */
+>         nop
+> -#endif /* CONFIG_MMU */
+> diff --git a/arch/microblaze/kernel/hw_exception_handler.S b/arch/microbl=
+aze/kernel/hw_exception_handler.S
+> index 54411de22fa6..07ea23965f81 100644
+> --- a/arch/microblaze/kernel/hw_exception_handler.S
+> +++ b/arch/microblaze/kernel/hw_exception_handler.S
+> @@ -80,7 +80,6 @@
+>  /* Helpful Macros */
+>  #define NUM_TO_REG(num)                r ## num
+>
+> -#ifdef CONFIG_MMU
+>         #define RESTORE_STATE                   \
+>                 lwi     r5, r1, 0;              \
+>                 mts     rmsr, r5;               \
+> @@ -92,7 +91,6 @@
+>                 lwi     r11, r1, PT_R11;        \
+>                 lwi     r31, r1, PT_R31;        \
+>                 lwi     r1, r1, PT_R1;
+> -#endif /* CONFIG_MMU */
+>
+>  #define LWREG_NOP                      \
+>         bri     ex_handler_unhandled;   \
+> @@ -102,10 +100,6 @@
+>         bri     ex_handler_unhandled;   \
+>         nop;
+>
+> -/* FIXME this is weird - for noMMU kernel is not possible to use brid
+> - * instruction which can shorten executed time
+> - */
+> -
+>  /* r3 is the source */
+>  #define R3_TO_LWREG_V(regnum)                          \
+>         swi     r3, r1, 4 * regnum;                             \
+> @@ -126,7 +120,6 @@
+>         or      r3, r0, NUM_TO_REG (regnum);            \
+>         bri     ex_sw_tail;
+>
+> -#ifdef CONFIG_MMU
+>         #define R3_TO_LWREG_VM_V(regnum)                \
+>                 brid    ex_lw_end_vm;                   \
+>                 swi     r3, r7, 4 * regnum;
+> @@ -193,7 +186,6 @@
+>         .endm
+>         #endif
+>
+> -#endif /* CONFIG_MMU */
+>
+>  .extern other_exception_handler /* Defined in exception.c */
+>
+> @@ -251,7 +243,6 @@
+>   */
+>
+>  /* wrappers to restore state before coming to entry.S */
+> -#ifdef CONFIG_MMU
+>  .section .data
+>  .align 4
+>  pt_pool_space:
+> @@ -316,31 +307,24 @@ _MB_HW_ExceptionVectorTable:
+>         .long   TOPHYS(ex_handler_unhandled)
+>         .long   TOPHYS(ex_handler_unhandled)
+>         .long   TOPHYS(ex_handler_unhandled)
+> -#endif
+>
+>  .global _hw_exception_handler
+>  .section .text
+>  .align 4
+>  .ent _hw_exception_handler
+>  _hw_exception_handler:
+> -#ifndef CONFIG_MMU
+> -       addik   r1, r1, -(EX_HANDLER_STACK_SIZ); /* Create stack frame */
+> -#else
+>         swi     r1, r0, TOPHYS(pt_pool_space + PT_R1); /* GET_SP */
+>         /* Save date to kernel memory. Here is the problem
+>          * when you came from user space */
+>         ori     r1, r0, TOPHYS(pt_pool_space);
+> -#endif
+>         swi     r3, r1, PT_R3
+>         swi     r4, r1, PT_R4
+>         swi     r5, r1, PT_R5
+>         swi     r6, r1, PT_R6
+>
+> -#ifdef CONFIG_MMU
+>         swi     r11, r1, PT_R11
+>         swi     r31, r1, PT_R31
+>         lwi     r31, r0, TOPHYS(PER_CPU(CURRENT_SAVE)) /* get saved curre=
+nt */
+> -#endif
+>
+>         mfs     r5, rmsr;
+>         nop
+> @@ -350,18 +334,8 @@ _hw_exception_handler:
+>         mfs     r3, rear;
+>         nop
+>
+> -#ifndef CONFIG_MMU
+> -       andi    r5, r4, 0x1000;         /* Check ESR[DS] */
+> -       beqi    r5, not_in_delay_slot;  /* Branch if ESR[DS] not set */
+> -       mfs     r17, rbtr;      /* ESR[DS] set - return address in BTR */
+> -       nop
+> -not_in_delay_slot:
+> -       swi     r17, r1, PT_R17
+> -#endif
+> -
+>         andi    r5, r4, 0x1F;           /* Extract ESR[EXC] */
+>
+> -#ifdef CONFIG_MMU
+>         /* Calculate exception vector offset =3D r5 << 2 */
+>         addk    r6, r5, r5; /* << 1 */
+>         addk    r6, r6, r6; /* << 2 */
+> @@ -383,73 +357,6 @@ not_in_delay_slot:
+>  full_exception_trapw:
+>         RESTORE_STATE
+>         bri     full_exception_trap
+> -#else
+> -       /* Exceptions enabled here. This will allow nested exceptions */
+> -       mfs     r6, rmsr;
+> -       nop
+> -       swi     r6, r1, 0; /* RMSR_OFFSET */
+> -       ori     r6, r6, 0x100; /* Turn ON the EE bit */
+> -       andi    r6, r6, ~2; /* Disable interrupts */
+> -       mts     rmsr, r6;
+> -       nop
+> -
+> -       xori    r6, r5, 1; /* 00001 =3D Unaligned Exception */
+> -       /* Jump to unalignment exception handler */
+> -       beqi    r6, handle_unaligned_ex;
+> -
+> -handle_other_ex: /* Handle Other exceptions here */
+> -       /* Save other volatiles before we make procedure calls below */
+> -       swi     r7, r1, PT_R7
+> -       swi     r8, r1, PT_R8
+> -       swi     r9, r1, PT_R9
+> -       swi     r10, r1, PT_R10
+> -       swi     r11, r1, PT_R11
+> -       swi     r12, r1, PT_R12
+> -       swi     r14, r1, PT_R14
+> -       swi     r15, r1, PT_R15
+> -       swi     r18, r1, PT_R18
+> -
+> -       or      r5, r1, r0
+> -       andi    r6, r4, 0x1F; /* Load ESR[EC] */
+> -       lwi     r7, r0, PER_CPU(KM) /* MS: saving current kernel mode to =
+regs */
+> -       swi     r7, r1, PT_MODE
+> -       mfs     r7, rfsr
+> -       nop
+> -       addk    r8, r17, r0; /* Load exception address */
+> -       bralid  r15, full_exception; /* Branch to the handler */
+> -       nop;
+> -       mts     rfsr, r0;       /* Clear sticky fsr */
+> -       nop
+> -
+> -       /*
+> -        * Trigger execution of the signal handler by enabling
+> -        * interrupts and calling an invalid syscall.
+> -        */
+> -       mfs     r5, rmsr;
+> -       nop
+> -       ori     r5, r5, 2;
+> -       mts     rmsr, r5; /* enable interrupt */
+> -       nop
+> -       addi    r12, r0, __NR_syscalls;
+> -       brki    r14, 0x08;
+> -       mfs     r5, rmsr; /* disable interrupt */
+> -       nop
+> -       andi    r5, r5, ~2;
+> -       mts     rmsr, r5;
+> -       nop
+> -
+> -       lwi     r7, r1, PT_R7
+> -       lwi     r8, r1, PT_R8
+> -       lwi     r9, r1, PT_R9
+> -       lwi     r10, r1, PT_R10
+> -       lwi     r11, r1, PT_R11
+> -       lwi     r12, r1, PT_R12
+> -       lwi     r14, r1, PT_R14
+> -       lwi     r15, r1, PT_R15
+> -       lwi     r18, r1, PT_R18
+> -
+> -       bri     ex_handler_done; /* Complete exception handling */
+> -#endif
+>
+>  /* 0x01 - Unaligned data access exception
+>   * This occurs when a word access is not aligned on a word boundary,
+> @@ -463,7 +370,6 @@ handle_unaligned_ex:
+>          *  R4 =3D ESR
+>          *  R3 =3D EAR
+>          */
+> -#ifdef CONFIG_MMU
+>         andi    r6, r4, 0x1000                  /* Check ESR[DS] */
+>         beqi    r6, _no_delayslot               /* Branch if ESR[DS] not =
+set */
+>         mfs     r17, rbtr;      /* ESR[DS] set - return address in BTR */
+> @@ -472,7 +378,7 @@ _no_delayslot:
+>         /* jump to high level unaligned handler */
+>         RESTORE_STATE;
+>         bri     unaligned_data_trap
+> -#endif
+> +
+>         andi    r6, r4, 0x3E0; /* Mask and extract the register operand *=
+/
+>         srl     r6, r6; /* r6 >> 5 */
+>         srl     r6, r6;
+> @@ -558,25 +464,10 @@ ex_shw:
+>  ex_sw_end: /* Exception handling of store word, ends. */
+>
+>  ex_handler_done:
+> -#ifndef CONFIG_MMU
+> -       lwi     r5, r1, 0 /* RMSR */
+> -       mts     rmsr, r5
+> -       nop
+> -       lwi     r3, r1, PT_R3
+> -       lwi     r4, r1, PT_R4
+> -       lwi     r5, r1, PT_R5
+> -       lwi     r6, r1, PT_R6
+> -       lwi     r17, r1, PT_R17
+> -
+> -       rted    r17, 0
+> -       addik   r1, r1, (EX_HANDLER_STACK_SIZ); /* Restore stack frame */
+> -#else
+>         RESTORE_STATE;
+>         rted    r17, 0
+>         nop
+> -#endif
+>
+> -#ifdef CONFIG_MMU
+>         /* Exception vector entry code. This code runs with address trans=
+lation
+>          * turned off (i.e. using physical addresses). */
+>
+> @@ -882,13 +773,7 @@ ex_handler_done:
+>                  * bits 20 and 21 are zero.
+>                  */
+>                 andi    r3, r3, PAGE_MASK
+> -#ifdef CONFIG_MICROBLAZE_64K_PAGES
+> -               ori     r3, r3, TLB_VALID | TLB_PAGESZ(PAGESZ_64K)
+> -#elif CONFIG_MICROBLAZE_16K_PAGES
+> -               ori     r3, r3, TLB_VALID | TLB_PAGESZ(PAGESZ_16K)
+> -#else
+>                 ori     r3, r3, TLB_VALID | TLB_PAGESZ(PAGESZ_4K)
+> -#endif
+>                 mts     rtlbhi, r3              /* Load TLB HI */
+>                 nop
+>
+> @@ -926,10 +811,8 @@ ex_handler_done:
+>                 rtsd    r15,8
+>                 nop
+>
+> -#endif
+>  .end _hw_exception_handler
+>
+> -#ifdef CONFIG_MMU
+>  /* Unaligned data access exception last on a 4k page for MMU.
+>   * When this is called, we are in virtual mode with exceptions enabled
+>   * and registers 1-13,15,17,18 saved.
+> @@ -1044,7 +927,6 @@ ex_unaligned_fixup:
+>         .word   store6,ex_unaligned_fixup;
+>  .previous;
+>  .end _unaligned_data_exception
+> -#endif /* CONFIG_MMU */
+>
+>  .global ex_handler_unhandled
+>  ex_handler_unhandled:
+> @@ -1093,11 +975,7 @@ lw_r27:           R3_TO_LWREG     (27);
+>  lw_r28:                R3_TO_LWREG     (28);
+>  lw_r29:                R3_TO_LWREG     (29);
+>  lw_r30:                R3_TO_LWREG     (30);
+> -#ifdef CONFIG_MMU
+>  lw_r31:        R3_TO_LWREG_V   (31);
+> -#else
+> -lw_r31:                R3_TO_LWREG     (31);
+> -#endif
+>
+>  sw_table:
+>  sw_r0:         SWREG_TO_R3     (0);
+> @@ -1131,13 +1009,8 @@ sw_r27:          SWREG_TO_R3     (27);
+>  sw_r28:                SWREG_TO_R3     (28);
+>  sw_r29:                SWREG_TO_R3     (29);
+>  sw_r30:                SWREG_TO_R3     (30);
+> -#ifdef CONFIG_MMU
+>  sw_r31:                SWREG_TO_R3_V   (31);
+> -#else
+> -sw_r31:                SWREG_TO_R3     (31);
+> -#endif
+>
+> -#ifdef CONFIG_MMU
+>  lw_table_vm:
+>  lw_r0_vm:      R3_TO_LWREG_VM          (0);
+>  lw_r1_vm:      R3_TO_LWREG_VM_V        (1);
+> @@ -1205,7 +1078,6 @@ sw_r28_vm:        SWREG_TO_R3_VM_V        (28);
+>  sw_r29_vm:     SWREG_TO_R3_VM_V        (29);
+>  sw_r30_vm:     SWREG_TO_R3_VM_V        (30);
+>  sw_r31_vm:     SWREG_TO_R3_VM_V        (31);
+> -#endif /* CONFIG_MMU */
+>
+>  /* Temporary data structures used in the handler */
+>  .section .data
+> diff --git a/arch/microblaze/kernel/microblaze_ksyms.c b/arch/microblaze/=
+kernel/microblaze_ksyms.c
+> index 51c43ee5e380..303aaf13573b 100644
+> --- a/arch/microblaze/kernel/microblaze_ksyms.c
+> +++ b/arch/microblaze/kernel/microblaze_ksyms.c
+> @@ -33,9 +33,7 @@ EXPORT_SYMBOL(memcpy);
+>  EXPORT_SYMBOL(memmove);
+>  #endif
+>
+> -#ifdef CONFIG_MMU
+>  EXPORT_SYMBOL(empty_zero_page);
+> -#endif
+>
+>  EXPORT_SYMBOL(mbc);
+>
+> diff --git a/arch/microblaze/kernel/process.c b/arch/microblaze/kernel/pr=
+ocess.c
+> index a9e46e525cd0..3afda1823730 100644
+> --- a/arch/microblaze/kernel/process.c
+> +++ b/arch/microblaze/kernel/process.c
+> @@ -69,9 +69,7 @@ int copy_thread(unsigned long clone_flags, unsigned lon=
+g usp, unsigned long arg,
+>                 ti->cpu_context.r19 =3D (unsigned long)arg;
+>                 childregs->pt_mode =3D 1;
+>                 local_save_flags(childregs->msr);
+> -#ifdef CONFIG_MMU
+>                 ti->cpu_context.msr =3D childregs->msr & ~MSR_IE;
+> -#endif
+>                 ti->cpu_context.r15 =3D (unsigned long)ret_from_kernel_th=
+read - 8;
+>                 return 0;
+>         }
+> @@ -81,9 +79,6 @@ int copy_thread(unsigned long clone_flags, unsigned lon=
+g usp, unsigned long arg,
+>
+>         memset(&ti->cpu_context, 0, sizeof(struct cpu_context));
+>         ti->cpu_context.r1 =3D (unsigned long)childregs;
+> -#ifndef CONFIG_MMU
+> -       ti->cpu_context.msr =3D (unsigned long)childregs->msr;
+> -#else
+>         childregs->msr |=3D MSR_UMS;
+>
+>         /* we should consider the fact that childregs is a copy of the pa=
+rent
+> @@ -105,7 +100,6 @@ int copy_thread(unsigned long clone_flags, unsigned l=
+ong usp, unsigned long arg,
+>         ti->cpu_context.msr =3D (childregs->msr|MSR_VM);
+>         ti->cpu_context.msr &=3D ~MSR_UMS; /* switch_to to kernel mode */
+>         ti->cpu_context.msr &=3D ~MSR_IE;
+> -#endif
+>         ti->cpu_context.r15 =3D (unsigned long)ret_from_fork - 8;
+>
+>         /*
+> @@ -130,13 +124,10 @@ void start_thread(struct pt_regs *regs, unsigned lo=
+ng pc, unsigned long usp)
+>         regs->pc =3D pc;
+>         regs->r1 =3D usp;
+>         regs->pt_mode =3D 0;
+> -#ifdef CONFIG_MMU
+>         regs->msr |=3D MSR_UMS;
+>         regs->msr &=3D ~MSR_VM;
+> -#endif
+>  }
+>
+> -#ifdef CONFIG_MMU
+>  #include <linux/elfcore.h>
+>  /*
+>   * Set up a thread for executing a new program
+> @@ -145,7 +136,6 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fp=
+regs)
+>  {
+>         return 0; /* MicroBlaze has no separate FPU registers */
+>  }
+> -#endif /* CONFIG_MMU */
+>
+>  void arch_cpu_idle(void)
+>  {
+> diff --git a/arch/microblaze/kernel/setup.c b/arch/microblaze/kernel/setu=
+p.c
+> index 7fcf5279ad15..f417333eccae 100644
+> --- a/arch/microblaze/kernel/setup.c
+> +++ b/arch/microblaze/kernel/setup.c
+> @@ -190,12 +190,10 @@ static int microblaze_debugfs_init(void)
+>  }
+>  arch_initcall(microblaze_debugfs_init);
+>
+> -# ifdef CONFIG_MMU
+>  static int __init debugfs_tlb(void)
+>  {
+>         debugfs_create_u32("tlb_skip", S_IRUGO, of_debugfs_root, &tlb_ski=
+p);
+>         return 0;
+>  }
+>  device_initcall(debugfs_tlb);
+> -# endif
+>  #endif
+> diff --git a/arch/microblaze/kernel/signal.c b/arch/microblaze/kernel/sig=
+nal.c
+> index 5a8d173d7b75..fc61eb0eb8dd 100644
+> --- a/arch/microblaze/kernel/signal.c
+> +++ b/arch/microblaze/kernel/signal.c
+> @@ -157,10 +157,8 @@ static int setup_rt_frame(struct ksignal *ksig, sigs=
+et_t *set,
+>         struct rt_sigframe __user *frame;
+>         int err =3D 0, sig =3D ksig->sig;
+>         unsigned long address =3D 0;
+> -#ifdef CONFIG_MMU
+>         pmd_t *pmdp;
+>         pte_t *ptep;
+> -#endif
+>
+>         frame =3D get_sigframe(ksig, regs, sizeof(*frame));
+>
+> @@ -192,7 +190,6 @@ static int setup_rt_frame(struct ksignal *ksig, sigse=
+t_t *set,
+>         regs->r15 =3D ((unsigned long)frame->tramp)-8;
+>
+>         address =3D ((unsigned long)frame->tramp);
+> -#ifdef CONFIG_MMU
+>         pmdp =3D pmd_off(current->mm, address);
+>
+>         preempt_disable();
+> @@ -208,10 +205,6 @@ static int setup_rt_frame(struct ksignal *ksig, sigs=
+et_t *set,
+>         }
+>         pte_unmap(ptep);
+>         preempt_enable();
+> -#else
+> -       flush_icache_range(address, address + 8);
+> -       flush_dcache_range(address, address + 8);
+> -#endif
+>         if (err)
+>                 return -EFAULT;
+>
+> diff --git a/arch/microblaze/kernel/unwind.c b/arch/microblaze/kernel/unw=
+ind.c
+> index 778a761af0a7..a530a7a6be7d 100644
+> --- a/arch/microblaze/kernel/unwind.c
+> +++ b/arch/microblaze/kernel/unwind.c
+> @@ -161,22 +161,12 @@ static void microblaze_unwind_inner(struct task_str=
+uct *task,
+>   * unwind_trap - Unwind through a system trap, that stored previous stat=
+e
+>   *              on the stack.
+>   */
+> -#ifdef CONFIG_MMU
+>  static inline void unwind_trap(struct task_struct *task, unsigned long p=
+c,
+>                                 unsigned long fp, struct stack_trace *tra=
+ce,
+>                                 const char *loglvl)
+>  {
+>         /* To be implemented */
+>  }
+> -#else
+> -static inline void unwind_trap(struct task_struct *task, unsigned long p=
+c,
+> -                               unsigned long fp, struct stack_trace *tra=
+ce,
+> -                               const char *loglvl)
+> -{
+> -       const struct pt_regs *regs =3D (const struct pt_regs *) fp;
+> -       microblaze_unwind_inner(task, regs->pc, regs->r1, regs->r15, trac=
+e, loglvl);
+> -}
+> -#endif
+>
+>  /**
+>   * microblaze_unwind_inner - Unwind the stack from the specified point
+> @@ -215,16 +205,7 @@ static void microblaze_unwind_inner(struct task_stru=
+ct *task,
+>                          * HW exception handler doesn't save all register=
+s,
+>                          * so we open-code a special case of unwind_trap(=
+)
+>                          */
+> -#ifndef CONFIG_MMU
+> -                       const struct pt_regs *regs =3D
+> -                               (const struct pt_regs *) fp;
+> -#endif
+>                         printk("%sHW EXCEPTION\n", loglvl);
+> -#ifndef CONFIG_MMU
+> -                       microblaze_unwind_inner(task, regs->r17 - 4,
+> -                                               fp + EX_HANDLER_STACK_SIZ=
+,
+> -                                               regs->r15, trace, loglvl)=
+;
+> -#endif
+>                         return;
+>                 }
+>
+> diff --git a/arch/microblaze/mm/Makefile b/arch/microblaze/mm/Makefile
+> index 1b16875cea70..cd8a844bf29e 100644
+> --- a/arch/microblaze/mm/Makefile
+> +++ b/arch/microblaze/mm/Makefile
+> @@ -5,5 +5,5 @@
+>
+>  obj-y :=3D consistent.o init.o
+>
+> -obj-$(CONFIG_MMU) +=3D pgtable.o mmu_context.o fault.o
+> +obj-y +=3D pgtable.o mmu_context.o fault.o
+>  obj-$(CONFIG_HIGHMEM) +=3D highmem.o
+> diff --git a/arch/microblaze/mm/consistent.c b/arch/microblaze/mm/consist=
+ent.c
+> index 81dffe43b18c..b7ad4a98636d 100644
+> --- a/arch/microblaze/mm/consistent.c
+> +++ b/arch/microblaze/mm/consistent.c
+> @@ -21,32 +21,3 @@ void arch_dma_prep_coherent(struct page *page, size_t =
+size)
+>
+>         flush_dcache_range(paddr, paddr + size);
+>  }
+> -
+> -#ifndef CONFIG_MMU
+> -/*
+> - * Consistent memory allocators. Used for DMA devices that want to share
+> - * uncached memory with the processor core.  My crufty no-MMU approach i=
+s
+> - * simple.  In the HW platform we can optionally mirror the DDR up above=
+ the
+> - * processor cacheable region.  So, memory accessed in this mirror regio=
+n will
+> - * not be cached.  It's alloced from the same pool as normal memory, but=
+ the
+> - * handle we return is shifted up into the uncached region.  This will n=
+o doubt
+> - * cause big problems if memory allocated here is not also freed properl=
+y. -- JW
+> - *
+> - * I have to use dcache values because I can't relate on ram size:
+> - */
+> -#ifdef CONFIG_XILINX_UNCACHED_SHADOW
+> -#define UNCACHED_SHADOW_MASK (cpuinfo.dcache_high - cpuinfo.dcache_base =
++ 1)
+> -#else
+> -#define UNCACHED_SHADOW_MASK 0
+> -#endif /* CONFIG_XILINX_UNCACHED_SHADOW */
+> -
+> -void *arch_dma_set_uncached(void *ptr, size_t size)
+> -{
+> -       unsigned long addr =3D (unsigned long)ptr;
+> -
+> -       addr |=3D UNCACHED_SHADOW_MASK;
+> -       if (addr > cpuinfo.dcache_base && addr < cpuinfo.dcache_high)
+> -               pr_warn("ERROR: Your cache coherent area is CACHED!!!\n")=
+;
+> -       return (void *)addr;
+> -}
+> -#endif /* CONFIG_MMU */
+> diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
+> index 45da639bd22c..7129a20881ea 100644
+> --- a/arch/microblaze/mm/init.c
+> +++ b/arch/microblaze/mm/init.c
+> @@ -29,11 +29,6 @@
+>  /* Use for MMU and noMMU because of PCI generic code */
+>  int mem_init_done;
+>
+> -#ifndef CONFIG_MMU
+> -unsigned int __page_offset;
+> -EXPORT_SYMBOL(__page_offset);
+> -#endif /* CONFIG_MMU */
+> -
+>  char *klimit =3D _end;
+>
+>  /*
+> @@ -82,13 +77,11 @@ static void highmem_setup(void)
+>  static void __init paging_init(void)
+>  {
+>         unsigned long zones_size[MAX_NR_ZONES];
+> -#ifdef CONFIG_MMU
+>         int idx;
+>
+>         /* Setup fixmaps */
+>         for (idx =3D 0; idx < __end_of_fixed_addresses; idx++)
+>                 clear_fixmap(idx);
+> -#endif
+>
+>         /* Clean every zones */
+>         memset(zones_size, 0, sizeof(zones_size));
+> @@ -108,40 +101,6 @@ static void __init paging_init(void)
+>
+>  void __init setup_memory(void)
+>  {
+> -#ifndef CONFIG_MMU
+> -       u32 kernel_align_start, kernel_align_size;
+> -       phys_addr_t start, end;
+> -       u64 i;
+> -
+> -       /* Find main memory where is the kernel */
+> -       for_each_mem_range(i, &start, &end) {
+> -               memory_start =3D start;
+> -               lowmem_size =3D end - start;
+> -               if ((memory_start <=3D (u32)_text) &&
+> -                       ((u32)_text <=3D (memory_start + lowmem_size - 1)=
+)) {
+> -                       memory_size =3D lowmem_size;
+> -                       PAGE_OFFSET =3D memory_start;
+> -                       pr_info("%s: Main mem: 0x%x, size 0x%08x\n",
+> -                               __func__, (u32) memory_start,
+> -                                       (u32) memory_size);
+> -                       break;
+> -               }
+> -       }
+> -
+> -       if (!memory_start || !memory_size) {
+> -               panic("%s: Missing memory setting 0x%08x, size=3D0x%08x\n=
+",
+> -                       __func__, (u32) memory_start, (u32) memory_size);
+> -       }
+> -
+> -       /* reservation of region where is the kernel */
+> -       kernel_align_start =3D PAGE_DOWN((u32)_text);
+> -       /* ALIGN can be remove because _end in vmlinux.lds.S is align */
+> -       kernel_align_size =3D PAGE_UP((u32)klimit) - kernel_align_start;
+> -       pr_info("%s: kernel addr:0x%08x-0x%08x size=3D0x%08x\n",
+> -               __func__, kernel_align_start, kernel_align_start
+> -                       + kernel_align_size, kernel_align_size);
+> -       memblock_reserve(kernel_align_start, kernel_align_size);
+> -#endif
+>         /*
+>          * Kernel:
+>          * start: base phys address of kernel - page align
+> @@ -181,12 +140,6 @@ void __init mem_init(void)
+>         mem_init_done =3D 1;
+>  }
+>
+> -#ifndef CONFIG_MMU
+> -int page_is_ram(unsigned long pfn)
+> -{
+> -       return __range_ok(pfn, 0);
+> -}
+> -#else
+>  int page_is_ram(unsigned long pfn)
+>  {
+>         return pfn < max_low_pfn;
+> @@ -330,8 +283,6 @@ void __init *early_get_page(void)
+>                                 NUMA_NO_NODE);
+>  }
+>
+> -#endif /* CONFIG_MMU */
+> -
+>  void * __ref zalloc_maybe_bootmem(size_t size, gfp_t mask)
+>  {
+>         void *p;
+> diff --git a/arch/microblaze/pci/pci-common.c b/arch/microblaze/pci/pci-c=
+ommon.c
+> index 60a58c0015f2..557585f1be41 100644
+> --- a/arch/microblaze/pci/pci-common.c
+> +++ b/arch/microblaze/pci/pci-common.c
+> @@ -325,12 +325,10 @@ int pci_mmap_legacy_page_range(struct pci_bus *bus,
+>                  * memory, effectively behaving just like /dev/zero
+>                  */
+>                 if ((offset + size) > hose->isa_mem_size) {
+> -#ifdef CONFIG_MMU
+>                         pr_debug("Process %s (pid:%d) mapped non-existing=
+ PCI",
+>                                 current->comm, current->pid);
+>                         pr_debug("legacy memory for 0%04x:%02x\n",
+>                                 pci_domain_nr(bus), bus->number);
+> -#endif
+>                         if (vma->vm_flags & VM_SHARED)
+>                                 return shmem_zero_setup(vma);
+>                         return 0;
+> --
+> 2.29.2
+>
 
---MGYHOYXEY6WxJCY8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied.
+M
 
-Hi Qinglang,
-
-Thank you for the patch! Perhaps something to improve:
-
-[auto build test WARNING on cgroup/for-next]
-[also build test WARNING on v5.10-rc7 next-20201208]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Qinglang-Miao/cgroup-Fix-memory-leak-when-parsing-multiple-source-parameters/20201209-201041
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-config: x86_64-randconfig-s031-20201209 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.3-179-ga00755aa-dirty
-        # https://github.com/0day-ci/linux/commit/f80ce6cc8c1bde7ecab3fed9f9a514091cec6f56
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Qinglang-Miao/cgroup-Fix-memory-leak-when-parsing-multiple-source-parameters/20201209-201041
-        git checkout f80ce6cc8c1bde7ecab3fed9f9a514091cec6f56
-        # save the attached .config to linux build tree
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=x86_64 
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   kernel/cgroup/cgroup-v1.c: In function 'cgroup1_parse_param':
->> kernel/cgroup/cgroup-v1.c:912:23: warning: missing terminating " character
-     912 |     return invalf(fc, "Multiple sources not
-         |                       ^
-   kernel/cgroup/cgroup-v1.c:913:18: warning: missing terminating " character
-     913 |         supported");
-         |                  ^
-   kernel/cgroup/cgroup-v1.c:1276: error: unterminated argument list invoking macro "invalf"
-    1276 | __setup("cgroup_no_v1=", cgroup_no_v1);
-         | 
-   kernel/cgroup/cgroup-v1.c:912:12: error: 'invalf' undeclared (first use in this function)
-     912 |     return invalf(fc, "Multiple sources not
-         |            ^~~~~~
-   kernel/cgroup/cgroup-v1.c:912:12: note: each undeclared identifier is reported only once for each function it appears in
-   kernel/cgroup/cgroup-v1.c:912:18: error: expected ';' at end of input
-     912 |     return invalf(fc, "Multiple sources not
-         |                  ^
-         |                  ;
-   ......
-    1276 | __setup("cgroup_no_v1=", cgroup_no_v1);
-         |                   
-   kernel/cgroup/cgroup-v1.c:1276: note: '-Wmisleading-indentation' is disabled from this point onwards, since column-tracking was disabled due to the size of the code/headers
-    1276 | __setup("cgroup_no_v1=", cgroup_no_v1);
-         | 
-   kernel/cgroup/cgroup-v1.c:912:5: error: expected declaration or statement at end of input
-     912 |     return invalf(fc, "Multiple sources not
-         |     ^~~~~~
-   kernel/cgroup/cgroup-v1.c:912:5: error: expected declaration or statement at end of input
-   kernel/cgroup/cgroup-v1.c:912:5: error: expected declaration or statement at end of input
-   kernel/cgroup/cgroup-v1.c:906:11: warning: unused variable 'i' [-Wunused-variable]
-     906 |  int opt, i;
-         |           ^
-   kernel/cgroup/cgroup-v1.c:904:24: warning: unused variable 'ss' [-Wunused-variable]
-     904 |  struct cgroup_subsys *ss;
-         |                        ^~
-   kernel/cgroup/cgroup-v1.c:903:28: warning: unused variable 'ctx' [-Wunused-variable]
-     903 |  struct cgroup_fs_context *ctx = cgroup_fc2context(fc);
-         |                            ^~~
-   kernel/cgroup/cgroup-v1.c:1276: error: control reaches end of non-void function [-Werror=return-type]
-    1276 | __setup("cgroup_no_v1=", cgroup_no_v1);
-         | 
-   At top level:
-   kernel/cgroup/cgroup-v1.c:849:12: warning: 'cgroup1_show_options' defined but not used [-Wunused-function]
-     849 | static int cgroup1_show_options(struct seq_file *seq, struct kernfs_root *kf_root)
-         |            ^~~~~~~~~~~~~~~~~~~~
-   kernel/cgroup/cgroup-v1.c:817:12: warning: 'cgroup1_rename' defined but not used [-Wunused-function]
-     817 | static int cgroup1_rename(struct kernfs_node *kn, struct kernfs_node *new_parent,
-         |            ^~~~~~~~~~~~~~
-   kernel/cgroup/cgroup-v1.c:33:13: warning: 'cgroup_no_v1_named' defined but not used [-Wunused-variable]
-      33 | static bool cgroup_no_v1_named;
-         |             ^~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-vim +912 kernel/cgroup/cgroup-v1.c
-
-   900	
-   901	int cgroup1_parse_param(struct fs_context *fc, struct fs_parameter *param)
-   902	{
-   903		struct cgroup_fs_context *ctx = cgroup_fc2context(fc);
-   904		struct cgroup_subsys *ss;
-   905		struct fs_parse_result result;
-   906		int opt, i;
-   907	
-   908		opt = fs_parse(fc, cgroup1_fs_parameters, param, &result);
-   909		if (opt == -ENOPARAM) {
-   910			if (strcmp(param->key, "source") == 0) {
-   911				if (fc->source)
- > 912					return invalf(fc, "Multiple sources not
-   913							  supported");
-   914				fc->source = param->string;
-   915				param->string = NULL;
-   916				return 0;
-   917			}
-   918			for_each_subsys(ss, i) {
-   919				if (strcmp(param->key, ss->legacy_name))
-   920					continue;
-   921				ctx->subsys_mask |= (1 << i);
-   922				return 0;
-   923			}
-   924			return invalfc(fc, "Unknown subsys name '%s'", param->key);
-   925		}
-   926		if (opt < 0)
-   927			return opt;
-   928	
-   929		switch (opt) {
-   930		case Opt_none:
-   931			/* Explicitly have no subsystems */
-   932			ctx->none = true;
-   933			break;
-   934		case Opt_all:
-   935			ctx->all_ss = true;
-   936			break;
-   937		case Opt_noprefix:
-   938			ctx->flags |= CGRP_ROOT_NOPREFIX;
-   939			break;
-   940		case Opt_clone_children:
-   941			ctx->cpuset_clone_children = true;
-   942			break;
-   943		case Opt_cpuset_v2_mode:
-   944			ctx->flags |= CGRP_ROOT_CPUSET_V2_MODE;
-   945			break;
-   946		case Opt_xattr:
-   947			ctx->flags |= CGRP_ROOT_XATTR;
-   948			break;
-   949		case Opt_release_agent:
-   950			/* Specifying two release agents is forbidden */
-   951			if (ctx->release_agent)
-   952				return invalfc(fc, "release_agent respecified");
-   953			ctx->release_agent = param->string;
-   954			param->string = NULL;
-   955			break;
-   956		case Opt_name:
-   957			/* blocked by boot param? */
-   958			if (cgroup_no_v1_named)
-   959				return -ENOENT;
-   960			/* Can't specify an empty name */
-   961			if (!param->size)
-   962				return invalfc(fc, "Empty name");
-   963			if (param->size > MAX_CGROUP_ROOT_NAMELEN - 1)
-   964				return invalfc(fc, "Name too long");
-   965			/* Must match [\w.-]+ */
-   966			for (i = 0; i < param->size; i++) {
-   967				char c = param->string[i];
-   968				if (isalnum(c))
-   969					continue;
-   970				if ((c == '.') || (c == '-') || (c == '_'))
-   971					continue;
-   972				return invalfc(fc, "Invalid name");
-   973			}
-   974			/* Specifying two names is forbidden */
-   975			if (ctx->name)
-   976				return invalfc(fc, "name respecified");
-   977			ctx->name = param->string;
-   978			param->string = NULL;
-   979			break;
-   980		}
-   981		return 0;
-   982	}
-   983	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
---MGYHOYXEY6WxJCY8
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-H4sICOPR0F8AAy5jb25maWcAjDxLc9w20vf8iinnkhyc1cNWOfWVDiAJziBDEjQAzkMXliKP
-vaqVJX8jaRP/++0G+ADA5jg+JBp0o/HqNxr8+aefF+z15enr7cv93e3Dw/fFl8Pj4Xj7cvi0
-+Hz/cPi/RSYXlTQLngnzGyAX94+vf//r7w9X7dW7xfvfzs9+O3t7vHu/WB+Oj4eHRfr0+Pn+
-yysQuH96/Onnn1JZ5WLZpmm74UoLWbWG78z1my93d29/X/ySHf68v31c/P7bJZA5f/+r++uN
-103odpmm19/7puVI6vr3s8uzsx5QZEP7xeX7M/tvoFOwajmAzzzyKavaQlTrcQCvsdWGGZEG
-sBXTLdNlu5RGkgBRQVfugWSljWpSI5UeW4X62G6l8sZNGlFkRpS8NSwpeKulMiPUrBRnGRDP
-JfwHUDR2hQ3+ebG0B/aweD68vH4bt1xUwrS82rRMweaIUpjrywtAH6ZV1gKGMVybxf3z4vHp
-BSkMuylTVvQb9uYN1dyyxt8CO/9Ws8J4+Cu24e2aq4oX7fJG1CO6D0kAckGDipuS0ZDdzVwP
-OQd4RwNutMlGSDjbYb/8qfr7FSPghE/Bdzene8vT4HenwLgQ4iwznrOmMJYjvLPpm1dSm4qV
-/PrNL49Pj4df34x09ZbVBEG91xtRe3LRNeD/U1P421ZLLXZt+bHhDSenvmUmXbXz8FRJrduS
-l1LtW2YMS1fEjBrNC5H4A7MGFBaBaQ+eKRjTYuCMWVH0sgRiuXh+/fP5+/PL4esoS0tecSVS
-K7W1kokn3j5Ir+SWhvA856kROHSet6WT3giv5lUmKqsaaCKlWCrQRyCQJFhUf+AYPnjFVAYg
-DQfZKq5hALpruvJFE1syWTJRhW1alBRSuxJc4Y7up8RLLej1dIDJOMF6mVHAPHA8oHVAfdJY
-uC61sfvSljLj4RRzqVKedeoTdtfj2Zopzed3O+NJs8y15anD46fF0+eIO0bjItO1lg0M5Lg5
-k94wltV8FCuF36nOG1aIjBneFkybNt2nBcFn1kJsRraNwJYe3/DK6JPANlGSZSkMdBqthPNl
-2R8NiVdK3TY1TjlSrE7q07qx01Xa2qve3llBM/dfD8dnStZWNyAJSsjMGt5BniuJEJEVtJpw
-4LwpCkLmLdAnthLLFTJON72QYnfYkxn21GrFeVkboGrN/KjquvaNLJrKMLUnJ9phEbPs+6cS
-uvf7BHv4L3P7/J/FC0xncQtTe365fXle3N7dPb0+vtw/fhl3DlyVtd10lloajt2HkTdCmQiM
-R0nMBNnf8llAyD9gna5Aqtgm0laJzlA/phxUNvQ185B2c+nPDfkDnS1N7YsWwTaD5uhNVyY0
-+koZeYD/YOsGKYRdEVoWvXa1W6/SZqGn/GngmFqA+XOCny3fAdtS56odst89asLFWxqdZBGg
-SVOTcardKJZGACQMe1sU6POVvnlASMXhIDVfpkkhrJAP+xeuf+CNtfvDU7PrgYFl6jevQOVy
-3+ktJLqJOdhJkZvrizO/HY+gZDsPfn4xSoaoDHjjLOcRjfPLgC0bcLWd82z50yqy/jj13b8P
-n14fDsfF58Pty+vx8Gybu8US0ECD66auwSHXbdWUrE0YBBRpIBYWa8sqA0BjR2+qktWtKZI2
-Lxq9mgQLsKbziw8RhWGcGJoulWxq7XMdOEXpklQySbHuOhD86ABui0b6OROqDSGjD5aDvWBV
-thWZWZEDgmbx+tKOnEOoRUYJeQdVme/ud405iMwNV8GMHGTVLDlsMEWvBpfQt4HInDh4ByGI
-ZXwj0hkn1GFAV9Rd89MHDZCTlMGVoOwSeN3ghoBSHOfZII95v60eroJzR0+7ojYRFqYiXFwx
-iVtxE6HCyaXrWgLjoWkEf4tTyswpfoj87NL8/uCTAJ9kHOwYuGucikQUL5jnJSKbwq5bl0h5
-vGh/sxKoOc/IC1pUFsWR0BCFj9ASRo3Q4AeLFi6j3++C311EOMqTlGiX8W/q8NNW1nBO4oaj
-v2m5QKoSNETgH8RoGv6ggysXQwW/wbykvLZOrlXxscOV6noNI4MFw6G9La7z8YczUePvEmyo
-QKbxRgOBwvCknXiY7ngnzfkKFEMROkLW+5u6VoE29yXTaveqFH4yIXBdeJHD9itaOKO1EyMm
-DBx99A29aTeG76KfICzeXtUyWL1YVqzIs1AwVR6wifWZc4rx9QqUdRCeCjrQF7JtYD8oNmPZ
-RsA6uhPwVASQTphSwj/HNaLsSz1taYPjG1sT8H9gF5B7Qc8RGHYXUYIxjg2ko877WVHTHgxj
-77Uh/h8iUMHIhBZI7p4lgSZzXCkMWKWWJwI/TPOPRH/oxbPMt3ZOaGDMNo6VbCNMp92UNvAM
-GDs9PwsSMNaD6DKf9eH4+en49fbx7rDg/z08gqfJwLdI0deEQGJ0IMlhrYmgB+88lH84TE9w
-U7oxXDjh3LAg+cfgINSa4tWCBZkUXTQJyau6kJTpxf5wUmrJ+xMPqQEULTq6m60C5SEpkQ3R
-MI8BrrF3gHrV5Dk4ejWDYfwMgRdoyVwUkSgNuxkmTXuqV+8SPzjf2Sx38Ns3Ui6tiyo546nM
-fPGTjakb01ozYK7fHB4+X717+/eHq7dX7/xc6hqsZe/yeWszLF07R34CK0tPNK1clOhlqgrM
-oHDx+vXFh1MIbId5YBKhZ4ue0AydAA3InV/FmQGnvqeNg/porZ8RBAdDVoEVIlGYBslCb2HQ
-AhgqIKEdBWPgoGDynlv7SmAAU8DAbb0EBjGRRgDH0HlxLk5W3PMibKDUg6xGAVIKEzWrxr8/
-CPAse5Jobj4i4apyuSuwmlokRTxl3WhMDM6BrWK1W8eK3h0eUW4k7AO41Jeee2TTnrbzXOjR
-6SKYeq+EBlOgWQWixzK5bWWeox999venz/Dv7mz4F0pPq8t6bqDG5lI9HsjBb+BMFfsUk3nc
-82OyPTjLmCRd7bUAFolyqPXSxX0F6Dwwje+jUAumzZ1Y4aHz1KkKq73r49Pd4fn56bh4+f7N
-pQm8+DDaR09G/VXhSnPOTKO48+lD0O6C1WEyC1vL2iYgCd23lEWWCxsxjpaNG3BIgK1JTYz0
-nFSAr6goK4wYfGeAk5A7J24igjduTQHRfiozFFGG4ShEFvdzgKLWena+rBwncir2ElLnbZmI
-mSkMzNRdEUAcWzShV+BiFlkC2+cQVgzKh7od2IPkgpsF7vmy4X7SEw6LYQYtMDFd22yANyDo
-WlQ20xtu+WqD6q5IgDHbTc+W4y6Rybk1WPZobi7HXDeYHQV+L0zou9abFTnrKMV3av59JmUg
-8gds80qiq2LnQjltqaqGiY45i/UH8pTLWqcEkRI9vIuAANj5kiQxGJC6OcGuqgJL3ZmJOM+E
-OMV5ALyasjv6qqms9+FR4lbUoF1cGK2bSLjqq7aSkcowOg0b0rLepatl5HJgnn0TtoBxFmVT
-WpnPQS8W++urdz6CZUgIG0vtOSUC7IDVU20QYFrZL3cTDeZ7Upi3xZCVF5zOf8BEQBLdDnkJ
-nK4ZZH3auNov/WRk35yC08oaNQXcrJjc+XdFq5o7JvaQWZ0MTcMCslLQHMOAtYUEn4rmSbYD
-lUjlTqxx1+i9gnlP+BKdLhqIV27vzyfA3jEeT62DeC1ObenSTHVZScmK5V68n287c+Nzrmwp
-G6S4khjzYToiUXLNK5fqwDvDmRHKMKnRNWFWtuBLlu7nu8XM0TcHzNE34oWdXoH1mYLcPWck
-SisOnnYxKlFn271Y6evT4/3L0zG4MPEisV62qy6knMVQrC5OwVO8xgjTIR6ONXpyG9qeISiZ
-mW9opF2gDR5oM1xXhKZX1gX+hytaTYoPa5rbRQpyDspx7gR9VdI5HCI6nvfW/wrbMqHgUNpl
-gg6ljkkwV2OjjUg9GG4T2HOQnlTt60AAIhCYGRtPJPtepujrwSasygjcUeuHOZqMcMAH8BjN
-BnCrE3v3A2+giwijA0WFA6JAgSl6ZwRvfxuO7vTh9tOZ9y883RonMpW00BNECwThmdSYIFGN
-TRvOnKq7Pcdrla2nekqjAgWKv9GJFgZiKjU7MESFc5vsAv2YV3VJ1pdYe1qKyFx2zuawmcZV
-O7RrvtcUptE7exwYqdD+6YhRza4pwsTMN4nLc9rGrG7a87OzOdDF+zPKC71pL8/O/Dk7KjTu
-tVcEt+Y7Hmh524AxLyXWqWJ61WaNH8sMARbIpcLw7jyM6iDwxlxLJyhjfGLPF1PbmCakXMme
-LoT3ywroXgRk+/iuO14I/MEweaZemrporC/gJYnBVKGHWvrgszinRsOcCMXqNFhSjLKTVUEL
-XYyJlQH0PVKZ2dQEzLyglbDMRA7Lz8yJjKpNVRSg9Wq8afRzhKeC2UkihGVZG+lkC3NasD+J
-bvt+hKPgr02sOjssXRcQetVo+kwXRxBYmLyw6RKizMnHM6s6QHGW/umvw3EBlvP2y+Hr4fHF
-Lp2ltVg8fcNKVHfX2/tQLqVCMWmgoepyPrAD37sIAqLtR2fYsdRLpIKP+e5Zu9NHrjhPb62T
-Xz1/WaHToKrluolzKrAjK9MVt2GXOksjIsBPBmyHm6R1UrSXXhztK+LaZS/JCNnRqlPVmshY
-2pnWfv7UNim+aYE1lBIZ97NY4YigpLqCq7kxWbyghBmwm/u4tTEmdIps8wZGl3OkczbtkAGj
-zuHbsEtxOHGto+HHWGlwBGmwyCabNwCj9lD5hdMcCbLlUgGfgPs7N+3OSY6op42GiLrNNOgc
-tBPeZeuoKmx3K35NDaKXxVOPYQQ7kfrOrSEVeJdAJxFwhhIiQlCbakK43xmnh+b691hCxjGQ
-Y+aETlK5vjPVDP7Wldys5Ak0xbMGixDxFmPLFLobM4bEosNf84WrVhJq7mmIsL27Rg0pImB+
-vKw2+Yk12r9zeotqNNmyBr6b9zBBVUYxus7F9VjetsiPh/9/PTzefV88390+uABttJidqM1V
-eBG9B8Li08PBe4KANV7RTXXf1i7lBnyOLCNVXoBV8qqZJWE47RwGSH2CjjxjB+qTeb5tH1bk
-hXLWN53WRPbewA+Not2q5PW5b1j8ArK4OLzc/farFyWDeLogLjCO0FqW7sfMtTwwT5VcnMGy
-PzZC0VGn0AxUNs1dCMtKhpkLSrTBn6iCi0obUex1npC7MbNMtwX3j7fH7wv+9fXhduIu2LTZ
-EG7PBgq7ywt63AltSzy/P3796/Z4WGTH+/+6++Exlsgo5yQXqrTqA7QdxE3+yoVOsZ46ySnF
-kW/bNO/qN7yrFq+190t9kksplwUfBqVu1XMxXNb08mwOX463i8/92j7Ztfl1djMIPXiyK4GW
-W28C/wwz0w2EEzeTg+lZBCzXZvf+3L/90nh/dd5WIm67eH8Vt0J00Wh+Hb2zuT3e/fv+5XCH
-bvXbT4dvMHUUrtHRDKKrMJ/kwrGwrTdPLtPXb3+XzAY/0ndx7DZId7XtkehbUPtP059rd81G
-bNAfEPqB3kv8lIV782Sjasxt5Ca4auigNsyZQu30Rge4qWywhwVjKXopkc+KKXN8NWRE1Sb4
-1CQiJGCb8M6ZuKhdxzeHrhVvySiArOn2jgwY5DanyqrypnI5BnBf0WejXlhseFi6ND4wsRRX
-4K1HQNRp6NOIZSMb4gZcw6FYa+FeLUS7Zu+wwWnHOLErj5siaN5npGaAXVaunGy6m7l7beYK
-HNrtShjeVQf7tPDuWQ+Ruy3xdz1ikrrEwLZ7NhafATgPIKZV5u5nO05BnR/jaf5x7njwidts
-x9W2TWA5rrQxgpViB9w5grWdToRkyyqBtRpVQWgPGx9UWsWlRAQ3oOOHga8tBXXXz32p6IQI
-MX5fFaS6LQoTNuOpUdJMQf0irg6tLJsWYgcIEDpXHktvSDDWjFMoHXc5aXCl2t11VjSZrtVd
-VczAMtkEseW4Cs1TLD85AeoKPDyVFXeZQ/RI4T4XwBQRcFJCMOYUAsjJd2dbYVag8dxZ2gvp
-+MBROfCdsQpkPX18MfOQI9aeP3zEgRkbTMvM6K4KM9+oxvvMzD/Fa+uGpIlwrGyLcxe2hsUC
-MUcEpljRRy9zq7dMbA9Bt/Spep6CdHqJAgA1mDNBU4NFpMj5hEa0oD6DSY0d1FDF9m4nDK2q
-w15jWdbIS/2br6lNgZkKlz0bqsFGjK4C6/IiEe4GlJoz7rTrPUKpttEuGLA+pn9MqrZefdUJ
-UNzdbTnZnQKN84UwsgBPu0swh5Zi8BfAqFFOAWpXv94x7toVj3oXStFR9E7NPGR82O28wVRu
-3v55+3z4tPiPq8z8dnz6fP8QXDAiUrdpxIQstPfc3Nij+x3B6CLGE3MIloGP5tHHFFXwnvEf
-erQ9KdA6JdZJ+/rKFgVrrFYdn9V3Qucvpzt5+xoTDovR2ZIOq6lOYfRuxCkKWqXDI/V47yLM
-mei1A6OgKT5TxdThYJHcFjwJrVERD286WlHa9C71TqMCVgZNty8TGRRyd9rKvhGL07xJmDrH
-txM26lP8Y1gN1L+qSPSSbHQPpaN2TCUslTDk64wO1Jrz4FKqR8DqOCpgta+QuhsPe4mq4t7b
-hApYHV28u8l13AP3TdaMSp4g2MloL+aBViXBbd6VX/ViXd8eX+6R7Rfm+ze/BBAWYIRzNrMN
-Pu3wlT0EdNWIMQto06ZkFQvzcyEG51ruZrJxIaZI6VR5iMWyXM/Px14GGJ7OYyihU+Fre7EL
-FjpMD6v0BgCZrhFLRu6RYUrQNEuW0jRHDJ1J/QOcIit/gKGX4gcYTWGfop9aoG5IFlgzVZLr
-xvQJ0YyfUrj6QO+HJ0zUXPu0X8TCvgCUHzEvFwoFtKFHKWTYbO/C3EcR5Pg8MshTQU8hXUVS
-Bt5PXJ46xVrvk1AJ9IAkpzO84dCjLILL5PlxTdUJNpZZWvMx8W/GyzYjMVpVpfelBmvVXGdg
-ebmt/KhAbTU4DjNA63fMwAafxX7cIqNqQOchcWe1pbtO2gfvosIZgRUsWF2jYWJZhpastcaJ
-ct/6BzVtwnP8H0ac4QcVPFx30b1VQNxf8/hU0/IJ//tw9/py++fDwX5MaGGrm148rZqIKi8N
-+t+eYBR5mCDrkHSqhO+6dc1geP0v9Ei8bekKmTsmmpuFnWJ5+Pp0/L4oxyz5JJF3ssJnLA8C
-1d4wCkIhQ3gHfiynQBuX351UI00w4mwIfjVi6bsM3Yz9l+1+B6yfQHL2o0JVcNJzl/9hezel
-WXD/4EtGn0SaLxvoSgVsmYCrh3w3nizEPFH2zUabiqNkB+EtUUKQ2oRbG71owKoUKxmtGR7/
-eK8+myqlNJqrnpZ4ceHjrzX1kqnfBHum7nMambp+d/b7VSBW/6COPYQQQ80E7QMBMlhnxZbt
-KVeCxC7dK0Qigte2MqNL444mq+DgLGFB9UxBDFWWd1NLGURDN0lDOZg3l3lQIXqjp2/2+rbh
-iUjp9CFFrkfFqG+kOqTi8a6jT0qPYDhfrhQfsqV2m8KPvNhkrm2fZnQGnVrbF09hesS9O7Fv
-I/wBN5YY8pOsgzeEiIjvaTdB5YF79DCUxkYWRruvocDAbV6wJWVK6rDEzr0QtbsU8D/oHrAd
-Vboq2cxtn80q4+235RWsOqbrPfw9sUkdVvgKfV5n9xQq7t9ZrBP39qVPP1vFXx1e/no6/gdi
-ZapGCFTNmlPBCfganjuMv8AwBddSti0TjA4sTTHzJCZXpTW5dP0qx+QLVeEgqvBjBqJ2z7rx
-0z70rWo9RDCtrf6mspWAVFf+J6Hs7zZbpXU0GDbbQry5wRBBMUXDcV2iFqeAS4UiUDY7YpoO
-ozVN5TIso0e/h2ALAmjB6d12HTeGLotAaC7pRwEdbBx25u4a8Rj9sQwL43pmx9zU0NrNnPa4
-XL8RGS5qMmndN4fkm6yeZ1CLodj2BxgIhXMBpSfpWhYcHf5cDtxGmZgeJ/0fZ1fS3DiOrP+K
-Yg4vZiKmpiRqsXToAwmSEkvcTEASXReGy1Z3O8ZtO2zXTL9//5AAFySYkGbeoRZlJkCsiUQi
-8eEQmG7bbs3s+L/85eHnj6eHv+Dcs3DJSUAG2bMrPEyPq3asg5eRjnZRQhqgAaLRm9DhgoLa
-ry517epi366IzsVlyJJy5eZaY9Zk8USMai1pzaqi2l6x81Baz8r2E3dlNEqtR9qFooKmKdMW
-stIxE5Sgan03n0fbVZOern1PicnlhblFqjK9nJHsA3UKRu1US8FKaxIpmjW7NM0eZVIaEM7g
-eMm5AHYy0u5Ufnu5hma2NWIK6yMqkhuUF5hSO4WMOXUyZw59XYV0J8peptvcF/Qtk9RzfCGo
-knBLGa/67BA0C/etZgUSmdkx9fNmPfVmtyQ7jFge0atgmjIaxtMXfkr3Xe0t6az8ksZHKHeF
-6/OrtDiVPu1rSqIogjotaaxPaA83ylLIKEiGMIeDbbkNPMq9+R9GZ8ju85VHk8ysKKP8yE+J
-YLS2O3IAChTOJVZh6DqXkax0rJ0amoj+5I67DSRdUmkFOyXSOdwbh2XAJXVbCfcHcsYp5VuZ
-RngVK4A7dAsKw3a1oFCQoTTVHQGDgwxLfc4TSoOrhRoQ0/hdg2/8BrfIGmoBVxxZxHB8oQGC
-sWk8+Tx/fFrxmKrUe2HhBvaW+SilxTCtbaNT/azyQ1dTOKZJQM8sP5ZtUrm0VdzsGbVJPyVV
-lOoIpeHD8Ram4cwU103RMV7O58ePyefr5MdZ1hMcTI/gXJrIBUoJDC6kjgKbJtjZ7BTWnUKo
-mA5lyExIC/WzPQfR1+rWhp6O9wkNdSn7Z2OsYfr34OBFHbkhoMmMdk9oQ4lF5U6OF1rn5THd
-8iWXC50LuxMs3pjmUUt5p9QAVAM8C8ZWHe5fRwgcCbwlhVZ7LSUSO1EUaaegLKdYNKATqc4O
-z/96ejCjNJFwwg03dPurLzv8lktUANM8o10OSgQiZcc5deGN0nAtxChbdczoWkWRi9/+0ULu
-ckRULjTLndV58SANiBBfA7Jv+n9bwuiOLtCbiFXMEuVlNqZQsEE9Tx1ZcVlLepghMXCq/UfC
-A2Cbo5Jw79KqTVhalWlKkdlFboKT89NNFFJbbxVYza0+c8EldzzlMenOMnHX6uBrbpXMfbMJ
-LmOIQ4Dz8IWVKThoQWG29wPs3JPi6MhbzgWcU+lz8xqxInklAltRH8RxbbpxDxy2KKMbnj3z
-0pXgXghi1S5LOMYHJRhVHvxFzcxhOrlmmYrNv5iyYReSA6/5LpbLpeO+qS3bejavCvMdXk/1
-STlLJg+vL5/vr88Am/o4DmOHpLGQf7suwIIAoM9TBTGbtgYcL2NpPKqYtVY9fzz99nKCkHEo
-EHuV/+E/395e3z/RDQY5X0/2BD6pj4+pgEpDU7sEuOc7ZkR5bJSEvqixPVkTV1rkuenXvFQZ
-fVj1+kO28tMzsM92ZQf3qFtKd8/94xkgBhR76ELAuqYajvlhlDNb/bVUqgk7FtGOJotuTCTh
-atHm2403wyXSJCrPlhNZ+9HuWs3VxujP1ekB30+G6OXx7fXpBTcfAIBYgccmtb9eZbGlDSIi
-DMeMPtF/9OPfT58Pv9MT0dTop3Z3JCJmZ+rOYsiB+RXS0RlLfNzMQFGRXQ1LSIBfmYM2MNqy
-f3m4f3+c/Hh/evzNjLO5A/gXM2tFaAqPyFOzpOIoduMUpJ+sZRV8lwTmAhOubryN4flZe9ON
-Z1YYig9H6vaLMJVfJqEZOtESGsETOezGdOVwA9cP3G+fT212e8lZbutE3agDQSKLzJdyW3Sk
-2vMihL03ZHvIIFYPX3/suHBiQ4W0dHwVyNYwuWfuuq+6f3t6hOAMPXZGY85oheVNTX6z5E1N
-+fTNpKv1uCqQUK4X3phT1YozNwe4o6DDhZ6nh9a2nxT2uf9BB5TuohTFOCAyYF7s0KMqR5GV
-OG6tozUZhKaSK6EcVnnopwUZQFNW+ov9BTD11E7XFf2VqedXqcreh+LHJzUfUXhGR1IHiCEA
-qRubjlpUfv8Ro05DKnUJoW+PvvSkQG+OkhUektAhlvZ9sLZy/QmhirmEk1AU8NE3OGyawyo5
-OtyjrUB0rBxOay0AKrjNptGRCrRzFMR8FT/TCqtrRURPGhBlCknE8ZYMsI+HFEAdA2n6iMSM
-uK2iLToj1r+bxGMjGk+TLDiM0kK80YiWZUiLtZmajzt0ieUgDsFfMuYwFoyzmBPlgjvJx8yE
-d5QqTQX+qzEZm2MWWLEyCbogeBy/PJ7A/a3WR7V3xyFrRS0cPlmegIcC7itbF1K7pLukQa3Z
-Enqdi66adt82/CZFnrtuh2xz83ZchtHH5U81xvjYBu9D/d7u3z+QBoZEfnWjYgVx1iiM0GIV
-MUWV3aJgwS6w9H0yCE/RccpfZs4M1LVAFeNvxtCOxSBYAGIFkL0yqrBqh4P8rzR7IUxQwyGL
-9/uXD33fdpLe/++oZYJ0L2c/t1tZlZ12VnfcpqJgJGL86lUufztOAC1ONzHisM2jG4w8NhE8
-eGZ/QvVWUZIDVYRDiCigxSmXd790+9nXqsi+xs/3H9Lq+/3pjdq7qXESUyYUcL5FYcQs5QV0
-qcB6mCs7KzhlUOerBfkeAUiBbgj8fN+ohyaaGc7c4noXuQtryMvvJzOC5lElVds1uRw6iqkq
-k4V8PEuBI5dyKqapYx9Eklqj3s/sfCoHxKWa1AGPbCuiM3bcXau3j/dvb+CBb4nKV62k7h8A
-NmjU/wUoxLqLmHJcgoDBtrtzIHmpAmfhzaquigxXO2G7lojyinjgVSQkuCrSfj1dUMk4CzyI
-X3IcG4FIHonP87Mj43SxmG5rq4Rq136spN1fYQ5sTrtu6zbdV9pWv0Fzfv71C2y07p9ezo8T
-mVW7TowtaPWZjC2X1qjVNADTjpOaZFlbAOBAuLRqHAe5OVWJgBCxKonvXDKFKO1Wz9iu9OZ7
-b7lyNCvnwlta452nuunQACImgfwjqZe1sZfhFw+1T+jp459fipcvDJrf5b9XdSvYdj6UJAAU
-XdjiNdkvs8WYKn5ZDP19vSv1UZq06/FHgTJ6uEBp8zwCnqMlVbKIMdjK7/wssx73cojIhYOE
-1VVq56RSXMolwAe/7dbv31/l4nv//Cwnkyrwr1rdDL4TosJhBFgAuNcNBj6lsJmhIAvJXI7b
-XiKrSadiz9+WptHbk8f42MY3LWdYz/ErQEfvVtns6eMBN4Ncwu33t/q08Bd6XbHndM6NUcsk
-fF/k7buN44oPbL0eXwrCupRIXRkwbvYRokEglPawJjkAGenRpW8CMCZnzm9yroy9jOaoM1Uq
-laY/T4Z5pXJOS1nKyf/of71JybLJHzo+lNSpSgyX9VYFwA92S/uJ6xlbSxBUuaA3nMA/BHS0
-IfAU7ji97QiFYQcW6JxDWuuHPBGOJ3wlVypuIdA1fUnUccwka18E3xChBXdAtG5UmDS0UZS/
-UfxtEXcwoyEG9dcMiEpBNH1rxUauMBDuSnUtzEaua0mUA8UMZVVxrGp7n8latPiH3VMAn68P
-r8+m7zQvMR5fe+fR/G53DTI/pCn8oKMVWiHwcXMOi1tSzr2avur33bXudbkcZDNeFEjl1uCi
-QFgFdABRX5srfL6/wq9poPeO76oiC6V1ByEmLDw6MNXAHQxelsjxGJ0OdrjaFddaoOK4e/R6
-fswidOZiNxvwySAHyWhiajVSHOFXWxzIbZBH3UmIxMyVWNhxgJ0KNavSL1qU08QPl96ybsKS
-xOgLD1l212qAYaMbZID7Qk3GnZ8LbMD3z0g0Jem1F0mcjUwmRbyp6xmRIGF8M/f4YmoYz3LZ
-TgsOAPegihL06N6ubJLUsAT8MuSb9dTzzUiShKfeZjqd2xTPgJWVWzNewHu3krNcotvSHSvY
-zW5u6PPQTkR9fjOlvOO7jK3mS7RrDflstaaOR0DDw4UQuVWfD+f03beQEY7OpIT1ZoM+fm14
-GEekNQUnGpXgxm6kPJZ+js8amGcrZ20XRCXs9j7GM0pz5Gz3FsRHB+7S6GJN1HCpI3Lm16v1
-zdIsVMvZzFlN7WB6dl0vVqP8klA0682ujMyat7womk2nC2TM4Ip28iy4mU1HY1tTXSEaBlfO
-MX7ISmFebBHnP+8/JsnLx+f7zz/UA2Efv9+/yz3KJzjF4OuTZ7CpHuVsf3qD/5rNLsCDQeqL
-/0e+46GdJnwOvmqiWj5EMys8+BJdbtCo3wlBarKIUCOSLmpaCR/1+ckxY44HIaL8dEti3bEd
-ip5TY95PGQA5MdJL1k0KvLPZ+YGf+42fINeBqXYHScDwQc+Zhz34SPl8vv+QVvFZbmxfH1Rv
-KF/n16fHM/z5x/vHp/JA/H5+fvv69PLr6+T1ZSIz0KarYeAAKG8dy8XUejpdkoUKWuOYKBdf
-whxSLI7uZANlizaXmgI5UBq7Z5YovsX4AIl30NszUbpPcldKFzpFy5cfjRxJHSE5qn0A8Cwp
-0FsqCuMYXpqN++kIrQ6OIJm6m/1ff/z87denP+1+GL3+3BuN42c9Ww7LwtVi6qJLlb7roCqo
-yknr9nLDqGMZFVvVBxwY1SECRszMcaCSpsBsgCOToqKhVrv0RRwHBYo56DjORgLX8so8ce/t
-uO8AYU+OWaifVc6O60ds5bLPe5k0mS3r+YV6gO9zUdfkB0SS1JfaX/UhmVRUSZxGl8u2K8V8
-RS1qncA39eBHToy2xHQs9q0l1rMbjxxIYu3NLjWCEiCyzPn6ZjFbUnmWIfOmsvmbIr00d3ux
-PDpR2fDjaU+7rXuJJMl88j7KIMGXy9l8XHyess00Wq3oHsqkZXgh12Pirz1W10SzCLZesemU
-GMl6xHazEdB/Op/jaCIqaCCp04dMKj8B/SrMNxdBCv+yXrkDiqXP1Gfb7+lnBv4qV/x//n3y
-ef92/vuEhV+knfO3sUrg5hNQu0rTBNlrJAhzlwS5PXsqo56oU8Xv7X5kjAOHqXCenIRoUgJp
-sd2iy9qKyhlcmYHjftQkorOCPqxeUKfdbbvjAsRMM+jNgIL0VX+PhFD2gHI77lZFT5NA/jP6
-LrBU3CX9vJWWqUqj1J3T26qo1Vqn7vmfQesrzmgHirjqyFfhELvbgdXbYK7lLwstrgkFee1d
-kAkib8S0huf81Mh5W6sJZbX5ruT27JHSGzTNOyrVMT6EmbnL7u/82c3CsXdUAj6DUrn61E/Y
-DSpLS4ClRkU5d1gDxgOxrQQ48IR+kbXJ+C9L9DBRJ6S3JDqEjTLwkZh6wHM6/o6KdxLiTr8L
-brUbiG3sGmyu1mDjqIElYpZ//AlUbFT3DVHwC52UsM3CYVlotX2UY8PVh9nxkI10dinknqqw
-2wpc/vzO1gt+xdBTXlpJyi96pltcbqHVgiEXVg0tOmx9OlZGHtJ2XHsT3jP0uEdVkqYKSfVA
-UamLUtvol9mAn2mmusT3xrnyzK9EeZuMpt4h5jt2Ye7tYJPt1JbZXRXY5b/DGr/de5ZHh3rR
-xctN07YnmXB4eLGu57PNzFZDsX1NxKTiDanibEOxs0gA+zZqo6S8tFTB62BUbEzH9WemFa7r
-JiJbM/K7bDlnazmjPCdHPQqgTyHgjFNtXWcu2Q5KAKBNhpeqLSkYREpitbDXykEmc1fvVpoK
-spvkGJyOWu029ccLDvpEkt3MxulCNt8s/7ygR6Bgmxv6lrCSOIU3sw3lRdT592FryNrLRkuI
-LbCWxqkrUxtJDlkG7sBxWNmWHq0TW5F2+F4S0b1wSUL35pJ8SU03ij0Rwl1Thb49KSVVgR2N
-yVFGyPrpwR/ZUZbpjg446INCEkJDO/kxYppgWZNYgKFAAzRZs3eAVrabgMEDyDQQDelSLopS
-vVY8Pq9oTT1FpyLkDhzhcenfOBS1o5lau6WZWr7/ZMtjjmC7lt1a8SPXM9yzn8zmm8Xkr/HT
-+/kk//yNckTHSRVBvCtVqZbV5AVHcYoX8zZ61GfSVCjgET4VOEyt+nkktE1jNEo+9PhguRZ5
-6EKSUEc0JAdKvz24rM7oVr2vcQGUyHHdV8HPRK7oHZ8BcAO9JSidrGPt4oBPyBGbHcg19xDS
-24+tA6JClo9HznrBrrFw3GSuEifigzjQZZf05qj6syq43LE5HNfWWWdH1iedcNpuoDrkaeaA
-MZW2n1W+LmDq8/3px8/P82N3UcI3IKFRfGh3Ve0/TNI70OHxABQVAHU+RnlYVM2c4fPAKJ1f
-UuJSgTtWvUFgvaHbsaiEw3Em7spdQSK7GiX1Q78U+IXNlqTey4xpNWFmsI3wtI3EbD5zYVt1
-iVK5r0vkR9A1J54mrOAOlTEkFZH9HF6UOxbJ9gRGkA94mplm/necqdwz9V18LS3yRsuf69ls
-5jzLL2HA2i8r4d7OM+ZSDPBGVL0lr2KYRZJaLhfYLvFvHTC/ZjrzOrtJh4YokPHvi9QFN5PO
-nAxaFwDH1X/XBtKhKipcT0Vp8mC9Jo0iI3FQFX5ozdRgQU/EgGWglGlVCC4YksFcA1Mk2yKn
-dQJk5thLqwcv7VNnM+GVoSorzKznDIOcOrwy0gzxgeZyQmHyoETH5IDaVewOOVyOgr1fScNw
-mCLH6yLB1qH2DJnKIZMmt4fEhc/SMa1CELXcRSnHICQtqRH0HOjZdNf3bHoMDuyrJUuqCmNf
-ML7e/HllPjBp8RZYCSZkfI+RRAHVogm4jTK5NyaV51CauomYT/PCqxo3xOuVRhBMEzKgyEjV
-YqMMH0o9Op6KywHkgM4w8oMH9CJ8mhV5V8sefbdDXDWlyUvw/OQAgwpXI21dM84pPnxLBEdP
-N3Yby+z4bba+ojn1c3io445Xarw7+KcIgzUkV0dIsvaWpn/TZEF4A2qKGamyo/a4E8lNHeB7
-WxrGR9IdOiWpXUnshRZzXNktXCWTDFcaBwxHnM2mjlcmt/S68i270oeZXx0j/DJLdsxcqpDv
-t3TJ+P6O2k2bH5Jf8fMCTZAsrReNDbQ18JZqC+ji8tNFdny6Up6EVXi07fl6vaDXbWAtaRWu
-WfKL9BZ9z7/LXGtHEI1VnmKkC3Lmrb+t6AMRyay9heTSbNnaN4v5lVmvvsoj0+Fucu8qNL3h
-92zqGAJx5Kf5lc/lvmg/NmhrTaI3o3w9X3tXVin536iy3pHgnmMAH2vyKBxnVxV5gQOv8vjK
-YpLjOiXSKI/+O/W9nm+mhO72a9eamUfe3h5WdurS3g0TJT9K2wYt2OoNo5DejxsJiz2qMzwR
-fUX1a8jpFtkBI3HJDZcc+2RV7iK4Ch8nV/YqZZRzeOAMeeyKq8uR9qiaiW5Tf147Tq9uU6cF
-L/Oso7xxsW/JmylmQQ4QbZchI/mW+TdyZQMfIp0pg0hMF1pslV3t/CrEcBmr6eLKbKsi2EMj
-u2k9m28c59/AEgU9Fav1bLW59rE8Qr5SkwfInBXJ4n4mTTbs+YcV2t6DEykj8wlOk1GkfhXL
-PzjIwuEclHQAh2DX9tc8SX2st9jGm86psweUCp+rJ3zjWAIka0YG6Zi5ZZwReodnbDOTpaFX
-njJhLsgryG8zmzl2rMBcXNPovGDgZqxpXxoXatFCTSAyeEnpevcecqx1yvIui3x65YYh5LiE
-wgCwNHesWcnhSiHu8qLUp9bD1uPEmjrdWjN5nFZEu4PAZxmKciUVTgHYaNJ4AoRm7oCQFikJ
-l2PkecRrhvzZVDvreSTEPcKrh4mgEP6NbE/J9xyfumhKc1q6BlwvML/m3+lR1vq0beC/Xydu
-NdrKpKls66sdVCeV5UBq5xMwPMfpchyG9FiS1qBD8ys04AC2PfTyv7tz4ZdquxfM1s1mmbnO
-4RTQ0tHah7Qhsnx8pduA2xpxjVKV9CrBrb26ynD3+vH55ePp8Tw58KAPxwOp8/mxhaEFTgfI
-6z/ev32e38eBgidLx3ZIuM0ppFzLID44wzO91lE8gXzV8ucFqFnJXY6MNTLTzMSANFmGc5Lg
-dq4agtXtqh2siidoFwRhcz7dT2WV8GxJXVYxMx12lBQzksams03NPRDBrnwMZ4t4vV1CMc0g
-UJNhIvuZdOGQ/34XmuaIyVIu9ijPqcP/yr9jY2yb01Pm1xM4OX0+f3xMgvfX+8cf93IeDRfU
-9A0iBbyMpsHn6wSuRugcgEFMxavZG1PCdSCZwe6D9k227qbGgS8lC7Vo3FsXOPHlCRVfpc5c
-B0jjwZbnIbkkHY0ZIX80ZZAi67SjjWenPiN/efv56QwyTvLyYD5zBD+bNArR4q2pcQxXf1PX
-U6paCEDMXcDsWkI/OLbPHFNQC2U+PNZoC/VAQc/Qy08vUhv+em9ddGzTF/A868VyfCvuLgtE
-x2t8d3O7ICt0yn10112NGNwoLU2qZHqVNgTK5XJNX821hKjdxyAi9gFdhFsxmzoAaJGM4w6k
-IePNHK6dXiZsXxioVmv6bYZeMt3vHdd9exEAg7guoQap4/GFXlAwf7WY0a+4mEL/x9iXNclt
-K2v+lX6aOxMxZw53sibCDyiSVUU3NxGspfVS0UduHyuuFock32vPrx8kwAVLJssPanXnl8S+
-JIBcssh/0BVqLD+oW5OFAb4MGTzhAx6xIKZhjD+cr0w5PoNXhn7wA+IycOZpy+tIqCgsPBB8
-Am4wH2Q3nWYfdFxXF4eKn1SI8Ecpjt2VXRmuL7NynduHI0ocvHpc5F9Yqnc8Id4v15YQKxn+
-xLWOpSa4j905P1lBwhDOax154YN5dRsf1g0uRu+ElszKxHpx1n1QvT0akUFbitcdRv5573mA
-kO6s1uNwrPT9S4GR4WZL/N/3GChOoawfqxxNcAHFgd10CLiw5C+96SNjhWQIwNkl8HqmWPCy
-BkmJiLiiFaIEwZW4TtNyk4MCjf2xMh26HMRDU71khS+N/H0zibklrM95OVTEBYJiYH1fl7KQ
-G0xihMSUoqviyF9YTxzWJA6NapsdWywXfrvd2FYi5AYx1XUZFtsZrXwgmm7KGBCIjHjRkiwy
-7BYR5k8xQMtycaQlnpGmWSaOR8QdaRU5z0jq/Pn67RfpmLX6Z/dkWz3Bg8M69BHvLRaH/PNe
-ZV4U2ETx0/bzooB8zII89VFFXskgjpPGQqGo4tyPUAd2tUmTLhTCLEiNFZ1i+mTIASRLxPop
-b+s7JVZw/DLxLHmQNI+sKaemsSj3lgvxDaHXEUIsm7PvPfsIcmgyaYW4nJmwTl80XrGTgpKt
-f3v99voBLh/Wk9uU1Ti+GNdkVMDNXXbvR92SRVmXkEQxZs9ifQ3iRd+/ln63wecuuB3+aTbc
-e/v28fWT6yhKLVvKU1JuRGdXQBbEHkoUxyix8EvXprOvS5xPuSQyBsIM+Ukce+x+YYJECSs6
-/wHuKZ6JUTcz5UprlSi0YfOpl9IwFdGA8sYGqvyonb7O0A73s/QkG2HoIHquasqFBc1DhnMt
-CDFcZ2S8L0VfXCC1B8UqrmJxoCpV4HFcjIKPQYaqkehMQkYhRkRTFUjm4JB3sv531uD265d/
-wKeCIoexvPtAFNinpIR4H5LPEjoL8TihWKAh62rEpIGJwzRF0IjaILRT/ZnjTwkTzKtDRSh4
-TxwgNFV4FMA5jTxvb8QN68zhJxVPKdM8xTTtCz+P7GiPKYL1EVt1uCU34qQ7sUyX7D1/mJjY
-g7bgocd3mQk+cNGS/aM8JFfVgguCR6w5PFSJrhFn9GOVi7UXtySYO6C37RAWZ5vGOm2NrSYf
-h3r25WinqWI2tAVl4rAcDccRPzm19yMxONvufUepZoAvOCpF6cdcjOmW0KdTBQdTY8sj4JrC
-bGWKpzCZBeQblgpV31RCHGuLmoj/3OzneOLyGvzAdKeXp6sQmdpCv25fSDK4hRBZDE9/K2rd
-t6+AUgx3yHsWhT4GWE9sOjDghogrSy5GjG7XvyK3qj+Vg7YdwgGlUg8L0wMP3Fk/fUCEmrUH
-X9pc3kyhWyHYeEPUzcjwSrJSI8NKcghMHyBVP7/QoDOFLJ52CrkyVHURgs/rfSb+fjYI7cXw
-GSZjREuzJe2Yy26KDs7VQfxachUUUhX71KOaGGJ4HvNTCdZmMKTWXMZc/OvxwaeTJV/FXddx
-io5kOX9hmKVpxHs+6JLfjIgDn/04pUNirazaUpcjdbQ9X7rRBltT7QBIMgN8OciPSx4kQz5g
-WuiAXEaIgTd0txekzmMYvu+DiEbMyBMOynvrQb7ObSf7EyQ2ufrFuE+ZKdJrJkKevKHOkZw2
-xvw8OoYzBI3sMR0EgwV8UizBU9TVvDjTuw8getXBVZTs0E4cAY6GsSNQ5WUXeJo1yeBkXQ+T
-JWknwSqdjGrE5nyby9L88enHx98/vf0p6grlko6uEcFPDsthrw6YItG6LltUwW9K39lDV7r4
-ufFdPeZR6CVOgUXHsV0c+RTwJwJULWznLiDa1CQW5SZ/U9/yvi70EbLZbvr3UwQbOC6aCVsX
-frKB62O3r0aXKKqoD57l8AzRQdbOmjaVJ5GyoP/29fuPzWBeKvHKj8PYzlEQk9DuPdpFlUSb
-Io2tblO0O4+yLHAQsNVysmjg0h+79pBr33yHoNNwdz0KaqymBHdUkUlqpQ5mgBJFwXeZ1TZK
-iVOM4rPVm+DaaRc7xCT07CKDGlmCHwwAFsIIUSGB9FIdS3a0dCeHhNuQWeSmMLkuO399//H2
-+elfEFVmii7wPz+LgfLpr6e3z/96+wX0Pf45cf1DnAnBPdv/slPPYcG0bzCN2cSrYytdVNjb
-pQXzmgqoajFiB1eCU79nAKxsyovVv6av9plyV94dVLzZbrCL3TkvSPrIyhniWg+Q4Tm82aOi
-UXafGm1RmFJ6CH+KreeLOKUI6J9qNr9OSjdEh48MnlAu7sG++/GbWqGmdLSeN1eCdY3Te1q9
-zNxV4GS7RQ6246P5/o5aoqxBOp4xMUJCMC6sVqtllGTp+hRDwNMseDB3Rxu4OyHtF1YWWGcf
-sDhnKK3Cztofmj5ri5YDbYqgg2ZUXAmOWYI35R+QISm/roAtsXp0WrmcPkDVuXn9DoMqX3cJ
-R1NAuhyTtw9mSqDJB//b0QOBJvawPTOcnYG465ozqhrMUxc/wQqWA+7vBHzk3/o73B0gLUOs
-Tyo9uHTYm8UDoiGqA1FdBd05z016B3EX2xeT2N9YYHjnWmi2Y0hAQKsaFLCIMvLcz8Tu4QVm
-eur2yk6LiE0B0M3WdJdEudqQ7f3+pX3X9PfjO446LJW9v4bNleNIk4awW0Mo49n1gA6fzp7y
-p7FojTzxz3KRL7tlcR1S2g6GNa6xLpPghr7qQMrmErOQ5AERoysbYLgJGYeuNjnW2AZaCRo0
-ALOuIHeSLutWWV49h/HKCoCykj99BGfJetNCEiDjI1n1vRmpu+cbepPt2AOH00VAm7LFehYS
-zesKDG+e5ckaTVzjko8nj5jsubuU5N8Qpe/1x9dvrtg79qKcXz/8pw1MOn2Tni7oa7XleO2G
-Z6mWDWXmI2sgKNWs6yd2TLHd/iJjw4k9WKb6/f8YurdOZkub20eIOQ7jBNyPQ3fWdQsEXZ3G
-XH44eRzO4jPz6QdSEr/hWShAuymBbWvKGxsiU6kYD9PAeE5cENRT0Iw2eR+E3MvM06uDGuuq
-jboIeOIyr/YX5ObHxJvCwjI2h20O0E1KE9Q0YmYZnjMvxgrQ5WXd4UvOzLJnL+PAKvx6ZWbK
-T+UwvFyqEn8LmtnqF7HDdZYLQLs6IiWxK5R1gRV4P3Q3Sj9qKQxr266t2TMRkn5mKwsGwevx
-i+KZS2zyl3J4lGXZNNXI9+cBX42W2SIt2h+WrBK98ojnZ3i+Gx6y1eW1elwufm6HipdO1ziM
-Y3V0M1Wxr8RS9v31+9PvH798+PHtE6ZXTLE4IwAul5g7j3IepbUfE4BlBDl3zLuzEA72Q3XG
-zlqwMBuS00QQRyc+QvhiIVeJjv0p9hefmd3BOm7Jo5YZCWdOpRremTrpav1Cvpc+XvXyq3sp
-S1FWxxxn35Iq9RS99TZMBWX6/Pr77+IgLLch57AkvwNP3FacW1WvWVI2CyZW0R6bw6rUdhww
-SS2urN87CcFjOZXOYYT/PN+zUlr2B+d8quDBvqqT5FN9xVZ+iVWmepekSevOC761q6beZwlP
-sas/1aOsYXERiIHY7c9O6u6rrYl2N3eA5KalsiRfblkcU8lc82IXmk8kkr4hLs+9ez/YWmfz
-PSE9opTcIqSHf0woqMJsjLlD6meZXc9qzFK76kjvCFpImQqqulcteH3bYOB+kkcZWsnNSix3
-T5L69ufvQgZzKzcpk7szR9FhadjogAKNPqCG9/VuXGto096eKJIa2C08Ue2oRErTCq6ew41m
-lQwpJmpM8CFTQe116thXeZBNbjy1KwarAdWKdSjchrVaZ6jed6izIQnvCzGuArfl94Uoud9c
-cdMDyfIza9/fR8JloloV+nAX4briE56lW+0HeJzgCvlT78Det4W7wh7GEZN91HDzYKfmUx1k
-cF1Grkigru18NfY8iQNCT3/lyIjb4ZVj5+O6F4rDVcu24EQ9DJufnfO9HxE6PWoFaLJwcwkR
-ON2MAt3tjDBGyNBdQoM8GtLq+YAc0mN2c5fxJTQY2dOoJK0gIWR22EPDNI2ru/Rb5SfWVIbX
-RgXp754SGoo8NGJZqIHTFexS1bURPhJpkeX+ZHNVFWKKn9gZS82snZOzWhN9m5qHYZbZK2Vf
-8U53/K22yYGJARTqBUcKaK76x+NQHtnY2Wk1Xf581o0T/VlE8//x3x+na2XnxujqT5ee0tZF
-lwlWpOBBpL9G6Yh/Na7KVoi4TFwZ+NEIw4QUUi88//RqRE4S6Ux3T+JY2Bhlm+6eDOWJhQx1
-Mc+pJoQvNAYPGm3FTCUhMwgefZxtlI4wHDF5cOMfkwffXkye7EFBY++Gt2+qj30T8KmqZaWH
-mu4aLH6KDJhpYCznte5aDiragHaIW4nrvQ2C2VK9jcGvI6VzpzPXYx7sYuxRVueaUsPLskjj
-JKZI3UG71xpKGc7DjCY2caMYRKFscEhlyM99X7+4jaLo5GOKwXS6Nua5oi+Y4sB3xunwxYr8
-vmejWCtwRT6x+ma7IN5ISW2/d7j3PuO6pxPHdhKgik0ywH36BjxV4J5lfZMlxEUc3EYfQeNB
-SO5egk/gOaH8Gng+Lt3NLDDVCI1WnSX7GyzbZZEsuFg1s/A9rkM5V5nClXsqGp/T378LUsoh
-0pxHwXY+YRO71OQxixhufuoR8V8spu02kUwBIRfOTJNICtI6fkMw104ciMSgIZb0ObXhRniI
-m1ORk8mjPH0qni3jxZkHTh9B+pCFsIGeWUhbr7W4cnhs5zOGyeNa+1Gcbpe3KEep3aC4kxg3
-LNaSdM5GLlMfJAFu6juziIEd+fH2wJY8u+2sgCeIt2sIPGmILyoaT/w3yhNnj8sT74ilZ1kU
-mn0YbRd5OhfiTPOoP7LzsVSbcbS9ks166NuTaIw9Yp7NxRrGXRRvN6RUEDnzfY/fHM1s55z7
-nkd4ap7bstjtdjFumTm08Zj4mbs1Tfi8Ket/3i+mFYwiTuogJ8QPTvv64+N/vWEWXFMo5SIN
-fe0wpdEjkp5h9Mb3AkN6NCHsgtLkSKhUdwSg673rgJ+mKLALIiQUNSvG9OajoagBCgkTypUj
-oj+O0OO8wZEE5MePomBLns12FZI0Xjaep0mwWbZbdT+wVtMMcBJ5zsB9+GYRn33vIc+BNX58
-ImfBUqCmADeYw/EFrRCYSfOGsu2Za73HPQKvDGAMh6Y/3np8fZo5cvGDVWLx6AdURWdiK3iC
-xUOHGOUBMpyLsq7FYtu4SBU/izbZuwDcqHvxAQey4HDEkDhMY45VvMn9MM1C0nHKkgTPTw1l
-bqhYjnXsZ2jIe40j8DhS2aOQlhlKDhCqUntsXeRUnRI/RGdEBa9D1wZ1ubg2eewhfQdqeDDK
-0WTHLN1I8ec8QiogpsLgB9gwqau2FFIVlpPaQ7dWA8WBLI0TYOo72KCpRqaDO6ygYy5kI2RA
-AxDoz7cGECCtIYEoJuocBaRloM6zPXdBbMRvXnWOxEvQUkjMx7wBGRwJsmsCsEuJRENxBMGN
-5XWWEGl9gSQJvhlLKHxQ2CSJ0F1JQuhtuMGxQ8aYKuwOnXtN3oce4RJn4alvEEHyQLgam9nG
-PCGkrSWhsj0E/r7JH073ZkjFchS6dRFroaESOY+0JkGY6ybF5keT4rzYzGgweUZQM3RONNlW
-B4GfIyyxDM04Q8dm3RAnCI2BMqNdGHApXWOIgxC7cDQ4ImyFkQA6U/s8S8Nkq3mAIwqQ5m7H
-XF1kV9y42F/wfBQzPMRyBShN8SOHxpNmxFli4enzxjK+dkp/yOKdMe/7hrKRXT66Nva0sjjm
-d0G31vw0+mhLC2BTvBR4+CeaXo50qWOHsohHTSlWQHSQlkJyiYjrEo0n8D3svl/jSOA6D61j
-w/MobTarObHskH1NYfsQWy35OPI0JnJtkmT7MJX7QVZk+CmNp+pZHANS/PgmmiB7sDpXLQu8
-rU0FGLA1U9DDABN8xzxFTp/jqcljZDkdm9730C1LItujQLJgbykaQ+RhZRR0fJcVSIw+Qs0M
-4NI478+T2OiCSZYg8u5l9AMfKchlzALsMHzNwjQNEYEfgMxHJjQAKl6uUycJBWjsbJ0D2V0k
-HZm9ig6Lz6RejOVZp1lMOnnRuRLCyZ3GlQTpCQ+ZYjKVj7hopQGdZVNSmh7ufe++yCI/PTCC
-W2YkGNLSDxrrmfXZ89HbC7mRMaPFJxL4T60pxwszDx/ZWIHrLdRCfGIqG3FWL1vwNzQ9gq2x
-xT2b2Xl/moGOCtyl4OtQSRdf93GwYi9bjHOU42N3gaDK/f1a8RLLUGc8wHmenxhhxYN9At6o
-wAkrEYFn/oROHWHcLC8wgFmS/PEwz79ZPIhFxYj4fjOPqSc6ayRpQ2ty2Prj7RMYH3z7/PoJ
-tfOT00AOkbxmxFXRLUvu/TO85DX9nAPKqFLjXX4vRo5xrvNLsIaRd3tQNmDBc5zeuDfTcqqZ
-nzYTw1trbmP91RWZwVc25qeiQw3n+F40MefV3vBwxffGH+BeRjdDlF/lFXj0xr+eUZsIHjY2
-v5oZTLrylQGJSmdI2sfr0uawEbWdmEwl633eMKRMQLaYVOnzCi2EwYE/RywcHA1qI/G1Hk7i
-c+khKkXeYLPQYHMrOYcuX70h/PrHlw9g++M6359n8KFwDJuBxvIx20Ux4fcRGHiYoncnM2jZ
-4DRyCPdxjBqryI/YGGSphxcHnHxI88i8I6InL1ynOiduLYFHOs300POUhGdNUacEtz4Qi4Ll
-w1Jvxcm+2PBQAcBi0mCkp6i0T8yVBbdclFkuRhHGd5JMvBoueIYdJhbUvLFZyUTEWejcgu08
-Qv0Vvgc4DsigRBrLVpNIFrpmACfY5dkChmbfKPUCu65HNpZgVsfvR051N9yQ3/SzjUa0rZt1
-iB5A6u3ZTPBUJeKsIRtYT1Ccl+8941WOHTYAFLkYJ3dIS21G785seEY8B9R9PtlCaARL/X7d
-Z2WP56cR9iS8Qy3eZjigGsZrwSYXgEajrYiUfh9+b3pMWDFb73lFeiGF79GIt5JHuqE2U5SK
-4nnTFaZKGkDPQlCp8dcQgKWqEaGVvOLUvJwVlezFRSlKOFQpl2FUd7greoarT6wMxN3dwpBF
-2Gic4GznuWUELTGkMNluh72erGhmpTQmYeLWSlDpdObrYP2r8r10wIMLo3INtFENG8rxbBZr
-1v8xtsGJRj6sLQyEmu6k2W55k5QFsHWwJVFqRthNM+TxGGdUb4HBqNXCk86CSeRlju7VvIrS
-5Oa4qTA4xDwp1QzTH58k5tw6SmoT61cxC8laxCT9+SUTU8KQPtj+Fk+NRhVpMnJQuuhj8/HD
-t69vn94+/Pj29cvHD9+flM/6ag6PofmWWKVUYCHWd4XN28KsUf73szGKaimgAm0ENwZhGItT
-C89ZYbWpslyxaaDs5aRSN2e7P3tWNww9Zfc88b3YsE6Q6j8efv0gofRmp6/oG8uPYkBD0i1w
-4KduXaRBDkqOk9iiT+YsCDVL8CLv0FpqcIAkJqjTmMcS3JaPBJPYPtBAf7NSorsszAg7F/pM
-mSxnkA+utR+kIQLUTRi7a8mYh3G2o+W+8V1z2+hbx4jRQOsuP7XsiNqJSqFcmYOZ5ZyI7tIy
-A8ab9iLbBpFdtWsT+8TjzAyTQ0CaCFlDUtIyhxZ5nkML7YV80odGhs6E0KcEdSfpJhd7bhNp
-lk368t+dGmVbRyj06kxChMdu1c10TBs9tQCDnEgdKKUnBKuoi4WrK+6p61V9rd08Dc8pDOUR
-bsBMf1kLkdSpXzkO1Q28anf1aKlrrCzghvWsXADzc4PqPq3McHEn7+0WdjxRIRseKUs7gwsk
-SFw1c2WDo3+GvjVpPEUc7jK8MNM5/lEu02Ssiw5/ZHJZxfgAw4VH3PLu4QHTNAg366hfBTjg
-dNrHIPucaSCBbtJuIT6GHFgbh3Ec420t0Qx9+l+ZbOuZFVHHywdtpZguMaFgvjJWvN6F6PnF
-4EmC1GdYVcUGk+j7tYYIAcZ8prSwR/0ttd+xOx+ThcpdCAwxiSQkpMtXGqK2TApK0gSD3IOe
-iQkxBW+fDRcxNlOMjk04cyXRjkw9S1DdCpNHHf+IBHaomrDFY0r0FrjbnsrqfBrgDTtdzJgC
-j4mnGTqfAcp2VLny3hctit1GaUx9HPl4sfosi9FBAkiCDtSmf5fuArwTxWnYJ2aQOj9vlhNs
-/yPz5kAHNwxdNLbD+X2Ja+JqTBexmiVURgA+WOwkzw5tg/7aYOSB8X4PLozAz9oaGOjOxskv
-HlISeUZ+UN/p0PyIa4wyDxN7dJbpEI8gzQXvbx40PfOIDgeQo5f3Gk/cZGlCTNr5jP2gbrw+
-xna0YZdJJOUl6IYgoMzy826BKfZKsvKIE1PsJyExQ+fz66MkkkBdL6GYmOFo12inXRzzw4DE
-Ap9oeMzrAsEU0VlbJ1oLpRwyaGwb9maapEs4als57IOOiVDLjToyPUrYOsYMOXX7k6/XWBql
-7UZwn6D78IcgxBIDIdSIMCWTOKWhrscsaYuQuJTjDC+h55qXGXCgLQgsA6tafmJFd7XZjNI4
-JTHI4jhSj+aRYcb3xXCRfrx5WZe5cf09OY/65ePrfEz68dfvuoX/1BCskY9TSwmsPFjL6u54
-Hy8zC35wlLwQBWUUZyKc2WAdGDigoOpdDBQ0O4yiCyzthdGyLu6PnDaZ87hURdlZL3+qlTpp
-R1OvDvMvH395+xrVH7/88efT19/hNKo1rUrnEtXaQFpp5nFdo0N/lqI/9XsNBbPisrwKG4A6
-qTZVKzfA9lgaby8y1UPN+AniFt9z8Rt2AajYrq0yT18aCquiNqo0P+5rA1itjPDo43K5fJXE
-6ZL06dePn368fXv75en1uygl3KrC7z+e/uMggafP+sf/oV/dTmMkrzbGnxp5rGA9hD/XFi1J
-H0sWp+ZV6DRUqyj10C1mgX1tA1nHqQUob9smTSUhhNtK/oaWSXeZYpDvt5HVNsYZS1MvObnf
-HJJMt7pRZHVXaI2t/fkQWCvqSkfGtqQ3ZdPpvkRXpGjUNKrsMazSa1hdd/a0WD7k+kdRvTav
-UqIwB72cGDk7lPc8r7BFd5pyy+qHfS3935HfuqZmio7HkVDY4k8dod5zXgXDjdstN8Nj78z8
-CbmMudk0ogcC8DlBtszCUMrQRzVD6wlrMNrK5iqqO1RTpNcvHz5++vT67S9ESUXtKOPI5Hu0
-0ub645ePX8Vq/OEruOL530+/f/v64e37d3CnC45xP3/803qeUZUYL/IinGzssWBpZAqMC7DL
-IkzsWHB/tzNfNyakhKjXMb7ZayyEY6+p8Xkf4lLPNPB4GOqvdjM1DqMYo9ZhwGz6WF/CwGNV
-HoR7txpnUcEwwo6zChcyV5o6eQE13NnUSx+kvOmdQc279uW+Hw93ha3qdn+rs5Uv0oIvjPbG
-Kla3ZHbMN/sl1dnXDVpPwmoHsaWCqSU9xSVuL4qSHGVOjYGceBFBBuEPg7IIGaETQAiMimc/
-Zv7O/VSQCe8JC55s4c/c8wPsrX0avHWWiPokqdPfYrvxTTtqHcAvtKfBCpdoKeGPb57rfexH
-9MIqcf3OayGnnoctAdcgQ70hzfBu5zn9LqkJRvWdnC/9LVQGoPbsZ7ddYL6iaWMVpsCrMUOQ
-gZ/62NqU34I4s12n6GIcOjnevmxkE+C9nMX4iPVRj5I67qwpQA4jdIaFO5Qc63frBhmfYbsw
-2+0d8nOW+c4EHk88CzzDv6XVSFrDffwsVq7/evv89uXHE4SjcVrw3BeJOFr7ztqsgCx083HT
-XPfHfyqWD18Fj1gv4ekLzRYWxjQOTtxZdMkUlKJEMTz9+OOLkK2tZEEKEIM2UL23ajxY/Gr7
-//j9w5vY+b+8fYVQT2+fftfSs6fgiachYdgzTZU4SFFVAQUjRygOkb77qpim/Cyn0KVSxXr9
-/PbtVWTwRWxDbgjnacj0Y9XC4bN2Mm0q1vcYcqri2Fkvqka0ZeTOIEnHLLBWOHakAqCmzpYD
-1B2y9gh6uJ1FGDtTtLsESeSsb0CNHWEAqBmSsaRjDwMLnGJZxEmEJiboW4kJOMU+Iyyf189S
-tAzuqgXUHbIIdpc0iLG72AVOA2fVEVS0fdMkRSufphuia3fJsjjBPtslhFutlYFwqDQz+GEW
-41fg05bHkyTATben+TzuGs/D3yg1jpAWTAH33Q1AkHvDl8xCHj0PJfs+IhQI4OKhd+kaHjr3
-OUBGCsUHL/T6PHS6tu261vNRqImbrnYOgEPB8iZwmIef46h1s42fE+bsOZIaulUW9KjMj7Rg
-JRjiPTs46ck1z6aWY1Y+O2sUj/M0bIztDl9x5WJcCxpmyjPv53G2ebhiz2lIWGorhuK6S/2t
-UQoMydY4FwyZl94veYPKWkYFZA0On16//0buKwW8LTqiDmhoJcj8h4f1KEEzNrNZPPFu78JH
-7idJgKbnfKyd8AFjKvYbcuVnoObJfzy36wVq/sf3H18/f/x/b0/jRQkT392rPPnFpGe6cfGs
-2ODoLgPG/w3GLMD1EG0uS83RyS1FNZ1Mtl2m+8M3QHmF55NZSBjVfda4Gl4ZC52BjYFnGDdY
-mP4e5mAhiQVJQpVZoD7hIldnezf6lnYpynbLAw9XQzOYYiPWtIlFJNbcavFhzLfQFHthUHge
-RTxD3Q8YbCA9m55n3FFEvC7rjIfcw7cnhymg8pIoofzvFgk1v9HYyqlhiayEvPq4e5ssG3gi
-0qEfiqYyndmOHOS8CvyYmGHVuPNDYgIMYjehu/dWh54/4AbMxkhu/MIXLUv4JHVY96K6Ebrm
-oiuiubi6l6tyzTx+e/39N9A7R8KhsSNm6nA5MoidrO08iiBDnB/7M//J16KbA8iv1Qghojrc
-cWgxuIE+maDp8ePnA6lGVnvkNyESPP3rj19/hWiP9lZ52N/zpqiNiI6CJl92X3SS9ns1NDLy
-qmj8wviq0HXqIWXx71DV9VDmowPkXf8iUmEOUDXsWO7ryvyEv3A8LQDQtADQ01paE0rVDWV1
-bO9lKwYQph4x52i8t0AVy0M5DGVx11+SgFn0ohEoSdDAc3NdHU9mecFP9RQk2kx6rGpZVHEa
-XuxTjc77bQ6x6tz9Q8tVw3A2E+ybwKq2oIhGPAhJqwLziNZ61dZSe9mXQ2CtQTod+hr/lA25
-9RHjVS1aGX/clh3ORxIU7erjt6oAlhw3voUhbDmY1LHTEYuOIoCuL1sZ9teqAhdrS3hDDWIh
-qwvEiDYnkCSZNykreX5tNsqroGXQ4FkN1cXMCAi2xvtMpqM/zhxobkbf4GdigdRl5sVpZk5f
-Nogp2sFjuW4lCaPeis+wkO4NBL9oq3Nj1WCGX/hYvTvjAurKRlZzwnGLI2gGJoT11m49SSSN
-bFeOh+038VFa8TA7xhff1PRfiI+TF3wUxDHhCejsovTubRIyiiaA5XmJO5UAngrTeoDJWTEr
-uYtUY4EV/N4PXX6gP7yDqmnTs7Hai7VjfDEnUdmJZb0yZ9bzy2CuyGFxuDkEVRWrWBIgB8il
-64qu842kLmOW6BptsHoP4tTX2vsMM4Mn6itxaM+cxt6EJ5rY/VlzLy+mSwsDzM987DDvodA/
-plUgzOl9cz/exsjw2Cnosxtpp9ekMQY5wUoxwdquoWfoXjQWYRMjxw95/gSUi4WXsMaQlUtt
-Rbz5zI6JPXJP3b9++M9PH//924+n//FU58WsrLRKd1PyAlNKPaCzVOnx+gCpo4PnBVEw6q9Z
-Emh4kIXHgxdb9PESxt67i0kVo3sX6FeXMzHUr6WAOBZdEDUm7XI8BlEYMOPSG4BZuQAZEgCz
-hofJ7nA0Q71MpRfD5flAPB8Ay+mWhTF2bgawG5swCGLdaci8hhGNueLPYxHo9zUrsljVuWni
-O87K0JshflYA0alHuKTz5Ac878RSdb/WJWa6v3JxdmKmNsyKuU6z3IIUoNHu4d9LEH0jXHlc
-03itkVYrbDdtZamEZyytUTxMmLJ4dsT3fRYTbvkNJivkglsB1hbdgI46zNR5RR944p/ZyJAO
-WikvceClNXYeXJn2ReKbRh5aQw/5LW9RjzZrJpNe1LTIPVjKtOMn+CXTJt2paDQ1yLo7GrZP
-8Df4Uz4L8Uss7fhKsPI4IrrLktfnMQiMaHDOsXr+jHfnVne/B3/eO84dO3oTESJFKVaYCnWi
-bSTYFjIM+GCS+rwxCUXDyvYIe6wDna5F2ZskXr5zljagD+zaCMHeJIJsIw4Z/N4dDnXHrML9
-LLrbpdyrtj+Ppv4sV/UHn2RGw7SgtXorBwDx5oA6Aeq0gWzPvj6LiiMg0m7FS8uk8xJQk7U+
-gfsOsUIX/KcwMIs3a18LkQNUctEhJjMVcuL9QPg4FPilHPYdh86v2hGTtWQRTeXehTR/bbdd
-PtZ3IW5VBeXoTeasIsE5Y+bOj/vzwRkcZ1B5HOyc5Kg5Nw0uxRufbvQlpAKDTAiJSgRFMJx6
-n4aOBQmRz/2m6c+R59/PRtAvOQL7Orwblx86FRI0kcvN5Wb5LhXTotAVTWSDLsqROhFazG5K
-VncdtvjKHNH6jD272HUfKlbfz34SG65Ul9o7mUKxp3BhDI1XrGaOlTUr/Ew3blTl56F536Ko
-VRwRcYAkzqsTatQuwbGqbtY6pWjyFspa1Ng5y3zPpQUILXQLeiU8NAP2fgxD9KUB0P2YmQ9B
-C/HeXcD1YZfjPjflVGWe72GbjwSbymn67vZyLFtkuEq6tUzzKMh8h5YY3noXmjiXXu8Ft9o7
-H28HqwgFG2pmt+pR+gk2aTV7cRnV1xHydYR9bREb5QnC2irwSzTAyvzUhYTz2BZcCRTVEY3p
-sYD6RelKLX62SzFzo068te+sthcLmO89+yjRXXomwBluZcv9EBWgV9TOg/u7MHNpSeYkLqlq
-/6YbWjFJkwGS6dDgZpBSJlFDTxl7fP3yHz+efv367d9vP55+fH16/eUXcRT++OnHPz5+efr1
-47fPcI38HRie4LPpQtnw0zOlSEhTdyHn+Kn5GraQA9Q3fTs5nshunj0gFLWxE3vuhqMfEIZ2
-coR3NXb0kNAtiZKodOSRko9DFzozYKK7fWRKVMy0iQJq2wSEVrBa+W8nwhMxyIZVP1YFtWsM
-TRk6DSyIO2q5k1jsfMK7tsov1b6kxIf16srYMlkW2AvdRMR2D3lL1HFrsl9uZtwSQXppDmpR
-lsPtVPxDqlBqWpFy5DHzI0FYfLyKMxB3UTmK7KoDIGV1cs6wuzg1SAL2rRK59+VmAj04l72D
-GG9Lg4BKmUZkwuqxfKZgZQdIobw6NkzVDsUvFdJaCjLPeSZmvxhZaNeWN2aPCg1nnm9LCyYa
-BtvotFc6jT7xyLfdjWaf2yb04ogcLC6wCmuzc+rV5bYxlmTbifRrMTXuYnUoWaMfX5eB65Zr
-KN1sRV3JIdLD6BBSjsjsfflT4EWZszze21NtdYWiQ7rL+NUnvelcU61F4FuYOkJ0VluBU0op
-3e7tMQLIPBc3zsjANp9zXWTs+k4M+RcsU7fokt6AuE1NRI1DBs9APx8u4CYgyQKx4Od4tESD
-vWy7Co271s5udNFma6rnoYMjaTd2dlH2eZOE0sMpv19PFR9rPLIbCHqlmPitfGkX3HZCGtrn
-rnYA/5pPBkGwyR++vb19//D66e0p78+LSWj+9fPnr1801smKFPnk/9qyAZfH8lqcPwbUlZ/G
-whnanwA178gj7Zz+WczCm9vGMmFun2pnoC8q+wQ+QeVWaar8UGHG+DNT1dxkgc6G3dVmUxsz
-NoAwa0nge1iHqgxoUVviyl8sH2H+1OK0j7/KLANxfBYHqfzC0cgUExPvDktqbpsBarnh1iHC
-4azO0iE9AXR1AyMmyd6W0lYOUaSuLxF7dZ2t7ZB7AwvELNp1NrG+V/l4Z/vqnp/K/HlrWC6F
-pxI7dENeLjmDrLTZS2tj3IZzK4pCXmOY3PPVlzjjUiVRjKo8gg1ctlcbV1rmZ2Urw0fIPw5c
-bNqiZba6cuJf1IPGgeXO1Zr5CZTpUHddIR0L/M1WGsqRVe28840l6phY+4wqgppM2ETa8G8a
-Bk/gt15ZkukKYZvuStGv7KJONsdqacAxaZYL/dnIoL5YzSZOuQRutMttPPRHZq9D72/3saCO
-fHIBCkBYncWLaVMQoxwJoqvLEMQEZQU7389jVaOLIaB+Sp53V5abjyftK+1fArFCOtqoGdNR
-QyezRwzx/YxGxEGEqqWECZ+4M9tz5HsRmoBAUF83GkMUYwV7jmJbdJ7oie5AQadHWNWf49D0
-q6YhcbxZtDqPDUWKGdgXQYYDQhbPO5c+BxYgRlrOw7i2DyQrgGSkAKR5FBBTQIIBUVBjLSeB
-GBmjE2Br5JgwfS+y8lBXBQtHilY9CkJ0rAGCB1jTGFIPT9K+QFvp+FScMOQkM6O326NpI7hC
-P8QLFEbOdf6CoPHaFgbwDOBcgEvoFni4C8WZo2BpgE2uorEPq0AteepjY1DQzfiOCz0LfWQE
-Aj1AlgBFx5t/wtB18Dg2iYfkX7Vtdx+eQw+bBmCfnXkZUgyJhHHq3EwvYIyalBssuuG8AewC
-Cgmx0T8jeKssKC/Q5VzhqPmLWVpkTDa8yXZ+Ak57Z29PWBbiuOcn2da2CByp/b6kAXjVJLhz
-rsY16MFkm7nQIQOg5VLNgv5G6sBFpR56WJtOAFljCZJJinZmNEInKlEq1dgP/iQBMk0JEmuh
-mHH085pkqBMzCOJMH8XimE1j2cHiBFtLgI6nBTcrFJ3KI/WQTpNkaoYJ0PcB3Kqv4EF2aEnG
-S8KPY20aOi0I3L46z3o6Aj71GoYyyBAOTPy0/OStHMNhkuqpQyx+l8F5E4RejDUQQIlHe8m3
-+SgtZ40vilFDuYVjZGGATm1A8FCPC0N15wy7IGQ8iGNkPEkgQV45FJQmRIxrnYdwvK3xkLEW
-dJ4U1dkzOOzX2wkQgjSyrUu/Sj6ybo8HtstSDFi9EW2ClCSps+DO8R3O0L+hXb0yBLfo4aAy
-uf9u1shF4AQW+c2PsLbmIQuCFL2HGLkSIreyBhbskCQdPWGimfS4jx0PHFf8C9BksY+Kk4AE
-aKhcnQErhKBnSGuAoykfWbuBjsmH0jEVwW+FltaQaEs2AYaYqm0aP6htih0uJB3ZqYCO7UiC
-nnl4qwk6vgNPGLqngyNVD5l/ko7ns0uoJtihodl0hpRIMnUUD2YkIwKszyycgdOejWzf12GG
-ilfv5Z3ULuntV95Z0E3jHVYq8Ka9odW0sGwJNYIhwcrUsnMWR2j7tkrHaSNRyYFVRgHYot2z
-REhRzHCMY16KGZ8omQC0Iomrr5WBenqS8sJxYP1JstkpWKFk9LRf2vEESjDaMqQ98qkX+apw
-bSFOlZGL+PO+l1eQL/JptD2O+HOaYBzYFYXOkJFbTEh6fbxVN7G/v334+PpJlgzxXwFfsGgs
-iRc9CefDGdcylyip4y/RMzzPkvC+rJ+rloTBqHfAtTsVXIm/NvDubAX2MeCG5ayu6c/7oSuq
-5/IF15+VGTjP7Cb8It9vSVz07rFrh4rT7Vc2/H7ALb0lXJdUtFIJvxfFJ9Fj2eyrAQ8mKPHD
-QCd9rLuh6s505S7VhdUFLkQDLkomXeHTDC90s1xZbT30WHmXV6m4Qxf/ZXDUkw2GCvys0uhI
-Yz+z/UCPifFatSdG5/tctrwSK8JG0eqcDtEu8ZLu07psuwuuIifh7lhtrgXSdLAR/U7XvxF9
-M2wUv2Ev0u8zyTCUamLQKVRwYd0d8DcvyQFPW8PG2G/O9Vhtj7+WCDsKWDeMJa5WKxcO1kIY
-bTFD6I7oy5HVLy29rvZibQOrFBKvGTj+FoOcnoP9UAkxgoQ5q7aqwVnDz0Tsd4mDo+G6ajdS
-GEtGLyECLWtQGi/pGogC9PXGKjM0dCcdIcYG4xsLNG/YMP7cvWxmMVYbE0asQrzcmG/jSUxm
-ugnG03Dmo7KFIJnOIAXce44bFcrlsKqabmNJulVtQ9fhfTl0my3w/qUQMsDGhORi0YIwTuc9
-LQjUvZXB/OaLyCdSQIFDsClOLQnCQ6olAK2h7q3PVFpffrx9eqrEokOlKJ+zBQOdLp7EotGm
-ZzkLaXx/7055dQe/FEIqVf4yVuERcES1AsjgE38cKnzyAcO57isQPEkG8WtLhnjl0tOEqCzj
-91NeWLkTX2iKp8AEVbX95AO9/+2v7x8/iB6tX/96+4bJnG3XywRveVldyApA2e8XqoojO106
-u7BLb2yUw8qEFccS30fGl34rfEYnOlQ5nkF5moYIMS4kurHKMWMrsIAw1XPhL2X4i9FU+AQU
-kdub2D/MOIOSYT+ALWQL9nOnqxChITKDMeKVu7sSPS3IFGZbWKQKEmds9C0/n4rehl4Q7zAl
-SoXzMIl042dFvQae/uanKgGKgKbfh5VOeINUzTN4nh/5hKc9yVLWfhx4IR5USHJIg2rPKpIk
-BhjRLrz0lYdwJjvDlH2meqbBhaRDsKwYdUgpYSvuukwJAvRGCDF2StLHhmO2mRjLCGZNowcG
-XrDAx4ihU3Ag/3/Snqy5caPHv6LHpGqz4S3qkSIpiTEp0iQla+ZF5dgajyq25ZXl2sz36xfo
-blKNJuhJah+mPALQB/tAo9E4WB2NwoYk3EIHJGnuOqDhz30dFzbdUo8m+f8EtEtv2kbtxtxo
-ZmZTAYTT0Ha8xgp9A0HSfwmInu+TLNTECa3ByLeuPxuOmUoPN75i2zjCRFCfEOSxP7NZXa1s
-gUnb3q9f/+/xivsk52M1Y1SCgOavE/Csce1F7tqz0T4pCulFYfAkYSv65/Px9a9f7F8Fs6+X
-84m693y8PgIFI1ZMfrlKZL9qkSrEfKAcWwy6KRNhjw5bvoP5HRTClKrjQwYC+zSc80K5bBMP
-9i8j0pycTpFEW23GT8jGk4/JhpaFK9X+/fC25+PTE7FEkzXBmbEkjqQ6uPdrNppX2BLOmlXJ
-mRkSsqJNRqpfpSClz9OoHW3is7BPhDCuNqOVRDFI+tlISCBCORrPgFApB4k9nSIx1Me3y/2f
-z4f3yUWO93XZrg8XmWMI8xN9Oz5NfsFpudyjL9qvg5O4n4A6WjdZuv7593dJZTgkXFuzeHR4
-1mmbpLy0ZtSCms3RPdOPNk0WjpGFmuYar6hTXd7/9fGGQ/F+ej5M3t8Oh4fvxGCUp9Dl+kW2
-zubRmtOWpsDI98Cc0QG/ieuN5tQqUIxsjnCmprqNqVMsAoBve0FohwrT14G4sXxXSRHJOAhE
-s32FDmNhSZfFIhpGJ0R3eulfcu0Xwvr80CD7rVM9rjNilQeJBtFt0NERq472RbMEDOni3T7a
-ZUjPRoJC5wFZgl64AKanj+qgu2QAK6PWaLLKd9geuySVIe/XL+vbotonlUGnqETsmRV2Yl8s
-C81C/orQhuJOfN0gkIaCc5OpShA3agCmw7FDENJx7oyrZrMnPVEAwzN+sa8kVb8i4ufj4fVC
-BPio+bKO9+1g4K7TjbbkdP6Vj1IdiWeMrvb5ZjHMLidqX2S5bup+J6DkiqmKcxMnUfui3KYq
-juZnZE2aL7DDI1sJSeD0qMzN1MPxgG9TPmC28Y19tTGZu2izS7KmyqMvTBc2OovboJlKRgzq
-EVRhnsRlus7qW/6yCTQJJsUa0mgUkW79ggCQQeKycSkQ088NfPsQAcx9N+hYvWFZFOKKRaC/
-5iFHYbN6zcvdcmM4JyjcOmvrEtYWcMKt7sOCddFk4hKCsuaGqWebVGRCskW85Wz3t6sS03BA
-JVpbAobK5EYpZ+CQWkZxfwIJd4T307fLZPXj7XD+bTt5+ji8XzgN0upLldZbdiX9rJauO8s6
-/UIdBttoKeOZ9s0AY0pHXlXqNoeTZgTVwJ02HJwbGQgy75f7p+Prk6nKiR4eDs+H8+nlcCEC
-YQTL3Q4c/clegTySosYoL+t8vX8+PaFP/ePx6XgB8RwObmj0YqgZomQaskGRAOGEtJnPqtQb
-7dB/Hn97PJ4PDxeRaEZvvm+jnUo7YK0/AjRiadNhOysh2rOftatSvbzdPwDZK+b9HBmd6xCQ
-jFLwe+oF5Pn8p5VJHi56A38kuvnxevl+eD+SpmahrtIQv0kYqtE6RAsgzP7v6fyXGIkf/zmc
-/2uSvbwdHkXHYvbT4PpLEjL8wxrUgr3AAoaSh/PTj4lYdriss5iurHQa+nyQ6/EKZNq3A4iY
-ePn8B8vXaWzHjCHfpYP7STW9vpnZmtcmZPRG3jhQMg0Z3lvnq5hX4WtZ6xpoDQgHGzXL13Ff
-azewgs8SXGTVxkUPzM2Ax0Svj+fT8ZFKIasi5TylMhpMFn6qE1oc1/ysqeqvpboBmJe8FUgX
-qdO8gyybPbp1zctSE4A26wx60FSRpsHBgKWL1vy9j5aF7QTezX5hxkhF7DwJAtebcpb4igJD
-Q3rWfD2oWCCmCQv33YRpTEaZ5D5eEWCQTFtPo6DBSfBMAveZpgRmLMzxlcAeKeqFo3GmryTc
-UaAIqjiB/ewNOlxHYTjl+tsEieVEnJHdlcC2HXtQY5NWcIj6Q/jKtmko0A7RJLYTzj77PBmg
-lfMJIgTBsFGEu0wnEe4z8HY6df2a6yVgwtl2vAtttv6Sx8PV1+aYlm448pvYDuxhDwA8tRhw
-lQD5lKnnTigSylZPtC3EtbKoynW6bomoKVDrkaccgRQBD5nPFEjBxAb1JVnB5ppAHDF0VJJb
-z1H6aghiH1VzaanOcSVFieynLoth3Z1rMFf94NHSwI+Hwe4pSv6t8YovK1SzfUo0sEsx8HV0
-N/yubTavqYa8H4o6S5Zpsq9WX7iPHnnc7NDsBBENfQc0HEM6MMbqYz+3yjzXHZxzy/v3vw6X
-YT6l7jhaRs1N2u4XdVSkd2Wth7NRFFGV7tQ1SheCjIq7UrssR5VLI3ISkI2dpXmCH2Do6xT6
-porN3AQKJFQb4yXMcerAY9bqHX5MR3ObL7nWdmGgpXceKsNQQbW/G7H7iOK0XiW8agFx+7us
-TvMxozxhy7hfFiPmjlGDGyGqxkzPBP7TBtI0rWKmCoVO4mSuu3MkaZ6DnDfPSh4IfwoDUc+J
-hlsRl2Fo8dLbYvNH1jabzz6rI2kxQsEIF6lgl5axWN9jxm3VJ5HwAcmNWycGzgu83OrfJS1O
-GowAZNqVKAp857mpomQsyoZUKwrtb1M5fWxgghU2lFtDr27ajKxbWOTOfjv6KiDpinSdl7wx
-ryTYzlt+5JpNvYC1u3dV+KWyqtPlmO1iR1xhQLb5ph0zJKxiqdaDo6nasEbz0vpLLQwy9gpz
-O5Ilqy2bVTaP0Nu8XtxkOT/lHdVqbALFPo+LimcuVbSOhInnZytX3h2mwWANaL2ogPvWn1WC
-xkbCngLmCWjXbRa1HN8q8l3Pt4ZLKRv5SomtR+J3qJA1aKYWDzPOaKZNzdvh8DhpROSMSXt4
-+P56ej7BLfYI2PO3exKh36wdzfhQk4qZJRAkFhB71/q3bdG9thHJYeAATG9F7JG61ELmqE2y
-yPGFNq0L6r2rsGjSKLbAcGETwqqIjUhiCg63uVaFfKFjEG9GwBylEdJHQ4wnDiDtCN+Fa83Y
-XWRERAjpLqlVVnGrLV6BkJj2LWrng8TA4QAr23iq6FEt/2Sv4kCQIio0BO9e3GENyaAD59Vn
-hQYhvgTiZi4smD990+3jVazghq+H9O4bxoJz/c7eYbbzeAhUUXqGCHnMrPSXwR71pRmU2DRz
-OAjN9F8FnMHRuiTc4cozgJfvV2WLQcMHcF07scKge3GuiY3wAz4eJfObTTUkxMh4VaRvAmkw
-oCrRNcoKOp5JQaORtiJhwFUrnJY83SxGw9U3oRWymCbzDQWBgRxxdqJUIzZdlMjj9C+UhGZr
-0HBxEqdTi3dsNciM1BgMUSMF7oofEKeoGv0OjcD2Lg8s3UtTK2Dk6dAw2/gnPZknUzukTqka
-dpHtYC8WBXvTQoJ8WezjJZE5V3fADtZm4Gl58DyfHv6aNKeP8wOTiE3YkZDnZgkRYc7IYKRb
-YOMhyXcC0DkcHkNoU8fiAzRB+U7cxI1w/MKrIF5lFbDcNvDmRKXO9bsvGGX5vCQj2N9fitVm
-RPziOGP3um7UphoYhPnqjhaYro1mrCBvo6jGPj5MBHJS3T8dhMnJpBlG3foZqa6PxZYUt+SF
-tiKRVJ9JzOP4+nZfpwXV9Crl+8vpcng7nx44s1QoU7YpZjsYUbkPCstK317en9j6qqJRRgBL
-NAxDAP+uJgjlAyXfNGmil61RFYUXnm62YGW9Pt4dzwfNiuMqxXbUcvw4Wb2nwD73lcJw/NL8
-eL8cXibl6yT+fnz7FS1kHo7fYLYT47nvBWQ4AGM8Rn1EOi07g5bl3qU0OFJsiJVZpM6n+8eH
-08tYORYv35R21e/XKJG3p3N2O1bJz0ilKdZ/F7uxCgY4gbz9uH+Gro32ncXrsxnvqWeRKLw7
-Ph9f/x7U2elEpDnLNt6wq4wr3JtI/aNVoHEmoXRBIZ2zmNrhPaRbYOnfl4fTq1qy2oK6qjsE
-+T5KYpGEhVeJKJo6+1queUWRIlk0EQgX3EuDIlBmz2a5/p7uemz0b0UGsovt+dMpUwOgXNfn
-DlJFULVrn7zKKnjdhrOpGzFVNoXvW9y9W+E7DwimKKD6kG3cPRSYYa2Jn5l+9MEPuDwtFvrB
-d4Xt4zkLppZbBG4amGlYdC8o182mMBu7EVlUSZ4XBCvTQJT9mR7K/+oit1ZmQCpahSuQMI6U
-JFoOHSRq7pRykT+JJIUqyx26pMNd6hjeckJ7GJa2E9zrU4fT4pREyS53PX8AoKrtDkiiKwjg
-1BkAzJtaB+avd/MiskOavKyIHIdX+wDKY30m4K4Je6NPHslA6QcRDPmqJHL0wBxJ5OpCMqzG
-OtHfyiRgZgD0uOtimlvVlIva9BEcKoE+w6PRtoG/2TXJzPhJP0eCyLff7OI/bmzi8FLErqN7
-mxRFNPV8fwCgFXVA0iACA+o2AaDQ89lXrgJ9KeyBvaOCj5YgDgyFyHLPcU7ABI5PYzDFkel2
-oz3q38DdlFVUAmYe+f9f46N+Q8jIVKg5byN9/0ytmV37dPNMbTZdByJmZPNNnSCgv2e2UZUz
-475OIEJS1JvSqgJr8HufSSVwVEd5TjM7EIIxgya44dM64ca/tykkNIyQZgZ+RizEpmE4Nbox
-c3ifFkSxMSQRQUPsRcnMC3jHF+CnwiI5YlNtx7ENK81GrM5PZsh4lpWEXs/dtQylDWuiTeO2
-HHPVDT2XW+mrHQkbJP2ZaMt5GzvelKwIAQq5+gRmFhilZ1qcRhRlLMcA2DZ99JMwLkYMYkiE
-TAS4urUI6nnII38RV65j0VsrgDyH5SyAmZHSlRM4Mzok62gzJS5S9dpvA9sYuCYR0mVRJr2b
-lcYyCpgzfv5bsTCs0CYT3UFZz7oO6TWWYw9L2Y7t8o6HCm+Fjc1KfF35sLF0ZzwFDuwmcAID
-DDXpIfokbDrTJVAJC13dNkbBAt2dTtUn/NkotACZd0eHG8BtHnu+vjjau9yzXAvWBKFEbZV7
-3UwKvF0EtrU39pe63eyMqfr3Np6L8+n1MklfHzWGjsd0ncLRkqfkhBiUUNfgt2e4GBlHQugG
-xMBnVcSemfy2vyj3FUjJ7/vhRXghN4fX95MhDrZ5BDLqSqmZeTYmaNKv5WdE8yINQv7cjOMm
-tLnDOotujWQrceJawzShAjoSXBRjldTCSG9ZGTF9q8blZMHt13BG8j8MxofK4FQR3wwsFGTQ
-peOjKi6sJmVmDv1KzhPoK6Ro+iakGCU1KE3VldMq1eW/ptK6hlpT9v2aUMrXhOv9fNCGIWDS
-fvE4IuUZODWjyuZX7h/MaiY3AC8D+ZbulQO/3cCiv+m1ACCew99qfM8jogT8Jlcc35856MHX
-pAOoAXANgEW7GDhePbze+EE4sNsm6FkwasAC6KnPR38TKO7sRERAJCH4TTs6nVq10UkQnnh5
-x6V29mGom9AlVdmiM7IGaTzPofnMWzhCRix3UW4I2LOuCBxXt/yG8963qTzhhw49/70ptQ9F
-0Iw9/+EUgV5boUNdqCXY9/VQ5xI2Jfc8BQtoAj15shjueZqh+icLv3eFePx4efmh5/PTbLEJ
-TiAX58P/fBxeH370du//QS/jJGl+r/K8zxMkng6Ejv3+cjr/nhzfL+fjnx/oB0B1AzPfFIjJ
-68NIFaKO6vv9++G3HMgOj5P8dHqb/AJd+HXyre/iu9ZF2uzC44PMCoySSVVH/m0zXbmfjBRh
-TU8/zqf3h9PbAfoyPDGFksRilYASR+LVd6DABDmUne3qxghYIWCeP6bpWNoBa/G8ixoHxGyd
-U19hlINrcHpHrzaupQtyCmAGoVVcfvmlLqXmgTt42iVI5eRmPD7M8ig93D9fvmvCSgc9Xyb1
-/eUwKU6vx4s5K4vUAxGQmxOB8QjjcC1bjxStICQAJNuehtS7KDv48XJ8PF5+sGumcFyb5+LJ
-qmVloxWK6/Q2AyDHYoNfrtrG0Vmh/E0nW8GM02nVbthDs8mmlqUHwYXfDpnFwfcqUyBgaBj0
-4OVw//5xPrwcQLb9gPEbuG95lrHaBZBd0wo39c095OkKgHmR2cHgt6nXEzCy2he7sglJGPMO
-Yq73Hs7rLG6KnX7sZuvtPosLDza6xUMH+0nH8W0gCezGQOxGqponKFZY1ik4cS1viiBpdmNw
-VvzrcJ/Ut89c4pX2yRrRK8Apph7tOvSqoJeRI45P3y/s1kMTvijnWFOU/JHsG3mua+twg4oL
-dhnmyCW0NZi7GLlaA1RJMzNygAvYjF/WzdR1dKlivrKnOtvF3/oKjwugD6mVCoBY8QkQrh5T
-PMYwPr5RNAhGzFqWlRNVlsVnqJFI+HLL4rxcs9smAEYTGZFxuytEk8M5Z/NqCkrEZkQQKJuK
-eX80kZlmWGHqqrZIYKCuhUFUpLb2aXb4fAuT7Y1ENoQTAw6VET2xQnLqw3UZ2a7OV8uqhQVD
-Gq7gY0TwJ54v2zbJdgS/9eeZpr1xXSMYebvfbLOGNQdq48b1bF09g4Cpw81cCyPvB7y+VOBG
-4gMhbjplhfAm93zdg2jT+HboECvobbzOzZEmKD1U+zYthMrHhFB7qm0e2COqiq8wH47xONbz
-LcpjpHP2/dPr4SJ1/Cz3ucFw39zeR4R+nt1YM6KPVC9QRbRcs0Dz7NBRY3dNQAK344ayKGLX
-d7zhs5Soj3916nrxGZp5k+rN5ovYDz13FGGEcTeQNI67QtaFS+Q6CucrVLhOLOrc5bl5lTP+
-8Xw5vj0f/ibqCqG/oVlFCaGSjR6ej6/MYunPRQYvCLqYSJPf0B/39RFuj68H2rqwmq43Vau9
-R1NBHY1Fudfkvn2+FXW8voI8DPfWR/j39PEM/387vR+FIzmz7MUR4GG2ypGN9PPayIXs7XQB
-GeHIBALwHf2FOWlgY9M3At8zlQgePUEliH/AQf2Bxb9PAMZ2De2D5GWktM0L7G2VmxeOkW9l
-xwGmh8ZUyYtqZg/Oo5GaZWl5aT8f3lEE0yaxG9p5ZQVWsaQ8pnLYe2+Sr4DLEr6dVCBZ8Ux2
-VbEXtSyubONeVuW2/sYgfxuPzBJmXGsACpyOffNt/IBKfBIyqoFT6FGeCmiXy62j2KCRPluH
-svK0xBD21vqevqhXlWMFWsGvVQQiYDAA0Oo7oMHoBgvgKk2/otv/cF007sz19SqGxGppnf4+
-vuAFEff54/FdRoPguAWKdD4r7uRZgp4xWZvut0QoKeY2L/dWMlhJJ/8tMDSFReWZesEno9vN
-TMlpB91i4xtAFSTyJ4oirjVilbLNfTe3BunRtDn4dKT+WeSHniM6zYwoljAOBNW//KQueeIc
-Xt5Q1Ud5A2XwVgSHTVrwLkuo2J2NSITAcrNC+tiUcbkxkjd0RPluZgW6bCohOjtvC7ikBMZv
-TUfcwqGna6vFbypfou7HDv2APxGZUbgWXbdcmOJtkerZOODnZH4+Pj6x1olIHEczO9553GJG
-dAsivkcXG0AX0c3wEUq0dbo/P/JNZVgQLpQ+W3BgQqm1huEkr6NIHJjhh+mHgqAuv7YGunr2
-aECMyrZojfrU6qJAET3WNWFNM4SYzlFX+LhvFNKI0Kz6a4D4ttwJ4ypPDCi+65tttHe8m6HC
-mUkRpExY304evh/fhhlbAIOeAESXAGOVsfaWUYJG+1BEE3BVx1EypOoXs8m+xSqKb9TavZ75
-GMEE5JU4c8bMotI6i9C7sIzbiDMNhxMtbTt3u5xKphI3r+OiaefqkXy0CmlFu9Qc+CUcU9CJ
-KKndpqtWXybNx5/vwuT4OqQq7phy5h8C90UG95XE8PUXsdCXBRLwqvi42N+U6wgJHZOqWwJQ
-OWbzWMewocu6lqaaDDIhfdMxTQbyPQ0+qGOjfCRFAFLhLsuKXVjcjsRWlx+/Ew6O1yHQkNUu
-2jvhutivGj1wG0Hh9w/6B5uqGsZI15uNqmpVrtN9kRRBwB63SFbGaV7ii3KdUF98RMqFIfyA
-ymLO+QlRqhTuu0QKIutFqxs9PWMz6k8v3s8H27k6nL+dzi/i/H6RzwZckvnPyPqlrXvhwwB6
-9FfnArO/q0E66hb+NdBRxzLWSV3S3E8KtJ9na+Aa6As6YvFiBjXKs/l6m2QFxz+TSFMbo0ug
-BFyvAxK0v+GDLq3hlNEOAfGzP1bk88rd5HK+fxBipskqG/0AgR/SrRMf9ElO5h4BFe9JSFVE
-JZui4Dc4YptyU8M2A0hTsuKKRsQGC5aLz8yy1b2lDD+uqxfDQekqZ+GdVeG0DexkBkhx4HFv
-hFDnvljWfQnjwvF/lT3Jchw5rvf3FQqf5kW4u12yZEsHH1hMZhWt3MTMrCrpkqGWyrairSW0
-zNjv6x9A5sIFTHsO3XIBSBLcQIAEAR/PN842NKJ7pyn6pmKkklwcBYE7RmzO+HpXBslObTIT
-gyXohFQJcSkCbM9UhdGPjXKpvJaZ0AXWGWxKwzUwSbMQ0qW5CFrTw7FVsZYMJD7PDnJkIyye
-pVT4yRHtBGNNa/eHzu2Ay7AoE+FiTPIXL2S/hRjchUIM0y/3KZ6Apubue3INWwp8eUEdiYhR
-isE/qVdNNnjUfDAqAozxbroKsg7ewvedeYvuhKuPp4fOVtqD68XRO/pmAgkiwX4Q1T/upA7/
-qKwfOqBbt5F1qbzkIoM0kaWdaBR+dUO4IVvDk7mnrSHIPBrkjaK1UX1QyMNIDj0algwSWPMA
-BNt5yxInufH0ULXhS1BCqqa1/fgwOpX7q+Pmkfx0KOWaG8ab5RbjZ+tN2I4hzUFEiG5bqqSP
-0T0VvWF4QtCAPVSjp7ljpgBIlk5aZ7FrDrvU6bAe1O1Y09COjUDxvkupQQLMUVjckealrCXM
-KE4PwUBVC96qWLh3TRSE2u6Rn5eJZQbjL9/iguLzpe45W1uW0EOAcZkewUAceSE3kuADV4xo
-Ti0Eq3jTn2TNU9/Q6KFTbA4/axTJ2S5ADXp9WvuDXXIDo9X4RsWKKmQWFpYexplKMUEHFcSA
-br7Y4bNpfyYZWLfEV+xdWVGMYZjrDvFehN4cdDx0Rb9wKGh+wHxQF1Xj7nw2GPbbldtyByuL
-DENz69+xztgIf5qPOD9SReIDpAEMZxBTsWwmNvd5WzaRiF+IwSh9+lE1GWvGpuRuzCfWNmVa
-H9HTxCA7+ygkBa4dAG9tJ9M+rLRNUEJfZewiAsPEhFJhlBz4M0/Asi2DTSYFk7vcOqtgIkYL
-gI4zZhHtYAR024gmW2S5gN4qqzFuNb+6/mbHoEvrQRpZM8OIdkx7Q07vHr+WdVOuFMvtGWpQ
-g9QLyiyXn7EXMknGK9A0uDaciT1BQ8FLEY180S6TpgNMZyR/qDL/K9kkepML9jjQBE7B+HVG
-/XOZSeHYEJdAFpE4bZIGwmjgg67bXCyV9V8pa/4SO/x/0dDcAc7hLK/hO08cbgwRNYqAGBKR
-YOTJioHqe/T+4yT9/PINZPhGlhhjp4auePP68uXkzSiVm2An06DYnqmRausoIXPNNwb98/71
-5uHgC9Utei90GdCgM/+FgIve5JEYhxqLB1muzNFg7DRMKSpjT780FWhkWaIEFZXKlIJZEDHp
-np9o6kyowh4B70S3ySu3nRrwCy3H0MQVK4OXaI58oO5j1u0KpPTS5qMH6d6wpqPI0wQ2ILC4
-bStxSC64kiuMmMa9r8yfaQoNRzPhgE9Kb20yS5iYbraAVpjCzpP9LAnmZw+CWUhtH6lXgNB7
-Kg2CRtd1EJl/HdNgAIHpNT12liJGv/RZCZryOQ11qaFnQSK6xAZiVJlYBp+eJm/oMLI12CD1
-OiL9NlEtMJcFTFFPDczjmtu6iuPOi91RrB7AfQj6qAfGBJLqGXF0cQ3DwGMYg+DCdFn024nO
-pK6KF1O6J08OGUaXsDNfjUHbnN8ojzM0tTD4cX+pPUkfQ5JdliOallID3RFJF1CtuV2diz45
-OowjL+smiWNnmuC3ctiGftEci1HqizjnAzXBitOGX5calPgG6nkTlMrDI0yfBCMKxesxepj/
-zTKjpilIyo0jSFpPsJjf4yG2BfXsWaF83XqAxChHG3SyqQYMuXH5RJYh6qMuZUVAOUjYRqcf
-g706k7lsPi1G5UM0GHCZ3j4Kr2X4e3Po/XZiGhhIpAUaefTpziM/6mhfX1WWDVKQSMOa1nmj
-eLRxTM4asN5I+7knQi1DZEjkti2RNcb1BSW2ohKeAQmZQ0Hp+AJgWpZ22j7cYryf2BtOhX4O
-0botlB160/zuVrboAADMCIR1Z2rpBo0w5EMzZKGnDiZb5pjBl+7Z4aO4oSGqdWSDlTBbrOHF
-38aIIj3BEcvQCpw4G1MMuWVsBcNAfqg20SmFNVVbcRaJqKvxgcpnIwODbYLS3uYTHq9oKphE
-F3SHGsLf4G9uPoOBwmL7P4urBqdV5OTITm0HPybZfPv8cHJyfPrHwpLQSDBYSN0R6VXmkHx8
-/9EtfcK4eScc3EnkSZlHRE0lj+Q4UvvJ8cd47eRTCI9kMfP5r/n68H7mc8rS8EiizbIDkniY
-02iVp++pgF8uiZv21vv8lw0+tV8zu3x9PPILlnWJ866jnFqdbxeHM1wBkt5MkIrVXNLOkjYD
-8e8HCloe2BSUG6mNj7ae8gy18R9iH8bW5IAP5sHYXNoVziGJzc2RIFjUZ6U86ShZOyJbd2pg
-LkjQ+lnhl6TTSgpM2R4pzRAUjWhVGZbJVckaaed1GjEXSmaZfRE/YFZM0HAlxFkIlsAeKxIC
-UbSyiTSTZKlp1Zm009Yjom1Sx8suyShHhbaQ3Nyf2rd5COqKEkOGy0umj8WHtJDkkZxz0WXC
-POyvX5/QBTTIZ4n7nV0d/u6UOMechl2wkQ1KuVC1BC2zaJBeycI9wV/25dDnMgrV2CQgGNRd
-c/TfE3icdcm6K6Fy3QfkxWavVGM+yVr7bzVKcmv0Qq17gLiG8lhQr1lTnYCSqjEqGZg8rPGu
-1cciKkZaxzqKtQ7vXUBrW53OsrrQqhR3s8UERDOoLoUC0DKfo0HW68qeuykoxXgNYnxMnGaA
-4ie5/jaHebgWWRVJ/j02uM5joTBHkqbMywvao2ykYVXFoE5K/ow0WcmSShbhcA4YmFDQNi4I
-igtmB32cuGcpuv25Xk1WsaDxl9sCX59GL8BXkfuo4cx5mqZ2aAso8dMbDIRw8/Cf+7c/r+6u
-3n5/uLp5vL1/+3z1ZQ/l3N68xRQEX3Epv/378csbs7rP9k/3++8H366ebvbaU35a5cZlYX/3
-8ITZC27xXezt/131kRlGjiUmyULvzKJ0Il0iQt/QQautbN8hBTrLuASTrwJd+YCO8z6Gj/Fl
-13QQCIKiHC+Enn4+vjwcXD887Q8eng6+7b8/6hAXDjFeNjLbF8kBH4ZwwRISGJLWZ1xWa9tD
-wEOEn6AdRAJDUmU/O5hgJKF15uMxHuWExZg/q6qQGoBhCXg+FJLCHslWRLk93HHo7FEoachj
-X/vD0RrWuZGD4lfp4vAkb7MAUbQZDQxZr/TfAKz/EJOibdbCTQLdYyIxzYfZIfOwsFXWop8f
-SlpMFjVM8er17++313/8s/95cK1n+9enq8dvP203/GEW1FTu6x6ZhJNOcE7ANKFftOAqqenL
-76FJecTU7juwVRtxeHy8oF4wBzR2+9nryzd8YnZ99bK/ORD3uhPwVd9/bl++HbDn54frW41K
-rl6ugqXPef7pzu9oDQs4XIPeww7fVWV24Scv9GmZWMl6Qb4l9yjgH3Uhu7oWhPAQ53JDdvaa
-gYx1rjRMeHEdMOfu4ca+Ax/YX1LTkKeUZ/aAbMIlyol1JfgygGVqG8DKdEmwUAFncR52RH2g
-820VC6VNsR7GZgZFd7WFZ5sdIQoxSXbT5mHb61qPkfEXvnr+Fuv+nIWLaU0Bd/RIbXI3xNPw
-RnP//BJWpvj7Q3K4NSIaT9+mIkQcQGG0MkqC7nbktrXM2Jk4pEbdYOibPJugX+kBK83iXSLT
-OCbG6IrkMzpvxlmB2fnseGbDxpMcBeIjT46JBucSVq1+60A/+RxkdJ7Myg3Eu5GMJ8ThMXXq
-M+GdBLeDjFmzBVEagmGl1II+QZiooM6QLqA6XhwaKqp+KIICHy8oPQAQc1XlRA0NqKHLckUU
-1qzUgow+3OO3lWGCmEKdnl5dIc1iGvXN28dvju/vKO5DMQawrpEEW4gYCp7r/mVWbjFX1twi
-MhTB5YOPj0xvzjCJk51O20P86sN+ewOZ+vuUh3FSkwaXagniwuWrofO1180HYgg03PpwRm8i
-RhZg7zuRiFitKa1E1iyrGbFGB80jiojVAzpz5bz6cuF6K/zFt3OdZ5HEi8mPqIW3Lecnbk8Q
-G+0BHanURXfvt+wiSuO0z6zhh7tHfKHumMPjyOqb+lDduSwD2MkRJcCyy5nJpC/1g4LwTn5g
-Tl3d3zzcHRSvd3/vn4bYiBSnrKhlxyvKREzUEh2YipbG9FqJz7jBRS/pLCJO38RNFEG9nyXm
-vBb4WLO6IOpG668DW/yX9Y+Eg339W8SqiNyGenRo48dbprcFdFP3Dh++3/79dPX08+Dp4fXl
-9p7QDTGyGLVBaLjioYbRu5lthAlKZjQl8vNBi+ofnM7RhPuTU4uRNWQBBjVbR+Rrr4rRvqPL
-mMy/2armS6HkNcJHTU/V8lJ8WixmWY0qjE5Rc2zOluDbmiTRqDr583VNevrVF3ku8OBbn5mj
-j8BUqoWs2mXW09Ttsicba9gdvzvtuMBjYcnRZck8gKEde854fdJVSm6QEAsMic06wdB8X7QB
-/3zwBZ+l3n69NwEQrr/tr/+5vf9qn2YYVxb7ykDJyALuSWGGY1LNuqGJB5/l32Cjj1QSW9D4
-KoGpTntm2h5gbHgt0QOWEpTSjVC2X/7wJhz01YLjkb0qcy8Igk2SiSKCLUSjE63WISqVRQL/
-U9ATS/v6ipcqcZ5YK5mLrmjzJfA4gc0VC8vCgisu/YdPA8oD63WEjjk8r3Z8bbxllEg9CnSi
-TVHf6x/bSbulYxkwbWGjK8rG3P24a4F3nMO+QgpsvnBsDt6F9iRw3rSdozx5ZjHaw8OVm1c1
-YmAZieUF/bTPIYkk8DQkTG3pvMsG7w6j4q42xN1flucGCJDxlGAisDIhjBb95LPFiqTMrTYT
-TNH+kQjFh7E+/BLFGOyYrkp1acS0B7XdPF0oVXLMjROdQElOaNdNDabod5ed8zbR/HYPK3qY
-fs9fuYkfDEYy0rDoscxOmDvBmjWsSqKwGoQrdY7Wo5f8c1BaP2974NTMbuX4GlqIJSAOSUx2
-aV+bWYjdZYS+jMCPSHivA3uyhbgWVTqrd5mVjt1gQ/E2+SSCghpnULbQWPK180P7uDY69ZDt
-ZrljSrELI8Xs/bYuuQShBeqEJphQKPhAZNqRCQwIPRQ7R5Qi3ElRV2h+db6vDvaHVbP2cIiA
-IvT1rf9sAXEsSVTXgC3kiJVEp4XiGdOevGvhRhKZxDXeqGrithgv7Ce6eivLJlu6xQ7FwSop
-nQcomhuMChLxY69XmRl9S37hS1LMYlUw92Uwr9pOOT2XnFt7WJG570Z5dok3+BMA07OCJmZ9
-klfSCRIMP9LE6hMMdYFP6mGjdoYWhnuYupukLsMJvRINpuct04QR4WLwG52+t7O9WdMSTfnR
-hdWGnvywp6wG4aM6k/TeGprV0P/+mFYYE8O5Gx1RrXkX3aVZW6+9R78jkXYsyLmH0dfKW2Yn
-9dagRFSlzRbMQmfY0G+jWLl77hgQztPJ3DvwQYnU0Men2/uXf0zgs7v989fQ/wX0n6I5011t
-T8oejJ6e9G2kcXMHlWaVgXqXjXeuH6MU5y2+tzsaJ5Z+YUOUcGQ50qDvdM9KIjJGv0ZNLgqW
-yzlfX4ciyDAzatD5skSDQCgF5NYYm8/gP9Bjl2XtZBmK9vB4wHL7ff/Hy+1dr1o/a9JrA38K
-x8PU1dvWAQzfn7ZcuKEgJ+ywhwj6kY9FWYOeST+6sIiSLVMprbKtErDKuJJVQ3s5iULfTuct
-nmP6796HRQr7h+igjuLTyeL00J76FewbGKEm917Ss0QXyyK+J2uBkbrw1Rsssoy69zGtq0Em
-oBdZLuucNfb25mM0e11ZZBf+cJg9IG0L3r/ilhjK93DpLfQhhoLnHGWXYdzCMTdrRSf//e1Z
-9D92XvBeIiT7v1+/fkXPEnn//PL0iuHg7YgdbCX1s0g7uJkFHL1azIh+evdjMbXCpjNxyqJd
-7rqXDbDecX5urPoHDJoux+gZM+Wg+07M00yL4zOYt/b3+Js6QRgl/7JmBVgmhWzkpcBa7K81
-dr4+XjPHG+i3BsftAPOsI2w1vpcMDhh6b6OxXEvQo7AVuwYzelFzEfFazYi5+pXbwglTiLCq
-lHVZOAa/C4chMd3nnHV6NJdCUa/fDV+qhNXDPA1+HCBDs92F7dlSASJGI77Bxw4OSxoyhP2K
-cmPevde+MOjBpI3sUqCn2IzcHchwP1a0aHUJI86ZLpHirZaNMbZB+KDmGASncal6mT7s0wuf
-pTpj1GLSq6GfyqBjZSDtwu4ZMHGRrYVpWzuPjGvYWpIeJYrE7DTRWbLJu2qlHVb9Fm7yEKLd
-EFxdb0SpZdgCXTpY8qv45KEY8HmUqmkZsdp7xMyMMFnBtUsiwUGP1UE9JOw1oOSUCog/G/XY
-FwZmN0ILinzvPAk4VttutB4C+9CzXLhurMGGh8YGi3PayI5J8oK55hxLeBX7BU4SXiPKFgOS
-UHuDwZsoK35xemJNjwz9Jk0u3egrbrA6Takgd/FANHsTfG3iixpvFyQ6KB8en98eYDKu10ez
-46+v7r/ayjt0D0f/07KsnENYC4wKSCumVhikNr3a5tO70a4r+VlbjflvrTVWpk0UiQq6Pgew
-yXQNv0Pjs4aO2l5VOBNTe36NFMYGxnbAMOUVSWMx7NgUhh2LULNDzI44cc/7O3vlYGXduoWZ
-27CadgDfnoNGCXplUtKWip5Kph5yEs1PDPPWATTEm1dUCwktwEhM70mvAbo2h4bpR4+2+kKV
-7csOHJIzISrv8sHcJ6DX3qT0/Ov58fYePfmgNXevL/sfe/jH/uX6zz///F/rqgEjNOmyV9om
-Dp+wVqrczMVh0iVgY3xZjudMbSN2ItjRa+AfP/PhE7mvb2wNDrbBcht58tBXuq2d98kGqnn0
-pKUJ6FCFlfWIaBWsKdHerTMR+xp7Ut8e9xoLJeY1S7B88IzJKGDj9ezUWkLjqXnqfEYf+teJ
-qWDLZEPZ7sNxx38xZRzLq8EHzFNfakMO+rdri1qIBCa8OeUndBGj8IQuiHrt/WM095url6sD
-VNmv8dosMODxCs4f4YoC1quQgWGTjkRSQ5Ws6LRWzEudlAQU+hlpEeHYr5Ur6JWikV42L+OL
-wVtKmnhzYzLUQd/U+Zhjzt9IMPexEumvC0AFRdv54252uHAq6CeAU7I4J6NPDbH7nXa6IwWi
-29jrSutG4bCZUHJgYsHvDXkZBwyvYUPJjD6rw2DoqN3WigdowS+a0trQtFPGNKXDA1CtdY0n
-EZpIxbArxao1TTOckqXeyiGQ3VY2azz3rX+DrI+YhmeJPnlPlmvLA8rD21mPBCM26TFGSrAZ
-iyYoBL1p/MNn3pdmip6QpkLuinYERrYWwyFlE8OeIxMwi9dcLt6fHulzfFS+HUkImkkmKNlq
-6f06GrPszzCcewT9eK+nsIvVuUwsXLBef5x8INerbjzomdpOCSeShy9yGdIIprKL4VC2ra3z
-LvQt609IteLUVvRXkbKS5SrygY4Rv0tcZ/Fe2ciW+lQ+ZqRg5Fh/1Uz3icAwXrxhnG76QenU
-3/r4uXu3i2Q2sygih68jRRucZPsU/Ss0X7zow3B96UZvqBWbOwLXZeiVMoPXIz7XE6bL9KGb
-f1g5rIsW38ShAhK90WqLrQmODuLUOU8b4OZkWC/2SDItd4LbNyDN/vkFFQXUivnDv/dPV1/3
-tk/NWUsbyKRl7ITtrPKo+dxTlKmWOvHy7NYWojHxogk6smf7eH0DY3NC5YyXm8CsBvsUwP0i
-t+OxuNT4azjrwQsFpvCczn2KjCR4yK7aXLvFkue3hkqdA1uCddrX7N0PTDZoGU0KhDPe8uGE
-QwmMvpr06YV/DTY73MHrSnMr9v9HtuNTkk0CAA==
-
---MGYHOYXEY6WxJCY8--
+--=20
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
