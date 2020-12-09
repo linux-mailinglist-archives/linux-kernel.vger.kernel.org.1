@@ -2,103 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BDF2D4158
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:49:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F7E2D4163
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730837AbgLILsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:48:53 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:36904 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729260AbgLILsv (ORCPT
+        id S1730937AbgLILt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:49:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730829AbgLILt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:48:51 -0500
-Received: by mail-io1-f69.google.com with SMTP id s12so1010693iot.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 03:48:35 -0800 (PST)
+        Wed, 9 Dec 2020 06:49:26 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB22C061794
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 03:48:45 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id i9so1346943ioo.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 03:48:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j3uGWJhYTw6GKZHD8wfKlSNKe6wdrtYdPYkKgKUgxgg=;
+        b=06+rhWd8+y6iJvjo/+iWgqONBMCsCjSjihXULqFxCdI19FRSFOE1qKqDyNI8Py53HG
+         x75OopikQdvCY0j75xpQhzRPu6xxO9SbOTXqDwZOBF2F5zhHfSy1TE6N+PZl82GJp6N0
+         OlrM1Z2dWgOu9xL/Qc8w2WJQ2os624p0Wcfopz0R4O7uxrOFRX26z0S4U95Y21kP/1c7
+         aSQ0quwz7yJMMoWIWsXn4SW75CAGDVQENl3/dfcr3Vw6CCoASlPMUbY1kKEVD9mZtsYe
+         nhg5QymztkxgSfizfVJPUWcNih7BRHPPQh1ZZAr+3oncmj6CaKJrLu8Rmddc6m8z5eTa
+         QcvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=CwYMHQEl9E1lkCAq4q/oSzHEtTEatdQZWZYCFTonNmQ=;
-        b=gws0eZsnUrtW+A+dT5BtWmxN69UpcE6/GnHd+/Jy5DZSavN0rwSA/bzDhVWF1oScqt
-         qmOVjHA/lLf/SnG4jbJOFOPAxxiwT7Y8AMgaXw1RP3jLlykaWFCKTshX9r6IQSmCQh7F
-         rozwxnsTP20dw9K5L4HVhaOA3EOmArpIBHpKPge+te2TfMD1WAJeABviErSmmSyN1SZr
-         PWQVeUCEDqWN3fSdgym6Nm0PMsEXyjFA8wysi8ZnRzvdpAAWMYJ+9qeWcSWvYMC/0FhG
-         DehBjVHmaJo8rDrzGA09WVWS2HC2AT262tZoVX+/Hryd7nRgya16yuHD4T18YwKaQccM
-         nLHA==
-X-Gm-Message-State: AOAM5324/tvKUxpmCvIs6ixMwBLt0fq02NrDDjaJGwvvDWD3nbXxQuQr
-        sOj7ZsR030XYURVDUOLIyMaq1R8DBEZE58macpU4KW4AdLT9
-X-Google-Smtp-Source: ABdhPJyx90XS84buHbh6eiTsEACsTsp1ncpdlSTMbGyWDi0udWPcvKTtpqljZC+AzzNom9NPPbqXv3GcM3XKPt1qDNrONpmftY72
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j3uGWJhYTw6GKZHD8wfKlSNKe6wdrtYdPYkKgKUgxgg=;
+        b=RfW4u7U3i79Pm89ixtH5W3zYy69fhFdAoAmaSzIIzx0InCNxnTx9bKN4PrkSv6GEwy
+         4WE/Kl3ofdaLXuGnTNEksE6gJd5XRg+EgC7nDT5rao6XsUMpCNgfcL9L66ofcvbF4PBb
+         PZjSHpdeM2ZRUP+u+5wK5MoR/GQwLzwT4+C/di9JvrBZypvnuc88eU6zqnneMFtKmo+M
+         yX8ILyW0v6jBvt2h0gh4gFnNMAkiyzIs4fDswQ325m6pWvzOX3f4eDv9S+1uUiCG3xx5
+         vEU9ME4iz8Uy3Arrmhr5AxJ/khtU8gBL0aJtWwxkxXbK6TAHPQZe40j78oDA4ZqvKZvB
+         3PIA==
+X-Gm-Message-State: AOAM531vRXeG/QxPMyzXT0Zh1u9Y/YHABbtbNnPPIbvfIXH6Mn3MZRJR
+        VB2QU1+g5ewT06lMoXMVik/K8l4O02w/M23MIb89gA==
+X-Google-Smtp-Source: ABdhPJwbQYL5n5RxpdrD8qygMiWe+C20JC4G4yrDR2T5YkOM/MbdAUfZY6za7jqeE7Dk8OtDbfD6reyrXup+NvBRUpw=
+X-Received: by 2002:a02:6557:: with SMTP id u84mr2532784jab.82.1607514525257;
+ Wed, 09 Dec 2020 03:48:45 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:c7b2:: with SMTP id f18mr2429109ilk.120.1607514490523;
- Wed, 09 Dec 2020 03:48:10 -0800 (PST)
-Date:   Wed, 09 Dec 2020 03:48:10 -0800
-In-Reply-To: <000000000000c79c6b05ac027164@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002dd77405b606a278@google.com>
-Subject: Re: WARNING in __queue_work (3)
-From:   syzbot <syzbot+63bed493aebbf6872647@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, bp@alien8.de, davem@davemloft.net,
-        hkallweit1@gmail.com, hpa@zytor.com, johan.hedberg@gmail.com,
-        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luto@kernel.org, marcel@holtmann.org,
-        mingo@redhat.com, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+References: <20201209114440.62950-1-fparent@baylibre.com>
+In-Reply-To: <20201209114440.62950-1-fparent@baylibre.com>
+From:   Fabien Parent <fparent@baylibre.com>
+Date:   Wed, 9 Dec 2020 12:48:34 +0100
+Message-ID: <CAOwMV_xMfSV9+zTZzUgB5XYNZR0ed8J=H9G39++bBJNWiR_Ehg@mail.gmail.com>
+Subject: =?UTF-8?Q?Re=3A_=5BPATCH_v2_1=2F2=5D_=F0=9F=93=A4_dt=2Dbindings=3A_dma=3A_mtk=2Dapdma=3A?=
+        =?UTF-8?Q?_add_bindings_for_MT8516_SOC?=
+To:     Sean Wang <sean.wang@mediatek.com>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>, dmaengine@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Sorry, resending without the unicode symbol in the title
 
-HEAD commit:    7d8761ba Merge branch 'fixes' of git://git.kernel.org/pub/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14859745500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=59df2a4dced5f928
-dashboard link: https://syzkaller.appspot.com/bug?extid=63bed493aebbf6872647
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1431cc13500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+63bed493aebbf6872647@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 24939 at kernel/workqueue.c:1416 __queue_work+0xb59/0xf00 kernel/workqueue.c:1416
-Modules linked in:
-CPU: 1 PID: 24939 Comm: syz-executor.3 Not tainted 5.10.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__queue_work+0xb59/0xf00 kernel/workqueue.c:1416
-Code: e0 07 83 c0 03 38 d0 7c 09 84 d2 74 05 e8 3f d0 69 00 8b 5b 24 31 ff 83 e3 20 89 de e8 20 4b 28 00 85 db 75 7c e8 c7 52 28 00 <0f> 0b e9 dc fa ff ff e8 bb 52 28 00 0f 0b e9 55 fa ff ff e8 af 52
-RSP: 0018:ffffc9000266f750 EFLAGS: 00010093
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8147b1a0
-RDX: ffff88801f184ec0 RSI: ffffffff8147b1a9 RDI: 0000000000000005
-RBP: ffff88804d3d4b00 R08: 0000000000000000 R09: ffffffff8f12d1a3
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff888059ce4ac8
-R13: ffff88803f6b5800 R14: 0000000000000293 R15: ffff88803f6b5800
-FS:  00007f4e91751700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007effff766db8 CR3: 0000000059bc0000 CR4: 0000000000350ee0
-Call Trace:
- queue_work_on+0xc7/0xd0 kernel/workqueue.c:1521
- l2cap_do_send+0x248/0x480 net/bluetooth/l2cap_core.c:987
- l2cap_chan_send+0xcc3/0x2ac0 net/bluetooth/l2cap_core.c:2706
- l2cap_sock_sendmsg+0x235/0x2f0 net/bluetooth/l2cap_sock.c:1134
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x331/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmmsg+0x195/0x470 net/socket.c:2497
- __do_sys_sendmmsg net/socket.c:2526 [inline]
- __se_sys_sendmmsg net/socket.c:2523 [inline]
- __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2523
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e0f9
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f4e91750c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 000000000045e0f9
-RDX: 0000000000000500 RSI: 0000000020003f00 RDI: 0000000000000005
-RBP: 000000000119c070 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119c034
-R13: 00007ffd9c18ecaf R14: 00007f4e917519c0 R15: 000000000119c034
-
+On Wed, Dec 9, 2020 at 12:44 PM Fabien Parent <fparent@baylibre.com> wrote:
+>
+> Add bindings to APDMA for MT8516 SoC. MT8516 is compatible with MT6577.
+>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
+>
+> V2: no change
+>
+>  Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt b/Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt
+> index 2117db0ce4f2..fef9c1eeb264 100644
+> --- a/Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt
+> +++ b/Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt
+> @@ -4,6 +4,7 @@ Required properties:
+>  - compatible should contain:
+>    * "mediatek,mt2712-uart-dma" for MT2712 compatible APDMA
+>    * "mediatek,mt6577-uart-dma" for MT6577 and all of the above
+> +  * "mediatek,mt8516-uart-dma", "mediatek,mt6577" for MT8516 SoC
+>
+>  - reg: The base address of the APDMA register bank.
+>
+> --
+> 2.29.2
+>
