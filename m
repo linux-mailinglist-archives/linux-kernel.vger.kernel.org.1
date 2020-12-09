@@ -2,67 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B282D44D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2932D44E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733223AbgLIOxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 09:53:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52450 "EHLO mail.kernel.org"
+        id S2387423AbgLIO5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 09:57:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732059AbgLIOxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 09:53:50 -0500
-Date:   Wed, 9 Dec 2020 15:54:26 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607525590;
-        bh=IIfUJorqMDpBd82MCjqYNcMz9MwC1uE5ZYVW7orcYZA=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FGSaiilLUwmBIk0rZNRQHTyvh3Pq8cwIuv2+x4lySFPBlsw3nnB7ukYH/xx7IV+TR
-         0pkv/O+hcpRqgLNnRWN0H0yWRrVM7Xb35jv6dSEGIJjRMCkOylEP9OGdvaskR07AFk
-         mQDkK6kzaS8alz1L4U4JDzZ3a5GUrsAhnIvogNCM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jim Cromie <jim.cromie@gmail.com>
-Cc:     Jason Baron <jbaron@akamai.com>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] dyndbg: fix use before null check
-Message-ID: <X9DlIkNg2mVf20Bo@kroah.com>
-References: <20201123184334.1777186-1-jim.cromie@gmail.com>
+        id S1732445AbgLIO5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 09:57:43 -0500
+Date:   Wed, 9 Dec 2020 06:57:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607525822;
+        bh=E/J48ojA1PPkZ9RHRPFpZfdRtd7AUnBjD4AEtMLyiwY=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Ily9kgYerc3ISWU6gUuUiVDsh+jBLnWoZZLDajCs6/qkeqZPA1iTpLfH2p76QfzKD
+         0XscvMeRgHPl0jlbp4jEDmEqdq+v6PbmpNVSrIsbLWn3Ww44kivcJzIBurOIf5w4MY
+         ekJvFJrTNMFtBI5w8D7xvLoP5XQ6oc3lgvyo09RUkEB7Og0wdN4pL3TQsOPGfgrhdg
+         X7CrSAA+jB7ZAbg8nSacDNXZyt6dQjTG1ZsINp9XYiO0e37qN2Xmj56stc3nH6VN/u
+         XZ2Ywv6qcLhRqk3eZwlv2mGOtOU2N1Dr7unPsfYZ8YP66+goWIFdyr+wmhTRy2Jl1L
+         ImZRmV5wRhMLw==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        iamjoonsoo.kim@lge.com, andrii@kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
+Subject: Re: [PATCH v2 sl-b 1/5] mm: Add mem_dump_obj() to print source of
+ memory block
+Message-ID: <20201209145702.GA2657@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
+ <20201209011303.32737-1-paulmck@kernel.org>
+ <20201209081710.GA17642@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201123184334.1777186-1-jim.cromie@gmail.com>
+In-Reply-To: <20201209081710.GA17642@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 11:43:34AM -0700, Jim Cromie wrote:
-> commit a2d375eda771 ("dyndbg: refine export, rename to dynamic_debug_exec_queries()")
-> 
-> Above commit copies a string before checking for null pointer, fix
-> this, and add a pr_err.  Also trim comment, and add return val info.
+On Wed, Dec 09, 2020 at 08:17:10AM +0000, Christoph Hellwig wrote:
+> Your two new exports don't actually seem to get used in modular code
+> at all in this series.
 
-The way you list the above commit is very odd, and hard to read and
-understand.  How about something like:
+Indeed, and I either need to remove the exports or make my test code in
+kernel/rcu/rcuscale.o suitable for upstreaming.  Or find the appropriate
+mm/slab selftest location.
 
-	In commit a2d375eda771 ("dyndbg: refine export, rename to
-	dynamic_debug_exec_queries()"), a string is copied before
-	checking....
-
-
-Also, when you say "also" in a patch, that is a HUGE flag that the
-commit needs to be broken up into multiple patches.  Put the bugfix
-first, and then fix up the comment later, if it is not being changed for
-this fix.
-
-Also:
-
-> Fixes: a2d375eda771
-
-You need the full information here, please write:
-	Fixes: a2d375eda771 ("dyndbg: refine export, rename to dynamic_debug_exec_queries()")
-
-
-Can you fix all of that up and resend?
-
-thanks,
-
-greg k-h
+							Thanx, Paul
