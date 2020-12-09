@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056B82D400E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 474CF2D4015
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730174AbgLIKff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:35:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51784 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730156AbgLIKff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:35:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BC698AB63;
-        Wed,  9 Dec 2020 10:34:53 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 11:34:52 +0100
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, linux-doc@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org, stefanha@redhat.com
-Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
-Message-ID: <20201209103452.GH6564@kitsune.suse.cz>
-References: <20201203191135.21576-1-info@metux.net>
- <20201203191135.21576-2-info@metux.net>
- <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
- <96aca1e6-2d5a-deb1-2444-88f938c7a9de@metux.net>
- <20201205142218-mutt-send-email-mst@kernel.org>
- <20201208101051.GC6564@kitsune.suse.cz>
- <dcc41cf3-ab2d-656e-6fa3-73f231bde92d@metux.net>
+        id S1730141AbgLIKgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:36:51 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:44260 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730013AbgLIKgu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 05:36:50 -0500
+Received: by mail-oi1-f195.google.com with SMTP id d189so1192702oig.11;
+        Wed, 09 Dec 2020 02:36:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uo9dIETK9mAQxtw6iTjuVfB/lVN/jbUWmq6dj8/8OGE=;
+        b=Nxy/hIfpxmM6CmFvhw+auoVlxsZmaosuVuLl0mGVsLv6vHi5XBlE3pfjrTizTb0QCM
+         jcKWaui+qZF1jKbq+WbuKyMljakS7qW5aaj8+6tl1VO/C2J+Uwz8YYYayL6/3AA1nzt0
+         A7HvfNG/S+Sl8Xhf12bLBK2BNMue8rN0z8XpJsWoviT9UkpU8PZwLzQQEkha/qjKnNTd
+         6LZvkPgSGUydsSubdQJetqmyjDCE6Sh/eCHrpQHVM07tfjZhAvT4O3vktx1btn1VUe4R
+         jIc/UfjtryLpPxr1B+bUNT9/DFH2HzdmphIceJIPLGAlM7yKABHxiOVGSXRSGo7q/JbZ
+         NhXw==
+X-Gm-Message-State: AOAM532dUlclXPJJd1CYpW8Ruj8n5SvyKmsBz8QSvr/XaHpr2FkTRQ55
+        RjRir2SWKzEhmCE2tcRG6Sryb5IizLvASosY6mI=
+X-Google-Smtp-Source: ABdhPJw581OO9kYd+JonG62ZvkgE3rbmlRIweQ0nWhyHb6euMOhoJ/4vcCdZN/7Yo02XhOtlgJZOg/EUeVU0cLJX47s=
+X-Received: by 2002:aca:4b16:: with SMTP id y22mr1221145oia.148.1607510169947;
+ Wed, 09 Dec 2020 02:36:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dcc41cf3-ab2d-656e-6fa3-73f231bde92d@metux.net>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+References: <1607414643-25498-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1607414643-25498-2-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+In-Reply-To: <1607414643-25498-2-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 9 Dec 2020 11:35:59 +0100
+Message-ID: <CAMuHMdXugW_q-b8vGAKrqUMYZS4LYyp3jmedscAJH+h-FNR17A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mfd: bd9571mwv: Use the SPDX license identifier
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Khiem Nguyen <khiem.nguyen.xt@renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 01:33:02PM +0100, Enrico Weigelt, metux IT consult wrote:
-> On 08.12.20 11:10, Michal Suchánek wrote:
-> 
-> Hi,
-> 
-> > The console driver provides early console which should initialize
-> > without any transport. I have not tested it actually works but the code
-> > seems to be there to support this use case.
-> 
-> What does it do if it hasn't got any transport yet ?
-> 
-> Just eat the bits or buffer everything, until it gets a transportport
-> and sends out later ?
+On Tue, Dec 8, 2020 at 9:06 AM Yoshihiro Shimoda
+<yoshihiro.shimoda.uh@renesas.com> wrote:
+> Use the SPDX license identifier instead of a local description.
+>
+> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-Why would it need the transport?
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-It's not like the data goes through an actual PCI bus, it is only used
-for discovering and configuring the device, right?
+Gr{oetje,eeting}s,
 
-Then if you do ad-hoc configuration of the device you do not need the
-trasport at all.
+                        Geert
 
-Thanks
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Michal
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
