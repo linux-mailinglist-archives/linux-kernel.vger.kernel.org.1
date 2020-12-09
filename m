@@ -2,161 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA98D2D4192
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2252D4197
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731096AbgLIL7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:59:42 -0500
-Received: from mail-eopbgr1300042.outbound.protection.outlook.com ([40.107.130.42]:56320
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730599AbgLIL7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:59:42 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IYkZQiGsgMETgh0SwK3q0JEJV/6TffvrvT2J/zwAx3fCl77YY1QsVH3yqgwDzJ8aEYlRe4T1M9x5X2QobGu2Qidt4ZanD9jr/L37gM7Tc26CLVBamEXWXAHQCJZ2Psn/6KH/fHv5vIWUwUxVMf+UJ19INOMPQwmctC2XApU5/wWNPi4mzQsXL/nwmnHCW1+y1pi4/KCnb+I6o838tCN/mQLUunVkJiTLJvxaai2j6vGHI70FOcJ2IGGbLSEPXMZjl6ALm5uO0MUQYZoDNOfD6VmUjjo38P7FOSgqgMPNor2R8GnZmh/PBwyX1glpeZWRCTPRn08RL1JranlZK71nEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ke/7zqoWtPar/bnT5PwSZO//Zr9ZzmItjeD/Z4qwMIQ=;
- b=CZCfEXCCLR11pEmZufMjBH8vtX8wzByNV1Yv27VfjZ/nrqR+kuTBZha8FWxSVlCnPoE0mDiYl+RtaM/kM8VHR6WdFegVpWXGmERfW2K5gVe1gEf1gE7yDbJ+W08ZdZF1Pq7aJ0CpVyn1SQSX3jYwBNcs3GSS0Pi5aGtcmhh9a8yVBqmwtWvJ+ycEgIkoO5kUq2SEcLyooL+zbxebzDms39n52aUmoF7rEaiUYvtKA9IszJKWULN++HaY1M60dlsR2lsHX//a/xDmOde3mhS4Le8JvCTNuvkxpep0BzFuUzdequ0b52a1nGFrgo71YPQjbX4lyL95f/Ck2yQlXUgzLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oppoglobal.onmicrosoft.com; s=selector1-oppoglobal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ke/7zqoWtPar/bnT5PwSZO//Zr9ZzmItjeD/Z4qwMIQ=;
- b=X7OvGF6SXx3qh/Fl00mxd2zvCRq8IjCKbibJwoZkP/vurz71L24TlyNvmC7i3YI3W9qXek15TfxCiPfY/6mb4ArWSXqta+9smGxZb/g6n8zm1vgxmIRMfwObqayT8rkGJWzVGct4NsC2SQ8AZJLj6vIvtUcdHruWnk7I/slIZX0=
-Authentication-Results: lists.ozlabs.org; dkim=none (message not signed)
- header.d=none;lists.ozlabs.org; dmarc=none action=none header.from=oppo.com;
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
- SG2PR02MB2559.apcprd02.prod.outlook.com (2603:1096:3:27::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3632.19; Wed, 9 Dec 2020 11:58:04 +0000
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::dcd:13c1:2191:feb7]) by SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::dcd:13c1:2191:feb7%7]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
- 11:58:04 +0000
-From:   Huang Jianan <huangjianan@oppo.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     huangjianan@oppo.com, guoweichao@oppo.com, zhangshiming@oppo.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5] erofs: avoid using generic_block_bmap
-Date:   Wed,  9 Dec 2020 19:57:40 +0800
-Message-Id: <20201209115740.18802-1-huangjianan@oppo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [58.255.79.104]
-X-ClientProxiedBy: HKAPR03CA0017.apcprd03.prod.outlook.com
- (2603:1096:203:c8::22) To SG2PR02MB4108.apcprd02.prod.outlook.com
- (2603:1096:4:96::19)
+        id S1730625AbgLIMA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 07:00:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26897 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731110AbgLIMAJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 07:00:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607515123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/OLi6xw6A05rVF+FY+DCz7u5b/15LezMPYjls9q2mPE=;
+        b=UaHMZcqNM8GVl+b7AfaWaYTaqDyBD9L8FkOKZM6byZ9Bf7zSZa+zlsQB37V261+Ewr/B09
+        twCVSFY+qcijJUPge+sYhuGyePmTErTxYcSuZ0adnW5Hhs/Nx9eX23Y0pZNOZVffgm+yxp
+        uGXkh9FDaS+dKma+4MR3kZvImh7UBFk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-B7C-5k_CNgGhnwgKwhTXzg-1; Wed, 09 Dec 2020 06:58:39 -0500
+X-MC-Unique: B7C-5k_CNgGhnwgKwhTXzg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A43F4612A2;
+        Wed,  9 Dec 2020 11:58:36 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C798919C78;
+        Wed,  9 Dec 2020 11:58:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20201120180426.922572-5-mic@digikod.net>
+References: <20201120180426.922572-5-mic@digikod.net> <20201120180426.922572-1-mic@digikod.net>
+To:     =?us-ascii?Q?=3D=3FUTF-8=3Fq=3FMicka=3DC3=3DABl=3D20Sala=3DC3=3DBCn=3F?=
+         =?us-ascii?Q?=3D?= <mic@digikod.net>
+Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        =?us-ascii?Q?=3D=3FUTF-8=3Fq=3FMicka=3DC3=3DABl?=
+         =?us-ascii?Q?=3D20Sala=3DC3=3DBCn=3F=3D?= 
+        <mic@linux.microsoft.com>, Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v1 4/9] certs: Check that builtin blacklist hashes are valid
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (58.255.79.104) by HKAPR03CA0017.apcprd03.prod.outlook.com (2603:1096:203:c8::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.8 via Frontend Transport; Wed, 9 Dec 2020 11:58:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: db711528-6fe6-4e83-6f73-08d89c39af75
-X-MS-TrafficTypeDiagnostic: SG2PR02MB2559:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR02MB2559F9E30B888B23890DFAEAC3CC0@SG2PR02MB2559.apcprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:525;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2HwKS+MEZ94i0vPwcwZnJayUt6nROuj1ZpQAJK7eSLRxUsqytffXVOPlnIDih2Csp1p4bJJ3WmBgM+sHgkwjuwsQkS8OgKsmZ81NUdz2KJM8d5A3fMs7TkL1th6InsjPc2zoKxFftxsO0ukTy0m+PPrG+Z7HFXlhjogoXPBopoz9aObLiYH+gtkjLmE2tT+2OiqmDDHB/mOT9F/BZdLS5V7vey/EEbLvr05tOuU+o2Gw0e1UYf5M8Iyezx7HeJwYxHsElcvsPl/czilQjgkanQB/tv5Jl5RS8AgqiMvBENxrdTO8y6zhmRI699pbrp3IEXZo32MV3JMjXm/OVxwSjYth6iJEhiAUkI+zWJmof7S/ogE5KxxWd+bsYtrFPzaHEKayQ8cV0kUlVmktuuae9xuKhyNTCnii8KDAyKoQbGvIvQ1sKpCgVqSxAXEBI8im2Awb6EL46L7heL3zHuORdg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(34490700003)(5660300002)(6666004)(83380400001)(6506007)(956004)(86362001)(6512007)(1076003)(26005)(186003)(36756003)(16526019)(508600001)(69590400008)(6916009)(8936002)(66556008)(4326008)(6486002)(2906002)(66946007)(52116002)(2616005)(66476007)(8676002)(41533002)(11606006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?NCdQ2pmYLE1Fkn+s2tUDay9eDzaZKvv/gooToXVBoAzd248hBYax04siopoc?=
- =?us-ascii?Q?0b/04vtphPTUx/IHjUNzBlrkQerBxdLmx4r5honjw2/mE3LXRe1oGafzb8V+?=
- =?us-ascii?Q?WVvxC/utd68y+G29NEueVXgF4emA8+WIscjEIxj1eJg91P0ylbq5SdhNxfnb?=
- =?us-ascii?Q?TC3iSLEjeuXq4I7aRMR6wsXRjCqoIU/g30AG2O/mWHxArjFli+tBTmk0V2jM?=
- =?us-ascii?Q?poMmCYmB7b8EIKlfxIqb5t8D89/CXuNMGE9+f3W037zaZ8dueXKwjvk0SuUu?=
- =?us-ascii?Q?sBrzqpUhMguWes6jfy4bgoBuzM4trvRbsWhX+an2EgAwBTH9QVRjJNK9Umx7?=
- =?us-ascii?Q?6aV8LmrwLLHqOcAlZt54toCHCZKAA3Aj0k18mzcHtogZDniSx9E3mqT795Jk?=
- =?us-ascii?Q?AoGY6b25rMKXldVmiNUtSUzXUf6NjSG+TI2xLSX7R4y0eL3qtqn0pvEiwENJ?=
- =?us-ascii?Q?DK6oZC6HIlvTilSmGE+G3C6elMGIkgUBeWbzFVtTCLOnQKcyMWxhFlfMyODM?=
- =?us-ascii?Q?ziGbYcdhHJEHFO6FVxUmH+qv3tY/72cWrpR8yBqsFRlu0B/wl7E6BpQ4eQff?=
- =?us-ascii?Q?Sl1QChSJ4vUt9qgCCt+pKbvfASCZJD5pMuXm8FfxIs8/jE55e3u7AJFaFSG3?=
- =?us-ascii?Q?xNYWx66/vlUR2sA8JGuDfUNFryvcekAQoYI8/3fatIkMyE1p9AQYdBoKuA9z?=
- =?us-ascii?Q?J0+FSqA3ulNDgTaZjU+o6tIet211OuGvgX5+CPiemZzaFlphIVml4KRQnunm?=
- =?us-ascii?Q?tv+tzU+8j4p7fF7uWlO/6Q6eTV5zhGrKhGjKZDCmVukDz0rcXa8Bq7wEq+Aj?=
- =?us-ascii?Q?Jt9uffCms/ZHA6j9k7KltVSypgY07ZD0sTS6I4qU9RIOH2JKKgp7pTSzJOjI?=
- =?us-ascii?Q?eQ6PMk5VNkjp6JXi7udKu56jVDzEkUiXUmS7Jbljd3zDqAY0WVB78voRULVt?=
- =?us-ascii?Q?FjtF+UY/UxspUO6HP2/Bfdz75DIC3gOVSW3gXkV0MorfiPlyooLf9YxjQywX?=
- =?us-ascii?Q?lVPu?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 11:58:04.2923
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-Network-Message-Id: db711528-6fe6-4e83-6f73-08d89c39af75
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LeTszkJlMiT3zDi5URFHdw3GjYvsKBe2O7GrZ4bUdlWBBEmssjrcjvKDV4J3cRzayPXVD4KndkGlAy6AvSv/RQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB2559
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 09 Dec 2020 11:58:31 +0000
+Message-ID: <1221725.1607515111@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-iblock indicates the number of i_blkbits-sized blocks rather than
-sectors.
+Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wrote:
 
-In addition, considering buffer_head limits mapped size to 32-bits,
-should avoid using generic_block_bmap.
+> +      cmd_check_blacklist_hashes =3D $(AWK) -f scripts/check-blacklist-h=
+ashes.awk $(2); touch $@
 
-Fixes: 9da681e017a3 ("staging: erofs: support bmap")
-Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-Signed-off-by: Guo Weichao <guoweichao@oppo.com>
----
- fs/erofs/data.c | 26 +++++++-------------------
- 1 file changed, 7 insertions(+), 19 deletions(-)
+The script name needs prefixing with $(srctree)/ so that it can be used with
+alternative build directories.
 
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index 347be146884c..ea4f693bee22 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -312,27 +312,12 @@ static void erofs_raw_access_readahead(struct readahead_control *rac)
- 		submit_bio(bio);
- }
- 
--static int erofs_get_block(struct inode *inode, sector_t iblock,
--			   struct buffer_head *bh, int create)
--{
--	struct erofs_map_blocks map = {
--		.m_la = iblock << 9,
--	};
--	int err;
--
--	err = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
--	if (err)
--		return err;
--
--	if (map.m_flags & EROFS_MAP_MAPPED)
--		bh->b_blocknr = erofs_blknr(map.m_pa);
--
--	return err;
--}
--
- static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
- {
- 	struct inode *inode = mapping->host;
-+	struct erofs_map_blocks map = {
-+		.m_la = blknr_to_addr(block),
-+	};
- 
- 	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
- 		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
-@@ -341,7 +326,10 @@ static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
- 			return 0;
- 	}
- 
--	return generic_block_bmap(mapping, block, erofs_get_block);
-+	if (!erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW))
-+		return erofs_blknr(map.m_pa);
-+
-+	return 0;
- }
- 
- /* for uncompressed (aligned) files and raw access for other files */
--- 
-2.25.1
+Note that doesn't apply to scripts/extract-cert in the same makefile as tha=
+t's
+a built program and is to be found in the build dir, not the sources.
+
+Btw, I'm pulling some of your cleanups/fixes into my fixes branch.
+
+David
 
