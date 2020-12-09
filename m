@@ -2,494 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0AA2D4264
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E09D2D4275
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731879AbgLIMsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 07:48:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49044 "EHLO
+        id S1731881AbgLIMwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 07:52:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731188AbgLIMsb (ORCPT
+        with ESMTP id S1731859AbgLIMwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 07:48:31 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00ECC0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 04:47:50 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id y23so1544456wmi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 04:47:50 -0800 (PST)
+        Wed, 9 Dec 2020 07:52:37 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E25C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 04:51:56 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id y23so1558406wmi.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 04:51:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=f4uyodH6Wctfq6D2oaw2r57qzrUM8e3H6DvrLrJdT44=;
-        b=bYWottTroUD9/UnkZKLdPnri8zJqTDpGxiXS6H5y2SO/jI07m94mBJlUCjv3Z0xvVX
-         DjyAOMb6+OI5LPDDVtR+k9AoXGRPX00c4TAqYLY7ZLt2MOEM+62H9jrNGFKE1mpUYA9x
-         b4nvVI/u2ua/aVkxFsJKgYcj/dY1Eciz1UKsexLl6Sbm5rGcu97rg+Jwt0xdkH0PNGU5
-         rEWjVsgBbmJO0t6XARt4ss5sKqeqjoqNpCOZJF6vdQtWB6j8KTZWu48hUphGZV8itYoW
-         D+MFm3hE7506wgYUoBlZ8JoTbdVYKuMJGu0ffN29d/HHs6/u4lGpIkqKs41eB72/hT5C
-         QaWg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t3b+hYd92c2/h1jvJK/jdhfNTZJqrtzVMndWrwAcWaU=;
+        b=LLV0B9jIT+l3TZUaw3h4ien5tjsB2Q8QWFj00m+fHTuXF7GLxlIPzH+YFxCi/8bHBz
+         vd3VgMn0j7kxDTSUkM14sWNfVkCU548pXXl0LnxiXhhzglEJIK6XwDeW9mOtzubRgAMQ
+         j5wV5HNMLLpzIZQZhNBjWJVr4HTHMw2g91U25nzlgYjVwNgWLAlNLCv5jQIjgFCRODdv
+         JYtDLp954bJHL21T7ywrMr1GPlTNdDfp0RiLgxSRQBh6CW8oD2lAHSTwt8HMDVLk9XL9
+         FGINZ13YfRs5K5NG8PFIUepsdCWqYd0NlZb7DP29xFcr7n2sRqcBlbHSiA5Wp/flLg8c
+         28IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=f4uyodH6Wctfq6D2oaw2r57qzrUM8e3H6DvrLrJdT44=;
-        b=ogLVc2sJjo8bdE03WpYCEaXjEjTxjiPvqmJS+3qIV2xqMStzqFn2kMZZ3FFOQCwpfb
-         oIVARr8IMkHyEf2/kw2BnIhmMQNGTF0Qq9yOBPJ7euo/bXNA+KkPeBF/BIWF0kYlGquE
-         dD56f5irjRGkjm7TtrCI/hpfTqxVDYTS7XGI5SXkhhpnCphcIrvtGfaCeRASjsG1xiDL
-         4bHH6QTuaHYZ3mga+SzF4NMQtRJ7w917uBOHRJCnUA35XJupgdgm3XS+DbDd38nQGe3t
-         L8C98iN08gwUpXL60OIlqm7/6u6HBU5kKS+CJjW0fM/1WY5w33HN5YUXal+Im8sqsE9j
-         tbFQ==
-X-Gm-Message-State: AOAM533VBrNzOkDzN1+q6U9CiIjYGGI0a51yuL0aju0lV4BC4kvP+Rd7
-        PA0NRk1K1Rj92D4tEdbaJDP5+g==
-X-Google-Smtp-Source: ABdhPJw5EnSqdBfJYu+SP/sld9ZL/tAgcSL3khUfj80ob2TZm+ALooyI+oQiM6AhxBE4S2clF1u9FQ==
-X-Received: by 2002:a1c:2182:: with SMTP id h124mr2629741wmh.25.1607518069326;
-        Wed, 09 Dec 2020 04:47:49 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id r20sm3278166wrg.66.2020.12.09.04.47.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 04:47:47 -0800 (PST)
-Date:   Wed, 9 Dec 2020 13:47:39 +0100
-From:   Marco Elver <elver@google.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        netdev <netdev@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Jann Horn <jannh@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Willem de Bruijn <willemb@google.com>,
-        syzbot <syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com>
-Subject: Re: WARNING in sk_stream_kill_queues (5)
-Message-ID: <X9DHa2OG6lewtfPQ@elver.google.com>
-References: <000000000000b4862805b54ef573@google.com>
- <X8kLG5D+j4rT6L7A@elver.google.com>
- <CANn89iJWD5oXPLgtY47umTgo3gCGBaoy+XJfXnw1ecES_EXkCw@mail.gmail.com>
- <CANpmjNOaWbGJQ5Y=qC3cA31-R-Jy4Fbe+p=OBG5O2Amz8dLtLA@mail.gmail.com>
- <CANn89iKWf1EVZUuAHup+5ndhxvOqGopq53=vZ9yeok=DnRjggg@mail.gmail.com>
- <X8kjPIrLJUd8uQIX@elver.google.com>
- <af884a0e-5d4d-f71b-4821-b430ac196240@gmail.com>
- <CANpmjNNDKm_ObRnO_b3gH6wDYjb6_ex-KhZA5q5BRzEMgo+0xg@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t3b+hYd92c2/h1jvJK/jdhfNTZJqrtzVMndWrwAcWaU=;
+        b=Ca0pw0twVi0BSiUXTpaqEgrzdNBzb6ve4h0GHHzY6D+dtPojzS27rHN/if1BHxLOcE
+         COda1UKJdLQGk27SWnOLzZyjPTg0KzLi9VzWwklSsURmrX0nnRDi6o0NFtlo6LjZZYO9
+         jOfysshX0wDdv2SOVRgUS+pSJppt5mROea5DxXT1KZQjNxSj8/w2x6D5K+x+meS+2IMz
+         Fw3j6J4pWNRcJAjMJ1iZxav77X3Qd3dgNWZklypCIn7lDv5EbQ2Uit/mgBDWotbY93dE
+         SvYiuH1xxpiUd1BsesFXzrJX38u7bZjofXi0UltxuUFl5KDpOjR4yTHOhcq6goR3Mqc4
+         x0cA==
+X-Gm-Message-State: AOAM5325pQJAMKX0vsePLHiaSAFDvm5uJRiyv2Fw3rhEwHsQjjfphMnN
+        sv13sl7xzt+fbi717BZ/Hm/6juHQVs1XwQ==
+X-Google-Smtp-Source: ABdhPJzszTCHPo9N5/2hsfso3ic0KtpeDs7QEBxKMw3n132ewsgTiRxkQ5pZuvPdDVsxG2Fy29Gnwg==
+X-Received: by 2002:a1c:b608:: with SMTP id g8mr2661594wmf.110.1607518315269;
+        Wed, 09 Dec 2020 04:51:55 -0800 (PST)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id k7sm3780754wrn.63.2020.12.09.04.51.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Dec 2020 04:51:54 -0800 (PST)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org
+Cc:     vbabka@suse.cz, corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lmark@codeaurora.org,
+        georgi.djakov@linaro.org
+Subject: [PATCH v2] mm/page_owner: Record timestamp and pid
+Date:   Wed,  9 Dec 2020 14:51:53 +0200
+Message-Id: <20201209125153.10533-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="mA8bvRhUzsuhM5td"
-Content-Disposition: inline
-In-Reply-To: <CANpmjNNDKm_ObRnO_b3gH6wDYjb6_ex-KhZA5q5BRzEMgo+0xg@mail.gmail.com>
-User-Agent: Mutt/2.0.2 (2020-11-20)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Liam Mark <lmark@codeaurora.org>
 
---mA8bvRhUzsuhM5td
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Collect the time for each allocation recorded in page owner so that
+allocation "surges" can be measured.
 
-On Tue, Dec 08, 2020 at 08:06PM +0100, Marco Elver wrote:
-> On Thu, 3 Dec 2020 at 19:01, Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> > On 12/3/20 6:41 PM, Marco Elver wrote:
-> >
-> > > One more experiment -- simply adding
-> > >
-> > > --- a/net/core/skbuff.c
-> > > +++ b/net/core/skbuff.c
-> > > @@ -207,7 +207,21 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
-> > >        */
-> > >       size = SKB_DATA_ALIGN(size);
-> > >       size += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-> > > +     size = 1 << kmalloc_index(size); /* HACK */
-> > >       data = kmalloc_reserve(size, gfp_mask, node, &pfmemalloc);
-> > >
-> > >
-> > > also got rid of the warnings. Something must be off with some value that
-> > > is computed in terms of ksize(). If not, I don't have any explanation
-> > > for why the above hides the problem.
-> >
-> > Maybe the implementations of various macros (SKB_DATA_ALIGN and friends)
-> > hae some kind of assumptions, I will double check this.
-> 
-> If I force kfence to return 4K sized allocations for everything, the
-> warnings remain. That might suggest that it's not due to a missed
-> ALIGN.
-> 
-> Is it possible that copies or moves are a problem? E.g. we copy
-> something from kfence -> non-kfence object (or vice-versa), and
-> ksize() no longer matches, then things go wrong?
+Record the pid for each allocation recorded in page owner so that
+the source of allocation "surges" can be better identified.
 
-I was able to narrow it down to allocations of size 640. I also narrowed
-it down to 5 allocations that go through kfence that start triggering
-the issue. I have attached the list of those 5 allocations with
-allocation + free stacks. I'll try to go through them, maybe I get
-lucky eventually. :-)
+The above is very useful when doing memory analysis. On a crash for
+example, we can get this information from kdump (or ramdump) and parse
+it to figure out memory allocation problems.
 
-Thanks,
--- Marco
+Please note that on x86_64 this increases the size of struct page_owner
+from 16 bytes to 32.
 
---mA8bvRhUzsuhM5td
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="suspect-allocations.log"
+Signed-off-by: Liam Mark <lmark@codeaurora.org>
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+---
 
-kfence-#0 [0xffff888436814000-0xffff88843681427f, size=640, cache=kmalloc-1k] allocated by task 5298:
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0xb8/0x3f0 net/core/skbuff.c:210
- alloc_skb_fclone include/linux/skbuff.h:1144 [inline]
- sk_stream_alloc_skb+0xd3/0x650 net/ipv4/tcp.c:888
- tcp_fragment+0x124/0xac0 net/ipv4/tcp_output.c:1569
- __tcp_retransmit_skb+0x5e3/0x1770 net/ipv4/tcp_output.c:3183
- tcp_retransmit_skb+0x2a/0x200 net/ipv4/tcp_output.c:3257
- tcp_retransmit_timer+0x958/0x1a60 net/ipv4/tcp_timer.c:527
- tcp_write_timer_handler+0x4a6/0x5d0 net/ipv4/tcp_timer.c:610
- tcp_write_timer+0x86/0x270 net/ipv4/tcp_timer.c:630
- call_timer_fn+0x145/0x510 kernel/time/timer.c:1417
- expire_timers kernel/time/timer.c:1462 [inline]
- __run_timers.part.0+0x519/0x680 kernel/time/timer.c:1731
- __run_timers kernel/time/timer.c:1712 [inline]
- run_timer_softirq+0x6f/0x110 kernel/time/timer.c:1744
- __do_softirq+0x132/0x40b kernel/softirq.c:298
- asm_call_irq_on_stack+0xf/0x20
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0x58/0x70 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0xcd/0x110 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x38/0xd0 arch/x86/kernel/apic/apic.c:1096
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
- native_restore_fl arch/x86/include/asm/irqflags.h:41 [inline]
- arch_local_irq_restore arch/x86/include/asm/irqflags.h:84 [inline]
- __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
- _raw_spin_unlock_irqrestore+0x20/0x40 kernel/locking/spinlock.c:191
- spin_unlock_irqrestore include/linux/spinlock.h:409 [inline]
- free_debug_processing+0x1fc/0x2e0 mm/slub.c:1255
- __slab_free+0x130/0x5b0 mm/slub.c:2991
- do_slab_free mm/slub.c:3145 [inline]
- slab_free mm/slub.c:3158 [inline]
- kfree+0x532/0x580 mm/slub.c:4156
- tomoyo_realpath_from_path+0x12b/0x3d0 security/tomoyo/realpath.c:291
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_path_number_perm+0x11d/0x420 security/tomoyo/file.c:723
- tomoyo_path_chmod+0x21/0x30 security/tomoyo/tomoyo.c:342
- security_path_chmod+0x87/0xc0 security/security.c:1152
- chmod_common+0xbd/0x280 fs/open.c:578
- vfs_fchmod fs/open.c:598 [inline]
- __do_sys_fchmod fs/open.c:607 [inline]
- __se_sys_fchmod fs/open.c:601 [inline]
- __x64_sys_fchmod+0xaa/0x100 fs/open.c:601
- do_syscall_64+0x34/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+v2:
+- Improve the commit message (Andrew and Vlastimil)
+- Update page_owner.rst with more recent object size information (Andrew)
+- Use pid_t for the pid (Andrew)
+- Print the info also in __dump_page_owner() (Vlastimil)
 
-freed by task 12099:
- skb_free_head net/core/skbuff.c:595 [inline]
- skb_release_data+0x499/0x4e0 net/core/skbuff.c:615
- skb_release_all net/core/skbuff.c:669 [inline]
- __kfree_skb+0x34/0x50 net/core/skbuff.c:683
- sk_wmem_free_skb include/net/sock.h:1546 [inline]
- tcp_rtx_queue_unlink_and_free include/net/tcp.h:1856 [inline]
- tcp_clean_rtx_queue net/ipv4/tcp_input.c:3251 [inline]
- tcp_ack+0x124a/0x3450 net/ipv4/tcp_input.c:3795
- tcp_rcv_established+0x367/0x10b0 net/ipv4/tcp_input.c:5858
- tcp_v4_do_rcv+0x361/0x4c0 net/ipv4/tcp_ipv4.c:1668
- sk_backlog_rcv include/net/sock.h:1010 [inline]
- __release_sock+0xd7/0x260 net/core/sock.c:2523
- release_sock+0x40/0x120 net/core/sock.c:3053
- sk_wait_data+0x127/0x2b0 net/core/sock.c:2565
- tcp_recvmsg+0x1106/0x1b60 net/ipv4/tcp.c:2181
- inet_recvmsg+0xb1/0x270 net/ipv4/af_inet.c:848
- sock_recvmsg_nosec net/socket.c:885 [inline]
- sock_recvmsg net/socket.c:903 [inline]
- sock_recvmsg net/socket.c:899 [inline]
- ____sys_recvmsg+0x2fd/0x3a0 net/socket.c:2563
- ___sys_recvmsg+0xd9/0x1b0 net/socket.c:2605
- __sys_recvmsg+0x8b/0x130 net/socket.c:2641
- __do_sys_recvmsg net/socket.c:2651 [inline]
- __se_sys_recvmsg net/socket.c:2648 [inline]
- __x64_sys_recvmsg+0x43/0x50 net/socket.c:2648
- do_syscall_64+0x34/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
----------------------------------
-kfence-#1 [0xffff888436816000-0xffff88843681627f, size=640, cache=kmalloc-1k] allocated by task 29:
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0xb8/0x3f0 net/core/skbuff.c:210
- alloc_skb_fclone include/linux/skbuff.h:1144 [inline]
- sk_stream_alloc_skb+0xd3/0x650 net/ipv4/tcp.c:888
- tcp_fragment+0x124/0xac0 net/ipv4/tcp_output.c:1569
- __tcp_retransmit_skb+0x5e3/0x1770 net/ipv4/tcp_output.c:3183
- tcp_retransmit_skb+0x2a/0x200 net/ipv4/tcp_output.c:3257
- tcp_xmit_retransmit_queue.part.0+0x389/0x6f0 net/ipv4/tcp_output.c:3339
- tcp_xmit_retransmit_queue+0x36/0x40 net/ipv4/tcp_output.c:3293
- tcp_xmit_recovery net/ipv4/tcp_input.c:3652 [inline]
- tcp_xmit_recovery+0x64/0xe0 net/ipv4/tcp_input.c:3638
- tcp_ack+0x1a60/0x3450 net/ipv4/tcp_input.c:3825
- tcp_rcv_established+0x367/0x10b0 net/ipv4/tcp_input.c:5858
- tcp_v4_do_rcv+0x361/0x4c0 net/ipv4/tcp_ipv4.c:1668
- tcp_v4_rcv+0x1e29/0x20c0 net/ipv4/tcp_ipv4.c:2050
- ip_protocol_deliver_rcu+0x31/0x4f0 net/ipv4/ip_input.c:204
- ip_local_deliver_finish+0x111/0x150 net/ipv4/ip_input.c:231
- NF_HOOK include/linux/netfilter.h:301 [inline]
- NF_HOOK include/linux/netfilter.h:295 [inline]
- ip_local_deliver+0x244/0x250 net/ipv4/ip_input.c:252
- dst_input include/net/dst.h:447 [inline]
- ip_rcv_finish+0x14a/0x1d0 net/ipv4/ip_input.c:428
- NF_HOOK include/linux/netfilter.h:301 [inline]
- NF_HOOK include/linux/netfilter.h:295 [inline]
- ip_rcv+0x1c4/0x1d0 net/ipv4/ip_input.c:539
- __netif_receive_skb_one_core+0xb3/0xe0 net/core/dev.c:5316
- __netif_receive_skb+0x29/0xe0 net/core/dev.c:5430
- process_backlog+0x169/0x350 net/core/dev.c:6320
- napi_poll net/core/dev.c:6764 [inline]
- net_rx_action+0x326/0xa30 net/core/dev.c:6834
- __do_softirq+0x132/0x40b kernel/softirq.c:298
- run_ksoftirqd kernel/softirq.c:653 [inline]
- run_ksoftirqd+0x21/0x40 kernel/softirq.c:645
- smpboot_thread_fn+0x3e6/0x560 kernel/smpboot.c:165
- kthread+0x24f/0x280 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+v1: https://lore.kernel.org/r/20201112184106.733-1-georgi.djakov@linaro.org/
 
-freed by task 13615:
- skb_free_head net/core/skbuff.c:595 [inline]
- skb_release_data+0x499/0x4e0 net/core/skbuff.c:615
- skb_release_all net/core/skbuff.c:669 [inline]
- __kfree_skb+0x34/0x50 net/core/skbuff.c:683
- sk_wmem_free_skb include/net/sock.h:1546 [inline]
- tcp_rtx_queue_unlink_and_free include/net/tcp.h:1856 [inline]
- tcp_clean_rtx_queue net/ipv4/tcp_input.c:3251 [inline]
- tcp_ack+0x124a/0x3450 net/ipv4/tcp_input.c:3795
- tcp_rcv_established+0x367/0x10b0 net/ipv4/tcp_input.c:5858
- tcp_v4_do_rcv+0x361/0x4c0 net/ipv4/tcp_ipv4.c:1668
- sk_backlog_rcv include/net/sock.h:1010 [inline]
- __release_sock+0xd7/0x260 net/core/sock.c:2523
- release_sock+0x40/0x120 net/core/sock.c:3053
- sk_wait_data+0x127/0x2b0 net/core/sock.c:2565
- tcp_recvmsg+0x1106/0x1b60 net/ipv4/tcp.c:2181
- inet_recvmsg+0xb1/0x270 net/ipv4/af_inet.c:848
- sock_recvmsg_nosec net/socket.c:885 [inline]
- sock_recvmsg net/socket.c:903 [inline]
- sock_recvmsg net/socket.c:899 [inline]
- ____sys_recvmsg+0x2fd/0x3a0 net/socket.c:2563
- ___sys_recvmsg+0xd9/0x1b0 net/socket.c:2605
- __sys_recvmsg+0x8b/0x130 net/socket.c:2641
- __do_sys_recvmsg net/socket.c:2651 [inline]
- __se_sys_recvmsg net/socket.c:2648 [inline]
- __x64_sys_recvmsg+0x43/0x50 net/socket.c:2648
- do_syscall_64+0x34/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
----------------------------------
-kfence-#2 [0xffff888436818c00-0xffff888436818e7f, size=640, cache=kmalloc-1k] allocated by task 0:
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0xb8/0x3f0 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1094 [inline]
- __tcp_send_ack.part.0+0x47/0x3c0 net/ipv4/tcp_output.c:3945
- __tcp_send_ack net/ipv4/tcp_output.c:3977 [inline]
- tcp_send_ack+0x47/0x50 net/ipv4/tcp_output.c:3977
- __tcp_ack_snd_check+0xb2/0x530 net/ipv4/tcp_input.c:5400
- tcp_ack_snd_check net/ipv4/tcp_input.c:5445 [inline]
- tcp_rcv_established+0x5c2/0x10b0 net/ipv4/tcp_input.c:5870
- tcp_v4_do_rcv+0x361/0x4c0 net/ipv4/tcp_ipv4.c:1668
- tcp_v4_rcv+0x1e29/0x20c0 net/ipv4/tcp_ipv4.c:2050
- ip_protocol_deliver_rcu+0x31/0x4f0 net/ipv4/ip_input.c:204
- ip_local_deliver_finish+0x111/0x150 net/ipv4/ip_input.c:231
- NF_HOOK include/linux/netfilter.h:301 [inline]
- NF_HOOK include/linux/netfilter.h:295 [inline]
- ip_local_deliver+0x244/0x250 net/ipv4/ip_input.c:252
- dst_input include/net/dst.h:447 [inline]
- ip_rcv_finish+0x14a/0x1d0 net/ipv4/ip_input.c:428
- NF_HOOK include/linux/netfilter.h:301 [inline]
- NF_HOOK include/linux/netfilter.h:295 [inline]
- ip_rcv+0x1c4/0x1d0 net/ipv4/ip_input.c:539
- __netif_receive_skb_one_core+0xb3/0xe0 net/core/dev.c:5316
- __netif_receive_skb+0x29/0xe0 net/core/dev.c:5430
- process_backlog+0x169/0x350 net/core/dev.c:6320
- napi_poll net/core/dev.c:6764 [inline]
- net_rx_action+0x326/0xa30 net/core/dev.c:6834
- __do_softirq+0x132/0x40b kernel/softirq.c:298
- asm_call_irq_on_stack+0xf/0x20
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0x58/0x70 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0xcd/0x110 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x38/0xd0 arch/x86/kernel/apic/apic.c:1096
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
- native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
- arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
- default_idle+0xe/0x10 arch/x86/kernel/process.c:688
- default_idle_call+0x32/0x50 kernel/sched/idle.c:98
- cpuidle_idle_call kernel/sched/idle.c:168 [inline]
- do_idle+0x207/0x270 kernel/sched/idle.c:273
- cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:370
- secondary_startup_64_no_verify+0xb0/0xbb
 
-freed by task 0:
- skb_free_head net/core/skbuff.c:595 [inline]
- skb_release_data+0x499/0x4e0 net/core/skbuff.c:615
- skb_release_all net/core/skbuff.c:669 [inline]
- __kfree_skb+0x34/0x50 net/core/skbuff.c:683
- tcp_data_queue+0x1801/0x2560 net/ipv4/tcp_input.c:4927
- tcp_rcv_established+0x52c/0x10b0 net/ipv4/tcp_input.c:5867
- tcp_v4_do_rcv+0x361/0x4c0 net/ipv4/tcp_ipv4.c:1668
- tcp_v4_rcv+0x1e29/0x20c0 net/ipv4/tcp_ipv4.c:2050
- ip_protocol_deliver_rcu+0x31/0x4f0 net/ipv4/ip_input.c:204
- ip_local_deliver_finish+0x111/0x150 net/ipv4/ip_input.c:231
- NF_HOOK include/linux/netfilter.h:301 [inline]
- NF_HOOK include/linux/netfilter.h:295 [inline]
- ip_local_deliver+0x244/0x250 net/ipv4/ip_input.c:252
- dst_input include/net/dst.h:447 [inline]
- ip_rcv_finish+0x14a/0x1d0 net/ipv4/ip_input.c:428
- NF_HOOK include/linux/netfilter.h:301 [inline]
- NF_HOOK include/linux/netfilter.h:295 [inline]
- ip_rcv+0x1c4/0x1d0 net/ipv4/ip_input.c:539
- __netif_receive_skb_one_core+0xb3/0xe0 net/core/dev.c:5316
- __netif_receive_skb+0x29/0xe0 net/core/dev.c:5430
- process_backlog+0x169/0x350 net/core/dev.c:6320
- napi_poll net/core/dev.c:6764 [inline]
- net_rx_action+0x326/0xa30 net/core/dev.c:6834
- __do_softirq+0x132/0x40b kernel/softirq.c:298
- asm_call_irq_on_stack+0xf/0x20
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0x58/0x70 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0xcd/0x110 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x38/0xd0 arch/x86/kernel/apic/apic.c:1096
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
- native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
- arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
- default_idle+0xe/0x10 arch/x86/kernel/process.c:688
- default_idle_call+0x32/0x50 kernel/sched/idle.c:98
- cpuidle_idle_call kernel/sched/idle.c:168 [inline]
- do_idle+0x207/0x270 kernel/sched/idle.c:273
- cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:370
- secondary_startup_64_no_verify+0xb0/0xbb
----------------------------------
-kfence-#3 [0xffff88843681ac00-0xffff88843681ae7f, size=640, cache=kmalloc-1k] allocated by task 17012:
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0xb8/0x3f0 net/core/skbuff.c:210
- alloc_skb_fclone include/linux/skbuff.h:1144 [inline]
- sk_stream_alloc_skb+0xd3/0x650 net/ipv4/tcp.c:888
- tso_fragment net/ipv4/tcp_output.c:2124 [inline]
- tcp_write_xmit+0x1366/0x3510 net/ipv4/tcp_output.c:2674
- __tcp_push_pending_frames+0x68/0x1f0 net/ipv4/tcp_output.c:2866
- tcp_push_pending_frames include/net/tcp.h:1864 [inline]
- tcp_data_snd_check net/ipv4/tcp_input.c:5374 [inline]
- tcp_rcv_established+0x57c/0x10b0 net/ipv4/tcp_input.c:5869
- tcp_v4_do_rcv+0x361/0x4c0 net/ipv4/tcp_ipv4.c:1668
- sk_backlog_rcv include/net/sock.h:1010 [inline]
- __release_sock+0xd7/0x260 net/core/sock.c:2523
- release_sock+0x40/0x120 net/core/sock.c:3053
- sk_wait_data+0x127/0x2b0 net/core/sock.c:2565
- tcp_recvmsg+0x1106/0x1b60 net/ipv4/tcp.c:2181
- inet_recvmsg+0xb1/0x270 net/ipv4/af_inet.c:848
- sock_recvmsg_nosec net/socket.c:885 [inline]
- sock_recvmsg net/socket.c:903 [inline]
- sock_recvmsg net/socket.c:899 [inline]
- ____sys_recvmsg+0x2fd/0x3a0 net/socket.c:2563
- ___sys_recvmsg+0xd9/0x1b0 net/socket.c:2605
- __sys_recvmsg+0x8b/0x130 net/socket.c:2641
- __do_sys_recvmsg net/socket.c:2651 [inline]
- __se_sys_recvmsg net/socket.c:2648 [inline]
- __x64_sys_recvmsg+0x43/0x50 net/socket.c:2648
- do_syscall_64+0x34/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ Documentation/vm/page_owner.rst | 12 ++++++------
+ mm/page_owner.c                 | 17 +++++++++++++----
+ 2 files changed, 19 insertions(+), 10 deletions(-)
 
-freed by task 17012:
- skb_free_head net/core/skbuff.c:595 [inline]
- skb_release_data+0x499/0x4e0 net/core/skbuff.c:615
- skb_release_all net/core/skbuff.c:669 [inline]
- __kfree_skb+0x34/0x50 net/core/skbuff.c:683
- tcp_drop net/ipv4/tcp_input.c:4618 [inline]
- tcp_prune_ofo_queue+0x14b/0x3e0 net/ipv4/tcp_input.c:5250
- tcp_prune_queue net/ipv4/tcp_input.c:5307 [inline]
- tcp_try_rmem_schedule+0x9a2/0xbc0 net/ipv4/tcp_input.c:4680
- tcp_data_queue_ofo net/ipv4/tcp_input.c:4701 [inline]
- tcp_data_queue+0x2dd/0x2560 net/ipv4/tcp_input.c:5015
- tcp_rcv_established+0x52c/0x10b0 net/ipv4/tcp_input.c:5867
- tcp_v4_do_rcv+0x361/0x4c0 net/ipv4/tcp_ipv4.c:1668
- sk_backlog_rcv include/net/sock.h:1010 [inline]
- __release_sock+0xd7/0x260 net/core/sock.c:2523
- release_sock+0x40/0x120 net/core/sock.c:3053
- sk_wait_data+0x127/0x2b0 net/core/sock.c:2565
- tcp_recvmsg+0x1106/0x1b60 net/ipv4/tcp.c:2181
- inet_recvmsg+0xb1/0x270 net/ipv4/af_inet.c:848
- sock_recvmsg_nosec net/socket.c:885 [inline]
- sock_recvmsg net/socket.c:903 [inline]
- sock_recvmsg net/socket.c:899 [inline]
- ____sys_recvmsg+0x2fd/0x3a0 net/socket.c:2563
- ___sys_recvmsg+0xd9/0x1b0 net/socket.c:2605
- __sys_recvmsg+0x8b/0x130 net/socket.c:2641
- __do_sys_recvmsg net/socket.c:2651 [inline]
- __se_sys_recvmsg net/socket.c:2648 [inline]
- __x64_sys_recvmsg+0x43/0x50 net/socket.c:2648
- do_syscall_64+0x34/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
----------------------------------
-kfence-#4 [0xffff88843681c000-0xffff88843681c27f, size=640, cache=kmalloc-1k] allocated by task 0:
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0xb8/0x3f0 net/core/skbuff.c:210
- alloc_skb_fclone include/linux/skbuff.h:1144 [inline]
- sk_stream_alloc_skb+0xd3/0x650 net/ipv4/tcp.c:888
- tso_fragment net/ipv4/tcp_output.c:2124 [inline]
- tcp_write_xmit+0x1366/0x3510 net/ipv4/tcp_output.c:2674
- tcp_send_loss_probe+0x337/0x4c0 net/ipv4/tcp_output.c:2804
- tcp_write_timer_handler+0x4d4/0x5d0 net/ipv4/tcp_timer.c:606
- tcp_write_timer+0x86/0x270 net/ipv4/tcp_timer.c:630
- call_timer_fn+0x145/0x510 kernel/time/timer.c:1417
- expire_timers kernel/time/timer.c:1462 [inline]
- __run_timers.part.0+0x519/0x680 kernel/time/timer.c:1731
- __run_timers kernel/time/timer.c:1712 [inline]
- run_timer_softirq+0x6f/0x110 kernel/time/timer.c:1744
- __do_softirq+0x132/0x40b kernel/softirq.c:298
- asm_call_irq_on_stack+0xf/0x20
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0x58/0x70 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0xcd/0x110 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x38/0xd0 arch/x86/kernel/apic/apic.c:1096
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
- native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
- arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
- default_idle+0xe/0x10 arch/x86/kernel/process.c:688
- default_idle_call+0x32/0x50 kernel/sched/idle.c:98
- cpuidle_idle_call kernel/sched/idle.c:168 [inline]
- do_idle+0x207/0x270 kernel/sched/idle.c:273
- cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:370
- secondary_startup_64_no_verify+0xb0/0xbb
-
-freed by task 17200:
- skb_free_head net/core/skbuff.c:595 [inline]
- skb_release_data+0x499/0x4e0 net/core/skbuff.c:615
- skb_release_all net/core/skbuff.c:669 [inline]
- __kfree_skb+0x34/0x50 net/core/skbuff.c:683
- sk_wmem_free_skb include/net/sock.h:1546 [inline]
- tcp_rtx_queue_unlink_and_free include/net/tcp.h:1856 [inline]
- tcp_shifted_skb+0x4f8/0x960 net/ipv4/tcp_input.c:1464
- tcp_shift_skb_data net/ipv4/tcp_input.c:1607 [inline]
- tcp_sacktag_walk+0x7e0/0xc40 net/ipv4/tcp_input.c:1670
- tcp_sacktag_write_queue+0xd5e/0x1b50 net/ipv4/tcp_input.c:1931
- tcp_ack+0x1fcd/0x3450 net/ipv4/tcp_input.c:3758
- tcp_rcv_established+0x367/0x10b0 net/ipv4/tcp_input.c:5858
- tcp_v4_do_rcv+0x361/0x4c0 net/ipv4/tcp_ipv4.c:1668
- sk_backlog_rcv include/net/sock.h:1010 [inline]
- __release_sock+0xd7/0x260 net/core/sock.c:2523
- release_sock+0x40/0x120 net/core/sock.c:3053
- sk_wait_data+0x127/0x2b0 net/core/sock.c:2565
- tcp_recvmsg+0x1106/0x1b60 net/ipv4/tcp.c:2181
- inet_recvmsg+0xb1/0x270 net/ipv4/af_inet.c:848
- sock_recvmsg_nosec net/socket.c:885 [inline]
- sock_recvmsg net/socket.c:903 [inline]
- sock_recvmsg net/socket.c:899 [inline]
- ____sys_recvmsg+0x2fd/0x3a0 net/socket.c:2563
- ___sys_recvmsg+0xd9/0x1b0 net/socket.c:2605
- __sys_recvmsg+0x8b/0x130 net/socket.c:2641
- __do_sys_recvmsg net/socket.c:2651 [inline]
- __se_sys_recvmsg net/socket.c:2648 [inline]
- __x64_sys_recvmsg+0x43/0x50 net/socket.c:2648
- do_syscall_64+0x34/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
---mA8bvRhUzsuhM5td--
+diff --git a/Documentation/vm/page_owner.rst b/Documentation/vm/page_owner.rst
+index 02deac76673f..cf7c0c361621 100644
+--- a/Documentation/vm/page_owner.rst
++++ b/Documentation/vm/page_owner.rst
+@@ -41,17 +41,17 @@ size change due to this facility.
+ - Without page owner::
+ 
+    text    data     bss     dec     hex filename
+-   40662   1493     644   42799    a72f mm/page_alloc.o
++  48392    2333     644   51369    c8a9 mm/page_alloc.o
+ 
+ - With page owner::
+ 
+    text    data     bss     dec     hex filename
+-   40892   1493     644   43029    a815 mm/page_alloc.o
+-   1427      24       8    1459     5b3 mm/page_ext.o
+-   2722      50       0    2772     ad4 mm/page_owner.o
++  48800    2445     644   51889    cab1 mm/page_alloc.o
++   6574     108      29    6711    1a37 mm/page_owner.o
++   1025       8       8    1041     411 mm/page_ext.o
+ 
+-Although, roughly, 4 KB code is added in total, page_alloc.o increase by
+-230 bytes and only half of it is in hotpath. Building the kernel with
++Although, roughly, 8 KB code is added in total, page_alloc.o increase by
++520 bytes and less than half of it is in hotpath. Building the kernel with
+ page owner and turning it on if needed would be great option to debug
+ kernel memory problem.
+ 
+diff --git a/mm/page_owner.c b/mm/page_owner.c
+index b735a8eafcdb..af464bb7fbe7 100644
+--- a/mm/page_owner.c
++++ b/mm/page_owner.c
+@@ -10,6 +10,7 @@
+ #include <linux/migrate.h>
+ #include <linux/stackdepot.h>
+ #include <linux/seq_file.h>
++#include <linux/sched/clock.h>
+ 
+ #include "internal.h"
+ 
+@@ -25,6 +26,8 @@ struct page_owner {
+ 	gfp_t gfp_mask;
+ 	depot_stack_handle_t handle;
+ 	depot_stack_handle_t free_handle;
++	u64 ts_nsec;
++	pid_t pid;
+ };
+ 
+ static bool page_owner_enabled = false;
+@@ -172,6 +175,8 @@ static inline void __set_page_owner_handle(struct page *page,
+ 		page_owner->order = order;
+ 		page_owner->gfp_mask = gfp_mask;
+ 		page_owner->last_migrate_reason = -1;
++		page_owner->pid = current->pid;
++		page_owner->ts_nsec = local_clock();
+ 		__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
+ 		__set_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
+ 
+@@ -236,6 +241,8 @@ void __copy_page_owner(struct page *oldpage, struct page *newpage)
+ 	new_page_owner->last_migrate_reason =
+ 		old_page_owner->last_migrate_reason;
+ 	new_page_owner->handle = old_page_owner->handle;
++	new_page_owner->pid = old_page_owner->pid;
++	new_page_owner->ts_nsec = old_page_owner->ts_nsec;
+ 
+ 	/*
+ 	 * We don't clear the bit on the oldpage as it's going to be freed
+@@ -349,9 +356,10 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
+ 		return -ENOMEM;
+ 
+ 	ret = snprintf(kbuf, count,
+-			"Page allocated via order %u, mask %#x(%pGg)\n",
++			"Page allocated via order %u, mask %#x(%pGg), pid %d, ts %llu ns\n",
+ 			page_owner->order, page_owner->gfp_mask,
+-			&page_owner->gfp_mask);
++			&page_owner->gfp_mask, page_owner->pid,
++			page_owner->ts_nsec);
+ 
+ 	if (ret >= count)
+ 		goto err;
+@@ -427,8 +435,9 @@ void __dump_page_owner(struct page *page)
+ 	else
+ 		pr_alert("page_owner tracks the page as freed\n");
+ 
+-	pr_alert("page last allocated via order %u, migratetype %s, gfp_mask %#x(%pGg)\n",
+-		 page_owner->order, migratetype_names[mt], gfp_mask, &gfp_mask);
++	pr_alert("page last allocated via order %u, migratetype %s, gfp_mask %#x(%pGg), pid %d, ts %llu\n",
++		 page_owner->order, migratetype_names[mt], gfp_mask, &gfp_mask,
++		 page_owner->pid, page_owner->ts_nsec);
+ 
+ 	handle = READ_ONCE(page_owner->handle);
+ 	if (!handle) {
