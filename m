@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB2F2D3EB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D9E2D3EB5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbgLIJ0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:26:48 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9139 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728772AbgLIJ0n (ORCPT
+        id S1729115AbgLIJ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728673AbgLIJ10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:26:43 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CrWqX5xz5z15Vwk;
-        Wed,  9 Dec 2020 17:25:28 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Dec 2020 17:25:53 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <andrew@lunn.ch>,
-        <vivien.didelot@gmail.com>, <f.fainelli@gmail.com>,
-        <olteanv@gmail.com>, Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] net: dsa: simplify the return rtl8366_vlan_prepare()
-Date:   Wed, 9 Dec 2020 17:26:21 +0800
-Message-ID: <20201209092621.20523-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Wed, 9 Dec 2020 04:27:26 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E078C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:26:46 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id w13so2159321lfd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:26:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xe2wCqmHwjSift/w8mcBzC9aoqgbz0iOwJ272Obz4Ig=;
+        b=yOOA8yx8Z3df/9E32XvyNZOcUIYJ8EKGMnID8FSHOjfmmeiaGeFmf6AbYd3gGovEBi
+         8BKbmnsjR+CfgUGnc6OejaVNz6ozhjNml44uYmYyueo14SLkkH/7xV7YVnKcadtoX6bq
+         N2kSIcZotfIKXKl3dZWAFTxbafTySP9kABQDNy7WQeVOVF3DcmVxbFinhpXNtjlXe6gL
+         OBI1zX1ckwN/IDTyhu9FyyG/tkQPA+LfnS4s6klAy/C6za7kw8vGpFuNLhaFtrc6rVYC
+         nrDyq2eM2mzFJ+MoXKo2Bbqag8knS7ii4GrXylpOPMY6QslKFFz7a4fWPDG9kQJqVajG
+         xYCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xe2wCqmHwjSift/w8mcBzC9aoqgbz0iOwJ272Obz4Ig=;
+        b=NO3St8GPMVER1pbsPvGHzO5/QcZyI0GaPwA1vF+QXkuCRXoKMp6VKVI7aQhpOdOqhw
+         rIsL7wgw9tP6d+QjN3TzarJKtPEUOWyUpUDGMm229R7bOT546iIJcQA5gQgEu78SP9ev
+         H8otnV8998Llw7gYXdptpAIzXwlHqKnD6m3WARbBgzUc+F8EI79MAHsp8bxg9aSVDmmn
+         jNFHvHnKEbJf7ow/rt6kFxF/nV4qNscnNl73r7f8zM1+J/UPaC2j0q95ue8WpKQ1Rf/I
+         j0QNC95/KvWE07l+7xislt5LEBumRPaUHtPp6fyz1GjXACycRp7hdgBLSdlJEqPKl2lb
+         0B+Q==
+X-Gm-Message-State: AOAM530ErtV/bBxIULC3wDm8iQO1czoPwQXjZ53Hp/1CUtxkDORyvs+7
+        EeYra9wr2aPAEYlbVVr9TRrKT1yAAgXgr1/pykwb+w==
+X-Google-Smtp-Source: ABdhPJwsyBUDj5awP77/Zz+uFvy2DSd7akl3rgT4gaHhFibBb8b5YMsv7eGEHOrENbczoydN2FnYKH65lWm4GrDUzmI=
+X-Received: by 2002:a05:6512:74e:: with SMTP id c14mr698273lfs.529.1607506004588;
+ Wed, 09 Dec 2020 01:26:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+References: <X85UKveYKc3xLPVk@manjaro> <CAHp75Vcf-_yrUMOVLtydS+0tV4DE4gudsmqdmLLH1SSiXAK66A@mail.gmail.com>
+In-Reply-To: <CAHp75Vcf-_yrUMOVLtydS+0tV4DE4gudsmqdmLLH1SSiXAK66A@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 9 Dec 2020 10:26:33 +0100
+Message-ID: <CACRpkdaT7-2uFWGqj2JyE1CLHWQhG8kyjObBP=d6XOJ7nbc1Fg@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: remove the blank line in pinctrl_register()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Zhaoyu Liu <zackary.liu.pro@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
+On Mon, Dec 7, 2020 at 7:20 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Mon, Dec 7, 2020 at 6:13 PM Zhaoyu Liu <zackary.liu.pro@gmail.com> wrote:
+> >
+> > Remove the blank line in pinctrl_register() to keep the code neat.
+>
+> Probably you want to apply the same for other drivers at once?
+>
+>  % git grep -n -B1 -w ^} -- drivers/pinctrl/ | grep -C1 '[0-9]-$' | less
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/net/dsa/rtl8366.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+I agree with Andy, a patch should be "one technical step" so just sweep
+the entire subsystem if you wanna do this cosmetic.
 
-diff --git a/drivers/net/dsa/rtl8366.c b/drivers/net/dsa/rtl8366.c
-index 307466b90489..83d481ef9273 100644
---- a/drivers/net/dsa/rtl8366.c
-+++ b/drivers/net/dsa/rtl8366.c
-@@ -384,7 +384,6 @@ int rtl8366_vlan_prepare(struct dsa_switch *ds, int port,
- {
- 	struct realtek_smi *smi = ds->priv;
- 	u16 vid;
--	int ret;
- 
- 	for (vid = vlan->vid_begin; vid < vlan->vid_end; vid++)
- 		if (!smi->ops->is_vlan_valid(smi, vid))
-@@ -397,11 +396,7 @@ int rtl8366_vlan_prepare(struct dsa_switch *ds, int port,
- 	 * FIXME: what's with this 4k business?
- 	 * Just rtl8366_enable_vlan() seems inconclusive.
- 	 */
--	ret = rtl8366_enable_vlan4k(smi, true);
--	if (ret)
--		return ret;
--
--	return 0;
-+	return rtl8366_enable_vlan4k(smi, true);
- }
- EXPORT_SYMBOL_GPL(rtl8366_vlan_prepare);
- 
--- 
-2.22.0
-
+Yours,
+Linus Walleij
