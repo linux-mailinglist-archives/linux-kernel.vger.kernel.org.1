@@ -2,93 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BEB2D498E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A705D2D4986
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387527AbgLISz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:55:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387518AbgLISzV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:55:21 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 887B9C061793
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:54:41 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id m5so1481027pjv.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 10:54:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6rcG5E2ND0M3zVFvR91c2KDlufplbmx+6aVT4b7pfH4=;
-        b=amGZUB2QmzFAhQXEDLL5G3+GDkgkdz/1yh0NULCac6CqNYJy00PQGkrBCQjOVzYUYn
-         vBRd7xM6sq69QWZmLjDi27cAlrPIecWYqdxzzxluIN+YVwBBqEdWnl7RpmGaSqc6Vcwl
-         gq4CBqRsDYvJ8E0xmaBh5UG4nnXiIkmDPo7EI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6rcG5E2ND0M3zVFvR91c2KDlufplbmx+6aVT4b7pfH4=;
-        b=FdfurRVXl++SJMFGWcXuoErAt8CKh/O9ZAzkastTNF0F30S1OQcsBxM+1HRbgccli8
-         bhXsMZU2i4LSX+amWUWirNrEzbF9MEI9J0WADYaHdkiimS27YZhZggkmAJrcUMxiDB55
-         SHgAqr/XqjjdqB/Ts8aH3Ctq1uWEoixYko/OKcv9xRoGsD0aG75d785E//z5f6jacKVn
-         GWnZOGIchX50+CVITP/vseXlcO8EO9+ar8DL5Y2mYAMgpRIkOhOUr1QumMpuGHX3PkWl
-         gteGGY5gqv/nK1auZjhiqN/hIdgFd42K94zLmQpGOjvmugDDZNu+vh/l4jGxL2LAEBFA
-         grpA==
-X-Gm-Message-State: AOAM532fDQ9oCVgsfAUf8t8eBXZ2hrAFtoc0xGKctzNNRIYiabiGzjV2
-        AFtOuQH0y2YFyu1REcxdAHfCuA==
-X-Google-Smtp-Source: ABdhPJwwvwTi17NFslAusMjt8S/vlWSt6gsHPux53PRLMtr1AO4Xg672fCr3Z6ZLeeqyK/4dymrCCg==
-X-Received: by 2002:a17:902:ee11:b029:db:c0d6:581a with SMTP id z17-20020a170902ee11b02900dbc0d6581amr3244470plb.54.1607540081165;
-        Wed, 09 Dec 2020 10:54:41 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v8sm2900365pjk.39.2020.12.09.10.54.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 10:54:40 -0800 (PST)
-Date:   Wed, 9 Dec 2020 10:54:39 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     akpm@linux-foundation.org, andreyknvl@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Marco Elver <elver@google.com>
-Subject: Re: [PATCH] kcov: don't instrument with UBSAN
-Message-ID: <202012091054.08D70D4F@keescook>
-References: <20201209100152.2492072-1-dvyukov@google.com>
+        id S1733104AbgLISyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:54:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729345AbgLISyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:54:20 -0500
+Date:   Wed, 9 Dec 2020 19:54:55 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607540020;
+        bh=JkSh+8nouJ9z1fToQbr8I5QR+DTJ/b/oaWvVkGAzt78=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C8KxFlknd8vOpwJLKy/OwmthqbVCBeY5HQufcZrAWhnNbi35rvYZoDLyUujFEJiJi
+         zEbvWVJpyD15UJgdm3N8G/K0bw+fToBfv00wXhQ1lOGq2HXzrdMb+L9LU9Hxo8esFs
+         Ke0pk7OPB/lzSPkDx+ZmTff0QuyQz6dO6zcuUprA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thorsten Scherer <thorsten.scherer@eckelmann.de>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PATCH v3 0/2] siox: two cleanups
+Message-ID: <X9Edf/Fm6umQ7whL@kroah.com>
+References: <20201125093106.240643-1-u.kleine-koenig@pengutronix.de>
+ <20201125144720.5imcc3atcqpegk4i@ws067.eckelmann.group>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201209100152.2492072-1-dvyukov@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201125144720.5imcc3atcqpegk4i@ws067.eckelmann.group>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 11:01:52AM +0100, Dmitry Vyukov wrote:
-> Both KCOV and UBSAN use compiler instrumentation. If UBSAN detects a bug
-> in KCOV, it may cause infinite recursion via printk and other common
-> functions. We already don't instrument KCOV with KASAN/KCSAN for this
-> reason, don't instrument it with UBSAN as well.
+On Wed, Nov 25, 2020 at 03:47:20PM +0100, Thorsten Scherer wrote:
+> Hello,
 > 
-> As a side effect this also resolves the following gcc warning:
+> On Wed, Nov 25, 2020 at 10:31:04AM +0100, Uwe Kleine-König wrote:
+> > Hello,
+> >
+> > compared to v2 sent starting with Message-Id:
+> > 20201124141834.3096325-1-u.kleine-koenig@pengutronix.de:
+> >
+> >  - fix typo in commit log of patch 1
+> >  - add Ack by Thorsten for patch 1
+> >
+> > Uwe Kleine-König (2):
+> >   siox: Use bus_type functions for probe, remove and shutdown
+> >   siox: Make remove callback return void
 > 
-> conflicting types for built-in function '__sanitizer_cov_trace_switch';
-> expected 'void(long unsigned int,  void *)' [-Wbuiltin-declaration-mismatch]
+> Successfully ran our siox testcases on v3.
 > 
-> It's only reported when kcov.c is compiled with any of the sanitizers
-> enabled. Size of the arguments is correct, it's just that gcc uses 'long'
-> on 64-bit arches and 'long long' on 32-bit arches, while kernel type is
-> always 'long long'.
-> 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Suggested-by: Marco Elver <elver@google.com>
-> Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+> Tested-by: Thorsten Scherer <t.scherer@eckelmann.de>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Are you going to take these patches, or do you need/want me to take them
+through one of my trees?
 
-Thanks for chasing this down!
+Either is fine for me.
 
-Andrew, can you add this to the stack of ubsan patches you're carrying,
-please?
+thanks,
 
--- 
-Kees Cook
+greg k-h
