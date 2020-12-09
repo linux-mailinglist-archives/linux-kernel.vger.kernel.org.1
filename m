@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A672D43CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 985C02D43AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732765AbgLIOBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 09:01:43 -0500
-Received: from mail1.bemta23.messagelabs.com ([67.219.246.2]:39681 "EHLO
-        mail1.bemta23.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728855AbgLIOBZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 09:01:25 -0500
-Received: from [100.112.1.102] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
-        by server-2.bemta.az-b.us-east-1.aws.symcld.net id F0/C3-00973-897D0DF5; Wed, 09 Dec 2020 13:56:40 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnleJIrShJLcpLzFFi42JJl3vFrjvt+oV
-  4g59twhZPDrQzWrw5Pp3J4vKuOWwWBxe2MVqcOX2J1WLr3qvsDmwejTdusHks7pvM6vF+31U2
-  jy1X21k8Pm+SC2CNYs3MS8qvSGDNeN1yi7ngFWfFp/bPrA2Mqzm6GLk4hAT+M0rMnPWWCcJ5z
-  igxY95k5i5GDg5hAR+Jb/8zQEwRgVCJe7eyQEqYBXYzSjzuWcMEEhcSMJPYusC7i5GTg01AW2
-  LLll9sIDavgK3E1P6dYDaLgIrEvzd/GEFsUYFwifVLVjJC1AhKnJz5hAXE5hQwl7i85RMziM0
-  sYCBxZNEcVghbXOLWk/lMELa8xPa3c8BqJAQUJPrf9LFD2AkSy17eYZ7AKDgLydhZSEbNQjJq
-  FpJRCxhZVjGaJhVlpmeU5CZm5ugaGhjoGhoa6RrqmhjoJVbpJumVFuumJhaX6BrqJZYX6xVX5
-  ibnpOjlpZZsYgTGT0oBo8YOxs43H/QOMUpyMCmJ8k69dCFeiC8pP6UyI7E4I76oNCe1+BCjDA
-  eHkgTv1KtAOcGi1PTUirTMHGAsw6QlOHiURHhFrwGleYsLEnOLM9MhUqcYFaXEecNB+gRAEhm
-  leXBtsPRxiVFWSpiXkYGBQYinILUoN7MEVf4VozgHo5IwbzXIeJ7MvBK46a+AFjMBLea5dB5k
-  cUkiQkqqgUlTo9b7X7NlukrZ70rmJwbW029rXhacFnhtzgK1FW/blv1Uuxx/PVqp+czVGYs6e
-  bKkHlXF1l5r/3/e/LPnhPKa+ujMqHCn89fMjoTc6PY7Fb7gZqbUtboGWZfcb7YyMQv90tb7Vp
-  Xqc6c8rA/6syz/gHmD6xNN7o9ab7+cmXAq/6NlCk98euupru+fqm43Hbll7eh1KbhC+/LUqd9
-  i9+6SCzwr0rekWL7LIWyTT6+cdRXz9a3X7/0rO8nwzHsn36aTe+X5vY8qCAiIz9GrYTtZd2iN
-  dviSz+EBKcIvvpyPstT8WlH8e++j2JOsWx5NffMzP+mufP/R/fZsNpM8rvQz2nxrfLYr4y671
-  DWZtUosxRmJhlrMRcWJAOnvF96aAwAA
-X-Env-Sender: markpearson@lenovo.com
-X-Msg-Ref: server-9.tower-396.messagelabs.com!1607522196!74709!1
-X-Originating-IP: [103.30.234.7]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.60.3; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 7929 invoked from network); 9 Dec 2020 13:56:38 -0000
-Received: from unknown (HELO lenovo.com) (103.30.234.7)
-  by server-9.tower-396.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 9 Dec 2020 13:56:38 -0000
-Received: from reswpmail04.lenovo.com (unknown [10.62.32.23])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by Forcepoint Email with ESMTPS id 7D8A8C6CC430F0FD5DFA;
-        Wed,  9 Dec 2020 21:56:34 +0800 (CST)
-Received: from localhost.localdomain (10.38.54.222) by reswpmail04.lenovo.com
- (10.62.32.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2044.4; Wed, 9 Dec 2020
- 05:56:32 -0800
-Subject: Re: [External] linux-next: build failure after merge of the pm tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-CC:     Jonathan Corbet <corbet@lwn.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20201209205754.41ac2424@canb.auug.org.au>
-From:   Mark Pearson <markpearson@lenovo.com>
-Message-ID: <203934b6-dd68-b02d-757f-c0336352d397@lenovo.com>
-Date:   Wed, 9 Dec 2020 08:56:31 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1732664AbgLIN5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:57:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732618AbgLIN5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 08:57:34 -0500
+X-Gm-Message-State: AOAM531xsR/FJx09ztdBroVjxeLQAXTNihlFTQd5DuJUKk834ILEpu+2
+        1K/OhOTBxXUTnObrcY6pLxzPiHTV61AiSa4FdB0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607522213;
+        bh=Wxk4863HKHEe6I1SF/Ftfz8urpyIwnx+GowgkvmdTEM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OhO+J7cezWdo79Dq60bATHREUCc5Zb85lYB99a5Z3AMvgAM1wwqc3qRjWmWsI1qcm
+         ZMppCu2Cik9QLIqOH5E/UpCbQ4TI2tY/ImAmtXWvIletNk4+JAws1r4YtMHmLHN02D
+         NPeJmHdyRnMslLIaM4eb60HFnThXI3c4PRysGJ+GOTasPnE2Txs0BESRPHwuUIMELM
+         gMEltWMvwMGEkoy9nZyEphtNC2B9Sgn95xN6l7YM9MoZ7IKyWxHQIMvH6hCbYg5Rmd
+         mQ87Nar0sGbXGlK7+vwAXD45zb+I8Wi8r8kCAq7QKZrgYQkC3n5alU3MxwrvMUpAxj
+         Jz1NXSZcwQFzw==
+X-Google-Smtp-Source: ABdhPJyeU4UwaJeT0CWIh/z9PwvumXuXQQqsTpeFYpQEVXfq2HJZLNqfbHg5g3Fj5hgIKlnzcR/FeRJuZI9xL8QS7lw=
+X-Received: by 2002:a17:906:4e53:: with SMTP id g19mr2127255ejw.454.1607522211686;
+ Wed, 09 Dec 2020 05:56:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201209205754.41ac2424@canb.auug.org.au>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.38.54.222]
-X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
- reswpmail04.lenovo.com (10.62.32.23)
+References: <20201209122437.GA26815@kozik-lap> <20201209130709.GB15469@nautica>
+In-Reply-To: <20201209130709.GB15469@nautica>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 9 Dec 2020 14:56:39 +0100
+X-Gmail-Original-Message-ID: <CAJKOXPfXkZdVUuunpvLOCEim0TfRwG62hvrZu_R8vGkA+ZOapQ@mail.gmail.com>
+Message-ID: <CAJKOXPfXkZdVUuunpvLOCEim0TfRwG62hvrZu_R8vGkA+ZOapQ@mail.gmail.com>
+Subject: Re: Broken /usr/bin/env (invalid option)
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12/2020 04:57, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the pm tree, today's linux-next build (htmldocs) failed
-> like this:
-> 
-> Sphinx parallel build error:
-> docutils.utils.SystemMessage: /home/sfr/next/next/Documentation/ABI/testing/sysfs-platform_profile.rst:1: (SEVERE/4) Missing matching underline for section title overline.
-> 
-> =======================================================================
->  Platform Profile Selection (e.g. :ref:`\/sys\/firmware\/acpi\/platform_profile <abi_sys_firmware_acpi_platform_profile>`)
-> 
-> Caused by commit
-> 
->   ff950bebd0e0 ("Documentation: Add documentation for new platform_profile sysfs attribute")
-> 
-My apologies - I hadn't run the 'make htmldocs' command so I missed this
-one.
+On Wed, 9 Dec 2020 at 14:13, Dominique Martinet <asmadeus@codewreck.org> wrote:
+>
+> Krzysztof Kozlowski wrote on Wed, Dec 09, 2020:
+> > Your commit ece075366294 ("ld-version: use /usr/bin/env awk for
+> > shebank") breaks current linux-next on Ubuntu 16.04:
+> >
+> >     $ make defconfig
+> >
+> >     make[1]: Entering directory '/mnt/data2/linux/linux-upstream/out'
+> >       GEN     Makefile
+> >     *** Default configuration is based on 'multi_v7_defconfig'
+> >     /usr/bin/env: invalid option -- 'S'
+> >     Try '/usr/bin/env --help' for more information.
+> >     init/Kconfig:39: syntax error
+> >     init/Kconfig:38: invalid statement
+> >     ../scripts/kconfig/Makefile:80: recipe for target 'defconfig' failed
+> >     make[2]: *** [defconfig] Error 1
+> >     /mnt/data2/linux/linux-upstream/Makefile:602: recipe for target 'defconfig' failed
+> >     make[1]: *** [defconfig] Error 2
+> >     make[1]: Leaving directory '/mnt/data2/linux/linux-upstream/out'
+> >     Makefile:185: recipe for target '__sub-make' failed
+> >     make: *** [__sub-make] Error 2
+> >
+> > https://krzk.eu/#/builders/12/builds/1170/steps/4/logs/stdio
+> >
+> > It's not possible to build anything...
+>
+> Hm, what version of env is that?
+> I only checked on a couple of systems that env -S exists, but it might
+> not be available (e.g. now I'm looking, at least busybox env does not
+> provide -S)
 
-I've been able to reproduce the error and fix the error. I do see:
-   WARNING: document isn't included in any toctree
-but I think this is benign - I believe I'm getting it just because I
-converted the file to .rst (as requested by Andy Shevchenko). If this is
-important and needs to be addressed urgently as well let me know.
+$ env --version
+env (GNU coreutils) 8.25
 
-Rafael - I want to run a couple more sanity tests and will push the
-update for this (with the other fixes for the platform_profile.c code)
-for review later today.
+> OTOH, we need -S to split arguments because the kernel splits the
+> shebang as [binary, single argument], so without it awk wouldn't work.
 
-Thanks
-Mark
+None of the other scripts use 'env -S', maybe for the reason.
+
+> Apparently gawk can work without an explicit -f is invoked as gawk (so
+> could be used without -S), but that won't be much better wrt
+> compatibility in my opinion.
+>
+>
+> I don't see any way to make this work out of the box for me (awk not in
+> /usr/bin) and you (env not supporting -S), but I guess I can keep that
+> patch around locally...
+
+You could add a wrapper which uses PATH or searches for the awk...
+kind of reimplement other tools. Another solution is to clearly
+document the requirements for the build system and explicitly say that
+older systems like four-year Ubuntu are not supported.
+
+Best regards,
+Krzysztof
