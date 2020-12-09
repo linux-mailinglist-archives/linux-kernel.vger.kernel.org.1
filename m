@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E5E2D3966
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 05:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B12B22D3968
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 05:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgLIECk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 23:02:40 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:45517 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgLIECj (ORCPT
+        id S1726795AbgLIEEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 23:04:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725911AbgLIEEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 23:02:39 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id DC159240003;
-        Wed,  9 Dec 2020 04:01:55 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 05:01:55 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [patch 0/8] ntp/rtc: Fixes and cleanups
-Message-ID: <20201209040155.GB1245199@piout.net>
-References: <20201206214613.444124194@linutronix.de>
- <87sg8f24zf.fsf@nanos.tec.linutronix.de>
+        Tue, 8 Dec 2020 23:04:08 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E127C0613CF;
+        Tue,  8 Dec 2020 20:03:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ptjl1vOkAECNNGD8FjP9CmBCmHgTzCuywcTzKIYkzYw=; b=gYUQXZT87oKHPRmAzCyz2v0+q2
+        Q6+nWIVVrwqJR4T7g2r38PdidVo/NscPGofu4tGqU0lFPRs61ECqei/fKI9cPhLCM2o7OeFfv1oRy
+        BSXvNTRUH7hxvUuQRtydYrk7P0KDK4puaetLnP/RgTTDl/AezCyTUpf6rg7D8BaL5gulYtO8JR5BU
+        eCgfNrCiQxriCWNJbp4ZySU9FXWHXCmA0thvvB/VbCds/U3u/FL0B057XyJVlBG8ZSLj2Gc9Yh82Z
+        icd0zYpjbNCe5CW0tpPj46TktpIECNya3xBKJvWNUrzZ5FNJhR2rDi7JUoMmn4nhE9ZsI0+mN3Srd
+        diIYI5WQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmqh6-0006FZ-Up; Wed, 09 Dec 2020 04:03:13 +0000
+Date:   Wed, 9 Dec 2020 04:03:12 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
+Message-ID: <20201209040312.GN7338@casper.infradead.org>
+References: <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
+ <20201207234008.GE7338@casper.infradead.org>
+ <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
+ <20201208213255.GO1563847@iweiny-DESK2.sc.intel.com>
+ <20201208215028.GK7338@casper.infradead.org>
+ <CAPcyv4irF7YoEjOZ1iOrPPJDsw_-j4kiaqz_6Gf=cz1y3RpdoQ@mail.gmail.com>
+ <20201208223234.GL7338@casper.infradead.org>
+ <20201208224555.GA605321@magnolia>
+ <CAPcyv4jEmdfAz8foEUtDw4GEm2-+7J-4GULZ=6tCD+9K5CFzRw@mail.gmail.com>
+ <20201209022250.GP1563847@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87sg8f24zf.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20201209022250.GP1563847@iweiny-DESK2.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12/2020 01:33:08+0100, Thomas Gleixner wrote:
-> Alexandre,
-> 
-> On Sun, Dec 06 2020 at 22:46, Thomas Gleixner wrote:
-> > Miroslav ran into a situation where the periodic RTC synchronization almost
-> > never was able to hit the time window for the update. That happens due the
-> > usage of delayed_work and the properties of the timer wheel.
-> >
-> > While that particular problem is halfways simple to fix this started to
-> > unearth other problems with that code particularly with rtc_set_npt_time()
-> > but expanded into other things as well.
-> >
-> >   1) The update offset for rtc-cmos is off by a full second
-> >
-> >   2) The readout of MC146818 (rtc-cmos and arch code) is broken and can
-> >      return garbage.
-> >
-> >   2) Alexandre questioned the approach in general and wants to get rid of
-> >      it. Of course there are better methods to do that and it can be
-> >      completely done in user space.
-> >
-> >      Unfortunately it's not that simple as this would be a user visible
-> >      change, so making it at least halfways correct.
-> >
-> >   3) Alexandre requested to move that code into the NTP code as this is not
-> >      really RTC functionality and just usage of the RTC API.
-> >
-> >   4) The update offset itself was questioned, but the time between the
-> >      write and the next seconds increment in the RTC is fundamentaly a
-> >      hardware property. The transport time, which is pretty irrelevant for
-> >      direct accessible RTCs (rtc-cmos), but relevant for RTC behind i2c/SPI
-> >      needs to be added on top.
-> >
-> >      It's undebated that this transport time cannot be correctly estimated,
-> >      but right now it's 500ms which is far off. The correct transport time
-> >      can be calibrated, a halfways correct value supplied via DT, but
-> >      that's an orthogonal problem.
-> >
-> > The following series addresses the above:
-> >
-> >     1) Fix the readout function of MC146818
-> >     2) Fix the rtc-cmos offset
-> >     3) Reduce the default transport time
-> >
-> >     4) Switch the NTP periodic sync code to a hrtimer/work combo
-> >
-> >     5) Move rtc_set_npt_time() to the ntp code
-> >     6) Make the update offset more intuitive
-> >     7) Simplify the whole machinery
-> 
-> any opinion on this?
-> 
+On Tue, Dec 08, 2020 at 06:22:50PM -0800, Ira Weiny wrote:
+> Right now we have a mixed bag.  zero_user() [and it's variants, circa 2008]
+> does a BUG_ON.[0]  While the other ones do nothing; clear_highpage(),
+> clear_user_highpage(), copy_user_highpage(), and copy_highpage().
 
-This looks very good to me, however, I think the 10ms offset is a bit
-too much. Do you mind waiting one or two days so I can get my test setup
-back up?
+Erm, those functions operate on the entire PAGE_SIZE.  There's nothing
+for them to check.
 
+> While continuing to audit the code I don't see any users who would violating
+> the API with a simple conversion of the code.  The calls which I have worked on
+> [which is many at this point] all have checks in place which are well aware of
+> page boundaries.
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Oh good, then this BUG_ON won't trigger.
+
+> Therefore, I tend to agree with Dan that if anything is to be done it should be
+> a WARN_ON() which is only going to throw an error that something has probably
+> been wrong all along and should be fixed but continue running as before.
+
+Silent data corruption is for ever.  Are you absolutely sure nobody has
+done:
+
+	page = alloc_pages(GFP_HIGHUSER_MOVABLE, 3);
+	memcpy_to_page(page, PAGE_SIZE * 2, p, PAGE_SIZE * 2);
+
+because that will work fine if the pages come from ZONE_NORMAL and fail
+miserably if they came from ZONE_HIGHMEM.
+
+> FWIW I think this is a 'bad BUG_ON' use because we are "checking something that
+> we know we might be getting wrong".[1]  And because, "BUG() is only good for
+> something that never happens and that we really have no other option for".[2]
+
+BUG() is our only option here.  Both limiting how much we copy or
+copying the requested amount result in data corruption or leaking
+information to a process that isn't supposed to see it.
+
+What Linus is railing against is the developers who say "Oh, I don't
+know what to do here, I'll just BUG()".  That's not the case here.
+We've thought about it.  We've discussed it.  There's NO GOOD OPTION.
+
+Unless you want to do the moral equivalent of this:
+
+http://git.infradead.org/users/willy/pagecache.git/commitdiff/d2417516bd8b3dd1db096a9b040b0264d8052339
+
+I think that would look something like this ...
+
+void memcpy_to_page(struct page *page, size_t offset, const char *from,
+			size_t len)
+{
+	page += offset / PAGE_SIZE;
+	offset %= PAGE_SIZE;
+
+	while (len) {
+		char *to = kmap_atomic(page);
+		size_t bytes = min(len, PAGE_SIZE - offset);
+		memcpy(to + offset, from, len);
+		kunmap_atomic(to);
+		len -= bytes;
+		offset = 0;
+		page++;
+	}
+}
+
+Now 32-bit highmem will do the same thing as 64-bit for my example above,
+just more slowly.  Untested, obviously.
