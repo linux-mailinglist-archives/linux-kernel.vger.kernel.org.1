@@ -2,81 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C80F02D4924
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2552D4947
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733171AbgLIShd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:37:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727559AbgLIShd (ORCPT
+        id S1733302AbgLISmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:42:13 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48312 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727559AbgLISjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:37:33 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B09C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:36:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YaidPVlCxOibO+8c1Y8zsApUURZrb2kkqSHr+hyl+7A=; b=Udgs5SOt8G6nHTapDFKcxpRuha
-        AA1iApPdtIiQ0fQU4USFuLG8i3fmxoldKlOapZEXkVt3d5bYssVBG7EjG30o7U6UHusm++edgHPFB
-        JV0cg22HL1c/XmdABD6Q9mFfFZN4/L+opKB0xpv5aGX6X2vMqvuoyISLRG1yIJIGbXW+OxntWwcVR
-        GUAfyzjS1TDJVWiCHym4ug1b9trTGu8ogSWH+R9scRsOIKruzkVW6dAmlNsxTsb3qRzvz/9AJyOBR
-        3tvjiZf/N9cWXVId+i91QyZ5GmUbjvOiOeW92KlYvY2px4co+2zIcmTG6S6ddhL/4MQX3vmbD8SAZ
-        XnI0J/hw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kn4KJ-000100-4Y; Wed, 09 Dec 2020 18:36:35 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DD1DC980EF2; Wed,  9 Dec 2020 19:36:33 +0100 (CET)
-Date:   Wed, 9 Dec 2020 19:36:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Vasiliy Kulikov <segoon@openwall.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Christopher Yeoh <cyeoh@au1.ibm.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH 2/3] rwsem: Implement down_read_interruptible
-Message-ID: <20201209183633.GA6190@worktop.programming.kicks-ass.net>
-References: <87tut2bqik.fsf@x220.int.ebiederm.org>
- <87k0tybqfy.fsf@x220.int.ebiederm.org>
- <620f0908-c70a-9e54-e1b5-71d086b20756@redhat.com>
- <20201207090243.GE3040@hirez.programming.kicks-ass.net>
- <87360hy5hp.fsf@x220.int.ebiederm.org>
- <20201208145257.GE2414@hirez.programming.kicks-ass.net>
- <87tuswup9g.fsf@x220.int.ebiederm.org>
+        Wed, 9 Dec 2020 13:39:31 -0500
+Date:   Wed, 09 Dec 2020 18:38:46 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607539127;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6amLPYhulIcC8MH0lDtd1dgFefYZ+jQhQU9WZUwKSXk=;
+        b=SORboJduNpuawz+4fYoXj8I7dBRtjodQJt7xH93v7FlS8FU49XpBHbZud4nPaXEm46l7jw
+        worTqrEdITqs0IVMjgUHfIjpyjtAKeUxVfyvdAIJDGgBXimqFXm23o+NUaC02oz/wctK4N
+        SQhUmYf84kiY5/jiHfo3GYkkOnatSqW+El3eOZ1WYqhnyHqskjodF8P5/NwDDwqlcPcpP+
+        /ExdJd5X3RG01KpYYW+N/ul32tWOskgfckOwruyyNOXKIiOX7audVuF5P3ckoZZEpWn9N0
+        htiSW0qdq92STEsWGlBy5pn1bG1bFRIE06CVpe4JX8RaruVXqqEY69fcOlcp2w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607539127;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6amLPYhulIcC8MH0lDtd1dgFefYZ+jQhQU9WZUwKSXk=;
+        b=x54Hjd7Lq+bAfMIhCDqSorGJEDK/421DHA16VLSxWOsJBSA75FX5Ld6XHZwfr33fcFMXNE
+        incbKdiC22HYr4Dg==
+From:   "tip-bot2 for Ahmed S. Darwish" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] seqlock: Prefix internal seqcount_t-only macros
+ with a "do_"
+Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <CAHk-=wikhGExmprXgaW+MVXG1zsGpztBbVwOb23vetk41EtTBQ@mail.gmail.com>
+References: <CAHk-=wikhGExmprXgaW+MVXG1zsGpztBbVwOb23vetk41EtTBQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87tuswup9g.fsf@x220.int.ebiederm.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <160753912666.3364.821233138673064897.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 12:27:39PM -0600, Eric W. Biederman wrote:
-> Peter Zijlstra <peterz@infradead.org> writes:
-> 
-> > On Mon, Dec 07, 2020 at 09:56:34AM -0600, Eric W. Biederman wrote:
-> >
-> >> Do you want to pull these two into a topic branch in the tip tree
-> >> based on v10-rc1?
-> >
-> > I'll go do that. I'll let the robots chew on it before pushing it out
-> > though, I'll reply once it's in tip.git.
-> 
-> Thanks,
+The following commit has been merged into the locking/core branch of tip:
 
-git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/rwsem
+Commit-ID:     66bcfcdf89d00f2409f4b5da0f8c20c08318dc72
+Gitweb:        https://git.kernel.org/tip/66bcfcdf89d00f2409f4b5da0f8c20c08318dc72
+Author:        Ahmed S. Darwish <a.darwish@linutronix.de>
+AuthorDate:    Sun, 06 Dec 2020 17:21:42 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 09 Dec 2020 17:08:49 +01:00
 
+seqlock: Prefix internal seqcount_t-only macros with a "do_"
+
+When the seqcount_LOCKNAME_t group of data types were introduced, two
+classes of seqlock.h sequence counter macros were added:
+
+  - An external public API which can either take a plain seqcount_t or
+    any of the seqcount_LOCKNAME_t variants.
+
+  - An internal API which takes only a plain seqcount_t.
+
+To distinguish between the two groups, the "*_seqcount_t_*" pattern was
+used for the latter. This confused a number of mm/ call-site developers,
+and Linus also commented that it was not a standard practice for marking
+seqlock.h internal APIs.
+
+Distinguish the latter group of macros by prefixing a "do_".
+
+Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/CAHk-=wikhGExmprXgaW+MVXG1zsGpztBbVwOb23vetk41EtTBQ@mail.gmail.com
+---
+ include/linux/seqlock.h | 66 ++++++++++++++++++++--------------------
+ 1 file changed, 33 insertions(+), 33 deletions(-)
+
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index d89134c..235cbc6 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -425,9 +425,9 @@ SEQCOUNT_LOCKNAME(ww_mutex,     struct ww_mutex, true,     &s->lock->base, ww_mu
+  * Return: true if a read section retry is required, else false
+  */
+ #define __read_seqcount_retry(s, start)					\
+-	__read_seqcount_t_retry(seqprop_ptr(s), start)
++	do___read_seqcount_retry(seqprop_ptr(s), start)
+ 
+-static inline int __read_seqcount_t_retry(const seqcount_t *s, unsigned start)
++static inline int do___read_seqcount_retry(const seqcount_t *s, unsigned start)
+ {
+ 	kcsan_atomic_next(0);
+ 	return unlikely(READ_ONCE(s->sequence) != start);
+@@ -445,12 +445,12 @@ static inline int __read_seqcount_t_retry(const seqcount_t *s, unsigned start)
+  * Return: true if a read section retry is required, else false
+  */
+ #define read_seqcount_retry(s, start)					\
+-	read_seqcount_t_retry(seqprop_ptr(s), start)
++	do_read_seqcount_retry(seqprop_ptr(s), start)
+ 
+-static inline int read_seqcount_t_retry(const seqcount_t *s, unsigned start)
++static inline int do_read_seqcount_retry(const seqcount_t *s, unsigned start)
+ {
+ 	smp_rmb();
+-	return __read_seqcount_t_retry(s, start);
++	return do___read_seqcount_retry(s, start);
+ }
+ 
+ /**
+@@ -462,10 +462,10 @@ do {									\
+ 	if (seqprop_preemptible(s))					\
+ 		preempt_disable();					\
+ 									\
+-	raw_write_seqcount_t_begin(seqprop_ptr(s));			\
++	do_raw_write_seqcount_begin(seqprop_ptr(s));			\
+ } while (0)
+ 
+-static inline void raw_write_seqcount_t_begin(seqcount_t *s)
++static inline void do_raw_write_seqcount_begin(seqcount_t *s)
+ {
+ 	kcsan_nestable_atomic_begin();
+ 	s->sequence++;
+@@ -478,13 +478,13 @@ static inline void raw_write_seqcount_t_begin(seqcount_t *s)
+  */
+ #define raw_write_seqcount_end(s)					\
+ do {									\
+-	raw_write_seqcount_t_end(seqprop_ptr(s));			\
++	do_raw_write_seqcount_end(seqprop_ptr(s));			\
+ 									\
+ 	if (seqprop_preemptible(s))					\
+ 		preempt_enable();					\
+ } while (0)
+ 
+-static inline void raw_write_seqcount_t_end(seqcount_t *s)
++static inline void do_raw_write_seqcount_end(seqcount_t *s)
+ {
+ 	smp_wmb();
+ 	s->sequence++;
+@@ -506,12 +506,12 @@ do {									\
+ 	if (seqprop_preemptible(s))					\
+ 		preempt_disable();					\
+ 									\
+-	write_seqcount_t_begin_nested(seqprop_ptr(s), subclass);	\
++	do_write_seqcount_begin_nested(seqprop_ptr(s), subclass);	\
+ } while (0)
+ 
+-static inline void write_seqcount_t_begin_nested(seqcount_t *s, int subclass)
++static inline void do_write_seqcount_begin_nested(seqcount_t *s, int subclass)
+ {
+-	raw_write_seqcount_t_begin(s);
++	do_raw_write_seqcount_begin(s);
+ 	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
+ }
+ 
+@@ -533,12 +533,12 @@ do {									\
+ 	if (seqprop_preemptible(s))					\
+ 		preempt_disable();					\
+ 									\
+-	write_seqcount_t_begin(seqprop_ptr(s));				\
++	do_write_seqcount_begin(seqprop_ptr(s));			\
+ } while (0)
+ 
+-static inline void write_seqcount_t_begin(seqcount_t *s)
++static inline void do_write_seqcount_begin(seqcount_t *s)
+ {
+-	write_seqcount_t_begin_nested(s, 0);
++	do_write_seqcount_begin_nested(s, 0);
+ }
+ 
+ /**
+@@ -549,16 +549,16 @@ static inline void write_seqcount_t_begin(seqcount_t *s)
+  */
+ #define write_seqcount_end(s)						\
+ do {									\
+-	write_seqcount_t_end(seqprop_ptr(s));				\
++	do_write_seqcount_end(seqprop_ptr(s));				\
+ 									\
+ 	if (seqprop_preemptible(s))					\
+ 		preempt_enable();					\
+ } while (0)
+ 
+-static inline void write_seqcount_t_end(seqcount_t *s)
++static inline void do_write_seqcount_end(seqcount_t *s)
+ {
+ 	seqcount_release(&s->dep_map, _RET_IP_);
+-	raw_write_seqcount_t_end(s);
++	do_raw_write_seqcount_end(s);
+ }
+ 
+ /**
+@@ -603,9 +603,9 @@ static inline void write_seqcount_t_end(seqcount_t *s)
+  *      }
+  */
+ #define raw_write_seqcount_barrier(s)					\
+-	raw_write_seqcount_t_barrier(seqprop_ptr(s))
++	do_raw_write_seqcount_barrier(seqprop_ptr(s))
+ 
+-static inline void raw_write_seqcount_t_barrier(seqcount_t *s)
++static inline void do_raw_write_seqcount_barrier(seqcount_t *s)
+ {
+ 	kcsan_nestable_atomic_begin();
+ 	s->sequence++;
+@@ -623,9 +623,9 @@ static inline void raw_write_seqcount_t_barrier(seqcount_t *s)
+  * will complete successfully and see data older than this.
+  */
+ #define write_seqcount_invalidate(s)					\
+-	write_seqcount_t_invalidate(seqprop_ptr(s))
++	do_write_seqcount_invalidate(seqprop_ptr(s))
+ 
+-static inline void write_seqcount_t_invalidate(seqcount_t *s)
++static inline void do_write_seqcount_invalidate(seqcount_t *s)
+ {
+ 	smp_wmb();
+ 	kcsan_nestable_atomic_begin();
+@@ -865,9 +865,9 @@ static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
+ }
+ 
+ /*
+- * For all seqlock_t write side functions, use write_seqcount_*t*_begin()
+- * instead of the generic write_seqcount_begin(). This way, no redundant
+- * lockdep_assert_held() checks are added.
++ * For all seqlock_t write side functions, use the the internal
++ * do_write_seqcount_begin() instead of generic write_seqcount_begin().
++ * This way, no redundant lockdep_assert_held() checks are added.
+  */
+ 
+ /**
+@@ -886,7 +886,7 @@ static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
+ static inline void write_seqlock(seqlock_t *sl)
+ {
+ 	spin_lock(&sl->lock);
+-	write_seqcount_t_begin(&sl->seqcount.seqcount);
++	do_write_seqcount_begin(&sl->seqcount.seqcount);
+ }
+ 
+ /**
+@@ -898,7 +898,7 @@ static inline void write_seqlock(seqlock_t *sl)
+  */
+ static inline void write_sequnlock(seqlock_t *sl)
+ {
+-	write_seqcount_t_end(&sl->seqcount.seqcount);
++	do_write_seqcount_end(&sl->seqcount.seqcount);
+ 	spin_unlock(&sl->lock);
+ }
+ 
+@@ -912,7 +912,7 @@ static inline void write_sequnlock(seqlock_t *sl)
+ static inline void write_seqlock_bh(seqlock_t *sl)
+ {
+ 	spin_lock_bh(&sl->lock);
+-	write_seqcount_t_begin(&sl->seqcount.seqcount);
++	do_write_seqcount_begin(&sl->seqcount.seqcount);
+ }
+ 
+ /**
+@@ -925,7 +925,7 @@ static inline void write_seqlock_bh(seqlock_t *sl)
+  */
+ static inline void write_sequnlock_bh(seqlock_t *sl)
+ {
+-	write_seqcount_t_end(&sl->seqcount.seqcount);
++	do_write_seqcount_end(&sl->seqcount.seqcount);
+ 	spin_unlock_bh(&sl->lock);
+ }
+ 
+@@ -939,7 +939,7 @@ static inline void write_sequnlock_bh(seqlock_t *sl)
+ static inline void write_seqlock_irq(seqlock_t *sl)
+ {
+ 	spin_lock_irq(&sl->lock);
+-	write_seqcount_t_begin(&sl->seqcount.seqcount);
++	do_write_seqcount_begin(&sl->seqcount.seqcount);
+ }
+ 
+ /**
+@@ -951,7 +951,7 @@ static inline void write_seqlock_irq(seqlock_t *sl)
+  */
+ static inline void write_sequnlock_irq(seqlock_t *sl)
+ {
+-	write_seqcount_t_end(&sl->seqcount.seqcount);
++	do_write_seqcount_end(&sl->seqcount.seqcount);
+ 	spin_unlock_irq(&sl->lock);
+ }
+ 
+@@ -960,7 +960,7 @@ static inline unsigned long __write_seqlock_irqsave(seqlock_t *sl)
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&sl->lock, flags);
+-	write_seqcount_t_begin(&sl->seqcount.seqcount);
++	do_write_seqcount_begin(&sl->seqcount.seqcount);
+ 	return flags;
+ }
+ 
+@@ -989,7 +989,7 @@ static inline unsigned long __write_seqlock_irqsave(seqlock_t *sl)
+ static inline void
+ write_sequnlock_irqrestore(seqlock_t *sl, unsigned long flags)
+ {
+-	write_seqcount_t_end(&sl->seqcount.seqcount);
++	do_write_seqcount_end(&sl->seqcount.seqcount);
+ 	spin_unlock_irqrestore(&sl->lock, flags);
+ }
+ 
