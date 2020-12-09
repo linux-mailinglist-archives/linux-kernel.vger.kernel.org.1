@@ -2,292 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E8C2D4AB6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F46F2D4AE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387837AbgLITnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:43:42 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:58490 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387915AbgLITnU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:43:20 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id 602D9123AF7;
-        Wed,  9 Dec 2020 20:42:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607542952;
-        bh=umw3i716AA1RfHzauEg2V1/ls+eH/tEOpZLRHpRHjPc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eS78eQ3DXkYH0q0NAys4gAO5vp69q47sEYEpVbzjNxOBt2plp33STKVK/Z38B+Zw+
-         Z616OzHihqsdtQzVQw36ljmW9SFq1E5PGcsb30vqG5AlAEVRT/vW7bG4YATDcQvHse
-         pnqI/IFWBk1oJjebLiQ1yprxaZC5zTrG6Kn0TBRANVFHCAYJD9zfV46Ldun6I32EM3
-         2cUadQWC+6aCEk19lqGspoBMDYE4WIRcWocm0MGwwOmg5R13a6XvQ6C6qXUJ+65Crx
-         cU0GJpOG+STMg95jCQycxkMe+aJ3kMTtCCYDB3Vy7JEucUdCglwhiukeYXhCHNAAK1
-         HXpW+7ZymB7Mg==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id O-f_cmxzkNFt; Wed,  9 Dec 2020 20:41:55 +0100 (CET)
-Received: from dincontrollerdev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id 05045123AF4;
-        Wed,  9 Dec 2020 20:41:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607542915;
-        bh=umw3i716AA1RfHzauEg2V1/ls+eH/tEOpZLRHpRHjPc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TI7dIPr1jW2tZZkIrJPTo2HVn9JTxIyV/vwyd58YZ1C1Meq52o/v4sqRYYggwE4Xe
-         9MaDR006ePPjZzd/RGDvka9lNKL9TdwUaZJpX8I3Kn3PKHl0pCo4IiwOQZVzV/lrG0
-         J1SLvMQf4vQp4rIk3xHEWbI9u/TkGprubqytqlDPoB1rfiT8N6uaOAzvjQDPPkzdnI
-         wwbEwECAFICaFKGM30uFBL1q0GNOHbV8Y3//7qFjcFDzi0NNSUk0/b/Q1ORYJwsmg/
-         uTmMxLTlwf2whDdX/qoy1Vj8BwWjmX87px2sQW9BeTa8Agt+exVvCMqAovyHA2RL1V
-         /BGZuJA6VW0ig==
-Date:   Wed, 9 Dec 2020 19:41:53 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, driverdev-devel@linuxdriverproject.org
-Subject: Re: [PATCH] Staging: silabs si4455 serial driver
-Message-ID: <20201209194153.GC30918@dincontrollerdev>
-References: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAAAJUqiRO33GQqGIHffCVyG/AQAAAAA=@ministro.hu>
- <2907305.Mh6RI2rZIc@pc-42>
+        id S2387888AbgLITnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:43:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387857AbgLITms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:42:48 -0500
+Date:   Wed, 9 Dec 2020 11:42:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607542923;
+        bh=yQXE05cdLb/dLO1CFMaMF1kDgHxY35e7OwT9CiVhJ7w=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=T1/DVTzmn/Z1a91aubV5zifgLYnHyksvMSMD6h8kzP2ptHa0ZjACbfAh/xg12LTC0
+         bki/GcsoW98tGxfLnR/2ajk6XjpzrbpL0tae4aBUvR2PKY4mrL11VqCJgpnkOPeMwS
+         fmAEqFW6DfCxKACE1zMPfdS7JWIgY0JOXlYd6tmt99SFLvmSGPMya05Ba8mA0GLBII
+         3r4ncXuq8HO870nL+FgxM6ss/1i8BKHGSDLLvfSmUjcgMfzuPfF/mnXqdsSmm62Osw
+         m5Io5nZDotZ7O6TyLrXTfeZYzZXpBA0gLUBhcgNhh4Fn2dIIsTNLlCgyHPkUO6elfX
+         sP00n0Cn0+WEA==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <olteanv@gmail.com>,
+        <andrew@lunn.ch>, <vivien.didelot@gmail.com>,
+        <f.fainelli@gmail.com>
+Subject: Re: [PATCH net-next] net: sja1105: simplify the return
+ sja1105_cls_flower_stats()
+Message-ID: <20201209114202.4f2b27bf@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201209092504.20470-1-zhengyongjun3@huawei.com>
+References: <20201209092504.20470-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2907305.Mh6RI2rZIc@pc-42>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jérôme,
+On Wed, 9 Dec 2020 17:25:04 +0800 Zheng Yongjun wrote:
+> Simplify the return expression.
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-On Wed, Dec 09, 2020 at 06:38:08PM +0100, Jérôme Pouiller wrote:
-> On Wednesday 9 December 2020 12:09:58 CET Info wrote:
-> > 
-> > This is a serial port driver for
-> > Silicon Labs Si4455 Sub-GHz transciver.
-> 
-> Hello József,
-> 
-> Thank you for taking care of support of Silabs products :)
-
-I think great products :) and great support :)
-
-> 
-> 
-> > Signed-off-by: József Horváth <info@ministro.hu>
-> 
-> I think you have to use your personal address to sign-off.
-
-I'm a self-employed, currently this is my "personal" e-mail address.
-
-> 
-> > ---
-> >  .../bindings/staging/serial/silabs,si4455.txt |   39 +
-> >  drivers/staging/Kconfig                       |    2 +
-> >  drivers/staging/Makefile                      |    1 +
-> >  drivers/staging/si4455/Kconfig                |    8 +
-> >  drivers/staging/si4455/Makefile               |    2 +
-> >  drivers/staging/si4455/TODO                   |    3 +
-> >  drivers/staging/si4455/si4455.c               | 1465 +++++++++++++++++
-> >  drivers/staging/si4455/si4455_api.h           |   56 +
-> >  8 files changed, 1576 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
-> >  create mode 100644 drivers/staging/si4455/Kconfig
-> >  create mode 100644 drivers/staging/si4455/Makefile
-> >  create mode 100644 drivers/staging/si4455/TODO
-> >  create mode 100644 drivers/staging/si4455/si4455.c
-> >  create mode 100644 drivers/staging/si4455/si4455_api.h
-> 
-> Since you add a new directory, you should also update MAINTAINERS file
-> (checkpatch didn't warn you about that?).
-> 
-> 
-> > diff --git
-> > a/Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
-> > b/Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
-> > new file mode 100644
-> > index 000000000000..abd659b7b952
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
-> > @@ -0,0 +1,39 @@
-> > +* Silicon Labs Si4455 EASY-TO-USE, LOW-CURRENT OOK/(G)FSK SUB-GHZ
-> > TRANSCEIVER
-> 
-> AFAIK, Si4455 is a programmable product. So I think that this driver only
-> work if the Si4455 use a specific firmware, isn't? In this case, you
-> should mention it in the documentation. 
-
-Si4455 is programmed by silabs.
-In case of C2A, it is possible to load patch.
-
-My solution is to loading EZConfig(generated by WDS) and firmware patch with ioctl calls.
-You can see the definitions in si4455_api.h.
-A short example for EZConfig loading(patch loading will be exacly the same if Si4455 is rev C2A):
-	...
-	#include "si4455_api.h"
-	...
-	#include "radio.h"			//< Generated by WDS3
-	#include "radio_config_Si4455.h"	//< Generated by WDS3
-	...
-	struct si4455_iocbuff iocbuff = { 0 };
-	iocbuff.length = sizeof(Radio_Configuration_Data_Array);
-	memcpy(iocbuff.data, Radio_Configuration_Data_Array, iocbuff.length);
-	ret = ioctl(portFd, SI4455_IOC_SEZC, &iocbuff);
-	...
-
-After SI4455_IOC_SEZC or SI4455_IOC_SEZP ioctl calls, the driver resets the Si4455, and apply the configuration/patch.
-
-> 
-> 
-> > +
-> > +Required properties:
-> > +- compatible: Should be one of the following:
-> > +  - "silabs,si4455" for Silicon Labs Si4455-B1A or Si4455-C2A (driver
-> > automatically detects the part info),
-> > +  - "silabs,si4455b1a" for Silicon Labs Si4455-B1A,
-> > +  - "silabs,si4455c2a" for Silicon Labs Si4455-C2A,
-> > +- reg: SPI chip select number.
-> > +- interrupts: Specifies the interrupt source of the parent interrupt
-> > +  controller. The format of the interrupt specifier depends on the
-> > +  parent interrupt controller.
-> > +- clocks: phandle to the IC source clock (only external clock source
-> > supported).
-> > +- spi-max-frequency: maximum clock frequency on SPI port
-> > +- shdn-gpios: gpio pin for SDN
-> > +
-> > +Example:
-> > +
-> > +/ {
-> > +       clocks {
-> > +                si4455_1_2_osc: si4455_1_2_osc {
-> > +                        compatible = "fixed-clock";
-> > +                        #clock-cells = <0>;
-> > +                        clock-frequency  = <30000000>;
-> > +                };
-> > +       };
-> > +};
-> > +
-> > +&spi0 {
-> > +       si4455: si4455@0 {
-> > +               compatible = "silabs,si4455";
-> > +               reg = <0>;
-> > +               clocks = <&si4455_1_2_osc>;
-> 
-> It seems that the driver does not use this clock. So, is the clock
-> attribute mandatory? What is the purpose of declaring a fixed-clock
-> for this device?
-> 
-
-Yes you are right, but the uart subsystem maybe. I'll check it again, and if does not, I'll remove these definitions.
-
-> > +               interrupt-parent = <&gpio>;
-> > +               interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-> > +                shdn-gpios = <&gpio 26 1>;
-> > +                status = "okay";
-> > +                spi-max-frequency = <3000000>;
-> > +       };
-> > +};
-> 
-> [...]
-> 
-> 
-> > diff --git a/drivers/staging/si4455/Kconfig b/drivers/staging/si4455/Kconfig
-> > new file mode 100644
-> > index 000000000000..666f726f2583
-> > --- /dev/null
-> > +++ b/drivers/staging/si4455/Kconfig
-> > @@ -0,0 +1,8 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +config SERIAL_SI4455
-> > +       tristate "Si4455 support"
-> > +       depends on SPI
-> > +       select SERIAL_CORE
-> > +       help
-> > +         This driver is for Silicon Labs's Si4455 Sub-GHz transciver.
-> > +         Say 'Y' here if you wish to use it as serial port.
-> 
-> So, in fact, Si4455 is not a UART. I don't know how this kind of device
-> should be presented to the userspace. Have you check if similar devices
-> already exists in the kernel?
-
-I know Si4455 is not a regular UART, but in my mind it is a half-duplex serial transport channel, like UART with RS-485.
-This is the reason why I designed it among serial drivers.
-The special funcions like tx/rx channel, package size are controlled with ioctl calls.
-
-> 
-> I suggest to add linux-wpan@vger.kernel.org to the recipients of your
-> patch.
-> 
-> 
-> [...]
-> > +static int si4455_get_part_info(struct uart_port *port,
-> > +                               struct si4455_part_info *result)
-> > +{
-> > +       int ret;
-> > +       u8 dataOut[] = { SI4455_CMD_ID_PART_INFO };
-> > +       u8 dataIn[SI4455_CMD_REPLY_COUNT_PART_INFO];
-> > +
-> > +       ret = si4455_send_command_get_response(port,
-> > +                                               sizeof(dataOut),
-> > +                                               dataOut,
-> > +                                               sizeof(dataIn),
-> > +                                               dataIn);
-> 
-> Why not:
-> 
-
-I changed all like this in my code already. I test it, and I'll send it again.
-
-Ps.: For my eyes is better to read line or list, reading table is harder :)
-
-	line(arg1, arg2, arg3, arg4);
-
-	list(arg1,
-		arg2,
-		arg3,
-		arg4);
-
-	table(arg1, arg2,
-		arg3, arg4);
-
-
->        ret = si4455_send_command_get_response(port,
->                                               sizeof(*result), result,
->                                               sizeof(dataIn), dataIn);
-> 
-> > +       if (ret == 0) {
-> > +               result->CHIPREV = dataIn[0];
-> > +               memcpy(&result->PART, &dataIn[1],sizeof(result->PART));
-> > +               result->PBUILD = dataIn[3];
-> > +               memcpy(&result->ID, &dataIn[4], sizeof(result->ID));
-> > +               result->CUSTOMER = dataIn[6];
-> > +               result->ROMID = dataIn[7];
-> > +               result->BOND = dataIn[8];
-> 
-> ... it would avoid all these lines.
-> 
-> > +       } else {
-> > +               dev_err(port->dev,
-> > +                       "%s: si4455_send_command_get_response error(%i)",
-> > +                       __func__,
-> > +                       ret);
-> > +       }
-> > +       return ret;
-> > +}
-> 
-> [...]
-> 
-> -- 
-> Jérôme Pouiller
-> 
-> 
-
-Üdvözlettel / Best regards:
-József Horváth
-
+Looks like this one doesn't apply cleanly to net-next.
