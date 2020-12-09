@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4F12D389A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EBA2D3897
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgLICJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 21:09:30 -0500
-Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:39932 "EHLO
-        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgLICJ3 (ORCPT
+        id S1726278AbgLICJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 21:09:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgLICJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 21:09:29 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id B691B200E7E0;
-        Wed,  9 Dec 2020 10:08:27 +0800 (HKT)
-X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
-Received: from mail.gtsys.com.hk ([127.0.0.1])
-        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 84LiOLCf-GKu; Wed,  9 Dec 2020 10:08:27 +0800 (HKT)
-Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 946A1200E7DE;
-        Wed,  9 Dec 2020 10:08:27 +0800 (HKT)
-Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
-        by s01.gtsys.com.hk (Postfix) with ESMTP id 8E911C01F98;
-        Wed,  9 Dec 2020 10:08:27 +0800 (HKT)
-Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
-        id 560AC2000CF; Wed,  9 Dec 2020 10:08:27 +0800 (HKT)
-From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
-To:     linux-rockchip@lists.infradead.org
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Douglas Anderson <dianders@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Chris Ruehl <chris.ruehl@gtsys.com.hk>
-Subject: [PATCH v2] phy: rockchip-emmc: emmc_phy_init() always return 0
-Date:   Wed,  9 Dec 2020 10:07:57 +0800
-Message-Id: <20201209020757.5917-1-chris.ruehl@gtsys.com.hk>
-X-Mailer: git-send-email 2.20.1
+        Tue, 8 Dec 2020 21:09:11 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B2A7C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 18:08:31 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id p6so122872plo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 18:08:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KsToaui+c4tLuJA6o1UPV0Iqu/q3rNtPcLmVbxkIOGw=;
+        b=RJ6lMMlQN9Q0FB0pHRGZ64OYsdGDDdSVADApCttmcfF4htYVJMxmSAltyG/V8saCKc
+         QZGbx/qM+zInZxM71xW/sodC3WFVd282yqUZ0AZFwoGVeI54E7D4RkLla/BLmi6wAzKX
+         T9pQPPOiiqP60jUIFqzTuHr+qr3XldiH7LuIDlEOJ2J2u4f1utR2dzNrj7FMIhErpXiS
+         X2TqHZs6xuGapmX4P8hKkYrpkATpftIHcnCdZUx4q2oQGUbQZffjtkecO/uC4L/bwS0Q
+         W2Yq4uCnuV5i2w7yUu5nP45E/IL6UyDn6TQyhxpqV+PAVoDkCTwUnvx5fffUqvibou2P
+         aGsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KsToaui+c4tLuJA6o1UPV0Iqu/q3rNtPcLmVbxkIOGw=;
+        b=spBl/6JsTPbZPjp5/61sAuUc1vCBO5Vrsn4B/t0/HLUKk8TcgZSsGBuKbNNlcg6KVB
+         KqzpyYvJZdzg+JGu2lCVv5K8FCkw6FhwcgdG20kw1Oe32Qt7ZEbvaVr3oSE20JUfu3VT
+         G/i4eQPhaO/AqS2Ohk5Ebz5yzvxE7OEYVVGWU3nQ7lNf/2JHh2ZvHZcT8ofMQYSmM9Lz
+         dlTWmTALxSlMJoHW2mwK2yuD1Cmt4bR1gYGfDdMsf1EsWF3CI+DkMgoBfB6y1L3uIQiu
+         joYcTLKv0UgujUkTKOQyqOIrLTYlkVEeggFjalAWIvb3G07Xy3H1DleFDkuqmRNgomaf
+         zyhw==
+X-Gm-Message-State: AOAM532OT788J4aJDpak+g5ri+uVwAZsPrToVwpWrIzxUDEMeFr0RWjK
+        R3pusWcelzkHk6koYYf05k9l
+X-Google-Smtp-Source: ABdhPJxj0eU9WE1ZTHGb/qUkwS/+6BVHvEAcCmVgSiHdqU6TtAIpJiZarmMQ4W509vuXhJi9mV3w0A==
+X-Received: by 2002:a17:90b:350b:: with SMTP id ls11mr82922pjb.193.1607479710395;
+        Tue, 08 Dec 2020 18:08:30 -0800 (PST)
+Received: from localhost.localdomain ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id az19sm89046pjb.24.2020.12.08.18.08.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 18:08:29 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+X-Google-Original-From: Manivannan Sadhasivam <mani@kernel.org>
+To:     lorenzo.pieralisi@arm.com
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        svarbanov@mm-sol.com, bhelgaas@google.com,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mgautam@codeaurora.org,
+        truong@codeaurora.org, Manivannan Sadhasivam <mani@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] PCI: qcom: Fix using uninitialized smmu_sid_base variable
+Date:   Wed,  9 Dec 2020 07:38:17 +0530
+Message-Id: <20201209020817.12776-1-mani@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rockchip_emmc_phy_init() return variable is not set with the error value
-if clk_get() failed. 'emmcclk' is optional, thus use clk_get_optional()
-and if the return value != NULL make error processing and set the
-return code accordingly.
+smmu_sid_base should hold the base of SMMU SID extracted from the first
+entry of iommu-map. This value will be used to extract the successive SMMU
+SID values. Fix it by assigning the first SMMU SID base before for loop.
 
-Fixes: 52c0624a10cce phy: rockchip-emmc: Set phyctrl_frqsel based on card clock
-
-Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
 ---
- drivers/phy/rockchip/phy-rockchip-emmc.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/pci/controller/dwc/pcie-qcom.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/phy/rockchip/phy-rockchip-emmc.c b/drivers/phy/rockchip/phy-rockchip-emmc.c
-index 48e2d75b1004..a23034416481 100644
---- a/drivers/phy/rockchip/phy-rockchip-emmc.c
-+++ b/drivers/phy/rockchip/phy-rockchip-emmc.c
-@@ -245,15 +245,17 @@ static int rockchip_emmc_phy_init(struct phy *phy)
- 	 * - SDHCI driver to get the PHY
- 	 * - SDHCI driver to init the PHY
- 	 *
--	 * The clock is optional, so upon any error we just set to NULL.
-+	 * The clock is optional, using clk_get_optional() to get the clock
-+	 * and do error processing if the return value != NULL
- 	 *
- 	 * NOTE: we don't do anything special for EPROBE_DEFER here.  Given the
- 	 * above expected use case, EPROBE_DEFER isn't sensible to expect, so
- 	 * it's just like any other error.
- 	 */
--	rk_phy->emmcclk = clk_get(&phy->dev, "emmcclk");
--	if (IS_ERR(rk_phy->emmcclk)) {
--		dev_dbg(&phy->dev, "Error getting emmcclk: %d\n", ret);
-+	rk_phy->emmcclk = clk_get_optional(&phy->dev, "emmcclk");
-+	if (rk_phy->emmcclk && IS_ERR(rk_phy->emmcclk)) {
-+		ret = PTR_ERR(rk_phy->emmcclk);
-+		dev_err(&phy->dev, "Error getting emmcclk: %d\n", ret);
- 		rk_phy->emmcclk = NULL;
- 	}
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index 8ba3e6b29196..affa2713bf80 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -1297,6 +1297,9 @@ static int qcom_pcie_config_sid_sm8250(struct qcom_pcie *pcie)
+ 	/* Registers need to be zero out first */
+ 	memset_io(bdf_to_sid_base, 0, CRC8_TABLE_SIZE * sizeof(u32));
  
++	/* Extract the SMMU SID base from the first entry of iommu-map */
++	smmu_sid_base = map[0].smmu_sid;
++
+ 	/* Look for an available entry to hold the mapping */
+ 	for (i = 0; i < nr_map; i++) {
+ 		u16 bdf_be = cpu_to_be16(map[i].bdf);
 -- 
-2.20.1
+2.25.1
 
