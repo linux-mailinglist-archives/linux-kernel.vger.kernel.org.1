@@ -2,239 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7D12D4144
+	by mail.lfdr.de (Postfix) with ESMTP id D06542D4145
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730846AbgLILk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:40:56 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2232 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730679AbgLILk4 (ORCPT
+        id S1730859AbgLILlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:41:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43822 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729988AbgLILlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:40:56 -0500
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CrZlC2ygLz67Nq7;
-        Wed,  9 Dec 2020 19:36:55 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 9 Dec 2020 12:40:14 +0100
-Received: from [10.210.171.175] (10.210.171.175) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 9 Dec 2020 11:40:13 +0000
-Subject: Re: [RESEND PATCH v3 2/4] iommu/iova: Avoid double-negatives in
- magazine helpers
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>
-CC:     Linuxarm <linuxarm@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>
-References: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
- <1605608734-84416-3-git-send-email-john.garry@huawei.com>
- <7eb70f4b-b050-24ca-f1fa-d8f3c9ddce65@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <7dfee7b0-0d51-b342-5318-09470c56f0d9@huawei.com>
-Date:   Wed, 9 Dec 2020 11:39:39 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Wed, 9 Dec 2020 06:41:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607513996;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LQQtBr/xncf1OOMfe6ZF4U94fqdAGaQDE6cOcjJoC+4=;
+        b=OUpsrS5s9/e4BJdoda6MSOOoPV06q9d5QW1RxVKem/LWDp6jRak/WIb/cZjKvepEIqV9gc
+        rGvF2LUEUVG8EXZieW7/UZY9ujYHv1WAUfcfbc5AdaOFi3kJI6hjDD38p3hEnRlTd65TTy
+        3I/FajJkGdc+mqhB39J2IIAHkoC0UWA=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-223-LDWERGrJPnadjwvjyJwcqg-1; Wed, 09 Dec 2020 06:39:54 -0500
+X-MC-Unique: LDWERGrJPnadjwvjyJwcqg-1
+Received: by mail-pl1-f198.google.com with SMTP id x11so639823plo.19
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 03:39:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LQQtBr/xncf1OOMfe6ZF4U94fqdAGaQDE6cOcjJoC+4=;
+        b=kvoNG2z8LMqtLxkElgL8wPj21n/ap+VhtuwwsqJnC9zupgcIJeVRUT8Zu/ybTKdV5B
+         ecmrX9oBMWnxnH1henyk8bFcK2faDS7ehpHzu0epy9JQVH1V02iVphOLer36/Yp+XktW
+         Z1BrjtBuaL/WMeZQM6+mBu3o36hcycDtWq4RczNw+MplwApaIMHAp90FkDGnQQCZzULX
+         MVA4pgXMMc0B4SWfKzrb1RmJwVc6SIguzVh97/fxFzAo+vzExCtlgEeRF3cxXTSHTIYk
+         dm3jPrRv3HvuJ1/ZLyH1deXdDwnFWsyueWtZQ+B0hL+a/lsqlzB3tNtswvzXH96Jenx8
+         L6/w==
+X-Gm-Message-State: AOAM530TG4JQ2qhVZdQDqSc1NuCmIdn57GhAnBMQNL9o2/MbSNwPc4GE
+        DTbUwE+T5VcBC8YH0JaavL7dsgjNJLeM74HGSEUxTvi4h466Sq21DRlbAMqAYHD3nZ1zHLuQfxO
+        aAOLH+uJtGG87dcj8JC20dP/V
+X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr1885226pjp.8.1607513993332;
+        Wed, 09 Dec 2020 03:39:53 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwu1ZInadIHVy+SdexMutvdjrIhjmSkYMi9geOWjK6ltOjroPKdDiaQxAFCYJyTpFkUIg4+dg==
+X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr1885211pjp.8.1607513993162;
+        Wed, 09 Dec 2020 03:39:53 -0800 (PST)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id ci2sm1843192pjb.40.2020.12.09.03.39.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 03:39:52 -0800 (PST)
+Date:   Wed, 9 Dec 2020 19:39:41 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Huang Jianan <huangjianan@oppo.com>
+Cc:     Chao Yu <yuchao0@huawei.com>, linux-erofs@lists.ozlabs.org,
+        zhangshiming@oppo.com, guoweichao@oppo.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] erofs: avoid using generic_block_bmap
+Message-ID: <20201209113941.GB105731@xiangao.remote.csb>
+References: <20201209023930.15554-1-huangjianan@oppo.com>
+ <23527fc2-811b-321e-10f1-cb5b50affdbb@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <7eb70f4b-b050-24ca-f1fa-d8f3c9ddce65@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.171.175]
-X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <23527fc2-811b-321e-10f1-cb5b50affdbb@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12/2020 09:03, Leizhen (ThunderTown) wrote:
+Hi Jianan,
+
+On Wed, Dec 09, 2020 at 06:08:41PM +0800, Chao Yu wrote:
+> On 2020/12/9 10:39, Huang Jianan wrote:
+> > iblock indicates the number of i_blkbits-sized blocks rather than
+> > sectors.
+> > 
+> > In addition, considering buffer_head limits mapped size to 32-bits,
+> > should avoid using generic_block_bmap.
+> > 
+> > Fixes: 9da681e017a3 ("staging: erofs: support bmap")
+> > Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+> > Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+
+Could you send out an updated version? I might get a point to freeze
+dev branch since it needs some time on linux-next....
+
+Thanks,
+Gao Xiang
+
+> > ---
+> >   fs/erofs/data.c | 30 ++++++++++--------------------
+> >   1 file changed, 10 insertions(+), 20 deletions(-)
+> > 
+> > diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+> > index 347be146884c..d6ea0a216b57 100644
+> > --- a/fs/erofs/data.c
+> > +++ b/fs/erofs/data.c
+> > @@ -312,36 +312,26 @@ static void erofs_raw_access_readahead(struct readahead_control *rac)
+> >   		submit_bio(bio);
+> >   }
+> > -static int erofs_get_block(struct inode *inode, sector_t iblock,
+> > -			   struct buffer_head *bh, int create)
+> > -{
+> > -	struct erofs_map_blocks map = {
+> > -		.m_la = iblock << 9,
+> > -	};
+> > -	int err;
+> > -
+> > -	err = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
+> > -	if (err)
+> > -		return err;
+> > -
+> > -	if (map.m_flags & EROFS_MAP_MAPPED)
+> > -		bh->b_blocknr = erofs_blknr(map.m_pa);
+> > -
+> > -	return err;
+> > -}
+> > -
+> >   static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
+> >   {
+> >   	struct inode *inode = mapping->host;
+> > +	struct erofs_map_blocks map = {
+> > +		.m_la = blknr_to_addr(block),
+> > +	};
+> > +	sector_t blknr = 0;
 > 
+> It could be removed?
 > 
-> On 2020/11/17 18:25, John Garry wrote:
->> A similar crash to the following could be observed if initial CPU rcache
->> magazine allocations fail in init_iova_rcaches():
->>
->> Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
->> Mem abort info:
->>     ESR = 0x96000004
->>     EC = 0x25: DABT (current EL), IL = 32 bits
->>     SET = 0, FnV = 0
->>     EA = 0, S1PTW = 0
->> Data abort info:
->>     ISV = 0, ISS = 0x00000004
->>     CM = 0, WnR = 0
->> [0000000000000000] user address but active_mm is swapper
->> Internal error: Oops: 96000004 [#1] PREEMPT SMP
->> Modules linked in:
->> CPU: 11 PID: 696 Comm: irq/40-hisi_sas Not tainted 5.9.0-rc7-dirty #109
->> Hardware name: Huawei D06 /D06, BIOS Hisilicon D06 UEFI RC0 - V1.16.01 03/15/2019
->> Call trace:
->>    free_iova_fast+0xfc/0x280
->>    iommu_dma_free_iova+0x64/0x70
->>    __iommu_dma_unmap+0x9c/0xf8
->>    iommu_dma_unmap_sg+0xa8/0xc8
->>    dma_unmap_sg_attrs+0x28/0x50
->>    cq_thread_v3_hw+0x2dc/0x528
->>    irq_thread_fn+0x2c/0xa0
->>    irq_thread+0x130/0x1e0
->>    kthread+0x154/0x158
->>    ret_from_fork+0x10/0x34
->>
->> Code: f9400060 f102001f 54000981 d4210000 (f9400043)
->>
->>   ---[ end trace 4afcbdfc61b60467 ]---
->>
->> The issue is that expression !iova_magazine_full(NULL) evaluates true; this
->> falls over in in __iova_rcache_insert() when we attempt to cache a mag
->> and cpu_rcache->loaded == NULL:
->>
->> if (!iova_magazine_full(cpu_rcache->loaded)) {
->> 	can_insert = true;
->> ...
->>
->> if (can_insert)
->> 	iova_magazine_push(cpu_rcache->loaded, iova_pfn);
->>
->> As above, can_insert is evaluated true, which it shouldn't be, and we try
->> to insert pfns in a NULL mag, which is not safe.
->>
->> To avoid this, stop using double-negatives, like !iova_magazine_full() and
->> !iova_magazine_empty(), and use positive tests, like
->> iova_magazine_has_space() and iova_magazine_has_pfns(), respectively; these
->> can safely deal with cpu_rcache->{loaded, prev} = NULL.
->>
->> Signed-off-by: John Garry <john.garry@huawei.com>
-
-Thanks for checking here...
-
->> ---
->>   drivers/iommu/iova.c | 29 +++++++++++++++++------------
->>   1 file changed, 17 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
->> index 81b7399dd5e8..1f3f0f8b12e0 100644
->> --- a/drivers/iommu/iova.c
->> +++ b/drivers/iommu/iova.c
->> @@ -827,14 +827,18 @@ iova_magazine_free_pfns(struct iova_magazine *mag, struct iova_domain *iovad)
->>   	mag->size = 0;
->>   }
->>   
->> -static bool iova_magazine_full(struct iova_magazine *mag)
->> +static bool iova_magazine_has_space(struct iova_magazine *mag)
->>   {
->> -	return (mag && mag->size == IOVA_MAG_SIZE);
->> +	if (!mag)
->> +		return false;
->> +	return mag->size < IOVA_MAG_SIZE;
->>   }
->>   
->> -static bool iova_magazine_empty(struct iova_magazine *mag)
->> +static bool iova_magazine_has_pfns(struct iova_magazine *mag)
->>   {
->> -	return (!mag || mag->size == 0);
->> +	if (!mag)
->> +		return false;
->> +	return mag->size;
->>   }
->>   
->>   static unsigned long iova_magazine_pop(struct iova_magazine *mag,
->> @@ -843,7 +847,7 @@ static unsigned long iova_magazine_pop(struct iova_magazine *mag,
->>   	int i;
->>   	unsigned long pfn;
->>   
->> -	BUG_ON(iova_magazine_empty(mag));
->> +	BUG_ON(!iova_magazine_has_pfns(mag));
->>   
->>   	/* Only fall back to the rbtree if we have no suitable pfns at all */
->>   	for (i = mag->size - 1; mag->pfns[i] > limit_pfn; i--)
->> @@ -859,7 +863,7 @@ static unsigned long iova_magazine_pop(struct iova_magazine *mag,
->>   
->>   static void iova_magazine_push(struct iova_magazine *mag, unsigned long pfn)
->>   {
->> -	BUG_ON(iova_magazine_full(mag));
->> +	BUG_ON(!iova_magazine_has_space(mag));
->>   
->>   	mag->pfns[mag->size++] = pfn;
->>   }
->> @@ -905,9 +909,9 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->>   	cpu_rcache = raw_cpu_ptr(rcache->cpu_rcaches);
->>   	spin_lock_irqsave(&cpu_rcache->lock, flags);
->>   
->> -	if (!iova_magazine_full(cpu_rcache->loaded)) {
-
-*
-
->> +	if (iova_magazine_has_space(cpu_rcache->loaded)) {
->>   		can_insert = true;
->> -	} else if (!iova_magazine_full(cpu_rcache->prev)) {
->> +	} else if (iova_magazine_has_space(cpu_rcache->prev)) {
->>   		swap(cpu_rcache->prev, cpu_rcache->loaded);
->>   		can_insert = true;
->>   	} else {
->> @@ -916,8 +920,9 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->>   		if (new_mag) {
->>   			spin_lock(&rcache->lock);
->>   			if (rcache->depot_size < MAX_GLOBAL_MAGS) {
->> -				rcache->depot[rcache->depot_size++] =
->> -						cpu_rcache->loaded;
->> +				if (cpu_rcache->loaded)
+> >   	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
+> >   		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
+> >   		if (block >> LOG_SECTORS_PER_BLOCK >= blks)
+> > -			return 0;
 > 
-> Looks like it just needs to change this place. Compiler ensures that mag->size
-> will not be accessed when mag is NULL.
-
-Not sure about that. We would get a crash prior to touching this codepath:
-
-So if cpu_rcache->loaded == NULL at entry, then 
-!iova_magazine_full(cpu_rcache->loaded (==NULL) ) evaluates true, * 
-above, so can_insert is set true, and we then attempt 
-iova_magazine_push(cpu_rcache->loaded (==NULL), iova_pfn), which is not 
-safe.
-
-ok?
-
-Cheers,
-John
-
+> return 0;
 > 
-> static bool iova_magazine_full(struct iova_magazine *mag)
-> {
->          return (mag && mag->size == IOVA_MAG_SIZE);
-> }
+> > +			goto out;
+> >   	}
+> > -	return generic_block_bmap(mapping, block, erofs_get_block);
+> > +	if (!erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW))
+> > +		blknr = erofs_blknr(map.m_pa);
 > 
-> static bool iova_magazine_empty(struct iova_magazine *mag)
-> {
->          return (!mag || mag->size == 0);
-> }
+> return erofs_blknr(map.m_pa);
 > 
-
-
-
-
+> > +
+> > +out:
+> > +	return blknr;
 > 
->> +					rcache->depot[rcache->depot_size++] =
->> +							cpu_rcache->loaded;
->>   			} else {
->>   				mag_to_free = cpu_rcache->loaded;
->>   			}
->> @@ -968,9 +973,9 @@ static unsigned long __iova_rcache_get(struct iova_rcache *rcache,
->>   	cpu_rcache = raw_cpu_ptr(rcache->cpu_rcaches);
->>   	spin_lock_irqsave(&cpu_rcache->lock, flags);
->>   
->> -	if (!iova_magazine_empty(cpu_rcache->loaded)) {
->> +	if (iova_magazine_has_pfns(cpu_rcache->loaded)) {
->>   		has_pfn = true;
->> -	} else if (!iova_magazine_empty(cpu_rcache->prev)) {
->> +	} else if (iova_magazine_has_pfns(cpu_rcache->prev)) {
->>   		swap(cpu_rcache->prev, cpu_rcache->loaded);
->>   		has_pfn = true;
->>   	} else {
->>
+> return 0;
+> 
+> Anyway, LGTM.
+> 
+> Reviewed-by: Chao Yu <yuchao0@huawei.com>
+> 
+> Thanks,
+> 
+> >   }
+> >   /* for uncompressed (aligned) files and raw access for other files */
+> > 
 > 
 
