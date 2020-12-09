@@ -2,106 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71392D46B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 199E22D46BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731928AbgLIQ0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:26:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54462 "EHLO
+        id S1731972AbgLIQ0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:26:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729938AbgLIQ0G (ORCPT
+        with ESMTP id S1730349AbgLIQ0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:26:06 -0500
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E969EC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 08:25:25 -0800 (PST)
-Received: by mail-vs1-xe42.google.com with SMTP id z16so1199540vsp.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 08:25:25 -0800 (PST)
+        Wed, 9 Dec 2020 11:26:46 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2135C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 08:25:45 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id l11so3934918lfg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 08:25:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6iPujSFaRf63ICzfMH9y30wFs4tc+8uoN3o287lcAKc=;
-        b=nzPpXpurtim/Xt5h6cpZ0FcvFvOqsIz73uPe8GdrX81v6Uzipkco7k/pVTqqXga/3b
-         t+MHYk2nyM/C5LzuujzPgJdof9Lw0igpw+9YIzcLX2aV9A7LWZuzXeyuxEEk0n6rnxmr
-         aB75dnMFiO0VIGfeysS0gVynJ82rbBrfZklB+Bzln+JpuyM1FmY2SW0AVlvT8AFlHmcv
-         +k2dhUROuMIdDtrfh/AYyNOH6SNMuuXgt6E9DSBT8poKxOx/tZH9KA6OYlO1moFwCsec
-         UN8w6J3OR3+Eg9iTGgpIl1yYNJAoycddhbXwnLvbb6Sd+NqVgZFEd0Hm1D7SxRunGlrN
-         MppQ==
+        bh=0xBrb97lTo75kGlgbY3m4XgGoTI/1jjRhlZu6u72rgk=;
+        b=sDY9A2yMs122aEwsLRiAxNJUtdIrEVy+tAylzLcqgQaLuQgU/13aH4FcCdVRF72Jlj
+         LJA7Cg1tkp04n8g6ckBSaSu8dClDZS51O9wMdZR95qKqxdFjS0zeyQ32gK7SFeivKv1l
+         fQq+d+qR9qMZG3/dy8/V5wi8n7koeX96Aj/no3Ia7FmwUUuz1ElPhUTW9RYM5RPzOZiR
+         2HqlpVHvlMEmmq/BBkVh8BppZTUEWYqEATUK7bngOERX58IbWU9Ma82eT+QH0QZfTtOh
+         GE5Y6UII6VLYGWmuvwZNzo/gbjskQCe/VW+ilicVTjCSt5I1qVyySwWiDo/fYmXF69SG
+         u3iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6iPujSFaRf63ICzfMH9y30wFs4tc+8uoN3o287lcAKc=;
-        b=hMHyzRXUGaGRKuR2/CAs2k8xisSp64+m67GoLVKyOfOfJj1CzZZuu/8mDO/xFJuOBH
-         GXQ5T91/JuQUtfFJ7THd/B/kIWAE5MN9QyV16xBu6wXB7Dm8kBAomLN6TkTuuwbwMQlX
-         7He5eObBK6wiAdBNCi9KXlv2Q3yio3pGNaiqN/Ut+n74nt26VJdnei3O02srJ6xBcJ2i
-         4PgX3oND3u+aHSk1oBhQnxXGlkncZgzAL4Sb1ZFUK8H9U1zUAm60GaK2H4RS4nGRckBH
-         yGx7xDBTbwGyN1pr6XxkVovzwHXb2MOi718ucPbKzCew9Ukmpsz6axSRpGcp0IhDQWdw
-         RuPg==
-X-Gm-Message-State: AOAM5303Af4VCr/cq1+XColA9rlP5d3sWzhyeebh7OM3RE1zs1QrCrAA
-        zgdnfBG5uBecnz5Bf4aATY4RbTA4oFzjBKUvc5F7rA==
-X-Google-Smtp-Source: ABdhPJyTSS/IMLVSvJ+ApeZ9gBaaSGKG/HtQ8GyhKk+KWuIUDMry01JIQBMoQq94UvqMYjXmfFLduigKrpEFXyqQG0Y=
-X-Received: by 2002:a67:2cc1:: with SMTP id s184mr2651932vss.23.1607531124951;
- Wed, 09 Dec 2020 08:25:24 -0800 (PST)
+        bh=0xBrb97lTo75kGlgbY3m4XgGoTI/1jjRhlZu6u72rgk=;
+        b=Ex5R1n6Pg9hindZRtBy9Tgar83urFaR9Tatg8jVNr3U3wXAUV3ddRJ7FgXD+Rb9he1
+         V6p9ll9H33r/xYJGwEZCncpSVq4vMYzpkDptFJRTm/G83wFEVoATIaiJc3R3mIAq2H/b
+         Cfu3LGoODvBI1bGCrmzuZJ0O/4kGudwrPI65Wtb2gxgBSAW3fojb4uC+XljL6HM7dF9H
+         3R9ep0TDvL2/6txyDO3QVuG2aRTKgzxSpqkxpgagGudXB92JJ34x89pKu9/aJZJGIlO8
+         Jqj6HFGLs4JyiXpgcp8JCQkoo6vP8B3TE8ZzRcJqYVQuK5uNuUDPVz8S6IXtnNPcBpTA
+         QKMA==
+X-Gm-Message-State: AOAM530E0Ll5zfaHUka2/riZBH/Z3JzS53YQOP3XGZZrIc8u3X/jhBkG
+        jfBslvtVvLvpgipXg9pm+TCMIMZDnodzTiZ4HxCVtw==
+X-Google-Smtp-Source: ABdhPJyxNPa05kQBjmuwAnqODtgRKeoAKxynoWMj82Ul7NTn1ySYz/7hhIr7hEH0i6mj5ZwJrr98/n4mwkbSGi63eg4=
+X-Received: by 2002:a19:8384:: with SMTP id f126mr1133455lfd.649.1607531143780;
+ Wed, 09 Dec 2020 08:25:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20201201213707.541432-1-samitolvanen@google.com>
- <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com> <CAK8P3a2DYDCjkqf7oqWFfBT_=rjyJGgnh6kBzUkR8GyvxsB6uQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a2DYDCjkqf7oqWFfBT_=rjyJGgnh6kBzUkR8GyvxsB6uQ@mail.gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 9 Dec 2020 08:25:13 -0800
-Message-ID: <CABCJKud7ZC7_rXVmrF5PnDOMZTJX9iB7uYAa03YF-dkEojnBxg@mail.gmail.com>
-Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+References: <20201122170822.21715-1-mani@kernel.org> <20201122170822.21715-3-mani@kernel.org>
+ <CACRpkdbY-aZB1BAD=JkZAHA+OQvpH12AD3tLAp6Nf1hwr74s9A@mail.gmail.com>
+ <X8ZmfbQp7/BGgxec@localhost> <CACRpkdZJdxqxUEQaKUHctHRSQAUpYZJtuxonwVd_ZFAsLBbKrA@mail.gmail.com>
+ <X89OOUOG0x0SSxXA@localhost> <CACRpkdavm7GG8HdV1xk0W_b1EzUmvF0kKAGnp0u6t42NAWa9iA@mail.gmail.com>
+ <X9DsWahl6UDwZwBn@localhost>
+In-Reply-To: <X9DsWahl6UDwZwBn@localhost>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 9 Dec 2020 17:25:32 +0100
+Message-ID: <CACRpkdYm-j9QcK8hgNrC33KruWE17Q0F4+T=UanE7PCEZEtu6w@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] usb: serial: xr_serial: Add gpiochip support
+To:     Johan Hovold <johan@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
+        patong.mxl@gmail.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 4:36 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Tue, Dec 8, 2020 at 1:15 PM Arnd Bergmann <arnd@kernel.org> wrote:
+On Wed, Dec 9, 2020 at 4:24 PM Johan Hovold <johan@kernel.org> wrote:
+> On Tue, Dec 08, 2020 at 01:41:52PM +0100, Linus Walleij wrote:
+
+> > depends on !GPIO_SYSFS
 > >
-> > - one build seems to have dropped all symbols the string operations
-> > from vmlinux,
-> >   so while the link goes through, modules cannot be loaded:
-> >  ERROR: modpost: "memmove" [drivers/media/rc/rc-core.ko] undefined!
-> >  ERROR: modpost: "memcpy" [net/wireless/cfg80211.ko] undefined!
-> >  ERROR: modpost: "memcpy" [net/8021q/8021q.ko] undefined!
-> >  ERROR: modpost: "memset" [net/8021q/8021q.ko] undefined!
-> >  ERROR: modpost: "memcpy" [net/unix/unix.ko] undefined!
-> >  ERROR: modpost: "memset" [net/sched/cls_u32.ko] undefined!
-> >  ERROR: modpost: "memcpy" [net/sched/cls_u32.ko] undefined!
-> >  ERROR: modpost: "memset" [net/sched/sch_skbprio.ko] undefined!
-> >  ERROR: modpost: "memcpy" [net/802/garp.ko] undefined!
-> >  I first thought this was related to a clang-12 bug I saw the other day, but
-> >  this also happens with clang-11
+> > so it can't even be compiled in if someone is using the sysfs.
+> >
+> > That should solve the situation where people are (ab)using
+> > the sysfs and getting name collisions as a result.
 >
-> It seems to happen because of CONFIG_TRIM_UNUSED_KSYMS,
-> which is a shame, since I think that is an option we'd always want to
-> have enabled with LTO, to allow more dead code to be eliminated.
+> Would it possible to set a flag to suppress just the sysfs entry
+> renaming instead?
 
-Ah yes, this is a known issue. We use TRIM_UNUSED_KSYMS with LTO in
-Android's Generic Kernel Image and the problem is that bitcode doesn't
-yet contain calls to these functions, so autoksyms won't see them. The
-solution is to use a symbol whitelist with LTO to prevent these from
-being trimmed. I suspect we would need a default whitelist for LTO
-builds.
+Hm you mean that when a GPIO is "exported" in sysfs
+it should not get a symbolic name from the names but instead
+just the number?
 
-Sami
+I bet someone has written their scripts to take advantage of
+the symbolic names so I suspect the task becomes bigger
+like suppress the sysfs entry renaming if and only if there is
+a namespace collision.
+
+But I think we can do that, doesn't seem too hard?
+
+I just hacked up this:
+https://lore.kernel.org/linux-gpio/20201209161821.92931-1-linus.walleij@linaro.org/T/#u
+
+> Despite its flaws the sysfs interface is still very convenient and I'd
+> prefer not to disable it just because of the line names.
+
+Would these conveniences be identical to those listed
+in my recent TODO entry?
+https://lore.kernel.org/linux-gpio/20201204083533.65830-1-linus.walleij@linaro.org/
+
+There are several other issues with the sysfs, so making it conflict
+with other drivers is almost  plus in the direction of discouragement
+from the GPIO submaintainer point of view, but I do see that
+people like it for the reasons in the TODO. :/
+
+I am strongly encouraging any developer with a few spare cycles
+on their hands to go and implement the debugfs facility because
+we can make it so much better than the sysfs, easier and
+more convenient for testing etc.
+
+> > Then it should be fine for any driver to provide a names array
+> > provided all the names are unique on that gpiochip.
+>
+> So it sounds like there's nothing preventing per-chip-unique names in
+> the rest of gpiolib and the new chardev interface then? Are the
+> user-space libraries able to cope with it, etc?
+
+Yes the documentation refers to libgpiod a very well maintained
+library:
+https://www.kernel.org/doc/html/latest/driver-api/gpio/using-gpio.html
+https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/
+
+Then there are the the example tools included with the kernel
+that provide a second implementation for the same interfaces
+using just the C standard library:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/gpio
+
+I usually use the tools myself.
+
+Yours,
+Linus Walleij
