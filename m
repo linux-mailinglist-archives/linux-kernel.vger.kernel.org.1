@@ -2,112 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DF02D477F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3FE2D4788
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgLIRHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:07:54 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:46936 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728082AbgLIRHx (ORCPT
+        id S1732494AbgLIRJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:09:49 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3632 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730993AbgLIRJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:07:53 -0500
-Received: by mail-il1-f200.google.com with SMTP id q5so1878281ilc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 09:07:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=qIQXaAtoA55Hqp6Kor3EGs7q2VqDGIx+EnbuDJObsv8=;
-        b=YjZqY5LmxryrKMxH3NMftp1BzjAnYPeI8d11xwo7Xcizh5bttg5v7NU/2JBX8Mv2mq
-         jk9uVeL1MHgTkJJ3uvExXW8WDCDrn6+//Gqcv9MXu8Elu1c6aC/zU1Lfi/5GUS3kIt8R
-         gKjs+dAUPCUASfGvMrro3zAvDT6p3YI+w2TipIgLaul8FXiqtZ/o1f2D2ezr5uIzsI7n
-         9NXMYwoK4a3K4Tmz3kbhS40as491rEWjsYCRNqqwWMNoFz1SJI8/J4K2rnnyJGYbj1mT
-         b/mTgI06MnlXOxQwfjB1ECsteGU+zUrRPM6wE4RmndsL7427rRPuXtn0hFx5h17lHXG3
-         nRvg==
-X-Gm-Message-State: AOAM531jQ9KdfiGtcowoEUQjrNwCGrO4WWTO+sS2JBCXc8V2u1cH1Qn4
-        9yqtOzdpc/Hj01W5+wIdCAvIq/wie1/XWLJ0872x6N/mf/RB
-X-Google-Smtp-Source: ABdhPJwZHYGmrSkJnViQUI8+0O4v34jj5sW5H/8BnMCITxzEl4tPD5tUBuvAExx5+9blqJ4XkSFsTkDJ7TT6yuQoO9aQKxqV2UCU
-MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2e81:: with SMTP id m1mr3965175iow.131.1607533632436;
- Wed, 09 Dec 2020 09:07:12 -0800 (PST)
-Date:   Wed, 09 Dec 2020 09:07:12 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000020460105b60b17b5@google.com>
-Subject: INFO: task can't die in p9_client_rpc (2)
-From:   syzbot <syzbot+4ff9239a00671c7c656f@syzkaller.appspotmail.com>
-To:     asmadeus@codewreck.org, davem@davemloft.net, ericvh@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, lucho@ionkov.net,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        v9fs-developer@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 9 Dec 2020 12:09:32 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B9H2jvh064768;
+        Wed, 9 Dec 2020 12:08:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=HGxCZ4JNYCq3gVpScan/Ogqigeh6hIBTvZskcKvfeBU=;
+ b=DRZRSP4nDWzlPeLni/WMS+orvFC9XZJDd8yPIldr2bsR4+S3ek+Q2X2Gz9KreRcEalEj
+ gKfH8z0e2zRJqLcKUYfAfz7Q3ZbWd38jRjoW37PtcpSUzBUOCeYXQbFdPo1reVxn7ssO
+ 8rCZ55aeykPd4oxQPzq0oxjau1aX7rQcnEJkSrzVlga+wmHXEW7G8UTpXjJ0Rr2eHE1F
+ gIaKkvaKeRh03tcMp1xx+IOdvEsqkHcjBAObbcqDYIhmLMGsgi6j2eLfVnycPNy6WxFm
+ eTXa2dDZr53SOAEPqdRHQSUIXBzEIWTkZ56TfuU85iJsjuwI3OQcKsSS3DfXWGRJbINV SQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35b20tsbxy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 12:08:35 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B9H2qBN065423;
+        Wed, 9 Dec 2020 12:08:34 -0500
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35b20tsbxq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 12:08:34 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B9H225l004510;
+        Wed, 9 Dec 2020 17:08:33 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma01dal.us.ibm.com with ESMTP id 3581u9hb3s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 17:08:33 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B9H8WII27132238
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Dec 2020 17:08:32 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8DE6D7805E;
+        Wed,  9 Dec 2020 17:08:32 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B33EB7805F;
+        Wed,  9 Dec 2020 17:08:31 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.199.58.223])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed,  9 Dec 2020 17:08:31 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id 548652E35A0; Wed,  9 Dec 2020 22:38:28 +0530 (IST)
+From:   "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+Subject: [PATCH v2 0/5] Extend Parsing "ibm,thread-groups" for Shared-L2 information
+Date:   Wed,  9 Dec 2020 22:38:15 +0530
+Message-Id: <1607533700-5546-1-git-send-email-ego@linux.vnet.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_14:2020-12-09,2020-12-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1015 phishscore=0 spamscore=0 mlxlogscore=999 adultscore=0
+ suspectscore=0 impostorscore=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
 
-syzbot found the following issue on:
+Hi,
 
-HEAD commit:    0eedceaf Add linux-next specific files for 20201201
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11111df7500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=55aec7153b7827ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=4ff9239a00671c7c656f
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+This is the v2 of the patchset to extend parsing of "ibm,thread-groups" property
+to discover the Shared-L2 cache information.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The v1 can be found here :
+https://lore.kernel.org/linuxppc-dev/1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com/T/#m0fabffa1ea1a2807b362f25c849bb19415216520
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4ff9239a00671c7c656f@syzkaller.appspotmail.com
+The key changes from v1 are as follows to incorporate the review
+comments from Srikar and fix a build error on !PPC64 configs reported
+by the kernel bot.
 
-INFO: task syz-executor.2:10555 can't die for more than 143 seconds.
-task:syz-executor.2  state:D stack:27024 pid:10555 ppid:  8514 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4325 [inline]
- __schedule+0x8cd/0x2150 kernel/sched/core.c:5076
- schedule+0xcf/0x270 kernel/sched/core.c:5155
- p9_client_rpc+0x400/0x1240 net/9p/client.c:759
- p9_client_flush+0x1f9/0x430 net/9p/client.c:667
- p9_client_rpc+0xfde/0x1240 net/9p/client.c:784
- p9_client_version net/9p/client.c:955 [inline]
- p9_client_create+0xae1/0x1110 net/9p/client.c:1055
- v9fs_session_init+0x1dd/0x1770 fs/9p/v9fs.c:406
- v9fs_mount+0x79/0x9b0 fs/9p/vfs_super.c:126
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1549
- do_new_mount fs/namespace.c:2896 [inline]
- path_mount+0x12ae/0x1e70 fs/namespace.c:3227
- do_mount fs/namespace.c:3240 [inline]
- __do_sys_mount fs/namespace.c:3448 [inline]
- __se_sys_mount fs/namespace.c:3425 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45de79
-RSP: 002b:00007f4ba88a6c68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 000000000045de79
-RDX: 0000000020000200 RSI: 0000000020000000 RDI: 0000000000000000
-RBP: 000000000118bf70 R08: 0000000020000140 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007fff44b1496f R14: 00007f4ba88a79c0 R15: 000000000118bf2c
+ * Split Patch 1 into three patches
+   * First patch ensure that parse_thread_groups() is made generic to
+     support more than one property.
+   * Second patch renames cpu_l1_cache_map as
+     thread_group_l1_cache_map for consistency. No functional impact.
+   * The third patch makes init_thread_group_l1_cache_map()
+     generic. No functional impact.
 
-Showing all locks held in the system:
-2 locks held by kworker/u4:3/81:
-1 lock held by khungtaskd/1618:
- #0: ffffffff8b33a7a0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6254
-1 lock held by systemd-journal/4903:
-1 lock held by in:imklog/8195:
- #0: ffff88801dba7270 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:923
+* Patch 2 (Now patch 4): Incorporates the review comments from Srikar simplifying
+   the changes to update_mask_by_l2()
 
-=============================================
+* Patch 3 (Now patch 5): Fix a build errors for 32-bit configs
+   reported by the kernel build bot.
+ 
+Description of the Patchset
+===========================
+The "ibm,thread-groups" device-tree property is an array that is used
+to indicate if groups of threads within a core share certain
+properties. It provides details of which property is being shared by
+which groups of threads. This array can encode information about
+multiple properties being shared by different thread-groups within the
+core.
 
+Example: Suppose,
+"ibm,thread-groups" = [1,2,4,8,10,12,14,9,11,13,15,2,2,4,8,10,12,14,9,11,13,15]
 
+This can be decomposed up into two consecutive arrays:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+a) [1,2,4,8,10,12,14,9,11,13,15]
+b) [2,2,4,8,10,12,14,9,11,13,15]
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+where in,
+
+a) provides information of Property "1" being shared by "2" groups,
+   each with "4" threads each. The "ibm,ppc-interrupt-server#s" of the
+   first group is {8,10,12,14} and the "ibm,ppc-interrupt-server#s" of
+   the second group is {9,11,13,15}. Property "1" is indicative of
+   the thread in the group sharing L1 cache, translation cache and
+   Instruction Data flow.
+
+b) provides information of Property "2" being shared by "2" groups,
+   each group with "4" threads. The "ibm,ppc-interrupt-server#s" of
+   the first group is {8,10,12,14} and the
+   "ibm,ppc-interrupt-server#s" of the second group is
+   {9,11,13,15}. Property "2" indicates that the threads in each group
+   share the L2-cache.
+   
+The existing code assumes that the "ibm,thread-groups" encodes
+information about only one property. Hence even on platforms which
+encode information about multiple properties being shared by the
+corresponding groups of threads, the current code will only pick the
+first one. (In the above example, it will only consider
+[1,2,4,8,10,12,14,9,11,13,15] but not [2,2,4,8,10,12,14,9,11,13,15]).
+
+Furthermore, currently on platforms where groups of threads share L2
+cache, we incorrectly create an extra CACHE level sched-domain that
+maps to all the threads of the core.
+
+For example, if "ibm,thread-groups" is 
+		 00000001 00000002 00000004 00000000
+		 00000002 00000004 00000006 00000001
+		 00000003 00000005 00000007 00000002
+		 00000002 00000004 00000000 00000002
+		 00000004 00000006 00000001 00000003
+		 00000005 00000007
+
+then, the sub-array
+[00000002 00000002 00000004
+ 00000000 00000002 00000004 00000006
+ 00000001 00000003 00000005 00000007]
+indicates that L2 (Property "2") is shared only between the threads of a single
+group. There are "2" groups of threads where each group contains "4"
+threads each. The groups being {0,2,4,6} and {1,3,5,7}.
+
+However, the sched-domain hierarchy for CPUs 0,1 is
+	CPU0 attaching sched-domain(s):
+	domain-0: span=0,2,4,6 level=SMT
+	domain-1: span=0-7 level=CACHE
+	domain-2: span=0-15,24-39,48-55 level=MC
+	domain-3: span=0-55 level=DIE
+
+	CPU1 attaching sched-domain(s):
+	domain-0: span=1,3,5,7 level=SMT
+	domain-1: span=0-7 level=CACHE
+	domain-2: span=0-15,24-39,48-55 level=MC
+	domain-3: span=0-55 level=DIE
+
+where the CACHE domain reports that L2 is shared across the entire
+core which is incorrect on such platforms.
+
+This patchset remedies these issues by extending the parsing support
+for "ibm,thread-groups" to discover information about multiple
+properties being shared by the corresponding groups of threads. In
+particular we cano now detect if the groups of threads within a core
+share the L2-cache. On such platforms, we populate the populating the
+cpu_l2_cache_mask of every CPU to the core-siblings which share L2
+with the CPU as specified in the by the "ibm,thread-groups" property
+array.
+
+With the patchset, the sched-domain hierarchy is correctly
+reported. For eg for CPUs 0,1, with the patchset
+
+     	CPU0 attaching sched-domain(s):
+	domain-0: span=0,2,4,6 level=SMT
+	domain-1: span=0-15,24-39,48-55 level=MC
+	domain-2: span=0-55 level=DIE
+
+	CPU1 attaching sched-domain(s):
+	domain-0: span=1,3,5,7 level=SMT
+	domain-1: span=0-15,24-39,48-55 level=MC
+	domain-2: span=0-55 level=DIE
+
+The CACHE domain with span=0,2,4,6 for CPU 0 (span=1,3,5,7 for CPU 1
+resp.) gets degenerated into the SMT domain. Furthermore, the
+last-level-cache domain gets correctly set to the SMT sched-domain.
+
+Testing
+==========
+
+With the producer-consumer
+testcase(https://github.com/gautshen/misc/tree/master/producer_consumer)
+where in the producer thread performs writes to 4096 random locations,
+and the consumer thread subsequently reads from those 4096 random
+location. We measure the time taken by the consumer to finish the 4096
+reads (called an iteration of the consumer). Thus lower the value,
+better is the result.
+
+The best case occurs when the producer and consumer are affined to the
+same L2 cache domain (Eg: CPU0, CPU2). On the platform with the
+thread-groups sharing L2,
+|-----------------------------------------------|
+| Without Patch                                 |
+|-----------|-----------|-----------------------|
+| Producer  | Consumer  | Avg time per Consumer |
+| Affinity  | Affinity  | Iteration             |
+|-----------|-----------|-----------------------|
+|  CPU0     |  CPU2     |   235us               |
+|-----------|-----------|-----------------------|
+|Not affined|Not affined|   347us               |
+|-----------------------------------------------|
+
+We see that out-of-box, the average time per consumer iteration is
+higher since the tasks can be placed anywhere within the core without
+them being in the L2 domain.
+
+|-----------------------------------------------|
+| With Patch                                    |
+|-----------|-----------|-----------------------|
+| Producer  | Consumer  | Avg time per Consumer |
+| Affinity  | Affinity  | Iteration             |
+|-----------|-----------|-----------------------|
+|  CPU0     |  CPU2     |   235us               |
+|-----------|-----------|-----------------------|
+|Not affined|Not affined|   236us               |
+|-----------------------------------------------|
+
+With the patch, since the L2 domain is correctly identified, the
+scheduler does the right thing by co-locating the producer and
+consumer on the same L2 domain, thereby yielding the out-of-box
+performance matching the best case.
+
+Finally, this patchset reports the correct shared_cpu_map/list in the
+sysfs for L2 cache on such platforms. With the patchset for CPUs0, 1,
+for L2 cache we see the correct shared_cpu_map/list
+
+/sys/devices/system/cpu/cpu0/cache/index2/shared_cpu_list:0,2,4,6
+/sys/devices/system/cpu/cpu0/cache/index2/shared_cpu_map:000000,00000055
+
+/sys/devices/system/cpu/cpu1/cache/index2/shared_cpu_list:1,3,5,7
+/sys/devices/system/cpu/cpu1/cache/index2/shared_cpu_map:000000,000000aa
+
+The patchset has been tested on older platforms which encode only the
+L1 sharing information via "ibm,thread-groups" and there is no
+regression found.
+
+Gautham R. Shenoy (5):
+  powerpc/smp: Parse ibm,thread-groups with multiple properties
+  powerpc/smp: Rename cpu_l1_cache_map as thread_group_l1_cache_map
+  powerpc/smp: Rename init_thread_group_l1_cache_map() to make it
+    generic
+  powerpc/smp: Add support detecting thread-groups sharing L2 cache
+  powerpc/cacheinfo: Print correct cache-sibling map/list for L2 cache
+
+ arch/powerpc/include/asm/smp.h  |   1 +
+ arch/powerpc/kernel/cacheinfo.c |  34 ++++--
+ arch/powerpc/kernel/smp.c       | 241 ++++++++++++++++++++++++++++------------
+ 3 files changed, 197 insertions(+), 79 deletions(-)
+
+-- 
+1.9.4
+
