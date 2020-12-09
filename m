@@ -2,139 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113E72D3E33
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D5D2D3E36
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:09:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728810AbgLIJH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:07:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727339AbgLIJH3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:07:29 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5465C0613D6;
-        Wed,  9 Dec 2020 01:06:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MNMpVWDVu1xKs8I0T0Bns+VkPimcOASCojWukxDS8ng=; b=IpPbZN2f78dxphMHqQpYHqe58S
-        vw4NwnQ+Xz59+sElzQ/B5L3eRJkdnRh6BnNVuFZ5y34CD+z1GqrWUYj06V+i7uo3q/XpaDl+cG884
-        drRT2Fl5JdUamqqF/e3c5FVm4cZdv6ufagIWq3l2FmDBRTe88w+7D76jqPZ+a/1/2aZbc/Kq3RR8b
-        AW1FVBy6gWIDlGSu1r/dQhnWUKxtmBmSBD63N8Y1uTWHiW0k+fHm0hzv4digf/kQigNWvUXpNwcCN
-        p7YE1vjhW3f9nlvBiwMKeZthCUjMehbPAaFYLfvK5cVKrRzzP+XOPQDrNS+A5UhEbrU/2s3/fcJsv
-        mt+CWOYQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmvQs-00089J-7s; Wed, 09 Dec 2020 09:06:46 +0000
-Date:   Wed, 9 Dec 2020 09:06:46 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] iov: introduce ITER_BVEC_FLAG_FIXED
-Message-ID: <20201209090646.GA28832@infradead.org>
-References: <cover.1607477897.git.asml.silence@gmail.com>
- <de27dbca08f8005a303e5efd81612c9a5cdcf196.1607477897.git.asml.silence@gmail.com>
- <20201209083645.GB21968@infradead.org>
+        id S1728819AbgLIJHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:07:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47324 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728814AbgLIJHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 04:07:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 78D9BAB63;
+        Wed,  9 Dec 2020 09:07:00 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 26FBD1E133E; Wed,  9 Dec 2020 10:07:00 +0100 (CET)
+Date:   Wed, 9 Dec 2020 10:07:00 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org,
+        syzbot+2643e825238d7aabb37f@syzkaller.appspotmail.com
+Subject: Re: [PATCH] fs: quota: fix array-index-out-of-bounds bug by passing
+ correct argument to vfs_cleanup_quota_inode()
+Message-ID: <20201209090700.GA18595@quack2.suse.cz>
+References: <20201208194338.7064-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209083645.GB21968@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201208194338.7064-1-anant.thazhemadam@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 08:36:45AM +0000, Christoph Hellwig wrote:
-> This is making the iter type even more of a mess than it already is.
-> I think we at least need placeholders for 0/1 here and an explicit
-> flags namespace, preferably after the types.
+On Wed 09-12-20 01:13:38, Anant Thazhemadam wrote:
+> When dquot_resume() was last updated, the argument that got passed
+> to vfs_cleanup_quota_inode was incorrectly set.
 > 
-> Then again I'd much prefer if we didn't even add the flag or at best
-> just add it for a short-term transition and move everyone over to the
-> new scheme.  Otherwise the amount of different interfaces and supporting
-> code keeps exploding.
+> If type = -1 and dquot_load_quota_sb() returns a negative value,
+> then vfs_cleanup_quota_inode() gets called with -1 passed as an
+> argument, and this leads to an array-index-out-of-bounds bug.
+> 
+> Fix this issue by correctly passing the arguments.
+> 
+> Fixes: ae45f07d47cc ("quota: Simplify dquot_resume()")
+> Reported-by: syzbot+2643e825238d7aabb37f@syzkaller.appspotmail.com
+> Tested-by: syzbot+2643e825238d7aabb37f@syzkaller.appspotmail.com
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-Note that the only other callers that use iov_iter_bvec and asynchronous
-read/write are loop, target and nvme-target, so this should actually
-be pretty simple.  Out of these only target needs something like this
-trivial change to keep the bvec available over the duration of the I/O,
-the other two should be fine already:
+Thanks for the fix! I've just queued the very same fix I wrote yesterday to
+my tree. But yours has better changelog so let me pick your patch instead
+;)
 
----
-From 581a8eabbb1759e3dcfee4b1d2e419f814a8cb80 Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Wed, 9 Dec 2020 10:05:04 +0100
-Subject: target/file: allocate the bvec array as part of struct target_core_file_cmd
+For next time, how can we avoid collisions like this? Did you work on the fix
+based on the syzbot email sent to the list so if I actually reply to the
+syzbot email that I'm working on / already have a fix you'd see it?
 
-This saves one memory allocation, and ensures the bvecs aren't freed
-before the AIO completion.  This will allow the lower level code to be
-optimized so that it can avoid allocating another bvec array.
+								Honza
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/target/target_core_file.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/target/target_core_file.c b/drivers/target/target_core_file.c
-index 7143d03f0e027e..ed0c39a1f7c649 100644
---- a/drivers/target/target_core_file.c
-+++ b/drivers/target/target_core_file.c
-@@ -241,6 +241,7 @@ struct target_core_file_cmd {
- 	unsigned long	len;
- 	struct se_cmd	*cmd;
- 	struct kiocb	iocb;
-+	struct bio_vec	bvecs[];
- };
- 
- static void cmd_rw_aio_complete(struct kiocb *iocb, long ret, long ret2)
-@@ -268,29 +269,22 @@ fd_execute_rw_aio(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
- 	struct target_core_file_cmd *aio_cmd;
- 	struct iov_iter iter = {};
- 	struct scatterlist *sg;
--	struct bio_vec *bvec;
- 	ssize_t len = 0;
- 	int ret = 0, i;
- 
--	aio_cmd = kmalloc(sizeof(struct target_core_file_cmd), GFP_KERNEL);
-+	aio_cmd = kmalloc(struct_size(aio_cmd, bvecs, sgl_nents), GFP_KERNEL);
- 	if (!aio_cmd)
- 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
- 
--	bvec = kcalloc(sgl_nents, sizeof(struct bio_vec), GFP_KERNEL);
--	if (!bvec) {
--		kfree(aio_cmd);
--		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
--	}
--
- 	for_each_sg(sgl, sg, sgl_nents, i) {
--		bvec[i].bv_page = sg_page(sg);
--		bvec[i].bv_len = sg->length;
--		bvec[i].bv_offset = sg->offset;
-+		aio_cmd->bvecs[i].bv_page = sg_page(sg);
-+		aio_cmd->bvecs[i].bv_len = sg->length;
-+		aio_cmd->bvecs[i].bv_offset = sg->offset;
- 
- 		len += sg->length;
- 	}
- 
--	iov_iter_bvec(&iter, is_write, bvec, sgl_nents, len);
-+	iov_iter_bvec(&iter, is_write, aio_cmd->bvecs, sgl_nents, len);
- 
- 	aio_cmd->cmd = cmd;
- 	aio_cmd->len = len;
-@@ -307,8 +301,6 @@ fd_execute_rw_aio(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
- 	else
- 		ret = call_read_iter(file, &aio_cmd->iocb, &iter);
- 
--	kfree(bvec);
--
- 	if (ret != -EIOCBQUEUED)
- 		cmd_rw_aio_complete(&aio_cmd->iocb, ret, 0);
- 
+> ---
+> If type = -1 is passed as an argument to vfs_cleanup_quota_inode(),
+> it causes an array-index-out-of-bounds error since dqopt->files[-1]
+> can be potentially attempted to be accessed.
+> Before the bisected commit introduced this bug, vfs_load_quota_inode()
+> was being directly called in dquot_resume(), and subsequently 
+> vfs_cleanup_quota_inode() was called with the cnt value as argument.
+> 
+>  fs/quota/dquot.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+> index bb02989d92b6..4f1373463766 100644
+> --- a/fs/quota/dquot.c
+> +++ b/fs/quota/dquot.c
+> @@ -2455,7 +2455,7 @@ int dquot_resume(struct super_block *sb, int type)
+>  		ret = dquot_load_quota_sb(sb, cnt, dqopt->info[cnt].dqi_fmt_id,
+>  					  flags);
+>  		if (ret < 0)
+> -			vfs_cleanup_quota_inode(sb, type);
+> +			vfs_cleanup_quota_inode(sb, cnt);
+>  	}
+>  
+>  	return ret;
+> -- 
+> 2.25.1
+> 
 -- 
-2.29.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
