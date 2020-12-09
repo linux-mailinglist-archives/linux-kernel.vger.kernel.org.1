@@ -2,141 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22332D387D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 229DC2D3887
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgLIB41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 20:56:27 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:32074 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLIB41 (ORCPT
+        id S1726443AbgLIB7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 20:59:45 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57278 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725796AbgLIB7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 20:56:27 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201209015543epoutp035ecef0cf7a286b54751ebe57536e70b1~O6ZUmPjVT0561905619epoutp03C
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:55:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201209015543epoutp035ecef0cf7a286b54751ebe57536e70b1~O6ZUmPjVT0561905619epoutp03C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1607478943;
-        bh=rKPdRn8+8aCa+zS2qeZmcogWqauBTSK/4fGUyOr3En0=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=BG6SlueyK51bvRO5kyc9Z141cTAiTM4N02QktbMUxP4OoAkLYQfCVCY1DI4pQB/aD
-         DniwrZTrN3Qt3rTQ1w8mOiId0ZZAPG+ExmITBJCExCi1g7Ic2QBzleHIi+wuAZbV2J
-         ZXHkNn3Tj8oWn/tOdKRWx9oOeCHs79Y0N0jSb8Bo=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201209015543epcas1p1330363f8ff032c8a7b06ee94604603ce~O6ZT2ySju2430224302epcas1p1J;
-        Wed,  9 Dec 2020 01:55:43 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.152]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4CrKrX5Z1cz4x9QD; Wed,  9 Dec
-        2020 01:55:40 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D9.67.63458.B9E20DF5; Wed,  9 Dec 2020 10:55:39 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20201209015539epcas1p3b0c37736fcbf916c7991ec06f778fd1f~O6ZQRvCXI3110531105epcas1p3X;
-        Wed,  9 Dec 2020 01:55:39 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201209015539epsmtrp263361ea6269fe1fefa9f2e0eb3b3bb98~O6ZQRKx6H1735617356epsmtrp2h;
-        Wed,  9 Dec 2020 01:55:39 +0000 (GMT)
-X-AuditID: b6c32a36-6c9ff7000000f7e2-8e-5fd02e9b045c
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        58.F3.13470.B9E20DF5; Wed,  9 Dec 2020 10:55:39 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201209015538epsmtip2d5e5eccba43d1533dc97ea1c1fc25dfd~O6ZQCd3322067720677epsmtip2I;
-        Wed,  9 Dec 2020 01:55:38 +0000 (GMT)
-Subject: Re: [PATCH] extcon: max77693: Fix modalias string
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <2c155bb1-b356-4fec-bb2a-2ef52a0abec4@samsung.com>
-Date:   Wed, 9 Dec 2020 11:10:26 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Tue, 8 Dec 2020 20:59:44 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B91w8gn007789;
+        Tue, 8 Dec 2020 17:58:40 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=aydL4QXg8XURDf2KOlBrMWX/E75tPJ8ATtsmVoERNmQ=;
+ b=W6kG7UAoQUNYWIJy2WWuZpDxaDsScbR3xDsevQzVfGWYpwKm6VKNruGodRnc2PMNUtj9
+ 0KEjKZlaWRClv0iwm74V+782zshPt5KKP3IJfdqFwtwjZQLGMWpUtuGQerBNjKrRyGTi
+ C/EPky8BHdRLd4bLIbJ56X1ccTcFGlfCYdM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 35aj8vhfjq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 08 Dec 2020 17:58:40 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 8 Dec 2020 17:58:40 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IFpPyFtoCW/hnFvevdS3uYcAGqPurH8MGQdSCpMTfbawgOqyFnSpfZMQz9tOdEhJnI7MbTFQuQq5zNOU27+DeJWLkr9wbshITZ/5I1vONSt/tYCQGs/g3uiFjcq7hOyheswB94s0KhQlWYEeLzUVjyNdcuJntQYM4noiuY7ZOTb+U0jYvAqSXs3XpheXBkBqoOhWwQ9EUkB68lkyOhqevipK2fukgAkQcZsJA9AELJQWJ/kVcqdgfbm9pb37x/c/2o/INuIGzpYIjua8gzhgkxsYMEsp+XkukDb4YSlipKhEVDetFyczOJFQU1/yTp7G+o9EBqkcGbcEwTIKD++exg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aydL4QXg8XURDf2KOlBrMWX/E75tPJ8ATtsmVoERNmQ=;
+ b=Az2GGhwwrzQkFVu2CVFgWXBIYtxhKzyBz800ilcBh9enPG/gSLqmeEJd+ztxwLPqn1iQJ55VCYjHqK5b7Ph4z2zZx5puT9QLE09z2NRrgNjJlE8JzO32DksaeEXlnq4pbbucMr30qAvm35ty5eKxaXf9Vuj9xxjjuJWr6uAD9LzdP5uFVffrKYMzfrvLZrLN1Ox2q5fXYGFkAOd8DYhuoeSr3sD34O8/ueLxgMpYRVIq1UhxbgjDbY4IQkzAqbhtlRNMbotDamw5aQy//G4HCcke3cadhnXO+DILL65+d1JddvZiAV6OARtGnavqYOLrYeFtbE3mosAGkgYKJ88WaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aydL4QXg8XURDf2KOlBrMWX/E75tPJ8ATtsmVoERNmQ=;
+ b=UVJV2aSjngkSqBYVhHWAI9HoX73M8/ZzcKGWxENECd/M3B8O9q/s2R/SuBFSVtkCtIxt0+3HOOMo0vPf71Q++31ZjiHNfCdYYPeMQv/QsfBpfgtRAIfdwU+/l/EXCUrHU7DkzGK6ckUzLlXHjRX+cKQGLTNwqjDels6oho5hGrU=
+Authentication-Results: bytedance.com; dkim=none (message not signed)
+ header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2341.namprd15.prod.outlook.com (2603:10b6:a02:81::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Wed, 9 Dec
+ 2020 01:58:36 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396%6]) with mapi id 15.20.3632.024; Wed, 9 Dec 2020
+ 01:58:36 +0000
+Date:   Tue, 8 Dec 2020 17:58:30 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+CC:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
+        <adobriyan@gmail.com>, <akpm@linux-foundation.org>,
+        <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <vdavydov.dev@gmail.com>, <hughd@google.com>,
+        <shakeelb@google.com>, <samitolvanen@google.com>,
+        <feng.tang@intel.com>, <neilb@suse.de>, <iamjoonsoo.kim@lge.com>,
+        <rdunlap@infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <cgroups@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v3 1/7] mm: memcontrol: fix NR_ANON_THPS account
+Message-ID: <20201209015830.GA2385286@carbon.DHCP.thefacebook.com>
+References: <20201208041847.72122-1-songmuchun@bytedance.com>
+ <20201208041847.72122-2-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208041847.72122-2-songmuchun@bytedance.com>
+X-Originating-IP: [2620:10d:c090:400::5:1a15]
+X-ClientProxiedBy: CO2PR04CA0128.namprd04.prod.outlook.com
+ (2603:10b6:104:7::30) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-In-Reply-To: <20201208133627.10699-1-m.szyprowski@samsung.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplk+LIzCtJLcpLzFFi42LZdlhTV3e23oV4g2sHzC02zljPanH+/AZ2
-        i8u75rBZrD1yl93iduMKNgdWj02rOtk8+rasYvT4vEkugDkq2yYjNTEltUghNS85PyUzL91W
-        yTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMHaKWSQlliTilQKCCxuFhJ386mKL+0JFUh
-        I7+4xFYptSAlp8CyQK84Mbe4NC9dLzk/18rQwMDIFKgwITtj6+nZzAU3OSq+nHvK3sC4g72L
-        kZNDQsBE4uma+WxdjFwcQgI7GCXmf5rMAuF8YpTYvvApVOYbo0TjhWlMMC3zXy5ihEjsZZS4
-        9LiVHcJ5zyjxYvIbNpAqYQEriSctb4ASHBwiAv4Sl34XgtQwC3QxSuy+0gY2iU1AS2L/ixtg
-        9fwCihJXfzxmBLF5BewktrS9YAaxWQRUJFZsfQdWIyoQJnFyWwtUjaDEyZlPWEBsTqD6Te03
-        weLMAuISt57MZ4Kw5SW2v53DDLJYQqCRQ+LB0ptsEC+4SFzofAH1jrDEq+NboKEhJfH53V6o
-        mmqJlSePsEE0dzBKbNl/gRUiYSyxf+lkJpDPmAU0Jdbv0ocIK0rs/D0X6gg+iXdfe1hBSiQE
-        eCU62oQgSpQlLj+4C7VWUmJxeyfbBEalWUjemYXkhVlIXpiFsGwBI8sqRrHUguLc9NRiwwIj
-        5OjexAhOj1pmOxgnvf2gd4iRiYPxEKMEB7OSCK+a1Nl4Id6UxMqq1KL8+KLSnNTiQ4ymwACe
-        yCwlmpwPTNB5JfGGpkbGxsYWJoZmpoaGSuK8f7Q74oUE0hNLUrNTUwtSi2D6mDg4pRqYFupm
-        bJa7vO1Aa38LX/PfvG2pguX3H8b88rj0v3FVQMDqDy5ZTlH7ZEqy/3errd5SYnwisv+i2gFr
-        DbubFboTfVPXzJquvG/+F/kv++qTOW7PWX2vWbz7y1ohvvY+ZteFpkorDWY1LFZjj9V1vvXc
-        cMv05+12xbfWrLv5JGzudRczgx3zJQQKPk5Uyz9027Od9XnYk2NJrez7OuyL9DeYXtAz11AI
-        t+7i0Ai6ELS2vNH11GxbAek/f0W/S70S23Fm1fszN9zTXHg2K8VlyO9/cKzvcXHApXObd1ae
-        Y0rnNPuiI3JzMsde77aFWYEzl77lq/bjyNB/3/u85PkE/qvOx14+SCuZKqRocv372eumSizF
-        GYmGWsxFxYkAvsKerBgEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrALMWRmVeSWpSXmKPExsWy7bCSvO5svQvxBss7WSw2zljPanH+/AZ2
-        i8u75rBZrD1yl93iduMKNgdWj02rOtk8+rasYvT4vEkugDmKyyYlNSezLLVI3y6BK2Pr6dnM
-        BTc5Kr6ce8rewLiDvYuRk0NCwERi/stFjF2MXBxCArsZJRY8WcMKkZCUmHbxKHMXIweQLSxx
-        +HAxRM1bRolph26xgdQIC1hJPGl5AzZIRMBXordnAtggZoEeRokp06YzQXRMZJTomTeRCaSK
-        TUBLYv+LG2Dd/AKKEld/PGYEsXkF7CS2tL1gBrFZBFQkVmx9B1YjKhAmsXPJYyaIGkGJkzOf
-        sIDYnED1m9pvgvUyC6hL/Jl3iRnCFpe49WQ+E4QtL7H97RzmCYzCs5C0z0LSMgtJyywkLQsY
-        WVYxSqYWFOem5xYbFhjmpZbrFSfmFpfmpesl5+duYgRHipbmDsbtqz7oHWJk4mA8xCjBwawk
-        wqsmdTZeiDclsbIqtSg/vqg0J7X4EKM0B4uSOO+FrpPxQgLpiSWp2ampBalFMFkmDk6pBqYC
-        J9YJXibLtrqEbtjHcNHzs1mum1bFYolfb+pOPlpTbKIwwVPz0GzxqIQ/J3R/e33cXOy33MQy
-        Z8+k1p6vGlWXvHyfTEiQWnM03UY+5KbCcY2Vj2SvpkYqBCjd48hz93nhMEe7+sNGWR+mtZND
-        n/ruLLluHBC+Pfn17r5kp9hLJvXPzus23tFef/jZ/g0WJasL2R64zVM9uOXzstO/orvv1E1a
-        dlr6/yJ51SeJm4sX/5nK91OZyVr3e5zebob32340Xv47o7iCWy7mxkmhwNAvXuZnmeqzZxz5
-        LSAU+NNsS+Rq6edLmKfNPLyyKWnrnwOCm9flbeSe+PLnEY2wGSzHv2d9WGkq0jwnbPeRIlcH
-        JZbijERDLeai4kQAqio3FwMDAAA=
-X-CMS-MailID: 20201209015539epcas1p3b0c37736fcbf916c7991ec06f778fd1f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201208133637eucas1p2e2264886ce4641171ec72fa4ab962d14
-References: <CGME20201208133637eucas1p2e2264886ce4641171ec72fa4ab962d14@eucas1p2.samsung.com>
-        <20201208133627.10699-1-m.szyprowski@samsung.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:1a15) by CO2PR04CA0128.namprd04.prod.outlook.com (2603:10b6:104:7::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 01:58:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4f4f55bc-0a54-43b5-c6d4-08d89be5f0ce
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2341:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB234180BF831A9F79BB70BB55BECC0@BYAPR15MB2341.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nIdCjorOJMnVND7UIsvJJy8S8FP1qBCTvmomi6UpnUxjHns1zmou7+furFDUdC3X7THValBhQsxmNM/z56qIE3hU08PrXc02EG6zJJEbaLvL8crcqZQb7P09ddq/26jp2vCx2G9YJVxG4fPUh4kyCqOxWtGGqTbl70graUDIrNo05hHuoLwbJNhCeJY5w2DDUgplcCRgq8vIDovaQIEDjdGdzhk/QZYEeebmGNGTR2r/NCf4sw9e2HWrHnJvHOtPlW+BJnhZ9qLguISmdsq0yAKvQnoWDEqk5QisIRz84WJRoFzRqxVlLGgLnKl+7Ba8
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(366004)(2906002)(4326008)(33656002)(55016002)(7416002)(5660300002)(86362001)(9686003)(7696005)(52116002)(508600001)(186003)(1076003)(66556008)(66476007)(66946007)(6506007)(83380400001)(8676002)(6916009)(16526019)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?G87zqvcP4HryEDlslHV1dd+aQUxh6rmu2ipBHbIDXhOQ3HMNK476l/VPr356?=
+ =?us-ascii?Q?2KnJqesiin9gseEpsrmTyfBMH/mlkMO7KjG2Guf+jVgMxEnTfDO84sXh/BZV?=
+ =?us-ascii?Q?JQ8/FnLZeQB/m1wmx3yfHEz7tbEBOSKcYF2bHW3MOcPkFJvOWVJmSfP3MKqv?=
+ =?us-ascii?Q?VN5qm0GedDwEekm0g1+f/Fmy3uEMkBAsJK1WZfBKzIO8XPQpjmdvpfyXv7Hl?=
+ =?us-ascii?Q?ZXx+vlk6M6xAXvgE9PbyhJUY7I1PATWcM297KYrx4pvoAcEAPLyFxArPPVKO?=
+ =?us-ascii?Q?DdImXUQJef3O9Kk1gSurqEP5AytTl8UFCzlZPX+z746kMD6O97h157jeieez?=
+ =?us-ascii?Q?iQDtsPB4MZUUGzkSQJ77AlioGEeqYT8a31xfu1tCpbHAUOloIgJwz7/1vWr9?=
+ =?us-ascii?Q?6puSKMoOymgig/cobpYQAZYSRaXuPftJStbIS977dghS4b9ZQLQ8mtonCfDd?=
+ =?us-ascii?Q?0C4T0hD3vNuJ2nXSaf9mEaiAcgzbZsUGk45+x89E40/1kI1LpeCSMhstCGNq?=
+ =?us-ascii?Q?5WhD/PuEePpiNeVhjEmUVYUBmqO9/aGArKMdK46s2thOm/5pYxNPAeZsCSqk?=
+ =?us-ascii?Q?wo7+9DWh6cOuLzBmTWVY+q9D2PZs7qkYLNXh/Hov0rhFZB4EtDrbKQ/Ycjn2?=
+ =?us-ascii?Q?wfGNvk2ClXZ8lDjdCnwMsNsw5f4kfFK4PPAILMMyAajJn7AcUSqOEsFh0aWO?=
+ =?us-ascii?Q?ZIL2eV+m5a8O4Da6rtXh+KfW4H64vdYlsx7+pUA6wRSk989I6IlFQZaSdB03?=
+ =?us-ascii?Q?3TnA7f5rpdzJxQImTG3fWUsPfSAO3CRnUa9/+/ejNTYdNTrnxACFFccXR8Q+?=
+ =?us-ascii?Q?X+ugXqMOh5Wd3lIUn2/xvMb/w1Yj5ibU0QmnlshWn0NQasxlkrbFBh2MUrc7?=
+ =?us-ascii?Q?P6KmlwmdjSr4lKMX2BDk9zCWVPVz7sL3gOLd+sCYWgISypFmwLPkWwPPpf5T?=
+ =?us-ascii?Q?c6dhTgzE7/i9Pm9bDhojYE428Rj1dTtsYIlQBQnprx0Lwml4oqeCaPd815JO?=
+ =?us-ascii?Q?dJlapINC7IyAcQbXzL58HoL5ag=3D=3D?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 01:58:36.1894
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f4f55bc-0a54-43b5-c6d4-08d89be5f0ce
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BfYHU3akEMe65CsozZG1cUWVrKKr9DA70mNjCkeuO9/jgQI40usGjL+WWcQFO4Eh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2341
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_02:2020-12-08,2020-12-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 spamscore=0
+ malwarescore=0 adultscore=0 impostorscore=0 lowpriorityscore=0
+ clxscore=1011 suspectscore=1 mlxscore=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090011
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/20 10:36 PM, Marek Szyprowski wrote:
-> The platform device driver name is "max77693-muic", so advertise it
-> properly in the modalias string. This fixes automated module loading when
-> this driver is compiled as a module.
+On Tue, Dec 08, 2020 at 12:18:41PM +0800, Muchun Song wrote:
+> The unit of NR_ANON_THPS is HPAGE_PMD_NR already. So it should inc/dec
+> by one rather than nr_pages.
 > 
-> Fixes: db1b9037424b ("extcon: MAX77693: Add extcon-max77693 driver to support Maxim MAX77693 MUIC device")
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Fixes: 468c398233da ("mm: memcontrol: switch to native NR_ANON_THPS counter")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+
+Reviewed-by: Roman Gushchin <guro@fb.com>
+
+Thanks!
+
+
 > ---
->  drivers/extcon/extcon-max77693.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  mm/memcontrol.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/extcon/extcon-max77693.c b/drivers/extcon/extcon-max77693.c
-> index 4a410fd2ea9a..92af97e00828 100644
-> --- a/drivers/extcon/extcon-max77693.c
-> +++ b/drivers/extcon/extcon-max77693.c
-> @@ -1277,4 +1277,4 @@ module_platform_driver(max77693_muic_driver);
->  MODULE_DESCRIPTION("Maxim MAX77693 Extcon driver");
->  MODULE_AUTHOR("Chanwoo Choi <cw00.choi@samsung.com>");
->  MODULE_LICENSE("GPL");
-> -MODULE_ALIAS("platform:extcon-max77693");
-> +MODULE_ALIAS("platform:max77693-muic");
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index b80328f52fb4..8818bf64d6fe 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5653,10 +5653,8 @@ static int mem_cgroup_move_account(struct page *page,
+>  			__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
+>  			__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
+>  			if (PageTransHuge(page)) {
+> -				__mod_lruvec_state(from_vec, NR_ANON_THPS,
+> -						   -nr_pages);
+> -				__mod_lruvec_state(to_vec, NR_ANON_THPS,
+> -						   nr_pages);
+> +				__dec_lruvec_state(from_vec, NR_ANON_THPS);
+> +				__inc_lruvec_state(to_vec, NR_ANON_THPS);
+>  			}
+>  
+>  		}
+> -- 
+> 2.11.0
 > 
-
-Applied it. Thanks.
-
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
