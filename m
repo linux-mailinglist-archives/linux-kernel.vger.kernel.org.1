@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC372D49D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA652D49D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387608AbgLITJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:09:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733001AbgLITJI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2387598AbgLITJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 9 Dec 2020 14:09:08 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016E7C0613D6;
-        Wed,  9 Dec 2020 11:08:28 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id m12so4608573lfo.7;
-        Wed, 09 Dec 2020 11:08:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fxoqPCiWc/8hrZVyGnb4WQe69RSDUFwDEYNSupu9kTE=;
-        b=p021/NJzb5lga2xfuZKepqETedOgd01WzHXccbDMWgRKdjLQsBwTVCTK/XCU8YqrOw
-         irgaKKjsAfOBvwH/XayYaHNLSw1HVi1z0f//SZJY8gI5O1l5Mvl/UcrYuDA6cNCGXAGs
-         /lwGdlwfo3wS7x4N4+Ivh1wlTZ5jbgTmLXGkx1PRPTUkxrF0C/Kl0IWJ4e9zWojEn/zS
-         iYJV8hMyrRkRqm95ATOOIymEm4Z7Y8CpWyPvUzdK94fElRQdBhKg6uqKQET0UXIHm7PT
-         De1aeKEVRLkjNGcLoX2j94jQmrnt+hrdHOeLBni2ppcigkbYnP+a0UeVRENlMWv/rBWc
-         pfdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fxoqPCiWc/8hrZVyGnb4WQe69RSDUFwDEYNSupu9kTE=;
-        b=G2wwAecxFPmFQizydqLVNrAzBwB7A6iR1of+M9w7K1bMd/2zYNPVx9cIkl9NK1K3Yc
-         2jGfqT097q368U83LsAxZPWAExwlHqXwijkomAEfEx5fbMMvlp51mq+kAiFKsIpjnBx2
-         A7VKHfIvkqoTxpPRDOoCPmzcZVCrqEZ3My6evuTdVEDg2V+kxqxIpxpj66P0PCoWpfg9
-         OTVQdL3A4osuAhjsKGntCqVsjZjeokN0rP5A9y870MKx4JEMjUAUSPaaVcgMfTi/ffeN
-         w4MGbGdjUPARY2KeDZ3RZR0wp8U9bzTzO245BrgC2/zNRqjIOgSFyqg9Bi95LfYrp5b/
-         NcKQ==
-X-Gm-Message-State: AOAM531xyOzuaw9XRX78/H6fF5r2H6g+oc25/QlGhhBH17liSrXwVBy1
-        xtSSyORxWFynrGAiQWkR+tg=
-X-Google-Smtp-Source: ABdhPJwAVj0KWYoPE8X87RlhX9U9TcYDY+m+hwZazqGkQzpN/orl6GwDOnli4aU2j5TqSqwu9PDwBA==
-X-Received: by 2002:a19:cbc3:: with SMTP id b186mr1441910lfg.554.1607540906424;
-        Wed, 09 Dec 2020 11:08:26 -0800 (PST)
-Received: from [192.168.1.33] (88-114-222-21.elisa-laajakaista.fi. [88.114.222.21])
-        by smtp.gmail.com with ESMTPSA id s22sm260505lfi.187.2020.12.09.11.08.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 11:08:25 -0800 (PST)
-Subject: Re: [PATCH] mm/vmalloc: randomize vmalloc() allocations
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20201201214547.9721-1-toiwoton@gmail.com>
- <9d34fb0a-7aba-1e84-6426-006ea7c3d9f5@gmail.com>
- <20201203065801.GH751215@kernel.org>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <26f0c73a-3a81-4ba6-2b6f-c5ca73ea866b@gmail.com>
-Date:   Wed, 9 Dec 2020 21:08:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+Received: from mail.kernel.org ([198.145.29.99]:54774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733001AbgLITJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:09:07 -0500
+Message-ID: <f47444311bc7661c6482de11d570fb815f8e7941.camel@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607540907;
+        bh=MZoHqy8IDSGzdgkpc0oauuGyvv+fzNC267tZh0farKc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=vPVoR+yr9Irrh4vZvZhRF7yzxMdjKL8IJL6xAJj+2hpkMQuUvOlNGsB/zdXAdJrnf
+         G1d95aKPLd8DjKSMXVM7U4aIqTPmYZUhKrBM4BX5IQhzUPYoy68UPSZyPhqmBsYD9I
+         LwQ+Ir0SNSfYN8cNw0u9nPfel734j7BdCWjz2BwVV/UQifaiRbHbVWFhGcmXYINhJ4
+         Jr+sMzueG7eNx7LH/i8qtt0HmzFFRK80XB+KToWv+1eJf4U9m2XbgNW0NhM9ex6Pgs
+         NmQirD8+GSWg+ugJkqDQlTUIcyV79SOZqt5j583avk5K98QabQLRpNwsE5zSjmMEX/
+         IH3WjRqTnPvfg==
+Subject: Re: [PATCHv3 net-next] octeontx2-pf: Add RSS multi group support
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Geetha sowjanya <gakula@marvell.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     sgoutham@marvell.com, davem@davemloft.net, kuba@kernel.org,
+        sbhatta@marvell.com
+Date:   Wed, 09 Dec 2020 11:08:24 -0800
+In-Reply-To: <20201209170937.19548-1-gakula@marvell.com>
+References: <20201209170937.19548-1-gakula@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20201203065801.GH751215@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3.12.2020 8.58, Mike Rapoport wrote:
-> On Wed, Dec 02, 2020 at 08:49:06PM +0200, Topi Miettinen wrote:
->> On 1.12.2020 23.45, Topi Miettinen wrote:
->>> Memory mappings inside kernel allocated with vmalloc() are in
->>> predictable order and packed tightly toward the low addresses. With
->>> new kernel boot parameter 'randomize_vmalloc=1', the entire area is
->>> used randomly to make the allocations less predictable and harder to
->>> guess for attackers.
->>>
->>
->> This also seems to randomize module addresses. I was going to check that
->> next, so nice surprise!
+On Wed, 2020-12-09 at 22:39 +0530, Geetha sowjanya wrote:
+> Hardware supports 8 RSS groups per interface. Currently we are using
+> only group '0'. This patch allows user to create new RSS
+> groups/contexts
+> and use the same as destination for flow steering rules.
 > 
-> Heh, that's because module_alloc() uses vmalloc() in that way or another :)
+> usage:
+> To steer the traffic to RQ 2,3
+> 
+> ethtool -X eth0 weight 0 0 1 1 context new
+> (It will print the allocated context id number)
+> New RSS context is 1
+> 
+> ethtool -N eth0 flow-type tcp4 dst-port 80 context 1 loc 1
+> 
+> To delete the context
+> ethtool -X eth0 context 1 delete
+> 
+> When an RSS context is removed, the active classification
+> rules using this context are also removed.
+> 
+> Change-log:
+> v2
+> - Removed unrelated whitespace
+> - Coverted otx2_get_rxfh() to use new function.
+> 
+> v3
+> - Coverted otx2_set_rxfh() to use new function.
+> 
+> Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
+> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+> ---
 
-The modules are still allocated from their small (1.5GB) separate area 
-instead of the much larger (32TB/12.5PB) vmalloc area, which would 
-greatly improve ASLR for the modules. To fix that, I tried to to #define 
-MODULES_VADDR to VMALLOC_START etc. like x86_32 does, but then kernel 
-dies very early without even any output.
+...
 
--Topi
+> -/* Configure RSS table and hash key */
+> -static int otx2_set_rxfh(struct net_device *dev, const u32 *indir,
+> -			 const u8 *hkey, const u8 hfunc)
+> +static int otx2_get_rxfh_context(struct net_device *dev, u32 *indir,
+> +				 u8 *hkey, u8 *hfunc, u32 rss_context)
+>  {
+>  	struct otx2_nic *pfvf = netdev_priv(dev);
+> +	struct otx2_rss_ctx *rss_ctx;
+>  	struct otx2_rss_info *rss;
+>  	int idx;
+>  
+> -	if (hfunc != ETH_RSS_HASH_NO_CHANGE && hfunc !=
+> ETH_RSS_HASH_TOP)
+> -		return -EOPNOTSUPP;
+> -
+>  	rss = &pfvf->hw.rss_info;
+>  
+>  	if (!rss->enable) {
+> -		netdev_err(dev, "RSS is disabled, cannot change
+> settings\n");
+> +		netdev_err(dev, "RSS is disabled\n");
+>  		return -EIO;
+>  	}
+
+I see that you init/enable rss on open, is this is your way to block
+getting rss info if device is not open ? why do you need to report an
+error anyway, why not just report whatever default config you will be
+setting up on next open ? 
+
+to me reporting errors to ethtool queries when device is down is a bad
+user experience.
+
+> +	if (rss_context >= MAX_RSS_GROUPS)
+> +		return -EINVAL;
+> +
+
+-ENOENT
+> +	rss_ctx = rss->rss_ctx[rss_context];
+> +	if (!rss_ctx)
+> +		return -EINVAL;
+> 
+
+-ENOENT
+
+
