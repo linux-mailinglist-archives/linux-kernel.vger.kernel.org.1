@@ -2,86 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9AE2D3BA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 086692D3BAC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 07:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728231AbgLIGtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 01:49:51 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:46624 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728030AbgLIGtu (ORCPT
+        id S1728270AbgLIGvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 01:51:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728171AbgLIGvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 01:49:50 -0500
-X-UUID: 8fbaf453778946c7b5edae647397d99f-20201209
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=/BNwn7ZnxvpJrjyggPTyczK8/eauiOe9smE73GyHAnA=;
-        b=WfcPMQOlt8JpDtufkVRzQFajY4rMNmVCrYyNiyG9foDwfDQdbOT83mo44VstCUcyCRRkEr/g3iHyVR9TbMHLBS/Vw5sV0I6XfYYUS9bUwWRWvQAgHSw+6C1WbmLRnSiHKZqSSsydB31qZvT3D+sZI/JA+3i0e8Xk8ZRbhO6w1yo=;
-X-UUID: 8fbaf453778946c7b5edae647397d99f-20201209
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 270000220; Wed, 09 Dec 2020 14:48:59 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 9 Dec 2020 14:48:54 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 9 Dec 2020 14:48:58 +0800
-Message-ID: <1607496538.3580.31.camel@mtkswgap22>
-Subject: Re: [PATCH 1/1] scsi: ufs-mediatek: use correct path to fix
- compiling error
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-CC:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-mediatek <linux-mediatek@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Wed, 9 Dec 2020 14:48:58 +0800
-In-Reply-To: <20201209063144.1840-2-thunder.leizhen@huawei.com>
-References: <20201209063144.1840-1-thunder.leizhen@huawei.com>
-         <20201209063144.1840-2-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 9 Dec 2020 01:51:25 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDA4C0613CF;
+        Tue,  8 Dec 2020 22:50:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=p3OfvBVBtRAqDDRF6jH5uPYTH91JIUpZ9ujYw2CtzVk=; b=g9JtDQAysQXn5mU2ddEzM0Yz5X
+        P0zL8DTzb0K6qveIRiZOvKGrPalspGEXG5XQvVJFn1HUW8Xbc82Z4Eih/aVBu92sIDrYNyKwElnMj
+        C30/WIr2b5j+YXLZhuo9wLDMX+5Rtopo8rbf+4+QlewnIsTrzzHXRIqe3Bkx3lqWfef9Ngn/NwPDI
+        Q6Z63bXV4xlz46pj18EXMDR2z6K3sr9RSj7Mnf/Nvtk9TqcX/Ef3mGgdvfxg+KmWDVNgVXOzq6sA1
+        d3p0rvFQdNOF0cyN5mPJt+B7iY+6Dkv1RqNBayBOb4fgELniBnPEWNN6ldEYGeTaZcnfoUzU/gCVQ
+        zR3SN0AA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmtJA-0007Oz-Ky; Wed, 09 Dec 2020 06:50:40 +0000
+Date:   Wed, 9 Dec 2020 06:50:40 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [RFC 0/2] nocopy bvec for direct IO
+Message-ID: <20201209065040.GA27959@infradead.org>
+References: <cover.1607477897.git.asml.silence@gmail.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1607477897.git.asml.silence@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgWmhlbiwNCg0KT24gV2VkLCAyMDIwLTEyLTA5IGF0IDE0OjMxICswODAwLCBaaGVuIExlaSB3
-cm90ZToNCj4gV2hlbiB0aGUga2VybmVsIGlzIGNvbXBpbGVkIHdpdGggYWxsbW9kY29uZmlnLCB0
-aGUgZm9sbG93aW5nIGVycm9yIGlzDQo+IHJlcG9ydGVkOg0KPiBJbiBmaWxlIGluY2x1ZGVkIGZy
-b20gZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWstdHJhY2UuaDozNjowLA0KPiAgICAgICAg
-ICAgICAgICAgIGZyb20gZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYzoyODoNCj4gLi9p
-bmNsdWRlL3RyYWNlL2RlZmluZV90cmFjZS5oOjk1OjQyOiBmYXRhbCBlcnJvcjogLi91ZnMtbWVk
-aWF0ZWstdHJhY2UuaDogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQ0KPiAgI2luY2x1ZGUgVFJB
-Q0VfSU5DTFVERShUUkFDRV9JTkNMVURFX0ZJTEUpDQo+IA0KPiBUaGUgY29tbWVudCBpbiBpbmNs
-dWRlL3RyYWNlL2RlZmluZV90cmFjZS5oIHNwZWNpZmllcyB0aGF0Og0KPiBUUkFDRV9JTkNMVURF
-X1BBVEg6IE5vdGUsIHRoZSBwYXRoIGlzIHJlbGF0aXZlIHRvIGRlZmluZV90cmFjZS5oLCBub3Qg
-dGhlDQo+IGZpbGUgaW5jbHVkaW5nIGl0LiBGdWxsIHBhdGggbmFtZXMgZm9yIG91dCBvZiB0cmVl
-IG1vZHVsZXMgbXVzdCBiZSB1c2VkLg0KPiANCj4gU28gd2l0aG91dCAiQ0ZMQUdTX3Vmcy1tZWRp
-YXRlay5vIDo9IC1JJChzcmMpIiwgdGhlIGN1cnJlbnQgZGlyZWN0b3J5ICIuIg0KPiBpcyAiaW5j
-bHVkZS90cmFjZS8iLCB0aGUgcmVsYXRpdmUgcGF0aCBvZiB1ZnMtbWVkaWF0ZWstdHJhY2UuaCBp
-cw0KPiAiLi4vLi4vZHJpdmVycy9zY3NpL3Vmcy8iLg0KPiANCj4gRml4ZXM6IGNhMWJiMDYxZDY0
-NCAoInNjc2k6IHVmcy1tZWRpYXRlazogSW50cm9kdWNlIGV2ZW50X25vdGlmeSBpbXBsZW1lbnRh
-dGlvbiIpDQo+IFNpZ25lZC1vZmYtYnk6IFpoZW4gTGVpIDx0aHVuZGVyLmxlaXpoZW5AaHVhd2Vp
-LmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay10cmFjZS5oIHwg
-MiArLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+
-IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWstdHJhY2UuaCBi
-L2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLXRyYWNlLmgNCj4gaW5kZXggZmQ2Zjg0YzFi
-NGUyMjU2Li44OTVlODJlYTZlY2U1NTEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc2NzaS91ZnMv
-dWZzLW1lZGlhdGVrLXRyYWNlLmgNCj4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0
-ZWstdHJhY2UuaA0KPiBAQCAtMzEsNiArMzEsNiBAQCBUUkFDRV9FVkVOVCh1ZnNfbXRrX2V2ZW50
-LA0KPiAgDQo+ICAjdW5kZWYgVFJBQ0VfSU5DTFVERV9QQVRIDQo+ICAjdW5kZWYgVFJBQ0VfSU5D
-TFVERV9GSUxFDQo+IC0jZGVmaW5lIFRSQUNFX0lOQ0xVREVfUEFUSCAuDQo+ICsjZGVmaW5lIFRS
-QUNFX0lOQ0xVREVfUEFUSCAuLi8uLi9kcml2ZXJzL3Njc2kvdWZzLw0KPiAgI2RlZmluZSBUUkFD
-RV9JTkNMVURFX0ZJTEUgdWZzLW1lZGlhdGVrLXRyYWNlDQo+ICAjaW5jbHVkZSA8dHJhY2UvZGVm
-aW5lX3RyYWNlLmg+DQoNClRoYW5rcyBmb3IgdGhpcyBmaXguDQoNClJldmlld2VkLWJ5OiBTdGFu
-bGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KDQoNCg0KDQoNCg==
+On Wed, Dec 09, 2020 at 02:19:50AM +0000, Pavel Begunkov wrote:
+> A benchmark got me 430KIOPS vs 540KIOPS, or +25% on bare metal. And perf
+> shows that bio_iov_iter_get_pages() was taking ~20%. The test is pretty
+> silly, but still imposing. I'll redo it closer to reality for next
+> iteration, anyway need to double check some cases.
 
+That is pretty impressive.  But I only got this cover letter, not the
+actual patches..
