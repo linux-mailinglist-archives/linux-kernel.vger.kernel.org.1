@@ -2,82 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634CE2D497A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43A82D497D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387485AbgLISvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:51:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732952AbgLISvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:51:06 -0500
-Date:   Wed, 9 Dec 2020 18:50:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607539825;
-        bh=SmGD0Wngs0iUrS/PQuc7mTBZo1p0nDrXrdnb6+e6Q8c=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h514HCk5J29VZl6jAzdiaTmwdyhtAwB4Efnqyjv0E9sWa6jSVwwpeEPdOChE15rDt
-         EyFwPWhGW160CrgbIKrD6eZWty4qYvBEIgOgNbweHYTIZyf0wBHumOmMfxShsgtDS+
-         QtDnSjmM4+HYYK/sPYDLh+DSXvxU9aWpoNlziEZhgWbO4wpPo2fmYWlpSJ/6V/ItVP
-         t7MxYJioTGYWd7Ynq/eA+SW2X7DIJhIuIngVnMWEJ4mB1AdKQUr7BaHrOZskK2bbra
-         JUWvs2RVNBrWFfpR5AO7TE5yszlzeF9G7ShZW7zyH14dzX+syRLZrkbsxrcc0IDwDF
-         nOd6FHcGNHrWQ==
-From:   Will Deacon <will@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        iommu <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [GIT PULL] IOMMU fix for 5.10 (-final)
-Message-ID: <20201209185020.GC8778@willie-the-truck>
-References: <20201209141237.GA8092@willie-the-truck>
- <CAHk-=wht4inbTVVMt2TNDxR_cVjSNaBU3JYyKtRMVovWePb65g@mail.gmail.com>
+        id S2387504AbgLISv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:51:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387487AbgLISvN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:51:13 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9DEC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:50:32 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id k4so1697313qtj.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 10:50:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:references:in-reply-to:mime-version:thread-index:date
+         :message-id:subject:to:cc;
+        bh=1O3yHWyx8QkqyvCVxrK/FyU+kwedWZPC63Mcw669N7A=;
+        b=M7GPq+NIy5HD7+mYseQdHX8okdD91iWn2vyD0GoENzbKhCyTMBjftH2t3ubLg/0GXm
+         8W7BRv5j+7h8qympP0Ug/8BlnNbT9aPHrhJk1hLQD0TyOMWv64nyR7qUE/yaDGvAxxhf
+         oSprbuqlNdsEmFvuoIlGYbz1TWaA9z+lYDH7Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:references:in-reply-to:mime-version
+         :thread-index:date:message-id:subject:to:cc;
+        bh=1O3yHWyx8QkqyvCVxrK/FyU+kwedWZPC63Mcw669N7A=;
+        b=F9tTMFC91qZR6vVqzoGgV0RWEUtaUjrHdg38rS1DEXnVmIsX+6BgZwavLdEM+h9y0j
+         hWeski0Ur7r7a/YJi6rHG2eN1AL3AFVFeWvQytH11ygYqc5vBqxCVeM61ExOEoJUHCvk
+         KaubnzfZEfLO4yHQ4vEA9bycWZ3a3hlbuDgUEvz9l0lO0jwkrtdYXGs0EZ7riozZGuLG
+         Hnix2PnVYmhKdRNA6yYsfyUYSK/yHVffnkpxitRdjr/5F7E8aRBCPw/+7yOICP9hsuZ6
+         l5LmT0tXSoFwPIVsX6I16tsThxWboIlOVwsGhTZ9YsJCkXB1qHERKJEgfeN1heqn0Pgg
+         2dhw==
+X-Gm-Message-State: AOAM532oM2Py0wK9YhBsqYBeQMbHDBicExQ3ZKj5ieY+FYvocQ8mVIN6
+        +slDPNxqIirwlqnIjF6Zl9Q/tHudaxG0auGkjTxTa97KxRvwkZZ7V6Zobv31hN19n8zSTYZBtVc
+        ftj570E516cSobkp63azV30mbSgh+QgI=
+X-Google-Smtp-Source: ABdhPJxznWaweuBKS+UFe3/I37lFLUY2TxYcaKG1eDoXi6iWhnYjZhSitLNwznMWnhJH2goMisn7J5UeIJtKO6Bj/dI=
+X-Received: by 2002:ac8:5514:: with SMTP id j20mr4751899qtq.387.1607539831003;
+ Wed, 09 Dec 2020 10:50:31 -0800 (PST)
+From:   Kashyap Desai <kashyap.desai@broadcom.com>
+References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
+ <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
+ <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com> <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
+ <9106e994-bb4b-4148-1280-f08f71427420@huawei.com> <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
+ <alpine.DEB.2.22.394.2012082339470.16458@hadrien> <yq1sg8fud7y.fsf@ca-mkp.ca.oracle.com>
+ <4f3cd4d4-87d3-dc9a-027d-293cba469d5a@huawei.com> <alpine.DEB.2.22.394.2012091644010.2691@hadrien>
+ <db450cdf-f411-c0ed-d2ce-60283dacfd06@huawei.com>
+In-Reply-To: <db450cdf-f411-c0ed-d2ce-60283dacfd06@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wht4inbTVVMt2TNDxR_cVjSNaBU3JYyKtRMVovWePb65g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQI6im7hpQs4L8XyrGxklOx9XNwlawEJJlS/AkXit50CG832ogGicv5tAVdX1GsBilpIZgLev9eeAkuQtKwBMI3SnQEjoLAFqJw2qBA=
+Date:   Thu, 10 Dec 2020 00:20:27 +0530
+Message-ID: <8c02bc953eee2a0300caf1278a58d04e@mail.gmail.com>
+Subject: RE: problem booting 5.10
+To:     John Garry <john.garry@huawei.com>,
+        Julia Lawall <julia.lawall@inria.fr>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nicolas.palix@univ-grenoble-alpes.fr,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan Srikanteshwara 
+        <shivasharan.srikanteshwara@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000009d23c905b60c884f"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 10:07:46AM -0800, Linus Torvalds wrote:
-> On Wed, Dec 9, 2020 at 6:12 AM Will Deacon <will@kernel.org> wrote:
+--0000000000009d23c905b60c884f
+Content-Type: text/plain; charset="UTF-8"
+
+> -----Original Message-----
+> From: John Garry [mailto:john.garry@huawei.com]
+> Sent: Wednesday, December 9, 2020 9:22 PM
+> To: Julia Lawall <julia.lawall@inria.fr>; Kashyap Desai
+> <kashyap.desai@broadcom.com>
+> Cc: Martin K. Petersen <martin.petersen@oracle.com>; Linus Torvalds
+> <torvalds@linux-foundation.org>; James E.J. Bottomley
+> <jejb@linux.ibm.com>; Linux Kernel Mailing List <linux-
+> kernel@vger.kernel.org>; nicolas.palix@univ-grenoble-alpes.fr; linux-scsi
+> <linux-scsi@vger.kernel.org>; Ming Lei <ming.lei@redhat.com>; Sumit Saxena
+> <sumit.saxena@broadcom.com>; Shivasharan S
+> <shivasharan.srikanteshwara@broadcom.com>
+> Subject: Re: problem booting 5.10
+>
+> On 09/12/2020 15:44, Julia Lawall wrote:
 > >
-> > Please pull this one-liner AMD IOMMU fix for 5.10. It's actually a fix
-> > for a fix, where the size of the interrupt remapping table was increased
-> > but a related constant for the size of the interrupt table was forgotten.
-> 
-> Pulled.
+> > On Tue, 8 Dec 2020, John Garry wrote:
+> >
+> >> On 08/12/2020 22:51, Martin K. Petersen wrote:
+> >>> Julia,
+> >>>
+> >>>> This solves the problem.  Starting from 5.10-rc7 and doing this
+> >>>> revert, I get a kernel that boots.
+> >> Hi Julia,
+> >>
+> >> Can you also please test Ming's patchset here (without the megaraid
+> >> sas
+> >> revert) when you get a chance:
+> >> https://lore.kernel.org/linux-block/20201203012638.543321-1-ming.lei@
+> >> redhat.com/
+> > 5.10-rc7 plus these three commits boots fine.
+> >
+>
+> Hi Julia,
+>
+> Ok, Thanks for the confirmation. A sort of relief.
+>
+> @Kashyap, It would be good if we could recreate this, just in case.
 
-Thanks.
+I already tested series and issue fixed for me. Final patch (V2) provided by
+Ming already has "Tested-by" Tag from me.
+I once again confirm using config file provided by Julia Lawall and same
+result - Issue recreated once again and fixed by Ming's below patch.
 
-> However, why didn't this then add some sanity checking for the two
-> different #defines to be in sync?
-> 
-> IOW, something like
-> 
->    #define AMD_IOMMU_IRQ_TABLE_SHIFT 9
-> 
->    #define MAX_IRQS_PER_TABLE (1 << AMD_IOMMU_IRQ_TABLE_SHIFT)
->    #define DTE_IRQ_TABLE_LEN ((u64)AMD_IOMMU_IRQ_TABLE_SHIFT << 1)
-> 
-> or whatever. Hmm?
+https://lore.kernel.org/linux-block/20201203012638.543321-2-ming.lei@redhat.com/
 
-This looks like a worthwhile change to me, but I don't have any hardware
-so I've been very reluctant to make even "obvious" driver changes here.
+Kashyap
 
-Suravee -- please can you post a patch implementing the above?
+>
+> Cheers,
+> John
 
-> That way this won't happen again, but perhaps equally importantly the
-> linkage will be more clear, and there won't be those random constants.
-> 
-> Naming above is probably garbage - I assume there's some actual
-> architectural name for that irq table length field in the DTE?
+-- 
+This electronic communication and the information and any files transmitted 
+with it, or attached to it, are confidential and are intended solely for 
+the use of the individual or entity to whom it is addressed and may contain 
+information that is confidential, legally privileged, protected by privacy 
+laws, or otherwise restricted from disclosure to anyone else. If you are 
+not the intended recipient or the person responsible for delivering the 
+e-mail to the intended recipient, you are hereby notified that any use, 
+copying, distributing, dissemination, forwarding, printing, or copying of 
+this e-mail is strictly prohibited. If you received this e-mail in error, 
+please return the e-mail to the sender, delete it from your computer, and 
+destroy any printed copy of it.
 
-The one in the spec is even better: "IntTabLen".
+--0000000000009d23c905b60c884f
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Will
+MIIQRQYJKoZIhvcNAQcCoIIQNjCCEDICAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg2aMIIE6DCCA9CgAwIBAgIOSBtqCRO9gCTKXSLwFPMwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UE
+CxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMT
+Ckdsb2JhbFNpZ24wHhcNMTYwNjE1MDAwMDAwWhcNMjQwNjE1MDAwMDAwWjBdMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25h
+bFNpZ24gMiBDQSAtIFNIQTI1NiAtIEczMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+tpZok2X9LAHsYqMNVL+Ly6RDkaKar7GD8rVtb9nw6tzPFnvXGeOEA4X5xh9wjx9sScVpGR5wkTg1
+fgJIXTlrGESmaqXIdPRd9YQ+Yx9xRIIIPu3Jp/bpbiZBKYDJSbr/2Xago7sb9nnfSyjTSnucUcIP
+ZVChn6hKneVGBI2DT9yyyD3PmCEJmEzA8Y96qT83JmVH2GaPSSbCw0C+Zj1s/zqtKUbwE5zh8uuZ
+p4vC019QbaIOb8cGlzgvTqGORwK0gwDYpOO6QQdg5d03WvIHwTunnJdoLrfvqUg2vOlpqJmqR+nH
+9lHS+bEstsVJtZieU1Pa+3LzfA/4cT7XA/pnwwIDAQABo4IBtTCCAbEwDgYDVR0PAQH/BAQDAgEG
+MGoGA1UdJQRjMGEGCCsGAQUFBwMCBggrBgEFBQcDBAYIKwYBBQUHAwkGCisGAQQBgjcUAgIGCisG
+AQQBgjcKAwQGCSsGAQQBgjcVBgYKKwYBBAGCNwoDDAYIKwYBBQUHAwcGCCsGAQUFBwMRMBIGA1Ud
+EwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFGlygmIxZ5VEhXeRgMQENkmdewthMB8GA1UdIwQYMBaA
+FI/wS3+oLkUkrk1Q+mOai97i3Ru8MD4GCCsGAQUFBwEBBDIwMDAuBggrBgEFBQcwAYYiaHR0cDov
+L29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3RyMzA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3Js
+Lmdsb2JhbHNpZ24uY29tL3Jvb3QtcjMuY3JsMGcGA1UdIARgMF4wCwYJKwYBBAGgMgEoMAwGCisG
+AQQBoDIBKAowQQYJKwYBBAGgMgFfMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNp
+Z24uY29tL3JlcG9zaXRvcnkvMA0GCSqGSIb3DQEBCwUAA4IBAQConc0yzHxn4gtQ16VccKNm4iXv
+6rS2UzBuhxI3XDPiwihW45O9RZXzWNgVcUzz5IKJFL7+pcxHvesGVII+5r++9eqI9XnEKCILjHr2
+DgvjKq5Jmg6bwifybLYbVUoBthnhaFB0WLwSRRhPrt5eGxMw51UmNICi/hSKBKsHhGFSEaJQALZy
+4HL0EWduE6ILYAjX6BSXRDtHFeUPddb46f5Hf5rzITGLsn9BIpoOVrgS878O4JnfUWQi29yBfn75
+HajifFvPC+uqn+rcVnvrpLgsLOYG/64kWX/FRH8+mhVe+mcSX3xsUpcxK9q9vLTVtroU/yJUmEC4
+OcH5dQsbHBqjMIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4G
+A1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNV
+BAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQL
+ExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMK
+R2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aE
+yiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5
+uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bL
+yCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg
+6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkW
+qQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8w
+HQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+
+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5
+RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBov
+Hd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX42
+68NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o
+2HLO02JQZR7rkpeDMdmztcpHWD9fMIIFRzCCBC+gAwIBAgIMNJ2hfsaqieGgTtOzMA0GCSqGSIb3
+DQEBCwUAMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQD
+EypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMwHhcNMjAwOTE0MTE0
+NTE2WhcNMjIwOTE1MTE0NTE2WjCBkDELMAkGA1UEBhMCSU4xEjAQBgNVBAgTCUthcm5hdGFrYTES
+MBAGA1UEBxMJQmFuZ2Fsb3JlMRYwFAYDVQQKEw1Ccm9hZGNvbSBJbmMuMRYwFAYDVQQDEw1LYXNo
+eWFwIERlc2FpMSkwJwYJKoZIhvcNAQkBFhprYXNoeWFwLmRlc2FpQGJyb2FkY29tLmNvbTCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALcJrXmVmbWEd4eX2uEKGBI6v43LPHKbbncKqMGH
+Dez52MTfr4QkOZYWM4Rqv8j6vb8LPlUc9k0CEnC9Yaj9ZzDOcR+gHfoZ3F1JXSVRWdguz25MiB6a
+bU8odXAymhaig9sNJLxiWid3RORmG/w1Nceflo/72Cwttt0ytDTKdF987/aVGqMIxg3NnXM/cn+T
+0wUiccp8WINUie4nuR9pzv5RKGqAzNYyo8krQ2URk+3fGm1cPRoFEVAkwrCs/FOs6LfggC2CC4LB
+yfWKfxJx8FcWmsjkSlrwDu+oVuDUa2wqeKBU12HQ4JAVd+LOb5edsbbFQxgGHu+MPuc/1hl9kTkC
+AwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUH
+MAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNo
+YTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nw
+ZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIB
+FiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1Ud
+HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hh
+MmczLmNybDAlBgNVHREEHjAcgRprYXNoeWFwLmRlc2FpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQU4dX1
+Yg4eoWXbqyPW/N1ZD/LPIWcwDQYJKoZIhvcNAQELBQADggEBABBuHYKGUwHIhCjd3LieJwKVuJNr
+YohEnZzCoNaOj33/j5thiA4cZehCh6SgrIlFBIktLD7jW9Dwl88Gfcy+RrVa7XK5Hyqwr1JlCVsW
+pNj4hlSJMNNqxNSqrKaD1cR4/oZVPFVnJJYlB01cLVjGMzta9x27e6XEtseo2s7aoPS2l82koMr7
+8S/v9LyyP4X2aRTWOg9RG8D/13rLxFAApfYvCrf0quIUBWw2BXlq3+e3r7pU7j40d6P04VV3Zxws
+M+LbYxcXFT2gXvoYd2Ms8zsLrhO2M6pMzeNGWk2HWTof9s7EEHDjis/MRlbYSNaohV23IUzNlBw7
+1FmvvW5GKK0xggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0g
+RzMCDDSdoX7GqonhoE7TszANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgw/BEdvjD
+7iiZZWBRRZg2MBLKK9AsJFHTi4K14LKxXmkwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
+hkiG9w0BCQUxDxcNMjAxMjA5MTg1MDMxWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjAL
+BglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG
+9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBACbUdgVG1+HXmaNx2Tqw/59X9wd2
+qu9xSanm5ADt4siYpmMZIGwsWF4dDeoh3S2wQa/S5MwZ3lpTLVlQzIQMczzsdrv2UmT0t6ai+6A6
+zSEYoE0Hb4is7OLRbN4foYBa7PUnwtJew7GenBCMJ2K7W288m/bCyGer/5TmU2z8xHBWhsBFzJvH
+vZJrA/Vu+pB/1I7ke7ztkPC/CVmrOxxV5hy8aT73RkRseBK3p010xKAtCIiHidWz24d0IfWPVefN
+6VS9SfU9YS3QwRRF7vlGXdpCXXqvEHK07M7jBp9K/nExxsu2BTVwamlMNNVtAUiVEaVeooU9lQHr
+Q4/tPSHuTp0=
+--0000000000009d23c905b60c884f--
