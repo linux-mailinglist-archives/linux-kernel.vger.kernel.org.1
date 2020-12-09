@@ -2,89 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15232D4BB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAF52D4BB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388215AbgLIUYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:24:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36670 "EHLO mail.kernel.org"
+        id S2388223AbgLIUZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:25:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387544AbgLIUY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:24:28 -0500
-Date:   Wed, 9 Dec 2020 21:23:44 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607545427;
-        bh=Kizcyjwn9H/24P1nPu65kFtaf/oYsckg1+W7ag2YmCM=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AOMrCxC1eHDVN+qmxrfNgjSmBZITb2c0+7EBTD7Mq0YGUmvcCtfnx5DRLH9wEtN/q
-         KNCIWX17TwuuB9g1HvO/GgXHaA0gam+2yf64Tp5ofJlpSHpVkwmdQrqj6IFwr7Tusd
-         vi8H3a34hKY16Z8hzfcxp4vaABLBIYQ/JWcwIkhsrRLNmK8pSm0HLiUnxXJPjLqTLJ
-         H+InYWffxNqiesqoRItql33WjOlkmw11FGmjDs7EG1pmjgNJBI810kQrZm6Zz25Y7p
-         5zPMx2GZ1+B/rc3RENCrG3LRtej86bGSinXnamqUEKt/wSh3PawQ5EnPmLzVd+8HP7
-         LfN6Mm+qJ7kQw==
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v2 12/18] i2c: owl: Add compatible for the Actions Semi
- S500 I2C controller
-Message-ID: <20201209202344.GC3499@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
- <7622fae80d12d7f423fc25190159af494c359200.1605823502.git.cristian.ciocaltea@gmail.com>
+        id S1733214AbgLIUYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 15:24:46 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 440F023A33;
+        Wed,  9 Dec 2020 20:24:05 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 15:24:03 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-fsdevel@vger.kernel.org
+Subject: fs/namei.c: Make status likely to be ECHILD in lookup_fast()
+Message-ID: <20201209152403.6d6cf9ba@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Qbvjkv9qwOGw/5Fx"
-Content-Disposition: inline
-In-Reply-To: <7622fae80d12d7f423fc25190159af494c359200.1605823502.git.cristian.ciocaltea@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From:  Steven Rostedt (VMware) <rostedt@goodmis.org>
 
---Qbvjkv9qwOGw/5Fx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Running my yearly branch profiling code, it detected a 100% wrong branch
+condition in name.c for lookup_fast(). The code in question has:
 
-On Fri, Nov 20, 2020 at 01:56:06AM +0200, Cristian Ciocaltea wrote:
-> Add S500 variant to the list of devices supported by the Actions Semi
-> Owl I2C driver.
->=20
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+		status = d_revalidate(dentry, nd->flags);
+		if (likely(status > 0))
+			return dentry;
+		if (unlazy_child(nd, dentry, seq))
+			return ERR_PTR(-ECHILD);
+		if (unlikely(status == -ECHILD))
+			/* we'd been told to redo it in non-rcu mode */
+			status = d_revalidate(dentry, nd->flags);
 
-Applied to for-next, thanks!
+If the status of the d_revalidate() is greater than zero, then the function
+finishes. Otherwise, if it is an "unlazy_child" it returns with -ECHILD.
+After the above two checks, the status is compared to -ECHILD, as that is
+what is returned if the original d_revalidate() needed to be done in a
+non-rcu mode.
 
+Especially this path is called in a condition of:
 
---Qbvjkv9qwOGw/5Fx
-Content-Type: application/pgp-signature; name="signature.asc"
+	if (nd->flags & LOOKUP_RCU) {
 
------BEGIN PGP SIGNATURE-----
+And most of the d_revalidate() functions have:
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/RMlAACgkQFA3kzBSg
-Kba8MA//ZxwL5ZtaM8ANFzw8HReUj4Aafx2SwGWsa0ZoKVqlQG6rfI0mFP65wXzQ
-OVT1sNs5d1Ah1AG7mBR0tfC8p5bHdrlmRUI028dqbqih+fsEBUvUpvyGcMOsQPk+
-caXUDOpiUaaD6nXJ9GzIXB9XF+vwDZAYiIcndyN1+DNdyRHP3dHbfTCeBBEAk+Qv
-UBT6pgxT02yCZfY0C53bhKsUIs5hmKGzpzCjDXRABJZXYzDc2OrJaURoUzaAPyAD
-tny8LPjR58XgiUGDCmk31LPS9k9ecq0M/0mpd4p23Y40R7dVM5LUViM0yQoTp46S
-qJiIW6sxBa2eVfqxecN7scxT2NoPf1X7/Pjzln1Y9vRQqbhZvHuVrncBcqTF/4Tg
-+eszAVcoWoqhW+05ch7ZoaDcqqyR9TxPQ2f0Erj4+75Gx3/I4Mo1GUhEgwS7gEG5
-b2fHzHgPX8OoeHlOSTlfZj0B4dpoKdTQJEonvKX6aUuStneBcveLv6K4qYDKjS2O
-ptR3BiN2nTmkuWiqhpJOUF8LUdXVmclvQ9kMTbhqQ9exuSUe6GTmXoXNz551dRU7
-jzGp3wcDi9dYqGyuy/lz2W5qYYjlyEt+CBqUgheBWsHU1TulZzjARocyzS7n/TQJ
-fJt2sFiCu1Hv4QgLERdfFKxcdSgEsKYmL5SuO+atA7oeL6j13pA=
-=E6fB
------END PGP SIGNATURE-----
+	if (flags & LOOKUP_RCU)
+		return -ECHILD;
 
---Qbvjkv9qwOGw/5Fx--
+It appears that that is the only case that this if statement is triggered
+on two of my machines, running in production.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+diff --git a/fs/namei.c b/fs/namei.c
+index d4a6dd772303..8dd734efae9b 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -1495,7 +1495,7 @@ static struct dentry *lookup_fast(struct nameidata *nd,
+ 			return dentry;
+ 		if (unlazy_child(nd, dentry, seq))
+ 			return ERR_PTR(-ECHILD);
+-		if (unlikely(status == -ECHILD))
++		if (likely(status == -ECHILD))
+ 			/* we'd been told to redo it in non-rcu mode */
+ 			status = d_revalidate(dentry, nd->flags);
+ 	} else {
