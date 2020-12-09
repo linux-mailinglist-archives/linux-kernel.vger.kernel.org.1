@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DFB2D4C62
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F992D4C78
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgLIVBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 16:01:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726576AbgLIVBw (ORCPT
+        id S2387611AbgLIVGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 16:06:45 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:27895 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbgLIVGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 16:01:52 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889B9C061794
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 13:01:12 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id b9so2060764qtr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 13:01:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ExCyT+SCyEhlsRTDkdqpqOCI/2LqGwYMywiKe/9st7A=;
-        b=NurNnQGxxSkfZQjGs80r0MdCe57Y8YszlEuoc2elRd+DXWUpnANMlVzzuNTwPH+FN+
-         zrqk3CEFeTymZ/WhIRsmc63GudmjGSnyxwYmWSoC7rKyY2wzMZjlz/CVmZBX/VJJMIz3
-         +V7G4VxJctuBUoEtBaHlhidY8aE2WRrnpXG+GwJRVVqPfdFowfLmuJm1T6YkWhhmQCVx
-         7ZZCzoKpifkSTMUHpgTPNtkx7asho6Ik5kc1O3GeQRJUvA7miROIB2zSIeCZSCS+pDTA
-         hyyaBCcccsB9P998NCm428ljTqSZ0zroaXp50HK7VLiXfGKPXTaFmUK1acRBz1R7/fq3
-         Jw7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ExCyT+SCyEhlsRTDkdqpqOCI/2LqGwYMywiKe/9st7A=;
-        b=NCJz6/3yuoQ7E3PfD6PHqf6PX+/SSz1dS7wXYsIrdiuqw6T58DR1chS8yUDur/GTcX
-         IlzXCdwR5nuLcIdZWuYnAwsRgqPYd9YFO+gbAJJqtG0aVhnW8gO6MK3sMD1KNGcyXSxV
-         hDmb7PT+axokg3Bpx6cCwM6Me+wjvhU8hPIRS/a7BRZHGj/zp7Pjk+suBqzWrTWu17oo
-         gW4Q9tzcVBY1xA9XvMx4DF0u3+boL/7B8ewh1QRxmDtwNuaZs4HOvdoaI9Yt3inXNWdi
-         SjKgiAKN++oKEN8XyMVAnKZLshIFwfXxnJzONUhh7bEIejaxQL3QIjZMm9HKpkP6TkdO
-         G8Sw==
-X-Gm-Message-State: AOAM533dxnELWdjRG0erffqMAAatZeMc7wmbwFAnxc6fW5FfIoiKh/Cs
-        xEuu2CjvjuDpAZnSWns2IKZ/0g==
-X-Google-Smtp-Source: ABdhPJyXjhK+L8ctOi5c31cd5zlhIMw/LoMHFxPJanVLeUpnUks4dOAQNYla3t3nAPX+6am0z/Nk+g==
-X-Received: by 2002:aed:2ba5:: with SMTP id e34mr5353832qtd.146.1607547671626;
-        Wed, 09 Dec 2020 13:01:11 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id y9sm1914394qtm.96.2020.12.09.13.01.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 13:01:10 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kn6aD-008OUf-U6; Wed, 09 Dec 2020 17:01:09 -0400
-Date:   Wed, 9 Dec 2020 17:01:09 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leon@kernel.org>, Zou Wei <zou_wei@huawei.com>,
-        saeedm@nvidia.com, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] net/mlx5_core: remove unused including
- <generated/utsrelease.h>
-Message-ID: <20201209210109.GX5487@ziepe.ca>
-References: <1607343240-39155-1-git-send-email-zou_wei@huawei.com>
- <20201208112226.1bb31229@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <20201209062100.GK4430@unreal>
- <20201209090446.7daadd13@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        Wed, 9 Dec 2020 16:06:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1607547832;
+        s=strato-dkim-0002; d=fossekall.de;
+        h=Message-Id:Date:Subject:Cc:To:From:From:Subject:Sender;
+        bh=Yv3BisX3VSbCqFQLA4ar1BwG3T8m1Bk8ItATVLb6B/A=;
+        b=isEvdXqRuahkZiE4PEREE3/32hxkwMb9MkEqXaf7S4lag83P4e87iiDlwJQezhPUKy
+        aU+yW7ljxQQurJuu9c/BRFfRbJFPXmky6YXKc3Vr4EfaQyfC1hiAK8tEjrMT9XBRh+8t
+        sNs0qqkn6A/ZfsVycn9s+YTMEzydy9RDcS8bv7X/7l5YoZRMNId3cy2fZtYByUhvMq38
+        INdF+z3paYVrclIO8HK21clF8lKspYs2vJ0FeUcTMNWOSiUchqGq97DOxi5pf4Rg9sVs
+        D62jtM/b1siQoQWWWKq6vaMStP2pVD2twhtav1z/C8Jc4tFy7RE0U2+07etaMB9fNJbH
+        BtXg==
+X-RZG-AUTH: ":O2kGeEG7b/pS1EzgE2y7nF0STYsSLflpbjNKxx7cGrBOdI6BL9pkS3QW19mO7I+/JwRspuzJFZuRzQ=="
+X-RZG-CLASS-ID: mo00
+Received: from aerfugl
+        by smtp.strato.de (RZmta 47.6.2 AUTH)
+        with ESMTPSA id e07b38wB9L3mB1V
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Wed, 9 Dec 2020 22:03:48 +0100 (CET)
+Received: from koltrast.a98shuttle.de ([192.168.1.27] helo=a98shuttle.de)
+        by aerfugl with smtp (Exim 4.89)
+        (envelope-from <michael@a98shuttle.de>)
+        id 1kn6cj-0008CT-7V; Wed, 09 Dec 2020 22:03:45 +0100
+Received: (nullmailer pid 385332 invoked by uid 502);
+        Wed, 09 Dec 2020 21:03:45 -0000
+From:   Michael Klein <michael@fossekall.de>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Michael Klein <michael@fossekall.de>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 0/3] BPi M2 Zero poweroff support via new regulator-poweroff driver
+Date:   Wed,  9 Dec 2020 22:02:18 +0100
+Message-Id: <20201209210221.385188-1-michael@fossekall.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209090446.7daadd13@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 09:04:46AM -0800, Jakub Kicinski wrote:
-> On Wed, 9 Dec 2020 08:21:00 +0200 Leon Romanovsky wrote:
-> > On Tue, Dec 08, 2020 at 11:22:26AM -0800, Jakub Kicinski wrote:
-> > > On Mon, 7 Dec 2020 20:14:00 +0800 Zou Wei wrote:  
-> > > > Remove including <generated/utsrelease.h> that don't need it.
-> > > >
-> > > > Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> > > >  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 1 -
-> > > >  1 file changed, 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > > > index 989c70c..82ecc161 100644
-> > > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > > > @@ -30,7 +30,6 @@
-> > > >   * SOFTWARE.
-> > > >   */
-> > > >
-> > > > -#include <generated/utsrelease.h>
-> > > >  #include <linux/mlx5/fs.h>
-> > > >  #include <net/switchdev.h>
-> > > >  #include <net/pkt_cls.h>  
-> > 
-> > Jakub,
-> > 
-> > You probably doesn't have latest net-next.
-> > 
-> > In the commit 17a7612b99e6 ("net/mlx5_core: Clean driver version and
-> > name"), I removed "strlcpy(drvinfo->version, UTS_RELEASE,
-> > sizeof(drvinfo->version));" line.
-> > 
-> > The patch is ok, but should have Fixes line.
-> > Fixes: 17a7612b99e6 ("net/mlx5_core: Clean driver version and name")
-> 
-> Hm. Pretty sure our build bot gets a fresh copy before testing. 
-> Must had been some timing issue, perhaps? Looks like the commit
-> came in with the auxbus merge.
+Changes in v2:
+  - rename DT node
 
-mlx5-next is in linux-next independently so people will be sending
-fixes against stuff in linux-next before it hits net-next.
+Changes in v3:
+  - add regulator-poweroff driver
+  - use regulator-poweroff driver instead of gpio-poweroff
 
-Jason
+Changes in v4:
+  - hardcode poweroff timeout to 3000ms, not configurable any more
+  - remove support for multiple regulators
+  - fix Documentation issues
+
+Michael Klein (3):
+  power: reset: new driver regulator-poweroff
+  Documentation: DT: binding documentation for regulator-poweroff
+  ARM: dts: sun8i-h2-plus-bananapi-m2-zero: add poweroff node
+
+ .../power/reset/regulator-poweroff.yaml       | 37 ++++++++
+ .../dts/sun8i-h2-plus-bananapi-m2-zero.dts    |  5 ++
+ drivers/power/reset/Kconfig                   |  7 ++
+ drivers/power/reset/Makefile                  |  1 +
+ drivers/power/reset/regulator-poweroff.c      | 86 +++++++++++++++++++
+ 5 files changed, 136 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/reset/regulator-poweroff.yaml
+ create mode 100644 drivers/power/reset/regulator-poweroff.c
+
+-- 
+2.29.2
+
