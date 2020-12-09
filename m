@@ -2,170 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BBA2D4D27
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA632D4D2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388374AbgLIVzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 16:55:23 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:50118 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727030AbgLIVzX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 16:55:23 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kn7Q1-001gO4-Ci; Wed, 09 Dec 2020 14:54:41 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kn7Q0-00025k-Im; Wed, 09 Dec 2020 14:54:41 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Yahu Gao <yahu.gao@windriver.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>
-References: <20201209112100.47653-1-yahu.gao@windriver.com>
-Date:   Wed, 09 Dec 2020 15:54:02 -0600
-In-Reply-To: <20201209112100.47653-1-yahu.gao@windriver.com> (Yahu Gao's
-        message of "Wed, 9 Dec 2020 19:20:59 +0800")
-Message-ID: <87zh2mprwl.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S2388366AbgLIV7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 16:59:19 -0500
+Received: from mail-bn8nam11on2072.outbound.protection.outlook.com ([40.107.236.72]:55514
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727030AbgLIV7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 16:59:18 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NzCXjno3bXyWkKf7lHBOz3nAV6PI/SUxtyhmj740IevR8Ivgrp39dcr3CHn4qWMw1f7tBddmWWx2izILt/mh3HDAkPHb3qlvB5+uNoxCOlhrEHpD3rxLPHOcdTuynP5FItEYqlbMlZkkeDZbPknJLLs+cwBuSS/mBzxpBwdh3E7YNmC4L4aDDPAYOZZVnSqTCR9vjplROAKAzFv6MdM3ACbbnlWkmB9Ff4Y1qfOH2WEie8XXEJZzzOQIv+4r8pphA/PmwFp85AxOndQNadFXM65s9WvPvewzbHZt+zvV57/5euLuoBzPEL4KK1eW15gGSxqg9c0u+5yO++oWpC7hFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d7ns8YrhfeYDOZ7fjzSSFx5McWgYveAKLfWkcbVlT38=;
+ b=gzqtE9XMaD9RSPtBwVEZS6By0BhqqrGANqfk0cSbr01tTz1njcsyFrPgIQX8B+pq2+xJieBvEtkL3/0j5iYIkcjBQoAwpEBWbcqFtWFnS1vfguP7LaBNEbnnd0eCeRDDb7TuRrIcMWrzcYUF7R5+0+sGUELunlNTYE2R8+63YijAb581bYp0F0AramHOmgOG3qkhrH5Cz2TIo6+FXlQlss5QyP9rCywNd3hLs5Dccwt5c7w1zLX/pzp5ievnkqeGp8ujgqELg5T/kssyroCn08M61x9Burq5P+59/g21e7JYvpLy+Ec5y4sGLae7+NzZpGODIzVkzWGXAEWF0MrVrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d7ns8YrhfeYDOZ7fjzSSFx5McWgYveAKLfWkcbVlT38=;
+ b=BDW34uZSXCbu7DS/S4Zt9BCvcPv7HgCrU37jbOnh/+G46wrfQ+7jcxpLXqpIELpRTlAbUdICVgAOXbSLu33ueagMGcgsXGac9Pfa/nbj0gkSRPG2kNfc1iiNqNljejbADch6GcmqaZ/HjwYplFD3XP6LJXMK2T1X2EZHl/ekqaY=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from DM6PR12MB3962.namprd12.prod.outlook.com (2603:10b6:5:1ce::21)
+ by DM6PR12MB3467.namprd12.prod.outlook.com (2603:10b6:5:3c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Wed, 9 Dec
+ 2020 21:58:25 +0000
+Received: from DM6PR12MB3962.namprd12.prod.outlook.com
+ ([fe80::d055:19dc:5b0f:ed56]) by DM6PR12MB3962.namprd12.prod.outlook.com
+ ([fe80::d055:19dc:5b0f:ed56%6]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
+ 21:58:25 +0000
+From:   Luben Tuikov <luben.tuikov@amd.com>
+To:     dri-devel@lists.freedesktop.org,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Luben Tuikov <luben.tuikov@amd.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Subject: [PATCH] drm/sched: Add missing structure comment
+Date:   Wed,  9 Dec 2020 16:58:07 -0500
+Message-Id: <20201209215807.75983-1-luben.tuikov@amd.com>
+X-Mailer: git-send-email 2.29.2.404.ge67fbf927d
+In-Reply-To: <20201209210211.306f3c61@canb.auug.org.au>
+References: <20201209210211.306f3c61@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [165.204.55.250]
+X-ClientProxiedBy: YTOPR0101CA0025.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:15::38) To DM6PR12MB3962.namprd12.prod.outlook.com
+ (2603:10b6:5:1ce::21)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kn7Q0-00025k-Im;;;mid=<87zh2mprwl.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+8DidLiK3xuGsZRPuNCOhwUzv0QdyZRiI=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_12,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4964]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 T_XMDrugObfuBody_12 obfuscated drug references
-X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Yahu Gao <yahu.gao@windriver.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 465 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 4.6 (1.0%), b_tie_ro: 3.2 (0.7%), parse: 1.14
-        (0.2%), extract_message_metadata: 12 (2.6%), get_uri_detail_list: 3.3
-        (0.7%), tests_pri_-1000: 4.0 (0.9%), tests_pri_-950: 1.02 (0.2%),
-        tests_pri_-900: 0.80 (0.2%), tests_pri_-90: 81 (17.4%), check_bayes:
-        79 (17.1%), b_tokenize: 8 (1.6%), b_tok_get_all: 12 (2.6%),
-        b_comp_prob: 2.8 (0.6%), b_tok_touch_all: 54 (11.6%), b_finish: 0.73
-        (0.2%), tests_pri_0: 347 (74.7%), check_dkim_signature: 0.40 (0.1%),
-        check_dkim_adsp: 2.1 (0.4%), poll_dns_idle: 0.65 (0.1%), tests_pri_10:
-        3.0 (0.6%), tests_pri_500: 7 (1.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: Review request 0/1: fs/proc: Fix NULL pointer dereference in
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain.amd.com (165.204.55.250) by YTOPR0101CA0025.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:15::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 21:58:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 55e5c900-51a4-48ee-eaf0-08d89c8d8d83
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3467:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3467CFECD008560F0C02E38E99CC0@DM6PR12MB3467.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tvz8yBk9eNgip+cqxBMtqagRlESpEoDrIx3HRmpEc9r0bovrzPp+GkVVYYMbLjko4FN6QiV0OGtQDvDF/K2ZplUBFFB2SksphdE73j8OMsYF7C3s+DmxLKtpHNfXf8RS5Wg5uOuZRBrCWBIvLv/Wn+PCSKutJi94inXIserZI2GRdJsSrIijGLX6Ztuf+CnBzgvzWiIe77kY0pHKwu+2328IhKD+qr7oacFZutwFoiaBBhiABOKHdNqelPX3hXLrs2CeZFyqVTJkEllYcIncgU3aIxRZ3tGubvqjdCgkSIf2DRrQDQtQTGOwZ0zW4YVPf8eBL3ft6ksH2s4ijdZPPkHR/iTjmlZD14A8rRteqlOs5kxy/Iik3lbyFe0B/Zpu
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3962.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(346002)(66476007)(54906003)(34490700003)(66946007)(26005)(83380400001)(16526019)(36756003)(66556008)(110136005)(86362001)(52116002)(7696005)(508600001)(2906002)(6666004)(4326008)(1076003)(6486002)(44832011)(8936002)(5660300002)(8676002)(2616005)(956004)(66574015)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TzBOT0JNUTlrbUg5NnF4LzQyUzA0YmVCMmd6dHArbjNzRFl4cGMvbnZXWks1?=
+ =?utf-8?B?MHYrUkVHdkxvVGRwN1RWQmg5dzlaSE9KMEFwT05ZMXNMTXhBMnpPQU81NUo0?=
+ =?utf-8?B?Kzl6NGNabDdFNmpyVko1V3V2dnJnUlNNdURMMUFjbTFrd01adnppWFN1QXc0?=
+ =?utf-8?B?RUZEU0RZTjJ1cFFBVVM2NnNTMHFLaHdMRWdUOVZPUmhjY2JheXFqdWlab2Zp?=
+ =?utf-8?B?NEoyRlFXdzI3VmtCN2xaWG01dk1sWU1XS2xGWDllRmFpNmUwRVBFaVF4MCtv?=
+ =?utf-8?B?YnlqVUlnQVFmZEkxUHlNdG9LVlduazYrYVp2TnRoenIvTXlqY1RXa0dCQmo4?=
+ =?utf-8?B?NHkvYUdaT1Q1bGV0dlVnRndnYmszL3kxSVNuT0lOdUZjdG9pZEpJaEREczFI?=
+ =?utf-8?B?UnlXK3dWOVBTS0NJUGFBemFWY29qRERDR21KS295by9keTZVQXZsUlZBQW96?=
+ =?utf-8?B?R2piY0hYSTlPTzdoem51eittNUMvbitzWEVUd1ZmMUQwZEYrQTk4ZjBHUEpI?=
+ =?utf-8?B?aVlvdmNqSysxU0RvUHJNUHpSRE16TXh6WkRZMDJPQlFFckhqajM1dVFCbXQ0?=
+ =?utf-8?B?dXZ2dkloY0xDQ2dEcXAwSFk0ZStQbUhySFluWStnaHNKNDBYS3BwK0NTcU5j?=
+ =?utf-8?B?dnkrTC9zRjJtcWRxREJSa29Ld1pOUDlKbUZmc3lwKy9YSXJrd2FIdEMveUs2?=
+ =?utf-8?B?cS8xSU9MODZ5eXFOeUtweTFTUjVycmtVOFhTcnNVb25wY2ZSM1RnMDcrVUtl?=
+ =?utf-8?B?d2pLT21DeCtudnBlM0plejkwYWVFUEZQV3l0T3QyOG1IY3NnZFFoeVMvdUpM?=
+ =?utf-8?B?Um1Sb2xGZVpGUVBlVEpvc21UR0hXZG9McEdWdnc0Yk16U3ZxbWpsM0ZuOTdw?=
+ =?utf-8?B?TFhqZnpZMEZaZHVtaWRtdVVicWtXYk5oVCtjc2ZvL1lMSmdaZzFYUDY3Sm1G?=
+ =?utf-8?B?L1ZZcXZ6MXJRN3J3NktOVWgvWElidzV3a1pGNDFqSDgwQTlXRE1uM2JOdy94?=
+ =?utf-8?B?aE4vaURkYUxQbWQ1ZGlDNlNISW83VGpvMWFyUWYwY1h0KzdnMDBlOVlmUlk0?=
+ =?utf-8?B?WVRmdXZaSHp5bHNZaXZ5Q1pTelk1OW12bVhmazJHbjFUcTFWU1dFTTlPTjNJ?=
+ =?utf-8?B?cjg0amJPdUFjSHp0TlpCY00wTDFTc3pUTGVwdnBrTE1icDErMVNWREVObzR5?=
+ =?utf-8?B?djdJWTBLOXJwZjd4Njd0R1hqSFEzUzdTemx3d0JiTzVIRlRXM2ltYmNBSlJn?=
+ =?utf-8?B?NW1JRU9tN1FRZnVsYWZ1bzN3ZGNNNGdmcnBWMEFnTFNJakNtVndwTmtzaURi?=
+ =?utf-8?Q?xEjuSp53jSvc/6y+mO74Wlyj1XjXC3TYAk?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3962.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 21:58:24.9920
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55e5c900-51a4-48ee-eaf0-08d89c8d8d83
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4uBxQtJNss89IuYBppj/OrPxXCUvAJZELZprwmn/bFmYB/1lZ6t1uHDXLXix9XVn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3467
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yahu Gao <yahu.gao@windriver.com> writes:
+Add a missing structure comment for the recently
+added @list member.
 
-> There is a kernel NULL pointer dereference was found in Linux system.
-> The details of kernel NULL is shown at bellow.
->
-> Currently, we do not have a way to provoke this fault on purpose, but
-> the reproduction rate in out CI loops is high enough that we could go
-> for a trace patch in black or white UP and get a reproduction in few
-> weeks.
->
-> Our kernel version is 4.1.21, but via analyzing the source code of the
-> call trace. The upstream version should be affected. Really sorry for
-> havn't reproduced this in upstream version. But it's easier to be safe
-> than to prove it can't happen, right?
+Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
 
-Except I there are strong invariants that suggests that it takes
-a memory stomp to get a NULL pointer deference here.
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Christian König <christian.koenig@amd.com>
+---
+ include/drm/gpu_scheduler.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-For the life of a proc inode PROC_I(inode)->pid should be non-NULL.
+diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
+index 2e0c368e19f6..975e8a67947f 100644
+--- a/include/drm/gpu_scheduler.h
++++ b/include/drm/gpu_scheduler.h
+@@ -171,10 +171,10 @@ struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f);
+  * struct drm_sched_job - A job to be run by an entity.
+  *
+  * @queue_node: used to append this struct to the queue of jobs in an entity.
++ * @list: a job participates in a "pending" and "done" lists.
+  * @sched: the scheduler instance on which this job is scheduled.
+  * @s_fence: contains the fences for the scheduling of job.
+  * @finish_cb: the callback for the finished fence.
+- * @node: used to append this struct to the @drm_gpu_scheduler.pending_list.
+  * @id: a unique id assigned to each job scheduled on the scheduler.
+  * @karma: increment on every hang caused by this job. If this exceeds the hang
+  *         limit of the scheduler then the job is marked guilty and will not
+-- 
+2.29.2.404.ge67fbf927d
 
-For a non-NULL pid pointer ->tasks[PIDTYPE_PID].first simply reads
-an entry out of the struct pid.  Only pid needs to be non-NULL.
-
-So I don't see how you are getting a NULL pointer derference.
-
-Have you decoded the oops, looked at the assembly and seen which field
-is NULL?  I expec that will help you track down what is wrong.
-
-
-> Details of kernel crash:
-> ----------------------------------------------------------------------
-> [1446.285834] Unable to handle kernel NULL pointer dereference at
-> virtual address 00000008
-> [ 1446.293943] pgd = e4af0880
-> [ 1446.296656] [00000008] *pgd=10cc3003, *pmd=04153003, *pte=00000000
-> [ 1446.302898] Internal error: Oops: 207 1 PREEMPT SMP ARM
-> [ 1446.302950] Modules linked in: adkNetD ncp
-> lttng_ring_buffer_client_mmap_overwrite(C)
-> lttng_ring_buffer_client_mmap_discard(C)
-> lttng_ring_buffer_client_discard(C)
-> lttng_ring_buffer_metadata_mmap_client(C) lttng_probe_printk(C)
-> lttng_probe_irq(C) lttng_ring_buffer_metadata_client(C)
-> lttng_ring_buffer_client_overwrite(C) lttng_probe_signal(C)
-> lttng_probe_sched(C) lttng_tracer(C) lttng_statedump(C)
-> lttng_lib_ring_buffer(C) lttng_clock_plugin_arm_cntpct(C) lttng_clock(C)
-> [ 1446.302963] CPU: 0 PID: 12086 Comm: netstat Tainted: G C
-> 4.1.21-rt13-* #1
-> [ 1446.302967] Hardware name: Ericsson CPM1
-> [ 1446.302972] task: cbd75480 ti: c4a68000 task.ti: c4a68000
-> [ 1446.302984] PC is at pid_delete_dentry+0x8/0x18
-> [ 1446.302992] LR is at dput+0x1a8/0x2b4
-> [ 1446.303003] pc : [] lr : [] psr: 20070013
-> [ 1446.303003] sp : c4a69e88 ip : 00000000 fp : 00000000
-> [ 1446.303007] r10: 000218cc r9 : cd228000 r8 : e5f44320
-> [ 1446.303011] r7 : 00000001 r6 : 00080040 r5 : c4aa97d0 r4 : c4aa9780
-> [ 1446.303015] r3 : 00000000 r2 : cbd75480 r1 : 00000000 r0 : c4aa9780
-> [ 1446.303020] Flags: nzCv IRQs on FIQs on Mode SVC_32 ISA ARM Segment
-> user
-> [ 1446.303026] Control: 30c5387d Table: 24af0880 DAC: 000000fd
-> [ 1446.303033] Process netstat (pid: 12086, stack limit = 0xc4a68218)
-> [ 1446.303039] Stack: (0xc4a69e88 to 0xc4a6a000)
-> [ 1446.303052] 9e80: c4a69f70 0000a1c0 c4a69f13 00000002 e5f44320
-> cd228000
-> [ 1446.303059] 9ea0: 000218cc c0571604 c0a60bcc 00000000 00000000
-> 00000000 c4a69f20 c4a69f15
-> [ 1446.303065] 9ec0: 00003133 00000002 c4a69f13 00000000 0000001f
-> c4a69f70 c35de800 0000007c
-> [ 1446.303072] 9ee0: ce2b1c00 cd228000 00000001 c05747b8 c05745cc
-> c35de800 0000001f 00000000
-> [ 1446.303078] 9f00: 00000004 cd228008 00020000 c05745cc 33000004
-> c0400031 c4a68000 00000400
-> [ 1446.303086] 9f20: beb78c2c cd228000 c4a69f70 00000000 cd228008
-> c0ffca90 c4a68000 00000400
-> [ 1446.303103] 9f40: beb78c2c c052cd0c bf08a774 00000400 01480080
-> 00008000 cd228000 cd228000
-> [ 1446.303114] 9f60: c040f7c8 c4a68000 00000400 c052d22c c052cd8c
-> 00000000 00000021 00000000
-> [ 1446.303127] 9f80: 01480290 01480280 00007df0 ffffffea 01480060
-> 01480060 01480064 b6e424c0
-> [ 1446.303143] 9fa0: 0000008d c040f794 01480060 01480064 00000004
-> 01480080 00008000 00000000
-> [ 1446.303150] 9fc0: 01480060 01480064 b6e424c0 0000008d 01480080
-> 01480060 00035440 beb78c2c
-> [ 1446.303156] 9fe0: 01480080 beb78160 b6ede59c b6edea3c 60070010
-> 00000004 00000000 00000000
-> [ 1446.303167] [] (pid_delete_dentry) from [] (dput+0x1a8/0x2b4)
-> [ 1446.303176] [] (dput) from [] (proc_fill_cache+0x54/0x10c)
-> [ 1446.303189] [] (proc_fill_cache) from []
-> (proc_readfd_common+0xd8/0x238)
-> [ 1446.303203] [] (proc_readfd_common) from [] (iterate_dir+0x98/0x118)
-> [ 1446.303217] [] (iterate_dir) from [] (SyS_getdents+0x7c/0xf0)
-> [ 1446.303233] [] (SyS_getdents) from [] (__sys_trace_return+0x0/0x2c)
-> [ 1446.303243] Code: e8bd0030 e12fff1e e5903028 e5133020 (e5930008) 
-
-Eric
