@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CDE2D49EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:15:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 662AC2D49F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387603AbgLITOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:14:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387441AbgLITOm (ORCPT
+        id S2387630AbgLITRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:17:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37923 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733106AbgLITRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:14:42 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7F3C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 11:14:02 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id a9so4659848lfh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 11:14:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z3Nmrur31MwA2YAFkLrqIIvFJlFJK1KzSVW0MgYqjnU=;
-        b=iF8p7WSVKFaLPoiil/apBE7Bc/WIgYkkC2eeoVYJyiSsI93Shgjg2pmgj5T42cFNdT
-         dQVofMSyw/O7oowlMT0vQ1v9J6nvT5o0lYVaPwlYwvdR2TSfvxKirHUV9mUSQpwQ0rCj
-         LYzfVONNcmJCuJemyMspDvLrySVvj5A434PDo=
+        Wed, 9 Dec 2020 14:17:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607541356;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PjbYSkTUKJTra9F+rU4vKjR/ApBdCFoCJ6AA7j7gnIY=;
+        b=UCGeKEzliNliiuGDVp8uOIWIw9n6OznEVbUJRMA1ePZaeKHfZXf2U89VYRyDvc0QfbVcot
+        x5JjJ+zXmVor0KoYQ0rSfzfM+TbOP3qfFMI5lZ51LU3ScPmYSGWZgZuPQ4wniM8f/8QRDg
+        jRDOjfTjX3dFvljzJRgYZNaDlwYXHEM=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-GUDrdtb-M9CtiR62oaMt3Q-1; Wed, 09 Dec 2020 14:15:54 -0500
+X-MC-Unique: GUDrdtb-M9CtiR62oaMt3Q-1
+Received: by mail-lj1-f199.google.com with SMTP id z26so2564198ljm.18
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 11:15:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=z3Nmrur31MwA2YAFkLrqIIvFJlFJK1KzSVW0MgYqjnU=;
-        b=ryTKFNcmgZxAI65BWf3DBFVVPG1nmQqf077semkBeQLz9ejrH2tAYLktPGMSU8eQ+e
-         0cYExGD0JNO+FM3X//HPjdxhvzvHZuFMi6eWsq9R9jpsIbUAG0G84uZ5Vh4IWofvjKpZ
-         6OQ9ET4/kLdSyBYfzGW05L88ArvoraZZXqV5Dn24d34x0k4Oruhvq6XHUZdToRgkVWUT
-         M3gzfA045E2v2RTsrJpB3aIKYP/REl41fBxRso6RnvqYGCTzn97a/q0LNwpvzgJPzrRH
-         MKIALVJnUxmrdBg+GhQHDwvnSHsCeVEcfY6hTc167e2u8WUEUL7oedyX4PZ9tjqypHDV
-         7zbA==
-X-Gm-Message-State: AOAM531RaTYr2gfizxX8rsQZWiDvWKXw36XakYattj5H5qAjjkAKcyqU
-        T/FKL0B4Bz2B0Ry3cSAXbh0A0ddV92ALiw==
-X-Google-Smtp-Source: ABdhPJwXLhmao2aInxeqVFeeNpAD5tbmcjsnnKLpEOjqoPZs7XOitRCEr6jpZrl5KmDht5JXOjGbWA==
-X-Received: by 2002:a19:c5:: with SMTP id 188mr1447127lfa.511.1607541240479;
-        Wed, 09 Dec 2020 11:14:00 -0800 (PST)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id n22sm10687lfe.230.2020.12.09.11.13.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 11:13:59 -0800 (PST)
-Received: by mail-lf1-f54.google.com with SMTP id y19so4583668lfa.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 11:13:59 -0800 (PST)
-X-Received: by 2002:a19:7d85:: with SMTP id y127mr1439263lfc.253.1607541239067;
- Wed, 09 Dec 2020 11:13:59 -0800 (PST)
+        bh=PjbYSkTUKJTra9F+rU4vKjR/ApBdCFoCJ6AA7j7gnIY=;
+        b=mIq//zpLsYsei6vqxx377qfSH3Sh+m1vOhX0lYtoiuUt8u1BXaP0Pv2cm3my4vRCLh
+         dZ22MX97rOSGtj5xHlZzIzyh7aq1Y0Gbafct0ZpVxgFQA370S2688TM6psJ94/di/x8o
+         YKpVCWZly3sME/BZWc1cJrxgQxHqX35XO6+Imi58HBF0sMGa++zjXzT8bf6HfeVGcT+6
+         jLBr3A8L32UU9opEpChA2KGGnJq7nnV3yD3UriMw58uP10W9Kt/BqTnl7aybmALieQHr
+         jiAB0oQTFNbBqxXoT1/TiEwNLrPscU35SYnO3zumXRhLRx+I4giUVVMmhDbxnFdqphOj
+         lbWQ==
+X-Gm-Message-State: AOAM533c0GhMRPGoEzkzfiplSBxFpUTk85ZRUReY7LKjHpqL16pizaXc
+        w3pmp6VotpI7tggIL6PEW5FmP3yp92X7YxH2rvri8Qd1CBxC4PXzjxD1Y3kMC1cnJt+uL5v5IfH
+        vgttFPzyOPbQyE6x3nnCNkNRPU6FF2rBeoldbvFqn
+X-Received: by 2002:a05:651c:10c:: with SMTP id a12mr1658535ljb.414.1607541352071;
+        Wed, 09 Dec 2020 11:15:52 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz9/CimOc3N+72fFhCbbXRSFzpfZduUqobE3ByMI+lzkU6larzWtaAlzRFEmIhhoEYzS/VQ4tAHzGnleY0WZpw=
+X-Received: by 2002:a05:651c:10c:: with SMTP id a12mr1658530ljb.414.1607541351897;
+ Wed, 09 Dec 2020 11:15:51 -0800 (PST)
 MIME-Version: 1.0
-References: <87r1on1v62.fsf@x220.int.ebiederm.org> <20201120231441.29911-15-ebiederm@xmission.com>
- <20201207232900.GD4115853@ZenIV.linux.org.uk> <877dprvs8e.fsf@x220.int.ebiederm.org>
- <20201209040731.GK3579531@ZenIV.linux.org.uk> <877dprtxly.fsf@x220.int.ebiederm.org>
- <20201209142359.GN3579531@ZenIV.linux.org.uk> <87o8j2svnt.fsf_-_@x220.int.ebiederm.org>
-In-Reply-To: <87o8j2svnt.fsf_-_@x220.int.ebiederm.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 9 Dec 2020 11:13:38 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiUMHBHmmDS3_Xqh1wfGFyd_rdDmpZzk0cODoj1i7_VOA@mail.gmail.com>
-Message-ID: <CAHk-=wiUMHBHmmDS3_Xqh1wfGFyd_rdDmpZzk0cODoj1i7_VOA@mail.gmail.com>
-Subject: Re: [PATCH] files: rcu free files_struct
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+References: <20201209141237.GA8092@willie-the-truck> <CAHk-=wht4inbTVVMt2TNDxR_cVjSNaBU3JYyKtRMVovWePb65g@mail.gmail.com>
+ <20201209185020.GC8778@willie-the-truck> <87tusulrog.fsf@redhat.com>
+In-Reply-To: <87tusulrog.fsf@redhat.com>
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+Date:   Wed, 9 Dec 2020 12:15:25 -0700
+Message-ID: <CALzcdduYs4dng6R9j_dFFE5O13Kbpq9Rg05EFaQS1RSCHebYqg@mail.gmail.com>
+Subject: Re: [GIT PULL] IOMMU fix for 5.10 (-final)
+To:     Will Deacon <will@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jann@thejh.net>
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 10:05 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+On Wed, Dec 9, 2020 at 12:12 PM Jerry Snitselaar <jsnitsel@redhat.com> wrote:
 >
-> -                               struct file * file = xchg(&fdt->fd[i], NULL);
-> +                               struct file * file = fdt->fd[i];
->                                 if (file) {
-> +                                       rcu_assign_pointer(fdt->fd[i], NULL);
+>
+> Will Deacon @ 2020-12-09 11:50 MST:
+>
+> > On Wed, Dec 09, 2020 at 10:07:46AM -0800, Linus Torvalds wrote:
+> >> On Wed, Dec 9, 2020 at 6:12 AM Will Deacon <will@kernel.org> wrote:
+> >> >
+> >> > Please pull this one-liner AMD IOMMU fix for 5.10. It's actually a fix
+> >> > for a fix, where the size of the interrupt remapping table was increased
+> >> > but a related constant for the size of the interrupt table was forgotten.
+> >>
+> >> Pulled.
+> >
+> > Thanks.
+> >
+> >> However, why didn't this then add some sanity checking for the two
+> >> different #defines to be in sync?
+> >>
+> >> IOW, something like
+> >>
+> >>    #define AMD_IOMMU_IRQ_TABLE_SHIFT 9
+> >>
+> >>    #define MAX_IRQS_PER_TABLE (1 << AMD_IOMMU_IRQ_TABLE_SHIFT)
+> >>    #define DTE_IRQ_TABLE_LEN ((u64)AMD_IOMMU_IRQ_TABLE_SHIFT << 1)
+>
+> Since the field in the device table entry format expects it to be n
+> where there are 2^n entries in the table I guess it should be:
+>
+> #define DTE_IRQ_TABLE_LEN 9
+> #define MAX_IRQS_PER_TABLE (1 << DTE_IRQ_TABLE_LEN)
+>
+No, ignore that. I'm being stupid.
 
-This makes me nervous. Why did we use to do that xchg() there? That
-has atomicity guarantees that now are gone.
 
-Now, this whole thing should be called for just the last ref of the fd
-table, so presumably that atomicity was never needed in the first
-place. But the fact that we did that very expensive xchg() then makes
-me go "there's some reason for it".
+> >>
+> >> or whatever. Hmm?
+> >
+> > This looks like a worthwhile change to me, but I don't have any hardware
+> > so I've been very reluctant to make even "obvious" driver changes here.
+> >
+> > Suravee -- please can you post a patch implementing the above?
+> >
+> >> That way this won't happen again, but perhaps equally importantly the
+> >> linkage will be more clear, and there won't be those random constants.
+> >>
+> >> Naming above is probably garbage - I assume there's some actual
+> >> architectural name for that irq table length field in the DTE?
+> >
+> > The one in the spec is even better: "IntTabLen".
+> >
+> > Will
+> > _______________________________________________
+> > iommu mailing list
+> > iommu@lists.linux-foundation.org
+> > https://lists.linuxfoundation.org/mailman/listinfo/iommu
+>
 
-Is this xchg() just bogus historical leftover? It kind of looks that
-way. But maybe that change should be done separately?
-
-              Linus
