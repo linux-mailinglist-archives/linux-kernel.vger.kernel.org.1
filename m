@@ -2,154 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407A72D4873
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36CED2D4877
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730210AbgLIR6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:58:36 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:56360 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgLIR6W (ORCPT
+        id S1730749AbgLIR7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:59:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727905AbgLIR7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:58:22 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B9HvPea044251;
-        Wed, 9 Dec 2020 11:57:25 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607536645;
-        bh=xSo6kkY/WAzvZWiG0QrjkyrBLPDwYGU9Z/gfY9LWwv8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=s392Hq/6ukwNSrUVi9G49fjRFR+pNSTDUbKofRr6tEUIBBNhHF4cVFRp8rPq0RP7R
-         bdGIot+bNVYMOr1TDWsU3l7XW0LyDknmRbMgG7cb/LAuL7Ukx2O7pwfGZG6xb3CLKB
-         XQc3ROtdG7If/mYD8W3sa5FrCnEiA//hfEylYFqU=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B9HvPTc088842
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Dec 2020 11:57:25 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 9 Dec
- 2020 11:57:24 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 9 Dec 2020 11:57:24 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B9HvATH094634;
-        Wed, 9 Dec 2020 11:57:21 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>
-Subject: [PATCH RFC 2/2] eeprom: eeprom_93xx46: Add support for ignoring the dummy bit preceding data during read transfer
-Date:   Wed, 9 Dec 2020 23:27:08 +0530
-Message-ID: <20201209175708.16252-3-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201209175708.16252-1-a-govindraju@ti.com>
-References: <20201209175708.16252-1-a-govindraju@ti.com>
+        Wed, 9 Dec 2020 12:59:12 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780E6C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 09:58:32 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id l11so4356453lfg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 09:58:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uJaVhTpiMPaliRW1BsTVPR0HUZ5LPD9/lyKWp6voxZY=;
+        b=W3TAZiMxgQtdmGJSBJFklYY9V2kwPDqdPrz6VB+jV0dmuZj2xY806aorny+f833fr0
+         b8e17lxLA8lqeWSjVicsm8ZauNAfVbS1JSChtiKvqoRliqknYvhRrkhxg/15OsDnB8Ae
+         F7O6VFdwmN7mFS6k9yL922iGj3GMtLKU5aDW0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uJaVhTpiMPaliRW1BsTVPR0HUZ5LPD9/lyKWp6voxZY=;
+        b=MruqyttjjlYhAW/oiQ3qO8nTHBnpEIXaHbcMlOCSsrTyn2NHQxBVQ00XVJc96PUNox
+         girE5mnLhi4fsdJH3fGqcNo8yHRp8oyv1z2Jj+Ce4WiGLzM57zaxmIYUBlp8OldCBH5p
+         oMdEaLrQOmigREW+jGoggER1iX+tgDHXIS3Z5ba1PWy+E+1YLl29YrTHBZuUk5crjla0
+         EWVA5j6GZvKfe0+6Pbhm6CMk3UaYycBgOteV2RCb/Nt7nB24iJcS7j5NFWMa4jZould/
+         +EqRTyeRHiN0NqIXitbPEfFkpCBIe2Dui161fDX3JtYYKUNWbrWnRHg4ORNFCnoNT3XN
+         gIHg==
+X-Gm-Message-State: AOAM533+QU+IIf9akZoguPM65QCN3h+/GTCyBw6BOLwynMI26B5vNhza
+        1kCuZZDJ6Afuf/OydPwN4bG8sdu834asvg==
+X-Google-Smtp-Source: ABdhPJywQQVfQN7R9x6MqZGIfSNY3xfPhKgka1JXlWkxQ3iLip81ftpcnh+iYusVheMWqo253+xXfg==
+X-Received: by 2002:ac2:50d0:: with SMTP id h16mr1297886lfm.300.1607536710496;
+        Wed, 09 Dec 2020 09:58:30 -0800 (PST)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id w204sm242736lff.241.2020.12.09.09.58.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 09:58:29 -0800 (PST)
+Received: by mail-lj1-f170.google.com with SMTP id y16so3473163ljk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 09:58:29 -0800 (PST)
+X-Received: by 2002:a2e:5750:: with SMTP id r16mr1446782ljd.61.1607536708800;
+ Wed, 09 Dec 2020 09:58:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+References: <20201209163950.8494-1-will@kernel.org> <20201209163950.8494-2-will@kernel.org>
+In-Reply-To: <20201209163950.8494-2-will@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 9 Dec 2020 09:58:12 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgos=vgteG52=J=rVSeq6-Y2g2+Kn1=xV=wYjVzM6O9UQ@mail.gmail.com>
+Message-ID: <CAHk-=wgos=vgteG52=J=rVSeq6-Y2g2+Kn1=xV=wYjVzM6O9UQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries when prefaulting
+To:     Will Deacon <will@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A dummy zero bit is sent by eeprom preceding the data of every read
-transfer. This results in right shift of data during a read. In order to
-ignore the dummy bits preceding the data, extra zero bits are transferred
-after the read address.
+On Wed, Dec 9, 2020 at 8:40 AM Will Deacon <will@kernel.org> wrote:
+>
+> @@ -3978,8 +3994,17 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
+>
+>         /* check if the page fault is solved */
+>         vmf->pte -= (vmf->address >> PAGE_SHIFT) - (address >> PAGE_SHIFT);
+> -       if (!pte_none(*vmf->pte))
+> -               ret = VM_FAULT_NOPAGE;
+> +       if (pte_none(*vmf->pte))
+> +               goto out_unlock;
+> +
+> +       if (vmf->flags & FAULT_FLAG_PREFAULT_OLD) {
+> +               pte_t pte = pte_mkyoung(*vmf->pte);
+> +               if (ptep_set_access_flags(vmf->vma, address, vmf->pte, pte, 0))
+> +                       update_mmu_cache(vmf->vma, address, vmf->pte);
+> +       }
 
-This feature can be added by including the property read-op-dummy-cycles
-with the number of zero bits to be transferred as the value, in device tree
-node.
+Oh, please dear God no.
 
-Fix read by sending extra zero bits after the read address to ignore the
-zero bits sent by eeprom before data.
+First you incorrectly set it old, and then you conditionally make it
+young again and as a result force an atomic rwm update and another TLB
+flush for no good reason.
 
-Suggested-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- drivers/misc/eeprom/eeprom_93xx46.c | 23 +++++++++++++++++++++++
- include/linux/eeprom_93xx46.h       |  6 ++++++
- 2 files changed, 29 insertions(+)
+Just make sure that the FAULT_FLAG_PREFAULT_OLD never sets the
+*actual* address to old.
 
-diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
-index 7c45f82b4302..e778ae54a6f1 100644
---- a/drivers/misc/eeprom/eeprom_93xx46.c
-+++ b/drivers/misc/eeprom/eeprom_93xx46.c
-@@ -55,6 +55,16 @@ static inline bool has_quirk_instruction_length(struct eeprom_93xx46_dev *edev)
- 	return edev->pdata->quirks & EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH;
- }
- 
-+static inline bool needs_extra_read_cycle(struct eeprom_93xx46_dev *edev)
-+{
-+	return edev->pdata->flags & EE_EXTRA_CYCLE_READ;
-+}
-+
-+static inline u32 get_read_op_dummy_cycles(struct eeprom_93xx46_dev *edev)
-+{
-+	return edev->pdata->read_op_dummy_cycles;
-+}
-+
- static int eeprom_93xx46_read(void *priv, unsigned int off,
- 			      void *val, size_t count)
- {
-@@ -80,6 +90,7 @@ static int eeprom_93xx46_read(void *priv, unsigned int off,
- 		u16 cmd_addr = OP_READ << edev->addrlen;
- 		size_t nbytes = count;
- 		int bits;
-+		u32 read_op_dummy_cycles;
- 
- 		if (edev->addrlen == 7) {
- 			cmd_addr |= off & 0x7f;
-@@ -93,6 +104,12 @@ static int eeprom_93xx46_read(void *priv, unsigned int off,
- 				nbytes = 2;
- 		}
- 
-+		if (needs_extra_read_cycle(edev)) {
-+			read_op_dummy_cycles = get_read_op_dummy_cycles(edev);
-+			cmd_addr = cmd_addr << read_op_dummy_cycles;
-+			bits += read_op_dummy_cycles;
-+		}
-+
- 		dev_dbg(&edev->spi->dev, "read cmd 0x%x, %d Hz\n",
- 			cmd_addr, edev->spi->max_speed_hz);
- 
-@@ -398,6 +415,12 @@ static int eeprom_93xx46_probe_dt(struct spi_device *spi)
- 	if (of_property_read_bool(np, "read-only"))
- 		pd->flags |= EE_READONLY;
- 
-+	ret = of_property_read_u32(np, "read-op-dummy-cycles", &tmp);
-+	if (ret == 0) {
-+		pd->flags |= EE_EXTRA_CYCLE_READ;
-+		pd->read_op_dummy_cycles = tmp;
-+	}
-+
- 	pd->select = devm_gpiod_get_optional(&spi->dev, "select",
- 					     GPIOD_OUT_LOW);
- 	if (IS_ERR(pd->select))
-diff --git a/include/linux/eeprom_93xx46.h b/include/linux/eeprom_93xx46.h
-index eec7928ff8fe..f0d37e921aba 100644
---- a/include/linux/eeprom_93xx46.h
-+++ b/include/linux/eeprom_93xx46.h
-@@ -11,6 +11,12 @@ struct eeprom_93xx46_platform_data {
- #define EE_ADDR16	0x02		/* 16 bit addr. cfg */
- #define EE_READONLY	0x08		/* forbid writing */
- 
-+/* Add extra zero bits of data after the address during read transfer
-+ * to ignore the dummy bits sent before data
-+ */
-+#define EE_EXTRA_CYCLE_READ 0x04
-+	u32 read_op_dummy_cycles;
-+
- 	unsigned int	quirks;
- /* Single word read transfers only; no sequential read. */
- #define EEPROM_93XX46_QUIRK_SINGLE_WORD_READ		(1 << 0)
--- 
-2.17.1
+And yes, that probably means that you need to change "alloc_set_pte()"
+to actually pass in the real address, and leave "vmf->address" alone -
+so that it can know which ones are prefaulted and which one is real,
+but that sounds like a good idea anyway.
 
+Then you can just make alloc_set_pte() do the right thing in the first
+place, instead of doing this nasty "lets do it wrong and fix it up
+later" horror.
+
+                Linus
