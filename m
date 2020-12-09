@@ -2,100 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30D62D3C7A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C588F2D3C7F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgLIHr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 02:47:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727961AbgLIHrz (ORCPT
+        id S1728004AbgLIHtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 02:49:46 -0500
+Received: from m97179.mail.qiye.163.com ([220.181.97.179]:56372 "EHLO
+        m97179.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725953AbgLIHtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 02:47:55 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9AAC0613CF;
-        Tue,  8 Dec 2020 23:47:14 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id b73so467363edf.13;
-        Tue, 08 Dec 2020 23:47:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=vUdxfkrGNNo1FQF9h31XnihJ3y4Ce36/DE99SxLOEN4=;
-        b=bGrV5DiIZKcVT0Gqqw7i2bRWbLWwLyR6mnhe+fZmJTZ8Y51HGfViIKPBFFw9tSAWao
-         L1U+AxUyCuqECRICZCdgrhQRLagai+A/HFjKWITuhjeTOHRDW6dY+yh8h0oYpDYFuN9R
-         VBCkUMm8w6zj9TA2WYPhzssQ78984Y/AshzOl4n6fj/Poq08iKKzCl3q+xRYtbmOk8y6
-         gAHj4R2I0ZO5b3oR40rap/7WLxnccrLAP6eGEjAxQWhcjayaqVFi9Q8WLCjh2C8zN6OZ
-         HHAWmsyhyXz1ht5VeMymEP78/7NBuMRWwHB+Z2Q/ZKyK0CTbswU67a0eGqOYapsMWlsw
-         1QlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=vUdxfkrGNNo1FQF9h31XnihJ3y4Ce36/DE99SxLOEN4=;
-        b=Qw9LN4rMsbLikqBc+D+F+sifIw9ZtlhP1ugb/PVy+83LkFfumYcoD67JtDCRNdDtXx
-         LeHC+er8dOXvCFHTjNi4IwrSJw7WkuRUnZReaWAE5zsUQZGB8NoCMGascHdzfDdyC1jt
-         YiC157hLsXxGrqDf1foTj2pqWiFcpG28x0o8tATIJ73MKba0D3Sp8TvdKj31AyxmCN/t
-         92OBB91VtnjF/eqcU3x7ENzRcrjPodmHmydkbaSw1lFlQIZ9mBFG0jFXnU3IRJAvR54h
-         JGxhc3Q8chE5cyTyhBGogxyLWqP9EsPlrcaSrWNJdMAhOJewWYw3CwBj2c43m3RK8zqy
-         nTrA==
-X-Gm-Message-State: AOAM5301lLXYnJM7g7rHFkJMlxLa6NgaOKtPm8V6ib3TX3BYBIuZ/V07
-        8M8cKnLw1n5K2nX8Uk++uhE=
-X-Google-Smtp-Source: ABdhPJzRUVwqvvYMGn7Q5wEQjFknCl0J9KFE+fWL45OvQrRbCU6SJw0LKaabiA09tJ4CdpmT2J/TQQ==
-X-Received: by 2002:a05:6402:1d15:: with SMTP id dg21mr828807edb.280.1607500033479;
-        Tue, 08 Dec 2020 23:47:13 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2db8:be00:8188:da9:1e3d:a30d])
-        by smtp.gmail.com with ESMTPSA id eb14sm723692edb.20.2020.12.08.23.47.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 23:47:12 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org
-Cc:     Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] media: MAINTAINERS: correct entry in Amlogic GE2D driver section
-Date:   Wed,  9 Dec 2020 08:46:58 +0100
-Message-Id: <20201209074658.11557-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 9 Dec 2020 02:49:46 -0500
+Received: from [192.168.122.37] (unknown [218.94.118.90])
+        by m97179.mail.qiye.163.com (Hmail) with ESMTPA id 4A51EE019BC;
+        Wed,  9 Dec 2020 15:48:55 +0800 (CST)
+Subject: Re: [PATCH] bcache: consider the fragmentation when update the
+ writeback rate
+To:     Dongdong Tao <dongdong.tao@canonical.com>
+Cc:     Dongdong Tao <tdd21151186@gmail.com>, Coly Li <colyli@suse.de>,
+        Gavin Guo <gavin.guo@canonical.com>,
+        Gerald Yang <gerald.yang@canonical.com>,
+        Trent Lloyd <trent.lloyd@canonical.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        "open list:BCACHE (BLOCK LAYER CACHE)" <linux-bcache@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201103124235.14440-1-tdd21151186@gmail.com>
+ <89b83c00-1117-d114-2c23-7b03fc22966e@easystack.cn>
+ <CAJS8hV+UmLFQVhuqUin1Ze6kLtAO7paXH95+9gaiZgM19VZe1A@mail.gmail.com>
+From:   Dongsheng Yang <dongsheng.yang@easystack.cn>
+Message-ID: <ce04461c-ca5c-781d-7aad-cdad3ebadac2@easystack.cn>
+Date:   Wed, 9 Dec 2020 15:49:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <CAJS8hV+UmLFQVhuqUin1Ze6kLtAO7paXH95+9gaiZgM19VZe1A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
+        oVCBIfWUFZHxofSE5ITxlLTB4dVkpNS0xOS0tKSE5NTEJVGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hOT1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Oj46EBw6Gj0wDCkNEEguOggy
+        NQkaCzRVSlVKTUtMTktLSkhOQktMVTMWGhIXVR8UFRwIEx4VHFUCGhUcOx4aCAIIDxoYEFUYFUVZ
+        V1kSC1lBWUlKQ1VCT1VKSkNVQktZV1kIAVlBQkJPTjcG
+X-HM-Tid: 0a7646797c8f20bdkuqy4a51ee019bc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit aa821b2b9269 ("media: MAINTAINERS: Add myself as maintainer of the
-Amlogic GE2D driver") introduced a new MAINTAINERS section, but the file
-entry points to the wrong location.
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns warns:
+在 2020/12/9 星期三 下午 12:48, Dongdong Tao 写道:
+> Hi Dongsheng,
+>
+> I'm working on it, next step I'm gathering some testing data and
+> upload (very sorry for the delay...)
+> Thanks for the comment.
+> One of the main concerns to alleviate this issue with the writeback
+> process is that we need to minimize the impact on the client IO
+> performance.
+> writeback_percent by default is 10, start writeback when dirty buckets
+> reached 10 percent might be a bit too aggressive, as the
+> writeback_cutoff_sync is 70 percent.
+> So i chose to start the writeback when dirty buckets reached 50
+> percent so that this patch will only take effect after dirty buckets
+> percent is above that
 
-  warning: no file matches    F:    drivers/media/meson/ge2d/
+Agree with that's too aggressive to reuse writeback_percent, and that's 
+less flexable.
 
-Adjust the entry to the actual location of the driver.
+Okey, let's wait for your testing result.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies on next-20201208, not on current master
 
-Neil, please ack.
-Hans, Mauro, please pick this minor non-urgent fix-up for your -next tree.
+Thanx
 
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5b20babb9f7b..d66bf50fc640 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11520,7 +11520,7 @@ L:	linux-amlogic@lists.infradead.org
- S:	Supported
- T:	git git://linuxtv.org/media_tree.git
- F:	Documentation/devicetree/bindings/media/amlogic,axg-ge2d.yaml
--F:	drivers/media/meson/ge2d/
-+F:	drivers/media/platform/meson/ge2d/
- 
- MESON NAND CONTROLLER DRIVER FOR AMLOGIC SOCS
- M:	Liang Yang <liang.yang@amlogic.com>
--- 
-2.17.1
-
+>
+> Thanks,
+> Dongdong
+>
+>
+>
+>
+> On Wed, Dec 9, 2020 at 10:27 AM Dongsheng Yang
+> <dongsheng.yang@easystack.cn> wrote:
+>>
+>> 在 2020/11/3 星期二 下午 8:42, Dongdong Tao 写道:
+>>> From: dongdong tao <dongdong.tao@canonical.com>
+>>>
+>>> Current way to calculate the writeback rate only considered the
+>>> dirty sectors, this usually works fine when the fragmentation
+>>> is not high, but it will give us unreasonable small rate when
+>>> we are under a situation that very few dirty sectors consumed
+>>> a lot dirty buckets. In some case, the dirty bucekts can reached
+>>> to CUTOFF_WRITEBACK_SYNC while the dirty data(sectors) noteven
+>>> reached the writeback_percent, the writeback rate will still
+>>> be the minimum value (4k), thus it will cause all the writes to be
+>>> stucked in a non-writeback mode because of the slow writeback.
+>>>
+>>> This patch will try to accelerate the writeback rate when the
+>>> fragmentation is high. It calculate the propotional_scaled value
+>>> based on below:
+>>> (dirty_sectors / writeback_rate_p_term_inverse) * fragment
+>>> As we can see, the higher fragmentation will result a larger
+>>> proportional_scaled value, thus cause a larger writeback rate.
+>>> The fragment value is calculated based on below:
+>>> (dirty_buckets *  bucket_size) / dirty_sectors
+>>> If you think about it, the value of fragment will be always
+>>> inside [1, bucket_size].
+>>>
+>>> This patch only considers the fragmentation when the number of
+>>> dirty_buckets reached to a dirty threshold(configurable by
+>>> writeback_fragment_percent, default is 50), so bcache will
+>>> remain the original behaviour before the dirty buckets reached
+>>> the threshold.
+>>>
+>>> Signed-off-by: dongdong tao <dongdong.tao@canonical.com>
+>>> ---
+>>>    drivers/md/bcache/bcache.h    |  1 +
+>>>    drivers/md/bcache/sysfs.c     |  6 ++++++
+>>>    drivers/md/bcache/writeback.c | 21 +++++++++++++++++++++
+>>>    3 files changed, 28 insertions(+)
+>>>
+>>> diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
+>>> index 1d57f48307e6..87632f7032b6 100644
+>>> --- a/drivers/md/bcache/bcache.h
+>>> +++ b/drivers/md/bcache/bcache.h
+>>> @@ -374,6 +374,7 @@ struct cached_dev {
+>>>        unsigned int            writeback_metadata:1;
+>>>        unsigned int            writeback_running:1;
+>>>        unsigned char           writeback_percent;
+>>> +     unsigned char           writeback_fragment_percent;
+>>>        unsigned int            writeback_delay;
+>>>
+>>>        uint64_t                writeback_rate_target;
+>>> diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
+>>> index 554e3afc9b68..69499113aef8 100644
+>>> --- a/drivers/md/bcache/sysfs.c
+>>> +++ b/drivers/md/bcache/sysfs.c
+>>> @@ -115,6 +115,7 @@ rw_attribute(stop_when_cache_set_failed);
+>>>    rw_attribute(writeback_metadata);
+>>>    rw_attribute(writeback_running);
+>>>    rw_attribute(writeback_percent);
+>>> +rw_attribute(writeback_fragment_percent);
+>>
+>> Hi Dongdong and Coly,
+>>
+>>       What is the status about this patch? In my opinion, it is a problem
+>> we need to solve,
+>>
+>> but can we just reuse the parameter of writeback_percent, rather than
+>> introduce a new writeback_fragment_percent?
+>>
+>> That means the semantic of writeback_percent will act on dirty data
+>> percent and dirty bucket percent.
+>>
+>> When we found there are dirty buckets more than (c->nbuckets *
+>> writeback_percent), start the writeback.
+>>
+>>
+>> Thanx
+>>
+>> Yang
+>>
+>>>    rw_attribute(writeback_delay);
+>>>    rw_attribute(writeback_rate);
+>>>
+>>> @@ -197,6 +198,7 @@ SHOW(__bch_cached_dev)
+>>>        var_printf(writeback_running,   "%i");
+>>>        var_print(writeback_delay);
+>>>        var_print(writeback_percent);
+>>> +     var_print(writeback_fragment_percent);
+>>>        sysfs_hprint(writeback_rate,
+>>>                     wb ? atomic_long_read(&dc->writeback_rate.rate) << 9 : 0);
+>>>        sysfs_printf(io_errors,         "%i", atomic_read(&dc->io_errors));
+>>> @@ -308,6 +310,9 @@ STORE(__cached_dev)
+>>>        sysfs_strtoul_clamp(writeback_percent, dc->writeback_percent,
+>>>                            0, bch_cutoff_writeback);
+>>>
+>>> +     sysfs_strtoul_clamp(writeback_fragment_percent, dc->writeback_fragment_percent,
+>>> +                         0, bch_cutoff_writeback_sync);
+>>> +
+>>>        if (attr == &sysfs_writeback_rate) {
+>>>                ssize_t ret;
+>>>                long int v = atomic_long_read(&dc->writeback_rate.rate);
+>>> @@ -498,6 +503,7 @@ static struct attribute *bch_cached_dev_files[] = {
+>>>        &sysfs_writeback_running,
+>>>        &sysfs_writeback_delay,
+>>>        &sysfs_writeback_percent,
+>>> +     &sysfs_writeback_fragment_percent,
+>>>        &sysfs_writeback_rate,
+>>>        &sysfs_writeback_rate_update_seconds,
+>>>        &sysfs_writeback_rate_i_term_inverse,
+>>> diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
+>>> index 3c74996978da..34babc89fdf3 100644
+>>> --- a/drivers/md/bcache/writeback.c
+>>> +++ b/drivers/md/bcache/writeback.c
+>>> @@ -88,6 +88,26 @@ static void __update_writeback_rate(struct cached_dev *dc)
+>>>        int64_t integral_scaled;
+>>>        uint32_t new_rate;
+>>>
+>>> +     /*
+>>> +      * We need to consider the number of dirty buckets as well
+>>> +      * when calculating the proportional_scaled, Otherwise we might
+>>> +      * have an unreasonable small writeback rate at a highly fragmented situation
+>>> +      * when very few dirty sectors consumed a lot dirty buckets, the
+>>> +      * worst case is when dirty_data reached writeback_percent and
+>>> +      * dirty buckets reached to cutoff_writeback_sync, but the rate
+>>> +      * still will be at the minimum value, which will cause the write
+>>> +      * stuck at a non-writeback mode.
+>>> +      */
+>>> +     struct cache_set *c = dc->disk.c;
+>>> +
+>>> +     if (c->gc_stats.in_use > dc->writeback_fragment_percent && dirty > 0) {
+>>> +             int64_t dirty_buckets = (c->gc_stats.in_use * c->nbuckets) / 100;
+>>> +             int64_t fragment = (dirty_buckets *  c->cache->sb.bucket_size) / dirty;
+>>> +
+>>> +             proportional_scaled =
+>>> +             div_s64(dirty, dc->writeback_rate_p_term_inverse) * (fragment);
+>>> +     }
+>>> +
+>>>        if ((error < 0 && dc->writeback_rate_integral > 0) ||
+>>>            (error > 0 && time_before64(local_clock(),
+>>>                         dc->writeback_rate.next + NSEC_PER_MSEC))) {
+>>> @@ -969,6 +989,7 @@ void bch_cached_dev_writeback_init(struct cached_dev *dc)
+>>>        dc->writeback_metadata          = true;
+>>>        dc->writeback_running           = false;
+>>>        dc->writeback_percent           = 10;
+>>> +     dc->writeback_fragment_percent  = 50;
+>>>        dc->writeback_delay             = 30;
+>>>        atomic_long_set(&dc->writeback_rate.rate, 1024);
+>>>        dc->writeback_rate_minimum      = 8;
