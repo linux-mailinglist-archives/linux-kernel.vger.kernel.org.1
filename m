@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801952D4C0D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F692D4C09
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387917AbgLIUiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:38:46 -0500
-Received: from mga09.intel.com ([134.134.136.24]:61104 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728553AbgLIUii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732246AbgLIUii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 9 Dec 2020 15:38:38 -0500
-IronPort-SDR: wneR72WwgG8cfUCN+AC8awbiCRPqei/PjSn9SzSsHtvs3Rq54yrxjvEx5WmvRf//4cwKB2N9B0
- 22jUNxueF2ng==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="174291096"
+Received: from mga05.intel.com ([192.55.52.43]:52318 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727901AbgLIUib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 15:38:31 -0500
+IronPort-SDR: xfZHLk6CQrRvGKD2OQv/oIJX3xESpIAQbK6aVLkfDZXDho1ounlMEPSzNnSJI2zM0dxU9Tvdcv
+ UWxxTJfH9zMA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="258860592"
 X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="scan'208";a="174291096"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 12:36:45 -0800
-IronPort-SDR: 0jcpJbiAaVOWNy7RPYMj08XrSpSIbn9Io7H/9x6USd35wrZu1B5oAArnRjxHsIjyLXsc8/1ulk
- bB/1+P4n18cA==
+   d="scan'208";a="258860592"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 12:36:45 -0800
+IronPort-SDR: O9L+UaeVmT/RS3FYhXlxjwnqGzs0y8UCxtMuZVavZ4CDVDebP42aUZzfIhhhMLMSgQIiGWLTBw
+ U0o5uahU2JnQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="scan'208";a="318900937"
+   d="scan'208";a="540743330"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 09 Dec 2020 12:36:44 -0800
+  by fmsmga006.fm.intel.com with ESMTP; 09 Dec 2020 12:36:44 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 9B483252; Wed,  9 Dec 2020 22:36:43 +0200 (EET)
+        id A3226453; Wed,  9 Dec 2020 22:36:43 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
 Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Peng Hao <peng.hao2@zte.com.cn>, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 4/5] misc: pvpanic: Combine ACPI and platform drivers
-Date:   Wed,  9 Dec 2020 22:36:41 +0200
-Message-Id: <20201209203642.27648-4-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 5/5] misc: pvpanic: Replace OF headers by mod_devicetable.h
+Date:   Wed,  9 Dec 2020 22:36:42 +0200
+Message-Id: <20201209203642.27648-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201209203642.27648-1-andriy.shevchenko@linux.intel.com>
 References: <20201209203642.27648-1-andriy.shevchenko@linux.intel.com>
@@ -44,180 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is nothing special in the driver that requires to have
-a special ACPI driver for it. Combine both into simple
-platform driver.
+There is no use for OF headers in the driver, but mod_devicetable.h
+must be included. Update driver accordingly.
 
 Cc: Peng Hao <peng.hao2@zte.com.cn>
 Cc: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
 v2: no changes
- drivers/misc/pvpanic.c | 130 ++++++-----------------------------------
- 1 file changed, 17 insertions(+), 113 deletions(-)
+ drivers/misc/pvpanic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
-index e16a5e51006e..fcab2efd0c45 100644
+index fcab2efd0c45..951b37da5e3c 100644
 --- a/drivers/misc/pvpanic.c
 +++ b/drivers/misc/pvpanic.c
-@@ -8,7 +8,7 @@
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
--#include <linux/acpi.h>
-+#include <linux/io.h>
+@@ -11,11 +11,11 @@
+ #include <linux/io.h>
  #include <linux/kernel.h>
  #include <linux/kexec.h>
++#include <linux/mod_devicetable.h>
  #include <linux/module.h>
-@@ -49,101 +49,16 @@ static struct notifier_block pvpanic_panic_nb = {
- 	.priority = 1, /* let this called before broken drm_fb_helper */
- };
- 
--#ifdef CONFIG_ACPI
--static int pvpanic_add(struct acpi_device *device);
--static int pvpanic_remove(struct acpi_device *device);
--
--static const struct acpi_device_id pvpanic_device_ids[] = {
--	{ "QEMU0001", 0 },
--	{ "", 0 }
--};
--MODULE_DEVICE_TABLE(acpi, pvpanic_device_ids);
--
--static struct acpi_driver pvpanic_driver = {
--	.name =		"pvpanic",
--	.class =	"QEMU",
--	.ids =		pvpanic_device_ids,
--	.ops =		{
--				.add =		pvpanic_add,
--				.remove =	pvpanic_remove,
--			},
--	.owner =	THIS_MODULE,
--};
--
--static acpi_status
--pvpanic_walk_resources(struct acpi_resource *res, void *context)
--{
--	struct resource r;
--
--	if (acpi_dev_resource_io(res, &r)) {
--#ifdef CONFIG_HAS_IOPORT_MAP
--		base = ioport_map(r.start, resource_size(&r));
--		return AE_OK;
--#else
--		return AE_ERROR;
--#endif
--	} else if (acpi_dev_resource_memory(res, &r)) {
--		base = ioremap(r.start, resource_size(&r));
--		return AE_OK;
--	}
--
--	return AE_ERROR;
--}
--
--static int pvpanic_add(struct acpi_device *device)
--{
--	int ret;
--
--	ret = acpi_bus_get_status(device);
--	if (ret < 0)
--		return ret;
--
--	if (!device->status.enabled || !device->status.functional)
--		return -ENODEV;
--
--	acpi_walk_resources(device->handle, METHOD_NAME__CRS,
--			    pvpanic_walk_resources, NULL);
--
--	if (!base)
--		return -ENODEV;
--
--	atomic_notifier_chain_register(&panic_notifier_list,
--				       &pvpanic_panic_nb);
--
--	return 0;
--}
--
--static int pvpanic_remove(struct acpi_device *device)
--{
--
--	atomic_notifier_chain_unregister(&panic_notifier_list,
--					 &pvpanic_panic_nb);
--	iounmap(base);
--
--	return 0;
--}
--
--static int pvpanic_register_acpi_driver(void)
--{
--	return acpi_bus_register_driver(&pvpanic_driver);
--}
--
--static void pvpanic_unregister_acpi_driver(void)
--{
--	acpi_bus_unregister_driver(&pvpanic_driver);
--}
--#else
--static int pvpanic_register_acpi_driver(void)
--{
--	return -ENODEV;
--}
--
--static void pvpanic_unregister_acpi_driver(void) {}
--#endif
--
- static int pvpanic_mmio_probe(struct platform_device *pdev)
- {
--	base = devm_platform_ioremap_resource(pdev, 0);
-+	struct device *dev = &pdev->dev;
-+	struct resource *res;
+-#include <linux/of.h>
+-#include <linux/of_address.h>
+ #include <linux/platform_device.h>
+ #include <linux/types.h>
 +
-+	res = platform_get_mem_or_io(pdev, 0);
-+	if (res && resource_type(res) == IORESOURCE_IO)
-+		base = devm_ioport_map(dev, res->start, resource_size(res));
-+	else
-+		base = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
+ #include <uapi/misc/pvpanic.h>
  
-@@ -167,30 +82,19 @@ static const struct of_device_id pvpanic_mmio_match[] = {
- 	{}
- };
- 
-+static const struct acpi_device_id pvpanic_device_ids[] = {
-+	{ "QEMU0001", 0 },
-+	{ "", 0 }
-+};
-+MODULE_DEVICE_TABLE(acpi, pvpanic_device_ids);
-+
- static struct platform_driver pvpanic_mmio_driver = {
- 	.driver = {
- 		.name = "pvpanic-mmio",
- 		.of_match_table = pvpanic_mmio_match,
-+		.acpi_match_table = pvpanic_device_ids,
- 	},
- 	.probe = pvpanic_mmio_probe,
- 	.remove = pvpanic_mmio_remove,
- };
--
--static int __init pvpanic_mmio_init(void)
--{
--	if (acpi_disabled)
--		return platform_driver_register(&pvpanic_mmio_driver);
--	else
--		return pvpanic_register_acpi_driver();
--}
--
--static void __exit pvpanic_mmio_exit(void)
--{
--	if (acpi_disabled)
--		platform_driver_unregister(&pvpanic_mmio_driver);
--	else
--		pvpanic_unregister_acpi_driver();
--}
--
--module_init(pvpanic_mmio_init);
--module_exit(pvpanic_mmio_exit);
-+module_platform_driver(pvpanic_mmio_driver);
+ static void __iomem *base;
 -- 
 2.29.2
 
