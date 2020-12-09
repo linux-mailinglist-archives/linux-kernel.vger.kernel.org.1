@@ -2,51 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E932D448A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:42:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 944172D4483
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733034AbgLIOlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 09:41:20 -0500
-Received: from mga01.intel.com ([192.55.52.88]:33478 "EHLO mga01.intel.com"
+        id S1733008AbgLIOj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 09:39:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731477AbgLIOlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 09:41:12 -0500
-IronPort-SDR: rCob4zDUMllNavMr56jtUcuQGs/24HrgO3HdlH/ahbQ4HK57T96rp0XJxOfSyBbIf+nIrte4xP
- CkF+f4o/bMGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="192387017"
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="scan'208";a="192387017"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 06:39:24 -0800
-IronPort-SDR: pyJNMoe69/uLLsTsFjVDwidhM2zQdNV9tWfpqmeZCfY6efzG9gWVU5nUc/DIccBT/tpBRYM0I4
- /BfI9bLyQpew==
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="scan'208";a="364154509"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 06:39:21 -0800
-Received: by lahna (sSMTP sendmail emulation); Wed, 09 Dec 2020 16:39:19 +0200
-Date:   Wed, 9 Dec 2020 16:39:19 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, michael.jamet@intel.com,
-        YehezkelShB@gmail.com
-Subject: Re: [PATCH net-next] net: thunderbolt: convert comma to semicolon
-Message-ID: <20201209143919.GT5246@lahna.fi.intel.com>
-References: <20201209133852.1475-1-zhengyongjun3@huawei.com>
+        id S1733003AbgLIOj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 09:39:56 -0500
+Date:   Wed, 9 Dec 2020 15:40:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607524752;
+        bh=Ndua0Qb0+XJsoggkT9dt03GOXR+ewfsxw2/Ib/4nYqY=;
+        h=From:To:Subject:References:In-Reply-To:From;
+        b=qty7MVFzIWgcNAGIlk06+sJNTaADV5rt37SPKFWgCVl+V8bzFvtnfXT/y4eOO/thW
+         ykm5MgSc/uDGKzK0XKvgZ/MNAR+gH5xI6VQIYYTrr82tD1STL3GC3INyijfh96itN5
+         4AXoPrQF0a0dpjgL6W9r2DrPMJotYsUCtOzDQ9So=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        linux-kernel@vger.kernel.org, speakup@linux-speakup.org
+Subject: Re: [patch 1/3] speakup: Add synth parameter to io functions
+Message-ID: <X9Dh3exc0rN1YitF@kroah.com>
+References: <20201130220626.854574234@ens-lyon.org>
+ <20201130220719.168900798@ens-lyon.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209133852.1475-1-zhengyongjun3@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201130220719.168900798@ens-lyon.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 09:38:52PM +0800, Zheng Yongjun wrote:
-> Replace a comma between expression statements by a semicolon.
+On Mon, Nov 30, 2020 at 11:26:41PM +0100, Samuel Thibault wrote:
+> This merely adds the missing synth parameter to all io functions.
 > 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+This patch breaks the build :(
+
+Can you rebase and resend this whole series, as the other patches do not
+apply anymore due to the recent fixes in the speakup code.
+
+thanks,
+
+greg k-h
