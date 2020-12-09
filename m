@@ -2,107 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE2E2D385E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E992D3875
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 02:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726218AbgLIBoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 20:44:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLIBoi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 20:44:38 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946FAC0613CF;
-        Tue,  8 Dec 2020 17:43:58 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id m9so183882pgb.4;
-        Tue, 08 Dec 2020 17:43:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xmepJe/1I5EWk/L7H6KF+A+wJ6nL7llNxwdsRgyIQjo=;
-        b=OvkmsMlP26Yw86oDDyt2dCuwDGzeNqD8yWSEPnLc5BEwD9IqdR+qBab6e4VqbjMj5T
-         fO/fWUdIYQL42P9yeLbftqHnLloyJOCWTKA0Sy4U26arRo0IQZ7LO31B2KOlWE5OHivf
-         F8I7F/qycOUzYA4DiFpnTbkb/rRCSRezQj5lXm3NEg/wPGUyYYJp4Ea9KRTEgTWpgFqY
-         eYpAOwtxYVZV3xGaddeFME4didth0jlEWcMHrn/cMBNW5AtbXeo0SIREDvC53x7BzGxg
-         HHJlBj2GMZ+1XOrkqQXIiFd5pLAsASGwlLjpCYwhspuB5GdztQxmJdUXI5hph2eUftmU
-         zFGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xmepJe/1I5EWk/L7H6KF+A+wJ6nL7llNxwdsRgyIQjo=;
-        b=siqG4SL/4yPOpF7x2ZxV4upZQ/ehwytrcsBbm9hkXSBjfVeSoFB9Ixpny2kqRxrgTF
-         Z4hyDwY/2pV3VFcKrqt8vpjIx5i3lzmMZraOlkyXv5Wm+HH6OqAyL5pmfK2kd3BF0iXj
-         xJ7uNtmVxga0sSrVqIFBJ6M+RyvxlvLs/SgrqbsuxkE/VnhiQ5ekMRNsC2hjNWUezY+o
-         ZO3/DVCTHgZIOayhWsgJzUSFXxCsZaejvt9f2VeJAmlmp0BBztJ9iR0fG0XKtekPRgWw
-         twpLOlcfglzedufOX2VehTqGUPRLwBESvSuqwQPb/QYegi3Db4fVaSz4neue7XvPooY6
-         xfSQ==
-X-Gm-Message-State: AOAM531JuKFjPX9O2veTrxi76JTGzRFhn0S5x4tUKf73VNDsDK1YIQYU
-        ur0rjUeyharKBu+sTJigIOA=
-X-Google-Smtp-Source: ABdhPJzzi0egp6KgLAwlwilgrvxNYL1Kl9FGWNehYk7pplga+DwDpMUAhGfK3EH5B8JQ6x/4jMmbyA==
-X-Received: by 2002:a63:4648:: with SMTP id v8mr797948pgk.248.1607478238225;
-        Tue, 08 Dec 2020 17:43:58 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:ac46:48a7:8096:18f5])
-        by smtp.gmail.com with ESMTPSA id b37sm47606pgl.31.2020.12.08.17.43.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 17:43:57 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next v3] net: hdlc_x25: Remove unnecessary skb_reset_network_header calls
-Date:   Tue,  8 Dec 2020 17:43:54 -0800
-Message-Id: <20201209014354.5263-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S1726367AbgLIByI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 20:54:08 -0500
+Received: from mga11.intel.com ([192.55.52.93]:50399 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725283AbgLIByI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 20:54:08 -0500
+IronPort-SDR: g3Vq3VUV6ba3QM4jti/tITZY1Y4vDeG0ud/sfx2x4T1K+NlDSI5Z7POvxIDTKqbnqPcewuRG67
+ 7LWesUq7QTyQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="170493420"
+X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
+   d="scan'208";a="170493420"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 17:52:22 -0800
+IronPort-SDR: p9GFQc1L7/h6pbmnpMG4Am+qXvFd6Zl3fTnwJGN3OBiNcEQkmNyUac0raGFIqVqQPy119057Rt
+ c2Hw6pi3fkgg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
+   d="scan'208";a="367998068"
+Received: from allen-box.sh.intel.com ([10.239.159.28])
+  by fmsmga004.fm.intel.com with ESMTP; 08 Dec 2020 17:52:18 -0800
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v4 1/1] vfio/type1: Add vfio_group_iommu_domain()
+Date:   Wed,  9 Dec 2020 09:44:44 +0800
+Message-Id: <20201209014444.332772-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. In x25_xmit, skb_reset_network_header is not necessary before we call
-lapb_data_request. The lapb module doesn't need skb->network_header.
-So there is no need to set skb->network_header before calling
-lapb_data_request.
+Add the API for getting the domain from a vfio group. This could be used
+by the physical device drivers which rely on the vfio/mdev framework for
+mediated device user level access. The typical use case like below:
 
-2. In x25_data_indication (called by the lapb module after data have
-been received), skb_reset_network_header is not necessary before we
-call netif_rx. After we call netif_rx, the code in net/core/dev.c will
-call skb_reset_network_header before handing the skb to upper layers
-(in __netif_receive_skb_core, called by __netif_receive_skb_one_core,
-called by __netif_receive_skb, called by process_backlog). So we don't
-need to call skb_reset_network_header by ourselves.
+	unsigned int pasid;
+	struct vfio_group *vfio_group;
+	struct iommu_domain *iommu_domain;
+	struct device *dev = mdev_dev(mdev);
+	struct device *iommu_device = mdev_get_iommu_device(dev);
 
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
+	if (!iommu_device ||
+	    !iommu_dev_feature_enabled(iommu_device, IOMMU_DEV_FEAT_AUX))
+		return -EINVAL;
+
+	vfio_group = vfio_group_get_external_user_from_dev(dev);
+	if (IS_ERR_OR_NULL(vfio_group))
+		return -EFAULT;
+
+	iommu_domain = vfio_group_iommu_domain(vfio_group);
+	if (IS_ERR_OR_NULL(iommu_domain)) {
+		vfio_group_put_external_user(vfio_group);
+		return -EFAULT;
+	}
+
+	pasid = iommu_aux_get_pasid(iommu_domain, iommu_device);
+	if (pasid < 0) {
+		vfio_group_put_external_user(vfio_group);
+		return -EFAULT;
+	}
+
+	/* Program device context with pasid value. */
+	...
+
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- drivers/net/wan/hdlc_x25.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/vfio/vfio.c             | 18 ++++++++++++++++++
+ drivers/vfio/vfio_iommu_type1.c | 24 ++++++++++++++++++++++++
+ include/linux/vfio.h            |  4 ++++
+ 3 files changed, 46 insertions(+)
 
-diff --git a/drivers/net/wan/hdlc_x25.c b/drivers/net/wan/hdlc_x25.c
-index f52b9fed0593..bb164805804e 100644
---- a/drivers/net/wan/hdlc_x25.c
-+++ b/drivers/net/wan/hdlc_x25.c
-@@ -77,7 +77,6 @@ static int x25_data_indication(struct net_device *dev, struct sk_buff *skb)
- 	}
+Change log:
+ - v3: https://lore.kernel.org/linux-iommu/20201201012328.2465735-1-baolu.lu@linux.intel.com/
+ - Changed according to comments @ https://lore.kernel.org/linux-iommu/20201202144834.1dd0983e@w520.home/
+   - Rename group_domain to group_iommu_domain;
+   - Remove an unnecessary else branch.
+
+diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+index 2151bc7f87ab..4ad8a35667a7 100644
+--- a/drivers/vfio/vfio.c
++++ b/drivers/vfio/vfio.c
+@@ -2331,6 +2331,24 @@ int vfio_unregister_notifier(struct device *dev, enum vfio_notify_type type,
+ }
+ EXPORT_SYMBOL(vfio_unregister_notifier);
  
- 	skb_push(skb, 1);
--	skb_reset_network_header(skb);
++struct iommu_domain *vfio_group_iommu_domain(struct vfio_group *group)
++{
++	struct vfio_container *container;
++	struct vfio_iommu_driver *driver;
++
++	if (!group)
++		return ERR_PTR(-EINVAL);
++
++	container = group->container;
++	driver = container->iommu_driver;
++	if (likely(driver && driver->ops->group_iommu_domain))
++		return driver->ops->group_iommu_domain(container->iommu_data,
++						       group->iommu_group);
++
++	return ERR_PTR(-ENOTTY);
++}
++EXPORT_SYMBOL_GPL(vfio_group_iommu_domain);
++
+ /**
+  * Module/class support
+  */
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index 67e827638995..0b4dedaa9128 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -2980,6 +2980,29 @@ static int vfio_iommu_type1_dma_rw(void *iommu_data, dma_addr_t user_iova,
+ 	return ret;
+ }
  
- 	ptr  = skb->data;
- 	*ptr = X25_IFACE_DATA;
-@@ -118,7 +117,6 @@ static netdev_tx_t x25_xmit(struct sk_buff *skb, struct net_device *dev)
- 	switch (skb->data[0]) {
- 	case X25_IFACE_DATA:	/* Data to be transmitted */
- 		skb_pull(skb, 1);
--		skb_reset_network_header(skb);
- 		if ((result = lapb_data_request(dev, skb)) != LAPB_OK)
- 			dev_kfree_skb(skb);
- 		return NETDEV_TX_OK;
++static struct iommu_domain *
++vfio_iommu_type1_group_iommu_domain(void *iommu_data,
++				    struct iommu_group *iommu_group)
++{
++	struct iommu_domain *domain = ERR_PTR(-ENODEV);
++	struct vfio_iommu *iommu = iommu_data;
++	struct vfio_domain *d;
++
++	if (!iommu || !iommu_group)
++		return ERR_PTR(-EINVAL);
++
++	mutex_lock(&iommu->lock);
++	list_for_each_entry(d, &iommu->domain_list, next) {
++		if (find_iommu_group(d, iommu_group)) {
++			domain = d->domain;
++			break;
++		}
++	}
++	mutex_unlock(&iommu->lock);
++
++	return domain;
++}
++
+ static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
+ 	.name			= "vfio-iommu-type1",
+ 	.owner			= THIS_MODULE,
+@@ -2993,6 +3016,7 @@ static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
+ 	.register_notifier	= vfio_iommu_type1_register_notifier,
+ 	.unregister_notifier	= vfio_iommu_type1_unregister_notifier,
+ 	.dma_rw			= vfio_iommu_type1_dma_rw,
++	.group_iommu_domain	= vfio_iommu_type1_group_iommu_domain,
+ };
+ 
+ static int __init vfio_iommu_type1_init(void)
+diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+index 38d3c6a8dc7e..f45940b38a02 100644
+--- a/include/linux/vfio.h
++++ b/include/linux/vfio.h
+@@ -90,6 +90,8 @@ struct vfio_iommu_driver_ops {
+ 					       struct notifier_block *nb);
+ 	int		(*dma_rw)(void *iommu_data, dma_addr_t user_iova,
+ 				  void *data, size_t count, bool write);
++	struct iommu_domain *(*group_iommu_domain)(void *iommu_data,
++						   struct iommu_group *group);
+ };
+ 
+ extern int vfio_register_iommu_driver(const struct vfio_iommu_driver_ops *ops);
+@@ -126,6 +128,8 @@ extern int vfio_group_unpin_pages(struct vfio_group *group,
+ extern int vfio_dma_rw(struct vfio_group *group, dma_addr_t user_iova,
+ 		       void *data, size_t len, bool write);
+ 
++extern struct iommu_domain *vfio_group_iommu_domain(struct vfio_group *group);
++
+ /* each type has independent events */
+ enum vfio_notify_type {
+ 	VFIO_IOMMU_NOTIFY = 0,
 -- 
-2.27.0
+2.25.1
 
