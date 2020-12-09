@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13C32D45BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5D72D45B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730829AbgLIPpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:45:12 -0500
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:43921
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728082AbgLIPpM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:45:12 -0500
-X-IronPort-AV: E=Sophos;i="5.78,405,1599516000"; 
-   d="scan'208";a="367056589"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 16:44:29 +0100
-Date:   Wed, 9 Dec 2020 16:44:29 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     John Garry <john.garry@huawei.com>
-cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        nicolas.palix@univ-grenoble-alpes.fr,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Ming Lei <ming.lei@redhat.com>
-Subject: Re: problem booting 5.10
-In-Reply-To: <4f3cd4d4-87d3-dc9a-027d-293cba469d5a@huawei.com>
-Message-ID: <alpine.DEB.2.22.394.2012091644010.2691@hadrien>
-References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien> <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com> <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com> <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
- <9106e994-bb4b-4148-1280-f08f71427420@huawei.com> <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com> <alpine.DEB.2.22.394.2012082339470.16458@hadrien> <yq1sg8fud7y.fsf@ca-mkp.ca.oracle.com>
- <4f3cd4d4-87d3-dc9a-027d-293cba469d5a@huawei.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1728874AbgLIPoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 10:44:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730595AbgLIPoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 10:44:00 -0500
+Date:   Wed, 9 Dec 2020 16:44:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607528599;
+        bh=aQdUBcJzGs5sTFOVkJKkVgfaR/1cjLXqFj5iEQWhGWs=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kuXo8ntCTJ9f422Po8LLL06bKV6gUowSc/t6knG0gvyJ5h3/ttKFIBgZoGkM5zNuO
+         o1YQgS8WpLfaerJqM+LfKQAhxy78iDcq7EexAiTzGFnX56yAz3RCSqLWZOB2sjPOgt
+         UujRul97sJl1QRGeq2f5T1xOSPGyqFKFzyeAUrTg=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     Coiby Xu <coiby.xu@gmail.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Helmut Stult <helmut.stult@schinfo.de>,
+        Baq Domalaq <domalak@gmail.com>,
+        Pedro Ribeiro <pedrib@gmail.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] HID: i2c-hid: add polling mode based on connected
+ GPIO chip's pin status
+Message-ID: <X9Dw4zxx331I7zAk@kroah.com>
+References: <20201125141022.321643-1-coiby.xu@gmail.com>
+ <X75zL12q+FF6KBHi@kroah.com>
+ <B3Hx1v5x_ZWS8XSi8-0vZov1KLuINEHyS5yDUGBaoBN4d9wTi9OlCoFX1h6sqYG8dCZr_OKcKeImWX9eyKh8X4X3ZMdAUQ-KVwmG5e9LJeI=@protonmail.com>
+ <X9B2B6KuzbP8Is+W@kroah.com>
+ <CHTa60htGkyHzaM2En-TPXqyk1v3jVJUolGOMfHphEr_mMG5Z5f2K4mHTFilYR73bgpGEKNcGM1LFstJ7UhvbuJrgqr1-J2-YTZJenhK83Q=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CHTa60htGkyHzaM2En-TPXqyk1v3jVJUolGOMfHphEr_mMG5Z5f2K4mHTFilYR73bgpGEKNcGM1LFstJ7UhvbuJrgqr1-J2-YTZJenhK83Q=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Tue, 8 Dec 2020, John Garry wrote:
-
-> On 08/12/2020 22:51, Martin K. Petersen wrote:
+On Wed, Dec 09, 2020 at 03:38:11PM +0000, Barnabás Pőcze wrote:
+> 2020. december 9., szerda 8:00 keltezéssel, Greg KH írta:
+> 
+> > On Tue, Dec 08, 2020 at 09:59:20PM +0000, Barnabás Pőcze wrote:
 > >
-> > Julia,
+> > > 2020.  november 25., szerda 16:07 keltezéssel, Greg KH írta:
+> > >
+> > > > [...]
+> > > >
+> > > > > +static u8 polling_mode;
+> > > > > +module_param(polling_mode, byte, 0444);
+> > > > > +MODULE_PARM_DESC(polling_mode, "How to poll (default=0) - 0 disabled; 1 based on GPIO pin's status");
+> > > >
+> > > > Module parameters are for the 1990's, they are global and horrible to
+> > > > try to work with. You should provide something on a per-device basis,
+> > > > as what happens if your system requires different things here for
+> > > > different devices? You set this for all devices :(
+> > > > [...]
+> > >
+> > > Hi
+> > > do you think something like what the usbcore has would be better?
+> > > A module parameter like "quirks=<vendor-id>:<product-id>:<flags>[,<vendor-id>:<product-id>:<flags>]*"?
 > >
-> > > This solves the problem.  Starting from 5.10-rc7 and doing this revert, I
-> > > get a kernel that boots.
-> >
->
-> Hi Julia,
->
-> Can you also please test Ming's patchset here (without the megaraid sas
-> revert) when you get a chance:
-> https://lore.kernel.org/linux-block/20201203012638.543321-1-ming.lei@redhat.com/
+> > Not really, that's just for debugging, and asking users to test
+> > something, not for a final solution to anything.
+> 
+> My understanding is that this polling mode option is by no means intended
+> as a final solution, it's purely for debugging/fallback:
+> 
+> "Polling mode could be a fallback solution for enthusiastic Linux users
+> when they have a new laptop. It also acts like a debugging feature. If
+> polling mode works for a broken touchpad, we can almost be certain
+> the root cause is related to the interrupt or power setting."
+> 
+> What would you suggest instead of the module parameter?
 
-5.10-rc7 plus these three commits boots fine.
+a debugfs file?  That means it's only for debugging and you have to be
+root to change the value.
 
 thanks,
-julia
 
->
-> And please also share your .config, as I guess that it is not mainline vanilla
-> and we will want to recreate this to be sure for future. Qian's issue was only
-> exposed with a specific .config enabling lots of heavy debug options.
->
-> Thanks,
-> John
->
-> > Thanks for testing!
-> >
-> > I'll go ahead and revert 103fbf8e4020 in 5.10/scsi-fixes. We can revisit
-> > this change in 5.11 when Ming's fixes are in place.
-> >
->
+greg k-h
