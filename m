@@ -2,120 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0F42D4043
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E9C2D404E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730203AbgLIKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:46:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728277AbgLIKq5 (ORCPT
+        id S1730145AbgLIKtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:49:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21178 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728549AbgLIKtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:46:57 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3F5C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 02:46:17 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id q22so745583pfk.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 02:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=13Rn7jh3b3TjSNdG/NRwwmrqyqpxZcBccJA2fkW9O6Q=;
-        b=JMKpByMlVjcEJj9bv08rD0dOIJ/kIYPvIrrdUzhle4cH0cx6SU2BNTJ1LoH+2CeXwQ
-         M+TDc3W+rAovxErKzyMcPUI8RcoyqPR/5KXdvrEe7L2d69j+5E9Ccrqra6/f8SA8lpfV
-         SBAB6r5j56Voq52JfrI+5G/BAhd7jkqXPhLzKtHmB4KIf5g8/l6otdBx0sPnpgrQFv6L
-         DHjFCpgTMTHbtbxzM8Cp+bfec8n9PTw8zO9fnYvZhSXQ+2pvow3i1gKHWYW46UcqZk9r
-         /3flwNk+xboF8niYe21SpQxTU+f2vV6QJkPRwy3Agrd8dfISpPo1ZYASb1fOlfB2/iNs
-         LGRg==
+        Wed, 9 Dec 2020 05:49:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607510892;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Zl3ySWzgSqoKQsP+hNncCyo05eryIJHnOiYnp/uja00=;
+        b=M/dnkGOKSpZPIPn0U0rHnLaOK9AXPBM4VQY0LvJT6QktPKQZLxH/j/Z/9OF1it83Yn8EbQ
+        4GIp+Tyewr/w7BBaB8l5/WP19JYSGgWysqUlfKzCXFYSrKOGCLdwPWsuIFW3RsXQfpwn4v
+        w2AaAVc4vU2PSV6Z/pGySjh8ClgXEtw=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-379-ZhGTp6YkP4-E3YC61KkEZg-1; Wed, 09 Dec 2020 05:48:11 -0500
+X-MC-Unique: ZhGTp6YkP4-E3YC61KkEZg-1
+Received: by mail-wr1-f70.google.com with SMTP id w17so503908wrp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 02:48:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=13Rn7jh3b3TjSNdG/NRwwmrqyqpxZcBccJA2fkW9O6Q=;
-        b=JX1wTY9ZBeRpN0uMyDwKm007PIT+xBKhw3ARlzR9hCbb6kWV266pDNZOWpYpqjeelP
-         zEeIPLfX4KGdK7dobzfRQujCPjLohyXMgS34dkCmsQwDvhIbA3dCtw6UIe5gzCV5w1zh
-         sYdTqvYuc1i1m6dZ9huKhvc6UCVzf8ZLNeCPs79MmdDmHNpvMGAaiS2qZIbCq46KebJc
-         ebHXIwCgQZqa/lxZIk1Zm7yhD2lToRmsW8V34V2dYJIKL7jTJK73mOseLeSj/fvx+Z49
-         ukBYD12Tj9p7y9s6cirSGg2mCbrKlJkBR9u344+mpWfF/8zIuUN5h/PejxLSa/S66u0Z
-         c+9A==
-X-Gm-Message-State: AOAM531bhBI5tuKnJHxnqYYIty1K/cIXuOaXAbhSHL5kjdB4EpMyLHlX
-        76wNMesqk1eQuMMuRr6msI5SuGz8uHx6rQ==
-X-Google-Smtp-Source: ABdhPJz0Nuw0n2FzUX5G5rCbfjmHOibelJ45uwdQ/mRHGbVhGPxtL7nfz0Lzbkw5S3cHdNQ1LbO+dQ==
-X-Received: by 2002:a63:ed0b:: with SMTP id d11mr1395763pgi.261.1607510777231;
-        Wed, 09 Dec 2020 02:46:17 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id o62sm1847186pjo.17.2020.12.09.02.46.15
+        bh=Zl3ySWzgSqoKQsP+hNncCyo05eryIJHnOiYnp/uja00=;
+        b=sjgv08q+HGcM5nwxS+xd5XBGqyMQWIdLyX85avRWJCDUgunsGK4CFlYCdpBnqhn/vD
+         5H0k6RIhSMQ66RF4Na0lY1434RYgdoAEboYVxB1ta/jglQwr1rIi9HtYQa50feKvXGpA
+         hCYjKURGXhnHQ2bh9UKN81ryIuIDpq++2GQW+WerWNF3GX6l6BppjJXBdG6mxV/dCSeC
+         5EG/umlsHf/k2eJwKFd20iJOqH2J5zre5/hFlB6PiseysQDwvJeAMBjAyeyn/Ms/S/hX
+         1Mi97fVgHYYaZCkvIunILz1ocduTzZ9s8iaeMdPZ4F/Q107kv2nGfPPhOXGvWfIBuJAP
+         wCag==
+X-Gm-Message-State: AOAM530egEG8VLFKxvuqPn+4OxuLsKF8O/JMtyZZ0C/lcYXpQf667RNc
+        rWH6xsneNBxfY+liGHAclSq8BtFF4X/t7IuCnURY+bpUGHsnGyD8P50MlV2VN+s6MqvOhd7EQAO
+        nafMZy6fTf5xJtVFFTKNIugH2
+X-Received: by 2002:a7b:cc94:: with SMTP id p20mr2084720wma.22.1607510890009;
+        Wed, 09 Dec 2020 02:48:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyK8P8FxB2rYCIKQU4GEANRcP1ahuTFv3qx/pMjPuBEThdz0uts6Oskds/80xP/YhHVfyJTZw==
+X-Received: by 2002:a7b:cc94:: with SMTP id p20mr2084699wma.22.1607510889707;
+        Wed, 09 Dec 2020 02:48:09 -0800 (PST)
+Received: from steredhat (host-79-24-227-66.retail.telecomitalia.it. [79.24.227.66])
+        by smtp.gmail.com with ESMTPSA id e17sm2389291wrw.84.2020.12.09.02.48.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 02:46:16 -0800 (PST)
-Date:   Wed, 9 Dec 2020 19:46:13 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v2 2/3] printk: change @clear_seq to atomic64_t
-Message-ID: <X9Cq9SMaCy3lGhXJ@jagdpanzerIV.localdomain>
-References: <20201201205341.3871-1-john.ogness@linutronix.de>
- <20201201205341.3871-3-john.ogness@linutronix.de>
- <X8n9a2DWUFE/giyB@alley>
- <X8/jS9k/eMIL+Acw@jagdpanzerIV.localdomain>
- <875z5c9bhn.fsf@jogness.linutronix.de>
- <20201209081623.GI2414@hirez.programming.kicks-ass.net>
- <20201209092204.GD1667627@google.com>
+        Wed, 09 Dec 2020 02:48:09 -0800 (PST)
+Date:   Wed, 9 Dec 2020 11:48:06 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH net-next v2 1/4] vm_sockets: Include flags field in the
+ vsock address data structure
+Message-ID: <20201209104806.qbuemoz3oy6d3v3b@steredhat>
+References: <20201204170235.84387-1-andraprs@amazon.com>
+ <20201204170235.84387-2-andraprs@amazon.com>
+ <20201207132908.130a5f24@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <73ff948f-f455-7205-bfaa-5b468b2528c2@amazon.com>
+ <20201208104222.605bb669@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201209092204.GD1667627@google.com>
+In-Reply-To: <20201208104222.605bb669@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/12/09 18:22), Sergey Senozhatsky wrote:
-> > 
-> > Please put on your eye cancer gear and inspect the atomic implementation
-> > of PA-RISC, Sparc32, feh, I forgot who else.
-> > 
-> > Those SMP capable architectures are gifted with just one XCHG like
-> > atomic instruction :/ Anyway, as said in the other email, they also
-> > don't have NMIs so it mostly works.
+On Tue, Dec 08, 2020 at 10:42:22AM -0800, Jakub Kicinski wrote:
+>On Tue, 8 Dec 2020 20:23:24 +0200 Paraschiv, Andra-Irina wrote:
+>> >> --- a/include/uapi/linux/vm_sockets.h
+>> >> +++ b/include/uapi/linux/vm_sockets.h
+>> >> @@ -145,7 +145,7 @@
+>> >>
+>> >>   struct sockaddr_vm {
+>> >>        __kernel_sa_family_t svm_family;
+>> >> -     unsigned short svm_reserved1;
+>> >> +     unsigned short svm_flags;
+>> >>        unsigned int svm_port;
+>> >>        unsigned int svm_cid;
+>> >>        unsigned char svm_zero[sizeof(struct sockaddr) -
+>> > Since this is a uAPI header I gotta ask - are you 100% sure that it's
+>> > okay to rename this field?
+>> >
+>> > I didn't grasp from just reading the patches whether this is a uAPI or
+>> > just internal kernel flag, seems like the former from the reading of
+>> > the comment in patch 2. In which case what guarantees that existing
+>> > users don't pass in garbage since the kernel doesn't check it was 0?
+>>
+>> That's always good to double-check the uapi changes don't break / assume
+>> something, thanks for bringing this up. :)
+>>
+>> Sure, let's go through the possible options step by step. Let me know if
+>> I get anything wrong and if I can help with clarifications.
+>>
+>> There is the "svm_reserved1" field that is not used in the kernel
+>> codebase. It is set to 0 on the receive (listen) path as part of the
+>> vsock address initialization [1][2]. The "svm_family" and "svm_zero"
+>> fields are checked as part of the address validation [3].
+>>
+>> Now, with the current change to "svm_flags", the flow is the following:
+>>
+>> * On the receive (listen) path, the remote address structure is
+>> initialized as part of the vsock address init logic [2]. Then patch 3/4
+>> of this series sets the "VMADDR_FLAG_TO_HOST" flag given a set of
+>> conditions (local and remote CID > VMADDR_CID_HOST).
+>>
+>> * On the connect path, the userspace logic can set the "svm_flags"
+>> field. It can be set to 0 or 1 (VMADDR_FLAG_TO_HOST); or any other value
+>> greater than 1. If the "VMADDR_FLAG_TO_HOST" flag is set, all the vsock
+>> packets are then forwarded to the host.
+>>
+>> * When the vsock transport is assigned, the "svm_flags" field is
+>> checked, and if it has the "VMADDR_FLAG_TO_HOST" flag set, it goes on
+>> with a guest->host transport (patch 4/4 of this series). Otherwise,
+>> other specific flag value is not currently used.
+>>
+>> Given all these points, the question remains what happens if the
+>> "svm_flags" field is set on the connect path to a value higher than 1
+>> (maybe a bogus one, not intended so). And it includes the
+>> "VMADDR_FLAG_TO_HOST" value (the single flag set and specifically used
+>> for now, but we should also account for any further possible flags). In
+>> this case, all the vsock packets would be forwarded to the host and
+>> maybe not intended so, having a bogus value for the flags field. Is this
+>> possible case what you are referring to?
+>
+>Correct. What if user basically declared the structure on the stack,
+>and only initialized the fields the kernel used to check?
+>
+>This problem needs to be at the very least discussed in the commit
+>message.
+>
 
-PeterZ, thanks for the pointers!
+I agree that could be a problem, but here some considerations:
+- I checked some applications (qemu-guest-agent, ncat, iperf-vsock) and 
+   all use the same pattern: allocate memory, initialize all the 
+   sockaddr_vm to zero (to be sure to initialize the svm_zero), set the 
+   cid and port fields.
+   So we should be safe, but of course it may not always be true.
 
+- For now the issue could affect only nested VMs. We introduced this 
+   support one year ago, so it's something new and maybe we don't cause 
+   too many problems.
 
-> Hmm, wow. OK, I definitely want to look further.
-> 
-> When some CONFIG_DEBUG_FOO_BAR code wants to pr_err from prb->atomic_op
-> on those archs then we deadlock in printk once again?
+As an alternative, what about using 1 or 2 bytes from svm_zero[]?
+These must be set at zero, even if we only check the first byte in the 
+kernel.
 
-E.g. arch/sparc/lib/atomic32.c
+Thanks,
+Stefano
 
-	spinlock_t __atomic_hash[ATOMIC_HASH_SIZE];
-	atomic_foo()
-	{
-		spin_lock_irqsave(ATOMIC_HASH(v), flags)
-		...
-		spin_unlock_irqrestore(ATOMIC_HASH(v), flags);
-	}
-
-So another potential re-entry path is
-
-	atomic_foo()
-	 spin_lock_irqsave(ATOMIC_HASH(v), flags)
-	  printk()
-	   prb()
-	    atomic_foo()
-	     spin_lock_irqsave(ATOMIC_HASH(v), flags)
-
-which can deadlock, in theory, if both atomics HASH to the same
-key (same spin_lock).
-
-I wonder what else am I missing.
-
-	-ss
