@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FEF2D45ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EEAE2D45DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 16:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731095AbgLIPyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 10:54:07 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2235 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730970AbgLIPwy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731039AbgLIPwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 9 Dec 2020 10:52:54 -0500
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CrhKp70qkz67N4S;
-        Wed,  9 Dec 2020 23:48:46 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 9 Dec 2020 16:52:07 +0100
-Received: from [10.210.171.175] (10.210.171.175) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 9 Dec 2020 15:52:05 +0000
-Subject: Re: problem booting 5.10
-To:     Julia Lawall <julia.lawall@inria.fr>,
-        Kashyap Desai <kashyap.desai@broadcom.com>
-CC:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <nicolas.palix@univ-grenoble-alpes.fr>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>
-References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
- <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
- <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com>
- <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
- <9106e994-bb4b-4148-1280-f08f71427420@huawei.com>
- <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
- <alpine.DEB.2.22.394.2012082339470.16458@hadrien>
- <yq1sg8fud7y.fsf@ca-mkp.ca.oracle.com>
- <4f3cd4d4-87d3-dc9a-027d-293cba469d5a@huawei.com>
- <alpine.DEB.2.22.394.2012091644010.2691@hadrien>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <db450cdf-f411-c0ed-d2ce-60283dacfd06@huawei.com>
-Date:   Wed, 9 Dec 2020 15:51:30 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+Received: from mx3.wp.pl ([212.77.101.9]:49310 "EHLO mx3.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730948AbgLIPwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 10:52:49 -0500
+Received: (wp-smtpd smtp.wp.pl 24471 invoked from network); 9 Dec 2020 16:51:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1607529109; bh=3FjT/q8mbkb2XyA2MEM4/BuPSHX2DrgXduiPY1UbFxg=;
+          h=From:To:Cc:Subject;
+          b=aWOibTlM23BJzFKeIxtiUyvmCh0s2p+MN1SBv4fVFYIcEJpBdr9w5K5HK8rV5OPG4
+           PJtm+eF0dsMxueE/FAOoPaxZ6DKQqbQbIViVOjGa83n76IJxvpDoB0UD/+fuRO/Wq0
+           iII6F1UvtKgqU0GWUujmzPzpXQ8pWV16qfwLJXv4=
+Received: from ip4-46-39-164-203.cust.nbox.cz (HELO localhost) (stf_xl@wp.pl@[46.39.164.203])
+          (envelope-sender <stf_xl@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <willy@infradead.org>; 9 Dec 2020 16:51:49 +0100
+Date:   Wed, 9 Dec 2020 16:51:48 +0100
+From:   Stanislaw Gruszka <stf_xl@wp.pl>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        bpf <bpf@vger.kernel.org>, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH] mm/filemap: add static for function
+ __add_to_page_cache_locked
+Message-ID: <20201209155148.GA5552@wp.pl>
+References: <20201110115037.f6a53faec8d65782ab65d8b4@linux-foundation.org>
+ <ddca2a9e-ed89-5dec-b1af-4f2fd2c99b57@linux.alibaba.com>
+ <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
+ <CAFxkdApgQ4RCt-J43cK4_128pXr=Xn5jw+q0kOaP-TYufk_tPA@mail.gmail.com>
+ <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com>
+ <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz>
+ <CAADnVQJARx6sKF-30YsabCd1W+MFDMmfxY+2u0Pm40RHHHQZ6Q@mail.gmail.com>
+ <CAADnVQJ6tmzBXvtroBuEH6QA0H+q7yaSKxrVvVxhqr3KBZdEXg@mail.gmail.com>
+ <20201209144628.GA3474@wp.pl>
+ <20201209150826.GP7338@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2012091644010.2691@hadrien>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.171.175]
-X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209150826.GP7338@casper.infradead.org>
+X-WP-MailID: 729eafaf8c9901c095d530a4dd2b5e0e
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [4aPk]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12/2020 15:44, Julia Lawall wrote:
+On Wed, Dec 09, 2020 at 03:08:26PM +0000, Matthew Wilcox wrote:
+> On Wed, Dec 09, 2020 at 03:46:28PM +0100, Stanislaw Gruszka wrote:
+> > At this point of release cycle we should probably go with revert,
+> > but I think the main problem is that BPF and ERROR_INJECTION use
+> > function that is not intended to be used externally. For external users
+> > add_to_page_cache_lru() and add_to_page_cache_locked() are exported
+> > and I think those should be used (see the patch below).
 > 
-> On Tue, 8 Dec 2020, John Garry wrote:
-> 
->> On 08/12/2020 22:51, Martin K. Petersen wrote:
->>> Julia,
->>>
->>>> This solves the problem.  Starting from 5.10-rc7 and doing this revert, I
->>>> get a kernel that boots.
->> Hi Julia,
->>
->> Can you also please test Ming's patchset here (without the megaraid sas
->> revert) when you get a chance:
->> https://lore.kernel.org/linux-block/20201203012638.543321-1-ming.lei@redhat.com/
-> 5.10-rc7 plus these three commits boots fine.
-> 
+> FWIW, I intend to do some consolidation/renaming in this area.  I
+> trust that will not be a problem?
 
-Hi Julia,
+If it does not break anything, it will be not a problem ;-)
 
-Ok, Thanks for the confirmation. A sort of relief.
+It's possible that __add_to_page_cache_locked() can be a global symbol
+with add_to_page_cache_lru() + add_to_page_cache_locked() being just
+static/inline wrappers around it.
 
-@Kashyap, It would be good if we could recreate this, just in case.
-
-Cheers,
-John
+Stanislaw
