@@ -2,83 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 205BB2D46D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7CB2D46D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729711AbgLIQex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:34:53 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:35267 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727894AbgLIQex (ORCPT
+        id S1730287AbgLIQgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:36:01 -0500
+Received: from www62.your-server.de ([213.133.104.62]:46626 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728121AbgLIQgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:34:53 -0500
-Received: by mail-ot1-f65.google.com with SMTP id i6so1953847otr.2;
-        Wed, 09 Dec 2020 08:34:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9amksMRaTre1TKphGMa6RukD/0UXnG4x5MJc8xzPF+8=;
-        b=L5oczlRG2CKvs59LsTiMpaUtxfaWgRe36GLHu12kFAq3FA0C1sOrv2z1beR3vF+hKr
-         lF0ulA0N0IPyUs0BA5nuDOp1kpIDbxHPK91cB2czuT8OxCBcUiNmuA06WuRR7oKOtKtg
-         n6NP0dQNKQNgckKiU7XObT9sBIhyBLc4hvPBUzgf/mSduDRydEJtZj50AK4SSsv4CWtv
-         IWXoEWJ9jQkE8+ATNPKc/DVKyWirA9MBqTuUm5zllsgY4rLJIQoZaU5CJJ5cEgqtCji+
-         HoyQdz63FxhS6q0ybEv3nvOu8VnHH4+tP3803ezaEnIK9boThuSI4wJw/FPiZBcd8XM6
-         CYJg==
-X-Gm-Message-State: AOAM5337veQxI7aGlc2Tpw2NHqIJEzNfoiWfVI3Eimff5avWDAUYhgHL
-        v8EJ2q+ngjyuilAPlENSlw==
-X-Google-Smtp-Source: ABdhPJw079OcH9Wx/tOkfeG7V+did7VdjHcLMAldhzxsI94Q/ADO9vhyb7XLabLtHUSZaUYxtlnBlg==
-X-Received: by 2002:a05:6830:1011:: with SMTP id a17mr2440801otp.97.1607531651586;
-        Wed, 09 Dec 2020 08:34:11 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h2sm480685otn.15.2020.12.09.08.34.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 08:34:10 -0800 (PST)
-Received: (nullmailer pid 567548 invoked by uid 1000);
-        Wed, 09 Dec 2020 16:34:09 -0000
-Date:   Wed, 9 Dec 2020 10:34:09 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     devicetree@vger.kernel.org, soc@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        olof@lixom.net, arnd@arndb.de, w@1wt.eu
-Subject: Re: [PATCH v2 02/10] dt-bindings: vendor-prefixes: Add honestar
- vendor prefix
-Message-ID: <20201209163409.GA566058@robh.at.kernel.org>
-References: <20201201134330.3037007-1-daniel@0x0f.com>
- <20201201134330.3037007-3-daniel@0x0f.com>
+        Wed, 9 Dec 2020 11:36:01 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kn2Qw-000AWm-AE; Wed, 09 Dec 2020 17:35:18 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kn2Qw-0001Eu-42; Wed, 09 Dec 2020 17:35:18 +0100
+Subject: Re: [PATCH bpf-next v4 2/4] bpf: Expose bpf_get_socket_cookie to
+ tracing programs
+To:     Florent Revest <revest@chromium.org>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, kpsingh@chromium.org,
+        kafai@fb.com, linux-kernel@vger.kernel.org
+References: <20201209132636.1545761-1-revest@chromium.org>
+ <20201209132636.1545761-2-revest@chromium.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c3f1619d-41c1-89d3-a2a2-c2de0041fa51@iogearbox.net>
+Date:   Wed, 9 Dec 2020 17:35:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201134330.3037007-3-daniel@0x0f.com>
+In-Reply-To: <20201209132636.1545761-2-revest@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26013/Wed Dec  9 15:33:37 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 10:43:22PM +0900, Daniel Palmer wrote:
-> Add prefix for Honestar Technologies Co., Ltd.
+On 12/9/20 2:26 PM, Florent Revest wrote:
+> This needs two new helpers, one that works in a sleepable context (using
+> sock_gen_cookie which disables/enables preemption) and one that does not
+> (for performance reasons). Both take a struct sock pointer and need to
+> check it for NULLness.
 > 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> This helper could also be useful to other BPF program types such as LSM.
+
+Looks like this commit description is now stale and needs to be updated
+since we only really add one helper?
+
+> Signed-off-by: Florent Revest <revest@chromium.org>
 > ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+>   include/linux/bpf.h            |  1 +
+>   include/uapi/linux/bpf.h       |  7 +++++++
+>   kernel/trace/bpf_trace.c       |  2 ++
+>   net/core/filter.c              | 12 ++++++++++++
+>   tools/include/uapi/linux/bpf.h |  7 +++++++
+>   5 files changed, 29 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> index 2735be1a8470..a6cf2cef6f89 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -451,6 +451,8 @@ patternProperties:
->      description: Holt Integrated Circuits, Inc.
->    "^honeywell,.*":
->      description: Honeywell
-> +  "^honestar,.*":
-> +    description: Honestar Technologies Co., Ltd.
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 07cb5d15e743..5a858e8c3f1a 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1860,6 +1860,7 @@ extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
+>   extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
+>   extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
+>   extern const struct bpf_func_proto bpf_sock_from_file_proto;
+> +extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
+>   
+>   const struct bpf_func_proto *bpf_tracing_func_proto(
+>   	enum bpf_func_id func_id, const struct bpf_prog *prog);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index ba59309f4d18..9ac66cf25959 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1667,6 +1667,13 @@ union bpf_attr {
+>    * 	Return
+>    * 		A 8-byte long unique number.
+>    *
+> + * u64 bpf_get_socket_cookie(void *sk)
+> + * 	Description
+> + * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+> + * 		*sk*, but gets socket from a BTF **struct sock**.
 
-Alphabetical order please.
+Maybe add a small comment that this one also works for sleepable [tracing] progs?
 
->    "^hoperun,.*":
->      description: Jiangsu HopeRun Software Co., Ltd.
->    "^hp,.*":
-> -- 
-> 2.29.2
+> + * 	Return
+> + * 		A 8-byte long unique number.
+
+... or 0 if *sk* is NULL.
+
+>    * u32 bpf_get_socket_uid(struct sk_buff *skb)
+>    * 	Return
+>    * 		The owner UID of the socket associated to *skb*. If the socket
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 52ddd217d6a1..be5e96de306d 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1760,6 +1760,8 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>   		return &bpf_sk_storage_delete_tracing_proto;
+>   	case BPF_FUNC_sock_from_file:
+>   		return &bpf_sock_from_file_proto;
+> +	case BPF_FUNC_get_socket_cookie:
+> +		return &bpf_get_socket_ptr_cookie_proto;
+>   #endif
+>   	case BPF_FUNC_seq_printf:
+>   		return prog->expected_attach_type == BPF_TRACE_ITER ?
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 255aeee72402..13ad9a64f04f 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4631,6 +4631,18 @@ static const struct bpf_func_proto bpf_get_socket_cookie_sock_proto = {
+>   	.arg1_type	= ARG_PTR_TO_CTX,
+>   };
+>   
+> +BPF_CALL_1(bpf_get_socket_ptr_cookie, struct sock *, sk)
+> +{
+> +	return sk ? sock_gen_cookie(sk) : 0;
+> +}
+> +
+> +const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto = {
+> +	.func		= bpf_get_socket_ptr_cookie,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_BTF_ID_SOCK_COMMON,
+> +};
+> +
+>   BPF_CALL_1(bpf_get_socket_cookie_sock_ops, struct bpf_sock_ops_kern *, ctx)
+>   {
+>   	return __sock_gen_cookie(ctx->sk);
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index ba59309f4d18..9ac66cf25959 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1667,6 +1667,13 @@ union bpf_attr {
+>    * 	Return
+>    * 		A 8-byte long unique number.
+>    *
+> + * u64 bpf_get_socket_cookie(void *sk)
+> + * 	Description
+> + * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+> + * 		*sk*, but gets socket from a BTF **struct sock**.
+> + * 	Return
+> + * 		A 8-byte long unique number.
+> + *
+>    * u32 bpf_get_socket_uid(struct sk_buff *skb)
+>    * 	Return
+>    * 		The owner UID of the socket associated to *skb*. If the socket
 > 
+
