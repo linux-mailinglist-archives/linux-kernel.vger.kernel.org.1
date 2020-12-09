@@ -2,132 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0372D46E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A90EA2D46EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731711AbgLIQhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:37:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56192 "EHLO mx2.suse.de"
+        id S1731838AbgLIQjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:39:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59240 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729012AbgLIQhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:37:55 -0500
+        id S1726227AbgLIQjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:39:10 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607531828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZVwPeZe+K1uTe80npboLjwJwLum31MbCHyq8Bs1n6Us=;
-        b=jfB75bKYTmF3ZlJNb7d+m0GZ+aC6yuqOStmEeVBxJECpJnAmliYMMiJgN7Oq9aISHb/s5P
-        GrZwMbJK9kns2omwSJni7LhySsNeY+gY6Rm/LZ8OKrNUo1FEdTZJ4bK5rz/qlsOhsrV9Rp
-        nOGKS9ORwey6AM1agzd8F1bpBlsA1Sg=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 20CD4AC9A;
-        Wed,  9 Dec 2020 16:37:08 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 17:37:07 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH 0/3] clear_warn_once: add timed interval resetting
-Message-ID: <X9D9MwJzUCuwQPNb@alley>
-References: <20201126063029.2030-1-paul.gortmaker@windriver.com>
+        by mx2.suse.de (Postfix) with ESMTP id C964EAB63;
+        Wed,  9 Dec 2020 16:38:27 +0000 (UTC)
+Subject: Re: [PATCH v2] mm/page_owner: Record timestamp and pid
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        akpm@linux-foundation.org, linux-mm@kvack.org
+Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lmark@codeaurora.org
+References: <20201209125153.10533-1-georgi.djakov@linaro.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <20f7fb50-5e21-3ad8-50cd-81b56c9e45b1@suse.cz>
+Date:   Wed, 9 Dec 2020 17:38:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201126063029.2030-1-paul.gortmaker@windriver.com>
+In-Reply-To: <20201209125153.10533-1-georgi.djakov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-11-26 01:30:26, Paul Gortmaker wrote:
-> The existing clear_warn_once functionality is currently a manually
-> issued state reset via the file /sys/kernel/debug/clear_warn_once when
-> debugfs is mounted.  The idea being that a developer would be running
-> some tests, like LTP or similar, and want to check reproducibility
-> without having to reboot.
+On 12/9/20 1:51 PM, Georgi Djakov wrote:
+> From: Liam Mark <lmark@codeaurora.org>
 > 
-> But you currently can't make use of clear_warn_once unless you've got
-> debugfs enabled and mounted - which may not be desired by some people
-> in some deployment situations.
+> Collect the time for each allocation recorded in page owner so that
+> allocation "surges" can be measured.
 > 
-> The functionality added here allows for periodic resets in addition to
-> the one-shot reset it already had.  Then we allow for a boot-time setting
-> of the periodic resets so it can be used even when debugfs isn't mounted.
+> Record the pid for each allocation recorded in page owner so that
+> the source of allocation "surges" can be better identified.
 > 
-> By having a periodic reset, we also open the door for having the various
-> "once" functions act as long period ratelimited messages, where a sysadmin
-> can pick an hour or a day reset if they are facing an issue and are
-> wondering "did this just happen once, or am I only being informed once?"
+> The above is very useful when doing memory analysis. On a crash for
+> example, we can get this information from kdump (or ramdump) and parse
+> it to figure out memory allocation problems.
 
-OK, I though more about it and I NACK this patchset.
+Yes, I can imagine this to be useful.
 
-My reason:
+> Please note that on x86_64 this increases the size of struct page_owner
+> from 16 bytes to 32.
 
-1. The primary purpose was to provide a way to reset warn_once() without
-   debugfs. From this POV, the solution is rather complicated: timers
-   and another kernel parameter.
+That's the tradeoff, but it's not a functionality intended for production, so
+unless somebody says they need to enable page_owner for debugging and this
+increase prevents them from fitting into available memory, let's not complicate
+things with making this optional.
 
-2. I am not aware of any convincing argument why debugfs could not be
-   mounted on the debugged system.
+> Signed-off-by: Liam Mark <lmark@codeaurora.org>
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 
-3. Debugfs provides many more debugging facilities. It is designed for
-   this purpose. It does not look like a good strategy to provide
-   alternative interfaces just to avoid it.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-4. There were mentioned several other use cases for this feature,
-   like RT systems. But it was not clear that it was really needed
-   or that people would really use it.
+> ---
+> 
+> v2:
+> - Improve the commit message (Andrew and Vlastimil)
+> - Update page_owner.rst with more recent object size information (Andrew)
+> - Use pid_t for the pid (Andrew)
+> - Print the info also in __dump_page_owner() (Vlastimil)
+> 
+> v1: https://lore.kernel.org/r/20201112184106.733-1-georgi.djakov@linaro.org/
+> 
+> 
+>  Documentation/vm/page_owner.rst | 12 ++++++------
+>  mm/page_owner.c                 | 17 +++++++++++++----
+>  2 files changed, 19 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/vm/page_owner.rst b/Documentation/vm/page_owner.rst
+> index 02deac76673f..cf7c0c361621 100644
+> --- a/Documentation/vm/page_owner.rst
+> +++ b/Documentation/vm/page_owner.rst
+> @@ -41,17 +41,17 @@ size change due to this facility.
+>  - Without page owner::
+>  
+>     text    data     bss     dec     hex filename
+> -   40662   1493     644   42799    a72f mm/page_alloc.o
+> +  48392    2333     644   51369    c8a9 mm/page_alloc.o
+>  
+>  - With page owner::
+>  
+>     text    data     bss     dec     hex filename
+> -   40892   1493     644   43029    a815 mm/page_alloc.o
+> -   1427      24       8    1459     5b3 mm/page_ext.o
+> -   2722      50       0    2772     ad4 mm/page_owner.o
+> +  48800    2445     644   51889    cab1 mm/page_alloc.o
+> +   6574     108      29    6711    1a37 mm/page_owner.o
+> +   1025       8       8    1041     411 mm/page_ext.o
+>  
+> -Although, roughly, 4 KB code is added in total, page_alloc.o increase by
+> -230 bytes and only half of it is in hotpath. Building the kernel with
+> +Although, roughly, 8 KB code is added in total, page_alloc.o increase by
+> +520 bytes and less than half of it is in hotpath. Building the kernel with
+>  page owner and turning it on if needed would be great option to debug
+>  kernel memory problem.
+>  
+> diff --git a/mm/page_owner.c b/mm/page_owner.c
+> index b735a8eafcdb..af464bb7fbe7 100644
+> --- a/mm/page_owner.c
+> +++ b/mm/page_owner.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/migrate.h>
+>  #include <linux/stackdepot.h>
+>  #include <linux/seq_file.h>
+> +#include <linux/sched/clock.h>
+>  
+>  #include "internal.h"
+>  
+> @@ -25,6 +26,8 @@ struct page_owner {
+>  	gfp_t gfp_mask;
+>  	depot_stack_handle_t handle;
+>  	depot_stack_handle_t free_handle;
+> +	u64 ts_nsec;
+> +	pid_t pid;
+>  };
+>  
+>  static bool page_owner_enabled = false;
+> @@ -172,6 +175,8 @@ static inline void __set_page_owner_handle(struct page *page,
+>  		page_owner->order = order;
+>  		page_owner->gfp_mask = gfp_mask;
+>  		page_owner->last_migrate_reason = -1;
+> +		page_owner->pid = current->pid;
+> +		page_owner->ts_nsec = local_clock();
+>  		__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
+>  		__set_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
+>  
+> @@ -236,6 +241,8 @@ void __copy_page_owner(struct page *oldpage, struct page *newpage)
+>  	new_page_owner->last_migrate_reason =
+>  		old_page_owner->last_migrate_reason;
+>  	new_page_owner->handle = old_page_owner->handle;
+> +	new_page_owner->pid = old_page_owner->pid;
+> +	new_page_owner->ts_nsec = old_page_owner->ts_nsec;
+>  
+>  	/*
+>  	 * We don't clear the bit on the oldpage as it's going to be freed
+> @@ -349,9 +356,10 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
+>  		return -ENOMEM;
+>  
+>  	ret = snprintf(kbuf, count,
+> -			"Page allocated via order %u, mask %#x(%pGg)\n",
+> +			"Page allocated via order %u, mask %#x(%pGg), pid %d, ts %llu ns\n",
+>  			page_owner->order, page_owner->gfp_mask,
+> -			&page_owner->gfp_mask);
+> +			&page_owner->gfp_mask, page_owner->pid,
+> +			page_owner->ts_nsec);
+>  
+>  	if (ret >= count)
+>  		goto err;
+> @@ -427,8 +435,9 @@ void __dump_page_owner(struct page *page)
+>  	else
+>  		pr_alert("page_owner tracks the page as freed\n");
+>  
+> -	pr_alert("page last allocated via order %u, migratetype %s, gfp_mask %#x(%pGg)\n",
+> -		 page_owner->order, migratetype_names[mt], gfp_mask, &gfp_mask);
+> +	pr_alert("page last allocated via order %u, migratetype %s, gfp_mask %#x(%pGg), pid %d, ts %llu\n",
+> +		 page_owner->order, migratetype_names[mt], gfp_mask, &gfp_mask,
+> +		 page_owner->pid, page_owner->ts_nsec);
+>  
+>  	handle = READ_ONCE(page_owner->handle);
+>  	if (!handle) {
+> 
 
-5. Some code might even rely on that it is called only once, see commit
-   dfbf2897d00499f94cd ("bug: set warn variable before calling
-   WARN()") or the recent
-   https://lore.kernel.org/r/20201029142406.3c46855a@gandalf.local.home
-
-   It should better stay as debugging feature that should be used with
-   care.
-
-
-6. It creates system wide ratelimited printk().
-
-   We have printk_ratelimited() for this. And it is quite problematic.
-   It is supposed to prevent flood of printk() messages. But it does
-   not work well because the limits depend on more factors, like:
-   system size, conditions, console speed.
-
-   Yes, the proposed feature is supposed to solve another problem
-   (lack of messages). But it is a global action that would
-    re-enable >1000 messages that were limited to be printed
-    only once because they could be too frequent. As a result:
-
-	+ it might cause flood of printk() messages
-
-	+ it is hard to define a good system wide time limit;
-	  it was even unclear what should be the lower limit.
-
-	+ it will restart the messages at some "random" point,
-	  so that the relation of the reported events would
-	  be unclear.
-
-  From the API point of view:
-
-	+ printk_ratelimited() is used when we want to see that a
-	  problem is still there. It is per-message setting.
-
-	+ printk_once() is used when even printk_ratelimited() would
-	  be too much. It is per-message setting.
-
-	+ The new printk_repeated_once() is a strange mix of this two
-	  with the global setting. It does not fit much.
-
-
-Best Regards,
-Petr
-
-PS: I did not answer your last mail because it looked like an endless
-    fight over words or point of views. I decided to make a summary
-    of my view instead. These are reason why I nacked it.
-
-    I know that there might be different views but so far no arguments
-    changed mine. And I do not know how to explain it better.
