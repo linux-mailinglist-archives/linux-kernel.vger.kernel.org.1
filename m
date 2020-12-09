@@ -2,161 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E40D92D47EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 877A92D47F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732422AbgLIR1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:27:44 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:44237 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732758AbgLIR11 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:27:27 -0500
-Received: by mail-ot1-f65.google.com with SMTP id f16so2106026otl.11;
-        Wed, 09 Dec 2020 09:27:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dJcplb3slY1dsoFAl6yxoDTBG+DHfog6F6dFhpVHk9A=;
-        b=JKBBhpm/xGYFLyIaJpMhYhdXoKaVBh2nhVS18ayRiDMmzVB6oSfZdOyGdKyvJLgKvm
-         5is3EIYQr8SOSy85+1Y2QabXlmlYjEwtJFgh85o5yZcO0NhKQ5P/6wmvsgZT56n/VRIs
-         JUb/z49cW0Y+5zVbG1HgCtulagzykvZqjDvUU2oiFAdUeW1t5HilLD+9RBSKyFM9sYpf
-         13B6MCsD/XcFJwy02lw7v8jGrbc79tLxThvWoMr39PDhyTxoyMlcKy1JK918MX1+vc4M
-         JneoQAuLhW9TcWfMeQJAgdkieAGcIhl4M95SQFwTTRKmLa0o051BWseRxCFAJxEfXQ7k
-         uvGg==
-X-Gm-Message-State: AOAM531V1XdB+YMbsMJQBUHDo+hlyEY2EuVJrPAzMmaYdo1qkwWz3P6f
-        AZuA8vXkv6aRG7/KfmBjJ3LpHGILvQ==
-X-Google-Smtp-Source: ABdhPJwINWASDIcbnAlPGTqU1d+qKbxekVgnOt54abWpI7enCFjTH9b++DgZI0VBTn7SapNG6EEqVw==
-X-Received: by 2002:a9d:63c6:: with SMTP id e6mr2657288otl.326.1607534805803;
-        Wed, 09 Dec 2020 09:26:45 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k13sm537363otl.72.2020.12.09.09.26.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 09:26:45 -0800 (PST)
-Received: (nullmailer pid 641351 invoked by uid 1000);
-        Wed, 09 Dec 2020 17:26:43 -0000
-Date:   Wed, 9 Dec 2020 11:26:43 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, broonie@kernel.org,
-        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 2/7] dt-bindings: spi: Add Tegra QSPI device tree
- binding
-Message-ID: <20201209172643.GA638607@robh.at.kernel.org>
-References: <1606857168-5839-1-git-send-email-skomatineni@nvidia.com>
- <1606857168-5839-3-git-send-email-skomatineni@nvidia.com>
+        id S1730934AbgLIR3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:29:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37150 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728369AbgLIR3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:29:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B4027ACF5;
+        Wed,  9 Dec 2020 17:28:51 +0000 (UTC)
+To:     paulmck@kernel.org, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org, iamjoonsoo.kim@lge.com,
+        andrii@kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
+References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
+ <20201209011303.32737-1-paulmck@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v2 sl-b 1/5] mm: Add mem_dump_obj() to print source of
+ memory block
+Message-ID: <8ea31887-8cc3-24cc-82e8-779290c61c2c@suse.cz>
+Date:   Wed, 9 Dec 2020 18:28:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1606857168-5839-3-git-send-email-skomatineni@nvidia.com>
+In-Reply-To: <20201209011303.32737-1-paulmck@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 01:12:43PM -0800, Sowjanya Komatineni wrote:
-> This patch adds YAML based device tree binding document for Tegra
-> QSPI driver.
+On 12/9/20 2:12 AM, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
 > 
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  .../devicetree/bindings/spi/nvidia,tegra-qspi.yaml | 77 ++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra-qspi.yaml
+> There are kernel facilities such as per-CPU reference counts that give
+> error messages in generic handlers or callbacks, whose messages are
+> unenlightening.  In the case of per-CPU reference-count underflow, this
+> is not a problem when creating a new use of this facility because in that
+> case the bug is almost certainly in the code implementing that new use.
+> However, trouble arises when deploying across many systems, which might
+> exercise corner cases that were not seen during development and testing.
+> Here, it would be really nice to get some kind of hint as to which of
+> several uses the underflow was caused by.
 > 
-> diff --git a/Documentation/devicetree/bindings/spi/nvidia,tegra-qspi.yaml b/Documentation/devicetree/bindings/spi/nvidia,tegra-qspi.yaml
-> new file mode 100644
-> index 0000000..038a085
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/nvidia,tegra-qspi.yaml
-> @@ -0,0 +1,77 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/nvidia,tegra-qspi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Tegra Quad SPI Controller
-> +
-> +maintainers:
-> +  - Thierry Reding <thierry.reding@gmail.com>
-> +  - Jonathan Hunter <jonathanh@nvidia.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - nvidia,tegra210-qspi
-> +      - nvidia,tegra186-qspi
-> +      - nvidia,tegra194-qspi
-> +
-> +  reg:
-> +    items:
-> +      - description: QSPI registers
+> This commit therefore exposes a mem_dump_obj() function that takes
+> a pointer to memory (which must still be allocated if it has been
+> dynamically allocated) and prints available information on where that
+> memory came from.  This pointer can reference the middle of the block as
+> well as the beginning of the block, as needed by things like RCU callback
+> functions and timer handlers that might not know where the beginning of
+> the memory block is.  These functions and handlers can use mem_dump_obj()
+> to print out better hints as to where the problem might lie.
 
-Just 'maxItems: 1'
+Sounds useful, yeah. It occured to me at least once that we don't have a nice
+generic way to print this kind of info. I usually dig it from a crash dump...
 
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: qspi
-
-Kind of a pointless name. 
-
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  reset-names:
-> +    minItems: 1
-> +    items:
-> +      - const: qspi
-
-Same here.
-
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  dmas:
-> +    maxItems: 2
-> +
-> +  dma-names:
-> +    items:
-> +      - const: rx
-> +      - const: tx
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clock-names
-> +  - clocks
-> +  - reset-names
-> +  - resets
-> +
-> +additionalProperties: true
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/tegra210-car.h>
-> +    #include <dt-bindings/reset/tegra210-car.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    spi@70410000 {
-> +            compatible = "nvidia,tegra210-qspi";
-> +            reg = <0x70410000 0x1000>;
-> +            interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
-> +            clocks = <&tegra_car TEGRA210_CLK_QSPI>;
-> +            clock-names = "qspi";
-> +            resets = <&tegra_car 211>;
-> +            reset-names = "qspi";
-> +            dmas = <&apbdma 5>, <&apbdma 5>;
-> +            dma-names = "rx", "tx";
-> +    };
-> -- 
-> 2.7.4
+> The information printed can depend on kernel configuration.  For example,
+> the allocation return address can be printed only for slab and slub,
+> and even then only when the necessary debug has been enabled.  For slab,
+> build with CONFIG_DEBUG_SLAB=y, and either use sizes with ample space
+> to the next power of two or use the SLAB_STORE_USER when creating the
+> kmem_cache structure.  For slub, build with CONFIG_SLUB_DEBUG=y and
+> boot with slub_debug=U, or pass SLAB_STORE_USER to kmem_cache_create()
+> if more focused use is desired.  Also for slub, use CONFIG_STACKTRACE
+> to enable printing of the allocation-time stack trace.
 > 
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: Pekka Enberg <penberg@kernel.org>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: <linux-mm@kvack.org>
+> Reported-by: Andrii Nakryiko <andrii@kernel.org>
+> [ paulmck: Convert to printing and change names per Joonsoo Kim. ]
+> [ paulmck: Move slab definition per Stephen Rothwell and kbuild test robot. ]
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+...
+
+> +/**
+> + * kmem_valid_obj - does the pointer reference a valid slab object?
+> + * @object: pointer to query.
+> + *
+> + * Return: %true if the pointer is to a not-yet-freed object from
+> + * kmalloc() or kmem_cache_alloc(), either %true or %false if the pointer
+> + * is to an already-freed object, and %false otherwise.
+> + */
+
+It should be possible to find out more about object being free or not, than you
+currently do. At least to find out if it's definitely free. When it appears
+allocated, it can be actually still free in some kind of e.g. per-cpu or
+per-node cache that would be infeasible to check. But that improvement to the
+output can be also added later. Also SLUB stores the freeing stacktrace, which
+might be useful...
+
+> +bool kmem_valid_obj(void *object)
+> +{
+> +	struct page *page;
+> +
+> +	if (!virt_addr_valid(object))
+> +		return false;
+> +	page = virt_to_head_page(object);
+> +	return PageSlab(page);
+> +}
+> +EXPORT_SYMBOL_GPL(kmem_valid_obj);
+> +
+> +/**
+> + * kmem_dump_obj - Print available slab provenance information
+> + * @object: slab object for which to find provenance information.
+> + *
+> + * This function uses pr_cont(), so that the caller is expected to have
+> + * printed out whatever preamble is appropriate.  The provenance information
+> + * depends on the type of object and on how much debugging is enabled.
+> + * For a slab-cache object, the fact that it is a slab object is printed,
+> + * and, if available, the slab name, return address, and stack trace from
+> + * the allocation of that object.
+> + *
+> + * This function will splat if passed a pointer to a non-slab object.
+> + * If you are not sure what type of object you have, you should instead
+> + * use mem_dump_obj().
+> + */
+> +void kmem_dump_obj(void *object)
+> +{
+> +	int i;
+> +	struct page *page;
+> +	struct kmem_provenance kp;
+> +
+> +	if (WARN_ON_ONCE(!virt_addr_valid(object)))
+> +		return;
+> +	page = virt_to_head_page(object);
+> +	if (WARN_ON_ONCE(!PageSlab(page))) {
+> +		pr_cont(" non-slab memory.\n");
+> +		return;
+> +	}
+> +	kp.kp_ptr = object;
+> +	kp.kp_page = page;
+> +	kp.kp_nstack = KS_ADDRS_COUNT;
+> +	kmem_provenance(&kp);
+
+You don't seem to be printing kp.kp_objp anywhere? (unless in later patch, but
+would make sense in this patch already).
+
+> +	if (page->slab_cache)
+> +		pr_cont(" slab %s", page->slab_cache->name);
+> +	else
+> +		pr_cont(" slab ");
+> +	if (kp.kp_ret)
+> +		pr_cont(" allocated at %pS\n", kp.kp_ret);
+> +	else
+> +		pr_cont("\n");
+> +	if (kp.kp_stack[0]) {
+> +		for (i = 0; i < ARRAY_SIZE(kp.kp_stack); i++) {
+> +			if (!kp.kp_stack[i])
+> +				break;
+> +			pr_info("    %pS\n", kp.kp_stack[i]);
+> +		}
+> +	}
+> +}
+
+...
+
+> diff --git a/mm/slub.c b/mm/slub.c
+> index b30be23..027fe0f 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3918,6 +3918,46 @@ int __kmem_cache_shutdown(struct kmem_cache *s)
+>  	return 0;
+>  }
+>  
+> +void kmem_provenance(struct kmem_provenance *kpp)
+> +{
+> +#ifdef CONFIG_SLUB_DEBUG
+
+I'd expect at least the very basic stuff (kp_obj) to be possible to determine
+even under !CONFIG_SLUB_DEBUG?
+
+> +	void *base;
+> +	int i;
+> +	void *object = kpp->kp_ptr;
+> +	unsigned int objnr;
+> +	void *objp;
+> +	struct page *page = kpp->kp_page;
+> +	struct kmem_cache *s = page->slab_cache;
+> +	struct track *trackp;
+> +
+> +	base = page_address(page);
+> +	objp = kasan_reset_tag(object);
+> +	objp = restore_red_left(s, objp);
+> +	objnr = obj_to_index(s, page, objp);
+> +	objp = base + s->size * objnr;
+> +	kpp->kp_objp = objp;
+> +	if (WARN_ON_ONCE(objp < base || objp >= base + page->objects * s->size || (objp - base) % s->size) ||
+> +	    !(s->flags & SLAB_STORE_USER))
+> +		goto nodebug;
+> +	trackp = get_track(s, objp, TRACK_ALLOC);
+> +	kpp->kp_ret = (void *)trackp->addr;
+> +#ifdef CONFIG_STACKTRACE
+> +	for (i = 0; i < kpp->kp_nstack && i < TRACK_ADDRS_COUNT; i++) {
+> +		kpp->kp_stack[i] = (void *)trackp->addrs[i];
+> +		if (!kpp->kp_stack[i])
+> +			break;
+> +	}
+> +#endif
+> +	if (kpp->kp_stack && i < kpp->kp_nstack)
+> +		kpp->kp_stack[i] = NULL;
+> +	return;
+> +nodebug:
+> +#endif
+> +	kpp->kp_ret = NULL;
+> +	if (kpp->kp_nstack)
+> +		kpp->kp_stack[0] = NULL;
+> +}
+> +
+>  /********************************************************************
+>   *		Kmalloc subsystem
+>   *******************************************************************/
+> diff --git a/mm/util.c b/mm/util.c
+> index 4ddb6e1..d0e60d2 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+
+I think mm/debug.c is a better fit as it already has dump_page() of a similar
+nature. Also you can call that from from mem_dump_obj() at least in case when
+the more specific handlers fail. It will even include page_owner info if enabled! :)
+
+Thanks,
+Vlastimil
+
+> @@ -970,3 +970,28 @@ int __weak memcmp_pages(struct page *page1, struct page *page2)
+>  	kunmap_atomic(addr1);
+>  	return ret;
+>  }
+> +
+> +/**
+> + * mem_dump_obj - Print available provenance information
+> + * @object: object for which to find provenance information.
+> + *
+> + * This function uses pr_cont(), so that the caller is expected to have
+> + * printed out whatever preamble is appropriate.  The provenance information
+> + * depends on the type of object and on how much debugging is enabled.
+> + * For example, for a slab-cache object, the slab name is printed, and,
+> + * if available, the return address and stack trace from the allocation
+> + * of that object.
+> + */
+> +void mem_dump_obj(void *object)
+> +{
+> +	if (!virt_addr_valid(object)) {
+> +		pr_cont(" non-paged (local) memory.\n");
+> +		return;
+> +	}
+> +	if (kmem_valid_obj(object)) {
+> +		kmem_dump_obj(object);
+> +		return;
+> +	}
+> +	pr_cont(" non-slab memory.\n");
+> +}
+> +EXPORT_SYMBOL_GPL(mem_dump_obj);
+> 
+
