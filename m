@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95932D4B08
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3092D4B17
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730106AbgLITyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:54:21 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:42756 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726501AbgLITyU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:54:20 -0500
-Received: by mail-oi1-f194.google.com with SMTP id l200so3016935oig.9;
-        Wed, 09 Dec 2020 11:54:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bWf259ujDoB2ZIyMFOsodZPaeqbO0l1sTiL/ZFlI8PI=;
-        b=WZ5aur4ekNLLrkhPqB5BIQRhXnA8l31A7T1sZJKkvT3JVZuIQ1Xmc6339MJFULLmuQ
-         LpIhDCI7c/tAyJZTEmXA/LwUmGQbQhWmqyw8EqYxW4KYcuKckM6jyTWDjVfZJuaobUE8
-         0u2M3uET3fgXPNWCE6xx1TrEJ54sdeQLv8Dpt8C29ZL9+vgDVZ53/ZKJ5jkHZghl47HE
-         ElHdnBgpR8saJWeqRhq7qyp8ttLvKS+BJjSW7pyAPelYDDtMaY7izKm6LqWGByiCd6Eb
-         BU4Ip9Mc6DCj5QRXiGZbeYI5HwRLNDg5cMgyy3YqDIb4PnfspzjVd4gqvmzivdJa5HB7
-         0BSg==
-X-Gm-Message-State: AOAM5303ODFpuNdbsydjW6d9hkWet42/LT2nyIL42xOspK834lmNRWey
-        QIg61k1OpUw6801FMa20jA==
-X-Google-Smtp-Source: ABdhPJy8vklabGU+56dHaK8G6GlcdfFVaLlc7sCI0zIneIbykIjFdWm2aF1K2lnvNRsZQAKviqY2qQ==
-X-Received: by 2002:aca:5cc1:: with SMTP id q184mr3042479oib.46.1607543619166;
-        Wed, 09 Dec 2020 11:53:39 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u15sm493924oiv.28.2020.12.09.11.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 11:53:38 -0800 (PST)
-Received: (nullmailer pid 837413 invoked by uid 1000);
-        Wed, 09 Dec 2020 19:53:36 -0000
-Date:   Wed, 9 Dec 2020 13:53:36 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Gene Chen <gene.chen.richtek@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v11 3/5] dt-bindings: leds: Add LED_FUNCTION_MOONLIGHT
- definitions
-Message-ID: <20201209195336.GB826766@robh.at.kernel.org>
-References: <1606906011-25633-1-git-send-email-gene.chen.richtek@gmail.com>
- <1606906011-25633-4-git-send-email-gene.chen.richtek@gmail.com>
- <20201202122329.GA30929@duo.ucw.cz>
- <CAE+NS34D8a6Udt7ZZ0=U7oqm5POtihKvD3WjD_sAADamqQ=1AQ@mail.gmail.com>
- <20201203114044.GA9061@duo.ucw.cz>
- <87a4f0b9-1450-cd9f-70ea-dd5b408893f3@gmail.com>
+        id S2388035AbgLITzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:55:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729904AbgLITzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:55:08 -0500
+Date:   Wed, 9 Dec 2020 19:54:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607543667;
+        bh=U6M7AWAv6/CKWCwL3u7zyzCT2QpPcnIsDTnxCILhtoE=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B5oePjpSYh/pjaTGOBdUkD/N7rmXPeOGWuunrd7QJVC9tLjyz3Gu+CnZOXuqP2JDd
+         f7t1X14sl/CQtxf/+P/TN2h1DDCIbfBYvWFJl0Fv8c3rHGS3pZf6H8aDwUa8+Q7Qhq
+         0G21lwqvUiJjyiVhgX9p/0HIeFGKwazd2PzjLYv1iBV+4T31h6qF7pg/HSPshlUk7H
+         tGgCc+GIG4NDEeKu6GcUoT+AtckMhzVhXQw+niZS76SAwF72Zyx7BowkZle4akVw87
+         TXxBbXhHQXS8b6YknfSt56wB8/uT/t2KUmaat/YT48sUXK3w+15Sa1hk7rA9JXeWN1
+         eCoiWm2cN6RCQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: Limit the spi device max speed to controller's max
+ speed
+Message-ID: <20201209195420.GD4790@sirena.org.uk>
+References: <20201209173514.93328-1-tudor.ambarus@microchip.com>
+ <20201209194636.32f4ioxxdggezklr@mobilestation>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="YToU2i3Vx8H2dn7O"
 Content-Disposition: inline
-In-Reply-To: <87a4f0b9-1450-cd9f-70ea-dd5b408893f3@gmail.com>
+In-Reply-To: <20201209194636.32f4ioxxdggezklr@mobilestation>
+X-Cookie: sillema sillema nika su
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 09:06:42PM +0100, Jacek Anaszewski wrote:
-> Hi Pavel,
-> 
-> On 12/3/20 12:40 PM, Pavel Machek wrote:
-> > Hi!
-> > 
-> > > > > +++ b/include/dt-bindings/leds/common.h
-> > > > > @@ -78,6 +78,7 @@
-> > > > >   #define LED_FUNCTION_INDICATOR "indicator"
-> > > > >   #define LED_FUNCTION_LAN "lan"
-> > > > >   #define LED_FUNCTION_MAIL "mail"
-> > > > > +#define LED_FUNCTION_MOONLIGHT "moonlight"
-> > > > 
-> > > > There's "torch" function that should be used for this. I guess comment
-> > > > should be added with explanation what exactly that is and how should
-> > > > the LED be named.
-> > > > 
-> > > 
-> > > According to mail, 11/25 "Re: [PATCH v7 2/5] dt-bindings: leds: Add
-> > > LED_COLOR_ID_MOONLIGHT definitions",
-> > > The Moonlight LED is LED which maximum current more than torch, but
-> > > less than flash. Such as front camera fill light.
-> > > I think our channel is moonlight, not torch.
-> > > I will add this description to comment.
-> > > We can't exactly define moonlight current level, because every vendor
-> > > has their own specification.
-> > 
-> > So... what is the timelimit on moonlight?
-> > 
-> > But if it is used for camera illumination, I believe it should be
-> > simply called flash.
-> 
-> Let's keep FLASH reserved for LED flash class devices.
-> This device has already two other flash iouts.
-> 
-> Also iouts amperage gives clue that they have three different
-> functions.
 
-Perhaps there should just be a table of currents and max times rather 
-than trying to continually expand this while tied to function.
+--YToU2i3Vx8H2dn7O
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-One could simply want an LED brighter when blinking than steady state 
-would allow for.
+On Wed, Dec 09, 2020 at 10:46:36PM +0300, Serge Semin wrote:
 
-Rob
+> On Wed, Dec 09, 2020 at 07:35:14PM +0200, Tudor Ambarus wrote:
+
+> > Make sure the max_speed_hz of spi_device does not override
+> > the max_speed_hz of controller.
+
+> I have doubts that's right thing to do. It seems better to let
+> the controller driver to handle the speed clamping itself, while
+> to leave the SPI client device max_speed_hz field describing the
+> device speed capability. Moreover the SPI-transfers passed to the
+> controller will have a SPI-bus speed fixed in accordance with the
+> controller and client device capabilities anyway.
+> See the __spi_validate() method for details:
+> https://elixir.bootlin.com/linux/v5.10-rc7/source/drivers/spi/spi.c#L3570
+
+Right, in general we aim to do this sort of fixup on the transfers
+and messages rather than the devices, I guess we might be missing
+validation in some of the flash acceleration paths or was this an issue
+seen through inspection?
+
+--YToU2i3Vx8H2dn7O
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/RK2sACgkQJNaLcl1U
+h9AOogf/bm8GIbL9U7qDE6v/ghRo5Tj9+6YBvMNAsTKtmGctQqMB2AYegZ2VEeHQ
+9EuV70kEux34udEG4pgmOqcSyZOt1WWgkkE6BvEHQHONgZ9y75JkyIfBk3/iuwpN
+HIOugg60B1ZaJShUIQynQj5RWKlgZ/T4ksR+v5BGB30kZzirOgtSKEQ7o0bDKyAy
+1q1RK9r9ycVfWsqHQz9aFEoYWBmC9i/qyUxD0enjx+BjTEar7daNI1XrG4z5Bnzl
+6TpHTUSdFa+RLQP0gQ7/ltCBca2z9jDd96xk6jNTcjrEJhXSbuIA/BhCUDjG7WtY
+13AEwYvRAZMXSkYSuiNoXA9Y6S/N+g==
+=TYn1
+-----END PGP SIGNATURE-----
+
+--YToU2i3Vx8H2dn7O--
