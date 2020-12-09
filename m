@@ -2,129 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6E82D3E3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2612D3E3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728848AbgLIJIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:08:17 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35786 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726044AbgLIJIN (ORCPT
+        id S1728802AbgLIJKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:10:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47693 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728381AbgLIJKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:08:13 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B9934lq036376;
-        Wed, 9 Dec 2020 04:07:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=uPZLZFucs64QrPM+4R1abkgq6sji18ilojIc6tWxqoE=;
- b=DVkZknj/c0Hg6F1+Hx7X2BE1YnFeGUKXAGLiIjaejGwitzlMz8PNJGtHwKjmWMomd/hd
- +fN11w9hdXzgjhqBetEjM914LUBPkDnE6q2y+9TzriBTeLkpL5yJDjf9XwyKA/UuwciA
- KMr+RbXmYjmdkuGqAGGp/REsHtH5LPFlZqHZe8hEP0XRDIXRpq54YPCkaKKsoCLBCif2
- mA/2dqZB0AtDhXPtQnjbhWgvQPIm55ZdjPhiVgKJ7w3jH+vKSt+ClKguV1kqi8hquC1h
- 802z7DGc6ZDcuYZejOialXhNJeTsIFJSCePFXEWLZJM4sjMxaN7qg7NH+5/CcMXyVIqT Eg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35apm07tna-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 04:07:20 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B993ODE038125;
-        Wed, 9 Dec 2020 04:07:19 -0500
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35apm07tmp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 04:07:19 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B98xPj9028195;
-        Wed, 9 Dec 2020 09:07:18 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma01wdc.us.ibm.com with ESMTP id 3581u9bmf5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 09:07:18 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B997H1p19792284
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Dec 2020 09:07:17 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7044D136051;
-        Wed,  9 Dec 2020 09:07:17 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB88513605D;
-        Wed,  9 Dec 2020 09:07:16 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.199.49.37])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Dec 2020 09:07:16 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id C63D82E35A0; Wed,  9 Dec 2020 14:37:09 +0530 (IST)
-Date:   Wed, 9 Dec 2020 14:37:09 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] powerpc/cacheinfo: Print correct cache-sibling
- map/list for L2 cache
-Message-ID: <20201209090709.GB13125@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com>
- <1607057327-29822-4-git-send-email-ego@linux.vnet.ibm.com>
- <20201207131138.GJ528281@linux.vnet.ibm.com>
- <20201208175647.GC14206@in.ibm.com>
- <20201209083921.GL528281@linux.vnet.ibm.com>
+        Wed, 9 Dec 2020 04:10:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607504935;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z8HlquEoW4X2q/+qcVSM6H75qDDj8W+Dq9wZut/Sz5s=;
+        b=OsZ0bIonnXTORI237wlYn5X4VKEJwgHmORSbvBSSG174d1mT+/9EWRvl5E08A/Z0O5ZBJb
+        FhjqNVTgj84j3IN+WwCdF3GGKIy3UE2v2taWRflUX5753C4Z1Gz/w9fNzjiANvTGqWL5Oi
+        OUiyVIc+q7rS4+ToXEJl1BMelfPUP84=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-436-TGvgQEK_NFeHOwNgjZGB0A-1; Wed, 09 Dec 2020 04:08:53 -0500
+X-MC-Unique: TGvgQEK_NFeHOwNgjZGB0A-1
+Received: by mail-ej1-f72.google.com with SMTP id 2so351688ejv.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:08:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z8HlquEoW4X2q/+qcVSM6H75qDDj8W+Dq9wZut/Sz5s=;
+        b=n1NqJyezInYgvenO3dQy7dgqdP/d1SZMDKCUo+gmaKOLCK36Z9LD+JsguMpfnctm9U
+         PQa0F+4d8d1ihrsA1n7vEoY25LbKJnGLlmk62m9jNHqxtZXdO/gKS2+fCzVXwJ74QWqB
+         sKohJQHeHzaCXnmM4DGKU80qdFCwjOgJYx5zD8BPcC1pcGNOkPWOw//5USRcSIf6VRR3
+         vdVa+rA4OuqQ9LTkhYLDZn8ZVRW2xKygemOvSZwXgso5tNDDjjnaqH5WWcoRood3wzT7
+         ht5Vzyxk3gTecEdsyIqxaWLUx7qlomOyK+8oD0e6yKbeUGNMFJS0XKf3AVsjKu3GXF7W
+         62nQ==
+X-Gm-Message-State: AOAM531y3h1+YEmh4MLkq0CqChWGDr16F3JmAwixKVwhMXGEQ/GgtVPU
+        7VwHTVMH3274w46f2ejsvjaZpDmF+6m8XAoJkzS/s9yMvoryZRoABz3gt/3h+veR7iud7/RXimh
+        u4y5h2CGX96CcSy+3yQ7CeNu8nQIwUeYoyyiqrKQpDzIWs3mn1lZFD9hAKEEcSzEonKyM+L+Zy8
+        Ym
+X-Received: by 2002:a17:906:c193:: with SMTP id g19mr1169804ejz.393.1607504932129;
+        Wed, 09 Dec 2020 01:08:52 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyyCALCpD/nDA8Lmv55gbFxBTmrGaC6FbUiJ6kN1W5/lZm38nY8tddFPlonjiINu/+QS9+lYQ==
+X-Received: by 2002:a17:906:c193:: with SMTP id g19mr1169784ejz.393.1607504931925;
+        Wed, 09 Dec 2020 01:08:51 -0800 (PST)
+Received: from [192.168.1.124] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id m24sm868412ejo.52.2020.12.09.01.08.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 01:08:51 -0800 (PST)
+Subject: Re: [PATCH] KVM: mmu: Fix SPTE encoding of MMIO generation upper half
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <156700708db2a5296c5ed7a8b9ac71f1e9765c85.1607129096.git.maciej.szmigiero@oracle.com>
+ <370db207-7216-ae26-0c33-dab61e0fdaab@redhat.com>
+ <X8/sWzYUjuEYwCuf@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <5e1dc1cd-b175-86be-b33e-0456ecbd50e8@redhat.com>
+Date:   Wed, 9 Dec 2020 10:08:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209083921.GL528281@linux.vnet.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-09_07:2020-12-08,2020-12-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- malwarescore=0 priorityscore=1501 mlxlogscore=999 adultscore=0
- phishscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090060
+In-Reply-To: <X8/sWzYUjuEYwCuf@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 02:09:21PM +0530, Srikar Dronamraju wrote:
-> * Gautham R Shenoy <ego@linux.vnet.ibm.com> [2020-12-08 23:26:47]:
-> 
-> > > The drawback of this is even if cpus 0,2,4,6 are released L1 cache will not
-> > > be released. Is this as expected?
-> > 
-> > cacheinfo populates the cache->shared_cpu_map on the basis of which
-> > CPUs share the common device-tree node for a particular cache.  There
-> > is one l1-cache object in the device-tree for a CPU node corresponding
-> > to a big-core. That the L1 is further split between the threads of the
-> > core is shown using ibm,thread-groups.
-> > 
-> 
-> Yes.
-> 
-> > The ideal thing would be to add a "group_leader" field to "struct
-> > cache" so that we can create separate cache objects , one per thread
-> > group. I will take a stab at this in the v2.
-> > 
-> 
-> I am not saying this needs to be done immediately. We could add a TODO and
-> get it done later. Your patch is not making it worse. Its just that there is
-> still something more left to be done.
+On 08/12/20 22:12, Sean Christopherson wrote:
+>> #define MMIO_SPTE_GEN_MASK               GENMASK_ULL(MMIO_SPTE_GEN_LOW_BITS + MMIO_SPTE_GEN_HIGH_BITS - 1, 0)
+> What if we leave MMIO_SPTE_GEN_MASK as is, GENMASK_ULL(17, 0), and instead add a
+> BUILD_BUG_ON() to assert that it matches the above logic?  It's really easy to
+> get lost when reading through the chain of defines, I find the explicit mask
+> helps provide an anchor/reference for understand what's going on.  It'll require
+> an update if/when PT64_SECOND_AVAIL_BITS_SHIFT, but that's not necessarily a bad
+> thing, e.g. the comment above this block will also be stale.
 
-Yeah, it needs to be fixed but it may not be a 5.11 target. For now I
-will fix this patch to take care of the build errors on !PPC64 !SMT
-configs. I will post a separate series for making cacheinfo.c aware of
-thread-groups at the time of construction of the cache-chain.
+Sounds good.
 
-> 
-> -- 
-> Thanks and Regards
-> Srikar Dronamraju
+Paolo
+
