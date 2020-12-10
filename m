@@ -2,164 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090DA2D5453
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8530A2D5460
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387691AbgLJHGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 02:06:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58312 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730497AbgLJHGF (ORCPT
+        id S1727817AbgLJHOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 02:14:52 -0500
+Received: from forward106p.mail.yandex.net ([77.88.28.109]:60851 "EHLO
+        forward106p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725833AbgLJHOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 02:06:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607583878;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HcG7hVx/CRN4t/5i18tJCttaxP6IQshP6VJEl2g4fpM=;
-        b=A6+IXha+DqFWDFAqkeJst1fUW4UpUXMtwt/7paPcQsnRqnzkpHois8SFth7lFXsPHaEsp1
-        qluF2v2kPr21QN8632/rQkF6BQ3CLwBgtyHzxpQDLJwHrFucFNaC/CeZAXGifjYgHHMQMj
-        kA4/PiiMejk94VxqaOXHx4itBHKTOKY=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-108--AjKL-wtOL-PFoU-RMs5cA-1; Thu, 10 Dec 2020 02:04:36 -0500
-X-MC-Unique: -AjKL-wtOL-PFoU-RMs5cA-1
-Received: by mail-wm1-f71.google.com with SMTP id q17so837089wmc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 23:04:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=HcG7hVx/CRN4t/5i18tJCttaxP6IQshP6VJEl2g4fpM=;
-        b=Pfv/AwvIgJX34CIiKwmxMsmhOFDCN0npgkAadm3B5CWSKbquk/w+As0IH27vEUXjD6
-         f6kjUi9cbIc1vrEn+Qea701+7YnQuVEX0JzjTplyvzq4v6LEgAbGmbrGj0VNQjAm+Sty
-         qiOMqhGBchKBs/7kVUyxJhN561nWK/3ZCHCIyYiFBrTjzikDXi9nCZl6jd5kVZRu1J1y
-         Am/k+ez5rTlqA3kEObWMlmbHYQmKFlcwQAVYI1x1QLK5s2UljGcL7kSaoFJD4bOBsgbj
-         h7a9WWv3AnuL+b35WPK4RAj6kAvv+USSNbQWNwHPNeNhswzW3rfvMDsGCrTV3+RhUIgw
-         6syw==
-X-Gm-Message-State: AOAM53252rk4w7zSRN4rPW1yJp4bKb3GaKpvl30aalU88q0tSviT/iVj
-        izvhyC0XFyLXfRQODIiuqBYVXf7P8mWwNrGdUYqGv/ICgMvvYptH0KlQXlPytUWfABk1UEisoRC
-        mMnn6iIKcqTldolFmm6Ikd6oy
-X-Received: by 2002:a5d:4112:: with SMTP id l18mr6419179wrp.116.1607583874813;
-        Wed, 09 Dec 2020 23:04:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy9ov4rxUQSJuQKQCETVo2JsPSa0cpqOkgVH6rYsEkEZsiespnxMc4OGEi1K5RhXAOlmCqPUQ==
-X-Received: by 2002:a5d:4112:: with SMTP id l18mr6419156wrp.116.1607583874621;
-        Wed, 09 Dec 2020 23:04:34 -0800 (PST)
-Received: from [192.168.3.114] (p4ff23fc5.dip0.t-ipconnect.de. [79.242.63.197])
-        by smtp.gmail.com with ESMTPSA id q17sm7350456wrr.53.2020.12.09.23.04.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 23:04:33 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 3/3] s390/mm: Define arch_get_mappable_range()
-Date:   Thu, 10 Dec 2020 08:04:32 +0100
-Message-Id: <E026809E-4624-4ACE-B309-0443704C637B@redhat.com>
-References: <20201210065845.GA20691@osiris>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, david@redhat.com,
-        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-In-Reply-To: <20201210065845.GA20691@osiris>
-To:     Heiko Carstens <hca@linux.ibm.com>
-X-Mailer: iPhone Mail (18B92)
+        Thu, 10 Dec 2020 02:14:45 -0500
+X-Greylist: delayed 440 seconds by postgrey-1.27 at vger.kernel.org; Thu, 10 Dec 2020 02:14:38 EST
+Received: from myt6-9be80d028464.qloud-c.yandex.net (myt6-9be80d028464.qloud-c.yandex.net [IPv6:2a02:6b8:c12:5219:0:640:9be8:d02])
+        by forward106p.mail.yandex.net (Yandex) with ESMTP id 8DC261C83CF3;
+        Thu, 10 Dec 2020 10:06:19 +0300 (MSK)
+Received: from iva8-b81aeb0c8234.qloud-c.yandex.net (iva8-b81aeb0c8234.qloud-c.yandex.net [2a02:6b8:c0c:da9:0:640:b81a:eb0c])
+        by myt6-9be80d028464.qloud-c.yandex.net (mxback/Yandex) with ESMTP id VgOqERvMqT-6JDCaftZ;
+        Thu, 10 Dec 2020 10:06:19 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1607583979;
+        bh=AI5SeoejacCczgdU2/tvz99VlW6LkUVH+Sr2RwGLWJU=;
+        h=Date:Subject:To:From:Message-Id:Cc;
+        b=g/bl7xl5/6VCSn2OV5r88PPvdnECzRtjR4ByUoBQBlB4EM140e0PiB4Y8eZ3nCTl1
+         HLlcWBs2bmSANoCvuD/F/CSTf9r05OeCYkCWw9QuGVPaSOtNivjZub0cQIF8s0hOgQ
+         LoIVv8dONfI4EgW/HCU27qUR4BvH1m6nHUR1fTFc=
+Authentication-Results: myt6-9be80d028464.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by iva8-b81aeb0c8234.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id WTdnBhyMCe-6InWjpBE;
+        Thu, 10 Dec 2020 10:06:18 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] gpiolib: irq hooks: fix recursion in gpiochip_irq_unmask
+Date:   Thu, 10 Dec 2020 10:05:14 +0300
+Message-Id: <20201210070514.13238-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+irqchip shared with multiple gpiochips, leads to recursive call of
+gpiochip_irq_mask/gpiochip_irq_unmask which was assigned to
+rqchip->irq_mask/irqchip->irq_unmask, these happens becouse of
+only irqchip->irq_enable == gpiochip_irq_enable is checked.
 
-> Am 10.12.2020 um 07:58 schrieb Heiko Carstens <hca@linux.ibm.com>:
->=20
-> =EF=BB=BFOn Thu, Dec 10, 2020 at 09:48:11AM +0530, Anshuman Khandual wrote=
-:
->>>> Alternatively leaving __segment_load() and vmem_add_memory() unchanged
->>>> will create three range checks i.e two memhp_range_allowed() and the
->>>> existing VMEM_MAX_PHYS check in vmem_add_mapping() on all the hotplug
->>>> paths, which is not optimal.
->>>=20
->>> Ah, sorry. I didn't follow this discussion too closely. I just thought
->>> my point of view would be clear: let's not have two different ways to
->>> check for the same thing which must be kept in sync.
->>> Therefore I was wondering why this next version is still doing
->>> that. Please find a way to solve this.
->>=20
->> The following change is after the current series and should work with
->> and without memory hotplug enabled. There will be just a single place
->> i.e vmem_get_max_addr() to update in case the maximum address changes
->> from VMEM_MAX_PHYS to something else later.
->=20
-> Still not. That's way too much code churn for what you want to achieve.
-> If the s390 specific patch would look like below you can add
->=20
-> Acked-by: Heiko Carstens <hca@linux.ibm.com>
->=20
-> But please make sure that the arch_get_mappable_range() prototype in
-> linux/memory_hotplug.h is always visible and does not depend on
-> CONFIG_MEMORY_HOTPLUG. I'd like to avoid seeing sparse warnings
-> because of this.
->=20
-> Thanks.
->=20
-> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-> index 77767850d0d0..e0e78234ae57 100644
-> --- a/arch/s390/mm/init.c
-> +++ b/arch/s390/mm/init.c
-> @@ -291,6 +291,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
->    if (WARN_ON_ONCE(params->pgprot.pgprot !=3D PAGE_KERNEL.pgprot))
->        return -EINVAL;
->=20
-> +    VM_BUG_ON(!memhp_range_allowed(start, size, 1));
->    rc =3D vmem_add_mapping(start, size);
->    if (rc)
->        return rc;
-> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-> index b239f2ba93b0..ccd55e2f97f9 100644
-> --- a/arch/s390/mm/vmem.c
-> +++ b/arch/s390/mm/vmem.c
-> @@ -4,6 +4,7 @@
->  *    Author(s): Heiko Carstens <heiko.carstens@de.ibm.com>
->  */
->=20
-> +#include <linux/memory_hotplug.h>
-> #include <linux/memblock.h>
-> #include <linux/pfn.h>
-> #include <linux/mm.h>
-> @@ -532,11 +533,23 @@ void vmem_remove_mapping(unsigned long start, unsign=
-ed long size)
->    mutex_unlock(&vmem_mutex);
-> }
->=20
-> +struct range arch_get_mappable_range(void)
-> +{
-> +    struct range range;
-> +
-> +    range.start =3D 0;
-> +    range.end =3D VMEM_MAX_PHYS;
-> +    return range;
-> +}
-> +
-> int vmem_add_mapping(unsigned long start, unsigned long size)
-> {
-> +    struct range range;
->    int ret;
->=20
-> -    if (start + size > VMEM_MAX_PHYS ||
-> +    range =3D arch_get_mappable_range();
-> +    if (start < range.start ||
-> +        start + size > range.end ||
->        start + size < start)
->        return -ERANGE;
->=20
->=20
+Let's add an additional check to make sure shared irqchip is detected
+even if irqchip->irq_enable wasn't defined.
 
-Right, what I had in mind as reply to v1. Not sure if we really need new che=
-cks in common code. Having a new memhp_get_pluggable_range() would be suffic=
-ient for my use case (virtio-mem).=
+Fixes: a8173820f441 ("gpio: gpiolib: Allow GPIO IRQs to lazy disable")
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+ drivers/gpio/gpiolib.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 589eceecf374..5ce0c14c637b 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -1419,7 +1419,8 @@ static void gpiochip_set_irq_hooks(struct gpio_chip *gc)
+ 	if (WARN_ON(gc->irq.irq_enable))
+ 		return;
+ 	/* Check if the irqchip already has this hook... */
+-	if (irqchip->irq_enable == gpiochip_irq_enable) {
++	if (irqchip->irq_enable == gpiochip_irq_enable ||
++		irqchip->irq_mask == gpiochip_irq_mask) {
+ 		/*
+ 		 * ...and if so, give a gentle warning that this is bad
+ 		 * practice.
+-- 
+2.26.2
 
