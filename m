@@ -2,132 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FE12D6C22
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 957BD2D6C28
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394448AbgLJXp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:45:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49860 "EHLO
+        id S2389399AbgLJXql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:46:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394425AbgLJXpR (ORCPT
+        with ESMTP id S2394464AbgLJXp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:45:17 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C16BC061793
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:44:37 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id n7so5827342pgg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:44:37 -0800 (PST)
+        Thu, 10 Dec 2020 18:45:59 -0500
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E88C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:45:19 -0800 (PST)
+Received: by mail-oo1-xc36.google.com with SMTP id s1so1722521oon.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:45:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=g1SDPT6a/nyFvkH1HOjQQzabblTO3UWN2aLImo+cfxM=;
-        b=b9JDy4JmEv/AHWcU0PvO6asgJykeWO4XV039dPaKEH7CcxQJFd2pK3NCB4vsUNDhn6
-         GGR9tHvFnfoFo89JP+jG7TclK4/eoVQ2KutfTGDx97mrgbK+vddqNaNOBzxMCrcAcdDm
-         m3aDwid4LKxuBUv7ule60TmAKuYb60Hw4IRYyipMRDOIz84lcAryoYdqZYTP2tqfU8Sj
-         CVSbmYzX6giwyTTWrjK8MPbpyH2UpZjePDtxa2HBZOTo7cvTurCvgniHeSI/emF68M8R
-         UVfQBwlEP18Q9i9iW44LwjF5mOSB5VuC0VaP5tbNnCH4myyap2C4/QXXZ+qefaUr/yt6
-         dVug==
+        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
+        bh=CpA6gxKkHV08hJECSbbBwUFG46PBv1T6665ufiVVTc4=;
+        b=QQSvBiZnpJvWQUgf6zIz4KYO0MkAeosE304pZ3yR/dpj/IpD4AnjKWGvt4Spf0zlWY
+         e17ixx0vVAJ3c78ZVuBhL+qrGw/IXL5/B8vlcOIS14VqVUxj16mKN/sIBftFl7SdtVkK
+         IeEO4Tmyzx/ZQVBqU7emz3Z+JnX6AHZ9kqdQdtroUSElUppcC4lxvzd4NZZld+IgGW7W
+         i98abelo+JQ8C9EJqVA2Zb5ZAMb81KE1Od+vla1JAyNz/Ndhi5eqqPXPtfUwPfbMCrH9
+         rjDTqo9H8+YRW6PFm4A+pF/1r6B8veTEofV22oFVc4efY59vTJQHTowlmxQJCVgs5dOU
+         /W1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=g1SDPT6a/nyFvkH1HOjQQzabblTO3UWN2aLImo+cfxM=;
-        b=VKPsAWYeQu7kz0a7EumM9N/kXdOOOvORbViDqZy682bt22F2a9K/sSc+M72ojEnjtU
-         FKqoq/nkbwV3Sm9J8jz9AjwiYRHQ+jFcqvmHOdOuPGyz3iJvwX4eqtP3vAXBWcR1waii
-         url8xMaAua5vdUvv/rii4Oip6kgqBUPh+iPUTTCZ/0c/7queykBtSody554x9BkwiDvd
-         Rc5tKm994ahMY0J7DfapuLGhNxJOeB4Az2mwhr8BRr7ieFwDbRr3y786lckP6kCfjE1w
-         lEPDDSzh6oC5Ro9iPbAgfQG9hfhEIAA7oo6n7UL0U+Uut9o3KvsCFsmYjziI4NYxVDhW
-         YjRw==
-X-Gm-Message-State: AOAM530pHrEnXN9qOMAPCHSAwnpm0upjVcxScau9ka+nZ8SQbbGvGy6a
-        ovoTa383gjN1Zm0I1u6RoC8XUg==
-X-Google-Smtp-Source: ABdhPJys1uu7FVwYO4hbjffu3RIHA+ARy0okQqM9r8wqDKhwr//ncETBKoXEYPHvhSyqXh8AWyQ+vw==
-X-Received: by 2002:a17:90a:d494:: with SMTP id s20mr10351423pju.178.1607643876956;
-        Thu, 10 Dec 2020 15:44:36 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id z19sm7367692pfa.122.2020.12.10.15.44.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 15:44:36 -0800 (PST)
-Date:   Thu, 10 Dec 2020 15:44:35 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-cc:     Tejun Heo <tj@kernel.org>, Vipin Sharma <vipinsh@google.com>,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        corbet@lwn.net, joro@8bytes.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        dionnaglaze@google.com, kvm@vger.kernel.org, x86@kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v3 0/2] cgroup: KVM: New Encryption IDs cgroup
- controller
-In-Reply-To: <4f7b9c3f-200e-6127-1d94-91dd9c917921@de.ibm.com>
-Message-ID: <5f8d4cba-d3f-61c2-f97-fdb338fec9b8@google.com>
-References: <20201209205413.3391139-1-vipinsh@google.com> <X9E6eZaIFDhzrqWO@mtj.duckdns.org> <4f7b9c3f-200e-6127-1d94-91dd9c917921@de.ibm.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
+         :mime-version;
+        bh=CpA6gxKkHV08hJECSbbBwUFG46PBv1T6665ufiVVTc4=;
+        b=LCiTse2K1lzHROrwY+jS6RdLuSmmMk9BuPnI9t+LjsvfwjDTZuxGI/cnZhPRVrRzXq
+         fqt/B75YjrQ1sxgyzPYNGUXsnIIJQzq5l/yPWIqH/cDvpJjxNRWbIGHQvceUg72mhgiN
+         KgO51vTFeMKwID3mMYyv63ZU/nAqSXkh8wGbAEWhlpx984GKpFEMkGBw5L6vke2Fa/vo
+         0UrGw/QpzkRNo6PAKZwn4OVKpI6tgCYy5IQxBoVsnJpFvyVLcBLKJx8mqIwK9EfSkaOF
+         mL8p45Nv1LlQu/XU9mAHguLVQy2RkSc6d6TV3g3HM0bpSLFc3VBqMY3Q4nvX2BrThmF/
+         xo2w==
+X-Gm-Message-State: AOAM531ocg9cmuF0w+CFwavKdUnAm6AVkiLnSX3mP7xXd3gAbU5IC5h2
+        1YZM+Q5NdLcCDTUBh+Uq73COqQ==
+X-Google-Smtp-Source: ABdhPJwlPRRqLENGqR3DgtLwPuZKphMCcYTYi1x8TOvPghQemLsu2xmQNOpOKhtRMjNtVLUNKPVDGQ==
+X-Received: by 2002:a05:6820:41:: with SMTP id v1mr7903689oob.41.1607643918252;
+        Thu, 10 Dec 2020 15:45:18 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id h20sm1431541otj.57.2020.12.10.15.45.17
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 10 Dec 2020 15:45:17 -0800 (PST)
+Date:   Thu, 10 Dec 2020 15:44:57 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>
+cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: linux-next fsnotify mod breaks tail -f
+Message-ID: <alpine.LSU.2.11.2012101507080.1100@eggly.anvils>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="1482994552-364622287-1607643875=:399992"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Jan, Amir,
 
---1482994552-364622287-1607643875=:399992
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+There's something wrong with linux-next commit ca7fbf0d29ab
+("fsnotify: fix events reported to watching parent and child").
 
-On Thu, 10 Dec 2020, Christian Borntraeger wrote:
+If I revert that commit, no problem;
+but here's a one-line script "tailed":
 
-> > * However, the boilerplate to usefulness ratio doesn't look too good and I
-> >   wonder whether what we should do is adding a generic "misc" controller
-> >   which can host this sort of static hierarchical counting. I'll think more
-> >   on it.
-> 
-> We first dicussed to have
-> encryption_ids.stat
-> encryption_ids.max
-> encryption_ids.current
-> 
-> and we added the sev in later, so that we can also have tdx, seid, sgx or whatever.
-> Maybe also 2 or more things at the same time.
-> 
-> Right now this code has
-> 
-> encryption_ids.sev.stat
-> encryption_ids.sev.max
-> encryption_ids.sev.current
-> 
-> And it would be trivial to extend it to have
-> encryption_ids.seid.stat
-> encryption_ids.seid.max
-> encryption_ids.seid.current
-> on s390 instead (for our secure guests).
-> 
-> So in the end this is almost already a misc controller, the only thing that we
-> need to change is the capability to also define things other than encryption.*.*
-> And of course we would need to avoid adding lots of random garbage to such a thing.
-> 
-> But if you feel ok with the burden to keep things kind of organized a misc
-> controller would certainly work for the encryption ID usecase as well. 
-> So I would be fine with the thing as is or a misc controlĺer.
-> 
+for i in 1 2 3 4 5; do date; sleep 1; done &
 
-Yeah, I think generalization of this would come in the form of either (1) 
-the dumping ground of an actual "misc" controller, that you elude to, or 
-(2) a kernel abstraction so you can spin up your own generic controller 
-that has the {current, max, stat} support.  In the case of the latter, 
-encryption IDs becomes a user of that abstraction.
+Then if I run that (same result doing ./tailed after chmod a+x):
 
-Concern with a single misc controller would be that any subsystem that 
-wants to use it has to exactly fit this support: current, max, stat, 
-nothing more.  The moment a controller needs some additional support, and 
-its controller is already implemented in previous kernel versionv as a 
-part of "misc," we face a problem.
+sh tailed >log; tail -f log
 
-On the other hand, a kernel abstraction that provides just the basic 
-{current, max, stat} support might be interesting if it can be extended by 
-the subsystem instance using it.
---1482994552-364622287-1607643875=:399992--
+the "tail -f log" behaves in one of three ways:
+
+1) On a console, before graphical screen, no problem,
+   it shows the five lines coming from "date" as you would expect.
+2) From xterm or another tty, shows just the first line from date,
+   but after I wait and Ctrl-C out, "cat log" shows all five lines.
+3) From xterm or another tty, doesn't even show that first line.
+
+The before/after graphical screen thing seems particularly weird:
+I expect you'll end up with a simpler explanation for what's
+causing that difference.
+
+tailed and log are on ext4, if that's relevant;
+ah, I just tried on tmpfs, and saw no problem there.
+
+CONFIG_FSNOTIFY=y
+CONFIG_DNOTIFY=y
+CONFIG_INOTIFY_USER=y
+CONFIG_FANOTIFY=y
+
+Hugh
