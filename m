@@ -2,27 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFA42D604A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1612D6016
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391984AbgLJPqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:46:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45384 "EHLO mail.kernel.org"
+        id S2391295AbgLJOkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:40:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391227AbgLJOjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:39:39 -0500
+        id S2390875AbgLJOfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:35:04 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 5.9 27/75] gfs2: Fix deadlock between gfs2_{create_inode,inode_lookup} and delete_work_func
-Date:   Thu, 10 Dec 2020 15:26:52 +0100
-Message-Id: <20201210142607.388481254@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 17/54] ALSA: hda/generic: Add option to enforce preferred_dacs pairs
+Date:   Thu, 10 Dec 2020 15:26:54 +0100
+Message-Id: <20201210142602.888457075@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
-References: <20201210142606.074509102@linuxfoundation.org>
+In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
+References: <20201210142602.037095225@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,93 +30,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit dd0ecf544125639e54056d851e4887dbb94b6d2f upstream.
+commit 242d990c158d5b1dabd166516e21992baef5f26a upstream.
 
-In gfs2_create_inode and gfs2_inode_lookup, make sure to cancel any pending
-delete work before taking the inode glock.  Otherwise, gfs2_cancel_delete_work
-may block waiting for delete_work_func to complete, and delete_work_func may
-block trying to acquire the inode glock in gfs2_inode_lookup.
+The generic parser accepts the preferred_dacs[] pairs as a hint for
+assigning a DAC to each pin, but this hint doesn't work always
+effectively.  Currently it's merely a secondary choice after the trial
+with the path index failed.  This made sometimes it difficult to
+assign DACs without mimicking the connection list and/or the badness
+table.
 
-Reported-by: Alexander Aring <aahringo@redhat.com>
-Fixes: a0e3cc65fa29 ("gfs2: Turn gl_delete into a delayed work")
-Cc: stable@vger.kernel.org # v5.8+
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+This patch adds a new flag, obey_preferred_dacs, that changes the
+behavior of the parser.  As its name stands, the parser obeys the
+given preferred_dacs[] pairs by skipping the path index matching and
+giving a high penalty if no DAC is assigned by the pairs.  This mode
+will help for assigning the fixed DACs forcibly from the codec
+driver.
+
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201127141104.11041-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/gfs2/inode.c |   21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ sound/pci/hda/hda_generic.c |   12 ++++++++----
+ sound/pci/hda/hda_generic.h |    1 +
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
---- a/fs/gfs2/inode.c
-+++ b/fs/gfs2/inode.c
-@@ -150,6 +150,8 @@ struct inode *gfs2_inode_lookup(struct s
- 		error = gfs2_glock_get(sdp, no_addr, &gfs2_iopen_glops, CREATE, &io_gl);
- 		if (unlikely(error))
- 			goto fail;
-+		if (blktype != GFS2_BLKST_UNLINKED)
-+			gfs2_cancel_delete_work(io_gl);
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -1364,16 +1364,20 @@ static int try_assign_dacs(struct hda_co
+ 		struct nid_path *path;
+ 		hda_nid_t pin = pins[i];
  
- 		if (type == DT_UNKNOWN || blktype != GFS2_BLKST_FREE) {
- 			/*
-@@ -180,8 +182,6 @@ struct inode *gfs2_inode_lookup(struct s
- 		error = gfs2_glock_nq_init(io_gl, LM_ST_SHARED, GL_EXACT, &ip->i_iopen_gh);
- 		if (unlikely(error))
- 			goto fail;
--		if (blktype != GFS2_BLKST_UNLINKED)
--			gfs2_cancel_delete_work(ip->i_iopen_gh.gh_gl);
- 		glock_set_object(ip->i_iopen_gh.gh_gl, ip);
- 		gfs2_glock_put(io_gl);
- 		io_gl = NULL;
-@@ -725,13 +725,19 @@ static int gfs2_create_inode(struct inod
- 	flush_delayed_work(&ip->i_gl->gl_work);
- 	glock_set_object(ip->i_gl, ip);
+-		path = snd_hda_get_path_from_idx(codec, path_idx[i]);
+-		if (path) {
+-			badness += assign_out_path_ctls(codec, path);
+-			continue;
++		if (!spec->obey_preferred_dacs) {
++			path = snd_hda_get_path_from_idx(codec, path_idx[i]);
++			if (path) {
++				badness += assign_out_path_ctls(codec, path);
++				continue;
++			}
+ 		}
  
--	error = gfs2_glock_nq_init(ip->i_gl, LM_ST_EXCLUSIVE, GL_SKIP, ghs + 1);
-+	error = gfs2_glock_get(sdp, ip->i_no_addr, &gfs2_iopen_glops, CREATE, &io_gl);
- 	if (error)
- 		goto fail_free_inode;
-+	gfs2_cancel_delete_work(io_gl);
-+	glock_set_object(io_gl, ip);
-+
-+	error = gfs2_glock_nq_init(ip->i_gl, LM_ST_EXCLUSIVE, GL_SKIP, ghs + 1);
-+	if (error)
-+		goto fail_gunlock2;
+ 		dacs[i] = get_preferred_dac(codec, pin);
+ 		if (dacs[i]) {
+ 			if (is_dac_already_used(codec, dacs[i]))
+ 				badness += bad->shared_primary;
++		} else if (spec->obey_preferred_dacs) {
++			badness += BAD_NO_PRIMARY_DAC;
+ 		}
  
- 	error = gfs2_trans_begin(sdp, blocks, 0);
- 	if (error)
--		goto fail_free_inode;
-+		goto fail_gunlock2;
+ 		if (!dacs[i])
+--- a/sound/pci/hda/hda_generic.h
++++ b/sound/pci/hda/hda_generic.h
+@@ -236,6 +236,7 @@ struct hda_gen_spec {
+ 	unsigned int power_down_unused:1; /* power down unused widgets */
+ 	unsigned int dac_min_mute:1; /* minimal = mute for DACs */
+ 	unsigned int suppress_vmaster:1; /* don't create vmaster kctls */
++	unsigned int obey_preferred_dacs:1; /* obey preferred_dacs assignment */
  
- 	if (blocks > 1) {
- 		ip->i_eattr = ip->i_no_addr + 1;
-@@ -740,18 +746,12 @@ static int gfs2_create_inode(struct inod
- 	init_dinode(dip, ip, symname);
- 	gfs2_trans_end(sdp);
- 
--	error = gfs2_glock_get(sdp, ip->i_no_addr, &gfs2_iopen_glops, CREATE, &io_gl);
--	if (error)
--		goto fail_free_inode;
--
- 	BUG_ON(test_and_set_bit(GLF_INODE_CREATING, &io_gl->gl_flags));
- 
- 	error = gfs2_glock_nq_init(io_gl, LM_ST_SHARED, GL_EXACT, &ip->i_iopen_gh);
- 	if (error)
- 		goto fail_gunlock2;
- 
--	gfs2_cancel_delete_work(ip->i_iopen_gh.gh_gl);
--	glock_set_object(ip->i_iopen_gh.gh_gl, ip);
- 	gfs2_set_iop(inode);
- 	insert_inode_hash(inode);
- 
-@@ -803,6 +803,7 @@ fail_gunlock3:
- 	gfs2_glock_dq_uninit(&ip->i_iopen_gh);
- fail_gunlock2:
- 	clear_bit(GLF_INODE_CREATING, &io_gl->gl_flags);
-+	glock_clear_object(io_gl, ip);
- 	gfs2_glock_put(io_gl);
- fail_free_inode:
- 	if (ip->i_gl) {
+ 	/* other internal flags */
+ 	unsigned int no_analog:1; /* digital I/O only */
 
 
