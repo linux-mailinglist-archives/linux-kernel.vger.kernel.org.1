@@ -2,179 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F8D2D57CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6492D580F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:18:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732055AbgLJJ6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:58:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728063AbgLJJ63 (ORCPT
+        id S1727398AbgLJKRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:17:16 -0500
+Received: from 4.mo69.mail-out.ovh.net ([46.105.42.102]:57105 "EHLO
+        4.mo69.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgLJKRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:58:29 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B84C0613CF;
-        Thu, 10 Dec 2020 01:57:49 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id a9so7355703lfh.2;
-        Thu, 10 Dec 2020 01:57:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=q6Rle7Zfp/9fsnXTrVMeXSLbIqeu6VGUS6bZlipo6Yg=;
-        b=NEk+KrylcayZ4ow/7WzuzE6tE/6MradNdXkAzkkhcgBfjZQFdrfvd/jLCzSH93DnEj
-         +4Xkj0bZ6+Zrnr8E7L7ZIXLoB9bjSTJEt8jC//nuhHJNhxlYRqBfOSlwY4vGPTe0aOSf
-         rISRBnNwWKoVBd77/QlhMvCgjukH/hk2j9OBIjKS9d1g3iSCDlD+iHlKVTb0w2PgbQsK
-         TNanYeC/6qr42I4x4UPz4EgX/WcuFKdC1RehDFqZolXxCqlyHHxOKh/lhfmXvlfEHWwm
-         /vNgPPOwuXCwILVP6gM3mtvIdvM7Hzknb11MNsNgTbXDKir28Zu5PaejGr7arYW9ymLP
-         Ahew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=q6Rle7Zfp/9fsnXTrVMeXSLbIqeu6VGUS6bZlipo6Yg=;
-        b=gHoOZwky2w70Szo68LcPFmF+r/WfyVqzvDk0tAxJSUqXg1nzoiRB8g4d6Dk9K0jEbv
-         adho8qlbbn2Ql6fbsoMOVcPHOHk4PVxUs7lASWjit/FCuoQyMxUoMGP/T69jBCXfUpak
-         ukkmlZ80VzMDlATnSv40TCF9w7ciyowM9GdBVbzYush1QAl6jNLdH+Jjl+7vVNA4I0IS
-         jWoGIDMhokdIK9I33gaykGxDmH0T0J88+02uwTlfOWXf/KPmf2LffsbdkVEL4Bg1kuLb
-         jqL6ukfTaF4ahOBNqrrPTTtOYpbmHvp1o+Oj/acNWTLMpBVOZNSR5M5Y5NDqJTIsWPvi
-         qSQA==
-X-Gm-Message-State: AOAM531/TDQkmtf+9SMbxuy2B2OXOffVKJ4FtBW6pFmYzdJfym/lHys/
-        Uv3TvZ93HtSS7hzqj/n7tEhszA1zH8k=
-X-Google-Smtp-Source: ABdhPJx7LLXbSh3NSdhxr7eHO60gCHKufiN0jhXXLcVnoC8vpIK+i7AFVsSDACuQJY7h/KC+WJht9w==
-X-Received: by 2002:a19:d86:: with SMTP id 128mr2453180lfn.317.1607594267393;
-        Thu, 10 Dec 2020 01:57:47 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-205.dynamic.spd-mgts.ru. [109.252.193.205])
-        by smtp.googlemail.com with ESMTPSA id m17sm459131lfo.132.2020.12.10.01.57.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 01:57:46 -0800 (PST)
-Subject: Re: [PATCH v3 1/3] dt-bindings: input: atmel_mxt_ts: Document
- atmel,wakeup-method and wake-GPIO
-To:     Rob Herring <robh@kernel.org>
-Cc:     Nick Dyer <nick@shmanahar.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jiada Wang <jiada_wang@mentor.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201206212217.6857-1-digetx@gmail.com>
- <20201206212217.6857-2-digetx@gmail.com>
- <20201210034420.GA1615537@robh.at.kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ea36d902-b158-981a-f144-2878784bf079@gmail.com>
-Date:   Thu, 10 Dec 2020 12:57:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Thu, 10 Dec 2020 05:17:16 -0500
+X-Greylist: delayed 6315 seconds by postgrey-1.27 at vger.kernel.org; Thu, 10 Dec 2020 05:17:14 EST
+Received: from player694.ha.ovh.net (unknown [10.108.54.34])
+        by mo69.mail-out.ovh.net (Postfix) with ESMTP id B9839A48F3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:21:50 +0100 (CET)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player694.ha.ovh.net (Postfix) with ESMTPSA id C324118F19F53;
+        Thu, 10 Dec 2020 08:21:44 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-95G001721fa3ea-c851-41f5-a90b-307c09cb4b81,
+                    A3332C1353315F6CAADE0FE6D61FE8FFE980082F) smtp.auth=steve@sk2.org
+Date:   Thu, 10 Dec 2020 09:21:33 +0100
+From:   Stephen Kitt <steve@sk2.org>
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] close_range.2: new page documenting close_range(2)
+Message-ID: <20201210092047.4853db82@heffalump.sk2.org>
+In-Reply-To: <e50183ce-3ccb-c41c-9d30-bfb622b3b1f5@gmail.com>
+References: <20201209220023.17912-1-steve@sk2.org>
+        <e50183ce-3ccb-c41c-9d30-bfb622b3b1f5@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201210034420.GA1615537@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/U3tQ2U=imWqD0vVI0=oShwC"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 15753028547537030614
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudejledguddujecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgesghdtreerredtvdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepjeekffdvhfejkeffudekhedvtddvhfeiheehvdehkeetkedufeejffeuueevvddvnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheileegrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-10.12.2020 06:44, Rob Herring пишет:
-> On Mon, Dec 07, 2020 at 12:22:15AM +0300, Dmitry Osipenko wrote:
->> Some Atmel touchscreen controllers have a WAKE line that needs to be
->> asserted low in order to wake up controller from a deep sleep. Document
->> the wakeup methods and the wake-GPIO properties.
-> 
-> wake-GPIO?
+--Sig_/U3tQ2U=imWqD0vVI0=oShwC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The "wake-gpios" is the new property and it has "maxItems: 1", hence the
-wake-GPIO.
+Hi Alejandro,
 
->>
->> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  .../bindings/input/atmel,maxtouch.yaml        | 29 +++++++++++++++++++
->>  include/dt-bindings/input/atmel-maxtouch.h    | 10 +++++++
->>  2 files changed, 39 insertions(+)
->>  create mode 100644 include/dt-bindings/input/atmel-maxtouch.h
->>
->> diff --git a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
->> index 8c6418f76e94..e6b03a1e7c30 100644
->> --- a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
->> +++ b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
->> @@ -39,6 +39,13 @@ properties:
->>        (active low). The line must be flagged with
->>        GPIO_ACTIVE_LOW.
->>  
->> +  wake-gpios:
->> +    maxItems: 1
->> +    description:
->> +      Optional GPIO specifier for the touchscreen's wake pin
->> +      (active low). The line must be flagged with
->> +      GPIO_ACTIVE_LOW.
->> +
->>    linux,gpio-keymap:
->>      $ref: /schemas/types.yaml#/definitions/uint32-array
->>      description: |
->> @@ -53,6 +60,26 @@ properties:
->>        or experiment to determine which bit corresponds to which input. Use
->>        KEY_RESERVED for unused padding values.
->>  
->> +  atmel,wakeup-method:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: |
->> +      The WAKE line is an active-low input that is used to wake up the touch
->> +      controller from deep-sleep mode before communication with the controller
->> +      could be started. This optional feature used to minimize current
->> +      consumption when the controller is in deep sleep mode. This feature is
->> +      relevant only to some controller families, like mXT1386 controller for
->> +      example.
->> +
->> +      The WAKE pin can be connected in one of the following ways:
->> +       1) left permanently low
->> +       2) connected to the I2C-compatible SCL pin
->> +       3) connected to a GPIO pin on the host
->> +    enum:
->> +      - 0 # ATMEL_MXT_WAKEUP_NONE
->> +      - 1 # ATMEL_MXT_WAKEUP_I2C_SCL
->> +      - 2 # ATMEL_MXT_WAKEUP_GPIO
->> +    default: 0
->> +
->>  required:
->>    - compatible
->>    - reg
->> @@ -63,6 +90,7 @@ additionalProperties: false
->>  examples:
->>    - |
->>      #include <dt-bindings/interrupt-controller/irq.h>
->> +    #include <dt-bindings/input/atmel-maxtouch.h>
->>      #include <dt-bindings/gpio/gpio.h>
->>      i2c {
->>        #address-cells = <1>;
->> @@ -75,6 +103,7 @@ examples:
->>          reset-gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
->>          vdda-supply = <&ab8500_ldo_aux2_reg>;
->>          vdd-supply = <&ab8500_ldo_aux5_reg>;
->> +        atmel,wakeup-method = <ATMEL_MXT_WAKEUP_I2C_SCL>;
->>        };
->>      };
->>  
->> diff --git a/include/dt-bindings/input/atmel-maxtouch.h b/include/dt-bindings/input/atmel-maxtouch.h
->> new file mode 100644
->> index 000000000000..7345ab32224d
->> --- /dev/null
->> +++ b/include/dt-bindings/input/atmel-maxtouch.h
->> @@ -0,0 +1,10 @@
->> +/* SPDX-License-Identifier: GPL-2.0+ */
->> +
->> +#ifndef _DT_BINDINGS_ATMEL_MAXTOUCH_H
->> +#define _DT_BINDINGS_ATMEL_MAXTOUCH_H
->> +
->> +#define ATMEL_MXT_WAKEUP_NONE		0
->> +#define ATMEL_MXT_WAKEUP_I2C_SCL	1
->> +#define ATMEL_MXT_WAKEUP_GPIO		2
->> +
->> +#endif /* _DT_BINDINGS_ATMEL_MAXTOUCH_H */
->> -- 
->> 2.29.2
->>
+On Thu, 10 Dec 2020 01:24:28 +0100, "Alejandro Colomar (man-pages)"
+<alx.manpages@gmail.com> wrote:
+> A few more comments below.
 
+Thanks for all the detailed reviews! (Same goes to everyone reviewing this
+yesterday, thanks for helping turn my not-so-great attempt into something
+really useful.)
+
+> Michael, please have a look at them too.
+>=20
+> Christian, do you have any program that you used to test the syscall
+> that could be added as an example program to the page?
+
+I have some example code that I could turn into an example program, but I
+imagine Christian has better code than me ;-).
+
+> > +.BI "int close_range(unsigned int " first ", unsigned int " last ",
+> > unsigned int " flags ); =20
+>=20
+> This line overflows an 80-col terminal.  Fix:
+>=20
+> .BI "int close_range(unsigned int " first ", unsigned int " last ,
+> .BI "                unsigned int " flags );
+
+Noted, thanks.
+
+> > +.fi =20
+>=20
+> Please, add a note here that there is no wrapper for this syscall,
+> as in other syscalls without wrapper (see membarrier(2) as an example).
+> That way it's easier to grep, if all pages have the same notice.
+
+Ah, right, I used pidfd_open(2) as an example, where it's mentioned later.
+
+> Please use semantic newlines.
+> See man-pages(7)::STYLE GUIDE::Use semantic newlines
+
+Noted, thanks.
+
+> > +.SH NOTES
+> > +Currently, there is no glibc wrapper for this system call; call it usi=
+ng
+> > +.BR syscall (2). =20
+>=20
+> I can see that this notice is also present on a few pages,
+> but the one in membarrier(2) is more extended.
+>=20
+> Please, copy the notices from membarrier(2).
+> There's one in SYNOPSIS, and one in NOTES.
+
+Will do!
+
+> > +.SH USE CASES =20
+>=20
+> This section is unconventional.  Please move that text to one of the
+> traditional sections.  I think DESCRIPTION would be the best place for th=
+is.
+>=20
+> For a list of the traditional sections,
+> see man-pages(7)::DESCRIPTION::Sections within a manual page
+
+Indeed; it grew out of pidfd_open's "Use cases" section but making all this
+part of the description would be much better.
+
+I'll wait and see if there are other comments, and send a v3 addressing all
+the above.
+
+Regards,
+
+Stephen
+
+--Sig_/U3tQ2U=imWqD0vVI0=oShwC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl/R2o0ACgkQgNMC9Yht
+g5wIWBAAoBENJwZZP6kOLd95KZst1gOgAfv0T8JtANPGsplnlhzTte+iTZB8aG3d
+sv0SWRKABDFY61fEhswSi76hnWmXjoY/TcE5JFbB4MAolBvY5pXdsPsuMSg4I4hJ
+APBICXX/D++EsZUIAW+d3U3R9DUA8qzg+VhqekSssHLARRUamk4C3QOasdjuaYoa
+KphUzKlRdg0plj/DLHimcEsfKwn4ucsaLcBAkS/+AjEVJ1uZHPKAwEmYPGiZZzNL
+Y6HLdYu6fA54JW7iAqcMpM66w9fKMBQs6Ecz8alOVoeFuCiFCPVt5yq29ReH+w7c
+pWBLxsCF+vHow3Q8976YGtu9HwIN6u/zYZ4vrfD1cJ1YdaIPpFXIrR4ABrzGlTuh
+sJNv3mY17iVGf7aAQ8xxYqFnaqsBlJe78un10EshDbIlZ841iR+dINwT1q2MA6H3
+CQ7d5bTtogdwqt0CfIG4xyaM2MVbLqGe2LhjR8wGH33c7dF4Djw9w4zIuU2sOQGD
+wnY6kl1ljAR4NiU5rfBHR4tgm23t3RSFxgIQVZP7lYFUeFTsANHJ6VJJdgOJ2xUL
+pCdmYgGNG8Rmhwo+eAjJWPeHMdecIorq8Bee72jDGP39PRnGsn61pQa+XPwozUEo
+/ZhsT3x8g7s63LxJV32oVAvhb58FV+j5CBRlNKQ17TBX48Xt4tM=
+=OnPz
+-----END PGP SIGNATURE-----
+
+--Sig_/U3tQ2U=imWqD0vVI0=oShwC--
