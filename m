@@ -2,125 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E322D688B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D805D2D6896
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390493AbgLJUT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 15:19:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390127AbgLJUTF (ORCPT
+        id S2393218AbgLJUV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 15:21:29 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58230 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390123AbgLJUV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 15:19:05 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F02C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 12:18:24 -0800 (PST)
+        Thu, 10 Dec 2020 15:21:28 -0500
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607631502;
+        s=2020; t=1607631646;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=XUizVUdSL7/vvz9vnbsjRE/PNIgtT8MGKEUbe5J8TUE=;
-        b=MGoaIX5wr0Wk1EYPMyH+jTczQw27FX/IVeMSX3IuccfsmLjJLQd2MNDirMU42EzEYUgXzm
-        e5uH0PsQL6yz5A9lTg+Y0CvsA/3XRV08v5XotV678mMs1GqTPmbAtWOpzAWwYQDx6v7lIy
-        bGcl9u7bCNOxK2+OLnCA/LsSji0Sc+08Ct5TIyoWU06EQ0muVkSnBB2pG1fCGlpb8cYSET
-        jK7EDqh7KUnPV/l4TJnoXx5wuKxlrL+3+js3cesjr2dyBuSlgf6VUT86JFHVwPFzWMprWk
-        oDBXtUBvYrRBf7z9xQtQ5V36gOlqCvmi10EcfDXOggc5x4j803Ky7PjmFFdZJA==
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D3gx9tD13PRnQ68uO/rN8uV1XzJuse8JvLydTkrM0tk=;
+        b=WrALyDckvkeuNaz+eI3yDgM9uYSMWTyVSVNx6RXFUVljR2IFqs4rRLYbwUTCaqCBcHEcGO
+        eEIuOOOJ+WvE2haTJWd38VMUsEbHZK4EdsqTLMHSnoZJ4lYI1UNdqA7IOFCVGLLCz3JPN4
+        d7rB4e/IQ8NXDOAfz46Jz2WYWuDTSRdNjb0qKEaECflRKVMQCaXkBwiQzFSSbSI+Y32V2N
+        rpFRwWPEZI2d0bMPj+yhue74HKpNzxYf1SYNXeAroAYCa1KfxXFVFPmigjIFds2DfZedam
+        OKPFXaDSQDmRJGBsS52xgGXJu9aJbQsrQKoG7g9srYv2cS2H2lgHB4jqA8VLbA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607631503;
+        s=2020e; t=1607631646;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=XUizVUdSL7/vvz9vnbsjRE/PNIgtT8MGKEUbe5J8TUE=;
-        b=MPcPa/cswxKxwawfDwlHHSEKPnJkYNA4/q03kCjjWZf8WTANSqEow9xo7vMyVpkbS/Yy8/
-        cnH3uok+l9dJkOAA==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Ming Lei <ming.lei@redhat.com>, Peter Xu <peterx@redhat.com>
-Subject: [PATCH] x86/apic/vector: Fix ordering in vector assignment
-Date:   Thu, 10 Dec 2020 21:18:22 +0100
-Message-ID: <87ft4djtyp.fsf@nanos.tec.linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D3gx9tD13PRnQ68uO/rN8uV1XzJuse8JvLydTkrM0tk=;
+        b=F7nNySYnHzOdMdxy6HIl8ySMogAvGhi8kpKyKtBfAF0v3BxJPZP0l5Oo3+V/Xw13N/6lE7
+        I6WyyeFvL5LWxYCA==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+In-Reply-To: <20201210130131.GP2414@hirez.programming.kicks-ass.net>
+References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com> <87a6uq9abf.fsf@nanos.tec.linutronix.de> <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com> <87im9dlpsw.fsf@vitty.brq.redhat.com> <875z5d5x9m.fsf@nanos.tec.linutronix.de> <b6e0656b-4e3f-cf47-5ec9-eead44b2f2e9@redhat.com> <20201210121417.GN2414@hirez.programming.kicks-ass.net> <fe3e4637-b74b-864a-9d2f-c4f2d9450f2e@redhat.com> <20201210130131.GP2414@hirez.programming.kicks-ass.net>
+Date:   Thu, 10 Dec 2020 21:20:45 +0100
+Message-ID: <87blf1jtuq.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prarit reported that depending on the affinity setting the
+On Thu, Dec 10 2020 at 14:01, Peter Zijlstra wrote:
+> On Thu, Dec 10, 2020 at 01:22:02PM +0100, Paolo Bonzini wrote:
+>> On 10/12/20 13:14, Peter Zijlstra wrote:
+>> > On Thu, Dec 10, 2020 at 12:42:36PM +0100, Paolo Bonzini wrote:
+>> > > On 07/12/20 18:41, Thomas Gleixner wrote:
+>> > > > Right this happens still occasionally, but for quite some time this is
+>> > > > 100% firmware sillyness and not a fundamental property of the hardware
+>> > > > anymore.
+>> > > 
+>> > > It's still a fundamental property of old hardware.  Last time I tried to
+>> > > kill support for processors earlier than Core 2, I had to revert it. That's
+>> > > older than Nehalem.
+>> > 
+>> > Core2 doesn't use TSC for timekeeping anyway. KVM shouldn't either.
+>> 
+>> On Core2, KVM guests pass TSC through kvmclock in order to get something
+>> usable and not incredibly slow.
+>
+> Which is incredibly wrong.
 
- ' irq $N: Affinity broken due to vector space exhaustion.'
+Core2 is really not something which should prevent making all of this
+correct and robust. That'd be not only wrong, that'd be outright insane.
 
-message is showing up in dmesg, but the vector space on the CPUs in the
-affinity mask is definitely not exhausted.
+Thanks,
 
-Shung-Hsi provided traces and analysis which pinpoints the problem:
-
-The ordering of trying to assign an interrupt vector in
-assign_irq_vector_any_locked() is simply wrong if the interrupt data has a
-valid node assigned. It does:
-
- 1) Try the intersection of affinity mask and node mask
- 2) Try the node mask
- 3) Try the full affinity mask
- 4) Try the full online mask
-
-Obviously #2 and #3 are in the wrong order as the requested affinity
-mask has to take precedence.
-
-In the observed cases #1 failed because the affinity mask did not contain
-CPUs from node 0. That made it allocate a vector from node 0, thereby
-breaking affinity and emitting the misleading message.
-
-Revert the order of #2 and #3 so the full affinity mask without the node
-intersection is tried before actually affinity is broken.
-
-If no node is assigned then only the full affinity mask and if that fails
-the full online mask is tried.
-
-Fixes: d6ffc6ac83b1 ("x86/vector: Respect affinity mask in irq descriptor")
-Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Reported-by: Prarit Bhargava <prarit@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc: stable@vger.kernel.org
----
- arch/x86/kernel/apic/vector.c |   24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
-
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -273,20 +273,24 @@ static int assign_irq_vector_any_locked(
- 	const struct cpumask *affmsk = irq_data_get_affinity_mask(irqd);
- 	int node = irq_data_get_node(irqd);
- 
--	if (node == NUMA_NO_NODE)
--		goto all;
--	/* Try the intersection of @affmsk and node mask */
--	cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
--	if (!assign_vector_locked(irqd, vector_searchmask))
--		return 0;
--	/* Try the node mask */
--	if (!assign_vector_locked(irqd, cpumask_of_node(node)))
--		return 0;
--all:
-+	if (node != NUMA_NO_NODE) {
-+		/* Try the intersection of @affmsk and node mask */
-+		cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
-+		if (!assign_vector_locked(irqd, vector_searchmask))
-+			return 0;
-+	}
-+
- 	/* Try the full affinity mask */
- 	cpumask_and(vector_searchmask, affmsk, cpu_online_mask);
- 	if (!assign_vector_locked(irqd, vector_searchmask))
- 		return 0;
-+
-+	if (node != NUMA_NO_NODE) {
-+		/* Try the node mask */
-+		if (!assign_vector_locked(irqd, cpumask_of_node(node)))
-+			return 0;
-+	}
-+
- 	/* Try the full online mask */
- 	return assign_vector_locked(irqd, cpu_online_mask);
- }
+        tglx
