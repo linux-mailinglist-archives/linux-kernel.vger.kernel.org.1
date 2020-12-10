@@ -2,87 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A58F2D6298
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C7D2D62A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392141AbgLJQyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:54:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391052AbgLJOgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2391045AbgLJQ4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:56:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727149AbgLJOgw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Dec 2020 09:36:52 -0500
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.4 54/54] x86/insn-eval: Use new for_each_insn_prefix() macro to loop over prefixes bytes
-Date:   Thu, 10 Dec 2020 15:27:31 +0100
-Message-Id: <20201210142604.674205207@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
-User-Agent: quilt/0.66
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9F9C061793
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:36:08 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id b23so2941303vsp.9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:36:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=H8/OsnWKK6DDq7SavPxl8LbRvSVVCUN8Qp+oVZNB26c=;
+        b=jnIuIUMm/1fX8n6UhPdOkQv7AOKnHjz6IkPVUsfDZbQP8EhlG+BA91cZV717df6iNm
+         58kDXyjuwvPxbeDAtgf5VQUnN9SQGgCiQwSjJvto72ZmbLN7cy+o1LzHw0iVEgyxx3eD
+         4910tqH3a95BuOQNEVoerdTzrWLPGFkLj3U+cwaEeIlhFpLzg8RT18/ahogCTKnI3603
+         HfdZVCY/d/HtyG2jgILUQ+g8oDvvWZFTKlu2sY/EEjxU5/MjB3kNWJTeePieJg9CSYFv
+         B4biEqOup4W7CkO9VAVtJsnKoIGyISYfHgpzaj6vdLIRTDial9+90/M/rNzoXgvTz6Lu
+         BI5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=H8/OsnWKK6DDq7SavPxl8LbRvSVVCUN8Qp+oVZNB26c=;
+        b=TRNgz0q3Sbf23gF/7/ExEihZvrQ4VNd5NiRazb66SWE2l9XonX9KBjVfv7bV34EaJZ
+         1cdaCcH/2jRKBhzeIX6NBiPd0NaV6dydmGwOTv5VOhX2YKPuhOOYCTcD+as4VMowLA5V
+         B5DLY2yzwVb38+RG8mM8BP2PCOP28X/K09Xj72hFYyeuj0jkpyNjbLcpHXEcrzmgBrne
+         a58Ok4vM6KIR6C4droGiXhPINRpU0e2YL34QvmvyeKQxYGijmKCeZZDKvtK/AzQz/KwP
+         km49o58N6Ok/oocf4fV7lJLAuxqqEedFvKKcztVKFgv1tTXk3p7zRoZd8eU7q3wy7/e9
+         kgvQ==
+X-Gm-Message-State: AOAM533b+JDDhH21OFG+bpP4RFDzhnnVXa1toLXX3ucaxnV6GGvACOj1
+        kIPP1IK7zVPwRnJo2gGZ6Ku4+2fBrBAEfbqX3yk=
+X-Google-Smtp-Source: ABdhPJyD2+dVE4iJKCp6XQEBwB5gn8o4BeUyAv3Vjt9goWfA1kFJXDbVhX4dE0/wA3PoqPy9L99qJ//OMH1cPXCfbbQ=
+X-Received: by 2002:a67:5d06:: with SMTP id r6mr9021819vsb.49.1607610967607;
+ Thu, 10 Dec 2020 06:36:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ab0:134:0:0:0:0:0 with HTTP; Thu, 10 Dec 2020 06:36:06 -0800 (PST)
+Reply-To: mrs.maria.del.pilarrezola07@gmail.com
+From:   "Mrs.MARIA DEL PILAR REZOLA" <onnabadenge@gmail.com>
+Date:   Thu, 10 Dec 2020 14:36:06 +0000
+Message-ID: <CANge9K-KHXtes0PpkXh349kSEK8Un3htAV6XdpJPCktua=FXqA@mail.gmail.com>
+Subject: Good Day Dearest One,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+Good Day Dearest One,
 
-commit 12cb908a11b2544b5f53e9af856e6b6a90ed5533 upstream
+I pray this mail finds you in a state of your sound health and
+indomitable spirit. Please, I would like to confide in you for your
+honesty and truth for progress, I feel quite safe dealing with you in
+this important Project.
 
-Since insn.prefixes.nbytes can be bigger than the size of
-insn.prefixes.bytes[] when a prefix is repeated, the proper check must
-be
+Let me introduce myself to you, I am MRS.MARIA DEL PILAR REZOLA from a
+40 years period of marriage life without produce any child or
+pregnant, my late husband was very wealthy and after his death, I
+inherited some part of his business and money in
+the bank.
 
-  insn.prefixes.bytes[i] != 0 and i < 4
+The doctor has advised me that I may not live for more than three
+months and 2 weeks and warn me to stop from thinking over who is going
+to inherit me and the wealth. Based on that, today I have decided to
+donate and contribute to the less privileges, charity homes, and
+orphanage homes and to those displaced by wars going on in the
+middle-east and around the world Covid 19 damages. I made this
+decision after listing to the news line about 100 years old woman who
+secretly donated her fortune and wealth upon her death, follow up on
+this you-tube bellow:
 
-instead of using insn.prefixes.nbytes. Use the new
-for_each_insn_prefix() macro which does it correctly.
+http://www.youtube.com/watch?v=O8o-e-iLsUM
 
-Debugged by Kees Cook <keescook@chromium.org>.
+I choose you after much prayers as I'm devoted christian and always
+doing the right thing as I have the confident in you because I have
+prayed over it.
 
- [ bp: Massage commit message. ]
+I am willing to donate the sum of $20.5million U.S dollars, to the
+less privileged of which you will be responsible in taking care of the
+disbursement and sharing of this money to organizations that I will
+appoint. Meanwhile, you will also get 30% of the money which will be:
+six million one hundred and fifty thousand dollars ($6,150,000) as
+your compensation for helping me fulfill this desire of donation.
 
-Fixes: 32d0b95300db ("x86/insn-eval: Add utility functions to get segment selector")
-Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/160697104969.3146288.16329307586428270032.stgit@devnote2
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/x86/lib/insn-eval.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+But the gold bars quantity of (950 kg) which worth ($28.5Million US
+Dollars) will go for building companies in our name for memorial
+propose, Please I want you to note that this fund is still in the bank
+where my late husband deposited it.
 
---- a/arch/x86/lib/insn-eval.c
-+++ b/arch/x86/lib/insn-eval.c
-@@ -70,14 +70,15 @@ static int get_seg_reg_override_idx(stru
- {
- 	int idx = INAT_SEG_REG_DEFAULT;
- 	int num_overrides = 0, i;
-+	insn_byte_t p;
- 
- 	insn_get_prefixes(insn);
- 
- 	/* Look for any segment override prefixes. */
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
-+	for_each_insn_prefix(insn, i, p) {
- 		insn_attr_t attr;
- 
--		attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
-+		attr = inat_get_opcode_attribute(p);
- 		switch (attr) {
- 		case INAT_MAKE_PREFIX(INAT_PFX_CS):
- 			idx = INAT_SEG_REG_CS;
+I am going to advice my lawyer to change my last will to your name and
+file in an application for the transfer of the money in your
+name.change the documents of the gold also in your name: astley, I
+honestly pray that this money and gold when transferred to your
+account will be used for the said purpose even though I am late then
+or alive, because I have come to find out that wealth acquisition is
+not always the final thing in life or death if you do not help people
+as well when they need it.
 
+please bear it in mind that that all the money and the gold will
+rightfully belong to your name as quickly as I get your reply, and I
+made the promise to god that the fund will be used to help the needy
+and the less privilege.
 
+May the grace of our lord the love of god and the fellowship of god be
+with you and your family, please further discussion contact me with my
+private email address as follows:
+(mrs.maria.del.pilarrezola07@gmail.com).
+
+I await kind response and my regards to your family.
+
+Remain Blessed,
+Mrs.MARIA DEL PILAR REZOLA
