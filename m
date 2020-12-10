@@ -2,93 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFDC2D53A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DE72D53AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733131AbgLJGOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:14:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
+        id S1733153AbgLJGPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:15:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733119AbgLJGN5 (ORCPT
+        with ESMTP id S1728264AbgLJGPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:13:57 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98174C061793;
-        Wed,  9 Dec 2020 22:13:17 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1knFCK-000FrK-9B; Thu, 10 Dec 2020 06:13:04 +0000
-Date:   Thu, 10 Dec 2020 06:13:04 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jann@thejh.net>
-Subject: Re: [PATCH] files: rcu free files_struct
-Message-ID: <20201210061304.GS3579531@ZenIV.linux.org.uk>
-References: <20201120231441.29911-15-ebiederm@xmission.com>
- <20201207232900.GD4115853@ZenIV.linux.org.uk>
- <877dprvs8e.fsf@x220.int.ebiederm.org>
- <20201209040731.GK3579531@ZenIV.linux.org.uk>
- <877dprtxly.fsf@x220.int.ebiederm.org>
- <20201209142359.GN3579531@ZenIV.linux.org.uk>
- <87o8j2svnt.fsf_-_@x220.int.ebiederm.org>
- <CAHk-=wiUMHBHmmDS3_Xqh1wfGFyd_rdDmpZzk0cODoj1i7_VOA@mail.gmail.com>
- <20201209195033.GP3579531@ZenIV.linux.org.uk>
- <87sg8er7gp.fsf@x220.int.ebiederm.org>
+        Thu, 10 Dec 2020 01:15:13 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28C0C0613CF;
+        Wed,  9 Dec 2020 22:14:33 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id c12so3043434pfo.10;
+        Wed, 09 Dec 2020 22:14:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gny1Tk/NkzCkucCgjQAN08t8L5tKNABHVyy0fWYIoTE=;
+        b=Hc3wBayCQAuK3LKCJ98WVvLPf0kuUuIO2auwdmWliQLVAugrsQEPrD/JXcnzyQejC1
+         VGWR+8FGvgkI3W9gSoS660Osoinxc0YED93ImslSnY1j/KuyRqLuGfs8GV2hQ/J3aKN3
+         3heDHaSCRo8Yzw3P0SwGhuTUF5DzIOOL1xhw/fHd04HgDC6tXr6RUmAwSnBpvqZYwgBS
+         kyon6+uIcUXxk3IbEeM2yZSo0OXlrodwHqR4yqkaF3E8fu3rHeMhFUg0qav22AupaugU
+         tkFW32v+apowQkLZzAWMbtyZ0sNY7oKduEyRdVTyMzFiG11b4rKS6pcxy4uGF0htVjl/
+         bIVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gny1Tk/NkzCkucCgjQAN08t8L5tKNABHVyy0fWYIoTE=;
+        b=Sw26AjBwE/DsuQHPlhF6n/IXrKJ+W75ENJ8yKKP4vXfHQwyeYQeeE9LM6qertvAZOl
+         6pv8hl6xdLlr+e0lOqsvK3pKatkJMQulNpOO5M/aqpE1RodpgNDdFWJwLost6fGRSZBB
+         x8zmhEZ4PUKL31vjM8k0Pu0mrm1kMWJ0EfYJoD3kEbaN6VcNr0KEw0FuTHaVX7GE5hFc
+         dZXnopvhHA2/H4sEt415GhHGuQ+uJjCKVeO/84uxumBJOypRV0nM0HGvMB0nmjIK4gQV
+         rso8DP50f4tItydebvN5Zb87e8AP90eddj7YjaP9fwb5xLJKYMzub8Dkg3eGC6GLCQpn
+         1yRQ==
+X-Gm-Message-State: AOAM530BNtkasqQitfvhonKklZxcoGUbH+e6Kxj412+tLr0zuQeMC4qR
+        oKw+hsGI4JnTASUSsJJNS9I=
+X-Google-Smtp-Source: ABdhPJxAVkoQ3DkDktC5MbHG//Tj6qoVAxtoBbB1lyi8uqEp4AVoBEpUpobqjlK79YHzu08kZORvCQ==
+X-Received: by 2002:a17:90a:bf86:: with SMTP id d6mr5902040pjs.212.1607580873231;
+        Wed, 09 Dec 2020 22:14:33 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id iq3sm4495095pjb.57.2020.12.09.22.14.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 22:14:32 -0800 (PST)
+Date:   Wed, 9 Dec 2020 22:14:29 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     "jingle.wu" <jingle.wu@emc.com.tw>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        phoenix@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw
+Subject: Re: [PATCH 1/2] Input: elan_i2c - Add new trackpoint report type
+ 0x5F.
+Message-ID: <X9G8xUk/QvcxsNWi@google.com>
+References: <20201207090751.9076-1-jingle.wu@emc.com.tw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87sg8er7gp.fsf@x220.int.ebiederm.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20201207090751.9076-1-jingle.wu@emc.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 03:32:38PM -0600, Eric W. Biederman wrote:
-> Al Viro <viro@zeniv.linux.org.uk> writes:
+Hi Jingle,
+
+On Mon, Dec 07, 2020 at 05:07:51PM +0800, jingle.wu wrote:
+> The 0x5F is new trackpoint report type of some module.
 > 
-> > On Wed, Dec 09, 2020 at 11:13:38AM -0800, Linus Torvalds wrote:
-> >> On Wed, Dec 9, 2020 at 10:05 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> >> >
-> >> > -                               struct file * file = xchg(&fdt->fd[i], NULL);
-> >> > +                               struct file * file = fdt->fd[i];
-> >> >                                 if (file) {
-> >> > +                                       rcu_assign_pointer(fdt->fd[i], NULL);
-> >> 
-> >> This makes me nervous. Why did we use to do that xchg() there? That
-> >> has atomicity guarantees that now are gone.
-> >> 
-> >> Now, this whole thing should be called for just the last ref of the fd
-> >> table, so presumably that atomicity was never needed in the first
-> >> place. But the fact that we did that very expensive xchg() then makes
-> >> me go "there's some reason for it".
-> >> 
-> >> Is this xchg() just bogus historical leftover? It kind of looks that
-> >> way. But maybe that change should be done separately?
-> >
-> > I'm still not convinced that exposing close_files() to parallel
-> > 3rd-party accesses is safe in all cases, so this patch still needs
-> > more analysis.
+> Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
+> ---
+>  drivers/input/mouse/elan_i2c_core.c  | 2 ++
+>  drivers/input/mouse/elan_i2c_smbus.c | 3 ++-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
 > 
-> That is fine.  I just wanted to post the latest version so we could
-> continue the discussion.  Especially with comments etc.
+> diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
+> index 61ed3f5ca219..8f0c4663167c 100644
+> --- a/drivers/input/mouse/elan_i2c_core.c
+> +++ b/drivers/input/mouse/elan_i2c_core.c
+> @@ -52,6 +52,7 @@
+>  #define ETP_REPORT_ID		0x5D
+>  #define ETP_REPORT_ID2		0x60	/* High precision report */
+>  #define ETP_TP_REPORT_ID	0x5E
+> +#define ETP_TP_REPORT_ID2	0x5F
+>  #define ETP_REPORT_ID_OFFSET	2
+>  #define ETP_TOUCH_INFO_OFFSET	3
+>  #define ETP_FINGER_DATA_OFFSET	4
 
-It's probably safe.  I've spent today digging through the mess in
-fs/notify and kernel/bpf, and while I'm disgusted with both, at
-that point I believe that close_files() exposure is not going to
-create problems with either.  And xchg() in there _is_ useless.
+I think we might need to move this into elan_i2c.h so that we can
+reference it from elan_i2c_smbus.c.
 
-Said that, BPF "file iterator" stuff is potentially very unpleasant -
-it allows to pin a struct file found in any process' descriptor table
-indefinitely long.  Temporary struct file references grabbed by procfs
-code, while unfortunate, are at least short-lived; with this stuff sky's
-the limit.
+> @@ -1076,6 +1077,7 @@ static irqreturn_t elan_isr(int irq, void *dev_id)
+>  		elan_report_absolute(data, report, true);
+>  		break;
+>  	case ETP_TP_REPORT_ID:
+> +	case ETP_TP_REPORT_ID2:
+>  		elan_report_trackpoint(data, report);
+>  		break;
+>  	default:
+> diff --git a/drivers/input/mouse/elan_i2c_smbus.c b/drivers/input/mouse/elan_i2c_smbus.c
+> index 1820f1cfc1dc..1226d47ec3cf 100644
+> --- a/drivers/input/mouse/elan_i2c_smbus.c
+> +++ b/drivers/input/mouse/elan_i2c_smbus.c
+> @@ -45,6 +45,7 @@
+>  #define ETP_SMBUS_CALIBRATE_QUERY	0xC5
+>  
+>  #define ETP_SMBUS_REPORT_LEN		32
+> +#define ETP_SMBUS_REPORT_LEN2		7
+>  #define ETP_SMBUS_REPORT_OFFSET		2
+>  #define ETP_SMBUS_HELLOPACKET_LEN	5
+>  #define ETP_SMBUS_IAP_PASSWORD		0x1234
+> @@ -497,7 +498,7 @@ static int elan_smbus_get_report(struct i2c_client *client,
+>  		return len;
+>  	}
+>  
+> -	if (len != ETP_SMBUS_REPORT_LEN) {
+> +	if ((len != ETP_SMBUS_REPORT_LEN) && (len != ETP_SMBUS_REPORT_LEN2))  {
 
-I'm not happy about having that available, especially if it's a user-visible
-primitive we can't withdraw at zero notice ;-/
+I would prefer if we validated report length versus the packet type
+before accepting it.
 
-What are the users of that thing and is there any chance to replace it
-with something saner?  IOW, what *is* realistically called for each
-struct file by the users of that iterator?
+>  		dev_err(&client->dev,
+>  			"wrong report length (%d vs %d expected)\n",
+>  			len, ETP_SMBUS_REPORT_LEN);
+> -- 
+> 2.17.1
+> 
+
+Thanks.
+
+-- 
+Dmitry
