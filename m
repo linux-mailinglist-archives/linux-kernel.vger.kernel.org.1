@@ -2,30 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B9A2D5FBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9BD2D6057
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391437AbgLJOmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:42:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43578 "EHLO mail.kernel.org"
+        id S2391994AbgLJPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:47:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390981AbgLJOgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:06 -0500
+        id S2391211AbgLJOj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:39:27 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 5.4 37/54] i2c: imx: Fix reset of I2SR_IAL flag
-Date:   Thu, 10 Dec 2020 15:27:14 +0100
-Message-Id: <20201210142603.858475916@linuxfoundation.org>
+        stable@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.9 53/75] mm: list_lru: set shrinker map bit when child nr_items is not zero
+Date:   Thu, 10 Dec 2020 15:27:18 +0100
+Message-Id: <20201210142608.674029696@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -34,69 +36,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Eggers <ceggers@arri.de>
+From: Yang Shi <shy828301@gmail.com>
 
-commit 384a9565f70a876c2e78e58c5ca0bbf0547e4f6d upstream.
+commit 8199be001a470209f5c938570cc199abb012fe53 upstream.
 
-According to the "VFxxx Controller Reference Manual" (and the comment
-block starting at line 97), Vybrid requires writing a one for clearing
-an interrupt flag. Syncing the method for clearing I2SR_IIF in
-i2c_imx_isr().
+When investigating a slab cache bloat problem, significant amount of
+negative dentry cache was seen, but confusingly they neither got shrunk
+by reclaimer (the host has very tight memory) nor be shrunk by dropping
+cache.  The vmcore shows there are over 14M negative dentry objects on
+lru, but tracing result shows they were even not scanned at all.
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Fixes: 4b775022f6fd ("i2c: imx: add struct to hold more configurable quirks")
-Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: stable@vger.kernel.org
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Further investigation shows the memcg's vfs shrinker_map bit is not set.
+So the reclaimer or dropping cache just skip calling vfs shrinker.  So
+we have to reboot the hosts to get the memory back.
+
+I didn't manage to come up with a reproducer in test environment, and
+the problem can't be reproduced after rebooting.  But it seems there is
+race between shrinker map bit clear and reparenting by code inspection.
+The hypothesis is elaborated as below.
+
+The memcg hierarchy on our production environment looks like:
+
+                root
+               /    \
+          system   user
+
+The main workloads are running under user slice's children, and it
+creates and removes memcg frequently.  So reparenting happens very often
+under user slice, but no task is under user slice directly.
+
+So with the frequent reparenting and tight memory pressure, the below
+hypothetical race condition may happen:
+
+       CPU A                            CPU B
+reparent
+    dst->nr_items == 0
+                                 shrinker:
+                                     total_objects == 0
+    add src->nr_items to dst
+    set_bit
+                                     return SHRINK_EMPTY
+                                     clear_bit
+child memcg offline
+    replace child's kmemcg_id with
+    parent's (in memcg_offline_kmem())
+                                  list_lru_del() between shrinker runs
+                                     see parent's kmemcg_id
+                                     dec dst->nr_items
+reparent again
+    dst->nr_items may go negative
+    due to concurrent list_lru_del()
+
+                                 The second run of shrinker:
+                                     read nr_items without any
+                                     synchronization, so it may
+                                     see intermediate negative
+                                     nr_items then total_objects
+                                     may return 0 coincidently
+
+                                     keep the bit cleared
+    dst->nr_items != 0
+    skip set_bit
+    add scr->nr_item to dst
+
+After this point dst->nr_item may never go zero, so reparenting will not
+set shrinker_map bit anymore.  And since there is no task under user
+slice directly, so no new object will be added to its lru to set the
+shrinker map bit either.  That bit is kept cleared forever.
+
+How does list_lru_del() race with reparenting? It is because reparenting
+replaces children's kmemcg_id to parent's without protecting from
+nlru->lock, so list_lru_del() may see parent's kmemcg_id but actually
+deleting items from child's lru, but dec'ing parent's nr_items, so the
+parent's nr_items may go negative as commit 2788cf0c401c ("memcg:
+reparent list_lrus and free kmemcg_id on css offline") says.
+
+Since it is impossible that dst->nr_items goes negative and
+src->nr_items goes zero at the same time, so it seems we could set the
+shrinker map bit iff src->nr_items != 0.  We could synchronize
+list_lru_count_one() and reparenting with nlru->lock, but it seems
+checking src->nr_items in reparenting is the simplest and avoids lock
+contention.
+
+Fixes: fae91d6d8be5 ("mm/list_lru.c: set bit in memcg shrinker bitmap on first list_lru item appearance")
+Suggested-by: Roman Gushchin <guro@fb.com>
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: <stable@vger.kernel.org>	[4.19]
+Link: https://lkml.kernel.org/r/20201202171749.264354-1-shy828301@gmail.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/i2c/busses/i2c-imx.c |   20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ mm/list_lru.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -414,6 +414,19 @@ static void i2c_imx_dma_free(struct imx_
- 	dma->chan_using = NULL;
+--- a/mm/list_lru.c
++++ b/mm/list_lru.c
+@@ -534,7 +534,6 @@ static void memcg_drain_list_lru_node(st
+ 	struct list_lru_node *nlru = &lru->node[nid];
+ 	int dst_idx = dst_memcg->kmemcg_id;
+ 	struct list_lru_one *src, *dst;
+-	bool set;
+ 
+ 	/*
+ 	 * Since list_lru_{add,del} may be called under an IRQ-safe lock,
+@@ -546,11 +545,12 @@ static void memcg_drain_list_lru_node(st
+ 	dst = list_lru_from_memcg_idx(nlru, dst_idx);
+ 
+ 	list_splice_init(&src->list, &dst->list);
+-	set = (!dst->nr_items && src->nr_items);
+-	dst->nr_items += src->nr_items;
+-	if (set)
++
++	if (src->nr_items) {
++		dst->nr_items += src->nr_items;
+ 		memcg_set_shrinker_bit(dst_memcg, nid, lru_shrinker_id(lru));
+-	src->nr_items = 0;
++		src->nr_items = 0;
++	}
+ 
+ 	spin_unlock_irq(&nlru->lock);
  }
- 
-+static void i2c_imx_clear_irq(struct imx_i2c_struct *i2c_imx, unsigned int bits)
-+{
-+	unsigned int temp;
-+
-+	/*
-+	 * i2sr_clr_opcode is the value to clear all interrupts. Here we want to
-+	 * clear only <bits>, so we write ~i2sr_clr_opcode with just <bits>
-+	 * toggled. This is required because i.MX needs W0C and Vybrid uses W1C.
-+	 */
-+	temp = ~i2c_imx->hwdata->i2sr_clr_opcode ^ bits;
-+	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
-+}
-+
- static int i2c_imx_bus_busy(struct imx_i2c_struct *i2c_imx, int for_busy)
- {
- 	unsigned long orig_jiffies = jiffies;
-@@ -426,8 +439,7 @@ static int i2c_imx_bus_busy(struct imx_i
- 
- 		/* check for arbitration lost */
- 		if (temp & I2SR_IAL) {
--			temp &= ~I2SR_IAL;
--			imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
-+			i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
- 			return -EAGAIN;
- 		}
- 
-@@ -599,9 +611,7 @@ static irqreturn_t i2c_imx_isr(int irq,
- 	if (temp & I2SR_IIF) {
- 		/* save status register */
- 		i2c_imx->i2csr = temp;
--		temp &= ~I2SR_IIF;
--		temp |= (i2c_imx->hwdata->i2sr_clr_opcode & I2SR_IIF);
--		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
-+		i2c_imx_clear_irq(i2c_imx, I2SR_IIF);
- 		wake_up(&i2c_imx->queue);
- 		return IRQ_HANDLED;
- 	}
 
 
