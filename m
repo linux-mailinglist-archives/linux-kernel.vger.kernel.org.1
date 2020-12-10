@@ -2,113 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616282D572E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE1D2D5731
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388913AbgLJJak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:30:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732626AbgLJJaj (ORCPT
+        id S1727941AbgLJJbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:31:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58759 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725789AbgLJJbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:30:39 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB75C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 01:29:59 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id t8so3490836pfg.8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 01:29:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TMM7FRlCD8YfgT9nH5Pw055Xkr0/ntfYTn3LIAtEXLA=;
-        b=UT8Yn+ik/8OWESdJcSvQ/Oc8zrhhg1LljtviMYjdMXDqGlQ9DwKBFOq6Gr5Wf5Hsu3
-         KFppzMrnbNOMyXCQU5t5v+cSwf3X5aMjaHNy8SUnqgDILPdTI5Eoi+1cS+9V2/dMiXNW
-         zaQJleuvkgMUonmEypT42bkCn2dvQt52PYq/AhT3O5K/jxpPER2//darWwHoiE/D/GDE
-         AE9D5Art9xT5mWuP/nKCSwKYHpSg64fKSpiIKvA0lkM29NQbg5Zyy2T+zMhyppSHfvYz
-         9Wq1OVfQbix0ilhtIdMza6O2sVIjDJg7oadGRaNFb+XDPs6HQcYJLsGjjU+e+OR/sB/v
-         y+Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TMM7FRlCD8YfgT9nH5Pw055Xkr0/ntfYTn3LIAtEXLA=;
-        b=hvfToF5lDqKAhRIdSHZmg39DBd1U8wkr7UeFvQmQwjEIgTA6M2cS8We9kk9y08FUTn
-         fQQRNoqd9m70tOHIGhAmonywKV1NQ5sk7LLwoENF5iY+TA18579CemsNBjlGSbc0O3oJ
-         sEj38Uhg8QkwKcaUnRBnw7+umck2MrfHZHqqTZ3Vp24Nq0gpUp7BqXSRPXc4VtWtn/mJ
-         Zh7pGBNUnrPsi2dkAFq+yG8uyDxTw2ZJtp+KBvantHAzdu50Rvjz+a0+jS99ZmEYCLJW
-         jitj0BqGsk4vO+WZcQ7lqgUU9wINMX6ldowO+Rpvj62G09f4AGBFMnsiwtgPQyYmELhy
-         Zw+A==
-X-Gm-Message-State: AOAM531aMYN0sDH0NgNLoTMowYJHNTs8VfQt3YzBfZVtLOZNd4eKjvTV
-        KUi7OxIFZnPAh098gIQympN0aelsNJhxnAvu
-X-Google-Smtp-Source: ABdhPJy8KpNbujB4HGwPSYMJgHDpj9HX6rLYorgHAPHsIdk2p+WnoHKcC4d0hLX7b73wbH1fPychpA==
-X-Received: by 2002:a17:90a:d0c2:: with SMTP id y2mr6583100pjw.183.1607592599227;
-        Thu, 10 Dec 2020 01:29:59 -0800 (PST)
-Received: from localhost ([61.120.150.75])
-        by smtp.gmail.com with ESMTPSA id q23sm5726461pfg.18.2020.12.10.01.29.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 01:29:58 -0800 (PST)
-From:   John Wang <wangzhiqiang.bj@bytedance.com>
-To:     openbmc@lists.ozlabs.org, xuxiaohan@bytedance.com,
-        yulei.sh@bytedance.com
-Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/ASPEED MACHINE
-        SUPPORT),
-        linux-aspeed@lists.ozlabs.org (moderated list:ARM/ASPEED MACHINE
-        SUPPORT), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/3] ARM: dts: aspeed: Add uart-routing node
-Date:   Thu, 10 Dec 2020 17:29:55 +0800
-Message-Id: <20201210092955.358-1-wangzhiqiang.bj@bytedance.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 10 Dec 2020 04:31:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607592615;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OK/nInPQSL9jnVzhYq1NESDYlTBdG+vb/BJz0j219LU=;
+        b=ZGuEg1zOctzmuT05BxvWM/77JiVcilkDC3SHgP8ZoFEen+p0/RR1h31NcYf8NNzPJj4Gay
+        kA59Ilfzx0NkTEHMrMcl7bGeHV8RzvysHTu0XRFFQRHRoVP1FDg6bCkttZ9a8BkFHJygY2
+        PqNeAjnnOYeRQKkuisiPSSWEJya3qqc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-290-IMLI8mAlPmWOCOKk5j3ASg-1; Thu, 10 Dec 2020 04:30:13 -0500
+X-MC-Unique: IMLI8mAlPmWOCOKk5j3ASg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD8BE6D522;
+        Thu, 10 Dec 2020 09:30:11 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D3B775D6BA;
+        Thu, 10 Dec 2020 09:30:10 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20201209191204.GB1448831@erythro>
+References: <20201209191204.GB1448831@erythro> <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
+To:     Ben Boeckel <me@benboeckel.net>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 00/18] keys: Miscellaneous fixes
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1359154.1607592609.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 10 Dec 2020 09:30:09 +0000
+Message-ID: <1359155.1607592609@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
----
- arch/arm/boot/dts/aspeed-g5.dtsi | 6 ++++++
- arch/arm/boot/dts/aspeed-g6.dtsi | 6 ++++++
- 2 files changed, 12 insertions(+)
+Ben Boeckel <me@benboeckel.net> wrote:
 
-diff --git a/arch/arm/boot/dts/aspeed-g5.dtsi b/arch/arm/boot/dts/aspeed-g5.dtsi
-index 30bbf7452b90..bf40e8960244 100644
---- a/arch/arm/boot/dts/aspeed-g5.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g5.dtsi
-@@ -523,6 +523,12 @@ sio_regs: regs {
- 						compatible = "aspeed,bmc-misc";
- 					};
- 				};
-+
-+				uart_routing: uart_routing@9c {
-+					compatible = "aspeed,ast2500-uart-routing";
-+					reg = <0x9c 0x4>;
-+					status = "disabled";
-+				};
- 			};
- 
- 			peci: bus@1e78b000 {
-diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-index 4b1013870fb1..8b37182e8f36 100644
---- a/arch/arm/boot/dts/aspeed-g6.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-@@ -311,6 +311,12 @@ pinctrl: pinctrl {
- 					compatible = "aspeed,ast2600-pinctrl";
- 				};
- 
-+				uart_routing: uart_routing@9c {
-+					compatible = "aspeed,ast2500-uart-routing";
-+					reg = <0x9c 0x4>;
-+					status = "disabled";
-+				};
-+
- 				smp-memram@180 {
- 					compatible = "aspeed,ast2600-smpmem";
- 					reg = <0x180 0x40>;
--- 
-2.25.1
+> > I've extended my collection of minor keyrings fixes for the next merge
+> > window.  Anything else I should add (or anything I should drop)?
+> > =
+
+> > The patches can be found on the following branch:
+> > =
+
+> > 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git=
+/log/?h=3Dkeys-fixes
+> =
+
+> 1-16 LGTM (modulo the typo in patch 7's commit message). 17 and 18 are
+> outside my knowledge right now.
+> =
+
+> Reviewed-by: Ben Boeckel <mathstuf@gmail.com>
+
+I've applied that to the first 16 patches, thanks.
+
+David
 
