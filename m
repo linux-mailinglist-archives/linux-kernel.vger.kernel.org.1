@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3192D6565
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE2B2D6519
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390859AbgLJSqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:46:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39656 "EHLO mail.kernel.org"
+        id S2390771AbgLJOdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:33:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390566AbgLJOcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:32:33 -0500
+        id S1732238AbgLJOcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:32:36 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, stable@kernel.org,
         Jann Horn <jannh@google.com>, Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH 4.19 11/39] tty: Fix ->session locking
+Subject: [PATCH 4.14 13/31] tty: Fix ->session locking
 Date:   Thu, 10 Dec 2020 15:26:50 +0100
-Message-Id: <20201210142602.851935548@linuxfoundation.org>
+Message-Id: <20201210142602.755445583@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
-References: <20201210142602.272595094@linuxfoundation.org>
+In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
+References: <20201210142602.099683598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -75,7 +75,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/tty/tty_io.c
 +++ b/drivers/tty/tty_io.c
-@@ -2747,10 +2747,14 @@ void __do_SAK(struct tty_struct *tty)
+@@ -2739,10 +2739,14 @@ void __do_SAK(struct tty_struct *tty)
  	struct task_struct *g, *p;
  	struct pid *session;
  	int		i;
@@ -91,7 +91,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	tty_ldisc_flush(tty);
  
-@@ -2782,6 +2786,7 @@ void __do_SAK(struct tty_struct *tty)
+@@ -2774,6 +2778,7 @@ void __do_SAK(struct tty_struct *tty)
  		task_unlock(p);
  	} while_each_thread(g, p);
  	read_unlock(&tasklist_lock);
@@ -101,7 +101,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
 --- a/drivers/tty/tty_jobctrl.c
 +++ b/drivers/tty/tty_jobctrl.c
-@@ -103,8 +103,8 @@ static void __proc_set_tty(struct tty_st
+@@ -102,8 +102,8 @@ static void __proc_set_tty(struct tty_st
  	put_pid(tty->session);
  	put_pid(tty->pgrp);
  	tty->pgrp = get_pid(task_pgrp(current));
@@ -111,7 +111,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	if (current->signal->tty) {
  		tty_debug(tty, "current tty %s not NULL!!\n",
  			  current->signal->tty->name);
-@@ -293,20 +293,23 @@ void disassociate_ctty(int on_exit)
+@@ -292,20 +292,23 @@ void disassociate_ctty(int on_exit)
  	spin_lock_irq(&current->sighand->siglock);
  	put_pid(current->signal->tty_old_pgrp);
  	current->signal->tty_old_pgrp = NULL;
@@ -137,7 +137,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	/* Now clear signal->tty under the lock */
  	read_lock(&tasklist_lock);
  	session_clear_tty(task_session(current));
-@@ -477,14 +480,19 @@ static int tiocspgrp(struct tty_struct *
+@@ -476,14 +479,19 @@ static int tiocspgrp(struct tty_struct *
  		return -ENOTTY;
  	if (retval)
  		return retval;
@@ -161,7 +161,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	rcu_read_lock();
  	pgrp = find_vpid(pgrp_nr);
  	retval = -ESRCH;
-@@ -494,12 +502,12 @@ static int tiocspgrp(struct tty_struct *
+@@ -493,12 +501,12 @@ static int tiocspgrp(struct tty_struct *
  	if (session_of_pgrp(pgrp) != task_session(current))
  		goto out_unlock;
  	retval = 0;
@@ -176,7 +176,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	return retval;
  }
  
-@@ -511,20 +519,30 @@ out_unlock:
+@@ -510,20 +518,30 @@ out_unlock:
   *
   *	Obtain the session id of the tty. If there is no session
   *	return an error.
@@ -213,7 +213,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  /*
 --- a/include/linux/tty.h
 +++ b/include/linux/tty.h
-@@ -306,6 +306,10 @@ struct tty_struct {
+@@ -305,6 +305,10 @@ struct tty_struct {
  	struct termiox *termiox;	/* May be NULL for unsupported */
  	char name[64];
  	struct pid *pgrp;		/* Protected by ctrl lock */
