@@ -2,146 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8262D5A6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA832D5A66
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730358AbgLJMXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 07:23:41 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:46512 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728714AbgLJMXU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:23:20 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id 17349123B01;
-        Thu, 10 Dec 2020 13:22:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607602948;
-        bh=stdRd1Ge1u9OB3/zaOc1WCQ0FTlN9r2WHM/06jMJo8k=;
-        h=Date:From:To:Subject:From;
-        b=K5cL9Xpmn4q5In4An3pa1zlIAo+o35kI1Fvodu+o1M1MnvZug/Yf8emmew8t9lW5w
-         BeWSGYFoYZzoazG/deG1UABmSvcLaYd4/ntbmmQXNEZ+rkSpLNkkp0w5jq1KVEraDq
-         RZJ9mIa5+c875Zwfh5ud0z2yY8nHt3dG454QN4rgKkctHyN/pm9NiGIHYcJoeo2i1G
-         +NvwQKCipnap7ce6Al+0N8tyYiF2Z/+FG9YP4Kg1X0JyaRbjavpdZE8YJHId5ylb4v
-         OsWW2VNHG0sJGXS6biNWYzONoN43hen0+nFM/KEvEwCJG2UyXEkb44bmLQqfEjduHV
-         OYBDhLmnqq1jA==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 5pHo5vC9icYe; Thu, 10 Dec 2020 13:21:58 +0100 (CET)
-Received: from dincontrollerdev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id C0F9E123AFF;
-        Thu, 10 Dec 2020 13:21:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607602918;
-        bh=stdRd1Ge1u9OB3/zaOc1WCQ0FTlN9r2WHM/06jMJo8k=;
-        h=Date:From:To:Subject:From;
-        b=U5jhQoeTF29WCd56hwxzIcTs+KhBMWWyKbGeyWzGJavFnSC5p/E6kb/R8kEPGJ38z
-         XW7EDuIfzppK/2XC4j5vD20Q/vsAPsY+lFDQRc16fQwTPAoIZj/FKpFPcWIWyNSKM3
-         kfELTHGsDktZ13LpG+kKj2JPg+etMZ+YWwS7R7lKIBaCudl+VWf31hbgWX+ko6m/UJ
-         K3aT1C5NUbx5A5U5FWBEUvToYcNg5h8q9li0CbC7fjxtUCpzXt1W8pPLQp66WPcF9F
-         8wiseSy9/HfgwWVJ/y2sJP9/I9UvGrftEm1lRNDWKvgcEprT461WCNVtlYK/Dg5aTS
-         gNPgn4RAuiYDw==
-Date:   Thu, 10 Dec 2020 12:21:56 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     'Rob Herring' <robh+dt@kernel.org>,
-        'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
-        =?iso-8859-1?Q?'J=F3zsef_Horv=E1th'?= <info@ministro.hu>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: [PATCH v1 2/2] Staging: silabs si4455 serial driver: docs device
- tree binding
-Message-ID: <20201210122154.GA31799@dincontrollerdev>
+        id S1729296AbgLJMXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 07:23:00 -0500
+Received: from nautica.notk.org ([91.121.71.147]:45286 "EHLO nautica.notk.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726904AbgLJMXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 07:23:00 -0500
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id EC1A9C009; Thu, 10 Dec 2020 13:22:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1607602937; bh=k0CJucuVEz8HkH9kDdldXKj+LZNAj5vMfQmKkCtAcss=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IR/Rvsqg4HBjqHubGfpZhml4heRwRBqXy8woFQzNeSoB2l2EILEI0SGWLhos2ulVa
+         +3wvpxgnW/VINWXN21+RhWCAu10NsefiNeJsApO4EZQeYyvQQ+gPeZM9CF+vjbUl2U
+         x9FDVfwUP48hbyJXOE5U+GIVUCAlKT3JYQ0Rt4BNENlGAE+egRaOKxs7h/fwr3o+DE
+         LJnOs1Y0F+Y3J/ud1oatfveIcQFBs7YmCIS9Z/jvy2KptzGBckP0amCgkRzA81iDID
+         8G8VteAyM8uG/RBNj6RNnEIc+/7wg1t9+cTOyv2kIHNT22SkUEkiqld5Bp7QVkCl2O
+         mSUiGPx4UYhqg==
+Date:   Thu, 10 Dec 2020 13:22:02 +0100
+From:   'Dominique Martinet' <asmadeus@codewreck.org>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 1/2] ld-version: use /usr/bin/env awk for shebank
+Message-ID: <20201210122202.GA8323@nautica>
+References: <1606828650-29841-1-git-send-email-asmadeus@codewreck.org>
+ <69c82aee-59ec-f8d8-9546-b38f85bf08c0@arm.com>
+ <20201209174252.GA27721@nautica>
+ <5ca5c3bb23614af0a35f01f1e3a84ead@AcuMS.aculab.com>
+ <a68a09ce-f172-bfb4-6422-b1776d798f5f@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <a68a09ce-f172-bfb4-6422-b1776d798f5f@arm.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add: device tree binding schema
+Vincenzo Frascino wrote on Thu, Dec 10, 2020:
+> On 12/9/20 10:03 PM, David Laight wrote:
+>> Why bother with awk?
 
-Signed-off-by: József Horváth <info@ministro.hu>
----
- .../bindings/serial/silabs,si4455.yaml        | 53 +++++++++++++++++++
- MAINTAINERS                                   |  2 +-
- 2 files changed, 54 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/serial/silabs,si4455.yaml
+I wanted to keep the patch minimal, I'm not opposed to rewriting but
+that always potentially has more impact (although as you say, this
+script is simple enough)
 
-diff --git a/Documentation/devicetree/bindings/serial/silabs,si4455.yaml b/Documentation/devicetree/bindings/serial/silabs,si4455.yaml
-new file mode 100644
-index 000000000000..80a73a61755b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/serial/silabs,si4455.yaml
-@@ -0,0 +1,53 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/serial/silabs,si4455.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Silicon Labs Si4455 device tree bindings
-+
-+maintainers:
-+  - József Horváth <info@ministro.hu>
-+
-+allOf:
-+  - $ref: "/schemas/serial.yaml#"
-+
-+properties:
-+  compatible:
-+    const: silabs,si4455
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    description: maximum clock frequency on SPI port
-+    maximum: 500000
-+
-+  shutdown-gpios:
-+    description: gpio pin for SDN
-+    maxItems: 1
-+
-+required:
-+  - reg
-+  - interrupts
-+  - spi-max-frequency
-+  - shutdown-gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    &spi0 {
-+      serial0: si4455@0 {
-+        compatible = "silabs,si4455";
-+        reg = <0>;
-+        interrupt-parent = <&gpio>;
-+        interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-+        shutdown-gpios = <&gpio 26 1>;
-+        spi-max-frequency = <300000>;
-+      };
-+    };
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a29bc17d446d..16cc96971ac2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15937,7 +15937,7 @@ F:	drivers/platform/x86/touchscreen_dmi.c
- SILICON LABS SI4455 SERIAL DRIVER
- M:	József Horváth <info@ministro.hu>
- S:	Maintained
--F:	Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
-+F:	Documentation/devicetree/bindings/serial/silabs,si4455.yaml
- F:	drivers/tty/serial/si4455.c
- F:	drivers/tty/serial/si4455_api.h
- 
+> > I think you can do it all in a shell function.
+> > Something like:
+> > 	read line
+> > 	line=${line##*)}
+> > 	line=${line##*version }
+> > 	IFS='.-'
+> > 	set $line
+> > 	echo $(($1*100000000 + $2*1000000 + $3*10000))
+> > 
+> > That will work on any recent shell.
+
+Works for me.
+
+
+> I would suggest to revert the patch for now since we are close to the merge
+> window and then maybe in -rc1 start discussing a better solution.
+
+As far as I can see the patch is only in -next, as said earlier I'm in
+favor of just dropping the patch until a decision is taken for the next
+merge window (or the one after that); there's no hurry for me and
+nothing to revert.
+
 -- 
-2.17.1
-
+Dominique
