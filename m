@@ -2,169 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BF42D61DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 690872D6274
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:50:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392319AbgLJQao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:30:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54358 "EHLO mail.kernel.org"
+        id S2388922AbgLJQtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:49:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392278AbgLJQaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:30:24 -0500
-Date:   Thu, 10 Dec 2020 17:29:38 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607617783;
-        bh=wKoP18O5gMPLwquu/buxQ4EvFVAv2YOC8QSG6GaC+jQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Oh2ptG4ZVLCMhVKtFV4GX1Gr3/bKm6NIJvSboVEyeZe8uQ6hHt+N5rAoM6rTaduxl
-         HBY/f7WQvd8dGxp7rx23DFyZvq88hR0kzzYMIih8BJkGprPE1CD86gtYhYH89Fx1DJ
-         IMagpqVjLXGhdAvmefQ+Mt5yMPxbzdltgskX9uuEt4moX1l7Q4dJ6QpI+ZzCfGJoaz
-         UlHTa7aAni8ENe685aHLxDw1KIk+XFDpx/zx5jguM7xY8yo3ZZHPd/zmLN4z2+C7Z/
-         dZcf2NkEnqo8uLifUlVUC7moDPP4zQYh5J9ys9/4VC7Owhv/8l6YSuF/KxfzKku3ZU
-         /+zpsr0pxkbYg==
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     "Jonathan Corbet" <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH RFC] docs: experimental: build PDF with rst2pdf
-Message-ID: <20201210172938.3b3086b6@coco.lan>
-In-Reply-To: <a29b97f95cae490cb83da28410fade13d880f365.1607616056.git.mchehab+huawei@kernel.org>
-References: <20201210074845.4eb67f22@lwn.net>
-        <a29b97f95cae490cb83da28410fade13d880f365.1607616056.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2391089AbgLJOhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:37:37 -0500
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.9 15/75] ALSA: hda/realtek - Fixed Dell AIO wrong sound tone
+Date:   Thu, 10 Dec 2020 15:26:40 +0100
+Message-Id: <20201210142606.822538755@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 10 Dec 2020 17:01:19 +0100
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+From: Kailang Yang <kailang@realtek.com>
 
-> Add an experimental PDF builder using rst2pdf
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+commit 92666d45adcfd4a4a70580ff9f732309e16131f9 upstream.
 
-I opened an issue at:
+This platform only had one audio jack.
+If it plugged speaker then replug with speaker or headset, the sound
+tone will change to abnormal.
+Headset Mic also can't record when this issue was happen.
 
-https://github.com/rst2pdf/rst2pdf/issues/958
+[ Added a short comment about the COEF by tiwai ]
 
-Let's hope someone at rst2pdf could help fixing this ;-)
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/593c777dcfef4546aa050e105b8e53b5@realtek.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Regards,
-Mauro
+---
+ sound/pci/hda/patch_realtek.c |   40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -119,6 +119,7 @@ struct alc_spec {
+ 	unsigned int no_shutup_pins:1;
+ 	unsigned int ultra_low_power:1;
+ 	unsigned int has_hs_key:1;
++	unsigned int no_internal_mic_pin:1;
+ 
+ 	/* for PLL fix */
+ 	hda_nid_t pll_nid;
+@@ -4524,6 +4525,7 @@ static const struct coef_fw alc225_pre_h
+ 
+ static void alc_headset_mode_unplugged(struct hda_codec *codec)
+ {
++	struct alc_spec *spec = codec->spec;
+ 	static const struct coef_fw coef0255[] = {
+ 		WRITE_COEF(0x1b, 0x0c0b), /* LDO and MISC control */
+ 		WRITE_COEF(0x45, 0xd089), /* UAJ function set to menual mode */
+@@ -4598,6 +4600,11 @@ static void alc_headset_mode_unplugged(s
+ 		{}
+ 	};
+ 
++	if (spec->no_internal_mic_pin) {
++		alc_update_coef_idx(codec, 0x45, 0xf<<12 | 1<<10, 5<<12);
++		return;
++	}
++
+ 	switch (codec->core.vendor_id) {
+ 	case 0x10ec0255:
+ 		alc_process_coef_fw(codec, coef0255);
+@@ -5164,6 +5171,11 @@ static void alc_determine_headset_type(s
+ 		{}
+ 	};
+ 
++	if (spec->no_internal_mic_pin) {
++		alc_update_coef_idx(codec, 0x45, 0xf<<12 | 1<<10, 5<<12);
++		return;
++	}
++
+ 	switch (codec->core.vendor_id) {
+ 	case 0x10ec0255:
+ 		alc_process_coef_fw(codec, coef0255);
+@@ -6137,6 +6149,23 @@ static void alc274_fixup_hp_headset_mic(
+ 	}
+ }
+ 
++static void alc_fixup_no_int_mic(struct hda_codec *codec,
++				    const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++
++	switch (action) {
++	case HDA_FIXUP_ACT_PRE_PROBE:
++		/* Mic RING SLEEVE swap for combo jack */
++		alc_update_coef_idx(codec, 0x45, 0xf<<12 | 1<<10, 5<<12);
++		spec->no_internal_mic_pin = true;
++		break;
++	case HDA_FIXUP_ACT_INIT:
++		alc_combo_jack_hp_jd_restart(codec);
++		break;
++	}
++}
++
+ /* for hda_fixup_thinkpad_acpi() */
+ #include "thinkpad_helper.c"
+ 
+@@ -6336,6 +6365,7 @@ enum {
+ 	ALC285_FIXUP_THINKPAD_NO_BASS_SPK_HEADSET_JACK,
+ 	ALC287_FIXUP_HP_GPIO_LED,
+ 	ALC256_FIXUP_HP_HEADSET_MIC,
++	ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7753,6 +7783,12 @@ static const struct hda_fixup alc269_fix
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc274_fixup_hp_headset_mic,
+ 	},
++	[ALC236_FIXUP_DELL_AIO_HEADSET_MIC] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_no_int_mic,
++		.chained = true,
++		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7830,6 +7866,8 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1028, 0x097d, "Dell Precision", ALC289_FIXUP_DUAL_SPK),
+ 	SND_PCI_QUIRK(0x1028, 0x098d, "Dell Precision", ALC233_FIXUP_ASUS_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x09bf, "Dell Precision", ALC233_FIXUP_ASUS_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x0a2e, "Dell", ALC236_FIXUP_DELL_AIO_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1028, 0x0a30, "Dell", ALC236_FIXUP_DELL_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
+@@ -8369,6 +8407,8 @@ static const struct snd_hda_pin_quirk al
+ 		{0x19, 0x02a11020},
+ 		{0x1a, 0x02a11030},
+ 		{0x21, 0x0221101f}),
++	SND_HDA_PIN_QUIRK(0x10ec0236, 0x1028, "Dell", ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
++		{0x21, 0x02211010}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0236, 0x103c, "HP", ALC256_FIXUP_HP_HEADSET_MIC,
+ 		{0x14, 0x90170110},
+ 		{0x19, 0x02a11020},
 
 
-> ---
->  Documentation/Makefile                     |  5 +++++
->  Documentation/conf.py                      | 21 +++++++++++++++------
->  Documentation/userspace-api/media/Makefile |  1 +
->  Makefile                                   |  4 ++--
->  4 files changed, 23 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/Makefile b/Documentation/Makefile
-> index 61a7310b49e0..c3c8fb10f94e 100644
-> --- a/Documentation/Makefile
-> +++ b/Documentation/Makefile
-> @@ -115,6 +115,10 @@ pdfdocs: latexdocs
->  
->  endif # HAVE_PDFLATEX
->  
-> +rst2pdf:
-> +	@$(srctree)/scripts/sphinx-pre-install --version-check
-> +	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,pdf,$(var),pdf,$(var)))
-> +
->  epubdocs:
->  	@$(srctree)/scripts/sphinx-pre-install --version-check
->  	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,epub,$(var),epub,$(var)))
-> @@ -140,6 +144,7 @@ dochelp:
->  	@echo  '  htmldocs        - HTML'
->  	@echo  '  latexdocs       - LaTeX'
->  	@echo  '  pdfdocs         - PDF'
-> +	@echo  '  rst2pdf         - PDF, using experimental rst2pdf support'
->  	@echo  '  epubdocs        - EPUB'
->  	@echo  '  xmldocs         - XML'
->  	@echo  '  linkcheckdocs   - check for broken external links'
-> diff --git a/Documentation/conf.py b/Documentation/conf.py
-> index 66e121df59cd..6f2788aac81e 100644
-> --- a/Documentation/conf.py
-> +++ b/Documentation/conf.py
-> @@ -123,6 +123,12 @@ if (major == 1 and minor > 3) or (major > 1):
->  else:
->      extensions.append("sphinx.ext.pngmath")
->  
-> +# Enable experimental rst2pdf, if available
-> +try:
-> +    extensions.append("rst2pdf.pdfbuilder")
-> +except:
-> +    sys.stderr.write('rst2pdf extension not available.\n')
-> +
->  # Add any paths that contain templates here, relative to this directory.
->  templates_path = ['_templates']
->  
-> @@ -614,12 +620,15 @@ epub_exclude_files = ['search.html']
->  #
->  # See the Sphinx chapter of https://ralsina.me/static/manual.pdf
->  #
-> -# FIXME: Do not add the index file here; the result will be too big. Adding
-> -# multiple PDF files here actually tries to get the cross-referencing right
-> -# *between* PDF files.
-> -pdf_documents = [
-> -    ('kernel-documentation', u'Kernel', u'Kernel', u'J. Random Bozo'),
-> -]
-> +
-> +# Add all LaTeX files to PDF documents as well
-> +pdf_documents = []
-> +for l in latex_documents:
-> +    doc = l[0]
-> +    fn = l[1].replace(".tex", "")
-> +    name = l[2]
-> +    authors = l[3]
-> +    pdf_documents.append((doc, fn, name, authors))
->  
->  # kernel-doc extension configuration for running Sphinx directly (e.g. by Read
->  # the Docs). In a normal build, these are supplied from the Makefile via command
-> diff --git a/Documentation/userspace-api/media/Makefile b/Documentation/userspace-api/media/Makefile
-> index 81a4a1a53bce..8c6b3ac4ecb0 100644
-> --- a/Documentation/userspace-api/media/Makefile
-> +++ b/Documentation/userspace-api/media/Makefile
-> @@ -59,6 +59,7 @@ all: $(IMGDOT) $(BUILDDIR) ${TARGETS}
->  html: all
->  epub: all
->  xml: all
-> +pdf: all
->  latex: $(IMGPDF) all
->  linkcheck:
->  
-> diff --git a/Makefile b/Makefile
-> index 43ecedeb3f02..db4043578eec 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -264,7 +264,7 @@ no-dot-config-targets := $(clean-targets) \
->  			 cscope gtags TAGS tags help% %docs check% coccicheck \
->  			 $(version_h) headers headers_% archheaders archscripts \
->  			 %asm-generic kernelversion %src-pkg dt_binding_check \
-> -			 outputmakefile
-> +			 outputmakefile rst2pdf
->  no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease
->  single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
->  
-> @@ -1654,7 +1654,7 @@ $(help-board-dirs): help-%:
->  
->  # Documentation targets
->  # ---------------------------------------------------------------------------
-> -DOC_TARGETS := xmldocs latexdocs pdfdocs htmldocs epubdocs cleandocs \
-> +DOC_TARGETS := xmldocs latexdocs pdfdocs rst2pdf htmldocs epubdocs cleandocs \
->  	       linkcheckdocs dochelp refcheckdocs
->  PHONY += $(DOC_TARGETS)
->  $(DOC_TARGETS):
-
-
-
-Thanks,
-Mauro
