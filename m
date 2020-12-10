@@ -2,58 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1CF82D514B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A58702D5146
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729355AbgLJDZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 22:25:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729002AbgLJDYy (ORCPT
+        id S1729283AbgLJDYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:24:44 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:44188 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728199AbgLJDYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 22:24:54 -0500
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BF2C0613CF;
-        Wed,  9 Dec 2020 19:24:14 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477:9e51:a893:b0fe:602a])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 6F6CD4D259C1A;
-        Wed,  9 Dec 2020 19:23:52 -0800 (PST)
-Date:   Wed, 09 Dec 2020 19:23:51 -0800 (PST)
-Message-Id: <20201209.192351.1592604556832105313.davem@davemloft.net>
-To:     xie.he.0141@gmail.com
-Cc:     kuba@kernel.org, linux-x25@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ms@dev.tdt.de
-Subject: Re: [PATCH net-next v2] net: hdlc_x25: Remove unnecessary
- skb_reset_network_header calls
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20201209014013.4996-1-xie.he.0141@gmail.com>
-References: <20201209014013.4996-1-xie.he.0141@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Wed, 09 Dec 2020 19:23:52 -0800 (PST)
+        Wed, 9 Dec 2020 22:24:44 -0500
+Received: by mail-ot1-f66.google.com with SMTP id f16so3590543otl.11;
+        Wed, 09 Dec 2020 19:24:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BPV+mbc7aH16lyR1Iy3IK6IHtEQI7lxOlNJLzhXVprg=;
+        b=C0z+Fs4DZeylTcA3P39LK1NiYXw9e3cAFxmHBvy2xNgTrpFChgK/0pHR1zoCesZbOb
+         gQiU+UNIvVs40OjixuT6cNseZs+9ulZxEdHMMXv2tYcsVaJZEV9qZt9CzL2o/LSCKmab
+         qEJ4Pw/mImBiu1NlhRb5BmJArdLjLwon13U/tz/2C9ZTHp+krOZQb5NQgjECXNkxCxlD
+         L3MRtwf9qvQ5AXwo57cc5It2JnWNcnMYcaNFB0QI3Bx4OBgkceD6zVRkrBsLooXpEdyZ
+         5L7T7eF25DvbzakTuPVxZFBuOLFUjisyjPDNnF4pbdKITxIhnMa1NZepZeSLH8UtwhS/
+         qazA==
+X-Gm-Message-State: AOAM531SG/ndtjNWzCb/aBgC/Emj3EAZTcrOD9pP+kPqd9uGgAb52fFD
+        YxbzLsd2i06hVDU172mfTw==
+X-Google-Smtp-Source: ABdhPJxHS5abRR5IlwX+r1rqFuy3fjpJvhGxKQY1kv5d7hwo6ynHH2We4bKSmeX6t6ufoe/klKpb4w==
+X-Received: by 2002:a9d:5f9a:: with SMTP id g26mr4523870oti.241.1607570643083;
+        Wed, 09 Dec 2020 19:24:03 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r204sm334552oif.0.2020.12.09.19.24.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 19:24:01 -0800 (PST)
+Received: (nullmailer pid 1590264 invoked by uid 1000);
+        Thu, 10 Dec 2020 03:23:59 -0000
+Date:   Wed, 9 Dec 2020 21:23:59 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        linux-mips@vger.kernel.org,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Roger Quadros <rogerq@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        linux-snps-arc@lists.infradead.org,
+        Kevin Hilman <khilman@baylibre.com>, linux-usb@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Andy Gross <agross@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        devicetree@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v5 01/19] dt-bindings: usb: usb-hcd: Detach generic USB
+ controller properties
+Message-ID: <20201210032359.GA1590225@robh.at.kernel.org>
+References: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
+ <20201205152427.29537-2-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201205152427.29537-2-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
-Date: Tue,  8 Dec 2020 17:40:13 -0800
-
-> 1. In x25_xmit, skb_reset_network_header is not necessary before we call
-> lapb_data_request. The lapb module doesn't need skb->network_header.
-> So there is no need to set skb->network_header before calling
-> lapb_data_request.
+On Sat, 05 Dec 2020 18:24:08 +0300, Serge Semin wrote:
+> There can be three distinctive types of the USB controllers: USB hosts,
+> USB peripherals/gadgets and USB OTG, which can switch from one role to
+> another. In order to have that hierarchy handled in the DT binding files,
+> we need to collect common properties in a common DT schema and specific
+> properties in dedicated schemas. Seeing the usb-hcd.yaml DT schema is
+> dedicated for the USB host controllers only, let's move some common
+> properties from there into the usb.yaml schema. So the later would be
+> available to evaluate all currently supported types of the USB
+> controllers.
 > 
-> 2. In x25_data_indication (called by the lapb module after some data
-> have been received), skb_reset_network_header is not necessary before we
-> call netif_rx. After we call netif_rx, the code in net/core/dev.c will
-> call skb_reset_network_header before handing the skb to upper layers
-> (in __netif_receive_skb_core, called by __netif_receive_skb_one_core,
-> called by __netif_receive_skb, called by process_backlog). So we don't
-> need to call skb_reset_network_header by ourselves.
+> While at it add an explicit "additionalProperties: true" into the
+> usb-hcd.yaml as setting the additionalProperties/unevaluateProperties
+> properties is going to be get mandatory soon.
 > 
-> Cc: Martin Schiller <ms@dev.tdt.de>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> 
+> ---
+> 
+> Changelog v4:
+> - This is a new patch created as a result of the comment left
+>   by Chunfeng Yun in v3
+> 
+> Changelog v5:
+> - Discard duplicated additionalProperties property definition.
+> ---
+>  .../devicetree/bindings/usb/usb-hcd.yaml      | 14 ++-------
+>  .../devicetree/bindings/usb/usb.yaml          | 29 +++++++++++++++++++
+>  2 files changed, 31 insertions(+), 12 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/usb/usb.yaml
+> 
 
-Applied, thanks.
+Reviewed-by: Rob Herring <robh@kernel.org>
