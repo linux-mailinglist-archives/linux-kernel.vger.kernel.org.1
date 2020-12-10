@@ -2,205 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F7B2D55A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:51:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDAC2D55C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388246AbgLJIuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 03:50:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388214AbgLJIuQ (ORCPT
+        id S2388397AbgLJIwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 03:52:04 -0500
+Received: from mx.baikalelectronics.com ([94.125.187.42]:35986 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388307AbgLJIvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 03:50:16 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B1CC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 00:49:36 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id b2so4637394edm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 00:49:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=essensium.com; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=CZayN64RkmFgP9YFt0ohbXNG2Yfe239YNxPd4WUrfnQ=;
-        b=FF/92pZYdsUc4EP0t0DHnNjQJw52sDA2J7zOygjMInZJJIJm3YRCEW5zClNClV2HO0
-         uaUSZ+EtQEbI5EKou+n60PAHQ49tAE2Ouo+Ew404toupyldzPZ65NqZeMaIC766v4FaG
-         gdP06SRX34myU8O3o5URN5weEtM90gshX1hyWWlQYMGk+Iba27zPHmF4rG6Xw/IdHrGR
-         upFoJW8FvVeU7T5CbD+xnzALSDFg5EMXL0jolkWolMAGeErJ9MMuxKn0peo9OsearkQq
-         J/+HiZI+qSapDz9UM4+IdyjXpyup7GNYg8giWuJurkMS6guJxZYwyi2R2T09HQtt+9Wn
-         b7iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CZayN64RkmFgP9YFt0ohbXNG2Yfe239YNxPd4WUrfnQ=;
-        b=fk5+uIgRCpiIQ5XdfmwNk81yWV99TdNuP6ysZwuaySGQ47ZTxxyPxbTTknOHJArcif
-         B9plM6EZOT4KImwit6bx8hctOH0/Xvu/JTWwIf6dKgtuXA4kTdLJzBDDNv+EZEEmqMZc
-         L9taJKsCrbYuf1eAiKH9b/vjB96vgQd+Bbg8nySerx3gYQAhqqNhUFrANYfDyVhLyc0y
-         viBZIAxGCVJbttlgwzLAPScIJhFKHNx+Fez33jhrcUcmois6SQG1VE8KLO8afsWACao2
-         wcDtqKzH/MKxbPNawKHCCXP6trpDNE9vCQCyRAVbNlLk1072qnjNTe+rn10BV7X3CB1E
-         SiVw==
-X-Gm-Message-State: AOAM531K3kzvInOoqLam6pvW1RZq2Rf9QyYSmRlX9PeF4KCFdGICaojA
-        u7W+MHWaifFqSuRwVBwkF7jP+RUeqxN8zA==
-X-Google-Smtp-Source: ABdhPJwbUB1pNPJ9JA6DsnfSBsUb/y2v8ErUkWB3ocdPkXUmhlTipaOkkqW4P67vhn4cVvSaWPjawA==
-X-Received: by 2002:a50:d5c4:: with SMTP id g4mr5497199edj.334.1607590174408;
-        Thu, 10 Dec 2020 00:49:34 -0800 (PST)
-Received: from [192.168.1.16] (77.109.117.213.adsl.dyn.edpnet.net. [77.109.117.213])
-        by smtp.gmail.com with ESMTPSA id e3sm3733082ejq.96.2020.12.10.00.49.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 00:49:33 -0800 (PST)
-Subject: Re: [PATCH net 1/4] net: freescale/fman: Split the main resource
- region reservation
-To:     Madalin Bucur <madalin.bucur@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201203135039.31474-1-patrick.havelange@essensium.com>
- <20201203135039.31474-2-patrick.havelange@essensium.com>
- <AM6PR04MB39764190C3CC885EAA84E8B3ECF20@AM6PR04MB3976.eurprd04.prod.outlook.com>
- <e488ed95-3672-fdcb-d678-fdd4eb9a8b4b@essensium.com>
- <AM6PR04MB3976F905489C0CB2ECD1A6FAECCC0@AM6PR04MB3976.eurprd04.prod.outlook.com>
- <8c28d03a-8831-650c-cf17-9a744d084479@essensium.com>
- <AM6PR04MB3976721D38D6EAE91E6F3F37ECCC0@AM6PR04MB3976.eurprd04.prod.outlook.com>
-From:   Patrick Havelange <patrick.havelange@essensium.com>
-Message-ID: <9a118a8d-ce39-c71b-9efe-3a4fc86041ee@essensium.com>
-Date:   Thu, 10 Dec 2020 09:49:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 10 Dec 2020 03:51:11 -0500
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Felipe Balbi <balbi@kernel.org>,
+        John Youn <John.Youn@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        David Cohen <david.a.cohen@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH RESEND v5 0/3] usb: dwc3: ulpi: Fix UPLI registers read/write ops
+Date:   Thu, 10 Dec 2020 11:50:05 +0300
+Message-ID: <20201210085008.13264-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <AM6PR04MB3976721D38D6EAE91E6F3F37ECCC0@AM6PR04MB3976.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09 19:55, Madalin Bucur wrote:
->> -----Original Message-----
->> From: Patrick Havelange <patrick.havelange@essensium.com>
->> Sent: 09 December 2020 16:17
->> To: Madalin Bucur <madalin.bucur@nxp.com>; David S. Miller
->> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>;
->> netdev@vger.kernel.org; linux-kernel@vger.kernel.org
->> Subject: Re: [PATCH net 1/4] net: freescale/fman: Split the main resource
->> region reservation
->>
->>>>> area. I'm assuming this is the problem you are trying to address here,
->>>>> besides the stack corruption issue.
->>>>
->>>> Yes exactly.
->>>> I did not add this behaviour (having a main region and subdrivers using
->>>> subregions), I'm just trying to correct what is already there.
->>>> For example: this is some content of /proc/iomem for one board I'm
->>>> working with, with the current existing code:
->>>> ffe400000-ffe4fdfff : fman
->>>>      ffe4e0000-ffe4e0fff : mac
->>>>      ffe4e2000-ffe4e2fff : mac
->>>>      ffe4e4000-ffe4e4fff : mac
->>>>      ffe4e6000-ffe4e6fff : mac
->>>>      ffe4e8000-ffe4e8fff : mac
->>>>
->>>> and now with my patches:
->>>> ffe400000-ffe4fdfff : /soc@ffe000000/fman@400000
->>>>      ffe400000-ffe480fff : fman
->>>>      ffe488000-ffe488fff : fman-port
->>>>      ffe489000-ffe489fff : fman-port
->>>>      ffe48a000-ffe48afff : fman-port
->>>>      ffe48b000-ffe48bfff : fman-port
->>>>      ffe48c000-ffe48cfff : fman-port
->>>>      ffe4a8000-ffe4a8fff : fman-port
->>>>      ffe4a9000-ffe4a9fff : fman-port
->>>>      ffe4aa000-ffe4aafff : fman-port
->>>>      ffe4ab000-ffe4abfff : fman-port
->>>>      ffe4ac000-ffe4acfff : fman-port
->>>>      ffe4c0000-ffe4dffff : fman
->>>>      ffe4e0000-ffe4e0fff : mac
->>>>      ffe4e2000-ffe4e2fff : mac
->>>>      ffe4e4000-ffe4e4fff : mac
->>>>      ffe4e6000-ffe4e6fff : mac
->>>>      ffe4e8000-ffe4e8fff : mac
->>>>
->>>>> While for the latter I think we can
->>>>> put together a quick fix, for the former I'd like to take a bit of
->> time
->>>>> to select the best fix, if one is really needed. So, please, let's
->> split
->>>>> the two problems and first address the incorrect stack memory use.
->>>>
->>>> I have no idea how you can fix it without a (more correct this time)
->>>> dummy region passed as parameter (and you don't want to use the first
->>>> patch). But then it will be useless to do the call anyway, as it won't
->>>> do any proper verification at all, so it could also be removed entirely,
->>>> which begs the question, why do it at all in the first place (the
->>>> devm_request_mem_region).
->>>>
->>>> I'm not an expert in that part of the code so feel free to correct me
->> if
->>>> I missed something.
->>>>
->>>> BR,
->>>>
->>>> Patrick H.
->>>
->>> Hi, Patrick,
->>>
->>> the DPAA entities are described in the device tree. Adding some
->> hardcoding in
->>> the driver is not really the solution for this problem. And I'm not sure
->> we have
->>
->> I'm not seeing any problem here, the offsets used by the fman driver
->> were already there, I just reorganized them in 2 blocks.
->>
->>> a clear problem statement to start with. Can you help me on that part?
->>
->> - The current call to __devm_request_region in fman_port.c is not correct.
->>
->> One way to fix this is to use devm_request_mem_region, however this
->> requires that the main fman would not be reserving the whole region.
->> This leads to the second problem:
->> - Make sure the main fman driver is not reserving the whole region.
->>
->> Is that clearer like this ?
->>
->> Patrick H.
+Our Baikal-T1 SoC is equipped with DWC USB3 IP core as a USB2.0 bus
+controller. In general the DWC USB3 driver is working well for it except
+the ULPI-bus part. We've found out that the DWC USB3 ULPI-bus driver detected
+PHY with VID:PID tuple as 0x0000:0x0000, which of course wasn't true since
+it was supposed to be 0x0424:0x0006. After a short digging inside the
+ulpi.c code and studying the DWC USB3 documentation, it has been
+discovered that the ULPI bus IO ops didn't work quite correct. The
+busy-loop had stopped waiting before the actual operation was finished. We
+found out that the problem was caused by several bugs hidden in the DWC
+USB3 ULPI-bus IO implementation.
 
-Hi,
+First of all in accordance with the DWC USB3 databook [1] the ULPI IO
+busy-loop is supposed to use the GUSB2PHYACCn.VStsDone flag as an
+indication of the PHY vendor control access completion. Instead it polled
+the GUSB2PHYACCn.VStsBsy flag, which as we discovered can be cleared a
+bit before the VStsDone flag.
 
-> 
-> The overlapping IO areas result from the device tree description, that in turn
-> mimics the HW description in the manual. If we really want to remove the nesting,
-> we should change the device trees, not the drivers.
+Secondly having the simple counter-based loop in the modern kernel is
+really a weak design of the busy-looping pattern especially seeing the
+ULPI operations delay can be easily estimated [2], since the bus clock is
+fixed to 60MHz.
 
-But then that change would not be compatible with the existing device 
-trees in already existing hardware. I'm not sure how to handle that case 
-properly.
+Finally the root cause of the denoted in the prologue problem was due to
+the Suspend PHY DWC USB3 feature perception. The commit e0082698b689
+("usb: dwc3: ulpi: conditionally resume ULPI PHY") introduced the Suspend
+USB2.0 HS/FS/LS PHY regression as the Low-power consumption mode would be
+disable after a first attempt to read/write from the ULPI PHY control
+registers, and still didn't fix the problem it was originally intended for
+since the very first attempt of the ULPI PHY control registers IO would
+need much more time than the busy-loop provided. So instead of disabling
+the Suspend USB2.0 HS/FS/LS PHY feature we suggest to just extend the
+busy-loop delay in case if the GUSB2PHYCFGn.SusPHY flag set to 1. By doing
+so we'll eliminate the regression and fix the false busy-loop timeout
+problem.
 
-> If we want to hack it,
-> instead of splitting ioremaps, we can reserve 4 kB in the FMan driver,
-> and keep the ioremap as it is now, with the benefit of less code churn.
+[1] Synopsys DesignWare Cores SuperSpeed USB 3.0 xHCI Host Controller
+    Databook, 2.70a, December 2013, p.388
 
-but then the ioremap and the memory reservation do not match. Why bother 
-at all then with the mem reservation, just ioremap only and be done with 
-it. What I'm saying is, I don't see the point of having a "fake" 
-reservation call if it does not correspond that what is being used.
+[2] UTMI+ Low Pin Interface (ULPI) Specification, Revision 1.1,
+    October 20, 2004, pp. 30 - 36.
 
-> In the end, what the reservation is trying to achieve is to make sure there
-> is a single driver controlling a certain peripeheral, and this basic
-> requirement would be addressed by that change plus devm_of_iomap() for child
-> devices (ports, MACs).
+Link: https://lore.kernel.org/linux-usb/20201010222351.7323-1-Sergey.Semin@baikalelectronics.ru
+Changelog v2:
+- Add Heikki'es acked-byt tag.
+- Resend the series so it wouldn't be lost but merged in the kernel 5.10.
 
-Again, correct me if I'm wrong, but with the fake mem reservation, it 
-would *not* make sure that a single driver is controlling a certain 
-peripheral.
+Link: https://lore.kernel.org/linux-usb/20201026164050.30380-1-Sergey.Semin@baikalelectronics.ru
+Changelog v3:
+- Add Fixes tag to the commit log of the patch:
+  [PATCH 1/3] usb: dwc3: ulpi: Use VStsDone to detect PHY regs access completion
 
-My point is, either have a *correct* mem reservation, or don't have one 
-at all. There is no point in trying to cheat the system.
+Link: https://lore.kernel.org/linux-usb/20201111090254.12842-1-Sergey.Semin@baikalelectronics.ru
+Changelog v4:
+- Just resend.
 
-Patrick H.
+Link: https://lore.kernel.org/linux-usb/20201205135521.28344-1-Sergey.Semin@baikalelectronics.ru
+Changelog v5:
+- Just resend.
 
-> 
-> Madalin
-> 
+Fixes: e0082698b689 ("usb: dwc3: ulpi: conditionally resume ULPI PHY")
+Fixes: 88bc9d194ff6 ("usb: dwc3: add ULPI interface support")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: linux-usb@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (3):
+  usb: dwc3: ulpi: Use VStsDone to detect PHY regs access completion
+  usb: dwc3: ulpi: Replace CPU-based busyloop with Protocol-based one
+  usb: dwc3: ulpi: Fix USB2.0 HS/FS/LS PHY suspend regression
+
+ drivers/usb/dwc3/core.h |  1 +
+ drivers/usb/dwc3/ulpi.c | 38 +++++++++++++++++++++-----------------
+ 2 files changed, 22 insertions(+), 17 deletions(-)
+
+-- 
+2.29.2
+
