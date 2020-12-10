@@ -2,164 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A252D6078
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F6F2D608B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392097AbgLJPwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:52:20 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13340 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2392086AbgLJPwM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:52:12 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BAFdaPh187884;
-        Thu, 10 Dec 2020 10:51:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=K/WpxoBa8xs0Lok5th2XjQwTI5iF2ZMY9d4QPzepwGk=;
- b=rTy4YaSmvEMJJ9MwGEn0Dc7L+RtD0nQAEaLBHEt5W424h3ROgfOAQYFcdseVhCU3j/rt
- dL91m3zV6L6/t1OtWMxPsu+B5+8FSl2mXnlVM64Qiwv0z9/x81u/nJ/z6yV9PTw46y8Y
- OG/EZtRfWJczSip2YktSrcp6QFMShP6wFcVLXSSROCEdkCeFFV9NbG+UCa0zDD9lKmb0
- Zaeiah3XFtaXza55a/1hs4dbeo2zFd9v70iJzhwHWrc8afJDTDcmLSsfXGDeQGfs5KP4
- znoIh7TFwV5lU7OJa4sMD50WttZKww/u4e4AcwYrcQmLDFi6LYc5QM/iMjgOC5LzFpid +A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35bpgsrbxr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 10:51:30 -0500
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BAFeYQK190341;
-        Thu, 10 Dec 2020 10:51:29 -0500
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35bpgsrbxa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 10:51:29 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BAFgahI026671;
-        Thu, 10 Dec 2020 15:51:29 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma03dal.us.ibm.com with ESMTP id 3581u9ttgf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 15:51:28 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BAFpPw617629486
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Dec 2020 15:51:25 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 833226E052;
-        Thu, 10 Dec 2020 15:51:25 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 18BEF6E04C;
-        Thu, 10 Dec 2020 15:51:23 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.163.37.122])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Dec 2020 15:51:23 +0000 (GMT)
-Subject: Re: [RFC 0/4] vfio-pci/zdev: Fixing s390 vfio-pci ISM support
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     alex.williamson@redhat.com, schnelle@linux.ibm.com,
-        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1607545670-1557-1-git-send-email-mjrosato@linux.ibm.com>
- <20201210133306.70d1a556.cohuck@redhat.com>
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-Message-ID: <ce9d4ef2-2629-59b7-99ed-4c8212cb004f@linux.ibm.com>
-Date:   Thu, 10 Dec 2020 10:51:23 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2391005AbgLJPyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:54:53 -0500
+Received: from mx4.veeam.com ([104.41.138.86]:36282 "EHLO mx4.veeam.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391972AbgLJPy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:54:29 -0500
+Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx4.veeam.com (Postfix) with ESMTPS id A6EE6B21AA;
+        Thu, 10 Dec 2020 18:53:44 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
+        t=1607615625; bh=3awHdxGKc6WUm7H6eoqHiaDYHJ/Q1xBn9eP28D3/mQQ=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
+        b=MMMjdzzWarHX14mrpOC28CzT7RnW55A+vlU8XVgQjIyzj3WLwnnvpXYBMKbuoHnea
+         KvRkIBtCwGeR1q2m5tga/Pdu8XEuD6WqWXJooHQc8gwtY+qxASNicg+Q26OnIUikM5
+         I/KTLtAfJMqg7UnDYhBs6W42qzBPG/f5QZwHurPE=
+Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Thu, 10 Dec 2020
+ 16:53:43 +0100
+Date:   Thu, 10 Dec 2020 18:54:05 +0300
+From:   Sergei Shtepa <sergei.shtepa@veeam.com>
+To:     Mike Snitzer <snitzer@redhat.com>
+CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "hare@suse.de" <hare@suse.de>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Pavel Tide <Pavel.TIde@veeam.com>
+Subject: Re: [PATCH 2/3] block: blk_interposer - sample
+Message-ID: <20201210155405.GB31521@veeam.com>
+References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
+ <1607518911-30692-3-git-send-email-sergei.shtepa@veeam.com>
+ <20201209143606.GA494@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201210133306.70d1a556.cohuck@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-10_06:2020-12-09,2020-12-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- mlxlogscore=999 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
- clxscore=1015 adultscore=0 mlxscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012100095
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20201209143606.GA494@redhat.com>
+X-Originating-IP: [172.24.14.5]
+X-ClientProxiedBy: prgmbx01.amust.local (172.24.0.171) To prgmbx01.amust.local
+ (172.24.0.171)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A29C604D26A627064
+X-Veeam-MMEX: True
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/20 7:33 AM, Cornelia Huck wrote:
-> On Wed,  9 Dec 2020 15:27:46 -0500
-> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+The 12/09/2020 17:36, Mike Snitzer wrote:
+> On Wed, Dec 09 2020 at  8:01am -0500,
+> Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
 > 
->> Today, ISM devices are completely disallowed for vfio-pci passthrough as
->> QEMU will reject the device due to an (inappropriate) MSI-X check.
->> However, in an effort to enable ISM device passthrough, I realized that the
->> manner in which ISM performs block write operations is highly incompatible
->> with the way that QEMU s390 PCI instruction interception and
->> vfio_pci_bar_rw break up I/O operations into 8B and 4B operations -- ISM
->> devices have particular requirements in regards to the alignment, size and
->> order of writes performed.  Furthermore, they require that legacy/non-MIO
->> s390 PCI instructions are used, which is also not guaranteed when the I/O
->> is passed through the typical userspace channels.
+> > This sample demonstrates how to use blk_interposer.
+> > It show how to properly connect the interposer module to kernel,
+> > and perform the simplest monitoring of the number of bio.
+> > 
+> > Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
+> > ---
+> >  samples/blk_interposer/Makefile         |   2 +
+> >  samples/blk_interposer/blk-interposer.c | 276 ++++++++++++++++++++++++
+> >  2 files changed, 278 insertions(+)
+> >  create mode 100644 samples/blk_interposer/Makefile
+> >  create mode 100644 samples/blk_interposer/blk-interposer.c
+> > 
+> > diff --git a/samples/blk_interposer/Makefile b/samples/blk_interposer/Makefile
+> > new file mode 100644
+> > index 000000000000..b11aefde2b1c
+> > --- /dev/null
+> > +++ b/samples/blk_interposer/Makefile
+> > @@ -0,0 +1,2 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +obj-$(CONFIG_SAMPLE_BLK_INTERPOSER) += blk-interposer.o
+> > diff --git a/samples/blk_interposer/blk-interposer.c b/samples/blk_interposer/blk-interposer.c
+> > new file mode 100644
+> > index 000000000000..92b4c1fcf8f7
+> > --- /dev/null
+> > +++ b/samples/blk_interposer/blk-interposer.c
+> > @@ -0,0 +1,276 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +/*
+> > + * Block layer interposer allow to interpose bio requests from kernel module.
+> > + * This allows you to monitor requests, modify requests, add new request,
+> > + * or even redirect requests to another devices.
+> > + *
+> > + * This sample demonstrates how to use blk_interposer.
+> > + * It show how to properly connect the interposer module to kernel,
+> > + * and perform the simplest monitoring of the number of bio.
+> > + */
+> > +
+> > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> > +
+> > +#include <linux/module.h>
+> > +#include <linux/types.h>
+> > +#include <linux/errno.h>
+> > +#include <linux/blkdev.h>
+> > +#include <linux/genhd.h>
+> > +#include <linux/blk-mq.h>
+> > +
+> > +int device_major = 8;
+> > +int device_minor;
+> > +int fmode = FMODE_READ | FMODE_WRITE;
+> > +
+> > +/*
+> > + * Each interposer must have a common part in the form of the blk_interposer structure,
+> > + * as well as its own unique data.
+> > + */
+> > +struct my_interposer {
+> > +	/*
+> > +	 * Common part of block device interposer.
+> > +	 */
+> > +	struct blk_interposer interposer;
+> > +	/*
+> > +	 * Specific part for our interposer data.
+> > +	 */
+> > +	atomic_t counter;
+> > +};
+> > +
+> > +struct my_interposer my_ip;
+> > +
+> > +/**
+> > + * blk_interposer_attach - Attach interposer to disk
+> > + * @disk: target disk
+> > + * @interposer: block device interposer
+> > + */
+> > +static int blk_interposer_attach(struct gendisk *disk, struct blk_interposer *interposer)
+> > +{
+> > +	int ret = 0;
+> > +
+> > +	/*
+> > +	 * Stop disks queue processing.
+> > +	 */
+> > +	blk_mq_freeze_queue(disk->queue);
+> > +	blk_mq_quiesce_queue(disk->queue);
+> > +
+> > +	/*
+> > +	 * Check if the interposer is already busy.
+> > +	 * The interposer will only connect if it is not busy.
+> > +	 */
+> > +	if (blk_has_interposer(disk)) {
+> > +		pr_info("The interposer is already busy.\n");
+> > +		ret = -EBUSY;
+> > +		goto out;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Attach the interposer.
+> > +	 */
+> > +	disk->interposer = interposer;
+> > +	/*
+> > +	 * And while the queue is stopped, we can do something specific for our module.
+> > +	 */
+> > +	pr_info("Block device interposer attached successfully.\n");
+> > +
+> > +out:
+> > +	/*
+> > +	 * Resume disks queue processing
+> > +	 */
+> > +	blk_mq_unquiesce_queue(disk->queue);
+> > +	blk_mq_unfreeze_queue(disk->queue);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +/**
+> > + * blk_interposer_detach - Detach interposer from disk
+> > + * @disk: target disk
+> > + * @interposer: block device interposer
+> > + */
+> > +static int blk_interposer_detach(struct gendisk *disk, struct blk_interposer *interposer)
+> > +{
+> > +	int ret = 0;
+> > +
+> > +	if (WARN_ON(!disk))
+> > +		return -EINVAL;
+> > +
+> > +	/*
+> > +	 * Stop disks queue processing.
+> > +	 */
+> > +	blk_mq_freeze_queue(disk->queue);
+> > +	blk_mq_quiesce_queue(disk->queue);
+> > +
+> > +	/*
+> > +	 * Check if the interposer is still available.
+> > +	 */
+> > +	if (!disk->interposer) {
+> > +		pr_info("The interposer is not available.\n");
+> > +		return -ENOENT;
+> > +		goto out;
+> > +	}
+> > +	/*
+> > +	 * Check if it is really our interposer.
+> > +	 */
+> > +	if (disk->interposer->ip_submit_bio != interposer->ip_submit_bio) {
+> > +		pr_info("The interposer found is not ours.\n");
+> > +		return -EPERM;
+> > +		goto out;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Detach interposer.
+> > +	 */
+> > +	disk->interposer = NULL;
+> > +	/*
+> > +	 * And while the queue is stopped, we can do something specific for our module.
+> > +	 */
+> > +	pr_info("Block device interposer detached successfully.\n");
+> > +
+> > +out:
+> > +	/*
+> > +	 * Resume disks queue processing.
+> > +	 */
+> > +	blk_mq_unquiesce_queue(disk->queue);
+> > +	blk_mq_unfreeze_queue(disk->queue);
+> > +
+> > +	return ret;
+> > +}
 > 
-> The part about the non-MIO instructions confuses me. How can MIO
-> instructions be generated with the current code, and why does changing
-
-So to be clear, they are not being generated at all in the guest as the 
-necessary facility is reported as unavailable.
-
-Let's talk about Linux in LPAR / the host kernel:  When hardware that 
-supports MIO instructions is available, all userspace I/O traffic is 
-going to be routed through the MIO variants of the s390 PCI 
-instructions.  This is working well for other device types, but does not 
-work for ISM which does not support these variants.  However, the ISM 
-driver also does not invoke the userspace I/O routines for the kernel, 
-it invokes the s390 PCI layer directly, which in turn ensures the proper 
-PCI instructions are used -- This approach falls apart when the guest 
-ISM driver invokes those routines in the guest -- we (qemu) pass those 
-non-MIO instructions from the guest as memory operations through 
-vfio-pci, traversing through the vfio I/O layer in the guest 
-(vfio_pci_bar_rw and friends), where we then arrive in the host s390 PCI 
-layer -- where the MIO variant is used because the facility is available.
-
-Per conversations with Niklas (on CC), it's not trivial to decide by the 
-time we reach the s390 PCI I/O layer to switch gears and use the non-MIO 
-instruction set.
-
-> the write pattern help?
-
-The write pattern is a separate issue from non-MIO instruction 
-requirements...  Certain address spaces require specific instructions to 
-be used (so, no substituting PCISTG for PCISTB - that happens too by 
-default for any writes coming into the host s390 PCI layer that are 
-<=8B, and they all are when the PCISTB is broken up into 8B memory 
-operations that travel through vfio_pci_bar_rw, which further breaks 
-those up into 4B operations).  There's also a requirement for some 
-writes that the data, if broken up, be written in a certain order in 
-order to properly trigger events. :(  The ability to pass the entire 
-PCISTB payload vs breaking it into 8B chunks is also significantly faster.
-
+> This attach and detach code needs to be elevated out of samples so that
+> any future consumer of blk_interposer doesn't reinvent it.  It is far
+> too fundamental.
 > 
->>
->> As a result, this patchset proposes a new VFIO region to allow a guest to
->> pass certain PCI instruction intercepts directly to the s390 host kernel
->> PCI layer for exeuction, pinning the guest buffer in memory briefly in
->> order to execute the requested PCI instruction.
->>
->> Matthew Rosato (4):
->>    s390/pci: track alignment/length strictness for zpci_dev
->>    vfio-pci/zdev: Pass the relaxed alignment flag
->>    s390/pci: Get hardware-reported max store block length
->>    vfio-pci/zdev: Introduce the zPCI I/O vfio region
->>
->>   arch/s390/include/asm/pci.h         |   4 +-
->>   arch/s390/include/asm/pci_clp.h     |   7 +-
->>   arch/s390/pci/pci_clp.c             |   2 +
->>   drivers/vfio/pci/vfio_pci.c         |   8 ++
->>   drivers/vfio/pci/vfio_pci_private.h |   6 ++
->>   drivers/vfio/pci/vfio_pci_zdev.c    | 160 ++++++++++++++++++++++++++++++++++++
->>   include/uapi/linux/vfio.h           |   4 +
->>   include/uapi/linux/vfio_zdev.h      |  33 ++++++++
->>   8 files changed, 221 insertions(+), 3 deletions(-)
->>
+> The way you've proposed this be merged is very much unacceptable.
 > 
+> Nacked-by: Mike Snitzer <snitzer@redhat.com>
+> 
+Yes, but on the other hand, while the queue is suspended, the module can perform
+some other actions specific to it.
 
+And since the functions blk_mq_freeze_queue(), blk_mq_quiesce_queue(),
+blk_mq_unquiesce_queue() and blk_mq_unfreeze_queue() are public,
+the module creator can implement its module connection functionality regardless of
+whether we make the functions blk_interposer_attach() and blk_interposer_detach()
+in the kernel or not.
+
+I'll think about it and try to come up with a better solution.
+-- 
+Sergei Shtepa
+Veeam Software developer.
