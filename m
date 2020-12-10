@@ -2,501 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174772D5243
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F9C2D5225
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732062AbgLJD7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 22:59:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
+        id S1731407AbgLJD4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:56:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731974AbgLJD6q (ORCPT
+        with ESMTP id S1729955AbgLJD4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 22:58:46 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BC3C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 19:57:33 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id c12so2473948pgm.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 19:57:33 -0800 (PST)
+        Wed, 9 Dec 2020 22:56:25 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05857C0613D6;
+        Wed,  9 Dec 2020 19:55:45 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id q7so1797560qvt.12;
+        Wed, 09 Dec 2020 19:55:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3qJg+8yJ0ZaO1UKBsLGCMyx4R42eQSImcGjXZI1+SbQ=;
-        b=HkGA3qoUtgf/tbgsG8XAo70dPJlpdKQeP0Aj+YqHIFvc3pYzgbg0Qnb4hUTRCpml/S
-         5P1Tc8nAUs5xY4UnB39WAVEwcsxtCDeB91ZyTuB73rPPdMrGNDqvZUfnezbOA7lx5ptc
-         eOFN2e8x8ojUo5MHVkceum1LjP8H+5Q3Qj39QNDjb8LnzWc/bV0Fd0LQLPP2GuyWS6pX
-         r9T0SVNzqRZeG+sLNkbyszMQ24H1eMWDAjkp9+ULYZKQkU8m7hyYUa20ZpYsJNbH1fAW
-         NtOE2fnWLscN5DWPHrPwUyQK7zDsFxc0S7J6DcOQoW0pKsTccZ2gV3rB+0O8CLzym/Hl
-         A6CQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=DWuqm1IHzYvq5waqUReJGhdmosrFVLVkKFItkW/Zkl8=;
+        b=ZZBNfoEFVLTsnm1892ushz+X2QSbH/FDgGDRQ5JsXFE/yZMXZq5pvXn2ZARaMJX3gK
+         R7PS3F5nJi1xoF5EbDnyHOc1XuEw0Bu2xJ6jh6XDWEyFypq515lxhwlKjsBmkz2/WpYQ
+         24J5Ylv/R1mLMXZbDyfxY25qYuIDuUTvdI+qkNfrMuOQf688Pwb/ZrY1NUm/UE/RNMAf
+         KbdF+La5pjLmK4H+hnUlQEZcTwofxWInaRHgJHd6Mm6mWKC4DNbspI+0/Y9n1PqZ6Gvd
+         ImzR18s69Fwwj2cZL35KNMxjWCi/9R6zesPCMdn63h9phgYpOWnlhqnFJZwDJWs0o2uo
+         lcyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3qJg+8yJ0ZaO1UKBsLGCMyx4R42eQSImcGjXZI1+SbQ=;
-        b=dJaLO8Sd8fLtuSCa1941rUxJDEC6thRry0JiEX9GldqcTW4Qwv4uWpK7iR/CjcXsAu
-         eFQQhXomwC2fVfeDSArCzVg7hk2OSjDJE7Bxqhet6Qqis+aHnEZU4aO27/Mdevtnar1Q
-         hOL4H73zyGfy0wcXjxy4/mHi1+8IEgehTcqW4/5IQa9W4n38GtLsvl37jCKUSvr3W5Ch
-         fkCxSfDWgOItuGshYe5BoFTIfd1bsDITKQ6DJeYEQIhSERZ3OjDVKHriT+UjHAdu8Unu
-         TisYN7i6c6lEpIBS4hZBd4jurvE9Qrs2Uj6l7JOH0aHmjX3MNm4ILuWgKvTx7zBerTpe
-         Sgeg==
-X-Gm-Message-State: AOAM530BOVVH2aLSkcisQfs++WT5xaE3M5EaVGR5bH1C9Nw1enqHII0O
-        0ggYrt1jVhcUyhAAc/8bk7DyYg==
-X-Google-Smtp-Source: ABdhPJyfhImDBucIzV2jPuWAOlTx1/SFVwNqdnOQF4hp7enc0WfG5kHwkMxKLYQZ++pZH7KCbi43Rw==
-X-Received: by 2002:a63:124a:: with SMTP id 10mr5000062pgs.180.1607572652638;
-        Wed, 09 Dec 2020 19:57:32 -0800 (PST)
-Received: from localhost.localdomain ([103.136.220.85])
-        by smtp.gmail.com with ESMTPSA id f33sm4266535pgl.83.2020.12.09.19.57.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Dec 2020 19:57:32 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v8 01/12] mm/memory_hotplug: Factor out bootmem core functions to bootmem_info.c
-Date:   Thu, 10 Dec 2020 11:55:15 +0800
-Message-Id: <20201210035526.38938-2-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20201210035526.38938-1-songmuchun@bytedance.com>
-References: <20201210035526.38938-1-songmuchun@bytedance.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=DWuqm1IHzYvq5waqUReJGhdmosrFVLVkKFItkW/Zkl8=;
+        b=DyjPnrNbDTKem3M1+YNWNsvJ1RmxoeUJUuZWTX41D7UgTqZI/qfQru3TGEAIUn+hGS
+         KhfMWaVdlB5AOHhZV8GG4pqVA0N3823V8J86Jmv62fwD0645GfmPIQeuoZgBDEAkVFWi
+         blYGtdOitp9Yy9V8S8yN3oZ5qSb3kP/Bd908TRmci/Aqikxi4ce1al58g9AZGjpP8pqr
+         S4QJhJjZc1Q7sw20LTxtxEBAdv94CMtyJtidrDX6FVSY8Sd9YL5UwBO60fpIXS6VlYj5
+         MxJD2cswlmlAe5HwYVoa3IhDEUV9/Vs/2v4nxK/0vGs5yNAqqBw7OCMww/U0uo6MDBKw
+         3MNQ==
+X-Gm-Message-State: AOAM530lQcLJVodQqDz+l0ICqo/nKn2HffPE3KGMsdS2dWNhH5s3ReQv
+        jVH+N9Q2zfW9X6wKfYYKwhZby4RKL13YMQ==
+X-Google-Smtp-Source: ABdhPJw0jlBU5STbcSqU6PMg8L0gZBGHbRIBBI3MzW3j2aqBtHQW2iKab/MKcmfyUgr1BWdxxnfz8Q==
+X-Received: by 2002:a0c:f791:: with SMTP id s17mr6565638qvn.7.1607572543875;
+        Wed, 09 Dec 2020 19:55:43 -0800 (PST)
+Received: from localhost.localdomain ([198.52.185.246])
+        by smtp.gmail.com with ESMTPSA id s21sm2671583qtn.13.2020.12.09.19.55.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 19:55:43 -0800 (PST)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net v2] lan743x: fix rx_napi_poll/interrupt ping-pong
+Date:   Wed,  9 Dec 2020 22:55:40 -0500
+Message-Id: <20201210035540.32530-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move bootmem info registration common API to individual bootmem_info.c.
-And we will use {get,put}_page_bootmem() to initialize the page for the
-vmemmap pages or free the vmemmap pages to buddy in the later patch.
-So move them out of CONFIG_MEMORY_HOTPLUG_SPARSE. This is just code
-movement without any functional change.
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Even if there is more rx data waiting on the chip, the rx napi poll fn
+will never run more than once - it will always read a few buffers, then
+bail out and re-arm interrupts. Which results in ping-pong between napi
+and interrupt.
+
+This defeats the purpose of napi, and is bad for performance.
+
+Fix by making the rx napi poll behave identically to other ethernet
+drivers:
+1. initialize rx napi polling with an arbitrary budget (64).
+2. in the polling fn, return full weight if rx queue is not depleted,
+   this tells the napi core to "keep polling".
+3. update the rx tail ("ring the doorbell") once for every 8 processed
+   rx ring buffers.
+
+Thanks to Jakub Kicinski, Eric Dumazet and Andrew Lunn for their expert
+opinions and suggestions.
+
+Tested with 20 seconds of full bandwidth receive (iperf3):
+        rx irqs      softirqs(NET_RX)
+        -----------------------------
+before  23827        33620
+after   129          4081
+
+Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # lan7430
+Fixes: 23f0703c125be ("lan743x: Add main source files for new lan743x driver")
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
 ---
- arch/x86/mm/init_64.c          |   3 +-
- include/linux/bootmem_info.h   |  40 +++++++++++++
- include/linux/memory_hotplug.h |  27 ---------
- mm/Makefile                    |   1 +
- mm/bootmem_info.c              | 124 +++++++++++++++++++++++++++++++++++++++++
- mm/memory_hotplug.c            | 116 --------------------------------------
- mm/sparse.c                    |   1 +
- 7 files changed, 168 insertions(+), 144 deletions(-)
- create mode 100644 include/linux/bootmem_info.h
- create mode 100644 mm/bootmem_info.c
 
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index b5a3fa4033d3..0a45f062826e 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -33,6 +33,7 @@
- #include <linux/nmi.h>
- #include <linux/gfp.h>
- #include <linux/kcore.h>
-+#include <linux/bootmem_info.h>
- 
- #include <asm/processor.h>
- #include <asm/bios_ebda.h>
-@@ -1571,7 +1572,7 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
- 	return err;
+Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git # b7e4ba9a91df
+
+To: Bryan Whitehead <bryan.whitehead@microchip.com>
+To: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+To: "David S. Miller" <davem@davemloft.net>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+ drivers/net/ethernet/microchip/lan743x_main.c | 44 ++++++++++---------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index 87b6c59a1e03..30ec308b9a4c 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -1964,6 +1964,14 @@ static struct sk_buff *lan743x_rx_allocate_skb(struct lan743x_rx *rx)
+ 				  length, GFP_ATOMIC | GFP_DMA);
  }
  
--#if defined(CONFIG_MEMORY_HOTPLUG_SPARSE) && defined(CONFIG_HAVE_BOOTMEM_INFO_NODE)
-+#ifdef CONFIG_HAVE_BOOTMEM_INFO_NODE
- void register_page_bootmem_memmap(unsigned long section_nr,
- 				  struct page *start_page, unsigned long nr_pages)
++static void lan743x_rx_update_tail(struct lan743x_rx *rx, int index)
++{
++	/* update the tail once per 8 descriptors */
++	if ((index & 7) == 7)
++		lan743x_csr_write(rx->adapter, RX_TAIL(rx->channel_number),
++				  index);
++}
++
+ static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index,
+ 					struct sk_buff *skb)
  {
-diff --git a/include/linux/bootmem_info.h b/include/linux/bootmem_info.h
-new file mode 100644
-index 000000000000..4ed6dee1adc9
---- /dev/null
-+++ b/include/linux/bootmem_info.h
-@@ -0,0 +1,40 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __LINUX_BOOTMEM_INFO_H
-+#define __LINUX_BOOTMEM_INFO_H
-+
-+#include <linux/mmzone.h>
-+
-+/*
-+ * Types for free bootmem stored in page->lru.next. These have to be in
-+ * some random range in unsigned long space for debugging purposes.
-+ */
-+enum {
-+	MEMORY_HOTPLUG_MIN_BOOTMEM_TYPE = 12,
-+	SECTION_INFO = MEMORY_HOTPLUG_MIN_BOOTMEM_TYPE,
-+	MIX_SECTION_INFO,
-+	NODE_INFO,
-+	MEMORY_HOTPLUG_MAX_BOOTMEM_TYPE = NODE_INFO,
-+};
-+
-+#ifdef CONFIG_HAVE_BOOTMEM_INFO_NODE
-+void __init register_page_bootmem_info_node(struct pglist_data *pgdat);
-+
-+void get_page_bootmem(unsigned long info, struct page *page,
-+		      unsigned long type);
-+void put_page_bootmem(struct page *page);
-+#else
-+static inline void register_page_bootmem_info_node(struct pglist_data *pgdat)
-+{
-+}
-+
-+static inline void put_page_bootmem(struct page *page)
-+{
-+}
-+
-+static inline void get_page_bootmem(unsigned long info, struct page *page,
-+				    unsigned long type)
-+{
-+}
-+#endif
-+
-+#endif /* __LINUX_BOOTMEM_INFO_H */
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index 15acce5ab106..84590964ad35 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -33,18 +33,6 @@ struct vmem_altmap;
- 	___page;						   \
- })
+@@ -1994,6 +2002,7 @@ static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index,
+ 	descriptor->data0 = (RX_DESC_DATA0_OWN_ |
+ 			    (length & RX_DESC_DATA0_BUF_LENGTH_MASK_));
+ 	skb_reserve(buffer_info->skb, RX_HEAD_PADDING);
++	lan743x_rx_update_tail(rx, index);
  
--/*
-- * Types for free bootmem stored in page->lru.next. These have to be in
-- * some random range in unsigned long space for debugging purposes.
-- */
--enum {
--	MEMORY_HOTPLUG_MIN_BOOTMEM_TYPE = 12,
--	SECTION_INFO = MEMORY_HOTPLUG_MIN_BOOTMEM_TYPE,
--	MIX_SECTION_INFO,
--	NODE_INFO,
--	MEMORY_HOTPLUG_MAX_BOOTMEM_TYPE = NODE_INFO,
--};
--
- /* Types for control the zone type of onlined and offlined memory */
- enum {
- 	/* Offline the memory. */
-@@ -222,17 +210,6 @@ static inline void arch_refresh_nodedata(int nid, pg_data_t *pgdat)
- #endif /* CONFIG_NUMA */
- #endif /* CONFIG_HAVE_ARCH_NODEDATA_EXTENSION */
- 
--#ifdef CONFIG_HAVE_BOOTMEM_INFO_NODE
--extern void __init register_page_bootmem_info_node(struct pglist_data *pgdat);
--#else
--static inline void register_page_bootmem_info_node(struct pglist_data *pgdat)
--{
--}
--#endif
--extern void put_page_bootmem(struct page *page);
--extern void get_page_bootmem(unsigned long ingo, struct page *page,
--			     unsigned long type);
--
- void get_online_mems(void);
- void put_online_mems(void);
- 
-@@ -260,10 +237,6 @@ static inline void zone_span_writelock(struct zone *zone) {}
- static inline void zone_span_writeunlock(struct zone *zone) {}
- static inline void zone_seqlock_init(struct zone *zone) {}
- 
--static inline void register_page_bootmem_info_node(struct pglist_data *pgdat)
--{
--}
--
- static inline int try_online_node(int nid)
- {
  	return 0;
-diff --git a/mm/Makefile b/mm/Makefile
-index a1af02ba8f3f..ed4b88fa0f5e 100644
---- a/mm/Makefile
-+++ b/mm/Makefile
-@@ -83,6 +83,7 @@ obj-$(CONFIG_SLUB) += slub.o
- obj-$(CONFIG_KASAN)	+= kasan/
- obj-$(CONFIG_KFENCE) += kfence/
- obj-$(CONFIG_FAILSLAB) += failslab.o
-+obj-$(CONFIG_HAVE_BOOTMEM_INFO_NODE) += bootmem_info.o
- obj-$(CONFIG_MEMORY_HOTPLUG) += memory_hotplug.o
- obj-$(CONFIG_MEMTEST)		+= memtest.o
- obj-$(CONFIG_MIGRATION) += migrate.o
-diff --git a/mm/bootmem_info.c b/mm/bootmem_info.c
-new file mode 100644
-index 000000000000..fcab5a3f8cc0
---- /dev/null
-+++ b/mm/bootmem_info.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  linux/mm/bootmem_info.c
-+ *
-+ *  Copyright (C)
-+ */
-+#include <linux/mm.h>
-+#include <linux/compiler.h>
-+#include <linux/memblock.h>
-+#include <linux/bootmem_info.h>
-+#include <linux/memory_hotplug.h>
-+
-+void get_page_bootmem(unsigned long info, struct page *page, unsigned long type)
-+{
-+	page->freelist = (void *)type;
-+	SetPagePrivate(page);
-+	set_page_private(page, info);
-+	page_ref_inc(page);
-+}
-+
-+void put_page_bootmem(struct page *page)
-+{
-+	unsigned long type;
-+
-+	type = (unsigned long) page->freelist;
-+	BUG_ON(type < MEMORY_HOTPLUG_MIN_BOOTMEM_TYPE ||
-+	       type > MEMORY_HOTPLUG_MAX_BOOTMEM_TYPE);
-+
-+	if (page_ref_dec_return(page) == 1) {
-+		page->freelist = NULL;
-+		ClearPagePrivate(page);
-+		set_page_private(page, 0);
-+		INIT_LIST_HEAD(&page->lru);
-+		free_reserved_page(page);
-+	}
-+}
-+
-+#ifndef CONFIG_SPARSEMEM_VMEMMAP
-+static void register_page_bootmem_info_section(unsigned long start_pfn)
-+{
-+	unsigned long mapsize, section_nr, i;
-+	struct mem_section *ms;
-+	struct page *page, *memmap;
-+	struct mem_section_usage *usage;
-+
-+	section_nr = pfn_to_section_nr(start_pfn);
-+	ms = __nr_to_section(section_nr);
-+
-+	/* Get section's memmap address */
-+	memmap = sparse_decode_mem_map(ms->section_mem_map, section_nr);
-+
-+	/*
-+	 * Get page for the memmap's phys address
-+	 * XXX: need more consideration for sparse_vmemmap...
-+	 */
-+	page = virt_to_page(memmap);
-+	mapsize = sizeof(struct page) * PAGES_PER_SECTION;
-+	mapsize = PAGE_ALIGN(mapsize) >> PAGE_SHIFT;
-+
-+	/* remember memmap's page */
-+	for (i = 0; i < mapsize; i++, page++)
-+		get_page_bootmem(section_nr, page, SECTION_INFO);
-+
-+	usage = ms->usage;
-+	page = virt_to_page(usage);
-+
-+	mapsize = PAGE_ALIGN(mem_section_usage_size()) >> PAGE_SHIFT;
-+
-+	for (i = 0; i < mapsize; i++, page++)
-+		get_page_bootmem(section_nr, page, MIX_SECTION_INFO);
-+
-+}
-+#else /* CONFIG_SPARSEMEM_VMEMMAP */
-+static void register_page_bootmem_info_section(unsigned long start_pfn)
-+{
-+	unsigned long mapsize, section_nr, i;
-+	struct mem_section *ms;
-+	struct page *page, *memmap;
-+	struct mem_section_usage *usage;
-+
-+	section_nr = pfn_to_section_nr(start_pfn);
-+	ms = __nr_to_section(section_nr);
-+
-+	memmap = sparse_decode_mem_map(ms->section_mem_map, section_nr);
-+
-+	register_page_bootmem_memmap(section_nr, memmap, PAGES_PER_SECTION);
-+
-+	usage = ms->usage;
-+	page = virt_to_page(usage);
-+
-+	mapsize = PAGE_ALIGN(mem_section_usage_size()) >> PAGE_SHIFT;
-+
-+	for (i = 0; i < mapsize; i++, page++)
-+		get_page_bootmem(section_nr, page, MIX_SECTION_INFO);
-+}
-+#endif /* !CONFIG_SPARSEMEM_VMEMMAP */
-+
-+void __init register_page_bootmem_info_node(struct pglist_data *pgdat)
-+{
-+	unsigned long i, pfn, end_pfn, nr_pages;
-+	int node = pgdat->node_id;
-+	struct page *page;
-+
-+	nr_pages = PAGE_ALIGN(sizeof(struct pglist_data)) >> PAGE_SHIFT;
-+	page = virt_to_page(pgdat);
-+
-+	for (i = 0; i < nr_pages; i++, page++)
-+		get_page_bootmem(node, page, NODE_INFO);
-+
-+	pfn = pgdat->node_start_pfn;
-+	end_pfn = pgdat_end_pfn(pgdat);
-+
-+	/* register section info */
-+	for (; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
-+		/*
-+		 * Some platforms can assign the same pfn to multiple nodes - on
-+		 * node0 as well as nodeN.  To avoid registering a pfn against
-+		 * multiple nodes we check that this pfn does not already
-+		 * reside in some other nodes.
-+		 */
-+		if (pfn_valid(pfn) && (early_pfn_to_nid(pfn) == node))
-+			register_page_bootmem_info_section(pfn);
-+	}
-+}
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index a8cef4955907..4c4ca99745b7 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -141,122 +141,6 @@ static void release_memory_resource(struct resource *res)
+ }
+@@ -2012,6 +2021,7 @@ static void lan743x_rx_reuse_ring_element(struct lan743x_rx *rx, int index)
+ 	descriptor->data0 = (RX_DESC_DATA0_OWN_ |
+ 			    ((buffer_info->buffer_length) &
+ 			    RX_DESC_DATA0_BUF_LENGTH_MASK_));
++	lan743x_rx_update_tail(rx, index);
  }
  
- #ifdef CONFIG_MEMORY_HOTPLUG_SPARSE
--void get_page_bootmem(unsigned long info,  struct page *page,
--		      unsigned long type)
--{
--	page->freelist = (void *)type;
--	SetPagePrivate(page);
--	set_page_private(page, info);
--	page_ref_inc(page);
--}
--
--void put_page_bootmem(struct page *page)
--{
--	unsigned long type;
--
--	type = (unsigned long) page->freelist;
--	BUG_ON(type < MEMORY_HOTPLUG_MIN_BOOTMEM_TYPE ||
--	       type > MEMORY_HOTPLUG_MAX_BOOTMEM_TYPE);
--
--	if (page_ref_dec_return(page) == 1) {
--		page->freelist = NULL;
--		ClearPagePrivate(page);
--		set_page_private(page, 0);
--		INIT_LIST_HEAD(&page->lru);
--		free_reserved_page(page);
--	}
--}
--
--#ifdef CONFIG_HAVE_BOOTMEM_INFO_NODE
--#ifndef CONFIG_SPARSEMEM_VMEMMAP
--static void register_page_bootmem_info_section(unsigned long start_pfn)
--{
--	unsigned long mapsize, section_nr, i;
--	struct mem_section *ms;
--	struct page *page, *memmap;
--	struct mem_section_usage *usage;
--
--	section_nr = pfn_to_section_nr(start_pfn);
--	ms = __nr_to_section(section_nr);
--
--	/* Get section's memmap address */
--	memmap = sparse_decode_mem_map(ms->section_mem_map, section_nr);
--
--	/*
--	 * Get page for the memmap's phys address
--	 * XXX: need more consideration for sparse_vmemmap...
--	 */
--	page = virt_to_page(memmap);
--	mapsize = sizeof(struct page) * PAGES_PER_SECTION;
--	mapsize = PAGE_ALIGN(mapsize) >> PAGE_SHIFT;
--
--	/* remember memmap's page */
--	for (i = 0; i < mapsize; i++, page++)
--		get_page_bootmem(section_nr, page, SECTION_INFO);
--
--	usage = ms->usage;
--	page = virt_to_page(usage);
--
--	mapsize = PAGE_ALIGN(mem_section_usage_size()) >> PAGE_SHIFT;
--
--	for (i = 0; i < mapsize; i++, page++)
--		get_page_bootmem(section_nr, page, MIX_SECTION_INFO);
--
--}
--#else /* CONFIG_SPARSEMEM_VMEMMAP */
--static void register_page_bootmem_info_section(unsigned long start_pfn)
--{
--	unsigned long mapsize, section_nr, i;
--	struct mem_section *ms;
--	struct page *page, *memmap;
--	struct mem_section_usage *usage;
--
--	section_nr = pfn_to_section_nr(start_pfn);
--	ms = __nr_to_section(section_nr);
--
--	memmap = sparse_decode_mem_map(ms->section_mem_map, section_nr);
--
--	register_page_bootmem_memmap(section_nr, memmap, PAGES_PER_SECTION);
--
--	usage = ms->usage;
--	page = virt_to_page(usage);
--
--	mapsize = PAGE_ALIGN(mem_section_usage_size()) >> PAGE_SHIFT;
--
--	for (i = 0; i < mapsize; i++, page++)
--		get_page_bootmem(section_nr, page, MIX_SECTION_INFO);
--}
--#endif /* !CONFIG_SPARSEMEM_VMEMMAP */
--
--void __init register_page_bootmem_info_node(struct pglist_data *pgdat)
--{
--	unsigned long i, pfn, end_pfn, nr_pages;
--	int node = pgdat->node_id;
--	struct page *page;
--
--	nr_pages = PAGE_ALIGN(sizeof(struct pglist_data)) >> PAGE_SHIFT;
--	page = virt_to_page(pgdat);
--
--	for (i = 0; i < nr_pages; i++, page++)
--		get_page_bootmem(node, page, NODE_INFO);
--
--	pfn = pgdat->node_start_pfn;
--	end_pfn = pgdat_end_pfn(pgdat);
--
--	/* register section info */
--	for (; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
--		/*
--		 * Some platforms can assign the same pfn to multiple nodes - on
--		 * node0 as well as nodeN.  To avoid registering a pfn against
--		 * multiple nodes we check that this pfn does not already
--		 * reside in some other nodes.
--		 */
--		if (pfn_valid(pfn) && (early_pfn_to_nid(pfn) == node))
--			register_page_bootmem_info_section(pfn);
--	}
--}
--#endif /* CONFIG_HAVE_BOOTMEM_INFO_NODE */
--
- static int check_pfn_span(unsigned long pfn, unsigned long nr_pages,
- 		const char *reason)
- {
-diff --git a/mm/sparse.c b/mm/sparse.c
-index 7bd23f9d6cef..87676bf3af40 100644
---- a/mm/sparse.c
-+++ b/mm/sparse.c
-@@ -13,6 +13,7 @@
- #include <linux/vmalloc.h>
- #include <linux/swap.h>
- #include <linux/swapops.h>
-+#include <linux/bootmem_info.h>
+ static void lan743x_rx_release_ring_element(struct lan743x_rx *rx, int index)
+@@ -2223,34 +2233,26 @@ static int lan743x_rx_napi_poll(struct napi_struct *napi, int weight)
+ 	struct lan743x_rx *rx = container_of(napi, struct lan743x_rx, napi);
+ 	struct lan743x_adapter *adapter = rx->adapter;
+ 	u32 rx_tail_flags = 0;
+-	int count;
++	int count, result;
  
- #include "internal.h"
- #include <asm/dma.h>
+ 	if (rx->vector_flags & LAN743X_VECTOR_FLAG_SOURCE_STATUS_W2C) {
+ 		/* clear int status bit before reading packet */
+ 		lan743x_csr_write(adapter, DMAC_INT_STS,
+ 				  DMAC_INT_BIT_RXFRM_(rx->channel_number));
+ 	}
+-	count = 0;
+-	while (count < weight) {
+-		int rx_process_result = lan743x_rx_process_packet(rx);
+-
+-		if (rx_process_result == RX_PROCESS_RESULT_PACKET_RECEIVED) {
+-			count++;
+-		} else if (rx_process_result ==
+-			RX_PROCESS_RESULT_NOTHING_TO_DO) {
++	for (count = 0; count < weight; count++) {
++		result = lan743x_rx_process_packet(rx);
++		if (result == RX_PROCESS_RESULT_NOTHING_TO_DO)
+ 			break;
+-		} else if (rx_process_result ==
+-			RX_PROCESS_RESULT_PACKET_DROPPED) {
+-			continue;
+-		}
+ 	}
+ 	rx->frame_count += count;
+-	if (count == weight)
+-		goto done;
++	if (count == weight || result == RX_PROCESS_RESULT_PACKET_RECEIVED)
++		return weight;
+ 
+ 	if (!napi_complete_done(napi, count))
+-		goto done;
++		return count;
+ 
++	/* re-arm interrupts, must write to rx tail on some chip variants */
+ 	if (rx->vector_flags & LAN743X_VECTOR_FLAG_VECTOR_ENABLE_AUTO_SET)
+ 		rx_tail_flags |= RX_TAIL_SET_TOP_INT_VEC_EN_;
+ 	if (rx->vector_flags & LAN743X_VECTOR_FLAG_SOURCE_ENABLE_AUTO_SET) {
+@@ -2260,10 +2262,10 @@ static int lan743x_rx_napi_poll(struct napi_struct *napi, int weight)
+ 				  INT_BIT_DMA_RX_(rx->channel_number));
+ 	}
+ 
+-	/* update RX_TAIL */
+-	lan743x_csr_write(adapter, RX_TAIL(rx->channel_number),
+-			  rx_tail_flags | rx->last_tail);
+-done:
++	if (rx_tail_flags)
++		lan743x_csr_write(adapter, RX_TAIL(rx->channel_number),
++				  rx_tail_flags | rx->last_tail);
++
+ 	return count;
+ }
+ 
+@@ -2407,7 +2409,7 @@ static int lan743x_rx_open(struct lan743x_rx *rx)
+ 
+ 	netif_napi_add(adapter->netdev,
+ 		       &rx->napi, lan743x_rx_napi_poll,
+-		       rx->ring_size - 1);
++		       64);
+ 
+ 	lan743x_csr_write(adapter, DMAC_CMD,
+ 			  DMAC_CMD_RX_SWR_(rx->channel_number));
 -- 
-2.11.0
+2.17.1
 
