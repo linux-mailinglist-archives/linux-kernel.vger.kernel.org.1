@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3607A2D4F60
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A02192D4F65
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:26:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731801AbgLJAZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1731399AbgLJAZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 9 Dec 2020 19:25:18 -0500
-Received: from lucky1.263xmail.com ([211.157.147.130]:51078 "EHLO
+Received: from lucky1.263xmail.com ([211.157.147.130]:51096 "EHLO
         lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728913AbgLJAYw (ORCPT
+        with ESMTP id S1728920AbgLJAYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 19:24:52 -0500
+        Wed, 9 Dec 2020 19:24:53 -0500
 Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 68564CE837;
-        Thu, 10 Dec 2020 08:22:27 +0800 (CST)
+        by lucky1.263xmail.com (Postfix) with ESMTP id 4F1E9CE8DA;
+        Thu, 10 Dec 2020 08:22:28 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
 X-ADDR-CHECKED4: 1
@@ -22,9 +22,9 @@ X-ANTISPAM-LEVEL: 2
 X-ABS-CHECKED: 0
 Received: from localhost.localdomain (unknown [58.22.7.114])
         by smtp.263.net (postfix) whith ESMTP id P48101T139713788761856S1607559740679708_;
-        Thu, 10 Dec 2020 08:22:26 +0800 (CST)
+        Thu, 10 Dec 2020 08:22:27 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <41fad1a838bc763ff8ca785b152f65a2>
+X-UNIQUE-TAG: <2040c99906352de5f43c048bbb5d40eb>
 X-RL-SENDER: yifeng.zhao@rock-chips.com
 X-SENDER: zyf@rock-chips.com
 X-LOGIN-NAME: yifeng.zhao@rock-chips.com
@@ -39,9 +39,9 @@ Cc:     devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
         heiko@sntech.de, linux-rockchip@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Yifeng Zhao <yifeng.zhao@rock-chips.com>
-Subject: [PATCH v16 7/8] arm: dts: rockchip: Add NFC node for RK2928 and other SoCs
-Date:   Thu, 10 Dec 2020 08:22:18 +0800
-Message-Id: <20201210002219.5739-3-yifeng.zhao@rock-chips.com>
+Subject: [PATCH v16 8/8] arm: dts: rockchip: Add NFC node for RK3036 SoC
+Date:   Thu, 10 Dec 2020 08:22:19 +0800
+Message-Id: <20201210002219.5739-4-yifeng.zhao@rock-chips.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201210002219.5739-1-yifeng.zhao@rock-chips.com>
 References: <20201210002134.5686-1-yifeng.zhao@rock-chips.com>
@@ -50,8 +50,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add NAND FLASH Controller(NFC) node for RK2928, RK3066, RK3168
-and RK3188 SoCs.
+Add NAND FLASH Controller(NFC) node for RK3036 SoC.
 
 Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
 ---
@@ -72,29 +71,79 @@ Changes in v4: None
 Changes in v3: None
 Changes in v2: None
 
- arch/arm/boot/dts/rk3xxx.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/arm/boot/dts/rk3036.dtsi | 52 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-diff --git a/arch/arm/boot/dts/rk3xxx.dtsi b/arch/arm/boot/dts/rk3xxx.dtsi
-index 859a7477909f..97415180d5bb 100644
---- a/arch/arm/boot/dts/rk3xxx.dtsi
-+++ b/arch/arm/boot/dts/rk3xxx.dtsi
-@@ -276,6 +276,15 @@
+diff --git a/arch/arm/boot/dts/rk3036.dtsi b/arch/arm/boot/dts/rk3036.dtsi
+index 093567022386..dda5a1f79aca 100644
+--- a/arch/arm/boot/dts/rk3036.dtsi
++++ b/arch/arm/boot/dts/rk3036.dtsi
+@@ -292,6 +292,21 @@
  		status = "disabled";
  	};
  
 +	nfc: nand-controller@10500000 {
-+		compatible = "rockchip,rk2928-nfc";
++		compatible = "rockchip,rk3036-nfc",
++			     "rockchip,rk2928-nfc";
 +		reg = <0x10500000 0x4000>;
-+		interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru HCLK_NANDC0>;
-+		clock-names = "ahb";
++		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru HCLK_NANDC>, <&cru SCLK_NANDC>;
++		clock-names = "ahb", "nfc";
++		assigned-clocks = <&cru SCLK_NANDC>;
++		assigned-clock-rates = <150000000>;
++		pinctrl-0 = <&flash_ale &flash_bus8 &flash_cle &flash_csn0
++			     &flash_rdn &flash_rdy &flash_wrn>;
++		pinctrl-names = "default";
 +		status = "disabled";
 +	};
 +
- 	pmu: pmu@20004000 {
- 		compatible = "rockchip,rk3066-pmu", "syscon", "simple-mfd";
- 		reg = <0x20004000 0x100>;
+ 	cru: clock-controller@20000000 {
+ 		compatible = "rockchip,rk3036-cru";
+ 		reg = <0x20000000 0x1000>;
+@@ -643,6 +658,43 @@
+ 			};
+ 		};
+ 
++		nfc {
++			flash_ale: flash-ale {
++				rockchip,pins = <2 RK_PA0 1 &pcfg_pull_default>;
++			};
++
++			flash_bus8: flash-bus8 {
++				rockchip,pins = <1 RK_PD0 1 &pcfg_pull_default>,
++						<1 RK_PD1 1 &pcfg_pull_default>,
++						<1 RK_PD2 1 &pcfg_pull_default>,
++						<1 RK_PD3 1 &pcfg_pull_default>,
++						<1 RK_PD4 1 &pcfg_pull_default>,
++						<1 RK_PD5 1 &pcfg_pull_default>,
++						<1 RK_PD6 1 &pcfg_pull_default>,
++						<1 RK_PD7 1 &pcfg_pull_default>;
++			};
++
++			flash_cle: flash-cle {
++				rockchip,pins = <2 RK_PA1 1 &pcfg_pull_default>;
++			};
++
++			flash_csn0: flash-csn0 {
++				rockchip,pins = <2 RK_PA6 1 &pcfg_pull_default>;
++			};
++
++			flash_rdn: flash-rdn {
++				rockchip,pins = <2 RK_PA3 1 &pcfg_pull_default>;
++			};
++
++			flash_rdy: flash-rdy {
++				rockchip,pins = <2 RK_PA4 1 &pcfg_pull_default>;
++			};
++
++			flash_wrn: flash-wrn {
++				rockchip,pins = <2 RK_PA2 1 &pcfg_pull_default>;
++			};
++		};
++
+ 		emac {
+ 			emac_xfer: emac-xfer {
+ 				rockchip,pins = <2 RK_PB2 1 &pcfg_pull_default>, /* crs_dvalid */
 -- 
 2.17.1
 
