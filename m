@@ -2,29 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9BD2D6057
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4802D6058
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391994AbgLJPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2391987AbgLJPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 10 Dec 2020 10:47:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47078 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:47172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391211AbgLJOj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:39:27 -0500
+        id S2391222AbgLJOjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:39:33 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Gushchin <guro@fb.com>,
-        Yang Shi <shy828301@gmail.com>,
+        stable@vger.kernel.org, Adrian Moreno <amorenoz@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Shakeel Butt <shakeelb@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Shuah Khan <shuah@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.9 53/75] mm: list_lru: set shrinker map bit when child nr_items is not zero
-Date:   Thu, 10 Dec 2020 15:27:18 +0100
-Message-Id: <20201210142608.674029696@linuxfoundation.org>
+Subject: [PATCH 5.9 55/75] hugetlb_cgroup: fix offline of hugetlb cgroup with reservations
+Date:   Thu, 10 Dec 2020 15:27:20 +0100
+Message-Id: <20201210142608.763373590@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
 References: <20201210142606.074509102@linuxfoundation.org>
@@ -36,131 +39,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Shi <shy828301@gmail.com>
+From: Mike Kravetz <mike.kravetz@oracle.com>
 
-commit 8199be001a470209f5c938570cc199abb012fe53 upstream.
+commit 7a5bde37983d37783161681ff7c6122dfd081791 upstream.
 
-When investigating a slab cache bloat problem, significant amount of
-negative dentry cache was seen, but confusingly they neither got shrunk
-by reclaimer (the host has very tight memory) nor be shrunk by dropping
-cache.  The vmcore shows there are over 14M negative dentry objects on
-lru, but tracing result shows they were even not scanned at all.
+Adrian Moreno was ruuning a kubernetes 1.19 + containerd/docker workload
+using hugetlbfs.  In this environment the issue is reproduced by:
 
-Further investigation shows the memcg's vfs shrinker_map bit is not set.
-So the reclaimer or dropping cache just skip calling vfs shrinker.  So
-we have to reboot the hosts to get the memory back.
+ - Start a simple pod that uses the recently added HugePages medium
+   feature (pod yaml attached)
 
-I didn't manage to come up with a reproducer in test environment, and
-the problem can't be reproduced after rebooting.  But it seems there is
-race between shrinker map bit clear and reparenting by code inspection.
-The hypothesis is elaborated as below.
+ - Start a DPDK app. It doesn't need to run successfully (as in transfer
+   packets) nor interact with real hardware. It seems just initializing
+   the EAL layer (which handles hugepage reservation and locking) is
+   enough to trigger the issue
 
-The memcg hierarchy on our production environment looks like:
+ - Delete the Pod (or let it "Complete").
 
-                root
-               /    \
-          system   user
+This would result in a kworker thread going into a tight loop (top output):
 
-The main workloads are running under user slice's children, and it
-creates and removes memcg frequently.  So reparenting happens very often
-under user slice, but no task is under user slice directly.
+   1425 root      20   0       0      0      0 R  99.7   0.0   5:22.45 kworker/28:7+cgroup_destroy
 
-So with the frequent reparenting and tight memory pressure, the below
-hypothetical race condition may happen:
+'perf top -g' reports:
 
-       CPU A                            CPU B
-reparent
-    dst->nr_items == 0
-                                 shrinker:
-                                     total_objects == 0
-    add src->nr_items to dst
-    set_bit
-                                     return SHRINK_EMPTY
-                                     clear_bit
-child memcg offline
-    replace child's kmemcg_id with
-    parent's (in memcg_offline_kmem())
-                                  list_lru_del() between shrinker runs
-                                     see parent's kmemcg_id
-                                     dec dst->nr_items
-reparent again
-    dst->nr_items may go negative
-    due to concurrent list_lru_del()
+  -   63.28%     0.01%  [kernel]                    [k] worker_thread
+     - 49.97% worker_thread
+        - 52.64% process_one_work
+           - 62.08% css_killed_work_fn
+              - hugetlb_cgroup_css_offline
+                   41.52% _raw_spin_lock
+                 - 2.82% _cond_resched
+                      rcu_all_qs
+                   2.66% PageHuge
+        - 0.57% schedule
+           - 0.57% __schedule
 
-                                 The second run of shrinker:
-                                     read nr_items without any
-                                     synchronization, so it may
-                                     see intermediate negative
-                                     nr_items then total_objects
-                                     may return 0 coincidently
+We are spinning in the do-while loop in hugetlb_cgroup_css_offline.
+Worse yet, we are holding the master cgroup lock (cgroup_mutex) while
+infinitely spinning.  Little else can be done on the system as the
+cgroup_mutex can not be acquired.
 
-                                     keep the bit cleared
-    dst->nr_items != 0
-    skip set_bit
-    add scr->nr_item to dst
+Do note that the issue can be reproduced by simply offlining a hugetlb
+cgroup containing pages with reservation counts.
 
-After this point dst->nr_item may never go zero, so reparenting will not
-set shrinker_map bit anymore.  And since there is no task under user
-slice directly, so no new object will be added to its lru to set the
-shrinker map bit either.  That bit is kept cleared forever.
+The loop in hugetlb_cgroup_css_offline is moving page counts from the
+cgroup being offlined to the parent cgroup.  This is done for each
+hstate, and is repeated until hugetlb_cgroup_have_usage returns false.
+The routine moving counts (hugetlb_cgroup_move_parent) is only moving
+'usage' counts.  The routine hugetlb_cgroup_have_usage is checking for
+both 'usage' and 'reservation' counts.  Discussion about what to do with
+reservation counts when reparenting was discussed here:
 
-How does list_lru_del() race with reparenting? It is because reparenting
-replaces children's kmemcg_id to parent's without protecting from
-nlru->lock, so list_lru_del() may see parent's kmemcg_id but actually
-deleting items from child's lru, but dec'ing parent's nr_items, so the
-parent's nr_items may go negative as commit 2788cf0c401c ("memcg:
-reparent list_lrus and free kmemcg_id on css offline") says.
+https://lore.kernel.org/linux-kselftest/CAHS8izMFAYTgxym-Hzb_JmkTK1N_S9tGN71uS6MFV+R7swYu5A@mail.gmail.com/
 
-Since it is impossible that dst->nr_items goes negative and
-src->nr_items goes zero at the same time, so it seems we could set the
-shrinker map bit iff src->nr_items != 0.  We could synchronize
-list_lru_count_one() and reparenting with nlru->lock, but it seems
-checking src->nr_items in reparenting is the simplest and avoids lock
-contention.
+The decision was made to leave a zombie cgroup for with reservation
+counts.  Unfortunately, the code checking reservation counts was
+incorrectly added to hugetlb_cgroup_have_usage.
 
-Fixes: fae91d6d8be5 ("mm/list_lru.c: set bit in memcg shrinker bitmap on first list_lru item appearance")
-Suggested-by: Roman Gushchin <guro@fb.com>
-Signed-off-by: Yang Shi <shy828301@gmail.com>
+To fix the issue, simply remove the check for reservation counts.  While
+fixing this issue, a related bug in hugetlb_cgroup_css_offline was
+noticed.  The hstate index is not reinitialized each time through the
+do-while loop.  Fix this as well.
+
+Fixes: 1adc4d419aa2 ("hugetlb_cgroup: add interface for charge/uncharge hugetlb reservations")
+Reported-by: Adrian Moreno <amorenoz@redhat.com>
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Roman Gushchin <guro@fb.com>
+Tested-by: Adrian Moreno <amorenoz@redhat.com>
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: <stable@vger.kernel.org>	[4.19]
-Link: https://lkml.kernel.org/r/20201202171749.264354-1-shy828301@gmail.com
+Cc: Mina Almasry <almasrymina@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Sandipan Das <sandipan@linux.ibm.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201203220242.158165-1-mike.kravetz@oracle.com
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/list_lru.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ mm/hugetlb_cgroup.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -534,7 +534,6 @@ static void memcg_drain_list_lru_node(st
- 	struct list_lru_node *nlru = &lru->node[nid];
- 	int dst_idx = dst_memcg->kmemcg_id;
- 	struct list_lru_one *src, *dst;
--	bool set;
+--- a/mm/hugetlb_cgroup.c
++++ b/mm/hugetlb_cgroup.c
+@@ -82,11 +82,8 @@ static inline bool hugetlb_cgroup_have_u
  
- 	/*
- 	 * Since list_lru_{add,del} may be called under an IRQ-safe lock,
-@@ -546,11 +545,12 @@ static void memcg_drain_list_lru_node(st
- 	dst = list_lru_from_memcg_idx(nlru, dst_idx);
- 
- 	list_splice_init(&src->list, &dst->list);
--	set = (!dst->nr_items && src->nr_items);
--	dst->nr_items += src->nr_items;
--	if (set)
-+
-+	if (src->nr_items) {
-+		dst->nr_items += src->nr_items;
- 		memcg_set_shrinker_bit(dst_memcg, nid, lru_shrinker_id(lru));
--	src->nr_items = 0;
-+		src->nr_items = 0;
-+	}
- 
- 	spin_unlock_irq(&nlru->lock);
+ 	for (idx = 0; idx < hugetlb_max_hstate; idx++) {
+ 		if (page_counter_read(
+-			    hugetlb_cgroup_counter_from_cgroup(h_cg, idx)) ||
+-		    page_counter_read(hugetlb_cgroup_counter_from_cgroup_rsvd(
+-			    h_cg, idx))) {
++				hugetlb_cgroup_counter_from_cgroup(h_cg, idx)))
+ 			return true;
+-		}
+ 	}
+ 	return false;
  }
+@@ -202,9 +199,10 @@ static void hugetlb_cgroup_css_offline(s
+ 	struct hugetlb_cgroup *h_cg = hugetlb_cgroup_from_css(css);
+ 	struct hstate *h;
+ 	struct page *page;
+-	int idx = 0;
++	int idx;
+ 
+ 	do {
++		idx = 0;
+ 		for_each_hstate(h) {
+ 			spin_lock(&hugetlb_lock);
+ 			list_for_each_entry(page, &h->hugepage_activelist, lru)
 
 
