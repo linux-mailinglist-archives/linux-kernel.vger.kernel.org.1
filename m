@@ -2,73 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79D72D5F06
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7169E2D5F1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389954AbgLJPHV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Dec 2020 10:07:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390038AbgLJPHJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:07:09 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE433C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:06:28 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1knNWM-0006bB-1w; Thu, 10 Dec 2020 16:06:18 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1knNWI-0005Ab-IF; Thu, 10 Dec 2020 16:06:14 +0100
-Message-ID: <3dec6a922df318a65647d7a1d3e9ed711564075f.camel@pengutronix.de>
-Subject: Re: [PATCH v3 0/4] dt-bindings: reset: convert Hisilicon reset
- controller bindings to json-schema
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date:   Thu, 10 Dec 2020 16:06:14 +0100
-In-Reply-To: <20201208124641.1787-1-thunder.leizhen@huawei.com>
-References: <20201208124641.1787-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S2390129AbgLJPI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:08:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390594AbgLJPIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:08:43 -0500
+Date:   Thu, 10 Dec 2020 15:07:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607612882;
+        bh=KoxOBKWsIg2Wt9l8K5GKIQKzwk5N7dcuEaIEps5LD5c=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SgclQwK8xnkoZ5Cp6KABImVZgSOO74FBVdF7lcjniKRtgWMDMHJCtE85ifOLeNmZK
+         o9bFiEPXXMD6QMSLicBzKLyXvfenbZe8kpwxX1SyddtcRqjGymF2Hbu9FD/di/gvmF
+         jd3AgmfXG3jE+BqR+7jI2i2cB/U9pkZOSLWpOJ19JVHBEgZGFUOOkXlPa+RPE8z46a
+         07WlCKgK7tSTx0RqSkf/AtlJ7zC6Dhd+LR7UUqhfFDHfW565QjZ11qgBBW2ACfKhVK
+         txyge2n4wlMDmHWEWKnXROPpAZA0nuauTEn3fd7t6Rg8/N6qC7hj0kZEvG6XRGoNgU
+         q7/8QTPM/oQCg==
+From:   Will Deacon <will@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH v2 2/6] genirq: Allow an interrupt to be marked as 'raw'
+Message-ID: <20201210150756.GA10381@willie-the-truck>
+References: <20201124141449.572446-1-maz@kernel.org>
+ <20201124141449.572446-3-maz@kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124141449.572446-3-maz@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-08 at 20:46 +0800, Zhen Lei wrote:
-> v2 --> v3:
-> 1. Keep device tree patches and reset driver patch separate, as they were in v1.
->    That is, revert v2.
-> 2. When the new compatible match failed, fall back to the deprecated compatible.
-> 3. Fix a typo, correct "hi3660,rst-syscon" to "hisilicon,rst-syscon".
-> 
-> v1 --> v2:
-> Merge the driver and DT modification(correct vendor prefix hisi to hisilicon) into one patch.
-> 
-> v1:
-> Patch 1-3 change the vendor prefix from "hisi" to "hisilicon", to eliminate below warnings:
->   crg_rst_controller: 'hisi,rst-syscon' does not match any of the regexes: '^#.*', ... , '^hisilicon,.*', ...
->   From schema: /root/leizhen/linux-next/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> 
-> Patch 4 does the json-schema conversion.
+Hi Marc,
 
-Thank you, I've applied patches 1, 3, and 4 to the reset/next branch.
+On Tue, Nov 24, 2020 at 02:14:45PM +0000, Marc Zyngier wrote:
+> Some interrupts (such as the rescheduling IPI) rely on not going through
+> the irq_enter()/irq_exit() calls. To distinguish such interrupts, add
+> a new IRQ flag that allows the low-level handling code to sidestep the
+> enter()/exit() calls.
+> 
+> Only the architecture code is expected to use this. It will do the wrong
+> thing on normal interrupts. Note that this is a band-aid until we can
+> move to some more correct infrastructure (such as kernel/entry/common.c).
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  include/linux/irq.h   |  2 ++
+>  kernel/irq/Kconfig    |  3 +++
+>  kernel/irq/debugfs.c  |  1 +
+>  kernel/irq/irqdesc.c  | 17 ++++++++++++-----
+>  kernel/irq/settings.h | 15 +++++++++++++++
+>  5 files changed, 33 insertions(+), 5 deletions(-)
 
-regards
-Philipp
+[...]
+
+> diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+> index 1a7723604399..f5beee546a6f 100644
+> --- a/kernel/irq/irqdesc.c
+> +++ b/kernel/irq/irqdesc.c
+> @@ -667,10 +667,9 @@ int __handle_domain_irq(struct irq_domain *domain, unsigned int hwirq,
+>  {
+>  	struct pt_regs *old_regs = set_irq_regs(regs);
+>  	unsigned int irq = hwirq;
+> +	struct irq_desc *desc;
+>  	int ret = 0;
+>  
+> -	irq_enter();
+> -
+>  #ifdef CONFIG_IRQ_DOMAIN
+>  	if (lookup)
+>  		irq = irq_find_mapping(domain, hwirq);
+> @@ -680,14 +679,22 @@ int __handle_domain_irq(struct irq_domain *domain, unsigned int hwirq,
+>  	 * Some hardware gives randomly wrong interrupts.  Rather
+>  	 * than crashing, do something sensible.
+>  	 */
+> -	if (unlikely(!irq || irq >= nr_irqs)) {
+> +	if (unlikely(!irq || irq >= nr_irqs || !(desc = irq_to_desc(irq)))) {
+>  		ack_bad_irq(irq);
+>  		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	if (IS_ENABLED(CONFIG_ARCH_WANTS_IRQ_RAW) &&
+> +	    unlikely(irq_settings_is_raw(desc))) {
+> +		generic_handle_irq_desc(desc);
+
+Based on tglx's previous comments, I was expecting to see calls to
+__irq_{enter,exit}_raw() around this. Are they hiding somewhere else or
+are they not needed?
+
+Will
