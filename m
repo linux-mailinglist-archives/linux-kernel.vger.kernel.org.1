@@ -2,130 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C8E2D6B56
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C222D6B57
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392139AbgLJW6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2391603AbgLJW6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 10 Dec 2020 17:58:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726995AbgLJWzN (ORCPT
+        with ESMTP id S1728309AbgLJWzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Dec 2020 17:55:13 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E933C0611BB
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:40:52 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id m13so8578446ljo.11
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:40:52 -0800 (PST)
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2463C0619D8
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:42:33 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id z188so6676770qke.9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:42:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tQWc8Ya/SQ8yu30f2oZK/6gpauwPuWfx0xpCfyzU+rc=;
-        b=x0OoNs2LTcACOemmbvVWROexONVqsHi3sxvsxjEkiZzo8yXWD3n2DmqzuWPVW+Lr4b
-         ZJhgIZibF4dI8oEPYTgpj3vnCqYB525AAWOvKChixhX1HbwGJ8vSAaE0408WP1YA75TG
-         S1Nhwojylv6YfsOD+wxBGPQMRLauPSsMloHkNDFklJ1y2vMtdHU/V7YoC69m6DevORi4
-         kF+vdp2hTOIddsuNkaW670CKMwdt6o8sgaDP56d/wvUEluoyEdEpeOxAOCz6ZjYRN2lS
-         7NBmhYBNu2YeZZpzS7fwTANlplEp0hZ2PXtBjnNT5YVv1HOonto2C0QmjPttLym4AgAA
-         KM9Q==
+         :cc:content-transfer-encoding;
+        bh=BI42y0NL4g9pgxSiCUPEnrdmXwNVwllMLibIxfqxMAE=;
+        b=hWMsNOC78oPCR/5SbuVMdo29OQDG3LMI1Knmo1sKFCQLyigIG4vSOWQB5xY6tp8cU+
+         77Z8uG/aPnl2cGAEAmpDq76vp2e71hOkDQQAkwfJgpJYru1alEkjWhfQ6bHjPtzIyCS9
+         b+Hs8TTIVwUxiv7jNe3RMNaOlKh2oyjH1g4P4BoUKdwVR7/UQI7veEed1ZexzU24kbw8
+         UpV5cQ2SJ0IRPENlPCcfFgCEUQi3mbkX/YJMbCNFTg4oMKCRK1Xd1S3xGkVeiFbfTIvc
+         kq0UJFcKGNMB3ngzzV9qSQBRsz5C7c9UcOilExHurYt7II0zPp1kOdr07XcXXgaWio9z
+         GU0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tQWc8Ya/SQ8yu30f2oZK/6gpauwPuWfx0xpCfyzU+rc=;
-        b=WViqqxRJ84Rb7UCPHIgX+BWLc8+zUh0+BATMcN1rtGCjMH/Jxh5m+s8v44fj55Iq2E
-         MoFscVzIqTEmRRlatMY21JXnecL+x7BVwecEQcTudPuUaIcq9nH+XNVBk7o3u75yfNwO
-         FUrnrN5fomLqmOosXbRJkjvQdZdgzqrHCuY902C2cj7GzivV2Xu8XCs7m6zd2jPvdRWZ
-         NAkSyRK/yTKoEVV9zJ60vpkg7aGXAHef2D4wobHt9aUQwPMI2ZGavtazTKG7jRrx4kxH
-         yQPSUZpfA7Rsgd17X3EdOWEdVZfs6dFQx/TdI4dI9usFBwfWU28LowkdgWV8wd3Uz1zI
-         e7zQ==
-X-Gm-Message-State: AOAM5322jwbUj98uKk1966g2YCSk31t+DABbzdbdu0dNGS/OY+83Zm/E
-        GPsWnPCQks1kAPDDe2vl0IEuDExeJN1AEE/qbdhhBg==
-X-Google-Smtp-Source: ABdhPJzyv+/ixUU7Z4gURlK7gfSgTumIWFyuUn9BMQjVKhZOvuG2b6lPyD6nHt8L6UK49w2MpVe7eroKVnmkRciqHvk=
-X-Received: by 2002:a05:651c:10e:: with SMTP id a14mr3979348ljb.128.1607640050539;
- Thu, 10 Dec 2020 14:40:50 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BI42y0NL4g9pgxSiCUPEnrdmXwNVwllMLibIxfqxMAE=;
+        b=fH1dpbIQxQLKBIYSmMk1FyIfDOwTZYo2887wp8KF4YRaZggZSvk4gvb1RqlK3Bl13K
+         FUM7BWHFXS9rGORuW2DunVNFZIXfT1QN72zlZv47VL11MSK8VJWTL2XYTcKT3p8QS39P
+         plPrUx/LeMcylbJzkeLa+aw1VOzdFqU4iah3+8xVRi1EXgxlLgjBBQRHMvgyXbwk3xZF
+         ahMCEdtpsdQ2bMyuNu4x1VIcSUXc0bqpR7LjGIhucsspfQzm8IPHaqKJUgGQ0g6Dc+BU
+         UA4hp/UV2NQL5fizMFH+OUbO7xBSLZK3nsVOQ3bJ658ZCO3XxIk5azFMXr4wko9I04Z8
+         VnCA==
+X-Gm-Message-State: AOAM532ZRg4kxCEaD9AKqGD/KTmywbW14Wzix0KGhEFsUCN3/419bRLq
+        xfGrGFEdviQGJ3BmgJA3l93h6lSwWK9UdiLS9/41IQ==
+X-Google-Smtp-Source: ABdhPJyssOsPAM+0T8O2ecn5LMu0P4i9w+iyWsreu7x70gwVAySfKdx+0tWzoyaCLA9gf8su9JPsj/jlR1Tal3U3Zo4=
+X-Received: by 2002:a37:a80a:: with SMTP id r10mr11644017qke.467.1607640152596;
+ Thu, 10 Dec 2020 14:42:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20201117181935.3613581-1-minchan@kernel.org> <20201117181935.3613581-5-minchan@kernel.org>
- <CGME20201118030110epcas2p1105a09711ea2c123f19f413b32372764@epcas2p1.samsung.com>
- <CALAqxLWqDLHpOHNEayvhDjJeXjEk_uneH2=d9fy8M87EjKfReA@mail.gmail.com>
- <20201119011431.GA136599@KEI> <CALAqxLV=r-V6u8hq2fTmxq855nT7QPkkjyAYdPeZRkYPBi_CKg@mail.gmail.com>
- <X9Fjd+eSStUJskOV@google.com> <CALAqxLWthd8bEDRMWmuOf8dOCW8=cFao9HBawKGuRhQZkdgXXw@mail.gmail.com>
- <X9JHjPTdxv6Z7lCW@google.com>
-In-Reply-To: <X9JHjPTdxv6Z7lCW@google.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Thu, 10 Dec 2020 14:40:38 -0800
-Message-ID: <CALAqxLVz5bCYxehjVtCJ5eEJ-Wz81=fe30sqRtYtZpXWMkXZiw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] dma-heap: Devicetree binding for chunk heap
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Hyesoo Yu <hyesoo.yu@samsung.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>, david@redhat.com,
-        iamjoonsoo.kim@lge.com, vbabka@suse.cz,
+References: <20201210044400.1080308-1-hridya@google.com> <b5adfe46-8615-5821-d092-2b93feed5b79@amd.com>
+ <X9H0JREcdxDsMtLX@kroah.com> <20201210102727.GE401619@phenom.ffwll.local>
+ <X9H+3AP1q39aMxeb@kroah.com> <f95ee5dc-62f8-4870-11e4-3513dc8382ef@amd.com>
+In-Reply-To: <f95ee5dc-62f8-4870-11e4-3513dc8382ef@amd.com>
+From:   Hridya Valsaraju <hridya@google.com>
+Date:   Thu, 10 Dec 2020 14:41:56 -0800
+Message-ID: <CA+wgaPPtoz_JSAwsVVpFGLrcrO8-tAGD+gdrsWmBA3jpidigzQ@mail.gmail.com>
+Subject: Re: [PATCH] dmabuf: Add the capability to expose DMA-BUF stats in sysfs
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
         Suren Baghdasaryan <surenb@google.com>,
-        KyongHo Cho <pullip.cho@samsung.com>,
-        John Dias <joaodias@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-media@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 8:06 AM Minchan Kim <minchan@kernel.org> wrote:
-> On Thu, Dec 10, 2020 at 12:15:15AM -0800, John Stultz wrote:
-> > Well, while I agree that conceptually the dmabuf heaps allow for
-> > allocations for multi-device pipelines, and thus are not tied to
-> > specific devices. I do think that the memory types exposed are likely
-> > to have specific devices/drivers in the pipeline that it matters most
-> > to. So I don't see a big issue with the in-kernel driver registering a
-> > specific CMA region as a dmabuf heap.
+Thanks again for the reviews!
+
+On Thu, Dec 10, 2020 at 3:03 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
 >
-> Then, I am worry about that we spread out dma_heap_add_cma to too many
-> drivers since kernel doesn't how userspace will use it.
-> For example, system 1 could have device A-B-C pipeline so they added
-> it A driver. After that, system 2 could have device B-C-D pipeline
-> so they add dma_heap_add_cma into B device.
-
-I'm not sure I see this as a major issue? If the drivers add it based
-on the dt memory reference, those will be configured to not add
-duplicate heaps (and even so the heap driver can also ensure we don't
-try to add a heap twice).
-
-> > Yea, an un-upstreamable dummy driver is maybe what it devolves to in
-> > the worst case. But I suspect it would be cleaner for a display or ISP
-> > driver that benefits most from the heap type to add the reserved
-> > memory reference to their DT node, and on init for them to register
-> > the region with the dmabuf heap code.
+> Am 10.12.20 um 11:56 schrieb Greg KH:
+> > On Thu, Dec 10, 2020 at 11:27:27AM +0100, Daniel Vetter wrote:
+> >> On Thu, Dec 10, 2020 at 11:10:45AM +0100, Greg KH wrote:
+> >>> On Thu, Dec 10, 2020 at 10:58:50AM +0100, Christian K=C3=B6nig wrote:
+> >>>> In general a good idea, but I have a few concern/comments here.
+> >>>>
+> >>>> Am 10.12.20 um 05:43 schrieb Hridya Valsaraju:
+> >>>>> This patch allows statistics to be enabled for each DMA-BUF in
+> >>>>> sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
+> >>>>>
+> >>>>> The following stats will be exposed by the interface:
+> >>>>>
+> >>>>> /sys/kernel/dmabuf/<inode_number>/exporter_name
+> >>>>> /sys/kernel/dmabuf/<inode_number>/size
+> >>>>> /sys/kernel/dmabuf/<inode_number>/dev_map_info
+> >>>>>
+> >>>>> The inode_number is unique for each DMA-BUF and was added earlier [=
+1]
+> >>>>> in order to allow userspace to track DMA-BUF usage across different
+> >>>>> processes.
+> >>>>>
+> >>>>> Currently, this information is exposed in
+> >>>>> /sys/kernel/debug/dma_buf/bufinfo.
+> >>>>> However, since debugfs is considered unsafe to be mounted in produc=
+tion,
+> >>>>> it is being duplicated in sysfs.
+> >>>> Mhm, this makes it part of the UAPI. What is the justification for t=
+his?
+> >>>>
+> >>>> In other words do we really need those debug information in a produc=
+tion
+> >>>> environment?
+> >>> Production environments seem to want to know who is using up memory :=
+)
+> >> This only shows shared memory, so it does smell a lot like $specific_i=
+ssue
+> >> and we're designing a narrow solution for that and then have to carry =
+it
+> >> forever.
+> > I think the "issue" is that this was a feature from ion that people
+> > "missed" in the dmabuf move.  Taking away the ability to see what kind
+> > of allocations were being made didn't make a lot of debugging tools
+> > happy :(
 >
-> As I mentioned above, it could be a display at this moment but it could
-> be different driver next time. If I miss your point, let me know.
+> Yeah, that is certainly a very valid concern.
 >
+> > But Hridya knows more, she's been dealing with the transition for a lon=
+g
+> > time now.
 
-I guess I just don't see potentially having the registration calls
-added to multiple drivers as a big problem.
+Currently, telemetry tools capture this information(along with other
+memory metrics) periodically as well as on important events like a
+foreground app kill (which might have been triggered by an LMK). We
+would also like to get a snapshot of the system memory usage on other
+events such as OOM kills and ANRs.
 
-Ideally, yes, I'd probably rather see a DT node that would allow the
-heap driver to register specified regions, but that's been NACKed
-multiple times. Given that, having hooks in device drivers to export
-the region seems to me like the next best approach, as it avoids DT
-ABI ( if ends up its a bad approach, its not something we have to
-keep).
+> >
+> >> E.g. why is the list of attachments not a sysfs link? That's how we
+> >> usually expose struct device * pointers in sysfs to userspace, not as =
+a
+> >> list of things.
+> > These aren't struct devices, so I don't understand the objection here.
+> > Where else could these go in sysfs?
+>
+> Sure they are! Just take a look at an attachment:
+>
+> struct dma_buf_attachment {
+>           struct dma_buf *dmabuf;
+>           struct device *dev;
+>
+> This is the struct device which is importing the buffer and the patch in
+> discussion is just printing the name of this device into sysfs.
 
-The bigger problem right now is not that there are too many places the
-registration call would be made from, but that there aren't upstream
-drivers which I'm aware of where it would currently make sense to add
-specific dma_heap_add_cma() registration hooks to.  We need an
-upstream user of Kunihiko Hayashi's patch.
+I actually did not know that this is not ok to do. I will change it in
+the next version of the patch to be sysfs links instead.
 
-thanks
--john
+>
+> >> Furthermore we don't have the exporter device covered anywhere, how is
+> >> that tracked? Yes Android just uses ion for all shared buffers, but th=
+at's
+> >> not how all of linux userspace works.
+> > Do we have the exporter device link in the dmabuf interface?  If so,
+> > great, let's use that, but for some reason I didn't think it was there.
+>
+> Correct, since we don't really need a device as an exporter (it can just
+> be a system heap as well) we only have a const char* as name for the
+> exporter.
+
+Yes, the file exporter_name prints out this information.
+
+>
+> >> Then I guess there's the mmaps, you can fish them out of procfs. A too=
+l
+> >> which collects all that information might be useful, just as demonstra=
+tion
+> >> of how this is all supposed to be used.
+> > There's a script somewhere that does this today, again, Hridya knows
+> > more.
+
+That is correct, we do have a tool in AOSP that gathers the
+per-process DMA-BUF map stats from procfs.
+https://android.googlesource.com/platform/system/memory/libmeminfo/+/refs/h=
+eads/master/libdmabufinfo/tools/dmabuf_dump.cpp
+
+When I send the next revision of the patch, I will also include links
+to AOSP CLs that show the usage for the sysfs files.
+
+> >
+> >> There's also some things to make sure we're at least having thought ab=
+out
+> >> how other things fit in here. E.d. dma_resv attached to the dma-buf
+> >> matters in general a lot. It doesn't matter on Android because
+> >> everything's pinned all the time anyway.
+
+I see your point Daniel!  I will make the interface extendable in the
+next version of the patch.
+
+> >>
+> >> Also I thought sysfs was one value one file, dumping an entire list in=
+to
+> >> dev_info_map with properties we'll need to extend (once you care about
+> >> dma_resv you also want to know which attachments are dynamic) does not
+> >> smell like sysfs design at all.
+> > sysfs is one value per file, what is being exported that is larger than
+> > that here?  Did I miss something on review?
+>
+> See this chunk here:
+>
+> +
+> +    list_for_each_entry(attachment, &dmabuf->attachments, node) {
+> +        if (attachment->map_counter) {
+> +            ret +=3D sysfs_emit_at(buf, ret, "%s ",
+> +                         dev_name(attachment->dev));
+> +        }
+> +    }
+>
+> And yes now that Daniel mentioned that it looks like a sysfs rules
+> violation to me as well.
+
+Sysfs rules do seem to allow an array of similar values in one file
+https://elixir.bootlin.com/linux/v5.10-rc7/source/Documentation/filesystems=
+/sysfs.rst#L63
+However, I agree that we should change it so that it can be expanded
+easily in the future. I will fix it in the next version. Thank you all
+for pointing it out!
+
+Regards,
+Hridya
+
+>
+> Regards,
+> Christian.
+>
+>
+> >
+> > thanks,
+> >
+> > greg k-h
+>
