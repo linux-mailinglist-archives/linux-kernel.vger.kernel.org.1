@@ -2,166 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D342D5F9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:27:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C502D5FAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389310AbgLJP1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:27:23 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47956 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390483AbgLJP1L (ORCPT
+        id S2391722AbgLJP2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:28:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391672AbgLJP2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:27:11 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BAFNNEe105068;
-        Thu, 10 Dec 2020 10:26:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=8TuZ966qA9ZNiuC4VMviYgJgs5x/qiXSkeaAgDKBwBw=;
- b=VNvTVj9UDden97tAVM74cQKismSDWEcwk2rtQjwQdxf7z7ttR2wSzVk/gg2+9UWY+dkx
- X9te0gOuZGOaCeOSmdTxz6Mr5ZAzk0sGyjU50czJsOU2owZx0Q9Vb6Uv5rAFfzS7fW1c
- ciYchuAjtgMdgA1baHFIEcZRjZ4KhIC5d9L788snlQVYxRq8BzEcxtY0HKA8N+Cz014J
- YUMrpZfI28840tfKW/zLaIifCnEPdr75TtiEEzuyjNknXR7Wm8XFMyixqQYhZ3xJuW/H
- jie4GIZLCUZl1Ndmgnsg+fBA76X5JHc4dHJMyX6wQo1kvjDTHh9+RK61mEme3pp3xq/6 YQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35bp4jgea4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 10:26:29 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BAFO5Ha108304;
-        Thu, 10 Dec 2020 10:26:29 -0500
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35bp4jge9d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 10:26:28 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BAFHiOM010965;
-        Thu, 10 Dec 2020 15:26:28 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma03wdc.us.ibm.com with ESMTP id 3581u9gj97-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 15:26:28 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BAFQPJk22216994
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Dec 2020 15:26:25 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 010ED6E06C;
-        Thu, 10 Dec 2020 15:26:25 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E17906E04C;
-        Thu, 10 Dec 2020 15:26:23 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.163.37.122])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Dec 2020 15:26:23 +0000 (GMT)
-Subject: Re: [RFC 1/4] s390/pci: track alignment/length strictness for
- zpci_dev
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     alex.williamson@redhat.com, schnelle@linux.ibm.com,
-        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1607545670-1557-1-git-send-email-mjrosato@linux.ibm.com>
- <1607545670-1557-2-git-send-email-mjrosato@linux.ibm.com>
- <20201210113318.136636e2.cohuck@redhat.com>
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-Message-ID: <15132f7f-cad7-d663-a8b9-90f417e85c81@linux.ibm.com>
-Date:   Thu, 10 Dec 2020 10:26:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 10 Dec 2020 10:28:22 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEC7C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:27:33 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id w6so4411296pfu.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:27:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rv3LvUpmaExydeU0HNZ3WNQ4lNYDnwxvurxewj7Gioo=;
+        b=CUI3InpdCk2b2qqbrlYU3I+TKx8C7/x/zITj4+e6UHPTi4CztI5YFI6b6e4TYyB0zk
+         9GLSher1TjZWn3r++BtKviRXg9ASZRVOQ7hmDkSj9C+1ncPbu/rUkZGMkmForJvjvhR4
+         MPNgAfMF+W8VZQPCqhT99ceerjgW9inWSvOUSQbhtPq4XzPK/ZpJGUjqcp47FhLNS6Ce
+         r+zPhxFsaUvhZ2nPGfUCZqYqrlEJCoMVzqzWr0qzrlK8ohEP3ptB6noQdCO6S3nDyRhM
+         jkqD4svVWzg+/xae1eraU+L/DiJvBw3y01dqEZqp1D+OtXsez8UyLOrZX33W1QdCUK9r
+         J2wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rv3LvUpmaExydeU0HNZ3WNQ4lNYDnwxvurxewj7Gioo=;
+        b=saLu9ovptlkL4fusHGnaOGzyVyBLQX4QLAS3NtK+4HLXFxn/UN7yDX5INr48j261+r
+         M+qxxsOk5B1zvpYyLjrCHsvsrMtmKolq+o4MLH6/ha7FsxrS+vD0CTnZkxUF4yjzX6DN
+         rlumogin6F4CC8QabjyxZjZhGmoH5nror7EUKM+CNGENFmc2dR6oifNCPaA06LUPMVK8
+         UxC1xGmkAfuVufozYlLRlpqeX94FRuPKg9rN4LMX8LjD103geB/c798ga2vgNe1d9/mS
+         2CZWOsW+FbU6yyy09dC9v21Cnyodj8v6kjqerEVPG5cv4yjKAsTDRJ29w4mx8Q6JxnYh
+         +wyw==
+X-Gm-Message-State: AOAM532QF5lHGkYZpqrUif/jEf1q4MQ1uy8CtwSaTAALxCLK83yV3UVe
+        2TWNjq+8q2sJce91EJCCT7PCxQXNgpCV3hpTFQoICQ==
+X-Google-Smtp-Source: ABdhPJyPxcHvN6IYlzC4n1GyRsUIJzjup9DkstN1YuVZ6rDsyWbcahJr0nfkJmjvBlP92tLmyVuV8gEVjalWAMva4PE=
+X-Received: by 2002:a62:4e4e:0:b029:19e:aaab:8be with SMTP id
+ c75-20020a624e4e0000b029019eaaab08bemr5090266pfb.59.1607614052909; Thu, 10
+ Dec 2020 07:27:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201210113318.136636e2.cohuck@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-10_06:2020-12-09,2020-12-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- spamscore=0 lowpriorityscore=0 clxscore=1015 impostorscore=0
- suspectscore=0 bulkscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012100092
+References: <20201210035526.38938-1-songmuchun@bytedance.com>
+ <20201210035526.38938-4-songmuchun@bytedance.com> <20201210141547.GA8538@localhost.localdomain>
+ <CAMZfGtW6yJPR2yUR0h11=QxY8G6V8oZAnArYh4SQPn370cBLpQ@mail.gmail.com>
+In-Reply-To: <CAMZfGtW6yJPR2yUR0h11=QxY8G6V8oZAnArYh4SQPn370cBLpQ@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 10 Dec 2020 23:26:56 +0800
+Message-ID: <CAMZfGtUyiTnktzwqnGyw2wrgkj23U4g3BF04J+2okN2uQRjqTA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v8 03/12] mm/bootmem_info: Introduce
+ free_bootmem_page helper
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/20 5:33 AM, Cornelia Huck wrote:
-> On Wed,  9 Dec 2020 15:27:47 -0500
-> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
-> 
->> Some zpci device types (e.g., ISM) follow different rules for length
->> and alignment of pci instructions.  Recognize this and keep track of
->> it in the zpci_dev.
->>
->> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
->> Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
->> Reviewed-by: Pierre Morel <pmorel@linux.ibm.com>
->> ---
->>   arch/s390/include/asm/pci.h     | 3 ++-
->>   arch/s390/include/asm/pci_clp.h | 4 +++-
->>   arch/s390/pci/pci_clp.c         | 1 +
->>   3 files changed, 6 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/s390/include/asm/pci.h b/arch/s390/include/asm/pci.h
->> index 2126289..f16ffba 100644
->> --- a/arch/s390/include/asm/pci.h
->> +++ b/arch/s390/include/asm/pci.h
->> @@ -133,7 +133,8 @@ struct zpci_dev {
->>   	u8		has_hp_slot	: 1;
->>   	u8		is_physfn	: 1;
->>   	u8		util_str_avail	: 1;
->> -	u8		reserved	: 4;
->> +	u8		relaxed_align	: 1;
->> +	u8		reserved	: 3;
->>   	unsigned int	devfn;		/* DEVFN part of the RID*/
->>   
->>   	struct mutex lock;
->> diff --git a/arch/s390/include/asm/pci_clp.h b/arch/s390/include/asm/pci_clp.h
->> index 1f4b666..9fb7cbf 100644
->> --- a/arch/s390/include/asm/pci_clp.h
->> +++ b/arch/s390/include/asm/pci_clp.h
->> @@ -150,7 +150,9 @@ struct clp_rsp_query_pci_grp {
->>   	u16			:  4;
->>   	u16 noi			: 12;	/* number of interrupts */
->>   	u8 version;
->> -	u8			:  6;
->> +	u8			:  4;
->> +	u8 relaxed_align	:  1;	/* Relax length and alignment rules */
->> +	u8			:  1;
->>   	u8 frame		:  1;
->>   	u8 refresh		:  1;	/* TLB refresh mode */
->>   	u16 reserved2;
->> diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
->> index 153720d..630f8fc 100644
->> --- a/arch/s390/pci/pci_clp.c
->> +++ b/arch/s390/pci/pci_clp.c
->> @@ -103,6 +103,7 @@ static void clp_store_query_pci_fngrp(struct zpci_dev *zdev,
->>   	zdev->max_msi = response->noi;
->>   	zdev->fmb_update = response->mui;
->>   	zdev->version = response->version;
->> +	zdev->relaxed_align = response->relaxed_align;
->>   
->>   	switch (response->version) {
->>   	case 1:
-> 
-> Hm, what does that 'relaxed alignment' imply? Is that something that
-> can apply to emulated devices as well?
-> 
-The relaxed alignment simply loosens the rules on the PCISTB instruction 
-so that it doesn't have to be on particular boundaries / have a minimum 
-length restriction, these effectively allow ISM devices to use PCISTB 
-instead of PCISTG for just about everything.  If you have a look at the 
-patch "s390x/pci: Handle devices that support relaxed alignment" from 
-the linked qemu set, you can get an idea of what the bit changes via the 
-way qemu has to be more permissive of what the guest provides for PCISTB.
+On Thu, Dec 10, 2020 at 11:22 PM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> On Thu, Dec 10, 2020 at 10:16 PM Oscar Salvador <osalvador@suse.de> wrote:
+> >
+> > On Thu, Dec 10, 2020 at 11:55:17AM +0800, Muchun Song wrote:
+> > > Any memory allocated via the memblock allocator and not via the buddy
+> > > will be makred reserved already in the memmap. For those pages, we can
+> >          marked
+>
+> Thanks.
+>
+> > > call free_bootmem_page() to free it to buddy allocator.
+> > >
+> > > Becasue we wan to free some vmemmap pages of the HugeTLB to the buddy
+> > Because     want
+> > > allocator, we can use this helper to do that in the later patchs.
+> >                                                            patches
+> >
+>
+> Thanks.
+>
+> > To be honest, I think if would be best to introduce this along with
+> > patch#4, so we get to see where it gets used.
+> >
+> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > ---
+> > >  include/linux/bootmem_info.h | 19 +++++++++++++++++++
+> > >  1 file changed, 19 insertions(+)
+> > >
+> > > diff --git a/include/linux/bootmem_info.h b/include/linux/bootmem_info.h
+> > > index 4ed6dee1adc9..20a8b0df0c39 100644
+> > > --- a/include/linux/bootmem_info.h
+> > > +++ b/include/linux/bootmem_info.h
+> > > @@ -3,6 +3,7 @@
+> > >  #define __LINUX_BOOTMEM_INFO_H
+> > >
+> > >  #include <linux/mmzone.h>
+> > > +#include <linux/mm.h>
+> >
+> > <linux/mm.h> already includes <linux/mmzone.h>
+>
+> Yeah. Can remove this.
+>
+> >
+> > > +static inline void free_bootmem_page(struct page *page)
+> > > +{
+> > > +     unsigned long magic = (unsigned long)page->freelist;
+> > > +
+> > > +     /* bootmem page has reserved flag in the reserve_bootmem_region */
+> > reserve_bootmem_region sets the reserved flag on bootmem pages?
+>
+> Right.
+>
+> >
+> > > +     VM_WARN_ON(!PageReserved(page) || page_ref_count(page) != 2);
+> >
+> > We do check for PageReserved in patch#4 before calling in here.
+> > Do we need yet another check here? IOW, do we need to be this paranoid?
+>
+> Yeah, do not need to check again. We can remove it.
+>
+> >
+> > > +     if (magic == SECTION_INFO || magic == MIX_SECTION_INFO)
+> > > +             put_page_bootmem(page);
+> > > +     else
+> > > +             WARN_ON(1);
+> >
+> > Lately, some people have been complaining about using WARN_ON as some
+> > systems come with panic_on_warn set.
+> >
+> > I would say that in this case it does not matter much as if the vmemmap
+> > pages are not either SECTION_INFO or MIX_SECTION_INFO it means that a
+> > larger corruption happened elsewhere.
+> >
+> > But I think I would align the checks here.
+> > It does not make sense to me to only scream under DEBUG_VM if page's
+> > refcount differs from 2, and have a WARN_ON if the page we are trying
+> > to free was not used for the memmap array.
+> > Both things imply a corruption, so I would set the checks under the same
+> > configurations.
+>
+> Do you suggest changing them all to VM_DEBUG_ON?
 
-Re: emulated devices...  The S390 PCI I/O layer in the guest is always 
-issuing strict? aligned I/O for PCISTB, and if it decided to later 
-change that behavior it would need to look at this CLP bit to decide 
-whether that would be a valid operation for a given PCI function anyway. 
-  This bit will remain off in the CLP response we give for emulated 
-devices, ensuring that should such a change occur in the guest s390 PCI 
-I/O layer, we'd just continue getting strictly-aligned PCISTB.
+Or VM_WARN_ON?
+
+>
+> >
+> > --
+> > Oscar Salvador
+> > SUSE L3
+>
+>
+>
+> --
+> Yours,
+> Muchun
+
+
+
+-- 
+Yours,
+Muchun
