@@ -2,139 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F182D506B
+	by mail.lfdr.de (Postfix) with ESMTP id 716282D506C
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 02:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgLJBke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 20:40:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgLJBkd (ORCPT
+        id S1726828AbgLJBlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 20:41:09 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9417 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726763AbgLJBlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 20:40:33 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687B2C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 17:39:53 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id q22so3412368qkq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 17:39:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UkkzP/3Zui9Zv09UQ8xwBLPz4oeTJ7sNlMALQGeGM70=;
-        b=hCANu9k4ewHIF7sm5Uv/kEc/lz/9YpR/XMKI5w/v0gDeaUr9s2G3suJ+K31I9aK4ke
-         GpbwzxUQd2O9XsJ5ZFD8daBsFSjz7gxo0faf8kjkYNxhH279uSM6U84NC32MIjJ+QfXh
-         T/XWR0E9bxf2f8kCvbN38k2SSSh2H4AEY6f6jIOgxDrBAeJTTMic3owOqzu+XfP6b+1Q
-         IHdsAAvj0Uu3zkEPHUqkaypul6c96gmzXhhKztpKXAp4jIvwIxq6q4DM9kTAW1zUiW2l
-         6JIdGjevbyBTvKXoMO6Y+41+zX7sakqulVCN3Jt81e1jxiYesfoq1vXj2vUpUIbDDOmF
-         IAvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UkkzP/3Zui9Zv09UQ8xwBLPz4oeTJ7sNlMALQGeGM70=;
-        b=r0u1tgVuKo2KKD2A5Gj9/csznObQ49OQLrBtV8TF+WQnCqmS4EaI58TdY11foY7b6d
-         9JTKUV+mfHuG9l889Gvlp/sUl6oiET1xlJoYuAurVrrI/uZxiOTPbP4kk3XueLu+/gNN
-         HdE85i907zE9YjnhMqoQRNgP1OWljSb3QOqTvmpI+ucEeN5MCGyYBeU68ifJMcjjUs8M
-         tX9VFUBM8d678yqok1CV1ojf8NnCeLSUZn7DegbUA3XdFbrK92935+qf0nKefkpiwtOs
-         +/xJPhHAsvhKTxxCpL1rGVPShj0mJ0etKAUB5m6FAqyRxI4jViqoX4BZVogevM+OsHII
-         BGGg==
-X-Gm-Message-State: AOAM530ARMPxXn5YnM4sIjHKhXCPUt9e+ihXjoUfD3ZTMO/30cwYJCQj
-        7PppY1R/jFOscxNMjITFpnOthhdLpcdQDlRaQ6nCpA==
-X-Google-Smtp-Source: ABdhPJwwtzbyx8dv0A/bOYjE3eOzs3Dzd25CeqEwi5hkYuP378MTpDXYUPC+uMy3SAH/E3OYSul0Sai4Dwdkz425wO0=
-X-Received: by 2002:a05:620a:805:: with SMTP id s5mr6444986qks.80.1607564392357;
- Wed, 09 Dec 2020 17:39:52 -0800 (PST)
+        Wed, 9 Dec 2020 20:41:09 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CrxRt3dNBz7C6b;
+        Thu, 10 Dec 2020 09:39:54 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 10 Dec
+ 2020 09:40:25 +0800
+Subject: Re: [PATCH RESEND v2 5/5] f2fs: introduce sb_status sysfs node
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20201209084328.30416-1-yuchao0@huawei.com>
+ <20201209084328.30416-5-yuchao0@huawei.com> <X9D1dXVwKFvfHpP9@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <6f8bf3c3-f210-ec06-372f-c27c85d0449b@huawei.com>
+Date:   Thu, 10 Dec 2020 09:40:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <20200721041742.197354-1-sergey.senozhatsky@gmail.com>
- <20200817020310.GA1210848@jagdpanzerIV.localdomain> <fe72592c-c721-bece-1469-95eebf931299@huawei.com>
- <cbcfb402b7fdb8a2a45b80fbb0e79f3e@kernel.org> <20200911085841.GB562@jagdpanzerIV.localdomain>
- <CAJWu+oq26OK1-7Ze2pb5xpRJ-tS9wtXOdGFrYpHq+fhkyGhjkA@mail.gmail.com> <fdc35e25f2bc2cdfa0849a84802eafd6@kernel.org>
-In-Reply-To: <fdc35e25f2bc2cdfa0849a84802eafd6@kernel.org>
-From:   Joel Fernandes <joelaf@google.com>
-Date:   Wed, 9 Dec 2020 20:39:41 -0500
-Message-ID: <CAJWu+ooy=r=G+AnyriQDA9_4CJqfO6hkf=c8heV8HV+yNea_PQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH 0/4] arm64:kvm: teach guest sched that VCPUs can be preempted
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        yezengruan <yezengruan@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        kvmarm@lists.cs.columbia.edu,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>,
-        Quentin Perret <qperret@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <X9D1dXVwKFvfHpP9@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc, nice to hear from you.
+On 2020/12/10 0:04, Jaegeuk Kim wrote:
+> On 12/09, Chao Yu wrote:
+>> Introduce /sys/fs/f2fs/<devname>/stat/sb_status to show superblock
+>> status in real time as below:
+>>
+>> IS_DIRTY:		no
+>> IS_CLOSE:		no
+>> IS_SHUTDOWN:		no
+>> IS_RECOVERED:		no
+>> IS_RESIZEFS:		no
+>> NEED_FSCK:		no
+>> POR_DOING:		no
+>> NEED_SB_WRITE:		no
+>> NEED_CP:		no
+>> CP_DISABLED:		no
+>> CP_DISABLED_QUICK:	no
+>> QUOTA_NEED_FLUSH:	no
+>> QUOTA_SKIP_FLUSH:	no
+>> QUOTA_NEED_REPAIR:	no
+> 
+> Wait, this is breaking a sysfs rule where one entry should show one value.
 
-On Wed, Dec 9, 2020 at 4:43 AM Marc Zyngier <maz@kernel.org> wrote:
->
-> Hi all,
->
-> On 2020-12-08 20:02, Joel Fernandes wrote:
-> > On Fri, Sep 11, 2020 at 4:58 AM Sergey Senozhatsky
-> > <sergey.senozhatsky@gmail.com> wrote:
-> >>
-> >> My apologies for the slow reply.
-> >>
-> >> On (20/08/17 13:25), Marc Zyngier wrote:
-> >> >
-> >> > It really isn't the same thing at all. You are exposing PV spinlocks,
-> >> > while Sergey exposes preemption to vcpus.
-> >> >
-> >>
-> >> Correct, we see vcpu preemption as a "fundamental" feature, with
-> >> consequences that affect scheduling, which is a core feature :)
-> >>
-> >> Marc, is there anything in particular that you dislike about this RFC
-> >> patch set? Joel has some ideas, which we may discuss offline if that
-> >> works for you.
-> >
-> > Hi Marc, Sergey, Just checking what is the latest on this series?
->
-> I was planning to give it a go, but obviously got sidetracked. :-(
+Hmm.. let me change to show the sb status value directly, but then we needs extra
+tool or a mapping table to parse the real status every bit means.
 
-Ah, that happens.
+Thanks,
 
-> > About the idea me and Sergey discussed, at a high level we discussed
-> > being able to share information similar to "Is the vCPU preempted?"
-> > using a more arch-independent infrastructure. I do not believe this
-> > needs to be arch-specific. Maybe the speciifc mechanism about how to
-> > share a page of information needs to be arch-specific, but the actual
-> > information shared need not be.
->
-> We already have some information sharing in the form of steal time
-> accounting, and I believe this "vcpu preempted" falls in the same
-> bucket. It looks like we could implement the feature as an extension
-> of the steal-time accounting, as the two concepts are linked
-> (one describes the accumulation of non-running time, the other is
-> instantaneous).
-
-Yeah I noticed the steal stuff. Will go look more into that.
-
-> > This could open the door to sharing
-> > more such information in an arch-independent way (for example, if the
-> > scheduler needs to know other information such as the capacity of the
-> > CPU that the vCPU is on).
->
-> Quentin and I have discussed potential ways of improving guest
-> scheduling
-> on terminally broken systems (otherwise known as big-little), in the
-> form of a capacity request from the guest to the host. I'm not really
-> keen on the host exposing its own capacity, as that doesn't tell the
-> host what the guest actually needs.
-
-I am not sure how a capacity request could work well. It seems the
-cost of a repeated hypercall could be prohibitive. In this case, a
-lighter approach might be for KVM to restrict vCPU threads to run on
-certain types of cores, and pass the capacity information to the guest
-at guest's boot time. This would be a one-time cost to pay. And then,
-then the guest scheduler can handle the scheduling appropriately
-without any more hypercalls. Thoughts?
-
-- Joel
+> 
+>>
+>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> ---
+>>   Documentation/ABI/testing/sysfs-fs-f2fs |  5 ++++
+>>   fs/f2fs/sysfs.c                         | 36 +++++++++++++++++++++++++
+>>   2 files changed, 41 insertions(+)
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+>> index 3dfee94e0618..57ab839dc3a2 100644
+>> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+>> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+>> @@ -377,3 +377,8 @@ Description:	This gives a control to limit the bio size in f2fs.
+>>   		Default is zero, which will follow underlying block layer limit,
+>>   		whereas, if it has a certain bytes value, f2fs won't submit a
+>>   		bio larger than that size.
+>> +
+>> +What:		/sys/fs/f2fs/<disk>/stat/sb_status
+>> +Date:		December 2020
+>> +Contact:	"Chao Yu" <yuchao0@huawei.com>
+>> +Description:	Show status of f2fs superblock in real time.
+>> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+>> index ebca0b4961e8..1b85e6d16a94 100644
+>> --- a/fs/f2fs/sysfs.c
+>> +++ b/fs/f2fs/sysfs.c
+>> @@ -101,6 +101,40 @@ static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
+>>   				sbi->sectors_written_start) >> 1)));
+>>   }
+>>   
+>> +#define	SB_STATUS(s)	(s ? "yes" : "no")
+>> +static ssize_t sb_status_show(struct f2fs_attr *a,
+>> +		struct f2fs_sb_info *sbi, char *buf)
+>> +{
+>> +	return sprintf(buf, "IS_DIRTY:		%s\n"
+>> +				"IS_CLOSE:		%s\n"
+>> +				"IS_SHUTDOWN:		%s\n"
+>> +				"IS_RECOVERED:		%s\n"
+>> +				"IS_RESIZEFS:		%s\n"
+>> +				"NEED_FSCK:		%s\n"
+>> +				"POR_DOING:		%s\n"
+>> +				"NEED_SB_WRITE:		%s\n"
+>> +				"NEED_CP:		%s\n"
+>> +				"CP_DISABLED:		%s\n"
+>> +				"CP_DISABLED_QUICK:	%s\n"
+>> +				"QUOTA_NEED_FLUSH:	%s\n"
+>> +				"QUOTA_SKIP_FLUSH:	%s\n"
+>> +				"QUOTA_NEED_REPAIR:	%s\n",
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_DIRTY)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_CLOSE)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_SHUTDOWN)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_RECOVERED)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_RESIZEFS)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_NEED_FSCK)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_POR_DOING)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_NEED_SB_WRITE)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_NEED_CP)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_CP_DISABLED)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_CP_DISABLED_QUICK)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_QUOTA_NEED_FLUSH)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_QUOTA_SKIP_FLUSH)),
+>> +			SB_STATUS(is_sbi_flag_set(sbi, SBI_QUOTA_NEED_REPAIR)));
+>> +}
+>> +
+>>   static ssize_t features_show(struct f2fs_attr *a,
+>>   		struct f2fs_sb_info *sbi, char *buf)
+>>   {
+>> @@ -711,7 +745,9 @@ static struct attribute *f2fs_feat_attrs[] = {
+>>   };
+>>   ATTRIBUTE_GROUPS(f2fs_feat);
+>>   
+>> +F2FS_GENERAL_RO_ATTR(sb_status);
+>>   static struct attribute *f2fs_stat_attrs[] = {
+>> +	ATTR_LIST(sb_status),
+>>   	NULL,
+>>   };
+>>   ATTRIBUTE_GROUPS(f2fs_stat);
+>> -- 
+>> 2.29.2
+> .
+> 
