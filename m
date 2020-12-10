@@ -2,1322 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01802D604C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 966512D6037
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391893AbgLJPq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:46:59 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:43818 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391227AbgLJPql (ORCPT
+        id S2391940AbgLJPo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:44:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391342AbgLJPoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:46:41 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BAFjhe1086968;
-        Thu, 10 Dec 2020 15:45:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=iBe6lHUiTvoXtgtf50BwvecvrYfc9ccI0eOCQ1k8nro=;
- b=AhhtXs3AJGWW4TlfGNzBxE7PxF/EmxNtmWltkYkvX5o0lYP6sOLB7Wv1YwoEv+y0OJMw
- waqkoCL0JbUATFaHMn5w9qwhDu4GXXgFFEs5VeqeefrfnQlhSAIHgloR8FTDB048/4rh
- IOCw4n5Vvl+2o6wZnFHsb8SXuC2yiUEBh3kxei06IulY66COJr23IVVNgz18nYp0sTQh
- +Xwyrifn0q+cmetjKkwB2Ry/rPQdw+EFtxCYNNnYekHqsqyvTaeXGKdgQnr7NrsoEKD4
- iVA8deXvEim/0/6ITe7tjurN+h+fkc//XR8QuoxAopkmRC2S9UsWdCS3ncjlTAUJE5Ft FQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 35825me2pu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Dec 2020 15:45:48 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BAFacI4142046;
-        Thu, 10 Dec 2020 15:43:48 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 358m41u3t1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Dec 2020 15:43:48 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BAFhjtX022981;
-        Thu, 10 Dec 2020 15:43:45 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 10 Dec 2020 07:43:43 -0800
-Date:   Thu, 10 Dec 2020 18:43:33 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-Cc:     "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Greg Kroah-Hartman'" <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: Re: [PATCH v1 1/2] Staging: silabs si4455 serial driver: fix
- directory structure and coding style
-Message-ID: <20201210154333.GN2767@kadam>
-References: <20201210122057.GA31782@dincontrollerdev>
+        Thu, 10 Dec 2020 10:44:46 -0500
+Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A1CC0613CF;
+        Thu, 10 Dec 2020 07:44:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
+         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
+        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=bfquSlu2CVvoyye+gQbL5aUKWqWpkQNRYpSFZssfs2c=; b=O/NZfP5/dEX8MjBp9pB9Igyu4F
+        7kqBaAThDTB0M58EILAI7G8fmVH+aVND9zZFR0k5wunRSKU1eMMBp2bSRnOcnhcIdA+OUSul9mQb9
+        /OS7jLWn3jB+PNlbBUCitI5Vsfy1GTyL/Zq7jBde0OG3BFjQ4wSj1WJWPQ6xq7ZcLz8NDAjzpFoe/
+        /ucbP+4LXe9ACVJQeJ7za4QrnmvNrPCaWjFlJGx8ouMqn6s1le/xEe7SL4nPan1BDFuaGRBK03ciX
+        ugJVn5MFns8ya8CDo544zfCajFJivDrPU9U8Fk8ahc5IL+4mJpymJvR0hRK63iXobQ/XCA4e2nI9/
+        OKRIBhZg==;
+Received: from noodles by the.earth.li with local (Exim 4.92)
+        (envelope-from <noodles@earth.li>)
+        id 1knO6o-0001YY-QI; Thu, 10 Dec 2020 15:43:58 +0000
+Date:   Thu, 10 Dec 2020 15:43:58 +0000
+From:   Jonathan McDowell <noodles@earth.li>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: dmaengine: Convert Qualcomm ADM bindings to
+ yaml
+Message-ID: <20201210154358.GX32650@earth.li>
+References: <20201115181242.GA30004@earth.li>
+ <20201207191222.GA629533@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201210122057.GA31782@dincontrollerdev>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9830 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012100099
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9830 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012100100
+In-Reply-To: <20201207191222.GA629533@robh.at.kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 12:20:59PM +0000, József Horváth wrote:
-> fix: coding style
-> fix: error checking
-> remove: doc silabs,si4455.txt
+On Mon, Dec 07, 2020 at 01:12:22PM -0600, Rob Herring wrote:
+> On Sun, Nov 15, 2020 at 06:12:42PM +0000, Jonathan McDowell wrote:
+> > Converts the device tree bindings for the Qualcomm Application Data
+> > Mover (ADM) DMA controller over to YAML schemas.
+> > 
+> > Signed-off-by: Jonathan McDowell <noodles@earth.li>
+> > ---
+> >  .../devicetree/bindings/dma/qcom,adm.yaml     | 102 ++++++++++++++++++
+> >  .../devicetree/bindings/dma/qcom_adm.txt      |  61 -----------
+> >  2 files changed, 102 insertions(+), 61 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/dma/qcom,adm.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/dma/qcom_adm.txt
+> > 
+> > diff --git a/Documentation/devicetree/bindings/dma/qcom,adm.yaml b/Documentation/devicetree/bindings/dma/qcom,adm.yaml
+> > new file mode 100644
+> > index 000000000000..353d85d3326d
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/dma/qcom,adm.yaml
+> > @@ -0,0 +1,102 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/dma/qcom,adm.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: QCOM ADM DMA Controller
+> > +
+> > +maintainers:
+> > +  - Jonathan McDowell <noodles@earth.li>
+> > +
+> > +description: |
+> > +  QCOM Application Data Mover (ADM) DMA controller found in the MSM8x60
+> > +  and IPQ/APQ8064 platforms.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - const: qcom,adm
 > 
-> Signed-off-by: József Horváth <info@ministro.hu>
+> Needs SoC specific compatible(s).
 
-Just fold (combine) this check in with the first.  This is much better
-but there are still 54 checkpatch warnins.
+It's not clear would actually make sense that's more specific than this;
+adding a version was discussed but it does not appear more recent chips
+use the adm block and so qcom,adm was seen to be sufficient (as well as
+matching what's already in tree).
 
-total: 0 errors, 2 warnings, 52 checks, 1311 lines checked
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +    description:
+> > +      Address range for DMA registers
+> 
+> Drop description. Doesn't really add anything specific to this binding.
 
-This is much better.  Do we have to print so many warnings?  It's
-useful for debugging but it makes the code messy.  The ioctl still has
-some security issues with regards to user pointers (see bottom).
+Ok.
 
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +    description:
+> > +      Should contain one interrupt shared by all channels
+> 
+> Drop.
 
->  struct si4455_part_info {
-> -	u8				CHIPREV;
-> -	u16				PART;
-> -	u8				PBUILD;
-> -	u16				ID;
-> -	u8				CUSTOMER;
-> -	u8				ROMID;
-> -	u8				BOND;
-> +	u8 CHIPREV;
-> +	u16 PART;
-> +	u8 PBUILD;
-> +	u16 ID;
-> +	u8 CUSTOMER;
-> +	u8 ROMID;
-> +	u8 BOND;
+Ok.
 
-Make these lower case letters.
+> > +
+> > +  "#dma-cells":
+> > +    const: 2
+> > +    description:
+> > +      First cell denotes the channel number.  Second cell denotes CRCI
+> > +      (client rate control interface) flow control assignment. If no
+> > +      flow control is required, use 0.
+> > +
+> > +  clocks:
+> > +    maxItems: 2
+> > +    description:
+> > +      Should contain the core clock and interface clock.
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: core
+> > +      - const: iface
+> > +
+> > +  resets:
+> > +    maxItems: 4
+> > +    description:
+> > +      Must contain an entry for each entry in reset names.
+> > +
+> > +  reset-names:
+> > +    items:
+> > +      - const: clk
+> > +      - const: c0
+> > +      - const: c1
+> > +      - const: c2
+> > +
+> > +  qcom,ee:
+> > +    maxItems: 1
+> 
+> maxItems is for arrays and this is a scalar.
 
+So it should be:
 
->  static int si4455_get_response(struct uart_port *port,
->  				int length,
->  				u8 *data)
->  {
-> -	int ret = -EIO;
-> -	u8 dataOut[] = { SI4455_CMD_ID_READ_CMD_BUFF };
-> -	u8 *dataIn = devm_kzalloc(port->dev, 1 + length, GFP_KERNEL);
-> -	struct spi_transfer xfer[] = {
-> -		{
-> -			.tx_buf = dataOut,
-> -			.len = sizeof(dataOut),
-> -		}, {
-> -			.rx_buf = dataIn,
-> -			.len = 1 + length,
-> -		}
-> -	};
-> -	int errCnt = 10000;
-> +	int ret;
-> +	u8 data_out[] = { SI4455_CMD_ID_READ_CMD_BUFF };
-> +	u8 *data_in = NULL;
-> +	struct spi_transfer xfer[2];
-> +	int err = 10000;
+  $ref: /schemas/types.yaml#/definitions/uint32
 
-Use "cnt" instead of "err" otherwise people will get confused and start
-saying "err = some_function();"
+?
 
->  
-> -	while (errCnt > 0) {
-> -		dataOut[0] = SI4455_CMD_ID_READ_CMD_BUFF;
-> +	data_in = kzalloc(1 + length, GFP_KERNEL);
-> +	if (!data_in)
-> +		return -ENOMEM;
-> +
-> +	memset(&xfer, 0x00, sizeof(xfer));
-> +	xfer[0].tx_buf = data_out;
-> +	xfer[0].len = sizeof(data_out);
-> +	xfer[1].rx_buf = data_in;
-> +	xfer[1].len = 1 + length;
-> +
-> +	while (--err > 0) {
-> +		data_out[0] = SI4455_CMD_ID_READ_CMD_BUFF;
->  		ret = spi_sync_transfer(to_spi_device(port->dev),
->  					xfer,
->  					ARRAY_SIZE(xfer));
-> -		if (ret == 0) {
-> -			if (dataIn[0] == 0xFF) {
-> -				if ((length > 0) && (data != NULL)) {
-> -					memcpy(data, &dataIn[1], length);
-> -				} else {
-> -					if (length > 0)
-> -						ret = -EINVAL;
-> -				}
-> -				break;
-> +		if (ret) {
-> +			dev_err(port->dev, "%s: spi_sync_transfer error(%i)", __func__, ret);
-> +			break;
-> +		}
-> +
-> +		if (data_in[0] == 0xFF) {
-> +			if (length > 0 && data) {
-> +				memcpy(data, &data_in[1], length);
-> +			} else {
-> +				if (length > 0)
-> +					ret = -EINVAL;
+> > +    description:
+> > +      Indicates the security domain identifier used in the secure world.
+> 
+> How do I get 'ee' from this? Is this something other QCom blocks need?
 
-Should this break if we encounter an error?
+Apparently it stands for "Execution Environment". It's used for other
+QCom blocks as well (I see at least qcom,bam and qcom,spmi-pmic-arb
+already in tree). I'll expand the comment to include the Execution
+Environment string.
 
->  			}
-> -			usleep_range(100, 200);
-> -		} else {
->  			break;
->  		}
-> -		errCnt--;
-> +		usleep_range(100, 200);
->  	}
-> -	if (errCnt == 0) {
-> -		dev_err(port->dev, "si4455_poll_cts:errCnt==%i", errCnt);
-> +	if (err == 0) {
-> +		dev_err(port->dev, "%s:err==%i", __func__, err);
->  		ret = -EIO;
->  	}
-> -	if (dataIn != NULL)
-> -		devm_kfree(port->dev, dataIn);
-> +	kfree(data_in);
->  	return ret;
->  }
->  
-> +static int si4455_poll_cts(struct uart_port *port)
-> +{
-> +	return si4455_get_response(port, 0, NULL);
-> +}
-> +
->  static int si4455_send_command(struct uart_port *port,
->  				int length,
->  				u8 *data)
-> @@ -214,134 +193,118 @@ static int si4455_send_command(struct uart_port *port,
->  	int ret;
->  
->  	ret = si4455_poll_cts(port);
-> -	if (ret == 0) {
-> -		ret = spi_write(to_spi_device(port->dev), data, length);
-> -		if (ret) {
-> -			dev_err(port->dev,
-> -				"%s: spi_write error(%i)",
-> -				__func__,
-> -				ret);
-> -		}
-> -	} else {
-> -		dev_err(port->dev,
-> -			"%s: si4455_poll_cts error(%i)",
-> +	if (ret) {
-> +		dev_err(port->dev, "%s: si4455_poll_cts error(%i)",
->  			__func__,
->  			ret);
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +
+> > +required:
+> > +  - "#dma-cells"
+> > +  - compatible
+> > +  - reg
+> > +  - clocks
+> > +  - clock-names
+> > +  - interrupts
+> > +  - qcom,ee
+> > +  - resets
+> > +  - reset-names
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +    #include <dt-bindings/reset/qcom,gcc-ipq806x.h>
+> > +
+> > +    adm_dma: dma@18300000 {
+> 
+> Drop unused labels.
 
-This can fit in two lines.
+Ok.
 
-		dev_err(port->dev, "%s: si4455_poll_cts error(%i)", __func__,
-			ret);
+> 
+> > +             compatible = "qcom,adm";
+> > +             reg = <0x18300000 0x100000>;
+> > +             interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
+> > +             #dma-cells = <2>;
+> > +
+> > +             clocks = <&gcc ADM0_CLK>, <&gcc ADM0_PBUS_CLK>;
+> > +             clock-names = "core", "iface";
+> > +
+> > +             resets = <&gcc ADM0_RESET>,
+> > +                      <&gcc ADM0_C0_RESET>,
+> > +                      <&gcc ADM0_C1_RESET>,
+> > +                      <&gcc ADM0_C2_RESET>;
+> > +             reset-names = "clk", "c0", "c1", "c2";
+> > +             qcom,ee = <0>;
+> > +    };
+> > +
+> > +...
+> > diff --git a/Documentation/devicetree/bindings/dma/qcom_adm.txt b/Documentation/devicetree/bindings/dma/qcom_adm.txt
+> > deleted file mode 100644
+> > index 9d3b2f917b7b..000000000000
+> > --- a/Documentation/devicetree/bindings/dma/qcom_adm.txt
+> > +++ /dev/null
+> > @@ -1,61 +0,0 @@
+> > -QCOM ADM DMA Controller
+> > -
+> > -Required properties:
+> > -- compatible: must contain "qcom,adm" for IPQ/APQ8064 and MSM8960
+> > -- reg: Address range for DMA registers
+> > -- interrupts: Should contain one interrupt shared by all channels
+> > -- #dma-cells: must be <2>.  First cell denotes the channel number.  Second cell
+> > -  denotes CRCI (client rate control interface) flow control assignment.
+> > -- clocks: Should contain the core clock and interface clock.
+> > -- clock-names: Must contain "core" for the core clock and "iface" for the
+> > -  interface clock.
+> > -- resets: Must contain an entry for each entry in reset names.
+> > -- reset-names: Must include the following entries:
+> > -  - clk
+> > -  - c0
+> > -  - c1
+> > -  - c2
+> > -- qcom,ee: indicates the security domain identifier used in the secure world.
+> > -
+> > -Example:
+> > -		adm_dma: dma@18300000 {
+> > -			compatible = "qcom,adm";
+> > -			reg = <0x18300000 0x100000>;
+> > -			interrupts = <0 170 0>;
+> > -			#dma-cells = <2>;
+> > -
+> > -			clocks = <&gcc ADM0_CLK>, <&gcc ADM0_PBUS_CLK>;
+> > -			clock-names = "core", "iface";
+> > -
+> > -			resets = <&gcc ADM0_RESET>,
+> > -				<&gcc ADM0_C0_RESET>,
+> > -				<&gcc ADM0_C1_RESET>,
+> > -				<&gcc ADM0_C2_RESET>;
+> > -			reset-names = "clk", "c0", "c1", "c2";
+> > -			qcom,ee = <0>;
+> > -		};
+> > -
+> > -DMA clients must use the format descripted in the dma.txt file, using a three
+> > -cell specifier for each channel.
+> > -
+> > -Each dmas request consists of 3 cells:
+> > - 1. phandle pointing to the DMA controller
+> > - 2. channel number
+> > - 3. CRCI assignment, if applicable.  If no CRCI flow control is required, use 0.
+> > -    The CRCI is used for flow control.  It identifies the peripheral device that
+> > -    is the source/destination for the transferred data.
+> > -
+> > -Example:
+> > -
+> > -	spi4: spi@1a280000 {
+> > -		spi-max-frequency = <50000000>;
+> > -
+> > -		pinctrl-0 = <&spi_pins>;
+> > -		pinctrl-names = "default";
+> > -
+> > -		cs-gpios = <&qcom_pinmux 20 0>;
+> > -
+> > -		dmas = <&adm_dma 6 9>,
+> > -			<&adm_dma 5 10>;
+> > -		dma-names = "rx", "tx";
+> > -	};
+> > -- 
+> > 2.29.2
+> > 
 
+J.
 
-> +		return ret;
-> +	}
-> +	ret = spi_write(to_spi_device(port->dev), data, length);
-> +	if (ret) {
-> +		dev_err(port->dev,
-> +			"%s: spi_write error(%i)", __func__, ret);
->  	}
->  	return ret;
->  }
->  
->  static int si4455_send_command_get_response(struct uart_port *port,
-> -						int outLength,
-> -						u8 *outData,
-> -						int inLength,
-> -						u8 *inData)
-> +						int out_length,
-> +						u8 *data_out,
-> +						int in_length,
-> +						u8 *data_in)
->  {
->  	int ret;
->  
-> -	ret = si4455_send_command(port, outLength, outData);
-> -	if (!ret) {
-> -		ret = si4455_get_response(port, inLength, inData);
-> -	} else {
-> -		dev_err(port->dev,
-> -			"%s: si4455_send_command error(%i)",
-> -			__func__,
-> -			ret);
-> +	ret = si4455_send_command(port, out_length, data_out);
-> +	if (ret) {
-> +		dev_err(port->dev, "%s: si4455_send_command error(%i)",
-> +			__func__, ret);
-> +		return ret;
->  	}
-> +
-> +	ret = si4455_get_response(port, in_length, data_in);
-> +
->  	return ret;
->  }
->  
->  static int si4455_read_data(struct uart_port *port,
->  				u8 command,
-> -				int pollCts,
-> +				int poll,
->  				int length,
->  				u8 *data)
->  {
->  	int ret = 0;
-> -	u8 dataOut[] = { command };
-> +	u8 data_out[] = { command };
->  	struct spi_transfer xfer[] = {
->  		{
-> -			.tx_buf = dataOut,
-> -			.len = sizeof(dataOut),
-> +			.tx_buf = data_out,
-> +			.len = sizeof(data_out),
->  		}, {
->  			.rx_buf = data,
->  			.len = length,
->  		}
->  	};
->  
-> -	if (pollCts)
-> +	if (poll) {
->  		ret = si4455_poll_cts(port);
-> +		if (ret)
-> +			return ret;
-> +	}
->  
-> -	if (ret == 0) {
-> -		ret = spi_sync_transfer(to_spi_device(port->dev),
-> -					xfer,
-> -					ARRAY_SIZE(xfer));
-> -		if (ret) {
-> -			dev_err(port->dev,
-> -				"%s: spi_sync_transfer error(%i)",
-> -				__func__,
-> -				ret);
-> -		}
-> +	ret = spi_sync_transfer(to_spi_device(port->dev),
-> +				xfer,
-> +				ARRAY_SIZE(xfer));
-> +	if (ret) {
-> +		dev_err(port->dev, "%s: spi_sync_transfer error(%i)",
-> +			__func__,
-> +			ret);
->  	}
->  	return ret;
->  }
->  
->  static int si4455_write_data(struct uart_port *port,
->  				u8 command,
-> -				int pollCts,
-> +				int poll,
->  				int length,
->  				u8 *data)
->  {
->  	int ret = 0;
-> -	u8 *dataOut = NULL;
-> +	u8 *data_out;
->  
-> -	if (pollCts)
-> +	if (poll) {
->  		ret = si4455_poll_cts(port);
-> +		if (ret)
-> +			return ret;
-> +	}
->  
-> -	if (ret == 0) {
-> -		dataOut = devm_kzalloc(port->dev, 1 + length, GFP_KERNEL);
-> -		if (dataOut != NULL) {
-> -			dataOut[0] = command;
-> -			memcpy(&dataOut[1], data, length);
-> -			ret = spi_write(to_spi_device(port->dev),
-> -					dataOut,
-> -					1 + length);
-> -			if (ret) {
-> -				dev_err(port->dev,
-> -					"%s: spi_write error(%i)",
-> -					__func__,
-> -					ret);
-> -			}
-> -		} else {
-> -			dev_err(port->dev,
-> -				"%s: devm_kzalloc error",
-> -				__func__);
-> -			ret = -ENOMEM;
-> -		}
-> +	data_out = kzalloc(1 + length, GFP_KERNEL);
-> +	if (!data_out)
-> +		return -ENOMEM;
-> +
-> +	data_out[0] = command;
-> +	memcpy(&data_out[1], data, length);
-> +	ret = spi_write(to_spi_device(port->dev), data_out, 1 + length);
-> +	if (ret) {
-> +		dev_err(port->dev, "%s: spi_write error(%i)",
-> +			__func__, ret);
->  	}
-> -	if (dataOut != NULL)
-> -		devm_kfree(port->dev, dataOut);
-> +	kfree(data_out);
->  
->  	return ret;
->  }
->  
-> -static int si4455_poll_cts(struct uart_port *port)
-> -{
-> -	return si4455_get_response(port, 0, NULL);
-> -}
-> -
->  static void si4455_set_power(struct si4455_port *priv,
->  				int on)
->  {
-> -	if (priv->shdn_gpio) {
-> -		if (on) {
-> -			gpiod_direction_output(priv->shdn_gpio, 0);
-> -			usleep_range(4000, 5000);
-> -			gpiod_set_value(priv->shdn_gpio, 1);
-> -			usleep_range(4000, 5000);
-> -		} else {
-> -			gpiod_direction_output(priv->shdn_gpio, 0);
-> -		}
-> +	if (!priv->shdn_gpio)
-> +		return;
-> +	if (on) {
-> +		gpiod_direction_output(priv->shdn_gpio, 0);
-> +		usleep_range(4000, 5000);
-> +		gpiod_set_value(priv->shdn_gpio, 1);
-> +		usleep_range(4000, 5000);
-> +	} else {
-> +		gpiod_direction_output(priv->shdn_gpio, 0);
->  	}
->  }
->  
-> @@ -363,27 +326,23 @@ static int si4455_get_part_info(struct uart_port *port,
->  				struct si4455_part_info *result)
->  {
->  	int ret;
-> -	u8 dataOut[] = { SI4455_CMD_ID_PART_INFO };
-> -	u8 dataIn[SI4455_CMD_REPLY_COUNT_PART_INFO];
-> -
-> -	ret = si4455_send_command_get_response(port,
-> -						sizeof(dataOut),
-> -						dataOut,
-> -						sizeof(dataIn),
-> -						dataIn);
-> -	if (ret == 0) {
-> -		result->CHIPREV = dataIn[0];
-> -		memcpy(&result->PART, &dataIn[1], sizeof(result->PART));
-> -		result->PBUILD = dataIn[3];
-> -		memcpy(&result->ID, &dataIn[4], sizeof(result->ID));
-> -		result->CUSTOMER = dataIn[6];
-> -		result->ROMID = dataIn[7];
-> -		result->BOND = dataIn[8];
-> -	} else {
-> +	u8 data_out[] = { SI4455_CMD_ID_PART_INFO };
-> +	u8 data_in[SI4455_CMD_REPLY_COUNT_PART_INFO];
-> +
-> +	ret = si4455_send_command_get_response(port, sizeof(data_out), data_out,
-> +					       sizeof(data_in), data_in);
-> +	if (ret) {
->  		dev_err(port->dev,
->  			"%s: si4455_send_command_get_response error(%i)",
-> -			__func__,
-> -			ret);
-> +			__func__, ret);
-
-
-return ret;
-
-> +	} else {
-> +		result->CHIPREV = data_in[0];
-> +		memcpy(&result->PART, &data_in[1], sizeof(result->PART));
-> +		result->PBUILD = data_in[3];
-> +		memcpy(&result->ID, &data_in[4], sizeof(result->ID));
-> +		result->CUSTOMER = data_in[6];
-> +		result->ROMID = data_in[7];
-> +		result->BOND = data_in[8];
-
-
-Then you can pull these lines in one tab.  Ideally, the success path is
-indented one tab and the error path is indented two tabs.
-
-
->  	}
->  	return ret;
->  }
-> @@ -395,33 +354,29 @@ static int si4455_get_int_status(struct uart_port *port,
->  					struct si4455_int_status *result)
->  {
->  	int ret;
-> -	u8 dataOut[] = {
-> +	u8 data_out[] = {
->  		SI4455_CMD_ID_GET_INT_STATUS,
->  		phClear,
->  		modemClear,
->  		chipClear
->  	};
-> -	u8 dataIn[SI4455_CMD_REPLY_COUNT_GET_INT_STATUS];
-> +	u8 data_in[SI4455_CMD_REPLY_COUNT_GET_INT_STATUS];
->  
-> -	ret = si4455_send_command_get_response(port,
-> -						sizeof(dataOut),
-> -						dataOut,
-> -						sizeof(dataIn),
-> -						dataIn);
-> -	if (ret == 0) {
-> -		result->INT_PEND       = dataIn[0];
-> -		result->INT_STATUS     = dataIn[1];
-> -		result->PH_PEND        = dataIn[2];
-> -		result->PH_STATUS      = dataIn[3];
-> -		result->MODEM_PEND     = dataIn[4];
-> -		result->MODEM_STATUS   = dataIn[5];
-> -		result->CHIP_PEND      = dataIn[6];
-> -		result->CHIP_STATUS    = dataIn[7];
-> -	} else {
-> +	ret = si4455_send_command_get_response(port, sizeof(data_out), data_out,
-> +					       sizeof(data_in), data_in);
-> +	if (ret) {
->  		dev_err(port->dev,
->  			"%s: si4455_send_command_get_response error(%i)",
-> -			__func__,
-> -			ret);
-> +			__func__, ret);
-> +	} else {
-> +		result->INT_PEND       = data_in[0];
-> +		result->INT_STATUS     = data_in[1];
-> +		result->PH_PEND        = data_in[2];
-> +		result->PH_STATUS      = data_in[3];
-> +		result->MODEM_PEND     = data_in[4];
-> +		result->MODEM_STATUS   = data_in[5];
-> +		result->CHIP_PEND      = data_in[6];
-> +		result->CHIP_STATUS    = data_in[7];
->  	}
->  	return ret;
->  }
-> @@ -431,32 +386,27 @@ static int si4455_get_modem_status(struct uart_port *port,
->  					struct si4455_modem_status *result)
->  {
->  	int ret;
-> -	u8 dataOut[] = {
-> +	u8 data_out[] = {
->  		SI4455_CMD_ID_GET_MODEM_STATUS,
->  		modemClear,
->  	};
-> -	u8 dataIn[SI4455_CMD_REPLY_COUNT_GET_MODEM_STATUS];
-> +	u8 data_in[SI4455_CMD_REPLY_COUNT_GET_MODEM_STATUS];
->  
-> -	ret = si4455_send_command_get_response(port,
-> -						sizeof(dataOut),
-> -						dataOut,
-> -						sizeof(dataIn),
-> -						dataIn);
-> -	if (ret == 0) {
-> -		result->MODEM_PEND      = dataIn[0];
-> -		result->MODEM_STATUS    = dataIn[1];
-> -		result->CURR_RSSI       = dataIn[2];
-> -		result->LATCH_RSSI      = dataIn[3];
-> -		result->ANT1_RSSI       = dataIn[4];
-> -		result->ANT2_RSSI       = dataIn[5];
-> -		memcpy(&result->AFC_FREQ_OFFSET,
-> -			&dataIn[6],
-> -			sizeof(result->AFC_FREQ_OFFSET));
-> -	} else {
-> +	ret = si4455_send_command_get_response(port, sizeof(data_out), data_out,
-> +					       sizeof(data_in), data_in);
-> +	if (ret) {
->  		dev_err(port->dev,
->  			"%s: si4455_send_command_get_response error(%i)",
-> -			__func__,
-> -			ret);
-> +			__func__, ret);
-> +	} else {
-> +		result->MODEM_PEND      = data_in[0];
-> +		result->MODEM_STATUS    = data_in[1];
-> +		result->CURR_RSSI       = data_in[2];
-> +		result->LATCH_RSSI      = data_in[3];
-> +		result->ANT1_RSSI       = data_in[4];
-> +		result->ANT2_RSSI       = data_in[5];
-> +		memcpy(&result->AFC_FREQ_OFFSET,
-> +		       &data_in[6], sizeof(result->AFC_FREQ_OFFSET));
->  	}
->  	return ret;
->  }
-> @@ -465,25 +415,21 @@ static int si4455_fifo_info(struct uart_port *port,
->  				u8 fifo,
->  				struct si4455_fifo_info *result)
->  {
-> -	int ret = 0;
-> -	u8 dataOut[SI4455_CMD_ARG_COUNT_FIFO_INFO] = {
-> +	int ret;
-> +	u8 data_out[SI4455_CMD_ARG_COUNT_FIFO_INFO] = {
->  		SI4455_CMD_ID_FIFO_INFO, fifo
->  	};
-> -	u8 dataIn[SI4455_CMD_REPLY_COUNT_FIFO_INFO] = { 0 };
-> +	u8 data_in[SI4455_CMD_REPLY_COUNT_FIFO_INFO] = { 0 };
->  
-> -	ret = si4455_send_command_get_response(port,
-> -						sizeof(dataOut),
-> -						dataOut,
-> -						sizeof(dataIn),
-> -						dataIn);
-> -	if (ret == 0) {
-> -		result->RX_FIFO_COUNT  = dataIn[0];
-> -		result->TX_FIFO_SPACE  = dataIn[1];
-> -	} else {
-> +	ret = si4455_send_command_get_response(port, sizeof(data_out), data_out,
-> +					       sizeof(data_in), data_in);
-> +	if (ret) {
->  		dev_err(port->dev,
->  			"%s: si4455_send_command_get_response error(%i)",
-> -			__func__,
-> -			ret);
-> +			__func__, ret);
-> +	} else {
-> +		result->RX_FIFO_COUNT  = data_in[0];
-> +		result->TX_FIFO_SPACE  = data_in[1];
->  	}
->  	return ret;
->  }
-> @@ -492,10 +438,7 @@ static int si4455_read_rx_fifo(struct uart_port *port,
->  				int length,
->  				u8 *data)
->  {
-> -	return si4455_read_data(port,
-> -				SI4455_CMD_ID_READ_RX_FIFO,
-> -				0,
-> -				length,
-> +	return si4455_read_data(port, SI4455_CMD_ID_READ_RX_FIFO, 0, length,
->  				data);
->  }
->  
-> @@ -503,35 +446,31 @@ static int si4455_write_tx_fifo(struct uart_port *port,
->  				int length,
->  				u8 *data)
->  {
-> -	return si4455_write_data(port,
-> -					SI4455_CMD_ID_WRITE_TX_FIFO,
-> -					0,
-> -					length,
-> -					data);
-> +	return si4455_write_data(port, SI4455_CMD_ID_WRITE_TX_FIFO, 0, length,
-> +				data);
->  }
->  
->  static int si4455_rx(struct uart_port *port,
->  			u32 channel,
->  			u8 condition,
->  			u16 length,
-> -			u8 nextState1,
-> -			u8 nextState2,
-> -			u8 nextState3)
-> +			u8 next_state1,
-> +			u8 next_state2,
-> +			u8 next_state3)
->  {
-> -	u8 dataOut[SI4455_CMD_ARG_COUNT_START_RX];
-> -
-> -	dataOut[0] = SI4455_CMD_ID_START_RX;
-> -	dataOut[1] = channel;
-> -	dataOut[2] = condition;
-> -	dataOut[3] = (u8)(length >> 8);
-> -	dataOut[4] = (u8)(length);
-> -	dataOut[5] = nextState1;
-> -	dataOut[6] = nextState2;
-> -	dataOut[7] = nextState3;
-> -
-> -	return si4455_send_command(port,
-> -					SI4455_CMD_ARG_COUNT_START_RX,
-> -					dataOut);
-> +	u8 data_out[SI4455_CMD_ARG_COUNT_START_RX];
-> +
-> +	data_out[0] = SI4455_CMD_ID_START_RX;
-> +	data_out[1] = channel;
-> +	data_out[2] = condition;
-> +	data_out[3] = (u8)(length >> 8);
-> +	data_out[4] = (u8)(length);
-> +	data_out[5] = next_state1;
-> +	data_out[6] = next_state2;
-> +	data_out[7] = next_state3;
-> +
-> +	return si4455_send_command(port, SI4455_CMD_ARG_COUNT_START_RX,
-> +					data_out);
->  }
->  
->  static int si4455_tx(struct uart_port *port,
-> @@ -539,31 +478,29 @@ static int si4455_tx(struct uart_port *port,
->  			u8 condition,
->  			u16 length)
->  {
-> -	u8 dataOut[/*6*/ SI4455_CMD_ARG_COUNT_START_TX];
-> -
-> -	dataOut[0] = SI4455_CMD_ID_START_TX;
-> -	dataOut[1] = channel;
-> -	dataOut[2] = condition;
-> -	dataOut[3] = (u8)(length >> 8);
-> -	dataOut[4] = (u8)(length);
-> -	/*TODO: radioCmd[5] = 0x44; in case of rev c2a*/
-> -
-> -	return si4455_send_command(port,
-> -					/*6*/ SI4455_CMD_ARG_COUNT_START_TX,
-> -					dataOut);
-> +	u8 data_out[/*6*/ SI4455_CMD_ARG_COUNT_START_TX];
-> +
-> +	data_out[0] = SI4455_CMD_ID_START_TX;
-> +	data_out[1] = channel;
-> +	data_out[2] = condition;
-> +	data_out[3] = (u8)(length >> 8);
-> +	data_out[4] = (u8)(length);
-> +	/*TODO: data_out[5] = 0x44; in case of rev c2a*/
-> +
-> +	return si4455_send_command(port, /*6*/ SI4455_CMD_ARG_COUNT_START_TX,
-> +					data_out);
->  }
->  
->  static int si4455_change_state(struct uart_port *port,
-> -				u8 nextState1)
-> +				u8 next_state1)
->  {
-> -	u8 dataOut[SI4455_CMD_ARG_COUNT_CHANGE_STATE];
-> +	u8 data_out[SI4455_CMD_ARG_COUNT_CHANGE_STATE];
->  
-> -	dataOut[0] = SI4455_CMD_ID_CHANGE_STATE;
-> -	dataOut[1] = (u8)nextState1;
-> +	data_out[0] = SI4455_CMD_ID_CHANGE_STATE;
-> +	data_out[1] = (u8)next_state1;
->  
-> -	return si4455_send_command(port,
-> -					SI4455_CMD_ARG_COUNT_CHANGE_STATE,
-> -					dataOut);
-> +	return si4455_send_command(port, SI4455_CMD_ARG_COUNT_CHANGE_STATE,
-> +					data_out);
->  }
->  
->  static int si4455_begin_tx(struct uart_port *port,
-> @@ -572,88 +509,66 @@ static int si4455_begin_tx(struct uart_port *port,
->  				u8 *data)
->  {
->  	int ret = 0;
-> -	struct si4455_int_status intStatus = { 0 };
-> -	struct si4455_fifo_info fifoInfo = { 0 };
-> +	struct si4455_int_status int_status = { 0 };
-> +	struct si4455_fifo_info fifo_info = { 0 };
->  
->  	dev_dbg(port->dev, "%s(%u, %u)", __func__, channel, length);
->  	if ((length > SI4455_FIFO_SIZE) || (length < 0))
-> -		ret = -EINVAL;
-> +		return -EINVAL;
->  
-> -	if (ret == 0) {
-> -		ret = si4455_change_state(port,
-> -			SI4455_CMD_CHANGE_STATE_ARG_NEW_STATE_ENUM_READY);
-> -		if (ret) {
-> -			dev_err(port->dev,
-> -				"%s: si4455_change_state error(%i)",
-> -				__func__,
-> -				ret);
-> -			goto end;
-> -		}
-> -		ret = si4455_get_int_status(port, 0, 0, 0, &intStatus);
-> -		if (ret) {
-> -			dev_err(port->dev,
-> -				"%s: si4455_get_int_status error(%i)",
-> -				__func__,
-> -				ret);
-> -			goto end;
-> -		}
-> -		ret = si4455_fifo_info(port,
-> -					SI4455_CMD_FIFO_INFO_ARG_TX_BIT,
-> -					&fifoInfo);
-> -		if (ret) {
-> -			dev_err(port->dev,
-> -				"%s: si4455_fifo_info error(%i)",
-> -				__func__,
-> -				ret);
-> -			goto end;
-> -		}
-> -		ret = si4455_write_tx_fifo(port, (u16)length, data);
-> -		if (ret) {
-> -			dev_err(port->dev,
-> -				"%s: si4455_write_tx_fifo error(%i)",
-> -				__func__,
-> -				ret);
-> -			goto end;
-> -		}
-> -		ret = si4455_tx(port,
-> -				(u8)channel,
-> -				0x30,
-> -				(u16)length);
-> -		if (ret) {
-> -			dev_err(port->dev,
-> -				"%s: si4455_tx error(%i)",
-> -				__func__,
-> -				ret);
-> -			goto end;
-> -		}
-> +	ret = si4455_change_state(port,
-> +				  SI4455_CMD_CHANGE_STATE_STATE_READY);
-> +	if (ret) {
-> +		dev_err(port->dev, "%s: si4455_change_state error(%i)",
-> +			__func__, ret);
-> +		return ret;
-> +	}
-> +	ret = si4455_get_int_status(port, 0, 0, 0, &int_status);
-> +	if (ret) {
-> +		dev_err(port->dev, "%s: si4455_get_int_status error(%i)",
-> +			__func__, ret);
-> +		return ret;
-> +	}
-> +	ret = si4455_fifo_info(port,
-> +			       SI4455_CMD_FIFO_INFO_ARG_TX_BIT, &fifo_info);
-> +	if (ret) {
-> +		dev_err(port->dev, "%s: si4455_fifo_info error(%i)",
-> +			__func__, ret);
-> +		return ret;
-> +	}
-> +	ret = si4455_write_tx_fifo(port, (u16)length, data);
-> +	if (ret) {
-> +		dev_err(port->dev, "%s: si4455_write_tx_fifo error(%i)",
-> +			__func__, ret);
-> +		return ret;
-> +	}
-> +	ret = si4455_tx(port, channel, 0x30, length);
-> +	if (ret) {
-> +		dev_err(port->dev, "%s: si4455_tx error(%i)",
-> +			__func__, ret);
-> +		return ret;
->  	}
-> -end:
->  	return ret;
-
-This is now "return 0;" which is nice because it means you can see it
-is the success path.
-
->  }
->  
->  static int si4455_end_tx(struct uart_port *port)
->  {
->  	int ret = 0;
-> -	struct si4455_int_status intStatus = { 0 };
-> +	struct si4455_int_status int_status = { 0 };
->  
->  	ret = si4455_change_state(port,
-> -			SI4455_CMD_CHANGE_STATE_ARG_NEW_STATE_ENUM_READY);
-> +				  SI4455_CMD_CHANGE_STATE_STATE_READY);
->  	if (ret) {
-> -		dev_err(port->dev,
-> -			"%s: si4455_change_state error(%i)",
-> -			__func__,
-> -			ret);
-> -		goto end;
-> +		dev_err(port->dev, "%s: si4455_change_state error(%i)",
-> +			__func__, ret);
-> +		return ret;
->  	}
-> -	ret = si4455_get_int_status(port, 0, 0, 0, &intStatus);
-> +	ret = si4455_get_int_status(port, 0, 0, 0, &int_status);
->  	if (ret) {
-> -		dev_err(port->dev,
-> -			"%s: si4455_get_int_status error(%i)",
-> -			__func__,
-> -			ret);
-> -		goto end;
-> +		dev_err(port->dev, "%s: si4455_get_int_status error(%i)",
-> +			__func__, ret);
-> +		return ret;
->  	}
-> -end:
->  	return ret;
-
-return 0;
-
->  }
->  
-> @@ -662,43 +577,36 @@ static int si4455_begin_rx(struct uart_port *port,
->  				u32 length)
->  {
->  	int ret = 0;
-> -	struct si4455_int_status intStatus = { 0 };
-> -	struct si4455_fifo_info fifoInfo = { 0 };
-> +	struct si4455_int_status int_status = { 0 };
-> +	struct si4455_fifo_info fifo_info = { 0 };
->  
->  	dev_dbg(port->dev, "%s(%u, %u)", __func__, channel, length);
-> -	ret = si4455_get_int_status(port, 0, 0, 0, &intStatus);
-> +	ret = si4455_get_int_status(port, 0, 0, 0, &int_status);
->  	if (ret) {
-> -		dev_err(port->dev,
-> -			"%s: si4455_get_int_status error(%i)",
-> -			__func__,
-> -			ret);
-> -		goto end;
-> +		dev_err(port->dev, "%s: si4455_get_int_status error(%i)",
-> +			__func__, ret);
-> +		return ret;
->  	}
->  	ret = si4455_fifo_info(port,
->  				SI4455_CMD_FIFO_INFO_ARG_RX_BIT,
-> -				&fifoInfo);
-> +				&fifo_info);
->  	if (ret) {
-> -		dev_err(port->dev,
-> -			"%s: si4455_fifo_info error(%i)",
-> -			__func__,
-> -			ret);
-> -		goto end;
-> +		dev_err(port->dev, "%s: si4455_fifo_info error(%i)",
-> +			__func__, ret);
-> +		return ret;
->  	}
->  	ret = si4455_rx(port,
->  			channel,
->  			0x00,
->  			length,
-> -			SI4455_CMD_START_RX_ARG_RXTIMEOUT_STATE_ENUM_RX,
-> -			SI4455_CMD_START_RX_ARG_RXVALID_STATE_ENUM_RX,
-> -			SI4455_CMD_START_RX_ARG_RXINVALID_STATE_ENUM_RX);
-> +			SI4455_CMD_START_RX_RXTIMEOUT_STATE_RX,
-> +			SI4455_CMD_START_RX_RXVALID_STATE_RX,
-> +			SI4455_CMD_START_RX_RXINVALID_STATE_RX);
->  	if (ret) {
-> -		dev_err(port->dev,
-> -			"%s: si4455_rx error(%i)",
-> -			__func__,
-> -			ret);
-> -		goto end;
-> +		dev_err(port->dev, "%s: si4455_rx error(%i)",
-> +			__func__, ret);
-> +		return ret;
->  	}
-> -end:
->  	return ret;
-
-return 0;
-
->  }
->  
-> @@ -710,59 +618,53 @@ static int si4455_end_rx(struct uart_port *port,
->  }
->  
->  static int si4455_configure(struct uart_port *port,
-> -				u8 *configurationData)
-> +				u8 *configuration_data)
->  {
->  	int ret = 0;
->  	u8 col;
->  	u8 response;
-> -	u8 numOfBytes;
-> -	struct si4455_int_status intStatus = { 0 };
-> -	u8 radioCmd[16u];
-> +	u8 count;
-> +	struct si4455_int_status int_status = { 0 };
-> +	u8 radio_cmd[16u];
->  
->  	/* While cycle as far as the pointer points to a command */
-> -	while (*configurationData != 0x00) {
-> +	while (*configuration_data != 0x00) {
->  		/* Commands structure in the array:
->  		 * --------------------------------
->  		 * LEN | <LEN length of data>
->  		 */
-> -		numOfBytes = *configurationData++;
-> -		dev_dbg(port->dev,
-> -			"%s: numOfBytes(%u)",
-> -			__func__,
-> -			numOfBytes);
-> -		if (numOfBytes > 16u) {
-> +		count = *configuration_data++;
-> +		dev_dbg(port->dev, "%s: count(%u)",
-> +			__func__, count);
-> +		if (count > 16u) {
->  			/* Initial configuration of Si4x55 */
->  			if (SI4455_CMD_ID_WRITE_TX_FIFO
-> -				 == *configurationData) {
-> -				if (numOfBytes > 128u) {
-> +				 == *configuration_data) {
-> +				if (count > 128u) {
->  					/* Number of command bytes exceeds
->  					 * maximal allowable length
->  					 */
-> -					dev_err(port->dev,
-> -						"%s: command length error(%i)",
-> -						__func__,
-> -						numOfBytes);
-> +					dev_err(port->dev, "%s: command length error(%i)",
-> +						__func__, count);
->  					ret = -EINVAL;
->  					break;
->  				}
->  
->  				/* Load array to the device */
-> -				configurationData++;
-> +				configuration_data++;
->  				ret = si4455_write_data(port,
->  						SI4455_CMD_ID_WRITE_TX_FIFO,
->  						1,
-> -						numOfBytes - 1,
-> -						configurationData);
-> +						count - 1,
-> +						configuration_data);
->  				if (ret) {
-> -					dev_err(port->dev,
-> -						"%s: si4455_write_data error(%i)",
-> -						__func__,
-> -						ret);
-> +					dev_err(port->dev, "%s: si4455_write_data error(%i)",
-> +						__func__, ret);
->  					break;
->  				}
->  
->  				/* Point to the next command */
-> -				configurationData += numOfBytes - 1;
-> +				configuration_data += count - 1;
->  
->  				/* Continue command interpreter */
->  				continue;
-> @@ -775,52 +677,41 @@ static int si4455_configure(struct uart_port *port,
->  			}
->  		}
->  
-> -		for (col = 0u; col < numOfBytes; col++) {
-> -			radioCmd[col] = *configurationData;
-> -			configurationData++;
-> +		for (col = 0u; col < count; col++) {
-> +			radio_cmd[col] = *configuration_data;
-> +			configuration_data++;
->  		}
->  
-> -		dev_dbg(port->dev,
-> -			"%s: radioCmd[0](%u)",
-> -			__func__,
-> -			radioCmd[0]);
-> -		ret = si4455_send_command_get_response(port,
-> -							numOfBytes,
-> -							radioCmd,
-> -							1,
-> -							&response);
-> +		dev_dbg(port->dev, "%s: radio_cmd[0](%u)", __func__, radio_cmd[0]);
-> +		ret = si4455_send_command_get_response(port, count, radio_cmd,
-> +						       1, &response);
->  		if (ret) {
->  			dev_err(port->dev,
->  				"%s: si4455_send_command_get_response error(%i)",
-> -				__func__,
-> -				ret);
-> +				__func__, ret);
->  			break;
->  		}
->  
->  		/* Check response byte of EZCONFIG_CHECK command */
-> -		if (radioCmd[0] == SI4455_CMD_ID_EZCONFIG_CHECK) {
-> +		if (radio_cmd[0] == SI4455_CMD_ID_EZCONFIG_CHECK) {
->  			if (response) {
->  				/* Number of command bytes exceeds
->  				 * maximal allowable length
->  				 */
->  				ret = -EIO;
-> -				dev_err(port->dev,
-> -					"%s: EZConfig check error(%i)",
-> -					__func__,
-> -					radioCmd[0]);
-> +				dev_err(port->dev, "%s: EZConfig check error(%i)",
-> +					__func__, radio_cmd[0]);
->  				break;
->  			}
->  		}
->  
->  		/* Get and clear all interrupts.  An error has occurred... */
-> -		si4455_get_int_status(port, 0, 0, 0, &intStatus);
-> -		if (intStatus.CHIP_PEND
-> -			& SI4455_CMD_GET_CHIP_STATUS_REP_CMD_ERROR_PEND_MASK) {
-> +		si4455_get_int_status(port, 0, 0, 0, &int_status);
-> +		if (int_status.CHIP_PEND
-> +			& SI4455_CMD_GET_CHIP_STATUS_ERROR_PEND_MASK) {
->  			ret = -EIO;
-> -			dev_err(port->dev,
-> -				"%s: chip error(%i)",
-> -				__func__,
-> -				intStatus.CHIP_PEND);
-> +			dev_err(port->dev, "%s: chip error(%i)",
-> +				__func__, int_status.CHIP_PEND);
->  			break;
->  		}
->  	}
-> @@ -969,34 +860,34 @@ static irqreturn_t si4455_port_irq(struct si4455_port *s)
->  {
->  	struct uart_port *port = &s->one.port;
->  	irqreturn_t ret = IRQ_NONE;
-> -	struct si4455_int_status intStatus = { 0 };
-> -	struct si4455_fifo_info fifoInfo = { 0 };
-> +	struct si4455_int_status int_status = { 0 };
-> +	struct si4455_fifo_info fifo_info = { 0 };
->  
->  	mutex_lock(&s->mutex);
->  	if (s->configured && (s->power_count > 0)) {
-> -		if (!si4455_get_int_status(port, 0, 0, 0, &intStatus)) {
-> +		if (!si4455_get_int_status(port, 0, 0, 0, &int_status)) {
->  			si4455_get_modem_status(port, 0, &s->modem_status);
-> -			if (intStatus.CHIP_PEND
-> -			& SI4455_CMD_GET_CHIP_STATUS_REP_CMD_ERROR_PEND_BIT) {
-> +			if (int_status.CHIP_PEND
-> +			    & SI4455_CMD_GET_CHIP_STATUS_ERROR_PEND_BIT) {
->  				dev_err(port->dev,
->  					"%s: CHIP_STATUS:CMD_ERROR_PEND",
->  					__func__);
-> -			} else if (intStatus.PH_PEND
-> -			& SI4455_CMD_GET_INT_STATUS_REP_PACKET_SENT_PEND_BIT) {
-> +			} else if (int_status.PH_PEND
-> +				   & SI4455_CMD_GET_INT_STATUS_PACKET_SENT_PEND_BIT) {
->  				dev_dbg(port->dev,
->  					"%s: PH_STATUS:PACKET_SENT_PEND",
->  					__func__);
->  				si4455_handle_tx_pend(s);
-> -			} else if (intStatus.PH_PEND
-> -			& SI4455_CMD_GET_INT_STATUS_REP_PACKET_RX_PEND_BIT) {
-> +			} else if (int_status.PH_PEND
-> +				   & SI4455_CMD_GET_INT_STATUS_PACKET_RX_PEND_BIT) {
->  				dev_dbg(port->dev,
->  					"%s: PH_STATUS:PACKET_RX_PEND",
->  					__func__);
->  				s->current_rssi = s->modem_status.CURR_RSSI;
-> -				si4455_fifo_info(port, 0, &fifoInfo);
-> +				si4455_fifo_info(port, 0, &fifo_info);
->  				si4455_handle_rx_pend(s);
-> -			} else if (intStatus.PH_PEND
-> -			& SI4455_CMD_GET_INT_STATUS_REP_CRC_ERROR_BIT) {
-> +			} else if (int_status.PH_PEND
-> +				   & SI4455_CMD_GET_INT_STATUS_CRC_ERROR_BIT) {
->  				dev_dbg(port->dev,
->  					"%s: PH_STATUS:CRC_ERROR_PEND",
->  					__func__);
-> @@ -1049,12 +940,6 @@ static void si4455_set_mctrl(struct uart_port *port,
->  	dev_dbg(port->dev, "%s", __func__);
->  }
->  
-> -static void si4455_break_ctl(struct uart_port *port,
-> -				int break_state)
-> -{
-> -	dev_dbg(port->dev, "%s", __func__);
-> -}
-> -
->  static void si4455_set_termios(struct uart_port *port,
->  				struct ktermios *termios,
->  				struct ktermios *old)
-> @@ -1062,14 +947,6 @@ static void si4455_set_termios(struct uart_port *port,
->  	dev_dbg(port->dev, "%s", __func__);
->  }
->  
-> -static int si4455_rs485_config(struct uart_port *port,
-> -				struct serial_rs485 *rs485)
-> -{
-> -	dev_dbg(port->dev, "%s", __func__);
-> -
-> -	return 0;
-> -}
-> -
->  static int si4455_startup(struct uart_port *port)
->  {
->  	dev_dbg(port->dev, "%s", __func__);
-> @@ -1087,21 +964,14 @@ static const char *si4455_type(struct uart_port *port)
->  {
->  	struct si4455_port *s = dev_get_drvdata(port->dev);
->  
-> -	if (port->type == PORT_SI4455) {
-> -		if (s->part_info.ROMID == 3)
-> -			return "SI4455-B1A";
-> -		else if (s->part_info.ROMID == 6)
-> -			return "SI4455-C2A";
-> -
-> -	}
-> -	return NULL;
-> -}
-> +	if (port->type != PORT_SI4455)
-> +		return NULL;
-> +	if (s->part_info.ROMID == 3)
-> +		return "SI4455-B1A";
-> +	else if (s->part_info.ROMID == 6)
-> +		return "SI4455-C2A";
->  
-> -static int si4455_request_port(struct uart_port *port)
-> -{
-> -	/* Do nothing */
-> -	dev_dbg(port->dev, "%s", __func__);
-> -	return 0;
-> +	return "SI4455(UNKNOWN-REV)";
->  }
->  
->  static void si4455_config_port(struct uart_port *port,
-> @@ -1142,93 +1012,77 @@ static int si4455_ioctl(struct uart_port *port,
->  			unsigned long arg)
->  {
->  	struct si4455_port *s = dev_get_drvdata(port->dev);
-> +	void __user *argp = (void *)arg;
->  	int ret = 0;
->  
->  	dev_dbg(port->dev, "%s(%u)", __func__, cmd);
->  	switch (cmd) {
->  	case SI4455_IOC_SEZC:
-> -	memcpy(&s->configuration, (void *)arg, sizeof(s->configuration));
-> -	dev_dbg(port->dev,
-> -		"%s(%u): SI4455_IOC_SEZC, length(%i)",
-> -		__func__,
-> -		cmd,
-> -		s->configuration.length);
-> -	ret = si4455_re_configure(port);
-> +		ret = copy_from_user(&s->configuration, argp, sizeof(s->configuration));
-> +		if (ret) {
-> +			dev_err(port->dev, "%s: SI4455_IOC_SEZC: copy_from_user_error(%i)",
-> +				__func__, ret);
-> +			return -EIO;
-
-
-This isn't right.  Don't allow a malitious user to spam dmesg with error
-messages.  Return -EFAULT if copy_from_user() fails.
-
-	if (copy_from_user(&s->configuration, argp, sizeof(s->configuration)))
-		return -EFAULT;
-
-
-
-
-> +		}
-> +		dev_dbg(port->dev, "%s(%u): SI4455_IOC_SEZC, length(%i)",
-> +			__func__, cmd, s->configuration.length);
-> +		ret = si4455_re_configure(port);
->  	break;
->  	case SI4455_IOC_CEZC:
-> -	dev_dbg(port->dev,
-> -		"%s(%u): SI4455_IOC_CEZC",
-> -		__func__,
-> -		cmd);
-> -	memset(&s->configuration, 0x00, sizeof(s->configuration));
-> -	ret = si4455_re_configure(port);
-> +		dev_dbg(port->dev, "%s(%u): SI4455_IOC_CEZC",
-> +			__func__, cmd);
-> +		memset(&s->configuration, 0x00, sizeof(s->configuration));
-> +		ret = si4455_re_configure(port);
->  	break;
->  	case SI4455_IOC_SEZP:
-> -	memcpy(&s->patch, (void *)arg, sizeof(s->patch));
-> -	dev_dbg(port->dev,
-> -		"%s(%u): SI4455_IOC_SEZP, length(%i)",
-> -		__func__,
-> -		cmd,
-> -		s->configuration.length);
-> +		ret = copy_from_user(&s->patch, argp, sizeof(s->patch));
-> +		if (ret) {
-> +			dev_err(port->dev, "%s: SI4455_IOC_SEZP: copy_from_user_error(%i)",
-> +				__func__, ret);
-> +			return -EIO;
-> +		}
-> +		dev_dbg(port->dev, "%s(%u): SI4455_IOC_SEZP, length(%i)",
-> +			__func__, cmd, s->configuration.length);
->  	break;
->  	case SI4455_IOC_CEZP:
-> -	dev_dbg(port->dev,
-> -		"%s(%u): SI4455_IOC_CEZP",
-> -		__func__,
-> -		cmd);
-> -	memset(&s->patch, 0x00, sizeof(s->patch));
-> +		dev_dbg(port->dev, "%s(%u): SI4455_IOC_CEZP",
-> +			__func__, cmd);
-> +		memset(&s->patch, 0x00, sizeof(s->patch));
->  	break;
->  	case SI4455_IOC_STXC:
-> -	s->tx_channel = *((u32 *)arg);
-> -	dev_dbg(port->dev,
-> -		"%s(%u): SI4455_IOC_STXC, tx_channel(%i)",
-> -		__func__,
-> -		cmd,
-> -		s->tx_channel);
-> +		s->tx_channel = *((u32 *)arg);
-
-No.  Any use of arg after the argp assignment in this function is a
-security problem.  All accesses of "argp" need to use copy_to/from_user
-or get/put_user().
-
-> +		dev_dbg(port->dev, "%s(%u): SI4455_IOC_STXC, tx_channel(%i)",
-> +			__func__, cmd, s->tx_channel);
->  	break;
->  	case SI4455_IOC_GTXC:
-> -	dev_dbg(port->dev,
-> -		"%s(%u): SI4455_IOC_GTXC",
-> -		__func__,
-> -		cmd);
-> -	*((u32 *)arg) = s->tx_channel;
-> +		dev_dbg(port->dev, "%s(%u): SI4455_IOC_GTXC",
-> +			__func__, cmd);
-> +		*((u32 *)arg) = s->tx_channel;
->  	break;
->  	case SI4455_IOC_SRXC:
-> -	s->rx_channel = *((u32 *)arg);
-> -	dev_dbg(port->dev,
-> -		"%s(%u): SI4455_IOC_SRXC, rx_channel(%i)",
-> -		__func__,
-> -		cmd,
-> -		s->rx_channel);
-> +		s->rx_channel = *((u32 *)arg);
-> +		dev_dbg(port->dev, "%s(%u): SI4455_IOC_SRXC, rx_channel(%i)",
-> +			__func__, cmd, s->rx_channel);
->  	break;
->  	case SI4455_IOC_GRXC:
-> -	dev_dbg(port->dev,
-> -		"%s(%u): SI4455_IOC_GRXC",
-> -		__func__,
-> -		cmd);
-> -	*((u32 *)arg) = s->rx_channel;
-> +		dev_dbg(port->dev, "%s(%u): SI4455_IOC_GRXC",
-> +			__func__, cmd);
-> +		*((u32 *)arg) = s->rx_channel;
->  	break;
->  	case SI4455_IOC_SSIZ:
-> -	s->package_size = *((u32 *)arg);
-> -	dev_dbg(port->dev,
-> -		"%s(%u): SI4455_IOC_SSIZ, package_size(%i)",
-> -		__func__,
-> -		cmd,
-> -		s->package_size);
-> +		s->package_size = *((u32 *)arg);
-> +		dev_dbg(port->dev, "%s(%u): SI4455_IOC_SSIZ, package_size(%i)",
-> +			__func__, cmd, s->package_size);
->  	break;
->  	case SI4455_IOC_GSIZ:
-> -	dev_dbg(port->dev,
-> -		"%s(%u): SI4455_IOC_GSIZ",
-> -		__func__,
-> -		cmd);
-> -	*((u32 *)arg) = s->package_size;
-> +		dev_dbg(port->dev, "%s(%u): SI4455_IOC_GSIZ",
-> +			__func__, cmd);
-> +		*((u32 *)arg) = s->package_size;
->  	break;
->  	case SI4455_IOC_GRSSI:
-> -	dev_dbg(port->dev,
-> -		"%s(%u): SI4455_IOC_GRSSI",
-> -		__func__,
-> -		cmd);
-> -	*((u32 *)arg) = s->current_rssi;
-> +		dev_dbg(port->dev, "%s(%u): SI4455_IOC_GRSSI",
-> +			__func__, cmd);
-> +		*((u32 *)arg) = s->current_rssi;
->  	break;
->  	default:
->  		ret = -ENOIOCTLCMD;
-
-regards,
-dan carpenter
-
+-- 
+Revd Jonathan McDowell, ULC | Don't just stand there, kill something.
