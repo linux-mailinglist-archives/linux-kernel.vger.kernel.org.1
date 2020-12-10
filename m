@@ -2,26 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3832D6290
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC192D628B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391811AbgLJQxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:53:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44252 "EHLO mail.kernel.org"
+        id S2391317AbgLJQuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:50:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391063AbgLJOhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:37:05 -0500
+        id S2391068AbgLJOhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:37:17 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Luo Meng <luomeng12@huawei.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.4 51/54] Input: i8042 - fix error return code in i8042_setup_aux()
-Date:   Thu, 10 Dec 2020 15:27:28 +0100
-Message-Id: <20201210142604.532186562@linuxfoundation.org>
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.4 53/54] netfilter: nftables_offload: set address type in control dissector
+Date:   Thu, 10 Dec 2020 15:27:30 +0100
+Message-Id: <20201210142604.623207704@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
 References: <20201210142602.037095225@linuxfoundation.org>
@@ -33,37 +30,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Meng <luomeng12@huawei.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-commit 855b69857830f8d918d715014f05e59a3f7491a0 upstream.
+commit 3c78e9e0d33a27ab8050e4492c03c6a1f8d0ed6b upstream.
 
-Fix to return a negative error code from the error handling case
-instead of 0 in function i8042_setup_aux(), as done elsewhere in this
-function.
+This patch adds nft_flow_rule_set_addr_type() to set the address type
+from the nft_payload expression accordingly.
 
-Fixes: f81134163fc7 ("Input: i8042 - use platform_driver_probe")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Luo Meng <luomeng12@huawei.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20201123133420.4071187-1-luomeng12@huawei.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+If the address type is not set in the control dissector then a rule that
+matches either on source or destination IP address does not work.
+
+After this patch, nft hardware offload generates the flow dissector
+configuration as tc-flower does to match on an IP address.
+
+This patch has been also tested functionally to make sure packets are
+filtered out by the NIC.
+
+This is also getting the code aligned with the existing netfilter flow
+offload infrastructure which is also setting the control dissector.
+
+Fixes: c9626a2cbdb2 ("netfilter: nf_tables: add hardware offload support")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/input/serio/i8042.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/net/netfilter/nf_tables_offload.h |    4 ++++
+ net/netfilter/nf_tables_offload.c         |   17 +++++++++++++++++
+ net/netfilter/nft_payload.c               |    4 ++++
+ 3 files changed, 25 insertions(+)
 
---- a/drivers/input/serio/i8042.c
-+++ b/drivers/input/serio/i8042.c
-@@ -1468,7 +1468,8 @@ static int __init i8042_setup_aux(void)
- 	if (error)
- 		goto err_free_ports;
+--- a/include/net/netfilter/nf_tables_offload.h
++++ b/include/net/netfilter/nf_tables_offload.h
+@@ -37,6 +37,7 @@ void nft_offload_update_dependency(struc
  
--	if (aux_enable())
-+	error = aux_enable();
-+	if (error)
- 		goto err_free_irq;
+ struct nft_flow_key {
+ 	struct flow_dissector_key_basic			basic;
++	struct flow_dissector_key_control		control;
+ 	union {
+ 		struct flow_dissector_key_ipv4_addrs	ipv4;
+ 		struct flow_dissector_key_ipv6_addrs	ipv6;
+@@ -61,6 +62,9 @@ struct nft_flow_rule {
  
- 	i8042_aux_irq_registered = true;
+ #define NFT_OFFLOAD_F_ACTION	(1 << 0)
+ 
++void nft_flow_rule_set_addr_type(struct nft_flow_rule *flow,
++				 enum flow_dissector_key_id addr_type);
++
+ struct nft_rule;
+ struct nft_flow_rule *nft_flow_rule_create(struct net *net, const struct nft_rule *rule);
+ void nft_flow_rule_destroy(struct nft_flow_rule *flow);
+--- a/net/netfilter/nf_tables_offload.c
++++ b/net/netfilter/nf_tables_offload.c
+@@ -28,6 +28,23 @@ static struct nft_flow_rule *nft_flow_ru
+ 	return flow;
+ }
+ 
++void nft_flow_rule_set_addr_type(struct nft_flow_rule *flow,
++				 enum flow_dissector_key_id addr_type)
++{
++	struct nft_flow_match *match = &flow->match;
++	struct nft_flow_key *mask = &match->mask;
++	struct nft_flow_key *key = &match->key;
++
++	if (match->dissector.used_keys & BIT(FLOW_DISSECTOR_KEY_CONTROL))
++		return;
++
++	key->control.addr_type = addr_type;
++	mask->control.addr_type = 0xffff;
++	match->dissector.used_keys |= BIT(FLOW_DISSECTOR_KEY_CONTROL);
++	match->dissector.offset[FLOW_DISSECTOR_KEY_CONTROL] =
++		offsetof(struct nft_flow_key, control);
++}
++
+ struct nft_flow_rule *nft_flow_rule_create(struct net *net,
+ 					   const struct nft_rule *rule)
+ {
+--- a/net/netfilter/nft_payload.c
++++ b/net/netfilter/nft_payload.c
+@@ -197,6 +197,7 @@ static int nft_payload_offload_ip(struct
+ 
+ 		NFT_OFFLOAD_MATCH(FLOW_DISSECTOR_KEY_IPV4_ADDRS, ipv4, src,
+ 				  sizeof(struct in_addr), reg);
++		nft_flow_rule_set_addr_type(flow, FLOW_DISSECTOR_KEY_IPV4_ADDRS);
+ 		break;
+ 	case offsetof(struct iphdr, daddr):
+ 		if (priv->len != sizeof(struct in_addr))
+@@ -204,6 +205,7 @@ static int nft_payload_offload_ip(struct
+ 
+ 		NFT_OFFLOAD_MATCH(FLOW_DISSECTOR_KEY_IPV4_ADDRS, ipv4, dst,
+ 				  sizeof(struct in_addr), reg);
++		nft_flow_rule_set_addr_type(flow, FLOW_DISSECTOR_KEY_IPV4_ADDRS);
+ 		break;
+ 	case offsetof(struct iphdr, protocol):
+ 		if (priv->len != sizeof(__u8))
+@@ -233,6 +235,7 @@ static int nft_payload_offload_ip6(struc
+ 
+ 		NFT_OFFLOAD_MATCH(FLOW_DISSECTOR_KEY_IPV6_ADDRS, ipv6, src,
+ 				  sizeof(struct in6_addr), reg);
++		nft_flow_rule_set_addr_type(flow, FLOW_DISSECTOR_KEY_IPV6_ADDRS);
+ 		break;
+ 	case offsetof(struct ipv6hdr, daddr):
+ 		if (priv->len != sizeof(struct in6_addr))
+@@ -240,6 +243,7 @@ static int nft_payload_offload_ip6(struc
+ 
+ 		NFT_OFFLOAD_MATCH(FLOW_DISSECTOR_KEY_IPV6_ADDRS, ipv6, dst,
+ 				  sizeof(struct in6_addr), reg);
++		nft_flow_rule_set_addr_type(flow, FLOW_DISSECTOR_KEY_IPV6_ADDRS);
+ 		break;
+ 	case offsetof(struct ipv6hdr, nexthdr):
+ 		if (priv->len != sizeof(__u8))
 
 
