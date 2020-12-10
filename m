@@ -2,326 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451BF2D5630
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34912D5643
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387821AbgLJJJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:09:10 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:56653 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732215AbgLJJJH (ORCPT
+        id S1730328AbgLJJLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:11:50 -0500
+Received: from ns2.baikalelectronics.com ([94.125.187.42]:36138 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728614AbgLJJLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:09:07 -0500
-X-UUID: 6a2b4a5619d0410e859be42888cc0a1c-20201210
-X-UUID: 6a2b4a5619d0410e859be42888cc0a1c-20201210
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 746686106; Thu, 10 Dec 2020 17:07:50 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 10 Dec 2020 17:07:48 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 10 Dec 2020 17:07:48 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Thu, 10 Dec 2020 04:11:17 -0500
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Subject: [PATCH v8, 6/6] drm/mediatek: add support for mediatek SOC MT8183
-Date:   Thu, 10 Dec 2020 17:07:42 +0800
-Message-ID: <1607591262-21736-7-git-send-email-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1607591262-21736-1-git-send-email-yongqiang.niu@mediatek.com>
-References: <1607591262-21736-1-git-send-email-yongqiang.niu@mediatek.com>
+        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v6 00/19] dt-bindings: usb: Add generic USB HCD, xHCI, DWC USB3 DT schema
+Date:   Thu, 10 Dec 2020 12:09:24 +0300
+Message-ID: <20201210090944.16283-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add support for mediatek SOC MT8183
-1. add ovl private data
-2. add rdma private data
-3. add mutes private data
-4. add main and external path module for crtc create
+We've performed some work on the Generic USB HCD, xHCI and DWC USB3 DT
+bindings in the framework of the Baikal-T1 SoC support integration into
+the kernel. This patchset is a result of that work.
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c  | 18 ++++++++++++
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c |  6 ++++
- drivers/gpu/drm/mediatek/mtk_drm_ddp.c   | 47 ++++++++++++++++++++++++++++++++
- drivers/gpu/drm/mediatek/mtk_drm_drv.c   | 43 +++++++++++++++++++++++++++++
- 4 files changed, 114 insertions(+)
+First of all we moved the generic USB properties from the legacy text
+bindings to the USB DT schema. The properties have been distributed
+between three DT schemas dedicated for particular types of USB
+controllers: Generic USB controller properties (like node-naming, phys,
+maximum-speed, etc), Generic USB Host Controller bindings (companion and
+TPL support), Dual-Role USB Controller (OTG revision, DR mode,
+HNP/SRP/ADP protocols, etc). So the USB controllers DT bindings from now
+can validate the nodes against a generic USB-controller schema suitable
+for the controller functionality.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-index 28651bc..8cf9f3b 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-@@ -430,11 +430,29 @@ static int mtk_disp_ovl_remove(struct platform_device *pdev)
- 	.fmt_rgb565_is_0 = true,
- };
- 
-+static const struct mtk_disp_ovl_data mt8183_ovl_driver_data = {
-+	.addr = DISP_REG_OVL_ADDR_MT8173,
-+	.gmc_bits = 10,
-+	.layer_nr = 4,
-+	.fmt_rgb565_is_0 = true,
-+};
-+
-+static const struct mtk_disp_ovl_data mt8183_ovl_2l_driver_data = {
-+	.addr = DISP_REG_OVL_ADDR_MT8173,
-+	.gmc_bits = 10,
-+	.layer_nr = 2,
-+	.fmt_rgb565_is_0 = true,
-+};
-+
- static const struct of_device_id mtk_disp_ovl_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt2701-disp-ovl",
- 	  .data = &mt2701_ovl_driver_data},
- 	{ .compatible = "mediatek,mt8173-disp-ovl",
- 	  .data = &mt8173_ovl_driver_data},
-+	{ .compatible = "mediatek,mt8183-disp-ovl",
-+	  .data = &mt8183_ovl_driver_data},
-+	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
-+	  .data = &mt8183_ovl_2l_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_ovl_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-index 0508392..86e77c2 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-@@ -359,11 +359,17 @@ static int mtk_disp_rdma_remove(struct platform_device *pdev)
- 	.fifo_size = SZ_8K,
- };
- 
-+static const struct mtk_disp_rdma_data mt8183_rdma_driver_data = {
-+	.fifo_size = 5 * SZ_1K,
-+};
-+
- static const struct of_device_id mtk_disp_rdma_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt2701-disp-rdma",
- 	  .data = &mt2701_rdma_driver_data},
- 	{ .compatible = "mediatek,mt8173-disp-rdma",
- 	  .data = &mt8173_rdma_driver_data},
-+	{ .compatible = "mediatek,mt8183-disp-rdma",
-+	  .data = &mt8183_rdma_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_rdma_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
-index 014c1bb..60788c1 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
-@@ -15,6 +15,8 @@
- 
- #define MT2701_DISP_MUTEX0_MOD0			0x2c
- #define MT2701_DISP_MUTEX0_SOF0			0x30
-+#define MT8183_DISP_MUTEX0_MOD0			0x30
-+#define MT8183_DISP_MUTEX0_SOF0			0x2c
- 
- #define DISP_REG_MUTEX_EN(n)			(0x20 + 0x20 * (n))
- #define DISP_REG_MUTEX(n)			(0x24 + 0x20 * (n))
-@@ -25,6 +27,18 @@
- 
- #define INT_MUTEX				BIT(1)
- 
-+#define MT8183_MUTEX_MOD_DISP_RDMA0		0
-+#define MT8183_MUTEX_MOD_DISP_RDMA1		1
-+#define MT8183_MUTEX_MOD_DISP_OVL0		9
-+#define MT8183_MUTEX_MOD_DISP_OVL0_2L		10
-+#define MT8183_MUTEX_MOD_DISP_OVL1_2L		11
-+#define MT8183_MUTEX_MOD_DISP_WDMA0		12
-+#define MT8183_MUTEX_MOD_DISP_COLOR0		13
-+#define MT8183_MUTEX_MOD_DISP_CCORR0		14
-+#define MT8183_MUTEX_MOD_DISP_AAL0		15
-+#define MT8183_MUTEX_MOD_DISP_GAMMA0		16
-+#define MT8183_MUTEX_MOD_DISP_DITHER0		17
-+
- #define MT8173_MUTEX_MOD_DISP_OVL0		11
- #define MT8173_MUTEX_MOD_DISP_OVL1		12
- #define MT8173_MUTEX_MOD_DISP_RDMA0		13
-@@ -74,6 +88,10 @@
- #define MUTEX_SOF_DSI2			5
- #define MUTEX_SOF_DSI3			6
- 
-+#define MT8183_MUTEX_SOF_DPI0			2
-+#define MT8183_MUTEX_EOF_DSI0			(MUTEX_SOF_DSI0 << 6)
-+#define MT8183_MUTEX_EOF_DPI0			(MT8183_MUTEX_SOF_DPI0 << 6)
-+
- 
- struct mtk_disp_mutex {
- 	int id;
-@@ -153,6 +171,20 @@ struct mtk_ddp {
- 	[DDP_COMPONENT_WDMA1] = MT8173_MUTEX_MOD_DISP_WDMA1,
- };
- 
-+static const unsigned int mt8183_mutex_mod[DDP_COMPONENT_ID_MAX] = {
-+	[DDP_COMPONENT_AAL0] = MT8183_MUTEX_MOD_DISP_AAL0,
-+	[DDP_COMPONENT_CCORR] = MT8183_MUTEX_MOD_DISP_CCORR0,
-+	[DDP_COMPONENT_COLOR0] = MT8183_MUTEX_MOD_DISP_COLOR0,
-+	[DDP_COMPONENT_DITHER] = MT8183_MUTEX_MOD_DISP_DITHER0,
-+	[DDP_COMPONENT_GAMMA] = MT8183_MUTEX_MOD_DISP_GAMMA0,
-+	[DDP_COMPONENT_OVL0] = MT8183_MUTEX_MOD_DISP_OVL0,
-+	[DDP_COMPONENT_OVL_2L0] = MT8183_MUTEX_MOD_DISP_OVL0_2L,
-+	[DDP_COMPONENT_OVL_2L1] = MT8183_MUTEX_MOD_DISP_OVL1_2L,
-+	[DDP_COMPONENT_RDMA0] = MT8183_MUTEX_MOD_DISP_RDMA0,
-+	[DDP_COMPONENT_RDMA1] = MT8183_MUTEX_MOD_DISP_RDMA1,
-+	[DDP_COMPONENT_WDMA0] = MT8183_MUTEX_MOD_DISP_WDMA0,
-+};
-+
- static const unsigned int mt2712_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] = {
- 	[DDP_MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
- 	[DDP_MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0,
-@@ -163,6 +195,12 @@ struct mtk_ddp {
- 	[DDP_MUTEX_SOF_DSI3] = MUTEX_SOF_DSI3,
- };
- 
-+static const unsigned int mt8183_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] = {
-+	[DDP_MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
-+	[DDP_MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0 | MT8183_MUTEX_EOF_DSI0,
-+	[DDP_MUTEX_SOF_DPI0] = MT8183_MUTEX_SOF_DPI0 | MT8183_MUTEX_EOF_DPI0,
-+};
-+
- static const struct mtk_ddp_data mt2701_ddp_driver_data = {
- 	.mutex_mod = mt2701_mutex_mod,
- 	.mutex_sof = mt2712_mutex_sof,
-@@ -184,6 +222,13 @@ struct mtk_ddp {
- 	.mutex_sof_reg = MT2701_DISP_MUTEX0_SOF0,
- };
- 
-+static const struct mtk_ddp_data mt8183_ddp_driver_data = {
-+	.mutex_mod = mt8183_mutex_mod,
-+	.mutex_sof = mt8183_mutex_sof,
-+	.mutex_mod_reg = MT8183_DISP_MUTEX0_MOD0,
-+	.mutex_sof_reg = MT8183_DISP_MUTEX0_SOF0,
-+};
-+
- struct mtk_disp_mutex *mtk_disp_mutex_get(struct device *dev, unsigned int id)
- {
- 	struct mtk_ddp *ddp = dev_get_drvdata(dev);
-@@ -402,6 +447,8 @@ static int mtk_ddp_remove(struct platform_device *pdev)
- 	  .data = &mt2712_ddp_driver_data},
- 	{ .compatible = "mediatek,mt8173-disp-mutex",
- 	  .data = &mt8173_ddp_driver_data},
-+	{ .compatible = "mediatek,mt8183-disp-mutex",
-+	  .data = &mt8183_ddp_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, ddp_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 59c85c6..a7e9f88 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -131,6 +131,24 @@
- 	DDP_COMPONENT_DPI0,
- };
- 
-+static const enum mtk_ddp_comp_id mt8183_mtk_ddp_main[] = {
-+	DDP_COMPONENT_OVL0,
-+	DDP_COMPONENT_OVL_2L0,
-+	DDP_COMPONENT_RDMA0,
-+	DDP_COMPONENT_COLOR0,
-+	DDP_COMPONENT_CCORR,
-+	DDP_COMPONENT_AAL0,
-+	DDP_COMPONENT_GAMMA,
-+	DDP_COMPONENT_DITHER,
-+	DDP_COMPONENT_DSI0,
-+};
-+
-+static const enum mtk_ddp_comp_id mt8183_mtk_ddp_ext[] = {
-+	DDP_COMPONENT_OVL_2L1,
-+	DDP_COMPONENT_RDMA1,
-+	DDP_COMPONENT_DPI0,
-+};
-+
- static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
- 	.main_path = mt2701_mtk_ddp_main,
- 	.main_len = ARRAY_SIZE(mt2701_mtk_ddp_main),
-@@ -163,6 +181,13 @@
- 	.ext_len = ARRAY_SIZE(mt8173_mtk_ddp_ext),
- };
- 
-+static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
-+	.main_path = mt8183_mtk_ddp_main,
-+	.main_len = ARRAY_SIZE(mt8183_mtk_ddp_main),
-+	.ext_path = mt8183_mtk_ddp_ext,
-+	.ext_len = ARRAY_SIZE(mt8183_mtk_ddp_ext),
-+};
-+
- static int mtk_drm_kms_init(struct drm_device *drm)
- {
- 	struct mtk_drm_private *private = drm->dev_private;
-@@ -403,12 +428,20 @@ static void mtk_drm_unbind(struct device *dev)
- 	  .data = (void *)MTK_DISP_OVL },
- 	{ .compatible = "mediatek,mt8173-disp-ovl",
- 	  .data = (void *)MTK_DISP_OVL },
-+	{ .compatible = "mediatek,mt8183-disp-ovl",
-+	  .data = (void *)MTK_DISP_OVL },
-+	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
-+	  .data = (void *)MTK_DISP_OVL_2L },
- 	{ .compatible = "mediatek,mt2701-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8173-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
-+	{ .compatible = "mediatek,mt8183-disp-rdma",
-+	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8173-disp-wdma",
- 	  .data = (void *)MTK_DISP_WDMA },
-+	{ .compatible = "mediatek,mt8183-disp-ccorr",
-+	  .data = (void *)MTK_DISP_CCORR },
- 	{ .compatible = "mediatek,mt2701-disp-color",
- 	  .data = (void *)MTK_DISP_COLOR },
- 	{ .compatible = "mediatek,mt8173-disp-color",
-@@ -417,22 +450,30 @@ static void mtk_drm_unbind(struct device *dev)
- 	  .data = (void *)MTK_DISP_AAL},
- 	{ .compatible = "mediatek,mt8173-disp-gamma",
- 	  .data = (void *)MTK_DISP_GAMMA, },
-+	{ .compatible = "mediatek,mt8183-disp-dither",
-+	  .data = (void *)MTK_DISP_DITHER },
- 	{ .compatible = "mediatek,mt8173-disp-ufoe",
- 	  .data = (void *)MTK_DISP_UFOE },
- 	{ .compatible = "mediatek,mt2701-dsi",
- 	  .data = (void *)MTK_DSI },
- 	{ .compatible = "mediatek,mt8173-dsi",
- 	  .data = (void *)MTK_DSI },
-+	{ .compatible = "mediatek,mt8183-dsi",
-+	  .data = (void *)MTK_DSI },
- 	{ .compatible = "mediatek,mt2701-dpi",
- 	  .data = (void *)MTK_DPI },
- 	{ .compatible = "mediatek,mt8173-dpi",
- 	  .data = (void *)MTK_DPI },
-+	{ .compatible = "mediatek,mt8183-dpi",
-+	  .data = (void *)MTK_DPI },
- 	{ .compatible = "mediatek,mt2701-disp-mutex",
- 	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt2712-disp-mutex",
- 	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt8173-disp-mutex",
- 	  .data = (void *)MTK_DISP_MUTEX },
-+	{ .compatible = "mediatek,mt8183-disp-mutex",
-+	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt2701-disp-pwm",
- 	  .data = (void *)MTK_DISP_BLS },
- 	{ .compatible = "mediatek,mt8173-disp-pwm",
-@@ -451,6 +492,8 @@ static void mtk_drm_unbind(struct device *dev)
- 	  .data = &mt2712_mmsys_driver_data},
- 	{ .compatible = "mediatek,mt8173-mmsys",
- 	  .data = &mt8173_mmsys_driver_data},
-+	{ .compatible = "mediatek,mt8183-mmsys",
-+	  .data = &mt8183_mmsys_driver_data},
- 	{ }
- };
- 
+Secondly we converted generic USB xHCI text bindings file into the DT
+schema. It had to be split up into two bindings: DT schema with generic
+xHCI properties and a generic xHCI device DT schema. The later will be
+used to validate the pure xHCI-based nodes, while the former can be
+utilized by some vendor-specific versions of xHCI.
+
+Thirdly, what was primarily intended to be done for Baikal-T1 SoC USB we
+converted the legacy text-based DWC USB3 bindings to DT schema and altered
+the result a bit so it would be more coherent with what actually
+controller and its driver support. Since we've now got the DWC USB3 DT
+schema, we made it used to validate the sub-nodes of the Qualcom, TI and
+Amlogic DWC3 DT nodes.
+
+Link: https://lore.kernel.org/linux-usb/20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v2:
+- Thanks to Sergei Shtylyov for suggesting the commit logs grammar fixes:
+  [PATCH 04/18] dt-bindings: usb: usb-hcd: Add "ulpi/serial/hsic" PHY types
+  [PATCH 05/18] dt-bindings: usb: usb-hcd: Add "tpl-support" property
+  [PATCH 11/18] dt-bindings: usb: dwc3: Add interrupt-names property support
+  [PATCH 13/18] dt-bindings: usb: dwc3: Add Tx De-emphasis restrictions
+  [PATCH 17/18] dt-bindings: usb: keystone-dwc3: Validate DWC3 sub-node
+- Set FL-adj of the amlogiv,meson-g12a-usb controller with value 0x20 instead
+  of completely removing the property.
+- Drop the patch:
+  [PATCH 02/18] dt-bindings: usb: usb-hcd: Add "wireless" maximum-speed
+                property value
+  since "wireless" speed type is depracated due to lack of the device
+  supporting it.
+- Drop quotes from around the compat string constant.
+- Discard '|' from the property descriptions, since we don't need to preserve
+  the text formatting.
+- Convert abbreviated form of the "maximum-speed" enum constraint into
+  the multi-lined version of the list.
+- Fix the DW USB3 "clock-names" prop description to be refererring to the
+  enumerated clock-names instead of the ones from the Databook.
+- Add explicit "additionalProperties: true" to the usb-xhci.yaml schema,
+  since additionalProperties/unevaluatedProperties are going to be mandary
+  for each binding.
+- Use "oneOf: [dwc2.yaml#, snps,dwc3.yaml#]" instead of the bulky "if:
+  properties: compatibe: ..." statement.
+- Discard the "^dwc3@[0-9a-f]+$" nodes from being acceptable as sub-nodes
+  of the Qualcomm DWC3 DT nodes.
+- Add new patches:
+  [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
+  [PATCH 19/20] arch: dts: Fix xHCI DT nodes name
+  [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
+
+Link: https://lore.kernel.org/linux-usb/20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru
+Changelog v3:
+- Drop the patches:
+  [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
+  [PATCH 19/20] arch: dts: Fix xHCI DT nodes name
+  [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
+  as they are going to be submitted in the framework of a dedicated patchset.
+- Drop the patch:
+  [PATCH 11/20] dt-bindings: usb: dwc3: Add synopsys,dwc3 compatible string
+  since it's going to be replaced with the driver/dts fixup and moved to a
+  dedicated patchset.
+- Apply usb-xhci.yaml# schema for the DWC USB3 node only if the controller is
+  supposed to work as either host or otg.
+
+Link: https://lore.kernel.org/linux-usb/20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru
+Changelog v4:
+- Get the patch
+  [PATCH 11/17] dt-bindings: usb: dwc3: Add synopsys,dwc3 compatible string
+  back, since we can't discard the deprecated prefix from the driver.
+- Discard the block scalar style modifier "|" from the interrupts property
+  description.
+- Split the generic USB controller properties into three schemas: Generic USB
+  controllers, USB Host controllers and USB OTG controllers.
+
+Link: https://lore.kernel.org/linux-usb/20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru
+Changelog v5:
+- Add "snps,dis-split-quirk" property to the DWC USB3 DT schema.
+- Add a text to the
+  [PATCH v4 10/18] dt-bindings: usb: Convert DWC USB3 bindings to DT schema
+  patch log about the small change in the clock-related properties bindings
+  with respect to the original binding file.
+- Discard duplicated "additionalProperties" from the usb-hcd.yaml schema.
+- Make sure dr_mode exist in DW USB3 node to apply the USB-gadget-only schema.
+- Add a new patch:
+  [PATCH v5 19/19] dt-bindings: usb: intel,keembay-dwc3: Validate DWC3 sub-node
+  since the Intel Keem Bay DWC3 bindings has been just added.
+
+Link: https://lore.kernel.org/linux-usb/20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru
+Changelog v6:
+- Fix typo in the commit log:
+  [PATCH v5 19/19] dt-bindings: usb: intel,keembay-dwc3: Validate DWC3 sub-node
+  Qualcomm sub-node should be called as Intel eem Bay sub-node.
+- Fix identations in the "usb-phy" property definition.
+- Fix identations in the "maximum-speed" property definition.
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Manu Gautam <mgautam@codeaurora.org>
+Cc: Roger Quadros <rogerq@ti.com>
+Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Kevin Hilman <khilman@baylibre.com>
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-mips@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-usb@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (19):
+  dt-bindings: usb: usb-hcd: Detach generic USB controller properties
+  dt-bindings: usb: Convert generic USB properties to DT schemas
+  dt-bindings: usb: usb-drd: Add "otg-rev" property constraints
+  dt-bindings: usb: Add "ulpi/serial/hsic" PHY types
+  dt-bindings: usb: usb-hcd: Add "tpl-support" property
+  dt-bindings: usb: Add generic "usb-phy" property
+  dt-bindings: usb: Convert xHCI bindings to DT schema
+  dt-bindings: usb: xhci: Add Broadcom STB v2 compatible device
+  dt-bindings: usb: renesas-xhci: Refer to the usb-xhci.yaml file
+  dt-bindings: usb: Convert DWC USB3 bindings to DT schema
+  dt-bindings: usb: dwc3: Add interrupt-names property support
+  dt-bindings: usb: dwc3: Add synopsys,dwc3 compatible string
+  dt-bindings: usb: dwc3: Add Tx De-emphasis constraints
+  dt-bindings: usb: dwc3: Add Frame Length Adj constraints
+  dt-bindings: usb: meson-g12a-usb: Fix FL-adj property value
+  dt-bindings: usb: meson-g12a-usb: Validate DWC2/DWC3 sub-nodes
+  dt-bindings: usb: keystone-dwc3: Validate DWC3 sub-node
+  dt-bindings: usb: qcom,dwc3: Validate DWC3 sub-node
+  dt-bindings: usb: intel,keembay-dwc3: Validate DWC3 sub-node
+
+ .../usb/amlogic,meson-g12a-usb-ctrl.yaml      |   6 +-
+ .../devicetree/bindings/usb/dwc3.txt          | 128 -------
+ .../devicetree/bindings/usb/generic-xhci.yaml |  65 ++++
+ .../devicetree/bindings/usb/generic.txt       |  57 ---
+ .../bindings/usb/intel,keembay-dwc3.yaml      |   9 +-
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    |   9 +-
+ .../bindings/usb/renesas,usb-xhci.yaml        |   4 +-
+ .../devicetree/bindings/usb/snps,dwc3.yaml    | 332 ++++++++++++++++++
+ .../bindings/usb/ti,keystone-dwc3.yaml        |   4 +-
+ .../devicetree/bindings/usb/usb-drd.yaml      |  78 ++++
+ .../devicetree/bindings/usb/usb-hcd.yaml      |  19 +-
+ .../devicetree/bindings/usb/usb-xhci.txt      |  41 ---
+ .../devicetree/bindings/usb/usb-xhci.yaml     |  42 +++
+ .../devicetree/bindings/usb/usb.yaml          |  60 ++++
+ 14 files changed, 600 insertions(+), 254 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/usb/dwc3.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/generic-xhci.yaml
+ delete mode 100644 Documentation/devicetree/bindings/usb/generic.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+ create mode 100644 Documentation/devicetree/bindings/usb/usb-drd.yaml
+ delete mode 100644 Documentation/devicetree/bindings/usb/usb-xhci.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/usb-xhci.yaml
+ create mode 100644 Documentation/devicetree/bindings/usb/usb.yaml
+
 -- 
-1.8.1.1.dirty
+2.29.2
 
