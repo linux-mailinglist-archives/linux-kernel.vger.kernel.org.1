@@ -2,175 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1A42D6393
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FEC12D6395
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392694AbgLJRb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:31:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30688 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389090AbgLJRbF (ORCPT
+        id S2392725AbgLJRcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:32:05 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11569 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392714AbgLJRab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:31:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607621378;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WPix3SP1rka7hQ8hX1oDzx6oTaknX+t6svbdYJaNdNE=;
-        b=d340LjI+kdEo3hNqi4jO0xGB2HcgQ2PIzNFFMEJ+p75W5/CvOB7Zpbdfeov6DOqPcEAVpC
-        GDilRAYt3UtAcZXeoWeX+asY5iRNczJyFHrKiAVaCcK3gxuVltxIlphUzguPO9APpEBmxk
-        jGQ/DVwmIl9tKQvd4JHVa0RGExPetlk=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-396-IDzTsYr_MZ66UWQ79EeS1A-1; Thu, 10 Dec 2020 12:29:36 -0500
-X-MC-Unique: IDzTsYr_MZ66UWQ79EeS1A-1
-Received: by mail-qt1-f197.google.com with SMTP id 99so4454638qte.19
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:29:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=WPix3SP1rka7hQ8hX1oDzx6oTaknX+t6svbdYJaNdNE=;
-        b=lQlrnEdUc48HIKfSDeFdTwP0gpXjUitQHlIHYf3Ft+fkdZt8XGmUU5cq+FAxtSRXRK
-         hKG2kKMTNRnGwqudPGK15OQJnepL7h6ZiMCMIiS5bML74a2defC/rsnReAH7i018nPfx
-         QXC68vI7p2byBUgMdjQ4nFLBAErcL+Sj4WGMeq5UMYcwVvpnvk0m6nYU6U3ea/Kmqekv
-         72eMovN8ViYCr5xBcFV0vJASsSwRKIS+fldQmU7kc/NzdHOCnyFCvP+iU3Ca96hsgvbN
-         2NvRUBpJscZ/lYHJNMfPIBrQDHBI98UmPh77XMfXkBnYiy+VXcfKa9R7EWzAiD6Uw0Y5
-         AvMQ==
-X-Gm-Message-State: AOAM531emOfYELbW21iRuYehcJROREAgutsoQ1cmARLBx1IhxA5pjf86
-        4vFHYfoEMufoGsxjHAlt/H0gt/K2G4q1Zboc9FS8U/VSw8EivpYSjE2p8oCsl3+gRE34LRKeIVn
-        FD9n3hW7luKCZ7p3NZ3B6bZy7
-X-Received: by 2002:ac8:3417:: with SMTP id u23mr10346807qtb.80.1607621375934;
-        Thu, 10 Dec 2020 09:29:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyGU7fOjrqhiru2xOMuaLAkJpPXTV9UI0NjLAQmB/TsAVRPeqAVrpXoWFrEyVFjP/UZJwy8gQ==
-X-Received: by 2002:ac8:3417:: with SMTP id u23mr10346777qtb.80.1607621375681;
-        Thu, 10 Dec 2020 09:29:35 -0800 (PST)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id h26sm3807343qkj.96.2020.12.10.09.29.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 09:29:35 -0800 (PST)
-References: <20201210162436.126321-1-suravee.suthikulpanit@amd.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        joro@8bytes.org, will@kernel.org, Jon.Grimm@amd.com,
-        thomas.lendacky@amd.com
-Subject: Re: [PATCH] iommu/amd: Add sanity check for interrupt remapping
- table length macros
-In-reply-to: <20201210162436.126321-1-suravee.suthikulpanit@amd.com>
-Date:   Thu, 10 Dec 2020 10:29:31 -0700
-Message-ID: <871rfxtvr8.fsf@redhat.com>
+        Thu, 10 Dec 2020 12:30:31 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fd25b090000>; Thu, 10 Dec 2020 09:29:45 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Dec
+ 2020 17:29:45 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 10 Dec 2020 17:29:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mCbr7wogg5X+Yd539Igho5jaJXYSYQWv8zTaHjJDT5iRfqljmNbAVmwquVV4A0IDsTuskNJXMGsRlI1oa/x9otIF4w1ZFJYL2eyUGazqdibHUxorFWAtrWg8bCUsyG1Tjd97nFzkFKLXl6VOTAAHMlbx83lLX23lyx/8cs8OVef5Keb6yZinqYXvoE4tBvC19GyLBe5eETW5MzTcgO0a2Q/3icFoY84BfXJ9HmubG1I/I9AkiqRbqvsPK7M7yO2105I6aD96iK2fNDc1Kax7vfbAnTmk/46R6LCqpD7sDnN7kdqvykTDB/FBdTKxfKPaKC6alTXJGWT3FldzuXMayA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ijhB3/xMnWFMU6pv3I+YOoyRHDzZS6DgitkxaOu5XE8=;
+ b=mF4wVkMK07m35pJ/mwaeQqd7jkhTwAYA+cc6TC+rycwQvZVN/uDZh85nmn4JLsgx8oMRrzpCNytGZKK1qdZuphqjxmDnEN+boQEEvotXU9X3L+NBV9hWrXSS65LS429+ieMCGY3swe2ylAluMAC2pDPeL2Zu8HuV9LeHOTP4YKau93Rg0gCZej6j281u0dO3Z60LKoU9s9kWYroiceKph/qqpPx9p1scMJrP6wPwgkVurQ/KbZR3loOFMzdvUMkrze1v+psq4S84aPQimeBbVQtCK1J5I5VnwqMvwTcbXjIL5udnHgEBqo+j4HiNSPI7hHsJNTntVcx5nEk/ikvvHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0107.namprd12.prod.outlook.com (2603:10b6:4:55::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.20; Thu, 10 Dec
+ 2020 17:29:43 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3632.023; Thu, 10 Dec 2020
+ 17:29:43 +0000
+Date:   Thu, 10 Dec 2020 13:29:41 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] RDMA/restrack: update kernel documentation for
+ ib_create_named_qp()
+Message-ID: <20201210172941.GC2117013@nvidia.com>
+References: <20201207173255.13355-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201207173255.13355-1-lukas.bulwahn@gmail.com>
+X-ClientProxiedBy: MN2PR01CA0064.prod.exchangelabs.com (2603:10b6:208:23f::33)
+ To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR01CA0064.prod.exchangelabs.com (2603:10b6:208:23f::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 10 Dec 2020 17:29:42 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1knPl7-008slJ-ND; Thu, 10 Dec 2020 13:29:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607621385; bh=ijhB3/xMnWFMU6pv3I+YOoyRHDzZS6DgitkxaOu5XE8=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=cawpmPkB6QKhHtOu7b4VSHF1zZpcmhJ7vu/RAZmL6K+BBO3wFzKnWZicAU00ZM+9b
+         TIxX2OtRvk5S5j+16vj19c1exo42/AR4RhY6gd+d+LowLIeX5XoMFkHmB4z+GKTIVp
+         /q9ciTKa1h9WYqR6aafV9JcIRrItmQrJh0hRkMS1sm9uT8Tixqregq9Avi8SfRfsmK
+         9wnijmUL/pmC2PNOu4ztKL04l6oZ28+M2z+/16HNlxJ+tFkNeqQnR8HDa6o3PRUNMz
+         lpJGXaAr4htqdiYKVLtN9eKtq3pyxIsExWCy52ie+sid1C5ps1bAq+qwBZGVwj18jT
+         o00mHnCKWVsqg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Suravee Suthikulpanit @ 2020-12-10 09:24 MST:
-
-> Currently, macros related to the interrupt remapping table length are
-> defined separately. This has resulted in an oversight in which one of
-> the macros were missed when changing the length. To prevent this,
-> redefine the macros to add built-in sanity check.
->
-> Also, rename macros to use the name of the DTE[IntTabLen] field as
-> specified in the AMD IOMMU specification. There is no functional change.
->
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Jerry Snitselaar <jsnitsel@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
+On Mon, Dec 07, 2020 at 06:32:55PM +0100, Lukas Bulwahn wrote:
+> Commit 66f57b871efc ("RDMA/restrack: Support all QP types") extends
+> ib_create_qp() to a named ib_create_named_qp(), which takes the caller's
+> name as argument, but it did not add the new argument description to the
+> function's kerneldoc.
+> 
+> make htmldocs warns:
+> 
+>   ./drivers/infiniband/core/verbs.c:1206: warning: Function parameter or
+>   member 'caller' not described in 'ib_create_named_qp'
+> 
+> Add a description for this new argument based on the description of the
+> same argument in other related functions.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 > ---
->  drivers/iommu/amd/amd_iommu_types.h | 19 ++++++++++---------
->  drivers/iommu/amd/init.c            |  6 +++---
->  drivers/iommu/amd/iommu.c           |  2 +-
->  3 files changed, 14 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
-> index 494b42a31b7a..899ce62df3f0 100644
-> --- a/drivers/iommu/amd/amd_iommu_types.h
-> +++ b/drivers/iommu/amd/amd_iommu_types.h
-> @@ -255,11 +255,19 @@
->  /* Bit value definition for dte irq remapping fields*/
->  #define DTE_IRQ_PHYS_ADDR_MASK	(((1ULL << 45)-1) << 6)
->  #define DTE_IRQ_REMAP_INTCTL_MASK	(0x3ULL << 60)
-> -#define DTE_IRQ_TABLE_LEN_MASK	(0xfULL << 1)
->  #define DTE_IRQ_REMAP_INTCTL    (2ULL << 60)
-> -#define DTE_IRQ_TABLE_LEN       (9ULL << 1)
->  #define DTE_IRQ_REMAP_ENABLE    1ULL
->  
-> +/*
-> + * AMD IOMMU hardware only support 512 IRTEs despite
-> + * the architectural limitation of 2048 entries.
-> + */
-> +#define DTE_INTTAB_ALIGNMENT    128
-> +#define DTE_INTTABLEN_VALUE     9ULL
-> +#define DTE_INTTABLEN           (DTE_INTTABLEN_VALUE << 1)
-> +#define DTE_INTTABLEN_MASK      (0xfULL << 1)
-> +#define MAX_IRQS_PER_TABLE      (1 << DTE_INTTABLEN_VALUE)
-> +
->  #define PAGE_MODE_NONE    0x00
->  #define PAGE_MODE_1_LEVEL 0x01
->  #define PAGE_MODE_2_LEVEL 0x02
-> @@ -409,13 +417,6 @@ extern bool amd_iommu_np_cache;
->  /* Only true if all IOMMUs support device IOTLBs */
->  extern bool amd_iommu_iotlb_sup;
->  
-> -/*
-> - * AMD IOMMU hardware only support 512 IRTEs despite
-> - * the architectural limitation of 2048 entries.
-> - */
-> -#define MAX_IRQS_PER_TABLE	512
-> -#define IRQ_TABLE_ALIGNMENT	128
-> -
->  struct irq_remap_table {
->  	raw_spinlock_t lock;
->  	unsigned min_index;
-> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-> index 23a790f8f550..6bec8913d064 100644
-> --- a/drivers/iommu/amd/init.c
-> +++ b/drivers/iommu/amd/init.c
-> @@ -989,10 +989,10 @@ static bool copy_device_table(void)
->  
->  		irq_v = old_devtb[devid].data[2] & DTE_IRQ_REMAP_ENABLE;
->  		int_ctl = old_devtb[devid].data[2] & DTE_IRQ_REMAP_INTCTL_MASK;
-> -		int_tab_len = old_devtb[devid].data[2] & DTE_IRQ_TABLE_LEN_MASK;
-> +		int_tab_len = old_devtb[devid].data[2] & DTE_INTTABLEN_MASK;
->  		if (irq_v && (int_ctl || int_tab_len)) {
->  			if ((int_ctl != DTE_IRQ_REMAP_INTCTL) ||
-> -			    (int_tab_len != DTE_IRQ_TABLE_LEN)) {
-> +			    (int_tab_len != DTE_INTTABLEN)) {
->  				pr_err("Wrong old irq remapping flag: %#x\n", devid);
->  				return false;
->  			}
-> @@ -2674,7 +2674,7 @@ static int __init early_amd_iommu_init(void)
->  			remap_cache_sz = MAX_IRQS_PER_TABLE * (sizeof(u64) * 2);
->  		amd_iommu_irq_cache = kmem_cache_create("irq_remap_cache",
->  							remap_cache_sz,
-> -							IRQ_TABLE_ALIGNMENT,
-> +							DTE_INTTAB_ALIGNMENT,
->  							0, NULL);
->  		if (!amd_iommu_irq_cache)
->  			goto out;
-> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-> index b9cf59443843..f7abf16d1e3a 100644
-> --- a/drivers/iommu/amd/iommu.c
-> +++ b/drivers/iommu/amd/iommu.c
-> @@ -3191,7 +3191,7 @@ static void set_dte_irq_entry(u16 devid, struct irq_remap_table *table)
->  	dte	&= ~DTE_IRQ_PHYS_ADDR_MASK;
->  	dte	|= iommu_virt_to_phys(table->table);
->  	dte	|= DTE_IRQ_REMAP_INTCTL;
-> -	dte	|= DTE_IRQ_TABLE_LEN;
-> +	dte	|= DTE_INTTABLEN;
->  	dte	|= DTE_IRQ_REMAP_ENABLE;
->  
->  	amd_iommu_dev_table[devid].data[2] = dte;
+>  drivers/infiniband/core/verbs.c | 1 +
+>  1 file changed, 1 insertion(+)
 
+Applies to for-next, thanks
 
-Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
-
+Jason
