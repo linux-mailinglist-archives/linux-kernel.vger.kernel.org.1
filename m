@@ -2,129 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B542D5580
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACCD2D5585
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388050AbgLJIbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 03:31:21 -0500
-Received: from mail-eopbgr1310112.outbound.protection.outlook.com ([40.107.131.112]:35273
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726439AbgLJIbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 03:31:20 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nXB6RMYMFQ043FvTHdfPHAkyTDv9JsmWgLSbkjembOq9PHDZ7zzB/LDyeBuPWHVIkwHGXHrfALuNDkf/FOlE5IeOfS7Wdr9LMp45nvulc1SorFnTY5WqdbSgzAaP9E9L3hLa/xmpPRNIWz6nqSiiErgb8vC5brfIEYBXmGWzKHgIxTlQPwP3NPQJLX05MDlXJexdCRPowGreeoLDg81dwNGEVKAFqV4olijn5mAs9X09w8S2S8NexzxLHA9sbOZlViPW41F6SFWdKa+uKyh2VU3CeMoM5G+/BVZCMrMNX+Q+T1qFM/KRqf2Tt6be6u9HhtABn7A9DEhjWEsMAEgiGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qC8UY+ohCLLPaJSUpcbT0HDSvr3Jo1PzplCY5P2oX3c=;
- b=Kl1ngEnlnRKVJbTajI6KiD8I8fIhNmiNSoPsle5+FDsEexZlvFlBc+OVRF62kx198OUFW+IMIyUj93d7a8XsKMQdOdO+mKFF9/2c/GcZn0svMv995aTinWK7YIWMpIpHK3FqCQ7Y7OSqTPo8pR2InIfwOTFveEJxPtLslhhiOVGx/RFAC+WS1OyC7qyL6+8Jc9mcC0uUUW7KTucYYnbUYFU2vgOfXSjgi3wpXrsnAxU0x7ZsXDc/B7rBC4XeCjv9OwnF0+RzPa+qEbFM05nijJNRNlQLpvgtAaXAsLvv19VJpaYw4pgNJcccry0WBPdhkSsyK5Cevewpq2sg6Ua6rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qC8UY+ohCLLPaJSUpcbT0HDSvr3Jo1PzplCY5P2oX3c=;
- b=XXszB+mjGwVP/rvWpxm6qLF5sjQX5JwZhhjybToVhphVRd3NLJXF0kGklCZH3+lTKUlyXHw/saUS4McYLQzimCPh1al7zdO7XNiwlEYVuuP4CqUiokV/t9yyodg06H+zI+CXU2cn0t2YvIcoBKytX55HF/Xca2akxP7aNuon51A=
-Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
- by TY2PR01MB5004.jpnprd01.prod.outlook.com (2603:1096:404:118::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Thu, 10 Dec
- 2020 08:29:15 +0000
-Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
- ([fe80::2023:7ed1:37c3:8037]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
- ([fe80::2023:7ed1:37c3:8037%5]) with mapi id 15.20.3654.015; Thu, 10 Dec 2020
- 08:29:15 +0000
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Khiem Nguyen <khiem.nguyen.xt@renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 2/3] mfd: bd9571mwv: Make the driver more generic
-Thread-Topic: [PATCH 2/3] mfd: bd9571mwv: Make the driver more generic
-Thread-Index: AQHWzTi2+Q7ca7X5Rkq3LYc4whtPtKnuwzQAgAD0SbCAAEmGgIAAAWmA
-Date:   Thu, 10 Dec 2020 08:29:14 +0000
-Message-ID: <TY2PR01MB3692DE297F43405DC0CFDE59D8CB0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
-References: <1607414643-25498-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <1607414643-25498-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <CAMuHMdXr1kDaXF7FFowq5CSVHzyima2fbF1fJUOowUEb88dOTA@mail.gmail.com>
- <TY2PR01MB3692C55C6CDEFC83D6F8F90DD8CB0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
- <CAMuHMdXHMHaXPDaUfLmfREi92FKK0z_+eSyuOLRuXW1TDRPxOw@mail.gmail.com>
-In-Reply-To: <CAMuHMdXHMHaXPDaUfLmfREi92FKK0z_+eSyuOLRuXW1TDRPxOw@mail.gmail.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux-m68k.org; dkim=none (message not signed)
- header.d=none;linux-m68k.org; dmarc=none action=none header.from=renesas.com;
-x-originating-ip: [240f:60:5f3e:1:70b3:188b:a9ac:357d]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: b60d2af6-e00b-41ec-2d2d-08d89ce5addb
-x-ms-traffictypediagnostic: TY2PR01MB5004:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TY2PR01MB5004760FFD2D13E4D73D3075D8CB0@TY2PR01MB5004.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8z9esRLOrMFk4Tt11B8gv8wjog1HtHbVJD8ChoznI1Y/yxzDzdNriLsgR5EXxjTZLp0pIpNVjj7yscvNpBoopBbm7ErqwjvENwTUWcFWQBBP2hAr+EorXo5HCGdrayEQwKyDgchMpu+RCh2XaMSYJU8Sxa2Smq7DCWib2W4QyTcfu2+fpcMXkRAdRYu8wSMqbVXfQOjPgamY35C8CBjipXTqrA9unnJ9cjPxKTN/D9UfiEvJgS1+dvloLJuiKM2vHbfXRSGuHzxSrYetmZ7YJHpNqlD75cN8sqMXqw4q31J8iIyGp7zTORuNvVMw49D5mb/KtpcwWkTBHe0PaO3a3MXZY3Sngk2XCs3Xu904JxbAZX92VXVslpBEPSgJslPR
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(346002)(9686003)(83380400001)(71200400001)(508600001)(4326008)(6506007)(64756008)(66476007)(76116006)(66946007)(66446008)(6916009)(186003)(54906003)(7696005)(66556008)(5660300002)(55016002)(33656002)(52536014)(86362001)(4744005)(8936002)(2906002)(8676002)(41533002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?VUttYVVZeWF5Q3pSZUtOUFY4KzJqNjlZUkN3bTJNaDR4VGh4aGt2anQzaHl4?=
- =?utf-8?B?RWpuM3dHNVN4R1ZwOFNDcnh4ZWRrUEh0eDRxbVIxTW84NElNYUgyMEhrcnhy?=
- =?utf-8?B?TGRqUDUwU2dSOFZOU21ndERTaVNudG5IVlVadktyNmczTU1BeStHVXZwandK?=
- =?utf-8?B?cWtteVdVeVVwbTRZWlZvRkFYak94Vml6QmgxQTgvYWdieGZDR3JQYkY0ZW96?=
- =?utf-8?B?WjBxZUNZMHJ4UzVlNXVpemxaOFRtSmFLKy8vZmFwRFFTQ2ZtWWhjeUFEVmpG?=
- =?utf-8?B?NXpRV2lCd3BIdVE1VEt5YzJPZkRNSUVZY25Cb24yRldPcG0wYjhOZWxGeGhT?=
- =?utf-8?B?ZUk1Z3RyaWNmWVo0cFh5Yk9vMHNLTmlPQWU2QjVUdUJ0d1lqQWFvc3I1VWhL?=
- =?utf-8?B?KzlEbmhwc3ZIZCtrT05Sb0ZyMk56cThaQnNUL3BUMys0eUNSb2lmR0F0L2Zx?=
- =?utf-8?B?RlVDWUlVWWFUcmwyYm50WFJxMG5xdXl6bXNyV3NXZzR5WUozYzl0bUZLZ1M2?=
- =?utf-8?B?TldIR0xxSWplbGxSU3F3YTlpSEFMKzNwZGpMSmJUOVFqSDhudUI0OHVWdkNP?=
- =?utf-8?B?T0hZWS82M1R4SlJzcUROV0VTWFhkaDAvbnBXR1B5ME9FbzZDb2FXWnVqQTl6?=
- =?utf-8?B?aXdML0o2bkdYZmhrK1lYdHNGelRXU21HN3owQ3JnakVOdGRWbWRJaXA3YW1I?=
- =?utf-8?B?K2hMcnVQVWpLb0l1WjhWUVVTZnlaSGF1RzZhcUlkZGRwbTFEU0YvQTk5bXlM?=
- =?utf-8?B?Tm9jallRbkI1N3ZSQ0VlbTkyUGdQOG9rYWp0dHN1N1hFUnJkSkN0UkZ5dG8x?=
- =?utf-8?B?YnJIdjVGUDdmbFplZXQvZjA1WFMyYVJKeTFnNnVVVldjQVpDbHlmbFJQVDA5?=
- =?utf-8?B?L0JqWWFYYk5CWkNEek43bGtSNDlKeWx5STBFTWtCeTFheCtER1B5ejVvREhX?=
- =?utf-8?B?NTNQSU5SNWRVaTdpdnMvODF0bURuc3VlMEpTUUYzZERGdEFGUlFuM0Q1TzVS?=
- =?utf-8?B?M1lSMmU1VCtpYzJWREgva0hBOVVHdDNHQ2hycjV4V0dCRXV4MmJadXlUSjFi?=
- =?utf-8?B?RmhNaVUveElRV0hZUTg1d1o1d1VTSmRrOFlNMWIwWGg4L3k0OWFkS1RJTVBL?=
- =?utf-8?B?NWlORjJpcldRa3F4a2N3T2JNbGNwNkVIc1NLYnk5RzRnVm1hTG13U1lWb3Yv?=
- =?utf-8?B?eWR2QTZza0RWUEZQS0g5SlRaLzExYndSK2h3U2pqcjJUNnJXMWhxbHBZWGRo?=
- =?utf-8?B?SDJPcDhMbFBTUnJVaGdsTzlpLys5bkc1eWxUYlQ4OHRuR2Ixc05NVG82M2RI?=
- =?utf-8?B?R3p5bnJzODVZa1hoa29GZVZtdDl3Y21nNFUxaUNSMGhEOFN6WmY2MWxXZlR4?=
- =?utf-8?Q?kLQlNtsszwlYWhCdhYJoTMOc4fVudQrg=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S2387997AbgLJIeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 03:34:08 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:33711 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729887AbgLJIeH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 03:34:07 -0500
+Received: by mail-lf1-f65.google.com with SMTP id l11so7045236lfg.0;
+        Thu, 10 Dec 2020 00:33:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jAON2kq3zokNG8Def9vd/T7luvfb8gVQ6Uv3JRflpcw=;
+        b=kxfTgsmWNDtivt33CEl+cYbZ2ZBp1+zfFwuimpe3S73nOS0Rswa+Zl7Y98GVAFWdIK
+         Tfhj06QFq5wm6BVRFQ/O/8edhcVO7Cb9lUwiR34gAZDLij78+k10Bw4UQGCjhiIldk4V
+         Ftwa22sQ5ygUYQkKVqjBGn3PqbxAvDkmVyEPJK9mRu69ZxQTiXYXpyT4q2W6g3eqfnEV
+         9r9dHcovTTLHlifbPf5b9LMRWTUAbeRWnfkuALEufAmYbC3lWfEohJDDxsKiXYFsZlxf
+         9GISeJ8RXbEbiFMLfWIJeYpSHoveNtt/xxlxrbm5kaZoeJEwlpck5mtY+BijxzCWglh/
+         3keA==
+X-Gm-Message-State: AOAM530ApqSFIfBjqwtj6mYmfPPQZiFKacwIOlze80HLtM31t+ugCFMc
+        T3tdUe4nsR56NXiCE97kYXE=
+X-Google-Smtp-Source: ABdhPJwgYeAzn97Wh/VFIJ+wzZO9vzzpT0a9nbhd5x08Oee4wHa/jYaWst+KWsWEKTNDBBURoQp7Eg==
+X-Received: by 2002:a19:5512:: with SMTP id n18mr215152lfe.270.1607589205114;
+        Thu, 10 Dec 2020 00:33:25 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id y25sm436475lfl.108.2020.12.10.00.33.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 00:33:24 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1knHOm-0007y8-WB; Thu, 10 Dec 2020 09:34:05 +0100
+Date:   Thu, 10 Dec 2020 09:34:04 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] gpio: sysfs: Try numbered exports if symbolic names fail
+Message-ID: <X9HdfKxuUD3CZGNP@localhost>
+References: <20201209161821.92931-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b60d2af6-e00b-41ec-2d2d-08d89ce5addb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2020 08:29:15.0101
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EKtvjj/BcHQnrJqNFhVAP9JzQvj+aAlO5xMOLxpszfv11uHRJOPVZIcrAmbBXfERLtDCoDwyxVAdm3b0Aggk2gywi25F+Id5I+pzEb7U5VU0x+4502mpbIYM6dM5mDlP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB5004
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209161821.92931-1-linus.walleij@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgR2VlcnQtc2FuLA0KDQo+IEZyb206IEdlZXJ0IFV5dHRlcmhvZXZlbiwgU2VudDogVGh1cnNk
-YXksIERlY2VtYmVyIDEwLCAyMDIwIDU6MjMgUE0NCjxzbmlwPg0KPiA+IE9yLCBrZWVwaW5nIHRo
-aXMgbWVtYmVyIGFuZCB0aGVuIHdlIGNoZWNrIHRoZSBwcm9kdWN0IGNvZGUgYnkgdGhpcyBtZW1i
-ZXINCj4gPiBpbnN0ZWFkIG9mIHN3aXRjaCgpIGxpa2UgYmVsb3c/DQo+ID4NCj4gPiAvKiBObyBi
-dWlsZCB0ZXN0LCBKRllJICovDQo+ID4gc3RydWN0IGJkOTU3eF9kYXRhICpkYXRhX2FycmF5W10g
-PSB7DQo+ID4gICAgICAgICAmYmQ5NTcxbXd2X2RhdGEsDQo+ID4gICAgICAgICAmYmQ5NTc0bXdm
-X2RhdGEsDQo+ID4gfTsNCj4gPg0KPiA+IGZvciAoaSA9IDA7IEkgPCBBUlJBWV9TSVpFKGRhdGFf
-YXJyYXkpOyBpKyspIHsNCj4gPiAgICAgICAgIGlmICh2YWwgPT0gZGF0YV9hcnJheVtpXS5wcm9k
-dWN0X2NvZGVfdmFsKSB7DQo+ID4gICAgICAgICAgICAgICAgIGJkLT5kYXRhID0gZGF0YV9hcnJh
-eVtpXTsNCj4gPiAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ID4gICAgICAgICB9DQo+ID4gfQ0K
-PiANCj4gR2l2ZW4gd2UgcHJvYmFibHkgd29uJ3QgaGF2ZSBtb3JlIHRoYW4gYSBoYW5kZnVsIHZh
-cmlhbnRzLCBJJ20NCj4gbGVhbmluZyB0b3dhcmRzIHRoZSBzd2l0Y2goKSBhcHByb2FjaC4NCg0K
-T0suIEkgZ290IGl0LiBJJ2xsIHVzZSBzd2l0Y2goKS4NCg0KQmVzdCByZWdhcmRzLA0KWW9zaGlo
-aXJvIFNoaW1vZGENCg0K
+On Wed, Dec 09, 2020 at 05:18:21PM +0100, Linus Walleij wrote:
+> If a GPIO line cannot be exported using a symbolic name from
+> the .names array in the gpiochip, fall back to using the
+> "gpioN" naming system instead of just failing.
+> 
+> Cc: Manivannan Sadhasivam <mani@kernel.org>
+> Cc: Johan Hovold <johan@kernel.org>
+> Suggested-by: Johan Hovold <johan@kernel.org>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>  drivers/gpio/gpiolib-sysfs.c | 22 ++++++++++++++++++----
+>  1 file changed, 18 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
+> index 728f6c687182..a5a0e9238217 100644
+> --- a/drivers/gpio/gpiolib-sysfs.c
+> +++ b/drivers/gpio/gpiolib-sysfs.c
+> @@ -627,10 +627,24 @@ int gpiod_export(struct gpio_desc *desc, bool direction_may_change)
+>  	if (chip->names && chip->names[offset])
+>  		ioname = chip->names[offset];
+>  
+> -	dev = device_create_with_groups(&gpio_class, &gdev->dev,
+> -					MKDEV(0, 0), data, gpio_groups,
+> -					ioname ? ioname : "gpio%u",
+> -					desc_to_gpio(desc));
+> +	/*
+> +	 * If we have a symbolic name for the GPIO we try to use that
+> +	 * for the exported sysfs device/file, as legacy scripts depend
+> +	 * on it. If we don't have a symbolic name or if there is a
+> +	 * namespace collision, we stick with the "gpioN" name.
+> +	 */
+> +	dev = NULL;
+> +	if (ioname)
+> +		dev = device_create_with_groups(&gpio_class, &gdev->dev,
+> +						MKDEV(0, 0), data, gpio_groups,
+> +						ioname,
+> +						desc_to_gpio(desc));
+> +	if (IS_ERR_OR_NULL(dev))
+> +		dev = device_create_with_groups(&gpio_class, &gdev->dev,
+> +						MKDEV(0, 0), data, gpio_groups,
+> +						"gpio%u",
+> +						desc_to_gpio(desc));
+
+I suggested having the driver set a flag which determines whether to use
+the line names in sysfs or not.
+
+The above will trigger a bunch of nasty warnings and backtraces in the
+sysfs code (for every gpio line!), which is not something we want for
+normal operation. Having the sysfs interface for the same USB device
+depend on probe order is not very nice either.
+
+Since the USB GPIO controller do not register any names today (as
+gpiolib currently require a flat name space), there's no need to worry
+about legacy scripts depending on those either (or rather, the argument
+goes the other way since adding names now could break a functioning
+script).
+
+Just add a flag to suppress the renaming and we can safely start adding
+names to hotpluggable controllers (if the rest of gpiolib can handle
+non-unique names).
+
+Johan
