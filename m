@@ -2,90 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D805D2D6896
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D419A2D689A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:25:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393218AbgLJUV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 15:21:29 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:58230 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390123AbgLJUV2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 15:21:28 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607631646;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=D3gx9tD13PRnQ68uO/rN8uV1XzJuse8JvLydTkrM0tk=;
-        b=WrALyDckvkeuNaz+eI3yDgM9uYSMWTyVSVNx6RXFUVljR2IFqs4rRLYbwUTCaqCBcHEcGO
-        eEIuOOOJ+WvE2haTJWd38VMUsEbHZK4EdsqTLMHSnoZJ4lYI1UNdqA7IOFCVGLLCz3JPN4
-        d7rB4e/IQ8NXDOAfz46Jz2WYWuDTSRdNjb0qKEaECflRKVMQCaXkBwiQzFSSbSI+Y32V2N
-        rpFRwWPEZI2d0bMPj+yhue74HKpNzxYf1SYNXeAroAYCa1KfxXFVFPmigjIFds2DfZedam
-        OKPFXaDSQDmRJGBsS52xgGXJu9aJbQsrQKoG7g9srYv2cS2H2lgHB4jqA8VLbA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607631646;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=D3gx9tD13PRnQ68uO/rN8uV1XzJuse8JvLydTkrM0tk=;
-        b=F7nNySYnHzOdMdxy6HIl8ySMogAvGhi8kpKyKtBfAF0v3BxJPZP0l5Oo3+V/Xw13N/6lE7
-        I6WyyeFvL5LWxYCA==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-In-Reply-To: <20201210130131.GP2414@hirez.programming.kicks-ass.net>
-References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com> <87a6uq9abf.fsf@nanos.tec.linutronix.de> <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com> <87im9dlpsw.fsf@vitty.brq.redhat.com> <875z5d5x9m.fsf@nanos.tec.linutronix.de> <b6e0656b-4e3f-cf47-5ec9-eead44b2f2e9@redhat.com> <20201210121417.GN2414@hirez.programming.kicks-ass.net> <fe3e4637-b74b-864a-9d2f-c4f2d9450f2e@redhat.com> <20201210130131.GP2414@hirez.programming.kicks-ass.net>
-Date:   Thu, 10 Dec 2020 21:20:45 +0100
-Message-ID: <87blf1jtuq.fsf@nanos.tec.linutronix.de>
+        id S2390052AbgLJUZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 15:25:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726844AbgLJUZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 15:25:05 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607631864;
+        bh=kwg/tKpZfJcgzmEhzL9w8F91fP/go66oy80CP2CouNQ=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=ifuIgcsYP2UepQoWfMiYY9OMXC6M2J0h23teTNX0fgZA6Ar/xW1+9rbwYz5u9/otq
+         aHOnrO1EruIEhIOFIvB0bpZfMgRbsx5ClMRkK0ZuOGy3D6EKINRgt2zpgPgKXjsD0f
+         MOu1d7RAbeOqgDm6qa8Ha/r9dqxgprYvigAZBNfg0k49kFTc+JRSP9bJQFoYMgXPVe
+         O81M1PLA8hxsPMUF9JhF+fI8HSU9EHmVYo0ICnSe/lYTFUsDaqyvXtelaknckPd3Y9
+         iea200kEsww2jKvQCZN+YEYhGKdFb+t3+I0ViJYRKzkOz/7mQDVHYzthV9EQ1/OU8Z
+         uegG0ypuBeOLA==
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201103162435.13689-1-krzk@kernel.org>
+References: <20201103162435.13689-1-krzk@kernel.org>
+Subject: Re: [PATCH 1/8] clk: pwm: drop of_match_ptr from of_device_id table
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+To:     Abel Vesa <abel.vesa@nxp.com>, Anson Huang <Anson.Huang@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Date:   Thu, 10 Dec 2020 12:24:23 -0800
+Message-ID: <160763186300.1580929.2999322890374782210@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10 2020 at 14:01, Peter Zijlstra wrote:
-> On Thu, Dec 10, 2020 at 01:22:02PM +0100, Paolo Bonzini wrote:
->> On 10/12/20 13:14, Peter Zijlstra wrote:
->> > On Thu, Dec 10, 2020 at 12:42:36PM +0100, Paolo Bonzini wrote:
->> > > On 07/12/20 18:41, Thomas Gleixner wrote:
->> > > > Right this happens still occasionally, but for quite some time this is
->> > > > 100% firmware sillyness and not a fundamental property of the hardware
->> > > > anymore.
->> > > 
->> > > It's still a fundamental property of old hardware.  Last time I tried to
->> > > kill support for processors earlier than Core 2, I had to revert it. That's
->> > > older than Nehalem.
->> > 
->> > Core2 doesn't use TSC for timekeeping anyway. KVM shouldn't either.
->> 
->> On Core2, KVM guests pass TSC through kvmclock in order to get something
->> usable and not incredibly slow.
->
-> Which is incredibly wrong.
+Quoting Krzysztof Kozlowski (2020-11-03 08:24:28)
+> The driver can match only via the DT table so the table should be always
+> used and the of_match_ptr does not have any sense (this also allows ACPI
+> matching via PRP0001, even though it might be not relevant here).  This
+> fixes compile warning (!CONFIG_OF && !CONFIG_MODULES):
+>=20
+>     drivers/clk/clk-pwm.c:139:34: warning:
+>         =E2=80=98clk_pwm_dt_ids=E2=80=99 defined but not used [-Wunused-c=
+onst-variable=3D]
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
 
-Core2 is really not something which should prevent making all of this
-correct and robust. That'd be not only wrong, that'd be outright insane.
-
-Thanks,
-
-        tglx
+Applied to clk-next
