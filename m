@@ -2,181 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0840D2D6380
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:28:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4AB2D6353
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392755AbgLJR1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:27:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
+        id S2389090AbgLJRTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:19:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392712AbgLJRRB (ORCPT
+        with ESMTP id S1728873AbgLJRS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:17:01 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40651C061793
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:16:21 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id j12so5568491ota.7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:16:21 -0800 (PST)
+        Thu, 10 Dec 2020 12:18:56 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA77C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:18:16 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id k4so6360461edl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:18:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+raCjKpIVRC3ckpKE04FFg3Paj0t2Ny6Ep6v2MYPiMM=;
-        b=o3A4AwtYlW6bPDSRlI3lKl44/gTAYqaw73Z6IGfReAqL4SyeJCixVDyc0eortU+pks
-         mFYkfqhYfwJuN2bNHchU3TDgx+z/bUs8mlVOAwW1nCYr6q6e7a8dMlocILdkuwTjZbSo
-         CUr9rLTjAHw8y8zcAiFn9CUQzHCuoVSeJvkLCa6RMpLke2How3KX/eQe5gDAyLIIqBCk
-         L51whIp9xlIXDG7SUjdUb36DANdEG+Gaum8j3KHXYadUBvhG7GsHx7/FmchCOnMOZFy8
-         tujxLVZ9mTs4RWK9LQ/ZB90+/sov/HGCcDxWuzsYmnKv0qI1bYse/foM+/0KfIe0/yUB
-         g7TQ==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=MW8U021JzvFtVr7JpE11QNz129nE9ceQfCdsjjgn81w=;
+        b=ST7OI3KGaXKCNv/I237cXBj0OAK0RBYvyqCOFoCzO3tAGApnfC9ghRWyg1y7VVSnLG
+         H0B1p+NPNv4HoGgvjH5LsUZHHkmyCpkj47LeKoRVgq6IiIXuVQaDg1/W38ty0jNWBpvc
+         tAsRX3a6hnyuO08KIf6cByVBtDIZ7gtZdtgBOVGXjxlQbQIq2kDnFU/IrTGVIAIYARpc
+         hGsOlVUv1YheyYpo5mAWUi4bDzeiZDi+sQ4xYsPKdOznhojOMGArglM8jrfSRE/OwJWT
+         y/sEjWUoqFH8K+xPAd/BWlGhR7dZ0wE1lbVFgSCXpUWEXL0wyNtf/cRXmv7T6HoQaasJ
+         Kn/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+raCjKpIVRC3ckpKE04FFg3Paj0t2Ny6Ep6v2MYPiMM=;
-        b=KSl+y1VX4ZprwDj9wdWRbi5Ctl05IOU0iW2ThEzvKTuvelY8M30MQU1VCMWCn7C8ly
-         dOHMWCoYuAy67tDXI6YdnLdmeNe4Af3aN+2EQeZPAfBwmtIZF1hOchFr35z+h8BnmQIM
-         7wcyyj7lMRwfkSFcbJ2LSSGa82lW0LWWDpXi83gUQikk6fNvguJeItIFZc0zx0je1N8t
-         h6EClWUNv7WOeiZ6wjSZaEDwOugLc9NOuH1WFc6nSNxsy+W/FpNJ53xdgOrSETCNsJOm
-         W4VwXqupRyOuKeK21uIMbbPjU9IgzoDs2enxSd8xKkz7HMT1zhgVecVrmLMXu7dMjObF
-         ETJg==
-X-Gm-Message-State: AOAM533gWcWbQ+oIxqR0pBuHNwC7nIpBiz7Qg58BwWlWhkaA0yKOHVqL
-        udq0Efmok0D/knWrFn+UMLtFnQ==
-X-Google-Smtp-Source: ABdhPJzBYZeTDTKAR5za8xy1+HAnmnZJY9ploQ2X9GbJ4vF8FwlDDODAG/p2/i3CNd/aPyy/czMH/g==
-X-Received: by 2002:a9d:d4a:: with SMTP id 68mr6754095oti.101.1607620580521;
-        Thu, 10 Dec 2020 09:16:20 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id k23sm1122538oih.52.2020.12.10.09.16.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 09:16:19 -0800 (PST)
-Date:   Thu, 10 Dec 2020 11:16:18 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org
-Subject: Re: [PATCH v2 1/3] soc: qcom: Add tracepoints to mdt loader
-Message-ID: <X9JX4txhmr0PQ5pX@builder.lan>
-References: <1605563084-30385-1-git-send-email-rishabhb@codeaurora.org>
- <1605563084-30385-2-git-send-email-rishabhb@codeaurora.org>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=MW8U021JzvFtVr7JpE11QNz129nE9ceQfCdsjjgn81w=;
+        b=ZiWnG1aO5APp1mvOEaEXEtEhaCWrogyeFuSgbAKmNmj527J9WG1/WV2UCf+uZGeuvp
+         VkQgfqYl5rzsNe+v2csU23zg1Xf38a56I4l4JtE2+inuMBodv7RyaA7X0fIhi+JEdn+m
+         z+PspNzJcbv8PwIe0VhPi/wp55tpeg8TSriccZRJRD59o9PugJQpeVpjZAPzRA0BoejC
+         5pAzpkTLLPNERPNBd0EA5MPoddPQOB+Hw4dAC91wXb3tdy4fiY9gXbCskmTkAJWs4H+I
+         w1Fc1Uz7bYLs50Rjg+DkuVkxM4QMhS29hise+uDFJ2y0JmbqiJ5+f/ZdwVHRCNzuhtHi
+         2eIw==
+X-Gm-Message-State: AOAM533dBRy+jOI1JhSZ2oYJJ/ziU/Goy/Vfmn/bZSeIZwj8COJuAd0S
+        jG3lyz0F9cAQwOAjYJq0HKqToyqKYlilesnpXoVQRQ==
+X-Google-Smtp-Source: ABdhPJzWSjwxcK67hNpBmR+Vaca3Qj/zbj/zXXxxijocSkPnZ2+VAaU0fCznV/D1ZFAWfSAihYXHmtF2wV20NjUJ8eA=
+X-Received: by 2002:aa7:d75a:: with SMTP id a26mr7637348eds.230.1607620694590;
+ Thu, 10 Dec 2020 09:18:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605563084-30385-2-git-send-email-rishabhb@codeaurora.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 10 Dec 2020 22:48:03 +0530
+Message-ID: <CA+G9fYuRHoZsW9KyRJVGrXznB8dbt5+ZZTMCpK+3mqcuwHcSMw@mail.gmail.com>
+Subject: MIPS + clang-11 + allnoconfig / tinyconfig builds failed
+To:     linux-mips@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        tsbogend@alpha.franken.de, xie.he.0141@gmail.com,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 16 Nov 15:44 CST 2020, Rishabh Bhatnagar wrote:
+Recently we have setup clang build and found that,
+MIPS + clang-11 + allnoconfig  build failed
+MIPS + clang-11 + tinyconfig  build failed
 
-> Add trace events to the mdt loader driver. These events
-> can help us trace the region where we are loading the
-> segments and the time it takes to initialize the image
-> and setup the memory region.
-> 
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> ---
->  drivers/soc/qcom/mdt_loader.c     |  7 +++++++
->  include/trace/events/mdt_loader.h | 38 ++++++++++++++++++++++++++++++++++++++
->  2 files changed, 45 insertions(+)
->  create mode 100644 include/trace/events/mdt_loader.h
-> 
-> diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
-> index 24cd193..96dc912 100644
-> --- a/drivers/soc/qcom/mdt_loader.c
-> +++ b/drivers/soc/qcom/mdt_loader.c
-> @@ -17,6 +17,9 @@
->  #include <linux/slab.h>
->  #include <linux/soc/qcom/mdt_loader.h>
->  
-> +#define CREATE_TRACE_POINTS
-> +#include <trace/events/mdt_loader.h>
-> +
->  static bool mdt_phdr_valid(const struct elf32_phdr *phdr)
->  {
->  	if (phdr->p_type != PT_LOAD)
-> @@ -198,6 +201,7 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw,
->  		if (pas_init) {
->  			ret = qcom_scm_pas_mem_setup(pas_id, mem_phys,
->  						     max_addr - min_addr);
-> +
+MIPS + clang-10 + allnoconfig  build failed
+MIPS + clang-10 + tinyconfig  build failed
 
-This change is unnecessary.
+We have noticed these build failures on
+ - stable-4.19
+ - stable-5.4
+ - stable-5.9
+ - mainline
+ - next-master
 
->  			if (ret) {
->  				dev_err(dev, "unable to setup relocation\n");
->  				goto out;
-> @@ -232,6 +236,7 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw,
->  
->  		ptr = mem_region + offset;
->  
-> +
+FYI, The defconfig builds are successful.
+BTW, May I know what are the configs you build often ?
 
-Ditto.
+Steps to reproduce build failure:
+-----------------------------------------
+# sudo pip3 install -U tuxmake
+# tuxmake --runtime docker --target-arch mips --toolchain clang-11
+--kconfig allnoconfig
+# tuxmake --runtime docker --target-arch mips --toolchain clang-11
+--kconfig tinyconfig
 
->  		if (phdr->p_filesz && phdr->p_offset < fw->size) {
->  			/* Firmware is large enough to be non-split */
->  			if (phdr->p_offset + phdr->p_filesz > fw->size) {
-> @@ -256,6 +261,8 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw,
->  			release_firmware(seg_fw);
->  		}
->  
-> +		trace_qcom_mdt_load_segment(mem_phys + offset, phdr->p_filesz,
-> +					    fw_name);
->  		if (phdr->p_memsz > phdr->p_filesz)
->  			memset(ptr + phdr->p_filesz, 0, phdr->p_memsz - phdr->p_filesz);
->  	}
-> diff --git a/include/trace/events/mdt_loader.h b/include/trace/events/mdt_loader.h
-> new file mode 100644
-> index 0000000..01c2461
-> --- /dev/null
-> +++ b/include/trace/events/mdt_loader.h
-> @@ -0,0 +1,38 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM mdt_loader
-> +
-> +#if !defined(_TRACE_MDT_LOADER_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_MDT_LOADER_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/tracepoint.h>
-> +
-> +TRACE_EVENT(qcom_mdt_load_segment,
-> +
-> +	TP_PROTO(phys_addr_t region_start, size_t region_size, const char *fw),
-> +
-> +	TP_ARGS(region_start, region_size, fw),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(phys_addr_t, region_start)
-> +		__field(size_t, region_size)
-> +		__string(fw, fw)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->region_start = region_start;
-> +		__entry->region_size = region_size;
-> +		__assign_str(fw, fw);
-> +	),
-> +
-> +	TP_printk("firmware:%s region start=%pa size=%zx",
-> +		  __get_str(fw), __entry->region_start, __entry->region_size)
+Build failed log:
+ake --silent --keep-going --jobs=16
+O=/home/tuxbuild/.cache/tuxmake/builds/2/tmp ARCH=mips
+CROSS_COMPILE=mips-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+clang' allnoconfig
+make --silent --keep-going --jobs=16
+O=/home/tuxbuild/.cache/tuxmake/builds/2/tmp ARCH=mips
+CROSS_COMPILE=mips-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+clang'
+/builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/arch/mips/vdso/elf.S:14:1:
+warning: DWARF2 only supports one section per compilation unit
+.pushsection .note.Linux, "a",@note ; .balign 4 ; .long 2f - 1f ;
+.long 4484f - 3f ; .long 0 ; 1:.asciz "Linux" ; 2:.balign 4 ; 3:
+^
+/builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/arch/mips/vdso/elf.S:34:2:
+warning: DWARF2 only supports one section per compilation unit
+ .section .mips_abiflags, "a"
+ ^
+/builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/arch/mips/lib/uncached.c:45:6:
+warning: variable 'sp' is uninitialized when used here
+[-Wuninitialized]
+        if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+            ^~
+/builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/arch/mips/lib/uncached.c:40:18:
+note: initialize the variable 'sp' to silence this warning
+        register long sp __asm__("$sp");
+                        ^
+                         = 0
+1 warning generated.
+WARNING: modpost: vmlinux.o(.text+0x1a124): Section mismatch in
+reference from the function r4k_cache_init() to the function
+.init.text:loongson3_sc_init()
+The function r4k_cache_init() references
+the function __init loongson3_sc_init().
+This is often because r4k_cache_init lacks a __init
+annotation or the annotation of loongson3_sc_init is wrong.
+WARNING: modpost: vmlinux.o(.text+0x1f1c8): Section mismatch in
+reference from the function mips_sc_init() to the function
+.init.text:mips_sc_probe()
+The function mips_sc_init() references
+the function __init mips_sc_probe().
+This is often because mips_sc_init lacks a __init
+annotation or the annotation of mips_sc_probe is wrong.
+FATAL: modpost: Section mismatches detected.
+Set CONFIG_SECTION_MISMATCH_WARN_ONLY=y to allow them.
+make[2]: *** [/builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/scripts/Makefile.modpost:59:
+vmlinux.symvers] Error 1
 
-Doesn't this printk use the normal format specifiers, where %pa should
-be passed by reference? (I.e. shouldn't this be &__entry->region_start?)
-
-Regards,
-Bjorn
-
-> +);
-> +
-> +#endif
-> +#include <trace/define_trace.h>
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+--
+Linaro LKFT
+https://lkft.linaro.org
