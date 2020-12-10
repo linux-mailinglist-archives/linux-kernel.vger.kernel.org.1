@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180152D5316
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 06:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB06D2D5342
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 06:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727284AbgLJFTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 00:19:54 -0500
-Received: from mga17.intel.com ([192.55.52.151]:55322 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726350AbgLJFTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 00:19:54 -0500
-IronPort-SDR: rxy2SVqDq4P3mQtF/ScCN/j0mjoDcV/Gfn1Zg/Bjn1V/g6QSYtaPcVc9mebfJZGHn9EQ76jcAG
- 3lm6B/tIX1zQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="154005495"
-X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="154005495"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 21:18:08 -0800
-IronPort-SDR: vYiZw4aafPvsqj01p2l/4jFqU3PZ7yefYFIVT1kHVMg21klL1Sp8S2BnPTtUrFf6MMeb1Ymj7F
- Y2kPKlMvxhPQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="368633393"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Dec 2020 21:18:06 -0800
-Subject: Re: [PATCH 2/4] sched/fair: Move avg_scan_cost calculations under
- SIS_PROP
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Barry Song <song.bao.hua@hisilicon.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-References: <20201208153501.1467-1-mgorman@techsingularity.net>
- <20201208153501.1467-3-mgorman@techsingularity.net>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <1963d0ca-054c-19f9-94e0-d019a2e8e259@linux.intel.com>
-Date:   Thu, 10 Dec 2020 13:18:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1727334AbgLJF01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 00:26:27 -0500
+Received: from smtprelay0220.hostedemail.com ([216.40.44.220]:42478 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726313AbgLJF0W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 00:26:22 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id CDDFC182CED34;
+        Thu, 10 Dec 2020 05:25:40 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2198:2199:2200:2393:2559:2562:2828:2829:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:4022:4321:5007:6119:7903:10004:10400:10450:10455:10848:11026:11232:11658:11914:12043:12295:12297:12555:12740:12895:12986:13069:13071:13311:13357:13439:13846:13894:14180:14181:14659:14721:14777:19904:19999:21060:21080:21221:21627:21881:21939:30012:30026:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: page55_1912e53273f5
+X-Filterd-Recvd-Size: 2444
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 10 Dec 2020 05:25:40 +0000 (UTC)
+Message-ID: <aea0efa93c17e431205eeb932a73efa7e21598a3.camel@perches.com>
+Subject: Re: checkpatch
+From:   Joe Perches <joe@perches.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 09 Dec 2020 21:25:37 -0800
+In-Reply-To: <87zh2mzw3h.fsf@nanos.tec.linutronix.de>
+References: <87zh2mzw3h.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20201208153501.1467-3-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/8 23:34, Mel Gorman wrote:
-> As noted by Vincent Guittot, avg_scan_costs are calculated for SIS_PROP
-> even if SIS_PROP is disabled. Move the time calculations under a SIS_PROP
-> check and while we are at it, exclude the cost of initialising the CPU
-> mask from the average scan cost.
-> 
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> ---
->  kernel/sched/fair.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ac7b34e7372b..5c41875aec23 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6153,6 +6153,8 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->  	if (!this_sd)
->  		return -1;
->  
-> +	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> +
->  	if (sched_feat(SIS_PROP)) {
->  		u64 avg_cost, avg_idle, span_avg;
->  
-> @@ -6168,11 +6170,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->  			nr = div_u64(span_avg, avg_cost);
->  		else
->  			nr = 4;
-> -	}
-> -
-> -	time = cpu_clock(this);
->  
-> -	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> +		time = cpu_clock(this);
-> +	}
->  
->  	for_each_cpu_wrap(cpu, cpus, target) {
->  		if (!--nr)
->			return -1;
+On Wed, 2020-12-09 at 19:13 +0100, Thomas Gleixner wrote:
+> Joe,
 
-I thought about this again and here seems not to be consistent:
-- even if nr reduces to 0, shouldn't avg_scan_cost be updated as well before return -1?
-- if avg_scan_cost is not updated because nr is throttled, the first 
-	time = cpu_clock(this);
-  can be optimized. As nr is calculated and we already know which of the weight of cpumask and nr is greater.
+Hi Thomas.
 
-Thanks,
--Aubrey
+> the below made it through my filters for some reason so I actually
+> looked and immediately wondered why checkpatch.pl did not identify this
+> as pure garbage.
+> 
+>  Original mail is here: lore.kernel.org/r/69cb540a-09d5-4956-b062-071ccded7090@web.de
+> 
+> Can you have a look please? Adding brackets in the middle of the code
+> for absolutely no reason is wrong to begin with and then not indenting
+> the enclosed code makes it even worse.
+
+Well, maybe something like this, but there are probably some
+drawbacks with initializations.
+---
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7b086d1cd6c2..057be2cfe118 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -4047,6 +4047,25 @@ sub process {
+ 			}
+ 		}
+ 
++# Check open brace and any possible statement indentation
++		if (defined($stat) &&
++		    $stat =~ /^\+([ \t]+)\{[ \t]*\n/) {
++			if (substr($stat, pos($stat), length($1)+1) !~ /^$1\s/) {
++				my $cnt = statement_rawlines($stat);
++				my $herectx = get_stat_here($linenr, $cnt, $here);
++				my @array = split(/\n/, $herectx);
++				$cnt = 0;
++				$herectx = "";
++				foreach my $aline (@array) {
++					$herectx .= $aline . "\n";
++					$cnt++ if ($aline =~ /^\+/);
++					last if ($cnt >= 2);
++				}
++				WARN("OPEN_BRACE",
++				     "A line with only an open brace should start an indented block\n" . $herectx);
++			}
++		}
++
+ # Check relative indent for conditionals and blocks.
+ 		if ($line =~ /\b(?:(?:if|while|for|(?:[a-z_]+|)for_each[a-z_]+)\s*\(|(?:do|else)\b)/ && $line !~ /^.\s*#/ && $line !~ /\}\s*while\s*/) {
+ 			($stat, $cond, $line_nr_next, $remain_next, $off_next) =
+
+
