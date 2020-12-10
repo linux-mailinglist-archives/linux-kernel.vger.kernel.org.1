@@ -2,43 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6C62D5947
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BED92D5951
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389541AbgLJLbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:31:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389511AbgLJLaw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:30:52 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5483FC061285
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 03:30:34 -0800 (PST)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4CsBYH5WwXz9shq; Thu, 10 Dec 2020 22:30:27 +1100 (AEDT)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Youling Tang <tangyouling@loongson.cn>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <1606460857-2723-1-git-send-email-tangyouling@loongson.cn>
-References: <1606460857-2723-1-git-send-email-tangyouling@loongson.cn>
-Subject: Re: [PATCH] powerpc: Use common STABS_DEBUG and DWARF_DEBUG and ELF_DETAILS macro
-Message-Id: <160756605971.1313423.7998345002974297044.b4-ty@ellerman.id.au>
-Date:   Thu, 10 Dec 2020 22:30:27 +1100 (AEDT)
+        id S2388886AbgLJLex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:34:53 -0500
+Received: from mga11.intel.com ([192.55.52.93]:16536 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727149AbgLJLeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:34:20 -0500
+IronPort-SDR: Ut5zoj7FwXankmGOR28pGzamW8iKEI6CDyEtWseIw0vPFnA+M0OGmj1Ud6x6RjRFQ6N5zFcdmU
+ xWhJtSytqjKw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="170732060"
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="170732060"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 03:32:34 -0800
+IronPort-SDR: VSPww2xSyJ1jwgHSm10TH7YLDBIp3WPatk1kyCCNsdQsg+yEziz23pdrbr38sDHAgUxN2OHgCt
+ 6Su7XgnD1GIw==
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="319024823"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 03:32:32 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1knKCU-00DP8D-Hr; Thu, 10 Dec 2020 13:33:34 +0200
+Date:   Thu, 10 Dec 2020 13:33:34 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marco Felsch <m.felsch@pengutronix.de>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Simon Budig <simon.budig@kernelconcepts.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: edt-ft5x06 - consolidate handling of number of
+ electrodes
+Message-ID: <20201210113334.GD4077@smile.fi.intel.com>
+References: <X9FZFs3NZADoIhhH@google.com>
+ <20201210100803.bfohc5fglvrwrtcz@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210100803.bfohc5fglvrwrtcz@pengutronix.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020 15:07:37 +0800, Youling Tang wrote:
-> Use the common STABS_DEBUG and DWARF_DEBUG and ELF_DETAILS macro rule for
-> the linker script in an effort.
+On Thu, Dec 10, 2020 at 11:08:03AM +0100, Marco Felsch wrote:
+> On 20-12-09 15:09, Dmitry Torokhov wrote:
 
-Applied to powerpc/next.
+...
 
-[1/1] powerpc: Use common STABS_DEBUG and DWARF_DEBUG and ELF_DETAILS macro
-      https://git.kernel.org/powerpc/c/a21df7a1d6ca9bd387a17841863a99431c4aa730
+> >  	case EV_FT:
+> >  		reg_addr->reg_threshold = EV_REGISTER_THRESHOLD;
+> > +		reg_addr->reg_report_rate = NO_REGISTER;
+> >  		reg_addr->reg_gain = EV_REGISTER_GAIN;
+> >  		reg_addr->reg_offset = NO_REGISTER;
+> >  		reg_addr->reg_offset_x = EV_REGISTER_OFFSET_X;
+> >  		reg_addr->reg_offset_y = EV_REGISTER_OFFSET_Y;
+> >  		reg_addr->reg_num_x = NO_REGISTER;
+> >  		reg_addr->reg_num_y = NO_REGISTER;
+> > -		reg_addr->reg_report_rate = NO_REGISTER;
+> >  		break;
+> 
+> Nit:
+> Unrelated change.
 
-cheers
+I guess the motive is to get these assignments consistent between the cases.
+Documentation actually allows this kind of modifications of code in one change
+when them are toughly related.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
