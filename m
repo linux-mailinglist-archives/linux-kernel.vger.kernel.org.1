@@ -2,26 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CBC2D5F84
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F042B2D5F94
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403804AbgLJOpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:45:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44542 "EHLO mail.kernel.org"
+        id S2391494AbgLJOpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:45:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391116AbgLJOiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:38:00 -0500
+        id S2391065AbgLJOhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:37:23 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Sjoholm <sebastian.sjoholm@gmail.com>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.9 07/75] USB: serial: option: fix Quectel BG96 matching
-Date:   Thu, 10 Dec 2020 15:26:32 +0100
-Message-Id: <20201210142606.435009124@linuxfoundation.org>
+        stable@vger.kernel.org, Shisong Qin <qinshisong1205@gmail.com>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>
+Subject: [PATCH 5.9 10/75] speakup: Reject setting the speakup line discipline outside of speakup
+Date:   Thu, 10 Dec 2020 15:26:35 +0100
+Message-Id: <20201210142606.578300722@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
 References: <20201210142606.074509102@linuxfoundation.org>
@@ -33,267 +31,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjørn Mork <bjorn@mork.no>
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-commit c98fff7332dbd6e028969f8c2bda3d7bc7a024d8 upstream.
+commit f0992098cadb4c9c6a00703b66cafe604e178fea upstream.
 
-This is a partial revert of commit 2bb70f0a4b23 ("USB: serial:
-option: support dynamic Quectel USB compositions")
+Speakup exposing a line discipline allows userland to try to use it,
+while it is deemed to be useless, and thus uselessly exposes potential
+bugs. One of them is simply that in such a case if the line sends data,
+spk_ttyio_receive_buf2 is called and crashes since spk_ttyio_synth
+is NULL.
 
-The Quectel BG96 is different from most other modern Quectel modems,
-having serial functions with 3 endpoints using ff/ff/ff and ff/fe/ff
-class/subclass/protocol. Including it in the change to accommodate
-dynamic function mapping was incorrect.
+This change restricts the use of the speakup line discipline to
+speakup drivers, thus avoiding such kind of issues altogether.
 
-Revert to interface number matching for the BG96, assuming static
-layout of the RMNET function on interface 4. This restores support
-for the serial functions on interfaces 2 and 3.
-
-Full lsusb output for the BG96:
-
-Bus 002 Device 003: ID 2c7c:0296
-Device Descriptor:
- bLength                18
- bDescriptorType         1
- bcdUSB               2.00
- bDeviceClass            0 (Defined at Interface level)
- bDeviceSubClass         0
- bDeviceProtocol         0
- bMaxPacketSize0        64
- idVendor           0x2c7c
- idProduct          0x0296
- bcdDevice            0.00
- iManufacturer           3 Qualcomm, Incorporated
- iProduct                2 Qualcomm CDMA Technologies MSM
- iSerial                 4 d1098243
- bNumConfigurations      1
- Configuration Descriptor:
-   bLength                 9
-   bDescriptorType         2
-   wTotalLength          145
-   bNumInterfaces          5
-   bConfigurationValue     1
-   iConfiguration          1 Qualcomm Configuration
-   bmAttributes         0xe0
-     Self Powered
-     Remote Wakeup
-   MaxPower              500mA
-   Interface Descriptor:
-     bLength                 9
-     bDescriptorType         4
-     bInterfaceNumber        0
-     bAlternateSetting       0
-     bNumEndpoints           2
-     bInterfaceClass       255 Vendor Specific Class
-     bInterfaceSubClass    255 Vendor Specific Subclass
-     bInterfaceProtocol    255 Vendor Specific Protocol
-     iInterface              0
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x81  EP 1 IN
-       bmAttributes            2
-         Transfer Type            Bulk
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0200  1x 512 bytes
-       bInterval               0
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x01  EP 1 OUT
-       bmAttributes            2
-         Transfer Type            Bulk
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0200  1x 512 bytes
-       bInterval               0
-   Interface Descriptor:
-     bLength                 9
-     bDescriptorType         4
-     bInterfaceNumber        1
-     bAlternateSetting       0
-     bNumEndpoints           2
-     bInterfaceClass       255 Vendor Specific Class
-     bInterfaceSubClass    255 Vendor Specific Subclass
-     bInterfaceProtocol    255 Vendor Specific Protocol
-     iInterface              0
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x82  EP 2 IN
-       bmAttributes            2
-         Transfer Type            Bulk
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0200  1x 512 bytes
-       bInterval               0
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x02  EP 2 OUT
-       bmAttributes            2
-         Transfer Type            Bulk
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0200  1x 512 bytes
-       bInterval               0
-   Interface Descriptor:
-     bLength                 9
-     bDescriptorType         4
-     bInterfaceNumber        2
-     bAlternateSetting       0
-     bNumEndpoints           3
-     bInterfaceClass       255 Vendor Specific Class
-     bInterfaceSubClass    255 Vendor Specific Subclass
-     bInterfaceProtocol    255 Vendor Specific Protocol
-     iInterface              0
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x83  EP 3 IN
-       bmAttributes            3
-         Transfer Type            Interrupt
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0040  1x 64 bytes
-       bInterval               5
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x84  EP 4 IN
-       bmAttributes            2
-         Transfer Type            Bulk
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0200  1x 512 bytes
-       bInterval               0
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x03  EP 3 OUT
-       bmAttributes            2
-         Transfer Type            Bulk
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0200  1x 512 bytes
-       bInterval               0
-   Interface Descriptor:
-     bLength                 9
-     bDescriptorType         4
-     bInterfaceNumber        3
-     bAlternateSetting       0
-     bNumEndpoints           3
-     bInterfaceClass       255 Vendor Specific Class
-     bInterfaceSubClass    254
-     bInterfaceProtocol    255
-     iInterface              0
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x85  EP 5 IN
-       bmAttributes            3
-         Transfer Type            Interrupt
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0040  1x 64 bytes
-       bInterval               5
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x86  EP 6 IN
-       bmAttributes            2
-         Transfer Type            Bulk
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0200  1x 512 bytes
-       bInterval               0
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x04  EP 4 OUT
-       bmAttributes            2
-         Transfer Type            Bulk
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0200  1x 512 bytes
-       bInterval               0
-   Interface Descriptor:
-     bLength                 9
-     bDescriptorType         4
-     bInterfaceNumber        4
-     bAlternateSetting       0
-     bNumEndpoints           3
-     bInterfaceClass       255 Vendor Specific Class
-     bInterfaceSubClass    255 Vendor Specific Subclass
-     bInterfaceProtocol    255 Vendor Specific Protocol
-     iInterface              0
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x87  EP 7 IN
-       bmAttributes            3
-         Transfer Type            Interrupt
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0040  1x 64 bytes
-       bInterval               5
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x88  EP 8 IN
-       bmAttributes            2
-         Transfer Type            Bulk
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0200  1x 512 bytes
-       bInterval               0
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x05  EP 5 OUT
-       bmAttributes            2
-         Transfer Type            Bulk
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0200  1x 512 bytes
-       bInterval               0
-Device Qualifier (for other device speed):
- bLength                10
- bDescriptorType         6
- bcdUSB               2.00
- bDeviceClass            0 (Defined at Interface level)
- bDeviceSubClass         0
- bDeviceProtocol         0
- bMaxPacketSize0        64
- bNumConfigurations      1
-Device Status:     0x0000
- (Bus Powered)
-
-Cc: Sebastian Sjoholm <sebastian.sjoholm@gmail.com>
-Fixes: 2bb70f0a4b23 ("USB: serial: option: support dynamic Quectel USB compositions")
-Signed-off-by: Bjørn Mork <bjorn@mork.no>
 Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Reported-by: Shisong Qin <qinshisong1205@gmail.com>
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Tested-by: Shisong Qin <qinshisong1205@gmail.com>
+Link: https://lore.kernel.org/r/20201129193523.hm3f6n5xrn6fiyyc@function
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/option.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/accessibility/speakup/spk_ttyio.c |   37 ++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 14 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1106,9 +1106,8 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EG95, 0xff, 0xff, 0xff),
- 	  .driver_info = NUMEP2 },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EG95, 0xff, 0, 0) },
--	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_BG96, 0xff, 0xff, 0xff),
--	  .driver_info = NUMEP2 },
--	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_BG96, 0xff, 0, 0) },
-+	{ USB_DEVICE(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_BG96),
-+	  .driver_info = RSVD(4) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EP06, 0xff, 0xff, 0xff),
- 	  .driver_info = RSVD(1) | RSVD(2) | RSVD(3) | RSVD(4) | NUMEP2 },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EP06, 0xff, 0, 0) },
+--- a/drivers/accessibility/speakup/spk_ttyio.c
++++ b/drivers/accessibility/speakup/spk_ttyio.c
+@@ -47,27 +47,20 @@ static int spk_ttyio_ldisc_open(struct t
+ {
+ 	struct spk_ldisc_data *ldisc_data;
+ 
++	if (tty != speakup_tty)
++		/* Somebody tried to use this line discipline outside speakup */
++		return -ENODEV;
++
+ 	if (!tty->ops->write)
+ 		return -EOPNOTSUPP;
+ 
+-	mutex_lock(&speakup_tty_mutex);
+-	if (speakup_tty) {
+-		mutex_unlock(&speakup_tty_mutex);
+-		return -EBUSY;
+-	}
+-	speakup_tty = tty;
+-
+ 	ldisc_data = kmalloc(sizeof(*ldisc_data), GFP_KERNEL);
+-	if (!ldisc_data) {
+-		speakup_tty = NULL;
+-		mutex_unlock(&speakup_tty_mutex);
++	if (!ldisc_data)
+ 		return -ENOMEM;
+-	}
+ 
+ 	init_completion(&ldisc_data->completion);
+ 	ldisc_data->buf_free = true;
+-	speakup_tty->disc_data = ldisc_data;
+-	mutex_unlock(&speakup_tty_mutex);
++	tty->disc_data = ldisc_data;
+ 
+ 	return 0;
+ }
+@@ -191,9 +184,25 @@ static int spk_ttyio_initialise_ldisc(st
+ 
+ 	tty_unlock(tty);
+ 
++	mutex_lock(&speakup_tty_mutex);
++	speakup_tty = tty;
+ 	ret = tty_set_ldisc(tty, N_SPEAKUP);
+ 	if (ret)
+-		pr_err("speakup: Failed to set N_SPEAKUP on tty\n");
++		speakup_tty = NULL;
++	mutex_unlock(&speakup_tty_mutex);
++
++	if (!ret)
++		/* Success */
++		return 0;
++
++	pr_err("speakup: Failed to set N_SPEAKUP on tty\n");
++
++	tty_lock(tty);
++	if (tty->ops->close)
++		tty->ops->close(tty, NULL);
++	tty_unlock(tty);
++
++	tty_kclose(tty);
+ 
+ 	return ret;
+ }
 
 
