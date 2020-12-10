@@ -2,144 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B112D5525
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 572E52D5527
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387611AbgLJIKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 03:10:18 -0500
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:61287 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725896AbgLJIKG (ORCPT
+        id S2387764AbgLJIKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 03:10:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387710AbgLJIKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 03:10:06 -0500
+        Thu, 10 Dec 2020 03:10:48 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B69BC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 00:10:04 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id z11so4004530qkj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 00:10:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1607587805; x=1639123805;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=RaitfIFfdpp6jtfUPGRbEOUja/qNHha6jb1uqJ7pyaU=;
-  b=X/hhDI4R06IYr22SqJWXE9JvBlwWHN+poYZOOaHORuCF0b/h1LOHJ00w
-   +uEfP4kTkpfbN5JS+KRS6WfX1RCTSqVnBx5CC9Va+ENxHl0zKh+Zf5RAo
-   03Cl8ZidrhP151mtOOHeEohKDYq3dES9scny5nqgqIJXG21USwu+4lwtT
-   8=;
-X-IronPort-AV: E=Sophos;i="5.78,407,1599523200"; 
-   d="scan'208";a="103145938"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-c7c08562.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 10 Dec 2020 08:09:16 +0000
-Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-c7c08562.us-east-1.amazon.com (Postfix) with ESMTPS id 609FF240BFB;
-        Thu, 10 Dec 2020 08:09:14 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.102) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 10 Dec 2020 08:09:09 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <davem@davemloft.net>
-CC:     SeongJae Park <sjpark@amazon.de>, <kuba@kernel.org>,
-        <kuznet@ms2.inr.ac.ru>, <edumazet@google.com>, <fw@strlen.de>,
-        <paulmck@kernel.org>, <netdev@vger.kernel.org>,
-        <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 1/1] net/ipv4/inet_fragment: Batch fqdir destroy works
-Date:   Thu, 10 Dec 2020 09:08:44 +0100
-Message-ID: <20201210080844.23741-2-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201210080844.23741-1-sjpark@amazon.com>
-References: <20201210080844.23741-1-sjpark@amazon.com>
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vYDAWamrgtXENPLy0KNGY/iAQYLlOTlQsd1JUCvYlbQ=;
+        b=X340a6vYLIu9nk5jTRrIBU/GTygftmL4lzB0insa31P5NBCcQ9mew06GhG9yH7/x5A
+         huwQ9lMfEF1FN2qaEb5mpVXhIOJO+zql+pjTcYnrrvot2PDIByuOqkpnWzwFSgLecdsn
+         X4X+aMHpPT9deedqHAd0AgI4ce7aPCDdi9CTUBhpUW2MXfEEUgyzoYbNssEe9ZJflXWp
+         fWejdmw6qGhIt0/y5L5FqpCWc1OMXRxs8s8KWUsVs5cA1K5Yj2IWxH7F4D4PBxhbGzC2
+         2uh2vqnWRZN/hNhJSpT47aEtaYBdXTkLTPm8tBSn9aEDpRD7/ffttwSxnpFbRF1lcV93
+         J6+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vYDAWamrgtXENPLy0KNGY/iAQYLlOTlQsd1JUCvYlbQ=;
+        b=MIxg3l4Eq3ft2x1/J4jybZP6zPgEv6cj7qgCsNyINjwKvO8NvyRuwAm69hHHSKu7nU
+         QWDzg3BzquHzoN919Am5VKcHuSNACy1IqU8IIUUonZeD7soaKGCe3r24e7FocEbEcTse
+         IhXCjNh8lTbGad4f5ZeOdPVRtIfQUZ7gjYthCdGcpONatf5k7/V1pfFqm8yyjiS73bdt
+         oznlgm+CoN3u2gSeZOeqXSMHSfvTsqO+cn4ovD9sFSC0BHFGOVSRXEQ//KZlHHDpQCND
+         Pju9Zs90t2F897xbcwuMlOHgBUouukRM+r6Xu1HpaJtJl+GRSBaogJ071v3MbzwPTPoh
+         zraQ==
+X-Gm-Message-State: AOAM531C/y4fEKnomEKyR8qPsU6Ji/GXpUQ3Zy4mMtJD8rvdZ7a39/7c
+        SwLL9Ku16C4/uo0ZD3l6bRGkPpvfLYVkSIN+d0eR6g==
+X-Google-Smtp-Source: ABdhPJy7H6zGDswBAbu4+krX/7B3/ty90plQHmoQqsVqam3x/bggZ04bAtBdiovS1q67/5ehktng/KUBnnTiKYZcPm8=
+X-Received: by 2002:a37:56c6:: with SMTP id k189mr7380186qkb.501.1607587803237;
+ Thu, 10 Dec 2020 00:10:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.102]
-X-ClientProxiedBy: EX13D16UWB004.ant.amazon.com (10.43.161.170) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+References: <20201210023638.GP52960@mit.edu> <00000000000024030c05b61412e6@google.com>
+In-Reply-To: <00000000000024030c05b61412e6@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 10 Dec 2020 09:09:51 +0100
+Message-ID: <CACT4Y+bkaVq1RzONGuPJxu-pSyCSRrEs7xV0sa2n0oLNkicHQQ@mail.gmail.com>
+Subject: Re: UBSAN: shift-out-of-bounds in ext4_fill_super
+To:     syzbot <syzbot+345b75652b1d24227443@syzkaller.appspotmail.com>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Thu, Dec 10, 2020 at 4:50 AM syzbot
+<syzbot+345b75652b1d24227443@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot tried to test the proposed patch but the build/boot failed:
+>
+> failed to checkout kernel repo git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git on commit e360ba58d067a30a4e3e7d55ebdd919885a058d6: failed to run ["git" "fetch" "--tags" "d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8"]: exit status 1
+> From git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4
+>  * [new branch]                bisect-test-ext4-035     -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/bisect-test-ext4-035
+>  * [new branch]                bisect-test-generic-307  -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/bisect-test-generic-307
+>  * [new branch]                dev                      -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/dev
+>  * [new branch]                ext4-3.18                -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/ext4-3.18
+>  * [new branch]                ext4-4.1                 -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/ext4-4.1
+>  * [new branch]                ext4-4.4                 -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/ext4-4.4
+>  * [new branch]                ext4-4.9                 -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/ext4-4.9
+>  * [new branch]                ext4-dax                 -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/ext4-dax
+>  * [new branch]                ext4-tools               -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/ext4-tools
+>  * [new branch]                fix-bz-206443            -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/fix-bz-206443
+>  * [new branch]                for-stable               -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/for-stable
+>  * [new branch]                fsverity                 -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/fsverity
+>  * [new branch]                lazy_journal             -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/lazy_journal
+>  * [new branch]                master                   -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/master
+>  * [new branch]                origin                   -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/origin
+>  * [new branch]                pu                       -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/pu
+>  * [new branch]                test                     -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/test
+>  * [new tag]                   ext4-for-linus-5.8-rc1-2 -> ext4-for-linus-5.8-rc1-2
+>  ! [rejected]                  ext4_for_linus           -> ext4_for_linus  (would clobber existing tag)
 
-In 'fqdir_exit()', a work for destroy of the 'fqdir' is enqueued.  The
-work function, 'fqdir_work_fn()', calls 'rcu_barrier()'.  In case of
-intensive 'fqdir_exit()' (e.g., frequent 'unshare()' systemcalls), this
-increased contention could result in unacceptably high latency of
-'rcu_barrier()'.  This commit avoids such contention by doing the
-destroy work in batched manner, as similar to that of 'cleanup_net()'.
+Interesting. First time I see this. Should syzkaller use 'git fetch
+--tags --force"?...
+StackOverflow suggests it should help:
+https://stackoverflow.com/questions/58031165/how-to-get-rid-of-would-clobber-existing-tag
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- include/net/inet_frag.h  |  2 +-
- net/ipv4/inet_fragment.c | 28 ++++++++++++++++++++--------
- 2 files changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
-index bac79e817776..558893d8810c 100644
---- a/include/net/inet_frag.h
-+++ b/include/net/inet_frag.h
-@@ -20,7 +20,7 @@ struct fqdir {
- 
- 	/* Keep atomic mem on separate cachelines in structs that include it */
- 	atomic_long_t		mem ____cacheline_aligned_in_smp;
--	struct work_struct	destroy_work;
-+	struct llist_node	destroy_list;
- };
- 
- /**
-diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
-index 10d31733297d..d5c40386a764 100644
---- a/net/ipv4/inet_fragment.c
-+++ b/net/ipv4/inet_fragment.c
-@@ -145,12 +145,19 @@ static void inet_frags_free_cb(void *ptr, void *arg)
- 		inet_frag_destroy(fq);
- }
- 
-+static LLIST_HEAD(destroy_list);
-+
- static void fqdir_work_fn(struct work_struct *work)
- {
--	struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
--	struct inet_frags *f = fqdir->f;
-+	struct llist_node *kill_list;
-+	struct fqdir *fqdir, *tmp;
-+	struct inet_frags *f;
- 
--	rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
-+	/* Atomically snapshot the list of fqdirs to destroy */
-+	kill_list = llist_del_all(&destroy_list);
-+
-+	llist_for_each_entry(fqdir, kill_list, destroy_list)
-+		rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
- 
- 	/* We need to make sure all ongoing call_rcu(..., inet_frag_destroy_rcu)
- 	 * have completed, since they need to dereference fqdir.
-@@ -158,10 +165,13 @@ static void fqdir_work_fn(struct work_struct *work)
- 	 */
- 	rcu_barrier();
- 
--	if (refcount_dec_and_test(&f->refcnt))
--		complete(&f->completion);
-+	llist_for_each_entry_safe(fqdir, tmp, kill_list, destroy_list) {
-+		f = fqdir->f;
-+		if (refcount_dec_and_test(&f->refcnt))
-+			complete(&f->completion);
- 
--	kfree(fqdir);
-+		kfree(fqdir);
-+	}
- }
- 
- int fqdir_init(struct fqdir **fqdirp, struct inet_frags *f, struct net *net)
-@@ -184,10 +194,12 @@ int fqdir_init(struct fqdir **fqdirp, struct inet_frags *f, struct net *net)
- }
- EXPORT_SYMBOL(fqdir_init);
- 
-+static DECLARE_WORK(fqdir_destroy_work, fqdir_work_fn);
-+
- void fqdir_exit(struct fqdir *fqdir)
- {
--	INIT_WORK(&fqdir->destroy_work, fqdir_work_fn);
--	queue_work(system_wq, &fqdir->destroy_work);
-+	if (llist_add(&fqdir->destroy_list, &destroy_list))
-+		queue_work(system_wq, &fqdir_destroy_work);
- }
- EXPORT_SYMBOL(fqdir_exit);
- 
--- 
-2.17.1
-
+>  * [new tag]                   ext4_for_linus_bugfixes  -> ext4_for_linus_bugfixes
+>  * [new tag]                   ext4_for_linus_cleanups  -> ext4_for_linus_cleanups
+>  * [new tag]                   ext4_for_linus_fixes     -> ext4_for_linus_fixes
+>  * [new tag]                   ext4_for_linus_fixes2    -> ext4_for_linus_fixes2
+>
+>
+>
+> Tested on:
+>
+> commit:         [unknown
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git e360ba58d067a30a4e3e7d55ebdd919885a058d6
+> dashboard link: https://syzkaller.appspot.com/bug?extid=345b75652b1d24227443
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> patch:          https://syzkaller.appspot.com/x/patch.diff?x=1499c287500000
