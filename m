@@ -2,66 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE712D6281
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:52:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 926B42D6283
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392228AbgLJQvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:51:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
+        id S2392232AbgLJQwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:52:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733029AbgLJQvS (ORCPT
+        with ESMTP id S2392231AbgLJQv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:51:18 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D9AC0613CF;
-        Thu, 10 Dec 2020 08:50:38 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0d4100e4701ee3c8ed8bc5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4100:e470:1ee3:c8ed:8bc5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 15A4A1EC054C;
-        Thu, 10 Dec 2020 17:50:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607619037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ltz1Gfhlkm8S+aCwj4HHLeku70bwDcxrbCUdyuzFSkY=;
-        b=eCz12k74oVhUbZxwC91mbegEvVLKouI1zkf7q4Vc7K7Wx3nnJgP/2k70FrZHsO88h2UsUk
-        tY4T4NftHDw2r7LAYzS/r3i/0OaXhb6USMWwz7791avgZudVsBn46S1ksaeHgfcTk3e7wI
-        o+r1UT4OgbKBEWWtvmVc1wiXynkYt/Q=
-Date:   Thu, 10 Dec 2020 17:50:37 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Xiaochen Shen <xiaochen.shen@intel.com>
-Cc:     linux-tip-commits@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [tip: x86/cache] x86/resctrl: Fix incorrect local bandwidth when
- mba_sc is enabled
-Message-ID: <20201210165037.GC26529@zn.tnic>
-References: <1607063279-19437-1-git-send-email-xiaochen.shen@intel.com>
- <160754081861.3364.12382697409765236626.tip-bot2@tip-bot2>
- <20201209222328.GA20710@zn.tnic>
- <343e2fc7-6f64-d1b7-2ea1-cd422596f5be@intel.com>
- <20201210102625.GA26529@zn.tnic>
- <f965241c-69c7-c021-47c9-ef0c028e8399@intel.com>
+        Thu, 10 Dec 2020 11:51:57 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2E5C061793
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:51:17 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id g185so6016606wmf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:51:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=epGNlRHgYSygzTTZ+uFkIBrJrnk/Z3AzZZijyw63diU=;
+        b=wNykV1c1JlvHFJoxiReneV2Pt2vvkRHD3ZnqbdiC0M2A9Uiu1JBaIq/l8/yYj6CKlb
+         51bOfU44+YB6Ji1eHliUn28ZFSXnaIGbgRn8AzaWL5H/04PZ/GkLiCNCe/dcS9aZehbw
+         zwPqY/jrryJORyReX7ApUYtsK2XWbGRUc3ER3j000K8cUAbC1vUILedmOCdBNmY4q425
+         Y6/bDRNqDVU1UruDy+xyhnrDwRl+mYiNWukd2JhCHI8MI+qx90Hd70cXCIDIV7c1fAtz
+         jcTaHXGx1fQSZ8qTVaVqyKV1I1cy0ut+pNZYovGUcc7z2+CopqbLByVn3jRHqKp3vLUG
+         oKeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=epGNlRHgYSygzTTZ+uFkIBrJrnk/Z3AzZZijyw63diU=;
+        b=CeakZg6CkpTmBDJkcaW56Bu8n02ld6N4hQy/9P0l/GoKkbjUNeik7M/++bVS8D5nZ/
+         9NnsJHfrMRzmSnT2o6deIe5SccIvurOObEvF+EOViFGayoSt2/6RBuozgHzNuQ3wZ8Ai
+         wls1uF2+CEQfH8LQ5/yFHN7a/0iHw2CiC4OdbGpi3LcpzitDr5C05/oeAnskkRap2gK/
+         li8B2OupzK0hT7vLJJa2WxQY3K1fL/tB9V/7sXS7ciiCz3Nz5exFcg+SO/VvNj40JraA
+         ElATvZhgTbLAcCqaFT3b+FCn3WpLyKlAT6cWipbcvfneSVwYXwDECKoE56fZ2ksngFIE
+         dwcg==
+X-Gm-Message-State: AOAM533NoOHUTFTtytRyPMv9FR96qdI9jmjJlu8UiK3+oU3tMcJ2Dlq0
+        QEtPAYzGATD75gudvUu9FNARBw==
+X-Google-Smtp-Source: ABdhPJzNRk/1XMSjihjeRuqYw1BmHpjGdQCGana0ENyrKt1CgDQEsxqFFcjoljjIMZPt5ACDKJSpnA==
+X-Received: by 2002:a1c:4e0a:: with SMTP id g10mr9189731wmh.51.1607619075580;
+        Thu, 10 Dec 2020 08:51:15 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id m21sm10147726wml.13.2020.12.10.08.51.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 08:51:14 -0800 (PST)
+Date:   Thu, 10 Dec 2020 17:51:08 +0100
+From:   Marco Elver <elver@google.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Jann Horn <jannh@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Willem de Bruijn <willemb@google.com>,
+        syzbot <syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com>
+Subject: Re: WARNING in sk_stream_kill_queues (5)
+Message-ID: <X9JR/J6dMMOy1obu@elver.google.com>
+References: <000000000000b4862805b54ef573@google.com>
+ <X8kLG5D+j4rT6L7A@elver.google.com>
+ <CANn89iJWD5oXPLgtY47umTgo3gCGBaoy+XJfXnw1ecES_EXkCw@mail.gmail.com>
+ <CANpmjNOaWbGJQ5Y=qC3cA31-R-Jy4Fbe+p=OBG5O2Amz8dLtLA@mail.gmail.com>
+ <CANn89iKWf1EVZUuAHup+5ndhxvOqGopq53=vZ9yeok=DnRjggg@mail.gmail.com>
+ <X8kjPIrLJUd8uQIX@elver.google.com>
+ <af884a0e-5d4d-f71b-4821-b430ac196240@gmail.com>
+ <CANpmjNNDKm_ObRnO_b3gH6wDYjb6_ex-KhZA5q5BRzEMgo+0xg@mail.gmail.com>
+ <X9DHa2OG6lewtfPQ@elver.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f965241c-69c7-c021-47c9-ef0c028e8399@intel.com>
+In-Reply-To: <X9DHa2OG6lewtfPQ@elver.google.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 12:40:46AM +0800, Xiaochen Shen wrote:
-> I plan to do backporting for all -stable trees after this patch is merged
-> into upstream.
+On Wed, Dec 09, 2020 at 01:47PM +0100, Marco Elver wrote:
+> On Tue, Dec 08, 2020 at 08:06PM +0100, Marco Elver wrote:
+> > On Thu, 3 Dec 2020 at 19:01, Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> > > On 12/3/20 6:41 PM, Marco Elver wrote:
+> > >
+> > > > One more experiment -- simply adding
+> > > >
+> > > > --- a/net/core/skbuff.c
+> > > > +++ b/net/core/skbuff.c
+> > > > @@ -207,7 +207,21 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
+> > > >        */
+> > > >       size = SKB_DATA_ALIGN(size);
+> > > >       size += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+> > > > +     size = 1 << kmalloc_index(size); /* HACK */
+> > > >       data = kmalloc_reserve(size, gfp_mask, node, &pfmemalloc);
+> > > >
+> > > >
+> > > > also got rid of the warnings. Something must be off with some value that
+> > > > is computed in terms of ksize(). If not, I don't have any explanation
+> > > > for why the above hides the problem.
+> > >
+> > > Maybe the implementations of various macros (SKB_DATA_ALIGN and friends)
+> > > hae some kind of assumptions, I will double check this.
+> > 
+> > If I force kfence to return 4K sized allocations for everything, the
+> > warnings remain. That might suggest that it's not due to a missed
+> > ALIGN.
+> > 
+> > Is it possible that copies or moves are a problem? E.g. we copy
+> > something from kfence -> non-kfence object (or vice-versa), and
+> > ksize() no longer matches, then things go wrong?
+> 
+> I was able to narrow it down to allocations of size 640. I also narrowed
+> it down to 5 allocations that go through kfence that start triggering
+> the issue. I have attached the list of those 5 allocations with
+> allocation + free stacks. I'll try to go through them, maybe I get
+> lucky eventually. :-)
 
-Ok, you can do that when Greg sends the mails that it cannot apply to
-the respective trees. Lemme queue this one to urgent now.
+[...]
 
-Thx.
+> kfence-#3 [0xffff88843681ac00-0xffff88843681ae7f, size=640, cache=kmalloc-1k] allocated by task 17012:
+>  __kmalloc_reserve net/core/skbuff.c:142 [inline]
+>  __alloc_skb+0xb8/0x3f0 net/core/skbuff.c:210
+>  alloc_skb_fclone include/linux/skbuff.h:1144 [inline]
+>  sk_stream_alloc_skb+0xd3/0x650 net/ipv4/tcp.c:888
+>  tso_fragment net/ipv4/tcp_output.c:2124 [inline]
+>  tcp_write_xmit+0x1366/0x3510 net/ipv4/tcp_output.c:2674
+>  __tcp_push_pending_frames+0x68/0x1f0 net/ipv4/tcp_output.c:2866
+>  tcp_push_pending_frames include/net/tcp.h:1864 [inline]
+>  tcp_data_snd_check net/ipv4/tcp_input.c:5374 [inline]
+>  tcp_rcv_established+0x57c/0x10b0 net/ipv4/tcp_input.c:5869
+>  tcp_v4_do_rcv+0x361/0x4c0 net/ipv4/tcp_ipv4.c:1668
+>  sk_backlog_rcv include/net/sock.h:1010 [inline]
+>  __release_sock+0xd7/0x260 net/core/sock.c:2523
+>  release_sock+0x40/0x120 net/core/sock.c:3053
+>  sk_wait_data+0x127/0x2b0 net/core/sock.c:2565
+>  tcp_recvmsg+0x1106/0x1b60 net/ipv4/tcp.c:2181
+>  inet_recvmsg+0xb1/0x270 net/ipv4/af_inet.c:848
+>  sock_recvmsg_nosec net/socket.c:885 [inline]
+>  sock_recvmsg net/socket.c:903 [inline]
+>  sock_recvmsg net/socket.c:899 [inline]
+>  ____sys_recvmsg+0x2fd/0x3a0 net/socket.c:2563
+>  ___sys_recvmsg+0xd9/0x1b0 net/socket.c:2605
+>  __sys_recvmsg+0x8b/0x130 net/socket.c:2641
+>  __do_sys_recvmsg net/socket.c:2651 [inline]
+>  __se_sys_recvmsg net/socket.c:2648 [inline]
+>  __x64_sys_recvmsg+0x43/0x50 net/socket.c:2648
+>  do_syscall_64+0x34/0x80 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
--- 
-Regards/Gruss,
-    Boris.
+So I started putting gdb to work, and whenever I see an allocation
+exactly like the above that goes through tso_fragment() a warning
+immediately follows.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Long story short, I somehow synthesized this patch that appears to fix
+things, but I can't explain why exactly:
+
+| --- a/net/core/skbuff.c
+| +++ b/net/core/skbuff.c
+| @@ -1679,13 +1679,6 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
+|  
+|  	skb_metadata_clear(skb);
+|  
+| -	/* It is not generally safe to change skb->truesize.
+| -	 * For the moment, we really care of rx path, or
+| -	 * when skb is orphaned (not attached to a socket).
+| -	 */
+| -	if (!skb->sk || skb->destructor == sock_edemux)
+| -		skb->truesize += size - osize;
+| -
+|  	return 0;
+|  
+|  nofrags:
+
+Now, here are the breadcrumbs I followed:
+
+
+1. 	Breakpoint on kfence_ksize() -- first allocation that matches the above:
+
+	| #0  __kfence_ksize (s=18446612700164612096) at mm/kfence/core.c:726
+	| #1  0xffffffff816fbf30 in kfence_ksize (addr=0xffff888436856000) at mm/kfence/core.c:737
+	| #2  0xffffffff816217cf in ksize (objp=0xffff888436856000) at mm/slab_common.c:1178
+	| #3  0xffffffff84896911 in __alloc_skb (size=914710528, gfp_mask=2592, flags=0, node=-1) at net/core/skbuff.c:217
+	| #4  0xffffffff84d0ba73 in alloc_skb_fclone (priority=<optimized out>, size=<optimized out>) at ./include/linux/skbuff.h:1144
+	| #5  sk_stream_alloc_skb (sk=0xffff8881176cc000, size=0, gfp=2592, force_schedule=232) at net/ipv4/tcp.c:888
+	| #6  0xffffffff84d41c36 in tso_fragment (gfp=<optimized out>, mss_now=<optimized out>, len=<optimized out>,
+	|     skb=<optimized out>, sk=<optimized out>) at net/ipv4/tcp_output.c:2124
+	| #7  tcp_write_xmit (sk=0xffff8881176cc000, mss_now=21950, nonagle=3096, push_one=-1996874776, gfp=0)
+	|     at net/ipv4/tcp_output.c:2674
+	| #8  0xffffffff84d43e48 in __tcp_push_pending_frames (sk=0xffff8881176cc000, cur_mss=337, nonagle=0)
+	|     at ./include/net/sock.h:918
+	| #9  0xffffffff84d3259c in tcp_push_pending_frames (sk=<optimized out>) at ./include/net/tcp.h:1864
+	| #10 tcp_data_snd_check (sk=<optimized out>) at net/ipv4/tcp_input.c:5374
+	| #11 tcp_rcv_established (sk=0xffff8881176cc000, skb=0x0 <fixed_percpu_data>) at net/ipv4/tcp_input.c:5869
+	| #12 0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f52ea0) at net/ipv4/tcp_ipv4.c:1668
+	| [...]	
+
+	Set watchpoint on skb->truesize:
+
+	| (gdb) frame 3
+	| #3  0xffffffff84896911 in __alloc_skb (size=914710528, gfp_mask=2592, flags=0, node=-1) at net/core/skbuff.c:217
+	| 217             size = SKB_WITH_OVERHEAD(ksize(data));
+	| (gdb) p &skb->truesize
+	| $5 = (unsigned int *) 0xffff888117f55f90
+	| (gdb) awatch *0xffff888117f55f90
+	| Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
+
+2. 	Some time later, we see that the skb with kfence-allocated data
+	is cloned:
+
+	| Thread 7 hit Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
+	|
+	| Value = 1570
+	| 0xffffffff84886947 in __skb_clone (n=0xffff888117f55fa0, skb=0xffff888117f55ec0) at net/core/skbuff.c:1002
+	| 1002            C(truesize);
+	| (gdb) bt
+	| #0  0xffffffff84886947 in __skb_clone (n=0xffff888117f55fa0, skb=0xffff888117f55ec0) at net/core/skbuff.c:1002
+	| #1  0xffffffff8488bfb9 in skb_clone (skb=0xffff888117f55ec0, gfp_mask=2592) at net/core/skbuff.c:1454
+	| #2  0xffffffff84d3cd1c in __tcp_transmit_skb (sk=0xffff8881176cc000, skb=0xffff888117f55ec0, clone_it=0, gfp_mask=2592,
+	|     rcv_nxt=0) at net/ipv4/tcp_output.c:1267
+	| #3  0xffffffff84d4125b in tcp_transmit_skb (gfp_mask=<optimized out>, clone_it=<optimized out>, skb=<optimized out>,
+	|     sk=<optimized out>) at ./include/linux/tcp.h:439
+	| #4  tcp_write_xmit (sk=0xffff8881176cc000, mss_now=392485600, nonagle=1326, push_one=-1996875104, gfp=0)
+	|     at net/ipv4/tcp_output.c:2688
+	| #5  0xffffffff84d43e48 in __tcp_push_pending_frames (sk=0xffff8881176cc000, cur_mss=337, nonagle=0)
+	|     at ./include/net/sock.h:918
+	| #6  0xffffffff84d3259c in tcp_push_pending_frames (sk=<optimized out>) at ./include/net/tcp.h:1864
+	| #7  tcp_data_snd_check (sk=<optimized out>) at net/ipv4/tcp_input.c:5374
+	| #8  tcp_rcv_established (sk=0xffff8881176cc000, skb=0x0 <fixed_percpu_data>) at net/ipv4/tcp_input.c:5869
+	| #9  0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f57820) at net/ipv4/tcp_ipv4.c:1668
+	| #10 0xffffffff8487bf67 in sk_backlog_rcv (skb=<optimized out>, sk=<optimized out>) at ./include/net/sock.h:1010
+	[...]
+
+
+3. 	The original skb (that was cloned) has its truesize adjusted
+	after a pskb_expand_head():
+
+	| Thread 2 hit Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
+	| 
+	| Old value = 1570
+	| New value = 1954
+
+	^^ the difference between the old and the new value is exactly
+	384, which is also the final underflow of the sk_wmem_queued
+	that triggers the warning. Presumably if the original allocation
+	had been through kmalloc-1k and not KFENCE, the difference here
+	would have been 0, since ksize() of the original allocation in
+	step (1) would have been 1024, and not 640 (difference of 384).
+
+	| 0xffffffff8488d84b in pskb_expand_head (skb=0xffff888117f55ec0, nhead=401956752, ntail=1954, gfp_mask=2298092192)
+	|     at net/core/skbuff.c:1687
+	| 1687                    skb->truesize += size - osize;
+	| (gdb) bt
+	| #0  0xffffffff8488d84b in pskb_expand_head (skb=0xffff888117f55ec0, nhead=401956752, ntail=1954, gfp_mask=2298092192)
+	|     at net/core/skbuff.c:1687
+	| #1  0xffffffff8488de01 in skb_prepare_for_shift (skb=<optimized out>) at ./arch/x86/include/asm/atomic.h:29
+	| #2  skb_prepare_for_shift (skb=0xffff888117f55ec0) at net/core/skbuff.c:3276
+	| #3  0xffffffff848936b1 in skb_shift (tgt=0xffff888117f549c0, skb=0xffff888117f55ec0, shiftlen=674) at net/core/skbuff.c:3351
+	| #4  0xffffffff84d264de in tcp_skb_shift (shiftlen=<optimized out>, pcount=<optimized out>, from=<optimized out>,
+	|     to=<optimized out>) at net/ipv4/tcp_input.c:1497
+	| #5  tcp_shift_skb_data (dup_sack=<optimized out>, end_seq=<optimized out>, start_seq=<optimized out>, state=<optimized out>,
+	|     skb=<optimized out>, sk=<optimized out>) at net/ipv4/tcp_input.c:1605
+	| #6  tcp_sacktag_walk (skb=0xffff888117f55ec0, sk=0xffff8881176cc000, next_dup=0x894,
+	|     state=0xffffffff88fa1aa0 <watchpoints+192>, start_seq=0, end_seq=401956752, dup_sack_in=false)
+	|     at net/ipv4/tcp_input.c:1670
+	| #7  0xffffffff84d276de in tcp_sacktag_write_queue (sk=0xffff888117f55f90, ack_skb=0x1888117f55f90, prior_snd_una=2196,
+	|     state=0xffffffff88fa1aa0 <watchpoints+192>) at net/ipv4/tcp_input.c:1931
+	| #8  0xffffffff84d2ca1d in tcp_ack (sk=0xffff8881176cc000, skb=0x1888117f55f90, flag=16643) at net/ipv4/tcp_input.c:3758
+	| #9  0xffffffff84d32387 in tcp_rcv_established (sk=0xffff8881176cc000, skb=0xffff888117f54020) at net/ipv4/tcp_input.c:5858
+	| #10 0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f54020) at net/ipv4/tcp_ipv4.c:1668
+	[...]
+
+
+Any of this make sense?
+
+Thanks,
+-- Marco
