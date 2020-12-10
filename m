@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A5D2D5DCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CB32D5E4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390522AbgLJOb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:31:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38508 "EHLO mail.kernel.org"
+        id S2403833AbgLJOpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:45:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733056AbgLJOaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:30:30 -0500
+        id S2391136AbgLJOiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:38:11 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.9 37/45] spi: Introduce device-managed SPI controller allocation
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH 5.9 26/75] gfs2: Upgrade shared glocks for atime updates
 Date:   Thu, 10 Dec 2020 15:26:51 +0100
-Message-Id: <20201210142604.182913454@linuxfoundation.org>
+Message-Id: <20201210142607.339447970@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
-References: <20201210142602.361598591@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,146 +31,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Andreas Gruenbacher <agruenba@redhat.com>
 
-[ Upstream commit 5e844cc37a5cbaa460e68f9a989d321d63088a89 ]
+commit 82e938bd5382b322ce81e6cb8fd030987f2da022 upstream.
 
-SPI driver probing currently comprises two steps, whereas removal
-comprises only one step:
+Commit 20f829999c38 ("gfs2: Rework read and page fault locking") lifted
+the glock lock taking from the low-level ->readpage and ->readahead
+address space operations to the higher-level ->read_iter file and
+->fault vm operations.  The glocks are still taken in LM_ST_SHARED mode
+only.  On filesystems mounted without the noatime option, ->read_iter
+sometimes needs to update the atime as well, though.  Right now, this
+leads to a failed locking mode assertion in gfs2_dirty_inode.
 
-    spi_alloc_master()
-    spi_register_master()
+Fix that by introducing a new update_time inode operation.  There, if
+the glock is held non-exclusively, upgrade it to an exclusive lock.
 
-    spi_unregister_master()
-
-That's because spi_unregister_master() calls device_unregister()
-instead of device_del(), thereby releasing the reference on the
-spi_master which was obtained by spi_alloc_master().
-
-An SPI driver's private data is contained in the same memory allocation
-as the spi_master struct.  Thus, once spi_unregister_master() has been
-called, the private data is inaccessible.  But some drivers need to
-access it after spi_unregister_master() to perform further teardown
-steps.
-
-Introduce devm_spi_alloc_master(), which releases a reference on the
-spi_master struct only after the driver has unbound, thereby keeping the
-memory allocation accessible.  Change spi_unregister_master() to not
-release a reference if the spi_master was allocated by the new devm
-function.
-
-The present commit is small enough to be backportable to stable.
-It allows fixing drivers which use the private data in their ->remove()
-hook after it's been freed.  It also allows fixing drivers which neglect
-to release a reference on the spi_master in the probe error path.
-
-Long-term, most SPI drivers shall be moved over to the devm function
-introduced herein.  The few that can't shall be changed in a treewide
-commit to explicitly release the last reference on the master.
-That commit shall amend spi_unregister_master() to no longer release
-a reference, thereby completing the migration.
-
-As a result, the behaviour will be less surprising and more consistent
-with subsystems such as IIO, which also includes the private data in the
-allocation of the generic iio_dev struct, but calls device_del() in
-iio_device_unregister().
-
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Link: https://lore.kernel.org/r/272bae2ef08abd21388c98e23729886663d19192.1605121038.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: Alexander Aring <aahringo@redhat.com>
+Fixes: 20f829999c38 ("gfs2: Rework read and page fault locking")
+Cc: stable@vger.kernel.org # v5.8+
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/spi/spi.c       |   54 +++++++++++++++++++++++++++++++++++++++++++++++-
- include/linux/spi/spi.h |    2 +
- 2 files changed, 55 insertions(+), 1 deletion(-)
 
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -1827,6 +1827,46 @@ struct spi_master *spi_alloc_master(stru
+---
+ fs/gfs2/inode.c |   21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+--- a/fs/gfs2/inode.c
++++ b/fs/gfs2/inode.c
+@@ -2116,6 +2116,25 @@ loff_t gfs2_seek_hole(struct file *file,
+ 	return vfs_setpos(file, ret, inode->i_sb->s_maxbytes);
  }
- EXPORT_SYMBOL_GPL(spi_alloc_master);
  
-+static void devm_spi_release_master(struct device *dev, void *master)
++static int gfs2_update_time(struct inode *inode, struct timespec64 *time,
++			    int flags)
 +{
-+	spi_master_put(*(struct spi_master **)master);
-+}
++	struct gfs2_inode *ip = GFS2_I(inode);
++	struct gfs2_glock *gl = ip->i_gl;
++	struct gfs2_holder *gh;
++	int error;
 +
-+/**
-+ * devm_spi_alloc_master - resource-managed spi_alloc_master()
-+ * @dev: physical device of SPI master
-+ * @size: how much zeroed driver-private data to allocate
-+ * Context: can sleep
-+ *
-+ * Allocate an SPI master and automatically release a reference on it
-+ * when @dev is unbound from its driver.  Drivers are thus relieved from
-+ * having to call spi_master_put().
-+ *
-+ * The arguments to this function are identical to spi_alloc_master().
-+ *
-+ * Return: the SPI master structure on success, else NULL.
-+ */
-+struct spi_master *devm_spi_alloc_master(struct device *dev, unsigned int size)
-+{
-+	struct spi_master **ptr, *master;
-+
-+	ptr = devres_alloc(devm_spi_release_master, sizeof(*ptr),
-+			   GFP_KERNEL);
-+	if (!ptr)
-+		return NULL;
-+
-+	master = spi_alloc_master(dev, size);
-+	if (master) {
-+		*ptr = master;
-+		devres_add(dev, ptr);
-+	} else {
-+		devres_free(ptr);
++	gh = gfs2_glock_is_locked_by_me(gl);
++	if (gh && !gfs2_glock_is_held_excl(gl)) {
++		gfs2_glock_dq(gh);
++		gfs2_holder_reinit(LM_ST_EXCLUSIVE, 0, gh);
++		error = gfs2_glock_nq(gh);
++		if (error)
++			return error;
 +	}
-+
-+	return master;
-+}
-+EXPORT_SYMBOL_GPL(devm_spi_alloc_master);
-+
- #ifdef CONFIG_OF
- static int of_spi_register_master(struct spi_master *master)
- {
-@@ -2007,6 +2047,11 @@ int devm_spi_register_master(struct devi
- }
- EXPORT_SYMBOL_GPL(devm_spi_register_master);
- 
-+static int devm_spi_match_master(struct device *dev, void *res, void *master)
-+{
-+	return *(struct spi_master **)res == master;
++	return generic_update_time(inode, time, flags);
 +}
 +
- static int __unregister(struct device *dev, void *null)
- {
- 	spi_unregister_device(to_spi_device(dev));
-@@ -2036,7 +2081,14 @@ void spi_unregister_master(struct spi_ma
- 	list_del(&master->list);
- 	mutex_unlock(&board_lock);
+ const struct inode_operations gfs2_file_iops = {
+ 	.permission = gfs2_permission,
+ 	.setattr = gfs2_setattr,
+@@ -2124,6 +2143,7 @@ const struct inode_operations gfs2_file_
+ 	.fiemap = gfs2_fiemap,
+ 	.get_acl = gfs2_get_acl,
+ 	.set_acl = gfs2_set_acl,
++	.update_time = gfs2_update_time,
+ };
  
--	device_unregister(&master->dev);
-+	device_del(&master->dev);
-+
-+	/* Release the last reference on the master if its driver
-+	 * has not yet been converted to devm_spi_alloc_master().
-+	 */
-+	if (!devres_find(master->dev.parent, devm_spi_release_master,
-+			 devm_spi_match_master, master))
-+		put_device(&master->dev);
- }
- EXPORT_SYMBOL_GPL(spi_unregister_master);
+ const struct inode_operations gfs2_dir_iops = {
+@@ -2143,6 +2163,7 @@ const struct inode_operations gfs2_dir_i
+ 	.fiemap = gfs2_fiemap,
+ 	.get_acl = gfs2_get_acl,
+ 	.set_acl = gfs2_set_acl,
++	.update_time = gfs2_update_time,
+ 	.atomic_open = gfs2_atomic_open,
+ };
  
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -601,6 +601,8 @@ extern void spi_finalize_current_transfe
- /* the spi driver core manages memory for the spi_master classdev */
- extern struct spi_master *
- spi_alloc_master(struct device *host, unsigned size);
-+extern struct spi_master *
-+devm_spi_alloc_master(struct device *dev, unsigned int size);
- 
- extern int spi_register_master(struct spi_master *master);
- extern int devm_spi_register_master(struct device *dev,
 
 
