@@ -2,27 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD842D5FB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8302D5F0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391458AbgLJOm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:42:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43700 "EHLO mail.kernel.org"
+        id S2389598AbgLJOsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:48:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727337AbgLJOgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:18 -0500
+        id S2391245AbgLJOjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:39:44 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.4 41/54] tracing: Fix userstacktrace option for instances
-Date:   Thu, 10 Dec 2020 15:27:18 +0100
-Message-Id: <20201210142604.055294717@linuxfoundation.org>
+        stable@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.9 58/75] mm: memcg/slab: fix obj_cgroup_charge() return value handling
+Date:   Thu, 10 Dec 2020 15:27:23 +0100
+Message-Id: <20201210142608.910717022@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,71 +35,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Roman Gushchin <guro@fb.com>
 
-commit bcee5278958802b40ee8b26679155a6d9231783e upstream.
+commit becaba65f62f88e553ec92ed98370e9d2b18e629 upstream.
 
-When the instances were able to use their own options, the userstacktrace
-option was left hardcoded for the top level. This made the instance
-userstacktrace option bascially into a nop, and will confuse users that set
-it, but nothing happens (I was confused when it happened to me!)
+Commit 10befea91b61 ("mm: memcg/slab: use a single set of kmem_caches
+for all allocations") introduced a regression into the handling of the
+obj_cgroup_charge() return value.  If a non-zero value is returned
+(indicating of exceeding one of memory.max limits), the allocation
+should fail, instead of falling back to non-accounted mode.
 
-Cc: stable@vger.kernel.org
-Fixes: 16270145ce6b ("tracing: Add trace options for core options to instances")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+To make the code more readable, move memcg_slab_pre_alloc_hook() and
+memcg_slab_post_alloc_hook() calling conditions into bodies of these
+hooks.
+
+Fixes: 10befea91b61 ("mm: memcg/slab: use a single set of kmem_caches for all allocations")
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201127161828.GD840171@carbon.dhcp.thefacebook.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- kernel/trace/trace.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ mm/slab.h |   42 +++++++++++++++++++++++++-----------------
+ 1 file changed, 25 insertions(+), 17 deletions(-)
 
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -160,7 +160,8 @@ static union trace_eval_map_item *trace_
- #endif /* CONFIG_TRACE_EVAL_MAP_FILE */
- 
- static int tracing_set_tracer(struct trace_array *tr, const char *buf);
--static void ftrace_trace_userstack(struct ring_buffer *buffer,
-+static void ftrace_trace_userstack(struct trace_array *tr,
-+				   struct ring_buffer *buffer,
- 				   unsigned long flags, int pc);
- 
- #define MAX_TRACER_SIZE		100
-@@ -2621,7 +2622,7 @@ void trace_buffer_unlock_commit_regs(str
- 	 * two. They are not that meaningful.
- 	 */
- 	ftrace_trace_stack(tr, buffer, flags, regs ? 0 : STACK_SKIP, pc, regs);
--	ftrace_trace_userstack(buffer, flags, pc);
-+	ftrace_trace_userstack(tr, buffer, flags, pc);
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -275,25 +275,35 @@ static inline size_t obj_full_size(struc
+ 	return s->size + sizeof(struct obj_cgroup *);
  }
  
- /*
-@@ -2936,13 +2937,14 @@ EXPORT_SYMBOL_GPL(trace_dump_stack);
- static DEFINE_PER_CPU(int, user_stack_count);
- 
- static void
--ftrace_trace_userstack(struct ring_buffer *buffer, unsigned long flags, int pc)
-+ftrace_trace_userstack(struct trace_array *tr,
-+		       struct ring_buffer *buffer, unsigned long flags, int pc)
+-static inline struct obj_cgroup *memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+-							   size_t objects,
+-							   gfp_t flags)
++/*
++ * Returns false if the allocation should fail.
++ */
++static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
++					     struct obj_cgroup **objcgp,
++					     size_t objects, gfp_t flags)
  {
- 	struct trace_event_call *call = &event_user_stack;
- 	struct ring_buffer_event *event;
- 	struct userstack_entry *entry;
+ 	struct obj_cgroup *objcg;
  
--	if (!(global_trace.trace_flags & TRACE_ITER_USERSTACKTRACE))
-+	if (!(tr->trace_flags & TRACE_ITER_USERSTACKTRACE))
++	if (!memcg_kmem_enabled())
++		return true;
++
++	if (!(flags & __GFP_ACCOUNT) && !(s->flags & SLAB_ACCOUNT))
++		return true;
++
+ 	if (memcg_kmem_bypass())
+-		return NULL;
++		return true;
+ 
+ 	objcg = get_obj_cgroup_from_current();
+ 	if (!objcg)
+-		return NULL;
++		return true;
+ 
+ 	if (obj_cgroup_charge(objcg, flags, objects * obj_full_size(s))) {
+ 		obj_cgroup_put(objcg);
+-		return NULL;
++		return false;
+ 	}
+ 
+-	return objcg;
++	*objcgp = objcg;
++	return true;
+ }
+ 
+ static inline void mod_objcg_state(struct obj_cgroup *objcg,
+@@ -319,7 +329,7 @@ static inline void memcg_slab_post_alloc
+ 	unsigned long off;
+ 	size_t i;
+ 
+-	if (!objcg)
++	if (!memcg_kmem_enabled() || !objcg)
  		return;
  
- 	/*
-@@ -2981,7 +2983,8 @@ ftrace_trace_userstack(struct ring_buffe
- 	preempt_enable();
- }
- #else /* CONFIG_USER_STACKTRACE_SUPPORT */
--static void ftrace_trace_userstack(struct ring_buffer *buffer,
-+static void ftrace_trace_userstack(struct trace_array *tr,
-+				   struct ring_buffer *buffer,
- 				   unsigned long flags, int pc)
+ 	flags &= ~__GFP_ACCOUNT;
+@@ -404,11 +414,11 @@ static inline void memcg_free_page_obj_c
  {
  }
+ 
+-static inline struct obj_cgroup *memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+-							   size_t objects,
+-							   gfp_t flags)
++static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
++					     struct obj_cgroup **objcgp,
++					     size_t objects, gfp_t flags)
+ {
+-	return NULL;
++	return true;
+ }
+ 
+ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+@@ -512,9 +522,8 @@ static inline struct kmem_cache *slab_pr
+ 	if (should_failslab(s, flags))
+ 		return NULL;
+ 
+-	if (memcg_kmem_enabled() &&
+-	    ((flags & __GFP_ACCOUNT) || (s->flags & SLAB_ACCOUNT)))
+-		*objcgp = memcg_slab_pre_alloc_hook(s, size, flags);
++	if (!memcg_slab_pre_alloc_hook(s, objcgp, size, flags))
++		return NULL;
+ 
+ 	return s;
+ }
+@@ -533,8 +542,7 @@ static inline void slab_post_alloc_hook(
+ 					 s->flags, flags);
+ 	}
+ 
+-	if (memcg_kmem_enabled())
+-		memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
++	memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
+ }
+ 
+ #ifndef CONFIG_SLOB
 
 
