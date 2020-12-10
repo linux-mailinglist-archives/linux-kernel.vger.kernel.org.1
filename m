@@ -2,109 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400192D65BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD372D65B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404186AbgLJS7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:59:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393297AbgLJS6u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 13:58:50 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792D6C06179C
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 10:57:57 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id ce23so8828140ejb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 10:57:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a6TkgEUfiDhWCoSS0DFeAubMo61jHLszmVbhmRRlKAo=;
-        b=Mvy/GKpSRg8Xa2d/bWsJOn0aT1XfglvsqwjR+nO6/qw8n8TvkbbiEeshrouUhn4XU+
-         ax428YZ6LYn6d2NdDSzyxeS87BL+rbWwOVpppByha4dut1SaSxw6VhBtxRuyXA4B96ms
-         DHUF/izejnx648aeQrhElRRClRT+brQYNwWSQ3a2MAb10scn6hAPsjW4BNUVPwjtCwU6
-         b+GptKorV3xqcNbvWlWUcMdTRzzprfEfspQtSrdGbE8XrI2r27N/Z250TuneFrUMjKrA
-         LKe5RUyKGA3v8X2LC1d+78hZBw66X7PJiWi1xjUhUzyUECFLYpoici7W0Sfq0KsEHRJx
-         pnQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a6TkgEUfiDhWCoSS0DFeAubMo61jHLszmVbhmRRlKAo=;
-        b=BA8z0G2SAw6y2c83l9Rd4s2X21XEdUnUUwHNiTGFXr01e+h2GUZ01L8nh2viXmVCwg
-         0FndK/tpzLMA+UtQFwsWKXG7bgN7gyIjOCmBq1XRoEgnmlKZ0YPk9+JYRrI4F6zTc6iU
-         SDLtmUNBi+AIV7vQwPnYATmI+KU2HWVP5jeiDHABbyE1EPwXxS6i78gDfq+vK4HxG5u/
-         MpV2WHN08J/DjzsiurQhcpiGOtdXnQg7V/UbCQ8RlfHQRzWssTtbBiPxGx4QmNq8ojOW
-         0Menxr5jTCHRZolXY2wrZkpJGWU55kIFjWy6FCiCD8ZurxKdApoC5axrskQ7AtDRSV0i
-         PkhQ==
-X-Gm-Message-State: AOAM530D0DYBb1MJxpVANPY7fVQvfgthr/wLTgTMTS0OK1OqdKHwq9Qn
-        pOlHQF8Qy8SFqvzzpf1kL71mwjLfauZXMfHLtOpuzQ==
-X-Google-Smtp-Source: ABdhPJyRi83G4NsMmHZfaFGRTtQRDTMLDzUIrLDBV1wXI7ajLidTQuBMOdhm2H36zD8usiRong+dYAarxyBWcqOpOvE=
-X-Received: by 2002:a17:906:fb9b:: with SMTP id lr27mr7880873ejb.175.1607626676199;
- Thu, 10 Dec 2020 10:57:56 -0800 (PST)
+        id S2393285AbgLJS6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:58:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393133AbgLJS6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 13:58:21 -0500
+Date:   Thu, 10 Dec 2020 12:57:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607626660;
+        bh=bY6QyKta2HG7QnuulXpGmzijvxYT716CvFeUnK73lGE=;
+        h=From:To:Cc:Subject:In-Reply-To:From;
+        b=IRfRt9Rbs6p8tsMig0XCBR+5RMuUFTJpQU/itpNPQJss029/xNV2PTcALOb5np5XG
+         zcwl8b5UN0AUTNvZygu3PLrHWaXKFWeOs7GdyJr2xkvsb77dJM4GnzvA0zI10a+7sz
+         YEN8hqBWTGLsO2U/FwvhArfhtHNUeHgAE/uTNYBTmG5kQYSi2cD6IB4rR3dZq9zF2R
+         B+xe6OO9OSACmhBZ3rx37KSKvkrxQ1RXCC32KPiB3NDzHpxF9DUMqA0eI1L3zrB4Xn
+         bi5h/XhwxflLmu1WGNb1+frIySTwiFfSF/+4qiFHfGnATz+gpiUYgxjmUL58Cm+qEv
+         x+c3Er225XIQQ==
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     tglx@linutronix.de, ashok.raj@intel.com, kevin.tian@intel.com,
+        dave.jiang@intel.com, megha.dey@intel.com,
+        alex.williamson@redhat.com, bhelgaas@google.com,
+        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
+        eric.auger@redhat.com, jacob.jun.pan@intel.com, jgg@mellanox.com,
+        jing.lin@intel.com, kvm@vger.kernel.org, kwankhede@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
+        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
+        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
+        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
+        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com
+Subject: Re: [RFC PATCH 1/1] platform-msi: Add platform check for subdevice
+ irq domain
+Message-ID: <20201210185738.GA49060@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20201210004335.64634-1-pasha.tatashin@soleen.com>
- <20201210004335.64634-4-pasha.tatashin@soleen.com> <20201210040618.GR1563847@iweiny-DESK2.sc.intel.com>
- <CA+CK2bCVEnKKatQSxZcdcvNo+9rWNrGWXyLS3dnF-y7=5Ery7g@mail.gmail.com> <20201210174431.GT1563847@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20201210174431.GT1563847@iweiny-DESK2.sc.intel.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 10 Dec 2020 13:57:20 -0500
-Message-ID: <CA+CK2bBbN9dxqD_ntAPACfjJmwahPEyP36cb7koVm212nzsuKw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/8] mm/gup: make __gup_longterm_locked common
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210004624.345282-1-baolu.lu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 12:44 PM Ira Weiny <ira.weiny@intel.com> wrote:
->
-> On Thu, Dec 10, 2020 at 08:30:03AM -0500, Pavel Tatashin wrote:
-> > On Wed, Dec 9, 2020 at 11:06 PM Ira Weiny <ira.weiny@intel.com> wrote:
-> > >
-> > > On Wed, Dec 09, 2020 at 07:43:30PM -0500, Pavel Tatashin wrote:
-> > > > __gup_longterm_locked() has CMA || FS_DAX version and a common stub
-> > > > version. In the preparation of prohibiting longterm pinning of pages from
-> > > > movable zone make the CMA || FS_DAX version common, and delete the stub
-> > > > version.
-> > >
-> > > I thought Jason sent a patch which got rid of this as well?
-> >
-> > Yes, this series applies on the mainline so it can be easily tested.
-> > The next version, I will sync with linux-next.
->
-> Oh yea we wanted this to be back-portable correct?
->
-> If so, LGTM
->
-> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+On Thu, Dec 10, 2020 at 08:46:24AM +0800, Lu Baolu wrote:
+> The pci_subdevice_msi_create_irq_domain() should fail if the underlying
+> platform is not able to support IMS (Interrupt Message Storage). Otherwise,
+> the isolation of interrupt is not guaranteed.
+> 
+> For x86, IMS is only supported on bare metal for now. We could enable it
+> in the virtualization environments in the future if interrupt HYPERCALL
+> domain is supported or the hardware has the capability of interrupt
+> isolation for subdevices.
 
-Thank you. Yes, this series should be backported, but I am not sure
-what to do about Jason's patch. Perhaps, in the next version I will
-send out this series together with his patch.
+> + * We want to figure out which context we are running in. But the hardware
+> + * does not introduce a reliable way (instruction, CPUID leaf, MSR, whatever)
+> + * which can be manipulated by the VMM to let the OS figure out where it runs.
+> + * So we go with the below probably_on_bare_metal() function as a replacement
+> + * for definitely_on_bare_metal() to go forward only for the very simple reason
+> + * that this is the only option we have.
+> + */
+> +static const char * const possible_vmm_vendor_name[] = {
+> +	"QEMU", "Bochs", "KVM", "Xen", "VMware", "VMW", "VMware Inc.",
+> +	"innotek GmbH", "Oracle Corporation", "Parallels", "BHYVE",
+> +	"Microsoft Corporation"
+> +};
+> +
+> +static bool probably_on_bare_metal(void)
 
-Pasha
+What is the point of a function called probably_on_bare_metal()?
+*Probably*?  The caller can't really do anything with the fact that
+we're not 100% sure this gives the correct answer.  Just call it
+"on_bare_metal()" or something and accept the fact that it might be
+wrong sometimes.
 
->
-> Sorry for not keeping up,
-> Ira
+This patch goes with IMS support, which somebody else is handling, so
+I assume you don't need anything from the PCI side.
