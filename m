@@ -2,68 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D29F2D6BB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 177F32D6B55
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392490AbgLJXOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:14:43 -0500
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:42487 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392221AbgLJXNi (ORCPT
+        id S2390465AbgLJW6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 17:58:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726904AbgLJWzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:13:38 -0500
-Received: by mail-yb1-f194.google.com with SMTP id j17so6315470ybt.9;
-        Thu, 10 Dec 2020 15:13:22 -0800 (PST)
+        Thu, 10 Dec 2020 17:55:12 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E27A6C0611D0;
+        Thu, 10 Dec 2020 14:40:42 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id bo9so9644451ejb.13;
+        Thu, 10 Dec 2020 14:40:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=og3mP8QDCmKL6+paoUrOZB10bVWMU1AF7Rih31rOKvI=;
+        b=R8uEnwFpfcGw4QqKIJpWI4GItLiOKeA+e1VJh0Uwbo9QzxiTPAvJjFERA7zypCYm+I
+         gkzfP31MOHjNQOWEMw0pt0HBflHX8X2KDaI7HFYY+L/LLjbxckRVh5FlN1nweLbFWr+E
+         emuL1mUsWIm6ZH4gVZMt/7g45Q/uotlv6OuInduJJLI0z6e43/NaLGQx1TASdTb3q2vj
+         tGi76SuhyyJbykptvSkNP3SExESVzH8rbHyItq4mNVE2pHtR2keY5j+jVHvrMoua+eDY
+         mIuGuzw6/nalptxGxtutLGGtUZ2izgZPJkgnarYzmOVqgovuSUAd3ebszeGoduR17cYm
+         YcZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8kKmMiWcyzbiGl28UHvT780ogwdpkH+Z7+Rdd1Jmvvc=;
-        b=NH4URcFzPmTQFJMkYDfLt9mFIZXi4IfC7WwpmFZ7ix9RItNB852AGCcvoV73wglCwk
-         bzlObcHbvT6ug9Ua1BjJwZtBCdYURD7QcYqv/UvfhW858LCvFfq7yfyRRuiTr2ITigBB
-         2DMthBp9TxBsM9yQcKG1Ak4RjgLgA235CbqDx6h3aAUWgEmLtUxwzC2LNdK3XtBopnrd
-         /9fnrrOyG3qhK4H4685hqxSK5X5AywIAFgclkcoqJOjXi+b4bLW2R6tSC4zTNVBtSt6r
-         4drC5L54fujpMqdudAB2lxo14SjVSHtS3ArOiZ+IC42qNxh+m6wqXY4dIeo7Q1vQN0vq
-         0jsQ==
-X-Gm-Message-State: AOAM5313Q5zWcjwZ4Ilre/S4IajEu7cqY05KdvC55EPhUvJiQNvg5cg3
-        k0tcsuR6TnRtF5qLHO3wYSLg7XtYmQ==
-X-Google-Smtp-Source: ABdhPJytBQRjROhKJFf7zPzfAlUi28CwvvAbDU5KoLfTI0t8eT7ORR6YE3rrdzFZ6SLGEaJ+uhrkwQ==
-X-Received: by 2002:a05:6830:717:: with SMTP id y23mr7914339ots.268.1607639987153;
-        Thu, 10 Dec 2020 14:39:47 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x72sm1327886oia.16.2020.12.10.14.39.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 14:39:46 -0800 (PST)
-Received: (nullmailer pid 3187190 invoked by uid 1000);
-        Thu, 10 Dec 2020 22:39:45 -0000
-Date:   Thu, 10 Dec 2020 16:39:45 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] dt-bindings: media: Convert video-interfaces.txt
- to schemas
-Message-ID: <20201210223945.GA651087@robh.at.kernel.org>
-References: <20201210211625.3070388-1-robh@kernel.org>
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=og3mP8QDCmKL6+paoUrOZB10bVWMU1AF7Rih31rOKvI=;
+        b=j4SUL8450GQPikIP7wIbbgnYpwwUy0T0CTa/FM0q77HANe9cQMTomHcWig3LllawB3
+         tw5AFQij9ASG1O8u36ejcoAXTZRRIMhenmeEczO6jyq3dCfPjHOT0VjwVzgZ1CK9JxSC
+         GKDh1klYJJhufT/jvE/m6oDkxn4GTV6Oa7XTMhClwssZObfZCsbbBfMIplTfvvNIROKZ
+         PUJN7mWzF+nNEVeTMCzT2Q4YZEBZmb8axqFhKydfkbgm3JfH4FEMXYNFiMllyUCzS45O
+         6j0F5tzyp3mJdc7JLH2XYz7Zii0xl1ldKDVl9L/jHKNKc+WaeBrDELZwznO0+EGHDDMq
+         c4HA==
+X-Gm-Message-State: AOAM530BXumoz49Mvh6PJm5Pp5eJH+6rGCDxPtIqobQGbhPC/xbgLChq
+        1iP5wMLPaHl8e2yaznZ84eDMFf1jQiBg8Q==
+X-Google-Smtp-Source: ABdhPJzPzhd4FNR1hSVy5wLWlSOuInH7MTPLDylxPcsS1QAraMnQ0ERAxb0twNrbOZvqi4yIdxiwHw==
+X-Received: by 2002:a17:906:5386:: with SMTP id g6mr3937380ejo.137.1607640041392;
+        Thu, 10 Dec 2020 14:40:41 -0800 (PST)
+Received: from ?IPv6:2001:a61:25cc:8301:40d9:de28:875c:ad0d? ([2001:a61:25cc:8301:40d9:de28:875c:ad0d])
+        by smtp.gmail.com with ESMTPSA id 35sm5899797ede.0.2020.12.10.14.40.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 14:40:40 -0800 (PST)
+Cc:     mtk.manpages@gmail.com, linux-man <linux-man@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [patch] close_range.2: new page documenting close_range(2)
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        Stephen Kitt <steve@sk2.org>
+References: <20201208215133.30575-1-steve@sk2.org>
+ <CAKgNAki3jRYmTzCMXgBzXTz9LEmmAfRE5VuMOhnDbVmiJU=asg@mail.gmail.com>
+ <9cd2dd3a-c87e-e019-00ad-72ace5469338@gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <4542e216-3648-8dc4-0753-5d7379ee599b@gmail.com>
+Date:   Thu, 10 Dec 2020 23:40:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210211625.3070388-1-robh@kernel.org>
+In-Reply-To: <9cd2dd3a-c87e-e019-00ad-72ace5469338@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 03:16:20PM -0600, Rob Herring wrote:
-> This series converts video-interfaces.txt to DT schema which in turn is
-> based on converting the graph binding to a schema. All the media users
-> are converted to use the graph and video-interfaces schemas.
-> 
-> Based on media tree commit a3f132df0e5f. This is dependent on dt-schema
-> changes not yet committed[1]. Please review those too.
+On 12/9/20 10:47 AM, Alejandro Colomar (man-pages) wrote:
 
-Sigh, ignore the v2 patches...
+>>> +descriptors in
+>>> +.B /proc/self/fd/
+> 
+> By reading proc.5, I think this should s/.B/.I/, right mtk?
+> 
+>>> +and calling
+>>> +.BR close (2)
+>>> +on each one.
+>>> +.BR close_range ()
+>>> +can take care of this without requiring
+>>> +.B /proc
+> 
+> By reading proc.5, I think this should s/.B/.I/, right mtk?
+
+Yes to both. Pathnames are formatted with .I.
+
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
