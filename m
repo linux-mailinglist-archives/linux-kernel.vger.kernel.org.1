@@ -2,81 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA202D5788
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2C22D5793
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728762AbgLJJup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:50:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40210 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728103AbgLJJup (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:50:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607593759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ANRQNvQxs5wiZtk/4xV+GI9Sns6KDSiXIeFUsgCF5nw=;
-        b=dYZhXkZa9c5QZS5fXz+uWU/+kZNCgZTjTXIlo6OtGrB4QKVlj/BXypm2p91L2zFWYy4uyW
-        GRBIGOoM45cx+omd+GUZNL28V7YWE7cTmIq00jOOuxwkhTJFsxoWKIoB5C5RqIM7WIF8/n
-        MsE8s2nP+a4bc+Vc3dQLbzS0TJpf+Eg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-lCu6pvXdM4Wj2oM-EJz8lg-1; Thu, 10 Dec 2020 04:49:15 -0500
-X-MC-Unique: lCu6pvXdM4Wj2oM-EJz8lg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7B66AFA89;
-        Thu, 10 Dec 2020 09:49:12 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A4D55B6A2;
-        Thu, 10 Dec 2020 09:49:08 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200916004927.64276-1-eric.snowberg@oracle.com>
-References: <20200916004927.64276-1-eric.snowberg@oracle.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     dhowells@redhat.com, dwmw2@infradead.org,
-        jarkko.sakkinen@linux.intel.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jmorris@namei.org, serge@hallyn.com,
-        nayna@linux.ibm.com, zohar@linux.ibm.com, erichte@linux.ibm.com,
-        mpe@ellerman.id.au, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
+        id S1728921AbgLJJv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:51:27 -0500
+Received: from mga11.intel.com ([192.55.52.93]:9423 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727036AbgLJJv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 04:51:26 -0500
+IronPort-SDR: HZ2k1DdHJIUHyV9PlK39DA9aOSR2UPpHE5cut2ib9Kri2XJKKTAPREP6nBeVD/hGj7dMktvAiv
+ pbkfYrfv50Fw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="170718093"
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="170718093"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 01:49:36 -0800
+IronPort-SDR: sakz8cdy0isTDgAZEXYgncsulmvp3bVMUydDhGHpiIWOjn4aZovL+tdcc7/0pgT7k0cANhD1jz
+ tXc1gCJTSgYA==
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="438277008"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 01:49:35 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1knIar-00DNjr-ED; Thu, 10 Dec 2020 11:50:37 +0200
+Date:   Thu, 10 Dec 2020 11:50:37 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Simon Budig <simon.budig@kernelconcepts.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: edt-ft5x06 - consolidate handling of number of
+ electrodes
+Message-ID: <20201210095037.GC4077@smile.fi.intel.com>
+References: <X9FZFs3NZADoIhhH@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1360577.1607593748.1@warthog.procyon.org.uk>
-Date:   Thu, 10 Dec 2020 09:49:08 +0000
-Message-ID: <1360578.1607593748@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X9FZFs3NZADoIhhH@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric Snowberg <eric.snowberg@oracle.com> wrote:
+On Wed, Dec 09, 2020 at 03:09:10PM -0800, Dmitry Torokhov wrote:
+> Instead of using special-casing retrieval of number of X/Y electrodes
+> based on the firmware, let's select default values and mark registers as
+> non-existent on firmwares that do not support this operation.
+> 
+> Also mark "report rate" register as non-existent for generic firmwares as
+> having it set to 0 does not make sense.
 
-> Add support for EFI_CERT_X509_GUID dbx entries. When a EFI_CERT_X509_GUID
-> is found, it is added as an asymmetrical key to the .blacklist keyring.
-> Anytime the .platform keyring is used, the keys in the .blacklist keyring
-> are referenced, if a matching key is found, the key will be rejected.
+Makes sense, FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Ummm...  Why this way and not as a blacklist key which takes up less space?
-I'm guessing that you're using the key chain matching logic.  We really only
-need to blacklist the key IDs.
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
+>  drivers/input/touchscreen/edt-ft5x06.c | 43 ++++++++++----------------
+>  1 file changed, 17 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/edt-ft5x06.c b/drivers/input/touchscreen/edt-ft5x06.c
+> index 6ff81d48da86..2eefbc2485bc 100644
+> --- a/drivers/input/touchscreen/edt-ft5x06.c
+> +++ b/drivers/input/touchscreen/edt-ft5x06.c
+> @@ -69,6 +69,9 @@
+>  #define EDT_RAW_DATA_RETRIES		100
+>  #define EDT_RAW_DATA_DELAY		1000 /* usec */
+>  
+> +#define EDT_DEFAULT_NUM_X		1024
+> +#define EDT_DEFAULT_NUM_Y		1024
+> +
+>  enum edt_pmode {
+>  	EDT_PMODE_NOT_SUPPORTED,
+>  	EDT_PMODE_HIBERNATE,
+> @@ -977,8 +980,7 @@ static void edt_ft5x06_ts_get_defaults(struct device *dev,
+>  	}
+>  }
+>  
+> -static void
+> -edt_ft5x06_ts_get_parameters(struct edt_ft5x06_ts_data *tsdata)
+> +static void edt_ft5x06_ts_get_parameters(struct edt_ft5x06_ts_data *tsdata)
+>  {
+>  	struct edt_reg_addr *reg_addr = &tsdata->reg_addr;
+>  
+> @@ -997,21 +999,17 @@ edt_ft5x06_ts_get_parameters(struct edt_ft5x06_ts_data *tsdata)
+>  	if (reg_addr->reg_report_rate != NO_REGISTER)
+>  		tsdata->report_rate = edt_ft5x06_register_read(tsdata,
+>  						reg_addr->reg_report_rate);
+> -	if (tsdata->version == EDT_M06 ||
+> -	    tsdata->version == EDT_M09 ||
+> -	    tsdata->version == EDT_M12) {
+> +	tsdata->num_x = EDT_DEFAULT_NUM_X;
+> +	if (reg_addr->reg_num_x != NO_REGISTER)
+>  		tsdata->num_x = edt_ft5x06_register_read(tsdata,
+>  							 reg_addr->reg_num_x);
+> +	tsdata->num_y = EDT_DEFAULT_NUM_Y;
+> +	if (reg_addr->reg_num_y != NO_REGISTER)
+>  		tsdata->num_y = edt_ft5x06_register_read(tsdata,
+>  							 reg_addr->reg_num_y);
+> -	} else {
+> -		tsdata->num_x = -1;
+> -		tsdata->num_y = -1;
+> -	}
+>  }
+>  
+> -static void
+> -edt_ft5x06_ts_set_regs(struct edt_ft5x06_ts_data *tsdata)
+> +static void edt_ft5x06_ts_set_regs(struct edt_ft5x06_ts_data *tsdata)
+>  {
+>  	struct edt_reg_addr *reg_addr = &tsdata->reg_addr;
+>  
+> @@ -1041,22 +1039,25 @@ edt_ft5x06_ts_set_regs(struct edt_ft5x06_ts_data *tsdata)
+>  
+>  	case EV_FT:
+>  		reg_addr->reg_threshold = EV_REGISTER_THRESHOLD;
+> +		reg_addr->reg_report_rate = NO_REGISTER;
+>  		reg_addr->reg_gain = EV_REGISTER_GAIN;
+>  		reg_addr->reg_offset = NO_REGISTER;
+>  		reg_addr->reg_offset_x = EV_REGISTER_OFFSET_X;
+>  		reg_addr->reg_offset_y = EV_REGISTER_OFFSET_Y;
+>  		reg_addr->reg_num_x = NO_REGISTER;
+>  		reg_addr->reg_num_y = NO_REGISTER;
+> -		reg_addr->reg_report_rate = NO_REGISTER;
+>  		break;
+>  
+>  	case GENERIC_FT:
+>  		/* this is a guesswork */
+>  		reg_addr->reg_threshold = M09_REGISTER_THRESHOLD;
+> +		reg_addr->reg_report_rate = NO_REGISTER;
+>  		reg_addr->reg_gain = M09_REGISTER_GAIN;
+>  		reg_addr->reg_offset = M09_REGISTER_OFFSET;
+>  		reg_addr->reg_offset_x = NO_REGISTER;
+>  		reg_addr->reg_offset_y = NO_REGISTER;
+> +		reg_addr->reg_num_x = NO_REGISTER;
+> +		reg_addr->reg_num_y = NO_REGISTER;
+>  		break;
+>  	}
+>  }
+> @@ -1195,20 +1196,10 @@ static int edt_ft5x06_ts_probe(struct i2c_client *client,
+>  	input->id.bustype = BUS_I2C;
+>  	input->dev.parent = &client->dev;
+>  
+> -	if (tsdata->version == EDT_M06 ||
+> -	    tsdata->version == EDT_M09 ||
+> -	    tsdata->version == EDT_M12) {
+> -		input_set_abs_params(input, ABS_MT_POSITION_X,
+> -				     0, tsdata->num_x * 64 - 1, 0, 0);
+> -		input_set_abs_params(input, ABS_MT_POSITION_Y,
+> -				     0, tsdata->num_y * 64 - 1, 0, 0);
+> -	} else {
+> -		/* Unknown maximum values. Specify via devicetree */
+> -		input_set_abs_params(input, ABS_MT_POSITION_X,
+> -				     0, 65535, 0, 0);
+> -		input_set_abs_params(input, ABS_MT_POSITION_Y,
+> -				     0, 65535, 0, 0);
+> -	}
+> +	input_set_abs_params(input, ABS_MT_POSITION_X,
+> +			     0, tsdata->num_x * 64 - 1, 0, 0);
+> +	input_set_abs_params(input, ABS_MT_POSITION_Y,
+> +			     0, tsdata->num_y * 64 - 1, 0, 0);
+>  
+>  	touchscreen_parse_properties(input, true, &tsdata->prop);
+>  
+> -- 
+> 2.29.2.576.ga3fc446d84-goog
+> 
+> 
+> -- 
+> Dmitry
 
-Also, what should happen if a revocation cert rejected by the blacklist?
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> +int mark_key_revocationlisted(const char *data, size_t size)
-
-Hmmm...  The name looks wrong, but I can see the potential issue that kernel
-keys can actually be marked revoked as a separate concept.  How about
-add_key_to_revocation_list() and is_key_on_revocation_list().
-
-David
 
