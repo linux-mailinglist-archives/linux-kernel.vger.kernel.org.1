@@ -2,142 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB13B2D588A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF5B2D5881
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729955AbgLJKrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:47:47 -0500
-Received: from mga01.intel.com ([192.55.52.88]:14595 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389008AbgLJKr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:47:28 -0500
-IronPort-SDR: 3DQ5cz0pGvnkGCg3HtsKNemPimHYB74sbnSCgxxB0mTTAWNxZ5O32b5oFn5p8yoEw4qgx3A/C8
- qzPRetHQWbBg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="192546249"
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="192546249"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 02:45:42 -0800
-IronPort-SDR: 8B5JILFNwgpLoTaLek6lDBxucy5SOqjmME7GMXrefffU9h3aOhRW/kkWr7tMkBT7Ul/eo4ThxS
- Po3iPyr1yLcg==
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="319007397"
-Received: from nabuhijl-mobl.ger.corp.intel.com (HELO [10.251.185.230]) ([10.251.185.230])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 02:45:37 -0800
-Subject: Re: [Intel-gfx] [PATCH v3 2/4] drm/i915/pmu: Use kstat_irqs to get
- interrupt count
-To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Zijlstra <peterz@infradead.org>,
-        intel-gfx@lists.freedesktop.org,
-        Matthew Garrett <mjg59@google.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        David Airlie <airlied@linux.ie>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-integrity@vger.kernel.org,
-        Peter Huewe <peterhuewe@gmx.de>
-References: <20201205014340.148235-1-jsnitsel@redhat.com>
- <20201205014340.148235-3-jsnitsel@redhat.com>
- <875z5e99ez.fsf@nanos.tec.linutronix.de>
- <160758677957.5062.15497765500689083558@jlahtine-mobl.ger.corp.intel.com>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <e9892cc4-6344-be07-66b5-236b8576100e@linux.intel.com>
-Date:   Thu, 10 Dec 2020 10:45:34 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388999AbgLJKqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:46:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731564AbgLJKqX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 05:46:23 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A731C0613CF;
+        Thu, 10 Dec 2020 02:45:41 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cs9YZ72LZz9sW8;
+        Thu, 10 Dec 2020 21:45:38 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607597139;
+        bh=SRCtUPxmDZz5N5qs3iTMAxzu7u+AEyNrFQ7TsS27s+k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=OepISQ36brP/TLX4lmqNlzmwYx7JizdupLi203ImK+l0WZstKferpgp/VM/5Wj6sF
+         kZ9j+lTm5SnNd/kAEui4IPw9dzFTj63sjdTlqGezAaE1txe9xGnidbO6S0eVSH7mN3
+         AWy1NUYkCieQ3G9gLVFuN4v80repGPHfTLZqGq0a7dFDR0Wc/iV8ZkNzGb3nfF80Sg
+         oyhCq0XdPkA18cORybAd5I48M4m1hzLLmBRc6X3nWxggXZg6snd4DcBhLm7v7W+Re5
+         2YT2HIfW3ACVu4ohRFXSnkLCsx0CKcJW+zBViX0e6Tyvo2vpxO5V1JdwT0HFe4+Q8f
+         PWgjQd1+dRAgg==
+Date:   Thu, 10 Dec 2020 21:45:37 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steve French <smfrench@gmail.com>,
+        CIFS <linux-cifs@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the cifs tree
+Message-ID: <20201210214537.229c7ad9@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <160758677957.5062.15497765500689083558@jlahtine-mobl.ger.corp.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/Kacp3d.GYeLE8kuU0p6bn4e";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/Kacp3d.GYeLE8kuU0p6bn4e
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 10/12/2020 07:53, Joonas Lahtinen wrote:
-> + Tvrtko and Chris for comments
-> 
-> Code seems to be added in:
-> 
-> commit 0cd4684d6ea9a4ffec33fc19de4dd667bb90d0a5
-> Author: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-> Date:   Tue Nov 21 18:18:50 2017 +0000
-> 
->      drm/i915/pmu: Add interrupt count metric
-> 
-> I think later in the thread there was a suggestion to replace this with
-> simple counter increment in IRQ handler.
+Hi all,
 
-It was indeed unsafe until recent b00bccb3f0bb ("drm/i915/pmu: Handle 
-PCI unbind") but now should be fine.
+Commit
 
-If kstat_irqs does not get exported it is easy enough for i915 to keep a 
-local counter. Reasoning was very infrequent per cpu summation is much 
-cheaper than very frequent atomic add. Up to thousands of interrupts per 
-second vs "once per second" PMU read kind of thing.
+  7e9c48d305d5 ("cifs: remove the devname argument to cifs_compose_mount_op=
+tions")
 
-Regards,
+is missing a Signed-off-by from its committer.
 
-Tvrtko
+--=20
+Cheers,
+Stephen Rothwell
 
-> Quoting Thomas Gleixner (2020-12-06 18:38:44)
->> On Fri, Dec 04 2020 at 18:43, Jerry Snitselaar wrote:
->>
->>> Now that kstat_irqs is exported, get rid of count_interrupts in
->>> i915_pmu.c
->>> --- a/drivers/gpu/drm/i915/i915_pmu.c
->>> +++ b/drivers/gpu/drm/i915/i915_pmu.c
->>> @@ -423,22 +423,6 @@ static enum hrtimer_restart i915_sample(struct hrtimer *hrtimer)
->>>        return HRTIMER_RESTART;
->>>   }
->>>   
->>> -static u64 count_interrupts(struct drm_i915_private *i915)
->>> -{
->>> -     /* open-coded kstat_irqs() */
->>> -     struct irq_desc *desc = irq_to_desc(i915->drm.pdev->irq);
->>> -     u64 sum = 0;
->>> -     int cpu;
->>> -
->>> -     if (!desc || !desc->kstat_irqs)
->>> -             return 0;
->>> -
->>> -     for_each_possible_cpu(cpu)
->>> -             sum += *per_cpu_ptr(desc->kstat_irqs, cpu);
->>> -
->>> -     return sum;
->>> -}
->>
->> May I ask why this has been merged in the first place?
->>
->> Nothing in a driver has ever to fiddle with the internals of an irq
->> descriptor. We have functions for properly accessing them. Just because
->> C allows to fiddle with everything is not a justification. If the
->> required function is not exported then adding the export with a proper
->> explanation is not asked too much.
->>
->> Also this lacks protection or at least a comment why this can be called
->> safely and is not subject to a concurrent removal of the irq descriptor.
->> The same problem exists when calling kstat_irqs(). It's even documented
->> at the top of the function.
->>
->> Thanks,
->>
->>          tglx
->>
->>
->> _______________________________________________
->> Intel-gfx mailing list
->> Intel-gfx@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
-> 
+--Sig_/Kacp3d.GYeLE8kuU0p6bn4e
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/R/FEACgkQAVBC80lX
+0GyCSAf9GWLs8eIZu+7fhvOjZ31EklST8MOrF4U3sMGXDNwbc1R4CPhSDTRaRO4c
+W3VL6KcCanVOtjpcjtJoCgs8lZs/9mdb+5mxcM+7LdDz8ii/npfLwxIEeLC/n1pz
+TUMmrhBKfeF9elRy8axR06NvWm1P4TWoCWLvPXaeHu70ihY6zfns9gWsXoi/+zLK
+7R+mXd/xNjV3ebrtqX5qq12pcgOpfuKqMWG+nShDqffNhKBhbOHxqJDDPfoGq17H
+f+Q+O9EUK+KRJvWDqDYy4hpdKZchYUt2cQUSYmZpGQBUP2hYDAX1TuYm3MpJgS7K
+RQmWEoT2CvWU0OaozFGcd0bPsvdP8g==
+=0BJB
+-----END PGP SIGNATURE-----
+
+--Sig_/Kacp3d.GYeLE8kuU0p6bn4e--
