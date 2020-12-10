@@ -2,76 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0752D5CB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E072D5CD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389820AbgLJODc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:03:32 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:39943 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389714AbgLJOD3 (ORCPT
+        id S2389923AbgLJOFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:05:30 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:33494 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389714AbgLJODw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:03:29 -0500
-Received: by mail-oi1-f195.google.com with SMTP id p126so5796775oif.7;
-        Thu, 10 Dec 2020 06:03:14 -0800 (PST)
+        Thu, 10 Dec 2020 09:03:52 -0500
+Received: by mail-il1-f198.google.com with SMTP id j20so4488857ilk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:03:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=39LGye6padbJ1h7qO5yojPgi+E8q8E6FfLpRVUKm1mY=;
-        b=uY1zmbyFsnh8qoP+jQ1gclNu5tTG4uC1iwzsMOX9Uk+/83WgSOHkaXuOnR7XIGCqoi
-         /Wfhmzfg3rdLUWMpXG6gG536g8wJ7y+I6p5s3g2RA9UolTUEaCijHsQVKRWLIMMCnzg0
-         GFTKB7rhupm+wdyUbc43q4etMe5nbP3tedokhMS6Ohmr+FGqXp0/0AiqJeN0AAtaeUjV
-         r1LoGkbgBw+SKQ/h1kDju4KpbgLHcQSHM2ZNYok12Nje4XkvKHNRrvtGVJ76Dbu4KWk9
-         I0IIcdmfBiDqwanDJDds3NY33A/0kfJfcj+SxyUk1iE3DWFWXMELU/aewp7V37PZ0yIp
-         oCtg==
-X-Gm-Message-State: AOAM533vFx+pvrXKdehm7+3EN68c3urtdGiqdNp8qHp8c3Owgz3gZGTd
-        /vWcXIHU4yjClduBO55WPA==
-X-Google-Smtp-Source: ABdhPJw5oIIwqgy0lXZKIoNURfttba4FSS7t7ggIjw5817ESI8NNtywOdNIpV1BM8ic55p68J6lw7A==
-X-Received: by 2002:aca:5dd7:: with SMTP id r206mr5399970oib.30.1607608968763;
-        Thu, 10 Dec 2020 06:02:48 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v207sm1013220oif.58.2020.12.10.06.02.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 06:02:47 -0800 (PST)
-Received: (nullmailer pid 2424790 invoked by uid 1000);
-        Thu, 10 Dec 2020 14:02:46 -0000
-Date:   Thu, 10 Dec 2020 08:02:46 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH v3 4/4] dt-bindings: reset: convert Hisilicon reset
- controller bindings to json-schema
-Message-ID: <20201210140246.GA2424759@robh.at.kernel.org>
-References: <20201208124641.1787-1-thunder.leizhen@huawei.com>
- <20201208124641.1787-5-thunder.leizhen@huawei.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=dCHnS+IGmE05QjPXrUbbLAFiydDVaiZOQybW0UvsNF8=;
+        b=AqW4HEtBiUiSrqU8qGZxqGkDHbSvrnC0wOH78cBPEp7hJtrhEH2FblztfjN58Eezgi
+         gqw1X2RpEg2VRLh6HxDxDyy5nVlGzc3UE387SQbJip1/KkqfygnfKvjVdfubSHlPtS2R
+         uwgbwmZWNI8otDwdLbrCOIZ2zSEcQAQ/zCeudfIhZRQqDQx734QzEqycBMZJyDKM6WfI
+         Xl+lZmDN5A8KSUwDJZxKVIY2rofjZ1NvCtegvoRvi4D/k+Lck7KK7D38nHIa3KAakmpy
+         DNW36Wj9UERS9NH65SVDBbPEAKmj5Q0f1vfTXteqYmmc+eJWeQBvg7T3iBAX3vJlHIHF
+         dCDA==
+X-Gm-Message-State: AOAM533SA7psXZoUryOnULCdKPsQesnHGeDw5ih1jhLzK3MmxMEdE7pV
+        OR0PYZzdZi752WQ6hJe81wvmxF0Y/QhyWbSkmvv1KLL2DD4T
+X-Google-Smtp-Source: ABdhPJzNhswceQ5PwLWQ9ylc/ytFQpeq987bYUGnEeJ6q1oS7R5eKN3G8ahRRjFS9lFelXt+dL91xjXPU/7vxgtm3PWnXeJNVVeU
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208124641.1787-5-thunder.leizhen@huawei.com>
+X-Received: by 2002:a05:6602:2110:: with SMTP id x16mr7176336iox.127.1607608991438;
+ Thu, 10 Dec 2020 06:03:11 -0800 (PST)
+Date:   Thu, 10 Dec 2020 06:03:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000df5ecf05b61ca23b@google.com>
+Subject: possible deadlock in zd_chip_disable_rxtx
+From:   syzbot <syzbot+0ec3d1a6cf1fbe79c153@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, davem@davemloft.net, dsd@gentoo.org,
+        kuba@kernel.org, kune@deine-taler.de, kvalo@codeaurora.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Dec 2020 20:46:41 +0800, Zhen Lei wrote:
-> Convert the Hisilicon reset controller binding to DT schema format using
-> json-schema.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  .../bindings/reset/hisilicon,hi3660-reset.txt      | 44 -------------
->  .../bindings/reset/hisilicon,hi3660-reset.yaml     | 77 ++++++++++++++++++++++
->  2 files changed, 77 insertions(+), 44 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt
->  create mode 100644 Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-> 
+Hello,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+syzbot found the following issue on:
+
+HEAD commit:    8010622c USB: UAS: introduce a quirk to set no_write_same
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=131e6adf500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d24ee9ecd7ce968e
+dashboard link: https://syzkaller.appspot.com/bug?extid=0ec3d1a6cf1fbe79c153
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d7246b500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=172c240f500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0ec3d1a6cf1fbe79c153@syzkaller.appspotmail.com
+
+usb 1-1: reset high-speed USB device number 2 using dummy_hcd
+usb 1-1: device descriptor read/64, error -71
+usb 1-1: Using ep0 maxpacket: 32
+usb 1-1: unable to get BOS descriptor or descriptor too short
+zd1211rw 1-1:5.118: phy1
+zd1211rw 1-1:5.114: error ioread32(CR_REG1): -11
+============================================
+WARNING: possible recursive locking detected
+5.10.0-rc7-syzkaller #0 Not tainted
+--------------------------------------------
+kworker/1:2/2618 is trying to acquire lock:
+ffff888102cbdd10 (&chip->mutex){+.+.}-{3:3}, at: zd_chip_disable_rxtx+0x1c/0x40 drivers/net/wireless/zydas/zd1211rw/zd_chip.c:1465
+
+but task is already holding lock:
+ffff888101d9dd10 (&chip->mutex){+.+.}-{3:3}, at: pre_reset+0x217/0x290 drivers/net/wireless/zydas/zd1211rw/zd_usb.c:1504
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&chip->mutex);
+  lock(&chip->mutex);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+6 locks held by kworker/1:2/2618:
+ #0: ffff888103bff538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888103bff538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888103bff538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888103bff538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888103bff538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888103bff538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x821/0x1520 kernel/workqueue.c:2243
+ #1: ffffc900001c7da8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x854/0x1520 kernel/workqueue.c:2247
+ #2: ffff88810802a218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:731 [inline]
+ #2: ffff88810802a218 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c5/0x42d0 drivers/usb/core/hub.c:5537
+ #3: ffff8881013cd218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:731 [inline]
+ #3: ffff8881013cd218 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:887
+ #4: ffff88810ed8c1a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:731 [inline]
+ #4: ffff88810ed8c1a8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:887
+ #5: ffff888101d9dd10 (&chip->mutex){+.+.}-{3:3}, at: pre_reset+0x217/0x290 drivers/net/wireless/zydas/zd1211rw/zd_usb.c:1504
+
+stack backtrace:
+CPU: 1 PID: 2618 Comm: kworker/1:2 Not tainted 5.10.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_deadlock_bug kernel/locking/lockdep.c:2761 [inline]
+ check_deadlock kernel/locking/lockdep.c:2804 [inline]
+ validate_chain kernel/locking/lockdep.c:3595 [inline]
+ __lock_acquire.cold+0x15e/0x3b0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x288/0x700 kernel/locking/lockdep.c:5402
+ __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+ __mutex_lock+0x134/0x10a0 kernel/locking/mutex.c:1103
+ zd_chip_disable_rxtx+0x1c/0x40 drivers/net/wireless/zydas/zd1211rw/zd_chip.c:1465
+ zd_op_stop+0x60/0x190 drivers/net/wireless/zydas/zd1211rw/zd_mac.c:343
+ zd_usb_stop drivers/net/wireless/zydas/zd1211rw/zd_usb.c:1479 [inline]
+ pre_reset+0x19d/0x290 drivers/net/wireless/zydas/zd1211rw/zd_usb.c:1502
+ usb_reset_device+0x379/0x9a0 drivers/usb/core/hub.c:5959
+ probe+0x10f/0x590 drivers/net/wireless/zydas/zd1211rw/zd_usb.c:1371
+ usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
+ really_probe+0x291/0xde0 drivers/base/dd.c:554
+ driver_probe_device+0x26b/0x3d0 drivers/base/dd.c:738
+ __device_attach_driver+0x1d1/0x290 drivers/base/dd.c:844
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:912
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
+ device_add+0xbb2/0x1ce0 drivers/base/core.c:2936
+ usb_set_configuration+0x113c/0x1910 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
+ usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
+ really_probe+0x291/0xde0 drivers/base/dd.c:554
+ driver_probe_device+0x26b/0x3d0 drivers/base/dd.c:738
+ __device_attach_driver+0x1d1/0x290 drivers/base/dd.c:844
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:912
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
+ device_add+0xbb2/0x1ce0 drivers/base/core.c:2936
+ usb_new_device.cold+0x71d/0xfe9 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x2348/0x42d0 drivers/usb/core/hub.c:5591
+ process_one_work+0x933/0x1520 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x38c/0x460 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+zd1211rw 1-1:5.118: error ioread32(CR_REG1): -11
+usb 1-1: reset high-speed USB device number 2 using dummy_hcd
+usb 1-1: Using ep0 maxpacket: 32
+usb 1-1: unable to get BOS descriptor or descriptor too short
+ieee80211 phy2: Selected rate control algorithm 'minstrel_ht'
+zd1211rw 1-1:5.57: phy2
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
