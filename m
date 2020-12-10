@@ -2,80 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DC72D6588
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD06A2D6593
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393182AbgLJSvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:51:20 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:38876 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393123AbgLJSux (ORCPT
+        id S2393192AbgLJSvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:51:36 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:35216 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393184AbgLJSvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 13:50:53 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607626232; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=zOWCArwGZT8tWhKzawFXE2/2SfQMZq6/kYe7gPZhKWk=;
- b=GxUKX81xho62nKa3xVBIVUq4Jn8HFGEdSBY5iVgfj9e2tka1ZBeFvJKs9ynN0i3cW+40fKFg
- DnuLtQ9FgDC7q5BQ0xxcx1Vz6tuNNiCpXp/4nsYMku4Njcznycl5MgsyBc3WVKb2BkN1v5xr
- uRRo+/lbZLdPh3V/AMhNgsLqNFg=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5fd26dda53d7c5ba6054bc6d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Dec 2020 18:50:02
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 10F2FC43464; Thu, 10 Dec 2020 18:50:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0DB19C433C6;
-        Thu, 10 Dec 2020 18:49:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0DB19C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Thu, 10 Dec 2020 13:51:20 -0500
+Received: by mail-oi1-f194.google.com with SMTP id s2so6883955oij.2;
+        Thu, 10 Dec 2020 10:51:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4TPxR1vthDtXH6neeu5qep54SJaMZ2V+xRx0pNvjops=;
+        b=AlrfiCwASBuet85OoZYPPF1zWJ7Ei12GJX8IwvId87BGGVSmo0Pz/Y+Ahn0hS9a4wL
+         gl5JiHvmELM/o/WTRoYnVtODcoVbXXOPuvcQc+xi2ntufX3KdF5VeKoBuD5Zp9ju8+Xf
+         WSC1Et6JHjp3L+pSN9pw/6TApeTrL72Re5JdxLoMuZfld2Wsp1X+Urex6DkGQkg/nMsz
+         +CeOkOvdysO7ONJN6YsO21RGPw1XVtnijK9c8AwldF/HuW5C0ZmJlG80pe3EzH604lWX
+         XePocVNphlfJH+51usC7CJbXAGLQZY42JUW/a5U4yA7yEjBKn6vrZwOgvRLRrvuWY3mS
+         QeIA==
+X-Gm-Message-State: AOAM533NSX0ULMPIvC6Dus8sUzx0H4/9XBRS40vRj1TfXKtZAlSLHTlw
+        LPyHMo+6RYD1YoJQTFhsezL41gTQCg==
+X-Google-Smtp-Source: ABdhPJw9Fo0cj1YiB5dXR2HVsMZeuwv+dxK2OhhO4XYPXujtVU8Tp4QBfOlcDVERHha3oRVrTxfnhA==
+X-Received: by 2002:a54:4d06:: with SMTP id v6mr6255851oix.91.1607626238979;
+        Thu, 10 Dec 2020 10:50:38 -0800 (PST)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id g30sm1184357oiy.57.2020.12.10.10.50.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 10:50:38 -0800 (PST)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: vendor-prefixes: Add undocumented bm, gpio-key, and mentor prefixes
+Date:   Thu, 10 Dec 2020 12:50:37 -0600
+Message-Id: <20201210185037.2796992-1-robh@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH wireless -next] cw1200: txrx: convert comma to semicolon
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201209135550.2004-1-zhengyongjun3@huawei.com>
-References: <20201209135550.2004-1-zhengyongjun3@huawei.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     <pizza@shaftnet.org>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201210185002.10F2FC43464@smtp.codeaurora.org>
-Date:   Thu, 10 Dec 2020 18:50:02 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
+Add bm, gpio-key, and mentor as vendor prefixes which are in use, but
+undocumented.
 
-> Replace a comma between expression statements by a semicolon.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Patch applied to wireless-drivers-next.git, thanks.
-
-c42d492c672a cw1200: txrx: convert comma to semicolon
-
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index c0c21be520e9..0b52b58aedcc 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -16,7 +16,7 @@ properties: {}
+ patternProperties:
+   # Prefixes which are not vendors, but followed the pattern
+   # DO NOT ADD NEW PROPERTIES TO THIS LIST
+-  "^(at25|devbus|dmacap|dsa|exynos|fsi[ab]|gpio-fan|gpio|gpmc|hdmi|i2c-gpio),.*": true
++  "^(at25|bm|devbus|dmacap|dsa|exynos|fsi[ab]|gpio-fan|gpio-key|gpio|gpmc|hdmi|i2c-gpio),.*": true
+   "^(keypad|m25p|max8952|max8997|max8998|mpmc),.*": true
+   "^(pinctrl-single|#pinctrl-single|PowerPC),.*": true
+   "^(pl022|pxa-mmc|rcar_sound|rotary-encoder|s5m8767|sdhci),.*": true
+@@ -659,6 +659,8 @@ patternProperties:
+     description: MEMSIC Inc.
+   "^menlo,.*":
+     description: Menlo Systems GmbH
++  "^mentor,.*":
++    description: Mentor Graphics
+   "^meraki,.*":
+     description: Cisco Meraki, LLC
+   "^merrii,.*":
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201209135550.2004-1-zhengyongjun3@huawei.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.25.1
 
