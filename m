@@ -2,181 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02BA2D62C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7449F2D62E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392155AbgLJQ7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:59:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391024AbgLJQ6k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:58:40 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBACFC0613CF;
-        Thu, 10 Dec 2020 08:57:59 -0800 (PST)
-Date:   Thu, 10 Dec 2020 16:57:56 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607619477;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Dk+j8f4SMBkGP28rH/XZ3AY/EJSuuo9gA+ZZVs/63k=;
-        b=VNN/U0j9Wtq4QkXkU+0wu4smU0dheKziZZCxe0pFpPB1/5nF4pU+k0shP9XTXJFsQGTeYk
-        6QOe7/s814BPpC/5YrXB50M65Mt9e2J+jcwx6MCnLOcm0UwFYE5phnHWX/PdOPqj6FeLMG
-        A2sGrR+Mt4D8AOwPVGp9pMeg/Md8r1GDf+wK8RVmVceVhfFwOkhWdr4LKHOViQsRsWzEvR
-        eLStud9B7Te+aZrREVvWQFithajWyl7LNWJWgjkDFiQ964LCRK+xfJqW11n/p3bVvkDv0m
-        uR7hBTwgNpiOIEbekx5A4A7tq9xv/C/pKa8LnriauBWoC/WlSZFs/pPNO/VncA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607619477;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Dk+j8f4SMBkGP28rH/XZ3AY/EJSuuo9gA+ZZVs/63k=;
-        b=HYCznEtDo2zPHpsHs9QyKNoAT3jX/Gs/oWzTRtTp79FkIIwoMO/ueNrA2jAWHoQWLTZI9J
-        kz5FgkZyXkanZYCQ==
-From:   "tip-bot2 for Xiaochen Shen" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/resctrl: Fix incorrect local bandwidth when
- mba_sc is enabled
-Cc:     Xiaochen Shen <xiaochen.shen@intel.com>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
-        <stable@vger.kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1607063279-19437-1-git-send-email-xiaochen.shen@intel.com>
-References: <1607063279-19437-1-git-send-email-xiaochen.shen@intel.com>
+        id S2390917AbgLJOfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:35:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727367AbgLJOdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:33:25 -0500
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 02/39] pinctrl: baytrail: Fix pin being driven low for a while on gpiod_get(..., GPIOD_OUT_HIGH)
+Date:   Thu, 10 Dec 2020 15:26:41 +0100
+Message-Id: <20201210142602.406789914@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
+References: <20201210142602.272595094@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Message-ID: <160761947623.3364.17511692146380778670.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+From: Hans de Goede <hdegoede@redhat.com>
 
-Commit-ID:     06c5fe9b12dde1b62821f302f177c972bb1c81f9
-Gitweb:        https://git.kernel.org/tip/06c5fe9b12dde1b62821f302f177c972bb1c81f9
-Author:        Xiaochen Shen <xiaochen.shen@intel.com>
-AuthorDate:    Fri, 04 Dec 2020 14:27:59 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 10 Dec 2020 17:52:37 +01:00
+commit 156abe2961601d60a8c2a60c6dc8dd6ce7adcdaf upstream
 
-x86/resctrl: Fix incorrect local bandwidth when mba_sc is enabled
+The pins on the Bay Trail SoC have separate input-buffer and output-buffer
+enable bits and a read of the level bit of the value register will always
+return the value from the input-buffer.
 
-The MBA software controller (mba_sc) is a feedback loop which
-periodically reads MBM counters and tries to restrict the bandwidth
-below a user-specified value. It tags along the MBM counter overflow
-handler to do the updates with 1s interval in mbm_update() and
-update_mba_bw().
+The BIOS of a device may configure a pin in output-only mode, only enabling
+the output buffer, and write 1 to the level bit to drive the pin high.
+This 1 written to the level bit will be stored inside the data-latch of the
+output buffer.
 
-The purpose of mbm_update() is to periodically read the MBM counters to
-make sure that the hardware counter doesn't wrap around more than once
-between user samplings. mbm_update() calls __mon_event_count() for local
-bandwidth updating when mba_sc is not enabled, but calls mbm_bw_count()
-instead when mba_sc is enabled. __mon_event_count() will not be called
-for local bandwidth updating in MBM counter overflow handler, but it is
-still called when reading MBM local bandwidth counter file
-'mbm_local_bytes', the call path is as below:
+But a subsequent read of the value register will return 0 for the level bit
+because the input-buffer is disabled. This causes a read-modify-write as
+done by byt_gpio_set_direction() to write 0 to the level bit, driving the
+pin low!
 
-  rdtgroup_mondata_show()
-    mon_event_read()
-      mon_event_count()
-        __mon_event_count()
+Before this commit byt_gpio_direction_output() relied on
+pinctrl_gpio_direction_output() to set the direction, followed by a call
+to byt_gpio_set() to apply the selected value. This causes the pin to
+go low between the pinctrl_gpio_direction_output() and byt_gpio_set()
+calls.
 
-In __mon_event_count(), m->chunks is updated by delta chunks which is
-calculated from previous MSR value (m->prev_msr) and current MSR value.
-When mba_sc is enabled, m->chunks is also updated in mbm_update() by
-mistake by the delta chunks which is calculated from m->prev_bw_msr
-instead of m->prev_msr. But m->chunks is not used in update_mba_bw() in
-the mba_sc feedback loop.
+Change byt_gpio_direction_output() to directly make the register
+modifications itself instead. Replacing the 2 subsequent writes to the
+value register with a single write.
 
-When reading MBM local bandwidth counter file, m->chunks was changed
-unexpectedly by mbm_bw_count(). As a result, the incorrect local
-bandwidth counter which calculated from incorrect m->chunks is shown to
-the user.
+Note that the pinctrl code does not keep track internally of the direction,
+so not going through pinctrl_gpio_direction_output() is not an issue.
 
-Fix this by removing incorrect m->chunks updating in mbm_bw_count() in
-MBM counter overflow handler, and always calling __mon_event_count() in
-mbm_update() to make sure that the hardware local bandwidth counter
-doesn't wrap around.
+This issue was noticed on a Trekstor SurfTab Twin 10.1. When the panel is
+already on at boot (no external monitor connected), then the i915 driver
+does a gpiod_get(..., GPIOD_OUT_HIGH) for the panel-enable GPIO. The
+temporarily going low of that GPIO was causing the panel to reset itself
+after which it would not show an image until it was turned off and back on
+again (until a full modeset was done on it). This commit fixes this.
 
-Test steps:
-  # Run workload with aggressive memory bandwidth (e.g., 10 GB/s)
-  git clone https://github.com/intel/intel-cmt-cat && cd intel-cmt-cat
-  && make
-  ./tools/membw/membw -c 0 -b 10000 --read
+This commit also updates the byt_gpio_direction_input() to use direct
+register accesses instead of going through pinctrl_gpio_direction_input(),
+to keep it consistent with byt_gpio_direction_output().
 
-  # Enable MBA software controller
-  mount -t resctrl resctrl -o mba_MBps /sys/fs/resctrl
+Note for backporting, this commit depends on:
+commit e2b74419e5cc ("pinctrl: baytrail: Replace WARN with dev_info_once
+when setting direct-irq pin to output")
 
-  # Create control group c1
-  mkdir /sys/fs/resctrl/c1
-
-  # Set MB throttle to 6 GB/s
-  echo "MB:0=6000;1=6000" > /sys/fs/resctrl/c1/schemata
-
-  # Write PID of the workload to tasks file
-  echo `pidof membw` > /sys/fs/resctrl/c1/tasks
-
-  # Read local bytes counters twice with 1s interval, the calculated
-  # local bandwidth is not as expected (approaching to 6 GB/s):
-  local_1=`cat /sys/fs/resctrl/c1/mon_data/mon_L3_00/mbm_local_bytes`
-  sleep 1
-  local_2=`cat /sys/fs/resctrl/c1/mon_data/mon_L3_00/mbm_local_bytes`
-  echo "local b/w (bytes/s):" `expr $local_2 - $local_1`
-
-Before fix:
-  local b/w (bytes/s): 11076796416
-
-After fix:
-  local b/w (bytes/s): 5465014272
-
-Fixes: ba0f26d8529c (x86/intel_rdt/mba_sc: Prepare for feedback loop)
-Signed-off-by: Xiaochen Shen <xiaochen.shen@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/1607063279-19437-1-git-send-email-xiaochen.shen@intel.com
+Cc: stable@vger.kernel.org
+Fixes: 86e3ef812fe3 ("pinctrl: baytrail: Update gpio chip operations")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+[sudip: use byt_gpio and vg->pdev->dev for dev_info()]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/resctrl/monitor.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/pinctrl/intel/pinctrl-baytrail.c | 67 +++++++++++++++++++-----
+ 1 file changed, 53 insertions(+), 14 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index 54dffe5..a98519a 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -279,7 +279,6 @@ static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
- 		return;
- 
- 	chunks = mbm_overflow_count(m->prev_bw_msr, tval, rr->r->mbm_width);
--	m->chunks += chunks;
- 	cur_bw = (chunks * r->mon_scale) >> 20;
- 
- 	if (m->delta_comp)
-@@ -450,15 +449,14 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d, int rmid)
- 	}
- 	if (is_mbm_local_enabled()) {
- 		rr.evtid = QOS_L3_MBM_LOCAL_EVENT_ID;
-+		__mon_event_count(rmid, &rr);
- 
- 		/*
- 		 * Call the MBA software controller only for the
- 		 * control groups and when user has enabled
- 		 * the software controller explicitly.
- 		 */
--		if (!is_mba_sc(NULL))
--			__mon_event_count(rmid, &rr);
--		else
-+		if (is_mba_sc(NULL))
- 			mbm_bw_count(rmid, &rr);
- 	}
+diff --git a/drivers/pinctrl/intel/pinctrl-baytrail.c b/drivers/pinctrl/intel/pinctrl-baytrail.c
+index 7d6685ae31d70..1b00a3f3b419c 100644
+--- a/drivers/pinctrl/intel/pinctrl-baytrail.c
++++ b/drivers/pinctrl/intel/pinctrl-baytrail.c
+@@ -1009,6 +1009,21 @@ static void byt_gpio_disable_free(struct pinctrl_dev *pctl_dev,
+ 	pm_runtime_put(&vg->pdev->dev);
  }
+ 
++static void byt_gpio_direct_irq_check(struct byt_gpio *vg,
++				      unsigned int offset)
++{
++	void __iomem *conf_reg = byt_gpio_reg(vg, offset, BYT_CONF0_REG);
++
++	/*
++	 * Before making any direction modifications, do a check if gpio is set
++	 * for direct IRQ. On Bay Trail, setting GPIO to output does not make
++	 * sense, so let's at least inform the caller before they shoot
++	 * themselves in the foot.
++	 */
++	if (readl(conf_reg) & BYT_DIRECT_IRQ_EN)
++		dev_info_once(&vg->pdev->dev, "Potential Error: Setting GPIO with direct_irq_en to output");
++}
++
+ static int byt_gpio_set_direction(struct pinctrl_dev *pctl_dev,
+ 				  struct pinctrl_gpio_range *range,
+ 				  unsigned int offset,
+@@ -1016,7 +1031,6 @@ static int byt_gpio_set_direction(struct pinctrl_dev *pctl_dev,
+ {
+ 	struct byt_gpio *vg = pinctrl_dev_get_drvdata(pctl_dev);
+ 	void __iomem *val_reg = byt_gpio_reg(vg, offset, BYT_VAL_REG);
+-	void __iomem *conf_reg = byt_gpio_reg(vg, offset, BYT_CONF0_REG);
+ 	unsigned long flags;
+ 	u32 value;
+ 
+@@ -1026,14 +1040,8 @@ static int byt_gpio_set_direction(struct pinctrl_dev *pctl_dev,
+ 	value &= ~BYT_DIR_MASK;
+ 	if (input)
+ 		value |= BYT_OUTPUT_EN;
+-	else if (readl(conf_reg) & BYT_DIRECT_IRQ_EN)
+-		/*
+-		 * Before making any direction modifications, do a check if gpio
+-		 * is set for direct IRQ.  On baytrail, setting GPIO to output
+-		 * does not make sense, so let's at least inform the caller before
+-		 * they shoot themselves in the foot.
+-		 */
+-		dev_info_once(vg->dev, "Potential Error: Setting GPIO with direct_irq_en to output");
++	else
++		byt_gpio_direct_irq_check(vg, offset);
+ 
+ 	writel(value, val_reg);
+ 
+@@ -1374,19 +1382,50 @@ static int byt_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
+ 
+ static int byt_gpio_direction_input(struct gpio_chip *chip, unsigned int offset)
+ {
+-	return pinctrl_gpio_direction_input(chip->base + offset);
++	struct byt_gpio *vg = gpiochip_get_data(chip);
++	void __iomem *val_reg = byt_gpio_reg(vg, offset, BYT_VAL_REG);
++	unsigned long flags;
++	u32 reg;
++
++	raw_spin_lock_irqsave(&byt_lock, flags);
++
++	reg = readl(val_reg);
++	reg &= ~BYT_DIR_MASK;
++	reg |= BYT_OUTPUT_EN;
++	writel(reg, val_reg);
++
++	raw_spin_unlock_irqrestore(&byt_lock, flags);
++	return 0;
+ }
+ 
++/*
++ * Note despite the temptation this MUST NOT be converted into a call to
++ * pinctrl_gpio_direction_output() + byt_gpio_set() that does not work this
++ * MUST be done as a single BYT_VAL_REG register write.
++ * See the commit message of the commit adding this comment for details.
++ */
+ static int byt_gpio_direction_output(struct gpio_chip *chip,
+ 				     unsigned int offset, int value)
+ {
+-	int ret = pinctrl_gpio_direction_output(chip->base + offset);
++	struct byt_gpio *vg = gpiochip_get_data(chip);
++	void __iomem *val_reg = byt_gpio_reg(vg, offset, BYT_VAL_REG);
++	unsigned long flags;
++	u32 reg;
+ 
+-	if (ret)
+-		return ret;
++	raw_spin_lock_irqsave(&byt_lock, flags);
+ 
+-	byt_gpio_set(chip, offset, value);
++	byt_gpio_direct_irq_check(vg, offset);
+ 
++	reg = readl(val_reg);
++	reg &= ~BYT_DIR_MASK;
++	if (value)
++		reg |= BYT_LEVEL;
++	else
++		reg &= ~BYT_LEVEL;
++
++	writel(reg, val_reg);
++
++	raw_spin_unlock_irqrestore(&byt_lock, flags);
+ 	return 0;
+ }
+ 
+-- 
+2.27.0
+
+
+
