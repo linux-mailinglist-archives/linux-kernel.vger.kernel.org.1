@@ -2,145 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3992D6276
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F65F2D6236
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389954AbgLJQtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:49:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391081AbgLJOh0 (ORCPT
+        id S2392398AbgLJQmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:42:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54588 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392386AbgLJQmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:37:26 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0645DC0613CF;
-        Thu, 10 Dec 2020 06:36:46 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id a12so5706745wrv.8;
-        Thu, 10 Dec 2020 06:36:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RMLtZ684ewi1P10m7aTDF6xEYc5vBnCNa3tj14tR16o=;
-        b=poA7rHhev6BjUk1FQZJCQiTpHf2IY/Kq22wSObyqd6Im9MLBACplCNjWkAU0TTliBS
-         X/Cj6KuIL9Qe2Dxy8gsAcYMecfHTp+XdOfoSIn1Wm4tOEO5uB/k7kNVtV4qoM8z76yfj
-         56oEzfHHGF/yUM6Ty6NwRe5tJ8ziGHbhnlYyj4eblVgFVhcrznHO45Dr7rQ+XIC4qfyo
-         wUDxPpATMzo2t85GpTLX+BjrgAz4qWbVwkEpm8wUDVA8xVWyWmU15a8ML0l1AxTj6B7E
-         TsG+NrT8dL74WxnI5jmsVydhzpHmin543P0WYQCs8ILjZSHt4S7a0j6CJyZlMuqr5xlM
-         y9rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RMLtZ684ewi1P10m7aTDF6xEYc5vBnCNa3tj14tR16o=;
-        b=qzvW4JhYCYNeeJGowAdWhhtkkxVoVCeTQHhsX/+qElStrE0RtLwIxGigowO15o1Y86
-         oCSYsYIF9pjLLe00SGLserGDtvs6ZRuMMNu0ke3/6qVXRMRFv+q+KptUZmhIoJx/xZWl
-         5s2XUOMp5NaONvgJ9pFm1OEB766LrliI8XwNg88ek8QSPCks/SjUFD21fXOJKnk4h/bU
-         QCNETk+7d68DzMZBlnvA8ql1MLB4BecXIixB5yzHUGjZpY4qKWHcGmcct2g2X4FccddE
-         Z/+GLYmafRJtpyh1EBBmpob3SqMkfRDKdaShZxsx3V6fywihIeUA2xVG9AhBzHZHDf8r
-         FdeA==
-X-Gm-Message-State: AOAM531S8TDOCtJZaehN4gFb0xjYjgfaTKLrjfqu1kp3UTg35zYm6et6
-        zpUVclEcSERBkmz1J/JEx1W0YTWpOtw=
-X-Google-Smtp-Source: ABdhPJyX8A20TXlUMNk/OOCjtpPm13qZsuE7GHSaqhOtrrA+vEm3rsnKxmM0UXVeIJ9tXW0U+23osA==
-X-Received: by 2002:a5d:6289:: with SMTP id k9mr9004103wru.200.1607611004730;
-        Thu, 10 Dec 2020 06:36:44 -0800 (PST)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id s13sm9294375wmj.28.2020.12.10.06.36.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 06:36:43 -0800 (PST)
-Subject: Re: [patch] close_range.2: new page documenting close_range(2)
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Stephen Kitt <steve@sk2.org>, linux-man@vger.kernel.org,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <20201208215133.30575-1-steve@sk2.org>
- <20201209095817.7ksihhftmnd3c3hi@wittgenstein>
- <5f69d42d-c36d-b98a-3d00-7a5e7f489a07@gmail.com>
- <20201209105618.okw5lgcdikg5bvae@wittgenstein>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <0ea38a7a-1c64-086e-3d64-38686f5b7856@gmail.com>
-Date:   Thu, 10 Dec 2020 15:36:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 10 Dec 2020 11:42:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607618438;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2N89GAWJh2oijgPtEoE6/Kndq4JEGomfZWV0U25Lc9I=;
+        b=Ux4n3MQu2Qn+QLjfNCABYRc6/JHIv9NE7dLEGjiJISq/ghZt5IfzHOPfGBbZs6XQnIO93m
+        76pZyDS/YLboXB+jfv6a7DyIduR4F9GXux5B5w9PVYv645IKH9/nOGB0W2nNMpqG6d1bJr
+        5DBtld3B+BvF/Ol8DUkPgwOUsBmEqUI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-q2wahnQyOFCzTISxvSExEQ-1; Thu, 10 Dec 2020 11:40:35 -0500
+X-MC-Unique: q2wahnQyOFCzTISxvSExEQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08BA8107ACE4;
+        Thu, 10 Dec 2020 16:40:31 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-7.gru2.redhat.com [10.97.112.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3C95319718;
+        Thu, 10 Dec 2020 16:40:30 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id CC8E441853FD; Thu, 10 Dec 2020 12:26:18 -0300 (-03)
+Date:   Thu, 10 Dec 2020 12:26:18 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+Message-ID: <20201210152618.GB23951@fuller.cnet>
+References: <20201203171118.372391-1-mlevitsk@redhat.com>
+ <20201203171118.372391-2-mlevitsk@redhat.com>
+ <20201207232920.GD27492@fuller.cnet>
+ <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com>
+ <87sg8g2sn4.fsf@nanos.tec.linutronix.de>
+ <20201208181107.GA31442@fuller.cnet>
+ <875z5c2db8.fsf@nanos.tec.linutronix.de>
+ <20201209163434.GA22851@fuller.cnet>
+ <87r1nyzogg.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201209105618.okw5lgcdikg5bvae@wittgenstein>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r1nyzogg.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
-
-Thanks for confirming that behavior.  Seems reasonable.
-
-I was wondering...
-If this call is equivalent to unshare(2)+{close(2) in a loop},
-shouldn't it fail for the same reasons those syscalls can fail?
-
-What about the following errors?:
-
-From unshare(2):
-
-       EPERM  The calling process did not have the  required  privi‐
-              leges for this operation.
-
-From close(2):
-       EBADF  fd isn't a valid open file descriptor.
-
-OK, this one can't happen with the current code.
-Let's say there are fds 1 to 10, and you call 'close_range(20,30,0)'.
-It's a no-op (although it will still unshare if the flag is set).
-But souldn't it fail with EBADF?
-
-       EINTR  The close() call was interrupted by a signal; see sig‐
-              nal(7).
-
-       EIO    An I/O error occurred.
-
-       ENOSPC, EDQUOT
-              On NFS, these errors are not normally reported against
-              the first write which exceeds  the  available  storage
-              space,  but  instead  against  a  subsequent write(2),
-              fsync(2), or close().
-
-Thanks,
-
-Alex
-
-
-On 12/9/20 11:56 AM, Christian Brauner wrote:
-> On Wed, Dec 09, 2020 at 11:44:22AM +0100, Alejandro Colomar (man-pages) wrote:
->> Hey Christian,
->>
->> I have a question for you below.
->>
->> Thanks,
+On Wed, Dec 09, 2020 at 09:58:23PM +0100, Thomas Gleixner wrote:
+> Marcelo,
 > 
-> Hey Alex,
+> On Wed, Dec 09 2020 at 13:34, Marcelo Tosatti wrote:
+> > On Tue, Dec 08, 2020 at 10:33:15PM +0100, Thomas Gleixner wrote:
+> >> On Tue, Dec 08 2020 at 15:11, Marcelo Tosatti wrote:
+> >> > max_cycles overflow. Sent a message to Maxim describing it.
+> >> 
+> >> Truly helpful. Why the hell did you not talk to me when you ran into
+> >> that the first time?
+> >
+> > Because 
+> >
+> > 1) Users wanted CLOCK_BOOTTIME to stop counting while the VM 
+> > is paused (so we wanted to stop guest clock when VM is paused anyway).
 > 
-> Sure!
+> How is that supposed to work w/o the guest kernels help if you have to
+> keep clock realtime up to date? 
 
-[...]
+Upon VM resume, we notify NTP daemon in the guest to sync realtime
+clock.
+> 
+> > 2) The solution to inject NMIs to the guest seemed overly
+> > complicated.
+> 
+> Why do you need NMIs?
+> 
+> All you need is a way to communicate to the guest that it should prepare
+> for clock madness to happen. Whether that's an IPI or a bit in a
+> hyperpage which gets checked during the update of the guest timekeeping
+> does not matter at all.
+> 
+> But you certainly do not need an NMI because there is nothing useful you
+> can do within an NMI.
+> 
+> Thanks,
+> 
+>         tglx
 
->>
->> AFAICS after reading the code, if the unsharing fails,
->> it will not close any file descriptors (please correct me if I'm wrong).
->>
->> Just wanted to be sure that it was the intended behavior with you,
->> and if so, it would be good to document it in the page.
-> 
-> Yes, this is intended because if the unshare fails we haven't yet
-> actually started closing anything so we're before the point of no
-> return where we ignore failures. So we can let userspace decide whether
-> they want to retry without CLOSE_RANGE_UNSHARE.
-> 
-> Christian
-> 
-
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es
