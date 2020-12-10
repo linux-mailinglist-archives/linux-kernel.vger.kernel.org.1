@@ -2,102 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291F92D5EB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD62D2D5EC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389616AbgLJOyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:54:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733277AbgLJOyC (ORCPT
+        id S2388492AbgLJO4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:56:17 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35558 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727249AbgLJO4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:54:02 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03BCC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:53:21 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id v3so5558013ilo.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:53:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yeZ8gIpFQsdSytGiB9IK+Ej4WbbINVDqeD0QoV2QEwU=;
-        b=sGOYKdxnXRmFw5udWeVygXWbrL6g3yiJyReDFX9DIaEv628Z7gfbmlTa3kV3ns0RN8
-         Fm1hmLyYbAWmRyjVWy1rtzvy+vmE+/IoPOU8IUz2xIJ32sQpMaA30H1dd54Mm7Ol0gg8
-         6sSUPrSmgh7z+8FJdBa/K1wFx8EyO+GQm7RYE/KH7XMgatjcsoOh4+TAIZ4xALtUTYaH
-         bz6lY8HFcaHavaP4r2F4f86sSAHml6Xod2/I4wsTr7vG44Xw43bNUwmtTET4hhN/QlhU
-         uVav9FGOugP1h0qX4VYIsasf6cflBksuVHCvM7JSx3Ui7OMiuAb/eK73JOrd9L8gVkW3
-         Vogw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yeZ8gIpFQsdSytGiB9IK+Ej4WbbINVDqeD0QoV2QEwU=;
-        b=INOOQ7zzQPb3NW22al3PL1jQe0DI7hwMNNDuzZcRZWMDmZBM09SEP3hGsmWMvIdybN
-         cZ2Ik29s50U8CrClVDfU0B8CJBOJs/WVcCU8GC+Y/4NRDVW4coAHti632iXGjgAm5sAj
-         4mAVmJyINeI1lSSVRwHIULjr/a7YZZWSvsgygGS2HWKftK8JLgbLLTB53MRXMLUWIqXJ
-         3GZh44iLSGSrN7xa1qZJz/s703vxJ3lP4IzdYx1BfBpeVRPrBuGPqH4Axl7mxFSpoYek
-         pPh0iAOBupL9wZcG0l5tnAnc2uiLWtTO+e1lKcLWtjAI9nqx5jP8xtAX+dSgguxbCIYO
-         Q3qA==
-X-Gm-Message-State: AOAM53101qS+gSa0pcsfKk/tzotSzQDroxz5YpI7vUFIfAtjcqc5WtVx
-        uMTwghZzzNGG9fl8+9184LqByi0SoDVhPm0p0moBvQ==
-X-Google-Smtp-Source: ABdhPJy5mH//MsFyk06EpBitTVKJlWGMGAVTvIaoL59lVVaI5t7OU/A4NxGApzRE+TNC3wIGYeMn8E98UVXCaEeO3bI=
-X-Received: by 2002:a92:da82:: with SMTP id u2mr9289009iln.137.1607612001021;
- Thu, 10 Dec 2020 06:53:21 -0800 (PST)
+        Thu, 10 Dec 2020 09:56:10 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BAEZ7N7088316;
+        Thu, 10 Dec 2020 09:54:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=VsCisPySZHG4Vff0eAvJw4F76GzoTiGXaBqWHoCkKF0=;
+ b=H/i0vBJaVrEsIxTNzzpSFA/FCskUwAue6ja+2YX99G5xdQAchy5YHz28mh0jiokEVJh3
+ cVZVOQaOOGLQHSbKM9vb4OlkQS0lpZNLgdmAh8uifjptyOloMlsBkGmjAkOL/h1hmyzo
+ 5ANkm8pODhkiJfDX7wP2kvW+FVbcpDzP7v9QbxASmDfzsNGCUl8QrHMs+c0AZVs4IHoc
+ r9bYF0tv/FR5mng22P6Rrs6Qc283dFG5Jc4L9VdSpX8y9OHnYyDSwE27LhruKR4v7YxK
+ zypN7M+fXF08EenWsawvPzSRb+wz9CHSdTqjHIRc4bmgMRRK7ZcttZS5CtfejBDyWve/ 3Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35bndu9187-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Dec 2020 09:54:09 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BAEWOAc069949;
+        Thu, 10 Dec 2020 09:54:08 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35bndu916u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Dec 2020 09:54:08 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BAEqWrN021791;
+        Thu, 10 Dec 2020 14:54:05 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 3581u8rpv5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Dec 2020 14:54:05 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BAEs30S33030568
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Dec 2020 14:54:03 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1B3044C70D;
+        Thu, 10 Dec 2020 14:54:03 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F63E4C70F;
+        Thu, 10 Dec 2020 14:54:02 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.88.139])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Dec 2020 14:54:01 +0000 (GMT)
+Subject: Re: [Patch v3 0/2] cgroup: KVM: New Encryption IDs cgroup controller
+To:     Tejun Heo <tj@kernel.org>, Vipin Sharma <vipinsh@google.com>
+Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        corbet@lwn.net, joro@8bytes.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201209205413.3391139-1-vipinsh@google.com>
+ <X9E6eZaIFDhzrqWO@mtj.duckdns.org>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <4f7b9c3f-200e-6127-1d94-91dd9c917921@de.ibm.com>
+Date:   Thu, 10 Dec 2020 15:54:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201210142600.887734129@linuxfoundation.org> <20201210142601.652963609@linuxfoundation.org>
- <CANn89iK=kMSkT771iL0dybnWisXr9FWW-bffa5KB+McBYrxx4g@mail.gmail.com>
- <X9Iy9EDh2gZgth+R@kroah.com> <X9IzaHjsIjcn3XNX@kroah.com>
-In-Reply-To: <X9IzaHjsIjcn3XNX@kroah.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 10 Dec 2020 15:53:09 +0100
-Message-ID: <CANn89iLFCBVOzPhwSxmAnT6dx8fnRD4TYRSJaX2ni7AxvXKEGg@mail.gmail.com>
-Subject: Re: [PATCH 4.4 15/39] geneve: pull IP header before ECN decapsulation
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        syzbot <syzkaller@googlegroups.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <X9E6eZaIFDhzrqWO@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-10_05:2020-12-09,2020-12-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 adultscore=0 malwarescore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 phishscore=0 clxscore=1011 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012100088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 3:40 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Dec 10, 2020 at 03:38:44PM +0100, Greg Kroah-Hartman wrote:
-> > On Thu, Dec 10, 2020 at 03:32:12PM +0100, Eric Dumazet wrote:
-> > > On Thu, Dec 10, 2020 at 3:26 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > From: Eric Dumazet <edumazet@google.com>
-> > > >
-> > > > IP_ECN_decapsulate() and IP6_ECN_decapsulate() assume
-> > > > IP header is already pulled.
-> > > >
-> > > > geneve does not ensure this yet.
-> > > >
-> > > > Fixing this generically in IP_ECN_decapsulate() and
-> > > > IP6_ECN_decapsulate() is not possible, since callers
-> > > > pass a pointer that might be freed by pskb_may_pull()
-> > > >
-> > > > syzbot reported :
-> > > >
-> > >
-> > > Note that we had to revert this patch, so you can either scratp this
-> > > backport, or make sure to backport the revert.
-> >
-> > I'll drop it thanks.  Odd I lost the upstream git id on this patch, let
-> > me check what went wrong...
->
-> What is the git id of the revert?  This ended up already in 4.19.y,
-> 5.4.y, and 5.9.y so needs to be reverted there.
->
+On 09.12.20 21:58, Tejun Heo wrote:
+> Hello,
+> 
+> Rough take after skimming:
+> 
+> * I don't have an overall objection. In terms of behavior, the only thing
+>   which stood out was input rejection depending on the current usage. The
+>   preferred way of handling that is rejecting future allocations rather than
+>   failing configuration as that makes it impossible e.g. to lower limit and
+>   drain existing usages from outside the container.
+> 
+> * However, the boilerplate to usefulness ratio doesn't look too good and I
+>   wonder whether what we should do is adding a generic "misc" controller
+>   which can host this sort of static hierarchical counting. I'll think more
+>   on it.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=c02bd115b1d25931159f89c7d9bf47a30f5d4b41
+We first dicussed to have
+encryption_ids.stat
+encryption_ids.max
+encryption_ids.current
 
-Thanks !
+and we added the sev in later, so that we can also have tdx, seid, sgx or whatever.
+Maybe also 2 or more things at the same time.
 
-> thanks,
->
-> greg k-h
+Right now this code has
+
+encryption_ids.sev.stat
+encryption_ids.sev.max
+encryption_ids.sev.current
+
+And it would be trivial to extend it to have
+encryption_ids.seid.stat
+encryption_ids.seid.max
+encryption_ids.seid.current
+on s390 instead (for our secure guests).
+
+So in the end this is almost already a misc controller, the only thing that we
+need to change is the capability to also define things other than encryption.*.*
+And of course we would need to avoid adding lots of random garbage to such a thing.
+
+But if you feel ok with the burden to keep things kind of organized a misc
+controller would certainly work for the encryption ID usecase as well. 
+So I would be fine with the thing as is or a misc controlĺer.
+
+Christian
