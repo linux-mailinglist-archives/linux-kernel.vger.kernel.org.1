@@ -2,138 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CA62D54FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FF02D54FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733168AbgLJIBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 03:01:08 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:42098 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727734AbgLJIBI (ORCPT
+        id S1733239AbgLJIBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 03:01:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgLJIBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 03:01:08 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BA808Z7046402;
-        Thu, 10 Dec 2020 08:00:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=qahWmu7yfkzVAk9fNv3cnE4VKjWf+61A/L9L1BkjeEg=;
- b=xdD3jq2WCyAdlwDDQm0B4lv4ih5tNTqZG2MezTHyT9JGc3ydaCru5ly4pQIcR2059BzU
- dKmmjoyp2snDGRNG25b9NwPUjBVpA9QPTKpfirSd138k0WP0a2Dl/yGrVmjELMM9Y4HH
- +rqfAA3WBHuucz+EC6k9DsijUMJggFFfhTpqQEzlSm+5F5SeAlhIz/sX/sm6YiFf60uk
- XkekeOTl/m40KHM4JpRT60dkj855oKr7LOYUEJEB7PS9yiUo/TWL9xIuZxJm1ePyRQcK
- hzjqX7UbDn6JZA87aX7yYhZpnkFRREkJMApKDgAKsoqBNhm+8X824hBpVoWrBbRwMFn6 bA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 357yqc42x7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Dec 2020 08:00:19 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BA7ua2g132306;
-        Thu, 10 Dec 2020 08:00:19 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 358m41cffn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Dec 2020 08:00:19 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BA80EAM013160;
-        Thu, 10 Dec 2020 08:00:14 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 10 Dec 2020 00:00:13 -0800
-Date:   Thu, 10 Dec 2020 11:00:06 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-Cc:     =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>,
-        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        "'Greg Kroah-Hartman'" <gregkh@linuxfoundation.org>,
-        driverdev-devel@linuxdriverproject.org,
-        linux-kernel@vger.kernel.org, "'Rob Herring'" <robh+dt@kernel.org>
-Subject: Re: [PATCH] Staging: silabs si4455 serial driver
-Message-ID: <20201210080006.GK2767@kadam>
-References: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAAAJUqiRO33GQqGIHffCVyG/AQAAAAA=@ministro.hu>
- <2907305.Mh6RI2rZIc@pc-42>
- <20201209194153.GC30918@dincontrollerdev>
+        Thu, 10 Dec 2020 03:01:42 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8C5C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 00:01:02 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id s11so5659404ljp.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 00:01:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EaxSgwGc3sav/Jepv9lFlJ7IXr1WPiMxzvqTvfFy4fg=;
+        b=Tj1jgPerQPS7CM9LA290bWZTIFQ4w+Enn6sPGDh3Apdb14yarz/+olHKH1AaBJn9zS
+         uSI1BOfU+QfyK5gq95ET7abOMKpli0lAZ7lTmp2AWAOa6WDCSludrLgvaXMtWsTb9Qux
+         oGdb6Mi2Zgd+wSDVo9eoEbZd2bI5e6D0CsBwjoQqaNDQfW4h8klcxMMtIoDAu1yCQA1x
+         ihzBVY1ExV6iDF1oWNduiZphp9hPTfsQWFMbH+HZshAa6E7JSRK3tB4533IwicpYTCLE
+         90yGntViPXkVAkqjf+lcETwyWVLXaWl15A/L2ttv84iWxEBI6HIOsc3kJ1slqUGxgpKc
+         EbHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EaxSgwGc3sav/Jepv9lFlJ7IXr1WPiMxzvqTvfFy4fg=;
+        b=YgFkEjNA/5iOokSOTP+c23HGdRbyHzYV4o65OO9HCoOCADac243Hz0Qm4+7RhgDGqd
+         24p9MYvKD9Hqcl4k0IGvRQTk1sNJNAu89CXjGxsj/8DZdznJ7Hwkj79HShY5kJbJWR2b
+         vCRerZpxtmrA3GNcL4T6iVI1vNdvFxsvPPwtNPY95143levUG/uUDcNd206p0LMbhyed
+         A0pQHyIZoh7bgfvhAhEkRRPHQwx9RK5ct9Zy+qPG4BMfmw3rlSZhpf077L5FnS5bhQxP
+         McmOpvUv8yaEVzKk3ghutONQeFjrMslTsxBWHUWuSds48XsqK5ZjqesyzA18d8WGBI3r
+         Kpng==
+X-Gm-Message-State: AOAM533LEoVk2SAymrwAWG+mgmZHUWXmaqGg0QnaILCKFUUC45slZqfZ
+        RrqtIPWRmL0nPkIUnsWAhk2mgXBYuETgeEXdGcNxsw==
+X-Google-Smtp-Source: ABdhPJzOgUpJG4+fhPdf2F3nwt/AecWP8IsaQZ6IvObBuSiIq5Gd85PVHwbY2ski+RfTwgtHGhE0AeQ/aYZmlUZ7XsA=
+X-Received: by 2002:a2e:8396:: with SMTP id x22mr2499130ljg.221.1607587260753;
+ Thu, 10 Dec 2020 00:01:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201209194153.GC30918@dincontrollerdev>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9830 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012100051
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9830 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
- spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012100051
+References: <20201208153501.1467-1-mgorman@techsingularity.net> <20201209143748.GP3371@techsingularity.net>
+In-Reply-To: <20201209143748.GP3371@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 10 Dec 2020 09:00:49 +0100
+Message-ID: <CAKfTPtCToad1ZwMRi28iC=MQ2D+vnTBLKBU+UOBanTWnuQQzRA@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Reduce scanning of runqueues in select_idle_sibling
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 07:41:53PM +0000, József Horváth wrote:
-> > > +static int si4455_get_part_info(struct uart_port *port,
-> > > +                               struct si4455_part_info *result)
-> > > +{
-> > > +       int ret;
-> > > +       u8 dataOut[] = { SI4455_CMD_ID_PART_INFO };
-> > > +       u8 dataIn[SI4455_CMD_REPLY_COUNT_PART_INFO];
-> > > +
-> > > +       ret = si4455_send_command_get_response(port,
-> > > +                                               sizeof(dataOut),
-> > > +                                               dataOut,
-> > > +                                               sizeof(dataIn),
-> > > +                                               dataIn);
-> > 
-> > Why not:
-> > 
-> 
-> I changed all like this in my code already. I test it, and I'll send it again.
-> 
-> Ps.: For my eyes is better to read line or list, reading table is harder :)
-> 
-> 	line(arg1, arg2, arg3, arg4);
-> 
-> 	list(arg1,
-> 		arg2,
-> 		arg3,
-> 		arg4);
-> 
-> 	table(arg1, arg2,
-> 		arg3, arg4);
-> 
+On Wed, 9 Dec 2020 at 15:37, Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> On Tue, Dec 08, 2020 at 03:34:57PM +0000, Mel Gorman wrote:
+> > Changelog since v1
+> > o Drop single-pass patch                                              (vincent)
+> > o Scope variables used for SIS_AVG_CPU                                        (dietmar)
+> > o Remove redundant assignment                                         (dietmar
+> >
+> > This reduces the amount of runqueue scanning in select_idle_sibling in
+> > the worst case.
+> >
+> > Patch 1 removes SIS_AVG_CPU because it's unused.
+> >
+> > Patch 2 moves all SIS_PROP-related calculations under SIS_PROP
+> >
+> > Patch 3 improves the hit rate of p->recent_used_cpu to reduce the amount
+> >       of scanning. It should be relatively uncontroversial
+> >
+> > Patch 4 returns an idle candidate if one is found while scanning for a
+> >       free core.
+> >
+>
+> Any other objections to the series? Vincent marked 1, 3 and 4 as
+> reviewed. While patch 2 had some mild cosmetic concerns, I think the
+> version and how it treats SIS_PROP is fine as it is to keep it
+> functionally equivalent to !SIS_PROP and without adding too many
+> SIS_PROP checks.
 
-Use spaces to make arguments have to line up properly.
-`checkpatch.pl --strict` will complain if it's not done.
+while testing your patchset and Aubrey one on top of tip, I'm facing
+some perf regression on my arm64 numa system on hackbench and reaim.
+The regression seems to comes from your patchset but i don't know
+which patch in particular yet
 
-	table(arg1, arg2,
-	      arg_whatver, foo);
-[tab][space x 7]arg_whaver, foo);
+hackbench -l 256000 -g 1
 
-But I think Jérôme's main point was to get rid of the dataOut buffer and
-use "result" directly.
+v5.10-rc7 + tip/sched/core 13,255(+/- 3.22%)
+with your patchset         15.368(+/- 2.74)  -15.9%
 
-> 
-> >        ret = si4455_send_command_get_response(port,
-> >                                               sizeof(*result), result,
-> >                                               sizeof(dataIn), dataIn);
-> > 
-> > > +       if (ret == 0) {
-> > > +               result->CHIPREV = dataIn[0];
-> > > +               memcpy(&result->PART, &dataIn[1],sizeof(result->PART));
-> > > +               result->PBUILD = dataIn[3];
-> > > +               memcpy(&result->ID, &dataIn[4], sizeof(result->ID));
-> > > +               result->CUSTOMER = dataIn[6];
-> > > +               result->ROMID = dataIn[7];
-> > > +               result->BOND = dataIn[8];
-> > 
-> > ... it would avoid all these lines.
-> > 
+I'm also seeing perf regression on reaim but this one needs more
+investigation before confirming
 
-regards,
-dan carpenter
+TBH, I was not expecting regressions. I'm running more test to find
+which patch is the culprit
 
+
+>
+> --
+> Mel Gorman
+> SUSE Labs
