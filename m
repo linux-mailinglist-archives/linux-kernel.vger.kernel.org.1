@@ -2,121 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FB52D6245
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C730F2D622D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392101AbgLJP7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:59:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391210AbgLJP7T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:59:19 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C90C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:58:39 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id f9so4474014pfc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:58:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3JsItjQhJTNChGLKWrMzXdOtHhMmJn68zyS+vNfChmc=;
-        b=YR54goM9BduaqkUSFsN45e6lbCS6jKd0VIuO8EoEZV4bRzXfT2OMkZL9t4rycCznXW
-         3L+nB8URIDdu6cufleBaMugwkzBJ0bAmqF0tASnrYsCLhXE90t4kb9Fpi+J+fG4bsJly
-         4UPW1v4jSERSN9+jdEjsc4NfOwDb9a/RIIiYugb5FFWv0opti3lRjgSvAZwG60ZblLwL
-         8Q5zDENNJsMDc29AnGad8P8sF2aH8qAHCa1+ETX/nWCzL4DxswvNSMVczwx2143XKobK
-         EZFF46MuoFXi2yZCvCbpV2lqjbGdRnJ4/Es9gUtDj8ArJRCqhb32n36XVO4LRVNfilvI
-         3syw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3JsItjQhJTNChGLKWrMzXdOtHhMmJn68zyS+vNfChmc=;
-        b=bO0g6jxRMOtgUaES/HmzsPLt5TbtO4Tw88mIkNJ3blGH7xcH6io2BnhXuzILVo6BXT
-         x7nfop8/8HjTnm7GX3pNESPVlPfjKPjUIoNt8Uk5MIc21ds9CSz/36M6yCjBLxBdTiUt
-         wjcmMVxXRd1C2UzUL00K8vzjEnBI1TG34u57/GB0kLlfQx6shm0ikQngKgZcxzhLwtS4
-         Ehfo7qgRQp6HleWw+RKKZNoCVCn30HyFjkppuk+QcJl4HOcw+2vNMK/c/mPVNIOZ/aHD
-         iuXV/GgHXjgKR937ONcJsPrkKb8EZieN56ofDzvHT5JNeW89TuSNQ6Bxhn71hgvl75An
-         /8aA==
-X-Gm-Message-State: AOAM531YQ+glPPR89ZWeFKMtK0kKYpU1vgeEZpkhEzNo5m+09gubv2eZ
-        1wP4Zts3Rets+MgrKeCUA/Ezu4K/F3UtwsBkMwWhPQ==
-X-Google-Smtp-Source: ABdhPJxsRJTEViV1kHZNE7S/lb4xqQOiuBcWI/nuOSkpUU7hFgwqcfKWK3LPuNueNSM77fjVgLOMwdLciypLZQHT8Os=
-X-Received: by 2002:a63:c15:: with SMTP id b21mr7123599pgl.341.1607615918579;
- Thu, 10 Dec 2020 07:58:38 -0800 (PST)
+        id S2403872AbgLJQCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:02:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49472 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391090AbgLJQBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 11:01:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607616057; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=/RDK+90f4BiI39cPxQWNZJU2UwVBYdblMM4zAXfF7m8=;
+        b=FlOCJfTPnddM+GdQnUCJsIU8isd5lZWD01QVLUjhwI4dyQXnHR9CwaBUr6tIzFiqsNpYNU
+        BkoN4t72W3Mp3CSDNd1Vq+vIJmBBS70wMtbWeHtzC0I0hnpECfUseEgC8lqqff1hWDN6vM
+        t5BzW6zsr0SxP1RAicx0aOSys8pfQOk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1805FAE95;
+        Thu, 10 Dec 2020 16:00:57 +0000 (UTC)
+From:   Petr Mladek <pmladek@suse.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Laurence Oberman <loberman@redhat.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>
+Subject: [PATCH v2 0/7] watchdog/softlockup: Report overall time and some cleanup
+Date:   Thu, 10 Dec 2020 17:00:31 +0100
+Message-Id: <20201210160038.31441-1-pmladek@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20201210035526.38938-1-songmuchun@bytedance.com>
- <20201210035526.38938-5-songmuchun@bytedance.com> <20201210144256.GB8538@localhost.localdomain>
- <20201210144419.GC8538@localhost.localdomain>
-In-Reply-To: <20201210144419.GC8538@localhost.localdomain>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 10 Dec 2020 23:58:02 +0800
-Message-ID: <CAMZfGtVuoDnM5S1-rPcGELfr4xaO7Ok9qAyBYLQ3=dQ+DDjOGQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v8 04/12] mm/hugetlb: Free the vmemmap
- pages associated with each HugeTLB page
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 10:44 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Thu, Dec 10, 2020 at 03:42:56PM +0100, Oscar Salvador wrote:
-> > On Thu, Dec 10, 2020 at 11:55:18AM +0800, Muchun Song wrote:
-> > > The free_vmemmap_pages_per_hpage() which indicate that how many vmemmap
-> > > pages associated with a HugeTLB page that can be freed to the buddy
-> > > allocator just returns zero now, because all infrastructure is not
-> > > ready. Once all the infrastructure is ready, we will rework this
-> > > function to support the feature.
-> >
-> > I would reword the above to:
-> >
-> > "free_vmemmap_pages_per_hpage(), which indicates how many vmemmap
-> >  pages associated with a HugeTLB page can be freed, returns zero for
-> >  now, which means the feature is disabled.
-> >  We will enable it once all the infrastructure is there."
-> >
-> >  Or something along those lines.
-> >
-> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> >
-> > Overall this looks good to me, and it has seen a considerable
-> > simplification, which is good.
-> > Some nits/questions below:
->
-> And as I said, I would merge patch#3 with this one.
+I dug deep into the softlockup watchdog history when time permitted
+this year. And reworked the patchset that fixed timestamps and
+cleaned up the code[1].
 
-Will do. Thanks.
+I split it into very small steps and did even more code clean up.
+The result looks quite strightforward and I am pretty confident
+with the changes.
 
->
->
-> --
-> Oscar Salvador
-> SUSE L3
+[*] v1: https://lore.kernel.org/r/20191024114928.15377-1-pmladek@suse.com
 
+Petr Mladek (7):
+  watchdog: Rename __touch_watchdog() to a better descriptive name
+  watchdog: Explicitly update timestamp when reporting softlockup
+  watchdog/softlockup: Report the overall time of softlockups
+  watchdog/softlockup: Remove logic that tried to prevent repeated
+    reports
+  watchdog: Fix barriers when printing backtraces from all CPUs
+  watchdog: Cleanup handling of false positives
+  Test softlockup
 
+ fs/proc/consoles.c |  5 +++
+ fs/proc/version.c  |  7 ++++
+ kernel/watchdog.c  | 97 ++++++++++++++++++++++++++--------------------
+ 3 files changed, 66 insertions(+), 43 deletions(-)
 
 -- 
-Yours,
-Muchun
+2.26.2
+
