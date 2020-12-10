@@ -2,31 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3650E2D5E4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1106B2D5E1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:41:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403849AbgLJOpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:45:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44952 "EHLO mail.kernel.org"
+        id S2391310AbgLJOka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:40:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390080AbgLJOiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:38:21 -0500
+        id S2390886AbgLJOfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:35:11 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 5.9 39/75] drm/i915/gt: Program mocs:63 for cache eviction on gen9
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Mahesh Salgaonkar <mahesh@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 27/54] powerpc/64s/powernv: Fix memory corruption when saving SLB entries on MCE
 Date:   Thu, 10 Dec 2020 15:27:04 +0100
-Message-Id: <20201210142607.993914593@linuxfoundation.org>
+Message-Id: <20201210142603.365405138@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
-References: <20201210142606.074509102@linuxfoundation.org>
+In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
+References: <20201210142602.037095225@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -35,60 +32,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-commit 777a7717d60ccdc9b84f35074f848d3f746fc3bf upstream.
+commit a1ee28117077c3bf24e5ab6324c835eaab629c45 upstream.
 
-Ville noticed that the last mocs entry is used unconditionally by the HW
-when it performs cache evictions, and noted that while the value is not
-meant to be writable by the driver, we should program it to a reasonable
-value nevertheless.
+This can be hit by an HPT guest running on an HPT host and bring down
+the host, so it's quite important to fix.
 
-As it turns out, we can change the value of mocs:63 and the value we
-were programming into it would cause hard hangs in conjunction with
-atomic operations.
-
-v2: Add details from bspec about how it is used by HW
-
-Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/2707
-Fixes: 3bbaba0ceaa2 ("drm/i915: Added Programming of the MOCS")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: Jason Ekstrand <jason@jlekstrand.net>
-Cc: <stable@vger.kernel.org> # v4.3+
-Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201126140841.1982-1-chris@chris-wilson.co.uk
-(cherry picked from commit 977933b5da7c16f39295c4c1d4259a58ece65dbe)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Fixes: 7290f3b3d3e6 ("powerpc/64s/powernv: machine check dump SLB contents")
+Cc: stable@vger.kernel.org # v5.4+
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Acked-by: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201128070728.825934-2-npiggin@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/i915/gt/intel_mocs.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ arch/powerpc/platforms/powernv/setup.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/i915/gt/intel_mocs.c
-+++ b/drivers/gpu/drm/i915/gt/intel_mocs.c
-@@ -131,7 +131,19 @@ static const struct drm_i915_mocs_entry
- 	GEN9_MOCS_ENTRIES,
- 	MOCS_ENTRY(I915_MOCS_CACHED,
- 		   LE_3_WB | LE_TC_2_LLC_ELLC | LE_LRUM(3),
--		   L3_3_WB)
-+		   L3_3_WB),
-+
-+	/*
-+	 * mocs:63
-+	 * - used by the L3 for all of its evictions.
-+	 *   Thus it is expected to allow LLC cacheability to enable coherent
-+	 *   flows to be maintained.
-+	 * - used to force L3 uncachable cycles.
-+	 *   Thus it is expected to make the surface L3 uncacheable.
-+	 */
-+	MOCS_ENTRY(63,
-+		   LE_3_WB | LE_TC_1_LLC | LE_LRUM(3),
-+		   L3_1_UC)
- };
+--- a/arch/powerpc/platforms/powernv/setup.c
++++ b/arch/powerpc/platforms/powernv/setup.c
+@@ -186,11 +186,16 @@ static void __init pnv_init(void)
+ 		add_preferred_console("hvc", 0, NULL);
  
- /* NOTE: the LE_TGT_CACHE is not used on Broxton */
+ 	if (!radix_enabled()) {
++		size_t size = sizeof(struct slb_entry) * mmu_slb_size;
+ 		int i;
+ 
+ 		/* Allocate per cpu area to save old slb contents during MCE */
+-		for_each_possible_cpu(i)
+-			paca_ptrs[i]->mce_faulty_slbs = memblock_alloc_node(mmu_slb_size, __alignof__(*paca_ptrs[i]->mce_faulty_slbs), cpu_to_node(i));
++		for_each_possible_cpu(i) {
++			paca_ptrs[i]->mce_faulty_slbs =
++					memblock_alloc_node(size,
++						__alignof__(struct slb_entry),
++						cpu_to_node(i));
++		}
+ 	}
+ }
+ 
 
 
