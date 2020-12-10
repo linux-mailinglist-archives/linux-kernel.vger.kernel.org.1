@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85BA2D5D4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 551A62D5D56
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388002AbgLJOOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:14:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387865AbgLJOO0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:14:26 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2918BC0613CF;
-        Thu, 10 Dec 2020 06:13:46 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id w16so4318145pga.9;
-        Thu, 10 Dec 2020 06:13:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4Hb7CAOESndOw0qmRw9ewVrZoBtsOHUQtrWnjHs0d1U=;
-        b=hs49l3MbegHnzNrh0GBjhULW6ig/YFYqX2EM+6DzwB+fRgW9ILpGbafrJWdjTyYMGx
-         bg5fZABvSnlI26rFJy5pxWeVo1syaM3lTLnySC+vNijzgwJofGFA4jF8GbP5lw/3bolx
-         5MhNjpMMyGnxypq8jozD4tCdXpzAlJfrNhzeBSvLByOHyyXW0qcPmyn2crxwuFCW1NsE
-         0Y0LSTXpJzVV+Js+XxpS2wWocBaPoNyqwnIaHiLPRmTujhAnWChx87vID4du1gZxQ4lT
-         IO1MhWxII0hyNuc2ufbgv59WCjVSJinhDKlHuXizxWjqOrMl69sU847jQTfSRlqFqumA
-         +2PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4Hb7CAOESndOw0qmRw9ewVrZoBtsOHUQtrWnjHs0d1U=;
-        b=kNOP9L8F0BN5IBCE9KrlPyFv/hPFTx8BKcQRvscwo0tcIzd9PBL+RgcTTWAVUIZLm+
-         fUBHaypM0m32nwlQFMk3KZsFDEGmZ74ueQAnRHcPaI4fmNTYKV+0veMXVQ3IIWKup9BD
-         b2md8enq04Ct5X4xta9G0fKmef0NFjTO+jLjkYtW7t78rPqUziGFTX2dHrx867qPG15J
-         Ki2Dy3CA7LA3nDlX3tm0UmT/JVyMdTyBVwpiRl/ffyBQCpx1tQJbxbe+iTSmEdqCrcbL
-         oJ7h/r/OQ0otbn7Cm3K660cA51f9WYo7ylxbhUSDmBg0k6glpwHbSGjsvbbz0S3EcdhX
-         G1lw==
-X-Gm-Message-State: AOAM533u2Ky4GuZviHKv14KoCABiRw9bE6EOMyCiK0WnB1kK0QOyhqJP
-        /CdQ6pNQRoc3D2s1JJ5ubkWu+NQvj3zjBv4XxNkOsZ0Ap/w=
-X-Google-Smtp-Source: ABdhPJyFNZ9FhSEOIbEkRgpnz977Ot0cuwbUMyrsnC9vlZUdQdfjd+91orjutqMRcuYPE8Fvn6lnet0Z/prPzhCJx2I=
-X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr7847600pjt.228.1607609625632;
- Thu, 10 Dec 2020 06:13:45 -0800 (PST)
+        id S2389723AbgLJORB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:17:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35140 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389607AbgLJOQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:16:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2CC44AE95;
+        Thu, 10 Dec 2020 14:16:04 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 15:15:47 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v8 03/12] mm/bootmem_info: Introduce free_bootmem_page
+ helper
+Message-ID: <20201210141547.GA8538@localhost.localdomain>
+References: <20201210035526.38938-1-songmuchun@bytedance.com>
+ <20201210035526.38938-4-songmuchun@bytedance.com>
 MIME-Version: 1.0
-References: <20201210065013.29348-1-troy_lee@aspeedtech.com>
-In-Reply-To: <20201210065013.29348-1-troy_lee@aspeedtech.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 10 Dec 2020 16:14:33 +0200
-Message-ID: <CAHp75VcMuHiUFgSas26DA-Bh1gGA_G5FT+9cetK=En9Q_oMZtg@mail.gmail.com>
-Subject: Re: [PATCH] gpio: aspeed: Lock GPIO pin used as IRQ
-To:     Troy Lee <troy_lee@aspeedtech.com>
-Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>, leetroy@gmail.com,
-        ryan_chen@aspeedtech.com, chiawei_wang@aspeedtech.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210035526.38938-4-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 9:36 AM Troy Lee <troy_lee@aspeedtech.com> wrote:
->
-> GPIO pins can be used as IRQ indicators. When they do,
-> those pins should be flaged with locks to avoid kernel
+On Thu, Dec 10, 2020 at 11:55:17AM +0800, Muchun Song wrote:
+> Any memory allocated via the memblock allocator and not via the buddy
+> will be makred reserved already in the memmap. For those pages, we can
+         marked
+> call free_bootmem_page() to free it to buddy allocator.
+> 
+> Becasue we wan to free some vmemmap pages of the HugeTLB to the buddy
+Because     want
+> allocator, we can use this helper to do that in the later patchs.
+                                                           patches
 
-flagged
+To be honest, I think if would be best to introduce this along with
+patch#4, so we get to see where it gets used.
 
-> warning message.
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  include/linux/bootmem_info.h | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/include/linux/bootmem_info.h b/include/linux/bootmem_info.h
+> index 4ed6dee1adc9..20a8b0df0c39 100644
+> --- a/include/linux/bootmem_info.h
+> +++ b/include/linux/bootmem_info.h
+> @@ -3,6 +3,7 @@
+>  #define __LINUX_BOOTMEM_INFO_H
+>  
+>  #include <linux/mmzone.h>
+> +#include <linux/mm.h>
 
-...
+<linux/mm.h> already includes <linux/mmzone.h>
 
-> @@ -651,6 +651,13 @@ static int aspeed_gpio_set_type(struct irq_data *d, unsigned int type)
+> +static inline void free_bootmem_page(struct page *page)
+> +{
+> +	unsigned long magic = (unsigned long)page->freelist;
+> +
+> +	/* bootmem page has reserved flag in the reserve_bootmem_region */
+reserve_bootmem_region sets the reserved flag on bootmem pages?
 
-> +       rc = gpiochip_lock_as_irq(&gpio->chip, d->hwirq);
-> +       if (rc) {
-> +               dev_err(gpio->chip.parent, "unable to lock GPIO %lu as IRQ\n",
-> +                       d->hwirq);
-> +               return rc;
-> +       }
+> +	VM_WARN_ON(!PageReserved(page) || page_ref_count(page) != 2);
 
-It's a copy'n'paste of generic code. Why do you need it in an unusual
-place, i.e. ->irq_set_type() IIUC?
-Can you elaborate about an issue, because this seems to be a hack?
+We do check for PageReserved in patch#4 before calling in here.
+Do we need yet another check here? IOW, do we need to be this paranoid?
+
+> +	if (magic == SECTION_INFO || magic == MIX_SECTION_INFO)
+> +		put_page_bootmem(page);
+> +	else
+> +		WARN_ON(1);
+
+Lately, some people have been complaining about using WARN_ON as some
+systems come with panic_on_warn set.
+
+I would say that in this case it does not matter much as if the vmemmap
+pages are not either SECTION_INFO or MIX_SECTION_INFO it means that a
+larger corruption happened elsewhere.
+
+But I think I would align the checks here.
+It does not make sense to me to only scream under DEBUG_VM if page's
+refcount differs from 2, and have a WARN_ON if the page we are trying
+to free was not used for the memmap array.
+Both things imply a corruption, so I would set the checks under the same
+configurations.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Oscar Salvador
+SUSE L3
