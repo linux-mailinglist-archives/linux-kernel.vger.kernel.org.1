@@ -2,25 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA002D66B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3473C2D66AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393401AbgLJTid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:38:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36934 "EHLO mail.kernel.org"
+        id S2393434AbgLJThI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:37:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390175AbgLJO2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:28:48 -0500
+        id S2390181AbgLJO2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:28:55 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Mark Brown <broonie@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH 4.4 33/39] spi: bcm2835: Release the DMA channel if probe fails after dma_init
-Date:   Thu, 10 Dec 2020 15:26:44 +0100
-Message-Id: <20201210142602.519963173@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Luo Meng <luomeng12@huawei.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.4 38/39] Input: i8042 - fix error return code in i8042_setup_aux()
+Date:   Thu, 10 Dec 2020 15:26:49 +0100
+Message-Id: <20201210142602.756039862@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
 References: <20201210142600.887734129@linuxfoundation.org>
@@ -32,48 +33,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: Luo Meng <luomeng12@huawei.com>
 
-[ Upstream commit 666224b43b4bd4612ce3b758c038f9bc5c5e3fcb ]
+commit 855b69857830f8d918d715014f05e59a3f7491a0 upstream.
 
-The DMA channel was not released if either devm_request_irq() or
-devm_spi_register_controller() failed.
+Fix to return a negative error code from the error handling case
+instead of 0 in function i8042_setup_aux(), as done elsewhere in this
+function.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Link: https://lore.kernel.org/r/20191212135550.4634-3-peter.ujfalusi@ti.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[lukas: backport to 4.19-stable]
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Fixes: f81134163fc7 ("Input: i8042 - use platform_driver_probe")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Luo Meng <luomeng12@huawei.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20201123133420.4071187-1-luomeng12@huawei.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/spi/spi-bcm2835.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -792,18 +792,19 @@ static int bcm2835_spi_probe(struct plat
- 			       dev_name(&pdev->dev), master);
- 	if (err) {
- 		dev_err(&pdev->dev, "could not request IRQ: %d\n", err);
--		goto out_clk_disable;
-+		goto out_dma_release;
- 	}
+---
+ drivers/input/serio/i8042.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/drivers/input/serio/i8042.c
++++ b/drivers/input/serio/i8042.c
+@@ -1456,7 +1456,8 @@ static int __init i8042_setup_aux(void)
+ 	if (error)
+ 		goto err_free_ports;
  
- 	err = spi_register_master(master);
- 	if (err) {
- 		dev_err(&pdev->dev, "could not register SPI master: %d\n", err);
--		goto out_clk_disable;
-+		goto out_dma_release;
- 	}
+-	if (aux_enable())
++	error = aux_enable();
++	if (error)
+ 		goto err_free_irq;
  
- 	return 0;
- 
--out_clk_disable:
-+out_dma_release:
-+	bcm2835_dma_release(master);
- 	clk_disable_unprepare(bs->clk);
- 	return err;
- }
+ 	i8042_aux_irq_registered = true;
 
 
