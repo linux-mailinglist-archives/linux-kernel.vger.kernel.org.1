@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E112D53C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9662D53CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733258AbgLJGZY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Dec 2020 01:25:24 -0500
-Received: from smtp.h3c.com ([60.191.123.50]:27402 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733186AbgLJGZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:25:24 -0500
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam02-ex.h3c.com with ESMTP id 0BA6NNs7051288;
-        Thu, 10 Dec 2020 14:23:23 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 10 Dec 2020 14:23:25 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.2106.002; Thu, 10 Dec 2020 14:23:25 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>
-CC:     "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] [v2] blk-mq-tag: make blk_mq_tag_busy() return void
-Thread-Topic: [PATCH] [v2] blk-mq-tag: make blk_mq_tag_busy() return void
-Thread-Index: AQHWzroykh4+9vclPkq1LnwbeddRv6nv3B4Q
-Date:   Thu, 10 Dec 2020 06:23:24 +0000
-Message-ID: <bb610b2693ef4c71aedfc6559afe123b@h3c.com>
-References: <20201210055307.1024-1-tian.xianting@h3c.com>
- <BYAPR04MB4965FC5A5F69F18A1F0BB06486CB0@BYAPR04MB4965.namprd04.prod.outlook.com>
-In-Reply-To: <BYAPR04MB4965FC5A5F69F18A1F0BB06486CB0@BYAPR04MB4965.namprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S2387432AbgLJG3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:29:13 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:43367 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733306AbgLJG3N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 01:29:13 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1knFQ9-0005Ng-FX; Thu, 10 Dec 2020 07:27:21 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1knFQ8-0005gS-CG; Thu, 10 Dec 2020 07:27:20 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 3FCA8240041;
+        Thu, 10 Dec 2020 07:27:19 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id B3410240040;
+        Thu, 10 Dec 2020 07:27:18 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 0884B202DE;
+        Thu, 10 Dec 2020 07:27:18 +0100 (CET)
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 0BA6NNs7051288
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 10 Dec 2020 07:27:17 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v7 4/5] net/x25: fix restart request/confirm
+ handling
+Organization: TDT AG
+In-Reply-To: <CAJht_EPj-4bv6D=Ojz5KCbk0NTVfjRyEA3NmMw7etxrq8GKu8Q@mail.gmail.com>
+References: <20201126063557.1283-1-ms@dev.tdt.de>
+ <20201126063557.1283-5-ms@dev.tdt.de>
+ <CAJht_EMZqcPdE5n3Vp+jJa1sVk9+vbwd-Gbi8Xqy19bEdbNNuA@mail.gmail.com>
+ <CAJht_ENukJrnh6m8FLrHBwnKKyZpzk6uGWhS4_eUCyDzrCG3eA@mail.gmail.com>
+ <3e314d2786857cbd5aaee8b83a0e6daa@dev.tdt.de>
+ <CAJht_ENOhnS7A6997CAP5qhn10NMYSVD3xOxcbPGQFLGb8z_Sg@mail.gmail.com>
+ <CAJht_EPj-4bv6D=Ojz5KCbk0NTVfjRyEA3NmMw7etxrq8GKu8Q@mail.gmail.com>
+Message-ID: <458f89938c565b82fe30087fb33602b9@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.15
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate: clean
+X-purgate-ID: 151534::1607581641-00000FB8-BB3A271E/0/0
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, 
-Sorry, In V2. I missed it, so I sent v3 :)
+On 2020-12-09 23:11, Xie He wrote:
+> On Wed, Dec 9, 2020 at 1:47 AM Xie He <xie.he.0141@gmail.com> wrote:
+>> 
+>> On Wed, Dec 9, 2020 at 1:41 AM Martin Schiller <ms@dev.tdt.de> wrote:
+>> >
+>> > Right.
+>> > By the way: A "Restart Collision" is in practice a very common event to
+>> > establish the Layer 3.
+>> 
+>> Oh, I see. Thanks!
+> 
+> Hi Martin,
+> 
+> When you submit future patch series, can you try ensuring the code to
+> be in a completely working state after each patch in the series? This
+> makes reviewing the patches easier. After the patches get applied,
+> this also makes tracing bugs (for example, with "git bisect") through
+> the commit history easier.
 
------Original Message-----
-From: Chaitanya Kulkarni [mailto:Chaitanya.Kulkarni@wdc.com] 
-Sent: Thursday, December 10, 2020 2:21 PM
-To: tianxianting (RD) <tian.xianting@h3c.com>; axboe@kernel.dk
-Cc: ming.lei@redhat.com; linux-block@vger.kernel.org; linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] blk-mq-tag: make blk_mq_tag_busy() return void
+Well I thought that's what patch series are for:
+Send patches that belong together and should be applied together.
 
-On 12/9/20 22:06, Xianting Tian wrote:
-> As no one cares about the return value of blk_mq_tag_busy() and 
-> __blk_mq_tag_busy(), so make them return void.
->
-> Other change is to simplify blk_mq_tag_idle().
->
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> Reviewed-by: Ming Lei <ming.lei@redhat.com>
-> ---
->  block/blk-mq-tag.c |  4 ++--
->  block/blk-mq-tag.h | 16 ++++++----------
->  2 files changed, 8 insertions(+), 12 deletions(-)
->
-> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c index 
-> 9c92053e7..21ff7d156 100644
-> --- a/block/blk-mq-tag.c
-> +++ b/block/blk-mq-tag.c
-> @@ -21,7 +21,7 @@
->   * to get tag when first time, the other shared-tag users could reserve
->   * budget for it.
->   */
-> -bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
-> +void __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
->  {
->  	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
->  		struct request_queue *q = hctx->queue; @@ -36,7 +36,7 @@ bool 
-> __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
->  			atomic_inc(&hctx->tags->active_queues);
->  	}
->  
-> -	return true;
-> +	return;
-if above return is the last statement then you need to remove that instead of using return with no value.
+Of course I will try to make each patch work on its own, but this is not
+always possible with major changes or ends up in monster patches.
+And nobody wants that.
 
-Also, please add the version history.
+Martin
