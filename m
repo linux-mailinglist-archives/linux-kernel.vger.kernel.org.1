@@ -2,214 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57962D6448
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 263F02D6449
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392932AbgLJSAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:00:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
+        id S2392945AbgLJSA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:00:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390787AbgLJSAi (ORCPT
+        with ESMTP id S2390787AbgLJSAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 13:00:38 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBC2C061793
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:59:58 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id a12so9521057lfl.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:59:58 -0800 (PST)
+        Thu, 10 Dec 2020 13:00:50 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FE5C06179C
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 10:00:09 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id b10so5380911ljp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 10:00:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kSOS9gHQJjTmsLc8VDbsSjiQ/RzzRfDOewkmFTUJ9nA=;
-        b=Kxt/6OhE59pWJyW2ZQr+9XDZkp9Lg5lk3YGJO2hJ/iMzIxwVGXbRe6+uZji2XV3W/6
-         eaZlazRL4VCSMtd5bCHaSiHFvhZFJBDxSs6SSiruVbIZYzcIAnUiMaAhfFENp10Ys8rs
-         LjFaiY0iC6HeaQFkJ4mf7nA/zu3dmnvoamfeeJa+RcsInZBTN5wLmSVgw1rzUasRBvfi
-         eUzcIJimD7Juvsz0GA8cIAsVJ9sz982+E2YR0g58eknOW6uIW4OR4RdzfsvvoX0Wd57B
-         e69CJZtwFwqhXCTquurJTyEvnFGG7ok6Th2zMcMS51lKz76lCTzrHi2cXfd/6WtCyGGJ
-         v8NA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mQDKujR+0DMXhI8kbLJ9upg8lBZL3kVIZAc1oUCKXJc=;
+        b=Y2SGHNCcaLGFOdsI2EP5dhMWUVbfOdZXowXQHVEozuIFBK9AsiD9xHN1/N7Vozewaj
+         +Lgpwsg8YkryrHxfgEkeG9AqOact4ag8FERJIxCUvYeWWW1JsAkJrJE960XXY3r5Ppqz
+         auoeNguRkkKLmBZbIHSmR8NHHZcl5ZzcpUOV1WhuaD9JVRLaGYp/64n7jECE06GSRRMA
+         HzPu35kpMm5+Ai12YOi5ycZgMVkEzSS/0xrN10CMig480SM9U3+ebFuWC/88H1UXPm/7
+         FXNZVzIIhk4SizW7slatQpaeueEHeodicOOYCfYRaXSazfxMWNL853xuPwTciNQ/GB/h
+         3rMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kSOS9gHQJjTmsLc8VDbsSjiQ/RzzRfDOewkmFTUJ9nA=;
-        b=lI/9F7DQOw2qjZC2BuCnclLVE0h8mK/SmSi7reM74PedHmMZ+HlL2mWmVD644wdTWw
-         6fvE1EGQAsbGTsHSXfKTH4YEvPXrGyRaUr3iryBuwqNhyADhZk1S6s4yDTT1wHBEpKaj
-         tRCYIIl2fbmYVjqe5POqhaBWUqVLlDkc/oqIUC4TFeQAMCes5hRiFBWxS4bdBJUoKkbO
-         KqhO8FxVyx10mIuYxnKT0cXuJ+lEkawONfRfhuN5M650W6uGfNkk4PXEGONz01b4VmzH
-         kUSb9pkJXCZT7VgjA/xxIPJFrFcKzh6GBSNpLNSm3uBtH0/PZX9UCXUDwB5j6A3UCJxK
-         2ebw==
-X-Gm-Message-State: AOAM5331nsO/ktTaWIo7klJcE66V4+eLoPLSQ6EkquJ8BHCb3bQqWR13
-        b72pzxK7bVKPMoLGHEzGldewJcZ0+4BghwRfZxEVRA==
-X-Google-Smtp-Source: ABdhPJyC+V/aSG0layoljUptKcm8GaCP6ReUaXdlOAMHzGjDdVVWdZ/1X7eeSfQThNFvCdMJG0M4dBbsRPsBSBWk3Yg=
-X-Received: by 2002:ac2:4c8e:: with SMTP id d14mr2983701lfl.411.1607623196388;
- Thu, 10 Dec 2020 09:59:56 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mQDKujR+0DMXhI8kbLJ9upg8lBZL3kVIZAc1oUCKXJc=;
+        b=FYuw0v3UtciAdUNv4ddxpzAHTPtAngQSKmaxTCwfsPIOq8WVJ4uwi/4dCBk9ykE3tm
+         eNbyXlp3pMT2XXeBpQuzXgBAiWEokwUn7AEd+Bjjis/gCdJy7Vo+taMH86HIPfGkVoQA
+         lFYBYKJeqyvPsROPG+2xBThcOZLHTSzZ5O9qNOwUJceg26KGlvyHYW+MbaCSFhaSQ1vv
+         C6vY2g1NH0V4RwwuuJFks50xrWUc3D90tZi96JiW77zYVJt5Mr+i35aD8F/eubczQ1Zp
+         fJimASCsa3Rq4utbxzuRPVHW+f8loWA70KneWuhT71oObDkdqoYCP7QQxqxyB7PggU0m
+         I7tw==
+X-Gm-Message-State: AOAM5305in0PLNge12IqOTbPa8i71pEI2pqcfh2qMjXBPwC2xhhjxxtw
+        mogaOSjvCXsy8JLk8Qed8kjnoc95DskaAsFS
+X-Google-Smtp-Source: ABdhPJzBHEtZXQH0iFqk3Tj+guS2CdszXEEmlw0IxtyFSpzYlR/dcamqRkF2gaPOCSdp3y8mqGakig==
+X-Received: by 2002:a2e:50c:: with SMTP id 12mr3569690ljf.226.1607623208452;
+        Thu, 10 Dec 2020 10:00:08 -0800 (PST)
+Received: from localhost.bredbandsbolaget (c-92d7225c.014-348-6c756e10.bbcust.telenor.se. [92.34.215.146])
+        by smtp.gmail.com with ESMTPSA id x22sm432585lfe.277.2020.12.10.10.00.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 10:00:07 -0800 (PST)
+From:   Linus Walleij <linus.walleij@linaro.org>
+To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH] mfd: ab8500: Drop bm disable parameter
+Date:   Thu, 10 Dec 2020 19:00:03 +0100
+Message-Id: <20201210180003.2447251-1-linus.walleij@linaro.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <9389c1198da174bcc9483d6ebf535405aa8bdb45.camel@redhat.com> <E4F263BE-6CAA-4152-8818-187D34D8D0FD@amacapital.net>
-In-Reply-To: <E4F263BE-6CAA-4152-8818-187D34D8D0FD@amacapital.net>
-From:   Oliver Upton <oupton@google.com>
-Date:   Thu, 10 Dec 2020 11:59:44 -0600
-Message-ID: <CAOQ_QshW0UvwSS3TUCK5PxkLQhHTqDNXNeMxwVDyf+DXc23fXQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 9:16 AM Andy Lutomirski <luto@amacapital.net> wrote=
-:
->
->
->
-> > On Dec 10, 2020, at 6:52 AM, Maxim Levitsky <mlevitsk@redhat.com> wrote=
-:
-> >
-> > =EF=BB=BFOn Thu, 2020-12-10 at 12:48 +0100, Paolo Bonzini wrote:
-> >>> On 08/12/20 22:20, Thomas Gleixner wrote:
-> >>> So now life migration comes a long time after timekeeping had set the
-> >>> limits and just because it's virt it expects that everything works an=
-d it
-> >>> just can ignore these limits.
-> >>>
-> >>> TBH. That's not any different than SMM or hard/firmware taking the
-> >>> machine out for lunch. It's exactly the same: It's broken.
-> >>
-> >> I agree.  If *live* migration stops the VM for 200 seconds, it's broke=
-n.
-> >>
-> >> Sure, there's the case of snapshotting the VM over the weekend.  My
-> >> favorite solution would be to just put it in S3 before doing that.  *D=
-o
-> >> what bare metal does* and you can't go that wrong.
-> >
-> > Note though that qemu has a couple of issues with s3, and it is disable=
-d
-> > by default in libvirt.
-> > I would be very happy to work on improving this if there is a need for =
-that.
->
-> There=E2=80=99s also the case where someone has a VM running on a laptop =
-and someone closes the lid. The host QEMU might not have a chance to convin=
-ce the guest to enter S3.
->
-> >
-> >
-> >>
-> >> In general it's userspace policy whether to keep the TSC value the sam=
-e
-> >> across live migration.  There's pros and cons to both approaches, so K=
-VM
-> >> should provide the functionality to keep the TSC running (which the
-> >> guest will see as a very long, but not extreme SMI), and this is what
-> >> this series does.  Maxim will change it to operate per-VM.  Thanks
-> >> Thomas, Oliver and everyone else for the input.
+Nobody is passing the module parameter to disable the
+battery management portions so just drop this parameter.
 
-So, to be clear, this per-VM ioctl will work something like the following:
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/mfd/ab8500-core.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
 
-static u64 kvm_read_tsc_base(struct kvm *kvm, u64 host_tsc)
-{
-        return kvm_scale_tsc(kvm, host_tsc) + kvm->host_tsc_offset;
-}
+diff --git a/drivers/mfd/ab8500-core.c b/drivers/mfd/ab8500-core.c
+index 3b2276f04a98..f63a8e51d0e4 100644
+--- a/drivers/mfd/ab8500-core.c
++++ b/drivers/mfd/ab8500-core.c
+@@ -121,12 +121,6 @@
+ static DEFINE_SPINLOCK(on_stat_lock);
+ static u8 turn_on_stat_mask = 0xFF;
+ static u8 turn_on_stat_set;
+-static bool no_bm; /* No battery management */
+-/*
+- * not really modular, but the easiest way to keep compat with existing
+- * bootargs behaviour is to continue using module_param here.
+- */
+-module_param(no_bm, bool, S_IRUGO);
+ 
+ #define AB9540_MODEM_CTRL2_REG			0x23
+ #define AB9540_MODEM_CTRL2_SWDBBRSTN_BIT	BIT(2)
+@@ -1255,14 +1249,12 @@ static int ab8500_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (!no_bm) {
+-		/* Add battery management devices */
+-		ret = mfd_add_devices(ab8500->dev, 0, ab8500_bm_devs,
+-				      ARRAY_SIZE(ab8500_bm_devs), NULL,
+-				      0, ab8500->domain);
+-		if (ret)
+-			dev_err(ab8500->dev, "error adding bm devices\n");
+-	}
++	/* Add battery management devices */
++	ret = mfd_add_devices(ab8500->dev, 0, ab8500_bm_devs,
++			      ARRAY_SIZE(ab8500_bm_devs), NULL,
++			      0, ab8500->domain);
++	if (ret)
++		dev_err(ab8500->dev, "error adding bm devices\n");
+ 
+ 	if (((is_ab8505(ab8500) || is_ab9540(ab8500)) &&
+ 			ab8500->chip_id >= AB8500_CUT2P0) || is_ab8540(ab8500))
+-- 
+2.26.2
 
-case KVM_GET_TSC_BASE:
-        struct kvm_tsc_base base =3D {
-                .flags =3D KVM_TSC_BASE_TIMESTAMP_VALID;
-        };
-        u64 host_tsc;
-
-        kvm_get_walltime(&base.nsec, &host_tsc);
-        base.tsc =3D kvm_read_tsc_base(kvm, host_tsc);
-
-        copy_to_user(...);
-
-[...]
-
-case KVM_SET_TSC_BASE:
-        struct kvm_tsc_base base;
-        u64 host_tsc, nsec;
-        s64 delta =3D 0;
-
-        copy_from_user(...);
-
-        kvm_get_walltime(&nsec, &host_tsc);
-        delta +=3D base.tsc - kvm_read_tsc_base(kvm, host_tsc);
-
-        if (base.flags & KVM_TSC_BASE_TIMESTAMP_VALID) {
-                u64 delta_nsec =3D nsec - base.nsec;
-
-                if (delta_nsec > 0)
-                        delta +=3D nsec_to_cycles(kvm, diff);
-                else
-                        delta -=3D nsec_to_cycles(kvm, -diff);
-        }
-
-        kvm->host_tsc_offset +=3D delta;
-        /* plumb host_tsc_offset through to each vcpu */
-
-However, I don't believe we can assume the guest's TSCs to be synchronized,
-even if sane guests will never touch them. In this case, I think a per-vCPU
-ioctl is still warranted, allowing userspace to get at the guest CPU adjust
-component of Thomas' equation below (paraphrased):
-
-        TSC guest CPU =3D host tsc base + guest base offset + guest CPU adj=
-ust
-
-Alternatively, a write from userspace to the guest's IA32_TSC_ADJUST with
-KVM_X86_QUIRK_TSC_HOST_ACCESS could have the same effect, but that seems to=
- be
-problematic for a couple reasons. First, depending on the guest's CPUID the
-TSC_ADJUST MSR may not even be available, meaning that the guest could've u=
-sed
-IA32_TSC to adjust the TSC (eww). Second, userspace replaying writes to IA3=
-2_TSC
-(in the case IA32_TSC_ADJUST doesn't exist for the guest) seems _very_
-unlikely to work given all the magic handling that KVM does for
-writes to it.
-
-Is this roughly where we are or have I entirely missed the mark? :-)
-
---
-Thanks,
-Oliver
-
-> >
-> > I agree with that.
-> >
-> > I still think though that we should have a discussion on feasibility
-> > of making the kernel time code deal with large *forward* tsc jumps
-> > without crashing.
-> >
-> > If that is indeed hard to do, or will cause performance issues,
-> > then I agree that we might indeed inform the guest of time jumps instea=
-d.
-> >
->
-> Tglx, even without fancy shared host/guest timekeeping, count the guest k=
-ernel manage to update its timekeeping if the host sent the guest an interr=
-upt or NMI on all CPUs synchronously on resume?
->
-> Alternatively, if we had the explicit =E2=80=9Cmax TSC value that makes s=
-ense right now=E2=80=9D in the timekeeping data, the guest would reliably n=
-otice the large jump and could at least do something intelligent about it i=
-nstead of overflowing its internal calculation.
