@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED602D62E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1472D62F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392468AbgLJRCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:02:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56132 "EHLO
+        id S2390928AbgLJREU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:04:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391956AbgLJRBz (ORCPT
+        with ESMTP id S1731566AbgLJREF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:01:55 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB19FC061793
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:01:15 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id d189so6442083oig.11
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:01:15 -0800 (PST)
+        Thu, 10 Dec 2020 12:04:05 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91313C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:03:25 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id n142so5437382qkn.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:03:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=U0QCNM5KhsFPlcnPsOFo/BoOZiFJluT00PipTNkVB0Y=;
-        b=td1A1r7g1wq1i9r6xaID8Yi6bJNgXJbquHv8nB4OfmOy3HXX3w9UPiCDKtQ+UrLTrs
-         avsd39ECJheH9OQAgScvpcItddmYCeaj0Nc5Ft4VLxFCl8ZlNNHhSgvhNEGFnaorY5W4
-         xdc2fruQfQMPsq51qbmFD1+Lqq0xTO1w5ZM9Fsh+f4s1rxJ+xNQH0gNDd8Vsm4hOfMSL
-         qFQ5+emolKF5RbQXCdAB7V/AIwPubikcAuaKS5BPMYvqopIoGyx9/vvSHmxs865dNl1v
-         EOARcUaSAR9PNw5AuoxS9UE7P/GMw5GBO53S7+WnRMn2qhqo5Yj8GwXcCDVpPY9TV3Kw
-         A3nQ==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sUTklf9jBEwzs6UhWeShzolt35srKpXJ+Aec/2jQSUU=;
+        b=h/WaKNT1y3XBZzgswgsh3Ixjw2N5x/28mj80swAvklzGIkVrj6MJ8wuNisjEyktydT
+         zCseyjCchbMSPmxaGGplDZeJZGmP5oyuuVuXTxCHsGpXk0qls2m66qjTPGaKUsL8ZRao
+         pG1Gub5CnI64JSe7Y7ezFsY7qfQdgeOGSHy9txvrSC33WOO2k81hdMm/P+2raMibY7v9
+         fJHm6P4C0LRQcU3U5FIZ0KPx7ZPzEHxNce551WR814F2jYgp0wq9R/aJ9NcE8kgU8u2e
+         QyaXhCI11vcVH6ukyAI3qKqvg5kI9bv6rPVXMAlpIk9CUlSY5f7ETZmBRFKsxQ/oRgfO
+         7ZoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=U0QCNM5KhsFPlcnPsOFo/BoOZiFJluT00PipTNkVB0Y=;
-        b=mtrEEiFvCPj/3aIzFaFrEeiNiru7X7WklN5VguCZzL4immXNtHeo8OiEFatkdMjKyj
-         Ul5V4l1lnvLbxHkM2JkvLtotIb9b9NPI523YuVGnDBOX50FrYmmhMdXPKxqDpiIEp6IC
-         iFc9KgIfslVCtBMs8wunIukNdU3JdO9ux6ABwGZ0ZQwBoYezmstl03Z7rFcsq2yoXL5t
-         wB0uCpB0vILkoqrx3xvicctZo1onMEm6EBNxkhKBe6+tsboTDCnsMpqae+obIaMDgnhc
-         m2snuxAcJlraafwQAz6wRF8UKGeNDa/zz3uoK5oSSIJ9WO2yoB/pujj6mvg22AJ+Aq2K
-         cpVw==
-X-Gm-Message-State: AOAM5310Q6+qMxYXJUyuPYuQStKR3nA6RQjxksRVma1WPm4RyCudI7FS
-        HVapmw3icB31PjCiDSWpnc1kDCzzlVTxPKQYO2gn7B1S
-X-Received: by 2002:aca:44d:: with SMTP id 74mt6873790oie.4.1607619675083;
- Thu, 10 Dec 2020 09:01:15 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sUTklf9jBEwzs6UhWeShzolt35srKpXJ+Aec/2jQSUU=;
+        b=HVIGrNAvp33NXQ00xMCtks2/51p8PkKgHQ09qc3dQNATACQbHmN3TDwffCfBvSu7FR
+         3ky0r6OmGfWMbQOwBxFTxRBag//bMKdHt5M1i+CRTatG4piLFoWt22U1oumIBEh3vWyt
+         cwVC9vNR86ikIvMECN3GDpIpjqHiWIATe4EMIlCiCJP23vEomUcc9l3bX1yHFvmqeNz1
+         S2GxnDxPyLgzYzxJr7Ze34sFmkReMOeSDxoTx3TplOa29FLq+U1K/LbS4CQrZft+ogTT
+         qU4JSpU6aInotUIxo0GDPYZ4QQT5P1bDor8zpm5zWLbqituutplwn5UnLy4Hmz8VJVLR
+         d3zA==
+X-Gm-Message-State: AOAM5328XhiLjhlao81uShBx04o+mC37G0aHAJK+d99teIDOnOSpOWO6
+        aO6r+USm1VYmqzTBscZZMiuXPQ==
+X-Google-Smtp-Source: ABdhPJymXAQH/aw0VSr4+J5MsG5kd52DH5BGq1ZaXwLD+lvifpGCtkGDCg1EXTpttoD9CP3doaPF0g==
+X-Received: by 2002:a37:bac7:: with SMTP id k190mr10524292qkf.464.1607619804657;
+        Thu, 10 Dec 2020 09:03:24 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id y22sm3789944qkj.129.2020.12.10.09.03.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 09:03:23 -0800 (PST)
+Subject: Re: [dm-devel] [PATCH v1 0/5] dm: dm-user: New target that proxies
+ BIOs to userspace
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     snitzer@redhat.com, corbet@lwn.net, kernel-team@android.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, song@kernel.org, dm-devel@redhat.com,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org, agk@redhat.com,
+        Mike Christie <michael.christie@oracle.com>
+References: <mhng-97fc5874-29d0-4d9e-8c92-d3704a482f28@palmerdabbelt-glaptop1>
+ <6fb5be2d-c6ca-c21b-dddf-9b314973dcfe@acm.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <30d39293-80a4-9ef5-92bb-6b6dec464be3@toxicpanda.com>
+Date:   Thu, 10 Dec 2020 12:03:21 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201207084616.411531-1-conmanx360@gmail.com> <20201207084616.411531-3-conmanx360@gmail.com>
-In-Reply-To: <20201207084616.411531-3-conmanx360@gmail.com>
-From:   Connor McAdams <conmanx360@gmail.com>
-Date:   Thu, 10 Dec 2020 12:01:04 -0500
-Message-ID: <CAM8Agx1wF4W=wQuod5-awNzOppe-4h2xD-h4EDZFoaD0pxd0bw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ALSA: hda/ca0132 - Unmute surround when speaker
- output is selected.
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        ALSA development <alsa-devel@alsa-project.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <6fb5be2d-c6ca-c21b-dddf-9b314973dcfe@acm.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apologies, this patch seems to be a mistake.
+On 12/9/20 10:38 PM, Bart Van Assche wrote:
+> On 12/7/20 10:55 AM, Palmer Dabbelt wrote:
+>> All in all, I've found it a bit hard to figure out what sort of interest
+>> people
+>> have in dm-user: when I bring this up I seem to run into people who've done
+>> similar things before and are vaguely interested, but certainly nobody is
+>> chomping at the bit.  I'm sending it out in this early state to try and
+>> figure
+>> out if it's interesting enough to keep going.
+> 
+> Cc-ing Josef and Mike since their nbd contributions make me wonder
+> whether this new driver could be useful to their use cases?
+> 
 
-I don't know why I thought this was the case.
+Sorry gmail+imap sucks and I can't get my email client to get at the original 
+thread.  However here is my take.
 
-On Mon, Dec 7, 2020 at 3:46 AM Connor McAdams <conmanx360@gmail.com> wrote:
->
-> Make sure GPIO pin for surround channel mute is set to 0 when speaker
-> output is selected.
->
-> Signed-off-by: Connor McAdams <conmanx360@gmail.com>
-> ---
->  sound/pci/hda/patch_ca0132.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-> index 793dc5d501a5..6d647d461eab 100644
-> --- a/sound/pci/hda/patch_ca0132.c
-> +++ b/sound/pci/hda/patch_ca0132.c
-> @@ -1390,7 +1390,7 @@ static const struct ca0132_alt_out_set_quirk_data quirk_out_set_data[] = {
->                   .has_hda_gpio     = false,
->                   .mmio_gpio_count  = 3,
->                   .mmio_gpio_pin    = { 2, 3, 5 },
-> -                 .mmio_gpio_set    = { 1, 1, 0 },
-> +                 .mmio_gpio_set    = { 1, 0, 0 },
->                   .scp_cmds_count   = 0,
->                   .has_chipio_write = false,
->                 },
-> --
-> 2.25.1
->
+1) The advantages of using dm-user of NBD that you listed aren't actually 
+problems for NBD.  We have NBD working in production where you can hand off the 
+sockets for the server without ending in timeouts, it was actually the main 
+reason we wrote our own server so we could use the FD transfer stuff to restart 
+the server without impacting any clients that had the device in use.
+
+2) The extra copy is a big deal, in fact we already have too many copies in our 
+existing NBD setup and are actively looking for ways to avoid those.
+
+Don't take this as I don't think dm-user is a good idea, but I think at the very 
+least it should start with the very best we have to offer, starting with as few 
+copies as possible.
+
+If you are using it currently in production then cool, there's clearly a usecase 
+for it.  Personally as I get older and grouchier I want less things in the 
+kernel, so if this enables us to eventually do everything NBD related in 
+userspace with no performance drop then I'd be down.  I don't think you need to 
+make that your primary goal, but at least polishing this up so it could 
+potentially be abused in the future would make it more compelling for merging. 
+Thanks,
+
+Josef
