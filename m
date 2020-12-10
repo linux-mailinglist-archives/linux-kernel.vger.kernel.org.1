@@ -2,66 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738382D5AF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7472D5AFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387959AbgLJMvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 07:51:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54914 "EHLO mx2.suse.de"
+        id S2388345AbgLJMym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 07:54:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731240AbgLJMvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:51:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 84AFEACF4;
-        Thu, 10 Dec 2020 12:50:31 +0000 (UTC)
-Message-ID: <1607604631.22066.41.camel@suse.cz>
-Subject: Re: linux-next: Signed-off-by missing for commit in the tip tree
-From:   Giovanni Gherdovich <ggherdovich@suse.cz>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Date:   Thu, 10 Dec 2020 13:50:31 +0100
-In-Reply-To: <20201210215210.2c432324@canb.auug.org.au>
-References: <20201210215210.2c432324@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1733191AbgLJMya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 07:54:30 -0500
+Date:   Thu, 10 Dec 2020 13:55:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607604830;
+        bh=gtqICGnsvOHitJ+qiT1LDw6ed/QH/+lGYZQH8qRXoqI=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WPfcBZx7Z1JquJ69v007RmtZtwB8tKa1oBqTdCU+tt0bnnPaH8rexkQVxiB9CuEG9
+         zyShvqhCLw0HFkGcrkDjsIVw3iQ5GnVZZOz86lmI8FUIxiXKe0ZQ5Aru434oDqxmRt
+         OogMivKa0jVQkeZWozG0TItmfUbFDv8wuUQFGooc=
+From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+Cc:     'Rob Herring' <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
+Subject: Re: [PATCH v1 1/2] Staging: silabs si4455 serial driver: fix
+ directory structure and coding style
+Message-ID: <X9Iaqd8cb7xBAI7S@kroah.com>
+References: <20201210122057.GA31782@dincontrollerdev>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201210122057.GA31782@dincontrollerdev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-10 at 21:52 +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Commit
-> 
->   46609527577d ("x86, sched: Use midpoint of max_boost and max_P for frequency invariance on AMD EPYC")
-> 
-> is missing a Signed-off-by from its author.
-> 
+On Thu, Dec 10, 2020 at 12:20:59PM +0000, József Horváth wrote:
+> fix: coding style
+> fix: error checking
+> remove: doc silabs,si4455.txt
 
-Hello,
+What does all of this mean?
 
-I'm the author of that commit and the missing Signed-off-by is not intentional but
-due to a mistake I made. I used the string "------------" in the commit message and
-git interpreted it as "drop everything from here onwards", including the
-Signed-off-by.
+Please read the documentation for how to write an effective changelog
+text, and where to put the "changes from the first version" text at.
 
-According to the maintainer's preference, I agree to either them adding
+thanks,
 
-  Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
-
-or to resend them the patch with a better commit message if they prefer.
-
-
-Sorry for the inconvenience,
-Giovanni Gherdovich
-
-
-
-
+greg k-h
