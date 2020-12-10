@@ -2,128 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26B82D68C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD3F2D68CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393813AbgLJUc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 15:32:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729218AbgLJUcz (ORCPT
+        id S2404556AbgLJUfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 15:35:41 -0500
+Received: from ale.deltatee.com ([204.191.154.188]:48742 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393790AbgLJUf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 15:32:55 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D0BC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 12:32:15 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id q8so8183395ljc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 12:32:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JXo/6yTnw0lOEukdPOuRfdTJttQHVNIkXPnDWTx3kM0=;
-        b=HGsT2Yjjbr3Pxl7MzGsWp0SS0cjFS+GQryFOo6Lk1X5kNAeR2vY2iVaCfOTeZzijOG
-         l5CJ9g6YXwnlNlHjwxs+3n9sMi/xOub+CeiNGC5spwOY5u/qfB99lwDLiASZ1e0OyKsO
-         fW8878uS4rE3xZsP/SztjL2q9Po55Tvu4ycUKsHoN7L0IvHuEGXlWLyPNK2kPvQBmD0w
-         Hnc+cJePa4FoyzPRxMnD9Cd9ko1VLbkKB3i3Y6VJADx29zXZPTzRcVmDtlNET+OtkdR5
-         6jBWeqoSOXWl4aJixDS9oF9c5+f/YWPMiI0zaqAYxpFjGJWkzzNFqCDzMy9tubCDPikj
-         l66A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JXo/6yTnw0lOEukdPOuRfdTJttQHVNIkXPnDWTx3kM0=;
-        b=QDC1ACOq8QmR4d4ihaDFo6QU//bbg913acg7li88WHUZivSMqgZ80l/UN67EYwrd0G
-         VWLtCfM3EEqQ0fqlzMEDFo/j/JPWQmliFwLVN4t9CW41g6yInw9GNI0uj6+FltX9PKE8
-         G6EomNF3ea1l7jqwNOiDV1VwBe0cVkyw3LMUXAUczW5W6/KOG93NOsQwBGaAiIfbWLNo
-         dntCplOoeUcARc+0hO6xBkL4OfK5BgeSZJ3a0a7zjGMBKBOZAyb2F2Ao8dv59jf+sDAt
-         q8SQgHqXj1r8cJR2MDsdHsIuFxPvjabG7gW8n+Ux0JDUt7aQELcX/FMXp8KaaVcbirHo
-         Lrcw==
-X-Gm-Message-State: AOAM533xCdBDbeguRxuOGWT+UvH8jm4KZIZSqlVTqEtvG3m3jNY7LjAj
-        WggWKsYYfmJ4B2DNpFlq7ngq6Q==
-X-Google-Smtp-Source: ABdhPJwftCg+aMmbLa5OTXlhY7xSWcgK4L9HnLiOYnFNtFo2GlluWUqTS3bC3zH8Vw/NaqK2pvjHdw==
-X-Received: by 2002:a2e:93cd:: with SMTP id p13mr3573414ljh.205.1607632333596;
-        Thu, 10 Dec 2020 12:32:13 -0800 (PST)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id n10sm721868ljg.139.2020.12.10.12.32.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 12:32:13 -0800 (PST)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 2/2] usb: dwc3: drd: Avoid error when extcon is missing
-Date:   Thu, 10 Dec 2020 22:33:18 +0200
-Message-Id: <20201210203318.6914-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Thu, 10 Dec 2020 15:35:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=noa+454Phd4GD+cflUApEkbCBzQWdQM9xVdZ/BdtqiE=; b=ommLdATmScZCO3Nr0B0IKtaBD0
+        EKrjnXBUtbfueazgUtm6VU6b3S0wYy6KVx4WAtwNJ/AqnjHK72Gy9Jsmxppzw/gnUhc4xUowZeQ7A
+        VcHLuqMKttCxw8ez7I7uwmRr5QxGnTAmGxi8uXmfqMPsZhh7JjrJm5C+6KJYTWYREg/IlUxXKnLyU
+        oiYCxI5xB8TP98NfY73pg38uPmgt4JkWMiii1mD9wV9ZT2fBKdzZ4FLSmo62RegEoh6XSnUbSd6AH
+        TQacvQpLTj7RMyXxinaZaJU5rRKy+bJdREoJnd68m2upWyg2kGwzuZR1wf8InfiqQYZmWP3SPWvYA
+        gjpGnwDw==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1knSdJ-0002Fm-25; Thu, 10 Dec 2020 13:33:50 -0700
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-pci@vger.kernel.org,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194044.255887860@linutronix.de>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <3526d997-a629-9843-7060-78d9e0a487c5@deltatee.com>
+Date:   Thu, 10 Dec 2020 13:33:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201210194044.255887860@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: xen-devel@lists.xenproject.org, sstabellini@kernel.org, jgross@suse.com, boris.ostrovsky@oracle.com, leon@kernel.org, saeedm@nvidia.com, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, kuba@kernel.org, davem@davemloft.net, tariqt@nvidia.com, Zhiqiang.Hou@nxp.com, m.karthikeyan@mobiveil.co.in, linux-pci@vger.kernel.org, michal.simek@xilinx.com, bhelgaas@google.com, robh@kernel.org, lorenzo.pieralisi@arm.com, lee.jones@linaro.org, linux-gpio@vger.kernel.org, linus.walleij@linaro.org, tvrtko.ursulin@linux.intel.com, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, wambui.karugax@gmail.com, chris@chris-wilson.co.uk, pankaj.laxminarayan.bharadiya@intel.com, daniel@ffwll.ch, airlied@linux.ie, rodrigo.vivi@intel.com, joonas.lahtinen@linux.intel.com, jani.nikula@linux.intel.com, linux-s390@vger.kernel.org, hca@linux.ibm.com, borntraeger@de.ibm.com, will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk, linux-parisc@vger.kernel.org, afzal.mohd.ma@gmail.com, deller@gmx.de, James.Bottomley@HansenPartnership.com, linux-ntb@googlegroups.com, allenbh@gmail.com, dave.jiang@intel.com, jdmason@kudzu.us, maz@kernel.org, peterz@infradead.org, linux-kernel@vger.kernel.org, tglx@linutronix.de
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [patch 17/30] NTB/msi: Use irq_has_action()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If "port" node is missing in PHY controller node, dwc3_get_extcon()
-isn't able to find extcon device. This is perfectly fine in case when
-"usb-role-switch" or OTG is used, but next misleading error message is
-printed in that case, from of_graph_get_remote_node():
 
-    OF: graph: no port node found in /phy@1234abcd
 
-Avoid printing that message by checking if port node exists in PHY node
-before calling of_graph_get_remote_node().
+On 2020-12-10 12:25 p.m., Thomas Gleixner wrote:
+> Use the proper core function.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Jon Mason <jdmason@kudzu.us>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Allen Hubbe <allenbh@gmail.com>
+> Cc: linux-ntb@googlegroups.com
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
- drivers/usb/dwc3/drd.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+Looks good to me.
 
-diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
-index 3e1c1aacf002..eaf389d3f3c5 100644
---- a/drivers/usb/dwc3/drd.c
-+++ b/drivers/usb/dwc3/drd.c
-@@ -441,8 +441,8 @@ static int dwc3_drd_notifier(struct notifier_block *nb,
- static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
- {
- 	struct device *dev = dwc->dev;
--	struct device_node *np_phy, *np_conn;
--	struct extcon_dev *edev;
-+	struct device_node *np_phy;
-+	struct extcon_dev *edev = NULL;
- 	const char *name;
- 
- 	if (device_property_read_bool(dev, "extcon"))
-@@ -462,15 +462,22 @@ static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
- 		return edev;
- 	}
- 
-+	/*
-+	 * Try to get extcon device from USB PHY controller's "port" node.
-+	 * Check if it has the "port" node first, to avoid printing the error
-+	 * message from underlying code, as it's a valid case: extcon device
-+	 * (and "port" node) may be missing in case of "usb-role-switch" or OTG
-+	 * mode.
-+	 */
- 	np_phy = of_parse_phandle(dev->of_node, "phys", 0);
--	np_conn = of_graph_get_remote_node(np_phy, -1, -1);
-+	if (of_graph_is_present(np_phy)) {
-+		struct device_node *np_conn;
- 
--	if (np_conn)
--		edev = extcon_find_edev_by_node(np_conn);
--	else
--		edev = NULL;
--
--	of_node_put(np_conn);
-+		np_conn = of_graph_get_remote_node(np_phy, -1, -1);
-+		if (np_conn)
-+			edev = extcon_find_edev_by_node(np_conn);
-+		of_node_put(np_conn);
-+	}
- 	of_node_put(np_phy);
- 
- 	return edev;
--- 
-2.27.0
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 
+> ---
+>  drivers/ntb/msi.c |    4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> --- a/drivers/ntb/msi.c
+> +++ b/drivers/ntb/msi.c
+> @@ -282,15 +282,13 @@ int ntbm_msi_request_threaded_irq(struct
+>  				  struct ntb_msi_desc *msi_desc)
+>  {
+>  	struct msi_desc *entry;
+> -	struct irq_desc *desc;
+>  	int ret;
+>  
+>  	if (!ntb->msi)
+>  		return -EINVAL;
+>  
+>  	for_each_pci_msi_entry(entry, ntb->pdev) {
+> -		desc = irq_to_desc(entry->irq);
+> -		if (desc->action)
+> +		if (irq_has_action(entry->irq))
+>  			continue;
+>  
+>  		ret = devm_request_threaded_irq(&ntb->dev, entry->irq, handler,
+> 
