@@ -2,140 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 658BE2D5F5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 875622D5F69
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390276AbgLJPSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:18:45 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:35045 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgLJPSZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:18:25 -0500
-Received: by mail-ot1-f68.google.com with SMTP id i6so5183770otr.2;
-        Thu, 10 Dec 2020 07:18:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=O6n7jCHfQ+L1qVvvcr1LJS/+RzxlJbGuk5+PoiQLbfo=;
-        b=IuAD9pvKoHs3sO05F4JiMMPPJPhSloAYpUcqFK7H9doMegUoutTOTd2dJj2B0VK6mu
-         jEq8toVSi8Z+zsqVTXRxoj60OFpXh4jIc9T/4pru7D4EtmfWe8aiVaciree/BK//rXWk
-         OphudTT7jD/UbROT464fetbcfOirciuSlXHCDa/ttPFYXJP8JSqL9wMJ1kRn5xFlIYpj
-         m0MlpuWNWXxunjIH7pej8fBunbo4GFhwI4xDqtfNgHN8C9ygt7D8OhM6VJVBRcL27bXy
-         6aDZ+hZzZpQsqe69RlbTj1wfKr3r6irCoEqgpzzWrSHHWy7nhMvd3ohKVnGGtNhVWX1b
-         CEcw==
-X-Gm-Message-State: AOAM531v0Re5/E8Bskn/pSURR57kHJzQzH493Z7kZQThv7fLKfWND83e
-        2/5lkRvtVmHC+xLRevAZlQ==
-X-Google-Smtp-Source: ABdhPJwyb/xhH+0OyUj6AU27XEtLESyKVPtbcYD43ujDXmX8TaRR9xvrY3dQrEtCnYQ9LCCYME9UJQ==
-X-Received: by 2002:a9d:2287:: with SMTP id y7mr6025156ota.137.1607613464641;
-        Thu, 10 Dec 2020 07:17:44 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t26sm469138otm.17.2020.12.10.07.17.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 07:17:43 -0800 (PST)
-Received: (nullmailer pid 2522050 invoked by uid 1000);
-        Thu, 10 Dec 2020 15:17:42 -0000
-Date:   Thu, 10 Dec 2020 09:17:42 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     cy_huang <u0084500@gmail.com>
-Cc:     lee.jones@linaro.org, cy_huang@richtek.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] regulator: rt4831: Adds DT binding document for
- Richtek RT4831 DSV regulator
-Message-ID: <20201210151742.GB2518014@robh.at.kernel.org>
-References: <1607442886-13046-1-git-send-email-u0084500@gmail.com>
- <1607442886-13046-3-git-send-email-u0084500@gmail.com>
+        id S2389984AbgLJPTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:19:15 -0500
+Received: from relay.sw.ru ([185.231.240.75]:58460 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726090AbgLJPTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:19:03 -0500
+Received: from [192.168.15.68]
+        by relay3.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1knNhZ-00CZ4E-Tz; Thu, 10 Dec 2020 18:17:54 +0300
+Subject: Re: [PATCH 6/9] mm: vmscan: use per memcg nr_deferred of shrinker
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Yang Shi <shy828301@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>, Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201202182725.265020-1-shy828301@gmail.com>
+ <20201202182725.265020-7-shy828301@gmail.com>
+ <49464720-675d-5144-043c-eba6852a9c06@virtuozzo.com>
+ <CAHbLzkoiTmNLXj1Tx0-PggEdcYQ6nj71DUX3ya6mj3VNZ5ho4A@mail.gmail.com>
+ <d5454f6d-6739-3252-fba0-ac39c6c526c4@virtuozzo.com>
+ <CAHbLzkqu5X-kFKt1vWYc8U=fK=NBWauP-=Kz+A9=GUuQ32+gAQ@mail.gmail.com>
+ <20201210151331.GD264602@cmpxchg.org>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <6ffd6aa1-2c55-f4d3-a60a-56786d40531a@virtuozzo.com>
+Date:   Thu, 10 Dec 2020 18:17:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607442886-13046-3-git-send-email-u0084500@gmail.com>
+In-Reply-To: <20201210151331.GD264602@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 11:54:45PM +0800, cy_huang wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
+On 10.12.2020 18:13, Johannes Weiner wrote:
+> On Wed, Dec 09, 2020 at 09:32:37AM -0800, Yang Shi wrote:
+>> On Wed, Dec 9, 2020 at 7:42 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>>>
+>>> On 08.12.2020 20:13, Yang Shi wrote:
+>>>> On Thu, Dec 3, 2020 at 3:40 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>>>>>
+>>>>> On 02.12.2020 21:27, Yang Shi wrote:
+>>>>>> Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
+>>>>>> will be used in the following cases:
+>>>>>>     1. Non memcg aware shrinkers
+>>>>>>     2. !CONFIG_MEMCG
+>>>>>>     3. memcg is disabled by boot parameter
+>>>>>>
+>>>>>> Signed-off-by: Yang Shi <shy828301@gmail.com>
+>>>>>> ---
+>>>>>>  mm/vmscan.c | 88 +++++++++++++++++++++++++++++++++++++++++++++++++----
+>>>>>>  1 file changed, 82 insertions(+), 6 deletions(-)
+>>>>>>
+>>>>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>>>>>> index cba0bc8d4661..d569fdcaba79 100644
+>>>>>> --- a/mm/vmscan.c
+>>>>>> +++ b/mm/vmscan.c
+>>>>>> @@ -203,6 +203,12 @@ static DECLARE_RWSEM(shrinker_rwsem);
+>>>>>>  static DEFINE_IDR(shrinker_idr);
+>>>>>>  static int shrinker_nr_max;
+>>>>>>
+>>>>>> +static inline bool is_deferred_memcg_aware(struct shrinker *shrinker)
+>>>>>> +{
+>>>>>> +     return (shrinker->flags & SHRINKER_MEMCG_AWARE) &&
+>>>>>> +             !mem_cgroup_disabled();
+>>>>>> +}
+>>>>>> +
+>>>>>>  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+>>>>>>  {
+>>>>>>       int id, ret = -ENOMEM;
+>>>>>> @@ -271,7 +277,58 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+>>>>>>  #endif
+>>>>>>       return false;
+>>>>>>  }
+>>>>>> +
+>>>>>> +static inline long count_nr_deferred(struct shrinker *shrinker,
+>>>>>> +                                  struct shrink_control *sc)
+>>>>>> +{
+>>>>>> +     bool per_memcg_deferred = is_deferred_memcg_aware(shrinker) && sc->memcg;
+>>>>>> +     struct memcg_shrinker_deferred *deferred;
+>>>>>> +     struct mem_cgroup *memcg = sc->memcg;
+>>>>>> +     int nid = sc->nid;
+>>>>>> +     int id = shrinker->id;
+>>>>>> +     long nr;
+>>>>>> +
+>>>>>> +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+>>>>>> +             nid = 0;
+>>>>>> +
+>>>>>> +     if (per_memcg_deferred) {
+>>>>>> +             deferred = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_deferred,
+>>>>>> +                                                  true);
+>>>>>
+>>>>> My comment is about both 5/9 and 6/9 patches.
+>>>>
+>>>> Sorry for the late reply, I don't know why Gmail filtered this out to spam.
+>>>>
+>>>>>
+>>>>> shrink_slab_memcg() races with mem_cgroup_css_online(). A visibility of CSS_ONLINE flag
+>>>>> in shrink_slab_memcg()->mem_cgroup_online() does not guarantee that you will see
+>>>>> memcg->nodeinfo[nid]->shrinker_deferred != NULL in count_nr_deferred(). This may occur
+>>>>> because of processor reordering on !x86 (there is no a common lock or memory barriers).
+>>>>>
+>>>>> Regarding to shrinker_map this is not a problem due to map check in shrink_slab_memcg().
+>>>>> The map can't be NULL there.
+>>>>>
+>>>>> Regarding to shrinker_deferred you should prove either this is not a problem too,
+>>>>> or to add proper synchronization (maybe, based on barriers) or to add some similar check
+>>>>> (maybe, in shrink_slab_memcg() too).
+>>>>
+>>>> It seems shrink_slab_memcg() might see shrinker_deferred as NULL
+>>>> either due to the same reason. I don't think there is a guarantee it
+>>>> won't happen.
+>>>>
+>>>> We just need guarantee CSS_ONLINE is seen after shrinker_maps and
+>>>> shrinker_deferred are allocated, so I'm supposed barriers before
+>>>> "css->flags |= CSS_ONLINE" should work.
+>>>>
+>>>> So the below patch may be ok:
+>>>>
+>>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>>>> index df128cab900f..9f7fb0450d69 100644
+>>>> --- a/mm/memcontrol.c
+>>>> +++ b/mm/memcontrol.c
+>>>> @@ -5539,6 +5539,12 @@ static int mem_cgroup_css_online(struct
+>>>> cgroup_subsys_state *css)
+>>>>                 return -ENOMEM;
+>>>>         }
+>>>>
+>>>>
+>>>> +       /*
+>>>> +        * Barrier for CSS_ONLINE, so that shrink_slab_memcg() sees
+>>>> shirnker_maps
+>>>> +        * and shrinker_deferred before CSS_ONLINE.
+>>>> +        */
+>>>> +       smp_mb();
+>>>> +
+>>>>         /* Online state pins memcg ID, memcg ID pins CSS */
+>>>>         refcount_set(&memcg->id.ref, 1);
+>>>>         css_get(css);
+>>>
+>>> smp barriers synchronize data access from different cpus. They should go in a pair.
+>>> In case of you add the smp barrier into mem_cgroup_css_online(), we should also
+>>> add one more smp barrier in another place, which we want to synchonize with this.
+>>> Also, every place should contain a comment referring to its pair: "Pairs with...".
+>>
+>> Thanks, I think you are correct. Looked into it further, it seems the
+>> race pattern looks like:
+>>
+>> CPU A                                                                  CPU B
+>> store shrinker_maps pointer                      load CSS_ONLINE
+>> store CSS_ONLINE                                   load shrinker_maps pointer
+>>
+>> By checking the memory-barriers document, it seems we need write
+>> barrier/read barrier pair as below:
+>>
+>> CPU A                                                                  CPU B
+>> store shrinker_maps pointer                       load CSS_ONLINE
+>> <write barrier>                                             <read barrier>
+>> store CSS_ONLINE                                    load shrinker_maps pointer
+>>
+>>
+>> So, the patch should look like:
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index df128cab900f..489c0a84f82b 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -5539,6 +5539,13 @@ static int mem_cgroup_css_online(struct
+>> cgroup_subsys_state *css)
+>>                 return -ENOMEM;
+>>         }
+>>
+>> +       /*
+>> +        * Barrier for CSS_ONLINE, so that shrink_slab_memcg() sees
+>> shirnker_maps
+>> +        * and shrinker_deferred before CSS_ONLINE. It pairs with the
+>> read barrier
+>> +        * in shrink_slab_memcg().
+>> +        */
+>> +       smp_wmb();
 > 
-> Adds DT binding document for Richtek RT4831 DSV regulator.
-> 
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> ---
-> since v3
-> - Add dual license tag in regulator binding document.
-> - Left regulator dt-binding example only.
-> ---
->  .../regulator/richtek,rt4831-regulator.yaml        | 57 ++++++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml
-> new file mode 100644
-> index 00000000..c6741f2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml
-> @@ -0,0 +1,57 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/regulator/richtek,rt4831-regulator.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Richtek RT4831 Display Bias Voltage Regulator
-> +
-> +maintainers:
-> +  - ChiYuan Huang <cy_huang@richtek.com>
-> +
-> +description: |
-> +  RT4831 is a multifunctional device that can provide power to the LCD display
-> +  and LCD backlight.
-> +
-> +  For Display Bias Voltage DSVP and DSVN, the output range is about 4V to 6.5V.
-> +  It is sufficient to meet the current LCD power requirement.
-> +
-> +  DSVLCM is a boost regulator in IC internal as DSVP and DSVN input power.
-> +  Its voltage should be configured above 0.15V to 0.2V gap larger than the
-> +  voltage needed for DSVP and DSVN. Too much voltage gap could improve the
-> +  voltage drop from the heavy loading scenario. But it also make the power
-> +  efficiency worse. It's a trade-off.
-> +
-> +  Datasheet is available at
-> +  https://www.richtek.com/assets/product_file/RT4831A/DS4831A-05.pdf
-> +
-> +patternProperties:
-> +  "^DSV(LCM|P|N)$":
-> +    type: object
-> +    $ref: regulator.yaml#
-> +    description:
-> +      Properties for single Display Bias Voltage regulator.
+> Is there a reason why the shrinker allocations aren't done in
+> .css_alloc()? That would take care of all necessary ordering:
 
-Just put this into the MFD schema directly if you don't have any custom 
-properties to add.
+The reason is that allocations have to be made in a place, where
+mem-cgroup_iter() can't miss it, since memcg_expand_shrinker_maps()
+shouldn't miss allocated shrinker maps.
 
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    regulators {
-> +      DSVLCM {
-> +        regulator-min-microvolt = <4000000>;
-> +        regulator-max-microvolt = <7150000>;
-> +        regulator-allow-bypass;
-> +      };
-> +      DSVP {
-> +        regulator-name = "rt4831-dsvp";
-> +        regulator-min-microvolt = <4000000>;
-> +        regulator-max-microvolt = <6500000>;
-> +        regulator-boot-on;
-> +      };
-> +      DSVN {
-> +        regulator-name = "rt4831-dsvn";
-> +        regulator-min-microvolt = <4000000>;
-> +        regulator-max-microvolt = <6500000>;
-> +        regulator-boot-on;
-> +      };
-> +    };
-> -- 
-> 2.7.4
 > 
+>       #0
+>       css = ->css_alloc()
+>       list_add_tail_rcu(css, parent->children)
+>         rcu_assign_pointer()
+>       ->css_online(css)
+>       css->flags |= CSS_ONLINE
+> 
+>       #1
+>       memcg = mem_cgroup_iter()
+>         list_entry_rcu()
+> 	  rcu_dereference()
+>       shrink_slab(.., memcg)
+> 
+> RCU ensures that once the cgroup shows up in the reclaim cgroup it's
+> also fully allocated.
+> 
+>>         /* Online state pins memcg ID, memcg ID pins CSS */
+>>         refcount_set(&memcg->id.ref, 1);
+>>         css_get(css);
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 9d2a6485e982..fc9bda576d98 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -603,13 +603,15 @@ static unsigned long shrink_slab_memcg(gfp_t
+>> gfp_mask, int nid,
+>>         if (!mem_cgroup_online(memcg))
+>>                 return 0;
+> 
+> ...then we should be able to delete this online check here entirely:
+> 
+> A not-yet online cgroup is guaranteed to have a shrinker map, just
+> with no bits set. The shrinker code handles that just fine.
+> 
+> An offlined cgroup will eventually have an empty bitmap as the called
+> shrinkers return SHRINK_EMPTY. This could also be shortcut by clearing
+> the bit in memcg_drain_list_lru_node() the same way we set it in the
+> parent when we move all objects upward, but seems correct as-is.
+> 
+
