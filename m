@@ -2,114 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C632D4F4C
+	by mail.lfdr.de (Postfix) with ESMTP id 586B82D4F4B
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbgLJAUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730095AbgLJAUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 9 Dec 2020 19:20:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42978 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726690AbgLJAUV (ORCPT
+        with ESMTP id S1727048AbgLJAUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 19:20:21 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C2CC0613CF;
-        Wed,  9 Dec 2020 16:19:41 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id c79so2354107pfc.2;
-        Wed, 09 Dec 2020 16:19:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Es4gBJWVCcMkdwSCcQrKE/vAnJLC23HmAax/oGZgRwg=;
-        b=diU+dX9rAiB5NxbqbWwFZbOd6lP+clJ3wPmR4y3Cu6dorIhfweocBdlxznXu9pHHHa
-         Bv1bSutZxzhXvR/EqOiyOjz9bQVqjpEPG0UdG5UHvNfrdKLSVYz0LWnvKZvMn1nq3KUi
-         IqyMQayumOU4jYct1DWSB50aGdHjR9uOg9AXpLZZKu8eacTfKKNKWCHlqIQA70FPuGrh
-         mBPGRwzGB0mmmoZRIPzpj7KQAyHiJMFDxBSWvmB0sIaIxgNyYVdjQ6b4iSx1XN9KwmVM
-         wyqAPlKjhFXwplfwyby+slFFMWqJWRCK7qunGWMXHxy8R9JXFOHEiWu32OYDawSe3QBx
-         n0Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Es4gBJWVCcMkdwSCcQrKE/vAnJLC23HmAax/oGZgRwg=;
-        b=IEibQb3N8chxiTVaXOfHkpWI8duhVbfLkHgFgjEZ42PowXM2HPVnZjFUge3chtENdw
-         p3JqXkcIENWgX0Y39FyVYabifx6MCJQF1Uux9IyIVgahYaM7bkiGeJhZ1fviFGf2PtIN
-         WRTRHPnCZ+XZxY8iz5RVUts80mwHxEXWaUJ0dX1Chf2/Bl74mJuYZ42bqFuEEo+0mtdp
-         RSKR/HvXnhF67jirN+nAhuGlsNuXoVaX8opL73YsAqrWMRC/kK8Zv1vcjivQIaK7zkwo
-         OCLKRjDvIWEalfFoyA9wxk5K2vgLlPCI3ySQBx8YOKcPH85hXq3FCZu9vad6yOBnYcuR
-         d8oA==
-X-Gm-Message-State: AOAM533RNmt8gK9kOGKvAtd7bFSZXtLsEnv4rHKu0Bl9vj9Snac6kaRe
-        /tg1f0af+9HQL1MIGWCYmUM=
-X-Google-Smtp-Source: ABdhPJyWj0y3IrCO4/cTvoXDwqW+C4q9tMq3qsu1dAvLZvMYWzE+zbk4G+8+YPLpb216J+gh3qjE4w==
-X-Received: by 2002:a63:ce0c:: with SMTP id y12mr4260402pgf.208.1607559580676;
-        Wed, 09 Dec 2020 16:19:40 -0800 (PST)
-Received: from zen.local ([71.212.189.78])
-        by smtp.gmail.com with ESMTPSA id 10sm3320880pjt.35.2020.12.09.16.19.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 16:19:39 -0800 (PST)
-From:   Trent Piepho <tpiepho@gmail.com>
-To:     Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Joseph Hwang <josephsih@google.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        chromeos-bluetooth-upstreaming 
-        <chromeos-bluetooth-upstreaming@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] Bluetooth: btusb: define HCI packet sizes of USB Alts
-Date:   Wed, 09 Dec 2020 16:19:39 -0800
-Message-ID: <5703442.lOV4Wx5bFT@zen.local>
-In-Reply-To: <20201209011336.4qdnnehnz3kdlqid@pali>
-References: <20200910060403.144524-1-josephsih@chromium.org> <9810329.nUPlyArG6x@zen.local> <20201209011336.4qdnnehnz3kdlqid@pali>
+        Wed, 9 Dec 2020 19:20:30 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38990C0613D6;
+        Wed,  9 Dec 2020 16:19:50 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrvgQ2qq8z9sWC;
+        Thu, 10 Dec 2020 11:19:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1607559586;
+        bh=2Nou4BXsnpzOz5P0S3H1qxqKUObLSPTluDR33OT2IDM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=aFrvJQjwFt1M/PUMiDv7LLx1+QJwBMvHd7m8m9oMIMJl3AVyUg1VHHl8hvczCS3zc
+         WSUwd2N+LsH2O0+xzcHVHBSm9E/aWjwxjuvt6O3wgTcReinTodWQSGrpWZhcfDyURQ
+         qCr6Tx2c1SXkgVPDe8B+nrZDFDm7rYoB+W9P50yJEllX97Czg5z8HxNWE63UcpqtdS
+         t2k7+f0neFz6m8bNykh/1tkDWB7iCrERZ+aVjPtMNc9Rf1Iyz8qBfxLi/j/V4JKdtx
+         pvFQ7CK4riOAPdoZFO7/sIVTTUG+yrul1f/crQe//R4W9E9Hc3ydFAfQnmctCSCyBo
+         +Zi6NW0aQt3jg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Mathieu Malaterre <malat@debian.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: linux-next: build warning after merge of the akpm tree
+In-Reply-To: <20201209180703.404eb4cb@canb.auug.org.au>
+References: <20201204210000.660293c6@canb.auug.org.au> <20201208230157.42c42789@canb.auug.org.au> <87r1nzsi4s.fsf@mpe.ellerman.id.au> <20201209180703.404eb4cb@canb.auug.org.au>
+Date:   Thu, 10 Dec 2020 11:19:45 +1100
+Message-ID: <87im9aseam.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, December 8, 2020 5:13:36 PM PST Pali Roh=E1r wrote:
-> On Tuesday 08 December 2020 15:04:29 Trent Piepho wrote:
-> > Does this also give userspace a clear point at which to determine MTU=20
-setting,=20
-> > _before_ data is sent over SCO connection?  It will not work if sco_mtu=
-=20
-is not=20
-> > valid until after userspace sends data to SCO connection with incorrect=
-=20
-mtu.
->=20
-> IIRC connection is established after sync connection (SCO) complete
-> event. And sending data is possible after connection is established. So
-> based on these facts I think that userspace can determinate MTU settings
-> prior sending data over SCO socket.
->=20
-> Anyway, to whole MTU issue for SCO there is a nice workaround which
-> worked fine with more tested USB adapters and headsets. As SCO socket is
-> synchronous and most bluetooth headsets have own clocks, you can
-> synchronize sending packets to headsets based on time events when you
-> received packets from other side and also send packets of same size as
-> you received. I.e. for every received packet send own packet of the same
-> size.
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
+> Hi Michael,
+>
+> On Wed, 09 Dec 2020 15:44:35 +1100 Michael Ellerman <mpe@ellerman.id.au> wrote:
+>>
+>> They should really be in DATA_DATA or similar shouldn't they?
+>
+> No other architecture appears t need them ...
 
-As I understand it, the RX side from the headset is not guaranteed, so in=20
-the TX only case this will not work and we still need to be told what MTU=20
-kernel has selected for the SCO link.
+Any arch with orphan-handling=warn should see them I thought?
 
-It seems also it would add some latency to start up, since it would be=20
-necessary to wait for packets to arrive before knowing what size packet to=
-=20
-send.
-
-Would timing based on matching TX to RX in the case of packet loss on RX=20
-side?
-
-
-
-
+cheers
