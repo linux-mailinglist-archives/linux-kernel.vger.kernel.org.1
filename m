@@ -2,103 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6612D679F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:56:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EAE2D67CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404341AbgLJTzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:55:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393645AbgLJTzg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:55:36 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB82C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:54:56 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id c7so6845238edv.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:54:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jiqhdpxyPB2qhSSL8lmFRULkbulVtgbgM3x8Yn9WIks=;
-        b=AQf++TUte2ltHpibq5Gju3qOiL3gtd1QwSaE59Zg0LsQw0zfjWW1HRIjo9mBANVxxH
-         g2yUJArXsTS3kiJYk8vnpJm/oDoorxtLFcUedB6/Ott4sfP1HkYEs9t7U26t6bey9sTA
-         Er4F3CqzLKP85p3pj8B2B6a7zErOigfFrDZZ9E7gNU686C6eHUdLXUmgUjC2P4bVgU/t
-         Oll8359JTX5UYeF11kTF1p01Spfeg705guksa4L+rg+PsJ7z3XD0xgGoF7BtmGAl7g7Q
-         /+qZmbbMRwbJxIZ7nzM/qn2BqIpL3ylAOl0oe7DirzZefatNhRi/T6dEcsk+MYr6sXSa
-         cF1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jiqhdpxyPB2qhSSL8lmFRULkbulVtgbgM3x8Yn9WIks=;
-        b=V4L/q5Nr2z6a8BPYM8lar9Bitz6vFSuIAZD/NBbu/51Fde8/5mr/9XjG0hjviZpsmK
-         37rxKliC11AJbPudItctIPW41ZAOnCDNr4rTzb+cE+kTdc3jPVZJk1yh9MU4wpAXF1G5
-         /0P2zBii8J3e5QJrCFEHjDOrYYA66EK3OLq9zDOTNh1PYL47xl4V6Volezfx24F4pSGd
-         TKELqcX4a90FZB3DAvCbe/3QrEiI0i1xlABx/0FC5I2DrwJpkZAOPFFMVW1rAazY89Qk
-         9zKaRrf+RAv7VZORljABPzsV2o4l/49hlJJCQW4jDezxF2LepDLst6//5W38feK5O7E6
-         XBkQ==
-X-Gm-Message-State: AOAM532/hdeD3dBksHHHrcZOZPsFbPzHwrT/2YKYbcCignRLetZ0qPnn
-        3h3Ju4+p4mSg16Jd0dMmwVECs8Ojuw3HTPOpW9REKaIVdfVE6g==
-X-Google-Smtp-Source: ABdhPJy6P/1OMDVVi/Mgffhj7q+Ecrh69fmJZ7dv7K4HV4Uijlx/0siUn7Ux4OH+Kcm9DmIKFaYocoPNZYKKhggZsDE=
-X-Received: by 2002:a50:d757:: with SMTP id i23mr8539200edj.116.1607630094894;
- Thu, 10 Dec 2020 11:54:54 -0800 (PST)
+        id S2404332AbgLJT6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:58:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390146AbgLJT5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 14:57:43 -0500
+Date:   Thu, 10 Dec 2020 11:56:59 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607630219;
+        bh=7YiuW/XD2F8+axLnYxfd/GhmODra1Xbd7PzzWXxBB+k=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Pv9i69yA/yZ5f3zqOE7xzZ97OXL87KIeMaEZq99EUA4hfxGrHOlDheGv4Hjmv13LW
+         k8pxmrwmA7jm5ob2ZR9WWqU2FhsjNICuHJqfYhNiUlx2JaB2wVgEvzGb3LJG55kTxG
+         bTV9U38fSa5WbNbV6ndxzC7eotFebx60G7oY8ysdaYoY14Dt+5M98wtUhpIikU4V2S
+         TRtGk4Zz7gA7SRumFE0pdINS9TawlFAZf4LLz4MwPxSkWUD6dTOkbsFI7oPk+gGS7F
+         +RPq1kCFYVAcO9ujFKJDY+t3PUzIftCuyg7Xqe/Am1GegJOYWuIzVIuBK9PPsFoNe5
+         fWzE5LLPRNdDw==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        iamjoonsoo.kim@lge.com, andrii@kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
+Subject: Re: [PATCH v2 sl-b 1/5] mm: Add mem_dump_obj() to print source of
+ memory block
+Message-ID: <20201210195659.GY2657@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
+ <20201209011303.32737-1-paulmck@kernel.org>
+ <8ea31887-8cc3-24cc-82e8-779290c61c2c@suse.cz>
+ <20201209230442.GH2657@paulmck-ThinkPad-P72>
+ <211cc2a9-5d94-cb0f-91bf-3415510b7dae@suse.cz>
 MIME-Version: 1.0
-References: <20201210004335.64634-1-pasha.tatashin@soleen.com>
- <20201210004335.64634-4-pasha.tatashin@soleen.com> <20201210040618.GR1563847@iweiny-DESK2.sc.intel.com>
- <CA+CK2bCVEnKKatQSxZcdcvNo+9rWNrGWXyLS3dnF-y7=5Ery7g@mail.gmail.com>
- <20201210174431.GT1563847@iweiny-DESK2.sc.intel.com> <CA+CK2bBbN9dxqD_ntAPACfjJmwahPEyP36cb7koVm212nzsuKw@mail.gmail.com>
- <20201210195333.GZ5487@ziepe.ca>
-In-Reply-To: <20201210195333.GZ5487@ziepe.ca>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 10 Dec 2020 14:54:19 -0500
-Message-ID: <CA+CK2bCgEwa=dP4mUPkYy9vF+feXiWGQPM0gv6wZTd3j5Y6nyQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/8] mm/gup: make __gup_longterm_locked common
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <211cc2a9-5d94-cb0f-91bf-3415510b7dae@suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 2:53 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Thu, Dec 10, 2020 at 01:57:20PM -0500, Pavel Tatashin wrote:
->
-> > Thank you. Yes, this series should be backported, but I am not sure
-> > what to do about Jason's patch. Perhaps, in the next version I will
-> > send out this series together with his patch.
->
-> You need to send out patches that can be applied on top of linux-next,
-> at this point the window to go to rc kernels is done.
->
-> When you eventually want this back ported to stables then suggest they
-> take my patch as a pre-requisite.
+On Thu, Dec 10, 2020 at 11:48:26AM +0100, Vlastimil Babka wrote:
+> On 12/10/20 12:04 AM, Paul E. McKenney wrote:
+> >> > +/**
+> >> > + * kmem_valid_obj - does the pointer reference a valid slab object?
+> >> > + * @object: pointer to query.
+> >> > + *
+> >> > + * Return: %true if the pointer is to a not-yet-freed object from
+> >> > + * kmalloc() or kmem_cache_alloc(), either %true or %false if the pointer
+> >> > + * is to an already-freed object, and %false otherwise.
+> >> > + */
+> >> 
+> >> It should be possible to find out more about object being free or not, than you
+> >> currently do. At least to find out if it's definitely free. When it appears
+> >> allocated, it can be actually still free in some kind of e.g. per-cpu or
+> >> per-node cache that would be infeasible to check. But that improvement to the
+> >> output can be also added later. Also SLUB stores the freeing stacktrace, which
+> >> might be useful...
+> > 
+> > I can see how this could help debugging a use-after-free situation,
+> > at least as long as the poor sap that subsequently allocated it doesn't
+> > free it.
+> > 
+> > I can easily add more fields to the kmem_provenance structure.  Maybe
+> > it would make sense to have another exported API that you provide a
+> > kmem_provenance structure to, and it fills it in.
+> > 
+> > One caution though...  I rely on the object being allocated.
+> > If it officially might already be freed, complex and high-overhead
+> > synchronization seems to be required to safely access the various data
+> > structures.
+> 
+> Good point! It's easy to forget that when being used to similar digging in a
+> crash dump, where nothing changes.
 
-Sounds good.
+Maybe a similar addition to the crash-analysis tools would be helpful?
 
-Thanks,
-Pasha
+> > So any use on an already-freed object is on a "you break it you get to
+> > keep the pieces" basis.  On the other hand, if you are dealing with a
+> > use-after-free situation, life is hard anyway.
+> 
+> Yeah, even now I think it's potentially dangerous, as you can get
+> kmem_valid_obj() as true because PageSlab(page) is true. But the object might be
+> already free, so as soon as another CPU frees another object from the same slab
+> page, the page gets also freed... or it was already freed and then allocated by
+> another slab so it's PageSlab() again.
+> I guess at least some safety could be achieved by pinning the page with
+> get_page_unless_zero. But maybe your current implementation is already safe,
+> need to check in detail.
 
->
-> Jason
+The code on the various free paths looks to me to make the same
+assumptions that I am making.  So if this is unsafe, we have other
+problems.
+
+> > Or am I missing your point?
+> > 
+> >> > +bool kmem_valid_obj(void *object)
+> >> > +{
+> >> > +	struct page *page;
+> >> > +
+> >> > +	if (!virt_addr_valid(object))
+> >> > +		return false;
+> >> > +	page = virt_to_head_page(object);
+> >> > +	return PageSlab(page);
+> >> > +}
+> >> > +EXPORT_SYMBOL_GPL(kmem_valid_obj);
+> >> > +
+> >> > +/**
+> >> > + * kmem_dump_obj - Print available slab provenance information
+> >> > + * @object: slab object for which to find provenance information.
+> >> > + *
+> >> > + * This function uses pr_cont(), so that the caller is expected to have
+> >> > + * printed out whatever preamble is appropriate.  The provenance information
+> >> > + * depends on the type of object and on how much debugging is enabled.
+> >> > + * For a slab-cache object, the fact that it is a slab object is printed,
+> >> > + * and, if available, the slab name, return address, and stack trace from
+> >> > + * the allocation of that object.
+> >> > + *
+> >> > + * This function will splat if passed a pointer to a non-slab object.
+> >> > + * If you are not sure what type of object you have, you should instead
+> >> > + * use mem_dump_obj().
+> >> > + */
+> >> > +void kmem_dump_obj(void *object)
+> >> > +{
+> >> > +	int i;
+> >> > +	struct page *page;
+> >> > +	struct kmem_provenance kp;
+> >> > +
+> >> > +	if (WARN_ON_ONCE(!virt_addr_valid(object)))
+> >> > +		return;
+> >> > +	page = virt_to_head_page(object);
+> >> > +	if (WARN_ON_ONCE(!PageSlab(page))) {
+> >> > +		pr_cont(" non-slab memory.\n");
+> >> > +		return;
+> >> > +	}
+> >> > +	kp.kp_ptr = object;
+> >> > +	kp.kp_page = page;
+> >> > +	kp.kp_nstack = KS_ADDRS_COUNT;
+> >> > +	kmem_provenance(&kp);
+> >> 
+> >> You don't seem to be printing kp.kp_objp anywhere? (unless in later patch, but
+> >> would make sense in this patch already).
+> > 
+> > Good point!
+> > 
+> > However, please note that the various debugging options that reserve
+> > space at the beginning.  This can make the meaning of kp.kp_objp a bit
+> > different than one might expect.
+> 
+> Yeah, I think the best would be to match the address that
+> kmalloc/kmem_cache_alloc() would return, thus the beginning of the object
+> itself, so you can calculate the offset within it, etc.
+
+My thought is to do both.  Show the start address, the data offset (if
+nonzero), and the pointer offset within the data.  My guess is that in
+the absence of things like slub_debug=U, the pointer offset within the
+data is the best way to figure out which structure is involved.
+
+Or do you use other tricks to work this sort of thing out?
+
+> >> > --- a/mm/util.c
+> >> > +++ b/mm/util.c
+> >> 
+> >> I think mm/debug.c is a better fit as it already has dump_page() of a similar
+> >> nature. Also you can call that from from mem_dump_obj() at least in case when
+> >> the more specific handlers fail. It will even include page_owner info if enabled! :)
+> > 
+> > I will count this as one vote for mm/debug.c.
+> > 
+> > Two things to consider, though...  First, Joonsoo suggests that the fact
+> > that this produces useful information without any debugging information
+> > enabled makes it not be debugging as such.
+> 
+> Well there's already dump_page() which also produces information without special
+> configs.
+> We're not the best subsystem in this kind of consistency...
+> 
+> > Second, mm/debug.c does
+> > not include either slab.h or vmalloc.h.  The second might not be a
+> > showstopper, but I was interpreting this to mean that its role was
+> > less central.
+> 
+> I think it can include whatever becomes needed there :)
+
+I figured that there was a significant probability that I would have to
+move it, and I really don't have a basis for a preference, let alone
+a preference.  But I would like to avoid moving it more than once, so
+I also figured I should give anyone else having an educated preference
+a chance to speak up.  ;-)
+
+							Thanx, Paul
+
+> >> Thanks,
+> >> Vlastimil
+> >> 
+> >> > @@ -970,3 +970,28 @@ int __weak memcmp_pages(struct page *page1, struct page *page2)
+> >> >  	kunmap_atomic(addr1);
+> >> >  	return ret;
+> >> >  }
+> >> > +
+> >> > +/**
+> >> > + * mem_dump_obj - Print available provenance information
+> >> > + * @object: object for which to find provenance information.
+> >> > + *
+> >> > + * This function uses pr_cont(), so that the caller is expected to have
+> >> > + * printed out whatever preamble is appropriate.  The provenance information
+> >> > + * depends on the type of object and on how much debugging is enabled.
+> >> > + * For example, for a slab-cache object, the slab name is printed, and,
+> >> > + * if available, the return address and stack trace from the allocation
+> >> > + * of that object.
+> >> > + */
+> >> > +void mem_dump_obj(void *object)
+> >> > +{
+> >> > +	if (!virt_addr_valid(object)) {
+> >> > +		pr_cont(" non-paged (local) memory.\n");
+> >> > +		return;
+> >> > +	}
+> >> > +	if (kmem_valid_obj(object)) {
+> >> > +		kmem_dump_obj(object);
+> >> > +		return;
+> >> > +	}
+> >> > +	pr_cont(" non-slab memory.\n");
+> >> > +}
+> >> > +EXPORT_SYMBOL_GPL(mem_dump_obj);
+> >> > 
+> >> 
+> > 
+> 
