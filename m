@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811C22D5369
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 06:39:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5097E2D536B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 06:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732623AbgLJFjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 00:39:01 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:60538 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726788AbgLJFim (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 00:38:42 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BA5bmrB037995;
-        Wed, 9 Dec 2020 23:37:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607578668;
-        bh=669p0aGvc+wv5r2P4jSKbM0nhtpSnzsMzUMKngI6XnQ=;
-        h=From:To:CC:Subject:Date;
-        b=HzP7D/Y3EC1d7VZNfWaNXAEi2JjbaR/6oVoq6ngmHPwmspdStUckTAB4EBExVVawa
-         X5rt37Liqa93oqv6jw/Am9JBJxyfe+6fvpKHhf5Ti8FwA95hDJHTXDhEexnlIJixIW
-         Z5by7J5L9VCbPfNWGnXxZucsjDOmqd2p7hPlGhTg=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BA5bmg9013766
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Dec 2020 23:37:48 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 9 Dec
- 2020 23:37:47 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 9 Dec 2020 23:37:47 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BA5bgJ1113899;
-        Wed, 9 Dec 2020 23:37:43 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Roger Quadros <rogerq@ti.com>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] dt-bindings: usb: Add new compatible string for AM64 SoC
-Date:   Thu, 10 Dec 2020 11:07:40 +0530
-Message-ID: <20201210053740.5564-1-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
+        id S1732810AbgLJFlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 00:41:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730584AbgLJFlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 00:41:04 -0500
+Message-ID: <5057047d659b337317d1ee8355a2659c78d3315f.camel@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607578823;
+        bh=Q5F4J5wppiN0Rkj8e1cHlqpk4IOx2IP2r3JY2um8XKc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=kQRAG7iDJtJv7KFLKySWen9sLBE13I21hWcc3LeLakxgmpUzbZsDKD8MWla0waigz
+         JVm1Q5tup6bzX2xw+eYsGGv2qJalgAo1bYv38mc3klodRaU7+Z8ZdzrjGCpcgQH99+
+         x7JqZZVRIrb8LDTfsGg5OTHpIjnlzorlz4kVV6mVKx0DnsY9Wh8/zUxQlytk1y1psW
+         l2tWkVEWitNhZt6RkQu8E9XVuXhthfqquJUFlr/LrZsci3b1hREYYmoXoVbQK7veN3
+         p/5Z9bZjtmcw77U6I5mGzi4Ti1DCjAmKI84NjKwc4FNVNdA8KaUlcOqNJ+joXhHSPG
+         wW2ytPWj07eAQ==
+Subject: Re: [PATCH net-next 3/7] net: hns3: add support for forwarding
+ packet to queues of specified TC when flow director rule hit
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Huazhong Tan <tanhuazhong@huawei.com>, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, huangdaode@huawei.com,
+        Jian Shen <shenjian15@huawei.com>
+Date:   Wed, 09 Dec 2020 21:40:22 -0800
+In-Reply-To: <1607571732-24219-4-git-send-email-tanhuazhong@huawei.com>
+References: <1607571732-24219-1-git-send-email-tanhuazhong@huawei.com>
+         <1607571732-24219-4-git-send-email-tanhuazhong@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible string in j721e-usb binding file as the same USB subsystem
-is present in AM64.
+On Thu, 2020-12-10 at 11:42 +0800, Huazhong Tan wrote:
+> From: Jian Shen <shenjian15@huawei.com>
+> 
+> For some new device, it supports forwarding packet to queues
+> of specified TC when flow director rule hit. So extend the
+> command handle to support it.
+> 
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-Acked-by: Roger Quadros <rogerq@ti.com>
----
- Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+...
 
-diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-index 388245b91a55..453587f6d304 100644
---- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-+++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-@@ -11,8 +11,11 @@ maintainers:
- 
- properties:
-   compatible:
--    items:
--      - const: ti,j721e-usb
-+    anyOf:
-+      - items:
-+          - const: ti,j721e-usb
-+      - items:
-+          - const: ti,am64-usb
- 
-   reg:
-     description: module registers
--- 
-2.17.1
+>  static int hclge_config_action(struct hclge_dev *hdev, u8 stage,
+>  			       struct hclge_fd_rule *rule)
+>  {
+> +	struct hclge_vport *vport = hdev->vport;
+> +	struct hnae3_knic_private_info *kinfo = &vport->nic.kinfo;
+>  	struct hclge_fd_ad_data ad_data;
+>  
+> +	memset(&ad_data, 0, sizeof(struct hclge_fd_ad_data));
+>  	ad_data.ad_id = rule->location;
+>  
+>  	if (rule->action == HCLGE_FD_ACTION_DROP_PACKET) {
+>  		ad_data.drop_packet = true;
+> -		ad_data.forward_to_direct_queue = false;
+> -		ad_data.queue_id = 0;
+> +	} else if (rule->action == HCLGE_FD_ACTION_SELECT_TC) {
+> +		ad_data.override_tc = true;
+> +		ad_data.queue_id =
+> +			kinfo->tc_info.tqp_offset[rule->tc];
+> +		ad_data.tc_size =
+> +			ilog2(kinfo->tc_info.tqp_count[rule->tc]);
+
+In the previous patch you copied this info from mqprio, which is an
+egress qdisc feature, this patch is clearly about rx flow director, I
+think the patch is missing some context otherwise it doesn't make any
+sense.
+
+>  	} else {
+> -		ad_data.drop_packet = false;
+>  		ad_data.forward_to_direct_queue = true;
+>  		ad_data.queue_id = rule->queue_id;
+>  	}
+> @@ -5937,7 +5950,7 @@ static int hclge_add_fd_entry(struct
+> hnae3_handle *handle,
+>  			return -EINVAL;
+>  		}
+>  
+> -		action = HCLGE_FD_ACTION_ACCEPT_PACKET;
+> +		action = HCLGE_FD_ACTION_SELECT_QUEUE;
+>  		q_index = ring;
+>  	}
+>  
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+> b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+> index b3c1301..a481064 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+> @@ -572,8 +572,9 @@ enum HCLGE_FD_PACKET_TYPE {
+>  };
+>  
+>  enum HCLGE_FD_ACTION {
+> -	HCLGE_FD_ACTION_ACCEPT_PACKET,
+> +	HCLGE_FD_ACTION_SELECT_QUEUE,
+>  	HCLGE_FD_ACTION_DROP_PACKET,
+> +	HCLGE_FD_ACTION_SELECT_TC,
+
+what is SELECT_TC ? you never actually write this value anywhere  in
+this patch.
+
 
