@@ -2,120 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B273F2D59FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:08:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 460B22D5A00
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731202AbgLJMGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 07:06:35 -0500
-Received: from fieber.vanmierlo.com ([84.243.197.177]:38130 "EHLO
-        kerio9.vanmierlo.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726147AbgLJMGf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:06:35 -0500
-X-Footer: dmFubWllcmxvLmNvbQ==
-Received: from roundcube.vanmierlo.com ([192.168.37.37])
-        (authenticated user m.brock@vanmierlo.com)
-        by kerio9.vanmierlo.com (Kerio Connect 9.3.0 patch 1) with ESMTPA;
-        Thu, 10 Dec 2020 13:05:15 +0100
+        id S1732315AbgLJMHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 07:07:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726158AbgLJMG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 07:06:58 -0500
+Date:   Thu, 10 Dec 2020 13:07:32 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607601977;
+        bh=7+XUs0NKgoibxWSzN421h7xPCAuuCw7byH4TQnvEGNw=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oLeFeqt1pFET44DeiiSlhpvd2a6K2KZr6n0cBqcNsNx771+9H5PVIOkPbJucQu4u/
+         tqbg1OacZoFarVqzvGXDaM3wAp3VMknJUO2TG5c+1KksB3zFrWz7f6ra6xII51BqSz
+         sT8IhGsd63xCbp3XdM5LTVkVLgdSi4atIBmDoym0=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [PATCH] dmabuf: Add the capability to expose DMA-BUF stats in
+ sysfs
+Message-ID: <X9IPhEkcZO+Ut5RH@kroah.com>
+References: <20201210044400.1080308-1-hridya@google.com>
+ <b5adfe46-8615-5821-d092-2b93feed5b79@amd.com>
+ <X9H0JREcdxDsMtLX@kroah.com>
+ <20201210102727.GE401619@phenom.ffwll.local>
+ <X9H+3AP1q39aMxeb@kroah.com>
+ <CAKMK7uFD3fE01Li3JOpHpzP7313OT3xpcjBwzSVjrCGAmab2Zg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 10 Dec 2020 13:05:15 +0100
-From:   Maarten Brock <m.brock@vanmierlo.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mychaela Falconia <mychaela.falconia@gmail.com>,
-        Johan Hovold <johan@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] tty: add flag to suppress ready signalling on open
-In-Reply-To: <X9H9i98E1Gro+mDP@kroah.com>
-References: <20201202113942.27024-1-johan@kernel.org>
- <X9Dficb8sQGRut+S@kroah.com>
- <CA+uuBqYTzXCHGY8QnP+OQ5nRNAbqx2rMNzLM7OKLM1_4AzzinQ@mail.gmail.com>
- <6b81cca21561305b55ba8f019b78da28@vanmierlo.com>
- <X9H9i98E1Gro+mDP@kroah.com>
-Message-ID: <3fc3097ce1d35ce1e45fa5a3c7173666@vanmierlo.com>
-X-Sender: m.brock@vanmierlo.com
-User-Agent: Roundcube Webmail/1.3.3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKMK7uFD3fE01Li3JOpHpzP7313OT3xpcjBwzSVjrCGAmab2Zg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-10 11:50, Greg Kroah-Hartman wrote:
-> On Thu, Dec 10, 2020 at 11:41:24AM +0100, Maarten Brock wrote:
->> Hello Mychaela,
->> 
->> On 2020-12-09 23:49, Mychaela Falconia wrote:
->> > Greg K-H wrote:
->> >
->> > > I think we need more review for the rest of the series.  This does
->> > > change the way serial ports work in a non-traditional way (i.e. using
->> > > sysfs instead of terminal settings).
->> >
->> > But the problem is that the current status quo is fundamentally broken
->> > for those hardware devices in which DTR and/or RTS have been repurposed
->> > for something other than modem and flow control.  Right now whenever a
->> > "cold" (never previously opened) serial port is opened for the first
->> > time, that open action immediately and unstoppably asserts both DTR
->> > and RTS hardware outputs, without giving userspace any opportunity to
->> > say "no, please don't do it".  Yes, this behaviour is codified in a
->> > bunch of standards that ultimately trace back to 1970s Original UNIX,
->> > but just because it is a standard does not make it right - this
->> > Unix/POSIX/Linux "standard" serial port behaviour is a bug, not a
->> > feature.
->> 
->> I agree. And an application not configuring the required handshakes, 
->> but
->> still relying on them is an equal bug.
->> 
->> > But if there exist some custom hw devices out there that are in the
->> > same predicament as my DUART28 adapter, but are different in that they
->> > are classic old-fashioned RS-232 rather than integrated USB-serial,
->> > with no place to assign a custom USB ID, *then* we need a non-USB-ID-
->> > dependent solution such as Johan's sysfs attribute or O_DIRECT.
->> 
->> Any device with a classic old-fashioned RS-232 has probably already
->> solved this in another way or is accepted as not working on Linux.
->> 
->> And then there is also the device tree (overlay?) through which a 
->> quirk
->> like this can be communicated to the kernel driver. Not sure if this
->> could help for a plug-and-play device like on USB.
->> 
->> > > So I want to get a bunch of people
->> > > to agree that this is ok to do things this way now before taking this
->> > > new user-visible api.
->> 
->> Personally, I would prefer the VID:PID to enforce the quirk and an
->> O_DIRECT (or other) flag used on open() as general backup plan. To
->> me a sysfs solution seems illogical.
+On Thu, Dec 10, 2020 at 12:26:01PM +0100, Daniel Vetter wrote:
+> On Thu, Dec 10, 2020 at 11:55 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Dec 10, 2020 at 11:27:27AM +0100, Daniel Vetter wrote:
+> > > On Thu, Dec 10, 2020 at 11:10:45AM +0100, Greg KH wrote:
+> > > > On Thu, Dec 10, 2020 at 10:58:50AM +0100, Christian König wrote:
+> > > > > In general a good idea, but I have a few concern/comments here.
+> > > > >
+> > > > > Am 10.12.20 um 05:43 schrieb Hridya Valsaraju:
+> > > > > > This patch allows statistics to be enabled for each DMA-BUF in
+> > > > > > sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
+> > > > > >
+> > > > > > The following stats will be exposed by the interface:
+> > > > > >
+> > > > > > /sys/kernel/dmabuf/<inode_number>/exporter_name
+> > > > > > /sys/kernel/dmabuf/<inode_number>/size
+> > > > > > /sys/kernel/dmabuf/<inode_number>/dev_map_info
+> > > > > >
+> > > > > > The inode_number is unique for each DMA-BUF and was added earlier [1]
+> > > > > > in order to allow userspace to track DMA-BUF usage across different
+> > > > > > processes.
+> > > > > >
+> > > > > > Currently, this information is exposed in
+> > > > > > /sys/kernel/debug/dma_buf/bufinfo.
+> > > > > > However, since debugfs is considered unsafe to be mounted in production,
+> > > > > > it is being duplicated in sysfs.
+> > > > >
+> > > > > Mhm, this makes it part of the UAPI. What is the justification for this?
+> > > > >
+> > > > > In other words do we really need those debug information in a production
+> > > > > environment?
+> > > >
+> > > > Production environments seem to want to know who is using up memory :)
+> > >
+> > > This only shows shared memory, so it does smell a lot like $specific_issue
+> > > and we're designing a narrow solution for that and then have to carry it
+> > > forever.
+> >
+> > I think the "issue" is that this was a feature from ion that people
+> > "missed" in the dmabuf move.  Taking away the ability to see what kind
+> > of allocations were being made didn't make a lot of debugging tools
+> > happy :(
 > 
-> The "problem" of a vid:pid is that for usb-serial devices, that only
-> describes the device that does the conversion itself, NOT the serial
-> device the converter is plugged into that cares about these types of
-> line-wiggling.
-> 
-> Just like you would not want to classify all devices that met the PCI
-> serial class signature for this type of thing either, there is nothing
-> special about USB here other than it happens to be a common transport
-> for these signals these days.
-> 
-> thanks,
-> 
-> greg k-h
+> If this is just for dma-heaps then why don't we add the stuff back
+> over there? It reinforces more that the android gpu stack and the
+> non-android gpu stack on linux are fairly different in fundamental
+> ways, but that's not really new.
 
-This is true for a generic USB-UART board or cable, but not for a
-dedicated PCB where both the USB-UART chip and the special connection
-are implemented and which has a dedicated VID:PID different from any
-generic one. In this case the VID:PID describes the whole board.
+Back "over where"?
 
-If the line-wiggling requirement is created behind some sort of
-connector (real RS-232 DB9/DB25 or CMOS pin header or whatever)
-then the problem is the same as for an 8250 on any other bus. For
-this situation I would prefer the O_DIRECT flag on open().
+dma-bufs are not only used for the graphics stack on android from what I
+can tell, so this shouldn't be a gpu-specific issue.
 
-Maarten
+confused,
 
+greg k-h
