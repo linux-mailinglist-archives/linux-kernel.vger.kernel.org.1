@@ -2,161 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDEF2D6C34
+	by mail.lfdr.de (Postfix) with ESMTP id 0005C2D6C36
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732702AbgLJXvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:51:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732765AbgLJXvA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:51:00 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD051C061793
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:50:19 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id j140so3858215vsd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:50:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pjYy5Bl3/aduddVWQ9MWnVeXMprhMcZYGBH0P+DQDBo=;
-        b=EXJ6gnsnrAQOJ/s129D2lg7EFMcZQkafhwpuLSAr5ElkjGMGSxKsTtraCwyE+l2N9c
-         kH1m1fc0icv2IdakS3e/47ZEU4ULSZXsJhQj6QfkrDpc7Sc/cxQrpe/uB6tjJuB5BYZO
-         KZDbNar5iD8fGfDvJNaWmDq0StcY/Z8b+Jrx8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pjYy5Bl3/aduddVWQ9MWnVeXMprhMcZYGBH0P+DQDBo=;
-        b=RqAys7pob868IYambM4e+6bXHDppKxOIuIkAf7Pe/LXoZsSwDLB2Fd5ZLF2PB7ri1y
-         Gab9a+gVc3YeLNIuSha12Dyz4sg6PBg8aeSKCefBuCeknSYuu9nwrX3JlWRBs8GOuPpp
-         FEmrWoxByvCkf/uDPxqhOA9LJmg98Nd3gE2x8rd14DZEdzRzjhk5fmdnwn4wjWwveKpo
-         kmNIa2htiJxikuaGRbqcrnLCZBgcU4VyZbrI8brUKz9U4UGntK3J5I8qlsiu3DMPCrpG
-         DHU7Ebc0359tjmFv1DwUt6JD10RGQTaGTMYEeePcujtu5L+sgWU8aWrBlSIy0aK3I+J/
-         ylDw==
-X-Gm-Message-State: AOAM531SaF/2xkAIiciwSFx6FItKnI46kih6ax+jL9bLCd0pSa0NeMpG
-        4R29AD8kp33RQ6Phsd2g/k1zJ7AY3d5f8w==
-X-Google-Smtp-Source: ABdhPJzeXX4uCr+O5dzR/kMRpCyZAS6XAi3k3HJD8KuFjJoIowEgGifk85lxxdZnFdnCoW+jBLbLKg==
-X-Received: by 2002:a67:2e16:: with SMTP id u22mr5829727vsu.12.1607644218223;
-        Thu, 10 Dec 2020 15:50:18 -0800 (PST)
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
-        by smtp.gmail.com with ESMTPSA id k64sm718250vsk.15.2020.12.10.15.50.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 15:50:17 -0800 (PST)
-Received: by mail-ua1-f53.google.com with SMTP id s42so2295744uad.11
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:50:17 -0800 (PST)
-X-Received: by 2002:ab0:2e99:: with SMTP id f25mr10916179uaa.104.1607644216565;
- Thu, 10 Dec 2020 15:50:16 -0800 (PST)
+        id S1731882AbgLJX5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:57:12 -0500
+Received: from mga18.intel.com ([134.134.136.126]:48376 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729231AbgLJX5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 18:57:09 -0500
+IronPort-SDR: NQsj7UExvoOwlzymQe14yFli1lfSgCyjv3QcFooxYYPP+uzhzADy88wtL3y/21jJpKkhnHcCL0
+ 5O3WDHuCqDsw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="162111507"
+X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
+   d="scan'208";a="162111507"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 15:56:28 -0800
+IronPort-SDR: etEPIzFRDsgNv+GsTEHVZISDJ88Gkn/zEmiQKVK5Gp+3UCmdxsOvbgI6oOZnTNUtQaUos+sDTG
+ qxTHqCxFrJ5g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
+   d="scan'208";a="372977389"
+Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 10 Dec 2020 15:56:26 -0800
+Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1knVnN-0000cD-QP; Thu, 10 Dec 2020 23:56:25 +0000
+Date:   Fri, 11 Dec 2020 07:55:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:efi/core] BUILD SUCCESS
+ 54649911f31b6e7c2a79a1426ca98259139e4c35
+Message-ID: <5fd2b57f.dblSe1mXUKseXlSF%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20201203074459.13078-1-rojay@codeaurora.org> <CAD=FV=XKyXnjsM4iS-ydRWBnmYMojPOaYAdYhOkxkPTCQf0RLQ@mail.gmail.com>
- <160757022002.1580929.8656750350166301192@swboyd.mtv.corp.google.com>
- <CAD=FV=WtU3cnRe6pDKFMA9_0cnQFtSOyohY_bJwZObK+KrbhVQ@mail.gmail.com>
- <160764107797.1580929.14768824290834396298@swboyd.mtv.corp.google.com>
- <CAD=FV=WuQjKC6GHy8d2nuqS-fgsUfxYrJosg3eyC9JU1FPCcjw@mail.gmail.com> <160764316821.1580929.18177257779550490986@swboyd.mtv.corp.google.com>
-In-Reply-To: <160764316821.1580929.18177257779550490986@swboyd.mtv.corp.google.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 10 Dec 2020 15:50:04 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WvG085orLqnvg9WUobL7iyxwgoxh-8RvOaRdi9rLeDUg@mail.gmail.com>
-Message-ID: <CAD=FV=WvG085orLqnvg9WUobL7iyxwgoxh-8RvOaRdi9rLeDUg@mail.gmail.com>
-Subject: Re: [PATCH] spi: spi-geni-qcom: Fix NULL pointer access in geni_spi_isr
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        msavaliy@qti.qualcomm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  efi/core
+branch HEAD: 54649911f31b6e7c2a79a1426ca98259139e4c35  efi: stub: get rid of efi_get_max_fdt_addr()
 
-On Thu, Dec 10, 2020 at 3:32 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Doug Anderson (2020-12-10 15:07:39)
-> > Hi,
-> >
-> > On Thu, Dec 10, 2020 at 2:58 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > > right? It will only ensure that other irq handlers have completed, which
-> > > may be a problem, but not the only one.
-> > >
-> > > TL;DR: Peek at the irq status register in the timeout logic and skip it
-> > > if the irq is pending?
-> >
-> > I don't have tons of experience with synchronize_irq(), but the
-> > function comment seems to indicate that as long as the interrupt is
-> > pending synchronize_irq() will do what we want even if the CPU that
-> > should handle the interrupt is in an irqsoff section.  Digging a
-> > little bit I guess it relies upon the interrupt controller being able
-> > to read this state, but (hopefully) the GIC can?
->
-> I didn't read synchronize_irq() more than the single line summary. I
-> thought it would only make sure other irq handlers have finished, which
-> is beside the point of some long section of code that has disabled irqs
-> on CPU0 with local_irq_disable(). And further more, presumably the irq
-> handler could be threaded, and then we could put a sufficiently large
-> msleep() at the start of geni_spi_isr() and see the same problem?
+elapsed time: 727m
 
-As I understand it synchronize_irq():
-1. If the interrupt is not running but is pending at a hardware level,
-it'll wait.
-2. If the interrupt is currently running it waits for it to finish.
+configs tested: 176
+configs skipped: 2
 
-That should handle all the cases you're talking about including
-waiting for the threaded IRQ handler.  There's an explicit comment
-about the threaded IRQ being accounted for in synchronize_irq():
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-https://elixir.bootlin.com/linux/v5.9/source/kernel/irq/manage.c#L134
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       omap2plus_defconfig
+mips                         db1xxx_defconfig
+powerpc                      cm5200_defconfig
+mips                        maltaup_defconfig
+powerpc                     skiroot_defconfig
+mips                        workpad_defconfig
+arm                        shmobile_defconfig
+powerpc                     ep8248e_defconfig
+arm                          pcm027_defconfig
+powerpc                 mpc836x_mds_defconfig
+arc                         haps_hs_defconfig
+sh                             shx3_defconfig
+arm                          ixp4xx_defconfig
+arm                          simpad_defconfig
+mips                           ip28_defconfig
+mips                           ci20_defconfig
+arm                            zeus_defconfig
+sh                           se7343_defconfig
+sh                            migor_defconfig
+mips                        vocore2_defconfig
+arm                         orion5x_defconfig
+arm                     eseries_pxa_defconfig
+arm                      tct_hammer_defconfig
+powerpc                    mvme5100_defconfig
+powerpc                      acadia_defconfig
+arm                          imote2_defconfig
+mips                           gcw0_defconfig
+sh                          kfr2r09_defconfig
+sh                           se7724_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                           viper_defconfig
+powerpc                     asp8347_defconfig
+powerpc                         ps3_defconfig
+sh                           se7705_defconfig
+sh                        sh7763rdp_defconfig
+sparc64                          alldefconfig
+h8300                               defconfig
+sh                          rsk7201_defconfig
+mips                     loongson1c_defconfig
+powerpc                  storcenter_defconfig
+arm                      footbridge_defconfig
+arm                          iop32x_defconfig
+arc                            hsdk_defconfig
+mips                           rs90_defconfig
+arm                          collie_defconfig
+openrisc                    or1ksim_defconfig
+mips                        bcm63xx_defconfig
+m68k                         apollo_defconfig
+mips                          ath25_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                        oxnas_v6_defconfig
+s390                                defconfig
+arm                        spear6xx_defconfig
+arm                         s3c6400_defconfig
+mips                            ar7_defconfig
+arm                       versatile_defconfig
+powerpc                        icon_defconfig
+c6x                                 defconfig
+mips                             allyesconfig
+mips                          rb532_defconfig
+mips                        bcm47xx_defconfig
+powerpc                     tqm8541_defconfig
+m68k                             alldefconfig
+arm                          ep93xx_defconfig
+arm                        cerfcube_defconfig
+arm                       multi_v4t_defconfig
+sh                          urquell_defconfig
+sh                          sdk7786_defconfig
+powerpc                      ppc64e_defconfig
+arm                         palmz72_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                         shannon_defconfig
+sh                               j2_defconfig
+m68k                       m5249evb_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                               alldefconfig
+m68k                          amiga_defconfig
+powerpc                      ppc40x_defconfig
+mips                          rm200_defconfig
+arm                             mxs_defconfig
+riscv                            alldefconfig
+powerpc                      arches_defconfig
+m68k                        m5272c3_defconfig
+powerpc                 mpc837x_rdb_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201209
+i386                 randconfig-a005-20201209
+i386                 randconfig-a001-20201209
+i386                 randconfig-a002-20201209
+i386                 randconfig-a006-20201209
+i386                 randconfig-a003-20201209
+x86_64               randconfig-a016-20201209
+x86_64               randconfig-a012-20201209
+x86_64               randconfig-a013-20201209
+x86_64               randconfig-a014-20201209
+x86_64               randconfig-a015-20201209
+x86_64               randconfig-a011-20201209
+x86_64               randconfig-a016-20201210
+x86_64               randconfig-a012-20201210
+x86_64               randconfig-a013-20201210
+x86_64               randconfig-a015-20201210
+x86_64               randconfig-a014-20201210
+x86_64               randconfig-a011-20201210
+i386                 randconfig-a013-20201209
+i386                 randconfig-a014-20201209
+i386                 randconfig-a011-20201209
+i386                 randconfig-a015-20201209
+i386                 randconfig-a012-20201209
+i386                 randconfig-a016-20201209
+i386                 randconfig-a014-20201210
+i386                 randconfig-a013-20201210
+i386                 randconfig-a012-20201210
+i386                 randconfig-a011-20201210
+i386                 randconfig-a016-20201210
+i386                 randconfig-a015-20201210
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a004-20201209
+x86_64               randconfig-a006-20201209
+x86_64               randconfig-a005-20201209
+x86_64               randconfig-a001-20201209
+x86_64               randconfig-a002-20201209
+x86_64               randconfig-a003-20201209
+x86_64               randconfig-a003-20201210
+x86_64               randconfig-a006-20201210
+x86_64               randconfig-a002-20201210
+x86_64               randconfig-a005-20201210
+x86_64               randconfig-a004-20201210
+x86_64               randconfig-a001-20201210
 
-> > If it doesn't work like I think it does, I'd be OK with peeking in the
-> > IRQ status register, but we shouldn't _skip_ the logic IMO.  As long
-> > as we believe that an interrupt could happen in the future we
-> > shouldn't return from handle_fifo_timeout().  It's impossible to
-> > reason about how future transfers would work if the pending interrupt
-> > from the previous transfer could fire at any point.
->
-> Right. I just meant skip the timeout handling logic. We'd have to go
-> back to the timeout and keep waiting until the irq handler can run and
-> complete the completion variable.
->
-> I forgot that this is half handled in the spi core though. Peeking at
-> m_irq doesn't look very easy to implement. It certainly seems like this
-> means the timeout handler is busted and the diagram earlier could
-> indicate that spi core is driving this logic from
-> spi_transfer_one_message().
-
-My assumption was that it was still OK (even if not perfect) to still
-process it as a timeout.  I just want to really make sure a future
-interrupt isn't going to show up.
-
-If we want to try to do better, we can do timeout handling ourselves.
-The SPI core allows for that.
-
-
-> So why don't we check for cur_xfer being NULL in the rx/tx handling
-> paths too and bail out there? Does the FIFO need to be cleared out in
-> such a situation that spi core thinks a timeout happened but there's RX
-> data according to m_irq? Do we need to read it all and throw it away? Or
-> does the abort/cancel clear out the RX fifo?
-
-I don't know for sure, but IMO it's safest to read anything that's in
-the FIFO.  It's also important to adjust the watermark in the TX case.
-The suggestions I provided in my original reply (#2 and #3) handle
-this and are plenty simple.
-
-As per my original reply, though, anything we do in the ISR doesn't
-replace the changes we need to make to handle_fifo_timeout().  It is
-very important that when handle_fifo_timeout() finishes that no future
-interrupts for old transfers will fire.
-
-
--Doug
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
