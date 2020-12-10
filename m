@@ -2,64 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4602D53A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BBE2D53A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733056AbgLJGMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:12:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45608 "EHLO mail.kernel.org"
+        id S1733073AbgLJGNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:13:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726599AbgLJGMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:12:45 -0500
-Date:   Thu, 10 Dec 2020 11:41:59 +0530
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607580724;
-        bh=r9wyDFg8O/r1K7atmGgAZ2BIJyMKVZJCm3IQiQb41JI=;
+        id S1730894AbgLJGNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 01:13:21 -0500
+Date:   Thu, 10 Dec 2020 07:12:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607580760;
+        bh=TiHZAMbjTBaRiELh0z3ZLfW5HFrvHNV7sgm6yAtLliE=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LypWrH+GHgNCyH8VhsVUT9ofvKkHL3hr7mg1julltsWv8Ui8pYtYLmbEHj4W0Ugjf
-         lLybpTxPZFkMLzrsvWTb/s1p09vCyD1KsOQJO2HeZ+qRtDB8IAsyF+cRYwT7669InB
-         p8VDtYvbQlGpSvTSiPzelC2TAC/ImfyhxUnMbnsdC8SnxK3bTFi71HWLkHz19nJbSn
-         WPZtLpRY4BffBBaqwNDiROkcorubEGqoe3/qN/hcaPC9+D97ThHaYUMA9fpQ9bm81i
-         alNuYOnAm38C8MYJguh7BFDEA7vqKYtwkzgX2pwxUWTyGYISAs8OCXX6slZbcWipIK
-         q9w6ryp7WIppg==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Taniya Das <tdas@codeaurora.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] dt-bindings: clock: Add SM8350 GCC clock bindings
-Message-ID: <20201210061159.GM8403@vkoul-mobl>
-References: <20201208064702.3654324-1-vkoul@kernel.org>
- <20201208064702.3654324-4-vkoul@kernel.org>
- <20201210040116.GA1639067@robh.at.kernel.org>
+        b=pWOwlLjnA+NedqwemeCHQBWiXMX7qPiArvKXw+ronfShOaU0OfU0iUwIkaN6LZcTm
+         w0BsG8FbC7QB36AasiVREm6q+DvUmFi64Xr9Osldz7vQ6YyKT5Ci6myMW1YI8HqzVO
+         Yd5/QvV9j4jNRSRSs3sDoOjbbIaxh4n21xLTLMKk=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     pawell@cadence.com, peter.chen@nxp.com, rogerq@ti.com,
+        a-govindraju@ti.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: cdns3: Fixed kernel test robot warning
+Message-ID: <X9G8VDtkaM11m2Co@kroah.com>
+References: <1607544952-4891-1-git-send-email-jrdr.linux@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201210040116.GA1639067@robh.at.kernel.org>
+In-Reply-To: <1607544952-4891-1-git-send-email-jrdr.linux@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-12-20, 22:01, Rob Herring wrote:
-> On Tue, Dec 08, 2020 at 12:17:00PM +0530, Vinod Koul wrote:
-
-> > +required:
-> > +  - compatible
-> > +  - clocks
-> > +  - clock-names
-> > +  - reg
-> > +  - '#clock-cells'
-> > +  - '#reset-cells'
+On Thu, Dec 10, 2020 at 01:45:52AM +0530, Souptick Joarder wrote:
+> Kernel test robot throws below warning ->
 > 
-> You may or may not have power domains?
+> In file included from drivers/usb/cdns3/core.c:23:
+> >> drivers/usb/cdns3/host-export.h:27:51: warning: 'struct usb_hcd'
+> >> declared inside parameter list will not be visible outside of this
+> >> definition or declaration
+>       27 | static inline int xhci_cdns3_suspend_quirk(struct usb_hcd
+> *hcd)
+>          |                                                   ^~~~~~~
+> 
+> This patch will silence it.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> ---
+>  drivers/usb/cdns3/host-export.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/cdns3/host-export.h b/drivers/usb/cdns3/host-export.h
+> index fb8541b..c1259af 100644
+> --- a/drivers/usb/cdns3/host-export.h
+> +++ b/drivers/usb/cdns3/host-export.h
+> @@ -24,7 +24,7 @@ static inline int cdns_host_init(struct cdns *cdns)
+>  }
+>  
+>  static inline void cdns_host_exit(struct cdns *cdns) { }
+> -static inline int xhci_cdns3_suspend_quirk(struct usb_hcd *hcd)
+> +static int xhci_cdns3_suspend_quirk(struct usb_hcd *hcd)
 
-I have not added them in the driver yet, so I dont think it made sense
-to add them when they are not present. For basic stuff it is not
-required but eventually yes, so I plan to update binding and driver at
-that time
+That should not change anything for this warning, sorry.
 
--- 
-~Vinod
