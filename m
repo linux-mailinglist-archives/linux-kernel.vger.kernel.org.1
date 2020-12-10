@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1D62D5B34
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A76C2D5B2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389008AbgLJNGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:06:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388969AbgLJNFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:05:42 -0500
-Date:   Thu, 10 Dec 2020 14:04:58 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607605501;
-        bh=QfxBs6xsDWifop4pj9KY8wDcPJ8Vl6EbUNEX5HTK6bI=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jFbo3DNwNSuIHvkJWsBp2iv6118FOBvK79DyXB/4nofo5MYf4QJCcYOzFDsmjBHv2
-         qf4xo4QuMGH8QLMvDI9P5mC8zYHIHwJw9KBt91sE+aGlqX3L+mCo50t/AiKy0+KJGv
-         qQSaWX1byGHGZd+UDoMvSE4w2KVG4Mj7VwghnAMDDR0b3itZuOlMrP26/fL1nH4xZA
-         OCJz2D2QAr9pJyRRmCklm5EH76mUv79iahraiYU7pIUYfIHahd2Vn/aNA+kd4idVa5
-         3PHfiNMxgU0ucAnrgZmAhPAYUFo1pwY/mv46Nnu8NCCJAjBzt403q7yY6Djtz4ULpr
-         cabN6W788P+1w==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: NOHZ tick-stop error: Non-RCU local softirq work is pending
-Message-ID: <20201210130458.GA150462@lothringen>
-References: <20201118175218.GA16039@paulmck-ThinkPad-P72>
- <20201118175420.GA17381@paulmck-ThinkPad-P72>
+        id S2388650AbgLJNEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:04:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731240AbgLJNEy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 08:04:54 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF3FC0613D6;
+        Thu, 10 Dec 2020 05:04:14 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id o4so4179122pgj.0;
+        Thu, 10 Dec 2020 05:04:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=92Wh2LQtBXzTX4NkNdCAHhIqaKi2BFUPf+cbDuzZ2dM=;
+        b=FBMPE2JaoBmrOk3y40Mrmo8b1Mvkmv7ogxXi/Fxml/kMrLZjoWb3g6V1eeHeaSuBf6
+         lpP6yv9RhhduV0xpST+COmF6of3lXMi9gdBpiz16bzy7tscOk2EdY8Oa5EJll5qrMII7
+         rMGmNJmTsIg+86qlY0EF9tEuPhIopz0sTxiYSrPJFA6wQi510LFJQxKGBH90CVlOjT6T
+         8wisBOIVM8xpVLOUpvDc7PeJTu5hKYlpznhQVb0wdXzBuzeI9ZnTyEII/X+zoEuZTOmy
+         e0q+nZlanVaFzW9lBFv9yM/QNrG+7Fhf+HYGlM59T7cJlFye0iospfsZZ+1JLXWmD0Sp
+         t2IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=92Wh2LQtBXzTX4NkNdCAHhIqaKi2BFUPf+cbDuzZ2dM=;
+        b=H3tWHBd0rSkIVcg99qFd6KcJNbxHElVdKAoHnyeNgu3afc1dwxAJlOb7wyNUWsu0nL
+         jU/tn1T7+sPYLlfG2MxrKgFAsHTzdGCJXjn6gq2Nu/31VPgzWV9rj7VX9O1hgcm0H+NL
+         GNR8/unGpqJL+ujpWdX/vdXvSWN98WBJPrI7ixDf6KOJiMF1nyDGc1z/rQVVWLXfZHu+
+         kF1bVXI7zqXlfaiZd6lpdbBgc6+Qk7LtditmVuH5w4X1XG4h0eOJR3o08FrlF0dEnvTu
+         WUvX8Eb1+k0qbncQUVtoVrmhH8ZkjEb7aGeGND05v18uysXokeLkPMYuDtLfIRGGfpxG
+         lOFA==
+X-Gm-Message-State: AOAM5331z9D9CVBytrM7oyo9y48+HxNqGmvohqUVYCeD+6uXkOUqOrYR
+        VsG3JBlQZzoY59YdXA29/Av2//c7CGCyWc5MBj0=
+X-Google-Smtp-Source: ABdhPJx6pQh8UTUI6wTm+2am3BYMKhPGQWSY4Ulu5ZwL6w0nVgmYWZh7f4gx79f7WBvYQAFphvYasrY2UUg54Dkc8U8=
+X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr7555981pjf.181.1607605454205;
+ Thu, 10 Dec 2020 05:04:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118175420.GA17381@paulmck-ThinkPad-P72>
+References: <20201113105441.1427-1-sakari.ailus@linux.intel.com> <X9Hdg3lJm+TZAQGX@alley>
+In-Reply-To: <X9Hdg3lJm+TZAQGX@alley>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 10 Dec 2020 15:05:02 +0200
+Message-ID: <CAHp75VcY_b7uaGWoEa1Y6YDk0MmmzC4hV2yx8zVT7J-fD67Hyg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] lib/vsprintf: Add support for printing V4L2 and
+ DRM fourccs
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 09:54:20AM -0800, Paul E. McKenney wrote:
-> On Wed, Nov 18, 2020 at 09:52:18AM -0800, Paul E. McKenney wrote:
-> > Hello, Frederic,
-> > 
-> > Here is the last few months' pile of warnings from rcutorture runs.
-> 
-> And this time with scenario names.  ;-)
-> 
-> 								Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> ./2020.11.02-12.05.02/TREE02/console.log:[  255.098527] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #282!!!
-> ./2020.09.01-17.20.03/LOCK05.3/console.log:[  414.534548] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.09.01-17.20.03/LOCK05.3/console.log:[ 3798.654736] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.09.01-17.20.03/LOCK05.2/console.log:[ 1718.589367] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.09.01-17.20.03/LOCK05.2/console.log:[ 6632.777655] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.10.29-16.54.07/SRCU-P/console.log:[ 2873.688490] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.11.02-17.25.58/TREE05/console.log:[ 3081.738937] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.11.04-19.46.51/SRCU-N/console.log:[ 2673.597523] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.09.02-17.17.02/LOCK05.3/console.log:[ 1467.372887] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.09.02-17.17.02/LOCK05/console.log:[   34.371094] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.09.02-17.17.02/LOCK05/console.log:[ 1147.260097] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.11.14-16.00.39/SRCU-P/console.log:[ 5066.699589] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.10.12-21.08.28/SRCU-P/console.log:[  816.338843] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.09.02-15.27.04/LOCK05/console.log:[   34.338836] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.09.10-02.28.14/TREE01/console.log:[ 1234.111394] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-> ./2020.09.10-02.28.14/TREE01/console.log:[ 1282.109415] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-> ./2020.09.10-02.28.14/TREE07/console.log:[  239.215890] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-> ./2020.09.10-02.28.14/TREE07/console.log:[  367.918969] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-> ./2020.09.10-02.28.14/TREE07/console.log:[ 1461.037894] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.09.10-02.28.14/TREE07/console.log:[ 1503.810903] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-> ./2020.09.10-02.28.14/TREE07/console.log:[ 1503.811939] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-> ./2020.09.10-02.28.14/TRACE01/console.log:[  699.514824] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-> ./2020.09.10-02.28.14/SRCU-P/console.log:[  751.681629] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-> ./2020.09.10-02.28.14/TREE02/console.log:[  287.770126] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-> ./2020.09.10-02.28.14/TREE02/console.log:[  287.771096] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-> ./2020.09.10-02.28.14/TREE05/console.log:[  648.009370] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.09.10-02.28.14/TREE05/console.log:[  924.733405] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-> ./2020.09.10-02.28.14/TREE05/console.log:[  924.734011] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-> ./2020.09.10-02.28.14/TREE05/console.log:[ 1743.197353] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #02!!!
-> ./2020.09.10-02.28.14/TREE04/console.log:[ 1528.161635] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-> ./2020.09.10-02.28.14/TREE04/console.log:[ 1528.162313] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-> ./2020.10.30-11.47.17/TREE08/console.log:[  265.201513] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-> ./2020.10.30-11.47.17/TREE08/console.log:[  473.137587] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-> ./2020.11.05-11.47.22/TREE08/console.log:[  187.375426] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-> ./2020.09.02-16.20.12/LOCK05/console.log:[ 1361.544451] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-> ./2020.11.06-17.37.06/TREE05/console.log:[   79.519727] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
+On Thu, Dec 10, 2020 at 2:16 PM Petr Mladek <pmladek@suse.com> wrote:
+> On Fri 2020-11-13 12:54:41, Sakari Ailus wrote:
+> > Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
+> > pixel formats denoted by fourccs. The fourcc encoding is the same for both
+> > so the same implementation can be used.
+> >
+> > Suggested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+>
+> Andy, Rasmus,
+>
+> the last version looks fine to me. I am going to push it.
+> Please, speak up if you are against it.
 
-I'm having a hard time reproducing this. After trying a batch of 10 TREE05, I'm
-trying now with 10 SRCU-P, let's see how it goes.
+My concerns are:
+- not so standard format of representation (why not to use
+string_escape_mem() helper?) or is it?
+- no compatibility with generic 4cc
+  (I would rather have an additional specifier here for v4l2 cases.
+OTOH generic %p4cc to me sounds like an equivalent to %4pEh (but we
+have similar cases with MAC where %6ph is the same as %pM).
 
-Thanks.
+But I'm not insisting on them, consider it like just my 2 cents to the
+discussion.
+
+-- 
+With Best Regards,
+Andy Shevchenko
