@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7322D66AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEEFF2D66D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404265AbgLJThv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:37:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36560 "EHLO mail.kernel.org"
+        id S2390152AbgLJO2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:28:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390177AbgLJO2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:28:51 -0500
+        id S2390089AbgLJO2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:28:07 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 10/45] net: pasemi: fix error return code in pasemi_mac_open()
-Date:   Thu, 10 Dec 2020 15:26:24 +0100
-Message-Id: <20201210142602.874364915@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        Vamsi Krishna Samavedam <vskrishn@codeaurora.org>,
+        Jack Pham <jackp@codeaurora.org>
+Subject: [PATCH 4.4 16/39] usb: gadget: f_fs: Use local copy of descriptors for userspace copy
+Date:   Thu, 10 Dec 2020 15:26:27 +0100
+Message-Id: <20201210142601.703946773@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
-References: <20201210142602.361598591@linuxfoundation.org>
+In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
+References: <20201210142600.887734129@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,48 +32,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
 
-[ Upstream commit aba84871bd4f52c4dfcf3ad5d4501a6c9d2de90e ]
+commit a4b98a7512f18534ce33a7e98e49115af59ffa00 upstream.
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+The function may be unbound causing the ffs_ep and its descriptors
+to be freed while userspace is in the middle of an ioctl requesting
+the same descriptors. Avoid dangling pointer reference by first
+making a local copy of desctiptors before releasing the spinlock.
 
-Fixes: 72b05b9940f0 ("pasemi_mac: RX/TX ring management cleanup")
-Fixes: 8d636d8bc5ff ("pasemi_mac: jumbo frame support")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Link: https://lore.kernel.org/r/1606903035-1838-1-git-send-email-zhangchangzhong@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: c559a3534109 ("usb: gadget: f_fs: add ioctl returning ep descriptor")
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Signed-off-by: Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201130203453.28154-1-jackp@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/pasemi/pasemi_mac.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/pasemi/pasemi_mac.c
-+++ b/drivers/net/ethernet/pasemi/pasemi_mac.c
-@@ -1089,16 +1089,20 @@ static int pasemi_mac_open(struct net_de
+---
+ drivers/usb/gadget/function/f_fs.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -1034,7 +1034,7 @@ static long ffs_epfile_ioctl(struct file
+ 		case FUNCTIONFS_ENDPOINT_DESC:
+ 		{
+ 			int desc_idx;
+-			struct usb_endpoint_descriptor *desc;
++			struct usb_endpoint_descriptor desc1, *desc;
  
- 	mac->tx = pasemi_mac_setup_tx_resources(dev);
+ 			switch (epfile->ffs->gadget->speed) {
+ 			case USB_SPEED_SUPER:
+@@ -1046,10 +1046,12 @@ static long ffs_epfile_ioctl(struct file
+ 			default:
+ 				desc_idx = 0;
+ 			}
++
+ 			desc = epfile->ep->descs[desc_idx];
++			memcpy(&desc1, desc, desc->bLength);
  
--	if (!mac->tx)
-+	if (!mac->tx) {
-+		ret = -ENOMEM;
- 		goto out_tx_ring;
-+	}
- 
- 	/* We might already have allocated rings in case mtu was changed
- 	 * before interface was brought up.
- 	 */
- 	if (dev->mtu > 1500 && !mac->num_cs) {
- 		pasemi_mac_setup_csrings(mac);
--		if (!mac->num_cs)
-+		if (!mac->num_cs) {
-+			ret = -ENOMEM;
- 			goto out_tx_ring;
-+		}
- 	}
- 
- 	/* Zero out rmon counters */
+ 			spin_unlock_irq(&epfile->ffs->eps_lock);
+-			ret = copy_to_user((void *)value, desc, sizeof(*desc));
++			ret = copy_to_user((void *)value, &desc1, desc1.bLength);
+ 			if (ret)
+ 				ret = -EFAULT;
+ 			return ret;
 
 
