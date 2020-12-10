@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AFA2D679D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6612D679F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393596AbgLJTyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:54:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
+        id S2404341AbgLJTzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:55:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393588AbgLJTyQ (ORCPT
+        with ESMTP id S2393645AbgLJTzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:54:16 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8ACC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:53:36 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id z188so6079783qke.9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:53:36 -0800 (PST)
+        Thu, 10 Dec 2020 14:55:36 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB82C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:54:56 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id c7so6845238edv.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:54:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kpO1u5hzYEH5V8S5yxIwbQt0kkL6XU1TzxqvExx1i4k=;
-        b=ERm45IL/CRSJ7ej7ihQMRlmsjMj0UWbObRchoUkR0DpqcN1AgUT6ViR0I1oNQJ5Ipf
-         arQEdra+dR99zB/dZ0VZr+dcYQOoSsSMsqpQ8FI+ASV731sV1V8AOHCjJvtL/dH8E7Z2
-         EobL420DahxpHvJGKsNk02RZZ6hY4OmJoTWl9DMWiPwjJBOu1AOzgs0G61yODm0gQV0k
-         VFlkHt12xfW9cChSwPfLwyAmK3zZxhWhiYs4u0khpM9FP00ebOcWPXpEiaoNWSRxh1B0
-         OkBWVT09oHA0N8N2hVsW4A6kiKkt01i5VfILKKYTcoVuaa9GI1p9XOdu1/SHFpkfo/tE
-         LdSQ==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jiqhdpxyPB2qhSSL8lmFRULkbulVtgbgM3x8Yn9WIks=;
+        b=AQf++TUte2ltHpibq5Gju3qOiL3gtd1QwSaE59Zg0LsQw0zfjWW1HRIjo9mBANVxxH
+         g2yUJArXsTS3kiJYk8vnpJm/oDoorxtLFcUedB6/Ott4sfP1HkYEs9t7U26t6bey9sTA
+         Er4F3CqzLKP85p3pj8B2B6a7zErOigfFrDZZ9E7gNU686C6eHUdLXUmgUjC2P4bVgU/t
+         Oll8359JTX5UYeF11kTF1p01Spfeg705guksa4L+rg+PsJ7z3XD0xgGoF7BtmGAl7g7Q
+         /+qZmbbMRwbJxIZ7nzM/qn2BqIpL3ylAOl0oe7DirzZefatNhRi/T6dEcsk+MYr6sXSa
+         cF1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kpO1u5hzYEH5V8S5yxIwbQt0kkL6XU1TzxqvExx1i4k=;
-        b=i74Hc9PxYuSDzf7EpeezJBzN2vQnWBaxgCqO8XxM6aAfNpjo2qVxpf2NVkm5NnELqh
-         wZav5bv2+MNeF9MMgCugR9CQKNBWvh+H1wCDe6Nlew23+FcOOPg3iNamCUR5+mWflC+1
-         S45LAgjDY5ryuun1fREM54VA7R7XklILw0WJS80HqMzi0x9zAztNQzefl2HrYsy7j+FP
-         cbPQ85xSkYpIjzucbI31LwsJsp6JJ0fWDSfXRh5YilxZHlth0caL+IumgFlhl08ZDVpU
-         ZBgpwCd/azgMMxVSmml5M3nXO3DZrBBg8zJqf6Nku3xQ5hvhT9/v/sLkFgBVWSzAPy4N
-         1FGA==
-X-Gm-Message-State: AOAM532TZJPt6nFVPWToNLm9oDnqBet9u53lTQha7MWOhURmO9jf5K0A
-        musaun8n3dWC/eHjFzIvmcbZUg==
-X-Google-Smtp-Source: ABdhPJxNyjiKIJggTURqLKx/oQq4Q7Jmk8h6KRW1wT9DgA7r5fSDFq6gBpCKYRbs0tGzBN5Tgj8E9g==
-X-Received: by 2002:a05:620a:15ea:: with SMTP id p10mr11509186qkm.172.1607630015501;
-        Thu, 10 Dec 2020 11:53:35 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id b14sm4157697qti.97.2020.12.10.11.53.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 11:53:34 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1knS0L-008vyp-Ue; Thu, 10 Dec 2020 15:53:33 -0400
-Date:   Thu, 10 Dec 2020 15:53:33 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jiqhdpxyPB2qhSSL8lmFRULkbulVtgbgM3x8Yn9WIks=;
+        b=V4L/q5Nr2z6a8BPYM8lar9Bitz6vFSuIAZD/NBbu/51Fde8/5mr/9XjG0hjviZpsmK
+         37rxKliC11AJbPudItctIPW41ZAOnCDNr4rTzb+cE+kTdc3jPVZJk1yh9MU4wpAXF1G5
+         /0P2zBii8J3e5QJrCFEHjDOrYYA66EK3OLq9zDOTNh1PYL47xl4V6Volezfx24F4pSGd
+         TKELqcX4a90FZB3DAvCbe/3QrEiI0i1xlABx/0FC5I2DrwJpkZAOPFFMVW1rAazY89Qk
+         9zKaRrf+RAv7VZORljABPzsV2o4l/49hlJJCQW4jDezxF2LepDLst6//5W38feK5O7E6
+         XBkQ==
+X-Gm-Message-State: AOAM532/hdeD3dBksHHHrcZOZPsFbPzHwrT/2YKYbcCignRLetZ0qPnn
+        3h3Ju4+p4mSg16Jd0dMmwVECs8Ojuw3HTPOpW9REKaIVdfVE6g==
+X-Google-Smtp-Source: ABdhPJy6P/1OMDVVi/Mgffhj7q+Ecrh69fmJZ7dv7K4HV4Uijlx/0siUn7Ux4OH+Kcm9DmIKFaYocoPNZYKKhggZsDE=
+X-Received: by 2002:a50:d757:: with SMTP id i23mr8539200edj.116.1607630094894;
+ Thu, 10 Dec 2020 11:54:54 -0800 (PST)
+MIME-Version: 1.0
+References: <20201210004335.64634-1-pasha.tatashin@soleen.com>
+ <20201210004335.64634-4-pasha.tatashin@soleen.com> <20201210040618.GR1563847@iweiny-DESK2.sc.intel.com>
+ <CA+CK2bCVEnKKatQSxZcdcvNo+9rWNrGWXyLS3dnF-y7=5Ery7g@mail.gmail.com>
+ <20201210174431.GT1563847@iweiny-DESK2.sc.intel.com> <CA+CK2bBbN9dxqD_ntAPACfjJmwahPEyP36cb7koVm212nzsuKw@mail.gmail.com>
+ <20201210195333.GZ5487@ziepe.ca>
+In-Reply-To: <20201210195333.GZ5487@ziepe.ca>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 10 Dec 2020 14:54:19 -0500
+Message-ID: <CA+CK2bCgEwa=dP4mUPkYy9vF+feXiWGQPM0gv6wZTd3j5Y6nyQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/8] mm/gup: make __gup_longterm_locked common
+To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Ira Weiny <ira.weiny@intel.com>,
         LKML <linux-kernel@vger.kernel.org>,
         linux-mm <linux-mm@kvack.org>,
@@ -74,32 +76,29 @@ Cc:     Ira Weiny <ira.weiny@intel.com>,
         David Rientjes <rientjes@google.com>,
         John Hubbard <jhubbard@nvidia.com>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 3/8] mm/gup: make __gup_longterm_locked common
-Message-ID: <20201210195333.GZ5487@ziepe.ca>
-References: <20201210004335.64634-1-pasha.tatashin@soleen.com>
- <20201210004335.64634-4-pasha.tatashin@soleen.com>
- <20201210040618.GR1563847@iweiny-DESK2.sc.intel.com>
- <CA+CK2bCVEnKKatQSxZcdcvNo+9rWNrGWXyLS3dnF-y7=5Ery7g@mail.gmail.com>
- <20201210174431.GT1563847@iweiny-DESK2.sc.intel.com>
- <CA+CK2bBbN9dxqD_ntAPACfjJmwahPEyP36cb7koVm212nzsuKw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bBbN9dxqD_ntAPACfjJmwahPEyP36cb7koVm212nzsuKw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 01:57:20PM -0500, Pavel Tatashin wrote:
+On Thu, Dec 10, 2020 at 2:53 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Thu, Dec 10, 2020 at 01:57:20PM -0500, Pavel Tatashin wrote:
+>
+> > Thank you. Yes, this series should be backported, but I am not sure
+> > what to do about Jason's patch. Perhaps, in the next version I will
+> > send out this series together with his patch.
+>
+> You need to send out patches that can be applied on top of linux-next,
+> at this point the window to go to rc kernels is done.
+>
+> When you eventually want this back ported to stables then suggest they
+> take my patch as a pre-requisite.
 
-> Thank you. Yes, this series should be backported, but I am not sure
-> what to do about Jason's patch. Perhaps, in the next version I will
-> send out this series together with his patch.
+Sounds good.
 
-You need to send out patches that can be applied on top of linux-next,
-at this point the window to go to rc kernels is done.
+Thanks,
+Pasha
 
-When you eventually want this back ported to stables then suggest they
-take my patch as a pre-requisite.
-
-Jason
+>
+> Jason
