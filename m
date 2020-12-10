@@ -2,30 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 388E12D605D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013B32D5FFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392014AbgLJPst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:48:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46710 "EHLO mail.kernel.org"
+        id S2391365AbgLJOkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:40:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391210AbgLJOjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:39:09 -0500
+        id S1729811AbgLJOfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:35:36 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 5.9 29/75] i2c: imx: Fix reset of I2SR_IAL flag
-Date:   Thu, 10 Dec 2020 15:26:54 +0100
-Message-Id: <20201210142607.490267087@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.4 18/54] ftrace: Fix updating FTRACE_FL_TRAMP
+Date:   Thu, 10 Dec 2020 15:26:55 +0100
+Message-Id: <20201210142602.940778190@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
-References: <20201210142606.074509102@linuxfoundation.org>
+In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
+References: <20201210142602.037095225@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -34,78 +32,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Eggers <ceggers@arri.de>
+From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
-commit 384a9565f70a876c2e78e58c5ca0bbf0547e4f6d upstream.
+commit 4c75b0ff4e4bf7a45b5aef9639799719c28d0073 upstream.
 
-According to the "VFxxx Controller Reference Manual" (and the comment
-block starting at line 97), Vybrid requires writing a one for clearing
-an interrupt flag. Syncing the method for clearing I2SR_IIF in
-i2c_imx_isr().
+On powerpc, kprobe-direct.tc triggered FTRACE_WARN_ON() in
+ftrace_get_addr_new() followed by the below message:
+  Bad trampoline accounting at: 000000004222522f (wake_up_process+0xc/0x20) (f0000001)
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Fixes: 4b775022f6fd ("i2c: imx: add struct to hold more configurable quirks")
-Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+The set of steps leading to this involved:
+- modprobe ftrace-direct-too
+- enable_probe
+- modprobe ftrace-direct
+- rmmod ftrace-direct <-- trigger
+
+The problem turned out to be that we were not updating flags in the
+ftrace record properly. From the above message about the trampoline
+accounting being bad, it can be seen that the ftrace record still has
+FTRACE_FL_TRAMP set though ftrace-direct module is going away. This
+happens because we are checking if any ftrace_ops has the
+FTRACE_FL_TRAMP flag set _before_ updating the filter hash.
+
+The fix for this is to look for any _other_ ftrace_ops that also needs
+FTRACE_FL_TRAMP.
+
+Link: https://lkml.kernel.org/r/56c113aa9c3e10c19144a36d9684c7882bf09af5.1606412433.git.naveen.n.rao@linux.vnet.ibm.com
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: a124692b698b0 ("ftrace: Enable trampoline when rec count returns back to one")
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/i2c/busses/i2c-imx.c |   22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ kernel/trace/ftrace.c |   22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -412,6 +412,19 @@ static void i2c_imx_dma_free(struct imx_
- 	dma->chan_using = NULL;
- }
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -1626,6 +1626,8 @@ static bool test_rec_ops_needs_regs(stru
+ static struct ftrace_ops *
+ ftrace_find_tramp_ops_any(struct dyn_ftrace *rec);
+ static struct ftrace_ops *
++ftrace_find_tramp_ops_any_other(struct dyn_ftrace *rec, struct ftrace_ops *op_exclude);
++static struct ftrace_ops *
+ ftrace_find_tramp_ops_next(struct dyn_ftrace *rec, struct ftrace_ops *ops);
  
-+static void i2c_imx_clear_irq(struct imx_i2c_struct *i2c_imx, unsigned int bits)
-+{
-+	unsigned int temp;
+ static bool __ftrace_hash_rec_update(struct ftrace_ops *ops,
+@@ -1763,7 +1765,7 @@ static bool __ftrace_hash_rec_update(str
+ 			 * to it.
+ 			 */
+ 			if (ftrace_rec_count(rec) == 1 &&
+-			    ftrace_find_tramp_ops_any(rec))
++			    ftrace_find_tramp_ops_any_other(rec, ops))
+ 				rec->flags |= FTRACE_FL_TRAMP;
+ 			else
+ 				rec->flags &= ~FTRACE_FL_TRAMP;
+@@ -2185,6 +2187,24 @@ ftrace_find_tramp_ops_any(struct dyn_ftr
+ 			continue;
+ 
+ 		if (hash_contains_ip(ip, op->func_hash))
++			return op;
++	} while_for_each_ftrace_op(op);
 +
-+	/*
-+	 * i2sr_clr_opcode is the value to clear all interrupts. Here we want to
-+	 * clear only <bits>, so we write ~i2sr_clr_opcode with just <bits>
-+	 * toggled. This is required because i.MX needs W0C and Vybrid uses W1C.
-+	 */
-+	temp = ~i2c_imx->hwdata->i2sr_clr_opcode ^ bits;
-+	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
++	return NULL;
 +}
 +
- static int i2c_imx_bus_busy(struct imx_i2c_struct *i2c_imx, int for_busy, bool atomic)
- {
- 	unsigned long orig_jiffies = jiffies;
-@@ -424,8 +437,7 @@ static int i2c_imx_bus_busy(struct imx_i
++static struct ftrace_ops *
++ftrace_find_tramp_ops_any_other(struct dyn_ftrace *rec, struct ftrace_ops *op_exclude)
++{
++	struct ftrace_ops *op;
++	unsigned long ip = rec->ip;
++
++	do_for_each_ftrace_op(op, ftrace_ops_list) {
++
++		if (op == op_exclude || !op->trampoline)
++			continue;
++
++		if (hash_contains_ip(ip, op->func_hash))
+ 			return op;
+ 	} while_for_each_ftrace_op(op);
  
- 		/* check for arbitration lost */
- 		if (temp & I2SR_IAL) {
--			temp &= ~I2SR_IAL;
--			imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
-+			i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
- 			return -EAGAIN;
- 		}
- 
-@@ -469,7 +481,7 @@ static int i2c_imx_trx_complete(struct i
- 		 */
- 		readb_poll_timeout_atomic(addr, regval, regval & I2SR_IIF, 5, 1000 + 100);
- 		i2c_imx->i2csr = regval;
--		imx_i2c_write_reg(0, i2c_imx, IMX_I2C_I2SR);
-+		i2c_imx_clear_irq(i2c_imx, I2SR_IIF | I2SR_IAL);
- 	} else {
- 		wait_event_timeout(i2c_imx->queue, i2c_imx->i2csr & I2SR_IIF, HZ / 10);
- 	}
-@@ -623,9 +635,7 @@ static irqreturn_t i2c_imx_isr(int irq,
- 	if (temp & I2SR_IIF) {
- 		/* save status register */
- 		i2c_imx->i2csr = temp;
--		temp &= ~I2SR_IIF;
--		temp |= (i2c_imx->hwdata->i2sr_clr_opcode & I2SR_IIF);
--		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
-+		i2c_imx_clear_irq(i2c_imx, I2SR_IIF);
- 		wake_up(&i2c_imx->queue);
- 		return IRQ_HANDLED;
- 	}
 
 
