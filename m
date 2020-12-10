@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C242D62D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB1A2D6269
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391442AbgLJRAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:00:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43650 "EHLO mail.kernel.org"
+        id S2391096AbgLJOhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:37:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730417AbgLJOgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:12 -0500
+        id S2390796AbgLJOeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:34:14 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Mark Brown <broonie@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH 5.4 39/54] spi: bcm2835: Release the DMA channel if probe fails after dma_init
-Date:   Thu, 10 Dec 2020 15:27:16 +0100
-Message-Id: <20201210142603.957582556@linuxfoundation.org>
+        stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.19 38/39] netfilter: nf_tables: avoid false-postive lockdep splat
+Date:   Thu, 10 Dec 2020 15:27:17 +0100
+Message-Id: <20201210142604.165606801@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
+References: <20201210142602.272595094@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,51 +32,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit 666224b43b4bd4612ce3b758c038f9bc5c5e3fcb ]
+commit c0700dfa2cae44c033ed97dade8a2679c7d22a9d upstream.
 
-The DMA channel was not released if either devm_request_irq() or
-devm_spi_register_controller() failed.
+There are reports wrt lockdep splat in nftables, e.g.:
+------------[ cut here ]------------
+WARNING: CPU: 2 PID: 31416 at net/netfilter/nf_tables_api.c:622
+lockdep_nfnl_nft_mutex_not_held+0x28/0x38 [nf_tables]
+...
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Link: https://lore.kernel.org/r/20191212135550.4634-3-peter.ujfalusi@ti.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[lukas: backport to 5.4-stable]
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
+These are caused by an earlier, unrelated bug such as a n ABBA deadlock
+in a different subsystem.
+In such an event, lockdep is disabled and lockdep_is_held returns true
+unconditionally.  This then causes the WARN() in nf_tables.
+
+Make the WARN conditional on lockdep still active to avoid this.
+
+Fixes: f102d66b335a417 ("netfilter: nf_tables: use dedicated mutex to guard transactions")
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Link: https://lore.kernel.org/linux-kselftest/CA+G9fYvFUpODs+NkSYcnwKnXm62tmP=ksLeBPmB+KFrB2rvCtQ@mail.gmail.com/
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/spi/spi-bcm2835.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -1310,21 +1310,22 @@ static int bcm2835_spi_probe(struct plat
- 			       dev_name(&pdev->dev), ctlr);
- 	if (err) {
- 		dev_err(&pdev->dev, "could not request IRQ: %d\n", err);
--		goto out_clk_disable;
-+		goto out_dma_release;
- 	}
- 
- 	err = spi_register_controller(ctlr);
- 	if (err) {
- 		dev_err(&pdev->dev, "could not register SPI controller: %d\n",
- 			err);
--		goto out_clk_disable;
-+		goto out_dma_release;
- 	}
- 
- 	bcm2835_debugfs_create(bs, dev_name(&pdev->dev));
- 
- 	return 0;
- 
--out_clk_disable:
-+out_dma_release:
-+	bcm2835_dma_release(ctlr, bs);
- 	clk_disable_unprepare(bs->clk);
- 	return err;
+---
+ net/netfilter/nf_tables_api.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -532,7 +532,8 @@ static void nft_request_module(struct ne
+ static void lockdep_nfnl_nft_mutex_not_held(void)
+ {
+ #ifdef CONFIG_PROVE_LOCKING
+-	WARN_ON_ONCE(lockdep_nfnl_is_held(NFNL_SUBSYS_NFTABLES));
++	if (debug_locks)
++		WARN_ON_ONCE(lockdep_nfnl_is_held(NFNL_SUBSYS_NFTABLES));
+ #endif
  }
+ 
 
 
