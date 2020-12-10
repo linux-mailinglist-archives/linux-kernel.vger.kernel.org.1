@@ -2,147 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35472D53B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4DC2D53B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733217AbgLJGP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:15:56 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9860 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728264AbgLJGPx (ORCPT
+        id S1733234AbgLJGRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:17:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728264AbgLJGRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:15:53 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cs3Xn5DBMz7C9l;
-        Thu, 10 Dec 2020 14:14:33 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.9) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Dec 2020
- 14:14:58 +0800
-Subject: Re: [PATCH 1/1] dt-bindings: leds: add onboard LED triggers of
- 96Boards
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-CC:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Darshak Patel <darshak.patel@einfochips.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Marian-Cristian Rotariu 
-        <marian-cristian.rotariu.rb@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>
-References: <20201210031203.1901-1-thunder.leizhen@huawei.com>
- <20201210033157.GA6466@thinkpad>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <704f703c-7ed9-6302-60df-7708d0633af0@huawei.com>
-Date:   Thu, 10 Dec 2020 14:14:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Thu, 10 Dec 2020 01:17:16 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616DCC0613CF;
+        Wed,  9 Dec 2020 22:16:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=yUO807Um276FtA7btiIrTKbtdq/+/urED8qmMHlTed4=; b=uHD/s79Zc5ENvsKx0qHo2KxKmA
+        pJBiDhpJWeNP/K7QAEdEgmuAtjnhBBlL+eTqEB2F+l5Z9bSt4ZJgg8EDuPvI0OS/FrsD6V1bxjxuZ
+        vdn3/eMlL+MoNqLnRzJgbj/ubvDBcir5gISijnyCscRqoKzimp6Riin/CUyC0LWLqxt7WDu8HPUN9
+        XPEfymjb71OOUQEdY8t0NOA/IGnW9v7/LqMiFYG8JwnPYFx2rhbnzvSrk3U4WdI9C4ho3Z2tEkj8w
+        H0r24Lod3LzAKiPxMkOUFqtSwPQyGjgKDQBFgseqbI5C/FRHsrdW4Ihcr6GSI1J1tLDAqq5GqeTe3
+        w6NxkaMQ==;
+Received: from [2601:1c0:6280:3f0::1494]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knFFa-0000lG-Tj; Thu, 10 Dec 2020 06:16:27 +0000
+Subject: Re: [PATCH] block: blk-iocost: fix build for ARCH with missing
+ local64.h files
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        linux-c6x-dev@linux-c6x.org, Peter Zijlstra <peterz@infradead.org>
+References: <20201209204657.6676-1-rdunlap@infradead.org>
+ <20201210060742.GA19263@infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <04828b4e-8791-6f3e-8984-9de06f40c85a@infradead.org>
+Date:   Wed, 9 Dec 2020 22:16:20 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201210033157.GA6466@thinkpad>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201210060742.GA19263@infradead.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020/12/10 11:31, Manivannan Sadhasivam wrote:
-> Hi,
+On 12/9/20 10:07 PM, Christoph Hellwig wrote:
+> On Wed, Dec 09, 2020 at 12:46:57PM -0800, Randy Dunlap wrote:
+>> When building block/blk-iocost.c on arch/x6x/ or arch/nios2/, the
+>> build fails due to missing the <asm/local64.h> file.
 > 
-> On Thu, Dec 10, 2020 at 11:12:03AM +0800, Zhen Lei wrote:
->> For all 96Boards, the following standard is used for onboard LEDs.
->>
->> green:user1  default-trigger: heartbeat
->> green:user2  default-trigger: mmc0/disk-activity(onboard-storage)
->> green:user3  default-trigger: mmc1 (SD-card)
->> green:user4  default-trigger: none, panic-indicator
->> yellow:wlan  default-trigger: phy0tx
->> blue:bt      default-trigger: hci0-power
->>
->> Link to 96Boards CE Specification: https://linaro.co/ce-specification
->>
-> 
-> This is just a board configuration and there is absolutely no need to document
-> this in common LED binding. But if your intention is to document the missing
-No, I don't think so. The common just means the property linux,default-trigger
-is common, but not it values. This can be proved by counter-proving：none of
-the triggerrs currently defined in common.yaml is used by 96Boards.
+> Please mark it mandatory-y if the asm-generic version is suitable
+> for everyone and random pieces of kernel code are supposed to include
+> it.
 
-> triggers, then you should look at the patch I submitted long ago.
+include/asm-generic/local64.h has comments about some $arch could do
+its things better/faster instead of using asm-generic, but no $arch has
+done that since 2010 when it was added.
 
-I'm just trying to eliminate the warnings related to Hisilicon that YAML detected.
-So I didn't pay attention to other missing triggers.
+Is that conclusive?
+If it is, why even use mandatory-y?
+Why not just change all occurrences of <asm/local64.h>
+to <asm-generic/local64.h> ?
 
-> 
-> https://lore.kernel.org/patchwork/patch/1146359/
-> 
-> Maybe I should resubmit it again in YAML format. (thanks for reminding me :P)
 
-Yes, I hope that you will resubmit it. After all, these false positives are
-entirely due to YAML's failure to list all triggers. The DTS itself is fine.
-
-By the way, the description of this patch I copied from your patch：
-953d9f390365 arm64: dts: rockchip: Add on-board LED support on rk3399-rock960
-
-That's why I Cc to you.
-
-> 
-> Thanks,
-> Mani
-> 
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> Cc: Darshak Patel <darshak.patel@einfochips.com>
->> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->> Cc: Shawn Guo <shawnguo@kernel.org>
->> Cc: Dong Aisheng <aisheng.dong@nxp.com>
->> Cc: Guodong Xu <guodong.xu@linaro.org>
->> Cc: Wei Xu <xuwei5@hisilicon.com>
->> Cc: Linus Walleij <linus.walleij@linaro.org>
->> Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->> Cc: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
->> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
->> Cc: Heiko Stuebner <heiko@sntech.de>
->> ---
->>  Documentation/devicetree/bindings/leds/common.yaml | 10 ++++++++++
->>  1 file changed, 10 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
->> index f1211e7045f12f3..525752d6c5c84fd 100644
->> --- a/Documentation/devicetree/bindings/leds/common.yaml
->> +++ b/Documentation/devicetree/bindings/leds/common.yaml
->> @@ -97,6 +97,16 @@ properties:
->>          # LED alters the brightness for the specified duration with one software
->>          # timer (requires "led-pattern" property)
->>        - pattern
->> +        #For all 96Boards, Green, disk-activity(onboard-storage)
->> +      - mmc0
->> +        #For all 96Boards, Green, SD-card
->> +      - mmc1
->> +        #For all 96Boards, Green, panic-indicator
->> +      - none
->> +        #For all 96Boards, Yellow, WiFi activity LED
->> +      - phy0tx
->> +        #For all 96Boards, Blue, Bluetooth activity LED
->> +      - hci0-power
->>  
->>    led-pattern:
->>      description: |
->> -- 
->> 1.8.3
->>
->>
-> 
-> .
-> 
-
+thanks.
+-- 
+~Randy
