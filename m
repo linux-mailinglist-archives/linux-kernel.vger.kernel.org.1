@@ -2,126 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1822D6255
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 834522D6258
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391930AbgLJQpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:45:12 -0500
-Received: from ale.deltatee.com ([204.191.154.188]:46608 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731790AbgLJQpC (ORCPT
+        id S2392282AbgLJQp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:45:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391974AbgLJQpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:45:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=NLEerKoLFowaewjPdadKIQl7nLE1s4J5rPHYICcJITQ=; b=crqyakMNfLD0XUfh6F2e3swVLx
-        mTcpouhD/gNOfYXfGn6Ra4lmr58g0DKEFh8v8XZhw7oj3+a2PAQ6gUNE4XzkizYW5DHLyF7Z962+u
-        VOgMKxoM2ZoNxRHEGrF0b8DeCOHUdreOXpoHW86yykGzbOaDPRYZrLjPGRT3Dq5Jj+ROOKFo4RVTC
-        5Qm3rUKnhRLUuRiAammvF8OZt0oHLqzqWos19uRirQOx2TCgMA9I/ZpGTKhrPR3+HiCsA9JBUukjC
-        Id/rXnpnKxi4H2NChsUtSFGKaCBNLpYj+WfkrEFTOTBeR3z3ReJdU/ek2w8kaxqIVYFLxOVpqyS+5
-        pjQzCBCg==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1knP32-000791-LR; Thu, 10 Dec 2020 09:44:09 -0700
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        "open list:DMA MAPPING HELPERS" <iommu@lists.linux-foundation.org>,
-        Stephen Bates <sbates@raithlin.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-References: <20201106170036.18713-1-logang@deltatee.com>
- <20201106170036.18713-5-logang@deltatee.com> <20201109091258.GB28918@lst.de>
- <4e336c7e-207b-31fa-806e-c4e8028524a5@deltatee.com>
- <CAPcyv4ifGcrdOtUt8qr7pmFhmecGHqGVre9G0RorGczCGVECQQ@mail.gmail.com>
- <fba1022b-1425-bb79-9af8-fe68e6f2c56e@deltatee.com>
- <CAPcyv4hr=kM6--OUdK+6XAAEVzENJmy-uD78yK-p62bW8vbu9g@mail.gmail.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <7b08e6e9-eca4-0070-8444-5eb00965a0ad@deltatee.com>
-Date:   Thu, 10 Dec 2020 09:44:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 10 Dec 2020 11:45:16 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5811C0613CF;
+        Thu, 10 Dec 2020 08:44:36 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id e2so4725809pgi.5;
+        Thu, 10 Dec 2020 08:44:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=O6r1VxP3lNmxiqtfsbEsJwybOwIKpVa3l9EOS4rtjIs=;
+        b=R7SPHjgpg3mP/LQaoFtEybdof/xGXKUQhbGXAzB8JUBBjkWGfZONAmSRbN6l7NsVi8
+         p9SKNHE+1DnSBrogmA47RzMIqfhkHZnCCU3q/ire6iTMdTo5bofepmC5PAmUAR/2jPqc
+         fw276Oh/1X1U4E/a3YW5mL6M7V5TFnKtXPx3ur6UvYUKDJ1fW+APIMKbfKVYnKbMCbKI
+         dvmN+Z5vXtHVoUgxaJqzjfwW1yeb6BkpALggrv4Z+TfdLNHp9ap6JTCqKywEuBnjcE5w
+         XNTO6kyX55AQY+GYVpyjfruFvkmHLezhFM93QkQS556o3O2Uy8KG/6VlwUrNV1tUe6NN
+         kDag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=O6r1VxP3lNmxiqtfsbEsJwybOwIKpVa3l9EOS4rtjIs=;
+        b=UCp7Hwt6l4OCQDV7zxTt00uLkGR7TeqsARGbEmC/nyzs5b1wQsTYyQXjxu207i+taF
+         98ckWG7YaV4pl/2Jb6XCn26gN6ixsjIgqeJFmjiofTtQaAWEKdyQh+YE6/PN+TRdLuPc
+         ZV8/Ae+RdWpcPoUps3NzpGy/JerTkvmoU76++96xnzpJLLDDS3xq1JXcPNcytYUNw+1k
+         aDHTI86NIg5cB5g81jbJmhHPZap142Q8/2ympZR3UIu8RewqeoX3oaQsEHk0NG9UHahK
+         D7AUsgLqrDyWfDI/M1prWtXqccQRjQ5fpSC/0RUP5vkMtjG7ViMs8XywSKppv+9OSqsj
+         Rkbg==
+X-Gm-Message-State: AOAM532r0vJ44LfFjnutDZF29EKLfPCQu2ThWw1by5RZO2t6VKPpnLUM
+        KrVdEIjXxucyfRywkpWJKEjJjKmuorbs47rsfhE=
+X-Google-Smtp-Source: ABdhPJxsLeER9ZJbzr5nparyCDipcH7OlJcAWiIYmYBDTkjmVzuNtxhwf7u1BNqMy/MmQRxrbiWHsg==
+X-Received: by 2002:aa7:92c7:0:b029:197:e36f:fc5c with SMTP id k7-20020aa792c70000b0290197e36ffc5cmr7562994pfa.62.1607618676320;
+        Thu, 10 Dec 2020 08:44:36 -0800 (PST)
+Received: from cl-arch-kdev.. (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id k129sm6867175pgk.1.2020.12.10.08.44.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 08:44:35 -0800 (PST)
+From:   Fox Chen <foxhlchen@gmail.com>
+To:     raven@themaw.net
+Cc:     akpm@linux-foundation.org, dhowells@redhat.com,
+        gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, miklos@szeredi.hu,
+        ricklind@linux.vnet.ibm.com, sfr@canb.auug.org.au, tj@kernel.org,
+        viro@ZenIV.linux.org.uk, Fox Chen <foxhlchen@gmail.com>
+Subject: RE:[PATCH v2 0/6] kernfs: proposed locking and concurrency improvement
+Date:   Thu, 10 Dec 2020 16:44:23 +0000
+Message-Id: <20201210164423.9084-1-foxhlchen@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <159237905950.89469.6559073274338175600.stgit@mickey.themaw.net>
+References: <159237905950.89469.6559073274338175600.stgit@mickey.themaw.net>
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4hr=kM6--OUdK+6XAAEVzENJmy-uD78yK-p62bW8vbu9g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, jgg@ziepe.ca, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, hch@lst.de, dan.j.williams@intel.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [RFC PATCH 04/15] lib/scatterlist: Add flag for indicating P2PDMA
- segments in an SGL
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+I found this series of patches solves exact the problem I am trying to solve.
+https://lore.kernel.org/lkml/20201202145837.48040-1-foxhlchen@gmail.com/
+
+The problem is reported by Brice Goglin on thread:
+Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
+https://lore.kernel.org/lkml/X60dvJoT4fURcnsF@kroah.com/
+
+I independently comfirmed that on a 96-core AWS c5.metal server.
+Do open+read+write on /sys/devices/system/cpu/cpu15/topology/core_id 1000 times.
+With a single thread it takes ~2.5 us for each open+read+close.
+With one thread per core, 96 threads running simultaneously takes 540 us 
+for each of the same operation (without much variation) -- 200x slower than the 
+single thread one. 
+
+My Benchmark code is here:
+https://github.com/foxhlchen/sysfs_benchmark
+
+The problem can only be observed in large machines (>=16 cores).
+The more cores you have the slower it can be.
+
+Perf shows that CPUs spend most of the time (>80%) waiting on mutex locks in 
+kernfs_iop_permission and kernfs_dop_revalidate.
+
+After applying this, performance gets huge boost -- with the fastest one at ~30 us 
+to the worst at ~180 us (most of on spin_locks, the delay just stacking up, very
+similar to the performance on ext4). 
+
+I hope this problem can justifies this series of patches. A big mutex in kernfs
+is really not nice. Due to this BIG LOCK, concurrency in kernfs is almost NONE,
+even though you do operations on different files, they are contentious.
+
+As we get more and more cores on normal machines and because sysfs provides such
+important information, this problem should be fix. So please reconsider accepting
+the patches.
+
+For the patches, there is a mutex_lock in kn->attr_mutex, as Tejun mentioned here 
+(https://lore.kernel.org/lkml/X8fe0cmu+aq1gi7O@mtj.duckdns.org/), maybe a global 
+rwsem for kn->iattr will be better??
 
 
-On 2020-12-09 9:04 p.m., Dan Williams wrote:
-> On Wed, Dec 9, 2020 at 6:07 PM Logan Gunthorpe <logang@deltatee.com> wrote:
->>
->>
->>
->> On 2020-12-09 6:22 p.m., Dan Williams wrote:
->>> On Mon, Nov 9, 2020 at 8:47 AM Logan Gunthorpe <logang@deltatee.com> wrote:
->>>>
->>>>
->>>>
->>>> On 2020-11-09 2:12 a.m., Christoph Hellwig wrote:
->>>>> On Fri, Nov 06, 2020 at 10:00:25AM -0700, Logan Gunthorpe wrote:
->>>>>> We make use of the top bit of the dma_length to indicate a P2PDMA
->>>>>> segment.
->>>>>
->>>>> I don't think "we" can.  There is nothing limiting the size of a SGL
->>>>> segment.
->>>>
->>>> Yes, I expected this would be the unacceptable part. Any alternative ideas?
->>>
->>> Why is the SG_P2PDMA_FLAG needed as compared to checking the SGL
->>> segment-pages for is_pci_p2pdma_page()?
->>
->> Because the DMA and page segments in the SGL aren't necessarily aligned...
->>
->> The IOMMU implementations can coalesce multiple pages into fewer DMA
->> address ranges, so the page pointed to by sg->page_link may not be the
->> one that corresponds to the address in sg->dma_address for a given segment.
->>
->> If that makes sense -- it's not the easiest thing to explain.
-> 
-> It does...
-> 
-> Did someone already grab, or did you already consider the 3rd
-> available bit in page_link? AFAICS only SG_CHAIN and SG_END are
-> reserved. However, if you have a CONFIG_64BIT dependency for
-> user-directed p2pdma that would seem to allow SG_P2PDMA_FLAG to be
-> (0x4) in page_link.
 
-Hmm, I half considered that, but I had came to the conclusion that given
-the mis-alignment I shouldn't be using the page side of the SGL.
-However, reconsidering now, that might actually be a reasonable option.
-
-However, the CONFIG_64BIT dependency would have to be on all P2PDMA,
-because we'd need to replace pci_p2pdma_map_sg() in all cases. I'm not
-sure if this would be a restriction people care about.
-
-Thanks,
-
-Logan
+thanks,
+fox
 
