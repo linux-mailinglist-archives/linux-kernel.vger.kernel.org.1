@@ -2,161 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90DAB2D549A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:29:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA632D54D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732970AbgLJH2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 02:28:18 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:52988 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727734AbgLJH2R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 02:28:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1607585296; x=1639121296;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=+ZgNEknmUpfCWrXl5dEdMSWKoi9I8sDyFxoRQJHgM0k=;
-  b=mmbMJazMT6B24v+M9OhYzfal/T9RpSBS8NyUDIEP2uBVuwcUW5gT75aI
-   VuqanPZyKEFcGZqmAWhCxHSoDOXf4CSS2yRUsreECE+rf7if+l8mjii5E
-   nds10u4sdDg5hcRbPPBYwGNEkxAJZAXGpMp4tz1jmc3+qkGHM5vj2QDRF
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.78,407,1599523200"; 
-   d="scan'208";a="70252257"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 10 Dec 2020 07:27:28 +0000
-Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id 6C765A19EB;
-        Thu, 10 Dec 2020 07:27:27 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.53) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 10 Dec 2020 07:27:22 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-CC:     SeongJae Park <sjpark@amazon.com>, <davem@davemloft.net>,
-        SeongJae Park <sjpark@amazon.de>, <kuba@kernel.org>,
-        <kuznet@ms2.inr.ac.ru>, <paulmck@kernel.org>,
-        <netdev@vger.kernel.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] net/ipv4/inet_fragment: Batch fqdir destroy works
-Date:   Thu, 10 Dec 2020 08:27:07 +0100
-Message-ID: <20201210072707.16079-1-sjpark@amazon.com>
+        id S1729173AbgLJHtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 02:49:06 -0500
+Received: from smtp.h3c.com ([60.191.123.56]:21835 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726902AbgLJHtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 02:49:06 -0500
+Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+        by h3cspam01-ex.h3c.com with ESMTP id 0BA6Fbjb026975;
+        Thu, 10 Dec 2020 14:15:37 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam01-ex.h3c.com with ESMTP id 0BA6F9KN025956;
+        Thu, 10 Dec 2020 14:15:10 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 10 Dec 2020 14:15:12 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <axboe@kernel.dk>
+CC:     <ming.lei@redhat.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] [v3] blk-mq-tag: make blk_mq_tag_busy() return void
+Date:   Thu, 10 Dec 2020 14:04:48 +0800
+Message-ID: <20201210060448.23435-1-tian.xianting@h3c.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <6d3e32f6-c2df-a1a6-3568-b7387cd0c933@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.43.162.53]
-X-ClientProxiedBy: EX13D48UWA002.ant.amazon.com (10.43.163.16) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 0BA6F9KN025956
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 01:17:58 +0100 Eric Dumazet <eric.dumazet@gmail.com> wrote:
+As no one cares about the return value of blk_mq_tag_busy() and
+__blk_mq_tag_busy(), so make them return void.
 
-> 
-> 
-> On 12/8/20 10:45 AM, SeongJae Park wrote:
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > In 'fqdir_exit()', a work for destruction of the 'fqdir' is enqueued.
-> > The work function, 'fqdir_work_fn()', calls 'rcu_barrier()'.  In case of
-> > intensive 'fqdir_exit()' (e.g., frequent 'unshare(CLONE_NEWNET)'
-> > systemcalls), this increased contention could result in unacceptably
-> > high latency of 'rcu_barrier()'.  This commit avoids such contention by
-> > doing the destruction in batched manner, as similar to that of
-> > 'cleanup_net()'.
-> 
-> Any numbers to share ? I have never seen an issue.
+Other change is to simplify blk_mq_tag_idle().
 
-On our 40 CPU cores / 70GB DRAM machine, 15GB of available memory was reduced
-within 2 minutes while my artificial reproducer runs.  The reproducer merely
-repeats 'unshare(CLONE_NEWNET)' in a loop for 50,000 times.  The reproducer is
-not only artificial but resembles the behavior of our real workloads.
-While the reproducer runs, 'cleanup_net()' was called only 4 times.  First two
-calls quickly finished, but third call took about 30 seconds, and the fourth
-call didn't finished until the reproducer finishes.  We also confirmed the
-third and fourth calls just waiting for 'rcu_barrier()'.
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+---
+ block/blk-mq-tag.c |  4 +---
+ block/blk-mq-tag.h | 16 ++++++----------
+ 2 files changed, 7 insertions(+), 13 deletions(-)
 
-I think you've not seen this issue before because we are doing very intensive
-'unshare()' calls.  Also, this is not reproducible on every hardware.  On my 6
-CPU machine, the problem didn't reproduce.
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 9c92053e7..01c0bb1fb 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -21,7 +21,7 @@
+  * to get tag when first time, the other shared-tag users could reserve
+  * budget for it.
+  */
+-bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
++void __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+ {
+ 	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+ 		struct request_queue *q = hctx->queue;
+@@ -35,8 +35,6 @@ bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+ 		    !test_and_set_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
+ 			atomic_inc(&hctx->tags->active_queues);
+ 	}
+-
+-	return true;
+ }
+ 
+ /*
+diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+index 7d3e6b333..4b4ccd794 100644
+--- a/block/blk-mq-tag.h
++++ b/block/blk-mq-tag.h
+@@ -60,23 +60,19 @@ enum {
+ 	BLK_MQ_TAG_MAX		= BLK_MQ_NO_TAG - 1,
+ };
+ 
+-extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
++extern void __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
+ extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *);
+ 
+-static inline bool blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
++static inline void blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+ {
+-	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
+-		return false;
+-
+-	return __blk_mq_tag_busy(hctx);
++	if (hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED)
++		__blk_mq_tag_busy(hctx);
+ }
+ 
+ static inline void blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
+ {
+-	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
+-		return;
+-
+-	__blk_mq_tag_idle(hctx);
++	if (hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED)
++		__blk_mq_tag_idle(hctx);
+ }
+ 
+ static inline bool blk_mq_tag_is_reserved(struct blk_mq_tags *tags,
+-- 
+2.17.1
 
-> 
-> > 
-> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > ---
-> >  include/net/inet_frag.h  |  2 +-
-> >  net/ipv4/inet_fragment.c | 28 ++++++++++++++++++++--------
-> >  2 files changed, 21 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
-> > index bac79e817776..558893d8810c 100644
-> > --- a/include/net/inet_frag.h
-> > +++ b/include/net/inet_frag.h
-> > @@ -20,7 +20,7 @@ struct fqdir {
-> >  
-> >  	/* Keep atomic mem on separate cachelines in structs that include it */
-> >  	atomic_long_t		mem ____cacheline_aligned_in_smp;
-> > -	struct work_struct	destroy_work;
-> > +	struct llist_node	destroy_list;
-> >  };
-> >  
-> >  /**
-> > diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
-> > index 10d31733297d..796b559137c5 100644
-> > --- a/net/ipv4/inet_fragment.c
-> > +++ b/net/ipv4/inet_fragment.c
-> > @@ -145,12 +145,19 @@ static void inet_frags_free_cb(void *ptr, void *arg)
-> >  		inet_frag_destroy(fq);
-> >  }
-> >  
-> > +static LLIST_HEAD(destroy_list);
-> > +
-> >  static void fqdir_work_fn(struct work_struct *work)
-> >  {
-> > -	struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
-> > -	struct inet_frags *f = fqdir->f;
-> > +	struct llist_node *kill_list;
-> > +	struct fqdir *fqdir;
-> > +	struct inet_frags *f;
-> > +
-> > +	/* Atomically snapshot the list of fqdirs to destroy */
-> > +	kill_list = llist_del_all(&destroy_list);
-> >  
-> > -	rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
-> > +	llist_for_each_entry(fqdir, kill_list, destroy_list)
-> > +		rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
-> > 
-> 
-> 
-> OK, it seems rhashtable_free_and_destroy() has cond_resched() so we are not going
-> to hold this cpu for long periods.
->  
-> >  	/* We need to make sure all ongoing call_rcu(..., inet_frag_destroy_rcu)
-> >  	 * have completed, since they need to dereference fqdir.
-> > @@ -158,10 +165,13 @@ static void fqdir_work_fn(struct work_struct *work)
-> >  	 */
-> >  	rcu_barrier();
-> >  
-> > -	if (refcount_dec_and_test(&f->refcnt))
-> > -		complete(&f->completion);
-> > +	llist_for_each_entry(fqdir, kill_list, destroy_list) {
-> 
-> Don't we need the llist_for_each_entry_safe() variant here ???
-
-Oh, indeed.  I will do so in the next version.
-
-> 
-> > +		f = fqdir->f;
-> > +		if (refcount_dec_and_test(&f->refcnt))
-> > +			complete(&f->completion);
-> >  
-> > -	kfree(fqdir);
-> > +		kfree(fqdir);
-> > +	}
-
-
-Thanks,
-SeongJae Park
