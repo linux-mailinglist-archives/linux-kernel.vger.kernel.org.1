@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9CE2D6445
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9482D6446
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392437AbgLJR74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:59:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389278AbgLJR7d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:59:33 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3793CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:58:53 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0d410017205789a0fcbfc3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4100:1720:5789:a0fc:bfc3])
+        id S2392350AbgLJSAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:00:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387836AbgLJR7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 12:59:52 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BC6941EC0266;
-        Thu, 10 Dec 2020 18:58:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607623131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MwyvOQBqxuMUG7KzYXJrCDdCJAVHNYnOubZCd9QHgEo=;
-        b=QAbiXUnnXNeeVEl8f1bWlVdTRkQaqyuO5GwcX57rzx5YgNGyAoPsKd8SiHoQhEKOL3cswb
-        xJFTBEQqrivdDf2SutMFerrTsDT8f2MUOi3bt/x+qDD+kGByiHPn6aZFFd6jQgbpBKA5EE
-        NQZ4t6DTvpVHfanMjclYCmWpEGp+G0c=
-Date:   Thu, 10 Dec 2020 18:58:46 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 07/12] x86: add new features for paravirt patching
-Message-ID: <20201210175846.GE26529@zn.tnic>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-8-jgross@suse.com>
- <20201208184315.GE27920@zn.tnic>
- <2510752e-5d3d-f71c-8a4c-a5d2aae0075e@suse.com>
- <20201209120307.GB18203@zn.tnic>
- <9e989b07-84e8-b07b-ba6e-c2a3ed19d7b1@suse.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 18FE223D57;
+        Thu, 10 Dec 2020 17:59:12 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1knQDe-000EFC-23; Thu, 10 Dec 2020 17:59:10 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9e989b07-84e8-b07b-ba6e-c2a3ed19d7b1@suse.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 10 Dec 2020 17:59:09 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 01/15] irqchip: Allow to compile bcmstb on other platforms
+In-Reply-To: <20201210134648.272857-2-maxime@cerno.tech>
+References: <20201210134648.272857-1-maxime@cerno.tech>
+ <20201210134648.272857-2-maxime@cerno.tech>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <e0f1aed2b0007eab6e9192ac73fd411f@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: maxime@cerno.tech, eric@anholt.net, maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, daniel.vetter@intel.com, airlied@linux.ie, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl, linux-kernel@vger.kernel.org, mchehab@kernel.org, tglx@linutronix.de, dave.stevenson@raspberrypi.com, linux-rpi-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 01:22:24PM +0100, Jürgen Groß wrote:
-> Lets take the spin_unlock() case. With patch 11 of the series this is
+Hi Maxime,
+
+On 2020-12-10 13:46, Maxime Ripard wrote:
+> The BCM2711 uses a number of instances of the bcmstb-l2 controller in 
+> its
+> display engine. Let's allow the driver to be enabled through KConfig.
 > 
-> PVOP_ALT_VCALLEE1(lock.queued_spin_unlock, lock,
->                   "movb $0, (%%" _ASM_ARG1 ");",
->                   X86_FEATURE_NO_PVUNLOCK);
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
+>  drivers/irqchip/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> which boils down to ALTERNATIVE "call *lock.queued_spin_unlock"
->                                 "movb $0,(%rdi)" X86_FEATURE_NO_PVUNLOCK
+> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> index c6098eee0c7c..f1e58de117dc 100644
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+> @@ -131,7 +131,7 @@ config BCM7120_L2_IRQ
+>  	select IRQ_DOMAIN
 > 
-> The initial (paravirt) code is an indirect call in order to allow
-> spin_unlock() before paravirt/alternative patching takes place.
-> 
-> Paravirt patching will then replace the indirect call with a direct call
-> to the correct unlock function. Then alternative patching might replace
-> the direct call to the bare metal unlock with a plain "movb $0,(%rdi)"
-> in case pvlocks are not enabled.
+>  config BRCMSTB_L2_IRQ
+> -	bool
+> +	bool "Broadcom STB L2 Interrupt Controller"
+>  	select GENERIC_IRQ_CHIP
+>  	select IRQ_DOMAIN
 
-Aha, that zeros the locking var on unlock, I see.
+I'm always sceptical of making interrupt controllers user-selectable.
+Who is going to know that they need to pick that one?
 
-> In case alternative patching would occur first, the indirect call might
-> be replaced with the "movb ...", and then paravirt patching would
-> clobber that with the direct call, resulting in the bare metal
-> optimization being removed again.
+I'd be much more in favour of directly selecting this symbol
+from DRM_VC4_HDMI_CEC, since there is an obvious dependency.
 
-Yeah, that explains the whole situation much better - thanks - and
-considering how complex the whole patching is, I wouldn't mind the gist
-of it as text in alternative_instructions() or in a comment above it so
-that we don't have to swap everything back in, months and years from
-now, when we optimize it yet again. :-}
+Thanks,
 
-Thx.
-
+         M.
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Jazz is not dead. It just smells funny...
