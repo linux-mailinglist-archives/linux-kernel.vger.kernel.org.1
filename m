@@ -2,195 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4DA2D61FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D490C2D621A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392350AbgLJQeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:34:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26214 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392357AbgLJQd7 (ORCPT
+        id S2391387AbgLJQhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:37:51 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36718 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2391437AbgLJQha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:33:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607617952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QiBV/qdNapjkek/zOOgwmTitg3XQXA/twwALzu0loV8=;
-        b=TxORUjA7p+E2ixFJpDqBF9TJJryC8khhUdWzFz/H/5fwlJyCG49hgDTUt23pnU9Iyjk5/Y
-        PiHvbUFFjhKFy/iyoHjhO3gtwsGqEoxBRXJTDp/QNeX7R+gybk+meQVHji0V1irSP3ITkW
-        Sa5g3WINd84on9MQGr1SFUu7Hxy3Mis=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-426-CR9e77AwPGqM5Kxml6At0Q-1; Thu, 10 Dec 2020 11:32:28 -0500
-X-MC-Unique: CR9e77AwPGqM5Kxml6At0Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B535E1966320;
-        Thu, 10 Dec 2020 16:32:26 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 13CB25D6D3;
-        Thu, 10 Dec 2020 16:32:23 +0000 (UTC)
-Date:   Thu, 10 Dec 2020 11:32:22 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "hare@suse.de" <hare@suse.de>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pavel Tide <Pavel.TIde@veeam.com>
-Subject: Re: [PATCH 0/3] block: blk_interposer - Block Layer Interposer
-Message-ID: <20201210163222.GB10239@redhat.com>
-References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
- <20201209135148.GA32720@redhat.com>
- <20201210145814.GA31521@veeam.com>
+        Thu, 10 Dec 2020 11:37:30 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BAGVsdw159735;
+        Thu, 10 Dec 2020 11:36:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=dN9R56n8LBKD49/etkZ6uo0OmmDcJTzzH+j1i4Pij/U=;
+ b=oZwcHl+RwOgQ+M4Czs2gngXHqxyHsKSDw5/EzvHMpZ0t+cOE02T+Q242Bt8eJG08rSy2
+ KQbjBXUHF5VEABqeA+0nehCiGqdx0Z5XUoiaMCcfZ3X6eYfCsSU2RsTwyKZ0TlvqOv8C
+ k3fuwaFc9jqyJ98Hy3aWiax15Y0v9XJ9kXc6XDeTg8yNVdyaLv0oEgvkWDtga5s2uWPz
+ ne+NqW0xxiJfINWKlAHgrv4pKlclHzfi9+SQe/P3rQm90hrZILm2jtX0+/7qfpSAHFsw
+ 8w2G1ZkJ84VaYsumJLCKZuCspZ9hmYGpsWdQA3Od3kxEeEaDsNxOYQNGiZC099VJx51w og== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35bpq99paj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Dec 2020 11:36:43 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BAGSL1Y024649;
+        Thu, 10 Dec 2020 16:36:42 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 3581u8ru5a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Dec 2020 16:36:42 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BAGY9ee17760520
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Dec 2020 16:34:09 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F9704204C;
+        Thu, 10 Dec 2020 16:34:09 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BDFF542047;
+        Thu, 10 Dec 2020 16:34:08 +0000 (GMT)
+Received: from [9.171.6.187] (unknown [9.171.6.187])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Dec 2020 16:34:08 +0000 (GMT)
+Subject: Re: [PATCH 5.4 21/54] s390/pci: fix CPU address in MSI for directed
+ IRQ
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+References: <20201210142602.037095225@linuxfoundation.org>
+ <20201210142603.083190701@linuxfoundation.org>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <805f753f-f431-a032-383c-65130ef0b153@linux.ibm.com>
+Date:   Thu, 10 Dec 2020 17:34:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210145814.GA31521@veeam.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20201210142603.083190701@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-10_06:2020-12-09,2020-12-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ phishscore=0 mlxlogscore=999 clxscore=1011 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012100102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10 2020 at  9:58am -0500,
-Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
+Hi Greg,
 
-> The 12/09/2020 16:51, Mike Snitzer wrote:
-> > On Wed, Dec 09 2020 at  8:01am -0500,
-> > Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
-> > 
-> > > Hi all.
-> > > 
-> > > I try to suggest the Block Layer Interposer (blk_interposer) again.
-> > > It`s allows to intercept bio requests, remap bio to another devices
-> > > or add new bios.
-> > > 
-> > > Initially, blk_interposer was designed to be compatible with
-> > > device mapper. Our (my and Hannes) previous attempt to offer
-> > > blk_interposer integrated with device mapper did not receive
-> > > any comments from the dm-devel team, and without their help
-> > > I will not be able to make a full implementation. I hope later
-> > > they will have time to support blk_interposer in device mapper.
-> > 
-> > Excuse me?  I gave you quite a bit of early feedback!  I then went on
-> > PTO for ~10 days, when I returned last week I had to deal with fixing
-> > some 5.10 dm/block bio splitting regressions that only got resolved this
-> > past Saturday in time for 5.10-rc7.
-> 
-> Mike,
-> 
-> I would like to clarify some points that I've made, and also try 
-> to repair the damage from the misunderstandings that I think have occured.
-> 
-> First of all, I actually meant the feedback on Hannes's patch which was
-> sent on the 19th of November:
-> https://lore.kernel.org/linux-block/20201119164924.74401-1-hare@suse.de/
-> 
-> Your feedback from the 18th of November ("[PATCH 4/4] dm_interposer - 
-> Try to use blk_interpose in dm") is very valuable, but I am not sure that
-> I am currently capable of implementing the proposed DM changes.
-> The overall architecture of DM is still not clear to me, and I am studying
-> it right now.
-> 
-> This new patch (the one that Hannes sent on the 19th of November) is also
-> compatibile with DM and should not pose any problems - the architecture is
-> the same. There are some changes that make blk_interposer simpler and better,
-> plus the sample is added.
-> 
-> > 
-> > blk_interposer was/is on my short list to review closer (Hannes' version
-> > that refined yours a bit more).. primarily to see if I could avoid the
-> > extra clone and endio hooking.
-> 
-> Glad to hear that! In order to avoid the additional copying one can only
-> change an intercepted bio, which might be dangerous.
-> 
-> > 
-> > The development window for 5.11 is past, so you pushing this without
-> > using the approach discussed (in terms of DM) doesn't help your cause.
-> > 
-> > > And my blk-snap module requires an architecture change to
-> > > support blk_interposer.
-> > > 
-> > > This time I offer it along with a sample.
-> > > Despite the fact that blk_interposer is quite simple,
-> > > there are a few non-obvious points that I would like to clarify.
-> > > 
-> > > However, I suggest the blk_interposer now so that people
-> > > could discuss it and use it in their projects as soon as possible.
-> > 
-> > So you weren't willing to put the work in on something DM oriented
-> > because you expected me to do the work for you?  And now you're looking
-> > to side-step the consensus that was built because I didn't contribute
-> > quick enough?  That's pretty messed up.
-> 
-> I just think that no one can implement integration of DM with
-> blk_interposer better than dm-devel team. I will certainly try my best,
-> but I am afraid that such efforts will only produce incongruous
-> DM patches that will be a waste of time (yours and mine).
-> 
-> > 
-> > In the time-scale that is Linux kernel development.. you've really
-> > jumped the gun and undercut my enthusiasm to work through the details.
-> > I'd rather not read into your actions more than I already have here, but
-> > I'm not liking what you've done here.  Kind of left in dismay with how
-> > you decided to go down this path without a followup note to me or others
-> > (that I'm aware of).
-> 
-> I am very sorry that I undercut your enthusiasm, but, as you rightly
-> pointed out, another development windows is closing, and my product
-> is still not able to work on newer Linux versions starting from 5.8.
-> That fact makes me particularly sad and forces me to search for different
-> means to draw some attention to blk_interposer. I've seen an RHEL 8.4
-> alpha recently, all looks very cool there but made me even more sad ...
+sorry to bother you but I missed that the smp_cpu_get_cpu_address()
+address used here was only added with the
+commit 42d211a1ae3b77 ("s390/cpuinfo: show processor physical address")
+which landed in v5.7-rc1. This would therefore break if ever called
+(luckily it would not be called on any shipped hardware) and
+also causes a missing declaration warning as reported by
+Naresh Kamboju thanks!
+Since this is as of now just a spec fix, as on all known hardware
+the Linux CPU Id always matches the CPU Address, I would
+recommend to simply revert the commit.
+Thanks in advance!
 
-Made you more sad because you don't have a working solution for upstream
-or RHEL 8.4?
+Best regards,
+Niklas Schnelle
 
-I may have missed it in your past emails but how were you able to
-provide blk-snap support for kernels prior to 5.8?
-
-> Also I certainly remember a separate email that was sent to you on the
-> 7th of December. Maybe it should have been written in the already
-> existing thread instead.
-
-I don't see any mail from you on Dec 7... please bounce it to me if it
-was in private, or please point to the relevant list archive.
-
-> > 
-> > But I'm still willing to make blk_interposer work as we all discussed
-> > (in terms of DM).
+On 12/10/20 3:26 PM, Greg Kroah-Hartman wrote:
+> From: Alexander Gordeev <agordeev@linux.ibm.com>
 > 
-> I want it too. However, there is a certain difficulty with usage of DM
-> for backup copying. For instance, there is no changed block tracking (CBT)
-> and right now I don't have any clue how it could be implemented
-> considering the existing architecture. I still hope that sometime
-> in future I could be offer my blk-snap module which was specifically
-> created for backup copying purposes.
+> commit a2bd4097b3ec242f4de4924db463a9c94530e03a upstream.
 > 
-> I apologize for causing all that confusion and mess and making you upset.
-> I hope that all of the above makes sense to you and you will not think
-> that I was slacking and tried to offload all the work to your team.
-
-My primary concern is that blk_interposer be correct from the start.  To
-validate its correctness it needs to be fully implemented and vetted in
-terms on upstream Linux kernel code.  DM can easily serve as the primary
-upstream consumer until if/when your blk-snap module is proposed for
-upstream inclusion.
-
-But short of having an actual upstream consumer of blk_interposer (not
-just samples/ code) it cannot go upstream.  Otherwise there are too many
-risks of misuse and problems in the longrun.  That and it'd be baggage
-block core would need to carry for no upstream Linux benefit.
-
-Mike
-
+> The directed MSIs are delivered to CPUs whose address is
+> written to the MSI message address. The current code assumes
+> that a CPU logical number (as it is seen by the kernel)
+> is also the CPU address.
+> 
+> The above assumption is not correct, as the CPU address
+> is rather the value returned by STAP instruction. That
+> value does not necessarily match the kernel logical CPU
+> number.
+> 
+> Fixes: e979ce7bced2 ("s390/pci: provide support for CPU directed interrupts")
+> Cc: <stable@vger.kernel.org> # v5.2+
+> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+> Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> ---
+>  arch/s390/pci/pci_irq.c |   14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> --- a/arch/s390/pci/pci_irq.c
+> +++ b/arch/s390/pci/pci_irq.c
+> @@ -103,9 +103,10 @@ static int zpci_set_irq_affinity(struct
+>  {
+>  	struct msi_desc *entry = irq_get_msi_desc(data->irq);
+>  	struct msi_msg msg = entry->msg;
+> +	int cpu_addr = smp_cpu_get_cpu_address(cpumask_first(dest));
+>  
+>  	msg.address_lo &= 0xff0000ff;
+> -	msg.address_lo |= (cpumask_first(dest) << 8);
+> +	msg.address_lo |= (cpu_addr << 8);
+>  	pci_write_msi_msg(data->irq, &msg);
+>  
+>  	return IRQ_SET_MASK_OK;
+> @@ -238,6 +239,7 @@ int arch_setup_msi_irqs(struct pci_dev *
+>  	unsigned long bit;
+>  	struct msi_desc *msi;
+>  	struct msi_msg msg;
+> +	int cpu_addr;
+>  	int rc, irq;
+>  
+>  	zdev->aisb = -1UL;
+> @@ -287,9 +289,15 @@ int arch_setup_msi_irqs(struct pci_dev *
+>  					 handle_percpu_irq);
+>  		msg.data = hwirq - bit;
+>  		if (irq_delivery == DIRECTED) {
+> +			if (msi->affinity)
+> +				cpu = cpumask_first(&msi->affinity->mask);
+> +			else
+> +				cpu = 0;
+> +			cpu_addr = smp_cpu_get_cpu_address(cpu);
+> +
+>  			msg.address_lo = zdev->msi_addr & 0xff0000ff;
+> -			msg.address_lo |= msi->affinity ?
+> -				(cpumask_first(&msi->affinity->mask) << 8) : 0;
+> +			msg.address_lo |= (cpu_addr << 8);
+> +
+>  			for_each_possible_cpu(cpu) {
+>  				airq_iv_set_data(zpci_ibv[cpu], hwirq, irq);
+>  			}
+> 
+> 
