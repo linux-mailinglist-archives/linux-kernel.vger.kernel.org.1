@@ -2,192 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1D02D53C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E112D53C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733205AbgLJGXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:23:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733276AbgLJGWh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:22:37 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6CFC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 22:21:57 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id 131so3063158pfb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 22:21:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=NuismVZ4PrSdwp2DMCZD56Vg7x75UKlPw/nhIYGOfUM=;
-        b=DBUQSef+F/ShCuziTzEd++xuwZ+wWAMZvdB3xZmTKewyemy6cgS17H/Wbr0xXu4GuJ
-         R+hxiBaKYCg2Y2ue5XRgiILVM/01eT8WE1Ur2vuBrBgYibF15NmrHtee7l8vP3k5cN25
-         0/pm4l4AyiOZvu0D1ft0Jopz1WlU9B3oRzQmaVwErw5N4EtzDTABoM4YveBIkw3IIty1
-         bA7fY+AU5G5jNbdLM0EpO8S9S8QA3V1i+U3lFhr3+lxnVCbAm280k7S0cxiWLKXVpOsw
-         NevKR42PYd+fNErmQBGZblNqMruJlTgEfayTrDBLhoGth+D6+av+Ze21U8xj7HmHUenO
-         lNCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=NuismVZ4PrSdwp2DMCZD56Vg7x75UKlPw/nhIYGOfUM=;
-        b=goAQl+cWTWeNh71LWPZslOFCmYqZ01NmyRwXGPiEw1F4bj6SO5d1pYsH7RudV5IbQH
-         /6yZDsDe33gbff2s592hSI38mCggAJ/GvtFNOCON/DHpb7ZMEycYHOt+lVhXg7vhGImD
-         oQscjZPwpjrFuuGQQwwuao70pEWQ37Gvks+PWUYLvLsxWWqpeVBTTtlG76e9Uasmr727
-         fyek82KvyqN2+fUEoE/P6O9wWvTLXCyX4Pnp8CPWUkVlzljIzLRRuXo3r1LtJTByd4P9
-         EAC/M9oO7TbwKiTNFJUcriWLBzn6+PhUyloh6izlA1+bRLEkfjY77SBlOVMayUgWyhiN
-         R7iw==
-X-Gm-Message-State: AOAM530Tuy1l1HqFfIQ2ldZd4XsP9tPPgD2OrQSRSBAtbd1gbAnDtXNG
-        J3dfOlWrg136yvTTWDt1Gajx
-X-Google-Smtp-Source: ABdhPJyYrQ6chu6zPDYEq3yrD1lw04Ln2yRldRTh6g+qWim4T69F+f0ZVW0nJPnnTExkYFhg6SEHpg==
-X-Received: by 2002:a17:90b:3698:: with SMTP id mj24mr5739733pjb.149.1607581316615;
-        Wed, 09 Dec 2020 22:21:56 -0800 (PST)
-Received: from work ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id i2sm4588909pjd.21.2020.12.09.22.21.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 09 Dec 2020 22:21:56 -0800 (PST)
-Date:   Thu, 10 Dec 2020 11:51:47 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Darshak Patel <darshak.patel@einfochips.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Marian-Cristian Rotariu 
-        <marian-cristian.rotariu.rb@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: Re: [PATCH 1/1] dt-bindings: leds: add onboard LED triggers of
- 96Boards
-Message-ID: <20201210062147.GA24867@work>
-References: <20201210031203.1901-1-thunder.leizhen@huawei.com>
- <20201210033157.GA6466@thinkpad>
- <704f703c-7ed9-6302-60df-7708d0633af0@huawei.com>
+        id S1733258AbgLJGZY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Dec 2020 01:25:24 -0500
+Received: from smtp.h3c.com ([60.191.123.50]:27402 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733186AbgLJGZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 01:25:24 -0500
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam02-ex.h3c.com with ESMTP id 0BA6NNs7051288;
+        Thu, 10 Dec 2020 14:23:23 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 10 Dec 2020 14:23:25 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.2106.002; Thu, 10 Dec 2020 14:23:25 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>
+CC:     "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] [v2] blk-mq-tag: make blk_mq_tag_busy() return void
+Thread-Topic: [PATCH] [v2] blk-mq-tag: make blk_mq_tag_busy() return void
+Thread-Index: AQHWzroykh4+9vclPkq1LnwbeddRv6nv3B4Q
+Date:   Thu, 10 Dec 2020 06:23:24 +0000
+Message-ID: <bb610b2693ef4c71aedfc6559afe123b@h3c.com>
+References: <20201210055307.1024-1-tian.xianting@h3c.com>
+ <BYAPR04MB4965FC5A5F69F18A1F0BB06486CB0@BYAPR04MB4965.namprd04.prod.outlook.com>
+In-Reply-To: <BYAPR04MB4965FC5A5F69F18A1F0BB06486CB0@BYAPR04MB4965.namprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <704f703c-7ed9-6302-60df-7708d0633af0@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 0BA6NNs7051288
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 02:14:57PM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2020/12/10 11:31, Manivannan Sadhasivam wrote:
-> > Hi,
-> > 
-> > On Thu, Dec 10, 2020 at 11:12:03AM +0800, Zhen Lei wrote:
-> >> For all 96Boards, the following standard is used for onboard LEDs.
-> >>
-> >> green:user1  default-trigger: heartbeat
-> >> green:user2  default-trigger: mmc0/disk-activity(onboard-storage)
-> >> green:user3  default-trigger: mmc1 (SD-card)
-> >> green:user4  default-trigger: none, panic-indicator
-> >> yellow:wlan  default-trigger: phy0tx
-> >> blue:bt      default-trigger: hci0-power
-> >>
-> >> Link to 96Boards CE Specification: https://linaro.co/ce-specification
-> >>
-> > 
-> > This is just a board configuration and there is absolutely no need to document
-> > this in common LED binding. But if your intention is to document the missing
-> No, I don't think so. The common just means the property linux,default-trigger
-> is common, but not it values. This can be proved by counter-proving：none of
-> the triggerrs currently defined in common.yaml is used by 96Boards.
-> 
+Yes, 
+Sorry, In V2. I missed it, so I sent v3 :)
 
-Right, but I was not happy with you mentioning 96Boards in the binding. Because
-the triggers are used in more platforms other than 96Boards and they are not
-specific to 96Boards. The documentation of triggers itself is fine.
+-----Original Message-----
+From: Chaitanya Kulkarni [mailto:Chaitanya.Kulkarni@wdc.com] 
+Sent: Thursday, December 10, 2020 2:21 PM
+To: tianxianting (RD) <tian.xianting@h3c.com>; axboe@kernel.dk
+Cc: ming.lei@redhat.com; linux-block@vger.kernel.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] blk-mq-tag: make blk_mq_tag_busy() return void
 
-> > triggers, then you should look at the patch I submitted long ago.
-> 
-> I'm just trying to eliminate the warnings related to Hisilicon that YAML detected.
-> So I didn't pay attention to other missing triggers.
-> 
+On 12/9/20 22:06, Xianting Tian wrote:
+> As no one cares about the return value of blk_mq_tag_busy() and 
+> __blk_mq_tag_busy(), so make them return void.
+>
+> Other change is to simplify blk_mq_tag_idle().
+>
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> Reviewed-by: Ming Lei <ming.lei@redhat.com>
+> ---
+>  block/blk-mq-tag.c |  4 ++--
+>  block/blk-mq-tag.h | 16 ++++++----------
+>  2 files changed, 8 insertions(+), 12 deletions(-)
+>
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c index 
+> 9c92053e7..21ff7d156 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -21,7 +21,7 @@
+>   * to get tag when first time, the other shared-tag users could reserve
+>   * budget for it.
+>   */
+> -bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+> +void __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>  {
+>  	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+>  		struct request_queue *q = hctx->queue; @@ -36,7 +36,7 @@ bool 
+> __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>  			atomic_inc(&hctx->tags->active_queues);
+>  	}
+>  
+> -	return true;
+> +	return;
+if above return is the last statement then you need to remove that instead of using return with no value.
 
-No worries :)
-
-> > 
-> > https://lore.kernel.org/patchwork/patch/1146359/
-> > 
-> > Maybe I should resubmit it again in YAML format. (thanks for reminding me :P)
-> 
-> Yes, I hope that you will resubmit it. After all, these false positives are
-> entirely due to YAML's failure to list all triggers. The DTS itself is fine.
-> 
-> By the way, the description of this patch I copied from your patch：
-> 953d9f390365 arm64: dts: rockchip: Add on-board LED support on rk3399-rock960
-> 
-> That's why I Cc to you.
-> 
-
-I've now submitted the patch. Please take a look!
-
-Thanks,
-Mani
-
-> > 
-> > Thanks,
-> > Mani
-> > 
-> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >> Cc: Darshak Patel <darshak.patel@einfochips.com>
-> >> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> >> Cc: Shawn Guo <shawnguo@kernel.org>
-> >> Cc: Dong Aisheng <aisheng.dong@nxp.com>
-> >> Cc: Guodong Xu <guodong.xu@linaro.org>
-> >> Cc: Wei Xu <xuwei5@hisilicon.com>
-> >> Cc: Linus Walleij <linus.walleij@linaro.org>
-> >> Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >> Cc: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> >> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> >> Cc: Heiko Stuebner <heiko@sntech.de>
-> >> ---
-> >>  Documentation/devicetree/bindings/leds/common.yaml | 10 ++++++++++
-> >>  1 file changed, 10 insertions(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
-> >> index f1211e7045f12f3..525752d6c5c84fd 100644
-> >> --- a/Documentation/devicetree/bindings/leds/common.yaml
-> >> +++ b/Documentation/devicetree/bindings/leds/common.yaml
-> >> @@ -97,6 +97,16 @@ properties:
-> >>          # LED alters the brightness for the specified duration with one software
-> >>          # timer (requires "led-pattern" property)
-> >>        - pattern
-> >> +        #For all 96Boards, Green, disk-activity(onboard-storage)
-> >> +      - mmc0
-> >> +        #For all 96Boards, Green, SD-card
-> >> +      - mmc1
-> >> +        #For all 96Boards, Green, panic-indicator
-> >> +      - none
-> >> +        #For all 96Boards, Yellow, WiFi activity LED
-> >> +      - phy0tx
-> >> +        #For all 96Boards, Blue, Bluetooth activity LED
-> >> +      - hci0-power
-> >>  
-> >>    led-pattern:
-> >>      description: |
-> >> -- 
-> >> 1.8.3
-> >>
-> >>
-> > 
-> > .
-> > 
-> 
+Also, please add the version history.
