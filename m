@@ -2,310 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C93E2D5B55
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3927A2D5B5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389169AbgLJNKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:10:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389075AbgLJNKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:10:24 -0500
-Date:   Thu, 10 Dec 2020 22:09:37 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607605782;
-        bh=QU8bjKFqVT1RzgpntxF1tzq2BNTBv/SlJQJIvS4AeiI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=s8qa+204R7Jza+CEdcCWaZgunjxNk4LljAm8RGZv7VLtHQDzjf7cH64wQ+q1iGnE4
-         Ue+mmk99gpVl45RbVh4rgaW08Riid/oXZgPf7emlDqR7y1lmyuhkN4JenFEOeVn5EH
-         QEPXG/9eIOEs3gYYtqWBk/mDhB1v6zFWBB4IJllSR4fNZtUKCzB4GXhDyG7/zdc8/K
-         v8Gr2ssnXuyaOhrtQxRfTkwesSHbysuv+Pdh9sGNMTqUxxCdlzzLDyZ69jgJcQeD3l
-         FK0Eh/yMNyClsxT6tbxBxcpP+SVZsgF/gvbI65pGL1hJ//ayf0H8+VFCdJcaTyV6GG
-         kSiMMgt0mS3zQ==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Adam Zabrocki <pi3@pi3.com.pl>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Solar Designer <solar@openwall.com>
-Subject: Re: KRETPROBES are broken since kernel 5.8
-Message-Id: <20201210220937.5232571bf5b03237e7018012@kernel.org>
-In-Reply-To: <20201210071742.GA14484@pi3.com.pl>
-References: <20201209215001.GA8593@pi3.com.pl>
-        <20201210102507.6bd47a08191852b9f8b5e3f0@kernel.org>
-        <20201210071742.GA14484@pi3.com.pl>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S2389204AbgLJNLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:11:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389173AbgLJNLD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 08:11:03 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B30C061793
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 05:10:22 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id o11so4781895ote.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 05:10:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5SZx0SF1+bmdIPGDx8XS9Yvh6cMFc1HMujYWwx4oFXo=;
+        b=ljmsD/nZGyo/+nDuS0o0wS7bR94cQDN8VGl9oI3x9gF6FY1HbovjAwtbwEL91ATJtm
+         1xTzwHF+H8teshZzyQ3IR9ZGQiWUlsBu2AfAUddntFcJyQQeHRNrIFzGacznjrhKTKvg
+         zGEZhXmHkuly95lHRKyzmo3PZkbgX74s/29oM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5SZx0SF1+bmdIPGDx8XS9Yvh6cMFc1HMujYWwx4oFXo=;
+        b=eQOC9umQVNCByeclxw7UnlDmq1nCFwnKoZRKC65meOUMTBk947v+52yn6PNydn7QVj
+         kzgDw9C+Db4eu1yD7IwTNucXnSloeajYq8UMhf0pyh3QMBGe7KLF9cZWMAb977j53jVW
+         5pA0gd9+DK1GqLFyO0/rEU0r0dsnTOxCzm1+lDKHwgN1zfeT0qsa8cE4EbWyYLnFlM6G
+         dIsbC+wibAItvKdx/VRCU9NJqQqNHrp+2WuqPssnYyooRLCeNLEZVTsLzGVYnnf9y+MH
+         CrsoZsPd16ZpVkgb2SszI4P2tEBq952v+x3Q7E3s85LBP/tIdV31GqwFjI00aSHjleHO
+         SvbA==
+X-Gm-Message-State: AOAM530Gkpl+NXMNsNVB2sbgUu4qauZFPwS5w7gjnWFt//2LD7W4jLP0
+        /ECZ6zqcrPL6+w4f5k/6UjGooJ+nwcQt54OUeIPzCIM8hbk=
+X-Google-Smtp-Source: ABdhPJwe0G/fIm4wrIEbslkY/Xrvlb1182PcLJFrYAgq3Tmq7oxccHPXXb0WkMQH6isTqYmJy19qnmcJPRyIsmZ6nTE=
+X-Received: by 2002:a9d:23ca:: with SMTP id t68mr5751241otb.281.1607605822145;
+ Thu, 10 Dec 2020 05:10:22 -0800 (PST)
+MIME-Version: 1.0
+References: <20201210044400.1080308-1-hridya@google.com> <b5adfe46-8615-5821-d092-2b93feed5b79@amd.com>
+ <X9H0JREcdxDsMtLX@kroah.com> <20201210102727.GE401619@phenom.ffwll.local>
+ <X9H+3AP1q39aMxeb@kroah.com> <CAKMK7uFD3fE01Li3JOpHpzP7313OT3xpcjBwzSVjrCGAmab2Zg@mail.gmail.com>
+ <X9IPhEkcZO+Ut5RH@kroah.com>
+In-Reply-To: <X9IPhEkcZO+Ut5RH@kroah.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 10 Dec 2020 14:10:10 +0100
+Message-ID: <CAKMK7uEM636NjEcxLfsKJa9H71i0mkQ3dsT3yWwHTcVFk4r+Sg@mail.gmail.com>
+Subject: Re: [PATCH] dmabuf: Add the capability to expose DMA-BUF stats in sysfs
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+On Thu, Dec 10, 2020 at 1:06 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Dec 10, 2020 at 12:26:01PM +0100, Daniel Vetter wrote:
+> > On Thu, Dec 10, 2020 at 11:55 AM Greg KH <gregkh@linuxfoundation.org> w=
+rote:
+> > >
+> > > On Thu, Dec 10, 2020 at 11:27:27AM +0100, Daniel Vetter wrote:
+> > > > On Thu, Dec 10, 2020 at 11:10:45AM +0100, Greg KH wrote:
+> > > > > On Thu, Dec 10, 2020 at 10:58:50AM +0100, Christian K=C3=B6nig wr=
+ote:
+> > > > > > In general a good idea, but I have a few concern/comments here.
+> > > > > >
+> > > > > > Am 10.12.20 um 05:43 schrieb Hridya Valsaraju:
+> > > > > > > This patch allows statistics to be enabled for each DMA-BUF i=
+n
+> > > > > > > sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
+> > > > > > >
+> > > > > > > The following stats will be exposed by the interface:
+> > > > > > >
+> > > > > > > /sys/kernel/dmabuf/<inode_number>/exporter_name
+> > > > > > > /sys/kernel/dmabuf/<inode_number>/size
+> > > > > > > /sys/kernel/dmabuf/<inode_number>/dev_map_info
+> > > > > > >
+> > > > > > > The inode_number is unique for each DMA-BUF and was added ear=
+lier [1]
+> > > > > > > in order to allow userspace to track DMA-BUF usage across dif=
+ferent
+> > > > > > > processes.
+> > > > > > >
+> > > > > > > Currently, this information is exposed in
+> > > > > > > /sys/kernel/debug/dma_buf/bufinfo.
+> > > > > > > However, since debugfs is considered unsafe to be mounted in =
+production,
+> > > > > > > it is being duplicated in sysfs.
+> > > > > >
+> > > > > > Mhm, this makes it part of the UAPI. What is the justification =
+for this?
+> > > > > >
+> > > > > > In other words do we really need those debug information in a p=
+roduction
+> > > > > > environment?
+> > > > >
+> > > > > Production environments seem to want to know who is using up memo=
+ry :)
+> > > >
+> > > > This only shows shared memory, so it does smell a lot like $specifi=
+c_issue
+> > > > and we're designing a narrow solution for that and then have to car=
+ry it
+> > > > forever.
+> > >
+> > > I think the "issue" is that this was a feature from ion that people
+> > > "missed" in the dmabuf move.  Taking away the ability to see what kin=
+d
+> > > of allocations were being made didn't make a lot of debugging tools
+> > > happy :(
+> >
+> > If this is just for dma-heaps then why don't we add the stuff back
+> > over there? It reinforces more that the android gpu stack and the
+> > non-android gpu stack on linux are fairly different in fundamental
+> > ways, but that's not really new.
+>
+> Back "over where"?
+>
+> dma-bufs are not only used for the graphics stack on android from what I
+> can tell, so this shouldn't be a gpu-specific issue.
 
-On Thu, 10 Dec 2020 08:17:42 +0100
-Adam Zabrocki <pi3@pi3.com.pl> wrote:
+dma-buf heaps exist because android, mostly because google mandates
+it. There's not a whole lot (meaning zero) of actually open gpu stacks
+around that run on android and use dma-buf heaps like approved google
+systems, largely because the gralloc implementation in mesa just
+doesnt.
 
-> Hi,
-> 
-> On Thu, Dec 10, 2020 at 10:25:07AM +0900, Masami Hiramatsu wrote:
-> > Hi Adam,
-> > 
-> > Thank you for reporting and debugging, actually we had investigated this
-> > issue in Aug. Please read this thread.
-> > 
-> > https://lkml.kernel.org/r/8816bdbbc55c4d2397e0b02aad2825d3@trendmicro.com
-> > 
-> 
-> Thanks for the link. I've read the entire history of proposed fix - very 
-> informative :)
-> 
-> > We finally fixed this issue by commit e03b4a084ea6 ("kprobes: Remove NMI
-> > context check") and commit 645f224e7ba2 ("kprobes: Tell lockdep about
-> > kprobe nesting"). Yeah, it will be in the v5.10.
-> > 
-> > Could you try to test whether these commits can solve the issue?
-> 
-> I've applied these commits on the top of kernel 5.9.7 and verified that it 
-> works well. Non-optimized KRETPROBES are back to life.
+So if android needs some quick debug output in sysfs, we can just add
+that in dma-buf heaps, for android only, problem solved. And much less
+annoying review to make sure it actually fits into the wider ecosystem
+because as-is (and I'm not seeing that chance anytime soon), dma-buf
+heaps is for android only. dma-buf at large isn't, so merging a debug
+output sysfs api that's just for android but misses a ton of the more
+generic features and semantics of dma-buf is not great.
+-Daniel
 
-Good!
-
-> 
-> However, there might be another issue which I wanted to brought / discuss - 
-> problem with optimizer. Until kernel 5.9 KRETPROBE on e.g. 
-> 'ftrace_enable_sysctl' function was correctly optimized without any problems. 
-
-Did you check it on other functions? Did you see it only on the "ftrace_enable_sysctl"?
-
-> Since 5.9 it can't be optimized anynmore. I didn't see any changes in the 
-> sources regarding the optimizer, neither function itself.
-> When I looked at the generated vmlinux binary, I can see that GCC generated 
-> padding at the end of this function using INT3 opcode:
-> 
-> ...
-> ffffffff8130528b:       41 bd f0 ff ff ff       mov    $0xfffffff0,%r13d
-> ffffffff81305291:       e9 fe fe ff ff          jmpq   ffffffff81305194 <ftrace_enable_sysctl+0x114>
-> ffffffff81305296:       cc                      int3
-> ffffffff81305297:       cc                      int3
-> ffffffff81305298:       cc                      int3
-> ffffffff81305299:       cc                      int3
-> ffffffff8130529a:       cc                      int3
-> ffffffff8130529b:       cc                      int3
-> ffffffff8130529c:       cc                      int3
-> ffffffff8130529d:       cc                      int3
-> ffffffff8130529e:       cc                      int3
-> ffffffff8130529f:       cc                      int3
-
-So these int3 is generated by GCC for padding, right?
-
-> Such padding didn't exist in this function in generated images for older 
-> kernels. Nevertheless, such padding is not unusual and it's pretty common.
-> 
-> Optimizer logic fails here:
-> 
-> try_to_optimize_kprobe() -> alloc_aggr_kprobe() -> __prepare_optimized_kprobe()
-> -> arch_prepare_optimized_kprobe() -> can_optimize():
-> 
->     /* Decode instructions */
->     addr = paddr - offset;
->     while (addr < paddr - offset + size) { /* Decode until function end */
->         unsigned long recovered_insn;
->         if (search_exception_tables(addr))
->             /*
->              * Since some fixup code will jumps into this function,
->              * we can't optimize kprobe in this function.
->              */
->             return 0;
->         recovered_insn = recover_probed_instruction(buf, addr);
->         if (!recovered_insn)
->             return 0;
->         kernel_insn_init(&insn, (void *)recovered_insn, MAX_INSN_SIZE);
->         insn_get_length(&insn);
->         /* Another subsystem puts a breakpoint */
->         if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
->             return 0;
->         /* Recover address */
->         insn.kaddr = (void *)addr;
->         insn.next_byte = (void *)(addr + insn.length);
->         /* Check any instructions don't jump into target */
->         if (insn_is_indirect_jump(&insn) ||
->             insn_jump_into_range(&insn, paddr + INT3_INSN_SIZE,
->                      DISP32_SIZE))
->             return 0;
->         addr += insn.length;
->     }
-> 
-> One of the check tries to protect from the situation when another subsystem 
-> puts a breakpoint there as well:
-> 
->         /* Another subsystem puts a breakpoint */
->         if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
->             return 0;
-
-Right.
-
-> 
-> However, that's not the case here. INT3_INSN_OPCODE is placed at the end of 
-> the function as padding (and protect from NOP-padding problems).
-> 
-> I wonder, if optimizer should take this special case into account? Is it worth 
-> to still optimize such functions when they are padded with INT3?
-
-Indeed. I expected int3 is used from other subsystems (e.g. kgdb) and,
-in that case the optimization can confuse them.
-But if the gcc uses int3 to pad the room between functions, it should be
-reconsidered. 
-
-Thank you,
-
-> 
-> > If it is OK, we should backport those to stable tree.
-> 
-> Agreed.
-> 
-> Thanks,
-> Adam
-> 
-> > Thank you,
-> > 
-> > On Wed, 9 Dec 2020 22:50:01 +0100
-> > Adam Zabrocki <pi3@pi3.com.pl> wrote:
-> > 
-> > > Hello,
-> > > 
-> > > Starting from kernel 5.8 all non-optimized kretprobes don't work. Until 5.8,
-> > > when #DB exception was raised, entry to the NMI was not fully performed. Among
-> > > others, the following logic was executed:
-> > > https://elixir.bootlin.com/linux/v5.7.19/source/arch/x86/kernel/traps.c#L589
-> > > 
-> > >     if (!user_mode(regs)) {
-> > >         rcu_nmi_enter();
-> > >         preempt_disable();
-> > >     }
-> > > 
-> > > In some older kernels function ist_enter() was called instead. Inside this
-> > > function we can see the following logic:
-> > > https://elixir.bootlin.com/linux/v5.7.19/source/arch/x86/kernel/traps.c#L91
-> > > 
-> > >     if (user_mode(regs)) {
-> > >         RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
-> > >     } else {
-> > >         /*
-> > >          * We might have interrupted pretty much anything.  In
-> > >          * fact, if we're a machine check, we can even interrupt
-> > >          * NMI processing.  We don't want in_nmi() to return true,
-> > >          * but we need to notify RCU.
-> > >          */
-> > >         rcu_nmi_enter();
-> > >     }
-> > > 
-> > >     preempt_disable();
-> > > 
-> > > As the comment says "We don't want in_nmi() to return true, but we need to
-> > > notify RCU.". However, since kernel 5.8 the logic of how interrupts are handled
-> > > was modified and currently we have this (function "exc_int3"):
-> > > https://elixir.bootlin.com/linux/v5.8/source/arch/x86/kernel/traps.c#L630
-> > > 
-> > >     /*
-> > >      * idtentry_enter_user() uses static_branch_{,un}likely() and therefore
-> > >      * can trigger INT3, hence poke_int3_handler() must be done
-> > >      * before. If the entry came from kernel mode, then use nmi_enter()
-> > >      * because the INT3 could have been hit in any context including
-> > >      * NMI.
-> > >      */
-> > >     if (user_mode(regs)) {
-> > >         idtentry_enter_user(regs);
-> > >         instrumentation_begin();
-> > >         do_int3_user(regs);
-> > >         instrumentation_end();
-> > >         idtentry_exit_user(regs);
-> > >     } else {
-> > >         nmi_enter();
-> > >         instrumentation_begin();
-> > >         trace_hardirqs_off_finish();
-> > >         if (!do_int3(regs))
-> > >             die("int3", regs, 0);
-> > >         if (regs->flags & X86_EFLAGS_IF)
-> > >             trace_hardirqs_on_prepare();
-> > >         instrumentation_end();
-> > >         nmi_exit();
-> > >     }
-> > > 
-> > > The root of unlucky change comes from this commit:
-> > > 
-> > > https://github.com/torvalds/linux/commit/0d00449c7a28a1514595630735df383dec606812#diff-51ce909c2f65ed9cc668bc36cc3c18528541d8a10e84287874cd37a5918abae5
-> > > 
-> > > which later was modified by this commit:
-> > > 
-> > > https://github.com/torvalds/linux/commit/8edd7e37aed8b9df938a63f0b0259c70569ce3d2
-> > > 
-> > > and this is what we currently have in all kernels since 5.8. Essentially,
-> > > KRETPROBES are not working since these commits. We have the following logic:
-> > > 
-> > > asm_exc_int3() -> exc_int3():
-> > >                     |
-> > >     ----------------|
-> > >     |
-> > >     v
-> > > ...
-> > > nmi_enter();
-> > > ...
-> > > if (!do_int3(regs))
-> > >        |
-> > >   -----|
-> > >   |
-> > >   v
-> > > do_int3() -> kprobe_int3_handler():
-> > >                     |
-> > >     ----------------|
-> > >     |
-> > >     v
-> > > ...
-> > > if (!p->pre_handler || !p->pre_handler(p, regs))
-> > >                              |
-> > >     -------------------------|
-> > >     |
-> > >     v
-> > > ...
-> > > pre_handler_kretprobe():
-> > > ...
-> > >     if (unlikely(in_nmi())) {
-> > >         rp->nmissed++;
-> > >         return 0;
-> > >     }
-> > > 
-> > > Essentially, exc_int3() calls nmi_enter(), and pre_handler_kretprobe() before
-> > > invoking any registered kprobe verifies if it is not in NMI via in_nmi() call.
-> > > 
-> > > This bug was masked by OPTIMIZER which was turning most of the KPROBES to be
-> > > FTRACE so essentially if someone registered KRETPROBE, buggy code was not
-> > > invoked (FTRACE code was executed instead). However, the optimizer was changed
-> > > and can't optimize as many functions anymore (probably another bug which might
-> > > be worth to investigate) and this bug is more visible.
-> > > 
-> > > Thanks,
-> > > Adam
-> > > 
-> > > -- 
-> > > pi3 (pi3ki31ny) - pi3 (at) itsec pl
-> > > http://pi3.com.pl
-> > > 
-> > 
-> > 
-> > -- 
-> > Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> -- 
-> pi3 (pi3ki31ny) - pi3 (at) itsec pl
-> http://pi3.com.pl
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+-Daniel
+--
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
