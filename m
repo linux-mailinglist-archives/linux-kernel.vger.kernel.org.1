@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7E42D6686
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62DB2D6688
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732923AbgLJO3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:29:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36412 "EHLO mail.kernel.org"
+        id S2393410AbgLJTcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:32:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389943AbgLJO2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:28:22 -0500
+        id S2388428AbgLJO3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:29:53 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Raju Rangoju <rajur@chelsio.com>,
+        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 07/39] cxgb3: fix error return code in t3_sge_alloc_qset()
-Date:   Thu, 10 Dec 2020 15:26:18 +0100
-Message-Id: <20201210142601.253402693@linuxfoundation.org>
+Subject: [PATCH 4.9 05/45] netfilter: bridge: reset skb->pkt_type after NF_INET_POST_ROUTING traversal
+Date:   Thu, 10 Dec 2020 15:26:19 +0100
+Message-Id: <20201210142602.627793598@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
-References: <20201210142600.887734129@linuxfoundation.org>
+In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
+References: <20201210142602.361598591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,33 +32,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Antoine Tenart <atenart@kernel.org>
 
-[ Upstream commit ff9924897f8bfed82e61894b373ab9d2dfea5b10 ]
+[ Upstream commit 44f64f23bae2f0fad25503bc7ab86cd08d04cd47 ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+Netfilter changes PACKET_OTHERHOST to PACKET_HOST before invoking the
+hooks as, while it's an expected value for a bridge, routing expects
+PACKET_HOST. The change is undone later on after hook traversal. This
+can be seen with pairs of functions updating skb>pkt_type and then
+reverting it to its original value:
 
-Fixes: b1fb1f280d09 ("cxgb3 - Fix dma mapping error path")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Acked-by: Raju Rangoju <rajur@chelsio.com>
-Link: https://lore.kernel.org/r/1606902965-1646-1-git-send-email-zhangchangzhong@huawei.com
+For hook NF_INET_PRE_ROUTING:
+  setup_pre_routing / br_nf_pre_routing_finish
+
+For hook NF_INET_FORWARD:
+  br_nf_forward_ip / br_nf_forward_finish
+
+But the third case where netfilter does this, for hook
+NF_INET_POST_ROUTING, the packet type is changed in br_nf_post_routing
+but never reverted. A comment says:
+
+  /* We assume any code from br_dev_queue_push_xmit onwards doesn't care
+   * about the value of skb->pkt_type. */
+
+But when having a tunnel (say vxlan) attached to a bridge we have the
+following call trace:
+
+  br_nf_pre_routing
+  br_nf_pre_routing_ipv6
+     br_nf_pre_routing_finish
+  br_nf_forward_ip
+     br_nf_forward_finish
+  br_nf_post_routing           <- pkt_type is updated to PACKET_HOST
+     br_nf_dev_queue_xmit      <- but not reverted to its original value
+  vxlan_xmit
+     vxlan_xmit_one
+        skb_tunnel_check_pmtu  <- a check on pkt_type is performed
+
+In this specific case, this creates issues such as when an ICMPv6 PTB
+should be sent back. When CONFIG_BRIDGE_NETFILTER is enabled, the PTB
+isn't sent (as skb_tunnel_check_pmtu checks if pkt_type is PACKET_HOST
+and returns early).
+
+If the comment is right and no one cares about the value of
+skb->pkt_type after br_dev_queue_push_xmit (which isn't true), resetting
+it to its original value should be safe.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Antoine Tenart <atenart@kernel.org>
+Reviewed-by: Florian Westphal <fw@strlen.de>
+Link: https://lore.kernel.org/r/20201123174902.622102-1-atenart@kernel.org
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/chelsio/cxgb3/sge.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/bridge/br_netfilter_hooks.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/chelsio/cxgb3/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb3/sge.c
-@@ -3111,6 +3111,7 @@ int t3_sge_alloc_qset(struct adapter *ad
- 			  GFP_KERNEL | __GFP_COMP);
- 	if (!avail) {
- 		CH_ALERT(adapter, "free list queue 0 initialization failed\n");
-+		ret = -ENOMEM;
- 		goto err;
- 	}
- 	if (avail < q->fl[0].size)
+--- a/net/bridge/br_netfilter_hooks.c
++++ b/net/bridge/br_netfilter_hooks.c
+@@ -716,6 +716,11 @@ static int br_nf_dev_queue_xmit(struct n
+ 	mtu_reserved = nf_bridge_mtu_reduction(skb);
+ 	mtu = skb->dev->mtu;
+ 
++	if (nf_bridge->pkt_otherhost) {
++		skb->pkt_type = PACKET_OTHERHOST;
++		nf_bridge->pkt_otherhost = false;
++	}
++
+ 	if (nf_bridge->frag_max_size && nf_bridge->frag_max_size < mtu)
+ 		mtu = nf_bridge->frag_max_size;
+ 
+@@ -809,8 +814,6 @@ static unsigned int br_nf_post_routing(v
+ 	else
+ 		return NF_ACCEPT;
+ 
+-	/* We assume any code from br_dev_queue_push_xmit onwards doesn't care
+-	 * about the value of skb->pkt_type. */
+ 	if (skb->pkt_type == PACKET_OTHERHOST) {
+ 		skb->pkt_type = PACKET_HOST;
+ 		nf_bridge->pkt_otherhost = true;
 
 
