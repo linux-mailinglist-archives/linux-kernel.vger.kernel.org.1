@@ -2,127 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102282D5418
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE792D5419
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387586AbgLJGlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:41:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728974AbgLJGlf (ORCPT
+        id S2387589AbgLJGmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:42:22 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9053 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726686AbgLJGmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:41:35 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55CEC0613CF;
-        Wed,  9 Dec 2020 22:40:54 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cs47624CBz9sVl;
-        Thu, 10 Dec 2020 17:40:50 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607582451;
-        bh=hugfZXiv11BFqaO/f2B1HjycHJ7IP7Z/TBLmKjhbeYM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LdTLlZpdf6GLsNzJ49CiL6b8WdISWML5DipaXsQUgd65FR3DWKCwo3qR+QqK+Qc17
-         +e7dt68RXRAIwCyu0z6QsrZB0lPu3rYzMN7wRrgoTBre5AkOZ0vWdHC6EKo0UhPd/V
-         8EVIeFNzK078gJ9IiiQGbl0O9ZuVbi8zd6tFIwnQDcAjBTyk9ICdhZCvO58rM0ZaLH
-         avPExY1H0nRYiFrOSC5XqO6fIxscoQGDvSLbbAvEmbBGTy5099p1592/k1XwnkXviF
-         Gj+WyBBCklgar1mSMlRICLHnze7PpIfXfhZaj80NlZWjMUmGKBKusxAbFTh38Prhl5
-         2pOLXWbgulMjg==
-Date:   Thu, 10 Dec 2020 17:40:47 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Subject: linux-next: manual merge of the staging tree with the phy-next tree
-Message-ID: <20201210174047.3d1f8aaa@canb.auug.org.au>
+        Thu, 10 Dec 2020 01:42:22 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cs47Q2TDBzhq3p;
+        Thu, 10 Dec 2020 14:41:06 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 10 Dec 2020 14:41:31 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH v3 5/5] f2fs: introduce sb_status sysfs node
+Date:   Thu, 10 Dec 2020 14:41:15 +0800
+Message-ID: <20201210064115.47351-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/O4SzRHQndoKBDnHe5_08FFL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/O4SzRHQndoKBDnHe5_08FFL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Introduce /sys/fs/f2fs/<devname>/stat/sb_status to show superblock
+status in real time as a hexadecimal value.
 
-Hi all,
+value           sb status macro                 description
 
-Today's linux-next merge of the staging tree got conflicts in:
+0x1             SBI_IS_DIRTY,                   /* dirty flag for checkpoint */
+0x2             SBI_IS_CLOSE,                   /* specify unmounting */
+0x4             SBI_NEED_FSCK,                  /* need fsck.f2fs to fix */
+0x8             SBI_POR_DOING,                  /* recovery is doing or not */
+0x10            SBI_NEED_SB_WRITE,              /* need to recover superblock */
+0x20            SBI_NEED_CP,                    /* need to checkpoint */
+0x40            SBI_IS_SHUTDOWN,                /* shutdown by ioctl */
+0x80            SBI_IS_RECOVERED,               /* recovered orphan/data */
+0x100           SBI_CP_DISABLED,                /* CP was disabled last mount */
+0x200           SBI_CP_DISABLED_QUICK,          /* CP was disabled quickly */
+0x400           SBI_QUOTA_NEED_FLUSH,           /* need to flush quota info in CP */
+0x800           SBI_QUOTA_SKIP_FLUSH,           /* skip flushing quota in current CP */
+0x1000          SBI_QUOTA_NEED_REPAIR,          /* quota file may be corrupted */
+0x2000          SBI_IS_RESIZEFS,                /* resizefs is in process */
 
-  drivers/staging/Kconfig
-  drivers/staging/Makefile
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+v3:
+- just print one single value as output
+ Documentation/ABI/testing/sysfs-fs-f2fs | 21 +++++++++++++++++++++
+ fs/f2fs/sysfs.c                         |  8 ++++++++
+ 2 files changed, 29 insertions(+)
 
-between commit:
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 3dfee94e0618..9b2f93eda1f8 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -377,3 +377,24 @@ Description:	This gives a control to limit the bio size in f2fs.
+ 		Default is zero, which will follow underlying block layer limit,
+ 		whereas, if it has a certain bytes value, f2fs won't submit a
+ 		bio larger than that size.
++
++What:		/sys/fs/f2fs/<disk>/stat/sb_status
++Date:		December 2020
++Contact:	"Chao Yu" <yuchao0@huawei.com>
++Description:	Show status of f2fs superblock in real time.
++
++		value           sb status macro                 description
++		0x1             SBI_IS_DIRTY,                   /* dirty flag for checkpoint */
++		0x2             SBI_IS_CLOSE,                   /* specify unmounting */
++		0x4             SBI_NEED_FSCK,                  /* need fsck.f2fs to fix */
++		0x8             SBI_POR_DOING,                  /* recovery is doing or not */
++		0x10            SBI_NEED_SB_WRITE,              /* need to recover superblock */
++		0x20            SBI_NEED_CP,                    /* need to checkpoint */
++		0x40            SBI_IS_SHUTDOWN,                /* shutdown by ioctl */
++		0x80            SBI_IS_RECOVERED,               /* recovered orphan/data */
++		0x100           SBI_CP_DISABLED,                /* CP was disabled last mount */
++		0x200           SBI_CP_DISABLED_QUICK,          /* CP was disabled quickly */
++		0x400           SBI_QUOTA_NEED_FLUSH,           /* need to flush quota info in CP */
++		0x800           SBI_QUOTA_SKIP_FLUSH,           /* skip flushing quota in current CP */
++		0x1000          SBI_QUOTA_NEED_REPAIR,          /* quota file may be corrupted */
++		0x2000          SBI_IS_RESIZEFS,                /* resizefs is in process */
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index ebca0b4961e8..d5198689ab02 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -101,6 +101,12 @@ static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
+ 				sbi->sectors_written_start) >> 1)));
+ }
+ 
++static ssize_t sb_status_show(struct f2fs_attr *a,
++		struct f2fs_sb_info *sbi, char *buf)
++{
++	return sprintf(buf, "%lx\n", sbi->s_flag);
++}
++
+ static ssize_t features_show(struct f2fs_attr *a,
+ 		struct f2fs_sb_info *sbi, char *buf)
+ {
+@@ -711,7 +717,9 @@ static struct attribute *f2fs_feat_attrs[] = {
+ };
+ ATTRIBUTE_GROUPS(f2fs_feat);
+ 
++F2FS_GENERAL_RO_ATTR(sb_status);
+ static struct attribute *f2fs_stat_attrs[] = {
++	ATTR_LIST(sb_status),
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(f2fs_stat);
+-- 
+2.29.2
 
-  53e7c92c7fa0 ("staging: mt7621-pci-phy: remove driver from staging")
-
-from the phy-next tree and commit:
-
-  518b466a21ad ("pinctrl: ralink: add a pinctrl driver for the rt2880 famil=
-y")
-
-from the staging tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/staging/Kconfig
-index 4d7a5ddf9992,c42708e60afc..000000000000
---- a/drivers/staging/Kconfig
-+++ b/drivers/staging/Kconfig
-@@@ -94,8 -92,8 +92,6 @@@ source "drivers/staging/pi433/Kconfig
- =20
-  source "drivers/staging/mt7621-pci/Kconfig"
- =20
-- source "drivers/staging/mt7621-pinctrl/Kconfig"
- -source "drivers/staging/mt7621-pci-phy/Kconfig"
---
-  source "drivers/staging/mt7621-dma/Kconfig"
- =20
-  source "drivers/staging/ralink-gdma/Kconfig"
-diff --cc drivers/staging/Makefile
-index 89bde2370eee,ebcc646d7b51..000000000000
---- a/drivers/staging/Makefile
-+++ b/drivers/staging/Makefile
-@@@ -37,7 -36,7 +36,6 @@@ obj-$(CONFIG_GREYBUS)		+=3D greybus
-  obj-$(CONFIG_BCM2835_VCHIQ)	+=3D vc04_services/
-  obj-$(CONFIG_PI433)		+=3D pi433/
-  obj-$(CONFIG_PCI_MT7621)	+=3D mt7621-pci/
-- obj-$(CONFIG_PINCTRL_RT2880)	+=3D mt7621-pinctrl/
- -obj-$(CONFIG_PCI_MT7621_PHY)	+=3D mt7621-pci-phy/
-  obj-$(CONFIG_SOC_MT7621)	+=3D mt7621-dma/
-  obj-$(CONFIG_DMA_RALINK)	+=3D ralink-gdma/
-  obj-$(CONFIG_SOC_MT7621)	+=3D mt7621-dts/
-
---Sig_/O4SzRHQndoKBDnHe5_08FFL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/RwvAACgkQAVBC80lX
-0GyHRgf/aPmOW4WtbekZfjpWNFDf+l03fmojDldGcw2dNxzkqKcTcsD2ZNpLvcVL
-+6nz3mnpYNGZGXuglOMxDQNdqq7nzKuQbR4XZpKhVH5d9U0b9MWmwLwHEfVZbOub
-OFrRUFz/kVzPp2nuJvVkI0D6xwFdoeLzvljZ5e5J8KOIRD/YCzhbYOboE8B4EI0Q
-11Kca3irZ16XsOd8wv8LS1huVHWfaGBR6tLssds2BzpsmAr+CFkb5mtbZL3ZWlJB
-w+YhEtXcdosc4WJ1UIxqTneymVWsFiPaDajQcXT2CbyeS1P4xlLuwOHuYCrM48aP
-IK3n77ijEbn1YV3Vf4lQ6fVlzbGN6A==
-=CGvU
------END PGP SIGNATURE-----
-
---Sig_/O4SzRHQndoKBDnHe5_08FFL--
