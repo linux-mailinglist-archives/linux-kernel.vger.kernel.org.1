@@ -2,202 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7572D5454
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B76E02D5458
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:10:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732351AbgLJHH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 02:07:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgLJHH0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 02:07:26 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB00C0613CF;
-        Wed,  9 Dec 2020 23:06:45 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id g185so4150338wmf.3;
-        Wed, 09 Dec 2020 23:06:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=YR6gFCqJqXP84fA9UYeAxb46qRTVRaOH34o5hjUIaIM=;
-        b=ryM0D2Dm8X78sKekcsr8QeXnfQb75ahxH4eagUiR8vXfPb3RqQ7QRm7FkqE1TrOoAn
-         sm0BaxGB67py0D1HIH9lkWlfqECqH9381UOWLXFxArZQlQg9ExOFUAumj/0eaKOIi4UX
-         3WFmGqqvjhyMNj8srxO8HhWXuBTCkPtvFsTGylKOhvyJ5p43GP8uNYSfx78FYFWGS6Qc
-         5NTX3tUDys4i65tBkh/TdrzmFJyQyYtR4tEJEg7R0J29wBm265cqQ7HZf2h3lZa6mMP7
-         PuED2KpxmyVN746sbXA5DWswC7wTldq/gFYQlCH96dXqzx+r48bXMV8pgilZYX0tE5Bb
-         e1Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=YR6gFCqJqXP84fA9UYeAxb46qRTVRaOH34o5hjUIaIM=;
-        b=lwmDI+3iNqlOqBMUu1Mja5HUwmw1mj6Gel4LEGifBtbr6u/CfWvMkgfJvpmPaxk0jM
-         WpZ8eSX7ptpFxP19kNERVljFy+t2HSBKAUNWuv6mibMqCm8DwhT7BekB0zyA1B15TRSb
-         MPDN4XfZ1W6yJKmKvx+Y8W1Ms2KFuJth4O8NwgmmtdROrbcPccxfrHRZZyUneK4fH3+d
-         j6F1QvkL4t3vLvoprovkocdjMH3OzR8jYkjkZWb16f+nHBvQIIOyzfthb6Bc8IkHAqJs
-         tTLWCPf72JbvYQ91kGDYQRBkTKPzpm8zise8UK/y3K6S28exyHxyb3/BnvRhvpVr+9Ks
-         MStw==
-X-Gm-Message-State: AOAM531pY65xIw9oO/4Ij+ZMzkqpS7C3M1MmRbW5GCGTBElvFlr8uHIU
-        XjukIMfByI/dODg7twKyZXU=
-X-Google-Smtp-Source: ABdhPJwkUVWpTJnPr27BI1ip9p5CcQ5OEtAo3ZbkYvf2nHv0iMejPSh8n3j53qdXw9Hepz8L5wF5qA==
-X-Received: by 2002:a7b:cd91:: with SMTP id y17mr6252191wmj.171.1607584004382;
-        Wed, 09 Dec 2020 23:06:44 -0800 (PST)
-Received: from [10.11.11.4] ([178.254.237.20])
-        by smtp.gmail.com with ESMTPSA id c4sm8026442wrw.72.2020.12.09.23.06.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Dec 2020 23:06:43 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.31\))
-Subject: Re: Urgent: BUG: PPP ioctl Transport endpoint is not connected
-From:   Martin Zaharinov <micron10@gmail.com>
-In-Reply-To: <20201209181033.GB21199@linux.home>
-Date:   Thu, 10 Dec 2020 09:06:41 +0200
-Cc:     "linux-kernel@vger kernel. org" <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8AA74C35-A61A-4EA5-911E-41017C7A399E@gmail.com>
-References: <83C781EB-5D66-426E-A216-E1B846A3EC8A@gmail.com>
- <20201209164013.GA21199@linux.home>
- <1E49F9F8-0325-439E-B200-17C8CB6A3CBE@gmail.com>
- <20201209181033.GB21199@linux.home>
-To:     Guillaume Nault <gnault@redhat.com>
-X-Mailer: Apple Mail (2.3654.40.0.2.31)
+        id S1732544AbgLJHI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 02:08:26 -0500
+Received: from mga05.intel.com ([192.55.52.43]:7028 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726107AbgLJHIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 02:08:18 -0500
+IronPort-SDR: gEjzh5Fer/L0YGkCOpUPU712M4FagGwyfgy+RRmjRzoMgku2UUzqFYbOO8zeaf4EE3m3faIbeY
+ GyQeSZTbPzJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="258925816"
+X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
+   d="scan'208";a="258925816"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 23:07:34 -0800
+IronPort-SDR: b70CbR8qt3LOvjE6W0wdqhMaTzLtw01Fpyb2BfuRX1xRptzH/Zcp2Y4K81ZNgyceyqk1rLNVpu
+ yfeOQ5w4bpPg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
+   d="scan'208";a="375811504"
+Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 09 Dec 2020 23:07:32 -0800
+Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1knG30-00007o-Pq; Thu, 10 Dec 2020 07:07:30 +0000
+Date:   Thu, 10 Dec 2020 15:07:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cache] BUILD SUCCESS WITH WARNING
+ 2ba836dbe2467d31fffb439258c2f454c6f1a317
+Message-ID: <5fd1c92a.Ih3xkMwbJGiSyEGH%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cache
+branch HEAD: 2ba836dbe2467d31fffb439258c2f454c6f1a317  x86/resctrl: Fix incorrect local bandwidth when mba_sc is enabled
+
+Warning reports:
+
+https://lore.kernel.org/lkml/202012100516.H7sTNehL-lkp@intel.com
+
+Warning in current branch:
+
+arch/x86/kernel/cpu/resctrl/monitor.c:291:6: warning: variable 'chunks' set but not used [-Wunused-but-set-variable]
+
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- i386-allyesconfig
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- i386-randconfig-a001-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- i386-randconfig-a002-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- i386-randconfig-a002-20201210
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- i386-randconfig-a004-20201210
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- i386-randconfig-a006-20201210
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- i386-randconfig-a012-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- i386-randconfig-a014-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- i386-randconfig-a016-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- i386-randconfig-c001-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- i386-randconfig-c001-20201210
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- i386-randconfig-s001-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- i386-randconfig-s002-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-allmodconfig
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-allyesconfig
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-randconfig-a011-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-randconfig-a013-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-randconfig-a014-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-randconfig-p002-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-randconfig-r023-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-randconfig-r024-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-randconfig-s021-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-randconfig-s022-20201209
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-randconfig-s022-20201210
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-rhel
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+|-- x86_64-rhel-7.6-kselftests
+|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
+`-- x86_64-rhel-8.3
+    `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
 
 
-> On 9 Dec 2020, at 20:10, Guillaume Nault <gnault@redhat.com> wrote:
->=20
-> On Wed, Dec 09, 2020 at 06:57:44PM +0200, Martin Zaharinov wrote:
->>> On 9 Dec 2020, at 18:40, Guillaume Nault <gnault@redhat.com> wrote:
->>> On Wed, Dec 09, 2020 at 04:47:52PM +0200, Martin Zaharinov wrote:
->>>> Hi All
->>>>=20
->>>> I have problem with latest kernel release=20
->>>> And the problem is base on this late problem :
->>>>=20
->>>>=20
->>>> =
-https://www.mail-archive.com/search?l=3Dnetdev@vger.kernel.org&q=3Dsubject=
-:%22Re%5C%3A+ppp%5C%2Fpppoe%2C+still+panic+4.15.3+in+ppp_push%22&o=3Dnewes=
-t&f=3D1
->>>>=20
->>>> I have same problem in kernel 5.6 > now I use kernel 5.9.13 and =
-have same problem.
->>>>=20
->>>>=20
->>>> In kernel 5.9.13 now don=E2=80=99t have any crashes in dimes but in =
-one moment accel service stop with defunct and in log have many of this =
-line :
->>>>=20
->>>>=20
->>>> error: vlan608: ioctl(PPPIOCCONNECT): Transport endpoint is not =
-connected
->>>> error: vlan617: ioctl(PPPIOCCONNECT): Transport endpoint is not =
-connected
->>>> error: vlan679: ioctl(PPPIOCCONNECT): Transport endpoint is not =
-connected
->>>>=20
->>>> In one moment connected user bump double or triple and after that =
-service defunct and need wait to drop all session to start .
->>>>=20
->>>> I talk with accel-ppp team and they said this is kernel related =
-problem and to back to kernel 4.14 there is not this problem.
->>>>=20
->>>> Problem is come after kernel 4.15 > and not have solution to this =
-moment.
->>>=20
->>> I'm sorry, I don't understand.
->>> Do you mean that v4.14 worked fine (no crash, no ioctl() error)?
->>> Did the problem start appearing in v4.15? Or did v4.15 work and the
->>> problem appeared in v4.16?
->>=20
->> In Telegram group I talk with Sergey and Dimka and told my the =
-problem is come after changes from 4.14 to 4.15=20
->> Sergey write this : "as I know, there was a similar issue in kernel =
-4.15 so maybe it is still not fixed"
->=20
-> Ok, but what is your experience? Do you have a kernel version where
-> accel-ppp reports no ioctl() error and doesn't crash the kernel?
->=20
-> There wasn't a lot of changes between 4.14 and 4.15 for PPP.
-> The only PPP patch I can see that might have been risky is commit
-> 0171c4183559 ("ppp: unlock all_ppp_mutex before registering device").
+i386-tinyconfig vmlinux size:
 
-May be or is other bug in ppp but how to debug or find fix=E2=80=A6
++-------+------------------------------+------------------------------------------+
+| DELTA |            SYMBOL            |                  COMMIT                  |
++-------+------------------------------+------------------------------------------+
+| +1718 | TOTAL                        | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+| +1647 | TEXT                         | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|   +68 | BSS                          | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|  +774 | seq_read_iter()              | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|  +250 | __invalidate_mapping_pages() | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|  +225 | intel_pmu_drain_pebs_icl()   | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|  +218 | intel_pmu_drain_pebs_nhm()   | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|  +201 | intel_pmu_drain_pebs_core()  | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|  +117 | init.text                    | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|   +68 | dummy_iregs                  | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|   +66 | perf_event_aux_event()       | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|   +66 | perf_log_throttle()          | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|   -69 | __sb_start_write()           | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|   -78 | __ptrace_may_access()        | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|  -250 | __invalidate_mapping_pages() | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|  -356 | __intel_pmu_pebs_event()     | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
+|  -470 | seq_read()                   | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
++-------+------------------------------+------------------------------------------+
 
+elapsed time: 721m
 
->=20
->> I don=E2=80=99t have options to test with this old kernel 4.14.xxx i =
-don=E2=80=99t have support for them.
->>=20
->>=20
->>>=20
->>>> Please help to find the problem.
->>>>=20
->>>> Last time in link I see is make changes in ppp_generic.c=20
->>>>=20
->>>> ppp_lock(ppp);
->>>>       spin_lock_bh(&pch->downl);
->>>>       if (!pch->chan) {
->>>>               /* Don't connect unregistered channels */
->>>>               spin_unlock_bh(&pch->downl);
->>>>               ppp_unlock(ppp);
->>>>               ret =3D -ENOTCONN;
->>>>               goto outl;
->>>>       }
->>>>       spin_unlock_bh(&pch->downl);
->>>>=20
->>>>=20
->>>> But this fix only to don=E2=80=99t display error and freeze system=20=
+configs tested: 132
+configs skipped: 3
 
->>>> The problem is stay and is to big.
->>>=20
->>> Do you use accel-ppp's unit-cache option? Does the problem go away =
-if
->>> you stop using it?
->>>=20
->>=20
->> No I don=E2=80=99t use unit-cache , if I set unit-cache accel-ppp =
-defunct same but user Is connect and disconnet more fast.
->>=20
->> The problem is same with unit and without .=20
->> Only after this patch I don=E2=80=99t see error in dimes but this is =
-not solution.
->=20
-> Soryy, what's "in dimes"?
-> Do you mean that reverting commit 77f840e3e5f0 ("ppp: prevent
-> unregistered channels from connecting to PPP units") fixes your =
-problem?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      tqm8xx_defconfig
+arc                        vdk_hs38_defconfig
+powerpc                      walnut_defconfig
+ia64                         bigsur_defconfig
+powerpc                     tqm8555_defconfig
+m68k                         apollo_defconfig
+riscv                            allmodconfig
+m68k                        mvme16x_defconfig
+mips                        omega2p_defconfig
+ia64                        generic_defconfig
+um                             i386_defconfig
+mips                           gcw0_defconfig
+sh                          kfr2r09_defconfig
+sh                           se7724_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                           viper_defconfig
+arm                         socfpga_defconfig
+alpha                            alldefconfig
+arm                        vexpress_defconfig
+powerpc                      makalu_defconfig
+arm                    vt8500_v6_v7_defconfig
+mips                  maltasmvp_eva_defconfig
+sh                        edosk7760_defconfig
+arm                       imx_v6_v7_defconfig
+powerpc                 mpc85xx_cds_defconfig
+mips                         tb0219_defconfig
+mips                     cu1000-neo_defconfig
+powerpc                     rainier_defconfig
+arm                          pcm027_defconfig
+mips                          ath25_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                        oxnas_v6_defconfig
+s390                                defconfig
+arm                        spear6xx_defconfig
+arm                         s3c6400_defconfig
+mips                         db1xxx_defconfig
+mips                            ar7_defconfig
+arm                       versatile_defconfig
+powerpc                        icon_defconfig
+nios2                            alldefconfig
+arm                       aspeed_g5_defconfig
+powerpc                 canyonlands_defconfig
+sh                      rts7751r2d1_defconfig
+mips                         bigsur_defconfig
+mips                           xway_defconfig
+mips                         cobalt_defconfig
+mips                        nlm_xlp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201209
+i386                 randconfig-a005-20201209
+i386                 randconfig-a001-20201209
+i386                 randconfig-a002-20201209
+i386                 randconfig-a006-20201209
+i386                 randconfig-a003-20201209
+i386                 randconfig-a001-20201210
+i386                 randconfig-a004-20201210
+i386                 randconfig-a003-20201210
+i386                 randconfig-a002-20201210
+i386                 randconfig-a005-20201210
+i386                 randconfig-a006-20201210
+x86_64               randconfig-a016-20201209
+x86_64               randconfig-a012-20201209
+x86_64               randconfig-a013-20201209
+x86_64               randconfig-a014-20201209
+x86_64               randconfig-a015-20201209
+x86_64               randconfig-a011-20201209
+i386                 randconfig-a013-20201209
+i386                 randconfig-a014-20201209
+i386                 randconfig-a011-20201209
+i386                 randconfig-a015-20201209
+i386                 randconfig-a012-20201209
+i386                 randconfig-a016-20201209
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a004-20201209
+x86_64               randconfig-a006-20201209
+x86_64               randconfig-a005-20201209
+x86_64               randconfig-a001-20201209
+x86_64               randconfig-a002-20201209
+x86_64               randconfig-a003-20201209
+x86_64               randconfig-a003-20201210
+x86_64               randconfig-a006-20201210
+x86_64               randconfig-a002-20201210
+x86_64               randconfig-a005-20201210
+x86_64               randconfig-a004-20201210
+x86_64               randconfig-a001-20201210
 
-May be no if revert system will display crash report and go to freeze .
-
-
-
->=20
->> In network have customer what have power cut problem, when drop 600 =
-user and back Is normal but in this moment kernel is locking and start =
-to make this :=20
->> sessions:
->>  starting: 4235
->>  active: 3882
->>  finishing: 378
->> The problem is starting session is not real user normal user in this =
-server is ~4k customers .
->=20
-> What type of session is it? L2TP, PPPoE, PPTP?
->=20
->> I use pppd_compat .
->>=20
->> Any idea ?
->>=20
->>>>=20
->>>> Please help to fix.
->> Martin
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
