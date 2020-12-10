@@ -2,85 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 281F72D61A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D342D61AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388961AbgLJQWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:22:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728518AbgLJQWG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:22:06 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90928C0613CF;
-        Thu, 10 Dec 2020 08:21:26 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id g18so4682547pgk.1;
-        Thu, 10 Dec 2020 08:21:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Yxk9HNh5qdQCgFQ8rZtWSxHI6tHLmq1Eu2GPGLWvZ5E=;
-        b=cV8z8C4P/M6JHKbpfAkcV0wDHdahPPY8wHp8+9M0T+cX89praIif9OBdDcuWp7RWN2
-         CzrKvuP56h2PyJv6SZlYUATExb7r7LEkgNZC9mAK7s+AktVOEVLsyZk5T/kp40TH/EN6
-         iKDwV9HPkQPnSOp2N2o3rAjlDJaPW+rieBKj7TMzGoYbk4A5DCPM6zqvTurkc7ngMU5R
-         3cJJiirmoJYJZLJCVbAkcgtgfhNIVgkJfErP39awC6IS9kYULnX0aR6B4KF6D9QvwcYx
-         8uKfRuRC5QvhIbMC5MLGTZwdNK6oUpGv+7daQW9BIad5D5hqi6oK5WGPPn5DBj6m8Xj+
-         ZJ6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yxk9HNh5qdQCgFQ8rZtWSxHI6tHLmq1Eu2GPGLWvZ5E=;
-        b=I0WA/XCKzS34eE7/hSctaVIn2kC2ADJixlqKLOsWqBHMwNa5jfsnBt8yyBJv3uZ/ti
-         Ivvv8afltdKM6oEkA5B6SSRGx86Q9Ir5z2XUqeLClX58xj7IQZs+83k80ywnwVyevH3e
-         fgin1pTy+Kz+o8vhrqHikTFAle3PVMO08TAtXSJ6E0GO/HoyQnzb6c2AtoJUCgeHsccf
-         7T9BmFJJNys20UaFgRIeqfXAWFX9fwo4T9UkjyEV2/ILqwg+YulRM7tgDxr9zrbhFEFD
-         w2akGIlb7PjqNT7UILBfHHjma2YjK35h7PiqtPxj5pMEmIxky63hNCfpJSaH/k4GRHaF
-         062Q==
-X-Gm-Message-State: AOAM531JSTnSeTwKwT8yZcs8+uuGar/6SK5GTZ6uq6WCXnG6Wg8aCkHb
-        0bqxjIEOg3ESGjHj9FdYOGs7DiPOrcuq96pMtw==
-X-Google-Smtp-Source: ABdhPJxM30sLbsxiVwit0Q3WhUIn4k7KJrgXTbroXpsQ8hoC6mnwQ/TFp1F919TI146UgOVGzkfEQGqO1NwKkzeQ/cs=
-X-Received: by 2002:a17:90a:bf88:: with SMTP id d8mr8570693pjs.124.1607617286155;
- Thu, 10 Dec 2020 08:21:26 -0800 (PST)
+        id S2392228AbgLJQXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:23:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388407AbgLJQXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 11:23:38 -0500
+Date:   Thu, 10 Dec 2020 08:22:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607617378;
+        bh=IT1JhMouVay4d31+Gw+I77QyHRv1BMMQHowugQ1EGS8=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Uo0NiqgPB/g8PXQKQB1ZRC1Telxr2qFG92011hQ3lHonyXSLgYaxJq158mhIWfKFZ
+         HicY16RuNTpihqbB3lhvS5B0lT793phbiG+v82xkBK1sIb8kLIzpluOrHO22KhaZP1
+         DMdphQ8Mw7oe9cn5SrVx0/YisG6MS7RKeVcA6cxHhknAWBvUgwYMcMYhr7oDZM0SgA
+         Y0ktr1nILe/+Q2OEkkH/dGG14TWxGtPvQiVAUXuoW90aD4J+x1xMWpI/d8feiMhHrd
+         Z2waf0JVIn1DUdrZv/Gp1EWiXCpAIigqyCyqM9EaGykgMQWUtnbwaZSFW6wO1QSxmw
+         hOG5IHCWpQ4Wg==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     =?utf-8?B?5b6Q55Ge5paM?= <robinh3123@gmail.com>
+Cc:     Chao Yu <yuchao0@huawei.com>,
+        linux-f2fs-devel@lists.sourceforge.net, chao@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH v3 2/3] f2fs-tools:sload.f2fs compression
+ support
+Message-ID: <X9JLYADc4+lF53gG@google.com>
+References: <20201208081555.652932-1-robinh3123@gmail.com>
+ <20201208081555.652932-3-robinh3123@gmail.com>
+ <785e9f0a-c3d6-9cc5-f17a-a3cc58a43a0f@huawei.com>
+ <CAKnFrsLmEROi+ZwVCmoC=W7u+rVoZfWGC9Lr9_y=oLMUZMw63Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <CALjTZvZZZVqnoV4YFTDHogVHv77=dKfcSSBGj1zC83zpUid9+g@mail.gmail.com>
- <4eb99a1da6342999c4dca355533a0847d0e942a5.camel@intel.com>
- <CALjTZvYwccfOVTTGNo1=oLnwXG2b9Vz1nVZuvLKFV94+3fQ6EQ@mail.gmail.com>
- <20201209091315.2c55e1c6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <CANUX_P1=yuPkK5BzJ99oniMiCgB0z98yNYUSw4_qk2Vg7ucoRQ@mail.gmail.com>
- <CALjTZvYZEbgfLEzxQdafJT6CFz76prA4+YM2EGA8k5Dgn3gigw@mail.gmail.com>
- <CANUX_P1YWSudJfwyuFVg-qdBHwQvQJiZayZBMY8E4it0qwB5Hw@mail.gmail.com>
- <CANUX_P0sOAdRjOgg=ogAHmQdTXp5UKyW2XQQRComa4Rv3Y-toQ@mail.gmail.com> <CALjTZvYfJVjxRO4Avc3rV+W+HO-vBABxwF=UUETzDeNv_QBbhg@mail.gmail.com>
-In-Reply-To: <CALjTZvYfJVjxRO4Avc3rV+W+HO-vBABxwF=UUETzDeNv_QBbhg@mail.gmail.com>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Thu, 10 Dec 2020 16:21:15 +0000
-Message-ID: <CALjTZvZybsB3unK8X0WcA7kLF60=36F2senz6fEoJS6VVx6Hwg@mail.gmail.com>
-Subject: Re: [BUG] iwlwifi: card unusable after firmware crash
-To:     Emmanuel Grumbach <egrumbach@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "Coelho, Luciano" <luciano.coelho@intel.com>,
-        "Goodstein, Mordechay" <mordechay.goodstein@intel.com>,
-        "Berg, Johannes" <johannes.berg@intel.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKnFrsLmEROi+ZwVCmoC=W7u+rVoZfWGC9Lr9_y=oLMUZMw63Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, again,
+On 12/10, 徐瑞斌 wrote:
+> Hi, Jaegeuk,
+> 
+> I comment here the patch your provided (3 parts, since the patch contains 3
+> fixes):
+> 1.  +       dn->data_blkaddr = blkaddr;
+>         ret = reserve_new_block(sbi, &dn->data_blkaddr, &sum, type, 0);
+> 
+> We cannot assign dn->data_blkaddr here.  The old one is to be used in
+> reserve_new_block() function.  Also, reserve_new_block() function actually
+> will set dn->data_blkaddr to blkaddr in the end.
 
-I haven't tested any patch or bisected, but I have another data point.
-I built and tested Linux 5.8.18, with the same firmware, and it is
-working correctly. I reduced the test case to just rfkilling the
-connection, which showed the register dump immediately (before that I
-was using the airplane toggle on the keyboard, which isn't working
-correctly, it disables and immediately reenables the radio, for some
-unfathomable reason).
-So, now I'm inclined to believe this is some sort of race condition
-between rfkill and pending transactions.
+This tries to avoid deleting the block address used in the previous offset.
+Otherwise, we'll see wrong i_blocks.
 
-Thanks,
-Rui
+> 
+> 2.   Added condition "n < (1 << c.sldc_cc.log_cluster_size) * BLOCK_SZ"
+> 
+> The semantic meaning of the whole if statement is to say:
+>    When the compression fail (ret  != 0) or the original read size is
+> smaller than the compressed size plus (the minimum block saved (specified
+> by the user) x block size), we will not do compression but just write the
+> data as is.
+
+This is missing the last block having < 4Kb.
+
+> 
+> The right hand side (RHS) of your added condition is exactly the read size,
+> i.e. the cluster size.  That means the condition is always false except the
+> read of the last part of the file, when the file size is not exactly the
+> multiple of the cluster size.  That means we will never try to compress the
+> last part of the file (when the last part is not a multiple of the cluster
+> size)
+> 
+> IMHO, the original implementation should be correct.
+> 
+> 3.  node_blk->i.i_blocks += cpu_to_le64(cblocks);
+> 
+> I am not quite sure of the i_blocks count.  Did you mean that when the file
+> is mutable,   meaning that the file reserves some blocks for future write,
+> we will add count to i_blocks to mark the block as a used block by the
+> file, right?  I thought we only need to increment the allocated count...
+
+Should add it.
+
+> 
+> Regards,
+> Robin Hsu 徐瑞斌
+> 
+> 
+> On Thu, Dec 10, 2020 at 4:42 PM Chao Yu <yuchao0@huawei.com> wrote:
+> 
+> > On 2020/12/8 16:15, Robin Hsu wrote:
+> > > From: Robin Hsu <robinhsu@google.com>
+> > >
+> > > Add F2FS compression support for sload
+> > > * Support file extension filter, either default-accept or default-deny
+> > >    policy
+> > > * Support choice of compression algorithm, LZO (version 2) or LZ4
+> > >    (default)
+> > > * Support custom log of cluster size
+> > > * Support minimum number of compressed blocks per cluster (default 1).
+> > >    A cluster will not be compressed if the number can not be met.
+> > > * suuport -r (read-only) option
+> >
+> > Could you please update manual as well?
+> >
+> > > +
+> > > +     /* sldc: sload compression support */
+> >
+> > Personally, I don't like the naming method of adding "sldc_" prefix... :(
+> >
+> > > +     bool sldc_en;
+> > > +     bool sldc_use_allow_list;  /* default false to use the deny list */
+> > > +     struct compress_ctx sldc_cc;
+> > > +     u8 sldc_ca; /* compress algorithm: 0 = LZO, 1 = LZ4 */
+> > > +     compress_ops *sldc_compr;
+> > > +     enum filter_policy sldc_policy;
+> > > +     /* max_cppc can used to specify minimum compression rate */
+> > > +     unsigned int sldc_min_cbpc; /* min compressed pages per cluster */
+> > > +     bool sldc_got_opt;
+> > > +     bool sldc_immutable;
+> > > +     struct ext_tbl_op *sldc_ef; /* extension filter */
+> >
+> > The variables name like sldc_en, sldc_ca, min_cbpc, sldc_ef makes
+> > developers
+> > hard to understand w/o comments, and also there is no comments for several
+> > variable like sldc_en, sldc_cc...
+> >
+> > Could you please improve the naming like f2fs-tools style?
+> >
+> > Thanks,
+> >
