@@ -2,24 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E042D688C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0DD2D6874
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393462AbgLJUUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 15:20:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36102 "EHLO mail.kernel.org"
+        id S2390106AbgLJO2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:28:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390065AbgLJO13 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:27:29 -0500
+        id S2390076AbgLJO2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:28:01 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.4 12/39] powerpc: Stop exporting __clear_user which is now inlined.
-Date:   Thu, 10 Dec 2020 15:26:23 +0100
-Message-Id: <20201210142601.497869378@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 14/39] vlan: consolidate VLAN parsing code and limit max parsing depth
+Date:   Thu, 10 Dec 2020 15:26:25 +0100
+Message-Id: <20201210142601.602997730@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
 References: <20201210142600.887734129@linuxfoundation.org>
@@ -31,29 +35,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Suchanek <msuchanek@suse.de>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-Stable commit 452e2a83ea23 ("powerpc: Fix __clear_user() with KUAP
-enabled") redefines __clear_user as inline function but does not remove
-the export.
+[ Upstream commit 469aceddfa3ed16e17ee30533fae45e90f62efd8 ]
 
-Fixes: 452e2a83ea23 ("powerpc: Fix __clear_user() with KUAP enabled")
+Toshiaki pointed out that we now have two very similar functions to extract
+the L3 protocol number in the presence of VLAN tags. And Daniel pointed out
+that the unbounded parsing loop makes it possible for maliciously crafted
+packets to loop through potentially hundreds of tags.
 
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+Fix both of these issues by consolidating the two parsing functions and
+limiting the VLAN tag parsing to a max depth of 8 tags. As part of this,
+switch over __vlan_get_protocol() to use skb_header_pointer() instead of
+pskb_may_pull(), to avoid the possible side effects of the latter and keep
+the skb pointer 'const' through all the parsing functions.
+
+v2:
+- Use limit of 8 tags instead of 32 (matching XMIT_RECURSION_LIMIT)
+
+Reported-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+Reported-by: Daniel Borkmann <daniel@iogearbox.net>
+Fixes: d7bf2ebebc2b ("sched: consistently handle layer3 header accesses in the presence of VLANs")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/lib/ppc_ksyms.c |    1 -
- 1 file changed, 1 deletion(-)
+ include/linux/if_vlan.h | 29 ++++++++++++++++++++++-------
+ include/net/inet_ecn.h  |  1 +
+ 2 files changed, 23 insertions(+), 7 deletions(-)
 
---- a/arch/powerpc/lib/ppc_ksyms.c
-+++ b/arch/powerpc/lib/ppc_ksyms.c
-@@ -24,7 +24,6 @@ EXPORT_SYMBOL(csum_tcpudp_magic);
- #endif
+diff --git a/include/linux/if_vlan.h b/include/linux/if_vlan.h
+index dd676ba758ee7..40429b818b457 100644
+--- a/include/linux/if_vlan.h
++++ b/include/linux/if_vlan.h
+@@ -30,6 +30,8 @@
+ #define VLAN_ETH_DATA_LEN	1500	/* Max. octets in payload	 */
+ #define VLAN_ETH_FRAME_LEN	1518	/* Max. octets in frame sans FCS */
  
- EXPORT_SYMBOL(__copy_tofrom_user);
--EXPORT_SYMBOL(__clear_user);
- EXPORT_SYMBOL(copy_page);
++#define VLAN_MAX_DEPTH	8		/* Max. number of nested VLAN tags parsed */
++
+ /*
+  * 	struct vlan_hdr - vlan header
+  * 	@h_vlan_TCI: priority and VLAN ID
+@@ -478,10 +480,10 @@ static inline int vlan_get_tag(const struct sk_buff *skb, u16 *vlan_tci)
+  * Returns the EtherType of the packet, regardless of whether it is
+  * vlan encapsulated (normal or hardware accelerated) or not.
+  */
+-static inline __be16 __vlan_get_protocol(struct sk_buff *skb, __be16 type,
++static inline __be16 __vlan_get_protocol(const struct sk_buff *skb, __be16 type,
+ 					 int *depth)
+ {
+-	unsigned int vlan_depth = skb->mac_len;
++	unsigned int vlan_depth = skb->mac_len, parse_depth = VLAN_MAX_DEPTH;
  
- #ifdef CONFIG_PPC64
+ 	/* if type is 802.1Q/AD then the header should already be
+ 	 * present at mac_len - VLAN_HLEN (if mac_len > 0), or at
+@@ -496,13 +498,12 @@ static inline __be16 __vlan_get_protocol(struct sk_buff *skb, __be16 type,
+ 			vlan_depth = ETH_HLEN;
+ 		}
+ 		do {
+-			struct vlan_hdr *vh;
++			struct vlan_hdr vhdr, *vh;
+ 
+-			if (unlikely(!pskb_may_pull(skb,
+-						    vlan_depth + VLAN_HLEN)))
++			vh = skb_header_pointer(skb, vlan_depth, sizeof(vhdr), &vhdr);
++			if (unlikely(!vh || !--parse_depth))
+ 				return 0;
+ 
+-			vh = (struct vlan_hdr *)(skb->data + vlan_depth);
+ 			type = vh->h_vlan_encapsulated_proto;
+ 			vlan_depth += VLAN_HLEN;
+ 		} while (type == htons(ETH_P_8021Q) ||
+@@ -522,11 +523,25 @@ static inline __be16 __vlan_get_protocol(struct sk_buff *skb, __be16 type,
+  * Returns the EtherType of the packet, regardless of whether it is
+  * vlan encapsulated (normal or hardware accelerated) or not.
+  */
+-static inline __be16 vlan_get_protocol(struct sk_buff *skb)
++static inline __be16 vlan_get_protocol(const struct sk_buff *skb)
+ {
+ 	return __vlan_get_protocol(skb, skb->protocol, NULL);
+ }
+ 
++/* A getter for the SKB protocol field which will handle VLAN tags consistently
++ * whether VLAN acceleration is enabled or not.
++ */
++static inline __be16 skb_protocol(const struct sk_buff *skb, bool skip_vlan)
++{
++	if (!skip_vlan)
++		/* VLAN acceleration strips the VLAN header from the skb and
++		 * moves it to skb->vlan_proto
++		 */
++		return skb_vlan_tag_present(skb) ? skb->vlan_proto : skb->protocol;
++
++	return vlan_get_protocol(skb);
++}
++
+ static inline void vlan_set_encap_proto(struct sk_buff *skb,
+ 					struct vlan_hdr *vhdr)
+ {
+diff --git a/include/net/inet_ecn.h b/include/net/inet_ecn.h
+index dce2d586d9cec..245d999c0eac8 100644
+--- a/include/net/inet_ecn.h
++++ b/include/net/inet_ecn.h
+@@ -3,6 +3,7 @@
+ 
+ #include <linux/ip.h>
+ #include <linux/skbuff.h>
++#include <linux/if_vlan.h>
+ 
+ #include <net/inet_sock.h>
+ #include <net/dsfield.h>
+-- 
+2.27.0
+
 
 
