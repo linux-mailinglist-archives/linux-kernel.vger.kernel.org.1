@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E922D5897
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBCD32D58A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:53:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389114AbgLJKua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:50:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388672AbgLJKuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:50:18 -0500
-Date:   Thu, 10 Dec 2020 11:50:51 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607597377;
-        bh=siFkzcs/Nx7BP++MFJmAbPA49/Mj4oy8rewdCS7WRkU=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c20H3mVKPwdfDqZ+dtE4KoykwYNf9ltBuic1oNtTai6oUVk8qRLCb4gUYyoCfF8bQ
-         Nrrdr6sJUqVC+Vr712NzyY7bvM2qLG7Nm7KnxG2E1x65LRyWuu0kKwWxF+LdTUBYhv
-         UrfrO94DYiy/m5oc89LQOkJNQ8KOUCnoloEvMxGA=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Maarten Brock <m.brock@vanmierlo.com>
-Cc:     Mychaela Falconia <mychaela.falconia@gmail.com>,
-        Johan Hovold <johan@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] tty: add flag to suppress ready signalling on open
-Message-ID: <X9H9i98E1Gro+mDP@kroah.com>
-References: <20201202113942.27024-1-johan@kernel.org>
- <X9Dficb8sQGRut+S@kroah.com>
- <CA+uuBqYTzXCHGY8QnP+OQ5nRNAbqx2rMNzLM7OKLM1_4AzzinQ@mail.gmail.com>
- <6b81cca21561305b55ba8f019b78da28@vanmierlo.com>
+        id S2389154AbgLJKxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:53:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729145AbgLJKwz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 05:52:55 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1961C0613CF;
+        Thu, 10 Dec 2020 02:52:14 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cs9j75ghQz9sW8;
+        Thu, 10 Dec 2020 21:52:11 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607597532;
+        bh=XdGEj/wxLnr2TGCvder97q9uSNEzmoV3o/hlovFQcHY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gC6sbIAmDKY1+Z11U8nXGQT6giUjAqT0CUUQVtDBAcYK46fJ5d9pWDka8hrEkJ8yg
+         IM0dtLy6t1N0dA3tui8p3HWANxHEchyPdBQ9cuidHQaRCa+pLCGYtNniTS6h/WGABY
+         uPjyppZ1zRNMaXjPOoQuM4+0/ijJveBG30Ibw40PuOyPblzlTvmUU146pf9m6zuoSy
+         IXR+urpImmvyNA6Uuew0vprsFv+tHdcgc98ICQFLzS+zOdrgHXR7DE2s4rAj6iXk8/
+         BNNBWsFt9ul6s13sTyPtJOKjej1wrT7gfnAs2N1K0HQNrDUBqcy4wkBipECp/FNqlC
+         uREbFkwWpfJdw==
+Date:   Thu, 10 Dec 2020 21:52:10 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the tip tree
+Message-ID: <20201210215210.2c432324@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6b81cca21561305b55ba8f019b78da28@vanmierlo.com>
+Content-Type: multipart/signed; boundary="Sig_/sLpuWhXyc0OKH+68FxDIzzd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 11:41:24AM +0100, Maarten Brock wrote:
-> Hello Mychaela,
-> 
-> On 2020-12-09 23:49, Mychaela Falconia wrote:
-> > Greg K-H wrote:
-> > 
-> > > I think we need more review for the rest of the series.  This does
-> > > change the way serial ports work in a non-traditional way (i.e. using
-> > > sysfs instead of terminal settings).
-> > 
-> > But the problem is that the current status quo is fundamentally broken
-> > for those hardware devices in which DTR and/or RTS have been repurposed
-> > for something other than modem and flow control.  Right now whenever a
-> > "cold" (never previously opened) serial port is opened for the first
-> > time, that open action immediately and unstoppably asserts both DTR
-> > and RTS hardware outputs, without giving userspace any opportunity to
-> > say "no, please don't do it".  Yes, this behaviour is codified in a
-> > bunch of standards that ultimately trace back to 1970s Original UNIX,
-> > but just because it is a standard does not make it right - this
-> > Unix/POSIX/Linux "standard" serial port behaviour is a bug, not a
-> > feature.
-> 
-> I agree. And an application not configuring the required handshakes, but
-> still relying on them is an equal bug.
-> 
-> > But if there exist some custom hw devices out there that are in the
-> > same predicament as my DUART28 adapter, but are different in that they
-> > are classic old-fashioned RS-232 rather than integrated USB-serial,
-> > with no place to assign a custom USB ID, *then* we need a non-USB-ID-
-> > dependent solution such as Johan's sysfs attribute or O_DIRECT.
-> 
-> Any device with a classic old-fashioned RS-232 has probably already
-> solved this in another way or is accepted as not working on Linux.
-> 
-> And then there is also the device tree (overlay?) through which a quirk
-> like this can be communicated to the kernel driver. Not sure if this
-> could help for a plug-and-play device like on USB.
-> 
-> > > So I want to get a bunch of people
-> > > to agree that this is ok to do things this way now before taking this
-> > > new user-visible api.
-> 
-> Personally, I would prefer the VID:PID to enforce the quirk and an
-> O_DIRECT (or other) flag used on open() as general backup plan. To
-> me a sysfs solution seems illogical.
+--Sig_/sLpuWhXyc0OKH+68FxDIzzd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The "problem" of a vid:pid is that for usb-serial devices, that only
-describes the device that does the conversion itself, NOT the serial
-device the converter is plugged into that cares about these types of
-line-wiggling.
+Hi all,
 
-Just like you would not want to classify all devices that met the PCI
-serial class signature for this type of thing either, there is nothing
-special about USB here other than it happens to be a common transport
-for these signals these days.
+Commit
 
-thanks,
+  46609527577d ("x86, sched: Use midpoint of max_boost and max_P for freque=
+ncy invariance on AMD EPYC")
 
-greg k-h
+is missing a Signed-off-by from its author.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/sLpuWhXyc0OKH+68FxDIzzd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/R/doACgkQAVBC80lX
+0GwKXAf/cWDi4Yf8M9/jRCjomM5kEIp++SPuA3Z0hjBQoaZKf4EZZuoTcl4bRZ7s
+h7lsOPjYOLRYOaPfo5hwgMc+lMfksybrVaLNcCIOBe1T/WAFppMyokvwys/7uEmj
+qlqUkOI2heEZ4UagdTxDB1WLvoBv2K6eNGLZ3rznLfOxvyHz5T69nEEh15Y/5mlt
+vS9uGLwVEDKbShpZ5Pux5mO7PQK1dLq/JAP2WXOMND8H/BaveUZC5UHN/QvJ7Bnf
+mU72Kny1BvbVmtXoXDydU9PH4DIq1n5SS+tpt0CQP4LLhXFIwXpXYt8k7Lrvv6iQ
+xymkrWTvZwkCCmEMje39Ci0u2gwkUg==
+=XUTh
+-----END PGP SIGNATURE-----
+
+--Sig_/sLpuWhXyc0OKH+68FxDIzzd--
