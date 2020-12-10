@@ -2,119 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A32C2D6BD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7252D6BE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393764AbgLJXWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:22:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392814AbgLJXWN (ORCPT
+        id S2394363AbgLJXXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:23:06 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:37372 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393810AbgLJXW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:22:13 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B650DC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:21:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=S1gxQFTvi6k6hBnq3zFZ2pgWF8+3YcPVT49ndIuh08c=; b=IXKilbqqZeR5C3oQIM9RUQAbJj
-        KNJwHd52kyleqpOSlIWqyWKJYEHe4VG3VBQD4NTAiYZ91nBCezh1aRJ7TMimGoDKT70yxmNqNwMmp
-        cXLEFKhMKnPYIg+NMORG3H3DUwtsr2wC8oG7QT7fh6dXb63SZ1bh7esULxRgyNMN14ihKNX3Db/ap
-        2lKJImCCorBADW4ce5rreqi3ySU5jGrZt6UVkK1bteU4B5oJVspblxynahsQl7IWvX7dnFx9MS6d0
-        tBdVe1dV0qjPQGaPq4tz2LYDam5LD7Inxu19rLUZDdIl93q7RZsZnuuCzXp+SZgzT3N/XnXOE+jxH
-        QCUloXRg==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1knVFX-0006W2-F8; Thu, 10 Dec 2020 23:21:27 +0000
-Subject: Re: [PATCH 1/2] platform: cros_ec: Call interrupt bottom half in ISH
- or RPMSG mode
-To:     Gwendal Grignou <gwendal@chromium.org>, bleung@chromium.org,
-        enric.balletbo@collabora.com, groeck@chromium.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20201210225839.1212462-1-gwendal@chromium.org>
- <20201210225839.1212462-2-gwendal@chromium.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <439e5822-76a0-3ecf-7934-bc6f1f2446c6@infradead.org>
-Date:   Thu, 10 Dec 2020 15:21:20 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 10 Dec 2020 18:22:58 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id BED1520B717A;
+        Thu, 10 Dec 2020 15:22:16 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BED1520B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607642537;
+        bh=aqxeb+OMFJ79YCWyYWSOfxBKT5yVoGwApwb0b1AR2Qc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OcDKkA7td0oX/LylbdLTzvE5+APzl4v82GktGRhOlnsVL03Jfr7gsCLlz/MXD1Bl+
+         UEKC+ZMe0wCzhvfK+hXIEXMU+KfVt6t7Mn+M+cTuiQZTj3hKcAJxc7EeXpz+hrzFZ0
+         mXU45E49rtXPm8+P4d8qq3VwEZ/jT/m/0BExb28g=
+Date:   Thu, 10 Dec 2020 17:22:14 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
+        jmorris@namei.org, nramas@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Subject: Re: [PATCH v7 7/8] IMA: define a builtin critical data measurement
+ policy
+Message-ID: <20201210232214.GL489768@sequoia>
+References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
+ <20201209194212.5131-8-tusharsu@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20201210225839.1212462-2-gwendal@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209194212.5131-8-tusharsu@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
-
-Please use correct kernel-doc notation. See below:
-
-
-On 12/10/20 2:58 PM, Gwendal Grignou wrote:
-> Call the same bottom half for all EC protocols (threaded code).
+On 2020-12-09 11:42:11, Tushar Sugandhi wrote:
+> From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 > 
-> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+> Define a new critical data builtin policy to allow measuring
+> early kernel integrity critical data before a custom IMA policy
+> is loaded.
+> 
+> Add critical data to built-in IMA rules if the kernel command line
+> contains "ima_policy=critical_data".
+> 
+> Update the documentation on kernel parameters to document
+> the new critical data builtin policy.
+> 
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+
+Tyler
+
 > ---
->  drivers/platform/chrome/cros_ec.c           | 26 ++++++++++++++++-----
->  drivers/platform/chrome/cros_ec_ishtp.c     |  6 +----
->  drivers/platform/chrome/cros_ec_rpmsg.c     |  6 +----
->  include/linux/platform_data/cros_ec_proto.h |  3 ++-
->  4 files changed, 24 insertions(+), 17 deletions(-)
+>  Documentation/admin-guide/kernel-parameters.txt |  5 ++++-
+>  security/integrity/ima/ima_policy.c             | 12 ++++++++++++
+>  2 files changed, 16 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/cros_ec.c
-> index 6d6ce86a1408a..4ac33491d0d18 100644
-> --- a/drivers/platform/chrome/cros_ec.c
-> +++ b/drivers/platform/chrome/cros_ec.c
-> @@ -31,7 +31,14 @@ static struct cros_ec_platform pd_p = {
->  	.cmd_offset = EC_CMD_PASSTHRU_OFFSET(CROS_EC_DEV_PD_INDEX),
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 526d65d8573a..6034d75c3ca0 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1746,7 +1746,7 @@
+>  	ima_policy=	[IMA]
+>  			The builtin policies to load during IMA setup.
+>  			Format: "tcb | appraise_tcb | secure_boot |
+> -				 fail_securely"
+> +				 fail_securely | critical_data"
+>  
+>  			The "tcb" policy measures all programs exec'd, files
+>  			mmap'd for exec, and all files opened with the read
+> @@ -1765,6 +1765,9 @@
+>  			filesystems with the SB_I_UNVERIFIABLE_SIGNATURE
+>  			flag.
+>  
+> +			The "critical_data" policy measures kernel integrity
+> +			critical data.
+> +
+>  	ima_tcb		[IMA] Deprecated.  Use ima_policy= instead.
+>  			Load a policy which meets the needs of the Trusted
+>  			Computing Base.  This means IMA will measure all
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index 7486d09a3f60..37ca16a9e65f 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+> @@ -206,6 +206,10 @@ static struct ima_rule_entry secure_boot_rules[] __ro_after_init = {
+>  	 .flags = IMA_FUNC | IMA_DIGSIG_REQUIRED},
 >  };
 >  
-> -static irqreturn_t ec_irq_handler(int irq, void *data)
-> +/**
-> + * cros_ec_irq_handler: top half part of the interrupt handler
-
- * cros_ec_irq_handler - top half part of the interrupt handler
-
-> + * @irq: IRQ id
-> + * @data: (ec_dev) Device with events to process.
-> + *
-> + * Return: Wakeup the bottom half
-> + */
-> +static irqreturn_t cros_ec_irq_handler(int irq, void *data)
+> +static struct ima_rule_entry critical_data_rules[] __ro_after_init = {
+> +	{.action = MEASURE, .func = CRITICAL_DATA, .flags = IMA_FUNC},
+> +};
+> +
+>  /* An array of architecture specific rules */
+>  static struct ima_rule_entry *arch_policy_entry __ro_after_init;
+>  
+> @@ -228,6 +232,7 @@ __setup("ima_tcb", default_measure_policy_setup);
+>  
+>  static bool ima_use_appraise_tcb __initdata;
+>  static bool ima_use_secure_boot __initdata;
+> +static bool ima_use_critical_data __initdata;
+>  static bool ima_fail_unverifiable_sigs __ro_after_init;
+>  static int __init policy_setup(char *str)
 >  {
->  	struct cros_ec_device *ec_dev = data;
+> @@ -242,6 +247,8 @@ static int __init policy_setup(char *str)
+>  			ima_use_appraise_tcb = true;
+>  		else if (strcmp(p, "secure_boot") == 0)
+>  			ima_use_secure_boot = true;
+> +		else if (strcmp(p, "critical_data") == 0)
+> +			ima_use_critical_data = true;
+>  		else if (strcmp(p, "fail_securely") == 0)
+>  			ima_fail_unverifiable_sigs = true;
+>  		else
+> @@ -875,6 +882,11 @@ void __init ima_init_policy(void)
+>  			  ARRAY_SIZE(default_appraise_rules),
+>  			  IMA_DEFAULT_POLICY);
 >  
-
-> @@ -72,9 +79,15 @@ bool cros_ec_handle_event(struct cros_ec_device *ec_dev)
->  
->  	return ec_has_more_events;
+> +	if (ima_use_critical_data)
+> +		add_rules(critical_data_rules,
+> +			  ARRAY_SIZE(critical_data_rules),
+> +			  IMA_DEFAULT_POLICY);
+> +
+>  	ima_update_policy_flag();
 >  }
-> -EXPORT_SYMBOL(cros_ec_handle_event);
 >  
-> -static irqreturn_t ec_irq_thread(int irq, void *data)
-> +/**
-> + * cros_ec_irq_thread: bottom half part of the interrupt handler
-
- * cros_ec_irq_thread - bottom half part of the interrupt handler
-
-> + * @irq: IRQ id
-> + * @data: (ec_dev) Device with events to process.
-> + *
-> + * Return: Interrupt handled.
-> + */
-> +irqreturn_t cros_ec_irq_thread(int irq, void *data)
->  {
->  	struct cros_ec_device *ec_dev = data;
->  	bool ec_has_more_events;
-
-
-
-
-thanks.
--- 
-~Randy
-
+> -- 
+> 2.17.1
+> 
