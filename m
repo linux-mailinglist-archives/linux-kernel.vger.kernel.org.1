@@ -2,168 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D2D2D4FCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1E62D4FC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:46:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728457AbgLJAnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 19:43:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
+        id S1730743AbgLJAoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 19:44:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730322AbgLJAnK (ORCPT
+        with ESMTP id S1730422AbgLJAoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 19:43:10 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D802C061794
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 16:42:30 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id r5so3633388eda.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 16:42:30 -0800 (PST)
+        Wed, 9 Dec 2020 19:44:06 -0500
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAF9C061794
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 16:43:20 -0800 (PST)
+Received: by mail-vs1-xe2a.google.com with SMTP id s85so1965535vsc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 16:43:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vNvEsgxEU6uZTR1Us7I6r4YjbSGdWuf43XtWg1h/ZjQ=;
-        b=kj91qDjjmmSRx9Y9wZ28xrM4ILAD7D+wZc32csdO3Abd86CcS8AIaktID/pLpeWAy9
-         Lg4z817plMRMoe59ZWqcK/04+BfENFz0xADon2k4MolNMPPs+lkzHdmDTFXNLFDXK3Q8
-         YqyJGSCuhZpYUehX2ELEtQVWjQ59/V+8xNz60ZcxdhYRDK2i/r6c+aP372zYUKxjHx0V
-         05JeQeIAdF6IAVr+UwxZD6mt9PXXBE0DddWLQZ/IY1T6dR5DjDPHmDTKa7zlnffIZlTU
-         3kTU8HPQQb0S9ei8mEk9AessjYqLRVZhdteyNoISDjfhJUaFIUaTYj6um7CWEJw45/Jk
-         OQJA==
+        bh=KQorzTW27QOsMWD3KHq+FAGOyijZWBp7eao6c1glD1g=;
+        b=L2LlsWZYF4pVW8WTWhpUR0IO6rkyLZZ+EBTHXkv0Gmk9+l/0n30L23wN5nChAj5tQQ
+         ZVZxE9/QTq9fGZYLoDk5uWOofg/7bC+O0ACiA1Zgp1k4vENkUvV8yk/kZq/1OpaCgCC1
+         W4ODAzrUJ/zkEXgLVeyc2BUBA9vh+hEriVW6g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vNvEsgxEU6uZTR1Us7I6r4YjbSGdWuf43XtWg1h/ZjQ=;
-        b=sEs9Jn1KqN2Vn2uwaKsaltw5coD4tBqTt+xSn3tLVFlNBEq4Bw8dQ+j93Ckv+4om3t
-         7tv+MsNLrwu/siDWWLu+eB84vBGLLPwjL3MSXbIM8Gj5JLFO3I839+pZodEezit5qZxN
-         j36JQWzoh0507LTno67NdQLmHT0PkI4lG03xCo87mtLqcaBYgCdb6ERt8AEKA7IbuJkr
-         zOOPPQvofnTEx/mdlh472a69aovkNmA2WW2m0mJDJ5OhWhz5F8lXvAm7CgVH9ibbsQm4
-         ONWt5ifot+5lAx3XjTF49CkOr28sCu3DeOMrbyIV/h9uuZhvdtrfrlqjiofb+oGcw2/V
-         ue3w==
-X-Gm-Message-State: AOAM5313dcCYLeRo65xxhRM0BBPKqzJrPjbKkGYXEa1ktCk/s6rCW9k0
-        xiaupxF3WdMRr48TVRUL2QrcJsNA7fpg2VKMy5XMiw==
-X-Google-Smtp-Source: ABdhPJxkEYy1l4Dzzh42MlB1DBuPbdpyEYWjS7i+HtHHCrX01UWMKJujV74kKgE5AM/PYa95sJsQEEPdm4fu6DF/EhY=
-X-Received: by 2002:a50:8a44:: with SMTP id i62mr4336434edi.97.1607560948709;
- Wed, 09 Dec 2020 16:42:28 -0800 (PST)
+        bh=KQorzTW27QOsMWD3KHq+FAGOyijZWBp7eao6c1glD1g=;
+        b=R/0iNAdFTYrLfu5ytFWzIRqj89RQdyFIwPVu8Fck1kXGVG/h/PQ9Iq35qLj1yJNYIq
+         6YNfnZBYDXcQjGmhhGbbzfSQs920/OaLkOMvg7zjFyfyaf2iEKNeoCzBn7DE/CvW7m+u
+         72vXX9Wte9W2kHrS4CPUuEPqJY2DstPU/lTBca0jUs8ujWygcYIHZZdiwLhTi1o8dqG7
+         DFDtAPPy4T5nrsJ0Cr7YWHWfXujr39L8bNX8JOExMSM7Vmp6SRwWTLY+jiCw4UA/dQUK
+         64oLzx5soGnrCKF28sLF9booD8mY8RKTPJ3rxpz79aP3PxlusaKWeNtpMo/2u7IPNY0L
+         VYkg==
+X-Gm-Message-State: AOAM5310EZXEhYwXXt4mAF5KUYTfZ2UaLvPSilTG5qe30M7qoECDdpQf
+        SQOYCz0yEAjoJiAjM+vLvBEoX1fmdZCq4w==
+X-Google-Smtp-Source: ABdhPJyy8g6sI1EY+Okep5+P/S6Ek84oROj6mpSaZHWhZXpjWMJHm6KTKzbW94cQymO3euuJ5jCMCQ==
+X-Received: by 2002:a05:6102:22fa:: with SMTP id b26mr5141621vsh.35.1607560998712;
+        Wed, 09 Dec 2020 16:43:18 -0800 (PST)
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com. [209.85.221.177])
+        by smtp.gmail.com with ESMTPSA id b19sm337507vsq.18.2020.12.09.16.43.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 16:43:17 -0800 (PST)
+Received: by mail-vk1-f177.google.com with SMTP id w190so808263vkg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 16:43:17 -0800 (PST)
+X-Received: by 2002:a1f:3fc9:: with SMTP id m192mr5293407vka.17.1607560996597;
+ Wed, 09 Dec 2020 16:43:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20201209002418.1976362-1-ben.widawsky@intel.com> <20201209002418.1976362-15-ben.widawsky@intel.com>
-In-Reply-To: <20201209002418.1976362-15-ben.widawsky@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 9 Dec 2020 16:42:26 -0800
-Message-ID: <CAPcyv4hTP+AQ_h7SfeJPjMORqArTWp-6KWPA3Eu=-dmpo1B0AA@mail.gmail.com>
-Subject: Re: [RFC PATCH 14/14] WIP/cxl/mem: Add get firmware for testing
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
+References: <20201124094636.v2.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+ <20201124094636.v2.3.I771b6594b2a4d5b7fe7e12a991a6640f46386e8d@changeid>
+ <d6c5dba9-bcc7-fac9-dd41-c989509c822b@codeaurora.org> <CAD=FV=UOSkHQMcSV8Zq5qPfBoUu5xYzfNZqUPmymvD7PXUAN4w@mail.gmail.com>
+ <b84d5bb4-e413-ad20-a19a-c7420abd5d5d@codeaurora.org> <CAD=FV=UXo3RPuVSYwOrHJMxF38K-ynoaPv4ZVQ6N2ok_zcoOFw@mail.gmail.com>
+ <5f24ec87-6d91-dfd9-0f4f-6687f37c60ac@codeaurora.org>
+In-Reply-To: <5f24ec87-6d91-dfd9-0f4f-6687f37c60ac@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 9 Dec 2020 16:43:05 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Wm_q60w34LmbtC88BkfS0aKp_a=AjnuYFL=g-DX_-=yQ@mail.gmail.com>
+Message-ID: <CAD=FV=Wm_q60w34LmbtC88BkfS0aKp_a=AjnuYFL=g-DX_-=yQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] pinctrl: qcom: Clear possible pending irq when
+ remuxing GPIOs
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 4:25 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
->
-> This also serves as an example how to add a new command
->
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> ---
->  drivers/cxl/mem.c            | 22 ++++++++++++++++++++++
->  include/uapi/linux/cxl_mem.h |  3 ++-
->  2 files changed, 24 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index 6b2f8d3776b5..76aa1e6e4117 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -116,6 +116,7 @@ struct cxl_mem_command {
->  static struct cxl_mem_command mem_commands[] = {
->         CXL_CMD(INVALID, NONE, 0, 0, "Reserved", false, 0),
->         CXL_CMD(RAW, TAINT, ~0, ~0, "Raw", true, 0),
-> +       CXL_CMD(GET_FW_INFO, NONE, 0, 0x50, "Get FW Info", false, 0x0200),
+Hi,
 
-I think CXL_CMD() arguments can be put on a diet if the
-mem-command-id-to-name was moved to its own table, and the opcode was
-defined as something like:
-
-#define CXL_MBOX_OP_GET_FW_INFO 0x200
-
-...so that CXL_CMD can just do:
-
-    .opcode = CXL_MBOX_OP_##_id
-
-That @_enable arg wants a flag #define like CMD_ENABLE which reads
-better than 'true'. I would then add CMD_KERNEL_EXCL alongside that
-flag to indicate the commands that may be exclusive to the kernel when
-the device is active in a PMEM memory region, or ones that have an
-alternate ABI wrapped around them like the keys subsystem for security
-or the firwmare activation sysfs interface.
-
->  };
+On Tue, Dec 8, 2020 at 9:54 PM Maulik Shah <mkshah@codeaurora.org> wrote:
 >
->  static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
-> @@ -827,6 +828,23 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
->         return cxl_register(dev);
->  }
->
-> +static int cxl_mem_enable_commands(struct cxl_mem *cxlm)
-> +{
-> +       struct cxl_mem_command *c;
-> +
-> +       /*
-> +        * For now we pretend Get FW info is supported.
-> +        *
-> +        * FIXME: Invoke GET LOG to get the Command Effect Logs (CEL).
-> +        */
-> +       c = cxl_mem_find_command(0x200);
-> +       if (!c)
-> +               return -ENOENT;
-> +
-> +       c->enable = true;
-> +       return 0;
-> +}
-> +
->  /**
->   * cxl_mem_identify() - Send the IDENTIFY command to the device.
->   * @cxlm: The device to identify.
-> @@ -936,6 +954,10 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->         if (rc)
->                 return rc;
->
-> +       rc = cxl_mem_enable_commands(cxlm);
-> +       if (rc)
-> +               return rc;
-> +
->         rc = cxl_mem_identify(cxlm);
->         if (rc)
->                 return rc;
-> diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
-> index f2fbb0dcda06..3ac39acf8fa7 100644
-> --- a/include/uapi/linux/cxl_mem.h
-> +++ b/include/uapi/linux/cxl_mem.h
-> @@ -50,7 +50,8 @@ struct cxl_command_info {
->         __u32 id;
->  #define CXL_MEM_COMMAND_ID_INVALID 0
->  #define CXL_MEM_COMMAND_ID_RAW 1
-> -#define CXL_MEM_COMMAND_ID_MAX (CXL_MEM_COMMAND_ID_RAW + 1)
-> +#define CXL_MEM_COMMAND_ID_GET_FW_INFO 2
-> +#define CXL_MEM_COMMAND_ID_MAX (CXL_MEM_COMMAND_ID_GET_FW_INFO + 1)
+> >> but as long as its IRQ is in disabled/masked state it
+> >> doesn't matter.
+> > ...but there's no requirement that someone would need to disable/mask
+> > an interrupt while switching the muxing, is there?  So it does matter.
+> >
+> >
+> >> its only when the GPIO is again set to IRQ mode with set_mux callback,
+> >> the phantom IRQ needs clear to start as clean.
+> >>
+> >> So we should check only for if (i == pctrl->soc->gpio_func) then clear
+> >> phantom IRQ.
+> >>
+> >> The same is case with .direction_output callback, when GPIO is used as
+> >> output say as clock, need not clear any phantom IRQ,
+> >>
+> >> The reason is with every pulse of clock it can latch as pending IRQ in
+> >> GIC_ISPEND as long as it stay as output mode/clock.
+> >>
+> >> its only when switching back GPIO from output direction to input & IRQ
+> >> function, need to clear the phantom IRQ.
+> >>
+> >> so we do not require clear phantom irq in .direction_output callback.
+> > I think all the above explanation is with the model that the interrupt
+> > detection logic is still happening even when muxed away.  I don't
+> > believe that's true.
+> Its not the interrupt detection logic that is still happening when muxed
+> away, but the GPIO line is routed to GIC from PDC.
+> The GPIO line get forwarded when the system is active/out of system
+> level low power mode to GIC irrespective of whether GPIO is used as
+> interrupt or not.
+> Due to this it can still latch the IRQ at GIC after switching to lets
+> say Rx mode, whenever the line has any data recive, the line state
+> toggles can be latched as error interrupt at GIC.
 
-Seems like CXL_MEM_COMMAND_ID definitions want to be an enum so that
-CXL_MEM_COMMAND_ID_MAX does not need to be touched every time.
+From my tests, though, I strongly believe that the pin is only visible
+to the PDC if it's muxed as GPIO.  Specifically, in my tests I did
+this (with all my patches applied so there were no phantom interrupts
+when remuxing):
 
+a) Muxed the pin away from GPIO to special function, but _didn't_ mask
+the interrupt.
+
+b) Toggled the line a whole bunch.  These caused no interrupts at all.
+
+c) Muxed back to GPIO.
+
+To me this is quite strong evidence that the muxing is "earlier" in
+the path than the connection to the PDC.  In other words, if you
+change the mux away from GPIO then the PDC stops seeing it and thus
+the GIC also stops seeing it.  The GIC can't latch what it can't see.
+This means while you're in "Rx mode" it can't be latched.
+
+
+OK, so just in case this somehow only happens in S3, I also tried this
+(with my patch from https://crrev.com/c/2556012):
+
+a) Muxed away from GPIO ("bogus" pinmux)
+
+b) Enter S3.
+
+c) Toggle the GPIO a whole bunch ("wp enable / wp disable" on Cr50).
+
+d) Wake from S3.
+
+e) Check to see if the interrupt fired a bunch.  It didn't fire at all
+
+
+In my test code the interrupt is not masked, only muxed away.  That
+means that if, somehow, the PDC was still observing it then we'd see
+the interrupt fire.  We don't.
+
+
+Unless I messed up in my tests (always possible, though by this point
+I've run them a number of times) then it still feels like your mental
+model is wrong, or it's always possible I'm still misunderstanding
+your model.  Regardless, rather than trying to re-explain your model
+can you please confirm that you've written test code to confirm your
+mental model?  If so, can you please provide this test code?  I've
+provided several test patches proving out my mental model.
+
+> As the interrupt is in disabled state it won't be sent to CPU.
+> Its only when the driver chooses to switch back to interrupt mode we
+> want to clear the error interrupt latched to start as clean. same is the
+> case when used as output direction.
 >
->         __u32 flags;
->  #define CXL_MEM_COMMAND_FLAG_NONE 0
-> --
-> 2.29.2
->
+> Hope above is clear.
+
+Unfortunately, it's still not.  :(  Can I convince you to provide a
+test patch and a set of steps that will demonstrate the problem you're
+worried about?  Specifically:
+
+a) Maybe you're talking about the initial switch from a plain GPIO
+input to making it an interrupt for the first time?  Are you worried
+about a phantom interrupt in this case?  After patch #1 I think we're
+safe because pdc_gic_set_type() will always clear the interrupt,
+right?
+
+
+b) You say "switch back to interrupt mode".  Are you imagining that a
+driver does something like this:
+
+request_irq();
+...
+free_irq();
+...
+request_irq();
+
+If you're worried about that then we can implement irq_shutdown() for
+PDC and then make sure we clear on the first enable after a shutdown,
+I guess?
+
+
+c) Maybe when you say "switch back to interrupt mode" you mean
+something else?  If you are talking about muxing away and then muxing
+back then I think we already have this covered.  If you are talking
+about masking/unmasking then the whole point is that we _do_ want
+interrupts latched while masked, right?
+
+
+OK, I'm going to send out a v3 just to get the already-identified
+problems fixed and also to allow landing of patch #1 in the series,
+which I think is all agreed upon.  My request to you is that if you
+think my code misses a specific case to provide some test patches to
+demonstrate that case.
+
+
+-Doug
