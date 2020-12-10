@@ -2,24 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9767E2D664C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6032D664D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390362AbgLJOan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:30:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36422 "EHLO mail.kernel.org"
+        id S2390376AbgLJOao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:30:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390185AbgLJO26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:28:58 -0500
+        id S2390201AbgLJO3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:29:12 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sanjay Govind <sanjay.govind9@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.9 13/45] Input: xpad - support Ardwiino Controllers
-Date:   Thu, 10 Dec 2020 15:26:27 +0100
-Message-Id: <20201210142603.016006584@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 18/45] pinctrl: baytrail: Replace WARN with dev_info_once when setting direct-irq pin to output
+Date:   Thu, 10 Dec 2020 15:26:32 +0100
+Message-Id: <20201210142603.266345166@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
 References: <20201210142602.361598591@linuxfoundation.org>
@@ -31,39 +34,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sanjay Govind <sanjay.govind9@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 2aab1561439032be2e98811dd0ddbeb5b2ae4c61 upstream.
+commit e2b74419e5cc7cfc58f3e785849f73f8fa0af5b3 upstream
 
-This commit adds support for Ardwiino Controllers
+Suspending Goodix touchscreens requires changing the interrupt pin to
+output before sending them a power-down command. Followed by wiggling
+the interrupt pin to wake the device up, after which it is put back
+in input mode.
 
-Signed-off-by: Sanjay Govind <sanjay.govind9@gmail.com>
-Link: https://lore.kernel.org/r/20201201071922.131666-1-sanjay.govind9@gmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Cherry Trail device the interrupt pin is listed as a GpioInt ACPI
+resource so we can do this without problems as long as we release the
+IRQ before changing the pin to output mode.
 
+On Bay Trail devices with a Goodix touchscreen direct-irq mode is used
+in combination with listing the pin as a normal GpioIo resource. This
+works fine, but this triggers the WARN in byt_gpio_set_direction-s output
+path because direct-irq support is enabled on the pin.
+
+This commit replaces the WARN call with a dev_info_once call, fixing a
+bunch of WARN splats in dmesg on each suspend/resume cycle.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/joystick/xpad.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/pinctrl/intel/pinctrl-baytrail.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -258,6 +258,7 @@ static const struct xpad_device {
- 	{ 0x1038, 0x1430, "SteelSeries Stratus Duo", 0, XTYPE_XBOX360 },
- 	{ 0x1038, 0x1431, "SteelSeries Stratus Duo", 0, XTYPE_XBOX360 },
- 	{ 0x11c9, 0x55f0, "Nacon GC-100XF", 0, XTYPE_XBOX360 },
-+	{ 0x1209, 0x2882, "Ardwiino Controller", 0, XTYPE_XBOX360 },
- 	{ 0x12ab, 0x0004, "Honey Bee Xbox360 dancepad", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
- 	{ 0x12ab, 0x0301, "PDP AFTERGLOW AX.1", 0, XTYPE_XBOX360 },
- 	{ 0x12ab, 0x0303, "Mortal Kombat Klassic FightStick", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
-@@ -435,6 +436,7 @@ static const struct usb_device_id xpad_t
- 	XPAD_XBOXONE_VENDOR(0x0f0d),		/* Hori Controllers */
- 	XPAD_XBOX360_VENDOR(0x1038),		/* SteelSeries Controllers */
- 	XPAD_XBOX360_VENDOR(0x11c9),		/* Nacon GC100XF */
-+	XPAD_XBOX360_VENDOR(0x1209),		/* Ardwiino Controllers */
- 	XPAD_XBOX360_VENDOR(0x12ab),		/* X-Box 360 dance pads */
- 	XPAD_XBOX360_VENDOR(0x1430),		/* RedOctane X-Box 360 controllers */
- 	XPAD_XBOX360_VENDOR(0x146b),		/* BigBen Interactive Controllers */
+diff --git a/drivers/pinctrl/intel/pinctrl-baytrail.c b/drivers/pinctrl/intel/pinctrl-baytrail.c
+index 1e945aa77734b..23b3b3d541675 100644
+--- a/drivers/pinctrl/intel/pinctrl-baytrail.c
++++ b/drivers/pinctrl/intel/pinctrl-baytrail.c
+@@ -1034,15 +1034,15 @@ static int byt_gpio_set_direction(struct pinctrl_dev *pctl_dev,
+ 	value &= ~BYT_DIR_MASK;
+ 	if (input)
+ 		value |= BYT_OUTPUT_EN;
+-	else
++	else if (readl(conf_reg) & BYT_DIRECT_IRQ_EN)
+ 		/*
+ 		 * Before making any direction modifications, do a check if gpio
+ 		 * is set for direct IRQ.  On baytrail, setting GPIO to output
+-		 * does not make sense, so let's at least warn the caller before
++		 * does not make sense, so let's at least inform the caller before
+ 		 * they shoot themselves in the foot.
+ 		 */
+-		WARN(readl(conf_reg) & BYT_DIRECT_IRQ_EN,
+-		     "Potential Error: Setting GPIO with direct_irq_en to output");
++		dev_info_once(vg->dev, "Potential Error: Setting GPIO with direct_irq_en to output");
++
+ 	writel(value, val_reg);
+ 
+ 	raw_spin_unlock_irqrestore(&byt_lock, flags);
+-- 
+2.27.0
+
 
 
