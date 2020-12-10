@@ -2,186 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8812D545E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C75F2D5464
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727291AbgLJHOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 02:14:16 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:41731 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgLJHOQ (ORCPT
+        id S2387768AbgLJHRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 02:17:39 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:52814 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387764AbgLJHRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 02:14:16 -0500
-Received: by mail-lj1-f196.google.com with SMTP id f11so5523994ljm.8
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 23:13:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0UIvMECAf5QaqTsIRzzl0P/0Z+/Lib94ryyLqz9IsAA=;
-        b=AkrfBbthwSsusMwzLBCUMrpOyYc1FENjsDMhnz+D9MFry5zZO2t1NCGKgLznvKC+Oz
-         sb4qzTtIejbj6SnMiVFg+q1wiJ6t1GyV2qFaGWSoGxQQkiWtSANcMlEQihcpRyxForJv
-         +GYOFsY66tyw05ZO8RlptzN/HbsR8yXfpiMiPv6/+1ARTuGzdcUIPojca6KvkzqVkB8g
-         1g+DeWtz83mYEe0KFDcC39QGpuPLgFw/HYs/eLF4kP6lQmH7Z36SOm/iHgzgwOdT/1GI
-         OuGX6Id3HkVT7oP2kCK2O6m2XHu8Ahpq3bpfR+suk02Rw2fyilKcsh0Ofa0HQQKN9FC2
-         59dw==
-X-Gm-Message-State: AOAM532rL9K1XQjKk138FqDgvsqHfAPj4aKM3TQWvDWw5sdhkCCXDCNB
-        s6GAGFlbnjkx9sEXuedqfh+MJw9qj2iyQJRBTvTaeWU1
-X-Google-Smtp-Source: ABdhPJw5Pa8grUY2KlNyE4mNcQXT0NVht0lUiJefKg/ZTZDIVOElsp0pheOQmhf32g+2fWycm0fVmlqpSHL9OCX1gfQ=
-X-Received: by 2002:a2e:908:: with SMTP id 8mr2504958ljj.52.1607584413862;
- Wed, 09 Dec 2020 23:13:33 -0800 (PST)
+        Thu, 10 Dec 2020 02:17:32 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607584630; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=MulsTy2xpIxQLZhs1lE1ZqTDtAkjh+cX5VXMZpxMts0=; b=pFJWIrcIOHEakNM2ywjpYnYirCOeh2MY1tGdSl4QcAtPSA/ssT4JT2H1okDKnfEUL+MOT46f
+ CdSZtRzwxiRCQiDeu4AthHYO3xRafnEceSotStlsxlC8u67FM5MihWTQKoKrm+mZLsx6D3fr
+ YxKLdcp9Fxa3qE2mxOB4UA74Nuk=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fd1cb4e27e7db2389e2eca6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Dec 2020 07:16:30
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6AB22C43464; Thu, 10 Dec 2020 07:16:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C7255C433C6;
+        Thu, 10 Dec 2020 07:16:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C7255C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     nbd@nbd.name, lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
+        davem@davemloft.net, kuba@kernel.org, matthias.bgg@gmail.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mt76: Fixed kernel test robot warning
+References: <1607542617-4005-1-git-send-email-jrdr.linux@gmail.com>
+Date:   Thu, 10 Dec 2020 09:16:23 +0200
+In-Reply-To: <1607542617-4005-1-git-send-email-jrdr.linux@gmail.com> (Souptick
+        Joarder's message of "Thu, 10 Dec 2020 01:06:57 +0530")
+Message-ID: <87ft4e9lmg.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <20201130193842.10569-1-kan.liang@linux.intel.com>
- <20201130193842.10569-3-kan.liang@linux.intel.com> <20201201172903.GT3040@hirez.programming.kicks-ass.net>
- <CAM9d7ciukm4RAH+44YWhZRummKzk1HTbnZ0Sc4Xd5ZyCo=x0xQ@mail.gmail.com>
-In-Reply-To: <CAM9d7ciukm4RAH+44YWhZRummKzk1HTbnZ0Sc4Xd5ZyCo=x0xQ@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 10 Dec 2020 16:13:22 +0900
-Message-ID: <CAM9d7ciBO=cmgnBVJWpyJ75VHjoxuEA=ck=V1+k8KRBkh23+nw@mail.gmail.com>
-Subject: Re: [PATCH V2 3/3] perf: Optimize sched_task() in a context switch
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kan Liang <kan.liang@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Gabriel Marin <gmx@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter and Kan,
+Souptick Joarder <jrdr.linux@gmail.com> writes:
 
-How can we move this forward?
+> Kernel test robot throws below warning ->
+>
+>    drivers/net/wireless/mediatek/mt76/tx.c: In function
+> 'mt76_txq_schedule':
+>>> drivers/net/wireless/mediatek/mt76/tx.c:499:21: warning: variable 'q'
+>>> set but not used [-Wunused-but-set-variable]
+>      499 |  struct mt76_queue *q;
+>          |                     ^
+>
+> This patch will silence this warning.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
 
-Thanks,
-Namhyung
+I would like to take this directly to wireless-drivers-next, ok?
 
-On Fri, Dec 4, 2020 at 4:14 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> Hi Peter,
->
-> On Wed, Dec 2, 2020 at 2:29 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Mon, Nov 30, 2020 at 11:38:42AM -0800, kan.liang@linux.intel.com wrote:
-> > > From: Kan Liang <kan.liang@linux.intel.com>
-> > >
-> > > Some calls to sched_task() in a context switch can be avoided. For
-> > > example, large PEBS only requires flushing the buffer in context switch
-> > > out. The current code still invokes the sched_task() for large PEBS in
-> > > context switch in.
-> >
-> > I still hate this one, how's something like this then?
-> > Which I still don't really like.. but at least its simpler.
-> >
-> > (completely untested, may contain spurious edits, might ICE the
-> > compiler and set your pets on fire if it doesn't)
->
-> I've tested this version... and it worked well besides the optimization.. :)
->
-> [SNIP]
-> > +static void context_sched_task(struct perf_cpu_context *cpuctx,
-> > +                              struct perf_event_context *ctx,
-> > +                              bool sched_in)
-> > +{
-> > +       struct pmu *pmu = ctx->pmu;
-> > +
-> > +       if (cpuctx->sched_cb_dir[sched_in] && pmu->sched_task)
-> > +               pmu->sched_task(ctx, false);
->
-> applied: s/false/sched_in/
->
->
-> > +}
-> > +
-> >  static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
-> >                                          struct task_struct *next)
-> >  {
-> > @@ -3424,9 +3433,7 @@ static void perf_event_context_sched_out
-> >                         WRITE_ONCE(next_ctx->task, task);
-> >
-> >                         perf_pmu_disable(pmu);
-> > -
-> > -                       if (cpuctx->sched_cb_usage && pmu->sched_task)
-> > -                               pmu->sched_task(ctx, false);
-> > +                       context_sched_task(cpuctx, ctx, false);
-> >
-> >                         /*
-> >                          * PMU specific parts of task perf context can require
-> > @@ -3465,8 +3472,7 @@ static void perf_event_context_sched_out
-> >                 raw_spin_lock(&ctx->lock);
-> >                 perf_pmu_disable(pmu);
-> >
-> > -               if (cpuctx->sched_cb_usage && pmu->sched_task)
-> > -                       pmu->sched_task(ctx, false);
-> > +               context_sched_task(cpuctx, ctx, false);
-> >                 task_ctx_sched_out(cpuctx, ctx, EVENT_ALL);
-> >
-> >                 perf_pmu_enable(pmu);
->
-> [SNIP]
-> > @@ -3563,8 +3582,7 @@ void __perf_event_task_sched_out(struct
-> >  {
-> >         int ctxn;
-> >
-> > -       if (__this_cpu_read(perf_sched_cb_usage))
-> > -               perf_pmu_sched_task(task, next, false);
-> > +       perf_pmu_sched_task(task, next, false);
->
-> I think the reason is this change.  It now calls perf_pmu_sched_task()
-> without checking the counter.  And this is for per-cpu events.
->
-> >
-> >         if (atomic_read(&nr_switch_events))
-> >                 perf_event_switch(task, next, false);
-> > @@ -3828,8 +3846,7 @@ static void perf_event_context_sched_in(
-> >                 cpu_ctx_sched_out(cpuctx, EVENT_FLEXIBLE);
-> >         perf_event_sched_in(cpuctx, ctx, task);
-> >
-> > -       if (cpuctx->sched_cb_usage && pmu->sched_task)
-> > -               pmu->sched_task(cpuctx->task_ctx, true);
-> > +       context_sched_task(cpuctx, ctx, true);
-> >
-> >         perf_pmu_enable(pmu);
-> >
-> > @@ -3875,8 +3892,7 @@ void __perf_event_task_sched_in(struct t
-> >         if (atomic_read(&nr_switch_events))
-> >                 perf_event_switch(task, prev, true);
-> >
-> > -       if (__this_cpu_read(perf_sched_cb_usage))
-> > -               perf_pmu_sched_task(prev, task, true);
-> > +       perf_pmu_sched_task(prev, task, true);
->
-> Ditto.
->
-> >  }
-> >
-> >  static u64 perf_calculate_period(struct perf_event *event, u64 nsec, u64 count)
->
-> So I made a change like below.. and it could bring the optimization back.
->
-> Thanks,
-> Namhyung
->
->
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 9107e7c3ccfb..a30243a9fab5 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -3528,6 +3528,9 @@ static void __perf_pmu_sched_task(struct
-> perf_cpu_context *cpuctx, bool sched_in
->  {
->         struct pmu *pmu;
->
-> +       if (!cpuctx->sched_cb_dir[sched_in])
-> +               return;
-> +
->         pmu = cpuctx->ctx.pmu; /* software PMUs will not have sched_task */
->
->         if (WARN_ON_ONCE(!pmu->sched_task))
+I'll also change the title to:
+
+mt76: remove unused variable q
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
