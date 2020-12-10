@@ -2,26 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EADB2D64F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 974722D64FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:30:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390861AbgLJOfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:35:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41574 "EHLO mail.kernel.org"
+        id S2390820AbgLJOej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:34:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732919AbgLJOdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:33:11 -0500
+        id S2390580AbgLJOcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:32:48 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 15/39] ALSA: hda/generic: Add option to enforce preferred_dacs pairs
+        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 4.14 17/31] cifs: fix potential use-after-free in cifs_echo_request()
 Date:   Thu, 10 Dec 2020 15:26:54 +0100
-Message-Id: <20201210142603.037114540@linuxfoundation.org>
+Message-Id: <20201210142602.955829564@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
-References: <20201210142602.272595094@linuxfoundation.org>
+In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
+References: <20201210142602.099683598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -30,70 +32,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Paulo Alcantara <pc@cjr.nz>
 
-commit 242d990c158d5b1dabd166516e21992baef5f26a upstream.
+commit 212253367dc7b49ed3fc194ce71b0992eacaecf2 upstream.
 
-The generic parser accepts the preferred_dacs[] pairs as a hint for
-assigning a DAC to each pin, but this hint doesn't work always
-effectively.  Currently it's merely a secondary choice after the trial
-with the path index failed.  This made sometimes it difficult to
-assign DACs without mimicking the connection list and/or the badness
-table.
+This patch fixes a potential use-after-free bug in
+cifs_echo_request().
 
-This patch adds a new flag, obey_preferred_dacs, that changes the
-behavior of the parser.  As its name stands, the parser obeys the
-given preferred_dacs[] pairs by skipping the path index matching and
-giving a high penalty if no DAC is assigned by the pairs.  This mode
-will help for assigning the fixed DACs forcibly from the codec
-driver.
+For instance,
 
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201127141104.11041-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+  thread 1
+  --------
+  cifs_demultiplex_thread()
+    clean_demultiplex_info()
+      kfree(server)
+
+  thread 2 (workqueue)
+  --------
+  apic_timer_interrupt()
+    smp_apic_timer_interrupt()
+      irq_exit()
+        __do_softirq()
+          run_timer_softirq()
+            call_timer_fn()
+	      cifs_echo_request() <- use-after-free in server ptr
+
+Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+CC: Stable <stable@vger.kernel.org>
+Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/hda_generic.c |   12 ++++++++----
- sound/pci/hda/hda_generic.h |    1 +
- 2 files changed, 9 insertions(+), 4 deletions(-)
+ fs/cifs/connect.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -1376,16 +1376,20 @@ static int try_assign_dacs(struct hda_co
- 		struct nid_path *path;
- 		hda_nid_t pin = pins[i];
+--- a/fs/cifs/connect.c
++++ b/fs/cifs/connect.c
+@@ -756,6 +756,8 @@ static void clean_demultiplex_info(struc
+ 	list_del_init(&server->tcp_ses_list);
+ 	spin_unlock(&cifs_tcp_ses_lock);
  
--		path = snd_hda_get_path_from_idx(codec, path_idx[i]);
--		if (path) {
--			badness += assign_out_path_ctls(codec, path);
--			continue;
-+		if (!spec->obey_preferred_dacs) {
-+			path = snd_hda_get_path_from_idx(codec, path_idx[i]);
-+			if (path) {
-+				badness += assign_out_path_ctls(codec, path);
-+				continue;
-+			}
- 		}
- 
- 		dacs[i] = get_preferred_dac(codec, pin);
- 		if (dacs[i]) {
- 			if (is_dac_already_used(codec, dacs[i]))
- 				badness += bad->shared_primary;
-+		} else if (spec->obey_preferred_dacs) {
-+			badness += BAD_NO_PRIMARY_DAC;
- 		}
- 
- 		if (!dacs[i])
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -240,6 +240,7 @@ struct hda_gen_spec {
- 	unsigned int power_down_unused:1; /* power down unused widgets */
- 	unsigned int dac_min_mute:1; /* minimal = mute for DACs */
- 	unsigned int suppress_vmaster:1; /* don't create vmaster kctls */
-+	unsigned int obey_preferred_dacs:1; /* obey preferred_dacs assignment */
- 
- 	/* other internal flags */
- 	unsigned int no_analog:1; /* digital I/O only */
++	cancel_delayed_work_sync(&server->echo);
++
+ 	spin_lock(&GlobalMid_Lock);
+ 	server->tcpStatus = CifsExiting;
+ 	spin_unlock(&GlobalMid_Lock);
 
 
