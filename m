@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF002D60AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:59:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D142D609A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392135AbgLJP5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:57:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45050 "EHLO mail.kernel.org"
+        id S2392124AbgLJPz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:55:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389813AbgLJOiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:38:13 -0500
+        id S2390031AbgLJOi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:38:27 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan-Niklas Burfeind <kernel@aiyionpri.me>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.9 03/75] USB: serial: ch341: add new Product ID for CH341A
-Date:   Thu, 10 Dec 2020 15:26:28 +0100
-Message-Id: <20201210142606.242805946@linuxfoundation.org>
+        stable@vger.kernel.org, stable@kernel.org,
+        Jann Horn <jannh@google.com>, Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH 5.9 08/75] tty: Fix ->pgrp locking in tiocspgrp()
+Date:   Thu, 10 Dec 2020 15:26:33 +0100
+Message-Id: <20201210142606.480487036@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
 References: <20201210142606.074509102@linuxfoundation.org>
@@ -31,35 +31,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan-Niklas Burfeind <kernel@aiyionpri.me>
+From: Jann Horn <jannh@google.com>
 
-commit 46ee4abb10a07bd8f8ce910ee6b4ae6a947d7f63 upstream.
+commit 54ffccbf053b5b6ca4f6e45094b942fab92a25fc upstream.
 
-Add PID for CH340 that's found on a ch341 based Programmer made by keeyees.
-The specific device that contains the serial converter is described
-here: http://www.keeyees.com/a/Products/ej/36.html
+tiocspgrp() takes two tty_struct pointers: One to the tty that userspace
+passed to ioctl() (`tty`) and one to the TTY being changed (`real_tty`).
+These pointers are different when ioctl() is called with a master fd.
 
-The driver works flawlessly as soon as the new PID (0x5512) is added to
-it.
+To properly lock real_tty->pgrp, we must take real_tty->ctrl_lock.
 
-Signed-off-by: Jan-Niklas Burfeind <kernel@aiyionpri.me>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+This bug makes it possible for racing ioctl(TIOCSPGRP, ...) calls on
+both sides of a PTY pair to corrupt the refcount of `struct pid`,
+leading to use-after-free errors.
+
+Fixes: 47f86834bbd4 ("redo locking of tty->pgrp")
+CC: stable@kernel.org
+Signed-off-by: Jann Horn <jannh@google.com>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/serial/ch341.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/tty/tty_jobctrl.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/serial/ch341.c
-+++ b/drivers/usb/serial/ch341.c
-@@ -84,6 +84,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x4348, 0x5523) },
- 	{ USB_DEVICE(0x1a86, 0x7522) },
- 	{ USB_DEVICE(0x1a86, 0x7523) },
-+	{ USB_DEVICE(0x1a86, 0x5512) },
- 	{ USB_DEVICE(0x1a86, 0x5523) },
- 	{ },
- };
+--- a/drivers/tty/tty_jobctrl.c
++++ b/drivers/tty/tty_jobctrl.c
+@@ -494,10 +494,10 @@ static int tiocspgrp(struct tty_struct *
+ 	if (session_of_pgrp(pgrp) != task_session(current))
+ 		goto out_unlock;
+ 	retval = 0;
+-	spin_lock_irq(&tty->ctrl_lock);
++	spin_lock_irq(&real_tty->ctrl_lock);
+ 	put_pid(real_tty->pgrp);
+ 	real_tty->pgrp = get_pid(pgrp);
+-	spin_unlock_irq(&tty->ctrl_lock);
++	spin_unlock_irq(&real_tty->ctrl_lock);
+ out_unlock:
+ 	rcu_read_unlock();
+ 	return retval;
 
 
