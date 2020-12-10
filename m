@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3DD2D5293
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAE82D5297
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:08:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731024AbgLJEH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 23:07:26 -0500
-Received: from mga17.intel.com ([192.55.52.151]:18541 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731986AbgLJEHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 23:07:05 -0500
-IronPort-SDR: 2eoUH9XhRqJnRd7TCgH850thxP5pn4+7D8KVtng9w7/15zkxXHmwKW8L+aYbvuTMZyexxmATmG
- I0aCP+slH8vg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="153999163"
-X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="153999163"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 20:06:19 -0800
-IronPort-SDR: 2yLRbXl1/SMNxb/j0Fi5OnKn8YGbzpse05mx+yG5B9ZZJfvWvYZxm9kkc/AhTBzU0eO2LRlSCA
- s3rrjworJk+A==
-X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="376793430"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 20:06:19 -0800
-Date:   Wed, 9 Dec 2020 20:06:19 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        david@redhat.com, osalvador@suse.de, dan.j.williams@intel.com,
-        sashal@kernel.org, tyhicks@linux.microsoft.com,
-        iamjoonsoo.kim@lge.com, mike.kravetz@oracle.com,
-        rostedt@goodmis.org, mingo@redhat.com, jgg@ziepe.ca,
-        peterz@infradead.org, mgorman@suse.de, willy@infradead.org,
-        rientjes@google.com, jhubbard@nvidia.com, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 3/8] mm/gup: make __gup_longterm_locked common
-Message-ID: <20201210040618.GR1563847@iweiny-DESK2.sc.intel.com>
-References: <20201210004335.64634-1-pasha.tatashin@soleen.com>
- <20201210004335.64634-4-pasha.tatashin@soleen.com>
+        id S1732423AbgLJEH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 23:07:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731986AbgLJEHe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 23:07:34 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3B8C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 20:06:54 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id u4so2095480plr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 20:06:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0GPEqIaWJcqLf7P6askLTC3D31i4Szuh6Rq0AHAG9Tc=;
+        b=TdUOb18rR3jHySMqE+Q4DwihstlzSQ39+NVElGJvJpMBKrAdlt24K0j0MysT8LKgm4
+         behPcXhCeHvZMq8p+ZFntxxntoVss7iU8CNoucTM1ahvuF1myQnpjqWQQddGhyiz1MwB
+         orWcniOmCDjZmEO3BdmyrTXBhJu8nZpc1kDkcojqIiI+mjXDXPmXUSiVlrn8RcpK4f4n
+         kO5gmAQ0wYxsp9wbiKViUW84oZCvuozrZTDkiKJ7ZlsTO4VPT5xfRM/WqLiS27bAr3DC
+         Pg5e+Vk8LkcjbU61hxu/w9S+dtIQh7OSA8SmP4TGRS5GOqQV9OfRwmWsJChYjXS/Fp6M
+         0FMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0GPEqIaWJcqLf7P6askLTC3D31i4Szuh6Rq0AHAG9Tc=;
+        b=mZNIojQ3HCUcDAJIlsl/sRTiANZUrN4YvayNEL5bcaXQaqlB55xVK7jaXr64+z1tD2
+         e/0c3szmmFDk1G7/HtXHyLO7Pz0Sc42Gym18b3dlTNBP4H5E8oAWptJLzFxtKlGzG5Ym
+         gM75xIxqOmtvpNraPZLxjvMXL4Jqqr98qVAzya2iNnZAdXHl4Y6f5Gsmptu+naZqc3Mf
+         IDhaxaHNRg24USW3wPuFhyr6l1oej5OyA1dP/NMVi/tQRyEG0u5VXsn40UoqOlHq7wM9
+         PVCgdoXtUy99tKHgTMiMGD3vMUEsxMquyTnxUUO3P7t3HYFf6FWidQS2MBgvpeaX7qFJ
+         9Bdw==
+X-Gm-Message-State: AOAM5320NSTaRGOxmeTnXmk/SwfJ4dqNnZOQKKfM6wLIP1PEvdEvbLWt
+        9RIKp4JNeMmAdIHy0E0j7ftc
+X-Google-Smtp-Source: ABdhPJxRZ9O4Ut3GXyiS1qDLjT465suH8On/iOHxAyw+WES6Fr5N5oEeYnc/3qrG4cAeqcHet71dYQ==
+X-Received: by 2002:a17:902:b18c:b029:da:fc41:baf8 with SMTP id s12-20020a170902b18cb02900dafc41baf8mr5059919plr.58.1607573213512;
+        Wed, 09 Dec 2020 20:06:53 -0800 (PST)
+Received: from thinkpad ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id t15sm4063549pja.4.2020.12.09.20.06.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 20:06:52 -0800 (PST)
+Date:   Thu, 10 Dec 2020 09:36:44 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 1/7] dt-bindings: input: Add reset-time-sec common
+ property
+Message-ID: <20201210040644.GC6466@thinkpad>
+References: <cover.1607216141.git.cristian.ciocaltea@gmail.com>
+ <c08349db08db67e71cf428fe7fd53624aaa0acf8.1607216141.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201210004335.64634-4-pasha.tatashin@soleen.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <c08349db08db67e71cf428fe7fd53624aaa0acf8.1607216141.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 07:43:30PM -0500, Pavel Tatashin wrote:
-> __gup_longterm_locked() has CMA || FS_DAX version and a common stub
-> version. In the preparation of prohibiting longterm pinning of pages from
-> movable zone make the CMA || FS_DAX version common, and delete the stub
-> version.
-
-I thought Jason sent a patch which got rid of this as well?
-
-Ira
-
+On Sun, Dec 06, 2020 at 03:27:01AM +0200, Cristian Ciocaltea wrote:
+> Add a new common property 'reset-time-sec' to be used in conjunction
+> with the devices supporting the key pressed reset feature.
 > 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 > ---
->  mm/gup.c | 13 -------------
->  1 file changed, 13 deletions(-)
+> Changes in v3:
+>  - This patch was not present in v2
 > 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 3a76c005a3e2..0e2de888a8b0 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1567,7 +1567,6 @@ struct page *get_dump_page(unsigned long addr)
->  }
->  #endif /* CONFIG_ELF_CORE */
+>  Documentation/devicetree/bindings/input/input.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/input/input.yaml b/Documentation/devicetree/bindings/input/input.yaml
+> index ab407f266bef..caba93209ae7 100644
+> --- a/Documentation/devicetree/bindings/input/input.yaml
+> +++ b/Documentation/devicetree/bindings/input/input.yaml
+> @@ -34,4 +34,11 @@ properties:
+>        specify this property.
+>      $ref: /schemas/types.yaml#/definitions/uint32
 >  
-> -#if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
->  #ifdef CONFIG_FS_DAX
->  static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
->  {
-> @@ -1757,18 +1756,6 @@ static long __gup_longterm_locked(struct mm_struct *mm,
->  		kfree(vmas_tmp);
->  	return rc;
->  }
-> -#else /* !CONFIG_FS_DAX && !CONFIG_CMA */
-> -static __always_inline long __gup_longterm_locked(struct mm_struct *mm,
-> -						  unsigned long start,
-> -						  unsigned long nr_pages,
-> -						  struct page **pages,
-> -						  struct vm_area_struct **vmas,
-> -						  unsigned int flags)
-> -{
-> -	return __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
-> -				       NULL, flags);
-> -}
-> -#endif /* CONFIG_FS_DAX || CONFIG_CMA */
->  
->  static bool is_valid_gup_flags(unsigned int gup_flags)
->  {
+> +  reset-time-sec:
+> +    description:
+> +      Duration in seconds which the key should be kept pressed for device to
+> +      reset automatically. Device with key pressed reset feature can specify
+> +      this property.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+
+Why can't you just use "power-off-time-sec"?
+
+Thanks,
+Mani
+
+>  additionalProperties: true
 > -- 
-> 2.25.1
-> 
+> 2.29.2
 > 
