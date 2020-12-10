@@ -2,26 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5922D5DB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3632D5DB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390086AbgLJO17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:27:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36124 "EHLO mail.kernel.org"
+        id S2390141AbgLJO2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:28:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390069AbgLJO1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:27:31 -0500
+        id S2390069AbgLJO2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:28:01 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 13/39] btrfs: sysfs: init devices outside of the chunk_mutex
-Date:   Thu, 10 Dec 2020 15:26:24 +0100
-Message-Id: <20201210142601.551238514@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 15/39] geneve: pull IP header before ECN decapsulation
+Date:   Thu, 10 Dec 2020 15:26:26 +0100
+Message-Id: <20201210142601.652963609@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
 References: <20201210142600.887734129@linuxfoundation.org>
@@ -33,192 +32,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit ca10845a56856fff4de3804c85e6424d0f6d0cde upstream
+IP_ECN_decapsulate() and IP6_ECN_decapsulate() assume
+IP header is already pulled.
 
-While running btrfs/061, btrfs/073, btrfs/078, or btrfs/178 we hit the
-following lockdep splat:
+geneve does not ensure this yet.
 
-  ======================================================
-  WARNING: possible circular locking dependency detected
-  5.9.0-rc3+ #4 Not tainted
-  ------------------------------------------------------
-  kswapd0/100 is trying to acquire lock:
-  ffff96ecc22ef4a0 (&delayed_node->mutex){+.+.}-{3:3}, at: __btrfs_release_delayed_node.part.0+0x3f/0x330
+Fixing this generically in IP_ECN_decapsulate() and
+IP6_ECN_decapsulate() is not possible, since callers
+pass a pointer that might be freed by pskb_may_pull()
 
-  but task is already holding lock:
-  ffffffff8dd74700 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x5/0x30
+syzbot reported :
 
-  which lock already depends on the new lock.
+BUG: KMSAN: uninit-value in __INET_ECN_decapsulate include/net/inet_ecn.h:238 [inline]
+BUG: KMSAN: uninit-value in INET_ECN_decapsulate+0x345/0x1db0 include/net/inet_ecn.h:260
+CPU: 1 PID: 8941 Comm: syz-executor.0 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ __INET_ECN_decapsulate include/net/inet_ecn.h:238 [inline]
+ INET_ECN_decapsulate+0x345/0x1db0 include/net/inet_ecn.h:260
+ geneve_rx+0x2103/0x2980 include/net/inet_ecn.h:306
+ geneve_udp_encap_recv+0x105c/0x1340 drivers/net/geneve.c:377
+ udp_queue_rcv_one_skb+0x193a/0x1af0 net/ipv4/udp.c:2093
+ udp_queue_rcv_skb+0x282/0x1050 net/ipv4/udp.c:2167
+ udp_unicast_rcv_skb net/ipv4/udp.c:2325 [inline]
+ __udp4_lib_rcv+0x399d/0x5880 net/ipv4/udp.c:2394
+ udp_rcv+0x5c/0x70 net/ipv4/udp.c:2564
+ ip_protocol_deliver_rcu+0x572/0xc50 net/ipv4/ip_input.c:204
+ ip_local_deliver_finish net/ipv4/ip_input.c:231 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip_local_deliver+0x583/0x8d0 net/ipv4/ip_input.c:252
+ dst_input include/net/dst.h:449 [inline]
+ ip_rcv_finish net/ipv4/ip_input.c:428 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip_rcv+0x5c3/0x840 net/ipv4/ip_input.c:539
+ __netif_receive_skb_one_core net/core/dev.c:5315 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5429
+ process_backlog+0x523/0xc10 net/core/dev.c:6319
+ napi_poll+0x420/0x1010 net/core/dev.c:6763
+ net_rx_action+0x35c/0xd40 net/core/dev.c:6833
+ __do_softirq+0x1a9/0x6fa kernel/softirq.c:298
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0x6e/0x90 arch/x86/kernel/irq_64.c:77
+ do_softirq kernel/softirq.c:343 [inline]
+ __local_bh_enable_ip+0x184/0x1d0 kernel/softirq.c:195
+ local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
+ rcu_read_unlock_bh include/linux/rcupdate.h:730 [inline]
+ __dev_queue_xmit+0x3a9b/0x4520 net/core/dev.c:4167
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4173
+ packet_snd net/packet/af_packet.c:2992 [inline]
+ packet_sendmsg+0x86f9/0x99d0 net/packet/af_packet.c:3017
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ __sys_sendto+0x9dc/0xc80 net/socket.c:1992
+ __do_sys_sendto net/socket.c:2004 [inline]
+ __se_sys_sendto+0x107/0x130 net/socket.c:2000
+ __x64_sys_sendto+0x6e/0x90 net/socket.c:2000
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-  the existing dependency chain (in reverse order) is:
-
-  -> #3 (fs_reclaim){+.+.}-{0:0}:
-	 fs_reclaim_acquire+0x65/0x80
-	 slab_pre_alloc_hook.constprop.0+0x20/0x200
-	 kmem_cache_alloc+0x37/0x270
-	 alloc_inode+0x82/0xb0
-	 iget_locked+0x10d/0x2c0
-	 kernfs_get_inode+0x1b/0x130
-	 kernfs_get_tree+0x136/0x240
-	 sysfs_get_tree+0x16/0x40
-	 vfs_get_tree+0x28/0xc0
-	 path_mount+0x434/0xc00
-	 __x64_sys_mount+0xe3/0x120
-	 do_syscall_64+0x33/0x40
-	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-  -> #2 (kernfs_mutex){+.+.}-{3:3}:
-	 __mutex_lock+0x7e/0x7e0
-	 kernfs_add_one+0x23/0x150
-	 kernfs_create_link+0x63/0xa0
-	 sysfs_do_create_link_sd+0x5e/0xd0
-	 btrfs_sysfs_add_devices_dir+0x81/0x130
-	 btrfs_init_new_device+0x67f/0x1250
-	 btrfs_ioctl+0x1ef/0x2e20
-	 __x64_sys_ioctl+0x83/0xb0
-	 do_syscall_64+0x33/0x40
-	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-  -> #1 (&fs_info->chunk_mutex){+.+.}-{3:3}:
-	 __mutex_lock+0x7e/0x7e0
-	 btrfs_chunk_alloc+0x125/0x3a0
-	 find_free_extent+0xdf6/0x1210
-	 btrfs_reserve_extent+0xb3/0x1b0
-	 btrfs_alloc_tree_block+0xb0/0x310
-	 alloc_tree_block_no_bg_flush+0x4a/0x60
-	 __btrfs_cow_block+0x11a/0x530
-	 btrfs_cow_block+0x104/0x220
-	 btrfs_search_slot+0x52e/0x9d0
-	 btrfs_insert_empty_items+0x64/0xb0
-	 btrfs_insert_delayed_items+0x90/0x4f0
-	 btrfs_commit_inode_delayed_items+0x93/0x140
-	 btrfs_log_inode+0x5de/0x2020
-	 btrfs_log_inode_parent+0x429/0xc90
-	 btrfs_log_new_name+0x95/0x9b
-	 btrfs_rename2+0xbb9/0x1800
-	 vfs_rename+0x64f/0x9f0
-	 do_renameat2+0x320/0x4e0
-	 __x64_sys_rename+0x1f/0x30
-	 do_syscall_64+0x33/0x40
-	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-  -> #0 (&delayed_node->mutex){+.+.}-{3:3}:
-	 __lock_acquire+0x119c/0x1fc0
-	 lock_acquire+0xa7/0x3d0
-	 __mutex_lock+0x7e/0x7e0
-	 __btrfs_release_delayed_node.part.0+0x3f/0x330
-	 btrfs_evict_inode+0x24c/0x500
-	 evict+0xcf/0x1f0
-	 dispose_list+0x48/0x70
-	 prune_icache_sb+0x44/0x50
-	 super_cache_scan+0x161/0x1e0
-	 do_shrink_slab+0x178/0x3c0
-	 shrink_slab+0x17c/0x290
-	 shrink_node+0x2b2/0x6d0
-	 balance_pgdat+0x30a/0x670
-	 kswapd+0x213/0x4c0
-	 kthread+0x138/0x160
-	 ret_from_fork+0x1f/0x30
-
-  other info that might help us debug this:
-
-  Chain exists of:
-    &delayed_node->mutex --> kernfs_mutex --> fs_reclaim
-
-   Possible unsafe locking scenario:
-
-	 CPU0                    CPU1
-	 ----                    ----
-    lock(fs_reclaim);
-				 lock(kernfs_mutex);
-				 lock(fs_reclaim);
-    lock(&delayed_node->mutex);
-
-   *** DEADLOCK ***
-
-  3 locks held by kswapd0/100:
-   #0: ffffffff8dd74700 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x5/0x30
-   #1: ffffffff8dd65c50 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0x115/0x290
-   #2: ffff96ed2ade30e0 (&type->s_umount_key#36){++++}-{3:3}, at: super_cache_scan+0x38/0x1e0
-
-  stack backtrace:
-  CPU: 0 PID: 100 Comm: kswapd0 Not tainted 5.9.0-rc3+ #4
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-  Call Trace:
-   dump_stack+0x8b/0xb8
-   check_noncircular+0x12d/0x150
-   __lock_acquire+0x119c/0x1fc0
-   lock_acquire+0xa7/0x3d0
-   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
-   __mutex_lock+0x7e/0x7e0
-   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
-   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
-   ? lock_acquire+0xa7/0x3d0
-   ? find_held_lock+0x2b/0x80
-   __btrfs_release_delayed_node.part.0+0x3f/0x330
-   btrfs_evict_inode+0x24c/0x500
-   evict+0xcf/0x1f0
-   dispose_list+0x48/0x70
-   prune_icache_sb+0x44/0x50
-   super_cache_scan+0x161/0x1e0
-   do_shrink_slab+0x178/0x3c0
-   shrink_slab+0x17c/0x290
-   shrink_node+0x2b2/0x6d0
-   balance_pgdat+0x30a/0x670
-   kswapd+0x213/0x4c0
-   ? _raw_spin_unlock_irqrestore+0x41/0x50
-   ? add_wait_queue_exclusive+0x70/0x70
-   ? balance_pgdat+0x670/0x670
-   kthread+0x138/0x160
-   ? kthread_create_worker_on_cpu+0x40/0x40
-   ret_from_fork+0x1f/0x30
-
-This happens because we are holding the chunk_mutex at the time of
-adding in a new device.  However we only need to hold the
-device_list_mutex, as we're going to iterate over the fs_devices
-devices.  Move the sysfs init stuff outside of the chunk_mutex to get
-rid of this lockdep splat.
-
-CC: stable@vger.kernel.org # 4.4.x: f3cd2c58110dad14e: btrfs: sysfs, rename device_link add/remove functions
-CC: stable@vger.kernel.org # 4.4.x
-Reported-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 2d07dc79fe04 ("geneve: add initial netdev driver for GENEVE tunnels")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Link: https://lore.kernel.org/r/20201201090507.4137906-1-eric.dumazet@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
- fs/btrfs/volumes.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/geneve.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index cd1e9411f9269..d6383d362e271 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2357,9 +2357,6 @@ int btrfs_init_new_device(struct btrfs_root *root, char *device_path)
- 	btrfs_set_super_num_devices(root->fs_info->super_copy,
- 				    tmp + 1);
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index ee38299f9c578..e0384609fb84a 100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -231,8 +231,20 @@ static void geneve_rx(struct geneve_sock *gs, struct sk_buff *skb)
  
--	/* add sysfs device entry */
--	btrfs_sysfs_add_device_link(root->fs_info->fs_devices, device);
+ 	/* Ignore packet loops (and multicast echo) */
+ 	if (ether_addr_equal(eth_hdr(skb)->h_source, geneve->dev->dev_addr))
+-		goto drop;
 -
- 	/*
- 	 * we've got more storage, clear any full flags on the space
- 	 * infos
-@@ -2367,6 +2364,10 @@ int btrfs_init_new_device(struct btrfs_root *root, char *device_path)
- 	btrfs_clear_space_info_full(root->fs_info);
- 
- 	unlock_chunks(root);
++		goto rx_error;
 +
-+	/* add sysfs device entry */
-+	btrfs_sysfs_add_device_link(root->fs_info->fs_devices, device);
-+
- 	mutex_unlock(&root->fs_info->fs_devices->device_list_mutex);
++	switch (skb_protocol(skb, true)) {
++	case htons(ETH_P_IP):
++		if (pskb_may_pull(skb, sizeof(struct iphdr)))
++			goto rx_error;
++		break;
++	case htons(ETH_P_IPV6):
++		if (pskb_may_pull(skb, sizeof(struct ipv6hdr)))
++			goto rx_error;
++		break;
++	default:
++		goto rx_error;
++	}
+ 	skb_reset_network_header(skb);
  
- 	if (seeding_dev) {
+ 	if (iph)
+@@ -269,6 +281,8 @@ static void geneve_rx(struct geneve_sock *gs, struct sk_buff *skb)
+ 
+ 	gro_cells_receive(&geneve->gro_cells, skb);
+ 	return;
++rx_error:
++	geneve->dev->stats.rx_errors++;
+ drop:
+ 	/* Consume bad packet */
+ 	kfree_skb(skb);
 -- 
 2.27.0
 
