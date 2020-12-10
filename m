@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84D92D5FD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0042D5FBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391762AbgLJPeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:34:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391389AbgLJOla (ORCPT
+        id S2391788AbgLJPah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:30:37 -0500
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:13710 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726550AbgLJPaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:41:30 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9E6C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:40:48 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id y5so5732963iow.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:40:48 -0800 (PST)
+        Thu, 10 Dec 2020 10:30:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=d4LZazcEk4MFX1qHLGHiKS1Th2EI2Tgbz/+dKarKOJU=;
-        b=e6z/NFYeQUVhfdYZqe5DejzSFYW4cHjElw6aAgjnK8eSZ9+ruf8dLLyI5y7rRQAtsQ
-         1VEel+RGMX9uzSP4P7Pgf5oQkyQ3q2yr/LdAYXIOgjYk29efEnt2xd3efk+2xKH1VQkO
-         tT6cwts1CW76AUBWhNXO11t/0I0fQrXtNzbR+rhlte3I+GXuSra0B00RljRzZHqD1MeY
-         frGfNIHe1Y7FfO3zucoSAEfrtK71Mjce8ySwaLCLkjynjOv7FSgP/1lnsKTGuOPDUBb4
-         7l8OADqABeEZ1XTJqWBRzmWUFvvdGfgPPxfZdRIKr+9wj44HyWK19MUydpHxBu71nso4
-         QbCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=d4LZazcEk4MFX1qHLGHiKS1Th2EI2Tgbz/+dKarKOJU=;
-        b=Rh3Ua2074fOUAlRSg1ubXU5tsqORKBKw5HQ50rbmM82HnQYkb+Uxbp+SYUt1vEMh2a
-         T8ftQ8VsdTTy7FA+cwe7CIx2+g6X10zniUKTVkB0JZcjENcr3MWjFx61QHVqk7r6c0hS
-         P9P/0i9ucDpe9fs+lmOOPSyhF3vjP5kpxjFbWQIVc7uubGn0G7saS729LzRmD39/xsEH
-         2XF93UgvFUWqgaLt8pgrLkB7ScJzu4yRQuLDg1mVsWVi+awmvi+V4CLgBcuPy6mOSpCJ
-         EVgghdo+QuzjXCifLWuF3T/EHKM8CAikBiZmlX/Fy9J6i39JDzZTkg8AYA2bquNWcwpF
-         Kxjw==
-X-Gm-Message-State: AOAM533wPBQ+cT1zaTmZ1wTXygUHqX4bblsKqEzBWifA+U+Sgoun+6ro
-        6BIE9+HBrr51tdIc4BX1gHOw/4lu5rVf1ewdnglYmA==
-X-Google-Smtp-Source: ABdhPJwlq+TsPSvE8TskLkr0+AmZHyi24uQRirb4JJ2onz25/t1Egdli2Vn1XItnxRoQrIZjEB6ykw00LzqN2pi75Pc=
-X-Received: by 2002:a05:6638:1027:: with SMTP id n7mr8943390jan.35.1607611247949;
- Thu, 10 Dec 2020 06:40:47 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1607614229; x=1639150229;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=MhZAByVLLuYeb6Yt+0exS27yV+fgPNkBuQO+bOJbTFo=;
+  b=LNPf2QhsL1/ywBJAtNH5T8nOvKLcM03CREzB2u/JhoACDl/BbSRF3M5Z
+   lIr9BDSWaBGizPKYwPwwii07Xk25Pep/G5HzcRiGcRIWatXdw1z+hm/xt
+   zNNMJI20+VPro9mHktkTAHYwl83F9tHVWEkojRh8MjqfBeNbFF5Y6lbtZ
+   w=;
+X-IronPort-AV: E=Sophos;i="5.78,408,1599523200"; 
+   d="scan'208";a="68620578"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 10 Dec 2020 15:29:41 +0000
+Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id B48B6A179A;
+        Thu, 10 Dec 2020 15:29:40 +0000 (UTC)
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.185) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 10 Dec 2020 15:29:35 +0000
+Subject: Re: [PATCH net-next v2 1/4] vm_sockets: Include flags field in the
+ vsock address data structure
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Stefano Garzarella <sgarzare@redhat.com>
+CC:     netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+References: <20201204170235.84387-1-andraprs@amazon.com>
+ <20201204170235.84387-2-andraprs@amazon.com>
+ <20201207132908.130a5f24@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <73ff948f-f455-7205-bfaa-5b468b2528c2@amazon.com>
+ <20201208104222.605bb669@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <20201209104806.qbuemoz3oy6d3v3b@steredhat>
+ <4f2a1ac5-68c7-190f-6abf-452f67b3a7f4@amazon.com>
+ <20201209093019.1caae20e@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <265d2382-3909-cf1d-f3af-4fd14278ad4c@amazon.com>
+Date:   Thu, 10 Dec 2020 17:29:27 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201208044022.972872-1-bjorn.andersson@linaro.org>
- <20201210015136.GA18407@dragon> <20201210130453.regjkemfneqbelsi@pengutronix.de>
-In-Reply-To: <20201210130453.regjkemfneqbelsi@pengutronix.de>
-From:   Shawn Guo <shawn.guo@linaro.org>
-Date:   Thu, 10 Dec 2020 22:40:36 +0800
-Message-ID: <CAAQ0ZWQEhitxNCKBjTNGcv5E+yqwjfbb5GCLoctpJM7u4Zpp=A@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201209093019.1caae20e@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.160.185]
+X-ClientProxiedBy: EX13D43UWC003.ant.amazon.com (10.43.162.16) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uwe,
+CgpPbiAwOS8xMi8yMDIwIDE5OjMwLCBKYWt1YiBLaWNpbnNraSB3cm90ZToKPiBPbiBXZWQsIDkg
+RGVjIDIwMjAgMTc6MTc6NTYgKzAyMDAgUGFyYXNjaGl2LCBBbmRyYS1JcmluYSB3cm90ZToKPj4+
+IEkgYWdyZWUgdGhhdCBjb3VsZCBiZSBhIHByb2JsZW0sIGJ1dCBoZXJlIHNvbWUgY29uc2lkZXJh
+dGlvbnM6Cj4+PiAtIEkgY2hlY2tlZCBzb21lIGFwcGxpY2F0aW9ucyAocWVtdS1ndWVzdC1hZ2Vu
+dCwgbmNhdCwgaXBlcmYtdnNvY2spIGFuZAo+Pj4gICAgYWxsIHVzZSB0aGUgc2FtZSBwYXR0ZXJu
+OiBhbGxvY2F0ZSBtZW1vcnksIGluaXRpYWxpemUgYWxsIHRoZQo+Pj4gICAgc29ja2FkZHJfdm0g
+dG8gemVybyAodG8gYmUgc3VyZSB0byBpbml0aWFsaXplIHRoZSBzdm1femVybyksIHNldCB0aGUK
+Pj4+ICAgIGNpZCBhbmQgcG9ydCBmaWVsZHMuCj4+PiAgICBTbyB3ZSBzaG91bGQgYmUgc2FmZSwg
+YnV0IG9mIGNvdXJzZSBpdCBtYXkgbm90IGFsd2F5cyBiZSB0cnVlLgo+Pj4KPj4+IC0gRm9yIG5v
+dyB0aGUgaXNzdWUgY291bGQgYWZmZWN0IG9ubHkgbmVzdGVkIFZNcy4gV2UgaW50cm9kdWNlZCB0
+aGlzCj4+PiAgICBzdXBwb3J0IG9uZSB5ZWFyIGFnbywgc28gaXQncyBzb21ldGhpbmcgbmV3IGFu
+ZCBtYXliZSB3ZSBkb24ndCBjYXVzZQo+Pj4gICAgdG9vIG1hbnkgcHJvYmxlbXMuCj4+Pgo+Pj4g
+QXMgYW4gYWx0ZXJuYXRpdmUsIHdoYXQgYWJvdXQgdXNpbmcgMSBvciAyIGJ5dGVzIGZyb20gc3Zt
+X3plcm9bXT8KPj4+IFRoZXNlIG11c3QgYmUgc2V0IGF0IHplcm8sIGV2ZW4gaWYgd2Ugb25seSBj
+aGVjayB0aGUgZmlyc3QgYnl0ZSBpbiB0aGUKPj4+IGtlcm5lbC4KPj4gVGhhbmtzIGZvciB0aGUg
+Zm9sbG93LXVwIGluZm8uCj4+Cj4+IFdlIGNhbiBhbHNvIGNvbnNpZGVyIHRoZSAic3ZtX3plcm8i
+IG9wdGlvbiBhbmQgY291bGQgdXNlIDIgYnl0ZXMgZnJvbQo+PiB0aGF0IGZpZWxkIGZvciAic3Zt
+X2ZsYWdzIiwga2VlcGluZyB0aGUgc2FtZSAidW5zaWduZWQgc2hvcnQiIHR5cGUuCj4gT3IgdXNl
+IHN2bV96ZXJvIGFzIGEgZ2F0ZSBmb3IgaW50ZXJwcmV0aW5nIG90aGVyIGZpZWxkcz8KPiBJZiBz
+dm1femVyb1swXSogPT0gc29tZXRoaW5nIHN0YXJ0IGNoZWNraW5nIHRoZSB2YWx1ZSBvZiByZXNl
+cnZlZDE/Cj4gKiBpbiBwcmFjdGljZSB0aGUgbmFtZSBjYW4gYmUgdW5pb25lZCB0byBzb21ldGhp
+bmcgbW9yZSBwYWxhdGFibGUgOykKClRoYW5rcyBmb3IgdGhlIHNoYXJlZCBvcHRpb24sIHRoYXQg
+Y291bGQgYmUgb25lIGNhc2UgdG8gcmV1c2UgdGhlIApyZXNlcnZlZCBmaWVsZCwgd2l0aCBhIHR3
+byBwaGFzZSBjaGVjayBsb2dpYy4KCkknbGwgZ2l2ZSBpdCBhIHRyeSB0byB0aGUgb3B0aW9uIG9m
+IGhhdmluZyBhIG5ldyBmaWVsZCAic3ZtX2ZsYWdzIiBhbmQgCnRoZSAic3ZtX3plcm8iIHVwZGF0
+ZWQgYW5kIHRoZW4gc2VuZCBvdXQgYSBuZXcgcmV2aXNpb24uIEp1c3QgbGV0IG1lIAprbm93IGlm
+IHRoZXJlIGFyZSBvdGhlciB1cGRhdGVzIG5lZWRlZCAvIHF1ZXN0aW9ucyBpbiB0aGUgbWVhbnRp
+bWUuCgoKc3RydWN0IHNvY2thZGRyX3ZtIHsKIMKgwqDCoCBfX2tlcm5lbF9zYV9mYW1pbHlfdCBz
+dm1fZmFtaWx5OwogwqDCoMKgIHVuc2lnbmVkIHNob3J0IHN2bV9yZXNlcnZlZDE7CiDCoMKgwqAg
+dW5zaWduZWQgaW50IHN2bV9wb3J0OwogwqDCoMKgIHVuc2lnbmVkIGludCBzdm1fY2lkOwogwqDC
+oMKgIHVuc2lnbmVkIHNob3J0IHN2bV9mbGFnczsKIMKgwqDCoCB1bnNpZ25lZCBjaGFyIHN2bV96
+ZXJvW3NpemVvZihzdHJ1Y3Qgc29ja2FkZHIpIC0KIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDC
+oMKgwqDCoCBzaXplb2Yoc2FfZmFtaWx5X3QpIC0KIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDC
+oMKgwqDCoCBzaXplb2YodW5zaWduZWQgc2hvcnQpIC0KIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKg
+wqDCoMKgwqDCoCBzaXplb2YodW5zaWduZWQgaW50KSAtIHNpemVvZih1bnNpZ25lZCBpbnQpIC0K
+c2l6ZW9mKHVuc2lnbmVkIHNob3J0KV07Cn07CgoKVGhhbmtzLApBbmRyYQoKCgpBbWF6b24gRGV2
+ZWxvcG1lbnQgQ2VudGVyIChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBT
+Zi4gTGF6YXIgU3RyZWV0LCBVQkM1LCBmbG9vciAyLCBJYXNpLCBJYXNpIENvdW50eSwgNzAwMDQ1
+LCBSb21hbmlhLiBSZWdpc3RlcmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIy
+LzI2MjEvMjAwNS4K
 
-On Thu, Dec 10, 2020 at 9:05 PM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
-> > > @@ -111,6 +118,8 @@
-> > >
-> > >  #define SN_LINK_TRAINING_TRIES             10
-> > >
-> > > +#define SN_PWM_GPIO                        3
-> >
-> > So this maps to the GPIO4 described in sn65dsi86 datasheet.  I'm
-> > wondering if it's more readable to define the following SHIFT constants
-> > (your code), and use GPIO_MUX_GPIO4_SHIFT >> 2 where you need GPIO
-> > offset?
-> >
-> > #define  GPIO_MUX_GPIO1_SHIFT 0
-> > #define  GPIO_MUX_GPIO2_SHIFT 2
-> > #define  GPIO_MUX_GPIO3_SHIFT 4
-> > #define  GPIO_MUX_GPIO4_SHIFT 6
-> >
-> > If you agree, you may consider to integrate this patch beforehand:
-> >
-> > https://github.com/shawnguo2/linux/commit/7cde887ffb3b27a36e77a08bee366=
-6d14968b586
->
-> My preferred way here would be to add a prefix for the other constants.
-> It (IMHO) looks nicer and
->
->         GPIO_INPUT_SHIFT
->
-> looks like a quite generic name for a hardware specific definition.
-
-While this looks like a reasonable argument, I also like the naming
-choice for these constants in the beginning for that distinction
-between registers and bits.  And changing the names the other way
-around means there will be a much bigger diffstat, which I would like
-to avoid.  I suggest let's just focus on what really matters here -
-keep the naming consistent, so that people do not get confused when
-they want to add more constants in there.
-
-Shawn
-
-> (Even if up to now there is no other code location using this name.)
