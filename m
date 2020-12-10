@@ -2,145 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91DF62D5122
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 833C72D5126
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:11:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728241AbgLJDIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 22:08:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727612AbgLJDH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 22:07:56 -0500
-X-Gm-Message-State: AOAM530KYdUeetAxKWP0YDQgCkxq6ooNEHg+GN3mZuzBgqoA3amm/Ilk
-        a9r7SHlWHWmPOASNkX/m1uWchtcd6Zxhx9CnWA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607569632;
-        bh=Ij9Zk/sFw/WVF3WIL7Awpv4vVlyqAocQrIlQUfk4EAM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mRGdRf7AkW5/S3/2Xi22QAXd+Bjl7ZSR49AkoK96PrfRW5t8qzjkJFb7fY9xfKRCx
-         Aqu9uXWF4D2wQ1m+7eJgRtYZKe5k5m6iUEZr/1Eo20oURDQE7M5cbjkFkXTzb9FKpB
-         kA4UPru0N88k3tc3UnDFqw/OqaxEYPy14C90ZB3DiI3isg71Y+Bc7LInUidzUc7jeQ
-         jFEc+P6d8sAf6CxoSevVhfl6iJjH+qxYuR2B/UZBduEYBTAMsFpclIVisVXY3eQb3X
-         K4V3wcjr4zI+SX4XMd9NkPehFR27gL5zmA2KcgKjKG/tk6f+tyzu28xwwfzNQ0cnvR
-         Q0pSs0Hf0WLRw==
-X-Google-Smtp-Source: ABdhPJwEtsuU+F78ug25YRx5NKd5Abr/WII+jJ4HNESUFqg/3e6qw3rnVpO4bkSIn2pbjdbajOHhLUzB3jTHEwV50Sw=
-X-Received: by 2002:a05:6402:ca2:: with SMTP id cn2mr4762536edb.137.1607569630778;
- Wed, 09 Dec 2020 19:07:10 -0800 (PST)
+        id S1728638AbgLJDK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:10:26 -0500
+Received: from mail-eopbgr1310044.outbound.protection.outlook.com ([40.107.131.44]:49460
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727312AbgLJDK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 22:10:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bVS401uX7RFSAipB8BbfPP2Q3Uu/LJRXyYRolK0KTrvOQ0ruqnuSj8FOHTlcWd41pK6q9IsvUDJDR/i+TxUdruZ6r5UC0UHlMVBRSsDs+7Svbc/hPwU0n6HcHt5CirQECXKLqwXcSlB7KYrHyqPHsE2Gm0Ecn9I6syOZYCacgCYIHgHe77b+MPHjbG7tZppcvJCcpVTcxc20knWVpVI3QYuTHLNZkS8QbwFo8IXKysQrEfSg2dref5b2LWti71zON7v4ugjH6H7bZ0A9qNQGioY8CWLvTZ4JkYkyPXHGSFb7VqAZ513Yh6D798SZJXyuFlwxI6AE5yXD+51apbj53w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z509Mn9C/4jzOBj1z02gqyKjyMsAkPWhMrPrxO+kM6s=;
+ b=PC8IwUFO8mqIxX9qjM5AynxMOxIsDRxFuhuUaDXT2rO/FUJafrAYxeySzuc916J1a/DuazlEgyljj19kqtJwsO6UBmMd+0TEB30imMbFQ99Z+5baLhvv3CciZQPHjXGOqIzsdofJ3CI27wjqyzh+G92erL+G/jhnxBSbCTO6qkfgEUkQ7bnQ3dEcoGwX5iSbN40VLgrehdzyCbwefSq5+R3HrAlgSb8BiVeUcJNqzSgo3UnqXnNQXaKy15CfeR7YljLDPMbqxvOk3E6qd3D474ZHjvLHSVfCW8h37jacQoeTjlaNnKPas7fQME/9jztEpKHXP2DUbbGkMHD9bE2HNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oppoglobal.onmicrosoft.com; s=selector1-oppoglobal-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z509Mn9C/4jzOBj1z02gqyKjyMsAkPWhMrPrxO+kM6s=;
+ b=dTGhyeJndLboeULNdNUDXtMTs/K0vZ39s2D169WgcRE51m9fR8xflavXmHeF2FQRQ76CfgOw6aJpK7HwcI7Zh4bRfbOO65IXWDq62S8Nj4T54D0EAVYUznKk6OTh13Wc1HuMdKo5yi3Zba7GGGr8kp4uILqRNGcQtDqTqEmHOkU=
+Authentication-Results: oppo.com; dkim=none (message not signed)
+ header.d=none;oppo.com; dmarc=none action=none header.from=oppo.com;
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
+ SG2PR02MB3561.apcprd02.prod.outlook.com (2603:1096:4:4d::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3632.22; Thu, 10 Dec 2020 03:08:46 +0000
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::dcd:13c1:2191:feb7]) by SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::dcd:13c1:2191:feb7%7]) with mapi id 15.20.3654.012; Thu, 10 Dec 2020
+ 03:08:46 +0000
+Subject: Re: [PATCH v5] erofs: avoid using generic_block_bmap
+To:     Gao Xiang <hsiangkao@redhat.com>
+Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        guoweichao@oppo.com, zhangshiming@oppo.com
+References: <20201209115740.18802-1-huangjianan@oppo.com>
+ <20201210023612.GA247374@xiangao.remote.csb>
+From:   Huang Jianan <huangjianan@oppo.com>
+Message-ID: <efaca0e6-cd0d-e410-eb24-0ce872f7e2ea@oppo.com>
+Date:   Thu, 10 Dec 2020 11:08:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
+In-Reply-To: <20201210023612.GA247374@xiangao.remote.csb>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [58.255.79.104]
+X-ClientProxiedBy: HK0PR03CA0119.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::35) To SG2PR02MB4108.apcprd02.prod.outlook.com
+ (2603:1096:4:96::19)
 MIME-Version: 1.0
-References: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAAAJUqiRO33GQqGIHffCVyG/AQAAAAA=@ministro.hu>
-In-Reply-To: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAAAJUqiRO33GQqGIHffCVyG/AQAAAAA=@ministro.hu>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 9 Dec 2020 21:06:59 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJ5gXcVnqRxFWt0UadGTFA=QjquQhs3UtyVC=9Jb2-xdg@mail.gmail.com>
-Message-ID: <CAL_JsqJ5gXcVnqRxFWt0UadGTFA=QjquQhs3UtyVC=9Jb2-xdg@mail.gmail.com>
-Subject: Re: [PATCH] Staging: silabs si4455 serial driver
-To:     Info <info@ministro.hu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.118.0.32] (58.255.79.104) by HK0PR03CA0119.apcprd03.prod.outlook.com (2603:1096:203:b0::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 10 Dec 2020 03:08:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 70e2565c-be3f-4d73-6e4c-08d89cb8e878
+X-MS-TrafficTypeDiagnostic: SG2PR02MB3561:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR02MB3561B1EB16B88EE2F6C20E00C3CB0@SG2PR02MB3561.apcprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8Pta+5fgq8JOovwW9nbi0G2MGbBJs8E44XRtzxh7I30hGBpDDXfp2y3K+5/mwp/fEVN2RSW+4p7uQrv3ihXDHutLp+vWPQ//ogKn9pFa21ffUY/8GSlg3M5tlZcjZwDQaRacLXYM+gGFpiQY2wceJuSSX3U7am9qJJ4AHg0QeoBeCi8xKH7WBEhWPgn+KsgT74p9I37ZjyUgm8o3E94FBI7+NWAa0WOQ8igZSWV0BtFzDce8/48QbYwP9ykeJvndI3JAUS2VSUAxYYTZz4RyknSqU5kyqmH1HCQz327FxMyftKZ9yCrA8QIkma4w1kJywH/TF4U6sL4ZefegiPJ5Hxff6xqiQaOZfNLrSuUy+ZTfJn4bVzONkPSCdd/fEEPwOu9QYXue4ugVrmfhH0Pc/jWzCNEAUjPHHDXBykZ3O4CFov7ln3TjMkju9l8TqYIRoovyTEjVM2WoPRn/3a+OOX3IyirknEghCBCmdqDMkH9kWe84jNDP71MrpvVnFs96
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(66556008)(107886003)(508600001)(16526019)(8676002)(66476007)(83380400001)(26005)(31696002)(8936002)(186003)(4326008)(86362001)(6666004)(34490700003)(66946007)(6486002)(52116002)(5660300002)(956004)(2616005)(31686004)(16576012)(36756003)(6916009)(2906002)(41533002)(11606006)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZkJKTGcvejNEMnYzelFBNnlxTm94S1ZWWHNtdndpSlp2b04wV0hZaXAxSnFD?=
+ =?utf-8?B?QTh3RkVJMSt2eEFJYnNNT1VFL05oM1E0QWhLNmQ0TWxyMzBqOU9ycXoydEdn?=
+ =?utf-8?B?Y2dMVnd6dE44clUwdE0rUXJWNW1LQTZ0V3R3TWg0dzBoQ2lHcEw3VThVNkdL?=
+ =?utf-8?B?dWl2R0c2bTUreVlsdmh2K2RXWUltbkFoUFRnQzQwVkN2V1ZpVktNMS9ZeHp1?=
+ =?utf-8?B?SGx0L24rODFzeGx6cHdDVkV0bXY1aUNlaUxwQ084TEQ0NmRTZXdHb2tLSEtE?=
+ =?utf-8?B?SXlxYjRra285WHU1YVd0ckJLNGErQ0RUNi9BK01DbS9BMkVUaUh2Y09sczNs?=
+ =?utf-8?B?WHduY0tObjhBYklBYUUvTEp3dVFTbXVhU3ZtZk9RdUZTWGQ4NmN1aVlobU1K?=
+ =?utf-8?B?enJQVDBnRmN1UG50MGNkV1NtdmExUk9LclBxVVY5QlVnZ2JHYnUwN0RFam5j?=
+ =?utf-8?B?V1RCMFlCQmNtdDZ3QitxMFRtaXNUVHNodmlxZ1VFblFUeWpSTkVnSm5QZ2V6?=
+ =?utf-8?B?dldJV2lQbjZVTVRVQWxXdGpMVHpBR3VzVSs3cG9maE0yZkdISWFBWmI5UDNL?=
+ =?utf-8?B?blhwQjVwTkt3MWRmc2c3QkFPcTh4WStLYnd2ZExtRHoyc3Axd3h2cFF5eUQw?=
+ =?utf-8?B?Vm9TNlFoWU1kYjVFdzljRFVIWUtoaUM1WWxqSXpSUEJyTEpack8xT09ZdkI4?=
+ =?utf-8?B?OTh4NkU0elltVlk4RzNFeWptUHMzKy9KUHhySnR6Z3QvU1M4aGJQSHp4ZTZF?=
+ =?utf-8?B?SlRKRE5IcnJJcmZwQUVXTWg0bzQ1cmxIaHRGRE40T1hJaTZueXFLb1Z0TkFl?=
+ =?utf-8?B?aFM5TmswcFM2Q29NVVZxSDlXbi84NERDVVZ6c3lnKzNTLzQwOGh1RkhNaE1M?=
+ =?utf-8?B?aUFiZE1ZcVNhSjBXbHFlanN2NWtFU3hFU2FmVGVoZ082MEdPMHdyYVRFbEhM?=
+ =?utf-8?B?MzJLMkhTUllYVGlCaThsbHBsVlpkV2NNWnhMaWQ3V3hwcmlPeEVEU2ZpYUJC?=
+ =?utf-8?B?ZTRtMUhhOTdlRFQvR0ppaVZVQVNjWGhUQ1NDUnNKY29Fc0t6aXVvWHFuenUx?=
+ =?utf-8?B?UjdtdnJxUGRRL0RTdHFwYnQvQUREdmFHUlM5M2w1aGFPbUFnZ0NQZFBqckpz?=
+ =?utf-8?B?U0MxNmlYSmhKVks4RlNucGhBVnBYNEx5TnUrZG9JU1Q1SEhJWVpiZEJqUnF4?=
+ =?utf-8?B?VTNwMG8xV0JrbjBmRWFtNFQzcWNZY2tJZlJacnlpcS9EUDlWdmlCTGRYSXZp?=
+ =?utf-8?B?cWlqc3FLRG5FQzBJUk9MYVFNSVcxNE8rM0NGeHN3RHg1YldmYkNIOU5TcSt6?=
+ =?utf-8?Q?dmkAzjdfx0xmv+8Ev/WbWWm6gE+XbJQHrQ?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2020 03:08:45.9208
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70e2565c-be3f-4d73-6e4c-08d89cb8e878
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xsth3iSSH7Sl7+YJsUquWuN5OtHXqtA260KSK+w/C+XhP1p9l+JhSM87x0L9eOFRwSDzBY2hsLKN9xNgs4JBag==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB3561
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 5:17 AM Info <info@ministro.hu> wrote:
+Thanks for reminding me, I will pay attention about this next time.
+
+在 2020/12/10 10:36, Gao Xiang 写道:
+> Hi Jianan,
 >
-> This is a serial port driver for
-> Silicon Labs Si4455 Sub-GHz transciver.
+> On Wed, Dec 09, 2020 at 07:57:40PM +0800, Huang Jianan wrote:
+>> iblock indicates the number of i_blkbits-sized blocks rather than
+>> sectors.
+>>
+>> In addition, considering buffer_head limits mapped size to 32-bits,
+>> should avoid using generic_block_bmap.
+>>
+>> Fixes: 9da681e017a3 ("staging: erofs: support bmap")
+>> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+>> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+> Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
 >
-> Signed-off-by: J=C3=B3zsef Horv=C3=A1th <info@ministro.hu>
-> ---
->  .../bindings/staging/serial/silabs,si4455.txt |   39 +
-
-Looks straightforward enough to not be in staging. Plus
-bindings/staging/serial is not a directory I want.
-
-DT bindings are in DT schema format now. See
-Documentation/devicetree/writing-schema.rst.
-
->  drivers/staging/Kconfig                       |    2 +
->  drivers/staging/Makefile                      |    1 +
->  drivers/staging/si4455/Kconfig                |    8 +
->  drivers/staging/si4455/Makefile               |    2 +
->  drivers/staging/si4455/TODO                   |    3 +
->  drivers/staging/si4455/si4455.c               | 1465 +++++++++++++++++
->  drivers/staging/si4455/si4455_api.h           |   56 +
->  8 files changed, 1576 insertions(+)
->  create mode 100644
-> Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
->  create mode 100644 drivers/staging/si4455/Kconfig
->  create mode 100644 drivers/staging/si4455/Makefile
->  create mode 100644 drivers/staging/si4455/TODO
->  create mode 100644 drivers/staging/si4455/si4455.c
->  create mode 100644 drivers/staging/si4455/si4455_api.h
+> Also, I think Chao has sent his Reviewed-by in the previous reply ---
+> so unless some major modification happens, it needs to be attached with
+> all new versions as a common practice...
 >
-> diff --git
-> a/Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
-> b/Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
-> new file mode 100644
-> index 000000000000..abd659b7b952
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
-> @@ -0,0 +1,39 @@
-> +* Silicon Labs Si4455 EASY-TO-USE, LOW-CURRENT OOK/(G)FSK SUB-GHZ
-> TRANSCEIVER
-> +
-> +Required properties:
-> +- compatible: Should be one of the following:
-> +  - "silabs,si4455" for Silicon Labs Si4455-B1A or Si4455-C2A (driver
-> automatically detects the part info),
-
-Either do this or...
-
-> +  - "silabs,si4455b1a" for Silicon Labs Si4455-B1A,
-> +  - "silabs,si4455c2a" for Silicon Labs Si4455-C2A,
-
-this. Not both. I assume there's an id register or something you can
-read to determine which one. That's fine, but consider if there's any
-power sequencing differences that you'd need to handle before you can
-read that register.
-
-> +- reg: SPI chip select number.
-> +- interrupts: Specifies the interrupt source of the parent interrupt
-> +  controller. The format of the interrupt specifier depends on the
-> +  parent interrupt controller.
-> +- clocks: phandle to the IC source clock (only external clock source
-> supported).
-> +- spi-max-frequency: maximum clock frequency on SPI port
-> +- shdn-gpios: gpio pin for SDN
-
-shutdown-gpios is the semi-standard name.
-
-> +
-> +Example:
-> +
-> +/ {
-> +       clocks {
-> +                si4455_1_2_osc: si4455_1_2_osc {
-> +                        compatible =3D "fixed-clock";
-> +                        #clock-cells =3D <0>;
-> +                        clock-frequency  =3D <30000000>;
-> +                };
-> +       };
-
-Don't need to show this for the example.
-
-> +};
-> +
-> +&spi0 {
-> +       si4455: si4455@0 {
-> +               compatible =3D "silabs,si4455";
-> +               reg =3D <0>;
-> +               clocks =3D <&si4455_1_2_osc>;
-> +               interrupt-parent =3D <&gpio>;
-> +               interrupts =3D <7 IRQ_TYPE_LEVEL_LOW>;
-> +                shdn-gpios =3D <&gpio 26 1>;
-> +                status =3D "okay";
-
-Don't show status in examples.
-
-> +                spi-max-frequency =3D <3000000>;
-> +       };
-> +};
+> I will apply it later to for-next, thanks for your patch!
+>
+> Thanks,
+> Gao Xiang
+>
+>> ---
+>>   fs/erofs/data.c | 26 +++++++-------------------
+>>   1 file changed, 7 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+>> index 347be146884c..ea4f693bee22 100644
+>> --- a/fs/erofs/data.c
+>> +++ b/fs/erofs/data.c
+>> @@ -312,27 +312,12 @@ static void erofs_raw_access_readahead(struct readahead_control *rac)
+>>   		submit_bio(bio);
+>>   }
+>>   
+>> -static int erofs_get_block(struct inode *inode, sector_t iblock,
+>> -			   struct buffer_head *bh, int create)
+>> -{
+>> -	struct erofs_map_blocks map = {
+>> -		.m_la = iblock << 9,
+>> -	};
+>> -	int err;
+>> -
+>> -	err = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
+>> -	if (err)
+>> -		return err;
+>> -
+>> -	if (map.m_flags & EROFS_MAP_MAPPED)
+>> -		bh->b_blocknr = erofs_blknr(map.m_pa);
+>> -
+>> -	return err;
+>> -}
+>> -
+>>   static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
+>>   {
+>>   	struct inode *inode = mapping->host;
+>> +	struct erofs_map_blocks map = {
+>> +		.m_la = blknr_to_addr(block),
+>> +	};
+>>   
+>>   	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
+>>   		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
+>> @@ -341,7 +326,10 @@ static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
+>>   			return 0;
+>>   	}
+>>   
+>> -	return generic_block_bmap(mapping, block, erofs_get_block);
+>> +	if (!erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW))
+>> +		return erofs_blknr(map.m_pa);
+>> +
+>> +	return 0;
+>>   }
+>>   
+>>   /* for uncompressed (aligned) files and raw access for other files */
+>> -- 
+>> 2.25.1
+>>
