@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813C52D505C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 02:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 670722D5049
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 02:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732639AbgLJB1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 20:27:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728050AbgLJB1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 20:27:53 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607563632;
-        bh=4fquuoXgeXKGOmKHsZ5csbna5WzsqVOwtrr9OcdcGt4=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=QoEV6Wb73MTk6RVv03QGdhzC9QChshkqShWs7zHgdbgmb+S1UwE18CCDXqlr4dpCz
-         emhS1Fl2MmYt2dxaDR9EjWA1U55ohBQt0NqWkW46lDIJ7R2DROpwXL0FFg8O/iuYaj
-         lL/anVqdLkaRGlcyHwbr/QTmTyUrKnXTZmLTmpJ7EOAkCKsyRW6/pjEb+XFL2OG+jC
-         CibqOORASvbtc0PPBWsrOwYsxE8gnbYmhg+dXWDogsTlxkLoqAKKPzZ6nn4R+sbTdd
-         7dHuLYIxEHKnNsk+oFyn+Nop1xkGRVghGIJXdRGicuphQwt4st39a4Z16yNeAREPks
-         NrqiNOUnIIIJA==
+        id S1732055AbgLJBXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 20:23:35 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9416 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731652AbgLJBXJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 20:23:09 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Crx312lmZz7C5k;
+        Thu, 10 Dec 2020 09:21:49 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 10 Dec 2020 09:22:12 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH v2] cgroup: Fix memory leak when parsing multiple source parameters
+Date:   Thu, 10 Dec 2020 09:29:43 +0800
+Message-ID: <20201210012943.92845-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201209121322.77665-1-miaoqinglang@huawei.com>
+References: <20201209121322.77665-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201025224212.7790-1-digetx@gmail.com>
-References: <20201025224212.7790-1-digetx@gmail.com>
-Subject: Re: [PATCH v1] clk: tegra: Fix duplicated SE clock entry
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Date:   Wed, 09 Dec 2020 17:27:10 -0800
-Message-ID: <160756363099.1580929.2375956922093495697@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dmitry Osipenko (2020-10-25 15:42:12)
-> The periph_clks[] array contains duplicated entry for Security Engine
-> clock which was meant to be defined for T210, but it wasn't added
-> properly. This patch corrects the T210 SE entry and fixes the following
-> error message on T114/T124: "Tegra clk 127: register failed with -17".
->=20
-> Fixes: dc37fec48314 ("clk: tegra: periph: Add new periph clks and muxes f=
-or Tegra210")
-> Tested-by Nicolas Chauvet <kwizart@gmail.com>
-> Reported-by Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
+A memory leak is found in cgroup1_parse_param() when multiple source
+parameters overwrite fc->source in the fs_context struct without free.
 
-Looks correct. Should I pick this up Thierry?
+unreferenced object 0xffff888100d930e0 (size 16):
+  comm "mount", pid 520, jiffies 4303326831 (age 152.783s)
+  hex dump (first 16 bytes):
+    74 65 73 74 6c 65 61 6b 00 00 00 00 00 00 00 00  testleak........
+  backtrace:
+    [<000000003e5023ec>] kmemdup_nul+0x2d/0xa0
+    [<00000000377dbdaa>] vfs_parse_fs_string+0xc0/0x150
+    [<00000000cb2b4882>] generic_parse_monolithic+0x15a/0x1d0
+    [<000000000f750198>] path_mount+0xee1/0x1820
+    [<0000000004756de2>] do_mount+0xea/0x100
+    [<0000000094cafb0a>] __x64_sys_mount+0x14b/0x1f0
 
->  drivers/clk/tegra/clk-id.h           | 1 +
->  drivers/clk/tegra/clk-tegra-periph.c | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/clk/tegra/clk-id.h b/drivers/clk/tegra/clk-id.h
-> index ff7da2d3e94d..24413812ec5b 100644
-> --- a/drivers/clk/tegra/clk-id.h
-> +++ b/drivers/clk/tegra/clk-id.h
-> @@ -227,6 +227,7 @@ enum clk_id {
->         tegra_clk_sdmmc4,
->         tegra_clk_sdmmc4_8,
->         tegra_clk_se,
-> +       tegra_clk_se_10,
->         tegra_clk_soc_therm,
->         tegra_clk_soc_therm_8,
->         tegra_clk_sor0,
-> diff --git a/drivers/clk/tegra/clk-tegra-periph.c b/drivers/clk/tegra/clk=
--tegra-periph.c
-> index 2b2a3b81c16b..60cc34f90cb9 100644
-> --- a/drivers/clk/tegra/clk-tegra-periph.c
-> +++ b/drivers/clk/tegra/clk-tegra-periph.c
-> @@ -630,7 +630,7 @@ static struct tegra_periph_init_data periph_clks[] =
-=3D {
->         INT8("host1x", mux_pllm_pllc2_c_c3_pllp_plla, CLK_SOURCE_HOST1X, =
-28, 0, tegra_clk_host1x_8),
->         INT8("host1x", mux_pllc4_out1_pllc_pllc4_out2_pllp_clkm_plla_pllc=
-4_out0, CLK_SOURCE_HOST1X, 28, 0, tegra_clk_host1x_9),
->         INT8("se", mux_pllp_pllc2_c_c3_pllm_clkm, CLK_SOURCE_SE, 127, TEG=
-RA_PERIPH_ON_APB, tegra_clk_se),
-> -       INT8("se", mux_pllp_pllc2_c_c3_clkm, CLK_SOURCE_SE, 127, TEGRA_PE=
-RIPH_ON_APB, tegra_clk_se),
-> +       INT8("se", mux_pllp_pllc2_c_c3_clkm, CLK_SOURCE_SE, 127, TEGRA_PE=
-RIPH_ON_APB, tegra_clk_se_10),
->         INT8("2d", mux_pllm_pllc2_c_c3_pllp_plla, CLK_SOURCE_2D, 21, 0, t=
-egra_clk_gr2d_8),
->         INT8("3d", mux_pllm_pllc2_c_c3_pllp_plla, CLK_SOURCE_3D, 24, 0, t=
-egra_clk_gr3d_8),
->         INT8("vic03", mux_pllm_pllc_pllp_plla_pllc2_c3_clkm, CLK_SOURCE_V=
-IC03, 178, 0, tegra_clk_vic03),
+Fix this bug by permitting a single source parameter and rejecting with
+an error all subsequent ones.
+
+Fixes: 8d2451f4994f ("cgroup1: switch to option-by-option parsing")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+ v1->v2: fix compile problems caused by superfluous LF in err message.
+ kernel/cgroup/cgroup-v1.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 191c329e4..32596fdbc 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -908,6 +908,8 @@ int cgroup1_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 	opt = fs_parse(fc, cgroup1_fs_parameters, param, &result);
+ 	if (opt == -ENOPARAM) {
+ 		if (strcmp(param->key, "source") == 0) {
++			if (fc->source)
++				return invalf(fc, "Multiple sources not supported");
+ 			fc->source = param->string;
+ 			param->string = NULL;
+ 			return 0;
+-- 
+2.23.0
+
