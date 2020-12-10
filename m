@@ -2,137 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF3B2D5202
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 709682D5210
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731174AbgLJDs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 22:48:59 -0500
-Received: from smtp.h3c.com ([60.191.123.56]:18359 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729974AbgLJDs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 22:48:57 -0500
-Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam01-ex.h3c.com with ESMTP id 0BA2rHa0069794
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 10:53:17 +0800 (GMT-8)
-        (envelope-from gao.yanB@h3c.com)
-Received: from DAG2EX10-IDC.srv.huawei-3com.com ([10.8.0.73])
-        by h3cspam01-ex.h3c.com with ESMTP id 0BA2qmhx068651;
-        Thu, 10 Dec 2020 10:52:48 +0800 (GMT-8)
-        (envelope-from gao.yanB@h3c.com)
-Received: from DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71) by
- DAG2EX10-IDC.srv.huawei-3com.com (10.8.0.73) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 10 Dec 2020 10:52:49 +0800
-Received: from DAG2EX08-IDC.srv.huawei-3com.com ([fe80::81d1:43f5:5563:4c58])
- by DAG2EX08-IDC.srv.huawei-3com.com ([fe80::81d1:43f5:5563:4c58%10]) with
- mapi id 15.01.2106.002; Thu, 10 Dec 2020 10:52:49 +0800
-From:   Gaoyan <gao.yanB@h3c.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tianxianting <tian.xianting@h3c.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIHR0eTogUHJvdGVjdCBkaXNjX2RhdGEgaW4gbl90?=
- =?utf-8?B?dHlfY2xvc2UgYW5kIG5fdHR5X2ZsdXNoX2J1ZmZlcg==?=
-Thread-Topic: [PATCH] tty: Protect disc_data in n_tty_close and
- n_tty_flush_buffer
-Thread-Index: AQHWzhNvm8MbLcEgPUGsvs0TLXodL6nuT2OAgAFQ1XA=
-Date:   Thu, 10 Dec 2020 02:52:49 +0000
-Message-ID: <0f2088a0da65448598d8b6aad316da37@h3c.com>
-References: <20201209095921.40248-1-gao.yanB@h3c.com>
- <X9DhK9Sc6JVnLQLK@kroah.com>
-In-Reply-To: <X9DhK9Sc6JVnLQLK@kroah.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.161.27]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 0BA2qmhx068651
+        id S1731730AbgLJDvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:51:22 -0500
+Received: from twhmllg3.macronix.com ([211.75.127.131]:54571 "EHLO
+        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731587AbgLJDut (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 22:50:49 -0500
+Received: from TWHMLLG3.macronix.com (localhost [127.0.0.2] (may be forged))
+        by TWHMLLG3.macronix.com with ESMTP id 0BA3Nr3R012276
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:23:53 +0800 (GMT-8)
+        (envelope-from ycllin@mxic.com.tw)
+Received: from localhost.localdomain ([172.17.195.95])
+        by TWHMLLG3.macronix.com with ESMTP id 0BA3MURe011440;
+        Thu, 10 Dec 2020 11:22:30 +0800 (GMT-8)
+        (envelope-from ycllin@mxic.com.tw)
+From:   YouChing Lin <ycllin@mxic.com.tw>
+To:     miquel.raynal@bootlin.com, vigneshr@ti.com
+Cc:     juliensu@mxic.com.tw, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ycllin@mxic.com.tw
+Subject: [PATCH 0/2] mtd: spinand: add support for MX35LFxG24AD & Fix bug of BCH
+Date:   Thu, 10 Dec 2020 11:22:07 +0800
+Message-Id: <1607570529-22341-1-git-send-email-ycllin@mxic.com.tw>
+X-Mailer: git-send-email 1.9.1
+X-MAIL: TWHMLLG3.macronix.com 0BA3MURe011440
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgR3JlZyBLSCwNCglUaGFuayB5b3UgZm9yIHJldmlld2luZyB0aGUgcGF0Y2gsIGl0IGhlbHBl
-ZCBtZSBhIGxvdC4gQWNjb3JkaW5nIHRvIHlvdXIgc3VnZ2VzdGlvbiwgSSBjaGFuZ2UgdGhlDQpj
-b2RlLiBQbGVhc2UgaGVscCBtZSB0byByZXZpZXcgdGhlIHYyIHBhdGNoLiBUaGFua3MgYWdhaW4u
-DQoNCglodHRwczovL2xrbWwub3JnL2xrbWwvMjAyMC8xMi85LzE0MTINCg0KDQoNCg0KLS0tLS0g
-T3JpZ2luYWwgbWFpbCAtLS0tLQ0K5Y+R5Lu25Lq6OiBHcmVnIEtIIFttYWlsdG86Z3JlZ2toQGxp
-bnV4Zm91bmRhdGlvbi5vcmddIA0K5Y+R6YCB5pe26Ze0OiAyMDIw5bm0MTLmnIg55pelIDIyOjM4
-DQrmlLbku7bkuro6IGdhb3lhbiAoUkQpIDxnYW8ueWFuQkBoM2MuY29tPg0K5oqE6YCBOiBqaXJp
-c2xhYnlAa2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgdGlhbnhpYW50
-aW5nIChSRCkgPHRpYW4ueGlhbnRpbmdAaDNjLmNvbT4NCuS4u+mimDogUmU6IFtQQVRDSF0gdHR5
-OiBQcm90ZWN0IGRpc2NfZGF0YSBpbiBuX3R0eV9jbG9zZSBhbmQgbl90dHlfZmx1c2hfYnVmZmVy
-DQoNCk9uIFdlZCwgRGVjIDA5LCAyMDIwIGF0IDA1OjU5OjIxUE0gKzA4MDAsIFlhbi5HYW8gd3Jv
-dGU6DQo+IG5fdHR5X2ZsdXNoX2J1ZmZlciBjYW4gaGFwcGVuIGluIHBhcmFsbGVsIHdpdGggbl90
-dHlfY2xvc2UgdGhhdCB0aGUNCj4gdHR5LT5kaXNjX2RhdGEgd2lsbCBiZSBzZXQgdG8gTlVMTC4g
-bl90dHlfZmx1c2hfYnVmZmVyIGFjY2Vzc2VzIA0KPiB0dHktPmRpc2NfZGF0YSwgc28gd2UgbXVz
-dCBwcmV2ZW50IG5fdHR5X2Nsb3NlIGNsZWFyIHR0eS0+ZGlzY19kYXRhDQo+IHdoaWxlIG5fdHR5
-X2ZsdXNoX2J1ZmZlciAgaGFzIGEgbm9uLU5VTEwgdmlldyBvZiB0dHktPmRpc2NfZGF0YS4NCj4g
-DQo+IFNvIHdlIG5lZWQgdG8gbWFrZSBzdXJlIHRoYXQgYWNjZXNzZXMgdG8gZGlzY19kYXRhIGFy
-ZSBhdG9taWMgdXNpbmcgDQo+IHNwaW5sb2NrLg0KPiANCj4gVGhlcmUgaXMgYW4gZXhhbXBsZSBJ
-IG1lZXQ6DQo+IFdoZW4gbl90dHlfZmx1c2hfYnVmZmVyIGFjY2Vzc2VzIHR0eSBzdHJ1Y3QsIHRo
-ZSBkaXNjX2RhdGEgaXMgcmlnaHQuDQo+IEhvd2V2ZXIsIHRoZW4gcmVzZXRfYnVmZmVyX2ZsYWdz
-IGFjY2Vzc2VzIHR0eS0+ZGlzY19kYXRhLCBkaXNjX2RhdGEgDQo+IGJlY29tZSBOVUxMLCBTbyBr
-ZXJuZWwgY3Jhc2ggd2hlbiBhY2Nlc3NlcyB0dHktPmRpc2NfZGF0YS0+cmVhbF90YWlsLg0KPiBJ
-IGd1ZXNzIHRoZXJlIGNvdWxkIGJlIGFub3RoZXIgdGhyZWFkIGNoYW5nZSB0dHktPmRpc2NfZGF0
-YSB0byBOVUxMLCANCj4gYW5kIGR1cmluZyBOX1RUWSBsaW5lIGRpc2NpcGxpbmUsIG5fdHR5X2Ns
-b3NlIHdpbGwgc2V0IHR0eS0+ZGlzY19kYXRhIA0KPiB0byBiZSBOVUxMLiBTbyBhZGQgc3Bpbmxv
-Y2sgdG8gcHJvdGVjdCBkaXNjX2RhdGEgYmV0d2VlbiBjbG9zZSBhbmQgDQo+IGZsdXNoX2J1ZmZl
-ci4NCj4gDQo+IElQOiByZXNldF9idWZmZXJfZmxhZ3MrMHg5LzB4ZjANCj4gUEdEIDAgUDREIDAN
-Cj4gT29wczogMDAwMiBbIzFdIFNNUA0KPiBDUFU6IDIzIFBJRDogMjA4NzYyNiBDb21tOiAoYWdl
-dHR5KSBLZHVtcDogbG9hZGVkIFRhaW50ZWQ6IEcgSGFyZHdhcmUgDQo+IG5hbWU6IFVOSVNJTlNJ
-R0hUIFgzMDM2UC1HMy9TVDAxTTJDN1MsIEJJT1MgMi4wMC4xMyAwMS8xMS8yMDE5DQo+IHRhc2s6
-IGZmZmY5YzRlOWRhNzFlODAgdGFzay5zdGFjazogZmZmZmIzMGNmZTg5ODAwMA0KPiBSSVA6IDAw
-MTA6cmVzZXRfYnVmZmVyX2ZsYWdzKzB4OS8weGYwDQo+IFJTUDogMDAxODpmZmZmYjMwY2ZlODli
-Y2E4IEVGTEFHUzogMDAwMTAyNDYNCj4gUkFYOiBmZmZmOWM0ZTlkYTcxZTgwIFJCWDogZmZmZjlj
-MzY4ZDFiYWMwMCBSQ1g6IDAwMDAwMDAwMDAwMDAwMDANCj4gUkRYOiAwMDAwMDAwMDAwMDAwMDAw
-IFJTSTogZmZmZjljNGVhMTdiNTBmMCBSREk6IDAwMDAwMDAwMDAwMDAwMDANCj4gUkJQOiBmZmZm
-YjMwY2ZlODliY2M4IFIwODogMDAwMDAwMDAwMDAwMDEwMCBSMDk6IDAwMDAwMDAwMDAwMDAwMDEN
-Cj4gUjEwOiAwMDAwMDAwMDAwMDAwMDAxIFIxMTogMDAwMDAwMDAwMDAwMDAwMCBSMTI6IGZmZmY5
-YzM2OGQxYmFjYzANCj4gUjEzOiBmZmZmOWMyMGNmZDE4NDI4IFIxNDogZmZmZjljNGVhMTdiNTBm
-MCBSMTU6IGZmZmY5YzM2OGQxYmFjMDANCj4gRlM6ICAwMDAwN2Y5ZmJiZTk3OTQwKDAwMDApIEdT
-OmZmZmY5YzM3NWM3NDAwMDAoMDAwMCkNCj4ga25sR1M6MDAwMDAwMDAwMDAwMDAwMA0KPiBDUzog
-IDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQo+IENSMjogMDAw
-MDAwMDAwMDAwMjI2MCBDUjM6IDAwMDAwMDJmNzIyMzMwMDMgQ1I0OiAwMDAwMDAwMDAwNzYwNmUw
-DQo+IERSMDogMDAwMDAwMDAwMDAwMDAwMCBEUjE6IDAwMDAwMDAwMDAwMDAwMDAgRFIyOiAwMDAw
-MDAwMDAwMDAwMDAwDQo+IERSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAwZmZmZTBm
-ZjAgRFI3OiAwMDAwMDAwMDAwMDAwNDAwDQo+IFBLUlU6IDU1NTU1NTU0DQo+IENhbGwgVHJhY2U6
-DQo+ID8gbl90dHlfZmx1c2hfYnVmZmVyKzB4MmEvMHg2MA0KPiB0dHlfYnVmZmVyX2ZsdXNoKzB4
-NzYvMHg5MA0KPiB0dHlfbGRpc2NfZmx1c2grMHgyMi8weDQwDQo+IHZ0X2lvY3RsKzB4NWE3LzB4
-MTBiMA0KPiA/IG5fdHR5X2lvY3RsX2hlbHBlcisweDI3LzB4MTEwDQo+IHR0eV9pb2N0bCsweGVm
-LzB4OGMwDQo+IGRvX3Zmc19pb2N0bCsweGE3LzB4NWUwDQo+ID8gX19hdWRpdF9zeXNjYWxsX2Vu
-dHJ5KzB4YWYvMHgxMDANCj4gPyBzeXNjYWxsX3RyYWNlX2VudGVyKzB4MWQwLzB4MmIwDQo+IFN5
-U19pb2N0bCsweDc5LzB4OTANCj4gZG9fc3lzY2FsbF82NCsweDZjLzB4MWIwDQo+IGVudHJ5X1NZ
-U0NBTEw2NF9zbG93X3BhdGgrMHgyNS8weDI1DQo+IA0KPiBuX3R0eV9mbHVzaF9idWZmZXIJCQkt
-LS0+dHR5LT5kaXNjX2RhdGEgaXMgT0sNCj4gCS0+cmVzZXRfYnVmZmVyX2ZsYWdzCQkgLS0+dHR5
-LT5kaXNjX2RhdGEgaXMgTlVMTA0KPiANCj4gU2lnbmVkLW9mZi1ieTogWWFuLkdhbyA8Z2FvLnlh
-bkJAaDNjLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IFhpYW50aW5nIFRpYW4gPHRpYW4ueGlhbnRpbmdA
-aDNjLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL3R0eS9uX3R0eS5jIHwgNiArKysrKysNCj4gIDEg
-ZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
-L3R0eS9uX3R0eS5jIGIvZHJpdmVycy90dHkvbl90dHkuYyBpbmRleCANCj4gN2U1ZTM2MzE1Li5m
-NGIxNTJmMjAgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvdHR5L25fdHR5LmMNCj4gKysrIGIvZHJp
-dmVycy90dHkvbl90dHkuYw0KPiBAQCAtODcsNiArODcsOCBAQA0KPiAgIyBkZWZpbmUgbl90dHlf
-dHJhY2UoZiwgYXJncy4uLikJbm9fcHJpbnRrKGYsICMjYXJncykNCj4gICNlbmRpZg0KPiAgDQo+
-ICtzdGF0aWMgREVGSU5FX1NQSU5MT0NLKGRpc2NfZGF0YV9sb2NrKTsNCg0KV2Ugd2FudCB0byBs
-b2NrIGRhdGEsIG5vdCBjb2RlLCBhbmQgdGhpcyBpcyBsb2NraW5nIGNvZGUuDQoNCldoeSBjYW4n
-dCB3ZSB1c2UgdGhlIHR0eSdzIGxvY2sgaGVyZT8NCg0KPiArDQo+ICBzdHJ1Y3Qgbl90dHlfZGF0
-YSB7DQo+ICAJLyogcHJvZHVjZXItcHVibGlzaGVkICovDQo+ICAJc2l6ZV90IHJlYWRfaGVhZDsN
-Cj4gQEAgLTM3MSw4ICszNzMsMTAgQEAgc3RhdGljIHZvaWQgbl90dHlfcGFja2V0X21vZGVfZmx1
-c2goc3RydWN0IA0KPiB0dHlfc3RydWN0ICp0dHkpICBzdGF0aWMgdm9pZCBuX3R0eV9mbHVzaF9i
-dWZmZXIoc3RydWN0IHR0eV9zdHJ1Y3QgDQo+ICp0dHkpICB7DQo+ICAJZG93bl93cml0ZSgmdHR5
-LT50ZXJtaW9zX3J3c2VtKTsNCj4gKwlzcGluX2xvY2soJmRpc2NfZGF0YV9sb2NrKTsNCj4gIAly
-ZXNldF9idWZmZXJfZmxhZ3ModHR5LT5kaXNjX2RhdGEpOw0KPiAgCW5fdHR5X2tpY2tfd29ya2Vy
-KHR0eSk7DQo+ICsJc3Bpbl91bmxvY2soJmRpc2NfZGF0YV9sb2NrKTsNCg0KV2UgYWxyZWFkeSBo
-YXZlIHRoZSB0ZXJtaW9zX3J3c2VtIGxvY2sgaGVyZSwgd2h5IGRvIHdlIG5lZWQgYW5vdGhlciBv
-bmU/DQoNCj4gIA0KPiAgCWlmICh0dHktPmxpbmspDQo+ICAJCW5fdHR5X3BhY2tldF9tb2RlX2Zs
-dXNoKHR0eSk7DQo+IEBAIC0xODkyLDggKzE4OTYsMTAgQEAgc3RhdGljIHZvaWQgbl90dHlfY2xv
-c2Uoc3RydWN0IHR0eV9zdHJ1Y3QgKnR0eSkNCj4gIAlpZiAodHR5LT5saW5rKQ0KPiAgCQluX3R0
-eV9wYWNrZXRfbW9kZV9mbHVzaCh0dHkpOw0KPiAgDQo+ICsJc3Bpbl9sb2NrX2lycSgmZGlzY19k
-YXRhX2xvY2spOw0KPiAgCXZmcmVlKGxkYXRhKTsNCj4gIAl0dHktPmRpc2NfZGF0YSA9IE5VTEw7
-DQo+ICsJc3Bpbl91bmxvY2tfaXJxKCZkaXNjX2RhdGFfbG9jayk7DQoNCldoeSBjYW4ndCB5b3Ug
-anVzdCBncmFiIHRoZSB0ZXJtaW9zX3J3c2VtIGxvY2s/DQoNCnRoYW5rcywNCg0KZ3JlZyBrLWgN
-Cg==
+Hello,
+
+This series adds support for MX35LF1/2/4G24AD, are 3V, 1G/2G/4Gbit serial
+SLC NAND flash device (without on-die ECC).
+
+And fix a bug of BCH, the size of calc_buf/code_buf is limited to 64 bytes.
+If someone uses Flash with pagesize: 4096 (for example: MX35LF4G24AD, 
+eccbyte: 104 bytes), some errors will occur during the read operation.
+So we correct the size of calc_buf/code_buf to mtd->oobsize.
+
+This series has been tested on Xilinx Zynq PicoZed FPGA board.
+
+Thanks for your time.
+
+YouChing Lin (2):
+  mtd: nand: ecc-bch: Fix the size of calc_buf/code_buf of the BCH
+  mtd: spinand: macronix: Add support for MX35LFxG24AD
+
+ drivers/mtd/nand/ecc-sw-bch.c   |  4 ++--
+ drivers/mtd/nand/spi/macronix.c | 27 +++++++++++++++++++++++++++
+ 2 files changed, 29 insertions(+), 2 deletions(-)
+
+-- 
+1.9.1
+
