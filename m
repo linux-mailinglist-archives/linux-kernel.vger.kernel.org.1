@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4812D5161
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:30:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 540E22D5163
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729386AbgLJD2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 22:28:55 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:34079 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729094AbgLJD2y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 22:28:54 -0500
-Received: by mail-oi1-f193.google.com with SMTP id s75so4256468oih.1;
-        Wed, 09 Dec 2020 19:28:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VsFgwAlbOj5WSzj8d8eKnjYyws8ulCoX8NrIvbo902E=;
-        b=rkPibgT06f+Ow39Xwh5s1T/E5sMjFscdiRKiL1KPTT+nHck5n3h6lUXgdCWpKJNrUV
-         fTWkyuKehOC8HgjK9XQAD9zp4/tcAx9ASH4T0BPA1fEuvEAEsknNlgfF/79Nn7zrf50f
-         IMOss0nnQLiXwHcdueJ31JxHUlerXjJlxoQmYpNOeTM0oF+hfG4EGeNXgxDa1gIoQrqY
-         2jsIKe8ksicreeA2+VtSb7a+FCKKEGyMitTSw+P5blojpzfYJwXmPzRG0nU0CED40xEY
-         8uJfI/cfvOC5FKwUssUKUTQiE2bIrxzhMBVCDwNGvBhe17sAzQE4XPyMyepTz42XX/cF
-         fGfQ==
-X-Gm-Message-State: AOAM530NmiwNc6ka1H58qlgldboNB6hNFaLPIcueNGPxWMLKCPzPhH4k
-        7vwH0Y6jwYLNDruuBZbbAg==
-X-Google-Smtp-Source: ABdhPJzIYJcMNqkzFHWlXQQe0wA8CLXvVPMlv4wo8VSFWydNWiyuaAIaFMUHku0a5ruylWjVJmHbjw==
-X-Received: by 2002:aca:809:: with SMTP id 9mr4148182oii.13.1607570894130;
-        Wed, 09 Dec 2020 19:28:14 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v92sm820519otb.75.2020.12.09.19.28.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 19:28:13 -0800 (PST)
-Received: (nullmailer pid 1596034 invoked by uid 1000);
-        Thu, 10 Dec 2020 03:28:12 -0000
-Date:   Wed, 9 Dec 2020 21:28:12 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Nicola Di Lieto <nicola.dilieto@gmail.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] pwm: pwm-gpio: Add DT bindings
-Message-ID: <20201210032812.GA1595986@robh.at.kernel.org>
-References: <20201205214616.e4one25o3oz5dhrp@einstein.dilieto.eu>
+        id S1729571AbgLJD3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:29:50 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:53849 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729094AbgLJD3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 22:29:50 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Crzsv5pwSz9sWR;
+        Thu, 10 Dec 2020 14:29:07 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607570947;
+        bh=d3yp0d/0ijFXQAuwF4vOEsf9q9gYN331bvla662P5TM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gwxm3bbIxQq2a6fJlFDVpCKWaPi7D8y8eVqSwssNsILhTHvQVuePrXo5w8Z9YFWXO
+         Pyc+7k0uzzpch4794kYhAWd4ZKsjB7jtDpxv2Fs+DSla7rnmWV4K0ba8dgocUf/6Ql
+         Rm0UtyrSl79ufaAlS2c+PGYDK4nGwrzz5zCt04Vi+GBkx3KNTiy3INv7AkH40T8R59
+         YbUx1WqvK07V/4fwvnTTrZ8mx6eHkxkJ4Qv6KgrqSIIM+NgB3qGbtqc9XWCAIxp9NJ
+         Vrk0cqn+WdcOvXMv+iRB20CLC3cox/4Gy4pvcNMAf2DSlQSS5tM1BXK66wOBS79pfM
+         RoQqJUfz7BfSg==
+Date:   Thu, 10 Dec 2020 14:29:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robherring2@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the devicetree tree
+Message-ID: <20201210142905.6c2be2fd@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201205214616.e4one25o3oz5dhrp@einstein.dilieto.eu>
+Content-Type: multipart/signed; boundary="Sig_/sizPNbhHi9TKWAFmdf6/l0S";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 05 Dec 2020 22:46:16 +0100, Nicola Di Lieto wrote:
-> Added Documentation/devicetree/bindings/pwm/pwm-gpio.yaml
-> 
-> Signed-off-by: Nicola Di Lieto <nicola.dilieto@gmail.com>
-> ---
->  .../devicetree/bindings/pwm/pwm-gpio.yaml          | 42 ++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-gpio.yaml
-> 
+--Sig_/sizPNbhHi9TKWAFmdf6/l0S
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Hi all,
+
+Commit
+
+  faf724c90798 ("Documentation: DT: binding documentation for regulator-pow=
+eroff")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/sizPNbhHi9TKWAFmdf6/l0S
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/RlgEACgkQAVBC80lX
+0Gx8hAf/VFmQ0+c4OCAJaFc2S7042LfPwJ1J4O3HtPK7yD6oVmfFWq9hkIwuAlKP
+k6VwOPAzA+iqzLqYeqMSfFNR3U9pZcyS1yW06J9MCXThgcgddMglUT7yaO+KS9AK
+Dm92hLvGfCkjGVK5As7R0WU2FAWW/iBawRk6u95LVs4qCUienzse0VrlybPeufcU
+wwhTfOl+2usu+OJ692vn8hNnsK9wXZ1N3CZMxGH8oFZUx6SbOlVzEsC0kekJ+pBW
+NIr/ZYMY41VGm7iv938VoXOJfsMt5KuHLOJ4NIizx4LO8HfCh7fXr59a0QeRhjeW
+jlcz4d2+Q9soedIhs36qnqi8Lq3Bzw==
+=wTUQ
+-----END PGP SIGNATURE-----
+
+--Sig_/sizPNbhHi9TKWAFmdf6/l0S--
