@@ -2,26 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB132D5FC5
+	by mail.lfdr.de (Postfix) with ESMTP id E93212D5FC6
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391414AbgLJOmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:42:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43498 "EHLO mail.kernel.org"
+        id S2391422AbgLJOmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:42:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390974AbgLJOf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:35:58 -0500
+        id S2390978AbgLJOgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:36:03 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <qcai@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 35/54] mm/swapfile: do not sleep with a spin lock held
-Date:   Thu, 10 Dec 2020 15:27:12 +0100
-Message-Id: <20201210142603.767045028@linuxfoundation.org>
+        stable@vger.kernel.org, Shisong Qin <qinshisong1205@gmail.com>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>
+Subject: [PATCH 5.4 36/54] speakup: Reject setting the speakup line discipline outside of speakup
+Date:   Thu, 10 Dec 2020 15:27:13 +0100
+Message-Id: <20201210142603.809322847@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
 References: <20201210142602.037095225@linuxfoundation.org>
@@ -33,53 +31,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <qcai@redhat.com>
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-commit b11a76b37a5aa7b07c3e3eeeaae20b25475bddd3 upstream.
+commit f0992098cadb4c9c6a00703b66cafe604e178fea upstream.
 
-We can't call kvfree() with a spin lock held, so defer it.  Fixes a
-might_sleep() runtime warning.
+Speakup exposing a line discipline allows userland to try to use it,
+while it is deemed to be useless, and thus uselessly exposes potential
+bugs. One of them is simply that in such a case if the line sends data,
+spk_ttyio_receive_buf2 is called and crashes since spk_ttyio_synth
+is NULL.
 
-Fixes: 873d7bcfd066 ("mm/swapfile.c: use kvzalloc for swap_info_struct allocation")
-Signed-off-by: Qian Cai <qcai@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201202151549.10350-1-qcai@redhat.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+This change restricts the use of the speakup line discipline to
+speakup drivers, thus avoiding such kind of issues altogether.
+
+Cc: stable@vger.kernel.org
+Reported-by: Shisong Qin <qinshisong1205@gmail.com>
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Tested-by: Shisong Qin <qinshisong1205@gmail.com>
+Link: https://lore.kernel.org/r/20201129193523.hm3f6n5xrn6fiyyc@function
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- mm/swapfile.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -2824,6 +2824,7 @@ late_initcall(max_swapfiles_check);
- static struct swap_info_struct *alloc_swap_info(void)
+---
+ drivers/staging/speakup/spk_ttyio.c |   37 ++++++++++++++++++++++--------------
+ 1 file changed, 23 insertions(+), 14 deletions(-)
+
+--- a/drivers/staging/speakup/spk_ttyio.c
++++ b/drivers/staging/speakup/spk_ttyio.c
+@@ -47,27 +47,20 @@ static int spk_ttyio_ldisc_open(struct t
  {
- 	struct swap_info_struct *p;
-+	struct swap_info_struct *defer = NULL;
- 	unsigned int type;
- 	int i;
+ 	struct spk_ldisc_data *ldisc_data;
  
-@@ -2852,7 +2853,7 @@ static struct swap_info_struct *alloc_sw
- 		smp_wmb();
- 		WRITE_ONCE(nr_swapfiles, nr_swapfiles + 1);
- 	} else {
--		kvfree(p);
-+		defer = p;
- 		p = swap_info[type];
- 		/*
- 		 * Do not memset this entry: a racing procfs swap_next()
-@@ -2865,6 +2866,7 @@ static struct swap_info_struct *alloc_sw
- 		plist_node_init(&p->avail_lists[i], 0);
- 	p->flags = SWP_USED;
- 	spin_unlock(&swap_lock);
-+	kvfree(defer);
- 	spin_lock_init(&p->lock);
- 	spin_lock_init(&p->cont_lock);
++	if (tty != speakup_tty)
++		/* Somebody tried to use this line discipline outside speakup */
++		return -ENODEV;
++
+ 	if (!tty->ops->write)
+ 		return -EOPNOTSUPP;
  
+-	mutex_lock(&speakup_tty_mutex);
+-	if (speakup_tty) {
+-		mutex_unlock(&speakup_tty_mutex);
+-		return -EBUSY;
+-	}
+-	speakup_tty = tty;
+-
+ 	ldisc_data = kmalloc(sizeof(struct spk_ldisc_data), GFP_KERNEL);
+-	if (!ldisc_data) {
+-		speakup_tty = NULL;
+-		mutex_unlock(&speakup_tty_mutex);
++	if (!ldisc_data)
+ 		return -ENOMEM;
+-	}
+ 
+ 	init_completion(&ldisc_data->completion);
+ 	ldisc_data->buf_free = true;
+-	speakup_tty->disc_data = ldisc_data;
+-	mutex_unlock(&speakup_tty_mutex);
++	tty->disc_data = ldisc_data;
+ 
+ 	return 0;
+ }
+@@ -189,9 +182,25 @@ static int spk_ttyio_initialise_ldisc(st
+ 
+ 	tty_unlock(tty);
+ 
++	mutex_lock(&speakup_tty_mutex);
++	speakup_tty = tty;
+ 	ret = tty_set_ldisc(tty, N_SPEAKUP);
+ 	if (ret)
+-		pr_err("speakup: Failed to set N_SPEAKUP on tty\n");
++		speakup_tty = NULL;
++	mutex_unlock(&speakup_tty_mutex);
++
++	if (!ret)
++		/* Success */
++		return 0;
++
++	pr_err("speakup: Failed to set N_SPEAKUP on tty\n");
++
++	tty_lock(tty);
++	if (tty->ops->close)
++		tty->ops->close(tty, NULL);
++	tty_unlock(tty);
++
++	tty_kclose(tty);
+ 
+ 	return ret;
+ }
 
 
