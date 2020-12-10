@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6884C2D5779
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA202D5788
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730911AbgLJJo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:44:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726475AbgLJJo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:44:26 -0500
-Date:   Thu, 10 Dec 2020 10:45:00 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607593426;
-        bh=tW8e+ZIMytQ67f0yQ5yA8t6EHe8cmb+Lh+QmxW6LBx8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M6/TTmEAydmbO5m1IjQqVv5WTsGFBBIl97FuFODGzM248Dw7oVpUk6nmSAWTU6tYP
-         NVSG/WaqVlDa7iE1wG48Q2CyVbSAgAcVpkbZ5GNI/iLMEcyOD1ZExlJm23OHd+9SxF
-         plDcqLf34ZbytFkCxi/KkkKgG9s8TXB+9y39JBh0=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hridya Valsaraju <hridya@google.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        kernel-team@android.com, surenb@google.com, john.stultz@linaro.org
-Subject: Re: [PATCH] dmabuf: Add the capability to expose DMA-BUF stats in
- sysfs
-Message-ID: <X9HuHFQntOEUNpst@kroah.com>
-References: <20201210044400.1080308-1-hridya@google.com>
+        id S1728762AbgLJJup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:50:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40210 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728103AbgLJJup (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 04:50:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607593759;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ANRQNvQxs5wiZtk/4xV+GI9Sns6KDSiXIeFUsgCF5nw=;
+        b=dYZhXkZa9c5QZS5fXz+uWU/+kZNCgZTjTXIlo6OtGrB4QKVlj/BXypm2p91L2zFWYy4uyW
+        GRBIGOoM45cx+omd+GUZNL28V7YWE7cTmIq00jOOuxwkhTJFsxoWKIoB5C5RqIM7WIF8/n
+        MsE8s2nP+a4bc+Vc3dQLbzS0TJpf+Eg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-412-lCu6pvXdM4Wj2oM-EJz8lg-1; Thu, 10 Dec 2020 04:49:15 -0500
+X-MC-Unique: lCu6pvXdM4Wj2oM-EJz8lg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7B66AFA89;
+        Thu, 10 Dec 2020 09:49:12 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A4D55B6A2;
+        Thu, 10 Dec 2020 09:49:08 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200916004927.64276-1-eric.snowberg@oracle.com>
+References: <20200916004927.64276-1-eric.snowberg@oracle.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     dhowells@redhat.com, dwmw2@infradead.org,
+        jarkko.sakkinen@linux.intel.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, jmorris@namei.org, serge@hallyn.com,
+        nayna@linux.ibm.com, zohar@linux.ibm.com, erichte@linux.ibm.com,
+        mpe@ellerman.id.au, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210044400.1080308-1-hridya@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1360577.1607593748.1@warthog.procyon.org.uk>
+Date:   Thu, 10 Dec 2020 09:49:08 +0000
+Message-ID: <1360578.1607593748@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 08:43:57PM -0800, Hridya Valsaraju wrote:
-> This patch allows statistics to be enabled for each DMA-BUF in
-> sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
-> 
-> The following stats will be exposed by the interface:
-> 
-> /sys/kernel/dmabuf/<inode_number>/exporter_name
-> /sys/kernel/dmabuf/<inode_number>/size
-> /sys/kernel/dmabuf/<inode_number>/dev_map_info
-> 
-> The inode_number is unique for each DMA-BUF and was added earlier [1]
-> in order to allow userspace to track DMA-BUF usage across different
-> processes.
-> 
-> Currently, this information is exposed in
-> /sys/kernel/debug/dma_buf/bufinfo.
-> However, since debugfs is considered unsafe to be mounted in production,
-> it is being duplicated in sysfs.
-> 
-> This information is intended to help with root-causing
-> low-memory kills and the debugging/analysis of other memory-related issues.
-> 
-> It will also be used to derive DMA-BUF
-> per-exporter stats and per-device usage stats for Android Bug reports.
-> 
-> [1]: https://lore.kernel.org/patchwork/patch/1088791/
-> 
-> Signed-off-by: Hridya Valsaraju <hridya@google.com>
+Eric Snowberg <eric.snowberg@oracle.com> wrote:
 
-Thanks for adding all of this, nice work!
+> Add support for EFI_CERT_X509_GUID dbx entries. When a EFI_CERT_X509_GUID
+> is found, it is added as an asymmetrical key to the .blacklist keyring.
+> Anytime the .platform keyring is used, the keys in the .blacklist keyring
+> are referenced, if a matching key is found, the key will be rejected.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Ummm...  Why this way and not as a blacklist key which takes up less space?
+I'm guessing that you're using the key chain matching logic.  We really only
+need to blacklist the key IDs.
+
+Also, what should happen if a revocation cert rejected by the blacklist?
+
+> +int mark_key_revocationlisted(const char *data, size_t size)
+
+Hmmm...  The name looks wrong, but I can see the potential issue that kernel
+keys can actually be marked revoked as a separate concept.  How about
+add_key_to_revocation_list() and is_key_on_revocation_list().
+
+David
+
