@@ -2,100 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269682D581E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9782B2D582F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:28:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730417AbgLJKUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:20:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726078AbgLJKUa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:20:30 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135FFC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 02:19:50 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id 81so4902203ioc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 02:19:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I7cheIkDEebliEnqleliGM65RmyLAKIHcPYFYba+v48=;
-        b=kqRXushoFGjCoC3WlNBHCOqHTNHk2ZJmXoEOI7gIaq6FMfFUuCMO31ttku/zyXBEaB
-         5FZjPBMtIBucOIJXNvUN5cS0pjtWdOjqMmOO4ddDlirOqlBAwPYrbXLporW8lbq4R/gE
-         NcZe9LG5LiahywfcmMqoJwbcmq7mypE8+/LZ4A4IibAD3rb0jbskEtVI1U7O2FpowfNl
-         K43VQH0lAl3M4Q4HyIJtXP8aK6LXtNs5FTMVPTmhSonN4IKBNKuBY4SFCfXVaFqH5PrD
-         kPf7MXvaaO37W20FXVx7izW68jq81PRwRc9R5QqDrzfDZv8ZFXW+RPgkg+FmdP6moR9D
-         YhhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I7cheIkDEebliEnqleliGM65RmyLAKIHcPYFYba+v48=;
-        b=rCBI5tN/bRU4zcenHfy4ivtRdy0WS0AnADAUNQExPdPDeG03+0xqfqtig5AP9PUPTH
-         VWWPMViE4AHxKPJKGzZYlS5axnnaN7ouA/UMZzPz66MpsSQVr30tkPc4hcDeKPAxdZBN
-         Ca7y7xeHbY0So7Gj9hlSPn6+xZNUqLQn+Vy9mGdMPXef5MeZyVLYpENeLu05QICevAAu
-         lQxX3Xf7dmYTOIw9mnU0HwkqhX3Fo5bI5+m9bKfdmDLgPbK5+CqMB7AD22jYbLehYO/N
-         rlinzLNGg3RcgtDh1gr/PWOjCQH97FvLXzdIc8H9d8askLgSwvX91MXirpXXXXbT75T/
-         /Jbw==
-X-Gm-Message-State: AOAM531YehCMDJFL18Y+DcyKHgvt4xYFABZwfuuMgQRmMzmAlGlxMhg+
-        frJWSIpdW6nxavIKnSHd4ZbOM77TBvqr/JaLHR3xrA==
-X-Google-Smtp-Source: ABdhPJw1NBwZYJbQunI5QZ6uWeX/CNfx0OulhPPNAe5MkJHW44D7RHdm/OGjHMWUMBEDUDgVBOn1JsiUKC+IkVK4ZgM=
-X-Received: by 2002:a6b:d61a:: with SMTP id w26mr7839769ioa.117.1607595588821;
- Thu, 10 Dec 2020 02:19:48 -0800 (PST)
+        id S1727190AbgLJK1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:27:33 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:53924 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725988AbgLJK1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 05:27:17 -0500
+Received: from zn.tnic (p200300ec2f0d4100a171b3ea1c390962.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4100:a171:b3ea:1c39:962])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3452C1EC054E;
+        Thu, 10 Dec 2020 11:26:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607595991;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=vf9Zlp+3Kfqw0T186f/Eo5AjlBZAfwUY/WJoVr5Mbc4=;
+        b=mjAsE24CIP5fp48Ydf7wK7bYRSJrzEf8vLy4shcWTaDTplyutx1ULcvZbGtUZiOISY6HZ3
+        tkV41ZTEk4229AdukjxIPH4g8fJEQ3vjW70Px70ibOpIeLJTISqkkOGsAkb9l4rr+cOQ4O
+        Jzrc+S8FEU5bYn8i66TAIhq59O81nJY=
+Date:   Thu, 10 Dec 2020 11:26:25 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Xiaochen Shen <xiaochen.shen@intel.com>
+Cc:     linux-tip-commits@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [tip: x86/cache] x86/resctrl: Fix incorrect local bandwidth when
+ mba_sc is enabled
+Message-ID: <20201210102625.GA26529@zn.tnic>
+References: <1607063279-19437-1-git-send-email-xiaochen.shen@intel.com>
+ <160754081861.3364.12382697409765236626.tip-bot2@tip-bot2>
+ <20201209222328.GA20710@zn.tnic>
+ <343e2fc7-6f64-d1b7-2ea1-cd422596f5be@intel.com>
 MIME-Version: 1.0
-References: <1607592918-14356-1-git-send-email-yejune.deng@gmail.com>
-In-Reply-To: <1607592918-14356-1-git-send-email-yejune.deng@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 10 Dec 2020 11:19:36 +0100
-Message-ID: <CANn89iKW4cLMssB2zi8kvikddVHMXfQLDr9Gkg768Ou3H5VwiA@mail.gmail.com>
-Subject: Re: [PATCH] net: core: fix msleep() is not accurate
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <343e2fc7-6f64-d1b7-2ea1-cd422596f5be@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 10:35 AM Yejune Deng <yejune.deng@gmail.com> wrote:
->
-> See Documentation/timers/timers-howto.rst, msleep() is not
-> for (1ms - 20ms), There is a more advanced API is used.
->
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> ---
->  net/core/dev.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index d33099f..6e83ee03 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -6726,9 +6726,9 @@ void napi_disable(struct napi_struct *n)
->         set_bit(NAPI_STATE_DISABLE, &n->state);
->
->         while (test_and_set_bit(NAPI_STATE_SCHED, &n->state))
-> -               msleep(1);
-> +               fsleep(1000);
->         while (test_and_set_bit(NAPI_STATE_NPSVC, &n->state))
-> -               msleep(1);
-> +               fsleep(1000);
->
+On Thu, Dec 10, 2020 at 12:45:11PM +0800, Xiaochen Shen wrote:
+> Thank you for clarifying this issue. It is not a 0-DAY CI issue.
 
-I would prefer explicit usleep_range().
+Which begs the question: this patch should be Cc: stable and should go
+in now, shouldn't it?
 
-fsleep() is not common in the kernel, I had to go to its definition.
+Because then the first submission applies cleanly ontop of
+tip:x86/urgent.
 
-I would argue that we should  use usleep_range(10, 200)  to have an
-opportunity to spend less time in napi_disable() in some cases.
+I mean, it is fixing only reporting but that reporting is kinda waaay
+off.
+
+Hmmm?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
