@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D88F2D5E52
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A9B2D5E2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391649AbgLJOrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:47:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45428 "EHLO mail.kernel.org"
+        id S2403761AbgLJOnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:43:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391182AbgLJOi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:38:59 -0500
+        id S1729844AbgLJOgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:36:20 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Menglong Dong <dong.menglong@zte.com.cn>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Wise <pabs3@bonedaddy.net>,
-        Neil Horman <nhorman@tuxdriver.com>,
+        stable@vger.kernel.org, Greg KH <greg@kroah.com>,
+        Kees Cook <keescook@chromium.org>, Willy Tarreau <w@1wt.eu>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Jakub Wilk <jwilk@jwilk.net>
-Subject: [PATCH 5.9 52/75] coredump: fix core_pattern parse error
-Date:   Thu, 10 Dec 2020 15:27:17 +0100
-Message-Id: <20201210142608.627125476@linuxfoundation.org>
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 42/54] lib/syscall: fix syscall registers retrieval on 32-bit platforms
+Date:   Thu, 10 Dec 2020 15:27:19 +0100
+Message-Id: <20201210142604.106487872@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
-References: <20201210142606.074509102@linuxfoundation.org>
+In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
+References: <20201210142602.037095225@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -35,47 +34,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+From: Willy Tarreau <w@1wt.eu>
 
-commit 2bf509d96d84c3336d08375e8af34d1b85ee71c8 upstream.
+commit 4f134b89a24b965991e7c345b9a4591821f7c2a6 upstream.
 
-'format_corename()' will splite 'core_pattern' on spaces when it is in
-pipe mode, and take helper_argv[0] as the path to usermode executable.
-It works fine in most cases.
+Lilith >_> and Claudio Bozzato of Cisco Talos security team reported
+that collect_syscall() improperly casts the syscall registers to 64-bit
+values leaking the uninitialized last 24 bytes on 32-bit platforms, that
+are visible in /proc/self/syscall.
 
-However, if there is a space between '|' and '/file/path', such as
-'| /usr/lib/systemd/systemd-coredump %P %u %g', then helper_argv[0] will
-be parsed as '', and users will get a 'Core dump to | disabled'.
+The cause is that info->data.args are u64 while syscall_get_arguments()
+uses longs, as hinted by the bogus pointer cast in the function.
 
-It is not friendly to users, as the pattern above was valid previously.
-Fix this by ignoring the spaces between '|' and '/file/path'.
+Let's just proceed like the other call places, by retrieving the
+registers into an array of longs before assigning them to the caller's
+array.  This was successfully tested on x86_64, i386 and ppc32.
 
-Fixes: 315c69261dd3 ("coredump: split pipe command whitespace before expanding template")
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Paul Wise <pabs3@bonedaddy.net>
-Cc: Jakub Wilk <jwilk@jwilk.net> [https://bugs.debian.org/924398]
-Cc: Neil Horman <nhorman@tuxdriver.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/5fb62870.1c69fb81.8ef5d.af76@mx.google.com
+Reference: CVE-2020-28588, TALOS-2020-1211
+Fixes: 631b7abacd02 ("ptrace: Remove maxargs from task_current_syscall()")
+Cc: Greg KH <greg@kroah.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Tested-by: Michael Ellerman <mpe@ellerman.id.au> (ppc32)
+Signed-off-by: Willy Tarreau <w@1wt.eu>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/coredump.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ lib/syscall.c |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -229,7 +229,8 @@ static int format_corename(struct core_n
- 		 */
- 		if (ispipe) {
- 			if (isspace(*pat_ptr)) {
--				was_space = true;
-+				if (cn->used != 0)
-+					was_space = true;
- 				pat_ptr++;
- 				continue;
- 			} else if (was_space) {
+--- a/lib/syscall.c
++++ b/lib/syscall.c
+@@ -7,6 +7,7 @@
+ 
+ static int collect_syscall(struct task_struct *target, struct syscall_info *info)
+ {
++	unsigned long args[6] = { };
+ 	struct pt_regs *regs;
+ 
+ 	if (!try_get_task_stack(target)) {
+@@ -27,8 +28,14 @@ static int collect_syscall(struct task_s
+ 
+ 	info->data.nr = syscall_get_nr(target, regs);
+ 	if (info->data.nr != -1L)
+-		syscall_get_arguments(target, regs,
+-				      (unsigned long *)&info->data.args[0]);
++		syscall_get_arguments(target, regs, args);
++
++	info->data.args[0] = args[0];
++	info->data.args[1] = args[1];
++	info->data.args[2] = args[2];
++	info->data.args[3] = args[3];
++	info->data.args[4] = args[4];
++	info->data.args[5] = args[5];
+ 
+ 	put_task_stack(target);
+ 	return 0;
 
 
