@@ -2,91 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283722D69BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14952D69C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404856AbgLJV0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 16:26:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404835AbgLJVZy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 16:25:54 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8765C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:25:13 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id w5so4671296pgj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:25:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=vThmtEMe7O46c9tQqEWEVukUH1ChbZTC/moKCKUwtoE=;
-        b=Mobm9meQeooIgSZlSVO4S32L1xZxAJLuDvBbtjdsL2XrRTA/XTO+EyDAVvG7/tQZPh
-         Q9k1UtA+IPTVZqcGwj+5sxj5e+xuHNtmdgUfzkV9bxBzXtsYFkQ7q+1JZxc525hz2l/P
-         RSphddRZ+ooFucxnsy74rJy9v+71iGgUU7pMM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=vThmtEMe7O46c9tQqEWEVukUH1ChbZTC/moKCKUwtoE=;
-        b=p40OS2rli7Bussv/zdnETEdmfjZoFK5LPXerwtKUSDdXvH4Jv18JtpxBr+uCNMYvOR
-         4+zWBvpA+KwgwPjcRVfQiH+gU4kJRR+O4+EhsbtYSL/+oqhCcyGoGUCX1stXfgJpczhI
-         5d1mV36LBxrEbBsPQUh0djjYQzkfUxQUMU73WZwiOs/1PYsXazADiJlfO1XV5WKk/Aoa
-         dGS6QhXCg9cfqcpRh+WvTsenN7fMIDlmFiy+yPU2OWuPO86KexpbZufF1Im5gNHgyJbW
-         EY+RJGHzJJKiCpXRNTCZtJlxzdGspjZWiaIkXz+dZF47zk9yvYyFVMdv7xwRaGLl7BC1
-         Qqgg==
-X-Gm-Message-State: AOAM530FHcxZ3KJshNjeadLC790JTlPdPcFx5WNAY7Mg8qnORHA4cCRM
-        KUAcr+PPYq3njiRVitEaDztzUw==
-X-Google-Smtp-Source: ABdhPJzz2YTKP+M/SVJWkhcA3Ivcn1qhxENS+THxgIHuuHnX7c41Vd1LeCKyV++ewzAy6DYgtc32Lw==
-X-Received: by 2002:a17:90b:3698:: with SMTP id mj24mr9434503pjb.149.1607635513275;
-        Thu, 10 Dec 2020 13:25:13 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id e13sm7863703pgh.54.2020.12.10.13.25.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 13:25:12 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=V2E6W_1PtqBy6Fo_Cxp6kygpeitEkaMG5bMRpv7gO53w@mail.gmail.com>
-References: <20201210125709.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid> <160763420585.1580929.9586717907613124743@swboyd.mtv.corp.google.com> <CAD=FV=V2E6W_1PtqBy6Fo_Cxp6kygpeitEkaMG5bMRpv7gO53w@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-msm: Warn about overclocking SD/MMC
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Taniya Das <tdas@codeaurora.org>,
+        id S2404872AbgLJV04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 16:26:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393978AbgLJV0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 16:26:31 -0500
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Date:   Thu, 10 Dec 2020 13:25:11 -0800
-Message-ID: <160763551118.1580929.6120205249234917665@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-rtc@vger.kernel.org
+Cc:     Iskren Chernev <iskren.chernev@gmail.com>,
+        Matheus Castello <matheus@castello.eng.br>,
+        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
+        Angus Ainslie <angus@akkea.ca>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 02/18] ARM: dts: exynos: correct fuel gauge interrupt trigger level on P4 Note family
+Date:   Thu, 10 Dec 2020 22:25:18 +0100
+Message-Id: <20201210212534.216197-2-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201210212534.216197-1-krzk@kernel.org>
+References: <20201210212534.216197-1-krzk@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2020-12-10 13:20:03)
-> On Thu, Dec 10, 2020 at 1:03 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> >
-> > Can we use dev_warn?
->=20
-> What's here matches other prints including other ones in the same
-> function and in much of the MMC subsystem.  mmc_hostname() shows
-> "mmc1"
->=20
-> > dev_warn(mmc_dev(mmc)
-> > dev_warn(&msm_host->pdev->dev
->=20
-> This show "sdhci_msm 7c4000.sdhci"
->=20
-> I'm going to keep with tradition and keep using mmc_hostname().  In
-> some parts of this file they use both (a dev_warn that also includes
-> the mmc_hostname()) but that feels overkill.
+The Maxim fuel gauge datasheets describe the interrupt line as active
+low with a requirement of acknowledge from the CPU.  The falling edge
+interrupt will mostly work but it's not correct.
 
-Ok. This driver should be cleaned up I suppose.
+Fixes: f48b5050c301 ("ARM: dts: exynos: add Samsung's Exynos4412-based P4 Note boards")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ arch/arm/boot/dts/exynos4412-p4note.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/exynos4412-p4note.dtsi b/arch/arm/boot/dts/exynos4412-p4note.dtsi
+index b2f9d5448a18..5fe371543cbb 100644
+--- a/arch/arm/boot/dts/exynos4412-p4note.dtsi
++++ b/arch/arm/boot/dts/exynos4412-p4note.dtsi
+@@ -146,7 +146,7 @@ fuel-gauge@36 {
+ 			pinctrl-0 = <&fuel_alert_irq>;
+ 			pinctrl-names = "default";
+ 			interrupt-parent = <&gpx2>;
+-			interrupts = <3 IRQ_TYPE_EDGE_FALLING>;
++			interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
+ 			maxim,rsns-microohm = <10000>;
+ 			maxim,over-heat-temp = <600>;
+ 			maxim,over-volt = <4300>;
+-- 
+2.25.1
+
