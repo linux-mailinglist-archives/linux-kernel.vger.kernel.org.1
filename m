@@ -2,121 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77172D661C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:15:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B272D6624
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393333AbgLJTOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:14:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48542 "EHLO
+        id S2393275AbgLJTQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:16:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393309AbgLJTNU (ORCPT
+        with ESMTP id S2388801AbgLJTQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:13:20 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6727DC0617A6;
-        Thu, 10 Dec 2020 11:12:35 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id w1so4247852ejf.11;
-        Thu, 10 Dec 2020 11:12:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RTDvHTEKqVC+mjz0XehoDoae3BLNFHK2pu91mZg+aGw=;
-        b=NjJLG16LJsoXr1mpyosfDeS73eAn/zxzt1vzc2n50zH88d2Py/RvO144+T+g9gWnjV
-         S/YOhd5aRJs+E8zlkvImUxGjvHxlqc5OJ8vWCCDcCZFQ7HGtTO241PHIvSdNMpG4nKC6
-         0ZVvi6XoIJD713uO1rpa5SXh0bX+cTA33BU7wnDRcbq7FNlZip0DNgl22FmgN1blScBW
-         DKpraG1uMZD+Za2BhU4GExY6I9gEO8vwMavcFv7YlQZbnx/XGIV/in1IK4Hv5c6i4Dm3
-         ZAdvY2P6+R4fiJqbzi5gI+SPdjT0ikgVJ5owRXIUsxRdsKRZBo/X9x8jD/kWq3jATgm1
-         icCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RTDvHTEKqVC+mjz0XehoDoae3BLNFHK2pu91mZg+aGw=;
-        b=Dsw6o4p7L+Uj6KtO2ro7VFejtvIlQIcrJZBmd5CI6QAZTA2FgsteSg6zniJgtEbwqT
-         gwsthr3sXiUDJ7tGycA9Qqna7eLfWYtka9tRz4RPOemVHynAti6YqYM0SdmgIgL72izx
-         7QuQGKuAcjV2J7ed5uEPb2iRvoZHROCCRU2hXRxQKUIQmNqeQvOsppw6DCxw8XdJx17X
-         G9pZwOza57FHx+vfaYRVAWd/lmJhiXr4qRV3QOsII99ROAiqAZ6gxU+E42W4kDzzCT9h
-         B4OyLAlOEn+tRjk6rbzGqJuFzV85Cn9r/eUprpcH1r2oZcctZLGixs02vzYIWNDyRzNQ
-         loSw==
-X-Gm-Message-State: AOAM533e50AJjOP5peDE1l5w8/AlsDI0yMjnQ2v7moHSNFvFZeMhJfGj
-        KjWil460643DxOjWIQauPEaHyOI4/CWSDBdpAL4=
-X-Google-Smtp-Source: ABdhPJywr4rJuVSY3Z6ENZ+k0JTkQOilCOq4TnF75kgf6EqiLSKQAZ+GcDwt2qyuXOnj0ze1LzTkCJ/VA2ieytp9hXc=
-X-Received: by 2002:a17:906:24c3:: with SMTP id f3mr7594468ejb.238.1607627554147;
- Thu, 10 Dec 2020 11:12:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201202182725.265020-1-shy828301@gmail.com> <20201202182725.265020-6-shy828301@gmail.com>
- <20201210153356.GE264602@cmpxchg.org>
-In-Reply-To: <20201210153356.GE264602@cmpxchg.org>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 10 Dec 2020 11:12:22 -0800
-Message-ID: <CAHbLzkoSSQ_4aY1cNmJGZyL+r6yO3L41KWHi8ZQnDhFTNi-v_Q@mail.gmail.com>
-Subject: Re: [PATCH 5/9] mm: memcontrol: add per memcg shrinker nr_deferred
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 10 Dec 2020 14:16:17 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A489BC0613CF;
+        Thu, 10 Dec 2020 11:15:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6gYdNY4KmlI7o0rmXvmnzYUydPhCNoOaXJ5yQF2TiXE=; b=3BmTfGNZ7A0kuKgTB/7/2QJHnP
+        bxLOO2F/ZzUuuwcZSJDkVK/bIODVhe2I6Cs8eX5RDTCUGpxF+I0INHzWJ2LhzB6Q/YUzzTZKVLOIp
+        wWlXkxDac6v6XbS3J9P44Pylg+tRPhjcV94Ib+FkPYVI8zdqXc1EYRcLXIQe/i/grKi4uSFyNCFBl
+        RYzN5/Y4IwO1ozY/tkG5c3pwzV1a8dfaY5+/rmZCuzmYQKVPGFsEtDVF/cDasQWg6J8ggV9pwQEu8
+        7ZSmVr4natBmb+yi7Ccn2IMABl/jP9r125CYd6vWbeEBOnHfktfW09PrGCdP22+B8bVPlGnrbaITA
+        XwDQuYKA==;
+Received: from 54-240-197-227.amazon.com ([54.240.197.227] helo=u3832b3a9db3152.ant.amazon.com)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knRPL-0005s9-Ro; Thu, 10 Dec 2020 19:15:20 +0000
+Message-ID: <6d85013b195373211865bbf5eff9c5d973f74a57.camel@infradead.org>
+Subject: Re: [RFC PATCH 1/1] platform-msi: Add platform check for subdevice
+ irq domain
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     tglx@linutronix.de, ashok.raj@intel.com, kevin.tian@intel.com,
+        dave.jiang@intel.com, megha.dey@intel.com,
+        alex.williamson@redhat.com, bhelgaas@google.com,
+        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
+        eric.auger@redhat.com, jacob.jun.pan@intel.com, jgg@mellanox.com,
+        jing.lin@intel.com, kvm@vger.kernel.org, kwankhede@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
+        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
+        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
+        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
+        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com
+Date:   Thu, 10 Dec 2020 19:15:15 +0000
+In-Reply-To: <20201210185738.GA49060@bjorn-Precision-5520>
+References: <20201210185738.GA49060@bjorn-Precision-5520>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-rsp7EJyq8i4QUD5Bhnqf"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 7:36 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Wed, Dec 02, 2020 at 10:27:21AM -0800, Yang Shi wrote:
-> > @@ -504,6 +577,34 @@ int memcg_expand_shrinker_maps(int new_id)
-> >       return ret;
-> >  }
-> >
-> > +int memcg_expand_shrinker_deferred(int new_id)
-> > +{
-> > +     int size, old_size, ret = 0;
-> > +     struct mem_cgroup *memcg;
-> > +
-> > +     size = (new_id + 1) * sizeof(atomic_long_t);
-> > +     old_size = memcg_shrinker_deferred_size;
-> > +     if (size <= old_size)
-> > +             return 0;
-> > +
-> > +     mutex_lock(&memcg_shrinker_mutex);
->
-> The locking is somewhat confusing. I was wondering why we first read
-> memcg_shrinker_deferred_size "locklessly", then change it while
-> holding the &memcg_shrinker_mutex.
->
-> memcg_shrinker_deferred_size only changes under shrinker_rwsem(write),
-> correct? This should be documented in a comment, IMO.
 
-Yes, it is correct.
+--=-rsp7EJyq8i4QUD5Bhnqf
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->
-> memcg_shrinker_mutex looks superfluous then. The memcg allocation path
-> is the read-side of memcg_shrinker_deferred_size, and so simply needs
-> to take shrinker_rwsem(read) to lock out shrinker (de)registration.
+On Thu, 2020-12-10 at 12:57 -0600, Bjorn Helgaas wrote:
+> What is the point of a function called probably_on_bare_metal()?
+> *Probably*?  The caller can't really do anything with the fact that
+> we're not 100% sure this gives the correct answer.  Just call it
+> "on_bare_metal()" or something and accept the fact that it might be
+> wrong sometimes.
 
-I see you point. Yes, it seems shrinker_{maps|deferred} allocation
-could be synchronized with shrinker registration by shrinker_rwsem.
+Acknowledging that it's a heuristic is OK, but we should certainly be
+clear about whether it has false positives, false negatives, or both.
 
-memcg_shrinker_mutex is just renamed from memcg_shrinker_map_mutex
-which was introduced by shrinker_maps patchset. I'm not quite sure why
-this mutex was introduced at the first place, I guess the main purpose
-is to *not* exacerbate the contention of shrinker_rwsem?
+--=-rsp7EJyq8i4QUD5Bhnqf
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-If that contention is not a concern, we could remove that dedicated mutex.
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
+MjEwMTkxNTE1WjAvBgkqhkiG9w0BCQQxIgQga+iWmil0P/88SGqKwqK0T9Q+zf2awoXZ0oPlv1SD
+FlEwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAGB7emizXAZFTmDtDS2h2sXe2ykgReylPz3g47JF+bC3uaLVH1N9cjZjjmYtvBiy
+4p09Vs5HOXTPVYzR63Jb9xQT/L/Fprf00yNWCKJEJiUTE1JsvssWKDx+h+nh4MTxCwdVnnh8B06I
+bxdYIJuGqjjA+nZMlHOE/OIaFISzh6JIwfG+zrdvCyWNvR/jXZHNXDmHLME4njhchfrDSHE1u+QO
+mgz6Xr/r0nHXugsJt8voKDUTJel04oS6DGI032LGyH0zjlzF/aG0SvpqBMOjjtgMfccv3Xmkdcvc
+cWON2LT1apiBHd8xz8DdtNf6D1DkNz+TKtmGypYBSlFvrxauvOkAAAAAAAA=
 
->
-> Also, isn't memcg_shrinker_deferred_size just shrinker_nr_max? And
 
-No, it is variable. It is nr * sizeof(atomit_long_t). The nr is the
-current last shrinker ID. If a new shrinker is registered, the nr may
-grow.
+--=-rsp7EJyq8i4QUD5Bhnqf--
 
-> memcg_expand_shrinker_deferred() is only called when size >= old_size
-> in the first place (because id >= shrinker_nr_max)?
-
-Yes.
