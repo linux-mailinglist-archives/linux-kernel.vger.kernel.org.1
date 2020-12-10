@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510972D6093
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:56:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFA42D604A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391162AbgLJOif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:38:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42370 "EHLO mail.kernel.org"
+        id S2391984AbgLJPqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:46:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390581AbgLJOeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:34:36 -0500
+        id S2391227AbgLJOjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:39:39 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jian-Hong Pan <jhp@endlessos.org>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 15/54] ALSA: hda/realtek: Enable headset of ASUS UX482EG & B9400CEA with ALC294
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH 5.9 27/75] gfs2: Fix deadlock between gfs2_{create_inode,inode_lookup} and delete_work_func
 Date:   Thu, 10 Dec 2020 15:26:52 +0100
-Message-Id: <20201210142602.790480294@linuxfoundation.org>
+Message-Id: <20201210142607.388481254@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,34 +31,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian-Hong Pan <jhp@endlessos.org>
+From: Andreas Gruenbacher <agruenba@redhat.com>
 
-commit eeacd80fcb29b769ea915cd06b7dd35e0bf0bc25 upstream.
+commit dd0ecf544125639e54056d851e4887dbb94b6d2f upstream.
 
-Some laptops like ASUS UX482EG & B9400CEA's headset audio does not work
-until the quirk ALC294_FIXUP_ASUS_HPE is applied.
+In gfs2_create_inode and gfs2_inode_lookup, make sure to cancel any pending
+delete work before taking the inode glock.  Otherwise, gfs2_cancel_delete_work
+may block waiting for delete_work_func to complete, and delete_work_func may
+block trying to acquire the inode glock in gfs2_inode_lookup.
 
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201124092024.179540-1-jhp@endlessos.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reported-by: Alexander Aring <aahringo@redhat.com>
+Fixes: a0e3cc65fa29 ("gfs2: Turn gl_delete into a delayed work")
+Cc: stable@vger.kernel.org # v5.8+
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    3 +++
- 1 file changed, 3 insertions(+)
+ fs/gfs2/inode.c |   21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8588,6 +8588,9 @@ static const struct snd_hda_pin_quirk al
- 	SND_HDA_PIN_QUIRK(0x10ec0293, 0x1028, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		ALC292_STANDARD_PINS,
- 		{0x13, 0x90a60140}),
-+	SND_HDA_PIN_QUIRK(0x10ec0294, 0x1043, "ASUS", ALC294_FIXUP_ASUS_HPE,
-+		{0x17, 0x90170110},
-+		{0x21, 0x04211020}),
- 	SND_HDA_PIN_QUIRK(0x10ec0294, 0x1043, "ASUS", ALC294_FIXUP_ASUS_MIC,
- 		{0x14, 0x90170110},
- 		{0x1b, 0x90a70130},
+--- a/fs/gfs2/inode.c
++++ b/fs/gfs2/inode.c
+@@ -150,6 +150,8 @@ struct inode *gfs2_inode_lookup(struct s
+ 		error = gfs2_glock_get(sdp, no_addr, &gfs2_iopen_glops, CREATE, &io_gl);
+ 		if (unlikely(error))
+ 			goto fail;
++		if (blktype != GFS2_BLKST_UNLINKED)
++			gfs2_cancel_delete_work(io_gl);
+ 
+ 		if (type == DT_UNKNOWN || blktype != GFS2_BLKST_FREE) {
+ 			/*
+@@ -180,8 +182,6 @@ struct inode *gfs2_inode_lookup(struct s
+ 		error = gfs2_glock_nq_init(io_gl, LM_ST_SHARED, GL_EXACT, &ip->i_iopen_gh);
+ 		if (unlikely(error))
+ 			goto fail;
+-		if (blktype != GFS2_BLKST_UNLINKED)
+-			gfs2_cancel_delete_work(ip->i_iopen_gh.gh_gl);
+ 		glock_set_object(ip->i_iopen_gh.gh_gl, ip);
+ 		gfs2_glock_put(io_gl);
+ 		io_gl = NULL;
+@@ -725,13 +725,19 @@ static int gfs2_create_inode(struct inod
+ 	flush_delayed_work(&ip->i_gl->gl_work);
+ 	glock_set_object(ip->i_gl, ip);
+ 
+-	error = gfs2_glock_nq_init(ip->i_gl, LM_ST_EXCLUSIVE, GL_SKIP, ghs + 1);
++	error = gfs2_glock_get(sdp, ip->i_no_addr, &gfs2_iopen_glops, CREATE, &io_gl);
+ 	if (error)
+ 		goto fail_free_inode;
++	gfs2_cancel_delete_work(io_gl);
++	glock_set_object(io_gl, ip);
++
++	error = gfs2_glock_nq_init(ip->i_gl, LM_ST_EXCLUSIVE, GL_SKIP, ghs + 1);
++	if (error)
++		goto fail_gunlock2;
+ 
+ 	error = gfs2_trans_begin(sdp, blocks, 0);
+ 	if (error)
+-		goto fail_free_inode;
++		goto fail_gunlock2;
+ 
+ 	if (blocks > 1) {
+ 		ip->i_eattr = ip->i_no_addr + 1;
+@@ -740,18 +746,12 @@ static int gfs2_create_inode(struct inod
+ 	init_dinode(dip, ip, symname);
+ 	gfs2_trans_end(sdp);
+ 
+-	error = gfs2_glock_get(sdp, ip->i_no_addr, &gfs2_iopen_glops, CREATE, &io_gl);
+-	if (error)
+-		goto fail_free_inode;
+-
+ 	BUG_ON(test_and_set_bit(GLF_INODE_CREATING, &io_gl->gl_flags));
+ 
+ 	error = gfs2_glock_nq_init(io_gl, LM_ST_SHARED, GL_EXACT, &ip->i_iopen_gh);
+ 	if (error)
+ 		goto fail_gunlock2;
+ 
+-	gfs2_cancel_delete_work(ip->i_iopen_gh.gh_gl);
+-	glock_set_object(ip->i_iopen_gh.gh_gl, ip);
+ 	gfs2_set_iop(inode);
+ 	insert_inode_hash(inode);
+ 
+@@ -803,6 +803,7 @@ fail_gunlock3:
+ 	gfs2_glock_dq_uninit(&ip->i_iopen_gh);
+ fail_gunlock2:
+ 	clear_bit(GLF_INODE_CREATING, &io_gl->gl_flags);
++	glock_clear_object(io_gl, ip);
+ 	gfs2_glock_put(io_gl);
+ fail_free_inode:
+ 	if (ip->i_gl) {
 
 
