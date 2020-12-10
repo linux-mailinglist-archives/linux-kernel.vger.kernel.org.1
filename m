@@ -2,108 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75ED2D66D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C52022D674E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393536AbgLJTmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:42:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393423AbgLJTmL (ORCPT
+        id S2393634AbgLJTsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:48:13 -0500
+Received: from bmail1.ministro.hu ([5.249.150.236]:42608 "EHLO
+        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390148AbgLJTrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:42:11 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4129DC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:41:31 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id q25so6021693otn.10
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:41:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JN4/Fm+8U9SI+kX9bCbLCSg5K15G0HtIVWmrlY8LuvM=;
-        b=JANoz0BtCwZWxuCH2BcRX5JBP/t1T8H8VFPIG0Ix86kkoeHfGHbsjRApcP2w7ANxIv
-         E0zm+yN0Af3J7vZZ+20JkvGC+Iqbgs1pJC3G8uW34FIRLBtvgjTVapxLONIwvTrJAqMc
-         Gxe6KuglLOSfD9WtchW/Zo1eLQ/pn0PDkOvpoY24hya6GyS8UE43zvhFf21yFIGAC/VA
-         MqxM5kRgGW1iA2x4hnLhj95aXI+WFiQ4UMdX3JFEobcr8jhyFhPOSVC1wZ89ublrTT77
-         0A32Ufrtbb/OyUNWNUL3hM1p4LInGzuA5dAYRuSzX3Tj03kwgBx+m1oYbgywvwPLyCqw
-         7MHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JN4/Fm+8U9SI+kX9bCbLCSg5K15G0HtIVWmrlY8LuvM=;
-        b=KeCHci4ZKuiWi/04wSuvQTcCN7knNYtgYoDclog9CmHnEi/4uNGcMZgf4QzqcTCNs2
-         TnhXGrnOrxpKeiQAUAgRDHCOIc1AtMRDXOs9CZewmotq6QsGOd4zLpMLYs7zn2bSb/7a
-         aWks24mpU2sLKT5F5kwKlf+32DGZC/3lHWNTH5ufrKKLvNTHjhwW7xLU21nmzPBKJ4Hh
-         cJDvD7drdjsBDTttlphGwCdgBx4gdvA6luz+HV1Ccq89fCkDCa7uuNKl+AUBICuwma8U
-         3c2JZzMQAJ788NB2kJnsXYQ8IS8xzqpm8KbQ33UDvoEz5p3d+TiX3di6Lw51HE9RRKbf
-         4IaQ==
-X-Gm-Message-State: AOAM532MW0tlHtLqZIhIyoL7q1z/4uEtq7Uz9am12M9XhGBuAEkFyAFF
-        i3lMhaB4E2H3zIX5Gpm/prUgEg==
-X-Google-Smtp-Source: ABdhPJxTimt6EeZGz64PjKtcl1R7C8gwZv5awFJmIjFwUadEevx9fUq/aZvejFfQHFQKTiNFXdiYYg==
-X-Received: by 2002:a05:6830:11d1:: with SMTP id v17mr2359962otq.307.1607629290654;
-        Thu, 10 Dec 2020 11:41:30 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x31sm1293353otb.4.2020.12.10.11.41.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 11:41:29 -0800 (PST)
-Date:   Thu, 10 Dec 2020 13:41:28 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>, Taniya Das <tdas@codeaurora.org>,
-        vbadigan@codeaurora.org, Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        Thu, 10 Dec 2020 14:47:52 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTP id 3CC7F123B0D;
+        Thu, 10 Dec 2020 20:47:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1607629622;
+        bh=snH8es/pngoy41pPpSJuMprO26ulqiCPUbM8LssoCrY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZXpoGjkoXzJOXEMF7nmYz302Yn/i9smNfqtMUy8dLMFsK4E4HNzn8T5sFaf7jpFsR
+         ZmGf3ItZMdKk/Ef6GWBm4uCLOG9xusllpclmerHg6rWZTKSGNvVrC5etZGO4DQavZy
+         Rzm39pxrFWXBsjxh/oG0jQ89RD7Sr/5QEa4pjV1BuKljfje8ULLjBKWwsHIBlPTvVV
+         2prJoMMyC9Ma8+Bx7y8/EJunM6Nx0fiRPWLx0L6Wi3woO7XDfMPk+jG7ADcMlZET1Y
+         6wiI8Atl9a4AtRReuiyaeYOk2EzePS1cVizIi8YWnuMo5Q6EgUYx7P7NMUX6HEv0Vj
+         qwxRm5FgWS3+A==
+X-Virus-Scanned: Debian amavisd-new at ministro.hu
+Received: from bmail1.ministro.hu ([127.0.0.1])
+        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id w2CtiJc9gyjG; Thu, 10 Dec 2020 20:46:29 +0100 (CET)
+Received: from dincontrollerdev (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTPSA id 63135123B09;
+        Thu, 10 Dec 2020 20:46:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1607629589;
+        bh=snH8es/pngoy41pPpSJuMprO26ulqiCPUbM8LssoCrY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dSHS+7OotGppjefGM/Yx2MCEWP1nsiim1onZY2YaG5dK6gjazk0N5dJ4q/pO6Wf2/
+         T65sndyUDj5coHfQeYEnrSNfui8AovCbGi8MS480d304RM7lB+hQnHrnrDifLe0mwr
+         xBCbz1+Z6sA5PVjYOZDikYi3SZykWB2goLc4Q9f/kaKDRK1Ti0p1o37vwaj5v7Wxlc
+         WwgW+LenFBfZimrWiPg1hcfBZQt7auQRX0sT0PoQAIueW9g4HK9CJxraAZS2vDI8oV
+         u3Mhx1iBSzq29VGAJE10V6tIe90/9IS7jlTaV8edKbzWxx6p7OxoHkMubpms882oZP
+         1DI+xzxxJzQag==
+Date:   Thu, 10 Dec 2020 19:46:25 +0000
+From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] clk: qcom: gcc-sc7180: Add 50 MHz clock rate for SDC2
-Message-ID: <X9J56AdPINezgSNG@builder.lan>
-References: <20201210102234.1.I096779f219625148900fc984dd0084ed1ba87c7f@changeid>
- <20201210102234.2.I26dcc0cee374f5571d9929c9985f463773167e68@changeid>
+Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
+Message-ID: <20201210194625.GA17516@dincontrollerdev>
+References: <20201210170443.GA17304@dincontrollerdev>
+ <X9Jw+srprdT8tquZ@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201210102234.2.I26dcc0cee374f5571d9929c9985f463773167e68@changeid>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <X9Jw+srprdT8tquZ@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10 Dec 12:22 CST 2020, Douglas Anderson wrote:
+On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
+> On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
+> > This is a serial port driver for
+> > Silicon Labs Si4455 Sub-GHz transciver.
+> > 
+> > Signed-off-by: József Horváth <info@ministro.hu>
+> > ---
+> >  .../bindings/serial/silabs,si4455.yaml        |   53 +
+> >  MAINTAINERS                                   |    7 +
+> >  drivers/tty/serial/Kconfig                    |    8 +
+> >  drivers/tty/serial/Makefile                   |    1 +
+> >  drivers/tty/serial/si4455.c                   | 1235 +++++++++++++++++
+> >  drivers/tty/serial/si4455_api.h               |   56 +
+> 
+> First thing, a single .c file should not need a .h file.
+> 
+> But then I looked at the .h file and see:
+> 
+> > --- /dev/null
+> > +++ b/drivers/tty/serial/si4455_api.h
+> > @@ -0,0 +1,56 @@
+> > +/* SPDX-License-Identifier: GPL-2.0
+> > + *
+> > + * Copyright (C) 2020 József Horváth <info@ministro.hu>
+> > + *
+> > + */
+> > +#ifndef SI4455_API_H_
+> > +#define SI4455_API_H_
+> > +
+> > +struct si4455_iocbuff {
+> > +	uint32_t length;
+> > +	uint8_t	data[4096];
+> 
+> If you do have an ioctl, use proper data types.  These are not the
+> correct ones (hint, __u32 and __u8).
+> 
+> > +};
+> > +
+> > +#define BASE_TTYIOC_PRIVATE		0xA0
+> > +/* Set EZConfig.
+> > + * After this ioctl call, the driver restarts the si4455,
+> > + * then apply the new configuration and patch.
+> > + */
+> > +#define SI4455_IOC_SEZC		_IOW('T', \
+> > +				     BASE_TTYIOC_PRIVATE + 0x01, \
+> > +				     struct si4455_iocbuff)
+> 
+> Why does a serial driver have private ioctls?  Please no, don't do that.
 
-> 50 MHz is an incredibly common clock rate for SD cards to run at.
-> It's "high speed" mode in SD (not very fast these days, but it used to
-> be) or:
->   #define HIGH_SPEED_MAX_DTR	50000000
-> 
-> If we don't support this then older "high speed" cards can only run at
-> 25 MHz or at half their normal speed.  There doesn't seem to be any
-> reason to skip this clock rate, so add it.
-> 
-> Fixes: 17269568f726 ("clk: qcom: Add Global Clock controller (GCC) driver for SC7180")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
+In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+I can change it to BASE_TTYIOC or SI4455_IOC_BASE
 
-Regards,
-Bjorn
+> Implement the basic serial driver first, and then we can talk about
+> "custom" configurations and the like, using the correct apis.
 
-> ---
+Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
+The cofiguration for interface is provided by user for application.
+It contains the base frequency, channel spacing, modulation, and a lot of more stuff, and generated by Silicon Labs Wireless Development Suite.
+The generated configuration is in a non public(compressed, encrypted...who knows) format, so without this the driver can't provide configuration parameters to Si4455.
+
 > 
->  drivers/clk/qcom/gcc-sc7180.c | 1 +
->  1 file changed, 1 insertion(+)
+> thanks,
 > 
-> diff --git a/drivers/clk/qcom/gcc-sc7180.c b/drivers/clk/qcom/gcc-sc7180.c
-> index b080739ab0c3..d82d725ac231 100644
-> --- a/drivers/clk/qcom/gcc-sc7180.c
-> +++ b/drivers/clk/qcom/gcc-sc7180.c
-> @@ -651,6 +651,7 @@ static const struct freq_tbl ftbl_gcc_sdcc2_apps_clk_src[] = {
->  	F(9600000, P_BI_TCXO, 2, 0, 0),
->  	F(19200000, P_BI_TCXO, 1, 0, 0),
->  	F(25000000, P_GPLL0_OUT_EVEN, 12, 0, 0),
-> +	F(50000000, P_GPLL0_OUT_EVEN, 6, 0, 0),
->  	F(100000000, P_GPLL0_OUT_EVEN, 3, 0, 0),
->  	F(202000000, P_GPLL7_OUT_MAIN, 4, 0, 0),
->  	{ }
-> -- 
-> 2.29.2.576.ga3fc446d84-goog
-> 
+> greg k-h
+
+Üdvözlettel / Best regards:
+József Horváth
+
