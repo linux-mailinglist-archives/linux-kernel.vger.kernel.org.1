@@ -2,107 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C672D6296
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3992D6276
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392038AbgLJQyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:54:32 -0500
-Received: from smtprelay0039.hostedemail.com ([216.40.44.39]:37860 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391053AbgLJOgx (ORCPT
+        id S2389954AbgLJQtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:49:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391081AbgLJOh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:53 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 8A46E180206F5;
-        Thu, 10 Dec 2020 14:36:08 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1711:1730:1747:1777:1792:1801:1981:2194:2197:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:4605:5007:6119:7904:10004:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12740:12895:13019:13161:13229:13439:13894:14181:14659:14721:21080:21221:21433:21451:21627:21740:21939:21990:30012:30029:30054:30056:30070:30089:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:15,LUA_SUMMARY:none
-X-HE-Tag: elbow97_3e04abc273f9
-X-Filterd-Recvd-Size: 5049
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 10 Dec 2020 14:36:07 +0000 (UTC)
-Message-ID: <97a20537627bb281745fee157713200830c3a7bb.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add --fix option to IS_ENABLED_CONFIG check
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Date:   Thu, 10 Dec 2020 06:36:06 -0800
-In-Reply-To: <20201210141903.72327-1-dwaipayanray1@gmail.com>
-References: <20201210141903.72327-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 10 Dec 2020 09:37:26 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0645DC0613CF;
+        Thu, 10 Dec 2020 06:36:46 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id a12so5706745wrv.8;
+        Thu, 10 Dec 2020 06:36:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RMLtZ684ewi1P10m7aTDF6xEYc5vBnCNa3tj14tR16o=;
+        b=poA7rHhev6BjUk1FQZJCQiTpHf2IY/Kq22wSObyqd6Im9MLBACplCNjWkAU0TTliBS
+         X/Cj6KuIL9Qe2Dxy8gsAcYMecfHTp+XdOfoSIn1Wm4tOEO5uB/k7kNVtV4qoM8z76yfj
+         56oEzfHHGF/yUM6Ty6NwRe5tJ8ziGHbhnlYyj4eblVgFVhcrznHO45Dr7rQ+XIC4qfyo
+         wUDxPpATMzo2t85GpTLX+BjrgAz4qWbVwkEpm8wUDVA8xVWyWmU15a8ML0l1AxTj6B7E
+         TsG+NrT8dL74WxnI5jmsVydhzpHmin543P0WYQCs8ILjZSHt4S7a0j6CJyZlMuqr5xlM
+         y9rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RMLtZ684ewi1P10m7aTDF6xEYc5vBnCNa3tj14tR16o=;
+        b=qzvW4JhYCYNeeJGowAdWhhtkkxVoVCeTQHhsX/+qElStrE0RtLwIxGigowO15o1Y86
+         oCSYsYIF9pjLLe00SGLserGDtvs6ZRuMMNu0ke3/6qVXRMRFv+q+KptUZmhIoJx/xZWl
+         5s2XUOMp5NaONvgJ9pFm1OEB766LrliI8XwNg88ek8QSPCks/SjUFD21fXOJKnk4h/bU
+         QCNETk+7d68DzMZBlnvA8ql1MLB4BecXIixB5yzHUGjZpY4qKWHcGmcct2g2X4FccddE
+         Z/+GLYmafRJtpyh1EBBmpob3SqMkfRDKdaShZxsx3V6fywihIeUA2xVG9AhBzHZHDf8r
+         FdeA==
+X-Gm-Message-State: AOAM531S8TDOCtJZaehN4gFb0xjYjgfaTKLrjfqu1kp3UTg35zYm6et6
+        zpUVclEcSERBkmz1J/JEx1W0YTWpOtw=
+X-Google-Smtp-Source: ABdhPJyX8A20TXlUMNk/OOCjtpPm13qZsuE7GHSaqhOtrrA+vEm3rsnKxmM0UXVeIJ9tXW0U+23osA==
+X-Received: by 2002:a5d:6289:: with SMTP id k9mr9004103wru.200.1607611004730;
+        Thu, 10 Dec 2020 06:36:44 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id s13sm9294375wmj.28.2020.12.10.06.36.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 06:36:43 -0800 (PST)
+Subject: Re: [patch] close_range.2: new page documenting close_range(2)
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Stephen Kitt <steve@sk2.org>, linux-man@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-kernel@vger.kernel.org
+References: <20201208215133.30575-1-steve@sk2.org>
+ <20201209095817.7ksihhftmnd3c3hi@wittgenstein>
+ <5f69d42d-c36d-b98a-3d00-7a5e7f489a07@gmail.com>
+ <20201209105618.okw5lgcdikg5bvae@wittgenstein>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <0ea38a7a-1c64-086e-3d64-38686f5b7856@gmail.com>
+Date:   Thu, 10 Dec 2020 15:36:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
+In-Reply-To: <20201209105618.okw5lgcdikg5bvae@wittgenstein>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-10 at 19:49 +0530, Dwaipayan Ray wrote:
-> Documentation/process/coding-style.rst specifies the use of
-> IS_ENABLED macro:
+Hi Christian,
+
+Thanks for confirming that behavior.  Seems reasonable.
+
+I was wondering...
+If this call is equivalent to unshare(2)+{close(2) in a loop},
+shouldn't it fail for the same reasons those syscalls can fail?
+
+What about the following errors?:
+
+From unshare(2):
+
+       EPERM  The calling process did not have the  required  priviâ€
+              leges for this operation.
+
+From close(2):
+       EBADF  fd isn't a valid open file descriptor.
+
+OK, this one can't happen with the current code.
+Let's say there are fds 1 to 10, and you call 'close_range(20,30,0)'.
+It's a no-op (although it will still unshare if the flag is set).
+But souldn't it fail with EBADF?
+
+       EINTR  The close() call was interrupted by a signal; see sigâ€
+              nal(7).
+
+       EIO    An I/O error occurred.
+
+       ENOSPC, EDQUOT
+              On NFS, these errors are not normally reported against
+              the first write which exceeds  the  available  storage
+              space,  but  instead  against  a  subsequent write(2),
+              fsync(2), or close().
+
+Thanks,
+
+Alex
+
+
+On 12/9/20 11:56 AM, Christian Brauner wrote:
+> On Wed, Dec 09, 2020 at 11:44:22AM +0100, Alejandro Colomar (man-pages) wrote:
+>> Hey Christian,
+>>
+>> I have a question for you below.
+>>
+>> Thanks,
 > 
-> Within code, where possible, use the IS_ENABLED macro to convert a Kconfig
-> symbol into a C boolean expression, and use it in a normal C conditional:
+> Hey Alex,
 > 
-> 	if (IS_ENABLED(CONFIG_SOMETHING)) {
-> 		...
-> 	}
+> Sure!
+
+[...]
+
+>>
+>> AFAICS after reading the code, if the unsharing fails,
+>> it will not close any file descriptors (please correct me if I'm wrong).
+>>
+>> Just wanted to be sure that it was the intended behavior with you,
+>> and if so, it would be good to document it in the page.
 > 
-> checkpatch correspondingly has a check for IS_ENABLED() without
-> CONFIG_<FOO>.
-> Add a --fix option to the check to automatically correct the argument.
+> Yes, this is intended because if the unshare fails we haven't yet
+> actually started closing anything so we're before the point of no
+> return where we ignore failures. So we can let userspace decide whether
+> they want to retry without CLOSE_RANGE_UNSHARE.
 > 
-> Macros like:
->  #if IS_ENABLED(THERMAL)
+> Christian
 > 
-> is corrected to:
->  #if IS_ENABLED(CONFIG_THERMAL)
 
-I think adding a --fix option here is not a good option.
-
-Look at the existing uses without CONFIG and tell me
-the majority of them need to have CONFIG added.
-
-$ git grep -P '\bIS_ENABLED\s*\(\s*(?!CONFIG_)'
-arch/arc/include/asm/asserts.h: chk_opt_strict(#opt_name, hw_exists, IS_ENABLED(opt_name));     \
-arch/arc/include/asm/asserts.h: chk_opt_weak(#opt_name, hw_exists, IS_ENABLED(opt_name));       \
-arch/arc/include/asm/setup.h:#define IS_USED_CFG(cfg)   IS_USED_RUN(IS_ENABLED(cfg))
-arch/arm64/include/asm/alternative-macros.h:    __ALTERNATIVE_CFG(oldinstr, newinstr, feature, IS_ENABLED(cfg))
-arch/arm64/include/asm/alternative-macros.h:    alternative_insn insn1, insn2, cap, IS_ENABLED(cfg)
-arch/arm64/include/asm/cpufeature.h:    (IS_ENABLED(config) ? FTR_VISIBLE : FTR_HIDDEN)
-arch/x86/mm/numa.c:     if (IS_ENABLED(NODE_NOT_IN_PAGE_FLAGS)) {
-drivers/gpu/drm/exynos/exynos_drm_drv.c:#define DRV_PTR(drv, cond) (IS_ENABLED(cond) ? &drv : NULL)
-drivers/gpu/drm/i915/i915_utils.h: * This is a lookalike for IS_ENABLED() that takes a kconfig value,
-drivers/gpu/drm/i915/i915_utils.h: * Sadly IS_ENABLED() itself does not work with kconfig values.
-drivers/gpu/drm/rockchip/rockchip_drm_drv.c:    if (IS_ENABLED(cond) && \
-drivers/net/wireguard/allowedips.c:             WARN_ON(IS_ENABLED(DEBUG) && *len >= 128);
-drivers/net/wireguard/allowedips.c:             WARN_ON(IS_ENABLED(DEBUG) && len >= 128);                      \
-drivers/net/wireguard/noise.c:  WARN_ON(IS_ENABLED(DEBUG) &&
-drivers/net/wireguard/selftest/allowedips.c:    if (IS_ENABLED(DEBUG_PRINT_TRIE_GRAPHVIZ)) {
-drivers/net/wireguard/selftest/allowedips.c:    if (IS_ENABLED(DEBUG_PRINT_TRIE_GRAPHVIZ)) {
-drivers/net/wireguard/selftest/allowedips.c:    if (IS_ENABLED(DEBUG_RANDOM_TRIE) && success)
-drivers/phy/broadcom/phy-brcm-usb-init.h:       if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
-drivers/phy/broadcom/phy-brcm-usb-init.h:       if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
-include/asm-generic/vmlinux.lds.h:#define OF_TABLE(cfg, name)   __OF_TABLE(IS_ENABLED(cfg), name)
-include/crypto/blake2s.h:       WARN_ON(IS_ENABLED(DEBUG) && (!outlen || outlen > BLAKE2S_HASH_SIZE ||
-include/crypto/blake2s.h:       WARN_ON(IS_ENABLED(DEBUG) && ((!in && inlen > 0) || !out || !outlen ||
-include/linux/init.h:   int var = IS_ENABLED(config);                                   \
-include/linux/kconfig.h: * This is similar to IS_ENABLED(), but returns false when invoked from
-include/linux/kconfig.h:#define IS_ENABLED(option) __or(IS_BUILTIN(option), IS_MODULE(option))
-include/linux/page-flags-layout.h: * the IS_ENABLED() macro.
-include/linux/raid/pq.h:#define IS_ENABLED(x) (x)
-lib/crypto/blake2s-generic.c:   WARN_ON(IS_ENABLED(DEBUG) &&
-lib/crypto/blake2s.c:   WARN_ON(IS_ENABLED(DEBUG) && !out);
-lib/crypto/chacha20poly1305-selftest.c: for (total_len = POLY1305_DIGEST_SIZE; IS_ENABLED(DEBUG_CHACHA20POLY1305_SLOW_CHUNK_TEST)
-lib/test_ubsan.c:                       #config, IS_ENABLED(config) ? "y" : "n");       \
-scripts/checkpatch.pl:# check for IS_ENABLED() without CONFIG_<FOO> ($rawline for comments too)
-scripts/checkpatch.pl:                       "IS_ENABLED($1) is normally used as IS_ENABLED(${CONFIG_}$1)\n" . $herecurr);
-scripts/checkpatch.pl:                           "Prefer IS_ENABLED(<FOO>) to ${CONFIG_}<FOO> || ${CONFIG_}<FOO>_MODULE\n" . $herecurr) &&
-scripts/checkpatch.pl:                          $fixed[$fixlinenr] = "\+#if IS_ENABLED($config)";
-tools/testing/scatterlist/linux/mm.h:#define IS_ENABLED(x) (0)
-
-
-
+-- 
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es
