@@ -2,125 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4652D6165
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF632D616F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731331AbgLJQOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:14:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48480 "EHLO
+        id S1728868AbgLJQPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:15:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390057AbgLJQNJ (ORCPT
+        with ESMTP id S1729218AbgLJQPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:13:09 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CA2C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:12:29 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id x22so5111584wmc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:12:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OoPa7i+VjjxLCqnKVlKszdfnGOBJMF8Ur1yfeI8lT8g=;
-        b=kYt9uVy8zkVSh4REB40VTCqQ+WMZGsCr7gx+E/nqPzh/Z4red+B7R8zcpBdH83/QJG
-         rHJV7WzlgVE5ZYgdnbYDqn8cgJ9hmwDJ8jXAbzH9pTqPL2yC1NkJC4OyEapVOgsuqo0+
-         vcwBVADEy0pY6wO4oftjVoSh6FCNbRRkFrTytgRw8++OBWi8w97OpLoVp3dRt7ffZ7kG
-         d7GXP9M89b75fI+9oYJbcylWUmnaHI0MuY1fYwM5RYqFCIhOj7gcfL1AyHiMq4Eg8eZn
-         D/WVLUqB0UFja6YaJ2XQaDPVPzTr17G6daP1S/z1YW+juaO1Z8bfnasIqYXmOLd2OwTv
-         dWyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OoPa7i+VjjxLCqnKVlKszdfnGOBJMF8Ur1yfeI8lT8g=;
-        b=Ajy2SYD8Jnxyy44ojWT22YIQ63J5qh3JE+i5/WssbRsWBwy2JRjsSOrQTjtnM3mrUf
-         /oYZYhCB7fCGkH5Mtff4tIwhUCjyE0V9ZoWn5XAKSr4nYHy5GDLh1ZTqSr+hE53lcMjo
-         vpBVlIw+Ex2FjTCCSACrtXpTC5msaADA2gvR9ySpJG0R0eyGXDzt8r1dhpzG7lfjtluq
-         ReeZtr59tqqko4OZTev7/VESLY22LmrIqDhwThNSEEVZ+1CLVoudMT9azOXjTn7MxrYy
-         YhecF2VFb7WmKPDK3VeD9+G7b7tA5XDV9As8VFU8mqTeJYiBakj0BTXx9hHQzcVFqc+W
-         QQIw==
-X-Gm-Message-State: AOAM530IQofXiH7b6fanN7N8dskVAnLc8o4LJYIDqZsuZ5ZKpB4HlFm3
-        olvv7/nutx5nhlJq6R0HGWnhTw==
-X-Google-Smtp-Source: ABdhPJxjHiQwdE7P5CURTVD9+TCxtJVPiDrFIqxpI+tJ42OLjjvgGjh5If+sqe5dHeGURf1lY944kg==
-X-Received: by 2002:a7b:c184:: with SMTP id y4mr478178wmi.92.1607616747948;
-        Thu, 10 Dec 2020 08:12:27 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id d17sm9307735wro.62.2020.12.10.08.12.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 08:12:27 -0800 (PST)
-Date:   Thu, 10 Dec 2020 17:12:20 +0100
-From:   Marco Elver <elver@google.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kbuild@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@arndb.de>, stable@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kbuild: avoid static_assert for genksyms
-Message-ID: <X9JI5KpWoo23wkRg@elver.google.com>
-References: <20201203230955.1482058-1-arnd@kernel.org>
+        Thu, 10 Dec 2020 11:15:01 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A4AC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:14:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+n2txMGzirWDbYFlCh+HdMVVPIygYMcnaAzAxQDlW4A=; b=lt2ohKhbGs/2GXsAMGUTEhGD2b
+        EBEmjmP1UryZoTOg/AplnCb4L2NIxR9PIojCX9f3SAgIStqhga7w9YFsd4fKTNfVBOguCJRkiXZ+P
+        t6nuUcDjGgonSE5vVBN8Egtcwh+bUmRhh3O4muhEYM5XNDIfEPuFXMXaeVXa0c4eVsBgy5ruFjw+Z
+        GwAShlvhg7scyAnDmjyXwzMJV0nIZVGxWWpP4EbQb+cmG8d8w0MbUybOTGfUW1omsEd04gzbRIi6p
+        zL4LmVxLtwS8kv6Gfp1GsYmv5B1x1ZyOWs+FjvLXac03FZcSJJ5l+yrqFpl8F03NxfKPxY9cbA+s0
+        Sxm+9SyQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knOa2-0002KH-9r; Thu, 10 Dec 2020 16:14:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6D2E83007CD;
+        Thu, 10 Dec 2020 17:14:08 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5664D20697DEC; Thu, 10 Dec 2020 17:14:08 +0100 (CET)
+Date:   Thu, 10 Dec 2020 17:14:08 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        feng.tang@intel.com, zhengjun.xing@intel.com,
+        aubrey.li@linux.intel.com, yu.c.chen@intel.com
+Subject: Re: [sched/hotplug]  2558aacff8:  will-it-scale.per_thread_ops -1.6%
+ regression
+Message-ID: <20201210161408.GX3021@hirez.programming.kicks-ass.net>
+References: <20201210081859.GA19784@xsang-OptiPlex-9020>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201203230955.1482058-1-arnd@kernel.org>
-User-Agent: Mutt/2.0.2 (2020-11-20)
+In-Reply-To: <20201210081859.GA19784@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 12:09AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> genksyms does not know or care about the _Static_assert() built-in,
-> and sometimes falls back to ignoring the later symbols, which causes
-> undefined behavior such as
-> 
-> WARNING: modpost: EXPORT symbol "ethtool_set_ethtool_phy_ops" [vmlinux] version generation failed, symbol will not be versioned.
-> ld: net/ethtool/common.o: relocation R_AARCH64_ABS32 against `__crc_ethtool_set_ethtool_phy_ops' can not be used when making a shared object
-> net/ethtool/common.o:(_ftrace_annotated_branch+0x0): dangerous relocation: unsupported relocation
-> 
-> Redefine static_assert for genksyms to avoid that.
-> 
-> Cc: stable@vger.kernel.org
-> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/linux/build_bug.h | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/include/linux/build_bug.h b/include/linux/build_bug.h
-> index e3a0be2c90ad..7bb66e15b481 100644
-> --- a/include/linux/build_bug.h
-> +++ b/include/linux/build_bug.h
-> @@ -77,4 +77,9 @@
->  #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
->  #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
->  
-> +#ifdef __GENKSYMS__
-> +/* genksyms gets confused by _Static_assert */
-> +#define _Static_assert(expr, ...)
-> +#endif
-> +
+On Thu, Dec 10, 2020 at 04:18:59PM +0800, kernel test robot wrote:
+> FYI, we noticed a -1.6% regression of will-it-scale.per_thread_ops due to commit:
+> commit: 2558aacff8586699bcd248b406febb28b0a25de2 ("sched/hotplug: Ensure only per-cpu kthreads run during hotplug")
 
-I had sent
+Mooo, weird but whatever. Does the below help at all?
 
-	https://lkml.kernel.org/r/20201201152017.3576951-1-elver@google.com
+---
+ kernel/sched/core.c  | 40 +++++++++++++++-------------------------
+ kernel/sched/sched.h | 13 +++++--------
+ 2 files changed, 20 insertions(+), 33 deletions(-)
 
-3 days before your patch. :-)
-
-I guess what you propose is simpler, but might still have corner cases
-where we still get warnings. In particular, if some file (for whatever
-reason) does not include build_bug.h and uses a raw _Static_assert(),
-then we still get warnings. E.g. I see 1 user of raw _Static_assert()
-(drivers/gpu/drm/amd/amdgpu/amdgv_sriovmsg.h ).
-
-In the end I don't mind either way, as long as those warnings are fixed
-in 5.11. :-)
-
-Thanks,
--- Marco
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 7af80c3fce12..f80245c7f903 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3985,15 +3985,20 @@ static void do_balance_callbacks(struct rq *rq, struct callback_head *head)
+ 	}
+ }
+ 
++static void balance_push(struct rq *rq);
++
++struct callback_head balance_push_callback = {
++	.next = NULL,
++	.func = (void (*)(struct callback_head *))balance_push,
++};
++
+ static inline struct callback_head *splice_balance_callbacks(struct rq *rq)
+ {
+ 	struct callback_head *head = rq->balance_callback;
+ 
+ 	lockdep_assert_held(&rq->lock);
+-	if (head) {
++	if (head)
+ 		rq->balance_callback = NULL;
+-		rq->balance_flags &= ~BALANCE_WORK;
+-	}
+ 
+ 	return head;
+ }
+@@ -4014,21 +4019,6 @@ static inline void balance_callbacks(struct rq *rq, struct callback_head *head)
+ 	}
+ }
+ 
+-static void balance_push(struct rq *rq);
+-
+-static inline void balance_switch(struct rq *rq)
+-{
+-	if (likely(!rq->balance_flags))
+-		return;
+-
+-	if (rq->balance_flags & BALANCE_PUSH) {
+-		balance_push(rq);
+-		return;
+-	}
+-
+-	__balance_callbacks(rq);
+-}
+-
+ #else
+ 
+ static inline void __balance_callbacks(struct rq *rq)
+@@ -4044,10 +4034,6 @@ static inline void balance_callbacks(struct rq *rq, struct callback_head *head)
+ {
+ }
+ 
+-static inline void balance_switch(struct rq *rq)
+-{
+-}
+-
+ #endif
+ 
+ static inline void
+@@ -4075,7 +4061,7 @@ static inline void finish_lock_switch(struct rq *rq)
+ 	 * prev into current:
+ 	 */
+ 	spin_acquire(&rq->lock.dep_map, 0, 0, _THIS_IP_);
+-	balance_switch(rq);
++	__balance_callbacks(rq);
+ 	raw_spin_unlock_irq(&rq->lock);
+ }
+ 
+@@ -7256,6 +7242,10 @@ static void balance_push(struct rq *rq)
+ 
+ 	lockdep_assert_held(&rq->lock);
+ 	SCHED_WARN_ON(rq->cpu != smp_processor_id());
++	/*
++	 * Ensure the thing is persistent until balance_push_set(, on = false);
++	 */
++	rq->balance_callback = &balance_push_callback;
+ 
+ 	/*
+ 	 * Both the cpu-hotplug and stop task are in this case and are
+@@ -7305,9 +7295,9 @@ static void balance_push_set(int cpu, bool on)
+ 
+ 	rq_lock_irqsave(rq, &rf);
+ 	if (on)
+-		rq->balance_flags |= BALANCE_PUSH;
++		rq->balance_callback = &balance_push_callback;
+ 	else
+-		rq->balance_flags &= ~BALANCE_PUSH;
++		rq->balance_callback = NULL;
+ 	rq_unlock_irqrestore(rq, &rf);
+ }
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index f5acb6c5ce49..12ada79d40f3 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -975,7 +975,6 @@ struct rq {
+ 	unsigned long		cpu_capacity_orig;
+ 
+ 	struct callback_head	*balance_callback;
+-	unsigned char		balance_flags;
+ 
+ 	unsigned char		nohz_idle_balance;
+ 	unsigned char		idle_balance;
+@@ -1226,6 +1225,8 @@ struct rq_flags {
+ #endif
+ };
+ 
++extern struct callback_head balance_push_callback;
++
+ /*
+  * Lockdep annotation that avoids accidental unlocks; it's like a
+  * sticky/continuous lockdep_assert_held().
+@@ -1243,9 +1244,9 @@ static inline void rq_pin_lock(struct rq *rq, struct rq_flags *rf)
+ #ifdef CONFIG_SCHED_DEBUG
+ 	rq->clock_update_flags &= (RQCF_REQ_SKIP|RQCF_ACT_SKIP);
+ 	rf->clock_update_flags = 0;
+-#endif
+ #ifdef CONFIG_SMP
+-	SCHED_WARN_ON(rq->balance_callback);
++	SCHED_WARN_ON(rq->balance_callback && rq->balance_callback != &balance_push_callback);
++#endif
+ #endif
+ }
+ 
+@@ -1408,9 +1409,6 @@ init_numa_balancing(unsigned long clone_flags, struct task_struct *p)
+ 
+ #ifdef CONFIG_SMP
+ 
+-#define BALANCE_WORK	0x01
+-#define BALANCE_PUSH	0x02
+-
+ static inline void
+ queue_balance_callback(struct rq *rq,
+ 		       struct callback_head *head,
+@@ -1418,13 +1416,12 @@ queue_balance_callback(struct rq *rq,
+ {
+ 	lockdep_assert_held(&rq->lock);
+ 
+-	if (unlikely(head->next || (rq->balance_flags & BALANCE_PUSH)))
++	if (unlikely(head->next || rq->balance_callback == &balance_push_callback))
+ 		return;
+ 
+ 	head->func = (void (*)(struct callback_head *))func;
+ 	head->next = rq->balance_callback;
+ 	rq->balance_callback = head;
+-	rq->balance_flags |= BALANCE_WORK;
+ }
+ 
+ #define rcu_dereference_check_sched_domain(p) \
