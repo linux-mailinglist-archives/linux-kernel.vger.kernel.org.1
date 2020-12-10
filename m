@@ -2,140 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C63622D63E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB392D63F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392808AbgLJRoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:44:22 -0500
-Received: from gproxy7-pub.mail.unifiedlayer.com ([70.40.196.235]:33331 "EHLO
-        gproxy7-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392468AbgLJRoK (ORCPT
+        id S2390928AbgLJRop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:44:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392468AbgLJRod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:44:10 -0500
-Received: from cmgw14.unifiedlayer.com (unknown [10.9.0.14])
-        by gproxy7.mail.unifiedlayer.com (Postfix) with ESMTP id C5C23215CC4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 10:43:27 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id nPyRkkkpZwNNlnPyRkvWD8; Thu, 10 Dec 2020 10:43:27 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=A7FCwZeG c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=zTNgK-yGK50A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=1XWaLZrsAAAA:8
- a=_jlGtV7tAAAA:8 a=QyXUC8HyAAAA:8 a=ag1SF4gXAAAA:8 a=dVhFLFTkof1kBHoGy50A:9
- a=CjuIK1q_8ugA:10:nop_charset_2 a=nlm17XC03S6CtCLSeiRr:22
- a=Yupwre4RP9_Eg_Bd0iYG:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=fa7+K/xpNSS5LcaiVBLzSNpxCsT90qLMzDg/wyKeclQ=; b=VxoT0IGBZU1F9+JVvP2nGv942n
-        snkKMNWW1yf9ohs4AZCdZI/YM5Q+WGX08KSAWRxxSZLyJdIHxSTGhgWN9NCvpvO+SuO3fi0KpIMxB
-        /D22V3MNWpKhBjldXh4RSYfRqVy3IIlooRisVoHttrb6jLJSVCe+HaRgXSM9oNe8W2oFFTYeCiXP/
-        2u36Pmuqcnfuts7Wi4/JFsjZYHGIbNBK/rDy5l7iQvC/JE/HCK95jhk4Xjr3Q6zGtzOVzv2uKhTla
-        d+X6ZstbY3xUDeQ76U1y4L4pvnEZL2o64iaQNUYJPNza9aNI3Vgv+vM4Tp6a3KXsBi6Vye+jgrNip
-        U/84MDnA==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:60452 helo=localhost)
-        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1knPyQ-001SPp-Rn; Thu, 10 Dec 2020 17:43:26 +0000
-Date:   Thu, 10 Dec 2020 09:43:26 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pumahsu <pumahsu@google.com>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        Kyle Tso <kyletso@google.com>,
-        Will McVicker <willmcvicker@google.com>
-Subject: Re: [PATCH 2/5] USB: typec: tcpm: Hard Reset after not receiving a
- Request
-Message-ID: <20201210174326.GC107395@roeck-us.net>
-References: <20201210160521.3417426-1-gregkh@linuxfoundation.org>
- <20201210160521.3417426-3-gregkh@linuxfoundation.org>
+        Thu, 10 Dec 2020 12:44:33 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC3CC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:43:52 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1knPyh-0001XP-Vu; Thu, 10 Dec 2020 18:43:43 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1knPyg-0007GO-0n; Thu, 10 Dec 2020 18:43:42 +0100
+Date:   Thu, 10 Dec 2020 18:43:38 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
+Message-ID: <20201210174338.kecryijwptzc2mi7@pengutronix.de>
+References: <20201208044022.972872-1-bjorn.andersson@linaro.org>
+ <20201210015136.GA18407@dragon>
+ <20201210130453.regjkemfneqbelsi@pengutronix.de>
+ <CAAQ0ZWQEhitxNCKBjTNGcv5E+yqwjfbb5GCLoctpJM7u4Zpp=A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ps2gwrvyhmcv56vu"
 Content-Disposition: inline
-In-Reply-To: <20201210160521.3417426-3-gregkh@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1knPyQ-001SPp-Rn
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:60452
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 12
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+In-Reply-To: <CAAQ0ZWQEhitxNCKBjTNGcv5E+yqwjfbb5GCLoctpJM7u4Zpp=A@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 05:05:18PM +0100, Greg Kroah-Hartman wrote:
-> From: pumahsu <pumahsu@google.com>
-> 
-> PD 3.0 spec 8.3.3.2.3, A Get_Source_Cap message is sent
-> to a UUT that is in the PE_SRC_Ready state. After sending
-> a Source_Capabilities message, the UUT should then expect
-> a Request message in response. When one is not received,
-> the UUT should timeout to PE_SRC_Hard_Reset.
-> 
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Cc: Badhri Jagan Sridharan <badhri@google.com>
-> Signed-off-by: pumahsu <pumahsu@google.com>
-> Signed-off-by: Kyle Tso <kyletso@google.com>
-> Signed-off-by: Will McVicker <willmcvicker@google.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+--ps2gwrvyhmcv56vu
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 0ceeab50ed64..0efda59bb104 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -2218,6 +2218,7 @@ static int tcpm_pd_send_control(struct tcpm_port *port,
->  static bool tcpm_send_queued_message(struct tcpm_port *port)
->  {
->  	enum pd_msg_request queued_message;
-> +	int ret;
->  
->  	do {
->  		queued_message = port->queued_message;
-> @@ -2237,7 +2238,16 @@ static bool tcpm_send_queued_message(struct tcpm_port *port)
->  			tcpm_pd_send_sink_caps(port);
->  			break;
->  		case PD_MSG_DATA_SOURCE_CAP:
-> -			tcpm_pd_send_source_caps(port);
-> +			ret = tcpm_pd_send_source_caps(port);
-> +			if (ret < 0) {
-> +				tcpm_log(port,
-> +					 "Unable to send src caps, ret=%d",
-> +					 ret);
-> +				tcpm_set_state(port, SOFT_RESET_SEND, 0);
-> +			} else if (port->pwr_role == TYPEC_SOURCE) {
-> +				tcpm_set_state(port, HARD_RESET_SEND,
-> +					       PD_T_SENDER_RESPONSE);
-> +			}
->  			break;
->  		default:
->  			break;
-> -- 
-> 2.29.2
-> 
+On Thu, Dec 10, 2020 at 10:40:36PM +0800, Shawn Guo wrote:
+> Hi Uwe,
+>=20
+> On Thu, Dec 10, 2020 at 9:05 PM Uwe Kleine-K=F6nig
+> <u.kleine-koenig@pengutronix.de> wrote:
+> > > > @@ -111,6 +118,8 @@
+> > > >
+> > > >  #define SN_LINK_TRAINING_TRIES             10
+> > > >
+> > > > +#define SN_PWM_GPIO                        3
+> > >
+> > > So this maps to the GPIO4 described in sn65dsi86 datasheet.  I'm
+> > > wondering if it's more readable to define the following SHIFT constan=
+ts
+> > > (your code), and use GPIO_MUX_GPIO4_SHIFT >> 2 where you need GPIO
+> > > offset?
+> > >
+> > > #define  GPIO_MUX_GPIO1_SHIFT 0
+> > > #define  GPIO_MUX_GPIO2_SHIFT 2
+> > > #define  GPIO_MUX_GPIO3_SHIFT 4
+> > > #define  GPIO_MUX_GPIO4_SHIFT 6
+> > >
+> > > If you agree, you may consider to integrate this patch beforehand:
+> > >
+> > > https://github.com/shawnguo2/linux/commit/7cde887ffb3b27a36e77a08bee3=
+666d14968b586
+> >
+> > My preferred way here would be to add a prefix for the other constants.
+> > It (IMHO) looks nicer and
+> >
+> >         GPIO_INPUT_SHIFT
+> >
+> > looks like a quite generic name for a hardware specific definition.
+>=20
+> While this looks like a reasonable argument, I also like the naming
+> choice for these constants in the beginning for that distinction
+> between registers and bits.  And changing the names the other way
+> around means there will be a much bigger diffstat, which I would like
+> to avoid.  I suggest let's just focus on what really matters here -
+> keep the naming consistent, so that people do not get confused when
+> they want to add more constants in there.
+
+In my eyes the bigger diffstat is justified. As I wrote,
+GPIO_INPUT_SHIFT isn't used in other files, but please look how many
+definitions there are for RESET. The usefulness of ctags/cscope is quite
+reduced if generic terms are used this way.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ps2gwrvyhmcv56vu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/SXkcACgkQwfwUeK3K
+7AmI/Qf+O2t7kLzcKzhBBKQiEXpzva2VVJ1Sdqx+3IFglDVCks7FCR5ezU0dO09T
+72uH2a7cWTHDIo1DcVVCtefbVVClwIeXYdGbDr4FKRzkGjf54Veao3Ow+bRIS5DM
+6R+6d3oUuXHt+Ta51eGT/BoSL81iHQuyFhxUPGXlKBnPMdEy3/ZNa7jRj3LDgP0+
+/InQbERlpSTU2x5OAgXbczDYsH/ZnzrTorCVdpmRSOYMci5HU/o8DU7Lu3YR8PJp
+0QUai3CczxpUi0ZYF5dvPF9ED1Hctn0AeNuMM4hnErSg3EN6TrZsblLPnxSEh5bd
+ZgcHNcVUveLXFUdAcMmzB5YercKscg==
+=EgCO
+-----END PGP SIGNATURE-----
+
+--ps2gwrvyhmcv56vu--
