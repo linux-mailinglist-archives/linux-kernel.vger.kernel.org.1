@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6493C2D6410
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD592D6401
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:48:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392957AbgLJRuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:50:46 -0500
-Received: from mail-bn8nam11on2059.outbound.protection.outlook.com ([40.107.236.59]:9021
+        id S2392914AbgLJRsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:48:30 -0500
+Received: from mail-bn8nam11on2055.outbound.protection.outlook.com ([40.107.236.55]:12128
         "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2392564AbgLJRNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:13:55 -0500
+        id S2392642AbgLJROr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 12:14:47 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P58n4UzuYk9QQLLji1HG8vI9DaGqrtPC7CmS2wyw4bZMgSWvHP6zQq8FTCsbzh0V8INE0BPTKLAZU3Tai0Yr7mo+9Qn4kqqoIXBuqSJ5djPrTYFIVAEPesWj1ekn/hDw5MrXy8wSptN/eZR3zNqCbN99NGikVeTcSEfkJxTDH0xUT61REHhhv7gj6/UkTZxC8O0RYWCsS9pVBYuTML40PW/wt7bxM1VZS59rvn3pY9vQ4GFCUkjoNEnQdWaIV04dk4Ao2z478DfkASAhf4IggQIVL0/WHAwsn1UBjs0PUMT3zxYemhTiqkx/k2iC3wTZwr3EW3ObW4xH18NE1xJnOw==
+ b=NKnVl4o2GvFEYToU8lby56ZscMpLnyncLpHkRCkBUWlAaCcsMp1Vpcu3rllBeoQgzCRvODPofxQjE+esB1B9Yhy65pOiTd5Dknjfqe9VE1XxxIo2HPFMYYwWth0ayJZJoEJsbnrXvjgSjSWzUnvo9Fcd/IICViOEilOzrZ2KvbSB4Jd3mPFgUEfZZqIlS+wW31gVCtGaOmoBJILKGgcgkCRc4lsTkvKz7VhTPR/0oYyel1QVE0a1GkRI5DLSjJMdCXsiESRe1bHJpMOUxJ7rhe8zovuIin6JB+qmIJgbB28gbxvHlRmIymHmX5WrZmHAKR0gs9T3JoBiRfp3A0lmHQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=65vd2SCR7CxcVYHAZDS/7uCBTD0tZyJR+ANoP2eCmpg=;
- b=C+rpn0C8L6tg0WF/Ohidg7HAnsvgoCKrLcQMurF0B6l/yHfiS6rF2TrlYG6NciDqcyFEszDeGuVZ0yJXqp+sc5h+O+4IHMnCsWqaWybW1H+lwwCImF5zZEA+87Fbz/HdZTXBrr5jwOVfd8MCRB6YuoovAnMRd4qZnz/+j13e+ji4FZY+dMHICOrtPklQ+0fDjdNeyCyIvD84jUZXe70WaozCLtC94t62YnDJzWTkSVUdEPptlGjC+G/HLJRrCn2oxwBzkb97AYDhu725r+JoRDRrZ4gRmOcJ+SmS5O1iw8A54nuavjTiD/anVAFwY2B2XyTgZnMR5iVgtAGjKtGtSg==
+ bh=tEnZGGj5x+/PnxnEsZAKrM4KM5tnVeiQzhb/gnVASjY=;
+ b=g0mYq3YmQRkaTziUq6t1wI/b/0lFtAgxglFxHuxa/iNp2vjDb+LrEEXIIOKap1VRGxeeEG6kmlOCDclzaZAiuPE+fFTWG4zAWWA4GEMjyyTJm6PLmcaJoAhrQIqfXEG+hUKRR/t8/5JSu+J6UOP3TT+7pAUClI0F8ugNltaBz2W0OFxyaFGyYUHdhsfpdjic3HVU1wfvdjbP4ZO1rLw58qtsE0tlbKCjhBmGA01IUT5JH8RLc4fbIK2QX1pZ8LHqQfm6MW5NE9mxyIo4d2mreH1EFXx+/Jk6SWtTups1Zy3lTO/RPLPWUHL7nSirp9wRya4FuU0Kas69yLJuAYoVGQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=65vd2SCR7CxcVYHAZDS/7uCBTD0tZyJR+ANoP2eCmpg=;
- b=eS2lGmOIYaXh2HnqkyETsk+t1/QpcJ1dpMz3aznihj16umvyPgJkS/msteFBuLblWjzOxuJqymm2n6bPOImrbFULIphVcAkg+Zwnh6z/md3ZCFTqLo9q7s38AoDeWTB2H/dst5dcmvVpuAMf0nMXPewrxhsBM57Lu35s2B7z4oM=
+ bh=tEnZGGj5x+/PnxnEsZAKrM4KM5tnVeiQzhb/gnVASjY=;
+ b=JqoAYMDVyrHxs12bhcCTHYmGkThKv0Dza3nT1dowHRoqqfMxToUIyppOPM5uG6CI19+BpV8bMib2G616WZo+V3LPFw5YrrJ7Adns6wutGo08y5QSQhOOUDOn6GqF6e7bMD6MrWsknE8FCoUo7lZzyQNjeheel4pwrHydHA5O3DY=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
 Received: from CY4PR12MB1352.namprd12.prod.outlook.com (2603:10b6:903:3a::13)
  by CY4PR1201MB0149.namprd12.prod.outlook.com (2603:10b6:910:1c::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Thu, 10 Dec
- 2020 17:12:40 +0000
+ 2020 17:13:07 +0000
 Received: from CY4PR12MB1352.namprd12.prod.outlook.com
  ([fe80::a10a:295e:908d:550d]) by CY4PR12MB1352.namprd12.prod.outlook.com
  ([fe80::a10a:295e:908d:550d%8]) with mapi id 15.20.3632.021; Thu, 10 Dec 2020
- 17:12:40 +0000
+ 17:13:07 +0000
 From:   Tom Lendacky <thomas.lendacky@amd.com>
 To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
@@ -48,61 +48,62 @@ Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
         Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH v5 16/34] KVM: SVM: Add support for SEV-ES GHCB MSR protocol function 0x100
-Date:   Thu, 10 Dec 2020 11:09:51 -0600
-Message-Id: <f3a1f7850c75b6ea4101e15bbb4a3af1a203f1dc.1607620209.git.thomas.lendacky@amd.com>
+        Brijesh Singh <brijesh.singh@amd.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v5 19/34] KVM: SVM: Support string IO operations for an SEV-ES guest
+Date:   Thu, 10 Dec 2020 11:09:54 -0600
+Message-Id: <9d61daf0ffda496703717218f415cdc8fd487100.1607620209.git.thomas.lendacky@amd.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1607620209.git.thomas.lendacky@amd.com>
 References: <cover.1607620209.git.thomas.lendacky@amd.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: CH2PR10CA0007.namprd10.prod.outlook.com
- (2603:10b6:610:4c::17) To CY4PR12MB1352.namprd12.prod.outlook.com
+X-ClientProxiedBy: CH2PR18CA0028.namprd18.prod.outlook.com
+ (2603:10b6:610:4f::38) To CY4PR12MB1352.namprd12.prod.outlook.com
  (2603:10b6:903:3a::13)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from tlendack-t1.amd.com (165.204.77.1) by CH2PR10CA0007.namprd10.prod.outlook.com (2603:10b6:610:4c::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 10 Dec 2020 17:12:39 +0000
+Received: from tlendack-t1.amd.com (165.204.77.1) by CH2PR18CA0028.namprd18.prod.outlook.com (2603:10b6:610:4f::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 10 Dec 2020 17:13:06 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 74adb1e8-5107-4810-16b6-08d89d2ecd06
+X-MS-Office365-Filtering-Correlation-Id: 85a725bf-a7aa-486e-4705-08d89d2edd13
 X-MS-TrafficTypeDiagnostic: CY4PR1201MB0149:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR1201MB0149F676839815B1432D33EAECCB0@CY4PR1201MB0149.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB0149B1D06C6D2D1D3FD345BAECCB0@CY4PR1201MB0149.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NPu2FGsHyzbga8D19s/bzNGeQtgUQTDvtZHyW2e7E4Fn8Eh9CC33z6MXD/Tanzh0L+DlQJb4VyvqbB3Ne5Bq/X9YQyhjpc2Q36yJD7+R/pywR9Mw0vv2GE3oNa4vs7DYPm2q1c8LrpTOdZVqSJfbQiT/R0GkGfq22idrssWWODno/QteR4nJV6Cgv5zzsnUvYYpi6JaTvALEjoCk+kxqEIDxRhjTCVk6p9WxnkT0uiAqzRYtL38O4/rIE1V1GPHbAZIhmeb2I1SABS40TTvUivQPkmsKgqBunOQSTywkaEXxhU48Y1CG9Mhmum5ERiC1gcBF8WtFtpkqh/j+S16Fk2n3dpbil8vuHkdoUcrCVMichrTe3WEUxXzS2uoQn47W
+X-Microsoft-Antispam-Message-Info: NP7QiYn0vowqVOWRPJmk77OEw6INRNNaWVkW36+ZIm8taLKMsBYZRkYjwzmlfO9WjjDvs3x3g80M2L1HPc9cgUmorzKkODSTOZt+N/SPccFHP6Q/EHqapOMczgjCdQRajCaPnUpHtRbqMzZ+i3pxHCMMxZBvcs9YVWjiwIPISgdy88wz9EnGIoZSB9bWaSZH5WnFKxz2ej+da1hVYBs8c7ZlI7b1OVMX42xKSup8E9G84A7jG8K2IX9AR4iqfNL+T2zHIolerjrlLf44yFTRXYrcMpfeQ4v3nVffmJ+tf3XrurzJFJz325hYNzDNu1YhUxS8YuQUT3V6oUVky7qAsitD2oquXv9LhYqSHZgwTFltkEewUuEJJ7Io70c+CpO9
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1352.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(2906002)(5660300002)(6666004)(26005)(52116002)(186003)(83380400001)(16526019)(54906003)(6486002)(956004)(2616005)(8936002)(7696005)(508600001)(66946007)(66476007)(36756003)(8676002)(86362001)(34490700003)(4326008)(7416002)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?eax+bFFcHnWJnIzktXIEvwDTwFHy+1mQPqOmgxqLK5DpPzTyV4oO/9PqIq8H?=
- =?us-ascii?Q?3Pd9DVMVxJpsBNW2C048q2wy0szNnSGVIhEHfUBIYrguKhOMcHhWyPFeqF9r?=
- =?us-ascii?Q?egIn7TzVByerQ333sLYyEudgP9HE1pTxAGQq4ACuPsFhJVNLQzodFpMJaN0J?=
- =?us-ascii?Q?fdojnD5UucLyy4MlUTJHo41kYV1vUwLmupVCrGWmBPC8jKLkB+4Skx+NDwhG?=
- =?us-ascii?Q?CdGcJ0l7gFoZtglfdO4BJAOpFRsvl1fpn6tkZqdsdIc7v1W2fqQmdzuP66Ed?=
- =?us-ascii?Q?cUK4bZ10rtT1PDSAo4dAYxXJXd64PoDwvRLCto9z5qN2pr0+7M9PT0mwXA/B?=
- =?us-ascii?Q?fUoDy+y/T7bNnj4bJ66kHQw9zUTMlORe1RWGCOP+VSjmtUWIfU3Ll2l/pGzZ?=
- =?us-ascii?Q?BNOFS5Obuvc92BWaU2EZvdhago2D4wwxQ4rMilhbhdB3kG1ekCLiWxyGxS9G?=
- =?us-ascii?Q?BcnCmM5caJKSt91q/l3nZ1q1fabZMg255z+r+DKunSI4Enl6RXpYAKE2hJ/t?=
- =?us-ascii?Q?2/QTY0l6kf4so8gjY1S+wKxLAaxeGO+hpa2NZGP9tmvkoncfFZf2njyNt0TA?=
- =?us-ascii?Q?Um631QO3VzT+OLvzAuHCE/8IblA97XesujK7RR5BbgMrxT3l66yhTVadIBOp?=
- =?us-ascii?Q?GOhAw4SMiibvM4acJ/2O+JUuY8u16QflZzjdhSYvhiaiB5PXqFjOc54P596B?=
- =?us-ascii?Q?VDYAf1f0HIsuKO1rQ6EM0x7aH1Ar12K+RUn5jg/xQsPItgW7+5cGNSsk6yEn?=
- =?us-ascii?Q?y0KbSC4gbNwsuVaotIbeS1VaJtd/2orM1IwhPcNp49lgrVcllsn3PddhqDbJ?=
- =?us-ascii?Q?uBFa/1hFRR60jPIgfZliC+JfyR5g0O7eTRD7vAYB+6hLJhOxTuenz4vArevK?=
- =?us-ascii?Q?3MXCLigvoFLIbPfeI47yuviPnTEIdZ7h6ylr5xtz+KydV7/25uOfE6GDxTvo?=
- =?us-ascii?Q?AFseB4aWn7oeI2PEk4TFpdkDjMHgfwJMP1gA/MZILZxHXRsyLtvlvA/uWC0+?=
- =?us-ascii?Q?ZV/x?=
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?2p0NsodCd5xN+07k069ZyZi+O4f5BpQG2AsNaVQEkUjaxNBtPGyVkV/tn2gy?=
+ =?us-ascii?Q?0IkGmGCmZugZn8IH81i/aUCknqt5i8qoVun1L4RYOHkRgtT6rupBWG1gKmXR?=
+ =?us-ascii?Q?M8Gcrw/CB32zNA3zpw1faSvWrehSVCa77HAyCWQg71QuMV9UiGMydQx09ni2?=
+ =?us-ascii?Q?FmlAIzP+akWfo8NIpcZtR4k7VqTNgKrwdRMoxBHFIItnHqUsBLquc18y+oIU?=
+ =?us-ascii?Q?cnQhTPDUdK8yrLS6mM2AuEeBJ7jALX6W3S/IE+yQVaLKGGg6tKZFOizEma4n?=
+ =?us-ascii?Q?S4Ia4sNkKDBbTC14LNkvXFmNak5WBPlQ8aY6ht3m8htsrk8tBaVKY1af97HI?=
+ =?us-ascii?Q?tMaN4d1zO3DorGGLGGUcB9OcyKaS7jOhE8PF9BDcuFwlRlxw3LZaoBi4osSR?=
+ =?us-ascii?Q?gisM3M80NPIZC8L3f1RzMHGZdpHTJG6CnkqODSuNd9ILIf+XBmBbnL2CR4TH?=
+ =?us-ascii?Q?oAbtx9E9cjgcmaG+qq+ZcNcrTkHhAjbs1zUK7UGnvYSrvbBjvjRj29qKuHS4?=
+ =?us-ascii?Q?241tfNeEmryOwC8PYTe610vrCD1XcxfhZta2cHy+0sZgg6SsQp5+YgQOz7ML?=
+ =?us-ascii?Q?/UtLkKnocQvPo9McKZmnBwDlwNg31Vsd6JpO10pdQIz0y5RSqsJfZWCDlvID?=
+ =?us-ascii?Q?z6zM4xDVewF+s4PjlPQJXbqKRYYfPx0VnjAzjBrO67wLuCxno3aGUpNHevkM?=
+ =?us-ascii?Q?0ZYK/yr3dnnIQsC3hsLuNbcsJ/KNKipyuEtoTCVG6sSAE0bxZpqAU7yNzg9Q?=
+ =?us-ascii?Q?G0ouF7LANzE+WthCDnXqAzk1m1phGl+8vaw3aZVb+7ryDAdy+Ee1rejxPMFX?=
+ =?us-ascii?Q?zjwz9iX/CcXa8/M3+qP1OzGfil72vZTcklHhHs/FXfxfTzNaYdy0ipmkzHh2?=
+ =?us-ascii?Q?3aTWQ5iAJO//a8TNVNdzBlrEs8IIEGRfw5EvyvpragAApMLNIgJH2LRZ7/J2?=
+ =?us-ascii?Q?H1nuwsbQlVA6C+BeO5YMV0W49NyCgHausQHC3CNxrK0SwQrvleIZ/c7LYZbN?=
+ =?us-ascii?Q?KNRP?=
 X-OriginatorOrg: amd.com
 X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1352.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2020 17:12:40.5010
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2020 17:13:07.5090
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74adb1e8-5107-4810-16b6-08d89d2ecd06
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85a725bf-a7aa-486e-4705-08d89d2edd13
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qOKsNkDEYRUGUtJbeO2proyL6Uuk4Vjlb8QqPzA3EZr2CuSU7mf6l3vhrLfhjOHEQ20oSzArZfa0oB+8zsMtnA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: CUnBxlbbgyOtcPVZM5ZGxR4tPCktlP22s43MmRkjW47LVe4IXSS9xwh84kE45TgfQmaVXwsGyidXprxi6b20uw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0149
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -110,61 +111,191 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tom Lendacky <thomas.lendacky@amd.com>
 
-The GHCB specification defines a GHCB MSR protocol using the lower
-12-bits of the GHCB MSR (in the hypervisor this corresponds to the
-GHCB GPA field in the VMCB).
+For an SEV-ES guest, string-based port IO is performed to a shared
+(un-encrypted) page so that both the hypervisor and guest can read or
+write to it and each see the contents.
 
-Function 0x100 is a request for termination of the guest. The guest has
-encountered some situation for which it has requested to be terminated.
-The GHCB MSR value contains the reason for the request.
+For string-based port IO operations, invoke SEV-ES specific routines that
+can complete the operation using common KVM port IO support.
 
+[ set but not used variable ]
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 ---
- arch/x86/kvm/svm/sev.c | 13 +++++++++++++
- arch/x86/kvm/svm/svm.h |  6 ++++++
- 2 files changed, 19 insertions(+)
+ arch/x86/include/asm/kvm_host.h |  1 +
+ arch/x86/kvm/svm/sev.c          | 18 +++++++++--
+ arch/x86/kvm/svm/svm.c          | 11 +++++--
+ arch/x86/kvm/svm/svm.h          |  1 +
+ arch/x86/kvm/x86.c              | 54 +++++++++++++++++++++++++++++++++
+ arch/x86/kvm/x86.h              |  3 ++
+ 6 files changed, 83 insertions(+), 5 deletions(-)
 
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 8cf6b0493d49..26f937111226 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -614,6 +614,7 @@ struct kvm_vcpu_arch {
+ 
+ 	struct kvm_pio_request pio;
+ 	void *pio_data;
++	void *guest_ins_data;
+ 
+ 	u8 event_exit_inst_len;
+ 
 diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 53bf3ff1d9cc..c2cc38e7400b 100644
+index 63f20be4bc69..a7531de760b5 100644
 --- a/arch/x86/kvm/svm/sev.c
 +++ b/arch/x86/kvm/svm/sev.c
-@@ -1574,6 +1574,19 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
- 				  GHCB_MSR_INFO_POS);
+@@ -1406,9 +1406,14 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
+ 	case SVM_EXIT_INVD:
  		break;
- 	}
-+	case GHCB_MSR_TERM_REQ: {
-+		u64 reason_set, reason_code;
+ 	case SVM_EXIT_IOIO:
+-		if (!(ghcb_get_sw_exit_info_1(ghcb) & SVM_IOIO_TYPE_MASK))
+-			if (!ghcb_rax_is_valid(ghcb))
++		if (ghcb_get_sw_exit_info_1(ghcb) & SVM_IOIO_STR_MASK) {
++			if (!ghcb_sw_scratch_is_valid(ghcb))
+ 				goto vmgexit_err;
++		} else {
++			if (!(ghcb_get_sw_exit_info_1(ghcb) & SVM_IOIO_TYPE_MASK))
++				if (!ghcb_rax_is_valid(ghcb))
++					goto vmgexit_err;
++		}
+ 		break;
+ 	case SVM_EXIT_MSR:
+ 		if (!ghcb_rcx_is_valid(ghcb))
+@@ -1776,3 +1781,12 @@ int sev_handle_vmgexit(struct vcpu_svm *svm)
+ 
+ 	return ret;
+ }
 +
-+		reason_set = get_ghcb_msr_bits(svm,
-+					       GHCB_MSR_TERM_REASON_SET_MASK,
-+					       GHCB_MSR_TERM_REASON_SET_POS);
-+		reason_code = get_ghcb_msr_bits(svm,
-+						GHCB_MSR_TERM_REASON_MASK,
-+						GHCB_MSR_TERM_REASON_POS);
-+		pr_info("SEV-ES guest requested termination: %#llx:%#llx\n",
-+			reason_set, reason_code);
-+		fallthrough;
++int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in)
++{
++	if (!setup_vmgexit_scratch(svm, in, svm->vmcb->control.exit_info_2))
++		return -EINVAL;
++
++	return kvm_sev_es_string_io(&svm->vcpu, size, port,
++				    svm->ghcb_sa, svm->ghcb_sa_len, in);
++}
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index ad1ec6ad558e..32502c4b091d 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2058,11 +2058,16 @@ static int io_interception(struct vcpu_svm *svm)
+ 	++svm->vcpu.stat.io_exits;
+ 	string = (io_info & SVM_IOIO_STR_MASK) != 0;
+ 	in = (io_info & SVM_IOIO_TYPE_MASK) != 0;
+-	if (string)
+-		return kvm_emulate_instruction(vcpu, 0);
+-
+ 	port = io_info >> 16;
+ 	size = (io_info & SVM_IOIO_SIZE_MASK) >> SVM_IOIO_SIZE_SHIFT;
++
++	if (string) {
++		if (sev_es_guest(vcpu->kvm))
++			return sev_es_string_io(svm, size, port, in);
++		else
++			return kvm_emulate_instruction(vcpu, 0);
 +	}
- 	default:
- 		ret = -EINVAL;
- 	}
++
+ 	svm->next_rip = svm->vmcb->control.exit_info_2;
+ 
+ 	return kvm_fast_pio(&svm->vcpu, size, port, in);
 diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 9dd8429f2b27..fc69bc2e0cad 100644
+index 9019ad6a8138..b3f03dede6ac 100644
 --- a/arch/x86/kvm/svm/svm.h
 +++ b/arch/x86/kvm/svm/svm.h
-@@ -543,6 +543,12 @@ void svm_vcpu_unblocking(struct kvm_vcpu *vcpu);
- #define GHCB_MSR_CPUID_REG_POS		30
- #define GHCB_MSR_CPUID_REG_MASK		0x3
+@@ -573,5 +573,6 @@ void __init sev_hardware_setup(void);
+ void sev_hardware_teardown(void);
+ void sev_free_vcpu(struct kvm_vcpu *vcpu);
+ int sev_handle_vmgexit(struct vcpu_svm *svm);
++int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in);
  
-+#define GHCB_MSR_TERM_REQ		0x100
-+#define GHCB_MSR_TERM_REASON_SET_POS	12
-+#define GHCB_MSR_TERM_REASON_SET_MASK	0xf
-+#define GHCB_MSR_TERM_REASON_POS	16
-+#define GHCB_MSR_TERM_REASON_MASK	0xff
+ #endif
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 78e8c8b36f9b..fcd862f5a2b4 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -10790,6 +10790,10 @@ int kvm_arch_interrupt_allowed(struct kvm_vcpu *vcpu)
+ 
+ unsigned long kvm_get_linear_rip(struct kvm_vcpu *vcpu)
+ {
++	/* Can't read the RIP when guest state is protected, just return 0 */
++	if (vcpu->arch.guest_state_protected)
++		return 0;
 +
- extern unsigned int max_sev_asid;
+ 	if (is_64_bit_mode(vcpu))
+ 		return kvm_rip_read(vcpu);
+ 	return (u32)(get_segment_base(vcpu, VCPU_SREG_CS) +
+@@ -11422,6 +11426,56 @@ int kvm_sev_es_mmio_read(struct kvm_vcpu *vcpu, gpa_t gpa, unsigned int bytes,
+ }
+ EXPORT_SYMBOL_GPL(kvm_sev_es_mmio_read);
  
- static inline bool svm_sev_enabled(void)
++static int complete_sev_es_emulated_ins(struct kvm_vcpu *vcpu)
++{
++	memcpy(vcpu->arch.guest_ins_data, vcpu->arch.pio_data,
++	       vcpu->arch.pio.count * vcpu->arch.pio.size);
++	vcpu->arch.pio.count = 0;
++
++	return 1;
++}
++
++static int kvm_sev_es_outs(struct kvm_vcpu *vcpu, unsigned int size,
++			   unsigned int port, void *data,  unsigned int count)
++{
++	int ret;
++
++	ret = emulator_pio_out_emulated(vcpu->arch.emulate_ctxt, size, port,
++					data, count);
++	if (ret)
++		return ret;
++
++	vcpu->arch.pio.count = 0;
++
++	return 0;
++}
++
++static int kvm_sev_es_ins(struct kvm_vcpu *vcpu, unsigned int size,
++			  unsigned int port, void *data, unsigned int count)
++{
++	int ret;
++
++	ret = emulator_pio_in_emulated(vcpu->arch.emulate_ctxt, size, port,
++				       data, count);
++	if (ret) {
++		vcpu->arch.pio.count = 0;
++	} else {
++		vcpu->arch.guest_ins_data = data;
++		vcpu->arch.complete_userspace_io = complete_sev_es_emulated_ins;
++	}
++
++	return 0;
++}
++
++int kvm_sev_es_string_io(struct kvm_vcpu *vcpu, unsigned int size,
++			 unsigned int port, void *data,  unsigned int count,
++			 int in)
++{
++	return in ? kvm_sev_es_ins(vcpu, size, port, data, count)
++		  : kvm_sev_es_outs(vcpu, size, port, data, count);
++}
++EXPORT_SYMBOL_GPL(kvm_sev_es_string_io);
++
+ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_exit);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_fast_mmio);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_inj_virq);
+diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+index 804369fe45e3..0e8fe766a4c5 100644
+--- a/arch/x86/kvm/x86.h
++++ b/arch/x86/kvm/x86.h
+@@ -411,5 +411,8 @@ int kvm_sev_es_mmio_write(struct kvm_vcpu *vcpu, gpa_t src, unsigned int bytes,
+ 			  void *dst);
+ int kvm_sev_es_mmio_read(struct kvm_vcpu *vcpu, gpa_t src, unsigned int bytes,
+ 			 void *dst);
++int kvm_sev_es_string_io(struct kvm_vcpu *vcpu, unsigned int size,
++			 unsigned int port, void *data,  unsigned int count,
++			 int in);
+ 
+ #endif
 -- 
 2.28.0
 
