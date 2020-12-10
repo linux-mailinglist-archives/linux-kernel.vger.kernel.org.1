@@ -2,81 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138502D5D93
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5322D5DC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390057AbgLJO1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:27:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731718AbgLJO1T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:27:19 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6394EC061793;
-        Thu, 10 Dec 2020 06:26:39 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id u21so3707642qtw.11;
-        Thu, 10 Dec 2020 06:26:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3ng4ID+FM2jUqrNZONA64ob770LHcIUG2qaThMjtYWo=;
-        b=mS4Vy4IyDXA25U6bvb0/TypwovVLWDzbeT5Dvgp9XDkoefmNPRU5zXV+1tnvZcQyfv
-         OGcd06bcpHwNKVd841KCON2RHQxAw5sLflbYtrih+/JWZc1MvG9Zga/7Sw/4gdVsELwi
-         woR0IpOivMH5X4Gn2mCub3b2mYF7nsfq8ReQiPT8hlBTw6KZI2eSVkp82HMCx0M/vL2C
-         XLWSCzCPvopxouk7We+3aMrrmg7CMDpR1xCtipeYzOfJyOFLHzkqDRPavP5DaK1k+Q/M
-         nWBoP+3n04RcGWka8taxOWLCx4dYPy+qMnHfBng3teBUal4QVLUagVcLZAlUUNm/Q8rV
-         RngQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=3ng4ID+FM2jUqrNZONA64ob770LHcIUG2qaThMjtYWo=;
-        b=Z3oJWGf42WQMXZjkPcwZlu7P0sutOOySSA/64lxgEWaxnjuMayNoXERzrmil6J8zMp
-         /VuLtSLHUX9bMVhn0Lep3Vk8/EEZ6hNfP2RQ4aAUVypz6qeyLF0B/8I+9FT51OYPFk/f
-         20fju7SnLcEJkFgIe5tlkDl48VOlppN3PggLIXs4MUE8jhngax4RCOtSEbJ7k9g38p81
-         SM18CwhX5IVU8d/sjIhqXXebNvKwZXvamUw7/TTuMijAg6HOc1KK4HMSAFfvfJ6kLoWC
-         qcPOwpk0itc0riUmSJeqpStV7Q+AtNRt+2ZznyNNt0NNRGlcRxa9dHJfh/1IGPPMoN4Y
-         iN6w==
-X-Gm-Message-State: AOAM533M9yRTLJqSUILwPspdsBV0PLjRWKA8TYnQTbsh/dIoxn5Jr9f7
-        exGVYs423W6JF6Z4xv1gfjjEQPoi5xHzFQ==
-X-Google-Smtp-Source: ABdhPJwHAj1DJJnJI5dhH37w9B1Mx24/0xO2E4UfyVlvP7J1GD/QLCW4JUeeAlGjJCYofnPsZ21Rcg==
-X-Received: by 2002:ac8:5a90:: with SMTP id c16mr7935568qtc.331.1607610398475;
-        Thu, 10 Dec 2020 06:26:38 -0800 (PST)
-Received: from localhost ([2600:380:5a4a:42b3:c6ce:6e34:f826:c141])
-        by smtp.gmail.com with ESMTPSA id i68sm598858qkc.82.2020.12.10.06.26.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 06:26:37 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 10 Dec 2020 09:26:04 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] blk-iocost: Use alloc_percpu_gfp() to simplify the
- code
-Message-ID: <X9Iv/MlqQI00wZRn@mtj.duckdns.org>
-References: <1ba7a38d5a6186b1e71432ef424c23ba1904a365.1607591591.git.baolin.wang@linux.alibaba.com>
- <aa518c5b5c7185e660a1c8515c10d9513fe92132.1607591591.git.baolin.wang@linux.alibaba.com>
+        id S2390253AbgLJOaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:30:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390114AbgLJO2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:28:23 -0500
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.4 00/39] 4.4.248-rc1 review
+Date:   Thu, 10 Dec 2020 15:26:11 +0100
+Message-Id: <20201210142600.887734129@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa518c5b5c7185e660a1c8515c10d9513fe92132.1607591591.git.baolin.wang@linux.alibaba.com>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.248-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.248-rc1
+X-KernelTest-Deadline: 2020-12-12T14:26+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This is the start of the stable review cycle for the 4.4.248 release.
+There are 39 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-On Thu, Dec 10, 2020 at 06:56:45PM +0800, Baolin Wang wrote:
-> Use alloc_percpu_gfp() with __GFP_ZERO flag, which can remove
-> some explicit initialization code.
+Responses should be made by Sat, 12 Dec 2020 14:25:47 +0000.
+Anything received after that time might be too late.
 
-__GFP_ZERO is implicit for percpu allocations and local[64]_t's initial
-states aren't guaranteed to be all zeros on different archs.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.248-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+and the diffstat can be found below.
 
-Thanks.
+thanks,
 
--- 
-tejun
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.4.248-rc1
+
+Masami Hiramatsu <mhiramat@kernel.org>
+    x86/uprobes: Do not use prefixes.nbytes when looping over prefixes.bytes
+
+Luo Meng <luomeng12@huawei.com>
+    Input: i8042 - fix error return code in i8042_setup_aux()
+
+Bob Peterson <rpeterso@redhat.com>
+    gfs2: check for empty rgrp tree in gfs2_ri_update
+
+Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+    mm/userfaultfd: do not access vma->vm_mm after calling handle_userfault()
+
+Josef Bacik <josef@toxicpanda.com>
+    btrfs: cleanup cow block on error
+
+Steven Rostedt (VMware) <rostedt@goodmis.org>
+    tracing: Fix userstacktrace option for instances
+
+Peter Ujfalusi <peter.ujfalusi@ti.com>
+    spi: bcm2835: Release the DMA channel if probe fails after dma_init
+
+Lukas Wunner <lukas@wunner.de>
+    spi: bcm2835: Fix use-after-free on unbind
+
+Lukas Wunner <lukas@wunner.de>
+    spi: Introduce device-managed SPI controller allocation
+
+Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+    iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs
+
+Ard Biesheuvel <ard.biesheuvel@linaro.org>
+    arm64: assembler: make adr_l work in modules under KASLR
+
+Christian Eggers <ceggers@arri.de>
+    i2c: imx: Check for I2SR_IAL after every byte
+
+Christian Eggers <ceggers@arri.de>
+    i2c: imx: Fix reset of I2SR_IAL flag
+
+Paulo Alcantara <pc@cjr.nz>
+    cifs: fix potential use-after-free in cifs_echo_request()
+
+Jann Horn <jannh@google.com>
+    tty: Fix ->session locking
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: hda/generic: Add option to enforce preferred_dacs pairs
+
+Kailang Yang <kailang@realtek.com>
+    ALSA: hda/realtek - Add new codec supported for ALC897
+
+Jann Horn <jannh@google.com>
+    tty: Fix ->pgrp locking in tiocspgrp()
+
+Giacinto Cifelli <gciofono@gmail.com>
+    USB: serial: option: add support for Thales Cinterion EXS82
+
+Vincent Palatin <vpalatin@chromium.org>
+    USB: serial: option: add Fibocom NL668 variants
+
+Johan Hovold <johan@kernel.org>
+    USB: serial: ch341: sort device-id entries
+
+Jan-Niklas Burfeind <kernel@aiyionpri.me>
+    USB: serial: ch341: add new Product ID for CH341A
+
+Johan Hovold <johan@kernel.org>
+    USB: serial: kl5kusb105: fix memleak on open
+
+Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
+    usb: gadget: f_fs: Use local copy of descriptors for userspace copy
+
+Eric Dumazet <edumazet@google.com>
+    geneve: pull IP header before ECN decapsulation
+
+Toke Høiland-Jørgensen <toke@redhat.com>
+    vlan: consolidate VLAN parsing code and limit max parsing depth
+
+Josef Bacik <josef@toxicpanda.com>
+    btrfs: sysfs: init devices outside of the chunk_mutex
+
+Michal Suchanek <msuchanek@suse.de>
+    powerpc: Stop exporting __clear_user which is now inlined.
+
+Po-Hsu Lin <po-hsu.lin@canonical.com>
+    Input: i8042 - add ByteSpeed touchpad to noloop table
+
+Sanjay Govind <sanjay.govind9@gmail.com>
+    Input: xpad - support Ardwiino Controllers
+
+Krzysztof Kozlowski <krzk@kernel.org>
+    dt-bindings: net: correct interrupt flags in examples
+
+Zhang Changzhong <zhangchangzhong@huawei.com>
+    net: pasemi: fix error return code in pasemi_mac_open()
+
+Zhang Changzhong <zhangchangzhong@huawei.com>
+    cxgb3: fix error return code in t3_sge_alloc_qset()
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    net/x25: prevent a couple of overflows
+
+Antoine Tenart <atenart@kernel.org>
+    netfilter: bridge: reset skb->pkt_type after NF_INET_POST_ROUTING traversal
+
+Jamie Iles <jamie@nuviainc.com>
+    bonding: wait for sysfs kobject destruction before freeing struct slave
+
+Yves-Alexis Perez <corsac@corsac.net>
+    usbnet: ipheth: fix connectivity with iOS 14
+
+Anmol Karn <anmol.karan123@gmail.com>
+    rose: Fix Null pointer dereference in rose_send_frame()
+
+Julian Wiedmann <jwi@linux.ibm.com>
+    net/af_iucv: set correct sk_protocol for child sockets
+
+
+-------------
+
+Diffstat:
+
+ .../devicetree/bindings/net/nfc/nxp-nci.txt        |  2 +-
+ .../devicetree/bindings/net/nfc/pn544.txt          |  2 +-
+ Makefile                                           |  4 +-
+ arch/arm64/include/asm/assembler.h                 | 36 +++++++++----
+ arch/arm64/kernel/head.S                           |  3 +-
+ arch/powerpc/lib/ppc_ksyms.c                       |  1 -
+ arch/x86/include/asm/insn.h                        | 15 ++++++
+ arch/x86/kernel/uprobes.c                          | 10 ++--
+ drivers/i2c/busses/i2c-imx.c                       | 30 +++++++++--
+ drivers/input/joystick/xpad.c                      |  2 +
+ drivers/input/serio/i8042-x86ia64io.h              |  4 ++
+ drivers/input/serio/i8042.c                        |  3 +-
+ drivers/iommu/amd_iommu.c                          |  2 +-
+ drivers/net/bonding/bond_main.c                    | 61 +++++++++++++++-------
+ drivers/net/bonding/bond_sysfs_slave.c             | 18 +------
+ drivers/net/ethernet/chelsio/cxgb3/sge.c           |  1 +
+ drivers/net/ethernet/pasemi/pasemi_mac.c           |  8 ++-
+ drivers/net/geneve.c                               | 18 ++++++-
+ drivers/net/usb/ipheth.c                           |  2 +-
+ drivers/spi/spi-bcm2835.c                          | 22 ++++----
+ drivers/spi/spi.c                                  | 54 ++++++++++++++++++-
+ drivers/tty/tty_io.c                               | 51 +++++++++++++-----
+ drivers/usb/gadget/function/f_fs.c                 |  6 ++-
+ drivers/usb/serial/ch341.c                         |  5 +-
+ drivers/usb/serial/kl5kusb105.c                    | 10 ++--
+ drivers/usb/serial/option.c                        |  5 +-
+ fs/btrfs/ctree.c                                   |  6 +++
+ fs/btrfs/volumes.c                                 |  7 +--
+ fs/cifs/connect.c                                  |  2 +
+ fs/gfs2/rgrp.c                                     |  4 ++
+ include/linux/if_vlan.h                            | 29 +++++++---
+ include/linux/spi/spi.h                            |  2 +
+ include/linux/tty.h                                |  4 ++
+ include/net/bonding.h                              |  8 +++
+ include/net/inet_ecn.h                             |  1 +
+ kernel/trace/trace.c                               |  9 ++--
+ kernel/trace/trace.h                               |  6 ++-
+ mm/huge_memory.c                                   |  8 ++-
+ net/bridge/br_netfilter_hooks.c                    |  7 ++-
+ net/iucv/af_iucv.c                                 |  4 +-
+ net/rose/rose_loopback.c                           | 17 ++++--
+ net/x25/af_x25.c                                   |  6 ++-
+ sound/pci/hda/hda_generic.c                        | 12 +++--
+ sound/pci/hda/hda_generic.h                        |  1 +
+ sound/pci/hda/patch_realtek.c                      |  2 +
+ 45 files changed, 370 insertions(+), 140 deletions(-)
+
+
