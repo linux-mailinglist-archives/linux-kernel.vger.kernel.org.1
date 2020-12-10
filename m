@@ -2,84 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBB92D597E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E90E32D5984
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:43:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388969AbgLJLlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:41:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43750 "EHLO mx2.suse.de"
+        id S2387422AbgLJLnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:43:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34284 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725904AbgLJLlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:41:32 -0500
+        id S1727968AbgLJLnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:43:03 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C73AAAE2B;
-        Thu, 10 Dec 2020 11:40:49 +0000 (UTC)
-Date:   Thu, 10 Dec 2020 11:36:07 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        tip-bot2 for Masami Hiramatsu <tip-bot2@linutronix.de>,
-        linux-tip-commits@vger.kernel.org,
-        syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>, x86@kernel.org
-Subject: Re: [tip: x86/urgent] x86/uprobes: Do not use prefixes.nbytes when
- looping over prefixes.bytes
-Message-ID: <20201210103607.GA26633@zn.tnic>
-References: <160697103739.3146288.7437620795200799020.stgit@devnote2>
- <160709424307.3364.5849503551045240938.tip-bot2@tip-bot2>
- <20201205091256.14161a2e1606c527131efc06@kernel.org>
- <20201205101704.GB26409@zn.tnic>
- <20201206125325.d676906774c2329742746005@kernel.org>
- <20201206090250.GA10741@zn.tnic>
- <20201209180147.GD185686@kernel.org>
+        by mx2.suse.de (Postfix) with ESMTP id 177E4AE4A;
+        Thu, 10 Dec 2020 11:42:19 +0000 (UTC)
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        iamjoonsoo.kim@lge.com, andrii@kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
+References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
+ <20201209011303.32737-1-paulmck@kernel.org>
+ <8ea31887-8cc3-24cc-82e8-779290c61c2c@suse.cz>
+ <20201209230442.GH2657@paulmck-ThinkPad-P72>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v2 sl-b 1/5] mm: Add mem_dump_obj() to print source of
+ memory block
+Message-ID: <211cc2a9-5d94-cb0f-91bf-3415510b7dae@suse.cz>
+Date:   Thu, 10 Dec 2020 11:48:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
+In-Reply-To: <20201209230442.GH2657@paulmck-ThinkPad-P72>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201209180147.GD185686@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 03:01:47PM -0300, Arnaldo Carvalho de Melo wrote:
-> Trying to swap this back into my brain...
-
-I know *exactly* what you mean. :)
-
+On 12/10/20 12:04 AM, Paul E. McKenney wrote:
+>> > +/**
+>> > + * kmem_valid_obj - does the pointer reference a valid slab object?
+>> > + * @object: pointer to query.
+>> > + *
+>> > + * Return: %true if the pointer is to a not-yet-freed object from
+>> > + * kmalloc() or kmem_cache_alloc(), either %true or %false if the pointer
+>> > + * is to an already-freed object, and %false otherwise.
+>> > + */
+>> 
+>> It should be possible to find out more about object being free or not, than you
+>> currently do. At least to find out if it's definitely free. When it appears
+>> allocated, it can be actually still free in some kind of e.g. per-cpu or
+>> per-node cache that would be infeasible to check. But that improvement to the
+>> output can be also added later. Also SLUB stores the freeing stacktrace, which
+>> might be useful...
 > 
-> Humm, if I'm building this on, say, aarch64 then asm/ will not be
-> pointing to x86, right? Intel PT needs the x86 instruction decoder,
-> right?
+> I can see how this could help debugging a use-after-free situation,
+> at least as long as the poor sap that subsequently allocated it doesn't
+> free it.
+> 
+> I can easily add more fields to the kmem_provenance structure.  Maybe
+> it would make sense to have another exported API that you provide a
+> kmem_provenance structure to, and it fills it in.
+> 
+> One caution though...  I rely on the object being allocated.
+> If it officially might already be freed, complex and high-overhead
+> synchronization seems to be required to safely access the various data
+> structures.
 
-Yeah.
+Good point! It's easy to forget that when being used to similar digging in a
+crash dump, where nothing changes.
 
-> I should've have wrote in the cset comment log if this was related to
-> cross build failures I encountered, can't remember now :-\
+> So any use on an already-freed object is on a "you break it you get to
+> keep the pieces" basis.  On the other hand, if you are dealing with a
+> use-after-free situation, life is hard anyway.
 
-I think that is it. There's inat.h in tools/arch/x86/include/asm/ too so
-it needs to be exactly that one that gets included on other arches.
+Yeah, even now I think it's potentially dangerous, as you can get
+kmem_valid_obj() as true because PageSlab(page) is true. But the object might be
+already free, so as soon as another CPU frees another object from the same slab
+page, the page gets also freed... or it was already freed and then allocated by
+another slab so it's PageSlab() again.
+I guess at least some safety could be achieved by pinning the page with
+get_page_unless_zero. But maybe your current implementation is already safe,
+need to check in detail.
 
-> And also it would be interesting to avoid updating both the kernel and
-> the tools/ copy, otherwise one would have to test the tools build, which
-> may break with such updates.
->
-> The whole point of the copy is to avoid that, otherwise we could just
-> use the kernel files directly.
+> Or am I missing your point?
+> 
+>> > +bool kmem_valid_obj(void *object)
+>> > +{
+>> > +	struct page *page;
+>> > +
+>> > +	if (!virt_addr_valid(object))
+>> > +		return false;
+>> > +	page = virt_to_head_page(object);
+>> > +	return PageSlab(page);
+>> > +}
+>> > +EXPORT_SYMBOL_GPL(kmem_valid_obj);
+>> > +
+>> > +/**
+>> > + * kmem_dump_obj - Print available slab provenance information
+>> > + * @object: slab object for which to find provenance information.
+>> > + *
+>> > + * This function uses pr_cont(), so that the caller is expected to have
+>> > + * printed out whatever preamble is appropriate.  The provenance information
+>> > + * depends on the type of object and on how much debugging is enabled.
+>> > + * For a slab-cache object, the fact that it is a slab object is printed,
+>> > + * and, if available, the slab name, return address, and stack trace from
+>> > + * the allocation of that object.
+>> > + *
+>> > + * This function will splat if passed a pointer to a non-slab object.
+>> > + * If you are not sure what type of object you have, you should instead
+>> > + * use mem_dump_obj().
+>> > + */
+>> > +void kmem_dump_obj(void *object)
+>> > +{
+>> > +	int i;
+>> > +	struct page *page;
+>> > +	struct kmem_provenance kp;
+>> > +
+>> > +	if (WARN_ON_ONCE(!virt_addr_valid(object)))
+>> > +		return;
+>> > +	page = virt_to_head_page(object);
+>> > +	if (WARN_ON_ONCE(!PageSlab(page))) {
+>> > +		pr_cont(" non-slab memory.\n");
+>> > +		return;
+>> > +	}
+>> > +	kp.kp_ptr = object;
+>> > +	kp.kp_page = page;
+>> > +	kp.kp_nstack = KS_ADDRS_COUNT;
+>> > +	kmem_provenance(&kp);
+>> 
+>> You don't seem to be printing kp.kp_objp anywhere? (unless in later patch, but
+>> would make sense in this patch already).
+> 
+> Good point!
+> 
+> However, please note that the various debugging options that reserve
+> space at the beginning.  This can make the meaning of kp.kp_objp a bit
+> different than one might expect.
 
-Well, there's this diff -u thing which makes sure both copies are in sync.
+Yeah, I think the best would be to match the address that
+kmalloc/kmem_cache_alloc() would return, thus the beginning of the object
+itself, so you can calculate the offset within it, etc.
 
-Why did we ever copy the insn decoder to tools/?
+>> > --- a/mm/util.c
+>> > +++ b/mm/util.c
+>> 
+>> I think mm/debug.c is a better fit as it already has dump_page() of a similar
+>> nature. Also you can call that from from mem_dump_obj() at least in case when
+>> the more specific handlers fail. It will even include page_owner info if enabled! :)
+> 
+> I will count this as one vote for mm/debug.c.
+> 
+> Two things to consider, though...  First, Joonsoo suggests that the fact
+> that this produces useful information without any debugging information
+> enabled makes it not be debugging as such.
 
-There must've been some reason because otherwise we could probably use
-the one in arch/x86/lib/, in tools/.
+Well there's already dump_page() which also produces information without special
+configs.
+We're not the best subsystem in this kind of consistency...
 
-Yeah, this whole copying of headers back'n'forth is turning out to be
-kinda hairy...
+> Second, mm/debug.c does
+> not include either slab.h or vmalloc.h.  The second might not be a
+> showstopper, but I was interpreting this to mean that its role was
+> less central.
 
--- 
-Regards/Gruss,
-    Boris.
+I think it can include whatever becomes needed there :)
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+> 							Thanx, Paul
+> 
+>> Thanks,
+>> Vlastimil
+>> 
+>> > @@ -970,3 +970,28 @@ int __weak memcmp_pages(struct page *page1, struct page *page2)
+>> >  	kunmap_atomic(addr1);
+>> >  	return ret;
+>> >  }
+>> > +
+>> > +/**
+>> > + * mem_dump_obj - Print available provenance information
+>> > + * @object: object for which to find provenance information.
+>> > + *
+>> > + * This function uses pr_cont(), so that the caller is expected to have
+>> > + * printed out whatever preamble is appropriate.  The provenance information
+>> > + * depends on the type of object and on how much debugging is enabled.
+>> > + * For example, for a slab-cache object, the slab name is printed, and,
+>> > + * if available, the return address and stack trace from the allocation
+>> > + * of that object.
+>> > + */
+>> > +void mem_dump_obj(void *object)
+>> > +{
+>> > +	if (!virt_addr_valid(object)) {
+>> > +		pr_cont(" non-paged (local) memory.\n");
+>> > +		return;
+>> > +	}
+>> > +	if (kmem_valid_obj(object)) {
+>> > +		kmem_dump_obj(object);
+>> > +		return;
+>> > +	}
+>> > +	pr_cont(" non-slab memory.\n");
+>> > +}
+>> > +EXPORT_SYMBOL_GPL(mem_dump_obj);
+>> > 
+>> 
+> 
+
