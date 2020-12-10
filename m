@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4552D6224
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D84B02D622B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391441AbgLJQiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:38:51 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2242 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390577AbgLJQid (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:38:33 -0500
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CsKJt4gsFz67Mn0;
-        Fri, 11 Dec 2020 00:35:10 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 10 Dec 2020 17:37:49 +0100
-Received: from [10.210.172.228] (10.210.172.228) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 10 Dec 2020 16:37:48 +0000
-Subject: Re: [PATCH v5 4/5] Driver core: platform: Add
- devm_platform_get_irqs_affinity()
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Marc Zyngier <maz@kernel.org>, <tglx@linutronix.de>
-CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <lenb@kernel.org>, <rjw@rjwysocki.net>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <linux-acpi@vger.kernel.org>,
-        <dwagner@suse.de>
-References: <1606905417-183214-1-git-send-email-john.garry@huawei.com>
- <1606905417-183214-5-git-send-email-john.garry@huawei.com>
- <X9EYRNDXS1Xcy4iU@kroah.com>
- <36730230-9fd7-8c6c-b997-328beea2fc31@huawei.com>
- <X9Ehy28876ezAOLH@kroah.com> <ed238cc6e4a6b865b2dc965f52fe0550@kernel.org>
- <X9I+2ydy8VDOaiec@kroah.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <2cce8111-37b9-e29b-6f9a-4866891f7a7c@huawei.com>
-Date:   Thu, 10 Dec 2020 16:37:13 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S2391783AbgLJQki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:40:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:52440 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391274AbgLJQj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 11:39:59 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B619B31B;
+        Thu, 10 Dec 2020 08:39:13 -0800 (PST)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5A0A23F66B;
+        Thu, 10 Dec 2020 08:39:11 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, bigeasy@linutronix.de, qais.yousef@arm.com,
+        swood@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org,
+        ouwen210@hotmail.com, Qian Cai <cai@redhat.com>
+Subject: [PATCH 0/2] workqueue: Fix migrate_disable hotplug changes vs kworker affinity
+Date:   Thu, 10 Dec 2020 16:38:28 +0000
+Message-Id: <20201210163830.21514-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <X9I+2ydy8VDOaiec@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.172.228]
-X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi folks,
 
-> {sigh} why do hardware engineers ignore sane busses...
+This should fix the issue reported by Qian at [1]. Dietmar mentioned some
+other issue with hotplug & deadline tasks, but that's being investigated by
+someone else ATM. 
 
-The next HW version is an integrated PCI endpoint, so there is hope.
 
-> 
-> Anyway, if you all are going to maintain this, no objection from me, it
-> should go through the irq tree.
+I would like to mention I suspect this bug comes straight from $hell, as
+I've never ever had to fight off so many (mostly unrelated) issues while
+looking into it. Distro kernel being mangled, git tree corruption, periods of
+heisenbugism...
 
-OK, thanks. So this is getting quite late for 5.11, and none of it has 
-seen -next obviously. However, the changes are additive and should only 
-affect a single driver now. I'm talking about this series now, not 
-Marc's companion series.
+Cheers,
+Valentin
 
-I just need to hear from Thomas on any merge preference.
+[1]: https://lore.kernel.org/r/ff62e3ee994efb3620177bf7b19fab16f4866845.camel@redhat.com
 
-Thanks,
-John
+Valentin Schneider (2):
+  stop_machine: Add caller debug info to queue_stop_cpus_work
+  workqueue: Fix affinity of kworkers attached during late hotplug
 
+ kernel/stop_machine.c |  1 +
+ kernel/workqueue.c    | 24 +++++++++++++++++-------
+ 2 files changed, 18 insertions(+), 7 deletions(-)
+
+--
+2.27.0
 
