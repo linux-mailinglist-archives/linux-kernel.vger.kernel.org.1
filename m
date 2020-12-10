@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722562D6420
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 532C22D641A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392921AbgLJRxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:53:09 -0500
-Received: from mail-bn8nam11on2055.outbound.protection.outlook.com ([40.107.236.55]:12128
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        id S2392667AbgLJRxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:53:00 -0500
+Received: from mail-dm6nam11on2069.outbound.protection.outlook.com ([40.107.223.69]:37494
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404085AbgLJRMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2404084AbgLJRMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Dec 2020 12:12:53 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fL4xFwSZ07x7dF0WPJJOLo0Gi4Qv+AEYXBz4yNA2EHVTN3q+zMXN8z/h9iCQyiGesx5HZ4t0Ov+rdk3VsDMri+YlJkp7BH2BPbuBJ1ZUQQkax5ecSWorF/sezxWa0m4YlQiHROGolkhHuq/bebR0cGxakk5DkR9hVp27ohdupypmKxCvwUaUQHvHhV5Oe1OidMC5EFHHUMJHMoSpTJ/6OHSX6kDMmsqa/o17BwqDlNLbtUytPvD0+o1RSW4GlvELeJqxhVBKP+TUucBUNP4IBDIZdPk2VBG0K1Saw762QfTPqFL5ZNIKW+cbDq5K5JQsoDcB46Om+k4NJqWj2f6/QQ==
+ b=fmsm0G9ubvaf8KcXhzJlaVp1rYDiFVsjJ/ocn4P+gddb4eWG3EvIEJuVuJfYh9bU3cgSX8WJWMRqP7FMOF/ISdi+IasZi25ZIr+DwWkdf5P/JF84j6DkmMUSTgpFhFHE4qThuE1qL6PWVoY2jN8sKc3jOUbyRAHjUwEZPvykvKnDMDxz4rM5TmuQHnhnE1c8oy4YXDc1jrNNLABcI7e5tI/d/AGpdKWzCobW/UUk/0JUbPeHiNLs0yal7x9Q5Uz8a5g5jk+FAYooBamskpZenIXpz/M7aR6hFHoqz52rgBzEi6OsEaNUOCMW0tMnnfc9/ptXz6d/D+KS7fV7CLt6JA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ManqscXx1DPKr4nXvgMBJE6/JjqscpgS0t1WaoEyDo8=;
- b=S4ip3XD9EcG2Vp/drM5+HaFmLqIW9laoGvlcMjAMsOBEBW0DKaxbJ80YTrc/QhZRAPuhGnWnQmjAO/ceRcLed5/H35LF6q3cy4RbVazfyrOy+Rmdj8owgZ8pBwan99uP2Niuthfs70Cl/TMIl9OY6EYhdC/9ebY/gCrXNCMZh0uNCLEmzYr2NQW7BEHRRlO2ausVbr0mcdpmgxEXn7uQJlPb5VvKAGxrWkN2GdYU0mp+XeTMi8xGdlDWqGzhzbuaY39JLc7/JD0QAAODSNf2UjyBZ7WIgeGyvcPxY9Ydh6PXEB6rCM8h7w22XdP4w1FexlhMXCRky9m0VI6t2dteBw==
+ bh=pQBOjEstY8Di5CYgkGzWr+hnLpGjJq9ZYa0v9l9Zj4o=;
+ b=mIf236rP6gtMiE78b+RoOiGsZbXiF44SuE6WS8GpnsOeDqzABe3b/PqsbxOBLDx9GoKvzbZRhgosVXp1YgNj1k0Nb7QKSIj2amMSSoZwNWG1O9cWiQTAfUGvdYuLPFqbhQfb3eVwlgio2ranGlu6mHAYymJGVzMXQr0IS9yfX/J6vEc9EbnSobCY/Ni+l15x1gUYLyMVf+subco0GfY/D9dHrVvbnVM0CoOItKmPgRTsIQCoKh2mCZpoDoh6MQR9rSqsYdKxnMOBF6IrqYhopds620CUq4ovG/Y6HjmwSENEFTbGL6Fl9lnfzYRxJ5otsOq0/C2wpZsqG6ShhdPEEw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ManqscXx1DPKr4nXvgMBJE6/JjqscpgS0t1WaoEyDo8=;
- b=uj6JSjT3j4Vco87gqL3daa8fPKfJEEoeFeyN8i6LEXckalvoXCrQe9jyMqtbMDzsZiESD4lGjtbm1Qgw4B46Ng9faaS5VHcjCxwjbYxrn+mGtpWCvuqPQPkXnujYpYAX3rAU1GMsctqQln29S5oPSKBk7sda50QCJP1yDKTTpZ4=
+ bh=pQBOjEstY8Di5CYgkGzWr+hnLpGjJq9ZYa0v9l9Zj4o=;
+ b=MMZHVfwsv1Lpt/muPHpI/YKb/T8qapF7CDFmuzTIwvNS5r2N6W8womydAmVpZSXLT6t4U3PFSsiYeHwhUj4eVPIJpGWbQ66m9oviC0URJDQQK5ScduEzhy53Y/NqeL347QKWeIclyaZLhyNf/QK1dm8ZtY3Gltr51vJ2Z5aTWkc=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
 Received: from CY4PR12MB1352.namprd12.prod.outlook.com (2603:10b6:903:3a::13)
- by CY4PR1201MB0149.namprd12.prod.outlook.com (2603:10b6:910:1c::19) with
+ by CY4PR1201MB0168.namprd12.prod.outlook.com (2603:10b6:910:1d::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Thu, 10 Dec
- 2020 17:11:28 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.22; Thu, 10 Dec
+ 2020 17:12:13 +0000
 Received: from CY4PR12MB1352.namprd12.prod.outlook.com
  ([fe80::a10a:295e:908d:550d]) by CY4PR12MB1352.namprd12.prod.outlook.com
  ([fe80::a10a:295e:908d:550d%8]) with mapi id 15.20.3632.021; Thu, 10 Dec 2020
- 17:11:28 +0000
+ 17:12:13 +0000
 From:   Tom Lendacky <thomas.lendacky@amd.com>
 To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
@@ -49,244 +49,188 @@ Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH v5 08/34] KVM: SVM: Prevent debugging under SEV-ES
-Date:   Thu, 10 Dec 2020 11:09:43 -0600
-Message-Id: <8db966fa2f9803d6454ce773863025d0e2e7f3cc.1607620209.git.thomas.lendacky@amd.com>
+Subject: [PATCH v5 13/34] KVM: SVM: Create trace events for VMGEXIT processing
+Date:   Thu, 10 Dec 2020 11:09:48 -0600
+Message-Id: <25357dca49a38372e8f483753fb0c1c2a70a6898.1607620209.git.thomas.lendacky@amd.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1607620209.git.thomas.lendacky@amd.com>
 References: <cover.1607620209.git.thomas.lendacky@amd.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: CH2PR14CA0005.namprd14.prod.outlook.com
- (2603:10b6:610:60::15) To CY4PR12MB1352.namprd12.prod.outlook.com
+X-ClientProxiedBy: CH2PR14CA0008.namprd14.prod.outlook.com
+ (2603:10b6:610:60::18) To CY4PR12MB1352.namprd12.prod.outlook.com
  (2603:10b6:903:3a::13)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from tlendack-t1.amd.com (165.204.77.1) by CH2PR14CA0005.namprd14.prod.outlook.com (2603:10b6:610:60::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 10 Dec 2020 17:11:27 +0000
+Received: from tlendack-t1.amd.com (165.204.77.1) by CH2PR14CA0008.namprd14.prod.outlook.com (2603:10b6:610:60::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 10 Dec 2020 17:12:12 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 435bebe7-0d09-4427-5b6e-08d89d2ea22c
-X-MS-TrafficTypeDiagnostic: CY4PR1201MB0149:
+X-MS-Office365-Filtering-Correlation-Id: 3ad14ba8-81a5-4f04-bdf0-08d89d2ebcbb
+X-MS-TrafficTypeDiagnostic: CY4PR1201MB0168:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR1201MB01491FBF7373253AA587AD5EECCB0@CY4PR1201MB0149.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1002;
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB0168B7B9865A4B4DEC8A4CF4ECCB0@CY4PR1201MB0168.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nWnAwNsFNevNikluVCt1SxKAhpd8WcH9RdCXoW3PeDWIhUg3X3fFBDWZJa9lGZKGo1lSumuMGZZamCjrFe4BgeKM+zNTfvpFDmaNbRyFcwkn80DTXsk6qYB7UmYDI45Jz7QyxYuSBJLn7qfWSMR8W389pbdMxJu2SzGIxrMVlQBabLdtDT1RSLyYNLNORIboaJSeMsJ4s9jfNhMNV4XTG/zy7LATdGGKdzFCYhpZjd5eCrZZLwj7yhTLjsKuBwFTt26k0zSMnC8eVELe78T6nlRhi5sESbD5GsMOJ8AblSusOhqdZtpEseusDsRXaR9OgGUi5pjN9vMvCnsVuM0Hu3GEBGJMJRSXBJ0PNNmtxbKDX6txfQkFeCjRnI6XLVVt
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1352.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(2906002)(5660300002)(6666004)(26005)(52116002)(186003)(83380400001)(16526019)(54906003)(6486002)(956004)(2616005)(8936002)(7696005)(508600001)(66946007)(66476007)(36756003)(8676002)(86362001)(34490700003)(4326008)(7416002)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?p0cSEMo0U8BSlgiGPa/jiCH0wiJ0vdQbdCxVzJBHKqvG8I/M2I3dgK1O2TGH?=
- =?us-ascii?Q?lxdXQ9PmM+MVzPvESrDSXM3jMpOf4JdllnDCZ8ta0C8QBi8yR3547fmHNUD5?=
- =?us-ascii?Q?TjUpQTC9K11cUNFiqk2NJrASqImgFQwFydouP1vE8NBqZJfcLa4Xe2iLMkpR?=
- =?us-ascii?Q?05SZxsy8umhWeNyTXmUP787x8nWK3uz/X6jqnNPvGPsM9qWe88VbG5ZAFyIQ?=
- =?us-ascii?Q?/ayny/Kn3X0Nr08Z9QbhqhcLQp9y3Lg/pVP2f73RQ+vO8p1DuvBpWxNf2HmW?=
- =?us-ascii?Q?JyEInRodAbi68BD1rlkfs8uxX05iDNqSbKf7aFfXlPZUeMH4U0l+/gzlRQgJ?=
- =?us-ascii?Q?27doG9xbes5QnH67+4B9c/WvU4WRhowAGye8rlEte/3LCcYr4l64ZfiE/wNk?=
- =?us-ascii?Q?yDYov+vm06GuAJARmHO7d0B6CGos0Xsf2eJiAPmA+FlndTlCaCVSvycxnGBh?=
- =?us-ascii?Q?qfVS9kIm0F2+L+JahsZOvMiVwP+ZYtOayEzViNYusnWnOdG6V9/s+xURKhbv?=
- =?us-ascii?Q?Myrhm8HV+d8vyJjtTP4NDiJD+0qborIo+TdCtqq2kXSRYfmxGLtdARv4277o?=
- =?us-ascii?Q?4mgyS6wDxN1q8mhqbW6ZRBknHjvDvwikFsEGW3pozSJ1/2CvPGCfNPTbtCK3?=
- =?us-ascii?Q?gY0HCQY4z0CJHTX2eg1lee5sxNGK3C9tldEldTG5kpqjtYquL3+xgdc497aq?=
- =?us-ascii?Q?C5JJ6JYwxlL/o1cVqKEmcnCiecIyEeRcuDv9ulaUulovaBEgDEFRxReY+J8I?=
- =?us-ascii?Q?jDqnF7qMm8cQiDm6584q2XySPXaSwMrC0xxSysEXiZdihfbZPSnsORcPgiaW?=
- =?us-ascii?Q?31y8daca/++iKIYbuIeSD7SKe7NdsjS9iVQxY0oWjfuI8+WXiLa/lpFZ2w6o?=
- =?us-ascii?Q?NYnLF1JRSdrwWTNRU5/p3beV/gK3/y7Up4Tpj85jkSn/OiLNc3LQSnA3LVN9?=
- =?us-ascii?Q?MHjeoain5o0VFYphso9BYreKDggw+I0RrNaTOeX1343FjGr3OfvO0QIBnkJt?=
- =?us-ascii?Q?DkaF?=
+X-Microsoft-Antispam-Message-Info: Zwd+8+WEQQ4kv2hYPDnUNg0k9yKBhPn5Y8AFONS03wZsBnoWwsu6a/ntOfD/Sh4U/UJS1yquwHU4SIvQHL/yTT/KkyAhhSVcn/0IcT9z5raEIjItQAPnKzgl9uBCMaJl4naZXTt0bRFNaMalcAgFT3cUb2axfJuVpu9lXi8xGfnWSqb8QBjNN/efqjRw7IxMVCrSVoKPKqCE7T8mFTeUnadnlKF3y4rEx3FaOgizSqToeOZvkA9cPV1r39954bSjuNqOj7+STlV4RNYwsGdZ/G/1rTKzF410Va65m4tqjnTlBpt76MryncQlaEnzllPvnxUa7wjkg1qqnyq0QqS6l9gdqOXM6XNWsKEyjvRJem5pVGcHaPFL8R9p+KwYvq72
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1352.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(376002)(36756003)(8676002)(6486002)(4326008)(66476007)(86362001)(7416002)(66946007)(7696005)(54906003)(6666004)(26005)(16526019)(34490700003)(66556008)(8936002)(83380400001)(186003)(2906002)(2616005)(52116002)(956004)(508600001)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?b4erJJ9temJs000Gw/blBz6wVZ1SYZOlhHDAIP0L6oq8GZL6CZLqPdY3tN7F?=
+ =?us-ascii?Q?wUjgaavFtyr5rnu/HeroXSRRkTUYZY8Qzn7dGsWs/pLJMRvp2KdGR7Gya4+G?=
+ =?us-ascii?Q?9bbnsB3uGNH2ipwpcSE6M81+lssPyAUZ7vA1S1LmIYgHyMhRG6OeGHY4pTAB?=
+ =?us-ascii?Q?mhUi/JOo3if28A5fxXFUOfoBdSkJ+Lsb2NyXZOxgX9z6J8OuwpBwGuuNZJTh?=
+ =?us-ascii?Q?sryzzeMEOstevW9hI1DGpRDZi8CWOKpmH0nB0kVzvOww52ycSrj6wVmi2u7N?=
+ =?us-ascii?Q?Hg9hmZYKS7WzHdyOrp5P6KMJa43YCYM2CJ5f5FqwIlfisizpDBwFzdKp9xAu?=
+ =?us-ascii?Q?BTni311NqTvCKK7iZrC+LrlnTg+hGLbh4KDsAErDY/Zh+vyMXSz9nqt3yJzL?=
+ =?us-ascii?Q?2DYWUp9KVrEEIhh69m1Uc6GnzcZHEfUiLsAarLHsuBcrwAvpuIUwnvjnioZ+?=
+ =?us-ascii?Q?6JY03Pn9KEnF0KW6alKC4IZ+bsttfVJQmsxg/1eUnnzC2ekWVeHBrxLfuFrF?=
+ =?us-ascii?Q?ApVC7UZ9Og45Pq7Stdx1kWElq1ztCMi2a7gcV0qnCfpFuZm0NlnXxdWixe4z?=
+ =?us-ascii?Q?4KAkEt9wRL+frL8zjrgKff9QOTWZR4uq3k45msQbLZHbXvYJ12h4u8B1kLjY?=
+ =?us-ascii?Q?+x5QuFPr35C4iX4mYZXNyJmFnPh8SUCwAK9H5YCVQrVVeEztAaTx4d5tFNwz?=
+ =?us-ascii?Q?9ProMwN+JLT1ar7kHzGP8LlyH7fFwVBXdq7bfmaWQiDrXThGFqKZ8ZXrBkGc?=
+ =?us-ascii?Q?+NP+GSsf1rwUmtmNnesmjOr2EssUSBAWnk/es22BfYGYVrzHA3xHEbDdsSDc?=
+ =?us-ascii?Q?HwODYUd6CdusfnOq28MPdG5NrHJ6L0xA9GkKyhFWeEIK9aC7MwpgOwj8ZmFs?=
+ =?us-ascii?Q?Z2+vSPwV8ax4IJq/J9wr8jkZnm8h13MSpuhYtgql/YW9x96iF2BUk6r4jZBw?=
+ =?us-ascii?Q?BqmLJNMu9giv5szOC3A2sIQE0Miucajia8h3zdWE7iXreqqLZmlMD4S/yAD3?=
+ =?us-ascii?Q?sZsX?=
 X-OriginatorOrg: amd.com
 X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1352.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2020 17:11:28.6848
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2020 17:12:13.2642
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 435bebe7-0d09-4427-5b6e-08d89d2ea22c
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ad14ba8-81a5-4f04-bdf0-08d89d2ebcbb
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A4Hvd2oJA4V4LTJRO7nR80Df45/OG0q29rLf2pZxy8rLsVuhx+8SiKGuTyi1PxBe1r9sPrJLaq5YNPOoX3b7rw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0149
+X-MS-Exchange-CrossTenant-UserPrincipalName: bK9m1S89Nze8BFK1VSE6j01ncVU6DrSOz5kpc6QigWF1wG1OtTNckHOz3yKp3mZSXQDbPCCm8GrTgVKmshbQEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0168
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tom Lendacky <thomas.lendacky@amd.com>
 
-Since the guest register state of an SEV-ES guest is encrypted, debugging
-is not supported. Update the code to prevent guest debugging when the
-guest has protected state.
-
-Additionally, an SEV-ES guest must only and always intercept DR7 reads and
-writes. Update set_dr_intercepts() and clr_dr_intercepts() to account for
-this.
+Add trace events for entry to and exit from VMGEXIT processing. The vCPU
+id and the exit reason will be common for the trace events. The exit info
+fields will represent the input and output values for the entry and exit
+events, respectively.
 
 Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 ---
- arch/x86/kvm/svm/svm.c |  9 +++++
- arch/x86/kvm/svm/svm.h | 81 +++++++++++++++++++++++-------------------
- arch/x86/kvm/x86.c     |  3 ++
- 3 files changed, 57 insertions(+), 36 deletions(-)
+ arch/x86/kvm/svm/sev.c |  6 +++++
+ arch/x86/kvm/trace.h   | 53 ++++++++++++++++++++++++++++++++++++++++++
+ arch/x86/kvm/x86.c     |  2 ++
+ 3 files changed, 61 insertions(+)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 857d0d3f2752..513cf667dff4 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1806,6 +1806,9 @@ static void svm_set_dr6(struct vcpu_svm *svm, unsigned long value)
- {
- 	struct vmcb *vmcb = svm->vmcb;
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 54e6894b26d2..da473c6b725e 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -15,10 +15,12 @@
+ #include <linux/pagemap.h>
+ #include <linux/swap.h>
+ #include <linux/processor.h>
++#include <linux/trace_events.h>
  
-+	if (svm->vcpu.arch.guest_state_protected)
-+		return;
+ #include "x86.h"
+ #include "svm.h"
+ #include "cpuid.h"
++#include "trace.h"
+ 
+ static int sev_flush_asids(void);
+ static DECLARE_RWSEM(sev_deactivate_lock);
+@@ -1464,6 +1466,8 @@ static void pre_sev_es_run(struct vcpu_svm *svm)
+ 	if (!svm->ghcb)
+ 		return;
+ 
++	trace_kvm_vmgexit_exit(svm->vcpu.vcpu_id, svm->ghcb);
 +
- 	if (unlikely(value != vmcb->save.dr6)) {
- 		vmcb->save.dr6 = value;
- 		vmcb_mark_dirty(vmcb, VMCB_DR);
-@@ -1816,6 +1819,9 @@ static void svm_sync_dirty_debug_regs(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
+ 	sev_es_sync_to_ghcb(svm);
  
-+	if (vcpu->arch.guest_state_protected)
-+		return;
+ 	kvm_vcpu_unmap(&svm->vcpu, &svm->ghcb_map, true);
+@@ -1528,6 +1532,8 @@ int sev_handle_vmgexit(struct vcpu_svm *svm)
+ 	svm->ghcb = svm->ghcb_map.hva;
+ 	ghcb = svm->ghcb_map.hva;
+ 
++	trace_kvm_vmgexit_enter(svm->vcpu.vcpu_id, ghcb);
 +
- 	get_debugreg(vcpu->arch.db[0], 0);
- 	get_debugreg(vcpu->arch.db[1], 1);
- 	get_debugreg(vcpu->arch.db[2], 2);
-@@ -1834,6 +1840,9 @@ static void svm_set_dr7(struct kvm_vcpu *vcpu, unsigned long value)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
+ 	exit_code = ghcb_get_sw_exit_code(ghcb);
  
-+	if (vcpu->arch.guest_state_protected)
-+		return;
+ 	ret = sev_es_validate_vmgexit(svm);
+diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+index aef960f90f26..7da931a511c9 100644
+--- a/arch/x86/kvm/trace.h
++++ b/arch/x86/kvm/trace.h
+@@ -1578,6 +1578,59 @@ TRACE_EVENT(kvm_hv_syndbg_get_msr,
+ 		  __entry->vcpu_id, __entry->vp_index, __entry->msr,
+ 		  __entry->data)
+ );
 +
- 	svm->vmcb->save.dr7 = value;
- 	vmcb_mark_dirty(svm->vmcb, VMCB_DR);
- }
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 80a359f3cf20..abfe53d6b3dc 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -199,6 +199,28 @@ static inline struct kvm_svm *to_kvm_svm(struct kvm *kvm)
- 	return container_of(kvm, struct kvm_svm, kvm);
- }
- 
-+static inline bool sev_guest(struct kvm *kvm)
-+{
-+#ifdef CONFIG_KVM_AMD_SEV
-+	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
++/*
++ * Tracepoint for the start of VMGEXIT processing
++ */
++TRACE_EVENT(kvm_vmgexit_enter,
++	TP_PROTO(unsigned int vcpu_id, struct ghcb *ghcb),
++	TP_ARGS(vcpu_id, ghcb),
 +
-+	return sev->active;
-+#else
-+	return false;
-+#endif
-+}
++	TP_STRUCT__entry(
++		__field(unsigned int, vcpu_id)
++		__field(u64, exit_reason)
++		__field(u64, info1)
++		__field(u64, info2)
++	),
 +
-+static inline bool sev_es_guest(struct kvm *kvm)
-+{
-+#ifdef CONFIG_KVM_AMD_SEV
-+	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
++	TP_fast_assign(
++		__entry->vcpu_id     = vcpu_id;
++		__entry->exit_reason = ghcb->save.sw_exit_code;
++		__entry->info1       = ghcb->save.sw_exit_info_1;
++		__entry->info2       = ghcb->save.sw_exit_info_2;
++	),
 +
-+	return sev_guest(kvm) && sev->es_active;
-+#else
-+	return false;
-+#endif
-+}
++	TP_printk("vcpu %u, exit_reason %llx, exit_info1 %llx, exit_info2 %llx",
++		  __entry->vcpu_id, __entry->exit_reason,
++		  __entry->info1, __entry->info2)
++);
 +
- static inline void vmcb_mark_all_dirty(struct vmcb *vmcb)
- {
- 	vmcb->control.clean = 0;
-@@ -250,21 +272,24 @@ static inline void set_dr_intercepts(struct vcpu_svm *svm)
- {
- 	struct vmcb *vmcb = get_host_vmcb(svm);
- 
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR0_READ);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR1_READ);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR2_READ);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR3_READ);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR4_READ);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR5_READ);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR6_READ);
-+	if (!sev_es_guest(svm->vcpu.kvm)) {
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR0_READ);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR1_READ);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR2_READ);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR3_READ);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR4_READ);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR5_READ);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR6_READ);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR0_WRITE);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR1_WRITE);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR2_WRITE);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR3_WRITE);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR4_WRITE);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR5_WRITE);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR6_WRITE);
-+	}
++/*
++ * Tracepoint for the end of VMGEXIT processing
++ */
++TRACE_EVENT(kvm_vmgexit_exit,
++	TP_PROTO(unsigned int vcpu_id, struct ghcb *ghcb),
++	TP_ARGS(vcpu_id, ghcb),
 +
- 	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR7_READ);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR0_WRITE);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR1_WRITE);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR2_WRITE);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR3_WRITE);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR4_WRITE);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR5_WRITE);
--	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR6_WRITE);
- 	vmcb_set_intercept(&vmcb->control, INTERCEPT_DR7_WRITE);
- 
- 	recalc_intercepts(svm);
-@@ -276,6 +301,12 @@ static inline void clr_dr_intercepts(struct vcpu_svm *svm)
- 
- 	vmcb->control.intercepts[INTERCEPT_DR] = 0;
- 
-+	/* DR7 access must remain intercepted for an SEV-ES guest */
-+	if (sev_es_guest(svm->vcpu.kvm)) {
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR7_READ);
-+		vmcb_set_intercept(&vmcb->control, INTERCEPT_DR7_WRITE);
-+	}
++	TP_STRUCT__entry(
++		__field(unsigned int, vcpu_id)
++		__field(u64, exit_reason)
++		__field(u64, info1)
++		__field(u64, info2)
++	),
 +
- 	recalc_intercepts(svm);
- }
++	TP_fast_assign(
++		__entry->vcpu_id     = vcpu_id;
++		__entry->exit_reason = ghcb->save.sw_exit_code;
++		__entry->info1       = ghcb->save.sw_exit_info_1;
++		__entry->info2       = ghcb->save.sw_exit_info_2;
++	),
++
++	TP_printk("vcpu %u, exit_reason %llx, exit_info1 %llx, exit_info2 %llx",
++		  __entry->vcpu_id, __entry->exit_reason,
++		  __entry->info1, __entry->info2)
++);
++
+ #endif /* _TRACE_KVM_H */
  
-@@ -481,28 +512,6 @@ void svm_vcpu_unblocking(struct kvm_vcpu *vcpu);
- 
- extern unsigned int max_sev_asid;
- 
--static inline bool sev_guest(struct kvm *kvm)
--{
--#ifdef CONFIG_KVM_AMD_SEV
--	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
--
--	return sev->active;
--#else
--	return false;
--#endif
--}
--
--static inline bool sev_es_guest(struct kvm *kvm)
--{
--#ifdef CONFIG_KVM_AMD_SEV
--	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
--
--	return sev_guest(kvm) && sev->es_active;
--#else
--	return false;
--#endif
--}
--
- static inline bool svm_sev_enabled(void)
- {
- 	return IS_ENABLED(CONFIG_KVM_AMD_SEV) ? max_sev_asid : 0;
+ #undef TRACE_INCLUDE_PATH
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b6809a2851d2..de0e35083df5 100644
+index de0e35083df5..d89736066b39 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -9671,6 +9671,9 @@ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
- 	unsigned long rflags;
- 	int i, r;
- 
-+	if (vcpu->arch.guest_state_protected)
-+		return -EINVAL;
-+
- 	vcpu_load(vcpu);
- 
- 	if (dbg->control & (KVM_GUESTDBG_INJECT_DB | KVM_GUESTDBG_INJECT_BP)) {
+@@ -11321,3 +11321,5 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_avic_unaccelerated_access);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_avic_incomplete_ipi);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_avic_ga_log);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_apicv_update_request);
++EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_vmgexit_enter);
++EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_vmgexit_exit);
 -- 
 2.28.0
 
