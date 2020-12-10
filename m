@@ -2,25 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFB02D6034
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A40BC2D6096
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391901AbgLJPo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:44:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47412 "EHLO mail.kernel.org"
+        id S2392031AbgLJPzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:55:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391247AbgLJOjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:39:52 -0500
+        id S2391168AbgLJOim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:38:42 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Paulian Bogdan Marinca <paulian@marinca.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH 5.9 33/75] thunderbolt: Fix use-after-free in remove_unplugged_switch()
-Date:   Thu, 10 Dec 2020 15:26:58 +0100
-Message-Id: <20201210142607.691475078@linuxfoundation.org>
+        stable@vger.kernel.org, Edward Baker <edward.baker@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Andi Shyti <andi.shyti@intel.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.9 38/75] drm/i915/gt: Limit frequency drop to RPe on parking
+Date:   Thu, 10 Dec 2020 15:27:03 +0100
+Message-Id: <20201210142607.941137005@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
 References: <20201210142606.074509102@linuxfoundation.org>
@@ -32,70 +34,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-commit 600c0849cf86b75d86352f59745226273290986a upstream.
+commit aff76ab795364569b1cac58c1d0bc7df956e3899 upstream.
 
-Paulian reported a crash that happens when a dock is unplugged during
-hibernation:
+We treat idling the GT (intel_rps_park) as a downclock event, and reduce
+the frequency we intend to restart the GT with. Since the two workloads
+are likely related (e.g. a compositor rendering every 16ms), we want to
+carry the frequency and load information from across the idling.
+However, we do also need to update the frequencies so that workloads
+that run for less than 1ms are autotuned by RPS (otherwise we leave
+compositors running at max clocks, draining excess power). Conversely,
+if we try to run too slowly, the next workload has to run longer. Since
+there is a hysteresis in the power graph, below a certain frequency
+running a short workload for longer consumes more energy than running it
+slightly higher for less time. The exact balance point is unknown
+beforehand, but measurements with 30fps media playback indicate that RPe
+is a better choice.
 
-[78436.228217] thunderbolt 0-1: device disconnected
-[78436.228365] BUG: kernel NULL pointer dereference, address: 00000000000001e0
-...
-[78436.228397] RIP: 0010:icm_free_unplugged_children+0x109/0x1a0
-...
-[78436.228432] Call Trace:
-[78436.228439]  icm_rescan_work+0x24/0x30
-[78436.228444]  process_one_work+0x1a3/0x3a0
-[78436.228449]  worker_thread+0x30/0x370
-[78436.228454]  ? process_one_work+0x3a0/0x3a0
-[78436.228457]  kthread+0x13d/0x160
-[78436.228461]  ? kthread_park+0x90/0x90
-[78436.228465]  ret_from_fork+0x1f/0x30
-
-This happens because remove_unplugged_switch() calls tb_switch_remove()
-that releases the memory pointed by sw so the following lines reference
-to a memory that might be released already.
-
-Fix this by saving pointer to the parent device before calling
-tb_switch_remove().
-
-Reported-by: Paulian Bogdan Marinca <paulian@marinca.net>
-Fixes: 4f7c2e0d8765 ("thunderbolt: Make sure device runtime resume completes before taking domain lock")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Edward Baker <edward.baker@intel.com>
+Tested-by: Edward Baker <edward.baker@intel.com>
+Fixes: 043cd2d14ede ("drm/i915/gt: Leave rps->cur_freq on unpark")
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Edward Baker <edward.baker@intel.com>
+Cc: Andi Shyti <andi.shyti@intel.com>
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: <stable@vger.kernel.org> # v5.8+
+Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Reviewed-by: Andi Shyti <andi.shyti@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201124183521.28623-1-chris@chris-wilson.co.uk
+(cherry picked from commit f7ed83cc1925f0b8ce2515044d674354035c3af9)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/thunderbolt/icm.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/i915/gt/intel_rps.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/thunderbolt/icm.c
-+++ b/drivers/thunderbolt/icm.c
-@@ -1973,7 +1973,9 @@ static int complete_rpm(struct device *d
+--- a/drivers/gpu/drm/i915/gt/intel_rps.c
++++ b/drivers/gpu/drm/i915/gt/intel_rps.c
+@@ -882,6 +882,10 @@ void intel_rps_park(struct intel_rps *rp
+ 		adj = -2;
+ 	rps->last_adj = adj;
+ 	rps->cur_freq = max_t(int, rps->cur_freq + adj, rps->min_freq);
++	if (rps->cur_freq < rps->efficient_freq) {
++		rps->cur_freq = rps->efficient_freq;
++		rps->last_adj = 0;
++	}
  
- static void remove_unplugged_switch(struct tb_switch *sw)
- {
--	pm_runtime_get_sync(sw->dev.parent);
-+	struct device *parent = get_device(sw->dev.parent);
-+
-+	pm_runtime_get_sync(parent);
- 
- 	/*
- 	 * Signal this and switches below for rpm_complete because
-@@ -1984,8 +1986,10 @@ static void remove_unplugged_switch(stru
- 	bus_for_each_dev(&tb_bus_type, &sw->dev, NULL, complete_rpm);
- 	tb_switch_remove(sw);
- 
--	pm_runtime_mark_last_busy(sw->dev.parent);
--	pm_runtime_put_autosuspend(sw->dev.parent);
-+	pm_runtime_mark_last_busy(parent);
-+	pm_runtime_put_autosuspend(parent);
-+
-+	put_device(parent);
+ 	GT_TRACE(rps_to_gt(rps), "park:%x\n", rps->cur_freq);
  }
- 
- static void icm_free_unplugged_children(struct tb_switch *sw)
 
 
