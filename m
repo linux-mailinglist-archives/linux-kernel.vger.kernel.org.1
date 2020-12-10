@@ -2,244 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE6B2D65D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 001752D65D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393235AbgLJTCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:02:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390107AbgLJTCk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:02:40 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60CAC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:01:53 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id j20so1436191otq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:01:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rx1msOfEbSyJS7cDx0/C400tSkHwuFCIEJM5sstvA4Q=;
-        b=hxa5l26RAYKPmcwdGaSAsHOP7HN8acPuE7KxU8p/M13QmkBQMnx5NQSQEQ4DC9j7O+
-         KFIJY/EG+lA0H1sUAlk9s3Ivg/1cgGO6tHWhRI79EXXpVHb1TQCxqIQfVUzACsPXgwlE
-         bi8ktcScXiLW+aFr9rNwO71AtITLQuxbaboHEUkLR+y7NBtLIPhQz3yP18AwMADd0QRy
-         nQ09oZf8fMBf6DWNscLBvMsbXVQyYKAhFwNZbBWbphQ2e6n/Ai2mMYMxaeH9fN1RN0mw
-         twIweOFSAjuAFDPiU76wkqMzIU6wUZh7QrOHS3smMiJirkPjdU542XvIx9WvVCs4fZ/K
-         rWvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rx1msOfEbSyJS7cDx0/C400tSkHwuFCIEJM5sstvA4Q=;
-        b=huK3BZwEG7Sr3i6svwR3h9kJklCxld38u7s+3mmTRFdRs2dsElwvA9QvHO0nFu6BPx
-         VGfKSTDPnF34K+r5HHlfKJ3752Tm/q5VSb0H8ikKkD6AiF8LFyq6wWHO2bFDCSFI93+/
-         SedSDylJkjgBDapyrMYnxI+TiIqD5qquMMCDUQ8NbiWKigHd6uF6F1G4LbRlYiXxqif7
-         bQuMvC1jkpazeorybcQKQzJl1GzIrV7t57FBDVv8nRJx0S2MKNmym+JN7J6kFJMEhkNU
-         8b9ff0c7lSelg5AsDMSI7T0MvyPhqHkDFtrFtntN+UBPZbAWJp8SRKLPogINyVycxSNk
-         upGw==
-X-Gm-Message-State: AOAM531R7/gUIVz49n0NUch6iWG4ulYXnj+R2S8jVYE1bgqXWKqrIRce
-        edtcfTplurpI/cGlVDDkzM9Fhm5SM0LW7zROv+Mqqw==
-X-Google-Smtp-Source: ABdhPJwG5+R2DIjQG+IG6LfB+23B9BthxPXL4XVHax2aft3b4QMixxgEJmhOwkBRJPSS5R5RgJ63Z6GrzvoEvzAzCOI=
-X-Received: by 2002:a9d:6317:: with SMTP id q23mr7124580otk.251.1607626912981;
- Thu, 10 Dec 2020 11:01:52 -0800 (PST)
+        id S2403994AbgLJTDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:03:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393240AbgLJTCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 14:02:49 -0500
+Date:   Thu, 10 Dec 2020 20:03:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607626928;
+        bh=ZfdBQzaSM47I/XuHSY08+0FnE40SdZU+Gk3omAhDuhg=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FCQFCwqxddKs23p50yHX0I5d/oS9HKBTYXcMQkfgSjLsRUE/4gpdLHNg5HMXAJ8l5
+         6mNhGt7PDZvlPCdBusW9x+6sEOZQ2xUdHV6dF5BBiAOBClStkJnfZzv+ElC2d/kdJa
+         nTpddsypJaZqKWSSCmKZVtMajVrhgtsWHpJ0AzFQ=
+From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
+Message-ID: <X9Jw+srprdT8tquZ@kroah.com>
+References: <20201210170443.GA17304@dincontrollerdev>
 MIME-Version: 1.0
-References: <000000000000b4862805b54ef573@google.com> <X8kLG5D+j4rT6L7A@elver.google.com>
- <CANn89iJWD5oXPLgtY47umTgo3gCGBaoy+XJfXnw1ecES_EXkCw@mail.gmail.com>
- <CANpmjNOaWbGJQ5Y=qC3cA31-R-Jy4Fbe+p=OBG5O2Amz8dLtLA@mail.gmail.com>
- <CANn89iKWf1EVZUuAHup+5ndhxvOqGopq53=vZ9yeok=DnRjggg@mail.gmail.com>
- <X8kjPIrLJUd8uQIX@elver.google.com> <af884a0e-5d4d-f71b-4821-b430ac196240@gmail.com>
- <CANpmjNNDKm_ObRnO_b3gH6wDYjb6_ex-KhZA5q5BRzEMgo+0xg@mail.gmail.com>
- <X9DHa2OG6lewtfPQ@elver.google.com> <X9JR/J6dMMOy1obu@elver.google.com> <CANn89i+2mAu_srdvefKLDY23HvrbOG1aMfj5uwvk6tYZ9uBtMA@mail.gmail.com>
-In-Reply-To: <CANn89i+2mAu_srdvefKLDY23HvrbOG1aMfj5uwvk6tYZ9uBtMA@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 10 Dec 2020 20:01:40 +0100
-Message-ID: <CANpmjNMdgX1H=ztDH5cpmmZJ3duL4M8Vn9Ty-XzNpsrhx0h4sA@mail.gmail.com>
-Subject: Re: WARNING in sk_stream_kill_queues (5)
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Jann Horn <jannh@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Willem de Bruijn <willemb@google.com>,
-        syzbot <syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201210170443.GA17304@dincontrollerdev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 at 18:14, Eric Dumazet <edumazet@google.com> wrote:
-> On Thu, Dec 10, 2020 at 5:51 PM Marco Elver <elver@google.com> wrote:
-[...]
-> > So I started putting gdb to work, and whenever I see an allocation
-> > exactly like the above that goes through tso_fragment() a warning
-> > immediately follows.
-> >
-> > Long story short, I somehow synthesized this patch that appears to fix
-> > things, but I can't explain why exactly:
-> >
-> > | --- a/net/core/skbuff.c
-> > | +++ b/net/core/skbuff.c
-> > | @@ -1679,13 +1679,6 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
-> > |
-> > |       skb_metadata_clear(skb);
-> > |
-> > | -     /* It is not generally safe to change skb->truesize.
-> > | -      * For the moment, we really care of rx path, or
-> > | -      * when skb is orphaned (not attached to a socket).
-> > | -      */
-> > | -     if (!skb->sk || skb->destructor == sock_edemux)
-> > | -             skb->truesize += size - osize;
-> > | -
-> > |       return 0;
-> > |
-> > |  nofrags:
-> >
-> > Now, here are the breadcrumbs I followed:
-> >
-> >
-> > 1.      Breakpoint on kfence_ksize() -- first allocation that matches the above:
-> >
-> >         | #0  __kfence_ksize (s=18446612700164612096) at mm/kfence/core.c:726
-> >         | #1  0xffffffff816fbf30 in kfence_ksize (addr=0xffff888436856000) at mm/kfence/core.c:737
-> >         | #2  0xffffffff816217cf in ksize (objp=0xffff888436856000) at mm/slab_common.c:1178
-> >         | #3  0xffffffff84896911 in __alloc_skb (size=914710528, gfp_mask=2592, flags=0, node=-1) at net/core/skbuff.c:217
-> >         | #4  0xffffffff84d0ba73 in alloc_skb_fclone (priority=<optimized out>, size=<optimized out>) at ./include/linux/skbuff.h:1144
-> >         | #5  sk_stream_alloc_skb (sk=0xffff8881176cc000, size=0, gfp=2592, force_schedule=232) at net/ipv4/tcp.c:888
-> >         | #6  0xffffffff84d41c36 in tso_fragment (gfp=<optimized out>, mss_now=<optimized out>, len=<optimized out>,
-> >         |     skb=<optimized out>, sk=<optimized out>) at net/ipv4/tcp_output.c:2124
-> >         | #7  tcp_write_xmit (sk=0xffff8881176cc000, mss_now=21950, nonagle=3096, push_one=-1996874776, gfp=0)
-> >         |     at net/ipv4/tcp_output.c:2674
-> >         | #8  0xffffffff84d43e48 in __tcp_push_pending_frames (sk=0xffff8881176cc000, cur_mss=337, nonagle=0)
-> >         |     at ./include/net/sock.h:918
-> >         | #9  0xffffffff84d3259c in tcp_push_pending_frames (sk=<optimized out>) at ./include/net/tcp.h:1864
-> >         | #10 tcp_data_snd_check (sk=<optimized out>) at net/ipv4/tcp_input.c:5374
-> >         | #11 tcp_rcv_established (sk=0xffff8881176cc000, skb=0x0 <fixed_percpu_data>) at net/ipv4/tcp_input.c:5869
-> >         | #12 0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f52ea0) at net/ipv4/tcp_ipv4.c:1668
-> >         | [...]
-> >
-> >         Set watchpoint on skb->truesize:
-> >
-> >         | (gdb) frame 3
-> >         | #3  0xffffffff84896911 in __alloc_skb (size=914710528, gfp_mask=2592, flags=0, node=-1) at net/core/skbuff.c:217
-> >         | 217             size = SKB_WITH_OVERHEAD(ksize(data));
-> >         | (gdb) p &skb->truesize
-> >         | $5 = (unsigned int *) 0xffff888117f55f90
-> >         | (gdb) awatch *0xffff888117f55f90
-> >         | Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
-> >
-> > 2.      Some time later, we see that the skb with kfence-allocated data
-> >         is cloned:
-> >
-> >         | Thread 7 hit Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
-> >         |
-> >         | Value = 1570
-> >         | 0xffffffff84886947 in __skb_clone (n=0xffff888117f55fa0, skb=0xffff888117f55ec0) at net/core/skbuff.c:1002
-> >         | 1002            C(truesize);
-> >         | (gdb) bt
-> >         | #0  0xffffffff84886947 in __skb_clone (n=0xffff888117f55fa0, skb=0xffff888117f55ec0) at net/core/skbuff.c:1002
-> >         | #1  0xffffffff8488bfb9 in skb_clone (skb=0xffff888117f55ec0, gfp_mask=2592) at net/core/skbuff.c:1454
-> >         | #2  0xffffffff84d3cd1c in __tcp_transmit_skb (sk=0xffff8881176cc000, skb=0xffff888117f55ec0, clone_it=0, gfp_mask=2592,
-> >         |     rcv_nxt=0) at net/ipv4/tcp_output.c:1267
-> >         | #3  0xffffffff84d4125b in tcp_transmit_skb (gfp_mask=<optimized out>, clone_it=<optimized out>, skb=<optimized out>,
-> >         |     sk=<optimized out>) at ./include/linux/tcp.h:439
-> >         | #4  tcp_write_xmit (sk=0xffff8881176cc000, mss_now=392485600, nonagle=1326, push_one=-1996875104, gfp=0)
-> >         |     at net/ipv4/tcp_output.c:2688
-> >         | #5  0xffffffff84d43e48 in __tcp_push_pending_frames (sk=0xffff8881176cc000, cur_mss=337, nonagle=0)
-> >         |     at ./include/net/sock.h:918
-> >         | #6  0xffffffff84d3259c in tcp_push_pending_frames (sk=<optimized out>) at ./include/net/tcp.h:1864
-> >         | #7  tcp_data_snd_check (sk=<optimized out>) at net/ipv4/tcp_input.c:5374
-> >         | #8  tcp_rcv_established (sk=0xffff8881176cc000, skb=0x0 <fixed_percpu_data>) at net/ipv4/tcp_input.c:5869
-> >         | #9  0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f57820) at net/ipv4/tcp_ipv4.c:1668
-> >         | #10 0xffffffff8487bf67 in sk_backlog_rcv (skb=<optimized out>, sk=<optimized out>) at ./include/net/sock.h:1010
-> >         [...]
-> >
-> >
-> > 3.      The original skb (that was cloned) has its truesize adjusted
-> >         after a pskb_expand_head():
-> >
-> >         | Thread 2 hit Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
-> >         |
-> >         | Old value = 1570
-> >         | New value = 1954
-> >
-> >         ^^ the difference between the old and the new value is exactly
-> >         384, which is also the final underflow of the sk_wmem_queued
-> >         that triggers the warning. Presumably if the original allocation
-> >         had been through kmalloc-1k and not KFENCE, the difference here
-> >         would have been 0, since ksize() of the original allocation in
-> >         step (1) would have been 1024, and not 640 (difference of 384).
-> >
-> >         | 0xffffffff8488d84b in pskb_expand_head (skb=0xffff888117f55ec0, nhead=401956752, ntail=1954, gfp_mask=2298092192)
-> >         |     at net/core/skbuff.c:1687
-> >         | 1687                    skb->truesize += size - osize;
-> >         | (gdb) bt
-> >         | #0  0xffffffff8488d84b in pskb_expand_head (skb=0xffff888117f55ec0, nhead=401956752, ntail=1954, gfp_mask=2298092192)
-> >         |     at net/core/skbuff.c:1687
-> >         | #1  0xffffffff8488de01 in skb_prepare_for_shift (skb=<optimized out>) at ./arch/x86/include/asm/atomic.h:29
-> >         | #2  skb_prepare_for_shift (skb=0xffff888117f55ec0) at net/core/skbuff.c:3276
-> >         | #3  0xffffffff848936b1 in skb_shift (tgt=0xffff888117f549c0, skb=0xffff888117f55ec0, shiftlen=674) at net/core/skbuff.c:3351
-> >         | #4  0xffffffff84d264de in tcp_skb_shift (shiftlen=<optimized out>, pcount=<optimized out>, from=<optimized out>,
-> >         |     to=<optimized out>) at net/ipv4/tcp_input.c:1497
-> >         | #5  tcp_shift_skb_data (dup_sack=<optimized out>, end_seq=<optimized out>, start_seq=<optimized out>, state=<optimized out>,
-> >         |     skb=<optimized out>, sk=<optimized out>) at net/ipv4/tcp_input.c:1605
-> >         | #6  tcp_sacktag_walk (skb=0xffff888117f55ec0, sk=0xffff8881176cc000, next_dup=0x894,
-> >         |     state=0xffffffff88fa1aa0 <watchpoints+192>, start_seq=0, end_seq=401956752, dup_sack_in=false)
-> >         |     at net/ipv4/tcp_input.c:1670
-> >         | #7  0xffffffff84d276de in tcp_sacktag_write_queue (sk=0xffff888117f55f90, ack_skb=0x1888117f55f90, prior_snd_una=2196,
-> >         |     state=0xffffffff88fa1aa0 <watchpoints+192>) at net/ipv4/tcp_input.c:1931
-> >         | #8  0xffffffff84d2ca1d in tcp_ack (sk=0xffff8881176cc000, skb=0x1888117f55f90, flag=16643) at net/ipv4/tcp_input.c:3758
-> >         | #9  0xffffffff84d32387 in tcp_rcv_established (sk=0xffff8881176cc000, skb=0xffff888117f54020) at net/ipv4/tcp_input.c:5858
-> >         | #10 0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f54020) at net/ipv4/tcp_ipv4.c:1668
-> >         [...]
-> >
-> >
-> > Any of this make sense?
->
-> Very nice debugging !
->
-> I guess we could fix this in skb_prepare_for_shift(), eventually
-> caring for the truesize manipulation
-> (or reverting the change done in pskb_expand_head(), since only kfence
-> is having this issue.
+On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
+> This is a serial port driver for
+> Silicon Labs Si4455 Sub-GHz transciver.
+> 
+> Signed-off-by: József Horváth <info@ministro.hu>
+> ---
+>  .../bindings/serial/silabs,si4455.yaml        |   53 +
+>  MAINTAINERS                                   |    7 +
+>  drivers/tty/serial/Kconfig                    |    8 +
+>  drivers/tty/serial/Makefile                   |    1 +
+>  drivers/tty/serial/si4455.c                   | 1235 +++++++++++++++++
+>  drivers/tty/serial/si4455_api.h               |   56 +
 
-Phew, good to hear I finally got lucky. :-)
+First thing, a single .c file should not need a .h file.
 
-Either option is fine, as long as it avoids this problem in future.
-Hopefully it can be fixed for 5.11.
+But then I looked at the .h file and see:
 
-> (All TCP skbs in output path have the same allocation size for skb->head)
->
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index e578544b2cc7110ec2f6bcf4c29d93e4b4b1ad14..798b51eeeaa4fbed65d41d9eab207dbbf438dab3
-> 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -3270,7 +3270,14 @@ EXPORT_SYMBOL(skb_split);
->   */
->  static int skb_prepare_for_shift(struct sk_buff *skb)
->  {
-> -       return skb_cloned(skb) && pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
-> +       unsigned int ret = 0, save;
+> --- /dev/null
+> +++ b/drivers/tty/serial/si4455_api.h
+> @@ -0,0 +1,56 @@
+> +/* SPDX-License-Identifier: GPL-2.0
+> + *
+> + * Copyright (C) 2020 József Horváth <info@ministro.hu>
+> + *
+> + */
+> +#ifndef SI4455_API_H_
+> +#define SI4455_API_H_
 > +
-> +       if (skb_cloned(skb)) {
-> +               save = skb->truesize;
-> +               ret = pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
-> +               skb->truesize = save;
-> +       }
-> +       return ret;
->  }
+> +struct si4455_iocbuff {
+> +	uint32_t length;
+> +	uint8_t	data[4096];
 
-FWIW,
+If you do have an ioctl, use proper data types.  These are not the
+correct ones (hint, __u32 and __u8).
 
-    Tested-by: Marco Elver <elver@google.com>
+> +};
+> +
+> +#define BASE_TTYIOC_PRIVATE		0xA0
+> +/* Set EZConfig.
+> + * After this ioctl call, the driver restarts the si4455,
+> + * then apply the new configuration and patch.
+> + */
+> +#define SI4455_IOC_SEZC		_IOW('T', \
+> +				     BASE_TTYIOC_PRIVATE + 0x01, \
+> +				     struct si4455_iocbuff)
 
-Thanks,
--- Marco
+Why does a serial driver have private ioctls?  Please no, don't do that.
+Implement the basic serial driver first, and then we can talk about
+"custom" configurations and the like, using the correct apis.
+
+thanks,
+
+greg k-h
