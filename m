@@ -2,100 +2,569 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEC12D6395
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 222022D639F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392725AbgLJRcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:32:05 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11569 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392714AbgLJRab (ORCPT
+        id S2392757AbgLJRc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:32:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392576AbgLJRck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:30:31 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fd25b090000>; Thu, 10 Dec 2020 09:29:45 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Dec
- 2020 17:29:45 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 10 Dec 2020 17:29:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mCbr7wogg5X+Yd539Igho5jaJXYSYQWv8zTaHjJDT5iRfqljmNbAVmwquVV4A0IDsTuskNJXMGsRlI1oa/x9otIF4w1ZFJYL2eyUGazqdibHUxorFWAtrWg8bCUsyG1Tjd97nFzkFKLXl6VOTAAHMlbx83lLX23lyx/8cs8OVef5Keb6yZinqYXvoE4tBvC19GyLBe5eETW5MzTcgO0a2Q/3icFoY84BfXJ9HmubG1I/I9AkiqRbqvsPK7M7yO2105I6aD96iK2fNDc1Kax7vfbAnTmk/46R6LCqpD7sDnN7kdqvykTDB/FBdTKxfKPaKC6alTXJGWT3FldzuXMayA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ijhB3/xMnWFMU6pv3I+YOoyRHDzZS6DgitkxaOu5XE8=;
- b=mF4wVkMK07m35pJ/mwaeQqd7jkhTwAYA+cc6TC+rycwQvZVN/uDZh85nmn4JLsgx8oMRrzpCNytGZKK1qdZuphqjxmDnEN+boQEEvotXU9X3L+NBV9hWrXSS65LS429+ieMCGY3swe2ylAluMAC2pDPeL2Zu8HuV9LeHOTP4YKau93Rg0gCZej6j281u0dO3Z60LKoU9s9kWYroiceKph/qqpPx9p1scMJrP6wPwgkVurQ/KbZR3loOFMzdvUMkrze1v+psq4S84aPQimeBbVQtCK1J5I5VnwqMvwTcbXjIL5udnHgEBqo+j4HiNSPI7hHsJNTntVcx5nEk/ikvvHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0107.namprd12.prod.outlook.com (2603:10b6:4:55::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.20; Thu, 10 Dec
- 2020 17:29:43 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3632.023; Thu, 10 Dec 2020
- 17:29:43 +0000
-Date:   Thu, 10 Dec 2020 13:29:41 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] RDMA/restrack: update kernel documentation for
- ib_create_named_qp()
-Message-ID: <20201210172941.GC2117013@nvidia.com>
-References: <20201207173255.13355-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201207173255.13355-1-lukas.bulwahn@gmail.com>
-X-ClientProxiedBy: MN2PR01CA0064.prod.exchangelabs.com (2603:10b6:208:23f::33)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+        Thu, 10 Dec 2020 12:32:40 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EEBEC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:32:00 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id g185so6151818wmf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:32:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ex+yVZu3USOPvQbsOLL+yPZSIqbRGGL9RBuyTP5TA/4=;
+        b=I7yD90E6xcDWQCfJn7F5NvxMqrgyoxqqpzbOm7AnMZWO15jXhKQRONoOZ6Cmuz6o99
+         fwqlKHJbzmHn7UT5oQsNBMlFzWAjiFa/fZJRGgJJOi0xysYCHih/YiWhqUt6lCNys6ZK
+         AX1nzStqZVgT6QqlEldG+LHMhWkXoGbsrQzAaXqqdWbh835t68jVEbDpkO6VIWn0eyqe
+         6oLw9w7Lqx7DT6lVZc9gTJakCnYLTmdCXx01e/7lOJo5ConJBG06nIgk5zd9rYW/Y6zR
+         lE4JWDlfH7gGH7lpigNVZxga/AC5sPnDW3x+eF71jQqQNLVx6n2zq3T7hRqQCeTtJdji
+         I5nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ex+yVZu3USOPvQbsOLL+yPZSIqbRGGL9RBuyTP5TA/4=;
+        b=Qqf3ZZFhn6gIKRM0wk0taVXu+jUTA1gWqf7D3HJtHnbktJWDhK1GiYWcF1kdFVm5V1
+         hxyvIuPR8ilyaX8ORxPzOQhbfq18a7SujaFCEVQeLv2O1ZlAwd48VnHkHOOSGO5YLZsK
+         LHp34Oi6OQ1g9h8FNMUeupJ5xJp3CNQk85RJ9jj5yxyGo3qSrFSA+75DGUA7NBXADl6i
+         dM0NfIQVQly21I4TrYZDnH9Gtha8HBRWIpSE1Ep2pKSQH45F6OF80AWTd/ZNM9tLLVK2
+         Yu8cGnk3pPjz8VICaB3jAVGlBGyt1awXeLxNaWNzhg3iFniMrX4KaOE6AxcFL63DFrz0
+         YQlg==
+X-Gm-Message-State: AOAM531ZNrNptwdVWBFE0QlHsClt+GMNO0zxIUnhd4OZbczJguZtd+k3
+        /goDok32egUGZw8cZWgUXSRtWQ==
+X-Google-Smtp-Source: ABdhPJw6m0VPR53EjHr8Pcg7U2mKas/d3WOAwT37MkAVn6GsDX479M6s1LRQqs5ky9NYDb5Zu27Nmw==
+X-Received: by 2002:a1c:9e41:: with SMTP id h62mr9474199wme.51.1607621518794;
+        Thu, 10 Dec 2020 09:31:58 -0800 (PST)
+Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id g11sm10452671wrq.7.2020.12.10.09.31.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 09:31:58 -0800 (PST)
+Date:   Thu, 10 Dec 2020 17:31:56 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Ioana Ciornei <ioana.ciornei@nxp.com>
+Cc:     linux-netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND net-next 1/2] dpaa2-eth: send a scatter-gather FD
+ instead of realloc-ing
+Message-ID: <20201210173156.mbizovo6rxvkda73@holly.lan>
+References: <20200629184712.12449-2-ioana.ciornei () nxp ! com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR01CA0064.prod.exchangelabs.com (2603:10b6:208:23f::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 10 Dec 2020 17:29:42 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1knPl7-008slJ-ND; Thu, 10 Dec 2020 13:29:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607621385; bh=ijhB3/xMnWFMU6pv3I+YOoyRHDzZS6DgitkxaOu5XE8=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=cawpmPkB6QKhHtOu7b4VSHF1zZpcmhJ7vu/RAZmL6K+BBO3wFzKnWZicAU00ZM+9b
-         TIxX2OtRvk5S5j+16vj19c1exo42/AR4RhY6gd+d+LowLIeX5XoMFkHmB4z+GKTIVp
-         /q9ciTKa1h9WYqR6aafV9JcIRrItmQrJh0hRkMS1sm9uT8Tixqregq9Avi8SfRfsmK
-         9wnijmUL/pmC2PNOu4ztKL04l6oZ28+M2z+/16HNlxJ+tFkNeqQnR8HDa6o3PRUNMz
-         lpJGXaAr4htqdiYKVLtN9eKtq3pyxIsExWCy52ie+sid1C5ps1bAq+qwBZGVwj18jT
-         o00mHnCKWVsqg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629184712.12449-2-ioana.ciornei () nxp ! com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 06:32:55PM +0100, Lukas Bulwahn wrote:
-> Commit 66f57b871efc ("RDMA/restrack: Support all QP types") extends
-> ib_create_qp() to a named ib_create_named_qp(), which takes the caller's
-> name as argument, but it did not add the new argument description to the
-> function's kerneldoc.
+Hi Ioana
+
+On Mon, Jun 29, 2020 at 06:47:11PM +0000, Ioana Ciornei wrote:
+> Instead of realloc-ing the skb on the Tx path when the provided headroom
+> is smaller than the HW requirements, create a Scatter/Gather frame
+> descriptor with only one entry.
 > 
-> make htmldocs warns:
+> Remove the '[drv] tx realloc frames' counter exposed previously through
+> ethtool since it is no longer used.
 > 
->   ./drivers/infiniband/core/verbs.c:1206: warning: Function parameter or
->   member 'caller' not described in 'ib_create_named_qp'
-> 
-> Add a description for this new argument based on the description of the
-> same argument in other related functions.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
 > ---
->  drivers/infiniband/core/verbs.c | 1 +
->  1 file changed, 1 insertion(+)
 
-Applies to for-next, thanks
+I've been chasing down a networking regression on my LX2160A board
+(Honeycomb LX2K based on CEx7 LX2160A COM) that first appeared in v5.9.
 
-Jason
+It makes the board unreliable opening outbound connections meaning
+things like `apt update` or `git fetch` often can't open the connection.
+It does not happen all the time but is sufficient to make the boards
+built-in networking useless for workstation use.
+
+The problem is strongly linked to warnings in the logs so I used the
+warnings to bisect down to locate the cause of the regression and it
+pinpointed this patch. I have confirmed that in both v5.9 and v5.10-rc7
+that reverting this patch (and fixing up the merge issues) fixes the
+regression and the warnings stop appearing.
+
+A typical example of the warning is below (io-pgtable-arm.c:281 is an
+error path that I guess would cause dma_map_page_attrs() to return
+an error):
+
+[  714.464927] WARNING: CPU: 13 PID: 0 at
+drivers/iommu/io-pgtable-arm.c:281 __arm_lpae_map+0x2d4/0x30c
+[  714.464930] Modules linked in: snd_seq_dummy(E) snd_hrtimer(E)
+snd_seq(E) snd_seq_device(E) snd_timer(E) snd(E) soundcore(E) bridge(E)
+stp(E) llc(E) rfkill(E) caam_jr(E) crypto_engine(E) rng_core(E)
+joydev(E) evdev(E) dpaa2_caam(E) caamhash_desc(E) caamalg_desc(E)
+authenc(E) libdes(E) dpaa2_console(E) ofpart(E) caam(E) sg(E) error(E)
+lm90(E) at24(E) spi_nor(E) mtd(E) sbsa_gwdt(E) qoriq_thermal(E)
+layerscape_edac_mod(E) qoriq_cpufreq(E) drm(E) fuse(E) configfs(E)
+ip_tables(E) x_tables(E) autofs4(E) ext4(E) crc32c_generic(E) crc16(E)
+mbcache(E) jbd2(E) hid_generic(E) usbhid(E) hid(E) dm_crypt(E) dm_mod(E)
+sd_mod(E) fsl_dpaa2_ptp(E) ptp_qoriq(E) fsl_dpaa2_eth(E)
+xhci_plat_hcd(E) xhci_hcd(E) usbcore(E) aes_ce_blk(E) crypto_simd(E)
+cryptd(E) aes_ce_cipher(E) ghash_ce(E) gf128mul(E) at803x(E) libaes(E)
+fsl_mc_dpio(E) pcs_lynx(E) rtc_pcf2127(E) sha2_ce(E) phylink(E)
+xgmac_mdio(E) regmap_spi(E) of_mdio(E) sha256_arm64(E)
+i2c_mux_pca954x(E) fixed_phy(E) i2c_mux(E) sha1_ce(E) ptp(E) libphy(E)
+[  714.465131]  pps_core(E) ahci_qoriq(E) libahci_platform(E) nvme(E)
+libahci(E) nvme_core(E) t10_pi(E) libata(E) crc_t10dif(E)
+crct10dif_generic(E) crct10dif_common(E) dwc3(E) scsi_mod(E) udc_core(E)
+roles(E) ulpi(E) sdhci_of_esdhc(E) sdhci_pltfm(E) sdhci(E)
+spi_nxp_fspi(E) i2c_imx(E) fixed(E)
+[  714.465192] CPU: 13 PID: 0 Comm: swapper/13 Tainted: G        W   E
+5.10.0-rc7-00001-gba98d13279ca #52
+[  714.465196] Hardware name: SolidRun LX2160A Honeycomb (DT)
+[  714.465202] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+[  714.465207] pc : __arm_lpae_map+0x2d4/0x30c
+[  714.465211] lr : __arm_lpae_map+0x114/0x30c
+[  714.465215] sp : ffff80001006b340
+[  714.465219] x29: ffff80001006b340 x28: 0000002086538003 
+[  714.465227] x27: 0000000000000a20 x26: 0000000000001000 
+[  714.465236] x25: 0000000000000f44 x24: 00000020adf8d000 
+[  714.465245] x23: 0000000000000001 x22: 0000fffffaeca000 
+[  714.465253] x21: 0000000000000003 x20: ffff19b60d64d200 
+[  714.465261] x19: 00000000000000ca x18: 0000000000000000 
+[  714.465270] x17: 0000000000000000 x16: ffffcccb7cf3ca20 
+[  714.465278] x15: 0000000000000000 x14: 0000000000000000 
+[  714.465286] x13: 0000000000000003 x12: 0000000000000010 
+[  714.465294] x11: 0000000000000000 x10: 0000000000000002 
+[  714.465302] x9 : ffffcccb7d5b6e78 x8 : 00000000000001ff 
+[  714.465311] x7 : ffff19b606538650 x6 : ffff19b606538000 
+[  714.465319] x5 : 0000000000000009 x4 : 0000000000000f44 
+[  714.465327] x3 : 0000000000001000 x2 : 00000020adf8d000 
+[  714.465335] x1 : 0000000000000002 x0 : 0000000000000003 
+[  714.465343] Call trace:
+[  714.465348]  __arm_lpae_map+0x2d4/0x30c
+[  714.465353]  __arm_lpae_map+0x114/0x30c
+[  714.465357]  __arm_lpae_map+0x114/0x30c
+[  714.465362]  __arm_lpae_map+0x114/0x30c
+[  714.465366]  arm_lpae_map+0xf4/0x180
+[  714.465373]  arm_smmu_map+0x4c/0xc0
+[  714.465379]  __iommu_map+0x100/0x2bc
+[  714.465385]  iommu_map_atomic+0x20/0x30
+[  714.465391]  __iommu_dma_map+0xb0/0x110
+[  714.465397]  iommu_dma_map_page+0xb8/0x120
+[  714.465404]  dma_map_page_attrs+0x1a8/0x210
+[  714.465413]  __dpaa2_eth_tx+0x384/0xbd0 [fsl_dpaa2_eth]
+[  714.465421]  dpaa2_eth_tx+0x84/0x134 [fsl_dpaa2_eth]
+[  714.465427]  dev_hard_start_xmit+0x10c/0x2b0
+[  714.465433]  sch_direct_xmit+0x1a0/0x550
+[  714.465438]  __qdisc_run+0x140/0x670
+[  714.465443]  __dev_queue_xmit+0x6c4/0xa74
+[  714.465449]  dev_queue_xmit+0x20/0x2c
+[  714.465463]  br_dev_queue_push_xmit+0xc4/0x1a0 [bridge]
+[  714.465476]  br_forward_finish+0xdc/0xf0 [bridge]
+[  714.465489]  __br_forward+0x160/0x1c0 [bridge]
+[  714.465502]  br_forward+0x13c/0x160 [bridge]
+[  714.465514]  br_dev_xmit+0x228/0x3b0 [bridge]
+[  714.465520]  dev_hard_start_xmit+0x10c/0x2b0
+[  714.465526]  __dev_queue_xmit+0x8f0/0xa74
+[  714.465531]  dev_queue_xmit+0x20/0x2c
+[  714.465538]  arp_xmit+0xc0/0xd0
+[  714.465544]  arp_send_dst+0x78/0xa0
+[  714.465550]  arp_solicit+0xf4/0x260
+[  714.465554]  neigh_probe+0x64/0xb0
+[  714.465560]  neigh_timer_handler+0x2f4/0x400
+[  714.465566]  call_timer_fn+0x3c/0x184
+[  714.465572]  __run_timers.part.0+0x2bc/0x370
+[  714.465578]  run_timer_softirq+0x48/0x80
+[  714.465583]  __do_softirq+0x120/0x36c
+[  714.465589]  irq_exit+0xac/0x100
+[  714.465596]  __handle_domain_irq+0x8c/0xf0
+[  714.465600]  gic_handle_irq+0xcc/0x14c
+[  714.465605]  el1_irq+0xc4/0x180
+[  714.465610]  arch_cpu_idle+0x18/0x30
+[  714.465617]  default_idle_call+0x4c/0x180
+[  714.465623]  do_idle+0x238/0x2b0
+[  714.465629]  cpu_startup_entry+0x30/0xa0
+[  714.465636]  secondary_start_kernel+0x134/0x180
+[  714.465640] ---[ end trace a84a7f61b559005f ]---
+
+
+Given it is the iommu code that is provoking the warning I should
+probably mention that the board I have requires
+arm-smmu.disable_bypass=0 on the kernel command line in order to boot.
+Also if it matters I am running the latest firmware from Solidrun
+which is based on LSDK-20.04.
+
+Is there any reason for this code not to be working for LX2160A?
+
+
+Daniel.
+
+
+PS A few months have gone by so I decided not to trim the patch out
+   of this reply so you don't have to go digging!
+
+
+
+>  .../freescale/dpaa2/dpaa2-eth-debugfs.c       |   7 +-
+>  .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  | 177 +++++++++++++++---
+>  .../net/ethernet/freescale/dpaa2/dpaa2-eth.h  |   9 +-
+>  .../ethernet/freescale/dpaa2/dpaa2-ethtool.c  |   1 -
+>  4 files changed, 160 insertions(+), 34 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
+> index 2880ca02d7e7..5cb357c74dec 100644
+> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
+> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
+> @@ -19,14 +19,14 @@ static int dpaa2_dbg_cpu_show(struct seq_file *file, void *offset)
+>  	int i;
+>  
+>  	seq_printf(file, "Per-CPU stats for %s\n", priv->net_dev->name);
+> -	seq_printf(file, "%s%16s%16s%16s%16s%16s%16s%16s%16s%16s\n",
+> +	seq_printf(file, "%s%16s%16s%16s%16s%16s%16s%16s%16s\n",
+>  		   "CPU", "Rx", "Rx Err", "Rx SG", "Tx", "Tx Err", "Tx conf",
+> -		   "Tx SG", "Tx realloc", "Enq busy");
+> +		   "Tx SG", "Enq busy");
+>  
+>  	for_each_online_cpu(i) {
+>  		stats = per_cpu_ptr(priv->percpu_stats, i);
+>  		extras = per_cpu_ptr(priv->percpu_extras, i);
+> -		seq_printf(file, "%3d%16llu%16llu%16llu%16llu%16llu%16llu%16llu%16llu%16llu\n",
+> +		seq_printf(file, "%3d%16llu%16llu%16llu%16llu%16llu%16llu%16llu%16llu\n",
+>  			   i,
+>  			   stats->rx_packets,
+>  			   stats->rx_errors,
+> @@ -35,7 +35,6 @@ static int dpaa2_dbg_cpu_show(struct seq_file *file, void *offset)
+>  			   stats->tx_errors,
+>  			   extras->tx_conf_frames,
+>  			   extras->tx_sg_frames,
+> -			   extras->tx_reallocs,
+>  			   extras->tx_portal_busy);
+>  	}
+>  
+> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+> index 712bbfdbe7d7..4a264b75c035 100644
+> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+> @@ -685,6 +685,86 @@ static int build_sg_fd(struct dpaa2_eth_priv *priv,
+>  	return err;
+>  }
+>  
+> +/* Create a SG frame descriptor based on a linear skb.
+> + *
+> + * This function is used on the Tx path when the skb headroom is not large
+> + * enough for the HW requirements, thus instead of realloc-ing the skb we
+> + * create a SG frame descriptor with only one entry.
+> + */
+> +static int build_sg_fd_single_buf(struct dpaa2_eth_priv *priv,
+> +				  struct sk_buff *skb,
+> +				  struct dpaa2_fd *fd)
+> +{
+> +	struct device *dev = priv->net_dev->dev.parent;
+> +	struct dpaa2_eth_sgt_cache *sgt_cache;
+> +	struct dpaa2_sg_entry *sgt;
+> +	struct dpaa2_eth_swa *swa;
+> +	dma_addr_t addr, sgt_addr;
+> +	void *sgt_buf = NULL;
+> +	int sgt_buf_size;
+> +	int err;
+> +
+> +	/* Prepare the HW SGT structure */
+> +	sgt_cache = this_cpu_ptr(priv->sgt_cache);
+> +	sgt_buf_size = priv->tx_data_offset + sizeof(struct dpaa2_sg_entry);
+> +
+> +	if (sgt_cache->count == 0)
+> +		sgt_buf = kzalloc(sgt_buf_size + DPAA2_ETH_TX_BUF_ALIGN,
+> +				  GFP_ATOMIC);
+> +	else
+> +		sgt_buf = sgt_cache->buf[--sgt_cache->count];
+> +	if (unlikely(!sgt_buf))
+> +		return -ENOMEM;
+> +
+> +	sgt_buf = PTR_ALIGN(sgt_buf, DPAA2_ETH_TX_BUF_ALIGN);
+> +	sgt = (struct dpaa2_sg_entry *)(sgt_buf + priv->tx_data_offset);
+> +
+> +	addr = dma_map_single(dev, skb->data, skb->len, DMA_BIDIRECTIONAL);
+> +	if (unlikely(dma_mapping_error(dev, addr))) {
+> +		err = -ENOMEM;
+> +		goto data_map_failed;
+> +	}
+> +
+> +	/* Fill in the HW SGT structure */
+> +	dpaa2_sg_set_addr(sgt, addr);
+> +	dpaa2_sg_set_len(sgt, skb->len);
+> +	dpaa2_sg_set_final(sgt, true);
+> +
+> +	/* Store the skb backpointer in the SGT buffer */
+> +	swa = (struct dpaa2_eth_swa *)sgt_buf;
+> +	swa->type = DPAA2_ETH_SWA_SINGLE;
+> +	swa->single.skb = skb;
+> +	swa->sg.sgt_size = sgt_buf_size;
+> +
+> +	/* Separately map the SGT buffer */
+> +	sgt_addr = dma_map_single(dev, sgt_buf, sgt_buf_size, DMA_BIDIRECTIONAL);
+> +	if (unlikely(dma_mapping_error(dev, sgt_addr))) {
+> +		err = -ENOMEM;
+> +		goto sgt_map_failed;
+> +	}
+> +
+> +	dpaa2_fd_set_offset(fd, priv->tx_data_offset);
+> +	dpaa2_fd_set_format(fd, dpaa2_fd_sg);
+> +	dpaa2_fd_set_addr(fd, sgt_addr);
+> +	dpaa2_fd_set_len(fd, skb->len);
+> +	dpaa2_fd_set_ctrl(fd, FD_CTRL_PTA);
+> +
+> +	if (priv->tx_tstamp && skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP)
+> +		enable_tx_tstamp(fd, sgt_buf);
+> +
+> +	return 0;
+> +
+> +sgt_map_failed:
+> +	dma_unmap_single(dev, addr, skb->len, DMA_BIDIRECTIONAL);
+> +data_map_failed:
+> +	if (sgt_cache->count >= DPAA2_ETH_SGT_CACHE_SIZE)
+> +		kfree(sgt_buf);
+> +	else
+> +		sgt_cache->buf[sgt_cache->count++] = sgt_buf;
+> +
+> +	return err;
+> +}
+> +
+>  /* Create a frame descriptor based on a linear skb */
+>  static int build_single_fd(struct dpaa2_eth_priv *priv,
+>  			   struct sk_buff *skb,
+> @@ -743,13 +823,16 @@ static void free_tx_fd(const struct dpaa2_eth_priv *priv,
+>  		       const struct dpaa2_fd *fd, bool in_napi)
+>  {
+>  	struct device *dev = priv->net_dev->dev.parent;
+> -	dma_addr_t fd_addr;
+> +	dma_addr_t fd_addr, sg_addr;
+>  	struct sk_buff *skb = NULL;
+>  	unsigned char *buffer_start;
+>  	struct dpaa2_eth_swa *swa;
+>  	u8 fd_format = dpaa2_fd_get_format(fd);
+>  	u32 fd_len = dpaa2_fd_get_len(fd);
+>  
+> +	struct dpaa2_eth_sgt_cache *sgt_cache;
+> +	struct dpaa2_sg_entry *sgt;
+> +
+>  	fd_addr = dpaa2_fd_get_addr(fd);
+>  	buffer_start = dpaa2_iova_to_virt(priv->iommu_domain, fd_addr);
+>  	swa = (struct dpaa2_eth_swa *)buffer_start;
+> @@ -769,16 +852,29 @@ static void free_tx_fd(const struct dpaa2_eth_priv *priv,
+>  					 DMA_BIDIRECTIONAL);
+>  		}
+>  	} else if (fd_format == dpaa2_fd_sg) {
+> -		skb = swa->sg.skb;
+> +		if (swa->type == DPAA2_ETH_SWA_SG) {
+> +			skb = swa->sg.skb;
+> +
+> +			/* Unmap the scatterlist */
+> +			dma_unmap_sg(dev, swa->sg.scl, swa->sg.num_sg,
+> +				     DMA_BIDIRECTIONAL);
+> +			kfree(swa->sg.scl);
+>  
+> -		/* Unmap the scatterlist */
+> -		dma_unmap_sg(dev, swa->sg.scl, swa->sg.num_sg,
+> -			     DMA_BIDIRECTIONAL);
+> -		kfree(swa->sg.scl);
+> +			/* Unmap the SGT buffer */
+> +			dma_unmap_single(dev, fd_addr, swa->sg.sgt_size,
+> +					 DMA_BIDIRECTIONAL);
+> +		} else {
+> +			skb = swa->single.skb;
+>  
+> -		/* Unmap the SGT buffer */
+> -		dma_unmap_single(dev, fd_addr, swa->sg.sgt_size,
+> -				 DMA_BIDIRECTIONAL);
+> +			/* Unmap the SGT Buffer */
+> +			dma_unmap_single(dev, fd_addr, swa->single.sgt_size,
+> +					 DMA_BIDIRECTIONAL);
+> +
+> +			sgt = (struct dpaa2_sg_entry *)(buffer_start +
+> +							priv->tx_data_offset);
+> +			sg_addr = dpaa2_sg_get_addr(sgt);
+> +			dma_unmap_single(dev, sg_addr, skb->len, DMA_BIDIRECTIONAL);
+> +		}
+>  	} else {
+>  		netdev_dbg(priv->net_dev, "Invalid FD format\n");
+>  		return;
+> @@ -808,8 +904,17 @@ static void free_tx_fd(const struct dpaa2_eth_priv *priv,
+>  	}
+>  
+>  	/* Free SGT buffer allocated on tx */
+> -	if (fd_format != dpaa2_fd_single)
+> -		skb_free_frag(buffer_start);
+> +	if (fd_format != dpaa2_fd_single) {
+> +		sgt_cache = this_cpu_ptr(priv->sgt_cache);
+> +		if (swa->type == DPAA2_ETH_SWA_SG) {
+> +			skb_free_frag(buffer_start);
+> +		} else {
+> +			if (sgt_cache->count >= DPAA2_ETH_SGT_CACHE_SIZE)
+> +				kfree(buffer_start);
+> +			else
+> +				sgt_cache->buf[sgt_cache->count++] = buffer_start;
+> +		}
+> +	}
+>  
+>  	/* Move on with skb release */
+>  	napi_consume_skb(skb, in_napi);
+> @@ -833,22 +938,6 @@ static netdev_tx_t dpaa2_eth_tx(struct sk_buff *skb, struct net_device *net_dev)
+>  	percpu_extras = this_cpu_ptr(priv->percpu_extras);
+>  
+>  	needed_headroom = dpaa2_eth_needed_headroom(priv, skb);
+> -	if (skb_headroom(skb) < needed_headroom) {
+> -		struct sk_buff *ns;
+> -
+> -		ns = skb_realloc_headroom(skb, needed_headroom);
+> -		if (unlikely(!ns)) {
+> -			percpu_stats->tx_dropped++;
+> -			goto err_alloc_headroom;
+> -		}
+> -		percpu_extras->tx_reallocs++;
+> -
+> -		if (skb->sk)
+> -			skb_set_owner_w(ns, skb->sk);
+> -
+> -		dev_kfree_skb(skb);
+> -		skb = ns;
+> -	}
+>  
+>  	/* We'll be holding a back-reference to the skb until Tx Confirmation;
+>  	 * we don't want that overwritten by a concurrent Tx with a cloned skb.
+> @@ -867,6 +956,10 @@ static netdev_tx_t dpaa2_eth_tx(struct sk_buff *skb, struct net_device *net_dev)
+>  		err = build_sg_fd(priv, skb, &fd);
+>  		percpu_extras->tx_sg_frames++;
+>  		percpu_extras->tx_sg_bytes += skb->len;
+> +	} else if (skb_headroom(skb) < needed_headroom) {
+> +		err = build_sg_fd_single_buf(priv, skb, &fd);
+> +		percpu_extras->tx_sg_frames++;
+> +		percpu_extras->tx_sg_bytes += skb->len;
+>  	} else {
+>  		err = build_single_fd(priv, skb, &fd);
+>  	}
+> @@ -924,7 +1017,6 @@ static netdev_tx_t dpaa2_eth_tx(struct sk_buff *skb, struct net_device *net_dev)
+>  	return NETDEV_TX_OK;
+>  
+>  err_build_fd:
+> -err_alloc_headroom:
+>  	dev_kfree_skb(skb);
+>  
+>  	return NETDEV_TX_OK;
+> @@ -1161,6 +1253,22 @@ static int refill_pool(struct dpaa2_eth_priv *priv,
+>  	return 0;
+>  }
+>  
+> +static void dpaa2_eth_sgt_cache_drain(struct dpaa2_eth_priv *priv)
+> +{
+> +	struct dpaa2_eth_sgt_cache *sgt_cache;
+> +	u16 count;
+> +	int k, i;
+> +
+> +	for_each_online_cpu(k) {
+> +		sgt_cache = per_cpu_ptr(priv->sgt_cache, k);
+> +		count = sgt_cache->count;
+> +
+> +		for (i = 0; i < count; i++)
+> +			kfree(sgt_cache->buf[i]);
+> +		sgt_cache->count = 0;
+> +	}
+> +}
+> +
+>  static int pull_channel(struct dpaa2_eth_channel *ch)
+>  {
+>  	int err;
+> @@ -1562,6 +1670,9 @@ static int dpaa2_eth_stop(struct net_device *net_dev)
+>  	/* Empty the buffer pool */
+>  	drain_pool(priv);
+>  
+> +	/* Empty the Scatter-Gather Buffer cache */
+> +	dpaa2_eth_sgt_cache_drain(priv);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -3846,6 +3957,13 @@ static int dpaa2_eth_probe(struct fsl_mc_device *dpni_dev)
+>  		goto err_alloc_percpu_extras;
+>  	}
+>  
+> +	priv->sgt_cache = alloc_percpu(*priv->sgt_cache);
+> +	if (!priv->sgt_cache) {
+> +		dev_err(dev, "alloc_percpu(sgt_cache) failed\n");
+> +		err = -ENOMEM;
+> +		goto err_alloc_sgt_cache;
+> +	}
+> +
+>  	err = netdev_init(net_dev);
+>  	if (err)
+>  		goto err_netdev_init;
+> @@ -3914,6 +4032,8 @@ static int dpaa2_eth_probe(struct fsl_mc_device *dpni_dev)
+>  err_alloc_rings:
+>  err_csum:
+>  err_netdev_init:
+> +	free_percpu(priv->sgt_cache);
+> +err_alloc_sgt_cache:
+>  	free_percpu(priv->percpu_extras);
+>  err_alloc_percpu_extras:
+>  	free_percpu(priv->percpu_stats);
+> @@ -3959,6 +4079,7 @@ static int dpaa2_eth_remove(struct fsl_mc_device *ls_dev)
+>  		fsl_mc_free_irqs(ls_dev);
+>  
+>  	free_rings(priv);
+> +	free_percpu(priv->sgt_cache);
+>  	free_percpu(priv->percpu_stats);
+>  	free_percpu(priv->percpu_extras);
+>  
+> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h
+> index 2d7ada0f0dbd..9e4ceb92f240 100644
+> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h
+> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h
+> @@ -125,6 +125,7 @@ struct dpaa2_eth_swa {
+>  	union {
+>  		struct {
+>  			struct sk_buff *skb;
+> +			int sgt_size;
+>  		} single;
+>  		struct {
+>  			struct sk_buff *skb;
+> @@ -282,7 +283,6 @@ struct dpaa2_eth_drv_stats {
+>  	__u64	tx_conf_bytes;
+>  	__u64	tx_sg_frames;
+>  	__u64	tx_sg_bytes;
+> -	__u64	tx_reallocs;
+>  	__u64	rx_sg_frames;
+>  	__u64	rx_sg_bytes;
+>  	/* Enqueues retried due to portal busy */
+> @@ -395,6 +395,12 @@ struct dpaa2_eth_cls_rule {
+>  	u8 in_use;
+>  };
+>  
+> +#define DPAA2_ETH_SGT_CACHE_SIZE	256
+> +struct dpaa2_eth_sgt_cache {
+> +	void *buf[DPAA2_ETH_SGT_CACHE_SIZE];
+> +	u16 count;
+> +};
+> +
+>  /* Driver private data */
+>  struct dpaa2_eth_priv {
+>  	struct net_device *net_dev;
+> @@ -409,6 +415,7 @@ struct dpaa2_eth_priv {
+>  
+>  	u8 num_channels;
+>  	struct dpaa2_eth_channel *channel[DPAA2_ETH_MAX_DPCONS];
+> +	struct dpaa2_eth_sgt_cache __percpu *sgt_cache;
+>  
+>  	struct dpni_attr dpni_attrs;
+>  	u16 dpni_ver_major;
+> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-ethtool.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-ethtool.c
+> index e88269fe3de7..c4cbbcaa9a3f 100644
+> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-ethtool.c
+> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-ethtool.c
+> @@ -43,7 +43,6 @@ static char dpaa2_ethtool_extras[][ETH_GSTRING_LEN] = {
+>  	"[drv] tx conf bytes",
+>  	"[drv] tx sg frames",
+>  	"[drv] tx sg bytes",
+> -	"[drv] tx realloc frames",
+>  	"[drv] rx sg frames",
+>  	"[drv] rx sg bytes",
+>  	"[drv] enqueue portal busy",
+> -- 
+> 2.25.1
