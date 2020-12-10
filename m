@@ -2,50 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D542D4F87
+	by mail.lfdr.de (Postfix) with ESMTP id C364F2D4F88
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729312AbgLJAfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 19:35:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728963AbgLJAfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 19:35:16 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607560466;
-        bh=dGu8x7s/80OJUUCRF1FFqmK37Libi85qRHutPmZx3qA=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=CliVdxcHMRmOdigIpVGjYV/FRrBKyYGGfIZwP5bS3nnlDcvqs1iQ3pNlBufTxTOIK
-         YURYbZb9AA1IcTYrxgFnU0vPdosDipI0V631O+kS/bm08KvERv3Km4W6omzya/Ofo+
-         GI0lKXPpEmxw8+j7m9BGio71SnWSOCIXEJ0/d8uuiLRJys+fJssT1DCKcHcKoxNXuw
-         UC4Wh7zzqjRCGh3AzEQakm1RddjbaVAIz0aanx0JN5WwhmK1nO+EaG3NK1ivw8AQ9d
-         d95VcC5Vr2VLcxZAr1kyzg5Xs9Y4PAcAOyjlWVrh6ld2KvDmAjY0CYF7NRAe3Q0d1o
-         6GleiPyuT+EpQ==
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201126072844.35370-7-manivannan.sadhasivam@linaro.org>
-References: <20201126072844.35370-1-manivannan.sadhasivam@linaro.org> <20201126072844.35370-7-manivannan.sadhasivam@linaro.org>
-Subject: Re: [RESEND PATCH v4 6/6] clk: qcom: Add GDSC support for SDX55 GCC
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     bjorn.andersson@linaro.org, vkoul@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        mturquette@baylibre.com, robh+dt@kernel.org
-Date:   Wed, 09 Dec 2020 16:34:25 -0800
-Message-ID: <160756046559.1580929.6449738302849701410@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S1729515AbgLJAfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 19:35:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729178AbgLJAfa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 19:35:30 -0500
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A268C061794;
+        Wed,  9 Dec 2020 16:34:50 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477:9e51:a893:b0fe:602a])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 210124D259C19;
+        Wed,  9 Dec 2020 16:34:50 -0800 (PST)
+Date:   Wed, 09 Dec 2020 16:34:49 -0800 (PST)
+Message-Id: <20201209.163449.828449791443170572.davem@davemloft.net>
+To:     zhengyongjun3@huawei.com
+Cc:     kuba@kernel.org, linux-afs@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] hisilicon/hns3: convert comma to semicolon
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20201209133630.1230-1-zhengyongjun3@huawei.com>
+References: <20201209133630.1230-1-zhengyongjun3@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Wed, 09 Dec 2020 16:34:50 -0800 (PST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Manivannan Sadhasivam (2020-11-25 23:28:44)
-> Add GDSC support to control the power supply of power domains in SDX55
-> GCC.
->=20
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
+From: Zheng Yongjun <zhengyongjun3@huawei.com>
+Date: Wed, 9 Dec 2020 21:36:30 +0800
 
-Applied to clk-next
+> Replace a comma between expression statements by a semicolon.
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+
+Applied.
