@@ -2,54 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6192D5E99
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0B42D5EA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:53:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391822AbgLJOvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:51:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389365AbgLJOrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:47:19 -0500
-Date:   Thu, 10 Dec 2020 15:47:52 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607611598;
-        bh=8roGAcaqdWV7Cx09/qYtV5EtfHdEnYqtywgHdVmgwQk=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jzuzGeJwxxrfyurgYKXmQEv0RmrKj0q3aVAr8MampgupErIRCWrDwttbbsyj8Irne
-         3NM4NP5OQ3eYqUzIj21UyFrikfMa9m70g19KwKQQ1rMk4RXUZlXScLznpcDZNiMOdA
-         PnzoAkjWVN0o1SUe5Zxd/6FVF56Hs6xskQfgt6lU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] cxl: Reduce scope =?utf-8?Q?fo?=
- =?utf-8?B?ciB0aGUgdmFyaWFibGUg4oCcbW3igJ0=?= in cxllib_get_PE_attributes()
-Message-ID: <X9I1GLYCkw/q/xMu@kroah.com>
-References: <5cee2b25-71e0-15aa-fba6-12211b8308aa@web.de>
+        id S2389802AbgLJOwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:52:17 -0500
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:27068 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729257AbgLJOud (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:50:33 -0500
+Received: from localhost.localdomain ([92.131.12.169])
+        by mwinf5d15 with ME
+        id 2eoj2400H3eqQsk03eokPw; Thu, 10 Dec 2020 15:48:48 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 10 Dec 2020 15:48:48 +0100
+X-ME-IP: 92.131.12.169
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     daniel.vetter@ffwll.ch, grandmaster@al2klimov.de
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/2] video: fbdev: Use framebuffer_release instead of kfree to free a frame buffer
+Date:   Thu, 10 Dec 2020 15:48:08 +0100
+Message-Id: <20201210144808.64384-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5cee2b25-71e0-15aa-fba6-12211b8308aa@web.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 03:35:38PM +0100, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Thu, 10 Dec 2020 14:14:07 +0100
-> 
-> A local variable was used only within an if branch.
-> Thus move the definition for the variable “mm” into the corresponding
-> code block.
+Use 'framebuffer_release()' instead of 'kfree()' to undo a
+'framebuffer_alloc()' call, both in the error handling path of the probe
+function and in remove function.
 
-You did nothing here except add a checkpatch warning :(
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/video/fbdev/ep93xx-fb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-dropped.
+diff --git a/drivers/video/fbdev/ep93xx-fb.c b/drivers/video/fbdev/ep93xx-fb.c
+index ba33b4dce0df..80a70e5796b8 100644
+--- a/drivers/video/fbdev/ep93xx-fb.c
++++ b/drivers/video/fbdev/ep93xx-fb.c
+@@ -566,7 +566,7 @@ static int ep93xxfb_probe(struct platform_device *pdev)
+ failed_videomem:
+ 	fb_dealloc_cmap(&info->cmap);
+ failed_cmap:
+-	kfree(info);
++	framebuffer_release(info);
+ 
+ 	return err;
+ }
+@@ -584,7 +584,7 @@ static int ep93xxfb_remove(struct platform_device *pdev)
+ 	if (fbi->mach_info->teardown)
+ 		fbi->mach_info->teardown(pdev);
+ 
+-	kfree(info);
++	framebuffer_release(info);
+ 
+ 	return 0;
+ }
+-- 
+2.27.0
 
-greg k-h
