@@ -2,201 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE33A2D561C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4B52D5625
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730257AbgLJJIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:08:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727941AbgLJJIa (ORCPT
+        id S1730831AbgLJJIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:08:46 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:41680 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730371AbgLJJIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:08:30 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 923B4C0613CF;
-        Thu, 10 Dec 2020 01:07:49 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id w6so3458203pfu.1;
-        Thu, 10 Dec 2020 01:07:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=PNWxza0pQ+gVMkdkA2hwtJMSzL/KzeSFs29w2WSx87k=;
-        b=ex8eMwwg+1pYMSXqc8U+dJLvFIBTeWWOvq0KxqtK3n7SRoxAFXfmvlUjLU9G+hdSUA
-         rwqq6JT49Vz0O1XZ72lVUXaooBdxUWq2d31QbqvGIlNsKlyteHuPQrvU/4bttqbl83VL
-         k4qIdVt7OTIlulM9xMuNmwJ6gnztZ+xmMcs7xx8R6W3xXGvMgwHIyIvr25s5ufKYb6Uw
-         Sek4x81m6YqHArlqsXvMWt8cgnNpiVABEhnY3KUBX/gbRTD+u3fJ6X9fqCh9hu60cMG9
-         uS+arR0nGpY0E+SKmpa7ZgO7wPjgXt1ZajGOjvOKKfd6WzRIzXgtFqlpPxSuR1u6rdTS
-         f75g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=PNWxza0pQ+gVMkdkA2hwtJMSzL/KzeSFs29w2WSx87k=;
-        b=SBui9/+5k+eldbwZbrEaSBSmt6xYoH/64gvbqvR8l97rm8pjcZCIN5w5M1Dqe+xSSc
-         vGZ2ViQKgOnkgSEvKiKunrEjDPk/3NWE0DcK5HC6zhE10N5vemhy92n8ynT/HJugZSyj
-         WUPgluopknej+YSN7qu37rj37pj5oZFB64JhldB6bXKrNzcvxraiL4XuSTyEJAy72LIn
-         wCOwMi6JNWDhCur1eCE2o2JDBFYal9MndEKJs5TxNQrHJEyaAdpLzTCMU2+9LLxDJX29
-         5nQOotscL0J+vfUHhK5i8g0CxbAnxH74o7B44h7yJHnFu+S5nQ6levLV3Ox9NvD9kAlY
-         46pw==
-X-Gm-Message-State: AOAM532spnuIY+XgfIZb2kNdpS6nig70H8/2lU1a3+TNRE4VIfNHox26
-        SItxvCeY3oMyX54qwdlsReo=
-X-Google-Smtp-Source: ABdhPJwgEuB7RbOC6nXm978xX2NHpAWcNUjxnIoxQjK+9blYMkJZ2vftqct6ZXKfs3lXQNLIovXz7A==
-X-Received: by 2002:a05:6a00:7c5:b029:19e:2965:7a6 with SMTP id n5-20020a056a0007c5b029019e296507a6mr5756116pfu.60.1607591269172;
-        Thu, 10 Dec 2020 01:07:49 -0800 (PST)
-Received: from localhost.localdomain ([122.10.161.207])
-        by smtp.gmail.com with ESMTPSA id n127sm5815328pfd.143.2020.12.10.01.07.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Dec 2020 01:07:48 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     sfrench@samba.org
-Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org, yejune.deng@gmail.com
-Subject: [PATCH] cifs: fix msleep() is imprecise
-Date:   Thu, 10 Dec 2020 17:07:38 +0800
-Message-Id: <1607591258-13865-1-git-send-email-yejune.deng@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Thu, 10 Dec 2020 04:08:35 -0500
+X-UUID: a1c1bd23ace44675936efed2d0295c06-20201210
+X-UUID: a1c1bd23ace44675936efed2d0295c06-20201210
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1826352770; Thu, 10 Dec 2020 17:07:48 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 10 Dec 2020 17:07:46 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 10 Dec 2020 17:07:45 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Subject: [PATCH v8, 3/6] soc: mediatek: mmsys: add mt8183 function call for setting the routing registers
+Date:   Thu, 10 Dec 2020 17:07:39 +0800
+Message-ID: <1607591262-21736-4-git-send-email-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
+In-Reply-To: <1607591262-21736-1-git-send-email-yongqiang.niu@mediatek.com>
+References: <1607591262-21736-1-git-send-email-yongqiang.niu@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-See Documentation/timers/timers-howto.rst, msleep() is not
-for (1ms - 20ms), There is a more advanced API is used.
+add mt8183 function call for setting the routing registers
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
 ---
- fs/cifs/cifsfs.c    |  4 ++--
- fs/cifs/connect.c   | 14 +++++++-------
- fs/cifs/file.c      |  6 +++---
- fs/cifs/smbdirect.c |  2 +-
- 4 files changed, 13 insertions(+), 13 deletions(-)
+ drivers/soc/mediatek/mmsys/Makefile       |  1 +
+ drivers/soc/mediatek/mmsys/mt8183-mmsys.c | 90 +++++++++++++++++++++++++++++++
+ drivers/soc/mediatek/mmsys/mtk-mmsys.c    |  1 +
+ include/linux/soc/mediatek/mtk-mmsys.h    |  1 +
+ 4 files changed, 93 insertions(+)
+ create mode 100644 drivers/soc/mediatek/mmsys/mt8183-mmsys.c
 
-diff --git a/fs/cifs/cifsfs.c b/fs/cifs/cifsfs.c
-index 472cb77..d35ce52 100644
---- a/fs/cifs/cifsfs.c
-+++ b/fs/cifs/cifsfs.c
-@@ -664,10 +664,10 @@ static void cifs_umount_begin(struct super_block *sb)
- 		cifs_dbg(FYI, "wake up tasks now - umount begin not complete\n");
- 		wake_up_all(&tcon->ses->server->request_q);
- 		wake_up_all(&tcon->ses->server->response_q);
--		msleep(1); /* yield */
-+		fsleep(1000); /* yield */
- 		/* we have to kick the requests once more */
- 		wake_up_all(&tcon->ses->server->response_q);
--		msleep(1);
-+		fsleep(1000);
- 	}
+diff --git a/drivers/soc/mediatek/mmsys/Makefile b/drivers/soc/mediatek/mmsys/Makefile
+index ac03025..25eeb9e5 100644
+--- a/drivers/soc/mediatek/mmsys/Makefile
++++ b/drivers/soc/mediatek/mmsys/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_MTK_MMSYS) += mt2701-mmsys.o
++obj-$(CONFIG_MTK_MMSYS) += mt8183-mmsys.o
+ obj-$(CONFIG_MTK_MMSYS) += mtk-mmsys.o
+diff --git a/drivers/soc/mediatek/mmsys/mt8183-mmsys.c b/drivers/soc/mediatek/mmsys/mt8183-mmsys.c
+new file mode 100644
+index 0000000..192b4ab
+--- /dev/null
++++ b/drivers/soc/mediatek/mmsys/mt8183-mmsys.c
+@@ -0,0 +1,90 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// Copyright (c) 2020 MediaTek Inc.
++
++#include <linux/device.h>
++#include <linux/io.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++#include <linux/soc/mediatek/mtk-mmsys.h>
++
++#define DISP_OVL0_MOUT_EN		0xf00
++#define DISP_OVL0_2L_MOUT_EN		0xf04
++#define DISP_OVL1_2L_MOUT_EN		0xf08
++#define DISP_DITHER0_MOUT_EN		0xf0c
++#define DISP_PATH0_SEL_IN		0xf24
++#define DISP_DSI0_SEL_IN		0xf2c
++#define DISP_DPI0_SEL_IN		0xf30
++#define DISP_RDMA0_SOUT_SEL_IN		0xf50
++#define DISP_RDMA1_SOUT_SEL_IN		0xf54
++
++#define OVL0_MOUT_EN_OVL0_2L			BIT(4)
++#define OVL0_2L_MOUT_EN_DISP_PATH0		BIT(0)
++#define OVL1_2L_MOUT_EN_RDMA1			BIT(4)
++#define DITHER0_MOUT_IN_DSI0			BIT(0)
++#define DISP_PATH0_SEL_IN_OVL0_2L		0x1
++#define DSI0_SEL_IN_RDMA0			0x1
++#define DSI0_SEL_IN_RDMA1			0x3
++#define DPI0_SEL_IN_RDMA0			0x1
++#define DPI0_SEL_IN_RDMA1			0x2
++#define RDMA0_SOUT_COLOR0			0x1
++#define RDMA1_SOUT_DSI0				0x1
++
++static unsigned int mtk_mmsys_ddp_mout_en(enum mtk_ddp_comp_id cur,
++					  enum mtk_ddp_comp_id next,
++					  unsigned int *addr)
++{
++	unsigned int value;
++
++	if (cur == DDP_COMPONENT_OVL0 && next == DDP_COMPONENT_OVL_2L0) {
++		*addr = DISP_OVL0_MOUT_EN;
++		value = OVL0_MOUT_EN_OVL0_2L;
++	} else if (cur == DDP_COMPONENT_OVL_2L0 && next == DDP_COMPONENT_RDMA0) {
++		*addr = DISP_OVL0_2L_MOUT_EN;
++		value = OVL0_2L_MOUT_EN_DISP_PATH0;
++	} else if (cur == DDP_COMPONENT_OVL_2L1 && next == DDP_COMPONENT_RDMA1) {
++		*addr = DISP_OVL1_2L_MOUT_EN;
++		value = OVL1_2L_MOUT_EN_RDMA1;
++	} else if (cur == DDP_COMPONENT_DITHER && next == DDP_COMPONENT_DSI0) {
++		*addr = DISP_DITHER0_MOUT_EN;
++		value = DITHER0_MOUT_IN_DSI0;
++	} else {
++		value = 0;
++	}
++
++	return value;
++}
++
++static unsigned int mtk_mmsys_ddp_sel_in(enum mtk_ddp_comp_id cur,
++					 enum mtk_ddp_comp_id next,
++					 unsigned int *addr)
++{
++	unsigned int value;
++
++	if (cur == DDP_COMPONENT_OVL_2L0 && next == DDP_COMPONENT_RDMA0) {
++		*addr = DISP_PATH0_SEL_IN;
++		value = DISP_PATH0_SEL_IN_OVL0_2L;
++	} else if (cur == DDP_COMPONENT_RDMA1 && next == DDP_COMPONENT_DPI0) {
++		*addr = DISP_DPI0_SEL_IN;
++		value = DPI0_SEL_IN_RDMA1;
++	} else {
++		value = 0;
++	}
++
++	return value;
++}
++
++static void mtk_mmsys_ddp_sout_sel(void __iomem *config_regs,
++				   enum mtk_ddp_comp_id cur,
++				   enum mtk_ddp_comp_id next)
++{
++	if (cur == DDP_COMPONENT_RDMA0 && next == DDP_COMPONENT_COLOR0) {
++		writel_relaxed(RDMA0_SOUT_COLOR0, config_regs + DISP_RDMA0_SOUT_SEL_IN);
++	}
++}
++
++struct mtk_mmsys_conn_funcs mt8183_mmsys_funcs = {
++	.mout_en = mtk_mmsys_ddp_mout_en,
++	.sel_in = mtk_mmsys_ddp_sel_in,
++	.sout_sel = mtk_mmsys_ddp_sout_sel,
++};
+diff --git a/drivers/soc/mediatek/mmsys/mtk-mmsys.c b/drivers/soc/mediatek/mmsys/mtk-mmsys.c
+index 9d6a3e9..63e1a63 100644
+--- a/drivers/soc/mediatek/mmsys/mtk-mmsys.c
++++ b/drivers/soc/mediatek/mmsys/mtk-mmsys.c
+@@ -42,6 +42,7 @@ struct mtk_mmsys_driver_data {
  
- 	return;
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index 44f9cce..62a9c64 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -538,7 +538,7 @@ static inline int reconn_setup_dfs_targets(struct cifs_sb_info *cifs_sb,
- 		if (rc) {
- 			cifs_dbg(FYI, "reconnect error %d\n", rc);
- 			mutex_unlock(&server->srv_mutex);
--			msleep(3000);
-+			ssleep(3);
- 		} else {
- 			atomic_inc(&tcpSesReconnectCount);
- 			set_credits(server, 1);
-@@ -621,7 +621,7 @@ static inline int reconn_setup_dfs_targets(struct cifs_sb_info *cifs_sb,
- 		server->bigbuf = (char *)cifs_buf_get();
- 		if (!server->bigbuf) {
- 			cifs_server_dbg(VFS, "No memory for large SMB response\n");
--			msleep(3000);
-+			ssleep(3);
- 			/* retry will check if exiting */
- 			return false;
- 		}
-@@ -634,7 +634,7 @@ static inline int reconn_setup_dfs_targets(struct cifs_sb_info *cifs_sb,
- 		server->smallbuf = (char *)cifs_small_buf_get();
- 		if (!server->smallbuf) {
- 			cifs_server_dbg(VFS, "No memory for SMB response\n");
--			msleep(1000);
-+			ssleep(1);
- 			/* retry will check if exiting */
- 			return false;
- 		}
-@@ -729,7 +729,7 @@ static inline int reconn_setup_dfs_targets(struct cifs_sb_info *cifs_sb,
- 			 * to clear and app threads to set tcpStatus
- 			 * CifsNeedReconnect if server hung.
- 			 */
--			usleep_range(1000, 2000);
-+			fsleep(1000);
- 			length = 0;
- 			continue;
- 		}
-@@ -790,7 +790,7 @@ static inline int reconn_setup_dfs_targets(struct cifs_sb_info *cifs_sb,
- 		 */
- 		cifs_dbg(FYI, "RFC 1002 negative session response\n");
- 		/* give server a second to clean up */
--		msleep(1000);
-+		ssleep(1);
- 		/*
- 		 * Always try 445 first on reconnect since we get NACK
- 		 * on some if we ever connected to port 139 (the NACK
-@@ -944,7 +944,7 @@ static void clean_demultiplex_info(struct TCP_Server_Info *server)
- 		 * response and going ahead and killing cifsd.
- 		 */
- 		cifs_dbg(FYI, "Wait for exit from demultiplex thread\n");
--		msleep(46000);
-+		ssleep(46);
- 		/*
- 		 * If threads still have not exited they are probably never
- 		 * coming home not much else we can do but free the memory.
-@@ -3655,7 +3655,7 @@ static void rfc1002mangle(char *target, char *source, unsigned int length)
- 		 * significant slowing down on mount
- 		 * for everyone else
- 		 */
--		usleep_range(1000, 2000);
-+		fsleep(1000);
- 	}
- 	/*
- 	 * else the negprot may still work without this
-diff --git a/fs/cifs/file.c b/fs/cifs/file.c
-index be46fab..75538a8 100644
---- a/fs/cifs/file.c
-+++ b/fs/cifs/file.c
-@@ -283,7 +283,7 @@ int cifs_posix_open(char *full_path, struct inode **pinode,
- cifs_down_write(struct rw_semaphore *sem)
- {
- 	while (!down_write_trylock(sem))
--		msleep(10);
-+		fsleep(10000);
- }
+ static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
+ 	.clk_driver = "clk-mt8183-mm",
++	.funcs = &mt8183_mmsys_funcs,
+ };
  
- static void cifsFileInfo_put_work(struct work_struct *work);
-@@ -2828,7 +2828,7 @@ size_t get_numpages(const size_t wsize, const size_t len, size_t *cur_len)
+ struct mtk_mmsys {
+diff --git a/include/linux/soc/mediatek/mtk-mmsys.h b/include/linux/soc/mediatek/mtk-mmsys.h
+index 17e8b91..4b6c514 100644
+--- a/include/linux/soc/mediatek/mtk-mmsys.h
++++ b/include/linux/soc/mediatek/mtk-mmsys.h
+@@ -55,6 +55,7 @@ struct mtk_mmsys_conn_funcs {
+ };
  
- 			if (wsize < wdata->bytes) {
- 				add_credits_and_wake_if(server, &credits, 0);
--				msleep(1000);
-+				ssleep(1);
- 			}
- 		} while (wsize < wdata->bytes);
- 		wdata->credits = credits;
-@@ -3563,7 +3563,7 @@ static int cifs_resend_rdata(struct cifs_readdata *rdata,
+ extern struct mtk_mmsys_conn_funcs mt2701_mmsys_funcs;
++extern struct mtk_mmsys_conn_funcs mt8183_mmsys_funcs;
  
- 			if (rsize < rdata->bytes) {
- 				add_credits_and_wake_if(server, &credits, 0);
--				msleep(1000);
-+				ssleep(1);
- 			}
- 		} while (rsize < rdata->bytes);
- 		rdata->credits = credits;
-diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
-index b029ed3..84f97f8 100644
---- a/fs/cifs/smbdirect.c
-+++ b/fs/cifs/smbdirect.c
-@@ -1372,7 +1372,7 @@ void smbd_destroy(struct TCP_Server_Info *server)
- 	wake_up_interruptible_all(&info->wait_mr);
- 	while (atomic_read(&info->mr_used_count)) {
- 		mutex_unlock(&server->srv_mutex);
--		msleep(1000);
-+		ssleep(1);
- 		mutex_lock(&server->srv_mutex);
- 	}
- 	destroy_mr_list(info);
+ void mtk_mmsys_ddp_connect(struct device *dev,
+ 			   enum mtk_ddp_comp_id cur,
 -- 
-1.9.1
+1.8.1.1.dirty
 
