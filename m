@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1E12D6996
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB81D2D6995
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404734AbgLJVSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 16:18:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
+        id S1728051AbgLJVS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 16:18:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404705AbgLJVRr (ORCPT
+        with ESMTP id S2404647AbgLJVSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 16:17:47 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91393C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:17:07 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id v3so3429542plz.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:17:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LV0Dw31yyAP5jAfVhRThIAzxxlOQnv5oimA5Y/7MJ8w=;
-        b=Qml+XfHV11xyFUrSDVpeuQ90D3/lSIbILP2Pr8h9EQc3dCFdN/PFuhbHUbFTYzg3G5
-         U7BmrSW81dVg1sbDN1+pn6Z1P7d+6jskw2doPBhzQZcrQ++3lzR+0R85fxBs4qxQAcKc
-         dD5n3fv6JAYmIS5r6jbqanDzCf1dbzzeNP5lI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LV0Dw31yyAP5jAfVhRThIAzxxlOQnv5oimA5Y/7MJ8w=;
-        b=IUvFB4aaO3pPS6XSFXa1A0bb13xhuLFgyApSi9yVa67oR+sLPNnW9OJsdXaCglCxOw
-         9RchXsPCzHINDDxCC0H+6dnkLXXXWgmXNJFMTYSCfad4G8IHaysyMjFqckOi7QONm5qU
-         GHBqG7v6LAoo6lnKbymSPt/lBDReqB5WgI7SXPwAYsagz14H+J/i+pKf0jnZ18xscocD
-         K3nSpkk+sL54J7HICE7nqyVD1GxIclSAl3UzLrzkuIda/naP3RAlfPO7CLid6bO+66QP
-         4v/kVSjgQviMu4/jzxMKGcqKaWO90Z2c5+fb7TnCY23OImXd4qyfLfxZnakNWTJAgFpE
-         CuCg==
-X-Gm-Message-State: AOAM533jUi26YdpdmnYY9taZ4lro2ob5PG/WqgSNM7nIDJMmNQhVihWp
-        kknH5bj59JyER7fyfQruWdetyQ==
-X-Google-Smtp-Source: ABdhPJzRtjRgaltaTKa4mf0uNF34yuhkCIDTw8dnkQAlpD49E/WF4Gql/oLDsYiDhIWYAjMSJDWeLw==
-X-Received: by 2002:a17:902:c195:b029:db:c725:24d1 with SMTP id d21-20020a170902c195b02900dbc72524d1mr7963995pld.28.1607635027115;
-        Thu, 10 Dec 2020 13:17:07 -0800 (PST)
-Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id c62sm3681653pfa.116.2020.12.10.13.17.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 13:17:06 -0800 (PST)
-From:   Prashant Malani <pmalani@chromium.org>
-To:     linux-usb@vger.kernel.org, gregkh@linuxfoundation.org,
-        heikki.krogerus@linux.intel.com
-Cc:     bleung@chromium.org, Prashant Malani <pmalani@chromium.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] usb: typec: Add class for plug alt mode device
-Date:   Thu, 10 Dec 2020 13:16:54 -0800
-Message-Id: <20201210211653.879044-1-pmalani@chromium.org>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+        Thu, 10 Dec 2020 16:18:00 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3DDC0613CF;
+        Thu, 10 Dec 2020 13:17:19 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CsRZL5fJBz9sW8;
+        Fri, 11 Dec 2020 08:17:14 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607635035;
+        bh=/89RyKGhyzrh7ICFw6QLijUhHYlxIFpICR3a/BelMMY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Qaw+P1QJpi4sUZ/S1d/PTZFUttmduij/3JWaicI8J5Qs/+DzIegh3q2EAv+neVkcW
+         BN/n9pD0Ou7nowI3xJAW+GqGkgdY3oTLeotL2d8IWhXEw63BxclwGiw5lCJWznQGkE
+         /ROoPjF75bFovt0U2dnWtuG8za+0FP9xlp2CGRzNrLIDWf3BLki+yKbzq6U7CrvQXY
+         wpM/U7sbG+fOFyNr9EfAFTY1hJf9CiVrQHK2CrGIr6GvZSPf+Q5jth5VEDl2+i/Pnf
+         6Ql+frC1BbmfqbLFpPR5RtN9Q7YklIeubZQC9Jgq3dJjtu5hIVcYBgFw4q//MU8SO/
+         bHzrgszyuKB8A==
+Date:   Fri, 11 Dec 2020 08:17:14 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Mathieu Malaterre <malat@debian.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: linux-next: build warning after merge of the akpm tree
+Message-ID: <20201211081714.59b01fd5@canb.auug.org.au>
+In-Reply-To: <87im9aseam.fsf@mpe.ellerman.id.au>
+References: <20201204210000.660293c6@canb.auug.org.au>
+        <20201208230157.42c42789@canb.auug.org.au>
+        <87r1nzsi4s.fsf@mpe.ellerman.id.au>
+        <20201209180703.404eb4cb@canb.auug.org.au>
+        <87im9aseam.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/nc.HY0cENfICFNESbH._09N";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the Type C class for plug alternate mode devices which are being
-registered by the Type C connector class. This ensures that udev events
-get generated when the plug alt modes are registered.
+--Sig_/nc.HY0cENfICFNESbH._09N
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
+Hi Michael,
 
-Changes in v2:
-- Changed code to set the class member instead of bus.
-- Removed the alteration to typec_bus.rst since it's not longer
-  required.
-- Updated the commit message and subject to reflect the change in code.
+On Thu, 10 Dec 2020 11:19:45 +1100 Michael Ellerman <mpe@ellerman.id.au> wr=
+ote:
+>
+> Stephen Rothwell <sfr@canb.auug.org.au> writes:
+> >
+> > On Wed, 09 Dec 2020 15:44:35 +1100 Michael Ellerman <mpe@ellerman.id.au=
+> wrote: =20
+> >>
+> >> They should really be in DATA_DATA or similar shouldn't they? =20
+> >
+> > No other architecture appears t need them ... =20
+>=20
+> Any arch with orphan-handling=3Dwarn should see them I thought?
 
-v1: https://lore.kernel.org/linux-usb/20201203030846.51669-1-pmalani@chromium.org/
+I did an x86_64 allyesconfig build (same compiler (more or less) and
+same source) and it produces none of these sections.  The only
+difference in UBSAN CONFIG_ options was that CONFIG_UBSAN_UNREACHABLE
+is not set in the x86_64 build.
 
- drivers/usb/typec/class.c | 4 ++++
- 1 file changed, 4 insertions(+)
+--=20
+Cheers,
+Stephen Rothwell
 
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index 35eec707cb51..29d05b45cc9d 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -482,6 +482,10 @@ typec_register_altmode(struct device *parent,
- 	if (is_typec_partner(parent))
- 		alt->adev.dev.bus = &typec_bus;
- 
-+	/* Plug alt modes need a class to generate udev events. */
-+	if (is_typec_plug(parent))
-+		alt->adev.dev.class = typec_class;
-+
- 	ret = device_register(&alt->adev.dev);
- 	if (ret) {
- 		dev_err(parent, "failed to register alternate mode (%d)\n",
--- 
-2.29.2.576.ga3fc446d84-goog
+--Sig_/nc.HY0cENfICFNESbH._09N
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/SkFoACgkQAVBC80lX
+0GyqKwf+J8xtkjxSPZAJp0oSeMOS7lRPL5anrrtESBYljcbIM5Ix2XqCrr3aYca6
+Rn0xk6WryFvyVreiFKxBldWLdpU3r8jnXy0J7a8TWWlvxC7l6DwNusfeo8xLa5YG
+mGHeZMqaw5WznpuMMt6ukf0IH4gQ2qaLXyOutZsgO7Mo0jFynEKuNoPw99YVrkXj
+QMowuryAQ8MmzBvisgt1yBXVDTH6kE0yHN7KMTT6UuUNSzVUyNRWl0l0CRD4Snit
+/xvGmzSQSF2yT+dGwN6NvkovFk2JZEdoKJQ6jS7U8Hsc0+G9/Pwq14ifnaXUgx1g
+fAko2nq3fXUdm0ci2IX1OiUh7eg1fg==
+=K2GV
+-----END PGP SIGNATURE-----
+
+--Sig_/nc.HY0cENfICFNESbH._09N--
