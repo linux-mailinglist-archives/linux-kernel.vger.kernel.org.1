@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2986B2D6C27
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 650792D6C2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390820AbgLJXqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:46:16 -0500
-Received: from gproxy7-pub.mail.unifiedlayer.com ([70.40.196.235]:46742 "EHLO
-        gproxy7-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2394460AbgLJXpq (ORCPT
+        id S2389962AbgLJXrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:47:53 -0500
+Received: from gproxy5-pub.mail.unifiedlayer.com ([67.222.38.55]:56579 "EHLO
+        gproxy5-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389442AbgLJXrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:45:46 -0500
+        Thu, 10 Dec 2020 18:47:10 -0500
 Received: from cmgw10.unifiedlayer.com (unknown [10.9.0.10])
-        by gproxy7.mail.unifiedlayer.com (Postfix) with ESMTP id 3FAAF218CB2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:45:04 -0700 (MST)
+        by gproxy5.mail.unifiedlayer.com (Postfix) with ESMTP id 9243A140409
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:46:25 -0700 (MST)
 Received: from bh-25.webhostbox.net ([208.91.199.152])
         by cmsmtp with ESMTP
-        id nVcNk5AM2DlydnVcOkqrUf; Thu, 10 Dec 2020 16:45:04 -0700
+        id nVdhk5AedDlydnVdhkqrmj; Thu, 10 Dec 2020 16:46:25 -0700
 X-Authority-Reason: nr=8
 X-Authority-Analysis: v=2.3 cv=G4sy7es5 c=1 sm=1 tr=0
  a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
  a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
  a=zTNgK-yGK50A:10:nop_rcvd_month_year
  a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=_jlGtV7tAAAA:8
- a=5ECQQv9YRw_6OKVbx6EA:9 a=CjuIK1q_8ugA:10:nop_charset_2
+ a=kvk3kt7nRNyH8w8It4sA:9 a=CjuIK1q_8ugA:10:nop_charset_2
  a=nlm17XC03S6CtCLSeiRr:22
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
@@ -32,30 +32,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
         Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
         List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=GSR/XnumuC0eiaNQgNr+iai2QKutLw73HdkwvDda8TI=; b=eXSw73VB0oMVVSMVvj1hQ8e0pt
-        9M2BMMwgfBRnt2s3b5N2veFp43FmlRdyu4cvuem2VoYrEIY5yxfJ6FWXn35r/q7kz/koxB7hru4sI
-        LQSNuWEtW9exMmbiZk/3r5dlUHxN8NU8ak0epFxgczFS8KSjcc9WFo3tbmqZXM9J6AiybkHq5s7aj
-        T609h570dOndj5p11EypJMB706k6mK9x1YGaqQPzw8awrA0nXCJ0oHP+rXhv2Wj3qf02dtXh5QdxV
-        MIGepG5dGr4mnUb4KaJHzqLxojuv6jpO3WWdXjvyzPplESsGpHnldsSGM4XnZtE39YghDaCr0lkUi
-        9e+CRs8A==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:34634 helo=localhost)
+        bh=i8kUSeuv715kse3PbFIteUNOMNrQbQU5yphbekTMRMQ=; b=JsKOSZ2jXQ6NrSJQVYMS7vg0O7
+        r2ANH45dbIX4iCzT1MlpZQvYwVaCtl8lK+ee2fUoDi4mSHlQCYPI5B4ccl8Qfm9IpVQzeYaPF8fVC
+        lcA6BHXvaMi/0i1vZ9rlZLV1vH5nMSgl3Il66uN2IJzuXucpaXsRdXOPSVa7baVj7rLzkgXxDXarH
+        N7EZDLVkWAElP3I8N4zl7ee0ArrvsP+Yfr29ipyMo6cngOyvmljSIkOhO/9qFOY1HSVk3+bdVE2bl
+        sdqF+WmVkghNtWDcG6wJyh/5bJkBsbz37FJN9TxQ10tDoN12RvDKdWenxosmzgkX2PIpmpcI/dvWj
+        VXA0kKpA==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:34642 helo=localhost)
         by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <linux@roeck-us.net>)
-        id 1knVcN-0044sI-Au; Thu, 10 Dec 2020 23:45:03 +0000
-Date:   Thu, 10 Dec 2020 15:45:02 -0800
+        id 1knVdg-0045ZJ-Li; Thu, 10 Dec 2020 23:46:24 +0000
+Date:   Thu, 10 Dec 2020 15:46:23 -0800
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
         akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
         lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/54] 5.4.83-rc2 review
-Message-ID: <20201210234502.GD259082@roeck-us.net>
-References: <20201210164728.074574869@linuxfoundation.org>
+Subject: Re: [PATCH 5.9 00/75] 5.9.14-rc1 review
+Message-ID: <20201210234623.GE259082@roeck-us.net>
+References: <20201210142606.074509102@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201210164728.074574869@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
 X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
@@ -65,31 +65,31 @@ X-AntiAbuse: Sender Address Domain - roeck-us.net
 X-BWhitelist: no
 X-Source-IP: 108.223.40.66
 X-Source-L: No
-X-Exim-ID: 1knVcN-0044sI-Au
+X-Exim-ID: 1knVdg-0045ZJ-Li
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:34634
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:34642
 X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 36
+X-Email-Count: 45
 X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
 X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 05:47:50PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.83 release.
-> There are 54 patches in this series, all will be posted as a response
+On Thu, Dec 10, 2020 at 03:26:25PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.9.14 release.
+> There are 75 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
-> Responses should be made by Sat, 12 Dec 2020 16:47:12 +0000.
+> Responses should be made by Sat, 12 Dec 2020 14:25:47 +0000.
 > Anything received after that time might be too late.
 > 
 
 Build results:
-	total: 157 pass: 157 fail: 0
+	total: 154 pass: 154 fail: 0
 Qemu test results:
 	total: 426 pass: 426 fail: 0
 
