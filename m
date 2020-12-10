@@ -2,100 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EB22D5F5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:19:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658BE2D5F5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391661AbgLJPSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:18:05 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:42994 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgLJPRg (ORCPT
+        id S2390276AbgLJPSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:18:45 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:35045 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgLJPSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:17:36 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BAFA2VI177131;
-        Thu, 10 Dec 2020 15:16:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=mhDEcViNkf52+zGizhWDgh+VrPyDtHLGaTXTeKk0xxQ=;
- b=iNI6HGHcpffdbrt5mkHtio+VjrZnJXNBPoodqf1b7BRUUoEIw/ss4LBh0Go3iQjeAI98
- g7paqNEv4hiccjtPDRyxWClpbtuwoYbYoig8wz85jRwpD81sIoGEBv4+9/+HBvqhRQBa
- SyofadJeZqLNWW2XxTuDiIvcJmuXsxckKregJiKzi86EjqNP0+Zuo1zklu5fC7PqtYK1
- /+ggKvt1rPfzE2QKuxvaLk7L5NVNxyt1U9ttpW/+uR/7N21XCQtk6c6u166yBgVCGogs
- Vh/HWzqYWyIrDWnxQIHzVOeBMp1W846+rVSDlhrnMWKhi/MrKXPLS+wkzb24J9vxK7Mw Rw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 35825mdwks-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Dec 2020 15:16:42 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BAF9pVm036710;
-        Thu, 10 Dec 2020 15:16:41 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 358m52bf87-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Dec 2020 15:16:41 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BAFGcgI032409;
-        Thu, 10 Dec 2020 15:16:39 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 10 Dec 2020 07:16:38 -0800
-Date:   Thu, 10 Dec 2020 18:16:31 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     shaojie.dong@isrc.iscas.ac.cn
-Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] staging: rtl8712: check register_netdev() return
- value
-Message-ID: <20201210151631.GN2789@kadam>
-References: <20201209150124.23446-1-shaojie.dong@isrc.iscas.ac.cn>
- <20201209174615.GI2767@kadam>
- <30d377fa.20bd.1764d2f9aa8.Coremail.shaojie.dong@isrc.iscas.ac.cn>
+        Thu, 10 Dec 2020 10:18:25 -0500
+Received: by mail-ot1-f68.google.com with SMTP id i6so5183770otr.2;
+        Thu, 10 Dec 2020 07:18:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=O6n7jCHfQ+L1qVvvcr1LJS/+RzxlJbGuk5+PoiQLbfo=;
+        b=IuAD9pvKoHs3sO05F4JiMMPPJPhSloAYpUcqFK7H9doMegUoutTOTd2dJj2B0VK6mu
+         jEq8toVSi8Z+zsqVTXRxoj60OFpXh4jIc9T/4pru7D4EtmfWe8aiVaciree/BK//rXWk
+         OphudTT7jD/UbROT464fetbcfOirciuSlXHCDa/ttPFYXJP8JSqL9wMJ1kRn5xFlIYpj
+         m0MlpuWNWXxunjIH7pej8fBunbo4GFhwI4xDqtfNgHN8C9ygt7D8OhM6VJVBRcL27bXy
+         6aDZ+hZzZpQsqe69RlbTj1wfKr3r6irCoEqgpzzWrSHHWy7nhMvd3ohKVnGGtNhVWX1b
+         CEcw==
+X-Gm-Message-State: AOAM531v0Re5/E8Bskn/pSURR57kHJzQzH493Z7kZQThv7fLKfWND83e
+        2/5lkRvtVmHC+xLRevAZlQ==
+X-Google-Smtp-Source: ABdhPJwyb/xhH+0OyUj6AU27XEtLESyKVPtbcYD43ujDXmX8TaRR9xvrY3dQrEtCnYQ9LCCYME9UJQ==
+X-Received: by 2002:a9d:2287:: with SMTP id y7mr6025156ota.137.1607613464641;
+        Thu, 10 Dec 2020 07:17:44 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t26sm469138otm.17.2020.12.10.07.17.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 07:17:43 -0800 (PST)
+Received: (nullmailer pid 2522050 invoked by uid 1000);
+        Thu, 10 Dec 2020 15:17:42 -0000
+Date:   Thu, 10 Dec 2020 09:17:42 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     lee.jones@linaro.org, cy_huang@richtek.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] regulator: rt4831: Adds DT binding document for
+ Richtek RT4831 DSV regulator
+Message-ID: <20201210151742.GB2518014@robh.at.kernel.org>
+References: <1607442886-13046-1-git-send-email-u0084500@gmail.com>
+ <1607442886-13046-3-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <30d377fa.20bd.1764d2f9aa8.Coremail.shaojie.dong@isrc.iscas.ac.cn>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9830 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=62
- bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012100096
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9830 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=62 adultscore=0
- bulkscore=0 phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
- mlxscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012100096
+In-Reply-To: <1607442886-13046-3-git-send-email-u0084500@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 11:05:34PM +0800, shaojie.dong@isrc.iscas.ac.cn wrote:
-> Hi
+On Tue, Dec 08, 2020 at 11:54:45PM +0800, cy_huang wrote:
+> From: ChiYuan Huang <cy_huang@richtek.com>
 > 
-> &gt; 
-> &gt; This function should not be calling register_netdev().  What does that
-> &gt; have to do with firmware?  It should also not free_netdev() because
-> &gt; that will just lead to a use after free in the caller.
-> &gt;
+> Adds DT binding document for Richtek RT4831 DSV regulator.
 > 
-> --&gt; check code history author<larry.finger@lwfinger.net> changed synchronous firmware loading to asynchronous firmware loading
->     before this change, register_netdev() was not calling in firmware related function.
->     For asynchronous loading, maybe register_netdev() be calling in rtl871x_load_fw_cb() is to ensure the netdev be registered after firmware loading completed
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> ---
+> since v3
+> - Add dual license tag in regulator binding document.
+> - Left regulator dt-binding example only.
+> ---
+>  .../regulator/richtek,rt4831-regulator.yaml        | 57 ++++++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml
 > 
-> --&gt; for potential use after free issue
->     Could I only call "free_irq(adapter-&gt;pnetdev-&gt;irq, adapter-&gt;pnetdev)" when register_netdev() failed ?
->     If no need to change drivers/staging/rtl8712/hal_init.c file, I could give up my patch, thank you !
-> 
+> diff --git a/Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml
+> new file mode 100644
+> index 00000000..c6741f2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml
+> @@ -0,0 +1,57 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/regulator/richtek,rt4831-regulator.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Richtek RT4831 Display Bias Voltage Regulator
+> +
+> +maintainers:
+> +  - ChiYuan Huang <cy_huang@richtek.com>
+> +
+> +description: |
+> +  RT4831 is a multifunctional device that can provide power to the LCD display
+> +  and LCD backlight.
+> +
+> +  For Display Bias Voltage DSVP and DSVN, the output range is about 4V to 6.5V.
+> +  It is sufficient to meet the current LCD power requirement.
+> +
+> +  DSVLCM is a boost regulator in IC internal as DSVP and DSVN input power.
+> +  Its voltage should be configured above 0.15V to 0.2V gap larger than the
+> +  voltage needed for DSVP and DSVN. Too much voltage gap could improve the
+> +  voltage drop from the heavy loading scenario. But it also make the power
+> +  efficiency worse. It's a trade-off.
+> +
+> +  Datasheet is available at
+> +  https://www.richtek.com/assets/product_file/RT4831A/DS4831A-05.pdf
+> +
+> +patternProperties:
+> +  "^DSV(LCM|P|N)$":
+> +    type: object
+> +    $ref: regulator.yaml#
+> +    description:
+> +      Properties for single Display Bias Voltage regulator.
 
-Cleaning this up is a bit complicated and requires reworking the
-firmware loading and it requires testing.  I don't think you have the
-hardware to actually test this driver?  Probably, just leave this code
-for another day.
+Just put this into the MFD schema directly if you don't have any custom 
+properties to add.
 
-regards,
-dan carpenter
-
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    regulators {
+> +      DSVLCM {
+> +        regulator-min-microvolt = <4000000>;
+> +        regulator-max-microvolt = <7150000>;
+> +        regulator-allow-bypass;
+> +      };
+> +      DSVP {
+> +        regulator-name = "rt4831-dsvp";
+> +        regulator-min-microvolt = <4000000>;
+> +        regulator-max-microvolt = <6500000>;
+> +        regulator-boot-on;
+> +      };
+> +      DSVN {
+> +        regulator-name = "rt4831-dsvn";
+> +        regulator-min-microvolt = <4000000>;
+> +        regulator-max-microvolt = <6500000>;
+> +        regulator-boot-on;
+> +      };
+> +    };
+> -- 
+> 2.7.4
+> 
