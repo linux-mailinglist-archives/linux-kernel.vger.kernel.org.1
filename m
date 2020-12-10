@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800122D5AD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D51C52D5AF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:53:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732563AbgLJMsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 07:48:39 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62406 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728735AbgLJMsj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:48:39 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BACWnFE144834;
-        Thu, 10 Dec 2020 07:47:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=YBczKy8t1PSc0xrxwIaZ2Mtomm6wWxLCXRKU48zsWk0=;
- b=jxWlbRXpdnok5xK0+UTcfRzzhatc2vQAYgF79r+/8DlsDBitTlT4C+QSnavDGoUuWMkv
- azjaZm+15GSzn5A1hQ3YJ61k6B9JUuTQd0/ppUiHfHBcNioWFqNdcDQE8G6UZOgUD9Wj
- 4yW7CXfgIJYxQ8148MBa8uJ9OVEH9zXhThUldjjyr1EH7CMKWF1KK72NyCF3n91ERQV1
- PtCWH2t/D/+0S5cwHRbRTFKrJUu3ffXVyVlkRWDCNfLbmzyqXsTZeZwRVEM7Im3rQ9yZ
- y2vawyCN9fBVA4bRw++luG86CI8+d6gXjhcra/zfYwU+YbEMmbisD0CpYZnriCErTw/P nw== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35bksbge2v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 07:47:47 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BACVuqo021329;
-        Thu, 10 Dec 2020 12:47:45 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 35958q237j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 12:47:45 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BAClhkA34013510
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Dec 2020 12:47:43 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 480FD4204D;
-        Thu, 10 Dec 2020 12:47:43 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F2FB54204B;
-        Thu, 10 Dec 2020 12:47:42 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Dec 2020 12:47:42 +0000 (GMT)
-Received: from [9.206.213.130] (unknown [9.206.213.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id C3C32609A5;
-        Thu, 10 Dec 2020 23:47:41 +1100 (AEDT)
-Subject: Re: [PATCH] powerpc/rtas: fix typo of ibm,open-errinjct in rtas
- filter
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>, mpe@ellerman.id.au
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20201208195434.8289-1-tyreld@linux.ibm.com>
-From:   Andrew Donnellan <ajd@linux.ibm.com>
-Message-ID: <ac5c551e-69f2-0c13-06a4-bb46bcc529d0@linux.ibm.com>
-Date:   Thu, 10 Dec 2020 23:47:41 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1732921AbgLJMwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 07:52:31 -0500
+Received: from mga12.intel.com ([192.55.52.136]:26357 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387545AbgLJMwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 07:52:06 -0500
+IronPort-SDR: ljOmEhNXsfUB3Zd1xATnE958FSX1P6Fu5GRQFIT8TBciH40UYVCYhRPTjfjCSDBPqPxSly2EZP
+ GJ70g56q5V2A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="153481136"
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="153481136"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 04:51:21 -0800
+IronPort-SDR: zMhGeLDLV+I+Gs/yc8yu1CBaVblxWNO+V1vRFf/q1wFfUjFttEWzHWAJI/PDqRUitkAgGS+SqR
+ LkTVDiHHsZIA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="408517044"
+Received: from srpawnik-nuc8i7beh.iind.intel.com ([10.223.107.144])
+  by orsmga001.jf.intel.com with ESMTP; 10 Dec 2020 04:51:19 -0800
+From:   Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+To:     daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     andriy.shevchenko@intel.com, rui.zhang@intel.com,
+        sumeet.r.pawnikar@intel.com
+Subject: [PATCH -next] thermal: intel: pch: use macro for temperature calculation
+Date:   Thu, 10 Dec 2020 18:18:01 +0530
+Message-Id: <20201210124801.13850-1-sumeet.r.pawnikar@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201208195434.8289-1-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-10_05:2020-12-09,2020-12-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 bulkscore=0 priorityscore=1501 spamscore=0 clxscore=1015
- impostorscore=0 mlxscore=0 malwarescore=0 adultscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012100080
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/20 6:54 am, Tyrel Datwyler wrote:
-> Commit bd59380c5ba4 ("powerpc/rtas: Restrict RTAS requests from userspace")
-> introduced the following error when invoking the errinjct userspace
-> tool.
-> 
-> [root@ltcalpine2-lp5 librtas]# errinjct open
-> [327884.071171] sys_rtas: RTAS call blocked - exploit attempt?
-> [327884.071186] sys_rtas: token=0x26, nargs=0 (called by errinjct)
-> errinjct: Could not open RTAS error injection facility
-> errinjct: librtas: open: Unexpected I/O error
-> 
-> The entry for ibm,open-errinjct in rtas_filter array has a typo where
-> the "j" is omitted in the rtas call name. After fixing this typo the
-> errinjct tool functions again as expected.
-> 
-> [root@ltcalpine2-lp5 linux]# errinjct open
-> RTAS error injection facility open, token = 1
-> 
-> fixes: bd59380c5ba4 ("powerpc/rtas: Restrict RTAS requests from userspace")
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Use macro for temperature calculation
 
-Thanks for catching this!
+Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+Reviewed-by: Zhang Rui <rui.zhang@intel.com>
+---
+ drivers/thermal/intel/intel_pch_thermal.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-Acked-by: Andrew Donnellan <ajd@linux.ibm.com>
+diff --git a/drivers/thermal/intel/intel_pch_thermal.c b/drivers/thermal/intel/intel_pch_thermal.c
+index d7c05c00881e..41723c6c6c0c 100644
+--- a/drivers/thermal/intel/intel_pch_thermal.c
++++ b/drivers/thermal/intel/intel_pch_thermal.c
+@@ -167,8 +167,7 @@ static int pch_wpt_init(struct pch_thermal_device *ptd, int *nr_trips)
+ 	trip_temp = readw(ptd->hw_base + WPT_CTT);
+ 	trip_temp &= 0x1FF;
+ 	if (trip_temp) {
+-		/* Resolution of 1/2 degree C and an offset of -50C */
+-		ptd->crt_temp = trip_temp * 1000 / 2 - 50000;
++		ptd->crt_temp = GET_WPT_TEMP(trip_temp);
+ 		ptd->crt_trip_id = 0;
+ 		++(*nr_trips);
+ 	}
+@@ -177,8 +176,7 @@ static int pch_wpt_init(struct pch_thermal_device *ptd, int *nr_trips)
+ 	trip_temp = readw(ptd->hw_base + WPT_PHL);
+ 	trip_temp &= 0x1FF;
+ 	if (trip_temp) {
+-		/* Resolution of 1/2 degree C and an offset of -50C */
+-		ptd->hot_temp = trip_temp * 1000 / 2 - 50000;
++		ptd->hot_temp = GET_WPT_TEMP(trip_temp);
+ 		ptd->hot_trip_id = *nr_trips;
+ 		++(*nr_trips);
+ 	}
+@@ -190,12 +188,7 @@ static int pch_wpt_init(struct pch_thermal_device *ptd, int *nr_trips)
 
+ static int pch_wpt_get_temp(struct pch_thermal_device *ptd, int *temp)
+ {
+-	u16 wpt_temp;
+-
+-	wpt_temp = WPT_TEMP_TSR & readw(ptd->hw_base + WPT_TEMP);
+-
+-	/* Resolution of 1/2 degree C and an offset of -50C */
+-	*temp = (wpt_temp * 1000 / 2 - 50000);
++	*temp = GET_WPT_TEMP(WPT_TEMP_TSR & readw(ptd->hw_base + WPT_TEMP));
 
--- 
-Andrew Donnellan              OzLabs, ADL Canberra
-ajd@linux.ibm.com             IBM Australia Limited
+ 	return 0;
+ }
+--
+2.28.0
+
