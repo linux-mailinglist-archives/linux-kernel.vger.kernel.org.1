@@ -2,147 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180752D5344
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 06:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFD82D535D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 06:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727382AbgLJF1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 00:27:22 -0500
-Received: from mga09.intel.com ([134.134.136.24]:7013 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726434AbgLJF1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 00:27:21 -0500
-IronPort-SDR: YGPG6Md4hw4U1ii42vayo0QyUJ4NcIchGGZAtaq66/aWQcIViNfz7+2PdbzUMgKVh3qmsjTH4E
- SKhqdxfE/iuQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="174346308"
-X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="174346308"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 21:26:40 -0800
-IronPort-SDR: lo7EoDzHT9S0ukNUp46sLr07ZFqRc17qbqchgU/rS41xUqqRqDzKVWi5TBt1ydWTohVSIlBqa2
- gAbrkdqPFfUw==
-X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="408389993"
-Received: from xshen14-linux.bj.intel.com ([10.238.155.105])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 21:26:38 -0800
-From:   Xiaochen Shen <xiaochen.shen@intel.com>
-To:     bp@alien8.de
-Cc:     linux-tip-commits@vger.kernel.org, bp@suse.de, tony.luck@intel.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        xiaochen.shen@intel.com
-Subject: [tip: x86/cache v2] x86/resctrl: Fix incorrect local bandwidth when mba_sc is enabled
-Date:   Thu, 10 Dec 2020 13:49:17 +0800
-Message-Id: <1607579357-15897-1-git-send-email-xiaochen.shen@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <20201209222328.GA20710@zn.tnic>
-References: <20201209222328.GA20710@zn.tnic>
+        id S1732673AbgLJFgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 00:36:54 -0500
+Received: from mail-eopbgr70044.outbound.protection.outlook.com ([40.107.7.44]:27399
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727276AbgLJFgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 00:36:53 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UrKDYN3IL6IUvtltdvv3qaB4PwifSoBQmQa1qWB6QUj07B5DxCndq2fbRhHRIoZRUmsGEB5xMs4bQdcDeM8KlBLIWGFYoG3bU+VntKIntU7INR8i4ZgE5+bCoRA9M0ikDbqm/uAQrWAAKcuTl5WZZpp6xnARwW4uLHsqzzBMjofDhAub08O9V4m67I1Ku2YuWzOa37tnytkW8a366XDDcsgbcwAvDAiRDWdoFvkAZnojvQQgCMjid4zdyj/C1Gt2e2GeeaWn3O5YBchZtYT75dYTJa2MQnHEF+JUmiV7R1PZuvvIhjexbgz10mmWG7uS+gLqT4//ZXzuX+v6RLkUdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rJvlKGlLu4fJtxSiUlUzfk5oWOf/QBC1lLPprbFKZ6Y=;
+ b=hk3Z/VuSJa7q9H/kgOnoSBkdyPOdKjdaTZBAFH3UKE50vOZKzMurQ6LFmV5O1fwUCl4MOFICHSDysQ33cQnMK18Kuh1peOt+Tv6scc/LtcquBXNZ8z545vR52Pqg0HojbG/YBTe6vhyFCR7RZgX5U6a9kNQOOZmeR88tRorNxEd44c2wyCW/IFCBVnbmMI1UoKye+aBGYATNOaV4msFjmYknNBM8ltZGyi+gR/4Z6jxm//E2zNfaqhcSYw+8J7Y2v7ZFzQYGw8X+AWJ9fwa+zd7XbM/YAMdZMW0e4tzALplaES8F4bCdIzseC1ckVhZkYjs7NT7LvPO96LDoqskUDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rJvlKGlLu4fJtxSiUlUzfk5oWOf/QBC1lLPprbFKZ6Y=;
+ b=dFoevfHIfHjoDC3r4aq8ZoNxX//8a3Mv3oFsunAtIm7xo4yuD60m+iMTe0QjfkPm108WzwnWV26OLNDvN7Nl8bYmCbES0sr44H8hC4ecWAL8ldcSb/wKQ4LcdiEPPPjGk/pw3oUIU/LZNCV0zSu60bmvvxzQU4hgGb4kA95Tt4c=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VI1PR04MB5454.eurprd04.prod.outlook.com (2603:10a6:803:d1::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.15; Thu, 10 Dec
+ 2020 05:36:01 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::dcb7:6117:3def:2685]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::dcb7:6117:3def:2685%7]) with mapi id 15.20.3632.023; Thu, 10 Dec 2020
+ 05:36:01 +0000
+From:   Liu Ying <victor.liu@nxp.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     p.zabel@pengutronix.de, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, robh+dt@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, laurentiu.palcu@oss.nxp.com,
+        guido.gunther@puri.sm
+Subject: [PATCH v4 0/6] drm/imx: Introduce i.MX8qm/qxp DPU DRM
+Date:   Thu, 10 Dec 2020 13:27:25 +0800
+Message-Id: <1607578052-4316-1-git-send-email-victor.liu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR01CA0102.apcprd01.prod.exchangelabs.com
+ (2603:1096:3:15::28) To VI1PR04MB3983.eurprd04.prod.outlook.com
+ (2603:10a6:803:4c::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR01CA0102.apcprd01.prod.exchangelabs.com (2603:1096:3:15::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3654.12 via Frontend Transport; Thu, 10 Dec 2020 05:35:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 64d4e862-cc36-4521-262f-08d89ccd7a7d
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5454:
+X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB54545D89899F6127E88799C898CB0@VI1PR04MB5454.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kQMrdUkBSnj28n5EuEK2rjVaAymFzOkjyMOrvnBW98kXHZpOjN5Zy0ywBcxCb7Ff72RYzPyfIfBRuhjo6VUqw/gb5VPILUVBdTgzMO4Of/Lgo/3Q5g8LkkG48TSk3XUUT8ox3+3wR6E0QybkCC+Co7OKfmGG8s7vtRDNDOEXbXnuUPPNs1WL1NyZX0mi9yO1jmDywalulq/yEA8MbJPZJXeKS9XINOGo85Xu01SE05tnOXKeKXmLQgKFhT/BSddlVICMn7heStOgw2MuP4bZmvWK6bct1BfuoEUaik8IumBh5KY3l107WVZPleY9R8xBe7Fk5O2cyF3t5HbiUHhIwWJWkPXbCOrdhd8NLzdNUmip6qB94q0vhi5kXUe0pLlZ6NtP4kJ7VjyOGAEcNQGPfC75ycZbTD/rJaRoweDAzSfj0IVmozmZQXBE13SmYtJX35/EAjufdzYZSEiMKjuCYPVcTqDTAC0zaO+GrSbZS/mXYZFgC3ffhcMU2fU2X/xl
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(366004)(7416002)(6512007)(34490700003)(52116002)(83380400001)(8936002)(8676002)(6666004)(966005)(66476007)(66946007)(66556008)(6486002)(508600001)(2906002)(2616005)(69590400008)(956004)(86362001)(4326008)(186003)(5660300002)(6506007)(26005)(36756003)(16526019);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?qCcEz0L1a6HKHVgI4r3sA/HikspS2dZSODawbi87ls3ND/mFfCBWgzIN932U?=
+ =?us-ascii?Q?sxpOIuEy69sYBc6mN6oywi4rEdnUFz5oDeoX1n2M+QlvvACB6mYzJdwPJdLf?=
+ =?us-ascii?Q?+0uw3etZUX19gV70F1Ou0vVXHx3daTH0BCS8jlKpC1zPKz3vgwDI7ZYt3v96?=
+ =?us-ascii?Q?zatJYkglUlIXO4V3mJXn661VitoxmINHgiqXNlv9TGRpkQ3eHr7e9FUP7Zm/?=
+ =?us-ascii?Q?72FaM0VUJllsBMzErE1upl3Lo9ukqxC4AgoAzKWj3TC3Z025HAa+4lXh1XK6?=
+ =?us-ascii?Q?bcdGlJihhKj5KDY8thDTxKQ4ucJlYJOSEhO+vZ+xHVk/s3ay2YqoqaqBW5fg?=
+ =?us-ascii?Q?eqYa2EHpz2EvbDi6JC4LfiAPCvwST3pzSH6/s0Vbbnveuc7ozwFpeO6eE0ot?=
+ =?us-ascii?Q?c48pcSLcp/6tC1Hjzoo8HYlLjj8y+SY32CxhtEt98JlZqCJ2t0vVKFC+sfxq?=
+ =?us-ascii?Q?sqQFOoFWXa+KG7CTdeGBQJ0tCGu1QixAd9/82c+mIZE/XqqdKb9RtZ8oQxxt?=
+ =?us-ascii?Q?7pR+t+x5hgn8gPsIL6qQh3HHelm9Ot4yj+r4A0KL+HrKNhMxPYAi0kSroo7o?=
+ =?us-ascii?Q?/uhQxlg4YQZ5EzdF6F1HCRhC4wKb5Gq3KuwZWWCo+T2B00WmvtOZbb1Ix3hT?=
+ =?us-ascii?Q?LcfLG1sbmY771I3waBIR4XmIxM23M9uOQhFDEDNoa21Ol56bMvcnemMTqWlt?=
+ =?us-ascii?Q?aSP4bKsX4yWFEedSTLdGgFf740s0fsENPMhHHQIMqWzJXtHT09gWgBnwJP1i?=
+ =?us-ascii?Q?lSEMR5mKizuyyLq1u52+pO+H3KTV6lz1OMd30poP1xUn/RoZbW4xWWkipWme?=
+ =?us-ascii?Q?mflYM8LqU4mZ+9bRXY+yJbf+LrEsox63w27FfVi1w2oXNHQKoAIbls/P3/ht?=
+ =?us-ascii?Q?fVim9Umaii8FEuOB3Wg+391SCCJyO2OnQuFMM3F/63JhKM1LqTRzxrFpiDDZ?=
+ =?us-ascii?Q?+LkPhq+2daiB4JLw4NMlVIsyYUbWqkfQ72fTN0Hp9Q+1bZmEkcL4i2n0IIwl?=
+ =?us-ascii?Q?aUl3?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2020 05:36:00.9206
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Network-Message-Id: 64d4e862-cc36-4521-262f-08d89ccd7a7d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: J32XrLHXhcyDTiAPbDG7Q+G/vXdOUTzQ2/YC2aela3kRXjd7WQromMkYqyNrBtmBFqUS8mH0hCilGjZZjhUqQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5454
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MBA software controller (mba_sc) is a feedback loop which periodically
-reads MBM counters and tries to restrict the bandwidth below a user
-specified bandwidth. It tags along MBM counter overflow handler to do
-the updates with 1s interval in mbm_update() and update_mba_bw().
+Hi,
 
-The purpose of mbm_update() is to periodically read the MBM counters to
-make sure that the hardware counter doesn't wrap around more than once
-between user samplings. mbm_update() calls __mon_event_count() for local
-bandwidth updating when mba_sc is not enabled, but calls mbm_bw_count()
-instead when mba_sc is enabled. __mon_event_count() will not be called
-for local bandwidth updating in MBM counter overflow handler, but it is
-still called when reading MBM local bandwidth counter file
-'mbm_local_bytes', the call path is as below:
 
-  rdtgroup_mondata_show()
-    mon_event_read()
-      mon_event_count()
-        __mon_event_count()
+This patch set introduces i.MX8qm/qxp Display Processing Unit(DPU) DRM support.
 
-In __mon_event_count(), m->chunks is updated by delta chunks which is
-calculated from previous MSR value (m->prev_msr) and current MSR value.
-When mba_sc is enabled, m->chunks is also updated in mbm_update() by
-mistake by the delta chunks which is calculated from m->prev_bw_msr
-instead of m->prev_msr. But m->chunks is not used in update_mba_bw() in
-the mba_sc feedback loop.
+DPU is comprised of a blit engine for 2D graphics, a display controller
+and a command sequencer.  Outside of DPU, optional prefetch engines can
+fetch data from memory prior to some DPU fetchunits of blit engine and
+display controller.  The pre-fetchers support linear formats and Vivante
+GPU tile formats.
 
-When reading MBM local bandwidth counter file, m->chunks was changed
-unexpectedly by mbm_bw_count(). As a result, the incorrect local
-bandwidth counter which calculated from incorrect m->chunks is read out
-to the user.
+Reference manual can be found at:
+https://www.nxp.com/webapp/Download?colCode=IMX8DQXPRM
 
-Fix this by removing incorrect m->chunks updating in mbm_bw_count() in
-MBM counter overflow handler, and always calling __mon_event_count() in
-mbm_update() to make sure that the hardware local bandwidth counter
-doesn't wrap around.
 
-Test steps:
-  # Run workload with aggressive memory bandwidth (e.g., 10 GB/s)
-  git clone https://github.com/intel/intel-cmt-cat && cd intel-cmt-cat
-  && make
-  ./tools/membw/membw -c 0 -b 10000 --read
+This patch set adds kernel modesetting support for the display controller part.
+It supports two CRTCs per display controller, several planes, prefetch
+engines and some properties of CRTC and plane.  Currently, the registers of
+the controller is accessed without command sequencer involved, instead just by
+using CPU.  DRM connectors would be created from the DPU KMS driver.
 
-  # Enable MBA software controller
-  mount -t resctrl resctrl -o mba_MBps /sys/fs/resctrl
 
-  # Create control group c1
-  mkdir /sys/fs/resctrl/c1
+If people want to try this series with i.MX8qxp, clock patches can be found at:
+https://www.spinics.net/lists/arm-kernel/msg859763.html
 
-  # Set MB throttle to 6 GB/s
-  echo "MB:0=6000;1=6000" > /sys/fs/resctrl/c1/schemata
+and, power domain patches have already landed in Shawn's
+i.MX for-next git branch.
 
-  # Write PID of the workload to tasks file
-  echo `pidof membw` > /sys/fs/resctrl/c1/tasks
+Version2 dropped the device tree patches because we'll use new dt binding
+way to support i.MX8qm/qxp clocks.  It depends on the below series to do basic
+conversions for the platforms which has not landed yet:
+https://www.spinics.net/lists/linux-mmc/msg61965.html
 
-  # Read local bytes counters twice with 1s interval, the calculated
-  # local bandwidth is not as expected (approaching to 6 GB/s):
-  local_1=`cat /sys/fs/resctrl/c1/mon_data/mon_L3_00/mbm_local_bytes`
-  sleep 1
-  local_2=`cat /sys/fs/resctrl/c1/mon_data/mon_L3_00/mbm_local_bytes`
-  echo "local b/w (bytes/s):" `expr $local_2 - $local_1`
 
-Before fix:
-  local b/w (bytes/s): 11076796416
+I will send other patch sets to add downstream bridges(embedded in i.MX8qxp)
+to support LVDS displays.
 
-After fix:
-  local b/w (bytes/s): 5465014272
+A brief look at the pipe:
+prefetch eng -> DPU -> pixel combiner -> pixel link -> pixel to DPI(pxl2dpi) ->
+LVDS display bridge(LDB)
 
-Fixes: ba0f26d8529c (x86/intel_rdt/mba_sc: Prepare for feedback loop)
-Signed-off-by: Xiaochen Shen <xiaochen.shen@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kernel/cpu/resctrl/monitor.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Patch 1 ~ 3 add dt-bindings for DPU and prefetch engines.
+Patch 4 is a minor improvement of a macro to suppress warning as the KMS driver
+uses it.
+Patch 5 introduces the DPU DRM support.
+Patch 6 updates MAINTAINERS.
 
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index 622073f..7ac3121 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -343,7 +343,6 @@ static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
- 		return;
- 
- 	chunks = mbm_overflow_count(m->prev_bw_msr, tval, rr->r->mbm_width);
--	m->chunks += chunks;
- 	cur_bw = (get_corrected_mbm_count(rmid, chunks) * r->mon_scale) >> 20;
- 
- 	if (m->delta_comp)
-@@ -514,15 +513,14 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d, int rmid)
- 	}
- 	if (is_mbm_local_enabled()) {
- 		rr.evtid = QOS_L3_MBM_LOCAL_EVENT_ID;
-+		__mon_event_count(rmid, &rr);
- 
- 		/*
- 		 * Call the MBA software controller only for the
- 		 * control groups and when user has enabled
- 		 * the software controller explicitly.
- 		 */
--		if (!is_mba_sc(NULL))
--			__mon_event_count(rmid, &rr);
--		else
-+		if (is_mba_sc(NULL))
- 			mbm_bw_count(rmid, &rr);
- 	}
- }
+Welcome comments, thanks.
+
+v3->v4:
+* Improve compatible properties in DPU and prefetch engines' dt bindings
+  by using enum instead of oneOf+const.
+* Add Rob's R-b tags on dt binding patches(patch 1/6, 2/6 and 3/6).
+* Add Daniel's A-b tag on patch 4/6.
+
+v2->v3:
+* Fix DPU DRM driver build warnings which are
+  Reported-by: kernel test robot <lkp@intel.com>.
+* Drop DPU DRM driver build dependency on IMX_SCU, as dummy SCU functions have
+  been added in header files by the patch 'firmware: imx: add dummy functions'
+  which has landed in linux-next/master branch.
+* Add a missing blank line in include/drm/drm_atomic.h.
+
+v1->v2:
+* Test this patch set also with i.MX8qm LVDS displays.
+* Drop the device tree patches because we'll use new dt binding way to
+  support i.MX8qm/qxp clocks.  This depends on a not-yet-landed patch set
+  to do basic conversions for the platforms.
+* Fix dt binding yamllint warnings.
+* Require bypass0 and bypass1 clocks for both i.MX8qxp and i.MX8qm in DPU's
+  dt binding documentation.
+* Use new dt binding way to add clocks in the dt binding examples.
+* Address several comments from Laurentiu on the DPU DRM patch.
+
+Liu Ying (6):
+  dt-bindings: display: imx: Add i.MX8qxp/qm DPU binding
+  dt-bindings: display: imx: Add i.MX8qxp/qm PRG binding
+  dt-bindings: display: imx: Add i.MX8qxp/qm DPR channel binding
+  drm/atomic: Avoid unused-but-set-variable warning on
+    for_each_old_plane_in_state
+  drm/imx: Introduce i.MX8qm/qxp DPU DRM
+  MAINTAINERS: add maintainer for i.MX8qxp DPU DRM driver
+
+ .../bindings/display/imx/fsl,imx8qxp-dprc.yaml     |  87 ++
+ .../bindings/display/imx/fsl,imx8qxp-dpu.yaml      | 416 +++++++++
+ .../bindings/display/imx/fsl,imx8qxp-prg.yaml      |  60 ++
+ MAINTAINERS                                        |   9 +
+ drivers/gpu/drm/imx/Kconfig                        |   1 +
+ drivers/gpu/drm/imx/Makefile                       |   1 +
+ drivers/gpu/drm/imx/dpu/Kconfig                    |  10 +
+ drivers/gpu/drm/imx/dpu/Makefile                   |  10 +
+ drivers/gpu/drm/imx/dpu/dpu-constframe.c           | 170 ++++
+ drivers/gpu/drm/imx/dpu/dpu-core.c                 | 881 ++++++++++++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-crtc.c                 | 926 +++++++++++++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-crtc.h                 |  62 ++
+ drivers/gpu/drm/imx/dpu/dpu-disengcfg.c            | 114 +++
+ drivers/gpu/drm/imx/dpu/dpu-dprc.c                 | 721 ++++++++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-dprc.h                 |  40 +
+ drivers/gpu/drm/imx/dpu/dpu-drv.c                  | 297 +++++++
+ drivers/gpu/drm/imx/dpu/dpu-drv.h                  |  28 +
+ drivers/gpu/drm/imx/dpu/dpu-extdst.c               | 296 +++++++
+ drivers/gpu/drm/imx/dpu/dpu-fetchdecode.c          | 291 +++++++
+ drivers/gpu/drm/imx/dpu/dpu-fetcheco.c             | 221 +++++
+ drivers/gpu/drm/imx/dpu/dpu-fetchlayer.c           | 151 ++++
+ drivers/gpu/drm/imx/dpu/dpu-fetchunit.c            | 609 ++++++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-fetchunit.h            | 191 +++++
+ drivers/gpu/drm/imx/dpu/dpu-fetchwarp.c            | 247 ++++++
+ drivers/gpu/drm/imx/dpu/dpu-framegen.c             | 392 +++++++++
+ drivers/gpu/drm/imx/dpu/dpu-gammacor.c             | 220 +++++
+ drivers/gpu/drm/imx/dpu/dpu-hscaler.c              | 272 ++++++
+ drivers/gpu/drm/imx/dpu/dpu-kms.c                  | 543 ++++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-kms.h                  |  23 +
+ drivers/gpu/drm/imx/dpu/dpu-layerblend.c           | 345 ++++++++
+ drivers/gpu/drm/imx/dpu/dpu-plane.c                | 703 ++++++++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-plane.h                |  56 ++
+ drivers/gpu/drm/imx/dpu/dpu-prg.c                  | 433 ++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-prg.h                  |  45 +
+ drivers/gpu/drm/imx/dpu/dpu-prv.h                  | 203 +++++
+ drivers/gpu/drm/imx/dpu/dpu-tcon.c                 | 249 ++++++
+ drivers/gpu/drm/imx/dpu/dpu-vscaler.c              | 305 +++++++
+ drivers/gpu/drm/imx/dpu/dpu.h                      | 389 +++++++++
+ include/drm/drm_atomic.h                           |   5 +-
+ 39 files changed, 10021 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml
+ create mode 100644 drivers/gpu/drm/imx/dpu/Kconfig
+ create mode 100644 drivers/gpu/drm/imx/dpu/Makefile
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-constframe.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-core.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-crtc.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-crtc.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-disengcfg.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-dprc.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-dprc.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-drv.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-drv.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-extdst.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchdecode.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetcheco.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchlayer.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchunit.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchunit.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchwarp.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-framegen.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-gammacor.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-hscaler.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-kms.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-kms.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-layerblend.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-plane.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-plane.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prg.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prg.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prv.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-tcon.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-vscaler.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu.h
+
 -- 
-1.8.3.1
+2.7.4
 
