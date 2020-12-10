@@ -2,155 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14C22D5136
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEC72D513B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729144AbgLJDQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 22:16:30 -0500
-Received: from mo-csw1514.securemx.jp ([210.130.202.153]:44522 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728657AbgLJDQ3 (ORCPT
+        id S1729189AbgLJDRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:17:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728619AbgLJDRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 22:16:29 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 0BA3EOED004470; Thu, 10 Dec 2020 12:14:24 +0900
-X-Iguazu-Qid: 34tr90iprcJs0CvEWH
-X-Iguazu-QSIG: v=2; s=0; t=1607570064; q=34tr90iprcJs0CvEWH; m=MGTkGpPCR33awQ5e9q1fuXNGZmOlO+ll14kQslt2LHE=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1511) id 0BA3ENHo028729;
-        Thu, 10 Dec 2020 12:14:23 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 0BA3ENt1005878;
-        Thu, 10 Dec 2020 12:14:23 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 0BA3ENYq008224;
-        Thu, 10 Dec 2020 12:14:23 +0900
-From:   Punit Agrawal <punit1.agrawal@toshiba.co.jp>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/4] dt-bindings: gpio: Add bindings for Toshiba Visconti GPIO Controller
-References: <20201201181406.2371881-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-        <20201201181406.2371881-2-nobuhiro1.iwamatsu@toshiba.co.jp>
-Date:   Thu, 10 Dec 2020 12:14:22 +0900
-In-Reply-To: <20201201181406.2371881-2-nobuhiro1.iwamatsu@toshiba.co.jp>
-        (Nobuhiro Iwamatsu's message of "Wed, 2 Dec 2020 03:14:03 +0900")
-X-TSB-HOP: ON
-Message-ID: <87mtym2vzl.fsf@kokedama.swc.toshiba.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Wed, 9 Dec 2020 22:17:43 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D3BC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 19:17:03 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id t6so2072097plq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 19:17:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=k53PFT7deXWzGUQq0Qpf6W/21ZGbwiD77Sh9ifdNlYI=;
+        b=j/3AaR7Rv5E0+fKghUnWh6A8a2UeZzPe81/mLS/v3NuwDplaOQN7T01j81j978t12h
+         Bv9RlbNJWBBugNdKcx8NNnfildF6mmoJj0b92N2lH5GxU6SKQMNwTH9JTvNBpLJpl87c
+         ZbfOQwyLx35Nuie38/uNAF48DHT4i+K8moLJo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=k53PFT7deXWzGUQq0Qpf6W/21ZGbwiD77Sh9ifdNlYI=;
+        b=QYtIBFtIzYa3af+RlaUz2VlaM5VIARWrK+JUFZ2X9iCaKU/erY+mrUAhGHzwS8UDCv
+         CGRBuThA83UqEBQb3s38LKnxiz1oKqeGbf+b2x8KHZg4DGfAQg4md6kKgPakRL96chvT
+         jc+NFNFxYArf8NOAmcZ2ZvI2nUhnVkTagrVYS2TGSFLwyWoabTegcDlqzTVsM2D/6KBo
+         qAblsH4IvAoyx6LgHdOydppw3zNIfQxVJfIF2vwTFAh3QSOjRJ0MmDL1hwYlWL4YgnvO
+         4a/TzgEDZBZVR1d0Jwdm5UUOixJRyTIzQOycFHBp587KMvdEkqW94Iz8i9kE2Rvt0m2E
+         QQhw==
+X-Gm-Message-State: AOAM531lpoajePNw2Fhhtw/8greucc9DHIu0dui57Gju7AE9CtlzmBHm
+        HS6Rvne5ZHdEv0saX90DvyN8MA==
+X-Google-Smtp-Source: ABdhPJxCdPN48jN7aGTW0NAvFrMo0PSR1HiBugsItDALpwR1BgRUQBc57Mz37oFQa7zYg0hYEQiSfA==
+X-Received: by 2002:a17:902:74cc:b029:da:9287:2b4 with SMTP id f12-20020a17090274ccb02900da928702b4mr4650468plt.9.1607570222586;
+        Wed, 09 Dec 2020 19:17:02 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id l17sm3665289pjy.29.2020.12.09.19.17.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 19:17:01 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAD=FV=XKyXnjsM4iS-ydRWBnmYMojPOaYAdYhOkxkPTCQf0RLQ@mail.gmail.com>
+References: <20201203074459.13078-1-rojay@codeaurora.org> <CAD=FV=XKyXnjsM4iS-ydRWBnmYMojPOaYAdYhOkxkPTCQf0RLQ@mail.gmail.com>
+Subject: Re: [PATCH] spi: spi-geni-qcom: Fix NULL pointer access in geni_spi_isr
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Mark Brown <broonie@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+To:     Doug Anderson <dianders@chromium.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+Date:   Wed, 09 Dec 2020 19:17:00 -0800
+Message-ID: <160757022002.1580929.8656750350166301192@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp> writes:
+Quoting Doug Anderson (2020-12-03 08:40:46)
 
-> Add bindings for the Toshiba Visconti GPIO Controller.
->
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> ---
->  .../bindings/gpio/toshiba,gpio-visconti.yaml  | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
->
-> diff --git a/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml b/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-> new file mode 100644
-> index 000000000000..5168a15b90e1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-> @@ -0,0 +1,85 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/gpio/toshiba,gpio-visconti.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Toshiba Visconti ARM SoCs GPIO controller
-> +
-> +maintainers:
-> +  - Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: toshiba,gpio-tmpv7708
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#gpio-cells":
-> +    const: 2
-> +
-> +  gpio-ranges: true
-> +
-> +  gpio-controller: true
-> +
-> +  interrupt-controller: true
-> +
-> +  "#interrupt-cells":
-> +    const: 2
-> +
-> +  interrupts:
-> +    description:
-> +      interrupt mapping one per GPIO.
-> +    minItems: 16
-> +    maxItems: 16
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#gpio-cells"
-> +  - gpio-ranges
-> +  - gpio-controller
-> +  - interrupt-controller
-> +  - "#interrupt-cells"
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +      #include <dt-bindings/interrupt-controller/irq.h>
-> +      #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +      soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        gpio: gpio@28020000 {
-> +          compatible = "toshiba,gpio-tmpv7708";
-> +          reg = <0 0x28020000 0 0x1000>;
-> +          #gpio-cells = <0x2>;
-> +          gpio-ranges = <&pmux 0 0 32>;
-> +          gpio-controller;
-> +          interrupt-controller;
-> +          #interrupt-cells = <2>;
-> +          interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
-> +        };
-> +      };
-> +...
+> I would guess that if "mas->cur_xfer" is NULL then
+> geni_spi_handle_rx() should read all data in the FIFO and throw it
+> away and geni_spi_handle_tx() should set SE_GENI_TX_WATERMARK_REG to
+> 0.  NOTE: I _think_ that with the synchronize_irq() I'm suggesting
+> above we'll avoid this case, but it never hurts to be defensive.
+>=20
+>=20
+> Does that all make sense?  So the summary is that instead of your patch:
 
-FWIW,
+Can we get a CPU diagram describing the race and scenario where this
+happens? Something like:
 
-Reviewed-by: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+  CPU0                                CPU1
+  ----                                ----
+  setup_fifo_xfer()
+   spin_lock_irq(&mas->lock);
+   spin_unlock_irq(&mas->lock);
+   mas->cur_xfer =3D xfer
+   ...
+   <IRQ>
+                                      geni_spi_isr()
+				       geni_spi_handle_rx()
+				        <NULL deref boom explosion!>
 
-Thanks,
-Punit
+But obviously this example diagram is incorrect and some timeout happens
+instead? Sorry, I'm super lazy and don't want to read many paragraphs of
+text. :) I'd rather have a diagram like above that clearly points out
+the steps taken to the NULL pointer deref.
+
+>=20
+> 1. Add synchronize_irq() at the start and end of
+> handle_fifo_timeout().  Not under lock.
+>=20
+> 2. In geni_spi_handle_rx(), check for NULL "mas->cur_xfer".  Read all
+> data in the FIFO (don't cap at rx_rem_bytes), but throw it away.
+>=20
+> 3. In geni_spi_handle_tx(), check for NULL "mas->cur_xfer".  Don't
+> write any data.  Just write 0 to SE_GENI_TX_WATERMARK_REG.
+>=20
+> I think #1 is the real fix, but #2 and #3 will avoid crashes in case
+> there's another bug somewhere.
+>=20
+
+Aren't 2 and 3 papering over some weird problem though where irqs are
+coming in unexpectedly?
