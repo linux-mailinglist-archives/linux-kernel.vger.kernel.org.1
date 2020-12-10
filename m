@@ -2,26 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EADEA2D662D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79672D6651
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390432AbgLJOaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:30:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37968 "EHLO mail.kernel.org"
+        id S2390355AbgLJOam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:30:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390261AbgLJOaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:30:05 -0500
+        id S2390179AbgLJO2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:28:52 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Raju Rangoju <rajur@chelsio.com>,
+        stable@vger.kernel.org, Eran Ben Elisha <eranbe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 09/45] cxgb3: fix error return code in t3_sge_alloc_qset()
-Date:   Thu, 10 Dec 2020 15:26:23 +0100
-Message-Id: <20201210142602.825352781@linuxfoundation.org>
+Subject: [PATCH 4.9 11/45] net/mlx5: Fix wrong address reclaim when command interface is down
+Date:   Thu, 10 Dec 2020 15:26:25 +0100
+Message-Id: <20201210142602.919855348@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
 References: <20201210142602.361598591@linuxfoundation.org>
@@ -33,33 +32,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Eran Ben Elisha <eranbe@nvidia.com>
 
-[ Upstream commit ff9924897f8bfed82e61894b373ab9d2dfea5b10 ]
+[ Upstream commit 1d2bb5ad89f47d8ce8aedc70ef85059ab3870292 ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+When command interface is down, driver to reclaim all 4K page chucks that
+were hold by the Firmeware. Fix a bug for 64K page size systems, where
+driver repeatedly released only the first chunk of the page.
 
-Fixes: b1fb1f280d09 ("cxgb3 - Fix dma mapping error path")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Acked-by: Raju Rangoju <rajur@chelsio.com>
-Link: https://lore.kernel.org/r/1606902965-1646-1-git-send-email-zhangchangzhong@huawei.com
+Define helper function to fill 4K chunks for a given Firmware pages.
+Iterate over all unreleased Firmware pages and call the hepler per each.
+
+Fixes: 5adff6a08862 ("net/mlx5: Fix incorrect page count when in internal error")
+Signed-off-by: Eran Ben Elisha <eranbe@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/chelsio/cxgb3/sge.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c |   21 ++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/chelsio/cxgb3/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb3/sge.c
-@@ -3111,6 +3111,7 @@ int t3_sge_alloc_qset(struct adapter *ad
- 			  GFP_KERNEL | __GFP_COMP);
- 	if (!avail) {
- 		CH_ALERT(adapter, "free list queue 0 initialization failed\n");
-+		ret = -ENOMEM;
- 		goto err;
+--- a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
+@@ -331,6 +331,24 @@ out_free:
+ 	return err;
+ }
+ 
++static u32 fwp_fill_manage_pages_out(struct fw_page *fwp, u32 *out, u32 index,
++				     u32 npages)
++{
++	u32 pages_set = 0;
++	unsigned int n;
++
++	for_each_clear_bit(n, &fwp->bitmask, MLX5_NUM_4K_IN_PAGE) {
++		MLX5_ARRAY_SET64(manage_pages_out, out, pas, index + pages_set,
++				 fwp->addr + (n * MLX5_ADAPTER_PAGE_SIZE));
++		pages_set++;
++
++		if (!--npages)
++			break;
++	}
++
++	return pages_set;
++}
++
+ static int reclaim_pages_cmd(struct mlx5_core_dev *dev,
+ 			     u32 *in, int in_size, u32 *out, int out_size)
+ {
+@@ -354,8 +372,7 @@ static int reclaim_pages_cmd(struct mlx5
+ 		if (fwp->func_id != func_id)
+ 			continue;
+ 
+-		MLX5_ARRAY_SET64(manage_pages_out, out, pas, i, fwp->addr);
+-		i++;
++		i += fwp_fill_manage_pages_out(fwp, out, i, npages - i);
  	}
- 	if (avail < q->fl[0].size)
+ 
+ 	MLX5_SET(manage_pages_out, out, output_num_entries, i);
 
 
