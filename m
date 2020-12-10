@@ -2,118 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7284A2D5999
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A7F2D599F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388264AbgLJLpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:45:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732885AbgLJLo5 (ORCPT
+        id S1729541AbgLJLto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:49:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54161 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728117AbgLJLto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:44:57 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8E8C061793;
-        Thu, 10 Dec 2020 03:44:17 -0800 (PST)
-Date:   Thu, 10 Dec 2020 11:44:14 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607600655;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Thu, 10 Dec 2020 06:49:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607600897;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=y9ZggfT5Wgyj7L/mvbAGMIlzUrXCA6F2CAUaSPt1KRk=;
-        b=sQazjDxRl4zrmcSkTN6t0Cq12Xf0nBHgnx47vuHxCTeqmrSdzAj4eVCyrXIL1kqHAFbQxy
-        mwDMZoYUVOKSzpcMXUM3i1OTfxbjsf0BEfC6uxoRifFSE4ThVzDF14051AR5zhnvfDRmp6
-        AZtMaJ/Y3yIqWQUubL+snCbJsoCWtn69IDZauWUeqePnBf0936u7simHU+RUDOe1j6lE7y
-        9CR0HPKZAD/sWvF999z9HLK1w9slJlt/uq7ggJYbrdS49ELT8ScCihZXwT+IhOU/d15djY
-        6KWKu0cvEVYmbDQZR3DCIr8wmd/DzqvnrPK0hykcS5g/yWixcnzotcT9dMpaiA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607600655;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y9ZggfT5Wgyj7L/mvbAGMIlzUrXCA6F2CAUaSPt1KRk=;
-        b=mGis3PyEnW+8c6X7LJ725VABMZEi9+mIMLv7Or+XM/YLh0yp6IFycFmACAY5a4CVHMtVe+
-        ZJP0vQNp7dlittAg==
-From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/mm/mem_encrypt: Fix definition of PMD_FLAGS_DEC_WP
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20201111160946.147341-1-nivedita@alum.mit.edu>
-References: <20201111160946.147341-1-nivedita@alum.mit.edu>
+        bh=Vy7qUFqmJ4w+Yqe/3zBzEgAxcvrIudav4UoG7qWP05M=;
+        b=ZIA1qekM+njfi9yjrP/elOhzUDVE4DKhu+UEJo7ikMU7kvfZE7t59FaW9nNFif2lmrGWFV
+        6ZXh9DGaIkHjyPIXc7alHjipdB5CuOcZqD/o+xe8Wx20EOVwyLQsGGT4vEwl9V3RTwYRPW
+        iiTEdIv70FXsmrzfOcHhvyRuYsvV1+U=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-182--cX4dDdwNIugHBi59rFj7A-1; Thu, 10 Dec 2020 06:48:15 -0500
+X-MC-Unique: -cX4dDdwNIugHBi59rFj7A-1
+Received: by mail-ej1-f72.google.com with SMTP id u15so1520702ejg.17
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 03:48:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Vy7qUFqmJ4w+Yqe/3zBzEgAxcvrIudav4UoG7qWP05M=;
+        b=qzruhpZwk0q3tRBUGG1O/rg8eb/DJiK/u32cludzYOPFXkr7paO/HDOPpz9mn6IqJp
+         oV+9S1D3YP1CkC4+wQFnn/vBoZYK0ofXo+SsituWqR6Y7GFSlRdxQiZURDz8BzopuvQE
+         G3al1HBYUw/GOBrmM0LUvz7Nr0bqFu0suN3OLD3d3ghl1DoGhAgkRWrRMpGoAwQEwngj
+         hVG9+QdCBnqjH1oN02uJFQ6ca5v4Vst8dHJP5vJca6pdwHFvOXT+TIfl1+oy2V6wNeRH
+         06EuMqAI7pdnvmMw8lQIuHWjZuEHCdYts4Gfn4njpMUOFDL3+NyzlX1rUkCzBT/Z4Tet
+         zqNQ==
+X-Gm-Message-State: AOAM53051jxJYqDz8HxWV2VarPG0VRW0V3AqQK/XVjCZnSvcShaDhhOk
+        8WlnEQFJydcxsrWIbSqAz7SoJvSSBne4q5OiSWUfV98eIl9+odismJCBvNXJD2Wj6ls3FmRGLWm
+        Tkm0ZyCOxG1jLPmPApcirdJ13
+X-Received: by 2002:aa7:d41a:: with SMTP id z26mr6393020edq.267.1607600893838;
+        Thu, 10 Dec 2020 03:48:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwT1BgKb53bvs2L+9goeNkFTaweyYQb4Mx9OhlhD01G0jFvMtjmublR8JhvmFDTnhy+1qlKKg==
+X-Received: by 2002:aa7:d41a:: with SMTP id z26mr6392996edq.267.1607600893671;
+        Thu, 10 Dec 2020 03:48:13 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id j20sm4182609ejy.124.2020.12.10.03.48.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 03:48:12 -0800 (PST)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 0/3] RFC: Precise TSC migration
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+References: <20201203171118.372391-1-mlevitsk@redhat.com>
+Message-ID: <566e8346-1e78-2737-be86-0ec27ad147a5@redhat.com>
+Date:   Thu, 10 Dec 2020 12:48:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Message-ID: <160760065470.3364.9118672083291010559.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201203171118.372391-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+I'm queueing patches 2 and 3 for now, since the sane MSR interface is a 
+prerequisite anyway.
 
-Commit-ID:     29ac40cbed2bc06fa218ca25d7f5e280d3d08a25
-Gitweb:        https://git.kernel.org/tip/29ac40cbed2bc06fa218ca25d7f5e280d3d08a25
-Author:        Arvind Sankar <nivedita@alum.mit.edu>
-AuthorDate:    Wed, 11 Nov 2020 11:09:45 -05:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 10 Dec 2020 12:28:06 +01:00
+Paolo
 
-x86/mm/mem_encrypt: Fix definition of PMD_FLAGS_DEC_WP
+On 03/12/20 18:11, Maxim Levitsky wrote:
+> Hi!
+> 
+> This is the second version of the work to make TSC migration more accurate,
+> as was defined by Paulo at:
+> https://www.spinics.net/lists/kvm/msg225525.html
+> 
+> I omitted most of the semi-offtopic points I raised related to TSC
+> in the previous RFC where we can continue the discussion.
+> 
+> I do want to raise another thing that I almost forgot.
+> 
+> On AMD systems, the Linux kernel will mark the guest tsc as
+> unstable unless invtsc is set which is set on recent AMD
+> hardware.
+> 
+> Take a look at 'unsynchronized_tsc()' to verify this.
+> 
+> This is another thing that IMHO should be fixed at least when
+> running under KVM.
+> 
+> Note that I forgot to mention that
+> X86_FEATURE_TSC_RELIABLE also short-circuits this code,
+> thus giving another reason to enable it under KVM.
+> 
+> Changes from V1:
+> 
+> - added KVM_TSC_STATE_TIMESTAMP_VALID instead of testing ns == 0
+> - allow diff < 0, because it is still better that capping it to 0
+> - updated tsc_msr_test unit test to cover this feature
+> - refactoring
+> 
+> Patches to enable this feature in qemu are in the process of
+> being sent to qemu-devel mailing list.
+> 
+> Best regards,
+>      Maxim Levitsky
+> 
+> Maxim Levitsky (3):
+>    KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+>    KVM: x86: introduce KVM_X86_QUIRK_TSC_HOST_ACCESS
+>    kvm/selftests: update tsc_msrs_test to cover
+>      KVM_X86_QUIRK_TSC_HOST_ACCESS
+> 
+>   Documentation/virt/kvm/api.rst                | 65 +++++++++++++
+>   arch/x86/include/uapi/asm/kvm.h               |  1 +
+>   arch/x86/kvm/x86.c                            | 92 ++++++++++++++++++-
+>   include/uapi/linux/kvm.h                      | 15 +++
+>   .../selftests/kvm/x86_64/tsc_msrs_test.c      | 79 ++++++++++++++--
+>   5 files changed, 237 insertions(+), 15 deletions(-)
+> 
 
-The PAT bit is in different locations for 4k and 2M/1G page table
-entries.
-
-Add a definition for _PAGE_LARGE_CACHE_MASK to represent the three
-caching bits (PWT, PCD, PAT), similar to _PAGE_CACHE_MASK for 4k pages,
-and use it in the definition of PMD_FLAGS_DEC_WP to get the correct PAT
-index for write-protected pages.
-
-Fixes: 6ebcb060713f ("x86/mm: Add support to encrypt the kernel in-place")
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20201111160946.147341-1-nivedita@alum.mit.edu
----
- arch/x86/include/asm/pgtable_types.h | 1 +
- arch/x86/mm/mem_encrypt_identity.c   | 4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index 816b31c..394757e 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -155,6 +155,7 @@ enum page_cache_mode {
- #define _PAGE_ENC		(_AT(pteval_t, sme_me_mask))
- 
- #define _PAGE_CACHE_MASK	(_PAGE_PWT | _PAGE_PCD | _PAGE_PAT)
-+#define _PAGE_LARGE_CACHE_MASK	(_PAGE_PWT | _PAGE_PCD | _PAGE_PAT_LARGE)
- 
- #define _PAGE_NOCACHE		(cachemode2protval(_PAGE_CACHE_MODE_UC))
- #define _PAGE_CACHE_WP		(cachemode2protval(_PAGE_CACHE_MODE_WP))
-diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-index 733b983..6c5eb6f 100644
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -45,8 +45,8 @@
- #define PMD_FLAGS_LARGE		(__PAGE_KERNEL_LARGE_EXEC & ~_PAGE_GLOBAL)
- 
- #define PMD_FLAGS_DEC		PMD_FLAGS_LARGE
--#define PMD_FLAGS_DEC_WP	((PMD_FLAGS_DEC & ~_PAGE_CACHE_MASK) | \
--				 (_PAGE_PAT | _PAGE_PWT))
-+#define PMD_FLAGS_DEC_WP	((PMD_FLAGS_DEC & ~_PAGE_LARGE_CACHE_MASK) | \
-+				 (_PAGE_PAT_LARGE | _PAGE_PWT))
- 
- #define PMD_FLAGS_ENC		(PMD_FLAGS_LARGE | _PAGE_ENC)
- 
