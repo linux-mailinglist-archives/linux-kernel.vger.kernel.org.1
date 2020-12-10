@@ -2,135 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A0B2D5D74
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 350ED2D5CE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389813AbgLJOXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:23:31 -0500
-Received: from outbound-ip23b.ess.barracuda.com ([209.222.82.220]:57142 "EHLO
-        outbound-ip23b.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389034AbgLJOXb (ORCPT
+        id S2389257AbgLJNsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:48:21 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:58539 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389116AbgLJNsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:23:31 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46]) by mx11.us-east-2b.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Thu, 10 Dec 2020 14:22:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nn19zBwh+TjXA9U4gEuWx5fYo89tAjNFn9CxQ5GjLaKSmc4gdxNcYweJo8oQYlgHcF1oQTgoE1Nu8Ec2X1sljEGnlr50UxSlOTi/3lHOt8F1lb6lPzhbWi0SZu8SFlFdK/35UKWgEiidWbYJ1BaZtLhaoLQW1fBoS2TF6idnNgbfultgIcZODbZdJpLWdGWs8v5HUOzxeJp+VrnlWWt6M0lFAG1QVyuVSbd04whKEyrHtOS01FO+tQ7nKkVjPc+MvbDJIh+GLEq4x88M0yChkIIe4e9jkQFnHBsDdt5XoTU5kWvL7gu3q9UrtYx5G3KUpP1/2C15NihPC4EZLM625w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mifXxRPNSb/Hcp/k1oz5Pj4HZF0OlUG7nMJUhMoDwlY=;
- b=HrFxIK0wFUNbfgB9W2PSnzImhonXVMRHAeW9sMC3luLO2NT2p7GsYG1Fg6cclOSG1zNjGcgUsAAImAS0p+NbqmB3bkS20XwuOt3TqIjMPBh+AF05jHEUEQDSVYQosmOzKwmEq+tdYfEeuZOxVniQUqWzn3CAO3yPff0pF+gvwIS7UDXatwayDoRHx1ZtCQEHlc4G+KwhjR2On8vZEd/q7HsoOZwz/x2aibTuUSAjT1HG6+T5gWafJEqbrCywzmM2x4DiBumtkvhVFH9x0BK228D4qLTXqvUQ5KXtPgkJvr4V2LXUvTeeaMX+ITGtVHA2qkfdnuTF2ojhUrvBFL7HLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=digi.com; dmarc=pass action=none header.from=digi.com;
- dkim=pass header.d=digi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digi.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mifXxRPNSb/Hcp/k1oz5Pj4HZF0OlUG7nMJUhMoDwlY=;
- b=G5tqxCNxKKPtnHKxMhaIyAv8ccfjJWGs5hd/iTLZ7fNQgTWSWYrOq9W3LSvtpKbB9nvIjlpvPrBKkhdYim8n47AEL/xJHlkwNHGG1hS52BbLhZ/XCJamzUjCGuWA+mGxsUlUNHe9yRUKVkSsSzw+CFk+GhLWWBfQCB4JKdrKjsQ=
-Authentication-Results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=digi.com;
-Received: from MN2PR10MB4174.namprd10.prod.outlook.com (2603:10b6:208:1dd::21)
- by MN2PR10MB4304.namprd10.prod.outlook.com (2603:10b6:208:1d0::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Thu, 10 Dec
- 2020 13:44:01 +0000
-Received: from MN2PR10MB4174.namprd10.prod.outlook.com
- ([fe80::c8b6:2021:35a0:2365]) by MN2PR10MB4174.namprd10.prod.outlook.com
- ([fe80::c8b6:2021:35a0:2365%9]) with mapi id 15.20.3654.013; Thu, 10 Dec 2020
- 13:44:00 +0000
-From:   Pavana Sharma <pavana.sharma@digi.com>
-To:     andrew@lunn.ch
-Cc:     ashkan.boldaji@digi.com, clang-built-linux@googlegroups.com,
-        davem@davemloft.net, devicetree@vger.kernel.org,
-        f.fainelli@gmail.com, gregkh@linuxfoundation.org,
-        kbuild-all@lists.01.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com, marek.behun@nic.cz,
-        netdev@vger.kernel.org, pavana.sharma@digi.com, robh+dt@kernel.org,
-        vivien.didelot@gmail.com
-Subject: [PATCH v11 1/4] dt-bindings: net: Add 5GBASER phy interface mode
-Date:   Thu, 10 Dec 2020 23:43:29 +1000
-Message-Id: <20201210134329.25200-1-pavana.sharma@digi.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201209231512.GF2649111@lunn.ch>
-References: <20201209231512.GF2649111@lunn.ch>
-Content-Type: text/plain
-X-Originating-IP: [203.111.5.166]
-X-ClientProxiedBy: SYCPR01CA0022.ausprd01.prod.outlook.com
- (2603:10c6:10:31::34) To MN2PR10MB4174.namprd10.prod.outlook.com
- (2603:10b6:208:1dd::21)
+        Thu, 10 Dec 2020 08:48:01 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id E6032EC5;
+        Thu, 10 Dec 2020 08:46:53 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 10 Dec 2020 08:46:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:content-type:mime-version
+        :content-transfer-encoding; s=fm1; bh=2mM5F5w/Ms2f3FSkqgC6qFfGU2
+        pI+9dyJwvXJa0dfw4=; b=oT3FsbRn/eSIi6+XjN4UOcKIUtXQ27V/bIJ88VFOhe
+        o/l+NmXvIFKUPGKr6kasRabnz+khP/DhNi3tfZ5LZifZs7+Hb4QYxDNehYmVRaOo
+        /CilS3jbLfvcY2/MOqiahNvGe3QAkDM1Xg53iPeOzAA0Ctnb/ser7v63o6FTffr4
+        upDsVdMUKde9f/zEED2IOve30b5AjZNbRybHJ848HQRjBjj6RkfuvrB4oyiUdQWI
+        xVdonOm9KMHCGOGawKXk9k1I+bb+5aWC4wtCM8wcaN0F3t4MfVIgAvTTSDgpDkIU
+        rKsNViHGBo6ucP1h0uBkxmUVmw9p9S6eniqjTEe5Ew/g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=2mM5F5
+        w/Ms2f3FSkqgC6qFfGU2pI+9dyJwvXJa0dfw4=; b=NZFpj4GjOVx1ot5iFlReP2
+        EJQ4fYtaDe+yKTyQYxC7zEIBg8F5oF5tDgDUL3rE4+4FalyFYGHzuQ5mRY+9lb3p
+        EWNKhxCch4UiKc0Fv5nbrEFTC7BMQbm63lBYbzSXeZCu+AjM9c3A3MusUTnlqGn4
+        dATKqqaX0Ie7WHqcXeDh/+pCuyrGFA62c2n2jJr0XI4fQNcRKGFNEVKL9kpj3TPo
+        uZ7O5MwVecgkLq31Q6yVypTP4ZbvvXC4FvDpgCMgmvtgvrRqiNvOsSipml9k4pzb
+        d/dQYtwT35j8Omfh5TtRBgHNKbQuQMChOelpnmqyFcr8OAyxRL4cqBykAVaGcgWA
+        ==
+X-ME-Sender: <xms:ySbSXxXb3A0YNpRtNGCizods-XSYjdgdO0aY9pYxgDOBJuGU3eyZDg>
+    <xme:ySbSXxlCMMlT3_maeubL39gXgMZuZtrk8shpue-BPSCG2b1Tisgrg6O0wXIDv7vG7
+    m1xszTUM-q81XFqI00>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudektddgheeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffotggggfesthhqredtredtjeenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeetieekgfffkeegkeeltdehudetteejgfekueevhffhteegudfgkedtueegfffg
+    feenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:ySbSX9byWpkZzSqnVffJufTazefJB6MaTcZqVV4cOuX30Qz5A4PfxA>
+    <xmx:ySbSX0UVEbjLAJD7SjPCt3kCgpIl5GhDjtBEkLJP81pV0f-L7v0VWw>
+    <xmx:ySbSX7nQQWb6pVFEv5UUGfN65_7c9EMbuOaNUsokBSYXkmMsvslHcw>
+    <xmx:zSbSXzmukvgaILRgABTSaws0XcYXHh9cqlFyolM3zWB4KJdJy-Fof7F1SEs>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A8723240062;
+        Thu, 10 Dec 2020 08:46:49 -0500 (EST)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>
+Cc:     Jason Cooper <jason@lakedaemon.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, linux-media@vger.kernel.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 00/15] drm/vc4: hdmi: Add CEC support for the BCM2711
+Date:   Thu, 10 Dec 2020 14:46:33 +0100
+Message-Id: <20201210134648.272857-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.28.0
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (203.111.5.166) by SYCPR01CA0022.ausprd01.prod.outlook.com (2603:10c6:10:31::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 10 Dec 2020 13:43:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f314a665-0647-4bc7-8bd6-08d89d11a6af
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4304:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4304BA3ACD44530E49B47DB995CB0@MN2PR10MB4304.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: c7PX/vFPJN+PoqDZUU6mA1T6zpkzhKd0Otq4I2i4A387v01UVrlQxS8llWvwzdMK6lUwuv7olnjAbrJXlv3sJWtNu7INd3y3eFy2TnSJbFgSau+SNd8C57ub6egQPzo2AivC0vrEmCXrtPA++wXGdt+wfRAYxiEytYLPNIb3G4+LNTIOznpby5eIed1zB0sp/52+XXbvdi8637YFeJLoG+fx/MaN3/5k4DQzuco4Cl8AhVDjZrwnvpMPFLmck+N7yRwUrqPApX4Iq3seTwDAF8ZGkC/po2j/DPSMhWTFuj+fT4IVVNGpEJZBhNyn/ZTAuGz0TSCFMvWm44ueyiys9EJgKk/WUPbSfhIgFyPm957hXPjKaLdn7JTOIK4VYoNBiZjj+ZJOBlnF1CH6BZHr5PMZBJsSbgWlSNwbfXFRTIA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4174.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(16526019)(6512007)(52116002)(26005)(7416002)(4326008)(66946007)(66476007)(69590400008)(186003)(6486002)(36756003)(66556008)(8936002)(44832011)(86362001)(4744005)(2616005)(5660300002)(34490700003)(6506007)(2906002)(6916009)(8676002)(1076003)(508600001)(956004)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ZSqg5eWat6j2KKZ5I93XVbDvRZTZCy4VdQBAwhygNIbxAngOkx4gwUVc5hXy?=
- =?us-ascii?Q?tQqd0oUoMzzocR9S/+mxM29ENuyh8+qUfo8YgXVNpvw+OwWyWtVbRolMz1MJ?=
- =?us-ascii?Q?+Dve9AN8V6CTYynfDgaNF4SD6xsEG134OP+tMVNRTIClN6+h/h0mF+4mttu1?=
- =?us-ascii?Q?Pslm1/n8KyU53wW9rYOWQDk82O+PeghNH6Ak1dyogbDUtM1EGLh15kuCb+ad?=
- =?us-ascii?Q?Rl5qUcIRhEJHuZB3zPE+FmnKu8SHZhQDGmgFRG+EqKjfoBQMGwejCDgr+0tV?=
- =?us-ascii?Q?i323hPfCyC7rMm0kdhAJlmKLzyDfFlqjJyelhHcfGVu/2O8pG7Y+53ys7krH?=
- =?us-ascii?Q?oyMKrSdFFPjV7gW8bQmNJDQdJfXdkYD2tuDEoEBZB3n9s/9Piz/w3kMqIV0l?=
- =?us-ascii?Q?d9FfT2yyLXT41xKirADyMXV2QZrJRvZpTNZmtBtR9/0DP9JJ9j6nY+iSqqXS?=
- =?us-ascii?Q?XXdxd0KmUpKzM3YZ+ulEGHbKHuF4MRr9Ijr0+JGlARQ2Gv51icWIjuT7E0dq?=
- =?us-ascii?Q?yKCViYYCBUSoKcajn+XPLPWCyXD8SnHEjwQ2nKBj3diZo+0DCzDazlS/Tug0?=
- =?us-ascii?Q?tE2aVCCvaSiuYda8A6kp6A3I29gcVa/202gqZs2tnmGr7iF+3XOv16cVA/bJ?=
- =?us-ascii?Q?8uo0TQjJ+L9mzGPt5PLQiARoD6A9qcLksUeb/oeXfMu+4X2SRGjApltL2aiP?=
- =?us-ascii?Q?yZSplZK1oxcA1Z38JT52wnbfBzj4unCGkN5RjRE60lzLb+PE45auRYV7oZvB?=
- =?us-ascii?Q?Zw2YMkFcGq46lKX+SFWoB63fc0VXe1/y72VQdJlJzdOb6L0INAciqP9rdzhI?=
- =?us-ascii?Q?xfj7k6FCRiu+sIss6IdwQff7HJQTRCFD0IPgGFEeD09ZsIdB5eLH05j++2TS?=
- =?us-ascii?Q?kiNZbNuHI5d3HGM3pLks6lufz6Dk0J8ONgr8NZjYHO+ReAp1XPYt7mcRDidh?=
- =?us-ascii?Q?hqSJZvswc003y5KXK8wdE1mgO+AzSTo+yg+vB75hf6+E000JK6YHA1EMZO4t?=
- =?us-ascii?Q?lwe5?=
-X-OriginatorOrg: digi.com
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4174.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2020 13:44:00.8347
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: abb4cdb7-1b7e-483e-a143-7ebfd1184b9e
-X-MS-Exchange-CrossTenant-Network-Message-Id: f314a665-0647-4bc7-8bd6-08d89d11a6af
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2lm5wtn1qrf9FineqjOl0UG9NZifduHsIdCciyPTc5fQNv0YDB/i4at8SR2UuDo9iOoQOYQxjDvxLfb3zuFhLg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4304
-X-BESS-ID: 1607610134-893021-7399-8448-1
-X-BESS-VER: 2019.1_20201208.2330
-X-BESS-Apparent-Source-IP: 104.47.66.46
-X-BESS-Outbound-Spam-Score: 0.00
-X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.228740 [from 
-        cloudscan14-131.us-east-2a.ess.aws.cudaops.com]
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------
-        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
-        0.00 MSGID_FROM_MTA_HEADER  META: Message-Id was added by a relay 
-X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS112744 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND, MSGID_FROM_MTA_HEADER
-X-BESS-BRTS-Status: 1
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
-
-> For v10 i said:
-
-> > What value does the comment add?
-
-> I don't remember you replying. Why is 5gbase-r special and it needs a
-> comment, saying the same thing in CAPS LETTERS? What value is there in
-> the CAPS LETTERS string?
-
-There isn't anything special regarding 5gbase-r apart from another supported
-speed.
-So, I will remove the comment from [PATCH 1 & 2] and keep it similar to other
-(1000/2500) speed options.
-
-Thanks,
-Pavana
+Hi,=0D
+=0D
+Here's a series introducing the CEC support for the BCM2711 found on the=0D
+RaspberryPi4.=0D
+=0D
+The BCM2711 HDMI controller uses a similar layout for the CEC registers, th=
+e=0D
+main difference being that the interrupt handling part is now shared betwee=
+n=0D
+both HDMI controllers.=0D
+=0D
+This series is mainly about fixing a couple of bugs, reworking the driver t=
+o=0D
+support having two different interrupts, one for each direction, provided b=
+y an=0D
+external irqchip, and enables the irqchip driver for the controller we have=
+.=0D
+=0D
+This has been tested on an RPi3 and RPi4, but requires the latest firmware.=
+=0D
+It's is based on the 10 and 12 bpc series.=0D
+=0D
+Here is the cec-compliance output:=0D
+=0D
+$ cec-ctl --tuner -p 1.0.0.0=0D
+The CEC adapter doesn't allow setting the physical address manually, ignore=
+ this option.=0D
+=0D
+Driver Info:=0D
+	Driver Name                : vc4_hdmi=0D
+	Adapter Name               : vc4=0D
+	Capabilities               : 0x0000010e=0D
+		Logical Addresses=0D
+		Transmit=0D
+		Passthrough=0D
+	Driver version             : 5.10.0=0D
+	Available Logical Addresses: 1=0D
+	Physical Address           : 1.0.0.0=0D
+	Logical Address Mask       : 0x0008=0D
+	CEC Version                : 2.0=0D
+	Vendor ID                  : 0x000c03 (HDMI)=0D
+	OSD Name                   : Tuner=0D
+	Logical Addresses          : 1 (Allow RC Passthrough)=0D
+=0D
+	  Logical Address          : 3 (Tuner 1)=0D
+	    Primary Device Type    : Tuner=0D
+	    Logical Address Type   : Tuner=0D
+	    All Device Types       : Tuner=0D
+	    RC TV Profile          : None=0D
+	    Device Features        :=0D
+		None=0D
+=0D
+$ cec-compliance=0D
+cec-compliance SHA                 : not available=0D
+Driver Info:=0D
+	Driver Name                : vc4_hdmi=0D
+	Adapter Name               : vc4=0D
+	Capabilities               : 0x0000010e=0D
+		Logical Addresses=0D
+		Transmit=0D
+		Passthrough=0D
+	Driver version             : 5.10.0=0D
+	Available Logical Addresses: 1=0D
+	Physical Address           : 1.0.0.0=0D
+	Logical Address Mask       : 0x0008=0D
+	CEC Version                : 2.0=0D
+	Vendor ID                  : 0x000c03 (HDMI)=0D
+	OSD Name                   : Tuner=0D
+	Logical Addresses          : 1 (Allow RC Passthrough)=0D
+=0D
+	  Logical Address          : 3 (Tuner 1)=0D
+	    Primary Device Type    : Tuner=0D
+	    Logical Address Type   : Tuner=0D
+	    All Device Types       : Tuner=0D
+	    RC TV Profile          : None=0D
+	    Device Features        :=0D
+		None=0D
+=0D
+Compliance test for vc4_hdmi device /dev/cec0:=0D
+=0D
+    The test results mean the following:=0D
+        OK                  Supported correctly by the device.=0D
+        OK (Not Supported)  Not supported and not mandatory for the device.=
+=0D
+        OK (Presumed)       Presumably supported.  Manually check to confir=
+m.=0D
+        OK (Unexpected)     Supported correctly but is not expected to be s=
+upported for this device.=0D
+        OK (Refused)        Supported by the device, but was refused.=0D
+        FAIL                Failed and was expected to be supported by this=
+ device.=0D
+=0D
+Find remote devices:=0D
+	Polling: OK=0D
+=0D
+Network topology:=0D
+	System Information for device 0 (TV) from device 3 (Tuner 1):=0D
+		CEC Version                : 2.0=0D
+		Physical Address           : 0.0.0.0=0D
+		Primary Device Type        : TV=0D
+		Vendor ID                  : 0x000c03 (HDMI)=0D
+		OSD Name                   : 'test-124'=0D
+		Power Status               : Tx, OK, Rx, OK, Feature Abort=0D
+=0D
+Total for vc4_hdmi device /dev/cec0: 1, Succeeded: 1, Failed: 0, Warnings: =
+0=0D
+=0D
+Let me know what you think,=0D
+Maxime=0D
+=0D
+Dom Cobley (5):=0D
+  drm/vc4: hdmi: Move hdmi reset to bind=0D
+  drm/vc4: hdmi: Fix register offset with longer CEC messages=0D
+  drm/vc4: hdmi: Fix up CEC registers=0D
+  drm/vc4: hdmi: Restore cec physical address on reconnect=0D
+  drm/vc4: hdmi: Remove cec_available flag=0D
+=0D
+Maxime Ripard (10):=0D
+  irqchip: Allow to compile bcmstb on other platforms=0D
+  drm/vc4: hdmi: Compute the CEC clock divider from the clock rate=0D
+  drm/vc4: hdmi: Update the CEC clock divider on HSM rate change=0D
+  drm/vc4: hdmi: Introduce a CEC clock=0D
+  drm/vc4: hdmi: Split the interrupt handlers=0D
+  drm/vc4: hdmi: Support BCM2711 CEC interrupt setup=0D
+  drm/vc4: hdmi: Don't register the CEC adapter if there's no interrupts=0D
+  dt-binding: display: bcm2711-hdmi: Add CEC and hotplug interrupts=0D
+  ARM: dts: bcm2711: Add the BSC interrupt controller=0D
+  ARM: dts: bcm2711: Add the CEC interrupt controller=0D
+=0D
+ .../bindings/display/brcm,bcm2711-hdmi.yaml   |  20 +-=0D
+ arch/arm/boot/dts/bcm2711.dtsi                |  30 +++=0D
+ drivers/gpu/drm/vc4/vc4_hdmi.c                | 224 +++++++++++++-----=0D
+ drivers/gpu/drm/vc4/vc4_hdmi.h                |  11 +-=0D
+ drivers/gpu/drm/vc4/vc4_hdmi_regs.h           |   4 +-=0D
+ drivers/irqchip/Kconfig                       |   2 +-=0D
+ 6 files changed, 232 insertions(+), 59 deletions(-)=0D
+=0D
+-- =0D
+2.28.0=0D
+=0D
