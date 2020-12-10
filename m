@@ -2,99 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1FB2D57E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3682D57EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728096AbgLJKIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:08:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726648AbgLJKIr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:08:47 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87994C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 02:08:07 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1knIrk-0002lu-5r; Thu, 10 Dec 2020 11:08:04 +0100
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1knIrj-0002sH-Aa; Thu, 10 Dec 2020 11:08:03 +0100
-Date:   Thu, 10 Dec 2020 11:08:03 +0100
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Simon Budig <simon.budig@kernelconcepts.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: edt-ft5x06 - consolidate handling of number of
- electrodes
-Message-ID: <20201210100803.bfohc5fglvrwrtcz@pengutronix.de>
-References: <X9FZFs3NZADoIhhH@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X9FZFs3NZADoIhhH@google.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:03:13 up 8 days, 9 min, 25 users,  load average: 0.05, 0.07, 0.07
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        id S1729136AbgLJKKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:10:48 -0500
+Received: from comms.puri.sm ([159.203.221.185]:40212 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728188AbgLJKKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 05:10:43 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 35CE6DF98D;
+        Thu, 10 Dec 2020 02:09:38 -0800 (PST)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id dmlePB7Okdbu; Thu, 10 Dec 2020 02:09:33 -0800 (PST)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     robh@kernel.org, shawnguo@kernel.org, festevam@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, georgi.djakov@linaro.org,
+        cdleonard@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, kernel@puri.sm,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH v3 0/6] imx8mq: updates for the interconnect fabric
+Date:   Thu, 10 Dec 2020 11:09:00 +0100
+Message-Id: <20201210100906.18205-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+revision history:
+v3: (thanks Krysztof and Georgi)
+ * drop the defconfig cycling patch and fix the interconnect enable config
+ * add the noc node to imx8mq only and use correct properties
+ * add missing signed-off-by
 
-On 20-12-09 15:09, Dmitry Torokhov wrote:
-> Instead of using special-casing retrieval of number of X/Y electrodes
-> based on the firmware, let's select default values and mark registers as
-> non-existent on firmwares that do not support this operation.
-> 
-> Also mark "report rate" register as non-existent for generic firmwares as
-> having it set to 0 does not make sense.
-> 
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> ---
->  drivers/input/touchscreen/edt-ft5x06.c | 43 ++++++++++----------------
->  1 file changed, 17 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/input/touchscreen/edt-ft5x06.c b/drivers/input/touchscreen/edt-ft5x06.c
-> index 6ff81d48da86..2eefbc2485bc 100644
-> --- a/drivers/input/touchscreen/edt-ft5x06.c
-> +++ b/drivers/input/touchscreen/edt-ft5x06.c
-> @@ -69,6 +69,9 @@
+v2: (thanks Lucas)
+ * reorder and clean up defconfig changes
+ * use "dram" for the interconnect path name and document it
+ * https://lore.kernel.org/linux-arm-kernel/20201201123932.12312-1-martin.kepplinger@puri.sm/T/#t
 
-...
+v1:
+ * link: https://lore.kernel.org/linux-arm-kernel/20201201100124.4676-1-martin.kepplinger@puri.sm/T/
 
->  	case EV_FT:
->  		reg_addr->reg_threshold = EV_REGISTER_THRESHOLD;
-> +		reg_addr->reg_report_rate = NO_REGISTER;
->  		reg_addr->reg_gain = EV_REGISTER_GAIN;
->  		reg_addr->reg_offset = NO_REGISTER;
->  		reg_addr->reg_offset_x = EV_REGISTER_OFFSET_X;
->  		reg_addr->reg_offset_y = EV_REGISTER_OFFSET_Y;
->  		reg_addr->reg_num_x = NO_REGISTER;
->  		reg_addr->reg_num_y = NO_REGISTER;
-> -		reg_addr->reg_report_rate = NO_REGISTER;
->  		break;
+thanks,
+                        martin
 
-Nit:
-Unrelated change.
+Leonard Crestez (1):
+  arm64: dts: imx8mq: Add NOC node
 
-However the patch looks good, thanks.
+Martin Kepplinger (5):
+  arm64: dts: imx8mq: Add interconnect provider property
+  arm64: dts: imx8mq: Add interconnect for lcdif
+  dt-bindings: mxsfb: Add interconnect bindings for LCDIF path
+  interconnect: imx8mq: Use icc_sync_state
+  arm64: defconfig: Enable interconnect for imx8mq
 
-Acked-by: Marco Felsch <m.felsch@pengutronix.de>
+ .../devicetree/bindings/display/mxsfb.txt     |  6 +++++
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 26 +++++++++++++++++++
+ arch/arm64/configs/defconfig                  |  2 ++
+ drivers/interconnect/imx/imx8mq.c             |  2 ++
+ 4 files changed, 36 insertions(+)
 
-Regards,
-  Marco
+-- 
+2.20.1
+
