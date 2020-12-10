@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810CE2D5DCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B382D5E49
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390502AbgLJObf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:31:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38376 "EHLO mail.kernel.org"
+        id S2391524AbgLJOpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:45:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390284AbgLJOaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:30:24 -0500
+        id S2391106AbgLJOhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:37:42 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 4.9 35/45] i2c: imx: Check for I2SR_IAL after every byte
-Date:   Thu, 10 Dec 2020 15:26:49 +0100
-Message-Id: <20201210142604.084868716@linuxfoundation.org>
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.9 25/75] cifs: add NULL check for ses->tcon_ipc
+Date:   Thu, 10 Dec 2020 15:26:50 +0100
+Message-Id: <20201210142607.291085463@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
-References: <20201210142602.361598591@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,46 +32,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Eggers <ceggers@arri.de>
+From: Aurelien Aptel <aaptel@suse.com>
 
-commit 1de67a3dee7a279ebe4d892b359fe3696938ec15 upstream.
+commit 59463eb88829f646aed13283fd84d02a475334fe upstream.
 
-Arbitration Lost (IAL) can happen after every single byte transfer. If
-arbitration is lost, the I2C hardware will autonomously switch from
-master mode to slave. If a transfer is not aborted in this state,
-consecutive transfers will not be executed by the hardware and will
-timeout.
+In some scenarios (DFS and BAD_NETWORK_NAME) set_root_set() can be
+called with a NULL ses->tcon_ipc.
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Tested (not extensively) on Vybrid VF500 (Toradex VF50):
-Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: stable@vger.kernel.org
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Aurelien Aptel <aaptel@suse.com>
+Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+CC: Stable <stable@vger.kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/i2c/busses/i2c-imx.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ fs/cifs/connect.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -465,6 +465,16 @@ static int i2c_imx_trx_complete(struct i
- 		dev_dbg(&i2c_imx->adapter.dev, "<%s> Timeout\n", __func__);
- 		return -ETIMEDOUT;
+--- a/fs/cifs/connect.c
++++ b/fs/cifs/connect.c
+@@ -4768,7 +4768,8 @@ static void set_root_ses(struct cifs_sb_
+ 	if (ses) {
+ 		spin_lock(&cifs_tcp_ses_lock);
+ 		ses->ses_count++;
+-		ses->tcon_ipc->remap = cifs_remap(cifs_sb);
++		if (ses->tcon_ipc)
++			ses->tcon_ipc->remap = cifs_remap(cifs_sb);
+ 		spin_unlock(&cifs_tcp_ses_lock);
  	}
-+
-+	/* check for arbitration lost */
-+	if (i2c_imx->i2csr & I2SR_IAL) {
-+		dev_dbg(&i2c_imx->adapter.dev, "<%s> Arbitration lost\n", __func__);
-+		i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
-+
-+		i2c_imx->i2csr = 0;
-+		return -EAGAIN;
-+	}
-+
- 	dev_dbg(&i2c_imx->adapter.dev, "<%s> TRX complete\n", __func__);
- 	i2c_imx->i2csr = 0;
- 	return 0;
+ 	*root_ses = ses;
 
 
