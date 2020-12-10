@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60F12D54BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D2A2D54C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbgLJHg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 02:36:27 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9574 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729945AbgLJHgT (ORCPT
+        id S1733231AbgLJHgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 02:36:51 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9863 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732601AbgLJHgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 02:36:19 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cs5KV1ZwPzM365;
-        Thu, 10 Dec 2020 15:34:54 +0800 (CST)
+        Thu, 10 Dec 2020 02:36:20 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cs5Kg5xvQz7C9b;
+        Thu, 10 Dec 2020 15:35:03 +0800 (CST)
 Received: from DESKTOP-5IS4806.china.huawei.com (10.174.187.37) by
  DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 10 Dec 2020 15:35:28 +0800
+ 14.3.487.0; Thu, 10 Dec 2020 15:35:29 +0800
 From:   Keqian Zhu <zhukeqian1@huawei.com>
 To:     <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
@@ -39,9 +39,9 @@ CC:     Joerg Roedel <joro@8bytes.org>,
         Alexios Zavras <alexios.zavras@intel.com>,
         <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
         Keqian Zhu <zhukeqian1@huawei.com>
-Subject: [PATCH 4/7] vfio: iommu_type1: Fix missing dirty page when promote pinned_scope
-Date:   Thu, 10 Dec 2020 15:34:22 +0800
-Message-ID: <20201210073425.25960-5-zhukeqian1@huawei.com>
+Subject: [PATCH 5/7] vfio: iommu_type1: Drop parameter "pgsize" of vfio_dma_bitmap_alloc_all
+Date:   Thu, 10 Dec 2020 15:34:23 +0800
+Message-ID: <20201210073425.25960-6-zhukeqian1@huawei.com>
 X-Mailer: git-send-email 2.8.4.windows.1
 In-Reply-To: <20201210073425.25960-1-zhukeqian1@huawei.com>
 References: <20201210073425.25960-1-zhukeqian1@huawei.com>
@@ -53,57 +53,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we pin or detach a group which is not dirty tracking capable,
-we will try to promote pinned_scope of vfio_iommu.
-
-If we succeed to do so, vfio only report pinned_scope as dirty to
-userspace next time, but these memory written before pin or detach
-is missed.
-
-The solution is that we must populate all dma range as dirty before
-promoting pinned_scope of vfio_iommu.
+We always use the smallest supported page size of vfio_iommu as
+pgsize. Remove parameter "pgsize" of vfio_dma_bitmap_alloc_all.
 
 Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
 ---
- drivers/vfio/vfio_iommu_type1.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/vfio/vfio_iommu_type1.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index bd9a94590ebc..00684597b098 100644
+index 00684597b098..32ab889c8193 100644
 --- a/drivers/vfio/vfio_iommu_type1.c
 +++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -1633,6 +1633,20 @@ static struct vfio_group *vfio_iommu_find_iommu_group(struct vfio_iommu *iommu,
- 	return group;
- }
- 
-+static void vfio_populate_bitmap_all(struct vfio_iommu *iommu)
-+{
-+	struct rb_node *n;
-+	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
-+
-+	for (n = rb_first(&iommu->dma_list); n; n = rb_next(n)) {
-+		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
-+		unsigned long nbits = dma->size >> pgshift;
-+
-+		if (dma->iommu_mapped)
-+			bitmap_set(dma->bitmap, 0, nbits);
-+	}
-+}
-+
- static void promote_pinned_page_dirty_scope(struct vfio_iommu *iommu)
- {
- 	struct vfio_domain *domain;
-@@ -1657,6 +1671,10 @@ static void promote_pinned_page_dirty_scope(struct vfio_iommu *iommu)
+@@ -236,9 +236,10 @@ static void vfio_dma_populate_bitmap(struct vfio_dma *dma, size_t pgsize)
  	}
- 
- 	iommu->pinned_page_dirty_scope = true;
-+
-+	/* Set all bitmap to avoid missing dirty page */
-+	if (iommu->dirty_page_tracking)
-+		vfio_populate_bitmap_all(iommu);
  }
  
- static bool vfio_iommu_has_sw_msi(struct list_head *group_resv_regions,
+-static int vfio_dma_bitmap_alloc_all(struct vfio_iommu *iommu, size_t pgsize)
++static int vfio_dma_bitmap_alloc_all(struct vfio_iommu *iommu)
+ {
+ 	struct rb_node *n;
++	size_t pgsize = (size_t)1 << __ffs(iommu->pgsize_bitmap);
+ 
+ 	for (n = rb_first(&iommu->dma_list); n; n = rb_next(n)) {
+ 		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
+@@ -2798,12 +2799,9 @@ static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
+ 		return -EINVAL;
+ 
+ 	if (dirty.flags & VFIO_IOMMU_DIRTY_PAGES_FLAG_START) {
+-		size_t pgsize;
+-
+ 		mutex_lock(&iommu->lock);
+-		pgsize = 1 << __ffs(iommu->pgsize_bitmap);
+ 		if (!iommu->dirty_page_tracking) {
+-			ret = vfio_dma_bitmap_alloc_all(iommu, pgsize);
++			ret = vfio_dma_bitmap_alloc_all(iommu);
+ 			if (!ret)
+ 				iommu->dirty_page_tracking = true;
+ 		}
 -- 
 2.23.0
 
