@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CBE2D652D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 775392D654B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393157AbgLJSft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:35:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41670 "EHLO mail.kernel.org"
+        id S2390649AbgLJOcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:32:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389176AbgLJOdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:33:21 -0500
+        id S2390498AbgLJObd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:31:33 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Suganath Prabu S <suganath-prabu.subramani@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.19 19/39] scsi: mpt3sas: Fix ioctl timeout
-Date:   Thu, 10 Dec 2020 15:26:58 +0100
-Message-Id: <20201210142603.229611427@linuxfoundation.org>
+        stable@vger.kernel.org, Jerry Snitselaar <jsnitsel@redhat.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 4.14 22/31] iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs
+Date:   Thu, 10 Dec 2020 15:26:59 +0100
+Message-Id: <20201210142603.204326253@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
-References: <20201210142602.272595094@linuxfoundation.org>
+In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
+References: <20201210142602.099683598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,42 +32,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suganath Prabu S <suganath-prabu.subramani@broadcom.com>
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 
-commit 42f687038bcc34aa919e0e4c29b04e4cda3f6a79 upstream.
+commit 4165bf015ba9454f45beaad621d16c516d5c5afe upstream.
 
-Commit c1a6c5ac4278 ("scsi: mpt3sas: For NVME device, issue a protocol
-level reset") modified the ioctl path 'timeout' variable type to u8 from
-unsigned long, limiting the maximum timeout value that the driver can
-support to 255 seconds.
+According to the AMD IOMMU spec, the commit 73db2fc595f3
+("iommu/amd: Increase interrupt remapping table limit to 512 entries")
+also requires the interrupt table length (IntTabLen) to be set to 9
+(power of 2) in the device table mapping entry (DTE).
 
-If the management application is requesting a higher value the resulting
-timeout will be zero. The operation times out immediately and the ioctl
-request fails.
-
-Change datatype back to unsigned long.
-
-Link: https://lore.kernel.org/r/20201125094838.4340-1-suganath-prabu.subramani@broadcom.com
-Fixes: c1a6c5ac4278 ("scsi: mpt3sas: For NVME device, issue a protocol level reset")
-Cc: <stable@vger.kernel.org> #v4.18+
-Signed-off-by: Suganath Prabu S <suganath-prabu.subramani@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 73db2fc595f3 ("iommu/amd: Increase interrupt remapping table limit to 512 entries")
+Reported-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Link: https://lore.kernel.org/r/20201207091920.3052-1-suravee.suthikulpanit@amd.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/mpt3sas/mpt3sas_ctl.c |    2 +-
+ drivers/iommu/amd_iommu_types.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-@@ -654,7 +654,7 @@ _ctl_do_mpt_command(struct MPT3SAS_ADAPT
- 	struct _pcie_device *pcie_device = NULL;
- 	u32 ioc_state;
- 	u16 smid;
--	u8 timeout;
-+	unsigned long timeout;
- 	u8 issue_reset;
- 	u32 sz, sz_arg;
- 	void *psge;
+--- a/drivers/iommu/amd_iommu_types.h
++++ b/drivers/iommu/amd_iommu_types.h
+@@ -255,7 +255,7 @@
+ #define DTE_IRQ_REMAP_INTCTL_MASK	(0x3ULL << 60)
+ #define DTE_IRQ_TABLE_LEN_MASK	(0xfULL << 1)
+ #define DTE_IRQ_REMAP_INTCTL    (2ULL << 60)
+-#define DTE_IRQ_TABLE_LEN       (8ULL << 1)
++#define DTE_IRQ_TABLE_LEN       (9ULL << 1)
+ #define DTE_IRQ_REMAP_ENABLE    1ULL
+ 
+ #define PAGE_MODE_NONE    0x00
 
 
