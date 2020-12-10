@@ -2,104 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F742D5C88
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D802D5C80
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389772AbgLJN5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:57:22 -0500
-Received: from mga12.intel.com ([192.55.52.136]:31178 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389761AbgLJN5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:57:19 -0500
-IronPort-SDR: ax8s0qgw/LucKMSCGW16dRaY+YcxxtjuVaSM6N+nhcf3ml9mf5sSYRXS2WCnNXl/XNa/dglCgz
- NkahukKm0y7A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="153489126"
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="153489126"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 05:55:32 -0800
-IronPort-SDR: do9N5KAms1qR1BOwmxto6A9gdtKSLM0DRNag1vpRcF0IUs+o5GUMiJyk2pQIUo7Qq+z5wAtONr
- 3hHkpPXoLG1w==
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="371650813"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 05:55:29 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 1BFBB20867; Thu, 10 Dec 2020 15:55:27 +0200 (EET)
-Date:   Thu, 10 Dec 2020 15:55:27 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v5 1/1] lib/vsprintf: Add support for printing V4L2 and
- DRM fourccs
-Message-ID: <20201210135526.GH25763@paasikivi.fi.intel.com>
-References: <20201113105441.1427-1-sakari.ailus@linux.intel.com>
- <X9Hdg3lJm+TZAQGX@alley>
- <CAHp75VcY_b7uaGWoEa1Y6YDk0MmmzC4hV2yx8zVT7J-fD67Hyg@mail.gmail.com>
+        id S2389754AbgLJN4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:56:46 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9494 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727531AbgLJN43 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 08:56:29 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CsFmL098SzhpfS;
+        Thu, 10 Dec 2020 21:55:14 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 10 Dec 2020 21:55:40 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] gpio: simplify the return expression of cs5535_gpio_probe()
+Date:   Thu, 10 Dec 2020 21:56:09 +0800
+Message-ID: <20201210135609.1372-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VcY_b7uaGWoEa1Y6YDk0MmmzC4hV2yx8zVT7J-fD67Hyg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Simplify the return expression.
 
-On Thu, Dec 10, 2020 at 03:05:02PM +0200, Andy Shevchenko wrote:
-> On Thu, Dec 10, 2020 at 2:16 PM Petr Mladek <pmladek@suse.com> wrote:
-> > On Fri 2020-11-13 12:54:41, Sakari Ailus wrote:
-> > > Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
-> > > pixel formats denoted by fourccs. The fourcc encoding is the same for both
-> > > so the same implementation can be used.
-> > >
-> > > Suggested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
-> > > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> >
-> > Andy, Rasmus,
-> >
-> > the last version looks fine to me. I am going to push it.
-> > Please, speak up if you are against it.
-> 
-> My concerns are:
-> - not so standard format of representation (why not to use
-> string_escape_mem() helper?) or is it?
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/gpio/gpio-cs5535.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-The format string may contain spaces that are not meant to be printed.
-Other unprintable chacaters should not be present (at least not in V4L2
-pixelformats). The hexadecimal representation is there to convey the
-numerical value and that originally came from DRM, not V4L2.
-
-> - no compatibility with generic 4cc
->   (I would rather have an additional specifier here for v4l2 cases.
-
-What do you mean by "generic 4cc"? There are two users of 4cc codes in the
-kernel that I know of: V4L2 and DRM. Something that does not refer to
-in-memory pixel formats?
-
-> OTOH generic %p4cc to me sounds like an equivalent to %4pEh (but we
-> have similar cases with MAC where %6ph is the same as %pM).
-> 
-> But I'm not insisting on them, consider it like just my 2 cents to the
-> discussion.
-
-Ack.
-
+diff --git a/drivers/gpio/gpio-cs5535.c b/drivers/gpio/gpio-cs5535.c
+index 53b24e3ae7de..6da3a247614a 100644
+--- a/drivers/gpio/gpio-cs5535.c
++++ b/drivers/gpio/gpio-cs5535.c
+@@ -345,12 +345,8 @@ static int cs5535_gpio_probe(struct platform_device *pdev)
+ 				mask_orig, mask);
+ 
+ 	/* finally, register with the generic GPIO API */
+-	err = devm_gpiochip_add_data(&pdev->dev, &cs5535_gpio_chip.chip,
+-				     &cs5535_gpio_chip);
+-	if (err)
+-		return err;
+-
+-	return 0;
++	return devm_gpiochip_add_data(&pdev->dev, &cs5535_gpio_chip.chip,
++				      &cs5535_gpio_chip);
+ }
+ 
+ static struct platform_driver cs5535_gpio_driver = {
 -- 
-Kind regards,
+2.22.0
 
-Sakari Ailus
