@@ -2,569 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222022D639F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2A82D63A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392757AbgLJRc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:32:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32770 "EHLO
+        id S2392765AbgLJRdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:33:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392576AbgLJRck (ORCPT
+        with ESMTP id S2391059AbgLJRcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:32:40 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EEBEC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:32:00 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id g185so6151818wmf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:32:00 -0800 (PST)
+        Thu, 10 Dec 2020 12:32:53 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330E2C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:32:13 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id r9so6357193ioo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:32:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ex+yVZu3USOPvQbsOLL+yPZSIqbRGGL9RBuyTP5TA/4=;
-        b=I7yD90E6xcDWQCfJn7F5NvxMqrgyoxqqpzbOm7AnMZWO15jXhKQRONoOZ6Cmuz6o99
-         fwqlKHJbzmHn7UT5oQsNBMlFzWAjiFa/fZJRGgJJOi0xysYCHih/YiWhqUt6lCNys6ZK
-         AX1nzStqZVgT6QqlEldG+LHMhWkXoGbsrQzAaXqqdWbh835t68jVEbDpkO6VIWn0eyqe
-         6oLw9w7Lqx7DT6lVZc9gTJakCnYLTmdCXx01e/7lOJo5ConJBG06nIgk5zd9rYW/Y6zR
-         lE4JWDlfH7gGH7lpigNVZxga/AC5sPnDW3x+eF71jQqQNLVx6n2zq3T7hRqQCeTtJdji
-         I5nQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=25q6zpipedQCVIYwyHkHiyB2heybX2dq15I5qG0YlVU=;
+        b=HTOqOxtZZ/tfgWCCGjsa+q0Ok+1fCKGLfjH/9H1uyvhIXJ3/4WTqbFR1ShfwhwFxZM
+         fAW1cAfVCA2/FtvGvGFl1m4PbmZXPsZOXLKxnd2ClD6frDTAZo6wjQNIm4BtDC1eLCqS
+         mEWWjERdMDhLzW6L0t0ZuphjO0T2mh2Yb2+4v9lMy5w6MV9HjyPM/dkQ4Uki1vDFDvcu
+         myOwk1EzCOmwj8gCC3H4H3wSNknc+sjFUVYL/CxbErbXun3qaTdPQJ2uVBRXl8//7kZv
+         JsUgMpx2xQXyv43ZFKIbfLiV4HiTwfUza4fDHRlxcfh7aNL6aEnC9lvftRV6jP1mGiUr
+         NpCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ex+yVZu3USOPvQbsOLL+yPZSIqbRGGL9RBuyTP5TA/4=;
-        b=Qqf3ZZFhn6gIKRM0wk0taVXu+jUTA1gWqf7D3HJtHnbktJWDhK1GiYWcF1kdFVm5V1
-         hxyvIuPR8ilyaX8ORxPzOQhbfq18a7SujaFCEVQeLv2O1ZlAwd48VnHkHOOSGO5YLZsK
-         LHp34Oi6OQ1g9h8FNMUeupJ5xJp3CNQk85RJ9jj5yxyGo3qSrFSA+75DGUA7NBXADl6i
-         dM0NfIQVQly21I4TrYZDnH9Gtha8HBRWIpSE1Ep2pKSQH45F6OF80AWTd/ZNM9tLLVK2
-         Yu8cGnk3pPjz8VICaB3jAVGlBGyt1awXeLxNaWNzhg3iFniMrX4KaOE6AxcFL63DFrz0
-         YQlg==
-X-Gm-Message-State: AOAM531ZNrNptwdVWBFE0QlHsClt+GMNO0zxIUnhd4OZbczJguZtd+k3
-        /goDok32egUGZw8cZWgUXSRtWQ==
-X-Google-Smtp-Source: ABdhPJw6m0VPR53EjHr8Pcg7U2mKas/d3WOAwT37MkAVn6GsDX479M6s1LRQqs5ky9NYDb5Zu27Nmw==
-X-Received: by 2002:a1c:9e41:: with SMTP id h62mr9474199wme.51.1607621518794;
-        Thu, 10 Dec 2020 09:31:58 -0800 (PST)
-Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id g11sm10452671wrq.7.2020.12.10.09.31.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 09:31:58 -0800 (PST)
-Date:   Thu, 10 Dec 2020 17:31:56 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Ioana Ciornei <ioana.ciornei@nxp.com>
-Cc:     linux-netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND net-next 1/2] dpaa2-eth: send a scatter-gather FD
- instead of realloc-ing
-Message-ID: <20201210173156.mbizovo6rxvkda73@holly.lan>
-References: <20200629184712.12449-2-ioana.ciornei () nxp ! com>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=25q6zpipedQCVIYwyHkHiyB2heybX2dq15I5qG0YlVU=;
+        b=tPwyQLzKn+5u+QPiZmX0vO0MHwM01myQOvx2f2F5Nmeylti8EEsNO3cyDvmlDVIYfl
+         8AtPDz6ZvPcUkuSysz5Fq0LFDTpX3ihP72Ioqot+1PObUK8k8oQ3AviqgcqYUVETvgye
+         9siQZAQXNBnktfpTopfRrgfEd9kgSZYTCN6pGUVFgRiybjLTiBTsbwp+H3Hn2/Klh6xU
+         RDr3Vswq9l93EDXeeNo/1D4DQHiIqIOjMSa9ugRH7vJETyumhzqkETksHWIDqNme0gz2
+         rvjpZqEjiW78Nsm2/wkZGFgYs2oDalrUYIfTGq40Dk4C+ht7j3wEWfGbzy37H7Sx1bNb
+         kEig==
+X-Gm-Message-State: AOAM531tjSsAIwYlaLmUJ4+FqXlb3ub68k4ktnKiosx8rTYGusL2Gw8t
+        LXQpMZLFo5oz11u0ORxI3ki7J4xfPDoCCA==
+X-Google-Smtp-Source: ABdhPJxEyLEleHR+eaE3z5uxVwNKUGCka8AWtL/B6y2Hkfjc7NiIr6EzhJjl4e5a6ZqB7RzXd3FKvA==
+X-Received: by 2002:a05:6638:f89:: with SMTP id h9mr9881310jal.89.1607621531866;
+        Thu, 10 Dec 2020 09:32:11 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id t2sm3694477ili.31.2020.12.10.09.32.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 09:32:11 -0800 (PST)
+Subject: namei.c LOOKUP_NONBLOCK (was "Re: [GIT PULL] io_uring fixes for
+ 5.10-rc")
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <6535286b-2532-dc86-3c6e-1b1e9bce358f@kernel.dk>
+ <CAHk-=wjrayP=rOB+v+2eTP8micykkM76t=6vp-hyy+vWYkL8=A@mail.gmail.com>
+ <4bcf3012-a4ad-ac2d-e70b-17f17441eea9@kernel.dk>
+ <CAHk-=wimYoUtY4ygMNknkKZHqgYBZbkU4Koo5cE6ar8XjHkzGg@mail.gmail.com>
+ <ad8db5d0-2fac-90b6-b9e4-746a52b8ac57@kernel.dk>
+ <d7095e1d-0363-0aad-5c13-6d9bb189b2c8@kernel.dk>
+ <CAHk-=wgyRpBW_NOCKpJ1rZGD9jVOX80EWqKwwZxFeief2Khotg@mail.gmail.com>
+ <87f88614-3045-89bb-8051-b545f5b1180a@kernel.dk>
+Message-ID: <a522a422-92e3-6171-8a2e-76a5c7e21cfc@kernel.dk>
+Date:   Thu, 10 Dec 2020 10:32:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629184712.12449-2-ioana.ciornei () nxp ! com>
+In-Reply-To: <87f88614-3045-89bb-8051-b545f5b1180a@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ioana
-
-On Mon, Jun 29, 2020 at 06:47:11PM +0000, Ioana Ciornei wrote:
-> Instead of realloc-ing the skb on the Tx path when the provided headroom
-> is smaller than the HW requirements, create a Scatter/Gather frame
-> descriptor with only one entry.
+On 11/21/20 3:58 PM, Jens Axboe wrote:
+> On 11/21/20 11:07 AM, Linus Torvalds wrote:
+>> On Fri, Nov 20, 2020 at 7:00 PM Jens Axboe <axboe@kernel.dk> wrote:
+>>>
+>>> Actually, I think we can do even better. How about just having
+>>> do_filp_open() exit after LOOKUP_RCU fails, if LOOKUP_RCU was already
+>>> set in the lookup flags? Then we don't need to change much else, and
+>>> most of it falls out naturally.
+>>
+>> So I was thinking doing the RCU lookup unconditionally, and then doing
+>> the nn-RCU lookup if that fails afterwards.
+>>
+>> But your patch looks good to me.
+>>
+>> Except for the issue you noticed.
 > 
-> Remove the '[drv] tx realloc frames' counter exposed previously through
-> ethtool since it is no longer used.
+> After having taken a closer look, I think the saner approach is
+> LOOKUP_NONBLOCK instead of using LOOKUP_RCU which is used more as
+> a state than lookup flag. I'll try and hack something up that looks
+> passable.
 > 
-> Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
-> ---
-
-I've been chasing down a networking regression on my LX2160A board
-(Honeycomb LX2K based on CEx7 LX2160A COM) that first appeared in v5.9.
-
-It makes the board unreliable opening outbound connections meaning
-things like `apt update` or `git fetch` often can't open the connection.
-It does not happen all the time but is sufficient to make the boards
-built-in networking useless for workstation use.
-
-The problem is strongly linked to warnings in the logs so I used the
-warnings to bisect down to locate the cause of the regression and it
-pinpointed this patch. I have confirmed that in both v5.9 and v5.10-rc7
-that reverting this patch (and fixing up the merge issues) fixes the
-regression and the warnings stop appearing.
-
-A typical example of the warning is below (io-pgtable-arm.c:281 is an
-error path that I guess would cause dma_map_page_attrs() to return
-an error):
-
-[  714.464927] WARNING: CPU: 13 PID: 0 at
-drivers/iommu/io-pgtable-arm.c:281 __arm_lpae_map+0x2d4/0x30c
-[  714.464930] Modules linked in: snd_seq_dummy(E) snd_hrtimer(E)
-snd_seq(E) snd_seq_device(E) snd_timer(E) snd(E) soundcore(E) bridge(E)
-stp(E) llc(E) rfkill(E) caam_jr(E) crypto_engine(E) rng_core(E)
-joydev(E) evdev(E) dpaa2_caam(E) caamhash_desc(E) caamalg_desc(E)
-authenc(E) libdes(E) dpaa2_console(E) ofpart(E) caam(E) sg(E) error(E)
-lm90(E) at24(E) spi_nor(E) mtd(E) sbsa_gwdt(E) qoriq_thermal(E)
-layerscape_edac_mod(E) qoriq_cpufreq(E) drm(E) fuse(E) configfs(E)
-ip_tables(E) x_tables(E) autofs4(E) ext4(E) crc32c_generic(E) crc16(E)
-mbcache(E) jbd2(E) hid_generic(E) usbhid(E) hid(E) dm_crypt(E) dm_mod(E)
-sd_mod(E) fsl_dpaa2_ptp(E) ptp_qoriq(E) fsl_dpaa2_eth(E)
-xhci_plat_hcd(E) xhci_hcd(E) usbcore(E) aes_ce_blk(E) crypto_simd(E)
-cryptd(E) aes_ce_cipher(E) ghash_ce(E) gf128mul(E) at803x(E) libaes(E)
-fsl_mc_dpio(E) pcs_lynx(E) rtc_pcf2127(E) sha2_ce(E) phylink(E)
-xgmac_mdio(E) regmap_spi(E) of_mdio(E) sha256_arm64(E)
-i2c_mux_pca954x(E) fixed_phy(E) i2c_mux(E) sha1_ce(E) ptp(E) libphy(E)
-[  714.465131]  pps_core(E) ahci_qoriq(E) libahci_platform(E) nvme(E)
-libahci(E) nvme_core(E) t10_pi(E) libata(E) crc_t10dif(E)
-crct10dif_generic(E) crct10dif_common(E) dwc3(E) scsi_mod(E) udc_core(E)
-roles(E) ulpi(E) sdhci_of_esdhc(E) sdhci_pltfm(E) sdhci(E)
-spi_nxp_fspi(E) i2c_imx(E) fixed(E)
-[  714.465192] CPU: 13 PID: 0 Comm: swapper/13 Tainted: G        W   E
-5.10.0-rc7-00001-gba98d13279ca #52
-[  714.465196] Hardware name: SolidRun LX2160A Honeycomb (DT)
-[  714.465202] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-[  714.465207] pc : __arm_lpae_map+0x2d4/0x30c
-[  714.465211] lr : __arm_lpae_map+0x114/0x30c
-[  714.465215] sp : ffff80001006b340
-[  714.465219] x29: ffff80001006b340 x28: 0000002086538003 
-[  714.465227] x27: 0000000000000a20 x26: 0000000000001000 
-[  714.465236] x25: 0000000000000f44 x24: 00000020adf8d000 
-[  714.465245] x23: 0000000000000001 x22: 0000fffffaeca000 
-[  714.465253] x21: 0000000000000003 x20: ffff19b60d64d200 
-[  714.465261] x19: 00000000000000ca x18: 0000000000000000 
-[  714.465270] x17: 0000000000000000 x16: ffffcccb7cf3ca20 
-[  714.465278] x15: 0000000000000000 x14: 0000000000000000 
-[  714.465286] x13: 0000000000000003 x12: 0000000000000010 
-[  714.465294] x11: 0000000000000000 x10: 0000000000000002 
-[  714.465302] x9 : ffffcccb7d5b6e78 x8 : 00000000000001ff 
-[  714.465311] x7 : ffff19b606538650 x6 : ffff19b606538000 
-[  714.465319] x5 : 0000000000000009 x4 : 0000000000000f44 
-[  714.465327] x3 : 0000000000001000 x2 : 00000020adf8d000 
-[  714.465335] x1 : 0000000000000002 x0 : 0000000000000003 
-[  714.465343] Call trace:
-[  714.465348]  __arm_lpae_map+0x2d4/0x30c
-[  714.465353]  __arm_lpae_map+0x114/0x30c
-[  714.465357]  __arm_lpae_map+0x114/0x30c
-[  714.465362]  __arm_lpae_map+0x114/0x30c
-[  714.465366]  arm_lpae_map+0xf4/0x180
-[  714.465373]  arm_smmu_map+0x4c/0xc0
-[  714.465379]  __iommu_map+0x100/0x2bc
-[  714.465385]  iommu_map_atomic+0x20/0x30
-[  714.465391]  __iommu_dma_map+0xb0/0x110
-[  714.465397]  iommu_dma_map_page+0xb8/0x120
-[  714.465404]  dma_map_page_attrs+0x1a8/0x210
-[  714.465413]  __dpaa2_eth_tx+0x384/0xbd0 [fsl_dpaa2_eth]
-[  714.465421]  dpaa2_eth_tx+0x84/0x134 [fsl_dpaa2_eth]
-[  714.465427]  dev_hard_start_xmit+0x10c/0x2b0
-[  714.465433]  sch_direct_xmit+0x1a0/0x550
-[  714.465438]  __qdisc_run+0x140/0x670
-[  714.465443]  __dev_queue_xmit+0x6c4/0xa74
-[  714.465449]  dev_queue_xmit+0x20/0x2c
-[  714.465463]  br_dev_queue_push_xmit+0xc4/0x1a0 [bridge]
-[  714.465476]  br_forward_finish+0xdc/0xf0 [bridge]
-[  714.465489]  __br_forward+0x160/0x1c0 [bridge]
-[  714.465502]  br_forward+0x13c/0x160 [bridge]
-[  714.465514]  br_dev_xmit+0x228/0x3b0 [bridge]
-[  714.465520]  dev_hard_start_xmit+0x10c/0x2b0
-[  714.465526]  __dev_queue_xmit+0x8f0/0xa74
-[  714.465531]  dev_queue_xmit+0x20/0x2c
-[  714.465538]  arp_xmit+0xc0/0xd0
-[  714.465544]  arp_send_dst+0x78/0xa0
-[  714.465550]  arp_solicit+0xf4/0x260
-[  714.465554]  neigh_probe+0x64/0xb0
-[  714.465560]  neigh_timer_handler+0x2f4/0x400
-[  714.465566]  call_timer_fn+0x3c/0x184
-[  714.465572]  __run_timers.part.0+0x2bc/0x370
-[  714.465578]  run_timer_softirq+0x48/0x80
-[  714.465583]  __do_softirq+0x120/0x36c
-[  714.465589]  irq_exit+0xac/0x100
-[  714.465596]  __handle_domain_irq+0x8c/0xf0
-[  714.465600]  gic_handle_irq+0xcc/0x14c
-[  714.465605]  el1_irq+0xc4/0x180
-[  714.465610]  arch_cpu_idle+0x18/0x30
-[  714.465617]  default_idle_call+0x4c/0x180
-[  714.465623]  do_idle+0x238/0x2b0
-[  714.465629]  cpu_startup_entry+0x30/0xa0
-[  714.465636]  secondary_start_kernel+0x134/0x180
-[  714.465640] ---[ end trace a84a7f61b559005f ]---
-
-
-Given it is the iommu code that is provoking the warning I should
-probably mention that the board I have requires
-arm-smmu.disable_bypass=0 on the kernel command line in order to boot.
-Also if it matters I am running the latest firmware from Solidrun
-which is based on LSDK-20.04.
-
-Is there any reason for this code not to be working for LX2160A?
-
-
-Daniel.
-
-
-PS A few months have gone by so I decided not to trim the patch out
-   of this reply so you don't have to go digging!
-
-
-
->  .../freescale/dpaa2/dpaa2-eth-debugfs.c       |   7 +-
->  .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  | 177 +++++++++++++++---
->  .../net/ethernet/freescale/dpaa2/dpaa2-eth.h  |   9 +-
->  .../ethernet/freescale/dpaa2/dpaa2-ethtool.c  |   1 -
->  4 files changed, 160 insertions(+), 34 deletions(-)
+>>> Except it seems that should work, except LOOKUP_RCU does not guarantee
+>>> that we're not going to do IO:
+>>
+>> Well, almost nothing guarantees lack of IO, since allocations etc can
+>> still block, but..
 > 
-> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
-> index 2880ca02d7e7..5cb357c74dec 100644
-> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
-> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
-> @@ -19,14 +19,14 @@ static int dpaa2_dbg_cpu_show(struct seq_file *file, void *offset)
->  	int i;
->  
->  	seq_printf(file, "Per-CPU stats for %s\n", priv->net_dev->name);
-> -	seq_printf(file, "%s%16s%16s%16s%16s%16s%16s%16s%16s%16s\n",
-> +	seq_printf(file, "%s%16s%16s%16s%16s%16s%16s%16s%16s\n",
->  		   "CPU", "Rx", "Rx Err", "Rx SG", "Tx", "Tx Err", "Tx conf",
-> -		   "Tx SG", "Tx realloc", "Enq busy");
-> +		   "Tx SG", "Enq busy");
->  
->  	for_each_online_cpu(i) {
->  		stats = per_cpu_ptr(priv->percpu_stats, i);
->  		extras = per_cpu_ptr(priv->percpu_extras, i);
-> -		seq_printf(file, "%3d%16llu%16llu%16llu%16llu%16llu%16llu%16llu%16llu%16llu\n",
-> +		seq_printf(file, "%3d%16llu%16llu%16llu%16llu%16llu%16llu%16llu%16llu\n",
->  			   i,
->  			   stats->rx_packets,
->  			   stats->rx_errors,
-> @@ -35,7 +35,6 @@ static int dpaa2_dbg_cpu_show(struct seq_file *file, void *offset)
->  			   stats->tx_errors,
->  			   extras->tx_conf_frames,
->  			   extras->tx_sg_frames,
-> -			   extras->tx_reallocs,
->  			   extras->tx_portal_busy);
->  	}
->  
-> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-> index 712bbfdbe7d7..4a264b75c035 100644
-> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-> @@ -685,6 +685,86 @@ static int build_sg_fd(struct dpaa2_eth_priv *priv,
->  	return err;
->  }
->  
-> +/* Create a SG frame descriptor based on a linear skb.
-> + *
-> + * This function is used on the Tx path when the skb headroom is not large
-> + * enough for the HW requirements, thus instead of realloc-ing the skb we
-> + * create a SG frame descriptor with only one entry.
-> + */
-> +static int build_sg_fd_single_buf(struct dpaa2_eth_priv *priv,
-> +				  struct sk_buff *skb,
-> +				  struct dpaa2_fd *fd)
-> +{
-> +	struct device *dev = priv->net_dev->dev.parent;
-> +	struct dpaa2_eth_sgt_cache *sgt_cache;
-> +	struct dpaa2_sg_entry *sgt;
-> +	struct dpaa2_eth_swa *swa;
-> +	dma_addr_t addr, sgt_addr;
-> +	void *sgt_buf = NULL;
-> +	int sgt_buf_size;
-> +	int err;
-> +
-> +	/* Prepare the HW SGT structure */
-> +	sgt_cache = this_cpu_ptr(priv->sgt_cache);
-> +	sgt_buf_size = priv->tx_data_offset + sizeof(struct dpaa2_sg_entry);
-> +
-> +	if (sgt_cache->count == 0)
-> +		sgt_buf = kzalloc(sgt_buf_size + DPAA2_ETH_TX_BUF_ALIGN,
-> +				  GFP_ATOMIC);
-> +	else
-> +		sgt_buf = sgt_cache->buf[--sgt_cache->count];
-> +	if (unlikely(!sgt_buf))
-> +		return -ENOMEM;
-> +
-> +	sgt_buf = PTR_ALIGN(sgt_buf, DPAA2_ETH_TX_BUF_ALIGN);
-> +	sgt = (struct dpaa2_sg_entry *)(sgt_buf + priv->tx_data_offset);
-> +
-> +	addr = dma_map_single(dev, skb->data, skb->len, DMA_BIDIRECTIONAL);
-> +	if (unlikely(dma_mapping_error(dev, addr))) {
-> +		err = -ENOMEM;
-> +		goto data_map_failed;
-> +	}
-> +
-> +	/* Fill in the HW SGT structure */
-> +	dpaa2_sg_set_addr(sgt, addr);
-> +	dpaa2_sg_set_len(sgt, skb->len);
-> +	dpaa2_sg_set_final(sgt, true);
-> +
-> +	/* Store the skb backpointer in the SGT buffer */
-> +	swa = (struct dpaa2_eth_swa *)sgt_buf;
-> +	swa->type = DPAA2_ETH_SWA_SINGLE;
-> +	swa->single.skb = skb;
-> +	swa->sg.sgt_size = sgt_buf_size;
-> +
-> +	/* Separately map the SGT buffer */
-> +	sgt_addr = dma_map_single(dev, sgt_buf, sgt_buf_size, DMA_BIDIRECTIONAL);
-> +	if (unlikely(dma_mapping_error(dev, sgt_addr))) {
-> +		err = -ENOMEM;
-> +		goto sgt_map_failed;
-> +	}
-> +
-> +	dpaa2_fd_set_offset(fd, priv->tx_data_offset);
-> +	dpaa2_fd_set_format(fd, dpaa2_fd_sg);
-> +	dpaa2_fd_set_addr(fd, sgt_addr);
-> +	dpaa2_fd_set_len(fd, skb->len);
-> +	dpaa2_fd_set_ctrl(fd, FD_CTRL_PTA);
-> +
-> +	if (priv->tx_tstamp && skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP)
-> +		enable_tx_tstamp(fd, sgt_buf);
-> +
-> +	return 0;
-> +
-> +sgt_map_failed:
-> +	dma_unmap_single(dev, addr, skb->len, DMA_BIDIRECTIONAL);
-> +data_map_failed:
-> +	if (sgt_cache->count >= DPAA2_ETH_SGT_CACHE_SIZE)
-> +		kfree(sgt_buf);
-> +	else
-> +		sgt_cache->buf[sgt_cache->count++] = sgt_buf;
-> +
-> +	return err;
-> +}
-> +
->  /* Create a frame descriptor based on a linear skb */
->  static int build_single_fd(struct dpaa2_eth_priv *priv,
->  			   struct sk_buff *skb,
-> @@ -743,13 +823,16 @@ static void free_tx_fd(const struct dpaa2_eth_priv *priv,
->  		       const struct dpaa2_fd *fd, bool in_napi)
->  {
->  	struct device *dev = priv->net_dev->dev.parent;
-> -	dma_addr_t fd_addr;
-> +	dma_addr_t fd_addr, sg_addr;
->  	struct sk_buff *skb = NULL;
->  	unsigned char *buffer_start;
->  	struct dpaa2_eth_swa *swa;
->  	u8 fd_format = dpaa2_fd_get_format(fd);
->  	u32 fd_len = dpaa2_fd_get_len(fd);
->  
-> +	struct dpaa2_eth_sgt_cache *sgt_cache;
-> +	struct dpaa2_sg_entry *sgt;
-> +
->  	fd_addr = dpaa2_fd_get_addr(fd);
->  	buffer_start = dpaa2_iova_to_virt(priv->iommu_domain, fd_addr);
->  	swa = (struct dpaa2_eth_swa *)buffer_start;
-> @@ -769,16 +852,29 @@ static void free_tx_fd(const struct dpaa2_eth_priv *priv,
->  					 DMA_BIDIRECTIONAL);
->  		}
->  	} else if (fd_format == dpaa2_fd_sg) {
-> -		skb = swa->sg.skb;
-> +		if (swa->type == DPAA2_ETH_SWA_SG) {
-> +			skb = swa->sg.skb;
-> +
-> +			/* Unmap the scatterlist */
-> +			dma_unmap_sg(dev, swa->sg.scl, swa->sg.num_sg,
-> +				     DMA_BIDIRECTIONAL);
-> +			kfree(swa->sg.scl);
->  
-> -		/* Unmap the scatterlist */
-> -		dma_unmap_sg(dev, swa->sg.scl, swa->sg.num_sg,
-> -			     DMA_BIDIRECTIONAL);
-> -		kfree(swa->sg.scl);
-> +			/* Unmap the SGT buffer */
-> +			dma_unmap_single(dev, fd_addr, swa->sg.sgt_size,
-> +					 DMA_BIDIRECTIONAL);
-> +		} else {
-> +			skb = swa->single.skb;
->  
-> -		/* Unmap the SGT buffer */
-> -		dma_unmap_single(dev, fd_addr, swa->sg.sgt_size,
-> -				 DMA_BIDIRECTIONAL);
-> +			/* Unmap the SGT Buffer */
-> +			dma_unmap_single(dev, fd_addr, swa->single.sgt_size,
-> +					 DMA_BIDIRECTIONAL);
-> +
-> +			sgt = (struct dpaa2_sg_entry *)(buffer_start +
-> +							priv->tx_data_offset);
-> +			sg_addr = dpaa2_sg_get_addr(sgt);
-> +			dma_unmap_single(dev, sg_addr, skb->len, DMA_BIDIRECTIONAL);
-> +		}
->  	} else {
->  		netdev_dbg(priv->net_dev, "Invalid FD format\n");
->  		return;
-> @@ -808,8 +904,17 @@ static void free_tx_fd(const struct dpaa2_eth_priv *priv,
->  	}
->  
->  	/* Free SGT buffer allocated on tx */
-> -	if (fd_format != dpaa2_fd_single)
-> -		skb_free_frag(buffer_start);
-> +	if (fd_format != dpaa2_fd_single) {
-> +		sgt_cache = this_cpu_ptr(priv->sgt_cache);
-> +		if (swa->type == DPAA2_ETH_SWA_SG) {
-> +			skb_free_frag(buffer_start);
-> +		} else {
-> +			if (sgt_cache->count >= DPAA2_ETH_SGT_CACHE_SIZE)
-> +				kfree(buffer_start);
-> +			else
-> +				sgt_cache->buf[sgt_cache->count++] = buffer_start;
-> +		}
-> +	}
->  
->  	/* Move on with skb release */
->  	napi_consume_skb(skb, in_napi);
-> @@ -833,22 +938,6 @@ static netdev_tx_t dpaa2_eth_tx(struct sk_buff *skb, struct net_device *net_dev)
->  	percpu_extras = this_cpu_ptr(priv->percpu_extras);
->  
->  	needed_headroom = dpaa2_eth_needed_headroom(priv, skb);
-> -	if (skb_headroom(skb) < needed_headroom) {
-> -		struct sk_buff *ns;
-> -
-> -		ns = skb_realloc_headroom(skb, needed_headroom);
-> -		if (unlikely(!ns)) {
-> -			percpu_stats->tx_dropped++;
-> -			goto err_alloc_headroom;
-> -		}
-> -		percpu_extras->tx_reallocs++;
-> -
-> -		if (skb->sk)
-> -			skb_set_owner_w(ns, skb->sk);
-> -
-> -		dev_kfree_skb(skb);
-> -		skb = ns;
-> -	}
->  
->  	/* We'll be holding a back-reference to the skb until Tx Confirmation;
->  	 * we don't want that overwritten by a concurrent Tx with a cloned skb.
-> @@ -867,6 +956,10 @@ static netdev_tx_t dpaa2_eth_tx(struct sk_buff *skb, struct net_device *net_dev)
->  		err = build_sg_fd(priv, skb, &fd);
->  		percpu_extras->tx_sg_frames++;
->  		percpu_extras->tx_sg_bytes += skb->len;
-> +	} else if (skb_headroom(skb) < needed_headroom) {
-> +		err = build_sg_fd_single_buf(priv, skb, &fd);
-> +		percpu_extras->tx_sg_frames++;
-> +		percpu_extras->tx_sg_bytes += skb->len;
->  	} else {
->  		err = build_single_fd(priv, skb, &fd);
->  	}
-> @@ -924,7 +1017,6 @@ static netdev_tx_t dpaa2_eth_tx(struct sk_buff *skb, struct net_device *net_dev)
->  	return NETDEV_TX_OK;
->  
->  err_build_fd:
-> -err_alloc_headroom:
->  	dev_kfree_skb(skb);
->  
->  	return NETDEV_TX_OK;
-> @@ -1161,6 +1253,22 @@ static int refill_pool(struct dpaa2_eth_priv *priv,
->  	return 0;
->  }
->  
-> +static void dpaa2_eth_sgt_cache_drain(struct dpaa2_eth_priv *priv)
-> +{
-> +	struct dpaa2_eth_sgt_cache *sgt_cache;
-> +	u16 count;
-> +	int k, i;
-> +
-> +	for_each_online_cpu(k) {
-> +		sgt_cache = per_cpu_ptr(priv->sgt_cache, k);
-> +		count = sgt_cache->count;
-> +
-> +		for (i = 0; i < count; i++)
-> +			kfree(sgt_cache->buf[i]);
-> +		sgt_cache->count = 0;
-> +	}
-> +}
-> +
->  static int pull_channel(struct dpaa2_eth_channel *ch)
->  {
->  	int err;
-> @@ -1562,6 +1670,9 @@ static int dpaa2_eth_stop(struct net_device *net_dev)
->  	/* Empty the buffer pool */
->  	drain_pool(priv);
->  
-> +	/* Empty the Scatter-Gather Buffer cache */
-> +	dpaa2_eth_sgt_cache_drain(priv);
-> +
->  	return 0;
->  }
->  
-> @@ -3846,6 +3957,13 @@ static int dpaa2_eth_probe(struct fsl_mc_device *dpni_dev)
->  		goto err_alloc_percpu_extras;
->  	}
->  
-> +	priv->sgt_cache = alloc_percpu(*priv->sgt_cache);
-> +	if (!priv->sgt_cache) {
-> +		dev_err(dev, "alloc_percpu(sgt_cache) failed\n");
-> +		err = -ENOMEM;
-> +		goto err_alloc_sgt_cache;
-> +	}
-> +
->  	err = netdev_init(net_dev);
->  	if (err)
->  		goto err_netdev_init;
-> @@ -3914,6 +4032,8 @@ static int dpaa2_eth_probe(struct fsl_mc_device *dpni_dev)
->  err_alloc_rings:
->  err_csum:
->  err_netdev_init:
-> +	free_percpu(priv->sgt_cache);
-> +err_alloc_sgt_cache:
->  	free_percpu(priv->percpu_extras);
->  err_alloc_percpu_extras:
->  	free_percpu(priv->percpu_stats);
-> @@ -3959,6 +4079,7 @@ static int dpaa2_eth_remove(struct fsl_mc_device *ls_dev)
->  		fsl_mc_free_irqs(ls_dev);
->  
->  	free_rings(priv);
-> +	free_percpu(priv->sgt_cache);
->  	free_percpu(priv->percpu_stats);
->  	free_percpu(priv->percpu_extras);
->  
-> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h
-> index 2d7ada0f0dbd..9e4ceb92f240 100644
-> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h
-> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h
-> @@ -125,6 +125,7 @@ struct dpaa2_eth_swa {
->  	union {
->  		struct {
->  			struct sk_buff *skb;
-> +			int sgt_size;
->  		} single;
->  		struct {
->  			struct sk_buff *skb;
-> @@ -282,7 +283,6 @@ struct dpaa2_eth_drv_stats {
->  	__u64	tx_conf_bytes;
->  	__u64	tx_sg_frames;
->  	__u64	tx_sg_bytes;
-> -	__u64	tx_reallocs;
->  	__u64	rx_sg_frames;
->  	__u64	rx_sg_bytes;
->  	/* Enqueues retried due to portal busy */
-> @@ -395,6 +395,12 @@ struct dpaa2_eth_cls_rule {
->  	u8 in_use;
->  };
->  
-> +#define DPAA2_ETH_SGT_CACHE_SIZE	256
-> +struct dpaa2_eth_sgt_cache {
-> +	void *buf[DPAA2_ETH_SGT_CACHE_SIZE];
-> +	u16 count;
-> +};
-> +
->  /* Driver private data */
->  struct dpaa2_eth_priv {
->  	struct net_device *net_dev;
-> @@ -409,6 +415,7 @@ struct dpaa2_eth_priv {
->  
->  	u8 num_channels;
->  	struct dpaa2_eth_channel *channel[DPAA2_ETH_MAX_DPCONS];
-> +	struct dpaa2_eth_sgt_cache __percpu *sgt_cache;
->  
->  	struct dpni_attr dpni_attrs;
->  	u16 dpni_ver_major;
-> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-ethtool.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-ethtool.c
-> index e88269fe3de7..c4cbbcaa9a3f 100644
-> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-ethtool.c
-> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-ethtool.c
-> @@ -43,7 +43,6 @@ static char dpaa2_ethtool_extras[][ETH_GSTRING_LEN] = {
->  	"[drv] tx conf bytes",
->  	"[drv] tx sg frames",
->  	"[drv] tx sg bytes",
-> -	"[drv] tx realloc frames",
->  	"[drv] rx sg frames",
->  	"[drv] rx sg bytes",
->  	"[drv] enqueue portal busy",
-> -- 
-> 2.25.1
+> Sure, and we can't always avoid that - but blatant block on waiting
+> for IO should be avoided.
+> 
+>>> [   20.463195]  schedule+0x5f/0xd0
+>>> [   20.463444]  io_schedule+0x45/0x70
+>>> [   20.463712]  bit_wait_io+0x11/0x50
+>>> [   20.463981]  __wait_on_bit+0x2c/0x90
+>>> [   20.464264]  out_of_line_wait_on_bit+0x86/0x90
+>>> [   20.464611]  ? var_wake_function+0x30/0x30
+>>> [   20.464932]  __ext4_find_entry+0x2b5/0x410
+>>> [   20.465254]  ? d_alloc_parallel+0x241/0x4e0
+>>> [   20.465581]  ext4_lookup+0x51/0x1b0
+>>> [   20.465855]  ? __d_lookup+0x77/0x120
+>>> [   20.466136]  path_openat+0x4e8/0xe40
+>>> [   20.466417]  do_filp_open+0x79/0x100
+>>
+>> Hmm. Is this perhaps an O_CREAT case? I think we only do the dcache
+>> lookups under RCU, not the final path component creation.
+> 
+> It's just a basic test that opens all files under a directory. So
+> no O_CREAT, it's all existing files. I think this is just a case of not
+> aborting early enough for LOOKUP_NONBLOCK, and we've obviously already
+> dropped LOOKUP_RCU (and done rcu_read_unlock() again) at this point.
+> 
+>> And there are probably lots of other situations where we finish with
+>> LOOKUP_RCU (with unlazy_walk()), and then continue.> 
+>> Example: look at "may_lookup()" - if inode_permission() says "I can't
+>> do this without blocking" the logic actually just tries to validate
+>> the current state (that "unlazy_walk()" thing), and then continue
+>> without RCU.
+>>
+>> It obviously hasn't been about lockless semantics, it's been about
+>> really being lockless. So LOOKUP_RCU has been a "try to do this
+>> locklessly" rather than "you cannot take any locks".
+>>
+>> I guess we would have to add a LOOKUP_NOBLOCK thing to actually then
+>> say "if the RCU lookup fails, return -EAGAIN".
+>>
+>> That's probably not a huge undertaking, but yeah, I didn't think of
+>> it. I think this is a "we need to have Al tell us if it's reasonable".
+> 
+> Definitely. I did have a weak attempt at LOOKUP_NONBLOCK earlier, I'll
+> try and resurrect it and see what that leads to. Outside of just pure
+> lookup, the d_revalidate() was a bit interesting as it may block for
+> certain cases, but those should be (hopefully) detectable upfront.
+
+Here's a potentially better attempt - basically we allow LOOKUP_NONBLOCK
+with LOOKUP_RCU, and if we end up dropping LOOKUP_RCU, then we generally
+return -EAGAIN if LOOKUP_NONBLOCK is set as we can no longer guarantee
+that we won't block.
+
+Al, what do you think? I didn't include the io_uring part here, as
+that's just dropping the existing hack and setting LOOKUP_NONBLOCK if
+we're in task context. I can send it out as a separate patch, of course.
+
+diff --git a/fs/namei.c b/fs/namei.c
+index 03d0e11e4f36..303874f1b9f1 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -679,7 +679,7 @@ static bool legitimize_root(struct nameidata *nd)
+  * Nothing should touch nameidata between unlazy_walk() failure and
+  * terminate_walk().
+  */
+-static int unlazy_walk(struct nameidata *nd)
++static int __unlazy_walk(struct nameidata *nd)
+ {
+ 	struct dentry *parent = nd->path.dentry;
+ 
+@@ -704,6 +704,18 @@ static int unlazy_walk(struct nameidata *nd)
+ 	return -ECHILD;
+ }
+ 
++static int unlazy_walk(struct nameidata *nd)
++{
++	int ret;
++
++	ret = __unlazy_walk(nd);
++	/* If caller is asking for NONBLOCK lookup, assume we can't satisfy it */
++	if (!ret && (nd->flags & LOOKUP_NONBLOCK))
++		ret = -EAGAIN;
++
++	return ret;
++}
++
+ /**
+  * unlazy_child - try to switch to ref-walk mode.
+  * @nd: nameidata pathwalk data
+@@ -764,10 +776,13 @@ static int unlazy_child(struct nameidata *nd, struct dentry *dentry, unsigned se
+ 
+ static inline int d_revalidate(struct dentry *dentry, unsigned int flags)
+ {
+-	if (unlikely(dentry->d_flags & DCACHE_OP_REVALIDATE))
++	if (unlikely(dentry->d_flags & DCACHE_OP_REVALIDATE)) {
++		if ((flags & (LOOKUP_RCU | LOOKUP_NONBLOCK)) == LOOKUP_NONBLOCK)
++			return -EAGAIN;
+ 		return dentry->d_op->d_revalidate(dentry, flags);
+-	else
+-		return 1;
++	}
++
++	return 1;
+ }
+ 
+ /**
+@@ -792,7 +807,7 @@ static int complete_walk(struct nameidata *nd)
+ 		 */
+ 		if (!(nd->flags & (LOOKUP_ROOT | LOOKUP_IS_SCOPED)))
+ 			nd->root.mnt = NULL;
+-		if (unlikely(unlazy_walk(nd)))
++		if (unlikely(__unlazy_walk(nd)))
+ 			return -ECHILD;
+ 	}
+ 
+@@ -1466,8 +1481,9 @@ static struct dentry *lookup_fast(struct nameidata *nd,
+ 		unsigned seq;
+ 		dentry = __d_lookup_rcu(parent, &nd->last, &seq);
+ 		if (unlikely(!dentry)) {
+-			if (unlazy_walk(nd))
+-				return ERR_PTR(-ECHILD);
++			int ret = unlazy_walk(nd);
++			if (ret)
++				return ERR_PTR(ret);
+ 			return NULL;
+ 		}
+ 
+@@ -1569,8 +1585,9 @@ static inline int may_lookup(struct nameidata *nd)
+ 		int err = inode_permission(nd->inode, MAY_EXEC|MAY_NOT_BLOCK);
+ 		if (err != -ECHILD)
+ 			return err;
+-		if (unlazy_walk(nd))
+-			return -ECHILD;
++		err = unlazy_walk(nd);
++		if (err)
++			return err;
+ 	}
+ 	return inode_permission(nd->inode, MAY_EXEC);
+ }
+@@ -1591,9 +1608,11 @@ static int reserve_stack(struct nameidata *nd, struct path *link, unsigned seq)
+ 		// we need to grab link before we do unlazy.  And we can't skip
+ 		// unlazy even if we fail to grab the link - cleanup needs it
+ 		bool grabbed_link = legitimize_path(nd, link, seq);
++		int ret;
+ 
+-		if (unlazy_walk(nd) != 0 || !grabbed_link)
+-			return -ECHILD;
++		ret = unlazy_walk(nd);
++		if (ret && !grabbed_link)
++			return ret;
+ 
+ 		if (nd_alloc_stack(nd))
+ 			return 0;
+@@ -1634,8 +1653,9 @@ static const char *pick_link(struct nameidata *nd, struct path *link,
+ 		touch_atime(&last->link);
+ 		cond_resched();
+ 	} else if (atime_needs_update(&last->link, inode)) {
+-		if (unlikely(unlazy_walk(nd)))
+-			return ERR_PTR(-ECHILD);
++		error = unlazy_walk(nd);
++		if (unlikely(error))
++			return ERR_PTR(error);
+ 		touch_atime(&last->link);
+ 	}
+ 
+@@ -1652,8 +1672,9 @@ static const char *pick_link(struct nameidata *nd, struct path *link,
+ 		if (nd->flags & LOOKUP_RCU) {
+ 			res = get(NULL, inode, &last->done);
+ 			if (res == ERR_PTR(-ECHILD)) {
+-				if (unlikely(unlazy_walk(nd)))
+-					return ERR_PTR(-ECHILD);
++				error = unlazy_walk(nd);
++				if (unlikely(error))
++					return ERR_PTR(error);
+ 				res = get(link->dentry, inode, &last->done);
+ 			}
+ 		} else {
+@@ -2193,8 +2214,9 @@ static int link_path_walk(const char *name, struct nameidata *nd)
+ 		}
+ 		if (unlikely(!d_can_lookup(nd->path.dentry))) {
+ 			if (nd->flags & LOOKUP_RCU) {
+-				if (unlazy_walk(nd))
+-					return -ECHILD;
++				err = unlazy_walk(nd);
++				if (err)
++					return err;
+ 			}
+ 			return -ENOTDIR;
+ 		}
+@@ -3394,10 +3416,14 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
+ 
+ 	set_nameidata(&nd, dfd, pathname);
+ 	filp = path_openat(&nd, op, flags | LOOKUP_RCU);
++	/* If we fail RCU lookup, assume NONBLOCK cannot be honored */
++	if (flags & LOOKUP_NONBLOCK)
++		goto out;
+ 	if (unlikely(filp == ERR_PTR(-ECHILD)))
+ 		filp = path_openat(&nd, op, flags);
+ 	if (unlikely(filp == ERR_PTR(-ESTALE)))
+ 		filp = path_openat(&nd, op, flags | LOOKUP_REVAL);
++out:
+ 	restore_nameidata();
+ 	return filp;
+ }
+diff --git a/include/linux/namei.h b/include/linux/namei.h
+index a4bb992623c4..c36c4e0805fc 100644
+--- a/include/linux/namei.h
++++ b/include/linux/namei.h
+@@ -46,6 +46,7 @@ enum {LAST_NORM, LAST_ROOT, LAST_DOT, LAST_DOTDOT};
+ #define LOOKUP_NO_XDEV		0x040000 /* No mountpoint crossing. */
+ #define LOOKUP_BENEATH		0x080000 /* No escaping from starting point. */
+ #define LOOKUP_IN_ROOT		0x100000 /* Treat dirfd as fs root. */
++#define LOOKUP_NONBLOCK		0x200000 /* don't block for lookup */
+ /* LOOKUP_* flags which do scope-related checks based on the dirfd. */
+ #define LOOKUP_IS_SCOPED (LOOKUP_BENEATH | LOOKUP_IN_ROOT)
+ 
+
+-- 
+Jens Axboe
+
