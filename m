@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9101F2D6299
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:55:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B54AE2D6279
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392244AbgLJQzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:55:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43972 "EHLO mail.kernel.org"
+        id S2391071AbgLJQuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:50:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391042AbgLJOgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:52 -0500
+        id S2391074AbgLJOhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:37:17 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Luo Meng <luomeng12@huawei.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 47/54] ASoC: wm_adsp: fix error return code in wm_adsp_load()
-Date:   Thu, 10 Dec 2020 15:27:24 +0100
-Message-Id: <20201210142604.334613909@linuxfoundation.org>
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 5.4 49/54] i2c: qup: Fix error return code in qup_i2c_bam_schedule_desc()
+Date:   Thu, 10 Dec 2020 15:27:26 +0100
+Message-Id: <20201210142604.431803018@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
 References: <20201210142602.037095225@linuxfoundation.org>
@@ -33,35 +33,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Meng <luomeng12@huawei.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-commit 3fba05a2832f93b4d0cd4204f771fdae0d823114 upstream.
+commit e9acf0298c664f825e6f1158f2a97341bf9e03ca upstream.
 
-Fix to return a negative error code from the error handling case
-instead of 0 in function wm_adsp_load(), as done elsewhere in this
-function.
+Fix to return the error code from qup_i2c_change_state()
+instaed of 0 in qup_i2c_bam_schedule_desc().
 
-Fixes: 170b1e123f38 ("ASoC: wm_adsp: Add support for new Halo core DSPs")
+Fixes: fbf9921f8b35d9b2 ("i2c: qup: Fix error handling")
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Luo Meng <luomeng12@huawei.com>
-Acked-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20201123133839.4073787-1-luomeng12@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/codecs/wm_adsp.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/i2c/busses/i2c-qup.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1912,6 +1912,7 @@ static int wm_adsp_load(struct wm_adsp *
- 			mem = wm_adsp_find_region(dsp, type);
- 			if (!mem) {
- 				adsp_err(dsp, "No region of type: %x\n", type);
-+				ret = -EINVAL;
- 				goto out_fw;
- 			}
+--- a/drivers/i2c/busses/i2c-qup.c
++++ b/drivers/i2c/busses/i2c-qup.c
+@@ -806,7 +806,8 @@ static int qup_i2c_bam_schedule_desc(str
+ 	if (ret || qup->bus_err || qup->qup_err) {
+ 		reinit_completion(&qup->xfer);
  
+-		if (qup_i2c_change_state(qup, QUP_RUN_STATE)) {
++		ret = qup_i2c_change_state(qup, QUP_RUN_STATE);
++		if (ret) {
+ 			dev_err(qup->dev, "change to run state timed out");
+ 			goto desc_err;
+ 		}
 
 
