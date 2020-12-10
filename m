@@ -2,26 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA7C2D6551
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BA82D6543
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390629AbgLJOcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:32:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38684 "EHLO mail.kernel.org"
+        id S2390678AbgLJOcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:32:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390478AbgLJObW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:31:22 -0500
+        id S2389205AbgLJObu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:31:50 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <qcai@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 18/31] mm/swapfile: do not sleep with a spin lock held
-Date:   Thu, 10 Dec 2020 15:26:55 +0100
-Message-Id: <20201210142603.001031407@linuxfoundation.org>
+        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 4.14 19/31] i2c: imx: Fix reset of I2SR_IAL flag
+Date:   Thu, 10 Dec 2020 15:26:56 +0100
+Message-Id: <20201210142603.052200003@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
 References: <20201210142602.099683598@linuxfoundation.org>
@@ -33,53 +34,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <qcai@redhat.com>
+From: Christian Eggers <ceggers@arri.de>
 
-commit b11a76b37a5aa7b07c3e3eeeaae20b25475bddd3 upstream.
+commit 384a9565f70a876c2e78e58c5ca0bbf0547e4f6d upstream.
 
-We can't call kvfree() with a spin lock held, so defer it.  Fixes a
-might_sleep() runtime warning.
+According to the "VFxxx Controller Reference Manual" (and the comment
+block starting at line 97), Vybrid requires writing a one for clearing
+an interrupt flag. Syncing the method for clearing I2SR_IIF in
+i2c_imx_isr().
 
-Fixes: 873d7bcfd066 ("mm/swapfile.c: use kvzalloc for swap_info_struct allocation")
-Signed-off-by: Qian Cai <qcai@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201202151549.10350-1-qcai@redhat.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Fixes: 4b775022f6fd ("i2c: imx: add struct to hold more configurable quirks")
+Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: stable@vger.kernel.org
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/swapfile.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-imx.c |   20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -2828,6 +2828,7 @@ late_initcall(max_swapfiles_check);
- static struct swap_info_struct *alloc_swap_info(void)
- {
- 	struct swap_info_struct *p;
-+	struct swap_info_struct *defer = NULL;
- 	unsigned int type;
- 	int i;
- 	int size = sizeof(*p) + nr_node_ids * sizeof(struct plist_node);
-@@ -2857,7 +2858,7 @@ static struct swap_info_struct *alloc_sw
- 		smp_wmb();
- 		nr_swapfiles++;
- 	} else {
--		kvfree(p);
-+		defer = p;
- 		p = swap_info[type];
- 		/*
- 		 * Do not memset this entry: a racing procfs swap_next()
-@@ -2870,6 +2871,7 @@ static struct swap_info_struct *alloc_sw
- 		plist_node_init(&p->avail_lists[i], 0);
- 	p->flags = SWP_USED;
- 	spin_unlock(&swap_lock);
-+	kvfree(defer);
- 	spin_lock_init(&p->lock);
- 	spin_lock_init(&p->cont_lock);
+--- a/drivers/i2c/busses/i2c-imx.c
++++ b/drivers/i2c/busses/i2c-imx.c
+@@ -413,6 +413,19 @@ static void i2c_imx_dma_free(struct imx_
+ 	dma->chan_using = NULL;
+ }
  
++static void i2c_imx_clear_irq(struct imx_i2c_struct *i2c_imx, unsigned int bits)
++{
++	unsigned int temp;
++
++	/*
++	 * i2sr_clr_opcode is the value to clear all interrupts. Here we want to
++	 * clear only <bits>, so we write ~i2sr_clr_opcode with just <bits>
++	 * toggled. This is required because i.MX needs W0C and Vybrid uses W1C.
++	 */
++	temp = ~i2c_imx->hwdata->i2sr_clr_opcode ^ bits;
++	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
++}
++
+ static int i2c_imx_bus_busy(struct imx_i2c_struct *i2c_imx, int for_busy)
+ {
+ 	unsigned long orig_jiffies = jiffies;
+@@ -425,8 +438,7 @@ static int i2c_imx_bus_busy(struct imx_i
+ 
+ 		/* check for arbitration lost */
+ 		if (temp & I2SR_IAL) {
+-			temp &= ~I2SR_IAL;
+-			imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
++			i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
+ 			return -EAGAIN;
+ 		}
+ 
+@@ -595,9 +607,7 @@ static irqreturn_t i2c_imx_isr(int irq,
+ 	if (temp & I2SR_IIF) {
+ 		/* save status register */
+ 		i2c_imx->i2csr = temp;
+-		temp &= ~I2SR_IIF;
+-		temp |= (i2c_imx->hwdata->i2sr_clr_opcode & I2SR_IIF);
+-		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
++		i2c_imx_clear_irq(i2c_imx, I2SR_IIF);
+ 		wake_up(&i2c_imx->queue);
+ 		return IRQ_HANDLED;
+ 	}
 
 
