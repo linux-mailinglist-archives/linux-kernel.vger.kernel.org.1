@@ -2,143 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41D42D59E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2D82D59F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730831AbgLJL7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:59:47 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:18973 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727398AbgLJL7q (ORCPT
+        id S1730424AbgLJMFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 07:05:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726902AbgLJMFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:59:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1607601585; x=1639137585;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=0YHATgU1+leqABZGbPMbOcQFPXDKDkCDSAsEmpUy+8o=;
-  b=vI7p8KK8kHxBSywH0lW/iD5burNNUvDZXhgJmtgbcNxcJnnZZUqqh6NN
-   bVDmxDlnp1DuYtKbOhuP4lgq3O4SlJTAU+8fmZkA8MdXZNR92HProYIXq
-   fqFKk4N4ojcAVzH9YuUxMf2Flf95okX6FYESgDWB74mDXXFpcm5IYh2Rc
-   IZc2/2ZvbalK1sBtpA9yofk6P1K8KZruyYovwolVJCnSxDXCdabNLnktg
-   H25bFzBpyCNoL91v+GIGBqf/w+Gr2f6W9363hZ79jGWRhCtixQ52aTQKn
-   RRbUJpFgayMkOo9tRo2jSgZUbny0/x0w8vB7dGqMLYET7PcPtqK5jvIDa
-   g==;
-IronPort-SDR: 7zmCNj/Fwqv8pY5hgaLEH19ofqvOlEg7mL6xDS6yhyFiTm0SFFB6RtkbtZdp1Atyib6d6tUUji
- fxzeP0d2i+6xhoSbYzrv8EZd6BMmw42Cz0wRLUT66396vRToSDWFSopEmDkVzVAQxiusUU7zI3
- 5TJzAg/8s9TsxSBhuNqth62B/6HGq57CTYqFrAoHikgSIDVkBBIkp6pLFuU3K38KbOQTbPri83
- XxkZJFJNx4KXmjS42tw1sLuPf4CR0hKEXt3WP1DmxPzG1sjCMSpy3vfiPnaGRBSZskCcXUJBZr
- OuI=
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="99348432"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Dec 2020 04:58:29 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 10 Dec 2020 04:58:29 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Thu, 10 Dec 2020 04:58:29 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EmmB7ysJnbA5JDEmOCBMdaaCfbi++kYao7yI6g5RXDmyaTb137GNzkZiedkDiLhCnjojvl0ousSYM2QFFRG1Zw8WaKmcRs5MZk2eLruwtyUfL1lZ+yux3bB67YyZQ/mEZnRE9S6qZpmEJDS+/F4XO2TiJRZLmD7iWLeDmsXzHTI2KT0/EBkDfmiNsFcOPsMLz6/0coGB/frP2XhLKx0GNTSKC/bUJ9vLOYCglVDeBAm1+Y5dodXgyuVMPxOGIPFjXnJOSbtb4r+8Cg5ODBYbv38mo1k4jbWAru2JI6TbqhkJQWtxpoapHwxnAtYDRGVfDLCvuayL8xO5WJOBzCjvPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0YHATgU1+leqABZGbPMbOcQFPXDKDkCDSAsEmpUy+8o=;
- b=CqGz6PX1gBJ/qjFnYs74CENSBmfrx0angzAbFy7rs5hoS7hoCxrG+mX9xaW++b5KUXJDD6DG1wAALUCgt94tAzd1x7zbe2z+t87/snilw0zgr3NNgGfjOEY0IItP6Qhi1eeV5sRmbhBQAL71WJkd/lggCQWo5yyXSuR1t6+wzl0aVlAdHmoU0rb1s6Uk6N9HhW1YNjYlcD5JZIN8hg0yP1bSEpWVi9CVqgOG8g2068QAVrb6z9SjhGP2cBjVuQhTsQvM+bTeZcWlesdIzsj7mmylWFDTqeGH6AhdP8bJBw++utyBWoWYEepUgH79ms4Wa7SoU8wGZFZ2/+gMjNiW5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+        Thu, 10 Dec 2020 07:05:03 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91466C0613D6;
+        Thu, 10 Dec 2020 04:04:23 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 131so3849299pfb.9;
+        Thu, 10 Dec 2020 04:04:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0YHATgU1+leqABZGbPMbOcQFPXDKDkCDSAsEmpUy+8o=;
- b=sqPhtjuS1zHAFy9pELpBREU9oR8AgH1Vr+NFdehF//oJEL3CLh3uRCaQQeo0+lmKJx7DQjapMf29dT7vcDsVrpVxkpJcS+4uzay2szH3W6VjVYdnzpEAbUMkNB883qNwKQgSKXQHxytMGoKV69KYWH3BH7K8X9ySBiN5TxLTob8=
-Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
- (2603:10b6:903:b1::22) by CY4PR11MB2038.namprd11.prod.outlook.com
- (2603:10b6:903:30::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.13; Thu, 10 Dec
- 2020 11:58:26 +0000
-Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
- ([fe80::a52e:2a1b:e5d9:4fdb]) by CY4PR1101MB2341.namprd11.prod.outlook.com
- ([fe80::a52e:2a1b:e5d9:4fdb%5]) with mapi id 15.20.3632.027; Thu, 10 Dec 2020
- 11:58:26 +0000
-From:   <Codrin.Ciubotariu@microchip.com>
-To:     <wsa@kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <rmk+kernel@armlinux.org.uk>, <alpawi@amazon.com>
-Subject: Re: [PATCH v3] i2c: pxa: move to generic GPIO recovery
-Thread-Topic: [PATCH v3] i2c: pxa: move to generic GPIO recovery
-Thread-Index: AQHWmjY/Ht43BvB7fUusOaX7Y3A0canvpGOAgAD+t4A=
-Date:   Thu, 10 Dec 2020 11:58:26 +0000
-Message-ID: <0c699b9f-fe6a-8f3f-f95c-5a5c0cf10fc9@microchip.com>
-References: <20201004100711.1093343-1-codrin.ciubotariu@microchip.com>
- <20201209204645.GF3499@kunai>
-In-Reply-To: <20201209204645.GF3499@kunai>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [188.27.102.19]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9a18d058-55bd-4c7f-d55d-08d89d02e6dc
-x-ms-traffictypediagnostic: CY4PR11MB2038:
-x-microsoft-antispam-prvs: <CY4PR11MB20387CC7027B047680B71844E7CB0@CY4PR11MB2038.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EdDmfDVZgIWVPxfVlzSfg9gnGwBy76eCkc1hsR4J4NDW80feLuQ7q8wAHJT1vEXEc+2/yf789aBszrmjbwsFhHXfKef5ZX4g24CHaT/LKbplLLtWOlKsOG3rXvVDQSKT9KcuEpKmx6tvqjVRsmABgsIb6U+llD1aZ1gR+/J4NJSVbwDoCvauwadIv34Tv15pQhF068246ML4qQhMResdu19GYeS8K/rCBk7UJk3emrqpnYEV6LIoFZvnNmPUk8WzOobIAVWGXjp9y3PO4wimegQFFAarWHO6XEgMSo7SdFzRjM7VOHHjvMZfzpJqzkl2xGs+fQ7ZINUiCKP3jjQkq7b4+WexKNnOCpljXR0hDAnLzXdTwIehzkBZuRIZBbI5QgDgsykytKZCdpV0uA71pI6Y+tL+nn1vldite33bGBsSIVQyuQnzI2Dxk8Yp9ChL
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2341.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(136003)(66476007)(186003)(6486002)(86362001)(6512007)(31696002)(6506007)(91956017)(76116006)(71200400001)(110136005)(31686004)(8676002)(26005)(36756003)(5660300002)(66556008)(558084003)(8936002)(2906002)(64756008)(66446008)(508600001)(2616005)(66946007)(41533002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?Windows-1252?Q?Mhz+zk+UuzZAKMyWoVjcaZQQz5/Jt3JUrgqF6KQpPu5NCXw1Wd9tv8/o?=
- =?Windows-1252?Q?TUg+5IXxCLO1gSzlcCF1iXLtSexpL2RCTS6ngHYLcaR5AEx1nMzFMfpI?=
- =?Windows-1252?Q?X3gwO9foUEeBbKScw3oAnsTb1evSX7omGhn1vf2zmCsWww22aOH5qvr+?=
- =?Windows-1252?Q?zN/UjsTD7AnxcU4AL7O4+fTqInJvM5xrhzuf+zw9iQTLomL8ugHqKwxc?=
- =?Windows-1252?Q?5yW5OU1+03C3a5/scAdW3mgZUHKOG0gprY3Nq6535THEHnKLkqHHMbOn?=
- =?Windows-1252?Q?9dJrWkWB9+dF8Uwd4yRqHM28R4E/ok4f9z2xeLqQrHXYgxHY5cFCtblA?=
- =?Windows-1252?Q?p4igqyUoPkpzurbzIggG5HlFyXT9vjx2EhIXxOGhsbb0qMa9UNYNnCLq?=
- =?Windows-1252?Q?dOrdeB1jwEEfnjKFTZ0QI5PiCHv51moSGhgxnZsBneoXSL7VQxmtZraT?=
- =?Windows-1252?Q?7gQkCx8j4X1VMyGfPngSvzu67JpnkeI2WaUegpNUh9XGb0XBTUcWy41c?=
- =?Windows-1252?Q?DVNu2/3xAeTkk/rKX0d86mNOo1NG0KYKg2xfW0dLi3TWg8KW3zguRJyR?=
- =?Windows-1252?Q?Z7mWFsVmyxBYC+yGLxv0wCkIYiTdTWTZ9e9qrUPc8wbwvACou9Uzb6r6?=
- =?Windows-1252?Q?D1RJjVk8mfmwjw+BqqekYwIjqMl0G2bK7bIk7oTCRpfq//ScH5WypkmK?=
- =?Windows-1252?Q?2tknJxP5zMa5cS1+CfhQJ3QzJFLxHmu4Ne/XdT0QPfzPIC8r3H6jFAGf?=
- =?Windows-1252?Q?NUOxXjVVYpYEfaGpJpQiJDmjs1jWQeNwe0WBPDqDFlvpAHgJY538E1IN?=
- =?Windows-1252?Q?VPhuBXv1QeC6S2nPqdsI5CaRYrzKrKhu4Vmh7d87pfGnsngeJBJXzMTz?=
- =?Windows-1252?Q?jORvxB+9qN6xhCnEbiYX8qeMfwdtMKD7AkoEvBAQ5tWR+POrBVgxpusq?=
- =?Windows-1252?Q?uX7ja3EnApBwfGDWqMZ+E+u8Hdy8s0/Nf8a3NOxJg5JSQGTrMFFvhW4r?=
- =?Windows-1252?Q?KMiQMtNoxHkAdsYGXnn9+ilDkMl6t3g9DZWCv0wxtvk4VX7JgVU=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <767592AAAF84A349967A98D95966AD23@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2110Liwkji00fJouDuvr7ZMzUrfg5/AGd4lgnzxTURU=;
+        b=UrkLj6mJZK8W+GcyarsyD6rReYA/tGJU4hMPdfu9GmmH5RsVaVX3PmKZ+QzEZyE179
+         fOpV5jMZxfL4qRXcDDycjvlt2n4eIlfrgDK9labo7q/0ZxypbNlE5oZ3budHv1uD09Hv
+         azf9jlQe24Uvgl4MoAnVB1XIGRStSlKmFHp7AbP+IwEZNKgeGU6Bif3N28kJVCNNF8Uj
+         KoAThl6cwyDy/1LtXesVgpzNqWUZJ6MApIEjG3wjDaknjD3gujnvdibKPCgfrdgQ4GI3
+         LviLYzAAfi7gh4PPV9IRqIQV3MwwWEBkhX35PoFx/P6mubRLpJsmYDWkuR512oDg71ah
+         10uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2110Liwkji00fJouDuvr7ZMzUrfg5/AGd4lgnzxTURU=;
+        b=YLTbg57foQOOWmZgu9Qihr5Uquq0fhwpDfNJM/GW+3EttGPSETdzHCUCeGdB8UiAE0
+         CMQBu7/CMEfPOBVeQ0oLbBAdwR5rg0WovsAO0WQqco0IbAyaQUHT9w0juKPBPBZ3evDi
+         49TYZtJIp1nn3VGiu0BEK/HLPR48gz3uka/Uz+PSD39EbA+IQs0WHt2K+LaL2YynPjin
+         hMptbEajSCmZKC9pyBKftm0miuBWnyV5oUUFuWpA/B8W7V8TUiyo6hCB/GaA1gnm714P
+         NNxLhGL6ZNaK80Xr7StSSGq2r/jR6uD6L/IfCtm6RBVf0SViZYwMFya4q5VNqfSF3kLM
+         b9kQ==
+X-Gm-Message-State: AOAM533+eIodtJDUocXkiH7Es+nMKnP8L3FIZnQjb+VFZBxaPF5xWeRq
+        hVVduOh4MD/b4mw2q7LEZyk=
+X-Google-Smtp-Source: ABdhPJyG7KEqIPqWcXeS5svy+RmTwJL6Y+xI1wWkK/N8Koy5F6R2w382yRU9kBETh2Qj9XgxOj95Bw==
+X-Received: by 2002:a17:90b:4c51:: with SMTP id np17mr7201068pjb.180.1607601863161;
+        Thu, 10 Dec 2020 04:04:23 -0800 (PST)
+Received: from js1304-desktop ([114.206.198.176])
+        by smtp.gmail.com with ESMTPSA id f7sm5936525pfe.30.2020.12.10.04.04.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Dec 2020 04:04:22 -0800 (PST)
+Date:   Thu, 10 Dec 2020 21:04:11 +0900
+From:   Joonsoo Kim <js1304@gmail.com>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        andrii@kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
+Subject: Re: [PATCH v2 sl-b 1/5] mm: Add mem_dump_obj() to print source of
+ memory block
+Message-ID: <20201210120354.GA8705@js1304-desktop>
+References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
+ <20201209011303.32737-1-paulmck@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2341.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a18d058-55bd-4c7f-d55d-08d89d02e6dc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2020 11:58:26.0643
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Ej3QLEgXQZooYSACVazYOoZl8f8lFceGYqeToeoJ57/WoRoT9rxwfK/CQG9fSVkbjwQN4CVarRZuHC4en2pJJmUHT8wPAgnb80w5AAkWYOg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB2038
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209011303.32737-1-paulmck@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> patch not tested.
->=20
-> LGTM. In case we missed a glitch, we can still revert the patch later.
->=20
+On Tue, Dec 08, 2020 at 05:12:59PM -0800, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> There are kernel facilities such as per-CPU reference counts that give
+> error messages in generic handlers or callbacks, whose messages are
+> unenlightening.  In the case of per-CPU reference-count underflow, this
+> is not a problem when creating a new use of this facility because in that
+> case the bug is almost certainly in the code implementing that new use.
+> However, trouble arises when deploying across many systems, which might
+> exercise corner cases that were not seen during development and testing.
+> Here, it would be really nice to get some kind of hint as to which of
+> several uses the underflow was caused by.
+> 
+> This commit therefore exposes a mem_dump_obj() function that takes
+> a pointer to memory (which must still be allocated if it has been
+> dynamically allocated) and prints available information on where that
+> memory came from.  This pointer can reference the middle of the block as
+> well as the beginning of the block, as needed by things like RCU callback
+> functions and timer handlers that might not know where the beginning of
+> the memory block is.  These functions and handlers can use mem_dump_obj()
+> to print out better hints as to where the problem might lie.
+> 
+> The information printed can depend on kernel configuration.  For example,
+> the allocation return address can be printed only for slab and slub,
+> and even then only when the necessary debug has been enabled.  For slab,
+> build with CONFIG_DEBUG_SLAB=y, and either use sizes with ample space
+> to the next power of two or use the SLAB_STORE_USER when creating the
+> kmem_cache structure.  For slub, build with CONFIG_SLUB_DEBUG=y and
+> boot with slub_debug=U, or pass SLAB_STORE_USER to kmem_cache_create()
+> if more focused use is desired.  Also for slub, use CONFIG_STACKTRACE
+> to enable printing of the allocation-time stack trace.
+> 
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: Pekka Enberg <penberg@kernel.org>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: <linux-mm@kvack.org>
+> Reported-by: Andrii Nakryiko <andrii@kernel.org>
+> [ paulmck: Convert to printing and change names per Joonsoo Kim. ]
+> [ paulmck: Move slab definition per Stephen Rothwell and kbuild test robot. ]
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-Sure, just CC me if anything goes wrong.
+Introducing three functions, kmem_valid_obj(), kmem_provenance(),
+mem_dump_obj() looks better than patchset v1. Nice work. Few comments
+below.
+
+> ---
+>  include/linux/mm.h   |  2 ++
+>  include/linux/slab.h |  2 ++
+>  mm/slab.c            | 28 +++++++++++++++++++++
+>  mm/slab.h            | 11 +++++++++
+>  mm/slab_common.c     | 69 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  mm/slob.c            |  7 ++++++
+>  mm/slub.c            | 40 ++++++++++++++++++++++++++++++
+>  mm/util.c            | 25 +++++++++++++++++++
+>  8 files changed, 184 insertions(+)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index ef360fe..1eea266 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -3153,5 +3153,7 @@ unsigned long wp_shared_mapping_range(struct address_space *mapping,
+>  
+>  extern int sysctl_nr_trim_pages;
+>  
+> +void mem_dump_obj(void *object);
+> +
+>  #endif /* __KERNEL__ */
+>  #endif /* _LINUX_MM_H */
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index dd6897f..169b511 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -186,6 +186,8 @@ void kfree(const void *);
+>  void kfree_sensitive(const void *);
+>  size_t __ksize(const void *);
+>  size_t ksize(const void *);
+> +bool kmem_valid_obj(void *object);
+> +void kmem_dump_obj(void *object);
+>  
+>  #ifdef CONFIG_HAVE_HARDENED_USERCOPY_ALLOCATOR
+>  void __check_heap_object(const void *ptr, unsigned long n, struct page *page,
+> diff --git a/mm/slab.c b/mm/slab.c
+> index b111356..72b6743 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -3602,6 +3602,34 @@ void *kmem_cache_alloc_node_trace(struct kmem_cache *cachep,
+>  EXPORT_SYMBOL(kmem_cache_alloc_node_trace);
+>  #endif
+>  
+> +void kmem_provenance(struct kmem_provenance *kpp)
+
+To open up the possibility of future enhancement, name, provenance,
+looks not good to me. This function could be used to extract various
+object information so such as kmem_obj_info() looks better to me. Any
+thought?
+
+> +{
+> +#ifdef DEBUG
+> +	struct kmem_cache *cachep;
+> +	void *object = kpp->kp_ptr;
+> +	unsigned int objnr;
+> +	void *objp;
+> +	struct page *page = kpp->kp_page;
+> +
+> +	cachep = page->slab_cache;
+> +	if (!(cachep->flags & SLAB_STORE_USER)) {
+> +		kpp->kp_ret = NULL;
+> +		goto nodebug;
+> +	}
+> +	objp = object - obj_offset(cachep);
+> +	page = virt_to_head_page(objp);
+> +	objnr = obj_to_index(cachep, page, objp);
+> +	objp = index_to_obj(cachep, page, objnr);
+> +	kpp->kp_objp = objp;
+> +	kpp->kp_ret = *dbg_userword(cachep, objp);
+> +nodebug:
+> +#else
+> +	kpp->kp_ret = NULL;
+> +#endif
+> +	if (kpp->kp_nstack)
+> +		kpp->kp_stack[0] = NULL;
+> +}
+> +
+>  static __always_inline void *
+>  __do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller)
+>  {
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 6d7c6a5..28a41d5 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -630,4 +630,15 @@ static inline bool slab_want_init_on_free(struct kmem_cache *c)
+>  	return false;
+>  }
+>  
+> +#define KS_ADDRS_COUNT 16
+> +struct kmem_provenance {
+> +	void *kp_ptr;
+> +	struct page *kp_page;
+> +	void *kp_objp;
+> +	void *kp_ret;
+> +	void *kp_stack[KS_ADDRS_COUNT];
+> +	int kp_nstack;
+> +};
+> +void kmem_provenance(struct kmem_provenance *kpp);
+> +
+>  #endif /* MM_SLAB_H */
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index f9ccd5d..09f0cbc 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -536,6 +536,75 @@ bool slab_is_available(void)
+>  	return slab_state >= UP;
+>  }
+>  
+> +/**
+> + * kmem_valid_obj - does the pointer reference a valid slab object?
+> + * @object: pointer to query.
+> + *
+> + * Return: %true if the pointer is to a not-yet-freed object from
+> + * kmalloc() or kmem_cache_alloc(), either %true or %false if the pointer
+> + * is to an already-freed object, and %false otherwise.
+> + */
+> +bool kmem_valid_obj(void *object)
+> +{
+> +	struct page *page;
+> +
+> +	if (!virt_addr_valid(object))
+> +		return false;
+> +	page = virt_to_head_page(object);
+> +	return PageSlab(page);
+> +}
+> +EXPORT_SYMBOL_GPL(kmem_valid_obj);
+> +
+> +/**
+> + * kmem_dump_obj - Print available slab provenance information
+> + * @object: slab object for which to find provenance information.
+> + *
+> + * This function uses pr_cont(), so that the caller is expected to have
+> + * printed out whatever preamble is appropriate.  The provenance information
+> + * depends on the type of object and on how much debugging is enabled.
+> + * For a slab-cache object, the fact that it is a slab object is printed,
+> + * and, if available, the slab name, return address, and stack trace from
+> + * the allocation of that object.
+> + *
+> + * This function will splat if passed a pointer to a non-slab object.
+> + * If you are not sure what type of object you have, you should instead
+> + * use mem_dump_obj().
+> + */
+> +void kmem_dump_obj(void *object)
+> +{
+> +	int i;
+> +	struct page *page;
+> +	struct kmem_provenance kp;
+> +
+> +	if (WARN_ON_ONCE(!virt_addr_valid(object)))
+> +		return;
+> +	page = virt_to_head_page(object);
+> +	if (WARN_ON_ONCE(!PageSlab(page))) {
+> +		pr_cont(" non-slab memory.\n");
+> +		return;
+> +	}
+> +	kp.kp_ptr = object;
+> +	kp.kp_page = page;
+> +	kp.kp_nstack = KS_ADDRS_COUNT;
+
+I hope that kmem_dump_obj() doesn't set any kp fields. It's the job
+reserved for kmem_provenance().
+
+> +	kmem_provenance(&kp);
+> +	if (page->slab_cache)
+> +		pr_cont(" slab %s", page->slab_cache->name);
+
+Rather than accessing page->slab_cache, it's better to introduce
+slab_cache field on kp and use it. Note that slob doesn't use
+page->slab_cache. In slob, that field on struct page would be NULL so
+it would not cause a problem. But using kp makes things clear.
+
+> +	else
+> +		pr_cont(" slab ");
+> +	if (kp.kp_ret)
+> +		pr_cont(" allocated at %pS\n", kp.kp_ret);
+> +	else
+> +		pr_cont("\n");
+> +	if (kp.kp_stack[0]) {
+
+This check would be useless since we check it on every iteration.
+ 
+Thanks.
