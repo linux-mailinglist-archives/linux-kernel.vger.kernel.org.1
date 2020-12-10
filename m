@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417B22D5A1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CAEE2D5A26
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732630AbgLJMNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 07:13:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387506AbgLJMMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:12:38 -0500
-From:   Will Deacon <will@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Minchan Kim <minchan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mohamed Alzayat <alzayat@mpi-sws.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, linux-mm@kvack.org
-Subject: [PATCH v2 6/6] x86/ldt: Use tlb_gather_mmu_fullmm() when freeing LDT page-tables
-Date:   Thu, 10 Dec 2020 12:11:10 +0000
-Message-Id: <20201210121110.10094-7-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201210121110.10094-1-will@kernel.org>
-References: <20201210121110.10094-1-will@kernel.org>
+        id S2387856AbgLJMPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 07:15:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728530AbgLJMPc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 07:15:32 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09D5C0613CF;
+        Thu, 10 Dec 2020 04:14:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DB9D2pH9CmpJ5O5VlPeB8KKtAT8lj7o0SsGztCVyPIc=; b=v8XablaO9IAVxnRpzKKiYxZ6A4
+        e3FokL4c8tO2GFLkoHXXcB0+WfLH0Md9xHCFiMF/Zvq2TUuns77qGs+SKkUsi/8z2lYxR4VCcNfgQ
+        Iuo+1NrRwS+aqWX9VVo/LRALvz2V+wQg9L80vPW8+ONsZEr6OyayEEqV4aYPm+ReaXI5XP5Td9huU
+        mGNPRvEdXbiDEBWQ8LHUoZme42ePDpcoOMwArsMtSrt43XH1e2iNajNXqC0j/TuNO7DHrQEA90Xqr
+        9B78bCN15JC3/hk8Sq1KzmanZFyJTxThUUABuKpJHXg/DXAWxeQmeDcBgX1Eva0ZNZGKPdlf1evIJ
+        EncVXFBw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knKpy-00066Z-Ct; Thu, 10 Dec 2020 12:14:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1A84A3059C6;
+        Thu, 10 Dec 2020 13:14:17 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D7A2F20234B76; Thu, 10 Dec 2020 13:14:17 +0100 (CET)
+Date:   Thu, 10 Dec 2020 13:14:17 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+Message-ID: <20201210121417.GN2414@hirez.programming.kicks-ass.net>
+References: <20201203171118.372391-1-mlevitsk@redhat.com>
+ <20201203171118.372391-2-mlevitsk@redhat.com>
+ <87a6uq9abf.fsf@nanos.tec.linutronix.de>
+ <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com>
+ <87im9dlpsw.fsf@vitty.brq.redhat.com>
+ <875z5d5x9m.fsf@nanos.tec.linutronix.de>
+ <b6e0656b-4e3f-cf47-5ec9-eead44b2f2e9@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b6e0656b-4e3f-cf47-5ec9-eead44b2f2e9@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-free_ldt_pgtables() uses the MMU gather API for batching TLB flushes
-over the call to free_pgd_range(). However, tlb_gather_mmu() expects
-to operate on user addresses and so passing LDT_{BASE,END}_ADDR will
-confuse the range setting logic in __tlb_adjust_range(), causing the
-gather to identify a range starting at TASK_SIZE. Such a large range
-will be converted into a 'fullmm' flush by the low-level invalidation
-code, so change the caller to invoke tlb_gather_mmu_fullmm() directly.
+On Thu, Dec 10, 2020 at 12:42:36PM +0100, Paolo Bonzini wrote:
+> On 07/12/20 18:41, Thomas Gleixner wrote:
+> > Right this happens still occasionally, but for quite some time this is
+> > 100% firmware sillyness and not a fundamental property of the hardware
+> > anymore.
+> 
+> It's still a fundamental property of old hardware.  Last time I tried to
+> kill support for processors earlier than Core 2, I had to revert it. That's
+> older than Nehalem.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- arch/x86/kernel/ldt.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/ldt.c b/arch/x86/kernel/ldt.c
-index 7ad9834e0d95..aa15132228da 100644
---- a/arch/x86/kernel/ldt.c
-+++ b/arch/x86/kernel/ldt.c
-@@ -398,7 +398,13 @@ static void free_ldt_pgtables(struct mm_struct *mm)
- 	if (!boot_cpu_has(X86_FEATURE_PTI))
- 		return;
- 
--	tlb_gather_mmu(&tlb, mm);
-+	/*
-+	 * Although free_pgd_range() is intended for freeing user
-+	 * page-tables, it also works out for kernel mappings on x86.
-+	 * We use tlb_gather_mmu_fullmm() to avoid confusing the
-+	 * range-tracking logic in __tlb_adjust_range().
-+	 */
-+	tlb_gather_mmu_fullmm(&tlb, mm);
- 	free_pgd_range(&tlb, start, end, start, end);
- 	tlb_finish_mmu(&tlb);
- #endif
--- 
-2.29.2.576.ga3fc446d84-goog
-
+Core2 doesn't use TSC for timekeeping anyway. KVM shouldn't either.
