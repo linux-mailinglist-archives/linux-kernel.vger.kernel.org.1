@@ -2,180 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E223B2D551D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:04:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7DC2D5516
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387506AbgLJIEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 03:04:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52157 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726090AbgLJIEI (ORCPT
+        id S1733033AbgLJIDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 03:03:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgLJIDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 03:04:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607587361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TQkSn2F7evUhUtd3xKUtaGHva5aW3Ib9zLjmDxpPHBI=;
-        b=Tybv87ja7LT0359qO9TH6+2A2CM0WiYxQ3N9Fo9ZstJdIVeozTSR7SxGeVGFoo3pJAFuFP
-        PU3/4QFbcGTZx5df/WBJtT0F7Hp+vgYsBhJ0wvwpDl5y6iFzXBEb4A+6WyZo81fjPhX3fq
-        vWTc767V/meNo+YkDu327tisjoTcEM0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-_X5kaKvFOHO1YMeC7QRTTg-1; Thu, 10 Dec 2020 03:02:39 -0500
-X-MC-Unique: _X5kaKvFOHO1YMeC7QRTTg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82A268042CF;
-        Thu, 10 Dec 2020 08:02:24 +0000 (UTC)
-Received: from [10.36.113.177] (ovpn-113-177.ams2.redhat.com [10.36.113.177])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A76B86F96F;
-        Thu, 10 Dec 2020 08:02:21 +0000 (UTC)
-Subject: Re: [PATCH 3/3] s390/mm: Define arch_get_mappable_range()
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20201210065845.GA20691@osiris>
- <E026809E-4624-4ACE-B309-0443704C637B@redhat.com>
- <0a2f6eb1-c38b-9cc2-5c45-16f6c8999ce2@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <2a379949-4ecb-e380-560e-78ef91168c87@redhat.com>
-Date:   Thu, 10 Dec 2020 09:02:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 10 Dec 2020 03:03:07 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC10C0613CF;
+        Thu, 10 Dec 2020 00:02:26 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id bo9so5988625ejb.13;
+        Thu, 10 Dec 2020 00:02:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=gepYDu0wny/2sKZLnfp5j/sfmRWJCXHMwGREZkDWP4U=;
+        b=CIkoMCl70jOtB0h7ih8Em3Cky+PwvrFnWshKyjRoJqEYPfVWQnd//I2U+b+AsEQT2N
+         493H3mrluNs/Vj9pLfYuaWRMskraIoQ04kt80cqqYFgqbV3d0hBeY47Ldt5i9pVfnGtz
+         pbTLNWx6JXjg5fHXftQyHVnxfH7QxmqldjeRg1jOPef+cbe0C/P73wPj+JYHqrUuDXSI
+         hwPaIKLf30iVAiSIMX5HVTKMxoy4IDn6EPmr8QZQBKYW1IzeMq+QDF0Qa2EHADWvxuwv
+         zhzhlNBnz4wtDoUr5ksvTFZg6NW2yIVIgu/oUKhNjw/HH01GhpCrGfb0K+MoQe7yR+00
+         WgBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gepYDu0wny/2sKZLnfp5j/sfmRWJCXHMwGREZkDWP4U=;
+        b=Dd/ejied4zcKBzTmBi2A0a7Ee8X/SYpQpIqh9qfKkaZXE5kO7IkGSDNC6eA1Mp1h3t
+         F8qYDL0qzWUSmut0iw4vXLhyZiwAvypYqTcdHu2MZWUhKdwm+2P2x+kPfpeKlVcgDaX2
+         IOWxVbogzPOVPq86xhB6JEOa639SDCLAEr8PgTAN4SOZIM6ltT744zOzwT3J3CzRfj9V
+         lCFUy1jsLXezPkOHTYsjofcfc5Zro+CL4UWTHn2H0keOo5tum+GvwwG2pr7HV8HZhcCf
+         XmJrZMRO4cffAPeopfS504NeK0VGFY2q/VHz+NAt54N47UekgTuuCardO2mQT8Rn8E3J
+         lIRQ==
+X-Gm-Message-State: AOAM531Qq7mGLS5PTNGF49Z62WyKIP0dMyBxJf7CJMu8+iC3e6Pme4no
+        DK55bmo8pfCsk6s8crMeW30=
+X-Google-Smtp-Source: ABdhPJw9lhXX/V2yxwL6JrVu9jNUWLRMKIwYkimwVmi54pTUj20COvWowSQESBjGiJ24yOKPCQjHUw==
+X-Received: by 2002:a17:907:1004:: with SMTP id ox4mr5267839ejb.240.1607587345720;
+        Thu, 10 Dec 2020 00:02:25 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id s6sm3688917ejb.122.2020.12.10.00.02.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 00:02:24 -0800 (PST)
+Date:   Thu, 10 Dec 2020 09:02:22 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] clk: tegra: Fix duplicated SE clock entry
+Message-ID: <X9HWDq8UBDdr4vGs@ulmo>
+References: <20201025224212.7790-1-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <0a2f6eb1-c38b-9cc2-5c45-16f6c8999ce2@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="KAA0DHtXUWF2QXAw"
+Content-Disposition: inline
+In-Reply-To: <20201025224212.7790-1-digetx@gmail.com>
+User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.12.20 08:40, Anshuman Khandual wrote:
-> 
-> 
-> On 12/10/20 12:34 PM, David Hildenbrand wrote:
->>
->>> Am 10.12.2020 um 07:58 schrieb Heiko Carstens <hca@linux.ibm.com>:
->>>
->>> ﻿On Thu, Dec 10, 2020 at 09:48:11AM +0530, Anshuman Khandual wrote:
->>>>>> Alternatively leaving __segment_load() and vmem_add_memory() unchanged
->>>>>> will create three range checks i.e two memhp_range_allowed() and the
->>>>>> existing VMEM_MAX_PHYS check in vmem_add_mapping() on all the hotplug
->>>>>> paths, which is not optimal.
->>>>>
->>>>> Ah, sorry. I didn't follow this discussion too closely. I just thought
->>>>> my point of view would be clear: let's not have two different ways to
->>>>> check for the same thing which must be kept in sync.
->>>>> Therefore I was wondering why this next version is still doing
->>>>> that. Please find a way to solve this.
->>>>
->>>> The following change is after the current series and should work with
->>>> and without memory hotplug enabled. There will be just a single place
->>>> i.e vmem_get_max_addr() to update in case the maximum address changes
->>>> from VMEM_MAX_PHYS to something else later.
->>>
->>> Still not. That's way too much code churn for what you want to achieve.
->>> If the s390 specific patch would look like below you can add
->>>
->>> Acked-by: Heiko Carstens <hca@linux.ibm.com>
->>>
->>> But please make sure that the arch_get_mappable_range() prototype in
->>> linux/memory_hotplug.h is always visible and does not depend on
->>> CONFIG_MEMORY_HOTPLUG. I'd like to avoid seeing sparse warnings
->>> because of this.
->>>
->>> Thanks.
->>>
->>> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
->>> index 77767850d0d0..e0e78234ae57 100644
->>> --- a/arch/s390/mm/init.c
->>> +++ b/arch/s390/mm/init.c
->>> @@ -291,6 +291,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
->>>    if (WARN_ON_ONCE(params->pgprot.pgprot != PAGE_KERNEL.pgprot))
->>>        return -EINVAL;
->>>
->>> +    VM_BUG_ON(!memhp_range_allowed(start, size, 1));
->>>    rc = vmem_add_mapping(start, size);
->>>    if (rc)
->>>        return rc;
->>> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
->>> index b239f2ba93b0..ccd55e2f97f9 100644
->>> --- a/arch/s390/mm/vmem.c
->>> +++ b/arch/s390/mm/vmem.c
->>> @@ -4,6 +4,7 @@
->>>  *    Author(s): Heiko Carstens <heiko.carstens@de.ibm.com>
->>>  */
->>>
->>> +#include <linux/memory_hotplug.h>
->>> #include <linux/memblock.h>
->>> #include <linux/pfn.h>
->>> #include <linux/mm.h>
->>> @@ -532,11 +533,23 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
->>>    mutex_unlock(&vmem_mutex);
->>> }
->>>
->>> +struct range arch_get_mappable_range(void)
->>> +{
->>> +    struct range range;
->>> +
->>> +    range.start = 0;
->>> +    range.end = VMEM_MAX_PHYS;
->>> +    return range;
->>> +}
->>> +
->>> int vmem_add_mapping(unsigned long start, unsigned long size)
->>> {
->>> +    struct range range;
->>>    int ret;
->>>
->>> -    if (start + size > VMEM_MAX_PHYS ||
->>> +    range = arch_get_mappable_range();
->>> +    if (start < range.start ||
->>> +        start + size > range.end ||
->>>        start + size < start)
->>>        return -ERANGE;
->>>
->>>
->>
->> Right, what I had in mind as reply to v1. Not sure if we really need new checks in common code. Having a new memhp_get_pluggable_range() would be sufficient for my use case (virtio-mem).
-> Didn't quite understand "Not sure if we really need new checks in common code".
-> Could you please be more specific. New checks as in pagemap_range() ? Because
-> other places it is either replacing erstwhile check_hotplug_memory_addressable()
-> or just moving existing checks from platform arch_add_memory() to the beginning
-> of various hotplug paths.
 
-The main concern I have with current code is that it makes it impossible
-for some driver to detect which ranges it could actually later hotplug.
-You cannot warn about a strange setup before you actually run into the
-issues while trying to add memory. Like returning "-EINVAL" from a
-function but not exposing which values are actually valid.
+--KAA0DHtXUWF2QXAw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If we have memhp_get_pluggable_range(), we have such a mechanism and
+On Mon, Oct 26, 2020 at 01:42:12AM +0300, Dmitry Osipenko wrote:
+> The periph_clks[] array contains duplicated entry for Security Engine
+> clock which was meant to be defined for T210, but it wasn't added
+> properly. This patch corrects the T210 SE entry and fixes the following
+> error message on T114/T124: "Tegra clk 127: register failed with -17".
+>=20
+> Fixes: dc37fec48314 ("clk: tegra: periph: Add new periph clks and muxes f=
+or Tegra210")
+> Tested-by Nicolas Chauvet <kwizart@gmail.com>
+> Reported-by Nicolas Chauvet <kwizart@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/clk/tegra/clk-id.h           | 1 +
+>  drivers/clk/tegra/clk-tegra-periph.c | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 
-1. Trying to add out-of-range memory will fail (although deep down in
-arch code, but at least it fails).
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-2. There is a way for drivers to find out which values are actually
-valid before triggering 1.
+--KAA0DHtXUWF2QXAw
+Content-Type: application/pgp-signature; name="signature.asc"
 
-For my use case that's good enough. Do you have others in mind that
-require new checks in common code (meaning inside add_memory() and friends)?
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Thanks,
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/R1gwACgkQ3SOs138+
+s6FjHA/+MZliA/1FCUfV5MVbp9NlWq4s16hK4nloyO7HpnsQduSwo06ag5LpuuTB
+XTZ6eCN6f7oVEDiG5UaQE2xd2JDAyHSE5emJA3zfG2yTdOteZ3dq6QMeSEN65IEx
+4rvVP3pc5i5nUVydalKTY9YIr49X2/vIEJT2MhB3qYEvOGCy033+5QdEnZhwwkBL
+pOEt9UtaaUw5CFMfXvBABue3xF7nbJ6xjIjR23+9qAzl5PKaZrrzBDXWt1eTp7KR
+nLK3MZ93PhbUgy4Ex9IE6zclzBSpiMtESEj2NTZeq9gXgk5ZsLELF/Rw4vA56qGa
+mUbVPGNcaSZHDDyTdWwYWoLIkwZu2T1jx/ylSDcXcfdz/IKkzMpLoSgKHFxjN3fx
+DKdJxW7xk1C5dQ43qM18WrGrdq3E8ZEqDgEiY/9k1JsBfo6escUwEkYGgpI6dESD
+hq25DChqtGrVr9KaqOzzCEyBE61KhvYZw7gHAGoVyxa/90bMTVeE3kgTBOfPaVc7
+OIm2UUiA2mxurl1x2fcNWw4haEbaFnGvpGMf0kq7G4USYpSJCG9/VwXNbdztG50I
+tMcho2QYUJTArnOSvLtJELuUoRD/3MaS1lMzgpMoaO+qfmduRjr6GMMXfYElF9yG
+UvW34msXFKiiY6kMAimDiDnDHgQSNCA0DRcjku2YKrPMv+QTJ7M=
+=SgsT
+-----END PGP SIGNATURE-----
 
-David / dhildenb
-
+--KAA0DHtXUWF2QXAw--
