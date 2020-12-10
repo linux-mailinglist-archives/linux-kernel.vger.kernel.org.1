@@ -2,236 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3FC2D597F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9C22D5939
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389414AbgLJLlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:41:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43432 "EHLO mx2.suse.de"
+        id S2389422AbgLJLaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:30:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:36438 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727424AbgLJLlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:41:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607600449; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zaS3R0D28hfhRJRE8kS9Fjpf3ltkfs74Q0HQPBSqdr8=;
-        b=l1ku7VnksbHmDI/hbfm+HUu1MfXIfYXOu3dojB1LBKeYCDxar1PKmTBS213bq9oCCc4E0U
-        p4Luu9fLuvfi7i+/Gnt2G11845AMhTzcFCP9DkNixY7baetrDGi9+Iy9ZOAKPH3wosCOxQ
-        bFoTD0LYZFaxB20mP5tglo2JiecXXWw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2436FAD63;
-        Thu, 10 Dec 2020 11:40:48 +0000 (UTC)
-Subject: Re: [PATCH 2/2] xen: don't use page->lru for ZONE_DEVICE memory
-To:     =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
-Cc:     Jason Andryuk <jandryuk@gmail.com>,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-References: <20201207133024.16621-1-jgross@suse.com>
- <20201207133024.16621-3-jgross@suse.com>
- <CAKf6xpuqdY=TctOjNsnTTexeBpkV+HMkOHFsAd4vxUudBpxizA@mail.gmail.com>
- <72bc4417-076c-78f0-9c7e-5a9c95e79fb2@suse.com>
- <20201210111454.dxykvyktzwr3fjyk@Air-de-Roger>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <7425aed6-ff6f-873a-b629-b9c7058e9b13@suse.com>
-Date:   Thu, 10 Dec 2020 12:25:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1731999AbgLJLaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:30:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E9B9C30E;
+        Thu, 10 Dec 2020 03:29:13 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A5DE3F718;
+        Thu, 10 Dec 2020 03:29:13 -0800 (PST)
+Date:   Thu, 10 Dec 2020 11:29:12 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: topology: Cleanup init_amu_fie() a bit
+Message-ID: <20201210112912.GB5300@arm.com>
+References: <5594c7d6756a47b473ceb6f48cc217458db32ab0.1607584435.git.viresh.kumar@linaro.org>
+ <20201210103815.GA3313@arm.com>
+ <20201210105506.gi76peabl2bv5j62@vireshk-i7>
 MIME-Version: 1.0
-In-Reply-To: <20201210111454.dxykvyktzwr3fjyk@Air-de-Roger>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ksoksSJb3j0Ut26tcfA9wmBm4Bn3Gsd2Y"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210105506.gi76peabl2bv5j62@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ksoksSJb3j0Ut26tcfA9wmBm4Bn3Gsd2Y
-Content-Type: multipart/mixed; boundary="LnRafePN06iNHry9leb0lMX8VhyDVlrY5";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
-Cc: Jason Andryuk <jandryuk@gmail.com>,
- xen-devel <xen-devel@lists.xenproject.org>,
- open list <linux-kernel@vger.kernel.org>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>
-Message-ID: <7425aed6-ff6f-873a-b629-b9c7058e9b13@suse.com>
-Subject: Re: [PATCH 2/2] xen: don't use page->lru for ZONE_DEVICE memory
-References: <20201207133024.16621-1-jgross@suse.com>
- <20201207133024.16621-3-jgross@suse.com>
- <CAKf6xpuqdY=TctOjNsnTTexeBpkV+HMkOHFsAd4vxUudBpxizA@mail.gmail.com>
- <72bc4417-076c-78f0-9c7e-5a9c95e79fb2@suse.com>
- <20201210111454.dxykvyktzwr3fjyk@Air-de-Roger>
-In-Reply-To: <20201210111454.dxykvyktzwr3fjyk@Air-de-Roger>
+On Thursday 10 Dec 2020 at 16:25:06 (+0530), Viresh Kumar wrote:
+> My intent was to keep the logical working of the code as is (in all
+> the patches I have sent today), let me see if I broke that assumption
+> somewhere unintentionally.
+> 
 
---LnRafePN06iNHry9leb0lMX8VhyDVlrY5
-Content-Type: multipart/mixed;
- boundary="------------BA5A6B6E95D44F69ED3FB6FB"
-Content-Language: en-US
+Okay, I replied separately in regards to the piece of code that confused
+things.
 
-This is a multi-part message in MIME format.
---------------BA5A6B6E95D44F69ED3FB6FB
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+> On 10-12-20, 10:38, Ionela Voinescu wrote:
+> > I'm first of all replying to discuss the need of this policy analysis
+> > that enable_policy_freq_counters() does which results in the setting of
+> > have_policy.
+> > 
+> > Basically, that's functions purpose is only to make sure that invariance
+> > at the level of the policy is consistent: either all CPUs in a policy
+> > support counters and counters will be used for the scale factor, or
+> > either none or only some support counters and therefore the default
+> > cpufreq implementation will be used (arch_set_freq_scale()) for all CPUs
+> > in a policy.
+> > 
+> > If we find that cpufreq policies are not present at all, we only enable
+> > counter use if all CPUs support them.
+> 
+> Right, and the same must be true after this patch.
+> 
+> > This being said, there is a very important part of your patches in this
+> > set:
+> > 
+> > +	/* Disallow partial use of counters for frequency invariance */
+> > +	if (!cpumask_equal(amu_fie_cpus, cpu_present_mask))
+> > +		goto free_valid_mask;
+> 
+> The current code already has this check and so this isn't something
+> new.
+>  
 
-On 10.12.20 12:14, Roger Pau Monn=C3=A9 wrote:
-> On Tue, Dec 08, 2020 at 07:45:00AM +0100, J=C3=BCrgen Gro=C3=9F wrote:
->> On 07.12.20 21:48, Jason Andryuk wrote:
->>> On Mon, Dec 7, 2020 at 8:30 AM Juergen Gross <jgross@suse.com> wrote:=
+Replied separately for the patch.
 
->>>>
->>>> Commit 9e2369c06c8a18 ("xen: add helpers to allocate unpopulated
->>>> memory") introduced usage of ZONE_DEVICE memory for foreign memory
->>>> mappings.
->>>>
->>>> Unfortunately this collides with using page->lru for Xen backend
->>>> private page caches.
->>>>
->>>> Fix that by using page->zone_device_data instead.
->>>>
->>>> Fixes: 9e2369c06c8a18 ("xen: add helpers to allocate unpopulated mem=
-ory")
->>>> Signed-off-by: Juergen Gross <jgross@suse.com>
->>>
->>> Would it make sense to add BUG_ON(is_zone_device_page(page)) and the
->>> opposite as appropriate to cache_enq?
->>
->> No, I don't think so. At least in the CONFIG_ZONE_DEVICE case the
->> initial list in a PV dom0 is populated from extra memory (basically
->> the same, but not marked as zone device memory explicitly).
->=20
-> I assume it's fine for us to then use page->zone_device_data even if
-> the page is not explicitly marked as ZONE_DEVICE memory?
+> > If this is agreed upon, there is a lot more that can be removed from the
+> > initialisation: enable_policy_freq_counters() can entirely go away plus
+> > all the checks around it.
+> > 
+> > I completely agree that all of this will be more clear if we decided to
+> > "Disallow partial use of counters for frequency invariance", but I think
+> > we might have to add it back in again when systems with partial support
+> > for counters show up.
+> > 
+> > I don't agree to not support these systems from the get go as it's
+> > likely that the first big.LITTLE systems will only have partial support
+> > for AMUs, but it's only an assumption at this point.
+> 
+> Here is how things move AFAICT:
+> 
+> - We set valid_cpus 1-by-1 with all CPUs that have counters available.
+> 
 
-I think so, yes, as we are owner of that page and we were fine to use
-lru, too.
+Yes.
 
->=20
-> If that's fine, add my:
->=20
-> Acked-by: Roger Pau Monn=C3=A9 <roger.pau@citrix.com>
->=20
-> To both patches, and thank you very much for fixing this!
+> - Once all CPUs of a policy are part of valid_cpus, we update
+>   amu_fie_cpus with that policies related_cpus.
+> 
 
-UR welcome. :-)
+Yes.
 
+> - Once we are done with all CPUs, we check if cpufreq policy was there
+>   for any of the CPUs, if not, we update amu_fie_cpus if all present
+>   CPUs are part of valid_cpus.
+> 
 
-Juergen
+Yes.
 
---------------BA5A6B6E95D44F69ED3FB6FB
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+> - At this point we call static_branch_enable() if amu_fie_cpus is not
+>   empty (i.e. even if it is partially set).
+> 
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+Yes.
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+> - But right after that we call static_branch_disable() if we aren't
+>   invariant (call to topology_scale_freq_invariant()), and this will
+>   happen if amu_fie_cpus doesn't have all the CPUs there. Isn't it? So
+>   partial amu support is already disallowed, without cpufreq.
+> 
 
---------------BA5A6B6E95D44F69ED3FB6FB--
+This is the point that needs clarification:
 
---LnRafePN06iNHry9leb0lMX8VhyDVlrY5--
+topology_scale_freq_invariant()) = cpufreq_supports_freq_invariance() ||
+                                   arch_freq_counters_available(cpu_online_mask);
 
---ksoksSJb3j0Ut26tcfA9wmBm4Bn3Gsd2Y
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+This checks if the full system is invariant.
 
------BEGIN PGP SIGNATURE-----
+The possible scenarios are:
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/SBb8FAwAAAAAACgkQsN6d1ii/Ey+Y
-JAgAhvi8On0omlCq6kAAnEhiDDtQpG1QxSB4jHR5B5cy5PJCgWGrrtxQj06Fm+nVv9UxAbNnPdxq
-aSIoodvIB1HTeOCluhp3kV1jyOBoCEtHG3/M7gjA64LJxAgKYtgxcWxZc5AEXPAaa+4Z1FgpoM9Z
-/rLx7ysQVM0gLMYYqQk5cbETqa8pCHpcbSN8DmI4vDk/cC4TlHWZ7SMwC5AMRfqFPh8Vnee6ozo1
-Y8+XKGRFlFzjkB/nvg7jYc/bUl/+8EdXK+PJNPWjYwxPWgctNX8JHkSnYtNiX3iEF3zCR19mnYP5
-2R15q5LdCuWQoot9zOb7gpMlO7V0KDxr6/h4UwhDMw==
-=+PsR
------END PGP SIGNATURE-----
+ - All online CPUs support AMUs - arch_freq_counters_available() will
+   return true -> topology_scale_freq_invariant() will return true.
 
---ksoksSJb3j0Ut26tcfA9wmBm4Bn3Gsd2Y--
+ - None of the CPUs support AMUs, or part of the CPUs support AMUs - the
+   system is invariant only if cpufreq is invariant (dependent on
+   whether the driver implements the proper callbacks that results in
+   calling arch_set_freq_scale() in cpufreq core.
+
+ - Either cpufreq does not support invariance or we don't have AMU
+   support on all CPUs -> the system is not invariant so we disable
+   the AMU static key that guards the calls to
+   topology_scale_freq_tick() - we would not want to set a scale factor
+   for only a part of the CPUs.
+
+So whether were are or are not invariant does not depend only on the AMU
+presence, but also on the cpufreq support for invariance. We have to
+disable invariance altogether (including the AMU guarding static key)
+if the system is not invariant (it no all CPUs have means to provide the
+scale).
+
+Let me know if it makes sense.
+
+> Where am I wrong ? (And I know there is a high possibility of that
+> happening here :) )..
+> 
+
+No worries. I myself sometimes wonder if I missed something. I will be
+happy in a few years when we can remove this and use counters for all
+CPUs.
+
+Thanks,
+Ionela.
+
+> -- 
+> viresh
