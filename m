@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527002D5D64
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F91E2D5D82
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388401AbgLJOUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:20:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726431AbgLJOUJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:20:09 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1816C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:19:27 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id w16so4332111pga.9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:19:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/N/xrIL/qZ8kXAOOwh9PJuTQPNefKxYIgxBhEc6/Fr8=;
-        b=V6MqVsjQ9RpFTpapEh2g7Y/yEAavHtL4sLgK0t8huY1ail3nVcrcWfpIhDoyzlvTFE
-         ilfB7udGzJ/dYy6mKL3tduWf7zeCNn7qIkiegSnVdE8/gWBSOxPJWDSNI5zoZpHCI2qs
-         B0AaA3JQZE3i3BnrNmwitMh7Yi5MqW3nR937PxSIHoAaLF147rO48a9+vcHqSxEkP1Mb
-         5YpauCU6UlK4C/MRYTvEs25x28qUjiBLiALy/WPX/PX+E+J20bF+XED1PklZkzQvT1nu
-         FDjTVOA067l3tzMfmX0HKulou7jxmEwWT85pxu/ULGVvTYEUes8hLivBpNcdxCqB1qFE
-         ydTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/N/xrIL/qZ8kXAOOwh9PJuTQPNefKxYIgxBhEc6/Fr8=;
-        b=Ct6jfGp02uzQeK7/zxBtHMOZ371Gi3VTU043HKVUUXNNY918Wl1YYOEftnmgq9gcbT
-         N7vhW/VTh2xkbPqfMNcVjPJThwFh16TS+KVGoOs78fhSlpCQokhxrtQ/6xnHEKlfwu/C
-         SM7Lbv+RQENbLk307yEV6beBeYVaOvEejDs6VoDkGsfZ7iQkN8xSGDU9ogHdBAyxFeEL
-         jn4xlB6tcIr+HOFGp71X+Jm5cgUC7p1vCrKCRh9tmLQWMOPuI4S5vqarV5NMlQLY7mTg
-         gR3sXCvkKIQ2IJrZiDEaXs9xijx3DvaYmHQNLZK/3Fo+4kFtIJ/mRL9PhOs2ELXFQ3c8
-         KHSg==
-X-Gm-Message-State: AOAM530HTTSohioLAUAtVrcpWBFz+YRlCjTCKfUYzjR9NykGjiOfIwpI
-        qYnh0Qfl5SMn9tFZcf2I8jwQGIWU2yFqrJkK
-X-Google-Smtp-Source: ABdhPJxs6SxvHaEuUlMtfsSppZKvcnr1ThQcH044478prOqOuyELkp9jt5/X5IgbFKtZX5//ftyqIA==
-X-Received: by 2002:a63:ec57:: with SMTP id r23mr6666865pgj.315.1607609967095;
-        Thu, 10 Dec 2020 06:19:27 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:9004:681b:efb7:be26:4d99:7d44])
-        by smtp.gmail.com with ESMTPSA id x12sm6579964pfj.25.2020.12.10.06.19.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 06:19:26 -0800 (PST)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com
-Subject: [PATCH] checkpatch: add --fix option to IS_ENABLED_CONFIG check
-Date:   Thu, 10 Dec 2020 19:49:03 +0530
-Message-Id: <20201210141903.72327-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S2389940AbgLJOX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:23:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57150 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389034AbgLJOXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:23:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607610169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=AfFmYlDUq990VhRnxpYoKhCrY5/sWUQht2ol3RX6enI=;
+        b=efS2DEQLXvjpbJOjGAuA0HZJSjkX/2Mpa31mqJ0QvF61sU1F3y01VtX2rhnXfmAcozOnVI
+        fCg16UngQWUj5WjWgNTZR5yYZynUitY6kRkw7Ry50BXOTNoZi/dBJ3Hzy2s3WuZl1eL3eK
+        UVajl02XKP9i1dJj0nZJDbScCWaJ6Pk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 983E3AC6A;
+        Thu, 10 Dec 2020 14:22:49 +0000 (UTC)
+From:   Mian Yousaf Kaukab <yousaf.kaukab@suse.com>
+To:     rjw@rjwysocki.net, lenb@kernel.org, viresh.kumar@linaro.org,
+        ionela.voinescu@arm.com
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Mian Yousaf Kaukab <ykaukab@suse.de>,
+        Petr Cervinka <pcervinka@suse.com>
+Subject: [PATCH 1/2] acpi: cppc: add cpufreq device
+Date:   Thu, 10 Dec 2020 15:21:38 +0100
+Message-Id: <20201210142139.20490-1-yousaf.kaukab@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation/process/coding-style.rst specifies the use of
-IS_ENABLED macro:
+From: Mian Yousaf Kaukab <ykaukab@suse.de>
 
-Within code, where possible, use the IS_ENABLED macro to convert a Kconfig
-symbol into a C boolean expression, and use it in a normal C conditional:
+Since commit 28f06f770454 ("cppc_cpufreq: replace per-cpu structures with
+lists"), cppc-cpufreq driver doesn't check availability of PSD data before
+registering with cpufreq core. As a result on a ThunderX2 platform when
+CPPC is disabled from BIOS, kernel log is spammed with following messages:
 
-	if (IS_ENABLED(CONFIG_SOMETHING)) {
-		...
-	}
+[  180.974166] CPPC Cpufreq: Error in acquiring _CPC/_PSD data for CPUxx
 
-checkpatch correspondingly has a check for IS_ENABLED() without
-CONFIG_<FOO>.
-Add a --fix option to the check to automatically correct the argument.
+acpi_cppc_processor_probe() never succeed in this case because
+acpi_evaluate_object_typed("_CPC") always returns AE_NOT_FOUND. When
+cpufreq core calls cppc_cpufreq_cpu_init(), driver fails to obtain PSD data
+and print error messages.
 
-Macros like:
- #if IS_ENABLED(THERMAL)
+Convert cppc-cpufreq driver to a platform driver (done in a separate patch)
+and add cppc-cpufreq device when acpi_cppc_processor_probe() succeeds.
 
-is corrected to:
- #if IS_ENABLED(CONFIG_THERMAL)
-
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Fixes: 28f06f770454 ("cppc_cpufreq: replace per-cpu structures with lists")
+Reported-by: Petr Cervinka <pcervinka@suse.com>
+Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
 ---
- scripts/checkpatch.pl | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/acpi/cppc_acpi.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7b086d1cd6c2..751cd13622b9 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6877,8 +6877,11 @@ sub process {
+diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+index 4e478f751ff7..adf9ca3be9fe 100644
+--- a/drivers/acpi/cppc_acpi.c
++++ b/drivers/acpi/cppc_acpi.c
+@@ -39,6 +39,7 @@
+ #include <linux/ktime.h>
+ #include <linux/rwsem.h>
+ #include <linux/wait.h>
++#include <linux/platform_device.h>
  
- # check for IS_ENABLED() without CONFIG_<FOO> ($rawline for comments too)
- 		if ($rawline =~ /\bIS_ENABLED\s*\(\s*(\w+)\s*\)/ && $1 !~ /^${CONFIG_}/) {
--			WARN("IS_ENABLED_CONFIG",
--			     "IS_ENABLED($1) is normally used as IS_ENABLED(${CONFIG_}$1)\n" . $herecurr);
-+			if (WARN("IS_ENABLED_CONFIG",
-+				 "IS_ENABLED($1) is normally used as IS_ENABLED(${CONFIG_}$1)\n" . $herecurr) &&
-+			    $fix) {
-+				$fixed[$fixlinenr] =~ s/\bIS_ENABLED\s*\(\s*(\w+)\s*\)/IS_ENABLED(${CONFIG_}$1)/;
-+			}
- 		}
+ #include <acpi/cppc_acpi.h>
  
- # check for #if defined CONFIG_<FOO> || defined CONFIG_<FOO>_MODULE
+@@ -606,6 +607,23 @@ static bool is_cppc_supported(int revision, int num_ent)
+ 	return true;
+ }
+ 
++static void add_cppc_cpufreq_dev(void)
++{
++	static bool already_added;
++
++	if (!already_added) {
++		struct platform_device *pdev;
++
++		pdev = platform_device_register_simple("cppc-cpufreq", -1,
++				NULL, 0);
++		if (IS_ERR(pdev))
++			pr_err("Couldn't register cppc-cpufreq err=%ld\n",
++					PTR_ERR(pdev));
++		else
++			already_added = true;
++	}
++}
++
+ /*
+  * An example CPC table looks like the following.
+  *
+@@ -815,6 +833,9 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
+ 	}
+ 
+ 	kfree(output.pointer);
++
++	add_cppc_cpufreq_dev();
++
+ 	return 0;
+ 
+ out_free:
 -- 
-2.27.0
+2.26.2
 
