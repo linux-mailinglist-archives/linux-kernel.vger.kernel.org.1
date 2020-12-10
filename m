@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A12E2D5752
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FD72D5751
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732682AbgLJJg1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Dec 2020 04:36:27 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:48991 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732639AbgLJJgX (ORCPT
+        id S1732614AbgLJJgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:36:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727449AbgLJJgK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:36:23 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-88-VZuhpelxODGJV8wFgwzj7w-1; Thu, 10 Dec 2020 09:34:38 +0000
-X-MC-Unique: VZuhpelxODGJV8wFgwzj7w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 10 Dec 2020 09:34:37 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 10 Dec 2020 09:34:37 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Joe Perches' <joe@perches.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     LKML <linux-kernel@vger.kernel.org>
-Subject: RE: checkpatch
-Thread-Topic: checkpatch
-Thread-Index: AQHWzrUw0a7UmS3NhEOklnWYktoEBKnwEOAg
-Date:   Thu, 10 Dec 2020 09:34:37 +0000
-Message-ID: <32a8677e1bcf4d69ba019bfcefc9ea59@AcuMS.aculab.com>
-References: <87zh2mzw3h.fsf@nanos.tec.linutronix.de>
- <aea0efa93c17e431205eeb932a73efa7e21598a3.camel@perches.com>
-In-Reply-To: <aea0efa93c17e431205eeb932a73efa7e21598a3.camel@perches.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Thu, 10 Dec 2020 04:36:10 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CA0C0613CF;
+        Thu, 10 Dec 2020 01:35:30 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id s2so2476699plr.9;
+        Thu, 10 Dec 2020 01:35:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=84iy7jpyBbCHZV2z4RbwkHJnShbb27+5JYU+4nc4KLQ=;
+        b=LOIP8A8sJuuur5dPKx3m3jgDmuRDTYLoyP7Odl5rrpEnLE/n3lZ9TRir1yG5BNSQO6
+         Nkd1jSp/F8nootAXAKsDdEAigHdyTQtjAEjd2JCVmFhbSquYBCqRAztZWA9QMi9d0PzJ
+         LBDhWD9ytk1VhcZnyhAGLb4oiK0ynemXFXHjhjGhuRUPp5XAeHj4J1JL2eQHG4Nacser
+         yw2Io+bLoo62bG1u/JD8RiQoScW5NsjhDzRq7kcjSlIzK71dlq8/1DNMnFoWWMJcrzHz
+         lWGWxjNJU3Ye/0Exxr6NWww/ujs0XJ1rmUoaRq9tAmfFsRSQ2S1uYV5SuO3hvC1YytKN
+         Ln+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=84iy7jpyBbCHZV2z4RbwkHJnShbb27+5JYU+4nc4KLQ=;
+        b=mxXha7GrveyOZAvzjZQotodr+ipgZ194qeQE7JJ7AZY5C9acCCMo91KinHycDdOyIm
+         OjeZqdlqaq2NTLRlH1svTQeQ1n++YxLjC1IcJNBR3Ufj7+OaIKcbLuH0RTCW2U50O0rv
+         VZBC1ZFzXjg4ETm+eO+dXEKRc1/IP9ogi98RhKlZwJJnJfH8mwuXne/eg3iYiq+idPWk
+         1SULBhXHPDTpGw4SDfBeHT1IBgnd/lyVWUBkrB4I5tAuUoytvqRmfCZJAE6Ej7yLBlzD
+         xxSiWQcDSRUR9btzE4iTTPle6sszX5fInAr5pdL+n1QX/uTYMGJkuArCZoYyBS4Bqr1/
+         Skqw==
+X-Gm-Message-State: AOAM532RX0PQmQORJuq7nK03+sNEwr8jjOsBszroOmuWr9Fz62fRmNaX
+        ktKubdUMIn8Hz1UVSr2sma0=
+X-Google-Smtp-Source: ABdhPJzg1pv3b/b6IqlVmd5UI86wzSLJcOqLbdMw0d1TxEmOUqTJWn0cUiyxsSp2oYtqeDEtvA08Vg==
+X-Received: by 2002:a17:902:c383:b029:db:c725:e325 with SMTP id g3-20020a170902c383b02900dbc725e325mr5853465plg.21.1607592929990;
+        Thu, 10 Dec 2020 01:35:29 -0800 (PST)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id mj5sm5590001pjb.20.2020.12.10.01.35.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Dec 2020 01:35:29 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        andriin@fb.com, daniel@iogearbox.net, edumazet@google.com,
+        ap420073@gmail.com, bjorn.topel@intel.com,
+        xiyou.wangcong@gmail.com, jiri@mellanox.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] net: core: fix msleep() is not accurate
+Date:   Thu, 10 Dec 2020 17:35:18 +0800
+Message-Id: <1607592918-14356-1-git-send-email-yejune.deng@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Perches
-> Sent: 10 December 2020 05:26
-> 
-> On Wed, 2020-12-09 at 19:13 +0100, Thomas Gleixner wrote:
-> > Joe,
-> 
-> Hi Thomas.
-> 
-> > the below made it through my filters for some reason so I actually
-> > looked and immediately wondered why checkpatch.pl did not identify this
-> > as pure garbage.
-> >
-> >  Original mail is here: lore.kernel.org/r/69cb540a-09d5-4956-b062-071ccded7090@web.de
-> >
-> > Can you have a look please? Adding brackets in the middle of the code
-> > for absolutely no reason is wrong to begin with and then not indenting
-> > the enclosed code makes it even worse.
-> 
-> Well, maybe something like this, but there are probably some
-> drawbacks with initializations.
+See Documentation/timers/timers-howto.rst, msleep() is not
+for (1ms - 20ms), There is a more advanced API is used.
 
-Isn't the other likely problem where an extra code block
-is being squeezed in after a case label without generating
-a double-indent.
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ net/core/dev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/net/core/dev.c b/net/core/dev.c
+index d33099f..6e83ee03 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6726,9 +6726,9 @@ void napi_disable(struct napi_struct *n)
+ 	set_bit(NAPI_STATE_DISABLE, &n->state);
+ 
+ 	while (test_and_set_bit(NAPI_STATE_SCHED, &n->state))
+-		msleep(1);
++		fsleep(1000);
+ 	while (test_and_set_bit(NAPI_STATE_NPSVC, &n->state))
+-		msleep(1);
++		fsleep(1000);
+ 
+ 	hrtimer_cancel(&n->timer);
+ 
+-- 
+1.9.1
 
