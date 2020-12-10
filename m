@@ -2,104 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947F72D5426
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9332D542D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387517AbgLJGsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:48:39 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60868 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732146AbgLJGs1 (ORCPT
+        id S2387624AbgLJGuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:50:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730364AbgLJGuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:48:27 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BA6lK6G058566;
-        Thu, 10 Dec 2020 00:47:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607582840;
-        bh=qgITTTZSkIihUU/af1ffR6ZvBdt+qsA59Qd9Not4R7E=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=FgOkCepwyKxkuu4EcETOJr2tWYn56YV4N8ZbOSd1mg7OzrL2hECkWyusJaJ9iny0J
-         uzxgS8MLsHGhFWXczHaYU1wvoxhDQGShcmlejsn1+ZSFDPUJ9n5GcXkz2lb148/zZO
-         jvWSW1j/XJT6UmLqu+hbUgpPbkEN1Fgk42A6FbdI=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BA6lKQS086512
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Dec 2020 00:47:20 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
- Dec 2020 00:47:20 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 10 Dec 2020 00:47:20 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BA6lG7A048565;
-        Thu, 10 Dec 2020 00:47:17 -0600
-Subject: Re: [PATCH v2 0/3] PCI: J721E: Fix Broken DT w.r.t SYSCON DT
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-CC:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>
-References: <20201204075117.10430-1-kishon@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <6c846ae3-0bb5-f8de-0f3e-5e0239a7aa6c@ti.com>
-Date:   Thu, 10 Dec 2020 12:17:14 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201204075117.10430-1-kishon@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Thu, 10 Dec 2020 01:50:50 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E24DC0613CF;
+        Wed,  9 Dec 2020 22:50:10 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id w4so3285652pgg.13;
+        Wed, 09 Dec 2020 22:50:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=k90lU5MzDzOvBvgIqg5sOl2XQp7To9eM40VLuqnHb9U=;
+        b=BYO8V+E21HxPZIVpjjF0hPz0LkMPiIOtdY908V/YUOzQqKfaGyHPahZDwGFP61nxBb
+         DOZhb5IgPGIhBZ+w8L6xROpnKP05rmij4YdzSLykNJwMZvA1K//9WnwggBYUnDbUK62h
+         vXmPWjzDYz6ULAkCXzgTlxUGzBnReNBZZHAoKTWohduZYhAT3C7LDNH9mB+28XTFOmYd
+         QCJokhwoOF5R0ieVmIgu3uj0Uc6hQpCy9Bh9HzyY/P27QIi61WtFnjuhZ/rdDPGUt8MJ
+         yivFKQcSbFVXe8npOHdcKNsINc2zSuJGdg0QapXTNU/ohweMCfbvyLgAUNQB9QpGvTyr
+         Np5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=k90lU5MzDzOvBvgIqg5sOl2XQp7To9eM40VLuqnHb9U=;
+        b=oe/UHWOuFipgEDRG5Lu6Q21hU+ovFKB74mBIVBiJmJLR6J+ihNPA/JdZBw2texO1cf
+         Jwle1tFpLbY0bGtata+0Ghiy4h9npqP5BcBttLqYuaKj4UzVVlbFzIiSID0NbU77+crl
+         6dcPO7IHdINPf12YiLmednItM4FaOMSGHW2pUMd0Y6DcSUDi4mKxeN9p7bHeFEQXfKSJ
+         +EG5BLfCjsSMX8iG8kH52UvJoroigKFpp4ojQr/DWyg+aN4E1n+zVIXznRVgeUCnhJ2q
+         TOZyRmV/5iObqprjYNr1hiasrRAN6EZpECgXGkiDQfVoR/YEEOgZGENUdkIF1mAcbWJ1
+         V/iA==
+X-Gm-Message-State: AOAM532k1nqrkvmmx4DpK37eH5eCnbEOgTxIq374HO6MlGhLbwm99vFj
+        0OsB7AI1cvOhZETVhaJ6n6zufuSeric=
+X-Google-Smtp-Source: ABdhPJyE4O/JwfyqisgnapywYS5mMB9cDM3XIK6asuCE7Ld1MOKY55smf4EoOYkOs1SY00+FgODg3Q==
+X-Received: by 2002:a65:4544:: with SMTP id x4mr5521631pgr.183.1607583010285;
+        Wed, 09 Dec 2020 22:50:10 -0800 (PST)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id u3sm5096514pfu.47.2020.12.09.22.50.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Dec 2020 22:50:09 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     ysato@users.sourceforge.jp, dalias@libc.org
+Cc:     yejune.deng@gmail.com, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] sh: kdump: add some attribute to function
+Date:   Thu, 10 Dec 2020 14:49:58 +0800
+Message-Id: <1607582998-13098-1-git-send-email-yejune.deng@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
+add '__iomem' for ioremap() and '__user' for copy_to_user().
 
-On 04/12/20 1:21 pm, Kishon Vijay Abraham I wrote:
-> Previously a subnode to syscon node was added which has the
-> exact memory mapped address of pcie_ctrl but based on review comment
-> provided by Rob [1], the offset is now being passed as argument to
-> "ti,syscon-pcie-ctrl" phandle.
-> 
-> This series has both driver change and DT change. The driver change
-> should be merged first and the driver takes care of maintaining old
-> DT compatibility.
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ arch/sh/kernel/crash_dump.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Can you queue the 1st two patches of this series for this merge window?
-I'll ask NM to queue the DTS patch. Let me know if you want me to resend
-only the first two patches as a separate series.
+diff --git a/arch/sh/kernel/crash_dump.c b/arch/sh/kernel/crash_dump.c
+index a908612..5b41b59 100644
+--- a/arch/sh/kernel/crash_dump.c
++++ b/arch/sh/kernel/crash_dump.c
+@@ -26,7 +26,7 @@
+ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+                                size_t csize, unsigned long offset, int userbuf)
+ {
+-	void  *vaddr;
++	void  __iomem *vaddr;
+ 
+ 	if (!csize)
+ 		return 0;
+@@ -34,7 +34,7 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+ 	vaddr = ioremap(pfn << PAGE_SHIFT, PAGE_SIZE);
+ 
+ 	if (userbuf) {
+-		if (copy_to_user(buf, (vaddr + offset), csize)) {
++		if (copy_to_user((void __user *)buf, (vaddr + offset), csize)) {
+ 			iounmap(vaddr);
+ 			return -EFAULT;
+ 		}
+-- 
+1.9.1
 
-Thank You,
-Kishon
-
-> 
-> Changes frm v1:
-> *) Remove use of allOf in schema
-> *) Added Fixes tag
-> *) Maintain old DT compatibility
-> 
-> [1] -> http://lore.kernel.org/r/CAL_JsqKiUcO76bo1GoepWM1TusJWoty_BRy2hFSgtEVMqtrvvQ@mail.gmail.com
-> 
-> Kishon Vijay Abraham I (3):
->   dt-bindings: pci: ti,j721e: Fix "ti,syscon-pcie-ctrl" to take argument
->   PCI: j721e: Get offset within "syscon" from "ti,syscon-pcie-ctrl"
->     phandle arg
->   arm64: dts: ti: k3-j721e-main: Remove "syscon" nodes added for
->     pcieX_ctrl
-> 
->  .../bindings/pci/ti,j721e-pci-ep.yaml         | 11 +++--
->  .../bindings/pci/ti,j721e-pci-host.yaml       | 11 +++--
->  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 48 ++++---------------
->  drivers/pci/controller/cadence/pci-j721e.c    | 28 +++++++----
->  4 files changed, 41 insertions(+), 57 deletions(-)
-> 
