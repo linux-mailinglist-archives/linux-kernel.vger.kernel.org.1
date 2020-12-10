@@ -2,176 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C582D6638
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6EC2D6650
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393335AbgLJTSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:18:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30002 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2393327AbgLJTSb (ORCPT
+        id S2393408AbgLJTWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:22:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392687AbgLJTWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:18:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607627821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5kmp9gy5nxGFdrl4LVG8Ly3qZOFyWyiuhjDzmpydZu0=;
-        b=axKyn+LJrMqfY454zQlSy3IVHE+xvRB7PdwYNQ6WIwai40lz7WTUfpryFWKenycs86ye1Z
-        G2KMaddk3dK7CqkzBWEDK3jd1yOIiAiw63dSP0oSlQKHRBVX+xFRK8m4LEBT0ciNKjwe71
-        +g5bD/la9FHH7WMGK1UEoL64dMzxdCg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-RbUqo1cuMGOk8bK4pmTycw-1; Thu, 10 Dec 2020 14:16:54 -0500
-X-MC-Unique: RbUqo1cuMGOk8bK4pmTycw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF75710054FF;
-        Thu, 10 Dec 2020 19:16:50 +0000 (UTC)
-Received: from omen.home (ovpn-112-10.phx2.redhat.com [10.3.112.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B078B5D6D3;
-        Thu, 10 Dec 2020 19:16:47 +0000 (UTC)
-Date:   Thu, 10 Dec 2020 12:16:46 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: Re: [PATCH 1/7] vfio: iommu_type1: Clear added dirty bit when
- unwind pin
-Message-ID: <20201210121646.24fb3cd8@omen.home>
-In-Reply-To: <20201210073425.25960-2-zhukeqian1@huawei.com>
-References: <20201210073425.25960-1-zhukeqian1@huawei.com>
-        <20201210073425.25960-2-zhukeqian1@huawei.com>
+        Thu, 10 Dec 2020 14:22:10 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A362DC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:21:30 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id u12so6326181ilv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:21:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NkJcDJp+JWTsWeBLXa3bcvnsV2pdxmFxdpPlYLoMu8U=;
+        b=allGgmdfpdQyUkp9kJoIWela3l0YLQWg1i5zE0W42HOlI9zIq0ydO24/5s63WdbGnc
+         oDtbdh7zVxO38mIVbNP5S6JovCiec9aZdiAOJAJfi8Y7ohBXfDuxglTLug6BvidYlQXp
+         23+T5EeFPo7227M8xAitGzcDlkNZmAyBp+Fw72rrSKEIkNl1pNVvtCS+RO7DWiAMkyiT
+         g6qEtsIkt1hkkPz0di9kSbj9+WbKajgWmRb7lqe6k2R9YbSjeCyYGbwdsn1CVq1XAaMF
+         dOlVisEYI8t1pHtyps0XJRpjUSteYyEz548kgNux5JfM2zO+3fEcBC+Y9tCrWgOT3aM4
+         GSBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NkJcDJp+JWTsWeBLXa3bcvnsV2pdxmFxdpPlYLoMu8U=;
+        b=CciRLH+4sYFVqk6a0dFf6tary8JzmEfKeC/ETYxb5Q+zuzfsP7M3uRKWnWmB4kt/2c
+         k03RZ1lLjC19H1o+Haxec29m5cgJmEbCtrItfzo557b+Kqbrsb6GRI5d+823h37KElbn
+         IkLSQU1WUJnJqZlLd7jRssH/bNev3WT6CKUd7gZllyYDEALBQvH3EOLvyB1/cF1gxc0m
+         F869bHmtT9rN8I3Y8Vwx1n8GviB/GLIHAOC0oLV1Azg/5EgKvogyXhKeGVD5Z8mAqAJc
+         FreiXuUqOUwu2obQ+S6sIYeAQ3jkn2nxPTjGdRQU74tlTphoxwxjSqRKJ7U36qAtuAUj
+         IaUg==
+X-Gm-Message-State: AOAM5302Oi10MIyhGN5F3aJjIJUxM0MIl/8unHmlBqUkdcBfocHd4Acq
+        T/tHfwHWuMoT6txpW3a4GjumGWUZw2vB8w==
+X-Google-Smtp-Source: ABdhPJy0rxemf9twqLiD7Vj3SWdE25NQLaFt5KmvP8boROykqirC6dmBZOQYkb5POUvo5LQDOpqUHw==
+X-Received: by 2002:a92:15c6:: with SMTP id 67mr10218677ilv.283.1607628089690;
+        Thu, 10 Dec 2020 11:21:29 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id w9sm3676174ilq.43.2020.12.10.11.21.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 11:21:29 -0800 (PST)
+Subject: Re: namei.c LOOKUP_NONBLOCK (was "Re: [GIT PULL] io_uring fixes for
+ 5.10-rc")
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <6535286b-2532-dc86-3c6e-1b1e9bce358f@kernel.dk>
+ <CAHk-=wjrayP=rOB+v+2eTP8micykkM76t=6vp-hyy+vWYkL8=A@mail.gmail.com>
+ <4bcf3012-a4ad-ac2d-e70b-17f17441eea9@kernel.dk>
+ <CAHk-=wimYoUtY4ygMNknkKZHqgYBZbkU4Koo5cE6ar8XjHkzGg@mail.gmail.com>
+ <ad8db5d0-2fac-90b6-b9e4-746a52b8ac57@kernel.dk>
+ <d7095e1d-0363-0aad-5c13-6d9bb189b2c8@kernel.dk>
+ <CAHk-=wgyRpBW_NOCKpJ1rZGD9jVOX80EWqKwwZxFeief2Khotg@mail.gmail.com>
+ <87f88614-3045-89bb-8051-b545f5b1180a@kernel.dk>
+ <a522a422-92e3-6171-8a2e-76a5c7e21cfc@kernel.dk>
+ <CAHk-=wicKF87YsiQpdK0B26Mk3UhRNrBEcOv7h=ohFKLjRM4DQ@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4790c746-0911-0bde-06fb-c987d6b0c3af@kernel.dk>
+Date:   Thu, 10 Dec 2020 12:21:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAHk-=wicKF87YsiQpdK0B26Mk3UhRNrBEcOv7h=ohFKLjRM4DQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 15:34:19 +0800
-Keqian Zhu <zhukeqian1@huawei.com> wrote:
-
-> Currently we do not clear added dirty bit of bitmap when unwind
-> pin, so if pin failed at halfway, we set unnecessary dirty bit
-> in bitmap. Clearing added dirty bit when unwind pin, userspace
-> will see less dirty page, which can save much time to handle them.
+On 12/10/20 11:55 AM, Linus Torvalds wrote:
+> On Thu, Dec 10, 2020 at 9:32 AM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>> Here's a potentially better attempt - basically we allow LOOKUP_NONBLOCK
+>> with LOOKUP_RCU, and if we end up dropping LOOKUP_RCU, then we generally
+>> return -EAGAIN if LOOKUP_NONBLOCK is set as we can no longer guarantee
+>> that we won't block.
 > 
-> Note that we should distinguish the bits added by pin and the bits
-> already set before pin, so introduce bitmap_added to record this.
+> Looks sane to me.
 > 
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 33 ++++++++++++++++++++++-----------
->  1 file changed, 22 insertions(+), 11 deletions(-)
+> I don't love the "__unlazy_walk vs unlazy_walk" naming - I think it
+> needs to be more clear about what the difference is, but I think the
+> basic patch looks sane, and looks about as big as I would have
+> expected it to be.
+
+Agree, would probably make more sense as __unlazy_walk ->
+complete_walk_rcu(), which then also falls out naturally from
+complete_walk() being the sole caller of that.
+
+> But yes, I'll leave it to Al.
 > 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 67e827638995..f129d24a6ec3 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -637,7 +637,11 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
->  	struct vfio_iommu *iommu = iommu_data;
->  	struct vfio_group *group;
->  	int i, j, ret;
-> +	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
->  	unsigned long remote_vaddr;
-> +	unsigned long bitmap_offset;
-> +	unsigned long *bitmap_added;
-> +	dma_addr_t iova;
->  	struct vfio_dma *dma;
->  	bool do_accounting;
->  
-> @@ -650,6 +654,12 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
->  
->  	mutex_lock(&iommu->lock);
->  
-> +	bitmap_added = bitmap_zalloc(npage, GFP_KERNEL);
-> +	if (!bitmap_added) {
-> +		ret = -ENOMEM;
-> +		goto pin_done;
-> +	}
+> And if we do this - and I think we should - I'd also love to see a new
+> flag in 'struct open_how' to openat2(), even if it's only to enable
+> tests. RESOLVE_NONBLOCK?
 
+Sure, enabling cached opens from userspace through regular openat2().
+Let's wrap up this one first though, that needs to be a separate patch
+anyway. I'll follow up with that once this is in.
 
-This is allocated regardless of whether dirty tracking is enabled, so
-this adds overhead to the common case in order to reduce user overhead
-(not correctness) in the rare condition that dirty tracking is enabled,
-and the even rarer condition that there's a fault during that case.
-This is not a good trade-off.  Thanks,
-
-Alex
-
-
-> +
->  	/* Fail if notifier list is empty */
->  	if (!iommu->notifier.head) {
->  		ret = -EINVAL;
-> @@ -664,7 +674,6 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
->  	do_accounting = !IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu);
->  
->  	for (i = 0; i < npage; i++) {
-> -		dma_addr_t iova;
->  		struct vfio_pfn *vpfn;
->  
->  		iova = user_pfn[i] << PAGE_SHIFT;
-> @@ -699,14 +708,10 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
->  		}
->  
->  		if (iommu->dirty_page_tracking) {
-> -			unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
-> -
-> -			/*
-> -			 * Bitmap populated with the smallest supported page
-> -			 * size
-> -			 */
-> -			bitmap_set(dma->bitmap,
-> -				   (iova - dma->iova) >> pgshift, 1);
-> +			/* Populated with the smallest supported page size */
-> +			bitmap_offset = (iova - dma->iova) >> pgshift;
-> +			if (!test_and_set_bit(bitmap_offset, dma->bitmap))
-> +				set_bit(i, bitmap_added);
->  		}
->  	}
->  	ret = i;
-> @@ -722,14 +727,20 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
->  pin_unwind:
->  	phys_pfn[i] = 0;
->  	for (j = 0; j < i; j++) {
-> -		dma_addr_t iova;
-> -
->  		iova = user_pfn[j] << PAGE_SHIFT;
->  		dma = vfio_find_dma(iommu, iova, PAGE_SIZE);
->  		vfio_unpin_page_external(dma, iova, do_accounting);
->  		phys_pfn[j] = 0;
-> +
-> +		if (test_bit(j, bitmap_added)) {
-> +			bitmap_offset = (iova - dma->iova) >> pgshift;
-> +			clear_bit(bitmap_offset, dma->bitmap);
-> +		}
->  	}
->  pin_done:
-> +	if (bitmap_added)
-> +		bitmap_free(bitmap_added);
-> +
->  	mutex_unlock(&iommu->lock);
->  	return ret;
->  }
+-- 
+Jens Axboe
 
