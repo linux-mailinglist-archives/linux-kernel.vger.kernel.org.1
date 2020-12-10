@@ -2,91 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9332D542D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3472D5433
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387624AbgLJGuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:50:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730364AbgLJGuu (ORCPT
+        id S2387642AbgLJGwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:52:32 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:41498 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729009AbgLJGwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:50:50 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E24DC0613CF;
-        Wed,  9 Dec 2020 22:50:10 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id w4so3285652pgg.13;
-        Wed, 09 Dec 2020 22:50:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=k90lU5MzDzOvBvgIqg5sOl2XQp7To9eM40VLuqnHb9U=;
-        b=BYO8V+E21HxPZIVpjjF0hPz0LkMPiIOtdY908V/YUOzQqKfaGyHPahZDwGFP61nxBb
-         DOZhb5IgPGIhBZ+w8L6xROpnKP05rmij4YdzSLykNJwMZvA1K//9WnwggBYUnDbUK62h
-         vXmPWjzDYz6ULAkCXzgTlxUGzBnReNBZZHAoKTWohduZYhAT3C7LDNH9mB+28XTFOmYd
-         QCJokhwoOF5R0ieVmIgu3uj0Uc6hQpCy9Bh9HzyY/P27QIi61WtFnjuhZ/rdDPGUt8MJ
-         yivFKQcSbFVXe8npOHdcKNsINc2zSuJGdg0QapXTNU/ohweMCfbvyLgAUNQB9QpGvTyr
-         Np5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=k90lU5MzDzOvBvgIqg5sOl2XQp7To9eM40VLuqnHb9U=;
-        b=oe/UHWOuFipgEDRG5Lu6Q21hU+ovFKB74mBIVBiJmJLR6J+ihNPA/JdZBw2texO1cf
-         Jwle1tFpLbY0bGtata+0Ghiy4h9npqP5BcBttLqYuaKj4UzVVlbFzIiSID0NbU77+crl
-         6dcPO7IHdINPf12YiLmednItM4FaOMSGHW2pUMd0Y6DcSUDi4mKxeN9p7bHeFEQXfKSJ
-         +EG5BLfCjsSMX8iG8kH52UvJoroigKFpp4ojQr/DWyg+aN4E1n+zVIXznRVgeUCnhJ2q
-         TOZyRmV/5iObqprjYNr1hiasrRAN6EZpECgXGkiDQfVoR/YEEOgZGENUdkIF1mAcbWJ1
-         V/iA==
-X-Gm-Message-State: AOAM532k1nqrkvmmx4DpK37eH5eCnbEOgTxIq374HO6MlGhLbwm99vFj
-        0OsB7AI1cvOhZETVhaJ6n6zufuSeric=
-X-Google-Smtp-Source: ABdhPJyE4O/JwfyqisgnapywYS5mMB9cDM3XIK6asuCE7Ld1MOKY55smf4EoOYkOs1SY00+FgODg3Q==
-X-Received: by 2002:a65:4544:: with SMTP id x4mr5521631pgr.183.1607583010285;
-        Wed, 09 Dec 2020 22:50:10 -0800 (PST)
-Received: from localhost.localdomain ([122.10.161.207])
-        by smtp.gmail.com with ESMTPSA id u3sm5096514pfu.47.2020.12.09.22.50.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Dec 2020 22:50:09 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     ysato@users.sourceforge.jp, dalias@libc.org
-Cc:     yejune.deng@gmail.com, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] sh: kdump: add some attribute to function
-Date:   Thu, 10 Dec 2020 14:49:58 +0800
-Message-Id: <1607582998-13098-1-git-send-email-yejune.deng@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Thu, 10 Dec 2020 01:52:32 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 0BA6lCla046149;
+        Thu, 10 Dec 2020 14:47:12 +0800 (GMT-8)
+        (envelope-from troy_lee@aspeedtech.com)
+Received: from TroyLee-PC.localdomain (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Dec
+ 2020 14:50:07 +0800
+From:   Troy Lee <troy_lee@aspeedtech.com>
+To:     <openbmc@lists.ozlabs.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>
+CC:     <leetroy@gmail.com>, <troy_lee@aspeedtech.com>,
+        <ryan_chen@aspeedtech.com>, <chiawei_wang@aspeedtech.com>
+Subject: [PATCH] gpio: aspeed: Lock GPIO pin used as IRQ
+Date:   Thu, 10 Dec 2020 14:50:13 +0800
+Message-ID: <20201210065013.29348-1-troy_lee@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 0BA6lCla046149
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add '__iomem' for ioremap() and '__user' for copy_to_user().
+GPIO pins can be used as IRQ indicators. When they do,
+those pins should be flaged with locks to avoid kernel
+warning message.
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
 ---
- arch/sh/kernel/crash_dump.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpio/gpio-aspeed.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/sh/kernel/crash_dump.c b/arch/sh/kernel/crash_dump.c
-index a908612..5b41b59 100644
---- a/arch/sh/kernel/crash_dump.c
-+++ b/arch/sh/kernel/crash_dump.c
-@@ -26,7 +26,7 @@
- ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
-                                size_t csize, unsigned long offset, int userbuf)
- {
--	void  *vaddr;
-+	void  __iomem *vaddr;
+diff --git a/drivers/gpio/gpio-aspeed.c b/drivers/gpio/gpio-aspeed.c
+index b966f5e28ebf..f5b3e1d89fbf 100644
+--- a/drivers/gpio/gpio-aspeed.c
++++ b/drivers/gpio/gpio-aspeed.c
+@@ -651,6 +651,13 @@ static int aspeed_gpio_set_type(struct irq_data *d, unsigned int type)
+ 		aspeed_gpio_copro_release(gpio, offset);
+ 	spin_unlock_irqrestore(&gpio->lock, flags);
  
- 	if (!csize)
- 		return 0;
-@@ -34,7 +34,7 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
- 	vaddr = ioremap(pfn << PAGE_SHIFT, PAGE_SIZE);
++	rc = gpiochip_lock_as_irq(&gpio->chip, d->hwirq);
++	if (rc) {
++		dev_err(gpio->chip.parent, "unable to lock GPIO %lu as IRQ\n",
++			d->hwirq);
++		return rc;
++	}
++
+ 	irq_set_handler_locked(d, handler);
  
- 	if (userbuf) {
--		if (copy_to_user(buf, (vaddr + offset), csize)) {
-+		if (copy_to_user((void __user *)buf, (vaddr + offset), csize)) {
- 			iounmap(vaddr);
- 			return -EFAULT;
- 		}
+ 	return 0;
 -- 
-1.9.1
+2.17.1
 
