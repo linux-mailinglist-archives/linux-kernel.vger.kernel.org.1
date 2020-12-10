@@ -2,27 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43872D5F9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86D12D5F44
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391469AbgLJOoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:44:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44188 "EHLO mail.kernel.org"
+        id S2389079AbgLJOqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:46:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391046AbgLJOg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:58 -0500
+        id S2391165AbgLJOij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:38:39 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 16/54] ALSA: hda/realtek - Add new codec supported for ALC897
-Date:   Thu, 10 Dec 2020 15:26:53 +0100
-Message-Id: <20201210142602.840046508@linuxfoundation.org>
+        stable@vger.kernel.org, Sudeep Dutt <sudeep.dutt@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Ramalingam C <ramalingam.c@intel.com>,
+        CQ Tang <cq.tang@intel.com>,
+        Venkata Ramana Nayana <venkata.ramana.nayana@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.9 37/75] drm/i915/gt: Retain default context state across shrinking
+Date:   Thu, 10 Dec 2020 15:27:02 +0100
+Message-Id: <20201210142607.890936514@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,39 +37,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kailang Yang <kailang@realtek.com>
+From: Venkata Ramana Nayana <venkata.ramana.nayana@intel.com>
 
-commit e5782a5d5054bf1e03cb7fbd87035037c2a22698 upstream.
+commit 78b2eb8a1f10f366681acad8d21c974c1f66791a upstream.
 
-Enable new codec supported for ALC897.
+As we use a shmemfs file to hold the context state, when not in use it
+may be swapped out, such as across suspend. Since we wrote into the
+shmemfs without marking the pages as dirty, the contents may be dropped
+instead of being written back to swap. On re-using the shmemfs file,
+such as creating a new context after resume, the contents of that file
+were likely garbage and so the new context could then hang the GPU.
 
-Signed-off-by: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/3b00520f304842aab8291eb8d9191bd8@realtek.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Simply mark the page as being written when copying into the shmemfs
+file, and it the new contents will be retained across swapout.
+
+Fixes: be1cb55a07bf ("drm/i915/gt: Keep a no-frills swappable copy of the default context state")
+Cc: Sudeep Dutt <sudeep.dutt@intel.com>
+Cc: Matthew Auld <matthew.auld@intel.com>
+Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Cc: Ramalingam C <ramalingam.c@intel.com>
+Signed-off-by: CQ Tang <cq.tang@intel.com>
+Signed-off-by: Venkata Ramana Nayana <venkata.ramana.nayana@intel.com>
+Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: <stable@vger.kernel.org> # v5.8+
+Link: https://patchwork.freedesktop.org/patch/msgid/20201127120718.454037-161-matthew.auld@intel.com
+(cherry picked from commit a9d71f76ccfd309f3bd5f7c9b60e91a4decae792)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/i915/gt/shmem_utils.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -436,6 +436,7 @@ static void alc_fill_eapd_coef(struct hd
- 			alc_update_coef_idx(codec, 0x7, 1<<5, 0);
- 		break;
- 	case 0x10ec0892:
-+	case 0x10ec0897:
- 		alc_update_coef_idx(codec, 0x7, 1<<5, 0);
- 		break;
- 	case 0x10ec0899:
-@@ -10174,6 +10175,7 @@ static const struct hda_device_id snd_hd
- 	HDA_CODEC_ENTRY(0x10ec0888, "ALC888", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec0889, "ALC889", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec0892, "ALC892", patch_alc662),
-+	HDA_CODEC_ENTRY(0x10ec0897, "ALC897", patch_alc662),
- 	HDA_CODEC_ENTRY(0x10ec0899, "ALC898", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec0900, "ALC1150", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec0b00, "ALCS1200A", patch_alc882),
+--- a/drivers/gpu/drm/i915/gt/shmem_utils.c
++++ b/drivers/gpu/drm/i915/gt/shmem_utils.c
+@@ -143,10 +143,13 @@ static int __shmem_rw(struct file *file,
+ 			return PTR_ERR(page);
+ 
+ 		vaddr = kmap(page);
+-		if (write)
++		if (write) {
+ 			memcpy(vaddr + offset_in_page(off), ptr, this);
+-		else
++			set_page_dirty(page);
++		} else {
+ 			memcpy(ptr, vaddr + offset_in_page(off), this);
++		}
++		mark_page_accessed(page);
+ 		kunmap(page);
+ 		put_page(page);
+ 
 
 
