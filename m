@@ -2,100 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43E32D6B99
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BA92D6B6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389362AbgLJXKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:10:38 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:54045 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387996AbgLJWbQ (ORCPT
+        id S2388679AbgLJXBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:01:43 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:60338 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731943AbgLJXAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:31:16 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1knUS9-0002PV-EF; Thu, 10 Dec 2020 22:30:25 +0000
-Date:   Thu, 10 Dec 2020 23:30:24 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jann@thejh.net>
-Subject: Re: [PATCH] files: rcu free files_struct
-Message-ID: <20201210223024.hi2zlluqqxcdaod4@wittgenstein>
-References: <20201209040731.GK3579531@ZenIV.linux.org.uk>
- <877dprtxly.fsf@x220.int.ebiederm.org>
- <20201209142359.GN3579531@ZenIV.linux.org.uk>
- <87o8j2svnt.fsf_-_@x220.int.ebiederm.org>
- <CAHk-=wiUMHBHmmDS3_Xqh1wfGFyd_rdDmpZzk0cODoj1i7_VOA@mail.gmail.com>
- <20201209195033.GP3579531@ZenIV.linux.org.uk>
- <87sg8er7gp.fsf@x220.int.ebiederm.org>
- <20201210061304.GS3579531@ZenIV.linux.org.uk>
- <87h7oto3ya.fsf@x220.int.ebiederm.org>
- <20201210213624.GT3579531@ZenIV.linux.org.uk>
+        Thu, 10 Dec 2020 18:00:38 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-244-j0ChRN6fO0-QK_ictc5YEw-1; Thu, 10 Dec 2020 22:34:02 +0000
+X-MC-Unique: j0ChRN6fO0-QK_ictc5YEw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 10 Dec 2020 22:34:02 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 10 Dec 2020 22:34:02 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Xie He' <xie.he.0141@gmail.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-x25@vger.kernel.org" <linux-x25@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Martin Schiller" <ms@dev.tdt.de>
+Subject: RE: [PATCH net-next] net: x25: Remove unimplemented X.25-over-LLC
+ code stubs
+Thread-Topic: [PATCH net-next] net: x25: Remove unimplemented X.25-over-LLC
+ code stubs
+Thread-Index: AQHWzdxRX1QgNEu/LUu372JTopy8S6nvRYJAgAAbHICAAKnREIAAFRSAgADJy6A=
+Date:   Thu, 10 Dec 2020 22:34:02 +0000
+Message-ID: <bd009efe08154dcd8f0ad2e893fb1bdc@AcuMS.aculab.com>
+References: <20201209033346.83742-1-xie.he.0141@gmail.com>
+ <801dc0320e484bf7a5048c0cddac12af@AcuMS.aculab.com>
+ <CAJht_EMQFtR_-QH=QMHt9+cLcNO6LHBSy2fy=mgbic+=JUsR-Q@mail.gmail.com>
+ <3e7fb08afd624399a7f689c2b507a01e@AcuMS.aculab.com>
+ <CAJht_EMqO8cS3BSnqHA=ROqbkpum8JB_FjzRgPuW=up+e4bO1w@mail.gmail.com>
+In-Reply-To: <CAJht_EMqO8cS3BSnqHA=ROqbkpum8JB_FjzRgPuW=up+e4bO1w@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201210213624.GT3579531@ZenIV.linux.org.uk>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 09:36:24PM +0000, Al Viro wrote:
-> On Thu, Dec 10, 2020 at 01:29:01PM -0600, Eric W. Biederman wrote:
-> > Al Viro <viro@zeniv.linux.org.uk> writes:
-> 
-> > > What are the users of that thing and is there any chance to replace it
-> > > with something saner?  IOW, what *is* realistically called for each
-> > > struct file by the users of that iterator?
-> > 
-> > The bpf guys are no longer Cc'd and they can probably answer better than
-> > I.
-> > 
-> > In a previous conversation it was mentioned that task_iter was supposed
-> > to be a high performance interface for getting proc like data out of the
-> > kernel using bpf.
-> > 
-> > If so I think that handles the lifetime issues as bpf programs are
-> > supposed to be short-lived and can not pass references anywhere.
-> > 
-> > On the flip side it raises the question did the BPF guys just make the
-> > current layout of task_struct and struct file part of the linux kernel
-> > user space ABI?
-> 
-> An interesting question, that...  For the record: anybody coming to
+RnJvbTogWGllIEhlDQo+IFNlbnQ6IDEwIERlY2VtYmVyIDIwMjAgMTA6MTcNCj4gDQo+IE9uIFRo
+dSwgRGVjIDEwLCAyMDIwIGF0IDE6MTQgQU0gRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWlnaHRAYWN1
+bGFiLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiA+IFRvIG1lLCBMTEMxIGFuZCBMTEMyIGFyZSB0byBF
+dGhlcm5ldCB3aGF0IFVEUCBhbmQgVENQIGFyZSB0byBJUA0KPiA+ID4gbmV0d29ya3MuIEkgdGhp
+bmsgd2UgY2FuIHVzZSBMTEMxIGFuZCBMTEMyIHdoZXJldmVyIFVEUCBhbmQgVENQIGNhbiBiZQ0K
+PiA+ID4gdXNlZCwgYXMgbG9uZyBhcyB3ZSBhcmUgaW4gdGhlIHNhbWUgTEFOIGFuZCBhcmUgd2ls
+bGluZyB0byB1c2UgTUFDDQo+ID4gPiBhZGRyZXNzZXMgYXMgdGhlIGFkZHJlc3Nlcy4NCj4gPg0K
+PiA+IEV4Y2VwdCB0aGF0IHlvdSBkb24ndCBoYXZlIGFueSB3aGVyZSBuZWFyIGVub3VnaCAncG9y
+dHMnIHNvIHlvdSBuZWVkDQo+ID4gc29tZXRoaW5nIHRvIGRlbXVsdGlwbGV4IG1lc3NhZ2VzIHRv
+IGRpZmZlcmVudCBhcHBsaWNhdGlvbnMuDQo+IA0KPiBZZXMsIExMQyBvbmx5IGhhcyAyNTYgInBv
+cnRzIiBjb21wYXJlZCB0byBtb3JlIHRoYW4gNjAwMDAgZm9yIFVEUC9UQ1AuDQoNCkFuZCBJU08g
+dHJhbnNwb3J0IHNlcGFyYXRlcyBvdXQgdGhlIGFkZHJlc3MgZnJvbSB0aGUgY29ubmVjdGlvbi1p
+ZC4NClRoZSBUU0FQICh1c2VkIHRvIHNlbGVjdCB0aGUgbGlzdGVuaW5nIGFwcGxpY2F0aW9uKSBp
+cyAzMiBieXRlcy4NCklmIHlvdSBydW4gdGhlIElTTyBOZXR3b3JrIGxheWVyICh3aGljaCBpc24n
+dCBYLjI1IGxldmVsIDMpIG9uIGEgTEFODQp5b3UgaGF2ZSBhbiBhZGRpdGlvbmFsIDI0IGJ5dGUg
+TlNBUC4NCg0KRm9yIFguMjUgbGV2ZWwgMyB3ZSByb3V0ZWQgY2FsbHMgdG8gYXBwbGljYXRpb25z
+IHVzaW5nIGFueSBvZiAoSUlSQyk6DQotIGNhbGxlZCBudW1iZXIgc3ViLWFkZHJlc3MuDQotIENV
+RyAoY2xvc2VkIHVzZXIgZ3JvdXAgbnVtYmVyKQ0KLSBTb21lIG90aGVyIEwzIHBhcmFtZXRlcnMg
+SSBjYW4ndCByZW1lbWJlciA6LSkNCi0gVFNBUCBpZiB0cmFuc3BvcnQgbGF5ZXIgYWxzbyBpbiB1
+c2UuDQpUaGUgb25seSB3YXkgdG8gcGFzcyB0aGF0IGRvd24gd2FzIGluIGEgVExWIGZvcm1hdC4N
+CkZvcnR1bmF0ZWx5IHdlIHdlcmVuJ3QgZXZlbiB0cnlpbmcgdG8gdXNlIEJTRCBzdHlsZSBzb2Nr
+ZXRzLg0KDQo+ID4gV2UgKElDTCkgYWx3YXlzIHJhbiBjbGFzcyA0IHRyYW5zcG9ydCAod2hpY2gg
+ZG9lcyBlcnJvciByZWNvdmVyeSkNCj4gPiBkaXJlY3RseSBvdmVyIExMQzEgdXNpbmcgTUFDIGFk
+ZHJlc3MgKGEgTlVMIGJ5dGUgZm9yIHRoZSBuZXR3b3JrIGxheWVyKS4NCj4gPiBUaGlzIHJlcXVp
+cmVzIGEgYnJpZGdlZCBuZXR3b3JrIGFuZCBnbG9iYWxseSB1bmlxdWUgTUFDIGFkZHJlc3Nlcy4N
+Cj4gPiBTZW5kaW5nIG91dCBhbiBMTEMgcmVmbGVjdCBwYWNrZXQgdG8gdGhlIGJyb2FkY2FzdCBN
+QUMgYWRkcmVzcyB1c2VkIHRvDQo+ID4gZ2VuZXJhdGUgYSBjb3VwbGUgb2YgdGhvdXNhbmQgcmVz
+cG9uc2VzIChtYW55IHdvdWxkIGdldCBkaXNjYXJkZWQNCj4gPiBiZWNhdXNlIHRoZSBicmlkZ2Vz
+IGdvdCBvdmVybG9hZGVkKS4NCj4gDQo+IFdvdywgWW91IGhhdmUgYSByZWFsbHkgYmlnIExBTiEN
+Cg0KSSB0aGluayBpdCAnb25seScgc3RyZXRjaGVkIGZyb20gTG9uZG9uIHRvIE1hbmNoZXN0ZXIu
+DQpCdXQgaXQgbWlnaHQgaGF2ZSBnb25lIHVwIHRvIEVkaW5idXJnaC4NCkl0IHdhc24ndCBhIHNp
+bmdsZSBjb2xsaXNpb24gZG9tYWluLCB0aGVyZSB3ZXJlIGJyaWRnZXMgZG9pbmcNCk1BQyBmaWx0
+ZXJpbmcgLSBidXQgdGhleSBoYWQgdG8gYmUgb3BlbiB0byBicm9hZGNhc3QgdHJhZmZpYy4NCg0K
+SXQgd2FzIGFjdHVhbGx5IGEgYmFkIElQIGJyb2FkY2FzdCBwYWNrZXQgdGhhdCB0b29rIG91dCBh
+bGwgdGhlDQp1bml4IHNlcnZlcnMgaW4gc2V2ZXJhbCBjaXRpZXMhDQooWmVybyBsZW5ndGggaW4g
+YSBJUCBvcHRpb25zIGZpZWxkIGNhdXNlZCB0aGUgY29kZSB0cnlpbmcgdG8gc2tpcA0KdGhlIG9w
+dGlvbnMgdG8gZ2VuZXJhdGUgdGhlIElDTVAgZXJyb3IgdG8gc3Bpbi4NCkJ5IHRoZSB0aW1lIHRo
+ZSBjb3Jwb3JhdGUgbmV0d29yayBndXlzIGNhbWUgc3Rvcm1pbmcgaW50byBvdXIgbGFiDQp3ZSdk
+IGFscmVhZHkgZ290IGEgZHVtcCBmcm9tIG9uZSBzeXN0ZW0gYW5kIGhhZCBmb3VuZCB0aGUgYmFk
+IHBhY2tldC4NCldlIG5ldmVyIGRpZCBmaW5kIG91dCB3aHkgaXQgZ290IHNlbnQgLSB0aGUgb3Jp
+Z2luYXRpbmcgc3lzdGVtDQp3YXNuJ3QgZG9pbmcgYW55dGhpbmcgJ29kZCcuDQoNCglEYXZpZA0K
+DQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFy
+bSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAo
+V2FsZXMpDQo=
 
-Imho, they did. An example from the BPF LSM: a few weeks ago someone
-asked me whether it would be possible to use the BPF LSM to enforce you
-can't open files when they are on a given filesystem. Sine this bpf lsm
-allows to attach to lsm hooks, say security_file_open(), you can get at
-the superblock and check the filesyste type in a bpf program
-(requiring btf), i.e. security_file_open, then follow
-file->f_inode->i_sb->s_type->s_magic. If we change the say struct
-super_block I'd expect these bpf programs to break. I'm sure there's
-something clever that they came up with but it is nonetheless
-uncomfortably close to making internal kernel structures part of
-userspace ABI indeed.
-
-> complain about a removed/renamed/replaced with something else field
-> in struct file will be refered to Figure 1.
-> 
-> None of the VFS data structures has any layout stability warranties.
-> If BPF folks want access to something in that, they are welcome to come
-> and discuss the set of accessors; so far nothing of that sort has happened.
-> 
-> Direct access to any fields of any of those structures is subject to
-> being broken at zero notice.
-> 
-> IMO we need some notation for a structure being off-limits for BPF, tracing,
-> etc., along the lines of "don't access any field directly".
-
-Indeed. I would also like to see a list where changes need to be sent
-that are technically specific to a subsystem but will necessarily have
-kernel-wide impact prime example: a lot of bpf.
-
-Christian
