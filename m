@@ -2,211 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768B22D61FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4DA2D61FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391636AbgLJQda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:33:30 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:46929 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390057AbgLJQda (ORCPT
+        id S2392350AbgLJQeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:34:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26214 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392357AbgLJQd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:33:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1607618008; x=1639154008;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=N/J88fCq84JBRsNQb1y3k/tXFbcNx0HGb6D4cRss22c=;
-  b=I+M6uUpMrkuMMNPExa6+Rml6AQjYsPW6P7fA+vqgz6uU++Zl60Q5whqa
-   2TORf8u2nc8VDQZyxqSgpLZbRqJuy+T9OFVT63PqBtO+GGIRHPydE84Yi
-   AL5um3VFOnQP4rGsjr9IPAhjElv/nzAIZzh7jf4Q5R+LFzAZ8kfWy9+Os
-   HvUrPbJXIbs8efdyxsJk9WBI0CWE4cPTDMKepoZXmUN5WnvMRF22SoaVi
-   AXCFu+mHKJXKza18+fuk3VWUgFUBPWo33t/aIuxOPhZk+DMAFOVhIk++6
-   tH0P+dhcTheWjkd929pBqlOgeMEIpYUNoER0xwItjRqDt6qiEijy/T3hD
-   g==;
-IronPort-SDR: T7wd123VDyRSQmA8jh8XYJ67cEniohN4+4bWqA/Joi0AU9luXU+TJiSAwBtOFMfMxrIFSZi2Uf
- 18VebRulPTdqiRyCbauigXREhLIQ4J8k8vec3R5ovRPPy34uMqlUmmRIuq5mRXlJ5iyEiQG3Km
- QrRl1IA1rEb+/cZhLMjIA+3tA8ePrW1DIrG9cZuweg8XbDq87WwiqsmpliYD5axeTTMbxBdqVK
- 7BUm4GdxBlTy+ez/u7PYG+iDd4KUlJk6N7XnTO6yQ+m7vT+MTW9RAodhcXWZIl3iSy8NXdJJNE
- IK0=
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="36958306"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Dec 2020 09:32:07 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 10 Dec 2020 09:32:05 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Thu, 10 Dec 2020 09:32:05 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W9pURdg5NWUQ4XW6mvyKYM6fwXiEqMxeykBL3Eqs/hGyMHTmjyNXB/NmQXznYfzqZSnzfDva5+KvgQcvZWnLxNzKSIoWYpBu9Qfgk3TsWdzh1LL0egABk/txPm+6gqyeYjkWfJMKLTOq2Ygwm3PEkUpLFD/xHpn1KJAUgZoOueUvf5MS2m4kTxetcy/H9WpEvmb5ekbDGTw9gsVvXUC+zWExmJ1F/7+W8PbxuaclHLvoQHQZXh47b2M+sRre/CsUriFWNeJ1jJzbYGQ2Djoba+sI5iBEau+ioTVSCpl5TQ1/hrah/Grmi6Yg184r8lJwOIgP7HJj/9BcvIVEe98izQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N/J88fCq84JBRsNQb1y3k/tXFbcNx0HGb6D4cRss22c=;
- b=UJWZ0nrpNKmD8OtuJF+Dowy5T6vPu7DrILEAIVd1pWg3oaxB8oMVRlpp7xFtUykJYFTjSf7lxUQpWqMRia7gxZcHYpZlMLW19xUH9xijQph9kSkViGjfYxP/gPe1zIf71M3PhxMmIHI4NGzykOaBflgWAo/DeQzPn76SB54VGdLPnFnpHn2i+jsvpwKY4QHPN36lXuxyK/mxePENt7KNxUKTkHzbanFTDHXYHsI8BNX6DFmKx+/Ao3iz5/1f1wY4ssCwPPaRsdzBirmlKk9bIqdHbe1SedQH0peIMTK1Jk6Qovn5qePS2eMv0fe6hUdjsvsd+ULVXW+vrx7EEa772A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N/J88fCq84JBRsNQb1y3k/tXFbcNx0HGb6D4cRss22c=;
- b=NNxuqSKKAKxYHjKk/+hzBeVpfrz15RupECHS24PHAWrZ6RnPhWn0oCR+IAK5AR3Ox8j5Qs7d2YtQBTve1WbEmEU7kib7xPSli/XzOecf1w3T1ao8PzfSDNLt4750qiSWm/7YHFNVFwl4u1lxvzePPW7aKGsev9mnfni4hoR+qJA=
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
- by SA0PR11MB4766.namprd11.prod.outlook.com (2603:10b6:806:92::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Thu, 10 Dec
- 2020 16:32:03 +0000
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::6903:3212:cc9e:761]) by SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::6903:3212:cc9e:761%7]) with mapi id 15.20.3654.012; Thu, 10 Dec 2020
- 16:32:03 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <broonie@kernel.org>
-CC:     <fancer.lancer@gmail.com>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [PATCH] spi: Limit the spi device max speed to controller's
- max speed
-Thread-Topic: Re: [PATCH] spi: Limit the spi device max speed to controller's
- max speed
-Thread-Index: AQHWztKZmHDw6aLncEO1O0nh7I/99A==
-Date:   Thu, 10 Dec 2020 16:32:02 +0000
-Message-ID: <6e182961-fb4e-d7f6-fe05-abfdd99d2ac5@microchip.com>
-References: <20201209173514.93328-1-tudor.ambarus@microchip.com>
- <20201209194636.32f4ioxxdggezklr@mobilestation>
- <20201209195420.GD4790@sirena.org.uk>
- <20201209201535.32g4kwpzo45jiqr3@mobilestation>
- <20201209202552.GE4790@sirena.org.uk>
- <20201209203042.oqbcijwaxqt5aa7b@mobilestation>
- <48bf85a0-4a98-7e81-0802-c5fac762234f@microchip.com>
- <20201210153351.GB4747@sirena.org.uk>
-In-Reply-To: <20201210153351.GB4747@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [5.13.1.111]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b2ec3635-a98d-4083-336f-08d89d29201b
-x-ms-traffictypediagnostic: SA0PR11MB4766:
-x-microsoft-antispam-prvs: <SA0PR11MB476688EA23CDE6AD121EE68DF0CB0@SA0PR11MB4766.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6DW/3+b3qnSXbjJZfHrXKipmgdZoQSePKyJumxOpjj+v332n7cqzQaYFm5HuKd2zFxib6evPmNv1R7mQd4ptSrwLJZhZcAou1cSSBlYN1M2V0jL4Ar0WQLo/jZLDcBDw+4huuVQzoKdWmBPIPVMrRqm/cTubisDq/XM0lOf36pOHgVCy0SrF86Ms9BsQZzMEO1ihV59AipbqZzA+tAddg9IhkuP7T9J3DSLBJ0S6OXmZFwSCjjOUZXZTY31HGwmavl6DfBCgX5ZnD4RdfcCzRsfd9OOZgrArBtZ7S+nKKYuI6aLgRzBEi0ARc3vEswbWVoWUUu8/6aF8JWucD/K1sI40v+czOtufE/aC/S+M93yBf9Qlm9xLEblc9BKUdFnl0W1l59p8MWpd+Nnk/lXdr5E+AS9vobQspxLcD8+5NWE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(366004)(346002)(91956017)(6916009)(6512007)(186003)(54906003)(71200400001)(2906002)(8676002)(2616005)(8936002)(31696002)(508600001)(36756003)(5660300002)(64756008)(26005)(53546011)(66476007)(83380400001)(6506007)(6486002)(86362001)(31686004)(4326008)(66556008)(66946007)(66446008)(76116006)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: AgHMia6yBLhbYi3/F8bl3DZeOkO5h41STTdFSufAMXkpeRm9Pw3dgG/K2TOjhUjDA3qaP0MBIhsHUQ2wdkIZCy9QnSO/LpT6l+EE8lJs99QGxVHJNut4HU+F2Pys74WCzJoKXB/eaLNY9oqlIvEU5Yoc/Flvjgpf5cx/fwVUyhNFE9+RMlPFScrMmm8afrMc7QBjo6/OLdEu7X86XvyfZ89CBSb06TfADaQtenxBZk1aktxe4uKOGtpC0KyWOX/Gi2/Rlm2LRZ+mSI85lcqjZSq4QpSzor6cdTZCVwIG47KANJVlzsaUgJGnpVyVpLQFQJpXQ0y4ZlrTN5IYTXbJY0mypp4tFPNPZ2y6fCiamnKrPEk7MRz4HrgAZt7w6/wfGFIGwWplYHikL9eO1lC6O2MevWBWV7Oh1a10CRdUgk+VbWUFG2k5uB1k5lX4bdAjPfXBUDJuRa2G3XfBGBlJCG/Su1SaYCmUKuhvLxkQohWeoxsO0v0cycPqt1KvnXvLcrz3tjf7UkPaTh30deDnPuUnmLLtfJkG6YYS3JYCAwptVZqMk2hb5MrVz1hYjSQxKtN/5sEH++usArFqQbz0wfLMJSdRhItMRFVwUDaODLCA78ignjlPvSZQci1O7jMNiIlmWoY+AcLfCuRAVu6g2CJvRSMISECZ3or5mWuMwFydvOUxkEfke2Q+e6gC0sCFnj9tYlcr/bv4NA3uMQfDK0mTylC3fOGlHNqJAZ91dOY=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <44097F3684B703499569BD3E113E0527@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Thu, 10 Dec 2020 11:33:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607617952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QiBV/qdNapjkek/zOOgwmTitg3XQXA/twwALzu0loV8=;
+        b=TxORUjA7p+E2ixFJpDqBF9TJJryC8khhUdWzFz/H/5fwlJyCG49hgDTUt23pnU9Iyjk5/Y
+        PiHvbUFFjhKFy/iyoHjhO3gtwsGqEoxBRXJTDp/QNeX7R+gybk+meQVHji0V1irSP3ITkW
+        Sa5g3WINd84on9MQGr1SFUu7Hxy3Mis=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-426-CR9e77AwPGqM5Kxml6At0Q-1; Thu, 10 Dec 2020 11:32:28 -0500
+X-MC-Unique: CR9e77AwPGqM5Kxml6At0Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B535E1966320;
+        Thu, 10 Dec 2020 16:32:26 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 13CB25D6D3;
+        Thu, 10 Dec 2020 16:32:23 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 11:32:22 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Sergei Shtepa <sergei.shtepa@veeam.com>
+Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "hare@suse.de" <hare@suse.de>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Pavel Tide <Pavel.TIde@veeam.com>
+Subject: Re: [PATCH 0/3] block: blk_interposer - Block Layer Interposer
+Message-ID: <20201210163222.GB10239@redhat.com>
+References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
+ <20201209135148.GA32720@redhat.com>
+ <20201210145814.GA31521@veeam.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b2ec3635-a98d-4083-336f-08d89d29201b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2020 16:32:02.9823
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BJBjKdyLU/8MeqwrFJbKTz+h9AJ3Xt1ghjnd4H9DazCDxdcb7El1gLro1HH537MDoZ9p6oVlpXNE+P9VCS0A6QWbxmQ21tv0GSqqHRahWBI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4766
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210145814.GA31521@veeam.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/20 5:33 PM, Mark Brown wrote:
-> On Thu, Dec 10, 2020 at 08:58:18AM +0000, Tudor.Ambarus@microchip.com wro=
-te:
->> On 12/9/20 10:30 PM, Serge Semin wrote:
->=20
->>>>>> Right, in general we aim to do this sort of fixup on the transfers
->>>>>> and messages rather than the devices, I guess we might be missing
->>>>>> validation in some of the flash acceleration paths or was this an is=
-sue
->>>>>> seen through inspection?
->=20
->> We miss validation for the SPI controllers that provide the
->> spi_controller_mem_ops with its exec_op() method. In this case the SPI
->> core does not check if the max_speed_hz of spi_device overrides the
->> max_speed_hz of controller.
->=20
->> This was seen through inspection. There are octal SPI NOR flashes that
->> can run at 400 MHZ, and I've also seen SPI controllers that are limited
->> to 200 MHZ (microchip's sama7g5 octal SPI for example, which is not yet
->> in mainline).
->=20
-> Right, that's the hole :/
->=20
->>>> Ideally the driver wouldn't have to check though (no harm in doing so =
-of
->>>> course).
->=20
->> Right. I thought of doing this in the SPI core, rather than doing in (ea=
-ch)
->> controller driver.
->=20
-> Yes, we should just make sure things are OK in the core as much as we
-> can so there's less work for driver authors.
->=20
->>> If so then we'd need to have a dedicated speed-related field in the
->>> spi_mem_op structure, which would be accordingly initialized by the
->>> SPI-mem core.
->=20
->> We do need a max_speed_hz in the SPIMEM, but probably for other purposes=
-:
->> NOR flashes, for example, can discover the maximum supported frequency
->> at run-time, when parsing the jesd216 SFDP tables. One may consider that
->> the run-time discovered max_speed_hz should have a higher precedence tha=
-n
->> what we fill with the spi-max-frequency dt property, because the
->> manufacturers/jesd216 standard know/s better. Of course, if the
->> manufacturers put a wrong max_speed_hz in the sfdp table, that can be
->> updated at runtime with a fixup() hook, on a case by case basis. Other
->> thing to consider here, is the max_speed_hz supported by the PCB. For
->> example if the SPI flash supports 400 MHZ, the controller 200 MHZ, but
->> the PCB only 180 MHZ, then we'll have to synchronize all three. But this
->> seems like a discussion for other patch.
->=20
-> The potential for board issues suggests that we should be taking the
-> minimum of what the board DT and runtime discovery say - if the board
-> limits things more than the parts we should assume that there's a system
-> integration limitation there.
->=20
->> Let me know if you think that this patch is ok for now. I can update the
->> commit message if needed.
->=20
-> It does work for now but it'd be nicer if we were doing this through
-> recording the decision on the transfer.
->=20
+On Thu, Dec 10 2020 at  9:58am -0500,
+Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
 
-Ok, we can drop the patch, as nobody complained about this until now. I can
-work on a better approach. Are you saying that we should calibrate/adjust t=
-he
-maximum supported frequency on each operation/command? Most of the commands
-can work at the same frequency. I know an exception: on SPI NOR flashes, th=
-e
-jesd216 standard specifies that the READ SFDP command should be run at 50MH=
-z,
-even though the rest of the commands/opcodes can run at a higher frequency.
-It is common that flashes can run this command at 50+ MHz, and nobody bothe=
-red
-about adjusting the frequency at run-time until now. That being said, maybe=
- we
-can calibrate/adjust a generic max frequency for most of the commands and
-treat the exceptions on a per operation basis.
+> The 12/09/2020 16:51, Mike Snitzer wrote:
+> > On Wed, Dec 09 2020 at  8:01am -0500,
+> > Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
+> > 
+> > > Hi all.
+> > > 
+> > > I try to suggest the Block Layer Interposer (blk_interposer) again.
+> > > It`s allows to intercept bio requests, remap bio to another devices
+> > > or add new bios.
+> > > 
+> > > Initially, blk_interposer was designed to be compatible with
+> > > device mapper. Our (my and Hannes) previous attempt to offer
+> > > blk_interposer integrated with device mapper did not receive
+> > > any comments from the dm-devel team, and without their help
+> > > I will not be able to make a full implementation. I hope later
+> > > they will have time to support blk_interposer in device mapper.
+> > 
+> > Excuse me?  I gave you quite a bit of early feedback!  I then went on
+> > PTO for ~10 days, when I returned last week I had to deal with fixing
+> > some 5.10 dm/block bio splitting regressions that only got resolved this
+> > past Saturday in time for 5.10-rc7.
+> 
+> Mike,
+> 
+> I would like to clarify some points that I've made, and also try 
+> to repair the damage from the misunderstandings that I think have occured.
+> 
+> First of all, I actually meant the feedback on Hannes's patch which was
+> sent on the 19th of November:
+> https://lore.kernel.org/linux-block/20201119164924.74401-1-hare@suse.de/
+> 
+> Your feedback from the 18th of November ("[PATCH 4/4] dm_interposer - 
+> Try to use blk_interpose in dm") is very valuable, but I am not sure that
+> I am currently capable of implementing the proposed DM changes.
+> The overall architecture of DM is still not clear to me, and I am studying
+> it right now.
+> 
+> This new patch (the one that Hannes sent on the 19th of November) is also
+> compatibile with DM and should not pose any problems - the architecture is
+> the same. There are some changes that make blk_interposer simpler and better,
+> plus the sample is added.
+> 
+> > 
+> > blk_interposer was/is on my short list to review closer (Hannes' version
+> > that refined yours a bit more).. primarily to see if I could avoid the
+> > extra clone and endio hooking.
+> 
+> Glad to hear that! In order to avoid the additional copying one can only
+> change an intercepted bio, which might be dangerous.
+> 
+> > 
+> > The development window for 5.11 is past, so you pushing this without
+> > using the approach discussed (in terms of DM) doesn't help your cause.
+> > 
+> > > And my blk-snap module requires an architecture change to
+> > > support blk_interposer.
+> > > 
+> > > This time I offer it along with a sample.
+> > > Despite the fact that blk_interposer is quite simple,
+> > > there are a few non-obvious points that I would like to clarify.
+> > > 
+> > > However, I suggest the blk_interposer now so that people
+> > > could discuss it and use it in their projects as soon as possible.
+> > 
+> > So you weren't willing to put the work in on something DM oriented
+> > because you expected me to do the work for you?  And now you're looking
+> > to side-step the consensus that was built because I didn't contribute
+> > quick enough?  That's pretty messed up.
+> 
+> I just think that no one can implement integration of DM with
+> blk_interposer better than dm-devel team. I will certainly try my best,
+> but I am afraid that such efforts will only produce incongruous
+> DM patches that will be a waste of time (yours and mine).
+> 
+> > 
+> > In the time-scale that is Linux kernel development.. you've really
+> > jumped the gun and undercut my enthusiasm to work through the details.
+> > I'd rather not read into your actions more than I already have here, but
+> > I'm not liking what you've done here.  Kind of left in dismay with how
+> > you decided to go down this path without a followup note to me or others
+> > (that I'm aware of).
+> 
+> I am very sorry that I undercut your enthusiasm, but, as you rightly
+> pointed out, another development windows is closing, and my product
+> is still not able to work on newer Linux versions starting from 5.8.
+> That fact makes me particularly sad and forces me to search for different
+> means to draw some attention to blk_interposer. I've seen an RHEL 8.4
+> alpha recently, all looks very cool there but made me even more sad ...
 
-Cheers,
-ta
+Made you more sad because you don't have a working solution for upstream
+or RHEL 8.4?
+
+I may have missed it in your past emails but how were you able to
+provide blk-snap support for kernels prior to 5.8?
+
+> Also I certainly remember a separate email that was sent to you on the
+> 7th of December. Maybe it should have been written in the already
+> existing thread instead.
+
+I don't see any mail from you on Dec 7... please bounce it to me if it
+was in private, or please point to the relevant list archive.
+
+> > 
+> > But I'm still willing to make blk_interposer work as we all discussed
+> > (in terms of DM).
+> 
+> I want it too. However, there is a certain difficulty with usage of DM
+> for backup copying. For instance, there is no changed block tracking (CBT)
+> and right now I don't have any clue how it could be implemented
+> considering the existing architecture. I still hope that sometime
+> in future I could be offer my blk-snap module which was specifically
+> created for backup copying purposes.
+> 
+> I apologize for causing all that confusion and mess and making you upset.
+> I hope that all of the above makes sense to you and you will not think
+> that I was slacking and tried to offload all the work to your team.
+
+My primary concern is that blk_interposer be correct from the start.  To
+validate its correctness it needs to be fully implemented and vetted in
+terms on upstream Linux kernel code.  DM can easily serve as the primary
+upstream consumer until if/when your blk-snap module is proposed for
+upstream inclusion.
+
+But short of having an actual upstream consumer of blk_interposer (not
+just samples/ code) it cannot go upstream.  Otherwise there are too many
+risks of misuse and problems in the longrun.  That and it'd be baggage
+block core would need to carry for no upstream Linux benefit.
+
+Mike
+
