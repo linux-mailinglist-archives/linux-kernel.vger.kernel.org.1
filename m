@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76522D6B3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3ED82D6B52
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388215AbgLJW5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 17:57:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729324AbgLJW5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:57:16 -0500
-X-Gm-Message-State: AOAM531VI4K5ScDHtgx08n2sIxdeOym6/PE+oGo/QaMpVCk+Ldwct148
-        wrC2B2QpSGaMXBVb6ICV60v6FdcIMXBZx27ZTg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607640995;
-        bh=HILNalL3GlPRV+ztE2WnCsMQWzjgnQh5F8d+VjxfhHA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DkCyyeuvJy4iU5hGrhY5rvXdNF/XDEltkcaXCK6XvpomHZn/eMfi17cIpcRiI5UTN
-         kSgVM0+4jjhPCNQ75+n/cgaon9liXs7woUDnE8yttzk1aQDmv4io7aucoYzyAtdNG0
-         I2wUawkxulB5pG6A0oOdXuJ1alyYKqoFx6TvAWl9grEpRA2evfntb2Y6XvyL5UXgjx
-         TzZURk/yteTpMNwsMgcPKMcKwqol/ljrllpmoEMc4onPQTbPEpHiroGdwkcCe99aWN
-         MqaDFHEFOoTW4rWfDNURprjhGlC5XlkkOBsq9Gva6ntmAVZmR6ksXaR9lV2TA1APi2
-         jOgUDjBhrO9bg==
-X-Google-Smtp-Source: ABdhPJxCdEkGcUPgqgCmU+hGdc9mjJz2mo+m7nRBlZJj4NBRvD8ZfcoTXioyfo8/Gn48VrKyiwGC/1HmZUK4DbzvCWk=
-X-Received: by 2002:a17:906:d784:: with SMTP id pj4mr8261525ejb.360.1607640993261;
- Thu, 10 Dec 2020 14:56:33 -0800 (PST)
+        id S2389149AbgLJW6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 17:58:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388817AbgLJW5f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 17:57:35 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9608CC0613D3;
+        Thu, 10 Dec 2020 14:56:55 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id f9so5582815pfc.11;
+        Thu, 10 Dec 2020 14:56:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PVjxVtqxXgYN9c2nHomeMFAAgnOeXuzABonf9BV14U4=;
+        b=b90aCyK61/PhANWhccytnEiZPgLJrXVSS+yOEGGXTBUCtYbkJCYkXR9nogJn9FnUkd
+         0soQ+hgDOs3C612CbD0SSN5bE6yztYah41jTPp8UircUNHegNkyxfmJAS8QK27NxgANw
+         BthxfuEnhu1e5vMHr1PgOd3cA2i5nGw7GRwwXZ7v1WLlIGewPsMFktyMn26qgJnc4cQx
+         jKGgJSi1g6wkd+3KtyYCWGuElgw9CuSa55WIhMoFq0moDWtxq/wtYpnW/rheR/OqpxLw
+         YQ9cltTQrdvS2vvclz+f8jnDN4imBKSplrJvzGaLR8IM2uv63Kp9mXq+c4yOFMH6/3Ss
+         EZ7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PVjxVtqxXgYN9c2nHomeMFAAgnOeXuzABonf9BV14U4=;
+        b=sd+oKS4IFMXZkurvmHV1KECTlQEsKYdQxrHyt7QY9M3h4sn2XCwN/XiyJBz7fHplHQ
+         bi7EQZ7QSyq3rsyDNtBSipcioo0TAcn8uDwFnwtcjWk1QaO/LvqRo78cRmj9Zl2fVyYn
+         93zaltLc4iSejLJ70Rk4yJzD6GTqMVwQxZAUF+/y6t6IgJIpEimb1WziMY0EHI/DgoLH
+         G3vwZSCz9GUZvoIz1SLdY987nYLXTGAPlummSUoqk7BFYxfO3cDZLKDJQqugzpIReN7D
+         PCNricSBiWnD/32tD1e15c5kjx8pBSvukGVs4y8j9R9WpkDqlG6MzTxz/lc+3XjqnH9e
+         X0vw==
+X-Gm-Message-State: AOAM530Eu6WP9RRaYwdMLuUm33YLAV0Pa/bbS4yycTfLB1WcxsTdrayw
+        Z+wBCD38lP1s/klCXnXuFds7udJbpPXcJKno
+X-Google-Smtp-Source: ABdhPJyWRuFdUjfzV/+3SCLci1wxl4ir7wcOCxaVg+zFHV0Di0MAWqIYw3A4X8eW2b/u2+e7NxTtVA==
+X-Received: by 2002:a62:8205:0:b029:19e:717c:d647 with SMTP id w5-20020a6282050000b029019e717cd647mr8859674pfd.50.1607641015100;
+        Thu, 10 Dec 2020 14:56:55 -0800 (PST)
+Received: from localhost ([2405:6580:31a1:500:1ac0:4dff:fe39:5426])
+        by smtp.gmail.com with ESMTPSA id w63sm7429996pfc.20.2020.12.10.14.56.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 14:56:54 -0800 (PST)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     rjw@rjwysocki.net
+Cc:     Punit Agrawal <punitagrawal@gmail.com>, wei.huang2@amd.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        bp@alien8.de
+Subject: [PATCH 0/2] Add processor to the ignore PSD override list
+Date:   Fri, 11 Dec 2020 07:56:38 +0900
+Message-Id: <20201210225640.317719-1-punitagrawal@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201210192536.118432146@linutronix.de> <20201210194044.364211860@linutronix.de>
-In-Reply-To: <20201210194044.364211860@linutronix.de>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 10 Dec 2020 16:56:21 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKCGkyk9whiGQ0hPyWjSYXnC-TSbot85k7=bwVd0rwC=A@mail.gmail.com>
-Message-ID: <CAL_JsqKCGkyk9whiGQ0hPyWjSYXnC-TSbot85k7=bwVd0rwC=A@mail.gmail.com>
-Subject: Re: [patch 18/30] PCI: xilinx-nwl: Use irq_data_get_irq_chip_data()
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 1:42 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Going through a full irq descriptor lookup instead of just using the proper
-> helper function which provides direct access is suboptimal.
->
-> In fact it _is_ wrong because the chip callback needs to get the chip data
-> which is relevant for the chip while using the irq descriptor variant
-> returns the irq chip data of the top level chip of a hierarchy. It does not
-> matter in this case because the chip is the top level chip, but that
-> doesn't make it more correct.
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Michal Simek <michal.simek@xilinx.com>
-> Cc: linux-pci@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> ---
->  drivers/pci/controller/pcie-xilinx-nwl.c |    8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
+Hi,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Here's an update of the previously posted patches at [0].
+
+Patch 1 refactors the test to ignore firmware provided frequency
+domain into a separate function.
+
+Patch 2 adds the APU (Family: 0x17, Model: 0x60, Stepping: 0x01) to
+the list of CPUs for which the PSD override is ignored. In the absence
+of clarity regarding the affected CPUs, the patch adds the CPU by
+model numbers.
+
+Thanks,
+Punit
+
+Changes since RFC:
+* Dropped patches 3 and 4 to add macros for AMD processor families due
+  to lack of interest
+* Patch 1
+  - renamed override_acpi_psd() to amd_override_acpi_psd()
+  - Changed return value of the function to bool
+
+Punit Agrawal (2):
+  cpufreq: acpi-cpufreq: Re-factor overriding ACPI PSD
+  cpufreq: acpi-cpufreq: Add processor to the ignore PSD override list
+
+ drivers/cpufreq/acpi-cpufreq.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
+
+-- 
+2.29.2
+
