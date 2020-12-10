@@ -2,27 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6902D655B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 473272D654F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390609AbgLJOcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:32:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38928 "EHLO mail.kernel.org"
+        id S2390657AbgLJOcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:32:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728178AbgLJObI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:31:08 -0500
+        id S2390496AbgLJObb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:31:31 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Giacinto Cifelli <gciofono@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 27/45] USB: serial: option: add support for Thales Cinterion EXS82
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 04/31] geneve: pull IP header before ECN decapsulation
 Date:   Thu, 10 Dec 2020 15:26:41 +0100
-Message-Id: <20201210142603.697178589@linuxfoundation.org>
+Message-Id: <20201210142602.311220485@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
-References: <20201210142602.361598591@linuxfoundation.org>
+In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
+References: <20201210142602.099683598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,322 +32,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giacinto Cifelli <gciofono@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 6d6556c04ebaeaf4e7fa8b791c97e2a7c41b38a3 upstream.
+IP_ECN_decapsulate() and IP6_ECN_decapsulate() assume
+IP header is already pulled.
 
-There is a single option port in this modem, and it is used as debug port.
+geneve does not ensure this yet.
 
-lsusb -v for this device:
+Fixing this generically in IP_ECN_decapsulate() and
+IP6_ECN_decapsulate() is not possible, since callers
+pass a pointer that might be freed by pskb_may_pull()
 
-Bus 001 Device 002: ID 1e2d:006c
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass          239 Miscellaneous Device
-  bDeviceSubClass         2 ?
-  bDeviceProtocol         1 Interface Association
-  bMaxPacketSize0        64
-  idVendor           0x1e2d
-  idProduct          0x006c
-  bcdDevice            0.00
-  iManufacturer           4
-  iProduct                3
-  iSerial                 5
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          243
-    bNumInterfaces          7
-    bConfigurationValue     1
-    iConfiguration          2
-    bmAttributes         0xe0
-      Self Powered
-      Remote Wakeup
-    MaxPower              500mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass    255 Vendor Specific Subclass
-      bInterfaceProtocol    255 Vendor Specific Protocol
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-    Interface Association:
-      bLength                 8
-      bDescriptorType        11
-      bFirstInterface         1
-      bInterfaceCount         2
-      bFunctionClass          2 Communications
-      bFunctionSubClass       2 Abstract (modem)
-      bFunctionProtocol       1 AT-commands (v.25ter)
-      iFunction               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         2 Communications
-      bInterfaceSubClass      2 Abstract (modem)
-      bInterfaceProtocol      1 AT-commands (v.25ter)
-      iInterface              0
-      CDC Header:
-        bcdCDC               1.10
-      CDC ACM:
-        bmCapabilities       0x02
-          line coding and serial state
-      CDC Call Management:
-        bmCapabilities       0x03
-          call management
-          use DataInterface
-        bDataInterface          2
-      CDC Union:
-        bMasterInterface        1
-        bSlaveInterface         2
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               5
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass        10 CDC Data
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-    Interface Association:
-      bLength                 8
-      bDescriptorType        11
-      bFirstInterface         3
-      bInterfaceCount         2
-      bFunctionClass          2 Communications
-      bFunctionSubClass       2 Abstract (modem)
-      bFunctionProtocol       1 AT-commands (v.25ter)
-      iFunction               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         2 Communications
-      bInterfaceSubClass      2 Abstract (modem)
-      bInterfaceProtocol      1 AT-commands (v.25ter)
-      iInterface              0
-      CDC Header:
-        bcdCDC               1.10
-      CDC ACM:
-        bmCapabilities       0x02
-          line coding and serial state
-      CDC Call Management:
-        bmCapabilities       0x03
-          call management
-          use DataInterface
-        bDataInterface          4
-      CDC Union:
-        bMasterInterface        3
-        bSlaveInterface         4
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x84  EP 4 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               5
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass        10 CDC Data
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x85  EP 5 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-    Interface Association:
-      bLength                 8
-      bDescriptorType        11
-      bFirstInterface         5
-      bInterfaceCount         2
-      bFunctionClass          2 Communications
-      bFunctionSubClass       2 Abstract (modem)
-      bFunctionProtocol       1 AT-commands (v.25ter)
-      iFunction               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        5
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         2 Communications
-      bInterfaceSubClass      6 Ethernet Networking
-      bInterfaceProtocol      0
-      iInterface              0
-      CDC Header:
-        bcdCDC               1.10
-      CDC Ethernet:
-        iMacAddress                      1 (??)
-        bmEthernetStatistics    0x00000000
-        wMaxSegmentSize              16384
-        wNumberMCFilters            0x0001
-        bNumberPowerFilters              0
-      CDC Union:
-        bMasterInterface        5
-        bSlaveInterface         6
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x86  EP 6 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               5
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        6
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass        10 CDC Data
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        6
-      bAlternateSetting       1
-      bNumEndpoints           2
-      bInterfaceClass        10 CDC Data
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x87  EP 7 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x04  EP 4 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
+syzbot reported :
 
-Signed-off-by: Giacinto Cifelli <gciofono@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+BUG: KMSAN: uninit-value in __INET_ECN_decapsulate include/net/inet_ecn.h:238 [inline]
+BUG: KMSAN: uninit-value in INET_ECN_decapsulate+0x345/0x1db0 include/net/inet_ecn.h:260
+CPU: 1 PID: 8941 Comm: syz-executor.0 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ __INET_ECN_decapsulate include/net/inet_ecn.h:238 [inline]
+ INET_ECN_decapsulate+0x345/0x1db0 include/net/inet_ecn.h:260
+ geneve_rx+0x2103/0x2980 include/net/inet_ecn.h:306
+ geneve_udp_encap_recv+0x105c/0x1340 drivers/net/geneve.c:377
+ udp_queue_rcv_one_skb+0x193a/0x1af0 net/ipv4/udp.c:2093
+ udp_queue_rcv_skb+0x282/0x1050 net/ipv4/udp.c:2167
+ udp_unicast_rcv_skb net/ipv4/udp.c:2325 [inline]
+ __udp4_lib_rcv+0x399d/0x5880 net/ipv4/udp.c:2394
+ udp_rcv+0x5c/0x70 net/ipv4/udp.c:2564
+ ip_protocol_deliver_rcu+0x572/0xc50 net/ipv4/ip_input.c:204
+ ip_local_deliver_finish net/ipv4/ip_input.c:231 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip_local_deliver+0x583/0x8d0 net/ipv4/ip_input.c:252
+ dst_input include/net/dst.h:449 [inline]
+ ip_rcv_finish net/ipv4/ip_input.c:428 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip_rcv+0x5c3/0x840 net/ipv4/ip_input.c:539
+ __netif_receive_skb_one_core net/core/dev.c:5315 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5429
+ process_backlog+0x523/0xc10 net/core/dev.c:6319
+ napi_poll+0x420/0x1010 net/core/dev.c:6763
+ net_rx_action+0x35c/0xd40 net/core/dev.c:6833
+ __do_softirq+0x1a9/0x6fa kernel/softirq.c:298
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0x6e/0x90 arch/x86/kernel/irq_64.c:77
+ do_softirq kernel/softirq.c:343 [inline]
+ __local_bh_enable_ip+0x184/0x1d0 kernel/softirq.c:195
+ local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
+ rcu_read_unlock_bh include/linux/rcupdate.h:730 [inline]
+ __dev_queue_xmit+0x3a9b/0x4520 net/core/dev.c:4167
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4173
+ packet_snd net/packet/af_packet.c:2992 [inline]
+ packet_sendmsg+0x86f9/0x99d0 net/packet/af_packet.c:3017
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ __sys_sendto+0x9dc/0xc80 net/socket.c:1992
+ __do_sys_sendto net/socket.c:2004 [inline]
+ __se_sys_sendto+0x107/0x130 net/socket.c:2000
+ __x64_sys_sendto+0x6e/0x90 net/socket.c:2000
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
+Fixes: 2d07dc79fe04 ("geneve: add initial netdev driver for GENEVE tunnels")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Link: https://lore.kernel.org/r/20201201090507.4137906-1-eric.dumazet@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/geneve.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -419,6 +419,7 @@ static void option_instat_callback(struc
- #define CINTERION_PRODUCT_PH8			0x0053
- #define CINTERION_PRODUCT_AHXX			0x0055
- #define CINTERION_PRODUCT_PLXX			0x0060
-+#define CINTERION_PRODUCT_EXS82			0x006c
- #define CINTERION_PRODUCT_PH8_2RMNET		0x0082
- #define CINTERION_PRODUCT_PH8_AUDIO		0x0083
- #define CINTERION_PRODUCT_AHXX_2RMNET		0x0084
-@@ -1885,6 +1886,7 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_INTERFACE_CLASS(CINTERION_VENDOR_ID, CINTERION_PRODUCT_AHXX_AUDIO, 0xff) },
- 	{ USB_DEVICE_INTERFACE_CLASS(CINTERION_VENDOR_ID, CINTERION_PRODUCT_CLS8, 0xff),
- 	  .driver_info = RSVD(0) | RSVD(4) },
-+	{ USB_DEVICE_INTERFACE_CLASS(CINTERION_VENDOR_ID, CINTERION_PRODUCT_EXS82, 0xff) },
- 	{ USB_DEVICE(CINTERION_VENDOR_ID, CINTERION_PRODUCT_HC28_MDM) },
- 	{ USB_DEVICE(CINTERION_VENDOR_ID, CINTERION_PRODUCT_HC28_MDMNET) },
- 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC25_MDM) },
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index f48006c22a8a6..5eb7f409dc10b 100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -254,11 +254,21 @@ static void geneve_rx(struct geneve_dev *geneve, struct geneve_sock *gs,
+ 		skb_dst_set(skb, &tun_dst->dst);
+ 
+ 	/* Ignore packet loops (and multicast echo) */
+-	if (ether_addr_equal(eth_hdr(skb)->h_source, geneve->dev->dev_addr)) {
+-		geneve->dev->stats.rx_errors++;
+-		goto drop;
++	if (ether_addr_equal(eth_hdr(skb)->h_source, geneve->dev->dev_addr))
++		goto rx_error;
++
++	switch (skb_protocol(skb, true)) {
++	case htons(ETH_P_IP):
++		if (pskb_may_pull(skb, sizeof(struct iphdr)))
++			goto rx_error;
++		break;
++	case htons(ETH_P_IPV6):
++		if (pskb_may_pull(skb, sizeof(struct ipv6hdr)))
++			goto rx_error;
++		break;
++	default:
++		goto rx_error;
+ 	}
+-
+ 	oiph = skb_network_header(skb);
+ 	skb_reset_network_header(skb);
+ 
+@@ -299,6 +309,8 @@ static void geneve_rx(struct geneve_dev *geneve, struct geneve_sock *gs,
+ 		u64_stats_update_end(&stats->syncp);
+ 	}
+ 	return;
++rx_error:
++	geneve->dev->stats.rx_errors++;
+ drop:
+ 	/* Consume bad packet */
+ 	kfree_skb(skb);
+-- 
+2.27.0
+
 
 
