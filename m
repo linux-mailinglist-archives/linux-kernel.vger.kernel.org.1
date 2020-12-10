@@ -2,26 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581A32D6052
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC222D60B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391229AbgLJOji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:39:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42534 "EHLO mail.kernel.org"
+        id S2403837AbgLJP7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:59:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390833AbgLJOex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:34:53 -0500
+        id S2388401AbgLJOiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:38:02 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 07/54] USB: serial: ch341: sort device-id entries
-Date:   Thu, 10 Dec 2020 15:26:44 +0100
-Message-Id: <20201210142602.401033541@linuxfoundation.org>
+        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.9 23/75] cifs: fix potential use-after-free in cifs_echo_request()
+Date:   Thu, 10 Dec 2020 15:26:48 +0100
+Message-Id: <20201210142607.193071073@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -30,38 +32,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Paulo Alcantara <pc@cjr.nz>
 
-commit bf193bfc12dbc3754fc8a6e0e1e3702f1af2f772 upstream.
+commit 212253367dc7b49ed3fc194ce71b0992eacaecf2 upstream.
 
-Keep the device-id entries sorted to make it easier to add new ones in
-the right spot.
+This patch fixes a potential use-after-free bug in
+cifs_echo_request().
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+For instance,
+
+  thread 1
+  --------
+  cifs_demultiplex_thread()
+    clean_demultiplex_info()
+      kfree(server)
+
+  thread 2 (workqueue)
+  --------
+  apic_timer_interrupt()
+    smp_apic_timer_interrupt()
+      irq_exit()
+        __do_softirq()
+          run_timer_softirq()
+            call_timer_fn()
+	      cifs_echo_request() <- use-after-free in server ptr
+
+Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+CC: Stable <stable@vger.kernel.org>
+Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/ch341.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/cifs/connect.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/serial/ch341.c
-+++ b/drivers/usb/serial/ch341.c
-@@ -80,11 +80,11 @@
- #define CH341_LCR_CS5          0x00
+--- a/fs/cifs/connect.c
++++ b/fs/cifs/connect.c
+@@ -935,6 +935,8 @@ static void clean_demultiplex_info(struc
+ 	list_del_init(&server->tcp_ses_list);
+ 	spin_unlock(&cifs_tcp_ses_lock);
  
- static const struct usb_device_id id_table[] = {
--	{ USB_DEVICE(0x4348, 0x5523) },
--	{ USB_DEVICE(0x1a86, 0x7522) },
--	{ USB_DEVICE(0x1a86, 0x7523) },
- 	{ USB_DEVICE(0x1a86, 0x5512) },
- 	{ USB_DEVICE(0x1a86, 0x5523) },
-+	{ USB_DEVICE(0x1a86, 0x7522) },
-+	{ USB_DEVICE(0x1a86, 0x7523) },
-+	{ USB_DEVICE(0x4348, 0x5523) },
- 	{ },
- };
- MODULE_DEVICE_TABLE(usb, id_table);
++	cancel_delayed_work_sync(&server->echo);
++
+ 	spin_lock(&GlobalMid_Lock);
+ 	server->tcpStatus = CifsExiting;
+ 	spin_unlock(&GlobalMid_Lock);
 
 
