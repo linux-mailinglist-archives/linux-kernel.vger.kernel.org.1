@@ -2,81 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD06A2D6593
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B762D658C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393192AbgLJSvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:51:36 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:35216 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393184AbgLJSvU (ORCPT
+        id S2390870AbgLJSwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:52:35 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:40079 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389034AbgLJSwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 13:51:20 -0500
-Received: by mail-oi1-f194.google.com with SMTP id s2so6883955oij.2;
-        Thu, 10 Dec 2020 10:51:04 -0800 (PST)
+        Thu, 10 Dec 2020 13:52:04 -0500
+Received: by mail-ot1-f67.google.com with SMTP id j12so5877418ota.7;
+        Thu, 10 Dec 2020 10:51:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4TPxR1vthDtXH6neeu5qep54SJaMZ2V+xRx0pNvjops=;
-        b=AlrfiCwASBuet85OoZYPPF1zWJ7Ei12GJX8IwvId87BGGVSmo0Pz/Y+Ahn0hS9a4wL
-         gl5JiHvmELM/o/WTRoYnVtODcoVbXXOPuvcQc+xi2ntufX3KdF5VeKoBuD5Zp9ju8+Xf
-         WSC1Et6JHjp3L+pSN9pw/6TApeTrL72Re5JdxLoMuZfld2Wsp1X+Urex6DkGQkg/nMsz
-         +CeOkOvdysO7ONJN6YsO21RGPw1XVtnijK9c8AwldF/HuW5C0ZmJlG80pe3EzH604lWX
-         XePocVNphlfJH+51usC7CJbXAGLQZY42JUW/a5U4yA7yEjBKn6vrZwOgvRLRrvuWY3mS
-         QeIA==
-X-Gm-Message-State: AOAM533NSX0ULMPIvC6Dus8sUzx0H4/9XBRS40vRj1TfXKtZAlSLHTlw
-        LPyHMo+6RYD1YoJQTFhsezL41gTQCg==
-X-Google-Smtp-Source: ABdhPJw9Fo0cj1YiB5dXR2HVsMZeuwv+dxK2OhhO4XYPXujtVU8Tp4QBfOlcDVERHha3oRVrTxfnhA==
-X-Received: by 2002:a54:4d06:: with SMTP id v6mr6255851oix.91.1607626238979;
-        Thu, 10 Dec 2020 10:50:38 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id g30sm1184357oiy.57.2020.12.10.10.50.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 10:50:38 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: vendor-prefixes: Add undocumented bm, gpio-key, and mentor prefixes
-Date:   Thu, 10 Dec 2020 12:50:37 -0600
-Message-Id: <20201210185037.2796992-1-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F0H1TzAjvIzYsJAy+fTpFnPknlK7exRsj/j22fyx0oc=;
+        b=mc1lrAbPagqUvNOVIP8HkFcGDJcREwIPPsYvi4OkH40O98ygHYJyMLk5IH7YKWGX6v
+         W1A2lv22fyNkux1bwUusIATCAvY5dKWrRIXSOTUrJDvmOtRBklC67uqITsaBOTNu/Jme
+         yo0Qo9XvKzYlVr1S0XkwgI//VMwYot8RQJucOovwIFbwnC9x+iQH0QnBzVpV8WnOGD42
+         ljrxoTVHtbYvRmgyVXMvOFgA2IxmyYS6CCdgw2rPq3Ggiy7GgWnmT/j1tQ2CSCjpv/wa
+         NgIVIHwPLSvN8hWT7bqd2TFiixLbN9k4z178Kwaeh9DH8eDBoQyX3bQ1kZdsP4P1sFOr
+         Q8Jg==
+X-Gm-Message-State: AOAM531/itFNzxyA/HaMTwZL0Wm5ApTY6hSBZsbpXjCiUZNiVyuj330O
+        CkiATXKEXdBgfRtFFykt6HzI/kAqOdw1s7nPDXg=
+X-Google-Smtp-Source: ABdhPJy363h3FnSgXJqtDTmFqIk78iXCR7xBOrDlBH1fM9Mvj47Vc889HC7dFY+6k3yGsmlASqWja0anJEwpkIVKYjs=
+X-Received: by 2002:a9d:67da:: with SMTP id c26mr6971668otn.321.1607626282604;
+ Thu, 10 Dec 2020 10:51:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201208191955.2466057-1-tstrudel@google.com> <CAPDyKFruq+TCSOEOFTZF+Q00SiqggRHqc1NMugDbpJ-71r6K3g@mail.gmail.com>
+In-Reply-To: <CAPDyKFruq+TCSOEOFTZF+Q00SiqggRHqc1NMugDbpJ-71r6K3g@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 10 Dec 2020 19:51:11 +0100
+Message-ID: <CAJZ5v0jPJPY3VXqc-wFzbKHiRR_DiEr2asG_ObAh_bT-3mwuDA@mail.gmail.com>
+Subject: Re: [PATCH v4] PM: domains: create debugfs nodes when adding power domains
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Thierry Strudel <tstrudel@google.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bm, gpio-key, and mentor as vendor prefixes which are in use, but
-undocumented.
+On Thu, Dec 10, 2020 at 8:18 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Tue, 8 Dec 2020 at 20:20, Thierry Strudel <tstrudel@google.com> wrote:
+> >
+> > debugfs nodes were created in genpd_debug_init alled in late_initcall
+> > preventing power domains registered though loadable modules to have
+> > a debugfs entry.
+> >
+> > Create/remove debugfs nodes when the power domain is added/removed
+> > to/from the internal gpd_list.
+> >
+> > Signed-off-by: Thierry Strudel <tstrudel@google.com>
+> > Change-Id: I8a2e0616746afe2a6bbd9c24bc3a0eaa84725a75
+>
+> Thierry, thanks for fixing this!
+>
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Applied now (as 5.11-rc material), thanks!
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index c0c21be520e9..0b52b58aedcc 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -16,7 +16,7 @@ properties: {}
- patternProperties:
-   # Prefixes which are not vendors, but followed the pattern
-   # DO NOT ADD NEW PROPERTIES TO THIS LIST
--  "^(at25|devbus|dmacap|dsa|exynos|fsi[ab]|gpio-fan|gpio|gpmc|hdmi|i2c-gpio),.*": true
-+  "^(at25|bm|devbus|dmacap|dsa|exynos|fsi[ab]|gpio-fan|gpio-key|gpio|gpmc|hdmi|i2c-gpio),.*": true
-   "^(keypad|m25p|max8952|max8997|max8998|mpmc),.*": true
-   "^(pinctrl-single|#pinctrl-single|PowerPC),.*": true
-   "^(pl022|pxa-mmc|rcar_sound|rotary-encoder|s5m8767|sdhci),.*": true
-@@ -659,6 +659,8 @@ patternProperties:
-     description: MEMSIC Inc.
-   "^menlo,.*":
-     description: Menlo Systems GmbH
-+  "^mentor,.*":
-+    description: Mentor Graphics
-   "^meraki,.*":
-     description: Cisco Meraki, LLC
-   "^merrii,.*":
--- 
-2.25.1
-
+> > ---
+> > v2: fix forward declaration and genpd_debugfs_dir being NULL - Ulf
+> > v3: remove extra trailing char added by mistake in v2 - kernel test robot
+> > v4: cleanup includes and regroup CONFIG_DEBUG_FS CPP blocks - Greg
+> >  drivers/base/power/domain.c | 73 +++++++++++++++++++++++--------------
+> >  1 file changed, 45 insertions(+), 28 deletions(-)
+> >
+> > diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> > index 2cb5e04cf86c..49c87607cba7 100644
+> > --- a/drivers/base/power/domain.c
+> > +++ b/drivers/base/power/domain.c
+> > @@ -21,6 +21,7 @@
+> >  #include <linux/suspend.h>
+> >  #include <linux/export.h>
+> >  #include <linux/cpu.h>
+> > +#include <linux/debugfs.h>
+> >
+> >  #include "power.h"
+> >
+> > @@ -210,6 +211,18 @@ static void genpd_sd_counter_inc(struct generic_pm_domain *genpd)
+> >  }
+> >
+> >  #ifdef CONFIG_DEBUG_FS
+> > +static struct dentry *genpd_debugfs_dir;
+> > +
+> > +static void genpd_debug_add(struct generic_pm_domain *genpd);
+> > +
+> > +static void genpd_debug_remove(struct generic_pm_domain *genpd)
+> > +{
+> > +       struct dentry *d;
+> > +
+> > +       d = debugfs_lookup(genpd->name, genpd_debugfs_dir);
+> > +       debugfs_remove(d);
+> > +}
+> > +
+> >  static void genpd_update_accounting(struct generic_pm_domain *genpd)
+> >  {
+> >         ktime_t delta, now;
+> > @@ -234,6 +247,8 @@ static void genpd_update_accounting(struct generic_pm_domain *genpd)
+> >         genpd->accounting_time = now;
+> >  }
+> >  #else
+> > +static inline void genpd_debug_add(struct generic_pm_domain *genpd) {}
+> > +static inline void genpd_debug_remove(struct generic_pm_domain *genpd) {}
+> >  static inline void genpd_update_accounting(struct generic_pm_domain *genpd) {}
+> >  #endif
+> >
+> > @@ -1827,6 +1842,7 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
+> >
+> >         mutex_lock(&gpd_list_lock);
+> >         list_add(&genpd->gpd_list_node, &gpd_list);
+> > +       genpd_debug_add(genpd);
+> >         mutex_unlock(&gpd_list_lock);
+> >
+> >         return 0;
+> > @@ -1860,6 +1876,7 @@ static int genpd_remove(struct generic_pm_domain *genpd)
+> >                 kfree(link);
+> >         }
+> >
+> > +       genpd_debug_remove(genpd);
+> >         list_del(&genpd->gpd_list_node);
+> >         genpd_unlock(genpd);
+> >         cancel_work_sync(&genpd->power_off_work);
+> > @@ -2764,14 +2781,6 @@ core_initcall(genpd_bus_init);
+> >  /***        debugfs support        ***/
+> >
+> >  #ifdef CONFIG_DEBUG_FS
+> > -#include <linux/pm.h>
+> > -#include <linux/device.h>
+> > -#include <linux/debugfs.h>
+> > -#include <linux/seq_file.h>
+> > -#include <linux/init.h>
+> > -#include <linux/kobject.h>
+> > -static struct dentry *genpd_debugfs_dir;
+> > -
+> >  /*
+> >   * TODO: This function is a slightly modified version of rtpm_status_show
+> >   * from sysfs.c, so generalize it.
+> > @@ -3047,9 +3056,34 @@ DEFINE_SHOW_ATTRIBUTE(total_idle_time);
+> >  DEFINE_SHOW_ATTRIBUTE(devices);
+> >  DEFINE_SHOW_ATTRIBUTE(perf_state);
+> >
+> > -static int __init genpd_debug_init(void)
+> > +static void genpd_debug_add(struct generic_pm_domain *genpd)
+> >  {
+> >         struct dentry *d;
+> > +
+> > +       if (!genpd_debugfs_dir)
+> > +               return;
+> > +
+> > +       d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
+> > +
+> > +       debugfs_create_file("current_state", 0444,
+> > +                           d, genpd, &status_fops);
+> > +       debugfs_create_file("sub_domains", 0444,
+> > +                           d, genpd, &sub_domains_fops);
+> > +       debugfs_create_file("idle_states", 0444,
+> > +                           d, genpd, &idle_states_fops);
+> > +       debugfs_create_file("active_time", 0444,
+> > +                           d, genpd, &active_time_fops);
+> > +       debugfs_create_file("total_idle_time", 0444,
+> > +                           d, genpd, &total_idle_time_fops);
+> > +       debugfs_create_file("devices", 0444,
+> > +                           d, genpd, &devices_fops);
+> > +       if (genpd->set_performance_state)
+> > +               debugfs_create_file("perf_state", 0444,
+> > +                                   d, genpd, &perf_state_fops);
+> > +}
+> > +
+> > +static int __init genpd_debug_init(void)
+> > +{
+> >         struct generic_pm_domain *genpd;
+> >
+> >         genpd_debugfs_dir = debugfs_create_dir("pm_genpd", NULL);
+> > @@ -3057,25 +3091,8 @@ static int __init genpd_debug_init(void)
+> >         debugfs_create_file("pm_genpd_summary", S_IRUGO, genpd_debugfs_dir,
+> >                             NULL, &summary_fops);
+> >
+> > -       list_for_each_entry(genpd, &gpd_list, gpd_list_node) {
+> > -               d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
+> > -
+> > -               debugfs_create_file("current_state", 0444,
+> > -                               d, genpd, &status_fops);
+> > -               debugfs_create_file("sub_domains", 0444,
+> > -                               d, genpd, &sub_domains_fops);
+> > -               debugfs_create_file("idle_states", 0444,
+> > -                               d, genpd, &idle_states_fops);
+> > -               debugfs_create_file("active_time", 0444,
+> > -                               d, genpd, &active_time_fops);
+> > -               debugfs_create_file("total_idle_time", 0444,
+> > -                               d, genpd, &total_idle_time_fops);
+> > -               debugfs_create_file("devices", 0444,
+> > -                               d, genpd, &devices_fops);
+> > -               if (genpd->set_performance_state)
+> > -                       debugfs_create_file("perf_state", 0444,
+> > -                                           d, genpd, &perf_state_fops);
+> > -       }
+> > +       list_for_each_entry(genpd, &gpd_list, gpd_list_node)
+> > +               genpd_debug_add(genpd);
+> >
+> >         return 0;
+> >  }
+> > --
+> > 2.29.2.576.ga3fc446d84-goog
+> >
