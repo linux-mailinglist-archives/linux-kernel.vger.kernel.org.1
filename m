@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1F82D5ED5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DA52D5EEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388187AbgLJPAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:00:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729816AbgLJPA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:00:29 -0500
-Date:   Thu, 10 Dec 2020 16:01:03 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607612389;
-        bh=PIj9FhhUvvSZu0xzJxHT6c/gR8kNiKhw5BAjOPiDy8c=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c+urhOw5zVITPob6166OQJDTbM4feF7LQoaKdyvkUWUWZQNxyqYQoal6EfsM1Y3Vk
-         g9c7dlsKnjViwFRVSOcz/v2eMBjKQK+CeRDrZRBOPrM69254Ttwc3xnnQBpMJ6qfrX
-         eElBMZ4Lbu2D6X5hPC77z/EHK3wboN659P5hKjU4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     min.guo@mediatek.com, Bin Liu <b-liu@ti.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        chunfeng.yun@mediatek.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v3] usb: musb: remove unused variable 'devctl'
-Message-ID: <X9I4L3E9EJlcPMEu@kroah.com>
-References: <20201124084955.30270-1-min.guo@mediatek.com>
- <c2f3f643-8514-5c4a-dd52-7abc8a6dc501@gmail.com>
+        id S2389810AbgLJPEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:04:02 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:62196 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389659AbgLJPDp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:03:45 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607612603; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=fTCspt8fsRDJ1131Yu+GC08GW7hUsw3zqXe2mBHPhEw=; b=pnJNuhjYlxkFSoWk8GSSZL2RE6PIrkxOtbcS9UIgM3d3yCrOY2Dn3gNHFwlBZ7O0Lu09clkA
+ cDbwGVjd9Q/uVaatj8WKpvE9hzGkHYSqc+tX0LG9p36l1eUz0N+7NKM+zrubQd9p7AnNLWtC
+ DjqE4QdJXUtJgMCmhg6QeAuPSuQ=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5fd238693a8ba2142a1c7cc1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Dec 2020 15:02:01
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 86C9AC433CA; Thu, 10 Dec 2020 15:02:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4171C43465;
+        Thu, 10 Dec 2020 15:01:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D4171C43465
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v16 4/4] bus: mhi: Add userspace client interface driver
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Hemant Kumar <hemantk@codeaurora.org>
+Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org
+References: <1607584885-23824-1-git-send-email-hemantk@codeaurora.org>
+ <1607584885-23824-5-git-send-email-hemantk@codeaurora.org>
+ <X9HifqAntBUBV0Ce@kroah.com>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <1ce7fc1a-7794-6815-ab4c-0721f0422564@codeaurora.org>
+Date:   Thu, 10 Dec 2020 08:01:59 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c2f3f643-8514-5c4a-dd52-7abc8a6dc501@gmail.com>
+In-Reply-To: <X9HifqAntBUBV0Ce@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 12:13:42PM +0300, Sergei Shtylyov wrote:
-> Hello!
+On 12/10/2020 1:55 AM, Greg KH wrote:
+> On Wed, Dec 09, 2020 at 11:21:25PM -0800, Hemant Kumar wrote:
+>> This MHI client driver allows userspace clients to transfer
+>> raw data between MHI device and host using standard file operations.
+>> Driver instantiates UCI device object which is associated to device
+>> file node. UCI device object instantiates UCI channel object when device
+>> file node is opened. UCI channel object is used to manage MHI channels
+>> by calling MHI core APIs for read and write operations. MHI channels
+>> are started as part of device open(). MHI channels remain in start
+>> state until last release() is called on UCI device file node. Device
+>> file node is created with format
+>>
+>> /dev/<mhi_device_name>
+>>
+>> Currently it supports QMI channel.
+>>
+>> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+>> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>> Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
+>> Tested-by: Loic Poulain <loic.poulain@linaro.org>
+>> ---
 > 
-> On 24.11.2020 11:49, min.guo@mediatek.com wrote:
-> 
-> > From: Min Guo <min.guo@mediatek.com>
-> > 
-> > Remove unused 'devctl' variable to fix compile warnings:
-> > 
-> >      drivers/usb/musb/musbhsdma.c: In function 'dma_controller_irq':
-> >      drivers/usb/musb/musbhsdma.c:324:8: warning: variable 'devctl' set
-> >      but not used [-Wunused-but-set-variable]
-> > 
-> > Signed-off-by: Min Guo <min.guo@mediatek.com>
-> > ---
-> > changes in v3
-> > suggested by Greg Kroah-Hartman:
-> > Add a comment.
-> > 
-> > changes in v2
-> > suggested by Alan Stern:
-> > Add void before musb_read to indicate that the register MUSB_DEVCTL
-> > was intended to be read and discarded.
-> > ---
-> >   drivers/usb/musb/musbhsdma.c | 8 +++++---
-> >   1 file changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/usb/musb/musbhsdma.c b/drivers/usb/musb/musbhsdma.c
-> > index 0aacfc8be5a1..2a345b4ad015 100644
-> > --- a/drivers/usb/musb/musbhsdma.c
-> > +++ b/drivers/usb/musb/musbhsdma.c
-> [...]
-> > @@ -336,7 +334,11 @@ irqreturn_t dma_controller_irq(int irq, void *private_data)
-> >   						< musb_channel->len) ?
-> >   					"=> reconfig 0" : "=> complete");
-> > -				devctl = musb_readb(mbase, MUSB_DEVCTL);
-> > +				/*
-> > +				 * Some hardware may need to read the
-> > +				 * MUSB_DEVCTL register once to take effect.
-> > +				 */
-> > +				(void)musb_readb(mbase, MUSB_DEVCTL);
-> 
->    Hm, forcibly reading DevCtl in the DMA driver... sounds quite
-> nonsensically. Lemme take a look...
+> Can you provide a pointer to the open-source userspace program that will
+> be talking to this new kernel driver please?  That should be part of the
+> changelog here.
 
-What happened to your look?
+Its listed in the documentation file (patch 3 in the series).  I'm 
+guessing you still want it in the change log though, so Hemant should 
+probably take care of that.
 
-thanks,
-
-greg k-h
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
