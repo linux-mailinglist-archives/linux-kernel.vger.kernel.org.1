@@ -2,120 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610E22D6373
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D1C2D6376
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392217AbgLJRZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:25:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59804 "EHLO
+        id S2392544AbgLJRZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:25:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733165AbgLJRY7 (ORCPT
+        with ESMTP id S2391317AbgLJRZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:24:59 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3DEC0617A6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:24:15 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id s11so7572865ljp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:24:15 -0800 (PST)
+        Thu, 10 Dec 2020 12:25:10 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88A9C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:24:55 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id d8so5599224otq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:24:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=c8GZHV70SIMPnsG/im0NZ1nvlbdKEj02vN3NUYrxHb4=;
-        b=NUepeImek9g6AkAD8FP2WpSlLYMQ/jndgfbQYnX33PYoGJkeaWhM41SQ4PYFMxds9i
-         8KPSUbc/mSnK8nMSeWE8bE9HJJVm2FkBbsHLGAsFTXqlZLGSU3mpdMA+0D2KkOgKY6O5
-         hPXsCpdYHUJ74krd32q8hOzJQ+Ls46rsXJEbw=
+        bh=IFQckzUxker7hD4gEVPk8FIb33ZU0VYEtCHChGBdgHo=;
+        b=TOG920h10dQaSs1Q198SciJA7oznw7oR34uKYF5py3DQuEjyYTON9+z1HjOnjjjlvx
+         JXrgnkCecWzR+8rvOo/d6rjtWTapmCrFezHhoy5XAK4fAWCx+fbc1ww+ua29g7QLGuGE
+         KK5Zm3uIJiZrSF0Qx606sq+DZUECSFH1Bk+hBJ4dC+s8BuQm/z40aDRibum/3JtzT0Un
+         sAlIIFRX39vUFtEeYkO+Pxy3Dk5vBzVh0Ibx6JOtD+u448UzRrzKusHOz87Ppeq7P4Fb
+         sgp+H+hLlFfleb51uqa7uE07Rl6UVe8smo5VvvAfD/yo+6CptPnfM8Hg6SXxOtAoxd7N
+         6aqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=c8GZHV70SIMPnsG/im0NZ1nvlbdKEj02vN3NUYrxHb4=;
-        b=OMsw7y7mDifDW3k2zxy2ji8j2P969J/lBTVhMgzi0EuhuFZVkBhVLynnkrLm90I2oS
-         2N3VNRVDTT4+Nr06VjsZ4nfDdRQT/W/irqnoEbnJ+aQH/KA0ie8/3znxEb5cWlFWJGNb
-         3XzhybzW1X5BkpZQcXVa7FQKbLnVO+aDiKl31i4l2mNe80lEdrUSmkACtMI+HBsNkhnu
-         DDtKNtoVHhezWZF8bQyJm+7fwSehHtV+HJsZWKtTJBUYw+GamVpVtFAwUk6PDg6fQTN6
-         U9z1A4MkBa3jIGwEbGFRyCvzkWg8Y3AMBW3r2e5KPK1Wh9DztlBRb7hB+ZB37+csFgm6
-         RC+g==
-X-Gm-Message-State: AOAM533qMCY+Yvqb6NRujlIP9rGK4HBJwE+jJyzGGlQgOvd9VpRH+kE5
-        ICgSnG3ilbq0hi/GLIEajNd8XzeVge6+0g==
-X-Google-Smtp-Source: ABdhPJwh/z+pcVcFj7F/bdCBZ274glfhr+9jYzSM1ZTFZ0KrHxtDFP9h5PrwnY2ZdUZI466aNIlvpQ==
-X-Received: by 2002:a2e:98da:: with SMTP id s26mr3393901ljj.445.1607621053551;
-        Thu, 10 Dec 2020 09:24:13 -0800 (PST)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id 192sm587214lfa.219.2020.12.10.09.24.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 09:24:12 -0800 (PST)
-Received: by mail-lf1-f45.google.com with SMTP id o17so6446594lfg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:24:11 -0800 (PST)
-X-Received: by 2002:a05:6512:338f:: with SMTP id h15mr2925765lfg.40.1607621050581;
- Thu, 10 Dec 2020 09:24:10 -0800 (PST)
+        bh=IFQckzUxker7hD4gEVPk8FIb33ZU0VYEtCHChGBdgHo=;
+        b=iOrZPxyLR8mQhuEXtoK3pyeiqUE/zomC75gg3RrTIg8x47STkKViaFGIqy/H0NR+BJ
+         GR4nMAzkBzI1S4dkVXMn6TWcDmDLADFWarUx2hIl9lQTX97MpQPEf1BueZ+Del6bClPS
+         t965StoFOpj7w9oAUoX6Ok4eu2NPUdMgi0BtXnCq8PhKEwIW2dyJPlllfTSK+Y14F5S3
+         NQUHDNva7aEVDRE/TjNFR2O4krXGvaBGhJX/97h4Tc4Gj8sj4lI58oyt9BGMCyDH1mU5
+         JtNpkHnnCX0jXU66WBSz/Ri5l5l8XW2grgzyviudEitm9a5axjwUngNHs1t2AcekVqlG
+         SSFw==
+X-Gm-Message-State: AOAM532Nk5n6xxujAoktxsPQXorurOnXke0FQbT/A+sQmf359VoNyqW7
+        RIUU5laXYA004guupJ+6JvxojsZoNxqmyL31EG+AGHbY
+X-Google-Smtp-Source: ABdhPJxOMhMACKGCkVgQUS9xHAEg0wochoEtFLfmyVRzXWlQkk1BKLm6ABpG4Wh5IMW+NWtCuDnAA9jEuaSihXQOe50=
+X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr6900148ote.132.1607621095196;
+ Thu, 10 Dec 2020 09:24:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20201209163950.8494-1-will@kernel.org> <20201209163950.8494-2-will@kernel.org>
- <CAHk-=wgos=vgteG52=J=rVSeq6-Y2g2+Kn1=xV=wYjVzM6O9UQ@mail.gmail.com>
- <20201209184049.GA8778@willie-the-truck> <CAHk-=wgVqGh402dxfhR=bx2QSH=+4kq9doarNmD77baqDKdiUg@mail.gmail.com>
- <20201210150828.4b7pg5lx666r7l2u@black.fi.intel.com>
-In-Reply-To: <20201210150828.4b7pg5lx666r7l2u@black.fi.intel.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 10 Dec 2020 09:23:53 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiU8ktvak2hCj2TWJ6wMSwVsUSvi5Bjf4i1JGvpGmyUZw@mail.gmail.com>
-Message-ID: <CAHk-=wiU8ktvak2hCj2TWJ6wMSwVsUSvi5Bjf4i1JGvpGmyUZw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries when prefaulting
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Android Kernel Team <kernel-team@android.com>
+References: <20201208195223.424753-1-conmanx360@gmail.com> <20201208195223.424753-3-conmanx360@gmail.com>
+ <CAM8Agx3ttO_RDgjQAxLYpVMVRhz+xgmg80f4iefXZNVrGcd0-g@mail.gmail.com> <s5hczzhr2xy.wl-tiwai@suse.de>
+In-Reply-To: <s5hczzhr2xy.wl-tiwai@suse.de>
+From:   Connor McAdams <conmanx360@gmail.com>
+Date:   Thu, 10 Dec 2020 12:24:44 -0500
+Message-ID: <CAM8Agx1+FiaqoR7jG5uD-XQkwzu2YiVOZTAEy8JuKLjC3XCU6g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] ALSA: hda/ca0132 - Unmute surround when speaker
+ output is selected.
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     stable@kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 7:08 AM Kirill A. Shutemov
-<kirill.shutemov@linux.intel.com> wrote:
+Will do. Sorry about that.
+
+On Thu, Dec 10, 2020 at 12:22 PM Takashi Iwai <tiwai@suse.de> wrote:
 >
-> See lightly tested patch below. Is it something you had in mind?
-
-This is closer, in that at least it removes the ostensibly blocking
-allocation (that can't happen) from the prefault path.
-
-But the main issue remains:
-
-> > At that point, I think the current very special and odd
-> > do_fault_around() pre-allocation could be made into just a _regular_
-> > "allocate the pmd if it doesn't exist". And then the pte locking could
-> > be moved into filemap_map_pages(), and suddenly the semantics and
-> > rules around all that would be a whole lot more obvious.
+> On Thu, 10 Dec 2020 18:16:00 +0100,
+> Connor McAdams wrote:
+> >
+> > Woops, sent previous email on the first version of this patch.
+> >
+> > This patch is a mistake. Not sure why I did this.
 >
-> No. It would stop faultaround code from mapping huge pages. We had to
-> defer pte page table mapping until we know we don't have huge pages in
-> page cache.
-
-Can we please move that part to the callers too - possibly with a
-separate helper function?
-
-Because the real issue remains: as long the map_set_pte() function
-takes the pte lock, the caller cannot rely on it.
-
-And the filemap_map_pages() code really would like to rely on it.
-Because if the lock is taken there *above* the loop - or even in the
-loop iteration at the top, the code can now do things that rely on "I
-know I hold the page table lock".
-
-In particular, we can get rid of that very very expensive page locking.
-
-Which is the reason I know about the horrid current issue with
-"pre-allocate in one place, lock in another, and know we are atomic in
-a third place" issue. Because I had to walk down these paths and
-realize that "this loop is run under the page table lock, EXCEPT for
-the first iteration, where it's taken by the first time we do that
-non-allocating alloc_set_pte()".
-
-See?
-
-             Linus
+> OK, then could you resubmit v3?  Now I reverted the v2 patches.
+>
+>
+> Takashi
