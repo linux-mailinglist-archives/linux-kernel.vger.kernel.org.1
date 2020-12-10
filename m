@@ -2,142 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2C62D64A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F092D64B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:19:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404125AbgLJSPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:15:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404008AbgLJSPH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 13:15:07 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02994C061793;
-        Thu, 10 Dec 2020 10:14:26 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id j26so4257403qtq.8;
-        Thu, 10 Dec 2020 10:14:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6lQX2FldVB+bLmR42AkAT2yi0jmfQ4FehMvr0nrqseU=;
-        b=N/BIxXFngYt4QguTVZ2jczepx9fgn6T3GV3BWcRl0HanPxq6M7+SGjJJjOP10itcYb
-         RxBgomfvlhCMGihlPZwWQzorjVLpUaAx3Zu3+G6VTNc6IAsTMulq84j8L8pvdOhIZpRs
-         2y0/ZXGi0fFmvXmr6QQcgFLaf7zOvtK4QfVxbuvCWLUTxwM9IHdsQzieIyLF327th+Ee
-         +3YWM38Wo5mVyH3OpqQmM0K9PNaSXHguhx5MlGGMtl37lKdBi0nRv27VuOgcwHeh38Il
-         4zicXIO27pWBMnhNSgyBn48p/FS4W/c1zTLxNVVHQ06gP5vb65zQpkd9jcXP9nP6fJKK
-         6LaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=6lQX2FldVB+bLmR42AkAT2yi0jmfQ4FehMvr0nrqseU=;
-        b=DoZeIUtKxXN82C55JKGGYgICLPX98Xtfa8aJqASDOaNYcUMc3JLtkunzeo6BwYzGgo
-         MAibf65RcR4Ns0JH6AECK8in4LQOYroBPJ54NvPPaeHJpCwQYS2CVnk+wczaxcW70mZb
-         jCgddvIdNcuNHEVpaS3iCQWpL0G4pXHWBIrfDBhHeI0m2dgsUlXA9eNE9Ce/401FvXKR
-         JZuFqsO0OkYtXHjQfbV+rXfWVQaHoe6VZ4Gg1Yv2fznl1p5w2cCB35VlN+T6Z6mqFw2f
-         5baq8TAKf8G1LhWftfZMbA2Sl15ZE/4k5hq1yQnlfahinLBhYSvTCp1opVuqF7wpcm3P
-         fCgg==
-X-Gm-Message-State: AOAM530volqHrkL9G10U0U0Il3IGVTOIJEeNXa497MedZxUDjZ1Y0fcH
-        Q10RpSY20TBtDeOTksSW8s4=
-X-Google-Smtp-Source: ABdhPJw3DHAqyZDvYkdICh5kJLDy8H+C/LiLc1aDsg0kMLtEks+IDsxdsk3RId6f9u2VaL/7LZkICQ==
-X-Received: by 2002:ac8:6e8b:: with SMTP id c11mr10913048qtv.314.1607624065094;
-        Thu, 10 Dec 2020 10:14:25 -0800 (PST)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id p23sm3302515qtu.53.2020.12.10.10.14.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 10:14:24 -0800 (PST)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Thu, 10 Dec 2020 13:14:22 -0500
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        laniel_francis@privacyrequired.com,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v1 07/12] efi: Replace strstarts() by
- str_has_prefix().
-Message-ID: <X9Jlfqiu/vCOAm3U@rani.riverdale.lan>
-References: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
- <20201204170319.20383-8-laniel_francis@privacyrequired.com>
- <CAMj1kXEQhT_LF5FDBO3-S7pBn55wG59bQUVr2q58A4FhqodY8Q@mail.gmail.com>
- <ab769a5188394cd3379cc627d14a0222050a1367.camel@HansenPartnership.com>
- <CAMj1kXFvCZKH-Bbvu-V5-GxcTun8yz98igeFxRc1tTswbttM0w@mail.gmail.com>
+        id S2388530AbgLJSRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:17:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404142AbgLJSRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 13:17:19 -0500
+Date:   Thu, 10 Dec 2020 18:16:30 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607624198;
+        bh=7IZC/FrtsCtLP8agrMBBowmGAoKsyQl86sQD/PfKEZU=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OUzOOvJyOHp5GCflFjoiyG4VB59OavtXbV9jSVhyoXaC12lCSvmzpTFd1xyY+S1Qy
+         fT/k5H14BlNQaligoStbWwpF1W4OPaHRFhmoU23yTSTUB5q69pumMqCbHzZeJZP6aH
+         q4LjMoEXp2D2SqIdiKT65jSYUHbeoD623TQYapCGn7g1k3YAjo4XyxtaaVyskqwRAW
+         kBwCp+73e6NN6E2muAAI93fAb1FZRLPKtEvl2XeVAmbitYBAgahP0ZfuWKk1X06a3P
+         qAooP42dP/cYmBZ2u0pGOxwF9Su5omBoGSBH51h8OrCOk66ATS+MtRFgdIgW2/ObVT
+         fO2YD3xEa0MUg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Tudor.Ambarus@microchip.com
+Cc:     fancer.lancer@gmail.com, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] spi: Limit the spi device max speed to controller's
+ max speed
+Message-ID: <20201210181630.GE4747@sirena.org.uk>
+References: <20201209173514.93328-1-tudor.ambarus@microchip.com>
+ <20201209194636.32f4ioxxdggezklr@mobilestation>
+ <20201209195420.GD4790@sirena.org.uk>
+ <20201209201535.32g4kwpzo45jiqr3@mobilestation>
+ <20201209202552.GE4790@sirena.org.uk>
+ <20201209203042.oqbcijwaxqt5aa7b@mobilestation>
+ <48bf85a0-4a98-7e81-0802-c5fac762234f@microchip.com>
+ <20201210153351.GB4747@sirena.org.uk>
+ <6e182961-fb4e-d7f6-fe05-abfdd99d2ac5@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Uwl7UQhJk99r8jnw"
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXFvCZKH-Bbvu-V5-GxcTun8yz98igeFxRc1tTswbttM0w@mail.gmail.com>
+In-Reply-To: <6e182961-fb4e-d7f6-fe05-abfdd99d2ac5@microchip.com>
+X-Cookie: Your step will soil many countries.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 08:36:02PM +0100, Ard Biesheuvel wrote:
-> On Fri, 4 Dec 2020 at 19:02, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> >
-> > On Fri, 2020-12-04 at 18:07 +0100, Ard Biesheuvel wrote:
-> > > On Fri, 4 Dec 2020 at 18:06, <laniel_francis@privacyrequired.com>
-> > > wrote:
-> > > > From: Francis Laniel <laniel_francis@privacyrequired.com>
-> > > >
-> > > > The two functions indicates if a string begins with a given prefix.
-> > > > The only difference is that strstarts() returns a bool while
-> > > > str_has_prefix()
-> > > > returns the length of the prefix if the string begins with it or 0
-> > > > otherwise.
-> > > >
-> > >
-> > > Why?
-> >
-> > I think I can answer that.  If the conversion were done properly (which
-> > it's not) you could get rid of the double strings in the code which are
-> > error prone if you update one and forget another.  This gives a good
-> > example: 3d739c1f6156 ("tracing: Use the return of str_has_prefix() to
-> > remove open coded numbers"). so in your code you'd replace things like
-> >
-> >     if (strstarts(option, "rgb")) {
-> >         option += strlen("rgb");
-> >         ...
-> >
-> > with
-> >
-> >     len = str_has_prefix(option, "rgb");
-> >     if (len) {
-> >         option += len
-> >         ...
-> >
-> > Obviously you also have cases where strstart is used as a boolean with
-> > no need to know the length ... I think there's no value to converting
-> > those.
-> >
-> 
-> This will lead to worse code being generated. strlen() is evaluated at
-> build time by the compiler if the argument is a string literal, so
-> your 'before' version gets turned into 'option += 3', whereas the
-> latter needs to use a runtime variable.
 
-The EFI stub is -ffreestanding, so you actually get multiple calls to
-strlen() in any case. I could have used strncmp() directly with sizeof()
-to avoid that, but the strstarts()/strlen() was slightly more readable
-and the performance of this code doesn't really matter.
+--Uwl7UQhJk99r8jnw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I wasn't aware of str_has_prefix() at the time. It does seem useful to
-eliminate the duplication of the string literal, I like the
-skip_prefix() API suggestion, maybe even
+On Thu, Dec 10, 2020 at 04:32:02PM +0000, Tudor.Ambarus@microchip.com wrote:
+> On 12/10/20 5:33 PM, Mark Brown wrote:
 
-	bool str_skip_prefix(const char **s, const char *pfx)
-	{
-		size_t len = str_has_prefix(*s, pfx);
-		*s += len;
-		return !!len;
-	}
-	...
-	if (str_skip_prefix(&option, prefix)) { ... }
+> > It does work for now but it'd be nicer if we were doing this through
+> > recording the decision on the transfer.
 
-to avoid the intermediate variable.
+> Ok, we can drop the patch, as nobody complained about this until now. I can
 
-> 
-> So I don't object to using str_has_prefix() in new code in this way,
-> but I really don't see the point of touching existing code.
+TBH I've actually got it queued to apply and test, we can make things
+better incrementally but it seems fine for now and it's backportable if
+someone does run into trouble.
+
+> work on a better approach. Are you saying that we should calibrate/adjust the
+> maximum supported frequency on each operation/command? Most of the commands
+> can work at the same frequency. I know an exception: on SPI NOR flashes, the
+
+It's the way that everything else works.  It's a bit inefficent though.
+
+> jesd216 standard specifies that the READ SFDP command should be run at 50MHz,
+> even though the rest of the commands/opcodes can run at a higher frequency.
+> It is common that flashes can run this command at 50+ MHz, and nobody bothered
+> about adjusting the frequency at run-time until now. That being said, maybe we
+> can calibrate/adjust a generic max frequency for most of the commands and
+> treat the exceptions on a per operation basis.
+
+If the spec says 50MHz for that one op we should probably stick to that
+by default - the chances of it making a difference seem low but better
+to stay in spec if we can.
+
+--Uwl7UQhJk99r8jnw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/SZf0ACgkQJNaLcl1U
+h9A8nAf8DsnPV/slJruHMN4NMzGuJ7qZj/2TSZS3LxvSaIl5ottupNbWmXKwQxKn
+OGommhk1DVNihHALOz+XOyorMgL7HJSaRSb152LGQr1pbpy7YcLmkauNsqoougzo
+t1r3F/qqAgWnvUzj7KLXhShP7cPZCFQxIEfqaXDnconB7zqosfmFFTh66JyNhmwJ
+KkWObRMIgJblJCACY8F6Xve4r9OOlt86iHKB663iNY72PEBwQaQIYTE96gHNf0mI
+zVEqkUbKWufrTUDA2CsMAAV3annuAKM6rySuQ/6Mqg16xCejZnigGfo4zwaApl0T
+86xO0M1HEjpypZneDn1gtniJT2+mlw==
+=XJ24
+-----END PGP SIGNATURE-----
+
+--Uwl7UQhJk99r8jnw--
