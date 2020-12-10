@@ -2,167 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F222D6B14
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672892D6B98
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394185AbgLJWbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 17:31:23 -0500
-Received: from mail-qv1-f51.google.com ([209.85.219.51]:35228 "EHLO
-        mail-qv1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405078AbgLJWUv (ORCPT
+        id S2390616AbgLJXKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:10:09 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58836 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388045AbgLJWbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:20:51 -0500
-Received: by mail-qv1-f51.google.com with SMTP id l14so3284136qvh.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:20:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5GBGxfLDmoveGpJ9L5HVmKW/Nrr5Gil4FnQfI25Evx8=;
-        b=TmuEpAOZ33fl36J4hLO2oipR/LPALK+ZrWvm1zxKBBUVmqCyHUQBmqCMYHpA9TOGkQ
-         NxRmXeB2vPVedR4uaJGg3z/I53svmnoQ0u/hi8YVs2LKOQE1ZnnNFMVMvUpXrmM/0C5D
-         adKRflwcnfLACGmrEUqWTYaBAq4MxnG6uizjoEDgIDlcDKzRJhvIDYaIAUIu2FXXkXHy
-         gbslCBnusfa63aqcaRMKWTa8ZN+E3u5vYOKHP4BeL4bnRriAT9P0bzIUplIuN490pY7B
-         OUP3q6UgKS1vWPb1/mBH3dPmqkvUAblzCZLnaeEpSLkhGogMja8PN/wr7monSh8JCVRE
-         ldtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5GBGxfLDmoveGpJ9L5HVmKW/Nrr5Gil4FnQfI25Evx8=;
-        b=Mdzs9mvNOBZPcB7iWzBmdQjVtcEjQeJkqTujlIU9YLDZPzDRD4p612EVx59GEkueLa
-         ANEUW6rXCI4mXpOtXDjQbF4I9iBar/2D9tkRXBTHxZc6Hks7rUOJazrl0vKFCAH+Z7UR
-         3s5rFyCIp2SAhtMbQo25cLPjmORNjHP9PIAqqysP8JjWyaUz2K6MhjG+spD/Cc1D8bRP
-         ZrVG5/pxTz1RtBLxFPq6DiXuTk5HfAx0iXLPoeLdgIEhvD4KjmVTfOWFTg4MjWVsbqHu
-         KbOSO/Oay0inMeKDhmD3lE99Q0Tbd/GO9YbqvVCCJk8zDCajaEXKD/xtdtSWsjcmsIKq
-         R+8w==
-X-Gm-Message-State: AOAM532BQAOC6TtIgP6KQoReXhXRqUnOBPUuYCcd+mZ1IUkglthROL+J
-        sV6EGVvH2tRITBv3aBYykmEcr0ChnZ+GoNrjbazioYvxnnZ0Rw==
-X-Google-Smtp-Source: ABdhPJwbW2fMzvD12MhzuAZRF/4urKE3RHRtlIy2tjdmtLts9J9ZHedkBgJOtFXveyGdxWpUM6oP9ORDxjPVfGfy3sI=
-X-Received: by 2002:a17:902:8541:b029:da:fcd1:7bf with SMTP id
- d1-20020a1709028541b02900dafcd107bfmr8250628plo.56.1607637854163; Thu, 10 Dec
- 2020 14:04:14 -0800 (PST)
+        Thu, 10 Dec 2020 17:31:17 -0500
+Date:   Thu, 10 Dec 2020 22:04:33 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607637874;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VGmPq1i3ayrpyyrVWVoevEjU3QrxYsIort8NEoox4yg=;
+        b=hqCVMUfmuuticgtDymRG8jxVgKfcFBzIB8pH+l/OI50m/5MRXQLvICVL5XRnShD1fdU7zS
+        uJ2GN/5zKHWIkchNoD1WGnOItSOiUg5KRJkU/eKqkA7yPkxvjEdqmw2mUb8klHvfwutPgX
+        PxuxC+UDyZTvbi8Lvmg8wx3Za1npgvVOUw2FbsBKWQXcA3IAtTxnf3xUPNzuQlxz7Em99G
+        pCsZ+/QdH1xpbvWOIL0OhbaOeo/eE6OMdHBxPK+a9MOLpXyFe6EYV8M8BD9WRLEgRy8AEG
+        IxTXXg6uMXttBc0ctbRWxHTdWpdDUd329F2cgyOpHEm2eQtL7IKG2NjhvZrEaw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607637874;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VGmPq1i3ayrpyyrVWVoevEjU3QrxYsIort8NEoox4yg=;
+        b=Prvbtp9FjBqAtnFs1a+QKMk96kMxUa+7ebchJTMKBOD4BZ2ODJR7oe5dOa363J9JgvnJbH
+        4SvbeE4WVTaLGSCA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/apic/vector: Fix ordering in vector assignment
+Cc:     Prarit Bhargava <prarit@redhat.com>,
+        "Shung-Hsi Yu" <shung-hsi.yu@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <87ft4djtyp.fsf@nanos.tec.linutronix.de>
+References: <87ft4djtyp.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <CA+G9fYuRHoZsW9KyRJVGrXznB8dbt5+ZZTMCpK+3mqcuwHcSMw@mail.gmail.com>
-In-Reply-To: <CA+G9fYuRHoZsW9KyRJVGrXznB8dbt5+ZZTMCpK+3mqcuwHcSMw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 10 Dec 2020 14:04:02 -0800
-Message-ID: <CAKwvOdn2wjqR6aSRNP1Ztz3rnKg7rcdjYboacBdWJ9TO7u_kmA@mail.gmail.com>
-Subject: Re: MIPS + clang-11 + allnoconfig / tinyconfig builds failed
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux-mips@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        xie.he.0141@gmail.com,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Dan Rue <dan.rue@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160763787305.3364.11404170583920698033.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 9:18 AM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> Recently we have setup clang build and found that,
-> MIPS + clang-11 + allnoconfig  build failed
-> MIPS + clang-11 + tinyconfig  build failed
->
-> MIPS + clang-10 + allnoconfig  build failed
-> MIPS + clang-10 + tinyconfig  build failed
->
-> We have noticed these build failures on
->  - stable-4.19
->  - stable-5.4
->  - stable-5.9
->  - mainline
->  - next-master
->
-> FYI, The defconfig builds are successful.
-> BTW, May I know what are the configs you build often ?
+The following commit has been merged into the x86/urgent branch of tip:
 
-Hi Naresh, thank you again for these reports; they are invaluable.  We
-were testing malta_kvm_guest_defconfig for ARCH=mips and ARCH=mipsel.
-We should work to get those configs building/tested as well.
+Commit-ID:     190113b4c6531c8e09b31d5235f9b5175cbb0f72
+Gitweb:        https://git.kernel.org/tip/190113b4c6531c8e09b31d5235f9b5175cbb0f72
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Thu, 10 Dec 2020 21:18:22 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 10 Dec 2020 23:00:54 +01:00
 
-"were testing" past tense, because TravisCI just nuked our builds!
-https://blog.travis-ci.com/oss-announcement
+x86/apic/vector: Fix ordering in vector assignment
 
-So we're running with one CI system down at the moment.  I'm working
-with Dan on leveraging tuxbuild and github actions.
+Prarit reported that depending on the affinity setting the
 
->
-> Steps to reproduce build failure:
-> -----------------------------------------
-> # sudo pip3 install -U tuxmake
-> # tuxmake --runtime docker --target-arch mips --toolchain clang-11
-> --kconfig allnoconfig
-> # tuxmake --runtime docker --target-arch mips --toolchain clang-11
-> --kconfig tinyconfig
->
-> Build failed log:
-> ake --silent --keep-going --jobs=16
-> O=/home/tuxbuild/.cache/tuxmake/builds/2/tmp ARCH=mips
-> CROSS_COMPILE=mips-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-> clang' allnoconfig
-> make --silent --keep-going --jobs=16
-> O=/home/tuxbuild/.cache/tuxmake/builds/2/tmp ARCH=mips
-> CROSS_COMPILE=mips-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-> clang'
-> /builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/arch/mips/vdso/elf.S:14:1:
-> warning: DWARF2 only supports one section per compilation unit
-> .pushsection .note.Linux, "a",@note ; .balign 4 ; .long 2f - 1f ;
-> .long 4484f - 3f ; .long 0 ; 1:.asciz "Linux" ; 2:.balign 4 ; 3:
-> ^
-> /builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/arch/mips/vdso/elf.S:34:2:
-> warning: DWARF2 only supports one section per compilation unit
->  .section .mips_abiflags, "a"
->  ^
+ ' irq $N: Affinity broken due to vector space exhaustion.'
 
-So this is likely the vdso resetting KBUILD_CFLAGS (common issue)
-which is dropping -no-integrated-as, but setting -Wa,-gdwarf-2, which
-we disabled in the top level Makefile.
+message is showing up in dmesg, but the vector space on the CPUs in the
+affinity mask is definitely not exhausted.
 
-> /builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/arch/mips/lib/uncached.c:45:6:
-> warning: variable 'sp' is uninitialized when used here
-> [-Wuninitialized]
->         if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
->             ^~
-> /builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/arch/mips/lib/uncached.c:40:18:
-> note: initialize the variable 'sp' to silence this warning
->         register long sp __asm__("$sp");
->                         ^
->                          = 0
+Shung-Hsi provided traces and analysis which pinpoints the problem:
 
-I think we recently discussed this upstream.
-https://lore.kernel.org/linux-mips/alpine.LFD.2.21.2012061431190.656242@eddie.linux-mips.org/T/#mcaabe339aaee81ed8f6dfe761f699c82e938b4c5
+The ordering of trying to assign an interrupt vector in
+assign_irq_vector_any_locked() is simply wrong if the interrupt data has a
+valid node assigned. It does:
 
-> 1 warning generated.
-> WARNING: modpost: vmlinux.o(.text+0x1a124): Section mismatch in
-> reference from the function r4k_cache_init() to the function
-> .init.text:loongson3_sc_init()
-> The function r4k_cache_init() references
-> the function __init loongson3_sc_init().
-> This is often because r4k_cache_init lacks a __init
-> annotation or the annotation of loongson3_sc_init is wrong.
-> WARNING: modpost: vmlinux.o(.text+0x1f1c8): Section mismatch in
-> reference from the function mips_sc_init() to the function
-> .init.text:mips_sc_probe()
-> The function mips_sc_init() references
-> the function __init mips_sc_probe().
-> This is often because mips_sc_init lacks a __init
-> annotation or the annotation of mips_sc_probe is wrong.
-> FATAL: modpost: Section mismatches detected.
-> Set CONFIG_SECTION_MISMATCH_WARN_ONLY=y to allow them.
-> make[2]: *** [/builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/scripts/Makefile.modpost:59:
-> vmlinux.symvers] Error 1
+ 1) Try the intersection of affinity mask and node mask
+ 2) Try the node mask
+ 3) Try the full affinity mask
+ 4) Try the full online mask
 
-Anders sent a patch for this, too, IIRC.  Once the above fixes land
-upstream, we probably need to follow up on ensuring they get picked up
-into the affected branches of stable.
+Obviously #2 and #3 are in the wrong order as the requested affinity
+mask has to take precedence.
 
--- 
-Thanks,
-~Nick Desaulniers
+In the observed cases #1 failed because the affinity mask did not contain
+CPUs from node 0. That made it allocate a vector from node 0, thereby
+breaking affinity and emitting the misleading message.
+
+Revert the order of #2 and #3 so the full affinity mask without the node
+intersection is tried before actually affinity is broken.
+
+If no node is assigned then only the full affinity mask and if that fails
+the full online mask is tried.
+
+Fixes: d6ffc6ac83b1 ("x86/vector: Respect affinity mask in irq descriptor")
+Reported-by: Prarit Bhargava <prarit@redhat.com>
+Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/87ft4djtyp.fsf@nanos.tec.linutronix.de
+
+---
+ arch/x86/kernel/apic/vector.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
+
+diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
+index 1eac536..758bbf2 100644
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -273,20 +273,24 @@ static int assign_irq_vector_any_locked(struct irq_data *irqd)
+ 	const struct cpumask *affmsk = irq_data_get_affinity_mask(irqd);
+ 	int node = irq_data_get_node(irqd);
+ 
+-	if (node == NUMA_NO_NODE)
+-		goto all;
+-	/* Try the intersection of @affmsk and node mask */
+-	cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
+-	if (!assign_vector_locked(irqd, vector_searchmask))
+-		return 0;
+-	/* Try the node mask */
+-	if (!assign_vector_locked(irqd, cpumask_of_node(node)))
+-		return 0;
+-all:
++	if (node != NUMA_NO_NODE) {
++		/* Try the intersection of @affmsk and node mask */
++		cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
++		if (!assign_vector_locked(irqd, vector_searchmask))
++			return 0;
++	}
++
+ 	/* Try the full affinity mask */
+ 	cpumask_and(vector_searchmask, affmsk, cpu_online_mask);
+ 	if (!assign_vector_locked(irqd, vector_searchmask))
+ 		return 0;
++
++	if (node != NUMA_NO_NODE) {
++		/* Try the node mask */
++		if (!assign_vector_locked(irqd, cpumask_of_node(node)))
++			return 0;
++	}
++
+ 	/* Try the full online mask */
+ 	return assign_vector_locked(irqd, cpu_online_mask);
+ }
