@@ -2,133 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7462D6B2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE852D6BB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394224AbgLJWcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 17:32:07 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:40319 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405129AbgLJW0X (ORCPT
+        id S2393070AbgLJXN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:13:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391866AbgLJXNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:26:23 -0500
-Received: by mail-pg1-f196.google.com with SMTP id t37so5596542pga.7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:26:07 -0800 (PST)
+        Thu, 10 Dec 2020 18:13:17 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7BBEC0611CC
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:37:20 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id d27so7638159oic.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:37:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FDWcEk/bsx49QrHA7le6QrzeyX76Cr1G90wWwfXt9og=;
-        b=eyVki26QxbAouCaaS+b5GUx8CLMRFIUjtoypoV1IvhDtSzOg3ca6z5EmYDGXNGdnsl
-         U+P3N8j9mIzu2E6FUrgaBxpdccT6tWtbHCrRjZMks0d0xEp+Chmmqgi1Hxnek/CfhSSb
-         J/g7qBme+dbBvOTXGw++vYsu1hR611rkrq7AKJAuQe39bo/lcfts5+qbjkI83D1B1OTP
-         I+AkQfB8YDF2EkuZYN/PtM6wUI/ebdlwaa3KjJp+l64dFy3cwul8BPM8X9BMoxO+lorY
-         c46YnKuEqYtlLlnSw4CRt/ovwT+/sQjuIuY9PLoZ/koHhXzyXUfoJqAoagvAWP5ophzp
-         1nrg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+ZVJHFSrcvg/rM3/coktBI0ATZzEEYOYnQ3lqpo3zPA=;
+        b=hqUoJ4fB1Go3B36ZXoSqCONvRMX3UglfC0KFpIREBDUqSWlcaJ1Fm51MG+zW7WCsaB
+         t5XbdNuLFtPEIXQT0X0ZxGOtWF6Nef85e39e5KDbKVh6mzlonrCXEkMLk25rYa/hQsKv
+         L1h8KGq/nzTDSQpUfRZyKWFuOU+G5Xukb3vBB3x5KBw3oLNh1hV6eDrJXgvUPMZ4y3TV
+         F5ry2bcvkM767TUXw9gdlLo9jmrX/Orp6n1CD+DL+YBtVb74nA2j8b/p/zZcZsSpxaxN
+         l9ZCYWlZArdz5YXxdg9flTbNqQ7E8IkaM6BMFSxcOjMimBwn5fA+DF0RQjPmAFhrMkST
+         EG6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FDWcEk/bsx49QrHA7le6QrzeyX76Cr1G90wWwfXt9og=;
-        b=l+Nj2u59b/O1zbVAIH9xsBWRcmutxBwgBrX4gaBPGljUvgOSI7pi3Ru+ekEF5oBcOC
-         2k+/Flp3fcBqURrFYbGfKV2Z63XhMe5OS2JYDQHlutdx07rrMseTKBmT9T6TffRsac0U
-         Jmm6OOOLV8DI5Gu23VZYcznXmgeNjFD9ZPY41VerbkfIzsncAmTa7E0tfwIu/mUzUlJ4
-         4BD/dlhmuayp1RLVLNZtulWPNeaK5xTJRbD2RvDVNyTRX5U5oZUV+6hiRRQKMstPq01v
-         kplyQA9/Nje7XEHiRmP/+DGgSg5h4vOUCxcYSJyQjB8qoBl/ulkGd1yZUD4bt/Wkcasm
-         kNIA==
-X-Gm-Message-State: AOAM5304cFUVmiLLNi7r43huOTQABKU0RjVRVR2IYAWmQzyUR4DW9fC/
-        Lh6265JUaCt35hoFyh0G7e2X8oSRJS3CnBjlVTyRA2FOP/Klqw==
-X-Google-Smtp-Source: ABdhPJzopPgY04RexLu7seRjCtvQA796q4DkmGgHbAC5sIUU3JvJreGcaZy2uhTAnU3vlcA/nOou9RxdlKuQmXwmL5M=
-X-Received: by 2002:a63:184c:: with SMTP id 12mr1082455pgy.381.1607636935147;
- Thu, 10 Dec 2020 13:48:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20201201152017.3576951-1-elver@google.com> <CAKwvOdkcv=FES2CXfoY+AFcvg_rbPd2Nk8sEwXNBJqXL4wQGBg@mail.gmail.com>
- <CANpmjNOUHdANKQ6EZEzgbVg0+jqWgBEAuoLQxpzQJkstv6fxBg@mail.gmail.com>
- <CANpmjNOdJZUm1apuEHZz_KYJTEoRU6FVxMwZUrMar021hTd5Cg@mail.gmail.com>
- <CANiq72kwZtBn-YtWhZmewVNXNbjEXwqeWSpU1iLx45TNoLLOUg@mail.gmail.com> <CANpmjNN3akp+Npf6tqJR44kn=85WpkRh89Z4BQtBh0nGJEiGEQ@mail.gmail.com>
-In-Reply-To: <CANpmjNN3akp+Npf6tqJR44kn=85WpkRh89Z4BQtBh0nGJEiGEQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 10 Dec 2020 13:48:43 -0800
-Message-ID: <CAKwvOdn7c20vATaJMzsMYtCngs6ZDQMW8LX9ywhARxL6OKEdNg@mail.gmail.com>
-Subject: Re: [PATCH] genksyms: Ignore module scoped _Static_assert()
-To:     Marco Elver <elver@google.com>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+ZVJHFSrcvg/rM3/coktBI0ATZzEEYOYnQ3lqpo3zPA=;
+        b=MYoK69occj2szltuVLFKkDbBqyjO23OGVg7YMFYwUcGKnfbvu+WFyqmMM8trW9QWa2
+         8mDV4Sb5T013n8bWbFW5cT7ze2wWBdM68J8OO/8Gij0ynbL4XqLwdXJkuV1zS9VoGduP
+         akLMH7UefbDN0Mjv5aYFPRO7Q8tuhAK7N9pievGEsitzSaeXzTDghMChkaUX8F1wvTTS
+         n5C8bhkWlhTvb/+ZK2L4hmf2NifHzTfzQ8jKfhVhpF2KxEhzUCoMdCFsk41zSXpHfVCe
+         RfimdeoeE+8e1Sg7LQun18n6lQBDkTigsniSYUPJQZbTQByIxjms6x9YDXm3fFw8PTO5
+         Lzsg==
+X-Gm-Message-State: AOAM532TQPtDHMH62Ac2l/ydSmrmV9lTwGB3QZiUdAma4aFO+ih8tm1O
+        tl0iFo+QPMGkm8qLtB/0KI+jeIHQm7mZubZ7
+X-Google-Smtp-Source: ABdhPJwexAnTD2OyB+f9YLdh4DYY/daLokkk5nfPNf9Bp86JdqDn2v42AAaZLxb9w+rOMqo4p6o35Q==
+X-Received: by 2002:a17:90a:d194:: with SMTP id fu20mr6126132pjb.111.1607637343315;
+        Thu, 10 Dec 2020 13:55:43 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 77sm6915281pfx.156.2020.12.10.13.55.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 13:55:42 -0800 (PST)
+Date:   Thu, 10 Dec 2020 14:55:40 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] coresight: cti: =?utf-8?Q?Redu?=
+ =?utf-8?Q?ce_scope_for_the_variable_=E2=80=9Ccs=5Ffwnode?= =?utf-8?B?4oCd?=
+ in cti_plat_create_connection()
+Message-ID: <20201210215540.GA1860012@xps15>
+References: <c1b09b27-9012-324f-28d0-ba820dc468a5@web.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c1b09b27-9012-324f-28d0-ba820dc468a5@web.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 8:25 AM Marco Elver <elver@google.com> wrote:
->
-> On Thu, 10 Dec 2020 at 14:29, Miguel Ojeda
-> <miguel.ojeda.sandonis@gmail.com> wrote:
-> > On Thu, Dec 10, 2020 at 11:35 AM Marco Elver <elver@google.com> wrote:
-> > >
-> > > It looks like there's no clear MAINTAINER for this. :-/
-> > > It'd still be good to fix this for 5.11.
-> >
-> > Richard seems to be the author, not sure if he picks patches (CC'd).
-> >
-> > I guess Masahiro or akpm (Cc'd) would be two options; otherwise, I
-> > could pick it up through compiler attributes (stretching the
-> > definition...).
->
-> Thanks for the info. I did find that there's an alternative patch to
-> fix _Static_assert() with genksyms that was sent 3 days after mine
-> (it's simpler, but might miss cases). I've responded there (
-> https://lkml.kernel.org/r/X9JI5KpWoo23wkRg@elver.google.com ).
->
-> Now we have some choice. I'd argue for this patch, because it's not
-> doing preprocessor workarounds, but in the end I won't make that call.
-> :-)
+On Wed, Dec 09, 2020 at 09:42:20PM +0100, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Wed, 9 Dec 2020 21:34:48 +0100
+> 
+> A local variable was used only within an else branch.
+> Thus move the definition for the variable “cs_fwnode” into
+> the corresponding code block.
+> 
+> This issue was detected by using the Coccinelle software.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>  drivers/hwtracing/coresight/coresight-cti-platform.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-cti-platform.c b/drivers/hwtracing/coresight/coresight-cti-platform.c
+> index 98f830c6ed50..ccef04f27f12 100644
+> --- a/drivers/hwtracing/coresight/coresight-cti-platform.c
+> +++ b/drivers/hwtracing/coresight/coresight-cti-platform.c
+> @@ -343,7 +343,6 @@ static int cti_plat_create_connection(struct device *dev,
+>  {
+>  	struct cti_trig_con *tc = NULL;
+>  	int cpuid = -1, err = 0;
+> -	struct fwnode_handle *cs_fwnode = NULL;
+>  	struct coresight_device *csdev = NULL;
+>  	const char *assoc_name = "unknown";
+>  	char cpu_name_str[16];
+> @@ -397,8 +396,9 @@ static int cti_plat_create_connection(struct device *dev,
+>  		assoc_name = cpu_name_str;
+>  	} else {
+>  		/* associated device ? */
+> -		cs_fwnode = fwnode_find_reference(fwnode,
+> -						  CTI_DT_CSDEV_ASSOC, 0);
+> +		struct fwnode_handle *cs_fwnode = fwnode_find_reference(fwnode,
+> +									CTI_DT_CSDEV_ASSOC,
+> +									0);
 
-I was half kidding about depending on a production C parser.  See
-internal reference pa/1432607, choice quotes:
-```
-...
-CONFIG_MODVERSIONS uses scripts/genksyms/genksyms to create a file,
-Module.symvers, that is a simple mapping of CRCs of various symbols'
-types to the symbol names.  It produces these CRCs by using the C
-preprocessor, then passing this into genksyms. genksyms has a lex/yacc
-based C parser to parse the preprocessed sources of kernel modules.  It
-turns out that it's incomplete, copied from an upstream project that
-ceased development in 2013, and was slated to be removed around the 4.9
-kernel release.
-...
-Some possible solutions:
-* Update the kernel's version of genksyms.  There's a comment that the
-  kernel's sources were copied from "modutils." It seems that modutils'
-  last release was v2.4.27 in 2004, and that development on it has
-  stopped.  Upstream modutils also has the same parsing bug.
-...
-* Fix the parsing bug in genksysms. While the discussion about removing
-  CONFIG_MODVERSIONS has started again upstream due to my bugreport,
-  this would be the optimal solution, if I could just figure out how to
-  rewrite the parser correctly.
-...
-A better long term solution would be to replace genksyms's
-modutils/lex/yacc based incomplete and dead C parser with a libclang
-based one, but such work is beyond the scope of a toolchain update.
+I have applied your patch.
 
-For future travelers that would like to take a crack at fixing the
-existing parser, I found the develop/build/test/debug cycle to be:
-
-$ rm scripts/genksyms/genksyms
-$ make scripts/genksyms/
-$ ./scripts/genksyms/genksyms -d < test_case.i
-$ ./scripts/genksyms/genksyms -d -d < test_case.i
-Best of luck on that endeavor.
-```
-
-I was planning on talking about this timebomb at plumbers, but had to
-cut it due to the tight time constraints we were allotted.
--- 
 Thanks,
-~Nick Desaulniers
+Mathieu
+
+>  		if (!IS_ERR(cs_fwnode)) {
+>  			assoc_name = cti_plat_get_csdev_or_node_name(cs_fwnode,
+>  								     &csdev);
+> --
+> 2.29.2
+> 
