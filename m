@@ -2,216 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5722D6B7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A162D6B83
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388658AbgLJXEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:04:00 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:34704 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732334AbgLJXDC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:03:02 -0500
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E62E920B717A;
-        Thu, 10 Dec 2020 15:02:19 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E62E920B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607641340;
-        bh=8vnJQal7pFq1j3DfKkYxtWz0Xll6Hm2j422JbNE5k/k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gw0ROljJOQSdRqV9LQyEh4ICZwbxsXxmPAw3g6+flhvm9cXFjr6rpXAog0Am8cehE
-         9HNmP65hhBlF0tw8wATwWASbhkFxfCbU6iTbPFQX2HJcEJr6ERaaMJReX2TTD2cKcr
-         +GVai4fOtd917UrOdViO7aQ/jf+J7Ip/nzdWtg2Q=
-Date:   Thu, 10 Dec 2020 17:02:18 -0600
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
-        jmorris@namei.org, nramas@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Subject: Re: [PATCH v7 3/8] IMA: define a hook to measure kernel integrity
- critical data
-Message-ID: <20201210230218.GH489768@sequoia>
-References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
- <20201209194212.5131-4-tusharsu@linux.microsoft.com>
+        id S1730793AbgLJXEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:04:49 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:59482 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389035AbgLJXEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 18:04:20 -0500
+Received: from zn.tnic (p200300ec2f0d4100324f6551f32106f4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4100:324f:6551:f321:6f4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A70E41EC0380;
+        Fri, 11 Dec 2020 00:03:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607641418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=QHCDS5xknLkQSxrIZmTflSOoir1pkSLjwuD4Z1gvOmQ=;
+        b=d3y7sXGGaX0ykclPID3Ma6JCsxGeZQPsM99z8xsROYspdcvDANHUUgSU2MHkJ0VtlmduYt
+        00YPFiBU1BivZbLK7Q5BRmQTZD5078R/W7vWSoE3P/amVV1yEbyRD/wJVGbTnPFvGPLzdF
+        RftBMJGpk9hNjR4BK3uhAMlZ4SS2hIw=
+Date:   Fri, 11 Dec 2020 00:03:32 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     rjw@rjwysocki.net, wei.huang2@amd.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 2/2] cpufreq: acpi-cpufreq: Add processor to the ignore
+ PSD override list
+Message-ID: <20201210230332.GH26529@zn.tnic>
+References: <20201210225640.317719-1-punitagrawal@gmail.com>
+ <20201210225640.317719-3-punitagrawal@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201209194212.5131-4-tusharsu@linux.microsoft.com>
+In-Reply-To: <20201210225640.317719-3-punitagrawal@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09 11:42:07, Tushar Sugandhi wrote:
-> IMA provides capabilities to measure file data, and in-memory buffer
-> data. However, various data structures, policies, and states
-> stored in kernel memory also impact the integrity of the system.
-> Several kernel subsystems contain such integrity critical data. These
-> kernel subsystems help protect the integrity of a device. Currently,
-> IMA does not provide a generic function for kernel subsystems to measure
-> their integrity critical data.
->  
-> Define a new IMA hook - ima_measure_critical_data to measure kernel
-> integrity critical data.
+On Fri, Dec 11, 2020 at 07:56:40AM +0900, Punit Agrawal wrote:
+> Booting Linux on a Zen2 based processor (family: 0x17, model: 0x60,
+> stepping: 0x1) shows the following message in the logs -
 > 
-> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+>     acpi_cpufreq: overriding BIOS provided _PSD data
+> 
+> Although commit 5368512abe08 ("acpi-cpufreq: Honor _PSD table setting
+> on new AMD CPUs") indicates that the override is not required for Zen3
+> onwards, it seems that domain information can be trusted even on
+> certain earlier systems. Update the check, to skip the override for
+> Zen2 processors known to work without the override.
+> 
+> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> Cc: Wei Huang <wei.huang2@amd.com>
 > ---
->  Documentation/ABI/testing/ima_policy |  2 +-
->  include/linux/ima.h                  |  6 +++++
->  security/integrity/ima/ima.h         |  1 +
->  security/integrity/ima/ima_api.c     |  2 +-
->  security/integrity/ima/ima_main.c    | 36 ++++++++++++++++++++++++++++
->  security/integrity/ima/ima_policy.c  |  2 ++
->  6 files changed, 47 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
-> index e35263f97fc1..6ec7daa87cba 100644
-> --- a/Documentation/ABI/testing/ima_policy
-> +++ b/Documentation/ABI/testing/ima_policy
-> @@ -32,7 +32,7 @@ Description:
->  			func:= [BPRM_CHECK][MMAP_CHECK][CREDS_CHECK][FILE_CHECK]MODULE_CHECK]
->  			        [FIRMWARE_CHECK]
->  				[KEXEC_KERNEL_CHECK] [KEXEC_INITRAMFS_CHECK]
-> -				[KEXEC_CMDLINE] [KEY_CHECK]
-> +				[KEXEC_CMDLINE] [KEY_CHECK] [CRITICAL_DATA]
->  			mask:= [[^]MAY_READ] [[^]MAY_WRITE] [[^]MAY_APPEND]
->  			       [[^]MAY_EXEC]
->  			fsmagic:= hex value
-> diff --git a/include/linux/ima.h b/include/linux/ima.h
-> index ac3d82f962f2..675f54db6264 100644
-> --- a/include/linux/ima.h
-> +++ b/include/linux/ima.h
-> @@ -30,6 +30,9 @@ extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
->  extern void ima_post_path_mknod(struct dentry *dentry);
->  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
->  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
-> +extern void ima_measure_critical_data(const char *event_name,
-> +				      const void *buf, int buf_len,
-> +				      bool measure_buf_hash);
->  
->  #ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
->  extern void ima_appraise_parse_cmdline(void);
-> @@ -122,6 +125,9 @@ static inline int ima_file_hash(struct file *file, char *buf, size_t buf_size)
->  }
->  
->  static inline void ima_kexec_cmdline(int kernel_fd, const void *buf, int size) {}
-> +static inline void ima_measure_critical_data(const char *event_name,
-> +					     const void *buf, int buf_len,
-> +					     bool measure_buf_hash) {}
->  #endif /* CONFIG_IMA */
->  
->  #ifndef CONFIG_IMA_KEXEC
-> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-> index fa3044a7539f..7d9deda6a8b3 100644
-> --- a/security/integrity/ima/ima.h
-> +++ b/security/integrity/ima/ima.h
-> @@ -201,6 +201,7 @@ static inline unsigned int ima_hash_key(u8 *digest)
->  	hook(POLICY_CHECK, policy)			\
->  	hook(KEXEC_CMDLINE, kexec_cmdline)		\
->  	hook(KEY_CHECK, key)				\
-> +	hook(CRITICAL_DATA, critical_data)		\
->  	hook(MAX_CHECK, none)
->  
->  #define __ima_hook_enumify(ENUM, str)	ENUM,
-> diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
-> index af218babd198..9917e1730cb6 100644
-> --- a/security/integrity/ima/ima_api.c
-> +++ b/security/integrity/ima/ima_api.c
-> @@ -176,7 +176,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
->   *		subj=, obj=, type=, func=, mask=, fsmagic=
->   *	subj,obj, and type: are LSM specific.
->   *	func: FILE_CHECK | BPRM_CHECK | CREDS_CHECK | MMAP_CHECK | MODULE_CHECK
-> - *	| KEXEC_CMDLINE | KEY_CHECK
-> + *	| KEXEC_CMDLINE | KEY_CHECK | CRITICAL_DATA
->   *	mask: contains the permission mask
->   *	fsmagic: hex value
->   *
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index 03aad13e9e70..ae59f4a4dd70 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -922,6 +922,42 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
->  	fdput(f);
->  }
->  
-> +/**
-> + * ima_measure_critical_data - measure kernel integrity critical data
-> + * @event_name: event name to be used for the buffer entry
-> + * @buf: pointer to buffer containing data to measure
-> + * @buf_len: length of buffer(in bytes)
-> + * @measure_buf_hash: measure buffer hash
-> + *
-> + * Measure the kernel subsystem data, critical to the integrity of the kernel,
-> + * into the IMA log and extend the @pcr.
-> + *
-> + * Use @event_name to describe the state/buffer data change.
-> + * Examples of critical data (buf) could be kernel in-memory r/o structures,
-                                 ^
-				 @buf
+>  drivers/cpufreq/acpi-cpufreq.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 
-> + * hash of the memory structures, or data that represents subsystem state
-> + * change.
-> + *
-> + * If @measure_buf_hash is set to true - measure hash of the buffer data,
-> + * else measure the buffer data itself.
-> + * measure_buf_hash can be used to save space, if the data being measured
-      ^
-      @measure_buf_hash
+What about answers to those questions first?
 
-> + * is too large.
-> + *
-> + * The data (buf) can only be measured, not appraised.
-                ^
-		@buf
+https://lkml.kernel.org/r/20201208233216.GH27920@zn.tnic
 
-> + */
-> +void ima_measure_critical_data(const char *event_name,
-> +			       const void *buf, int buf_len,
-> +			       bool measure_buf_hash)
-> +{
-> +	if (!event_name || !buf || !buf_len) {
-> +		pr_err("Invalid arguments passed to %s().\n", __func__);
+-- 
+Regards/Gruss,
+    Boris.
 
-This is a problem for the developer making use of the
-ima_measure_critical_data() API and shouldn't be logged, IMO, because a
-user/admin can do nothing about it. I think the error message should be
-dropped.
-
-> +		return;
-> +	}
-> +
-> +	process_buffer_measurement(NULL, buf, buf_len, event_name,
-> +				   CRITICAL_DATA, 0, NULL,
-> +				   measure_buf_hash);
-> +}
-> +
->  static int __init init_ima(void)
->  {
->  	int error;
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index 25419c7ff50b..2a0c0603626e 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
-> @@ -1251,6 +1251,8 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
->  			else if (IS_ENABLED(CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS) &&
->  				 strcmp(args[0].from, "KEY_CHECK") == 0)
->  				entry->func = KEY_CHECK;
-> +			else if (strcmp(args[0].from, "CRITICAL_DATA") == 0)
-> +				entry->func = CRITICAL_DATA;
->  			else
->  				result = -EINVAL;
->  			if (!result)
-
-This hunk and the above change to Documentation/ABI/testing/ima_policy
-need to be moved to the next patch when you introduce the policy
-changes.
-
-Tyler
-
-> -- 
-> 2.17.1
-> 
+https://people.kernel.org/tglx/notes-about-netiquette
