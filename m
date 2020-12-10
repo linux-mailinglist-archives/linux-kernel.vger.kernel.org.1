@@ -2,159 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673C52D6947
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7042D694A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393891AbgLJVA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 16:00:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36868 "EHLO
+        id S2393904AbgLJVBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 16:01:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727019AbgLJVAE (ORCPT
+        with ESMTP id S1727019AbgLJVBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 16:00:04 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1D4C0613CF;
-        Thu, 10 Dec 2020 12:59:24 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id o17so7320542lfg.4;
-        Thu, 10 Dec 2020 12:59:24 -0800 (PST)
+        Thu, 10 Dec 2020 16:01:05 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703AEC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:00:25 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id p187so7103400iod.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:00:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=L+2kq/mn/GAqmqkIcbgr9LNeg9Bhva26hFZF9Y+zYOc=;
-        b=A2O2xoYnYD6LKvIJNY87qFGg5SGAPNyjXyluJ+/UKQl+J7/ESPcVH+WB+JD6mVL6r8
-         BVj8q+zYaJ579OYuL7ociaLxK2FqP7yegH/wjAe4RO6kOtEOpsR/XxV3h1roJrTTc66I
-         febq8qYC+GVuJxmZn++rUhIvwGhzMaaMjsGb/KESkDZdHtVLYdqPN6+fMb+iFto9dLLs
-         kZR+wYKyJI2vhZcW9MEizjJkdpteOWTLwgRlmuh6/fyzpnaP1OsWd0lMunGNY3ZUT9yl
-         KnVIEK0kKhEfFFUN/TTnjASiwwF4bMaAJdVWK0tA7f2pzJO3cPHgX9Iv2guyK3Y87kGE
-         DL4A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=26Vm4s06JnMVOl9zkroZalqQJYVX3pZvEC5YiT4DGro=;
+        b=bePoVgoZkT130rTZGLCOVgoYm8XZaqW8Woj+N4R6vowh7e/+3K7mvFceJ7tUDc23I3
+         79awfxjusxoStgE5o129NbFBY8mcaIqCfapdan1OnCr+DJ0vhkZraIb68YUkrDAGD9hv
+         9rgShmTq9kQb7z6ds9lLLt88SYadgYWjKrr8ZfgAIJIBfaRwSJ1ZzZdQEakgUQR1+Cm4
+         JRDf8p8e1joY1358W7XspiYV5GATWZScWxgDyGz4FpBovsSDZqTnJnGIitu+gb8pDbwH
+         VMZ2dh00eXlf0+/7Bz1nt4/Fhxa/jt6pEGNXo1TRWWxUNoArgXMZ0J68Jgw3vF4GroRs
+         tw/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L+2kq/mn/GAqmqkIcbgr9LNeg9Bhva26hFZF9Y+zYOc=;
-        b=tI9cVhZVLS3XmF50BMIXh+DTrWA5oDEuzRK+PfGHZHbyACqtVfQyCOgmsjNJfs77PL
-         tTq7Ul7/cJu9WiPGPHnEbLEE6jKZFZ6roe31tI11ZDsQxz47Ws3E3x6IMvK+5/jH8SYj
-         i4W2ZcbU/sRsQ9vpjkx6j4huc6rv8e9EIr2TEnPoeWedZQQNY1DFiEBfxlG9vbM5eSNq
-         zQwuPqNAl1qwy9oEshNVlJOt7btloMrFtX1upE6v6NEu/TefyS/+U5vlkGIenSCrDZ7w
-         55Z/P8dgnmZHKIzo7iIMT5PKd5j2DcprXOBaLxBEqGD4XZtyN0Tnwvl70n4+fsBkUT5U
-         42ag==
-X-Gm-Message-State: AOAM531jj73KYXahVel407KwAc6+LRYlAjFmITKqritHIVJoG72YYb1R
-        qmxsiW+ox2fkWNAtLnVDMsE=
-X-Google-Smtp-Source: ABdhPJyBMknhNz6xYU4ZCi12CSdIk+VQd8R9a0xiFyGovgfVRlVVXl3oi2RWtuH+1Iba/mt/xTj74g==
-X-Received: by 2002:a19:3f47:: with SMTP id m68mr3577297lfa.494.1607633962817;
-        Thu, 10 Dec 2020 12:59:22 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-205.dynamic.spd-mgts.ru. [109.252.193.205])
-        by smtp.googlemail.com with ESMTPSA id w6sm590100lji.74.2020.12.10.12.59.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 12:59:22 -0800 (PST)
-Subject: Re: [PATCH 1/2] of: property: Get rid of code duplication in port
- getting
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20201210202944.6747-1-semen.protsenko@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f18dea6e-5806-370c-0d83-e56f3dc118b4@gmail.com>
-Date:   Thu, 10 Dec 2020 23:59:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=26Vm4s06JnMVOl9zkroZalqQJYVX3pZvEC5YiT4DGro=;
+        b=Ch9Wopf5QpnMl+MFTarmIwQfsDVoQ/RPUkYq9xyGa7+zyE1rjQNN7sB6zGh9Vq3QTU
+         K8VM1QvMuJrZqYu2Xz4zoNw5VjYACP3P4ssrGpLP3H6JF13/bHNeidFQQkv0+UNvLrvu
+         9zVaC03Y0e797nAZSRggJ0ASgqmFmUvEBumnQgimauEwAk+Da9S8l+sMVPX8P+jQ4CLS
+         TYWPtoxV9ozt379OTfT92ou7WtCCrtXNGRrKXjqkNJQb6LTbEHB3nIS/vPdOyBQrCq9I
+         zUGFMtl9U0KRVIHZDmiQy5MT77pvmmfkAh+toxp9FSNG5tZFGMbrtGh78cTSADTDK1mw
+         Y9mw==
+X-Gm-Message-State: AOAM5309gm6r16OL2G/ka+T4dtGAEl0ICHumdHvcaemN+284ujYeCqc9
+        cloaXiWCl50s0Qp4QjmYgChlZ41otLlE9PsjtFlcog==
+X-Google-Smtp-Source: ABdhPJxVTTC6jf6Rca6pGj/4VGpBcmnmfKJQSRWgYGp5zzAjBBSxgIgZtYJdOgIiHV6IOPYUdwwP97+bX6EwXIfd6J4=
+X-Received: by 2002:a05:6638:ecd:: with SMTP id q13mr9100887jas.62.1607634024741;
+ Thu, 10 Dec 2020 13:00:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201210202944.6747-1-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201123104616.1412688-1-robert.foss@linaro.org>
+In-Reply-To: <20201123104616.1412688-1-robert.foss@linaro.org>
+From:   Peter Collingbourne <pcc@google.com>
+Date:   Thu, 10 Dec 2020 13:00:13 -0800
+Message-ID: <CAMn1gO6AQvyJO0s2k1POAVn4JxuOKLoKpj_UvvW3TnLTtv6_bw@mail.gmail.com>
+Subject: Re: [PATCH v1] drm/bridge: lt9611: Fix handling of 4k panels
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     a.hajda@samsung.com, Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, airlied@linux.ie,
+        Daniel Vetter <daniel@ffwll.ch>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Alistair Delva <adelva@google.com>,
+        Vinod Koul <vinod.koul@linaro.org>,
+        Anibal Limon <anibal.limon@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-10.12.2020 23:29, Sam Protsenko пишет:
-> Both of_graph_is_present() and of_graph_get_next_endpoint() functions
-> share common piece of code for obtaining the graph port. Extract it into
-> separate static function to get rid of code duplication and avoid
-> possible coding errors in future.
-> 
-> Fixes: 4ec0a44ba8d7 ("of_graph: add of_graph_is_present()")
+Thanks. Confirmed that this fixes display output for me on a 4K monitor.
 
-The "fixes" tag should be used only for bug-fixes and there is no bug
-fixed in this patch.
+On Mon, Nov 23, 2020 at 2:46 AM Robert Foss <robert.foss@linaro.org> wrote:
+>
+> 4k requires two dsi pipes, so don't report MODE_OK when only a
+> single pipe is configured. But rather report MODE_PANEL to
+> signal that requirements of the panel are not being met.
+>
+> Reported-by: Peter Collingbourne <pcc@google.com>
+> Suggested-by: Peter Collingbourne <pcc@google.com>
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> Tested-by: John Stultz <john.stultz@linaro.org>
 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+Tested-by: Peter Collingbourne <pcc@google.com>
+
 > ---
->  drivers/of/property.c | 34 ++++++++++++++++++++--------------
->  1 file changed, 20 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index 408a7b5f06a9..da111fcf37ac 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -30,13 +30,13 @@
->  #include "of_private.h"
->  
->  /**
-> - * of_graph_is_present() - check graph's presence
-> + * of_graph_get_port - find the "port" node in a given node
->   * @node: pointer to device_node containing graph port
->   *
-> - * Return: True if @node has a port or ports (with a port) sub-node,
-> - * false otherwise.
-> + * Return: A 'port' node pointer with refcount incremented if found or NULL
-> + * otherwise. The caller has to use of_node_put() on it when done.
->   */
-> -bool of_graph_is_present(const struct device_node *node)
-> +static struct device_node *of_graph_get_port(const struct device_node *node)
+>  drivers/gpu/drm/bridge/lontium-lt9611.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/lontium-lt9611.c b/drivers/gpu/drm/bridge/lontium-lt9611.c
+> index d734d9402c35..e8eb8deb444b 100644
+> --- a/drivers/gpu/drm/bridge/lontium-lt9611.c
+> +++ b/drivers/gpu/drm/bridge/lontium-lt9611.c
+> @@ -867,8 +867,14 @@ static enum drm_mode_status lt9611_bridge_mode_valid(struct drm_bridge *bridge,
+>                                                      const struct drm_display_mode *mode)
 >  {
->  	struct device_node *ports, *port;
->  
-> @@ -46,8 +46,22 @@ bool of_graph_is_present(const struct device_node *node)
->  
->  	port = of_get_child_by_name(node, "port");
->  	of_node_put(ports);
-> -	of_node_put(port);
->  
-> +	return port;
-> +}
-> +
-> +/**
-> + * of_graph_is_present() - check graph's presence
-> + * @node: pointer to device_node containing graph port
-> + *
-> + * Return: True if @node has a port or ports (with a port) sub-node,
-> + * false otherwise.
-> + */
-> +bool of_graph_is_present(const struct device_node *node)
-> +{
-> +	struct device_node *port = of_graph_get_port(node);
-> +
-> +	of_node_put(port);
->  	return !!port;
+>         struct lt9611_mode *lt9611_mode = lt9611_find_mode(mode);
+> +       struct lt9611 *lt9611 = bridge_to_lt9611(bridge);
+>
+> -       return lt9611_mode ? MODE_OK : MODE_BAD;
+> +       if (!lt9611_mode)
+> +               return MODE_BAD;
+> +       else if (lt9611_mode->intfs > 1 && !lt9611->dsi1)
+> +               return MODE_PANEL;
+> +       else
+> +               return MODE_OK;
 >  }
->  EXPORT_SYMBOL(of_graph_is_present);
-> @@ -631,15 +645,7 @@ struct device_node *of_graph_get_next_endpoint(const struct device_node *parent,
->  	 * parent port node.
->  	 */
->  	if (!prev) {
-> -		struct device_node *node;
-> -
-> -		node = of_get_child_by_name(parent, "ports");
-> -		if (node)
-> -			parent = node;
-> -
-> -		port = of_get_child_by_name(parent, "port");
-> -		of_node_put(node);
-> -
-> +		port = of_graph_get_port(parent);
->  		if (!port) {
->  			pr_err("graph: no port node found in %pOF\n", parent);
->  			return NULL;
-> 
-
-This repeats the problem which was made once before:
-
-https://lore.kernel.org/patchwork/patch/1266028/#1461493
+>
+>  static void lt9611_bridge_pre_enable(struct drm_bridge *bridge)
+> --
+> 2.27.0
+>
