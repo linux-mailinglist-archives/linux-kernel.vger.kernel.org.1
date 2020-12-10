@@ -2,217 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A832D61C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB9B2D61DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391977AbgLJQ1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:27:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:51572 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392016AbgLJQ0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:26:23 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39DF71FB;
-        Thu, 10 Dec 2020 08:25:37 -0800 (PST)
-Received: from [10.57.1.60] (unknown [10.57.1.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1AB913F68F;
-        Thu, 10 Dec 2020 08:25:35 -0800 (PST)
-Subject: Re: [PATCH v2 4/4] thermal/core: Remove ms based delay fields
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rui.zhang@intel.com, amitk@kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20201207190902.30464-1-daniel.lezcano@linaro.org>
- <20201207190902.30464-4-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <5cc9554f-0351-4668-6276-f55696ca02ba@arm.com>
-Date:   Thu, 10 Dec 2020 16:25:34 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2392064AbgLJQaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:30:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388107AbgLJQaO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 11:30:14 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FAF9C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:29:33 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id w5so3909149pgj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:29:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uW7jPDAJP0W04jlB4xyfWMLexo3zn7jvZAA+I5zJHp0=;
+        b=rfbCw2pDR9L3wrIjols0HhZZ+nbrQq7ayfwaLPo9A5f/YDf+wcNW0WMWhYomSw/2Y6
+         ije2M5566hxUfHBWNtc0KkEZBuS/NsJNJQHaAH0cW6hc7HqSGuStC2bG5xYcWJsIGV+b
+         jCwDNlChUCyc8g8LB9eoogC3eHhZYb51MpkbDYz6349H3OHfyBQBwyYqb2bzn50TLCQH
+         SHeGPvucXyyuiRaOa5FzQZ3Vn+kyraGVogTk7M0H6qHk63VWNFG/HtNXXY6MTkK7m2PR
+         4r6FrbAshrINB+COW8A9/15fPHoabOuEnNWcoaj6WykEg9eku9af2c7c3i7ApKrTSFGj
+         cyaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uW7jPDAJP0W04jlB4xyfWMLexo3zn7jvZAA+I5zJHp0=;
+        b=aX+VEbZgqiD4WJAnoj2nmGR8Y5JeY/TwyUCp114pQlgnI1MFR9Aosv1bG0J3nX7n7/
+         HK/eZYlvRFsZ53AC719nwpPhX4PqGHMT8FLuBFeG+3qSwFTi62bYnztQWryHJp7ROPly
+         RjqgDv6eHBtlErf8K0BIVfi3oZpdsOMNZQsGUuz73Fnth07bcEQ1tWAQCLSyY79Dtd2R
+         DTwnRshD9cQrsdpvfsR3srnHxWF7srPFO3KqYPspZcO6uZH964LXNF+UNdWC/wF7n0+5
+         3Bi9Ek46VZ+WJjEYacH035kfPDS8M6Ae9AVwgA7B6t06fyAkcCbUJYbVaxfV4KcDeVtT
+         ntow==
+X-Gm-Message-State: AOAM530oBjr6qbwwdK2YOyrLi6y73GjPsRnLztphknm9gRUk85Eoey6b
+        63iHMJHTCDm2DYqImhnNSPE8ug==
+X-Google-Smtp-Source: ABdhPJwtzzxEFMY808WWjp/6A+1rJeaDRULKBdPL3epPOOV5Xprf8FqEKOHkYblFqy8Y89ieyJgGAQ==
+X-Received: by 2002:a17:90a:a012:: with SMTP id q18mr8242051pjp.223.1607617772619;
+        Thu, 10 Dec 2020 08:29:32 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id x15sm6764754pfn.118.2020.12.10.08.29.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Dec 2020 08:29:31 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V2 1/2] arm64: topology: Avoid the have_policy check
+Date:   Thu, 10 Dec 2020 21:59:22 +0530
+Message-Id: <5f85c2ddf7aa094d7d2ebebe8426f84fad0a99b7.1607617625.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-In-Reply-To: <20201207190902.30464-4-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Every time I have stumbled upon this routine, I get confused with the
+way 'have_policy' is used and I have to dig in to understand why is it
+so. Here is an attempt to make it easier to understand, and hopefully it
+is an improvement.
 
+The 'have_policy' check was just an optimization to avoid writing
+to amu_fie_cpus in case we don't have to, but that optimization itself
+is creating more confusion than the real work. Lets just do that if all
+the CPUs support AMUs. It is much cleaner that way.
 
-On 12/7/20 7:09 PM, Daniel Lezcano wrote:
-> The code does no longer use the ms unit based fields to set the
-> delays as they are replaced by the jiffies.
-> 
-> Remove them and replace their user to use the jiffies version instead.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   drivers/platform/x86/acerhdf.c                     | 3 ++-
->   drivers/thermal/da9062-thermal.c                   | 4 ++--
->   drivers/thermal/gov_power_allocator.c              | 2 +-
->   drivers/thermal/thermal_core.c                     | 2 +-
->   drivers/thermal/thermal_core.h                     | 2 --
->   drivers/thermal/thermal_sysfs.c                    | 2 +-
->   drivers/thermal/ti-soc-thermal/ti-thermal-common.c | 6 ++++--
->   include/linux/thermal.h                            | 7 -------
->   8 files changed, 11 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/acerhdf.c b/drivers/platform/x86/acerhdf.c
-> index 7b26f601b407..b7dbcf6be13e 100644
-> --- a/drivers/platform/x86/acerhdf.c
-> +++ b/drivers/platform/x86/acerhdf.c
-> @@ -336,7 +336,8 @@ static void acerhdf_check_param(struct thermal_zone_device *thermal)
->   			pr_notice("interval changed to: %d\n", interval);
->   
->   		if (thermal)
-> -			thermal->polling_delay_ms = interval*1000;
-> +			thermal->polling_delay_jiffies =
-> +				msecs_to_jiffies(interval * 1000);
->   
->   		prev_interval = interval;
->   	}
-> diff --git a/drivers/thermal/da9062-thermal.c b/drivers/thermal/da9062-thermal.c
-> index ebb3d0b4a5be..180edec34e07 100644
-> --- a/drivers/thermal/da9062-thermal.c
-> +++ b/drivers/thermal/da9062-thermal.c
-> @@ -95,7 +95,7 @@ static void da9062_thermal_poll_on(struct work_struct *work)
->   		thermal_zone_device_update(thermal->zone,
->   					   THERMAL_EVENT_UNSPECIFIED);
->   
-> -		delay = msecs_to_jiffies(thermal->zone->passive_delay_ms);
-> +		delay = thermal->zone->passive_delay_jiffies;
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+V2:
+- Skip the have_policy check altogether
+- Updated subject and log
 
-We would use rounding down value to full seconds, but I couldn't
-find any odd values in DT for this devices. So it should be OK.
+ arch/arm64/kernel/topology.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
 
->   		queue_delayed_work(system_freezable_wq, &thermal->work, delay);
->   		return;
->   	}
-> @@ -245,7 +245,7 @@ static int da9062_thermal_probe(struct platform_device *pdev)
->   
->   	dev_dbg(&pdev->dev,
->   		"TJUNC temperature polling period set at %d ms\n",
-> -		thermal->zone->passive_delay_ms);
-> +		jiffies_to_msecs(thermal->zone->passive_delay_jiffies));
->   
->   	ret = platform_get_irq_byname(pdev, "THERMAL");
->   	if (ret < 0) {
-> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-> index f7a663f698d4..f8c3d1e40b86 100644
-> --- a/drivers/thermal/gov_power_allocator.c
-> +++ b/drivers/thermal/gov_power_allocator.c
-> @@ -258,7 +258,7 @@ static u32 pid_controller(struct thermal_zone_device *tz,
->   	 * power being applied, slowing down the controller)
->   	 */
->   	d = mul_frac(tz->tzp->k_d, err - params->prev_err);
-> -	d = div_frac(d, tz->passive_delay_ms);
-> +	d = div_frac(d, jiffies_to_msecs(tz->passive_delay_jiffies));
->   	params->prev_err = err;
->   
->   	power_range = p + i + d;
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 16ef5d652d85..aff15c6b1c61 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -313,7 +313,7 @@ static void monitor_thermal_zone(struct thermal_zone_device *tz)
->   
->   	if (!stop && tz->passive)
->   		thermal_zone_device_set_polling(tz, tz->passive_delay_jiffies);
-> -	else if (!stop && tz->polling_delay_ms)
-> +	else if (!stop && tz->polling_delay_jiffies)
->   		thermal_zone_device_set_polling(tz, tz->polling_delay_jiffies);
->   	else
->   		thermal_zone_device_set_polling(tz, 0);
-> diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-> index 2c9551ed5ef8..5baa308ee7a5 100644
-> --- a/drivers/thermal/thermal_core.h
-> +++ b/drivers/thermal/thermal_core.h
-> @@ -131,7 +131,6 @@ void thermal_zone_set_trips(struct thermal_zone_device *tz);
->   static inline void thermal_zone_set_passive_delay(
->   	struct thermal_zone_device *tz, int delay_ms)
->   {
-> -	tz->passive_delay_ms = delay_ms;
->   	tz->passive_delay_jiffies = msecs_to_jiffies(delay_ms);
->   	if (delay_ms > 1000)
->   		tz->passive_delay_jiffies = round_jiffies(tz->passive_delay_jiffies);
-> @@ -140,7 +139,6 @@ static inline void thermal_zone_set_passive_delay(
->   static inline void thermal_zone_set_polling_delay(
->   	struct thermal_zone_device *tz, int delay_ms)
->   {
-> -	tz->polling_delay_ms = delay_ms;
->   	tz->polling_delay_jiffies = msecs_to_jiffies(delay_ms);
->   	if (delay_ms > 1000)
->   		tz->polling_delay_jiffies = round_jiffies(tz->polling_delay_jiffies);
-> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-> index 9598b288a0a1..8532b1dd0608 100644
-> --- a/drivers/thermal/thermal_sysfs.c
-> +++ b/drivers/thermal/thermal_sysfs.c
-> @@ -233,7 +233,7 @@ passive_store(struct device *dev, struct device_attribute *attr,
->   		return -EINVAL;
->   
->   	if (state && !tz->forced_passive) {
-> -		if (!tz->passive_delay_ms)
-> +		if (!tz->passive_delay_jiffies)
->   			thermal_zone_set_passive_delay(tz, 1000);
->   		thermal_zone_device_rebind_exception(tz, "Processor",
->   						     sizeof("Processor"));
-> diff --git a/drivers/thermal/ti-soc-thermal/ti-thermal-common.c b/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-> index 4baff19e1142..f84375865c97 100644
-> --- a/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-> +++ b/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-> @@ -166,6 +166,7 @@ int ti_thermal_expose_sensor(struct ti_bandgap *bgp, int id,
->   			     char *domain)
->   {
->   	struct ti_thermal_data *data;
-> +	int interval;
->   
->   	data = ti_bandgap_get_sensor_data(bgp, id);
->   
-> @@ -183,9 +184,10 @@ int ti_thermal_expose_sensor(struct ti_bandgap *bgp, int id,
->   		return PTR_ERR(data->ti_thermal);
->   	}
->   
-> +	interval = jiffies_to_msecs(data->ti_thermal->polling_delay_jiffies);
+diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+index f6faa697e83e..ebadc73449f9 100644
+--- a/arch/arm64/kernel/topology.c
++++ b/arch/arm64/kernel/topology.c
+@@ -199,14 +199,14 @@ static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
+ 	return 0;
+ }
+ 
+-static inline bool
++static inline void
+ enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
+ {
+ 	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
+ 
+ 	if (!policy) {
+ 		pr_debug("CPU%d: No cpufreq policy found.\n", cpu);
+-		return false;
++		return;
+ 	}
+ 
+ 	if (cpumask_subset(policy->related_cpus, valid_cpus))
+@@ -214,8 +214,6 @@ enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
+ 			   amu_fie_cpus);
+ 
+ 	cpufreq_cpu_put(policy);
+-
+-	return true;
+ }
+ 
+ static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
+@@ -225,7 +223,6 @@ static int __init init_amu_fie(void)
+ {
+ 	bool invariance_status = topology_scale_freq_invariant();
+ 	cpumask_var_t valid_cpus;
+-	bool have_policy = false;
+ 	int ret = 0;
+ 	int cpu;
+ 
+@@ -245,17 +242,12 @@ static int __init init_amu_fie(void)
+ 			continue;
+ 
+ 		cpumask_set_cpu(cpu, valid_cpus);
+-		have_policy |= enable_policy_freq_counters(cpu, valid_cpus);
++		enable_policy_freq_counters(cpu, valid_cpus);
+ 	}
+ 
+-	/*
+-	 * If we are not restricted by cpufreq policies, we only enable
+-	 * the use of the AMU feature for FIE if all CPUs support AMU.
+-	 * Otherwise, enable_policy_freq_counters has already enabled
+-	 * policy cpus.
+-	 */
+-	if (!have_policy && cpumask_equal(valid_cpus, cpu_present_mask))
+-		cpumask_or(amu_fie_cpus, amu_fie_cpus, valid_cpus);
++	/* Overwrite amu_fie_cpus if all CPUs support AMU */
++	if (cpumask_equal(valid_cpus, cpu_present_mask))
++		cpumask_copy(amu_fie_cpus, cpu_present_mask);
+ 
+ 	if (!cpumask_empty(amu_fie_cpus)) {
+ 		pr_info("CPUs[%*pbl]: counters will be used for FIE.",
+-- 
+2.25.0.rc1.19.g042ed3e048af
 
-Same here, so it should be OK.
-
-> +
->   	ti_bandgap_set_sensor_data(bgp, id, data);
-> -	ti_bandgap_write_update_interval(bgp, data->sensor_id,
-> -					data->ti_thermal->polling_delay_ms);
-> +	ti_bandgap_write_update_interval(bgp, data->sensor_id, interval);
->   
->   	return 0;
->   }
-> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index 5dd9bdb6c6ad..f23a388ded15 100644
-> --- a/include/linux/thermal.h
-> +++ b/include/linux/thermal.h
-> @@ -116,13 +116,8 @@ struct thermal_cooling_device {
->    * @devdata:	private pointer for device private data
->    * @trips:	number of trip points the thermal zone supports
->    * @trips_disabled;	bitmap for disabled trips
-> - * @passive_delay_ms:	number of milliseconds to wait between polls when
-> - *			performing passive cooling.
->    * @passive_delay_jiffies: number of jiffies to wait between polls when
->    *			performing passive cooling.
-> - * @polling_delay_ms:	number of milliseconds to wait between polls when
-> - *			checking whether trip points have been crossed (0 for
-> - *			interrupt driven systems)
->    * @polling_delay_jiffies: number of jiffies to wait between polls when
->    *			checking whether trip points have been crossed (0 for
->    *			interrupt driven systems)
-> @@ -164,8 +159,6 @@ struct thermal_zone_device {
->   	void *devdata;
->   	int trips;
->   	unsigned long trips_disabled;	/* bitmap for disabled trips */
-> -	int passive_delay_ms;
-> -	int polling_delay_ms;
->   	int passive_delay_jiffies;
->   	int polling_delay_jiffies;
->   	int temperature;
-> 
-
-LGTM
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
