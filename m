@@ -2,28 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BB82D5DBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB462D5E48
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390160AbgLJO2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:28:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36496 "EHLO mail.kernel.org"
+        id S2391491AbgLJOoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:44:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390090AbgLJO2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:28:07 -0500
+        id S2391077AbgLJOhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:37:20 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan-Niklas Burfeind <kernel@aiyionpri.me>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 18/39] USB: serial: ch341: add new Product ID for CH341A
-Date:   Thu, 10 Dec 2020 15:26:29 +0100
-Message-Id: <20201210142601.804963174@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        Vamsi Krishna Samavedam <vskrishn@codeaurora.org>,
+        Jack Pham <jackp@codeaurora.org>
+Subject: [PATCH 5.9 01/75] usb: gadget: f_fs: Use local copy of descriptors for userspace copy
+Date:   Thu, 10 Dec 2020 15:26:26 +0100
+Message-Id: <20201210142606.143549022@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
-References: <20201210142600.887734129@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -31,35 +34,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan-Niklas Burfeind <kernel@aiyionpri.me>
+From: Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
 
-commit 46ee4abb10a07bd8f8ce910ee6b4ae6a947d7f63 upstream.
+commit a4b98a7512f18534ce33a7e98e49115af59ffa00 upstream.
 
-Add PID for CH340 that's found on a ch341 based Programmer made by keeyees.
-The specific device that contains the serial converter is described
-here: http://www.keeyees.com/a/Products/ej/36.html
+The function may be unbound causing the ffs_ep and its descriptors
+to be freed while userspace is in the middle of an ioctl requesting
+the same descriptors. Avoid dangling pointer reference by first
+making a local copy of desctiptors before releasing the spinlock.
 
-The driver works flawlessly as soon as the new PID (0x5512) is added to
-it.
-
-Signed-off-by: Jan-Niklas Burfeind <kernel@aiyionpri.me>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: c559a3534109 ("usb: gadget: f_fs: add ioctl returning ep descriptor")
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Signed-off-by: Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201130203453.28154-1-jackp@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/ch341.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/gadget/function/f_fs.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/serial/ch341.c
-+++ b/drivers/usb/serial/ch341.c
-@@ -73,6 +73,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x4348, 0x5523) },
- 	{ USB_DEVICE(0x1a86, 0x7522) },
- 	{ USB_DEVICE(0x1a86, 0x7523) },
-+	{ USB_DEVICE(0x1a86, 0x5512) },
- 	{ USB_DEVICE(0x1a86, 0x5523) },
- 	{ },
- };
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -1324,7 +1324,7 @@ static long ffs_epfile_ioctl(struct file
+ 	case FUNCTIONFS_ENDPOINT_DESC:
+ 	{
+ 		int desc_idx;
+-		struct usb_endpoint_descriptor *desc;
++		struct usb_endpoint_descriptor desc1, *desc;
+ 
+ 		switch (epfile->ffs->gadget->speed) {
+ 		case USB_SPEED_SUPER:
+@@ -1336,10 +1336,12 @@ static long ffs_epfile_ioctl(struct file
+ 		default:
+ 			desc_idx = 0;
+ 		}
++
+ 		desc = epfile->ep->descs[desc_idx];
++		memcpy(&desc1, desc, desc->bLength);
+ 
+ 		spin_unlock_irq(&epfile->ffs->eps_lock);
+-		ret = copy_to_user((void __user *)value, desc, desc->bLength);
++		ret = copy_to_user((void __user *)value, &desc1, desc1.bLength);
+ 		if (ret)
+ 			ret = -EFAULT;
+ 		return ret;
 
 
