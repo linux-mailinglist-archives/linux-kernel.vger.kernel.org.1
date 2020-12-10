@@ -2,410 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D982D5082
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 02:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5AE2D508B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 03:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727089AbgLJByf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 20:54:35 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:18226 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727020AbgLJBye (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 20:54:34 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BA1n4iP023149;
-        Wed, 9 Dec 2020 17:53:31 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=qvcVQlk+vpjOlk80iXppK74fAxXugUvOT/xCuGWt7iE=;
- b=SmJ/lU86ZGxQm+ze18nMx/6Q6cdhseJ1+BuI34u+20VIrH6sWIHCYNM3AL+9wHVWqTrO
- qe4Sp3aySyG+ZrEimMcf4ZUE36vyPnOCyjUkmnSEIN67Bl2b7tJI6EjW8lEwsSzknRpi
- AV4RzMLSYbtVC8fWcnaiUyr1SSHExuXHfNM= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 35ak7a92mn-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 09 Dec 2020 17:53:31 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+        id S1727292AbgLJB4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 20:56:07 -0500
+Received: from mga02.intel.com ([134.134.136.20]:38987 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727168AbgLJB4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 20:56:06 -0500
+IronPort-SDR: ZfuhphYgJruAwIceiOFy1up7VY3IR56fi0y7kNjLr26vVU01GWJoEkWHsJH5+9LAT5vElUQfom
+ PwjRAZz1iJNw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="161231980"
+X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
+   d="scan'208";a="161231980"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 17:55:24 -0800
+IronPort-SDR: qU6I2uzidWOkOjktN5ZXS0RL6oTLNSiQmuGX/a591yt4nVeVW6KBy1Ip8EObhTfs3HmB27Wi2h
+ CnPeNLPrBxhg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
+   d="scan'208";a="318641867"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by fmsmga008.fm.intel.com with ESMTP; 09 Dec 2020 17:55:24 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 9 Dec 2020 17:53:28 -0800
+ 15.1.1713.5; Wed, 9 Dec 2020 17:55:23 -0800
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 9 Dec 2020 17:55:23 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 9 Dec 2020 17:55:23 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.104)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Wed, 9 Dec 2020 17:55:23 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NQRWxqDMIi4VZzzBh0vtTu6l6ls9C1LjAABZ77nV9pLBGaUsJ3cXyjOj+92iGhG9HB6ZrJQRvE1Rhy6kZYYhBzZ9W/CdYMDsKSHN2zBX5T+PkbV9KWHxwCnWpeO6TuoDdMAz1PdESS3GtA/Rhr3R4bNATWkthTqjtsMy2TF1WE0DSM1wfJcgx0kjvV+kjr3Up/knQ5ti/qG1N8zJJapgw94O00oEeDu8ONU2YAGEicNo5bWyOHVpeU3UogClSn89Ny2PNnzQD3bf+E8d2kRJ3eygQMJZ5gWivak9FocPfMATuDdhcYgwx20cHBGvXls8QFoRTjgYXpPr4AVFEnq5kA==
+ b=Fu1djRKw/+/8G9gte+8PKTgYSkjEsOpNi/DD8rnT0/idEbTYhTjsjBkW8lpqKWXHtEtv0cnegbuoaYkSGTYb50BEeQoa84ZHGDNhjiIod8vaql2FmHQuO2azCNyJXzcsulBdnAoWrmh4WyleYzZeeHT4Ag5qvLrm8+nMHYEJr8upPz16tEMLxa6BTdQ0exwz9i2l6TGVbuAbX67Rajny0H7VB+GN62XYiGKmBZnLffq62MllinBhGiNPwnvhagLjANv1Y02LepTThWM1n18a9VjlUSD7JnKgZLY4Fpdx65Tb1r3Adb0RuBasrSNq2/WoNO9kNOdq+vCgISprE2g6kA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qvcVQlk+vpjOlk80iXppK74fAxXugUvOT/xCuGWt7iE=;
- b=bbbFVMaZvyH+9nAQw8CtNnG0KeuDmoSN3J9Cpz/plJ06wwXsiPmvxox/nb4F0Y8Trpatc73DptSL1pFp1wvjiUhk9cGEXSnzmzq3P+Go5PHhWXCyV1duI9KrrtH3A2PmdQ6Yx9/BjaXHImgo0n3V1hXZC39zb3FGzHjvGhTHYkRfg0m9K3F2eW8qrCqILz9y2uC9ad38i3LUO3KSxV2pDXDz3DgcI0v4fp2M+KaU5ERSg/kmpNBHO3zbzpp1ydi52+X1qc61+ByUMeNV2wGWaVKPYkpGwhgAUmGm0JI+h1cxAUFxbECcZAmaMedictBIlJzLlaFGmX2hX7QRPSUU9A==
+ bh=PWKUHnrq8BKjeBIWQAKwqYmAP1EAGEiCt5l6LeY2kBw=;
+ b=MlNQwAx8llUwZSHndFUWLPLDVrnb2dT1DOUdNa9/7dciIr4tgqxkGWFX2mEzs1UIqUlmdcd6yka/1WN88xo5GtM1XYuQCoWlNWputlt4Ja3gZsOtiU/fz8vZpFgVs3Rb9qTEA1mAiI/0GgdJZbRIasGa8hrd4ODHZQhPaWAAl8FsMIVXGQtnQzr1rIjXJIVJddrP7q8mBz7oRAnvRTJj1QzDO1UWXol9sv4gsDcStBlyKE/fTRk3Vo9k9iOlAO14IXe1GEQzPy/B3ZZ+aPhgKfq9CbA9G7I9cvouIZQpqY2Lr1MJWQh+Un15teZ1nDWtibwSk7ZOMB16ve5mT7TnCQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qvcVQlk+vpjOlk80iXppK74fAxXugUvOT/xCuGWt7iE=;
- b=KgGgWR2jJzpb+39v3aJcSnvlOKT7EK8MyGNLpzsQsQEc3ied8TCCtiqOWfCMVhgjpy50IuRqnRKXXYT5uky6j4WrxBXplz3XKUXqTal8jy7j7ALz+D/tuJsUDYkam05j0dnXMTHyg6d/HmJ7iBLFA+XygQKlOyl/12Of2d9l+iA=
-Authentication-Results: amazon.co.jp; dkim=none (message not signed)
- header.d=none;amazon.co.jp; dmarc=none action=none header.from=fb.com;
-Received: from CH2PR15MB3573.namprd15.prod.outlook.com (2603:10b6:610:e::28)
- by CH2PR15MB3542.namprd15.prod.outlook.com (2603:10b6:610:7::12) with
+ bh=PWKUHnrq8BKjeBIWQAKwqYmAP1EAGEiCt5l6LeY2kBw=;
+ b=FdXGl/pjAOUHlyg08qxtZ5YifgwViSlMzopG/GHKn7wZLOieSOTreKJCZoWod0AbPhAmXMfwx98R+9ZTV7ZxU6Iml6405WI0u8tD4Z0mCeTx3sTCyxeXMO3lQeO75AwQmyUjyoK8/0FI/N3vH394hrdGlM4PoJk+vOmAZBfQPOY=
+Received: from BY5PR11MB3893.namprd11.prod.outlook.com (2603:10b6:a03:183::26)
+ by BY5PR11MB4103.namprd11.prod.outlook.com (2603:10b6:a03:18c::29) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Thu, 10 Dec
- 2020 01:53:27 +0000
-Received: from CH2PR15MB3573.namprd15.prod.outlook.com
- ([fe80::81f0:e22:522e:9dd]) by CH2PR15MB3573.namprd15.prod.outlook.com
- ([fe80::81f0:e22:522e:9dd%7]) with mapi id 15.20.3632.021; Thu, 10 Dec 2020
- 01:53:27 +0000
-Date:   Wed, 9 Dec 2020 17:53:19 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <eric.dumazet@gmail.com>, <kuba@kernel.org>,
-        <kuni1840@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH v1 bpf-next 03/11] tcp: Migrate
- TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
-Message-ID: <20201210015319.e6njlcwuhfpre3bn@kafai-mbp.dhcp.thefacebook.com>
-References: <20201209080509.66504-1-kuniyu@amazon.co.jp>
- <20201209165719.73652-1-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209165719.73652-1-kuniyu@amazon.co.jp>
-X-Originating-IP: [2620:10d:c090:400::5:55be]
-X-ClientProxiedBy: SJ0PR05CA0192.namprd05.prod.outlook.com
- (2603:10b6:a03:330::17) To CH2PR15MB3573.namprd15.prod.outlook.com
- (2603:10b6:610:e::28)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.13; Thu, 10 Dec
+ 2020 01:55:22 +0000
+Received: from BY5PR11MB3893.namprd11.prod.outlook.com
+ ([fe80::10d0:b76c:2ead:8a66]) by BY5PR11MB3893.namprd11.prod.outlook.com
+ ([fe80::10d0:b76c:2ead:8a66%5]) with mapi id 15.20.3654.014; Thu, 10 Dec 2020
+ 01:55:21 +0000
+From:   "Tan, Ley Foon" <ley.foon.tan@intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>
+Subject: RE: [PATCH] block: blk-iocost: fix build for ARCH with missing
+ local64.h files
+Thread-Topic: [PATCH] block: blk-iocost: fix build for ARCH with missing
+ local64.h files
+Thread-Index: AQHWzmyGaj384SACK0KSzACXBpjhJKnvkgEg
+Date:   Thu, 10 Dec 2020 01:55:21 +0000
+Message-ID: <BY5PR11MB3893310F750FB2F0AE587AC7CCCB0@BY5PR11MB3893.namprd11.prod.outlook.com>
+References: <20201209204657.6676-1-rdunlap@infradead.org>
+In-Reply-To: <20201209204657.6676-1-rdunlap@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [210.186.140.253]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 066dc0ce-8c20-43ad-5c5b-08d89caea769
+x-ms-traffictypediagnostic: BY5PR11MB4103:
+x-microsoft-antispam-prvs: <BY5PR11MB410372C83B3DC01CFEDB8302CCCB0@BY5PR11MB4103.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XOEiiLIMAuA4QYWbV+gTOcKAVMvaPxgdE4Txh1Pnf7ae5sK+0uUQzGau25Yg76LBOFu1zvHnHwyNxL/tsYx0xT8zEPSRGCjzb6ay6AJ2OYGlAFnuQcF6Obb7ca4aZUcl+PLBxql7NQxr3YCh7TyNd6j+Uom/idmXP7fbwIb4koTq2vjIwmt+B9BqHtFICeGPNC6g0wtzTRGs0Kx9RJ0+G0vIYx3PfAOLZuZGqxdZuNMVv7u9fAfWc1PzED11CNDUKT7qDvY91bbZ4X87jbdm9Aovrp1mbgxGdQsymOhI41ebeZ7X6xzqfOqeU9+6zG9VYbq0ipxHF+sZAVFtRwY5QA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB3893.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(346002)(52536014)(9686003)(7696005)(86362001)(6506007)(54906003)(110136005)(2906002)(83380400001)(4326008)(76116006)(66476007)(508600001)(186003)(66446008)(71200400001)(33656002)(66556008)(5660300002)(53546011)(64756008)(26005)(8936002)(66946007)(8676002)(55016002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?9QJ92V2PoMF8DGFYQU86QvWY9KRiXozjCDM+kDP8evpYbSQJEaeInu82x+WK?=
+ =?us-ascii?Q?ch9+47+rdbfJWiB5GDt92yY5/8qt4Wbbrl0/iUgO+ZyrngHgZOwkLExrotlU?=
+ =?us-ascii?Q?9JG4iu3oHa1FoptG+5PlGJfbmIxtSwizpWTS4/mrWk7B8ey6Otr3lACOrk4+?=
+ =?us-ascii?Q?yH0OZVli7O2f7KzOWkDKzxCbQ+fjjwYMd18Lo+3KV2/fdjiFYL10MR1NXrWA?=
+ =?us-ascii?Q?QUHdhQywcPu9gsQiF3BrV7ige+ckPMyb3IvhbKVJ4LjBJLWm7jPfg16cIdRP?=
+ =?us-ascii?Q?cUSV6h6uYg8DBCMaxrhJnqRXwiIhkShG1Ao0Jd0rzTHgSlK24CWd5XpAitID?=
+ =?us-ascii?Q?hvpGs75ugLUb8vpmj6yaHWCjnu88GL45IXAYiRJmLB1wNzDPoECIXVyvREfp?=
+ =?us-ascii?Q?bztZ2U7eDnKIjk5CLl3sf2LF2eibQe53mQg/wAD/M3lfzFHQpSxsvFRgBwxw?=
+ =?us-ascii?Q?+U/m0Woo9XLKG8tnZDvHj7uRZiMuORoRfrLS+VrPBD7FFlRPIUwCzq9V8WD4?=
+ =?us-ascii?Q?BzBEffDk9tx5zTLvIwjqFps45x3gcF4r9FDNRnZxOuMqBoL4T076VOU4c2EH?=
+ =?us-ascii?Q?OVPMQRoUJ8VDajqXXjv3T7JIISkNYRRe5qgq0pwIIPtWlvRhUBNoQPOgap8k?=
+ =?us-ascii?Q?FDFt2lRo+dXJ54V5sWL2zmKHL5D4OOmik2pXVLAspDJWXSR9HgJVRJjo15aV?=
+ =?us-ascii?Q?zUchhD5xvaM4H1uRI+2COCAgx3JWiYgXRn6kCbgfplrK+/vXTaMSxUs3063A?=
+ =?us-ascii?Q?NBGqQ8WKHyXXW3Lubv8Q+Pvchs0GUptt0AD9lmTmmn3rx9o12EHvHj6Bv0eN?=
+ =?us-ascii?Q?+IoP/hYqV3ViVJg2aP3WZHR+RfZbqiZ2cMMtkuUOhbF3WLhPn72a5lUSMP0z?=
+ =?us-ascii?Q?omIJGbgtX2Rg+uMwkH0tOM3uRqvERR/iRVZHlLVwsi1eOpKRTgloI1nSt9jX?=
+ =?us-ascii?Q?O8sRxnm+ZR7pxAEt/x5N8Kd91ARSrgUYXkgxggZyoVs=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:55be) by SJ0PR05CA0192.namprd05.prod.outlook.com (2603:10b6:a03:330::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Thu, 10 Dec 2020 01:53:25 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 61472f4b-5be6-4db9-4284-08d89cae6343
-X-MS-TrafficTypeDiagnostic: CH2PR15MB3542:
-X-Microsoft-Antispam-PRVS: <CH2PR15MB35422E8C25AF10CCAC788458D5CB0@CH2PR15MB3542.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2089;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q4WuePVpW7wSnjO928xKLpq26Uh79wFNLx6cyG+0qtxBdbhRBuSvXr3sNLp7sXSIjUB76MZNtKyGkT8sWJcG3KdSI0hqfNd6kapeyXClk7wjF5V0adu4jWeFaYRHm5rE4XMuH9KilvtZ58GelF2A+ArDPnYgBkcaFB9gFJr/SgmYqlko0tFqus1slpdAhHWhuFvgGx0XFa9jelDtFJ+ktibqkK9AaraWJzzMzCwKmeRik6Y87Pfm4ybiYNBGpY7oYZTs8OCxLgvYc5TreywQzmiglinu+2iC/8uyRjyoAGBSDLVqqJnJs6gqGYK1tKeau7YsNJ9SVVI5FTA6X7zHEw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR15MB3573.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(366004)(66556008)(7696005)(52116002)(1076003)(66946007)(4326008)(30864003)(2906002)(6506007)(66476007)(8676002)(16526019)(186003)(83380400001)(508600001)(55016002)(6916009)(8936002)(6666004)(5660300002)(86362001)(7416002)(9686003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PCmkD9CxXtEPRKWwVxIZdE04IMe1ojbqt34F2tilFMp/O1q32KQmdPebWwUj?=
- =?us-ascii?Q?Fe3Jhxbr0jxlb66JzHMrNXouBGz2OqBSH0u5l+vcEkNcBFoGnRrOAF+QXpd/?=
- =?us-ascii?Q?fT3VujTzUiNSrbgJtj595R70m2BmAmQ76VsPp7kkrDHDeFN1/51BOflLzUZ3?=
- =?us-ascii?Q?DvhnqhGjYc7mWxViV7jcptSF72Dze0ZK4ZNCIhKs/hsCdbEwBaeTXHqURWiQ?=
- =?us-ascii?Q?wFdROzO2o0h3GTZwjPYufJUSIiZ7vGpJlw0hR20jrgiOAd0UAjGyFHZF4CFo?=
- =?us-ascii?Q?BwkWLhsHtAzPaUBPeKamYcpAecvJBVNKxIykuPdl47HnuS2u2590KhJ50fy6?=
- =?us-ascii?Q?rR6vE+7iSv+X7gYWySKKVHKwYE0J/pc+8SR2F65ExREbzXaMygnHIAB08EdC?=
- =?us-ascii?Q?05wGp3oRWUD57gPBaHOJa2NMPtolMyn7raQoDiwsnNQRpTLpZBjC9nLO7v2J?=
- =?us-ascii?Q?2MvkR/qqcHLCyQdAij9tOgM/HgAhjjTIuBeivXz6m962w4oWKImxffgODzlT?=
- =?us-ascii?Q?yiXFeReXf9DKWPI8yxDw70TIxToxvmMPbXwWZcUcgSSYwFaesI/OX01F/YCT?=
- =?us-ascii?Q?PB8G2OXaaNP+i3rIRWI1LpfqVK/V18eFTxxsy6JjIMQ/aeMjp3gTJ65K7UgI?=
- =?us-ascii?Q?VXHVsnvmEU53AW9m1as/oaidSDfE6UMDtQdLECGQ1irh5mENbaiAQNRaPu2i?=
- =?us-ascii?Q?zOgB+eyL6pXNqeVQTO2+rxAkefY80aVfBKeBvUrcAJLNTxt0BrC0zEB18Zfs?=
- =?us-ascii?Q?HfD8zLFFEUGVDO1tE9VfLXwjVIjjw3yNGc5BE1lvL3f7FSV4sYgHSMDTAWjs?=
- =?us-ascii?Q?t8iXIX2nsUYpRsKMsK7ujdbCr4htkiiwF/+V5Yln+LzzrsDEZagwoSOtsEtx?=
- =?us-ascii?Q?7NOgYqDQAbun7/CZ4fJLqzu427poVBAR8EHxGmrfSW2sqXmBjAHSWQsCXXr3?=
- =?us-ascii?Q?cgY0AtwVsneHABz5HD7HYrWTO7ScIViRhjMVLExTNNau9bDFb+BPzBtCJfCH?=
- =?us-ascii?Q?8c9SCWDrV3PhT/N9l6uVR+Bozw=3D=3D?=
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR15MB3573.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2020 01:53:27.5790
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB3893.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 066dc0ce-8c20-43ad-5c5b-08d89caea769
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2020 01:55:21.8018
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61472f4b-5be6-4db9-4284-08d89cae6343
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P3nG/7spFscfQC/H9PZtv6q1urgS/TcKKRTgGzj0m1SEXt/GSdKP2k1oKypfFli/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR15MB3542
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-09_19:2020-12-09,2020-12-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- malwarescore=0 mlxscore=0 suspectscore=1 spamscore=0 adultscore=0
- lowpriorityscore=0 bulkscore=0 phishscore=0 mlxlogscore=511
- priorityscore=1501 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012100012
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vGGNSqK1ZDCZLcqrWPs78GzxYBAq1FzDT0vtWwlJ+Z5+dBagIf1VuP1EXHRPjdb5cdX1cwft+hTII/Iy6klbKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4103
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 01:57:19AM +0900, Kuniyuki Iwashima wrote:
-[ ... ]
 
-> > > > I think it is a bit complex to pass the new listener from
-> > > > reuseport_detach_sock() to inet_csk_listen_stop().
-> > > > 
-> > > > __tcp_close/tcp_disconnect/tcp_abort
-> > > >  |-tcp_set_state
-> > > >  |  |-unhash
-> > > >  |     |-reuseport_detach_sock (return nsk)
-> > > >  |-inet_csk_listen_stop
-> > > Picking the new listener does not have to be done in
-> > > reuseport_detach_sock().
-> > > 
-> > > IIUC, it is done there only because it prefers to pick
-> > > the last sk from socks[] when bpf prog is not attached.
-> > > This seems to get into the way of exploring other potential
-> > > implementation options.
-> > 
-> > Yes.
-> > This is just idea, but we can reserve the last index of socks[] to hold the
-> > last 'moved' socket in reuseport_detach_sock() and use it in
-> > inet_csk_listen_stop().
-> > 
-> > 
-> > > Merging the discussion on the last socks[] pick from another thread:
-> > > >
-> > > > I think most applications start new listeners before closing listeners, in
-> > > > this case, selecting the moved socket as the new listener works well.
-> > > >
-> > > >
-> > > > > That said, if it is still desired to do a random pick by kernel when
-> > > > > there is no bpf prog, it probably makes sense to guard it in a sysctl as
-> > > > > suggested in another reply.  To keep it simple, I would also keep this
-> > > > > kernel-pick consistent instead of request socket is doing something
-> > > > > different from the unhash path.
-> > > >
-> > > > Then, is this way better to keep kernel-pick consistent?
-> > > >
-> > > >   1. call reuseport_select_migrated_sock() without sk_hash from any path
-> > > >   2. generate a random number in reuseport_select_migrated_sock()
-> > > >   3. pass it to __reuseport_select_sock() only for select-by-hash
-> > > >   (4. pass 0 as sk_hash to bpf_run_sk_reuseport not to use it)
-> > > >   5. do migration per queue in inet_csk_listen_stop() or per request in
-> > > >      receive path.
-> > > >
-> > > > I understand it is beautiful to keep consistensy, but also think
-> > > > the kernel-pick with heuristic performs better than random-pick.
-> > > I think discussing the best kernel pick without explicit user input
-> > > is going to be a dead end. There is always a case that
-> > > makes this heuristic (or guess) fail.  e.g. what if multiple
-> > > sk(s) being closed are always the last one in the socks[]?
-> > > all their child sk(s) will then be piled up at one listen sk
-> > > because the last socks[] is always picked?
-> > 
-> > There can be such a case, but it means the newly listened sockets are
-> > closed earlier than old ones.
-> > 
-> > 
-> > > Lets assume the last socks[] is indeed the best for all cases.  Then why
-> > > the in-progress req don't pick it this way?  I feel the implementation
-> > > is doing what is convenient at that point.  And that is fine, I think
-> > 
-> > In this patchset, I originally assumed four things:
-> > 
-> >   migration should be done
-> >     (i)   from old to new
-> >     (ii)  to redistribute requests evenly as possible
-> >     (iii) to keep the order of requests in the queue
-> >           (resulting in splicing queues)
-> >     (iv)  in O(1) for scalability
-> >           (resulting in fix-up rsk_listener approach)
-> > 
-> > I selected the last socket in unhash path to satisfy above four because the
-> > last socket changes at every close() syscall if application closes from
-> > older socket.
-> > 
-> > But in receiving ACK or retransmitting SYN+ACK, we cannot get the last
-> > 'moved' socket. Even if we reserve the last 'moved' socket in the last
-> > index by the idea above, we cannot sure the last socket is changed after
-> > close() for each req->listener. For example, we have listeners A, B, C, and
-> > D, and then call close(A) and close(B), and receive the final ACKs for A
-> > and B, then both of them are assigned to C. In this case, A for D and B for
-> > C is desired. So, selecting the last socket in socks[] for incoming
-> > requests cannnot realize (ii).
-> > 
-> > This is why I selected the last moved socket in unhash path and a random
-> > listener in receive path.
-> > 
-> > 
-> > > for kernel-pick, it should just go for simplicity and stay with
-> > > the random(/hash) pick instead of pretending the kernel knows the
-> > > application must operate in a certain way.  It is fine
-> > > that the pick was wrong, the kernel will eventually move the
-> > > childs/reqs to the survived listen sk.
-> > 
-> > Exactly. Also the heuristic way is not fair for every application.
-> > 
-> > After reading below idea (migrated_sk), I think random-pick is better
-> > at simplicity and passing each sk.
-> > 
-> > 
-> > > [ I still think the kernel should not even pick if
-> > >   there is no bpf prog to instruct how to pick
-> > >   but I am fine as long as there is a sysctl to
-> > >   guard this. ]
-> > 
-> > Unless different applications listen on the same port, random-pick can save
-> > connections which would be aborted. So, I would add a sysctl to do
-> > migration when no eBPF prog is attached.
-> > 
-> > 
-> > > I would rather focus on ensuring the bpf prog getting what it
-> > > needs to make the migration pick.  A few things
-> > > I would like to discuss and explore:
-> > > > If we splice requests like this, we do not need double lock?
-> > > > 
-> > > >   1. lock the accept queue of the old listener
-> > > >   2. unlink all requests and decrement refcount
-> > > >   3. unlock
-> > > >   4. update all requests with new listener
-> > > I guess updating rsk_listener can be done without acquiring
-> > > the lock in (5) below is because it is done under the
-> > > listening_hash's bucket lock (and also the global reuseport_lock) so
-> > > that the new listener will stay in TCP_LISTEN state?
-> > 
-> > If we do migration in inet_unhash(), the lock is held, but it is not held
-> > in inet_csk_listen_stop().
-> > 
-> > 
-> > > I am not sure iterating the queue under these
-> > > locks is a very good thing to do though.  The queue may not be
-> > > very long in usual setup but still let see
-> > > if that can be avoided.
-> > 
-> > I agree, lock should not be held long.
-> > 
-> > 
-> > > Do you think the iteration can be done without holding
-> > > bucket lock and the global reuseport_lock?  inet_csk_reqsk_queue_add()
-> > > is taking the rskq_lock and then check for TCP_LISTEN.  May be
-> > > something similar can be done also?
-> > 
-> > I think either one is necessary at least, so if the sk_state of selected
-> > listener is TCP_CLOSE (this is mostly by random-pick of kernel), then we
-> > have to fall back to call inet_child_forget().
-> > 
-> > 
-> > > While doing BPF_SK_REUSEPORT_MIGRATE_REQUEST,
-> > > the bpf prog can pick per req and have the sk_hash.
-> > > However, while doing BPF_SK_REUSEPORT_MIGRATE_QUEUE,
-> > > the bpf prog currently does not have a chance to
-> > > pick individually for each req/child on the queue.
-> > > Since it is iterating the queue anyway, does it make
-> > > sense to also call the bpf to pick for each req/child
-> > > in the queue?  It then can pass sk_hash (from child->sk_hash?)
-> > > to the bpf prog also instead of current 0.  The cost of calling
-> > > bpf prog is not really that much / signficant at the
-> > > migration code path.  If the queue is somehow
-> > > unusally long, there is already an existing
-> > > cond_resched() in inet_csk_listen_stop().
-> > > 
-> > > Then, instead of adding sk_reuseport_md->migration,
-> > > it can then add sk_reuseport_md->migrate_sk.
-> > > "migrate_sk = req" for in-progress req and "migrate_sk = child"
-> > > for iterating acceptq.  The bpf_prog can then tell what sk (req or child)
-> > > it is migrating by reading migrate_sk->state.  It can then also
-> > > learn the 4 tuples src/dst ip/port while skb is missing.
-> > > The sk_reuseport_md->sk can still point to the closed sk
-> > > such that the bpf prog can learn the cookie.
-> > > 
-> > > I suspect a few things between BPF_SK_REUSEPORT_MIGRATE_REQUEST
-> > > and BPF_SK_REUSEPORT_MIGRATE_QUEUE can be folded together
-> > > by doing the above.  It also gives a more consistent
-> > > interface for the bpf prog, no more MIGRATE_QUEUE vs MIGRATE_REQUEST.
-> > 
-> > I think this is really nice idea. Also, I tried to implement random-pick
-> > one by one in inet_csk_listen_stop() yesterday, I found a concern about how
-> > to handle requests in TFO queue.
-> > 
-> > The request can be already accepted, so passing it to eBPF prog is
-> > confusing? But, redistributing randomly can affect all listeners
-> > unnecessary. How should we handle such requests?
-> 
-> I've implemented one-by-one migration only for the accept queue for now.
-> In addition to the concern about TFO queue,
-You meant this queue:  queue->fastopenq.rskq_rst_head?
-Can "req" be passed?
-I did not look up the lock/race in details for that though.
 
-> I want to discuss which should
-> we pass NULL or request_sock to eBPF program as migrate_sk when selecting a
-> listener for SYN ?
-hmmm... not sure I understand your question.
+> -----Original Message-----
+> From: Randy Dunlap <rdunlap@infradead.org>
+> Sent: Thursday, December 10, 2020 4:47 AM
+> To: linux-kernel@vger.kernel.org
+> Cc: Randy Dunlap <rdunlap@infradead.org>; Tejun Heo <tj@kernel.org>;
+> Jens Axboe <axboe@kernel.dk>; linux-block@vger.kernel.org; Tan, Ley Foon
+> <ley.foon.tan@intel.com>; Mark Salter <msalter@redhat.com>; Aurelien
+> Jacquiot <jacquiot.aurelien@gmail.com>; linux-c6x-dev@linux-c6x.org
+> Subject: [PATCH] block: blk-iocost: fix build for ARCH with missing local=
+64.h
+> files
+>=20
+> When building block/blk-iocost.c on arch/x6x/ or arch/nios2/, the build f=
+ails
+> due to missing the <asm/local64.h> file.
+>=20
+> Fix this by adding local64.h as a "generic-y" file in their respective Kb=
+uild files,
+> so that they will use a copy of <asm-generic/local64.h> instead (copied t=
+o
+> arch/*/include/generated/local64.h by the build system).
+>=20
+> c6x or nios2 build error:
+> ../block/blk-iocost.c:183:10: fatal error: asm/local64.h: No such file or
+> directory
+>   183 | #include <asm/local64.h>
+>=20
+> Fixes: 5e124f74325d ("blk-iocost: use local[64]_t for percpu stat")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: linux-block@vger.kernel.org
+> Cc: Ley Foon Tan <ley.foon.tan@intel.com>
+> Cc: Mark Salter <msalter@redhat.com>
+> Cc: Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+> Cc: linux-c6x-dev@linux-c6x.org
+> ---
+>  arch/c6x/include/asm/Kbuild   |    1 +
+>  arch/nios2/include/asm/Kbuild |    1 +
+>  2 files changed, 2 insertions(+)
+>=20
+> --- linux-next-20201208.orig/arch/c6x/include/asm/Kbuild
+> +++ linux-next-20201208/arch/c6x/include/asm/Kbuild
+> @@ -1,5 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  generic-y +=3D extable.h
+>  generic-y +=3D kvm_para.h
+> +generic-y +=3D local64.h
+>  generic-y +=3D mcs_spinlock.h
+>  generic-y +=3D user.h
+> --- linux-next-20201208.orig/arch/nios2/include/asm/Kbuild
+> +++ linux-next-20201208/arch/nios2/include/asm/Kbuild
+> @@ -2,6 +2,7 @@
+>  generic-y +=3D cmpxchg.h
+>  generic-y +=3D extable.h
+>  generic-y +=3D kvm_para.h
+> +generic-y +=3D local64.h
+>  generic-y +=3D mcs_spinlock.h
+>  generic-y +=3D spinlock.h
+>  generic-y +=3D user.h
 
-You meant the existing lookup listener case from inet_lhash2_lookup()?
-There is nothing to migrate at that point, so NULL makes sense to me.
-migrate_sk's type should be PTR_TO_SOCK_COMMON_OR_NULL.
+For nios2:
 
-> 
-> ---8<---
-> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> index a82fd4c912be..d0ddd3cb988b 100644
-> --- a/net/ipv4/inet_connection_sock.c
-> +++ b/net/ipv4/inet_connection_sock.c
-> @@ -1001,6 +1001,29 @@ struct sock *inet_csk_reqsk_queue_add(struct sock *sk,
->  }
->  EXPORT_SYMBOL(inet_csk_reqsk_queue_add);
->  
-> +static bool inet_csk_reqsk_queue_migrate(struct sock *sk, struct sock *nsk, struct request_sock *req)
-> +{
-> +       struct request_sock_queue *queue = &inet_csk(nsk)->icsk_accept_queue;
-> +       bool migrated = false;
-> +
-> +       spin_lock(&queue->rskq_lock);
-> +       if (likely(nsk->sk_state == TCP_LISTEN)) {
-> +               migrated = true;
-> +
-> +               req->dl_next = NULL;
-> +               if (queue->rskq_accept_head == NULL)
-> +                       WRITE_ONCE(queue->rskq_accept_head, req);
-> +               else
-> +                       queue->rskq_accept_tail->dl_next = req;
-> +               queue->rskq_accept_tail = req;
-> +               sk_acceptq_added(nsk);
-> +               inet_csk_reqsk_queue_migrated(sk, nsk, req);
-need to first resolve the question raised in patch 5 regarding
-to the update on req->rsk_listener though.
+Acked-by: Ley Foon Tan <ley.foon.tan@intel.com>
 
-> +       }
-> +       spin_unlock(&queue->rskq_lock);
-> +
-> +       return migrated;
-> +}
-> +
->  struct sock *inet_csk_complete_hashdance(struct sock *sk, struct sock *child,
->                                          struct request_sock *req, bool own_req)
->  {
-> @@ -1023,9 +1046,11 @@ EXPORT_SYMBOL(inet_csk_complete_hashdance);
->   */
->  void inet_csk_listen_stop(struct sock *sk)
->  {
-> +       struct sock_reuseport *reuseport_cb = rcu_access_pointer(sk->sk_reuseport_cb);
->         struct inet_connection_sock *icsk = inet_csk(sk);
->         struct request_sock_queue *queue = &icsk->icsk_accept_queue;
->         struct request_sock *next, *req;
-> +       struct sock *nsk;
->  
->         /* Following specs, it would be better either to send FIN
->          * (and enter FIN-WAIT-1, it is normal close)
-> @@ -1043,8 +1068,19 @@ void inet_csk_listen_stop(struct sock *sk)
->                 WARN_ON(sock_owned_by_user(child));
->                 sock_hold(child);
->  
-> +               if (reuseport_cb) {
-> +                       nsk = reuseport_select_migrated_sock(sk, req_to_sk(req)->sk_hash, NULL);
-> +                       if (nsk) {
-> +                               if (inet_csk_reqsk_queue_migrate(sk, nsk, req))
-> +                                       goto unlock_sock;
-> +                               else
-> +                                       sock_put(nsk);
-> +                       }
-> +               }
-> +
->                 inet_child_forget(sk, req, child);
->                 reqsk_put(req);
-> +unlock_sock:
->                 bh_unlock_sock(child);
->                 local_bh_enable();
->                 sock_put(child);
-> ---8<---
-> 
-> 
-> > > >   5. lock the accept queue of the new listener
-> > > >   6. splice requests and increment refcount
-> > > >   7. unlock
-> > > > 
-> > > > Also, I think splicing is better to keep the order of requests. Adding one
-> > > > by one reverses it.
-> > > It can keep the order but I think it is orthogonal here.
+Regards
+Ley Foon
