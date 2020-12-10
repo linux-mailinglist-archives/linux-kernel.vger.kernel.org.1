@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BE22D6B5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 974552D6B26
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393705AbgLJW64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 17:58:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730422AbgLJWc7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:32:59 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F295C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:32:19 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id 2so6936297ilg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:32:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=wAy9QWmSbAjP+1vzLoCprV0JhS6b3tOG3oKCIiePlHY=;
-        b=XoppR/t/VsHPixKkpY66yhU1MxaWjuDNxJNdhQnrk/nxTkfsAhaW3JhJt81/Ot9As2
-         zilGS/RGnAisEXNhWUIjdpLIYuVEqe4HKXpstyCJVhqHpKc8B6Ziox6EDo4MNLVJiDJ/
-         ut7zdSeJiDNd5LIpYZOXcteDS1idKVeUsbgMI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=wAy9QWmSbAjP+1vzLoCprV0JhS6b3tOG3oKCIiePlHY=;
-        b=HBFYDvTdiJAeUbQtmdhGbVJKAPLK8w8a8onxzVc7IyYkvkPWUEr3+QQaZhaUpyntYz
-         ks1Zc5mkF9kaLbRYfrVXmxtvbxQyLC7DcG1JHhcCdhGPQMHWNdlviEA/kCmSGfheEVqg
-         AHkTqG3YnztKQDK10HVYX/mmOaVlFd3rwnJHX4O1Ons9bVldd1YjrC2Ifv8tRfjfBHDz
-         5ieOLbqv2t4JnZLUrRoQKbFAOzrzVS0fTJ4H55mKA+TAA5XCz81z3Fajn6viw61U5szG
-         aae0erZ5gbwXVZmLyQlsPBAOx3D0fnU7jErfyhcRAAEH1M8VbvzlHhABrWFSuAZtlQ9W
-         s4bQ==
-X-Gm-Message-State: AOAM532hpKeMo0ixamsyYKgbhg5+xnXKE8rtRtw8elrrtGUCgo4FKbbb
-        HRc6XJETK1Ep6NIxuu/WcCSVuCv0QW8JYg==
-X-Google-Smtp-Source: ABdhPJyCchftowUz5XPIXXQ53pvevHKPmlYhW+5uT6/c1SRldRP+CzB/QN4Ty5ZkR8Vnub1SqvrbGA==
-X-Received: by 2002:a63:2406:: with SMTP id k6mr8556983pgk.453.1607637438657;
-        Thu, 10 Dec 2020 13:57:18 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id u124sm7831835pfb.171.2020.12.10.13.57.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 13:57:18 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S2405105AbgLJWbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 17:31:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405114AbgLJWY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 17:24:28 -0500
+X-Gm-Message-State: AOAM533iQCX9Rm5VbO/hL6hPW3yWJDbnMAqe0cJ12mcTbVhXCefhWQrj
+        pMNMy7c22dwMsZx/FFN2jRZrAENrMyOL8WBnDGXxuw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607637685;
+        bh=4yt8h1Q+CPGGcT2IO75cM/fN5M+tD+08bKTLE18FGBc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mMWvnIShKAgYdcX4PZb8dm3EICOtgYX6trNmFvewYP950g4nA7qZFUO3aspNqYyCV
+         W0nMO4Uiv0A2JNQScze/bR1D4r6sLp1z2j28hPPzB6E7JWlAXMkYdytq1ETss+zhBA
+         qpTcen55RpIcHCr5sRoWE1BCFgn6MvS1STdBvxgXl0DL5mOvmPpl3if8LgQIVj1rSI
+         lNTnmlAZYUI1R+GPk87at/QKlEDpe1actw0jFqS+cNmc5/RaP75d2h4fJpEFk31ILP
+         PlPRX0c1sUGmfWEbf2cNXeaSFee43sbhR7LQ+0dZdPlBxZqETopmAVlZJ5JbGveVVK
+         bG92QEYqTL55A==
+X-Google-Smtp-Source: ABdhPJzF2a9E+mCWo9M4tLmMpSz+6JMPjrTXsFPQMg/z71zkpXbGLbBH1iCVRxG8tDVwZozqBfsoJUXetLw8AUPWzi8=
+X-Received: by 2002:adf:e98c:: with SMTP id h12mr10402629wrm.75.1607637683968;
+ Thu, 10 Dec 2020 14:01:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201210132745.v3.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
-References: <20201210132745.v3.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
-Subject: Re: [PATCH v3] mmc: sdhci-msm: Warn about overclocking SD/MMC
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     vbadigan@codeaurora.org, Taniya Das <tdas@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 10 Dec 2020 13:57:16 -0800
-Message-ID: <160763743676.1580929.8043645391758481751@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <9389c1198da174bcc9483d6ebf535405aa8bdb45.camel@redhat.com>
+ <E4F263BE-6CAA-4152-8818-187D34D8D0FD@amacapital.net> <87360djqve.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87360djqve.fsf@nanos.tec.linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 10 Dec 2020 14:01:12 -0800
+X-Gmail-Original-Message-ID: <CALCETrXXH5GoaSZwSPy-JFxJ6iMMCj0A=yFFPuyutBh+1imCsQ@mail.gmail.com>
+Message-ID: <CALCETrXXH5GoaSZwSPy-JFxJ6iMMCj0A=yFFPuyutBh+1imCsQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2020-12-10 13:27:52)
-> As talked about in commit 5e4b7e82d497 ("clk: qcom: gcc-sdm845: Use
-> floor ops for sdcc clks"), most clocks handled by the Qualcomm clock
-> drivers are rounded _up_ by default instead of down.  We should make
-> sure SD/MMC clocks are always rounded down in the clock drivers.
-> Let's add a warning in the Qualcomm SDHCI driver to help catch the
-> problem.
->=20
-> This would have saved a bunch of time [1].
->=20
-> [1] http://lore.kernel.org/r/20201210102234.1.I096779f219625148900fc984dd=
-0084ed1ba87c7f@changeid
->=20
-> Suggested-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+On Thu, Dec 10, 2020 at 1:25 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Andy,
+>
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>
+> I'm still convinced that a notification about 'we take a nap' will be
+> more robust, less complex and more trivial to backport.
+
+What do you have in mind?  Suppose the host kernel sends the guest an
+interrupt on all vCPUs saying "I'm about to take a nap".  What happens
+if the guest is busy with IRQs off for a little bit?  Does the host
+guarantee the guest a certain about of time to try to get the
+interrupt delivered before allowing the host to enter S3?  How about
+if the host wants to reboot for a security fix -- how long is a guest
+allowed to delay the process?
+
+I'm sure this can all be made to work 99% of time, but I'm a bit
+concerned about that last 1%.
+
+--Andy
