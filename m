@@ -2,212 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D7B2D5D2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5DF2D5D29
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387552AbgLJOJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:09:13 -0500
-Received: from mga12.intel.com ([192.55.52.136]:32289 "EHLO mga12.intel.com"
+        id S2390021AbgLJOIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:08:16 -0500
+Received: from mga01.intel.com ([192.55.52.88]:29475 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726212AbgLJOJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:09:13 -0500
-IronPort-SDR: S6slQlhVza8c5Cp7R+68rs6+ENrIshVby0UnN9ylOmagXrgMK89pJf1M4nk8D03cAAlKbA1ju6
- U31qQoJVQ33A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="153491310"
+        id S1733261AbgLJOIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:08:15 -0500
+IronPort-SDR: Aklkd2ouG1w1YKPIky2mX0d4GaeXzcPfZ/p5Z6fenn0Zowc8u8X6QfJRBwvH2jKQmp6I/r08xe
+ DD4fPKCfWGBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="192578543"
 X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="153491310"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 06:08:32 -0800
-IronPort-SDR: NXPLJtMYmT/CeJpidikNNJ75eG+BRyJpsWgmTIw2NV2U2KmqBDhIsDNGMAUU8PBv60H5aP4k6v
- 4nCTk8aoQQLw==
-X-ExtLoop1: 1
+   d="scan'208";a="192578543"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 06:07:07 -0800
+IronPort-SDR: EoDdnLpI+SqnpnRvYnVV7QWUxkweGYOsEBD78Q4+q9L3qi7LLueBvmqYxBZEz3AzFl+ps4cJza
+ lVT8w83o2SFA==
 X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="364666575"
-Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 10 Dec 2020 06:08:31 -0800
-Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1knMcQ-0000Jf-F3; Thu, 10 Dec 2020 14:08:30 +0000
-Date:   Thu, 10 Dec 2020 22:07:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.12.08d] BUILD SUCCESS
- 99312ae06ad1265dbaa5bc9df63b3bc65bef61c4
-Message-ID: <5fd22ba3.V7y3P7jr7p1SEbOF%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="348822288"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 06:07:04 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1knMc1-00DR1Y-Ma; Thu, 10 Dec 2020 16:08:05 +0200
+Date:   Thu, 10 Dec 2020 16:08:05 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v5 1/1] lib/vsprintf: Add support for printing V4L2 and
+ DRM fourccs
+Message-ID: <20201210140805.GI4077@smile.fi.intel.com>
+References: <20201113105441.1427-1-sakari.ailus@linux.intel.com>
+ <X9Hdg3lJm+TZAQGX@alley>
+ <CAHp75VcY_b7uaGWoEa1Y6YDk0MmmzC4hV2yx8zVT7J-fD67Hyg@mail.gmail.com>
+ <20201210135526.GH25763@paasikivi.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201210135526.GH25763@paasikivi.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.12.08d
-branch HEAD: 99312ae06ad1265dbaa5bc9df63b3bc65bef61c4  rcu-tasks: Add RCU-tasks self tests
+On Thu, Dec 10, 2020 at 03:55:27PM +0200, Sakari Ailus wrote:
+> On Thu, Dec 10, 2020 at 03:05:02PM +0200, Andy Shevchenko wrote:
+> > On Thu, Dec 10, 2020 at 2:16 PM Petr Mladek <pmladek@suse.com> wrote:
+> > > On Fri 2020-11-13 12:54:41, Sakari Ailus wrote:
+> > > > Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
+> > > > pixel formats denoted by fourccs. The fourcc encoding is the same for both
+> > > > so the same implementation can be used.
+> > > >
+> > > > Suggested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > > > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > >
+> > > Andy, Rasmus,
+> > >
+> > > the last version looks fine to me. I am going to push it.
+> > > Please, speak up if you are against it.
+> > 
+> > My concerns are:
+> > - not so standard format of representation (why not to use
+> > string_escape_mem() helper?) or is it?
+> 
+> The format string may contain spaces that are not meant to be printed.
+> Other unprintable chacaters should not be present (at least not in V4L2
+> pixelformats). The hexadecimal representation is there to convey the
+> numerical value and that originally came from DRM, not V4L2.
 
-elapsed time: 722m
+Yes, but I mean that we usually anticipate the escaped characters in a form of
+'\xNN' (hex) or '\NNN' (octal). The format '(NN)' is quite unusual to me.
 
-configs tested: 150
-configs skipped: 2
+> > - no compatibility with generic 4cc
+> >   (I would rather have an additional specifier here for v4l2 cases.
+> 
+> What do you mean by "generic 4cc"? There are two users of 4cc codes in the
+> kernel that I know of: V4L2 and DRM. Something that does not refer to
+> in-memory pixel formats?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Of course. Everything else. 4cc is a generic term to describe something which
+is of 4 characters long [1]. It's not limited by media file formats. And
+moreover some (chip) vendors are using it as well (Synopsys).
+Microsoft uses 4cc in CSRT ACPI table for vendor field and so on...
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          kfr2r09_defconfig
-x86_64                           alldefconfig
-arm                     am200epdkit_defconfig
-arm                  colibri_pxa270_defconfig
-arm                          lpd270_defconfig
-m68k                       m5475evb_defconfig
-m68k                        m5407c3_defconfig
-sh                            titan_defconfig
-xtensa                generic_kc705_defconfig
-s390                             allyesconfig
-mips                         mpc30x_defconfig
-openrisc                 simple_smp_defconfig
-m68k                        stmark2_defconfig
-sh                           se7722_defconfig
-riscv                    nommu_virt_defconfig
-arm                          ep93xx_defconfig
-powerpc                         wii_defconfig
-xtensa                  cadence_csp_defconfig
-powerpc                      tqm8xx_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                      walnut_defconfig
-ia64                         bigsur_defconfig
-m68k                         apollo_defconfig
-powerpc                     tqm8555_defconfig
-riscv                            allmodconfig
-m68k                        mvme16x_defconfig
-mips                        omega2p_defconfig
-ia64                        generic_defconfig
-um                             i386_defconfig
-mips                           gcw0_defconfig
-sh                           se7724_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                           viper_defconfig
-arm                    vt8500_v6_v7_defconfig
-sh                        edosk7760_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                 mpc85xx_cds_defconfig
-mips                         tb0219_defconfig
-mips                  maltasmvp_eva_defconfig
-mips                     cu1000-neo_defconfig
-powerpc                     rainier_defconfig
-arm                        spear6xx_defconfig
-arm                         s3c6400_defconfig
-mips                         db1xxx_defconfig
-mips                            ar7_defconfig
-arm                       versatile_defconfig
-powerpc                        icon_defconfig
-arm                           tegra_defconfig
-arm                        multi_v5_defconfig
-mips                          ath79_defconfig
-arc                              allyesconfig
-powerpc                     redwood_defconfig
-powerpc                 linkstation_defconfig
-mips                           mtx1_defconfig
-mips                          ath25_defconfig
-sh                             shx3_defconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                      pmac32_defconfig
-riscv                    nommu_k210_defconfig
-openrisc                            defconfig
-m68k                           sun3_defconfig
-arm                        multi_v7_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201209
-i386                 randconfig-a005-20201209
-i386                 randconfig-a001-20201209
-i386                 randconfig-a002-20201209
-i386                 randconfig-a006-20201209
-i386                 randconfig-a003-20201209
-i386                 randconfig-a001-20201210
-i386                 randconfig-a004-20201210
-i386                 randconfig-a003-20201210
-i386                 randconfig-a002-20201210
-i386                 randconfig-a005-20201210
-i386                 randconfig-a006-20201210
-x86_64               randconfig-a016-20201209
-x86_64               randconfig-a012-20201209
-x86_64               randconfig-a013-20201209
-x86_64               randconfig-a014-20201209
-x86_64               randconfig-a015-20201209
-x86_64               randconfig-a011-20201209
-i386                 randconfig-a013-20201209
-i386                 randconfig-a014-20201209
-i386                 randconfig-a011-20201209
-i386                 randconfig-a015-20201209
-i386                 randconfig-a012-20201209
-i386                 randconfig-a016-20201209
-i386                 randconfig-a014-20201210
-i386                 randconfig-a013-20201210
-i386                 randconfig-a012-20201210
-i386                 randconfig-a011-20201210
-i386                 randconfig-a016-20201210
-i386                 randconfig-a015-20201210
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+[1]: https://en.wikipedia.org/wiki/FourCC
 
-clang tested configs:
-x86_64               randconfig-a004-20201209
-x86_64               randconfig-a006-20201209
-x86_64               randconfig-a005-20201209
-x86_64               randconfig-a001-20201209
-x86_64               randconfig-a002-20201209
-x86_64               randconfig-a003-20201209
-x86_64               randconfig-a003-20201210
-x86_64               randconfig-a006-20201210
-x86_64               randconfig-a002-20201210
-x86_64               randconfig-a005-20201210
-x86_64               randconfig-a004-20201210
-x86_64               randconfig-a001-20201210
+-- 
+With Best Regards,
+Andy Shevchenko
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
