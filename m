@@ -2,30 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4CD2D5F32
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7038C2D5FB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391641AbgLJOrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:47:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45384 "EHLO mail.kernel.org"
+        id S2391451AbgLJOm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:42:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391180AbgLJOi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:38:56 -0500
+        id S2390988AbgLJOgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:36:14 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Subject: [PATCH 5.9 51/75] x86/uprobes: Do not use prefixes.nbytes when looping over prefixes.bytes
-Date:   Thu, 10 Dec 2020 15:27:16 +0100
-Message-Id: <20201210142608.579645025@linuxfoundation.org>
+        stable@vger.kernel.org, Jerry Snitselaar <jsnitsel@redhat.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.4 40/54] iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs
+Date:   Thu, 10 Dec 2020 15:27:17 +0100
+Message-Id: <20201210142604.003592619@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
-References: <20201210142606.074509102@linuxfoundation.org>
+In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
+References: <20201210142602.037095225@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -34,123 +32,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 
-commit 4e9a5ae8df5b3365183150f6df49e49dece80d8c upstream.
+commit 4165bf015ba9454f45beaad621d16c516d5c5afe upstream.
 
-Since insn.prefixes.nbytes can be bigger than the size of
-insn.prefixes.bytes[] when a prefix is repeated, the proper check must
-be
+According to the AMD IOMMU spec, the commit 73db2fc595f3
+("iommu/amd: Increase interrupt remapping table limit to 512 entries")
+also requires the interrupt table length (IntTabLen) to be set to 9
+(power of 2) in the device table mapping entry (DTE).
 
-  insn.prefixes.bytes[i] != 0 and i < 4
-
-instead of using insn.prefixes.nbytes.
-
-Introduce a for_each_insn_prefix() macro for this purpose. Debugged by
-Kees Cook <keescook@chromium.org>.
-
- [ bp: Massage commit message, sync with the respective header in tools/
-   and drop "we". ]
-
-Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install and remove uprobes breakpoints")
-Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/160697103739.3146288.7437620795200799020.stgit@devnote2
+Fixes: 73db2fc595f3 ("iommu/amd: Increase interrupt remapping table limit to 512 entries")
+Reported-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Link: https://lore.kernel.org/r/20201207091920.3052-1-suravee.suthikulpanit@amd.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/include/asm/insn.h       |   15 +++++++++++++++
- arch/x86/kernel/uprobes.c         |   10 ++++++----
- tools/arch/x86/include/asm/insn.h |   15 +++++++++++++++
- 3 files changed, 36 insertions(+), 4 deletions(-)
+ drivers/iommu/amd_iommu_types.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/insn.h
-+++ b/arch/x86/include/asm/insn.h
-@@ -201,6 +201,21 @@ static inline int insn_offset_immediate(
- 	return insn_offset_displacement(insn) + insn->displacement.nbytes;
- }
+--- a/drivers/iommu/amd_iommu_types.h
++++ b/drivers/iommu/amd_iommu_types.h
+@@ -254,7 +254,7 @@
+ #define DTE_IRQ_REMAP_INTCTL_MASK	(0x3ULL << 60)
+ #define DTE_IRQ_TABLE_LEN_MASK	(0xfULL << 1)
+ #define DTE_IRQ_REMAP_INTCTL    (2ULL << 60)
+-#define DTE_IRQ_TABLE_LEN       (8ULL << 1)
++#define DTE_IRQ_TABLE_LEN       (9ULL << 1)
+ #define DTE_IRQ_REMAP_ENABLE    1ULL
  
-+/**
-+ * for_each_insn_prefix() -- Iterate prefixes in the instruction
-+ * @insn: Pointer to struct insn.
-+ * @idx:  Index storage.
-+ * @prefix: Prefix byte.
-+ *
-+ * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
-+ * and the index is stored in @idx (note that this @idx is just for a cursor,
-+ * do not change it.)
-+ * Since prefixes.nbytes can be bigger than 4 if some prefixes
-+ * are repeated, it cannot be used for looping over the prefixes.
-+ */
-+#define for_each_insn_prefix(insn, idx, prefix)	\
-+	for (idx = 0; idx < ARRAY_SIZE(insn->prefixes.bytes) && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
-+
- #define POP_SS_OPCODE 0x1f
- #define MOV_SREG_OPCODE 0x8e
- 
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -255,12 +255,13 @@ static volatile u32 good_2byte_insns[256
- 
- static bool is_prefix_bad(struct insn *insn)
- {
-+	insn_byte_t p;
- 	int i;
- 
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
-+	for_each_insn_prefix(insn, i, p) {
- 		insn_attr_t attr;
- 
--		attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
-+		attr = inat_get_opcode_attribute(p);
- 		switch (attr) {
- 		case INAT_MAKE_PREFIX(INAT_PFX_ES):
- 		case INAT_MAKE_PREFIX(INAT_PFX_CS):
-@@ -715,6 +716,7 @@ static const struct uprobe_xol_ops push_
- static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
- {
- 	u8 opc1 = OPCODE1(insn);
-+	insn_byte_t p;
- 	int i;
- 
- 	switch (opc1) {
-@@ -746,8 +748,8 @@ static int branch_setup_xol_ops(struct a
- 	 * Intel and AMD behavior differ in 64-bit mode: Intel ignores 66 prefix.
- 	 * No one uses these insns, reject any branch insns with such prefix.
- 	 */
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
--		if (insn->prefixes.bytes[i] == 0x66)
-+	for_each_insn_prefix(insn, i, p) {
-+		if (p == 0x66)
- 			return -ENOTSUPP;
- 	}
- 
---- a/tools/arch/x86/include/asm/insn.h
-+++ b/tools/arch/x86/include/asm/insn.h
-@@ -201,6 +201,21 @@ static inline int insn_offset_immediate(
- 	return insn_offset_displacement(insn) + insn->displacement.nbytes;
- }
- 
-+/**
-+ * for_each_insn_prefix() -- Iterate prefixes in the instruction
-+ * @insn: Pointer to struct insn.
-+ * @idx:  Index storage.
-+ * @prefix: Prefix byte.
-+ *
-+ * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
-+ * and the index is stored in @idx (note that this @idx is just for a cursor,
-+ * do not change it.)
-+ * Since prefixes.nbytes can be bigger than 4 if some prefixes
-+ * are repeated, it cannot be used for looping over the prefixes.
-+ */
-+#define for_each_insn_prefix(insn, idx, prefix)	\
-+	for (idx = 0; idx < ARRAY_SIZE(insn->prefixes.bytes) && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
-+
- #define POP_SS_OPCODE 0x1f
- #define MOV_SREG_OPCODE 0x8e
- 
+ #define PAGE_MODE_NONE    0x00
 
 
