@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF77E2D59C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 362282D59A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732994AbgLJLwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:52:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23947 "EHLO
+        id S1729366AbgLJLuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:50:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25700 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727277AbgLJLtw (ORCPT
+        by vger.kernel.org with ESMTP id S1728557AbgLJLuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:49:52 -0500
+        Thu, 10 Dec 2020 06:50:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607600905;
+        s=mimecast20190719; t=1607600921;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nYPQDiAhm8hSh2USepS5FHexuq2b5Pq9ywrQrkIfNpo=;
-        b=Hyy25Z2afntXyb6wipTl2pKeT4dsSiYn6NS3NGjdNsfQ4JOD9UubNlfZaF9RelilOxBHp4
-        WFIRRvXMSSC7tG1Uyi+NWKO61E3Nkmry7gWTDll9qn5M4vqZ+0sbLGkrg/+4qc1SkyOR18
-        v4/WAFzv5yp5PutkRYnSq+Mpw3WXWGw=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-53-kOSpTjFtOIaWKYqR1qmb4g-1; Thu, 10 Dec 2020 06:48:24 -0500
-X-MC-Unique: kOSpTjFtOIaWKYqR1qmb4g-1
-Received: by mail-ed1-f69.google.com with SMTP id e12so2300185eds.19
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 03:48:24 -0800 (PST)
+        bh=S1cqRGAPZ7tEyP9tZX4DdUYMRy3eYwTTW4lAfMAIl0U=;
+        b=eKOm5TpIWBf7WgUoYXclkTwWy7hacnIA2bazirFCQLZpjW5wsFKTjB2FMqF3344/ibj8MK
+        +5OkZoDN0WTjouoq7/xfUNIoSXhiybE0LIUtWGy3A1Ugin0+zZs1ecUOpjHSkcX4s9F4j8
+        /mJmvun3HSlcVWpOLJSoXNsM9GuYAXA=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-543-kk2ZtAUKMRWfVHoREyr0dA-1; Thu, 10 Dec 2020 06:48:40 -0500
+X-MC-Unique: kk2ZtAUKMRWfVHoREyr0dA-1
+Received: by mail-ej1-f72.google.com with SMTP id dv25so1515882ejb.15
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 03:48:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+        h=x-gm-message-state:from:to:cc:references:subject:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=nYPQDiAhm8hSh2USepS5FHexuq2b5Pq9ywrQrkIfNpo=;
-        b=UlvTziE1kxjp1VC6AD2IgGltMRoa0AsMykCgHvLER0TBGKY+eP6wpp4fgZz+IRWSGo
-         pKrWbww1qU0S5aSJMvO4rUAHKpN7uJETNfonmV/Weri0ScHO43XVy2iJo18R8UXMyPQS
-         baRI8843WbGC0GNZYM4JHFsmEq93FIUp30P4HbS5xwYVARowmXw6LLzi0to6DtFgeDO6
-         z9kFt85FwCDbMhjyjMMDAFx4Myz9cI8uwLW+CvriLzx4m/PcV4odpOgqLbAWN7Vrb6g/
-         TmLHIqYtyPnynFRRbE1FRCT5dkkSgs4X+tCvAtYXDzV30a8a3pIZ+VxRaPTBAJdDrD0e
-         T54A==
-X-Gm-Message-State: AOAM533Xmn+8JJ4ttj/MRklnOk82e+mQ+ZKeKEk/SqnME9ZSGgfmO8Lg
-        5j4d78fMLvdV0WyY49QiR6JJlCR1nHDaTlVXlYpWa8SQIgVnWme3kqtn1jHklbUh+k5Qlfg7kQF
-        7r4fwt8mxB4ONdNmRL7fKBdrj
-X-Received: by 2002:a17:906:60c4:: with SMTP id f4mr5984868ejk.336.1607600903231;
-        Thu, 10 Dec 2020 03:48:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxQgXMt4toLvnNgD5Cb9xhVQ4EUd7Fk1QIvNq7IrqgtLyqfYak4c6SknAeDik9vCfyF8qAaQg==
-X-Received: by 2002:a17:906:60c4:: with SMTP id f4mr5984837ejk.336.1607600903022;
-        Thu, 10 Dec 2020 03:48:23 -0800 (PST)
+        bh=S1cqRGAPZ7tEyP9tZX4DdUYMRy3eYwTTW4lAfMAIl0U=;
+        b=AJSdjIR7t5vgqUEGwWMUdskHzXx7SJe/9HamH++j9qXYEgm1yC44HhBuTbQ8HnApcE
+         saZJPRrgYO/mQqKAAnii728XJnHtVGXFqMKQDVOayEGkPVGezsA14TRHKCkd0m1rwP9U
+         8+/x4aFw4S5kzYWNnF/JCvAU44MSFoAD1CFaHfLdBHbRkXbOXQ9ZrpSE0+22Nba1EkA5
+         DPA26RbrCTaiQdCijStWESDGvW36iQR3B6/zqaS79lElLukF0N0saO/1yNmkD84NvyKC
+         n+N7hJ6+wBP9bIFbLTROacZoTju1+jPeyLGNTELR5EVg0xasNSWMMl9AtwQmHeNT18L2
+         GO+w==
+X-Gm-Message-State: AOAM532Vh3gYMBmn6evDE8G6i4EbJ5jgwiFFgKU76siZjveuLQOepssG
+        TFkQROjhA/5f4UUEaZ9v2+N4G02ZTrGt2h6Nvh6Oq3q6nOSs3kMIzt8FOLcZMoTZwk2YwPFhZl1
+        f7ru2z/SO+YWC1JggR+23mZyT
+X-Received: by 2002:a17:906:1e0c:: with SMTP id g12mr6163967ejj.115.1607600918813;
+        Thu, 10 Dec 2020 03:48:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyB1pH5eIBmIOmgLLK8HLkGQLR9KY10/es9c1MjQzaruXTof/K9wc6bX6AIrPVAFDaTCBimbA==
+X-Received: by 2002:a17:906:1e0c:: with SMTP id g12mr6163955ejj.115.1607600918641;
+        Thu, 10 Dec 2020 03:48:38 -0800 (PST)
 Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id rk12sm4108614ejb.75.2020.12.10.03.48.21
+        by smtp.gmail.com with ESMTPSA id q26sm4127282ejt.73.2020.12.10.03.48.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 03:48:22 -0800 (PST)
+        Thu, 10 Dec 2020 03:48:37 -0800 (PST)
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-To:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Oliver Upton <oupton@google.com>
-Cc:     kvm list <kvm@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     kvm@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Jonathan Corbet <corbet@lwn.net>,
         Jim Mattson <jmattson@google.com>,
         Wanpeng Li <wanpengli@tencent.com>,
         "open list:KERNEL SELFTEST FRAMEWORK" 
         <linux-kselftest@vger.kernel.org>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         open list <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -72,52 +70,50 @@ Cc:     kvm list <kvm@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
         Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
         Shuah Khan <shuah@kernel.org>,
         Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
         "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
 References: <20201203171118.372391-1-mlevitsk@redhat.com>
  <20201203171118.372391-2-mlevitsk@redhat.com>
- <CAOQ_Qsj6THRPj2ta3PdOxUJeCj8KxPnLkWV8EGpvN_J=qUv74A@mail.gmail.com>
- <d3dd82950301517e47630cc86fa0e6dc84f63f90.camel@redhat.com>
- <87lfe82quh.fsf@nanos.tec.linutronix.de>
- <047afdde655350a6701803aa8ae739a8bd1c1c14.camel@redhat.com>
-Message-ID: <7c25e8c0-a7d4-8906-ae47-20714e6699fe@redhat.com>
-Date:   Thu, 10 Dec 2020 12:48:20 +0100
+ <20201207232920.GD27492@fuller.cnet>
+ <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com>
+ <87sg8g2sn4.fsf@nanos.tec.linutronix.de>
+ <6f64558a029574444da417754786f711c2fec407.camel@redhat.com>
+ <87blf42dvv.fsf@nanos.tec.linutronix.de>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+Message-ID: <70f9a5b3-d912-2a46-3718-a9c7591cd1f4@redhat.com>
+Date:   Thu, 10 Dec 2020 12:48:36 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <047afdde655350a6701803aa8ae739a8bd1c1c14.camel@redhat.com>
+In-Reply-To: <87blf42dvv.fsf@nanos.tec.linutronix.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/20 18:08, Maxim Levitsky wrote:
->> Even if you support TSCADJUST and let the guest write to it does not
->> change the per guest offset at all. TSCADJUST is per [v]CPU and adds on
->> top:
->>
->>      tscvcpu = tsc_host + guest_offset + TSC_ADJUST
->>
->> Scaling is just orthogonal and does not change any of this.
->
-> I agree with this, and I think that this is what we will end up doing.
-> Paulo, what do you think about this?
+On 08/12/20 22:20, Thomas Gleixner wrote:
+> 
+> So now life migration comes a long time after timekeeping had set the
+> limits and just because it's virt it expects that everything works and it
+> just can ignore these limits.
+> 
+> TBH. That's not any different than SMM or hard/firmware taking the
+> machine out for lunch. It's exactly the same: It's broken.
 
-Yes, you can have a VM ioctl that saves/restores cur_tsc_nsec and 
-cur_tsc_write.  The restore side would loop on all vcpus.
+I agree.  If *live* migration stops the VM for 200 seconds, it's broken.
 
-However, it is not so easy: 1) it would have to be usable only if 
-KVM_X86_QUIRK_TSC_HOST_ACCESS is false, 2) it would fail if 
-kvm->arch.nr_vcpus_matched_tsc == kvm->online_vcpus (which basically 
-means that userspace didn't mess up the TSC configuration).  If not, it 
-would return -EINVAL.
+Sure, there's the case of snapshotting the VM over the weekend.  My 
+favorite solution would be to just put it in S3 before doing that.  *Do 
+what bare metal does* and you can't go that wrong.
 
-Also, while at it let's burn and pour salt on the support for 
-KVM_SET_TSC_KHZ unless TSC scaling is supported, together with 
-vcpu->tsc_catchup and all the "tolerance" crap that is in 
-kvm_set_tsc_khz.  And initialize vcpu->arch.virtual_tsc_khz to 
-kvm->arch.last_tsc_khz before calling kvm_synchronize_tsc.
+In general it's userspace policy whether to keep the TSC value the same 
+across live migration.  There's pros and cons to both approaches, so KVM 
+should provide the functionality to keep the TSC running (which the 
+guest will see as a very long, but not extreme SMI), and this is what 
+this series does.  Maxim will change it to operate per-VM.  Thanks 
+Thomas, Oliver and everyone else for the input.
 
 Paolo
 
