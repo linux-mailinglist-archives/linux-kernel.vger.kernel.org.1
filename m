@@ -2,195 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEA62D633C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:15:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A09652D6350
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392696AbgLJRPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:15:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
+        id S2404212AbgLJRR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:17:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392651AbgLJRPK (ORCPT
+        with ESMTP id S2404130AbgLJRQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:15:10 -0500
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2525FC061793
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:14:30 -0800 (PST)
-Received: by mail-vs1-xe42.google.com with SMTP id v8so3255577vso.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:14:30 -0800 (PST)
+        Thu, 10 Dec 2020 12:16:52 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A3DC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:16:11 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id x16so6534211oic.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:16:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xMgQPzANQdeOqMY+fXyJVOEZa71a65TdMFizwM/N9b0=;
-        b=WnikWqu/v1U0viE/wvjK6QZAW6WMiIGtgjXOrFJM+gR4YgZklzOOU/3A8DYKZRjnvZ
-         /KqbvstT7mebzyo7tqJPILPN8Rt1PlqqIB0GFGSeFC2zpLhD7d9cxFeoYc9hsbVOUQqE
-         N9dRWSWNxoK4zG9RdmRRpq8Q0VxyW6mOw60ac=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
+        bh=1DhGc1yNSVnvbflwjjTm6H7Ift8ftskK41SQF5YbY8M=;
+        b=mFuC2IViDM2sP6c1KSdjWfBMV/YHz8XR4kcAnOxpcRJ5lul3INm6pwWUmq/i04lIEm
+         FhGagnQNBno/U6t9cbBSCE4n9x+Mzyz5irGL0ULbD7vF/ZsJVbiKWxN6KfnJ54yLvpA5
+         vyJeopdI7LG4GS+ooRMqGh2/cMDRgVHD1hP3pCSGg1ftKbMhntcOMIhc3jWnmxuZEghh
+         SvCbkuLR5Y5ssLNjWETwQpUrAVbTN6cAFLXQ9xdJ9zpk+afv6Xgv6hS5OkTlAf4/MlM1
+         56UQ/0HGrlyL9vY9qtweiObH82RsHDndfGFWVdQWP3hl2AUXcmx5vW8kcs9gEQ4d2Jnn
+         iqFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xMgQPzANQdeOqMY+fXyJVOEZa71a65TdMFizwM/N9b0=;
-        b=Z47j8oIt1eXX/Cw6WO59eYC6CnZy4jE+8EJHnziGoTS3mILaITSy0nuN7MPMbPtLog
-         NKaQxUp2t9X7Ef1a7uVgRGUfXF0AnyMVQiuUwgGSNtLeqCn+MCc9J5KiYJ0e3CdneOpO
-         iBb9Bl9Qm1ww+hjtZcLv5nzc8OhXB7W2HvKfcceZRV/EOPgJdMJl+x5GDMeJui1qiTPB
-         VODG5hvy00whtHwVfQjaOO2gaO8tbGUt+cpjGAvqtTz+zdXDKrISa3i478L2JRnkARZn
-         UCkfySSxHev15Cqu4RGbjGMtCQB8XerW49Cv5coKQEcv7bihZm5eNwgShrgQl1Ao9pvC
-         fcow==
-X-Gm-Message-State: AOAM5323n0gbfQJt6lAGbzftWd8OTSwjIZBfMIdCVd1QxKcGwAAXmQj1
-        mh3eDlQewraYOuHGQ4IEZlGJLi4V0HEg+Q==
-X-Google-Smtp-Source: ABdhPJziR/l9hhuz4i79b1jrE7m+PakJEztwfbuwD6PXsgOpr9F7MTjEh1gT0GgRu7hbNFVGhxP+FA==
-X-Received: by 2002:a67:bd01:: with SMTP id y1mr3062136vsq.49.1607620468967;
-        Thu, 10 Dec 2020 09:14:28 -0800 (PST)
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com. [209.85.221.176])
-        by smtp.gmail.com with ESMTPSA id a66sm593424vka.23.2020.12.10.09.14.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 09:14:28 -0800 (PST)
-Received: by mail-vk1-f176.google.com with SMTP id a4so1391090vko.11
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:14:27 -0800 (PST)
-X-Received: by 2002:ac5:ce9b:: with SMTP id 27mr10106859vke.9.1607620467257;
- Thu, 10 Dec 2020 09:14:27 -0800 (PST)
+         :message-id:subject:cc;
+        bh=1DhGc1yNSVnvbflwjjTm6H7Ift8ftskK41SQF5YbY8M=;
+        b=Z53TAbEZMDeyCKr7XB5+HlDTI/ZmWXH+QbMfmftoRp0ukye4//6Ov9LDW6UeILARrw
+         KlOrq+IHDsZjB6xpYeRKMpRoJ/1+Aj/LJsgJ7xNMSjYteOvaiz5xxk7Cm0RKIFUVoGbv
+         bu+JRQlc20KtF7hrK2aOZJtGBsX1Lx8pU1S4U9Aru66xsT+sDwzyr7G0wn0fWtT2hlSZ
+         Cf5spPrdPZ3rCMLpJrH5JrXc3kZvzdpLYiIq6HKU9lPnffncwqDX5zNGIE9Ab1AkMnxE
+         tv6Ijp8rqldRELcbX+chwdY9BAdCLl8oWW8BscRJkiGRj53fue6y0DPWk7bRS1vSAjqK
+         rCJw==
+X-Gm-Message-State: AOAM5334xMqJoEEkaLbb6og+vWBJ6E+48x5sEHrseQnyuDsTYIXnJmAJ
+        KuTXPDVdYoiBpxon3PL9ntTdvDpnQwugIBGtmaw=
+X-Received: by 2002:aca:dfc2:: with SMTP id w185mt7112250oig.50.1607620571499;
+ Thu, 10 Dec 2020 09:16:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203074459.13078-1-rojay@codeaurora.org> <CAD=FV=XKyXnjsM4iS-ydRWBnmYMojPOaYAdYhOkxkPTCQf0RLQ@mail.gmail.com>
- <160757022002.1580929.8656750350166301192@swboyd.mtv.corp.google.com>
-In-Reply-To: <160757022002.1580929.8656750350166301192@swboyd.mtv.corp.google.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 10 Dec 2020 09:14:15 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WtU3cnRe6pDKFMA9_0cnQFtSOyohY_bJwZObK+KrbhVQ@mail.gmail.com>
-Message-ID: <CAD=FV=WtU3cnRe6pDKFMA9_0cnQFtSOyohY_bJwZObK+KrbhVQ@mail.gmail.com>
-Subject: Re: [PATCH] spi: spi-geni-qcom: Fix NULL pointer access in geni_spi_isr
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        msavaliy@qti.qualcomm.com
+References: <20201208195223.424753-1-conmanx360@gmail.com> <20201208195223.424753-3-conmanx360@gmail.com>
+In-Reply-To: <20201208195223.424753-3-conmanx360@gmail.com>
+From:   Connor McAdams <conmanx360@gmail.com>
+Date:   Thu, 10 Dec 2020 12:16:00 -0500
+Message-ID: <CAM8Agx3ttO_RDgjQAxLYpVMVRhz+xgmg80f4iefXZNVrGcd0-g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] ALSA: hda/ca0132 - Unmute surround when speaker
+ output is selected.
+Cc:     stable@kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Woops, sent previous email on the first version of this patch.
 
-On Wed, Dec 9, 2020 at 7:17 PM Stephen Boyd <swboyd@chromium.org> wrote:
+This patch is a mistake. Not sure why I did this.
+
+On Tue, Dec 8, 2020 at 2:52 PM Connor McAdams <conmanx360@gmail.com> wrote:
 >
-> Quoting Doug Anderson (2020-12-03 08:40:46)
+> Make sure GPIO pin for surround channel mute is set to 0 when speaker
+> output is selected.
 >
-> > I would guess that if "mas->cur_xfer" is NULL then
-> > geni_spi_handle_rx() should read all data in the FIFO and throw it
-> > away and geni_spi_handle_tx() should set SE_GENI_TX_WATERMARK_REG to
-> > 0.  NOTE: I _think_ that with the synchronize_irq() I'm suggesting
-> > above we'll avoid this case, but it never hurts to be defensive.
-> >
-> >
-> > Does that all make sense?  So the summary is that instead of your patch:
+> Fixes: def3f0a5c7007 ("ALSA: hda/ca0132 - Add quirk output selection structures.")
+> Cc: <stable@kernel.org>
+> Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+> ---
+>  sound/pci/hda/patch_ca0132.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Can we get a CPU diagram describing the race and scenario where this
-> happens? Something like:
+> diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+> index 793dc5d501a5..6d647d461eab 100644
+> --- a/sound/pci/hda/patch_ca0132.c
+> +++ b/sound/pci/hda/patch_ca0132.c
+> @@ -1390,7 +1390,7 @@ static const struct ca0132_alt_out_set_quirk_data quirk_out_set_data[] = {
+>                   .has_hda_gpio     = false,
+>                   .mmio_gpio_count  = 3,
+>                   .mmio_gpio_pin    = { 2, 3, 5 },
+> -                 .mmio_gpio_set    = { 1, 1, 0 },
+> +                 .mmio_gpio_set    = { 1, 0, 0 },
+>                   .scp_cmds_count   = 0,
+>                   .has_chipio_write = false,
+>                 },
+> --
+> 2.25.1
 >
->   CPU0                                CPU1
->   ----                                ----
->   setup_fifo_xfer()
->    spin_lock_irq(&mas->lock);
->    spin_unlock_irq(&mas->lock);
->    mas->cur_xfer = xfer
->    ...
->    <IRQ>
->                                       geni_spi_isr()
->                                        geni_spi_handle_rx()
->                                         <NULL deref boom explosion!>
->
-> But obviously this example diagram is incorrect and some timeout happens
-> instead? Sorry, I'm super lazy and don't want to read many paragraphs of
-> text. :) I'd rather have a diagram like above that clearly points out
-> the steps taken to the NULL pointer deref.
-
-This is my untested belief of what's happening
-
- CPU0                                CPU1
- ----                                ----
-                                     setup_fifo_xfer()
-                                      ...
-                                      geni_se_setup_m_cmd()
-                                      <hardware starts transfer>
- <unrelated interrupt storm>          spin_unlock_irq()
- <continued interrupt storm>         <time passes>
- <continued interrupt storm>         <transfer complets in hardware>
- <continued interrupt storm>         <hardware sets M_RX_FIFO_WATERMARK_EN>
- <continued interrupt storm>         <time passes>
- <continued interrupt storm>         handle_fifo_timeout()
- <continued interrupt storm>          spin_lock_irq()
- <continued interrupt storm>          mas->cur_xfer = NULL
- <continued interrupt storm>          geni_se_cancel_m_cmd()
- <continued interrupt storm>          spin_unlock_irq()
- <continued interrupt storm>          wait_for_completion_timeout() => timeout
- <continued interrupt storm>          spin_lock_irq()
- <continued interrupt storm>          geni_se_abort_m_cmd()
- <continued interrupt storm>          spin_unlock_irq()
- <continued interrupt storm>          wait_for_completion_timeout() => timeout
- <interrupt storm ends>
- geni_spi_isr()
-  spin_lock()
-  if (m_irq & M_RX_FIFO_WATERMARK_EN)
-   geni_spi_handle_rx()
-    mas->cur_xfer NULL derefrence
-
-With my proposed fix, I believe that would transform into:
-
- CPU0                                CPU1
- ----                                ----
-                                     setup_fifo_xfer()
-                                      ...
-                                      geni_se_setup_m_cmd()
-                                      <hardware starts transfer>
- <unrelated interrupt storm>          spin_unlock_irq()
- <continued interrupt storm>         <time passes>
- <continued interrupt storm>         <transfer complets in hardware>
- <continued interrupt storm>         <hardware sets M_RX_FIFO_WATERMARK_EN>
- <continued interrupt storm>         <time passes>
- <continued interrupt storm>         handle_fifo_timeout()
- <continued interrupt storm>          synchronize_irq()
- <continued interrupt storm>           <time passes>
- <interrupt storm ends>
- geni_spi_isr()
-  ...
-                                       <synchronize_irq() finishes>
-                                      spin_lock_irq()
-                                      mas->cur_xfer = NULL
-                                      geni_se_cancel_m_cmd()
-                                      spin_unlock_irq()
- geni_spi_isr()
-   ...
-                                      wait_for_completion_timeout() => success
-
-The extra synchronize_irq() I was suggesting at the end of the
-function would be an extra bit of paranoia.  Maybe a new storm showed
-up while we were processing the timeout?
-
-
-> > 1. Add synchronize_irq() at the start and end of
-> > handle_fifo_timeout().  Not under lock.
-> >
-> > 2. In geni_spi_handle_rx(), check for NULL "mas->cur_xfer".  Read all
-> > data in the FIFO (don't cap at rx_rem_bytes), but throw it away.
-> >
-> > 3. In geni_spi_handle_tx(), check for NULL "mas->cur_xfer".  Don't
-> > write any data.  Just write 0 to SE_GENI_TX_WATERMARK_REG.
-> >
-> > I think #1 is the real fix, but #2 and #3 will avoid crashes in case
-> > there's another bug somewhere.
->
-> Aren't 2 and 3 papering over some weird problem though where irqs are
-> coming in unexpectedly?
-
-I think that's what I said but in different words?  #1 is the real fix
-but #2 and #3 will keep us from crashing (AKA paper over) if we have
-some other (unexpected) bug.  We'll already have an error in the log
-in this case "Failed to cancel/abort m_cmd" so it doesn't feel
-necessary to crash with a NULL dereference...
-
--Doug
