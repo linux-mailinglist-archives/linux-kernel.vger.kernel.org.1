@@ -2,97 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D1F2D5654
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71BA2D5677
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731905AbgLJJMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:12:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51798 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729811AbgLJJMp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:12:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607591476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gb3SbnRTo+3pkXXdNLxcd5ljhhUyYYdpcGHBH8tC1V0=;
-        b=ZZbUb9Ue/CRtXFx/SakRKa3/fp+9zpKu9Zuuq7RM2KRUc3NDyAcsHmCYTC/h1QpgegMbTM
-        r649zVtTVBlNmrLGBTUdRV6oWIahL41XT65mniWtLrSBoKPJ5uu+8CkO3HNtgunmseD8RE
-        EqaULq5KRgF7Ox6wyIuA47UvMn91nZI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-284-8hJn_FKvPdSa1KjmAx1-Xg-1; Thu, 10 Dec 2020 04:11:14 -0500
-X-MC-Unique: 8hJn_FKvPdSa1KjmAx1-Xg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF953802B49;
-        Thu, 10 Dec 2020 09:11:13 +0000 (UTC)
-Received: from [10.72.12.50] (ovpn-12-50.pek2.redhat.com [10.72.12.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BD8E160BF1;
-        Thu, 10 Dec 2020 09:11:03 +0000 (UTC)
-Subject: Re: [PATCH v1] vdpa/mlx5: Use write memory barrier after updating CQ
- index
-To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     lulu@redhat.com, maxime.coquelin@redhat.com
-References: <20201209140004.15892-1-elic@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <26dd1676-ff63-4940-9b0d-d7097950c1e5@redhat.com>
-Date:   Thu, 10 Dec 2020 17:11:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201209140004.15892-1-elic@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        id S2388717AbgLJJOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:14:11 -0500
+Received: from mga07.intel.com ([134.134.136.100]:18524 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388701AbgLJJOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 04:14:05 -0500
+IronPort-SDR: oNjLU9Kn+gE76P2Kephz3iVLEtsoutBtnFopXTlJSrbv3Tu+38OntBNI3jNxA2CAH1dZCBEz9x
+ QMH1om7Mt0zw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="238330376"
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="238330376"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 01:12:18 -0800
+IronPort-SDR: Gge6ZG/APD0xChqxyv5yqhDKIcq3bmYXBPkkA4xphzExKt4LrGplRPQM/SR0QYjVmrYVPHkfJv
+ gpWhXiSSuHlQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="364543079"
+Received: from sgsxdev004.isng.phoenix.local (HELO localhost) ([10.226.81.179])
+  by orsmga008.jf.intel.com with ESMTP; 10 Dec 2020 01:12:16 -0800
+From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+To:     linux-leds@vger.kernel.org, pavel@ucw.cz, dmurphy@ti.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, mallikarjunax.reddy@linux.intel.com,
+        malliamireddy009@gmail.com, yixin.zhu@intel.com
+Subject: [PATCH v3 1/2] dt-bindings: leds: Add bindings for Intel LGM SoC
+Date:   Thu, 10 Dec 2020 17:12:11 +0800
+Message-Id: <49ebc8e27958cb77cde36e5f95ad530803259907.1607591119.git.mallikarjunax.reddy@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add DT bindings YAML schema for SSO controller driver
+of Lightning Mountain (LGM) SoC.
 
-On 2020/12/9 下午10:00, Eli Cohen wrote:
-> Make sure to put dma write memory barrier after updating CQ consumer
-> index so the hardware knows that there are available CQE slots in the
-> queue.
->
-> Failure to do this can cause the update of the RX doorbell record to get
-> updated before the CQ consumer index resulting in CQ overrun.
->
-> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> Signed-off-by: Eli Cohen <elic@nvidia.com>
-> ---
-> V0 -> V1
-> Use dma_wmb() instead of wmb()
+Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+---
+v1:
+- Initial version.
 
+v2:
+- Fix bot errors (wrong indentation).
+- Spell out LGM and SSO.
+- Remove vendor specific name for LED properites.
+- removed deprecating property "label"
+- Include 'reg', 'function' & 'color' properties.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+v3:
+- Included full names(maintainers).
+- changed compatible SoC specific.
+- Remove redundant properties.
+- Updated vendor prefix and unit suffix to properties.
+---
+ .../devicetree/bindings/leds/leds-lgm.yaml    | 113 ++++++++++++++++++
+ 1 file changed, 113 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-lgm.yaml
 
-
->
->   drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +++++
->   1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index db87abc3cb60..43b0069ff8b1 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -479,6 +479,11 @@ static int mlx5_vdpa_poll_one(struct mlx5_vdpa_cq *vcq)
->   static void mlx5_vdpa_handle_completions(struct mlx5_vdpa_virtqueue *mvq, int num)
->   {
->   	mlx5_cq_set_ci(&mvq->cq.mcq);
-> +
-> +	/* make sure CQ cosumer update is visible to the hardware before updating
-> +	 * RX doorbell record.
-> +	 */
-> +	dma_wmb();
->   	rx_post(&mvq->vqqp, num);
->   	if (mvq->event_cb.callback)
->   		mvq->event_cb.callback(mvq->event_cb.private);
+diff --git a/Documentation/devicetree/bindings/leds/leds-lgm.yaml b/Documentation/devicetree/bindings/leds/leds-lgm.yaml
+new file mode 100644
+index 000000000000..32bbf146c01d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/leds-lgm.yaml
+@@ -0,0 +1,113 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/leds-lgm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Intel Lightning Mountain (LGM) SoC LED Serial Shift Output (SSO) Controller driver
++
++maintainers:
++  - Zhu, Yi Xin <Yixin.zhu@intel.com>
++  - Amireddy Mallikarjuna reddy <mallikarjunax.reddy@intel.com>
++
++properties:
++  compatible:
++    const: intel,lgm-ssoled
++
++  gpio-controller: true
++
++  '#gpio-cells':
++    const: 2
++
++  ngpios:
++    minimum: 0
++    maximum: 32
++    description:
++      Number of GPIOs this controller provides.
++
++  intel,sso-update-rate-hz:
++    description:
++      Blink frequency for SOUTs in Hz.
++
++  led-controller:
++    type: object
++    description:
++      This sub-node must contain a sub-node for each leds.
++
++    additionalProperties: false
++
++    patternProperties:
++      "^led@[0-23]$":
++        type: object
++
++        properties:
++          reg:
++            description: Index of the LED.
++            minimum: 0
++            maximum: 2
++
++          intel,sso-hw-trigger:
++            type: boolean
++            description: This property indicates Hardware driven/control LED.
++
++          intel,sso-hw-blink:
++            type: boolean
++            description: This property indicates Enable LED blink by Hardware.
++
++          intel,sso-blink-rate-hz:
++            description: LED HW blink frequency.
++
++          retain-state-suspended:
++            type: boolean
++            description: The suspend state of LED can be retained.
++
++          retain-state-shutdown:
++            type: boolean
++            description: Retain the state of the LED on shutdown.
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - "#gpio-cells"
++  - gpio-controller
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/intel,lgm-clk.h>
++    #include <dt-bindings/leds/common.h>
++
++    ssogpio: ssogpio@e0d40000 {
++      compatible = "intel,sso-led";
++      reg = <0xE0D40000 0x2E4>;
++      gpio-controller;
++      #gpio-cells = <2>;
++      ngpios = <32>;
++      pinctrl-names = "default";
++      pinctrl-0 = <&pinctrl_ledc>;
++      clocks = <&cgu0 LGM_GCLK_LEDC0>, <&afeclk>;
++      clock-names = "sso", "fpid";
++      intel,sso-update-rate-hz = <250000>;
++
++      led-controller {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        led@0 {
++          reg = <0>;
++          function = "gphy";
++          color = <LED_COLOR_ID_GREEN>;
++          led-gpio = <&ssogpio 0 0>;
++        };
++
++        led@23 {
++          reg = <23>;
++          function = LED_FUNCTION_POWER;
++          color = <LED_COLOR_ID_GREEN>;
++          led-gpio = <&ssogpio 23 0>;
++        };
++      };
++    };
+-- 
+2.17.1
 
