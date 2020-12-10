@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDCE2D5B8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:24:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5144D2D5BB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389173AbgLJNXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:23:31 -0500
-Received: from foss.arm.com ([217.140.110.172]:41514 "EHLO foss.arm.com"
+        id S2388449AbgLJN11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:27:27 -0500
+Received: from foss.arm.com ([217.140.110.172]:41676 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389111AbgLJNXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:23:30 -0500
+        id S1730352AbgLJN10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 08:27:26 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC10C31B;
-        Thu, 10 Dec 2020 05:22:43 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B9841FB;
+        Thu, 10 Dec 2020 05:26:41 -0800 (PST)
 Received: from localhost (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E34E3F718;
-        Thu, 10 Dec 2020 05:22:43 -0800 (PST)
-Date:   Thu, 10 Dec 2020 13:22:42 +0000
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BFE1C3F718;
+        Thu, 10 Dec 2020 05:26:40 -0800 (PST)
+Date:   Thu, 10 Dec 2020 13:26:39 +0000
 From:   Ionela Voinescu <ionela.voinescu@arm.com>
 To:     Viresh Kumar <viresh.kumar@linaro.org>
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -25,128 +25,73 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] arm64: topology: Cleanup init_amu_fie() a bit
-Message-ID: <20201210132242.GA8683@arm.com>
+Message-ID: <20201210132639.GB8683@arm.com>
 References: <5594c7d6756a47b473ceb6f48cc217458db32ab0.1607584435.git.viresh.kumar@linaro.org>
+ <20201210103815.GA3313@arm.com>
+ <20201210105506.gi76peabl2bv5j62@vireshk-i7>
+ <20201210112912.GB5300@arm.com>
+ <20201210123439.zugex2zzbmy6z3le@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5594c7d6756a47b473ceb6f48cc217458db32ab0.1607584435.git.viresh.kumar@linaro.org>
+In-Reply-To: <20201210123439.zugex2zzbmy6z3le@vireshk-i7>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+On Thursday 10 Dec 2020 at 18:04:39 (+0530), Viresh Kumar wrote:
+> On 10-12-20, 11:29, Ionela Voinescu wrote:
+> > On Thursday 10 Dec 2020 at 16:25:06 (+0530), Viresh Kumar wrote:
+> > > - But right after that we call static_branch_disable() if we aren't
+> > >   invariant (call to topology_scale_freq_invariant()), and this will
+> > >   happen if amu_fie_cpus doesn't have all the CPUs there. Isn't it? So
+> > >   partial amu support is already disallowed, without cpufreq.
+> > > 
+> > 
+> > This is the point that needs clarification:
+> > 
+> > topology_scale_freq_invariant()) = cpufreq_supports_freq_invariance() ||
+> >                                    arch_freq_counters_available(cpu_online_mask);
+> > 
+> > This checks if the full system is invariant.
+> > 
+> > The possible scenarios are:
+> > 
+> >  - All online CPUs support AMUs - arch_freq_counters_available() will
+> >    return true -> topology_scale_freq_invariant() will return true.
+> > 
+> >  - None of the CPUs support AMUs, or part of the CPUs support AMUs - the
+> >    system is invariant only if cpufreq is invariant (dependent on
+> >    whether the driver implements the proper callbacks that results in
+> >    calling arch_set_freq_scale() in cpufreq core.
+> > 
+> >  - Either cpufreq does not support invariance or we don't have AMU
+> >    support on all CPUs -> the system is not invariant so we disable
+> >    the AMU static key that guards the calls to
+> >    topology_scale_freq_tick() - we would not want to set a scale factor
+> >    for only a part of the CPUs.
+> > 
+> > So whether were are or are not invariant does not depend only on the AMU
+> > presence, but also on the cpufreq support for invariance. We have to
+> > disable invariance altogether (including the AMU guarding static key)
+> > if the system is not invariant (it no all CPUs have means to provide the
+> > scale).
+> 
+> Okay, I think I mis-assumed that amu_fie_cpus will get set by
+> enable_policy_freq_counters() even for CPUs where AMU support isn't
+> there, it won't be though.
+> 
+> Having said that, this patch, along with the minor suggestion in the
+> commit log, still stands fine, right ? The other patch which I sent is
+> probably incorrect due to the above assumption I had.
+> 
 
-On Thursday 10 Dec 2020 at 12:48:20 (+0530), Viresh Kumar wrote:
-> Every time I have stumbled upon this routine, I get confused with the
-> way 'have_policy' is used and I have to dig in to understand why is it
-> so.
-> 
-> Here is an attempt to make it easier to understand, and hopefully it is
-> an improvement. This is based on the logic that amu_fie_cpus will be
-> empty if cpufreq policy wasn't available for any CPU.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
-> 
-> Ionela, I think it would be even better to do this over this patch
-> 
-> -       /*
-> -        * If none of the CPUs have cpufreq support, we only enable
-> -        * the use of the AMU feature for FIE if all CPUs support AMU.
-> -        * Otherwise, enable_policy_freq_counters has already enabled
-> -        * policy cpus.
-> -        */
-> -       if (cpumask_empty(amu_fie_cpus) &&
-> -           cpumask_equal(valid_cpus, cpu_present_mask))
-> +       /* Overwrite amu_fie_cpus if all CPUs support AMU */
-> +       if (cpumask_equal(valid_cpus, cpu_present_mask))
->                 cpumask_copy(amu_fie_cpus, cpu_present_mask);
-> 
+Yes, this one is good, although I would vote for the commit message
+implementation. I'll wait for v2 for reviewed-by, in case you want to
+push something for the second patch in the same series.
 
-Yes, I was just about to suggest this, reading the patch below.
-
-> This will also take care of the case where the cpufreq policy isn't
-> there for a small group of CPUs, which do have AMUs enabled for them.
-> (This doesn't normally happen though).
-> 
-> ---
->  arch/arm64/kernel/topology.c | 16 +++++++---------
->  1 file changed, 7 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-> index f6faa697e83e..7f7d8de325b6 100644
-> --- a/arch/arm64/kernel/topology.c
-> +++ b/arch/arm64/kernel/topology.c
-> @@ -199,14 +199,14 @@ static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
->  	return 0;
->  }
->  
-> -static inline bool
-> +static inline void
->  enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
->  {
->  	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
->  
->  	if (!policy) {
->  		pr_debug("CPU%d: No cpufreq policy found.\n", cpu);
-> -		return false;
-> +		return;
->  	}
->  
->  	if (cpumask_subset(policy->related_cpus, valid_cpus))
-> @@ -214,8 +214,6 @@ enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
->  			   amu_fie_cpus);
->  
->  	cpufreq_cpu_put(policy);
-> -
-> -	return true;
->  }
->  
->  static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
-> @@ -225,7 +223,6 @@ static int __init init_amu_fie(void)
->  {
->  	bool invariance_status = topology_scale_freq_invariant();
->  	cpumask_var_t valid_cpus;
-> -	bool have_policy = false;
->  	int ret = 0;
->  	int cpu;
->  
-> @@ -245,17 +242,18 @@ static int __init init_amu_fie(void)
->  			continue;
->  
->  		cpumask_set_cpu(cpu, valid_cpus);
-> -		have_policy |= enable_policy_freq_counters(cpu, valid_cpus);
-> +		enable_policy_freq_counters(cpu, valid_cpus);
->  	}
->  
->  	/*
-> -	 * If we are not restricted by cpufreq policies, we only enable
-> +	 * If none of the CPUs have cpufreq support, we only enable
->  	 * the use of the AMU feature for FIE if all CPUs support AMU.
->  	 * Otherwise, enable_policy_freq_counters has already enabled
->  	 * policy cpus.
->  	 */
-> -	if (!have_policy && cpumask_equal(valid_cpus, cpu_present_mask))
-> -		cpumask_or(amu_fie_cpus, amu_fie_cpus, valid_cpus);
-> +	if (cpumask_empty(amu_fie_cpus) &&
-> +	    cpumask_equal(valid_cpus, cpu_present_mask))
-> +		cpumask_copy(amu_fie_cpus, cpu_present_mask);
->  
-
-Yes, if you really don't like the have_policy variable, I would go for
-your suggestion in the commit message for this condition and the removal
-of the comment. In the form of the comment here it creates more confusion,
-but your suggestion in the commit message hides all involvement of
-policies in enable_policy_freq_counters().
-
-Thanks,
 Ionela.
 
-
->  	if (!cpumask_empty(amu_fie_cpus)) {
->  		pr_info("CPUs[%*pbl]: counters will be used for FIE.",
 > -- 
-> 2.25.0.rc1.19.g042ed3e048af
-> 
+> viresh
