@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D632D5CA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 995C52D5CA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389799AbgLJOAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:00:13 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:33921 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389791AbgLJOAM (ORCPT
+        id S1732683AbgLJOAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:00:21 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9155 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731316AbgLJOAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:00:12 -0500
-Received: by mail-ot1-f68.google.com with SMTP id a109so4917929otc.1;
-        Thu, 10 Dec 2020 05:59:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E0uG63kxQcD1euovXuF5Hkbx9fLEVhzIKnnrQCV3Aec=;
-        b=q1ov9ioZSutPl8ZNVbYPl9PRoiOrFPsIClPh0391ebE1GvfrcGLhL2Q8oramGiWQQO
-         7dK8yrUOIXpOyuPDiRW2+aVj0dwzLsOp9mmHi44/uS8CnRrpjI6Ss+6tO92EVktnhO9u
-         kbBGHiIRRZxxbzAiXP40fREwlkrg4LRqohpCyMAFtMq5wt3eqifk0d2DsTGdfnjoM0WU
-         JqE8NZhHiY529vp8hoZVgCK7iVcaN/G1eTDIg4ClU2s0N+a6Uq7qqZlxm4tlEuwMzBWp
-         sTp1/0XjMU0cis4w9SMxik9VlA/IFP52KXAet/Q3ZCMCJc1hK57p277JtFfHuwrpFxII
-         gHzw==
-X-Gm-Message-State: AOAM533giZ0+wGd9u4swPzh/aUZgr9TF9cqvRgKAWzhg1hy9ZtAIstJ5
-        yQ2DhXgz/PUd8M8lGhYa+A==
-X-Google-Smtp-Source: ABdhPJzwaO+G8CoiRqNw6FTHQQecwOhAFA3uke+/0LDylhq19cKPB39mlhG6qs/p4yPwb1bRUNNdZA==
-X-Received: by 2002:a9d:6c96:: with SMTP id c22mr5673967otr.196.1607608768727;
-        Thu, 10 Dec 2020 05:59:28 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 73sm1084322otv.26.2020.12.10.05.59.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 05:59:27 -0800 (PST)
-Received: (nullmailer pid 2420054 invoked by uid 1000);
-        Thu, 10 Dec 2020 13:59:26 -0000
-Date:   Thu, 10 Dec 2020 07:59:26 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     devicetree@vger.kernel.org, dan.j.williams@intel.com,
-        vkoul@kernel.org, linux-kernel@vger.kernel.org, vigneshr@ti.com,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        grygorii.strashko@ti.com, dmaengine@vger.kernel.org, nm@ti.com,
-        ssantosh@kernel.org, t-kristo@ti.com
-Subject: Re: [PATCH v3 11/20] dt-bindings: dma: ti: Add document for K3 BCDMA
-Message-ID: <20201210135926.GA2420000@robh.at.kernel.org>
-References: <20201208090440.31792-1-peter.ujfalusi@ti.com>
- <20201208090440.31792-12-peter.ujfalusi@ti.com>
+        Thu, 10 Dec 2020 09:00:13 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CsFrX3sD6z15ZQ8;
+        Thu, 10 Dec 2020 21:58:52 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 10 Dec 2020 21:59:15 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <nick@shmanahar.org>, <dmitry.torokhov@gmail.com>,
+        <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] input/touchscreen: simplify the return expression of mxt_send_bootloader_cmd()
+Date:   Thu, 10 Dec 2020 21:59:43 +0800
+Message-ID: <20201210135943.1612-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208090440.31792-12-peter.ujfalusi@ti.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Dec 2020 11:04:31 +0200, Peter Ujfalusi wrote:
-> New binding document for
-> Texas Instruments K3 Block Copy DMA (BCDMA).
-> 
-> BCDMA is introduced as part of AM64.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  .../devicetree/bindings/dma/ti/k3-bcdma.yaml  | 164 ++++++++++++++++++
->  1 file changed, 164 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
-> 
+Simplify the return expression.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/input/touchscreen/atmel_mxt_ts.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
+index b6f75367a284..664fd940c06e 100644
+--- a/drivers/input/touchscreen/atmel_mxt_ts.c
++++ b/drivers/input/touchscreen/atmel_mxt_ts.c
+@@ -606,7 +606,6 @@ static int mxt_check_bootloader(struct mxt_data *data, unsigned int state,
+ 
+ static int mxt_send_bootloader_cmd(struct mxt_data *data, bool unlock)
+ {
+-	int ret;
+ 	u8 buf[2];
+ 
+ 	if (unlock) {
+@@ -617,11 +616,7 @@ static int mxt_send_bootloader_cmd(struct mxt_data *data, bool unlock)
+ 		buf[1] = 0x01;
+ 	}
+ 
+-	ret = mxt_bootloader_write(data, buf, 2);
+-	if (ret)
+-		return ret;
+-
+-	return 0;
++	return mxt_bootloader_write(data, buf, 2);
+ }
+ 
+ static int __mxt_read_reg(struct i2c_client *client,
+-- 
+2.22.0
+
