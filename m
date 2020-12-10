@@ -2,325 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC872D53D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 175C62D53DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387447AbgLJGht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:37:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
+        id S2387474AbgLJGiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:38:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgLJGh2 (ORCPT
+        with ESMTP id S1725789AbgLJGht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:37:28 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DF2C0613CF;
-        Wed,  9 Dec 2020 22:36:48 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id t8so3101385pfg.8;
-        Wed, 09 Dec 2020 22:36:48 -0800 (PST)
+        Thu, 10 Dec 2020 01:37:49 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B07BC0613D6;
+        Wed,  9 Dec 2020 22:37:09 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id i9so4325793ioo.2;
+        Wed, 09 Dec 2020 22:37:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0qYB+nsadsrWaNua01/LicNlZb1sBfShDcr/ixX1ONo=;
-        b=dm5EvYEvjHrkvVZjzOV7so6fKcSszbDqijDa1IgWjL+qHXtOAOxG/oHgP0/Jdtmugm
-         cE5T5Bxkivioy8PQ4n2nrdLODjxyXZ0+yxYd00RC94Wk1NXGkIv3Qf5XJJA9fWhtuDxT
-         nDnNzcnT9PMHxA90TSX84yc4WQQU6ilgY+Wx9MVc9hBWLZXRp5SCiuyUKlwP3aCOM56N
-         UQrKSTDwrhfsLvw9lhL0as02WdG89yNtXKaenvPd1P0W9a8w0a36CAma7o5/w1EJe2k1
-         asxwPPF2dQJ0617ChuuajUO1LVScquzIOM5k0o0CqETLLCwif4eZ8dzbhJqFsIwkRHxY
-         7HHA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HShWYqj3AYkJnLdHwx5NgTdwZAauQZwAST01WHghFCw=;
+        b=IQ31dFe57fhu9rGhuD00c/OfQpSIabk6bgI0gHu40WhQT8qCL+eAD5H88Ks7o+XBsU
+         gailQfrvR0zNGmYIbl9rXhoCKFExvAC+vs1EOTQ7c26uu43hKHu9AVH3XZq+Tb0P1+Um
+         7jF3+Vdr62F9LPXIQ+5rM1RTWgAlgRLIsSAPCV1SGKYBwV0IFD137d2pMJnfq8PLQcg9
+         TH8n4iP4LhXDgSYdPSPoX+wSqNf2sVTdlfIWHRy7pQGtKZdT+uM4O5b2+SLIoFJdu85+
+         Mt7K79Qi7pZ6JiNlDYChcZhqk/zKXXt14Sqa63zw2nD1F8Ur6gz0bc2atVDwZC4e7/QQ
+         TA5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0qYB+nsadsrWaNua01/LicNlZb1sBfShDcr/ixX1ONo=;
-        b=ouP3MGtKJHMkDiFA2+Eu3ol+JFkN3VCMF1Sy6gZdJaqkv8Q6AXJZeNPsXNnq1VR6hh
-         4qhMHbpz/IoN+MzoSqi3bffGq8VdqmafGFrKnfOhdII3ysJhEe4gvwAQ1tX4tLPpJMhb
-         PWeEONKVlMA7ufcIKx8po98zFpbLl3Hw1VKWpM4gXX0g8p9P8mUpkxNKtVj3rlZXEsdN
-         EiW0JNfiyCum5d+xXSAVhtBHlTYktAGWLBbn6MZpC14Rv2P9eT5abavqTxANrJArKCDo
-         7nNF2kM+yiRVmRMRS80ADXFH5MPJtAzFyglFZyjLI92cAaLgvIWIxK3hNmLgIIQ+aK9n
-         4ANw==
-X-Gm-Message-State: AOAM532xLiLtUNyIThlnabq1/8ImwVucDKImqN71aUDbp2HTRQ+H4TSP
-        mMnqB8TKWemPEKWPZpBvJcg=
-X-Google-Smtp-Source: ABdhPJyRwRMdoKvpepsgslAILsp/2H94oWmQuryzIYONFjBKEc8Qw3EI8c8hzNnf5CJFYemi0g135w==
-X-Received: by 2002:a05:6a00:88b:b029:19c:780e:1cd with SMTP id q11-20020a056a00088bb029019c780e01cdmr5577900pfj.64.1607582207804;
-        Wed, 09 Dec 2020 22:36:47 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id o11sm4639649pjs.36.2020.12.09.22.36.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 22:36:47 -0800 (PST)
-Date:   Wed, 9 Dec 2020 22:36:44 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     "jingle.wu" <jingle.wu@emc.com.tw>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        phoenix@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw
-Subject: Re: [PATCH 2/2] Input: elantech - Some module tp of tracpoint report
- has a smbus protocol error.
-Message-ID: <X9HB/BqlPyUIbq18@google.com>
-References: <20201207090800.9129-1-jingle.wu@emc.com.tw>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HShWYqj3AYkJnLdHwx5NgTdwZAauQZwAST01WHghFCw=;
+        b=oGk0Aw/+yz1VjOBYmbnKoS81tPsnMFiYFm8+nVU4xcdsH8S8Cio2FD+i9zIFfekjnZ
+         Km+TBxDLPAxWpmeyjnJlwydGqRD6ywe2MeB2fOIZ6QvZT6p5gnTylCnVYbSErDYBLrEN
+         NZlG811o6WeiJwMBrLJDFtkXKGUaCNh9zmSBGlr8/4SqggdV7K2Wa6aeXSyGy/vb8gGQ
+         BweXONYxwjevgFOYsrxJlQu+jyu7TZT98oNjdbCoXlf3Yf00B2ZmVPbJ4MVf/3N9tk/P
+         GB7RmqKpE1I5kDA9o8DI/TBKfkRaFOFVOkVmtBd7ZpfF9rnqbjA2Xi77XXWICQADtFyt
+         4Ruw==
+X-Gm-Message-State: AOAM5321KFZn1IgsVQ6dMtzYjK+NNvPNnHLAiUf71AwYScrgy9cGvxlB
+        ZmhCzc9m0dGPvEq0qPq36Pq0ev213zyOdpme4p0=
+X-Google-Smtp-Source: ABdhPJykPkxnX2Y/fkHHKMJSnlcG1CwqOHr7++Gujfz0sDW66ZNXcKFl1K9MuvhBUWNpIbGruWPU7+8kG11G3O9f4E8=
+X-Received: by 2002:a02:4007:: with SMTP id n7mr7722100jaa.99.1607582228088;
+ Wed, 09 Dec 2020 22:37:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207090800.9129-1-jingle.wu@emc.com.tw>
+References: <20201210004335.64634-1-pasha.tatashin@soleen.com> <20201210004335.64634-2-pasha.tatashin@soleen.com>
+In-Reply-To: <20201210004335.64634-2-pasha.tatashin@soleen.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Thu, 10 Dec 2020 07:36:56 +0100
+Message-ID: <CAM9Jb+g2B+uXH+Vj_FSMAh18j3DAKn4zKyAZNB_t8hSQ90a=mg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/8] mm/gup: perform check_dax_vmas only when FS_DAX is enabled
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>, sashal@kernel.org,
+        tyhicks@linux.microsoft.com, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        mike.kravetz@oracle.com, rostedt@goodmis.org,
+        Ingo Molnar <mingo@redhat.com>,
+        "Dave Jiang <dave.jiang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>, Johannes Thumshirn
+        <jthumshirn@suse.de>, Logan Gunthorpe" <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jingle,
-
-On Mon, Dec 07, 2020 at 05:08:00PM +0800, jingle.wu wrote:
-> 1. Add the conditional expression to distinguish different patterns regarding 0, 1, 2.
-> 2. Add the function to get or set more bytes from register
-> 3. Get and correct the device informations including ic_type, module id from different pattern.
-> 4. Add the function to change the report id 0x5F of trackpoint.
-> 5. Some module has a bug which makes default SMBUS trackpoint report 0x5E has a smbus protocol error.
-
-Your Signed-off-by is missing.
-
+> There is no need to check_dax_vmas() and run through the npage loop of
+> pinned pages if FS_DAX is not enabled.
+>
+> Add a stub check_dax_vmas() function for no-FS_DAX case.
+>
+> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 > ---
->  drivers/input/mouse/elantech.c | 128 ++++++++++++++++++++++++++++++++-
->  drivers/input/mouse/elantech.h |   4 ++
->  2 files changed, 131 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
-> index 90f8765f9efc..b3240775ceca 100644
-> --- a/drivers/input/mouse/elantech.c
-> +++ b/drivers/input/mouse/elantech.c
-> @@ -89,6 +89,57 @@ static int elantech_ps2_command(struct psmouse *psmouse,
->  	return rc;
->  }
->  
-> +/*
-> + * Send an Elantech style special command to read 3 bytes from a register
-> + */
-> +static int elantech_read_reg_params(struct psmouse *psmouse, unsigned char reg,
-> +                                    unsigned char *param)
-> +{
-> +	int rc = 0;
-> +	
-
-Extra tab here. Please run through checkpatch to catch these.
-
-> +	if (elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-> +	    elantech_ps2_command(psmouse, NULL, ETP_REGISTER_READWRITE) ||
-> +	    elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-> +	    elantech_ps2_command(psmouse, NULL, reg) ||
-> +	    elantech_ps2_command(psmouse, param, PSMOUSE_CMD_GETINFO)) {
-> +			rc = -1;
-
-This is weird indentation. You can also move the error message here and
-get rid of "rc" variable.
-
-> +	}
-> +		
-> +	if (rc)
-> +		psmouse_err(psmouse,
-> +			    "failed to read register 0x%02x.\n", reg);
-> +	return rc;
-> +}
-> +
-> +/*
-> + * Send an Elantech style special command to write a register with a parameter
-> + */
-> +static int elantech_write_reg_params(struct psmouse *psmouse, unsigned char reg,
-> +				unsigned char *param)
-> +{
-> +	
-> +	int rc = 0;
-> +	
-> +	if (elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-> +		    elantech_ps2_command(psmouse, NULL, ETP_REGISTER_READWRITE) ||
-> +		    elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-> +		    elantech_ps2_command(psmouse, NULL, reg) ||
-> +		    elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-> +		    elantech_ps2_command(psmouse, NULL, param[0]) ||
-> +		    elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-> +		    elantech_ps2_command(psmouse, NULL, param[1]) ||
-> +		    elantech_ps2_command(psmouse, NULL, PSMOUSE_CMD_SETSCALE11)) {
-> +			rc = -1;
-> +		}
-> +		
-> +	if (rc)
-> +		psmouse_err(psmouse,
-> +			    "failed to write register 0x%02x with value 0x%02x0x%02x.\n",
-> +			    reg, param[0], param[1]);
-> +	return rc;
-> +
-> +}
-> +
->  /*
->   * Send an Elantech style special command to read a value from a register
->   */
-> @@ -1529,6 +1580,27 @@ static const struct dmi_system_id no_hw_res_dmi_table[] = {
->  	{ }
->  };
->  
-> +/*
-> + * Change Report id 0x5E to 0x5F.
-> + */
-> +static int elantech_change_report_id(struct psmouse *psmouse)
-> +{
-> +	unsigned char param[2] = { 0x10, 0x03 };
-> +	
-> +	if (elantech_write_reg_params(psmouse, 0x7, param) == 0) {
-> +		if (elantech_read_reg_params(psmouse, 0x7, param) == 0) {
-> +			if ((param[0] == 0x10) && (param[1] == 0x03)) {
-> +				return 0;
-> +			}
-> +			psmouse_err(psmouse,
-> +		    	"Elantech change report id Fail. (0x%02x, 0x%02x)\n",
-> +		    	param[0], param[1]);
-
-Awkward indentation/formatting.
-
-> +		}	
-> +	}
-> +	psmouse_err(psmouse,
-> +		    	"Elantech change report id Fail.\n");
-> +	return -1;
-> +}
->  /*
->   * determine hardware version and set some properties according to it.
->   */
-> @@ -1556,6 +1628,18 @@ static int elantech_set_properties(struct elantech_device_info *info)
->  			return -1;
->  		}
->  	}
-> +	
-> +	
-> +	/* Get information pattern for hw_version 4 */
-> +	if (ver == 15) {
-> +		if ((info->fw_version & 0x0000ff) == 0x01)
-> +			info->pattern = 0x01;
-> +		else if ((info->fw_version & 0x0000ff) == 0x02)
-> +			info->pattern = 0x02;
-> +		else
-> +			info->pattern = 0x00;
-> +	} else
-> +		info->pattern = 0x00;
-
-	info->pattern = 0x00;
-	if (ver == 0x0f && (info->fw_version & 0xff) <= 0x02)
-		info->pattern = info->fw_version & 0xff;
->  
->  	/* decide which send_cmd we're gonna use early */
->  	info->send_cmd = info->hw_version >= 3 ? elantech_send_cmd :
-> @@ -1598,7 +1682,8 @@ static int elantech_query_info(struct psmouse *psmouse,
+>  mm/gup.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 98eb8e6d2609..cdb8b9eeb016 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -1568,6 +1568,7 @@ struct page *get_dump_page(unsigned long addr)
+>  #endif /* CONFIG_ELF_CORE */
+>
+>  #if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
+> +#ifdef CONFIG_FS_DAX
+>  static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
 >  {
->  	unsigned char param[3];
->  	unsigned char traces;
-> -
-> +	unsigned char ic_body[3];
-> +	
->  	memset(info, 0, sizeof(*info));
->  
->  	/*
-> @@ -1628,6 +1713,21 @@ static int elantech_query_info(struct psmouse *psmouse,
->  		     info->capabilities[0], info->capabilities[1],
->  		     info->capabilities[2]);
->  
-> +
-> +	info->ic_version = (info->fw_version & 0x0f0000) >> 16;
+>         long i;
+> @@ -1586,6 +1587,12 @@ static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
+>         }
+>         return false;
+>  }
+> +#else
+> +static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
+> +{
+> +       return false;
+> +}
+> +#endif
+>
+>  #ifdef CONFIG_CMA
+>  static long check_and_migrate_cma_pages(struct mm_struct *mm,
 
-Should we move this assignment up to the where we set info->fw_version,
-and then use it instead of "ver" in elantech_set_properties()?
-
-> +	
-> +	if ((info->pattern > 0x00) && (info->ic_version == 0xf)) {
-
-Please drop extra parentheses.
-
-> +		if (info->send_cmd(psmouse, ETP_ICBODY_QUERY, ic_body)) {
-> +			psmouse_err(psmouse, "failed to query ic body\n");
-> +			return -EINVAL;
-> +		}
-> +		info->ic_version = (ic_body[0] << 8) | ic_body[1];
-
-be16_to_cpup().
-
-> +		psmouse_info(psmouse,
-> +			     "Elan ic body : 0x%04x, current fw version : 0x%02x\n",
-> +			     info->ic_version,
-> +			     ic_body[2]);
-> +	}	
-> +	
->  	if (info->hw_version != 1) {
->  		if (info->send_cmd(psmouse, ETP_SAMPLE_QUERY, info->samples)) {
->  			psmouse_err(psmouse, "failed to query sample data\n");
-> @@ -1640,6 +1740,11 @@ static int elantech_query_info(struct psmouse *psmouse,
->  			     info->samples[2]);
->  	}
->  
-> +	if (info->pattern > 0x00) 
-> +		info->product_id = (info->samples[0] << 8) | info->samples[1];
-> +	else
-> +		info->product_id = info->samples[1];
-
-Maybe
-
-	info->product_id = be16_to_cpup((__be16 *)info->samples);
-	if (info->pattern == 0x00)
-		info->product_id &= 0xff; /* Only lower byte is valid */
-
-> +	
->  	if (info->samples[1] == 0x74 && info->hw_version == 0x03) {
->  		/*
->  		 * This module has a bug which makes absolute mode
-> @@ -1653,6 +1758,27 @@ static int elantech_query_info(struct psmouse *psmouse,
->  
->  	/* The MSB indicates the presence of the trackpoint */
->  	info->has_trackpoint = (info->capabilities[0] & 0x80) == 0x80;
-> +	
-> +	if (info->has_trackpoint) {
-> +		if ((info->ic_version == 0x0011) && (info->product_id == 0x08 || 
-> +						      info->product_id == 0x09 ||
-> +						      info->product_id == 0x0D ||
-> +						      info->product_id == 0x0E)) {
-> +		/*
-> +		 * This module has a bug which makes default SMBUS trackpoint report 
-> +		 * 0x5E have a protocol error, So change the report id to 0x5F,  
-> +		 * if it is not changed to 0x5F report, so let's abort 
-> +		 * so we'll be using standard PS/2 protocol.
-> +		 */
-> +			if (elantech_change_report_id(psmouse) != 0) {
-> +				psmouse_info(psmouse,
-> +			     	"Trackpoint report is broken, forcing standard PS/2 protocol\n");
-> +				return -ENODEV;
-> +			}
-> +				
-> +		}
-> +						      
-> +	}
->  
->  	info->x_res = 31;
->  	info->y_res = 31;
-> diff --git a/drivers/input/mouse/elantech.h b/drivers/input/mouse/elantech.h
-> index e0a3e59d4f1b..571e6ca11d33 100644
-> --- a/drivers/input/mouse/elantech.h
-> +++ b/drivers/input/mouse/elantech.h
-> @@ -18,6 +18,7 @@
->  #define ETP_CAPABILITIES_QUERY		0x02
->  #define ETP_SAMPLE_QUERY		0x03
->  #define ETP_RESOLUTION_QUERY		0x04
-> +#define ETP_ICBODY_QUERY		0x05
->  
->  /*
->   * Command values for register reading or writing
-> @@ -140,7 +141,10 @@ struct elantech_device_info {
->  	unsigned char samples[3];
->  	unsigned char debug;
->  	unsigned char hw_version;
-> +	unsigned char pattern;
->  	unsigned int fw_version;
-> +	unsigned int ic_version;
-> +	unsigned int product_id;
->  	unsigned int x_min;
->  	unsigned int y_min;
->  	unsigned int x_max;
-> -- 
-> 2.17.1
-> 
-
-Thanks.
-
--- 
-Dmitry
+Reviewed-by: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
