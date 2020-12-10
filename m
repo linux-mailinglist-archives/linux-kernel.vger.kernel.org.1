@@ -2,150 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976D32D6BBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0562D6BCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393713AbgLJXQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:16:09 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:36462 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391943AbgLJXPu (ORCPT
+        id S2394331AbgLJXUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:20:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394206AbgLJXTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:15:50 -0500
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id DA45220B717A;
-        Thu, 10 Dec 2020 15:15:08 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DA45220B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607642109;
-        bh=+gv/gg/2HxdaQJyuKJf5h6owrGbXjuw9+M9tqbWzuX0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UxSfztuTPLSldW+kYYM6h54kEGzpgr3gaE9SMQzSkrAqqFhYcnMsp+K8edT2Pw7fK
-         boUJWSetDm0ibXLUx2RCPndwT9CyK/cMky8ypUYy0S9EKuUom3pa4ou3ohocBBRRan
-         kF+IFG5ECG0YrBALsUiJybbslu0uT2ydoFpJkcv4=
-Date:   Thu, 10 Dec 2020 17:15:05 -0600
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
-        jmorris@namei.org, nramas@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Subject: Re: [PATCH v7 5/8] IMA: limit critical data measurement based on a
- label
-Message-ID: <20201210231505.GJ489768@sequoia>
-References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
- <20201209194212.5131-6-tusharsu@linux.microsoft.com>
+        Thu, 10 Dec 2020 18:19:38 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902A7C061793
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:18:58 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id n1so3029867pge.8
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:18:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cuo3hOaqklmDAlFeyNMO9tK7FfLVT9BZ8OlP4OtCFqU=;
+        b=loFvrO8ObA/6GshmdsKH7qoI9iCisWk9O7eMVsEDDZ7795PK+dK/Q+MwLj0jnH2RFz
+         vH6+g/5LTdZhvhkEFVoIddq3QyjSAE3in4aK+MoNY+uX1lEgr3aoFQXm+PzxS5sajEEA
+         tByw4b/yDS3LOmXy1Fag/9bVMqWF75R3JnSNCZ9MIe7dxlBFqTnDaRd/X/eWIOzlB56o
+         DiOCxZOKFuuoao5akTG99bCddkdqOFHs+sIWXA+IqBtcNvihhXQAnQnyrFdCjPSEjhcx
+         PYnf4I2cmhjEEB8BpxDv4p7d05/5F3UEPkaYM19XqyMZGGUjGGnVp1aCmldrS1pBtQQV
+         R9Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cuo3hOaqklmDAlFeyNMO9tK7FfLVT9BZ8OlP4OtCFqU=;
+        b=nbSBfGNSvDftuzRuL+PfQaM22ydmNx6ykru+UZGf2UVPvEnhY6131jxn4Zd4vAc02y
+         8F1QTw1kuBkUiDvyQsCpg2c+PReXX19z/s/iXyuzZeP9VR2iTwDMfImYpPOYWC0XGUSA
+         J2JuM+lu6u/f9iiFUY0s69SXBKONPzIA1/vWTM9q5agDgHM9blXE+xe8thrNkZjmXDR+
+         YpZmYue1Deg8PjtMetW3HFuFrp8t41aazD9Q0hI+LGnIjqxI0/d1/7RyCHAgbzcpnnv8
+         0Salwi0OlnvOR3QdGKMNUuMqf7A+bHKI5+8F+Tl1csb0I620T2ts60qsGZAsIhkT+alu
+         gECw==
+X-Gm-Message-State: AOAM531219O2ylbfOzLIPgQYjA6HZQ8Qxadbufd9xxAr4/rdRFaK+b1j
+        tAaiOvh1cb7n5TonSZf/M+GHqUNZyrhDwnbsDCYHHA==
+X-Google-Smtp-Source: ABdhPJyDDDi9Z5GVLzojZF2EUUtYtg8RykVb977GkQUKX/ddOlgF60hTUp1sYQqTLza67iQBIC/HbF23QhwfBnvUYp4=
+X-Received: by 2002:a63:184c:: with SMTP id 12mr1370518pgy.381.1607642337689;
+ Thu, 10 Dec 2020 15:18:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209194212.5131-6-tusharsu@linux.microsoft.com>
+References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
+ <20201104005343.4192504-1-ndesaulniers@google.com> <20201104005343.4192504-5-ndesaulniers@google.com>
+ <20201124172836.GA346213@rani.riverdale.lan> <CAKwvOdkGvLrPr4pHi4LKCF5t74+wencdy7r38d3k_4pC9pQYwQ@mail.gmail.com>
+ <CAKwvOdmEVM67v8PqPWHP-VyGTkQpkWv8FdOTbxQ-7ebvSummMA@mail.gmail.com> <X8psgMuL4jMjP/Oy@rani.riverdale.lan>
+In-Reply-To: <X8psgMuL4jMjP/Oy@rani.riverdale.lan>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 10 Dec 2020 15:18:45 -0800
+Message-ID: <CAKwvOd=SbbJptBbv3y39_ZCeTbO0vb_fa5ZbQQ2LUquegzLycg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] Kbuild: implement support for DWARF v5
+To:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Jakub Jelinek <jakub@redhat.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Alistair Delva <adelva@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09 11:42:09, Tushar Sugandhi wrote:
-> System administrators should be able to limit which kernel subsystems
-> they want to measure the critical data for. To enable that, an IMA policy
-> condition to choose specific kernel subsystems is needed. This policy
-> condition would constrain the measurement of the critical data based on
-> a label for the given subsystems.
-> 
-> Add a new IMA policy condition - "data_source:=" to the IMA func
-> CRITICAL_DATA to allow measurement of various kernel subsystems. This
-> policy condition would enable the system administrators to restrict the
-> measurement to the labels listed in "data_source:=".
-> 
-> Limit the measurement to the labels that are specified in the IMA
-> policy - CRITICAL_DATA+"data_source:=". If "data_sources:=" is not
-> provided with the func CRITICAL_DATA, the data from all the
-> supported kernel subsystems is measured.
-> 
-> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+On Fri, Dec 4, 2020 at 9:06 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> On Thu, Dec 03, 2020 at 03:28:14PM -0800, Nick Desaulniers wrote:
+> > On Thu, Dec 3, 2020 at 3:22 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > >
+> > > On Tue, Nov 24, 2020 at 9:28 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> > > >
+> > > > On Tue, Nov 03, 2020 at 04:53:43PM -0800, Nick Desaulniers wrote:
+> > > > > DWARF v5 is the latest standard of the DWARF debug info format.
+> > > > >
+> > > > > Feature detection of DWARF5 is onerous, especially given that we've
+> > > > > removed $(AS), so we must query $(CC) for DWARF5 assembler directive
+> > > > > support.  GNU `as` only recently gained support for specifying
+> > > > > -gdwarf-5.
+> > > >
+> > > > With gcc, using -gdwarf-5 even without -Wa,--gdwarf-5 results in
+> > > > considerably smaller debug info. gcc does not seem to generate the .file 0
+> > > > directive that causes older GNU as to barf.
+> > > >
+> > > > Should the assembler support check be restricted to CC_IS_CLANG?
+> > >
+> > > No, because if LLVM_IAS=1 then the assembler support need not be checked.
+> >
+> > Also, if your version of GCC supports DWARF Version 5, but your
+> > version of GAS does not, then I'm more inclined to not allow
+> > CONFIG_DEBUG_INFO_DWARF5 to be selectable, rather than mix and match
+> > or partially support this for one but not the other.  Either all tools
+> > used support DWARF 5, or you don't get to use DWARF 5.
+> >
+>
+> Why? Does this actually cause any problems?
+>
+> It seems like the options for gcc can actually be very straightforward:
+> you just need a cc-option check, and then add -gdwarf-N to both CFLAGS
+> and AFLAGS and you're done.  Adding the -Wa flag is superfluous and
+> carries the risk of interfering with what the compiler driver does. Just
+> let the gcc driver handle the details.
+>
+> Clang/IAS is almost as straightforward, with the only additional edge
+> case being that for assembler files, DWARF 2 doesn't work, so the CFLAGS
+> is the same -gdwarf-N, but AFLAGS gets -gdwarf-N only if N > 2.
+>
+> The messy case is only Clang/IAS=0, which needs to check the support
+> from the external assembler, and needs CFLAGS of -gdwarf-N and AFLAGS of
+> -Wa,--gdwarf-N, because Clang doesn't pass that option on to an external
+> assembler. This is why I was asking if the assembler support check can
+> be restricted to CC_IS_CLANG: nothing but Clang/IAS=0 actually requires
+> that check.
 
-This patch will look good once all the IMA_DATA_SOURCE stuff is moved
-over from patch #4.
+Oh, I see. Yeah, that might be a nicer approach.  What should we do in
+the case of gcc < 7 though, where -gdwarf-5 won't produce DWARF v5?
+Maybe that's ok, but the intent behind the Kconfig check was to
+prevent the option from being selectable if the tools do not support
+it.  Maybe it's more flexible to pass the arguments along, and hope
+for the best?
 
-Tyler
-
-> ---
->  Documentation/ABI/testing/ima_policy |  2 ++
->  security/integrity/ima/ima_policy.c  | 26 +++++++++++++++++++++++++-
->  2 files changed, 27 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
-> index 6ec7daa87cba..0f4ee9e0a455 100644
-> --- a/Documentation/ABI/testing/ima_policy
-> +++ b/Documentation/ABI/testing/ima_policy
-> @@ -52,6 +52,8 @@ Description:
->  			template:= name of a defined IMA template type
->  			(eg, ima-ng). Only valid when action is "measure".
->  			pcr:= decimal value
-> +			data_source:= [label]
-> +			label:= a unique string used for grouping and limiting critical data.
->  
->  		  default policy:
->  			# PROC_SUPER_MAGIC
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index 9a8ee80a3128..7486d09a3f60 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
-> @@ -934,7 +934,7 @@ enum {
->  	Opt_uid_lt, Opt_euid_lt, Opt_fowner_lt,
->  	Opt_appraise_type, Opt_appraise_flag,
->  	Opt_permit_directio, Opt_pcr, Opt_template, Opt_keyrings,
-> -	Opt_err
-> +	Opt_data_source, Opt_err
->  };
->  
->  static const match_table_t policy_tokens = {
-> @@ -971,6 +971,7 @@ static const match_table_t policy_tokens = {
->  	{Opt_pcr, "pcr=%s"},
->  	{Opt_template, "template=%s"},
->  	{Opt_keyrings, "keyrings=%s"},
-> +	{Opt_data_source, "data_source=%s"},
->  	{Opt_err, NULL}
->  };
->  
-> @@ -1350,6 +1351,23 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
->  
->  			entry->flags |= IMA_KEYRINGS;
->  			break;
-> +		case Opt_data_source:
-> +			ima_log_string(ab, "data_source", args[0].from);
-> +
-> +			if (entry->data_source) {
-> +				result = -EINVAL;
-> +				break;
-> +			}
-> +
-> +			entry->data_source = ima_alloc_rule_opt_list(args);
-> +			if (IS_ERR(entry->data_source)) {
-> +				result = PTR_ERR(entry->data_source);
-> +				entry->data_source = NULL;
-> +				break;
-> +			}
-> +
-> +			entry->flags |= IMA_DATA_SOURCE;
-> +			break;
->  		case Opt_fsuuid:
->  			ima_log_string(ab, "fsuuid", args[0].from);
->  
-> @@ -1730,6 +1748,12 @@ int ima_policy_show(struct seq_file *m, void *v)
->  		seq_puts(m, " ");
->  	}
->  
-> +	if (entry->flags & IMA_DATA_SOURCE) {
-> +		seq_puts(m, "data_source=");
-> +		ima_show_rule_opt_list(m, entry->data_source);
-> +		seq_puts(m, " ");
-> +	}
-> +
->  	if (entry->flags & IMA_PCR) {
->  		snprintf(tbuf, sizeof(tbuf), "%d", entry->pcr);
->  		seq_printf(m, pt(Opt_pcr), tbuf);
-> -- 
-> 2.17.1
-> 
+As a gcc-5 user, I might be surprised if I chose
+CONFIG_DEBUG_INFO_DWARF5 if what I got was not actually DWARF v5; it
+does violate the principle of least surprise.  Maybe that doesn't
+matter though?
+-- 
+Thanks,
+~Nick Desaulniers
