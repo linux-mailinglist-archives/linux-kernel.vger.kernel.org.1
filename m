@@ -2,24 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78DB2D5F8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 585452D5F86
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391530AbgLJOpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:45:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44780 "EHLO mail.kernel.org"
+        id S2391551AbgLJOpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:45:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391117AbgLJOhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:37:48 -0500
+        id S2391122AbgLJOh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:37:56 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.9 19/75] ring-buffer: Always check to put back before stamp when crossing pages
-Date:   Thu, 10 Dec 2020 15:26:44 +0100
-Message-Id: <20201210142607.001525071@linuxfoundation.org>
+Subject: [PATCH 5.9 21/75] ftrace: Fix DYNAMIC_FTRACE_WITH_DIRECT_CALLS dependency
+Date:   Thu, 10 Dec 2020 15:26:46 +0100
+Message-Id: <20201210142607.100047313@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
 References: <20201210142606.074509102@linuxfoundation.org>
@@ -31,53 +32,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
-commit 68e10d5ff512b503dcba1246ad5620f32035e135 upstream.
+commit 49a962c075dfa41c78e34784772329bc8784d217 upstream.
 
-The current ring buffer logic checks to see if the updating of the event
-buffer was interrupted, and if it is, it will try to fix up the before stamp
-with the write stamp to make them equal again. This logic is flawed, because
-if it is not interrupted, the two are guaranteed to be different, as the
-current event just updated the before stamp before allocation. This
-guarantees that the next event (this one or another interrupting one) will
-think it interrupted the time updates of a previous event and inject an
-absolute time stamp to compensate.
+DYNAMIC_FTRACE_WITH_DIRECT_CALLS should depend on
+DYNAMIC_FTRACE_WITH_REGS since we need ftrace_regs_caller().
 
-The correct logic is to always update the timestamps when traversing to a
-new sub buffer.
+Link: https://lkml.kernel.org/r/fc4b257ea8689a36f086d2389a9ed989496ca63a.1606412433.git.naveen.n.rao@linux.vnet.ibm.com
 
 Cc: stable@vger.kernel.org
-Fixes: a389d86f7fd09 ("ring-buffer: Have nested events still record running time stamp")
+Fixes: 763e34e74bb7d5c ("ftrace: Add register_ftrace_direct()")
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/trace/ring_buffer.c |   14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ kernel/trace/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3234,14 +3234,12 @@ __rb_reserve_next(struct ring_buffer_per
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -202,7 +202,7 @@ config DYNAMIC_FTRACE_WITH_REGS
  
- 	/* See if we shot pass the end of this buffer page */
- 	if (unlikely(write > BUF_PAGE_SIZE)) {
--		if (tail != w) {
--			/* before and after may now different, fix it up*/
--			b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
--			a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
--			if (a_ok && b_ok && info->before != info->after)
--				(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
--						      info->before, info->after);
--		}
-+		/* before and after may now different, fix it up*/
-+		b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
-+		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
-+		if (a_ok && b_ok && info->before != info->after)
-+			(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
-+					      info->before, info->after);
- 		return rb_move_tail(cpu_buffer, tail, info);
- 	}
+ config DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ 	def_bool y
+-	depends on DYNAMIC_FTRACE
++	depends on DYNAMIC_FTRACE_WITH_REGS
+ 	depends on HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
  
+ config FUNCTION_PROFILER
 
 
