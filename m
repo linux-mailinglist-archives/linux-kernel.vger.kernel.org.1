@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51C52D5AF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:53:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217942D5AE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732921AbgLJMwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 07:52:31 -0500
-Received: from mga12.intel.com ([192.55.52.136]:26357 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387545AbgLJMwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:52:06 -0500
-IronPort-SDR: ljOmEhNXsfUB3Zd1xATnE958FSX1P6Fu5GRQFIT8TBciH40UYVCYhRPTjfjCSDBPqPxSly2EZP
- GJ70g56q5V2A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="153481136"
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="153481136"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 04:51:21 -0800
-IronPort-SDR: zMhGeLDLV+I+Gs/yc8yu1CBaVblxWNO+V1vRFf/q1wFfUjFttEWzHWAJI/PDqRUitkAgGS+SqR
- LkTVDiHHsZIA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="408517044"
-Received: from srpawnik-nuc8i7beh.iind.intel.com ([10.223.107.144])
-  by orsmga001.jf.intel.com with ESMTP; 10 Dec 2020 04:51:19 -0800
-From:   Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-To:     daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     andriy.shevchenko@intel.com, rui.zhang@intel.com,
-        sumeet.r.pawnikar@intel.com
-Subject: [PATCH -next] thermal: intel: pch: use macro for temperature calculation
-Date:   Thu, 10 Dec 2020 18:18:01 +0530
-Message-Id: <20201210124801.13850-1-sumeet.r.pawnikar@intel.com>
-X-Mailer: git-send-email 2.28.0
+        id S1732652AbgLJMuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 07:50:52 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:36364 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732768AbgLJMu0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 07:50:26 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BACnOHl054477;
+        Thu, 10 Dec 2020 06:49:24 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607604564;
+        bh=dyXVorj+Oj06fTeJdoJln15ZodxygE5nv0OPXaSQGYs=;
+        h=From:To:CC:Subject:Date;
+        b=fwpvRVH1JzQoCdWHXtv6NeiKwrYY9Y4smmo5IM+2TZg5FMnSY/86hiy594SCGlFHe
+         YDEVWwe6VL4TKLz/GMzvSUtx+N29D/7Sgm5c0w5jK5SC4ojBw8NfOT31BitvCLOU7j
+         ldmX4b96umdZ7BS/CPFH1toP1no7u8/9VDaHsWiY=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BACnOlN108501
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Dec 2020 06:49:24 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
+ Dec 2020 06:49:24 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 10 Dec 2020 06:49:24 -0600
+Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BACnKJL112244;
+        Thu, 10 Dec 2020 06:49:20 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [RESEND PATCH 0/4] PCI: J7: J7200/J721E PCIe bindings
+Date:   Thu, 10 Dec 2020 18:19:13 +0530
+Message-ID: <20201210124917.24185-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use macro for temperature calculation
+Patch series adds PCIe binding for J7200 and and fixes
+"ti,syscon-pcie-ctrl" applicable to both J721E and J7200.
 
-Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-Reviewed-by: Zhang Rui <rui.zhang@intel.com>
----
- drivers/thermal/intel/intel_pch_thermal.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+All the four patches here have got Acks from Rob Herring.
 
-diff --git a/drivers/thermal/intel/intel_pch_thermal.c b/drivers/thermal/intel/intel_pch_thermal.c
-index d7c05c00881e..41723c6c6c0c 100644
---- a/drivers/thermal/intel/intel_pch_thermal.c
-+++ b/drivers/thermal/intel/intel_pch_thermal.c
-@@ -167,8 +167,7 @@ static int pch_wpt_init(struct pch_thermal_device *ptd, int *nr_trips)
- 	trip_temp = readw(ptd->hw_base + WPT_CTT);
- 	trip_temp &= 0x1FF;
- 	if (trip_temp) {
--		/* Resolution of 1/2 degree C and an offset of -50C */
--		ptd->crt_temp = trip_temp * 1000 / 2 - 50000;
-+		ptd->crt_temp = GET_WPT_TEMP(trip_temp);
- 		ptd->crt_trip_id = 0;
- 		++(*nr_trips);
- 	}
-@@ -177,8 +176,7 @@ static int pch_wpt_init(struct pch_thermal_device *ptd, int *nr_trips)
- 	trip_temp = readw(ptd->hw_base + WPT_PHL);
- 	trip_temp &= 0x1FF;
- 	if (trip_temp) {
--		/* Resolution of 1/2 degree C and an offset of -50C */
--		ptd->hot_temp = trip_temp * 1000 / 2 - 50000;
-+		ptd->hot_temp = GET_WPT_TEMP(trip_temp);
- 		ptd->hot_trip_id = *nr_trips;
- 		++(*nr_trips);
- 	}
-@@ -190,12 +188,7 @@ static int pch_wpt_init(struct pch_thermal_device *ptd, int *nr_trips)
+Ack for "dt-bindings: pci: ti,j721e: Fix "ti,syscon-pcie-ctrl" to take
+argument"
+lore.kernel.org/r/CAL_JsqJQju8TUZA-wu=WA-5XH4H9s2ifO8Hf4TnT5epa=Gg1ng@mail.gmail.com
 
- static int pch_wpt_get_temp(struct pch_thermal_device *ptd, int *temp)
- {
--	u16 wpt_temp;
--
--	wpt_temp = WPT_TEMP_TSR & readw(ptd->hw_base + WPT_TEMP);
--
--	/* Resolution of 1/2 degree C and an offset of -50C */
--	*temp = (wpt_temp * 1000 / 2 - 50000);
-+	*temp = GET_WPT_TEMP(WPT_TEMP_TSR & readw(ptd->hw_base + WPT_TEMP));
+Ack for "dt-bindings: PCI: Add host mode dt-bindings for TI's J7200 SoC"
+lore.kernel.org/r/20201105165604.GA1474027@bogus
 
- 	return 0;
- }
---
-2.28.0
+Ack for "dt-bindings: PCI: Add EP mode dt-bindings for TI's J7200 SoC"
+http://lore.kernel.org/r/20201105165627.GA1474647@bogus
+
+Ack for "PCI: j721e: Get offset within "syscon" from
+"ti,syscon-pcie-ctrl" phandle arg"
+http://lore.kernel.org/r/CAL_JsqKQwx2qKJb5eAsutdHH5DevC+XH33yXrCBWE+OCrrQFYg@mail.gmail.com
+
+Kishon Vijay Abraham I (4):
+  dt-bindings: pci: ti,j721e: Fix "ti,syscon-pcie-ctrl" to take argument
+  dt-bindings: PCI: Add host mode dt-bindings for TI's J7200 SoC
+  dt-bindings: PCI: Add EP mode dt-bindings for TI's J7200 SoC
+  PCI: j721e: Get offset within "syscon" from "ti,syscon-pcie-ctrl"
+    phandle arg
+
+ .../bindings/pci/ti,j721e-pci-ep.yaml         | 21 ++++++++++----
+ .../bindings/pci/ti,j721e-pci-host.yaml       | 27 +++++++++++++-----
+ drivers/pci/controller/cadence/pci-j721e.c    | 28 +++++++++++++------
+ 3 files changed, 54 insertions(+), 22 deletions(-)
+
+-- 
+2.17.1
 
