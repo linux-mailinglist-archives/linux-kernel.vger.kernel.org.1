@@ -2,126 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB602D5FD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D0D2D5FDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391441AbgLJPfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:35:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391772AbgLJPek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:34:40 -0500
-Date:   Thu, 10 Dec 2020 15:33:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607614439;
-        bh=iMwv7c77IjrqicDbjsGvEy84gWS+/5SD4Vci9BgKJn4=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WtncBznI2e4tcslywLdMN7BlXtSq67/ZC7sO/xVh0jA7Mder3gDlzZ27l2M1hzrXI
-         ErKREhbBerczgjbEPJjrVF2kW0zV2XwLwtGT6b5DJ4WcP1/3TVxyCusgHTqUn+7F9+
-         4b3mIUV+hrxGW5hiR32+Ce0Ht0UUoXscZtkq+IQNLzOUI5jwk4sqqyn2nTR9LX3a3Y
-         oYKNj8fRm6mPNZlCPIWADxUlAihoHkotQHHuEswzG+6mn7/cujNdVx3ywoSq7AD2vw
-         94a2Ch1822VuoDdkHJzhEO7TweI6fh6NicboNnL6Fz1VLEJGial5fo5NqOvFHPQw+b
-         f7DLUHPGGtgcA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Tudor.Ambarus@microchip.com
-Cc:     fancer.lancer@gmail.com, linux-spi@vger.kernel.org,
+        id S2391416AbgLJPgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:36:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391896AbgLJPgs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:36:48 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC191C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:36:02 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id y17so5897531wrr.10
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:36:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fpTNmQiIHEJLaTitKVv1oaaSRbT39VRnTw74fvsGI1c=;
+        b=H3trLt4V1L33TGwM/yZD0JhEIXHblYks1nZFOtWoQlVLJbsN4Mz5l79tyImAywSIi/
+         C8bIE40OmzGccXtTHB9uAPK+pfwT16fE4+WkMzVF9505mmbuAjrE2MTj80KZD/zCn8CT
+         lHPuSJv9iYvdtlkhMD0Y1cF/n0mF1jce237ttDgDNPKFwvynr2QuVvCVr0P7Ep1bc2ni
+         8L5A/xQr9LtZOrgHHwu1uHYsJDmsHA2nRpxaMyVej2blUUTv+IFGvVuFTjMj7zKMmjNa
+         Qos2oXRMierk/L+O1eqGuYNoI7QNw4g2+7EQzyAspzxtKKxfJk9mG9V7gHqPDny5woOx
+         G+aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fpTNmQiIHEJLaTitKVv1oaaSRbT39VRnTw74fvsGI1c=;
+        b=SlgQmB6d1qZ6B4CNt+wwOfraBBsg7abGW+7cRNnlmrrX2wtOcM1cLxONi8J7T3s314
+         vb/3b2Mhq/vJ7KXsVB/I5IdRVumHpepmnWPgo4CVVxxLHxu2kv9jyC1HMfF6nWzM4Vra
+         q7rZvk20zc486WdQMEt5J13tpuFzO5W7ACo78h5EiOoIRnsXWOUnRQdek3K5NjREqkuh
+         Blvu9RnXxqqxUqQtj4wwu0SwT7l7wdkC9cLIB3Qj1dJSaSoisAC3chb6edZD+xMnc2QL
+         dgpe8hClh/HX3VhJcK0pYir1jIDXq2/m2d2HmZU0+KfslEx0g2thsQpoTZ7JheRE0gEO
+         KlYA==
+X-Gm-Message-State: AOAM530b2IqbODVXOUW1nm/7ZEU8h9hpsSOBPdLjdn8vlaDitQOYQ+25
+        CezRcH+9afL1Zz1uKfuOemumSA==
+X-Google-Smtp-Source: ABdhPJzRsd4INrUHZ1w+FccKPJwW1ZyQU2s8jxT0sdxgFM9P2IbkcARs9CxNUGLQOzZ7aJF2x940Xw==
+X-Received: by 2002:adf:fdcb:: with SMTP id i11mr8862811wrs.349.1607614561777;
+        Thu, 10 Dec 2020 07:36:01 -0800 (PST)
+Received: from localhost (p4fdabc80.dip0.t-ipconnect.de. [79.218.188.128])
+        by smtp.gmail.com with ESMTPSA id z22sm9112468wml.1.2020.12.10.07.36.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 07:36:01 -0800 (PST)
+Date:   Thu, 10 Dec 2020 16:33:56 +0100
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
+        david@fromorbit.com, mhocko@suse.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: Limit the spi device max speed to controller's max
- speed
-Message-ID: <20201210153351.GB4747@sirena.org.uk>
-References: <20201209173514.93328-1-tudor.ambarus@microchip.com>
- <20201209194636.32f4ioxxdggezklr@mobilestation>
- <20201209195420.GD4790@sirena.org.uk>
- <20201209201535.32g4kwpzo45jiqr3@mobilestation>
- <20201209202552.GE4790@sirena.org.uk>
- <20201209203042.oqbcijwaxqt5aa7b@mobilestation>
- <48bf85a0-4a98-7e81-0802-c5fac762234f@microchip.com>
+Subject: Re: [PATCH 5/9] mm: memcontrol: add per memcg shrinker nr_deferred
+Message-ID: <20201210153356.GE264602@cmpxchg.org>
+References: <20201202182725.265020-1-shy828301@gmail.com>
+ <20201202182725.265020-6-shy828301@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NDin8bjvE/0mNLFQ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <48bf85a0-4a98-7e81-0802-c5fac762234f@microchip.com>
-X-Cookie: Your step will soil many countries.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201202182725.265020-6-shy828301@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 02, 2020 at 10:27:21AM -0800, Yang Shi wrote:
+> @@ -504,6 +577,34 @@ int memcg_expand_shrinker_maps(int new_id)
+>  	return ret;
+>  }
+>  
+> +int memcg_expand_shrinker_deferred(int new_id)
+> +{
+> +	int size, old_size, ret = 0;
+> +	struct mem_cgroup *memcg;
+> +
+> +	size = (new_id + 1) * sizeof(atomic_long_t);
+> +	old_size = memcg_shrinker_deferred_size;
+> +	if (size <= old_size)
+> +		return 0;
+> +
+> +	mutex_lock(&memcg_shrinker_mutex);
 
---NDin8bjvE/0mNLFQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The locking is somewhat confusing. I was wondering why we first read
+memcg_shrinker_deferred_size "locklessly", then change it while
+holding the &memcg_shrinker_mutex.
 
-On Thu, Dec 10, 2020 at 08:58:18AM +0000, Tudor.Ambarus@microchip.com wrote:
-> On 12/9/20 10:30 PM, Serge Semin wrote:
+memcg_shrinker_deferred_size only changes under shrinker_rwsem(write),
+correct? This should be documented in a comment, IMO.
 
-> >>>> Right, in general we aim to do this sort of fixup on the transfers
-> >>>> and messages rather than the devices, I guess we might be missing
-> >>>> validation in some of the flash acceleration paths or was this an issue
-> >>>> seen through inspection?
+memcg_shrinker_mutex looks superfluous then. The memcg allocation path
+is the read-side of memcg_shrinker_deferred_size, and so simply needs
+to take shrinker_rwsem(read) to lock out shrinker (de)registration.
 
-> We miss validation for the SPI controllers that provide the
-> spi_controller_mem_ops with its exec_op() method. In this case the SPI
-> core does not check if the max_speed_hz of spi_device overrides the
-> max_speed_hz of controller.
-
-> This was seen through inspection. There are octal SPI NOR flashes that
-> can run at 400 MHZ, and I've also seen SPI controllers that are limited
-> to 200 MHZ (microchip's sama7g5 octal SPI for example, which is not yet
-> in mainline).
-
-Right, that's the hole :/
-
-> >> Ideally the driver wouldn't have to check though (no harm in doing so of
-> >> course).
-
-> Right. I thought of doing this in the SPI core, rather than doing in (each)
-> controller driver.
-
-Yes, we should just make sure things are OK in the core as much as we
-can so there's less work for driver authors.
-
-> > If so then we'd need to have a dedicated speed-related field in the
-> > spi_mem_op structure, which would be accordingly initialized by the
-> > SPI-mem core.
-
-> We do need a max_speed_hz in the SPIMEM, but probably for other purposes:
-> NOR flashes, for example, can discover the maximum supported frequency
-> at run-time, when parsing the jesd216 SFDP tables. One may consider that
-> the run-time discovered max_speed_hz should have a higher precedence than
-> what we fill with the spi-max-frequency dt property, because the
-> manufacturers/jesd216 standard know/s better. Of course, if the
-> manufacturers put a wrong max_speed_hz in the sfdp table, that can be
-> updated at runtime with a fixup() hook, on a case by case basis. Other
-> thing to consider here, is the max_speed_hz supported by the PCB. For
-> example if the SPI flash supports 400 MHZ, the controller 200 MHZ, but
-> the PCB only 180 MHZ, then we'll have to synchronize all three. But this
-> seems like a discussion for other patch.
-
-The potential for board issues suggests that we should be taking the
-minimum of what the board DT and runtime discovery say - if the board
-limits things more than the parts we should assume that there's a system
-integration limitation there.
-
-> Let me know if you think that this patch is ok for now. I can update the
-> commit message if needed.
-
-It does work for now but it'd be nicer if we were doing this through
-recording the decision on the transfer.
-
---NDin8bjvE/0mNLFQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/SP94ACgkQJNaLcl1U
-h9AOwgf+KUAUCPTHIq0yy+UcFieHbKjLnKaQxJVd3pKP8XFAAZXtDwXw2oStbP8m
-Yw61sRICosi+SQLxHLvbavpHfolqnpTTya6DLN8xONhRUKiTmV9CV8N2rnfHpFeO
-V4VTAdLFLl5WpEvVHcNvdY48khOSy1Jzycv1CdogWz3LEoJLiRmSkbF0bBIa2kbj
-P1T8cmy1hVAXJPixZJjiF8psXB8Rs0Evz7CvMzAZZV4YR+h23No6XOCehZH8udvC
-kw2fly1yxHP+aWNWgzT4MWyPUaOPRXklOjCz/ERfUs8KXj1Yq07D9XL0bkbvURzJ
-mS3VmG+zbZmOsL/vHiDzcscubZ6WIg==
-=kW3E
------END PGP SIGNATURE-----
-
---NDin8bjvE/0mNLFQ--
+Also, isn't memcg_shrinker_deferred_size just shrinker_nr_max? And
+memcg_expand_shrinker_deferred() is only called when size >= old_size
+in the first place (because id >= shrinker_nr_max)?
