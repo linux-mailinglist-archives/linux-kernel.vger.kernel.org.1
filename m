@@ -2,282 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76E02D5458
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8812D545E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732544AbgLJHI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 02:08:26 -0500
-Received: from mga05.intel.com ([192.55.52.43]:7028 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726107AbgLJHIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 02:08:18 -0500
-IronPort-SDR: gEjzh5Fer/L0YGkCOpUPU712M4FagGwyfgy+RRmjRzoMgku2UUzqFYbOO8zeaf4EE3m3faIbeY
- GyQeSZTbPzJA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="258925816"
-X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="258925816"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 23:07:34 -0800
-IronPort-SDR: b70CbR8qt3LOvjE6W0wdqhMaTzLtw01Fpyb2BfuRX1xRptzH/Zcp2Y4K81ZNgyceyqk1rLNVpu
- yfeOQ5w4bpPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="375811504"
-Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 09 Dec 2020 23:07:32 -0800
-Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1knG30-00007o-Pq; Thu, 10 Dec 2020 07:07:30 +0000
-Date:   Thu, 10 Dec 2020 15:07:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cache] BUILD SUCCESS WITH WARNING
- 2ba836dbe2467d31fffb439258c2f454c6f1a317
-Message-ID: <5fd1c92a.Ih3xkMwbJGiSyEGH%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727291AbgLJHOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 02:14:16 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:41731 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgLJHOQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 02:14:16 -0500
+Received: by mail-lj1-f196.google.com with SMTP id f11so5523994ljm.8
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 23:13:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0UIvMECAf5QaqTsIRzzl0P/0Z+/Lib94ryyLqz9IsAA=;
+        b=AkrfBbthwSsusMwzLBCUMrpOyYc1FENjsDMhnz+D9MFry5zZO2t1NCGKgLznvKC+Oz
+         sb4qzTtIejbj6SnMiVFg+q1wiJ6t1GyV2qFaGWSoGxQQkiWtSANcMlEQihcpRyxForJv
+         +GYOFsY66tyw05ZO8RlptzN/HbsR8yXfpiMiPv6/+1ARTuGzdcUIPojca6KvkzqVkB8g
+         1g+DeWtz83mYEe0KFDcC39QGpuPLgFw/HYs/eLF4kP6lQmH7Z36SOm/iHgzgwOdT/1GI
+         OuGX6Id3HkVT7oP2kCK2O6m2XHu8Ahpq3bpfR+suk02Rw2fyilKcsh0Ofa0HQQKN9FC2
+         59dw==
+X-Gm-Message-State: AOAM532rL9K1XQjKk138FqDgvsqHfAPj4aKM3TQWvDWw5sdhkCCXDCNB
+        s6GAGFlbnjkx9sEXuedqfh+MJw9qj2iyQJRBTvTaeWU1
+X-Google-Smtp-Source: ABdhPJw5Pa8grUY2KlNyE4mNcQXT0NVht0lUiJefKg/ZTZDIVOElsp0pheOQmhf32g+2fWycm0fVmlqpSHL9OCX1gfQ=
+X-Received: by 2002:a2e:908:: with SMTP id 8mr2504958ljj.52.1607584413862;
+ Wed, 09 Dec 2020 23:13:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201130193842.10569-1-kan.liang@linux.intel.com>
+ <20201130193842.10569-3-kan.liang@linux.intel.com> <20201201172903.GT3040@hirez.programming.kicks-ass.net>
+ <CAM9d7ciukm4RAH+44YWhZRummKzk1HTbnZ0Sc4Xd5ZyCo=x0xQ@mail.gmail.com>
+In-Reply-To: <CAM9d7ciukm4RAH+44YWhZRummKzk1HTbnZ0Sc4Xd5ZyCo=x0xQ@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 10 Dec 2020 16:13:22 +0900
+Message-ID: <CAM9d7ciBO=cmgnBVJWpyJ75VHjoxuEA=ck=V1+k8KRBkh23+nw@mail.gmail.com>
+Subject: Re: [PATCH V2 3/3] perf: Optimize sched_task() in a context switch
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Gabriel Marin <gmx@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cache
-branch HEAD: 2ba836dbe2467d31fffb439258c2f454c6f1a317  x86/resctrl: Fix incorrect local bandwidth when mba_sc is enabled
+Hi Peter and Kan,
 
-Warning reports:
+How can we move this forward?
 
-https://lore.kernel.org/lkml/202012100516.H7sTNehL-lkp@intel.com
+Thanks,
+Namhyung
 
-Warning in current branch:
-
-arch/x86/kernel/cpu/resctrl/monitor.c:291:6: warning: variable 'chunks' set but not used [-Wunused-but-set-variable]
-
-Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- i386-allyesconfig
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- i386-randconfig-a001-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- i386-randconfig-a002-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- i386-randconfig-a002-20201210
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- i386-randconfig-a004-20201210
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- i386-randconfig-a006-20201210
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- i386-randconfig-a012-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- i386-randconfig-a014-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- i386-randconfig-a016-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- i386-randconfig-c001-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- i386-randconfig-c001-20201210
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- i386-randconfig-s001-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- i386-randconfig-s002-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-allmodconfig
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-allyesconfig
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-randconfig-a011-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-randconfig-a013-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-randconfig-a014-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-randconfig-p002-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-randconfig-r023-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-randconfig-r024-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-randconfig-s021-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-randconfig-s022-20201209
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-randconfig-s022-20201210
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-rhel
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-|-- x86_64-rhel-7.6-kselftests
-|   `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-`-- x86_64-rhel-8.3
-    `-- arch-x86-kernel-cpu-resctrl-monitor.c:warning:variable-chunks-set-but-not-used
-
-
-i386-tinyconfig vmlinux size:
-
-+-------+------------------------------+------------------------------------------+
-| DELTA |            SYMBOL            |                  COMMIT                  |
-+-------+------------------------------+------------------------------------------+
-| +1718 | TOTAL                        | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-| +1647 | TEXT                         | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|   +68 | BSS                          | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|  +774 | seq_read_iter()              | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|  +250 | __invalidate_mapping_pages() | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|  +225 | intel_pmu_drain_pebs_icl()   | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|  +218 | intel_pmu_drain_pebs_nhm()   | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|  +201 | intel_pmu_drain_pebs_core()  | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|  +117 | init.text                    | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|   +68 | dummy_iregs                  | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|   +66 | perf_event_aux_event()       | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|   +66 | perf_log_throttle()          | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|   -69 | __sb_start_write()           | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|   -78 | __ptrace_may_access()        | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|  -250 | __invalidate_mapping_pages() | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|  -356 | __intel_pmu_pebs_event()     | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-|  -470 | seq_read()                   | 3650b228f83a..2ba836dbe246 (ALL COMMITS) |
-+-------+------------------------------+------------------------------------------+
-
-elapsed time: 721m
-
-configs tested: 132
-configs skipped: 3
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      tqm8xx_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                      walnut_defconfig
-ia64                         bigsur_defconfig
-powerpc                     tqm8555_defconfig
-m68k                         apollo_defconfig
-riscv                            allmodconfig
-m68k                        mvme16x_defconfig
-mips                        omega2p_defconfig
-ia64                        generic_defconfig
-um                             i386_defconfig
-mips                           gcw0_defconfig
-sh                          kfr2r09_defconfig
-sh                           se7724_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                           viper_defconfig
-arm                         socfpga_defconfig
-alpha                            alldefconfig
-arm                        vexpress_defconfig
-powerpc                      makalu_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                  maltasmvp_eva_defconfig
-sh                        edosk7760_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                 mpc85xx_cds_defconfig
-mips                         tb0219_defconfig
-mips                     cu1000-neo_defconfig
-powerpc                     rainier_defconfig
-arm                          pcm027_defconfig
-mips                          ath25_defconfig
-powerpc                 mpc834x_mds_defconfig
-arm                        oxnas_v6_defconfig
-s390                                defconfig
-arm                        spear6xx_defconfig
-arm                         s3c6400_defconfig
-mips                         db1xxx_defconfig
-mips                            ar7_defconfig
-arm                       versatile_defconfig
-powerpc                        icon_defconfig
-nios2                            alldefconfig
-arm                       aspeed_g5_defconfig
-powerpc                 canyonlands_defconfig
-sh                      rts7751r2d1_defconfig
-mips                         bigsur_defconfig
-mips                           xway_defconfig
-mips                         cobalt_defconfig
-mips                        nlm_xlp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201209
-i386                 randconfig-a005-20201209
-i386                 randconfig-a001-20201209
-i386                 randconfig-a002-20201209
-i386                 randconfig-a006-20201209
-i386                 randconfig-a003-20201209
-i386                 randconfig-a001-20201210
-i386                 randconfig-a004-20201210
-i386                 randconfig-a003-20201210
-i386                 randconfig-a002-20201210
-i386                 randconfig-a005-20201210
-i386                 randconfig-a006-20201210
-x86_64               randconfig-a016-20201209
-x86_64               randconfig-a012-20201209
-x86_64               randconfig-a013-20201209
-x86_64               randconfig-a014-20201209
-x86_64               randconfig-a015-20201209
-x86_64               randconfig-a011-20201209
-i386                 randconfig-a013-20201209
-i386                 randconfig-a014-20201209
-i386                 randconfig-a011-20201209
-i386                 randconfig-a015-20201209
-i386                 randconfig-a012-20201209
-i386                 randconfig-a016-20201209
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20201209
-x86_64               randconfig-a006-20201209
-x86_64               randconfig-a005-20201209
-x86_64               randconfig-a001-20201209
-x86_64               randconfig-a002-20201209
-x86_64               randconfig-a003-20201209
-x86_64               randconfig-a003-20201210
-x86_64               randconfig-a006-20201210
-x86_64               randconfig-a002-20201210
-x86_64               randconfig-a005-20201210
-x86_64               randconfig-a004-20201210
-x86_64               randconfig-a001-20201210
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On Fri, Dec 4, 2020 at 4:14 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> Hi Peter,
+>
+> On Wed, Dec 2, 2020 at 2:29 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Mon, Nov 30, 2020 at 11:38:42AM -0800, kan.liang@linux.intel.com wrote:
+> > > From: Kan Liang <kan.liang@linux.intel.com>
+> > >
+> > > Some calls to sched_task() in a context switch can be avoided. For
+> > > example, large PEBS only requires flushing the buffer in context switch
+> > > out. The current code still invokes the sched_task() for large PEBS in
+> > > context switch in.
+> >
+> > I still hate this one, how's something like this then?
+> > Which I still don't really like.. but at least its simpler.
+> >
+> > (completely untested, may contain spurious edits, might ICE the
+> > compiler and set your pets on fire if it doesn't)
+>
+> I've tested this version... and it worked well besides the optimization.. :)
+>
+> [SNIP]
+> > +static void context_sched_task(struct perf_cpu_context *cpuctx,
+> > +                              struct perf_event_context *ctx,
+> > +                              bool sched_in)
+> > +{
+> > +       struct pmu *pmu = ctx->pmu;
+> > +
+> > +       if (cpuctx->sched_cb_dir[sched_in] && pmu->sched_task)
+> > +               pmu->sched_task(ctx, false);
+>
+> applied: s/false/sched_in/
+>
+>
+> > +}
+> > +
+> >  static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
+> >                                          struct task_struct *next)
+> >  {
+> > @@ -3424,9 +3433,7 @@ static void perf_event_context_sched_out
+> >                         WRITE_ONCE(next_ctx->task, task);
+> >
+> >                         perf_pmu_disable(pmu);
+> > -
+> > -                       if (cpuctx->sched_cb_usage && pmu->sched_task)
+> > -                               pmu->sched_task(ctx, false);
+> > +                       context_sched_task(cpuctx, ctx, false);
+> >
+> >                         /*
+> >                          * PMU specific parts of task perf context can require
+> > @@ -3465,8 +3472,7 @@ static void perf_event_context_sched_out
+> >                 raw_spin_lock(&ctx->lock);
+> >                 perf_pmu_disable(pmu);
+> >
+> > -               if (cpuctx->sched_cb_usage && pmu->sched_task)
+> > -                       pmu->sched_task(ctx, false);
+> > +               context_sched_task(cpuctx, ctx, false);
+> >                 task_ctx_sched_out(cpuctx, ctx, EVENT_ALL);
+> >
+> >                 perf_pmu_enable(pmu);
+>
+> [SNIP]
+> > @@ -3563,8 +3582,7 @@ void __perf_event_task_sched_out(struct
+> >  {
+> >         int ctxn;
+> >
+> > -       if (__this_cpu_read(perf_sched_cb_usage))
+> > -               perf_pmu_sched_task(task, next, false);
+> > +       perf_pmu_sched_task(task, next, false);
+>
+> I think the reason is this change.  It now calls perf_pmu_sched_task()
+> without checking the counter.  And this is for per-cpu events.
+>
+> >
+> >         if (atomic_read(&nr_switch_events))
+> >                 perf_event_switch(task, next, false);
+> > @@ -3828,8 +3846,7 @@ static void perf_event_context_sched_in(
+> >                 cpu_ctx_sched_out(cpuctx, EVENT_FLEXIBLE);
+> >         perf_event_sched_in(cpuctx, ctx, task);
+> >
+> > -       if (cpuctx->sched_cb_usage && pmu->sched_task)
+> > -               pmu->sched_task(cpuctx->task_ctx, true);
+> > +       context_sched_task(cpuctx, ctx, true);
+> >
+> >         perf_pmu_enable(pmu);
+> >
+> > @@ -3875,8 +3892,7 @@ void __perf_event_task_sched_in(struct t
+> >         if (atomic_read(&nr_switch_events))
+> >                 perf_event_switch(task, prev, true);
+> >
+> > -       if (__this_cpu_read(perf_sched_cb_usage))
+> > -               perf_pmu_sched_task(prev, task, true);
+> > +       perf_pmu_sched_task(prev, task, true);
+>
+> Ditto.
+>
+> >  }
+> >
+> >  static u64 perf_calculate_period(struct perf_event *event, u64 nsec, u64 count)
+>
+> So I made a change like below.. and it could bring the optimization back.
+>
+> Thanks,
+> Namhyung
+>
+>
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 9107e7c3ccfb..a30243a9fab5 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -3528,6 +3528,9 @@ static void __perf_pmu_sched_task(struct
+> perf_cpu_context *cpuctx, bool sched_in
+>  {
+>         struct pmu *pmu;
+>
+> +       if (!cpuctx->sched_cb_dir[sched_in])
+> +               return;
+> +
+>         pmu = cpuctx->ctx.pmu; /* software PMUs will not have sched_task */
+>
+>         if (WARN_ON_ONCE(!pmu->sched_task))
