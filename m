@@ -2,209 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857FA2D69BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 283722D69BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404827AbgLJV0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 16:26:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
+        id S2404856AbgLJV0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 16:26:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404833AbgLJVZz (ORCPT
+        with ESMTP id S2404835AbgLJVZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 16:25:55 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335FAC06179C;
+        Thu, 10 Dec 2020 16:25:54 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8765C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:25:13 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id w5so4671296pgj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:25:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=vThmtEMe7O46c9tQqEWEVukUH1ChbZTC/moKCKUwtoE=;
+        b=Mobm9meQeooIgSZlSVO4S32L1xZxAJLuDvBbtjdsL2XrRTA/XTO+EyDAVvG7/tQZPh
+         Q9k1UtA+IPTVZqcGwj+5sxj5e+xuHNtmdgUfzkV9bxBzXtsYFkQ7q+1JZxc525hz2l/P
+         RSphddRZ+ooFucxnsy74rJy9v+71iGgUU7pMM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=vThmtEMe7O46c9tQqEWEVukUH1ChbZTC/moKCKUwtoE=;
+        b=p40OS2rli7Bussv/zdnETEdmfjZoFK5LPXerwtKUSDdXvH4Jv18JtpxBr+uCNMYvOR
+         4+zWBvpA+KwgwPjcRVfQiH+gU4kJRR+O4+EhsbtYSL/+oqhCcyGoGUCX1stXfgJpczhI
+         5d1mV36LBxrEbBsPQUh0djjYQzkfUxQUMU73WZwiOs/1PYsXazADiJlfO1XV5WKk/Aoa
+         dGS6QhXCg9cfqcpRh+WvTsenN7fMIDlmFiy+yPU2OWuPO86KexpbZufF1Im5gNHgyJbW
+         EY+RJGHzJJKiCpXRNTCZtJlxzdGspjZWiaIkXz+dZF47zk9yvYyFVMdv7xwRaGLl7BC1
+         Qqgg==
+X-Gm-Message-State: AOAM530FHcxZ3KJshNjeadLC790JTlPdPcFx5WNAY7Mg8qnORHA4cCRM
+        KUAcr+PPYq3njiRVitEaDztzUw==
+X-Google-Smtp-Source: ABdhPJzz2YTKP+M/SVJWkhcA3Ivcn1qhxENS+THxgIHuuHnX7c41Vd1LeCKyV++ewzAy6DYgtc32Lw==
+X-Received: by 2002:a17:90b:3698:: with SMTP id mj24mr9434503pjb.149.1607635513275;
         Thu, 10 Dec 2020 13:25:13 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607635509;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ajw6S0ecP5JyDk4B2mqzjZj/OHXUcKEye3wFwM30n/w=;
-        b=aeDeoP2OMb6W1yTcNPLUJ7wTG3iLhIrafwxO3scwUbegxx08gBtU4kPrN4ODASzLSPXzwQ
-        XobemNt/pYeltS25uDGXmbV3GcNLJ0Px9AqcUqfHH9QjmKdlsMu9C2KveBrh8D6WLyVQin
-        HMwpE3Yd6Zsit+r9vYhdDGbiSRY/VqrX00NDXloesms1kq2YZxcq4M6oMkQAzowXMOz4Lc
-        gkQyx3nDfFA0NkzkwNhdTPK+ycLYpQnNY8iS+jxO4gYkKH6ssnTImlyf2MKMIwDekl521L
-        mwambQN10d9AVw1RmPeaLvQ7xs2Uqtpi9o4yWIC0WB7be6+xSSdTYp2ro5V6UA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607635509;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ajw6S0ecP5JyDk4B2mqzjZj/OHXUcKEye3wFwM30n/w=;
-        b=h9cVxZlo/qnGFMbdP7Cl4Ja1S4XsFkUxh4B0G8WAAbAbstUjgxp3XvbTLJFjBbC8sux1U7
-        p4gLQNs44O7wRGBg==
-To:     Andy Lutomirski <luto@amacapital.net>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-In-Reply-To: <E4F263BE-6CAA-4152-8818-187D34D8D0FD@amacapital.net>
-References: <9389c1198da174bcc9483d6ebf535405aa8bdb45.camel@redhat.com> <E4F263BE-6CAA-4152-8818-187D34D8D0FD@amacapital.net>
-Date:   Thu, 10 Dec 2020 22:25:09 +0100
-Message-ID: <87360djqve.fsf@nanos.tec.linutronix.de>
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id e13sm7863703pgh.54.2020.12.10.13.25.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 13:25:12 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAD=FV=V2E6W_1PtqBy6Fo_Cxp6kygpeitEkaMG5bMRpv7gO53w@mail.gmail.com>
+References: <20201210125709.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid> <160763420585.1580929.9586717907613124743@swboyd.mtv.corp.google.com> <CAD=FV=V2E6W_1PtqBy6Fo_Cxp6kygpeitEkaMG5bMRpv7gO53w@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-msm: Warn about overclocking SD/MMC
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>
+To:     Doug Anderson <dianders@chromium.org>
+Date:   Thu, 10 Dec 2020 13:25:11 -0800
+Message-ID: <160763551118.1580929.6120205249234917665@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy,
+Quoting Doug Anderson (2020-12-10 13:20:03)
+> On Thu, Dec 10, 2020 at 1:03 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> >
+> >
+> > Can we use dev_warn?
+>=20
+> What's here matches other prints including other ones in the same
+> function and in much of the MMC subsystem.  mmc_hostname() shows
+> "mmc1"
+>=20
+> > dev_warn(mmc_dev(mmc)
+> > dev_warn(&msm_host->pdev->dev
+>=20
+> This show "sdhci_msm 7c4000.sdhci"
+>=20
+> I'm going to keep with tradition and keep using mmc_hostname().  In
+> some parts of this file they use both (a dev_warn that also includes
+> the mmc_hostname()) but that feels overkill.
 
-On Thu, Dec 10 2020 at 07:16, Andy Lutomirski wrote:
->> On Dec 10, 2020, at 6:52 AM, Maxim Levitsky <mlevitsk@redhat.com> wrote:
->> =EF=BB=BFOn Thu, 2020-12-10 at 12:48 +0100, Paolo Bonzini wrote:
->>>> On 08/12/20 22:20, Thomas Gleixner wrote:
->>>> So now life migration comes a long time after timekeeping had set the
->>>> limits and just because it's virt it expects that everything works and=
- it
->>>> just can ignore these limits.
->>>>=20
->>>> TBH. That's not any different than SMM or hard/firmware taking the
->>>> machine out for lunch. It's exactly the same: It's broken.
->>>=20
->>> I agree.  If *live* migration stops the VM for 200 seconds, it's broken.
-
-I'm glad we are on the same page here.
-
->>> Sure, there's the case of snapshotting the VM over the weekend.  My=20
->>> favorite solution would be to just put it in S3 before doing that.  *Do=
-=20
->>> what bare metal does* and you can't go that wrong.
-
-:)
-
->> Note though that qemu has a couple of issues with s3, and it is disabled=
-=20
->> by default in libvirt.=20
->> I would be very happy to work on improving this if there is a need for t=
-hat.
->
-> There=E2=80=99s also the case where someone has a VM running on a laptop =
-and
-> someone closes the lid. The host QEMU might not have a chance to
-> convince the guest to enter S3.
-
-But the host kernel can do something sensible before going off into lala
-land. It knows that it is about to do that and it knows that there are
-guests running.
-
->> I still think though that we should have a discussion on feasibility
->> of making the kernel time code deal with large *forward* tsc jumps=20
->> without crashing.
-
-I'm not opposed against that as I said before.
-=20
->> If that is indeed hard to do, or will cause performance issues,
->> then I agree that we might indeed inform the guest of time jumps instead.
->>=20
->
-> Tglx, even without fancy shared host/guest timekeeping, count the
-> guest kernel manage to update its timekeeping if the host sent the
-> guest an interrupt or NMI on all CPUs synchronously on resume?
-
-Tell it before it takes a nap is simpler and does not require an NMI
-which is horrible anyway because we can't do much in the NMI and
-scheduling irq_work from NMI does not help either because the guest
-could be in the middle of ... timekeeping. See below.
-
-> Alternatively, if we had the explicit =E2=80=9Cmax TSC value that makes s=
-ense
-> right now=E2=80=9D in the timekeeping data, the guest would reliably noti=
-ce
-> the large jump and could at least do something intelligent about it
-> instead of overflowing its internal calculation.
-
-Yes. We can do that and we should do that for robustness sake.
-
-But, there is more than the robustness problem on the reader side, which
-is trivial as we discussed in the other part of this thread already.
-
-There is also the problem on the timekeeping core in various aspects
-which need a very close look.
-
-So there are various things to solve:
-
-   1) Readerside delta limit
-
-      Trivial to provide and trivial to implement for the VDSO because
-      the VDSO just can loop forever.
-
-      Not so trivial for kernel side usage due to the fact that being
-      caught in a read can prevent timekeeping from being updated.
-
-      Hint: NOHZ entry path. That would simply livelock and never reach
-      the timekeeping code. Also any interrupt disabled region can cause
-      that.
-
-      I looked into using 128 bit math as well, but that only works for
-      wide clock sources like TSC and needs to be conditional on 64bit
-      as 32bit would really suffer badly in the hotpath and even on
-      64bit it's measurable.
-
-      So we could keep 64bit math, use the limit and if the delta is
-      larger than the limit take a slowpath which does wider math.
-
-      But that still needs thoughts about clocksources with smaller
-      counterwidth and therefore a fast wraparound time.
-
-      There is another issue with larger deltas. The extrapolation might
-      be off and then cause other side effects like observable time
-      going backwards etc.
-
-      That has to be analyzed together with the writer side because
-      that's where we need to ensure the continuity/monotonicity etc.
-
-   2) Writer side issues
-
-      The core timekeeping code is pretty robust against large deltas
-      already, but there are some limitations nevertheless and it was
-      obviously not designed to be taken out in the middle of the
-      updates. Haven't wrapped my head around that yet.
-
-      But there is more than the timekeeper update, there are other
-      things like NTP, PTP and consumers of the more raw timekeeping
-      internals which might get surprised by large deltas and run into
-      similar problems because they were not designed to deal with that.
-
-So yes, it can and should be done, but it's not a project for friday
-afternoon and it's going to be hard to backport. I know that distro
-people do not care because another 500 patches on their frankenkernels
-are just noise, but it leaves everybody else out in the dark and I have
-zero interest to proliferate that.
-
-I'm still convinced that a notification about 'we take a nap' will be
-more robust, less complex and more trivial to backport.
-
-Both life migration and suspend on the host know it upfront which means
-that not using this knowledge and instead of that trying to cure the
-symptom is violating the basic engineering principles and TBH outright
-stupid.
-
-As I said before we have most of the bits and pieces in place and I'm
-sure we can come up with an even simpler solution as the one I outlined
-before and once that is solved (or in parallel) make the time keeping
-more robust.=20
-
-Thanks,
-
-        tglx
+Ok. This driver should be cleaned up I suppose.
