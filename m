@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0D82D5E2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DAB42D5E14
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403767AbgLJOnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:43:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43578 "EHLO mail.kernel.org"
+        id S2391184AbgLJOi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:38:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391022AbgLJOg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:28 -0500
+        id S2390823AbgLJOen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:34:43 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 5.4 24/54] drm/i915/gt: Program mocs:63 for cache eviction on gen9
-Date:   Thu, 10 Dec 2020 15:27:01 +0100
-Message-Id: <20201210142603.225606332@linuxfoundation.org>
+        syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Subject: [PATCH 4.19 24/39] x86/uprobes: Do not use prefixes.nbytes when looping over prefixes.bytes
+Date:   Thu, 10 Dec 2020 15:27:03 +0100
+Message-Id: <20201210142603.465506052@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
+References: <20201210142602.272595094@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -35,60 +34,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit 777a7717d60ccdc9b84f35074f848d3f746fc3bf upstream.
+commit 4e9a5ae8df5b3365183150f6df49e49dece80d8c upstream.
 
-Ville noticed that the last mocs entry is used unconditionally by the HW
-when it performs cache evictions, and noted that while the value is not
-meant to be writable by the driver, we should program it to a reasonable
-value nevertheless.
+Since insn.prefixes.nbytes can be bigger than the size of
+insn.prefixes.bytes[] when a prefix is repeated, the proper check must
+be
 
-As it turns out, we can change the value of mocs:63 and the value we
-were programming into it would cause hard hangs in conjunction with
-atomic operations.
+  insn.prefixes.bytes[i] != 0 and i < 4
 
-v2: Add details from bspec about how it is used by HW
+instead of using insn.prefixes.nbytes.
 
-Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/2707
-Fixes: 3bbaba0ceaa2 ("drm/i915: Added Programming of the MOCS")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: Jason Ekstrand <jason@jlekstrand.net>
-Cc: <stable@vger.kernel.org> # v4.3+
-Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201126140841.1982-1-chris@chris-wilson.co.uk
-(cherry picked from commit 977933b5da7c16f39295c4c1d4259a58ece65dbe)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Introduce a for_each_insn_prefix() macro for this purpose. Debugged by
+Kees Cook <keescook@chromium.org>.
+
+ [ bp: Massage commit message, sync with the respective header in tools/
+   and drop "we". ]
+
+Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install and remove uprobes breakpoints")
+Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/160697103739.3146288.7437620795200799020.stgit@devnote2
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/i915/gt/intel_mocs.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/insn.h               |   15 +++++++++++++++
+ arch/x86/kernel/uprobes.c                 |   10 ++++++----
+ tools/objtool/arch/x86/include/asm/insn.h |   15 +++++++++++++++
+ tools/perf/util/intel-pt-decoder/insn.h   |   15 +++++++++++++++
+ 4 files changed, 51 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/i915/gt/intel_mocs.c
-+++ b/drivers/gpu/drm/i915/gt/intel_mocs.c
-@@ -130,7 +130,19 @@ static const struct drm_i915_mocs_entry
- 	GEN9_MOCS_ENTRIES,
- 	MOCS_ENTRY(I915_MOCS_CACHED,
- 		   LE_3_WB | LE_TC_2_LLC_ELLC | LE_LRUM(3),
--		   L3_3_WB)
-+		   L3_3_WB),
-+
-+	/*
-+	 * mocs:63
-+	 * - used by the L3 for all of its evictions.
-+	 *   Thus it is expected to allow LLC cacheability to enable coherent
-+	 *   flows to be maintained.
-+	 * - used to force L3 uncachable cycles.
-+	 *   Thus it is expected to make the surface L3 uncacheable.
-+	 */
-+	MOCS_ENTRY(63,
-+		   LE_3_WB | LE_TC_1_LLC | LE_LRUM(3),
-+		   L3_1_UC)
- };
+--- a/arch/x86/include/asm/insn.h
++++ b/arch/x86/include/asm/insn.h
+@@ -208,6 +208,21 @@ static inline int insn_offset_immediate(
+ 	return insn_offset_displacement(insn) + insn->displacement.nbytes;
+ }
  
- /* NOTE: the LE_TGT_CACHE is not used on Broxton */
++/**
++ * for_each_insn_prefix() -- Iterate prefixes in the instruction
++ * @insn: Pointer to struct insn.
++ * @idx:  Index storage.
++ * @prefix: Prefix byte.
++ *
++ * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
++ * and the index is stored in @idx (note that this @idx is just for a cursor,
++ * do not change it.)
++ * Since prefixes.nbytes can be bigger than 4 if some prefixes
++ * are repeated, it cannot be used for looping over the prefixes.
++ */
++#define for_each_insn_prefix(insn, idx, prefix)	\
++	for (idx = 0; idx < ARRAY_SIZE(insn->prefixes.bytes) && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
++
+ #define POP_SS_OPCODE 0x1f
+ #define MOV_SREG_OPCODE 0x8e
+ 
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -268,12 +268,13 @@ static volatile u32 good_2byte_insns[256
+ 
+ static bool is_prefix_bad(struct insn *insn)
+ {
++	insn_byte_t p;
+ 	int i;
+ 
+-	for (i = 0; i < insn->prefixes.nbytes; i++) {
++	for_each_insn_prefix(insn, i, p) {
+ 		insn_attr_t attr;
+ 
+-		attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
++		attr = inat_get_opcode_attribute(p);
+ 		switch (attr) {
+ 		case INAT_MAKE_PREFIX(INAT_PFX_ES):
+ 		case INAT_MAKE_PREFIX(INAT_PFX_CS):
+@@ -728,6 +729,7 @@ static const struct uprobe_xol_ops push_
+ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+ {
+ 	u8 opc1 = OPCODE1(insn);
++	insn_byte_t p;
+ 	int i;
+ 
+ 	switch (opc1) {
+@@ -758,8 +760,8 @@ static int branch_setup_xol_ops(struct a
+ 	 * Intel and AMD behavior differ in 64-bit mode: Intel ignores 66 prefix.
+ 	 * No one uses these insns, reject any branch insns with such prefix.
+ 	 */
+-	for (i = 0; i < insn->prefixes.nbytes; i++) {
+-		if (insn->prefixes.bytes[i] == 0x66)
++	for_each_insn_prefix(insn, i, p) {
++		if (p == 0x66)
+ 			return -ENOTSUPP;
+ 	}
+ 
+--- a/tools/objtool/arch/x86/include/asm/insn.h
++++ b/tools/objtool/arch/x86/include/asm/insn.h
+@@ -208,6 +208,21 @@ static inline int insn_offset_immediate(
+ 	return insn_offset_displacement(insn) + insn->displacement.nbytes;
+ }
+ 
++/**
++ * for_each_insn_prefix() -- Iterate prefixes in the instruction
++ * @insn: Pointer to struct insn.
++ * @idx:  Index storage.
++ * @prefix: Prefix byte.
++ *
++ * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
++ * and the index is stored in @idx (note that this @idx is just for a cursor,
++ * do not change it.)
++ * Since prefixes.nbytes can be bigger than 4 if some prefixes
++ * are repeated, it cannot be used for looping over the prefixes.
++ */
++#define for_each_insn_prefix(insn, idx, prefix)	\
++	for (idx = 0; idx < ARRAY_SIZE(insn->prefixes.bytes) && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
++
+ #define POP_SS_OPCODE 0x1f
+ #define MOV_SREG_OPCODE 0x8e
+ 
+--- a/tools/perf/util/intel-pt-decoder/insn.h
++++ b/tools/perf/util/intel-pt-decoder/insn.h
+@@ -208,6 +208,21 @@ static inline int insn_offset_immediate(
+ 	return insn_offset_displacement(insn) + insn->displacement.nbytes;
+ }
+ 
++/**
++ * for_each_insn_prefix() -- Iterate prefixes in the instruction
++ * @insn: Pointer to struct insn.
++ * @idx:  Index storage.
++ * @prefix: Prefix byte.
++ *
++ * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
++ * and the index is stored in @idx (note that this @idx is just for a cursor,
++ * do not change it.)
++ * Since prefixes.nbytes can be bigger than 4 if some prefixes
++ * are repeated, it cannot be used for looping over the prefixes.
++ */
++#define for_each_insn_prefix(insn, idx, prefix)	\
++	for (idx = 0; idx < ARRAY_SIZE(insn->prefixes.bytes) && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
++
+ #define POP_SS_OPCODE 0x1f
+ #define MOV_SREG_OPCODE 0x8e
+ 
 
 
