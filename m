@@ -2,98 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976A72D5BFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2D82D5C0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:39:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389536AbgLJNh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:37:27 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:38040 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389103AbgLJNhR (ORCPT
+        id S2389582AbgLJNif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:38:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389576AbgLJNiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:37:17 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <seth.forshee@canonical.com>)
-        id 1knM7X-0005R3-R1
-        for linux-kernel@vger.kernel.org; Thu, 10 Dec 2020 13:36:36 +0000
-Received: by mail-io1-f71.google.com with SMTP id y197so3919151iof.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 05:36:35 -0800 (PST)
+        Thu, 10 Dec 2020 08:38:10 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3532FC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 05:37:30 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id t16so5513229wra.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 05:37:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oRtoQvl6MRwwbBwu+OqoR6Ch7qCnEu5Xnq7MBfAyxbo=;
+        b=cfiQdQ57fyFjf+aeE5qdCw7XNDFrO5g6gYq+9m4593bVy09IxHbnfPqbmaboucXXF5
+         gVWFQ0psB4TU8rwIgphClPaUu1c1W2G2eHgmsfeeYjJKiJe6BWaZ/9NhIc43QCEdNJAk
+         NU4NX/qrUnwWtnJTTasf3wpxSQfg51ZTuvH/ys+sKpxrHTh0p3/AcZk+dQDrUkv9nGEf
+         eA9hi5BfIYeWW2cfrpLzVcVoFyHJUmdLyuN+3P7hNRE9YzI36hp3B69gtWr09OZaJcR1
+         nS+7wPbdlm05JL8d8ehe13RcTCobIxyCLMfdP05bq9AGdRYvD+s5/ACANmLjW9YwAjDv
+         /UiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mwzWNqwukiO9666dcy5UFimaTAhAAx9w5jcf7BvZNzs=;
-        b=l/3rpC5SFuG/PjfcHnq1gMAZS2zcOUFmoNzs/WDmFYfGIt/HFci2xC6P0ZDcgYXF3r
-         OWW699TiDg9hg5FuHj3wOyzzQLtgb5QiCHc/B0PhapLXiQqfJlKuPOtQDulwdX2Ln03f
-         048xOM2S5MUJs+C+cADtgI1aA5KV3m4IqaFYZtzJaL87ZcdVkev+RwT1ssbUs5ELKmCl
-         gVGA76JePogx+LCq5fxmaHXuVuFcK6QiO3w4fJ/rDZ5j1vPraUEGHRkJK/Q3UQSbaVl8
-         rBLrhWy0h4ehWnwrmnGu1qbxkMxPHJK+a002E5s98Coz6D5LOA/kDqB/gHSnQe7zVfKb
-         HIAQ==
-X-Gm-Message-State: AOAM531NUxR5niqkYHgzd3grAFSNKWbv2vbiqc+AGVeqmnsZ+y7dCza8
-        ZEJhzhz5VJhjNza+NgW7Y+1ilgcVWrv8rC7jdJ/6295yIEvOSgqVq/bSKMLx9U6Esiu5T0VbYzO
-        BztBVxp/buC2VYopyPOtX96fyeS8aXPNiEBfOGmKdHw==
-X-Received: by 2002:a05:6638:2a5:: with SMTP id d5mr8717994jaq.92.1607607394872;
-        Thu, 10 Dec 2020 05:36:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzDAlRH9nDs2/sDKF2FW7RjAYQtS5kLIoWftt3jEkBIPJZ2Ls4/PB9s1dnWAzZ7dDe7Fi0g6A==
-X-Received: by 2002:a05:6638:2a5:: with SMTP id d5mr8717977jaq.92.1607607394700;
-        Thu, 10 Dec 2020 05:36:34 -0800 (PST)
-Received: from localhost ([2605:a601:ac0f:820:5f:df71:1517:60e9])
-        by smtp.gmail.com with ESMTPSA id y14sm3240284ilb.66.2020.12.10.05.36.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 05:36:34 -0800 (PST)
-Date:   Thu, 10 Dec 2020 07:36:33 -0600
-From:   Seth Forshee <seth.forshee@canonical.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: BPF selftests build failure in 5.10-rc
-Message-ID: <X9IkYa6D9QrjooOd@ubuntu-x1>
-References: <X9FOSImMbu0/SV5B@ubuntu-x1>
- <CAEf4BzYAptUF+AxmkVk7BjJWRE6UaLkPowKM+pWbFuOV9Z4GGg@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oRtoQvl6MRwwbBwu+OqoR6Ch7qCnEu5Xnq7MBfAyxbo=;
+        b=mpKLTK9Ht7zjv+9htzytzui9mZx+gnuVC0OmvDvDhwbR/gj2u57glwxC3aX56ozCgV
+         DKmATZfw4shMh1p8kdaCj9gY0xE7zpS5TEXFagWfySVKwQIwN/fJDTjWvHny5s38kMDy
+         sxKY4fOEa/poUlxp6snYglC2F1+YSDHxEg9B6sjog9MHajPijPa7ljG25aSY5gFxXtX0
+         63How4gst3yuVxdeweZdaiQ/RvhjTfDzZnS2lcl4aQJlXyrMG4u0aHidEQbv/60RaRe2
+         itrVIhu5KiQeQzJuOP79BnLRZe94o3BU4ErOu5mIvN30CMHEdozTrcrFSyLfRomwYERY
+         QjVg==
+X-Gm-Message-State: AOAM533CDzPaa1CuxXwcg1MJkhzSdzIIAa4Z20L7JER6wOtQObBM8dQQ
+        ynWDeL1uApJfKvFTdvyEuWmgFg==
+X-Google-Smtp-Source: ABdhPJwCCzpOMSIxWJQznXzFX6b1+JYQPsqyyFO/88xv27PsxliFuoQMvIjIx6fpO6qMgtHZVN9t0A==
+X-Received: by 2002:a5d:5604:: with SMTP id l4mr8256266wrv.127.1607607448711;
+        Thu, 10 Dec 2020 05:37:28 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:4ea:d408:1aec:e109? ([2a01:e34:ed2f:f020:4ea:d408:1aec:e109])
+        by smtp.googlemail.com with ESMTPSA id n123sm9591223wmn.7.2020.12.10.05.37.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 05:37:28 -0800 (PST)
+Subject: Re: [PATCH 2/5] thermal/core: Add critical and hot ops
+To:     Lukasz Luba <lukasz.luba@arm.com>, rui.zhang@intel.com
+Cc:     kai.heng.feng@canonical.com, srinivas.pandruvada@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Amit Kucheria <amitk@kernel.org>
+References: <20201210121514.25760-1-daniel.lezcano@linaro.org>
+ <20201210121514.25760-2-daniel.lezcano@linaro.org>
+ <fd9b262a-cb9a-bd88-5790-0ca5f9a7bdad@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <565c354e-0850-47f3-ad58-ee28fdedcfb2@linaro.org>
+Date:   Thu, 10 Dec 2020 14:37:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYAptUF+AxmkVk7BjJWRE6UaLkPowKM+pWbFuOV9Z4GGg@mail.gmail.com>
+In-Reply-To: <fd9b262a-cb9a-bd88-5790-0ca5f9a7bdad@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 04:15:35PM -0800, Andrii Nakryiko wrote:
-> On Wed, Dec 9, 2020 at 2:24 PM Seth Forshee <seth.forshee@canonical.com> wrote:
-> >
-> > Building the BPF selftests with clang 11, I'm getting the following
-> > error:
-> >
-> >    CLNG-LLC [test_maps] profiler1.o
-> >  In file included from progs/profiler1.c:6:
-> >  progs/profiler.inc.h:260:17: error: use of unknown builtin '__builtin_preserve_enum_value' [-Wimplicit-function-declaration]
-> >                  int cgrp_id = bpf_core_enum_value(enum cgroup_subsys_id___local,
-> >                                ^
-> >  /home/ubuntu/unstable/tools/testing/selftests/bpf/tools/include/bpf/bpf_core_read.h:179:2: note: expanded from macro 'bpf_core_enum_value'
-> >          __builtin_preserve_enum_value(*(typeof(enum_type) *)enum_value, BPF_ENUMVAL_VALUE)
-> >          ^
-> >  1 error generated.
-> >  llc: error: llc: <stdin>:1:1: error: expected top-level entity
-> >  BPF obj compilation failed
+On 10/12/2020 13:44, Lukasz Luba wrote:
 > 
-> Addressed by fb3558127cb6 ("bpf: Fix selftest compilation on clang 11")
-
-Great, thanks!
-
 > 
-> >
-> > I see that test_core_reloc_enumval.c takes precautions around the use of
-> > __builtin_preserve_enum_value as it is currently only available in clang
-> > 12 nightlies. Is it possible to do something similar here? Though I see
-> > that the use of the builtin is not nearly so neatly localized as it is
-> > in test_core_reloc_enumval.c.
-> >
-> > Thanks,
-> > Seth
+> On 12/10/20 12:15 PM, Daniel Lezcano wrote:
+>> Currently there is no way to the sensors to directly call an ops in
+>> interrupt mode without calling thermal_zone_device_update assuming all
+>> the trip points are defined.
+>>
+>> A sensor may want to do something special if a trip point is hot or
+>> critical.
+>>
+>> This patch adds the critical and hot ops to the thermal zone device,
+>> so a sensor can directly invoke them or let the thermal framework to
+>> call the sensor specific ones.
+>>
+>> Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>> ---
+>>   drivers/thermal/thermal_core.c | 43 +++++++++++++++++++++-------------
+>>   include/linux/thermal.h        |  3 +++
+>>   2 files changed, 30 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/drivers/thermal/thermal_core.c
+>> b/drivers/thermal/thermal_core.c
+>> index e6771e5aeedb..cee0b31b5cd7 100644
+>> --- a/drivers/thermal/thermal_core.c
+>> +++ b/drivers/thermal/thermal_core.c
+>> @@ -375,6 +375,25 @@ static void thermal_emergency_poweroff(void)
+>>                     msecs_to_jiffies(poweroff_delay_ms));
+>>   }
+>>   +void thermal_zone_device_critical(struct thermal_zone_device *tz)
+>> +{
+>> +    dev_emerg(&tz->device, "%s: critical temperature reached, "
+>> +          "shutting down\n", tz->type);
+>> +
+>> +    mutex_lock(&poweroff_lock);
+>> +    if (!power_off_triggered) {
+>> +        /*
+>> +         * Queue a backup emergency shutdown in the event of
+>> +         * orderly_poweroff failure
+>> +         */
+>> +        thermal_emergency_poweroff();
+>> +        orderly_poweroff(true);
+>> +        power_off_triggered = true;
+>> +    }
+>> +    mutex_unlock(&poweroff_lock);
+>> +}
+>> +EXPORT_SYMBOL(thermal_zone_device_critical);
+>> +
+>>   static void handle_critical_trips(struct thermal_zone_device *tz,
+>>                     int trip, enum thermal_trip_type trip_type)
+>>   {
+>> @@ -391,22 +410,10 @@ static void handle_critical_trips(struct
+>> thermal_zone_device *tz,
+>>       if (tz->ops->notify)
+>>           tz->ops->notify(tz, trip, trip_type);
+>>   -    if (trip_type == THERMAL_TRIP_CRITICAL) {
+>> -        dev_emerg(&tz->device,
+>> -              "critical temperature reached (%d C), shutting down\n",
+>> -              tz->temperature / 1000);
+>> -        mutex_lock(&poweroff_lock);
+>> -        if (!power_off_triggered) {
+>> -            /*
+>> -             * Queue a backup emergency shutdown in the event of
+>> -             * orderly_poweroff failure
+>> -             */
+>> -            thermal_emergency_poweroff();
+>> -            orderly_poweroff(true);
+>> -            power_off_triggered = true;
+>> -        }
+>> -        mutex_unlock(&poweroff_lock);
+>> -    }
+>> +    if (trip_type == THERMAL_TRIP_HOT && tz->ops->hot)
+>> +        tz->ops->hot(tz);
+>> +    else if (trip_type == THERMAL_TRIP_CRITICAL)
+>> +        tz->ops->critical(tz);
+> 
+> I can see that in the patch 3/5 there driver .critical() callback
+> calls framework thermal_zone_device_critical() at the end.
+> I wonder if we could always call this framework function.
+
+It is actually done on purpose, we want to let the driver to handle the
+critical routine which may not end up with an emergency shutdown.
+
+[ ... ]
+
+>>   #else
+>>   static inline struct thermal_zone_device *thermal_zone_device_register(
+>>       const char *type, int trips, int mask, void *devdata,
+>>
+> 
+> I am just concerned about drivers which provide own .critical() callback
+> but forgot to call thermal_zone_device_critical() at the end and
+> framework could skip it.
+> 
+> Or we can make sure during the review that it's not an issue (and ignore
+> out of tree drivers)?
+
+Yes, the framework guarantees if the critical trip point is crossed we
+call the emergency shutdown by default. If the driver choose to override
+it, it takes responsibility of the change.
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
