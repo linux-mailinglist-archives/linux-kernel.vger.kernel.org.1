@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DF92D5955
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C012D5952
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728013AbgLJLgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:36:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389450AbgLJLaa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:30:30 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430CBC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 03:29:49 -0800 (PST)
+        id S2389359AbgLJLfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:35:40 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:39095 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389448AbgLJLab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:30:31 -0500
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4CsBXV5p1rz9sWy; Thu, 10 Dec 2020 22:29:45 +1100 (AEDT)
+        id 4CsBXW44Hqz9sWr; Thu, 10 Dec 2020 22:29:47 +1100 (AEDT)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Alastair D'Silva <alastair@d-silva.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <ceede82fadf37f3b8275e61fcf8cf29a3e2ec7fe.1602351011.git.christophe.leroy@csgroup.eu>
-References: <ceede82fadf37f3b8275e61fcf8cf29a3e2ec7fe.1602351011.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc/mm: Fix verification of MMU_FTR_TYPE_44x
-Message-Id: <160756607012.1313423.11395822390772039188.b4-ty@ellerman.id.au>
-Date:   Thu, 10 Dec 2020 22:29:45 +1100 (AEDT)
+In-Reply-To: <d01d7613664fafa43de1f1ae89924075bc24241c.1602489931.git.christophe.leroy@csgroup.eu>
+References: <d01d7613664fafa43de1f1ae89924075bc24241c.1602489931.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/mm: MMU_FTR_NEED_DTLB_SW_LRU is only possible with CONFIG_PPC_83xx
+Message-Id: <160756607062.1313423.10978525634640096668.b4-ty@ellerman.id.au>
+Date:   Thu, 10 Dec 2020 22:29:47 +1100 (AEDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Oct 2020 17:30:59 +0000 (UTC), Christophe Leroy wrote:
-> MMU_FTR_TYPE_44x cannot be checked by cpu_has_feature()
+On Mon, 12 Oct 2020 08:05:49 +0000 (UTC), Christophe Leroy wrote:
+> Only mpc83xx will set MMU_FTR_NEED_DTLB_SW_LRU and its
+> definition is enclosed in #ifdef CONFIG_PPC_83xx.
 > 
-> Use mmu_has_feature() instead
+> Make MMU_FTR_NEED_DTLB_SW_LRU possible only when
+> CONFIG_PPC_83xx is set.
 
 Applied to powerpc/next.
 
-[1/1] powerpc/mm: Fix verification of MMU_FTR_TYPE_44x
-      https://git.kernel.org/powerpc/c/17179aeb9d34cc81e1a4ae3f85e5b12b13a1f8d0
+[1/1] powerpc/mm: MMU_FTR_NEED_DTLB_SW_LRU is only possible with CONFIG_PPC_83xx
+      https://git.kernel.org/powerpc/c/b68e3a3dff97bdc1cba79dc5f80cede8a2419cac
 
 cheers
