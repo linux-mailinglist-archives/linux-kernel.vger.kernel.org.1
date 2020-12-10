@@ -2,79 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DB62D5B2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A59682D5B30
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388553AbgLJND2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:03:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387506AbgLJNDO (ORCPT
+        id S1732652AbgLJNFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:05:11 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:49132 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731240AbgLJNE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:03:14 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298B7C0613D6;
-        Thu, 10 Dec 2020 05:02:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+RVI+GYAz7Cj9dLwQO7lJaDKUEPBg0VpOCcGAPAQzyc=; b=XayUTy0Xx36b0ASSYih2uYleT7
-        OWXI61BFbpVcfYGM4id6hUCxKtOA4LQeGSlYfXphaaE2hP+1PVgdT7/etzFU9SjpKTjjgoXM0GiGJ
-        A/KEIFspO0ZaYi5HC9tJBs/UmoZGEA8TtccH16jJV7PfNiKmu8491EMZrmyJuOD4Kqt6zDsGU0I/3
-        b/xvf1SSDljY6wwcncUYZwzCAUjLisLHLN0X5lFJ01gffdTyZrFymsqAwnb/T/1CFTUhtQf2zmfgg
-        KS0WHnXeGnB+PqSbb5BYuwtJYDqLJI8GHl0ypWYLriZLSGS7oSc0skDVHSvcFGLjXw2FyUAprHyKN
-        uDWqoYIQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1knLaT-0004j4-Cy; Thu, 10 Dec 2020 13:02:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D53F23059C6;
-        Thu, 10 Dec 2020 14:02:24 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A2E6D2B855156; Thu, 10 Dec 2020 14:02:24 +0100 (CET)
-Date:   Thu, 10 Dec 2020 14:02:24 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the tip tree
-Message-ID: <20201210130224.GQ2414@hirez.programming.kicks-ass.net>
-References: <20201210215210.2c432324@canb.auug.org.au>
- <1607604631.22066.41.camel@suse.cz>
+        Thu, 10 Dec 2020 08:04:56 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BAD3uin051755;
+        Thu, 10 Dec 2020 07:03:56 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607605436;
+        bh=f6EbvCETCqSbP/orqL1NF04MBD/Ro0HKcfNe82m54FY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=QbYV18BV+ETMCAtJEOvPsyGwtNILsBN0ohNrp9nvzItvWXUpn8qsdQuMqtn6WkRQ9
+         ojIJE6BqaJ+I2TPH4CVjsVFTiptSk4qutH2wLmpr4WqYttJA5gctrYzgbznrN9lUhW
+         JlWUE9uaLYxpPXBDpiXaJF1lCZ6UFWIQux38b0Tg=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BAD3ufN087548
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Dec 2020 07:03:56 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
+ Dec 2020 07:03:56 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 10 Dec 2020 07:03:56 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BAD3qMV006134;
+        Thu, 10 Dec 2020 07:03:53 -0600
+Subject: Re: [v2] i2c: mediatek: Move suspend and resume handling to NOIRQ
+ phase
+To:     Qii Wang <qii.wang@mediatek.com>
+CC:     Wolfram Sang <wsa@the-dreams.de>, <matthias.bgg@gmail.com>,
+        <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>
+References: <1605701861-30800-1-git-send-email-qii.wang@mediatek.com>
+ <20201202153543.GG874@kunai> <1606958735.25719.29.camel@mhfsdcap03>
+ <629d171a-0e77-3d74-ae23-e6439dcf17b7@ti.com>
+ <1607326431.25719.33.camel@mhfsdcap03>
+ <a9cb5ba5-f3ce-3f82-15cc-30419bb70f4e@ti.com>
+ <1607565387.25719.43.camel@mhfsdcap03>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <e83ab23b-81f2-620c-039b-9cadd84a39fa@ti.com>
+Date:   Thu, 10 Dec 2020 15:03:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607604631.22066.41.camel@suse.cz>
+In-Reply-To: <1607565387.25719.43.camel@mhfsdcap03>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 01:50:31PM +0100, Giovanni Gherdovich wrote:
-> On Thu, 2020-12-10 at 21:52 +1100, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Commit
-> > 
-> >   46609527577d ("x86, sched: Use midpoint of max_boost and max_P for frequency invariance on AMD EPYC")
-> > 
-> > is missing a Signed-off-by from its author.
-> > 
-> 
-> Hello,
-> 
-> I'm the author of that commit and the missing Signed-off-by is not intentional but
-> due to a mistake I made. I used the string "------------" in the commit message and
-> git interpreted it as "drop everything from here onwards", including the
-> Signed-off-by.
-> 
-> According to the maintainer's preference, I agree to either them adding
-> 
->   Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
 
-Hurmph, I'd have to rebase that branch to fix this.. mingo?
+
+On 10/12/2020 03:56, Qii Wang wrote:
+> On Mon, 2020-12-07 at 18:35 +0200, Grygorii Strashko wrote:
+>>
+>>>
+>>> On Thu, 2020-12-03 at 10:01 +0200, Grygorii Strashko wrote:
+>>>>
+>>>> On 03/12/2020 03:25, Qii Wang wrote:
+>>>>> On Wed, 2020-12-02 at 16:35 +0100, Wolfram Sang wrote:
+>>>>>> Hi,
+>>>>>>
+>>>>>>> Some i2c device driver indirectly uses I2C driver when it is now
+>>>>>>> being suspended. The i2c devices driver is suspended during the
+>>>>>>> NOIRQ phase and this cannot be changed due to other dependencies.
+>>>>>>> Therefore, we also need to move the suspend handling for the I2C
+>>>>>>> controller driver to the NOIRQ phase as well.
+>>>>>>>
+>>>>>>> Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+>>>>>>
+>>>>>> Is this a bugfix and should go into 5.10? Or can it wait for 5.11?
+>>>>>>
+>>>>>
+>>>>> Yes, Can you help to apply it into 5.10? Thanks
+>>>>
+>>>> To be honest if you still do have any i2c device which accessing i2c buss after _noirq
+>>>> stage and your driver does not implement .master_xfer_atomic() - you definitely have a bigger problem.
+>>>> So adding IRQF_NO_SUSPEND sound like a hack and probably works just by luck.
+>>>>
+>>>
+>>> At present, it is only a problem caused by missing interrupts,
+>>> and .master_xfer_atomic() just a implement in polling mode. Why not set
+>>> the interrupt to a state that can always be triggered?
+>>>
+>>>
+>>
+>> Because you must not use any IRQ driven operations after _noirq suspend state as it might (and most probably will)
+>> cause unpredictable behavior later  in suspend_enter():
+>>
+>> 	arch_suspend_disable_irqs();
+>> 	BUG_ON(!irqs_disabled());
+>> ^after this point any IRQ driven I2C transfer will cause IRQ to be re-enabled
+>>
+>> if you need  turn off device from platform callbacks -  .master_xfer_atomic() has to be implemented and used.
+>>    
+> Maybe my comment is a bit disturbing.Our purpose is not to call i2c and
+> use interrupts after _noirq pauses.So We use
+> i2c_mark_adapter_suspended&i2c_mark_adapter_resumed to block these i2c
+> transfers， There will not have any IRQ driven I2C transfer after this
+> point:
+>          arch_suspend_disable_irqs();
+>          BUG_ON(!irqs_disabled());
+> But some device driver will do i2c transfer after
+> dpm_noirq_resume_devices in dpm_resume_noirq(PMSG_RESUME) when our
+> driver irq hasn't resume.
+> 	void dpm_resume_noirq(pm_message_t state)
+> 	{
+>          	dpm_noirq_resume_devices(state);
+
+Just to clarify. You have resume sequence in dpm_noirq_resume_devices
+  dpm_noirq_resume_devices -> resume I2C -> resume some device -> do i2c transfer after?
+
+Is "some device" in Kernel mainline?
+
+>          	resume_device_irqs();
+>          	device_wakeup_disarm_wake_irqs();
+>          	cpuidle_resume();
+> 	}
+> .master_xfer_atomic() seems to be invalid for this question at this
+> time?
+> 
+
+-- 
+Best regards,
+grygorii
