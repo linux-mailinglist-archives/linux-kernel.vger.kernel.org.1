@@ -2,83 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555302D6C2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E262D6C30
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731018AbgLJXtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:49:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727339AbgLJXtY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:49:24 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E5BC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:48:43 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id r4so3651119pls.11
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:48:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=AG5j6KdzOrOIZlpP/G9Y3cE+K8n2ovOPbsXUJ+7wxSo=;
-        b=FayvgMRlRj18DT5FRCj2xQ+hkc14+FsGexb2ndZ1Rek0uG3kjNwv4fcZqzZVSgroTD
-         5hz6WjzLi0eqDuoGrSg0SDv7+IF3relQUsha969dYZ60zo8DvVlObmt3hZ5+xqXGUgb9
-         fUjxPVSO1iXVRso/n0LxRCwCmeadiV3AWBhyeHigIiZPDIg6ePSrNQ4y5913weR3hx2M
-         OjQV2VJ/zg0guoP9VrOFyRsH3RA+XUFFHbbnHc7kobQ+vKik50uKRpWccpzaT2Cx+2T9
-         OrdS9SYkidQ185axfnJmM8JfnsZVr7beMOOtSMZuMCGVJNyGSq1Ch/YdbxweIQo5fNb6
-         zzvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=AG5j6KdzOrOIZlpP/G9Y3cE+K8n2ovOPbsXUJ+7wxSo=;
-        b=Xg6VxqFrMIeqrvM/IVLdVpseakdhz525uP3B1NJqlkmUQfBnJLiuNk+zReW+F4VRKS
-         9x18apmzpjkcA3Rcca3i0GHGXXSLP7Jwrh0IDKJMur+Yh21XjBYw4P3jTIF7jWL5DgEk
-         menuwuyBnc98fKahXZf/Qq7docE7um9W4piK/flAa8GO8qB1dcJ9UGYW+kS8M02EfaIz
-         maA+mUfSoDqDoOyuq9sKyCDLw0ZhC0u6S07TmATliHB06xvCH/hWIIaBEFx4ZYFGQ4U/
-         4S00SXULXF6yy0eA4xb2EVhqaQXgFf2i5Z9hHMI+L5TzFtv6oJeK1ngVxlCt3Ct4HIyj
-         vQbw==
-X-Gm-Message-State: AOAM531oKpzl2VSc+6SagjDunQVarsbUI4VSx2YR3cLmSYPYdsY9RrTo
-        ddXa27sQUtBOd8enuyDcnHWSNA==
-X-Google-Smtp-Source: ABdhPJy8eYSBSN1zLoF8WPrP3Ta3RaV5MISN51OJupxpC+nlzAgsQW/ZwYFm/vnBFekFzdFRpXnYtg==
-X-Received: by 2002:a17:902:6903:b029:da:f458:798c with SMTP id j3-20020a1709026903b02900daf458798cmr8325001plk.68.1607644123398;
-        Thu, 10 Dec 2020 15:48:43 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id e5sm7184975pfc.76.2020.12.10.15.48.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 15:48:42 -0800 (PST)
-Date:   Thu, 10 Dec 2020 15:48:41 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Alexander Popov <alex.popov@linux.com>
-cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        notify@kernel.org
-Subject: Re: [PATCH] mm/slab: Perform init_on_free earlier
-In-Reply-To: <20201210183729.1261524-1-alex.popov@linux.com>
-Message-ID: <9c37ff7f-813d-3313-ea8a-fd65484e476a@google.com>
-References: <20201210183729.1261524-1-alex.popov@linux.com>
+        id S2389555AbgLJXu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:50:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729004AbgLJXuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 18:50:08 -0500
+X-Gm-Message-State: AOAM5321ukWf1Lc84Mg2RRju1rtrukSipEAiKvS8pSwBFZfel7p68jkW
+        TtmWbBhUwrjFOG+yhJZ8fpd4jZOwcjc89twet0mXiA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607644167;
+        bh=MNNMeYO9+guDTInb22HPk68dS0IUQC+Ud3eyI+lT8fA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LnLRBasBY1OnXFrE3zkb89Bd9VCJQX+b6uinZP/zKoFwQ0KbqSQhZ14d1WNp2yydR
+         MSL8RoxWtpWRmQKwqKAfKWapb0ncx7C6wCb+DZ2MaOgm4/Ck9+zOx6t8Uu/FO5B/k1
+         SlJpmq1yXDVsBuTNW4r88CpGQgrfKjco44GDJzAkcuAd9zLTrT5n75wW1Gfb+KbfMp
+         iWI6l5lizZBM9GEHm1plrIwPRKhgkHsBFVdZoYvSffYnEgVD3oiImdTgSWTIuAMenF
+         a9pgeHdurrqRH1ccY3v868C0PzaHvql7x8EDo6TVrPrfsNC1ftUb6fMXp221QyWhZ2
+         KfEMi2Qc2M6HA==
+X-Google-Smtp-Source: ABdhPJyQSI/08f4R+UFh2uQXcgYej8irWAt32vwINXfV4OmsDyhqXFa9TMyzQMtfy4aGyLuDiACHeYjpVHvNzi4D2xo=
+X-Received: by 2002:adf:ef51:: with SMTP id c17mr10637732wrp.184.1607644165804;
+ Thu, 10 Dec 2020 15:49:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20201210174814.1122585-1-michael.roth@amd.com>
+ <CALCETrXo+2LjUt_ObxV+6u6719gTVaMR4-KCrgsjQVRe=xPo+g@mail.gmail.com> <160763562772.1125101.13951354991725886671@vm0>
+In-Reply-To: <160763562772.1125101.13951354991725886671@vm0>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 10 Dec 2020 15:49:14 -0800
+X-Gmail-Original-Message-ID: <CALCETrV2-WwV+uz99r2RCJx6OADzwxaLxPUVW22wjHoAAN5cSQ@mail.gmail.com>
+Message-ID: <CALCETrV2-WwV+uz99r2RCJx6OADzwxaLxPUVW22wjHoAAN5cSQ@mail.gmail.com>
+Subject: Re: [PATCH] KVM: SVM: use vmsave/vmload for saving/restoring
+ additional host state
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020, Alexander Popov wrote:
+> On Dec 10, 2020, at 1:27 PM, Michael Roth <michael.roth@amd.com> wrote:
+>
+> =EF=BB=BFQuoting Andy Lutomirski (2020-12-10 13:23:19)
+>>> On Thu, Dec 10, 2020 at 9:52 AM Michael Roth <michael.roth@amd.com> wro=
+te:
+>>>  MSR_STAR, MSR_LSTAR, MSR_CSTAR,
+>>>  MSR_SYSCALL_MASK, MSR_KERNEL_GS_BASE,
+>>>  MSR_IA32_SYSENTER_CS,
+>>>  MSR_IA32_SYSENTER_ESP,
+>>>  MSR_IA32_SYSENTER_EIP,
+>>>  MSR_FS_BASE, MSR_GS_BASE
+>>
+>> Can you get rid of all the old FS/GS manipulation at the same time?
+>>
+>>> +       for (i =3D 0; i < NR_HOST_SAVE_USER_MSRS; i++) {
+>>> +               rdmsrl(host_save_user_msrs[i], svm->host_user_msrs[i]);
+>>> +       }
+>>> +
+>>> +       asm volatile(__ex("vmsave")
+>>> +                    : : "a" (page_to_pfn(sd->save_area) << PAGE_SHIFT)
+>>> +                    : "memory");
+>>> +       /*
+>>> +        * Host FS/GS segment registers might be restored soon after
+>>> +        * vmexit, prior to vmload of host save area. Even though this
+>>> +        * state is now saved in the host's save area, we cannot use
+>>> +        * per-cpu accesses until these registers are restored, so we
+>>> +        * store a copy in the VCPU struct to make sure they are
+>>> +        * accessible.
+>>> +        */
+>>> #ifdef CONFIG_X86_64
+>>> -       rdmsrl(MSR_GS_BASE, to_svm(vcpu)->host.gs_base);
+>>> +       svm->host.gs_base =3D hostsa->gs.base;
+>>> #endif
+>>
+>> For example, this comment makes no sense to me.  Just let VMLOAD
+>> restore FS/GS and be done with it.  Don't copy those gs_base and
+>> gs.base fields -- just delete them please.  (Or are they needed for
+>> nested virt for some reason?  If so, please document that.)
+>
+> Hi Andy,
+>
+> The main issue is that we restore FS/GS immediately after a vmexit since
+> we need them soon-after for things like per-cpu accesses, but the rest
+> of the host state only needs to be restored if we're exiting all the way
+> out to userspace. That's also why we store a copy of the values, since
+> the host can't access the per-cpu save_area beforehand.
 
-> Currently in CONFIG_SLAB init_on_free happens too late, and heap
-> objects go to the heap quarantine not being erased.
-> 
-> Lets move init_on_free clearing before calling kasan_slab_free().
-> In that case heap quarantine will store erased objects, similarly
-> to CONFIG_SLUB=y behavior.
-> 
-> Signed-off-by: Alexander Popov <alex.popov@linux.com>
-> Reviewed-by: Alexander Potapenko <glider@google.com>
+>
+> In theory I think we probably could use vmload to restore this state
+> immediately after vmexit as you're suggesting, but then we will end up
+> taking a performance hit for cases where the vmexit can be handled within
+> the kernel, which might leave us worse-off than the pre-patch behavior
+> for those cases (handling an MMIO for a virtqueue notification when
+> vhost_net is enabled, for instance)
 
-Acked-by: David Rientjes <rientjes@google.com>
+Please benchmark this.  WRMSR to MSR_GS_BASE is serializing and may
+well be slower than VMLOAD.
+
+>
+>>
+>>> -       savesegment(fs, svm->host.fs);
+>>> -       savesegment(gs, svm->host.gs);
+>>> -       svm->host.ldt =3D kvm_read_ldt();
+>>> -
+>>> -       for (i =3D 0; i < NR_HOST_SAVE_USER_MSRS; i++)
+>>> -               rdmsrl(host_save_user_msrs[i], svm->host_user_msrs[i]);
+>>> +       svm->host.fs =3D hostsa->fs.selector;
+>>> +       svm->host.gs =3D hostsa->gs.selector;
+>>
+>> This too.  Why is the host code thinking about selectors at all?
+>>
+>>> -       kvm_load_ldt(svm->host.ldt);
+>>
+>> I have a patch that deletes this, too.  Don't worry about the conflict
+>> -- I'll sort it out.
+>>
+>>> @@ -120,7 +115,6 @@ struct vcpu_svm {
+>>>        struct {
+>>>                u16 fs;
+>>>                u16 gs;
+>>> -               u16 ldt;
+>>>                u64 gs_base;
+>>>        } host;
+>>
+>> Shouldn't you be about to delete fs, gs, and gs_base too?
+>
+> For the reasons above it seems like they'd need to be there in some form,
+> though we could maybe replace them with a pointer to the per-cpu save_are=
+a
+> so that they can be accessed directly before GS segment is restored.
+
+I=E2=80=99m confused. Why would you be accessing them before VMLOAD?  These
+are host values.
+
+I think there are two reasonable ways to do this:
+
+1. VMLOAD before STGI.  This is obviously correct, and it's quite simple.
+
+2. Save cpu_kernelmode_gs_base(cpu) before VM entry, and restore that
+value to MSR_GS_BASE using code like this (or its asm equivalent)
+before STGI:
+
+if (static_cpu_has(X86_FEATURE_FSGSBASE))
+  wrgsbase(base);
+else
+  wrmsr...
+
+and then VMLOAD in the vcpu_put() path.
+
+I can't think of any reason to use loadsegment(), load_gs_index(), or
+savesegment() at all, nor can I think of any reason to touch
+MSR_KERNEL_GS_BASE or MSR_FS_BASE.
+
+--Andy
