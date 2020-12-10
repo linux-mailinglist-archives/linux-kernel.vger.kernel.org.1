@@ -2,24 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B502D5F42
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:15:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDF72D5F45
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:15:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391585AbgLJOpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:45:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45032 "EHLO mail.kernel.org"
+        id S2391616AbgLJOrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:47:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387712AbgLJOib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:38:31 -0500
+        id S1726147AbgLJOip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:38:45 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.9 43/75] dm writecache: advance the number of arguments when reporting max_age
-Date:   Thu, 10 Dec 2020 15:27:08 +0100
-Message-Id: <20201210142608.187980683@linuxfoundation.org>
+        stable@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kurz <groug@kaod.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.9 47/75] powerpc/pseries: Pass MSI affinity to irq_create_mapping()
+Date:   Thu, 10 Dec 2020 15:27:12 +0100
+Message-Id: <20201210142608.381660607@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
 References: <20201210142606.074509102@linuxfoundation.org>
@@ -31,33 +33,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Laurent Vivier <lvivier@redhat.com>
 
-commit e5d41cbca1b2036362c9e29d705d3a175a01eff8 upstream.
+commit 9ea69a55b3b9a71cded9726af591949c1138f235 upstream.
 
-When reporting the "max_age" value the number of arguments must
-advance by two.
+With virtio multiqueue, normally each queue IRQ is mapped to a CPU.
 
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Fixes: 3923d4854e18 ("dm writecache: implement gradual cleanup")
-Cc: stable@vger.kernel.org # v5.7+
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Commit 0d9f0a52c8b9f ("virtio_scsi: use virtio IRQ affinity") exposed
+an existing shortcoming of the arch code by moving virtio_scsi to
+the automatic IRQ affinity assignment.
+
+The affinity is correctly computed in msi_desc but this is not applied
+to the system IRQs.
+
+It appears the affinity is correctly passed to rtas_setup_msi_irqs() but
+lost at this point and never passed to irq_domain_alloc_descs()
+(see commit 06ee6d571f0e ("genirq: Add affinity hint to irq allocation"))
+because irq_create_mapping() doesn't take an affinity parameter.
+
+Use the new irq_create_mapping_affinity() function, which allows to forward
+the affinity setting from rtas_setup_msi_irqs() to irq_domain_alloc_descs().
+
+With this change, the virtqueues are correctly dispatched between the CPUs
+on pseries.
+
+Fixes: e75eafb9b039 ("genirq/msi: Switch to new irq spreading infrastructure")
+Signed-off-by: Laurent Vivier <lvivier@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Greg Kurz <groug@kaod.org>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201126082852.1178497-3-lvivier@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-writecache.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/platforms/pseries/msi.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/md/dm-writecache.c
-+++ b/drivers/md/dm-writecache.c
-@@ -2479,6 +2479,8 @@ static void writecache_status(struct dm_
- 			extra_args += 2;
- 		if (wc->autocommit_time_set)
- 			extra_args += 2;
-+		if (wc->max_age != MAX_AGE_UNSPECIFIED)
-+			extra_args += 2;
- 		if (wc->cleaner)
- 			extra_args++;
- 		if (wc->writeback_fua_set)
+--- a/arch/powerpc/platforms/pseries/msi.c
++++ b/arch/powerpc/platforms/pseries/msi.c
+@@ -458,7 +458,8 @@ again:
+ 			return hwirq;
+ 		}
+ 
+-		virq = irq_create_mapping(NULL, hwirq);
++		virq = irq_create_mapping_affinity(NULL, hwirq,
++						   entry->affinity);
+ 
+ 		if (!virq) {
+ 			pr_debug("rtas_msi: Failed mapping hwirq %d\n", hwirq);
 
 
