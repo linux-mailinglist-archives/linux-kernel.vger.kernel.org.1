@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A962D5B22
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:03:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0DB62D5B2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:05:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388889AbgLJNCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:02:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
+        id S2388553AbgLJND2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:03:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387506AbgLJNCt (ORCPT
+        with ESMTP id S2387506AbgLJNDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:02:49 -0500
+        Thu, 10 Dec 2020 08:03:14 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94BFC0613CF;
-        Thu, 10 Dec 2020 05:02:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298B7C0613D6;
+        Thu, 10 Dec 2020 05:02:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8DNWVeAUd7OvyCVtE5PeUeZEuJerl3ZR6gz0ZKvmpyo=; b=QoPx6KFRU+xS+RaJr2y1Qphzjb
-        s+yXByA3V4D2JJjPNrqJEj1y++RZMQ2QrVSvDnGQqtmx8Lo3LdXjBPtz6vEngpYhMZ98DjG9GIJ9N
-        vXErudo8loKA59o3aKxKOwrOiETZnptD4jkclkS27O9+TI1oA9mUX0LhghbGIG1XS6WdyaqIC019R
-        eJRa7Pn/tHHTPljQtMtEZc+TQJWcFm0Ef/WN0X2mlbE2Ut6pZQmyaSKeiAdBskXfwa2uDiHcEnJuN
-        GdkBDPHqdcZlK7QNdKtrpU1zccUIpK/CQWvIM06IHs+Ak9gYHhzEXczcug14IEm8h+EtHPNMYGynU
-        jDQ0bHzQ==;
+        bh=+RVI+GYAz7Cj9dLwQO7lJaDKUEPBg0VpOCcGAPAQzyc=; b=XayUTy0Xx36b0ASSYih2uYleT7
+        OWXI61BFbpVcfYGM4id6hUCxKtOA4LQeGSlYfXphaaE2hP+1PVgdT7/etzFU9SjpKTjjgoXM0GiGJ
+        A/KEIFspO0ZaYi5HC9tJBs/UmoZGEA8TtccH16jJV7PfNiKmu8491EMZrmyJuOD4Kqt6zDsGU0I/3
+        b/xvf1SSDljY6wwcncUYZwzCAUjLisLHLN0X5lFJ01gffdTyZrFymsqAwnb/T/1CFTUhtQf2zmfgg
+        KS0WHnXeGnB+PqSbb5BYuwtJYDqLJI8GHl0ypWYLriZLSGS7oSc0skDVHSvcFGLjXw2FyUAprHyKN
+        uDWqoYIQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1knLZd-0004f1-BZ; Thu, 10 Dec 2020 13:01:33 +0000
+        id 1knLaT-0004j4-Cy; Thu, 10 Dec 2020 13:02:25 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A3D693007CD;
-        Thu, 10 Dec 2020 14:01:31 +0100 (CET)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D53F23059C6;
+        Thu, 10 Dec 2020 14:02:24 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8C5B7209B20CB; Thu, 10 Dec 2020 14:01:31 +0100 (CET)
-Date:   Thu, 10 Dec 2020 14:01:31 +0100
+        id A2E6D2B855156; Thu, 10 Dec 2020 14:02:24 +0100 (CET)
+Date:   Thu, 10 Dec 2020 14:02:24 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-Message-ID: <20201210130131.GP2414@hirez.programming.kicks-ass.net>
-References: <20201203171118.372391-1-mlevitsk@redhat.com>
- <20201203171118.372391-2-mlevitsk@redhat.com>
- <87a6uq9abf.fsf@nanos.tec.linutronix.de>
- <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com>
- <87im9dlpsw.fsf@vitty.brq.redhat.com>
- <875z5d5x9m.fsf@nanos.tec.linutronix.de>
- <b6e0656b-4e3f-cf47-5ec9-eead44b2f2e9@redhat.com>
- <20201210121417.GN2414@hirez.programming.kicks-ass.net>
- <fe3e4637-b74b-864a-9d2f-c4f2d9450f2e@redhat.com>
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the tip tree
+Message-ID: <20201210130224.GQ2414@hirez.programming.kicks-ass.net>
+References: <20201210215210.2c432324@canb.auug.org.au>
+ <1607604631.22066.41.camel@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fe3e4637-b74b-864a-9d2f-c4f2d9450f2e@redhat.com>
+In-Reply-To: <1607604631.22066.41.camel@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 01:22:02PM +0100, Paolo Bonzini wrote:
-> On 10/12/20 13:14, Peter Zijlstra wrote:
-> > On Thu, Dec 10, 2020 at 12:42:36PM +0100, Paolo Bonzini wrote:
-> > > On 07/12/20 18:41, Thomas Gleixner wrote:
-> > > > Right this happens still occasionally, but for quite some time this is
-> > > > 100% firmware sillyness and not a fundamental property of the hardware
-> > > > anymore.
-> > > 
-> > > It's still a fundamental property of old hardware.  Last time I tried to
-> > > kill support for processors earlier than Core 2, I had to revert it. That's
-> > > older than Nehalem.
+On Thu, Dec 10, 2020 at 01:50:31PM +0100, Giovanni Gherdovich wrote:
+> On Thu, 2020-12-10 at 21:52 +1100, Stephen Rothwell wrote:
+> > Hi all,
 > > 
-> > Core2 doesn't use TSC for timekeeping anyway. KVM shouldn't either.
+> > Commit
+> > 
+> >   46609527577d ("x86, sched: Use midpoint of max_boost and max_P for frequency invariance on AMD EPYC")
+> > 
+> > is missing a Signed-off-by from its author.
+> > 
 > 
-> On Core2, KVM guests pass TSC through kvmclock in order to get something
-> usable and not incredibly slow.
+> Hello,
+> 
+> I'm the author of that commit and the missing Signed-off-by is not intentional but
+> due to a mistake I made. I used the string "------------" in the commit message and
+> git interpreted it as "drop everything from here onwards", including the
+> Signed-off-by.
+> 
+> According to the maintainer's preference, I agree to either them adding
+> 
+>   Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
 
-Which is incredibly wrong.
+Hurmph, I'd have to rebase that branch to fix this.. mingo?
