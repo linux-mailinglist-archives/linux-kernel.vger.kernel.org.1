@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6F82D601E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:43:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA862D6030
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391867AbgLJPmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:42:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45384 "EHLO mail.kernel.org"
+        id S2391911AbgLJPnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:43:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391281AbgLJOkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:40:15 -0500
+        id S2391274AbgLJOkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:40:12 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 5.9 65/75] gfs2: Fix deadlock dumping resource group glocks
-Date:   Thu, 10 Dec 2020 15:27:30 +0100
-Message-Id: <20201210142609.235645522@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.9 70/75] dm writecache: remove BUG() and fail gracefully instead
+Date:   Thu, 10 Dec 2020 15:27:35 +0100
+Message-Id: <20201210142609.471194629@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
 References: <20201210142606.074509102@linuxfoundation.org>
@@ -31,42 +31,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Mike Snitzer <snitzer@redhat.com>
 
-commit 16e6281b6b22b0178eab95c6a82502d7b10f67b8 upstream.
+commit 857c4c0a8b2888d806f4308c58f59a6a81a1dee9 upstream.
 
-Commit 0e539ca1bbbe ("gfs2: Fix NULL pointer dereference in gfs2_rgrp_dump")
-introduced additional locking in gfs2_rgrp_go_dump, which is also used for
-dumping resource group glocks via debugfs.  However, on that code path, the
-glock spin lock is already taken in dump_glock, and taking it again in
-gfs2_glock2rgrp leads to deadlock.  This can be reproduced with:
+Building on arch/s390/ results in this build error:
 
-  $ mkfs.gfs2 -O -p lock_nolock /dev/FOO
-  $ mount /dev/FOO /mnt/foo
-  $ touch /mnt/foo/bar
-  $ cat /sys/kernel/debug/gfs2/FOO/glocks
+cc1: some warnings being treated as errors
+../drivers/md/dm-writecache.c: In function 'persistent_memory_claim':
+../drivers/md/dm-writecache.c:323:1: error: no return statement in function returning non-void [-Werror=return-type]
 
-Fix that by not taking the glock spin lock inside the go_dump callback.
+Fix this by replacing the BUG() with an -EOPNOTSUPP return.
 
-Fixes: 0e539ca1bbbe ("gfs2: Fix NULL pointer dereference in gfs2_rgrp_dump")
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Fixes: 48debafe4f2f ("dm: add writecache target")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/gfs2/glops.c |    2 +-
+ drivers/md/dm-writecache.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/gfs2/glops.c
-+++ b/fs/gfs2/glops.c
-@@ -230,7 +230,7 @@ static void rgrp_go_inval(struct gfs2_gl
- static void gfs2_rgrp_go_dump(struct seq_file *seq, struct gfs2_glock *gl,
- 			      const char *fs_id_buf)
+--- a/drivers/md/dm-writecache.c
++++ b/drivers/md/dm-writecache.c
+@@ -319,7 +319,7 @@ err1:
+ #else
+ static int persistent_memory_claim(struct dm_writecache *wc)
  {
--	struct gfs2_rgrpd *rgd = gfs2_glock2rgrp(gl);
-+	struct gfs2_rgrpd *rgd = gl->gl_object;
+-	BUG();
++	return -EOPNOTSUPP;
+ }
+ #endif
  
- 	if (rgd)
- 		gfs2_rgrp_dump(seq, rgd, fs_id_buf);
 
 
