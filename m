@@ -2,117 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEC72D513B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 083F52D513D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729189AbgLJDRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 22:17:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        id S1729222AbgLJDSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:18:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728619AbgLJDRn (ORCPT
+        with ESMTP id S1728274AbgLJDSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 22:17:43 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D3BC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 19:17:03 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id t6so2072097plq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 19:17:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=k53PFT7deXWzGUQq0Qpf6W/21ZGbwiD77Sh9ifdNlYI=;
-        b=j/3AaR7Rv5E0+fKghUnWh6A8a2UeZzPe81/mLS/v3NuwDplaOQN7T01j81j978t12h
-         Bv9RlbNJWBBugNdKcx8NNnfildF6mmoJj0b92N2lH5GxU6SKQMNwTH9JTvNBpLJpl87c
-         ZbfOQwyLx35Nuie38/uNAF48DHT4i+K8moLJo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=k53PFT7deXWzGUQq0Qpf6W/21ZGbwiD77Sh9ifdNlYI=;
-        b=QYtIBFtIzYa3af+RlaUz2VlaM5VIARWrK+JUFZ2X9iCaKU/erY+mrUAhGHzwS8UDCv
-         CGRBuThA83UqEBQb3s38LKnxiz1oKqeGbf+b2x8KHZg4DGfAQg4md6kKgPakRL96chvT
-         jc+NFNFxYArf8NOAmcZ2ZvI2nUhnVkTagrVYS2TGSFLwyWoabTegcDlqzTVsM2D/6KBo
-         qAblsH4IvAoyx6LgHdOydppw3zNIfQxVJfIF2vwTFAh3QSOjRJ0MmDL1hwYlWL4YgnvO
-         4a/TzgEDZBZVR1d0Jwdm5UUOixJRyTIzQOycFHBp587KMvdEkqW94Iz8i9kE2Rvt0m2E
-         QQhw==
-X-Gm-Message-State: AOAM531lpoajePNw2Fhhtw/8greucc9DHIu0dui57Gju7AE9CtlzmBHm
-        HS6Rvne5ZHdEv0saX90DvyN8MA==
-X-Google-Smtp-Source: ABdhPJxCdPN48jN7aGTW0NAvFrMo0PSR1HiBugsItDALpwR1BgRUQBc57Mz37oFQa7zYg0hYEQiSfA==
-X-Received: by 2002:a17:902:74cc:b029:da:9287:2b4 with SMTP id f12-20020a17090274ccb02900da928702b4mr4650468plt.9.1607570222586;
-        Wed, 09 Dec 2020 19:17:02 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id l17sm3665289pjy.29.2020.12.09.19.17.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 19:17:01 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 9 Dec 2020 22:18:33 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B275AC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 19:17:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=e3geagjLUbkfu555scHFBxhLDn64X8QU8MqLRKZIS1c=; b=nbcj+Qb9VE5T6TWfV+//6eWNBm
+        CjvIWQ4J459HWNqeeM4J87K5b9sPtgzM5yQNQWxaOiKJSHoGewc4dwhzjGBp5b++DOq6SSkBmFbCr
+        dTjp3kJQPcNUeJ4RgKC/wrsAHDe4gtnq2SVd4tgq/3OVBnObwpsQDfQIJS3o1Dn7Ce9mZ5Jc7SdIB
+        L6nH3Gt2R706E9zzlbVexUrANij7GBUW0Q63ngHov2Yr093j8D0Apir0svI0xMmBs89Y0IZwX5dFf
+        E9OagfZkMISDyLdVv8atnpEiB8Q34/7OJqWsSGoRBP4xGRqnwZDDQSrkC2TUSuJZX/l8Yq5zUZfAf
+        1N9TzpMg==;
+Received: from [2601:1c0:6280:3f0::1494] (helo=smtpauth.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knCSj-00020I-PN; Thu, 10 Dec 2020 03:17:50 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-c6x-dev@linux-c6x.org,
+        Jens Axboe <axboe@kernel.dk>, Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+Subject: [PATCH -next] c6x: fix build of signal.c using _TIF_SIGNALs
+Date:   Wed,  9 Dec 2020 19:17:42 -0800
+Message-Id: <20201210031742.14534-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=XKyXnjsM4iS-ydRWBnmYMojPOaYAdYhOkxkPTCQf0RLQ@mail.gmail.com>
-References: <20201203074459.13078-1-rojay@codeaurora.org> <CAD=FV=XKyXnjsM4iS-ydRWBnmYMojPOaYAdYhOkxkPTCQf0RLQ@mail.gmail.com>
-Subject: Re: [PATCH] spi: spi-geni-qcom: Fix NULL pointer access in geni_spi_isr
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        msavaliy@qti.qualcomm.com
-To:     Doug Anderson <dianders@chromium.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-Date:   Wed, 09 Dec 2020 19:17:00 -0800
-Message-ID: <160757022002.1580929.8656750350166301192@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2020-12-03 08:40:46)
+kernel/signal.c in arch/c6x/ needs <asm/asm-offsets.h> to build
+since it contains _TIF_SIGNALfoobar #defines, so add it.
 
-> I would guess that if "mas->cur_xfer" is NULL then
-> geni_spi_handle_rx() should read all data in the FIFO and throw it
-> away and geni_spi_handle_tx() should set SE_GENI_TX_WATERMARK_REG to
-> 0.  NOTE: I _think_ that with the synchronize_irq() I'm suggesting
-> above we'll avoid this case, but it never hurts to be defensive.
->=20
->=20
-> Does that all make sense?  So the summary is that instead of your patch:
+Placates these build errors:
 
-Can we get a CPU diagram describing the race and scenario where this
-happens? Something like:
+../arch/c6x/kernel/signal.c: In function 'do_notify_resume':
+../arch/c6x/kernel/signal.c:316:27: error: '_TIF_SIGPENDING' undeclared (first use in this function); did you mean 'TIF_SIGPENDING'?
+  316 |  if (thread_info_flags & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+      |                           ^~~~~~~~~~~~~~~
+../arch/c6x/kernel/signal.c:316:27: note: each undeclared identifier is reported only once for each function it appears in
+../arch/c6x/kernel/signal.c:316:45: error: '_TIF_NOTIFY_SIGNAL' undeclared (first use in this function); did you mean 'TIF_NOTIFY_SIGNAL'?
+  316 |  if (thread_info_flags & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+      |                                             ^~~~~~~~~~~~~~~~~~
 
-  CPU0                                CPU1
-  ----                                ----
-  setup_fifo_xfer()
-   spin_lock_irq(&mas->lock);
-   spin_unlock_irq(&mas->lock);
-   mas->cur_xfer =3D xfer
-   ...
-   <IRQ>
-                                      geni_spi_isr()
-				       geni_spi_handle_rx()
-				        <NULL deref boom explosion!>
+Fixes: b7560cfc3f8a ("c6x: add support for TIF_NOTIFY_SIGNAL")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-c6x-dev@linux-c6x.org
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Mark Salter <msalter@redhat.com>
+Cc: Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+---
+ arch/c6x/kernel/signal.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-But obviously this example diagram is incorrect and some timeout happens
-instead? Sorry, I'm super lazy and don't want to read many paragraphs of
-text. :) I'd rather have a diagram like above that clearly points out
-the steps taken to the NULL pointer deref.
-
->=20
-> 1. Add synchronize_irq() at the start and end of
-> handle_fifo_timeout().  Not under lock.
->=20
-> 2. In geni_spi_handle_rx(), check for NULL "mas->cur_xfer".  Read all
-> data in the FIFO (don't cap at rx_rem_bytes), but throw it away.
->=20
-> 3. In geni_spi_handle_tx(), check for NULL "mas->cur_xfer".  Don't
-> write any data.  Just write 0 to SE_GENI_TX_WATERMARK_REG.
->=20
-> I think #1 is the real fix, but #2 and #3 will avoid crashes in case
-> there's another bug somewhere.
->=20
-
-Aren't 2 and 3 papering over some weird problem though where irqs are
-coming in unexpectedly?
+--- linux-next-20201209.orig/arch/c6x/kernel/signal.c
++++ linux-next-20201209/arch/c6x/kernel/signal.c
+@@ -13,6 +13,7 @@
+ #include <linux/syscalls.h>
+ #include <linux/tracehook.h>
+ 
++#include <asm/asm-offsets.h>
+ #include <asm/ucontext.h>
+ #include <asm/cacheflush.h>
+ 
