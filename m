@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F172D5ED6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ACF92D5EE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388149AbgLJPBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:01:23 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:28279 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729979AbgLJPAx (ORCPT
+        id S2389946AbgLJPBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:01:02 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:38544 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729816AbgLJPAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:00:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1607612453; x=1639148453;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UqMkvKL7D8SiD3dwz7dJFaadhU8wN/9oUbsLA7y6BBs=;
-  b=h0ql8Y8Mr2FEnK6WNEwyVgedGxs3JutllsUqxQL4XHEz+RulKBJnwU79
-   ozE4anMARd5NGJ7p23KEL/phBZ4r0LmHhXbTmlNh7jUSL2+Gt8Xhswghk
-   N1+MvvSpzA4dXw7YrvDnrfDQa/ahgzvqY8gW6cD1vfdHtitZXxNa6GXOl
-   PGFgE5lGeQNnj+gDfLtmfkePlUjvhxT9lwOKiUS2+0y1DWDFcN2ACVtbq
-   Dn25wqvke324/6lr302F7r1Hosv/OV5vdO0PMC9lF8u2mlQPzmDCQh5Hf
-   tzXdZjdMTWXIVZSl5fBHJQJwCMq9rD5HcgAZhTNkgrDyEuoXvy1NGdgwN
-   A==;
-IronPort-SDR: R3MJaP3nvzHZiidlIW4RrQ7dWRWphe6WNKjns6lRGwVl67uDBH1GvIQ5YmIHTkqYmUfE0wRLDc
- kInbCicGpSSFFjeHQxGlInx6cNvrsz64ClS3jGpWs25RVDGkvIJVBNPWsxq7rGt4S5GQW+RyiU
- VdlKiwdO1k5LNzChrE6WPp2SPJcYlzMbGg2Qe2vc3GbnLUw2ZBEcwusVYF3KIF7I+UCn5dtLE8
- iu08kAFZUgviptzKSklFTEpjOo8b7wZhgJpaf6T8Zbi+gazz1XPtmj1TPxkLZQMbImhyZaPD2A
- T58=
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="96633051"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Dec 2020 07:59:37 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 10 Dec 2020 07:59:37 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Thu, 10 Dec 2020 07:59:36 -0700
-Date:   Thu, 10 Dec 2020 15:59:35 +0100
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 3/4] phy: Add Sparx5 ethernet serdes PHY driver
-Message-ID: <20201210145935.see4n6csnomsl2rx@mchp-dev-shegelun>
-References: <20201207121345.3818234-1-steen.hegelund@microchip.com>
- <20201207121345.3818234-4-steen.hegelund@microchip.com>
- <20201210021134.GD2638572@lunn.ch>
- <20201210125706.saub7c2rarifhbx4@mchp-dev-shegelun>
- <20201210141610.GG2638572@lunn.ch>
+        Thu, 10 Dec 2020 10:00:50 -0500
+Received: by mail-oi1-f194.google.com with SMTP id o25so6014514oie.5;
+        Thu, 10 Dec 2020 07:00:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UVsVIe3suYkFEfD50jET/XIrhdhVHmEbSyKr3t3yUpg=;
+        b=MhV6cqzKRcgaBTijnJBo1dE7CEUzr6JsBbJ0x5/xJUssfhiz0F1oe7ONeuzN3bhqYn
+         3UWwMRTv/sHG1Z3klmfX3M0Fk+LGzbZhjl1J1PRpw+zWPMask1PbPrZDbFUgzIxRpk0Y
+         X4SLjdmcVwWqtSiJnPXdpWGWOSLGHX2ICpk3Qgv5SqXnPVT6nt2h0A4roLEI56wkEu2f
+         PWOt+c4dZmVMb4hp2wkzXPc4eiqALu3cxvWM7Vj0zYRfIgkAV/5edMyH2Q7Hhm24aFaE
+         qXClRm7I6X2dwfJhU/UM+xuq2FzQgpxb9yESKPsp6mklHV+AupvioSdGAhGeWxHjlWhF
+         b8Hg==
+X-Gm-Message-State: AOAM530sUN7nWqjAZ//Ga0NbDatBEfbK2rQe1j3bjx2EML2oOo3uL0jZ
+        M60ifA4aiXpH/A17HTOVN0piIVRvBA==
+X-Google-Smtp-Source: ABdhPJxtjxFO5NRE5uDTlGtuOqlTdZ+z6YyXsCpr2sbIMHkfwWL05oCwLJORR97iFJXMyZ7TuC6Xog==
+X-Received: by 2002:a05:6808:685:: with SMTP id k5mr5725138oig.135.1607612409231;
+        Thu, 10 Dec 2020 07:00:09 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r4sm1030551ooa.29.2020.12.10.07.00.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 07:00:08 -0800 (PST)
+Received: (nullmailer pid 2499159 invoked by uid 1000);
+        Thu, 10 Dec 2020 15:00:07 -0000
+Date:   Thu, 10 Dec 2020 09:00:07 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Cc:     praneeth@ti.com, linux-remoteproc@vger.kernel.org,
+        bjorn.andersson@linaro.org, rogerq@ti.com, s-anna@ti.com,
+        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ohad@wizery.com,
+        lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, mathieu.poirier@linaro.org
+Subject: Re: [PATCH v4 1/6] dt-bindings: remoteproc: Add binding doc for PRU
+ cores in the PRU-ICSS
+Message-ID: <20201210150007.GA2499121@robh.at.kernel.org>
+References: <20201208141002.17777-1-grzegorz.jaszczyk@linaro.org>
+ <20201208141002.17777-2-grzegorz.jaszczyk@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201210141610.GG2638572@lunn.ch>
+In-Reply-To: <20201208141002.17777-2-grzegorz.jaszczyk@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.12.2020 15:16, Andrew Lunn wrote:
->EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->
->> > So why are returning link up information?
->>
->> Yes that was a bit of a hijacking of the function.  I will remove that.
->> I also removed the dependency on this behaviour in the client driver in the
->> meantime.
->>
->> I think a status function on the generic phy would be useful, but I will
->> take that as separate issue.
->
->In this context of an Ethernet SERDES, do you actually need it? You
->would normally look at the PCS link status to determine if the link is
->up.  But it is useful debug information. If the PCS is down, but the
->PHY indicates up, you can guess you have a protocol misconfiguration.
+On Tue, 08 Dec 2020 15:09:57 +0100, Grzegorz Jaszczyk wrote:
+> From: Suman Anna <s-anna@ti.com>
+> 
+> The Programmable Real-Time Unit and Industrial Communication Subsystem
+> (PRU-ICSS or simply PRUSS) on various TI SoCs consists of dual 32-bit
+> RISC cores (Programmable Real-Time Units, or PRUs) for program execution.
+> 
+> The K3 AM65x amd J721E SoCs have the next generation of the PRU-ICSS IP,
+> commonly called ICSSG. The ICSSG IP on AM65x SoCs has two PRU cores,
+> two auxiliary custom PRU cores called Real Time Units (RTUs). The K3
+> AM65x SR2.0 and J721E SoCs have a revised version of the ICSSG IP, and
+> include two additional custom auxiliary PRU cores called Transmit PRUs
+> (Tx_PRUs).
+> 
+> This patch adds the bindings for these PRU cores. The binding covers the
+> OMAP architecture SoCs - AM33xx, AM437x and AM57xx; Keystone 2 architecture
+> based 66AK2G SoC; and the K3 architecture based SoCs - AM65x and J721E. The
+> Davinci based OMAPL138 SoCs will be covered in a future patch.
+> 
+> Co-developed-by: Roger Quadros <rogerq@ti.com>
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> Signed-off-by: Suman Anna <s-anna@ti.com>
+> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+> ---
+> v3->v4:
+> - no changes
+> 
+> v2->v3:
+> - no changes
+> v1->v2:
+> - fix below yamllint warnings:
+> ./Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml:37:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
+> ./Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml:92:2: [warning] wrong indentation: expected 2 but found 1 (indentation)
+> ---
+>  .../bindings/remoteproc/ti,pru-rproc.yaml     | 214 ++++++++++++++++++
+>  1 file changed, 214 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+> 
 
-Yes - you are probably right about that.  I have been exposing this via
-a procfs interface during the development phase, and it was really
-useful to have, to track down the origin of the problem in certain situations.
-
-But on a system level, the PCS link would have the final say anyway.
->
->What exactly does link at this level mean? And thinking of the wider
->uses of the PHY subsystem, what would link mean at this level for
->SATA, PCIe, USB? Don't these all have some protocol level above
->similar to Ethernet PCS which is the real determiner of link?
-
-Yes - I think this is really only a debug feature.  No need to force
-this on the other PHY categories.
-
-
->
->     Andrew
-
-Thanks for your comments, Andrew.
-
-BR
-Steen
-
----------------------------------------
-Steen Hegelund
-steen.hegelund@microchip.com
+Reviewed-by: Rob Herring <robh@kernel.org>
