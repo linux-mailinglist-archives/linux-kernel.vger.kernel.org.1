@@ -2,26 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED59F2D6252
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 681172D6289
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391112AbgLJOhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:37:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42370 "EHLO mail.kernel.org"
+        id S2391070AbgLJOhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:37:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390800AbgLJOeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:34:20 -0500
+        id S2390790AbgLJOeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:34:01 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 4.19 26/39] i2c: imx: Check for I2SR_IAL after every byte
-Date:   Thu, 10 Dec 2020 15:27:05 +0100
-Message-Id: <20201210142603.562742819@linuxfoundation.org>
+        stable@vger.kernel.org, Jerry Snitselaar <jsnitsel@redhat.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 4.19 28/39] iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs
+Date:   Thu, 10 Dec 2020 15:27:07 +0100
+Message-Id: <20201210142603.658081326@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
 References: <20201210142602.272595094@linuxfoundation.org>
@@ -33,46 +32,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Eggers <ceggers@arri.de>
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 
-commit 1de67a3dee7a279ebe4d892b359fe3696938ec15 upstream.
+commit 4165bf015ba9454f45beaad621d16c516d5c5afe upstream.
 
-Arbitration Lost (IAL) can happen after every single byte transfer. If
-arbitration is lost, the I2C hardware will autonomously switch from
-master mode to slave. If a transfer is not aborted in this state,
-consecutive transfers will not be executed by the hardware and will
-timeout.
+According to the AMD IOMMU spec, the commit 73db2fc595f3
+("iommu/amd: Increase interrupt remapping table limit to 512 entries")
+also requires the interrupt table length (IntTabLen) to be set to 9
+(power of 2) in the device table mapping entry (DTE).
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Tested (not extensively) on Vybrid VF500 (Toradex VF50):
-Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: stable@vger.kernel.org
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: 73db2fc595f3 ("iommu/amd: Increase interrupt remapping table limit to 512 entries")
+Reported-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Link: https://lore.kernel.org/r/20201207091920.3052-1-suravee.suthikulpanit@amd.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/i2c/busses/i2c-imx.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/iommu/amd_iommu_types.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -460,6 +460,16 @@ static int i2c_imx_trx_complete(struct i
- 		dev_dbg(&i2c_imx->adapter.dev, "<%s> Timeout\n", __func__);
- 		return -ETIMEDOUT;
- 	}
-+
-+	/* check for arbitration lost */
-+	if (i2c_imx->i2csr & I2SR_IAL) {
-+		dev_dbg(&i2c_imx->adapter.dev, "<%s> Arbitration lost\n", __func__);
-+		i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
-+
-+		i2c_imx->i2csr = 0;
-+		return -EAGAIN;
-+	}
-+
- 	dev_dbg(&i2c_imx->adapter.dev, "<%s> TRX complete\n", __func__);
- 	i2c_imx->i2csr = 0;
- 	return 0;
+--- a/drivers/iommu/amd_iommu_types.h
++++ b/drivers/iommu/amd_iommu_types.h
+@@ -259,7 +259,7 @@
+ #define DTE_IRQ_REMAP_INTCTL_MASK	(0x3ULL << 60)
+ #define DTE_IRQ_TABLE_LEN_MASK	(0xfULL << 1)
+ #define DTE_IRQ_REMAP_INTCTL    (2ULL << 60)
+-#define DTE_IRQ_TABLE_LEN       (8ULL << 1)
++#define DTE_IRQ_TABLE_LEN       (9ULL << 1)
+ #define DTE_IRQ_REMAP_ENABLE    1ULL
+ 
+ #define PAGE_MODE_NONE    0x00
 
 
