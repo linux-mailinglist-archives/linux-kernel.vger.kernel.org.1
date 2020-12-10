@@ -2,113 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F1E2D5384
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 182BA2D5399
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:05:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732965AbgLJGBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:01:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731841AbgLJGBA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:01:00 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953ADC0613CF;
-        Wed,  9 Dec 2020 22:00:19 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id l9so4136416wrt.13;
-        Wed, 09 Dec 2020 22:00:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XZ0GzFkMnql2mZ9ucABMri0aPX93XDgGP0zi1s6RhwA=;
-        b=lpPQkdebMIuW2w/cNOMG3wQQ6LBxUIp+8A+fz23QJ6YBfQHmYd2Q6TFsEzkd65Bz2Q
-         nnmjvPjeS+4gbIrHSjWnyZY7eigeX6MXbFvOHu9iqxzTfso5Xn4Ex20eiBA1DOc7Dqg1
-         gajDdftMTG6qbWO0ufCTvhUF7BOCqbI/Y9fc+bD3jzdCux81kf+U8V/S9SD+MsqxMfMn
-         P+KQhlhvWVTuXidYsGa2+Ghj1y15ukXr6DAbF+glgtNRLH2wLJZGbY9DftaZGhgcZZlW
-         W8VN8+Zp2vbP95uhZ1etegd9qAn7liSoWUXEfjb44h6WVNpPFg4jj52djNRPlRFWy4z0
-         wDnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XZ0GzFkMnql2mZ9ucABMri0aPX93XDgGP0zi1s6RhwA=;
-        b=dyArKJHorjqCp0RbMDPAJBu0OA0Tk/+pdO3Lmq4XwjESnqA+K4D9eAVNCch1AdLpfz
-         Rf6HR2boX27Gx5fErEC6T9mxDMPNzN708tHxU2cWfx4j/2OZBPsGU4Raer3vcfixjLH0
-         t7RZGvh/F+f2Gpf3uAPmfacWivPMuWQfN+aXNxivGNMWmUsbEpegfp/GSjc8doTYePoZ
-         cxbST9YyqwFFpQelunUds9zYMN6x8w+EmS58WoPj0bPwWA0SVDrIfhyMxLJnso+dLDbc
-         PnDxm8+GRIaYv491G1YFil5c5BKPav/Tq3fSCdVgYo58Y7rcfU4Ttu1RKt1tDyPMJBmr
-         btgg==
-X-Gm-Message-State: AOAM533TvHeO04ermift8cJCucVCppjEqQ+1fbtfs1uGN0VGYI92nfvC
-        wHntKB9j/+YF/ntD6Y7EVvFWvPjfxfep9g==
-X-Google-Smtp-Source: ABdhPJxIZm4jacRkxlweAry7ldEyr9Cs5Uph++CwJyZaxVGgzBK88btGmFHUxJq7aphOK+x0WV2vZQ==
-X-Received: by 2002:adf:916e:: with SMTP id j101mr6237868wrj.55.1607580018016;
-        Wed, 09 Dec 2020 22:00:18 -0800 (PST)
-Received: from giga-mm.localdomain ([195.245.17.255])
-        by smtp.gmail.com with ESMTPSA id q15sm7443906wrw.75.2020.12.09.22.00.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 22:00:17 -0800 (PST)
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     linux-serial@vger.kernel.org
-Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH] serial: 8250_omap: Avoid FIFO corruption caused by MDR1 access
-Date:   Thu, 10 Dec 2020 06:52:57 +0100
-Message-Id: <20201210055257.1053028-1-alexander.sverdlin@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1733043AbgLJGFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:05:16 -0500
+Received: from smtp.h3c.com ([60.191.123.50]:26874 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732896AbgLJGFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 01:05:16 -0500
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam02-ex.h3c.com with ESMTP id 0BA63XK7009246;
+        Thu, 10 Dec 2020 14:03:33 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 10 Dec 2020 14:03:35 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <axboe@kernel.dk>
+CC:     <ming.lei@redhat.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] [v2] blk-mq-tag: make blk_mq_tag_busy() return void
+Date:   Thu, 10 Dec 2020 13:53:07 +0800
+Message-ID: <20201210055307.1024-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 0BA63XK7009246
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has been observed that once per 300-1300 port openings the first
-transmitted byte is being corrupted on AM3352 ("v" written to FIFO appeared
-as "e" on the wire). It only happened if single byte has been transmitted
-right after port open, which means, DMA is not used for this transfer and
-the corruption never happened afterwards.
+As no one cares about the return value of blk_mq_tag_busy() and
+__blk_mq_tag_busy(), so make them return void.
 
-Therefore I've carefully re-read the MDR1 errata (link below), which says
-"when accessing the MDR1 registers that causes a dummy under-run condition
-that will freeze the UART in IrDA transmission. In UART mode, this may
-corrupt the transferred data". Strictly speaking,
-omap_8250_mdr1_errataset() performs a read access and if the value is the
-same as should be written, exits without errata-recommended FIFO reset.
+Other change is to simplify blk_mq_tag_idle().
 
-A brief check of the serial_omap_mdr1_errataset() from the competing
-omap-serial driver showed it has no read access of MDR1. After removing the
-read access from omap_8250_mdr1_errataset() the data corruption never
-happened any more.
-
-Link: https://www.ti.com/lit/er/sprz360i/sprz360i.pdf
-Fixes: 61929cf0169d ("tty: serial: Add 8250-core based omap driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 ---
- drivers/tty/serial/8250/8250_omap.c | 5 -----
- 1 file changed, 5 deletions(-)
+ block/blk-mq-tag.c |  4 ++--
+ block/blk-mq-tag.h | 16 ++++++----------
+ 2 files changed, 8 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-index 562087df7d33..0cc6d35a0815 100644
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -184,11 +184,6 @@ static void omap_8250_mdr1_errataset(struct uart_8250_port *up,
- 				     struct omap8250_priv *priv)
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 9c92053e7..21ff7d156 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -21,7 +21,7 @@
+  * to get tag when first time, the other shared-tag users could reserve
+  * budget for it.
+  */
+-bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
++void __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
  {
- 	u8 timeout = 255;
--	u8 old_mdr1;
--
--	old_mdr1 = serial_in(up, UART_OMAP_MDR1);
--	if (old_mdr1 == priv->mdr1)
--		return;
+ 	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+ 		struct request_queue *q = hctx->queue;
+@@ -36,7 +36,7 @@ bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+ 			atomic_inc(&hctx->tags->active_queues);
+ 	}
  
- 	serial_out(up, UART_OMAP_MDR1, priv->mdr1);
- 	udelay(2);
+-	return true;
++	return;
+ }
+ 
+ /*
+diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+index 7d3e6b333..4b4ccd794 100644
+--- a/block/blk-mq-tag.h
++++ b/block/blk-mq-tag.h
+@@ -60,23 +60,19 @@ enum {
+ 	BLK_MQ_TAG_MAX		= BLK_MQ_NO_TAG - 1,
+ };
+ 
+-extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
++extern void __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
+ extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *);
+ 
+-static inline bool blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
++static inline void blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+ {
+-	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
+-		return false;
+-
+-	return __blk_mq_tag_busy(hctx);
++	if (hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED)
++		__blk_mq_tag_busy(hctx);
+ }
+ 
+ static inline void blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
+ {
+-	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
+-		return;
+-
+-	__blk_mq_tag_idle(hctx);
++	if (hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED)
++		__blk_mq_tag_idle(hctx);
+ }
+ 
+ static inline bool blk_mq_tag_is_reserved(struct blk_mq_tags *tags,
 -- 
-2.29.2
+2.17.1
 
