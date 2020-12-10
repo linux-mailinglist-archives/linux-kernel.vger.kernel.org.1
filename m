@@ -2,122 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C07A2D58AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 608A62D58BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389162AbgLJK4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:56:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389133AbgLJKz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:55:56 -0500
-Date:   Thu, 10 Dec 2020 11:56:28 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607597715;
-        bh=fIdtGp8vWJ8rg/wWH4ZsOydgwsBnqjqa6suyPx9CjfQ=;
-        h=From:To:Subject:References:In-Reply-To:From;
-        b=uNJUj8Xv/P5uwUw4YhKVzlwl51hpeBuON60UdAv3sBOhpHulQebDdtLbzFylGBF1t
-         9Lhwbxdf8pMSKN1m7Bbd1q2Jepska5L9E+yXMC8giviE+EG9nw8uIPi3IAzMimIIS0
-         27uyTunzMLLsj7WS9F3TRfBEkUkBZj9IUGJJysRY=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        surenb@google.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Hridya Valsaraju <hridya@google.com>, kernel-team@android.com,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] dmabuf: Add the capability to expose DMA-BUF stats in
- sysfs
-Message-ID: <X9H+3AP1q39aMxeb@kroah.com>
-References: <20201210044400.1080308-1-hridya@google.com>
- <b5adfe46-8615-5821-d092-2b93feed5b79@amd.com>
- <X9H0JREcdxDsMtLX@kroah.com>
- <20201210102727.GE401619@phenom.ffwll.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201210102727.GE401619@phenom.ffwll.local>
+        id S2389308AbgLJK6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:58:50 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:33911 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389253AbgLJK5h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 05:57:37 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UI8pCsw_1607597813;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UI8pCsw_1607597813)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 10 Dec 2020 18:56:53 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     axboe@kernel.dk, tj@kernel.org
+Cc:     baolin.wang@linux.alibaba.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] blk-iocost: Add iocg idle state tracepoint
+Date:   Thu, 10 Dec 2020 18:56:44 +0800
+Message-Id: <1ba7a38d5a6186b1e71432ef424c23ba1904a365.1607591591.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 11:27:27AM +0100, Daniel Vetter wrote:
-> On Thu, Dec 10, 2020 at 11:10:45AM +0100, Greg KH wrote:
-> > On Thu, Dec 10, 2020 at 10:58:50AM +0100, Christian König wrote:
-> > > In general a good idea, but I have a few concern/comments here.
-> > > 
-> > > Am 10.12.20 um 05:43 schrieb Hridya Valsaraju:
-> > > > This patch allows statistics to be enabled for each DMA-BUF in
-> > > > sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
-> > > > 
-> > > > The following stats will be exposed by the interface:
-> > > > 
-> > > > /sys/kernel/dmabuf/<inode_number>/exporter_name
-> > > > /sys/kernel/dmabuf/<inode_number>/size
-> > > > /sys/kernel/dmabuf/<inode_number>/dev_map_info
-> > > > 
-> > > > The inode_number is unique for each DMA-BUF and was added earlier [1]
-> > > > in order to allow userspace to track DMA-BUF usage across different
-> > > > processes.
-> > > > 
-> > > > Currently, this information is exposed in
-> > > > /sys/kernel/debug/dma_buf/bufinfo.
-> > > > However, since debugfs is considered unsafe to be mounted in production,
-> > > > it is being duplicated in sysfs.
-> > > 
-> > > Mhm, this makes it part of the UAPI. What is the justification for this?
-> > > 
-> > > In other words do we really need those debug information in a production
-> > > environment?
-> > 
-> > Production environments seem to want to know who is using up memory :)
-> 
-> This only shows shared memory, so it does smell a lot like $specific_issue
-> and we're designing a narrow solution for that and then have to carry it
-> forever.
+It will be helpful to trace the iocg's whole state, including active and
+idle state. And we can easily expand the original iocost_iocg_activate
+trace event to support a state trace class, including active and idle
+state tracing.
 
-I think the "issue" is that this was a feature from ion that people
-"missed" in the dmabuf move.  Taking away the ability to see what kind
-of allocations were being made didn't make a lot of debugging tools
-happy :(
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+ block/blk-iocost.c            |  3 +++
+ include/trace/events/iocost.h | 16 +++++++++++++++-
+ 2 files changed, 18 insertions(+), 1 deletion(-)
 
-But Hridya knows more, she's been dealing with the transition for a long
-time now.
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index ffa418c..ac6078a 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -2185,6 +2185,9 @@ static int ioc_check_iocgs(struct ioc *ioc, struct ioc_now *now)
+ 							    WEIGHT_ONE);
+ 			}
+ 
++			TRACE_IOCG_PATH(iocg_idle, iocg, now,
++					atomic64_read(&iocg->active_period),
++					atomic64_read(&ioc->cur_period), vtime);
+ 			__propagate_weights(iocg, 0, 0, false, now);
+ 			list_del_init(&iocg->active_list);
+ 		}
+diff --git a/include/trace/events/iocost.h b/include/trace/events/iocost.h
+index 0b68699..e282ce0 100644
+--- a/include/trace/events/iocost.h
++++ b/include/trace/events/iocost.h
+@@ -11,7 +11,7 @@
+ 
+ #include <linux/tracepoint.h>
+ 
+-TRACE_EVENT(iocost_iocg_activate,
++DECLARE_EVENT_CLASS(iocost_iocg_state,
+ 
+ 	TP_PROTO(struct ioc_gq *iocg, const char *path, struct ioc_now *now,
+ 		u64 last_period, u64 cur_period, u64 vtime),
+@@ -59,6 +59,20 @@
+ 	)
+ );
+ 
++DEFINE_EVENT(iocost_iocg_state, iocost_iocg_activate,
++	TP_PROTO(struct ioc_gq *iocg, const char *path, struct ioc_now *now,
++		 u64 last_period, u64 cur_period, u64 vtime),
++
++	TP_ARGS(iocg, path, now, last_period, cur_period, vtime)
++);
++
++DEFINE_EVENT(iocost_iocg_state, iocost_iocg_idle,
++	TP_PROTO(struct ioc_gq *iocg, const char *path, struct ioc_now *now,
++		 u64 last_period, u64 cur_period, u64 vtime),
++
++	TP_ARGS(iocg, path, now, last_period, cur_period, vtime)
++);
++
+ DECLARE_EVENT_CLASS(iocg_inuse_update,
+ 
+ 	TP_PROTO(struct ioc_gq *iocg, const char *path, struct ioc_now *now,
+-- 
+1.8.3.1
 
-> E.g. why is the list of attachments not a sysfs link? That's how we
-> usually expose struct device * pointers in sysfs to userspace, not as a
-> list of things.
-
-These aren't struct devices, so I don't understand the objection here.
-Where else could these go in sysfs?
-
-> Furthermore we don't have the exporter device covered anywhere, how is
-> that tracked? Yes Android just uses ion for all shared buffers, but that's
-> not how all of linux userspace works.
-
-Do we have the exporter device link in the dmabuf interface?  If so,
-great, let's use that, but for some reason I didn't think it was there.
-
-> Then I guess there's the mmaps, you can fish them out of procfs. A tool
-> which collects all that information might be useful, just as demonstration
-> of how this is all supposed to be used.
-
-There's a script somewhere that does this today, again, Hridya knows
-more.
-
-> There's also some things to make sure we're at least having thought about
-> how other things fit in here. E.d. dma_resv attached to the dma-buf
-> matters in general a lot. It doesn't matter on Android because
-> everything's pinned all the time anyway.
-> 
-> Also I thought sysfs was one value one file, dumping an entire list into
-> dev_info_map with properties we'll need to extend (once you care about
-> dma_resv you also want to know which attachments are dynamic) does not
-> smell like sysfs design at all.
-
-sysfs is one value per file, what is being exported that is larger than
-that here?  Did I miss something on review?
-
-thanks,
-
-greg k-h
