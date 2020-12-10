@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9FD2D665B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2B92D665F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393345AbgLJTYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:24:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45178 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390395AbgLJTYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:24:12 -0500
-X-Gm-Message-State: AOAM533cLWfb3jfI2+s8lj6DiccSa2IIP94px1fMSsQlg11RJskfgp7s
-        +PSq1rYzMJqnGjA09/xsl7EuuwccIzmxU5GJV3qXkw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607628212;
-        bh=eJMsI0+ccl0FL0VnPRYx2wbilnqvAbvifn0xrb0doJk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hcVeTSz8ybNxJNKCaqN7NeNd4d25X/70iSI32uFGoidnFGhhH53hT1mRfbLnRdb1u
-         fy09qA1ff4+q+4rXVOLLCQ8w65psRuShL+w0hKFyXpICXFIsi1+Qv9ATs/g8jbnM6X
-         /khxvIQogTXU/UhZJHYcqEUqCC0W1NUSgLPlOvVbyWPin384TNdhnEDpPS52SHzV/G
-         liEtsnCwtTFmMzFGZiLVHlzhEzvY3PkxqPlY/RMYamhC9zl+eQUm32zgitV1x0B/tZ
-         bkDOP3qA0GL/6ZupAM2vFlJ6dqhKQXhGR/0Eri4FBwJX0dKyCdKGkZu6lvbhTz3aRH
-         w8g/DXYhrD9uw==
-X-Google-Smtp-Source: ABdhPJwdrfYH1JpkWcUq49If+4LmYbjbjjudaPKF2D0Ft08usBxVCDcx4/CrFmaxvkvOuIsK89No6dR3kUklY4RNinw=
-X-Received: by 2002:adf:e98c:: with SMTP id h12mr9856560wrm.75.1607628210100;
- Thu, 10 Dec 2020 11:23:30 -0800 (PST)
+        id S2393379AbgLJTZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:25:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393240AbgLJTYn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 14:24:43 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696A1C0613D6;
+        Thu, 10 Dec 2020 11:24:03 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id f11so8039921ljn.2;
+        Thu, 10 Dec 2020 11:24:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=DCrNR3n9GJNoXa6hYaaSjB4xbjhQGCznNDRIPsdaBgI=;
+        b=QCR5wTC0ofAq8RJNsX2W1rg6lNBCuGM/kJN3qyqlq2cGRvdmNRX7i9ydiVK9k2lu3J
+         a7HsND38YxMH1QQHajQo8DViLOuSjSXdaR3lJdaYafD5ABB3fCRkV4lwDUClCZOzLvY6
+         BlGMedO5FU22D2HLqkNpwTvaWtXoOraH5KDEra911zjFAaCPNlkph3BSN7DLjIKXwEkr
+         AYgAwoERJMj8reQUL860FAJtcHYBqobuy1oV7t7wiffTrwJFBHhuntNn1F4qA1cdRMuG
+         EsJIwTEJ1QP/KV00mStp6iFeyi3lUEXYltIOOdruRO2QChRJ9TAcKgG2/yqI8ArxjNq5
+         d++w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DCrNR3n9GJNoXa6hYaaSjB4xbjhQGCznNDRIPsdaBgI=;
+        b=lrElSWrQ8404u81E81+N7SaPUZKX3K3EgZRJbpraapaO3kscua/5FUbkJnG78zio3r
+         VhZvTV0xicDA6xPJHfVi5XWmbxQSTn1O7Mf+QS4IbiK3cIEGiVTs+bzXZxblHDj0LgsT
+         Qa6JHo/GAhIP4Yggm2jmqoKwnmbyLpZpV+LYzWXyAz0pLhvsdayGJHx9I4f1Deze+IFc
+         NjWrG8eYbvMC2hupMRLp/ZhhTQgwZ5e+jxB3d6qzQbqvi9K85sSVhwPUxuOp0d3Ty+TM
+         Kb53RBlVidT0dYukNEFI/VhAmW0wo0a83yBdvQ67qoQF+FTOHQq/N6jlKRbL78hHHwb+
+         ZY7A==
+X-Gm-Message-State: AOAM5327WfSb2LMZbG4ZwlUDall/kEO+oCXscjY5Zgh/VzSHpJwPqFV0
+        qMH2ZUaMccxKI12Rz+7lz5o=
+X-Google-Smtp-Source: ABdhPJyt3Mpg1xnO5a8M5FUwtqQQBf79CikKdM4ytgc0dMYe5Bby2JPefgTVSyEjLR0kMpaqC+uwaQ==
+X-Received: by 2002:a2e:914c:: with SMTP id q12mr3670350ljg.102.1607628241935;
+        Thu, 10 Dec 2020 11:24:01 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id v9sm615235lfd.287.2020.12.10.11.24.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 11:24:01 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 10 Dec 2020 20:23:58 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Energy-efficiency options within RCU
+Message-ID: <20201210192358.GA2365@pc638.lan>
+References: <20201210183737.GA12900@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20201210174814.1122585-1-michael.roth@amd.com>
-In-Reply-To: <20201210174814.1122585-1-michael.roth@amd.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 10 Dec 2020 11:23:19 -0800
-X-Gmail-Original-Message-ID: <CALCETrXo+2LjUt_ObxV+6u6719gTVaMR4-KCrgsjQVRe=xPo+g@mail.gmail.com>
-Message-ID: <CALCETrXo+2LjUt_ObxV+6u6719gTVaMR4-KCrgsjQVRe=xPo+g@mail.gmail.com>
-Subject: Re: [PATCH] KVM: SVM: use vmsave/vmload for saving/restoring
- additional host state
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210183737.GA12900@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 9:52 AM Michael Roth <michael.roth@amd.com> wrote:
->   MSR_STAR, MSR_LSTAR, MSR_CSTAR,
->   MSR_SYSCALL_MASK, MSR_KERNEL_GS_BASE,
->   MSR_IA32_SYSENTER_CS,
->   MSR_IA32_SYSENTER_ESP,
->   MSR_IA32_SYSENTER_EIP,
->   MSR_FS_BASE, MSR_GS_BASE
+Hello, Paul.
 
-Can you get rid of all the old FS/GS manipulation at the same time?
+[Dropping CC]
 
-> +       for (i = 0; i < NR_HOST_SAVE_USER_MSRS; i++) {
-> +               rdmsrl(host_save_user_msrs[i], svm->host_user_msrs[i]);
-> +       }
-> +
-> +       asm volatile(__ex("vmsave")
-> +                    : : "a" (page_to_pfn(sd->save_area) << PAGE_SHIFT)
-> +                    : "memory");
-> +       /*
-> +        * Host FS/GS segment registers might be restored soon after
-> +        * vmexit, prior to vmload of host save area. Even though this
-> +        * state is now saved in the host's save area, we cannot use
-> +        * per-cpu accesses until these registers are restored, so we
-> +        * store a copy in the VCPU struct to make sure they are
-> +        * accessible.
-> +        */
->  #ifdef CONFIG_X86_64
-> -       rdmsrl(MSR_GS_BASE, to_svm(vcpu)->host.gs_base);
-> +       svm->host.gs_base = hostsa->gs.base;
->  #endif
+> Hello, Joel,
+> 
+> In case you are -seriously- interested...  ;-)
+> 
+> 						Thanx, Paul
+> 
+> rcu_nocbs=
+> 
+> 	Adding a CPU to this list offloads RCU callback invocation from
+> 	that CPU's softirq handler to a kthread.  In big.LITTLE systems,
+> 	this kthread can be placed on a LITTLE CPU, which has been
+> 	demonstrated to save significant energy in benchmarks.
+> 	http://www.rdrop.com/users/paulmck/realtime/paper/AMPenergy.2013.04.19a.pdf
+> 
+I have checked our config. We do use rcu_nocbs=0-7 as kthreads but what
+i see those threads are not bound to 0-3 CPUs. In our case it is little
+cluster. I think i should check and run some test cases regarding power 
+savings if i pin all threads to little cluster.
 
-For example, this comment makes no sense to me.  Just let VMLOAD
-restore FS/GS and be done with it.  Don't copy those gs_base and
-gs.base fields -- just delete them please.  (Or are they needed for
-nested virt for some reason?  If so, please document that.)
+> rcutree.rcu_idle_gp_delay=  (Only CONFIG_RCU_FAST_NO_HZ=y kernels.)
+> 
+> 	This defaults to four jiffies on the theory that grace periods
+> 	tend to last about that long.  If grace periods tend to take
+> 	longer, then it makes a lot of sense to increase this.	And maybe
+> 	battery-powered devices would rather have it be about 2x or 3x
+> 	the expected grace-period duration, who knows?
+> 
+> 	I would keep it to a power of two, but the code should work with
+> 	other numbers.  Except that I don't know that this has ever been
+> 	tested.  ;-)
+> 
+Same here. We do use it.
 
-> -       savesegment(fs, svm->host.fs);
-> -       savesegment(gs, svm->host.gs);
-> -       svm->host.ldt = kvm_read_ldt();
-> -
-> -       for (i = 0; i < NR_HOST_SAVE_USER_MSRS; i++)
-> -               rdmsrl(host_save_user_msrs[i], svm->host_user_msrs[i]);
-> +       svm->host.fs = hostsa->fs.selector;
-> +       svm->host.gs = hostsa->gs.selector;
-
-This too.  Why is the host code thinking about selectors at all?
-
-> -       kvm_load_ldt(svm->host.ldt);
-
-I have a patch that deletes this, too.  Don't worry about the conflict
--- I'll sort it out.
-
-> @@ -120,7 +115,6 @@ struct vcpu_svm {
->         struct {
->                 u16 fs;
->                 u16 gs;
-> -               u16 ldt;
->                 u64 gs_base;
->         } host;
-
-Shouldn't you be about to delete fs, gs, and gs_base too?
+--
+Vlad Rezki
