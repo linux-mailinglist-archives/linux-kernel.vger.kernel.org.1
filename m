@@ -2,161 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98842D6808
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4072D6812
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393549AbgLJUFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 15:05:15 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:45608 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404559AbgLJUEG (ORCPT
+        id S2404555AbgLJUGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 15:06:13 -0500
+Received: from smtprelay0158.hostedemail.com ([216.40.44.158]:60664 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2393719AbgLJUGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 15:04:06 -0500
-Received: by mail-oi1-f193.google.com with SMTP id f132so7103513oib.12;
-        Thu, 10 Dec 2020 12:03:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wYT6D6yOTVKMl9lCBQT5EHKzZ4TTN7Y8gqIdAhxWbzU=;
-        b=lXfSDT+B816vq7GPV5aNcidW2P4KOPoR38uMftCfGU6WQuMQ4z+Jtn8kNVMJ8nQ1at
-         xT6hbWbX3LbAY1JLClOmbM9Zc966gLh+7DrM0Yv98RmLr+3WvDFNd3s2+oCZoHb7i3dk
-         ORgUI/zvyYjPl3FQlDasHh2xJYiVm59zlxm4uTqQbLjoX0dbEKyQP8cniT4nbBG734IO
-         uLl7gFgtOu4bxOcsLKMwXANdNVMfWNQv/ndGrjpj51Ik6FeCy+39qJpGuuJY/5DUcA8i
-         jX8P2e2BpP876xdrfK9Cq/fpDMsPjuzrIxuJBFydpPTBz4Jus9pGb5mByk+1AGmmMxBA
-         m4lg==
-X-Gm-Message-State: AOAM532K9G/3qvCTKv4Xt+5yAhEiPFZgDIWvR/1Qa779NIpgQxgHBt/S
-        AK+6nnB3lXMPl1c/8zgJAA==
-X-Google-Smtp-Source: ABdhPJxZ/fKWmJZJ0n2BGw8t4WfwQQfcXvuzPetiSTDtYG86R1HrAOQX1YNSu6f3c/T+vqBwQMbyaQ==
-X-Received: by 2002:aca:2418:: with SMTP id n24mr6393172oic.62.1607630604964;
-        Thu, 10 Dec 2020 12:03:24 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id o82sm1220636oih.5.2020.12.10.12.03.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 12:03:23 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     Jamie Iles <jamie@jamieiles.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, soc@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 4/4] dt-bindings: Remove PicoXcell bindings
-Date:   Thu, 10 Dec 2020 14:03:15 -0600
-Message-Id: <20201210200315.2965567-5-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201210200315.2965567-1-robh@kernel.org>
-References: <20201210200315.2965567-1-robh@kernel.org>
+        Thu, 10 Dec 2020 15:06:02 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id D474318026130;
+        Thu, 10 Dec 2020 20:05:06 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:2:41:69:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1593:1594:1605:1606:1730:1747:1777:1792:1981:2194:2197:2199:2200:2393:2559:2562:2828:2890:3138:3139:3140:3141:3142:3622:3653:3865:3866:3867:3868:3870:3871:3872:3874:4042:4117:4250:4321:4605:5007:6119:7875:7903:8531:10004:10946:11026:11232:11473:11658:11914:12043:12048:12291:12296:12297:12438:12555:12683:12740:12895:13141:13161:13229:13230:13255:13439:13894:14659:21080:21212:21221:21433:21450:21451:21627:21966:21990:30001:30012:30030:30054:30070:30075:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: kick42_05118bb273fb
+X-Filterd-Recvd-Size: 6732
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 10 Dec 2020 20:05:05 +0000 (UTC)
+Message-ID: <c3f1d9de2e5a61588f64e69a1309968d84a2dd12.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: make the line length warnings match the
+ coding style document
+From:   Joe Perches <joe@perches.com>
+To:     Christoph Hellwig <hch@lst.de>, apw@canonical.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 10 Dec 2020 12:05:04 -0800
+In-Reply-To: <20201210082251.2717564-1-hch@lst.de>
+References: <20201210082251.2717564-1-hch@lst.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PicoXcell has had nothing but treewide cleanups for at least the last 8
-years and no signs of activity. The most recent activity is a yocto vendor
-kernel based on v3.0 in 2015.
+On Thu, 2020-12-10 at 09:22 +0100, Christoph Hellwig wrote:
+> Add a new informational message that lines <= 80 chars are still
+> preffered.  Without this people unfortunately auto format code way over
+> 80 lines without the required benefit for readability.
 
-Cc: Jamie Iles <jamie@jamieiles.com>
-Cc: linux-crypto@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-I'll take this via the DT tree.
+In general, I agree with some of the concept, though I think 80
+columns is sometimes overly restrictive.
 
- .../devicetree/bindings/arm/picoxcell.txt     | 24 -------------------
- .../bindings/crypto/picochip-spacc.txt        | 21 ----------------
- .../devicetree/bindings/net/macb.txt          |  2 --
- .../bindings/timer/snps,dw-apb-timer.yaml     |  7 ------
- 4 files changed, 54 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/picoxcell.txt
- delete mode 100644 Documentation/devicetree/bindings/crypto/picochip-spacc.txt
+Also, given the ever increasing average identifier length, strict
+adherence to 80 columns is sometimes just not possible without silly
+visual gymnastics.  The kernel now has quite a lot of 30+ character
+length function names, constants, and structs.
 
-diff --git a/Documentation/devicetree/bindings/arm/picoxcell.txt b/Documentation/devicetree/bindings/arm/picoxcell.txt
-deleted file mode 100644
-index e75c0ef51e69..000000000000
---- a/Documentation/devicetree/bindings/arm/picoxcell.txt
-+++ /dev/null
-@@ -1,24 +0,0 @@
--Picochip picoXcell device tree bindings.
--========================================
--
--Required root node properties:
--    - compatible:
--	- "picochip,pc7302-pc3x3" : PC7302 development board with PC3X3 device.
--	- "picochip,pc7302-pc3x2" : PC7302 development board with PC3X2 device.
--	- "picochip,pc3x3" : picoXcell PC3X3 device based board.
--	- "picochip,pc3x2" : picoXcell PC3X2 device based board.
--
--Timers required properties:
--    - compatible = "picochip,pc3x2-timer"
--    - interrupts : The single IRQ line for the timer.
--    - clock-freq : The frequency in HZ of the timer.
--    - reg : The register bank for the timer.
--
--Note: two timers are required - one for the scheduler clock and one for the
--event tick/NOHZ.
--
--VIC required properties:
--    - compatible = "arm,pl192-vic".
--    - interrupt-controller.
--    - reg : The register bank for the device.
--    - #interrupt-cells : Must be 1.
-diff --git a/Documentation/devicetree/bindings/crypto/picochip-spacc.txt b/Documentation/devicetree/bindings/crypto/picochip-spacc.txt
-deleted file mode 100644
-index df1151f87745..000000000000
---- a/Documentation/devicetree/bindings/crypto/picochip-spacc.txt
-+++ /dev/null
-@@ -1,21 +0,0 @@
--Picochip picoXcell SPAcc (Security Protocol Accelerator) bindings
--
--Picochip picoXcell devices contain crypto offload engines that may be used for
--IPSEC and femtocell layer 2 ciphering.
--
--Required properties:
--  - compatible : "picochip,spacc-ipsec" for the IPSEC offload engine
--    "picochip,spacc-l2" for the femtocell layer 2 ciphering engine.
--  - reg : Offset and length of the register set for this device
--  - interrupts : The interrupt line from the SPAcc.
--  - ref-clock : The input clock that drives the SPAcc.
--
--Example SPAcc node:
--
--spacc@10000 {
--	compatible = "picochip,spacc-ipsec";
--	reg = <0x100000 0x10000>;
--	interrupt-parent = <&vic0>;
--	interrupts = <24>;
--	ref-clock = <&ipsec_clk>, "ref";
--};
-diff --git a/Documentation/devicetree/bindings/net/macb.txt b/Documentation/devicetree/bindings/net/macb.txt
-index 0b61a90f1592..46dc52c0739a 100644
---- a/Documentation/devicetree/bindings/net/macb.txt
-+++ b/Documentation/devicetree/bindings/net/macb.txt
-@@ -7,8 +7,6 @@ Required properties:
-   Use "cdns,sam9x60-macb" for Microchip sam9x60 SoC.
-   Use "cdns,np4-macb" for NP4 SoC devices.
-   Use "cdns,at32ap7000-macb" for other 10/100 usage or use the generic form: "cdns,macb".
--  Use "cdns,pc302-gem" for Picochip picoXcell pc302 and later devices based on
--  the Cadence GEM, or the generic form: "cdns,gem".
-   Use "atmel,sama5d2-gem" for the GEM IP (10/100) available on Atmel sama5d2 SoCs.
-   Use "atmel,sama5d3-macb" for the 10/100Mbit IP available on Atmel sama5d3 SoCs.
-   Use "atmel,sama5d3-gem" for the Gigabit IP available on Atmel sama5d3 SoCs.
-diff --git a/Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml b/Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml
-index 2fc617377e2c..d65faf289a83 100644
---- a/Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml
-+++ b/Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml
-@@ -38,13 +38,6 @@ properties:
+(these generic searches probably have some false positives and negatives)
 
-   clock-frequency: true
+# defines
+$ git grep -P -oh 'define\s+\w{30,}(?!\()' -- '*.[ch]' | sort | uniq | wc -l
+1009715
+(A lot or even most of those are autogenerated and never used)
 
--  clock-freq:
--    $ref: "/schemas/types.yaml#/definitions/uint32"
--    description: |
--      Has the same meaning as the 'clock-frequency' property - timer clock
--      frequency in HZ, but is defined only for the backwards compatibility
--      with the picoxcell platform.
--
- additionalProperties: false
+# function like macros
+$ git grep -P -oh 'define\s+\w{30,}\(' -- '*.[ch]' | sort | uniq | wc -l
+6583
 
- required:
---
-2.25.1
+# functions
+$ git grep -P -oh '\b(?!define)\w+\s+\w{30,}\s*\(' -- '*.[ch]' | sort | uniq | wc -l
+31091
+
+# structs
+$ git grep -P -oh 'struct\s+\w{30,}' -- '*.[ch]' | sort | uniq | wc -l
+3250
+
+Using those identifiers with 80 column restrictions is just stupid.
+
+A logical complexity analysis, and/or something that takes those long
+identifiers into account rather than a simple line length test might
+be more appropriate though more difficult to create.
+
+Perhaps this should be enabled/disabled similarly to --check where
+the reporting is not done unless specifically requested via something
+like --info.
+
+And in that case, maybe it should just as well be a --strict CHK test.
+
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  scripts/checkpatch.pl | 41 ++++++++++++++++++++++++++++++-----------
+>  1 file changed, 30 insertions(+), 11 deletions(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index fab38b493cef79..d937889a5fe3b2 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -54,6 +54,7 @@ my @ignore = ();
+>  my $help = 0;
+>  my $configuration_file = ".checkpatch.conf";
+>  my $max_line_length = 100;
+> +my $preferred_line_length = 80;
+>  my $ignore_perl_version = 0;
+>  my $minimum_perl_version = 5.10.0;
+>  my $min_conf_desc_length = 4;
+> @@ -2228,6 +2229,16 @@ sub WARN {
+>  	}
+>  	return 0;
+>  }
+> +sub INFO {
+> +	my ($type, $msg) = @_;
+> +
+> +	if (report("INFO", $type, $msg)) {
+> +		our $clean = 0;
+> +		our $cnt_info++;
+> +		return 1;
+> +	}
+> +	return 0;
+> +}
+>  sub CHK {
+>  	my ($type, $msg) = @_;
+>  
+> 
+> @@ -2396,6 +2407,7 @@ sub process {
+>  	our $cnt_lines = 0;
+>  	our $cnt_error = 0;
+>  	our $cnt_warn = 0;
+> +	our $cnt_info = 0;
+>  	our $cnt_chk = 0;
+>  
+> 
+>  	# Trace the real file/line as we go.
+> @@ -3343,15 +3355,15 @@ sub process {
+>  # if LONG_LINE is ignored, the other 2 types are also ignored
+>  #
+>  
+> 
+> -		if ($line =~ /^\+/ && $length > $max_line_length) {
+> +		if ($line =~ /^\+/ && $length > $preferred_line_length) {
+>  			my $msg_type = "LONG_LINE";
+>  
+> 
+>  			# Check the allowed long line types first
+>  
+> 
+>  			# logging functions that end in a string that starts
+> -			# before $max_line_length
+> +			# before $preferred_line_length
+>  			if ($line =~ /^\+\s*$logFunctions\s*\(\s*(?:(?:KERN_\S+\s*|[^"]*))?($String\s*(?:|,|\)\s*;)\s*)$/ &&
+> -			    length(expand_tabs(substr($line, 1, length($line) - length($1) - 1))) <= $max_line_length) {
+> +			    length(expand_tabs(substr($line, 1, length($line) - length($1) - 1))) <= $preferred_line_length) {
+>  				$msg_type = "";
+>  
+> 
+>  			# lines with only strings (w/ possible termination)
+> @@ -3371,23 +3383,30 @@ sub process {
+>  
+> 
+>  			# Otherwise set the alternate message types
+>  
+> 
+> -			# a comment starts before $max_line_length
+> +			# a comment starts before $preferred_line_length
+>  			} elsif ($line =~ /($;[\s$;]*)$/ &&
+> -				 length(expand_tabs(substr($line, 1, length($line) - length($1) - 1))) <= $max_line_length) {
+> +				 length(expand_tabs(substr($line, 1, length($line) - length($1) - 1))) <= $preferred_line_length) {
+>  				$msg_type = "LONG_LINE_COMMENT"
+>  
+> 
+> -			# a quoted string starts before $max_line_length
+> +			# a quoted string starts before $preferred_line_length
+>  			} elsif ($sline =~ /\s*($String(?:\s*(?:\\|,\s*|\)\s*;\s*))?)$/ &&
+> -				 length(expand_tabs(substr($line, 1, length($line) - length($1) - 1))) <= $max_line_length) {
+> +				 length(expand_tabs(substr($line, 1, length($line) - length($1) - 1))) <= $preferred_line_length) {
+>  				$msg_type = "LONG_LINE_STRING"
+>  			}
+>  
+> 
+>  			if ($msg_type ne "" &&
+>  			    (show_type("LONG_LINE") || show_type($msg_type))) {
+> -				my $msg_level = \&WARN;
+> -				$msg_level = \&CHK if ($file);
+> -				&{$msg_level}($msg_type,
+> +				my $msg_level = \&CHK;
+> +		
+> +				if ($line =~ /^\+/ && $length <= $max_line_length) {
+> +					$msg_level = \&INFO if (!$file);
+> +					&{$msg_level}($msg_type,
+> +					      "line length of $length exceeds preferred $preferred_line_length columns\n" . $herecurr);
+> +				} else {
+> +					$msg_level = \&WARN if (!$file);
+> +					&{$msg_level}($msg_type,
+>  					      "line length of $length exceeds $max_line_length columns\n" . $herecurr);
+> +				}
+>  			}
+>  		}
+>  
+> 
+> @@ -7015,7 +7034,7 @@ sub process {
+>  	print report_dump();
+>  	if ($summary && !($clean == 1 && $quiet == 1)) {
+>  		print "$filename " if ($summary_file);
+> -		print "total: $cnt_error errors, $cnt_warn warnings, " .
+> +		print "total: $cnt_error errors, $cnt_warn warnings, $cnt_info informational, " .
+>  			(($check)? "$cnt_chk checks, " : "") .
+>  			"$cnt_lines lines checked\n";
+>  	}
+
+
