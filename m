@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7663F2D5F3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B502D5F42
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391623AbgLJOrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:47:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45612 "EHLO mail.kernel.org"
+        id S2391585AbgLJOpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:45:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391177AbgLJOix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:38:53 -0500
+        id S2387712AbgLJOib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:38:31 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.9 42/75] io_uring: fix recvmsg setup with compat buf-select
-Date:   Thu, 10 Dec 2020 15:27:07 +0100
-Message-Id: <20201210142608.142620506@linuxfoundation.org>
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.9 43/75] dm writecache: advance the number of arguments when reporting max_age
+Date:   Thu, 10 Dec 2020 15:27:08 +0100
+Message-Id: <20201210142608.187980683@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
 References: <20201210142606.074509102@linuxfoundation.org>
@@ -31,35 +31,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit 2d280bc8930ba9ed1705cfd548c6c8924949eaf1 upstream.
+commit e5d41cbca1b2036362c9e29d705d3a175a01eff8 upstream.
 
-__io_compat_recvmsg_copy_hdr() with REQ_F_BUFFER_SELECT reads out iov
-len but never assigns it to iov/fast_iov, leaving sr->len with garbage.
-Hopefully, following io_buffer_select() truncates it to the selected
-buffer size, but the value is still may be under what was specified.
+When reporting the "max_age" value the number of arguments must
+advance by two.
 
-Cc: <stable@vger.kernel.org> # 5.7
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Fixes: 3923d4854e18 ("dm writecache: implement gradual cleanup")
+Cc: stable@vger.kernel.org # v5.7+
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/io_uring.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/md/dm-writecache.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -4300,7 +4300,8 @@ static int __io_compat_recvmsg_copy_hdr(
- 			return -EFAULT;
- 		if (clen < 0)
- 			return -EINVAL;
--		sr->len = iomsg->iov[0].iov_len;
-+		sr->len = clen;
-+		iomsg->iov[0].iov_len = clen;
- 		iomsg->iov = NULL;
- 	} else {
- 		ret = compat_import_iovec(READ, uiov, len, UIO_FASTIOV,
+--- a/drivers/md/dm-writecache.c
++++ b/drivers/md/dm-writecache.c
+@@ -2479,6 +2479,8 @@ static void writecache_status(struct dm_
+ 			extra_args += 2;
+ 		if (wc->autocommit_time_set)
+ 			extra_args += 2;
++		if (wc->max_age != MAX_AGE_UNSPECIFIED)
++			extra_args += 2;
+ 		if (wc->cleaner)
+ 			extra_args++;
+ 		if (wc->writeback_fua_set)
 
 
