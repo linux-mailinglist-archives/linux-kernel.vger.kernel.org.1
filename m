@@ -2,214 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1E62D4FC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6647C2D4FC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730743AbgLJAoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 19:44:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
+        id S1727943AbgLJArE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 19:47:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730422AbgLJAoG (ORCPT
+        with ESMTP id S1730541AbgLJAoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 19:44:06 -0500
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAF9C061794
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 16:43:20 -0800 (PST)
-Received: by mail-vs1-xe2a.google.com with SMTP id s85so1965535vsc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 16:43:20 -0800 (PST)
+        Wed, 9 Dec 2020 19:44:19 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0504DC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 16:43:39 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id u16so1624172qvl.7
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 16:43:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KQorzTW27QOsMWD3KHq+FAGOyijZWBp7eao6c1glD1g=;
-        b=L2LlsWZYF4pVW8WTWhpUR0IO6rkyLZZ+EBTHXkv0Gmk9+l/0n30L23wN5nChAj5tQQ
-         ZVZxE9/QTq9fGZYLoDk5uWOofg/7bC+O0ACiA1Zgp1k4vENkUvV8yk/kZq/1OpaCgCC1
-         W4ODAzrUJ/zkEXgLVeyc2BUBA9vh+hEriVW6g=
+        d=soleen.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NBmnA65Dz75B27b98byjwbuogn8Qshl/scokvzJzVpI=;
+        b=E+nF8FQ/RA9XyaDQX43MC05Gtb0NiBNPBW1Rq4OXGK+IFHzYWJMil+SOGuW572guzW
+         Yfmm50M/TAN18PSPsHc6DfmesiN6FfzLHaJM40j8gRzFon7t6OqL6tWYnhOpV9LIwupz
+         +oM0MAiNOxaA6ZcM+hmMFQ2TIe9EusCcyDRFihn0ygcT+G0sLPAawGm9IdRWG+8Vy9nP
+         HoIpKON7vjRN1xkZrkqwyAS3HCzHK4sr2N0TUphJtAFCLHsuIC6IK4dfO36CT3QpItC2
+         9SdKvkPMAz5/xuhaPrQv/HkhnBG1ijSbq+vGsrOzYZfcK+DGSJczUy+WnOUByDjdvtZ1
+         ajxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KQorzTW27QOsMWD3KHq+FAGOyijZWBp7eao6c1glD1g=;
-        b=R/0iNAdFTYrLfu5ytFWzIRqj89RQdyFIwPVu8Fck1kXGVG/h/PQ9Iq35qLj1yJNYIq
-         6YNfnZBYDXcQjGmhhGbbzfSQs920/OaLkOMvg7zjFyfyaf2iEKNeoCzBn7DE/CvW7m+u
-         72vXX9Wte9W2kHrS4CPUuEPqJY2DstPU/lTBca0jUs8ujWygcYIHZZdiwLhTi1o8dqG7
-         DFDtAPPy4T5nrsJ0Cr7YWHWfXujr39L8bNX8JOExMSM7Vmp6SRwWTLY+jiCw4UA/dQUK
-         64oLzx5soGnrCKF28sLF9booD8mY8RKTPJ3rxpz79aP3PxlusaKWeNtpMo/2u7IPNY0L
-         VYkg==
-X-Gm-Message-State: AOAM5310EZXEhYwXXt4mAF5KUYTfZ2UaLvPSilTG5qe30M7qoECDdpQf
-        SQOYCz0yEAjoJiAjM+vLvBEoX1fmdZCq4w==
-X-Google-Smtp-Source: ABdhPJyy8g6sI1EY+Okep5+P/S6Ek84oROj6mpSaZHWhZXpjWMJHm6KTKzbW94cQymO3euuJ5jCMCQ==
-X-Received: by 2002:a05:6102:22fa:: with SMTP id b26mr5141621vsh.35.1607560998712;
-        Wed, 09 Dec 2020 16:43:18 -0800 (PST)
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com. [209.85.221.177])
-        by smtp.gmail.com with ESMTPSA id b19sm337507vsq.18.2020.12.09.16.43.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 16:43:17 -0800 (PST)
-Received: by mail-vk1-f177.google.com with SMTP id w190so808263vkg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 16:43:17 -0800 (PST)
-X-Received: by 2002:a1f:3fc9:: with SMTP id m192mr5293407vka.17.1607560996597;
- Wed, 09 Dec 2020 16:43:16 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NBmnA65Dz75B27b98byjwbuogn8Qshl/scokvzJzVpI=;
+        b=pad1l9d/nogra9t9Ta7ZpGafUzFLy6qmWR1U/OoLHQklT3wdZY2AEvBmuDvuVq5/JD
+         qc04jhDwlYKAwg7Yb2ub9kpCRbNQBDuGuJ5pmN85nsZUVXQddDOm92sgWQjuRrsU6e4+
+         gGx5xn3FZbCyhbR43FYqtYr/yvG3XxCq7s/hUmLDrYR0ovh109082xGeiLRgV/kOCn7o
+         uKeDw9LejDisvbMmoN2WQuxxyozmXQFwq1Tici5nGr0q40bwwElRQNm0Pq/L77579Yaa
+         Se/fhJmbqgbBZw4xz5jBwugiivwP5NZH8QPgYBM+erZ9YnDW9YH3LM9LbIuTzfLne01j
+         rG5g==
+X-Gm-Message-State: AOAM530r5NLVj4H42xGKTkeC7e3PoEOrRY33PRlaTmhTP2ztKm1ageGk
+        6l7kDBO0QcWzKDaRZ/aq20R90Q==
+X-Google-Smtp-Source: ABdhPJz/zBIlkx56x4lbYGMtgVf5irIjM9A/U+Ya7JihigE6VRMEn96T/cXPJlBm6odQ49iXgyYoWQ==
+X-Received: by 2002:a05:6214:a14:: with SMTP id dw20mr5985335qvb.43.1607561018186;
+        Wed, 09 Dec 2020 16:43:38 -0800 (PST)
+Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
+        by smtp.gmail.com with ESMTPSA id y1sm2538745qky.63.2020.12.09.16.43.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 16:43:36 -0800 (PST)
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
+        mhocko@suse.com, david@redhat.com, osalvador@suse.de,
+        dan.j.williams@intel.com, sashal@kernel.org,
+        tyhicks@linux.microsoft.com, iamjoonsoo.kim@lge.com,
+        mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
+        jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
+        willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v2 0/8] prohibit pinning pages in ZONE_MOVABLE
+Date:   Wed,  9 Dec 2020 19:43:27 -0500
+Message-Id: <20201210004335.64634-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201124094636.v2.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
- <20201124094636.v2.3.I771b6594b2a4d5b7fe7e12a991a6640f46386e8d@changeid>
- <d6c5dba9-bcc7-fac9-dd41-c989509c822b@codeaurora.org> <CAD=FV=UOSkHQMcSV8Zq5qPfBoUu5xYzfNZqUPmymvD7PXUAN4w@mail.gmail.com>
- <b84d5bb4-e413-ad20-a19a-c7420abd5d5d@codeaurora.org> <CAD=FV=UXo3RPuVSYwOrHJMxF38K-ynoaPv4ZVQ6N2ok_zcoOFw@mail.gmail.com>
- <5f24ec87-6d91-dfd9-0f4f-6687f37c60ac@codeaurora.org>
-In-Reply-To: <5f24ec87-6d91-dfd9-0f4f-6687f37c60ac@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 9 Dec 2020 16:43:05 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Wm_q60w34LmbtC88BkfS0aKp_a=AjnuYFL=g-DX_-=yQ@mail.gmail.com>
-Message-ID: <CAD=FV=Wm_q60w34LmbtC88BkfS0aKp_a=AjnuYFL=g-DX_-=yQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] pinctrl: qcom: Clear possible pending irq when
- remuxing GPIOs
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Changelog
+---------
+v2
+- Addressed all review comments
+- Added Reviewed-by's.
+- Renamed PF_MEMALLOC_NOMOVABLE to PF_MEMALLOC_PIN
+- Added is_pinnable_page() to check if page can be longterm pinned
+- Fixed gup fast path by checking is_in_pinnable_zone()
+- rename cma_page_list to movable_page_list
+- add a admin-guide note about handling pinned pages in ZONE_MOVABLE,
+  updated caveat about pinned pages from linux/mmzone.h
+- Move current_gfp_context() to fast-path
 
-On Tue, Dec 8, 2020 at 9:54 PM Maulik Shah <mkshah@codeaurora.org> wrote:
->
-> >> but as long as its IRQ is in disabled/masked state it
-> >> doesn't matter.
-> > ...but there's no requirement that someone would need to disable/mask
-> > an interrupt while switching the muxing, is there?  So it does matter.
-> >
-> >
-> >> its only when the GPIO is again set to IRQ mode with set_mux callback,
-> >> the phantom IRQ needs clear to start as clean.
-> >>
-> >> So we should check only for if (i == pctrl->soc->gpio_func) then clear
-> >> phantom IRQ.
-> >>
-> >> The same is case with .direction_output callback, when GPIO is used as
-> >> output say as clock, need not clear any phantom IRQ,
-> >>
-> >> The reason is with every pulse of clock it can latch as pending IRQ in
-> >> GIC_ISPEND as long as it stay as output mode/clock.
-> >>
-> >> its only when switching back GPIO from output direction to input & IRQ
-> >> function, need to clear the phantom IRQ.
-> >>
-> >> so we do not require clear phantom irq in .direction_output callback.
-> > I think all the above explanation is with the model that the interrupt
-> > detection logic is still happening even when muxed away.  I don't
-> > believe that's true.
-> Its not the interrupt detection logic that is still happening when muxed
-> away, but the GPIO line is routed to GIC from PDC.
-> The GPIO line get forwarded when the system is active/out of system
-> level low power mode to GIC irrespective of whether GPIO is used as
-> interrupt or not.
-> Due to this it can still latch the IRQ at GIC after switching to lets
-> say Rx mode, whenever the line has any data recive, the line state
-> toggles can be latched as error interrupt at GIC.
+---------
+When page is pinned it cannot be moved and its physical address stays
+the same until pages is unpinned.
 
-From my tests, though, I strongly believe that the pin is only visible
-to the PDC if it's muxed as GPIO.  Specifically, in my tests I did
-this (with all my patches applied so there were no phantom interrupts
-when remuxing):
+This is useful functionality to allows userland to implementation DMA
+access. For example, it is used by vfio in vfio_pin_pages().
 
-a) Muxed the pin away from GPIO to special function, but _didn't_ mask
-the interrupt.
+However, this functionality breaks memory hotplug/hotremove assumptions
+that pages in ZONE_MOVABLE can always be migrated.
 
-b) Toggled the line a whole bunch.  These caused no interrupts at all.
+This patch series fixes this issue by forcing new allocations during
+page pinning to omit ZONE_MOVABLE, and also to migrate any existing
+pages from ZONE_MOVABLE during pinning.
 
-c) Muxed back to GPIO.
+It uses the same scheme logic that is currently used by CMA, and extends
+the functionality for all allocations.
 
-To me this is quite strong evidence that the muxing is "earlier" in
-the path than the connection to the PDC.  In other words, if you
-change the mux away from GPIO then the PDC stops seeing it and thus
-the GIC also stops seeing it.  The GIC can't latch what it can't see.
-This means while you're in "Rx mode" it can't be latched.
+For more information read the discussion [1] about this problem.
+[1] https://lore.kernel.org/lkml/CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com
 
+Previous versions:
+v1
+https://lore.kernel.org/lkml/20201202052330.474592-1-pasha.tatashin@soleen.com
 
-OK, so just in case this somehow only happens in S3, I also tried this
-(with my patch from https://crrev.com/c/2556012):
+Pavel Tatashin (8):
+  mm/gup: perform check_dax_vmas only when FS_DAX is enabled
+  mm/gup: don't pin migrated cma pages in movable zone
+  mm/gup: make __gup_longterm_locked common
+  mm cma: rename PF_MEMALLOC_NOCMA to PF_MEMALLOC_PIN
+  mm: apply per-task gfp constraints in fast path
+  mm: honor PF_MEMALLOC_PIN for all movable pages
+  mm/gup: migrate pinned pages out of movable zone
+  memory-hotplug.rst: add a note about ZONE_MOVABLE and page pinning
 
-a) Muxed away from GPIO ("bogus" pinmux)
+ .../admin-guide/mm/memory-hotplug.rst         |  9 ++
+ include/linux/migrate.h                       |  1 +
+ include/linux/mm.h                            | 11 +++
+ include/linux/mmzone.h                        | 11 ++-
+ include/linux/sched.h                         |  2 +-
+ include/linux/sched/mm.h                      | 27 ++----
+ include/trace/events/migrate.h                |  3 +-
+ mm/gup.c                                      | 91 ++++++++-----------
+ mm/hugetlb.c                                  |  4 +-
+ mm/page_alloc.c                               | 32 +++----
+ mm/vmscan.c                                   | 10 +-
+ 11 files changed, 101 insertions(+), 100 deletions(-)
 
-b) Enter S3.
+-- 
+2.25.1
 
-c) Toggle the GPIO a whole bunch ("wp enable / wp disable" on Cr50).
-
-d) Wake from S3.
-
-e) Check to see if the interrupt fired a bunch.  It didn't fire at all
-
-
-In my test code the interrupt is not masked, only muxed away.  That
-means that if, somehow, the PDC was still observing it then we'd see
-the interrupt fire.  We don't.
-
-
-Unless I messed up in my tests (always possible, though by this point
-I've run them a number of times) then it still feels like your mental
-model is wrong, or it's always possible I'm still misunderstanding
-your model.  Regardless, rather than trying to re-explain your model
-can you please confirm that you've written test code to confirm your
-mental model?  If so, can you please provide this test code?  I've
-provided several test patches proving out my mental model.
-
-> As the interrupt is in disabled state it won't be sent to CPU.
-> Its only when the driver chooses to switch back to interrupt mode we
-> want to clear the error interrupt latched to start as clean. same is the
-> case when used as output direction.
->
-> Hope above is clear.
-
-Unfortunately, it's still not.  :(  Can I convince you to provide a
-test patch and a set of steps that will demonstrate the problem you're
-worried about?  Specifically:
-
-a) Maybe you're talking about the initial switch from a plain GPIO
-input to making it an interrupt for the first time?  Are you worried
-about a phantom interrupt in this case?  After patch #1 I think we're
-safe because pdc_gic_set_type() will always clear the interrupt,
-right?
-
-
-b) You say "switch back to interrupt mode".  Are you imagining that a
-driver does something like this:
-
-request_irq();
-...
-free_irq();
-...
-request_irq();
-
-If you're worried about that then we can implement irq_shutdown() for
-PDC and then make sure we clear on the first enable after a shutdown,
-I guess?
-
-
-c) Maybe when you say "switch back to interrupt mode" you mean
-something else?  If you are talking about muxing away and then muxing
-back then I think we already have this covered.  If you are talking
-about masking/unmasking then the whole point is that we _do_ want
-interrupts latched while masked, right?
-
-
-OK, I'm going to send out a v3 just to get the already-identified
-problems fixed and also to allow landing of patch #1 in the series,
-which I think is all agreed upon.  My request to you is that if you
-think my code misses a specific case to provide some test patches to
-demonstrate that case.
-
-
--Doug
