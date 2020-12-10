@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7147B2D6539
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F632D6537
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390713AbgLJOcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:32:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39684 "EHLO mail.kernel.org"
+        id S2393118AbgLJShb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:37:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390547AbgLJOcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:32:16 -0500
+        id S2390547AbgLJOcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:32:55 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Giacinto Cifelli <gciofono@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 10/31] USB: serial: option: add support for Thales Cinterion EXS82
-Date:   Thu, 10 Dec 2020 15:26:47 +0100
-Message-Id: <20201210142602.610843532@linuxfoundation.org>
+        stable@vger.kernel.org, stable@kernel.org,
+        Jann Horn <jannh@google.com>, Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH 4.19 10/39] tty: Fix ->pgrp locking in tiocspgrp()
+Date:   Thu, 10 Dec 2020 15:26:49 +0100
+Message-Id: <20201210142602.801013772@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
-References: <20201210142602.099683598@linuxfoundation.org>
+In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
+References: <20201210142602.272595094@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,322 +31,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giacinto Cifelli <gciofono@gmail.com>
+From: Jann Horn <jannh@google.com>
 
-commit 6d6556c04ebaeaf4e7fa8b791c97e2a7c41b38a3 upstream.
+commit 54ffccbf053b5b6ca4f6e45094b942fab92a25fc upstream.
 
-There is a single option port in this modem, and it is used as debug port.
+tiocspgrp() takes two tty_struct pointers: One to the tty that userspace
+passed to ioctl() (`tty`) and one to the TTY being changed (`real_tty`).
+These pointers are different when ioctl() is called with a master fd.
 
-lsusb -v for this device:
+To properly lock real_tty->pgrp, we must take real_tty->ctrl_lock.
 
-Bus 001 Device 002: ID 1e2d:006c
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass          239 Miscellaneous Device
-  bDeviceSubClass         2 ?
-  bDeviceProtocol         1 Interface Association
-  bMaxPacketSize0        64
-  idVendor           0x1e2d
-  idProduct          0x006c
-  bcdDevice            0.00
-  iManufacturer           4
-  iProduct                3
-  iSerial                 5
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          243
-    bNumInterfaces          7
-    bConfigurationValue     1
-    iConfiguration          2
-    bmAttributes         0xe0
-      Self Powered
-      Remote Wakeup
-    MaxPower              500mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass    255 Vendor Specific Subclass
-      bInterfaceProtocol    255 Vendor Specific Protocol
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-    Interface Association:
-      bLength                 8
-      bDescriptorType        11
-      bFirstInterface         1
-      bInterfaceCount         2
-      bFunctionClass          2 Communications
-      bFunctionSubClass       2 Abstract (modem)
-      bFunctionProtocol       1 AT-commands (v.25ter)
-      iFunction               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         2 Communications
-      bInterfaceSubClass      2 Abstract (modem)
-      bInterfaceProtocol      1 AT-commands (v.25ter)
-      iInterface              0
-      CDC Header:
-        bcdCDC               1.10
-      CDC ACM:
-        bmCapabilities       0x02
-          line coding and serial state
-      CDC Call Management:
-        bmCapabilities       0x03
-          call management
-          use DataInterface
-        bDataInterface          2
-      CDC Union:
-        bMasterInterface        1
-        bSlaveInterface         2
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               5
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass        10 CDC Data
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-    Interface Association:
-      bLength                 8
-      bDescriptorType        11
-      bFirstInterface         3
-      bInterfaceCount         2
-      bFunctionClass          2 Communications
-      bFunctionSubClass       2 Abstract (modem)
-      bFunctionProtocol       1 AT-commands (v.25ter)
-      iFunction               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         2 Communications
-      bInterfaceSubClass      2 Abstract (modem)
-      bInterfaceProtocol      1 AT-commands (v.25ter)
-      iInterface              0
-      CDC Header:
-        bcdCDC               1.10
-      CDC ACM:
-        bmCapabilities       0x02
-          line coding and serial state
-      CDC Call Management:
-        bmCapabilities       0x03
-          call management
-          use DataInterface
-        bDataInterface          4
-      CDC Union:
-        bMasterInterface        3
-        bSlaveInterface         4
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x84  EP 4 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               5
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass        10 CDC Data
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x85  EP 5 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-    Interface Association:
-      bLength                 8
-      bDescriptorType        11
-      bFirstInterface         5
-      bInterfaceCount         2
-      bFunctionClass          2 Communications
-      bFunctionSubClass       2 Abstract (modem)
-      bFunctionProtocol       1 AT-commands (v.25ter)
-      iFunction               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        5
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         2 Communications
-      bInterfaceSubClass      6 Ethernet Networking
-      bInterfaceProtocol      0
-      iInterface              0
-      CDC Header:
-        bcdCDC               1.10
-      CDC Ethernet:
-        iMacAddress                      1 (??)
-        bmEthernetStatistics    0x00000000
-        wMaxSegmentSize              16384
-        wNumberMCFilters            0x0001
-        bNumberPowerFilters              0
-      CDC Union:
-        bMasterInterface        5
-        bSlaveInterface         6
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x86  EP 6 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               5
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        6
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass        10 CDC Data
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        6
-      bAlternateSetting       1
-      bNumEndpoints           2
-      bInterfaceClass        10 CDC Data
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x87  EP 7 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x04  EP 4 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
+This bug makes it possible for racing ioctl(TIOCSPGRP, ...) calls on
+both sides of a PTY pair to corrupt the refcount of `struct pid`,
+leading to use-after-free errors.
 
-Signed-off-by: Giacinto Cifelli <gciofono@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: 47f86834bbd4 ("redo locking of tty->pgrp")
+CC: stable@kernel.org
+Signed-off-by: Jann Horn <jannh@google.com>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/tty/tty_jobctrl.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -422,6 +422,7 @@ static void option_instat_callback(struc
- #define CINTERION_PRODUCT_PH8			0x0053
- #define CINTERION_PRODUCT_AHXX			0x0055
- #define CINTERION_PRODUCT_PLXX			0x0060
-+#define CINTERION_PRODUCT_EXS82			0x006c
- #define CINTERION_PRODUCT_PH8_2RMNET		0x0082
- #define CINTERION_PRODUCT_PH8_AUDIO		0x0083
- #define CINTERION_PRODUCT_AHXX_2RMNET		0x0084
-@@ -1905,6 +1906,7 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_INTERFACE_CLASS(CINTERION_VENDOR_ID, CINTERION_PRODUCT_AHXX_AUDIO, 0xff) },
- 	{ USB_DEVICE_INTERFACE_CLASS(CINTERION_VENDOR_ID, CINTERION_PRODUCT_CLS8, 0xff),
- 	  .driver_info = RSVD(0) | RSVD(4) },
-+	{ USB_DEVICE_INTERFACE_CLASS(CINTERION_VENDOR_ID, CINTERION_PRODUCT_EXS82, 0xff) },
- 	{ USB_DEVICE(CINTERION_VENDOR_ID, CINTERION_PRODUCT_HC28_MDM) },
- 	{ USB_DEVICE(CINTERION_VENDOR_ID, CINTERION_PRODUCT_HC28_MDMNET) },
- 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC25_MDM) },
+--- a/drivers/tty/tty_jobctrl.c
++++ b/drivers/tty/tty_jobctrl.c
+@@ -494,10 +494,10 @@ static int tiocspgrp(struct tty_struct *
+ 	if (session_of_pgrp(pgrp) != task_session(current))
+ 		goto out_unlock;
+ 	retval = 0;
+-	spin_lock_irq(&tty->ctrl_lock);
++	spin_lock_irq(&real_tty->ctrl_lock);
+ 	put_pid(real_tty->pgrp);
+ 	real_tty->pgrp = get_pid(pgrp);
+-	spin_unlock_irq(&tty->ctrl_lock);
++	spin_unlock_irq(&real_tty->ctrl_lock);
+ out_unlock:
+ 	rcu_read_unlock();
+ 	return retval;
 
 
