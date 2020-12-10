@@ -2,281 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926B42D6283
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD392D629B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392232AbgLJQwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:52:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54560 "EHLO
+        id S2392336AbgLJQzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:55:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392231AbgLJQv5 (ORCPT
+        with ESMTP id S2392231AbgLJQzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:51:57 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2E5C061793
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:51:17 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id g185so6016606wmf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:51:17 -0800 (PST)
+        Thu, 10 Dec 2020 11:55:00 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B087AC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:54:20 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id f16so5469954otl.11
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:54:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=epGNlRHgYSygzTTZ+uFkIBrJrnk/Z3AzZZijyw63diU=;
-        b=wNykV1c1JlvHFJoxiReneV2Pt2vvkRHD3ZnqbdiC0M2A9Uiu1JBaIq/l8/yYj6CKlb
-         51bOfU44+YB6Ji1eHliUn28ZFSXnaIGbgRn8AzaWL5H/04PZ/GkLiCNCe/dcS9aZehbw
-         zwPqY/jrryJORyReX7ApUYtsK2XWbGRUc3ER3j000K8cUAbC1vUILedmOCdBNmY4q425
-         Y6/bDRNqDVU1UruDy+xyhnrDwRl+mYiNWukd2JhCHI8MI+qx90Hd70cXCIDIV7c1fAtz
-         jcTaHXGx1fQSZ8qTVaVqyKV1I1cy0ut+pNZYovGUcc7z2+CopqbLByVn3jRHqKp3vLUG
-         oKeA==
+         :content-disposition:in-reply-to;
+        bh=vurmz2AICTUDcX6IY3FlJE2gspqHSkQXNIWoIOF7OW8=;
+        b=gPT7OBlIe/fFjFrU9XH1LNYyZVlhmhZW3pSV4IywxBESC2WFe0OO5mVef0wIY4TK8P
+         i/agynuR7JACFOLvWlXWoOtxj5xdyiIaZSiN11LQza1+JhCSiNydUtaMu041+gVy+AkS
+         mPJOzWOVfeUKqROG4M1pfiQyiuguaX9uzOwLYPK/wKs3dOwXB6Z2kAdZ230Zb84TZy6j
+         ILGi3RjMNGDjDj2xlcMq8OwXIADYcQ4dn1L29tDL3m9pm/59DQ17MO790QvPsXzjE/nE
+         JqJHdulEJP6TOR1v4RRa2PeY/Gmoh2cO4Qe6gEsgAt5kcBXPLDYiPr78wDCZx3J9BD8s
+         ZiKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=epGNlRHgYSygzTTZ+uFkIBrJrnk/Z3AzZZijyw63diU=;
-        b=CeakZg6CkpTmBDJkcaW56Bu8n02ld6N4hQy/9P0l/GoKkbjUNeik7M/++bVS8D5nZ/
-         9NnsJHfrMRzmSnT2o6deIe5SccIvurOObEvF+EOViFGayoSt2/6RBuozgHzNuQ3wZ8Ai
-         wls1uF2+CEQfH8LQ5/yFHN7a/0iHw2CiC4OdbGpi3LcpzitDr5C05/oeAnskkRap2gK/
-         li8B2OupzK0hT7vLJJa2WxQY3K1fL/tB9V/7sXS7ciiCz3Nz5exFcg+SO/VvNj40JraA
-         ElATvZhgTbLAcCqaFT3b+FCn3WpLyKlAT6cWipbcvfneSVwYXwDECKoE56fZ2ksngFIE
-         dwcg==
-X-Gm-Message-State: AOAM533NoOHUTFTtytRyPMv9FR96qdI9jmjJlu8UiK3+oU3tMcJ2Dlq0
-        QEtPAYzGATD75gudvUu9FNARBw==
-X-Google-Smtp-Source: ABdhPJzNRk/1XMSjihjeRuqYw1BmHpjGdQCGana0ENyrKt1CgDQEsxqFFcjoljjIMZPt5ACDKJSpnA==
-X-Received: by 2002:a1c:4e0a:: with SMTP id g10mr9189731wmh.51.1607619075580;
-        Thu, 10 Dec 2020 08:51:15 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id m21sm10147726wml.13.2020.12.10.08.51.14
+         :mime-version:content-disposition:in-reply-to;
+        bh=vurmz2AICTUDcX6IY3FlJE2gspqHSkQXNIWoIOF7OW8=;
+        b=MpLoR8veT9IGyttGofHphui7xCM11LdycnKLTh/DWqUJ/+5f3cGi8ueayXicmGx9ja
+         SIcB97PeNVq6lQYcYC1ySrcpoTSU30g5/UNeQHa2pEeb2VSleQ3a4H5xFThJx3dO4WfE
+         +n8QcCAeeX4hkB/hSU0b8OiBXHUy0aAcjuBmoUnDpZqRL2bg/gtlaMSvrouypruQl4sh
+         K3D3TuwQUHJv7SILXrI+KRdB2eXHvXkIY52m5G2UmHV/+BVIYIlFZhJ0Aw6vdR0fvr9N
+         zaCeDPIi5zDSpA3tjSpCeYfEmXdI0BOwf0zpPBSxvTUfXf2QZlXHMf3PKZ3qb7AevSN8
+         0z3Q==
+X-Gm-Message-State: AOAM531YhTrfltwzaF0Jy864afq9YoFbQ7FLxjKQOM2b4UZ/HVuZwYo6
+        4zF5OBsZuq1PMp+ER0j+r7QMnw==
+X-Google-Smtp-Source: ABdhPJzPwVQfOZzDeC8a3Hed8fH1ZnMNEwmW6mcEEm/dAwYIi04Oz2k8ebCpEGW2Ik21A+qTSfM2QQ==
+X-Received: by 2002:a05:6830:1352:: with SMTP id r18mr6312865otq.73.1607619259977;
+        Thu, 10 Dec 2020 08:54:19 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r12sm1111949ooo.25.2020.12.10.08.54.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 08:51:14 -0800 (PST)
-Date:   Thu, 10 Dec 2020 17:51:08 +0100
-From:   Marco Elver <elver@google.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Jann Horn <jannh@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Willem de Bruijn <willemb@google.com>,
-        syzbot <syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com>
-Subject: Re: WARNING in sk_stream_kill_queues (5)
-Message-ID: <X9JR/J6dMMOy1obu@elver.google.com>
-References: <000000000000b4862805b54ef573@google.com>
- <X8kLG5D+j4rT6L7A@elver.google.com>
- <CANn89iJWD5oXPLgtY47umTgo3gCGBaoy+XJfXnw1ecES_EXkCw@mail.gmail.com>
- <CANpmjNOaWbGJQ5Y=qC3cA31-R-Jy4Fbe+p=OBG5O2Amz8dLtLA@mail.gmail.com>
- <CANn89iKWf1EVZUuAHup+5ndhxvOqGopq53=vZ9yeok=DnRjggg@mail.gmail.com>
- <X8kjPIrLJUd8uQIX@elver.google.com>
- <af884a0e-5d4d-f71b-4821-b430ac196240@gmail.com>
- <CANpmjNNDKm_ObRnO_b3gH6wDYjb6_ex-KhZA5q5BRzEMgo+0xg@mail.gmail.com>
- <X9DHa2OG6lewtfPQ@elver.google.com>
+        Thu, 10 Dec 2020 08:54:19 -0800 (PST)
+Date:   Thu, 10 Dec 2020 10:54:17 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Richard Zhu <hongxing.zhu@nxp.com>
+Subject: Re: [PATCH V3 1/7] remoteproc: elf: support platform specific memory
+ hook
+Message-ID: <X9JSuY9tohnN2TCf@builder.lan>
+References: <20201204074036.23870-1-peng.fan@oss.nxp.com>
+ <20201204074036.23870-2-peng.fan@oss.nxp.com>
+ <X8rRedNHet9gm5lJ@builder.lan>
+ <DB6PR0402MB276056A300BD72EA59FC429488CE0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X9DHa2OG6lewtfPQ@elver.google.com>
-User-Agent: Mutt/2.0.2 (2020-11-20)
+In-Reply-To: <DB6PR0402MB276056A300BD72EA59FC429488CE0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 01:47PM +0100, Marco Elver wrote:
-> On Tue, Dec 08, 2020 at 08:06PM +0100, Marco Elver wrote:
-> > On Thu, 3 Dec 2020 at 19:01, Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> > > On 12/3/20 6:41 PM, Marco Elver wrote:
-> > >
-> > > > One more experiment -- simply adding
-> > > >
-> > > > --- a/net/core/skbuff.c
-> > > > +++ b/net/core/skbuff.c
-> > > > @@ -207,7 +207,21 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
-> > > >        */
-> > > >       size = SKB_DATA_ALIGN(size);
-> > > >       size += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-> > > > +     size = 1 << kmalloc_index(size); /* HACK */
-> > > >       data = kmalloc_reserve(size, gfp_mask, node, &pfmemalloc);
-> > > >
-> > > >
-> > > > also got rid of the warnings. Something must be off with some value that
-> > > > is computed in terms of ksize(). If not, I don't have any explanation
-> > > > for why the above hides the problem.
-> > >
-> > > Maybe the implementations of various macros (SKB_DATA_ALIGN and friends)
-> > > hae some kind of assumptions, I will double check this.
-> > 
-> > If I force kfence to return 4K sized allocations for everything, the
-> > warnings remain. That might suggest that it's not due to a missed
-> > ALIGN.
-> > 
-> > Is it possible that copies or moves are a problem? E.g. we copy
-> > something from kfence -> non-kfence object (or vice-versa), and
-> > ksize() no longer matches, then things go wrong?
+On Sun 06 Dec 20:07 CST 2020, Peng Fan wrote:
+
+> Hi Bjorn,
 > 
-> I was able to narrow it down to allocations of size 640. I also narrowed
-> it down to 5 allocations that go through kfence that start triggering
-> the issue. I have attached the list of those 5 allocations with
-> allocation + free stacks. I'll try to go through them, maybe I get
-> lucky eventually. :-)
+> > Subject: Re: [PATCH V3 1/7] remoteproc: elf: support platform specific
+> > memory hook
+> > 
+> > On Fri 04 Dec 01:40 CST 2020, Peng Fan (OSS) wrote:
+> > 
+> > > From: Peng Fan <peng.fan@nxp.com>
+> > >
+> > > To arm64, "dc      zva, dst" is used in memset.
+> > > Per ARM DDI 0487A.j, chapter C5.3.8 DC ZVA, Data Cache Zero by VA,
+> > >
+> > > "If the memory region being zeroed is any type of Device memory, this
+> > > instruction can give an alignment fault which is prioritized in the
+> > > same way as other alignment faults that are determined by the memory
+> > > type."
+> > >
+> > > On i.MX platforms, when elf is loaded to onchip TCM area, the region
+> > > is ioremapped, so "dc zva, dst" will trigger abort. And ioremap_wc()
+> > > on i.MX not able to write correct data to TCM area.
+> > >
+> > > So we need to use io helpers, and extend the elf loader to support
+> > > platform specific memory functions.
+> > >
+> > > Acked-by: Richard Zhu <hongxing.zhu@nxp.com>
+> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > ---
+> > >  drivers/remoteproc/remoteproc_elf_loader.c | 20
+> > ++++++++++++++++++--
+> > >  include/linux/remoteproc.h                 |  4 ++++
+> > >  2 files changed, 22 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/remoteproc/remoteproc_elf_loader.c
+> > > b/drivers/remoteproc/remoteproc_elf_loader.c
+> > > index df68d87752e4..6cb71fe47261 100644
+> > > --- a/drivers/remoteproc/remoteproc_elf_loader.c
+> > > +++ b/drivers/remoteproc/remoteproc_elf_loader.c
+> > > @@ -129,6 +129,22 @@ u64 rproc_elf_get_boot_addr(struct rproc *rproc,
+> > > const struct firmware *fw)  }
+> > EXPORT_SYMBOL(rproc_elf_get_boot_addr);
+> > >
+> > > +static void rproc_elf_memcpy(struct rproc *rproc, void *dest, const
+> > > +void *src, size_t count) {
+> > > +	if (!rproc->ops->elf_memcpy)
+> > > +		memcpy(dest, src, count);
+> > > +
+> > > +	rproc->ops->elf_memcpy(rproc, dest, src, count);
+> > 
+> > Looking at the current set of remoteproc drivers I get a feeling that we'll end
+> > up with a while bunch of functions that all just wraps memcpy_toio(). And the
+> > reason for this is that we are we're "abusing" the carveout to carry the
+> > __iomem pointer without keeping track of it.
+> > 
+> > And this is not the only time we're supposed to use an io-accessor, another
+> > example is rproc_copy_segment() in rproc_coredump.c
+> > 
+> > It also means that if a platform driver for some reason where to support both
+> > ioremap and normal carveouts the elf_memcpy op would be quite quirky.
+> > 
+> > 
+> > So I would prefer if we track the knowledge about void *va being a __iomem
+> > or not in the struct rproc_mem_entry and make rproc_da_to_va() return this
+> > information as well.
+> > 
+> > Then instead of extending the ops we can make this simply call memcpy or
+> > memcpy_toio() depending on this.
+> 
+> A draft proposal as below, are you ok with the approach?
+> 
 
-[...]
+Yes, this looks very reasonable and should be directly useful for the
+other users of ioremap as well.
 
-> kfence-#3 [0xffff88843681ac00-0xffff88843681ae7f, size=640, cache=kmalloc-1k] allocated by task 17012:
->  __kmalloc_reserve net/core/skbuff.c:142 [inline]
->  __alloc_skb+0xb8/0x3f0 net/core/skbuff.c:210
->  alloc_skb_fclone include/linux/skbuff.h:1144 [inline]
->  sk_stream_alloc_skb+0xd3/0x650 net/ipv4/tcp.c:888
->  tso_fragment net/ipv4/tcp_output.c:2124 [inline]
->  tcp_write_xmit+0x1366/0x3510 net/ipv4/tcp_output.c:2674
->  __tcp_push_pending_frames+0x68/0x1f0 net/ipv4/tcp_output.c:2866
->  tcp_push_pending_frames include/net/tcp.h:1864 [inline]
->  tcp_data_snd_check net/ipv4/tcp_input.c:5374 [inline]
->  tcp_rcv_established+0x57c/0x10b0 net/ipv4/tcp_input.c:5869
->  tcp_v4_do_rcv+0x361/0x4c0 net/ipv4/tcp_ipv4.c:1668
->  sk_backlog_rcv include/net/sock.h:1010 [inline]
->  __release_sock+0xd7/0x260 net/core/sock.c:2523
->  release_sock+0x40/0x120 net/core/sock.c:3053
->  sk_wait_data+0x127/0x2b0 net/core/sock.c:2565
->  tcp_recvmsg+0x1106/0x1b60 net/ipv4/tcp.c:2181
->  inet_recvmsg+0xb1/0x270 net/ipv4/af_inet.c:848
->  sock_recvmsg_nosec net/socket.c:885 [inline]
->  sock_recvmsg net/socket.c:903 [inline]
->  sock_recvmsg net/socket.c:899 [inline]
->  ____sys_recvmsg+0x2fd/0x3a0 net/socket.c:2563
->  ___sys_recvmsg+0xd9/0x1b0 net/socket.c:2605
->  __sys_recvmsg+0x8b/0x130 net/socket.c:2641
->  __do_sys_recvmsg net/socket.c:2651 [inline]
->  __se_sys_recvmsg net/socket.c:2648 [inline]
->  __x64_sys_recvmsg+0x43/0x50 net/socket.c:2648
->  do_syscall_64+0x34/0x80 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-So I started putting gdb to work, and whenever I see an allocation
-exactly like the above that goes through tso_fragment() a warning
-immediately follows.
-
-Long story short, I somehow synthesized this patch that appears to fix
-things, but I can't explain why exactly:
-
-| --- a/net/core/skbuff.c
-| +++ b/net/core/skbuff.c
-| @@ -1679,13 +1679,6 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
-|  
-|  	skb_metadata_clear(skb);
-|  
-| -	/* It is not generally safe to change skb->truesize.
-| -	 * For the moment, we really care of rx path, or
-| -	 * when skb is orphaned (not attached to a socket).
-| -	 */
-| -	if (!skb->sk || skb->destructor == sock_edemux)
-| -		skb->truesize += size - osize;
-| -
-|  	return 0;
-|  
-|  nofrags:
-
-Now, here are the breadcrumbs I followed:
-
-
-1. 	Breakpoint on kfence_ksize() -- first allocation that matches the above:
-
-	| #0  __kfence_ksize (s=18446612700164612096) at mm/kfence/core.c:726
-	| #1  0xffffffff816fbf30 in kfence_ksize (addr=0xffff888436856000) at mm/kfence/core.c:737
-	| #2  0xffffffff816217cf in ksize (objp=0xffff888436856000) at mm/slab_common.c:1178
-	| #3  0xffffffff84896911 in __alloc_skb (size=914710528, gfp_mask=2592, flags=0, node=-1) at net/core/skbuff.c:217
-	| #4  0xffffffff84d0ba73 in alloc_skb_fclone (priority=<optimized out>, size=<optimized out>) at ./include/linux/skbuff.h:1144
-	| #5  sk_stream_alloc_skb (sk=0xffff8881176cc000, size=0, gfp=2592, force_schedule=232) at net/ipv4/tcp.c:888
-	| #6  0xffffffff84d41c36 in tso_fragment (gfp=<optimized out>, mss_now=<optimized out>, len=<optimized out>,
-	|     skb=<optimized out>, sk=<optimized out>) at net/ipv4/tcp_output.c:2124
-	| #7  tcp_write_xmit (sk=0xffff8881176cc000, mss_now=21950, nonagle=3096, push_one=-1996874776, gfp=0)
-	|     at net/ipv4/tcp_output.c:2674
-	| #8  0xffffffff84d43e48 in __tcp_push_pending_frames (sk=0xffff8881176cc000, cur_mss=337, nonagle=0)
-	|     at ./include/net/sock.h:918
-	| #9  0xffffffff84d3259c in tcp_push_pending_frames (sk=<optimized out>) at ./include/net/tcp.h:1864
-	| #10 tcp_data_snd_check (sk=<optimized out>) at net/ipv4/tcp_input.c:5374
-	| #11 tcp_rcv_established (sk=0xffff8881176cc000, skb=0x0 <fixed_percpu_data>) at net/ipv4/tcp_input.c:5869
-	| #12 0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f52ea0) at net/ipv4/tcp_ipv4.c:1668
-	| [...]	
-
-	Set watchpoint on skb->truesize:
-
-	| (gdb) frame 3
-	| #3  0xffffffff84896911 in __alloc_skb (size=914710528, gfp_mask=2592, flags=0, node=-1) at net/core/skbuff.c:217
-	| 217             size = SKB_WITH_OVERHEAD(ksize(data));
-	| (gdb) p &skb->truesize
-	| $5 = (unsigned int *) 0xffff888117f55f90
-	| (gdb) awatch *0xffff888117f55f90
-	| Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
-
-2. 	Some time later, we see that the skb with kfence-allocated data
-	is cloned:
-
-	| Thread 7 hit Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
-	|
-	| Value = 1570
-	| 0xffffffff84886947 in __skb_clone (n=0xffff888117f55fa0, skb=0xffff888117f55ec0) at net/core/skbuff.c:1002
-	| 1002            C(truesize);
-	| (gdb) bt
-	| #0  0xffffffff84886947 in __skb_clone (n=0xffff888117f55fa0, skb=0xffff888117f55ec0) at net/core/skbuff.c:1002
-	| #1  0xffffffff8488bfb9 in skb_clone (skb=0xffff888117f55ec0, gfp_mask=2592) at net/core/skbuff.c:1454
-	| #2  0xffffffff84d3cd1c in __tcp_transmit_skb (sk=0xffff8881176cc000, skb=0xffff888117f55ec0, clone_it=0, gfp_mask=2592,
-	|     rcv_nxt=0) at net/ipv4/tcp_output.c:1267
-	| #3  0xffffffff84d4125b in tcp_transmit_skb (gfp_mask=<optimized out>, clone_it=<optimized out>, skb=<optimized out>,
-	|     sk=<optimized out>) at ./include/linux/tcp.h:439
-	| #4  tcp_write_xmit (sk=0xffff8881176cc000, mss_now=392485600, nonagle=1326, push_one=-1996875104, gfp=0)
-	|     at net/ipv4/tcp_output.c:2688
-	| #5  0xffffffff84d43e48 in __tcp_push_pending_frames (sk=0xffff8881176cc000, cur_mss=337, nonagle=0)
-	|     at ./include/net/sock.h:918
-	| #6  0xffffffff84d3259c in tcp_push_pending_frames (sk=<optimized out>) at ./include/net/tcp.h:1864
-	| #7  tcp_data_snd_check (sk=<optimized out>) at net/ipv4/tcp_input.c:5374
-	| #8  tcp_rcv_established (sk=0xffff8881176cc000, skb=0x0 <fixed_percpu_data>) at net/ipv4/tcp_input.c:5869
-	| #9  0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f57820) at net/ipv4/tcp_ipv4.c:1668
-	| #10 0xffffffff8487bf67 in sk_backlog_rcv (skb=<optimized out>, sk=<optimized out>) at ./include/net/sock.h:1010
-	[...]
-
-
-3. 	The original skb (that was cloned) has its truesize adjusted
-	after a pskb_expand_head():
-
-	| Thread 2 hit Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
-	| 
-	| Old value = 1570
-	| New value = 1954
-
-	^^ the difference between the old and the new value is exactly
-	384, which is also the final underflow of the sk_wmem_queued
-	that triggers the warning. Presumably if the original allocation
-	had been through kmalloc-1k and not KFENCE, the difference here
-	would have been 0, since ksize() of the original allocation in
-	step (1) would have been 1024, and not 640 (difference of 384).
-
-	| 0xffffffff8488d84b in pskb_expand_head (skb=0xffff888117f55ec0, nhead=401956752, ntail=1954, gfp_mask=2298092192)
-	|     at net/core/skbuff.c:1687
-	| 1687                    skb->truesize += size - osize;
-	| (gdb) bt
-	| #0  0xffffffff8488d84b in pskb_expand_head (skb=0xffff888117f55ec0, nhead=401956752, ntail=1954, gfp_mask=2298092192)
-	|     at net/core/skbuff.c:1687
-	| #1  0xffffffff8488de01 in skb_prepare_for_shift (skb=<optimized out>) at ./arch/x86/include/asm/atomic.h:29
-	| #2  skb_prepare_for_shift (skb=0xffff888117f55ec0) at net/core/skbuff.c:3276
-	| #3  0xffffffff848936b1 in skb_shift (tgt=0xffff888117f549c0, skb=0xffff888117f55ec0, shiftlen=674) at net/core/skbuff.c:3351
-	| #4  0xffffffff84d264de in tcp_skb_shift (shiftlen=<optimized out>, pcount=<optimized out>, from=<optimized out>,
-	|     to=<optimized out>) at net/ipv4/tcp_input.c:1497
-	| #5  tcp_shift_skb_data (dup_sack=<optimized out>, end_seq=<optimized out>, start_seq=<optimized out>, state=<optimized out>,
-	|     skb=<optimized out>, sk=<optimized out>) at net/ipv4/tcp_input.c:1605
-	| #6  tcp_sacktag_walk (skb=0xffff888117f55ec0, sk=0xffff8881176cc000, next_dup=0x894,
-	|     state=0xffffffff88fa1aa0 <watchpoints+192>, start_seq=0, end_seq=401956752, dup_sack_in=false)
-	|     at net/ipv4/tcp_input.c:1670
-	| #7  0xffffffff84d276de in tcp_sacktag_write_queue (sk=0xffff888117f55f90, ack_skb=0x1888117f55f90, prior_snd_una=2196,
-	|     state=0xffffffff88fa1aa0 <watchpoints+192>) at net/ipv4/tcp_input.c:1931
-	| #8  0xffffffff84d2ca1d in tcp_ack (sk=0xffff8881176cc000, skb=0x1888117f55f90, flag=16643) at net/ipv4/tcp_input.c:3758
-	| #9  0xffffffff84d32387 in tcp_rcv_established (sk=0xffff8881176cc000, skb=0xffff888117f54020) at net/ipv4/tcp_input.c:5858
-	| #10 0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f54020) at net/ipv4/tcp_ipv4.c:1668
-	[...]
-
-
-Any of this make sense?
+May I ask that you rename the boolean "iomem" with "is_iomem", to make
+it obvious that it's a boolean in the cases where we're already juggling
+physical, virtual and device addresses?
 
 Thanks,
--- Marco
+Bjorn
+
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 46c2937ebea9..bbb6e0613c1b 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -189,13 +189,13 @@ EXPORT_SYMBOL(rproc_va_to_pa);
+>   * here the output of the DMA API for the carveouts, which should be more
+>   * correct.
+>   */
+> -void *rproc_da_to_va(struct rproc *rproc, u64 da, size_t len)
+> +void *rproc_da_to_va(struct rproc *rproc, u64 da, size_t len, bool *iomem)
+>  {
+>         struct rproc_mem_entry *carveout;
+>         void *ptr = NULL;
+> 
+>         if (rproc->ops->da_to_va) {
+> -               ptr = rproc->ops->da_to_va(rproc, da, len);
+> +               ptr = rproc->ops->da_to_va(rproc, da, len, iomem);
+>                 if (ptr)
+>                         goto out;
+>         }
+> @@ -217,6 +217,9 @@ void *rproc_da_to_va(struct rproc *rproc, u64 da, size_t len)
+> 
+>                 ptr = carveout->va + offset;
+> 
+> +               if (iomem)
+> +                       iomem = carveout->iomem;
+> +
+>                 break;
+>         }
+> 
+> diff --git a/drivers/remoteproc/remoteproc_coredump.c b/drivers/remoteproc/remoteproc_coredump.c
+> index 34530dc20cb4..5ff9389e6319 100644
+> --- a/drivers/remoteproc/remoteproc_coredump.c
+> +++ b/drivers/remoteproc/remoteproc_coredump.c
+> @@ -153,18 +153,22 @@ static void rproc_copy_segment(struct rproc *rproc, void *dest,
+>                                size_t offset, size_t size)
+>  {
+>         void *ptr;
+> +       bool iomem;
+> 
+>         if (segment->dump) {
+>                 segment->dump(rproc, segment, dest, offset, size);
+>         } else {
+> -               ptr = rproc_da_to_va(rproc, segment->da + offset, size);
+> +               ptr = rproc_da_to_va(rproc, segment->da + offset, size, &iomem);
+>                 if (!ptr) {
+>                         dev_err(&rproc->dev,
+>                                 "invalid copy request for segment %pad with offset %zu and size %zu)\n",
+>                                 &segment->da, offset, size);
+>                         memset(dest, 0xff, size);
+>                 } else {
+> -                       memcpy(dest, ptr, size);
+> +                       if (iomem)
+> +                               memcpy_fromio(dest, ptr, size);
+> +                       else
+> +                               memcpy(dest, ptr, size);
+>                 }
+>         }
+>  }
+> diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
+> index df68d87752e4..20538143249e 100644
+> --- a/drivers/remoteproc/remoteproc_elf_loader.c
+> +++ b/drivers/remoteproc/remoteproc_elf_loader.c
+> @@ -175,6 +175,7 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
+>                 u64 offset = elf_phdr_get_p_offset(class, phdr);
+>                 u32 type = elf_phdr_get_p_type(class, phdr);
+>                 void *ptr;
+> +               bool iomem;
+> 
+>                 if (type != PT_LOAD)
+>                         continue;
+> @@ -204,7 +205,7 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
+>                 }
+> 
+>                 /* grab the kernel address for this device address */
+> -               ptr = rproc_da_to_va(rproc, da, memsz);
+> +               ptr = rproc_da_to_va(rproc, da, memsz, &iomem);
+>                 if (!ptr) {
+>                         dev_err(dev, "bad phdr da 0x%llx mem 0x%llx\n", da,
+>                                 memsz);
+> @@ -213,8 +214,12 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
+>                 }
+> 
+>                 /* put the segment where the remote processor expects it */
+> -               if (filesz)
+> -                       memcpy(ptr, elf_data + offset, filesz);
+> +               if (filesz) {
+> +                       if (iomem)
+> +                               memcpy_fromio(ptr, elf_data + offset, filesz);
+> +                       else
+> +                               memcpy(ptr, elf_data + offset, filesz);
+> +               }
+> 
+>                 /*
+>                  * Zero out remaining memory for this segment.
+> @@ -223,8 +228,12 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
+>                  * did this for us. albeit harmless, we may consider removing
+>                  * this.
+>                  */
+> -               if (memsz > filesz)
+> -                       memset(ptr + filesz, 0, memsz - filesz);
+> +               if (memsz > filesz) {
+> +                       if (iomem)
+> +                               memset_toio(ptr + filesz, 0, memsz - filesz);
+> +                       else
+> +                               memset(ptr + filesz, 0, memsz - filesz);
+> +               }
+>         }
+> 
+>         return ret;
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index e8ac041c64d9..01bb9fa12784 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -329,6 +329,7 @@ struct rproc;
+>   */
+>  struct rproc_mem_entry {
+>         void *va;
+> +       bool iomem;
+>         dma_addr_t dma;
+>         size_t len;
+>         u32 da;
+> diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+> index d6473a72a336..dfa0bd7812a5 100644
+> --- a/include/linux/uaccess.h
+> +++ b/include/linux/uaccess.h
+> @@ -194,7 +194,7 @@ copy_from_user(void *to, const void __user *from, unsigned long n)
+>  }
+> 
+>  static __always_inline unsigned long __must_check
+> -copy_to_user(void __user *to, const void *from, unsigned long n)
+> +copy_to_user(void __user *to, const void *_toiofrom, unsigned long n)
+>  {
+>         if (likely(check_copy_size(from, n, true)))
+>                 n = _copy_to_user(to, from, n);
+> 
+> Thanks,
+> Peng.
+> 
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> > > +}
+> > > +
+> > > +static void rproc_elf_memset(struct rproc *rproc, void *s, int c,
+> > > +size_t count) {
+> > > +	if (!rproc->ops->elf_memset)
+> > > +		memset(s, c, count);
+> > > +
+> > > +	rproc->ops->elf_memset(rproc, s, c, count); }
+> > > +
+> > >  /**
+> > >   * rproc_elf_load_segments() - load firmware segments to memory
+> > >   * @rproc: remote processor which will be booted using these fw
+> > > segments @@ -214,7 +230,7 @@ int rproc_elf_load_segments(struct rproc
+> > > *rproc, const struct firmware *fw)
+> > >
+> > >  		/* put the segment where the remote processor expects it */
+> > >  		if (filesz)
+> > > -			memcpy(ptr, elf_data + offset, filesz);
+> > > +			rproc_elf_memcpy(rproc, ptr, elf_data + offset, filesz);
+> > >
+> > >  		/*
+> > >  		 * Zero out remaining memory for this segment.
+> > > @@ -224,7 +240,7 @@ int rproc_elf_load_segments(struct rproc *rproc,
+> > const struct firmware *fw)
+> > >  		 * this.
+> > >  		 */
+> > >  		if (memsz > filesz)
+> > > -			memset(ptr + filesz, 0, memsz - filesz);
+> > > +			rproc_elf_memset(rproc, ptr + filesz, 0, memsz - filesz);
+> > >  	}
+> > >
+> > >  	return ret;
+> > > diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> > > index e8ac041c64d9..06c52f88a3fd 100644
+> > > --- a/include/linux/remoteproc.h
+> > > +++ b/include/linux/remoteproc.h
+> > > @@ -373,6 +373,8 @@ enum rsc_handling_status {
+> > >   *			expects to find it
+> > >   * @sanity_check:	sanity check the fw image
+> > >   * @get_boot_addr:	get boot address to entry point specified in
+> > firmware
+> > > + * @elf_memcpy:		platform specific elf loader memcpy
+> > > + * @elf_memset:		platform specific elf loader memset
+> > >   * @panic:	optional callback to react to system panic, core will delay
+> > >   *		panic at least the returned number of milliseconds
+> > >   */
+> > > @@ -392,6 +394,8 @@ struct rproc_ops {
+> > >  	int (*load)(struct rproc *rproc, const struct firmware *fw);
+> > >  	int (*sanity_check)(struct rproc *rproc, const struct firmware *fw);
+> > >  	u64 (*get_boot_addr)(struct rproc *rproc, const struct firmware
+> > > *fw);
+> > > +	void (*elf_memcpy)(struct rproc *rproc, void *dest, const void *src,
+> > size_t count);
+> > > +	void (*elf_memset)(struct rproc *rproc, void *s, int c, size_t
+> > > +count);
+> > >  	unsigned long (*panic)(struct rproc *rproc);  };
+> > >
+> > > --
+> > > 2.28.0
+> > >
