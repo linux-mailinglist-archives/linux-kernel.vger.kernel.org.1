@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D16132D5E91
+	by mail.lfdr.de (Postfix) with ESMTP id 61B572D5E90
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391688AbgLJOt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:49:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47494 "EHLO mail.kernel.org"
+        id S2391682AbgLJOt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:49:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391262AbgLJOj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:39:58 -0500
+        id S2391264AbgLJOkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:40:01 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
@@ -18,9 +18,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Boyuan Zhang <boyuan.zhang@amd.com>,
         James Zhu <James.Zhu@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.9 35/75] drm/amdgpu/vcn3.0: stall DPG when WPTR/RPTR reset
-Date:   Thu, 10 Dec 2020 15:27:00 +0100
-Message-Id: <20201210142607.790023229@linuxfoundation.org>
+Subject: [PATCH 5.9 36/75] drm/amdgpu/vcn3.0: remove old DPG workaround
+Date:   Thu, 10 Dec 2020 15:27:01 +0100
+Message-Id: <20201210142607.841516663@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
 References: <20201210142606.074509102@linuxfoundation.org>
@@ -34,11 +34,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Boyuan Zhang <boyuan.zhang@amd.com>
 
-commit ac2db9488cf21de0be7899c1e5963e5ac0ff351f upstream.
+commit efd6d85a18102241538dd1cc257948a0dbe6fae6 upstream.
 
 Port from VCN2.5
-Add vcn dpg harware synchronization to fix race condition
-issue between vcn driver and hardware.
+SCRATCH2 is used to keep decode wptr as a workaround
+which fix a hardware DPG decode wptr update bug for
+vcn2.5 beforehand.
 
 Signed-off-by: Boyuan Zhang <boyuan.zhang@amd.com>
 Reviewed-by: James Zhu <James.Zhu@amd.com>
@@ -47,67 +48,31 @@ Cc: stable@vger.kernel.org # 5.9.x
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c |   20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
 --- a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
 +++ b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
-@@ -1011,6 +1011,11 @@ static int vcn_v3_0_start_dpg_mode(struc
- 	tmp = REG_SET_FIELD(tmp, UVD_RBC_RB_CNTL, RB_RPTR_WR_EN, 1);
- 	WREG32_SOC15(VCN, inst_idx, mmUVD_RBC_RB_CNTL, tmp);
+@@ -1587,9 +1587,6 @@ static int vcn_v3_0_pause_dpg_mode(struc
+ 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_RPTR2, lower_32_bits(ring->wptr));
+ 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_WPTR2, lower_32_bits(ring->wptr));
  
-+	/* Stall DPG before WPTR/RPTR reset */
-+	WREG32_P(SOC15_REG_OFFSET(VCN, inst_idx, mmUVD_POWER_STATUS),
-+		UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK,
-+		~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
-+
- 	/* set the write pointer delay */
- 	WREG32_SOC15(VCN, inst_idx, mmUVD_RBC_RB_WPTR_CNTL, 0);
+-				WREG32_SOC15(VCN, inst_idx, mmUVD_RBC_RB_WPTR,
+-					RREG32_SOC15(VCN, inst_idx, mmUVD_SCRATCH2) & 0x7FFFFFFF);
+-
+ 				/* Unstall DPG */
+ 				WREG32_P(SOC15_REG_OFFSET(VCN, inst_idx, mmUVD_POWER_STATUS),
+ 					0, ~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
+@@ -1650,10 +1647,6 @@ static void vcn_v3_0_dec_ring_set_wptr(s
+ {
+ 	struct amdgpu_device *adev = ring->adev;
  
-@@ -1033,6 +1038,10 @@ static int vcn_v3_0_start_dpg_mode(struc
- 	WREG32_SOC15(VCN, inst_idx, mmUVD_RBC_RB_WPTR,
- 		lower_32_bits(ring->wptr));
- 
-+	/* Unstall DPG */
-+	WREG32_P(SOC15_REG_OFFSET(VCN, inst_idx, mmUVD_POWER_STATUS),
-+		0, ~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
-+
- 	return 0;
- }
- 
-@@ -1556,8 +1565,14 @@ static int vcn_v3_0_pause_dpg_mode(struc
- 					UVD_DPG_PAUSE__NJ_PAUSE_DPG_ACK_MASK,
- 					UVD_DPG_PAUSE__NJ_PAUSE_DPG_ACK_MASK);
- 
-+				/* Stall DPG before WPTR/RPTR reset */
-+				WREG32_P(SOC15_REG_OFFSET(VCN, inst_idx, mmUVD_POWER_STATUS),
-+					UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK,
-+					~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
-+
- 				/* Restore */
- 				ring = &adev->vcn.inst[inst_idx].ring_enc[0];
-+				ring->wptr = 0;
- 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_BASE_LO, ring->gpu_addr);
- 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_BASE_HI, upper_32_bits(ring->gpu_addr));
- 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_SIZE, ring->ring_size / 4);
-@@ -1565,6 +1580,7 @@ static int vcn_v3_0_pause_dpg_mode(struc
- 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_WPTR, lower_32_bits(ring->wptr));
- 
- 				ring = &adev->vcn.inst[inst_idx].ring_enc[1];
-+				ring->wptr = 0;
- 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_BASE_LO2, ring->gpu_addr);
- 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_BASE_HI2, upper_32_bits(ring->gpu_addr));
- 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_SIZE2, ring->ring_size / 4);
-@@ -1574,6 +1590,10 @@ static int vcn_v3_0_pause_dpg_mode(struc
- 				WREG32_SOC15(VCN, inst_idx, mmUVD_RBC_RB_WPTR,
- 					RREG32_SOC15(VCN, inst_idx, mmUVD_SCRATCH2) & 0x7FFFFFFF);
- 
-+				/* Unstall DPG */
-+				WREG32_P(SOC15_REG_OFFSET(VCN, inst_idx, mmUVD_POWER_STATUS),
-+					0, ~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
-+
- 				SOC15_WAIT_ON_RREG(VCN, inst_idx, mmUVD_POWER_STATUS,
- 					UVD_PGFSM_CONFIG__UVDM_UVDU_PWR_ON, UVD_POWER_STATUS__UVD_POWER_STATUS_MASK);
- 			}
+-	if (adev->pg_flags & AMD_PG_SUPPORT_VCN_DPG)
+-		WREG32_SOC15(VCN, ring->me, mmUVD_SCRATCH2,
+-			lower_32_bits(ring->wptr) | 0x80000000);
+-
+ 	if (ring->use_doorbell) {
+ 		adev->wb.wb[ring->wptr_offs] = lower_32_bits(ring->wptr);
+ 		WDOORBELL32(ring->doorbell_index, lower_32_bits(ring->wptr));
 
 
