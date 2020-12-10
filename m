@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79BDF2D4FE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C892D4FEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730768AbgLJAu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 19:50:26 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:55877 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730348AbgLJAuZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 19:50:25 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607561400; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ki6qhk9beKgLh7vMubeDeIa2ozDU3ovfEqX88UQeOsU=;
- b=LePOiy4/8Ksxa7wwCj4AFdRPOwxzaxuJav1nqjlhxQ15zDk03Qv7Bje1Dk6JejxvL0CCfKdP
- Sdb4W2YOotnldNC4SZhUg+GcILQ4sEylUYEcYJ/R1J1htMKyF8YGANP6TiSd3+iUfLRW+NGP
- Hm4GF7r6WSmvE0Tw4+DZFUv6Ejg=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fd170b77e7202f9bc6016a9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Dec 2020 00:49:59
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D732EC43464; Thu, 10 Dec 2020 00:49:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CFE47C433CA;
-        Thu, 10 Dec 2020 00:49:57 +0000 (UTC)
+        id S1730230AbgLJAvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 19:51:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730336AbgLJAvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 19:51:38 -0500
+Date:   Wed, 9 Dec 2020 16:50:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607561457;
+        bh=FKfFS3P2tnXTZ5B8IbXhgv+55qT0M8nfUMu7IrEthgc=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=FDyARYbNQjfJaTRX2p/Wdcca0eb6731Zy/WVMOEwsSn72g3e0wgyRWCfpFy9PIbxm
+         2mUWwzkDZysLzsHdcnCgzNeuL0TFaQNnC8B/9H4EJ9KESqiFS67t1lBFqWqHelkDlU
+         t6sthdQuDrmyhFaNVzcm/14uz5llqVNPJNY5LRb9FVMsUdTDiHELkJoRiZt0mdVI13
+         KyUhol7NYWnflqzMBDDjo1ureJI0OAcmpmA9+5aQ/Rp/UtqqdiNJcUdYFMi457O6ig
+         V/g6VbA3ZEug8UJu3qsVDijt3OL4FSW23ekqfl55O24/cRb/G/z3RwtecCEXIHzZrZ
+         lXoOK148V/WtA==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: One potential issue with concurrent execution of RCU callbacks...
+Message-ID: <20201210005056.GM2657@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201208145810.GA4875@paulmck-ThinkPad-P72>
+ <20201208155457.GA3916@lothringen>
+ <20201208171927.GS2657@paulmck-ThinkPad-P72>
+ <20201208175230.GB3916@lothringen>
+ <20201208182409.GT2657@paulmck-ThinkPad-P72>
+ <20201208220438.GC3916@lothringen>
+ <20201209021449.GK3025@boqun-archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 10 Dec 2020 08:49:57 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/2] scsi: ufs: Clean up some lines from
- ufshcd_hba_exit()
-In-Reply-To: <48c1f368d7ce23abee32dce052d8e2a724a94d01.camel@gmail.com>
-References: <1607497100-27570-1-git-send-email-cang@codeaurora.org>
- <1607497100-27570-3-git-send-email-cang@codeaurora.org>
- <48c1f368d7ce23abee32dce052d8e2a724a94d01.camel@gmail.com>
-Message-ID: <f24787e727921e9e2bce5a2e7015eff1@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209021449.GK3025@boqun-archlinux>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-10 06:17, Bean Huo wrote:
-> On Tue, 2020-12-08 at 22:58 -0800, Can Guo wrote:
->> ufshcd_hba_exit() is always called after ufshcd_exit_clk_scaling()
->> and
->> ufshcd_exit_clk_gating(), so no need to suspend clock scaling again
->> in
->> ufshcd_hba_exit().
->> 
->> Signed-off-by: Can Guo <cang@codeaurora.org>
-> Reviewed-by: Bean Huo <beanhuo@micron.com>
+On Wed, Dec 09, 2020 at 10:14:49AM +0800, Boqun Feng wrote:
+> Hi Frederic,
+> 
+> On Tue, Dec 08, 2020 at 11:04:38PM +0100, Frederic Weisbecker wrote:
+> > On Tue, Dec 08, 2020 at 10:24:09AM -0800, Paul E. McKenney wrote:
+> > > > It reduces the code scope running with BH disabled.
+> > > > Also narrowing down helps to understand what it actually protects.
+> > > 
+> > > I thought that you would call out unnecessarily delaying other softirq
+> > > handlers.  ;-)
+> > > 
+> > > But if such delays are a problem (and they might well be), then to
+> > > avoid them on non-rcu_nocb CPUs would instead/also require changing the
+> > > early-exit checks to check for other pending softirqs to the existing
+> > > checks involving time, need_resched, and idle.  At which point, entering and
+> > > exiting BH-disabled again doesn't help, other than your point about the
+> > > difference in BH-disabled scopes on rcu_nocb and non-rcu_nocb CPUs.
+> > 
+> > Wise observation!
+> > 
+> > > 
+> > > Would it make sense to exit rcu_do_batch() if more than some amount
+> > > of time had elapsed and there was some non-RCU softirq pending?
+> > > 
+> > > My guess is that the current tlimit checks in rcu_do_batch() make this
+> > > unnecessary.
+> > 
+> > Right and nobody has complained about it so far.
+> > 
+> > But I should add a comment explaining the reason for the BH-disabled
+> > section in my series.
+> > 
+> 
+> Some background for the original question: I'm revisiting the wait
+> context checking feature of lockdep (which can detect bugs like
+> acquiring a spinlock_t lock inside a raw_spinlock_t), I've post my first
+> version:
+> 
+> 	https://lore.kernel.org/lkml/20201208103112.2838119-1-boqun.feng@gmail.com/	
+> 
+> , and will surely copy you in the next version ;-)
+> 
+> The reason I asked for the RCU callback context requirement is that we
+> have the virtual lock (rcu_callback_map) that marks a RCU callback
+> context, so if RCU callback contexts have special restrictions on the
+> locking usage inside, we can use the wait context checking to do the
+> check (like what I did in the patch #3 of the above series).
+> 
+> My current summary is that since in certain configs (use_softirq is true
+> and nocb is disabled) RCU callbacks are executed in a softirq context,
+> so the least requirement for any RCU callbacks is they need to obey the
+> rules in softirq contexts. And yes, I'm aware that in some configs, RCU
+> callbacks are not executed in a softirq context (sometimes, even the BH
+> is not disabled), but we need to make all the callback work in the
+> "worst" (or strictest) case (callbacks executing in softirq contexts).
+> Currently, the effect of using wait context for rcu_callback_map in my
+> patchset is that lockdep will complain if a RCU callback use a mutex or
+> other sleepable locks, but using spinlock_t (even in PREEMPT_RT) won't
+> cause lockdep to complain. Am I getting this correct?
 
-Hi Bean,
+It matches what I know.  And yes, in PREEMPT_RT, softirq is preemptible,
+allowing spinlock_t to be used, but there are restrictions that
+lopckdep enforces.  I am not going to claim to remember the exact set
+of restrictions.
 
-Thanks for you review. But I sent V2 yesterday,
-in which this patch is slightly updated.
-
-Thanks,
-
-Can Guo.
+							Thanx, Paul
