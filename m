@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6837C2D6571
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA7C2D6551
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390544AbgLJOcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:32:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38622 "EHLO mail.kernel.org"
+        id S2390629AbgLJOcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:32:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733026AbgLJOaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:30:39 -0500
+        id S2390478AbgLJObW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:31:22 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Mark Brown <broonie@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH 4.9 40/45] spi: bcm2835: Release the DMA channel if probe fails after dma_init
-Date:   Thu, 10 Dec 2020 15:26:54 +0100
-Message-Id: <20201210142604.326645697@linuxfoundation.org>
+        stable@vger.kernel.org, Qian Cai <qcai@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 18/31] mm/swapfile: do not sleep with a spin lock held
+Date:   Thu, 10 Dec 2020 15:26:55 +0100
+Message-Id: <20201210142603.001031407@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
-References: <20201210142602.361598591@linuxfoundation.org>
+In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
+References: <20201210142602.099683598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,48 +33,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: Qian Cai <qcai@redhat.com>
 
-[ Upstream commit 666224b43b4bd4612ce3b758c038f9bc5c5e3fcb ]
+commit b11a76b37a5aa7b07c3e3eeeaae20b25475bddd3 upstream.
 
-The DMA channel was not released if either devm_request_irq() or
-devm_spi_register_controller() failed.
+We can't call kvfree() with a spin lock held, so defer it.  Fixes a
+might_sleep() runtime warning.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Link: https://lore.kernel.org/r/20191212135550.4634-3-peter.ujfalusi@ti.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[lukas: backport to 4.19-stable]
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Fixes: 873d7bcfd066 ("mm/swapfile.c: use kvzalloc for swap_info_struct allocation")
+Signed-off-by: Qian Cai <qcai@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201202151549.10350-1-qcai@redhat.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/spi/spi-bcm2835.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -787,18 +787,19 @@ static int bcm2835_spi_probe(struct plat
- 			       dev_name(&pdev->dev), master);
- 	if (err) {
- 		dev_err(&pdev->dev, "could not request IRQ: %d\n", err);
--		goto out_clk_disable;
-+		goto out_dma_release;
- 	}
+---
+ mm/swapfile.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -2828,6 +2828,7 @@ late_initcall(max_swapfiles_check);
+ static struct swap_info_struct *alloc_swap_info(void)
+ {
+ 	struct swap_info_struct *p;
++	struct swap_info_struct *defer = NULL;
+ 	unsigned int type;
+ 	int i;
+ 	int size = sizeof(*p) + nr_node_ids * sizeof(struct plist_node);
+@@ -2857,7 +2858,7 @@ static struct swap_info_struct *alloc_sw
+ 		smp_wmb();
+ 		nr_swapfiles++;
+ 	} else {
+-		kvfree(p);
++		defer = p;
+ 		p = swap_info[type];
+ 		/*
+ 		 * Do not memset this entry: a racing procfs swap_next()
+@@ -2870,6 +2871,7 @@ static struct swap_info_struct *alloc_sw
+ 		plist_node_init(&p->avail_lists[i], 0);
+ 	p->flags = SWP_USED;
+ 	spin_unlock(&swap_lock);
++	kvfree(defer);
+ 	spin_lock_init(&p->lock);
+ 	spin_lock_init(&p->cont_lock);
  
- 	err = spi_register_master(master);
- 	if (err) {
- 		dev_err(&pdev->dev, "could not register SPI master: %d\n", err);
--		goto out_clk_disable;
-+		goto out_dma_release;
- 	}
- 
- 	return 0;
- 
--out_clk_disable:
-+out_dma_release:
-+	bcm2835_dma_release(master);
- 	clk_disable_unprepare(bs->clk);
- 	return err;
- }
 
 
