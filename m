@@ -2,139 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA432D64CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 944682D64CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393054AbgLJSVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:21:53 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2244 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392725AbgLJSVj (ORCPT
+        id S2393059AbgLJSWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:22:47 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:51879 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390976AbgLJSWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 13:21:39 -0500
-Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CsMbs2N0Hz67KVv;
-        Fri, 11 Dec 2020 02:18:17 +0800 (CST)
-Received: from lhreml741-chm.china.huawei.com (10.201.108.191) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 10 Dec 2020 19:20:56 +0100
-Received: from [10.47.200.37] (10.47.200.37) by lhreml741-chm.china.huawei.com
- (10.201.108.191) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 10 Dec
- 2020 18:20:49 +0000
-Subject: Re: [PATCH 2/3] perf tools: Allow to enable/disable events via
- control file
-To:     Jiri Olsa <jolsa@redhat.com>
-CC:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>
-References: <20201206170519.4010606-1-jolsa@kernel.org>
- <20201206170519.4010606-3-jolsa@kernel.org>
- <7bcde520-e933-c2d6-c960-3f8acdaf6047@huawei.com>
- <20201210162430.GH69683@krava> <20201210180646.GA186916@krava>
-From:   Alexei Budankov <abudankov@huawei.com>
-Message-ID: <6214e1cd-e6a4-2a7a-160c-47212afdc190@huawei.com>
-Date:   Thu, 10 Dec 2020 21:20:42 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 10 Dec 2020 13:22:33 -0500
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 5F5E924000D;
+        Thu, 10 Dec 2020 18:21:50 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 19:21:50 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Colin Ian King <colin.king@canonical.com>
+Subject: Re: [PATCH] mmc: atmel-mci: =?utf-8?Q?Redu?=
+ =?utf-8?Q?ce_scope_for_the_variable_=E2=80=9Cslot?= =?utf-8?B?4oCd?= in
+ atmci_request_end()
+Message-ID: <20201210182150.GE1578121@piout.net>
+References: <466b4c6d-032f-fbcc-58ac-75f6f39d734f@web.de>
+ <20201210151035.GC1578121@piout.net>
+ <ec71d7b8-a36b-04f5-77a8-22874ac241e1@web.de>
+ <20201210170723.GD1578121@piout.net>
+ <2667790c-fad2-aaa9-36e8-6be66949ac8d@web.de>
 MIME-Version: 1.0
-In-Reply-To: <20201210180646.GA186916@krava>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.200.37]
-X-ClientProxiedBy: braeml707-chm.china.huawei.com (10.226.71.37) To
- lhreml741-chm.china.huawei.com (10.201.108.191)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2667790c-fad2-aaa9-36e8-6be66949ac8d@web.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/12/2020 18:23:05+0100, Markus Elfring wrote:
+> >> Can the extra null pointer initialisation trigger a source code analysis warning
+> >> like “Addresses-Coverity: ("Unused value")” for this function implementation?
+> >>
+> >
+> > Did you check, does it? It doesn't.
+> >
+> > Are you wasting maintainer and reviewer's time? Yes you are.
+> 
+> How do you think about a patch like “staging: speakup: remove redundant initialization
+> of pointer p_key” for comparison?
+> https://lore.kernel.org/patchwork/patch/1199128/
+> https://lore.kernel.org/driverdev-devel/20200223153954.420731-1-colin.king@canonical.com/
+> 
+> Would you tolerate to omit the initialisation for the variable “slot”?
+> 
 
-On 10.12.2020 21:06, Jiri Olsa wrote:
-> On Thu, Dec 10, 2020 at 05:24:30PM +0100, Jiri Olsa wrote:
->> On Mon, Dec 07, 2020 at 08:02:20PM +0300, Alexei Budankov wrote:
->>> Hi,
->>>
->>> On 06.12.2020 20:05, Jiri Olsa wrote:
->>>> Adding new control events to enable/disable specific event.
->>>> The interface string for control file are:
->>>>
->>>>   'enable-<EVENT NAME>'
->>>>   'disable-<EVENT NAME>'
->>>
->>> <SNIP>
->>>
->>>>
->>>> when received the command, perf will scan the current evlist
->>>> for <EVENT NAME> and if found it's enabled/disabled.
->>>
->>> <SNIP>
->>>
->>>> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
->>>> index 70aff26612a9..05723227bebf 100644
->>>> --- a/tools/perf/util/evlist.c
->>>> +++ b/tools/perf/util/evlist.c
->>>> @@ -1915,7 +1915,13 @@ static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
->>>>  		 bytes_read == data_size ? "" : c == '\n' ? "\\n" : "\\0");
->>>>  
->>>>  	if (bytes_read > 0) {
->>>> -		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
->>>> +		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_EVSEL_TAG,
->>>> +				    (sizeof(EVLIST_CTL_CMD_ENABLE_EVSEL_TAG)-1))) {
->>>> +			*cmd = EVLIST_CTL_CMD_ENABLE_EVSEL;
->>>> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_EVSEL_TAG,
->>>> +				    (sizeof(EVLIST_CTL_CMD_DISABLE_EVSEL_TAG)-1))) {
->>>> +			*cmd = EVLIST_CTL_CMD_DISABLE_EVSEL;
->>>> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
->>>>  			     (sizeof(EVLIST_CTL_CMD_ENABLE_TAG)-1))) {
->>>>  			*cmd = EVLIST_CTL_CMD_ENABLE;
->>>>  		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_TAG,
->>>> @@ -1952,6 +1958,8 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
->>>>  	char cmd_data[EVLIST_CTL_CMD_MAX_LEN];
->>>>  	int ctlfd_pos = evlist->ctl_fd.pos;
->>>>  	struct pollfd *entries = evlist->core.pollfd.entries;
->>>> +	struct evsel *evsel;
->>>> +	char *evsel_name;
->>>>  
->>>>  	if (!evlist__ctlfd_initialized(evlist) || !entries[ctlfd_pos].revents)
->>>>  		return 0;
->>>> @@ -1967,6 +1975,26 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
->>>>  			case EVLIST_CTL_CMD_DISABLE:
->>>>  				evlist__disable(evlist);
->>>>  				break;
->>>> +			case EVLIST_CTL_CMD_ENABLE_EVSEL:
->>>> +				evsel_name = cmd_data + sizeof(EVLIST_CTL_CMD_ENABLE_EVSEL_TAG) - 1;
->>>
->>> It makes sense to check that evsel_name still points
->>> into cmd_data buffer after assigning to event name.
->>
->> right, will add that
-> 
-> actualy it's already checked in evlist__ctlfd_recv, evsel_name at
-> worst will be empty string so evlist__find_evsel_by_str will fail
-> 
-> I'll add '' around %s in the error output string:
-> 
->   failed: can't find '%s' event
-> 
-> so it's obvious when it's empty
+If you were able to provide one good technical reason.
 
-Looks good to me. Thanks!
-
-Alexei
-
-> 
-> jirka
-> 
-> .
-> 
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
