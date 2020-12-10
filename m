@@ -2,234 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F782D5A87
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1F42D5A96
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732768AbgLJM2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 07:28:31 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9149 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729283AbgLJM20 (ORCPT
+        id S1727007AbgLJMd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 07:33:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726439AbgLJMdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:28:26 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CsCpV37Pvz15bBh;
-        Thu, 10 Dec 2020 20:26:58 +0800 (CST)
-Received: from [127.0.0.1] (10.74.149.191) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Dec 2020
- 20:27:25 +0800
-Subject: Re: [PATCH net-next 2/7] net: hns3: add support for tc mqprio offload
-To:     Saeed Mahameed <saeed@kernel.org>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kuba@kernel.org>, <huangdaode@huawei.com>,
-        Jian Shen <shenjian15@huawei.com>
-References: <1607571732-24219-1-git-send-email-tanhuazhong@huawei.com>
- <1607571732-24219-3-git-send-email-tanhuazhong@huawei.com>
- <80b7502b700df43df7f66fa79fb9893399d0abd1.camel@kernel.org>
-From:   tanhuazhong <tanhuazhong@huawei.com>
-Message-ID: <42c9fd63-3e51-543e-bbbd-01e7face7c9c@huawei.com>
-Date:   Thu, 10 Dec 2020 20:27:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+        Thu, 10 Dec 2020 07:33:23 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86441C061793
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 04:32:43 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id w4so4054741pgg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 04:32:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l2j9oJVLdw2ETVRjvlsUKZFYNsqLIEckkbStxyUbG4c=;
+        b=Cf6GkzyVICZ2r+cphcXwh9MH72pN7NwUnmwu484SPDfOCSkIX7b16iRZS+XGbb0J9V
+         ogHDXhnYLhGBT0lXSBZjMp/7JnxpPxncVqbvvGDSe2Yt7XZPb2/XdTar+rZ9E2dmC9gS
+         fQH4+CLKK5F3vRAi+ixzmAIpBewwZZwKxPJom1P5o15wG7DUVUire3Az2R1rppKXtouM
+         GO8fBMD+6tkECDO2+6w4HSxn705fER+7axAKl50N1I9U/c55lRj8rxuNS49h74n9EQiK
+         KSQGY4SiMnuQb5zYN2yW3RKKa8RykPQTPPDWNy/ULPShCy1tFlsEejugZK4buXEFHUjh
+         PReQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l2j9oJVLdw2ETVRjvlsUKZFYNsqLIEckkbStxyUbG4c=;
+        b=L/ajpMdHlhj14J1/m5qYy4UA+vhed+AjUdOResn/aSdgHBgMbTUxqsRRRLtYqxyJyy
+         cYUxwM18NlzPtmKCpyFoU/18VvlFn388zyd4athLgPInkClYtqpX9KNHoaCdGXJoy9sk
+         LmcZPFJUKKFj0YLa+bEQtWa70BfEPdGi50df17HzyW9gQaC3B0WPiu/FUTgrOyzyTyo9
+         994Ri4xfzWsx+ftaDFT30VM8mnDblB+x4gDNEkCJXsaf+FvoOyj1ZdLkWS+XTOVEEv1h
+         9v0pEGqTHDwlFllEEu1ypnZA+FzD4IbeW1YymHd4rFIpvH809tLYFoSikg7YK2rTWFoM
+         J6Fw==
+X-Gm-Message-State: AOAM532+aVR37sNhFYfvN84eDChWnumpOhwdmnAKokPAsAKbQXpUkeRk
+        eF2wUlHd+TAgtKPuaoQk8ZQRVZ9GfZhXAdW3622Yiw==
+X-Google-Smtp-Source: ABdhPJzruP2FzeZRwPR6zyDb+MGWrPcKVuHVSHRiDqmTukJKyZeQtXXgwD7GQB8j4xgwJLtaqxztDYOUwhGdTqMth70=
+X-Received: by 2002:aa7:8105:0:b029:18e:c8d9:2c24 with SMTP id
+ b5-20020aa781050000b029018ec8d92c24mr6569040pfi.49.1607603562910; Thu, 10 Dec
+ 2020 04:32:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <80b7502b700df43df7f66fa79fb9893399d0abd1.camel@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.149.191]
-X-CFilter-Loop: Reflected
+References: <20201210035526.38938-1-songmuchun@bytedance.com>
+ <20201210035526.38938-11-songmuchun@bytedance.com> <20201210101526.GA4525@localhost.localdomain>
+In-Reply-To: <20201210101526.GA4525@localhost.localdomain>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 10 Dec 2020 20:32:06 +0800
+Message-ID: <CAMZfGtWEE3rCBxXVb9bE_siByOuii19NVq1-Y2+EKe0-OSb2vg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v8 10/12] mm/hugetlb: Introduce
+ nr_free_vmemmap_pages in the struct hstate
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 10, 2020 at 7:40 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Thu, Dec 10, 2020 at 11:55:24AM +0800, Muchun Song wrote:
+> > +void __init hugetlb_vmemmap_init(struct hstate *h)
+> > +{
+> > +     unsigned int nr_pages = pages_per_huge_page(h);
+> > +     unsigned int vmemmap_pages;
+> > +
+> > +     /* We cannot optimize if a "struct page" crosses page boundaries. */
+> > +     if (!is_power_of_2(sizeof(struct page)))
+> > +             return;
+> > +
+> > +     if (!hugetlb_free_vmemmap_enabled)
+> > +             return;
+>
+> I think it would make sense to squash the last patch and this one.
+> As per the last patch, if "struct page" is not power of 2,
+> early_hugetlb_free_vmemmap_param() does not set
+> hugetlb_free_vmemmap_enabled, so the "!is_power_of_2" check from above
+> would become useless here.
+> We know that in order for hugetlb_free_vmemmap_enabled to become true,
+> the is_power_of_2 must have succeed early on when calling the early_
+> function.
+
+Yeah, you are right. But if is_power_of_2 returns false. The compiler
+can optimize this function to null. If we remove the check, it prevents
+the compiler from optimizing the code of hugetlb_vmemmap_init().
+So I think leaving it here makes sense. Right?
+
+>
+> --
+> Oscar Salvador
+> SUSE L3
 
 
-On 2020/12/10 12:50, Saeed Mahameed wrote:
-> On Thu, 2020-12-10 at 11:42 +0800, Huazhong Tan wrote:
->> From: Jian Shen <shenjian15@huawei.com>
->>
->> Currently, the HNS3 driver only supports offload for tc number
->> and prio_tc. This patch adds support for other qopts, including
->> queues count and offset for each tc.
->>
->> When enable tc mqprio offload, it's not allowed to change
->> queue numbers by ethtool. For hardware limitation, the queue
->> number of each tc should be power of 2.
->>
->> For the queues is not assigned to each tc by average, so it's
->> should return vport->alloc_tqps for hclge_get_max_channels().
->>
-> 
-> The commit message needs some improvements, it is not really clear what
-> the last two sentences are about.
-> 
 
-The hclge_get_max_channels() returns the max queue number of each TC for
-user can set by command ethool -L. In previous implement, the queues are
-assigned to each TC by average, so we return it by vport-:
-alloc_tqps / num_tc. And now we can assign differrent queue number for
-each TC, so it shouldn't be divided by num_tc.
-
->> Signed-off-by: Jian Shen <shenjian15@huawei.com>
->> Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
->> ---
->>
-> ...
-> 
->>   
->> +	if (kinfo->tc_info.mqprio_active) {
->> +		dev_err(&netdev->dev,
-> 
-> why not use netdev_err() and friends ?
-> anyway I see your driver is using dev_err(&netdev->dev, ...)
-> intensively,
-> maybe submit a follow up patch to fix all your prints ?
-> 
-
-yes, will fix it with another patch.
-
-> ...]
->>   
->> +static int hclge_mqprio_qopt_check(struct hclge_dev *hdev,
->> +				   struct tc_mqprio_qopt_offload
->> *mqprio_qopt)
->> +{
->> +	u16 queue_sum = 0;
->> +	int ret;
->> +	int i;
->> +
->> +	if (!mqprio_qopt->qopt.num_tc) {
->> +		mqprio_qopt->qopt.num_tc = 1;
->> +		return 0;
->> +	}
->> +
->> +	ret = hclge_dcb_common_validate(hdev, mqprio_qopt->qopt.num_tc,
->> +					mqprio_qopt->qopt.prio_tc_map);
->> +	if (ret)
->> +		return ret;
->> +
->> +	for (i = 0; i < mqprio_qopt->qopt.num_tc; i++) {
->> +		if (!is_power_of_2(mqprio_qopt->qopt.count[i])) {
->> +			dev_err(&hdev->pdev->dev,
->> +				"qopt queue count must be power of
->> 2\n");
->> +			return -EINVAL;
->> +		}
->> +
->> +		if (mqprio_qopt->qopt.count[i] > hdev->rss_size_max) {
->> +			dev_err(&hdev->pdev->dev,
->> +				"qopt queue count should be no more
->> than %u\n",
->> +				hdev->rss_size_max);
->> +			return -EINVAL;
->> +		}
->> +
->> +		if (mqprio_qopt->qopt.offset[i] != queue_sum) {
->> +			dev_err(&hdev->pdev->dev,
->> +				"qopt queue offset must start from 0,
->> and being continuous\n");
->> +			return -EINVAL;
->> +		}
->> +
->> +		if (mqprio_qopt->min_rate[i] || mqprio_qopt-
->>> max_rate[i]) {
->> +			dev_err(&hdev->pdev->dev,
->> +				"qopt tx_rate is not supported\n");
->> +			return -EOPNOTSUPP;
->> +		}
->> +
->> +		queue_sum = mqprio_qopt->qopt.offset[i];
->> +		queue_sum += mqprio_qopt->qopt.count[i];
-> 
-> it will make more sense if you moved this queue summing outside of the
-> loop
-> 
-
-this queue_sum is used in this loop:
-if (mqprio_qopt->qopt.offset[i] != queue_sum) {
-...
-
->> +	}
->> +	if (hdev->vport[0].alloc_tqps < queue_sum) {
-> 
-> can't you just allocate new tqps according to the new mqprio input like
-> other drivers do ? how the user allocates those tqps ?
-> 
-
-maybe the name of 'alloc_tqps' is a little bit misleading, the meaning
-of this field is the total number of the available tqps in this vport.
-
->> +		dev_err(&hdev->pdev->dev,
->> +			"qopt queue count sum should be less than
->> %u\n",
->> +			hdev->vport[0].alloc_tqps);
->> +		return -EINVAL;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static void hclge_sync_mqprio_qopt(struct hnae3_tc_info *tc_info,
->> +				   struct tc_mqprio_qopt_offload
->> *mqprio_qopt)
->> +{
->> +	int i;
->> +
->> +	memset(tc_info, 0, sizeof(*tc_info));
->> +	tc_info->num_tc = mqprio_qopt->qopt.num_tc;
->> +	memcpy(tc_info->prio_tc, mqprio_qopt->qopt.prio_tc_map,
->> +	       sizeof_field(struct hnae3_tc_info, prio_tc));
->> +	memcpy(tc_info->tqp_count, mqprio_qopt->qopt.count,
->> +	       sizeof_field(struct hnae3_tc_info, tqp_count));
->> +	memcpy(tc_info->tqp_offset, mqprio_qopt->qopt.offset,
->> +	       sizeof_field(struct hnae3_tc_info, tqp_offset));
->> +
-> 
-> isn't it much easier to just store a copy of tc_mqprio_qopt in you
-> tc_info and then just:
-> tc_info->qopt = mqprio->qopt;
-> 
-> [...]
-
-The tc_mqprio_qopt_offload still contains a lot of opt hns3 driver does
-not use yet, even if the hns3 use all the opt, I still think it is
-better to create our own struct, if struct tc_mqprio_qopt_offload
-changes in the future, we can limit the change to the
-tc_mqprio_qopt_offload convertion.
-
->> -	hclge_tm_schd_info_update(hdev, tc);
->> -	hclge_tm_prio_tc_info_update(hdev, prio_tc);
->> -
->> -	ret = hclge_tm_init_hw(hdev, false);
->> -	if (ret)
->> -		goto err_out;
->> +	kinfo = &vport->nic.kinfo;
->> +	memcpy(&old_tc_info, &kinfo->tc_info, sizeof(old_tc_info));
-> 
-> if those are of the same kind, just normal assignment would be much
-> cleaner.
-
-yes, normal assignment seems cleaner.
-
->> +	hclge_sync_mqprio_qopt(&kinfo->tc_info, mqprio_qopt);
->> +	kinfo->tc_info.mqprio_active = tc > 0;
->>   
->> -	ret = hclge_client_setup_tc(hdev);
->> +	ret = hclge_config_tc(hdev, &kinfo->tc_info);
->>   	if (ret)
->>   		goto err_out;
->>   
->> @@ -436,6 +534,12 @@ static int hclge_setup_tc(struct hnae3_handle
->> *h, u8 tc, u8 *prio_tc)
->>   	return hclge_notify_init_up(hdev);
->>   
->>   err_out:
->> +	/* roll-back */
->> +	memcpy(&kinfo->tc_info, &old_tc_info, sizeof(old_tc_info));
-> same.
-> 
-> 
-> 
-> .
-> 
-
+-- 
+Yours,
+Muchun
