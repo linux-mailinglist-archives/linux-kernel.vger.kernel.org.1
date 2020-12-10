@@ -2,320 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3762D55C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7B52D55C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388431AbgLJIwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 03:52:17 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:43189 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388364AbgLJIwA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 03:52:00 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BA8m2j0007298;
-        Thu, 10 Dec 2020 09:51:08 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=B/3tuzjIHOPWbgHJOdZTMpj3MXPOpjz00NZem2Gkp2g=;
- b=kZKfnHGsNmMCKrGj94POBE/rm7sB8e/rK5DHn6zMhPD3j2DetoT1oH5FFmgH+H99RvKO
- HfrF9yd4mRmjGG86n+Ev1oA8PObZqK1M0prFHKQpgYVLfxr9CDkIGkP9TaLaeFypft+c
- qd17m2F7ec2ALGdGZ4G+alHQr8sO378HJrnMkmWHNQ1dxXLNoUMuBe3YgePv2O6Mql8z
- b8yOAYSidRdgn4grG/7phNWSidbzTyLqo8gBHZKoIxU6/OyrIuAMxDfkWk61CMG/6hYu
- sJU8h8UXrBCzM5rVQZeqEX7JyhkgZY+BiJeDRl9cvU1ZHnLjbgkpsaajOioqYFWoYLt/ jA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 35agq69v9a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 09:51:08 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 189A310002A;
-        Thu, 10 Dec 2020 09:51:07 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DE04922B71E;
-        Thu, 10 Dec 2020 09:51:07 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.44) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Dec
- 2020 09:51:07 +0100
-Subject: Re: [PATCH v3 09/15] remoteproc: Introduce function rproc_detach()
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201126210642.897302-1-mathieu.poirier@linaro.org>
- <20201126210642.897302-10-mathieu.poirier@linaro.org>
- <0e705760-b69a-d872-9770-c03dde85ab1c@st.com>
- <20201209005311.GB1601690@xps15>
- <cb959e29-65eb-ae89-0c53-cdbc4c7bc77a@st.com>
- <20201209211808.GA1814981@xps15>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <9e5a9101-485d-3e1c-d959-92cb26115ba4@st.com>
-Date:   Thu, 10 Dec 2020 09:51:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201209211808.GA1814981@xps15>
-Content-Type: text/plain; charset="utf-8"
+        id S2388169AbgLJIxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 03:53:16 -0500
+Received: from mail-eopbgr40069.outbound.protection.outlook.com ([40.107.4.69]:18870
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388255AbgLJIxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 03:53:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eP9in2/ZD2G9iliIq3P76wx+5E5QDHnoBoA6nmiibNqeARHIYlQPKiv/T69VZJJjZKsXqO8+iWmX6TaLKIb/ao1H6SYz0q/Y6Wx+tU8+LtQsIf6+W1+i3cYHZX3S8uR1XXMvlCgsN46LnnBTzb2Zn0b9CSR5qSjewVRkrPMHi3XQw0kdhaShS8EG2H92Uav9EZ90KAj2y9xz0YIMKnmUBxdRPcJQBhF0Grz4L0SY1qfucbBrUDqz5bJ5hMV+iZTGQEftsITPQ1pQK1FJpMKD6NSLOmuc/tYfrqrdXDhhiVJPQqvxi47/QVLEF3heyUHU9hoeu+30Ga7+OfJLTXQjOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k3diIQ7OXgsD0qHTdIuJcPmUaeGVV8QJrCCfA0QZeuw=;
+ b=IBXjjmslsYmtlgHWU7H8WMqHep6RZQzpp65RyP/ADvgihZhFLZE3bxUOn8BJ0GMFSzphXkJtwTzQOfZW+9E6MgK29xcG20wNlSOOqgT2CS8Kpk3774iJ9FLZl/VwRGvsnpBGYmEW+AHrKD4RQE7jtqDfxTujhYTM7c3/AB2iq+Isem7vI3jO8R+i1SHZJX4Z4L9btnbcpCvZKhChYkEZLA8Q3TiY+5TMI2chfih6PIHpJW5ZHwFSxjmAqKkOBbAl+/wwUj3KcwuWn8PvAT4EWOnJdpkZmvRAnJRODSXrncy8ro+miyRuN5lnyuLqGJ+1IED4mpQGQlMdQxs3rPfpFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k3diIQ7OXgsD0qHTdIuJcPmUaeGVV8QJrCCfA0QZeuw=;
+ b=MfgUYIkHBr2yKxF6o7IYwIaus2oa3bX8pSdpJYBrUmLZbB7XYKwo2bgj3zpUPEaLsIQvoD0cWB26pvFrn+uQEeRZ8YC5bk5E3r030iZ8fxrLMqNAWBVaxrRlmZON0h36h7sJu1Qg2wSxTumMbdwvroE+Ag+DtkxW9CmFHakZRyg=
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9)
+ by DB6PR0401MB2373.eurprd04.prod.outlook.com (2603:10a6:4:4b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.15; Thu, 10 Dec
+ 2020 08:52:17 +0000
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c]) by DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c%5]) with mapi id 15.20.3632.023; Thu, 10 Dec 2020
+ 08:52:17 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Pawel Laszczak <pawell@cadence.com>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: linux-next: Tree for Dec 9 (usb/cdns3)
+Thread-Topic: linux-next: Tree for Dec 9 (usb/cdns3)
+Thread-Index: AQHWzo/azlCvSJB/Aky2bACp1E8uPqnwBkKA
+Date:   Thu, 10 Dec 2020 08:52:17 +0000
+Message-ID: <20201210085147.GB2388@b29397-desktop>
+References: <20201209214447.3bfdeb87@canb.auug.org.au>
+ <7e4ff29c-9fa8-219c-a17d-e9be9a2a92ab@infradead.org>
+In-Reply-To: <7e4ff29c-9fa8-219c-a17d-e9be9a2a92ab@infradead.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-10_02:2020-12-09,2020-12-10 signatures=0
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mutt/1.9.4 (2018-02-28)
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 01418c52-f242-4178-930b-08d89ce8e5e6
+x-ms-traffictypediagnostic: DB6PR0401MB2373:
+x-microsoft-antispam-prvs: <DB6PR0401MB2373542A4038910E4F21389F8BCB0@DB6PR0401MB2373.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NHj1bjzY7bu17sh4zGYR9rO5H+r27z1eceVHrXsnauGKg7ZQuEvn1Ty4GRo0FHp/+471jNg6LIOWqbqlgKvWUuXF1Ua8VkZ2bf+c3UNMLv6HX+BixDHDITip4alVKicsjaQaWFHMQf4K0+yG2YY+Lr8Aid5crIj4FxtlVrZj/BotBb5RxZd50l+kERujqdBlqCDkUb5RhOT+9i8hGEAbYMUocnMDr0hZEEyOhBgFACZMceTKwEhtlon8J31KAEmyyNEilZIqmZvdt5G0koPZssLTUfCaV0sgiyhVdRrfQka2JsvZtMpA4XyxcYRlkugGETvUjQJKmvvGjdcNVDLxvg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7979.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(39860400002)(376002)(396003)(366004)(346002)(33656002)(86362001)(478600001)(6486002)(110136005)(54906003)(5660300002)(316002)(26005)(9686003)(6512007)(186003)(83380400001)(64756008)(91956017)(76116006)(33716001)(8676002)(66476007)(66556008)(66946007)(8936002)(2906002)(66446008)(1076003)(4326008)(44832011)(71200400001)(6506007)(53546011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?MAg0AWawjYYH9hiXQXkxODGuwGa9KKYTMTnD3MXW1FLAVOWO3yuQI2Pa8YYM?=
+ =?us-ascii?Q?ZTSEQBHtReEZmEu0K5bOnoiZwreG5afW9LCfxpG5XqGrTl9duw+q0gJvoaqQ?=
+ =?us-ascii?Q?F0XLrmHicbyHRR3EacPcl0TiD6WP//6UyZnBKl/8jyub9rJfHxsqYN7kEGRR?=
+ =?us-ascii?Q?xmjtBqTk2NpmRq99XKi1yDl13sV9+mKBycr+1aLgFFSlgjVi4LYr+q5dtGbt?=
+ =?us-ascii?Q?PPTGPMGfaGUsJGECiKuV2IoBMH/jsXlhSgokQZ0urqbYQymbELGTCC/jzVvw?=
+ =?us-ascii?Q?WBGjgLrBjAqmmMc5aXja3jICYgt/4ZJknR2YSbsLqFqleY9zZAXZBD1rNF7O?=
+ =?us-ascii?Q?rByjsluPFF5wfLALxIf+pvXQI8K8slG0MYYWQrOXY+4vp11E23Z0SjpyFnsC?=
+ =?us-ascii?Q?tVUHMQkkjTS+RajRJFpoDObIH4qxPt+5hEHZMJUN25Yf3Y7UQ1r3cbB4n7IX?=
+ =?us-ascii?Q?DCRjQAVLqlQPBk8y13zL/AhY3pJPk/ieziBAVuDdQB2+CavpaaNJEf3o2pm+?=
+ =?us-ascii?Q?zawJsd8VH4Bz1PqbigiDRwlEtu/FxBFvCj6h6QYTmK7lTQxH5pZPyZP0aCxx?=
+ =?us-ascii?Q?3bQuZjQA2ofm0PKsDlxCQDqyDhY7qNHT9UMXylH4bzkxhuI2vgLcnxdwx7D/?=
+ =?us-ascii?Q?uneKUpo6O8FxsqJwCDXPjh0fhJwpksZyLT3c2eFraOYzy5F8Oiy1IVnBrLOP?=
+ =?us-ascii?Q?WcGFnqhOCwqJ9Db9VCyZuLJtO8rP+83++mcPgldsD9dnSkDOXJjNJJpStPxx?=
+ =?us-ascii?Q?MNFY96OWkMFV0hMzkO7cXsrVX9Xz7fwkcmaJ4Zi1foO3laGMobHvQkvOqKRz?=
+ =?us-ascii?Q?jKihFSlOlz0cAm2e1PaarqWQs+f0zjFRmvqtHyHpngFo/y91dSTkWbtwn3kf?=
+ =?us-ascii?Q?bBO8QNwGg4uxqfANlK2yPL5qL+rpHdTdBcFEoAOdgJmukAcyNHBDxMp/e8fO?=
+ =?us-ascii?Q?TxiK5Uc/BblQdtcHC44zDABhHpzgiGZbQfc1J9ErQ72Ai0j0Y8qAF324DkSK?=
+ =?us-ascii?Q?cBiT?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9C7F5C2A6B36F540B5A9B226245087D8@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7979.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01418c52-f242-4178-930b-08d89ce8e5e6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2020 08:52:17.5747
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JB5Z7IEFSmHbwDFUPJEiXdnNlIC/VWoSnSnPUBcv+ahRmNM9xWInaxpiQCVgFAP2/87OY0JPKISYTNUqsCM4BA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2373
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 20-12-09 16:58:16, Randy Dunlap wrote:
+> On 12/9/20 2:44 AM, Stephen Rothwell wrote:
+> > Hi all,
+> >=20
+> > Changes since 20201208:
+> >=20
+>=20
+> (I don't know what to do about this one -- seeking help.)
+
+Add Pawel.
+
+Hi Pawel,
+
+Add old cdns3 logic, when the CONFIG_USB=3Dm
+If CONFIG_USB_CDNS3 is M, the host will be built as module
+If CONFIG_USB_CDNS3 is build-in, the host will not built due to
+USB=3Dm, so USB!=3D USB_CDNS3 at below dependency.
+
+config USB_CDNS3_HOST
+	bool "Cadence USB3 host controller"
+	depends on USB=3Dy || USB=3DUSB_CDNS3
+
+So, it has no such issue.
+
+But after adding CDNSSP support, the configuration relationship is
+much complicated, both CDNS3 and CDNSSP could choose host file,
+would you have a check for this issue?
+
+Peter
+
+>=20
+>=20
+> on x86_64:
+>=20
+> ld: drivers/usb/cdns3/host.o: in function `xhci_cdns3_suspend_quirk':
+> host.c:(.text+0x9): undefined reference to `usb_hcd_is_primary_hcd'
+>=20
+> This reference to 'usb_hdc_is_primary_hcd' is from hcd_to_xhci(),
+> which is being built as a loadable module:
+>=20
+> int xhci_cdns3_suspend_quirk(struct usb_hcd *hcd)
+> {
+> 	struct xhci_hcd	*xhci =3D hcd_to_xhci(hcd);
+>=20
+>=20
+>=20
+>=20
+> CONFIG_USB_GADGET=3Dy
+> CONFIG_USB_SUPPORT=3Dy
+> CONFIG_USB_COMMON=3Dy
+> # CONFIG_USB_CONN_GPIO is not set
+> CONFIG_USB_ARCH_HAS_HCD=3Dy
+> CONFIG_USB=3Dm
+>=20
+> CONFIG_USB_CDNS_SUPPORT=3Dy
+> CONFIG_USB_CDNS_HOST=3Dy
+> CONFIG_USB_CDNS3=3Dm
+> CONFIG_USB_CDNS3_GADGET=3Dy
+> CONFIG_USB_CDNS3_HOST=3Dy
+>=20
+> Problem is mostly that CONFIG_USB=3Dm and CONFIG_USB_GADGET=3Dy.
+>=20
+>=20
+> Full randconfig file is attached.
+>=20
+>=20
+> thanks.
+> --=20
+> ~Randy
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
 
 
-On 12/9/20 10:18 PM, Mathieu Poirier wrote:
-> On Wed, Dec 09, 2020 at 09:45:32AM +0100, Arnaud POULIQUEN wrote:
->>
->>
->> On 12/9/20 1:53 AM, Mathieu Poirier wrote:
->>> On Tue, Dec 08, 2020 at 07:35:18PM +0100, Arnaud POULIQUEN wrote:
->>>> Hi Mathieu,
->>>>
->>>>
->>>> On 11/26/20 10:06 PM, Mathieu Poirier wrote:
->>>>> Introduce function rproc_detach() to enable the remoteproc
->>>>> core to release the resources associated with a remote processor
->>>>> without stopping its operation.
->>>>>
->>>>> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->>>>> Reviewed-by: Peng Fan <peng.fan@nxp.com>
->>>>> ---
->>>>>  drivers/remoteproc/remoteproc_core.c | 65 +++++++++++++++++++++++++++-
->>>>>  include/linux/remoteproc.h           |  1 +
->>>>>  2 files changed, 65 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
->>>>> index 928b3f975798..f5adf05762e9 100644
->>>>> --- a/drivers/remoteproc/remoteproc_core.c
->>>>> +++ b/drivers/remoteproc/remoteproc_core.c
->>>>> @@ -1667,7 +1667,7 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
->>>>>  /*
->>>>>   * __rproc_detach(): Does the opposite of rproc_attach()
->>>>>   */
->>>>> -static int __maybe_unused __rproc_detach(struct rproc *rproc)
->>>>> +static int __rproc_detach(struct rproc *rproc)
->>>>>  {
->>>>>  	struct device *dev = &rproc->dev;
->>>>>  	int ret;
->>>>> @@ -1910,6 +1910,69 @@ void rproc_shutdown(struct rproc *rproc)
->>>>>  }
->>>>>  EXPORT_SYMBOL(rproc_shutdown);
->>>>>  
->>>>> +/**
->>>>> + * rproc_detach() - Detach the remote processor from the
->>>>> + * remoteproc core
->>>>> + *
->>>>> + * @rproc: the remote processor
->>>>> + *
->>>>> + * Detach a remote processor (previously attached to with rproc_actuate()).
->>>>> + *
->>>>> + * In case @rproc is still being used by an additional user(s), then
->>>>> + * this function will just decrement the power refcount and exit,
->>>>> + * without disconnecting the device.
->>>>> + *
->>>>> + * Function rproc_detach() calls __rproc_detach() in order to let a remote
->>>>> + * processor know that services provided by the application processor are
->>>>> + * no longer available.  From there it should be possible to remove the
->>>>> + * platform driver and even power cycle the application processor (if the HW
->>>>> + * supports it) without needing to switch off the remote processor.
->>>>> + */
->>>>> +int rproc_detach(struct rproc *rproc)
->>>>> +{
->>>>> +	struct device *dev = &rproc->dev;
->>>>> +	int ret;
->>>>> +
->>>>> +	ret = mutex_lock_interruptible(&rproc->lock);
->>>>> +	if (ret) {
->>>>> +		dev_err(dev, "can't lock rproc %s: %d\n", rproc->name, ret);
->>>>> +		return ret;
->>>>> +	}
->>>>> +
->>>>> +	if (rproc->state != RPROC_RUNNING && rproc->state != RPROC_ATTACHED) {
->>>>> +		ret = -EPERM;
->>>>> +		goto out;
->>>>> +	}
->>>>> +
->>>>> +	/* if the remote proc is still needed, bail out */
->>>>> +	if (!atomic_dec_and_test(&rproc->power)) {
->>>>> +		ret = -EBUSY;
->>>>> +		goto out;
->>>>> +	}
->>>>> +
->>>>> +	ret = __rproc_detach(rproc);
->>>>> +	if (ret) {
->>>>> +		atomic_inc(&rproc->power);
->>>>> +		goto out;
->>>>> +	}
->>>>> +
->>>>> +	/* clean up all acquired resources */
->>>>> +	rproc_resource_cleanup(rproc);
->>>>
->>>> I started to test the series, I found 2 problems testing in STM32P1 board.
->>>>
->>>> 1) the resource_table pointer is unmapped if the firmware has been booted by the
->>>> Linux, generating a crash in rproc_free_vring.
->>>> I attached a fix at the end of the mail.
->>>>
->>>
->>> I have reproduced the condition on my side and confirm that your solution is
->>> correct.  See below for a minor comment. 
->>>
->>>> 2) After the detach, the rproc state is "detached"
->>>> but it is no longer possible to re-attach to it correctly.
->>>> Neither if the firmware is standalone, nor if it has been booted
->>>> by the Linux.
->>>>
->>>
->>> Did you update your FW image?  If so, I need to run the same one.
->>>
->>>> I did not investigate, but the issue is probably linked to the resource
->>>> table address which is set to NULL.
->>>>
->>>> So we either have to fix the problem in order to attach or forbid the transition.
->>>>
->>>>
->>>> Regards,
->>>> Arnaud
->>>>
->>>>> +
->>>>> +	rproc_disable_iommu(rproc);
->>>>> +
->>>>> +	/*
->>>>> +	 * Set the remote processor's table pointer to NULL.  Since mapping
->>>>> +	 * of the resource table to a virtual address is done in the platform
->>>>> +	 * driver, unmapping should also be done there.
->>>>> +	 */
->>>>> +	rproc->table_ptr = NULL;
->>>>> +out:
->>>>> +	mutex_unlock(&rproc->lock);
->>>>> +	return ret;
->>>>> +}
->>>>> +EXPORT_SYMBOL(rproc_detach);
->>>>> +
->>>>>  /**
->>>>>   * rproc_get_by_phandle() - find a remote processor by phandle
->>>>>   * @phandle: phandle to the rproc
->>>>> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
->>>>> index da15b77583d3..329c1c071dcf 100644
->>>>> --- a/include/linux/remoteproc.h
->>>>> +++ b/include/linux/remoteproc.h
->>>>> @@ -656,6 +656,7 @@ rproc_of_resm_mem_entry_init(struct device *dev, u32 of_resm_idx, size_t len,
->>>>>  
->>>>>  int rproc_boot(struct rproc *rproc);
->>>>>  void rproc_shutdown(struct rproc *rproc);
->>>>> +int rproc_detach(struct rproc *rproc);
->>>>>  int rproc_set_firmware(struct rproc *rproc, const char *fw_name);
->>>>>  void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type);
->>>>>  int rproc_coredump_add_segment(struct rproc *rproc, dma_addr_t da, size_t size);
->>>>>
->>>>
->>>> From: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
->>>> Date: Tue, 8 Dec 2020 18:54:51 +0100
->>>> Subject: [PATCH] remoteproc: core: fix detach for unmapped table_ptr
->>>>
->>>> If the firmware has been loaded and started by the kernel, the
->>>> resource table has probably been mapped by the carveout allocation
->>>> (see rproc_elf_find_loaded_rsc_table).
->>>> In this case the memory can have been unmapped before the vrings are free.
->>>> The result is a crash that occurs in rproc_free_vring while try to use the
->>>> unmapped pointer.
->>>>
->>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
->>>> ---
->>>>  drivers/remoteproc/remoteproc_core.c | 17 ++++++++++++++---
->>>>  1 file changed, 14 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/drivers/remoteproc/remoteproc_core.c
->>>> b/drivers/remoteproc/remoteproc_core.c
->>>> index 2b0a52fb3398..3508ffba4a2a 100644
->>>> --- a/drivers/remoteproc/remoteproc_core.c
->>>> +++ b/drivers/remoteproc/remoteproc_core.c
->>>> @@ -1964,6 +1964,13 @@ int rproc_detach(struct rproc *rproc)
->>>>  		goto out;
->>>>  	}
->>>>
->>>> +	/*
->>>> +	 * Prevent case that the installed resource table is no longer
->>>> +	 * accessible (e.g. memory unmapped), use the cache if available
->>>> +	 */
->>>> +	if (rproc->cached_table)
->>>> +		rproc->table_ptr = rproc->cached_table;
->>>
->>> I don't think there is an explicit need to check ->cached_table.  If the remote
->>> processor has been started by the remoteproc core it is valid anyway.  And below
->>> kfree() is called invariably. 
->>
->> The condition is needed, the  rproc->cached_table is null if the firmware as
->> been preloaded and the Linux remote proc just attaches to it.
->> The cached is used only when Linux loads the firmware, as the resource table is
->> extracted from the elf file to parse resource before the load of the firmware.
-> 
-> I have taken another look at this and you are correct. The if() condition is
-> needed because ->table_ptr is set only once when the platform driver is
-> probed.  See further down...
-> 
->>
->>>
->>> So that problem is fixed.  Let me know about your FW image and we'll pick it up
->>> from there.
->>
->> I use the following example available on the stm32mp1 image:
->> /usr/local/Cube-M4-examples/STM32MP157C-DK2/Applications/OpenAMP/OpenAMP_TTY_echo_wakeup/lib/firmware/
->> This exemple use the RPMsg and also blink a LED when while running.
->>
->> Don't hesitate if you need me to send it to you by mail.
->>
->> Thank,
->> Arnaud
->>
->>>
->>> Mathieu
->>>
->>>> +
->>>>  	ret = __rproc_detach(rproc);
->>>>  	if (ret) {
->>>>  		atomic_inc(&rproc->power);
->>>> @@ -1975,10 +1982,14 @@ int rproc_detach(struct rproc *rproc)
->>>>
->>>>  	rproc_disable_iommu(rproc);
->>>>
->>>> +	/* Free the chached table memory that can has been allocated*/
->>>> +	kfree(rproc->cached_table);
->>>> +	rproc->cached_table = NULL;
->>>>  	/*
->>>> -	 * Set the remote processor's table pointer to NULL.  Since mapping
->>>> -	 * of the resource table to a virtual address is done in the platform
->>>> -	 * driver, unmapping should also be done there.
->>>> +	 * Set the remote processor's table pointer to NULL. If mapping
->>>> +	 * of the resource table to a virtual address has been done in the
->>>> +	 * platform driver(attachment to an existing firmware),
->>>> +	 * unmapping should also be done there.
->>>>  	 */
->>>>  	rproc->table_ptr = NULL;
-> 
-> With the above in mind we can't to that, otherwise trying to re-attach with
-> rproc_attach() won't work because ->table_ptr will be NULL.
 
-Yes, or an alternative would be to call find_loaded_rsc_table on attach. I did
-not test it but could make sense to call the ops instead of expecting that the
-platform has set table_ptr.
+--=20
 
-> 
-> I wasn't able to test that code path because I didn't have the FW that supported
-> detaching.  Now that the feature is maturing it needs to be done.  
-> 
->>>>  out:
->>>> -- 
->>>> 2.17.1
->>>>
->>>>
->>>>
+Thanks,
+Peter Chen=
