@@ -2,331 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF782D64B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E6D2D64C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404152AbgLJSSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:18:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
+        id S2392761AbgLJSUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:20:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392895AbgLJSR7 (ORCPT
+        with ESMTP id S2392941AbgLJSSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 13:17:59 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6A5C061793
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 10:17:19 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id 15so6742863oix.8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 10:17:19 -0800 (PST)
+        Thu, 10 Dec 2020 13:18:05 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1767C061794;
+        Thu, 10 Dec 2020 10:17:23 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id l11so9633057lfg.0;
+        Thu, 10 Dec 2020 10:17:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uw5yIh61JKo5/En0PAb29LwQEGzQi6lmhmDKRSFr+G4=;
-        b=CkjGDT2hZQGIq0Q38/mkTxav9g9BsLKr2SYSgKdozoMRLVy+FMr/RGgV8HdVkDrlPI
-         9Q1vE13lNnDfykLYcFlnso6D9sudUXdtvkvFTDfNRO6aQ628tQnvprUoWIRdtaQKJpOM
-         8h8AQ8yZYfZO/1olEfRwxlk+TSO8j1mRZ+ZUhaXbCvJKcAsgHJ66UOLNOye1KM2ulSbd
-         IOJIfr+vM7+T6FlXBqt1AQ+X0dkv6zxsArOahoai5tzjsYuUmDxDHv/bSpPLA3nVLMob
-         ZOdDPaxH+BF0ZmkrEToSfrpzTxy/aEekbiSET39hLIw2B6oI2GovNnkNK5tcIiTQ9m91
-         f4Ew==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6eU3gAxbHfnuDe7fKcEuZgZLh+PC1w6WTIXE0r+35/k=;
+        b=AFSFEY2QPDU6OkjO4H3NJtnS38VCLhNF4FP5bhhzJ91zxmxn/sUT0xktWvRZsVS+NY
+         n+yzzVPz/Hz0beUTeC6H7kIWj3/yEF3Wzd9qUTyYVM8Npu7rd8aLv6EUKl77VgTHO4XW
+         gO/qtn9UdbnuDGDbSKZ75LrNpHvvTHB+yXe+QmYOij2Rwd6C1y/strfZAh8Pi7gOag1e
+         W2qWHOBPMG8frNF/j4HqOEqTJZ0s6oV3wWC0zA//jucC1X/jL9ILhDcm9xJr3e7Nn2/J
+         6GGpRZcpuU5CUUc4um4x7UJC7ALWce5mhVpZ24Qqaodfr6Yg9mH8zOu3Dj33K1FbIaf2
+         ViuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uw5yIh61JKo5/En0PAb29LwQEGzQi6lmhmDKRSFr+G4=;
-        b=V39OJAAxCXqZS3Oh4EIPMQF4A+DQV3zdlCx2yMEm6PJeDL12Chf6gOTYGU7oVAdhk7
-         8amTt+Su7wcCTRA1YVf2F7StecYAbN2/BtwR+loUSOLfBKIdy1AaPLTuYgZso/TfMiVC
-         tjIY5SoSv958JFghUmmTZdWmVleWiLpAdGfE1Wyv4mS+OWqes0FxkR0jqMPs6ynnX3lo
-         ooNIA8+YtHBU58Sx/Mo2Ls80JM7XMjlWsOURGgpUhjGG6J3kGD8Co+Dpuj5I1Ka10KcC
-         4rxJfGbkQFYBPwhHIP808IyGfMdKPZPBprDY1fGMS6Yah6abxPKZC8XXl2CbH6EAglNV
-         mfOA==
-X-Gm-Message-State: AOAM532njU+lnLkJkHsO2LGFchPHkBYNdycMKYjilkzsabaTEeAW54hb
-        ydj46zsDOMw3orL2UzY+9UkdweHW1wJmPg==
-X-Google-Smtp-Source: ABdhPJzGp3kXk985pD2FxipwKLcWv24P0Pd7Y2VkOhf3ynr8Mdq36ad/FJxmqgsa2ySHU7kpdAHFWw==
-X-Received: by 2002:aca:3757:: with SMTP id e84mr2795207oia.5.1607624238805;
-        Thu, 10 Dec 2020 10:17:18 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id y8sm937798oix.43.2020.12.10.10.17.17
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6eU3gAxbHfnuDe7fKcEuZgZLh+PC1w6WTIXE0r+35/k=;
+        b=pFJgUbImdhTESZEsGWiroP55jKbPQjuWBYBqfJ9PlSbXiLQKdOPKIzuXGFm+OMQRug
+         D3js4SqhAf4aaDsh6oA7//eLTGdoxxXzmIo18pufyBgQRiOOz3Mu/HwocB6pDy8qIl+m
+         ynIUkVkrTDXyX5yUWDq8T2oqRTPhKnAeH/2xv6Qrqc7G5bT0z0TEhTqpL2sgZDCsQbtB
+         +uTlfhJkju2KuyQz2Wmf6m0IBUAdJvs0AxHxQIa1OjQRodhScuAYVWPreOJ0PxpNHvk0
+         nqRdK0wMwPMPRYTe8/YGWUbfhBSXmFAn0EzBa0pc1zJk8LI7cPK2H3wVdc3Tw27Atm8l
+         ow6Q==
+X-Gm-Message-State: AOAM531L926vQ8esleETsiWAPoamMbd7qd0KoTzENdyLhmj4XZY94i5d
+        FjmOLZdmYxxw9LVgPWKQeD0=
+X-Google-Smtp-Source: ABdhPJzzS4xpRUhgeSNdf3lfAbc0iKSsSFDRBEqYnOduzCmt11voQLFYzrGoASRxDbie0iqoWmjoSA==
+X-Received: by 2002:a19:2291:: with SMTP id i139mr3340562lfi.592.1607624242127;
+        Thu, 10 Dec 2020 10:17:22 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id c19sm603830lfr.182.2020.12.10.10.17.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 10:17:17 -0800 (PST)
-Date:   Thu, 10 Dec 2020 12:17:15 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org
-Subject: Re: [PATCH v2 3/3] remoteproc: Add ftrace events to trace lifecycle
- of remoteprocs
-Message-ID: <X9JmK6/eUHfMj+dR@builder.lan>
-References: <1605563084-30385-1-git-send-email-rishabhb@codeaurora.org>
- <1605563084-30385-4-git-send-email-rishabhb@codeaurora.org>
- <20201118222614.GA75192@xps15>
+        Thu, 10 Dec 2020 10:17:21 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 10 Dec 2020 19:17:19 +0100
+To:     Daniel Axtens <dja@axtens.net>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/2] rcu-tasks: move RCU-tasks initialization out of
+ core_initcall()
+Message-ID: <20201210181719.GA2014@pc638.lan>
+References: <20201209202732.5896-1-urezki@gmail.com>
+ <20201209203728.GA5972@pc638.lan>
+ <875z59hjau.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118222614.GA75192@xps15>
+In-Reply-To: <875z59hjau.fsf@dja-thinkpad.axtens.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 18 Nov 16:26 CST 2020, Mathieu Poirier wrote:
+Hello, Daniel.
 
-> On Mon, Nov 16, 2020 at 01:44:44PM -0800, Rishabh Bhatnagar wrote:
-> > Add trace events to trace bootup/shutdown/recovery of remote
-> > processors. These events are useful in analyzing the time
-> > spent in each step in the life cycle and can be used for
-> > performace analysis. Also these serve as standard checkpoints
-> > in debugging.
-> > 
-> > Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> > ---
-> >  drivers/remoteproc/remoteproc_core.c | 19 +++++++-
-> >  include/trace/events/remoteproc.h    | 91 ++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 109 insertions(+), 1 deletion(-)
-> >  create mode 100644 include/trace/events/remoteproc.h
-> > 
-> > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> > index dab2c0f..39da409 100644
-> > --- a/drivers/remoteproc/remoteproc_core.c
-> > +++ b/drivers/remoteproc/remoteproc_core.c
-> > @@ -42,6 +42,9 @@
-> >  
-> >  #include "remoteproc_internal.h"
-> >  
-> > +#define CREATE_TRACE_POINTS
-> > +#include <trace/events/remoteproc.h>
-> > +
-> >  #define HIGH_BITS_MASK 0xFFFFFFFF00000000ULL
-> >  
-> >  static DEFINE_MUTEX(rproc_list_mutex);
-> > @@ -1164,6 +1167,7 @@ static int rproc_prepare_subdevices(struct rproc *rproc)
-> >  	struct rproc_subdev *subdev;
-> >  	int ret;
-> >  
-> > +	trace_rproc_subdevices("Prepare subdevices", rproc->name);
+> Hi Vlad,
 > 
-> I wouldn't add this to the core - after a while they become part of the ABI and
-> we can't move things around.  I suppose they can stay in platform drivers but
-> even that is going against the general trend in the kernel community to avoid them at
-> all.  To me this should remain out of tree code but Bjorn will make the call.
+> >> Initialize the RCU-tasks earlier, before *_initcall() callbacks are
+> >> invoked. Do it after the workqueue subsytem is up and running. That
+> >> gives us a possibility to make use of synchronize_rcu_tasks*() wait
+> >> API in early_initcall() callbacks.
+> >> 
+> >> Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
+> >> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > 
-
-I need to update my understanding of traces being ABI or not. But I
-think the general start/stop traces would be useful and I expect that we
-will continue to do those.
-
-For the subdevices we need to conclude what we want to trace, e.g.
-is this big trace adding anything beyond the trace_rproc_boot()?
-Shouldn't we trace the individual subdevs, and if so we're definitely in
-the area you're worrying about.
-
-Regards,
-Bjorn
-
-> Thanks,
-> Mathieu
+> Tested-by: Daniel Axtens <dja@axtens.net>
 > 
-> >  	list_for_each_entry(subdev, &rproc->subdevs, node) {
-> >  		if (subdev->prepare) {
-> >  			ret = subdev->prepare(subdev);
-> > @@ -1188,6 +1192,7 @@ static int rproc_start_subdevices(struct rproc *rproc)
-> >  	struct rproc_subdev *subdev;
-> >  	int ret;
-> >  
-> > +	trace_rproc_subdevices("Start subdevices", rproc->name);
-> >  	list_for_each_entry(subdev, &rproc->subdevs, node) {
-> >  		if (subdev->start) {
-> >  			ret = subdev->start(subdev);
-> > @@ -1211,6 +1216,7 @@ static void rproc_stop_subdevices(struct rproc *rproc, bool crashed)
-> >  {
-> >  	struct rproc_subdev *subdev;
-> >  
-> > +	trace_rproc_subdevices("Stop subdevices", rproc->name);
-> >  	list_for_each_entry_reverse(subdev, &rproc->subdevs, node) {
-> >  		if (subdev->stop)
-> >  			subdev->stop(subdev, crashed);
-> > @@ -1221,6 +1227,7 @@ static void rproc_unprepare_subdevices(struct rproc *rproc)
-> >  {
-> >  	struct rproc_subdev *subdev;
-> >  
-> > +	trace_rproc_subdevices("Unprepare subdevices", rproc->name);
-> >  	list_for_each_entry_reverse(subdev, &rproc->subdevs, node) {
-> >  		if (subdev->unprepare)
-> >  			subdev->unprepare(subdev);
-> > @@ -1357,6 +1364,7 @@ static int rproc_start(struct rproc *rproc, const struct firmware *fw)
-> >  	struct device *dev = &rproc->dev;
-> >  	int ret;
-> >  
-> > +	trace_rproc_boot("loading firmware segments into memory", rproc->name);
-> >  	/* load the ELF segments to memory */
-> >  	ret = rproc_load_segments(rproc, fw);
-> >  	if (ret) {
-> > @@ -1385,6 +1393,7 @@ static int rproc_start(struct rproc *rproc, const struct firmware *fw)
-> >  		goto reset_table_ptr;
-> >  	}
-> >  
-> > +	trace_rproc_boot("starting remoteproc", rproc->name);
-> >  	/* power up the remote processor */
-> >  	ret = rproc->ops->start(rproc);
-> >  	if (ret) {
-> > @@ -1402,6 +1411,7 @@ static int rproc_start(struct rproc *rproc, const struct firmware *fw)
-> >  
-> >  	rproc->state = RPROC_RUNNING;
-> >  
-> > +	trace_rproc_boot("remoteproc is up", rproc->name);
-> >  	dev_info(dev, "remote processor %s is now up\n", rproc->name);
-> >  
-> >  	return 0;
-> > @@ -1648,6 +1658,7 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
-> >  	/* the installed resource table is no longer accessible */
-> >  	rproc->table_ptr = rproc->cached_table;
-> >  
-> > +	trace_rproc_shutdown("Stopping the remoteproc", rproc->name);
-> >  	/* power off the remote processor */
-> >  	ret = rproc->ops->stop(rproc);
-> >  	if (ret) {
-> > @@ -1697,6 +1708,7 @@ int rproc_trigger_recovery(struct rproc *rproc)
-> >  	if (rproc->state != RPROC_CRASHED)
-> >  		goto unlock_mutex;
-> >  
-> > +	trace_rproc_recovery("Recover remoteproc", rproc->name);
-> >  	dev_err(dev, "recovering %s\n", rproc->name);
-> >  
-> >  	ret = rproc_stop(rproc, true);
-> > @@ -1716,6 +1728,7 @@ int rproc_trigger_recovery(struct rproc *rproc)
-> >  	/* boot the remote processor up again */
-> >  	ret = rproc_start(rproc, firmware_p);
-> >  
-> > +	trace_rproc_recovery("Recovery completed", rproc->name);
-> >  	release_firmware(firmware_p);
-> >  
-> >  unlock_mutex:
-> > @@ -1796,6 +1809,7 @@ int rproc_boot(struct rproc *rproc)
-> >  	/* skip the boot or attach process if rproc is already powered up */
-> >  	if (atomic_inc_return(&rproc->power) > 1) {
-> >  		ret = 0;
-> > +		trace_rproc_boot("Incrementing ref count and exiting", rproc->name);
-> >  		goto unlock_mutex;
-> >  	}
-> >  
-> > @@ -1804,6 +1818,7 @@ int rproc_boot(struct rproc *rproc)
-> >  
-> >  		ret = rproc_actuate(rproc);
-> >  	} else {
-> > +		trace_rproc_boot("requesting firmware", rproc->name);
-> >  		dev_info(dev, "powering up %s\n", rproc->name);
-> >  
-> >  		/* load firmware */
-> > @@ -1858,8 +1873,10 @@ void rproc_shutdown(struct rproc *rproc)
-> >  	}
-> >  
-> >  	/* if the remote proc is still needed, bail out */
-> > -	if (!atomic_dec_and_test(&rproc->power))
-> > +	if (!atomic_dec_and_test(&rproc->power)) {
-> > +		trace_rproc_shutdown("Decrementing ref count and exiting", rproc->name);
-> >  		goto out;
-> > +	}
-> >  
-> >  	ret = rproc_stop(rproc, false);
-> >  	if (ret) {
-> > diff --git a/include/trace/events/remoteproc.h b/include/trace/events/remoteproc.h
-> > new file mode 100644
-> > index 0000000..341bf4b
-> > --- /dev/null
-> > +++ b/include/trace/events/remoteproc.h
-> > @@ -0,0 +1,91 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > +/*
-> > + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> > + */
-> > +
-> > +#undef TRACE_SYSTEM
-> > +#define TRACE_SYSTEM remoteproc
-> > +
-> > +#if !defined(_TRACE_REMOTEPROC_H) || defined(TRACE_HEADER_MULTI_READ)
-> > +#define _TRACE_REMOTEPROC_H
-> > +
-> > +#include <linux/tracepoint.h>
-> > +
-> > +TRACE_EVENT(rproc_boot,
-> > +
-> > +	TP_PROTO(const char *event, const char *rproc_name),
-> > +
-> > +	TP_ARGS(event, rproc_name),
-> > +
-> > +	TP_STRUCT__entry(
-> > +		__string(event, event)
-> > +		__string(rproc_name, rproc_name)
-> > +	),
-> > +
-> > +	TP_fast_assign(
-> > +		__assign_str(event, event);
-> > +		__assign_str(rproc_name, rproc_name);
-> > +	),
-> > +
-> > +	TP_printk("rproc_boot: %s: %s", __get_str(rproc_name), __get_str(event))
-> > +);
-> > +
-> > +TRACE_EVENT(rproc_shutdown,
-> > +
-> > +	TP_PROTO(const char *event, const char *rproc_name),
-> > +
-> > +	TP_ARGS(event, rproc_name),
-> > +
-> > +	TP_STRUCT__entry(
-> > +		__string(event, event)
-> > +		__string(rproc_name, rproc_name)
-> > +	),
-> > +
-> > +	TP_fast_assign(
-> > +		__assign_str(event, event);
-> > +		__assign_str(rproc_name, rproc_name);
-> > +	),
-> > +
-> > +	TP_printk("rproc_shutdown: %s: %s", __get_str(rproc_name), __get_str(event))
-> > +);
-> > +
-> > +TRACE_EVENT(rproc_recovery,
-> > +
-> > +	TP_PROTO(const char *event, const char *rproc_name),
-> > +
-> > +	TP_ARGS(event, rproc_name),
-> > +
-> > +	TP_STRUCT__entry(
-> > +		__string(event, event)
-> > +		__string(rproc_name, rproc_name)
-> > +	),
-> > +
-> > +	TP_fast_assign(
-> > +		__assign_str(event, event);
-> > +		__assign_str(rproc_name, rproc_name);
-> > +	),
-> > +
-> > +	TP_printk("rproc_recovery: %s: %s", __get_str(rproc_name), __get_str(event))
-> > +);
-> > +
-> > +TRACE_EVENT(rproc_subdevices,
-> > +
-> > +	TP_PROTO(const char *event, const char *rproc_name),
-> > +
-> > +	TP_ARGS(event, rproc_name),
-> > +
-> > +	TP_STRUCT__entry(
-> > +		__string(event, event)
-> > +		__string(rproc_name, rproc_name)
-> > +	),
-> > +
-> > +	TP_fast_assign(
-> > +		__assign_str(event, event);
-> > +		__assign_str(rproc_name, rproc_name);
-> > +	),
-> > +
-> > +	TP_printk("rproc_subdevices: %s: %s", __get_str(rproc_name), __get_str(event))
-> > +);
-> > +#endif
-> > +#include <trace/define_trace.h>
-> > +
-> > -- 
-> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > a Linux Foundation Collaborative Project
-> > 
+Thank you for checking it!
+
+> >> ---
+> >>  include/linux/rcupdate.h |  6 ++++++
+> >>  init/main.c              |  1 +
+> >>  kernel/rcu/tasks.h       | 26 ++++++++++++++++++++++----
+> >>  3 files changed, 29 insertions(+), 4 deletions(-)
+> >> 
+> > I still don't have a powerPC hw so far, even though i have sent a request
+> > to the osuosl.org. It would be appreciated if Michael or Daniel could run
+> > and verify it.
+> 
+> Sorry it's taken me so long to get to this. Your patch fixes things for
+> me. Thanks!
+> 
+No problem. I fully understand that sometimes we are limited in spare time.
+
+>
+> BTW, I'm happy to see you taking on the challenge of RCU after your good
+> work on vmalloc - all the best with it!
+> 
+Yep, that work was quite interesting and probably not so easy, at least
+in the beginning. Thanks for your supportive words and same to you
+regarding your excellent KASAN work and future challenge :)
+
+--
+Vlad Rezki
