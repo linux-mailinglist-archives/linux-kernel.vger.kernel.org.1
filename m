@@ -2,124 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B162D645D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C419F2D6475
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404062AbgLJSEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:04:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392560AbgLJSDs (ORCPT
+        id S2392781AbgLJSGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:06:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44064 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391027AbgLJSGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 13:03:48 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E576C061793;
-        Thu, 10 Dec 2020 10:03:08 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id ga15so8613937ejb.4;
-        Thu, 10 Dec 2020 10:03:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6q578J6A1fbtKR8a+hbQPlwUDllTgydW2mEl6lc3Zdo=;
-        b=pJcBbImRzRTvMGRNhg6vF0yB0MhgDQudL1Fe65Yge9FrK32TBovGPy/H8OtLOntZUH
-         dnN4RgmwMqUh6QdN6iBvGCfhRb0FqaD8RudvM9c+PMwR+2Yed77VH8mNrY1cXl4GYnDH
-         E+uKxVvqaSGGIqeW2+4HgSwYDa9hpuKtt75887XtZZLHsn3ksQqeBtBhHFhkp4GU26g1
-         vR4TFd9HeYM+nDtrhEkA4o/FpbsdBHqnG/s+Ut9tvsMgG/lDlWv7W6OfKUjwm44jha/J
-         T7fMGV+50kebGdK329J0s761q2cKdAREMShHBa34h0eV3dvL+ieDJcK7DKB13oIIz8Nl
-         ORCg==
+        Thu, 10 Dec 2020 13:06:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607623520;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=38b2aHumfg+RHL6XskHzjsc/L/nI/0Gd6ZGQlxYxxHM=;
+        b=V7NppQiWfqS8kMpDFn49lxQP5UAPgjN+3T3gwY3SVY76V1feDldbDeHN6sCuTlcsTZlYh9
+        nyNf9wh7yRgLS4LFFTo4O/kil8DWzlcvA5xAfv+PPtW/iC1DP3Ljz/k7o1urnJzYLqtWPT
+        4rh61wWorwxhvjekps2JnLCKY2xa/uw=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-463-Wl6Xm1ArPHip30bgbcTDPA-1; Thu, 10 Dec 2020 13:05:18 -0500
+X-MC-Unique: Wl6Xm1ArPHip30bgbcTDPA-1
+Received: by mail-ed1-f69.google.com with SMTP id c24so2791110edx.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 10:05:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6q578J6A1fbtKR8a+hbQPlwUDllTgydW2mEl6lc3Zdo=;
-        b=GmFRFb57CinJVSYsvMpIY6EGCkw5kFI8qpnZOvdFWYbOLrNEhaXw/g1yHcnV+8uQ5b
-         9y2MiCN64cSEJPQdsP9WvilRmgUrCyZZmmf0y4QU6k1a1Jsw6PQAgMdAJVhVanD0Hw6c
-         yx6ylKeJIC814TXPFbsLthp4cT3bvlMrpxyQpuIOGIo/q1b1PBtk13Nm/7YQ05qbArBU
-         Jf6d0X6D0vREhErmfz1wPuFNg0PS+8iJ4zm2djhEcnyVxQA10+XghUvbh0HuzHvXLRpm
-         n4pUya8ZSdMJ7m3tbudNOVb4JAInYugSpO0/C42Uy4YS87LOhGZKcTjQKaZtUBgFMTth
-         nkYQ==
-X-Gm-Message-State: AOAM532eKWkDS0appZMCI3oJ1IHLJArdl2PWgXNsWFuMrMzpqlawgrJp
-        MWV8VrJU2by6V+QCFxxnmZY=
-X-Google-Smtp-Source: ABdhPJwm2SoJa+GRCQsQwjtVyMGYTKu8R75ywRQ1ki7thPaqC254JYaTZm3YuoFX1INsf5XCmQI6Aw==
-X-Received: by 2002:a17:906:52da:: with SMTP id w26mr7606530ejn.347.1607623386979;
-        Thu, 10 Dec 2020 10:03:06 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id k3sm5014070ejd.36.2020.12.10.10.03.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 10 Dec 2020 10:03:06 -0800 (PST)
-Message-ID: <f12d2c516d2a038bcc27677d9b982c52d19d5027.camel@gmail.com>
-Subject: Re: [PATCH 2/2] scsi: ufs: Clean up ufshcd_exit_clk_scaling/gating()
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Thu, 10 Dec 2020 19:03:05 +0100
-In-Reply-To: <1607520942-22254-3-git-send-email-cang@codeaurora.org>
-References: <1607520942-22254-1-git-send-email-cang@codeaurora.org>
-         <1607520942-22254-3-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=38b2aHumfg+RHL6XskHzjsc/L/nI/0Gd6ZGQlxYxxHM=;
+        b=TSocmDF4bHiG9JdXlTI9BE/llK4I81xW4S+MfhARSI6UUdbv8ZLYExACTBFIO/8Vrb
+         7QWNHtJH8eeCI5O1ykcvSMr9VDbNOqumtU/DmsWi3X6cdYiKArPMOkdbe4ehAP2SC0s8
+         sg88yruA2DZOPgG09+oOEmqlSON6BbYDVV3q6FacXJAvtnXLb3UDCrtES+sjkFDPLWj0
+         Xzb6UuK9lX3mvFtNm/A2t2gmgCWAyoeRkFUFXWhWRWiVYXgj4lRYkmDBo5zhK6os6OSj
+         +hbGahA9rVT7Xt/kH9keH0sdEg3vY1XTbcrlwxAgkH7m4Oqz1rglUa8HitlXdJPRRe8e
+         KYbA==
+X-Gm-Message-State: AOAM530z5Yo6jtmHnN5m8VqkD9GkDSZPVCFBVElzrTDzZgq3Qlyorq7b
+        qsnu+BEIdcv02zmIdNhY+SRQ0Kb9yjJGvenjaIlBTmEeDtp0pOHMKK7xDbKzQse8f74O6ijNjvl
+        nnw/2IvHcb0aRmOGOpYo5oQwK
+X-Received: by 2002:a50:e786:: with SMTP id b6mr7758325edn.242.1607623517514;
+        Thu, 10 Dec 2020 10:05:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwgKk6eJFtLPuqCFcvy/3QeR5ZDZaVS3/9ky/rcrJfcfptZUk4xCwIvHkm7fi1iYvstgVtIog==
+X-Received: by 2002:a50:e786:: with SMTP id b6mr7758300edn.242.1607623517335;
+        Thu, 10 Dec 2020 10:05:17 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id k21sm5830209edq.26.2020.12.10.10.05.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 10:05:16 -0800 (PST)
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+To:     Oliver Upton <oupton@google.com>,
+        Andy Lutomirski <luto@amacapital.net>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+References: <9389c1198da174bcc9483d6ebf535405aa8bdb45.camel@redhat.com>
+ <E4F263BE-6CAA-4152-8818-187D34D8D0FD@amacapital.net>
+ <CAOQ_QshW0UvwSS3TUCK5PxkLQhHTqDNXNeMxwVDyf+DXc23fXQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <eb0cbfaa-251a-810b-3c12-4ee63d082bc8@redhat.com>
+Date:   Thu, 10 Dec 2020 19:05:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <CAOQ_QshW0UvwSS3TUCK5PxkLQhHTqDNXNeMxwVDyf+DXc23fXQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-09 at 05:35 -0800, Can Guo wrote:
-> ufshcd_hba_exit() is always called after ufshcd_exit_clk_scaling()
-> and
-> ufshcd_exit_clk_gating(), so move ufshcd_exit_clk_scaling/gating() to
-> ufshcd_hba_exit().
+On 10/12/20 18:59, Oliver Upton wrote:
+> However, I don't believe we can assume the guest's TSCs to be synchronized,
+> even if sane guests will never touch them. In this case, I think a per-vCPU
+> ioctl is still warranted, allowing userspace to get at the guest CPU adjust
+> component of Thomas' equation below (paraphrased):
 > 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
+>          TSC guest CPU = host tsc base + guest base offset + guest CPU adjust
+
+Right now that would be:
+
+- KVM_GET_TSC_STATE (vm) returns host tsc base + guest base offset (plus 
+the associated time)
+
+- KVM_GET_MSR *without* KVM_X86_QUIRK_TSC_HOST_ACCESS for guest CPU adjust
+
+and the corresponding SET ioctls.  What am *I* missing?
+
+> Alternatively, a write from userspace to the guest's IA32_TSC_ADJUST with
+> KVM_X86_QUIRK_TSC_HOST_ACCESS could have the same effect, but that seems to be
+> problematic for a couple reasons. First, depending on the guest's CPUID the
+> TSC_ADJUST MSR may not even be available, meaning that the guest could've used
+> IA32_TSC to adjust the TSC (eww).
+
+Indeed, the host should always be able to read/write IA32_TSC and 
+IA32_TSC_ADJUST.
+
+Thanks,
+
+Paolo
+
+> Second, userspace replaying writes to IA32_TSC
+> (in the case IA32_TSC_ADJUST doesn't exist for the guest) seems_very_
+> unlikely to work given all the magic handling that KVM does for
+> writes to it.
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 12266bd..41a12d6 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -1846,11 +1846,14 @@ static void ufshcd_init_clk_scaling(struct
-> ufs_hba *hba)
->         snprintf(wq_name, sizeof(wq_name), "ufs_clkscaling_%d",
->                  hba->host->host_no);
->         hba->clk_scaling.workq =
-> create_singlethread_workqueue(wq_name);
-> +
-> +       hba->clk_scaling.is_initialized = true;
->  }
->  
->  static void ufshcd_exit_clk_scaling(struct ufs_hba *hba)
->  {
-> -       if (!ufshcd_is_clkscaling_supported(hba))
-> +       if (!ufshcd_is_clkscaling_supported(hba) ||
-> +           !hba->clk_scaling.is_initialized)
->                 return;
->  
->         if (hba->devfreq)
-> @@ -1894,12 +1897,16 @@ static void ufshcd_init_clk_gating(struct
-> ufs_hba *hba)
->         hba->clk_gating.enable_attr.attr.mode = 0644;
->         if (device_create_file(hba->dev, &hba-
-> >clk_gating.enable_attr))
->                 dev_err(hba->dev, "Failed to create sysfs for
-> clkgate_enable\n");
-> +
-> +       hba->clk_gating.is_initialized = true;
->  }
-
-you don't need these two is_initialized at all. they are only be false
-when scaling/gating is not supported??
-
-Bean
-
+> Is this roughly where we are or have I entirely missed the mark?:-)
 
