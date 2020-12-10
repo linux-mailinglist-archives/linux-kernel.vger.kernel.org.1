@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE61B2D614F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4732D617E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391811AbgLJQJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:09:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47692 "EHLO
+        id S2392303AbgLJQK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:10:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403884AbgLJQIO (ORCPT
+        with ESMTP id S2392335AbgLJQHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:08:14 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8F5C0611CA
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:07:34 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id w79so5245710qkb.5
+        Thu, 10 Dec 2020 11:07:50 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00EACC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:07:35 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id j26so3885702qtq.8
         for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:07:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8qkH/T0u1gIF+PhxKKFzFehDKE3HDIIdIpQZFLT4Bhs=;
-        b=TTCCXDSLrBA2NXLYRXoh5BMEly9WIUnOfhgx7j16Bglfc5BJz1rjDT2guFKeq43Sof
-         nVG1qWc598tBvGLf1WeHNilHbrG7olVsOOfnNvn5GsHCIimYEgCrgx9N0nH4TZFNYPYj
-         mgPcYASjrHDrb6X7mB1PXUDfVC3xEsJCnGmDrXa+WbH/E7cK63jYEuupVdv36Q/vZWxZ
-         O3GMHCLNAOURheN+L73YIlI+ycmILecTaUYc4Z4Ssp9gec4rldklTehOeEtWeqKscgcJ
-         q8rhKRimXqXWbUwJh0BExMUTEqdUmatmknMb67i+i21ctEM3gs6b1Zf05sVSsKzMsehi
-         Qv1Q==
+        bh=sKdNFHIaOGHzemSXJ4fYnvyA7QI5pQyJsgsZg/WlZU8=;
+        b=kPhh1k9RGQVw2nO38xkVOkwR/De1KOKnP+eCLe74yxRR6yA8+dGeGdUv/5lHWit/xq
+         hc4MYYTiy25Jg9nprHcusjK6o+Ry13V6VxmHRC3LWNSy0nk/4Oa6Z+59spbrzxuCjz0G
+         QitlL/rJwBRDdzhwYiOvEKmAyLIfYob+sXa0LqUOpu9h+jkjimy31b+Bx8DCnAbXNDSu
+         UHSaA1ZVdDnaOgdhHjT88GakQegAhfpGxHqJjbKLOWu5WzLyQt5g4Nvm2IB9Yd1F4mey
+         lGjULS4YXMISpc9p4wWffV3BtmOj9HpGJQ+WY2GgUr3rk596ZonYKW0uo0fLx3xPWMQA
+         lnrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8qkH/T0u1gIF+PhxKKFzFehDKE3HDIIdIpQZFLT4Bhs=;
-        b=b2rnIBHC5/54n2VNVgR4GK8PUAjIEdhRBycojXR1mcC+XLYJ9+trGPHCGPlDP5ZwWI
-         5xR/sI8Iksfnf8OzDCiX6gOHB7Om0LcR5zmoKsiKf7WuTvqm/XC5HvLsOXpNzFKflCPF
-         X9J9cTa7m+kNUWdtQgNJxDbcQZWfuK01bU8JvEuGciYFA9ITpkXVQ3xsdDQ/OqTPCIES
-         czzxe/KzikFX6yOtfYSZHlr2iPMESshDoFY7XPH10v7WfYN+SVb6HTgP0dkE+wWtQ7ds
-         skd4t3d0VbPTQRqMqPb+JbxS6ma22pTAe5t9fBJ13U1WJEm27Xi7Z6gcHkg7txxQ6lG1
-         jibA==
-X-Gm-Message-State: AOAM530sGLdYZ2RTMLW15UIC7W6VExpAAZyeFFzkdBr8Y6p5P/KR3r6q
-        hSAK6bAIVo/j7uDWl++uFUtIwemqcPk=
-X-Google-Smtp-Source: ABdhPJxHRY4OBGREbkOnuB7bjpNabJlG4/6RoDaVFn5Y5BgqCwSKYQQBaZu4ESCJPPRaVWshLqRXDg==
-X-Received: by 2002:a37:aec2:: with SMTP id x185mr10249359qke.64.1607616451795;
-        Thu, 10 Dec 2020 08:07:31 -0800 (PST)
+        bh=sKdNFHIaOGHzemSXJ4fYnvyA7QI5pQyJsgsZg/WlZU8=;
+        b=llfQZLY/iTY8jps4BLAEFv2T9GaLSpm33W/b574tXrfbiRxWS/rwazsECZe8Hy2Exh
+         5w+kdpzKTcwTVHyKW3O6RwsX7MM1+XNJPpbl0dy5u2LY/Wk7Xvq32DF/00hKArisTBZX
+         yMWWGGFeMEK9ZPx/JAkKSdhwa4OCXygYOexVZyNktJJ2Py1ysd3dsRmUZKbPB0mIJ7xk
+         mhNefwgKS224NTbA1l/+fRHWRxa0bOo2/lwBAtT3G6GywT0QZ0w5HXR2iZLZWhRcyNTd
+         C1IuIml9b1ejGiH8cXp3VhEi7whzCQN1Q0bRA99kJT02/NLcOn8ctD4s4ghak7MpShM5
+         ly7A==
+X-Gm-Message-State: AOAM5317gM7B81foIIcagi8+sB5tYbA1eHczbWjW2cbuYebqEbSNBRNc
+        4ObTZ4Jpc27a+mL5Q1iKGqI=
+X-Google-Smtp-Source: ABdhPJyD5Sr0PTnzWNkhnU3yKvolIcUB/EkRkxa//Z39Ut5HYtd2yLd8sNecVMYs8eXqtrZW/j27rA==
+X-Received: by 2002:aed:3051:: with SMTP id 75mr9959479qte.64.1607616454186;
+        Thu, 10 Dec 2020 08:07:34 -0800 (PST)
 Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com. [71.65.111.223])
-        by smtp.googlemail.com with ESMTPSA id d190sm3852290qkf.112.2020.12.10.08.07.30
+        by smtp.googlemail.com with ESMTPSA id d190sm3852290qkf.112.2020.12.10.08.07.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 08:07:31 -0800 (PST)
+        Thu, 10 Dec 2020 08:07:33 -0800 (PST)
 From:   Connor McAdams <conmanx360@gmail.com>
 Cc:     conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/5] ALSA: hda/ca0132 - Ensure DSP is properly setup post-firmware download.
-Date:   Thu, 10 Dec 2020 11:06:56 -0500
-Message-Id: <20201210160658.461739-5-conmanx360@gmail.com>
+Subject: [PATCH v2 5/5] ALSA: hda/ca0132 - Remove now unnecessary DSP setup functions.
+Date:   Thu, 10 Dec 2020 11:06:57 -0500
+Message-Id: <20201210160658.461739-6-conmanx360@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201210160658.461739-1-conmanx360@gmail.com>
 References: <20201210160658.461739-1-conmanx360@gmail.com>
@@ -65,183 +65,235 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure that the DSP has no DMA channels allocated once the firmware
-is downloaded, and that the default audio streams in use by the DSP are
-setup in the correct order.
+Now that the DSP's audio configuration is understood, remove previous
+hacky methods of trying to properly configure it.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 119 +++++++++++++++++++++++++++++++++++
- 1 file changed, 119 insertions(+)
-
-v2 changes:
--Remove conditional mutex.
+ sound/pci/hda/patch_ca0132.c | 105 -----------------------------------
+ 1 file changed, 105 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index f84815cc8d2f..8884ad0910cd 100644
+index 8884ad0910cd..df8bee4eef26 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -1863,6 +1863,18 @@ static void chipio_set_stream_control(struct hda_codec *codec,
- 			CONTROL_PARAM_STREAM_CONTROL, enable);
+@@ -2426,13 +2426,6 @@ static int dspio_set_uint_param(struct hda_codec *codec, int mod_id,
+ 			sizeof(unsigned int));
  }
  
-+/*
-+ * Get ChipIO audio stream's status.
-+ */
-+static void chipio_get_stream_control(struct hda_codec *codec,
-+				int streamid, unsigned int *enable)
-+{
-+	chipio_set_control_param_no_mutex(codec,
-+			CONTROL_PARAM_STREAM_ID, streamid);
-+	*enable = snd_hda_codec_read(codec, WIDGET_CHIP_CTRL, 0,
-+			   VENDOR_CHIPIO_PARAM_GET,
-+			   CONTROL_PARAM_STREAM_CONTROL);
-+}
- 
+-static int dspio_set_uint_param_no_source(struct hda_codec *codec, int mod_id,
+-			int req, const unsigned int data)
+-{
+-	return dspio_set_param(codec, mod_id, 0x00, req, &data,
+-			sizeof(unsigned int));
+-}
+-
  /*
-  * Set sampling rate of the connection point. NO MUTEX.
-@@ -7513,6 +7525,109 @@ static void ca0132_refresh_widget_caps(struct hda_codec *codec)
+  * Allocate a DSP DMA channel via an SCP message
+  */
+@@ -7780,24 +7773,6 @@ static void ca0132_alt_init_speaker_tuning(struct hda_codec *codec)
+ 				SPEAKER_TUNING_FRONT_LEFT_DELAY + i, values[i]);
+ }
+ 
+-/*
+- * Creates a dummy stream to bind the output to. This seems to have to be done
+- * after changing the main outputs source and destination streams.
+- */
+-static void ca0132_alt_create_dummy_stream(struct hda_codec *codec)
+-{
+-	struct ca0132_spec *spec = codec->spec;
+-	unsigned int stream_format;
+-
+-	stream_format = snd_hdac_calc_stream_format(48000, 2,
+-			SNDRV_PCM_FORMAT_S32_LE, 32, 0);
+-
+-	snd_hda_codec_setup_stream(codec, spec->dacs[0], spec->dsp_stream_id,
+-					0, stream_format);
+-
+-	snd_hda_codec_cleanup_stream(codec, spec->dacs[0]);
+-}
+-
+ /*
+  * Initialize mic for non-chromebook ca0132 implementations.
+  */
+@@ -7839,9 +7814,6 @@ static void sbz_connect_streams(struct hda_codec *codec)
+ 
+ 	codec_dbg(codec, "Connect Streams entered, mutex locked and loaded.\n");
+ 
+-	chipio_set_stream_channels(codec, 0x0C, 6);
+-	chipio_set_stream_control(codec, 0x0C, 1);
+-
+ 	/* This value is 0x43 for 96khz, and 0x83 for 192khz. */
+ 	chipio_write_no_mutex(codec, 0x18a020, 0x00000043);
+ 
+@@ -7889,9 +7861,6 @@ static void sbz_chipio_startup_data(struct hda_codec *codec)
+ 		break;
  	}
+ 
+-	chipio_set_stream_channels(codec, 0x0c, 6);
+-	chipio_set_stream_control(codec, 0x0c, 1);
+-
+ 	if (dsp_out_remap_data)
+ 		chipio_remap_stream(codec, dsp_out_remap_data);
+ 
+@@ -7899,57 +7868,6 @@ static void sbz_chipio_startup_data(struct hda_codec *codec)
+ 	mutex_unlock(&spec->chipio_mutex);
  }
  
-+
-+/* If there is an active channel for some reason, find it and free it. */
-+static void ca0132_alt_free_active_dma_channels(struct hda_codec *codec)
-+{
-+	unsigned int i, tmp;
-+	int status;
-+
-+	/* Read active DSPDMAC channel register. */
-+	status = chipio_read(codec, DSPDMAC_CHNLSTART_MODULE_OFFSET, &tmp);
-+	if (status >= 0) {
-+		/* AND against 0xfff to get the active channel bits. */
-+		tmp = tmp & 0xfff;
-+
-+		/* If there are no active channels, nothing to free. */
-+		if (!tmp)
-+			return;
-+	} else {
-+		codec_dbg(codec, "%s: Failed to read active DSP DMA channel register.\n",
-+				__func__);
-+		return;
-+	}
-+
-+	/*
-+	 * Check each DSP DMA channel for activity, and if the channel is
-+	 * active, free it.
-+	 */
-+	for (i = 0; i < DSPDMAC_DMA_CFG_CHANNEL_COUNT; i++) {
-+		if (dsp_is_dma_active(codec, i)) {
-+			status = dspio_free_dma_chan(codec, i);
-+			if (status < 0)
-+				codec_dbg(codec, "%s: Failed to free active DSP DMA channel %d.\n",
-+						__func__, i);
-+		}
-+	}
-+}
-+
-+/*
-+ * In the case of CT_EXTENSIONS_ENABLE being set to 1, and the DSP being in
-+ * use, audio is no longer routed directly to the DAC/ADC from the HDA stream.
-+ * Instead, audio is now routed through the DSP's DMA controllers, which
-+ * the DSP is tasked with setting up itself. Through debugging, it seems the
-+ * cause of most of the no-audio on startup issues were due to improperly
-+ * configured DSP DMA channels.
-+ *
-+ * Normally, the DSP configures these the first time an HDA audio stream is
-+ * started post DSP firmware download. That is why creating a 'dummy' stream
-+ * worked in fixing the audio in some cases. This works most of the time, but
-+ * sometimes if a stream is started/stopped before the DSP can setup the DMA
-+ * configuration registers, it ends up in a broken state. Issues can also
-+ * arise if streams are started in an unusual order, i.e the audio output dma
-+ * channel being sandwiched between the mic1 and mic2 dma channels.
-+ *
-+ * The solution to this is to make sure that the DSP has no DMA channels
-+ * in use post DSP firmware download, and then to manually start each default
-+ * DSP stream that uses the DMA channels. These are 0x0c, the audio output
-+ * stream, 0x03, analog mic 1, and 0x04, analog mic 2.
-+ */
-+static void ca0132_alt_start_dsp_audio_streams(struct hda_codec *codec)
-+{
-+	const unsigned int dsp_dma_stream_ids[] = { 0x0c, 0x03, 0x04 };
-+	struct ca0132_spec *spec = codec->spec;
-+	unsigned int i, tmp;
-+
-+	/*
-+	 * Check if any of the default streams are active, and if they are,
-+	 * stop them.
-+	 */
-+	mutex_lock(&spec->chipio_mutex);
-+
-+	for (i = 0; i < ARRAY_SIZE(dsp_dma_stream_ids); i++) {
-+		chipio_get_stream_control(codec, dsp_dma_stream_ids[i], &tmp);
-+
-+		if (tmp) {
-+			chipio_set_stream_control(codec,
-+					dsp_dma_stream_ids[i], 0);
-+		}
-+	}
-+
-+	mutex_unlock(&spec->chipio_mutex);
-+
-+	/*
-+	 * If all DSP streams are inactive, there should be no active DSP DMA
-+	 * channels. Check and make sure this is the case, and if it isn't,
-+	 * free any active channels.
-+	 */
-+	ca0132_alt_free_active_dma_channels(codec);
-+
-+	mutex_lock(&spec->chipio_mutex);
-+
-+	/* Make sure stream 0x0c is six channels. */
-+	chipio_set_stream_channels(codec, 0x0c, 6);
-+
-+	for (i = 0; i < ARRAY_SIZE(dsp_dma_stream_ids); i++) {
-+		chipio_set_stream_control(codec,
-+				dsp_dma_stream_ids[i], 1);
-+
-+		/* Give the DSP some time to setup the DMA channel. */
-+		msleep(75);
-+	}
-+
-+	mutex_unlock(&spec->chipio_mutex);
-+}
-+
- /*
-  * The region of ChipIO memory from 0x190000-0x1903fc is a sort of 'audio
-  * router', where each entry represents a 48khz audio channel, with a format
-@@ -8250,6 +8365,7 @@ static void r3d_setup_defaults(struct hda_codec *codec)
+-/*
+- * Custom DSP SCP commands where the src value is 0x00 instead of 0x20. This is
+- * done after the DSP is loaded.
+- */
+-static void ca0132_alt_dsp_scp_startup(struct hda_codec *codec)
+-{
+-	struct ca0132_spec *spec = codec->spec;
+-	unsigned int tmp, i;
+-
+-	/*
+-	 * Gotta run these twice, or else mic works inconsistently. Not clear
+-	 * why this is, but multiple tests have confirmed it.
+-	 */
+-	for (i = 0; i < 2; i++) {
+-		switch (ca0132_quirk(spec)) {
+-		case QUIRK_SBZ:
+-		case QUIRK_AE5:
+-		case QUIRK_AE7:
+-			tmp = 0x00000003;
+-			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-			tmp = 0x00000000;
+-			dspio_set_uint_param_no_source(codec, 0x80, 0x0A, tmp);
+-			tmp = 0x00000001;
+-			dspio_set_uint_param_no_source(codec, 0x80, 0x0B, tmp);
+-			tmp = 0x00000004;
+-			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-			tmp = 0x00000005;
+-			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-			tmp = 0x00000000;
+-			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-			break;
+-		case QUIRK_R3D:
+-		case QUIRK_R3DI:
+-			tmp = 0x00000000;
+-			dspio_set_uint_param_no_source(codec, 0x80, 0x0A, tmp);
+-			tmp = 0x00000001;
+-			dspio_set_uint_param_no_source(codec, 0x80, 0x0B, tmp);
+-			tmp = 0x00000004;
+-			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-			tmp = 0x00000005;
+-			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-			tmp = 0x00000000;
+-			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-			break;
+-		default:
+-			break;
+-		}
+-		msleep(100);
+-	}
+-}
+-
+ static void ca0132_alt_dsp_initial_mic_setup(struct hda_codec *codec)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+@@ -8067,9 +7985,6 @@ static void ae5_post_dsp_stream_setup(struct hda_codec *codec)
  
- 	ca0132_alt_dsp_scp_startup(codec);
+ 	chipio_set_conn_rate_no_mutex(codec, 0x70, SR_96_000);
+ 
+-	chipio_set_stream_channels(codec, 0x0C, 6);
+-	chipio_set_stream_control(codec, 0x0C, 1);
+-
+ 	chipio_set_stream_source_dest(codec, 0x5, 0x43, 0x0);
+ 
+ 	chipio_set_stream_source_dest(codec, 0x18, 0x9, 0xd0);
+@@ -8127,9 +8042,6 @@ static void ae7_post_dsp_setup_ports(struct hda_codec *codec)
+ 
+ 	mutex_lock(&spec->chipio_mutex);
+ 
+-	chipio_set_stream_channels(codec, 0x0c, 6);
+-	chipio_set_stream_control(codec, 0x0c, 1);
+-
+ 	/* Seems to share the same port remapping as the SBZ. */
+ 	chipio_remap_stream(codec, &stream_remap_data[1]);
+ 
+@@ -8155,8 +8067,6 @@ static void ae7_post_dsp_asi_stream_setup(struct hda_codec *codec)
+ 	ca0113_mmio_command_set(codec, 0x30, 0x2b, 0x00);
+ 
+ 	chipio_set_conn_rate_no_mutex(codec, 0x70, SR_96_000);
+-	chipio_set_stream_channels(codec, 0x0c, 6);
+-	chipio_set_stream_control(codec, 0x0c, 1);
+ 
+ 	chipio_set_stream_source_dest(codec, 0x05, 0x43, 0x00);
+ 	chipio_set_stream_source_dest(codec, 0x18, 0x09, 0xd0);
+@@ -8363,7 +8273,6 @@ static void r3d_setup_defaults(struct hda_codec *codec)
+ 	if (spec->dsp_state != DSP_DOWNLOADED)
+ 		return;
+ 
+-	ca0132_alt_dsp_scp_startup(codec);
  	ca0132_alt_init_analog_mics(codec);
-+	ca0132_alt_start_dsp_audio_streams(codec);
+ 	ca0132_alt_start_dsp_audio_streams(codec);
  
- 	/*remove DSP headroom*/
- 	tmp = FLOAT_ZERO;
-@@ -8300,6 +8416,7 @@ static void sbz_setup_defaults(struct hda_codec *codec)
+@@ -8414,15 +8323,11 @@ static void sbz_setup_defaults(struct hda_codec *codec)
+ 	if (spec->dsp_state != DSP_DOWNLOADED)
+ 		return;
  
- 	ca0132_alt_dsp_scp_startup(codec);
+-	ca0132_alt_dsp_scp_startup(codec);
  	ca0132_alt_init_analog_mics(codec);
-+	ca0132_alt_start_dsp_audio_streams(codec);
+ 	ca0132_alt_start_dsp_audio_streams(codec);
  	sbz_connect_streams(codec);
  	sbz_chipio_startup_data(codec);
  
-@@ -8359,6 +8476,7 @@ static void ae5_setup_defaults(struct hda_codec *codec)
+-	chipio_set_stream_control(codec, 0x03, 1);
+-	chipio_set_stream_control(codec, 0x04, 1);
+-
+ 	/*
+ 	 * Sets internal input loopback to off, used to have a switch to
+ 	 * enable input loopback, but turned out to be way too buggy.
+@@ -8457,8 +8362,6 @@ static void sbz_setup_defaults(struct hda_codec *codec)
+ 	}
  
- 	ca0132_alt_dsp_scp_startup(codec);
+ 	ca0132_alt_init_speaker_tuning(codec);
+-
+-	ca0132_alt_create_dummy_stream(codec);
+ }
+ 
+ /*
+@@ -8474,11 +8377,8 @@ static void ae5_setup_defaults(struct hda_codec *codec)
+ 	if (spec->dsp_state != DSP_DOWNLOADED)
+ 		return;
+ 
+-	ca0132_alt_dsp_scp_startup(codec);
  	ca0132_alt_init_analog_mics(codec);
-+	ca0132_alt_start_dsp_audio_streams(codec);
- 	chipio_set_stream_control(codec, 0x03, 1);
- 	chipio_set_stream_control(codec, 0x04, 1);
+ 	ca0132_alt_start_dsp_audio_streams(codec);
+-	chipio_set_stream_control(codec, 0x03, 1);
+-	chipio_set_stream_control(codec, 0x04, 1);
  
-@@ -8428,6 +8546,7 @@ static void ae7_setup_defaults(struct hda_codec *codec)
- 
- 	ca0132_alt_dsp_scp_startup(codec);
- 	ca0132_alt_init_analog_mics(codec);
-+	ca0132_alt_start_dsp_audio_streams(codec);
- 	ae7_post_dsp_setup_ports(codec);
- 
+ 	/* New, unknown SCP req's */
  	tmp = FLOAT_ZERO;
+@@ -8527,8 +8427,6 @@ static void ae5_setup_defaults(struct hda_codec *codec)
+ 	}
+ 
+ 	ca0132_alt_init_speaker_tuning(codec);
+-
+-	ca0132_alt_create_dummy_stream(codec);
+ }
+ 
+ /*
+@@ -8544,7 +8442,6 @@ static void ae7_setup_defaults(struct hda_codec *codec)
+ 	if (spec->dsp_state != DSP_DOWNLOADED)
+ 		return;
+ 
+-	ca0132_alt_dsp_scp_startup(codec);
+ 	ca0132_alt_init_analog_mics(codec);
+ 	ca0132_alt_start_dsp_audio_streams(codec);
+ 	ae7_post_dsp_setup_ports(codec);
+@@ -8613,8 +8510,6 @@ static void ae7_setup_defaults(struct hda_codec *codec)
+ 	}
+ 
+ 	ca0132_alt_init_speaker_tuning(codec);
+-
+-	ca0132_alt_create_dummy_stream(codec);
+ }
+ 
+ /*
 -- 
 2.25.1
 
