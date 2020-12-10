@@ -2,123 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967FC2D6BC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7462D6B2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393728AbgLJXTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:19:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393214AbgLJXTD (ORCPT
+        id S2394224AbgLJWcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 17:32:07 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:40319 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405129AbgLJW0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:19:03 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1722C061285;
-        Thu, 10 Dec 2020 14:35:34 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607636890;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fS6Q5Mzy8JmeMJ4Hud0TQwMZS+fqZnoguNO5e8v6TVs=;
-        b=QPVSgrSjXozmKT2n8R4x08cAnYxVSNVsEJIc2eOXdokOKwJWBs2OmryPk2gbH9m6ZOKoe8
-        e+FoOcRFR2pIFn5LvxJZAHjBjdUwn+McnauUHljGdaHlGQhHp7mcwOKFxgJnADdWgEa9+5
-        Wjwl0ZQnBnDjijvfKOKcoVnM9bGg8ZcJUDxLZMr40Tyep1mn50l2na3vzBcnlLIfSVGPHT
-        qd1Yig3bi9mFhuiQ3NybufG11BjowHHtfz+hoOB6XRlOCdjaFSoLIwD58Ra+5X0RLs4tmV
-        iV22mB1VyAas66wcX/Q3IA4GgfdryNM5nXZSiSOxGRiFKZEL9m0Hzvu7gx/57A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607636890;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fS6Q5Mzy8JmeMJ4Hud0TQwMZS+fqZnoguNO5e8v6TVs=;
-        b=1mexZVqkZd9QyFLML/IjTcYSbIpLa2tYlJj+Jet5oFipyeOgV1RizLPTsRFrRHCrog9vOU
-        wBhOpA0OtkrUPIBA==
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-In-Reply-To: <20201210152618.GB23951@fuller.cnet>
-References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com> <20201207232920.GD27492@fuller.cnet> <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com> <87sg8g2sn4.fsf@nanos.tec.linutronix.de> <20201208181107.GA31442@fuller.cnet> <875z5c2db8.fsf@nanos.tec.linutronix.de> <20201209163434.GA22851@fuller.cnet> <87r1nyzogg.fsf@nanos.tec.linutronix.de> <20201210152618.GB23951@fuller.cnet>
-Date:   Thu, 10 Dec 2020 22:48:10 +0100
-Message-ID: <87zh2lib8l.fsf@nanos.tec.linutronix.de>
+        Thu, 10 Dec 2020 17:26:23 -0500
+Received: by mail-pg1-f196.google.com with SMTP id t37so5596542pga.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:26:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FDWcEk/bsx49QrHA7le6QrzeyX76Cr1G90wWwfXt9og=;
+        b=eyVki26QxbAouCaaS+b5GUx8CLMRFIUjtoypoV1IvhDtSzOg3ca6z5EmYDGXNGdnsl
+         U+P3N8j9mIzu2E6FUrgaBxpdccT6tWtbHCrRjZMks0d0xEp+Chmmqgi1Hxnek/CfhSSb
+         J/g7qBme+dbBvOTXGw++vYsu1hR611rkrq7AKJAuQe39bo/lcfts5+qbjkI83D1B1OTP
+         I+AkQfB8YDF2EkuZYN/PtM6wUI/ebdlwaa3KjJp+l64dFy3cwul8BPM8X9BMoxO+lorY
+         c46YnKuEqYtlLlnSw4CRt/ovwT+/sQjuIuY9PLoZ/koHhXzyXUfoJqAoagvAWP5ophzp
+         1nrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FDWcEk/bsx49QrHA7le6QrzeyX76Cr1G90wWwfXt9og=;
+        b=l+Nj2u59b/O1zbVAIH9xsBWRcmutxBwgBrX4gaBPGljUvgOSI7pi3Ru+ekEF5oBcOC
+         2k+/Flp3fcBqURrFYbGfKV2Z63XhMe5OS2JYDQHlutdx07rrMseTKBmT9T6TffRsac0U
+         Jmm6OOOLV8DI5Gu23VZYcznXmgeNjFD9ZPY41VerbkfIzsncAmTa7E0tfwIu/mUzUlJ4
+         4BD/dlhmuayp1RLVLNZtulWPNeaK5xTJRbD2RvDVNyTRX5U5oZUV+6hiRRQKMstPq01v
+         kplyQA9/Nje7XEHiRmP/+DGgSg5h4vOUCxcYSJyQjB8qoBl/ulkGd1yZUD4bt/Wkcasm
+         kNIA==
+X-Gm-Message-State: AOAM5304cFUVmiLLNi7r43huOTQABKU0RjVRVR2IYAWmQzyUR4DW9fC/
+        Lh6265JUaCt35hoFyh0G7e2X8oSRJS3CnBjlVTyRA2FOP/Klqw==
+X-Google-Smtp-Source: ABdhPJzopPgY04RexLu7seRjCtvQA796q4DkmGgHbAC5sIUU3JvJreGcaZy2uhTAnU3vlcA/nOou9RxdlKuQmXwmL5M=
+X-Received: by 2002:a63:184c:: with SMTP id 12mr1082455pgy.381.1607636935147;
+ Thu, 10 Dec 2020 13:48:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201201152017.3576951-1-elver@google.com> <CAKwvOdkcv=FES2CXfoY+AFcvg_rbPd2Nk8sEwXNBJqXL4wQGBg@mail.gmail.com>
+ <CANpmjNOUHdANKQ6EZEzgbVg0+jqWgBEAuoLQxpzQJkstv6fxBg@mail.gmail.com>
+ <CANpmjNOdJZUm1apuEHZz_KYJTEoRU6FVxMwZUrMar021hTd5Cg@mail.gmail.com>
+ <CANiq72kwZtBn-YtWhZmewVNXNbjEXwqeWSpU1iLx45TNoLLOUg@mail.gmail.com> <CANpmjNN3akp+Npf6tqJR44kn=85WpkRh89Z4BQtBh0nGJEiGEQ@mail.gmail.com>
+In-Reply-To: <CANpmjNN3akp+Npf6tqJR44kn=85WpkRh89Z4BQtBh0nGJEiGEQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 10 Dec 2020 13:48:43 -0800
+Message-ID: <CAKwvOdn7c20vATaJMzsMYtCngs6ZDQMW8LX9ywhARxL6OKEdNg@mail.gmail.com>
+Subject: Re: [PATCH] genksyms: Ignore module scoped _Static_assert()
+To:     Marco Elver <elver@google.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10 2020 at 12:26, Marcelo Tosatti wrote:
-> On Wed, Dec 09, 2020 at 09:58:23PM +0100, Thomas Gleixner wrote:
->> Marcelo,
->> 
->> On Wed, Dec 09 2020 at 13:34, Marcelo Tosatti wrote:
->> > On Tue, Dec 08, 2020 at 10:33:15PM +0100, Thomas Gleixner wrote:
->> >> On Tue, Dec 08 2020 at 15:11, Marcelo Tosatti wrote:
->> >> > max_cycles overflow. Sent a message to Maxim describing it.
->> >> 
->> >> Truly helpful. Why the hell did you not talk to me when you ran into
->> >> that the first time?
->> >
->> > Because 
->> >
->> > 1) Users wanted CLOCK_BOOTTIME to stop counting while the VM 
->> > is paused (so we wanted to stop guest clock when VM is paused anyway).
->> 
->> How is that supposed to work w/o the guest kernels help if you have to
->> keep clock realtime up to date? 
+On Thu, Dec 10, 2020 at 8:25 AM Marco Elver <elver@google.com> wrote:
 >
-> Upon VM resume, we notify NTP daemon in the guest to sync realtime
-> clock.
+> On Thu, 10 Dec 2020 at 14:29, Miguel Ojeda
+> <miguel.ojeda.sandonis@gmail.com> wrote:
+> > On Thu, Dec 10, 2020 at 11:35 AM Marco Elver <elver@google.com> wrote:
+> > >
+> > > It looks like there's no clear MAINTAINER for this. :-/
+> > > It'd still be good to fix this for 5.11.
+> >
+> > Richard seems to be the author, not sure if he picks patches (CC'd).
+> >
+> > I guess Masahiro or akpm (Cc'd) would be two options; otherwise, I
+> > could pick it up through compiler attributes (stretching the
+> > definition...).
+>
+> Thanks for the info. I did find that there's an alternative patch to
+> fix _Static_assert() with genksyms that was sent 3 days after mine
+> (it's simpler, but might miss cases). I've responded there (
+> https://lkml.kernel.org/r/X9JI5KpWoo23wkRg@elver.google.com ).
+>
+> Now we have some choice. I'd argue for this patch, because it's not
+> doing preprocessor workarounds, but in the end I won't make that call.
+> :-)
 
-Brilliant. What happens if there is no NTP daemon? What happens if the
-NTP daemon is not part of the virt orchestration magic and cannot be
-notified, then it will notice the time jump after the next update
-interval.
+I was half kidding about depending on a production C parser.  See
+internal reference pa/1432607, choice quotes:
+```
+...
+CONFIG_MODVERSIONS uses scripts/genksyms/genksyms to create a file,
+Module.symvers, that is a simple mapping of CRCs of various symbols'
+types to the symbol names.  It produces these CRCs by using the C
+preprocessor, then passing this into genksyms. genksyms has a lex/yacc
+based C parser to parse the preprocessed sources of kernel modules.  It
+turns out that it's incomplete, copied from an upstream project that
+ceased development in 2013, and was slated to be removed around the 4.9
+kernel release.
+...
+Some possible solutions:
+* Update the kernel's version of genksyms.  There's a comment that the
+  kernel's sources were copied from "modutils." It seems that modutils'
+  last release was v2.4.27 in 2004, and that development on it has
+  stopped.  Upstream modutils also has the same parsing bug.
+...
+* Fix the parsing bug in genksysms. While the discussion about removing
+  CONFIG_MODVERSIONS has started again upstream due to my bugreport,
+  this would be the optimal solution, if I could just figure out how to
+  rewrite the parser correctly.
+...
+A better long term solution would be to replace genksyms's
+modutils/lex/yacc based incomplete and dead C parser with a libclang
+based one, but such work is beyond the scope of a toolchain update.
 
-What about correctness?
+For future travelers that would like to take a crack at fixing the
+existing parser, I found the develop/build/test/debug cycle to be:
 
-ALL CLOCK_* stop and resume when the VM is resumed at the point where
-they stopped.
+$ rm scripts/genksyms/genksyms
+$ make scripts/genksyms/
+$ ./scripts/genksyms/genksyms -d < test_case.i
+$ ./scripts/genksyms/genksyms -d -d < test_case.i
+Best of luck on that endeavor.
+```
 
-So up to the point where NTP catches up and corrects clock realtime and
-TAI other processes can observe that time jumped in the outside world,
-e.g. via a network packet or whatever, but there is no reason why time
-should have jumped outside vs. the local one.
-
-You really all live in a seperate universe creating your own rules how
-things which other people work hard on to get it correct can be screwed
-over.
-
-Of course this all is nowhere documented in detail. At least a quick
-search with about 10 different keyword combinations revealed absolutely
-nothing.
-
-This features first, correctness later frenzy is insane and it better
-stops now before you pile even more crap on the existing steaming pile
-of insanities.
-
+I was planning on talking about this timebomb at plumbers, but had to
+cut it due to the tight time constraints we were allotted.
+-- 
 Thanks,
-
-        tglx
-
-
-
-
+~Nick Desaulniers
