@@ -2,618 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BBE2D615E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D16A2D6164
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392341AbgLJQNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:13:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391375AbgLJQMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:12:31 -0500
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, CK Hu <ck.hu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Subject: [PATCH v2 12/12] drm/mediatek: Move mtk_ddp_comp_init() from sub driver to DRM driver
-Date:   Fri, 11 Dec 2020 00:10:50 +0800
-Message-Id: <20201210161050.8460-13-chunkuang.hu@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201210161050.8460-1-chunkuang.hu@kernel.org>
-References: <20201210161050.8460-1-chunkuang.hu@kernel.org>
+        id S1733071AbgLJQOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:14:32 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:27032 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392349AbgLJQNJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 11:13:09 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BAG4juN004934;
+        Thu, 10 Dec 2020 08:12:16 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0220;
+ bh=x7CcT1SH5PgNGEW+P1B2v6HKUWn4pF1f5fCm8X9d3KI=;
+ b=YZEkfz4+cN97BC9LfVu4XSjVoPlSY1+f1X9ZaHg+uEUTH0fYIOVLDQ2IXrcK3hHvIW6W
+ qrr9L+EnDJRszPAmK+ko2u6MSal3053JsphuhN6+5N5U0d+tJgmapRDb8MyrBmylhZEl
+ mwRB5WnMd8Ju3VWP7kdMnG/6mNE8ObGwO2w1QdcWjiSs3ENR1EoW3Pc5RgJnbJ4v6wiz
+ bz469vM7aC5TD15nm0U94dnwDfSZcXFfvNtbu/oz0fr9QeSYiq6kFOV8kfJm/nYekLb5
+ F4I3R0xDNqkShMGoLM68VHGTYv8F0M/iP/UjKGn5aSNf6ANs10PFGxCUrpmEiRiIaxTQ Xg== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 358akrfrkr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 10 Dec 2020 08:12:16 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Dec
+ 2020 08:12:14 -0800
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Dec
+ 2020 08:12:14 -0800
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.52) by
+ SC-EXCH01.marvell.com (10.93.176.81) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Thu, 10 Dec 2020 08:12:14 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i8/GRWrFsrstUBwolOXbPnPGtfEwILpEj2Xjbujm4qV5ZAHf0m/ABQvRxyBXeTsARpuRsxRsfNLqUrur+E57BeKEVL/pebK/6HCoHSLvYtk8UOmu1UpGGnfMo46LKzVcPvPlChwBEQVhOayaS2qHokJx3wFE8nkcr+xFZjJhbKAoJ+PKFONb8Pyn33OwzV8BAXDP3MjyhvuzGuSth13a/8MMEyG+LFsQJs/5l+KKlygfuYEk67JLQLjmualJeb/eMKh6z9U7JbAFh0V9ZYLXfYI6jzROVQR6V7IqQCIhrVXFUeESkrNxJ9071AHxU1HRu2Wy/0oMT/t3qZ40O8ZfZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x7CcT1SH5PgNGEW+P1B2v6HKUWn4pF1f5fCm8X9d3KI=;
+ b=jmkHgTGuJtA0ZW/x+uz0l8Ct6Sc7nNjO1jlTnaWdk6ANXxC5JHutE8h/1K98GstDEfrAKkksq60Kbfy8QPWHr++wr0NPSMfQh092wxNVTgRFY7Kg759NCMFRHbmfTvcFpKuSWF2nFnMRYev8wrDRIve7IY7KGV9AqTMzb/wv0CqK1DYln7tmZCJS9xWr7voCvie6fkgrvp+Z/SOSfvichTv5+bVvI1txsv/whvMljMw9mAKHkdXX22kkWiX2GhFzH3yQDOXu37KximkM11WbHNq3R5byCPEt6yIdPEQ/7avWGheEihumEZvSLeLlQmuZ51GQkJh8RhLYbl0jsoWEiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x7CcT1SH5PgNGEW+P1B2v6HKUWn4pF1f5fCm8X9d3KI=;
+ b=SkYF/SY5NXeLnBQz2xvGKm22P9BYS+VDWa/+bILghWnld1VE6m5sXam2SEa/ElG+GpCee4bzbt+zGsCdnYGjDtg2MAAwDfFvFQgyLdp7gUKPQD7A0MwHBxgmg004ChtVjlUvBEQxWEX4impevnN+hXostWK/s7Otyq7siD4n8zk=
+Received: from DM6PR18MB2602.namprd18.prod.outlook.com (2603:10b6:5:15d::25)
+ by DM6PR18MB3585.namprd18.prod.outlook.com (2603:10b6:5:2af::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.13; Thu, 10 Dec
+ 2020 16:12:12 +0000
+Received: from DM6PR18MB2602.namprd18.prod.outlook.com
+ ([fe80::c4e7:19ce:d712:bd91]) by DM6PR18MB2602.namprd18.prod.outlook.com
+ ([fe80::c4e7:19ce:d712:bd91%5]) with mapi id 15.20.3654.012; Thu, 10 Dec 2020
+ 16:12:12 +0000
+From:   Geethasowjanya Akula <gakula@marvell.com>
+To:     Saeed Mahameed <saeed@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "Subbaraya Sundeep Bhatta" <sbhatta@marvell.com>
+Subject: Re: [EXT] Re: [PATCHv3 net-next] octeontx2-pf: Add RSS multi group
+ support
+Thread-Topic: [EXT] Re: [PATCHv3 net-next] octeontx2-pf: Add RSS multi group
+ support
+Thread-Index: AQHWzk4d9K8Ye5uitUy6hna3D0lwvKnvILkAgAFgzQI=
+Date:   Thu, 10 Dec 2020 16:12:12 +0000
+Message-ID: <DM6PR18MB26028B727E26DAFBA2D711E5CDCB0@DM6PR18MB2602.namprd18.prod.outlook.com>
+References: <20201209170937.19548-1-gakula@marvell.com>,<f47444311bc7661c6482de11d570fb815f8e7941.camel@kernel.org>
+In-Reply-To: <f47444311bc7661c6482de11d570fb815f8e7941.camel@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [103.248.210.142]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 97ebdbce-3467-40cb-1a30-08d89d265a9d
+x-ms-traffictypediagnostic: DM6PR18MB3585:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR18MB358513A37510BADAA5AFFEC9CDCB0@DM6PR18MB3585.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: J8wDzQnMmxstjzj5lqtOP/6+Mdq+hWko5GlK4UECAEqo32hKxuc/TW/u9glQismZ9bDqw3DFkucUK1Q2ujFrzzQ4K+cod8quHh1qlw6CzaHAWpgNPJn2naNU4DCOxoPgHG8D5T+fZxkAKbDAa2o5yquztBPB++DBdpmpKnJjhgBLB1Hm6aQMDdVOPjVRBz8aBwqj8xw5xpd1B6fDS/1xvyqfEgkoSuQjvOiulbwr51A6KVA/Btm0PBF/Ao7UpBngh9eXNtVe/dZDwymSkzCCokiQ1JuJ+NGSlwLEvyMhs4s2tAvz9s/6jTTN05ysRuNDNIkwsHje2zH0xFIcJmHaXg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR18MB2602.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(136003)(52536014)(54906003)(86362001)(5660300002)(66946007)(110136005)(33656002)(4326008)(66446008)(66556008)(91956017)(71200400001)(6506007)(55016002)(26005)(9686003)(53546011)(7696005)(64756008)(508600001)(76116006)(66476007)(107886003)(8936002)(2906002)(83380400001)(186003)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?+asKIGNuemFhiYd7jfiiCwaC2pZY0YPfKR+m4WauzarE9kSlsZjuXUPudnFr?=
+ =?us-ascii?Q?oO8CShso97f2GVreqs/sERVB/GAcJcG6UHPYXy9Ffgc/06d24VPVvFWvIW7w?=
+ =?us-ascii?Q?AScYux2ryX9BlWJFyi3wI/6ZZ52SS6iY/tsx83zP/4DdRZ/NFNq12QjyLdpX?=
+ =?us-ascii?Q?4P9hTAyZs22zK9IzFsG4WxiPPE9ovZheKUOT6GSRqenHarMUy7U+B1XcU7qV?=
+ =?us-ascii?Q?QuQOZd9T+lHQNmSseAtPTK7kQ4fXDUSl4/H6bN0B1OQK8KJOJDAzOkLgtEY+?=
+ =?us-ascii?Q?Kp6RIcQiPDx4iGEwr5W4M6i8GetOc328JvuKMBpWx4x9Yf0uVcb7QVj6eFYN?=
+ =?us-ascii?Q?gcNQP4Xh3/BGXS7/ue8d0KOOexsTk3q5M4Ty73/bYEetdh78HFYBM62Il8ZV?=
+ =?us-ascii?Q?FMWg4+DJFhepjV0qPqYv7fwFH65Te6sW+Qvzg1vNAvDZferlaOiZoYCfZLod?=
+ =?us-ascii?Q?qpNteNCW7a6skKToHXbAcIL8gxtmWo4a17i6B4QjrQGOtc/lExyyDr8cnjk4?=
+ =?us-ascii?Q?NOmAduUzrtZatbMMxRWpICYDWV94XsIbPhV46FStzN9yuOfEFH9PTgsk7Web?=
+ =?us-ascii?Q?q8jZrBbhE41gUVZ2CMY6daBzl8SClDW/Tc0hC8QbOLmSyMvBqgCvfxaK5Uh8?=
+ =?us-ascii?Q?AR+5rs6XY9x12ObS4H1UGjJIT/MaklfsO/RSmOiF9klhIjuGzAKkCqeCEatj?=
+ =?us-ascii?Q?kSYl6nY77+t+WqnitDalb/ikF2zag6hv5KjxRyBR6G3QR4S2YjtarDlw0qTY?=
+ =?us-ascii?Q?g6sCQePfr9mmgS7rg9KcZhhafEx+nwRbgc2vrLeR9LjlBxkEGBtUzoBqrYwp?=
+ =?us-ascii?Q?+5HyOhUKbldXkaO96oKT20tcN7CQGvLYw/5Wl3qUYLazZGfbN9U6/7e+B/ZK?=
+ =?us-ascii?Q?C4BxiMIqcbg3gN4MxjmnknxuYlFbi0Vzb7pC1M8r6F8IAFp5A5t5xgjLc96G?=
+ =?us-ascii?Q?skSTp5rWoW3QDRXTMUOQ4xyhlu4LM7VnG1cySKUTegQ=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR18MB2602.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 97ebdbce-3467-40cb-1a30-08d89d265a9d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2020 16:12:12.6589
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TmxtcvkrV55QOvGewCZ6IEyshBWMPs8l3mxtxY216RF+ew26bWaP8RZk+1+L/bG8FKFzrwZKSLjGyep0Hbeh9g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR18MB3585
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-10_06:2020-12-09,2020-12-10 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: CK Hu <ck.hu@mediatek.com>
+Thanks Saeed for the feedback. Will address your comments in next version.
 
-Some ddp component exist in both display path and other path, so
-sub driver should not directly call DRM driver's function. Moving
-mtk_ddp_comp_init() from sub driver to DRM driver to achieve this.
 
-Signed-off-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
----
- drivers/gpu/drm/mediatek/mtk_disp_color.c   | 35 -------------------
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c     | 38 ---------------------
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c    | 32 -----------------
- drivers/gpu/drm/mediatek/mtk_dpi.c          | 29 ++--------------
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c     |  2 +-
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 38 ++++++---------------
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  4 +--
- drivers/gpu/drm/mediatek/mtk_drm_drv.c      | 29 +++++-----------
- drivers/gpu/drm/mediatek/mtk_drm_drv.h      |  2 +-
- drivers/gpu/drm/mediatek/mtk_dsi.c          | 32 +----------------
- 10 files changed, 25 insertions(+), 216 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_color.c b/drivers/gpu/drm/mediatek/mtk_disp_color.c
-index d28c06d02286..63f411ab393b 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_color.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_color.c
-@@ -37,7 +37,6 @@ struct mtk_disp_color_data {
-  * @data: platform colour driver data
-  */
- struct mtk_disp_color {
--	struct mtk_ddp_comp			ddp_comp;
- 	struct drm_crtc				*crtc;
- 	struct clk				*clk;
- 	void __iomem				*regs;
-@@ -81,27 +80,12 @@ void mtk_color_start(struct device *dev)
- static int mtk_disp_color_bind(struct device *dev, struct device *master,
- 			       void *data)
- {
--	struct mtk_disp_color *priv = dev_get_drvdata(dev);
--	struct drm_device *drm_dev = data;
--	int ret;
--
--	ret = mtk_ddp_comp_register(drm_dev, &priv->ddp_comp);
--	if (ret < 0) {
--		dev_err(dev, "Failed to register component %pOF: %d\n",
--			dev->of_node, ret);
--		return ret;
--	}
--
- 	return 0;
- }
- 
- static void mtk_disp_color_unbind(struct device *dev, struct device *master,
- 				  void *data)
- {
--	struct mtk_disp_color *priv = dev_get_drvdata(dev);
--	struct drm_device *drm_dev = data;
--
--	mtk_ddp_comp_unregister(drm_dev, &priv->ddp_comp);
- }
- 
- static const struct component_ops mtk_disp_color_component_ops = {
-@@ -114,7 +98,6 @@ static int mtk_disp_color_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct mtk_disp_color *priv;
- 	struct resource *res;
--	int comp_id;
- 	int ret;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -139,23 +122,7 @@ static int mtk_disp_color_probe(struct platform_device *pdev)
- 		dev_dbg(dev, "get mediatek,gce-client-reg fail!\n");
- #endif
- 
--	comp_id = mtk_ddp_comp_get_id(dev->of_node, MTK_DISP_COLOR);
--	if (comp_id < 0) {
--		dev_err(dev, "Failed to identify by alias: %d\n", comp_id);
--		return comp_id;
--	}
--
--	ret = mtk_ddp_comp_init(dev->of_node, &priv->ddp_comp, comp_id);
--	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Failed to initialize component: %d\n",
--				ret);
--
--		return ret;
--	}
--
- 	priv->data = of_device_get_match_data(dev);
--
- 	platform_set_drvdata(pdev, priv);
- 
- 	ret = component_add(dev, &mtk_disp_color_component_ops);
-@@ -167,8 +134,6 @@ static int mtk_disp_color_probe(struct platform_device *pdev)
- 
- static int mtk_disp_color_remove(struct platform_device *pdev)
- {
--	component_del(&pdev->dev, &mtk_disp_color_component_ops);
--
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-index a4f806355d2c..266c5c5ca280 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-@@ -71,7 +71,6 @@ struct mtk_disp_ovl_data {
-  * @data: platform data
-  */
- struct mtk_disp_ovl {
--	struct mtk_ddp_comp		ddp_comp;
- 	struct drm_crtc			*crtc;
- 	struct clk			*clk;
- 	void __iomem			*regs;
-@@ -342,27 +341,12 @@ void mtk_ovl_bgclr_in_off(struct device *dev)
- static int mtk_disp_ovl_bind(struct device *dev, struct device *master,
- 			     void *data)
- {
--	struct mtk_disp_ovl *priv = dev_get_drvdata(dev);
--	struct drm_device *drm_dev = data;
--	int ret;
--
--	ret = mtk_ddp_comp_register(drm_dev, &priv->ddp_comp);
--	if (ret < 0) {
--		dev_err(dev, "Failed to register component %pOF: %d\n",
--			dev->of_node, ret);
--		return ret;
--	}
--
- 	return 0;
- }
- 
- static void mtk_disp_ovl_unbind(struct device *dev, struct device *master,
- 				void *data)
- {
--	struct mtk_disp_ovl *priv = dev_get_drvdata(dev);
--	struct drm_device *drm_dev = data;
--
--	mtk_ddp_comp_unregister(drm_dev, &priv->ddp_comp);
- }
- 
- static const struct component_ops mtk_disp_ovl_component_ops = {
-@@ -375,7 +359,6 @@ static int mtk_disp_ovl_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct mtk_disp_ovl *priv;
- 	struct resource *res;
--	int comp_id;
- 	int irq;
- 	int ret;
- 
-@@ -406,25 +389,6 @@ static int mtk_disp_ovl_probe(struct platform_device *pdev)
- #endif
- 
- 	priv->data = of_device_get_match_data(dev);
--
--	comp_id = mtk_ddp_comp_get_id(dev->of_node,
--				      priv->data->layer_nr == 4 ?
--				      MTK_DISP_OVL :
--				      MTK_DISP_OVL_2L);
--	if (comp_id < 0) {
--		dev_err(dev, "Failed to identify by alias: %d\n", comp_id);
--		return comp_id;
--	}
--
--	ret = mtk_ddp_comp_init(dev->of_node, &priv->ddp_comp, comp_id);
--	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Failed to initialize component: %d\n",
--				ret);
--
--		return ret;
--	}
--
- 	platform_set_drvdata(pdev, priv);
- 
- 	ret = devm_request_irq(dev, irq, mtk_disp_ovl_irq_handler,
-@@ -443,8 +407,6 @@ static int mtk_disp_ovl_probe(struct platform_device *pdev)
- 
- static int mtk_disp_ovl_remove(struct platform_device *pdev)
- {
--	component_del(&pdev->dev, &mtk_disp_ovl_component_ops);
--
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-index a263b7eab866..7ac8f9ee082b 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-@@ -62,7 +62,6 @@ struct mtk_disp_rdma_data {
-  * @data: local driver data
-  */
- struct mtk_disp_rdma {
--	struct mtk_ddp_comp		ddp_comp;
- 	struct clk			*clk;
- 	void __iomem			*regs;
- 	struct cmdq_client_reg		cmdq_reg;
-@@ -250,17 +249,6 @@ void mtk_rdma_layer_config(struct device *dev, unsigned int idx,
- static int mtk_disp_rdma_bind(struct device *dev, struct device *master,
- 			      void *data)
- {
--	struct mtk_disp_rdma *priv = dev_get_drvdata(dev);
--	struct drm_device *drm_dev = data;
--	int ret;
--
--	ret = mtk_ddp_comp_register(drm_dev, &priv->ddp_comp);
--	if (ret < 0) {
--		dev_err(dev, "Failed to register component %pOF: %d\n",
--			dev->of_node, ret);
--		return ret;
--	}
--
- 	return 0;
- 
- }
-@@ -268,10 +256,6 @@ static int mtk_disp_rdma_bind(struct device *dev, struct device *master,
- static void mtk_disp_rdma_unbind(struct device *dev, struct device *master,
- 				 void *data)
- {
--	struct mtk_disp_rdma *priv = dev_get_drvdata(dev);
--	struct drm_device *drm_dev = data;
--
--	mtk_ddp_comp_unregister(drm_dev, &priv->ddp_comp);
- }
- 
- static const struct component_ops mtk_disp_rdma_component_ops = {
-@@ -284,7 +268,6 @@ static int mtk_disp_rdma_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct mtk_disp_rdma *priv;
- 	struct resource *res;
--	int comp_id;
- 	int irq;
- 	int ret;
- 
-@@ -314,21 +297,6 @@ static int mtk_disp_rdma_probe(struct platform_device *pdev)
- 		dev_dbg(dev, "get mediatek,gce-client-reg fail!\n");
- #endif
- 
--	comp_id = mtk_ddp_comp_get_id(dev->of_node, MTK_DISP_RDMA);
--	if (comp_id < 0) {
--		dev_err(dev, "Failed to identify by alias: %d\n", comp_id);
--		return comp_id;
--	}
--
--	ret = mtk_ddp_comp_init(dev->of_node, &priv->ddp_comp, comp_id);
--	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Failed to initialize component: %d\n",
--				ret);
--
--		return ret;
--	}
--
- 	/* Disable and clear pending interrupts */
- 	writel(0x0, priv->regs + DISP_REG_RDMA_INT_ENABLE);
- 	writel(0x0, priv->regs + DISP_REG_RDMA_INT_STATUS);
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index 4d0d84d34fb1..7d279f0ff55a 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -63,7 +63,6 @@ enum mtk_dpi_out_color_format {
- };
- 
- struct mtk_dpi {
--	struct mtk_ddp_comp ddp_comp;
- 	struct drm_encoder encoder;
- 	struct drm_bridge bridge;
- 	struct drm_bridge *next_bridge;
-@@ -592,21 +591,14 @@ static int mtk_dpi_bind(struct device *dev, struct device *master, void *data)
- 	struct drm_device *drm_dev = data;
- 	int ret;
- 
--	ret = mtk_ddp_comp_register(drm_dev, &dpi->ddp_comp);
--	if (ret < 0) {
--		dev_err(dev, "Failed to register component %pOF: %d\n",
--			dev->of_node, ret);
--		return ret;
--	}
--
- 	ret = drm_simple_encoder_init(drm_dev, &dpi->encoder,
- 				      DRM_MODE_ENCODER_TMDS);
- 	if (ret) {
- 		dev_err(dev, "Failed to initialize decoder: %d\n", ret);
--		goto err_unregister;
-+		return ret;
- 	}
- 
--	dpi->encoder.possible_crtcs = mtk_drm_find_possible_crtc_by_comp(drm_dev, dpi->ddp_comp);
-+	dpi->encoder.possible_crtcs = mtk_drm_find_possible_crtc_by_comp(drm_dev, dpi->dev);
- 
- 	ret = drm_bridge_attach(&dpi->encoder, &dpi->bridge, NULL, 0);
- 	if (ret) {
-@@ -623,8 +615,6 @@ static int mtk_dpi_bind(struct device *dev, struct device *master, void *data)
- 
- err_cleanup:
- 	drm_encoder_cleanup(&dpi->encoder);
--err_unregister:
--	mtk_ddp_comp_unregister(drm_dev, &dpi->ddp_comp);
- 	return ret;
- }
- 
-@@ -632,10 +622,8 @@ static void mtk_dpi_unbind(struct device *dev, struct device *master,
- 			   void *data)
- {
- 	struct mtk_dpi *dpi = dev_get_drvdata(dev);
--	struct drm_device *drm_dev = data;
- 
- 	drm_encoder_cleanup(&dpi->encoder);
--	mtk_ddp_comp_unregister(drm_dev, &dpi->ddp_comp);
- }
- 
- static const struct component_ops mtk_dpi_component_ops = {
-@@ -696,7 +684,6 @@ static int mtk_dpi_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct mtk_dpi *dpi;
- 	struct resource *mem;
--	int comp_id;
- 	int ret;
- 
- 	dpi = devm_kzalloc(dev, sizeof(*dpi), GFP_KERNEL);
-@@ -774,18 +761,6 @@ static int mtk_dpi_probe(struct platform_device *pdev)
- 
- 	dev_info(dev, "Found bridge node: %pOF\n", dpi->next_bridge->of_node);
- 
--	comp_id = mtk_ddp_comp_get_id(dev->of_node, MTK_DPI);
--	if (comp_id < 0) {
--		dev_err(dev, "Failed to identify by alias: %d\n", comp_id);
--		return comp_id;
--	}
--
--	ret = mtk_ddp_comp_init(dev->of_node, &dpi->ddp_comp, comp_id);
--	if (ret) {
--		dev_err(dev, "Failed to initialize component: %d\n", ret);
--		return ret;
--	}
--
- 	platform_set_drvdata(pdev, dpi);
- 
- 	dpi->bridge.funcs = &mtk_dpi_bridge_funcs;
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index 01c35786be49..7ec833d800eb 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -781,7 +781,7 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
- 		struct device_node *node;
- 
- 		node = priv->comp_node[comp_id];
--		comp = priv->ddp_comp[comp_id];
-+		comp = &priv->ddp_comp[comp_id];
- 		if (!comp) {
- 			dev_err(dev, "Component %pOF not initialized\n", node);
- 			ret = -ENODEV;
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-index 1d6e45648da8..52820b12a000 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-@@ -524,9 +524,10 @@ static const struct mtk_ddp_comp_match mtk_ddp_matches[DDP_COMPONENT_ID_MAX] = {
- 	[DDP_COMPONENT_WDMA1]	= { MTK_DISP_WDMA,	1, NULL },
- };
- 
--static bool mtk_drm_find_comp_in_ddp(struct mtk_ddp_comp ddp_comp,
-+static bool mtk_drm_find_comp_in_ddp(struct device *dev,
- 				     const enum mtk_ddp_comp_id *path,
--				     unsigned int path_len)
-+				     unsigned int path_len,
-+				     struct mtk_ddp_comp *ddp_comp)
- {
- 	unsigned int i;
- 
-@@ -534,7 +535,7 @@ static bool mtk_drm_find_comp_in_ddp(struct mtk_ddp_comp ddp_comp,
- 		return false;
- 
- 	for (i = 0U; i < path_len; i++)
--		if (ddp_comp.id == path[i])
-+		if (dev == ddp_comp[path[i]].dev)
- 			return true;
- 
- 	return false;
-@@ -556,18 +557,19 @@ int mtk_ddp_comp_get_id(struct device_node *node,
- }
- 
- unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
--						struct mtk_ddp_comp ddp_comp)
-+						struct device *dev)
- {
- 	struct mtk_drm_private *private = drm->dev_private;
- 	unsigned int ret = 0;
- 
--	if (mtk_drm_find_comp_in_ddp(ddp_comp, private->data->main_path, private->data->main_len))
-+	if (mtk_drm_find_comp_in_ddp(dev, private->data->main_path, private->data->main_len,
-+				     private->ddp_comp))
- 		ret = BIT(0);
--	else if (mtk_drm_find_comp_in_ddp(ddp_comp, private->data->ext_path,
--					  private->data->ext_len))
-+	else if (mtk_drm_find_comp_in_ddp(dev, private->data->ext_path,
-+					  private->data->ext_len, private->ddp_comp))
- 		ret = BIT(1);
--	else if (mtk_drm_find_comp_in_ddp(ddp_comp, private->data->third_path,
--					  private->data->third_len))
-+	else if (mtk_drm_find_comp_in_ddp(dev, private->data->third_path,
-+					  private->data->third_len, private->ddp_comp))
- 		ret = BIT(2);
- 	else
- 		DRM_INFO("Failed to find comp in ddp table\n");
-@@ -660,21 +662,3 @@ int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *comp,
- 
- 	return 0;
- }
--
--int mtk_ddp_comp_register(struct drm_device *drm, struct mtk_ddp_comp *comp)
--{
--	struct mtk_drm_private *private = drm->dev_private;
--
--	if (private->ddp_comp[comp->id])
--		return -EBUSY;
--
--	private->ddp_comp[comp->id] = comp;
--	return 0;
--}
--
--void mtk_ddp_comp_unregister(struct drm_device *drm, struct mtk_ddp_comp *comp)
--{
--	struct mtk_drm_private *private = drm->dev_private;
--
--	private->ddp_comp[comp->id] = NULL;
--}
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-index 03db5fb4fc56..e2588e64426e 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-@@ -220,11 +220,9 @@ static inline void mtk_ddp_ctm_set(struct mtk_ddp_comp *comp,
- int mtk_ddp_comp_get_id(struct device_node *node,
- 			enum mtk_ddp_comp_type comp_type);
- unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
--						struct mtk_ddp_comp ddp_comp);
-+						struct device *dev);
- int mtk_ddp_comp_init(struct device_node *comp_node, struct mtk_ddp_comp *comp,
- 		      enum mtk_ddp_comp_id comp_id);
--int mtk_ddp_comp_register(struct drm_device *drm, struct mtk_ddp_comp *comp);
--void mtk_ddp_comp_unregister(struct drm_device *drm, struct mtk_ddp_comp *comp);
- enum mtk_ddp_comp_type mtk_ddp_comp_get_type(enum mtk_ddp_comp_id comp_id);
- void mtk_ddp_write(struct cmdq_pkt *cmdq_pkt, unsigned int value,
- 		   struct cmdq_client_reg *cmdq_reg, void __iomem *regs,
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index cef6168a4469..4f2cc34936df 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -502,23 +502,12 @@ static int mtk_drm_probe(struct platform_device *pdev)
- 				 node);
- 			drm_of_component_match_add(dev, &match, compare_of,
- 						   node);
--		} else {
--			struct mtk_ddp_comp *comp;
--
--			comp = devm_kzalloc(dev, sizeof(*comp), GFP_KERNEL);
--			if (!comp) {
--				ret = -ENOMEM;
--				of_node_put(node);
--				goto err_node;
--			}
--
--			ret = mtk_ddp_comp_init(node, comp, comp_id);
--			if (ret) {
--				of_node_put(node);
--				goto err_node;
--			}
--
--			private->ddp_comp[comp_id] = comp;
-+		}
-+
-+		ret = mtk_ddp_comp_init(node, &private->ddp_comp[comp_id], comp_id);
-+		if (ret) {
-+			of_node_put(node);
-+			goto err_node;
- 		}
- 	}
- 
-@@ -544,10 +533,8 @@ static int mtk_drm_probe(struct platform_device *pdev)
- 	of_node_put(private->mutex_node);
- 	for (i = 0; i < DDP_COMPONENT_ID_MAX; i++) {
- 		of_node_put(private->comp_node[i]);
--		if (private->ddp_comp[i]) {
--			put_device(private->ddp_comp[i]->larb_dev);
--			private->ddp_comp[i] = NULL;
--		}
-+		if (private->ddp_comp[i].larb_dev)
-+			put_device(private->ddp_comp[i].larb_dev);
- 	}
- 	return ret;
- }
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.h b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-index 5d771cf0bf25..690e92e9eff9 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-@@ -41,7 +41,7 @@ struct mtk_drm_private {
- 	struct device *mutex_dev;
- 	struct device *mmsys_dev;
- 	struct device_node *comp_node[DDP_COMPONENT_ID_MAX];
--	struct mtk_ddp_comp *ddp_comp[DDP_COMPONENT_ID_MAX];
-+	struct mtk_ddp_comp ddp_comp[DDP_COMPONENT_ID_MAX];
- 	const struct mtk_mmsys_driver_data *data;
- 	struct drm_atomic_state *suspend_state;
- };
-diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index 50f8d803f8dd..f8cc9545ebca 100644
---- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -179,7 +179,6 @@ struct mtk_dsi_driver_data {
- };
- 
- struct mtk_dsi {
--	struct mtk_ddp_comp ddp_comp;
- 	struct device *dev;
- 	struct mipi_dsi_host host;
- 	struct drm_encoder encoder;
-@@ -965,7 +964,7 @@ static int mtk_dsi_encoder_init(struct drm_device *drm, struct mtk_dsi *dsi)
- 		return ret;
- 	}
- 
--	dsi->encoder.possible_crtcs = mtk_drm_find_possible_crtc_by_comp(drm, dsi->ddp_comp);
-+	dsi->encoder.possible_crtcs = mtk_drm_find_possible_crtc_by_comp(drm, dsi->host.dev);
- 
- 	ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL,
- 				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-@@ -993,32 +992,17 @@ static int mtk_dsi_bind(struct device *dev, struct device *master, void *data)
- 	struct drm_device *drm = data;
- 	struct mtk_dsi *dsi = dev_get_drvdata(dev);
- 
--	ret = mtk_ddp_comp_register(drm, &dsi->ddp_comp);
--	if (ret < 0) {
--		dev_err(dev, "Failed to register component %pOF: %d\n",
--			dev->of_node, ret);
--		return ret;
--	}
--
- 	ret = mtk_dsi_encoder_init(drm, dsi);
--	if (ret)
--		goto err_unregister;
--
--	return 0;
- 
--err_unregister:
--	mtk_ddp_comp_unregister(drm, &dsi->ddp_comp);
- 	return ret;
- }
- 
- static void mtk_dsi_unbind(struct device *dev, struct device *master,
- 			   void *data)
- {
--	struct drm_device *drm = data;
- 	struct mtk_dsi *dsi = dev_get_drvdata(dev);
- 
- 	drm_encoder_cleanup(&dsi->encoder);
--	mtk_ddp_comp_unregister(drm, &dsi->ddp_comp);
- }
- 
- static const struct component_ops mtk_dsi_component_ops = {
-@@ -1033,7 +1017,6 @@ static int mtk_dsi_probe(struct platform_device *pdev)
- 	struct drm_panel *panel;
- 	struct resource *regs;
- 	int irq_num;
--	int comp_id;
- 	int ret;
- 
- 	dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
-@@ -1103,19 +1086,6 @@ static int mtk_dsi_probe(struct platform_device *pdev)
- 		goto err_unregister_host;
- 	}
- 
--	comp_id = mtk_ddp_comp_get_id(dev->of_node, MTK_DSI);
--	if (comp_id < 0) {
--		dev_err(dev, "Failed to identify by alias: %d\n", comp_id);
--		ret = comp_id;
--		goto err_unregister_host;
--	}
--
--	ret = mtk_ddp_comp_init(dev->of_node, &dsi->ddp_comp, comp_id);
--	if (ret) {
--		dev_err(dev, "Failed to initialize component: %d\n", ret);
--		goto err_unregister_host;
--	}
--
- 	irq_num = platform_get_irq(pdev, 0);
- 	if (irq_num < 0) {
- 		dev_err(&pdev->dev, "failed to get dsi irq_num: %d\n", irq_num);
--- 
-2.17.1
+________________________________________
+From: Saeed Mahameed <saeed@kernel.org>
+Sent: Thursday, December 10, 2020 12:38 AM
+To: Geethasowjanya Akula; netdev@vger.kernel.org; linux-kernel@vger.kernel.=
+org
+Cc: Sunil Kovvuri Goutham; davem@davemloft.net; kuba@kernel.org; Subbaraya =
+Sundeep Bhatta
+Subject: [EXT] Re: [PATCHv3 net-next] octeontx2-pf: Add RSS multi group sup=
+port
+
+External Email
+
+----------------------------------------------------------------------
+On Wed, 2020-12-09 at 22:39 +0530, Geetha sowjanya wrote:
+> Hardware supports 8 RSS groups per interface. Currently we are using
+> only group '0'. This patch allows user to create new RSS
+> groups/contexts
+> and use the same as destination for flow steering rules.
+>
+> usage:
+> To steer the traffic to RQ 2,3
+>
+> ethtool -X eth0 weight 0 0 1 1 context new
+> (It will print the allocated context id number)
+> New RSS context is 1
+>
+> ethtool -N eth0 flow-type tcp4 dst-port 80 context 1 loc 1
+>
+> To delete the context
+> ethtool -X eth0 context 1 delete
+>
+> When an RSS context is removed, the active classification
+> rules using this context are also removed.
+>
+> Change-log:
+> v2
+> - Removed unrelated whitespace
+> - Coverted otx2_get_rxfh() to use new function.
+>
+> v3
+> - Coverted otx2_set_rxfh() to use new function.
+>
+> Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
+> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+> ---
+
+...
+
+> -/* Configure RSS table and hash key */
+> -static int otx2_set_rxfh(struct net_device *dev, const u32 *indir,
+> -                      const u8 *hkey, const u8 hfunc)
+> +static int otx2_get_rxfh_context(struct net_device *dev, u32 *indir,
+> +                              u8 *hkey, u8 *hfunc, u32 rss_context)
+>  {
+>       struct otx2_nic *pfvf =3D netdev_priv(dev);
+> +     struct otx2_rss_ctx *rss_ctx;
+>       struct otx2_rss_info *rss;
+>       int idx;
+>
+> -     if (hfunc !=3D ETH_RSS_HASH_NO_CHANGE && hfunc !=3D
+> ETH_RSS_HASH_TOP)
+> -             return -EOPNOTSUPP;
+> -
+>       rss =3D &pfvf->hw.rss_info;
+>
+>       if (!rss->enable) {
+> -             netdev_err(dev, "RSS is disabled, cannot change
+> settings\n");
+> +             netdev_err(dev, "RSS is disabled\n");
+>               return -EIO;
+>       }
+
+I see that you init/enable rss on open, is this is your way to block
+getting rss info if device is not open ? why do you need to report an
+error anyway, why not just report whatever default config you will be
+setting up on next open ?
+
+to me reporting errors to ethtool queries when device is down is a bad
+user experience.
+
+> +     if (rss_context >=3D MAX_RSS_GROUPS)
+> +             return -EINVAL;
+> +
+
+-ENOENT
+> +     rss_ctx =3D rss->rss_ctx[rss_context];
+> +     if (!rss_ctx)
+> +             return -EINVAL;
+>
+
+-ENOENT
+
 
