@@ -2,255 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37812D6676
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1732D6654
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390339AbgLJT3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:29:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38018 "EHLO mail.kernel.org"
+        id S2390348AbgLJOam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:30:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387557AbgLJOaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:30:08 -0500
+        id S2390171AbgLJO2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:28:48 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: [PATCH 4.9 00/45] 4.9.248-rc1 review
-Date:   Thu, 10 Dec 2020 15:26:14 +0100
-Message-Id: <20201210142602.361598591@linuxfoundation.org>
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Jamie Iles <jamie@nuviainc.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 04/39] bonding: wait for sysfs kobject destruction before freeing struct slave
+Date:   Thu, 10 Dec 2020 15:26:15 +0100
+Message-Id: <20201210142601.114138099@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
+In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
+References: <20201210142600.887734129@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.248-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.9.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.9.248-rc1
-X-KernelTest-Deadline: 2020-12-12T14:26+00:00
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.9.248 release.
-There are 45 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Jamie Iles <jamie@nuviainc.com>
 
-Responses should be made by Sat, 12 Dec 2020 14:25:47 +0000.
-Anything received after that time might be too late.
+[ Upstream commit b9ad3e9f5a7a760ab068e33e1f18d240ba32ce92 ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.248-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-and the diffstat can be found below.
+syzkaller found that with CONFIG_DEBUG_KOBJECT_RELEASE=y, releasing a
+struct slave device could result in the following splat:
 
-thanks,
+  kobject: 'bonding_slave' (00000000cecdd4fe): kobject_release, parent 0000000074ceb2b2 (delayed 1000)
+  bond0 (unregistering): (slave bond_slave_1): Releasing backup interface
+  ------------[ cut here ]------------
+  ODEBUG: free active (active state 0) object type: timer_list hint: workqueue_select_cpu_near kernel/workqueue.c:1549 [inline]
+  ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x98 kernel/workqueue.c:1600
+  WARNING: CPU: 1 PID: 842 at lib/debugobjects.c:485 debug_print_object+0x180/0x240 lib/debugobjects.c:485
+  Kernel panic - not syncing: panic_on_warn set ...
+  CPU: 1 PID: 842 Comm: kworker/u4:4 Tainted: G S                5.9.0-rc8+ #96
+  Hardware name: linux,dummy-virt (DT)
+  Workqueue: netns cleanup_net
+  Call trace:
+   dump_backtrace+0x0/0x4d8 include/linux/bitmap.h:239
+   show_stack+0x34/0x48 arch/arm64/kernel/traps.c:142
+   __dump_stack lib/dump_stack.c:77 [inline]
+   dump_stack+0x174/0x1f8 lib/dump_stack.c:118
+   panic+0x360/0x7a0 kernel/panic.c:231
+   __warn+0x244/0x2ec kernel/panic.c:600
+   report_bug+0x240/0x398 lib/bug.c:198
+   bug_handler+0x50/0xc0 arch/arm64/kernel/traps.c:974
+   call_break_hook+0x160/0x1d8 arch/arm64/kernel/debug-monitors.c:322
+   brk_handler+0x30/0xc0 arch/arm64/kernel/debug-monitors.c:329
+   do_debug_exception+0x184/0x340 arch/arm64/mm/fault.c:864
+   el1_dbg+0x48/0xb0 arch/arm64/kernel/entry-common.c:65
+   el1_sync_handler+0x170/0x1c8 arch/arm64/kernel/entry-common.c:93
+   el1_sync+0x80/0x100 arch/arm64/kernel/entry.S:594
+   debug_print_object+0x180/0x240 lib/debugobjects.c:485
+   __debug_check_no_obj_freed lib/debugobjects.c:967 [inline]
+   debug_check_no_obj_freed+0x200/0x430 lib/debugobjects.c:998
+   slab_free_hook mm/slub.c:1536 [inline]
+   slab_free_freelist_hook+0x190/0x210 mm/slub.c:1577
+   slab_free mm/slub.c:3138 [inline]
+   kfree+0x13c/0x460 mm/slub.c:4119
+   bond_free_slave+0x8c/0xf8 drivers/net/bonding/bond_main.c:1492
+   __bond_release_one+0xe0c/0xec8 drivers/net/bonding/bond_main.c:2190
+   bond_slave_netdev_event drivers/net/bonding/bond_main.c:3309 [inline]
+   bond_netdev_event+0x8f0/0xa70 drivers/net/bonding/bond_main.c:3420
+   notifier_call_chain+0xf0/0x200 kernel/notifier.c:83
+   __raw_notifier_call_chain kernel/notifier.c:361 [inline]
+   raw_notifier_call_chain+0x44/0x58 kernel/notifier.c:368
+   call_netdevice_notifiers_info+0xbc/0x150 net/core/dev.c:2033
+   call_netdevice_notifiers_extack net/core/dev.c:2045 [inline]
+   call_netdevice_notifiers net/core/dev.c:2059 [inline]
+   rollback_registered_many+0x6a4/0xec0 net/core/dev.c:9347
+   unregister_netdevice_many.part.0+0x2c/0x1c0 net/core/dev.c:10509
+   unregister_netdevice_many net/core/dev.c:10508 [inline]
+   default_device_exit_batch+0x294/0x338 net/core/dev.c:10992
+   ops_exit_list.isra.0+0xec/0x150 net/core/net_namespace.c:189
+   cleanup_net+0x44c/0x888 net/core/net_namespace.c:603
+   process_one_work+0x96c/0x18c0 kernel/workqueue.c:2269
+   worker_thread+0x3f0/0xc30 kernel/workqueue.c:2415
+   kthread+0x390/0x498 kernel/kthread.c:292
+   ret_from_fork+0x10/0x18 arch/arm64/kernel/entry.S:925
 
-greg k-h
+This is a potential use-after-free if the sysfs nodes are being accessed
+whilst removing the struct slave, so wait for the object destruction to
+complete before freeing the struct slave itself.
 
--------------
-Pseudo-Shortlog of commits:
+Fixes: 07699f9a7c8d ("bonding: add sysfs /slave dir for bond slave devices.")
+Fixes: a068aab42258 ("bonding: Fix reference count leak in bond_sysfs_slave_add.")
+Cc: Qiushi Wu <wu000273@umn.edu>
+Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+Cc: Veaceslav Falico <vfalico@gmail.com>
+Cc: Andy Gospodarek <andy@greyhouse.net>
+Signed-off-by: Jamie Iles <jamie@nuviainc.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201120142827.879226-1-jamie@nuviainc.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/net/bonding/bond_main.c        |   61 +++++++++++++++++++++++----------
+ drivers/net/bonding/bond_sysfs_slave.c |   18 ---------
+ include/net/bonding.h                  |    8 ++++
+ 3 files changed, 52 insertions(+), 35 deletions(-)
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.9.248-rc1
-
-Masami Hiramatsu <mhiramat@kernel.org>
-    x86/uprobes: Do not use prefixes.nbytes when looping over prefixes.bytes
-
-Luo Meng <luomeng12@huawei.com>
-    Input: i8042 - fix error return code in i8042_setup_aux()
-
-Zhihao Cheng <chengzhihao1@huawei.com>
-    i2c: qup: Fix error return code in qup_i2c_bam_schedule_desc()
-
-Bob Peterson <rpeterso@redhat.com>
-    gfs2: check for empty rgrp tree in gfs2_ri_update
-
-Steven Rostedt (VMware) <rostedt@goodmis.org>
-    tracing: Fix userstacktrace option for instances
-
-Peter Ujfalusi <peter.ujfalusi@ti.com>
-    spi: bcm2835: Release the DMA channel if probe fails after dma_init
-
-Lukas Wunner <lukas@wunner.de>
-    spi: bcm2835: Fix use-after-free on unbind
-
-Lukas Wunner <lukas@wunner.de>
-    spi: bcm-qspi: Fix use-after-free on unbind
-
-Lukas Wunner <lukas@wunner.de>
-    spi: Introduce device-managed SPI controller allocation
-
-Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-    iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs
-
-Christian Eggers <ceggers@arri.de>
-    i2c: imx: Check for I2SR_IAL after every byte
-
-Christian Eggers <ceggers@arri.de>
-    i2c: imx: Fix reset of I2SR_IAL flag
-
-Paulo Alcantara <pc@cjr.nz>
-    cifs: fix potential use-after-free in cifs_echo_request()
-
-Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-    ftrace: Fix updating FTRACE_FL_TRAMP
-
-Jann Horn <jannh@google.com>
-    tty: Fix ->session locking
-
-Takashi Iwai <tiwai@suse.de>
-    ALSA: hda/generic: Add option to enforce preferred_dacs pairs
-
-Kailang Yang <kailang@realtek.com>
-    ALSA: hda/realtek - Add new codec supported for ALC897
-
-Jann Horn <jannh@google.com>
-    tty: Fix ->pgrp locking in tiocspgrp()
-
-Giacinto Cifelli <gciofono@gmail.com>
-    USB: serial: option: add support for Thales Cinterion EXS82
-
-Vincent Palatin <vpalatin@chromium.org>
-    USB: serial: option: add Fibocom NL668 variants
-
-Johan Hovold <johan@kernel.org>
-    USB: serial: ch341: sort device-id entries
-
-Jan-Niklas Burfeind <kernel@aiyionpri.me>
-    USB: serial: ch341: add new Product ID for CH341A
-
-Johan Hovold <johan@kernel.org>
-    USB: serial: kl5kusb105: fix memleak on open
-
-Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
-    usb: gadget: f_fs: Use local copy of descriptors for userspace copy
-
-Eric Dumazet <edumazet@google.com>
-    geneve: pull IP header before ECN decapsulation
-
-Toke Høiland-Jørgensen <toke@redhat.com>
-    vlan: consolidate VLAN parsing code and limit max parsing depth
-
-Hans de Goede <hdegoede@redhat.com>
-    pinctrl: baytrail: Fix pin being driven low for a while on gpiod_get(..., GPIOD_OUT_HIGH)
-
-Hans de Goede <hdegoede@redhat.com>
-    pinctrl: baytrail: Replace WARN with dev_info_once when setting direct-irq pin to output
-
-Josef Bacik <josef@toxicpanda.com>
-    btrfs: sysfs: init devices outside of the chunk_mutex
-
-Shiraz Saleem <shiraz.saleem@intel.com>
-    RDMA/i40iw: Address an mmap handler exploit in i40iw
-
-Lukas Wunner <lukas@wunner.de>
-    spi: Fix controller unregister order harder
-
-Po-Hsu Lin <po-hsu.lin@canonical.com>
-    Input: i8042 - add ByteSpeed touchpad to noloop table
-
-Sanjay Govind <sanjay.govind9@gmail.com>
-    Input: xpad - support Ardwiino Controllers
-
-Krzysztof Kozlowski <krzk@kernel.org>
-    dt-bindings: net: correct interrupt flags in examples
-
-Eran Ben Elisha <eranbe@nvidia.com>
-    net/mlx5: Fix wrong address reclaim when command interface is down
-
-Zhang Changzhong <zhangchangzhong@huawei.com>
-    net: pasemi: fix error return code in pasemi_mac_open()
-
-Zhang Changzhong <zhangchangzhong@huawei.com>
-    cxgb3: fix error return code in t3_sge_alloc_qset()
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    net/x25: prevent a couple of overflows
-
-Thomas Falcon <tlfalcon@linux.ibm.com>
-    ibmvnic: Fix TX completion error handling
-
-Thomas Falcon <tlfalcon@linux.ibm.com>
-    ibmvnic: Ensure that SCRQ entry reads are correctly ordered
-
-Antoine Tenart <atenart@kernel.org>
-    netfilter: bridge: reset skb->pkt_type after NF_INET_POST_ROUTING traversal
-
-Jamie Iles <jamie@nuviainc.com>
-    bonding: wait for sysfs kobject destruction before freeing struct slave
-
-Yves-Alexis Perez <corsac@corsac.net>
-    usbnet: ipheth: fix connectivity with iOS 14
-
-Anmol Karn <anmol.karan123@gmail.com>
-    rose: Fix Null pointer dereference in rose_send_frame()
-
-Julian Wiedmann <jwi@linux.ibm.com>
-    net/af_iucv: set correct sk_protocol for child sockets
-
-
--------------
-
-Diffstat:
-
- .../devicetree/bindings/net/nfc/nxp-nci.txt        |  2 +-
- .../devicetree/bindings/net/nfc/pn544.txt          |  2 +-
- Makefile                                           |  4 +-
- arch/x86/include/asm/insn.h                        | 15 +++++
- arch/x86/kernel/uprobes.c                          | 10 ++--
- drivers/i2c/busses/i2c-imx.c                       | 30 ++++++++--
- drivers/i2c/busses/i2c-qup.c                       |  3 +-
- drivers/infiniband/hw/i40iw/i40iw_main.c           |  5 --
- drivers/infiniband/hw/i40iw/i40iw_verbs.c          | 36 +++---------
- drivers/input/joystick/xpad.c                      |  2 +
- drivers/input/serio/i8042-x86ia64io.h              |  4 ++
- drivers/input/serio/i8042.c                        |  3 +-
- drivers/iommu/amd_iommu.c                          |  2 +-
- drivers/net/bonding/bond_main.c                    | 61 ++++++++++++++------
- drivers/net/bonding/bond_sysfs_slave.c             | 18 +-----
- drivers/net/ethernet/chelsio/cxgb3/sge.c           |  1 +
- drivers/net/ethernet/ibm/ibmvnic.c                 | 22 ++++++-
- .../net/ethernet/mellanox/mlx5/core/pagealloc.c    | 21 ++++++-
- drivers/net/ethernet/pasemi/pasemi_mac.c           |  8 ++-
- drivers/net/geneve.c                               | 20 +++++--
- drivers/net/usb/ipheth.c                           |  2 +-
- drivers/pinctrl/intel/pinctrl-baytrail.c           | 67 +++++++++++++++++-----
- drivers/spi/spi-bcm-qspi.c                         | 34 ++++-------
- drivers/spi/spi-bcm2835.c                          | 22 +++----
- drivers/spi/spi.c                                  | 58 ++++++++++++++++++-
- drivers/tty/tty_io.c                               | 51 +++++++++++-----
- drivers/usb/gadget/function/f_fs.c                 |  6 +-
- drivers/usb/serial/ch341.c                         |  5 +-
- drivers/usb/serial/kl5kusb105.c                    | 10 ++--
- drivers/usb/serial/option.c                        |  5 +-
- fs/btrfs/volumes.c                                 |  7 ++-
- fs/cifs/connect.c                                  |  2 +
- fs/gfs2/rgrp.c                                     |  4 ++
- include/linux/if_vlan.h                            | 29 +++++++---
- include/linux/spi/spi.h                            |  2 +
- include/linux/tty.h                                |  4 ++
- include/net/bonding.h                              |  8 +++
- include/net/inet_ecn.h                             |  1 +
- kernel/trace/ftrace.c                              | 22 ++++++-
- kernel/trace/trace.c                               |  7 ++-
- kernel/trace/trace.h                               |  6 +-
- net/bridge/br_netfilter_hooks.c                    |  7 ++-
- net/iucv/af_iucv.c                                 |  4 +-
- net/rose/rose_loopback.c                           | 17 ++++--
- net/x25/af_x25.c                                   |  6 +-
- sound/pci/hda/hda_generic.c                        | 12 ++--
- sound/pci/hda/hda_generic.h                        |  1 +
- sound/pci/hda/patch_realtek.c                      |  2 +
- tools/objtool/arch/x86/include/asm/insn.h          | 15 +++++
- 49 files changed, 481 insertions(+), 204 deletions(-)
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -1225,7 +1225,39 @@ static void bond_upper_dev_unlink(struct
+ 	rtmsg_ifinfo(RTM_NEWLINK, slave_dev, IFF_SLAVE, GFP_KERNEL);
+ }
+ 
+-static struct slave *bond_alloc_slave(struct bonding *bond)
++static void slave_kobj_release(struct kobject *kobj)
++{
++	struct slave *slave = to_slave(kobj);
++	struct bonding *bond = bond_get_bond_by_slave(slave);
++
++	cancel_delayed_work_sync(&slave->notify_work);
++	if (BOND_MODE(bond) == BOND_MODE_8023AD)
++		kfree(SLAVE_AD_INFO(slave));
++
++	kfree(slave);
++}
++
++static struct kobj_type slave_ktype = {
++	.release = slave_kobj_release,
++#ifdef CONFIG_SYSFS
++	.sysfs_ops = &slave_sysfs_ops,
++#endif
++};
++
++static int bond_kobj_init(struct slave *slave)
++{
++	int err;
++
++	err = kobject_init_and_add(&slave->kobj, &slave_ktype,
++				   &(slave->dev->dev.kobj), "bonding_slave");
++	if (err)
++		kobject_put(&slave->kobj);
++
++	return err;
++}
++
++static struct slave *bond_alloc_slave(struct bonding *bond,
++				      struct net_device *slave_dev)
+ {
+ 	struct slave *slave = NULL;
+ 
+@@ -1233,11 +1265,17 @@ static struct slave *bond_alloc_slave(st
+ 	if (!slave)
+ 		return NULL;
+ 
++	slave->bond = bond;
++	slave->dev = slave_dev;
++
++	if (bond_kobj_init(slave))
++		return NULL;
++
+ 	if (BOND_MODE(bond) == BOND_MODE_8023AD) {
+ 		SLAVE_AD_INFO(slave) = kzalloc(sizeof(struct ad_slave_info),
+ 					       GFP_KERNEL);
+ 		if (!SLAVE_AD_INFO(slave)) {
+-			kfree(slave);
++			kobject_put(&slave->kobj);
+ 			return NULL;
+ 		}
+ 	}
+@@ -1246,17 +1284,6 @@ static struct slave *bond_alloc_slave(st
+ 	return slave;
+ }
+ 
+-static void bond_free_slave(struct slave *slave)
+-{
+-	struct bonding *bond = bond_get_bond_by_slave(slave);
+-
+-	cancel_delayed_work_sync(&slave->notify_work);
+-	if (BOND_MODE(bond) == BOND_MODE_8023AD)
+-		kfree(SLAVE_AD_INFO(slave));
+-
+-	kfree(slave);
+-}
+-
+ static void bond_fill_ifbond(struct bonding *bond, struct ifbond *info)
+ {
+ 	info->bond_mode = BOND_MODE(bond);
+@@ -1420,14 +1447,12 @@ int bond_enslave(struct net_device *bond
+ 	    bond->dev->addr_assign_type == NET_ADDR_RANDOM)
+ 		bond_set_dev_addr(bond->dev, slave_dev);
+ 
+-	new_slave = bond_alloc_slave(bond);
++	new_slave = bond_alloc_slave(bond, slave_dev);
+ 	if (!new_slave) {
+ 		res = -ENOMEM;
+ 		goto err_undo_flags;
+ 	}
+ 
+-	new_slave->bond = bond;
+-	new_slave->dev = slave_dev;
+ 	/* Set the new_slave's queue_id to be zero.  Queue ID mapping
+ 	 * is set via sysfs or module option if desired.
+ 	 */
+@@ -1741,7 +1766,7 @@ err_restore_mtu:
+ 	dev_set_mtu(slave_dev, new_slave->original_mtu);
+ 
+ err_free:
+-	bond_free_slave(new_slave);
++	kobject_put(&new_slave->kobj);
+ 
+ err_undo_flags:
+ 	/* Enslave of first slave has failed and we need to fix master's mac */
+@@ -1920,7 +1945,7 @@ static int __bond_release_one(struct net
+ 	if (!netif_is_bond_master(slave_dev))
+ 		slave_dev->priv_flags &= ~IFF_BONDING;
+ 
+-	bond_free_slave(slave);
++	kobject_put(&slave->kobj);
+ 
+ 	return 0;
+ }
+--- a/drivers/net/bonding/bond_sysfs_slave.c
++++ b/drivers/net/bonding/bond_sysfs_slave.c
+@@ -125,7 +125,6 @@ static const struct slave_attribute *sla
+ };
+ 
+ #define to_slave_attr(_at) container_of(_at, struct slave_attribute, attr)
+-#define to_slave(obj)	container_of(obj, struct slave, kobj)
+ 
+ static ssize_t slave_show(struct kobject *kobj,
+ 			  struct attribute *attr, char *buf)
+@@ -136,28 +135,15 @@ static ssize_t slave_show(struct kobject
+ 	return slave_attr->show(slave, buf);
+ }
+ 
+-static const struct sysfs_ops slave_sysfs_ops = {
++const struct sysfs_ops slave_sysfs_ops = {
+ 	.show = slave_show,
+ };
+ 
+-static struct kobj_type slave_ktype = {
+-#ifdef CONFIG_SYSFS
+-	.sysfs_ops = &slave_sysfs_ops,
+-#endif
+-};
+-
+ int bond_sysfs_slave_add(struct slave *slave)
+ {
+ 	const struct slave_attribute **a;
+ 	int err;
+ 
+-	err = kobject_init_and_add(&slave->kobj, &slave_ktype,
+-				   &(slave->dev->dev.kobj), "bonding_slave");
+-	if (err) {
+-		kobject_put(&slave->kobj);
+-		return err;
+-	}
+-
+ 	for (a = slave_attrs; *a; ++a) {
+ 		err = sysfs_create_file(&slave->kobj, &((*a)->attr));
+ 		if (err) {
+@@ -175,6 +161,4 @@ void bond_sysfs_slave_del(struct slave *
+ 
+ 	for (a = slave_attrs; *a; ++a)
+ 		sysfs_remove_file(&slave->kobj, &((*a)->attr));
+-
+-	kobject_put(&slave->kobj);
+ }
+--- a/include/net/bonding.h
++++ b/include/net/bonding.h
+@@ -181,6 +181,11 @@ struct slave {
+ 	struct rtnl_link_stats64 slave_stats;
+ };
+ 
++static inline struct slave *to_slave(struct kobject *kobj)
++{
++	return container_of(kobj, struct slave, kobj);
++}
++
+ struct bond_up_slave {
+ 	unsigned int	count;
+ 	struct rcu_head rcu;
+@@ -667,6 +672,9 @@ extern struct bond_parm_tbl ad_select_tb
+ /* exported from bond_netlink.c */
+ extern struct rtnl_link_ops bond_link_ops;
+ 
++/* exported from bond_sysfs_slave.c */
++extern const struct sysfs_ops slave_sysfs_ops;
++
+ static inline void bond_tx_drop(struct net_device *dev, struct sk_buff *skb)
+ {
+ 	atomic_long_inc(&dev->tx_dropped);
 
 
