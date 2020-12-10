@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967132D510E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 03:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E89F42D511D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728025AbgLJCw4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Dec 2020 21:52:56 -0500
-Received: from mgw-01.mpynet.fi ([82.197.21.90]:50744 "EHLO mgw-01.mpynet.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727885AbgLJCw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 21:52:56 -0500
-Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
-        by mgw-01.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 0BA2al1U015078;
-        Thu, 10 Dec 2020 04:51:18 +0200
-Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
-        by mgw-01.mpynet.fi with ESMTP id 35b9r801es-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 04:51:18 +0200
-Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
- tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 10 Dec 2020 04:51:17 +0200
-Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
- tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
- 15.00.1497.006; Thu, 10 Dec 2020 04:51:17 +0200
-From:   Anton Altaparmakov <anton@tuxera.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Zheng Zengkai <zhengzengkai@huawei.com>
-Subject: Re: [PATCH -next] fs/ntfs: fix set but not used variable
- 'log_page_mask'
-Thread-Topic: [PATCH -next] fs/ntfs: fix set but not used variable
- 'log_page_mask'
-Thread-Index: AQHV+CW2KXvc7M5VpE2Aohqtho6jyqnuZSUAgALDiICAAAQoAA==
-Date:   Thu, 10 Dec 2020 02:51:17 +0000
-Message-ID: <C1D18C59-3E1B-4825-881C-B7AE6FACF4D7@tuxera.com>
-References: <20200312041353.19877-1-zhengzengkai@huawei.com>
- <94ED375C-C57C-464B-A1CA-BFB1EEF71BB2@tuxera.com>
- <20201209183623.b26e90de3d0aa92a72010ff0@linux-foundation.org>
-In-Reply-To: <20201209183623.b26e90de3d0aa92a72010ff0@linux-foundation.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [86.134.252.216]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3C28FABD37D07B4CA17E13423600CA60@ex13.tuxera.com>
-Content-Transfer-Encoding: 8BIT
+        id S1728036AbgLJDDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:03:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgLJDDF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 22:03:05 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D5CC0613CF;
+        Wed,  9 Dec 2020 19:02:24 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id s11so5018716ljp.4;
+        Wed, 09 Dec 2020 19:02:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7VknBs3+OO4cbPFyac6UMvtv/ygbv9sRyQgm0I2urpo=;
+        b=j+aa7raWma8/6rkZiaQr+3m+3eWKFsEjNE2U004caJXgeqcLOk/0EKUSSxYF1AnZa7
+         qowaaEO66hpXpFQoRi2dLfJRIH7Z9LIlcmEkm6WLOzqLOJDcQu8B679Hxc+5YzaFQKfu
+         VKSE3GHyafnkGyZNudp2lDvCya3eH3tNh311Ue7d6j6nVyOqzPmf/FBy5Q7/qLlJXwXO
+         2MfdooZFVmgqzFs9XB/pJuFYIM8akbY2HJebXyLMM0VsgBzjx3Rl6ptJ0sAscl378Dv8
+         0V7q/Gb7jYRvbTm1SC8OAodTySZYNtXgDkrbl9OcLlWD0l611UJcv4tR1wdmWquXUyip
+         yS6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7VknBs3+OO4cbPFyac6UMvtv/ygbv9sRyQgm0I2urpo=;
+        b=ofEc38aMdnS2SzWtYfyQZMjUnhMIfnk035LgPjS000fY+irBd4fsGKJyKTZ4qHoCA4
+         AFuApU94DbuJg+9pKWPbi8rbyZvrJxsUXwD4IRcYZ+Zfu9GHh0GbYEEo4O13pF0pX8Cr
+         7I3rAGCVC/917r8VmriPjqwpxaofl78AeihV08ULdc0C2zBbm6KMFK6eZUtlOIZltVeK
+         xgPGqmC5tQ0NKSqwbxJFhhb1FVQZIPIEvSOYfkaw5P9NmYhp87T/b/fz56D3GOAfY3NC
+         7odfxAWrJeJlQ2F/910PHKPqO/Yqt8t2hIxFN8p0igosV5KfvzLlFxNQ4WAgbEHWs8Xl
+         TYRQ==
+X-Gm-Message-State: AOAM530zg2nzH70JmRlcwU/HkxQ6t/0A9W8SBKkYZKvwsdDVNAL86pCI
+        XfED4DqhzCQhesZwpfTCSRnQBiSOcVgWTT+frMA=
+X-Google-Smtp-Source: ABdhPJwjascmpY96Tnzqi0NKpxktPoJnXSP0VBwfFTVswcQyH7eU8Zay190L548EDADATSwsDcNP6YaEq3VulbQW7HU=
+X-Received: by 2002:a2e:96c9:: with SMTP id d9mr2243344ljj.258.1607569343217;
+ Wed, 09 Dec 2020 19:02:23 -0800 (PST)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-09_19:2020-12-09,2020-12-09 signatures=0
-X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 spamscore=0 bulkscore=0 suspectscore=0
- malwarescore=0 mlxlogscore=999 phishscore=0 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012100018
+References: <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
+ <CAFxkdApgQ4RCt-J43cK4_128pXr=Xn5jw+q0kOaP-TYufk_tPA@mail.gmail.com>
+ <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com>
+ <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz> <CAADnVQJARx6sKF-30YsabCd1W+MFDMmfxY+2u0Pm40RHHHQZ6Q@mail.gmail.com>
+ <CAADnVQJ6tmzBXvtroBuEH6QA0H+q7yaSKxrVvVxhqr3KBZdEXg@mail.gmail.com>
+ <20201209144628.GA3474@wp.pl> <20201209150826.GP7338@casper.infradead.org>
+ <20201209155148.GA5552@wp.pl> <20201209180552.GA28692@infradead.org>
+ <20201209223206.GA1935@home.goodmis.org> <CAADnVQKiBWG9NVNEV9EqGkyd-n3Yj88cNJpH997js-63eTVAOQ@mail.gmail.com>
+ <20201209213126.79ca1326@oasis.local.home>
+In-Reply-To: <20201209213126.79ca1326@oasis.local.home>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 9 Dec 2020 19:02:11 -0800
+Message-ID: <CAADnVQ+6n4Nf5TczYWqLBrYJF_fEmRVyEbGqmaT0G9XoS7iMxA@mail.gmail.com>
+Subject: Re: [PATCH] mm/filemap: add static for function __add_to_page_cache_locked
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        bpf <bpf@vger.kernel.org>, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Josef Bacik <josef@toxicpanda.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Wed, Dec 9, 2020 at 6:31 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Wed, 9 Dec 2020 17:12:43 -0800
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>
+> > > > > > FWIW, I intend to do some consolidation/renaming in this area.  I
+> > > > > > trust that will not be a problem?
+> > > > >
+> > > > > If it does not break anything, it will be not a problem ;-)
+> > > > >
+> > > > > It's possible that __add_to_page_cache_locked() can be a global symbol
+> > > > > with add_to_page_cache_lru() + add_to_page_cache_locked() being just
+> > > > > static/inline wrappers around it.
+> > > >
+> > > > So what happens to BTF if we change this area entirely?  Your IDs
+> > > > sound like some kind of ABI to me, which is extremely scary.
+> > >
+> > > Is BTF becoming the new tracepoint? That is, random additions of things like:
+> > >
+> > >    BTF_ID(func,__add_to_page_cache_locked)
+> > >
+> > > Like was done in commit 1e6c62a882155 ("bpf: Introduce sleepable BPF
+> > > programs") without any notification to the maintainers of the
+> > > __add_to_page_cache_locked code, will suddenly become an API?
+> >
+> > huh? what api/abi you're talking about?
+>
+> If the function __add_to_page_cache_locked were to be removed due to
+> the code being rewritten,  would it break any user space? If not, then
+> there's nothing to worry about. ;-)
 
-Ah, oops!  Thank you and apologies.  Quite right the alternative patch was even better.  No need to apply this patch after all...
-
-Zheng, the log_page_mask variable was removed altogether so your patch no longer makes sense.
-
-Best regards,
-
-	Anton
-
-> On 10 Dec 2020, at 02:36, Andrew Morton <akpm@linux-foundation.org> wrote:
-> 
-> On Tue, 8 Dec 2020 08:24:02 +0000 Anton Altaparmakov <anton@tuxera.com> wrote:
-> 
->> Can you please apply this?
->> 
->> ...
->> 
->>> --- a/fs/ntfs/logfile.c
->>> +++ b/fs/ntfs/logfile.c
->>> @@ -507,7 +507,7 @@ bool ntfs_check_logfile(struct inode *log_vi, RESTART_PAGE_HEADER **rp)
->>> 	 * optimize log_page_size and log_page_bits into constants.
->>> 	 */
->>> 	log_page_bits = ntfs_ffs(log_page_size) - 1;
->>> -	size &= ~(s64)(log_page_size - 1);
->>> +	size &= ~(s64)(log_page_mask);
->>> 	/*
->>> 	 * Ensure the log file is big enough to store at least the two restart
->>> 	 * pages and the minimum number of log record pages.
-> 
-> https://lore.kernel.org/lkml/1604821092-54631-1-git-send-email-alex.shi@linux.alibaba.com/
-> addressed this?
-> 
-
-
--- 
-Anton Altaparmakov <anton at tuxera.com> (replace at with @)
-Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
-Linux NTFS maintainer
-
+That function is marked with ALLOW_ERROR_INJECTION.
+So any script that exercises it via debugfs (or via bpf) will not work.
+That's nothing new. Same "breakage" happens with kprobes, etc.
+The function was marked with error_inject for a reason though.
+The refactoring or renaming of this code ideally should provide a way to do
+similar pattern of injecting errors in this code path.
+It could be a completely new function, of course.
