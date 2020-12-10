@@ -2,141 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248592D5618
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D15522D5622
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:09:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbgLJJHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:07:44 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:44093 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727710AbgLJJHm (ORCPT
+        id S1731712AbgLJJIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:08:38 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:56653 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728631AbgLJJIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:07:42 -0500
-Received: by mail-oi1-f195.google.com with SMTP id d189so4958316oig.11
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 01:07:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aoVanH6PpJItaGusWTgG8SDNfnDJUsCWIBki9TqzoFs=;
-        b=SRgJDLqW5nef4dLbLEzoQyHJ5d6WwPBcKzARziZ0RCtwAQPeAqcQy8k+YPKYgCa5a2
-         qz0y8sQYqsHJVFKv61qUCzdM1sOFLgR10OWhu8TG8hqR010/emgEiUn/aLkbGgWbYNSg
-         L234yxDaS8f+msgt2gEf5p2wl7fMRZtxYDEswUxRGVvAh+Z3C4NDuHgxMSE3K3mmSjsL
-         aseW2I+se59cqF49aKxcFyKATcK5rWSv8eXOjV/NObZUX67CDVqNGqmZ2oylggeJ8sYN
-         iXPkqDatOLEX1GJAwRReYXgZ+PIg4DDfEzdf1mqOXsV4InQg8V2LZXw9YvCaaeriUy4e
-         0SrQ==
-X-Gm-Message-State: AOAM532DcAU5ukMSV1CkRbdmn8RHEF86a8pLFjqhWg/xk5GZHXkvpDq7
-        YAi9K/jLUMnIHXpEj3bg0JWBbrHkjyYqiLopkUAha4vsusY=
-X-Google-Smtp-Source: ABdhPJzf0knRERLR8YZ9NOPlwbDHfzdOFzLG3U//gA4Oz4mzugiWqtafnbqK+P57McZqu6A2QdWTyRu7WWlaN6pAFJI=
-X-Received: by 2002:aca:5c08:: with SMTP id q8mr4829513oib.54.1607591221309;
- Thu, 10 Dec 2020 01:07:01 -0800 (PST)
+        Thu, 10 Dec 2020 04:08:32 -0500
+X-UUID: 900509a2bc7f4989875947f2b977dfd2-20201210
+X-UUID: 900509a2bc7f4989875947f2b977dfd2-20201210
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1522337281; Thu, 10 Dec 2020 17:07:45 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 10 Dec 2020 17:07:44 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 10 Dec 2020 17:07:43 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Subject: [PATCH v8, 0/6] drm/mediatek: add support for mediatek SOC MT8183
+Date:   Thu, 10 Dec 2020 17:07:36 +0800
+Message-ID: <1607591262-21736-1-git-send-email-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-References: <20201120025757.325930-1-npiggin@gmail.com> <20201120025757.325930-3-npiggin@gmail.com>
-In-Reply-To: <20201120025757.325930-3-npiggin@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 10 Dec 2020 10:06:50 +0100
-Message-ID: <CAMuHMdUdorW03=mipgm92SXNPBZO5owW1Wp6_SacRDZ7fOe9gw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] powerpc/64s: Trim offlined CPUs from mm_cpumasks
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Anton Vorontsov <anton.vorontsov@linaro.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicholas,
+This series are based on 5.10-rc1 and provide 6 patch
+to support mediatek SOC MT8183
 
-On Fri, Nov 20, 2020 at 4:01 AM Nicholas Piggin <npiggin@gmail.com> wrote:
->
-> When offlining a CPU, powerpc/64s does not flush TLBs, rather it just
-> leaves the CPU set in mm_cpumasks, so it continues to receive TLBIEs
-> to manage its TLBs.
->
-> However the exit_flush_lazy_tlbs() function expects that after
-> returning, all CPUs (except self) have flushed TLBs for that mm, in
-> which case TLBIEL can be used for this flush. This breaks for offline
-> CPUs because they don't get the IPI to flush their TLB. This can lead
-> to stale translations.
->
-> Fix this by clearing the CPU from mm_cpumasks, then flushing all TLBs
-> before going offline.
->
-> These offlined CPU bits stuck in the cpumask also prevents the cpumask
-> from being trimmed back to local mode, which means continual broadcast
-> IPIs or TLBIEs are needed for TLB flushing. This patch prevents that
-> situation too.
->
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Change since v7
+- add dt-binding for mt8183 display
+- base mmsys patch
+https://patchwork.kernel.org/project/linux-mediatek/cover/1607506379-10998-1-git-send-email-yongqiang.niu@mediatek.com/
+- base dts patch
+https://patchwork.kernel.org/project/linux-mediatek/cover/20201127104930.1981497-1-enric.balletbo@collabora.com/
+- add mt8183 function call for setting the routing registers
+- add RDMA fifo size error handle
 
-Thanks for your patch!
+Change since v6
+- move ddp component define into mtk_mmsys.h
+- add mmsys private data to support different ic path connection
+- add mt8183-mmsys.c to support 8183 path connection
+- fix reviewed issue in v6
 
-> --- a/arch/powerpc/platforms/powermac/smp.c
-> +++ b/arch/powerpc/platforms/powermac/smp.c
-> @@ -911,6 +911,8 @@ static int smp_core99_cpu_disable(void)
->
->         mpic_cpu_set_priority(0xf);
->
-> +       cleanup_cpu_mmu_context();
-> +
+Change since v5
+- fix reviewed issue in v5
+base https://patchwork.kernel.org/project/linux-mediatek/list/?series=213219
 
-I guess this change broke pmac32_defconfig+SMP in v5.10-rc7?
+Change since v4
+- fix reviewed issue in v4
 
-arch/powerpc/platforms/powermac/smp.c: error: implicit
-declaration of function 'cleanup_cpu_mmu_context'
-[-Werror=implicit-function-declaration]:  => 914:2
+Change since v3
+- fix reviewed issue in v3
+- fix type error in v3
+- fix conflict with iommu patch
 
-http://kisskb.ellerman.id.au/kisskb/buildresult/14423174/
+Change since v2
+- fix reviewed issue in v2
+- add mutex node into dts file
 
+Changes since v1:
+- fix reviewed issue in v1
+- add dts for mt8183 display nodes
+- adjust display clock control flow in patch 22
+- add vmap support for mediatek drm in patch 23
+- fix page offset issue for mmap function in patch 24
+- enable allow_fb_modifiers for mediatek drm in patch 25
 
->         return 0;
->  }
->
-> diff --git a/arch/powerpc/platforms/powernv/smp.c b/arch/powerpc/platforms/powernv/smp.c
-> index 54c4ba45c7ce..cbb67813cd5d 100644
-> --- a/arch/powerpc/platforms/powernv/smp.c
-> +++ b/arch/powerpc/platforms/powernv/smp.c
-> @@ -143,6 +143,9 @@ static int pnv_smp_cpu_disable(void)
->                 xive_smp_disable_cpu();
->         else
->                 xics_migrate_irqs_away();
-> +
-> +       cleanup_cpu_mmu_context();
-> +
->         return 0;
->  }
->
-> diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/platforms/pseries/hotplug-cpu.c
-> index f2837e33bf5d..a02012f1b04a 100644
-> --- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
-> +++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
-> @@ -90,6 +90,9 @@ static int pseries_cpu_disable(void)
->                 xive_smp_disable_cpu();
->         else
->                 xics_migrate_irqs_away();
-> +
-> +       cleanup_cpu_mmu_context();
-> +
->         return 0;
->  }
->
-> --
-> 2.23.0
->
+Yongqiang Niu (6):
+  dt-bindings: mediatek: add rdma_fifo_size description for mt8183
+    display
+  dt-bindings: mediatek: add description for mt8183 display
+  soc: mediatek: mmsys: add mt8183 function call for setting the routing
+    registers
+  drm/mediatek: add fifo_size into rdma private data
+  drm/mediatek: add RDMA fifo size error handle
+  drm/mediatek: add support for mediatek SOC MT8183
 
+ .../bindings/display/mediatek/mediatek,disp.txt    | 18 ++++-
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c            | 18 +++++
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c           | 29 ++++++-
+ drivers/gpu/drm/mediatek/mtk_drm_ddp.c             | 47 +++++++++++
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c             | 43 +++++++++++
+ drivers/soc/mediatek/mmsys/Makefile                |  1 +
+ drivers/soc/mediatek/mmsys/mt8183-mmsys.c          | 90 ++++++++++++++++++++++
+ drivers/soc/mediatek/mmsys/mtk-mmsys.c             |  1 +
+ include/linux/soc/mediatek/mtk-mmsys.h             |  1 +
+ 9 files changed, 246 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/soc/mediatek/mmsys/mt8183-mmsys.c
 
---
-Gr{oetje,eeting}s,
+-- 
+1.8.1.1.dirty
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
