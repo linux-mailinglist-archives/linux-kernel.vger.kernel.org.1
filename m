@@ -2,145 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18AC2D68B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B96FF2D68B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393786AbgLJU3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 15:29:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393381AbgLJU3V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 15:29:21 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDB2C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 12:28:40 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id b10so5893195ljp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 12:28:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=v13PsshndG89LyYYoye/My4vJgfzMpm5itJIsCaIY+4=;
-        b=o9eCZIRtMIAzbD3JXvX274VC1v8XOtAaVhbTr9trkQA/RdRV7zEkOyEdTGCqfuZ/pW
-         3ilL2vi9dkXoE+iyJoeuKhclSLMfSSKwvf6YZ0I9n1M0ZEuCb6ztnCWsK/GS8XQBjSIg
-         5DRhucD5Iz304agF7eKe1Zkg/xw7KsC8xJUjoMKHjPy1/QUiGA89Ov6vdt6umEPtEOLW
-         G80ofo8xZU51laIyrY/coiuN/MlzHPp2He7hrpiNte6fvwgOj/9jlAbyBmxWm4yLM+as
-         yVtQ1vn3IxjcCr1IJTizmRjSphQEaksYvLxJFfPoQp7yD85xbk54fzf7fP9wJYMzGqAj
-         501w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=v13PsshndG89LyYYoye/My4vJgfzMpm5itJIsCaIY+4=;
-        b=k9sGrCrICWUxvu1jwMb1dMBwJaP/uaNLLoDzl6D7pqlcApP+mJOdDuS/BcoZIVQQID
-         3IR8n1/HkCZ67/IKavXq9orCT/ZPwH7jzhhFmo3LsB84o58mu6V/leV1StE2KCXCW2zX
-         FHnQfI1n5z9i2QtDZ4Dfml01AB9XBd7/D4UsTHTfg1XhUSTojt6QZq7UpjeUbSq0sp34
-         w74I415/K+T74bsJ2DlqKTRr7qwkVF4Ye1yyMxJ2wgdYRLzjevH/8PcQREtpjcWhBu65
-         /1AN3hTcROx0Da+we8QBFCphxmeBltw63IzIX49bo376R5cjguZGcnMWzwxMPPh0/A8n
-         qPnA==
-X-Gm-Message-State: AOAM530GktLW20s06Ssf39gZW4m42RNGDSFH02uQEen8hLDjwl3xqylY
-        CdIkK+EKaaRdjnihUq2YucBkjQ==
-X-Google-Smtp-Source: ABdhPJwjM6OoA3N0FiFoe4OmDhc9Zx7jYxDZaFaKESQNL+7y/1bQUUSX5QJp3MACBNpM78EmPd+skA==
-X-Received: by 2002:a2e:8113:: with SMTP id d19mr1909725ljg.303.1607632119436;
-        Thu, 10 Dec 2020 12:28:39 -0800 (PST)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id r4sm364279lfc.247.2020.12.10.12.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 12:28:38 -0800 (PST)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: [PATCH 1/2] of: property: Get rid of code duplication in port getting
-Date:   Thu, 10 Dec 2020 22:29:44 +0200
-Message-Id: <20201210202944.6747-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        id S2393802AbgLJUaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 15:30:08 -0500
+Received: from mga05.intel.com ([192.55.52.43]:43253 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393793AbgLJU3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 15:29:51 -0500
+IronPort-SDR: 8H3pXWepjt/3HCEUAbYn+ydTrNlRzW+bUv1MlRO7RM4uRsDnCT/jlKL2Eaf/y6fmIXRRohKcrX
+ qHOvxAh7sB4w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="259044006"
+X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
+   d="scan'208";a="259044006"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 12:29:09 -0800
+IronPort-SDR: fu0Tsz6n8+eS5paPIMBTAa+8NA7Qzrej8TbdAb39BBCB9gGikOxGV4Nuy9GaKbQNdef6R+W00C
+ R41H9uF1Qeaw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
+   d="scan'208";a="439679530"
+Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Dec 2020 12:29:08 -0800
+Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1knSYl-0000TH-IC; Thu, 10 Dec 2020 20:29:07 +0000
+Date:   Fri, 11 Dec 2020 04:28:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 33eae21d327caecf404882145b2749865836991f
+Message-ID: <5fd28501.LAigSPqsE5YOX1zP%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both of_graph_is_present() and of_graph_get_next_endpoint() functions
-share common piece of code for obtaining the graph port. Extract it into
-separate static function to get rid of code duplication and avoid
-possible coding errors in future.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: 33eae21d327caecf404882145b2749865836991f  Merge branch 'core/entry'
 
-Fixes: 4ec0a44ba8d7 ("of_graph: add of_graph_is_present()")
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+elapsed time: 724m
+
+configs tested: 147
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       omap2plus_defconfig
+mips                         db1xxx_defconfig
+powerpc                      cm5200_defconfig
+mips                        maltaup_defconfig
+powerpc                     skiroot_defconfig
+mips                         bigsur_defconfig
+powerpc                 canyonlands_defconfig
+mips                           ci20_defconfig
+m68k                                defconfig
+xtensa                  nommu_kc705_defconfig
+arc                        vdk_hs38_defconfig
+sh                           sh2007_defconfig
+powerpc                     tqm8560_defconfig
+arm                           viper_defconfig
+arm                          collie_defconfig
+arm                            zeus_defconfig
+sh                           se7343_defconfig
+sh                            migor_defconfig
+mips                        vocore2_defconfig
+arm                         orion5x_defconfig
+powerpc                 mpc836x_mds_defconfig
+m68k                        mvme16x_defconfig
+mips                        omega2p_defconfig
+ia64                        generic_defconfig
+um                             i386_defconfig
+powerpc                         ps3_defconfig
+sh                           se7705_defconfig
+sh                        sh7763rdp_defconfig
+sparc64                          alldefconfig
+h8300                               defconfig
+sh                          rsk7201_defconfig
+powerpc                 mpc836x_rdk_defconfig
+sh                          rsk7264_defconfig
+sh                             sh03_defconfig
+arm                          simpad_defconfig
+powerpc                  iss476-smp_defconfig
+m68k                         apollo_defconfig
+arm                          pcm027_defconfig
+mips                          ath25_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                        oxnas_v6_defconfig
+s390                                defconfig
+m68k                             alldefconfig
+sh                          r7785rp_defconfig
+sh                   secureedge5410_defconfig
+ia64                          tiger_defconfig
+arm                        mini2440_defconfig
+sh                              ul2_defconfig
+sh                          urquell_defconfig
+sh                          sdk7786_defconfig
+powerpc                      ppc64e_defconfig
+arm                         palmz72_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                 mpc8540_ads_defconfig
+arm                           tegra_defconfig
+sh                             shx3_defconfig
+powerpc                      pmac32_defconfig
+mips                          ath79_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                               alldefconfig
+m68k                          amiga_defconfig
+powerpc                      ppc40x_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201209
+i386                 randconfig-a005-20201209
+i386                 randconfig-a001-20201209
+i386                 randconfig-a002-20201209
+i386                 randconfig-a006-20201209
+i386                 randconfig-a003-20201209
+x86_64               randconfig-a016-20201209
+x86_64               randconfig-a012-20201209
+x86_64               randconfig-a013-20201209
+x86_64               randconfig-a014-20201209
+x86_64               randconfig-a015-20201209
+x86_64               randconfig-a011-20201209
+x86_64               randconfig-a016-20201210
+x86_64               randconfig-a012-20201210
+x86_64               randconfig-a013-20201210
+x86_64               randconfig-a015-20201210
+x86_64               randconfig-a014-20201210
+x86_64               randconfig-a011-20201210
+i386                 randconfig-a013-20201209
+i386                 randconfig-a014-20201209
+i386                 randconfig-a011-20201209
+i386                 randconfig-a015-20201209
+i386                 randconfig-a012-20201209
+i386                 randconfig-a016-20201209
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201209
+x86_64               randconfig-a006-20201209
+x86_64               randconfig-a005-20201209
+x86_64               randconfig-a001-20201209
+x86_64               randconfig-a002-20201209
+x86_64               randconfig-a003-20201209
+x86_64               randconfig-a003-20201210
+x86_64               randconfig-a006-20201210
+x86_64               randconfig-a002-20201210
+x86_64               randconfig-a005-20201210
+x86_64               randconfig-a004-20201210
+x86_64               randconfig-a001-20201210
+
 ---
- drivers/of/property.c | 34 ++++++++++++++++++++--------------
- 1 file changed, 20 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 408a7b5f06a9..da111fcf37ac 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -30,13 +30,13 @@
- #include "of_private.h"
- 
- /**
-- * of_graph_is_present() - check graph's presence
-+ * of_graph_get_port - find the "port" node in a given node
-  * @node: pointer to device_node containing graph port
-  *
-- * Return: True if @node has a port or ports (with a port) sub-node,
-- * false otherwise.
-+ * Return: A 'port' node pointer with refcount incremented if found or NULL
-+ * otherwise. The caller has to use of_node_put() on it when done.
-  */
--bool of_graph_is_present(const struct device_node *node)
-+static struct device_node *of_graph_get_port(const struct device_node *node)
- {
- 	struct device_node *ports, *port;
- 
-@@ -46,8 +46,22 @@ bool of_graph_is_present(const struct device_node *node)
- 
- 	port = of_get_child_by_name(node, "port");
- 	of_node_put(ports);
--	of_node_put(port);
- 
-+	return port;
-+}
-+
-+/**
-+ * of_graph_is_present() - check graph's presence
-+ * @node: pointer to device_node containing graph port
-+ *
-+ * Return: True if @node has a port or ports (with a port) sub-node,
-+ * false otherwise.
-+ */
-+bool of_graph_is_present(const struct device_node *node)
-+{
-+	struct device_node *port = of_graph_get_port(node);
-+
-+	of_node_put(port);
- 	return !!port;
- }
- EXPORT_SYMBOL(of_graph_is_present);
-@@ -631,15 +645,7 @@ struct device_node *of_graph_get_next_endpoint(const struct device_node *parent,
- 	 * parent port node.
- 	 */
- 	if (!prev) {
--		struct device_node *node;
--
--		node = of_get_child_by_name(parent, "ports");
--		if (node)
--			parent = node;
--
--		port = of_get_child_by_name(parent, "port");
--		of_node_put(node);
--
-+		port = of_graph_get_port(parent);
- 		if (!port) {
- 			pr_err("graph: no port node found in %pOF\n", parent);
- 			return NULL;
--- 
-2.27.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
