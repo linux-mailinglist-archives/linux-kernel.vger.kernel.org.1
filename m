@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB962D559C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3279E2D55A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388161AbgLJIqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 03:46:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726579AbgLJIqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 03:46:06 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2388152AbgLJIsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 03:48:03 -0500
+Received: from relay1.mymailcheap.com ([144.217.248.102]:34138 "EHLO
+        relay1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726579AbgLJIsB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 03:48:01 -0500
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 76EC03F202;
+        Thu, 10 Dec 2020 08:46:29 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 4968A2A3E6;
+        Thu, 10 Dec 2020 03:46:29 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1607589989;
+        bh=X/nTSkbPqr6vKKgXzf57nKcH+Yn+Q4agIeaKKW0GQjk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=uJkfI0pTwtPfuJFZkS62SKZy0JFeDhtOuZG0kwpFCcIaMoT/2BIAKzrv9CF3/Ljjf
+         QDg98BTCIQ3312NkUbfpzFmak3JocPajrvWfFdbkFzmbe8fXpvEeBSmNmQoeLXjp5S
+         RIUCB4H6QEHqrRR8Kr2uq7ZbUOkE1fqDLbj0TqEo=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id K2GE1c3fruPh; Thu, 10 Dec 2020 03:46:28 -0500 (EST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06B3422CA1;
-        Thu, 10 Dec 2020 08:45:25 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1knHZi-00013B-TO; Thu, 10 Dec 2020 08:45:23 +0000
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Thu, 10 Dec 2020 03:46:28 -0500 (EST)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 745C540AA1;
+        Thu, 10 Dec 2020 08:46:27 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="KwM5uJ14";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.161.121])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id D0C65411A2;
+        Thu, 10 Dec 2020 08:46:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1607589970; bh=X/nTSkbPqr6vKKgXzf57nKcH+Yn+Q4agIeaKKW0GQjk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KwM5uJ14OYNYAGcL73+2ukR/ddj6o5wFgtaoQcxTJAWFmhLGdviyYpGYNEg7HCpAz
+         2tCq1E8FUF4QECx7JGRvIRv/dauF5DgFa62YzMGd7VxwPomkCS0FHpqOZtWfnLOJIB
+         9kokITd4g+kAqW1jlY1JoQXUcb+xW2Xa2dePRAHI=
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Ondrej Jirman <megous@megous.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Icenowy Zheng <icenowy@aosc.io>
+Subject: [PATCH 3/3] dt-bindings: arm: sunxi: note that old PineTab compatible has old panel
+Date:   Thu, 10 Dec 2020 16:45:58 +0800
+Message-Id: <20201210084558.1917246-1-icenowy@aosc.io>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201210083722.1912981-1-icenowy@aosc.io>
+References: <20201210083722.1912981-1-icenowy@aosc.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 10 Dec 2020 08:45:22 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Joel Fernandes <joelaf@google.com>,
-        Quentin Perret <qperret@google.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        yezengruan <yezengruan@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        kvmarm@lists.cs.columbia.edu,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>
-Subject: Re: [RFC][PATCH 0/4] arm64:kvm: teach guest sched that VCPUs can be
- preempted
-In-Reply-To: <CAJWu+ooy=r=G+AnyriQDA9_4CJqfO6hkf=c8heV8HV+yNea_PQ@mail.gmail.com>
-References: <20200721041742.197354-1-sergey.senozhatsky@gmail.com>
- <20200817020310.GA1210848@jagdpanzerIV.localdomain>
- <fe72592c-c721-bece-1469-95eebf931299@huawei.com>
- <cbcfb402b7fdb8a2a45b80fbb0e79f3e@kernel.org>
- <20200911085841.GB562@jagdpanzerIV.localdomain>
- <CAJWu+oq26OK1-7Ze2pb5xpRJ-tS9wtXOdGFrYpHq+fhkyGhjkA@mail.gmail.com>
- <fdc35e25f2bc2cdfa0849a84802eafd6@kernel.org>
- <CAJWu+ooy=r=G+AnyriQDA9_4CJqfO6hkf=c8heV8HV+yNea_PQ@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <78091359dab0d8decfc452f7c5c25971@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: joelaf@google.com, qperret@google.com, sergey.senozhatsky@gmail.com, yezengruan@huawei.com, will@kernel.org, linux-kernel@vger.kernel.org, suleiman@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, wanghaibin.wang@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [6.40 / 20.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.121:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         DMARC_NA(0.00)[aosc.io];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         MID_CONTAINS_FROM(1.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Queue-Id: 745C540AA1
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-10 01:39, Joel Fernandes wrote:
+As the old LCD panel used by PineTab developer samples are discontinued,
+there won't be furtherly any more units of the sample, and this should
+be noted in the document.
 
-[...]
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+---
+ Documentation/devicetree/bindings/arm/sunxi.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->> Quentin and I have discussed potential ways of improving guest
->> scheduling
->> on terminally broken systems (otherwise known as big-little), in the
->> form of a capacity request from the guest to the host. I'm not really
->> keen on the host exposing its own capacity, as that doesn't tell the
->> host what the guest actually needs.
-> 
-> I am not sure how a capacity request could work well. It seems the
-> cost of a repeated hypercall could be prohibitive. In this case, a
-> lighter approach might be for KVM to restrict vCPU threads to run on
-> certain types of cores, and pass the capacity information to the guest
-> at guest's boot time.
-
-That seems like a very narrow use case. If you actually pin vcpus to
-physical CPU classes, DT is the right place to put things, because
-it is completely static. This is effectively creating a virtual
-big-little, which is in my opinion a userspace job.
-
-> This would be a one-time cost to pay. And then,
-> then the guest scheduler can handle the scheduling appropriately
-> without any more hypercalls. Thoughts?
-
-Anything that is a one-off belongs to firmware configuration, IMO.
-
-The case I'm concerned with is when vcpus are allowed to roam across
-the system, and hit random physical CPUs because the host has no idea
-of the workload the guest deals with (specially as the AMU counters
-are either absent or unusable on any available core).
-
-The cost of a hypercall really depends on where you terminate it.
-If it is a shallow exit, that's only a few hundred cycles on any half
-baked CPU. Go all the way to userspace, and the host scheduler is the
-limit. But the frequency of that hypercall obviously matters too.
-
-How often do you expect the capacity request to fire? Probably not
-on each and every time slice, right?
-
-Quentin, can you shed some light on this?
-
-Thanks,
-
-         M.
+diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
+index 73a6c8421172..9f29b5811aa1 100644
+--- a/Documentation/devicetree/bindings/arm/sunxi.yaml
++++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
+@@ -695,7 +695,7 @@ properties:
+           - const: pine64,pinephone-1.2
+           - const: allwinner,sun50i-a64
+ 
+-      - description: Pine64 PineTab
++      - description: Pine64 PineTab (developers' sample with old discontinued LCD panel, discontinued)
+         items:
+           - const: pine64,pinetab
+           - const: allwinner,sun50i-a64
 -- 
-Jazz is not dead. It just smells funny...
+2.28.0
