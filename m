@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AC12D5680
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE712D5694
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733239AbgLJJOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:14:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388739AbgLJJO1 (ORCPT
+        id S2388998AbgLJJQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:16:46 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:25354 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388952AbgLJJQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:14:27 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4698C0613CF;
-        Thu, 10 Dec 2020 01:13:46 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id ce23so6275006ejb.8;
-        Thu, 10 Dec 2020 01:13:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=K+DVSHiJnzRZk+oC9MjBKUhPYmCnDv5TwhJVFqHuLvw=;
-        b=dMxloizdshy/7FS/gyC+DwjY773aXJWiR6E3hIPwI2UZ6HraMFvRXf4gnmzgrcuuuq
-         aGDDXpcGeWuzr2i+NCNzZdRpjjE6I2VH7Yrt0IWATEHPV3Z4D5rg6171Uf9Rd0bCCGG0
-         fv89bvWIwwA5szQJOkVzJe7qqBWWy54SO52dslwl/fe3hVuCfW7efcSvL7Kjt2N9t8CT
-         i8gn05ALX8rUVW/682O/kFFKsfs5RFGyEFTwcfF//AcYjVJTYB6TWNvky5bwkCa9u7u/
-         wlbOA7KKry5wZnI0QTzaDKxEQvQwQSAbEMBDzU12iDzLIQVQ5uX+6mU938hCD3f3lGkb
-         k1Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K+DVSHiJnzRZk+oC9MjBKUhPYmCnDv5TwhJVFqHuLvw=;
-        b=rxVaNvTwTqFIUwbosbdtoiAsaXGCu0vPDF/pKoKaa02tjVAK1S4JrXDXuqqRbwyFMb
-         n7hBb5URCpOxZ3rYvdpXMTaG+LU6mbhrNrvnSrHUOKiPR5ubtz3prtz8YrEH0vcP1bn0
-         +UeDh1zrrigfkzP0K5oLDgJj6soLOaaawy4gLVgxkmfAFbm8MA4BZmK8njbCeA/kLW0E
-         xlGjWthUFzhooSG6eVSZe0TmHTP2RkzEFQzIGW3nkHlQrYWre6PP0so52++zHnElx/wQ
-         JmDcquSQND+VkQmSw68Mn3M/COfVWkLtdWLJfF26jwM4vtVX0K2UiR8CJtJlUsEt5VzF
-         x4Vg==
-X-Gm-Message-State: AOAM530OiqXpHdO32GrCxjNsgB7AoAO0ygWjs5gwgqK8xF7NOgMTUKxZ
-        4M5NXNag/C4nTMZ1JUrC500=
-X-Google-Smtp-Source: ABdhPJyNXDZ32NmWN6+Z8+njhTkuV2Ml/7gZFPwYAnmn16+mjzEw8JhzQfvzvzrEgPEYYTjfgoTICw==
-X-Received: by 2002:a17:907:c10:: with SMTP id ga16mr5498230ejc.43.1607591625448;
-        Thu, 10 Dec 2020 01:13:45 -0800 (PST)
-Received: from ubuntu2004 ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id r24sm4236984edo.4.2020.12.10.01.13.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 01:13:44 -0800 (PST)
-Date:   Thu, 10 Dec 2020 11:13:50 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 1/7] dt-bindings: input: Add reset-time-sec common
- property
-Message-ID: <20201210091350.GA322060@ubuntu2004>
-References: <cover.1607216141.git.cristian.ciocaltea@gmail.com>
- <c08349db08db67e71cf428fe7fd53624aaa0acf8.1607216141.git.cristian.ciocaltea@gmail.com>
- <20201210033708.GA1606132@robh.at.kernel.org>
+        Thu, 10 Dec 2020 04:16:18 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-22-d2LaCE-KOWaxiGCsoXYLMQ-1; Thu, 10 Dec 2020 09:14:37 +0000
+X-MC-Unique: d2LaCE-KOWaxiGCsoXYLMQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 10 Dec 2020 09:14:36 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 10 Dec 2020 09:14:36 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Xie He' <xie.he.0141@gmail.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-x25@vger.kernel.org" <linux-x25@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Martin Schiller" <ms@dev.tdt.de>
+Subject: RE: [PATCH net-next] net: x25: Remove unimplemented X.25-over-LLC
+ code stubs
+Thread-Topic: [PATCH net-next] net: x25: Remove unimplemented X.25-over-LLC
+ code stubs
+Thread-Index: AQHWzdxRX1QgNEu/LUu372JTopy8S6nvRYJAgAAbHICAAKnREA==
+Date:   Thu, 10 Dec 2020 09:14:36 +0000
+Message-ID: <3e7fb08afd624399a7f689c2b507a01e@AcuMS.aculab.com>
+References: <20201209033346.83742-1-xie.he.0141@gmail.com>
+ <801dc0320e484bf7a5048c0cddac12af@AcuMS.aculab.com>
+ <CAJht_EMQFtR_-QH=QMHt9+cLcNO6LHBSy2fy=mgbic+=JUsR-Q@mail.gmail.com>
+In-Reply-To: <CAJht_EMQFtR_-QH=QMHt9+cLcNO6LHBSy2fy=mgbic+=JUsR-Q@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210033708.GA1606132@robh.at.kernel.org>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+RnJvbTogWGllIEhlDQo+IFNlbnQ6IDA5IERlY2VtYmVyIDIwMjAgMjI6NTQNCj4gDQo+IE9uIFdl
+ZCwgRGVjIDksIDIwMjAgYXQgMToyMSBQTSBEYXZpZCBMYWlnaHQgPERhdmlkLkxhaWdodEBhY3Vs
+YWIuY29tPiB3cm90ZToNCj4gPg0KPiA+IEkgYWx3YXlzIHdvbmRlcmVkIGFib3V0IHJ1bm5pbmcg
+Q2xhc3MgMiB0cmFuc3BvcnQgZGlyZWN0bHkgb3ZlciBMTEMyDQo+ID4gKHJhdGhlciB0aGFuIENs
+YXNzIDQgb3ZlciBMTEMxKS4NCj4gPiBCdXQgdGhlIG9ubHkgTExDMiB1c2VyIHdhcyBuZXRiaW9z
+IC0gYW5kIG1pY3Jvc29mdCdzIExMQzIgd2FzIGJyb2tlbi4NCj4gPiBOb3QgdG8gbWVudGlvbiB0
+aGUgd2luZG93IHByb2JpbmcgbmVlZGVkIHRvIGhhbmRsZSBzeXN0ZW1zIHRoYXQNCj4gPiBzYWlk
+IHRoZXkgc3VwcG9ydGVkIGEgd2luZG93IG9mIChJSVJDKSAxNSBidXQgd291bGQgZGlzY2FyZCB0
+aGUNCj4gPiA1dGggYmFjayB0byBiYWNrIGZyYW1lLg0KPiANCj4gVG8gbWUsIExMQzEgYW5kIExM
+QzIgYXJlIHRvIEV0aGVybmV0IHdoYXQgVURQIGFuZCBUQ1AgYXJlIHRvIElQDQo+IG5ldHdvcmtz
+LiBJIHRoaW5rIHdlIGNhbiB1c2UgTExDMSBhbmQgTExDMiB3aGVyZXZlciBVRFAgYW5kIFRDUCBj
+YW4gYmUNCj4gdXNlZCwgYXMgbG9uZyBhcyB3ZSBhcmUgaW4gdGhlIHNhbWUgTEFOIGFuZCBhcmUg
+d2lsbGluZyB0byB1c2UgTUFDDQo+IGFkZHJlc3NlcyBhcyB0aGUgYWRkcmVzc2VzLg0KDQpFeGNl
+cHQgdGhhdCB5b3UgZG9uJ3QgaGF2ZSBhbnkgd2hlcmUgbmVhciBlbm91Z2ggJ3BvcnRzJyBzbyB5
+b3UgbmVlZA0Kc29tZXRoaW5nIHRvIGRlbXVsdGlwbGV4IG1lc3NhZ2VzIHRvIGRpZmZlcmVudCBh
+cHBsaWNhdGlvbnMuDQoNCldlIChJQ0wpIGFsd2F5cyByYW4gY2xhc3MgNCB0cmFuc3BvcnQgKHdo
+aWNoIGRvZXMgZXJyb3IgcmVjb3ZlcnkpDQpkaXJlY3RseSBvdmVyIExMQzEgdXNpbmcgTUFDIGFk
+ZHJlc3MgKGEgTlVMIGJ5dGUgZm9yIHRoZSBuZXR3b3JrIGxheWVyKS4NClRoaXMgcmVxdWlyZXMg
+YSBicmlkZ2VkIG5ldHdvcmsgYW5kIGdsb2JhbGx5IHVuaXF1ZSBNQUMgYWRkcmVzc2VzLg0KU2Vu
+ZGluZyBvdXQgYW4gTExDIHJlZmxlY3QgcGFja2V0IHRvIHRoZSBicm9hZGNhc3QgTUFDIGFkZHJl
+c3MgdXNlZCB0bw0KZ2VuZXJhdGUgYSBjb3VwbGUgb2YgdGhvdXNhbmQgcmVzcG9uc2VzIChtYW55
+IHdvdWxkIGdldCBkaXNjYXJkZWQNCmJlY2F1c2UgdGhlIGJyaWRnZXMgZ290IG92ZXJsb2FkZWQp
+Lg0KDQo+IFguMjUgbGF5ZXIgMyBjZXJ0YWlubHkgY2FuIGFsc28gcnVuIG92ZXIgTExDMi4NCg0K
+WW91IGRvbid0IG5lZWQgWC4yNSBsYXllciAzLg0KWC4yNSBsYXllciAyIGRvZXMgZXJyb3IgcmVj
+b3Zlcnkgb3ZlciBhIHBvaW50LXRvLXBvaW50IGxpbmsuDQpYLjI1IGxheWVyIDMgZG9lcyBzd2l0
+Y2hpbmcgYmV0d2VlbiBtYWNoaW5lcy4NCkNsYXNzIDIgdHJhbnNwb3J0IGRvZXMgbXVsdGlwbGV4
+aW5nIG92ZXIgYSByZWxpYWJsZSBsb3dlciBsYXllci4NClNvIHlvdSBub3JtYWxseSBuZWVkIGFs
+bCB0aHJlZS4NCg0KSG93ZXZlciBMTEMyIGdpdmVzIHlvdSBhIHJlbGlhYmxlIGNvbm5lY3Rpb24g
+YmV0d2VlbiB0d28gbWFjaGluZXMNCihzZWxlY3RlZCBieSBNQUMgYWRkcmVzcykuDQpTbyB5b3Ug
+c2hvdWxkIGJlIGFibGUgdG8gcnVuIENsYXNzIDIgdHJhbnNwb3J0ICh3ZWxsIG9uZSBvZiBpdHMN
+CjQgdmFyaWFudHMhKSBkaXJlY3RseSBvdmVyIExMMi4NCg0KVGhlIGFkdmFudGFnZSBvdmVyIENs
+YXNzIDQgdHJhbnNwb3J0IG92ZXIgTExDMSBpcyB0aGF0IHRoZXJlIGlzDQpvbmx5IG9uZSBzZXQg
+b2YgcmV0cmFuc21pdCBidWZmZXJzIChldGMpIHJlZ2FyZGxlc3Mgb2YgdGhlIG51bWJlcg0Kb2Yg
+Y29ubmVjdGlvbnMuDQoNCkJ1dCB0aGlzIGlzIGFsbCAzMCB5ZWFyIG9sZCBoaXN0b3J5Li4uDQoN
+CglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwg
+TW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzog
+MTM5NzM4NiAoV2FsZXMpDQo=
 
-On Wed, Dec 09, 2020 at 09:37:08PM -0600, Rob Herring wrote:
-> On Sun, Dec 06, 2020 at 03:27:01AM +0200, Cristian Ciocaltea wrote:
-> > Add a new common property 'reset-time-sec' to be used in conjunction
-> > with the devices supporting the key pressed reset feature.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > ---
-> > Changes in v3:
-> >  - This patch was not present in v2
-> > 
-> >  Documentation/devicetree/bindings/input/input.yaml | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/input/input.yaml b/Documentation/devicetree/bindings/input/input.yaml
-> > index ab407f266bef..caba93209ae7 100644
-> > --- a/Documentation/devicetree/bindings/input/input.yaml
-> > +++ b/Documentation/devicetree/bindings/input/input.yaml
-> > @@ -34,4 +34,11 @@ properties:
-> >        specify this property.
-> >      $ref: /schemas/types.yaml#/definitions/uint32
-> >  
-> > +  reset-time-sec:
-> 
-> Humm, I'm pretty sure we already have something for this. Or maybe just 
-> power off.
-
-We only have 'power-off-time-sec', so I added 'reset-time-sec' according
-to your review in v2:
-https://lore.kernel.org/lkml/20200908214724.GA959481@bogus/
-
-Thanks,
-Cristi
-
-> > +    description:
-> > +      Duration in seconds which the key should be kept pressed for device to
-> > +      reset automatically. Device with key pressed reset feature can specify
-> > +      this property.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +
-> >  additionalProperties: true
-> > -- 
-> > 2.29.2
-> > 
