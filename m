@@ -2,98 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984632D6C24
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FE12D6C22
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394455AbgLJXpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:45:30 -0500
-Received: from gproxy3-pub.mail.unifiedlayer.com ([69.89.30.42]:60198 "EHLO
-        gproxy3-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2394422AbgLJXpR (ORCPT
+        id S2394448AbgLJXp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:45:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394425AbgLJXpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Dec 2020 18:45:17 -0500
-Received: from cmgw11.unifiedlayer.com (unknown [10.9.0.11])
-        by gproxy3.mail.unifiedlayer.com (Postfix) with ESMTP id B16CF40043
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:44:36 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id nVbwk0kEkdCH5nVbwk3fbp; Thu, 10 Dec 2020 16:44:36 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=ZrDD1ezG c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=zTNgK-yGK50A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=_jlGtV7tAAAA:8
- a=9Wi8DZaribg8e5_6SBAA:9 a=CjuIK1q_8ugA:10:nop_charset_2
- a=nlm17XC03S6CtCLSeiRr:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=UqKzvoML7GQkNK+q/wnEB8Ege8gq6tn9UUq607hXGbY=; b=BcVeLSoxOz7fr5VIWyOUIQDfvy
-        75y4bLEgZev5BwuKBhhTklKB3RJ6RARGF9xdndjLQwMrz1IPm8M/PY2SIGaw8LGrfODB5ckLkzuVc
-        wGX9b1Wc1LsmpBoaXPUgsuv1BU8sDzNiq9dLGWfquKta815+Vn+n3hZzp8oroK9sogLrJROW0pXZ+
-        vCf+aDDkrTWjiUvqZ7IBidQHN/PKDvRJdtkGmJMTleiTnnQJEZyScW0tc84mcTdM313A+N7rytZck
-        q2EClN9T92ku85dSBbVqL91X5LvujAcGXvJ65tuol6qEBsuY/d2HMwabAexqk0OvnPP0Cbg/1uFgZ
-        ZeRomf5w==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:34632 helo=localhost)
-        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1knVbv-0044dh-Pd; Thu, 10 Dec 2020 23:44:35 +0000
-Date:   Thu, 10 Dec 2020 15:44:35 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/39] 4.19.163-rc1 review
-Message-ID: <20201210234434.GC259082@roeck-us.net>
-References: <20201210142602.272595094@linuxfoundation.org>
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C16BC061793
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:44:37 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id n7so5827342pgg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:44:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=g1SDPT6a/nyFvkH1HOjQQzabblTO3UWN2aLImo+cfxM=;
+        b=b9JDy4JmEv/AHWcU0PvO6asgJykeWO4XV039dPaKEH7CcxQJFd2pK3NCB4vsUNDhn6
+         GGR9tHvFnfoFo89JP+jG7TclK4/eoVQ2KutfTGDx97mrgbK+vddqNaNOBzxMCrcAcdDm
+         m3aDwid4LKxuBUv7ule60TmAKuYb60Hw4IRYyipMRDOIz84lcAryoYdqZYTP2tqfU8Sj
+         CVSbmYzX6giwyTTWrjK8MPbpyH2UpZjePDtxa2HBZOTo7cvTurCvgniHeSI/emF68M8R
+         UVfQBwlEP18Q9i9iW44LwjF5mOSB5VuC0VaP5tbNnCH4myyap2C4/QXXZ+qefaUr/yt6
+         dVug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=g1SDPT6a/nyFvkH1HOjQQzabblTO3UWN2aLImo+cfxM=;
+        b=VKPsAWYeQu7kz0a7EumM9N/kXdOOOvORbViDqZy682bt22F2a9K/sSc+M72ojEnjtU
+         FKqoq/nkbwV3Sm9J8jz9AjwiYRHQ+jFcqvmHOdOuPGyz3iJvwX4eqtP3vAXBWcR1waii
+         url8xMaAua5vdUvv/rii4Oip6kgqBUPh+iPUTTCZ/0c/7queykBtSody554x9BkwiDvd
+         Rc5tKm994ahMY0J7DfapuLGhNxJOeB4Az2mwhr8BRr7ieFwDbRr3y786lckP6kCfjE1w
+         lEPDDSzh6oC5Ro9iPbAgfQG9hfhEIAA7oo6n7UL0U+Uut9o3KvsCFsmYjziI4NYxVDhW
+         YjRw==
+X-Gm-Message-State: AOAM530pHrEnXN9qOMAPCHSAwnpm0upjVcxScau9ka+nZ8SQbbGvGy6a
+        ovoTa383gjN1Zm0I1u6RoC8XUg==
+X-Google-Smtp-Source: ABdhPJys1uu7FVwYO4hbjffu3RIHA+ARy0okQqM9r8wqDKhwr//ncETBKoXEYPHvhSyqXh8AWyQ+vw==
+X-Received: by 2002:a17:90a:d494:: with SMTP id s20mr10351423pju.178.1607643876956;
+        Thu, 10 Dec 2020 15:44:36 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id z19sm7367692pfa.122.2020.12.10.15.44.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 15:44:36 -0800 (PST)
+Date:   Thu, 10 Dec 2020 15:44:35 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+cc:     Tejun Heo <tj@kernel.org>, Vipin Sharma <vipinsh@google.com>,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        corbet@lwn.net, joro@8bytes.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        dionnaglaze@google.com, kvm@vger.kernel.org, x86@kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v3 0/2] cgroup: KVM: New Encryption IDs cgroup
+ controller
+In-Reply-To: <4f7b9c3f-200e-6127-1d94-91dd9c917921@de.ibm.com>
+Message-ID: <5f8d4cba-d3f-61c2-f97-fdb338fec9b8@google.com>
+References: <20201209205413.3391139-1-vipinsh@google.com> <X9E6eZaIFDhzrqWO@mtj.duckdns.org> <4f7b9c3f-200e-6127-1d94-91dd9c917921@de.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1knVbv-0044dh-Pd
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:34632
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 27
-X-Org:  HG=direseller_whb_net_legacy;ORG=directi;
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+Content-Type: multipart/mixed; boundary="1482994552-364622287-1607643875=:399992"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 03:26:39PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.163 release.
-> There are 39 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--1482994552-364622287-1607643875=:399992
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+On Thu, 10 Dec 2020, Christian Borntraeger wrote:
+
+> > * However, the boilerplate to usefulness ratio doesn't look too good and I
+> >   wonder whether what we should do is adding a generic "misc" controller
+> >   which can host this sort of static hierarchical counting. I'll think more
+> >   on it.
 > 
-> Responses should be made by Sat, 12 Dec 2020 14:25:47 +0000.
-> Anything received after that time might be too late.
+> We first dicussed to have
+> encryption_ids.stat
+> encryption_ids.max
+> encryption_ids.current
+> 
+> and we added the sev in later, so that we can also have tdx, seid, sgx or whatever.
+> Maybe also 2 or more things at the same time.
+> 
+> Right now this code has
+> 
+> encryption_ids.sev.stat
+> encryption_ids.sev.max
+> encryption_ids.sev.current
+> 
+> And it would be trivial to extend it to have
+> encryption_ids.seid.stat
+> encryption_ids.seid.max
+> encryption_ids.seid.current
+> on s390 instead (for our secure guests).
+> 
+> So in the end this is almost already a misc controller, the only thing that we
+> need to change is the capability to also define things other than encryption.*.*
+> And of course we would need to avoid adding lots of random garbage to such a thing.
+> 
+> But if you feel ok with the burden to keep things kind of organized a misc
+> controller would certainly work for the encryption ID usecase as well. 
+> So I would be fine with the thing as is or a misc controlĺer.
 > 
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 417 pass: 417 fail: 0
+Yeah, I think generalization of this would come in the form of either (1) 
+the dumping ground of an actual "misc" controller, that you elude to, or 
+(2) a kernel abstraction so you can spin up your own generic controller 
+that has the {current, max, stat} support.  In the case of the latter, 
+encryption IDs becomes a user of that abstraction.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Concern with a single misc controller would be that any subsystem that 
+wants to use it has to exactly fit this support: current, max, stat, 
+nothing more.  The moment a controller needs some additional support, and 
+its controller is already implemented in previous kernel versionv as a 
+part of "misc," we face a problem.
 
-Guenter
+On the other hand, a kernel abstraction that provides just the basic 
+{current, max, stat} support might be interesting if it can be extended by 
+the subsystem instance using it.
+--1482994552-364622287-1607643875=:399992--
