@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247B82D62A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1FB2D62D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391014AbgLJOg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:36:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41574 "EHLO mail.kernel.org"
+        id S2392380AbgLJQ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:59:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390777AbgLJOdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:33:52 -0500
+        id S2390998AbgLJOgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:36:25 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.19 39/39] x86/insn-eval: Use new for_each_insn_prefix() macro to loop over prefixes bytes
-Date:   Thu, 10 Dec 2020 15:27:18 +0100
-Message-Id: <20201210142604.214845768@linuxfoundation.org>
+        syzbot+e3f23ce40269a4c9053a@syzkaller.appspotmail.com,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH 5.4 44/54] gfs2: check for empty rgrp tree in gfs2_ri_update
+Date:   Thu, 10 Dec 2020 15:27:21 +0100
+Message-Id: <20201210142604.198802898@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
-References: <20201210142602.272595094@linuxfoundation.org>
+In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
+References: <20201210142602.037095225@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -34,55 +33,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Bob Peterson <rpeterso@redhat.com>
 
-commit 12cb908a11b2544b5f53e9af856e6b6a90ed5533 upstream
+commit 778721510e84209f78e31e2ccb296ae36d623f5e upstream.
 
-Since insn.prefixes.nbytes can be bigger than the size of
-insn.prefixes.bytes[] when a prefix is repeated, the proper check must
-be
+If gfs2 tries to mount a (corrupt) file system that has no resource
+groups it still tries to set preferences on the first one, which causes
+a kernel null pointer dereference. This patch adds a check to function
+gfs2_ri_update so this condition is detected and reported back as an
+error.
 
-  insn.prefixes.bytes[i] != 0 and i < 4
-
-instead of using insn.prefixes.nbytes. Use the new
-for_each_insn_prefix() macro which does it correctly.
-
-Debugged by Kees Cook <keescook@chromium.org>.
-
- [ bp: Massage commit message. ]
-
-Fixes: 32d0b95300db ("x86/insn-eval: Add utility functions to get segment selector")
-Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/160697104969.3146288.16329307586428270032.stgit@devnote2
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Reported-by: syzbot+e3f23ce40269a4c9053a@syzkaller.appspotmail.com
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/x86/lib/insn-eval.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/arch/x86/lib/insn-eval.c
-+++ b/arch/x86/lib/insn-eval.c
-@@ -70,14 +70,15 @@ static int get_seg_reg_override_idx(stru
- {
- 	int idx = INAT_SEG_REG_DEFAULT;
- 	int num_overrides = 0, i;
-+	insn_byte_t p;
+---
+ fs/gfs2/rgrp.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/fs/gfs2/rgrp.c
++++ b/fs/gfs2/rgrp.c
+@@ -1008,6 +1008,10 @@ static int gfs2_ri_update(struct gfs2_in
+ 	if (error < 0)
+ 		return error;
  
- 	insn_get_prefixes(insn);
++	if (RB_EMPTY_ROOT(&sdp->sd_rindex_tree)) {
++		fs_err(sdp, "no resource groups found in the file system.\n");
++		return -ENOENT;
++	}
+ 	set_rgrp_preferences(sdp);
  
- 	/* Look for any segment override prefixes. */
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
-+	for_each_insn_prefix(insn, i, p) {
- 		insn_attr_t attr;
- 
--		attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
-+		attr = inat_get_opcode_attribute(p);
- 		switch (attr) {
- 		case INAT_MAKE_PREFIX(INAT_PFX_CS):
- 			idx = INAT_SEG_REG_CS;
+ 	sdp->sd_rindex_uptodate = 1;
 
 
