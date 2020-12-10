@@ -2,64 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0804D2D5E95
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA9D2D5EC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389737AbgLJOuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:50:39 -0500
-Received: from foss.arm.com ([217.140.110.172]:45726 "EHLO foss.arm.com"
+        id S2391802AbgLJOul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:50:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391313AbgLJOka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:40:30 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C563E1FB;
-        Thu, 10 Dec 2020 06:39:44 -0800 (PST)
-Received: from red-moon.arm.com (unknown [10.57.55.73])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9C1FD3F718;
-        Thu, 10 Dec 2020 06:39:42 -0800 (PST)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH 0/4] PCI: J7: J7200/J721E PCIe bindings
-Date:   Thu, 10 Dec 2020 14:39:35 +0000
-Message-Id: <160761114382.21392.11608975856655590224.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20201210124917.24185-1-kishon@ti.com>
-References: <20201210124917.24185-1-kishon@ti.com>
+        id S2390577AbgLJOk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:40:56 -0500
+Date:   Thu, 10 Dec 2020 15:40:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607611216;
+        bh=NgzJ+mRf7fLTuA5ix8xAU4kKnS7qzg2AXJsyY5uMGjY=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BvUB0AVYbrpW8BW49tuy9uC6bcKe88KXKhKFeAPf0vNe9Kc3fJueXyYOOu5CPG1fa
+         ucuO71CGn9CQKdQHxz84m4sh212DXtz2TSYOCx5OIe3pJO9dYLx0gMtgnW6U9s1cQP
+         5MpMM3z8Wv5R2Wq8faFocn5XhRKXZBUyKT0eGTIs=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        syzbot <syzkaller@googlegroups.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 4.4 15/39] geneve: pull IP header before ECN decapsulation
+Message-ID: <X9IzaHjsIjcn3XNX@kroah.com>
+References: <20201210142600.887734129@linuxfoundation.org>
+ <20201210142601.652963609@linuxfoundation.org>
+ <CANn89iK=kMSkT771iL0dybnWisXr9FWW-bffa5KB+McBYrxx4g@mail.gmail.com>
+ <X9Iy9EDh2gZgth+R@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X9Iy9EDh2gZgth+R@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 18:19:13 +0530, Kishon Vijay Abraham I wrote:
-> Patch series adds PCIe binding for J7200 and and fixes
-> "ti,syscon-pcie-ctrl" applicable to both J721E and J7200.
+On Thu, Dec 10, 2020 at 03:38:44PM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Dec 10, 2020 at 03:32:12PM +0100, Eric Dumazet wrote:
+> > On Thu, Dec 10, 2020 at 3:26 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > From: Eric Dumazet <edumazet@google.com>
+> > >
+> > > IP_ECN_decapsulate() and IP6_ECN_decapsulate() assume
+> > > IP header is already pulled.
+> > >
+> > > geneve does not ensure this yet.
+> > >
+> > > Fixing this generically in IP_ECN_decapsulate() and
+> > > IP6_ECN_decapsulate() is not possible, since callers
+> > > pass a pointer that might be freed by pskb_may_pull()
+> > >
+> > > syzbot reported :
+> > >
+> > 
+> > Note that we had to revert this patch, so you can either scratp this
+> > backport, or make sure to backport the revert.
 > 
-> All the four patches here have got Acks from Rob Herring.
-> 
-> Ack for "dt-bindings: pci: ti,j721e: Fix "ti,syscon-pcie-ctrl" to take
-> argument"
-> lore.kernel.org/r/CAL_JsqJQju8TUZA-wu=WA-5XH4H9s2ifO8Hf4TnT5epa=Gg1ng@mail.gmail.com
-> 
-> [...]
+> I'll drop it thanks.  Odd I lost the upstream git id on this patch, let
+> me check what went wrong...
 
-Applied to pci/cadence, thanks!
+What is the git id of the revert?  This ended up already in 4.19.y,
+5.4.y, and 5.9.y so needs to be reverted there.
 
-[1/4] dt-bindings: pci: ti,j721e: Fix "ti,syscon-pcie-ctrl" to take argument
-      https://git.kernel.org/lpieralisi/pci/c/b6c81be912
-[2/4] dt-bindings: PCI: Add host mode dt-bindings for TI's J7200 SoC
-      https://git.kernel.org/lpieralisi/pci/c/3f1f870c01
-[3/4] dt-bindings: PCI: Add EP mode dt-bindings for TI's J7200 SoC
-      https://git.kernel.org/lpieralisi/pci/c/17c5b458a9
-[4/4] PCI: j721e: Get offset within "syscon" from "ti,syscon-pcie-ctrl" phandle arg
-      https://git.kernel.org/lpieralisi/pci/c/7aa256234c
+thanks,
 
-Thanks,
-Lorenzo
+greg k-h
