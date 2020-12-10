@@ -2,247 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B962D67CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2452D6889
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404335AbgLJT7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:59:07 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2247 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390146AbgLJT6t (ORCPT
+        id S2393730AbgLJUTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 15:19:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38100 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390067AbgLJO1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:58:49 -0500
-Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CsPl35jC3z67M6B;
-        Fri, 11 Dec 2020 03:54:39 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 10 Dec 2020 20:58:02 +0100
-Received: from [10.210.172.228] (10.210.172.228) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 10 Dec 2020 19:58:01 +0000
-Subject: Re: [BUG] jevents problem when cross building Re: [PATCH 2/3] perf
- tools: Allow to enable/disable events via control file
-From:   John Garry <john.garry@huawei.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Jiri Olsa <jolsa@redhat.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        "Jiri Olsa" <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>
-References: <20201206170519.4010606-1-jolsa@kernel.org>
- <20201206170519.4010606-3-jolsa@kernel.org>
- <7bcde520-e933-c2d6-c960-3f8acdaf6047@huawei.com>
- <20201210162430.GH69683@krava> <20201210171503.GA195565@kernel.org>
- <20201210171903.GB195565@kernel.org> <20201210172608.GC195565@kernel.org>
- <30e7907d-868a-a673-59a7-3bb4766093b4@huawei.com>
- <20201210181708.GD195565@kernel.org>
- <1a608e92-d0d0-2e5e-ba7e-e9fa2e02b0f9@huawei.com>
-Message-ID: <650baaf2-36b6-a9e2-ff49-963ef864c1f3@huawei.com>
-Date:   Thu, 10 Dec 2020 19:57:26 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Thu, 10 Dec 2020 09:27:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607610382;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XemBX6GDiS8sIGiD/ca2Z1h8LOYV6Xo8hkAbb535R90=;
+        b=Fo5NgH0K0pumbaYNdlpWaUydgSzoS+PMR1Qp12Xf7zybqbWAJ0y1YQZLFG1DxhD6rq3N3L
+        bj1FFMYPLi+xVbb3+OWi5jcuhG8lR0BpgkDG0uUcWSQepf0T52nPmvBnuiCkiUMOfRSuwy
+        DaqlgjcMTbcnzpb7P5GkrA4XNgn2tpI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-256-0sU_Km6bOiuY1Rfj4BqIcA-1; Thu, 10 Dec 2020 09:26:18 -0500
+X-MC-Unique: 0sU_Km6bOiuY1Rfj4BqIcA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D6FD1842146;
+        Thu, 10 Dec 2020 14:26:15 +0000 (UTC)
+Received: from starship (unknown [10.35.206.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3083636FA;
+        Thu, 10 Dec 2020 14:25:58 +0000 (UTC)
+Message-ID: <7846c5452644a3c029d27361759cb82c2b8d4f2e.camel@redhat.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Oliver Upton <oupton@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Date:   Thu, 10 Dec 2020 16:25:57 +0200
+In-Reply-To: <7c25e8c0-a7d4-8906-ae47-20714e6699fe@redhat.com>
+References: <20201203171118.372391-1-mlevitsk@redhat.com>
+         <20201203171118.372391-2-mlevitsk@redhat.com>
+         <CAOQ_Qsj6THRPj2ta3PdOxUJeCj8KxPnLkWV8EGpvN_J=qUv74A@mail.gmail.com>
+         <d3dd82950301517e47630cc86fa0e6dc84f63f90.camel@redhat.com>
+         <87lfe82quh.fsf@nanos.tec.linutronix.de>
+         <047afdde655350a6701803aa8ae739a8bd1c1c14.camel@redhat.com>
+         <7c25e8c0-a7d4-8906-ae47-20714e6699fe@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <1a608e92-d0d0-2e5e-ba7e-e9fa2e02b0f9@huawei.com>
-Content-Type: multipart/mixed;
-        boundary="------------F62C2E5729283149E21160D0"
-Content-Language: en-US
-X-Originating-IP: [10.210.172.228]
-X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---------------F62C2E5729283149E21160D0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-
-On 10/12/2020 18:27, John Garry wrote:
->> Its unpublished, I'll send it to the tmp.perf/core branch now.
+On Thu, 2020-12-10 at 12:48 +0100, Paolo Bonzini wrote:
+> On 08/12/20 18:08, Maxim Levitsky wrote:
+> > > Even if you support TSCADJUST and let the guest write to it does not
+> > > change the per guest offset at all. TSCADJUST is per [v]CPU and adds on
+> > > top:
+> > > 
+> > >      tscvcpu = tsc_host + guest_offset + TSC_ADJUST
+> > > 
+> > > Scaling is just orthogonal and does not change any of this.
+> > 
+> > I agree with this, and I think that this is what we will end up doing.
+> > Paulo, what do you think about this?
 > 
-> I use cross-compile for arm64 to build, and it's ok.
+> Yes, you can have a VM ioctl that saves/restores cur_tsc_nsec and 
+> cur_tsc_write.  The restore side would loop on all vcpus.
+
+Why would the restore need to run on all VCPUs though?
+
+The picture that I have in mind is that we we will restore the 
+cur_tsc_nsec/cur_tsc_write pair once per VM, and then restore the 
+TSC_ADJUST value on all vCPUs as if the guest wrote it (with the quirk disabled), 
+which will restore all the horrible things that the guest did to its TSC.
+
+Since TSC adjust is enabled by default, if the user disables it in the CPUID, 
+we might as well just disable the whole thing, 
+make TSC readonly or something similar.
+
+This way we don't need to worry about TSC writes as 
+those will be reflected in the TSC_ADJUST.
+
 > 
-> I notice that the failures are for architectures which don't have an 
-> entry under pmu-events/arch, so maybe we're missing some 'weak' 
-> definition of pmu_sys_event_tables.
-> 
-> I'll check now.
-> 
+> However, it is not so easy: 1) it would have to be usable only if 
+> KVM_X86_QUIRK_TSC_HOST_ACCESS is false, 2) it would fail if 
+> kvm->arch.nr_vcpus_matched_tsc == kvm->online_vcpus (which basically 
+> means that userspace didn't mess up the TSC configuration).  If not, it 
+> would return -EINVAL.
 
-Hi Arnaldo,
+Note though that we don't track the guest tsc/tsc_adjust writes anymore
+via the tsc sync code, and with the quirk disabled we don't track them
+even for the host writes, thus the (2) condition will always be true
+(the only call left to kvm_synchronize_tsc is in the kvm_arch_vcpu_postcreate)
 
-Can you try this on top:
+However I indeed see no reason to allow new per VM API when the masterclock is
+disabled, and therefore using cur_tsc_nsec/cur_tsc_write is reasonable.
 
-----8<-----
-
- From 201aa2cb7bc8723765afd84a5d3972248af0f0a1 Mon Sep 17 00:00:00 2001
-From: John Garry <john.garry@huawei.com>
-Date: Thu, 10 Dec 2020 19:45:14 +0000
-Subject: [PATCH] perf jevents: Add system events table for empty mapping
-
-For architectures which have no PMU event lists - like arm32 - an empty
-mapping table is printed. This is how the "pmu_events_map" symbol -
-referenced in util/pmu.c::perf_pmu__find_map() - is created for those
-architectures.
-
-Since pmu-events.c now includes a new table - "pmu_sys_event_tables" -
-which is also referenced from util/pmu.c, also add this for the empty
-mappings.
-
-Signed-off-by: John Garry <john.garry@huawei.com>
-
-diff --git a/tools/perf/pmu-events/jevents.c 
-b/tools/perf/pmu-events/jevents.c
-index e930096ad713..28e20d9ec0f5 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -816,19 +816,30 @@ static void print_mapping_test_table(FILE *outfp)
-  	fprintf(outfp, "},\n");
-  }
-
-+static void print_system_event_mapping_table_prefix(FILE *outfp)
-+{
-+	fprintf(outfp, "\nstruct pmu_sys_events pmu_sys_event_tables[] = {");
-+}
-+
-+static void print_system_event_mapping_table_suffix(FILE *outfp)
-+{
-+	fprintf(outfp, "\n\t{\n\t\t.table = 0\n\t},");
-+
-+	fprintf(outfp, "\n};\n");
-+}
-+
-  static int process_system_event_tables(FILE *outfp)
-  {
-  	struct sys_event_table *sys_event_table;
-
--	fprintf(outfp, "\nstruct pmu_sys_events pmu_sys_event_tables[] = {");
-+	print_system_event_mapping_table_prefix(outfp);
-
-  	list_for_each_entry(sys_event_table, &sys_event_tables, list) {
-  		fprintf(outfp, "\n\t{\n\t\t.table = %s,\n\t},",
-  			sys_event_table->soc_id);
-  	}
--	fprintf(outfp, "\n\t{\n\t\t.table = 0\n\t},");
-
--	fprintf(outfp, "\n};\n");
-+	print_system_event_mapping_table_suffix(outfp);
-
-  	return 0;
-  }
-@@ -938,6 +949,9 @@ static void create_empty_mapping(const char 
-*output_file)
-  	fprintf(outfp, "#include \"pmu-events/pmu-events.h\"\n");
-  	print_mapping_table_prefix(outfp);
-  	print_mapping_table_suffix(outfp);
-+	print_system_event_mapping_table_prefix(outfp);
-+	print_system_event_mapping_table_suffix(outfp);
-+
-  	fclose(outfp);
-  }
-
----->8----
-
-Obviously I never tested building for one of test architectures which 
-does not use PMU events - sorry!
-
-I'll review this more tomorrow.
-
-Thanks!
+The cur_tsc_nsec should IMHO be converted to absolute time (CLOCK_REALTIME
+or similiar) or should the conversion be done in the userspace? 
+I don't know yet if I can convert between different POSIX clocks
+in race/error free manner. (e.g get the offset between them).
 
 
 > 
->>
->> More results from testing:
->>
->>    59    13.57 ubuntu:16.04-x-arm            : FAIL 
->> arm-linux-gnueabihf-gcc (Ubuntu/Linaro 5.4.0-6ubuntu1~16.04.9) 5.4.0 
->> 20160609
->>
->> [perfbuilder@five ~]$ tail -20 dm.log/ubuntu\:16.04-x-arm
->>    CC       /tmp/build/perf/util/expr.o
->>    LD       /tmp/build/perf/util/intel-pt-decoder/perf-in.o
->>    LD       /tmp/build/perf/util/perf-in.o
->>    LD       /tmp/build/perf/perf-in.o
->>    LINK     /tmp/build/perf/perf
->> /tmp/build/perf/perf-in.o: In function `pmu_for_each_sys_event':
->> /git/linux/tools/perf/util/pmu.c:816: undefined reference to 
->> `pmu_sys_event_tables'
->> /git/linux/tools/perf/util/pmu.c:816: undefined reference to 
->> `pmu_sys_event_tables'
->> /tmp/build/perf/perf-in.o: In function `pmu_add_sys_aliases':
->> /git/linux/tools/perf/util/pmu.c:886: undefined reference to 
->> `pmu_sys_event_tables'
->> /git/linux/tools/perf/util/pmu.c:886: undefined reference to 
->> `pmu_sys_event_tables'
->> collect2: error: ld returned 1 exit status
->> Makefile.perf:659: recipe for target '/tmp/build/perf/perf' failed
->> make[2]: *** [/tmp/build/perf/perf] Error 1
->> Makefile.perf:232: recipe for target 'sub-make' failed
->> make[1]: *** [sub-make] Error 2
->> Makefile:69: recipe for target 'all' failed
->> make: *** [all] Error 2
->> make: Leaving directory '/git/linux/tools/perf'
->> + exit 1 
+> Also, while at it let's burn and pour salt on the support for 
+> KVM_SET_TSC_KHZ unless TSC scaling is supported, together with 
+> vcpu->tsc_catchup and all the "tolerance" crap that is in 
+> kvm_set_tsc_khz.  And initialize vcpu->arch.virtual_tsc_khz to 
+> kvm->arch.last_tsc_khz before calling kvm_synchronize_tsc.
+
+The tsc_catchup is enabled when host TSC is unstable, so that guest
+TSC at least roughtly follows real time (which host kernel gets
+by other means).
+
+We push the guest tsc forward roughtly each time VM entry from userspace
+happens:
+
+(On each kvm_arch_vcpu_load, we raise KVM_REQ_GLOBAL_CLOCK_UPDATE
+request which (with small delay) makes all vcpus go through 
+kvm_guest_time_update which pushes the guest tsc forward)
+
+However we also have the 'tsc_always_catchup' mode which is indeed 
+something I would like to remove.
+
+It is a poor man simulation of the TSC scaling which is enabled 
+when the host doesn't support TSC scaling, but we were asked 
+to run at frequency faster than host TSC frequency is.
+
+This way guest tsc runs slower than it should, but on each VM exit,
+we punt the guest tsc offset forward so on average the guest tsc
+doesn't lag behind.
+
+Unless backward compatibility is an issue, I have no objections
+to remove that code.
+
+The tolerance thing might be needed. On many systems 
+(including mine new 3970X), the hardware doesn't have means to report 
+the unscaled host TSC frequency, thus the kernel has to 
+measure it, and since the measurement is not 100% accurate, a slightly
+different value is used every time the host boots.
+
+Thus without a small tolerance, we will always have to use TSC scaling,
+while migrating even between two identical systems.
+I don't know if this is an issue.
 
 
---------------F62C2E5729283149E21160D0
-Content-Type: text/plain; charset="UTF-8";
-	name="0001-perf-jevents-Add-system-events-table-for-empty-mappi.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename*0="0001-perf-jevents-Add-system-events-table-for-empty-mappi.pa";
-	filename*1="tch"
+Best regards,
+	Maxim Levitsky
 
-RnJvbSAyMDFhYTJjYjdiYzg3MjM3NjVhZmQ4NGE1ZDM5NzIyNDhhZjBmMGExIE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBKb2huIEdhcnJ5IDxqb2huLmdhcnJ5QGh1YXdlaS5j
-b20+CkRhdGU6IFRodSwgMTAgRGVjIDIwMjAgMTk6NDU6MTQgKzAwMDAKU3ViamVjdDogW1BB
-VENIXSBwZXJmIGpldmVudHM6IEFkZCBzeXN0ZW0gZXZlbnRzIHRhYmxlIGZvciBlbXB0eSBt
-YXBwaW5nCgpGb3IgYXJjaGl0ZWN0dXJlcyB3aGljaCBoYXZlIG5vIFBNVSBldmVudCBsaXN0
-cyAtIGxpa2UgYXJtMzIgLSBhbiBlbXB0eQptYXBwaW5nIHRhYmxlIGlzIHByaW50ZWQuIFRo
-aXMgaXMgaG93IHRoZSAicG11X2V2ZW50c19tYXAiIHN5bWJvbCAtCnJlZmVyZW5jZWQgaW4g
-dXRpbC9wbXUuYzo6cGVyZl9wbXVfX2ZpbmRfbWFwKCkgLSBpcyBjcmVhdGVkIGZvciB0aG9z
-ZQphcmNoaXRlY3R1cmVzLgoKU2luY2UgcG11LWV2ZW50cy5jIG5vdyBpbmNsdWRlcyBhIG5l
-dyB0YWJsZSAtICJwbXVfc3lzX2V2ZW50X3RhYmxlcyIgLQp3aGljaCBpcyBhbHNvIHJlZmVy
-ZW5jZWQgZnJvbSB1dGlsL3BtdS5jLCBhbHNvIGFkZCB0aGlzIGZvciB0aGUgZW1wdHkKbWFw
-cGluZ3MuCgpTaWduZWQtb2ZmLWJ5OiBKb2huIEdhcnJ5IDxqb2huLmdhcnJ5QGh1YXdlaS5j
-b20+CgpkaWZmIC0tZ2l0IGEvdG9vbHMvcGVyZi9wbXUtZXZlbnRzL2pldmVudHMuYyBiL3Rv
-b2xzL3BlcmYvcG11LWV2ZW50cy9qZXZlbnRzLmMKaW5kZXggZTkzMDA5NmFkNzEzLi4yOGUy
-MGQ5ZWMwZjUgMTAwNjQ0Ci0tLSBhL3Rvb2xzL3BlcmYvcG11LWV2ZW50cy9qZXZlbnRzLmMK
-KysrIGIvdG9vbHMvcGVyZi9wbXUtZXZlbnRzL2pldmVudHMuYwpAQCAtODE2LDE5ICs4MTYs
-MzAgQEAgc3RhdGljIHZvaWQgcHJpbnRfbWFwcGluZ190ZXN0X3RhYmxlKEZJTEUgKm91dGZw
-KQogCWZwcmludGYob3V0ZnAsICJ9LFxuIik7CiB9CiAKK3N0YXRpYyB2b2lkIHByaW50X3N5
-c3RlbV9ldmVudF9tYXBwaW5nX3RhYmxlX3ByZWZpeChGSUxFICpvdXRmcCkKK3sKKwlmcHJp
-bnRmKG91dGZwLCAiXG5zdHJ1Y3QgcG11X3N5c19ldmVudHMgcG11X3N5c19ldmVudF90YWJs
-ZXNbXSA9IHsiKTsKK30KKworc3RhdGljIHZvaWQgcHJpbnRfc3lzdGVtX2V2ZW50X21hcHBp
-bmdfdGFibGVfc3VmZml4KEZJTEUgKm91dGZwKQoreworCWZwcmludGYob3V0ZnAsICJcblx0
-e1xuXHRcdC50YWJsZSA9IDBcblx0fSwiKTsKKworCWZwcmludGYob3V0ZnAsICJcbn07XG4i
-KTsKK30KKwogc3RhdGljIGludCBwcm9jZXNzX3N5c3RlbV9ldmVudF90YWJsZXMoRklMRSAq
-b3V0ZnApCiB7CiAJc3RydWN0IHN5c19ldmVudF90YWJsZSAqc3lzX2V2ZW50X3RhYmxlOwog
-Ci0JZnByaW50ZihvdXRmcCwgIlxuc3RydWN0IHBtdV9zeXNfZXZlbnRzIHBtdV9zeXNfZXZl
-bnRfdGFibGVzW10gPSB7Iik7CisJcHJpbnRfc3lzdGVtX2V2ZW50X21hcHBpbmdfdGFibGVf
-cHJlZml4KG91dGZwKTsKIAogCWxpc3RfZm9yX2VhY2hfZW50cnkoc3lzX2V2ZW50X3RhYmxl
-LCAmc3lzX2V2ZW50X3RhYmxlcywgbGlzdCkgewogCQlmcHJpbnRmKG91dGZwLCAiXG5cdHtc
-blx0XHQudGFibGUgPSAlcyxcblx0fSwiLAogCQkJc3lzX2V2ZW50X3RhYmxlLT5zb2NfaWQp
-OwogCX0KLQlmcHJpbnRmKG91dGZwLCAiXG5cdHtcblx0XHQudGFibGUgPSAwXG5cdH0sIik7
-CiAKLQlmcHJpbnRmKG91dGZwLCAiXG59O1xuIik7CisJcHJpbnRfc3lzdGVtX2V2ZW50X21h
-cHBpbmdfdGFibGVfc3VmZml4KG91dGZwKTsKIAogCXJldHVybiAwOwogfQpAQCAtOTM4LDYg
-Kzk0OSw5IEBAIHN0YXRpYyB2b2lkIGNyZWF0ZV9lbXB0eV9tYXBwaW5nKGNvbnN0IGNoYXIg
-Km91dHB1dF9maWxlKQogCWZwcmludGYob3V0ZnAsICIjaW5jbHVkZSBcInBtdS1ldmVudHMv
-cG11LWV2ZW50cy5oXCJcbiIpOwogCXByaW50X21hcHBpbmdfdGFibGVfcHJlZml4KG91dGZw
-KTsKIAlwcmludF9tYXBwaW5nX3RhYmxlX3N1ZmZpeChvdXRmcCk7CisJcHJpbnRfc3lzdGVt
-X2V2ZW50X21hcHBpbmdfdGFibGVfcHJlZml4KG91dGZwKTsKKwlwcmludF9zeXN0ZW1fZXZl
-bnRfbWFwcGluZ190YWJsZV9zdWZmaXgob3V0ZnApOworCiAJZmNsb3NlKG91dGZwKTsKIH0K
-IAotLSAKMi4yNi4yCgo=
---------------F62C2E5729283149E21160D0--
+
+> 
+> Paolo
+> 
+
+
