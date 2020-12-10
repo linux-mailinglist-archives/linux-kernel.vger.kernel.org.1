@@ -2,89 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7342D4F52
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D3D2D4F63
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgLJAWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 19:22:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727104AbgLJAWR (ORCPT
+        id S1731239AbgLJAZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 19:25:17 -0500
+Received: from lucky1.263xmail.com ([211.157.147.132]:48750 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727278AbgLJAYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 19:22:17 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB87C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 16:21:36 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrvjQ4CCFz9sWR;
-        Thu, 10 Dec 2020 11:21:30 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1607559694;
-        bh=gUZqycqRbXTyBxFOg8awmtGV88oSNS0vpFmP17hRE8I=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=iXVlNHV7UeasFgTcvPoOsDtvudLakpBzfGe/AodMrzWLe6r723U2AbOJKaPvvv7CY
-         rCHNeEBRzlnTZqStVaQAbsyEv+pDNCUuBsko533qvj8TfG2p5gcg2XTofGs1v5rcZN
-         Dn9i0TmnpAI6JubAMqDCkzjm7pE+xatB2SAo0EBlEuM0CaEFWbKn8SROn1iRJEAIJ6
-         AbTi1WWeOSOIUico+Q0SDITrF+vUggxyOOiWawqRXlUGtfCaVmxl+4FbAs6RyzUvRE
-         uWP9xksLPBCG/ZwJM97i74ms5+I/AVrkJPcqN2LNXOUKWGn3WqbMG12MLmQs2N9Ed3
-         8JS1BtcWXh2hQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v1 2/6] powerpc/8xx: Always pin kernel text TLB
-In-Reply-To: <a726961f-f440-b553-6c46-341a860dc90a@csgroup.eu>
-References: <e796c5fcb5898de827c803cf1ab8ba1d7a5d4b76.1606231483.git.christophe.leroy@csgroup.eu> <203b89de491e1379f1677a2685211b7c32adfff0.1606231483.git.christophe.leroy@csgroup.eu> <87lfe7s1j3.fsf@mpe.ellerman.id.au> <a726961f-f440-b553-6c46-341a860dc90a@csgroup.eu>
-Date:   Thu, 10 Dec 2020 11:21:29 +1100
-Message-ID: <87ft4ese7q.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Wed, 9 Dec 2020 19:24:02 -0500
+Received: from localhost (unknown [192.168.167.13])
+        by lucky1.263xmail.com (Postfix) with ESMTP id CB99BEF3DB;
+        Thu, 10 Dec 2020 08:21:41 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P20466T140379108411136S1607559696395890_;
+        Thu, 10 Dec 2020 08:21:41 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <5d8d0dffcde47a00d2b54d99d5a6c5a5>
+X-RL-SENDER: yifeng.zhao@rock-chips.com
+X-SENDER: zyf@rock-chips.com
+X-LOGIN-NAME: yifeng.zhao@rock-chips.com
+X-FST-TO: miquel.raynal@bootlin.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Yifeng Zhao <yifeng.zhao@rock-chips.com>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        heiko@sntech.de, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yifeng Zhao <yifeng.zhao@rock-chips.com>
+Subject: [PATCH v16 0/8] Add Rockchip NFC drivers for RK3308 and others
+Date:   Thu, 10 Dec 2020 08:21:30 +0800
+Message-Id: <20201210002134.5686-1-yifeng.zhao@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 09/12/2020 =C3=A0 11:43, Michael Ellerman a =C3=A9crit=C2=A0:
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>> There is no big poing in not pinning kernel text anymore, as now
->>> we can keep pinned TLB even with things like DEBUG_PAGEALLOC.
->>>
->>> Remove CONFIG_PIN_TLB_TEXT, making it always right.
->>>
->>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>> ---
->>>   arch/powerpc/Kconfig               |  3 +--
->>>   arch/powerpc/kernel/head_8xx.S     | 20 +++-----------------
->>>   arch/powerpc/mm/nohash/8xx.c       |  3 +--
->>>   arch/powerpc/platforms/8xx/Kconfig |  7 -------
->>>   4 files changed, 5 insertions(+), 28 deletions(-)
->>>
->> ...
->>> diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
->>> index 231ca95f9ffb..19a3eec1d8c5 100644
->>> --- a/arch/powerpc/mm/nohash/8xx.c
->>> +++ b/arch/powerpc/mm/nohash/8xx.c
->>> @@ -186,8 +186,7 @@ void mmu_mark_initmem_nx(void)
->>>   	mmu_mapin_ram_chunk(0, boundary, PAGE_KERNEL_TEXT, false);
->>>   	mmu_mapin_ram_chunk(boundary, einittext8, PAGE_KERNEL, false);
->>>=20=20=20
->>> -	if (IS_ENABLED(CONFIG_PIN_TLB_TEXT))
->>> -		mmu_pin_tlb(block_mapped_ram, false);
->>> +	mmu_pin_tlb(block_mapped_ram, false);
->>>   }
->>=20
->> This broke mpc885_ads_defconfig with:
->
-> :surprise:
->
-> How did I get it working ? Anyway, thanks for fixing it.
 
-No worries. I figured you must have tested with some other series(s)
-applied and/or with different configs, it happens :)
+Rockchp's NFC(Nand Flash Controller) has four versions: V600, V622, V800 and
+V900.This series patch can support all four versions.
 
-cheers
+
+Changes in v16:
+- Fix some comments about 'ret' variable.
+
+Changes in v15:
+- Use a buffer pointer nfc->page_buf instead of the original two pointers.
+- Fix coding style.
+- Fix some comments.
+
+Changes in v14:
+- Add oob_read and oob_write hook api.
+- Support timing config and ecc config for each chips.
+- Fix some comments.
+
+Changes in v13:
+- The nfc->buffer will realloc while the page size of the second mtd
+  is large than the first one.
+- Fix coding style.
+- Fix some comments.
+
+Changes in v12:
+- Fix some warnings while make dt_binding_check
+- Drop a allOf defined
+
+Changes in v11:
+- Fix compile error.
+
+Changes in v10:
+- Fix compile error on master v5.9-rc7.
+
+Changes in v9:
+- The nfc->buffer will realloc while the page size of the second mtd
+  is large than the first one
+- Fix coding style.
+- Remove struct rk_nfc_clk.
+- Prepend some function with rk_nfc_.
+- Replace function readl_poll_timeout_atomic with readl_relaxed_poll_timeout.
+- Remove function rk_nfc_read_byte and rk_nfc_write_byte.
+- Don't select the die if 'check_only == true' in function rk_nfc_exec_op.
+- Modify function rk_nfc_write_page and rk_nfc_write_page_raw.
+
+Changes in v8:
+- Fix a error while make dt_binding_check
+
+Changes in v7:
+- Fix some wrong define
+- Rebase to linux-next.
+- Fix coding style.
+- Reserved 4 bytes at the beginning of the oob area.
+- Page raw read and write included ecc data.
+
+Changes in v6:
+- Fix some wrong define
+- Modified the definition of compatible
+- The mtd->name set by NAND label property.
+- Add some comments.
+- Fix compile error.
+
+Changes in v5:
+- Fix some wrong define.
+- Add boot-medium define.
+- Remove some compatible define.
+- Add boot blocks support  with different ECC for bootROM.
+- Rename rockchip-nand.c to rockchip-nand-controller.c.
+- Unification of other variable names.
+- Remove some compatible define.
+
+Changes in v4:
+- The compatible define with rkxx_nfc.
+- Add assigned-clocks.
+- Fix some wrong defineChanges in.
+- Define platform data structure for the register offsets.
+- The compatible define with rkxx_nfc.
+- Use SET_SYSTEM_SLEEP_PM_OPS to define PM_OPS.
+- Use exec_op instead of legacy hooks.
+
+Changes in v3:
+- Change the title for the dt-bindings.
+
+Changes in v2:
+- Fix compile error.
+- Include header files sorted by file name.
+
+Yifeng Zhao (8):
+  dt-bindings: mtd: Describe Rockchip RK3xxx NAND flash controller
+  mtd: rawnand: rockchip: NFC drivers for RK3308, RK2928 and others
+  MAINTAINERS: add maintainers to ROCKCHIP NFC
+  arm64: dts: rockchip: Add NFC node for RK3308 SoC
+  arm64: dts: rockchip: Add NFC node for PX30 SoC
+  arm: dts: rockchip: Add NFC node for RV1108 SoC
+  arm: dts: rockchip: Add NFC node for RK2928 and other SoCs
+  arm: dts: rockchip: Add NFC node for RK3036 SoC
+
+ .../mtd/rockchip,nand-controller.yaml         |  161 ++
+ MAINTAINERS                                   |    4 +-
+ arch/arm/boot/dts/rk3036.dtsi                 |   52 +
+ arch/arm/boot/dts/rk3xxx.dtsi                 |    9 +
+ arch/arm/boot/dts/rv1108.dtsi                 |   11 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   15 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      |   15 +
+ drivers/mtd/nand/raw/Kconfig                  |   12 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ .../mtd/nand/raw/rockchip-nand-controller.c   | 1495 +++++++++++++++++
+ 10 files changed, 1773 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+ create mode 100644 drivers/mtd/nand/raw/rockchip-nand-controller.c
+
+-- 
+2.17.1
+
+
+
