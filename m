@@ -2,184 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1E12D5D72
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE0E2D5D87
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:27:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388963AbgLJOWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:22:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59538 "EHLO
+        id S2390031AbgLJO0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:26:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729076AbgLJOWy (ORCPT
+        with ESMTP id S1730742AbgLJO0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:22:54 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64352C0613CF;
-        Thu, 10 Dec 2020 06:22:14 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id s21so4192510pfu.13;
-        Thu, 10 Dec 2020 06:22:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7gvh3enTyM7r16asGFsXp25EQVi9nM03JLF3FLpI4e8=;
-        b=g8KiW139pOV2susxo8HdW/YCjk7r0bCJ4v1VqLcaQGdS+kugolJyuTrKNLYE02M5Oy
-         hwO0pFh3VRMHS9xsoL4zKAssx6DcQGdsUPQWjDb8Ms2QdI/RaFjWvBMAs3LlajEYLm7B
-         E/A2Nm7BKrKcghKE4sxxyC17d2pz3yJPxpj7vgNOtGlyOeLGfWzS+Yh+MQnFrYW4XKPv
-         Et7xQ/S87ZeU5xl/3i8CHeYDwkhdvTgBFJG+CL1zBOYmJ35bV5D/W9PFODHWO9hTZGHF
-         +ffG/RBD1oTr9lZrJf6/aM81EXYASfnDpjNY7jdq5a4j15se5zsQCeoNQNwtCZaeEsNH
-         DC2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7gvh3enTyM7r16asGFsXp25EQVi9nM03JLF3FLpI4e8=;
-        b=RxNOZ8c2DaW7OAjXAX4uI0VkrK2w73os6XVXydFmlRywHnvJLlXEGAKL7e8unjb/g5
-         1dE6LEZsIyjiQM44dxi6imrY0RyKRXnM5OA++HnrI0Z9IRCYahE6NTEBI45yB+xu85Vb
-         3qrCcDJ3DLwtSZW8QRF6YlfoVeYluMoIOs95oonsQ9GV+zRyA04+fA78NjCkGWXvIZ8n
-         DeLlXDulxdHNGwf8l3R7v9xIv4zkMEZrZ7gy6ijhaXK/nMrW//IgtR6o3Rjv91uL2lWm
-         7Wo5qnbc/h5bYVoaMO9KlaxNieApy9mrFE1SXzOO8NKQQgPKfr4diQUR2447fCAPcLBi
-         gOQg==
-X-Gm-Message-State: AOAM533/AF1mlq4+McGx7acs5oB96QqnR5CHy67AwLd3W0Iqj0AzXF3h
-        IJOY8udV9/MmewAvBoxRP03yjADHdCPgsSxCToA=
-X-Google-Smtp-Source: ABdhPJxVp8EjIZlO70I74O7fyXpVy6WLFzWzXDg3HsS2ENh9tXjZCbb5x1gDs1oxITNXtrQMaWhjZVC5PijATGv5ts4=
-X-Received: by 2002:a63:4002:: with SMTP id n2mr6926113pga.4.1607610133882;
- Thu, 10 Dec 2020 06:22:13 -0800 (PST)
+        Thu, 10 Dec 2020 09:26:19 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF396C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:25:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zAdSc9CCJ97ovr3hMYt96581NCmMZNYJU/oAeSfKb+0=; b=Cy2/EfP1QNjdDQTl5UFS1vbpIb
+        oSJaYYfSC7DnAVQTUJi0ImK4X9VLl46JG2quL6Ldytl7KKOeLDRjZd83Qvlxut4KTZPhU+7C7cl8t
+        ffq3Hf4OMXj9Yf1ZQeZwwdPhS+uqNbvOTUUe9pCbOZzIJ4AMdAk4lgnuu60VvrXKRWyuNmGocd2L0
+        5p9Ru4L2p9rWW31TRxzLnXgQzNISnPByaL2jUzpH2AOju2IMx5z/ymEuL2eerNgKXL+x7VK6IxsEU
+        +IhVZqYTgux5luGCqlfCcKFJtXkjZIn2k8Ffdq35297nskNy3sley6snqVnBlTQd2LIq64v6AaKJb
+        wdfGjirQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knMsh-0002B8-Ay; Thu, 10 Dec 2020 14:25:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 13BE03059C6;
+        Thu, 10 Dec 2020 15:25:16 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EF405209B20D9; Thu, 10 Dec 2020 15:25:15 +0100 (CET)
+Date:   Thu, 10 Dec 2020 15:25:15 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Gabriel Marin <gmx@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH V2 3/3] perf: Optimize sched_task() in a context switch
+Message-ID: <20201210142515.GR2414@hirez.programming.kicks-ass.net>
+References: <20201130193842.10569-1-kan.liang@linux.intel.com>
+ <20201130193842.10569-3-kan.liang@linux.intel.com>
+ <20201201172903.GT3040@hirez.programming.kicks-ass.net>
+ <CAM9d7ciukm4RAH+44YWhZRummKzk1HTbnZ0Sc4Xd5ZyCo=x0xQ@mail.gmail.com>
+ <CAM9d7ciBO=cmgnBVJWpyJ75VHjoxuEA=ck=V1+k8KRBkh23+nw@mail.gmail.com>
+ <c868c6f7-c89f-ecc5-b771-2701b6029788@linux.intel.com>
 MIME-Version: 1.0
-References: <20201129110803.2461700-1-daniel@0x0f.com> <20201129110803.2461700-4-daniel@0x0f.com>
-In-Reply-To: <20201129110803.2461700-4-daniel@0x0f.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 10 Dec 2020 16:23:02 +0200
-Message-ID: <CAHp75Vdy9rBgJhyYXjUKapYdeMfsNhbX9Zi3Jtxb4H8H279V-A@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] gpio: msc313: MStar MSC313 GPIO driver
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     SoC Team <soc@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>, Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c868c6f7-c89f-ecc5-b771-2701b6029788@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 29, 2020 at 1:10 PM Daniel Palmer <daniel@0x0f.com> wrote:
->
-> This adds a driver that supports the GPIO block found in
-> MStar/SigmaStar ARMv7 SoCs.
->
-> The controller seems to have enough register for 128 lines
-> but where they are wired up differs between chips and
-> no currently known chip uses anywhere near 128 lines so there
-> needs to be some per-chip data to collect together what lines
-> actually have physical pins attached and map the right names to them.
->
-> The core peripherals seem to use the same lines on the
-> currently known chips but the lines used for the sensor
-> interface, lcd controller etc pins seem to be totally
-> different between the infinity and mercury chips
->
-> The code tries to collect all of the re-usable names,
-> offsets etc together so that it's easy to build the extra
-> per-chip data for other chips in the future.
->
-> So far this only supports the MSC313 and MSC313E chips.
->
-> Support for the SSC8336N (mercury5) is trivial to add once
-> all of the lines have been mapped out.
+On Thu, Dec 10, 2020 at 08:52:55AM -0500, Liang, Kan wrote:
+> 
+> 
+> On 12/10/2020 2:13 AM, Namhyung Kim wrote:
+> > Hi Peter and Kan,
+> > 
+> > How can we move this forward?
+> 
+> Hi Namhyung,
+> 
+> Thanks for the test. The changes look good to me.
+> 
+> Hi Peter,
+> 
+> Should we resend the patch set for further review?
 
-...
-
-> +#include <linux/io.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/gpio/driver.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-
-Perhaps ordered?
-
-...
-
-> +       /*
-> +        * only the spi0 pins have interrupts on the parent
-> +        * on all of the known chips and so far they are all
-> +        * mapped to the same place
-> +        */
-
-You have a different comment style here (no capital letter, no period).
-
-> +       if (offset >= OFF_SPI0_CZ && offset <= OFF_SPI0_DO) {
-
-Why not traditional pattern, i.e.
-
-if (...)
-  return -EINVAL;
-...
-
-?
-
-> +               *parent_type = child_type;
-> +               *parent = ((offset - OFF_SPI0_CZ) >> 2) + 28;
-> +               return 0;
-> +       }
-> +
-> +       return -EINVAL;
-
-...
-
-> +       ret = devm_gpiochip_add_data(dev, gpiochip, gpio);
-> +       return ret;
-
-Purpose?
-
-return devm_...(...);
-
-...
-
-> +static int msc313_gpio_remove(struct platform_device *pdev)
-> +{
-> +       return 0;
-> +}
-
-Purpose?
-
-...
-
-> +static const struct of_device_id msc313_gpio_of_match[] = {
-
-> +#ifdef CONFIG_MACH_INFINITY
-
-What's the point? Are you expecting two drivers for the same IP?
-
-> +       {
-> +               .compatible = "mstar,msc313-gpio",
-> +               .data = &msc313_data,
-> +       },
-> +#endif
-> +       { }
-> +};
-
-...
-
-> +static struct platform_driver msc313_gpio_driver = {
-> +       .driver = {
-> +               .name = DRIVER_NAME,
-> +               .of_match_table = msc313_gpio_of_match,
-> +               .pm = &msc313_gpio_ops,
-> +       },
-> +       .probe = msc313_gpio_probe,
-> +       .remove = msc313_gpio_remove,
-> +};
-
-> +
-
-Redundant blank line.
-
-> +builtin_platform_driver(msc313_gpio_driver);
-
--- 
-With Best Regards,
-Andy Shevchenko
+I've not yet seen a coherent replacement of #3, what I send was just a
+PoC.
