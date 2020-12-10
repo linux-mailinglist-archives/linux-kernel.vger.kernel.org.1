@@ -2,170 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071B72D58FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F28D12D5907
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389348AbgLJLLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:11:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:35680 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729342AbgLJLLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:11:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B642F30E;
-        Thu, 10 Dec 2020 03:10:14 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.27.13])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C06353F718;
-        Thu, 10 Dec 2020 03:10:11 -0800 (PST)
-Date:   Thu, 10 Dec 2020 11:10:08 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, luto@kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: Re: [PATCH v2 05/12] x86: rework arch_local_irq_restore() to not use
- popf
-Message-ID: <20201210111008.GB88655@C02TD0UTHF1T.local>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-6-jgross@suse.com>
- <20201120115943.GD3021@hirez.programming.kicks-ass.net>
- <20201209181514.GA14235@C02TD0UTHF1T.local>
- <87tusuzu71.fsf@nanos.tec.linutronix.de>
+        id S2389379AbgLJLNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:13:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389313AbgLJLMh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:12:37 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65079C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 03:11:57 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id o5so3892393pgm.10
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 03:11:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=toUTo+ySXpS7pwb/7sjwWZ96dVr2pgQN6Yp4zKtbI18=;
+        b=gsElE5i/SESaaJBRBBM6Fq1YbgbvDrPLr8lSX+3J3tHCBRX4mt6Yx40XqMH1+TRhu0
+         USTJmHCrsOdAO91tQ1jFeR0glBUhTMydCVEXLhrrjDEOLrfUJxvkXfhxgNCILQ/93NOB
+         egUHBpYxVyTIiFxYBn8me3XEJ9C7muGEJbFn8fpEv4MTlySEQ2nvAE/Plkf2nNv0tmN/
+         /fZBZ5H8yOrwF1HY7NOm73CJo0yreVKeDLGlMS3uWRfAq6J7l6rTxYyBWOIpRPv0VyR/
+         Tm0SEDpS5c/qET4+mWxFJZPPQa5AmX0+5+4eSVVe8/jRYQkflcxYJH7Zh6CYF7S7f+M/
+         seYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=toUTo+ySXpS7pwb/7sjwWZ96dVr2pgQN6Yp4zKtbI18=;
+        b=kmAHwOafbCZoV89sPI2TS7gm0GwGTUM38jTrLH6i/oFXY9/oppKW6kan/TEXvrHA7+
+         f20UV1KCxq7J3hLQM282W4QZRr9/MAhYuAykHaGUcfS8CsaqUjcpNnPxgBlNouJhJthk
+         j5Pyeb3RMLWuAddWdoq6y0QPNLnKslxx17XdaH1N/zVGZiVvFIGmNiV437rUP0ZksyKC
+         AS2lih0ogxH8GbRWQf9Y+a0ycMm8AxD4ENovTjmOehpSpWpTKwEbFGRoa25UbbI/rCo4
+         HWHKpSHl2xgjgzmTovXF21EYHSJnmlcdakLO47MXvOifVqB9kM3d5CbJYf1kFfefEzry
+         rlpw==
+X-Gm-Message-State: AOAM532fi73Tc4Xj8FcBb6CFbgb5UV6sQfSrT79Tc4fGOvdv40NA6M6Z
+        i929RSeMWFbax7TGi17bTPgXQnT2qTF5j7tF6X+iXg==
+X-Google-Smtp-Source: ABdhPJw7AOn+643GfwIOTgmZBys/IqTqxKhs72rJGIyik1pe/QrVTeSUw+qQTfJQoJioQPBqgw5RxLU9GRgMc0xFADo=
+X-Received: by 2002:a63:cd14:: with SMTP id i20mr6177612pgg.31.1607598716845;
+ Thu, 10 Dec 2020 03:11:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87tusuzu71.fsf@nanos.tec.linutronix.de>
+References: <20201210035526.38938-1-songmuchun@bytedance.com> <20201210035526.38938-8-songmuchun@bytedance.com>
+In-Reply-To: <20201210035526.38938-8-songmuchun@bytedance.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 10 Dec 2020 19:11:19 +0800
+Message-ID: <CAMZfGtUrmkm7N5r+vBjhiKNFksNG+eTKvTQL9FLcnj_3JHm5mA@mail.gmail.com>
+Subject: Re: [PATCH v8 07/12] mm/hugetlb: Set the PageHWPoison to the raw
+ error page
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>
+Cc:     Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 07:54:26PM +0100, Thomas Gleixner wrote:
-> On Wed, Dec 09 2020 at 18:15, Mark Rutland wrote:
-> > In arch/x86/kernel/apic/io_apic.c's timer_irq_works() we do:
-> >
-> > 	local_irq_save(flags);
-> > 	local_irq_enable();
-> >
-> > 	[ trigger an IRQ here ]
-> >
-> > 	local_irq_restore(flags);
-> >
-> > ... and in check_timer() we call that a number of times after either a
-> > local_irq_save() or local_irq_disable(), eventually trailing with a
-> > local_irq_disable() that will balance things up before calling
-> > local_irq_restore().
+On Thu, Dec 10, 2020 at 11:58 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> Because we reuse the first tail vmemmap page frame and remap it
+> with read-only, we cannot set the PageHWPosion on a tail page.
+> So we can use the head[4].mapping to record the real error page
+                              ^^^
+                             private
 
-I gave the patchlet below a spin with my debug patch, and it boots
-cleanly for me under QEMU. If you spin it as a real patch, feel free to
-add:
+A typo. Will update the next version. Thanks.
 
-Tested-by: Mark Rutland <mark.rutland@arm.com>
-
-Mark.
-
+> index and set the raw error page PageHWPoison later.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > ---
->  arch/x86/kernel/apic/io_apic.c |   22 ++++++----------------
->  1 file changed, 6 insertions(+), 16 deletions(-)
-> 
-> --- a/arch/x86/kernel/apic/io_apic.c
-> +++ b/arch/x86/kernel/apic/io_apic.c
-> @@ -1618,21 +1618,16 @@ static void __init delay_without_tsc(voi
->  static int __init timer_irq_works(void)
->  {
->  	unsigned long t1 = jiffies;
-> -	unsigned long flags;
->  
->  	if (no_timer_check)
->  		return 1;
->  
-> -	local_save_flags(flags);
->  	local_irq_enable();
-> -
->  	if (boot_cpu_has(X86_FEATURE_TSC))
->  		delay_with_tsc();
->  	else
->  		delay_without_tsc();
->  
-> -	local_irq_restore(flags);
-> -
->  	/*
->  	 * Expect a few ticks at least, to be sure some possible
->  	 * glue logic does not lock up after one or two first
-> @@ -1641,10 +1636,10 @@ static int __init timer_irq_works(void)
->  	 * least one tick may be lost due to delays.
->  	 */
->  
-> -	/* jiffies wrap? */
-> -	if (time_after(jiffies, t1 + 4))
-> -		return 1;
-> -	return 0;
-> +	local_irq_disable();
+>  mm/hugetlb.c | 52 ++++++++++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 44 insertions(+), 8 deletions(-)
+>
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 542e6cb81321..06157df08d8e 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1347,6 +1347,47 @@ static inline void __update_and_free_page(struct hstate *h, struct page *page)
+>                 schedule_work(&hpage_update_work);
+>  }
+>
+> +static inline void subpage_hwpoison_deliver(struct hstate *h, struct page *head)
+> +{
+> +       struct page *page = head;
 > +
-> +	/* Did jiffies advance? */
-> +	return time_after(jiffies, t1 + 4);
->  }
->  
->  /*
-> @@ -2117,13 +2112,12 @@ static inline void __init check_timer(vo
->  	struct irq_cfg *cfg = irqd_cfg(irq_data);
->  	int node = cpu_to_node(0);
->  	int apic1, pin1, apic2, pin2;
-> -	unsigned long flags;
->  	int no_pin1 = 0;
->  
->  	if (!global_clock_event)
->  		return;
->  
-> -	local_irq_save(flags);
-> +	local_irq_disable();
->  
->  	/*
->  	 * get/set the timer IRQ vector:
-> @@ -2191,7 +2185,6 @@ static inline void __init check_timer(vo
->  			goto out;
->  		}
->  		panic_if_irq_remap("timer doesn't work through Interrupt-remapped IO-APIC");
-> -		local_irq_disable();
->  		clear_IO_APIC_pin(apic1, pin1);
->  		if (!no_pin1)
->  			apic_printk(APIC_QUIET, KERN_ERR "..MP-BIOS bug: "
-> @@ -2215,7 +2208,6 @@ static inline void __init check_timer(vo
->  		/*
->  		 * Cleanup, just in case ...
->  		 */
-> -		local_irq_disable();
->  		legacy_pic->mask(0);
->  		clear_IO_APIC_pin(apic2, pin2);
->  		apic_printk(APIC_QUIET, KERN_INFO "....... failed.\n");
-> @@ -2232,7 +2224,6 @@ static inline void __init check_timer(vo
->  		apic_printk(APIC_QUIET, KERN_INFO "..... works.\n");
->  		goto out;
->  	}
-> -	local_irq_disable();
->  	legacy_pic->mask(0);
->  	apic_write(APIC_LVT0, APIC_LVT_MASKED | APIC_DM_FIXED | cfg->vector);
->  	apic_printk(APIC_QUIET, KERN_INFO "..... failed.\n");
-> @@ -2251,7 +2242,6 @@ static inline void __init check_timer(vo
->  		apic_printk(APIC_QUIET, KERN_INFO "..... works.\n");
->  		goto out;
->  	}
-> -	local_irq_disable();
->  	apic_printk(APIC_QUIET, KERN_INFO "..... failed :(.\n");
->  	if (apic_is_x2apic_enabled())
->  		apic_printk(APIC_QUIET, KERN_INFO
-> @@ -2260,7 +2250,7 @@ static inline void __init check_timer(vo
->  	panic("IO-APIC + timer doesn't work!  Boot with apic=debug and send a "
->  		"report.  Then try booting with the 'noapic' option.\n");
->  out:
-> -	local_irq_restore(flags);
-> +	local_irq_enable();
->  }
->  
->  /*
+> +       if (!free_vmemmap_pages_per_hpage(h))
+> +               return;
+> +
+> +       if (PageHWPoison(head))
+> +               page = head + page_private(head + 4);
+> +
+> +       /*
+> +        * Move PageHWPoison flag from head page to the raw error page,
+> +        * which makes any subpages rather than the error page reusable.
+> +        */
+> +       if (page != head) {
+> +               SetPageHWPoison(page);
+> +               ClearPageHWPoison(head);
+> +       }
+> +}
+> +
+> +static inline void set_subpage_hwpoison(struct hstate *h, struct page *head,
+> +                                       struct page *page)
+> +{
+> +       if (!PageHWPoison(head))
+> +               return;
+> +
+> +       if (free_vmemmap_pages_per_hpage(h)) {
+> +               set_page_private(head + 4, page - head);
+> +               return;
+> +       }
+> +
+> +       /*
+> +        * Move PageHWPoison flag from head page to the raw error page,
+> +        * which makes any subpages rather than the error page reusable.
+> +        */
+> +       if (page != head) {
+> +               SetPageHWPoison(page);
+> +               ClearPageHWPoison(head);
+> +       }
+> +}
+> +
+>  static void update_and_free_page(struct hstate *h, struct page *page)
+>  {
+>         if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
+> @@ -1363,6 +1404,7 @@ static void __free_hugepage(struct hstate *h, struct page *page)
+>         int i;
+>
+>         alloc_huge_page_vmemmap(h, page);
+> +       subpage_hwpoison_deliver(h, page);
+>
+>         for (i = 0; i < pages_per_huge_page(h); i++) {
+>                 page[i].flags &= ~(1 << PG_locked | 1 << PG_error |
+> @@ -1840,14 +1882,8 @@ int dissolve_free_huge_page(struct page *page)
+>                 int nid = page_to_nid(head);
+>                 if (h->free_huge_pages - h->resv_huge_pages == 0)
+>                         goto out;
+> -               /*
+> -                * Move PageHWPoison flag from head page to the raw error page,
+> -                * which makes any subpages rather than the error page reusable.
+> -                */
+> -               if (PageHWPoison(head) && page != head) {
+> -                       SetPageHWPoison(page);
+> -                       ClearPageHWPoison(head);
+> -               }
+> +
+> +               set_subpage_hwpoison(h, head, page);
+>                 list_del(&head->lru);
+>                 h->free_huge_pages--;
+>                 h->free_huge_pages_node[nid]--;
+> --
+> 2.11.0
+>
+
+
+-- 
+Yours,
+Muchun
