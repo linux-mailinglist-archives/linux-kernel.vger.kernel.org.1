@@ -2,82 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974552D6B26
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F222D6B14
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405105AbgLJWbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 17:31:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405114AbgLJWY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:24:28 -0500
-X-Gm-Message-State: AOAM533iQCX9Rm5VbO/hL6hPW3yWJDbnMAqe0cJ12mcTbVhXCefhWQrj
-        pMNMy7c22dwMsZx/FFN2jRZrAENrMyOL8WBnDGXxuw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607637685;
-        bh=4yt8h1Q+CPGGcT2IO75cM/fN5M+tD+08bKTLE18FGBc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mMWvnIShKAgYdcX4PZb8dm3EICOtgYX6trNmFvewYP950g4nA7qZFUO3aspNqYyCV
-         W0nMO4Uiv0A2JNQScze/bR1D4r6sLp1z2j28hPPzB6E7JWlAXMkYdytq1ETss+zhBA
-         qpTcen55RpIcHCr5sRoWE1BCFgn6MvS1STdBvxgXl0DL5mOvmPpl3if8LgQIVj1rSI
-         lNTnmlAZYUI1R+GPk87at/QKlEDpe1actw0jFqS+cNmc5/RaP75d2h4fJpEFk31ILP
-         PlPRX0c1sUGmfWEbf2cNXeaSFee43sbhR7LQ+0dZdPlBxZqETopmAVlZJ5JbGveVVK
-         bG92QEYqTL55A==
-X-Google-Smtp-Source: ABdhPJzF2a9E+mCWo9M4tLmMpSz+6JMPjrTXsFPQMg/z71zkpXbGLbBH1iCVRxG8tDVwZozqBfsoJUXetLw8AUPWzi8=
-X-Received: by 2002:adf:e98c:: with SMTP id h12mr10402629wrm.75.1607637683968;
- Thu, 10 Dec 2020 14:01:23 -0800 (PST)
+        id S2394185AbgLJWbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 17:31:23 -0500
+Received: from mail-qv1-f51.google.com ([209.85.219.51]:35228 "EHLO
+        mail-qv1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405078AbgLJWUv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 17:20:51 -0500
+Received: by mail-qv1-f51.google.com with SMTP id l14so3284136qvh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:20:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5GBGxfLDmoveGpJ9L5HVmKW/Nrr5Gil4FnQfI25Evx8=;
+        b=TmuEpAOZ33fl36J4hLO2oipR/LPALK+ZrWvm1zxKBBUVmqCyHUQBmqCMYHpA9TOGkQ
+         NxRmXeB2vPVedR4uaJGg3z/I53svmnoQ0u/hi8YVs2LKOQE1ZnnNFMVMvUpXrmM/0C5D
+         adKRflwcnfLACGmrEUqWTYaBAq4MxnG6uizjoEDgIDlcDKzRJhvIDYaIAUIu2FXXkXHy
+         gbslCBnusfa63aqcaRMKWTa8ZN+E3u5vYOKHP4BeL4bnRriAT9P0bzIUplIuN490pY7B
+         OUP3q6UgKS1vWPb1/mBH3dPmqkvUAblzCZLnaeEpSLkhGogMja8PN/wr7monSh8JCVRE
+         ldtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5GBGxfLDmoveGpJ9L5HVmKW/Nrr5Gil4FnQfI25Evx8=;
+        b=Mdzs9mvNOBZPcB7iWzBmdQjVtcEjQeJkqTujlIU9YLDZPzDRD4p612EVx59GEkueLa
+         ANEUW6rXCI4mXpOtXDjQbF4I9iBar/2D9tkRXBTHxZc6Hks7rUOJazrl0vKFCAH+Z7UR
+         3s5rFyCIp2SAhtMbQo25cLPjmORNjHP9PIAqqysP8JjWyaUz2K6MhjG+spD/Cc1D8bRP
+         ZrVG5/pxTz1RtBLxFPq6DiXuTk5HfAx0iXLPoeLdgIEhvD4KjmVTfOWFTg4MjWVsbqHu
+         KbOSO/Oay0inMeKDhmD3lE99Q0Tbd/GO9YbqvVCCJk8zDCajaEXKD/xtdtSWsjcmsIKq
+         R+8w==
+X-Gm-Message-State: AOAM532BQAOC6TtIgP6KQoReXhXRqUnOBPUuYCcd+mZ1IUkglthROL+J
+        sV6EGVvH2tRITBv3aBYykmEcr0ChnZ+GoNrjbazioYvxnnZ0Rw==
+X-Google-Smtp-Source: ABdhPJwbW2fMzvD12MhzuAZRF/4urKE3RHRtlIy2tjdmtLts9J9ZHedkBgJOtFXveyGdxWpUM6oP9ORDxjPVfGfy3sI=
+X-Received: by 2002:a17:902:8541:b029:da:fcd1:7bf with SMTP id
+ d1-20020a1709028541b02900dafcd107bfmr8250628plo.56.1607637854163; Thu, 10 Dec
+ 2020 14:04:14 -0800 (PST)
 MIME-Version: 1.0
-References: <9389c1198da174bcc9483d6ebf535405aa8bdb45.camel@redhat.com>
- <E4F263BE-6CAA-4152-8818-187D34D8D0FD@amacapital.net> <87360djqve.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87360djqve.fsf@nanos.tec.linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 10 Dec 2020 14:01:12 -0800
-X-Gmail-Original-Message-ID: <CALCETrXXH5GoaSZwSPy-JFxJ6iMMCj0A=yFFPuyutBh+1imCsQ@mail.gmail.com>
-Message-ID: <CALCETrXXH5GoaSZwSPy-JFxJ6iMMCj0A=yFFPuyutBh+1imCsQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
+References: <CA+G9fYuRHoZsW9KyRJVGrXznB8dbt5+ZZTMCpK+3mqcuwHcSMw@mail.gmail.com>
+In-Reply-To: <CA+G9fYuRHoZsW9KyRJVGrXznB8dbt5+ZZTMCpK+3mqcuwHcSMw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 10 Dec 2020 14:04:02 -0800
+Message-ID: <CAKwvOdn2wjqR6aSRNP1Ztz3rnKg7rcdjYboacBdWJ9TO7u_kmA@mail.gmail.com>
+Subject: Re: MIPS + clang-11 + allnoconfig / tinyconfig builds failed
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     linux-mips@vger.kernel.org,
         open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        xie.he.0141@gmail.com,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Dan Rue <dan.rue@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 1:25 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Thu, Dec 10, 2020 at 9:18 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
 >
-> Andy,
+> Recently we have setup clang build and found that,
+> MIPS + clang-11 + allnoconfig  build failed
+> MIPS + clang-11 + tinyconfig  build failed
 >
+> MIPS + clang-10 + allnoconfig  build failed
+> MIPS + clang-10 + tinyconfig  build failed
+>
+> We have noticed these build failures on
+>  - stable-4.19
+>  - stable-5.4
+>  - stable-5.9
+>  - mainline
+>  - next-master
+>
+> FYI, The defconfig builds are successful.
+> BTW, May I know what are the configs you build often ?
+
+Hi Naresh, thank you again for these reports; they are invaluable.  We
+were testing malta_kvm_guest_defconfig for ARCH=mips and ARCH=mipsel.
+We should work to get those configs building/tested as well.
+
+"were testing" past tense, because TravisCI just nuked our builds!
+https://blog.travis-ci.com/oss-announcement
+
+So we're running with one CI system down at the moment.  I'm working
+with Dan on leveraging tuxbuild and github actions.
 
 >
-> I'm still convinced that a notification about 'we take a nap' will be
-> more robust, less complex and more trivial to backport.
+> Steps to reproduce build failure:
+> -----------------------------------------
+> # sudo pip3 install -U tuxmake
+> # tuxmake --runtime docker --target-arch mips --toolchain clang-11
+> --kconfig allnoconfig
+> # tuxmake --runtime docker --target-arch mips --toolchain clang-11
+> --kconfig tinyconfig
+>
+> Build failed log:
+> ake --silent --keep-going --jobs=16
+> O=/home/tuxbuild/.cache/tuxmake/builds/2/tmp ARCH=mips
+> CROSS_COMPILE=mips-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+> clang' allnoconfig
+> make --silent --keep-going --jobs=16
+> O=/home/tuxbuild/.cache/tuxmake/builds/2/tmp ARCH=mips
+> CROSS_COMPILE=mips-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+> clang'
+> /builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/arch/mips/vdso/elf.S:14:1:
+> warning: DWARF2 only supports one section per compilation unit
+> .pushsection .note.Linux, "a",@note ; .balign 4 ; .long 2f - 1f ;
+> .long 4484f - 3f ; .long 0 ; 1:.asciz "Linux" ; 2:.balign 4 ; 3:
+> ^
+> /builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/arch/mips/vdso/elf.S:34:2:
+> warning: DWARF2 only supports one section per compilation unit
+>  .section .mips_abiflags, "a"
+>  ^
 
-What do you have in mind?  Suppose the host kernel sends the guest an
-interrupt on all vCPUs saying "I'm about to take a nap".  What happens
-if the guest is busy with IRQs off for a little bit?  Does the host
-guarantee the guest a certain about of time to try to get the
-interrupt delivered before allowing the host to enter S3?  How about
-if the host wants to reboot for a security fix -- how long is a guest
-allowed to delay the process?
+So this is likely the vdso resetting KBUILD_CFLAGS (common issue)
+which is dropping -no-integrated-as, but setting -Wa,-gdwarf-2, which
+we disabled in the top level Makefile.
 
-I'm sure this can all be made to work 99% of time, but I'm a bit
-concerned about that last 1%.
+> /builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/arch/mips/lib/uncached.c:45:6:
+> warning: variable 'sp' is uninitialized when used here
+> [-Wuninitialized]
+>         if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+>             ^~
+> /builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/arch/mips/lib/uncached.c:40:18:
+> note: initialize the variable 'sp' to silence this warning
+>         register long sp __asm__("$sp");
+>                         ^
+>                          = 0
 
---Andy
+I think we recently discussed this upstream.
+https://lore.kernel.org/linux-mips/alpine.LFD.2.21.2012061431190.656242@eddie.linux-mips.org/T/#mcaabe339aaee81ed8f6dfe761f699c82e938b4c5
+
+> 1 warning generated.
+> WARNING: modpost: vmlinux.o(.text+0x1a124): Section mismatch in
+> reference from the function r4k_cache_init() to the function
+> .init.text:loongson3_sc_init()
+> The function r4k_cache_init() references
+> the function __init loongson3_sc_init().
+> This is often because r4k_cache_init lacks a __init
+> annotation or the annotation of loongson3_sc_init is wrong.
+> WARNING: modpost: vmlinux.o(.text+0x1f1c8): Section mismatch in
+> reference from the function mips_sc_init() to the function
+> .init.text:mips_sc_probe()
+> The function mips_sc_init() references
+> the function __init mips_sc_probe().
+> This is often because mips_sc_init lacks a __init
+> annotation or the annotation of mips_sc_probe is wrong.
+> FATAL: modpost: Section mismatches detected.
+> Set CONFIG_SECTION_MISMATCH_WARN_ONLY=y to allow them.
+> make[2]: *** [/builds/1kl9SVppm6wRdzlQ3UcQKIBaUrx/scripts/Makefile.modpost:59:
+> vmlinux.symvers] Error 1
+
+Anders sent a patch for this, too, IIRC.  Once the above fixes land
+upstream, we probably need to follow up on ensuring they get picked up
+into the affected branches of stable.
+
+-- 
+Thanks,
+~Nick Desaulniers
