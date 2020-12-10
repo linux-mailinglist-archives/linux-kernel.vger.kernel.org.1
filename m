@@ -2,94 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9482D6446
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A57962D6448
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392350AbgLJSAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:00:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387836AbgLJR7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:59:52 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18FE223D57;
-        Thu, 10 Dec 2020 17:59:12 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1knQDe-000EFC-23; Thu, 10 Dec 2020 17:59:10 +0000
+        id S2392932AbgLJSAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:00:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390787AbgLJSAi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 13:00:38 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBC2C061793
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:59:58 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id a12so9521057lfl.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:59:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kSOS9gHQJjTmsLc8VDbsSjiQ/RzzRfDOewkmFTUJ9nA=;
+        b=Kxt/6OhE59pWJyW2ZQr+9XDZkp9Lg5lk3YGJO2hJ/iMzIxwVGXbRe6+uZji2XV3W/6
+         eaZlazRL4VCSMtd5bCHaSiHFvhZFJBDxSs6SSiruVbIZYzcIAnUiMaAhfFENp10Ys8rs
+         LjFaiY0iC6HeaQFkJ4mf7nA/zu3dmnvoamfeeJa+RcsInZBTN5wLmSVgw1rzUasRBvfi
+         eUzcIJimD7Juvsz0GA8cIAsVJ9sz982+E2YR0g58eknOW6uIW4OR4RdzfsvvoX0Wd57B
+         e69CJZtwFwqhXCTquurJTyEvnFGG7ok6Th2zMcMS51lKz76lCTzrHi2cXfd/6WtCyGGJ
+         v8NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kSOS9gHQJjTmsLc8VDbsSjiQ/RzzRfDOewkmFTUJ9nA=;
+        b=lI/9F7DQOw2qjZC2BuCnclLVE0h8mK/SmSi7reM74PedHmMZ+HlL2mWmVD644wdTWw
+         6fvE1EGQAsbGTsHSXfKTH4YEvPXrGyRaUr3iryBuwqNhyADhZk1S6s4yDTT1wHBEpKaj
+         tRCYIIl2fbmYVjqe5POqhaBWUqVLlDkc/oqIUC4TFeQAMCes5hRiFBWxS4bdBJUoKkbO
+         KqhO8FxVyx10mIuYxnKT0cXuJ+lEkawONfRfhuN5M650W6uGfNkk4PXEGONz01b4VmzH
+         kUSb9pkJXCZT7VgjA/xxIPJFrFcKzh6GBSNpLNSm3uBtH0/PZX9UCXUDwB5j6A3UCJxK
+         2ebw==
+X-Gm-Message-State: AOAM5331nsO/ktTaWIo7klJcE66V4+eLoPLSQ6EkquJ8BHCb3bQqWR13
+        b72pzxK7bVKPMoLGHEzGldewJcZ0+4BghwRfZxEVRA==
+X-Google-Smtp-Source: ABdhPJyC+V/aSG0layoljUptKcm8GaCP6ReUaXdlOAMHzGjDdVVWdZ/1X7eeSfQThNFvCdMJG0M4dBbsRPsBSBWk3Yg=
+X-Received: by 2002:ac2:4c8e:: with SMTP id d14mr2983701lfl.411.1607623196388;
+ Thu, 10 Dec 2020 09:59:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 10 Dec 2020 17:59:09 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+References: <9389c1198da174bcc9483d6ebf535405aa8bdb45.camel@redhat.com> <E4F263BE-6CAA-4152-8818-187D34D8D0FD@amacapital.net>
+In-Reply-To: <E4F263BE-6CAA-4152-8818-187D34D8D0FD@amacapital.net>
+From:   Oliver Upton <oupton@google.com>
+Date:   Thu, 10 Dec 2020 11:59:44 -0600
+Message-ID: <CAOQ_QshW0UvwSS3TUCK5PxkLQhHTqDNXNeMxwVDyf+DXc23fXQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 01/15] irqchip: Allow to compile bcmstb on other platforms
-In-Reply-To: <20201210134648.272857-2-maxime@cerno.tech>
-References: <20201210134648.272857-1-maxime@cerno.tech>
- <20201210134648.272857-2-maxime@cerno.tech>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <e0f1aed2b0007eab6e9192ac73fd411f@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: maxime@cerno.tech, eric@anholt.net, maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, daniel.vetter@intel.com, airlied@linux.ie, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl, linux-kernel@vger.kernel.org, mchehab@kernel.org, tglx@linutronix.de, dave.stevenson@raspberrypi.com, linux-rpi-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+On Thu, Dec 10, 2020 at 9:16 AM Andy Lutomirski <luto@amacapital.net> wrote=
+:
+>
+>
+>
+> > On Dec 10, 2020, at 6:52 AM, Maxim Levitsky <mlevitsk@redhat.com> wrote=
+:
+> >
+> > =EF=BB=BFOn Thu, 2020-12-10 at 12:48 +0100, Paolo Bonzini wrote:
+> >>> On 08/12/20 22:20, Thomas Gleixner wrote:
+> >>> So now life migration comes a long time after timekeeping had set the
+> >>> limits and just because it's virt it expects that everything works an=
+d it
+> >>> just can ignore these limits.
+> >>>
+> >>> TBH. That's not any different than SMM or hard/firmware taking the
+> >>> machine out for lunch. It's exactly the same: It's broken.
+> >>
+> >> I agree.  If *live* migration stops the VM for 200 seconds, it's broke=
+n.
+> >>
+> >> Sure, there's the case of snapshotting the VM over the weekend.  My
+> >> favorite solution would be to just put it in S3 before doing that.  *D=
+o
+> >> what bare metal does* and you can't go that wrong.
+> >
+> > Note though that qemu has a couple of issues with s3, and it is disable=
+d
+> > by default in libvirt.
+> > I would be very happy to work on improving this if there is a need for =
+that.
+>
+> There=E2=80=99s also the case where someone has a VM running on a laptop =
+and someone closes the lid. The host QEMU might not have a chance to convin=
+ce the guest to enter S3.
+>
+> >
+> >
+> >>
+> >> In general it's userspace policy whether to keep the TSC value the sam=
+e
+> >> across live migration.  There's pros and cons to both approaches, so K=
+VM
+> >> should provide the functionality to keep the TSC running (which the
+> >> guest will see as a very long, but not extreme SMI), and this is what
+> >> this series does.  Maxim will change it to operate per-VM.  Thanks
+> >> Thomas, Oliver and everyone else for the input.
 
-On 2020-12-10 13:46, Maxime Ripard wrote:
-> The BCM2711 uses a number of instances of the bcmstb-l2 controller in 
-> its
-> display engine. Let's allow the driver to be enabled through KConfig.
-> 
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
->  drivers/irqchip/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-> index c6098eee0c7c..f1e58de117dc 100644
-> --- a/drivers/irqchip/Kconfig
-> +++ b/drivers/irqchip/Kconfig
-> @@ -131,7 +131,7 @@ config BCM7120_L2_IRQ
->  	select IRQ_DOMAIN
-> 
->  config BRCMSTB_L2_IRQ
-> -	bool
-> +	bool "Broadcom STB L2 Interrupt Controller"
->  	select GENERIC_IRQ_CHIP
->  	select IRQ_DOMAIN
+So, to be clear, this per-VM ioctl will work something like the following:
 
-I'm always sceptical of making interrupt controllers user-selectable.
-Who is going to know that they need to pick that one?
+static u64 kvm_read_tsc_base(struct kvm *kvm, u64 host_tsc)
+{
+        return kvm_scale_tsc(kvm, host_tsc) + kvm->host_tsc_offset;
+}
 
-I'd be much more in favour of directly selecting this symbol
-from DRM_VC4_HDMI_CEC, since there is an obvious dependency.
+case KVM_GET_TSC_BASE:
+        struct kvm_tsc_base base =3D {
+                .flags =3D KVM_TSC_BASE_TIMESTAMP_VALID;
+        };
+        u64 host_tsc;
 
+        kvm_get_walltime(&base.nsec, &host_tsc);
+        base.tsc =3D kvm_read_tsc_base(kvm, host_tsc);
+
+        copy_to_user(...);
+
+[...]
+
+case KVM_SET_TSC_BASE:
+        struct kvm_tsc_base base;
+        u64 host_tsc, nsec;
+        s64 delta =3D 0;
+
+        copy_from_user(...);
+
+        kvm_get_walltime(&nsec, &host_tsc);
+        delta +=3D base.tsc - kvm_read_tsc_base(kvm, host_tsc);
+
+        if (base.flags & KVM_TSC_BASE_TIMESTAMP_VALID) {
+                u64 delta_nsec =3D nsec - base.nsec;
+
+                if (delta_nsec > 0)
+                        delta +=3D nsec_to_cycles(kvm, diff);
+                else
+                        delta -=3D nsec_to_cycles(kvm, -diff);
+        }
+
+        kvm->host_tsc_offset +=3D delta;
+        /* plumb host_tsc_offset through to each vcpu */
+
+However, I don't believe we can assume the guest's TSCs to be synchronized,
+even if sane guests will never touch them. In this case, I think a per-vCPU
+ioctl is still warranted, allowing userspace to get at the guest CPU adjust
+component of Thomas' equation below (paraphrased):
+
+        TSC guest CPU =3D host tsc base + guest base offset + guest CPU adj=
+ust
+
+Alternatively, a write from userspace to the guest's IA32_TSC_ADJUST with
+KVM_X86_QUIRK_TSC_HOST_ACCESS could have the same effect, but that seems to=
+ be
+problematic for a couple reasons. First, depending on the guest's CPUID the
+TSC_ADJUST MSR may not even be available, meaning that the guest could've u=
+sed
+IA32_TSC to adjust the TSC (eww). Second, userspace replaying writes to IA3=
+2_TSC
+(in the case IA32_TSC_ADJUST doesn't exist for the guest) seems _very_
+unlikely to work given all the magic handling that KVM does for
+writes to it.
+
+Is this roughly where we are or have I entirely missed the mark? :-)
+
+--
 Thanks,
+Oliver
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> >
+> > I agree with that.
+> >
+> > I still think though that we should have a discussion on feasibility
+> > of making the kernel time code deal with large *forward* tsc jumps
+> > without crashing.
+> >
+> > If that is indeed hard to do, or will cause performance issues,
+> > then I agree that we might indeed inform the guest of time jumps instea=
+d.
+> >
+>
+> Tglx, even without fancy shared host/guest timekeeping, count the guest k=
+ernel manage to update its timekeeping if the host sent the guest an interr=
+upt or NMI on all CPUs synchronously on resume?
+>
+> Alternatively, if we had the explicit =E2=80=9Cmax TSC value that makes s=
+ense right now=E2=80=9D in the timekeeping data, the guest would reliably n=
+otice the large jump and could at least do something intelligent about it i=
+nstead of overflowing its internal calculation.
