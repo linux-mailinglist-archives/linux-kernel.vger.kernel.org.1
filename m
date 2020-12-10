@@ -2,25 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB1A2D6269
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 247B82D62A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391096AbgLJOhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:37:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42308 "EHLO mail.kernel.org"
+        id S2391014AbgLJOg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:36:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390796AbgLJOeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:34:14 -0500
+        id S2390777AbgLJOdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:33:52 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.19 38/39] netfilter: nf_tables: avoid false-postive lockdep splat
-Date:   Thu, 10 Dec 2020 15:27:17 +0100
-Message-Id: <20201210142604.165606801@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.19 39/39] x86/insn-eval: Use new for_each_insn_prefix() macro to loop over prefixes bytes
+Date:   Thu, 10 Dec 2020 15:27:18 +0100
+Message-Id: <20201210142604.214845768@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
 References: <20201210142602.272595094@linuxfoundation.org>
@@ -32,45 +34,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit c0700dfa2cae44c033ed97dade8a2679c7d22a9d upstream.
+commit 12cb908a11b2544b5f53e9af856e6b6a90ed5533 upstream
 
-There are reports wrt lockdep splat in nftables, e.g.:
-------------[ cut here ]------------
-WARNING: CPU: 2 PID: 31416 at net/netfilter/nf_tables_api.c:622
-lockdep_nfnl_nft_mutex_not_held+0x28/0x38 [nf_tables]
-...
+Since insn.prefixes.nbytes can be bigger than the size of
+insn.prefixes.bytes[] when a prefix is repeated, the proper check must
+be
 
-These are caused by an earlier, unrelated bug such as a n ABBA deadlock
-in a different subsystem.
-In such an event, lockdep is disabled and lockdep_is_held returns true
-unconditionally.  This then causes the WARN() in nf_tables.
+  insn.prefixes.bytes[i] != 0 and i < 4
 
-Make the WARN conditional on lockdep still active to avoid this.
+instead of using insn.prefixes.nbytes. Use the new
+for_each_insn_prefix() macro which does it correctly.
 
-Fixes: f102d66b335a417 ("netfilter: nf_tables: use dedicated mutex to guard transactions")
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Link: https://lore.kernel.org/linux-kselftest/CA+G9fYvFUpODs+NkSYcnwKnXm62tmP=ksLeBPmB+KFrB2rvCtQ@mail.gmail.com/
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Debugged by Kees Cook <keescook@chromium.org>.
+
+ [ bp: Massage commit message. ]
+
+Fixes: 32d0b95300db ("x86/insn-eval: Add utility functions to get segment selector")
+Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/160697104969.3146288.16329307586428270032.stgit@devnote2
+[sudip: adjust context]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- net/netfilter/nf_tables_api.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/lib/insn-eval.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -532,7 +532,8 @@ static void nft_request_module(struct ne
- static void lockdep_nfnl_nft_mutex_not_held(void)
+--- a/arch/x86/lib/insn-eval.c
++++ b/arch/x86/lib/insn-eval.c
+@@ -70,14 +70,15 @@ static int get_seg_reg_override_idx(stru
  {
- #ifdef CONFIG_PROVE_LOCKING
--	WARN_ON_ONCE(lockdep_nfnl_is_held(NFNL_SUBSYS_NFTABLES));
-+	if (debug_locks)
-+		WARN_ON_ONCE(lockdep_nfnl_is_held(NFNL_SUBSYS_NFTABLES));
- #endif
- }
+ 	int idx = INAT_SEG_REG_DEFAULT;
+ 	int num_overrides = 0, i;
++	insn_byte_t p;
  
+ 	insn_get_prefixes(insn);
+ 
+ 	/* Look for any segment override prefixes. */
+-	for (i = 0; i < insn->prefixes.nbytes; i++) {
++	for_each_insn_prefix(insn, i, p) {
+ 		insn_attr_t attr;
+ 
+-		attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
++		attr = inat_get_opcode_attribute(p);
+ 		switch (attr) {
+ 		case INAT_MAKE_PREFIX(INAT_PFX_CS):
+ 			idx = INAT_SEG_REG_CS;
 
 
