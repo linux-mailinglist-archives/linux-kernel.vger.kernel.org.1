@@ -2,23 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6CC2D5707
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8AA72D56EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388831AbgLJJYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:24:00 -0500
-Received: from s2.neomailbox.net ([5.148.176.60]:20485 "EHLO s2.neomailbox.net"
+        id S2388199AbgLJJVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:21:16 -0500
+Received: from s2.neomailbox.net ([5.148.176.60]:28530 "EHLO s2.neomailbox.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731643AbgLJJXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:23:38 -0500
+        id S1732218AbgLJJU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 04:20:56 -0500
+X-Greylist: delayed 1522 seconds by postgrey-1.27 at vger.kernel.org; Thu, 10 Dec 2020 04:20:51 EST
 From:   Antonio Quartulli <a@unstable.cc>
-To:     Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Antonio Quartulli <a@unstable.cc>
-Subject: [PATCH] dm ebs: avoid double unlikely() notation when using IS_ERR()
-Date:   Thu, 10 Dec 2020 09:50:49 +0100
-Message-Id: <20201210085049.14528-1-a@unstable.cc>
+Subject: [PATCH] can: avoid double unlikely() notation when using IS_ERR()
+Date:   Thu, 10 Dec 2020 09:53:21 +0100
+Message-Id: <20201210085321.18693-1-a@unstable.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -34,22 +36,22 @@ Clean up code by removing redundant notation.
 
 Signed-off-by: Antonio Quartulli <a@unstable.cc>
 ---
- drivers/md/dm-ebs-target.c | 2 +-
+ drivers/net/can/rx-offload.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/md/dm-ebs-target.c b/drivers/md/dm-ebs-target.c
-index cb85610527c2..55bcfb74f51f 100644
---- a/drivers/md/dm-ebs-target.c
-+++ b/drivers/md/dm-ebs-target.c
-@@ -86,7 +86,7 @@ static int __ebs_rw_bvec(struct ebs_c *ec, int rw, struct bio_vec *bv, struct bv
- 		else
- 			ba = dm_bufio_new(ec->bufio, block, &b);
+diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
+index 450c5cfcb3fc..3c1912c0430b 100644
+--- a/drivers/net/can/rx-offload.c
++++ b/drivers/net/can/rx-offload.c
+@@ -157,7 +157,7 @@ can_rx_offload_offload_one(struct can_rx_offload *offload, unsigned int n)
+ 	/* There was a problem reading the mailbox, propagate
+ 	 * error value.
+ 	 */
+-	if (unlikely(IS_ERR(skb))) {
++	if (IS_ERR(skb)) {
+ 		offload->dev->stats.rx_dropped++;
+ 		offload->dev->stats.rx_fifo_errors++;
  
--		if (unlikely(IS_ERR(ba))) {
-+		if (IS_ERR(ba)) {
- 			/*
- 			 * Carry on with next buffer, if any, to issue all possible
- 			 * data but return error.
 -- 
 2.29.2
 
