@@ -2,89 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5962D6B75
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C04FF2D6B7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732030AbgLJXDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:03:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
+        id S1732957AbgLJXDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:03:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727519AbgLJXB7 (ORCPT
+        with ESMTP id S1731920AbgLJXC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:01:59 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A391C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:01:19 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id n26so9736995eju.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:01:19 -0800 (PST)
+        Thu, 10 Dec 2020 18:02:58 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AEAC061794;
+        Thu, 10 Dec 2020 15:02:18 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id u19so7366154edx.2;
+        Thu, 10 Dec 2020 15:02:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BnvnqJGFJGAEEl1+u8bL8r9N2i4Qe3s5dKeu7ZtnAEk=;
-        b=Yu2/Z/tJHLbpJ4YbL85w4Xp8OKQyuSaX3pY0ZG+Vu5LAkciOCqvdAQP29O6/t1cVYE
-         X9aw9fSISJgoci3z1WUNCrcUw4Bjvi7CQsbx2dVPKfQDu4YvgQavKzgUTgy1pci9Avv+
-         VCeCTnq5qMjGEgQxhHI+r7LqkoUVEB+CODrqqdfnnbWwe0ASpTM8BXCguC09KI+uN6sh
-         qroD7lWPMJAWWmAdv5Ch+BdMV8LBA5HZbzQOUQdvwG7VilbqmAiLtloSG+/4VAn5AY+p
-         la0JSYQ7LD3j1Z+wHbndx9d/d3lMHKpSitwohcJR7lJb8sb+ff27vGwfuoNmHAnhjnOc
-         E1aA==
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QDZfvpgZSfMYfm7MEplQFWEgvIINNAQMW+C7CmvjGcU=;
+        b=KUI9rPWT/0+rSzRNQaNaQ3NVgkfonMI8ZVVsav9PfhIg6FKx95jUOL4pHJx7gMxPyU
+         b6Ui6J/1xVEmEEMpWPgD25yW/Nq0NQ1hhIbcEZCHQJcaZgyiQ4R+Ji2SaUahaeDabVqN
+         eAlN5gSBkdqSpmiTm9/iT9Q+pRt6Pilz818SeSpCNyzWu0Ru5wwbb2PvLsRJVssDPCeN
+         IgIDK2EaW+FXsDhjI+TBDJoK2jp4Lh9UJ5ey/GUO0C3nGhSWeS60qTRD/YatY4hDON12
+         XNtcU71REpRKtvpnGy3H3ztJKeudF/Ci5pxkiM+JTv28EMAht0GPNetTkdUy/LcJIa6X
+         H0jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BnvnqJGFJGAEEl1+u8bL8r9N2i4Qe3s5dKeu7ZtnAEk=;
-        b=YcZo0K2QNkoH5mFlq96eaz8XaiZgm6ydZYXjEvDNcNfAqqiAvcis6zfJ9PuljeP641
-         b/XtyW3xHEDl9b0Y9YX9GL0KpBVXsnASXwXKwQ00J3gNEve2IrVK/dV/n8fC0R1xJw86
-         fnLck7T58Z7YY5P7Zo6kE+f6H9aOJdOgDIBISH+yQ0j2d4+q/YMNfX9fGcQlRPsAvtMV
-         Y0roBKsW8Du2cegtU6871p+2VXAcipl5u4G79mFG1WYMezr4fZjB/MTLeDTK8euFIawc
-         I623mvbNUVmS5cfaOoucJAVybQIgy7E10fl2UvlPSEYsIOlJUFllQhMhG0PvbryBbZnL
-         lg9w==
-X-Gm-Message-State: AOAM531A3Y5G0/R5F3btINFAJkTOIhxK7iw9s2I7Xk4igsYRmUPpZGPy
-        OHlT/EThdCmjXrfXnhTAu3dOKDCf5r6D84lNqxdS9g==
-X-Google-Smtp-Source: ABdhPJztbkFYF/AbPW9+Jw/6UkidwRn/IojK+0f4ljD0wVz/95d3jHjD6QlmWMZkdYAnF0oHFFAqMc9I9SlhCUMQE8w=
-X-Received: by 2002:a17:906:168f:: with SMTP id s15mr8250414ejd.180.1607641278306;
- Thu, 10 Dec 2020 15:01:18 -0800 (PST)
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QDZfvpgZSfMYfm7MEplQFWEgvIINNAQMW+C7CmvjGcU=;
+        b=iuNPo3DZzyUtDCeHd3tqIMQxu+Wyjfz+iUgHjakldMTZ4XG/jK9fxWbT9wLWpnCvzy
+         dwFOxJtqw7OfEK/0dIuWdm7UtoZqqzfS/Xq2M1soLIDM6to3x1FDt3142AmZ/1bQgREF
+         /GrLPCmjKJwlPaQxHc9wlJf8oncrVZN3FhWcPZv9lTE25bZ07gBHh/ep/LIdPY/iJHI3
+         /mIL6hq0vOw0jSlW+hcPMjO1GosQJZT+jCkw/ZCEVJkEhglG6aY1DbL64aViCl1+Llp8
+         toZwwwaeSCnEcsKaVx7UH+8UdOgTPNCQTYGFrQQIGoviYleFAHiqKelRtUxJQagU/jWZ
+         8Xvg==
+X-Gm-Message-State: AOAM531/7rAXzkeQ+MjO3Mo0SQuiQS85mx0WzaWzAq+AS7UZJXFxYiz7
+        hYvZYY75ygtSFeSsQWB9ef6zTRYs4QkSPg==
+X-Google-Smtp-Source: ABdhPJzInVj+AThpD9+6RasllPgRmzwc1VA5+NhFge7wB9ouml/YAJcu6dNedBR0fJ98/V6W6o40NQ==
+X-Received: by 2002:aa7:d593:: with SMTP id r19mr9226053edq.246.1607641336805;
+        Thu, 10 Dec 2020 15:02:16 -0800 (PST)
+Received: from ?IPv6:2001:a61:25cc:8301:40d9:de28:875c:ad0d? ([2001:a61:25cc:8301:40d9:de28:875c:ad0d])
+        by smtp.gmail.com with ESMTPSA id b11sm6170758edk.15.2020.12.10.15.02.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 15:02:16 -0800 (PST)
+Cc:     mtk.manpages@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] close_range.2: new page documenting close_range(2)
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        Stephen Kitt <steve@sk2.org>, linux-man@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>
+References: <20201209220023.17912-1-steve@sk2.org>
+ <e50183ce-3ccb-c41c-9d30-bfb622b3b1f5@gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <67052f7d-700f-6721-e8be-2a3c9bc8bc34@gmail.com>
+Date:   Fri, 11 Dec 2020 00:02:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20201210041946.8961-1-chiu@endlessos.org> <20201210184930.GF26529@zn.tnic>
-In-Reply-To: <20201210184930.GF26529@zn.tnic>
-From:   Dan Nicholson <dbn@endlessos.org>
-Date:   Thu, 10 Dec 2020 16:01:06 -0700
-Message-ID: <CAJAOzpAC8V7iNnXDjdJS8Gu0pWsdZgy77ofcZftmfyOoOTDNeg@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/reboot/quirks: Add GIGABYTE BRIX BXBT-2807 reboot quirk
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Chris Chiu <chiu@endlessos.org>, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, peterz@infradead.org,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux@endlessos.org,
-        Dan Nicholson <nicholson@endlessos.org>,
-        Jian-Hong Pan <jhp@endlessos.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e50183ce-3ccb-c41c-9d30-bfb622b3b1f5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 11:49 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Thu, Dec 10, 2020 at 12:19:46PM +0800, Chris Chiu wrote:
-> > From: Dan Nicholson <nicholson@endlessos.org>
-> >
-> > The GIGABYTE BRIX BXBT-2807 always hangs with the normal acpi
-> > reboot.
->
-> Is that what the "hard disk crash" in the comment below, refers to?
+On 12/10/20 1:24 AM, Alejandro Colomar (man-pages) wrote:
+> Hi Stephen,
+> 
+> A few more comments below.
+> 
+> Michael, please have a look at them too.
+> 
+> Christian, do you have any program that you used to test the syscall
+> that could be added as an example program to the page?
+> 
+> Thanks,
+> 
+> Alex
+> 
+> On 12/9/20 11:00 PM, Stephen Kitt wrote:
+>> This documents close_range(2) based on information in
+>> 278a5fbaed89dacd04e9d052f4594ffd0e0585de and
+>> 60997c3d45d9a67daf01c56d805ae4fec37e0bd8.
+>>
+>> Signed-off-by: Stephen Kitt <steve@sk2.org>
+>> ---
+>> V2: unsigned int to match the kernel declarations
+>>     groff and grammar tweaks
+>>     CLOSE_RANGE_UNSHARE unshares *and* closes
+>>     Explain that EMFILE and ENOMEM can occur with C_R_U
+>>     "Conforming to" phrasing
+>>     Detailed explanation of CLOSE_RANGE_UNSHARE
+>>     Reading /proc isn't common
+>>
+>>  man2/close_range.2 | 138 +++++++++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 138 insertions(+)
+>>  create mode 100644 man2/close_range.2
+>>
+>> diff --git a/man2/close_range.2 b/man2/close_range.2
+>> new file mode 100644
+>> index 000000000..403142b33
+>> --- /dev/null
+>> +++ b/man2/close_range.2
 
-Hmm, when I wrote this patch several years back there wasn't any hang
-when rebooting. According to our internal bug tracker, you could hear
-the disk head crashing on reboot. The workaround was to do a BIOS
-reboot rather than an ACPI reboot. My original commit message was:
+[...]
 
-    x86/reboot: Use bios reboot for GIGABYTE BRIX BXBT-2807
+>> +.SH USE CASES
+> 
+> This section is unconventional.  Please move that text to one of the
+> traditional sections.  I think DESCRIPTION would be the best place for this.
 
-    Using ACPI, the hard disk crashes on reboot. This seems to be avoided
-    when using the BIOS to reboot.
+Actually, I'd just drop this SH line, and keep the
+subsections where they are in NOTES.
 
-I don't know if this became a hang with more recent kernels as
-described in this commit message. Chris?
+Thanks,
 
---
-Dan
+Michael
+
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
