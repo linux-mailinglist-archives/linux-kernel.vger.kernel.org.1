@@ -2,187 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5EF2D67F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0C42D685F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:14:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404514AbgLJUB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 15:01:27 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:57710 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404302AbgLJTna (ORCPT
+        id S2390124AbgLJUNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 15:13:50 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:33572 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732879AbgLJTmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:43:30 -0500
-Message-Id: <20201210194045.157601122@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607629367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=RU1bu/2cEIaQZD4XBTa1ORm36AT2+9xoAT9okJ4RH1c=;
-        b=AhYGZMH5Lll3k86M+Mw+u/CMXrFP+z5OweedDSPLrQC7zMl71ejfF6LXNXRZTGD8kmOuJe
-        qS19XHZYRwS6BqhVuvnoRC1T4ttKWNuaoSyT3BgYYN1BzFtZlPcOz+YQKy/43th5Y90u/R
-        X6B6cmkRFkndNRXwbx2PLjfkgaDXN0K9HLJvSEGYF2Mwu+bniCBmPPPJ7kblKM0absRSol
-        Xu6RJgcDTReN71V4H+Nn1MY4+vbA65bMSFOyl/jldJBTen7poJfNR1wRX6XEMJPR917pl1
-        k5XFjcYwY2tULG78ylPnHOTKCe4dKJGK7v6roca6SRSYcgOrtkVCsvBrRQWZhw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607629367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=RU1bu/2cEIaQZD4XBTa1ORm36AT2+9xoAT9okJ4RH1c=;
-        b=XdjqOHU/CtrxmjSRt3J35g254e3xJTlyAPxkG/hnQfineDJae9yPVorBnqLmfzdojIT+AV
-        RtH7kedwWF+OweDQ==
-Date:   Thu, 10 Dec 2020 20:26:02 +0100
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
+        Thu, 10 Dec 2020 14:42:51 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1knRop-006yDH-4C; Thu, 10 Dec 2020 12:41:39 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1knRoo-0000LM-7f; Thu, 10 Dec 2020 12:41:38 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Davidlohr Bueso <dave@stgolabs.net>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci@vger.kernel.org,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-Subject: [patch 26/30] xen/events: Use immediate affinity setting
-References: <20201210192536.118432146@linutronix.de>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Vasiliy Kulikov <segoon@openwall.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Waiman Long <longman@redhat.com>
+References: <87ft4mbqen.fsf@x220.int.ebiederm.org>
+        <AM6PR03MB5170412C2B0318C40CED55E5E4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+        <CAHk-=wi6inOF5yvQRwUFbqMt0zFJ8S8GhqE2M0judU7RiGru8Q@mail.gmail.com>
+        <875z5h4b7a.fsf@x220.int.ebiederm.org>
+        <CAHk-=wio3JXxf3fy8tRVzb69u1e5iUru8p-dw+Mnga6yAdz=HQ@mail.gmail.com>
+        <AM6PR03MB51704629E50F6280A52D9FAFE4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+        <CAHk-=wgxe-KAqR_y2jP58GthOYKk0YG=6gNxKHxVUJbG7z2CoQ@mail.gmail.com>
+        <20201207090953.GF3040@hirez.programming.kicks-ass.net>
+        <CAHk-=wjgG=_-zONkBkKnkOv3uoVRy45hTxx8e-6Ks3j-3TVHKQ@mail.gmail.com>
+        <20201208083412.GR2414@hirez.programming.kicks-ass.net>
+        <20201210183849.fdgcagdn4pyghtfn@linux-p48b>
+Date:   Thu, 10 Dec 2020 13:40:58 -0600
+In-Reply-To: <20201210183849.fdgcagdn4pyghtfn@linux-p48b> (Davidlohr Bueso's
+        message of "Thu, 10 Dec 2020 10:38:49 -0800")
+Message-ID: <87r1nxmotx.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Content-Type: text/plain
+X-XM-SPF: eid=1knRoo-0000LM-7f;;;mid=<87r1nxmotx.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18ruw/fWoR4wfy7LMN2DCQ9CCMYZQv0YpQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_XM_SB_Phish,T_TM2_M_HEADER_IN_MSG,XMSubLong,
+        XMSubPhish11 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4997]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.5 XMSubPhish11 Phishy Language Subject
+        *  0.0 TR_XM_SB_Phish Phishing flag in subject of message
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Davidlohr Bueso <dave@stgolabs.net>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 607 ms - load_scoreonly_sql: 0.13 (0.0%),
+        signal_user_changed: 12 (1.9%), b_tie_ro: 9 (1.6%), parse: 1.79 (0.3%),
+         extract_message_metadata: 19 (3.1%), get_uri_detail_list: 1.15 (0.2%),
+         tests_pri_-1000: 10 (1.6%), tests_pri_-950: 1.92 (0.3%),
+        tests_pri_-900: 1.59 (0.3%), tests_pri_-90: 298 (49.1%), check_bayes:
+        289 (47.6%), b_tokenize: 9 (1.5%), b_tok_get_all: 7 (1.1%),
+        b_comp_prob: 2.3 (0.4%), b_tok_touch_all: 267 (44.0%), b_finish: 1.02
+        (0.2%), tests_pri_0: 203 (33.4%), check_dkim_signature: 0.69 (0.1%),
+        check_dkim_adsp: 2.8 (0.5%), poll_dns_idle: 0.93 (0.2%), tests_pri_10:
+        2.3 (0.4%), tests_pri_500: 53 (8.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] perf: Break deadlock involving exec_update_mutex
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is absolutely no reason to mimic the x86 deferred affinity
-setting. This mechanism is required to handle the hardware induced issues
-of IO/APIC and MSI and is not in use when the interrupts are remapped.
+Davidlohr Bueso <dave@stgolabs.net> writes:
 
-XEN does not need this and can simply change the affinity from the calling
-context. The core code invokes this with the interrupt descriptor lock held
-so it is fully serialized against any other operation.
+> On Tue, 08 Dec 2020, Peter Zijlstra wrote:
+>
+>>I suppose I'll queue the below into tip/perf/core for next merge window,
+>>unless you want it in a hurry?
+>
+> I'm thinking we'd still want Eric's series on top of this for the reader
+> benefits of the lock.
 
-Mark the interrupts with IRQ_MOVE_PCNTXT to disable the deferred affinity
-setting. The conditional mask/unmask operation is already handled in
-xen_rebind_evtchn_to_cpu().
+We will see shortly what happens when the various branches all make it
+into linux-next.   The two changes don't conflict in principle so it
+should not be a problem.
 
-This makes XEN on x86 use the same mechanics as on e.g. ARM64 where
-deferred affinity setting is not required and not implemented and the code
-path in the ack functions is compiled out.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>
-Cc: xen-devel@lists.xenproject.org
----
- drivers/xen/events/events_base.c |   35 +++++++++--------------------------
- 1 file changed, 9 insertions(+), 26 deletions(-)
-
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -628,6 +628,11 @@ static void xen_irq_init(unsigned irq)
- 	info->refcnt = -1;
- 
- 	set_info_for_irq(irq, info);
-+	/*
-+	 * Interrupt affinity setting can be immediate. No point
-+	 * in delaying it until an interrupt is handled.
-+	 */
-+	irq_set_status_flags(irq, IRQ_MOVE_PCNTXT);
- 
- 	INIT_LIST_HEAD(&info->eoi_list);
- 	list_add_tail(&info->list, &xen_irq_list_head);
-@@ -739,18 +744,7 @@ static void eoi_pirq(struct irq_data *da
- 	if (!VALID_EVTCHN(evtchn))
- 		return;
- 
--	if (unlikely(irqd_is_setaffinity_pending(data)) &&
--	    likely(!irqd_irq_disabled(data))) {
--		int masked = test_and_set_mask(evtchn);
--
--		clear_evtchn(evtchn);
--
--		irq_move_masked_irq(data);
--
--		if (!masked)
--			unmask_evtchn(evtchn);
--	} else
--		clear_evtchn(evtchn);
-+	clear_evtchn(evtchn);
- 
- 	if (pirq_needs_eoi(data->irq)) {
- 		rc = HYPERVISOR_physdev_op(PHYSDEVOP_eoi, &eoi);
-@@ -1641,7 +1635,6 @@ void rebind_evtchn_irq(evtchn_port_t evt
- 	mutex_unlock(&irq_mapping_update_lock);
- 
-         bind_evtchn_to_cpu(evtchn, info->cpu);
--	/* This will be deferred until interrupt is processed */
- 	irq_set_affinity(irq, cpumask_of(info->cpu));
- 
- 	/* Unmask the event channel. */
-@@ -1688,8 +1681,9 @@ static int set_affinity_irq(struct irq_d
- 			    bool force)
- {
- 	unsigned tcpu = cpumask_first_and(dest, cpu_online_mask);
--	int ret = xen_rebind_evtchn_to_cpu(evtchn_from_irq(data->irq), tcpu);
-+	int ret;
- 
-+	ret = xen_rebind_evtchn_to_cpu(evtchn_from_irq(data->irq), tcpu);
- 	if (!ret)
- 		irq_data_update_effective_affinity(data, cpumask_of(tcpu));
- 
-@@ -1719,18 +1713,7 @@ static void ack_dynirq(struct irq_data *
- 	if (!VALID_EVTCHN(evtchn))
- 		return;
- 
--	if (unlikely(irqd_is_setaffinity_pending(data)) &&
--	    likely(!irqd_irq_disabled(data))) {
--		int masked = test_and_set_mask(evtchn);
--
--		clear_evtchn(evtchn);
--
--		irq_move_masked_irq(data);
--
--		if (!masked)
--			unmask_evtchn(evtchn);
--	} else
--		clear_evtchn(evtchn);
-+	clear_evtchn(evtchn);
- }
- 
- static void mask_ack_dynirq(struct irq_data *data)
+Eric
 
