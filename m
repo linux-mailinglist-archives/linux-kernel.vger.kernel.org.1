@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A9B2D5E2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7832D5E71
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403761AbgLJOnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:43:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43718 "EHLO mail.kernel.org"
+        id S2389377AbgLJOsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:48:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729844AbgLJOgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:20 -0500
+        id S2391221AbgLJOja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:39:30 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Greg KH <greg@kroah.com>,
-        Kees Cook <keescook@chromium.org>, Willy Tarreau <w@1wt.eu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 42/54] lib/syscall: fix syscall registers retrieval on 32-bit platforms
+        stable@vger.kernel.org, Qian Cai <qcai@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.9 54/75] mm/swapfile: do not sleep with a spin lock held
 Date:   Thu, 10 Dec 2020 15:27:19 +0100
-Message-Id: <20201210142604.106487872@linuxfoundation.org>
+Message-Id: <20201210142608.724378472@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -34,62 +33,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willy Tarreau <w@1wt.eu>
+From: Qian Cai <qcai@redhat.com>
 
-commit 4f134b89a24b965991e7c345b9a4591821f7c2a6 upstream.
+commit b11a76b37a5aa7b07c3e3eeeaae20b25475bddd3 upstream.
 
-Lilith >_> and Claudio Bozzato of Cisco Talos security team reported
-that collect_syscall() improperly casts the syscall registers to 64-bit
-values leaking the uninitialized last 24 bytes on 32-bit platforms, that
-are visible in /proc/self/syscall.
+We can't call kvfree() with a spin lock held, so defer it.  Fixes a
+might_sleep() runtime warning.
 
-The cause is that info->data.args are u64 while syscall_get_arguments()
-uses longs, as hinted by the bogus pointer cast in the function.
-
-Let's just proceed like the other call places, by retrieving the
-registers into an array of longs before assigning them to the caller's
-array.  This was successfully tested on x86_64, i386 and ppc32.
-
-Reference: CVE-2020-28588, TALOS-2020-1211
-Fixes: 631b7abacd02 ("ptrace: Remove maxargs from task_current_syscall()")
-Cc: Greg KH <greg@kroah.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Tested-by: Michael Ellerman <mpe@ellerman.id.au> (ppc32)
-Signed-off-by: Willy Tarreau <w@1wt.eu>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Fixes: 873d7bcfd066 ("mm/swapfile.c: use kvzalloc for swap_info_struct allocation")
+Signed-off-by: Qian Cai <qcai@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201202151549.10350-1-qcai@redhat.com
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- lib/syscall.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ mm/swapfile.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/lib/syscall.c
-+++ b/lib/syscall.c
-@@ -7,6 +7,7 @@
- 
- static int collect_syscall(struct task_struct *target, struct syscall_info *info)
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -2868,6 +2868,7 @@ late_initcall(max_swapfiles_check);
+ static struct swap_info_struct *alloc_swap_info(void)
  {
-+	unsigned long args[6] = { };
- 	struct pt_regs *regs;
+ 	struct swap_info_struct *p;
++	struct swap_info_struct *defer = NULL;
+ 	unsigned int type;
+ 	int i;
  
- 	if (!try_get_task_stack(target)) {
-@@ -27,8 +28,14 @@ static int collect_syscall(struct task_s
+@@ -2896,7 +2897,7 @@ static struct swap_info_struct *alloc_sw
+ 		smp_wmb();
+ 		WRITE_ONCE(nr_swapfiles, nr_swapfiles + 1);
+ 	} else {
+-		kvfree(p);
++		defer = p;
+ 		p = swap_info[type];
+ 		/*
+ 		 * Do not memset this entry: a racing procfs swap_next()
+@@ -2909,6 +2910,7 @@ static struct swap_info_struct *alloc_sw
+ 		plist_node_init(&p->avail_lists[i], 0);
+ 	p->flags = SWP_USED;
+ 	spin_unlock(&swap_lock);
++	kvfree(defer);
+ 	spin_lock_init(&p->lock);
+ 	spin_lock_init(&p->cont_lock);
  
- 	info->data.nr = syscall_get_nr(target, regs);
- 	if (info->data.nr != -1L)
--		syscall_get_arguments(target, regs,
--				      (unsigned long *)&info->data.args[0]);
-+		syscall_get_arguments(target, regs, args);
-+
-+	info->data.args[0] = args[0];
-+	info->data.args[1] = args[1];
-+	info->data.args[2] = args[2];
-+	info->data.args[3] = args[3];
-+	info->data.args[4] = args[4];
-+	info->data.args[5] = args[5];
- 
- 	put_task_stack(target);
- 	return 0;
 
 
