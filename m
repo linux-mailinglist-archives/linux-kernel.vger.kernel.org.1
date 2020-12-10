@@ -2,142 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007482D69DD
+	by mail.lfdr.de (Postfix) with ESMTP id DB0BE2D69DF
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405008AbgLJV2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 16:28:41 -0500
-Received: from smtprelay0037.hostedemail.com ([216.40.44.37]:55902 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404948AbgLJV15 (ORCPT
+        id S2405027AbgLJV27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 16:28:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405007AbgLJV2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 16:27:57 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id C401C18039531;
-        Thu, 10 Dec 2020 21:27:06 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:1801:2197:2199:2393:2553:2559:2562:2828:2919:3138:3139:3140:3141:3142:3355:3622:3653:3865:3866:3867:3868:3870:3871:3874:4321:4605:5007:7875:7903:7904:8603:8957:9010:9040:9121:10004:10400:10848:11026:11232:11233:11473:11658:11914:12043:12291:12297:12438:12555:12683:12740:12760:12895:13161:13229:13255:13439:14181:14659:14721:21080:21212:21221:21324:21627:30003:30030:30034:30054:30062:30070:30080:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:38,LUA_SUMMARY:none
-X-HE-Tag: scarf44_2c0eece273fb
-X-Filterd-Recvd-Size: 4928
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 10 Dec 2020 21:27:05 +0000 (UTC)
-Message-ID: <4898c0c03d370a23b1b98ddabb72e70ec8d430fa.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: make the line length warnings match the
- coding style document
-From:   Joe Perches <joe@perches.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>, apw@canonical.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 10 Dec 2020 13:27:03 -0800
-In-Reply-To: <20201210200930.GB7338@casper.infradead.org>
-References: <20201210082251.2717564-1-hch@lst.de>
-         <c3f1d9de2e5a61588f64e69a1309968d84a2dd12.camel@perches.com>
-         <20201210200930.GB7338@casper.infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Thu, 10 Dec 2020 16:28:41 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3EFC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:28:01 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id c14so4944556qtn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:28:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=znkhNnIS3r1tEBD7K4eIaXfiP9kPaMqnTLtmCTJQVyA=;
+        b=PqG+LASskQ3owEZLeU6mT8YTJBB81lSWuT3PwZDqx6TGDVF1FYlcBKPcZ2jgfwBfVG
+         kyeff85FKMojSTeh1iCuzkhuNGEvLtxGBkjJqx00l4wVMUEIcTzNneTYh4MMUTKULkZ9
+         MBVUziUkZfNJpNP5/TzxZitth4UsbM5vXVenjpRywqW8Kbtt/AVEK63VXcsEHeoxtuSg
+         yA9aiTq7KKkLKakubv4WexJtcqAcDiJkZY1u8+ddMTuK1DA7Q4Tum3ExFxqns+VrZAz/
+         ZnkvelZgK6vbLEpS7V12awUAlQVgvePWhc5jQvQFuv1P7jlvkm9erXiqtfRGLwaw7KTA
+         3W4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=znkhNnIS3r1tEBD7K4eIaXfiP9kPaMqnTLtmCTJQVyA=;
+        b=s+VBBKxpNjSH8M3XzrsBkygtJrFsmP3yt+wc9bS0h4aokowkTBiHQcOQbNXz6N0WKz
+         /z87IfcUHChCYNVLsIHhnqmH5kCNWuiq0+l5ZT9/hNvq2syFDmaoelqIUGe5BDN5UOCI
+         TiW3LJ/bFpMbkVqMrhyxqsJ9oPnS0Hm+cpP2frcKTSPDLtOki/q9n3GEChqXoX9ooGYT
+         gRUIuCVywBr+6x+Nuklxgh2nmJ+sL3F6d8r18UYy872ljZmaEx+yJfblgxJSxt5MnoUC
+         UHD59DXred7NnsmD+SYIGDlO0DZg/7zAC1iDKYbqYVhlrtyArr/CxwFygKsInRzA19Y4
+         JcRQ==
+X-Gm-Message-State: AOAM533WGJcr+2mx+QCBV2I9BahGy56rchPPo/jXrXEM9V2RgBfU2zp2
+        stqUrIPvu3dCJLaQuVDlcZ8=
+X-Google-Smtp-Source: ABdhPJwV+5sZsY/kbhi3J4upW9OpmlLm7uqlBkYrHVHuMOU5am+ZKcpV/bq80OyQnIabmvd/4N3E2w==
+X-Received: by 2002:ac8:24a1:: with SMTP id s30mr11847093qts.89.1607635680417;
+        Thu, 10 Dec 2020 13:28:00 -0800 (PST)
+Received: from localhost.localdomain ([2804:14c:482:a80:6086:6f67:ecaf:b184])
+        by smtp.gmail.com with ESMTPSA id a11sm4640096qtd.19.2020.12.10.13.27.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 13:27:59 -0800 (PST)
+From:   Fabio Estevam <festevam@gmail.com>
+To:     broonie@kernel.org
+Cc:     yibin.gong@nxp.com, linux-kernel@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] regulator: pfuze100: Convert the driver to DT-only
+Date:   Thu, 10 Dec 2020 18:27:48 -0300
+Message-Id: <20201210212748.5849-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-10 at 20:09 +0000, Matthew Wilcox wrote:
-> On Thu, Dec 10, 2020 at 12:05:04PM -0800, Joe Perches wrote:
-> > Also, given the ever increasing average identifier length, strict
-> > adherence to 80 columns is sometimes just not possible without silly
-> > visual gymnastics.  The kernel now has quite a lot of 30+ character
-> > length function names, constants, and structs.
-> 
-> maybe checkpatch should warn for identifiers that are 30+ characters
-> long?  address the problem at its source ..
+Since 5.10-rc1 i.MX is a devicetree-only platform, so simplify the code
+by removing the unused non-DT support.
 
-Hard to know when to warn as patches could just add uses of already
-existing names and emitting warnings for those would just be annoying.
-
-Maybe something that tests long identifier additions of
-defines/functions/macros/structs but not their uses and maybe only
-then in patches and not files.
-
-Perhaps:
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
 ---
- scripts/checkpatch.pl | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ drivers/regulator/Kconfig              |  2 +-
+ drivers/regulator/pfuze100-regulator.c | 34 +-------------------------
+ include/linux/regulator/pfuze100.h     |  6 -----
+ 3 files changed, 2 insertions(+), 40 deletions(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7b086d1cd6c2..8579be987fc0 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -54,6 +54,7 @@ my @ignore = ();
- my $help = 0;
- my $configuration_file = ".checkpatch.conf";
- my $max_line_length = 100;
-+my $max_identifier_length = 30;
- my $ignore_perl_version = 0;
- my $minimum_perl_version = 5.10.0;
- my $min_conf_desc_length = 4;
-@@ -103,6 +104,8 @@ Options:
-   --max-line-length=n        set the maximum line length, (default $max_line_length)
-                              if exceeded, warn on patches
-                              requires --strict for use with --file
-+  --max-identifier-length=n  set the maximum identifier length, (default $max_identifier_length)
-+                             only used with patches, not output with --file
-   --min-conf-desc-length=n   set the min description length, if shorter, warn
-   --tab-size=n               set the number of spaces for tab (default $tabsize)
-   --root=PATH                PATH to the kernel tree root
-@@ -223,6 +226,7 @@ GetOptions(
- 	'show-types!'	=> \$show_types,
- 	'list-types!'	=> \$list_types,
- 	'max-line-length=i' => \$max_line_length,
-+	'max-identifier-length=i' => \$max_identifier_length,
- 	'min-conf-desc-length=i' => \$min_conf_desc_length,
- 	'tab-size=i'	=> \$tabsize,
- 	'root=s'	=> \$root,
-@@ -2489,6 +2493,7 @@ sub process {
- 	my $suppress_statement = 0;
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index cffadf8b2c37..53fa84f4d1e1 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -830,7 +830,7 @@ config REGULATOR_PF8X00
  
- 	my %signatures = ();
-+	my %long_identifiers = ();
+ config REGULATOR_PFUZE100
+ 	tristate "Freescale PFUZE100/200/3000/3001 regulator driver"
+-	depends on I2C
++	depends on I2C && OF
+ 	select REGMAP_I2C
+ 	help
+ 	  Say y here to support the regulators found on the Freescale
+diff --git a/drivers/regulator/pfuze100-regulator.c b/drivers/regulator/pfuze100-regulator.c
+index 01a12cfcea7c..d60d7d1b7fa2 100644
+--- a/drivers/regulator/pfuze100-regulator.c
++++ b/drivers/regulator/pfuze100-regulator.c
+@@ -105,15 +105,6 @@ static const int pfuze3000_sw2hi[] = {
+ 	2500000, 2800000, 2850000, 3000000, 3100000, 3150000, 3200000, 3300000,
+ };
  
- 	# Pre-scan the patch sanitizing the lines.
- 	# Pre-scan the patch looking for any __setup documentation.
-@@ -3840,6 +3845,33 @@ sub process {
- # check we are in a valid C source file if not then ignore this hunk
- 		next if ($realfile !~ /\.(h|c)$/);
+-static const struct i2c_device_id pfuze_device_id[] = {
+-	{.name = "pfuze100", .driver_data = PFUZE100},
+-	{.name = "pfuze200", .driver_data = PFUZE200},
+-	{.name = "pfuze3000", .driver_data = PFUZE3000},
+-	{.name = "pfuze3001", .driver_data = PFUZE3001},
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(i2c, pfuze_device_id);
+-
+ static const struct of_device_id pfuze_dt_ids[] = {
+ 	{ .compatible = "fsl,pfuze100", .data = (void *)PFUZE100},
+ 	{ .compatible = "fsl,pfuze200", .data = (void *)PFUZE200},
+@@ -440,7 +431,6 @@ static struct pfuze_regulator pfuze3001_regulators[] = {
+ 	PFUZE100_VGEN_REG(PFUZE3001, VLDO4, PFUZE100_VGEN6VOL, 1800000, 3300000, 100000),
+ };
  
-+# check for long identifiers in defines/macros/functions/structs/types/labels
-+		if (!$file) {
-+			while ($sline =~ /^\+.*\b(\w{$max_identifier_length,})\b/g) {
-+				my $id = $1;
-+				next if (exists($long_identifiers{$id}));
-+				my $use = "";
-+				if ($sline =~ /^\+\s*\#\s*define\s+$id(?!\()/) {
-+					$use = "define";
-+				} elsif ($sline =~ /^\+\s*\#\s*define\s+$id\(/) {
-+					$use = "function-like macro";
-+				} elsif ($sline =~ /^\+\s*(?!define)$Declare?$id\s*\(/) {
-+					$use = "function";
-+				} elsif ($sline =~ /^\+\s*(struct|union|enum)\s+$id\b/) {
-+					$use = "$1";
-+				} elsif ($sline =~ /^\+\s*$Declare$id\b/) {
-+					$use = "declaration";
-+				} elsif ($sline =~ /^\+\s*$id\s*:\s*$/) {
-+					$use = "label";
-+				}
-+				if ($use ne "") {
-+					$long_identifiers{$id} = $id;
-+					WARN("LONG_IDENTIFIER",
-+					     "$use '$id' is " . length($id) . " characters - avoid using identifiers with $max_identifier_length+ characters\n" . $herecurr);
-+				}
-+			}
-+		}
-+
- # check for unusual line ending [ or (
- 		if ($line =~ /^\+.*([\[\(])\s*$/) {
- 			CHK("OPEN_ENDED_LINE",
+-#ifdef CONFIG_OF
+ /* PFUZE100 */
+ static struct of_regulator_match pfuze100_matches[] = {
+ 	{ .name = "sw1ab",	},
+@@ -578,22 +568,6 @@ static inline struct device_node *match_of_node(int index)
+ {
+ 	return pfuze_matches[index].of_node;
+ }
+-#else
+-static int pfuze_parse_regulators_dt(struct pfuze_chip *chip)
+-{
+-	return 0;
+-}
+-
+-static inline struct regulator_init_data *match_init_data(int index)
+-{
+-	return NULL;
+-}
+-
+-static inline struct device_node *match_of_node(int index)
+-{
+-	return NULL;
+-}
+-#endif
+ 
+ static struct pfuze_chip *syspm_pfuze_chip;
+ 
+@@ -708,8 +682,6 @@ static int pfuze100_regulator_probe(struct i2c_client *client,
+ 				    const struct i2c_device_id *id)
+ {
+ 	struct pfuze_chip *pfuze_chip;
+-	struct pfuze_regulator_platform_data *pdata =
+-	    dev_get_platdata(&client->dev);
+ 	struct regulator_config config = { };
+ 	int i, ret;
+ 	const struct of_device_id *match;
+@@ -802,10 +774,7 @@ static int pfuze100_regulator_probe(struct i2c_client *client,
+ 
+ 		desc = &pfuze_chip->regulator_descs[i].desc;
+ 
+-		if (pdata)
+-			init_data = pdata->init_data[i];
+-		else
+-			init_data = match_init_data(i);
++		init_data = match_init_data(i);
+ 
+ 		/* SW2~SW4 high bit check and modify the voltage value table */
+ 		if (i >= sw_check_start && i <= sw_check_end) {
+@@ -879,7 +848,6 @@ static int pfuze100_regulator_remove(struct i2c_client *client)
+ }
+ 
+ static struct i2c_driver pfuze_driver = {
+-	.id_table = pfuze_device_id,
+ 	.driver = {
+ 		.name = "pfuze100-regulator",
+ 		.of_match_table = pfuze_dt_ids,
+diff --git a/include/linux/regulator/pfuze100.h b/include/linux/regulator/pfuze100.h
+index d47e668d9ca8..c964fe8ab698 100644
+--- a/include/linux/regulator/pfuze100.h
++++ b/include/linux/regulator/pfuze100.h
+@@ -63,10 +63,4 @@
+ #define PFUZE3001_VLDO3		8
+ #define PFUZE3001_VLDO4		9
+ 
+-struct regulator_init_data;
+-
+-struct pfuze_regulator_platform_data {
+-	struct regulator_init_data *init_data[PFUZE100_MAX_REGULATOR];
+-};
+-
+ #endif /* __LINUX_REG_PFUZE100_H */
+-- 
+2.17.1
 
