@@ -2,54 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460422D5E9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1FB2D5E98
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391828AbgLJOvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:51:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391675AbgLJOtK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:49:10 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C3EC061794
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:48:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
-        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=yn1qH04jjjmkAXAfwbqdVLSx2R9x3N7TiVfDrsMpX+E=; b=Wi5MrpNuNIzVubde2t4JG+MhSL
-        G2i9j0pS6csU5+hLILJYOYD/LZUnIilk/5AZbGv6gFiXyncSjcLI+ZmPho2KislHkydYKV8IFPUC6
-        YRshqvhRp6xmuoqNARPVYx26LqEWxOpELm19GBdL3953lgG/kvU5MmVHAeYVbT6X/V0EX/vtwCSbX
-        w3YvOmQ/qDkcfx0WMipdubRMiDPgT4idwDjynztdOrfSowGikTgGoRgryysrLzk8G4p92Lbbp8otJ
-        7Eghbwtw8YBjeywiixFDavNQ5rtGVApszF7nQmnviEDxntY2c8pTVtiOA5AZSSuYQ+JaVdWKS5qhb
-        WRFjiyHQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1knNF5-00044V-4G; Thu, 10 Dec 2020 14:48:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DCE63304D58;
-        Thu, 10 Dec 2020 15:48:25 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id C33D72BAB36D0; Thu, 10 Dec 2020 15:48:25 +0100 (CET)
-Message-ID: <20201210144254.583402167@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 10 Dec 2020 15:42:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@kernel.org, will@kernel.org, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        bigeasy@linutronix.de, peterz@infradead.org
-Subject: [PATCH 0/6] Fix lockdep vs local_lock_t
+        id S2391808AbgLJOvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:51:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50308 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391041AbgLJOnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:43:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A76BCAE87;
+        Thu, 10 Dec 2020 14:43:00 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 15:42:56 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v8 04/12] mm/hugetlb: Free the vmemmap pages associated
+ with each HugeTLB page
+Message-ID: <20201210144256.GB8538@localhost.localdomain>
+References: <20201210035526.38938-1-songmuchun@bytedance.com>
+ <20201210035526.38938-5-songmuchun@bytedance.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210035526.38938-5-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Dec 10, 2020 at 11:55:18AM +0800, Muchun Song wrote:
+> The free_vmemmap_pages_per_hpage() which indicate that how many vmemmap
+> pages associated with a HugeTLB page that can be freed to the buddy
+> allocator just returns zero now, because all infrastructure is not
+> ready. Once all the infrastructure is ready, we will rework this
+> function to support the feature.
 
-After a few days of confusion, here are patches that (hopefully!) teach lockdep
-about local_lock_t.
+I would reword the above to:
+
+"free_vmemmap_pages_per_hpage(), which indicates how many vmemmap
+ pages associated with a HugeTLB page can be freed, returns zero for
+ now, which means the feature is disabled.
+ We will enable it once all the infrastructure is there."
+
+ Or something along those lines.
+
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+
+Overall this looks good to me, and it has seen a considerable
+simplification, which is good.
+Some nits/questions below:
 
 
+> +#define vmemmap_hpage_addr_end(addr, end)				 \
+> +({									 \
+> +	unsigned long __boundary;					 \
+> +	__boundary = ((addr) + VMEMMAP_HPAGE_SIZE) & VMEMMAP_HPAGE_MASK; \
+> +	(__boundary - 1 < (end) - 1) ? __boundary : (end);		 \
+> +})
+
+Maybe add a little comment explaining what are you trying to get here.
+
+> +/*
+> + * Walk a vmemmap address to the pmd it maps.
+> + */
+> +static pmd_t *vmemmap_to_pmd(unsigned long addr)
+> +{
+> +	pgd_t *pgd;
+> +	p4d_t *p4d;
+> +	pud_t *pud;
+> +	pmd_t *pmd;
+> +
+> +	pgd = pgd_offset_k(addr);
+> +	if (pgd_none(*pgd))
+> +		return NULL;
+> +
+> +	p4d = p4d_offset(pgd, addr);
+> +	if (p4d_none(*p4d))
+> +		return NULL;
+> +
+> +	pud = pud_offset(p4d, addr);
+> +	if (pud_none(*pud))
+> +		return NULL;
+> +
+> +	pmd = pmd_offset(pud, addr);
+> +	if (pmd_none(*pmd))
+> +		return NULL;
+> +
+> +	return pmd;
+> +}
+
+I saw that some people suggested to put all the non-hugetlb vmemmap
+functions under sparsemem-vmemmap.c, which makes some sense if some
+feature is going to re-use this code somehow. (I am not sure if the
+recent patches that take advantage of this feature for ZONE_DEVICE needs
+something like this).
+
+I do not have a strong opinion on this though.
+
+> +static void vmemmap_reuse_pte_range(struct page *reuse, pte_t *pte,
+> +				    unsigned long start, unsigned long end,
+> +				    struct list_head *vmemmap_pages)
+> +{
+> +	/*
+> +	 * Make the tail pages are mapped with read-only to catch
+> +	 * illegal write operation to the tail pages.
+> +	 */
+> +	pgprot_t pgprot = PAGE_KERNEL_RO;
+> +	pte_t entry = mk_pte(reuse, pgprot);
+> +	unsigned long addr;
+> +
+> +	for (addr = start; addr < end; addr += PAGE_SIZE, pte++) {
+> +		struct page *page;
+> +
+> +		VM_BUG_ON(pte_none(*pte));
+
+If it is none, page will be NULL and we will crash in the list_add
+below?
+
+> +static void vmemmap_remap_range(unsigned long start, unsigned long end,
+> +				struct list_head *vmemmap_pages)
+> +{
+> +	pmd_t *pmd;
+> +	unsigned long next, addr = start;
+> +	struct page *reuse = NULL;
+> +
+> +	VM_BUG_ON(!IS_ALIGNED(start, PAGE_SIZE));
+> +	VM_BUG_ON(!IS_ALIGNED(end, PAGE_SIZE));
+> +	VM_BUG_ON((start >> PUD_SHIFT) != (end >> PUD_SHIFT));
+This last VM_BUG_ON, is to see if both fall under the same PUD table?
+
+> +
+> +	pmd = vmemmap_to_pmd(addr);
+> +	BUG_ON(!pmd);
+
+Which is the criteria you followed to make this BUG_ON and VM_BUG_ON
+in the check from vmemmap_reuse_pte_range? 
+
+-- 
+Oscar Salvador
+SUSE L3
