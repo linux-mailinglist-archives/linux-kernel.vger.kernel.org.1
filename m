@@ -2,103 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE192D54EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F15E2D54ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732449AbgLJHxl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Dec 2020 02:53:41 -0500
-Received: from mail-oo1-f49.google.com ([209.85.161.49]:34556 "EHLO
-        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726107AbgLJHxd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 02:53:33 -0500
-Received: by mail-oo1-f49.google.com with SMTP id t63so1068103ooa.1;
-        Wed, 09 Dec 2020 23:53:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=od3/SfRw9owkKLE3PuBGLkFJU3SpegkIJpaUukly2Vk=;
-        b=JNGAswZJgw6G0f7sfYLArmVMPETQkOdi4WVTn3tDEcQEYy9uzznWJPblaiBP2UAMNy
-         PdxeUyjh4ruD7LBdXl7Juj6KlwvOT80RWB/1mfFUToReLe+xTEv0npfSNhUAoxw3IYH+
-         uX7RL1yxjPH1mVvGn8qjGz99GSPVXyM8TV+WZE7vhKRK95oc9Rmnno6djRJyP2tKBo2y
-         mMOrE0SwVG/3ptIFPVkMYypW2wKphU7AI4IHfkpYOEjdzG4+fgO+MW3Mo7oVRcp+f8kE
-         mJ9uc7i8zTjtd+IoUOOHdWZCLjp9XjxN1ZXDgfX5OlNTnl/MbfiG7OmkkZuDCRzBXUuZ
-         UOUQ==
-X-Gm-Message-State: AOAM531JvlolDAR5avDk5Ft7UbHQYZsipO6TL6TS2GgkaL7NlEGSUmqC
-        w7m/WcCTtsR/gTDCvkrOqvHZE6lamiCPMbZGqBE=
-X-Google-Smtp-Source: ABdhPJxGEReNaUAoEWLa0HGLv4p5Io511aYSPbxsxPU1JS4b7LjrRk/vkrhMzPmZaTIQuvMfZ+9gkXCgxq6TDijg2cc=
-X-Received: by 2002:a4a:ca14:: with SMTP id w20mr5069865ooq.11.1607586772264;
- Wed, 09 Dec 2020 23:52:52 -0800 (PST)
+        id S1732800AbgLJHyz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Dec 2020 02:54:55 -0500
+Received: from mga03.intel.com ([134.134.136.65]:36232 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725953AbgLJHyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 02:54:54 -0500
+IronPort-SDR: IIDEuIyMGuarhgdowKOKfSmwbTrlL/Q8DjQpYkYl7Tqe0Mszu4YRax5TeiJgLn2wqAbG2Jyqrl
+ AABEr0wto52A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="174329035"
+X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
+   d="scan'208";a="174329035"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 23:53:08 -0800
+IronPort-SDR: GXwzMAoXMJneblLoVcnh81qMWmYGzXQ8MFNg/P0ooRmNc68RzjhpPYLP3hwhqyP/hpQPjlwvCE
+ DxcejKf/Qykg==
+X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
+   d="scan'208";a="364507804"
+Received: from ggiordax-mobl1.ger.corp.intel.com (HELO localhost) ([10.251.87.181])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 23:53:03 -0800
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20201208090555.7159b138@canb.auug.org.au> <CAMuHMdVYoxUOUL0zNAPzTJUSR3vGzcJWMzvtCKK=ZxyM=8hk+A@mail.gmail.com>
- <160753498332.1580929.15118515893187584689@swboyd.mtv.corp.google.com>
-In-Reply-To: <160753498332.1580929.15118515893187584689@swboyd.mtv.corp.google.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 10 Dec 2020 08:52:41 +0100
-Message-ID: <CAMuHMdWAtUK6qDOAXZ3-qy69ZzbfZb_Z=bSvx-0S-42dfUiw9w@mail.gmail.com>
-Subject: Re: linux-next: Fixes tag needs some work in the clk tree
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Mike Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
+In-Reply-To: <875z5e99ez.fsf@nanos.tec.linutronix.de>
+References: <20201205014340.148235-1-jsnitsel@redhat.com> <20201205014340.148235-3-jsnitsel@redhat.com> <875z5e99ez.fsf@nanos.tec.linutronix.de>
+From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        David Airlie <airlied@linux.ie>,
+        Matthew Garrett <mjg59@google.com>,
+        intel-gfx@lists.freedesktop.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-integrity@vger.kernel.org,
+        Peter Huewe <peterhuewe@gmx.de>
+To:     Jerry Snitselaar <jsnitsel@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+Subject: Re: [Intel-gfx] [PATCH v3 2/4] drm/i915/pmu: Use kstat_irqs to get interrupt count
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <160758677957.5062.15497765500689083558@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: alot/0.8.1
+Date:   Thu, 10 Dec 2020 09:53:00 +0200
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen²,
++ Tvrtko and Chris for comments
 
-On Wed, Dec 9, 2020 at 6:29 PM Stephen Boyd <sboyd@kernel.org> wrote:
-> Quoting Geert Uytterhoeven (2020-12-08 00:37:00)
-> > On Mon, Dec 7, 2020 at 11:06 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > > In commit
-> > >
-> > >   c3f207f6d23d ("clk: renesas: r8a779a0: Make rcar_r8a779a0_cpg_clk_register() static")
-> > >
-> > > Fixes tag
-> > >
-> > >   Fixes: c07439dea94050b6 ("clk: renesas: cpg-mssr: Add support for R-Car V3U")
-> > >
-> > > has these problem(s):
-> > >
-> > >   - Target SHA1 does not exist
-> >
-> > Oops, my bad.
-> >
-> > > Maybe you meant
-> > >
-> > > Fixes: 17bcc8035d2d ("clk: renesas: cpg-mssr: Add support for R-Car V3U")
-> >
-> > Yes I did.
-> >
-> > Mike/Stephen: do you want me to respin my pull requests?
->
-> Sure a respin is fine. I can fix it up in clk tree. Any chance your
+Code seems to be added in:
 
-Done, sorry for the mess.
+commit 0cd4684d6ea9a4ffec33fc19de4dd667bb90d0a5
+Author: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Date:   Tue Nov 21 18:18:50 2017 +0000
 
-> trees can be pulled into linux-next? That would find this earlier.
+    drm/i915/pmu: Add interrupt count metric
 
-That sounds like a great idea, also for pinctrl.
-Can you please add the following:
-    git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git
-renesas-clk
-    git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git
-renesas-pinctrl
-?
+I think later in the thread there was a suggestion to replace this with
+simple counter increment in IRQ handler.
 
-Thanks!
+Regards, Joonas
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Quoting Thomas Gleixner (2020-12-06 18:38:44)
+> On Fri, Dec 04 2020 at 18:43, Jerry Snitselaar wrote:
+> 
+> > Now that kstat_irqs is exported, get rid of count_interrupts in
+> > i915_pmu.c
+> > --- a/drivers/gpu/drm/i915/i915_pmu.c
+> > +++ b/drivers/gpu/drm/i915/i915_pmu.c
+> > @@ -423,22 +423,6 @@ static enum hrtimer_restart i915_sample(struct hrtimer *hrtimer)
+> >       return HRTIMER_RESTART;
+> >  }
+> >  
+> > -static u64 count_interrupts(struct drm_i915_private *i915)
+> > -{
+> > -     /* open-coded kstat_irqs() */
+> > -     struct irq_desc *desc = irq_to_desc(i915->drm.pdev->irq);
+> > -     u64 sum = 0;
+> > -     int cpu;
+> > -
+> > -     if (!desc || !desc->kstat_irqs)
+> > -             return 0;
+> > -
+> > -     for_each_possible_cpu(cpu)
+> > -             sum += *per_cpu_ptr(desc->kstat_irqs, cpu);
+> > -
+> > -     return sum;
+> > -}
+> 
+> May I ask why this has been merged in the first place?
+> 
+> Nothing in a driver has ever to fiddle with the internals of an irq
+> descriptor. We have functions for properly accessing them. Just because
+> C allows to fiddle with everything is not a justification. If the
+> required function is not exported then adding the export with a proper
+> explanation is not asked too much.
+> 
+> Also this lacks protection or at least a comment why this can be called
+> safely and is not subject to a concurrent removal of the irq descriptor.
+> The same problem exists when calling kstat_irqs(). It's even documented
+> at the top of the function.
+> 
+> Thanks,
+> 
+>         tglx
+> 
+> 
+> _______________________________________________
+> Intel-gfx mailing list
+> Intel-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
