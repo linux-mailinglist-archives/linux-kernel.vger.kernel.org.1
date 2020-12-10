@@ -2,139 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35ED2D6BD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF9B2D6BE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394341AbgLJXUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:20:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389337AbgLJXTs (ORCPT
+        id S2394307AbgLJXXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:23:05 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:55024 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394234AbgLJXWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:19:48 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98999C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:19:08 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id y8so3610944plp.8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:19:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=t0Sx/XIPvxiCKhEvsUvex+bf+zfhTcd/fmShmfRK7nw=;
-        b=fjaOh7Yn+hYJHK8b6dEVuPhNwij7FJO7d/aZfC/K1QdpwgJTKXp0V6h913hQHnPx6o
-         yYbrGu6+ka7woWkbFDcYMvUUHHDR/fIxCswu6wglMIGcIiBzBli84xQ8cg36gKwbyc5t
-         2nxqbD26czLVWGH8jN7pIx+6fS2jBLTER8ew6wcSEwNu+E5x+vGt0GH57fY1XhuYkW5V
-         Oc+/v8uaPWdlvt+litrOQfdBRp2g+oYf9Ligp4K2gE6Ymb5np5hPciKdBot6KQ+Ds1qO
-         mzi1F7WndTmcM5uTIY+Al1EHnkCUmwwJhzKgLO/L2+d1xleWaOp+D4owOSoyrchqCNCf
-         1PSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=t0Sx/XIPvxiCKhEvsUvex+bf+zfhTcd/fmShmfRK7nw=;
-        b=Fi4TLEnw1bvz3Vhk1t7a/F4t1U5ygyE0f7KGFnGcSLwqsr9uASrkLZEifqPQCYTBa1
-         jP89xTGxGxR6E9QONIVixUTQHvDxg78v4EWK/gFIxbRi3YR6u+bHxN1ukQ/vr9/GZB3A
-         B+syo8red6rTgJpcVAMMPcp64qwsBS1I+9rLt28rYzWFXeYQQFf/83e9gNb+EeJDM4Kr
-         iKA/X+nhEhA4eQwwHWvuLHVyKIb2S846Nwr8pAIUImM3jJXnVEtZAQS520SAdah4eF52
-         zHFmdeqMw9vP+fbg4bE1GH4PN0pboM7PyND01dJX/mZ8o1Xu4QPsoSxqFrIM361dZsHP
-         AI5g==
-X-Gm-Message-State: AOAM530WFfC6zypqcWUPWxrCs0RxJE/iGq7HmMXvfytVjl9sl41JpRWV
-        GLP+mujzPcoYcqM4GcE1kkgVpQ==
-X-Google-Smtp-Source: ABdhPJx3DJeFCNqncunWWmFw+Ili2CoD2aVdiDFsoUUIbbkZknoQzVq6/PQzYckr9GAm1YDO4HUuMQ==
-X-Received: by 2002:a17:902:860a:b029:da:e83a:7f1f with SMTP id f10-20020a170902860ab02900dae83a7f1fmr8272152plo.60.1607642348164;
-        Thu, 10 Dec 2020 15:19:08 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:d828:a6ba:337e:e413? ([2601:646:c200:1ef2:d828:a6ba:337e:e413])
-        by smtp.gmail.com with ESMTPSA id z9sm7852957pji.48.2020.12.10.15.19.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 15:19:07 -0800 (PST)
+        Thu, 10 Dec 2020 18:22:39 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BANJcXS003074;
+        Thu, 10 Dec 2020 23:19:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=+7Mm8NoMJp9j52xNSSS3U0SBEUJij5+TbHj/sEGWvTc=;
+ b=u+3l3VwFE77ZdGsGjRddFE+dCehz5qrVKsbBnhGV+nhEsQXQr4wsZggjHTDzlgab5HWW
+ W5egKIrrmhPu4ceJfalySBs8+I9FL0posNnaW9CbqbQrGVA0xg9R6RUkmEkz2s2No81L
+ nPNXJeIgpYDvFxFB/WQZYYVQRZ8i2VKbURSVU2FxkTzOHIYKNUfXXIo5pBMOc10Am1by
+ BIehnBSdx++jQOQE0Sqhoje+VUsTyicTJHRPdgx7QaW/te4Rwue+wm7tniYwBY8WiOcJ
+ un2QEN6snEEYNGv5arjms4I4Cg54F0bI7f25KRnMCWmobnf82SR6SJhov103IcOkf0u5 8g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 357yqc85cd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Dec 2020 23:19:38 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BAMxr2o074450;
+        Thu, 10 Dec 2020 23:19:32 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 358m52xf7m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Dec 2020 23:19:32 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BANJPdu022291;
+        Thu, 10 Dec 2020 23:19:25 GMT
+Received: from [10.39.227.125] (/10.39.227.125)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 10 Dec 2020 15:19:24 -0800
+Subject: Re: [patch 24/30] xen/events: Remove unused
+ bind_evtchn_to_irq_lateeoi()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-pci@vger.kernel.org,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194044.972064156@linutronix.de>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <748d8d81-ac0f-aee2-1a56-ba9c40fee52f@oracle.com>
+Date:   Thu, 10 Dec 2020 18:19:19 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <20201210194044.972064156@linutronix.de>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-Date:   Thu, 10 Dec 2020 15:19:05 -0800
-Message-Id: <D4FDC64D-C632-42CF-A4F1-A9584C94AFD9@amacapital.net>
-References: <87v9d9i9dt.fsf@nanos.tec.linutronix.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-In-Reply-To: <87v9d9i9dt.fsf@nanos.tec.linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-X-Mailer: iPhone Mail (18B121)
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012100148
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012100149
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> On Dec 10, 2020, at 2:28 PM, Thomas Gleixner <tglx@linutronix.de> wrote:
->=20
-> =EF=BB=BFOn Thu, Dec 10 2020 at 14:01, Andy Lutomirski wrote:
->>> On Thu, Dec 10, 2020 at 1:25 PM Thomas Gleixner <tglx@linutronix.de> wro=
-te:
->>> I'm still convinced that a notification about 'we take a nap' will be
->>> more robust, less complex and more trivial to backport.
->>=20
->> What do you have in mind?  Suppose the host kernel sends the guest an
->> interrupt on all vCPUs saying "I'm about to take a nap".  What happens
->> if the guest is busy with IRQs off for a little bit?  Does the host
->> guarantee the guest a certain about of time to try to get the
->> interrupt delivered before allowing the host to enter S3?  How about
->> if the host wants to reboot for a security fix -- how long is a guest
->> allowed to delay the process?
->>=20
->> I'm sure this can all be made to work 99% of time, but I'm a bit
->> concerned about that last 1%.
->=20
-> Seriously?
->=20
-> If the guest has interrupts disabled for ages, i.e. it went for out for
-> lunch on its own, then surely the hypervisor can just pull the plug and
-> wreckage it. It's like you hit the reset button or pull the powerplug of
-> the machine which is not responding anymore.
->=20
-> Reboot waits already today for guests to shut down/hibernate/supsend or
-> whatever they are supposed to do. systemd sits there and waits for
-> minutes until it decides to kill them. Just crash a guest kernel and
-> forget to reset or force power off the guest before you reboot the
-> host. Twiddle thumbs for a while and watch the incomprehensible time
-> display.
->=20
-> If your security fix reboot is so urgent that it can't wait then just
-> pull the plug and be done with it, i.e. kill the guest which makes it
-> start from a known state which is a gazillion times better than bringing
-> it into a state which it can't handle anymore.
->=20
-> Again, that's not any different than hitting the reset button on the
-> host or pulling and reinserting the host powerplug which you would do
-> anyway in an emergency case.
->=20
-> Can we please focus on real problems instead of making up new ones?
->=20
-> Correctness of time is a real problem despite the believe of virt folks
-> that it can be ignored or duct taped to death.
->=20
+On 12/10/20 2:26 PM, Thomas Gleixner wrote:
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Juergen Gross <jgross@suse.com>
+> Cc: Stefano Stabellini <sstabellini@kernel.org>
+> Cc: xen-devel@lists.xenproject.org
+> ---
+>  drivers/xen/events/events_base.c |    6 ------
+>  1 file changed, 6 deletions(-)
+>
+> --- a/drivers/xen/events/events_base.c
+> +++ b/drivers/xen/events/events_base.c
+> @@ -1132,12 +1132,6 @@ int bind_evtchn_to_irq(evtchn_port_t evt
+>  }
+>  EXPORT_SYMBOL_GPL(bind_evtchn_to_irq);
+>  
+> -int bind_evtchn_to_irq_lateeoi(evtchn_port_t evtchn)
+> -{
+> -	return bind_evtchn_to_irq_chip(evtchn, &xen_lateeoi_chip);
+> -}
+> -EXPORT_SYMBOL_GPL(bind_evtchn_to_irq_lateeoi);
 
-I=E2=80=99m fine with this as long as it=E2=80=99s intentional. If we say =E2=
-=80=9Cguest timekeeping across host suspend is correct because we notify the=
- guest=E2=80=9D, then we have a hole. But if we say =E2=80=9Cthe host will t=
-ry to notify the guest, and if the guest is out to lunch then the host reser=
-ves the right to suspend without waiting, and the guest should deal with thi=
-s=E2=80=9D, then okay.=
+
+
+include/xen/events.h also needs to be updated (and in the next patch for xen_set_affinity_evtchn() as well).
+
+
+-boris
+
