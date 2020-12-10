@@ -2,102 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A789D2D507B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 02:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E552D5081
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 02:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbgLJBrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 20:47:32 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9052 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgLJBrY (ORCPT
+        id S1727007AbgLJBw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 20:52:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27906 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726953AbgLJBws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 20:47:24 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Crxb11h04zhq60;
-        Thu, 10 Dec 2020 09:46:05 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 10 Dec
- 2020 09:46:33 +0800
-Subject: Re: [f2fs-dev] [PATCH] fs: f2fs: fix potential shift-out-of-bounds
- error in sanity_check_raw_super()
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-CC:     <syzbot+ca9a785f8ac472085994@syzkaller.appspotmail.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201209181322.27932-1-anant.thazhemadam@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <9e38608c-9fc3-1f94-d275-742facef3db3@huawei.com>
-Date:   Thu, 10 Dec 2020 09:46:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Wed, 9 Dec 2020 20:52:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607565081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yatyL7brUpdT9nN7wHFOuWownO2RnkXmQv5daJIQu4Q=;
+        b=XVzTJ/SXYwfCgh5a1SsPqAbxQT7Uldn7LuyfUUwcDsQQbxnlCfEOlFbLsu8LhpZzZzQX35
+        4zO/s7P//vDmYwgMxoGjDR+QWLuFQwk/E2ViVpzZqbF2pczb8UzYqxuYkXAKf5H5/1ps+i
+        CFdfIU2eUdlT5u5HOydXA/xenlsYmgw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-4P76lbMNO3u9kQ0cf8ISTg-1; Wed, 09 Dec 2020 20:51:13 -0500
+X-MC-Unique: 4P76lbMNO3u9kQ0cf8ISTg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 928711934102;
+        Thu, 10 Dec 2020 01:51:09 +0000 (UTC)
+Received: from mail (ovpn-119-164.rdu2.redhat.com [10.10.119.164])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0EE055D6BA;
+        Thu, 10 Dec 2020 01:51:06 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 20:51:05 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mm: fix initialization of struct page for holes
+ in memory layout
+Message-ID: <X9F/Cc946aKaA8gr@redhat.com>
+References: <20201209214304.6812-1-rppt@kernel.org>
+ <20201209214304.6812-3-rppt@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201209181322.27932-1-anant.thazhemadam@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209214304.6812-3-rppt@kernel.org>
+User-Agent: Mutt/2.0.2 (2020-11-20)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anant,
+Hello,
 
-I've posted a patch a little earlier. :P
+On Wed, Dec 09, 2020 at 11:43:04PM +0200, Mike Rapoport wrote:
+> +void __init __weak memmap_init(unsigned long size, int nid,
+> +			       unsigned long zone,
+> +			       unsigned long range_start_pfn)
+> +{
+> +	unsigned long start_pfn, end_pfn, hole_start_pfn = 0;
+>  	unsigned long range_end_pfn = range_start_pfn + size;
+> +	u64 pgcnt = 0;
+>  	int i;
+>  
+>  	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
+>  		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
+>  		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
+> +		hole_start_pfn = clamp(hole_start_pfn, range_start_pfn,
+> +				       range_end_pfn);
+>  
+>  		if (end_pfn > start_pfn) {
+>  			size = end_pfn - start_pfn;
+>  			memmap_init_zone(size, nid, zone, start_pfn,
+>  					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
+>  		}
+> +
+> +		if (hole_start_pfn < start_pfn)
+> +			pgcnt += init_unavailable_range(hole_start_pfn,
+> +							start_pfn, zone, nid);
+> +		hole_start_pfn = end_pfn;
+>  	}
 
-https://lore.kernel.org/linux-f2fs-devel/20201209084936.31711-1-yuchao0@huawei.com/T/#u
+After applying the new 1/2, the above loop seem to be functionally a
+noop compared to what was in -mm yesterday, so the above looks great
+as far as I'm concerned.
 
-Thanks,
+Unlike the simple fix this will not loop over holes that aren't part
+of memblock.memory nor memblock.reserved and it drops the static
+variable which would have required ordering and serialization.
 
-On 2020/12/10 2:13, Anant Thazhemadam wrote:
-> In sanity_check_raw_super(), if
-> 1 << le32_to_cpu(raw_super->log_blocksize) != F2FS_BLKSIZE, then the
-> block size is deemed to be invalid.
-> 
-> syzbot triggered a shift-out-of-bounds bug by assigning a value of 59 to
-> le32_to_cpu(raw_super->log_blocksize).
-> Although the value assigned itself isn't of much significance, this goes
-> to show that even if the block size is invalid,
-> le32_to_cpu(raw_super->log_blocksize) can be potentially evaluated to a
-> value for which the shift exponent becomes too large for the unsigned
-> int.
-> 
-> Since 1 << le32_to_cpu(raw_super->log_blocksize) must be = 4096 for a
-> valid block size, le32_to_cpu(raw_super->log_blocksize) must equal 12.
-> Replacing the existing check with the more direct sanity check
-> resolves this bug.
-> 
-> Reported-by: syzbot+ca9a785f8ac472085994@syzkaller.appspotmail.com
-> Tested-by: syzbot+ca9a785f8ac472085994@syzkaller.appspotmail.com
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> ---
->   fs/f2fs/super.c | 7 ++-----
->   1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 33808c397580..4bc7372af43f 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -2775,7 +2775,6 @@ static int sanity_check_raw_super(struct f2fs_sb_info *sbi,
->   	block_t total_sections, blocks_per_seg;
->   	struct f2fs_super_block *raw_super = (struct f2fs_super_block *)
->   					(bh->b_data + F2FS_SUPER_OFFSET);
-> -	unsigned int blocksize;
->   	size_t crc_offset = 0;
->   	__u32 crc = 0;
->   
-> @@ -2802,10 +2801,8 @@ static int sanity_check_raw_super(struct f2fs_sb_info *sbi,
->   	}
->   
->   	/* Currently, support only 4KB block size */
-> -	blocksize = 1 << le32_to_cpu(raw_super->log_blocksize);
-> -	if (blocksize != F2FS_BLKSIZE) {
-> -		f2fs_info(sbi, "Invalid blocksize (%u), supports only 4KB",
-> -			  blocksize);
-> +	if (le32_to_cpu(raw_super->log_blocksize) != 12) {
-> +		f2fs_info(sbi, "Invalid blocksize. Only 4KB supported");
->   		return -EFSCORRUPTED;
->   	}
->   
-> 
+By being functionally equivalent, it looks it also suffers from the
+same dependency on pfn 0 (and not just pfn 0) being reserved that you
+pointed out earlier.
+
+I suppose to drop that further dependency we need a further round down
+in this logic to the start of the pageblock_order or max-order like
+mentioned yesterday?
+
+If the first pfn of a pageblock (or maybe better a max-order block) is
+valid, but not in memblock.reserved nor memblock.memory and any other
+pages in such pageblock is freed to the buddy allocator, we should
+make sure the whole pageblock gets initialized (or at least the pages
+with a pfn lower than the one that was added to the buddy). So
+applying a round down in the above loop might just do the trick.
+
+Since the removal of that extra dependency was mostly orthogonal with
+the above, I guess it's actually cleaner to do it incrementally.
+
+I'd suggest to also document why we're doing it, in the code (not just
+commit header) of the incremental patch, by mentioning which are the
+specific VM invariants we're enforcing that the VM code always
+depended upon, that required the rundown etc...
+
+In the meantime I'll try to update all systems again with this
+implementation to test it.
+
+Thanks!
+Andrea
+
