@@ -2,94 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FEE2D63D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:42:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B398D2D63DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392868AbgLJRl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:41:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34190 "EHLO
+        id S2392426AbgLJRnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:43:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728868AbgLJRlo (ORCPT
+        with ESMTP id S2391065AbgLJRmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:41:44 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A606BC0613CF;
-        Thu, 10 Dec 2020 09:41:04 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id u4so3121205plr.12;
-        Thu, 10 Dec 2020 09:41:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wg76jedNfKc/TU9UzquktTGoQhYb+6rN7M9SWX71cGQ=;
-        b=U7xYP0DnAGJ++RJDicbYFohdbSw6+4dEKbL51GuDiOEwWCZ0sGYVcyfWyA7DPDyXch
-         fc4vCdHmT2NtlE+Qvg/EFIw279PSUtxpDLsQ5CuCXmWrGsd8jlB18i9ODl3dGSRkRLCD
-         184DyMd70p7xoWHzIdSrmEq5CBjpn6Hs9mgdfZTHpUdcS6MYj1yxqNS2jCciljxd7T/9
-         sxBnbXUCV+k3qicWrYFZCKtSUrKemak5JorceOLmJ6A+C8Qkv1LFd96fsoRNfBGR+2pV
-         4xXbbJ+6/vfv/zzldGFWywDgN3k5Etc2mDqMKeWOu3X8asj9O+CO9JcvuIZ/QpeiU3+g
-         Ptqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wg76jedNfKc/TU9UzquktTGoQhYb+6rN7M9SWX71cGQ=;
-        b=peqjjtsNtMlD6yVve+NVcyK4nR9lYnHr3JczIiqUJ0c/AxyECkfhwV8cLF1+GASuyM
-         iMSZZkL1Sp2qlTOSKiBg6Adhx/bDjAQAkAPYqSKV/V8PRUNry/OJ6ahFxNr41ui4l4zq
-         5uoUcq0eavRK3W/63NoHYz+R8dEhV3vgOsWVjbbH219KmS9lb75HuUkpDZE0bE5Nx97H
-         DXqx3mszW9/le+d7aOnh5iGxDKtCsBaOCSaF6U41K/bHj+R9mnKvX2ww4Q6p2p56CN8O
-         dXuz+D9x+I/Dcw6/o8UgkL+5QhJZPBuv5mbNAclO0ew07f/+MSAnKDiWB+oxKHBVWgVG
-         7l4w==
-X-Gm-Message-State: AOAM530Dp49rWU1bsA/LREqIIxIH20Allqv4RafDpv6heK5Yio1818oE
-        ZBRWcQCMC8NHBzurKV6xKvE=
-X-Google-Smtp-Source: ABdhPJy7sT9hqz16lIdJ9LTYu1ADeOZPUOYqL5kRiMhi+q82kvjQrH7ZjNig1UfhjJlmQh3ETeYDbQ==
-X-Received: by 2002:a17:902:10e:b029:d8:d11d:9613 with SMTP id 14-20020a170902010eb02900d8d11d9613mr1407576plb.26.1607622064190;
-        Thu, 10 Dec 2020 09:41:04 -0800 (PST)
-Received: from [10.230.29.166] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id g85sm6912510pfb.4.2020.12.10.09.41.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 09:41:03 -0800 (PST)
-Subject: Re: [PATCH 14/15] ARM: dts: bcm2711: Add the BSC interrupt controller
-To:     Maxime Ripard <maxime@cerno.tech>, Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>
-Cc:     Jason Cooper <jason@lakedaemon.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, linux-media@vger.kernel.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thu, 10 Dec 2020 12:42:42 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FECAC0613CF;
+        Thu, 10 Dec 2020 09:42:02 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0d4100e4701ee3c8ed8bc5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4100:e470:1ee3:c8ed:8bc5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 125411EC054C;
+        Thu, 10 Dec 2020 18:42:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607622121;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=DMxIl+sUswXky4hhx8cQNgi4k4soKTP3TjDz/GFCjaw=;
+        b=iNEHVi15kmRdMHYS4OMEd1JmZaUshnKRI5nbl3emQfzm4SnYizyFXY93PnbbSOvoLSYBQV
+        tWyfO3QpKd1baUIDBU1XePAbFK9WwLEWIw0dkN8xvaUtOrrcF5wgzsX1knpxXSRHRO79Ws
+        Ef3HwocPJpikX283wWeE1yYoYmvMiHQ=
+Date:   Thu, 10 Dec 2020 18:41:55 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-References: <20201210134648.272857-1-maxime@cerno.tech>
- <20201210134648.272857-15-maxime@cerno.tech>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <46411f3a-9b0b-9bf6-8795-77fc11988f79@gmail.com>
-Date:   Thu, 10 Dec 2020 09:41:00 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.1
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v15 08/26] x86/mm: Introduce _PAGE_COW
+Message-ID: <20201210174155.GD26529@zn.tnic>
+References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
+ <20201110162211.9207-9-yu-cheng.yu@intel.com>
+ <20201208175014.GD27920@zn.tnic>
+ <218503f6-eec1-94b0-8404-6f92c55799e3@intel.com>
+ <20201208184727.GF27920@zn.tnic>
+ <cddc2cc5-a04e-ce9c-6fdf-2e7a29346cf7@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201210134648.272857-15-maxime@cerno.tech>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <cddc2cc5-a04e-ce9c-6fdf-2e7a29346cf7@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 08, 2020 at 11:24:16AM -0800, Yu, Yu-cheng wrote:
+> Case (a) is a normal writable data page that has gone through fork(). So it
 
+Writable?
 
-On 12/10/2020 5:46 AM, Maxime Ripard wrote:
-> The BSC controllers used for the HDMI DDC have an interrupt controller
-> shared between both instances. Let's add it to avoid polling.
-> 
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> has W=0, D=1.  But here, the software chooses not to use the D bit, and
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+But it has W=0. So not writable?
+
+> instead, W=0, COW=1.
+
+So the "new" way of denoting that the page is modified is COW=1
+*when* on CET hw. The D=1 bit is still used on the rest thus the two
+_PAGE_DIRTY_BITS.
+
+Am I close?
+
+> Case (b) is a normal read-only data page.  Since it is read-only, fork()
+> won't affect it.  In __get_user_pages(), a copy of the read-only page is
+> needed, and the page is duplicated.  The software sets COW=1 for the new
+> copy.
+
+That makes more sense.
+
+> Thread-A is writing to a writable page, and the page's PTE is becoming W=1,
+> D=1.  In the middle of it, Thread-B is changing the PTE to W=0.
+
+Yah, add that to the explanation pls.
+
 -- 
-Florian
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
