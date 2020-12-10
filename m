@@ -2,112 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C892D4FEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C03692D4FEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730230AbgLJAvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 19:51:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730336AbgLJAvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 19:51:38 -0500
-Date:   Wed, 9 Dec 2020 16:50:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607561457;
-        bh=FKfFS3P2tnXTZ5B8IbXhgv+55qT0M8nfUMu7IrEthgc=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FDyARYbNQjfJaTRX2p/Wdcca0eb6731Zy/WVMOEwsSn72g3e0wgyRWCfpFy9PIbxm
-         2mUWwzkDZysLzsHdcnCgzNeuL0TFaQNnC8B/9H4EJ9KESqiFS67t1lBFqWqHelkDlU
-         t6sthdQuDrmyhFaNVzcm/14uz5llqVNPJNY5LRb9FVMsUdTDiHELkJoRiZt0mdVI13
-         KyUhol7NYWnflqzMBDDjo1ureJI0OAcmpmA9+5aQ/Rp/UtqqdiNJcUdYFMi457O6ig
-         V/g6VbA3ZEug8UJu3qsVDijt3OL4FSW23ekqfl55O24/cRb/G/z3RwtecCEXIHzZrZ
-         lXoOK148V/WtA==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: One potential issue with concurrent execution of RCU callbacks...
-Message-ID: <20201210005056.GM2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201208145810.GA4875@paulmck-ThinkPad-P72>
- <20201208155457.GA3916@lothringen>
- <20201208171927.GS2657@paulmck-ThinkPad-P72>
- <20201208175230.GB3916@lothringen>
- <20201208182409.GT2657@paulmck-ThinkPad-P72>
- <20201208220438.GC3916@lothringen>
- <20201209021449.GK3025@boqun-archlinux>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209021449.GK3025@boqun-archlinux>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1731211AbgLJAxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 19:53:35 -0500
+Received: from shards.monkeyblade.net ([23.128.96.9]:53524 "EHLO
+        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728668AbgLJAxf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 19:53:35 -0500
+Received: from localhost (unknown [IPv6:2601:601:9f00:477:9e51:a893:b0fe:602a])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id C71F94D259C19;
+        Wed,  9 Dec 2020 16:52:53 -0800 (PST)
+Date:   Wed, 09 Dec 2020 16:52:53 -0800 (PST)
+Message-Id: <20201209.165253.120704618605367403.davem@davemloft.net>
+To:     bongsu.jeon2@gmail.com
+Cc:     krzk@kernel.org, linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bongsu.jeon@samsung.com
+Subject: Re: [PATCH v2 net-next 0/2] nfc: s3fwrn5: Change I2C interrupt
+ trigger to EDGE_RISING
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20201208141012.6033-1-bongsu.jeon@samsung.com>
+References: <20201208141012.6033-1-bongsu.jeon@samsung.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Wed, 09 Dec 2020 16:52:54 -0800 (PST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 10:14:49AM +0800, Boqun Feng wrote:
-> Hi Frederic,
-> 
-> On Tue, Dec 08, 2020 at 11:04:38PM +0100, Frederic Weisbecker wrote:
-> > On Tue, Dec 08, 2020 at 10:24:09AM -0800, Paul E. McKenney wrote:
-> > > > It reduces the code scope running with BH disabled.
-> > > > Also narrowing down helps to understand what it actually protects.
-> > > 
-> > > I thought that you would call out unnecessarily delaying other softirq
-> > > handlers.  ;-)
-> > > 
-> > > But if such delays are a problem (and they might well be), then to
-> > > avoid them on non-rcu_nocb CPUs would instead/also require changing the
-> > > early-exit checks to check for other pending softirqs to the existing
-> > > checks involving time, need_resched, and idle.  At which point, entering and
-> > > exiting BH-disabled again doesn't help, other than your point about the
-> > > difference in BH-disabled scopes on rcu_nocb and non-rcu_nocb CPUs.
-> > 
-> > Wise observation!
-> > 
-> > > 
-> > > Would it make sense to exit rcu_do_batch() if more than some amount
-> > > of time had elapsed and there was some non-RCU softirq pending?
-> > > 
-> > > My guess is that the current tlimit checks in rcu_do_batch() make this
-> > > unnecessary.
-> > 
-> > Right and nobody has complained about it so far.
-> > 
-> > But I should add a comment explaining the reason for the BH-disabled
-> > section in my series.
-> > 
-> 
-> Some background for the original question: I'm revisiting the wait
-> context checking feature of lockdep (which can detect bugs like
-> acquiring a spinlock_t lock inside a raw_spinlock_t), I've post my first
-> version:
-> 
-> 	https://lore.kernel.org/lkml/20201208103112.2838119-1-boqun.feng@gmail.com/	
-> 
-> , and will surely copy you in the next version ;-)
-> 
-> The reason I asked for the RCU callback context requirement is that we
-> have the virtual lock (rcu_callback_map) that marks a RCU callback
-> context, so if RCU callback contexts have special restrictions on the
-> locking usage inside, we can use the wait context checking to do the
-> check (like what I did in the patch #3 of the above series).
-> 
-> My current summary is that since in certain configs (use_softirq is true
-> and nocb is disabled) RCU callbacks are executed in a softirq context,
-> so the least requirement for any RCU callbacks is they need to obey the
-> rules in softirq contexts. And yes, I'm aware that in some configs, RCU
-> callbacks are not executed in a softirq context (sometimes, even the BH
-> is not disabled), but we need to make all the callback work in the
-> "worst" (or strictest) case (callbacks executing in softirq contexts).
-> Currently, the effect of using wait context for rcu_callback_map in my
-> patchset is that lockdep will complain if a RCU callback use a mutex or
-> other sleepable locks, but using spinlock_t (even in PREEMPT_RT) won't
-> cause lockdep to complain. Am I getting this correct?
+From: Bongsu Jeon <bongsu.jeon2@gmail.com>
+Date: Tue,  8 Dec 2020 23:10:10 +0900
 
-It matches what I know.  And yes, in PREEMPT_RT, softirq is preemptible,
-allowing spinlock_t to be used, but there are restrictions that
-lopckdep enforces.  I am not going to claim to remember the exact set
-of restrictions.
+> From: Bongsu Jeon <bongsu.jeon@samsung.com>
+> 
+> For stable Samsung's I2C interrupt handling, I changed the interrupt 
+> trigger from IRQ_TYPE_LEVEL_HIGH to IRQ_TYPE_EDGE_RISING and removed 
+> the hard coded interrupt trigger type in the i2c module for the flexible 
+> control.
+> 
+> 1/2 is the changed dt binding for the edge rising trigger.
+> 2/2 is to remove the hard coded interrupt trigger type in the i2c module.
+> 
+> ChangeLog:
+>  v2:
+>   2/2
+>    - remove the hard coded interrupt trigger type.
 
-							Thanx, Paul
+Series applied, thanks.
