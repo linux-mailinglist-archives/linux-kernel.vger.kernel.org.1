@@ -2,125 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4BD2D5FD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8812E2D5FCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391804AbgLJPem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:34:42 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:59356 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391812AbgLJPeT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:34:19 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BAFXIAM110543;
-        Thu, 10 Dec 2020 09:33:18 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607614398;
-        bh=AeyQGxgu/DbIULyND/4supeqkzfg6gDhQeqZq4ZzO/w=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=npJW6fejpX1XkkxT8PhGAdoGgg6/U9RCGL7brBEyaSDpooeeqUIWacJWYNSJQXD1h
-         yaTOpODgZaf6YMrd/epYadpgu+D3x85gUDa50TweRctSwdNsevcvXSh36PLyz6pSAp
-         rT46cR0fOikp5ZNh8s2IEGMcKQbZC7FG5NyxVfko=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BAFXIcp080989
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Dec 2020 09:33:18 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
- Dec 2020 09:30:58 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 10 Dec 2020 09:30:58 -0600
-Received: from [10.250.38.244] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BAFUwi2110524;
-        Thu, 10 Dec 2020 09:30:58 -0600
-Subject: Re: [PATCH v4 0/6] Add a PRU remoteproc driver
-To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
-        <mathieu.poirier@linaro.org>, <robh+dt@kernel.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <lee.jones@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <praneeth@ti.com>,
-        <rogerq@ti.com>
-References: <20201208141002.17777-1-grzegorz.jaszczyk@linaro.org>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <0dc797aa-b938-4a9a-b8cb-ec73508563fd@ti.com>
-Date:   Thu, 10 Dec 2020 09:30:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2391787AbgLJPcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:32:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391789AbgLJPb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:31:57 -0500
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     stable@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Solar Designer <solar@openwall.com>, Eddy_Wu@trendmicro.com,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 2/2] kprobes: Tell lockdep about kprobe nesting
+Date:   Fri, 11 Dec 2020 00:31:09 +0900
+Message-Id: <160761426940.3585575.9968752396885952490.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <160761425763.3585575.15837172081484340228.stgit@devnote2>
+References: <160761425763.3585575.15837172081484340228.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-In-Reply-To: <20201208141002.17777-1-grzegorz.jaszczyk@linaro.org>
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-On 12/8/20 8:09 AM, Grzegorz Jaszczyk wrote:
-> Hi All,
-> 
-> The Programmable Real-Time Unit and Industrial Communication Subsystem
-> (PRU-ICSS or simply PRUSS) on various TI SoCs consists of dual 32-bit
-> RISC cores (Programmable Real-Time Units, or PRUs) for program execution.
-> 
-> The K3 AM65x and J721E SoCs have the next generation of the PRU-ICSS IP,
-> commonly called ICSSG. The ICSSG IP on AM65x SoCs has two PRU cores,
-> two auxiliary custom PRU cores called Real Time Units (RTUs). The K3
-> AM65x SR2.0 and J721E SoCs have a revised version of the ICSSG IP, and
-> include two additional custom auxiliary PRU cores called Transmit PRUs
-> (Tx_PRUs).
-> 
-> This series contains the PRUSS remoteproc driver together with relevant
-> dt-binding. This is the 3rd foundation component for PRUSS subsystem, the
-> previous two were already merged and can be found under:
-> 1) drivers/soc/ti/pruss.c
->    Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
-> 2) drivers/irqchip/irq-pruss-intc.c
->    Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
-> 
-> The following is a v4 version of the series. There is only one change
-> from v3 [1]:
-> - Use sizeof(unsigned int) instead of sizeof(int) for kcalloc in
-> pru_handle_intrmap() in patch #3.
-> 
-> [1] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20201204201807.14716-1-grzegorz.jaszczyk@linaro.org/
-> 
-> Best regards,
-> Grzegorz
-> 
-> Grzegorz Jaszczyk (1):
->   remoteproc: pru: Add support for PRU specific interrupt configuration
-> 
-> Suman Anna (5):
->   dt-bindings: remoteproc: Add binding doc for PRU cores in the PRU-ICSS
->   remoteproc: pru: Add a PRU remoteproc driver
->   remoteproc: pru: Add pru-specific debugfs support
->   remoteproc: pru: Add support for various PRU cores on K3 AM65x SoCs
->   remoteproc: pru: Add support for various PRU cores on K3 J721E SoCs
+commit 645f224e7ba2f4200bf163153d384ceb0de5462e upstream.
 
-All patches in this series are Reviewed now and we have got the binding ack as
-well. Can you please pick this series up for 5.11 if it is not too late?
+Since the kprobe handlers have protection that prohibits other handlers from
+executing in other contexts (like if an NMI comes in while processing a
+kprobe, and executes the same kprobe, it will get fail with a "busy"
+return). Lockdep is unaware of this protection. Use lockdep's nesting api to
+differentiate between locks taken in INT3 context and other context to
+suppress the false warnings.
 
-Thank you,
-Suman
+Link: https://lore.kernel.org/r/20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org
 
-> 
->  .../bindings/remoteproc/ti,pru-rproc.yaml     | 214 +++++
->  drivers/remoteproc/Kconfig                    |  12 +
->  drivers/remoteproc/Makefile                   |   1 +
->  drivers/remoteproc/pru_rproc.c                | 875 ++++++++++++++++++
->  drivers/remoteproc/pru_rproc.h                |  46 +
->  5 files changed, 1148 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
->  create mode 100644 drivers/remoteproc/pru_rproc.c
->  create mode 100644 drivers/remoteproc/pru_rproc.h
-> 
+Cc: stable@vger.kernel.org # 5.9.x
+Cc: Peter Zijlstra <peterz@infradead.org>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/kprobes.c |   25 +++++++++++++++++++++----
+ 1 file changed, 21 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index b885d884603d..1b7fd1ab8ddc 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1250,7 +1250,13 @@ __acquires(hlist_lock)
+ 
+ 	*head = &kretprobe_inst_table[hash];
+ 	hlist_lock = kretprobe_table_lock_ptr(hash);
+-	raw_spin_lock_irqsave(hlist_lock, *flags);
++	/*
++	 * Nested is a workaround that will soon not be needed.
++	 * There's other protections that make sure the same lock
++	 * is not taken on the same CPU that lockdep is unaware of.
++	 * Differentiate when it is taken in NMI context.
++	 */
++	raw_spin_lock_irqsave_nested(hlist_lock, *flags, !!in_nmi());
+ }
+ NOKPROBE_SYMBOL(kretprobe_hash_lock);
+ 
+@@ -1259,7 +1265,13 @@ static void kretprobe_table_lock(unsigned long hash,
+ __acquires(hlist_lock)
+ {
+ 	raw_spinlock_t *hlist_lock = kretprobe_table_lock_ptr(hash);
+-	raw_spin_lock_irqsave(hlist_lock, *flags);
++	/*
++	 * Nested is a workaround that will soon not be needed.
++	 * There's other protections that make sure the same lock
++	 * is not taken on the same CPU that lockdep is unaware of.
++	 * Differentiate when it is taken in NMI context.
++	 */
++	raw_spin_lock_irqsave_nested(hlist_lock, *flags, !!in_nmi());
+ }
+ NOKPROBE_SYMBOL(kretprobe_table_lock);
+ 
+@@ -1942,7 +1954,12 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+ 
+ 	/* TODO: consider to only swap the RA after the last pre_handler fired */
+ 	hash = hash_ptr(current, KPROBE_HASH_BITS);
+-	raw_spin_lock_irqsave(&rp->lock, flags);
++	/*
++	 * Nested is a workaround that will soon not be needed.
++	 * There's other protections that make sure the same lock
++	 * is not taken on the same CPU that lockdep is unaware of.
++	 */
++	raw_spin_lock_irqsave_nested(&rp->lock, flags, 1);
+ 	if (!hlist_empty(&rp->free_instances)) {
+ 		ri = hlist_entry(rp->free_instances.first,
+ 				struct kretprobe_instance, hlist);
+@@ -1953,7 +1970,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+ 		ri->task = current;
+ 
+ 		if (rp->entry_handler && rp->entry_handler(ri, regs)) {
+-			raw_spin_lock_irqsave(&rp->lock, flags);
++			raw_spin_lock_irqsave_nested(&rp->lock, flags, 1);
+ 			hlist_add_head(&ri->hlist, &rp->free_instances);
+ 			raw_spin_unlock_irqrestore(&rp->lock, flags);
+ 			return 0;
 
