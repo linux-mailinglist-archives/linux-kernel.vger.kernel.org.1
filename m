@@ -2,29 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587D12D5DE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4602D5E29
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390751AbgLJOdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:33:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39928 "EHLO mail.kernel.org"
+        id S2391408AbgLJOlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:41:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390555AbgLJOcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:32:23 -0500
+        id S2390965AbgLJOfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:35:46 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Luo Meng <luomeng12@huawei.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.14 30/31] Input: i8042 - fix error return code in i8042_setup_aux()
-Date:   Thu, 10 Dec 2020 15:27:07 +0100
-Message-Id: <20201210142603.603749164@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.4 31/54] dm: remove invalid sparse __acquires and __releases annotations
+Date:   Thu, 10 Dec 2020 15:27:08 +0100
+Message-Id: <20201210142603.565252708@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
-References: <20201210142602.099683598@linuxfoundation.org>
+In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
+References: <20201210142602.037095225@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,37 +30,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Meng <luomeng12@huawei.com>
+From: Mike Snitzer <snitzer@redhat.com>
 
-commit 855b69857830f8d918d715014f05e59a3f7491a0 upstream.
+commit bde3808bc8c2741ad3d804f84720409aee0c2972 upstream.
 
-Fix to return a negative error code from the error handling case
-instead of 0 in function i8042_setup_aux(), as done elsewhere in this
-function.
+Fixes sparse warnings:
+drivers/md/dm.c:508:12: warning: context imbalance in 'dm_prepare_ioctl' - wrong count at exit
+drivers/md/dm.c:543:13: warning: context imbalance in 'dm_unprepare_ioctl' - wrong count at exit
 
-Fixes: f81134163fc7 ("Input: i8042 - use platform_driver_probe")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Luo Meng <luomeng12@huawei.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20201123133420.4071187-1-luomeng12@huawei.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 971888c46993f ("dm: hold DM table for duration of ioctl rather than use blkdev_get")
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/input/serio/i8042.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/md/dm.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/input/serio/i8042.c
-+++ b/drivers/input/serio/i8042.c
-@@ -1458,7 +1458,8 @@ static int __init i8042_setup_aux(void)
- 	if (error)
- 		goto err_free_ports;
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -495,7 +495,6 @@ out:
  
--	if (aux_enable())
-+	error = aux_enable();
-+	if (error)
- 		goto err_free_irq;
+ static int dm_prepare_ioctl(struct mapped_device *md, int *srcu_idx,
+ 			    struct block_device **bdev)
+-	__acquires(md->io_barrier)
+ {
+ 	struct dm_target *tgt;
+ 	struct dm_table *map;
+@@ -529,7 +528,6 @@ retry:
+ }
  
- 	i8042_aux_irq_registered = true;
+ static void dm_unprepare_ioctl(struct mapped_device *md, int srcu_idx)
+-	__releases(md->io_barrier)
+ {
+ 	dm_put_live_table(md, srcu_idx);
+ }
 
 
