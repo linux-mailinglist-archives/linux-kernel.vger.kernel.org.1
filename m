@@ -2,364 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA162D63BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4DB2D63C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392812AbgLJRh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:37:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33532 "EHLO
+        id S2392460AbgLJRjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:39:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392749AbgLJRh2 (ORCPT
+        with ESMTP id S2391737AbgLJRjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:37:28 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A0CC0613CF;
-        Thu, 10 Dec 2020 09:36:47 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id a12so6338996wrv.8;
-        Thu, 10 Dec 2020 09:36:47 -0800 (PST)
+        Thu, 10 Dec 2020 12:39:03 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC560C0613CF;
+        Thu, 10 Dec 2020 09:38:22 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id b26so4779690pfi.3;
+        Thu, 10 Dec 2020 09:38:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1QAgEfLbDqvLOTms5FuJD8g2f8Zb8lG9g+EAmIv/LsM=;
-        b=bLOMD2POUfsIYyNQChcFt1XNUfGOpslB+5byR6Dv9enjapsZsAt5oGX+sS+jO7Xxkv
-         413dl3kZxpfy8GGl2TsmNaJZD3uMTIH6Eur+2hytUYbU6CE4wRZqyIS8WtUj+u1ypIv5
-         +d15RMgGNhhmOBItiC+mGPQEcu7xI2zQICEhaEIA2Bkzc9GTTRtW743sJldsfuNal1d1
-         OxMFzuON6apt2JlKQBlYGS3QqI4BV/Yyo7QLkDXpVOBfBOcBxi9Q/MdYNv7ODN9AgsJ2
-         ZI729ytStgxbjx84BQChPbhz9Tnnjp9/9pzUxmxa5+nVTGyMy/TpyLUJ4G3veQxC3DDy
-         9q0A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yaSoQbWkGk9rnWSYO+eot2cz4dRr33/1PTssSbr1rxY=;
+        b=kkPwCwYaLd/fKBtLL8cs8L6+Ee10drce68MuF+qZ7QPJexL0P7fkH8QBvm1C/z1vSn
+         bCll7cpDomOrdbgxNqbhUQNxNZ32t4cXNbCQ/s3djNXehteFKuB2b5evNmW1RmvISzxw
+         nK8eLHEcnB0yWKIjMxqgpYd5NxXfVHZRQnSDTKJteVK+EVxMPMpDSYa2cCqApm3Jto7o
+         /GnNPOUzdJz5HEDNu6Eqgf3e4lwfLhLGcvGWg3Jycytgs3Ml09bvjCj6niUo5NcPqrX3
+         wp5BOqOQVRXWgRsK17LgTg2gddYcW2HOp64OyY04twHvAAdOHH2mtSJtY8kNh9s/4ylf
+         goIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1QAgEfLbDqvLOTms5FuJD8g2f8Zb8lG9g+EAmIv/LsM=;
-        b=i1z8oaaE+K7g75zSYiFedjBD/QxRcabGbGi7jsHgQf7jMrls0SQLQ1GjP6LBDuzD9t
-         ACU44YCRO106QMh4uA3Ubtxh+XK7JZvkNXbjUuNuInPmq26Z6a8YPoc1nN3RvKSikU8J
-         xWq/4HlvKCN92pi1IURCL/KEp8o67MzwmzAY+c1zTH9UtiOHxlkrxKpvfgDvkj6ZVE22
-         fGRAZJzxeVYz1G4hGKXbN5pM54wAMjKYIlbQmJmw49FqdKDgRVSknU7OgwDvjM3+sC8P
-         DQaNB9hGOEsmJKsxJDd5/xJQCzlhVtCbOZ/uj35G8jAoSpef1UPSS/+yq15gYhxPNBY4
-         EtWA==
-X-Gm-Message-State: AOAM533LCk3Xe8dAKd21Y/eIU0vXiVVtLAX7Hkke4IqSKdY0lQ3YZH7A
-        9kxKtaZ7w1QVUpxXqbrztX31FlrgsIU=
-X-Google-Smtp-Source: ABdhPJwKH5s9bXb6DNvrt4AJjd71jK69ajr+CeJjp2QNajxjA4R2G5xJV/BCXEN+tXEjWhECTYW8sQ==
-X-Received: by 2002:adf:e749:: with SMTP id c9mr9840799wrn.409.1607621806141;
-        Thu, 10 Dec 2020 09:36:46 -0800 (PST)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id y130sm11219363wmc.22.2020.12.10.09.36.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 09:36:45 -0800 (PST)
-Subject: Re: [PATCH] futex: Change 'utime' parameter to be 'const ... *'
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-api@vger.kernel.org
-References: <20201128123945.4592-1-alx.manpages@gmail.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <869f16b2-ee4f-5f33-4b82-43332a381660@gmail.com>
-Date:   Thu, 10 Dec 2020 18:36:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        bh=yaSoQbWkGk9rnWSYO+eot2cz4dRr33/1PTssSbr1rxY=;
+        b=ZHa2CRGskzjJRzs6acQLRaLqcKOsBmUZuVljdEr5azH28dAGPb5avhJ1mYR5sGeDsl
+         6fl0P3EPWvyVvipkbjl+M+uoEpVrYYA35eRdCg4Xhr0JPuDvelfZdqI5bBbKbVmL2RGN
+         uzUbAfZCl9ML0mF3RG7+yF6C4JtXqCsGTB4cLR8rWa9HakQuHPww7UuUydfXp7DFoIjz
+         tnO4UZzUU6ccn9vu2gLL9nyT9iLiNYlGeQKxX5fdCB5w7uziZ/5WZuKZLb32oG8XZTr1
+         YtGfs4vlwMJFnIaE7TwgmKVRg/mHr5eA7MNRpNdH6Q75p/zpzipnBNGYS9XU+M+TuKqf
+         WAQg==
+X-Gm-Message-State: AOAM530WHhxk7+qZiVA9KdE5f/rZriVjnDnZw41Syj+tktVvv3SfP+DV
+        wiBkn47ww4XFbJOAC+zLnX4=
+X-Google-Smtp-Source: ABdhPJwgIDldLpEhYXjnyvvcLDonLUncqif9qMLnfoECHv0QXwm1hcK64UfF7veC5/3U6/ojHnbenw==
+X-Received: by 2002:a17:90a:3ee3:: with SMTP id k90mr8624318pjc.164.1607621902369;
+        Thu, 10 Dec 2020 09:38:22 -0800 (PST)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id f5sm7095009pfg.1.2020.12.10.09.38.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 09:38:21 -0800 (PST)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Iskren Chernev <iskren.chernev@gmail.com>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm: Fix WARN_ON() splat in _free_object()
+Date:   Thu, 10 Dec 2020 09:40:28 -0800
+Message-Id: <20201210174028.2060883-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201128123945.4592-1-alx.manpages@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas & Ingo,
+From: Rob Clark <robdclark@chromium.org>
 
-I tested the changes. Everything's OK.
+[  192.062000] ------------[ cut here ]------------
+[  192.062498] WARNING: CPU: 3 PID: 2039 at drivers/gpu/drm/msm/msm_gem.c:381 put_iova_vmas+0x94/0xa0 [msm]
+[  192.062870] Modules linked in: snd_hrtimer snd_seq snd_seq_device rfcomm algif_hash algif_skcipher af_alg bnep xt_CHECKSUM nft_chain_nat xt_MASQUERADE nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nft_counter xt_tcpudp nft_compat cpufreq_powersave cpufreq_conservative q6asm_dai q6routing q6afe_dai q6adm bridge q6afe q6asm q6dsp_common q6core stp llc nf_tables libcrc32c nfnetlink snd_soc_wsa881x regmap_sdw soundwire_qcom gpio_wcd934x snd_soc_wcd934x wcd934x regmap_slimbus venus_enc venus_dec apr videobuf2_dma_sg qrtr_smd uvcvideo videobuf2_vmalloc videobuf2_memops ath10k_snoc ath10k_core hci_uart btqca btbcm mac80211 bluetooth snd_soc_sdm845 ath snd_soc_rt5663 snd_soc_qcom_common snd_soc_rl6231 soundwire_bus ecdh_generic ecc qcom_spmi_adc5 venus_core qcom_pon qcom_spmi_temp_alarm qcom_vadc_common v4l2_mem2mem videobuf2_v4l2 cfg80211 videobuf2_common hid_multitouch reset_qcom_pdc qcrypto qcom_rng rfkill qcom_q6v5_mss libarc4 libdes qrtr ns qcom_wdt socinfo slim_qcom_ngd_ctrl
+[  192.065739]  pdr_interface qcom_q6v5_pas slimbus qcom_pil_info qcom_q6v5 qcom_sysmon qcom_common qcom_glink_smem qmi_helpers rmtfs_mem tcp_bbr sch_fq fuse ip_tables x_tables ipv6 crc_ccitt ti_sn65dsi86 i2c_hid msm mdt_loader llcc_qcom rtc_pm8xxx ocmem drm_kms_helper crct10dif_ce phy_qcom_qusb2 i2c_qcom_geni panel_simple drm pwm_bl
+[  192.066066] CPU: 3 PID: 2039 Comm: gnome-shell Tainted: G        W         5.10.0-rc7-next-20201208 #1
+[  192.066068] Hardware name: LENOVO 81JL/LNVNB161216, BIOS 9UCN33WW(V2.06) 06/ 4/2019
+[  192.066072] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+[  192.066099] pc : put_iova_vmas+0x94/0xa0 [msm]
+[  192.066262] lr : put_iova_vmas+0x1c/0xa0 [msm]
+[  192.066403] sp : ffff800019efbbb0
+[  192.066405] x29: ffff800019efbbb0 x28: ffff800019efbd88
+[  192.066411] x27: 0000000000000000 x26: ffff109582efa400
+[  192.066417] x25: 0000000000000009 x24: 000000000000012b
+[  192.066422] x23: ffff109582efa438 x22: ffff109582efa450
+[  192.066427] x21: ffff109582efa528 x20: ffff1095cbd4f200
+[  192.066432] x19: ffff1095cbd4f200 x18: 0000000000000000
+[  192.066438] x17: 0000000000000000 x16: ffffc26c200ca750
+[  192.066727] x15: 0000000000000000 x14: 0000000000000000
+[  192.066741] x13: ffff1096fb8c9100 x12: 0000000000000002
+[  192.066754] x11: ffffffffffffffff x10: 0000000000000002
+[  192.067046] x9 : 0000000000000001 x8 : 0000000000000a36
+[  192.067060] x7 : ffff4e2ad9f11000 x6 : ffffc26c216d4000
+[  192.067212] x5 : ffffc26c2022661c x4 : ffff1095c2b98000
+[  192.067367] x3 : ffff1095cbd4f300 x2 : 0000000000000000
+[  192.067380] x1 : ffff1095c2b98000 x0 : 0000000000000000
+[  192.067667] Call trace:
+[  192.067734]  put_iova_vmas+0x94/0xa0 [msm]
+[  192.068078]  msm_gem_free_object+0xb4/0x110 [msm]
+[  192.068399]  drm_gem_object_free+0x1c/0x30 [drm]
+[  192.068717]  drm_gem_object_handle_put_unlocked+0xf0/0xf8 [drm]
+[  192.069032]  drm_gem_object_release_handle+0x6c/0x88 [drm]
+[  192.069349]  drm_gem_handle_delete+0x68/0xc0 [drm]
+[  192.069666]  drm_gem_close_ioctl+0x30/0x48 [drm]
+[  192.069984]  drm_ioctl_kernel+0xc0/0x110 [drm]
+[  192.070303]  drm_ioctl+0x210/0x440 [drm]
+[  192.070588]  __arm64_sys_ioctl+0xa8/0xf0
+[  192.070599]  el0_svc_common.constprop.0+0x74/0x190
+[  192.070608]  do_el0_svc+0x24/0x90
+[  192.070618]  el0_svc+0x14/0x20
+[  192.070903]  el0_sync_handler+0xb0/0xb8
+[  192.070911]  el0_sync+0x174/0x180
+[  192.070918] ---[ end trace bee6b12a899001a3 ]---
+[  192.072140] ------------[ cut here ]------------
 
-Cheers,
+Fixes: 9b73bde39cf2 ("drm/msm: Fix use-after-free in msm_gem with carveout")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_gem.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Alex
-
-$ uname -a
-Linux debian 5.10.0-rc7+alx3+ #4 SMP Thu Dec 10 18:05:03 CET 2020 x86_64
-GNU/Linux
-
-.../linux/tools/testing/selftests/futex$ sudo ./run.sh
-[sudo] password for user:
-
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=0 locked=0 owner=0 timeout=0ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=1 locked=0 owner=0 timeout=0ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=1 locked=1 owner=0 timeout=0ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=1 locked=0 owner=1 timeout=0ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=0 locked=1 owner=0 timeout=0ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=0 locked=0 owner=1 timeout=0ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=1 locked=1 owner=0 timeout=5000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=0 locked=1 owner=0 timeout=5000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=1 locked=1 owner=0 timeout=500000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=0 locked=1 owner=0 timeout=500000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=1 locked=0 owner=0 timeout=5000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=0 locked=0 owner=0 timeout=5000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=1 locked=0 owner=0 timeout=500000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=0 locked=0 owner=0 timeout=500000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=1 locked=0 owner=1 timeout=5000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=0 locked=1 owner=0 timeout=5000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=1 locked=0 owner=1 timeout=500000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=0 locked=1 owner=0 timeout=500000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=1 locked=1 owner=0 timeout=2000000000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_requeue_pi: Test requeue functionality
-# 	Arguments: broadcast=0 locked=1 owner=0 timeout=2000000000ns
-ok 1 futex-requeue-pi
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-
-TAP version 13
-1..1
-# futex_requeue_pi_mismatched_ops: Detect mismatched requeue_pi operations
-ok 1 futex-requeue-pi-mismatched-ops
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-
-TAP version 13
-1..1
-# futex_requeue_pi_signal_restart: Test signal handling during requeue_pi
-# 	Arguments: <none>
-ok 1 futex-requeue-pi-signal-restart
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-
-TAP version 13
-1..1
-# futex_wait_timeout: Block on a futex and wait for timeout
-# 	Arguments: timeout=100000ns
-ok 1 futex-wait-timeout
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-
-TAP version 13
-1..1
-# futex_wait_wouldblock: Test the unexpected futex value in FUTEX_WAIT
-ok 1 futex-wait-wouldblock
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-
-TAP version 13
-1..1
-# futex_wait_uninitialized_heap: Test the uninitialized futex value in
-FUTEX_WAIT
-ok 1 futex-wait-uninitialized-heap
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-TAP version 13
-1..1
-# futex_wait_private_mapped_file: Test the futex value of private file
-mappings in FUTEX_WAIT
-ok 1 futex-wait-private-mapped-file
-# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-
-
-On 11/28/20 1:39 PM, Alejandro Colomar wrote:
-> futex(2) says that 'utime' is a pointer to 'const'.
-> The implementation doesn't use 'const';
-> however, it _never_ modifies the contents of utime.
-> 
-> - futex() either uses 'utime' as a pointer to struct or as a 'u32'.
-> 
-> - In case it's used as a 'u32', it makes a copy of it,
->   and of course it is not dereferenced.
-> 
-> - In case it's used as a 'struct __kernel_timespec __user *',
->   the pointer is not dereferenced inside the futex() definition,
->   and it is only passed to a function: get_timespec64(),
->   which accepts a 'const struct __kernel_timespec __user *'.
-> 
-> context:
-> ........
-> 
-> [[
-> FUTEX(2)               Linux Programmer's Manual              FUTEX(2)
-> 
-> NAME
->        futex - fast user-space locking
-> 
-> SYNOPSIS
->        #include <linux/futex.h>
->        #include <stdint.h>
->        #include <sys/time.h>
-> 
->        long futex(uint32_t *uaddr, int futex_op, uint32_t val,
->                  const struct timespec *timeout,   /* or: uint32_t val2 */
->                  uint32_t *uaddr2, uint32_t val3);
-> 
->        Note:  There  is  no  glibc  wrapper  for this system call; see
->        NOTES.
-> ]]
-> 
-> $ sed -n '/SYSCALL_DEFINE.(futex\>/,/^}/p' linux/kernel/futex.c
-> SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
-> 		struct __kernel_timespec __user *, utime, u32 __user *, uaddr2,
-> 		u32, val3)
-> {
-> 	struct timespec64 ts;
-> 	ktime_t t, *tp = NULL;
-> 	u32 val2 = 0;
-> 	int cmd = op & FUTEX_CMD_MASK;
-> 
-> 	if (utime && (cmd == FUTEX_WAIT || cmd == FUTEX_LOCK_PI ||
-> 		      cmd == FUTEX_WAIT_BITSET ||
-> 		      cmd == FUTEX_WAIT_REQUEUE_PI)) {
-> 		if (unlikely(should_fail_futex(!(op & FUTEX_PRIVATE_FLAG))))
-> 			return -EFAULT;
-> 		if (get_timespec64(&ts, utime))
-> 			return -EFAULT;
-> 		if (!timespec64_valid(&ts))
-> 			return -EINVAL;
-> 
-> 		t = timespec64_to_ktime(ts);
-> 		if (cmd == FUTEX_WAIT)
-> 			t = ktime_add_safe(ktime_get(), t);
-> 		else if (!(op & FUTEX_CLOCK_REALTIME))
-> 			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
-> 		tp = &t;
-> 	}
-> 	/*
-> 	 * requeue parameter in 'utime' if cmd == FUTEX_*_REQUEUE_*.
-> 	 * number of waiters to wake in 'utime' if cmd == FUTEX_WAKE_OP.
-> 	 */
-> 	if (cmd == FUTEX_REQUEUE || cmd == FUTEX_CMP_REQUEUE ||
-> 	    cmd == FUTEX_CMP_REQUEUE_PI || cmd == FUTEX_WAKE_OP)
-> 		val2 = (u32) (unsigned long) utime;
-> 
-> 	return do_futex(uaddr, op, val, tp, uaddr2, val2, val3);
-> }
-> 
-> $ sed -n '/get_timespec64(/,/;/p' linux/include/linux/time.h
-> int get_timespec64(struct timespec64 *ts,
-> 		const struct __kernel_timespec __user *uts);
-> 
-> ...
-> 
-> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
-> ---
-> 
-> Hello Thomas & Ingo,
-> 
-> I'm sorry I couldn't test the change in my computers,
-> as there is a bug since Linux 5.7 where I can't boot
-> (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=974166).
-> 
-> Alex
-> 
->  kernel/futex.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/futex.c b/kernel/futex.c
-> index 00259c7e288e..28577c7d2805 100644
-> --- a/kernel/futex.c
-> +++ b/kernel/futex.c
-> @@ -3792,8 +3792,8 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
->  
->  
->  SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
-> -		struct __kernel_timespec __user *, utime, u32 __user *, uaddr2,
-> -		u32, val3)
-> +		const struct __kernel_timespec __user *, utime,
-> +		u32 __user *, uaddr2, u32, val3)
->  {
->  	struct timespec64 ts;
->  	ktime_t t, *tp = NULL;
-> 
-
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index 68a6c7eacc0a..a21be5b910ff 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -990,6 +990,8 @@ void msm_gem_free_object(struct drm_gem_object *obj)
+ 		if (msm_obj->pages)
+ 			kvfree(msm_obj->pages);
+ 
++		put_iova_vmas(obj);
++
+ 		/* dma_buf_detach() grabs resv lock, so we need to unlock
+ 		 * prior to drm_prime_gem_destroy
+ 		 */
+@@ -999,11 +1001,10 @@ void msm_gem_free_object(struct drm_gem_object *obj)
+ 	} else {
+ 		msm_gem_vunmap(obj);
+ 		put_pages(obj);
++		put_iova_vmas(obj);
+ 		msm_gem_unlock(obj);
+ 	}
+ 
+-	put_iova_vmas(obj);
+-
+ 	drm_gem_object_release(obj);
+ 
+ 	kfree(msm_obj);
 -- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es
+2.28.0
+
