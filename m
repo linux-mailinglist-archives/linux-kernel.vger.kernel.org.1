@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908592D50A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 03:10:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 125DE2D50A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 03:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbgLJCJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 21:09:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30718 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727780AbgLJCJb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 21:09:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607566085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L0UEpSglWXCbwIGmM6W0kiiUcEDufQdmtoBvtOA3A/w=;
-        b=DBALpF+1DvGwo4rUrSQA7WcE1mU6BFM+ul1bOkkNeG01fGciEtxBaIGPic8y68XI8F3L9W
-        a8m4ur6/95+OVJJAOmAn7lFPrbnq9WQ7miQfRHc3C10t7eINNzbT6In2ZGq0HeUymmwooM
-        eolOI8Q1jbW1BH2XGJKvIw+8Qg0NWRU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-vmbCeoe2PmOS5OAGABbU3Q-1; Wed, 09 Dec 2020 21:08:02 -0500
-X-MC-Unique: vmbCeoe2PmOS5OAGABbU3Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F268B100C60A;
-        Thu, 10 Dec 2020 02:08:00 +0000 (UTC)
-Received: from T590 (ovpn-13-118.pek2.redhat.com [10.72.13.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3692D6F97F;
-        Thu, 10 Dec 2020 02:07:49 +0000 (UTC)
-Date:   Thu, 10 Dec 2020 10:07:45 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hch@lst.de, hare@suse.de,
-        ppvk@codeaurora.org, bvanassche@acm.org, kashyap.desai@broadcom.com
-Subject: Re: [RFC PATCH] blk-mq: Clean up references when freeing rqs
-Message-ID: <20201210020745.GA1363446@T590>
-References: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
- <20201202033134.GD494805@T590>
- <aaf77015-3039-6b04-3417-d376e3467444@huawei.com>
- <20201203005505.GB540033@T590>
- <fa222311-2184-0041-61ab-b3d70fb92585@huawei.com>
- <7beb86a2-5c4b-bdc0-9fce-1b583548c6d0@huawei.com>
- <20201209010102.GA1217988@T590>
- <13327a68-6f86-96da-0c5f-5fa0be326d6f@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <13327a68-6f86-96da-0c5f-5fa0be326d6f@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S1727862AbgLJCJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 21:09:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727780AbgLJCJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 21:09:39 -0500
+Date:   Thu, 10 Dec 2020 11:08:54 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607566138;
+        bh=vG8yoWeJ5TaAqgH6L+L4b7udlEhhfsUN6amJFmbiL10=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LAm2qMJwFcHz+UDCYJXCzRI3QPaC062Wm3UXIEHSSt4OxiRy6Sh3FWl2bkxOVFXpl
+         TStzxj5tau2vg0sW4gSsP5F88EvN6mpNKnXPrC/eAf21mIXrqX0x5fmFk63YOG0sgI
+         ZEl3G+nU417GrW6KqDrfGqVEp5M2GrkKXiXf5I76fFISCmGZFYRPIBwNqU4lekyiW7
+         eLPCrKGeRjDKZPGupjGxF3g4xrPYpeilRVIl0JyS3ixN04B9+NdoGONwB+dMH91qqM
+         YfanActU+uD9AeNHjq7vr/+zTH+tpp6z5H8adBcLnGUubCjJEyxONSfZMd8qwZEMKh
+         IPrB/4vfQmduA==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC][PATCH] ftrace/selftests: Add binary test to verify ring
+ buffer timestamps
+Message-Id: <20201210110854.73fc08c6a19fdd8588f3e2c0@kernel.org>
+In-Reply-To: <20201209094919.31724179@gandalf.local.home>
+References: <20201201160656.7cc6a5e8@gandalf.local.home>
+        <20201208211411.e41849908381eb493adce0f5@kernel.org>
+        <20201208100024.42bbcd23@gandalf.local.home>
+        <20201209083954.5f7321a7551013aa95c0a459@kernel.org>
+        <20201209094919.31724179@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 09:55:30AM +0000, John Garry wrote:
-> On 09/12/2020 01:01, Ming Lei wrote:
-> > blk_mq_queue_tag_busy_iter() can be run on another request queue just
-> > between one driver tag is allocated and updating the request map, so one
-> > extra request reference still can be grabbed.
-> > 
-> > So looks only holding one queue's usage_counter doesn't help this issue, since
-> > bt_for_each() always iterates on driver tags wide.
-> > 
-> > > But I didn't see such a guard for blk_mq_tagset_busy_iter().
-> > IMO there isn't real difference between the two iteration.
+On Wed, 9 Dec 2020 09:49:19 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Wed, 9 Dec 2020 08:39:54 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
 > 
-> ok, I see. Let me try to recreate that one, which will prob again require
-> artificial delays added.
+> > > OK. I'll look at how to make this for both cases (embedded and not).
+> > > Because, my current case is to copy the selftests to the machine and run
+> > > them there. So my use case requires the build to happen at test time. But I
+> > > can make it where it wont build if the binary already exists.  
+> > 
+> > For that case, what about just "make clean" before copy, then the binary
+> > will be removed? 
 > 
-> Apart from this, my concern is that we come with for a solution, but it's a
-> complicated solution and may not be accepted as this issue is not seen as a
-> problem in practice.
+> I just meant that the binary build should not depend on anything outside
+> the directory. It should be able to be built if you just copy the
+> ftracetest directory and run there.
 
-If that is the case, I'd suggest to consider the solution in the
-following link:
+Oh I thought you considered the case that the library version differences
+between the binary and execute environment.
 
-https://lore.kernel.org/linux-block/20200820180335.3109216-1-ming.lei@redhat.com/
+> > > > (currently I returns UNRESOLVED when the test target kmodule is not found)  
+> > > 
+> > > I used UNTESTED for a couple of reasons. I figured "UNRESOLVED" was for
+> > > lack of kernel features or modules. But this is not a lack of the kernel,
+> > > but a lack of user space. If something in user space is lacking (a tool,
+> > > library, or binary), then I thought UNTESTED would be a better option. But
+> > > if you have a strong opinion on it, I'll change it to UNRESOLVED, otherwise
+> > > I'll keep UNTESTED.  
+> > 
+> > The idea of UNTESTED/UNRESOLVED (and UNSUPPORTED) came from POSIX standard,
+> > it is expained in dejagnu's manual:
+> > 
+> > https://www.gnu.org/software/dejagnu/manual/A-POSIX-Conforming-Test-Framework.html
+> > 
+> > In this case, user can build the user space binary for the environment but
+> > does't, so I think UNRESOLVED will fit to that case.
+> > 
+> > So strictly speaking, UNTESTED is just a placeholder which will be implemented
+> > in the future. (hmm, it will be a good chance to write a document for it)
+> 
+> OK, I'll change it to UNRESOLVED. One reason I used UNTESTED, is that the
+> build wont happen until libtracefs is packaged and released (or you
+> download and build it yourself). And it's just getting ready now. So in
+> essence, this is currently just a "placeholder" ;-)
 
-At least, the idea is simple, which can be extended to support allocate driver tags
-request pool dynamically.
+Yeah, so now if it can not run, user can solve it by installing libtracefs:)
+
+Thank you,
 
 
-Thanks, 
-Ming
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
