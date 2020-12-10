@@ -2,145 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF9B2D6BE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE052D6BD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394307AbgLJXXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:23:05 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:55024 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394234AbgLJXWj (ORCPT
+        id S2394348AbgLJXUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:20:46 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:37016 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394330AbgLJXUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:22:39 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BANJcXS003074;
-        Thu, 10 Dec 2020 23:19:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=+7Mm8NoMJp9j52xNSSS3U0SBEUJij5+TbHj/sEGWvTc=;
- b=u+3l3VwFE77ZdGsGjRddFE+dCehz5qrVKsbBnhGV+nhEsQXQr4wsZggjHTDzlgab5HWW
- W5egKIrrmhPu4ceJfalySBs8+I9FL0posNnaW9CbqbQrGVA0xg9R6RUkmEkz2s2No81L
- nPNXJeIgpYDvFxFB/WQZYYVQRZ8i2VKbURSVU2FxkTzOHIYKNUfXXIo5pBMOc10Am1by
- BIehnBSdx++jQOQE0Sqhoje+VUsTyicTJHRPdgx7QaW/te4Rwue+wm7tniYwBY8WiOcJ
- un2QEN6snEEYNGv5arjms4I4Cg54F0bI7f25KRnMCWmobnf82SR6SJhov103IcOkf0u5 8g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 357yqc85cd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Dec 2020 23:19:38 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BAMxr2o074450;
-        Thu, 10 Dec 2020 23:19:32 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 358m52xf7m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Dec 2020 23:19:32 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BANJPdu022291;
-        Thu, 10 Dec 2020 23:19:25 GMT
-Received: from [10.39.227.125] (/10.39.227.125)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 10 Dec 2020 15:19:24 -0800
-Subject: Re: [patch 24/30] xen/events: Remove unused
- bind_evtchn_to_irq_lateeoi()
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci@vger.kernel.org,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-References: <20201210192536.118432146@linutronix.de>
- <20201210194044.972064156@linutronix.de>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <748d8d81-ac0f-aee2-1a56-ba9c40fee52f@oracle.com>
-Date:   Thu, 10 Dec 2020 18:19:19 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        Thu, 10 Dec 2020 18:20:08 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 41A4820B717A;
+        Thu, 10 Dec 2020 15:19:24 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 41A4820B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607642365;
+        bh=FzUVSYcEmkEJpeeF+NfTc++mI+lgqPFXBkchQXvY9OA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g48dcavkVQaHP36UKUp0PiEZWlosMtMWDrVv8gyciBY4vYqsqWzBeuJ5M8DKSvQf4
+         08RQ2O/AZ2/pRFAk4ubRtqRtkcktnTx5J0zxs7TkpQNu6qrxfQXUmD5yoWKMQQatsF
+         C4fkSxe90vtKGsteOJrLoZc+GPRtIviKn830ifbc=
+Date:   Thu, 10 Dec 2020 17:19:22 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
+        jmorris@namei.org, nramas@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Subject: Re: [PATCH v7 6/8] IMA: extend critical data hook to limit the
+ measurement based on a label
+Message-ID: <20201210231922.GK489768@sequoia>
+References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
+ <20201209194212.5131-7-tusharsu@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20201210194044.972064156@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012100148
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
- spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012100149
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209194212.5131-7-tusharsu@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-12-09 11:42:10, Tushar Sugandhi wrote:
+> The IMA hook ima_measure_critical_data() does not support a way to
+> specify the source of the critical data provider. Thus, the data
+> measurement cannot be constrained based on the data source label
+> in the IMA policy.
+> 
+> Extend the IMA hook ima_measure_critical_data() to support passing 
+> the data source label as an input parameter, so that the policy rule can
+> be used to limit the measurements based on the label.
+> 
+> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
 
-On 12/10/20 2:26 PM, Thomas Gleixner wrote:
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: Juergen Gross <jgross@suse.com>
-> Cc: Stefano Stabellini <sstabellini@kernel.org>
-> Cc: xen-devel@lists.xenproject.org
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+
+Tyler
+
 > ---
->  drivers/xen/events/events_base.c |    6 ------
->  1 file changed, 6 deletions(-)
->
-> --- a/drivers/xen/events/events_base.c
-> +++ b/drivers/xen/events/events_base.c
-> @@ -1132,12 +1132,6 @@ int bind_evtchn_to_irq(evtchn_port_t evt
->  }
->  EXPORT_SYMBOL_GPL(bind_evtchn_to_irq);
+>  include/linux/ima.h               |  6 ++++--
+>  security/integrity/ima/ima_main.c | 11 ++++++++---
+>  2 files changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index 675f54db6264..6434287a81cd 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -30,7 +30,8 @@ extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
+>  extern void ima_post_path_mknod(struct dentry *dentry);
+>  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
+>  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+> -extern void ima_measure_critical_data(const char *event_name,
+> +extern void ima_measure_critical_data(const char *event_data_source,
+> +				      const char *event_name,
+>  				      const void *buf, int buf_len,
+>  				      bool measure_buf_hash);
 >  
-> -int bind_evtchn_to_irq_lateeoi(evtchn_port_t evtchn)
-> -{
-> -	return bind_evtchn_to_irq_chip(evtchn, &xen_lateeoi_chip);
-> -}
-> -EXPORT_SYMBOL_GPL(bind_evtchn_to_irq_lateeoi);
-
-
-
-include/xen/events.h also needs to be updated (and in the next patch for xen_set_affinity_evtchn() as well).
-
-
--boris
-
+> @@ -125,7 +126,8 @@ static inline int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+>  }
+>  
+>  static inline void ima_kexec_cmdline(int kernel_fd, const void *buf, int size) {}
+> -static inline void ima_measure_critical_data(const char *event_name,
+> +static inline void ima_measure_critical_data(const char *event_data_source,
+> +					     const char *event_name,
+>  					     const void *buf, int buf_len,
+>  					     bool measure_buf_hash) {}
+>  #endif /* CONFIG_IMA */
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index ae59f4a4dd70..7c633901f441 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -924,6 +924,7 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
+>  
+>  /**
+>   * ima_measure_critical_data - measure kernel integrity critical data
+> + * @event_data_source: kernel data source being measured
+>   * @event_name: event name to be used for the buffer entry
+>   * @buf: pointer to buffer containing data to measure
+>   * @buf_len: length of buffer(in bytes)
+> @@ -932,6 +933,9 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
+>   * Measure the kernel subsystem data, critical to the integrity of the kernel,
+>   * into the IMA log and extend the @pcr.
+>   *
+> + * Use @event_data_source to describe the kernel data source for the buffer
+> + * being measured.
+> + *
+>   * Use @event_name to describe the state/buffer data change.
+>   * Examples of critical data (buf) could be kernel in-memory r/o structures,
+>   * hash of the memory structures, or data that represents subsystem state
+> @@ -944,17 +948,18 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
+>   *
+>   * The data (buf) can only be measured, not appraised.
+>   */
+> -void ima_measure_critical_data(const char *event_name,
+> +void ima_measure_critical_data(const char *event_data_source,
+> +			       const char *event_name,
+>  			       const void *buf, int buf_len,
+>  			       bool measure_buf_hash)
+>  {
+> -	if (!event_name || !buf || !buf_len) {
+> +	if (!event_name || !event_data_source || !buf || !buf_len) {
+>  		pr_err("Invalid arguments passed to %s().\n", __func__);
+>  		return;
+>  	}
+>  
+>  	process_buffer_measurement(NULL, buf, buf_len, event_name,
+> -				   CRITICAL_DATA, 0, NULL,
+> +				   CRITICAL_DATA, 0, event_data_source,
+>  				   measure_buf_hash);
+>  }
+>  
+> -- 
+> 2.17.1
+> 
