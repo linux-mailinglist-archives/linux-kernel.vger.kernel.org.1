@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DAF2D5C3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B15DC2D5C65
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389488AbgLJNtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:49:11 -0500
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:52033 "EHLO
+        id S2389629AbgLJNxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:53:22 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:38063 "EHLO
         wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389351AbgLJNsx (ORCPT
+        by vger.kernel.org with ESMTP id S2389348AbgLJNsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Dec 2020 08:48:53 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id DB275F43;
-        Thu, 10 Dec 2020 08:47:05 -0500 (EST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 13008F3E;
+        Thu, 10 Dec 2020 08:47:07 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 10 Dec 2020 08:47:07 -0500
+  by compute4.internal (MEProxy); Thu, 10 Dec 2020 08:47:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=92GfHmKhRpxPM
-        RIUUbECfJaIZvUgJBoz8+NUyhSFyso=; b=KCbe2+Exuycx2mjvU8soWICzlpnyc
-        ewDU1us8dR7WN/1Rzbbe7ZpoXcaQnCuT0Q6F6hQ+q8+FhH5EoQp9Nja0LMgt3u2g
-        5vmo3ADPfbPRxuU/exlpvtxcSmFlnbKJep3I2FUyJY18T40Ituul4apuR9+efg86
-        VmVpT1x+TVRf5QoS2q90Ew6pZ4rT/syAqP9OmS1eBuMxXy5VGGkibHijtp92QqYi
-        DtMPRlT8VY2P5x5HI7g2ER6bf55yo4sBmHWAJEWiRqQv3Fue3/GX9V3eBUGpYCEI
-        kIxdxntsQl91M4UgZ6xniWwLigZEpB6Hc1RNOcLC3eDFnjZqliN7wdgiQ==
+        :mime-version:content-transfer-encoding; s=fm1; bh=fklFVIL4Y1AJE
+        O4W9nFqNlVOvqBIEiPSfsqHHscTIBE=; b=nNO2RIx/astgzAlXENxsKURrTJJSI
+        UHXJnswJvUqviJv1BEOPeVTq3+uU0ymAP96TDRugvCTVE4YHFqj73fSPr3T+MGyB
+        lNWYQ3kXMnjIFHOEylnZP7FvBFx9BrCHSUWV0u0trgPJR8eNu+Loo6pbNBpkZCUj
+        WnchPKPM7ou8mN6/7dm33q47hJdXN2UbdgmtlzgUDyazt3pQ81OT4cHLXFE/rthJ
+        w1QMZ5KL6xXfVZSiJrsY0t52dJhVp+8MiVT0fe9/CxNnCn6Z8QRZjg+UNeKGK1QR
+        HmAgeLKe3pc8MH7FZlctlxJccshFC1oyA6fn6El2jTqz4NqBuk0bn0PlA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=92GfHmKhRpxPMRIUUbECfJaIZvUgJBoz8+NUyhSFyso=; b=r8VWY44G
-        9Ijky47OSugap5Q3EU/c4pM2H7i9zSI4zy2Tiqx6zHsbffEJhUkWu4iBX8yzHuII
-        g+QkqtiGUboX3GYlt0yvTb3FS1sRmhDm/5PuYaWO37AuDj1lJWtVfI7QsKJk7NF/
-        Z63KZm3vQAJXVFhQaSqOsG5pcGoUwXDC9ZKOk33n7tRFcUFor3l2JzmaAFtCmr9h
-        RW8cTAEBFQ6n8wxbwfCfqDMZ80p96coeZrfdkJGFRuMZUC1jIeKFlCAXO972pWvy
-        YZZBXxZ/oc89tHaAqvWkhqJPeP5zsayL/y0k7jzJN7KwIluLZOIvDn0/v5VS1TWx
-        vpCFZxvTMz6dUQ==
-X-ME-Sender: <xms:2SbSX1AI0S1YWHgb7v-8DPLgX-jtPU6v26hjKXG8IPRGX5_eDGNz2A>
-    <xme:2SbSXziGLqGpMtEyNGltbCncS5xfSrqS8LW8uMWuciSjmy8RSr_bgB20J4vj4_Byi
-    wIbNimjo2ejUrMlpfM>
+        fm1; bh=fklFVIL4Y1AJEO4W9nFqNlVOvqBIEiPSfsqHHscTIBE=; b=mRPoa3CL
+        DaxFOvTVB6EdXe2MJe/edKYP9BDX7tzRiiK9uQSq//RMTH2TYdZQRLZ/jpXaayqx
+        TgDyUEf5hOqmM3hN4iSUEbSkqCcg+bytIBHuXoTROEssM4jx3fULZy915qwLGDIs
+        e/8TvPv+2Ly3ntSgWscW8zizBNJ8FJdUvTX8Ch/XAxfzAYrILzh+0sm4KAzgbhlm
+        orPCL2H7lHdHkpi8l1CsCgHjaOpnZpnFE/MIJRmTtwvXFU/YFj6sLEBndTMwBeyv
+        CxTR+gJiI55nRDmql4fZQm5H52fPu4KnxetReOUHPIUvd3MVRWLVRhGph/n0+kDz
+        uYQAHnb4jsJWjw==
+X-ME-Sender: <xms:2ibSX9mH94HI6WwMkHJ1GchPuosLfHB3xQe59PjAoflQzfN9IEQeyg>
+    <xme:2ibSXxlppsHHlVlGXg3MW8KcmejKnG9ei_izcDU8vLCTQWB2wySKMf04eJHI_eFeA
+    ZdcVlM8UmYfgvjxzBM>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudektddgheeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
     vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
     htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepvdenuc
+    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepfeenuc
     frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:2SbSXwnOZbBXflG2SfR5zweV2pkh138XobfwZ4lxY57t1af2AZyEXg>
-    <xmx:2SbSX_w7pJX198LZjtfBJiirxUJLTTIbMvwOmxmGtMqhkXQj3fsRrg>
-    <xmx:2SbSX6S2ZVW_XV6YyUXMP864qVMGbVqE4JJBig1xhhCFsRP1BS_RRw>
-    <xmx:2SbSXzDelKdSik8DxV-drrHC1IDKo6i3QFq8-NDd_dicK0ecrK29pPsmFb0>
+X-ME-Proxy: <xmx:2ibSXyVV8tFiVZ37_xZ_eNy4hLtkebRoLuW5j-fGUgKIg8INQvECqw>
+    <xmx:2ibSX_8V5BKgBklSGzpJOHbBLinD3L8GLx2_f-Yvi7TgCkO2e_0nYw>
+    <xmx:2ibSX_o2q_v30l___fIGEZ3JzWJcEume39X23uiig5fBRmJWlIpDhQ>
+    <xmx:2ibSX2vWFJECfjf8Qq-LJFjJ4jKm01wj0L7gs5DERdcXUie8fwHUl_eVODM>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 13E02108005C;
-        Thu, 10 Dec 2020 08:47:04 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 73253108006B;
+        Thu, 10 Dec 2020 08:47:06 -0500 (EST)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Eric Anholt <eric@anholt.net>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -72,10 +72,10 @@ Cc:     Jason Cooper <jason@lakedaemon.net>,
         Thomas Gleixner <tglx@linutronix.de>,
         Dave Stevenson <dave.stevenson@raspberrypi.com>,
         linux-rpi-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, Dom Cobley <popcornmix@gmail.com>
-Subject: [PATCH 11/15] drm/vc4: hdmi: Remove cec_available flag
-Date:   Thu, 10 Dec 2020 14:46:44 +0100
-Message-Id: <20201210134648.272857-12-maxime@cerno.tech>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 12/15] drm/vc4: hdmi: Don't register the CEC adapter if there's no interrupts
+Date:   Thu, 10 Dec 2020 14:46:45 +0100
+Message-Id: <20201210134648.272857-13-maxime@cerno.tech>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201210134648.272857-1-maxime@cerno.tech>
 References: <20201210134648.272857-1-maxime@cerno.tech>
@@ -85,54 +85,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dom Cobley <popcornmix@gmail.com>
+We introduced the BCM2711 support to the vc4 HDMI controller with 5.10,
+but this was lacking any of the interrupts of the CEC controller so we
+have to deal with the backward compatibility.
 
-Now that our HDMI controller supports CEC for the BCM2711, let's remove
-that flag.
+Do so by simply ignoring the CEC setup if the DT doesn't have the
+interrupts property.
 
-Signed-off-by: Dom Cobley <popcornmix@gmail.com>
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 4 ----
- drivers/gpu/drm/vc4/vc4_hdmi.h | 3 ---
- 2 files changed, 7 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index d208b7d1d937..327638d93032 100644
+index 327638d93032..69217c68d3a4 100644
 --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
 +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -1658,9 +1658,6 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
+@@ -1655,9 +1655,15 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
+ {
+ 	struct cec_connector_info conn_info;
+ 	struct platform_device *pdev = vc4_hdmi->pdev;
++	struct device *dev = &pdev->dev;
  	u32 value;
  	int ret;
  
--	if (!vc4_hdmi->variant->cec_available)
--		return 0;
--
++	if (!of_find_property(dev->of_node, "interrupts", NULL)) {
++		dev_warn(dev, "'interrupts' DT property is missing, no CEC\n");
++		return 0;
++	}
++
  	vc4_hdmi->cec_adap = cec_allocate_adapter(&vc4_hdmi_cec_adap_ops,
  						  vc4_hdmi, "vc4",
  						  CEC_CAP_DEFAULTS |
-@@ -2074,7 +2071,6 @@ static const struct vc4_hdmi_variant bcm2835_variant = {
- 	.debugfs_name		= "hdmi_regs",
- 	.card_name		= "vc4-hdmi",
- 	.max_pixel_clock	= 162000000,
--	.cec_available		= true,
- 	.registers		= vc4_hdmi_fields,
- 	.num_registers		= ARRAY_SIZE(vc4_hdmi_fields),
- 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
-index 27352827f70c..c93ada62f429 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.h
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
-@@ -42,9 +42,6 @@ struct vc4_hdmi_variant {
- 	/* Filename to expose the registers in debugfs */
- 	const char *debugfs_name;
- 
--	/* Set to true when the CEC support is available */
--	bool cec_available;
--
- 	/* Maximum pixel clock supported by the controller (in Hz) */
- 	unsigned long long max_pixel_clock;
- 
 -- 
 2.28.0
 
