@@ -2,80 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D3C2D58BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA9B2D58BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389316AbgLJK7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:59:15 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:49964 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389254AbgLJK5h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:57:37 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UI8pCt1_1607597813;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UI8pCt1_1607597813)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 10 Dec 2020 18:56:53 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     axboe@kernel.dk, tj@kernel.org
-Cc:     baolin.wang@linux.alibaba.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] blk-iocost: Use alloc_percpu_gfp() to simplify the code
-Date:   Thu, 10 Dec 2020 18:56:45 +0800
-Message-Id: <aa518c5b5c7185e660a1c8515c10d9513fe92132.1607591591.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1ba7a38d5a6186b1e71432ef424c23ba1904a365.1607591591.git.baolin.wang@linux.alibaba.com>
-References: <1ba7a38d5a6186b1e71432ef424c23ba1904a365.1607591591.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <1ba7a38d5a6186b1e71432ef424c23ba1904a365.1607591591.git.baolin.wang@linux.alibaba.com>
-References: <1ba7a38d5a6186b1e71432ef424c23ba1904a365.1607591591.git.baolin.wang@linux.alibaba.com>
+        id S2389320AbgLJK7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:59:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389287AbgLJK6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 05:58:16 -0500
+Date:   Thu, 10 Dec 2020 11:58:45 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607597855;
+        bh=+yNy2/EhKij1FrxrK/M173AdxIP7Qw+piOTeN0Owbwk=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YqWT9A8V1/rwqj8dU+bFqO3kPDEHGzBagQ50kyDtSZqSbkS6KE1WRE95VtxK6gnbD
+         JqzjKXl1JUblAc7BspaphdDpa9W7IHVld5x+e/tAF2M1DFri3qOVhfbGs/KH5nGKHp
+         VBwkyzBcX2PHgiRtRNv9qddao6RrODx2jEPgFmGw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ikjoon Jang <ikjn@chromium.org>
+Cc:     linux-mediatek@lists.infradead.org, linux-usb@vger.kernel.org,
+        Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] usb: xhci-mtk: fix unreleased bandwidth data
+Message-ID: <X9H/ZVpHf2Owd6rj@kroah.com>
+References: <20201210104747.3416781-1-ikjn@chromium.org>
+ <20201210184700.v2.3.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210184700.v2.3.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use alloc_percpu_gfp() with __GFP_ZERO flag, which can remove
-some explicit initialization code.
+On Thu, Dec 10, 2020 at 06:47:47PM +0800, Ikjoon Jang wrote:
+> xhci-mtk has hooks on add_endpoint() and drop_endpoint() from xhci
+> to handle its own sw bandwidth managements and stores bandwidth data
+> into internal table every time add_endpoint() is called,
+> so when bandwidth allocation fails at one endpoint, all earlier
+> allocation from the same interface could still remain at the table.
+> 
+> This patch adds two more hooks from check_bandwidth() and
+> reset_bandwidth(), and make mtk-xhci to releases all failed endpoints
+> from reset_bandwidth().
+> 
+> Fixes: 0cbd4b34cda9 ("xhci: mediatek: support MTK xHCI host controller")
+> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- block/blk-iocost.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+Shouldn't this be the first patch in the series?  You don't want a fix
+to be dependent on code style changes, otherwise it is really really
+hard to backport it to older kernels that might need this fix, right?
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index ac6078a..52ce2e3 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -2819,28 +2819,19 @@ static int blk_iocost_init(struct request_queue *q)
- {
- 	struct ioc *ioc;
- 	struct rq_qos *rqos;
--	int i, cpu, ret;
-+	int ret;
-+	gfp_t gfp = GFP_KERNEL | __GFP_ZERO;
- 
- 	ioc = kzalloc(sizeof(*ioc), GFP_KERNEL);
- 	if (!ioc)
- 		return -ENOMEM;
- 
--	ioc->pcpu_stat = alloc_percpu(struct ioc_pcpu_stat);
-+	ioc->pcpu_stat = alloc_percpu_gfp(struct ioc_pcpu_stat, gfp);
- 	if (!ioc->pcpu_stat) {
- 		kfree(ioc);
- 		return -ENOMEM;
- 	}
- 
--	for_each_possible_cpu(cpu) {
--		struct ioc_pcpu_stat *ccs = per_cpu_ptr(ioc->pcpu_stat, cpu);
--
--		for (i = 0; i < ARRAY_SIZE(ccs->missed); i++) {
--			local_set(&ccs->missed[i].nr_met, 0);
--			local_set(&ccs->missed[i].nr_missed, 0);
--		}
--		local64_set(&ccs->rq_wait_ns, 0);
--	}
--
- 	rqos = &ioc->rqos;
- 	rqos->id = RQ_QOS_COST;
- 	rqos->ops = &ioc_rqos_ops;
--- 
-1.8.3.1
+Can you re-order these patches please?
 
+thanks,
+
+greg k-h
