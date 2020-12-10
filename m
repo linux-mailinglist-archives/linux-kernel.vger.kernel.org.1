@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF92E2D4FD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4709C2D4FBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730541AbgLJAre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 19:47:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
+        id S1730882AbgLJAot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 19:44:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730503AbgLJAoP (ORCPT
+        with ESMTP id S1730135AbgLJAol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 19:44:15 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E8EC0611BB
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 16:43:48 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id k4so2482281qtj.10
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 16:43:48 -0800 (PST)
+        Wed, 9 Dec 2020 19:44:41 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA88C0619D2
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 16:43:50 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id h20so3310919qkk.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 16:43:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=HGSArqOjWuHQduh4/5V9y89IaA5+sB598z4JFn69OP8=;
-        b=o7oBMoPEURQxueAB/DYaG9hgqsci/S81PY/g0tU9JQ7uHPBs1l1TdiiPZ7lZWdo1jx
-         MfMTa7UrHefkYeZsixowZ3N+3xEaq8XQn/CH+wP8cVSaa0HDusbRMavvOBGfSqKbhNEA
-         Dk/KKqEIMSk1wyvBafZw/G3JeIq+YcCvLyDgN/aUuahGm5+KuTRpy/i4knEPd+6qyWY1
-         Wd7iJuRXjjTEKN4dCcUDYUb9Ppqxqy5M2NOoFpThFel693jdlmSgH84spyS2C7HQ2uWv
-         0tiU9dFz7n8dhB57XiqQv09AXTRixjozggqmHEwZsTZ9UDro4j+8KUDTbDRsGKq1Mwdz
-         BnSw==
+        bh=Qk8rVh1rXtyNOJhKlNnNxraylm8G6DtD3KrN637cCCY=;
+        b=fMdVWCNKITv0dg2NlC0bJIuTY/rS0L/auHzJODLG1gJsRMzwg1f2vhMfk8VgTPWFb1
+         EGP2rvW7Ddsyis7N9GW7HF9Esuunne9NnIMmaRDqXC6mpUhPIXZ+1ciCTkNDyjdLhx+y
+         VfNtVUaQFX50fcEsJqRUZeONp2iOgImfFJ6YSI0zItK+pg6nljFaSVEl5+VMIn5Ju/yi
+         Ef6R/VeZqKwv8OkjcphblD65i3nnkN+eM34dHKwtHrfzYg3muPKZwZvlA4vqzv/S06Gv
+         nUFwMjeZ3/39YoDQqyquk9o1umGf+i7jw6W4Uz7/oSy7LPLzfaRkrKxMEAWQqIQc0jTU
+         aBmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HGSArqOjWuHQduh4/5V9y89IaA5+sB598z4JFn69OP8=;
-        b=QBn0LOPQG2CoDzKsA35h+ZmyGdZzIQ2t9jrZqFgYoVMOMSoA4XVKznpP1sZ52Y94Dd
-         3ZYmW2wFaBa/84Au6nmv3xDHU7jt6IkgFZ1ebNhCEv9BiLlLZe5YuFFrMSmZiFipobuT
-         bYRWQajsLGF/AwiMR5BXDh316/h2wmdNWEL5PmIIR+QaDwwqrnA1V9+w/MzEcD2QqY9M
-         79TO4K9A8VCcKdofJ73pGPa9CjBhKdc8hRHdxSTTspgrPy4/4aDrZErypENqv0vPmOCe
-         eVoyt1jPa9bloq+khHL3BmWIdWgCrXP4pXTyAOqasDB+u+nJL5EYf/+rjLKgE9+pys26
-         APdg==
-X-Gm-Message-State: AOAM530nZzwLrnKU1WsRSRcvpkQ4G52l6GhTrog9/ZwSoR9dXMukNzqh
-        fZmj+TsKrp0K09SWe/g9wBwjSw==
-X-Google-Smtp-Source: ABdhPJy0FMKB/a1dDS08qr/9bboIpjUOWVwN8UwgN6wV5lFd4ss4cCgP0fB4M4q8oBJWye8XruB8Xw==
-X-Received: by 2002:ac8:5ccc:: with SMTP id s12mr5995034qta.364.1607561028139;
-        Wed, 09 Dec 2020 16:43:48 -0800 (PST)
+        bh=Qk8rVh1rXtyNOJhKlNnNxraylm8G6DtD3KrN637cCCY=;
+        b=GcHuUx0glEPdSw74TCNG8ebJpsnqjTLz+BHlPpB7ZwGr1FcGyPY3f+tliM2d+zgRDx
+         W3Jt+Fkh5Mz/5iPRCTAKCOMYpRis8DS6hTUksxYz7Iy7FIjG9fCV2CV05G52icsSa619
+         rd0bla1qCMsKgg6AjoUFfuJ33CaI6955GvDL0nm9MW3x2Sr1xfsXvVuBlxhVUNZT01y0
+         PFniikJlEjSYYlpXnSTCpHEEzvqY9nmVGh3wZNI2X8sPRBGA2+36yXmwPGdvAJq95e58
+         Ua3E6SzSZS6Km5MoALq3EvasB5RtJDhR6jzCTJxdVWg/it5vYiHeTPxh0c22j7any7Z7
+         5O0g==
+X-Gm-Message-State: AOAM5333SN7UU2MWVqPuC9ZQjF5HXiq/ATw5M2JXWc++yn7+fPVhzTd2
+        Xj2THkrvqHd1CfGISLGyR3MQbw==
+X-Google-Smtp-Source: ABdhPJy/W1k/3gnadCh/Cym4o8ZSSnpU7JcnD+shVsxXMkusZ00RCHBLY90vQHfYNck7M8GFIweDew==
+X-Received: by 2002:a37:aa15:: with SMTP id t21mr6023243qke.86.1607561029865;
+        Wed, 09 Dec 2020 16:43:49 -0800 (PST)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id y1sm2538745qky.63.2020.12.09.16.43.46
+        by smtp.gmail.com with ESMTPSA id y1sm2538745qky.63.2020.12.09.16.43.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 16:43:47 -0800 (PST)
+        Wed, 09 Dec 2020 16:43:49 -0800 (PST)
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
@@ -58,9 +58,9 @@ To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
         willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
         linux-doc@vger.kernel.org
-Subject: [PATCH v2 6/8] mm: honor PF_MEMALLOC_PIN for all movable pages
-Date:   Wed,  9 Dec 2020 19:43:33 -0500
-Message-Id: <20201210004335.64634-7-pasha.tatashin@soleen.com>
+Subject: [PATCH v2 7/8] mm/gup: migrate pinned pages out of movable zone
+Date:   Wed,  9 Dec 2020 19:43:34 -0500
+Message-Id: <20201210004335.64634-8-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201210004335.64634-1-pasha.tatashin@soleen.com>
 References: <20201210004335.64634-1-pasha.tatashin@soleen.com>
@@ -70,147 +70,213 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PF_MEMALLOC_PIN is only honored for CMA pages, extend
-this flag to work for any allocations from ZONE_MOVABLE by removing
-__GFP_MOVABLE from gfp_mask when this flag is passed in the current
-context.
-
-Add is_pinnable_page() to return true if page is in a pinnable page.
-A pinnable page is not in ZONE_MOVABLE and not of MIGRATE_CMA type.
+We should not pin pages in ZONE_MOVABLE. Currently, we do not pin only
+movable CMA pages. Generalize the function that migrates CMA pages to
+migrate all movable pages. Use is_pinnable_page() to check which
+pages need to be migrated
 
 Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 ---
- include/linux/mm.h       | 11 +++++++++++
- include/linux/sched/mm.h |  6 +++++-
- mm/hugetlb.c             |  2 +-
- mm/page_alloc.c          | 19 ++++++++-----------
- 4 files changed, 25 insertions(+), 13 deletions(-)
+ include/linux/migrate.h        |  1 +
+ include/linux/mmzone.h         | 11 ++++--
+ include/trace/events/migrate.h |  3 +-
+ mm/gup.c                       | 65 ++++++++++++++--------------------
+ 4 files changed, 37 insertions(+), 43 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index db6ae4d3fb4e..1105e4aa9472 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1100,6 +1100,17 @@ static inline bool is_zone_device_page(const struct page *page)
- }
- #endif
+diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+index 0f8d1583fa8e..00bab23d1ee5 100644
+--- a/include/linux/migrate.h
++++ b/include/linux/migrate.h
+@@ -27,6 +27,7 @@ enum migrate_reason {
+ 	MR_MEMPOLICY_MBIND,
+ 	MR_NUMA_MISPLACED,
+ 	MR_CONTIG_RANGE,
++	MR_LONGTERM_PIN,
+ 	MR_TYPES
+ };
  
-+static inline bool is_zone_movable_page(const struct page *page)
-+{
-+	return page_zonenum(page) == ZONE_MOVABLE;
-+}
-+
-+/* MIGRATE_CMA and ZONE_MOVABLE do not allow pin pages */
-+static inline bool is_pinnable_page(struct page *page)
-+{
-+	return !is_zone_movable_page(page) && !is_migrate_cma_page(page);
-+}
-+
- #ifdef CONFIG_DEV_PAGEMAP_OPS
- void free_devmap_managed_page(struct page *page);
- DECLARE_STATIC_KEY_FALSE(devmap_managed_key);
-diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index a4b5da13d2c6..1c7ba35c405a 100644
---- a/include/linux/sched/mm.h
-+++ b/include/linux/sched/mm.h
-@@ -150,12 +150,13 @@ static inline bool in_vfork(struct task_struct *tsk)
-  * Applies per-task gfp context to the given allocation flags.
-  * PF_MEMALLOC_NOIO implies GFP_NOIO
-  * PF_MEMALLOC_NOFS implies GFP_NOFS
-+ * PF_MEMALLOC_PIN  implies !GFP_MOVABLE
-  */
- static inline gfp_t current_gfp_context(gfp_t flags)
- {
- 	unsigned int pflags = READ_ONCE(current->flags);
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index fb3bf696c05e..87a7321b4252 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -405,9 +405,14 @@ enum zone_type {
+ 	 * likely to succeed, and to locally limit unmovable allocations - e.g.,
+ 	 * to increase the number of THP/huge pages. Notable special cases are:
+ 	 *
+-	 * 1. Pinned pages: (long-term) pinning of movable pages might
+-	 *    essentially turn such pages unmovable. Memory offlining might
+-	 *    retry a long time.
++	 * 1. Pinned pages: (long-term) pinning of movable pages is avoided
++	 *    when pages are pinned and faulted, but it is still possible that
++	 *    address space already has pages in ZONE_MOVABLE at the time when
++	 *    pages are pinned (i.e. user has touches that memory before
++	 *    pinning). In such case we try to migrate them to a different zone,
++	 *    but if migration fails the pages can still end-up pinned in
++	 *    ZONE_MOVABLE. In such case, memory offlining might retry a long
++	 *    time and will only succeed once user application unpins pages.
+ 	 * 2. memblock allocations: kernelcore/movablecore setups might create
+ 	 *    situations where ZONE_MOVABLE contains unmovable allocations
+ 	 *    after boot. Memory offlining and allocations fail early.
+diff --git a/include/trace/events/migrate.h b/include/trace/events/migrate.h
+index 4d434398d64d..363b54ce104c 100644
+--- a/include/trace/events/migrate.h
++++ b/include/trace/events/migrate.h
+@@ -20,7 +20,8 @@
+ 	EM( MR_SYSCALL,		"syscall_or_cpuset")		\
+ 	EM( MR_MEMPOLICY_MBIND,	"mempolicy_mbind")		\
+ 	EM( MR_NUMA_MISPLACED,	"numa_misplaced")		\
+-	EMe(MR_CONTIG_RANGE,	"contig_range")
++	EM( MR_CONTIG_RANGE,	"contig_range")			\
++	EMe(MR_LONGTERM_PIN,	"longterm_pin")
  
--	if (unlikely(pflags & (PF_MEMALLOC_NOIO | PF_MEMALLOC_NOFS))) {
-+	if (unlikely(pflags & (PF_MEMALLOC_NOIO | PF_MEMALLOC_NOFS | PF_MEMALLOC_PIN))) {
+ /*
+  * First define the enums in the above macros to be exported to userspace
+diff --git a/mm/gup.c b/mm/gup.c
+index 0eb8a85fb704..e575237d4c67 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -88,11 +88,12 @@ static __maybe_unused struct page *try_grab_compound_head(struct page *page,
+ 		int orig_refs = refs;
+ 
  		/*
- 		 * NOIO implies both NOIO and NOFS and it is a weaker context
- 		 * so always make sure it makes precedence
-@@ -164,6 +165,9 @@ static inline gfp_t current_gfp_context(gfp_t flags)
- 			flags &= ~(__GFP_IO | __GFP_FS);
- 		else if (pflags & PF_MEMALLOC_NOFS)
- 			flags &= ~__GFP_FS;
-+
-+		if (pflags & PF_MEMALLOC_PIN)
-+			flags &= ~__GFP_MOVABLE;
- 	}
- 	return flags;
+-		 * Can't do FOLL_LONGTERM + FOLL_PIN with CMA in the gup fast
+-		 * path, so fail and let the caller fall back to the slow path.
++		 * Can't do FOLL_LONGTERM + FOLL_PIN gup fast path if not in a
++		 * right zone, so fail and let the caller fall back to the slow
++		 * path.
+ 		 */
+-		if (unlikely(flags & FOLL_LONGTERM) &&
+-				is_migrate_cma_page(page))
++		if (unlikely((flags & FOLL_LONGTERM) &&
++			     !is_pinnable_page(page)))
+ 			return NULL;
+ 
+ 		/*
+@@ -1593,19 +1594,18 @@ static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
  }
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index e797b41998ec..79f2643843f3 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1036,7 +1036,7 @@ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
- 	bool pin = !!(current->flags & PF_MEMALLOC_PIN);
- 
- 	list_for_each_entry(page, &h->hugepage_freelists[nid], lru) {
--		if (pin && is_migrate_cma_page(page))
-+		if (pin && !is_pinnable_page(page))
- 			continue;
- 
- 		if (PageHWPoison(page))
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 24c99b3b12af..c514ad058335 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3766,16 +3766,12 @@ alloc_flags_nofragment(struct zone *zone, gfp_t gfp_mask)
- 	return alloc_flags;
- }
- 
--static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
--					unsigned int alloc_flags)
-+static inline unsigned int cma_alloc_flags(gfp_t gfp_mask,
-+					   unsigned int alloc_flags)
- {
- #ifdef CONFIG_CMA
--	unsigned int pflags = current->flags;
--
--	if (!(pflags & PF_MEMALLOC_PIN) &&
--	    gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
-+	if (gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
- 		alloc_flags |= ALLOC_CMA;
--
  #endif
- 	return alloc_flags;
+ 
+-#ifdef CONFIG_CMA
+-static long check_and_migrate_cma_pages(struct mm_struct *mm,
+-					unsigned long start,
+-					unsigned long nr_pages,
+-					struct page **pages,
+-					struct vm_area_struct **vmas,
+-					unsigned int gup_flags)
++static long check_and_migrate_movable_pages(struct mm_struct *mm,
++					    unsigned long start,
++					    unsigned long nr_pages,
++					    struct page **pages,
++					    struct vm_area_struct **vmas,
++					    unsigned int gup_flags)
+ {
+ 	unsigned long i;
+ 	unsigned long step;
+ 	bool drain_allow = true;
+ 	bool migrate_allow = true;
+-	LIST_HEAD(cma_page_list);
++	LIST_HEAD(movable_page_list);
+ 	long ret = nr_pages;
+ 	struct migration_target_control mtc = {
+ 		.nid = NUMA_NO_NODE,
+@@ -1623,13 +1623,12 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 		 */
+ 		step = compound_nr(head) - (pages[i] - head);
+ 		/*
+-		 * If we get a page from the CMA zone, since we are going to
+-		 * be pinning these entries, we might as well move them out
+-		 * of the CMA zone if possible.
++		 * If we get a movable page, since we are going to be pinning
++		 * these entries, try to move them out if possible.
+ 		 */
+-		if (is_migrate_cma_page(head)) {
++		if (!is_pinnable_page(head)) {
+ 			if (PageHuge(head))
+-				isolate_huge_page(head, &cma_page_list);
++				isolate_huge_page(head, &movable_page_list);
+ 			else {
+ 				if (!PageLRU(head) && drain_allow) {
+ 					lru_add_drain_all();
+@@ -1637,7 +1636,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 				}
+ 
+ 				if (!isolate_lru_page(head)) {
+-					list_add_tail(&head->lru, &cma_page_list);
++					list_add_tail(&head->lru, &movable_page_list);
+ 					mod_node_page_state(page_pgdat(head),
+ 							    NR_ISOLATED_ANON +
+ 							    page_is_file_lru(head),
+@@ -1649,7 +1648,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 		i += step;
+ 	}
+ 
+-	if (!list_empty(&cma_page_list)) {
++	if (!list_empty(&movable_page_list)) {
+ 		/*
+ 		 * drop the above get_user_pages reference.
+ 		 */
+@@ -1659,7 +1658,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 			for (i = 0; i < nr_pages; i++)
+ 				put_page(pages[i]);
+ 
+-		if (migrate_pages(&cma_page_list, alloc_migration_target, NULL,
++		if (migrate_pages(&movable_page_list, alloc_migration_target, NULL,
+ 			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
+ 			/*
+ 			 * some of the pages failed migration. Do get_user_pages
+@@ -1667,17 +1666,16 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 			 */
+ 			migrate_allow = false;
+ 
+-			if (!list_empty(&cma_page_list))
+-				putback_movable_pages(&cma_page_list);
++			if (!list_empty(&movable_page_list))
++				putback_movable_pages(&movable_page_list);
+ 		}
+ 		/*
+ 		 * We did migrate all the pages, Try to get the page references
+-		 * again migrating any new CMA pages which we failed to isolate
+-		 * earlier.
++		 * again migrating any pages which we failed to isolate earlier.
+ 		 */
+ 		ret = __get_user_pages_locked(mm, start, nr_pages,
+-						   pages, vmas, NULL,
+-						   gup_flags);
++					      pages, vmas, NULL,
++					      gup_flags);
+ 
+ 		if ((ret > 0) && migrate_allow) {
+ 			nr_pages = ret;
+@@ -1688,17 +1686,6 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 
+ 	return ret;
  }
-@@ -4423,7 +4419,7 @@ gfp_to_alloc_flags(gfp_t gfp_mask)
- 	} else if (unlikely(rt_task(current)) && !in_interrupt())
- 		alloc_flags |= ALLOC_HARDER;
+-#else
+-static long check_and_migrate_cma_pages(struct mm_struct *mm,
+-					unsigned long start,
+-					unsigned long nr_pages,
+-					struct page **pages,
+-					struct vm_area_struct **vmas,
+-					unsigned int gup_flags)
+-{
+-	return nr_pages;
+-}
+-#endif /* CONFIG_CMA */
  
--	alloc_flags = current_alloc_flags(gfp_mask, alloc_flags);
-+	alloc_flags = cma_alloc_flags(gfp_mask, alloc_flags);
+ /*
+  * __gup_longterm_locked() is a wrapper for __get_user_pages_locked which
+@@ -1746,8 +1733,8 @@ static long __gup_longterm_locked(struct mm_struct *mm,
+ 			goto out;
+ 		}
  
- 	return alloc_flags;
- }
-@@ -4725,7 +4721,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 
- 	reserve_flags = __gfp_pfmemalloc_flags(gfp_mask);
- 	if (reserve_flags)
--		alloc_flags = current_alloc_flags(gfp_mask, reserve_flags);
-+		alloc_flags = cma_alloc_flags(gfp_mask, reserve_flags);
- 
- 	/*
- 	 * Reset the nodemask and zonelist iterators if memory policies can be
-@@ -4894,7 +4890,7 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
- 	if (should_fail_alloc_page(gfp_mask, order))
- 		return false;
- 
--	*alloc_flags = current_alloc_flags(gfp_mask, *alloc_flags);
-+	*alloc_flags = cma_alloc_flags(gfp_mask, *alloc_flags);
- 
- 	/* Dirty zone balancing only done in the fast path */
- 	ac->spread_dirty_pages = (gfp_mask & __GFP_WRITE);
-@@ -4936,7 +4932,8 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
- 	 * Apply scoped allocation constraints. This is mainly about GFP_NOFS
- 	 * resp. GFP_NOIO which has to be inherited for all allocation requests
- 	 * from a particular context which has been marked by
--	 * memalloc_no{fs,io}_{save,restore}.
-+	 * memalloc_no{fs,io}_{save,restore}. And PF_MEMALLOC_PIN which ensures
-+	 * movable zones are not used during allocation.
- 	 */
- 	gfp_mask = current_gfp_context(gfp_mask);
- 	alloc_mask = gfp_mask;
+-		rc = check_and_migrate_cma_pages(mm, start, rc, pages,
+-						 vmas_tmp, gup_flags);
++		rc = check_and_migrate_movable_pages(mm, start, rc, pages,
++						     vmas_tmp, gup_flags);
+ out:
+ 		memalloc_pin_restore(flags);
+ 	}
 -- 
 2.25.1
 
