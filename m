@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DA52D5EEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7030B2D5EEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389810AbgLJPEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:04:02 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:62196 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389659AbgLJPDp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:03:45 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607612603; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=fTCspt8fsRDJ1131Yu+GC08GW7hUsw3zqXe2mBHPhEw=; b=pnJNuhjYlxkFSoWk8GSSZL2RE6PIrkxOtbcS9UIgM3d3yCrOY2Dn3gNHFwlBZ7O0Lu09clkA
- cDbwGVjd9Q/uVaatj8WKpvE9hzGkHYSqc+tX0LG9p36l1eUz0N+7NKM+zrubQd9p7AnNLWtC
- DjqE4QdJXUtJgMCmhg6QeAuPSuQ=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fd238693a8ba2142a1c7cc1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Dec 2020 15:02:01
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 86C9AC433CA; Thu, 10 Dec 2020 15:02:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4171C43465;
-        Thu, 10 Dec 2020 15:01:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D4171C43465
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v16 4/4] bus: mhi: Add userspace client interface driver
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Hemant Kumar <hemantk@codeaurora.org>
-Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, netdev@vger.kernel.org
-References: <1607584885-23824-1-git-send-email-hemantk@codeaurora.org>
- <1607584885-23824-5-git-send-email-hemantk@codeaurora.org>
- <X9HifqAntBUBV0Ce@kroah.com>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <1ce7fc1a-7794-6815-ab4c-0721f0422564@codeaurora.org>
-Date:   Thu, 10 Dec 2020 08:01:59 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2389373AbgLJPDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:03:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:47064 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389430AbgLJPDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:03:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCD191FB;
+        Thu, 10 Dec 2020 07:02:25 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F4363F68F;
+        Thu, 10 Dec 2020 07:02:25 -0800 (PST)
+Date:   Thu, 10 Dec 2020 15:02:23 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Mian Yousaf Kaukab <yousaf.kaukab@suse.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Mian Yousaf Kaukab <ykaukab@suse.de>,
+        Petr Cervinka <pcervinka@suse.com>
+Subject: Re: [PATCH 1/2] acpi: cppc: add cpufreq device
+Message-ID: <20201210150223.GA28824@arm.com>
+References: <20201210142139.20490-1-yousaf.kaukab@suse.com>
+ <CAJZ5v0hWxLrXCS+X15hnLZ2enBsSJ0aEfnxK2kL+n9k4gkg17Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <X9HifqAntBUBV0Ce@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hWxLrXCS+X15hnLZ2enBsSJ0aEfnxK2kL+n9k4gkg17Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2020 1:55 AM, Greg KH wrote:
-> On Wed, Dec 09, 2020 at 11:21:25PM -0800, Hemant Kumar wrote:
->> This MHI client driver allows userspace clients to transfer
->> raw data between MHI device and host using standard file operations.
->> Driver instantiates UCI device object which is associated to device
->> file node. UCI device object instantiates UCI channel object when device
->> file node is opened. UCI channel object is used to manage MHI channels
->> by calling MHI core APIs for read and write operations. MHI channels
->> are started as part of device open(). MHI channels remain in start
->> state until last release() is called on UCI device file node. Device
->> file node is created with format
->>
->> /dev/<mhi_device_name>
->>
->> Currently it supports QMI channel.
->>
->> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
->> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->> Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
->> Tested-by: Loic Poulain <loic.poulain@linaro.org>
->> ---
+Hi guys,
+
+On Thursday 10 Dec 2020 at 15:32:09 (+0100), Rafael J. Wysocki wrote:
+> On Thu, Dec 10, 2020 at 3:23 PM Mian Yousaf Kaukab
+> <yousaf.kaukab@suse.com> wrote:
+> >
+> > From: Mian Yousaf Kaukab <ykaukab@suse.de>
+> >
+> > Since commit 28f06f770454 ("cppc_cpufreq: replace per-cpu structures with
+> > lists"), cppc-cpufreq driver doesn't check availability of PSD data before
+> > registering with cpufreq core. As a result on a ThunderX2 platform when
+> > CPPC is disabled from BIOS, kernel log is spammed with following messages:
+> >
+> > [  180.974166] CPPC Cpufreq: Error in acquiring _CPC/_PSD data for CPUxx
+> >
+> > acpi_cppc_processor_probe() never succeed in this case because
+> > acpi_evaluate_object_typed("_CPC") always returns AE_NOT_FOUND. When
+> > cpufreq core calls cppc_cpufreq_cpu_init(), driver fails to obtain PSD data
+> > and print error messages.
+> >
+> > Convert cppc-cpufreq driver to a platform driver (done in a separate patch)
+> > and add cppc-cpufreq device when acpi_cppc_processor_probe() succeeds.
 > 
-> Can you provide a pointer to the open-source userspace program that will
-> be talking to this new kernel driver please?  That should be part of the
-> changelog here.
+> Honestly, I prefer to drop 28f06f770454 (along with its follower)
+> instead of making this change.
+> 
+> > Fixes: 28f06f770454 ("cppc_cpufreq: replace per-cpu structures with lists")
+> 
 
-Its listed in the documentation file (patch 3 in the series).  I'm 
-guessing you still want it in the change log though, so Hemant should 
-probably take care of that.
+Sorry for introducing this, I though it was enough to bail out of cpu
+init if _CPC entries are not present.
 
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+I'll defer to Rafael to decide whether to drop the patches or accept
+alternative fixes, but I believe the rework of the data structures and
+initialisation is useful.
+
+As alternative fix, would it be okay to introduce a check function to
+verify for !cpc_ptr, to be called in cppc_cpufreq_init()? In that case
+the driver would not be registered if this check fails.
+
+Thanks,
+Ionela.
+
+> Thanks!
