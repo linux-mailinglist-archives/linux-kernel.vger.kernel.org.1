@@ -2,160 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60472D50AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 03:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25182D50BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 03:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728013AbgLJCMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 21:12:34 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:47800 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726534AbgLJCM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 21:12:27 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1knBQc-00B9IH-95; Thu, 10 Dec 2020 03:11:34 +0100
-Date:   Thu, 10 Dec 2020 03:11:34 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 3/4] phy: Add Sparx5 ethernet serdes PHY driver
-Message-ID: <20201210021134.GD2638572@lunn.ch>
-References: <20201207121345.3818234-1-steen.hegelund@microchip.com>
- <20201207121345.3818234-4-steen.hegelund@microchip.com>
+        id S1728074AbgLJCPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 21:15:03 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:40958 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726194AbgLJCPD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 21:15:03 -0500
+Received: by mail-oi1-f193.google.com with SMTP id p126so4071708oif.7;
+        Wed, 09 Dec 2020 18:14:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9JLcr6LeSb9voq7wy4mQhKT2jzcf1oDtqn4kdBVAecY=;
+        b=IgbTnUScvp+0874sY3AomTGBwyamG4x8g6dKObIkwKg9jd5Q1nK+b50vShm0LnafhW
+         sydLB1Puavo+FoUMEL22gYQnTyp/E6kwYLCxGGmFMP77pXyCzRvNlyccLT3ZdEKiwm98
+         b9ffhFT0nEZ44B71GpC/iMgP3oPQTsePhM0ArqRTHRfFl5Tr+knsP11gKfhdT4fDAS9B
+         +qoTZ57NDlzjE8ygKH4bnLRNg0/3thAp7cqS/kXGKqtRW5u0MkT5iyYrdtkogilmIMfa
+         PleuY5JT+8Z63i4S+lar1St8409eI1ALE9XOPZPffEJTgaqXNW73nZd4D9ZC+xwK87s3
+         YFNQ==
+X-Gm-Message-State: AOAM531zkamVuWJQeZmjtOZl9iGoZavfLL6zuUBnULYTdcATr0vUcLWg
+        iQPJeVinardNBKa4uG13Vg==
+X-Google-Smtp-Source: ABdhPJyB9iL6bL23r7xj0mPiLyQxHQwMseB04PFt+U7EXILIsb7/lSIgWi37Ud8lF1Kyj72CxwQzsw==
+X-Received: by 2002:aca:b256:: with SMTP id b83mr4083635oif.77.1607566462214;
+        Wed, 09 Dec 2020 18:14:22 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i82sm708046oia.2.2020.12.09.18.14.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 18:14:21 -0800 (PST)
+Received: (nullmailer pid 1496561 invoked by uid 1000);
+        Thu, 10 Dec 2020 02:14:20 -0000
+Date:   Wed, 9 Dec 2020 20:14:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: vendor-prefixes: correct the spelling of
+ TQ-Systems GmbH
+Message-ID: <20201210021420.GA1496510@robh.at.kernel.org>
+References: <20201207093036.29824-1-matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207121345.3818234-4-steen.hegelund@microchip.com>
+In-Reply-To: <20201207093036.29824-1-matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
-> index 01b53f86004c..f6a094c81e86 100644
-> --- a/drivers/phy/Kconfig
-> +++ b/drivers/phy/Kconfig
-> @@ -66,9 +66,11 @@ source "drivers/phy/broadcom/Kconfig"
->  source "drivers/phy/cadence/Kconfig"
->  source "drivers/phy/freescale/Kconfig"
->  source "drivers/phy/hisilicon/Kconfig"
-> +source "drivers/phy/intel/Kconfig"
+On Mon, 07 Dec 2020 10:30:36 +0100, Matthias Schiffer wrote:
+> From: Max Merchel <Max.Merchel@tq-group.com>
+> 
+> "TQ-Systems" is written with a dash, as can be seen on
+> https://www.tq-group.com/en/imprint/
+> 
+> Signed-off-by: Max Merchel <Max.Merchel@tq-group.com>
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-That looks odd.
-
->  source "drivers/phy/lantiq/Kconfig"
->  source "drivers/phy/marvell/Kconfig"
->  source "drivers/phy/mediatek/Kconfig"
-> +source "drivers/phy/microchip/Kconfig"
->  source "drivers/phy/motorola/Kconfig"
->  source "drivers/phy/mscc/Kconfig"
->  source "drivers/phy/qualcomm/Kconfig"
-> @@ -80,7 +82,6 @@ source "drivers/phy/socionext/Kconfig"
->  source "drivers/phy/st/Kconfig"
->  source "drivers/phy/tegra/Kconfig"
->  source "drivers/phy/ti/Kconfig"
-> -source "drivers/phy/intel/Kconfig"
->  source "drivers/phy/xilinx/Kconfig"
-
-Ah. Please make that a separate patch.
-
-> +	value = sdx5_rd(priv, SD25G_LANE_CMU_C0(sd_index));
-> +	value = SD25G_LANE_CMU_C0_PLL_LOL_UDL_GET(value);
-> +
-> +	if (value) {
-> +		dev_err(macro->priv->dev, "CMU_C0 pll_lol_udl: 0x%x\n", value);
-> +		ret = -EINVAL;
-> +	}
-> +
-> +	value = sdx5_rd(priv, SD_LANE_25G_SD_LANE_STAT(sd_index));
-> +	value = SD_LANE_25G_SD_LANE_STAT_PMA_RST_DONE_GET(value);
-> +
-> +	if (value != 0x1) {
-> +		dev_err(macro->priv->dev, "sd_lane_stat pma_rst_done: 0x%x\n", value);
-> +		ret = -EINVAL;
-> +	}
-
-These error messages are not very helpful. Could you be a bit more
-descriptive. Or do you think there is sufficient black magic in the
-hardware that nobody outside of Microchip will be able to debug it?
-
-> +static int sparx5_serdes_get_serdesmode(phy_interface_t portmode,
-> +					struct phy_configure_opts_eth_serdes *conf)
-> +{
-> +	switch (portmode) {
-> +	case PHY_INTERFACE_MODE_1000BASEX:
-> +		if (conf->speed == SPEED_2500)
-> +			return SPX5_SD_MODE_2G5;
-> +		if (conf->speed == SPEED_100)
-> +			return SPX5_SD_MODE_100FX;
-> +		return SPX5_SD_MODE_1000BASEX;
-
-Please could you explain this. Why different speeds for 1000BaseX?
-
-> +	case PHY_INTERFACE_MODE_SGMII:
-> +		return SPX5_SD_MODE_1000BASEX;
-
-Here there could be some oddities, depending on how 10Mbps and 100Mbps
-is implemented. But 1000BASEX only supports 1Gbps.
-
-> +static int sparx5_serdes_validate(struct phy *phy, enum phy_mode mode,
-> +					int submode,
-> +					union phy_configure_opts *opts)
-> +{
-> +	struct sparx5_serdes_macro *macro = phy_get_drvdata(phy);
-> +	struct sparx5_serdes_private *priv = macro->priv;
-> +	u32 value, analog_sd;
-> +
-> +	if (mode != PHY_MODE_ETHERNET)
-> +		return -EINVAL;
-> +
-> +	switch (submode) {
-> +	case PHY_INTERFACE_MODE_1000BASEX:
-> +	case PHY_INTERFACE_MODE_SGMII:
-> +	case PHY_INTERFACE_MODE_QSGMII:
-> +	case PHY_INTERFACE_MODE_10GBASER:
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +	if (macro->serdestype == SPX5_SDT_6G) {
-> +		value = sdx5_rd(priv, SD6G_LANE_LANE_DF(macro->stpidx));
-> +		analog_sd = SD6G_LANE_LANE_DF_PMA2PCS_RXEI_FILTERED_GET(value);
-> +	} else if (macro->serdestype == SPX5_SDT_10G) {
-> +		value = sdx5_rd(priv, SD10G_LANE_LANE_DF(macro->stpidx));
-> +		analog_sd = SD10G_LANE_LANE_DF_PMA2PCS_RXEI_FILTERED_GET(value);
-> +	} else {
-> +		value = sdx5_rd(priv, SD25G_LANE_LANE_DE(macro->stpidx));
-> +		analog_sd = SD25G_LANE_LANE_DE_LN_PMA_RXEI_GET(value);
-> +	}
-> +	/* Link up is when analog_sd == 0 */
-> +	return analog_sd;
-
-The documentation says:
-
-	/**
-	 * @validate:
-	 *
-	 * Optional.
-	 *
-	 * Used to check that the current set of parameters can be
-	 * handled by the phy. Implementations are free to tune the
-	 * parameters passed as arguments if needed by some
-	 * implementation detail or constraints. It must not change
-	 * any actual configuration of the PHY, so calling it as many
-	 * times as deemed fit by the consumer must have no side
-	 * effect.
-	 *
-	 * Returns: 0 if the configuration can be applied, an negative
-	 * error code otherwise
-	 */
-
-So why are returning link up information?
-
-   Andrew
+Applied, thanks!
