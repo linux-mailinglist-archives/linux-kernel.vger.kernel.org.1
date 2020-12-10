@@ -2,67 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8B92D65E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 910BE2D65F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404180AbgLJTFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:05:36 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:53870 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390475AbgLJTFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:05:09 -0500
-Received: from zn.tnic (p200300ec2f0d410017205789a0fcbfc3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4100:1720:5789:a0fc:bfc3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F3E551EC053F;
-        Thu, 10 Dec 2020 20:04:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607627062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=gBPo35cr755KDczL40MYpAmqwRmKAJRe1c7xYq33J+E=;
-        b=qaH6poEKPonLWEQR8dSSVUhcVQp8HX5X+7zLCsAuYOyuX33tUVqCTk3MxQfojd6F1VaC1w
-        99JB25O41VWYQU36R7/b2aTmdO3aAQK8gUEBGnd0nf0toosgPhOe4Sa/Dmkw9lyCUR49oc
-        eB5OL+xSPoWniIaFhKxwinEv3Os7kvw=
-Date:   Thu, 10 Dec 2020 20:04:18 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/reboot/quirks: Add Zotac ZBOX CI327 nano PCI reboot
- quirk
-Message-ID: <20201210190418.GG26529@zn.tnic>
-References: <1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com>
+        id S2404293AbgLJTHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:07:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726194AbgLJTHe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 14:07:34 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A402C0617A7;
+        Thu, 10 Dec 2020 11:06:37 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id h19so9758161lfc.12;
+        Thu, 10 Dec 2020 11:06:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jK9Y5PkoT1guKY24bhQOaQWJilZMLMWPMge6U32+Mb0=;
+        b=t1AUXg0gKvJv8kg3yhKoTf2ou+pIjRSMiVmQt6eSxtEHA0b6fLC0B0aFA50zJmhIWn
+         LVzvanXwbqyQTduWy9ExPxjcXBwz1bwwtZ6v5zgW8rBucaLqH1QucwCY6/GSX8Vu3yxj
+         jXo96wolOLKZTnNJEfb2ujP4z+Iuwhm1kl4dGSKmGzm4BYrI8GePsUMbAGrPiDyr6hoc
+         wXgR3xUDY6Fjlvg6vXWlL9K/hlEyhmRLkkHXAxKrLAGH9QLyZ2YOw/7arWdR70FZP37j
+         /70s737t3sgoTbVqmFtTDPdp93LddlWdwwjQ68bvMGzMgNayI9xV4o0EztA+KVnoB+Uc
+         pr7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jK9Y5PkoT1guKY24bhQOaQWJilZMLMWPMge6U32+Mb0=;
+        b=DQH/hRdUFw9YpWbCT1vEA+m/qhOoUGU9STofH0s+71TWlImhaiRrBIbpIcE5CqqW8C
+         3Z6C6O/rFp3KQjOvy+39EJUqzGmy/ed4SLXp5O4kukX/xUfr4m1vqUJ5ZQbVsxjuG4x9
+         ggZ/9TbhnV1kV6Zu66o/FCCqqotzsB1+vCNQ1QAbWXk2TyLWY+ECrpMXeCVhPKsmWVs9
+         Jvgt5DcGAY1o5qB5KISl5GfLBbztsw3W4B1HTqurm8p6LLOwQhEonrqjcVESpCHpSErT
+         w+rMxSUAEnR4szzDd7v6vQVaI1Fb12eGnvYthpsTywRZT5s75IecnLgiFv2pSwJoruFm
+         oc8Q==
+X-Gm-Message-State: AOAM530hMvRWC/cG/pNVKJ0Jz7fsevOUjpD9GBYDovND/wMwW6N5oUDN
+        VYf8XiIbtvQ5uzh974SGOp1SBPe/43fL2YafpOvRSdgEhZo=
+X-Google-Smtp-Source: ABdhPJx9R9PirOjKLDlJPKHecDmbjkwF2WeSxAs5IaHJ3fSeK5t+jruwglrXCttjE9+txL0mJanClLR/JHBRitX1JWw=
+X-Received: by 2002:ac2:48b2:: with SMTP id u18mr3385681lfg.313.1607627195787;
+ Thu, 10 Dec 2020 11:06:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com>
+References: <20201210214537.229c7ad9@canb.auug.org.au>
+In-Reply-To: <20201210214537.229c7ad9@canb.auug.org.au>
+From:   Steve French <smfrench@gmail.com>
+Date:   Thu, 10 Dec 2020 13:06:24 -0600
+Message-ID: <CAH2r5mu9_KFrnmpXzLzHV3mpE9yvtksz=5f0XGbvjC+_n+3VMQ@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the cifs tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 12:39:57PM +0100, Heiner Kallweit wrote:
-> On this system the M.2 PCIe WiFi card isn't detected after reboot,
-> only after cold boot. reboot=pci fixes this behavior.
-> In [0] the same issue is described, although on another system and
-> with another Intel WiFi card. In case it's relevant, both systems
-> have Celeron CPU's.
-> The dicussion in [0] involved the PCI maintainer, and proposal was
-> to go with the PCI reboot quirk on affected systems until a more
-> generic fix is available.
-> 
-> [0] https://bugzilla.kernel.org/show_bug.cgi?id=202399
+fixed and repushed to cifs-2.6.git for-next
 
-But this quirk is for your system only - the one in the bugzilla entry
-would need another one? Or?
+On Thu, Dec 10, 2020 at 4:45 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Commit
+>
+>   7e9c48d305d5 ("cifs: remove the devname argument to cifs_compose_mount_options")
+>
+> is missing a Signed-off-by from its committer.
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
-Thx.
+
 
 -- 
-Regards/Gruss,
-    Boris.
+Thanks,
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Steve
