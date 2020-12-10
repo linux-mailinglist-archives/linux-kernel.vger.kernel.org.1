@@ -2,414 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCCB2D525F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB2B2D5272
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732403AbgLJEBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 23:01:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731860AbgLJEBd (ORCPT
+        id S1729414AbgLJEDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 23:03:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25907 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731957AbgLJECe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 23:01:33 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D7BC061793
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 20:00:53 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id i6so3685820otr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 20:00:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gIdhhdeDOjOvNvXjvma9ceMqMwjrmoXcN6a4wX/2Q5c=;
-        b=B6yJJE8edGvq9GI6I2ip+hXyldCH1UORaOGEJP9DITXrGk7c9vehnTczkdr+g/tePa
-         cuxyOOopsq9W7WZ3zNMRi2hT1OpI2VNUobWHE6G83cQYB4/DiBWTJGPs5lMz7et09/70
-         7s4BUKY2qMeZ+OJnL0AkoGdO6Ta+v6yBuzxZOG1oDbgqgiudiD5vtm9Nwl1G/vV22kmb
-         wl+DzqnvhBlmvOjEXtaJhCza5lHVf0XNGpbg9tdXDNjvAlEZ6iby0JDbIOTkrfUL+29H
-         GTTFOyicTiN2UeL8srSUizNkAg+WmiGvFatmL75AB/IPL8ZxmY1foMA98hBfPXa4lycc
-         E16g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gIdhhdeDOjOvNvXjvma9ceMqMwjrmoXcN6a4wX/2Q5c=;
-        b=q/BhHSFRhI378jCcuTpxjwcI5AsVch+n1Zr/SC7SgF7f8i7DZ7puOQ6MONYWWDxH/E
-         ve2CkoBDpGZZBthHaGxxIrrwk0Y9V0xUtUqwnIWys9s9RCPceQmtg//5YZDCkEXTyqRH
-         W1JhxfG/NAMjJrkaujgeB7c2OpTfM7hj4UpH3KU4TAuqRwrJhi66nQFta5d10M8HbtBa
-         jykT8w0FVM8wiDcTzmeMkD0Z7OtDPu4UNEQsXuB4U9iCgVbwrLDAXxamUTFWUg7Ug5lH
-         oJY7/DkH2Zsq3awKBVSSBaRUNXmmQRw4vaeVt6+UCJ4sdJwzcoj7aaeiatd5MDZ4LBwR
-         nwEA==
-X-Gm-Message-State: AOAM5313PZtHYfWuBs3kXRNMtDwmKjp1sdo/ZuCWVEa2dOEdsyefl42W
-        drbKQ0eP90fGZuvGEffPT/vxAA==
-X-Google-Smtp-Source: ABdhPJxEzu0PWJYyMdg/aaKM8sDA3h3RiLnGMa8if2kOj8EM0/iGaYLHRsE3qsi828dakvByFU9lzA==
-X-Received: by 2002:a9d:5f9a:: with SMTP id g26mr4594273oti.241.1607572852476;
-        Wed, 09 Dec 2020 20:00:52 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g21sm836776otj.77.2020.12.09.20.00.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 20:00:51 -0800 (PST)
-Date:   Wed, 9 Dec 2020 22:00:49 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
-Message-ID: <X9GdceiglgdoKKbC@builder.lan>
-References: <20201208044022.972872-1-bjorn.andersson@linaro.org>
- <20201210015136.GA18407@dragon>
+        Wed, 9 Dec 2020 23:02:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607572867;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aENoo7jeptz7oTELH++s7yl2mherQeWG6u6Xhzawxno=;
+        b=HWW1FJXZ3Zfckq8aBGc6LWn+WbqD5kPPgip8H2ONyV6ysL32BCt+1Twixv8xtu0qZ5Y7hW
+        b/teJvrrJ4DoNugSFhKg2MbVAheQZyYFv8QI330XAIkLjhhrF+GMEAn4U9BARd1XDyFd92
+        1ss0wz33fX6xTIv4GVjFSjiuykLEcFo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-gXrAR2EcMQyTbVSTA_hf9Q-1; Wed, 09 Dec 2020 23:01:04 -0500
+X-MC-Unique: gXrAR2EcMQyTbVSTA_hf9Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03A82800D53;
+        Thu, 10 Dec 2020 04:01:03 +0000 (UTC)
+Received: from T590 (ovpn-13-118.pek2.redhat.com [10.72.13.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D154819C78;
+        Thu, 10 Dec 2020 04:00:55 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 12:00:51 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Xianting Tian <tian.xianting@h3c.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-mq-tag: make blk_mq_tag_busy() return void
+Message-ID: <20201210040051.GA1377508@T590>
+References: <20201208074002.31539-1-tian.xianting@h3c.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201210015136.GA18407@dragon>
+In-Reply-To: <20201208074002.31539-1-tian.xianting@h3c.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 09 Dec 19:51 CST 2020, Shawn Guo wrote:
+On Tue, Dec 08, 2020 at 03:40:02PM +0800, Xianting Tian wrote:
+> As no one cares about the return value of blk_mq_tag_busy() and
+> __blk_mq_tag_busy(), so make them return void.
+> 
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>  block/blk-mq-tag.c | 4 ++--
+>  block/blk-mq-tag.h | 8 ++++----
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> index 9c92053e7..21ff7d156 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -21,7 +21,7 @@
+>   * to get tag when first time, the other shared-tag users could reserve
+>   * budget for it.
+>   */
+> -bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+> +void __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>  {
+>  	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+>  		struct request_queue *q = hctx->queue;
+> @@ -36,7 +36,7 @@ bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>  			atomic_inc(&hctx->tags->active_queues);
+>  	}
+>  
+> -	return true;
+> +	return;
+>  }
+>  
+>  /*
+> diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+> index 7d3e6b333..dd80e5a85 100644
+> --- a/block/blk-mq-tag.h
+> +++ b/block/blk-mq-tag.h
+> @@ -60,15 +60,15 @@ enum {
+>  	BLK_MQ_TAG_MAX		= BLK_MQ_NO_TAG - 1,
+>  };
+>  
+> -extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
+> +extern void __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
+>  extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *);
+>  
+> -static inline bool blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+> +static inline void blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>  {
+>  	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
+> -		return false;
+> +		return;
+>  
+> -	return __blk_mq_tag_busy(hctx);
+> +	__blk_mq_tag_busy(hctx);
 
-> On Mon, Dec 07, 2020 at 10:40:22PM -0600, Bjorn Andersson wrote:
-> > The SN65DSI86 provides the ability to supply a PWM signal on GPIO 4,
-> > with the primary purpose of controlling the backlight of the attached
-> > panel. Add an implementation that exposes this using the standard PWM
-> > framework, to allow e.g. pwm-backlight to expose this to the user.
-> > 
-> > Special thanks to Doug Anderson for suggestions related to the involved
-> > math.
-> > 
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 202 ++++++++++++++++++++++++++
-> >  1 file changed, 202 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > index f27306c51e4d..43c0acba57ab 100644
-> > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > @@ -4,6 +4,7 @@
-> >   * datasheet: https://www.ti.com/lit/ds/symlink/sn65dsi86.pdf
-> >   */
-> >  
-> > +#include <linux/atomic.h>
-> >  #include <linux/bits.h>
-> >  #include <linux/clk.h>
-> >  #include <linux/debugfs.h>
-> > @@ -14,6 +15,7 @@
-> >  #include <linux/module.h>
-> >  #include <linux/of_graph.h>
-> >  #include <linux/pm_runtime.h>
-> > +#include <linux/pwm.h>
-> >  #include <linux/regmap.h>
-> >  #include <linux/regulator/consumer.h>
-> >  
-> > @@ -89,6 +91,11 @@
-> >  #define SN_ML_TX_MODE_REG			0x96
-> >  #define  ML_TX_MAIN_LINK_OFF			0
-> >  #define  ML_TX_NORMAL_MODE			BIT(0)
-> > +#define SN_PWM_PRE_DIV_REG			0xA0
-> > +#define SN_BACKLIGHT_SCALE_REG			0xA1
-> > +#define  BACKLIGHT_SCALE_MAX			0xFFFF
-> > +#define SN_BACKLIGHT_REG			0xA3
-> > +#define SN_PWM_EN_INV_REG			0xA5
-> >  #define SN_AUX_CMD_STATUS_REG			0xF4
-> >  #define  AUX_IRQ_STATUS_AUX_RPLY_TOUT		BIT(3)
-> >  #define  AUX_IRQ_STATUS_AUX_SHORT		BIT(5)
-> > @@ -111,6 +118,8 @@
-> >  
-> >  #define SN_LINK_TRAINING_TRIES		10
-> >  
-> > +#define SN_PWM_GPIO			3
-> 
-> So this maps to the GPIO4 described in sn65dsi86 datasheet.  I'm
-> wondering if it's more readable to define the following SHIFT constants
-> (your code), and use GPIO_MUX_GPIO4_SHIFT >> 2 where you need GPIO
-> offset?
-> 
-> #define  GPIO_MUX_GPIO1_SHIFT	0
-> #define  GPIO_MUX_GPIO2_SHIFT	2
-> #define  GPIO_MUX_GPIO3_SHIFT	4
-> #define  GPIO_MUX_GPIO4_SHIFT	6
-> 
-> If you agree, you may consider to integrate this patch beforehand:
-> 
+The above can be simplified as:
 
-Afaict this is the only place in the driver where the gpio number is a
-compile time constant and as you say I need both the shifted value and
-the value itself in the patch. But I think it's worth clarifying that
-"3" means GPIO 4, so if nothing else I should add a comment about that.
+  	if (hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED)
+		__blk_mq_tag_busy(hctx);
 
-> https://github.com/shawnguo2/linux/commit/7cde887ffb3b27a36e77a08bee3666d14968b586
-> 
+Otherwise, looks fine:
 
-These looks rather generic, but I like the consistency. Feel free to
-post this and I'll review it for you.
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
-Regards,
-Bjorn
+Thanks,
+Ming
 
-> 
-> Shawn
-> 
-> > +
-> >  /**
-> >   * struct ti_sn_bridge - Platform data for ti-sn65dsi86 driver.
-> >   * @dev:          Pointer to our device.
-> > @@ -162,6 +171,12 @@ struct ti_sn_bridge {
-> >  	struct gpio_chip		gchip;
-> >  	DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
-> >  #endif
-> > +#if defined(CONFIG_PWM)
-> > +	struct pwm_chip			pchip;
-> > +	bool				pwm_enabled;
-> > +	unsigned int			pwm_refclk;
-> > +	atomic_t			pwm_pin_busy;
-> > +#endif
-> >  };
-> >  
-> >  static const struct regmap_range ti_sn_bridge_volatile_ranges[] = {
-> > @@ -499,6 +514,14 @@ static void ti_sn_bridge_set_refclk_freq(struct ti_sn_bridge *pdata)
-> >  
-> >  	regmap_update_bits(pdata->regmap, SN_DPPLL_SRC_REG, REFCLK_FREQ_MASK,
-> >  			   REFCLK_FREQ(i));
-> > +
-> > +#if defined(CONFIG_PWM)
-> > +	/*
-> > +	 * The PWM refclk is based on the value written to SN_DPPLL_SRC_REG,
-> > +	 * regardless of its actual sourcing.
-> > +	 */
-> > +	pdata->pwm_refclk = ti_sn_bridge_refclk_lut[i];
-> > +#endif
-> >  }
-> >  
-> >  static void ti_sn_bridge_set_dsi_rate(struct ti_sn_bridge *pdata)
-> > @@ -981,6 +1004,161 @@ static int ti_sn_bridge_parse_dsi_host(struct ti_sn_bridge *pdata)
-> >  	return 0;
-> >  }
-> >  
-> > +#if defined(CONFIG_PWM)
-> > +static int ti_sn_pwm_pin_request(struct ti_sn_bridge *pdata)
-> > +{
-> > +	return atomic_xchg(&pdata->pwm_pin_busy, 1) ? -EBUSY : 0;
-> > +}
-> > +
-> > +static void ti_sn_pwm_pin_release(struct ti_sn_bridge *pdata)
-> > +{
-> > +	atomic_set(&pdata->pwm_pin_busy, 0);
-> > +}
-> > +
-> > +static struct ti_sn_bridge *
-> > +pwm_chip_to_ti_sn_bridge(struct pwm_chip *chip)
-> > +{
-> > +	return container_of(chip, struct ti_sn_bridge, pchip);
-> > +}
-> > +
-> > +static int ti_sn_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
-> > +{
-> > +	struct ti_sn_bridge *pdata = pwm_chip_to_ti_sn_bridge(chip);
-> > +
-> > +	return ti_sn_pwm_pin_request(pdata);
-> > +}
-> > +
-> > +static void ti_sn_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
-> > +{
-> > +	struct ti_sn_bridge *pdata = pwm_chip_to_ti_sn_bridge(chip);
-> > +
-> > +	ti_sn_pwm_pin_release(pdata);
-> > +}
-> > +
-> > +static int ti_sn_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-> > +			   const struct pwm_state *state)
-> > +{
-> > +	struct ti_sn_bridge *pdata = pwm_chip_to_ti_sn_bridge(chip);
-> > +	unsigned int pwm_en_inv;
-> > +	unsigned int backlight;
-> > +	unsigned int pwm_freq;
-> > +	unsigned int pre_div;
-> > +	unsigned int scale;
-> > +	int ret;
-> > +
-> > +	if (!pdata->pwm_enabled) {
-> > +		ret = pm_runtime_get_sync(pdata->dev);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +
-> > +		ret = regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
-> > +					 SN_GPIO_MUX_MASK << (2 * SN_PWM_GPIO),
-> > +					 SN_GPIO_MUX_SPECIAL << (2 * SN_PWM_GPIO));
-> > +		if (ret) {
-> > +			dev_err(pdata->dev, "failed to mux in PWM function\n");
-> > +			goto out;
-> > +		}
-> > +	}
-> > +
-> > +	if (state->enabled) {
-> > +		/*
-> > +		 * Per the datasheet the PWM frequency is given by:
-> > +		 *
-> > +		 * PWM_FREQ = REFCLK_FREQ / (PWM_PRE_DIV * BACKLIGHT_SCALE + 1)
-> > +		 *
-> > +		 * In order to find the PWM_FREQ that best suits the requested
-> > +		 * state->period, the PWM_PRE_DIV is calculated with the
-> > +		 * maximum possible number of steps (BACKLIGHT_SCALE_MAX). The
-> > +		 * actual BACKLIGHT_SCALE is then adjusted down to match the
-> > +		 * requested period.
-> > +		 *
-> > +		 * The BACKLIGHT value is then calculated against the
-> > +		 * BACKLIGHT_SCALE, based on the requested duty_cycle and
-> > +		 * period.
-> > +		 */
-> > +		pwm_freq = NSEC_PER_SEC / state->period;
-> > +		pre_div = DIV_ROUND_UP(pdata->pwm_refclk / pwm_freq - 1, BACKLIGHT_SCALE_MAX);
-> > +		scale = (pdata->pwm_refclk / pwm_freq - 1) / pre_div;
-> > +
-> > +		backlight = scale * state->duty_cycle / state->period;
-> > +
-> > +		ret = regmap_write(pdata->regmap, SN_PWM_PRE_DIV_REG, pre_div);
-> > +		if (ret) {
-> > +			dev_err(pdata->dev, "failed to update PWM_PRE_DIV\n");
-> > +			goto out;
-> > +		}
-> > +
-> > +		ti_sn_bridge_write_u16(pdata, SN_BACKLIGHT_SCALE_REG, scale);
-> > +		ti_sn_bridge_write_u16(pdata, SN_BACKLIGHT_REG, backlight);
-> > +	}
-> > +
-> > +	pwm_en_inv = FIELD_PREP(BIT(1), !!state->enabled) |
-> > +		     FIELD_PREP(BIT(0), state->polarity == PWM_POLARITY_INVERSED);
-> > +	ret = regmap_write(pdata->regmap, SN_PWM_EN_INV_REG, pwm_en_inv);
-> > +	if (ret) {
-> > +		dev_err(pdata->dev, "failed to update PWM_EN/PWM_INV\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	pdata->pwm_enabled = !!state->enabled;
-> > +out:
-> > +
-> > +	if (!pdata->pwm_enabled)
-> > +		pm_runtime_put_sync(pdata->dev);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static const struct pwm_ops ti_sn_pwm_ops = {
-> > +	.request = ti_sn_pwm_request,
-> > +	.free = ti_sn_pwm_free,
-> > +	.apply = ti_sn_pwm_apply,
-> > +	.owner = THIS_MODULE,
-> > +};
-> > +
-> > +static struct pwm_device *ti_sn_pwm_of_xlate(struct pwm_chip *pc,
-> > +					     const struct of_phandle_args *args)
-> > +{
-> > +	struct pwm_device *pwm;
-> > +
-> > +	if (args->args_count != 1)
-> > +		return ERR_PTR(-EINVAL);
-> > +
-> > +	pwm = pwm_request_from_chip(pc, 0, NULL);
-> > +	if (IS_ERR(pwm))
-> > +		return pwm;
-> > +
-> > +	pwm->args.period = args->args[0];
-> > +
-> > +	return pwm;
-> > +}
-> > +
-> > +static int ti_sn_setup_pwmchip(struct ti_sn_bridge *pdata)
-> > +{
-> > +	pdata->pchip.dev = pdata->dev;
-> > +	pdata->pchip.ops = &ti_sn_pwm_ops;
-> > +	pdata->pchip.base = -1;
-> > +	pdata->pchip.npwm = 1;
-> > +	pdata->pchip.of_xlate = ti_sn_pwm_of_xlate;
-> > +	pdata->pchip.of_pwm_n_cells = 1;
-> > +
-> > +	return pwmchip_add(&pdata->pchip);
-> > +}
-> > +
-> > +static void ti_sn_remove_pwmchip(struct ti_sn_bridge *pdata)
-> > +{
-> > +	pwmchip_remove(&pdata->pchip);
-> > +
-> > +	if (pdata->pwm_enabled)
-> > +		pm_runtime_put_sync(pdata->dev);
-> > +}
-> > +#else
-> > +static int ti_sn_pwm_pin_request(struct ti_sn_bridge *pdata) { return 0; }
-> > +static void ti_sn_pwm_pin_release(struct ti_sn_bridge *pdata) {}
-> > +static int ti_sn_setup_pwmchip(struct ti_sn_bridge *pdata) { return 0; }
-> > +static void ti_sn_remove_pwmchip(struct ti_sn_bridge *pdata) {}
-> > +#endif
-> > +
-> >  #if defined(CONFIG_OF_GPIO)
-> >  
-> >  static int tn_sn_bridge_of_xlate(struct gpio_chip *chip,
-> > @@ -1113,10 +1291,25 @@ static int ti_sn_bridge_gpio_direction_output(struct gpio_chip *chip,
-> >  	return ret;
-> >  }
-> >  
-> > +static int ti_sn_bridge_gpio_request(struct gpio_chip *chip, unsigned int offset)
-> > +{
-> > +	struct ti_sn_bridge *pdata = gpiochip_get_data(chip);
-> > +
-> > +	if (offset == SN_PWM_GPIO)
-> > +		return ti_sn_pwm_pin_request(pdata);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static void ti_sn_bridge_gpio_free(struct gpio_chip *chip, unsigned int offset)
-> >  {
-> > +	struct ti_sn_bridge *pdata = gpiochip_get_data(chip);
-> > +
-> >  	/* We won't keep pm_runtime if we're input, so switch there on free */
-> >  	ti_sn_bridge_gpio_direction_input(chip, offset);
-> > +
-> > +	if (offset == SN_PWM_GPIO)
-> > +		ti_sn_pwm_pin_release(pdata);
-> >  }
-> >  
-> >  static const char * const ti_sn_bridge_gpio_names[SN_NUM_GPIOS] = {
-> > @@ -1136,6 +1329,7 @@ static int ti_sn_setup_gpio_controller(struct ti_sn_bridge *pdata)
-> >  	pdata->gchip.owner = THIS_MODULE;
-> >  	pdata->gchip.of_xlate = tn_sn_bridge_of_xlate;
-> >  	pdata->gchip.of_gpio_n_cells = 2;
-> > +	pdata->gchip.request = ti_sn_bridge_gpio_request;
-> >  	pdata->gchip.free = ti_sn_bridge_gpio_free;
-> >  	pdata->gchip.get_direction = ti_sn_bridge_gpio_get_direction;
-> >  	pdata->gchip.direction_input = ti_sn_bridge_gpio_direction_input;
-> > @@ -1282,6 +1476,12 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
-> >  		return ret;
-> >  	}
-> >  
-> > +	ret = ti_sn_setup_pwmchip(pdata);
-> > +	if (ret)  {
-> > +		pm_runtime_disable(pdata->dev);
-> > +		return ret;
-> > +	}
-> > +
-> >  	i2c_set_clientdata(client, pdata);
-> >  
-> >  	pdata->aux.name = "ti-sn65dsi86-aux";
-> > @@ -1320,6 +1520,8 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
-> >  
-> >  	drm_bridge_remove(&pdata->bridge);
-> >  
-> > +	ti_sn_remove_pwmchip(pdata);
-> > +
-> >  	return 0;
-> >  }
-> >  
-> > -- 
-> > 2.29.2
-> > 
