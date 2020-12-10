@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789912D5C59
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D022D5C5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389649AbgLJNvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:51:38 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9493 "EHLO
+        id S2388970AbgLJNwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:52:19 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9589 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389641AbgLJNvP (ORCPT
+        with ESMTP id S1728441AbgLJNwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:51:15 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CsFfH6cyKzhpxK;
-        Thu, 10 Dec 2020 21:49:59 +0800 (CST)
+        Thu, 10 Dec 2020 08:52:06 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CsFg50F1mzM34n;
+        Thu, 10 Dec 2020 21:50:41 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 10 Dec 2020 21:50:22 +0800
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 10 Dec 2020 21:51:14 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <mcoquelin.stm32@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nbd@nbd.name>, <john@phrozen.org>, <sean.wang@mediatek.com>,
-        <Mark-MC.Lee@mediatek.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] net: mediatek: simplify the return expression of mtk_gmac_sgmii_path_setup()
-Date:   Thu, 10 Dec 2020 21:50:50 +0800
-Message-ID: <20201210135050.1076-1-zhengyongjun3@huawei.com>
+To:     <johan@kernel.org>, <matthias.bgg@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] drivers: gnss: simplify the gnss code return expression
+Date:   Thu, 10 Dec 2020 21:51:42 +0800
+Message-ID: <20201210135142.1138-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -38,37 +37,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
+Simplify the return expression at diffrent .c file, fix this all.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/net/ethernet/mediatek/mtk_eth_path.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/gnss/core.c |  7 +------
+ drivers/gnss/mtk.c  | 14 ++------------
+ drivers/gnss/ubx.c  | 14 ++------------
+ 3 files changed, 5 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_path.c b/drivers/net/ethernet/mediatek/mtk_eth_path.c
-index 0fe97155dd8f..6bc9f2487384 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_path.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_path.c
-@@ -241,17 +241,13 @@ static int mtk_eth_mux_setup(struct mtk_eth *eth, int path)
- 
- int mtk_gmac_sgmii_path_setup(struct mtk_eth *eth, int mac_id)
+diff --git a/drivers/gnss/core.c b/drivers/gnss/core.c
+index e6f94501cb28..e6b9ac9da92c 100644
+--- a/drivers/gnss/core.c
++++ b/drivers/gnss/core.c
+@@ -368,13 +368,8 @@ ATTRIBUTE_GROUPS(gnss);
+ static int gnss_uevent(struct device *dev, struct kobj_uevent_env *env)
  {
--	int err, path;
-+	int path;
+ 	struct gnss_device *gdev = to_gnss_device(dev);
+-	int ret;
  
- 	path = (mac_id == 0) ?  MTK_ETH_PATH_GMAC1_SGMII :
- 				MTK_ETH_PATH_GMAC2_SGMII;
- 
- 	/* Setup proper MUXes along the path */
--	err = mtk_eth_mux_setup(eth, path);
--	if (err)
--		return err;
+-	ret = add_uevent_var(env, "GNSS_TYPE=%s", gnss_type_name(gdev));
+-	if (ret)
+-		return ret;
 -
 -	return 0;
-+	return mtk_eth_mux_setup(eth, path);
++	return add_uevent_var(env, "GNSS_TYPE=%s", gnss_type_name(gdev));
  }
  
- int mtk_gmac_gephy_path_setup(struct mtk_eth *eth, int mac_id)
+ static int __init gnss_module_init(void)
+diff --git a/drivers/gnss/mtk.c b/drivers/gnss/mtk.c
+index d1fc55560daf..451cb6e66ec3 100644
+--- a/drivers/gnss/mtk.c
++++ b/drivers/gnss/mtk.c
+@@ -24,25 +24,15 @@ struct mtk_data {
+ static int mtk_set_active(struct gnss_serial *gserial)
+ {
+ 	struct mtk_data *data = gnss_serial_get_drvdata(gserial);
+-	int ret;
+ 
+-	ret = regulator_enable(data->vcc);
+-	if (ret)
+-		return ret;
+-
+-	return 0;
++	return regulator_enable(data->vcc);
+ }
+ 
+ static int mtk_set_standby(struct gnss_serial *gserial)
+ {
+ 	struct mtk_data *data = gnss_serial_get_drvdata(gserial);
+-	int ret;
+ 
+-	ret = regulator_disable(data->vcc);
+-	if (ret)
+-		return ret;
+-
+-	return 0;
++	return regulator_disable(data->vcc);
+ }
+ 
+ static int mtk_set_power(struct gnss_serial *gserial,
+diff --git a/drivers/gnss/ubx.c b/drivers/gnss/ubx.c
+index 7b05bc40532e..7a22fc901fab 100644
+--- a/drivers/gnss/ubx.c
++++ b/drivers/gnss/ubx.c
+@@ -24,25 +24,15 @@ struct ubx_data {
+ static int ubx_set_active(struct gnss_serial *gserial)
+ {
+ 	struct ubx_data *data = gnss_serial_get_drvdata(gserial);
+-	int ret;
+ 
+-	ret = regulator_enable(data->vcc);
+-	if (ret)
+-		return ret;
+-
+-	return 0;
++	return regulator_enable(data->vcc);
+ }
+ 
+ static int ubx_set_standby(struct gnss_serial *gserial)
+ {
+ 	struct ubx_data *data = gnss_serial_get_drvdata(gserial);
+-	int ret;
+ 
+-	ret = regulator_disable(data->vcc);
+-	if (ret)
+-		return ret;
+-
+-	return 0;
++	return regulator_disable(data->vcc);
+ }
+ 
+ static int ubx_set_power(struct gnss_serial *gserial,
 -- 
 2.22.0
 
