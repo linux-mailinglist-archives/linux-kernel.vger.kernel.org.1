@@ -2,144 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CE62D620F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1DE2D61F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:33:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392152AbgLJQCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:02:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403876AbgLJQCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:02:05 -0500
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     "Jonathan Corbet" <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: [PATCH RFC] docs: experimental: build PDF with rst2pdf
-Date:   Thu, 10 Dec 2020 17:01:19 +0100
-Message-Id: <a29b97f95cae490cb83da28410fade13d880f365.1607616056.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210074845.4eb67f22@lwn.net>
-References: <20201210074845.4eb67f22@lwn.net>
+        id S1728357AbgLJQbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:31:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391958AbgLJQFC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 11:05:02 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E587C06179C
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:04:21 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id r14so6029186wrn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:04:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6Uj7y3A8V2AwfLN+Pqn8MEopt38Al+RWbGM3+oeOM5I=;
+        b=C1AKu65PSoE7zQcCNy0JQRQoNgwkUc0P9zhgctECcKh2D2QvnaGL/kiQGLaAUPEWaf
+         ORRPEgv7zEwgBlOYKCoVem69+rPqrnkmdBRJTX9zh7pZS/K+n5f0RtDYbXvWCUp0JRpo
+         0wXQoSNA4pBGbpwJHKw6jX94wupKYKqYIe4yRh5fGSGwsyg0pIAwgOZeNPYdzmtWrckV
+         N14VPhHIRFwm7QftCfbb0M16p+2BInbAx6gHoZkqXnWuG3zEExM2DTEP4aA5k8V3ydJa
+         O4ze2uJfmUW6B2iTyHyVzbAn2dQt6f22d3RxlIZqOO6F5ZWBz65O3UvSHF0zV+vhT95C
+         Wr3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6Uj7y3A8V2AwfLN+Pqn8MEopt38Al+RWbGM3+oeOM5I=;
+        b=uKJzsr40ANXj0DEYKGY5HegxP7yDLmb584nhj2PNOBszXTzxUWfe28q1JjHQYqNQF0
+         NmjNiyczyw49noTyMfeQomUsiwFDq53XeQ1UgUmjPYmULDsIzepA48GBUieW0jvs3D7L
+         ieJ1w8K9gD4qAu6udfzLUQ3hrGj98eI1IlvXoFibr48cKnxPnmCG2mLFqPaQccykW3ao
+         QWhiq6yJfxEoy9KNeexbNpx1uPjra9Qmi7PXIIoeQ8mz6AgmyXsbY9nCQtzD8xEXgdfH
+         Sw7V/DW9PUZStbZ7QVsSgji3lNGlJiJN6+kMdAmuVQoR/2am9py4YA4jPIaFIRgzeOGm
+         2QBA==
+X-Gm-Message-State: AOAM530if7BG+Lb5Y2UlwcmZzSXq1W19o5pf9pWOCN1K725El0zvWO6n
+        QB+Ieoj64NWnGAJJA72xyhsm2Q==
+X-Google-Smtp-Source: ABdhPJxAhmFLnIoY010MjFHtQXoLlmelUaEajcB2sidw/qB+PZ2ByzxgE4Jc6uiPBxPmNyTH1CpVhA==
+X-Received: by 2002:adf:fa05:: with SMTP id m5mr9203280wrr.26.1607616260242;
+        Thu, 10 Dec 2020 08:04:20 -0800 (PST)
+Received: from localhost (p4fdabc80.dip0.t-ipconnect.de. [79.218.188.128])
+        by smtp.gmail.com with ESMTPSA id k1sm9968055wrp.23.2020.12.10.08.04.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 08:04:19 -0800 (PST)
+Date:   Thu, 10 Dec 2020 17:02:14 +0100
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
+        akpm@linux-foundation.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, hughd@google.com, will@kernel.org,
+        guro@fb.com, rppt@kernel.org, tglx@linutronix.de, esyr@redhat.com,
+        peterx@redhat.com, krisman@collabora.com, surenb@google.com,
+        avagin@openvz.org, elver@google.com, rdunlap@infradead.org,
+        iamjoonsoo.kim@lge.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Subject: Re: [RESEND PATCH v2 01/12] mm: memcontrol: fix NR_ANON_THPS account
+Message-ID: <20201210160214.GG264602@cmpxchg.org>
+References: <20201206101451.14706-1-songmuchun@bytedance.com>
+ <20201206101451.14706-2-songmuchun@bytedance.com>
+ <20201210160045.GF264602@cmpxchg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210160045.GF264602@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an experimental PDF builder using rst2pdf
+On Thu, Dec 10, 2020 at 05:00:47PM +0100, Johannes Weiner wrote:
+> On Sun, Dec 06, 2020 at 06:14:40PM +0800, Muchun Song wrote:
+> > The unit of NR_ANON_THPS is HPAGE_PMD_NR already. So it should inc/dec
+> > by one rather than nr_pages.
+> 
+> This is a real bug, thanks for catching it.
+> 
+> However, your patch changes the user-visible output of /proc/vmstat!
+> 
+> NR_ANON_THPS isn't just used by memcg, it's a generic accounting item
+> of the memory subsystem. See this from the Fixes:-patch:
+> 
+> -                       __inc_node_page_state(page, NR_ANON_THPS);
+> +                       __inc_lruvec_page_state(page, NR_ANON_THPS);
+> 
+> While we've considered /proc/vmstat less official than other files
+> like meminfo, and have in the past freely added and removed items,
+> changing the unit of an existing one is not going to work.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/Makefile                     |  5 +++++
- Documentation/conf.py                      | 21 +++++++++++++++------
- Documentation/userspace-api/media/Makefile |  1 +
- Makefile                                   |  4 ++--
- 4 files changed, 23 insertions(+), 8 deletions(-)
-
-diff --git a/Documentation/Makefile b/Documentation/Makefile
-index 61a7310b49e0..c3c8fb10f94e 100644
---- a/Documentation/Makefile
-+++ b/Documentation/Makefile
-@@ -115,6 +115,10 @@ pdfdocs: latexdocs
- 
- endif # HAVE_PDFLATEX
- 
-+rst2pdf:
-+	@$(srctree)/scripts/sphinx-pre-install --version-check
-+	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,pdf,$(var),pdf,$(var)))
-+
- epubdocs:
- 	@$(srctree)/scripts/sphinx-pre-install --version-check
- 	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,epub,$(var),epub,$(var)))
-@@ -140,6 +144,7 @@ dochelp:
- 	@echo  '  htmldocs        - HTML'
- 	@echo  '  latexdocs       - LaTeX'
- 	@echo  '  pdfdocs         - PDF'
-+	@echo  '  rst2pdf         - PDF, using experimental rst2pdf support'
- 	@echo  '  epubdocs        - EPUB'
- 	@echo  '  xmldocs         - XML'
- 	@echo  '  linkcheckdocs   - check for broken external links'
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 66e121df59cd..6f2788aac81e 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -123,6 +123,12 @@ if (major == 1 and minor > 3) or (major > 1):
- else:
-     extensions.append("sphinx.ext.pngmath")
- 
-+# Enable experimental rst2pdf, if available
-+try:
-+    extensions.append("rst2pdf.pdfbuilder")
-+except:
-+    sys.stderr.write('rst2pdf extension not available.\n')
-+
- # Add any paths that contain templates here, relative to this directory.
- templates_path = ['_templates']
- 
-@@ -614,12 +620,15 @@ epub_exclude_files = ['search.html']
- #
- # See the Sphinx chapter of https://ralsina.me/static/manual.pdf
- #
--# FIXME: Do not add the index file here; the result will be too big. Adding
--# multiple PDF files here actually tries to get the cross-referencing right
--# *between* PDF files.
--pdf_documents = [
--    ('kernel-documentation', u'Kernel', u'Kernel', u'J. Random Bozo'),
--]
-+
-+# Add all LaTeX files to PDF documents as well
-+pdf_documents = []
-+for l in latex_documents:
-+    doc = l[0]
-+    fn = l[1].replace(".tex", "")
-+    name = l[2]
-+    authors = l[3]
-+    pdf_documents.append((doc, fn, name, authors))
- 
- # kernel-doc extension configuration for running Sphinx directly (e.g. by Read
- # the Docs). In a normal build, these are supplied from the Makefile via command
-diff --git a/Documentation/userspace-api/media/Makefile b/Documentation/userspace-api/media/Makefile
-index 81a4a1a53bce..8c6b3ac4ecb0 100644
---- a/Documentation/userspace-api/media/Makefile
-+++ b/Documentation/userspace-api/media/Makefile
-@@ -59,6 +59,7 @@ all: $(IMGDOT) $(BUILDDIR) ${TARGETS}
- html: all
- epub: all
- xml: all
-+pdf: all
- latex: $(IMGPDF) all
- linkcheck:
- 
-diff --git a/Makefile b/Makefile
-index 43ecedeb3f02..db4043578eec 100644
---- a/Makefile
-+++ b/Makefile
-@@ -264,7 +264,7 @@ no-dot-config-targets := $(clean-targets) \
- 			 cscope gtags TAGS tags help% %docs check% coccicheck \
- 			 $(version_h) headers headers_% archheaders archscripts \
- 			 %asm-generic kernelversion %src-pkg dt_binding_check \
--			 outputmakefile
-+			 outputmakefile rst2pdf
- no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease
- single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
- 
-@@ -1654,7 +1654,7 @@ $(help-board-dirs): help-%:
- 
- # Documentation targets
- # ---------------------------------------------------------------------------
--DOC_TARGETS := xmldocs latexdocs pdfdocs htmldocs epubdocs cleandocs \
-+DOC_TARGETS := xmldocs latexdocs pdfdocs rst2pdf htmldocs epubdocs cleandocs \
- 	       linkcheckdocs dochelp refcheckdocs
- PHONY += $(DOC_TARGETS)
- $(DOC_TARGETS):
--- 
-2.29.2
-
+Argh, I hit send instead of cancel after noticing that I misread your
+patch completely. Scratch what I wrote above.
