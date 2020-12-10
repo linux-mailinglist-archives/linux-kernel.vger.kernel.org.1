@@ -2,85 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3122D618F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF752D6128
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729900AbgLJQTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:19:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47484 "EHLO
+        id S2392232AbgLJQF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:05:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392280AbgLJQHD (ORCPT
+        with ESMTP id S2390276AbgLJQF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:07:03 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D71C061793
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:06:20 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id c5so2405066wrp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:06:20 -0800 (PST)
+        Thu, 10 Dec 2020 11:05:56 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24AEEC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:05:16 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id t4so6006048wrr.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:05:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9EEM0AX878xSa8V2cvUDpTLDczQ0IGzyz0LRReW9tzA=;
-        b=dG3nDfcSFKcJqfMUlDBawK6U+/17xUIuG5w7oEcJKBYdW1zerFAMxTR27Vw3ED9rWV
-         aZ5xpsrUl1k/73I4w1FR6llyHh342rQEBBSuerrIpeeWaTwd0YgiGKLpWIRVtTWvd0Vr
-         OvEPfWDYhl0k31LxHGSu2Y79gbq2+C/UQRm4+nfafn5ylsnB1sL/jMp6VoQ1CSC8wFkX
-         TGklkiZNfuDYk9kbL+3VXuWSYYQ0/jsni1x+f55I0oy0LfaTM5ZgzIiw6+vZ2IaGg5TV
-         VkN2qdkxGVbKvtdqLvrMGA2oN0cFpRSU6eGeFz2VAY046PYj+H8zuJcV2RZuDHBwQt/o
-         VW3g==
+        d=linaro.org; s=google;
+        h=to:cc:references:from:subject:message-id:date:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=NtWC1MFWh2ZmjVPvLTTmoLPrQ21xqYoAnMXG0VhKsVo=;
+        b=XhKLYnV2lgdZYg1GJeQ6kGd+pWPLu4ylneIFcwYOSdITyTxJ2bMuDxqTwLwpZCXy1q
+         GcAL9dnkmE7DGUc+wZj+E+bMaW+k6IMdVz83OnyGYwloWpJcFARzlT+Fcgg+JR8oqtOl
+         NzScYr6pSjgsRD17tyNZuxkT3DllCp/pUSSS6eMzhwAB2PRZitgk8sMsv86+PTa8bs98
+         1iVdT4PMNwHzKKtYgnaPM+QXFNU7C6Cz0NHEkKcO0f7kq9Di5xcnJdmdkBmHWYfB9kMs
+         pKx96dfs/dEiprJmtNSqy75TZcF7tIA0Y19J4rgkOwOFIflSh/M/SI5jN5dvvpIsMFxZ
+         e9Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9EEM0AX878xSa8V2cvUDpTLDczQ0IGzyz0LRReW9tzA=;
-        b=E1VDMqRRz5o9x+/fEl/gDB5bfLN9fSG4sxkcH5xtSqLyoW4XqJoykMkipviMOy5Scw
-         G+pyL1qC1XANKwn3g2JhGWckAPRWwetn0CDCeOlXIPt9fkonKpvv4ghmSdgZ7OROX7qj
-         5SKHnmk3/VfSIiiTRKfPEpEFrM5T1P4yfzZUROBoNQdzRiOg3TnS9jS5QLUugFmc0fdX
-         x9FM81uFB7xbGBH4+1P/4SON78cd6IzTYmU+f0S+T/cvsesxvDFOGH1MPYIAiVV5rWk1
-         oLcD8Y+87t5r6+pPWOTN5DB101dINk3amckdqRQi+f8BK+BWkjExwVM4txrz76XVxmcc
-         p8Rg==
-X-Gm-Message-State: AOAM5332xM9TK4WHLa1Zdl1QKvtRQ9i8BRvu7FrfMbE93P7FY9+a+39y
-        8Xwtfpam6f7jUq18QrbvA/Iydg==
-X-Google-Smtp-Source: ABdhPJwbsAebsVatgwJVP7G/BlySZfheiXSb2ekaT+aAULkzlUatfjHBeww5kzznvVZDMQ8OamZaBw==
-X-Received: by 2002:adf:9124:: with SMTP id j33mr8598967wrj.376.1607616379710;
-        Thu, 10 Dec 2020 08:06:19 -0800 (PST)
-Received: from localhost (p4fdabc80.dip0.t-ipconnect.de. [79.218.188.128])
-        by smtp.gmail.com with ESMTPSA id x7sm2719625wmi.11.2020.12.10.08.06.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 08:06:19 -0800 (PST)
-Date:   Thu, 10 Dec 2020 17:04:13 +0100
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
-        akpm@linux-foundation.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, hughd@google.com, will@kernel.org,
-        guro@fb.com, rppt@kernel.org, tglx@linutronix.de, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com, surenb@google.com,
-        avagin@openvz.org, elver@google.com, rdunlap@infradead.org,
-        iamjoonsoo.kim@lge.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org
-Subject: Re: [RESEND PATCH v2 01/12] mm: memcontrol: fix NR_ANON_THPS account
-Message-ID: <20201210160413.GH264602@cmpxchg.org>
-References: <20201206101451.14706-1-songmuchun@bytedance.com>
- <20201206101451.14706-2-songmuchun@bytedance.com>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NtWC1MFWh2ZmjVPvLTTmoLPrQ21xqYoAnMXG0VhKsVo=;
+        b=uZF+A2tguPwD3hU71UdUXMWz+tXwphLZz8tFkOVv+u9gtAcqeGuHlTb1oU1cgsZpxd
+         41bEhLsJJ1f9RW91TRhZ5paVBX7eTVsjAdZeGXI9AyRqdwi9PL8AqxvxC+UvwFZbZlHa
+         owvA82+7sSha0jQLodb5j1ZjMasT5h5ShNUnvy2hIcPiwnQrgje+6bPNSIys9TwppIp9
+         uXAEqsdSFdGGtNoiiKvUHGZyS8ND69Rlk1FHska+PG7JgycHoJjp03gbVjE7r5BGXdnb
+         TcEHl6nXwT02qkQ6mZtupvXwk4sOx6rjGg604uepJckNX3OviAtLulNYsLtrT3XxI6Tr
+         L69w==
+X-Gm-Message-State: AOAM531yV1qKBAnzRnkaBPVC1+Hsfsc9BJMqZ8Q1rnRaVKhUPDI9Ly84
+        U0fVV7UaWT1Ybm2/EOFlRfOJaw==
+X-Google-Smtp-Source: ABdhPJzk1vGDxF1lYn6ajNZxTM5re+zeXSQ6iohTDBRVOXHtteZ9a6KD2SXKRJMRkZr+dyg8fmqMiA==
+X-Received: by 2002:a5d:684b:: with SMTP id o11mr9069013wrw.157.1607616314753;
+        Thu, 10 Dec 2020 08:05:14 -0800 (PST)
+Received: from [10.44.66.8] ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id c81sm10915190wmd.6.2020.12.10.08.05.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 08:05:14 -0800 (PST)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Liam Mark <lmark@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20201210203845.04557b46@canb.auug.org.au>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Subject: Re: linux-next: build warning after merge of the akpm-current tree
+Message-ID: <75905385-217a-a8f2-e304-f31e554cbad0@linaro.org>
+Date:   Thu, 10 Dec 2020 18:05:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201206101451.14706-2-songmuchun@bytedance.com>
+In-Reply-To: <20201210203845.04557b46@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 06:14:40PM +0800, Muchun Song wrote:
-> The unit of NR_ANON_THPS is HPAGE_PMD_NR already. So it should inc/dec
-> by one rather than nr_pages.
+Thanks for the report Stephen!
+
+Andrew, I have sent you an updated patch. Please let me know if you prefer
+a follow-up fix instead.
+
+BR,
+Georgi
+
+On 12/10/20 11:38, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Fixes: 468c398233da ("mm: memcontrol: switch to native NR_ANON_THPS counter")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-
-But please change the subject to
-
-	'mm: memcontrol: fix NR_ANON_THPS accounting in charge moving'
+> After merging the akpm-current tree, today's linux-next build (htmldocs)
+> produced this warning:
+> 
+> Documentation/vm/page_owner.rst:44: WARNING: Literal block ends without a blank line; unexpected unindent.
+> Documentation/vm/page_owner.rst:49: WARNING: Literal block ends without a blank line; unexpected unindent.
+> 
+> Introduced by commit
+> 
+>    6cf22751938a ("mm/page_owner: Record timestamp and pid")
+> 
