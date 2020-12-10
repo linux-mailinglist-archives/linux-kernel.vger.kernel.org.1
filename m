@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4E22D58D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C91172D58DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389209AbgLJK47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:56:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56246 "EHLO mail.kernel.org"
+        id S2389200AbgLJK46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:56:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389168AbgLJK4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2389167AbgLJK4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Dec 2020 05:56:40 -0500
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
@@ -18,9 +18,9 @@ Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 02/13] media: colorspaces-details.rst: drop tabularcolumns
-Date:   Thu, 10 Dec 2020 11:55:41 +0100
-Message-Id: <b52f62a7b1f1e33be35fdc4b626aefdd14840f6a.1607597287.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 04/13] media: docs: sliced-vbi: fix V4L2_SLICED_WSS_625 docs
+Date:   Thu, 10 Dec 2020 11:55:43 +0100
+Message-Id: <2cb1af25956a33cccc59d751d3c44382db87ef47.1607597287.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1607597287.git.mchehab+huawei@kernel.org>
 References: <cover.1607597287.git.mchehab+huawei@kernel.org>
@@ -31,115 +31,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Those tables have small cells that fit nicely without requiring
-line beaks.
+While fixing issues with PDF generation, I noticed that
+bit 8 was missing for WSS 625 format.
 
-So, they don't need tabular columns, as Sphinx/LaTeX
-can adjust the width on such tables.
+While here, convert the literal block into a tables,
+as it becomes more visible.
+
+I opted to move the payload into a separate table, as
+Sphinx has troubles with complex nested tables.
+
+This way, it should work fine on both html and LaTeX/PDF
+formats.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../media/v4l/colorspaces-details.rst         | 31 -------------------
- 1 file changed, 31 deletions(-)
+ .../media/v4l/dev-sliced-vbi.rst              | 23 ++++++++++++------
+ .../media/v4l/vidioc-g-sliced-vbi-cap.rst     | 24 +++++++++++++------
+ 2 files changed, 33 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/colorspaces-details.rst b/Documentation/userspace-api/media/v4l/colorspaces-details.rst
-index 126f66482a0d..26a4ace42ca5 100644
---- a/Documentation/userspace-api/media/v4l/colorspaces-details.rst
-+++ b/Documentation/userspace-api/media/v4l/colorspaces-details.rst
-@@ -17,10 +17,6 @@ PAL and by SDTV in general. The default transfer function is
- range. The chromaticities of the primary colors and the white reference
- are:
+diff --git a/Documentation/userspace-api/media/v4l/dev-sliced-vbi.rst b/Documentation/userspace-api/media/v4l/dev-sliced-vbi.rst
+index f0df144c9f63..213b736c9b67 100644
+--- a/Documentation/userspace-api/media/v4l/dev-sliced-vbi.rst
++++ b/Documentation/userspace-api/media/v4l/dev-sliced-vbi.rst
+@@ -253,13 +253,7 @@ Sliced VBI services
  
+ 	:ref:`en300294`
+       - PAL/SECAM line 23
+-      -
 -
+-	::
 -
--.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.7cm}|
--
- .. flat-table:: SMPTE 170M Chromaticities
-     :header-rows:  1
-     :stub-columns: 0
-@@ -98,10 +94,6 @@ default Y'CbCr encoding is ``V4L2_YCBCR_ENC_709``. The default Y'CbCr
- quantization is limited range. The chromaticities of the primary colors
- and the white reference are:
+-	    Byte         0                 1
+-		  msb         lsb  msb           lsb
+-	     Bit  7 6 5 4 3 2 1 0  x x 13 12 11 10 9
++      -  See :ref:`v4l2-sliced-wss-625-payload` below.
+     * - ``V4L2_SLICED_VBI_525``
+       - 0x1000
+       - :cspan:`2` Set of services applicable to 525 line systems.
+@@ -282,6 +276,21 @@ format while i/o is in progress (between a
+ :ref:`VIDIOC_STREAMOFF <VIDIOC_STREAMON>` call, and after the first
+ :c:func:`read()` or :c:func:`write()` call).
  
--
--
--.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.7cm}|
--
- .. flat-table:: Rec. 709 Chromaticities
-     :header-rows:  1
-     :stub-columns: 0
-@@ -225,10 +217,6 @@ would break how applications interpret the quantization range.
++.. _v4l2-sliced-wss-625-payload:
++
++V4L2_SLICED_WSS_625 payload
++~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++The payload for ``V4L2_SLICED_WSS_625`` is:
++
++           +-----+------------------+-----------------------+
++	   |Byte |        0         |           1           |
++           +-----+--------+---------+-----------+-----------+
++	   |     | msb    | lsb     | msb       | lsb       |
++           |     +-+-+-+--+--+-+-+--+--+-+--+---+---+--+-+--+
++	   | Bit |7|6|5|4 | 3|2|1|0 | x|x|13|12 | 11|10|9|8 |
++           +-----+-+-+-+--+--+-+-+--+--+-+--+---+---+--+-+--+
++
+ Reading and writing sliced VBI data
+ ===================================
  
- The chromaticities of the primary colors and the white reference are:
+diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-sliced-vbi-cap.rst b/Documentation/userspace-api/media/v4l/vidioc-g-sliced-vbi-cap.rst
+index 752f7f5fae73..b3f4dc71bb5d 100644
+--- a/Documentation/userspace-api/media/v4l/vidioc-g-sliced-vbi-cap.rst
++++ b/Documentation/userspace-api/media/v4l/vidioc-g-sliced-vbi-cap.rst
+@@ -162,13 +162,7 @@ the sliced VBI API is unsupported or ``type`` is invalid.
  
+ 	:ref:`itu1119`
+       - PAL/SECAM line 23
+-      -
 -
+-	::
 -
--.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.7cm}|
--
- .. flat-table:: sRGB Chromaticities
-     :header-rows:  1
-     :stub-columns: 0
-@@ -308,9 +296,6 @@ would break how applications interpret the quantization range.
+-	    Byte        0                 1
+-		 msb         lsb  msb           lsb
+-	    Bit  7 6 5 4 3 2 1 0  x x 13 12 11 10 9
++      - See :ref:`v4l2-sliced-vbi-cap-wss-625-payload` below.
+     * - ``V4L2_SLICED_VBI_525``
+       - 0x1000
+       - :cspan:`2` Set of services applicable to 525 line systems.
+@@ -180,6 +174,22 @@ the sliced VBI API is unsupported or ``type`` is invalid.
  
- The chromaticities of the primary colors and the white reference are:
+     \normalsize
  
--
--.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.7cm}|
--
- .. flat-table:: opRGB Chromaticities
-     :header-rows:  1
-     :stub-columns: 0
-@@ -373,10 +358,6 @@ definition television (UHDTV). The default transfer function is
- ``V4L2_YCBCR_ENC_BT2020``. The default Y'CbCr quantization is limited range.
- The chromaticities of the primary colors and the white reference are:
++.. _v4l2-sliced-vbi-cap-wss-625-payload:
++
++V4L2_SLICED_VBI_CAP WSS_625 payload
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++The payload for ``V4L2_SLICED_WSS_625`` is:
++
++	    +-----+------------------+-----------------------+
++	    |Byte |        0         |           1           |
++	    +-----+--------+---------+-----------+-----------+
++	    |     | msb    | lsb     | msb       | lsb       |
++	    |     +-+-+-+--+--+-+-+--+--+-+--+---+---+--+-+--+
++	    | Bit |7|6|5|4 | 3|2|1|0 | x|x|13|12 | 11|10|9|8 |
++	    +-----+-+-+-+--+--+-+-+--+--+-+--+---+---+--+-+--+
++
++
+ Return Value
+ ============
  
--
--
--.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.7cm}|
--
- .. flat-table:: BT.2020 Chromaticities
-     :header-rows:  1
-     :stub-columns: 0
-@@ -478,9 +459,6 @@ is ``V4L2_XFER_FUNC_DCI_P3``. The default Y'CbCr encoding is
- The chromaticities of the primary colors and the white reference are:
- 
- 
--
--.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.7cm}|
--
- .. flat-table:: DCI-P3 Chromaticities
-     :header-rows:  1
-     :stub-columns: 0
-@@ -532,9 +510,6 @@ quantization is limited range. The chromaticities of the primary colors
- and the white reference are:
- 
- 
--
--.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.7cm}|
--
- .. flat-table:: SMPTE 240M Chromaticities
-     :header-rows:  1
-     :stub-columns: 0
-@@ -603,9 +578,6 @@ limited range. The chromaticities of the primary colors and the white
- reference are:
- 
- 
--
--.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.7cm}|
--
- .. flat-table:: NTSC 1953 Chromaticities
-     :header-rows:  1
-     :stub-columns: 0
-@@ -683,9 +655,6 @@ range. The chromaticities of the primary colors and the white reference
- are:
- 
- 
--
--.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.7cm}|
--
- .. flat-table:: EBU Tech. 3213 Chromaticities
-     :header-rows:  1
-     :stub-columns: 0
 -- 
 2.29.2
 
