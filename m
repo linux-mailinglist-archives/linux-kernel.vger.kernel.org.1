@@ -2,23 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5832D66A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 167832D671B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:43:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404259AbgLJThJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:37:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37174 "EHLO mail.kernel.org"
+        id S2390233AbgLJTmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:42:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390180AbgLJO2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:28:55 -0500
+        id S2390145AbgLJO2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:28:39 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 24/39] ALSA: hda/generic: Add option to enforce preferred_dacs pairs
-Date:   Thu, 10 Dec 2020 15:26:35 +0100
-Message-Id: <20201210142602.091969017@linuxfoundation.org>
+        stable@vger.kernel.org, Jerry Snitselaar <jsnitsel@redhat.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 4.4 30/39] iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs
+Date:   Thu, 10 Dec 2020 15:26:41 +0100
+Message-Id: <20201210142602.380959239@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
 References: <20201210142600.887734129@linuxfoundation.org>
@@ -30,70 +32,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 
-commit 242d990c158d5b1dabd166516e21992baef5f26a upstream.
+commit 4165bf015ba9454f45beaad621d16c516d5c5afe upstream.
 
-The generic parser accepts the preferred_dacs[] pairs as a hint for
-assigning a DAC to each pin, but this hint doesn't work always
-effectively.  Currently it's merely a secondary choice after the trial
-with the path index failed.  This made sometimes it difficult to
-assign DACs without mimicking the connection list and/or the badness
-table.
+According to the AMD IOMMU spec, the commit 73db2fc595f3
+("iommu/amd: Increase interrupt remapping table limit to 512 entries")
+also requires the interrupt table length (IntTabLen) to be set to 9
+(power of 2) in the device table mapping entry (DTE).
 
-This patch adds a new flag, obey_preferred_dacs, that changes the
-behavior of the parser.  As its name stands, the parser obeys the
-given preferred_dacs[] pairs by skipping the path index matching and
-giving a high penalty if no DAC is assigned by the pairs.  This mode
-will help for assigning the fixed DACs forcibly from the codec
-driver.
-
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201127141104.11041-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 73db2fc595f3 ("iommu/amd: Increase interrupt remapping table limit to 512 entries")
+Reported-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Link: https://lore.kernel.org/r/20201207091920.3052-1-suravee.suthikulpanit@amd.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- sound/pci/hda/hda_generic.c |   12 ++++++++----
- sound/pci/hda/hda_generic.h |    1 +
- 2 files changed, 9 insertions(+), 4 deletions(-)
+ drivers/iommu/amd_iommu.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -1344,16 +1344,20 @@ static int try_assign_dacs(struct hda_co
- 		struct nid_path *path;
- 		hda_nid_t pin = pins[i];
+--- a/drivers/iommu/amd_iommu.c
++++ b/drivers/iommu/amd_iommu.c
+@@ -3625,7 +3625,7 @@ static struct irq_chip amd_ir_chip;
  
--		path = snd_hda_get_path_from_idx(codec, path_idx[i]);
--		if (path) {
--			badness += assign_out_path_ctls(codec, path);
--			continue;
-+		if (!spec->obey_preferred_dacs) {
-+			path = snd_hda_get_path_from_idx(codec, path_idx[i]);
-+			if (path) {
-+				badness += assign_out_path_ctls(codec, path);
-+				continue;
-+			}
- 		}
+ #define DTE_IRQ_PHYS_ADDR_MASK	(((1ULL << 45)-1) << 6)
+ #define DTE_IRQ_REMAP_INTCTL    (2ULL << 60)
+-#define DTE_IRQ_TABLE_LEN       (8ULL << 1)
++#define DTE_IRQ_TABLE_LEN       (9ULL << 1)
+ #define DTE_IRQ_REMAP_ENABLE    1ULL
  
- 		dacs[i] = get_preferred_dac(codec, pin);
- 		if (dacs[i]) {
- 			if (is_dac_already_used(codec, dacs[i]))
- 				badness += bad->shared_primary;
-+		} else if (spec->obey_preferred_dacs) {
-+			badness += BAD_NO_PRIMARY_DAC;
- 		}
- 
- 		if (!dacs[i])
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -229,6 +229,7 @@ struct hda_gen_spec {
- 	unsigned int add_jack_modes:1; /* add i/o jack mode enum ctls */
- 	unsigned int power_down_unused:1; /* power down unused widgets */
- 	unsigned int dac_min_mute:1; /* minimal = mute for DACs */
-+	unsigned int obey_preferred_dacs:1; /* obey preferred_dacs assignment */
- 
- 	/* other internal flags */
- 	unsigned int no_analog:1; /* digital I/O only */
+ static void set_dte_irq_entry(u16 devid, struct irq_remap_table *table)
 
 
