@@ -2,135 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10942D5EBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB8A2D5EC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389857AbgLJOzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:55:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389817AbgLJOzW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:55:22 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8792C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:54:41 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id y19so8567021lfa.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:54:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O6ptu9+yUqmrrvRHBz+Ms5c7MJTZlfGGguaJ8+pJhRs=;
-        b=qxBha0sjMFxg78EJkra1StvHmiJuvX4oZdELZZHCiMYynG9+F2BGZs8Yaiw9qAKdi8
-         fxY7UzrkO85flZO+CSrbBvebiSEju746gwY/NF4sBcdMiwzhEFWDk16DGFly+nVSgIc1
-         LnJK7PLqlSTzXFJDHN7xtRWPo+m+1IsIwr43WWde3G8pDSP7KFg1I3Ie6gTsWrW0ncPr
-         XY9y4A2Hu8YsqjB4iZVfOgDMk62zejdDD+8h1zWB06jIcljpu0N3Pque8hVyd5QqcD6q
-         /5AbBTX81YZ/S2rW7rphnJ5dOCB0Y0uLvMMwbaYS/bGF7RUXBTOtwYp00VZfEvwEb/mc
-         Bh5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O6ptu9+yUqmrrvRHBz+Ms5c7MJTZlfGGguaJ8+pJhRs=;
-        b=XyxWl8OTY4gY2ohTA/N2lYW387Qsn3KG7GuCNaW4YjHSLd/gxaOx7xnYMQLx3Qk4Kc
-         f4FWxT4Krcy0Dh6FwN8eDrA8qbHn0ZuNjJoF9ixJwF4ckqCYiBvUC427zH6C6xQU96l8
-         Af3Kovomnyon8sRUpfOgOw5MuNr8bGsObZmoZlY7JPcMwfl61Ax1SjfUEQY2Cz8Eqj4V
-         Gu2I8ig7FTdBS3LJCRq1OJnqDysFS+Tnjn5/zZX+LHUJtYwaz5ogF3Ca9/wRPsYoL3b1
-         HoT6keQ9JbStZlJ1My7MxSmNTE56AZOx+ONDiDhj3ugRP1f73YvwXUGrx5nGkWCh5BQm
-         kTAQ==
-X-Gm-Message-State: AOAM53317S8h8BOBGuXRjEXSL4rRcoF1GEwcFtyhLucjPsxjfCSF4CGi
-        SVuIvlmb01GsFbJ2BWx3HWT+ndu5lYygrV3q3jATcPs5/HwEhnxd
-X-Google-Smtp-Source: ABdhPJx9BBe95t8VEi0zGcvOT3yVFSJe0tilLfooilcZm/UnWooZuHQA/ZBkhpu8dfmwgsQSCzqTTtmtUxFTJgle8F0=
-X-Received: by 2002:a19:5f06:: with SMTP id t6mr2921786lfb.117.1607612080214;
- Thu, 10 Dec 2020 06:54:40 -0800 (PST)
+        id S1727730AbgLJO5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:57:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727321AbgLJO5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:57:20 -0500
+Date:   Thu, 10 Dec 2020 15:56:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607612199;
+        bh=uKyGDekai/Mk+uYEzgAyret3/T1UrzvVnJckF/SqmrU=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UBXo1YH/xLVFpYkcBS38ywyz88GQcNIEdUGTNuREg7UufAElIIr9qfdI5QaxVvLS0
+         ABQXU3KjWp1+LjRjfR1JtYJdFNYuPSIxr2xuVlCyfImvNBkizXHCd6Ncvl3DjsPjUI
+         4/W0tQzlMnreHSWhiZKByhjiYYOR2v388GrlVagoSSzwP6hbghUOl/UeHftAiimxjR
+         H3v3iLitH+QnjmY9LtMVHm0IJ96I8SmvYO/qQIrZR51FjyUVhDG4897u/QqEWQI57H
+         CJKWW4Ofrz4j02kT/kND7kxshQjDyjyrJ0dT84mkalPVP7pU5h8+SDXnnqlrYyr8cq
+         gHwWFZVi0AdYQ==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: NOHZ tick-stop error: Non-RCU local softirq work is pending
+Message-ID: <20201210145637.GA164661@lothringen>
+References: <20201118175218.GA16039@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20201210141903.72327-1-dwaipayanray1@gmail.com> <97a20537627bb281745fee157713200830c3a7bb.camel@perches.com>
-In-Reply-To: <97a20537627bb281745fee157713200830c3a7bb.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Thu, 10 Dec 2020 20:24:15 +0530
-Message-ID: <CABJPP5Cjyh1QekK7LnTbxYEgmtLMO81Vdu77tGTRrNhjL_iEcg@mail.gmail.com>
-Subject: Re: [PATCH] checkpatch: add --fix option to IS_ENABLED_CONFIG check
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118175218.GA16039@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > checkpatch correspondingly has a check for IS_ENABLED() without
-> > CONFIG_<FOO>.
-> > Add a --fix option to the check to automatically correct the argument.
-> >
-> > Macros like:
-> >  #if IS_ENABLED(THERMAL)
-> >
-> > is corrected to:
-> >  #if IS_ENABLED(CONFIG_THERMAL)
->
-> I think adding a --fix option here is not a good option.
->
-> Look at the existing uses without CONFIG and tell me
-> the majority of them need to have CONFIG added.
->
-> $ git grep -P '\bIS_ENABLED\s*\(\s*(?!CONFIG_)'
-> arch/arc/include/asm/asserts.h: chk_opt_strict(#opt_name, hw_exists, IS_ENABLED(opt_name));     \
-> arch/arc/include/asm/asserts.h: chk_opt_weak(#opt_name, hw_exists, IS_ENABLED(opt_name));       \
-> arch/arc/include/asm/setup.h:#define IS_USED_CFG(cfg)   IS_USED_RUN(IS_ENABLED(cfg))
-> arch/arm64/include/asm/alternative-macros.h:    __ALTERNATIVE_CFG(oldinstr, newinstr, feature, IS_ENABLED(cfg))
-> arch/arm64/include/asm/alternative-macros.h:    alternative_insn insn1, insn2, cap, IS_ENABLED(cfg)
-> arch/arm64/include/asm/cpufeature.h:    (IS_ENABLED(config) ? FTR_VISIBLE : FTR_HIDDEN)
-> arch/x86/mm/numa.c:     if (IS_ENABLED(NODE_NOT_IN_PAGE_FLAGS)) {
-> drivers/gpu/drm/exynos/exynos_drm_drv.c:#define DRV_PTR(drv, cond) (IS_ENABLED(cond) ? &drv : NULL)
-> drivers/gpu/drm/i915/i915_utils.h: * This is a lookalike for IS_ENABLED() that takes a kconfig value,
-> drivers/gpu/drm/i915/i915_utils.h: * Sadly IS_ENABLED() itself does not work with kconfig values.
-> drivers/gpu/drm/rockchip/rockchip_drm_drv.c:    if (IS_ENABLED(cond) && \
-> drivers/net/wireguard/allowedips.c:             WARN_ON(IS_ENABLED(DEBUG) && *len >= 128);
-> drivers/net/wireguard/allowedips.c:             WARN_ON(IS_ENABLED(DEBUG) && len >= 128);                      \
-> drivers/net/wireguard/noise.c:  WARN_ON(IS_ENABLED(DEBUG) &&
-> drivers/net/wireguard/selftest/allowedips.c:    if (IS_ENABLED(DEBUG_PRINT_TRIE_GRAPHVIZ)) {
-> drivers/net/wireguard/selftest/allowedips.c:    if (IS_ENABLED(DEBUG_PRINT_TRIE_GRAPHVIZ)) {
-> drivers/net/wireguard/selftest/allowedips.c:    if (IS_ENABLED(DEBUG_RANDOM_TRIE) && success)
-> drivers/phy/broadcom/phy-brcm-usb-init.h:       if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
-> drivers/phy/broadcom/phy-brcm-usb-init.h:       if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
-> include/asm-generic/vmlinux.lds.h:#define OF_TABLE(cfg, name)   __OF_TABLE(IS_ENABLED(cfg), name)
-> include/crypto/blake2s.h:       WARN_ON(IS_ENABLED(DEBUG) && (!outlen || outlen > BLAKE2S_HASH_SIZE ||
-> include/crypto/blake2s.h:       WARN_ON(IS_ENABLED(DEBUG) && ((!in && inlen > 0) || !out || !outlen ||
-> include/linux/init.h:   int var = IS_ENABLED(config);                                   \
-> include/linux/kconfig.h: * This is similar to IS_ENABLED(), but returns false when invoked from
-> include/linux/kconfig.h:#define IS_ENABLED(option) __or(IS_BUILTIN(option), IS_MODULE(option))
-> include/linux/page-flags-layout.h: * the IS_ENABLED() macro.
-> include/linux/raid/pq.h:#define IS_ENABLED(x) (x)
-> lib/crypto/blake2s-generic.c:   WARN_ON(IS_ENABLED(DEBUG) &&
-> lib/crypto/blake2s.c:   WARN_ON(IS_ENABLED(DEBUG) && !out);
-> lib/crypto/chacha20poly1305-selftest.c: for (total_len = POLY1305_DIGEST_SIZE; IS_ENABLED(DEBUG_CHACHA20POLY1305_SLOW_CHUNK_TEST)
-> lib/test_ubsan.c:                       #config, IS_ENABLED(config) ? "y" : "n");       \
-> scripts/checkpatch.pl:# check for IS_ENABLED() without CONFIG_<FOO> ($rawline for comments too)
-> scripts/checkpatch.pl:                       "IS_ENABLED($1) is normally used as IS_ENABLED(${CONFIG_}$1)\n" . $herecurr);
-> scripts/checkpatch.pl:                           "Prefer IS_ENABLED(<FOO>) to ${CONFIG_}<FOO> || ${CONFIG_}<FOO>_MODULE\n" . $herecurr) &&
-> scripts/checkpatch.pl:                          $fixed[$fixlinenr] = "\+#if IS_ENABLED($config)";
-> tools/testing/scatterlist/linux/mm.h:#define IS_ENABLED(x) (0)
->
->
+Hi,
 
-That's true.
-The following looks okay to me:
+On Wed, Nov 18, 2020 at 09:52:18AM -0800, Paul E. McKenney wrote:
+> Hello, Frederic,
+> 
+> Here is the last few months' pile of warnings from rcutorture runs.
+> 
+> 							Thanx, Paul
+> 
+> [  255.098527] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #282!!!
+> [  414.534548] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [ 3798.654736] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [ 1718.589367] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [ 6632.777655] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [ 2873.688490] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [ 3081.738937] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [ 2673.597523] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [ 1467.372887] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [   34.371094] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [ 1147.260097] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [ 5066.699589] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [  816.338843] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [   34.338836] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [ 1234.111394] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
+> [ 1282.109415] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
+> [  239.215890] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
+> [  367.918969] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
+> [ 1461.037894] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [ 1503.810903] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
+> [ 1503.811939] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
+> [  699.514824] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
+> [  751.681629] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
+> [  287.770126] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
+> [  287.771096] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
+> [  648.009370] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [  924.733405] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
+> [  924.734011] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
+> [ 1743.197353] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #02!!!
+> [ 1528.161635] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
+> [ 1528.162313] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
+> [  265.201513] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
+> [  473.137587] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
+> [  187.375426] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
+> [ 1361.544451] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+> [   79.519727] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
 
-IS_ENABLED(DEBUG)
-IS_ENABLED(cfg)
-IS_ENABLED(opt_name)
-IS_ENABLED(option)
-IS_ENABLED(DEBUG_PRINT_TRIE_GRAPHVIZ)
-IS_ENABLED(config)
-IS_ENABLED(cond)
-IS_ENABLED(__BIG_ENDIAN)
-IS_ENABLED(x)
-IS_ENABLED(DEBUG_CHACHA20POLY1305_SLOW_CHUNK_TEST)
+Would you be willing to run TREE05 for me until it triggers the issue with:
 
-Adding a CONFIG_ in these would be wrong I think.
-I will drop this patch.
+      trace_event=softirq_raise trace_options=stacktrace
 
-Thank you,
-Dwaipayan.
+And with the below patch, thanks! (make sure you have CONFIG_EVENT_TRACING=y)
+
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 81632cd5e3b7..1751e2d9a5b5 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -929,6 +929,8 @@ static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
+ 		    (local_softirq_pending() & SOFTIRQ_STOP_IDLE_MASK)) {
+ 			pr_warn("NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #%02x!!!\n",
+ 				(unsigned int) local_softirq_pending());
++			dump_stack();
++			ftrace_dump(DUMP_ORIG);
+ 			ratelimit++;
+ 		}
+ 		return false;
