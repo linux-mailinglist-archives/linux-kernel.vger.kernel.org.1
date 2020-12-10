@@ -2,117 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A882D67DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 250E82D67E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404389AbgLJT7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390146AbgLJT7T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:59:19 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48804C0613D6;
-        Thu, 10 Dec 2020 11:58:38 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id o17so7094735lfg.4;
-        Thu, 10 Dec 2020 11:58:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GC/XblOlRvC+qjSKhqvPWSHVmyf1S0klyHzoOlN2iQc=;
-        b=B5RF+oI/aEJk5oFliIENmOnUpk914JFiTNv0xNVgQe+zFhST94+JU5cbGP7hvBpD9v
-         grxe8oo1mX5tiYCWySi3nscdMci1ElaO8JweSiONVZk+k+nFZ+Kil9YPERX7lJIBwAp8
-         iy82acrzkeA+z40q3fstbj9Na9DxCUJBIJO4V8acsMMpNsuHaaCjX/6RpStSTLkStSlp
-         +wdaFCm1yjv/7n6d1uFK+yR9yzHEX3YPRZ3gE15T5vJKAoG0OHqFg4VUTXpMMDBpPYFN
-         litjpTzzUYBMug4zvP+YywyKEC/jnyuvyath1r6HNbRBTF3VG3syPj8iBwdgEZbiHgk+
-         rlpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GC/XblOlRvC+qjSKhqvPWSHVmyf1S0klyHzoOlN2iQc=;
-        b=t57opLBFFhpW9+EIFUOhjeCTe51ke4emR+JSWaNOSXjdhIZaIThjAkXoSbC6niEuls
-         9XSCbTnehFx9igE06uSvzd1tdl8FIjFLRc0AnUJ5+MDltH8u1/qcEy+DS3t3kk76zDR4
-         ostvuH1++0gZfi7bYo5VzUWAzejo3CAsbFIKJuvqdrQBvzw/9dhDwXKHcle1Kt7oW54A
-         viNJapX6Z+TmpsJPi3f9uH4D5a29hD7oLVs5cEiNbYhIROU7Jq5deqixa/9iSaWNj1+9
-         4S1q5IkvAaZIECwc7HvaaPXGhzqNNe/rA/rd6RN7auDYrb0es/uFOTxHVkvKrE+Jt98I
-         7YpA==
-X-Gm-Message-State: AOAM532oiAvAjCtuPw06mvXdv2NSdtmszajK2TsNe0N0oTzgAFmJGCCh
-        4n+vhXHKLAf059DGiBQpjv0=
-X-Google-Smtp-Source: ABdhPJxhUF+Yv2avD1Pj5n+dOKXAWNePLfrPOFYOF7WHhPIbi9+WEBCX4vmjJXJECzcEC8KHTOt0Jw==
-X-Received: by 2002:a19:8b55:: with SMTP id n82mr3398587lfd.485.1607630316854;
-        Thu, 10 Dec 2020 11:58:36 -0800 (PST)
-Received: from [192.168.1.33] (88-114-222-21.elisa-laajakaista.fi. [88.114.222.21])
-        by smtp.gmail.com with ESMTPSA id r16sm712488ljj.52.2020.12.10.11.58.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 11:58:36 -0800 (PST)
-Subject: Re: [PATCH] mm/vmalloc: randomize vmalloc() allocations
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20201201214547.9721-1-toiwoton@gmail.com>
- <9d34fb0a-7aba-1e84-6426-006ea7c3d9f5@gmail.com>
- <20201203065801.GH751215@kernel.org>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <37787c16-e188-89ae-a5fb-583fd97e6661@gmail.com>
-Date:   Thu, 10 Dec 2020 21:58:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S2393665AbgLJUAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 15:00:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404416AbgLJT7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 14:59:43 -0500
+Date:   Thu, 10 Dec 2020 20:58:55 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607630342;
+        bh=s2+iLf6qBKVf58ffYZN9l2zof1I9JLW9V6wDx6uBGB8=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eklBHcybGU7NaHOQQv++7WWXgTVIXfU4CnRYhDTvdmMh828hU1HhwGuy262A7mXl3
+         UVfMlgSR9hjmxiHEEmyAKdwE8N24GronEa9YX/3xByG12lhH5sLlYjOzWtARATmbU+
+         gbjs//eYTsEVpjwIHW5m8/FwAch5WCZ79eUruF3gO37OfRXISugUzkUxi/tczLL5H1
+         C81E6xkV7hUWEVha0XOmiWm7bl+CmN06kwTj6Wpcq+BBF8+02d6kP4fL05muxPEfXb
+         pZ3KGXhlBNtOeEDWP9EZLwn/4dPMZS2smZLYs42jw9BUNf2bClh/cggGRtfKBSWABt
+         n3IVdl/kI4rwg==
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     George Cherian <gcherian@marvell.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Zaibo Xu <xuzaibo@huawei.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Arnaud Ebalard <arno@natisbad.org>,
+        Srujana Challa <schalla@marvell.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Elie Morisse <syniurge@gmail.com>,
+        Nehal Shah <nehal-bakulchandra.shah@amd.com>,
+        Shyam Sundar S K <shyam-sundar.s-k@amd.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andreas Larsson <andreas@gaisler.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Zorik Machulsky <zorik@amazon.com>,
+        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-everest-linux-l2@marvell.com,
+        Michael Chan <michael.chan@broadcom.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Catherine Sullivan <csully@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        Jon Olson <jonolson@google.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Jon Mason <jdmason@kudzu.us>,
+        Rain River <rain.1986.08.12@gmail.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Pensando Drivers <drivers@pensando.io>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        Daniele Venzano <venza@brownhat.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Wingman Kwok <w-kwok2@ti.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Kevin Brace <kevinbrace@bracecomputerlab.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, qat-linux@intel.com,
+        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        ath11k@lists.infradead.org, wil6210@qti.qualcomm.com,
+        b43-dev@lists.infradead.org, iommu@lists.linux-foundation.org
+Subject: Re: [PATCH] dma-mapping: move hint unlikely for dma_mapping_error
+ from drivers to core
+Message-ID: <20201210195855.GA11120@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        George Cherian <gcherian@marvell.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Zaibo Xu <xuzaibo@huawei.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Arnaud Ebalard <arno@natisbad.org>,
+        Srujana Challa <schalla@marvell.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Elie Morisse <syniurge@gmail.com>,
+        Nehal Shah <nehal-bakulchandra.shah@amd.com>,
+        Shyam Sundar S K <shyam-sundar.s-k@amd.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Andreas Larsson <andreas@gaisler.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>, Saeed Bishara <saeedb@amazon.com>,
+        Zorik Machulsky <zorik@amazon.com>,
+        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-everest-linux-l2@marvell.com,
+        Michael Chan <michael.chan@broadcom.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Catherine Sullivan <csully@google.com>,
+        Sagi Shahar <sagis@google.com>, Jon Olson <jonolson@google.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>,
+        John Crispin <john@phrozen.org>, Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>, Jon Mason <jdmason@kudzu.us>,
+        Rain River <rain.1986.08.12@gmail.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Pensando Drivers <drivers@pensando.io>,
+        Jiri Pirko <jiri@resnulli.us>, Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        Daniele Venzano <venza@brownhat.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Wingman Kwok <w-kwok2@ti.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Kevin Brace <kevinbrace@bracecomputerlab.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, qat-linux@intel.com,
+        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        ath11k@lists.infradead.org, wil6210@qti.qualcomm.com,
+        b43-dev@lists.infradead.org, iommu@lists.linux-foundation.org
+References: <5d08af46-5897-b827-dcfb-181d869c8f71@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201203065801.GH751215@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
+Content-Disposition: inline
+In-Reply-To: <5d08af46-5897-b827-dcfb-181d869c8f71@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3.12.2020 8.58, Mike Rapoport wrote:
-> On Wed, Dec 02, 2020 at 08:49:06PM +0200, Topi Miettinen wrote:
->> On 1.12.2020 23.45, Topi Miettinen wrote:
->>> Memory mappings inside kernel allocated with vmalloc() are in
->>> predictable order and packed tightly toward the low addresses. With
->>> new kernel boot parameter 'randomize_vmalloc=1', the entire area is
->>> used randomly to make the allocations less predictable and harder to
->>> guess for attackers.
->>>
->>
->> This also seems to randomize module addresses. I was going to check that
->> next, so nice surprise!
-> 
-> Heh, that's because module_alloc() uses vmalloc() in that way or another :)
 
-I got a bit further with really using vmalloc with 
-[VMALLOC_START..VMALLOC_END] for modules, but then inserting a module 
-fails because of the relocations:
-[    9.202856] module: overflow in relocation type 11 val ffffe1950e27f080
+--k+w/mQv8wyuph6w0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Type 11 is R_X86_64_32S expecting a 32 bits signed offset, so the loader 
-obviously can't fit the relocation from the highest 2GB to somewhere 32 
-TB lower.
+On Thu, Dec 10, 2020 at 03:47:50PM +0100, Heiner Kallweit wrote:
+> Zillions of drivers use the unlikely() hint when checking the result of
+> dma_mapping_error(). This is an inline function anyway, so we can move
+> the hint into the function and remove it from drivers.
+> From time to time discussions pop up how effective unlikely() is,
+> and that it should be used only if something is really very unlikely.
+> I think that's the case here.
+>=20
+> Patch was created with some help from coccinelle.
+>=20
+> @@
+> expression dev, dma_addr;
+> @@
+>=20
+> - unlikely(dma_mapping_error(dev, dma_addr))
+> + dma_mapping_error(dev, dma_addr)
+>=20
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
-The problem seems to be that the modules aren't really built as 
-position-independent shared objects with -fPIE/-fPIC, but instead 
-there's explicit -fno-PIE. I guess the modules also shouldn't use 
--mcmodel=kernel. Though tweaking the flags shows that some combinations 
-aren't well supported (like ’-mindirect-branch=thunk-extern’ and 
-‘-mcmodel=large’ are not compatible) and the handwritten assembly code 
-also assumes 32 bit offsets.
+Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C
 
-A different approach could be to make the entire kernel relocatable to 
-lower addresses and then the modules could stay close nearby. I guess 
-the asm files aren't written with position independence in mind either.
 
-But it seems that I'm finding and breaking lots of assumptions built in 
-to the system. What's the experts' opinion, is full module/kernel 
-randomization ever going to fly?
+--k+w/mQv8wyuph6w0
+Content-Type: application/pgp-signature; name="signature.asc"
 
--Topi
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/SffoACgkQFA3kzBSg
+KbYcjxAAgOE4gHcgEP8+Oex1fposdP2Z4KiWFjIYYWG4fo/Ry9PjDbSGh9Nptht2
+fnsCRcFXFj4oaSXaflBTq6ky4usgo2Gyp9puXbnpyj7P2uEjrqZs1zUFpAWdzMor
+UgiJkW/P2IZjCDfwxE8nn9L0fm8ZfcHWqVohAgDh/9SKsrQCdzlzwvd7vSQ94fXr
+qnYrmc6BF68dxVZx4TV18GddP5qFXYKytQ8pXL51XZEJTI05IGmc2l6hs/B4tKj6
+muxiEFw5Ac0eseMimi4J5YDJJZxWe28onn69mMJYQDzVPqSZRyhSAqCv0EhMg6Vp
+sABbG/eShtxir8A5ZrVRgqCaVyBjPu6pHAxdccHkj4d/6hfvD6F2FDXXaWirAf3i
+A4gsMJAmxtBYV0Lyx0D+fzCFnvUSDDSOEayRJdzotQXVCbLvuWHTp6EXVJFD5mMU
+/o3LApTC1uYQTXfGh1HHanpSEXLXfVgzjuDHRUsVIwemk5JwUAl6fw4oXbMrHYdZ
+v9Inx4U81LGxayz1vGmzbE39AeE7YH/5lH4metjot96RpKa+Gg++mMxUHBPW6Jam
+AOz6I3cKYsn7mPkzAZfDNvhvfgz2vxXcGGULSCdaWnVCJY7FMqe8i98w1z/Ymo7U
+JSXmDUhFS43r0JqUfbR0sRGgLL+kHTEa6I4ZT8UNd9DmTtS0Jmo=
+=4X1P
+-----END PGP SIGNATURE-----
+
+--k+w/mQv8wyuph6w0--
