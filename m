@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8DC2D690F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C842D6912
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393870AbgLJUpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 15:45:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404422AbgLJUpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 15:45:11 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607633071;
-        bh=SXi2HBbTi2Ktp+5K+01P6ZkTQWFFUTcMMxHB0SI5dyU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=tzbaKAC/0VfKmJXbBMJfm7B//dwkecsebePW3cs3CJvcJpCYcWOAUXI9E+arB4zkW
-         qM821r5r5rqotvfoHirW5poLR5DxH2KmvzxXyxA0xbtPCH+BsJZGvupZhN1mrl7cn+
-         9hO07rIePETgnxBPy8CMBv+fpxomb/ub1alY5OxKymOsNQ+W54spTjzpeYNqJxUkx5
-         oXTXhfme3rSax+3IWD86OpQIa9BXbdQTzu218a3YL+NgA9cjeeMhoF2E9w2nS1Yd/G
-         1JTOg51JovErMchlLSyWcMxvZkjhtxdQw58oSxMqaKl/qAzWHTSzZ1KcXEyAUoDw+p
-         7z8xjZGztNocw==
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201208064702.3654324-2-vkoul@kernel.org>
-References: <20201208064702.3654324-1-vkoul@kernel.org> <20201208064702.3654324-2-vkoul@kernel.org>
-Subject: Re: [PATCH v2 1/5] dt-bindings: clock: Add RPMHCC bindings for SM8350
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Vinod Koul <vkoul@kernel.org>
-Date:   Thu, 10 Dec 2020 12:44:29 -0800
-Message-ID: <160763306956.1580929.12735191050933840872@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S2404626AbgLJUqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 15:46:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732382AbgLJUqV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 15:46:21 -0500
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710BAC0613CF;
+        Thu, 10 Dec 2020 12:45:41 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 617FD4D2ED6E3;
+        Thu, 10 Dec 2020 12:45:40 -0800 (PST)
+Date:   Thu, 10 Dec 2020 12:45:35 -0800 (PST)
+Message-Id: <20201210.124535.572123178373912255.davem@davemloft.net>
+To:     a@unstable.cc
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vxlan: avoid double unlikely() notation when using
+ IS_ERR()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20201210085549.22846-1-a@unstable.cc>
+References: <20201210085549.22846-1-a@unstable.cc>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Thu, 10 Dec 2020 12:45:40 -0800 (PST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Vinod Koul (2020-12-07 22:46:58)
-> Add bindings and update documentation for clock rpmh driver on SM8350.
->=20
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
+From: Antonio Quartulli <a@unstable.cc>
+Date: Thu, 10 Dec 2020 09:55:49 +0100
 
-Applied to clk-next
+> The definition of IS_ERR() already applies the unlikely() notation
+> when checking the error status of the passed pointer. For this
+> reason there is no need to have the same notation outside of
+> IS_ERR() itself.
+> 
+> Clean up code by removing redundant notation.
+> 
+> Signed-off-by: Antonio Quartulli <a@unstable.cc>
+
+Applied to net-next, thanks.
