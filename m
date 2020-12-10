@@ -2,27 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267322D6559
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B812D6513
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390603AbgLJOcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:32:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38948 "EHLO mail.kernel.org"
+        id S2392498AbgLJSca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:32:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388798AbgLJObK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:31:10 -0500
+        id S2390780AbgLJOdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:33:49 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Jann Horn <jannh@google.com>, Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH 4.9 28/45] tty: Fix ->pgrp locking in tiocspgrp()
-Date:   Thu, 10 Dec 2020 15:26:42 +0100
-Message-Id: <20201210142603.739750087@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 04/39] USB: serial: kl5kusb105: fix memleak on open
+Date:   Thu, 10 Dec 2020 15:26:43 +0100
+Message-Id: <20201210142602.507198856@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
-References: <20201210142602.361598591@linuxfoundation.org>
+In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
+References: <20201210142602.272595094@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,44 +30,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jann Horn <jannh@google.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 54ffccbf053b5b6ca4f6e45094b942fab92a25fc upstream.
+commit 3f203f057edfcf6bd02c6b942799262bfcf31f73 upstream.
 
-tiocspgrp() takes two tty_struct pointers: One to the tty that userspace
-passed to ioctl() (`tty`) and one to the TTY being changed (`real_tty`).
-These pointers are different when ioctl() is called with a master fd.
+Fix memory leak of control-message transfer buffer on successful open().
 
-To properly lock real_tty->pgrp, we must take real_tty->ctrl_lock.
-
-This bug makes it possible for racing ioctl(TIOCSPGRP, ...) calls on
-both sides of a PTY pair to corrupt the refcount of `struct pid`,
-leading to use-after-free errors.
-
-Fixes: 47f86834bbd4 ("redo locking of tty->pgrp")
-CC: stable@kernel.org
-Signed-off-by: Jann Horn <jannh@google.com>
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Fixes: 6774d5f53271 ("USB: serial: kl5kusb105: fix open error path")
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/tty_io.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/serial/kl5kusb105.c |   10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -2645,10 +2645,10 @@ static int tiocspgrp(struct tty_struct *
- 	if (session_of_pgrp(pgrp) != task_session(current))
- 		goto out_unlock;
- 	retval = 0;
--	spin_lock_irq(&tty->ctrl_lock);
-+	spin_lock_irq(&real_tty->ctrl_lock);
- 	put_pid(real_tty->pgrp);
- 	real_tty->pgrp = get_pid(pgrp);
--	spin_unlock_irq(&tty->ctrl_lock);
-+	spin_unlock_irq(&real_tty->ctrl_lock);
- out_unlock:
- 	rcu_read_unlock();
+--- a/drivers/usb/serial/kl5kusb105.c
++++ b/drivers/usb/serial/kl5kusb105.c
+@@ -276,12 +276,12 @@ static int  klsi_105_open(struct tty_str
+ 	priv->cfg.unknown2 = cfg->unknown2;
+ 	spin_unlock_irqrestore(&priv->lock, flags);
+ 
++	kfree(cfg);
++
+ 	/* READ_ON and urb submission */
+ 	rc = usb_serial_generic_open(tty, port);
+-	if (rc) {
+-		retval = rc;
+-		goto err_free_cfg;
+-	}
++	if (rc)
++		return rc;
+ 
+ 	rc = usb_control_msg(port->serial->dev,
+ 			     usb_sndctrlpipe(port->serial->dev, 0),
+@@ -324,8 +324,6 @@ err_disable_read:
+ 			     KLSI_TIMEOUT);
+ err_generic_close:
+ 	usb_serial_generic_close(port);
+-err_free_cfg:
+-	kfree(cfg);
+ 
  	return retval;
+ }
 
 
