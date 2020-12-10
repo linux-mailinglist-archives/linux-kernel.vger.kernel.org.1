@@ -2,111 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAE82D5297
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:08:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBA72D52A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732423AbgLJEH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 23:07:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731986AbgLJEHe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 23:07:34 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3B8C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 20:06:54 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id u4so2095480plr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 20:06:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0GPEqIaWJcqLf7P6askLTC3D31i4Szuh6Rq0AHAG9Tc=;
-        b=TdUOb18rR3jHySMqE+Q4DwihstlzSQ39+NVElGJvJpMBKrAdlt24K0j0MysT8LKgm4
-         behPcXhCeHvZMq8p+ZFntxxntoVss7iU8CNoucTM1ahvuF1myQnpjqWQQddGhyiz1MwB
-         orWcniOmCDjZmEO3BdmyrTXBhJu8nZpc1kDkcojqIiI+mjXDXPmXUSiVlrn8RcpK4f4n
-         kO5gmAQ0wYxsp9wbiKViUW84oZCvuozrZTDkiKJ7ZlsTO4VPT5xfRM/WqLiS27bAr3DC
-         Pg5e+Vk8LkcjbU61hxu/w9S+dtIQh7OSA8SmP4TGRS5GOqQV9OfRwmWsJChYjXS/Fp6M
-         0FMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0GPEqIaWJcqLf7P6askLTC3D31i4Szuh6Rq0AHAG9Tc=;
-        b=mZNIojQ3HCUcDAJIlsl/sRTiANZUrN4YvayNEL5bcaXQaqlB55xVK7jaXr64+z1tD2
-         e/0c3szmmFDk1G7/HtXHyLO7Pz0Sc42Gym18b3dlTNBP4H5E8oAWptJLzFxtKlGzG5Ym
-         gM75xIxqOmtvpNraPZLxjvMXL4Jqqr98qVAzya2iNnZAdXHl4Y6f5Gsmptu+naZqc3Mf
-         IDhaxaHNRg24USW3wPuFhyr6l1oej5OyA1dP/NMVi/tQRyEG0u5VXsn40UoqOlHq7wM9
-         PVCgdoXtUy99tKHgTMiMGD3vMUEsxMquyTnxUUO3P7t3HYFf6FWidQS2MBgvpeaX7qFJ
-         9Bdw==
-X-Gm-Message-State: AOAM5320NSTaRGOxmeTnXmk/SwfJ4dqNnZOQKKfM6wLIP1PEvdEvbLWt
-        9RIKp4JNeMmAdIHy0E0j7ftc
-X-Google-Smtp-Source: ABdhPJxRZ9O4Ut3GXyiS1qDLjT465suH8On/iOHxAyw+WES6Fr5N5oEeYnc/3qrG4cAeqcHet71dYQ==
-X-Received: by 2002:a17:902:b18c:b029:da:fc41:baf8 with SMTP id s12-20020a170902b18cb02900dafc41baf8mr5059919plr.58.1607573213512;
-        Wed, 09 Dec 2020 20:06:53 -0800 (PST)
-Received: from thinkpad ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id t15sm4063549pja.4.2020.12.09.20.06.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 20:06:52 -0800 (PST)
-Date:   Thu, 10 Dec 2020 09:36:44 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 1/7] dt-bindings: input: Add reset-time-sec common
- property
-Message-ID: <20201210040644.GC6466@thinkpad>
-References: <cover.1607216141.git.cristian.ciocaltea@gmail.com>
- <c08349db08db67e71cf428fe7fd53624aaa0acf8.1607216141.git.cristian.ciocaltea@gmail.com>
+        id S1731385AbgLJEJx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Dec 2020 23:09:53 -0500
+Received: from smtp.h3c.com ([60.191.123.56]:18606 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730328AbgLJEJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 23:09:52 -0500
+Received: from DAG2EX01-BASE.srv.huawei-3com.com ([10.8.0.64])
+        by h3cspam01-ex.h3c.com with ESMTP id 0BA48DCZ034913;
+        Thu, 10 Dec 2020 12:08:13 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX01-BASE.srv.huawei-3com.com (10.8.0.64) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 10 Dec 2020 12:08:15 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.2106.002; Thu, 10 Dec 2020 12:08:15 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] blk-mq-tag: make blk_mq_tag_busy() return void
+Thread-Topic: [PATCH] blk-mq-tag: make blk_mq_tag_busy() return void
+Thread-Index: AQHWzTbPLVQryLH5fkSeJ0U/VBp/EKnvMY+AgACHgrA=
+Date:   Thu, 10 Dec 2020 04:08:14 +0000
+Message-ID: <c067fbee320e4810ae599cde9680a366@h3c.com>
+References: <20201208074002.31539-1-tian.xianting@h3c.com>
+ <20201210040051.GA1377508@T590>
+In-Reply-To: <20201210040051.GA1377508@T590>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c08349db08db67e71cf428fe7fd53624aaa0acf8.1607216141.git.cristian.ciocaltea@gmail.com>
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 0BA48DCZ034913
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 03:27:01AM +0200, Cristian Ciocaltea wrote:
-> Add a new common property 'reset-time-sec' to be used in conjunction
-> with the devices supporting the key pressed reset feature.
-> 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> ---
-> Changes in v3:
->  - This patch was not present in v2
-> 
->  Documentation/devicetree/bindings/input/input.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/input/input.yaml b/Documentation/devicetree/bindings/input/input.yaml
-> index ab407f266bef..caba93209ae7 100644
-> --- a/Documentation/devicetree/bindings/input/input.yaml
-> +++ b/Documentation/devicetree/bindings/input/input.yaml
-> @@ -34,4 +34,11 @@ properties:
->        specify this property.
->      $ref: /schemas/types.yaml#/definitions/uint32
->  
-> +  reset-time-sec:
-> +    description:
-> +      Duration in seconds which the key should be kept pressed for device to
-> +      reset automatically. Device with key pressed reset feature can specify
-> +      this property.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
+Thanks for the comments,
+So blk_mq_tag_idle() can be also simplified as below,  I will send v2 patch for reviewing.
 
-Why can't you just use "power-off-time-sec"?
+static inline void blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
+ {
+-       if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
+-               return;
+-
+-       __blk_mq_tag_idle(hctx);
++       if (hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED)
++               __blk_mq_tag_idle(hctx);
+ }
+
+-----Original Message-----
+From: Ming Lei [mailto:ming.lei@redhat.com] 
+Sent: Thursday, December 10, 2020 12:01 PM
+To: tianxianting (RD) <tian.xianting@h3c.com>
+Cc: axboe@kernel.dk; linux-block@vger.kernel.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-mq-tag: make blk_mq_tag_busy() return void
+
+On Tue, Dec 08, 2020 at 03:40:02PM +0800, Xianting Tian wrote:
+> As no one cares about the return value of blk_mq_tag_busy() and 
+> __blk_mq_tag_busy(), so make them return void.
+> 
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>  block/blk-mq-tag.c | 4 ++--
+>  block/blk-mq-tag.h | 8 ++++----
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c index 
+> 9c92053e7..21ff7d156 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -21,7 +21,7 @@
+>   * to get tag when first time, the other shared-tag users could reserve
+>   * budget for it.
+>   */
+> -bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+> +void __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>  {
+>  	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+>  		struct request_queue *q = hctx->queue; @@ -36,7 +36,7 @@ bool 
+> __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>  			atomic_inc(&hctx->tags->active_queues);
+>  	}
+>  
+> -	return true;
+> +	return;
+>  }
+>  
+>  /*
+> diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h index 
+> 7d3e6b333..dd80e5a85 100644
+> --- a/block/blk-mq-tag.h
+> +++ b/block/blk-mq-tag.h
+> @@ -60,15 +60,15 @@ enum {
+>  	BLK_MQ_TAG_MAX		= BLK_MQ_NO_TAG - 1,
+>  };
+>  
+> -extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
+> +extern void __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
+>  extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *);
+>  
+> -static inline bool blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+> +static inline void blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>  {
+>  	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
+> -		return false;
+> +		return;
+>  
+> -	return __blk_mq_tag_busy(hctx);
+> +	__blk_mq_tag_busy(hctx);
+
+The above can be simplified as:
+
+  	if (hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED)
+		__blk_mq_tag_busy(hctx);
+
+Otherwise, looks fine:
+
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
 Thanks,
-Mani
+Ming
 
->  additionalProperties: true
-> -- 
-> 2.29.2
-> 
