@@ -2,176 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C542D4F51
+	by mail.lfdr.de (Postfix) with ESMTP id AF7342D4F52
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730221AbgLJAVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 19:21:45 -0500
-Received: from mga11.intel.com ([192.55.52.93]:36194 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727398AbgLJAVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 19:21:45 -0500
-IronPort-SDR: CYyZ9VI5IIH0+FxkxgZeQDry18bj6WRYU45AQlU8lBADPZszQm4SWKt5vN+Y/+BKMfjK4o/Fa4
- vl/X3UFdTo2w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="170663419"
-X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="170663419"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 16:21:04 -0800
-IronPort-SDR: FEzWeizcvfYARXbqtdQBrILs6Vjy9Q2rQKgF29O6pmYYV2aoMKuK6DhFBiNMhakmsaeq+bg6UA
- tIJQpBQogaCg==
-X-IronPort-AV: E=Sophos;i="5.78,407,1599548400"; 
-   d="scan'208";a="438054504"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.209.138.37]) ([10.209.138.37])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 16:21:04 -0800
-Subject: Re: [PATCH 1/3] x86/resctrl: Move setting task's active CPU in a mask
- into helpers
-To:     James Morse <james.morse@arm.com>, fenghua.yu@intel.com
-Cc:     tglx@linutronix.de, bp@alien8.de, tony.luck@intel.com,
-        kuo-lang.tseng@intel.com, shakeelb@google.com,
-        valentin.schneider@arm.com, mingo@redhat.com, babu.moger@amd.com,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <cover.1607036601.git.reinette.chatre@intel.com>
- <77973e75a10bf7ef9b33c664544667deee9e1a8e.1607036601.git.reinette.chatre@intel.com>
- <a782d2f3-d2f6-795f-f4b1-9462205fd581@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <d38430c5-3d65-2c8a-d267-fb99b666d5ea@intel.com>
-Date:   Wed, 9 Dec 2020 16:21:03 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1728421AbgLJAWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 19:22:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727104AbgLJAWR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 19:22:17 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB87C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 16:21:36 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrvjQ4CCFz9sWR;
+        Thu, 10 Dec 2020 11:21:30 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1607559694;
+        bh=gUZqycqRbXTyBxFOg8awmtGV88oSNS0vpFmP17hRE8I=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=iXVlNHV7UeasFgTcvPoOsDtvudLakpBzfGe/AodMrzWLe6r723U2AbOJKaPvvv7CY
+         rCHNeEBRzlnTZqStVaQAbsyEv+pDNCUuBsko533qvj8TfG2p5gcg2XTofGs1v5rcZN
+         Dn9i0TmnpAI6JubAMqDCkzjm7pE+xatB2SAo0EBlEuM0CaEFWbKn8SROn1iRJEAIJ6
+         AbTi1WWeOSOIUico+Q0SDITrF+vUggxyOOiWawqRXlUGtfCaVmxl+4FbAs6RyzUvRE
+         uWP9xksLPBCG/ZwJM97i74ms5+I/AVrkJPcqN2LNXOUKWGn3WqbMG12MLmQs2N9Ed3
+         8JS1BtcWXh2hQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v1 2/6] powerpc/8xx: Always pin kernel text TLB
+In-Reply-To: <a726961f-f440-b553-6c46-341a860dc90a@csgroup.eu>
+References: <e796c5fcb5898de827c803cf1ab8ba1d7a5d4b76.1606231483.git.christophe.leroy@csgroup.eu> <203b89de491e1379f1677a2685211b7c32adfff0.1606231483.git.christophe.leroy@csgroup.eu> <87lfe7s1j3.fsf@mpe.ellerman.id.au> <a726961f-f440-b553-6c46-341a860dc90a@csgroup.eu>
+Date:   Thu, 10 Dec 2020 11:21:29 +1100
+Message-ID: <87ft4ese7q.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <a782d2f3-d2f6-795f-f4b1-9462205fd581@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Le 09/12/2020 =C3=A0 11:43, Michael Ellerman a =C3=A9crit=C2=A0:
+>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>>> There is no big poing in not pinning kernel text anymore, as now
+>>> we can keep pinned TLB even with things like DEBUG_PAGEALLOC.
+>>>
+>>> Remove CONFIG_PIN_TLB_TEXT, making it always right.
+>>>
+>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>> ---
+>>>   arch/powerpc/Kconfig               |  3 +--
+>>>   arch/powerpc/kernel/head_8xx.S     | 20 +++-----------------
+>>>   arch/powerpc/mm/nohash/8xx.c       |  3 +--
+>>>   arch/powerpc/platforms/8xx/Kconfig |  7 -------
+>>>   4 files changed, 5 insertions(+), 28 deletions(-)
+>>>
+>> ...
+>>> diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
+>>> index 231ca95f9ffb..19a3eec1d8c5 100644
+>>> --- a/arch/powerpc/mm/nohash/8xx.c
+>>> +++ b/arch/powerpc/mm/nohash/8xx.c
+>>> @@ -186,8 +186,7 @@ void mmu_mark_initmem_nx(void)
+>>>   	mmu_mapin_ram_chunk(0, boundary, PAGE_KERNEL_TEXT, false);
+>>>   	mmu_mapin_ram_chunk(boundary, einittext8, PAGE_KERNEL, false);
+>>>=20=20=20
+>>> -	if (IS_ENABLED(CONFIG_PIN_TLB_TEXT))
+>>> -		mmu_pin_tlb(block_mapped_ram, false);
+>>> +	mmu_pin_tlb(block_mapped_ram, false);
+>>>   }
+>>=20
+>> This broke mpc885_ads_defconfig with:
+>
+> :surprise:
+>
+> How did I get it working ? Anyway, thanks for fixing it.
 
-Thank you very much for your review.
+No worries. I figured you must have tested with some other series(s)
+applied and/or with different configs, it happens :)
 
-On 12/9/2020 8:47 AM, James Morse wrote:
-> Hi Reinette, Fenghua,
-> 
-> On 03/12/2020 23:25, Reinette Chatre wrote:
->> From: Fenghua Yu <fenghua.yu@intel.com>
->>
->> The code of setting the CPU on which a task is running in a CPU mask is
->> moved into a couple of helpers. The new helper task_on_cpu() will be
->> reused shortly.
-> 
->> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
->> index 6f4ca4bea625..68db7d2dec8f 100644
->> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
->> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
->> @@ -525,6 +525,38 @@ static void rdtgroup_remove(struct rdtgroup *rdtgrp)
-> 
->> +#ifdef CONFIG_SMP
-> 
-> (using IS_ENABLED(CONFIG_SMP) lets the compiler check all the code in one go, then
-> dead-code-remove the stuff that will never happen... its also easier on the eye!)
-
-Thank you for catching this. New fix (see below) uses this.
-
->> +/* Get the CPU if the task is on it. */
->> +static bool task_on_cpu(struct task_struct *t, int *cpu)
->> +{
->> +	/*
->> +	 * This is safe on x86 w/o barriers as the ordering of writing to
->> +	 * task_cpu() and t->on_cpu is reverse to the reading here. The
->> +	 * detection is inaccurate as tasks might move or schedule before
->> +	 * the smp function call takes place. In such a case the function
->> +	 * call is pointless, but there is no other side effect.
->> +	 */
-> 
->> +	if (t->on_cpu) {
-> 
-> kernel/sched/core.c calls out that there can be two tasks on one CPU with this set.
-> (grep astute)
-> I think that means this series will falsely match the old task for a CPU while the
-> scheduler is running, and IPI it unnecessarily.
-> 
-> task_curr() is the helper that knows not to do this.
-> 
-
-Thank you very much for catching this. I did not know this. This exposes 
-an issue with the current implementation of moving tasks as part of 
-directory removal. I now plan to replace this patch with a new fix to 
-address this new issue you exposed: the fix will replace the current 
-usage of t->on_cpu with task_curr(). Since I also follow your suggestion 
-for patch #2 this original patch is no longer needed, which is something 
-Borislav also suggested but I could not see a way to do it at the time.
-
-This new fix does seem to fall into the "This could be a problem.." 
-category of issues referred to in stable-kernel-rules.rst so while I 
-plan on adding a Fixes tag I plan to not cc the stable team on this one. 
-I am unsure about the right thing to do here so if you have an opinion I 
-would appreciate it.
-
-What do you think of this replacement patch (that will be moved to end 
-of series)?
-
-Reinette
-
-----8<------
-x86/resctrl: Replace t->on_cpu with task_curr() to prevent unnecessary IPI
-
-James reported in [1] that there could be two tasks running on the same CPU
-with t->on_cpu set. Using t->on_cpu as a test if a task is running on a
-CPU may thus match the old task for a CPU while the scheduler is
-running and IPI it unnecessarily.
-
-task_curr() is the correct helper to use. While doing so move the #ifdef
-check of the CONFIG_SMP symbol to be a C conditional used to determine
-if this helper should be used so ensure the code is always checked for
-correctness by the compiler.
-
-[1] 
-https://lore.kernel.org/lkml/a782d2f3-d2f6-795f-f4b1-9462205fd581@arm.com
-
-Fixes: 0efc89be9471 ("x86/intel_rdt: Update task closid immediately on 
-CPU in rmdir and unmount")
-Reported-by: James Morse <james.morse@arm.com>
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
----
-  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 14 ++------------
-  1 file changed, 2 insertions(+), 12 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c 
-b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 5e5a49f38fa1..c64fb37f0aec 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -2317,19 +2317,9 @@ static void rdt_move_group_tasks(struct rdtgroup 
-*from, struct rdtgroup *to,
-  			t->closid = to->closid;
-  			t->rmid = to->mon.rmid;
-
--#ifdef CONFIG_SMP
--			/*
--			 * This is safe on x86 w/o barriers as the ordering
--			 * of writing to task_cpu() and t->on_cpu is
--			 * reverse to the reading here. The detection is
--			 * inaccurate as tasks might move or schedule
--			 * before the smp function call takes place. In
--			 * such a case the function call is pointless, but
--			 * there is no other side effect.
--			 */
--			if (mask && t->on_cpu)
-+			/* If the task is on a CPU, set the CPU in the mask. */
-+			if (IS_ENABLED(CONFIG_SMP) && mask && task_curr(t))
-  				cpumask_set_cpu(task_cpu(t), mask);
--#endif
-  		}
-  	}
-  	read_unlock(&tasklist_lock);
-
-
-
-
-
-
-
+cheers
