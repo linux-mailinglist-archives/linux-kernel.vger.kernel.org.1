@@ -2,172 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E072D5CD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 888912D5CC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389923AbgLJOFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:05:30 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:33494 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389714AbgLJODw (ORCPT
+        id S2389840AbgLJOEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:04:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389835AbgLJOEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:03:52 -0500
-Received: by mail-il1-f198.google.com with SMTP id j20so4488857ilk.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:03:36 -0800 (PST)
+        Thu, 10 Dec 2020 09:04:06 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80FAC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:03:25 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id bo9so7433006ejb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:03:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wQkZfoQiHk1xwccW1qOvkd2W3WhIuH9Tuwz2EAXi1QE=;
+        b=TohY7715fqEyw/5GjAEVPNV37qaIsrFhUphQ5D0Qi62jTDE/9Mr3f3oICVrRu0NQVR
+         ZlRrHK3BK05HYMiI2ImzDJ3XcD+ycCwriNVRzRZUpKfD9o1WNriiQGfExofjaxgrag9U
+         MXsilONV07UtdI/ToYtXVqwJkt3QEKspK5uMhxjB+bK3w7YFeEwgkcX48fcIJM5VaAy/
+         PKDZBok9Ia9S3ii1chbrBz/mp/qNMQMPs/u6osmeEuRp/e9vzvQkW0pS7xHE+Uf0j3Wl
+         u1NMjEifApdg6JTcSugs2/0c3WZgLr2OETvf071QVDwYShhkmXn9+EmDTPGBhH33xqM3
+         M+vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=dCHnS+IGmE05QjPXrUbbLAFiydDVaiZOQybW0UvsNF8=;
-        b=AqW4HEtBiUiSrqU8qGZxqGkDHbSvrnC0wOH78cBPEp7hJtrhEH2FblztfjN58Eezgi
-         gqw1X2RpEg2VRLh6HxDxDyy5nVlGzc3UE387SQbJip1/KkqfygnfKvjVdfubSHlPtS2R
-         uwgbwmZWNI8otDwdLbrCOIZ2zSEcQAQ/zCeudfIhZRQqDQx734QzEqycBMZJyDKM6WfI
-         Xl+lZmDN5A8KSUwDJZxKVIY2rofjZ1NvCtegvoRvi4D/k+Lck7KK7D38nHIa3KAakmpy
-         DNW36Wj9UERS9NH65SVDBbPEAKmj5Q0f1vfTXteqYmmc+eJWeQBvg7T3iBAX3vJlHIHF
-         dCDA==
-X-Gm-Message-State: AOAM533SA7psXZoUryOnULCdKPsQesnHGeDw5ih1jhLzK3MmxMEdE7pV
-        OR0PYZzdZi752WQ6hJe81wvmxF0Y/QhyWbSkmvv1KLL2DD4T
-X-Google-Smtp-Source: ABdhPJzNhswceQ5PwLWQ9ylc/ytFQpeq987bYUGnEeJ6q1oS7R5eKN3G8ahRRjFS9lFelXt+dL91xjXPU/7vxgtm3PWnXeJNVVeU
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wQkZfoQiHk1xwccW1qOvkd2W3WhIuH9Tuwz2EAXi1QE=;
+        b=qQjzIMNQPZ90H7Ss+XPwuEgrvXE/lAFxJNTSnKAFRN7MhkgZSsCSRqxTAP//HZW/HN
+         tJy2IqJ4r+xUC80HU+6xBMmgllNjahVa84vPbj8QDJxow5Cmr/YbwzTAcrzfNBZshLBz
+         tcLfM7UkBf7NEirK0n3W0v73IkjUqyjwHYEkCgVZkdc6/11p46n7syZMprtWO0dqecTM
+         2h9+VppAdm9LNHY2K+qG/GhI8vHq9KeqY3k9E6kTrp6mXdzewa0o9/rdwSzJwQ4PEuV1
+         irRpAy79CslMJe52q6/Zsy2WhrxrBVb4uDU14NfuhPfh9+z1IbKj7v/+Dfiq0D7t777I
+         gtGQ==
+X-Gm-Message-State: AOAM533/I8OU//7uEt8eb/nPK33IlvzmELBnLDXAb2asAKy4xVdh0Bif
+        kJravhp0mbjeMlNohcqZfPiqeQ==
+X-Google-Smtp-Source: ABdhPJwYDfFoEIJMhCuEIucESC7KnKGajEnGFwmu71YD+I9rvBJsJTreJiRmXUx82xbweE+nQCNkyw==
+X-Received: by 2002:a17:906:7fcd:: with SMTP id r13mr6682088ejs.242.1607609004361;
+        Thu, 10 Dec 2020 06:03:24 -0800 (PST)
+Received: from [192.168.0.105] (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id f11sm5148560edy.59.2020.12.10.06.03.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 06:03:23 -0800 (PST)
+Subject: Re: linux-next: manual merge of the tip tree with the microblaze tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20201210155808.717a7257@canb.auug.org.au>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <1848f245-2a64-0aec-58db-b575de29debc@monstr.eu>
+Date:   Thu, 10 Dec 2020 15:03:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2110:: with SMTP id x16mr7176336iox.127.1607608991438;
- Thu, 10 Dec 2020 06:03:11 -0800 (PST)
-Date:   Thu, 10 Dec 2020 06:03:11 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000df5ecf05b61ca23b@google.com>
-Subject: possible deadlock in zd_chip_disable_rxtx
-From:   syzbot <syzbot+0ec3d1a6cf1fbe79c153@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, davem@davemloft.net, dsd@gentoo.org,
-        kuba@kernel.org, kune@deine-taler.de, kvalo@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201210155808.717a7257@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Stephen,
 
-syzbot found the following issue on:
+On 10. 12. 20 5:58, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the tip tree got conflicts in:
+> 
+>   arch/microblaze/Kconfig
+>   arch/microblaze/mm/Makefile
+> 
+> between commit:
+> 
+>   05cdf457477d ("microblaze: Remove noMMU code")
+> 
+> from the microblaze tree and commit:
+> 
+>   7ac1b26b0a72 ("microblaze/mm/highmem: Switch to generic kmap atomic")
+> 
+> from the tip tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
 
-HEAD commit:    8010622c USB: UAS: introduce a quirk to set no_write_same
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=131e6adf500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d24ee9ecd7ce968e
-dashboard link: https://syzkaller.appspot.com/bug?extid=0ec3d1a6cf1fbe79c153
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d7246b500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=172c240f500000
+Thanks for letting me know. I will mentioned it to Linus.
+Your resolution is correct.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0ec3d1a6cf1fbe79c153@syzkaller.appspotmail.com
-
-usb 1-1: reset high-speed USB device number 2 using dummy_hcd
-usb 1-1: device descriptor read/64, error -71
-usb 1-1: Using ep0 maxpacket: 32
-usb 1-1: unable to get BOS descriptor or descriptor too short
-zd1211rw 1-1:5.118: phy1
-zd1211rw 1-1:5.114: error ioread32(CR_REG1): -11
-============================================
-WARNING: possible recursive locking detected
-5.10.0-rc7-syzkaller #0 Not tainted
---------------------------------------------
-kworker/1:2/2618 is trying to acquire lock:
-ffff888102cbdd10 (&chip->mutex){+.+.}-{3:3}, at: zd_chip_disable_rxtx+0x1c/0x40 drivers/net/wireless/zydas/zd1211rw/zd_chip.c:1465
-
-but task is already holding lock:
-ffff888101d9dd10 (&chip->mutex){+.+.}-{3:3}, at: pre_reset+0x217/0x290 drivers/net/wireless/zydas/zd1211rw/zd_usb.c:1504
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&chip->mutex);
-  lock(&chip->mutex);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-6 locks held by kworker/1:2/2618:
- #0: ffff888103bff538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888103bff538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888103bff538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888103bff538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888103bff538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888103bff538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x821/0x1520 kernel/workqueue.c:2243
- #1: ffffc900001c7da8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x854/0x1520 kernel/workqueue.c:2247
- #2: ffff88810802a218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:731 [inline]
- #2: ffff88810802a218 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c5/0x42d0 drivers/usb/core/hub.c:5537
- #3: ffff8881013cd218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:731 [inline]
- #3: ffff8881013cd218 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:887
- #4: ffff88810ed8c1a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:731 [inline]
- #4: ffff88810ed8c1a8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:887
- #5: ffff888101d9dd10 (&chip->mutex){+.+.}-{3:3}, at: pre_reset+0x217/0x290 drivers/net/wireless/zydas/zd1211rw/zd_usb.c:1504
-
-stack backtrace:
-CPU: 1 PID: 2618 Comm: kworker/1:2 Not tainted 5.10.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_deadlock_bug kernel/locking/lockdep.c:2761 [inline]
- check_deadlock kernel/locking/lockdep.c:2804 [inline]
- validate_chain kernel/locking/lockdep.c:3595 [inline]
- __lock_acquire.cold+0x15e/0x3b0 kernel/locking/lockdep.c:4832
- lock_acquire kernel/locking/lockdep.c:5437 [inline]
- lock_acquire+0x288/0x700 kernel/locking/lockdep.c:5402
- __mutex_lock_common kernel/locking/mutex.c:956 [inline]
- __mutex_lock+0x134/0x10a0 kernel/locking/mutex.c:1103
- zd_chip_disable_rxtx+0x1c/0x40 drivers/net/wireless/zydas/zd1211rw/zd_chip.c:1465
- zd_op_stop+0x60/0x190 drivers/net/wireless/zydas/zd1211rw/zd_mac.c:343
- zd_usb_stop drivers/net/wireless/zydas/zd1211rw/zd_usb.c:1479 [inline]
- pre_reset+0x19d/0x290 drivers/net/wireless/zydas/zd1211rw/zd_usb.c:1502
- usb_reset_device+0x379/0x9a0 drivers/usb/core/hub.c:5959
- probe+0x10f/0x590 drivers/net/wireless/zydas/zd1211rw/zd_usb.c:1371
- usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
- really_probe+0x291/0xde0 drivers/base/dd.c:554
- driver_probe_device+0x26b/0x3d0 drivers/base/dd.c:738
- __device_attach_driver+0x1d1/0x290 drivers/base/dd.c:844
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4a0 drivers/base/dd.c:912
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbb2/0x1ce0 drivers/base/core.c:2936
- usb_set_configuration+0x113c/0x1910 drivers/usb/core/message.c:2164
- usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
- usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
- really_probe+0x291/0xde0 drivers/base/dd.c:554
- driver_probe_device+0x26b/0x3d0 drivers/base/dd.c:738
- __device_attach_driver+0x1d1/0x290 drivers/base/dd.c:844
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4a0 drivers/base/dd.c:912
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbb2/0x1ce0 drivers/base/core.c:2936
- usb_new_device.cold+0x71d/0xfe9 drivers/usb/core/hub.c:2555
- hub_port_connect drivers/usb/core/hub.c:5223 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
- port_event drivers/usb/core/hub.c:5509 [inline]
- hub_event+0x2348/0x42d0 drivers/usb/core/hub.c:5591
- process_one_work+0x933/0x1520 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x38c/0x460 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-zd1211rw 1-1:5.118: error ioread32(CR_REG1): -11
-usb 1-1: reset high-speed USB device number 2 using dummy_hcd
-usb 1-1: Using ep0 maxpacket: 32
-usb 1-1: unable to get BOS descriptor or descriptor too short
-ieee80211 phy2: Selected rate control algorithm 'minstrel_ht'
-zd1211rw 1-1:5.57: phy2
+Thanks,
+Michal
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
