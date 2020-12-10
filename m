@@ -2,83 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0202D576E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 082932D5776
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732543AbgLJJls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:41:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44408 "EHLO
+        id S1732741AbgLJJnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:43:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727036AbgLJJlc (ORCPT
+        with ESMTP id S1727730AbgLJJnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:41:32 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320C9C0613D6;
-        Thu, 10 Dec 2020 01:40:52 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id o4so3729004pgj.0;
-        Thu, 10 Dec 2020 01:40:52 -0800 (PST)
+        Thu, 10 Dec 2020 04:43:13 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA31C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 01:42:33 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id n7so3724242pgg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 01:42:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4wACi7c+y84hFlcOFDDjJ1mfg6gJ3+Zeyx/hwXEAMNU=;
-        b=hJHsvvU/+uBIFX6TLQB40KT17anRRYSMu4q+h9i6CGgJUtcvGs8/l2Dy+eDmBoEFZ4
-         pWKWCQGfBTdhFGKjGBfCHNHX1vgxY59IfxFVg1MHIebHR3SPRvy6Jg5NYUG0MIGYqdFx
-         VL+D9RRYsdt0aXZPv1uiKd7o6uVr8rZPxzq+w4t4Nkt0WpHUYxlRWoCDnR0q4k/jJrqz
-         DJ74T5HbAPcRjvbcVzQwb4iS5qjIx/F84LFOnCQkHX0noBBjoAKuh7pW1bCmHBV33FGG
-         STMKGJbHQ92uZ2qXQ+pXHlwWlKJd/eU/NvvybgpfHU34/GsaervI4S720y1ZY7e1Xw5T
-         CWVQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=XtvCgTzFUBGsUNcdgDa+auavrqoDFdovqrXwRiSLhnU=;
+        b=vaHlq5UdrrasmXTd3NvOcRuwNbBv0DnOdxbmGIdC+wLZi8tO0J5I9/N/Lv2O3KlLbr
+         fZLm2Fhgk+zlNgVGODtqPpkXMCafl3lH+7OSCksw1AES1b+eSHz/QUmNzMw7VuC2vWzt
+         /NCNQAinWk6zDcCEq43ivF4+zi3X+Pw4HQifZLHDalH9OMIVrNpJ2154/92FH3Kf2L6S
+         Jp8k3kz7UwQThJuKqkUhYWcPV3Te5g+kRULU+8BZ7py4RKvu8OvxPu3kMLZoblmcAsVv
+         EygWLTHQJX3OGOpJLgzUGvsOMt0Shozf5wG4jGPVnhdfmbwPQ+DSDmDsuEkDJKuIwdNN
+         hRKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4wACi7c+y84hFlcOFDDjJ1mfg6gJ3+Zeyx/hwXEAMNU=;
-        b=Vbq4565sPSREyJffeOQ3Sodx8KY1A3v5FzrtezX65ltSFklQIG1OLT2OYGe07Jh5vQ
-         T9yakaFeGaJqwOiQlEAq10pt2indb3Pz1iiZKRdTXAED+r0qq8jm1o2FxeFsTqjW9QHd
-         gRD8Qt/1wT9KlPUM/dDb9KF2aCFgAq4kPnj3NpGkpTKjYdXIeO6CF5b3MikEbFi2LslE
-         JYjMcND8vHk6suVAu7EIHpG4A0KqUldW2QuVX5/v4pCJysuccblkNU65NNtubsOPLKJ5
-         e0U6FmM+tyQEfCBP0HUHrY7EDvm+QuC3jl0dE47qK8tfHc18hT6pD5r7A1jQv0GXeXky
-         sfTg==
-X-Gm-Message-State: AOAM530/vriWmpCY5dgZY13JUQ8GLEZRKH5+xGjcAcv3Givqe6c7baRf
-        Pw9KXeNd/SqOILh2WQ09XA8M8Cmnksnw5R7A6MTcccsT
-X-Google-Smtp-Source: ABdhPJxHsWCOKgYVexWN3dQZ8W2TMDI6UaYW1T+HYEkZsFldN8WubM99OsXSlBmb+nDjIXtxLzHD0Ej/7Oafo/JKLBM=
-X-Received: by 2002:a17:90a:c085:: with SMTP id o5mr2025373pjs.210.1607593251874;
- Thu, 10 Dec 2020 01:40:51 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XtvCgTzFUBGsUNcdgDa+auavrqoDFdovqrXwRiSLhnU=;
+        b=rkn2ZtVcXi/qEdDu6mnd3kb+QFjXSMDXoC6pcQSXVhVbe1Z9EnFUJxRf7vyxlQszO2
+         beiCHAGGw+yYhZszDMkqrk7sefsu3u0SATK701O/ARz4s6kCZB5b4teCgtKrv6cSUa0J
+         y4heMGz/xFMK+F3R8taM+uN66rAtbpfIGarkQifWVH2GhBmirM1fDPC1l/6zRvziyDqQ
+         4afTK9L70F2ruGrak3tgy2zjg8+PLvJfyBN2gDgE+a34tVm4N2kqfBfLzQKIyrGWz5IX
+         OjValCZFqxTUUZ+OKrcZ/hj1mIKHK9gUW+qtpGTT+Gm5+QA0lScMIlgMcHWeAsqXdeRB
+         fPlg==
+X-Gm-Message-State: AOAM531PakqxDBTJRzr9I2/4q3YEplfub4sx894EXYA2Q3H3eZ6pKQ3m
+        Wg2QuoixcEN2QfD5k1WMeKqA2g==
+X-Google-Smtp-Source: ABdhPJxySeJx+xlUvznUbnXJtKJhcnebaCZyKDqohqeG56RLoCVg2RV3j/zrZt4B9kNETyckzxht8A==
+X-Received: by 2002:a63:943:: with SMTP id 64mr5999750pgj.80.1607593352804;
+        Thu, 10 Dec 2020 01:42:32 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id a23sm5521642pju.31.2020.12.10.01.42.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Dec 2020 01:42:32 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: topology: Avoid the static_branch_{enable|disable} dance
+Date:   Thu, 10 Dec 2020 15:12:25 +0530
+Message-Id: <10396de8046ada347d681eb84ea4dc6ec27e1742.1607593250.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+In-Reply-To: <5594c7d6756a47b473ceb6f48cc217458db32ab0.1607584435.git.viresh.kumar@linaro.org>
+References: <5594c7d6756a47b473ceb6f48cc217458db32ab0.1607584435.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-References: <20201209081604.464084-1-xie.he.0141@gmail.com>
- <7aed2f12bd42013e2d975280a3242136@dev.tdt.de> <dde53213f7e297690e054d01d815957f@dev.tdt.de>
- <CAJht_EPk4uzA+QeL0_nHBhNoaro48ieF1vTwxQihk5_D66GTEA@mail.gmail.com> <8e15d185cabc9294958b13f5cff389aa@dev.tdt.de>
-In-Reply-To: <8e15d185cabc9294958b13f5cff389aa@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Thu, 10 Dec 2020 01:40:41 -0800
-Message-ID: <CAJht_EOD9QbCi=AkPRqoT2Hzweb65OTpxkoCeUNm9WUrnyw_8w@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: x25: Fix handling of Restart Request and
- Restart Confirmation
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 10:35 PM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> Yes, that's also the reason why I already acked this patch. We can
-> solve this later a little bit cleaner if necessary.
->
-> My patch that takes care of the orphaned packets in x25_receive_data()
-> has again a dependency on other patches, especially the patch to
-> configure the neighbor parameters (DCE/DTE, number of channels etc.),
-> which I already sent before but still have to revise.
->
-> Unfortunately I have only limited time for this topic, so I am not as
-> fast as some people would wish. Sorry for that.
+Avoid the static_branch_enable() and static_branch_disable() dance by
+redoing the code in a different way. We will be fully invariant here
+only if amu_fie_cpus is set with all present CPUs, use that instead of
+yet another call to topology_scale_freq_invariant().
 
-OK. Thanks! I appreciate your work! Code needs to have specialist
-developers like you to keep it alive and evolving.
+This also avoids running rest of the routine if we enabled the static
+branch, followed by a disable.
 
-I understand you have limited time. Please take your time. Thanks!
+Also make the first call to topology_scale_freq_invariant() just when we
+need it, instead of at the top of the routine. This makes it further
+clear on why we need it, i.e. just around enabling AMUs use here.
+
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ arch/arm64/kernel/topology.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
+
+diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+index 7f7d8de325b6..6dedc6ee91cf 100644
+--- a/arch/arm64/kernel/topology.c
++++ b/arch/arm64/kernel/topology.c
+@@ -221,7 +221,7 @@ static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
+ 
+ static int __init init_amu_fie(void)
+ {
+-	bool invariance_status = topology_scale_freq_invariant();
++	bool invariance_status;
+ 	cpumask_var_t valid_cpus;
+ 	int ret = 0;
+ 	int cpu;
+@@ -255,18 +255,15 @@ static int __init init_amu_fie(void)
+ 	    cpumask_equal(valid_cpus, cpu_present_mask))
+ 		cpumask_copy(amu_fie_cpus, cpu_present_mask);
+ 
+-	if (!cpumask_empty(amu_fie_cpus)) {
+-		pr_info("CPUs[%*pbl]: counters will be used for FIE.",
+-			cpumask_pr_args(amu_fie_cpus));
+-		static_branch_enable(&amu_fie_key);
+-	}
++	/* Disallow partial use of counters for frequency invariance */
++	if (!cpumask_equal(amu_fie_cpus, cpu_present_mask))
++		goto free_valid_mask;
+ 
+-	/*
+-	 * If the system is not fully invariant after AMU init, disable
+-	 * partial use of counters for frequency invariance.
+-	 */
+-	if (!topology_scale_freq_invariant())
+-		static_branch_disable(&amu_fie_key);
++	pr_info("CPUs[%*pbl]: counters will be used for FIE.",
++		cpumask_pr_args(amu_fie_cpus));
++
++	invariance_status = topology_scale_freq_invariant();
++	static_branch_enable(&amu_fie_key);
+ 
+ 	/*
+ 	 * Task scheduler behavior depends on frequency invariance support,
+-- 
+2.25.0.rc1.19.g042ed3e048af
+
