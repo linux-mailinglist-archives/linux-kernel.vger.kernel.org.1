@@ -2,158 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4012D5545
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:25:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8939B2D554B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:25:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387914AbgLJIXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 03:23:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730907AbgLJIXg (ORCPT
+        id S2387961AbgLJIY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 03:24:27 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:42105 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387534AbgLJIYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 03:23:36 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8AEC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 00:22:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=U7IBxiRR4OGdd4exeE6AXXhO3TRX5E0P/jz8fPB8Cq4=; b=ZDZSb9gRyPI42yC71dvOy0MXHl
-        DWJI0vmu1HJf8xoU7vwaab5zWmWDAT0fiHvwuhw9a8CrnBa+eep9peXpfALPuLWVCsmHcPm25Cgcq
-        6YMFlhTosk5BaNNQenVX/zZChq79T7hlkeoghY1pCUR0s99/aPRBNk2iICvJpb2dQOffbBW4D+CpO
-        AP6FBIUAbFLjZxubhIAG5ZYy1UnXpLQY5Qpyj/tcVxJ1GNAAsutHDjZpC6YsrHgYTF81Ny5aBAUAS
-        s082H1s1Xjfk645c2vRuMnPSlszWHfVqZLMMW3/ecgropCMXCFtoZULbIIbgNZi2FeIjNd8CSoLsG
-        bF9TEqJA==;
-Received: from [2001:4bb8:199:f14c:a24a:d231:8d9c:a947] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1knHDw-00046Q-Qz; Thu, 10 Dec 2020 08:22:53 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     apw@canonical.com, joe@perches.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] checkpatch: make the line length warnings match the coding style document
-Date:   Thu, 10 Dec 2020 09:22:51 +0100
-Message-Id: <20201210082251.2717564-1-hch@lst.de>
-X-Mailer: git-send-email 2.29.2
+        Thu, 10 Dec 2020 03:24:17 -0500
+Received: by mail-ot1-f66.google.com with SMTP id 11so4107159oty.9;
+        Thu, 10 Dec 2020 00:24:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bALKz7ou045OVVjtEQhAIxeM6l3p2vtzdMmOOh1FY44=;
+        b=oQOltPAWfvqdlnPnjrv5e0E9YPFE2tY5HTj3gIEUTXcCo4A1Z6YuoJNJBrSuJw4oaM
+         s4RCLHPVGyxZmkWo/BG06mn2aXg8UNxpFEagIjrmb4SOsHbY4ujE2wv/k99H2mCF69aG
+         woVhpfapXtz4Joc1PV8vWduRAF6BUI7cJCpUuqp9fHaFMcN3xWCgqFABoxnOGQGCku06
+         PTlDCbSgbc2Awe4o7XOJgMQH5n7JMuQIvHLHD4oE6uI6bMacRZb6JgEkOH0ve+efdlX/
+         GvXufK0688GJu0HAt8oUEN0oqrorCYHdiTidcnTAE/mSefB37sfy8JAqmR2/vLApTRWt
+         VE6A==
+X-Gm-Message-State: AOAM531cG3ArzJg7GrKyqCs6Mm6TvinmFBo+1HF3AI/1j1lvNuTxUynb
+        7gglq8iyoFtVPHcn7CDHgH7916oXKcYhyUMI4iA=
+X-Google-Smtp-Source: ABdhPJw91BB0ZX7xUOKVvKsg1YA5Ph+wLOHJMrQbBy3Bk4cL5NiTdS3tlH2tf0Jw5C8SZh60OG/dElJoOAr69CsobyE=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr4997267otc.145.1607588616676;
+ Thu, 10 Dec 2020 00:23:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <1607414643-25498-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1607414643-25498-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <CAMuHMdXr1kDaXF7FFowq5CSVHzyima2fbF1fJUOowUEb88dOTA@mail.gmail.com> <TY2PR01MB3692C55C6CDEFC83D6F8F90DD8CB0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+In-Reply-To: <TY2PR01MB3692C55C6CDEFC83D6F8F90DD8CB0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 10 Dec 2020 09:23:25 +0100
+Message-ID: <CAMuHMdXHMHaXPDaUfLmfREi92FKK0z_+eSyuOLRuXW1TDRPxOw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mfd: bd9571mwv: Make the driver more generic
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Khiem Nguyen <khiem.nguyen.xt@renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new informational message that lines <= 80 chars are still
-preffered.  Without this people unfortunately auto format code way over
-80 lines without the required benefit for readability.
+Hi Shimoda-san,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- scripts/checkpatch.pl | 41 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 11 deletions(-)
+On Thu, Dec 10, 2020 at 5:10 AM Yoshihiro Shimoda
+<yoshihiro.shimoda.uh@renesas.com> wrote:
+> > From: Geert Uytterhoeven, Sent: Wednesday, December 9, 2020 10:26 PM
+> > On Tue, Dec 8, 2020 at 9:06 AM Yoshihiro Shimoda
+> > <yoshihiro.shimoda.uh@renesas.com> wrote:
+> <snip>
+> > > index 80c6ef0..57bdb6a 100644
+> > > --- a/drivers/mfd/bd9571mwv.c
+> > > +++ b/drivers/mfd/bd9571mwv.c
+> >
+> > > @@ -127,13 +137,12 @@ static int bd9571mwv_identify(struct bd9571mwv *bd)
+> > >                         ret);
+> > >                 return ret;
+> > >         }
+> > > -
+> > > -       if (value != BD9571MWV_PRODUCT_CODE_VAL) {
+> > > +       /* Confirm the product code */
+> > > +       if (value != bd->data->product_code_val) {
+> > >                 dev_err(dev, "Invalid product code ID %02x (expected %02x)\n",
+> > > -                       value, BD9571MWV_PRODUCT_CODE_VAL);
+> > > +                       value, bd->data->product_code_val);
+> > >                 return -EINVAL;
+> > >         }
+> >
+> > Reading the product code register, and checking the product code value
+> > can be removed, as bd9571mwv_probe() has verified it already.
+>
+> Indeed. I'll remove this.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index fab38b493cef79..d937889a5fe3b2 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -54,6 +54,7 @@ my @ignore = ();
- my $help = 0;
- my $configuration_file = ".checkpatch.conf";
- my $max_line_length = 100;
-+my $preferred_line_length = 80;
- my $ignore_perl_version = 0;
- my $minimum_perl_version = 5.10.0;
- my $min_conf_desc_length = 4;
-@@ -2228,6 +2229,16 @@ sub WARN {
- 	}
- 	return 0;
- }
-+sub INFO {
-+	my ($type, $msg) = @_;
-+
-+	if (report("INFO", $type, $msg)) {
-+		our $clean = 0;
-+		our $cnt_info++;
-+		return 1;
-+	}
-+	return 0;
-+}
- sub CHK {
- 	my ($type, $msg) = @_;
- 
-@@ -2396,6 +2407,7 @@ sub process {
- 	our $cnt_lines = 0;
- 	our $cnt_error = 0;
- 	our $cnt_warn = 0;
-+	our $cnt_info = 0;
- 	our $cnt_chk = 0;
- 
- 	# Trace the real file/line as we go.
-@@ -3343,15 +3355,15 @@ sub process {
- # if LONG_LINE is ignored, the other 2 types are also ignored
- #
- 
--		if ($line =~ /^\+/ && $length > $max_line_length) {
-+		if ($line =~ /^\+/ && $length > $preferred_line_length) {
- 			my $msg_type = "LONG_LINE";
- 
- 			# Check the allowed long line types first
- 
- 			# logging functions that end in a string that starts
--			# before $max_line_length
-+			# before $preferred_line_length
- 			if ($line =~ /^\+\s*$logFunctions\s*\(\s*(?:(?:KERN_\S+\s*|[^"]*))?($String\s*(?:|,|\)\s*;)\s*)$/ &&
--			    length(expand_tabs(substr($line, 1, length($line) - length($1) - 1))) <= $max_line_length) {
-+			    length(expand_tabs(substr($line, 1, length($line) - length($1) - 1))) <= $preferred_line_length) {
- 				$msg_type = "";
- 
- 			# lines with only strings (w/ possible termination)
-@@ -3371,23 +3383,30 @@ sub process {
- 
- 			# Otherwise set the alternate message types
- 
--			# a comment starts before $max_line_length
-+			# a comment starts before $preferred_line_length
- 			} elsif ($line =~ /($;[\s$;]*)$/ &&
--				 length(expand_tabs(substr($line, 1, length($line) - length($1) - 1))) <= $max_line_length) {
-+				 length(expand_tabs(substr($line, 1, length($line) - length($1) - 1))) <= $preferred_line_length) {
- 				$msg_type = "LONG_LINE_COMMENT"
- 
--			# a quoted string starts before $max_line_length
-+			# a quoted string starts before $preferred_line_length
- 			} elsif ($sline =~ /\s*($String(?:\s*(?:\\|,\s*|\)\s*;\s*))?)$/ &&
--				 length(expand_tabs(substr($line, 1, length($line) - length($1) - 1))) <= $max_line_length) {
-+				 length(expand_tabs(substr($line, 1, length($line) - length($1) - 1))) <= $preferred_line_length) {
- 				$msg_type = "LONG_LINE_STRING"
- 			}
- 
- 			if ($msg_type ne "" &&
- 			    (show_type("LONG_LINE") || show_type($msg_type))) {
--				my $msg_level = \&WARN;
--				$msg_level = \&CHK if ($file);
--				&{$msg_level}($msg_type,
-+				my $msg_level = \&CHK;
-+		
-+				if ($line =~ /^\+/ && $length <= $max_line_length) {
-+					$msg_level = \&INFO if (!$file);
-+					&{$msg_level}($msg_type,
-+					      "line length of $length exceeds preferred $preferred_line_length columns\n" . $herecurr);
-+				} else {
-+					$msg_level = \&WARN if (!$file);
-+					&{$msg_level}($msg_type,
- 					      "line length of $length exceeds $max_line_length columns\n" . $herecurr);
-+				}
- 			}
- 		}
- 
-@@ -7015,7 +7034,7 @@ sub process {
- 	print report_dump();
- 	if ($summary && !($clean == 1 && $quiet == 1)) {
- 		print "$filename " if ($summary_file);
--		print "total: $cnt_error errors, $cnt_warn warnings, " .
-+		print "total: $cnt_error errors, $cnt_warn warnings, $cnt_info informational, " .
- 			(($check)? "$cnt_chk checks, " : "") .
- 			"$cnt_lines lines checked\n";
- 	}
+OK.
+
+> > > --- a/include/linux/mfd/bd9571mwv.h
+> > > +++ b/include/linux/mfd/bd9571mwv.h
+
+> > > + */
+> > > +struct bd957x_data {
+> > > +       int product_code_val;
+> >
+> > unsigned int?
+>
+> We can remove this member.
+
+True.
+
+> Or, keeping this member and then we check the product code by this member
+> instead of switch() like below?
+>
+> /* No build test, JFYI */
+> struct bd957x_data *data_array[] = {
+>         &bd9571mwv_data,
+>         &bd9574mwf_data,
+> };
+>
+> for (i = 0; I < ARRAY_SIZE(data_array); i++) {
+>         if (val == data_array[i].product_code_val) {
+>                 bd->data = data_array[i];
+>                 break;
+>         }
+> }
+
+Given we probably won't have more than a handful variants, I'm
+leaning towards the switch() approach.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.29.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
