@@ -2,227 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F222D537B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 06:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2670E2D537D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 06:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732847AbgLJFyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 00:54:11 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6452 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727004AbgLJFxq (ORCPT
+        id S1732863AbgLJF6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 00:58:25 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9145 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727004AbgLJF6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 00:53:46 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BA5Vfg5066137;
-        Thu, 10 Dec 2020 00:52:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=iVTRcYlvhCxbqRg6/Fse2DZBWcHtsG3wDqUaymJg61k=;
- b=V35LcyYXjFMXZA/BbPOmdWWLTkYIX6FgyrVUXvH2pkcc+12JrtUOjrB49mvGLDBw0MSO
- JWtKEAymRPE8PaMMP3z+fz9V5a5nlGJvltV7mXvPRau8d5B9KicKvi7+UFKzbb09KX0D
- N6wWdO61Zlzkje5nKNvLVYuDf6L/qNICx9sAmMdFvLHxEyJBvpu7bs3a2a5dcJAvsu4a
- d8eRhVgMM8mrE4chihekxE7OdNZySljYFlmSwDczMaDopXtZSKHO57Tp55BTMRk+at3V
- GznwCD2HhZFdFWBQFVNhW/543GOq7X/+WhTXawFJSfG1QxM6XCMxDUv6JcEOBVRiTuIQ Rw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35b84s7jxc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 00:52:58 -0500
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BA5XA7b069528;
-        Thu, 10 Dec 2020 00:52:58 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35b84s7jx0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 00:52:57 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BA5pUAE017214;
-        Thu, 10 Dec 2020 05:52:56 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3581u85dq2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 05:52:56 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BA5qrFV61800944
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Dec 2020 05:52:53 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 439D24C040;
-        Thu, 10 Dec 2020 05:52:53 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DDBBA4C04A;
-        Thu, 10 Dec 2020 05:52:50 +0000 (GMT)
-Received: from [9.199.41.64] (unknown [9.199.41.64])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Dec 2020 05:52:50 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Subject: Re: [PATCH] perf test: Skip test 68 for Powerpc
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Thomas Richter <tmricht@linux.ibm.com>,
-        Kajol Jain <kjain@linux.ibm.com>, jolsa@redhat.com,
-        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, irogers@google.com,
-        rbernon@codeweavers.com, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-References: <20201104082954.57338-1-tmricht@linux.ibm.com>
- <20201119135022.36340-1-kjain@linux.ibm.com>
- <4a2908ca-6b75-c688-ec3b-7f37783f08cc@linux.ibm.com>
- <20201207163524.GF125383@kernel.org>
- <763d4593-d581-0971-338c-b811925be45b@linux.ibm.com>
- <29a77348-2ab7-1235-3fcf-c505dab1f1a1@linux.ibm.com>
- <20201209174910.GC185686@kernel.org>
-Message-ID: <c6757366-5d3a-e7b5-7f76-bae7e6ad41a4@linux.ibm.com>
-Date:   Thu, 10 Dec 2020 11:22:49 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 10 Dec 2020 00:58:24 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cs38g229Rz15b2R;
+        Thu, 10 Dec 2020 13:57:07 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 10 Dec
+ 2020 13:57:39 +0800
+Subject: Re: [f2fs-dev] [PATCH] fs: f2fs: fix potential shift-out-of-bounds
+ error in sanity_check_raw_super()
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Chao Yu <chao@kernel.org>,
+        <syzbot+ca9a785f8ac472085994@syzkaller.appspotmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20201209181322.27932-1-anant.thazhemadam@gmail.com>
+ <9e38608c-9fc3-1f94-d275-742facef3db3@huawei.com>
+ <8d293b99-4414-1317-7426-79692bbaa715@gmail.com>
+ <1215c353-3c3f-0a61-00a3-021f0c2f0032@huawei.com>
+ <38c68ef8-4b9b-cfc1-d8ad-cfeb4c2de845@gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <e72ff237-9d9a-2dbe-6a31-65046db9ee64@huawei.com>
+Date:   Thu, 10 Dec 2020 13:57:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20201209174910.GC185686@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <38c68ef8-4b9b-cfc1-d8ad-cfeb4c2de845@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-10_01:2020-12-09,2020-12-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 impostorscore=0 mlxlogscore=999 clxscore=1015 adultscore=0
- priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012100033
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jaegeuk,
 
+Could you please help to add signed-off of Anant manually in
 
-On 12/9/20 11:19 PM, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Dec 08, 2020 at 10:32:33PM +0530, Ravi Bangoria escreveu:
->> On 12/8/20 8:13 PM, Thomas Richter wrote:
->>> On 12/7/20 5:35 PM, Arnaldo Carvalho de Melo wrote:
->>>> Em Tue, Nov 24, 2020 at 03:04:53PM +0530, Ravi Bangoria escreveu:
->>>>> On 11/19/20 7:20 PM, Kajol Jain wrote:
->>>>>> Commit ed21d6d7c48e6e ("perf tests: Add test for PE binary format support")
->>>>>> adds a WINDOWS EXE file named tests/pe-file.exe, which is
->>>>>> examined by the test case 'PE file support'. As powerpc doesn't support
->>>>>> it, we are skipping this test.
+f2fs: fix shift-out-of-bounds in sanity_check_raw_super()
+
+Thanks,
+
+On 2020/12/10 10:14, Anant Thazhemadam wrote:
 > 
->>>>>> Result in power9 platform before this patach:
->>>>>> [command]# ./perf test -F 68
->>>>>> 68: PE file support                               : Failed!
-> 
->>>>>> Result in power9 platform after this patch:
->>>>>> [command]# ./perf test -F 68
->>>>>> 68: PE file support                               : Skip
-> 
->>>>>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-> 
->>>>> Reviewed-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-> 
->>>> But why is it failing? I.e. what is that
-> 
->>>>    perf test -v -F 68
-> 
->>>> outputs?
-> 
->>>> Using 'perf report' on a perf.data file containing samples in such
->>>> binaries, collected on x86 should work on whatever workstation a
->>>> developer uses.
-> 
->>>> Say, on a MacBook aarch64 one can look at a perf.data file collected on
->>>> a x86_64 system where Wine running a PE binary was present.
-> 
->>> What is the distro you are using?
->>> I observed the same issue on s390 but this was fixed for fedora33 somehow.
->>> The error just went away after a dnf update....
-> 
->>> [root@m35lp76 perf]# cat /etc/fedora-release
->>> Fedora release 33 (Thirty Three)
->>> [root@m35lp76 perf]# ./perf test -F 68
->>> 68: PE file support                                                 : Ok
->>> [root@m35lp76 perf]#
-> 
->>> However on my fedora32 machine it still fails:
->>> [root@t35lp46 perf]# cat /etc/fedora-release
->>> Fedora release 32 (Thirty Two)
->>> [root@t35lp46 perf]# ./perf test -F 68
->>> 68: PE file support                                                 : FAILED!
->>> [root@t35lp46 perf]#
+> On 10/12/20 7:40 am, Chao Yu wrote:
+>> On 2020/12/10 10:00, Anant Thazhemadam wrote:
 >>>
->>> Note that I am running the same kernel on both machines: linux 5.10.0rc7 downloaded
->>> this morning.
->>>
+>>> On 10/12/20 7:16 am, Chao Yu wrote:
+>>>> Hi Anant,
+>>>>
+>>>> I've posted a patch a little earlier. :P
+>>>>
+>>>> https://lore.kernel.org/linux-f2fs-devel/20201209084936.31711-1-yuchao0@huawei.com/T/#u
+>>>>
+>>> Ah well, that's alright, especially considering that your patch looks better.
+>>> Glad that bug has been fixed nonetheless. :)
 >>
->> Ok that's interesting. I don't see that on powerpc.
+>> Anyway, thanks a lot for taking time to fix f2fs bug. :)
 >>
->> Fedora 32 with 5.10.0-rc2+ kernel:
->>
->>    $ ./perf test -vv -F 68
->>    68: PE file support                                                 :
->>    --- start ---
->>    filename__read_build_id: cannot read ./tests/pe-file.exe bfd file.
->>    FAILED tests/pe-file-parsing.c:40 Failed to read build_id
->>    ---- end ----
->>    PE file support: FAILED!
->>
->> Fedora 33 with 5.10.0-rc3 kernel:
->>
->>    $ ./perf test -vv -F 68
->>    68: PE file support                                                 :
->>    --- start ---
->>    filename__read_build_id: cannot read ./tests/pe-file.exe bfd file.
->>    FAILED tests/pe-file-parsing.c:40 Failed to read build_id
->>    ---- end ----
->>    PE file support: FAILED!
->>
->> Ubuntu 18.04.5 with 4.15.0-126-generic kernel:
->>
->>    $ ./perf test -vv -F 68
->>    68: PE file support                                                 :
->>    --- start ---
->>    filename__read_build_id: cannot read ./tests/pe-file.exe bfd file.
->>    FAILED tests/pe-file-parsing.c:41 Failed to read build_id
->>    ---- end ----
->>    PE file support: FAILED!
+>> I prefer to add your Signed-off-by into "f2fs: fix shift-out-of-bounds
+>> in sanity_check_raw_super()" if you don't mind.
 >>
 >>
->> I assumed bfd is not capable to parse PE files on powerpc. Though,
->> I didn't check it in more detail. I'll look into it tomorrow.
 > 
-> Humm, so this is something related to installation? I.e. that
-> pe-file.exe isn't being found...
+> Sure, I'd appreciate that. Thank you! :D
 > 
-> It first assumes that the developers are in the tools/perf/ directory,
-> can you please add the patch below and see if it helps?
-
-I'm using upstream perf from tools/perf/
-
-I checked bfd code and it's bfd_check_format() who is returning error
-"bfd_error_file_not_recognized".
-
-I cross verified with objdump as well:
-
-On x86:
-
-   $ objdump -d ./tests/pe-file.exe
-   ./tests/pe-file.exe:     file format pei-x86-64
-     
-   Disassembly of section .text:
-   
-   0000000000401000 <__mingw_invalidParameterHandler>:
-     401000:       c3                      retq
-     401001:       66 66 2e 0f 1f 84 00    data16 nopw %cs:0x0(%rax,%rax,1)
-     401008:       00 00 00 00
-     40100c:       0f 1f 40 00             nopl   0x0(%rax)
-
-On powerpc:
-
-   $ objdump -d ./tests/pe-file.exe
-   objdump: ./tests/pe-file.exe: file format not recognized
-
-Objdump is also returning *same* error.
-
-I dig more into bfd logs and found that Powerpc PE support was removed
-recently (Jul 2020) with this commit:
-https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=fe49679d5193f6ff7cfd333e30883d293112a3d1
-
-Ravi
+> Thanks,
+> Anant
+> 
+> .
+> 
