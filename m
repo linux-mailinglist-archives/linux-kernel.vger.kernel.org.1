@@ -2,110 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6272D5853
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A07F2D5858
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733262AbgLJKgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:36:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52798 "EHLO
+        id S1733092AbgLJKiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:38:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728530AbgLJKgG (ORCPT
+        with ESMTP id S1726768AbgLJKh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:36:06 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72637C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 02:35:25 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id q25so4381673otn.10
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 02:35:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0RukmWBs4EfbLw0LKaTCMp0B3EXWkv2oBBxKfL580zU=;
-        b=uDiLP1wYcE9UmvvTYXhC5JIDwo+LQWZeD2fr5epM0u9E1IzSNpg1NPLfZ9TVwwXKwF
-         1BSJIxzxoztwnyKZl99AqGJXlcHHqC2fs6ErngxFlCT3uolFecw7Sxuhl90u9tKiEGa1
-         PLT0TZuLiKogwqtmNiNjCaBREwkn+01EwN51r1G9aEnRP7AxbO9WRPxFtb7swsVTBD/Y
-         iTUJ5Zk6zgH9vrGPP4ArGCUfYXYh+frIM5l3RH+ZB2Gj21tNYS5Zy+zrFUdMylfodxxp
-         PEaI6ElWWSyh33x/5X2+IUpnMnYpTw2njb2YreHN8RPpxVjTpTUbdxbh+tBrwRrrFNnU
-         I06w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0RukmWBs4EfbLw0LKaTCMp0B3EXWkv2oBBxKfL580zU=;
-        b=TyHhGn3BuRz7mXvTZ8i5RlvXTC+HUcbDH7lm3N/BCpfY/C16fpfhySUlc0vE/DwoUB
-         sYIv5iAYjQtcMpEDgYyM+W85evHdSZAaFilQlIFOSQCB4HBXswhx1MfmNz9yrB8EvRMn
-         bXxvilV7z4An2+0DDlHHy/N4K3MtIi4mC5XqyoTCtqr6N0g4wpPey39f5D09nmKnC8Ty
-         jpsrukFGDTn+dI0CDplE81UuYWAsPNhxGWsS5nMAJjhoV4/KhFF4rxmRSYXvv8PzJlic
-         hNvoHxT2uUhG4DtUhQqzb7NtzvGK9Cy8DBWFeYOz/l1I921mLw0pqW6QqEFkkLWyurrz
-         Ak2Q==
-X-Gm-Message-State: AOAM531wSpqZ0wVweyD3I5I5MvsjIh8eI71Tm6AZea1MLOKZfDK1Wzk/
-        zkq97HfHg5aEti5P9HktmPGU8t4R6sxzNw+XVHjhww==
-X-Google-Smtp-Source: ABdhPJycKdjKTL2dh65CQcw/pTA/yRKXlCjFRKiP5WuAvGLF+seANJig67Ue6XexBob1Bj00O9+g7tyJ/jNyCtJvlwo=
-X-Received: by 2002:a9d:6199:: with SMTP id g25mr5221108otk.17.1607596524684;
- Thu, 10 Dec 2020 02:35:24 -0800 (PST)
+        Thu, 10 Dec 2020 05:37:59 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA42BC061793;
+        Thu, 10 Dec 2020 02:37:18 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cs9Mv6YYYz9sW8;
+        Thu, 10 Dec 2020 21:37:15 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607596636;
+        bh=6pe7CPiYFHpmonWfOX3A+y01aY83tz2WgBLlJ6GkT3g=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cftmQ7V43eVN1/SKOwvKB2rWu8xZzuC9lJgqGFbCHToRRfOxLxQSln5AE1uFU6oeI
+         tH8PhtzzIrnxTdB2T1w8H79deHaI18MAeHvVeS7M9OUAyqe3k9647cR0e9rXfSrm7+
+         He8DhXx9FvZqhSeUi6Dtcu6CbZQDWT2W6Qpu/9Q1wKN+/TGVoLRJYe2fgMaiYug5Mj
+         LDscuIde8YeB9Ol4XCDBUDhl31qGUkPh01588s2nBDcJ945BkEeUD9AVTenIQ5Eu8y
+         0GkXiOAP+tYcK3IBoaye3VyyibYT9WY7Zythu9xZSL0IojQWImhR+EZ3XT4rHg1r8H
+         hIlZkXYdZ7Dcg==
+Date:   Thu, 10 Dec 2020 21:37:13 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the net-next tree
+Message-ID: <20201210213713.05fec230@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201201152017.3576951-1-elver@google.com> <CAKwvOdkcv=FES2CXfoY+AFcvg_rbPd2Nk8sEwXNBJqXL4wQGBg@mail.gmail.com>
- <CANpmjNOUHdANKQ6EZEzgbVg0+jqWgBEAuoLQxpzQJkstv6fxBg@mail.gmail.com>
-In-Reply-To: <CANpmjNOUHdANKQ6EZEzgbVg0+jqWgBEAuoLQxpzQJkstv6fxBg@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 10 Dec 2020 11:35:11 +0100
-Message-ID: <CANpmjNOdJZUm1apuEHZz_KYJTEoRU6FVxMwZUrMar021hTd5Cg@mail.gmail.com>
-Subject: Re: [PATCH] genksyms: Ignore module scoped _Static_assert()
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/RlI903T+aEUY=NJxhi/H+0l";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 at 11:21, Marco Elver <elver@google.com> wrote:
-> On Tue, 1 Dec 2020 at 21:00, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > On Tue, Dec 1, 2020 at 7:21 AM Marco Elver <elver@google.com> wrote:
-> > > The C11 _Static_assert() keyword may be used at module scope, and we
-> > > need to teach genksyms about it to not abort with an error. We currently
-> > > have a growing number of static_assert() (but also direct usage of
-> > > _Static_assert()) users at module scope:
-> > >
-> > >         git grep -E '^_Static_assert\(|^static_assert\(' | grep -v '^tools' | wc -l
-> > >         135
-> > >
-> > > More recently, when enabling CONFIG_MODVERSIONS with CONFIG_KCSAN, we
-> > > observe a number of warnings:
-> > >
-> > >         WARNING: modpost: EXPORT symbol "<..all kcsan symbols..>" [vmlinux] [...]
-> > >
-> > > When running a preprocessed source through 'genksyms -w' a number of
-> > > syntax errors point at usage of static_assert()s. In the case of
-> > > kernel/kcsan/encoding.h, new static_assert()s had been introduced which
-> > > used expressions that appear to cause genksyms to not even be able to
-> > > recover from the syntax error gracefully (as it appears was the case
-> > > previously).
-> > >
-> > > Therefore, make genksyms ignore all _Static_assert() and the contained
-> > > expression. With the fix, usage of _Static_assert() no longer cause
-> > > "syntax error" all over the kernel, and the above modpost warnings for
-> > > KCSAN are gone, too.
-> > >
-> > > Signed-off-by: Marco Elver <elver@google.com>
-> >
-> > Ah, genksyms...if only there were a library that we could use to parse
-> > C code...:P
-> > Acked-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> Which tree would this go into?
->
-> It'd be good if this problem could be fixed for 5.11.
+--Sig_/RlI903T+aEUY=NJxhi/H+0l
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[+Cc everyone returned by 'get_maintainers.pl scripts/genksyms']
+Hi all,
 
-It looks like there's no clear MAINTAINER for this. :-/
-It'd still be good to fix this for 5.11.
+Commit
 
-Thanks,
--- Marco
+  5137d303659d ("net: flow_offload: Fix memory leak for indirect flow block=
+")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/RlI903T+aEUY=NJxhi/H+0l
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/R+lkACgkQAVBC80lX
+0GyMlwf+O4mBQ3OsAnLP2zryB5jsJsChMbVaMzVpdb+gDVnxbblLknqsb4AjsqyE
+xMVxepfl6lRhxEGneeH1/7f3xndO+qlFF0o+yuGKCEQtCc4ZmHUaLrJgroNoAZVi
+Ft9YSXUkRqTpcn8jH/Jhx9WdYivpDJZe/FjHiBxJOqaNQrpqv5XfKiCwIuNqV5Tq
+o+uwC2FcrOvIhXr5QU0wuh4jIhrMRFkYZdE/tGudUOMHh3OvW3mA5UUgV06qi2ce
+AVSKFRbxqUtAPgLnZQPZ/qXw3xkd0DQroyCFFvEjp2ursJ/2P5AcYM4PXe4kiE3U
+cDjGGZXtspUumsDPw4CE0yKhrnOn4Q==
+=F6ta
+-----END PGP SIGNATURE-----
+
+--Sig_/RlI903T+aEUY=NJxhi/H+0l--
