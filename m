@@ -2,175 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA172D6BE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515192D6BEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394366AbgLJXZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:25:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
+        id S2388273AbgLJX3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:29:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727291AbgLJXZi (ORCPT
+        with ESMTP id S1732624AbgLJX3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:25:38 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39C9C0613CF;
-        Thu, 10 Dec 2020 15:24:57 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id r9so7564620ioo.7;
-        Thu, 10 Dec 2020 15:24:57 -0800 (PST)
+        Thu, 10 Dec 2020 18:29:23 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D3FC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:28:43 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id 11so5677618pfu.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:28:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h/LFEJxN+y9atuUh2I6JGG7R8Sn2KE2ON0GObfP+qI0=;
-        b=nCSZf3v9Ju3JnlXSqOOHaHEnYtbG81gWsxenvNMhmFMmQQtny6NEL927rs7RvwJoBT
-         fjF1weC2UeqTnzot4hgdP04HtUBt59B0H/r923IfSVvPmmPjZ8uHyAFMQtePe2a3P0fJ
-         RVJCN6U7WbVuh5sku6B42oiO0iYAlF8OSf+ZgTqNRwoFliL3uBZ7lkLIN9JIp/MyD+Lu
-         JKm6V4mDXFcTxxIUQcPMMCh/3uWFi5zDLA/2gWIDCM4j/4Q6uK+Jau+DK+rkfqlYrkgr
-         9leTIMSJgG3IKTviJWh/5E++A9cSObIJTqVtSaW59Re08tqdTuNvB7kGVezycjdBDw1y
-         nKHQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=CSt2FPKXtDQTYvs/cAS/t9n4d8NBaXGUQAaM+p/qblA=;
+        b=rbTnfKoJCPQv5YrR8jiywKYAw6yNxzB5OGt54Suax/v3IwCjdbe2y9TeXPoDqQFjEI
+         RrApWRXo3poxoacnjx30GrodOOetTNe9j0GfqfLceY3SRCOjIO7ZXeIzujWHtcjWrqgH
+         IoSs4e0U8DDoqFoeDeT9XszgsQUyiLWFcYJqzdUOfPifGawBI4JX5raHrt1mwmQJVJJJ
+         YM9LkcEGmlb8nSFyh3MMxqiqheWtT3szjtL2BezfUKXZvS52VIpeWlGeY/D69fLibcov
+         IH2tWxPpnHUYIgW/mlJulN6jkb6XF6BhZkK67CbWJOBQVRMB2nBWtHiuxcThmK94VOL1
+         Cdmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h/LFEJxN+y9atuUh2I6JGG7R8Sn2KE2ON0GObfP+qI0=;
-        b=YpRZL7E77S0T/E4EUr3jLRm0p+WH4vWSM1SmVSOFUYrn2jViCYJfQ48GOczcIPiItc
-         8MBm8xrqrI7ZPfzYFLJL0s50WjpiRwwlLPKjEN3FJTH/7vsQxxiP6RaKJ5KYZ9Luu5lZ
-         hxqvx3gmPEsXsMadkPmVFFBmPSJkqVC91Ai7UeJJJ0sWvk1opyEfC/LX18uCEj69b0g5
-         3wABrLmUnyvXd8/FAOtl6ymth8W4DOut6QZVXoPQXRDYzWzWTDB2xzzwzmtFBXEcMVXQ
-         ldiKfeIi4L18apfClOpdDUE/2maac/aICM5YhA432QQgLVL9CCP6LxFiJiVdutW7FHTz
-         LKfQ==
-X-Gm-Message-State: AOAM530pjg7PBUf7ZxDsSITdCKF0KzENduULFISDRK4z9c0RZTDYV9lB
-        zOPKZdDd/6tn4yvygOzY5bV4UjlHoZi8r8gm9AU=
-X-Google-Smtp-Source: ABdhPJyWCW+/SgIqqLPV2BSYP1U5EoAYFZW3FW6a2YGtXOOpbaX6k+lcONwSD1HzHR2Rg59RovBDh7yeh5XbUjzX/lw=
-X-Received: by 2002:a6b:7501:: with SMTP id l1mr11166527ioh.92.1607642696883;
- Thu, 10 Dec 2020 15:24:56 -0800 (PST)
-MIME-Version: 1.0
-References: <1607324004-12960-1-git-send-email-shengjiu.wang@nxp.com>
- <20201207132140.GA31982@kozik-lap> <20201207133221.GA32877@kozik-lap>
-In-Reply-To: <20201207133221.GA32877@kozik-lap>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Thu, 10 Dec 2020 17:24:45 -0600
-Message-ID: <CAHCN7x+uMFU0jRYKAdLfFY4uyFBsNFvxaCF9rKE4sR=nYq5etA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx8mn: Fix duplicate node name
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=CSt2FPKXtDQTYvs/cAS/t9n4d8NBaXGUQAaM+p/qblA=;
+        b=rIBzEJvoiRH+eQAE1Qx63fm2SYOVPhrIjuO12ALg1GsjIHiTiX2shKc+B2ZaKDyaeb
+         Rl5FhSJXXCJeeZacnc3Ex7dwdUX5wbTw37epQSly7GZs4knC5Vcm9jhHeOZmDBAdFgAN
+         5aKxldoo/HkPrxfkbBbN7fNn5JtSIpMeW9Yao1rNiNFWfck9CTwm28SOYl946HiKf3xw
+         /1pzh3Y6A33irk2q5hh8mrNQXwwstVW02Q2sxY9DIUG75hYPbP2HtZgyOiETizziNwzr
+         fmrCTuLPgpVTxO/OcZygzSAVwRG845lJRC1tYnb9YDG8GvHJ/EXMbDG2ATyTi/ETCrk8
+         tiYw==
+X-Gm-Message-State: AOAM5338wtBXz/qqYrpTdbtjLeOOTMgnUyXAMrvHwbZAfEvdzf9BwN63
+        HAx9I07V5e2pBjaGaTuYGxDB2A==
+X-Google-Smtp-Source: ABdhPJwFmOysqtEYH7lJTFtlxPjQzlHC4tPd1ANetiUdf4c0a/EEDaOb7x6HYq2n3bdzbGfoUg5P4A==
+X-Received: by 2002:a17:90a:1b0d:: with SMTP id q13mr9917082pjq.21.1607642922731;
+        Thu, 10 Dec 2020 15:28:42 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id e31sm7308677pgb.16.2020.12.10.15.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 15:28:41 -0800 (PST)
+Date:   Thu, 10 Dec 2020 15:28:41 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+cc:     Ard Biesheuvel <ardb@kernel.org>, kvm@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        John Allen <john.allen@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH] KVM/SVM: add support for SEV attestation command
+In-Reply-To: <78e18a3d-900b-fac5-19ca-c2defeb8d73a@amd.com>
+Message-ID: <e47f69b2-d4ea-1db0-aa13-729baba45b46@google.com>
+References: <20201204212847.13256-1-brijesh.singh@amd.com> <CAMj1kXFkyJwZ4BGSU-4UB5VR1etJ6atb7YpWMTzzBuu9FQKagA@mail.gmail.com> <78e18a3d-900b-fac5-19ca-c2defeb8d73a@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 7:36 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Mon, Dec 07, 2020 at 02:21:40PM +0100, Krzysztof Kozlowski wrote:
-> > On Mon, Dec 07, 2020 at 02:53:24PM +0800, Shengjiu Wang wrote:
-> > > Error log:
-> > > sysfs: cannot create duplicate filename '/bus/platform/devices/30000000.bus'
-> > >
-> > > The spba bus name is duplicate with aips bus name.
-> > > Refine spba bus name to fix this issue.
-> > >
-> > > Fixes: 970406eaef3a ("arm64: dts: imx8mn: Enable Asynchronous Sample Rate Converter")
-> > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > > ---
-> > >  arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > > index fd669c0f3fe5..30762eb4f0a7 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > > @@ -246,7 +246,7 @@ aips1: bus@30000000 {
-> > >                     #size-cells = <1>;
-> > >                     ranges;
-> > >
-> > > -                   spba: bus@30000000 {
-> > > +                   spba: spba-bus@30000000 {
+On Wed, 9 Dec 2020, Brijesh Singh wrote:
 
-I originally attempted to call it spba-bus@30000000, but I was told to
-switch it to 'bus' but all my testing was with the spba-bus name, so I
-didn't even notice the conflict.
+> Noted, I will send v2 with these fixed.
+> 
 
-> >
-> > The proper node name is "bus" so basically you introduce wrong name to
-> > other problem.  Introducing wrong names at least requires a comment.
->
-> I just noticed that my message was barely understandable... so let me
-> fix it:
->
-> The proper node name is "bus" so basically you introduce wrong name to
-> _fix_ other problem.  Introducing wrong names at least requires a comment.
->
-> > However the actual problem here is not in node names but in addresses:
-> >
-> >       aips1: bus@30000000 {
-> >               spba: bus@30000000 {
-> >
-> > You have to devices with the same unit address. How do you share the
-> > address space?
-> >
-> > I think this should be rather fixed.
->
-> And again, hungry keyboard ate a letter, so:
->
-> You have _two_ devices with the same unit address. How do you share the
-> address space?
-> I think this should be rather fixed.
+And with those changes:
 
-I am no expert on this driver, but from what I can tell, the SDMA
-driver searches for the memory range assigned to the bus associated
-with the spba so the DMA has an idea of which peripheral memory ranges
-are shared.
-from drivers/dma/imx-sdma.c:
+Acked-by: David Rientjes <rientjes@google.com>
 
-    spba_bus = of_find_compatible_node(NULL, NULL, "fsl,spba-bus");
-    ret = of_address_to_resource(spba_bus, 0, &spba_res);
-    if (!ret) {
-        sdma->spba_start_addr = spba_res.start;
-        sdma->spba_end_addr = spba_res.end;
-    }
-
-Table 2-3 of the reference manual for the i.MX8M Nano shows the memory
-range from 3000_0000 - 300F_FFFF is defined as AIPS-1 (s_b_1, via
-SPBA) Glob. Module Enable which implies to me that the SPBA needs to
-start at the same place as the AIPS1, but AIPS1 goes from 3000_0000 to
-303F_FFFF, so the spba-bus is a subset of the AIPS1.
-
-NXP/Freescale has a variety of SoC's that use the SPBA and in every
-instance, they do it this way.  Having the spba-bus with the same
-starting address of its parent aips bus isn't unique to this SoC:
-
-imx6q.dtsi
-imx6sl.dtsi
-imx31.dtsi
-imx7s.dtsi
-imx6sll.dtsi
-imx51.dtsi
-imx6qdl.dtsi
-imx35.dtsi
-imx50.dtsi
-imx25.dtsi
-imx6sx.dtsi
-imx6ul.dtsi
-imx53.dtsi
-
-However, in each instance, the bus associated to the SPBA is called
-spba-bus and not just 'bus'
-
-adam
->
-> Best regards,
-> Krzysztof
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Thanks Brijesh!
