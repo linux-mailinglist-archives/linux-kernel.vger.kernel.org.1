@@ -2,79 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7952D6531
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 065222D651D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393033AbgLJSgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:36:35 -0500
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:42039 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733295AbgLJOdB (ORCPT
+        id S2393085AbgLJSdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:33:45 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2246 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392680AbgLJSdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:33:01 -0500
-Received: by mail-oo1-f65.google.com with SMTP id x203so1315217ooa.9;
-        Thu, 10 Dec 2020 06:32:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k62Ve7mlBGGKYnLuZVHB8mMB87DGHB1By9AKQqAliVw=;
-        b=TS2XoujjUkgV1LYJ4nbdQV0XfPv+mJcZ/uGt7DU4uM4ozF1FnhyKGsQvN0nCG15JgF
-         lCoNNHzXKzZ/ia6ZBk1z+P2PziGAANbx5RBw5F+FZsazJuuSIsyDem7ps4I5Z3dTJW4l
-         02PMjKj6903sUetAlQfDReaAHU50+jcYNNg2sYXW8xALP9kWghymnkiEFL3+lOLGdcb4
-         50DXf2W4jMf+qvHlBJdalOGnCjezPzRkUS8bQO28xWIWjmW2oc2lCV8dnxfH6G349UWO
-         JJhso9kEZoV0raQPLZFOIRITbSS8/yRK+G2+gsoJApERC8VzDv5ZI5VA3fgC/hEKLDNW
-         eu/A==
-X-Gm-Message-State: AOAM5310CcSl5riaffpNtK0yw5WBIUOalwllsrLf+HJfyZ4Vx722CDzC
-        7yEslr8pPfNBUqLV1x3m7A67BGAXjokGi/q/RIY=
-X-Google-Smtp-Source: ABdhPJxsInWkuQMARndOZonBEuc0OjkBD+vUgPSyChtLKlr7QodvM1uxGMaD4o5So/hwQumvATutmKPpcaCfcxSFQK4=
-X-Received: by 2002:a4a:aac4:: with SMTP id e4mr6089606oon.2.1607610740318;
- Thu, 10 Dec 2020 06:32:20 -0800 (PST)
+        Thu, 10 Dec 2020 13:33:44 -0500
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CsMsp5bTZz67K4w;
+        Fri, 11 Dec 2020 02:30:22 +0800 (CST)
+Received: from lhreml741-chm.china.huawei.com (10.201.108.191) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 10 Dec 2020 19:33:02 +0100
+Received: from [10.47.200.37] (10.47.200.37) by lhreml741-chm.china.huawei.com
+ (10.201.108.191) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 10 Dec
+ 2020 18:32:55 +0000
+Subject: Re: [PATCH 2/3] perf tools: Allow to enable/disable events via
+ control file
+From:   Alexei Budankov <abudankov@huawei.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>
+References: <20201206170519.4010606-1-jolsa@kernel.org>
+ <20201206170519.4010606-3-jolsa@kernel.org>
+ <7bcde520-e933-c2d6-c960-3f8acdaf6047@huawei.com>
+ <20201210162430.GH69683@krava> <20201210180646.GA186916@krava>
+ <6214e1cd-e6a4-2a7a-160c-47212afdc190@huawei.com>
+Message-ID: <65ed9170-e88a-d034-5fda-e82c50846b0a@huawei.com>
+Date:   Thu, 10 Dec 2020 21:32:48 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201210142139.20490-1-yousaf.kaukab@suse.com>
-In-Reply-To: <20201210142139.20490-1-yousaf.kaukab@suse.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 10 Dec 2020 15:32:09 +0100
-Message-ID: <CAJZ5v0hWxLrXCS+X15hnLZ2enBsSJ0aEfnxK2kL+n9k4gkg17Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] acpi: cppc: add cpufreq device
-To:     Mian Yousaf Kaukab <yousaf.kaukab@suse.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Mian Yousaf Kaukab <ykaukab@suse.de>,
-        Petr Cervinka <pcervinka@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6214e1cd-e6a4-2a7a-160c-47212afdc190@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.200.37]
+X-ClientProxiedBy: braeml707-chm.china.huawei.com (10.226.71.37) To
+ lhreml741-chm.china.huawei.com (10.201.108.191)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 3:23 PM Mian Yousaf Kaukab
-<yousaf.kaukab@suse.com> wrote:
->
-> From: Mian Yousaf Kaukab <ykaukab@suse.de>
->
-> Since commit 28f06f770454 ("cppc_cpufreq: replace per-cpu structures with
-> lists"), cppc-cpufreq driver doesn't check availability of PSD data before
-> registering with cpufreq core. As a result on a ThunderX2 platform when
-> CPPC is disabled from BIOS, kernel log is spammed with following messages:
->
-> [  180.974166] CPPC Cpufreq: Error in acquiring _CPC/_PSD data for CPUxx
->
-> acpi_cppc_processor_probe() never succeed in this case because
-> acpi_evaluate_object_typed("_CPC") always returns AE_NOT_FOUND. When
-> cpufreq core calls cppc_cpufreq_cpu_init(), driver fails to obtain PSD data
-> and print error messages.
->
-> Convert cppc-cpufreq driver to a platform driver (done in a separate patch)
-> and add cppc-cpufreq device when acpi_cppc_processor_probe() succeeds.
 
-Honestly, I prefer to drop 28f06f770454 (along with its follower)
-instead of making this change.
 
-> Fixes: 28f06f770454 ("cppc_cpufreq: replace per-cpu structures with lists")
+On 10.12.2020 21:20, Alexei Budankov wrote:
+> 
+> On 10.12.2020 21:06, Jiri Olsa wrote:
+>> On Thu, Dec 10, 2020 at 05:24:30PM +0100, Jiri Olsa wrote:
+>>> On Mon, Dec 07, 2020 at 08:02:20PM +0300, Alexei Budankov wrote:
+>>>> Hi,
+>>>>
+>>>> On 06.12.2020 20:05, Jiri Olsa wrote:
+>>>>> Adding new control events to enable/disable specific event.
+>>>>> The interface string for control file are:
+>>>>>
+>>>>>   'enable-<EVENT NAME>'
+>>>>>   'disable-<EVENT NAME>'
+>>>>
+>>>> <SNIP>
+>>>>
+>>>>>
+>>>>> when received the command, perf will scan the current evlist
+>>>>> for <EVENT NAME> and if found it's enabled/disabled.
+>>>>
+>>>> <SNIP>
+>>>>
+>>>>> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+>>>>> index 70aff26612a9..05723227bebf 100644
+>>>>> --- a/tools/perf/util/evlist.c
+>>>>> +++ b/tools/perf/util/evlist.c
+>>>>> @@ -1915,7 +1915,13 @@ static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
+>>>>>  		 bytes_read == data_size ? "" : c == '\n' ? "\\n" : "\\0");
+>>>>>  
+>>>>>  	if (bytes_read > 0) {
+>>>>> -		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
+>>>>> +		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_EVSEL_TAG,
+>>>>> +				    (sizeof(EVLIST_CTL_CMD_ENABLE_EVSEL_TAG)-1))) {
+>>>>> +			*cmd = EVLIST_CTL_CMD_ENABLE_EVSEL;
+>>>>> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_EVSEL_TAG,
+>>>>> +				    (sizeof(EVLIST_CTL_CMD_DISABLE_EVSEL_TAG)-1))) {
+>>>>> +			*cmd = EVLIST_CTL_CMD_DISABLE_EVSEL;
+>>>>> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
+>>>>>  			     (sizeof(EVLIST_CTL_CMD_ENABLE_TAG)-1))) {
+>>>>>  			*cmd = EVLIST_CTL_CMD_ENABLE;
+>>>>>  		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_TAG,
+>>>>> @@ -1952,6 +1958,8 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+>>>>>  	char cmd_data[EVLIST_CTL_CMD_MAX_LEN];
+>>>>>  	int ctlfd_pos = evlist->ctl_fd.pos;
+>>>>>  	struct pollfd *entries = evlist->core.pollfd.entries;
+>>>>> +	struct evsel *evsel;
+>>>>> +	char *evsel_name;
+>>>>>  
+>>>>>  	if (!evlist__ctlfd_initialized(evlist) || !entries[ctlfd_pos].revents)
+>>>>>  		return 0;
+>>>>> @@ -1967,6 +1975,26 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+>>>>>  			case EVLIST_CTL_CMD_DISABLE:
+>>>>>  				evlist__disable(evlist);
+>>>>>  				break;
+>>>>> +			case EVLIST_CTL_CMD_ENABLE_EVSEL:
+>>>>> +				evsel_name = cmd_data + sizeof(EVLIST_CTL_CMD_ENABLE_EVSEL_TAG) - 1;
+>>>>
+>>>> It makes sense to check that evsel_name still points
+>>>> into cmd_data buffer after assigning to event name.
+>>>
+>>> right, will add that
+>>
+>> actualy it's already checked in evlist__ctlfd_recv, evsel_name at
+>> worst will be empty string so evlist__find_evsel_by_str will fail
+>>
+>> I'll add '' around %s in the error output string:
+>>
+>>   failed: can't find '%s' event
+>>
+>> so it's obvious when it's empty
 
-Thanks!
+Acked-by: Alexei Budankov <abudankov@huawei.com>
+
+Thanks,
+Alexei
