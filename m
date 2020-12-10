@@ -2,132 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30A82D5259
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D096B2D528A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732300AbgLJEAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 23:00:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732258AbgLJEAJ (ORCPT
+        id S1731867AbgLJD6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:58:06 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:41890 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731790AbgLJD5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 23:00:09 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD588C0617B0
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 19:59:29 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id w4so2929540pgg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 19:59:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=t1l4xMSE0KQnA71H//bDmskGduWipXvDa6Vox+ZjNms=;
-        b=hMRBPFb96XJumXLHyGTTwBklAUnIrxY7ck3bVW6zB94E5E1bc8M4k6wRlkORblzegV
-         U5lvw2LfOIBvWm70vSuLDEgphWueRmLtAcavEysLQ5ehechfmSU3Ipi0TQWhQxUh3fHU
-         enQTfmCl5wcAOp4vSyEMwEiXSHozesuQAfXUZ6fBkXFMzThmMoahvOptGtxCChZaB4XP
-         20mAdPoysLnFwGnxcQGOb5pWjsSUWLErW/qIG10Grlgi3RBcVRbvDii7ytREaV09QuxP
-         79KAVZ1RimWNnqGRmifxuj5st5dcIkCJG/ehffyI5jMdPmllwYixCXtBDTnsPx3b4BOl
-         kbLg==
+        Wed, 9 Dec 2020 22:57:43 -0500
+Received: by mail-ot1-f68.google.com with SMTP id x13so3655991oto.8;
+        Wed, 09 Dec 2020 19:57:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=t1l4xMSE0KQnA71H//bDmskGduWipXvDa6Vox+ZjNms=;
-        b=DSDdAQVfjT4VkiCwJ4tYDspobbLsARaUJKdTLYVavhMxqhnGF/idmMXqsFtgCFowj2
-         zGFD8ZqL9Bum00P9DEK1tfqXV3jOOrB0Bkzuzmhlk2s0IcAKBuwMb7LzpU2EJdO3J12Q
-         ma+3a1n/VBAcJBuXfCTcXUcj/KF2JyNirTFeDMTHiuedpkV4C+eYLDLJjPyJR2g7BZEJ
-         deOINFY9Z97AkGvBxgpphmCeuKjSQDRriREJE2+oqs2q4Ocwhuj5j5rhoXDswTMYpz3L
-         tJ/rj1OrbpwL9wypC+B1bZr3mFt3itP/HERuj5uc8LG6kIh6yE0S60OlxFXrMRGjPaAi
-         EhoA==
-X-Gm-Message-State: AOAM530FhEowF1GSGFu4ENcjhfQW0z4L2iN+YmWN4KOEVPMu6Ye4OVpV
-        H8ExHL9QeOWnYm0fSwca7IpHrg==
-X-Google-Smtp-Source: ABdhPJydwdYQo79U6PP08VNvTBIzTtWxejp8DNMvx8xTTULpe736PdBuGNl589ah44qPUz1qAf8ZKw==
-X-Received: by 2002:a17:90a:c306:: with SMTP id g6mr5511722pjt.104.1607572769408;
-        Wed, 09 Dec 2020 19:59:29 -0800 (PST)
-Received: from localhost.localdomain ([103.136.220.85])
-        by smtp.gmail.com with ESMTPSA id f33sm4266535pgl.83.2020.12.09.19.59.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Dec 2020 19:59:28 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v8 12/12] mm/hugetlb: Optimize the code with the help of the compiler
-Date:   Thu, 10 Dec 2020 11:55:26 +0800
-Message-Id: <20201210035526.38938-13-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20201210035526.38938-1-songmuchun@bytedance.com>
-References: <20201210035526.38938-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G2QhB7f/IZOs0m3re+ypQrxGcEo7MBRtBPMfHjJs2JY=;
+        b=hBQqGmHsmxDTA+7Ks8Dhn0W1p82f3DIWtyFvM7wDJgxDg47P+QOUvHV7BtOdmX86Xi
+         dI/Y3b3507VTrid0k35FIKGhETRHf8F/eLqrV5UvwNOiIZBJ0NWIHYa06CBIXpooqhaP
+         9mM5zhgDTt/PcHayqDvay7tbNmpFH55DEXV9vXPhKUEI+gNfSj1mu7gLzNOMbxzmYnL2
+         f2qD7orvmBHZDbv1pvOX5E54gXsMQWcijEQNf/UjLvzPE5HinT+/Uf96BZcNIi7DuFEx
+         CUsKRj2NHMAYpBl0TyQEoU0nAALFOUs9DVkAbylHRVSTnBqmZ7aPmwe8b2+oKpCVp8Ip
+         zt7A==
+X-Gm-Message-State: AOAM531EhhMYkKw/GOoyrlJDuZ9rfnhZEKFSM7GG7f+wY7zWyZgzj8J2
+        4pycF5fFaXjiIyS0Xe99Mgot5JjLzw==
+X-Google-Smtp-Source: ABdhPJyrEEkoAekm6sFmqloN+vJ1XT661Hp+eHwH6Y/W1V4otFUI+Q2hFPtNvXcKQnPU2jb3KbntNA==
+X-Received: by 2002:a05:6830:13c8:: with SMTP id e8mr926977otq.139.1607572621748;
+        Wed, 09 Dec 2020 19:57:01 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j126sm756267oib.13.2020.12.09.19.56.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 19:57:01 -0800 (PST)
+Received: (nullmailer pid 1634611 invoked by uid 1000);
+        Thu, 10 Dec 2020 03:56:59 -0000
+Date:   Wed, 9 Dec 2020 21:56:59 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Yash Shah <yash.shah@sifive.com>
+Cc:     broonie@kernel.org, linux-kernel@vger.kernel.org,
+        linus.walleij@linaro.org, u.kleine-koenig@pengutronix.de,
+        aou@eecs.berkeley.edu, bgolaszewski@baylibre.com,
+        gregkh@linuxfoundation.org, peter@korsgaard.com,
+        lee.jones@linaro.org, palmer@dabbelt.com,
+        linux-pwm@vger.kernel.org, paul.walmsley@sifive.com,
+        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
+        robh+dt@kernel.org, andrew@lunn.ch, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, thierry.reding@gmail.com
+Subject: Re: [PATCH v2 4/9] dt-bindings: serial: Update DT binding docs to
+ support SiFive FU740 SoC
+Message-ID: <20201210035659.GA1634582@robh.at.kernel.org>
+References: <1607403341-57214-1-git-send-email-yash.shah@sifive.com>
+ <1607403341-57214-5-git-send-email-yash.shah@sifive.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607403341-57214-5-git-send-email-yash.shah@sifive.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We cannot optimize if a "struct page" crosses page boundaries. If
-it is true, we can optimize the code with the help of a compiler.
-When free_vmemmap_pages_per_hpage() returns zero, most functions are
-optimized by the compiler.
+On Tue, 08 Dec 2020 10:25:36 +0530, Yash Shah wrote:
+> Add new compatible strings to the DT binding documents to support SiFive
+> FU740-C000.
+> 
+> Signed-off-by: Yash Shah <yash.shah@sifive.com>
+> ---
+>  Documentation/devicetree/bindings/serial/sifive-serial.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/hugetlb.h | 3 ++-
- mm/hugetlb_vmemmap.c    | 3 +++
- mm/hugetlb_vmemmap.h    | 2 +-
- 3 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 7295f6b3d55e..adc17765e0e9 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -791,7 +791,8 @@ extern bool hugetlb_free_vmemmap_enabled;
- 
- static inline bool is_hugetlb_free_vmemmap_enabled(void)
- {
--	return hugetlb_free_vmemmap_enabled;
-+	return hugetlb_free_vmemmap_enabled &&
-+	       is_power_of_2(sizeof(struct page));
- }
- #else
- static inline bool is_hugetlb_free_vmemmap_enabled(void)
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index 7f0b9e002be4..819ab9bb9298 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -208,6 +208,9 @@ bool hugetlb_free_vmemmap_enabled;
- 
- static int __init early_hugetlb_free_vmemmap_param(char *buf)
- {
-+	if (!is_power_of_2(sizeof(struct page)))
-+		return 0;
-+
- 	if (!buf)
- 		return -EINVAL;
- 
-diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-index 0a1c0d33a316..5f5e90c81cd2 100644
---- a/mm/hugetlb_vmemmap.h
-+++ b/mm/hugetlb_vmemmap.h
-@@ -21,7 +21,7 @@ void free_huge_page_vmemmap(struct hstate *h, struct page *head);
-  */
- static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
- {
--	return h->nr_free_vmemmap_pages;
-+	return h->nr_free_vmemmap_pages && is_power_of_2(sizeof(struct page));
- }
- #else
- static inline void hugetlb_vmemmap_init(struct hstate *h)
--- 
-2.11.0
-
+Reviewed-by: Rob Herring <robh@kernel.org>
