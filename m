@@ -2,240 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EAE2D67CC
+	by mail.lfdr.de (Postfix) with ESMTP id E2B962D67CD
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404332AbgLJT6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:58:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390146AbgLJT5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:57:43 -0500
-Date:   Thu, 10 Dec 2020 11:56:59 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607630219;
-        bh=7YiuW/XD2F8+axLnYxfd/GhmODra1Xbd7PzzWXxBB+k=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Pv9i69yA/yZ5f3zqOE7xzZ97OXL87KIeMaEZq99EUA4hfxGrHOlDheGv4Hjmv13LW
-         k8pxmrwmA7jm5ob2ZR9WWqU2FhsjNICuHJqfYhNiUlx2JaB2wVgEvzGb3LJG55kTxG
-         bTV9U38fSa5WbNbV6ndxzC7eotFebx60G7oY8ysdaYoY14Dt+5M98wtUhpIikU4V2S
-         TRtGk4Zz7gA7SRumFE0pdINS9TawlFAZf4LLz4MwPxSkWUD6dTOkbsFI7oPk+gGS7F
-         +RPq1kCFYVAcO9ujFKJDY+t3PUzIftCuyg7Xqe/Am1GegJOYWuIzVIuBK9PPsFoNe5
-         fWzE5LLPRNdDw==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        iamjoonsoo.kim@lge.com, andrii@kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
-Subject: Re: [PATCH v2 sl-b 1/5] mm: Add mem_dump_obj() to print source of
- memory block
-Message-ID: <20201210195659.GY2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
- <20201209011303.32737-1-paulmck@kernel.org>
- <8ea31887-8cc3-24cc-82e8-779290c61c2c@suse.cz>
- <20201209230442.GH2657@paulmck-ThinkPad-P72>
- <211cc2a9-5d94-cb0f-91bf-3415510b7dae@suse.cz>
+        id S2404335AbgLJT7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:59:07 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2247 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390146AbgLJT6t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 14:58:49 -0500
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CsPl35jC3z67M6B;
+        Fri, 11 Dec 2020 03:54:39 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Thu, 10 Dec 2020 20:58:02 +0100
+Received: from [10.210.172.228] (10.210.172.228) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 10 Dec 2020 19:58:01 +0000
+Subject: Re: [BUG] jevents problem when cross building Re: [PATCH 2/3] perf
+ tools: Allow to enable/disable events via control file
+From:   John Garry <john.garry@huawei.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     Jiri Olsa <jolsa@redhat.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        "Jiri Olsa" <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>
+References: <20201206170519.4010606-1-jolsa@kernel.org>
+ <20201206170519.4010606-3-jolsa@kernel.org>
+ <7bcde520-e933-c2d6-c960-3f8acdaf6047@huawei.com>
+ <20201210162430.GH69683@krava> <20201210171503.GA195565@kernel.org>
+ <20201210171903.GB195565@kernel.org> <20201210172608.GC195565@kernel.org>
+ <30e7907d-868a-a673-59a7-3bb4766093b4@huawei.com>
+ <20201210181708.GD195565@kernel.org>
+ <1a608e92-d0d0-2e5e-ba7e-e9fa2e02b0f9@huawei.com>
+Message-ID: <650baaf2-36b6-a9e2-ff49-963ef864c1f3@huawei.com>
+Date:   Thu, 10 Dec 2020 19:57:26 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <211cc2a9-5d94-cb0f-91bf-3415510b7dae@suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1a608e92-d0d0-2e5e-ba7e-e9fa2e02b0f9@huawei.com>
+Content-Type: multipart/mixed;
+        boundary="------------F62C2E5729283149E21160D0"
+Content-Language: en-US
+X-Originating-IP: [10.210.172.228]
+X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 11:48:26AM +0100, Vlastimil Babka wrote:
-> On 12/10/20 12:04 AM, Paul E. McKenney wrote:
-> >> > +/**
-> >> > + * kmem_valid_obj - does the pointer reference a valid slab object?
-> >> > + * @object: pointer to query.
-> >> > + *
-> >> > + * Return: %true if the pointer is to a not-yet-freed object from
-> >> > + * kmalloc() or kmem_cache_alloc(), either %true or %false if the pointer
-> >> > + * is to an already-freed object, and %false otherwise.
-> >> > + */
-> >> 
-> >> It should be possible to find out more about object being free or not, than you
-> >> currently do. At least to find out if it's definitely free. When it appears
-> >> allocated, it can be actually still free in some kind of e.g. per-cpu or
-> >> per-node cache that would be infeasible to check. But that improvement to the
-> >> output can be also added later. Also SLUB stores the freeing stacktrace, which
-> >> might be useful...
-> > 
-> > I can see how this could help debugging a use-after-free situation,
-> > at least as long as the poor sap that subsequently allocated it doesn't
-> > free it.
-> > 
-> > I can easily add more fields to the kmem_provenance structure.  Maybe
-> > it would make sense to have another exported API that you provide a
-> > kmem_provenance structure to, and it fills it in.
-> > 
-> > One caution though...  I rely on the object being allocated.
-> > If it officially might already be freed, complex and high-overhead
-> > synchronization seems to be required to safely access the various data
-> > structures.
+--------------F62C2E5729283149E21160D0
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+
+On 10/12/2020 18:27, John Garry wrote:
+>> Its unpublished, I'll send it to the tmp.perf/core branch now.
 > 
-> Good point! It's easy to forget that when being used to similar digging in a
-> crash dump, where nothing changes.
-
-Maybe a similar addition to the crash-analysis tools would be helpful?
-
-> > So any use on an already-freed object is on a "you break it you get to
-> > keep the pieces" basis.  On the other hand, if you are dealing with a
-> > use-after-free situation, life is hard anyway.
+> I use cross-compile for arm64 to build, and it's ok.
 > 
-> Yeah, even now I think it's potentially dangerous, as you can get
-> kmem_valid_obj() as true because PageSlab(page) is true. But the object might be
-> already free, so as soon as another CPU frees another object from the same slab
-> page, the page gets also freed... or it was already freed and then allocated by
-> another slab so it's PageSlab() again.
-> I guess at least some safety could be achieved by pinning the page with
-> get_page_unless_zero. But maybe your current implementation is already safe,
-> need to check in detail.
-
-The code on the various free paths looks to me to make the same
-assumptions that I am making.  So if this is unsafe, we have other
-problems.
-
-> > Or am I missing your point?
-> > 
-> >> > +bool kmem_valid_obj(void *object)
-> >> > +{
-> >> > +	struct page *page;
-> >> > +
-> >> > +	if (!virt_addr_valid(object))
-> >> > +		return false;
-> >> > +	page = virt_to_head_page(object);
-> >> > +	return PageSlab(page);
-> >> > +}
-> >> > +EXPORT_SYMBOL_GPL(kmem_valid_obj);
-> >> > +
-> >> > +/**
-> >> > + * kmem_dump_obj - Print available slab provenance information
-> >> > + * @object: slab object for which to find provenance information.
-> >> > + *
-> >> > + * This function uses pr_cont(), so that the caller is expected to have
-> >> > + * printed out whatever preamble is appropriate.  The provenance information
-> >> > + * depends on the type of object and on how much debugging is enabled.
-> >> > + * For a slab-cache object, the fact that it is a slab object is printed,
-> >> > + * and, if available, the slab name, return address, and stack trace from
-> >> > + * the allocation of that object.
-> >> > + *
-> >> > + * This function will splat if passed a pointer to a non-slab object.
-> >> > + * If you are not sure what type of object you have, you should instead
-> >> > + * use mem_dump_obj().
-> >> > + */
-> >> > +void kmem_dump_obj(void *object)
-> >> > +{
-> >> > +	int i;
-> >> > +	struct page *page;
-> >> > +	struct kmem_provenance kp;
-> >> > +
-> >> > +	if (WARN_ON_ONCE(!virt_addr_valid(object)))
-> >> > +		return;
-> >> > +	page = virt_to_head_page(object);
-> >> > +	if (WARN_ON_ONCE(!PageSlab(page))) {
-> >> > +		pr_cont(" non-slab memory.\n");
-> >> > +		return;
-> >> > +	}
-> >> > +	kp.kp_ptr = object;
-> >> > +	kp.kp_page = page;
-> >> > +	kp.kp_nstack = KS_ADDRS_COUNT;
-> >> > +	kmem_provenance(&kp);
-> >> 
-> >> You don't seem to be printing kp.kp_objp anywhere? (unless in later patch, but
-> >> would make sense in this patch already).
-> > 
-> > Good point!
-> > 
-> > However, please note that the various debugging options that reserve
-> > space at the beginning.  This can make the meaning of kp.kp_objp a bit
-> > different than one might expect.
+> I notice that the failures are for architectures which don't have an 
+> entry under pmu-events/arch, so maybe we're missing some 'weak' 
+> definition of pmu_sys_event_tables.
 > 
-> Yeah, I think the best would be to match the address that
-> kmalloc/kmem_cache_alloc() would return, thus the beginning of the object
-> itself, so you can calculate the offset within it, etc.
-
-My thought is to do both.  Show the start address, the data offset (if
-nonzero), and the pointer offset within the data.  My guess is that in
-the absence of things like slub_debug=U, the pointer offset within the
-data is the best way to figure out which structure is involved.
-
-Or do you use other tricks to work this sort of thing out?
-
-> >> > --- a/mm/util.c
-> >> > +++ b/mm/util.c
-> >> 
-> >> I think mm/debug.c is a better fit as it already has dump_page() of a similar
-> >> nature. Also you can call that from from mem_dump_obj() at least in case when
-> >> the more specific handlers fail. It will even include page_owner info if enabled! :)
-> > 
-> > I will count this as one vote for mm/debug.c.
-> > 
-> > Two things to consider, though...  First, Joonsoo suggests that the fact
-> > that this produces useful information without any debugging information
-> > enabled makes it not be debugging as such.
+> I'll check now.
 > 
-> Well there's already dump_page() which also produces information without special
-> configs.
-> We're not the best subsystem in this kind of consistency...
-> 
-> > Second, mm/debug.c does
-> > not include either slab.h or vmalloc.h.  The second might not be a
-> > showstopper, but I was interpreting this to mean that its role was
-> > less central.
-> 
-> I think it can include whatever becomes needed there :)
 
-I figured that there was a significant probability that I would have to
-move it, and I really don't have a basis for a preference, let alone
-a preference.  But I would like to avoid moving it more than once, so
-I also figured I should give anyone else having an educated preference
-a chance to speak up.  ;-)
+Hi Arnaldo,
 
-							Thanx, Paul
+Can you try this on top:
 
-> >> Thanks,
-> >> Vlastimil
-> >> 
-> >> > @@ -970,3 +970,28 @@ int __weak memcmp_pages(struct page *page1, struct page *page2)
-> >> >  	kunmap_atomic(addr1);
-> >> >  	return ret;
-> >> >  }
-> >> > +
-> >> > +/**
-> >> > + * mem_dump_obj - Print available provenance information
-> >> > + * @object: object for which to find provenance information.
-> >> > + *
-> >> > + * This function uses pr_cont(), so that the caller is expected to have
-> >> > + * printed out whatever preamble is appropriate.  The provenance information
-> >> > + * depends on the type of object and on how much debugging is enabled.
-> >> > + * For example, for a slab-cache object, the slab name is printed, and,
-> >> > + * if available, the return address and stack trace from the allocation
-> >> > + * of that object.
-> >> > + */
-> >> > +void mem_dump_obj(void *object)
-> >> > +{
-> >> > +	if (!virt_addr_valid(object)) {
-> >> > +		pr_cont(" non-paged (local) memory.\n");
-> >> > +		return;
-> >> > +	}
-> >> > +	if (kmem_valid_obj(object)) {
-> >> > +		kmem_dump_obj(object);
-> >> > +		return;
-> >> > +	}
-> >> > +	pr_cont(" non-slab memory.\n");
-> >> > +}
-> >> > +EXPORT_SYMBOL_GPL(mem_dump_obj);
-> >> > 
-> >> 
-> > 
+----8<-----
+
+ From 201aa2cb7bc8723765afd84a5d3972248af0f0a1 Mon Sep 17 00:00:00 2001
+From: John Garry <john.garry@huawei.com>
+Date: Thu, 10 Dec 2020 19:45:14 +0000
+Subject: [PATCH] perf jevents: Add system events table for empty mapping
+
+For architectures which have no PMU event lists - like arm32 - an empty
+mapping table is printed. This is how the "pmu_events_map" symbol -
+referenced in util/pmu.c::perf_pmu__find_map() - is created for those
+architectures.
+
+Since pmu-events.c now includes a new table - "pmu_sys_event_tables" -
+which is also referenced from util/pmu.c, also add this for the empty
+mappings.
+
+Signed-off-by: John Garry <john.garry@huawei.com>
+
+diff --git a/tools/perf/pmu-events/jevents.c 
+b/tools/perf/pmu-events/jevents.c
+index e930096ad713..28e20d9ec0f5 100644
+--- a/tools/perf/pmu-events/jevents.c
++++ b/tools/perf/pmu-events/jevents.c
+@@ -816,19 +816,30 @@ static void print_mapping_test_table(FILE *outfp)
+  	fprintf(outfp, "},\n");
+  }
+
++static void print_system_event_mapping_table_prefix(FILE *outfp)
++{
++	fprintf(outfp, "\nstruct pmu_sys_events pmu_sys_event_tables[] = {");
++}
++
++static void print_system_event_mapping_table_suffix(FILE *outfp)
++{
++	fprintf(outfp, "\n\t{\n\t\t.table = 0\n\t},");
++
++	fprintf(outfp, "\n};\n");
++}
++
+  static int process_system_event_tables(FILE *outfp)
+  {
+  	struct sys_event_table *sys_event_table;
+
+-	fprintf(outfp, "\nstruct pmu_sys_events pmu_sys_event_tables[] = {");
++	print_system_event_mapping_table_prefix(outfp);
+
+  	list_for_each_entry(sys_event_table, &sys_event_tables, list) {
+  		fprintf(outfp, "\n\t{\n\t\t.table = %s,\n\t},",
+  			sys_event_table->soc_id);
+  	}
+-	fprintf(outfp, "\n\t{\n\t\t.table = 0\n\t},");
+
+-	fprintf(outfp, "\n};\n");
++	print_system_event_mapping_table_suffix(outfp);
+
+  	return 0;
+  }
+@@ -938,6 +949,9 @@ static void create_empty_mapping(const char 
+*output_file)
+  	fprintf(outfp, "#include \"pmu-events/pmu-events.h\"\n");
+  	print_mapping_table_prefix(outfp);
+  	print_mapping_table_suffix(outfp);
++	print_system_event_mapping_table_prefix(outfp);
++	print_system_event_mapping_table_suffix(outfp);
++
+  	fclose(outfp);
+  }
+
+---->8----
+
+Obviously I never tested building for one of test architectures which 
+does not use PMU events - sorry!
+
+I'll review this more tomorrow.
+
+Thanks!
+
+
 > 
+>>
+>> More results from testing:
+>>
+>>    59    13.57 ubuntu:16.04-x-arm            : FAIL 
+>> arm-linux-gnueabihf-gcc (Ubuntu/Linaro 5.4.0-6ubuntu1~16.04.9) 5.4.0 
+>> 20160609
+>>
+>> [perfbuilder@five ~]$ tail -20 dm.log/ubuntu\:16.04-x-arm
+>>    CC       /tmp/build/perf/util/expr.o
+>>    LD       /tmp/build/perf/util/intel-pt-decoder/perf-in.o
+>>    LD       /tmp/build/perf/util/perf-in.o
+>>    LD       /tmp/build/perf/perf-in.o
+>>    LINK     /tmp/build/perf/perf
+>> /tmp/build/perf/perf-in.o: In function `pmu_for_each_sys_event':
+>> /git/linux/tools/perf/util/pmu.c:816: undefined reference to 
+>> `pmu_sys_event_tables'
+>> /git/linux/tools/perf/util/pmu.c:816: undefined reference to 
+>> `pmu_sys_event_tables'
+>> /tmp/build/perf/perf-in.o: In function `pmu_add_sys_aliases':
+>> /git/linux/tools/perf/util/pmu.c:886: undefined reference to 
+>> `pmu_sys_event_tables'
+>> /git/linux/tools/perf/util/pmu.c:886: undefined reference to 
+>> `pmu_sys_event_tables'
+>> collect2: error: ld returned 1 exit status
+>> Makefile.perf:659: recipe for target '/tmp/build/perf/perf' failed
+>> make[2]: *** [/tmp/build/perf/perf] Error 1
+>> Makefile.perf:232: recipe for target 'sub-make' failed
+>> make[1]: *** [sub-make] Error 2
+>> Makefile:69: recipe for target 'all' failed
+>> make: *** [all] Error 2
+>> make: Leaving directory '/git/linux/tools/perf'
+>> + exit 1 
+
+
+--------------F62C2E5729283149E21160D0
+Content-Type: text/plain; charset="UTF-8";
+	name="0001-perf-jevents-Add-system-events-table-for-empty-mappi.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename*0="0001-perf-jevents-Add-system-events-table-for-empty-mappi.pa";
+	filename*1="tch"
+
+RnJvbSAyMDFhYTJjYjdiYzg3MjM3NjVhZmQ4NGE1ZDM5NzIyNDhhZjBmMGExIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBKb2huIEdhcnJ5IDxqb2huLmdhcnJ5QGh1YXdlaS5j
+b20+CkRhdGU6IFRodSwgMTAgRGVjIDIwMjAgMTk6NDU6MTQgKzAwMDAKU3ViamVjdDogW1BB
+VENIXSBwZXJmIGpldmVudHM6IEFkZCBzeXN0ZW0gZXZlbnRzIHRhYmxlIGZvciBlbXB0eSBt
+YXBwaW5nCgpGb3IgYXJjaGl0ZWN0dXJlcyB3aGljaCBoYXZlIG5vIFBNVSBldmVudCBsaXN0
+cyAtIGxpa2UgYXJtMzIgLSBhbiBlbXB0eQptYXBwaW5nIHRhYmxlIGlzIHByaW50ZWQuIFRo
+aXMgaXMgaG93IHRoZSAicG11X2V2ZW50c19tYXAiIHN5bWJvbCAtCnJlZmVyZW5jZWQgaW4g
+dXRpbC9wbXUuYzo6cGVyZl9wbXVfX2ZpbmRfbWFwKCkgLSBpcyBjcmVhdGVkIGZvciB0aG9z
+ZQphcmNoaXRlY3R1cmVzLgoKU2luY2UgcG11LWV2ZW50cy5jIG5vdyBpbmNsdWRlcyBhIG5l
+dyB0YWJsZSAtICJwbXVfc3lzX2V2ZW50X3RhYmxlcyIgLQp3aGljaCBpcyBhbHNvIHJlZmVy
+ZW5jZWQgZnJvbSB1dGlsL3BtdS5jLCBhbHNvIGFkZCB0aGlzIGZvciB0aGUgZW1wdHkKbWFw
+cGluZ3MuCgpTaWduZWQtb2ZmLWJ5OiBKb2huIEdhcnJ5IDxqb2huLmdhcnJ5QGh1YXdlaS5j
+b20+CgpkaWZmIC0tZ2l0IGEvdG9vbHMvcGVyZi9wbXUtZXZlbnRzL2pldmVudHMuYyBiL3Rv
+b2xzL3BlcmYvcG11LWV2ZW50cy9qZXZlbnRzLmMKaW5kZXggZTkzMDA5NmFkNzEzLi4yOGUy
+MGQ5ZWMwZjUgMTAwNjQ0Ci0tLSBhL3Rvb2xzL3BlcmYvcG11LWV2ZW50cy9qZXZlbnRzLmMK
+KysrIGIvdG9vbHMvcGVyZi9wbXUtZXZlbnRzL2pldmVudHMuYwpAQCAtODE2LDE5ICs4MTYs
+MzAgQEAgc3RhdGljIHZvaWQgcHJpbnRfbWFwcGluZ190ZXN0X3RhYmxlKEZJTEUgKm91dGZw
+KQogCWZwcmludGYob3V0ZnAsICJ9LFxuIik7CiB9CiAKK3N0YXRpYyB2b2lkIHByaW50X3N5
+c3RlbV9ldmVudF9tYXBwaW5nX3RhYmxlX3ByZWZpeChGSUxFICpvdXRmcCkKK3sKKwlmcHJp
+bnRmKG91dGZwLCAiXG5zdHJ1Y3QgcG11X3N5c19ldmVudHMgcG11X3N5c19ldmVudF90YWJs
+ZXNbXSA9IHsiKTsKK30KKworc3RhdGljIHZvaWQgcHJpbnRfc3lzdGVtX2V2ZW50X21hcHBp
+bmdfdGFibGVfc3VmZml4KEZJTEUgKm91dGZwKQoreworCWZwcmludGYob3V0ZnAsICJcblx0
+e1xuXHRcdC50YWJsZSA9IDBcblx0fSwiKTsKKworCWZwcmludGYob3V0ZnAsICJcbn07XG4i
+KTsKK30KKwogc3RhdGljIGludCBwcm9jZXNzX3N5c3RlbV9ldmVudF90YWJsZXMoRklMRSAq
+b3V0ZnApCiB7CiAJc3RydWN0IHN5c19ldmVudF90YWJsZSAqc3lzX2V2ZW50X3RhYmxlOwog
+Ci0JZnByaW50ZihvdXRmcCwgIlxuc3RydWN0IHBtdV9zeXNfZXZlbnRzIHBtdV9zeXNfZXZl
+bnRfdGFibGVzW10gPSB7Iik7CisJcHJpbnRfc3lzdGVtX2V2ZW50X21hcHBpbmdfdGFibGVf
+cHJlZml4KG91dGZwKTsKIAogCWxpc3RfZm9yX2VhY2hfZW50cnkoc3lzX2V2ZW50X3RhYmxl
+LCAmc3lzX2V2ZW50X3RhYmxlcywgbGlzdCkgewogCQlmcHJpbnRmKG91dGZwLCAiXG5cdHtc
+blx0XHQudGFibGUgPSAlcyxcblx0fSwiLAogCQkJc3lzX2V2ZW50X3RhYmxlLT5zb2NfaWQp
+OwogCX0KLQlmcHJpbnRmKG91dGZwLCAiXG5cdHtcblx0XHQudGFibGUgPSAwXG5cdH0sIik7
+CiAKLQlmcHJpbnRmKG91dGZwLCAiXG59O1xuIik7CisJcHJpbnRfc3lzdGVtX2V2ZW50X21h
+cHBpbmdfdGFibGVfc3VmZml4KG91dGZwKTsKIAogCXJldHVybiAwOwogfQpAQCAtOTM4LDYg
+Kzk0OSw5IEBAIHN0YXRpYyB2b2lkIGNyZWF0ZV9lbXB0eV9tYXBwaW5nKGNvbnN0IGNoYXIg
+Km91dHB1dF9maWxlKQogCWZwcmludGYob3V0ZnAsICIjaW5jbHVkZSBcInBtdS1ldmVudHMv
+cG11LWV2ZW50cy5oXCJcbiIpOwogCXByaW50X21hcHBpbmdfdGFibGVfcHJlZml4KG91dGZw
+KTsKIAlwcmludF9tYXBwaW5nX3RhYmxlX3N1ZmZpeChvdXRmcCk7CisJcHJpbnRfc3lzdGVt
+X2V2ZW50X21hcHBpbmdfdGFibGVfcHJlZml4KG91dGZwKTsKKwlwcmludF9zeXN0ZW1fZXZl
+bnRfbWFwcGluZ190YWJsZV9zdWZmaXgob3V0ZnApOworCiAJZmNsb3NlKG91dGZwKTsKIH0K
+IAotLSAKMi4yNi4yCgo=
+--------------F62C2E5729283149E21160D0--
