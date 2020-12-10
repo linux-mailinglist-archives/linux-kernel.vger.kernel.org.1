@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2812D58B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 511212D58B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389286AbgLJK6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:58:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56392 "EHLO mail.kernel.org"
+        id S1726496AbgLJK5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:57:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389220AbgLJK5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:57:21 -0500
+        id S2389133AbgLJK4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 05:56:36 -0500
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     Linux Media Mailing List <linux-media@vger.kernel.org>
@@ -18,9 +18,9 @@ Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 03/13] media: control.rst: use a table for V4L2_CID_POWER_LINE
-Date:   Thu, 10 Dec 2020 11:55:42 +0100
-Message-Id: <da0267fcfd377cdbb47938ac524955eb811746c3.1607597287.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 06/13] media: ext-ctrls-codec.rst: add a missing profile description
+Date:   Thu, 10 Dec 2020 11:55:45 +0100
+Message-Id: <729accb9978a128143fdb7afe02a3ec26c0571a0.1607597287.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1607597287.git.mchehab+huawei@kernel.org>
 References: <cover.1607597287.git.mchehab+huawei@kernel.org>
@@ -31,38 +31,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default way to document control enums is via tables.
-
-Use one here too. As the table is simple, just use ASCII
-artwork.
+One of the MPEG-4 profiles has a missing description. Add it.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/userspace-api/media/v4l/control.rst | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Documentation/userspace-api/media/v4l/control.rst
-index 4e5652eb6126..ed5154700308 100644
---- a/Documentation/userspace-api/media/v4l/control.rst
-+++ b/Documentation/userspace-api/media/v4l/control.rst
-@@ -154,10 +154,13 @@ Control IDs
- ``V4L2_CID_POWER_LINE_FREQUENCY`` ``(enum)``
-     Enables a power line frequency filter to avoid flicker. Possible
-     values for ``enum v4l2_power_line_frequency`` are:
--    ``V4L2_CID_POWER_LINE_FREQUENCY_DISABLED`` (0),
--    ``V4L2_CID_POWER_LINE_FREQUENCY_50HZ`` (1),
--    ``V4L2_CID_POWER_LINE_FREQUENCY_60HZ`` (2) and
--    ``V4L2_CID_POWER_LINE_FREQUENCY_AUTO`` (3).
-+
-+    ==========================================  ==
-+    ``V4L2_CID_POWER_LINE_FREQUENCY_DISABLED``   0
-+    ``V4L2_CID_POWER_LINE_FREQUENCY_50HZ``	 1
-+    ``V4L2_CID_POWER_LINE_FREQUENCY_60HZ``	 2
-+    ``V4L2_CID_POWER_LINE_FREQUENCY_AUTO``	 3
-+    ==========================================  ==
+diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+index 454ecd9a0f83..08c317ae0910 100644
+--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
++++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+@@ -972,7 +972,7 @@ enum v4l2_mpeg_video_mpeg4_profile -
+     * - ``V4L2_MPEG_VIDEO_MPEG4_PROFILE_SIMPLE_SCALABLE``
+       - Simple Scalable profile
+     * - ``V4L2_MPEG_VIDEO_MPEG4_PROFILE_ADVANCED_CODING_EFFICIENCY``
+-      -
++      - Advanced Coding Efficiency profile
  
- ``V4L2_CID_HUE_AUTO`` ``(boolean)``
-     Enables automatic hue control by the device. The effect of setting
+ 
+ 
 -- 
 2.29.2
 
