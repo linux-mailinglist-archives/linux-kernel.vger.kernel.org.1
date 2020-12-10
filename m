@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424A82D69AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 032AC2D69B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:25:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394005AbgLJVXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 16:23:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390134AbgLJVXC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 16:23:02 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7DBC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:22:22 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id q1so6759401ilt.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:22:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+I9vIixYSp7G9odythIxvF/+NYvkHgUFd3haAtFCe9I=;
-        b=V0OuV9ojpvrpmYJf2e248jYUWvmoYrRRCxwMVutVYbTdp9GluFdGWW49ZzQvYRnQNX
-         Y6kXK8bn/O4Z1cLNXFNpjADUcGuaIgYvcoojkmSPCo7slxCpX0hMCSkibjioJrFMbgWQ
-         +NviTOue5IQPkx00rQNOnCyRQ/S8K51GMQha0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+I9vIixYSp7G9odythIxvF/+NYvkHgUFd3haAtFCe9I=;
-        b=n0ZXw5VcQcylewSE1PZd7jRkztHDc94afVbhkH81XkMml/5PZ/VhXIjIl/lZCnuBjT
-         1P5e3T6IthlYtWlpiebiTth251lU0oKKRbBlD8sgI1WuUzh42uCl1mZl4zNip3AmuE5W
-         KnvQtasOvbD6eRn85pWOiouW4t++ZkhcwEWVMfk7uzC5jn5DdKNPTot/v+6uS9jlPQKa
-         g5qqbtRE+5gIfi7BQRP1NO0CbCCas24FJW6U8RSLgrJ7AKoAfjQ/7yLbgcoUcgsmyZ1p
-         7eBTOMFRIIkfZk8h/beq+zV4DHOS4bYVcionXQbpkB0UuuHK2BCtgVW7Og1fhKpzWXfu
-         eLtQ==
-X-Gm-Message-State: AOAM531A6eaxtpCMllz7ycWKn6GRThjbBgFCDNpqZR5fxYF2JHkL7BPk
-        biPq6gjI9f23jb3uPG3xws3fnw==
-X-Google-Smtp-Source: ABdhPJxhKjZeu4jV1KBpNbRzlMtbJ0bV4pXOlcUX9W6aQ8QYeWViKdWOcfJXoc0tbuiG9kplM8kiqQ==
-X-Received: by 2002:a92:9a42:: with SMTP id t63mr11316412ili.176.1607635341519;
-        Thu, 10 Dec 2020 13:22:21 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v22sm4060849ila.84.2020.12.10.13.22.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 13:22:21 -0800 (PST)
-Subject: Re: [PATCH 5.4 00/54] 5.4.83-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S2394042AbgLJVZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 16:25:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394009AbgLJVXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 16:23:37 -0500
+Date:   Thu, 10 Dec 2020 15:22:55 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607635377;
+        bh=TOz09/Be4KaJAdEckZ6bX5dETMcE9pxq2g7yzIxBw60=;
+        h=From:To:Cc:Subject:In-Reply-To:From;
+        b=c29tY261aNn7r2A2U6A3CanPIzaCva7CfX+EOKAD8VV/0N+cwt8mBFXk5sYldhOZe
+         qgm0RkrZ/l4M2nJ1K1isLdePt9NcwqlWk5/clR8RVtPtaQApwT6hzXy/e1iOwXYn8m
+         OdDHUTSGbidktRpNOWmo7rVVV9jKLrNgCCCFfBJlhz+XvWujcXc8Juz7W6gdWsFooU
+         Uugs9Yv53zi8BwVEMuKZMm5rLVwjlSlrvavelbAj5oT6kSat3ehf8n/EfnBYrhdATk
+         OgdNUD7X3gnPRZCsgp+G7sKHSE7pH0iK/EBetU9MMyvf9vOpmd9reSySUUwo4QPgxH
+         Bz8gCUGgaAePA==
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20201210164728.074574869@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <8844e067-57c9-fbef-d986-890645bd5eac@linuxfoundation.org>
-Date:   Thu, 10 Dec 2020 14:22:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+Subject: Re: [PATCH v2 pci-next] PCI: Keep both device name and resource name
+ for config space remaps
+Message-ID: <20201210212255.GA56204@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20201210164728.074574869@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <WbKfdybjZ6xNIUjcC5oC8NcuLqrJfkxQAlnO80ag@cp3-web-020.plabs.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/20 9:47 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.83 release.
-> There are 54 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, Nov 19, 2020 at 09:26:33PM +0000, Alexander Lobakin wrote:
+> Follow the rule taken in commit 35bd8c07db2c
+> ("devres: keep both device name and resource name in pretty name")
+> and keep both device and resource names while requesting memory
+> regions for PCI config space to prettify e.g. /proc/iomem output:
 > 
-> Responses should be made by Sat, 12 Dec 2020 16:47:12 +0000.
-> Anything received after that time might be too late.
+> Before (DWC Host Controller):
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.83-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
+> 18b00000-18b01fff : dbi
+> 18b10000-18b11fff : config
+> 18b20000-18b21fff : dbi
+> 18b30000-18b31fff : config
 > 
-> thanks,
+> After:
 > 
-> greg k-h
+> 18b00000-18b01fff : 18b00000.pci dbi
+> 18b10000-18b11fff : 18b00000.pci config
+> 18b20000-18b21fff : 18b20000.pci dbi
+> 18b30000-18b31fff : 18b20000.pci config
 > 
+> Since v1 [0]:
+>  - massage subject and commit message (Bjorn);
+>  - no functional changes.
+> 
+> [0] https://lore.kernel.org/lkml/JvyOzv8K8n5CCdP1xfLOdOWh4AbFrXdMMOEExr6em8@cp4-web-036.plabs.ch
+> 
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 
-Compiled and booted on my test system. No dmesg regressions.
+Applied to pci/enumeration for v5.11, thanks!
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+> ---
+>  drivers/pci/pci.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index e578d34095e9..0716691f7d14 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -4188,7 +4188,14 @@ void __iomem *devm_pci_remap_cfg_resource(struct device *dev,
+>  	}
+>  
+>  	size = resource_size(res);
+> -	name = res->name ?: dev_name(dev);
+> +
+> +	if (res->name)
+> +		name = devm_kasprintf(dev, GFP_KERNEL, "%s %s", dev_name(dev),
+> +				      res->name);
+> +	else
+> +		name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
+> +	if (!name)
+> +		return IOMEM_ERR_PTR(-ENOMEM);
+>  
+>  	if (!devm_request_mem_region(dev, res->start, size, name)) {
+>  		dev_err(dev, "can't request region for resource %pR\n", res);
+> -- 
+> 2.29.2
+> 
+> 
