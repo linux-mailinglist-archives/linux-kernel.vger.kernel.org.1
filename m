@@ -2,139 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA1F2D5F64
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:20:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BF52D5F65
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391163AbgLJPUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:20:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40120 "EHLO
+        id S2391306AbgLJPUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:20:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390107AbgLJPTp (ORCPT
+        with ESMTP id S2389991AbgLJPUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:19:45 -0500
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB131C0617A6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:18:42 -0800 (PST)
-Received: by mail-ua1-x942.google.com with SMTP id w7so1789969uap.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:18:42 -0800 (PST)
+        Thu, 10 Dec 2020 10:20:17 -0500
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD16C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:19:31 -0800 (PST)
+Received: by mail-vk1-xa42.google.com with SMTP id l187so1294281vki.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:19:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=szeredi.hu; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=a3HoxVeTcWA5htpeSp9SI0dpd34NYlZHs8NPHZQ2aqk=;
-        b=T7Om6Dz30zjXwo1e3DzgDWXQhnNLsemk4NEGSyXJmQ5kiU3HRAbTfsV26RQ1UYys6W
-         y/tqwGLAgNEebP63abkpvwOu2RYxIOPjqyyxuP2icvCDKprQz8lzYHv4pEegw4T/pSGk
-         pv8LxMq6idiz77wBNzyo2zONXJtoQwzG+Hpxo=
+        bh=9MkRqt104RVsv5N+YB6WxXi+teVxnu9MbnHIdbKaCUs=;
+        b=d2WuHo1tCik0k3Fg5z/lUis7T2/Ee7ntUJkrfJIDMKNZFR0sI4ru2CJ8lp2K0L7thL
+         jZxi5N4bJ1s++KgIpr23I6EHVZ5gSxWGuSZq3q+LaV+kgYt49JkqZpHxxuTzgW6fP6X+
+         43DjTtxU7TEbsPKG5fNlTQ3WBI2Ih02t2E7Fw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=a3HoxVeTcWA5htpeSp9SI0dpd34NYlZHs8NPHZQ2aqk=;
-        b=JTqjhTKxrMlzvwEekRNPz0EjIhwdwzpn54d8Kuls+/SYzePYBaauSWZnfhu4hLzEG2
-         jECuFMMkXGWL2Xwb34N4Mrn6d/BxfvOfkRVKnJDHbHvVQyKKJPP2GnWsT1hx5D6jumms
-         MATwA6tXcd6p3Er1MA039+/fHkkB5EI5k6NiBuW7jSjYHs4SmdLg8TLGlcliYcLDZiMq
-         QlHTjkz1fcUjWft+xSakeAlactOP0hXFsKrq6RoyfyxsXRFf5rhb+hcfBRHWE2Q0kEel
-         FekPMrHjXcdiwA1Q7Sou/MDOrgI2uc2GpOQBrl2pqBUhLI3W/0vmCoYotwu914e7idaL
-         rg+g==
-X-Gm-Message-State: AOAM5311j4BVSE4SvHHrwIAOJz87GxkWjlNZpRhZZz5DOzJILG1F1yUY
-        ZhNKO31h2y3StWdgIUWVVKOKEZ/OWqkfjjCX9NheLg==
-X-Google-Smtp-Source: ABdhPJwnd+Q5OcwZ6kj3dLXkISS+sHMAcbDer9WLC1AifyTnZn7dV2SHai20UFYdvGjl9MbsKgdCtxhsvjEvdP+K1wY=
-X-Received: by 2002:a9f:3012:: with SMTP id h18mr8283428uab.11.1607613521839;
- Thu, 10 Dec 2020 07:18:41 -0800 (PST)
+        bh=9MkRqt104RVsv5N+YB6WxXi+teVxnu9MbnHIdbKaCUs=;
+        b=snvy/PHaKV+mhkalV71jNwmn2xYTGufXfBd7p1A4SPAr8HAuvE4XIVlnu/R4eiYhUM
+         yDcPxGg9j5GLufVGnSr6NKKGgvKQDejmkqCI/mcv6ruD3rKJPOJhHQn4q2sxlvFERSLZ
+         txyPpNV1grZ8ObibOc4m62xaXaTyL3gHuxvbyAF+w0kBATcFXjMQHrWeO2YKLty7DsJ5
+         8AYvy7xidEbDXAFSQvaVVdv/7Ehz47cM+vFMk+erC29hcMJp27feMKQoyScJvEuTLdfR
+         U2iC63IGKNeRgoyWVakmi0c8AD78X7FvFtTai+51TaIlwYAkFpp8Ys8cpHSGpowUGOak
+         Fbrg==
+X-Gm-Message-State: AOAM530u4XNwJ3lpLr3Hl7gWNrBFLi+UsaP8xMzLzRKCJPUZF7ZXTKBp
+        gqVzsTispDoHlWn3jeAgmh7b1nFREW12J+P9rzxmwg==
+X-Google-Smtp-Source: ABdhPJwvjRSAI1kxVXNit/fyHFyd319loOtIx2YFfsD0fjD4NxOYqVS5hiDeAbWdDM8beKfUnfhU76Wfa2EXqxGrHHY=
+X-Received: by 2002:a1f:b245:: with SMTP id b66mr9258645vkf.3.1607613570896;
+ Thu, 10 Dec 2020 07:19:30 -0800 (PST)
 MIME-Version: 1.0
 References: <20201207163255.564116-1-mszeredi@redhat.com> <20201207163255.564116-5-mszeredi@redhat.com>
- <CAOQ4uxhv+33nVxNQmZtf-uzZN0gMXBaDoiJYm88cWwa1fRQTTg@mail.gmail.com>
-In-Reply-To: <CAOQ4uxhv+33nVxNQmZtf-uzZN0gMXBaDoiJYm88cWwa1fRQTTg@mail.gmail.com>
+ <e5876ecc-1cce-76d0-528-40b9bc54d0c2@namei.org>
+In-Reply-To: <e5876ecc-1cce-76d0-528-40b9bc54d0c2@namei.org>
 From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 10 Dec 2020 16:18:30 +0100
-Message-ID: <CAJfpegsxku5D+08F6SUixQUfF6eDVm+o2pu6feLooq==ye0GDg@mail.gmail.com>
+Date:   Thu, 10 Dec 2020 16:19:19 +0100
+Message-ID: <CAJfpeguHYNK7G23u+3v34pzrP0N3xw5cpFT3n2ktgjvntvfABQ@mail.gmail.com>
 Subject: Re: [PATCH v2 04/10] ovl: make ioctl() safe
-To:     Amir Goldstein <amir73il@gmail.com>
+To:     James Morris <jmorris@namei.org>
 Cc:     Miklos Szeredi <mszeredi@redhat.com>,
         "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
         overlayfs <linux-unionfs@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 12:15 PM Amir Goldstein <amir73il@gmail.com> wrote:
+On Wed, Dec 9, 2020 at 3:01 AM James Morris <jmorris@namei.org> wrote:
 >
-> On Mon, Dec 7, 2020 at 6:36 PM Miklos Szeredi <mszeredi@redhat.com> wrote:
-> >
+> On Mon, 7 Dec 2020, Miklos Szeredi wrote:
+>
 > > ovl_ioctl_set_flags() does a capability check using flags, but then the
 > > real ioctl double-fetches flags and uses potentially different value.
 > >
 > > The "Check the capability before cred override" comment misleading: user
 > > can skip this check by presenting benign flags first and then overwriting
 > > them to non-benign flags.
-> >
-> > Just remove the cred override for now, hoping this doesn't cause a
-> > regression.
-> >
-> > The proper solution is to create a new setxflags i_op (patches are in the
-> > works).
-> >
-> > Xfstests don't show a regression.
-> >
-> > Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> > Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 >
-> Looks reasonable
->
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
->
-> > ---
-> >  fs/overlayfs/file.c | 75 ++-------------------------------------------
-> >  1 file changed, 3 insertions(+), 72 deletions(-)
-> >
-> > diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-> > index efccb7c1f9bc..3cd1590f2030 100644
-> > --- a/fs/overlayfs/file.c
-> > +++ b/fs/overlayfs/file.c
-> > @@ -541,46 +541,26 @@ static long ovl_real_ioctl(struct file *file, unsigned int cmd,
-> >                            unsigned long arg)
-> >  {
-> >         struct fd real;
-> > -       const struct cred *old_cred;
-> >         long ret;
-> >
-> >         ret = ovl_real_fdget(file, &real);
-> >         if (ret)
-> >                 return ret;
-> >
-> > -       old_cred = ovl_override_creds(file_inode(file)->i_sb);
-> >         ret = security_file_ioctl(real.file, cmd, arg);
-> >         if (!ret)
-> >                 ret = vfs_ioctl(real.file, cmd, arg);
-> > -       revert_creds(old_cred);
-> >
-> >         fdput(real);
-> >
-> >         return ret;
-> >  }
-> >
->
->
-> I wonder if we shouldn't leave a comment behind to explain
-> that no override is intentional.
+> Is this a security bug which should be fixed in stable?
 
-Comment added.
-
-> I also wonder if "Permission model" sections shouldn't be saying
-> something about ioctl() (current task checks only)? or we just treat
-> this is a breakage of the permission model that needs to be fixed?
-
-This is a breakage of the permission model.  But I don't think this is
-a serious breakage, or one that actually matters.
-
-Not sure which is better: adding exceptions to the model or applying
-the model in situations where it's unnecessary.  I'd rather go with
-the latter, but clearly in this case that was the wrong decision.
+Yes, good point.  Added Cc: stable@...
 
 Thanks,
 Miklos
