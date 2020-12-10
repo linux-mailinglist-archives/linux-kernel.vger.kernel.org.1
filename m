@@ -2,111 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41CC2D5B89
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDCE2D5B8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389116AbgLJNXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:23:30 -0500
-Received: from foss.arm.com ([217.140.110.172]:41484 "EHLO foss.arm.com"
+        id S2389173AbgLJNXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:23:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:41514 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387816AbgLJNXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:23:09 -0500
+        id S2389111AbgLJNXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 08:23:30 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CDC41FB;
-        Thu, 10 Dec 2020 05:22:23 -0800 (PST)
-Received: from [10.57.1.60] (unknown [10.57.1.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 97B5D3F718;
-        Thu, 10 Dec 2020 05:22:20 -0800 (PST)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Subject: Re: [PATCH v3 0/5] Thermal devfreq cooling improvements with Energy
- Model
-To:     daniel.lezcano@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, orjan.eide@arm.com, robh@kernel.org,
-        alyssa.rosenzweig@collabora.com, steven.price@arm.com,
-        airlied@linux.ie, daniel@ffwll.ch, ionela.voinescu@arm.com
-References: <20201209103016.10442-1-lukasz.luba@arm.com>
-Message-ID: <383b757b-63b0-ca81-c74c-bf2f31172bc3@arm.com>
-Date:   Thu, 10 Dec 2020 13:22:18 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC10C31B;
+        Thu, 10 Dec 2020 05:22:43 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E34E3F718;
+        Thu, 10 Dec 2020 05:22:43 -0800 (PST)
+Date:   Thu, 10 Dec 2020 13:22:42 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: topology: Cleanup init_amu_fie() a bit
+Message-ID: <20201210132242.GA8683@arm.com>
+References: <5594c7d6756a47b473ceb6f48cc217458db32ab0.1607584435.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20201209103016.10442-1-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5594c7d6756a47b473ceb6f48cc217458db32ab0.1607584435.git.viresh.kumar@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hey,
 
-On 12/9/20 10:30 AM, Lukasz Luba wrote:
-> Hi all,
+On Thursday 10 Dec 2020 at 12:48:20 (+0530), Viresh Kumar wrote:
+> Every time I have stumbled upon this routine, I get confused with the
+> way 'have_policy' is used and I have to dig in to understand why is it
+> so.
 > 
-> This patch set is a continuation of my previous work, which aimed
-> to add Energy Model to all devices [1]. This series is a follow up
-> for the patches which got merged to v5.9-rc1. It aims to change
-> the thermal devfreq cooling and use the Energy Model instead of
-> private power table and structures. The power model is now simplified,
-> static power and dynamic power are removed. The new registration interface
-> in the patch 3/5 helps to register devfreq cooling and the EM in one call.
-> There is also small improvement, patch 2/5 is changing the way how
-> thermal gets the device status (now uses a copy) and normalize the values.
-> The last patch is here for consistency and will probably go through drm tree.
+> Here is an attempt to make it easier to understand, and hopefully it is
+> an improvement. This is based on the logic that amu_fie_cpus will be
+> empty if cpufreq policy wasn't available for any CPU.
 > 
-> The patch set is based on current next-20201208, because it depends on EM
-> API change which is queued in the pm/linux-next tree as v5.11 material.
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
 > 
-> changes:
-> v3:
-> - dropped direct check of device status and used just a copy of 'status';
->    a separate patch set will be proposed to address this issue
-> - modified _normalize_load() and used 1024 scale to handle ms, us, ns
-> - removed 'em_registered' and called em_dev_unregister_perf_domain()
->    unconditionally, so the drivers will have to make sure the right order of
->    all unregister calls to frameworks which might use EM; this call must be last
->    one; a proper comment added
-> - removed 'em' pointer from struct devfreq_cooling_device, 'dev->em_pd' is used
-> - removed of_node_get/put(), since the code can handle it
-> - removed dfc_em_get_requested_power() (as missed to do it in v2)
-> - collected all Reviewed-by tags
-> v2 [3]:
-> - renamed freq_get_state() and related to perf_idx pattern as
->    suggested by Ionela
-> v1 [2]
+> Ionela, I think it would be even better to do this over this patch
 > 
-> Regards,
-> Lukasz Luba
-> 
-> [1] https://lkml.org/lkml/2020/5/11/326
-> [2] https://lore.kernel.org/linux-pm/20200921122007.29610-1-lukasz.luba@arm.com/
-> [3] https://lore.kernel.org/linux-pm/20201118120358.17150-1-lukasz.luba@arm.com/
-> 
-> Lukasz Luba (5):
->    thermal: devfreq_cooling: change tracing function and arguments
->    thermal: devfreq_cooling: use a copy of device status
->    thermal: devfreq_cooling: add new registration functions with Energy
->      Model
->    thermal: devfreq_cooling: remove old power model and use EM
->    drm/panfrost: Register devfreq cooling and attempt to add Energy Model
-> 
->   drivers/gpu/drm/panfrost/panfrost_devfreq.c |   2 +-
->   drivers/thermal/devfreq_cooling.c           | 420 ++++++++++----------
->   include/linux/devfreq_cooling.h             |  40 +-
->   include/trace/events/thermal.h              |  19 +-
->   4 files changed, 240 insertions(+), 241 deletions(-)
+> -       /*
+> -        * If none of the CPUs have cpufreq support, we only enable
+> -        * the use of the AMU feature for FIE if all CPUs support AMU.
+> -        * Otherwise, enable_policy_freq_counters has already enabled
+> -        * policy cpus.
+> -        */
+> -       if (cpumask_empty(amu_fie_cpus) &&
+> -           cpumask_equal(valid_cpus, cpu_present_mask))
+> +       /* Overwrite amu_fie_cpus if all CPUs support AMU */
+> +       if (cpumask_equal(valid_cpus, cpu_present_mask))
+>                 cpumask_copy(amu_fie_cpus, cpu_present_mask);
 > 
 
-If you consider to take it, please don't. I am going to send a v4 which
-does not have this em_dev_register_perf_domain() dependency due to API
-change. Then it could go via your thermal tree without issues.
+Yes, I was just about to suggest this, reading the patch below.
 
-It will be a small change in the patch 3/5, which will simplify
-registration function (use only dev_pm_opp_of_register_em()) and also
-instead of two registration function, have only one (which was also
-suggested by Ionela during review).
+> This will also take care of the case where the cpufreq policy isn't
+> there for a small group of CPUs, which do have AMUs enabled for them.
+> (This doesn't normally happen though).
+> 
+> ---
+>  arch/arm64/kernel/topology.c | 16 +++++++---------
+>  1 file changed, 7 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> index f6faa697e83e..7f7d8de325b6 100644
+> --- a/arch/arm64/kernel/topology.c
+> +++ b/arch/arm64/kernel/topology.c
+> @@ -199,14 +199,14 @@ static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
+>  	return 0;
+>  }
+>  
+> -static inline bool
+> +static inline void
+>  enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
+>  {
+>  	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
+>  
+>  	if (!policy) {
+>  		pr_debug("CPU%d: No cpufreq policy found.\n", cpu);
+> -		return false;
+> +		return;
+>  	}
+>  
+>  	if (cpumask_subset(policy->related_cpus, valid_cpus))
+> @@ -214,8 +214,6 @@ enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
+>  			   amu_fie_cpus);
+>  
+>  	cpufreq_cpu_put(policy);
+> -
+> -	return true;
+>  }
+>  
+>  static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
+> @@ -225,7 +223,6 @@ static int __init init_amu_fie(void)
+>  {
+>  	bool invariance_status = topology_scale_freq_invariant();
+>  	cpumask_var_t valid_cpus;
+> -	bool have_policy = false;
+>  	int ret = 0;
+>  	int cpu;
+>  
+> @@ -245,17 +242,18 @@ static int __init init_amu_fie(void)
+>  			continue;
+>  
+>  		cpumask_set_cpu(cpu, valid_cpus);
+> -		have_policy |= enable_policy_freq_counters(cpu, valid_cpus);
+> +		enable_policy_freq_counters(cpu, valid_cpus);
+>  	}
+>  
+>  	/*
+> -	 * If we are not restricted by cpufreq policies, we only enable
+> +	 * If none of the CPUs have cpufreq support, we only enable
+>  	 * the use of the AMU feature for FIE if all CPUs support AMU.
+>  	 * Otherwise, enable_policy_freq_counters has already enabled
+>  	 * policy cpus.
+>  	 */
+> -	if (!have_policy && cpumask_equal(valid_cpus, cpu_present_mask))
+> -		cpumask_or(amu_fie_cpus, amu_fie_cpus, valid_cpus);
+> +	if (cpumask_empty(amu_fie_cpus) &&
+> +	    cpumask_equal(valid_cpus, cpu_present_mask))
+> +		cpumask_copy(amu_fie_cpus, cpu_present_mask);
+>  
 
-Regards,
-Lukasz
+Yes, if you really don't like the have_policy variable, I would go for
+your suggestion in the commit message for this condition and the removal
+of the comment. In the form of the comment here it creates more confusion,
+but your suggestion in the commit message hides all involvement of
+policies in enable_policy_freq_counters().
+
+Thanks,
+Ionela.
+
+
+>  	if (!cpumask_empty(amu_fie_cpus)) {
+>  		pr_info("CPUs[%*pbl]: counters will be used for FIE.",
+> -- 
+> 2.25.0.rc1.19.g042ed3e048af
+> 
