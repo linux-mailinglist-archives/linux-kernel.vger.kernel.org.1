@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8039B2D5E47
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C05F2D5DF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391484AbgLJOoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:44:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43916 "EHLO mail.kernel.org"
+        id S2390968AbgLJOfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:35:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391064AbgLJOhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:37:09 -0500
+        id S1733022AbgLJOdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:33:49 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.9 14/75] ALSA: hda/realtek - Add new codec supported for ALC897
-Date:   Thu, 10 Dec 2020 15:26:39 +0100
-Message-Id: <20201210142606.774731247@linuxfoundation.org>
+        stable@vger.kernel.org, Jan-Niklas Burfeind <kernel@aiyionpri.me>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 05/39] USB: serial: ch341: add new Product ID for CH341A
+Date:   Thu, 10 Dec 2020 15:26:44 +0100
+Message-Id: <20201210142602.556428503@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
-References: <20201210142606.074509102@linuxfoundation.org>
+In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
+References: <20201210142602.272595094@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,39 +31,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kailang Yang <kailang@realtek.com>
+From: Jan-Niklas Burfeind <kernel@aiyionpri.me>
 
-commit e5782a5d5054bf1e03cb7fbd87035037c2a22698 upstream.
+commit 46ee4abb10a07bd8f8ce910ee6b4ae6a947d7f63 upstream.
 
-Enable new codec supported for ALC897.
+Add PID for CH340 that's found on a ch341 based Programmer made by keeyees.
+The specific device that contains the serial converter is described
+here: http://www.keeyees.com/a/Products/ej/36.html
 
-Signed-off-by: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/3b00520f304842aab8291eb8d9191bd8@realtek.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+The driver works flawlessly as soon as the new PID (0x5512) is added to
+it.
+
+Signed-off-by: Jan-Niklas Burfeind <kernel@aiyionpri.me>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/serial/ch341.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -445,6 +445,7 @@ static void alc_fill_eapd_coef(struct hd
- 			alc_update_coef_idx(codec, 0x7, 1<<5, 0);
- 		break;
- 	case 0x10ec0892:
-+	case 0x10ec0897:
- 		alc_update_coef_idx(codec, 0x7, 1<<5, 0);
- 		break;
- 	case 0x10ec0899:
-@@ -10189,6 +10190,7 @@ static const struct hda_device_id snd_hd
- 	HDA_CODEC_ENTRY(0x10ec0888, "ALC888", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec0889, "ALC889", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec0892, "ALC892", patch_alc662),
-+	HDA_CODEC_ENTRY(0x10ec0897, "ALC897", patch_alc662),
- 	HDA_CODEC_ENTRY(0x10ec0899, "ALC898", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec0900, "ALC1150", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec0b00, "ALCS1200A", patch_alc882),
+--- a/drivers/usb/serial/ch341.c
++++ b/drivers/usb/serial/ch341.c
+@@ -83,6 +83,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x4348, 0x5523) },
+ 	{ USB_DEVICE(0x1a86, 0x7522) },
+ 	{ USB_DEVICE(0x1a86, 0x7523) },
++	{ USB_DEVICE(0x1a86, 0x5512) },
+ 	{ USB_DEVICE(0x1a86, 0x5523) },
+ 	{ },
+ };
 
 
