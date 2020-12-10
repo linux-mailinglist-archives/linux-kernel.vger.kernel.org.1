@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AC12D5DDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C54482D5E27
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390721AbgLJOcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:32:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39850 "EHLO mail.kernel.org"
+        id S2391387AbgLJOln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:41:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390554AbgLJOcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:32:20 -0500
+        id S1729384AbgLJOfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:35:41 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 4.14 29/31] i2c: qup: Fix error return code in qup_i2c_bam_schedule_desc()
+        stable@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kurz <groug@kaod.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 29/54] powerpc/pseries: Pass MSI affinity to irq_create_mapping()
 Date:   Thu, 10 Dec 2020 15:27:06 +0100
-Message-Id: <20201210142603.551944230@linuxfoundation.org>
+Message-Id: <20201210142603.469047504@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
-References: <20201210142602.099683598@linuxfoundation.org>
+In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
+References: <20201210142602.037095225@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,35 +33,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Laurent Vivier <lvivier@redhat.com>
 
-commit e9acf0298c664f825e6f1158f2a97341bf9e03ca upstream.
+commit 9ea69a55b3b9a71cded9726af591949c1138f235 upstream.
 
-Fix to return the error code from qup_i2c_change_state()
-instaed of 0 in qup_i2c_bam_schedule_desc().
+With virtio multiqueue, normally each queue IRQ is mapped to a CPU.
 
-Fixes: fbf9921f8b35d9b2 ("i2c: qup: Fix error handling")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Commit 0d9f0a52c8b9f ("virtio_scsi: use virtio IRQ affinity") exposed
+an existing shortcoming of the arch code by moving virtio_scsi to
+the automatic IRQ affinity assignment.
+
+The affinity is correctly computed in msi_desc but this is not applied
+to the system IRQs.
+
+It appears the affinity is correctly passed to rtas_setup_msi_irqs() but
+lost at this point and never passed to irq_domain_alloc_descs()
+(see commit 06ee6d571f0e ("genirq: Add affinity hint to irq allocation"))
+because irq_create_mapping() doesn't take an affinity parameter.
+
+Use the new irq_create_mapping_affinity() function, which allows to forward
+the affinity setting from rtas_setup_msi_irqs() to irq_domain_alloc_descs().
+
+With this change, the virtqueues are correctly dispatched between the CPUs
+on pseries.
+
+Fixes: e75eafb9b039 ("genirq/msi: Switch to new irq spreading infrastructure")
+Signed-off-by: Laurent Vivier <lvivier@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Greg Kurz <groug@kaod.org>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201126082852.1178497-3-lvivier@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/i2c/busses/i2c-qup.c |    3 ++-
+ arch/powerpc/platforms/pseries/msi.c |    3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/i2c/busses/i2c-qup.c
-+++ b/drivers/i2c/busses/i2c-qup.c
-@@ -846,7 +846,8 @@ static int qup_i2c_bam_do_xfer(struct qu
- 	if (ret || qup->bus_err || qup->qup_err) {
- 		reinit_completion(&qup->xfer);
- 
--		if (qup_i2c_change_state(qup, QUP_RUN_STATE)) {
-+		ret = qup_i2c_change_state(qup, QUP_RUN_STATE);
-+		if (ret) {
- 			dev_err(qup->dev, "change to run state timed out");
- 			goto desc_err;
+--- a/arch/powerpc/platforms/pseries/msi.c
++++ b/arch/powerpc/platforms/pseries/msi.c
+@@ -458,7 +458,8 @@ again:
+ 			return hwirq;
  		}
+ 
+-		virq = irq_create_mapping(NULL, hwirq);
++		virq = irq_create_mapping_affinity(NULL, hwirq,
++						   entry->affinity);
+ 
+ 		if (!virq) {
+ 			pr_debug("rtas_msi: Failed mapping hwirq %d\n", hwirq);
 
 
