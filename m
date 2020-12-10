@@ -2,68 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406D52D5A80
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 113D92D5A86
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731782AbgLJM1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 07:27:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41716 "EHLO
+        id S1732303AbgLJM1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 07:27:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728477AbgLJM1B (ORCPT
+        with ESMTP id S1728385AbgLJM1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:27:01 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0B1C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 04:26:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yQicWsh++4Tuha+ofqyMiQufgJXnp2xipJggzw4rkQs=; b=E2p87UGsQDfr2WMPXBfG1ER89y
-        ypK/8ac4Qjt1nlcKHJSEs8GF9FJndq4A5POlFe4hNqEzva4lceJrQcFD9Md8FOTX/zzciTmNINifx
-        2yziWIVqtaKWj27pf476o1xypJAEsqPL2FAtPSTuDPAdAkJMfIskyNntsgaSfUsCy5e5x3myUkNMZ
-        1xuDVtHbaGSMsa8n/I4U2Nsjx/1A1OBdo9UikrIRNDIcJPl7eqg/TJkhNS/5ZVvLrTsNYoOc3Yywl
-        UveapwDUgRsxL34oeMrmg0t/5MrxWad7A9hFGMIHqK/tfPafD1I+a8Xk/vMiv2+kMrBDimHN3Ekx8
-        qKbYkj6w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1knL1M-00088V-JZ; Thu, 10 Dec 2020 12:26:08 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4D4613011F0;
-        Thu, 10 Dec 2020 13:26:07 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 29BE120234B76; Thu, 10 Dec 2020 13:26:07 +0100 (CET)
-Date:   Thu, 10 Dec 2020 13:26:07 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Yu Zhao <yuzhao@google.com>, Minchan Kim <minchan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mohamed Alzayat <alzayat@mpi-sws.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, linux-mm@kvack.org
-Subject: Re: [PATCH v2 0/6] tlb: Fix (soft-)dirty bit management clean up API
-Message-ID: <20201210122607.GO2414@hirez.programming.kicks-ass.net>
-References: <20201210121110.10094-1-will@kernel.org>
+        Thu, 10 Dec 2020 07:27:46 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D81C061793
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 04:27:06 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id s21so3894500pfu.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 04:27:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wRVH576RjUF7Hfh+GmVFJTHPtJJABCzK9jSLmoXeohM=;
+        b=QGxx2uqjkZLjwdyE5TglOBgNyR7M/o3toVg0IHWs2Un4c798mQiWRI/NN0FMfX4/gg
+         IJReYIcQ31zi26/7+syJfTE6ThijeQoZdGNcny52VUzZtPbGKiXISDRo3Ykuyf2ppOn8
+         6xYGIrmC+9Q1+oERfykes5HcLNdSI3l772nN6zLhVPDRCvVXv+9i/BeTzF7zR8vb/AxC
+         3JWAgmGWuNDJOT2d9hhfHKdfTBavQFlpTjzcV7qzNH3EgJ3QwGhm2wP6aFE5+PPqnnT+
+         72IUhDliIa3zPo0K+5frDNU0xN5UolLIcgRimNQAVabHNmXiViBJ8dfiLQjFNntlUYSC
+         08oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wRVH576RjUF7Hfh+GmVFJTHPtJJABCzK9jSLmoXeohM=;
+        b=mokbQWvxsics6qLC3bPzTk+iXs9AAWIbxFEJbmhuY6vr8eIzb0nelxAd1sJQW8hdMM
+         sC54NSXaz/cU6KPOdHGib9pnY5AxU6OmuoMahuiduoPGkVu3pzI7N/fJpZv66kNDkIxK
+         h50XJBizDnbWWaefB+yA3VHdp3h92FtZ2/6iRsga5P+FUu3oIqhS+7wMrCm/RpD529tv
+         RTrZbA9Hsv8fHoesX8iTgWrsSjYXro/OqH0sVSMOrE2jn8ghik9HuhtcehnuZu0ifYrw
+         osG1Uh1MDb1JL9OyU7yx6Vl9uBfGRljuqT9VkOzlpO6xMmM2Jf4BfoDRK+SLvrlwV25p
+         0uAg==
+X-Gm-Message-State: AOAM533Oev2Fpn7sX1w7guay1DeW/OB21mU3PMKK1VC8/ZGfTeuva1PV
+        Nyc0rvu3WYNf5uiK9Ix+tgARb6vQ2PQA5xwVxJ4jcQ==
+X-Google-Smtp-Source: ABdhPJzJSSCikK3jOM3ONA3u/M/J74mq1J/fc+RbtNlN/9xfSaOqDZ4guFg9UoAE15TqPlyox8rej6pMBOvdcG5TA5k=
+X-Received: by 2002:a63:1203:: with SMTP id h3mr6352071pgl.273.1607603225499;
+ Thu, 10 Dec 2020 04:27:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210121110.10094-1-will@kernel.org>
+References: <20201210035526.38938-1-songmuchun@bytedance.com>
+ <20201210035526.38938-10-songmuchun@bytedance.com> <20201210100454.GB3613@localhost.localdomain>
+In-Reply-To: <20201210100454.GB3613@localhost.localdomain>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 10 Dec 2020 20:26:28 +0800
+Message-ID: <CAMZfGtVks41ZXaUgPdLyNqVCRYTvSm5qAN9GM5e0vqJ9YV7NdA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v8 09/12] mm/hugetlb: Add a kernel
+ parameter hugetlb_free_vmemmap
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 12:11:04PM +0000, Will Deacon wrote:
-> Will Deacon (6):
->   mm: proc: Invalidate TLB after clearing soft-dirty page state
->   tlb: mmu_gather: Remove unused start/end arguments from
->     tlb_finish_mmu()
->   tlb: mmu_gather: Introduce tlb_gather_mmu_fullmm()
->   tlb: mmu_gather: Remove start/end arguments from tlb_gather_mmu()
->   tlb: arch: Remove empty __tlb_remove_tlb_entry() stubs
->   x86/ldt: Use tlb_gather_mmu_fullmm() when freeing LDT page-tables
+On Thu, Dec 10, 2020 at 7:41 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Thu, Dec 10, 2020 at 11:55:23AM +0800, Muchun Song wrote:
+> > +hugetlb_free_vmemmap
+> > +     When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set, this enables freeing
+> > +     unused vmemmap pages associated each HugeTLB page.
+>                                       ^^^ with
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Thanks.
+
+>
+> > -     if (end - start < PAGES_PER_SECTION * sizeof(struct page))
+> > +     if (is_hugetlb_free_vmemmap_enabled())
+> > +             err = vmemmap_populate_basepages(start, end, node, NULL);
+> > +     else if (end - start < PAGES_PER_SECTION * sizeof(struct page))
+> >               err = vmemmap_populate_basepages(start, end, node, NULL);
+>
+> Not sure if joining those in an OR makes se.se
+
+Well, I can do it.
+
+>
+> >       else if (boot_cpu_has(X86_FEATURE_PSE))
+> >               err = vmemmap_populate_hugepages(start, end, node, altmap);
+> > @@ -1610,7 +1613,8 @@ void register_page_bootmem_memmap(unsigned long section_nr,
+> >               }
+> >               get_page_bootmem(section_nr, pud_page(*pud), MIX_SECTION_INFO);
+> >
+> > -             if (!boot_cpu_has(X86_FEATURE_PSE)) {
+> > +             if (!boot_cpu_has(X86_FEATURE_PSE) ||
+> > +                 is_hugetlb_free_vmemmap_enabled()) {
+>
+> I would add a variable at the beginning called "basepages_populated"
+> that holds the result of those two conditions.
+> I am not sure if it slightly improves the code as the conditions do
+> not need to be rechecked, but the readibility a bit.
+
+Agree. The condition does not need to be rechecked.
+Will  do in the next version. Thanks.
+
+>
+> > +bool hugetlb_free_vmemmap_enabled;
+> > +
+> > +static int __init early_hugetlb_free_vmemmap_param(char *buf)
+> > +{
+> > +     if (!buf)
+> > +             return -EINVAL;
+> > +
+> > +     /* We cannot optimize if a "struct page" crosses page boundaries. */
+>
+> I think this comment belongs to the last patch.
+>
+
+Thanks.
+
+>
+> --
+> Oscar Salvador
+> SUSE L3
+
+
+
+-- 
+Yours,
+Muchun
