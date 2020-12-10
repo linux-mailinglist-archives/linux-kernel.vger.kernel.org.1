@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4814E2D5264
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 996E32D525C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:02:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732414AbgLJEC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 23:02:26 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:44119 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732225AbgLJEAD (ORCPT
+        id S1732383AbgLJEAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 23:00:37 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:37377 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732262AbgLJEAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 23:00:03 -0500
-Received: by mail-oi1-f195.google.com with SMTP id d189so4270978oig.11;
-        Wed, 09 Dec 2020 19:59:48 -0800 (PST)
+        Wed, 9 Dec 2020 23:00:17 -0500
+Received: by mail-ot1-f66.google.com with SMTP id o11so3674863ote.4;
+        Wed, 09 Dec 2020 20:00:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6oGGK+dOGnoINWzCvubHZwwfiFrKLTQRjMEQW/QxQb0=;
-        b=e7T57kNJBsn9PdhWT2j/OO2t8sHG/BFtEW4vm1NTEUwXBVTcst4WhkoYNZl2DaJMsT
-         AXTpHr+riZvxHHgv3hO89EXhBNb9vli/WJVkiP66T1kTR56pzPa7gPz1f+RlHOu76NaD
-         4z3zqplmjbbFZMKn9RF0x16oyi39kqXpTTPIXf+UWhUUFNHsTu2ynLtbNBbMGqWmaLFe
-         Ucqmx9Y4o6sBTGnS8RXP2ZE+kcl6P56mknpOFWukBOw8KlnlM1S5AmTMJInz0d2KspIC
-         EBwaHGyPOOhb51zv9hmy67Nn2cEgUyoQzYkbOge/V+DYCUAMUeWBYgmJ1vWEu4NQXKNH
-         xWTw==
-X-Gm-Message-State: AOAM530ONunrVJfIsnSe/VgR/H37//34d5PVxN7Him5Dhbr9dbb1Kgfi
-        A0g2E42HAOMwZH4QdagcDg==
-X-Google-Smtp-Source: ABdhPJzEJCziD7jzt8D07hIPtVj4iDG6Ls9LzxABH6iHQCPLAjSuLffty8DXLKn3cyFZUEmG/e2Tew==
-X-Received: by 2002:aca:6044:: with SMTP id u65mr4205383oib.109.1607572762746;
-        Wed, 09 Dec 2020 19:59:22 -0800 (PST)
+        bh=8M7aJ5igvgYdIoNgc/SliNnN8/fdWT13ds1iKAqo6cw=;
+        b=WyogKliWh6OIr9VA2Jwzel6IziFGql2phLt10JYXgwWDPk/COx+PBIP0Kqj9xyVU+g
+         R0sTyxIqP5PX+Ufo7WvW1Hme5sAn5wNxEl+xeUp3brIe/IWVeCBtPxNaW50qfTICV5bC
+         /qrWiXHHRha6y22+He7wK1weUaMIX3sTawADDx5/W4C6Cr5wait7dk+VK5SU2d88iM7B
+         PnVCE64rP/CMR7a04uqIlCW3pmL1eLR1w2zClAqRGfyfu8BBX45lAVu5kRArB94iVQL3
+         +6PTDd2cy3zHj/70ovzVUFHDNszZz/E61R7IyAdKUQZBx3QePz660qqU+dANBQ1kFoKM
+         pSnA==
+X-Gm-Message-State: AOAM530LLyg8x4e/B5vl06djPp1o+U4Qp6C0A3YmiriaTqMg52KPmrWI
+        piyya0qIAppKKd5m2WL4CQ==
+X-Google-Smtp-Source: ABdhPJwTag3OSA02ALveC1Jz/T6KMXGEM/UkOQEuG8jiogJfZKvq+BsQn6SiiFmQf/H7imo+3u9/9A==
+X-Received: by 2002:a9d:6642:: with SMTP id q2mr4485670otm.172.1607572777091;
+        Wed, 09 Dec 2020 19:59:37 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id g12sm795862oos.8.2020.12.09.19.59.20
+        by smtp.gmail.com with ESMTPSA id t186sm762178oif.1.2020.12.09.19.59.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 19:59:22 -0800 (PST)
-Received: (nullmailer pid 1638029 invoked by uid 1000);
-        Thu, 10 Dec 2020 03:59:20 -0000
-Date:   Wed, 9 Dec 2020 21:59:20 -0600
+        Wed, 09 Dec 2020 19:59:36 -0800 (PST)
+Received: (nullmailer pid 1638454 invoked by uid 1000);
+        Thu, 10 Dec 2020 03:59:34 -0000
+Date:   Wed, 9 Dec 2020 21:59:34 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Yash Shah <yash.shah@sifive.com>
-Cc:     gregkh@linuxfoundation.org, devicetree@vger.kernel.org,
-        paul.walmsley@sifive.com, peter@korsgaard.com,
-        lee.jones@linaro.org, linux-serial@vger.kernel.org,
-        thierry.reding@gmail.com, linux-i2c@vger.kernel.org,
-        linux-gpio@vger.kernel.org, bgolaszewski@baylibre.com,
-        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
-        palmer@dabbelt.com, u.kleine-koenig@pengutronix.de,
-        broonie@kernel.org, linus.walleij@linaro.org,
-        linux-spi@vger.kernel.org, linux-riscv@lists.infradead.org,
-        andrew@lunn.ch, linux-pwm@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH v2 8/9] dt-bindings: riscv: Update YAML doc to support
- SiFive HiFive Unmatched board
-Message-ID: <20201210035920.GA1637999@robh.at.kernel.org>
-References: <1607403341-57214-1-git-send-email-yash.shah@sifive.com>
- <1607403341-57214-9-git-send-email-yash.shah@sifive.com>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>, linux-clk@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v2 1/5] dt-bindings: clock: Add RPMHCC bindings for SM8350
+Message-ID: <20201210035934.GA1638408@robh.at.kernel.org>
+References: <20201208064702.3654324-1-vkoul@kernel.org>
+ <20201208064702.3654324-2-vkoul@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1607403341-57214-9-git-send-email-yash.shah@sifive.com>
+In-Reply-To: <20201208064702.3654324-2-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Dec 2020 10:25:40 +0530, Yash Shah wrote:
-> Add new compatible strings to the YAML DT binding document to support
-> SiFive's HiFive Unmatched board
+On Tue, 08 Dec 2020 12:16:58 +0530, Vinod Koul wrote:
+> Add bindings and update documentation for clock rpmh driver on SM8350.
 > 
-> Signed-off-by: Yash Shah <yash.shah@sifive.com>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 > ---
->  Documentation/devicetree/bindings/riscv/sifive.yaml | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
+>  Documentation/devicetree/bindings/clock/qcom,rpmhcc.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
