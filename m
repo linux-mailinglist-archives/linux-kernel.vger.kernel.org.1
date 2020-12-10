@@ -2,120 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8C82D697F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9BD2D6986
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393902AbgLJVMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 16:12:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393867AbgLJVLz (ORCPT
+        id S2393991AbgLJVRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 16:17:09 -0500
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:42003 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391281AbgLJVRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 16:11:55 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C194DC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:11:14 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id r4so3427829pls.11
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:11:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=VwbWtl7I5SNOkqfVgZBMF+Ns0M8yx5wYS1SIU5pQb/U=;
-        b=ihZj7nSGjap4zuU1cvocTPMsVzAcVG+c8r27U7BIAQsJIhQGJHahvDA7mml1atoWOv
-         /6jBRBLriIzcyBSmYNt6aY8R8HPhAApld6H74D7uqotaqUmELwXOZ5NsIkMwUdOtee+f
-         wb0vVvm2PsSsJQL5NkYzczgswgPD46/5/lE4w=
+        Thu, 10 Dec 2020 16:17:08 -0500
+Received: by mail-ot1-f49.google.com with SMTP id 11so6295199oty.9;
+        Thu, 10 Dec 2020 13:16:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=VwbWtl7I5SNOkqfVgZBMF+Ns0M8yx5wYS1SIU5pQb/U=;
-        b=GuFB8pp+t7kfub6BX0NeGAyvlgvsvyMU2P6PMEudFcYQjxox76uSGIg5vuxM5sZcoE
-         x+OSaQE28Wp8OG1ijKIE3RISmW8V1XRvLr7HbpLL1jbTIK+DaPkEiaPg/PSqVZ5bYy4x
-         nN6esA+NUHjzhZxrdfTZoARK1NDfonfkxNg5IoQosUZi2apZWIM43eDUB2oi4j/ao+6e
-         jzsaPHpNeq6B7P/agh5Dv59qEBXCONux6w9ZOhcOYSmLTcObTnlmtkudsn23F/rtMvex
-         fn31rGgoBIhaWIclg+NJbE9GmJQQSbBr0AFIiVGoh8K0D0gJ9iyNqKAu9ezS3JTmyqJr
-         8+Gg==
-X-Gm-Message-State: AOAM531Iw8BFFkQuLNqcMci1W8BUx3x2JOYFfyYjRcTbwsxm0nCmjC6N
-        w0vN7JdPaqaxrVaYbrVYe++CKA==
-X-Google-Smtp-Source: ABdhPJzsLWN8oF/VACejoWTnJtiUEsk4HkfSyYbFZKn2e+Y4Twinla4wH0SCKzt/mRNZ986H55DXVQ==
-X-Received: by 2002:a17:902:aa84:b029:da:f114:6022 with SMTP id d4-20020a170902aa84b02900daf1146022mr8011396plr.46.1607634674333;
-        Thu, 10 Dec 2020 13:11:14 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id d4sm7171879pfo.127.2020.12.10.13.11.13
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DjdSLtOzBPosggV3jRDhGiSxaYkS7MRdHVLaRRWPza0=;
+        b=Ir6X0GAaZupMCdxz6P7oH9BCoj0nx7X0djSY6IG1cokyy8dxwS0EwlbdYwiPgYyWno
+         w0NWrNFGOXZVjzucK8h5R5xs6vsEdV2H0tsPWj4ptlRPGm8jkN5RcTZr5ZogCdJdcXvU
+         R3cKfvWUOs6KcNu7aqEbptOoR71nT7pZHUdoIxaPgeDy1AEEkrMVb93ni6npzY0pyNlC
+         2Uv6/ZwOgoHvrYYUg/keXF+YoXNEfFtKbGs8F3w5OiwdF28nnTpxMEOt2KomAKeWq41n
+         pkHtHgHQrwflmuSmvif5KoyxpysyAGW1kw4qF8dGiPvAdrNhpA5+B9Tam2lp2d4/tEUf
+         +A4w==
+X-Gm-Message-State: AOAM530cTLMFBmL6s22VtS3tab4gDu60sispG/qKEeK//CktVSr3Bb/X
+        pt+eOlp1TWa0cOc6vuZAKn/NjsLmFQ==
+X-Google-Smtp-Source: ABdhPJx+TvfFP3n7D3tdcANwKWQLDP74aXtIfa+ZKxBkmCwEwNqjtcb54c1aALYdQQtyPDjJVVTLLg==
+X-Received: by 2002:a05:6830:1ad4:: with SMTP id r20mr1644647otc.354.1607634987577;
+        Thu, 10 Dec 2020 13:16:27 -0800 (PST)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id m21sm1260217oos.28.2020.12.10.13.16.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 13:11:13 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 10 Dec 2020 13:16:26 -0800 (PST)
+From:   Rob Herring <robh@kernel.org>
+To:     Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH v2 0/2] dt-bindings: media: Convert video-interfaces.txt to schemas
+Date:   Thu, 10 Dec 2020 15:16:20 -0600
+Message-Id: <20201210211625.3070388-1-robh@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201209163818.v3.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
-References: <20201209163818.v3.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
-Subject: Re: [PATCH v3 1/3] irqchip: qcom-pdc: Fix phantom irq when changing between rising/falling
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-gpio@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Archana Sathyakumar <asathyak@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>, linux-kernel@vger.kernel.org
-To:     Douglas Anderson <dianders@chromium.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Date:   Thu, 10 Dec 2020 13:11:12 -0800
-Message-ID: <160763467203.1580929.264104038298819006@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2020-12-09 16:41:01)
-> We have a problem if we use gpio-keys and configure wakeups such that
-> we only want one edge to wake us up.  AKA:
->   wakeup-event-action =3D <EV_ACT_DEASSERTED>;
->   wakeup-source;
->=20
-> Specifically we end up with a phantom interrupt that blocks suspend if
-> the line was already high and we want wakeups on rising edges (AKA we
-> want the GPIO to go low and then high again before we wake up).  The
-> opposite is also problematic.
->=20
-> Specifically, here's what's happening today:
-> 1. Normally, gpio-keys configures to look for both edges.  Due to the
->    current workaround introduced in commit c3c0c2e18d94 ("pinctrl:
->    qcom: Handle broken/missing PDC dual edge IRQs on sc7180"), if the
->    line was high we'd configure for falling edges.
-> 2. At suspend time, we change to look for rising edges.
-> 3. After qcom_pdc_gic_set_type() runs, we get a phantom interrupt.
->=20
-> We can solve this by just clearing the phantom interrupt.
->=20
-> NOTE: it is possible that this could cause problems for a client with
-> very specific needs, but there's not much we can do with this
-> hardware.  As an example, let's say the interrupt signal is currently
-> high and the client is looking for falling edges.  The client now
-> changes to look for rising edges.  The client could possibly expect
-> that if the line has a short pulse low (and back high) that it would
-> always be detected.  Specifically no matter when the pulse happened,
-> it should either have tripped the (old) falling edge trigger or the
-> (new) rising edge trigger.  We will simply not trip it.  We could
-> narrow down the race a bit by polling our parent before changing
-> types, but no matter what we do there will still be a period of time
-> where we can't tell the difference between a real transition (or more
-> than one transition) and the phantom.
->=20
-> Fixes: f55c73aef890 ("irqchip/pdc: Add PDC interrupt controller for QCOM =
-SoCs")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
-> Tested-by: Maulik Shah <mkshah@codeaurora.org>
-> ---
+This series converts video-interfaces.txt to DT schema which in turn is
+based on converting the graph binding to a schema. All the media users
+are converted to use the graph and video-interfaces schemas.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Based on media tree commit a3f132df0e5f. This is dependent on dt-schema
+changes not yet committed[1]. Please review those too.
+
+Rob
+
+[1] https://github.com/devicetree-org/dt-schema/tree/of-graph
+
+Rob Herring (2):
+  media: dt-bindings: Convert video-interfaces.txt properties to schemas
+  dt-bindings: media: Use graph and video-interfaces schemas
+
+ .../media/allwinner,sun4i-a10-csi.yaml        |  11 +-
+ .../media/allwinner,sun6i-a31-csi.yaml        |  12 +-
+ .../bindings/media/i2c/adv7180.yaml           |  35 +-
+ .../bindings/media/i2c/adv7604.yaml           |  37 +-
+ .../bindings/media/i2c/aptina,mt9v111.yaml    |   4 +-
+ .../bindings/media/i2c/imi,rdacm2x-gmsl.yaml  |  30 +-
+ .../devicetree/bindings/media/i2c/imx219.yaml |  21 +-
+ .../bindings/media/i2c/maxim,max9286.yaml     | 101 +--
+ .../devicetree/bindings/media/i2c/ov5647.yaml |  20 +-
+ .../devicetree/bindings/media/i2c/ov8856.yaml |  21 +-
+ .../bindings/media/i2c/ovti,ov2680.yaml       |   6 +-
+ .../bindings/media/i2c/ovti,ov772x.yaml       |   9 +-
+ .../bindings/media/i2c/sony,imx214.yaml       |  25 +-
+ .../bindings/media/i2c/sony,imx274.yaml       |   3 +-
+ .../bindings/media/marvell,mmp2-ccic.yaml     |  15 +-
+ .../bindings/media/nxp,imx7-csi.yaml          |   5 +-
+ .../bindings/media/nxp,imx7-mipi-csi2.yaml    |  32 +-
+ .../bindings/media/renesas,ceu.yaml           |  17 +-
+ .../bindings/media/renesas,csi2.yaml          |  54 +-
+ .../bindings/media/renesas,vin.yaml           | 113 +---
+ .../bindings/media/rockchip-isp1.yaml         |  40 +-
+ .../bindings/media/st,stm32-dcmi.yaml         |  18 +-
+ .../devicetree/bindings/media/ti,cal.yaml     |  55 +-
+ .../media/video-interface-devices.yaml        | 405 +++++++++++
+ .../bindings/media/video-interfaces.txt       | 640 +-----------------
+ .../bindings/media/video-interfaces.yaml      | 344 ++++++++++
+ .../bindings/media/xilinx/xlnx,csi2rxss.yaml  |  39 +-
+ 27 files changed, 901 insertions(+), 1211 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/video-interface-devices.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/video-interfaces.yaml
+
+--
+2.25.1
