@@ -2,134 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52022D674E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCDD2D673E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393634AbgLJTsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:48:13 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:42608 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390148AbgLJTrw (ORCPT
+        id S2393625AbgLJTrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:47:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393619AbgLJTrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:47:52 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id 3CC7F123B0D;
-        Thu, 10 Dec 2020 20:47:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607629622;
-        bh=snH8es/pngoy41pPpSJuMprO26ulqiCPUbM8LssoCrY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZXpoGjkoXzJOXEMF7nmYz302Yn/i9smNfqtMUy8dLMFsK4E4HNzn8T5sFaf7jpFsR
-         ZmGf3ItZMdKk/Ef6GWBm4uCLOG9xusllpclmerHg6rWZTKSGNvVrC5etZGO4DQavZy
-         Rzm39pxrFWXBsjxh/oG0jQ89RD7Sr/5QEa4pjV1BuKljfje8ULLjBKWwsHIBlPTvVV
-         2prJoMMyC9Ma8+Bx7y8/EJunM6Nx0fiRPWLx0L6Wi3woO7XDfMPk+jG7ADcMlZET1Y
-         6wiI8Atl9a4AtRReuiyaeYOk2EzePS1cVizIi8YWnuMo5Q6EgUYx7P7NMUX6HEv0Vj
-         qwxRm5FgWS3+A==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id w2CtiJc9gyjG; Thu, 10 Dec 2020 20:46:29 +0100 (CET)
-Received: from dincontrollerdev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id 63135123B09;
-        Thu, 10 Dec 2020 20:46:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607629589;
-        bh=snH8es/pngoy41pPpSJuMprO26ulqiCPUbM8LssoCrY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dSHS+7OotGppjefGM/Yx2MCEWP1nsiim1onZY2YaG5dK6gjazk0N5dJ4q/pO6Wf2/
-         T65sndyUDj5coHfQeYEnrSNfui8AovCbGi8MS480d304RM7lB+hQnHrnrDifLe0mwr
-         xBCbz1+Z6sA5PVjYOZDikYi3SZykWB2goLc4Q9f/kaKDRK1Ti0p1o37vwaj5v7Wxlc
-         WwgW+LenFBfZimrWiPg1hcfBZQt7auQRX0sT0PoQAIueW9g4HK9CJxraAZS2vDI8oV
-         u3Mhx1iBSzq29VGAJE10V6tIe90/9IS7jlTaV8edKbzWxx6p7OxoHkMubpms882oZP
-         1DI+xzxxJzQag==
-Date:   Thu, 10 Dec 2020 19:46:25 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
-Message-ID: <20201210194625.GA17516@dincontrollerdev>
-References: <20201210170443.GA17304@dincontrollerdev>
- <X9Jw+srprdT8tquZ@kroah.com>
+        Thu, 10 Dec 2020 14:47:43 -0500
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E2FC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:46:55 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by michel.telenet-ops.be with bizsmtp
+        id 2jmq2400G4C55Sk06jmqLb; Thu, 10 Dec 2020 20:46:51 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1knRtq-009VCz-Ga; Thu, 10 Dec 2020 20:46:50 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1knRtp-00CAva-NM; Thu, 10 Dec 2020 20:46:49 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Magnus Damm <damm@opensource.se>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] clocksource/drivers/sh_cmt: Make sure channel clock supply is enabled
+Date:   Thu, 10 Dec 2020 20:46:48 +0100
+Message-Id: <20201210194648.2901899-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <X9Jw+srprdT8tquZ@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
-> On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
-> > This is a serial port driver for
-> > Silicon Labs Si4455 Sub-GHz transciver.
-> > 
-> > Signed-off-by: József Horváth <info@ministro.hu>
-> > ---
-> >  .../bindings/serial/silabs,si4455.yaml        |   53 +
-> >  MAINTAINERS                                   |    7 +
-> >  drivers/tty/serial/Kconfig                    |    8 +
-> >  drivers/tty/serial/Makefile                   |    1 +
-> >  drivers/tty/serial/si4455.c                   | 1235 +++++++++++++++++
-> >  drivers/tty/serial/si4455_api.h               |   56 +
-> 
-> First thing, a single .c file should not need a .h file.
-> 
-> But then I looked at the .h file and see:
-> 
-> > --- /dev/null
-> > +++ b/drivers/tty/serial/si4455_api.h
-> > @@ -0,0 +1,56 @@
-> > +/* SPDX-License-Identifier: GPL-2.0
-> > + *
-> > + * Copyright (C) 2020 József Horváth <info@ministro.hu>
-> > + *
-> > + */
-> > +#ifndef SI4455_API_H_
-> > +#define SI4455_API_H_
-> > +
-> > +struct si4455_iocbuff {
-> > +	uint32_t length;
-> > +	uint8_t	data[4096];
-> 
-> If you do have an ioctl, use proper data types.  These are not the
-> correct ones (hint, __u32 and __u8).
-> 
-> > +};
-> > +
-> > +#define BASE_TTYIOC_PRIVATE		0xA0
-> > +/* Set EZConfig.
-> > + * After this ioctl call, the driver restarts the si4455,
-> > + * then apply the new configuration and patch.
-> > + */
-> > +#define SI4455_IOC_SEZC		_IOW('T', \
-> > +				     BASE_TTYIOC_PRIVATE + 0x01, \
-> > +				     struct si4455_iocbuff)
-> 
-> Why does a serial driver have private ioctls?  Please no, don't do that.
+The Renesas Compare Match Timer 0 and 1 (CMT0/1) variants have a
+register to control the clock supply to the individual channels.
+Currently the driver does not touch this register, and relies on the
+documented initial value, which has the clock supply enabled for all
+channels present.
 
-I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
-In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
+However, when Linux starts on the APE6-EVM development board, only the
+clock supply to the first CMT1 channel is enabled.  Hence the first
+channel (used as a clockevent) works, while the second channel (used as
+a clocksource) does not.  Note that the default system clocksource is
+the Cortex-A15 architectured timer, and the user needs to manually
+switch to the CMT1 clocksource to trigger the broken behavior.
 
-I can change it to BASE_TTYIOC or SI4455_IOC_BASE
+Fix this by removing the fragile dependency on implicit reset and/or
+boot loader state, and by enabling the clock supply explicitly for all
+channels used instead.  This requires postponing the clk_disable() call,
+else the timer's registers cannot be accessed in sh_cmt_setup_channel().
 
-> Implement the basic serial driver first, and then we can talk about
-> "custom" configurations and the like, using the correct apis.
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Tested on R-Mobile APE6, R-Car M2-W, and R-Car H3 ES2.0.
+---
+ drivers/clocksource/sh_cmt.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
-The cofiguration for interface is provided by user for application.
-It contains the base frequency, channel spacing, modulation, and a lot of more stuff, and generated by Silicon Labs Wireless Development Suite.
-The generated configuration is in a non public(compressed, encrypted...who knows) format, so without this the driver can't provide configuration parameters to Si4455.
-
-> 
-> thanks,
-> 
-> greg k-h
-
-Üdvözlettel / Best regards:
-József Horváth
+diff --git a/drivers/clocksource/sh_cmt.c b/drivers/clocksource/sh_cmt.c
+index e258230d432c0002..c98f8851fd680454 100644
+--- a/drivers/clocksource/sh_cmt.c
++++ b/drivers/clocksource/sh_cmt.c
+@@ -235,6 +235,8 @@ static const struct sh_cmt_info sh_cmt_info[] = {
+ #define CMCNT 1 /* channel register */
+ #define CMCOR 2 /* channel register */
+ 
++#define CMCLKE	0x1000	/* CLK Enable Register (R-Car Gen2) */
++
+ static inline u32 sh_cmt_read_cmstr(struct sh_cmt_channel *ch)
+ {
+ 	if (ch->iostart)
+@@ -853,6 +855,7 @@ static int sh_cmt_setup_channel(struct sh_cmt_channel *ch, unsigned int index,
+ 				unsigned int hwidx, bool clockevent,
+ 				bool clocksource, struct sh_cmt_device *cmt)
+ {
++	u32 value;
+ 	int ret;
+ 
+ 	/* Skip unused channels. */
+@@ -882,6 +885,11 @@ static int sh_cmt_setup_channel(struct sh_cmt_channel *ch, unsigned int index,
+ 		ch->iostart = cmt->mapbase + ch->hwidx * 0x100;
+ 		ch->ioctrl = ch->iostart + 0x10;
+ 		ch->timer_bit = 0;
++
++		/* Enable the clock supply to the channel */
++		value = ioread32(cmt->mapbase + CMCLKE);
++		value |= BIT(hwidx);
++		iowrite32(value, cmt->mapbase + CMCLKE);
+ 		break;
+ 	}
+ 
+@@ -1014,12 +1022,10 @@ static int sh_cmt_setup(struct sh_cmt_device *cmt, struct platform_device *pdev)
+ 	else
+ 		cmt->rate = clk_get_rate(cmt->clk) / 8;
+ 
+-	clk_disable(cmt->clk);
+-
+ 	/* Map the memory resource(s). */
+ 	ret = sh_cmt_map_memory(cmt);
+ 	if (ret < 0)
+-		goto err_clk_unprepare;
++		goto err_clk_disable;
+ 
+ 	/* Allocate and setup the channels. */
+ 	cmt->num_channels = hweight8(cmt->hw_channels);
+@@ -1047,6 +1053,8 @@ static int sh_cmt_setup(struct sh_cmt_device *cmt, struct platform_device *pdev)
+ 		mask &= ~(1 << hwidx);
+ 	}
+ 
++	clk_disable(cmt->clk);
++
+ 	platform_set_drvdata(pdev, cmt);
+ 
+ 	return 0;
+@@ -1054,6 +1062,8 @@ static int sh_cmt_setup(struct sh_cmt_device *cmt, struct platform_device *pdev)
+ err_unmap:
+ 	kfree(cmt->channels);
+ 	iounmap(cmt->mapbase);
++err_clk_disable:
++	clk_disable(cmt->clk);
+ err_clk_unprepare:
+ 	clk_unprepare(cmt->clk);
+ err_clk_put:
+-- 
+2.25.1
 
