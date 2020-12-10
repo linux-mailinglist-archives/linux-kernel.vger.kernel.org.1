@@ -2,129 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04FF2D6B7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5722D6B7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732957AbgLJXDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:03:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731920AbgLJXC6 (ORCPT
+        id S2388658AbgLJXEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:04:00 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:34704 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732334AbgLJXDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:02:58 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AEAC061794;
-        Thu, 10 Dec 2020 15:02:18 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id u19so7366154edx.2;
-        Thu, 10 Dec 2020 15:02:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QDZfvpgZSfMYfm7MEplQFWEgvIINNAQMW+C7CmvjGcU=;
-        b=KUI9rPWT/0+rSzRNQaNaQ3NVgkfonMI8ZVVsav9PfhIg6FKx95jUOL4pHJx7gMxPyU
-         b6Ui6J/1xVEmEEMpWPgD25yW/Nq0NQ1hhIbcEZCHQJcaZgyiQ4R+Ji2SaUahaeDabVqN
-         eAlN5gSBkdqSpmiTm9/iT9Q+pRt6Pilz818SeSpCNyzWu0Ru5wwbb2PvLsRJVssDPCeN
-         IgIDK2EaW+FXsDhjI+TBDJoK2jp4Lh9UJ5ey/GUO0C3nGhSWeS60qTRD/YatY4hDON12
-         XNtcU71REpRKtvpnGy3H3ztJKeudF/Ci5pxkiM+JTv28EMAht0GPNetTkdUy/LcJIa6X
-         H0jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QDZfvpgZSfMYfm7MEplQFWEgvIINNAQMW+C7CmvjGcU=;
-        b=iuNPo3DZzyUtDCeHd3tqIMQxu+Wyjfz+iUgHjakldMTZ4XG/jK9fxWbT9wLWpnCvzy
-         dwFOxJtqw7OfEK/0dIuWdm7UtoZqqzfS/Xq2M1soLIDM6to3x1FDt3142AmZ/1bQgREF
-         /GrLPCmjKJwlPaQxHc9wlJf8oncrVZN3FhWcPZv9lTE25bZ07gBHh/ep/LIdPY/iJHI3
-         /mIL6hq0vOw0jSlW+hcPMjO1GosQJZT+jCkw/ZCEVJkEhglG6aY1DbL64aViCl1+Llp8
-         toZwwwaeSCnEcsKaVx7UH+8UdOgTPNCQTYGFrQQIGoviYleFAHiqKelRtUxJQagU/jWZ
-         8Xvg==
-X-Gm-Message-State: AOAM531/7rAXzkeQ+MjO3Mo0SQuiQS85mx0WzaWzAq+AS7UZJXFxYiz7
-        hYvZYY75ygtSFeSsQWB9ef6zTRYs4QkSPg==
-X-Google-Smtp-Source: ABdhPJzInVj+AThpD9+6RasllPgRmzwc1VA5+NhFge7wB9ouml/YAJcu6dNedBR0fJ98/V6W6o40NQ==
-X-Received: by 2002:aa7:d593:: with SMTP id r19mr9226053edq.246.1607641336805;
-        Thu, 10 Dec 2020 15:02:16 -0800 (PST)
-Received: from ?IPv6:2001:a61:25cc:8301:40d9:de28:875c:ad0d? ([2001:a61:25cc:8301:40d9:de28:875c:ad0d])
-        by smtp.gmail.com with ESMTPSA id b11sm6170758edk.15.2020.12.10.15.02.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 15:02:16 -0800 (PST)
-Cc:     mtk.manpages@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] close_range.2: new page documenting close_range(2)
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        Stephen Kitt <steve@sk2.org>, linux-man@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>
-References: <20201209220023.17912-1-steve@sk2.org>
- <e50183ce-3ccb-c41c-9d30-bfb622b3b1f5@gmail.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <67052f7d-700f-6721-e8be-2a3c9bc8bc34@gmail.com>
-Date:   Fri, 11 Dec 2020 00:02:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 10 Dec 2020 18:03:02 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E62E920B717A;
+        Thu, 10 Dec 2020 15:02:19 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E62E920B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607641340;
+        bh=8vnJQal7pFq1j3DfKkYxtWz0Xll6Hm2j422JbNE5k/k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gw0ROljJOQSdRqV9LQyEh4ICZwbxsXxmPAw3g6+flhvm9cXFjr6rpXAog0Am8cehE
+         9HNmP65hhBlF0tw8wATwWASbhkFxfCbU6iTbPFQX2HJcEJr6ERaaMJReX2TTD2cKcr
+         +GVai4fOtd917UrOdViO7aQ/jf+J7Ip/nzdWtg2Q=
+Date:   Thu, 10 Dec 2020 17:02:18 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
+        jmorris@namei.org, nramas@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Subject: Re: [PATCH v7 3/8] IMA: define a hook to measure kernel integrity
+ critical data
+Message-ID: <20201210230218.GH489768@sequoia>
+References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
+ <20201209194212.5131-4-tusharsu@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <e50183ce-3ccb-c41c-9d30-bfb622b3b1f5@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209194212.5131-4-tusharsu@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/20 1:24 AM, Alejandro Colomar (man-pages) wrote:
-> Hi Stephen,
+On 2020-12-09 11:42:07, Tushar Sugandhi wrote:
+> IMA provides capabilities to measure file data, and in-memory buffer
+> data. However, various data structures, policies, and states
+> stored in kernel memory also impact the integrity of the system.
+> Several kernel subsystems contain such integrity critical data. These
+> kernel subsystems help protect the integrity of a device. Currently,
+> IMA does not provide a generic function for kernel subsystems to measure
+> their integrity critical data.
+>  
+> Define a new IMA hook - ima_measure_critical_data to measure kernel
+> integrity critical data.
 > 
-> A few more comments below.
+> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+> ---
+>  Documentation/ABI/testing/ima_policy |  2 +-
+>  include/linux/ima.h                  |  6 +++++
+>  security/integrity/ima/ima.h         |  1 +
+>  security/integrity/ima/ima_api.c     |  2 +-
+>  security/integrity/ima/ima_main.c    | 36 ++++++++++++++++++++++++++++
+>  security/integrity/ima/ima_policy.c  |  2 ++
+>  6 files changed, 47 insertions(+), 2 deletions(-)
 > 
-> Michael, please have a look at them too.
+> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+> index e35263f97fc1..6ec7daa87cba 100644
+> --- a/Documentation/ABI/testing/ima_policy
+> +++ b/Documentation/ABI/testing/ima_policy
+> @@ -32,7 +32,7 @@ Description:
+>  			func:= [BPRM_CHECK][MMAP_CHECK][CREDS_CHECK][FILE_CHECK]MODULE_CHECK]
+>  			        [FIRMWARE_CHECK]
+>  				[KEXEC_KERNEL_CHECK] [KEXEC_INITRAMFS_CHECK]
+> -				[KEXEC_CMDLINE] [KEY_CHECK]
+> +				[KEXEC_CMDLINE] [KEY_CHECK] [CRITICAL_DATA]
+>  			mask:= [[^]MAY_READ] [[^]MAY_WRITE] [[^]MAY_APPEND]
+>  			       [[^]MAY_EXEC]
+>  			fsmagic:= hex value
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index ac3d82f962f2..675f54db6264 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -30,6 +30,9 @@ extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
+>  extern void ima_post_path_mknod(struct dentry *dentry);
+>  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
+>  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+> +extern void ima_measure_critical_data(const char *event_name,
+> +				      const void *buf, int buf_len,
+> +				      bool measure_buf_hash);
+>  
+>  #ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
+>  extern void ima_appraise_parse_cmdline(void);
+> @@ -122,6 +125,9 @@ static inline int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+>  }
+>  
+>  static inline void ima_kexec_cmdline(int kernel_fd, const void *buf, int size) {}
+> +static inline void ima_measure_critical_data(const char *event_name,
+> +					     const void *buf, int buf_len,
+> +					     bool measure_buf_hash) {}
+>  #endif /* CONFIG_IMA */
+>  
+>  #ifndef CONFIG_IMA_KEXEC
+> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+> index fa3044a7539f..7d9deda6a8b3 100644
+> --- a/security/integrity/ima/ima.h
+> +++ b/security/integrity/ima/ima.h
+> @@ -201,6 +201,7 @@ static inline unsigned int ima_hash_key(u8 *digest)
+>  	hook(POLICY_CHECK, policy)			\
+>  	hook(KEXEC_CMDLINE, kexec_cmdline)		\
+>  	hook(KEY_CHECK, key)				\
+> +	hook(CRITICAL_DATA, critical_data)		\
+>  	hook(MAX_CHECK, none)
+>  
+>  #define __ima_hook_enumify(ENUM, str)	ENUM,
+> diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
+> index af218babd198..9917e1730cb6 100644
+> --- a/security/integrity/ima/ima_api.c
+> +++ b/security/integrity/ima/ima_api.c
+> @@ -176,7 +176,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
+>   *		subj=, obj=, type=, func=, mask=, fsmagic=
+>   *	subj,obj, and type: are LSM specific.
+>   *	func: FILE_CHECK | BPRM_CHECK | CREDS_CHECK | MMAP_CHECK | MODULE_CHECK
+> - *	| KEXEC_CMDLINE | KEY_CHECK
+> + *	| KEXEC_CMDLINE | KEY_CHECK | CRITICAL_DATA
+>   *	mask: contains the permission mask
+>   *	fsmagic: hex value
+>   *
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index 03aad13e9e70..ae59f4a4dd70 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -922,6 +922,42 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
+>  	fdput(f);
+>  }
+>  
+> +/**
+> + * ima_measure_critical_data - measure kernel integrity critical data
+> + * @event_name: event name to be used for the buffer entry
+> + * @buf: pointer to buffer containing data to measure
+> + * @buf_len: length of buffer(in bytes)
+> + * @measure_buf_hash: measure buffer hash
+> + *
+> + * Measure the kernel subsystem data, critical to the integrity of the kernel,
+> + * into the IMA log and extend the @pcr.
+> + *
+> + * Use @event_name to describe the state/buffer data change.
+> + * Examples of critical data (buf) could be kernel in-memory r/o structures,
+                                 ^
+				 @buf
+
+> + * hash of the memory structures, or data that represents subsystem state
+> + * change.
+> + *
+> + * If @measure_buf_hash is set to true - measure hash of the buffer data,
+> + * else measure the buffer data itself.
+> + * measure_buf_hash can be used to save space, if the data being measured
+      ^
+      @measure_buf_hash
+
+> + * is too large.
+> + *
+> + * The data (buf) can only be measured, not appraised.
+                ^
+		@buf
+
+> + */
+> +void ima_measure_critical_data(const char *event_name,
+> +			       const void *buf, int buf_len,
+> +			       bool measure_buf_hash)
+> +{
+> +	if (!event_name || !buf || !buf_len) {
+> +		pr_err("Invalid arguments passed to %s().\n", __func__);
+
+This is a problem for the developer making use of the
+ima_measure_critical_data() API and shouldn't be logged, IMO, because a
+user/admin can do nothing about it. I think the error message should be
+dropped.
+
+> +		return;
+> +	}
+> +
+> +	process_buffer_measurement(NULL, buf, buf_len, event_name,
+> +				   CRITICAL_DATA, 0, NULL,
+> +				   measure_buf_hash);
+> +}
+> +
+>  static int __init init_ima(void)
+>  {
+>  	int error;
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index 25419c7ff50b..2a0c0603626e 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+> @@ -1251,6 +1251,8 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+>  			else if (IS_ENABLED(CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS) &&
+>  				 strcmp(args[0].from, "KEY_CHECK") == 0)
+>  				entry->func = KEY_CHECK;
+> +			else if (strcmp(args[0].from, "CRITICAL_DATA") == 0)
+> +				entry->func = CRITICAL_DATA;
+>  			else
+>  				result = -EINVAL;
+>  			if (!result)
+
+This hunk and the above change to Documentation/ABI/testing/ima_policy
+need to be moved to the next patch when you introduce the policy
+changes.
+
+Tyler
+
+> -- 
+> 2.17.1
 > 
-> Christian, do you have any program that you used to test the syscall
-> that could be added as an example program to the page?
-> 
-> Thanks,
-> 
-> Alex
-> 
-> On 12/9/20 11:00 PM, Stephen Kitt wrote:
->> This documents close_range(2) based on information in
->> 278a5fbaed89dacd04e9d052f4594ffd0e0585de and
->> 60997c3d45d9a67daf01c56d805ae4fec37e0bd8.
->>
->> Signed-off-by: Stephen Kitt <steve@sk2.org>
->> ---
->> V2: unsigned int to match the kernel declarations
->>     groff and grammar tweaks
->>     CLOSE_RANGE_UNSHARE unshares *and* closes
->>     Explain that EMFILE and ENOMEM can occur with C_R_U
->>     "Conforming to" phrasing
->>     Detailed explanation of CLOSE_RANGE_UNSHARE
->>     Reading /proc isn't common
->>
->>  man2/close_range.2 | 138 +++++++++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 138 insertions(+)
->>  create mode 100644 man2/close_range.2
->>
->> diff --git a/man2/close_range.2 b/man2/close_range.2
->> new file mode 100644
->> index 000000000..403142b33
->> --- /dev/null
->> +++ b/man2/close_range.2
-
-[...]
-
->> +.SH USE CASES
-> 
-> This section is unconventional.  Please move that text to one of the
-> traditional sections.  I think DESCRIPTION would be the best place for this.
-
-Actually, I'd just drop this SH line, and keep the
-subsections where they are in NOTES.
-
-Thanks,
-
-Michael
-
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
