@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54232D5E32
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D16132D5E91
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403798AbgLJOny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:43:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44106 "EHLO mail.kernel.org"
+        id S2391688AbgLJOt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:49:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391054AbgLJOgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:53 -0500
+        id S2391262AbgLJOj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:39:58 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Paulian Bogdan Marinca <paulian@marinca.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH 5.4 23/54] thunderbolt: Fix use-after-free in remove_unplugged_switch()
+        stable@vger.kernel.org, Boyuan Zhang <boyuan.zhang@amd.com>,
+        James Zhu <James.Zhu@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.9 35/75] drm/amdgpu/vcn3.0: stall DPG when WPTR/RPTR reset
 Date:   Thu, 10 Dec 2020 15:27:00 +0100
-Message-Id: <20201210142603.177413238@linuxfoundation.org>
+Message-Id: <20201210142607.790023229@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,70 +32,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
+From: Boyuan Zhang <boyuan.zhang@amd.com>
 
-commit 600c0849cf86b75d86352f59745226273290986a upstream.
+commit ac2db9488cf21de0be7899c1e5963e5ac0ff351f upstream.
 
-Paulian reported a crash that happens when a dock is unplugged during
-hibernation:
+Port from VCN2.5
+Add vcn dpg harware synchronization to fix race condition
+issue between vcn driver and hardware.
 
-[78436.228217] thunderbolt 0-1: device disconnected
-[78436.228365] BUG: kernel NULL pointer dereference, address: 00000000000001e0
-...
-[78436.228397] RIP: 0010:icm_free_unplugged_children+0x109/0x1a0
-...
-[78436.228432] Call Trace:
-[78436.228439]  icm_rescan_work+0x24/0x30
-[78436.228444]  process_one_work+0x1a3/0x3a0
-[78436.228449]  worker_thread+0x30/0x370
-[78436.228454]  ? process_one_work+0x3a0/0x3a0
-[78436.228457]  kthread+0x13d/0x160
-[78436.228461]  ? kthread_park+0x90/0x90
-[78436.228465]  ret_from_fork+0x1f/0x30
-
-This happens because remove_unplugged_switch() calls tb_switch_remove()
-that releases the memory pointed by sw so the following lines reference
-to a memory that might be released already.
-
-Fix this by saving pointer to the parent device before calling
-tb_switch_remove().
-
-Reported-by: Paulian Bogdan Marinca <paulian@marinca.net>
-Fixes: 4f7c2e0d8765 ("thunderbolt: Make sure device runtime resume completes before taking domain lock")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Boyuan Zhang <boyuan.zhang@amd.com>
+Reviewed-by: James Zhu <James.Zhu@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org # 5.9.x
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/thunderbolt/icm.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c |   20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
---- a/drivers/thunderbolt/icm.c
-+++ b/drivers/thunderbolt/icm.c
-@@ -1919,7 +1919,9 @@ static int complete_rpm(struct device *d
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
+@@ -1011,6 +1011,11 @@ static int vcn_v3_0_start_dpg_mode(struc
+ 	tmp = REG_SET_FIELD(tmp, UVD_RBC_RB_CNTL, RB_RPTR_WR_EN, 1);
+ 	WREG32_SOC15(VCN, inst_idx, mmUVD_RBC_RB_CNTL, tmp);
  
- static void remove_unplugged_switch(struct tb_switch *sw)
- {
--	pm_runtime_get_sync(sw->dev.parent);
-+	struct device *parent = get_device(sw->dev.parent);
++	/* Stall DPG before WPTR/RPTR reset */
++	WREG32_P(SOC15_REG_OFFSET(VCN, inst_idx, mmUVD_POWER_STATUS),
++		UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK,
++		~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
 +
-+	pm_runtime_get_sync(parent);
+ 	/* set the write pointer delay */
+ 	WREG32_SOC15(VCN, inst_idx, mmUVD_RBC_RB_WPTR_CNTL, 0);
  
- 	/*
- 	 * Signal this and switches below for rpm_complete because
-@@ -1930,8 +1932,10 @@ static void remove_unplugged_switch(stru
- 	bus_for_each_dev(&tb_bus_type, &sw->dev, NULL, complete_rpm);
- 	tb_switch_remove(sw);
+@@ -1033,6 +1038,10 @@ static int vcn_v3_0_start_dpg_mode(struc
+ 	WREG32_SOC15(VCN, inst_idx, mmUVD_RBC_RB_WPTR,
+ 		lower_32_bits(ring->wptr));
  
--	pm_runtime_mark_last_busy(sw->dev.parent);
--	pm_runtime_put_autosuspend(sw->dev.parent);
-+	pm_runtime_mark_last_busy(parent);
-+	pm_runtime_put_autosuspend(parent);
++	/* Unstall DPG */
++	WREG32_P(SOC15_REG_OFFSET(VCN, inst_idx, mmUVD_POWER_STATUS),
++		0, ~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
 +
-+	put_device(parent);
+ 	return 0;
  }
  
- static void icm_free_unplugged_children(struct tb_switch *sw)
+@@ -1556,8 +1565,14 @@ static int vcn_v3_0_pause_dpg_mode(struc
+ 					UVD_DPG_PAUSE__NJ_PAUSE_DPG_ACK_MASK,
+ 					UVD_DPG_PAUSE__NJ_PAUSE_DPG_ACK_MASK);
+ 
++				/* Stall DPG before WPTR/RPTR reset */
++				WREG32_P(SOC15_REG_OFFSET(VCN, inst_idx, mmUVD_POWER_STATUS),
++					UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK,
++					~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
++
+ 				/* Restore */
+ 				ring = &adev->vcn.inst[inst_idx].ring_enc[0];
++				ring->wptr = 0;
+ 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_BASE_LO, ring->gpu_addr);
+ 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_BASE_HI, upper_32_bits(ring->gpu_addr));
+ 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_SIZE, ring->ring_size / 4);
+@@ -1565,6 +1580,7 @@ static int vcn_v3_0_pause_dpg_mode(struc
+ 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_WPTR, lower_32_bits(ring->wptr));
+ 
+ 				ring = &adev->vcn.inst[inst_idx].ring_enc[1];
++				ring->wptr = 0;
+ 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_BASE_LO2, ring->gpu_addr);
+ 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_BASE_HI2, upper_32_bits(ring->gpu_addr));
+ 				WREG32_SOC15(VCN, inst_idx, mmUVD_RB_SIZE2, ring->ring_size / 4);
+@@ -1574,6 +1590,10 @@ static int vcn_v3_0_pause_dpg_mode(struc
+ 				WREG32_SOC15(VCN, inst_idx, mmUVD_RBC_RB_WPTR,
+ 					RREG32_SOC15(VCN, inst_idx, mmUVD_SCRATCH2) & 0x7FFFFFFF);
+ 
++				/* Unstall DPG */
++				WREG32_P(SOC15_REG_OFFSET(VCN, inst_idx, mmUVD_POWER_STATUS),
++					0, ~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
++
+ 				SOC15_WAIT_ON_RREG(VCN, inst_idx, mmUVD_POWER_STATUS,
+ 					UVD_PGFSM_CONFIG__UVDM_UVDU_PWR_ON, UVD_POWER_STATUS__UVD_POWER_STATUS_MASK);
+ 			}
 
 
