@@ -2,264 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF8F2D60C3
+	by mail.lfdr.de (Postfix) with ESMTP id E7CC02D60C5
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388401AbgLJQA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:00:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58492 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2403854AbgLJQAE (ORCPT
+        id S2392166AbgLJQAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:00:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392117AbgLJQAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:00:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607615917;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xKjSMYSu+Z18egYl0Qu1TrUiaOZoWdBxJJgAeszoW0s=;
-        b=Q4/KIDHt4HEZsEV6aPQX1FZdUgcig8GLdSBuhhyN1FS07+ZVZKZgtq4ynBMqZVXFqS0mNU
-        68xZGINwlBknKpr+vJXHS2mS9JEPqv4H4hbH4NmipN30fieRxQ7MHTx0pVARDko6N5gN0o
-        IcU6aYKyHR228eMgU8gTtRYhJL7MYWg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-XJ-9TNLrOFOCL9NKwKRRTA-1; Thu, 10 Dec 2020 10:58:32 -0500
-X-MC-Unique: XJ-9TNLrOFOCL9NKwKRRTA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 083758049C9;
-        Thu, 10 Dec 2020 15:58:31 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2D19419C78;
-        Thu, 10 Dec 2020 15:58:27 +0000 (UTC)
-Date:   Thu, 10 Dec 2020 10:58:26 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "hare@suse.de" <hare@suse.de>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pavel Tide <Pavel.TIde@veeam.com>
-Subject: Re: [PATCH 2/3] block: blk_interposer - sample
-Message-ID: <20201210155826.GA10154@redhat.com>
-References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
- <1607518911-30692-3-git-send-email-sergei.shtepa@veeam.com>
- <20201209143606.GA494@redhat.com>
- <20201210155405.GB31521@veeam.com>
+        Thu, 10 Dec 2020 11:00:33 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B701C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:59:53 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id c12so4113329pgm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:59:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=37jd6dDlFZ0FtOT7hpVyZM2/D02By4B+sVM7kzHyGUo=;
+        b=MWuujoSGk4peEKzynZFRPFoyGH19IBZVRPEAsgk28Yoc5K33qhzPD52IvKgUGA3CEA
+         yXJj55ZyOTQuKIj0oivtOjqsRa0y43lhTiDRFnfHmIsDgplSKDPVEBR/m2lj9U8WnOKe
+         /8/fxKq7dVl6MnNqXRubT3sHl1oJqaSDP93tVQgECo464FSPGt1oYyhcmhv7SOZEUlbO
+         wSoLiOC8UFqdPjNi5GtcTq5JcKdm5IIZD7jjsM0b7IHyqVdxaJmNCZklX9tWzAC5w1VG
+         cW0G66b6QYOlLXcmmzySjYk91AARRZkyZxyowKqIY1WKD8f8NJ+mLIdm1P+xeCdmVne7
+         wTUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=37jd6dDlFZ0FtOT7hpVyZM2/D02By4B+sVM7kzHyGUo=;
+        b=Ju8oV8nheOy62I724Wa62LMHtxr/zP0LvcIP1B3R3LWmCplLqceG4FFudjKEOZvJq3
+         Z5I2W2xla2pbNVPzIGcSyHzb5ET7cx3QnAjFRtf24HfevUtmR0/AXx7SLe3FpNgf2C9H
+         awyc3ZvlfbJvA9LP/581pfR5/6zN/orRjXRbC8vq+IDOGLihhIKAkhgf+kdxGirUm/I/
+         HU9t3k29N0Hqokn6LTynZySTfVeGoeDTq42HxQO0IezCLaiA+zjc7J1BmDKStL3Tsvj8
+         iDQ0vVrYd+7k6krMYcpwqiKws1e8bLT1B4vCLlekVwgPF6l1tNKyzwg1LbZPCXIRjpPR
+         iNAg==
+X-Gm-Message-State: AOAM533/sZ85+FuXsOjAP2tEJsPg/FvKkZSKoOj0/igRsmDSWhDmG/x5
+        gkS9XTQWzr9tRyLymcuvwkbp/T9w+nxrBg==
+X-Google-Smtp-Source: ABdhPJz921FqDmPeIxZhrD4LCEmyv9upRImAS9aQrg23lfpVzNs/aHKkONoTMZLLVHDQ2aBd301d0w==
+X-Received: by 2002:a17:90a:4042:: with SMTP id k2mr8511128pjg.160.1607615992813;
+        Thu, 10 Dec 2020 07:59:52 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id m14sm6383060pgu.0.2020.12.10.07.59.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Dec 2020 07:59:51 -0800 (PST)
+Date:   Thu, 10 Dec 2020 21:29:49 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     vireshk@kernel.org, linus.walleij@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] pinctrl/spear: simplify the return expression of
+ spear300_pinctrl_probe()
+Message-ID: <20201210155949.thezgn2drwuur5sm@vireshk-i7>
+References: <20201210135746.1492-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201210155405.GB31521@veeam.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20201210135746.1492-1-zhengyongjun3@huawei.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10 2020 at 10:54am -0500,
-Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
-
-> The 12/09/2020 17:36, Mike Snitzer wrote:
-> > On Wed, Dec 09 2020 at  8:01am -0500,
-> > Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
-> > 
-> > > This sample demonstrates how to use blk_interposer.
-> > > It show how to properly connect the interposer module to kernel,
-> > > and perform the simplest monitoring of the number of bio.
-> > > 
-> > > Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
-> > > ---
-> > >  samples/blk_interposer/Makefile         |   2 +
-> > >  samples/blk_interposer/blk-interposer.c | 276 ++++++++++++++++++++++++
-> > >  2 files changed, 278 insertions(+)
-> > >  create mode 100644 samples/blk_interposer/Makefile
-> > >  create mode 100644 samples/blk_interposer/blk-interposer.c
-> > > 
-> > > diff --git a/samples/blk_interposer/Makefile b/samples/blk_interposer/Makefile
-> > > new file mode 100644
-> > > index 000000000000..b11aefde2b1c
-> > > --- /dev/null
-> > > +++ b/samples/blk_interposer/Makefile
-> > > @@ -0,0 +1,2 @@
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +obj-$(CONFIG_SAMPLE_BLK_INTERPOSER) += blk-interposer.o
-> > > diff --git a/samples/blk_interposer/blk-interposer.c b/samples/blk_interposer/blk-interposer.c
-> > > new file mode 100644
-> > > index 000000000000..92b4c1fcf8f7
-> > > --- /dev/null
-> > > +++ b/samples/blk_interposer/blk-interposer.c
-> > > @@ -0,0 +1,276 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +/*
-> > > + * Block layer interposer allow to interpose bio requests from kernel module.
-> > > + * This allows you to monitor requests, modify requests, add new request,
-> > > + * or even redirect requests to another devices.
-> > > + *
-> > > + * This sample demonstrates how to use blk_interposer.
-> > > + * It show how to properly connect the interposer module to kernel,
-> > > + * and perform the simplest monitoring of the number of bio.
-> > > + */
-> > > +
-> > > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> > > +
-> > > +#include <linux/module.h>
-> > > +#include <linux/types.h>
-> > > +#include <linux/errno.h>
-> > > +#include <linux/blkdev.h>
-> > > +#include <linux/genhd.h>
-> > > +#include <linux/blk-mq.h>
-> > > +
-> > > +int device_major = 8;
-> > > +int device_minor;
-> > > +int fmode = FMODE_READ | FMODE_WRITE;
-> > > +
-> > > +/*
-> > > + * Each interposer must have a common part in the form of the blk_interposer structure,
-> > > + * as well as its own unique data.
-> > > + */
-> > > +struct my_interposer {
-> > > +	/*
-> > > +	 * Common part of block device interposer.
-> > > +	 */
-> > > +	struct blk_interposer interposer;
-> > > +	/*
-> > > +	 * Specific part for our interposer data.
-> > > +	 */
-> > > +	atomic_t counter;
-> > > +};
-> > > +
-> > > +struct my_interposer my_ip;
-> > > +
-> > > +/**
-> > > + * blk_interposer_attach - Attach interposer to disk
-> > > + * @disk: target disk
-> > > + * @interposer: block device interposer
-> > > + */
-> > > +static int blk_interposer_attach(struct gendisk *disk, struct blk_interposer *interposer)
-> > > +{
-> > > +	int ret = 0;
-> > > +
-> > > +	/*
-> > > +	 * Stop disks queue processing.
-> > > +	 */
-> > > +	blk_mq_freeze_queue(disk->queue);
-> > > +	blk_mq_quiesce_queue(disk->queue);
-> > > +
-> > > +	/*
-> > > +	 * Check if the interposer is already busy.
-> > > +	 * The interposer will only connect if it is not busy.
-> > > +	 */
-> > > +	if (blk_has_interposer(disk)) {
-> > > +		pr_info("The interposer is already busy.\n");
-> > > +		ret = -EBUSY;
-> > > +		goto out;
-> > > +	}
-> > > +
-> > > +	/*
-> > > +	 * Attach the interposer.
-> > > +	 */
-> > > +	disk->interposer = interposer;
-> > > +	/*
-> > > +	 * And while the queue is stopped, we can do something specific for our module.
-> > > +	 */
-> > > +	pr_info("Block device interposer attached successfully.\n");
-> > > +
-> > > +out:
-> > > +	/*
-> > > +	 * Resume disks queue processing
-> > > +	 */
-> > > +	blk_mq_unquiesce_queue(disk->queue);
-> > > +	blk_mq_unfreeze_queue(disk->queue);
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > > +/**
-> > > + * blk_interposer_detach - Detach interposer from disk
-> > > + * @disk: target disk
-> > > + * @interposer: block device interposer
-> > > + */
-> > > +static int blk_interposer_detach(struct gendisk *disk, struct blk_interposer *interposer)
-> > > +{
-> > > +	int ret = 0;
-> > > +
-> > > +	if (WARN_ON(!disk))
-> > > +		return -EINVAL;
-> > > +
-> > > +	/*
-> > > +	 * Stop disks queue processing.
-> > > +	 */
-> > > +	blk_mq_freeze_queue(disk->queue);
-> > > +	blk_mq_quiesce_queue(disk->queue);
-> > > +
-> > > +	/*
-> > > +	 * Check if the interposer is still available.
-> > > +	 */
-> > > +	if (!disk->interposer) {
-> > > +		pr_info("The interposer is not available.\n");
-> > > +		return -ENOENT;
-> > > +		goto out;
-> > > +	}
-> > > +	/*
-> > > +	 * Check if it is really our interposer.
-> > > +	 */
-> > > +	if (disk->interposer->ip_submit_bio != interposer->ip_submit_bio) {
-> > > +		pr_info("The interposer found is not ours.\n");
-> > > +		return -EPERM;
-> > > +		goto out;
-> > > +	}
-> > > +
-> > > +	/*
-> > > +	 * Detach interposer.
-> > > +	 */
-> > > +	disk->interposer = NULL;
-> > > +	/*
-> > > +	 * And while the queue is stopped, we can do something specific for our module.
-> > > +	 */
-> > > +	pr_info("Block device interposer detached successfully.\n");
-> > > +
-> > > +out:
-> > > +	/*
-> > > +	 * Resume disks queue processing.
-> > > +	 */
-> > > +	blk_mq_unquiesce_queue(disk->queue);
-> > > +	blk_mq_unfreeze_queue(disk->queue);
-> > > +
-> > > +	return ret;
-> > > +}
-> > 
-> > This attach and detach code needs to be elevated out of samples so that
-> > any future consumer of blk_interposer doesn't reinvent it.  It is far
-> > too fundamental.
-> > 
-> > The way you've proposed this be merged is very much unacceptable.
-> > 
-> > Nacked-by: Mike Snitzer <snitzer@redhat.com>
-> > 
-> Yes, but on the other hand, while the queue is suspended, the module can perform
-> some other actions specific to it.
+On 10-12-20, 21:57, Zheng Yongjun wrote:
+> Simplify the return expression.
 > 
-> And since the functions blk_mq_freeze_queue(), blk_mq_quiesce_queue(),
-> blk_mq_unquiesce_queue() and blk_mq_unfreeze_queue() are public,
-> the module creator can implement its module connection functionality regardless of
-> whether we make the functions blk_interposer_attach() and blk_interposer_detach()
-> in the kernel or not.
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/pinctrl/spear/pinctrl-spear300.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
 > 
-> I'll think about it and try to come up with a better solution.
+> diff --git a/drivers/pinctrl/spear/pinctrl-spear300.c b/drivers/pinctrl/spear/pinctrl-spear300.c
+> index e39913a18139..d53a04597cbe 100644
+> --- a/drivers/pinctrl/spear/pinctrl-spear300.c
+> +++ b/drivers/pinctrl/spear/pinctrl-spear300.c
+> @@ -654,8 +654,6 @@ static const struct of_device_id spear300_pinctrl_of_match[] = {
+>  
+>  static int spear300_pinctrl_probe(struct platform_device *pdev)
+>  {
+> -	int ret;
+> -
+>  	spear3xx_machdata.groups = spear300_pingroups;
+>  	spear3xx_machdata.ngroups = ARRAY_SIZE(spear300_pingroups);
+>  	spear3xx_machdata.functions = spear300_functions;
+> @@ -669,11 +667,7 @@ static int spear300_pinctrl_probe(struct platform_device *pdev)
+>  
+>  	pmx_init_addr(&spear3xx_machdata, PMX_CONFIG_REG);
+>  
+> -	ret = spear_pinctrl_probe(pdev, &spear3xx_machdata);
+> -	if (ret)
+> -		return ret;
+> -
+> -	return 0;
+> +	return spear_pinctrl_probe(pdev, &spear3xx_machdata);
+>  }
+>  
+>  static struct platform_driver spear300_pinctrl_driver = {
 
-This practice of sprinkling code in samples/ subdir and getting a
-minimalist hook into the kernel (with no actual in-kernel consumer) is
-_not_ how we do things.
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-I'm not well-versed on the samples/ subdir nor when it came into
-existence; but it should die in a fire!
-
-Mike
-
+-- 
+viresh
