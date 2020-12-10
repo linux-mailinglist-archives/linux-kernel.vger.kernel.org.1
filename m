@@ -2,154 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C762D586D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5442D5835
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388742AbgLJKlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:41:46 -0500
-Received: from 5.mo178.mail-out.ovh.net ([46.105.51.53]:46239 "EHLO
-        5.mo178.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388426AbgLJKkv (ORCPT
+        id S1728933AbgLJK2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:28:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgLJK2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:40:51 -0500
-X-Greylist: delayed 1476 seconds by postgrey-1.27 at vger.kernel.org; Thu, 10 Dec 2020 05:40:49 EST
-Received: from player728.ha.ovh.net (unknown [10.108.57.76])
-        by mo178.mail-out.ovh.net (Postfix) with ESMTP id 39CFBB5284
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:15:27 +0100 (CET)
-Received: from armadeus.com (lfbn-str-1-77-132.w92-140.abo.wanadoo.fr [92.140.204.132])
-        (Authenticated sender: sebastien.szymanski@armadeus.com)
-        by player728.ha.ovh.net (Postfix) with ESMTPSA id D2BEC18F28450;
-        Thu, 10 Dec 2020 10:15:08 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-97G0020d5c1313-f4da-4972-9333-06acb63b90e1,
-                    8EAEE80FF2F1CA12C9851A06ABB588534C704F12) smtp.auth=sebastien.szymanski@armadeus.com
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Philippe Schenker <philippe.schenker@toradex.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, linux-imx@nxp.com,
-        kernel@pengutronix.de, David Jander <david@protonic.nl>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20201209122051.26151-1-o.rempel@pengutronix.de>
-From:   =?UTF-8?Q?S=c3=a9bastien_Szymanski?= 
-        <sebastien.szymanski@armadeus.com>
-Subject: Re: [PATCH v1] ARM: imx: mach-imx6ul: remove 14x14 EVK specific PHY
- fixup
-Message-ID: <4650b811-0bd8-74b5-044b-562b287c0e09@armadeus.com>
-Date:   Thu, 10 Dec 2020 11:15:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 10 Dec 2020 05:28:12 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F863C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 02:27:31 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id x22so4142765wmc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 02:27:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=l92zaKGCsUqQ/gxEstrfL6NDn1q+kjEay4OgM6ksKek=;
+        b=lZnohFRO2aVOHIRtc3z7i6lGYCNLnPZdXaB3qWvhukrz58enBHe7EHIJSqX/nuzAHW
+         yCJOYIELLDkG00HMP/i9sB90hTKotuEEX6XtZ6vbPgpiCE8od//LiE17cKbqsGFu6+WI
+         k8DYSm7F76nBrjKCaWmwkM3P9FtvSoRRTYJ2w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=l92zaKGCsUqQ/gxEstrfL6NDn1q+kjEay4OgM6ksKek=;
+        b=cCr3LG3AyCbZP2BITFloflJOfzGiegP8vZVMG/PmLotTemZHUc9+zEkFHpvqSXQ/hy
+         Lujm+QyS8HdVe/DRL3cBgOk14n93qQM1iXXL9C/0MVwyMiUyh02dBW4Zu0FIT8xSUh5j
+         WlXDUXkh+ZVKg36KqNLGgG+4TvSdU7xM9EHao5NyqDgmVrC+Uw7xOmnkCcYlDdpHzKUm
+         PJUdBhpNsVttqsMtYu5+s2tzRZJD0dgObaQavMJMZz32QHRtjCbm2A+qgEz1OPqrGlT2
+         gFGSCJjCPuIBvw05sKtm0/DWYwPNusseBuhSvaxn9mDzMMfxEtZ9aY3uOxihVQ05YBbK
+         78Aw==
+X-Gm-Message-State: AOAM530/YeatJ9s5VApVECjho8JIr1LunymvTx6PNbtNi/W/TTBctoVn
+        HfhKv1oFhLTc/ujbWl4ahWburA==
+X-Google-Smtp-Source: ABdhPJy6LrEU5I4bHa6NTCpIKzGWxUmYOzrDc8WN0RwYWzeap6wdM7DkzQUMvCNV9lfiw29hflZUpw==
+X-Received: by 2002:a1c:f405:: with SMTP id z5mr7288798wma.93.1607596050214;
+        Thu, 10 Dec 2020 02:27:30 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id z64sm8259746wme.10.2020.12.10.02.27.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 02:27:29 -0800 (PST)
+Date:   Thu, 10 Dec 2020 11:27:27 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Hridya Valsaraju <hridya@google.com>, kernel-team@android.com,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH] dmabuf: Add the capability to expose DMA-BUF stats in
+ sysfs
+Message-ID: <20201210102727.GE401619@phenom.ffwll.local>
+Mail-Followup-To: Greg KH <gregkh@linuxfoundation.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Hridya Valsaraju <hridya@google.com>, kernel-team@android.com,
+        linux-media@vger.kernel.org
+References: <20201210044400.1080308-1-hridya@google.com>
+ <b5adfe46-8615-5821-d092-2b93feed5b79@amd.com>
+ <X9H0JREcdxDsMtLX@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20201209122051.26151-1-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 17671843464484443388
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudektddgudefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepuforsggrshhtihgvnhgpufiihihmrghnshhkihcuoehsvggsrghsthhivghnrdhsiiihmhgrnhhskhhisegrrhhmrgguvghushdrtghomheqnecuggftrfgrthhtvghrnhepfedtjeduffegfedvgeeffffhgfffjeejfeevheekgffhkefhgfetjefgleduuddunecukfhppedtrddtrddtrddtpdelvddrudegtddrvddtgedrudefvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejvdekrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshgvsggrshhtihgvnhdrshiihihmrghnshhkihesrghrmhgruggvuhhsrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+In-Reply-To: <X9H0JREcdxDsMtLX@kroah.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Dec 10, 2020 at 11:10:45AM +0100, Greg KH wrote:
+> On Thu, Dec 10, 2020 at 10:58:50AM +0100, Christian K�nig wrote:
+> > In general a good idea, but I have a few concern/comments here.
+> > 
+> > Am 10.12.20 um 05:43 schrieb Hridya Valsaraju:
+> > > This patch allows statistics to be enabled for each DMA-BUF in
+> > > sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
+> > > 
+> > > The following stats will be exposed by the interface:
+> > > 
+> > > /sys/kernel/dmabuf/<inode_number>/exporter_name
+> > > /sys/kernel/dmabuf/<inode_number>/size
+> > > /sys/kernel/dmabuf/<inode_number>/dev_map_info
+> > > 
+> > > The inode_number is unique for each DMA-BUF and was added earlier [1]
+> > > in order to allow userspace to track DMA-BUF usage across different
+> > > processes.
+> > > 
+> > > Currently, this information is exposed in
+> > > /sys/kernel/debug/dma_buf/bufinfo.
+> > > However, since debugfs is considered unsafe to be mounted in production,
+> > > it is being duplicated in sysfs.
+> > 
+> > Mhm, this makes it part of the UAPI. What is the justification for this?
+> > 
+> > In other words do we really need those debug information in a production
+> > environment?
+> 
+> Production environments seem to want to know who is using up memory :)
 
-On 12/9/20 1:20 PM, Oleksij Rempel wrote:
-> Remove board specific PHY fixup introduced by commit:
-> 
-> | 709bc0657fe6f9f5 ("ARM: imx6ul: add fec MAC refrence clock and phy fixup init")
-> 
-> This fixup addresses boards with a specific configuration: a KSZ8081RNA
-> PHY with attached clock source to XI (Pin 8) of the PHY equal to 50MHz.
-> 
-> For the KSZ8081RND PHY, the meaning of the reg 0x1F bit 7 is different
-> (compared to the KSZ8081RNA). A set bit means:
-> 
-> - KSZ8081RNA: clock input to XI (Pin 8) is 50MHz for RMII
-> - KSZ8081RND: clock input to XI (Pin 8) is 25MHz for RMII
+This only shows shared memory, so it does smell a lot like $specific_issue
+and we're designing a narrow solution for that and then have to carry it
+forever.
 
-OPOS6UL has a KSZ80801RNB. On this PHY variant, bit 7 of reg 0x1F means:
-1: RMII 50MHz clock mode; clock input to XI (Pin 9) is 50MHz
-0: RMII 25MHz clock mode; clock input to XI (Pin 9) is 25MHz
+E.g. why is the list of attachments not a sysfs link? That's how we
+usually expose struct device * pointers in sysfs to userspace, not as a
+list of things.
 
-> 
-> In other configurations, for example a KSZ8081RND PHY or a KSZ8081RNA
-> with 25Mhz clock source, the PHY will glitch and stay in not recoverable
-> state.
-> 
-> It is not possible to detect the clock source frequency of the PHY. And
-> it is not possible to automatically detect KSZ8081 PHY variant - both
-> have same PHY ID. It is not possible to overwrite the fixup
-> configuration by providing proper device tree description. The only way
-> is to remove this fixup.
-> 
-> If this patch breaks network functionality on your board, fix it by
-> adding PHY node with following properties:
-> 
-> 	ethernet-phy@x {
-> 		...
-> 		micrel,led-mode = <1>;
-> 		clocks = <&clks IMX6UL_CLK_ENET_REF>;
-> 		clock-names = "rmii-ref";
-> 		...
-> 	};
+Furthermore we don't have the exporter device covered anywhere, how is
+that tracked? Yes Android just uses ion for all shared buffers, but that's
+not how all of linux userspace works.
 
-On OPOS6UL, this fix do fixes network breakage introduced by this patch.
-So, for OPOS6UL,
+Then I guess there's the mmaps, you can fish them out of procfs. A tool
+which collects all that information might be useful, just as demonstration
+of how this is all supposed to be used.
 
-Tested-by: Sébastien Szymanski <sebastien.szymanski@armadeus.com>
+Finally we have kernel internal mappings too. Not tracked.
 
-> 
-> The board which was referred in the initial patch is already fixed.
-> See: arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  arch/arm/mach-imx/mach-imx6ul.c | 21 ---------------------
->  1 file changed, 21 deletions(-)
-> 
-> diff --git a/arch/arm/mach-imx/mach-imx6ul.c b/arch/arm/mach-imx/mach-imx6ul.c
-> index e018e716735f..eabcd35c01a5 100644
-> --- a/arch/arm/mach-imx/mach-imx6ul.c
-> +++ b/arch/arm/mach-imx/mach-imx6ul.c
-> @@ -27,30 +27,9 @@ static void __init imx6ul_enet_clk_init(void)
->  		pr_err("failed to find fsl,imx6ul-iomux-gpr regmap\n");
->  }
->  
-> -static int ksz8081_phy_fixup(struct phy_device *dev)
-> -{
-> -	if (dev && dev->interface == PHY_INTERFACE_MODE_MII) {
-> -		phy_write(dev, 0x1f, 0x8110);
-> -		phy_write(dev, 0x16, 0x201);
-> -	} else if (dev && dev->interface == PHY_INTERFACE_MODE_RMII) {
-> -		phy_write(dev, 0x1f, 0x8190);
-> -		phy_write(dev, 0x16, 0x202);
-> -	}
-> -
-> -	return 0;
-> -}
-> -
-> -static void __init imx6ul_enet_phy_init(void)
-> -{
-> -	if (IS_BUILTIN(CONFIG_PHYLIB))
-> -		phy_register_fixup_for_uid(PHY_ID_KSZ8081, MICREL_PHY_ID_MASK,
-> -					   ksz8081_phy_fixup);
-> -}
-> -
->  static inline void imx6ul_enet_init(void)
->  {
->  	imx6ul_enet_clk_init();
-> -	imx6ul_enet_phy_init();
->  }
->  
->  static void __init imx6ul_init_machine(void)
-> 
+There's also some things to make sure we're at least having thought about
+how other things fit in here. E.d. dma_resv attached to the dma-buf
+matters in general a lot. It doesn't matter on Android because
+everything's pinned all the time anyway.
 
+Also I thought sysfs was one value one file, dumping an entire list into
+dev_info_map with properties we'll need to extend (once you care about
+dma_resv you also want to know which attachments are dynamic) does not
+smell like sysfs design at all.
 
+So yeah, why? worksformeonandroidweneeditthere not good enough for uapi of
+something this core to how the gpu stack works on linux in general, at
+least imo.
+-Daniel
 -- 
-Sébastien Szymanski, Armadeus Systems
-Software engineer
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
