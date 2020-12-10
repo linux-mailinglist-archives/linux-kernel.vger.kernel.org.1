@@ -2,99 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125DE2D50A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 03:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E73C2D50A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 03:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727862AbgLJCJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 21:09:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727780AbgLJCJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 21:09:39 -0500
-Date:   Thu, 10 Dec 2020 11:08:54 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607566138;
-        bh=vG8yoWeJ5TaAqgH6L+L4b7udlEhhfsUN6amJFmbiL10=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LAm2qMJwFcHz+UDCYJXCzRI3QPaC062Wm3UXIEHSSt4OxiRy6Sh3FWl2bkxOVFXpl
-         TStzxj5tau2vg0sW4gSsP5F88EvN6mpNKnXPrC/eAf21mIXrqX0x5fmFk63YOG0sgI
-         ZEl3G+nU417GrW6KqDrfGqVEp5M2GrkKXiXf5I76fFISCmGZFYRPIBwNqU4lekyiW7
-         eLPCrKGeRjDKZPGupjGxF3g4xrPYpeilRVIl0JyS3ixN04B9+NdoGONwB+dMH91qqM
-         YfanActU+uD9AeNHjq7vr/+zTH+tpp6z5H8adBcLnGUubCjJEyxONSfZMd8qwZEMKh
-         IPrB/4vfQmduA==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC][PATCH] ftrace/selftests: Add binary test to verify ring
- buffer timestamps
-Message-Id: <20201210110854.73fc08c6a19fdd8588f3e2c0@kernel.org>
-In-Reply-To: <20201209094919.31724179@gandalf.local.home>
-References: <20201201160656.7cc6a5e8@gandalf.local.home>
-        <20201208211411.e41849908381eb493adce0f5@kernel.org>
-        <20201208100024.42bbcd23@gandalf.local.home>
-        <20201209083954.5f7321a7551013aa95c0a459@kernel.org>
-        <20201209094919.31724179@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1727891AbgLJCLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 21:11:39 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9144 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727780AbgLJCLj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 21:11:39 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cry725qY0z15ZRR;
+        Thu, 10 Dec 2020 10:10:22 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 10 Dec
+ 2020 10:10:54 +0800
+Subject: Re: [f2fs-dev] [PATCH] fs: f2fs: fix potential shift-out-of-bounds
+ error in sanity_check_raw_super()
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+CC:     <syzbot+ca9a785f8ac472085994@syzkaller.appspotmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20201209181322.27932-1-anant.thazhemadam@gmail.com>
+ <9e38608c-9fc3-1f94-d275-742facef3db3@huawei.com>
+ <8d293b99-4414-1317-7426-79692bbaa715@gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <1215c353-3c3f-0a61-00a3-021f0c2f0032@huawei.com>
+Date:   Thu, 10 Dec 2020 10:10:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <8d293b99-4414-1317-7426-79692bbaa715@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Dec 2020 09:49:19 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Wed, 9 Dec 2020 08:39:54 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On 2020/12/10 10:00, Anant Thazhemadam wrote:
 > 
-> > > OK. I'll look at how to make this for both cases (embedded and not).
-> > > Because, my current case is to copy the selftests to the machine and run
-> > > them there. So my use case requires the build to happen at test time. But I
-> > > can make it where it wont build if the binary already exists.  
-> > 
-> > For that case, what about just "make clean" before copy, then the binary
-> > will be removed? 
+> On 10/12/20 7:16 am, Chao Yu wrote:
+>> Hi Anant,
+>>
+>> I've posted a patch a little earlier. :P
+>>
+>> https://lore.kernel.org/linux-f2fs-devel/20201209084936.31711-1-yuchao0@huawei.com/T/#u
+>>
+> Ah well, that's alright, especially considering that your patch looks better.
+> Glad that bug has been fixed nonetheless. :)
+
+Anyway, thanks a lot for taking time to fix f2fs bug. :)
+
+I prefer to add your Signed-off-by into "f2fs: fix shift-out-of-bounds
+in sanity_check_raw_super()" if you don't mind.
+
+Thanks,
+
 > 
-> I just meant that the binary build should not depend on anything outside
-> the directory. It should be able to be built if you just copy the
-> ftracetest directory and run there.
-
-Oh I thought you considered the case that the library version differences
-between the binary and execute environment.
-
-> > > > (currently I returns UNRESOLVED when the test target kmodule is not found)  
-> > > 
-> > > I used UNTESTED for a couple of reasons. I figured "UNRESOLVED" was for
-> > > lack of kernel features or modules. But this is not a lack of the kernel,
-> > > but a lack of user space. If something in user space is lacking (a tool,
-> > > library, or binary), then I thought UNTESTED would be a better option. But
-> > > if you have a strong opinion on it, I'll change it to UNRESOLVED, otherwise
-> > > I'll keep UNTESTED.  
-> > 
-> > The idea of UNTESTED/UNRESOLVED (and UNSUPPORTED) came from POSIX standard,
-> > it is expained in dejagnu's manual:
-> > 
-> > https://www.gnu.org/software/dejagnu/manual/A-POSIX-Conforming-Test-Framework.html
-> > 
-> > In this case, user can build the user space binary for the environment but
-> > does't, so I think UNRESOLVED will fit to that case.
-> > 
-> > So strictly speaking, UNTESTED is just a placeholder which will be implemented
-> > in the future. (hmm, it will be a good chance to write a document for it)
+> Cheers,
+> Anant
+> .
 > 
-> OK, I'll change it to UNRESOLVED. One reason I used UNTESTED, is that the
-> build wont happen until libtracefs is packaged and released (or you
-> download and build it yourself). And it's just getting ready now. So in
-> essence, this is currently just a "placeholder" ;-)
-
-Yeah, so now if it can not run, user can solve it by installing libtracefs:)
-
-Thank you,
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
