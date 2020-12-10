@@ -2,156 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813712D52C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 918332D52C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729784AbgLJEYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 23:24:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
+        id S1729356AbgLJEYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 23:24:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728238AbgLJEYl (ORCPT
+        with ESMTP id S1726645AbgLJEYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 23:24:41 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3671CC061793
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 20:24:01 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id t37so3008607pga.7
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 20:24:01 -0800 (PST)
+        Wed, 9 Dec 2020 23:24:14 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F40AC0613CF;
+        Wed,  9 Dec 2020 20:23:34 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id 4so2128241plk.5;
+        Wed, 09 Dec 2020 20:23:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=M3R+1Kw1+pxZrJagVjtPWvZt7HKHZG/cWLsw4oRpXRM=;
-        b=ed7QLo/rYT5tWL9hE0juUheenuYvMB/DsiCixtcPicRPnPdc5XSR5o8m6ehwmw9ixx
-         mqoOK5hMiLYq01XPF9wfQE8kIs8GHOOEue2QNA+YeNaiJO64O7YYDLWV1814M/RsjyZu
-         757nJtTf62KwIE+mCNy7RcyEp2w+a8Go8gEoZJGLXl2wgy0Yiqb6Ai2HDNPFfr/Il+Mz
-         fdI/7omavvu1NoE46SQOnBHFAgSFEVhlhgnKlCcjMKT6dt8Uyk7WrIDLOmUeQzQxEv7R
-         l5wZZ8MaVUhKBZOZ1vGRpKibvImYmJB5CzZIWinZyRk0oj+oIQ290DXX3lQDuP4o5Drg
-         hYMw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XNHPz0YAoN0UuSkSu06R7wbjCuX1P69SVLGZfK7SmBw=;
+        b=dqHBs+bUn+swPA3aSuJh+fZuzU4Az3QVxSN3e1DFUPjKsC9YkIYEwO5lW0zWW7px1P
+         SpqbeNHxU8VmQkYBNQjbJNdMWTbS9ngCdesEetAdOyaOFQstf2ZcDk/vxy64DkuRV77O
+         CY5DB1kFynjtmePeI8yiHlDMx9/iJnENYYvCc1+9R6xyclmjb11NDHF6J3wtwmxObAil
+         lqunI0hsiyEA5jTH6BSsyohsI0H/XCk3JLUGjlgjnkxbGKkTri5a4B0Km3xOc3RCVew1
+         6ifuWrBDMOsJTJVsT8YG4+rozqF7rje0woVilvH20GG3UuXL+tzx8WtJZJwM+d8coMuL
+         GmEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=M3R+1Kw1+pxZrJagVjtPWvZt7HKHZG/cWLsw4oRpXRM=;
-        b=ulMxaS1jhUjLvonAgFQIVibP9O9+gGkMYkOzHXSP71NmDGSJBF9guJRKdqMAHLrL5Y
-         u7T2WhuXoFOszxTfmDP5oHOlBntTrIox3deKKAe4uIYmeLf1rD4Qx9f3ldqwRiLpJapB
-         WJG6/PvQdu5RHUmDeg1FoJPLu4e+575ZMMtHoXNd1HdDFStrFjHx8Rsk4M/OlQfJhN5h
-         YOJLXNdmXaZ6nL3QnThbznA5cfkOVcdl5G0ey3tvZDsa7KGGg/nEMwIjtro0By9ytWkp
-         LYiAXZ2tnoadPWi+UcxRy9EM1+3p5hYHaWhq4XzQzfmthuFJAYs7FMLIINFGO8fW+76v
-         JuiQ==
-X-Gm-Message-State: AOAM533Eiu75S/X6YZdnZkZL87WUfN5Q/RqkaXFyVcTmiGqyuVF6h1Uw
-        1YxsTE4DJSmx8V/OoBWmytXGew==
-X-Google-Smtp-Source: ABdhPJwkCF7fY1bFrcA6xK2/kdJzPG4YfdS6qXeU6PxZwyABhuXfLBj6ekpI6AfnvSaQU/HEQuqamA==
-X-Received: by 2002:a63:7982:: with SMTP id u124mr4880721pgc.259.1607574240745;
-        Wed, 09 Dec 2020 20:24:00 -0800 (PST)
-Received: from localhost.localdomain ([103.136.221.73])
-        by smtp.gmail.com with ESMTPSA id q9sm4319411pgb.82.2020.12.09.20.23.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Dec 2020 20:24:00 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        sfr@canb.auug.org.au, chris@chrisdown.name, laoar.shao@gmail.com,
-        richard.weiyang@gmail.com
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v3] mm: memcontrol: optimize per-lruvec stats counter memory usage
-Date:   Thu, 10 Dec 2020 12:21:21 +0800
-Message-Id: <20201210042121.39665-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XNHPz0YAoN0UuSkSu06R7wbjCuX1P69SVLGZfK7SmBw=;
+        b=ozCZr7Lu9AA046gWyGT6U+APa2Jcl1FRPfsdc5JJkc8Z9cjwItDyV3TA80Sq5Qu4zf
+         RKMOCMpT6U0YKuQcuc7+cKJRSuiQ1DW4tRtevdIc6WJTWOfarEDojw8AJCtWaUJFpJRl
+         OIHCEl+Y1Im8oWfXrQO4sYo+syAlv2Qj2mjosqWVqm2AS0gYKeN1Q2Ku+lS3/7XzOI+R
+         cdcpvjACRS1mmN4GF2GI4yZUBcGuIhX9i4IvnNI2shzbtcgmWqvQlIygkCV3FBlTvq8M
+         FrbTgqVZ7yVz58oICc4pra8XlgT5k0WNC9+MxGZI9gPTli9D8O809WBhy2i/jVUueoe2
+         Hkkg==
+X-Gm-Message-State: AOAM533qWUiGWzDrTR1vxx5GqXS2R5DZBYSCIg9QkuxovzsmmUrE4ouc
+        gSz/FsxuHoed3j7rryVjVDMjYxXMwKk=
+X-Google-Smtp-Source: ABdhPJy+DAc7efiMhm1rt0hmJdImDLdOU1fhoQkPtkkWBYjQIrU0KffJfmkgVq4a00z1MkMfOgshCw==
+X-Received: by 2002:a17:902:6ac8:b029:da:d645:ab58 with SMTP id i8-20020a1709026ac8b02900dad645ab58mr5118182plt.25.1607574213457;
+        Wed, 09 Dec 2020 20:23:33 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id x1sm4568799pfj.95.2020.12.09.20.23.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 20:23:32 -0800 (PST)
+Date:   Wed, 9 Dec 2020 20:23:29 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     syzbot <syzbot+150f793ac5bc18eee150@syzkaller.appspotmail.com>
+Cc:     eli.billauer@gmail.com, gregkh@linuxfoundation.org,
+        gustavoars@kernel.org, ingrassia@epigenesys.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com, vulab@iscas.ac.cn
+Subject: Re: WARNING in cm109_input_ev/usb_submit_urb
+Message-ID: <X9GiwQsABTa/zC/t@google.com>
+References: <000000000000f6530105b48b2816@google.com>
+ <000000000000a023c905b588314b@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000a023c905b588314b@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vmstat threshold is 32 (MEMCG_CHARGE_BATCH), Actually the threshold
-can be as big as MEMCG_CHARGE_BATCH * PAGE_SIZE. It still fits into s32.
-So introducing struct batched_lruvec_stat to optimize memory usage.
-
-The size of struct lruvec_stat is 304 bytes on 64 bits system. As it
-is a per-cpu structure. So with this patch, we can save 304 / 2 * ncpu
-bytes per-memcg per-node where ncpu is the number of the possible CPU.
-If there are c memory cgroup (include dying cgroup) and n NUMA node in
-the system. Finally, we can save (152 * ncpu * c * n) bytes.
-
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
----
-Changes in v2 -> v3:
- - Rename per_cpu_lruvec_stat to batched_lruvec_stat. Thanks Shakeel.
- - Update commit log. Thanks Roman.
-
-Changes in v1 -> v2:
- - Update the commit log to point out how many bytes that we can save.
-
- include/linux/memcontrol.h | 14 ++++++++++++--
- mm/memcontrol.c            | 10 +++++++++-
- 2 files changed, 21 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 3febf64d1b80..076512e1dc9c 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -92,6 +92,10 @@ struct lruvec_stat {
- 	long count[NR_VM_NODE_STAT_ITEMS];
- };
- 
-+struct batched_lruvec_stat {
-+	s32 count[NR_VM_NODE_STAT_ITEMS];
-+};
-+
- /*
-  * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
-  * which have elements charged to this memcg.
-@@ -107,11 +111,17 @@ struct memcg_shrinker_map {
- struct mem_cgroup_per_node {
- 	struct lruvec		lruvec;
- 
--	/* Legacy local VM stats */
-+	/*
-+	 * Legacy local VM stats. This should be struct lruvec_stat and
-+	 * cannot be optimized to struct batched_lruvec_stat. Becasue
-+	 * the threshold of the lruvec_stat_cpu can be as big as
-+	 * MEMCG_CHARGE_BATCH * PAGE_SIZE. It can fit into s32. But this
-+	 * filed has no upper limit.
-+	 */
- 	struct lruvec_stat __percpu *lruvec_stat_local;
- 
- 	/* Subtree VM stats (batched updates) */
--	struct lruvec_stat __percpu *lruvec_stat_cpu;
-+	struct batched_lruvec_stat __percpu *lruvec_stat_cpu;
- 	atomic_long_t		lruvec_stat[NR_VM_NODE_STAT_ITEMS];
- 
- 	unsigned long		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index eec44918d373..1b01771f2600 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5198,7 +5198,7 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- 		return 1;
- 	}
- 
--	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct lruvec_stat,
-+	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct batched_lruvec_stat,
- 					       GFP_KERNEL_ACCOUNT);
- 	if (!pn->lruvec_stat_cpu) {
- 		free_percpu(pn->lruvec_stat_local);
-@@ -7089,6 +7089,14 @@ static int __init mem_cgroup_init(void)
- {
- 	int cpu, node;
- 
-+	/*
-+	 * Currently s32 type (can refer to struct batched_lruvec_stat) is
-+	 * used for per-memcg-per-cpu caching of per-node statistics. In order
-+	 * to work fine, we should make sure that the overfill threshold can't
-+	 * exceed S32_MAX / PAGE_SIZE.
-+	 */
-+	BUILD_BUG_ON(MEMCG_CHARGE_BATCH > S32_MAX / PAGE_SIZE);
-+
- 	cpuhp_setup_state_nocalls(CPUHP_MM_MEMCQ_DEAD, "mm/memctrl:dead", NULL,
- 				  memcg_hotplug_cpu_dead);
- 
--- 
-2.11.0
-
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git f6d088b4efe9636b0c5144e8ef36d785214e62cd
