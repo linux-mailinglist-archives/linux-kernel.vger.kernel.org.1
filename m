@@ -2,232 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C222D6B57
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9115B2D6B4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391603AbgLJW6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 17:58:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728309AbgLJWzN (ORCPT
+        id S1731463AbgLJW6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 17:58:33 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:32795 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387777AbgLJW5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:55:13 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2463C0619D8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:42:33 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id z188so6676770qke.9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 14:42:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BI42y0NL4g9pgxSiCUPEnrdmXwNVwllMLibIxfqxMAE=;
-        b=hWMsNOC78oPCR/5SbuVMdo29OQDG3LMI1Knmo1sKFCQLyigIG4vSOWQB5xY6tp8cU+
-         77Z8uG/aPnl2cGAEAmpDq76vp2e71hOkDQQAkwfJgpJYru1alEkjWhfQ6bHjPtzIyCS9
-         b+Hs8TTIVwUxiv7jNe3RMNaOlKh2oyjH1g4P4BoUKdwVR7/UQI7veEed1ZexzU24kbw8
-         UpV5cQ2SJ0IRPENlPCcfFgCEUQi3mbkX/YJMbCNFTg4oMKCRK1Xd1S3xGkVeiFbfTIvc
-         kq0UJFcKGNMB3ngzzV9qSQBRsz5C7c9UcOilExHurYt7II0zPp1kOdr07XcXXgaWio9z
-         GU0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BI42y0NL4g9pgxSiCUPEnrdmXwNVwllMLibIxfqxMAE=;
-        b=fH1dpbIQxQLKBIYSmMk1FyIfDOwTZYo2887wp8KF4YRaZggZSvk4gvb1RqlK3Bl13K
-         FUM7BWHFXS9rGORuW2DunVNFZIXfT1QN72zlZv47VL11MSK8VJWTL2XYTcKT3p8QS39P
-         plPrUx/LeMcylbJzkeLa+aw1VOzdFqU4iah3+8xVRi1EXgxlLgjBBQRHMvgyXbwk3xZF
-         ahMCEdtpsdQ2bMyuNu4x1VIcSUXc0bqpR7LjGIhucsspfQzm8IPHaqKJUgGQ0g6Dc+BU
-         UA4hp/UV2NQL5fizMFH+OUbO7xBSLZK3nsVOQ3bJ658ZCO3XxIk5azFMXr4wko9I04Z8
-         VnCA==
-X-Gm-Message-State: AOAM532ZRg4kxCEaD9AKqGD/KTmywbW14Wzix0KGhEFsUCN3/419bRLq
-        xfGrGFEdviQGJ3BmgJA3l93h6lSwWK9UdiLS9/41IQ==
-X-Google-Smtp-Source: ABdhPJyssOsPAM+0T8O2ecn5LMu0P4i9w+iyWsreu7x70gwVAySfKdx+0tWzoyaCLA9gf8su9JPsj/jlR1Tal3U3Zo4=
-X-Received: by 2002:a37:a80a:: with SMTP id r10mr11644017qke.467.1607640152596;
- Thu, 10 Dec 2020 14:42:32 -0800 (PST)
+        Thu, 10 Dec 2020 17:57:38 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-141-It5R_dMHNwKIf0Xeoz5iHA-1; Thu, 10 Dec 2020 22:43:29 +0000
+X-MC-Unique: It5R_dMHNwKIf0Xeoz5iHA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 10 Dec 2020 22:43:28 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 10 Dec 2020 22:43:28 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Dominique Martinet' <asmadeus@codewreck.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+CC:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: RE: [PATCH 1/2] ld-version: use /usr/bin/env awk for shebank
+Thread-Topic: [PATCH 1/2] ld-version: use /usr/bin/env awk for shebank
+Thread-Index: AQHWzlMiS9jNVW0o7U6RgrmdYSfLQqnvTUdggAD1DgqAAKpa0A==
+Date:   Thu, 10 Dec 2020 22:43:28 +0000
+Message-ID: <a9bc168cd2b84cc29e6cd4d25387a4f4@AcuMS.aculab.com>
+References: <1606828650-29841-1-git-send-email-asmadeus@codewreck.org>
+ <69c82aee-59ec-f8d8-9546-b38f85bf08c0@arm.com>
+ <20201209174252.GA27721@nautica>
+ <5ca5c3bb23614af0a35f01f1e3a84ead@AcuMS.aculab.com>
+ <a68a09ce-f172-bfb4-6422-b1776d798f5f@arm.com>
+ <20201210122202.GA8323@nautica>
+In-Reply-To: <20201210122202.GA8323@nautica>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20201210044400.1080308-1-hridya@google.com> <b5adfe46-8615-5821-d092-2b93feed5b79@amd.com>
- <X9H0JREcdxDsMtLX@kroah.com> <20201210102727.GE401619@phenom.ffwll.local>
- <X9H+3AP1q39aMxeb@kroah.com> <f95ee5dc-62f8-4870-11e4-3513dc8382ef@amd.com>
-In-Reply-To: <f95ee5dc-62f8-4870-11e4-3513dc8382ef@amd.com>
-From:   Hridya Valsaraju <hridya@google.com>
-Date:   Thu, 10 Dec 2020 14:41:56 -0800
-Message-ID: <CA+wgaPPtoz_JSAwsVVpFGLrcrO8-tAGD+gdrsWmBA3jpidigzQ@mail.gmail.com>
-Subject: Re: [PATCH] dmabuf: Add the capability to expose DMA-BUF stats in sysfs
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linaro-mm-sig@lists.linaro.org,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks again for the reviews!
+RnJvbTogJ0RvbWluaXF1ZSBNYXJ0aW5ldCcNCj4gU2VudDogMTAgRGVjZW1iZXIgMjAyMCAxMjoy
+Mg0KPiANCj4gVmluY2Vuem8gRnJhc2Npbm8gd3JvdGUgb24gVGh1LCBEZWMgMTAsIDIwMjA6DQo+
+ID4gT24gMTIvOS8yMCAxMDowMyBQTSwgRGF2aWQgTGFpZ2h0IHdyb3RlOg0KPiA+PiBXaHkgYm90
+aGVyIHdpdGggYXdrPw0KPiANCj4gSSB3YW50ZWQgdG8ga2VlcCB0aGUgcGF0Y2ggbWluaW1hbCwg
+SSdtIG5vdCBvcHBvc2VkIHRvIHJld3JpdGluZyBidXQNCj4gdGhhdCBhbHdheXMgcG90ZW50aWFs
+bHkgaGFzIG1vcmUgaW1wYWN0IChhbHRob3VnaCBhcyB5b3Ugc2F5LCB0aGlzDQo+IHNjcmlwdCBp
+cyBzaW1wbGUgZW5vdWdoKQ0KPiANCj4gPiA+IEkgdGhpbmsgeW91IGNhbiBkbyBpdCBhbGwgaW4g
+YSBzaGVsbCBmdW5jdGlvbi4NCj4gPiA+IFNvbWV0aGluZyBsaWtlOg0KPiA+ID4gCXJlYWQgbGlu
+ZQ0KPiA+ID4gCWxpbmU9JHtsaW5lIyMqKX0NCj4gPiA+IAlsaW5lPSR7bGluZSMjKnZlcnNpb24g
+fQ0KPiA+ID4gCUlGUz0nLi0nDQo+ID4gPiAJc2V0ICRsaW5lDQo+ID4gPiAJZWNobyAkKCgkMSox
+MDAwMDAwMDAgKyAkMioxMDAwMDAwICsgJDMqMTAwMDApKQ0KPiA+ID4NCj4gPiA+IFRoYXQgd2ls
+bCB3b3JrIG9uIGFueSByZWNlbnQgc2hlbGwuDQo+IA0KPiBXb3JrcyBmb3IgbWUuDQoNClRoYXQg
+d2FzIGEgdmVyeSBxdWljayByZXdyaXRlIG9mIHdoYXQgSSB0aGluayB0aGUgYXdrIHNjcmlwdCBk
+aWQuDQpIb3dldmVyIEkgdGhpbmsgdGhlIHZlcnNpb24gaXMgaW4gdGhlIGxhc3Qgc3BhY2Utc2Vw
+YXJhdGVkIHdvcmQuDQpTbyB5b3UgY2FuIGRvICh1bnRlc3RlZCk6DQoJcmVhZCBsaW5lDQoJc2V0
+IGxpbmUNCglzaGlmdCAkKCgkIy0xKSkNCglPSUZTPSIkSUZTIg0KCUlGUz0nLi0nDQoJc2V0ICQx
+DQoJSUZTPSIkT0lGUyINCgllY2hvICQoKCQxKjEwMDAwMDAwMCArICQyKjEwMDAwMDAgKyAkMyox
+MDAwMCkpDQoNCk5vdywgaWYgeW91IHdhbnQgYSB2ZXJzaW9uIHRoYXQgd2lsbCB3b3JrIHdpdGgg
+YSByZWFsIGJvdXJuZSBzaGVsbA0KKHRoYXQgZG9lc24ndCBzdXBwb3J0ICQoKGV4cHIpKSBvciAk
+KHgjI2J9IGl0IGdldHMgbW9yZSBpbnRlcmVzdGluZy4NCg0KWWVzLCBidXQgZm9yIG5vdywgcmV2
+ZXJ0IGZpcnN0Lg0KSXQgbWlnaHQgZXZlbiBiZSB0aGF0IHRoZSB3aG9sZSBmaWxlIGlzbid0IG5l
+ZWRlZC4NCklmIGl0IG9ubHkgdXNlZCBmcm9tIGEgTWFrZWZpbGUgaXQgY2FuIGJlIGdvbmUgd2l0
+aCBnbWFrZSBjb21tYW5kcy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtl
+c2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBV
+Sw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-On Thu, Dec 10, 2020 at 3:03 AM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 10.12.20 um 11:56 schrieb Greg KH:
-> > On Thu, Dec 10, 2020 at 11:27:27AM +0100, Daniel Vetter wrote:
-> >> On Thu, Dec 10, 2020 at 11:10:45AM +0100, Greg KH wrote:
-> >>> On Thu, Dec 10, 2020 at 10:58:50AM +0100, Christian K=C3=B6nig wrote:
-> >>>> In general a good idea, but I have a few concern/comments here.
-> >>>>
-> >>>> Am 10.12.20 um 05:43 schrieb Hridya Valsaraju:
-> >>>>> This patch allows statistics to be enabled for each DMA-BUF in
-> >>>>> sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
-> >>>>>
-> >>>>> The following stats will be exposed by the interface:
-> >>>>>
-> >>>>> /sys/kernel/dmabuf/<inode_number>/exporter_name
-> >>>>> /sys/kernel/dmabuf/<inode_number>/size
-> >>>>> /sys/kernel/dmabuf/<inode_number>/dev_map_info
-> >>>>>
-> >>>>> The inode_number is unique for each DMA-BUF and was added earlier [=
-1]
-> >>>>> in order to allow userspace to track DMA-BUF usage across different
-> >>>>> processes.
-> >>>>>
-> >>>>> Currently, this information is exposed in
-> >>>>> /sys/kernel/debug/dma_buf/bufinfo.
-> >>>>> However, since debugfs is considered unsafe to be mounted in produc=
-tion,
-> >>>>> it is being duplicated in sysfs.
-> >>>> Mhm, this makes it part of the UAPI. What is the justification for t=
-his?
-> >>>>
-> >>>> In other words do we really need those debug information in a produc=
-tion
-> >>>> environment?
-> >>> Production environments seem to want to know who is using up memory :=
-)
-> >> This only shows shared memory, so it does smell a lot like $specific_i=
-ssue
-> >> and we're designing a narrow solution for that and then have to carry =
-it
-> >> forever.
-> > I think the "issue" is that this was a feature from ion that people
-> > "missed" in the dmabuf move.  Taking away the ability to see what kind
-> > of allocations were being made didn't make a lot of debugging tools
-> > happy :(
->
-> Yeah, that is certainly a very valid concern.
->
-> > But Hridya knows more, she's been dealing with the transition for a lon=
-g
-> > time now.
-
-Currently, telemetry tools capture this information(along with other
-memory metrics) periodically as well as on important events like a
-foreground app kill (which might have been triggered by an LMK). We
-would also like to get a snapshot of the system memory usage on other
-events such as OOM kills and ANRs.
-
-> >
-> >> E.g. why is the list of attachments not a sysfs link? That's how we
-> >> usually expose struct device * pointers in sysfs to userspace, not as =
-a
-> >> list of things.
-> > These aren't struct devices, so I don't understand the objection here.
-> > Where else could these go in sysfs?
->
-> Sure they are! Just take a look at an attachment:
->
-> struct dma_buf_attachment {
->           struct dma_buf *dmabuf;
->           struct device *dev;
->
-> This is the struct device which is importing the buffer and the patch in
-> discussion is just printing the name of this device into sysfs.
-
-I actually did not know that this is not ok to do. I will change it in
-the next version of the patch to be sysfs links instead.
-
->
-> >> Furthermore we don't have the exporter device covered anywhere, how is
-> >> that tracked? Yes Android just uses ion for all shared buffers, but th=
-at's
-> >> not how all of linux userspace works.
-> > Do we have the exporter device link in the dmabuf interface?  If so,
-> > great, let's use that, but for some reason I didn't think it was there.
->
-> Correct, since we don't really need a device as an exporter (it can just
-> be a system heap as well) we only have a const char* as name for the
-> exporter.
-
-Yes, the file exporter_name prints out this information.
-
->
-> >> Then I guess there's the mmaps, you can fish them out of procfs. A too=
-l
-> >> which collects all that information might be useful, just as demonstra=
-tion
-> >> of how this is all supposed to be used.
-> > There's a script somewhere that does this today, again, Hridya knows
-> > more.
-
-That is correct, we do have a tool in AOSP that gathers the
-per-process DMA-BUF map stats from procfs.
-https://android.googlesource.com/platform/system/memory/libmeminfo/+/refs/h=
-eads/master/libdmabufinfo/tools/dmabuf_dump.cpp
-
-When I send the next revision of the patch, I will also include links
-to AOSP CLs that show the usage for the sysfs files.
-
-> >
-> >> There's also some things to make sure we're at least having thought ab=
-out
-> >> how other things fit in here. E.d. dma_resv attached to the dma-buf
-> >> matters in general a lot. It doesn't matter on Android because
-> >> everything's pinned all the time anyway.
-
-I see your point Daniel!  I will make the interface extendable in the
-next version of the patch.
-
-> >>
-> >> Also I thought sysfs was one value one file, dumping an entire list in=
-to
-> >> dev_info_map with properties we'll need to extend (once you care about
-> >> dma_resv you also want to know which attachments are dynamic) does not
-> >> smell like sysfs design at all.
-> > sysfs is one value per file, what is being exported that is larger than
-> > that here?  Did I miss something on review?
->
-> See this chunk here:
->
-> +
-> +    list_for_each_entry(attachment, &dmabuf->attachments, node) {
-> +        if (attachment->map_counter) {
-> +            ret +=3D sysfs_emit_at(buf, ret, "%s ",
-> +                         dev_name(attachment->dev));
-> +        }
-> +    }
->
-> And yes now that Daniel mentioned that it looks like a sysfs rules
-> violation to me as well.
-
-Sysfs rules do seem to allow an array of similar values in one file
-https://elixir.bootlin.com/linux/v5.10-rc7/source/Documentation/filesystems=
-/sysfs.rst#L63
-However, I agree that we should change it so that it can be expanded
-easily in the future. I will fix it in the next version. Thank you all
-for pointing it out!
-
-Regards,
-Hridya
-
->
-> Regards,
-> Christian.
->
->
-> >
-> > thanks,
-> >
-> > greg k-h
->
