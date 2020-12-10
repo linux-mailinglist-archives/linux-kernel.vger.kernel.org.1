@@ -2,56 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB3D2D69A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 985CD2D699E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404814AbgLJVVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 16:21:48 -0500
-Received: from shards.monkeyblade.net ([23.128.96.9]:45692 "EHLO
-        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393867AbgLJVUP (ORCPT
+        id S2404795AbgLJVU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 16:20:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393944AbgLJVUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 16:20:15 -0500
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 44EB74D2ED6E8;
-        Thu, 10 Dec 2020 13:19:24 -0800 (PST)
-Date:   Thu, 10 Dec 2020 13:19:23 -0800 (PST)
-Message-Id: <20201210.131923.261956317613003321.davem@davemloft.net>
-To:     xie.he.0141@gmail.com
-Cc:     kuba@kernel.org, linux-x25@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ms@dev.tdt.de
-Subject: Re: [PATCH net-next] net: lapbether: Consider it successful if
- (dis)connecting when already (dis)connected
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20201208225044.5522-1-xie.he.0141@gmail.com>
-References: <20201208225044.5522-1-xie.he.0141@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Thu, 10 Dec 2020 13:19:24 -0800 (PST)
+        Thu, 10 Dec 2020 16:20:17 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6723EC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:19:38 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id b26so5344722pfi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:19:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l/9N8F/baelWHyQ98/UbLICQNRl8dd1pE69/xgFra+Y=;
+        b=bHaFvEJRJ2xp9m8QIhD3LaubM3ulV/G1lYWzxS6grlaX6/0d9NZfDfWU/je5LgU762
+         0LAC1KJ0Nhn3kpa/to64FRLMSm/n3DSLZGZlVf8GKI7A5D6IzkuSZH3ku8K5KrG1E/jg
+         5/xz+96lU74ssKGoFzUUCCXmUZY4OsFOaKhSc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l/9N8F/baelWHyQ98/UbLICQNRl8dd1pE69/xgFra+Y=;
+        b=b+Co9qVICfNbtQ2BudhpvSBYcZvcPEOn5yWRUgtVj05dW2JmVMqwiyXtz7CtfuYU2h
+         L6V9KsLUrbVndPeZg/SJhTqWbJ5Zvh2dMzKL3BiCZdEI1YFbKq6Q5jw1wXKqkwdjix4z
+         qj7p4yGYWdQCwP1Kpnq4KMrIcARGZcjURDaGtE0BbOYf4mjgJpnXT3RTyu+txzFxLGp6
+         vNS04HY8XmHF1OsETvGfPoWWWp/ckrB0frLF3uPo7Ma/Ry2EQE8Ya32y7B8m4m5HZZKz
+         JQpGdJ95oV4LHlUAExhzUsD2/HMx2YuIyD/9hS8rf8f40ThyT+kxGiiE6Cj9cdB09mGf
+         KdKg==
+X-Gm-Message-State: AOAM531ccJuZtHPuI5V91GisfJRbA6WwEibl1+j5IAugKgPMSxgYYP0y
+        my71z8mrOMYRJLO19j7JQ8MV5A==
+X-Google-Smtp-Source: ABdhPJydDS8laqjW9+fNySNIQRDJRGOzgGjaM1FkRZAbeypxJ7tUTCXTdqspyYmRVya9TKAE9thJ1Q==
+X-Received: by 2002:a17:90a:4d84:: with SMTP id m4mr9680536pjh.145.1607635177687;
+        Thu, 10 Dec 2020 13:19:37 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id a141sm7320800pfa.189.2020.12.10.13.19.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 13:19:37 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     vbadigan@codeaurora.org, Stephen Boyd <swboyd@chromium.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+Subject: [PATCH v2] mmc: sdhci-msm: Warn about overclocking SD/MMC
+Date:   Thu, 10 Dec 2020 13:19:28 -0800
+Message-Id: <20201210131913.v2.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
-Date: Tue,  8 Dec 2020 14:50:44 -0800
+As talked about in commit 5e4b7e82d497 ("clk: qcom: gcc-sdm845: Use
+floor ops for sdcc clks"), most clocks handled by the Qualcomm clock
+drivers are rounded _up_ by default instead of down.  We should make
+sure SD/MMC clocks are always rounded down in the clock drivers.
+Let's add a warning in the Qualcomm SDHCI driver to help catch the
+problem.
 
-> When the upper layer instruct us to connect (or disconnect), but we have
-> already connected (or disconnected), consider this operation successful
-> rather than failed.
-> 
-> This can help the upper layer to correct its record about whether we are
-> connected or not here in layer 2.
-> 
-> The upper layer may not have the correct information about whether we are
-> connected or not. This can happen if this driver has already been running
-> for some time when the "x25" module gets loaded.
-> 
-> Another X.25 driver (hdlc_x25) is already doing this, so we make this
-> driver do this, too.
-> 
-> Cc: Martin Schiller <ms@dev.tdt.de>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+This would have saved a bunch of time [1].
 
-Applied, thank you.
+[1] http://lore.kernel.org/r/20201210102234.1.I096779f219625148900fc984dd0084ed1ba87c7f@changeid
+
+Suggested-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+Changes in v2:
+- Store rate in unsigned long, not unsigned int.
+- Reuse the clk_get_rate() in the later print.
+
+ drivers/mmc/host/sdhci-msm.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index 3451eb325513..52824c6b2073 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -353,6 +353,7 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
+ 	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
+ 	struct mmc_ios curr_ios = host->mmc->ios;
+ 	struct clk *core_clk = msm_host->bulk_clks[0].clk;
++	unsigned long achieved_rate;
+ 	int rc;
+ 
+ 	clock = msm_get_clock_rate_for_bus_mode(host, clock);
+@@ -363,10 +364,20 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
+ 		       curr_ios.timing);
+ 		return;
+ 	}
++
++	/*
++	 * Qualcomm clock drivers by default round clock _up_ if they can't
++	 * make the requested rate.  This is not good for SD.  Yell if we
++	 * encounter it.
++	 */
++	achieved_rate = clk_get_rate(core_clk);
++	if (achieved_rate > clock)
++		pr_warn("%s: Card appears overclocked; req %u Hz, actual %d Hz\n",
++			mmc_hostname(host->mmc), clock, achieved_rate);
++
+ 	msm_host->clk_rate = clock;
+ 	pr_debug("%s: Setting clock at rate %lu at timing %d\n",
+-		 mmc_hostname(host->mmc), clk_get_rate(core_clk),
+-		 curr_ios.timing);
++		 mmc_hostname(host->mmc), achieved_rate, curr_ios.timing);
+ }
+ 
+ /* Platform specific tuning */
+-- 
+2.29.2.576.ga3fc446d84-goog
+
