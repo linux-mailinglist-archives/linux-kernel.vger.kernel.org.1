@@ -2,164 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081432D5841
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4C32D583C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732271AbgLJKai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:30:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731908AbgLJKaC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:30:02 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C154FC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 02:29:20 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id w79so4244976qkb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 02:29:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b0knabE4pLiyMjkoiksYG/IB8kMycYTPeC8EyBeBTFk=;
-        b=miRhMRcVYRU8W2s9H83rcF+aFhaacPuIK1msFRh8h6eJwvU0WCRwa9ZzdaBW9vYaSM
-         5XrEfOOQ5WKR+Vi4i3eQCuBJOhhTI4d+IymcP5l/zOl4TfKm6+/MK8E1yiXqqFv+VhNz
-         gc7Zw1UEvharuOq3E/DRhmUxt30EVJiLe85UY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b0knabE4pLiyMjkoiksYG/IB8kMycYTPeC8EyBeBTFk=;
-        b=epq6uXJb+BA6WIfQGkH70WFP7D27xopt50ueZ0BtlaghTjV9pFOySouxNRnnexAu9K
-         +BvYRqhkEO+GAeZfagGdByEEeZPIkYULo6wqG+Jn8h+XeVmhsm5cr5k6z9atM8xs3Je4
-         WDsuxC13uyjDgta0bHZ/uNO7Rvmj54BlNghTMovBQdu0+2g1Eid0w8tdln37Ihqesb4x
-         dpAbKMrdjHLmMA5AtQjNJzaxZxx3rxhTv8iApo/I2mDAGcVI/FVXd0leWNFa6V48weSy
-         wvIa2ufvxWU6scY/IkflSHiIggWbzyh8CYBTWjy4fLOLDmnu9o2X9I6TYJlfSqx2gTTe
-         9ARA==
-X-Gm-Message-State: AOAM5320hH5m0L4ub0whFXSXafsYwA83X9F190QZtR3WeWVwRnNAq1DW
-        /Fc6Et/UoUOxYnHHYxfUjbB8xs5hMiUUT+SjRkee9Q==
-X-Google-Smtp-Source: ABdhPJwOZUi2Sl1Yd/f5v6x5SU7/RnsNHC6u16neZmVHJ04GokosGXeljSbqswV/Mein4PrK5Or0sFRoiVO0l3ifl/U=
-X-Received: by 2002:a37:8681:: with SMTP id i123mr7867752qkd.54.1607596159936;
- Thu, 10 Dec 2020 02:29:19 -0800 (PST)
+        id S1730952AbgLJK3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:29:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725988AbgLJK3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 05:29:34 -0500
+Date:   Thu, 10 Dec 2020 11:30:07 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607596133;
+        bh=NOlYB6gWlOdhNT+lTIb0YEj6TcISa/ub3wn3vWVEtbI=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W/hNtwb4Cvp7YAvD4fjYfG8+02skCrsmdplJz2tPlnYuQ7QbupdZltryuQ6QAzzEs
+         UBLGVhyQPhZ3lqYuxa9F15bTK7gIWNMvc+dQisPTR7fB0IY6MJB8xwanBnRIjdQp98
+         DvYwG+xVcmyDlT9AZaQmyWeNNGQ+jho7nW2xr5qg=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     John Wang <wangzhiqiang.bj@bytedance.com>
+Cc:     Lotus Xu <xuxiaohan@bytedance.com>,
+        =?utf-8?B?6YOB6Zu3?= <yulei.sh@bytedance.com>,
+        Oskar Senft <osk@google.com>,
+        Yong Li <yong.b.li@linux.intel.com>,
+        Vernon Mauery <vernon.mauery@linux.intel.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH 1/3] misc: aspeed: Add Aspeed UART routing
+ control driver.
+Message-ID: <X9H4r3XZynGtSDw0@kroah.com>
+References: <20201210092853.303-1-wangzhiqiang.bj@bytedance.com>
+ <X9HtwHo8s6e2UsAT@kroah.com>
+ <CAH0XSJt3=XJ_gQb2rTvbUcbyow2k7E4jfuKGKAKdi+nwdfauVw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201129110803.2461700-1-daniel@0x0f.com> <20201129110803.2461700-4-daniel@0x0f.com>
- <CAK8P3a2DGLfkOEm3JeXN-jWvDfxberaXXqOtu4wKdtYzqDWiNQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a2DGLfkOEm3JeXN-jWvDfxberaXXqOtu4wKdtYzqDWiNQ@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Thu, 10 Dec 2020 19:29:09 +0900
-Message-ID: <CAFr9PX=fhKiZF80iKaGeBWOONm3VpwtzgbB+yBHk8MHdTotaHg@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] gpio: msc313: MStar MSC313 GPIO driver
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     SoC Team <soc@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>, Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAH0XSJt3=XJ_gQb2rTvbUcbyow2k7E4jfuKGKAKdi+nwdfauVw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Thu, Dec 10, 2020 at 06:06:59PM +0800, John Wang wrote:
+> On Thu, Dec 10, 2020 at 5:42 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Dec 10, 2020 at 05:28:53PM +0800, John Wang wrote:
+> > > From: Oskar Senft <osk@google.com>
+> > >
+> > > This driver adds sysfs files that allow the BMC userspace to configure
+> > > how UARTs and physical serial I/O ports are routed.
+> > >
+> > > Tested: Checked correct behavior (both read & write) on TYAN S7106
+> > > board by manually changing routing settings and confirming that bits
+> > > flow as expected. Tested for UART1 and UART3 as this board doesn't have
+> > > the other UARTs wired up in a testable way.
+> > >
+> > > Signed-off-by: Oskar Senft <osk@google.com>
+> > > Signed-off-by: Yong Li <yong.b.li@linux.intel.com>
+> > > Signed-off-by: Vernon Mauery <vernon.mauery@linux.intel.com>
+> > > Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
+> > > ---
+> > >  .../stable/sysfs-driver-aspeed-uart-routing   |  14 +
+> > >  .../misc-devices/aspeed-uart-routing.txt      |  49 +++
+> > >  drivers/misc/Kconfig                          |   6 +
+> > >  drivers/misc/Makefile                         |   1 +
+> > >  drivers/misc/aspeed-uart-routing.c            | 383 ++++++++++++++++++
+> > >  5 files changed, 453 insertions(+)
+> > >  create mode 100644 Documentation/ABI/stable/sysfs-driver-aspeed-uart-routing
+> > >  create mode 100644 Documentation/misc-devices/aspeed-uart-routing.txt
+> > >  create mode 100644 drivers/misc/aspeed-uart-routing.c
+> > >
+> > > diff --git a/Documentation/ABI/stable/sysfs-driver-aspeed-uart-routing b/Documentation/ABI/stable/sysfs-driver-aspeed-uart-routing
+> > > new file mode 100644
+> > > index 000000000000..5068737d9c12
+> > > --- /dev/null
+> > > +++ b/Documentation/ABI/stable/sysfs-driver-aspeed-uart-routing
+> > > @@ -0,0 +1,14 @@
+> > > +What:                /sys/bus/platform/drivers/aspeed-uart-routing/*/io*
+> > > +Date:                August 2018
+> > > +Contact:     Oskar Senft <osk@google.com>
+> > > +Description: Configures the input source for the specific physical
+> > > +             serial I/O port.
+> > > +Users:               OpenBMC.  Proposed changes should be mailed to
+> > > +             openbmc@lists.ozlabs.org
+> > > +
+> > > +What:                /sys/bus/platform/drivers/aspeed-uart-routing/*/uart*
+> > > +Date:                August 2018
+> > > +Contact:     Oskar Senft <osk@google.com>
+> > > +Description: Configures the input source for the specific UART.
+> > > +Users:               OpenBMC.  Proposed changes should be mailed to
+> > > +             openbmc@lists.ozlabs.org
+> > > diff --git a/Documentation/misc-devices/aspeed-uart-routing.txt b/Documentation/misc-devices/aspeed-uart-routing.txt
+> > > new file mode 100644
+> > > index 000000000000..cf1c2a466875
+> > > --- /dev/null
+> > > +++ b/Documentation/misc-devices/aspeed-uart-routing.txt
+> > > @@ -0,0 +1,49 @@
+> > > +Kernel driver aspeed-uart-routing
+> > > +=================================
+> > > +
+> > > +Supported chips:
+> > > +ASPEED AST2500/AST2600
+> > > +
+> > > +Author:
+> > > +Google LLC
+> > > +
+> > > +Description
+> > > +-----------
+> > > +
+> > > +The Aspeed AST2500/AST2600 allows to dynamically route the inputs for the
+> > > +built-in UARTS and physical serial I/O ports.
+> > > +
+> > > +This allows, for example, to connect the output of UART to another UART.
+> > > +This can be used to enable host<->BMC communication via UARTs, e.g. to allow
+> > > +access to the host's serial console.
+> > > +
+> > > +This driver is for the BMC side. The sysfs files allow the BMC userspace
+> > > +which owns the system configuration policy, to configure how UARTs and
+> > > +physical serial I/O ports are routed.
+> > > +
+> > > +The driver provides the following files in sysfs:
+> > > +uart1                Configure the input signal to UART1.
+> > > +uart2                Configure the input signal to UART2.
+> > > +uart3                Configure the input signal to UART3.
+> > > +uart4                Configure the input signal to UART4.
+> > > +uart5                Configure the input signal to UART5.
+> > > +io1          Configure the input signal to physical serial port 1.
+> > > +io2          Configure the input signal to physical serial port 2.
+> > > +io3          Configure the input signal to physical serial port 3.
+> > > +io4          Configure the input signal to physical serial port 4.
+> > > +io5          Configure the input signal to physical serial port 5.
+> > > +
+> > > +When read, each file shows the list of available options with the currently
+> > > +selected option marked by square brackets "[]". The list of available options
+> > > +depends on the selected file.
+> > > +
+> > > +Example:
+> > > +$ cat /sys/bus/platform/drivers/aspeed-uart-routing/*.uart_routing/uart1
+> > > +[io1] io2 io3 io4 uart2 uart3 uart4 io6
+> > > +
+> > > +In this case, UART1 gets its input signal from IO1 (physical serial port 1).
+> > > +
+> > > +$ echo -n "uart3" \
+> > > +  >/sys/bus/platform/drivers/aspeed-uart-routing/*.uart_routing/uart1
+> > > +$ cat /sys/bus/platform/drivers/aspeed-uart-routing/*.uart_routing/uart1
+> > > +io1 io2 io3 io4 uart2 [uart3] uart4 io6
+> >
+> > Are you sure there are no other ways to configure this type of thing,
+> > than to a driver-specific sysfs file?
+> 
+> I think this is good. but what's your suggestion?
 
-On Thu, 10 Dec 2020 at 06:58, Arnd Bergmann <arnd@kernel.org> wrote:
-> These seem to just be contiguous ranges, so I probably would have
-> suggested describing them as separate gpio controllers to avoid
-> all the complexity with the names. As Linus already merged the
-> driver into the gpio tree, I won't complain too much about it.
->
-> Maybe you can do that for the other chips though and have one
-> implementation that works for all others, leaving only the msc313
-> as the one with the extra complexity.
+I do not know, but isn't this normally handled in a dts file?  Why must
+it be done "on the fly" like this?
 
-I'll have a think about that. The other chips I'm aiming to support
-(the mercury5 ssc8336 and infinity2m ssd202) currently reuse most of
-the msc313 bits with a few extras for the differences.
-i.e. the ssc8336 reuses most of the tables for the msc313 with some
-additions. Adding new chips hasn't been too bad so far.
+> If I use a driver-specific sysfs and modify the code based on the
+> comments, is this a good direction to go?
 
-> > +#define MSC313_GPIO_CHIPDATA(_chip) \
-> > static const struct msc313_gpio_data _chip##_data = { \
-> > +       .names = _chip##_names, \
-> > +       .offsets = _chip##_offsets, \
-> > +       .num = ARRAY_SIZE(_chip##_offsets), \
-> > +}
->
-> > +#ifdef CONFIG_MACH_INFINITY
-> > +static const char * const msc313_names[] = {
-> > +       FUART_NAMES,
-> > +       SR_NAMES,
->
-> I would try to avoid the #ifdefs and the macros here, don't overthink
-> it. The macro really hurts readability with the ## concatenation
-> making it impossible to grep for where things are defined, and
-> the #ifdef means you get worse compile test coverage compared
-> to an if(IS_ENABLED()) check in the place where the identifiers
-> are actually used.
+That's what you are trying to do here, and is why I am objecting to it
+:)
 
-Ok. I was really just trying to enforce some sort of pattern there so
-that each chip that gets added follows the same convention.
+thanks,
 
-> Even better would be to completely avoid the lookup tables here,
-> and have one driver that is instantiated based on settings from
-> the DT.
-
-I did think about this and I did this with the clk mux driver I
-haven't pushed yet. In that case there is a random lump of registers
-with some muxes mixed into it so I decided to make the lump a syscon
-and then have a node for each clk mux in the lump and some properties
-for the muxes within. The driver is certainly less complex but the
-device tree is pretty unmanageable as there are probably 30 or more
-muxes.
-
-> > +static void msc313_gpio_set(struct gpio_chip *chip, unsigned int offset, int value)
-> > +{
-> > +       struct msc313_gpio *gpio = gpiochip_get_data(chip);
-> > +       u8 gpioreg = readb_relaxed(gpio->base + gpio->gpio_data->offsets[offset]);
-> > +
-> > +       if (value)
-> > +               gpioreg |= MSC313_GPIO_OUT;
-> > +       else
-> > +               gpioreg &= ~MSC313_GPIO_OUT;
-> > +
-> > +       writeb_relaxed(gpioreg, gpio->base + gpio->gpio_data->offsets[offset]);
-> > +}
->
-> It would be helpful here to replace all the readb_relaxed/writeb_relaxed()
-> with normal readb()/writeb(). Don't use _relaxed() unless there is a strong
-> reason why you have to do it, and if you do, explain it in a comment what
-> the reason is.
-
-The reason is that readb()/writeb() will invoke the heavy memory
-barrier even though it's not needed for peripheral registers.
-I guess it doesn't actually make all that much difference in reality.
-
-> > +static int msc313_gpio_direction_output(struct gpio_chip *chip, unsigned int offset, int value)
-> > +{
-> > +       struct msc313_gpio *gpio = gpiochip_get_data(chip);
-> > +       u8 gpioreg = readb_relaxed(gpio->base + gpio->gpio_data->offsets[offset]);
-> > +
-> > +       gpioreg &= ~MSC313_GPIO_OEN;
-> > +       if (value)
-> > +               gpioreg |= MSC313_GPIO_OUT;
-> > +       else
-> > +               gpioreg &= ~MSC313_GPIO_OUT;
-> > +       writeb_relaxed(gpioreg, gpio->base + gpio->gpio_data->offsets[offset]);
->
-> These look like they also need a spinlock to avoid races between concurrent
-> read-modify-write cycles on the same register.
-
-Noted. I'll fix this and the readb and send a patch at some point.
-
-> > +builtin_platform_driver(msc313_gpio_driver);
->
-> There is a trend to make all drivers optionally loadable modules these days.
-> Is there a reason this has to be built-in?
-
-This was discussed and I think Linus said it was ok.
-
-Thanks,
-
-Daniel
+greg k-h
