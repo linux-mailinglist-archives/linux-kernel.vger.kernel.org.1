@@ -2,174 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9199A2D6873
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E322D688B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393810AbgLJUQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 15:16:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        id S2390493AbgLJUT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 15:19:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393785AbgLJUPs (ORCPT
+        with ESMTP id S2390127AbgLJUTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 15:15:48 -0500
+        Thu, 10 Dec 2020 15:19:05 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23647C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 12:15:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F02C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 12:18:24 -0800 (PST)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607631305;
+        s=2020; t=1607631502;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5fN5ChdPk6fH90ggZf7w1lWtyXdKRHqfW7WHc/pgsVs=;
-        b=ckiewzsMmQUlBqMXgP4UCM+Np8mVHkkyuYZ55dFWcuWlHfyz/tgDeQPN8gOJwL71KCuDFp
-        bTEV0UcVcW+THBv5y7dJyw0M+kQ1Riyvqn9OxQr3zwaLOv+uShsKUCjirolVbrlSa85oom
-        iI6uU+J4mWFPa2hGzIZEAOuKh5iN+4FzvPkGUwZRJzd2A30gZdT6pTvBYw/wj4wJvz45Q9
-        4xL68/ICbZjy5ErILON+zndUZYGmqVaFb9ADzRqHWrpdGoR4T6W0smF9rTYGSgd1QHwNu0
-        XdkbiN6hBQ7XZ7qyI/o8e/Rwir0XY//nkekRFelqXb/XKTsF4qfFyF4RODMkvA==
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=XUizVUdSL7/vvz9vnbsjRE/PNIgtT8MGKEUbe5J8TUE=;
+        b=MGoaIX5wr0Wk1EYPMyH+jTczQw27FX/IVeMSX3IuccfsmLjJLQd2MNDirMU42EzEYUgXzm
+        e5uH0PsQL6yz5A9lTg+Y0CvsA/3XRV08v5XotV678mMs1GqTPmbAtWOpzAWwYQDx6v7lIy
+        bGcl9u7bCNOxK2+OLnCA/LsSji0Sc+08Ct5TIyoWU06EQ0muVkSnBB2pG1fCGlpb8cYSET
+        jK7EDqh7KUnPV/l4TJnoXx5wuKxlrL+3+js3cesjr2dyBuSlgf6VUT86JFHVwPFzWMprWk
+        oDBXtUBvYrRBf7z9xQtQ5V36gOlqCvmi10EcfDXOggc5x4j803Ky7PjmFFdZJA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607631305;
+        s=2020e; t=1607631503;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5fN5ChdPk6fH90ggZf7w1lWtyXdKRHqfW7WHc/pgsVs=;
-        b=7Sv15HRz9k3S0goiNVwWDAqqbLafPJHvp7i7jT+K4bNnOThCzVhK/tC1gQGefAlx4Qus9O
-        sPKSDB0EOeG3wDBg==
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, luto@kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware\, Inc." <pv-drivers@vmware.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: x86/ioapic: Cleanup the timer_works() irqflags mess
-In-Reply-To: <20201210111008.GB88655@C02TD0UTHF1T.local>
-References: <20201120114630.13552-1-jgross@suse.com> <20201120114630.13552-6-jgross@suse.com> <20201120115943.GD3021@hirez.programming.kicks-ass.net> <20201209181514.GA14235@C02TD0UTHF1T.local> <87tusuzu71.fsf@nanos.tec.linutronix.de> <20201210111008.GB88655@C02TD0UTHF1T.local>
-Date:   Thu, 10 Dec 2020 21:15:04 +0100
-Message-ID: <87k0tpju47.fsf@nanos.tec.linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=XUizVUdSL7/vvz9vnbsjRE/PNIgtT8MGKEUbe5J8TUE=;
+        b=MPcPa/cswxKxwawfDwlHHSEKPnJkYNA4/q03kCjjWZf8WTANSqEow9xo7vMyVpkbS/Yy8/
+        cnH3uok+l9dJkOAA==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Ming Lei <ming.lei@redhat.com>, Peter Xu <peterx@redhat.com>
+Subject: [PATCH] x86/apic/vector: Fix ordering in vector assignment
+Date:   Thu, 10 Dec 2020 21:18:22 +0100
+Message-ID: <87ft4djtyp.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark tripped over the creative irqflags handling in the IO-APIC timer
-delivery check which ends up doing:
+Prarit reported that depending on the affinity setting the
 
-        local_irq_save(flags);
-	local_irq_enable();
-        local_irq_restore(flags);
+ ' irq $N: Affinity broken due to vector space exhaustion.'
 
-which triggered a new consistency check he's working on required for
-replacing the POPF based restore with a conditional STI.
+message is showing up in dmesg, but the vector space on the CPUs in the
+affinity mask is definitely not exhausted.
 
-That code is a historical mess and none of this is needed. Make it
-straightforward use local_irq_disable()/enable() as that's all what is
-required. It is invoked from interrupt enabled code nowadays.
+Shung-Hsi provided traces and analysis which pinpoints the problem:
 
-Reported-by: Mark Rutland <mark.rutland@arm.com>
+The ordering of trying to assign an interrupt vector in
+assign_irq_vector_any_locked() is simply wrong if the interrupt data has a
+valid node assigned. It does:
+
+ 1) Try the intersection of affinity mask and node mask
+ 2) Try the node mask
+ 3) Try the full affinity mask
+ 4) Try the full online mask
+
+Obviously #2 and #3 are in the wrong order as the requested affinity
+mask has to take precedence.
+
+In the observed cases #1 failed because the affinity mask did not contain
+CPUs from node 0. That made it allocate a vector from node 0, thereby
+breaking affinity and emitting the misleading message.
+
+Revert the order of #2 and #3 so the full affinity mask without the node
+intersection is tried before actually affinity is broken.
+
+If no node is assigned then only the full affinity mask and if that fails
+the full online mask is tried.
+
+Fixes: d6ffc6ac83b1 ("x86/vector: Respect affinity mask in irq descriptor")
+Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Reported-by: Prarit Bhargava <prarit@redhat.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Mark Rutland <mark.rutland@arm.com>
+Tested-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: stable@vger.kernel.org
 ---
- arch/x86/kernel/apic/io_apic.c |   22 ++++++----------------
- 1 file changed, 6 insertions(+), 16 deletions(-)
+ arch/x86/kernel/apic/vector.c |   24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -1618,21 +1618,16 @@ static void __init delay_without_tsc(voi
- static int __init timer_irq_works(void)
- {
- 	unsigned long t1 = jiffies;
--	unsigned long flags;
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -273,20 +273,24 @@ static int assign_irq_vector_any_locked(
+ 	const struct cpumask *affmsk = irq_data_get_affinity_mask(irqd);
+ 	int node = irq_data_get_node(irqd);
  
- 	if (no_timer_check)
- 		return 1;
- 
--	local_save_flags(flags);
- 	local_irq_enable();
--
- 	if (boot_cpu_has(X86_FEATURE_TSC))
- 		delay_with_tsc();
- 	else
- 		delay_without_tsc();
- 
--	local_irq_restore(flags);
--
- 	/*
- 	 * Expect a few ticks at least, to be sure some possible
- 	 * glue logic does not lock up after one or two first
-@@ -1641,10 +1636,10 @@ static int __init timer_irq_works(void)
- 	 * least one tick may be lost due to delays.
- 	 */
- 
--	/* jiffies wrap? */
--	if (time_after(jiffies, t1 + 4))
--		return 1;
--	return 0;
-+	local_irq_disable();
+-	if (node == NUMA_NO_NODE)
+-		goto all;
+-	/* Try the intersection of @affmsk and node mask */
+-	cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
+-	if (!assign_vector_locked(irqd, vector_searchmask))
+-		return 0;
+-	/* Try the node mask */
+-	if (!assign_vector_locked(irqd, cpumask_of_node(node)))
+-		return 0;
+-all:
++	if (node != NUMA_NO_NODE) {
++		/* Try the intersection of @affmsk and node mask */
++		cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
++		if (!assign_vector_locked(irqd, vector_searchmask))
++			return 0;
++	}
 +
-+	/* Did jiffies advance? */
-+	return time_after(jiffies, t1 + 4);
+ 	/* Try the full affinity mask */
+ 	cpumask_and(vector_searchmask, affmsk, cpu_online_mask);
+ 	if (!assign_vector_locked(irqd, vector_searchmask))
+ 		return 0;
++
++	if (node != NUMA_NO_NODE) {
++		/* Try the node mask */
++		if (!assign_vector_locked(irqd, cpumask_of_node(node)))
++			return 0;
++	}
++
+ 	/* Try the full online mask */
+ 	return assign_vector_locked(irqd, cpu_online_mask);
  }
- 
- /*
-@@ -2117,13 +2112,12 @@ static inline void __init check_timer(vo
- 	struct irq_cfg *cfg = irqd_cfg(irq_data);
- 	int node = cpu_to_node(0);
- 	int apic1, pin1, apic2, pin2;
--	unsigned long flags;
- 	int no_pin1 = 0;
- 
- 	if (!global_clock_event)
- 		return;
- 
--	local_irq_save(flags);
-+	local_irq_disable();
- 
- 	/*
- 	 * get/set the timer IRQ vector:
-@@ -2191,7 +2185,6 @@ static inline void __init check_timer(vo
- 			goto out;
- 		}
- 		panic_if_irq_remap("timer doesn't work through Interrupt-remapped IO-APIC");
--		local_irq_disable();
- 		clear_IO_APIC_pin(apic1, pin1);
- 		if (!no_pin1)
- 			apic_printk(APIC_QUIET, KERN_ERR "..MP-BIOS bug: "
-@@ -2215,7 +2208,6 @@ static inline void __init check_timer(vo
- 		/*
- 		 * Cleanup, just in case ...
- 		 */
--		local_irq_disable();
- 		legacy_pic->mask(0);
- 		clear_IO_APIC_pin(apic2, pin2);
- 		apic_printk(APIC_QUIET, KERN_INFO "....... failed.\n");
-@@ -2232,7 +2224,6 @@ static inline void __init check_timer(vo
- 		apic_printk(APIC_QUIET, KERN_INFO "..... works.\n");
- 		goto out;
- 	}
--	local_irq_disable();
- 	legacy_pic->mask(0);
- 	apic_write(APIC_LVT0, APIC_LVT_MASKED | APIC_DM_FIXED | cfg->vector);
- 	apic_printk(APIC_QUIET, KERN_INFO "..... failed.\n");
-@@ -2251,7 +2242,6 @@ static inline void __init check_timer(vo
- 		apic_printk(APIC_QUIET, KERN_INFO "..... works.\n");
- 		goto out;
- 	}
--	local_irq_disable();
- 	apic_printk(APIC_QUIET, KERN_INFO "..... failed :(.\n");
- 	if (apic_is_x2apic_enabled())
- 		apic_printk(APIC_QUIET, KERN_INFO
-@@ -2260,7 +2250,7 @@ static inline void __init check_timer(vo
- 	panic("IO-APIC + timer doesn't work!  Boot with apic=debug and send a "
- 		"report.  Then try booting with the 'noapic' option.\n");
- out:
--	local_irq_restore(flags);
-+	local_irq_enable();
- }
- 
- /*
