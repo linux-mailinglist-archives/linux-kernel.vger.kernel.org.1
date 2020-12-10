@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7FE2D512F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFFE2D5134
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728869AbgLJDOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 22:14:34 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8974 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgLJDOe (ORCPT
+        id S1729013AbgLJDQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:16:02 -0500
+Received: from mo-csw1516.securemx.jp ([210.130.202.155]:47784 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728657AbgLJDQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 22:14:34 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CrzWg1lz1zhq4w;
-        Thu, 10 Dec 2020 11:13:19 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.9) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 10 Dec 2020 11:13:34 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Darshak Patel <darshak.patel@einfochips.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "Dong Aisheng" <aisheng.dong@nxp.com>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
+        Wed, 9 Dec 2020 22:16:01 -0500
+Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 0BA3Df8W011928; Thu, 10 Dec 2020 12:13:41 +0900
+X-Iguazu-Qid: 34tr90iprcJokcJh9V
+X-Iguazu-QSIG: v=2; s=0; t=1607570021; q=34tr90iprcJokcJh9V; m=ue1X5DO76l9Ed9NyhOcclSFO4L1NFOkSfjaiDpssMro=
+Received: from imx2.toshiba.co.jp (imx2.toshiba.co.jp [106.186.93.51])
+        by relay.securemx.jp (mx-mr1510) id 0BA3DegK018871;
+        Thu, 10 Dec 2020 12:13:40 +0900
+Received: from enc01.toshiba.co.jp ([106.186.93.100])
+        by imx2.toshiba.co.jp  with ESMTP id 0BA3DeP4008733;
+        Thu, 10 Dec 2020 12:13:40 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 0BA3DeEm029454;
+        Thu, 10 Dec 2020 12:13:40 +0900
+From:   Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org,
         Linus Walleij <linus.walleij@linaro.org>,
-        "Lad Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Marian-Cristian Rotariu 
-        <marian-cristian.rotariu.rb@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH 1/1] dt-bindings: leds: add onboard LED triggers of 96Boards
-Date:   Thu, 10 Dec 2020 11:12:03 +0800
-Message-ID: <20201210031203.1901-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/4] dt-bindings: gpio: Add bindings for Toshiba Visconti GPIO Controller
+References: <20201201181406.2371881-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+        <20201201181406.2371881-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+        <87sg8n483w.fsf@kokedama.swc.toshiba.co.jp>
+        <20201209163945.GA570905@robh.at.kernel.org>
+Date:   Thu, 10 Dec 2020 12:13:33 +0900
+In-Reply-To: <20201209163945.GA570905@robh.at.kernel.org> (Rob Herring's
+        message of "Wed, 9 Dec 2020 10:39:45 -0600")
+X-TSB-HOP: ON
+Message-ID: <87sg8e2w0y.fsf@kokedama.swc.toshiba.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For all 96Boards, the following standard is used for onboard LEDs.
+Rob Herring <robh@kernel.org> writes:
 
-green:user1  default-trigger: heartbeat
-green:user2  default-trigger: mmc0/disk-activity(onboard-storage)
-green:user3  default-trigger: mmc1 (SD-card)
-green:user4  default-trigger: none, panic-indicator
-yellow:wlan  default-trigger: phy0tx
-blue:bt      default-trigger: hci0-power
+[...]
 
-Link to 96Boards CE Specification: https://linaro.co/ce-specification
+>> > +  gpio-ranges: true
+>> 
+>> I am not sure I have a good handle on the yaml schema definitions but
+>> "gpio-ranges" feels like it should be a list of ranges not a boolean.
+>> 
+>> Something like -
+>> 
+>>     gpio-ranges:
+>>       maxItems: 1
+>> 
+>> feels more appropriate.
+>> 
+>> I see both the usages in gpio bindings and for other range properties so
+>> maybe it's OK. I hope Rob or somebody more knowledgeable on this can
+>> clarify the usage.
+>
+> If you know how many (or a range) entries there are for gpio-ranges, 
+> then maxItems is good. If you don't, then 'gpio-ranges: true' is fine. 
+> That doesn't make the property a boolean, but just says the property can 
+> be present.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Cc: Darshak Patel <darshak.patel@einfochips.com>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Cc: Dong Aisheng <aisheng.dong@nxp.com>
-Cc: Guodong Xu <guodong.xu@linaro.org>
-Cc: Wei Xu <xuwei5@hisilicon.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Heiko Stuebner <heiko@sntech.de>
----
- Documentation/devicetree/bindings/leds/common.yaml | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Makes sense. Thanks for the explanation.
 
-diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
-index f1211e7045f12f3..525752d6c5c84fd 100644
---- a/Documentation/devicetree/bindings/leds/common.yaml
-+++ b/Documentation/devicetree/bindings/leds/common.yaml
-@@ -97,6 +97,16 @@ properties:
-         # LED alters the brightness for the specified duration with one software
-         # timer (requires "led-pattern" property)
-       - pattern
-+        #For all 96Boards, Green, disk-activity(onboard-storage)
-+      - mmc0
-+        #For all 96Boards, Green, SD-card
-+      - mmc1
-+        #For all 96Boards, Green, panic-indicator
-+      - none
-+        #For all 96Boards, Yellow, WiFi activity LED
-+      - phy0tx
-+        #For all 96Boards, Blue, Bluetooth activity LED
-+      - hci0-power
- 
-   led-pattern:
-     description: |
--- 
-1.8.3
-
+[...]
 
