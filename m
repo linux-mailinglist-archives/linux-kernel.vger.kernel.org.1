@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0207C2D5C1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158292D5C38
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389313AbgLJNlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:41:18 -0500
-Received: from smtprelay0062.hostedemail.com ([216.40.44.62]:42830 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389278AbgLJNlS (ORCPT
+        id S2388523AbgLJNrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:47:51 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:52439 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726253AbgLJNrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:41:18 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 612FA837F253;
-        Thu, 10 Dec 2020 13:40:37 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:2829:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4022:4321:5007:6119:7576:7903:10004:10400:10450:10455:10848:11232:11658:11914:12043:12295:12297:12740:12895:13019:13069:13095:13161:13229:13311:13357:13439:13846:13894:14096:14097:14180:14181:14659:14721:14777:19904:19999:21060:21080:21433:21627:21881:21939:30012:30026:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: help02_100b57b273f8
-X-Filterd-Recvd-Size: 2625
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 10 Dec 2020 13:40:36 +0000 (UTC)
-Message-ID: <8ee5b1f0eaec9c71066027e4e130d473fe6532d7.camel@perches.com>
-Subject: Re: checkpatch
-From:   Joe Perches <joe@perches.com>
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Thu, 10 Dec 2020 05:40:35 -0800
-In-Reply-To: <32a8677e1bcf4d69ba019bfcefc9ea59@AcuMS.aculab.com>
-References: <87zh2mzw3h.fsf@nanos.tec.linutronix.de>
-         <aea0efa93c17e431205eeb932a73efa7e21598a3.camel@perches.com>
-         <32a8677e1bcf4d69ba019bfcefc9ea59@AcuMS.aculab.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 10 Dec 2020 08:47:46 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id E2BA3EC4;
+        Thu, 10 Dec 2020 08:46:53 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 10 Dec 2020 08:46:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=xUPcbQNT0o/CK
+        S0rMi5Iv5Xji1UkV8zkkBcQWdsfXpY=; b=JMm31KUvz7mbDQ0boB7bou0KEzH3Q
+        PgsQy9GAKfAQMD+NjNairgVlTogOqHJjnGqDBOwycXJ7uY5sttSrckTs/X1m6w0m
+        Df3KubKJmlXKlxphjOU34C2Vv/lCq+DLweNjThcArLH94cgu4rGOUAietZXV55kl
+        Sd9KtpIUfwTm1ZyzbESo0+0jaSXG6F0s5NISKjZUNntHJSut8wN72DBvF2Obtb0h
+        ktBRDQZ/7/TzLeINAqOn7j1nzC3HQnEPiXqVp9/35QYtc7bmUTXQj76qVdsrv25V
+        DLyhpMGiQiII+f5XKTQj6S+KhjL5PRuGbhFsfsQ8IdVqQQum1vUcyIqgQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=xUPcbQNT0o/CKS0rMi5Iv5Xji1UkV8zkkBcQWdsfXpY=; b=mSvmhvww
+        3jLyyDHXeLC9oECwRdgfJCfrQPh4XFSyFweQ5u9E+4alfGZBGGWh0NOvh2g7aqbi
+        xSKWqBDj1orLZkFlYcq6NFRqg3KsRImcfoer7V11VgM+wR3MT1qZTZcEZR8dKwA5
+        XM4sTo4EiscX1eYFw8HBqnA6BjmNd2DqNskCsFBhxuF/M7jDoToSaPSKsP40reEm
+        u2FrTQBBojEjhfTSMbmTdT2mhd0iLmm7BxHQYUECDEyPYyXOQWx5xOik64RJz/9B
+        wNW74ba0rZRMdUhes2hO2HyCGItWPY/1tU4pvkI0X7yjkGeFnHA70B4Nsii/+Iut
+        YRQCaQ5Tf4sASg==
+X-ME-Sender: <xms:yybSX_j0e4yGW2dtTLl_q73iv_z3BqtIl72BUAxELajiGGeTdpF4_A>
+    <xme:yybSX8A5dFvyR5vgcEmj5jqqTDWfTcy8ZktXSmZKIxObJlUpNWV7-wvfySnIQK5sD
+    2vtnXgOAUdlHyky-I0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudektddgheeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
+    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:yybSX_FuvxD896r7flb3CVR6m2ytShP7CPii8l9wCUGyGz5dQbJVwA>
+    <xmx:yybSX8QuPqhLh74EJmLRXRSy41leD8sTULW-FHvcgbC91EGuBPVmuw>
+    <xmx:yybSX8zFcdFeTo-8DMTUjHmJoBMy4DscnTOqIxhLwB8xL2C2ZAa06A>
+    <xmx:zSbSX4DDaQpSR38Y6He26jGLlHI1ZUwdGvLSBl4nQ-n_U-Sfyqf1-UNNiOk>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 154541080059;
+        Thu, 10 Dec 2020 08:46:51 -0500 (EST)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>
+Cc:     Jason Cooper <jason@lakedaemon.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, linux-media@vger.kernel.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 01/15] irqchip: Allow to compile bcmstb on other platforms
+Date:   Thu, 10 Dec 2020 14:46:34 +0100
+Message-Id: <20201210134648.272857-2-maxime@cerno.tech>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201210134648.272857-1-maxime@cerno.tech>
+References: <20201210134648.272857-1-maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-10 at 09:34 +0000, David Laight wrote:
-> From: Joe Perches
-> > Sent: 10 December 2020 05:26
-> > 
-> > On Wed, 2020-12-09 at 19:13 +0100, Thomas Gleixner wrote:
-> > > Joe,
-> > 
-> > Hi Thomas.
-> > 
-> > > the below made it through my filters for some reason so I actually
-> > > looked and immediately wondered why checkpatch.pl did not identify this
-> > > as pure garbage.
-> > > 
-> > >  Original mail is here: lore.kernel.org/r/69cb540a-09d5-4956-b062-071ccded7090@web.de
-> > > 
-> > > Can you have a look please? Adding brackets in the middle of the code
-> > > for absolutely no reason is wrong to begin with and then not indenting
-> > > the enclosed code makes it even worse.
-> > 
-> > Well, maybe something like this, but there are probably some
-> > drawbacks with initializations.
-> 
-> Isn't the other likely problem where an extra code block
-> is being squeezed in after a case label without generating
-> a double-indent.
+The BCM2711 uses a number of instances of the bcmstb-l2 controller in its
+display engine. Let's allow the driver to be enabled through KConfig.
 
-Probably not.
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ drivers/irqchip/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-A common form for a case label with a brace is like the below
-where the code is indented.  There aren't many uses where the
-code for the case is at the same indent level as the case.
-
-	case foo:
-	{
-		definitions;
-		code;
-		break;
-	}
-
-Another puts the break at the same indent as the case.
-
-	case foo:
-	{
-		definitions;
-		code;
-	}
-	break;
-
-The other form that's used with case statements have the brace
-on the line with the case:
-
-	case foo: {
-		definitions;
-		code;
-		break;
-	}
-
-There are some uses where the open brace is on a separate
-line like the below, but checkpatch already emits a message
-like "open brace should be on the previous line" for it.
-Now another message will be emitted for the open brace.
-
-	switch (foo)
-	{
-	case bar:
-
-
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index c6098eee0c7c..f1e58de117dc 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -131,7 +131,7 @@ config BCM7120_L2_IRQ
+ 	select IRQ_DOMAIN
+ 
+ config BRCMSTB_L2_IRQ
+-	bool
++	bool "Broadcom STB L2 Interrupt Controller"
+ 	select GENERIC_IRQ_CHIP
+ 	select IRQ_DOMAIN
+ 
+-- 
+2.28.0
 
