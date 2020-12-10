@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0770A2D62E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6653D2D62F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390937AbgLJOfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:35:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41734 "EHLO mail.kernel.org"
+        id S2391024AbgLJRDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:03:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390743AbgLJOd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:33:27 -0500
+        id S2390901AbgLJOfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:35:33 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.19 20/39] dm writecache: fix the maximum number of arguments
-Date:   Thu, 10 Dec 2020 15:26:59 +0100
-Message-Id: <20201210142603.278587563@linuxfoundation.org>
+Subject: [PATCH 5.4 26/54] dm writecache: fix the maximum number of arguments
+Date:   Thu, 10 Dec 2020 15:27:03 +0100
+Message-Id: <20201210142603.314967115@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
-References: <20201210142602.272595094@linuxfoundation.org>
+In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
+References: <20201210142602.037095225@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,7 +51,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/md/dm-writecache.c
 +++ b/drivers/md/dm-writecache.c
-@@ -1883,7 +1883,7 @@ static int writecache_ctr(struct dm_targ
+@@ -1889,7 +1889,7 @@ static int writecache_ctr(struct dm_targ
  	struct wc_memory_superblock s;
  
  	static struct dm_arg _args[] = {
