@@ -2,134 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B232D6AD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 23:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597422D6AFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732863AbgLJWz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 17:55:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394102AbgLJWzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:55:06 -0500
-Date:   Thu, 10 Dec 2020 16:41:42 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607640103;
-        bh=brrBkbThDlKobOIvGd2AJf4m5XrAZvRVDrnJ3CikUlg=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=MVYN/35b7jjfp9xGI+3cM1WDZqW9kKnXHplFVNWQ9REzfWGCnO+P61ik8LdgjfCmN
-         oKk+/A7Q4smTgBJ2XG6eNurTP64twWFJPL/8F3d6Ahh+U4teuSzz/JxNUvbNaLHfRK
-         6CNm1cXU+cUZAYbGlpceWuu/f9L/9iboVuyowyrhT1qrsLnSoLLhdDuYK+4jWHBUwZ
-         lV6vl040gwbhQHR5IZ/c3jvwsOgzzY6oQgXsH5OBfZR3+mKvNMQnbyJppAj2W8LGeQ
-         40lKqv10zkD1TsmLkivSU7B1Mti/Imxl0LVEXe7ugYAQ1BY9jZ2ah4oXVkzLA8ii64
-         O/iw9YE1hhEQA==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Hedi Berriche <hedi.berriche@hpe.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sinan Kaya <okaya@kernel.org>,
-        Russ Anderson <rja@hpe.com>, Joerg Roedel <jroedel@suse.com>,
-        stable@kernel.org
-Subject: Re: [PATCH v4 1/1] PCI/ERR: don't clobber status after reset_link()
-Message-ID: <20201210224142.GA58424@bjorn-Precision-5520>
+        id S2388099AbgLJWbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 17:31:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394034AbgLJVYh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 16:24:37 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BCFC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:23:57 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id q10so3648921vsr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:23:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7mhjTRkoHG5wDB6hSuZ/aPIC7H/s0skSuoErD8uNBws=;
+        b=Mk0qsv8nQsIb+74vLlttYyB+sauWfKgHNsogJv1aie+18w0M3Qt7pPiZtt3aTWwfau
+         8SizigN8Zf9VFxFgSDbBcEAXw45HsRgJGbE6fmhqqt74pJM8FhSgNf3+hqNOw0DqMHiQ
+         riKNI5bvy+Az1UUENpaPsMTQNH9v/HcbODbcs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7mhjTRkoHG5wDB6hSuZ/aPIC7H/s0skSuoErD8uNBws=;
+        b=Fjcm9kDnDtjepOcVlrWJFWIr+41vz82vyF2VOSr+NqauQmaKH5tIyxdNhMOP6nR2UU
+         H0ZnGU3kV6v8t/uJkRn/riOmbwIVb6Jh4rcDyuU+qeR6uwipDOaF0QSzwn32BbjcjQkc
+         8KCNuHcF8BtRQRcIH6G/dljGHjX0TNj/tmnLRzSDQ+NcJn+zX5mirwinAIoH83jpUli9
+         StpOwVnZ/CBEnqjHR9ofVqROSN4c55pgYkrLcno7dh+e0uKb83MGKwA+9d71/OuALQVg
+         i71GASFv+dWsEGk8TpFXsnuz8rsJ+NGYHIIbQeNVs1Bl+KoAz+H2AyyNR6UE1875xDRM
+         cK2Q==
+X-Gm-Message-State: AOAM530XioxkWyE/CMlVD4cvhxjZ0ElXa3+I6QrRxhsiJbYblYywQ9lf
+        F33XWb7ysw5KwgMbRZgpzZHdNeM2gEwvNQ==
+X-Google-Smtp-Source: ABdhPJw6yJ6gez+56bBrd0lNwnu3OwYYnKGDCBhkEVBbui4YcqjYFm3/RM2/meX81h2iAP0MNaZqoQ==
+X-Received: by 2002:a67:2d8f:: with SMTP id t137mr11076486vst.28.1607635435976;
+        Thu, 10 Dec 2020 13:23:55 -0800 (PST)
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
+        by smtp.gmail.com with ESMTPSA id t127sm691653vka.3.2020.12.10.13.23.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 13:23:55 -0800 (PST)
+Received: by mail-vs1-f44.google.com with SMTP id v8so3677256vso.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:23:55 -0800 (PST)
+X-Received: by 2002:a67:70c6:: with SMTP id l189mr10697172vsc.34.1607635434758;
+ Thu, 10 Dec 2020 13:23:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102150951.149893-2-hedi.berriche@hpe.com>
+References: <20201210131913.v2.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
+In-Reply-To: <20201210131913.v2.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 10 Dec 2020 13:23:43 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=U5AvDR0mhaGH77QKTvPCAMH7fc5eCNFPcSqnSbrxKMhA@mail.gmail.com>
+Message-ID: <CAD=FV=U5AvDR0mhaGH77QKTvPCAMH7fc5eCNFPcSqnSbrxKMhA@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: sdhci-msm: Warn about overclocking SD/MMC
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 03:09:51PM +0000, Hedi Berriche wrote:
-> Commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-> broke pcie_do_recovery(): updating status after reset_link() has the ill
-> side effect of causing recovery to fail if the error status is
-> PCI_ERS_RESULT_CAN_RECOVER or PCI_ERS_RESULT_NEED_RESET as the following
-> code will *never* run in the case of a successful reset_link()
-> 
->    177         if (status == PCI_ERS_RESULT_CAN_RECOVER) {
->    ...
->    181         }
-> 
->    183         if (status == PCI_ERS_RESULT_NEED_RESET) {
->    ...
->    192         }
+Hi,
 
-The line numbers are basically useless because they depend on some
-particular version of the file.
-
-> For instance in the case of PCI_ERS_RESULT_NEED_RESET we end up not
-> calling ->slot_reset() (because we skip report_slot_reset()) thus
-> breaking driver (re)initialisation.
-> 
-> Don't clobber status with the return value of reset_link(); set status
-> to PCI_ERS_RESULT_RECOVERED, in case of successful link reset, if and
-> only if the initial value of error status is PCI_ERS_RESULT_DISCONNECT
-> or PCI_ERS_RESULT_NO_AER_DRIVER.
+On Thu, Dec 10, 2020 at 1:19 PM Douglas Anderson <dianders@chromium.org> wrote:
 >
-> Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-> Signed-off-by: Hedi Berriche <hedi.berriche@hpe.com>
-> 
-> Reviewed-by: Sinan Kaya <okaya@kernel.org>
-> Cc: Russ Anderson <rja@hpe.com>
-> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Ashok Raj <ashok.raj@intel.com>
-> Cc: Joerg Roedel <jroedel@suse.com>
-> 
-> Cc: stable@kernel.org # v5.7+
-> ---
->  drivers/pci/pcie/err.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index c543f419d8f9..2730826cfd8a 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -165,10 +165,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	pci_dbg(dev, "broadcast error_detected message\n");
->  	if (state == pci_channel_io_frozen) {
->  		pci_walk_bus(bus, report_frozen_detected, &status);
-> -		status = reset_link(dev);
-> -		if (status != PCI_ERS_RESULT_RECOVERED) {
-> +		if (reset_link(dev) != PCI_ERS_RESULT_RECOVERED) {
->  			pci_warn(dev, "link reset failed\n");
->  			goto failed;
-> +		} else {
-> +			if (status == PCI_ERS_RESULT_DISCONNECT ||
-> +			    status == PCI_ERS_RESULT_NO_AER_DRIVER)
-> +				status = PCI_ERS_RESULT_RECOVERED;
+> +               pr_warn("%s: Card appears overclocked; req %u Hz, actual %d Hz\n",
+> +                       mmc_hostname(host->mmc), clock, achieved_rate);
 
-This code (even before your patch) doesn't match
-Documentation/PCI/pci-error-recovery.rst very well.  The code handles
-pci_channel_io_frozen specially, but I don't think this is mentioned
-in the doc.
-
-The doc says we call ->error_detected() for all affected drivers.
-Then we're supposed to do a slot reset if any driver returned
-NEED_RESET.  But in fact, we always do a reset for the
-pci_channel_io_frozen case and never do one otherwise, regardless of
-what ->error_detected() returned.
-
-The doc says DISCONNECT means "Driver ... doesn't want to recover at
-all." Many drivers can return either NEED_RESET or DISCONNECT, and I
-assume they expect them to be handled differently.  But I'm not sure
-what DISCONNECT really means.  Do we reset the device?  Do we not
-attempt recovery at all?
-
-After your patch, if the reset_link() succeeded, we convert DISCONNECT
-and NO_AER_DRIVER to RECOVERED.  IIUC, that means we do exactly the
-same thing if the consensus of the ->error_detected() functions was
-RECOVERED, DISCONNECT, or NO_AER_DRIVER: we call reset_link() and
-continue with "status = PCI_ERS_RESULT_RECOVERED".
-
-(I'd reverse the sense of the "if (reset_link())" to make this easier
-to read)
-
->  		}
->  	} else {
->  		pci_walk_bus(bus, report_normal_detected, &status);
-> -- 
-> 2.28.0
-> 
+Ugh, multitasking too heavily.  Clearly this is wrong format codes...
+v3 coming shortly.  Sorry for the spam.
