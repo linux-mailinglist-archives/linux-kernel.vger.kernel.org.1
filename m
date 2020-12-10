@@ -2,24 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93212D5FC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B9A2D5FBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:32:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391422AbgLJOmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:42:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43556 "EHLO mail.kernel.org"
+        id S2391437AbgLJOmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:42:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390978AbgLJOgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:03 -0500
+        id S2390981AbgLJOgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:36:06 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shisong Qin <qinshisong1205@gmail.com>,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>
-Subject: [PATCH 5.4 36/54] speakup: Reject setting the speakup line discipline outside of speakup
-Date:   Thu, 10 Dec 2020 15:27:13 +0100
-Message-Id: <20201210142603.809322847@linuxfoundation.org>
+        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 5.4 37/54] i2c: imx: Fix reset of I2SR_IAL flag
+Date:   Thu, 10 Dec 2020 15:27:14 +0100
+Message-Id: <20201210142603.858475916@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
 References: <20201210142602.037095225@linuxfoundation.org>
@@ -31,93 +34,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+From: Christian Eggers <ceggers@arri.de>
 
-commit f0992098cadb4c9c6a00703b66cafe604e178fea upstream.
+commit 384a9565f70a876c2e78e58c5ca0bbf0547e4f6d upstream.
 
-Speakup exposing a line discipline allows userland to try to use it,
-while it is deemed to be useless, and thus uselessly exposes potential
-bugs. One of them is simply that in such a case if the line sends data,
-spk_ttyio_receive_buf2 is called and crashes since spk_ttyio_synth
-is NULL.
+According to the "VFxxx Controller Reference Manual" (and the comment
+block starting at line 97), Vybrid requires writing a one for clearing
+an interrupt flag. Syncing the method for clearing I2SR_IIF in
+i2c_imx_isr().
 
-This change restricts the use of the speakup line discipline to
-speakup drivers, thus avoiding such kind of issues altogether.
-
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Fixes: 4b775022f6fd ("i2c: imx: add struct to hold more configurable quirks")
+Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Cc: stable@vger.kernel.org
-Reported-by: Shisong Qin <qinshisong1205@gmail.com>
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
-Tested-by: Shisong Qin <qinshisong1205@gmail.com>
-Link: https://lore.kernel.org/r/20201129193523.hm3f6n5xrn6fiyyc@function
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-
 ---
- drivers/staging/speakup/spk_ttyio.c |   37 ++++++++++++++++++++++--------------
- 1 file changed, 23 insertions(+), 14 deletions(-)
+ drivers/i2c/busses/i2c-imx.c |   20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
---- a/drivers/staging/speakup/spk_ttyio.c
-+++ b/drivers/staging/speakup/spk_ttyio.c
-@@ -47,27 +47,20 @@ static int spk_ttyio_ldisc_open(struct t
+--- a/drivers/i2c/busses/i2c-imx.c
++++ b/drivers/i2c/busses/i2c-imx.c
+@@ -414,6 +414,19 @@ static void i2c_imx_dma_free(struct imx_
+ 	dma->chan_using = NULL;
+ }
+ 
++static void i2c_imx_clear_irq(struct imx_i2c_struct *i2c_imx, unsigned int bits)
++{
++	unsigned int temp;
++
++	/*
++	 * i2sr_clr_opcode is the value to clear all interrupts. Here we want to
++	 * clear only <bits>, so we write ~i2sr_clr_opcode with just <bits>
++	 * toggled. This is required because i.MX needs W0C and Vybrid uses W1C.
++	 */
++	temp = ~i2c_imx->hwdata->i2sr_clr_opcode ^ bits;
++	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
++}
++
+ static int i2c_imx_bus_busy(struct imx_i2c_struct *i2c_imx, int for_busy)
  {
- 	struct spk_ldisc_data *ldisc_data;
+ 	unsigned long orig_jiffies = jiffies;
+@@ -426,8 +439,7 @@ static int i2c_imx_bus_busy(struct imx_i
  
-+	if (tty != speakup_tty)
-+		/* Somebody tried to use this line discipline outside speakup */
-+		return -ENODEV;
-+
- 	if (!tty->ops->write)
- 		return -EOPNOTSUPP;
+ 		/* check for arbitration lost */
+ 		if (temp & I2SR_IAL) {
+-			temp &= ~I2SR_IAL;
+-			imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
++			i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
+ 			return -EAGAIN;
+ 		}
  
--	mutex_lock(&speakup_tty_mutex);
--	if (speakup_tty) {
--		mutex_unlock(&speakup_tty_mutex);
--		return -EBUSY;
--	}
--	speakup_tty = tty;
--
- 	ldisc_data = kmalloc(sizeof(struct spk_ldisc_data), GFP_KERNEL);
--	if (!ldisc_data) {
--		speakup_tty = NULL;
--		mutex_unlock(&speakup_tty_mutex);
-+	if (!ldisc_data)
- 		return -ENOMEM;
--	}
- 
- 	init_completion(&ldisc_data->completion);
- 	ldisc_data->buf_free = true;
--	speakup_tty->disc_data = ldisc_data;
--	mutex_unlock(&speakup_tty_mutex);
-+	tty->disc_data = ldisc_data;
- 
- 	return 0;
- }
-@@ -189,9 +182,25 @@ static int spk_ttyio_initialise_ldisc(st
- 
- 	tty_unlock(tty);
- 
-+	mutex_lock(&speakup_tty_mutex);
-+	speakup_tty = tty;
- 	ret = tty_set_ldisc(tty, N_SPEAKUP);
- 	if (ret)
--		pr_err("speakup: Failed to set N_SPEAKUP on tty\n");
-+		speakup_tty = NULL;
-+	mutex_unlock(&speakup_tty_mutex);
-+
-+	if (!ret)
-+		/* Success */
-+		return 0;
-+
-+	pr_err("speakup: Failed to set N_SPEAKUP on tty\n");
-+
-+	tty_lock(tty);
-+	if (tty->ops->close)
-+		tty->ops->close(tty, NULL);
-+	tty_unlock(tty);
-+
-+	tty_kclose(tty);
- 
- 	return ret;
- }
+@@ -599,9 +611,7 @@ static irqreturn_t i2c_imx_isr(int irq,
+ 	if (temp & I2SR_IIF) {
+ 		/* save status register */
+ 		i2c_imx->i2csr = temp;
+-		temp &= ~I2SR_IIF;
+-		temp |= (i2c_imx->hwdata->i2sr_clr_opcode & I2SR_IIF);
+-		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
++		i2c_imx_clear_irq(i2c_imx, I2SR_IIF);
+ 		wake_up(&i2c_imx->queue);
+ 		return IRQ_HANDLED;
+ 	}
 
 
