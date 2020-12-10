@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB942D5DDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C9D2D5E34
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390589AbgLJOct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:32:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38808 "EHLO mail.kernel.org"
+        id S2391464AbgLJOoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:44:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390454AbgLJOax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:30:53 -0500
+        id S2391049AbgLJOgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:36:53 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Luo Meng <luomeng12@huawei.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.9 44/45] Input: i8042 - fix error return code in i8042_setup_aux()
+        stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.4 21/54] s390/pci: fix CPU address in MSI for directed IRQ
 Date:   Thu, 10 Dec 2020 15:26:58 +0100
-Message-Id: <20201210142604.507748588@linuxfoundation.org>
+Message-Id: <20201210142603.083190701@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
-References: <20201210142602.361598591@linuxfoundation.org>
+In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
+References: <20201210142602.037095225@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,37 +33,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Meng <luomeng12@huawei.com>
+From: Alexander Gordeev <agordeev@linux.ibm.com>
 
-commit 855b69857830f8d918d715014f05e59a3f7491a0 upstream.
+commit a2bd4097b3ec242f4de4924db463a9c94530e03a upstream.
 
-Fix to return a negative error code from the error handling case
-instead of 0 in function i8042_setup_aux(), as done elsewhere in this
-function.
+The directed MSIs are delivered to CPUs whose address is
+written to the MSI message address. The current code assumes
+that a CPU logical number (as it is seen by the kernel)
+is also the CPU address.
 
-Fixes: f81134163fc7 ("Input: i8042 - use platform_driver_probe")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Luo Meng <luomeng12@huawei.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20201123133420.4071187-1-luomeng12@huawei.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+The above assumption is not correct, as the CPU address
+is rather the value returned by STAP instruction. That
+value does not necessarily match the kernel logical CPU
+number.
+
+Fixes: e979ce7bced2 ("s390/pci: provide support for CPU directed interrupts")
+Cc: <stable@vger.kernel.org> # v5.2+
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/input/serio/i8042.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/s390/pci/pci_irq.c |   14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
---- a/drivers/input/serio/i8042.c
-+++ b/drivers/input/serio/i8042.c
-@@ -1456,7 +1456,8 @@ static int __init i8042_setup_aux(void)
- 	if (error)
- 		goto err_free_ports;
+--- a/arch/s390/pci/pci_irq.c
++++ b/arch/s390/pci/pci_irq.c
+@@ -103,9 +103,10 @@ static int zpci_set_irq_affinity(struct
+ {
+ 	struct msi_desc *entry = irq_get_msi_desc(data->irq);
+ 	struct msi_msg msg = entry->msg;
++	int cpu_addr = smp_cpu_get_cpu_address(cpumask_first(dest));
  
--	if (aux_enable())
-+	error = aux_enable();
-+	if (error)
- 		goto err_free_irq;
+ 	msg.address_lo &= 0xff0000ff;
+-	msg.address_lo |= (cpumask_first(dest) << 8);
++	msg.address_lo |= (cpu_addr << 8);
+ 	pci_write_msi_msg(data->irq, &msg);
  
- 	i8042_aux_irq_registered = true;
+ 	return IRQ_SET_MASK_OK;
+@@ -238,6 +239,7 @@ int arch_setup_msi_irqs(struct pci_dev *
+ 	unsigned long bit;
+ 	struct msi_desc *msi;
+ 	struct msi_msg msg;
++	int cpu_addr;
+ 	int rc, irq;
+ 
+ 	zdev->aisb = -1UL;
+@@ -287,9 +289,15 @@ int arch_setup_msi_irqs(struct pci_dev *
+ 					 handle_percpu_irq);
+ 		msg.data = hwirq - bit;
+ 		if (irq_delivery == DIRECTED) {
++			if (msi->affinity)
++				cpu = cpumask_first(&msi->affinity->mask);
++			else
++				cpu = 0;
++			cpu_addr = smp_cpu_get_cpu_address(cpu);
++
+ 			msg.address_lo = zdev->msi_addr & 0xff0000ff;
+-			msg.address_lo |= msi->affinity ?
+-				(cpumask_first(&msi->affinity->mask) << 8) : 0;
++			msg.address_lo |= (cpu_addr << 8);
++
+ 			for_each_possible_cpu(cpu) {
+ 				airq_iv_set_data(zpci_ibv[cpu], hwirq, irq);
+ 			}
 
 
