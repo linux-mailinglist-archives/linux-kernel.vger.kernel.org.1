@@ -2,88 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C32B2D51D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD35F2D51DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:47:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731206AbgLJDpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 22:45:04 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9423 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729094AbgLJDoU (ORCPT
+        id S1731297AbgLJDp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:45:28 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:38104 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730376AbgLJDpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 22:44:20 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cs08x5ND2z7CB5;
-        Thu, 10 Dec 2020 11:42:09 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 10 Dec 2020 11:42:36 +0800
-From:   Huazhong Tan <tanhuazhong@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kuba@kernel.org>, <huangdaode@huawei.com>,
-        Guojia Liao <liaoguojia@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>
-Subject: [PATCH net-next 7/7] net: hns3: adjust rss tc mode configure command
-Date:   Thu, 10 Dec 2020 11:42:12 +0800
-Message-ID: <1607571732-24219-8-git-send-email-tanhuazhong@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607571732-24219-1-git-send-email-tanhuazhong@huawei.com>
-References: <1607571732-24219-1-git-send-email-tanhuazhong@huawei.com>
+        Wed, 9 Dec 2020 22:45:04 -0500
+Received: by mail-oi1-f196.google.com with SMTP id o25so4268856oie.5;
+        Wed, 09 Dec 2020 19:44:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fu6C4QffPD0sOdnGBmBWkf0xe4d39JgNdhCtih00fXk=;
+        b=PLO+crZpFANXZp/nHa1OWgkUZejGP1bxzLPZTjoBOjoGPkw6ZC9TGVkmB96+cW8ETE
+         MMwrVTQTV65h+JXYLxMuP7cyqxRypQntkMV1GL0a2gmBgeDPufem6UJ2GWPsyGAK+bh8
+         7DoH/XqwvhWfQa64LuM4PF2gyct0DSDwrmI32ocn9LJTsu1F1yu7sjqqUNfTha/8MP7S
+         viwrmgV8Yv1VfTS8Gu+fqwmghlgLZWN+kcBMjE69xoSLrPQZ8dQOmQ64R42Q7Z753/A7
+         J+w/Unf2RMLDjFtauMOCvolO7pppbqVt2vtrDPUfzMZE5X0uN4NVcdBml0Dyi+rxTUiH
+         zuDQ==
+X-Gm-Message-State: AOAM531kWbC2VgNux9ih/JcmByEl74oQXT4fs/BKAS75zgu53vh9jQnL
+        bleyqSdB0IF5RGh6FWb4iQ==
+X-Google-Smtp-Source: ABdhPJz3gT186xFD11r4/H87QdtT5az1qJBQ/iAVgeJQCgY0qz0QsLhzOiYonLwdos+BNGeEIzHy+Q==
+X-Received: by 2002:aca:d706:: with SMTP id o6mr4229937oig.28.1607571862751;
+        Wed, 09 Dec 2020 19:44:22 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f201sm536070oig.21.2020.12.09.19.44.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 19:44:21 -0800 (PST)
+Received: (nullmailer pid 1617044 invoked by uid 1000);
+        Thu, 10 Dec 2020 03:44:20 -0000
+Date:   Wed, 9 Dec 2020 21:44:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Nick Dyer <nick@shmanahar.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jiada Wang <jiada_wang@mentor.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] dt-bindings: input: atmel_mxt_ts: Document
+ atmel,wakeup-method and wake-GPIO
+Message-ID: <20201210034420.GA1615537@robh.at.kernel.org>
+References: <20201206212217.6857-1-digetx@gmail.com>
+ <20201206212217.6857-2-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201206212217.6857-2-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guojia Liao <liaoguojia@huawei.com>
+On Mon, Dec 07, 2020 at 12:22:15AM +0300, Dmitry Osipenko wrote:
+> Some Atmel touchscreen controllers have a WAKE line that needs to be
+> asserted low in order to wake up controller from a deep sleep. Document
+> the wakeup methods and the wake-GPIO properties.
 
-For the max rss size of PF may be up to 512, the max queue
-number of single tc may be up to 512 too. For the total queue
-numbers may be up to 1280, so the queue offset of each tc may
-be more than 1024. So adjust the rss tc mode configuration
-command, including extend tc size field from 10 bits to 11
-bits, and extend tc size field from 3 bits to 4 bits.
+wake-GPIO?
 
-Signed-off-by: Guojia Liao <liaoguojia@huawei.com>
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h  | 4 +++-
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 2 ++
- 2 files changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
-index a6c306b..edfadb5 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
-@@ -572,9 +572,11 @@ struct hclge_rss_indirection_table_cmd {
- };
- 
- #define HCLGE_RSS_TC_OFFSET_S		0
--#define HCLGE_RSS_TC_OFFSET_M		GENMASK(9, 0)
-+#define HCLGE_RSS_TC_OFFSET_M		GENMASK(10, 0)
-+#define HCLGE_RSS_TC_SIZE_MSB_B		11
- #define HCLGE_RSS_TC_SIZE_S		12
- #define HCLGE_RSS_TC_SIZE_M		GENMASK(14, 12)
-+#define HCLGE_RSS_TC_SIZE_MSB_OFFSET	3
- #define HCLGE_RSS_TC_VALID_B		15
- struct hclge_rss_tc_mode_cmd {
- 	__le16 rss_tc_mode[HCLGE_MAX_TC_NUM];
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 5de45a9..7a16411 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -4335,6 +4335,8 @@ static int hclge_set_rss_tc_mode(struct hclge_dev *hdev, u16 *tc_valid,
- 		hnae3_set_bit(mode, HCLGE_RSS_TC_VALID_B, (tc_valid[i] & 0x1));
- 		hnae3_set_field(mode, HCLGE_RSS_TC_SIZE_M,
- 				HCLGE_RSS_TC_SIZE_S, tc_size[i]);
-+		hnae3_set_bit(mode, HCLGE_RSS_TC_SIZE_MSB_B,
-+			      tc_size[i] >> HCLGE_RSS_TC_SIZE_MSB_OFFSET & 0x1);
- 		hnae3_set_field(mode, HCLGE_RSS_TC_OFFSET_M,
- 				HCLGE_RSS_TC_OFFSET_S, tc_offset[i]);
- 
--- 
-2.7.4
-
+> 
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../bindings/input/atmel,maxtouch.yaml        | 29 +++++++++++++++++++
+>  include/dt-bindings/input/atmel-maxtouch.h    | 10 +++++++
+>  2 files changed, 39 insertions(+)
+>  create mode 100644 include/dt-bindings/input/atmel-maxtouch.h
+> 
+> diff --git a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
+> index 8c6418f76e94..e6b03a1e7c30 100644
+> --- a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
+> +++ b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
+> @@ -39,6 +39,13 @@ properties:
+>        (active low). The line must be flagged with
+>        GPIO_ACTIVE_LOW.
+>  
+> +  wake-gpios:
+> +    maxItems: 1
+> +    description:
+> +      Optional GPIO specifier for the touchscreen's wake pin
+> +      (active low). The line must be flagged with
+> +      GPIO_ACTIVE_LOW.
+> +
+>    linux,gpio-keymap:
+>      $ref: /schemas/types.yaml#/definitions/uint32-array
+>      description: |
+> @@ -53,6 +60,26 @@ properties:
+>        or experiment to determine which bit corresponds to which input. Use
+>        KEY_RESERVED for unused padding values.
+>  
+> +  atmel,wakeup-method:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      The WAKE line is an active-low input that is used to wake up the touch
+> +      controller from deep-sleep mode before communication with the controller
+> +      could be started. This optional feature used to minimize current
+> +      consumption when the controller is in deep sleep mode. This feature is
+> +      relevant only to some controller families, like mXT1386 controller for
+> +      example.
+> +
+> +      The WAKE pin can be connected in one of the following ways:
+> +       1) left permanently low
+> +       2) connected to the I2C-compatible SCL pin
+> +       3) connected to a GPIO pin on the host
+> +    enum:
+> +      - 0 # ATMEL_MXT_WAKEUP_NONE
+> +      - 1 # ATMEL_MXT_WAKEUP_I2C_SCL
+> +      - 2 # ATMEL_MXT_WAKEUP_GPIO
+> +    default: 0
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -63,6 +90,7 @@ additionalProperties: false
+>  examples:
+>    - |
+>      #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/input/atmel-maxtouch.h>
+>      #include <dt-bindings/gpio/gpio.h>
+>      i2c {
+>        #address-cells = <1>;
+> @@ -75,6 +103,7 @@ examples:
+>          reset-gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
+>          vdda-supply = <&ab8500_ldo_aux2_reg>;
+>          vdd-supply = <&ab8500_ldo_aux5_reg>;
+> +        atmel,wakeup-method = <ATMEL_MXT_WAKEUP_I2C_SCL>;
+>        };
+>      };
+>  
+> diff --git a/include/dt-bindings/input/atmel-maxtouch.h b/include/dt-bindings/input/atmel-maxtouch.h
+> new file mode 100644
+> index 000000000000..7345ab32224d
+> --- /dev/null
+> +++ b/include/dt-bindings/input/atmel-maxtouch.h
+> @@ -0,0 +1,10 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
+> +
+> +#ifndef _DT_BINDINGS_ATMEL_MAXTOUCH_H
+> +#define _DT_BINDINGS_ATMEL_MAXTOUCH_H
+> +
+> +#define ATMEL_MXT_WAKEUP_NONE		0
+> +#define ATMEL_MXT_WAKEUP_I2C_SCL	1
+> +#define ATMEL_MXT_WAKEUP_GPIO		2
+> +
+> +#endif /* _DT_BINDINGS_ATMEL_MAXTOUCH_H */
+> -- 
+> 2.29.2
+> 
