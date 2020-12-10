@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC292D59BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DCC2D59C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732652AbgLJLvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:51:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729666AbgLJLuf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:50:35 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC97C061793;
-        Thu, 10 Dec 2020 03:49:52 -0800 (PST)
-Date:   Thu, 10 Dec 2020 11:49:50 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607600990;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=5GQN4mn1P1KL//i0g2/QPiHW8lyaRpwwOVoX1FdFmIs=;
-        b=c8ls0MzoO4vXCkToDHKsA6NxvgbmroowC+XSkrzj6lxWiq9qJFMc4spE0+G06DiiRgZoGg
-        SMbTKhS9b0MR1418uy20DPABiiLbzVbTpuVs0uKXJl0+kb2+uxrfPFH4sxxN4sJpvPX9mH
-        vUtJXFTTp9+BhDTNrH524EyYjQipDaQuZCQMJyKTrrMjzuQyy0hNs69OKRzAKgu2VgJ3tv
-        qbb91S4tRKTEZ7u/UXqLVcvVV6K0cLDTgzKZqRkMLPcMdkStr71igz0a26C5nHKI6OSbZb
-        K6RZxgn2xKR+fcdSEjdJjOngl0eRjOvmlKTQclie56CCopPWEctr7Uljfr/GEg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607600990;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=5GQN4mn1P1KL//i0g2/QPiHW8lyaRpwwOVoX1FdFmIs=;
-        b=ycQ7rLW96Tc00kW8e0emb+28UcY/WbhXR9QtTD+fSHKGeGGwDIZHpqKSZJU3WWoCH3sz1f
-        gBbr6xtefocmS1AA==
-From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/core] efi: capsule: use atomic kmap for transient sglist mappings
-Cc:     Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        id S1729666AbgLJLxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:53:51 -0500
+Received: from mga04.intel.com ([192.55.52.120]:22889 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733226AbgLJLwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:52:50 -0500
+IronPort-SDR: CSV6180jtXNBb7ErOeeEu1lhyWLVpubKc8t4y3CFzyS3jJXSV2eg9amV8LjlyJ2nx0shJQ07qu
+ BD92wE+v5vig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="171673554"
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="171673554"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 03:51:03 -0800
+IronPort-SDR: smss9TRyqk9rjDlWysbLjoMmrQKSkN4VY+r8UN7BPyuDObyS1jTYeBPN0+//UmVM1yuRVN33zu
+ dojUiUx3Pb1Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="438306781"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 10 Dec 2020 03:51:00 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 10 Dec 2020 13:50:59 +0200
+Date:   Thu, 10 Dec 2020 13:50:59 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        pmalani@chromium.org, enric.balletbo@collabora.com,
+        rajmohan.mani@intel.com, azhar.shaikh@intel.com
+Subject: Re: [PATCH v4 1/1] usb: typec: intel_pmc_mux: Configure cable
+ generation value for USB4
+Message-ID: <20201210115059.GB1594451@kuha.fi.intel.com>
+References: <20201209042408.23079-1-utkarsh.h.patel@intel.com>
+ <20201209042408.23079-2-utkarsh.h.patel@intel.com>
 MIME-Version: 1.0
-Message-ID: <160760099049.3364.7954271687064316032.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201209042408.23079-2-utkarsh.h.patel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the efi/core branch of tip:
+On Tue, Dec 08, 2020 at 08:24:08PM -0800, Utkarsh Patel wrote:
+> USB4 specification chapter 3 indicates that cable data rates have to be
+> rounded for USB4 device to operate as USB4.
+> With that configure cable generation value to use rounded data rates for
+> USB4.
+> 
+> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
 
-Commit-ID:     91c1c092f27da4164d55ca81e0a483108f8a3235
-Gitweb:        https://git.kernel.org/tip/91c1c092f27da4164d55ca81e0a483108f8a3235
-Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Mon, 07 Dec 2020 17:33:33 +01:00
-Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Mon, 07 Dec 2020 19:31:43 +01:00
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-efi: capsule: use atomic kmap for transient sglist mappings
+> ---
+> Changes in v4:
+> - Removed usage of tbt_mode_vdo since data rates should always be rounded
+>   in the case of USB4.
+> - Updated commit message to reflect the change.
+> 
+> Changes in v3:
+> - Moved TBT_CABLE_ROUNDED_SUPPORT assignment to the same line.
+> 
+> Changes in v2:
+> - No change.
+> ---
+>  drivers/usb/typec/mux/intel_pmc_mux.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
+> index e58ae8a7fefb..cf37a59ce130 100644
+> --- a/drivers/usb/typec/mux/intel_pmc_mux.c
+> +++ b/drivers/usb/typec/mux/intel_pmc_mux.c
+> @@ -327,6 +327,11 @@ pmc_usb_mux_usb4(struct pmc_usb_port *port, struct typec_mux_state *state)
+>  		fallthrough;
+>  	default:
+>  		req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE;
+> +
+> +		/* Configure data rate to rounded in the case of Active TBT3
+> +		 * and USB4 cables.
+> +		 */
+> +		req.mode_data |= PMC_USB_ALTMODE_TBT_GEN(1);
+>  		break;
+>  	}
+>  
+> -- 
+> 2.17.1
 
-Don't use the heavy-weight kmap() API to create short-lived mappings
-of the scatter-gather list entries that are released as soon as the
-entries are written. Instead, use kmap_atomic(), which is more suited
-to this purpose.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/firmware/efi/capsule.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/firmware/efi/capsule.c b/drivers/firmware/efi/capsule.c
-index 598b780..43f6fe7 100644
---- a/drivers/firmware/efi/capsule.c
-+++ b/drivers/firmware/efi/capsule.c
-@@ -244,7 +244,7 @@ int efi_capsule_update(efi_capsule_header_t *capsule, phys_addr_t *pages)
- 	for (i = 0; i < sg_count; i++) {
- 		efi_capsule_block_desc_t *sglist;
- 
--		sglist = kmap(sg_pages[i]);
-+		sglist = kmap_atomic(sg_pages[i]);
- 
- 		for (j = 0; j < SGLIST_PER_PAGE && count > 0; j++) {
- 			u64 sz = min_t(u64, imagesize,
-@@ -265,7 +265,7 @@ int efi_capsule_update(efi_capsule_header_t *capsule, phys_addr_t *pages)
- 		else
- 			sglist[j].data = page_to_phys(sg_pages[i + 1]);
- 
--		kunmap(sg_pages[i]);
-+		kunmap_atomic(sglist);
- 	}
- 
- 	mutex_lock(&capsule_mutex);
+-- 
+heikki
