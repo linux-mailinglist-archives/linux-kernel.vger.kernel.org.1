@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0842D5961
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBB92D597E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729743AbgLJLj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:39:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54458 "EHLO mx2.suse.de"
+        id S2388969AbgLJLlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:41:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43750 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgLJLj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:39:59 -0500
+        id S1725904AbgLJLlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:41:32 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A472DAE4A;
-        Thu, 10 Dec 2020 11:39:15 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C73AAAE2B;
+        Thu, 10 Dec 2020 11:40:49 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 11:36:07 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        tip-bot2 for Masami Hiramatsu <tip-bot2@linutronix.de>,
+        linux-tip-commits@vger.kernel.org,
+        syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>, x86@kernel.org
+Subject: Re: [tip: x86/urgent] x86/uprobes: Do not use prefixes.nbytes when
+ looping over prefixes.bytes
+Message-ID: <20201210103607.GA26633@zn.tnic>
+References: <160697103739.3146288.7437620795200799020.stgit@devnote2>
+ <160709424307.3364.5849503551045240938.tip-bot2@tip-bot2>
+ <20201205091256.14161a2e1606c527131efc06@kernel.org>
+ <20201205101704.GB26409@zn.tnic>
+ <20201206125325.d676906774c2329742746005@kernel.org>
+ <20201206090250.GA10741@zn.tnic>
+ <20201209180147.GD185686@kernel.org>
 MIME-Version: 1.0
-Date:   Thu, 10 Dec 2020 11:25:02 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v8 12/12] mm/hugetlb: Optimize the code with the help of
- the compiler
-In-Reply-To: <20201210035526.38938-13-songmuchun@bytedance.com>
-References: <20201210035526.38938-1-songmuchun@bytedance.com>
- <20201210035526.38938-13-songmuchun@bytedance.com>
-User-Agent: Roundcube Webmail
-Message-ID: <375d6bad6bb37e3626f71bfabc20b384@suse.de>
-X-Sender: osalvador@suse.de
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201209180147.GD185686@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-10 04:55, Muchun Song wrote:
-> We cannot optimize if a "struct page" crosses page boundaries. If
-> it is true, we can optimize the code with the help of a compiler.
-> When free_vmemmap_pages_per_hpage() returns zero, most functions are
-> optimized by the compiler.
+On Wed, Dec 09, 2020 at 03:01:47PM -0300, Arnaldo Carvalho de Melo wrote:
+> Trying to swap this back into my brain...
 
-As I said earlier, I would squash this patch with patch#10 and
-remove the !is_power_of_2 check in hugetlb_vmemmap_init and leave
-only the check for the boot parameter.
-That should be enough.
+I know *exactly* what you mean. :)
 
->  static inline bool is_hugetlb_free_vmemmap_enabled(void)
->  {
-> -	return hugetlb_free_vmemmap_enabled;
-> +	return hugetlb_free_vmemmap_enabled &&
-> +	       is_power_of_2(sizeof(struct page));
+> 
+> Humm, if I'm building this on, say, aarch64 then asm/ will not be
+> pointing to x86, right? Intel PT needs the x86 instruction decoder,
+> right?
 
-Why? hugetlb_free_vmemmap_enabled can only become true
-if the is_power_of_2 check succeeds in early_hugetlb_free_vmemmap_param.
-The "is_power_of_2" check here can go.
+Yeah.
 
-> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-> index 0a1c0d33a316..5f5e90c81cd2 100644
-> --- a/mm/hugetlb_vmemmap.h
-> +++ b/mm/hugetlb_vmemmap.h
-> @@ -21,7 +21,7 @@ void free_huge_page_vmemmap(struct hstate *h, struct
-> page *head);
->   */
->  static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate 
-> *h)
->  {
-> -	return h->nr_free_vmemmap_pages;
-> +	return h->nr_free_vmemmap_pages && is_power_of_2(sizeof(struct 
-> page));
+> I should've have wrote in the cset comment log if this was related to
+> cross build failures I encountered, can't remember now :-\
 
-If hugetlb_free_vmemmap_enabled is false, hugetlb_vmemmap_init() leaves
-h->nr_free_vmemmap_pages unset to 0, so no need for the is_power_of_2 
-check here.
+I think that is it. There's inat.h in tools/arch/x86/include/asm/ too so
+it needs to be exactly that one that gets included on other arches.
 
+> And also it would be interesting to avoid updating both the kernel and
+> the tools/ copy, otherwise one would have to test the tools build, which
+> may break with such updates.
+>
+> The whole point of the copy is to avoid that, otherwise we could just
+> use the kernel files directly.
+
+Well, there's this diff -u thing which makes sure both copies are in sync.
+
+Why did we ever copy the insn decoder to tools/?
+
+There must've been some reason because otherwise we could probably use
+the one in arch/x86/lib/, in tools/.
+
+Yeah, this whole copying of headers back'n'forth is turning out to be
+kinda hairy...
 
 -- 
-Oscar Salvador
-SUSE L3
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
