@@ -2,250 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F6F2D608B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2242D60AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391005AbgLJPyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:54:53 -0500
-Received: from mx4.veeam.com ([104.41.138.86]:36282 "EHLO mx4.veeam.com"
+        id S2391224AbgLJP6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:58:03 -0500
+Received: from mga01.intel.com ([192.55.52.88]:40076 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391972AbgLJPy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:54:29 -0500
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx4.veeam.com (Postfix) with ESMTPS id A6EE6B21AA;
-        Thu, 10 Dec 2020 18:53:44 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
-        t=1607615625; bh=3awHdxGKc6WUm7H6eoqHiaDYHJ/Q1xBn9eP28D3/mQQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=MMMjdzzWarHX14mrpOC28CzT7RnW55A+vlU8XVgQjIyzj3WLwnnvpXYBMKbuoHnea
-         KvRkIBtCwGeR1q2m5tga/Pdu8XEuD6WqWXJooHQc8gwtY+qxASNicg+Q26OnIUikM5
-         I/KTLtAfJMqg7UnDYhBs6W42qzBPG/f5QZwHurPE=
-Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Thu, 10 Dec 2020
- 16:53:43 +0100
-Date:   Thu, 10 Dec 2020 18:54:05 +0300
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Mike Snitzer <snitzer@redhat.com>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "hare@suse.de" <hare@suse.de>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pavel Tide <Pavel.TIde@veeam.com>
-Subject: Re: [PATCH 2/3] block: blk_interposer - sample
-Message-ID: <20201210155405.GB31521@veeam.com>
-References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
- <1607518911-30692-3-git-send-email-sergei.shtepa@veeam.com>
- <20201209143606.GA494@redhat.com>
+        id S2392075AbgLJP5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:57:34 -0500
+IronPort-SDR: DndN5pqvbd3zG+lfduwegh4JSuiBKEGDEHxe2HcAIoYnEpXvf9C4x7hHQ31v0QHh7jbPAyFyhE
+ R5iyHKpnlsZg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="192599474"
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="192599474"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 07:55:45 -0800
+IronPort-SDR: 3nkhWLCpQ6dAgMT9lORwAd8Jj7LQTaOWfcJOil6sKfSm0P33XjP5LeJlZlfS624xA3+aUm+ZjR
+ b2qpEZaQKnEQ==
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="319653427"
+Received: from mgorski-mobl.ger.corp.intel.com (HELO [10.213.11.242]) ([10.213.11.242])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 07:55:43 -0800
+Subject: Re: [PATCH] ASoC: Intel: Skylake: Check the kcontrol against NULL
+To:     Lukasz Majczak <lma@semihalf.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc:     Marcin Wojtas <mw@semihalf.com>,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        Alex Levin <levinale@google.com>,
+        Guenter Roeck <groeck@google.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20201210121438.7718-1-lma@semihalf.com>
+From:   "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>
+Message-ID: <43ecc9e6-3a86-6e7c-bb88-f87fbce0f51d@linux.intel.com>
+Date:   Thu, 10 Dec 2020 16:55:41 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20201209143606.GA494@redhat.com>
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx01.amust.local (172.24.0.171) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29C604D26A627064
-X-Veeam-MMEX: True
+In-Reply-To: <20201210121438.7718-1-lma@semihalf.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: pl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 12/09/2020 17:36, Mike Snitzer wrote:
-> On Wed, Dec 09 2020 at  8:01am -0500,
-> Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
-> 
-> > This sample demonstrates how to use blk_interposer.
-> > It show how to properly connect the interposer module to kernel,
-> > and perform the simplest monitoring of the number of bio.
-> > 
-> > Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
-> > ---
-> >  samples/blk_interposer/Makefile         |   2 +
-> >  samples/blk_interposer/blk-interposer.c | 276 ++++++++++++++++++++++++
-> >  2 files changed, 278 insertions(+)
-> >  create mode 100644 samples/blk_interposer/Makefile
-> >  create mode 100644 samples/blk_interposer/blk-interposer.c
-> > 
-> > diff --git a/samples/blk_interposer/Makefile b/samples/blk_interposer/Makefile
-> > new file mode 100644
-> > index 000000000000..b11aefde2b1c
-> > --- /dev/null
-> > +++ b/samples/blk_interposer/Makefile
-> > @@ -0,0 +1,2 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +obj-$(CONFIG_SAMPLE_BLK_INTERPOSER) += blk-interposer.o
-> > diff --git a/samples/blk_interposer/blk-interposer.c b/samples/blk_interposer/blk-interposer.c
-> > new file mode 100644
-> > index 000000000000..92b4c1fcf8f7
-> > --- /dev/null
-> > +++ b/samples/blk_interposer/blk-interposer.c
-> > @@ -0,0 +1,276 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +/*
-> > + * Block layer interposer allow to interpose bio requests from kernel module.
-> > + * This allows you to monitor requests, modify requests, add new request,
-> > + * or even redirect requests to another devices.
-> > + *
-> > + * This sample demonstrates how to use blk_interposer.
-> > + * It show how to properly connect the interposer module to kernel,
-> > + * and perform the simplest monitoring of the number of bio.
-> > + */
-> > +
-> > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> > +
-> > +#include <linux/module.h>
-> > +#include <linux/types.h>
-> > +#include <linux/errno.h>
-> > +#include <linux/blkdev.h>
-> > +#include <linux/genhd.h>
-> > +#include <linux/blk-mq.h>
-> > +
-> > +int device_major = 8;
-> > +int device_minor;
-> > +int fmode = FMODE_READ | FMODE_WRITE;
-> > +
-> > +/*
-> > + * Each interposer must have a common part in the form of the blk_interposer structure,
-> > + * as well as its own unique data.
-> > + */
-> > +struct my_interposer {
-> > +	/*
-> > +	 * Common part of block device interposer.
-> > +	 */
-> > +	struct blk_interposer interposer;
-> > +	/*
-> > +	 * Specific part for our interposer data.
-> > +	 */
-> > +	atomic_t counter;
-> > +};
-> > +
-> > +struct my_interposer my_ip;
-> > +
-> > +/**
-> > + * blk_interposer_attach - Attach interposer to disk
-> > + * @disk: target disk
-> > + * @interposer: block device interposer
-> > + */
-> > +static int blk_interposer_attach(struct gendisk *disk, struct blk_interposer *interposer)
-> > +{
-> > +	int ret = 0;
-> > +
-> > +	/*
-> > +	 * Stop disks queue processing.
-> > +	 */
-> > +	blk_mq_freeze_queue(disk->queue);
-> > +	blk_mq_quiesce_queue(disk->queue);
-> > +
-> > +	/*
-> > +	 * Check if the interposer is already busy.
-> > +	 * The interposer will only connect if it is not busy.
-> > +	 */
-> > +	if (blk_has_interposer(disk)) {
-> > +		pr_info("The interposer is already busy.\n");
-> > +		ret = -EBUSY;
-> > +		goto out;
-> > +	}
-> > +
-> > +	/*
-> > +	 * Attach the interposer.
-> > +	 */
-> > +	disk->interposer = interposer;
-> > +	/*
-> > +	 * And while the queue is stopped, we can do something specific for our module.
-> > +	 */
-> > +	pr_info("Block device interposer attached successfully.\n");
-> > +
-> > +out:
-> > +	/*
-> > +	 * Resume disks queue processing
-> > +	 */
-> > +	blk_mq_unquiesce_queue(disk->queue);
-> > +	blk_mq_unfreeze_queue(disk->queue);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +/**
-> > + * blk_interposer_detach - Detach interposer from disk
-> > + * @disk: target disk
-> > + * @interposer: block device interposer
-> > + */
-> > +static int blk_interposer_detach(struct gendisk *disk, struct blk_interposer *interposer)
-> > +{
-> > +	int ret = 0;
-> > +
-> > +	if (WARN_ON(!disk))
-> > +		return -EINVAL;
-> > +
-> > +	/*
-> > +	 * Stop disks queue processing.
-> > +	 */
-> > +	blk_mq_freeze_queue(disk->queue);
-> > +	blk_mq_quiesce_queue(disk->queue);
-> > +
-> > +	/*
-> > +	 * Check if the interposer is still available.
-> > +	 */
-> > +	if (!disk->interposer) {
-> > +		pr_info("The interposer is not available.\n");
-> > +		return -ENOENT;
-> > +		goto out;
-> > +	}
-> > +	/*
-> > +	 * Check if it is really our interposer.
-> > +	 */
-> > +	if (disk->interposer->ip_submit_bio != interposer->ip_submit_bio) {
-> > +		pr_info("The interposer found is not ours.\n");
-> > +		return -EPERM;
-> > +		goto out;
-> > +	}
-> > +
-> > +	/*
-> > +	 * Detach interposer.
-> > +	 */
-> > +	disk->interposer = NULL;
-> > +	/*
-> > +	 * And while the queue is stopped, we can do something specific for our module.
-> > +	 */
-> > +	pr_info("Block device interposer detached successfully.\n");
-> > +
-> > +out:
-> > +	/*
-> > +	 * Resume disks queue processing.
-> > +	 */
-> > +	blk_mq_unquiesce_queue(disk->queue);
-> > +	blk_mq_unfreeze_queue(disk->queue);
-> > +
-> > +	return ret;
-> > +}
-> 
-> This attach and detach code needs to be elevated out of samples so that
-> any future consumer of blk_interposer doesn't reinvent it.  It is far
-> too fundamental.
-> 
-> The way you've proposed this be merged is very much unacceptable.
-> 
-> Nacked-by: Mike Snitzer <snitzer@redhat.com>
-> 
-Yes, but on the other hand, while the queue is suspended, the module can perform
-some other actions specific to it.
 
-And since the functions blk_mq_freeze_queue(), blk_mq_quiesce_queue(),
-blk_mq_unquiesce_queue() and blk_mq_unfreeze_queue() are public,
-the module creator can implement its module connection functionality regardless of
-whether we make the functions blk_interposer_attach() and blk_interposer_detach()
-in the kernel or not.
+> There is no check for the kcontrol against NULL and in some cases
+> it causes kernel to crash.
+>
+> Fixes: 2d744ecf2b984 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHLT")
+> Cc: <stable@vger.kernel.org> # 5.4+
+> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+> ---
+>   sound/soc/intel/skylake/skl-topology.c | 14 ++++++++++----
+>   1 file changed, 10 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+> index ae466cd592922..c9abbe4ff0ba3 100644
+> --- a/sound/soc/intel/skylake/skl-topology.c
+> +++ b/sound/soc/intel/skylake/skl-topology.c
+> @@ -3618,12 +3618,18 @@ static void skl_tplg_complete(struct snd_soc_component *component)
+>   	int i;
+>   
+>   	list_for_each_entry(dobj, &component->dobj_list, list) {
+> -		struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
+> -		struct soc_enum *se =
+> -			(struct soc_enum *)kcontrol->private_value;
+> -		char **texts = dobj->control.dtexts;
+> +		struct snd_kcontrol *kcontrol;
+> +		struct soc_enum *se;
+> +		char **texts;
+>   		char chan_text[4];
+>   
+> +		kcontrol = dobj->control.kcontrol;
+> +		if(!kcontrol)
+> +			continue;
+> +
+> +		se = (struct soc_enum *)kcontrol->private_value;
+> +		texts = dobj->control.dtexts;
+> +
+>   		if (dobj->type != SND_SOC_DOBJ_ENUM ||
+>   		    dobj->control.kcontrol->put !=
+>   		    skl_tplg_multi_config_set_dmic)
+>
+> base-commit: 69fe63aa100220c8fd1f451dd54dd0895df1441d
 
-I'll think about it and try to come up with a better solution.
--- 
-Sergei Shtepa
-Veeam Software developer.
+
+Thanks for pointing out and fixing this. This check was obviously 
+missing there. I did a quick verification on few of our platforms, 
+encountered no issues, so:
+
+     Reviewed-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
+
+
+Also, could you please:
+
+- describe the affected configuration (used machine driver or audio card 
+name, device name),
+- share full dmesg logs from one of said crashes,
+- copy the output of "amixer -c0 controls" command executed on affected 
+device.
+
+These would be useful information for us to further improve our 
+validation and help us with debugging.
+
+
+Thanks,
+
+Mateusz
+
+
