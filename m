@@ -2,48 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513E22D5F97
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F012D5FB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391138AbgLJP0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:26:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43798 "EHLO mail.kernel.org"
+        id S2391766AbgLJP3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:29:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388345AbgLJP0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:26:41 -0500
-Date:   Thu, 10 Dec 2020 16:27:10 +0100
+        id S2391693AbgLJP25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:28:57 -0500
+Date:   Thu, 10 Dec 2020 16:29:31 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607613956;
-        bh=Z87RQdqpy2XtyEFtnNHNmScMTk7xWEhPFNzRQfi59Jo=;
+        s=korg; t=1607614097;
+        bh=u7q3rTPGTQ4dUgwP4cEe+JBQSe73GUlEF/YbcVC3h3c=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JfG1OQ67vXUAmcflpmV23jyB4Qbk4DTURf90ZMX6/7z+rNOuwKBE24AZ4XzdGHnx0
-         qmDf3LVQzoBtFGkhP7HDuWwBwVUGitDu0eqgq+mjxprfM3YhbdqClOTSAkr2Xu+YBT
-         CgPeCp5QtmCASkGbHxdbkhUETbxA+5o9i1cBPBwU=
+        b=Yz6kmUWz/BnO7gm3cVIocivjv5KDnSrNDdI8IldyDT2ta4Jm2gCZLwwAxVcneHpT/
+         BDtcTQrp4NGLiyqxGmihdKJrSZGKt3YKwZXOmxDE2r/z4bah+eXq+y0ARierYHBubD
+         UhCCnm13kW4jGKfaobg+dTz9cmcTAXd89uarDCpk=
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yanjun Zhang <zhang.yanjuna@h3c.com>
-Cc:     jirislaby@kernel.org, viro@zeniv.linux.org.uk,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] devpts: update the function comments about pty driver
-Message-ID: <X9I+TtS6dq1c33ZX@kroah.com>
-References: <20201209093405.28482-1-zhang.yanjuna@h3c.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     John Garry <john.garry@huawei.com>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, lenb@kernel.org, rjw@rjwysocki.net,
+        tglx@linutronix.de, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        linux-acpi@vger.kernel.org, dwagner@suse.de
+Subject: Re: [PATCH v5 4/5] Driver core: platform: Add
+ devm_platform_get_irqs_affinity()
+Message-ID: <X9I+2ydy8VDOaiec@kroah.com>
+References: <1606905417-183214-1-git-send-email-john.garry@huawei.com>
+ <1606905417-183214-5-git-send-email-john.garry@huawei.com>
+ <X9EYRNDXS1Xcy4iU@kroah.com>
+ <36730230-9fd7-8c6c-b997-328beea2fc31@huawei.com>
+ <X9Ehy28876ezAOLH@kroah.com>
+ <ed238cc6e4a6b865b2dc965f52fe0550@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209093405.28482-1-zhang.yanjuna@h3c.com>
+In-Reply-To: <ed238cc6e4a6b865b2dc965f52fe0550@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 05:34:05PM +0800, Yanjun Zhang wrote:
-> Update the function comments to match the code modified by 
-> commit 8ead9dd54716 ("devpts: more pty driver interface cleanups")
+On Wed, Dec 09, 2020 at 07:39:03PM +0000, Marc Zyngier wrote:
+> On 2020-12-09 19:13, Greg KH wrote:
+> > On Wed, Dec 09, 2020 at 07:04:02PM +0000, John Garry wrote:
+> > > On 09/12/2020 18:32, Greg KH wrote:
+> > > > On Wed, Dec 02, 2020 at 06:36:56PM +0800, John Garry wrote:
+> > > > > Drivers for multi-queue platform devices may also want managed interrupts
+> > > > > for handling HW queue completion interrupts, so add support.
+> > > >
+> > > 
+> > > Hi Greg,
+> > > 
+> > > > Why would a platform device want all of this?  Shouldn't such a device
+> > > > be on a "real" bus instead?
+> > > 
+> > > For this HW version, the device is on the system bus, directly
+> > > addressable
+> > > by the CPU.
+> > 
+> > What do you mean by "system bus"?
+> > 
+> > > Motivation is that I wanted to switch the HW completion queues to use
+> > > managed interrupts.
+> > 
+> > Fair enough, seems like overkill for a "platform" bus though :)
 > 
-> Signed-off-by: Yanjun Zhang <zhang.yanjuna@h3c.com>
-> ---
->  drivers/tty/pty.c    |  2 ++
->  drivers/tty/tty_io.c |  1 +
->  fs/devpts/inode.c    | 15 +++++++--------
->  3 files changed, 10 insertions(+), 8 deletions(-)
+> You should see the box, really... ;-)
 
-This patch fails to apply to the tree :(
+{sigh} why do hardware engineers ignore sane busses...
 
+Anyway, if you all are going to maintain this, no objection from me, it
+should go through the irq tree.
+
+thanks,
+
+greg k-h
