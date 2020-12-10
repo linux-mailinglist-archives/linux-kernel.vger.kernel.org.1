@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92F92D5710
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 827502D5724
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389092AbgLJJZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:25:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727356AbgLJJZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:25:56 -0500
-Date:   Thu, 10 Dec 2020 10:26:28 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607592315;
-        bh=KHGVsHMNI9pUexaEY9VJTdP9KZ7FbXACIh+y6JJQhrY=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c3Zv5LTemcEfNV4vGa3Q1rrWMKk9+lxCRdSpQf+9k4AyoZ3pk331wtu3xlJrdX3tg
-         gC/F6Iz0VEbN42qqzb6iPZFqOLvTm7VPucfpjy4wG9JiFKNU6Mi95q/KnO3gJ4yAze
-         HiKw8/2TIrqemuyqN4Cr0H+GcmuTVASOSN+wFMIs=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 00/17] Refactor fw_devlink to significantly improve
- boot time
-Message-ID: <X9HpxMOgzlCcVI7p@kroah.com>
-References: <20201121020232.908850-1-saravanak@google.com>
- <X9EUbji0tILG6PvX@kroah.com>
- <CAGETcx_5_=VKxbTddtG4u7p0yhCTdkr746fToPtPecEZcE1ncg@mail.gmail.com>
+        id S1732358AbgLJJ24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:28:56 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:37324 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726087AbgLJJ2x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 04:28:53 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UI810Cr_1607592488;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UI810Cr_1607592488)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 10 Dec 2020 17:28:08 +0800
+Subject: Re: [PATCH 00/11] mm: lru related cleanups
+To:     Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20201207220949.830352-1-yuzhao@google.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <54bdbe42-023a-4e32-9b94-173d0ad2dc16@linux.alibaba.com>
+Date:   Thu, 10 Dec 2020 17:28:08 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx_5_=VKxbTddtG4u7p0yhCTdkr746fToPtPecEZcE1ncg@mail.gmail.com>
+In-Reply-To: <20201207220949.830352-1-yuzhao@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 12:24:32PM -0800, Saravana Kannan wrote:
-> On Wed, Dec 9, 2020 at 10:15 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Nov 20, 2020 at 06:02:15PM -0800, Saravana Kannan wrote:
-> > > The current implementation of fw_devlink is very inefficient because it
-> > > tries to get away without creating fwnode links in the name of saving
-> > > memory usage. Past attempts to optimize runtime at the cost of memory
-> > > usage were blocked with request for data showing that the optimization
-> > > made significant improvement for real world scenarios.
-> > >
-> > > We have those scenarios now. There have been several reports of boot
-> > > time increase in the order of seconds in this thread [1]. Several OEMs
-> > > and SoC manufacturers have also privately reported significant
-> > > (350-400ms) increase in boot time due to all the parsing done by
-> > > fw_devlink.
-> > >
-> > > So this patch series refactors fw_devlink to be more efficient. The key
-> > > difference now is the addition of support for fwnode links -- just a few
-> > > simple APIs. This also allows most of the code to be moved out of
-> > > firmware specific (DT mostly) code into driver core.
-> > >
-> > > This brings the following benefits:
-> > > - Instead of parsing the device tree multiple times (complexity was
-> > >   close to O(N^3) where N in the number of properties) during bootup,
-> > >   fw_devlink parses each fwnode node/property only once and creates
-> > >   fwnode links. The rest of the fw_devlink code then just looks at these
-> > >   fwnode links to do rest of the work.
-> > >
-> > > - Makes it much easier to debug probe issue due to fw_devlink in the
-> > >   future. fw_devlink=on blocks the probing of devices if they depend on
-> > >   a device that hasn't been added yet. With this refactor, it'll be very
-> > >   easy to tell what that device is because we now have a reference to
-> > >   the fwnode of the device.
-> > >
-> > > - Much easier to add fw_devlink support to ACPI and other firmware
-> > >   types. A refactor to move the common bits from DT specific code to
-> > >   driver core was in my TODO list as a prerequisite to adding ACPI
-> > >   support to fw_devlink. This series gets that done.
-> > >
-> > > Laurent and Grygorii tested the v1 series and they saw boot time
-> > > improvment of about 12 seconds and 3 seconds, respectively.
-> >
-> > Now queued up to my tree.  Note, I had to hand-apply patches 13 and 16
-> > due to some reason (for 13, I have no idea, for 16 it was due to a
-> > previous patch applied to my tree that I cc:ed you on.)
-> >
-> > Verifying I got it all correct would be great :)
-> 
-> A quick diff of drivers/base/core.c between driver-core-testing and my
-> local tree doesn't show any major diff (only some unrelated comment
-> fixes). So, it looks fine.
-> 
-> The patch 13 conflict is probably due to having to rebase the v2
-> series on top of this:
-> https://lore.kernel.org/lkml/20201104205431.3795207-1-saravanak@google.com/
-> 
-> And looks like Patch 16 was handled fine.
+Hi Yu,
 
-Great, thanks for verifying!
+btw, after this patchset, to do cacheline alignment on each of lru lists
+are possible, so did you try that to see performance changes?
 
-greg k-h
+Thanks
+Alex
+
+在 2020/12/8 上午6:09, Yu Zhao 写道:
+> The cleanups are intended to reduce the verbosity in lru list
+> operations and make them less error-prone. A typical example
+> would be how the patches change __activate_page():
+> 
+>  static void __activate_page(struct page *page, struct lruvec *lruvec)
+>  {
+>  	if (!PageActive(page) && !PageUnevictable(page)) {
+> -		int lru = page_lru_base_type(page);
+>  		int nr_pages = thp_nr_pages(page);
+>  
+> -		del_page_from_lru_list(page, lruvec, lru);
+> +		del_page_from_lru_list(page, lruvec);
+>  		SetPageActive(page);
+> -		lru += LRU_ACTIVE;
+> -		add_page_to_lru_list(page, lruvec, lru);
+> +		add_page_to_lru_list(page, lruvec);
+>  		trace_mm_lru_activate(page);
+>  
+> There are a few more places like __activate_page() and they are
+> unnecessarily repetitive in terms of figuring out which list a page
+> should be added onto or deleted from. And with the duplicated code
+> removed, they are easier to read, IMO.
+> 
+> Patch 1 to 5 basically cover the above. Patch 6 and 7 make code more
+> robust by improving bug reporting. Patch 8, 9 and 10 take care of
+> some dangling helpers left in header files. Patch 11 isn't strictly a
+> clean-up patch, but it seems still relevant to include it here.
+> 
+> Yu Zhao (11):
+>   mm: use add_page_to_lru_list()
+>   mm: shuffle lru list addition and deletion functions
+>   mm: don't pass "enum lru_list" to lru list addition functions
+>   mm: don't pass "enum lru_list" to trace_mm_lru_insertion()
+>   mm: don't pass "enum lru_list" to del_page_from_lru_list()
+>   mm: add __clear_page_lru_flags() to replace page_off_lru()
+>   mm: VM_BUG_ON lru page flags
+>   mm: fold page_lru_base_type() into its sole caller
+>   mm: fold __update_lru_size() into its sole caller
+>   mm: make lruvec_lru_size() static
+>   mm: enlarge the "int nr_pages" parameter of update_lru_size()
+> 
+>  include/linux/memcontrol.h     |  10 +--
+>  include/linux/mm_inline.h      | 115 ++++++++++++++-------------------
+>  include/linux/mmzone.h         |   2 -
+>  include/linux/vmstat.h         |   6 +-
+>  include/trace/events/pagemap.h |  11 ++--
+>  mm/compaction.c                |   2 +-
+>  mm/memcontrol.c                |  10 +--
+>  mm/mlock.c                     |   3 +-
+>  mm/swap.c                      |  50 ++++++--------
+>  mm/vmscan.c                    |  21 ++----
+>  10 files changed, 91 insertions(+), 139 deletions(-)
+> 
