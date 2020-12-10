@@ -2,91 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001752D65D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8B92D65E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403994AbgLJTDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:03:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37120 "EHLO mail.kernel.org"
+        id S2404180AbgLJTFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:05:36 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:53870 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393240AbgLJTCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:02:49 -0500
-Date:   Thu, 10 Dec 2020 20:03:22 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607626928;
-        bh=ZfdBQzaSM47I/XuHSY08+0FnE40SdZU+Gk3omAhDuhg=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FCQFCwqxddKs23p50yHX0I5d/oS9HKBTYXcMQkfgSjLsRUE/4gpdLHNg5HMXAJ8l5
-         6mNhGt7PDZvlPCdBusW9x+6sEOZQ2xUdHV6dF5BBiAOBClStkJnfZzv+ElC2d/kdJa
-         nTpddsypJaZqKWSSCmKZVtMajVrhgtsWHpJ0AzFQ=
-From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
-Message-ID: <X9Jw+srprdT8tquZ@kroah.com>
-References: <20201210170443.GA17304@dincontrollerdev>
+        id S2390475AbgLJTFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 14:05:09 -0500
+Received: from zn.tnic (p200300ec2f0d410017205789a0fcbfc3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4100:1720:5789:a0fc:bfc3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F3E551EC053F;
+        Thu, 10 Dec 2020 20:04:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607627062;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=gBPo35cr755KDczL40MYpAmqwRmKAJRe1c7xYq33J+E=;
+        b=qaH6poEKPonLWEQR8dSSVUhcVQp8HX5X+7zLCsAuYOyuX33tUVqCTk3MxQfojd6F1VaC1w
+        99JB25O41VWYQU36R7/b2aTmdO3aAQK8gUEBGnd0nf0toosgPhOe4Sa/Dmkw9lyCUR49oc
+        eB5OL+xSPoWniIaFhKxwinEv3Os7kvw=
+Date:   Thu, 10 Dec 2020 20:04:18 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/reboot/quirks: Add Zotac ZBOX CI327 nano PCI reboot
+ quirk
+Message-ID: <20201210190418.GG26529@zn.tnic>
+References: <1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201210170443.GA17304@dincontrollerdev>
+In-Reply-To: <1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
-> This is a serial port driver for
-> Silicon Labs Si4455 Sub-GHz transciver.
+On Tue, Dec 01, 2020 at 12:39:57PM +0100, Heiner Kallweit wrote:
+> On this system the M.2 PCIe WiFi card isn't detected after reboot,
+> only after cold boot. reboot=pci fixes this behavior.
+> In [0] the same issue is described, although on another system and
+> with another Intel WiFi card. In case it's relevant, both systems
+> have Celeron CPU's.
+> The dicussion in [0] involved the PCI maintainer, and proposal was
+> to go with the PCI reboot quirk on affected systems until a more
+> generic fix is available.
 > 
-> Signed-off-by: József Horváth <info@ministro.hu>
-> ---
->  .../bindings/serial/silabs,si4455.yaml        |   53 +
->  MAINTAINERS                                   |    7 +
->  drivers/tty/serial/Kconfig                    |    8 +
->  drivers/tty/serial/Makefile                   |    1 +
->  drivers/tty/serial/si4455.c                   | 1235 +++++++++++++++++
->  drivers/tty/serial/si4455_api.h               |   56 +
+> [0] https://bugzilla.kernel.org/show_bug.cgi?id=202399
 
-First thing, a single .c file should not need a .h file.
+But this quirk is for your system only - the one in the bugzilla entry
+would need another one? Or?
 
-But then I looked at the .h file and see:
+Thx.
 
-> --- /dev/null
-> +++ b/drivers/tty/serial/si4455_api.h
-> @@ -0,0 +1,56 @@
-> +/* SPDX-License-Identifier: GPL-2.0
-> + *
-> + * Copyright (C) 2020 József Horváth <info@ministro.hu>
-> + *
-> + */
-> +#ifndef SI4455_API_H_
-> +#define SI4455_API_H_
-> +
-> +struct si4455_iocbuff {
-> +	uint32_t length;
-> +	uint8_t	data[4096];
+-- 
+Regards/Gruss,
+    Boris.
 
-If you do have an ioctl, use proper data types.  These are not the
-correct ones (hint, __u32 and __u8).
-
-> +};
-> +
-> +#define BASE_TTYIOC_PRIVATE		0xA0
-> +/* Set EZConfig.
-> + * After this ioctl call, the driver restarts the si4455,
-> + * then apply the new configuration and patch.
-> + */
-> +#define SI4455_IOC_SEZC		_IOW('T', \
-> +				     BASE_TTYIOC_PRIVATE + 0x01, \
-> +				     struct si4455_iocbuff)
-
-Why does a serial driver have private ioctls?  Please no, don't do that.
-Implement the basic serial driver first, and then we can talk about
-"custom" configurations and the like, using the correct apis.
-
-thanks,
-
-greg k-h
+https://people.kernel.org/tglx/notes-about-netiquette
