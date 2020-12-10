@@ -2,109 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1690D2D6375
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 228962D636F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392350AbgLJRZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:25:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:54690 "EHLO foss.arm.com"
+        id S2392282AbgLJRYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:24:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728969AbgLJRY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:24:29 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CEFC730E;
-        Thu, 10 Dec 2020 09:23:41 -0800 (PST)
-Received: from localhost (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F2EB3F66B;
-        Thu, 10 Dec 2020 09:23:41 -0800 (PST)
-Date:   Thu, 10 Dec 2020 17:23:40 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Mian Yousaf Kaukab <ykaukab@suse.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mian Yousaf Kaukab <yousaf.kaukab@suse.com>,
-        Len Brown <lenb@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Petr Cervinka <pcervinka@suse.com>
-Subject: Re: [PATCH 1/2] acpi: cppc: add cpufreq device
-Message-ID: <20201210172339.GA2828@arm.com>
-References: <20201210142139.20490-1-yousaf.kaukab@suse.com>
- <CAJZ5v0hWxLrXCS+X15hnLZ2enBsSJ0aEfnxK2kL+n9k4gkg17Q@mail.gmail.com>
- <20201210150417.GA24136@suse.de>
- <1916679.syIRshJoYJ@kreacher>
+        id S2391441AbgLJRY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 12:24:26 -0500
+Date:   Thu, 10 Dec 2020 09:23:43 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607621025;
+        bh=OMwkssHcKty+vlzemDTI48/lgSqmwlzZ/YXqxVTg4bA=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=taTDBWeFKykbXbevMBubrEKPlSoLeWeAy3gTI1wXDOgHRSw02CTTfmreMrSKKKi2w
+         itbIWalYWUD6ayXJiBwBC+Qf3U+pjwVy1D28G/XlADxnj22qyXjJmfhobC71TMaGr1
+         B8gGkWbJkv8W2d/Q/GnDyBYy1tMdpCT99kREMtu43WMLbcsf30HYdAJ8Qp4NijoCby
+         vzYhDq/BX4NmAM5To7eLNx6WztTpd/FzkPyEOiv308Ym3mqPlpK45j5MuRphVxIkIC
+         Nxye89qKSYKsY817ugNm/v4b4buNvh/AjqjReSFBvVplgxelDohHSiCv4yxLFU2rV3
+         KaecdzufOC2bQ==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH RFC] f2fs: compress: add compress_flag in struct
+ f2fs_comp_option
+Message-ID: <X9JZn2ELSZISEQpU@google.com>
+References: <20201210092020.66245-1-yuchao0@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1916679.syIRshJoYJ@kreacher>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201210092020.66245-1-yuchao0@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
-
-On Thursday 10 Dec 2020 at 17:55:56 (+0100), Rafael J. Wysocki wrote:
-> On Thursday, December 10, 2020 4:04:40 PM CET Mian Yousaf Kaukab wrote:
-> > On Thu, Dec 10, 2020 at 03:32:09PM +0100, Rafael J. Wysocki wrote:
-> > > On Thu, Dec 10, 2020 at 3:23 PM Mian Yousaf Kaukab
-> > > <yousaf.kaukab@suse.com> wrote:
-> > > >
-> > > > Convert cppc-cpufreq driver to a platform driver (done in a separate patch)
-> > > > and add cppc-cpufreq device when acpi_cppc_processor_probe() succeeds.
-> > > 
-> > > Honestly, I prefer to drop 28f06f770454 (along with its follower)
-> > > instead of making this change.
-> > > 
-> > Even if we revert 28f06f770454 there is still one more small issue that these
-> > patches fix. Currently, ACPI_PROCESSOR_DEVICE_HID is used to load cppc-cpufreq
-> > module. In case when CPPC is disabled, some cycles will be wasted in loading
-> > cppc-cpufreq module. The module will return error from the init call though
-> > so no memory is wasted.
-> > 
-> > After converting to platform-driver, cppc-cpufreq module will only be loaded
-> > when the platform-device is available.
+On 12/10, Chao Yu wrote:
+> Add a extra field compress_flag to get/set more compress option from/to
+> compressed inode.
 > 
-> Even so, that issue is low-impact AFAICS and may be addressed later and I'd
-> rather not let known breakage go into the mainline.
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
 > 
-> I'm going to do drop the problematic commit now and please work with Ionela
-> to produce a clean series of patches in the right order to avoid introducing
-> issues between them.
+> Daeho, Jaegeuk,
 > 
-
-The following commit will be easy to drop:
-a37afa60de38  cppc_cpufreq: optimise memory allocation for HW and NONE coordination (2 weeks ago)
-
-28f06f770454  will be more difficult to drop as it's embedded in the
-series, and removing that one will produce conflicts in the patches
-that follow it:
-
-f9f5baa8b2a8  ACPI: processor: fix NONE coordination for domain mapping failure (3 weeks ago)
-cdb4ae5de6f7  cppc_cpufreq: expose information on frequency domains (3 weeks ago)
-c783a4d94848  cppc_cpufreq: clarify support for coordination types (3 weeks ago)
-3bd412fb2c7f  cppc_cpufreq: use policy->cpu as driver of frequency setting (3 weeks ago)
-28f06f770454  cppc_cpufreq: replace per-cpu structures with lists (3 weeks ago)
-bb025fb6c276  cppc_cpufreq: simplify use of performance capabilities (3 weeks ago)
-48ad8dc94032  cppc_cpufreq: clean up cpu, cpu_num and cpunum variable use (3 weeks ago)
-63087265c288  cppc_cpufreq: fix misspelling, code style and readability issues (3 weeks ago)
-
-Let me know how you want to proceed and I can either send a replacement
-series or reverts with conflicts fixed.
-
-Also, if you want you can drop all 5 (all before and including 28f06f770454),
-and I can add them again in the series that fixes the problem that Yousaf
-reported.
-
-Thanks,
-Ionela.
-
-> If that is done timely enough, it may still be possible to push those patches
-> for 5.11-rc1.
+> Could you please check whether we could add this new field to struct
+> f2fs_comp_option? so we can expand to allow user to query/config more
+> options of compressed inode via new ioctl.
 > 
-> Thanks!
+> It needs to consider before original patches goes to merge window, let
+> me know you have other concerns.
+
+Chao, I think it'd hard to add this at time point, unless there's critical
+info that we need to set very urgently.
+
 > 
+>  fs/f2fs/file.c            | 1 +
+>  include/uapi/linux/f2fs.h | 1 +
+>  2 files changed, 2 insertions(+)
 > 
-> 
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 16ea10f2bcf5..fbf06311c88d 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -3965,6 +3965,7 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
+>  
+>  	option.algorithm = F2FS_I(inode)->i_compress_algorithm;
+>  	option.log_cluster_size = F2FS_I(inode)->i_log_cluster_size;
+> +	option.compress_flag = F2FS_I(inode)->i_compress_flag;
+>  
+>  	inode_unlock_shared(inode);
+>  
+> diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
+> index 352a822d4370..2b9c4c99ceee 100644
+> --- a/include/uapi/linux/f2fs.h
+> +++ b/include/uapi/linux/f2fs.h
+> @@ -93,6 +93,7 @@ struct f2fs_sectrim_range {
+>  struct f2fs_comp_option {
+>  	__u8 algorithm;
+>  	__u8 log_cluster_size;
+> +	__u16 compress_flag;
+>  };
+>  
+>  #endif /* _UAPI_LINUX_F2FS_H */
+> -- 
+> 2.29.2
