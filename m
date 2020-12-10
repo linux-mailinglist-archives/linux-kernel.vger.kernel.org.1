@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C9D2D5E34
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1B22D5E92
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391464AbgLJOoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:44:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44046 "EHLO mail.kernel.org"
+        id S2389743AbgLJOtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:49:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391049AbgLJOgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:53 -0500
+        id S2391259AbgLJOjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:39:55 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 5.4 21/54] s390/pci: fix CPU address in MSI for directed IRQ
-Date:   Thu, 10 Dec 2020 15:26:58 +0100
-Message-Id: <20201210142603.083190701@linuxfoundation.org>
+        stable@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: [PATCH 5.9 34/75] drm/omap: sdi: fix bridge enable/disable
+Date:   Thu, 10 Dec 2020 15:26:59 +0100
+Message-Id: <20201210142607.741521655@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,72 +33,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Gordeev <agordeev@linux.ibm.com>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
 
-commit a2bd4097b3ec242f4de4924db463a9c94530e03a upstream.
+commit fd4e788e971ce763e50762d7b1a0048992949dd0 upstream.
 
-The directed MSIs are delivered to CPUs whose address is
-written to the MSI message address. The current code assumes
-that a CPU logical number (as it is seen by the kernel)
-is also the CPU address.
+When the SDI output was converted to DRM bridge, the atomic versions of
+enable and disable funcs were used. This was not intended, as that would
+require implementing other atomic funcs too. This leads to:
 
-The above assumption is not correct, as the CPU address
-is rather the value returned by STAP instruction. That
-value does not necessarily match the kernel logical CPU
-number.
+WARNING: CPU: 0 PID: 18 at drivers/gpu/drm/drm_bridge.c:708 drm_atomic_helper_commit_modeset_enables+0x134/0x268
 
-Fixes: e979ce7bced2 ("s390/pci: provide support for CPU directed interrupts")
-Cc: <stable@vger.kernel.org> # v5.2+
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
-Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+and display not working.
+
+Fix this by using the legacy enable/disable funcs.
+
+Fixes: 8bef8a6d5da81b909a190822b96805a47348146f ("drm/omap: sdi: Register a drm_bridge")
+Reported-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Tested-by: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Tested-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: stable@vger.kernel.org # v5.7+
+Link: https://patchwork.freedesktop.org/patch/msgid/20201127085241.848461-1-tomi.valkeinen@ti.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/s390/pci/pci_irq.c |   14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/omapdrm/dss/sdi.c |   10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
---- a/arch/s390/pci/pci_irq.c
-+++ b/arch/s390/pci/pci_irq.c
-@@ -103,9 +103,10 @@ static int zpci_set_irq_affinity(struct
+--- a/drivers/gpu/drm/omapdrm/dss/sdi.c
++++ b/drivers/gpu/drm/omapdrm/dss/sdi.c
+@@ -195,8 +195,7 @@ static void sdi_bridge_mode_set(struct d
+ 	sdi->pixelclock = adjusted_mode->clock * 1000;
+ }
+ 
+-static void sdi_bridge_enable(struct drm_bridge *bridge,
+-			      struct drm_bridge_state *bridge_state)
++static void sdi_bridge_enable(struct drm_bridge *bridge)
  {
- 	struct msi_desc *entry = irq_get_msi_desc(data->irq);
- 	struct msi_msg msg = entry->msg;
-+	int cpu_addr = smp_cpu_get_cpu_address(cpumask_first(dest));
+ 	struct sdi_device *sdi = drm_bridge_to_sdi(bridge);
+ 	struct dispc_clock_info dispc_cinfo;
+@@ -259,8 +258,7 @@ err_get_dispc:
+ 	regulator_disable(sdi->vdds_sdi_reg);
+ }
  
- 	msg.address_lo &= 0xff0000ff;
--	msg.address_lo |= (cpumask_first(dest) << 8);
-+	msg.address_lo |= (cpu_addr << 8);
- 	pci_write_msi_msg(data->irq, &msg);
+-static void sdi_bridge_disable(struct drm_bridge *bridge,
+-			       struct drm_bridge_state *bridge_state)
++static void sdi_bridge_disable(struct drm_bridge *bridge)
+ {
+ 	struct sdi_device *sdi = drm_bridge_to_sdi(bridge);
  
- 	return IRQ_SET_MASK_OK;
-@@ -238,6 +239,7 @@ int arch_setup_msi_irqs(struct pci_dev *
- 	unsigned long bit;
- 	struct msi_desc *msi;
- 	struct msi_msg msg;
-+	int cpu_addr;
- 	int rc, irq;
+@@ -278,8 +276,8 @@ static const struct drm_bridge_funcs sdi
+ 	.mode_valid = sdi_bridge_mode_valid,
+ 	.mode_fixup = sdi_bridge_mode_fixup,
+ 	.mode_set = sdi_bridge_mode_set,
+-	.atomic_enable = sdi_bridge_enable,
+-	.atomic_disable = sdi_bridge_disable,
++	.enable = sdi_bridge_enable,
++	.disable = sdi_bridge_disable,
+ };
  
- 	zdev->aisb = -1UL;
-@@ -287,9 +289,15 @@ int arch_setup_msi_irqs(struct pci_dev *
- 					 handle_percpu_irq);
- 		msg.data = hwirq - bit;
- 		if (irq_delivery == DIRECTED) {
-+			if (msi->affinity)
-+				cpu = cpumask_first(&msi->affinity->mask);
-+			else
-+				cpu = 0;
-+			cpu_addr = smp_cpu_get_cpu_address(cpu);
-+
- 			msg.address_lo = zdev->msi_addr & 0xff0000ff;
--			msg.address_lo |= msi->affinity ?
--				(cpumask_first(&msi->affinity->mask) << 8) : 0;
-+			msg.address_lo |= (cpu_addr << 8);
-+
- 			for_each_possible_cpu(cpu) {
- 				airq_iv_set_data(zpci_ibv[cpu], hwirq, irq);
- 			}
+ static void sdi_bridge_init(struct sdi_device *sdi)
 
 
