@@ -2,119 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8192D53BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1D02D53C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:25:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733287AbgLJGWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:22:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726061AbgLJGWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:22:23 -0500
-Date:   Thu, 10 Dec 2020 07:21:32 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607581296;
-        bh=EBkD1Ctf5CppZSrk+VnScGGdvgMF40s0wsgBczCzH0I=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2JfcCjWZ4ci7MklmOhMfXkkvh+AE2HEzMvjWcS5ALQwodvt0u7UmrKNpzpIsbYi9S
-         JR7T09n0bRxTHqqagY4o1EX79DVOUK3TTtkw2cFol+pomm7YVmqY+NKu2qo9xKyVA3
-         GqZ4RZKEgx+WWG/sbw9zr8Rff8mAFVZTDB+/yHNs=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Yan.Gao" <gao.yanB@h3c.com>
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-        tian.xianting@h3c.com
-Subject: Re: [PATCH] [v2] tty: Protect disc_data in n_tty_close and
- n_tty_flush_buffer
-Message-ID: <X9G+bJSGQc6QIxLR@kroah.com>
-References: <20201210022507.30729-1-gao.yanB@h3c.com>
+        id S1733205AbgLJGXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:23:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733276AbgLJGWh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 01:22:37 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6CFC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 22:21:57 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id 131so3063158pfb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 22:21:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=NuismVZ4PrSdwp2DMCZD56Vg7x75UKlPw/nhIYGOfUM=;
+        b=DBUQSef+F/ShCuziTzEd++xuwZ+wWAMZvdB3xZmTKewyemy6cgS17H/Wbr0xXu4GuJ
+         R+hxiBaKYCg2Y2ue5XRgiILVM/01eT8WE1Ur2vuBrBgYibF15NmrHtee7l8vP3k5cN25
+         0/pm4l4AyiOZvu0D1ft0Jopz1WlU9B3oRzQmaVwErw5N4EtzDTABoM4YveBIkw3IIty1
+         bA7fY+AU5G5jNbdLM0EpO8S9S8QA3V1i+U3lFhr3+lxnVCbAm280k7S0cxiWLKXVpOsw
+         NevKR42PYd+fNErmQBGZblNqMruJlTgEfayTrDBLhoGth+D6+av+Ze21U8xj7HmHUenO
+         lNCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=NuismVZ4PrSdwp2DMCZD56Vg7x75UKlPw/nhIYGOfUM=;
+        b=goAQl+cWTWeNh71LWPZslOFCmYqZ01NmyRwXGPiEw1F4bj6SO5d1pYsH7RudV5IbQH
+         /6yZDsDe33gbff2s592hSI38mCggAJ/GvtFNOCON/DHpb7ZMEycYHOt+lVhXg7vhGImD
+         oQscjZPwpjrFuuGQQwwuao70pEWQ37Gvks+PWUYLvLsxWWqpeVBTTtlG76e9Uasmr727
+         fyek82KvyqN2+fUEoE/P6O9wWvTLXCyX4Pnp8CPWUkVlzljIzLRRuXo3r1LtJTByd4P9
+         EAC/M9oO7TbwKiTNFJUcriWLBzn6+PhUyloh6izlA1+bRLEkfjY77SBlOVMayUgWyhiN
+         R7iw==
+X-Gm-Message-State: AOAM530Tuy1l1HqFfIQ2ldZd4XsP9tPPgD2OrQSRSBAtbd1gbAnDtXNG
+        J3dfOlWrg136yvTTWDt1Gajx
+X-Google-Smtp-Source: ABdhPJyYrQ6chu6zPDYEq3yrD1lw04Ln2yRldRTh6g+qWim4T69F+f0ZVW0nJPnnTExkYFhg6SEHpg==
+X-Received: by 2002:a17:90b:3698:: with SMTP id mj24mr5739733pjb.149.1607581316615;
+        Wed, 09 Dec 2020 22:21:56 -0800 (PST)
+Received: from work ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id i2sm4588909pjd.21.2020.12.09.22.21.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 09 Dec 2020 22:21:56 -0800 (PST)
+Date:   Thu, 10 Dec 2020 11:51:47 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Darshak Patel <darshak.patel@einfochips.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Guodong Xu <guodong.xu@linaro.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Marian-Cristian Rotariu 
+        <marian-cristian.rotariu.rb@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>
+Subject: Re: [PATCH 1/1] dt-bindings: leds: add onboard LED triggers of
+ 96Boards
+Message-ID: <20201210062147.GA24867@work>
+References: <20201210031203.1901-1-thunder.leizhen@huawei.com>
+ <20201210033157.GA6466@thinkpad>
+ <704f703c-7ed9-6302-60df-7708d0633af0@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201210022507.30729-1-gao.yanB@h3c.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <704f703c-7ed9-6302-60df-7708d0633af0@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 10:25:07AM +0800, Yan.Gao wrote:
-> n_tty_flush_buffer can happen in parallel with n_tty_close that the
-> tty->disc_data will be set to NULL. n_tty_flush_buffer accesses
-> tty->disc_data, so we must prevent n_tty_close clear tty->disc_data
-> while n_tty_flush_buffer  has a non-NULL view of tty->disc_data.
+On Thu, Dec 10, 2020 at 02:14:57PM +0800, Leizhen (ThunderTown) wrote:
 > 
-> So we need to make sure that accesses to disc_data are atomic using
-> tty->termios_rwsem.
 > 
-> There is an example I meet:
-> When n_tty_flush_buffer accesses tty struct, the disc_data is right.
-> However, then reset_buffer_flags accesses tty->disc_data, disc_data
-> become NULL, So kernel crash when accesses tty->disc_data->real_tail.
-> I guess there could be another thread change tty->disc_data to NULL,
-> and during N_TTY line discipline, n_tty_close will set tty->disc_data
-> to be NULL. So use tty->termios_rwsem to protect disc_data between close
-> and flush_buffer.
+> On 2020/12/10 11:31, Manivannan Sadhasivam wrote:
+> > Hi,
+> > 
+> > On Thu, Dec 10, 2020 at 11:12:03AM +0800, Zhen Lei wrote:
+> >> For all 96Boards, the following standard is used for onboard LEDs.
+> >>
+> >> green:user1  default-trigger: heartbeat
+> >> green:user2  default-trigger: mmc0/disk-activity(onboard-storage)
+> >> green:user3  default-trigger: mmc1 (SD-card)
+> >> green:user4  default-trigger: none, panic-indicator
+> >> yellow:wlan  default-trigger: phy0tx
+> >> blue:bt      default-trigger: hci0-power
+> >>
+> >> Link to 96Boards CE Specification: https://linaro.co/ce-specification
+> >>
+> > 
+> > This is just a board configuration and there is absolutely no need to document
+> > this in common LED binding. But if your intention is to document the missing
+> No, I don't think so. The common just means the property linux,default-trigger
+> is common, but not it values. This can be proved by counter-proving：none of
+> the triggerrs currently defined in common.yaml is used by 96Boards.
 > 
-> IP: reset_buffer_flags+0x9/0xf0
-> PGD 0 P4D 0
-> Oops: 0002 [#1] SMP
-> CPU: 23 PID: 2087626 Comm: (agetty) Kdump: loaded Tainted: G
-> Hardware name: UNISINSIGHT X3036P-G3/ST01M2C7S, BIOS 2.00.13 01/11/2019
-> task: ffff9c4e9da71e80 task.stack: ffffb30cfe898000
-> RIP: 0010:reset_buffer_flags+0x9/0xf0
-> RSP: 0018:ffffb30cfe89bca8 EFLAGS: 00010246
-> RAX: ffff9c4e9da71e80 RBX: ffff9c368d1bac00 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: ffff9c4ea17b50f0 RDI: 0000000000000000
-> RBP: ffffb30cfe89bcc8 R08: 0000000000000100 R09: 0000000000000001
-> R10: 0000000000000001 R11: 0000000000000000 R12: ffff9c368d1bacc0
-> R13: ffff9c20cfd18428 R14: ffff9c4ea17b50f0 R15: ffff9c368d1bac00
-> FS:  00007f9fbbe97940(0000) GS:ffff9c375c740000(0000)
-> knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000002260 CR3: 0000002f72233003 CR4: 00000000007606e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
-> ? n_tty_flush_buffer+0x2a/0x60
-> tty_buffer_flush+0x76/0x90
-> tty_ldisc_flush+0x22/0x40
-> vt_ioctl+0x5a7/0x10b0
-> ? n_tty_ioctl_helper+0x27/0x110
-> tty_ioctl+0xef/0x8c0
-> do_vfs_ioctl+0xa7/0x5e0
-> ? __audit_syscall_entry+0xaf/0x100
-> ? syscall_trace_enter+0x1d0/0x2b0
-> SyS_ioctl+0x79/0x90
-> do_syscall_64+0x6c/0x1b0
-> entry_SYSCALL64_slow_path+0x25/0x25
-> 
-> n_tty_flush_buffer			--->tty->disc_data is OK
-> 	->reset_buffer_flags		 -->tty->disc_data is NULL
-> 
-> Signed-off-by: Yan.Gao <gao.yanB@h3c.com>
-> Reviewed-by: Xianting Tian <tian.xianting@h3c.com>
-> ---
->  drivers/tty/n_tty.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-> index 7e5e36315..e78124ce1 100644
-> --- a/drivers/tty/n_tty.c
-> +++ b/drivers/tty/n_tty.c
-> @@ -1892,8 +1892,10 @@ static void n_tty_close(struct tty_struct *tty)
->  	if (tty->link)
->  		n_tty_packet_mode_flush(tty);
->  
-> +	down_write(&tty->termios_rwsem);
->  	vfree(ldata);
->  	tty->disc_data = NULL;
-> +	up_write(&tty->termios_rwsem);
->  }
->  
->  /**
 
-So does this solve your problem in testing?  Do you have a reproducer
-for this problem?
+Right, but I was not happy with you mentioning 96Boards in the binding. Because
+the triggers are used in more platforms other than 96Boards and they are not
+specific to 96Boards. The documentation of triggers itself is fine.
 
-thanks,
+> > triggers, then you should look at the patch I submitted long ago.
+> 
+> I'm just trying to eliminate the warnings related to Hisilicon that YAML detected.
+> So I didn't pay attention to other missing triggers.
+> 
 
-greg k-h
+No worries :)
+
+> > 
+> > https://lore.kernel.org/patchwork/patch/1146359/
+> > 
+> > Maybe I should resubmit it again in YAML format. (thanks for reminding me :P)
+> 
+> Yes, I hope that you will resubmit it. After all, these false positives are
+> entirely due to YAML's failure to list all triggers. The DTS itself is fine.
+> 
+> By the way, the description of this patch I copied from your patch：
+> 953d9f390365 arm64: dts: rockchip: Add on-board LED support on rk3399-rock960
+> 
+> That's why I Cc to you.
+> 
+
+I've now submitted the patch. Please take a look!
+
+Thanks,
+Mani
+
+> > 
+> > Thanks,
+> > Mani
+> > 
+> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >> Cc: Darshak Patel <darshak.patel@einfochips.com>
+> >> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> >> Cc: Shawn Guo <shawnguo@kernel.org>
+> >> Cc: Dong Aisheng <aisheng.dong@nxp.com>
+> >> Cc: Guodong Xu <guodong.xu@linaro.org>
+> >> Cc: Wei Xu <xuwei5@hisilicon.com>
+> >> Cc: Linus Walleij <linus.walleij@linaro.org>
+> >> Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >> Cc: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> >> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> >> Cc: Heiko Stuebner <heiko@sntech.de>
+> >> ---
+> >>  Documentation/devicetree/bindings/leds/common.yaml | 10 ++++++++++
+> >>  1 file changed, 10 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
+> >> index f1211e7045f12f3..525752d6c5c84fd 100644
+> >> --- a/Documentation/devicetree/bindings/leds/common.yaml
+> >> +++ b/Documentation/devicetree/bindings/leds/common.yaml
+> >> @@ -97,6 +97,16 @@ properties:
+> >>          # LED alters the brightness for the specified duration with one software
+> >>          # timer (requires "led-pattern" property)
+> >>        - pattern
+> >> +        #For all 96Boards, Green, disk-activity(onboard-storage)
+> >> +      - mmc0
+> >> +        #For all 96Boards, Green, SD-card
+> >> +      - mmc1
+> >> +        #For all 96Boards, Green, panic-indicator
+> >> +      - none
+> >> +        #For all 96Boards, Yellow, WiFi activity LED
+> >> +      - phy0tx
+> >> +        #For all 96Boards, Blue, Bluetooth activity LED
+> >> +      - hci0-power
+> >>  
+> >>    led-pattern:
+> >>      description: |
+> >> -- 
+> >> 1.8.3
+> >>
+> >>
+> > 
+> > .
+> > 
+> 
