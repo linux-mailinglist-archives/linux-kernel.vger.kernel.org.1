@@ -2,188 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7092D6B9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DEF2D6B28
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390056AbgLJXKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:10:41 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:58838 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388035AbgLJWbQ (ORCPT
+        id S2405118AbgLJWbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 17:31:53 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:58222 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405122AbgLJWY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:31:16 -0500
-Date:   Thu, 10 Dec 2020 22:04:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607637874;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rt9QRnOtg+5ZrOtIegVhtf1b8NkMrLmsSF+RRgRYRwc=;
-        b=zyS23411np1EesNAPS3/0QkXqXbcLTNJ9bvRklWXJxmeaTVaUwlvRXUrvdYbScQsi38vMe
-        3AAX9eHRVmI4BMfugypp3km4HTry+Vcc1OrR6LHF99ZKDkLU1evXByuA4YEA20D2/XCSR/
-        b25zszoPCMDwiNf9Svxi0wicMuROYC/N0uvd6FnW7l4YYSDJcQQavHfv5yt225eK7wei2Z
-        z8KsDKFkCPMPQjQqnNJUif3YphrcnNVTivoBOQsH8dcoHNJ8qJQie3utrluZtFEuRd3EdL
-        yFE1rVEgovCkwWZJypL5lS5nqR/yVTuupCF91UotFb+q8XG26/gIIYIvp1fbFg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607637874;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rt9QRnOtg+5ZrOtIegVhtf1b8NkMrLmsSF+RRgRYRwc=;
-        b=GGzJsG+RrDcZh2nfb05i+etdJnUURH5vfMs0kbJY5ToeoGMgz4XtMd5vw3TwQWwmpJuW0b
-        uC/4nMx7S7bEz9CQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/ioapic: Cleanup the timer_works() irqflags mess
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <87k0tpju47.fsf@nanos.tec.linutronix.de>
-References: <87k0tpju47.fsf@nanos.tec.linutronix.de>
+        Thu, 10 Dec 2020 17:24:59 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7782620B717A;
+        Thu, 10 Dec 2020 14:14:21 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7782620B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607638462;
+        bh=n3rV1v0Ksy9472jn2PGaV3S3QfVFG8vBPEUCy9pnfAM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PzZd+5UU0YnBD2A1OxjzzeYLonjWSS3EKnu85df1paOvStDnESOdKHCOIigF4pRut
+         VLFDLu6khKqqhpRlqpYfkViVwVjVvBVH6CtVeo0DPL6ZsCTsO5AWCw4/0Jk/6rp/pb
+         ZIIor6KYn1JI/hc2oal+iTPDPv20YUbLr4g35f9Y=
+Date:   Thu, 10 Dec 2020 16:14:17 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
+        jmorris@namei.org, nramas@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Subject: Re: [PATCH v7 1/8] IMA: generalize keyring specific measurement
+ constructs
+Message-ID: <20201210221417.GF489768@sequoia>
+References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
+ <20201209194212.5131-2-tusharsu@linux.microsoft.com>
 MIME-Version: 1.0
-Message-ID: <160763787415.3364.14966268731529828798.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209194212.5131-2-tusharsu@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/apic branch of tip:
+On 2020-12-09 11:42:05, Tushar Sugandhi wrote:
+> IMA functions such as ima_match_keyring(), process_buffer_measurement(),
+> ima_match_policy() etc. handle data specific to keyrings. Currently,
+> these constructs are not generic to handle any func specific data.
+> This makes it harder to extend them without code duplication.
+> 
+> Refactor the keyring specific measurement constructs to be generic and
+> reusable in other measurement scenarios.
+> 
+> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
 
-Commit-ID:     058df195c23403f91acc028e39ca2ad599d0af52
-Gitweb:        https://git.kernel.org/tip/058df195c23403f91acc028e39ca2ad599d0af52
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 10 Dec 2020 21:15:04 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 10 Dec 2020 23:02:31 +01:00
+I've got a few code cleanup suggestions to ima_match_rule_data() below
+but the current patch is fine:
 
-x86/ioapic: Cleanup the timer_works() irqflags mess
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-Mark tripped over the creative irqflags handling in the IO-APIC timer
-delivery check which ends up doing:
+> ---
+>  security/integrity/ima/ima.h        |  6 ++--
+>  security/integrity/ima/ima_api.c    |  6 ++--
+>  security/integrity/ima/ima_main.c   |  6 ++--
+>  security/integrity/ima/ima_policy.c | 49 ++++++++++++++++++-----------
+>  4 files changed, 40 insertions(+), 27 deletions(-)
+> 
+> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+> index 8e8b1e3cb847..e5622ce8cbb1 100644
+> --- a/security/integrity/ima/ima.h
+> +++ b/security/integrity/ima/ima.h
+> @@ -256,7 +256,7 @@ static inline void ima_process_queued_keys(void) {}
+>  int ima_get_action(struct inode *inode, const struct cred *cred, u32 secid,
+>  		   int mask, enum ima_hooks func, int *pcr,
+>  		   struct ima_template_desc **template_desc,
+> -		   const char *keyring);
+> +		   const char *func_data);
+>  int ima_must_measure(struct inode *inode, int mask, enum ima_hooks func);
+>  int ima_collect_measurement(struct integrity_iint_cache *iint,
+>  			    struct file *file, void *buf, loff_t size,
+> @@ -268,7 +268,7 @@ void ima_store_measurement(struct integrity_iint_cache *iint, struct file *file,
+>  			   struct ima_template_desc *template_desc);
+>  void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>  				const char *eventname, enum ima_hooks func,
+> -				int pcr, const char *keyring);
+> +				int pcr, const char *func_data);
+>  void ima_audit_measurement(struct integrity_iint_cache *iint,
+>  			   const unsigned char *filename);
+>  int ima_alloc_init_template(struct ima_event_data *event_data,
+> @@ -284,7 +284,7 @@ const char *ima_d_path(const struct path *path, char **pathbuf, char *filename);
+>  int ima_match_policy(struct inode *inode, const struct cred *cred, u32 secid,
+>  		     enum ima_hooks func, int mask, int flags, int *pcr,
+>  		     struct ima_template_desc **template_desc,
+> -		     const char *keyring);
+> +		     const char *func_data);
+>  void ima_init_policy(void);
+>  void ima_update_policy(void);
+>  void ima_update_policy_flag(void);
+> diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
+> index 4f39fb93f278..af218babd198 100644
+> --- a/security/integrity/ima/ima_api.c
+> +++ b/security/integrity/ima/ima_api.c
+> @@ -170,7 +170,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
+>   * @func: caller identifier
+>   * @pcr: pointer filled in if matched measure policy sets pcr=
+>   * @template_desc: pointer filled in if matched measure policy sets template=
+> - * @keyring: keyring name used to determine the action
+> + * @func_data: private data specific to @func, can be NULL.
+>   *
+>   * The policy is defined in terms of keypairs:
+>   *		subj=, obj=, type=, func=, mask=, fsmagic=
+> @@ -186,14 +186,14 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
+>  int ima_get_action(struct inode *inode, const struct cred *cred, u32 secid,
+>  		   int mask, enum ima_hooks func, int *pcr,
+>  		   struct ima_template_desc **template_desc,
+> -		   const char *keyring)
+> +		   const char *func_data)
+>  {
+>  	int flags = IMA_MEASURE | IMA_AUDIT | IMA_APPRAISE | IMA_HASH;
+>  
+>  	flags &= ima_policy_flag;
+>  
+>  	return ima_match_policy(inode, cred, secid, func, mask, flags, pcr,
+> -				template_desc, keyring);
+> +				template_desc, func_data);
+>  }
+>  
+>  /*
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index 68956e884403..e76ef4bfd0f4 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -786,13 +786,13 @@ int ima_post_load_data(char *buf, loff_t size,
+>   * @eventname: event name to be used for the buffer entry.
+>   * @func: IMA hook
+>   * @pcr: pcr to extend the measurement
+> - * @keyring: keyring name to determine the action to be performed
+> + * @func_data: private data specific to @func, can be NULL.
+>   *
+>   * Based on policy, the buffer is measured into the ima log.
+>   */
+>  void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>  				const char *eventname, enum ima_hooks func,
+> -				int pcr, const char *keyring)
+> +				int pcr, const char *func_data)
+>  {
+>  	int ret = 0;
+>  	const char *audit_cause = "ENOMEM";
+> @@ -831,7 +831,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>  	if (func) {
+>  		security_task_getsecid(current, &secid);
+>  		action = ima_get_action(inode, current_cred(), secid, 0, func,
+> -					&pcr, &template, keyring);
+> +					&pcr, &template, func_data);
+>  		if (!(action & IMA_MEASURE))
+>  			return;
+>  	}
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index 823a0c1379cb..25419c7ff50b 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+> @@ -453,30 +453,44 @@ int ima_lsm_policy_change(struct notifier_block *nb, unsigned long event,
+>  }
+>  
+>  /**
+> - * ima_match_keyring - determine whether the keyring matches the measure rule
+> - * @rule: a pointer to a rule
+> - * @keyring: name of the keyring to match against the measure rule
+> + * ima_match_rule_data - determine whether the given func_data matches
+> + *			 the measure rule data
+> + * @rule: IMA policy rule
+> + * @func_data: data to match against the measure rule data
+>   * @cred: a pointer to a credentials structure for user validation
+>   *
+> - * Returns true if keyring matches one in the rule, false otherwise.
+> + * Returns true if func_data matches one in the rule, false otherwise.
+>   */
+> -static bool ima_match_keyring(struct ima_rule_entry *rule,
+> -			      const char *keyring, const struct cred *cred)
+> +static bool ima_match_rule_data(struct ima_rule_entry *rule,
+> +				const char *func_data,
+> +				const struct cred *cred)
+>  {
+> +	const struct ima_rule_opt_list *opt_list = NULL;
+>  	bool matched = false;
+>  	size_t i;
+>  
+>  	if ((rule->flags & IMA_UID) && !rule->uid_op(cred->uid, rule->uid))
+>  		return false;
+>  
+> -	if (!rule->keyrings)
+> -		return true;
+> +	switch (rule->func) {
+> +	case KEY_CHECK:
+> +		if (!rule->keyrings)
+> +			return true;
+> +		else
+> +			opt_list = rule->keyrings;
 
-        local_irq_save(flags);
-	local_irq_enable();
-        local_irq_restore(flags);
+You return if rule->keyrings is NULL so drop this else and simply make
+the opt_list assignment.
 
-which triggered a new consistency check he's working on required for
-replacing the POPF based restore with a conditional STI.
+> +		break;
+> +	default:
+> +		break;
 
-That code is a historical mess and none of this is needed. Make it
-straightforward use local_irq_disable()/enable() as that's all what is
-required. It is invoked from interrupt enabled code nowadays.
+I would like to see the 'return false;' happen immediately here instead
+of waiting for the opt_list check below.
 
-Reported-by: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Mark Rutland <mark.rutland@arm.com>
-Link: https://lore.kernel.org/r/87k0tpju47.fsf@nanos.tec.linutronix.de
+> +	}
+>  
+> -	if (!keyring)
+> +	if (!func_data)
+> +		return false;
+> +
+> +	if (!opt_list)
+>  		return false;
 
----
- arch/x86/kernel/apic/io_apic.c | 22 ++++++----------------
- 1 file changed, 6 insertions(+), 16 deletions(-)
+If you return false in the 'default:' case above, you can just remove this
+entire conditional because you'll be assigning opt_list in all of the
+valid cases of the switch statement.
 
-diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
-index 089e755..e4ab480 100644
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -1620,21 +1620,16 @@ static void __init delay_without_tsc(void)
- static int __init timer_irq_works(void)
- {
- 	unsigned long t1 = jiffies;
--	unsigned long flags;
- 
- 	if (no_timer_check)
- 		return 1;
- 
--	local_save_flags(flags);
- 	local_irq_enable();
--
- 	if (boot_cpu_has(X86_FEATURE_TSC))
- 		delay_with_tsc();
- 	else
- 		delay_without_tsc();
- 
--	local_irq_restore(flags);
--
- 	/*
- 	 * Expect a few ticks at least, to be sure some possible
- 	 * glue logic does not lock up after one or two first
-@@ -1643,10 +1638,10 @@ static int __init timer_irq_works(void)
- 	 * least one tick may be lost due to delays.
- 	 */
- 
--	/* jiffies wrap? */
--	if (time_after(jiffies, t1 + 4))
--		return 1;
--	return 0;
-+	local_irq_disable();
-+
-+	/* Did jiffies advance? */
-+	return time_after(jiffies, t1 + 4);
- }
- 
- /*
-@@ -2163,13 +2158,12 @@ static inline void __init check_timer(void)
- 	struct irq_cfg *cfg = irqd_cfg(irq_data);
- 	int node = cpu_to_node(0);
- 	int apic1, pin1, apic2, pin2;
--	unsigned long flags;
- 	int no_pin1 = 0;
- 
- 	if (!global_clock_event)
- 		return;
- 
--	local_irq_save(flags);
-+	local_irq_disable();
- 
- 	/*
- 	 * get/set the timer IRQ vector:
-@@ -2237,7 +2231,6 @@ static inline void __init check_timer(void)
- 			goto out;
- 		}
- 		panic_if_irq_remap("timer doesn't work through Interrupt-remapped IO-APIC");
--		local_irq_disable();
- 		clear_IO_APIC_pin(apic1, pin1);
- 		if (!no_pin1)
- 			apic_printk(APIC_QUIET, KERN_ERR "..MP-BIOS bug: "
-@@ -2261,7 +2254,6 @@ static inline void __init check_timer(void)
- 		/*
- 		 * Cleanup, just in case ...
- 		 */
--		local_irq_disable();
- 		legacy_pic->mask(0);
- 		clear_IO_APIC_pin(apic2, pin2);
- 		apic_printk(APIC_QUIET, KERN_INFO "....... failed.\n");
-@@ -2278,7 +2270,6 @@ static inline void __init check_timer(void)
- 		apic_printk(APIC_QUIET, KERN_INFO "..... works.\n");
- 		goto out;
- 	}
--	local_irq_disable();
- 	legacy_pic->mask(0);
- 	apic_write(APIC_LVT0, APIC_LVT_MASKED | APIC_DM_FIXED | cfg->vector);
- 	apic_printk(APIC_QUIET, KERN_INFO "..... failed.\n");
-@@ -2297,7 +2288,6 @@ static inline void __init check_timer(void)
- 		apic_printk(APIC_QUIET, KERN_INFO "..... works.\n");
- 		goto out;
- 	}
--	local_irq_disable();
- 	apic_printk(APIC_QUIET, KERN_INFO "..... failed :(.\n");
- 	if (apic_is_x2apic_enabled())
- 		apic_printk(APIC_QUIET, KERN_INFO
-@@ -2306,7 +2296,7 @@ static inline void __init check_timer(void)
- 	panic("IO-APIC + timer doesn't work!  Boot with apic=debug and send a "
- 		"report.  Then try booting with the 'noapic' option.\n");
- out:
--	local_irq_restore(flags);
-+	local_irq_enable();
- }
- 
- /*
+Tyler
+
+>  
+> -	for (i = 0; i < rule->keyrings->count; i++) {
+> -		if (!strcmp(rule->keyrings->items[i], keyring)) {
+> +	for (i = 0; i < opt_list->count; i++) {
+> +		if (!strcmp(opt_list->items[i], func_data)) {
+>  			matched = true;
+>  			break;
+>  		}
+> @@ -493,20 +507,20 @@ static bool ima_match_keyring(struct ima_rule_entry *rule,
+>   * @secid: the secid of the task to be validated
+>   * @func: LIM hook identifier
+>   * @mask: requested action (MAY_READ | MAY_WRITE | MAY_APPEND | MAY_EXEC)
+> - * @keyring: keyring name to check in policy for KEY_CHECK func
+> + * @func_data: private data specific to @func, can be NULL.
+>   *
+>   * Returns true on rule match, false on failure.
+>   */
+>  static bool ima_match_rules(struct ima_rule_entry *rule, struct inode *inode,
+>  			    const struct cred *cred, u32 secid,
+>  			    enum ima_hooks func, int mask,
+> -			    const char *keyring)
+> +			    const char *func_data)
+>  {
+>  	int i;
+>  
+>  	if (func == KEY_CHECK) {
+>  		return (rule->flags & IMA_FUNC) && (rule->func == func) &&
+> -		       ima_match_keyring(rule, keyring, cred);
+> +			ima_match_rule_data(rule, func_data, cred);
+>  	}
+>  	if ((rule->flags & IMA_FUNC) &&
+>  	    (rule->func != func && func != POST_SETATTR))
+> @@ -610,8 +624,7 @@ static int get_subaction(struct ima_rule_entry *rule, enum ima_hooks func)
+>   * @mask: requested action (MAY_READ | MAY_WRITE | MAY_APPEND | MAY_EXEC)
+>   * @pcr: set the pcr to extend
+>   * @template_desc: the template that should be used for this rule
+> - * @keyring: the keyring name, if given, to be used to check in the policy.
+> - *           keyring can be NULL if func is anything other than KEY_CHECK.
+> + * @func_data: private data specific to @func, can be NULL.
+>   *
+>   * Measure decision based on func/mask/fsmagic and LSM(subj/obj/type)
+>   * conditions.
+> @@ -623,7 +636,7 @@ static int get_subaction(struct ima_rule_entry *rule, enum ima_hooks func)
+>  int ima_match_policy(struct inode *inode, const struct cred *cred, u32 secid,
+>  		     enum ima_hooks func, int mask, int flags, int *pcr,
+>  		     struct ima_template_desc **template_desc,
+> -		     const char *keyring)
+> +		     const char *func_data)
+>  {
+>  	struct ima_rule_entry *entry;
+>  	int action = 0, actmask = flags | (flags << 1);
+> @@ -638,7 +651,7 @@ int ima_match_policy(struct inode *inode, const struct cred *cred, u32 secid,
+>  			continue;
+>  
+>  		if (!ima_match_rules(entry, inode, cred, secid, func, mask,
+> -				     keyring))
+> +				     func_data))
+>  			continue;
+>  
+>  		action |= entry->flags & IMA_ACTION_FLAGS;
+> -- 
+> 2.17.1
+> 
