@@ -2,100 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E75742D60A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD692D6011
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392128AbgLJP5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:57:17 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:48700 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389950AbgLJOiP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:38:15 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607611077; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=2UENAvr3UnfyT7Yes7BqMsH/lz30eJAtHLCVlaAJ4LM=; b=ExXaNhU4Fm7GbJB4GFa4KJb8xOAq/c3gzFtA3sGE+5mdyQBMs+UfLiKrhTHMXRVPhX60MWr+
- iZ1OAbBo4NKLWGD3/dLcML0axdDRZlbiJTN2psOIw01Qnl4Hhg6tFogRK0h6DeUzDrkohqQV
- KKU+5bYtxloH1xP8Yv++V+7W3es=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5fd232a36752249c543cba32 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Dec 2020 14:37:23
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D03F6C43466; Thu, 10 Dec 2020 14:37:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C4A5C433CA;
-        Thu, 10 Dec 2020 14:37:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C4A5C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH wireless -next] wireless/ath10k: simplify the return expression of ath10k_ahb_chip_reset()
-References: <20201210140204.1774-1-zhengyongjun3@huawei.com>
-Date:   Thu, 10 Dec 2020 16:37:18 +0200
-In-Reply-To: <20201210140204.1774-1-zhengyongjun3@huawei.com> (Zheng Yongjun's
-        message of "Thu, 10 Dec 2020 22:02:04 +0800")
-Message-ID: <87mtyl4ti9.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S2391930AbgLJPk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:40:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391311AbgLJOka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:40:30 -0500
+Date:   Thu, 10 Dec 2020 15:38:44 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607611213;
+        bh=zsIJN6z8FTmy73+DOegLXEWt+5izYHdwXL7OlzZ6Ykg=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ns2Bkr0xFfOXEVbBHWZZkdl+LpBFo5CilV+23ufJ9hUv0gD5KyYkO6CnGKZ7R9EQu
+         UXV2bZZ8Gd5qvubQQ9hOxxO0zP2OCPbvQr8Ru4Bkz+HGGdQhVR1xGaiSz5rhj6eB5g
+         3a5ljOKQJ+oqiNQvCJ7E92Z5Sm8X878QMeA4tXAk=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        syzbot <syzkaller@googlegroups.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 4.4 15/39] geneve: pull IP header before ECN decapsulation
+Message-ID: <X9Iy9EDh2gZgth+R@kroah.com>
+References: <20201210142600.887734129@linuxfoundation.org>
+ <20201210142601.652963609@linuxfoundation.org>
+ <CANn89iK=kMSkT771iL0dybnWisXr9FWW-bffa5KB+McBYrxx4g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANn89iK=kMSkT771iL0dybnWisXr9FWW-bffa5KB+McBYrxx4g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zheng Yongjun <zhengyongjun3@huawei.com> writes:
+On Thu, Dec 10, 2020 at 03:32:12PM +0100, Eric Dumazet wrote:
+> On Thu, Dec 10, 2020 at 3:26 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > From: Eric Dumazet <edumazet@google.com>
+> >
+> > IP_ECN_decapsulate() and IP6_ECN_decapsulate() assume
+> > IP header is already pulled.
+> >
+> > geneve does not ensure this yet.
+> >
+> > Fixing this generically in IP_ECN_decapsulate() and
+> > IP6_ECN_decapsulate() is not possible, since callers
+> > pass a pointer that might be freed by pskb_may_pull()
+> >
+> > syzbot reported :
+> >
+> 
+> Note that we had to revert this patch, so you can either scratp this
+> backport, or make sure to backport the revert.
 
-> Simplify the return expression.
->
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/net/wireless/ath/ath10k/ahb.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-> index 05a61975c83f..0ba31c0bbd24 100644
-> --- a/drivers/net/wireless/ath/ath10k/ahb.c
-> +++ b/drivers/net/wireless/ath/ath10k/ahb.c
-> @@ -598,16 +598,10 @@ static int ath10k_ahb_prepare_device(struct ath10k *ar)
->  
->  static int ath10k_ahb_chip_reset(struct ath10k *ar)
->  {
-> -	int ret;
-> -
->  	ath10k_ahb_halt_chip(ar);
->  	ath10k_ahb_clock_disable(ar);
->  
-> -	ret = ath10k_ahb_prepare_device(ar);
-> -	if (ret)
-> -		return ret;
-> -
-> -	return 0;
-> +	return ath10k_ahb_prepare_device(ar);
->  }
->  
->  static int ath10k_ahb_wake_target_cpu(struct ath10k *ar)
+I'll drop it thanks.  Odd I lost the upstream git id on this patch, let
+me check what went wrong...
 
-I prefer the original style, easier to add new code to the function.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+greg k-h
