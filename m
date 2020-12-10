@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89322D6C38
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC26C2D6C3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389592AbgLJX7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:59:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729231AbgLJX7V (ORCPT
+        id S2388679AbgLKAAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 19:00:40 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:31781 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389587AbgLJX7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:59:21 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C73DC0613CF;
-        Thu, 10 Dec 2020 15:58:41 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id f17so5846395pge.6;
-        Thu, 10 Dec 2020 15:58:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=L3d831+dnOWhI5RtMGl5c7cNy6XBFirQmQWs7vyIZBM=;
-        b=se07J9oSLReNy7EaHE5a4FPHwySjHq8wdrR5ABcshzUnyVlIE/qcQ8PhBDrvZXAZW8
-         m7fo7M4hp8fSnd9nKrOqwG8s2y0BlQgVukLyJ3SYoPaPKBWYyDTYjy6GeDyIeaJnb21I
-         oMxw/KUGuZm/DN3wPG+blkmbHXhaFL/0AAnEF/4/VUiO3Ger+YRcWFg9hfEA6d1Kq+xI
-         Cf1UxqNDf2G76wWzqLzLMH4/+IiyoQp1OyMBo/eIdxAuwjAJ5rGyYbFZPfGxgyosii6R
-         MUt9DJ6+4ze5ApR+MwPM5tdvpkF9Q9MQYw5Om9qxue37ZB5qMR5zG5dVJLuOd6kvzNWM
-         H3RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=L3d831+dnOWhI5RtMGl5c7cNy6XBFirQmQWs7vyIZBM=;
-        b=WwKINOIaQcp9Gg7aampXdv8oVOVwL94fBoiVG2ydfNlv9qdXCO6QivwNneohlLvaSH
-         u/mBkwkgJeFD9CjEAgRV9Vcd84rUwvln4/YoOpWHCXpaJ0oOVSCL39c0Y04H+EuEukpb
-         FQDyLNETRbY+H1ztFoWPjQNJD13nSToZCW6NHL5nnWxkf2MLw8BPVDSJiJk/CSMPg23N
-         cSTd+J8V8bd3vnViXPhpTtTQ16jhsgykbxUryGa4AqN/3X9YW2iJNj0ADE7PL6zgvT1T
-         mHCRdEcRUJS9ye+7nOIdB3tw15f7/aTgSoPs3SpH7j8jW8hJsCpJuL0FgCt1ZMIQzaUI
-         EaCg==
-X-Gm-Message-State: AOAM531Frp3m2LxV8SLCyo5cGqwRhmA0OfYxPm0pcM1KIlJFj/ojz40U
-        0IP7HrQ7fte9nnTAPTqMgg+3RgitvY4=
-X-Google-Smtp-Source: ABdhPJyQNK+UPTtm0o80UpfbpvYj0BmXjKUBk0wl/jVzbCoV7hZ0rirHnQQRfonyhecfc+Y/DoNFOg==
-X-Received: by 2002:aa7:963c:0:b029:19d:dcd3:b2ae with SMTP id r28-20020aa7963c0000b029019ddcd3b2aemr8971968pfg.76.1607644720955;
-        Thu, 10 Dec 2020 15:58:40 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id h11sm8183371pjg.46.2020.12.10.15.58.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 15:58:40 -0800 (PST)
-Date:   Thu, 10 Dec 2020 15:58:37 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     linux-input@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: cm109 - do not stomp on control URB
-Message-ID: <X9K2LXQ8iLICkpu3@google.com>
+        Thu, 10 Dec 2020 18:59:52 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 0C1D1240006;
+        Thu, 10 Dec 2020 23:59:08 +0000 (UTC)
+Date:   Fri, 11 Dec 2020 00:59:08 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [patch 4/8] rtc: core: Make the sync offset default more
+ realistic
+Message-ID: <20201210235908.GA1781038@piout.net>
+References: <20201206214613.444124194@linutronix.de>
+ <20201206220541.960333166@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20201206220541.960333166@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to make sure we are not stomping on the control URB that was
-issued when opening the device when attempting to toggle buzzer.
-To do that we need to mark it as pending in cm109_open().
+Hi,
 
-Reported-and-tested-by: syzbot+150f793ac5bc18eee150@syzkaller.appspotmail.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/input/misc/cm109.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+On 06/12/2020 22:46:17+0100, Thomas Gleixner wrote:
+> The offset which is used to steer the start of an RTC synchronization
+> update via rtc_set_ntp_time() is huge. The math behind this is:
+> 
+>   tsched       twrite(t2.tv_sec - 1) 	 t2 (seconds increment)
+> 
+> twrite - tsched is the transport time for the write to hit the device.
+> 
+> t2 - twrite depends on the chip and is for most chips one second.
+> 
+> The rtc_set_ntp_time() calculation of tsched is:
+> 
+>     tsched = t2 - 1sec - (t2 - twrite)
+> 
+> The default for the sync offset is 500ms which means that twrite - tsched
+> is 500ms assumed that t2 - twrite is one second.
+> 
+> This is 0.5 seconds off for RTCs which are directly accessible by IO writes
+> and probably for the majority of i2C/SPI based RTC off by an order of
+> magnitude. Set it to 10ms which should bring it closer to reality.
+> 
+> The default can be adjusted by drivers (rtc_cmos does so) and could be
+> adjusted further by a calibration method which is an orthogonal problem.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  drivers/rtc/class.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- a/drivers/rtc/class.c
+> +++ b/drivers/rtc/class.c
+> @@ -201,7 +201,7 @@ static struct rtc_device *rtc_allocate_d
+>  	device_initialize(&rtc->dev);
+>  
+>  	/* Drivers can revise this default after allocating the device. */
+> -	rtc->set_offset_nsec =  NSEC_PER_SEC / 2;
+> +	rtc->set_offset_nsec =  10 * NSEC_PER_MSEC;
 
-diff --git a/drivers/input/misc/cm109.c b/drivers/input/misc/cm109.c
-index e413801f0491..f515fae465c3 100644
---- a/drivers/input/misc/cm109.c
-+++ b/drivers/input/misc/cm109.c
-@@ -568,12 +568,15 @@ static int cm109_input_open(struct input_dev *idev)
- 	dev->ctl_data->byte[HID_OR2] = dev->keybit;
- 	dev->ctl_data->byte[HID_OR3] = 0x00;
- 
-+	dev->ctl_urb_pending = 1;
- 	error = usb_submit_urb(dev->urb_ctl, GFP_KERNEL);
--	if (error)
-+	if (error) {
-+		dev->ctl_urb_pending = 0;
- 		dev_err(&dev->intf->dev, "%s: usb_submit_urb (urb_ctl) failed %d\n",
- 			__func__, error);
--	else
-+	} else {
- 		dev->open = 1;
-+	}
- 
- 	mutex_unlock(&dev->pm_mutex);
- 
+I did retest, on a slow 100kHz i2c bus, with a fairly inconvenient RTC,
+The maximum offset to set the RTC was 4845533ns so I'd say 10ms is too
+large. Should we make that 5ms ?
+
+Apart from that, on the series, you can add my
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+
 -- 
-2.29.2.576.ga3fc446d84-goog
-
-
--- 
-Dmitry
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
