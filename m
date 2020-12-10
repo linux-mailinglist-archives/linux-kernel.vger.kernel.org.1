@@ -2,27 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CB32D5E4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E69692D5DE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403833AbgLJOpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:45:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45032 "EHLO mail.kernel.org"
+        id S1727752AbgLJOd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:33:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391136AbgLJOiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:38:11 -0500
+        id S2390573AbgLJOcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:32:41 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 5.9 26/75] gfs2: Upgrade shared glocks for atime updates
-Date:   Thu, 10 Dec 2020 15:26:51 +0100
-Message-Id: <20201210142607.339447970@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 15/31] ALSA: hda/generic: Add option to enforce preferred_dacs pairs
+Date:   Thu, 10 Dec 2020 15:26:52 +0100
+Message-Id: <20201210142602.860499088@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
-References: <20201210142606.074509102@linuxfoundation.org>
+In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
+References: <20201210142602.099683598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,74 +30,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 82e938bd5382b322ce81e6cb8fd030987f2da022 upstream.
+commit 242d990c158d5b1dabd166516e21992baef5f26a upstream.
 
-Commit 20f829999c38 ("gfs2: Rework read and page fault locking") lifted
-the glock lock taking from the low-level ->readpage and ->readahead
-address space operations to the higher-level ->read_iter file and
-->fault vm operations.  The glocks are still taken in LM_ST_SHARED mode
-only.  On filesystems mounted without the noatime option, ->read_iter
-sometimes needs to update the atime as well, though.  Right now, this
-leads to a failed locking mode assertion in gfs2_dirty_inode.
+The generic parser accepts the preferred_dacs[] pairs as a hint for
+assigning a DAC to each pin, but this hint doesn't work always
+effectively.  Currently it's merely a secondary choice after the trial
+with the path index failed.  This made sometimes it difficult to
+assign DACs without mimicking the connection list and/or the badness
+table.
 
-Fix that by introducing a new update_time inode operation.  There, if
-the glock is held non-exclusively, upgrade it to an exclusive lock.
+This patch adds a new flag, obey_preferred_dacs, that changes the
+behavior of the parser.  As its name stands, the parser obeys the
+given preferred_dacs[] pairs by skipping the path index matching and
+giving a high penalty if no DAC is assigned by the pairs.  This mode
+will help for assigning the fixed DACs forcibly from the codec
+driver.
 
-Reported-by: Alexander Aring <aahringo@redhat.com>
-Fixes: 20f829999c38 ("gfs2: Rework read and page fault locking")
-Cc: stable@vger.kernel.org # v5.8+
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201127141104.11041-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/gfs2/inode.c |   21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ sound/pci/hda/hda_generic.c |   12 ++++++++----
+ sound/pci/hda/hda_generic.h |    1 +
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
---- a/fs/gfs2/inode.c
-+++ b/fs/gfs2/inode.c
-@@ -2116,6 +2116,25 @@ loff_t gfs2_seek_hole(struct file *file,
- 	return vfs_setpos(file, ret, inode->i_sb->s_maxbytes);
- }
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -1374,16 +1374,20 @@ static int try_assign_dacs(struct hda_co
+ 		struct nid_path *path;
+ 		hda_nid_t pin = pins[i];
  
-+static int gfs2_update_time(struct inode *inode, struct timespec64 *time,
-+			    int flags)
-+{
-+	struct gfs2_inode *ip = GFS2_I(inode);
-+	struct gfs2_glock *gl = ip->i_gl;
-+	struct gfs2_holder *gh;
-+	int error;
-+
-+	gh = gfs2_glock_is_locked_by_me(gl);
-+	if (gh && !gfs2_glock_is_held_excl(gl)) {
-+		gfs2_glock_dq(gh);
-+		gfs2_holder_reinit(LM_ST_EXCLUSIVE, 0, gh);
-+		error = gfs2_glock_nq(gh);
-+		if (error)
-+			return error;
-+	}
-+	return generic_update_time(inode, time, flags);
-+}
-+
- const struct inode_operations gfs2_file_iops = {
- 	.permission = gfs2_permission,
- 	.setattr = gfs2_setattr,
-@@ -2124,6 +2143,7 @@ const struct inode_operations gfs2_file_
- 	.fiemap = gfs2_fiemap,
- 	.get_acl = gfs2_get_acl,
- 	.set_acl = gfs2_set_acl,
-+	.update_time = gfs2_update_time,
- };
+-		path = snd_hda_get_path_from_idx(codec, path_idx[i]);
+-		if (path) {
+-			badness += assign_out_path_ctls(codec, path);
+-			continue;
++		if (!spec->obey_preferred_dacs) {
++			path = snd_hda_get_path_from_idx(codec, path_idx[i]);
++			if (path) {
++				badness += assign_out_path_ctls(codec, path);
++				continue;
++			}
+ 		}
  
- const struct inode_operations gfs2_dir_iops = {
-@@ -2143,6 +2163,7 @@ const struct inode_operations gfs2_dir_i
- 	.fiemap = gfs2_fiemap,
- 	.get_acl = gfs2_get_acl,
- 	.set_acl = gfs2_set_acl,
-+	.update_time = gfs2_update_time,
- 	.atomic_open = gfs2_atomic_open,
- };
+ 		dacs[i] = get_preferred_dac(codec, pin);
+ 		if (dacs[i]) {
+ 			if (is_dac_already_used(codec, dacs[i]))
+ 				badness += bad->shared_primary;
++		} else if (spec->obey_preferred_dacs) {
++			badness += BAD_NO_PRIMARY_DAC;
+ 		}
  
+ 		if (!dacs[i])
+--- a/sound/pci/hda/hda_generic.h
++++ b/sound/pci/hda/hda_generic.h
+@@ -230,6 +230,7 @@ struct hda_gen_spec {
+ 	unsigned int power_down_unused:1; /* power down unused widgets */
+ 	unsigned int dac_min_mute:1; /* minimal = mute for DACs */
+ 	unsigned int suppress_vmaster:1; /* don't create vmaster kctls */
++	unsigned int obey_preferred_dacs:1; /* obey preferred_dacs assignment */
+ 
+ 	/* other internal flags */
+ 	unsigned int no_analog:1; /* digital I/O only */
 
 
