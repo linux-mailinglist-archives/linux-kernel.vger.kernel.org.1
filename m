@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05F82D5BF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 976A72D5BFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389458AbgLJNgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:36:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387691AbgLJNgO (ORCPT
+        id S2389536AbgLJNh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:37:27 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:38040 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389103AbgLJNhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:36:14 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B0CC0617B0;
-        Thu, 10 Dec 2020 05:35:08 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id u203so4734124ybb.2;
-        Thu, 10 Dec 2020 05:35:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m1HP1yIoElif264wBbc+cWtKQMdT/dfCn4qH9f3uFvE=;
-        b=D+sXkGE27BvA8k13Mm/sLNkyOydzvwrVUbzyCyveTzQBfOflUmMnRdlUbE1OB+XKYW
-         xAmA/jH7hEgXzn/jR1xat4Jl1JTLn1LNyvDwFWOyN+rM5gvFGsX2gF5jV/1zz/+DHn1p
-         8GwqJ0+PjdYQGgBrXHoSoUxg8xvd1nCCjoet1SqORFlbPMQik1j9l0AqIccpUl/qOtje
-         DhtZol6YtZnv2IoYwJphso8ZDk/O+9P+Z33jGvem80h46ouMJ4798Sy1u3SBX/QLLlV6
-         LNMi9s4YUIU75yhG9QY+FS/b5Mh2TAC3FkdofTj8hYhqsvsCtdyzYHTTOsVJyyrrAMxi
-         yglg==
+        Thu, 10 Dec 2020 08:37:17 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <seth.forshee@canonical.com>)
+        id 1knM7X-0005R3-R1
+        for linux-kernel@vger.kernel.org; Thu, 10 Dec 2020 13:36:36 +0000
+Received: by mail-io1-f71.google.com with SMTP id y197so3919151iof.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 05:36:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m1HP1yIoElif264wBbc+cWtKQMdT/dfCn4qH9f3uFvE=;
-        b=oDVGKAPzDykgWcCYrkjS4djmj0vY2cRAJktLZt1sJbqu4tqXIK0OXS9DgNUeDN75vE
-         e2Y9mtf7i1D/9imVOsSOMRdv2PglvGQl0olZ647n3JJbTT16aRpYDMzcOSA9YOt/de3s
-         +of0V/HlxQhGRtaaL9DR8QMg4GmiUVQ0p8JA+VLneL7Goxh9bg1glLqXWVtqAKHyKt+3
-         JJtnu3mpWBBf+NdIdqoHIzZ7+65F12xaQ2I2OCDF/44TsNNPr/4c0dVtnJ3/NJH+QmxD
-         d+zIxxoXXiRErSQEy9/qONkZ0Sf8wU8ZlfFWDU2ODUoqN86rjs40AJY+kt729xsQ98Tu
-         mSUA==
-X-Gm-Message-State: AOAM531XW3cpvzDhAUXSp2mHBQh/1zC2zgStu0RphX18oFA9HFi+ctUL
-        M4jQtSamROcTVAJa97NZYj3KJdCpik3ok6DbJzU=
-X-Google-Smtp-Source: ABdhPJyr0TYOgXzMuicga7wyBOkKbBeJ/YheB2Zrk4q9fKy+qC4mFj82XZKUw2JcVTA3YVjJ1ocGnBF5j6BpIIbt1WI=
-X-Received: by 2002:a25:bb50:: with SMTP id b16mr11643994ybk.152.1607607307674;
- Thu, 10 Dec 2020 05:35:07 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mwzWNqwukiO9666dcy5UFimaTAhAAx9w5jcf7BvZNzs=;
+        b=l/3rpC5SFuG/PjfcHnq1gMAZS2zcOUFmoNzs/WDmFYfGIt/HFci2xC6P0ZDcgYXF3r
+         OWW699TiDg9hg5FuHj3wOyzzQLtgb5QiCHc/B0PhapLXiQqfJlKuPOtQDulwdX2Ln03f
+         048xOM2S5MUJs+C+cADtgI1aA5KV3m4IqaFYZtzJaL87ZcdVkev+RwT1ssbUs5ELKmCl
+         gVGA76JePogx+LCq5fxmaHXuVuFcK6QiO3w4fJ/rDZ5j1vPraUEGHRkJK/Q3UQSbaVl8
+         rBLrhWy0h4ehWnwrmnGu1qbxkMxPHJK+a002E5s98Coz6D5LOA/kDqB/gHSnQe7zVfKb
+         HIAQ==
+X-Gm-Message-State: AOAM531NUxR5niqkYHgzd3grAFSNKWbv2vbiqc+AGVeqmnsZ+y7dCza8
+        ZEJhzhz5VJhjNza+NgW7Y+1ilgcVWrv8rC7jdJ/6295yIEvOSgqVq/bSKMLx9U6Esiu5T0VbYzO
+        BztBVxp/buC2VYopyPOtX96fyeS8aXPNiEBfOGmKdHw==
+X-Received: by 2002:a05:6638:2a5:: with SMTP id d5mr8717994jaq.92.1607607394872;
+        Thu, 10 Dec 2020 05:36:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzDAlRH9nDs2/sDKF2FW7RjAYQtS5kLIoWftt3jEkBIPJZ2Ls4/PB9s1dnWAzZ7dDe7Fi0g6A==
+X-Received: by 2002:a05:6638:2a5:: with SMTP id d5mr8717977jaq.92.1607607394700;
+        Thu, 10 Dec 2020 05:36:34 -0800 (PST)
+Received: from localhost ([2605:a601:ac0f:820:5f:df71:1517:60e9])
+        by smtp.gmail.com with ESMTPSA id y14sm3240284ilb.66.2020.12.10.05.36.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 05:36:34 -0800 (PST)
+Date:   Thu, 10 Dec 2020 07:36:33 -0600
+From:   Seth Forshee <seth.forshee@canonical.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: BPF selftests build failure in 5.10-rc
+Message-ID: <X9IkYa6D9QrjooOd@ubuntu-x1>
+References: <X9FOSImMbu0/SV5B@ubuntu-x1>
+ <CAEf4BzYAptUF+AxmkVk7BjJWRE6UaLkPowKM+pWbFuOV9Z4GGg@mail.gmail.com>
 MIME-Version: 1.0
-References: <1607403341-57214-1-git-send-email-yash.shah@sifive.com> <1607403341-57214-10-git-send-email-yash.shah@sifive.com>
-In-Reply-To: <1607403341-57214-10-git-send-email-yash.shah@sifive.com>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Thu, 10 Dec 2020 21:34:55 +0800
-Message-ID: <CAEUhbmVi7oVEJhyar+GyCVY=MrZri9h3DvQWOceZhcqFe544Kw@mail.gmail.com>
-Subject: Re: [PATCH v2 9/9] riscv: dts: add initial board data for the SiFive
- HiFive Unmatched
-To:     Yash Shah <yash.shah@sifive.com>
-Cc:     linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        broonie@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Albert Ou <aou@eecs.berkeley.edu>, lee.jones@linaro.org,
-        u.kleine-koenig@pengutronix.de,
-        Thierry Reding <thierry.reding@gmail.com>, andrew@lunn.ch,
-        Peter Korsgaard <peter@korsgaard.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYAptUF+AxmkVk7BjJWRE6UaLkPowKM+pWbFuOV9Z4GGg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 3:06 PM Yash Shah <yash.shah@sifive.com> wrote:
->
-> Add initial board data for the SiFive HiFive Unmatched A00.
-> This patch is dependent on Zong's Patchset[0].
->
-> [0]: https://lore.kernel.org/linux-riscv/20201130082330.77268-4-zong.li@sifive.com/T/#u
+On Wed, Dec 09, 2020 at 04:15:35PM -0800, Andrii Nakryiko wrote:
+> On Wed, Dec 9, 2020 at 2:24 PM Seth Forshee <seth.forshee@canonical.com> wrote:
+> >
+> > Building the BPF selftests with clang 11, I'm getting the following
+> > error:
+> >
+> >    CLNG-LLC [test_maps] profiler1.o
+> >  In file included from progs/profiler1.c:6:
+> >  progs/profiler.inc.h:260:17: error: use of unknown builtin '__builtin_preserve_enum_value' [-Wimplicit-function-declaration]
+> >                  int cgrp_id = bpf_core_enum_value(enum cgroup_subsys_id___local,
+> >                                ^
+> >  /home/ubuntu/unstable/tools/testing/selftests/bpf/tools/include/bpf/bpf_core_read.h:179:2: note: expanded from macro 'bpf_core_enum_value'
+> >          __builtin_preserve_enum_value(*(typeof(enum_type) *)enum_value, BPF_ENUMVAL_VALUE)
+> >          ^
+> >  1 error generated.
+> >  llc: error: llc: <stdin>:1:1: error: expected top-level entity
+> >  BPF obj compilation failed
+> 
+> Addressed by fb3558127cb6 ("bpf: Fix selftest compilation on clang 11")
 
-I think the dependency should be put below --, not in the commit message itself
+Great, thanks!
 
->
-> Signed-off-by: Yash Shah <yash.shah@sifive.com>
-> ---
->  arch/riscv/boot/dts/sifive/Makefile                |   3 +-
->  .../riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 253 +++++++++++++++++++++
->  2 files changed, 255 insertions(+), 1 deletion(-)
->  create mode 100644 arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
->
-> diff --git a/arch/riscv/boot/dts/sifive/Makefile b/arch/riscv/boot/dts/sifive/Makefile
-> index 6d6189e..74c47fe 100644
-> --- a/arch/riscv/boot/dts/sifive/Makefile
-> +++ b/arch/riscv/boot/dts/sifive/Makefile
-> @@ -1,2 +1,3 @@
->  # SPDX-License-Identifier: GPL-2.0
-> -dtb-$(CONFIG_SOC_SIFIVE) += hifive-unleashed-a00.dtb
-> +dtb-$(CONFIG_SOC_SIFIVE) += hifive-unleashed-a00.dtb \
-> +                           hifive-unmatched-a00.dtb
-
-Otherwise LGTM:
-Reviewed-by: Bin Meng <bin.meng@windriver.com>
+> 
+> >
+> > I see that test_core_reloc_enumval.c takes precautions around the use of
+> > __builtin_preserve_enum_value as it is currently only available in clang
+> > 12 nightlies. Is it possible to do something similar here? Though I see
+> > that the use of the builtin is not nearly so neatly localized as it is
+> > in test_core_reloc_enumval.c.
+> >
+> > Thanks,
+> > Seth
