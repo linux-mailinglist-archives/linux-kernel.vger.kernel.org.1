@@ -2,107 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5DF2D5D29
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DABA42D5D35
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:11:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390021AbgLJOIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:08:16 -0500
-Received: from mga01.intel.com ([192.55.52.88]:29475 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733261AbgLJOIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:08:15 -0500
-IronPort-SDR: Aklkd2ouG1w1YKPIky2mX0d4GaeXzcPfZ/p5Z6fenn0Zowc8u8X6QfJRBwvH2jKQmp6I/r08xe
- DD4fPKCfWGBw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="192578543"
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="192578543"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 06:07:07 -0800
-IronPort-SDR: EoDdnLpI+SqnpnRvYnVV7QWUxkweGYOsEBD78Q4+q9L3qi7LLueBvmqYxBZEz3AzFl+ps4cJza
- lVT8w83o2SFA==
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="348822288"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 06:07:04 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1knMc1-00DR1Y-Ma; Thu, 10 Dec 2020 16:08:05 +0200
-Date:   Thu, 10 Dec 2020 16:08:05 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v5 1/1] lib/vsprintf: Add support for printing V4L2 and
- DRM fourccs
-Message-ID: <20201210140805.GI4077@smile.fi.intel.com>
-References: <20201113105441.1427-1-sakari.ailus@linux.intel.com>
- <X9Hdg3lJm+TZAQGX@alley>
- <CAHp75VcY_b7uaGWoEa1Y6YDk0MmmzC4hV2yx8zVT7J-fD67Hyg@mail.gmail.com>
- <20201210135526.GH25763@paasikivi.fi.intel.com>
+        id S1729076AbgLJOKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:10:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728614AbgLJOKD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:10:03 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08786C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:09:23 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id g1so5404451ilk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:09:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IPBbRhY2fa8scqQYa6fuHv3sg6vR+F2lX2rvUeIAO48=;
+        b=JkdYsiUIuaKjkh9mnEn6K9UjsggLbkAEstkUertGwGfUsrbxgckPjN8K4kAMT+Qtn8
+         E1t1cBIBcazvAi9hCvM7zR3BLzqI8d1JXZZqzB4xP6jFGjrIpE9B39At2l7g5WeuGT+u
+         SUeS+KVEo87WLtzh1KVlcunTMvAhrHDXOXfIFHyEJjxSPl9zK7NzQ2NoGP2FqV6bV8JS
+         WUuNs4AFeWDtn9cZXLh7WR1kMYqCQ1j/ZE7yoylDLN1I3uPqQHo5/HuELmzpXUgPjOg8
+         WOqCY8CyqI9d81Lq6oF/oADMTwgUau75o3QgtjlBOZ0n/opE23HyfFKRTjq+oBfqVfV/
+         3GWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IPBbRhY2fa8scqQYa6fuHv3sg6vR+F2lX2rvUeIAO48=;
+        b=SBRw02r6J3SZwfDgieEV4oGWcmPYEcqKF6q40fqXdYrFBFYF5yMpgViOhhK/EmJu2c
+         3h+AeG5rVYuWSFHk/q6mrzyxm3mYXqswr6bRxvtiGpv+xq6EkCrgCIBD6BzSDE/baLv1
+         mwCWje6n/i38LNJ8hddm83m13yQNhmOMWabv95rvX9S+lcqbS9eLrtIiXasqVA7QYriL
+         OyFbELTaNNGs7wEkAtz57YJ0k1gcds1n5m7Uj3KZjHbQiWtj6+Yg5AeY+eoMpt4gvX3b
+         iOYAE3rsdBwNg+u8GlqKm0aYKkPBgZE5FLITjPU/xDcnWO0dYJp7plDgo29lH+UrnHfc
+         rnLQ==
+X-Gm-Message-State: AOAM532ysb/2yV809t2HC1GjKPTd64ISW7hIRBy6taBE1gvq7Mol+OXv
+        oAr806ZE3VoY2ryx1YElCFW++pMYEyRMbHjehDAQEA==
+X-Google-Smtp-Source: ABdhPJy2c1PmZgAZz7NGUShF5YWd6ef23nP2jmGcLoSepngzWOBONwg3/eAjoiLwkee6Bcyu/sTpGjzZWWAJ44XjHeE=
+X-Received: by 2002:a92:b12:: with SMTP id b18mr9243965ilf.216.1607609362100;
+ Thu, 10 Dec 2020 06:09:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210135526.GH25763@paasikivi.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20201210080844.23741-1-sjpark@amazon.com>
+In-Reply-To: <20201210080844.23741-1-sjpark@amazon.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 10 Dec 2020 15:09:10 +0100
+Message-ID: <CANn89i+egqwjJqGE6mZFB+-GuT_1dOQJP=pccREEZvEwQ1SGiw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/1] net: Reduce rcu_barrier() contentions from 'unshare(CLONE_NEWNET)'
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     David Miller <davem@davemloft.net>,
+        SeongJae Park <sjpark@amazon.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Florian Westphal <fw@strlen.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        netdev <netdev@vger.kernel.org>, rcu@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 03:55:27PM +0200, Sakari Ailus wrote:
-> On Thu, Dec 10, 2020 at 03:05:02PM +0200, Andy Shevchenko wrote:
-> > On Thu, Dec 10, 2020 at 2:16 PM Petr Mladek <pmladek@suse.com> wrote:
-> > > On Fri 2020-11-13 12:54:41, Sakari Ailus wrote:
-> > > > Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
-> > > > pixel formats denoted by fourccs. The fourcc encoding is the same for both
-> > > > so the same implementation can be used.
-> > > >
-> > > > Suggested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
-> > > > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > >
-> > > Andy, Rasmus,
-> > >
-> > > the last version looks fine to me. I am going to push it.
-> > > Please, speak up if you are against it.
-> > 
-> > My concerns are:
-> > - not so standard format of representation (why not to use
-> > string_escape_mem() helper?) or is it?
-> 
-> The format string may contain spaces that are not meant to be printed.
-> Other unprintable chacaters should not be present (at least not in V4L2
-> pixelformats). The hexadecimal representation is there to convey the
-> numerical value and that originally came from DRM, not V4L2.
+On Thu, Dec 10, 2020 at 9:09 AM SeongJae Park <sjpark@amazon.com> wrote:
+>
+> From: SeongJae Park <sjpark@amazon.de>
+>
+> On a few of our systems, I found frequent 'unshare(CLONE_NEWNET)' calls
+> make the number of active slab objects including 'sock_inode_cache' type
+> rapidly and continuously increase.  As a result, memory pressure occurs.
+>
+> In more detail, I made an artificial reproducer that resembles the
+> workload that we found the problem and reproduce the problem faster.  It
+> merely repeats 'unshare(CLONE_NEWNET)' 50,000 times in a loop.  It takes
+> about 2 minutes.  On 40 CPU cores, 70GB DRAM machine, it reduced about
+> 15GB of available memory in total.  Note that the issue don't reproduce
+> on every machine.  On my 6 CPU cores machine, the problem didn't
+> reproduce.
 
-Yes, but I mean that we usually anticipate the escaped characters in a form of
-'\xNN' (hex) or '\NNN' (octal). The format '(NN)' is quite unusual to me.
+OK, that is the number before the patch, but what is the number after
+the patch ?
 
-> > - no compatibility with generic 4cc
-> >   (I would rather have an additional specifier here for v4l2 cases.
-> 
-> What do you mean by "generic 4cc"? There are two users of 4cc codes in the
-> kernel that I know of: V4L2 and DRM. Something that does not refer to
-> in-memory pixel formats?
+I think the idea is very nice, but this will serialize fqdir hash
+tables destruction on one single cpu,
+this might become a real issue _if_ these hash tables are populated.
 
-Of course. Everything else. 4cc is a generic term to describe something which
-is of 4 characters long [1]. It's not limited by media file formats. And
-moreover some (chip) vendors are using it as well (Synopsys).
-Microsoft uses 4cc in CSRT ACPI table for vendor field and so on...
+(Obviously in your for (i=1;i<50000;i++) unshare(CLONE_NEWNET);  all
+these tables are empty...)
 
-[1]: https://en.wikipedia.org/wiki/FourCC
+As you may now, frags are often used as vectors for DDOS attacks.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I would suggest maybe to not (ab)use system_wq, but a dedicated work queue
+with a limit (@max_active argument set to 1 in alloc_workqueue()) , to
+make sure that the number of
+threads is optimal/bounded.
 
+Only the phase after hash table removal could benefit from your
+deferral to a single context,
+so that a single rcu_barrier() is active, since the part after
+rcu_barrier() is damn cheap and _can_ be serialized
 
+  if (refcount_dec_and_test(&f->refcnt))
+                complete(&f->completion);
+
+Thanks !
+
+>
+> 'cleanup_net()' and 'fqdir_work_fn()' are functions that deallocate the
+> relevant memory objects.  They are asynchronously invoked by the work
+> queues and internally use 'rcu_barrier()' to ensure safe destructions.
+> 'cleanup_net()' works in a batched maneer in a single thread worker,
+> while 'fqdir_work_fn()' works for each 'fqdir_exit()' call in the
+> 'system_wq'.
+>
+> Therefore, 'fqdir_work_fn()' called frequently under the workload and
+> made the contention for 'rcu_barrier()' high.  In more detail, the
+> global mutex, 'rcu_state.barrier_mutex' became the bottleneck.
+>
+> I tried making 'fqdir_work_fn()' batched and confirmed it works.  The
+> following patch is for the change.  I think this is the right solution
+> for point fix of this issue, but someone might blame different parts.
+>
+> 1. User: Frequent 'unshare()' calls
+> From some point of view, such frequent 'unshare()' calls might seem only
+> insane.
+>
+> 2. Global mutex in 'rcu_barrier()'
+> Because of the global mutex, 'rcu_barrier()' callers could wait long
+> even after the callbacks started before the call finished.  Therefore,
+> similar issues could happen in another 'rcu_barrier()' usages.  Maybe we
+> can use some wait queue like mechanism to notify the waiters when the
+> desired time came.
+>
+> I personally believe applying the point fix for now and making
+> 'rcu_barrier()' improvement in longterm make sense.  If I'm missing
+> something or you have different opinion, please feel free to let me
+> know.
+>
+>
+> Patch History
+> -------------
+>
+> Changes from v1
+> (https://lore.kernel.org/netdev/20201208094529.23266-1-sjpark@amazon.com/)
+> - Keep xmas tree variable ordering (Jakub Kicinski)
+> - Add more numbers (Eric Dumazet)
+> - Use 'llist_for_each_entry_safe()' (Eric Dumazet)
+>
+> SeongJae Park (1):
+>   net/ipv4/inet_fragment: Batch fqdir destroy works
+>
+>  include/net/inet_frag.h  |  2 +-
+>  net/ipv4/inet_fragment.c | 28 ++++++++++++++++++++--------
+>  2 files changed, 21 insertions(+), 9 deletions(-)
+>
+> --
+> 2.17.1
+>
