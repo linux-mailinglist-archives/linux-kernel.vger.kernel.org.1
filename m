@@ -2,150 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18532D6BF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B3B2D6BFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393786AbgLJXce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:32:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
+        id S2394385AbgLJXeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:34:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389466AbgLJXbj (ORCPT
+        with ESMTP id S2394377AbgLJXdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:31:39 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E0FC0613D3;
-        Thu, 10 Dec 2020 15:30:59 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id t37so5774001pga.7;
-        Thu, 10 Dec 2020 15:30:59 -0800 (PST)
+        Thu, 10 Dec 2020 18:33:31 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA78BC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:32:50 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id o4so5801650pgj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:32:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DxIVSUX2H6bimNutMDtAzIsDtpsebc1xO6PGsZ2Pwhk=;
-        b=GLRkf6JQL1ptO05KUdb29Wdoj51vQzqeflF1WXIJFrnJiwxWUSO6LD5UW/dQri2ULl
-         7QOrSSeGEpb68pcn9L/fFd7hRoRiQmwg8YgLf8weoubgjcOYqqNfrBP7As0weMoHsLb2
-         Zeqzs1Nx4Ah8yomvfrQovm/gEB2hH8COhGfUw5mePmVVZHlDl5VB9aEWYON4en+DoZNT
-         ucf2LpDwtCCrDkkDUAnzEXyFHS9+g6RjvwNliWU4NjPEiWvamrvarJsaCapXe5qDkMW2
-         L5RBqKjX91B0sL0cgHvra3sfXHRhGTBpdfZjvcXf8y94yWyoX2I4Eg9FF7HsRrDbHGlb
-         8Ozw==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=9eWTFNUzUm01PgnNoVde/S0D0c6WiXawj32iLWQB4Xk=;
+        b=fsr0oEwn1dC4dB7RsuUNqzLTvkghUmkbYGGNVSZHb6mrpS00TPDeQps86aqbK416CI
+         0Za26B+jcc31slw5Ccmgwrcqo/KTESOQcwT6mpdaThtops+FvzjcyuScuUZezj5Nopcr
+         Y27cdKQPNHn+y9jA6T9YFrcD4tpM5VeEb5EhA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=DxIVSUX2H6bimNutMDtAzIsDtpsebc1xO6PGsZ2Pwhk=;
-        b=ZnCiRPP7TOrCOGdN4Qv4Ohsu601uaeIRY8WNR3AZXjukhIcKX8ZGkLWVjyE9uyH+fv
-         ePSa4lAQQ6X2X1vNNylQB/vPq48FPQ4LCGhlCZklSWV5QP/mbFGCVGMMg4MSEWrSvrxr
-         iQk9Q+7gB9jCy/exd6VOPZ4tP17ajTjjJ1t3Dw7MEeCeCbqKwH73T3YKh+5k425qQ3/r
-         4tEyDsz0aiF+TrtpMw+biKoyfSIScrKFVJ//+zOnEm8Mo4n8PANKCdbcbwyPldNHW+Ba
-         590cp++jUKFqSsdTEXg5o7DWDRfqehrOYOQQG9Cf14TnEJU1wlr5pv80KoiLe5xkUOEt
-         UZig==
-X-Gm-Message-State: AOAM532TXtH2rKQ+g9mCynahIGj3W/s+uASwil+Ypy8tfLXUjHljuyNO
-        Hdp9xwUj9R24nHg1UVM1RZM=
-X-Google-Smtp-Source: ABdhPJzQ34O5574nawCtthvGcN4o4HywTqDu4/7/e/5QfeGCNPMRhSxX4RTQEVQMyXAdO/WoAlfGnw==
-X-Received: by 2002:a62:19ca:0:b029:19d:cd0d:af83 with SMTP id 193-20020a6219ca0000b029019dcd0daf83mr9006284pfz.51.1607643058804;
-        Thu, 10 Dec 2020 15:30:58 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id e24sm5119240pjt.16.2020.12.10.15.30.56
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=9eWTFNUzUm01PgnNoVde/S0D0c6WiXawj32iLWQB4Xk=;
+        b=GJ3Z+SMAgzUbzSWlPIBasE3qHR7aJ9kGusPsKWsjpxAokKlrs0CYNdeL5GP4R7UiHw
+         8AHKXsStWZJDn9b/f5WWPQk136GBj54lF/MwOrv73Kycc174Yaon5ze4hKiLqtb30Pyq
+         HUl4RKXAnXSRRhdvJc9nl/8ov12VFAqI+2LmSd6MVW/xCbw/32OIxc/Qp7hDFlyL1ecD
+         TUocApLojCXb9UkqSFT6A73w2gy2AtxbiVctw08GNfjSh6nhBr+XGbKbH0dU8nY517Ba
+         y4qLB+hvH30i2scv5tGCkvIyWf6RJduJfi+TUpoiN4BJzPH8Q78I/d09VJJSvn8WNkRp
+         C90Q==
+X-Gm-Message-State: AOAM530OmYZUAR6Qq5JbxrB1XcL0rfMh7BdyIBgdr+JAN1pFs1Y5FhYf
+        q/QH3wHsUsgzcT9GHg/C3Of3rQ==
+X-Google-Smtp-Source: ABdhPJxFmEKsWlyG2x1rCJPU/ohPLBWHLySIE8O46jomFJur9ZcfwOtmH/+xlg7dGlO7I/jEBT4RQg==
+X-Received: by 2002:a62:184e:0:b029:19e:c636:17f9 with SMTP id 75-20020a62184e0000b029019ec63617f9mr3783130pfy.23.1607643170366;
+        Thu, 10 Dec 2020 15:32:50 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id a20sm7497319pgg.89.2020.12.10.15.32.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 15:30:57 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 10 Dec 2020 15:30:54 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Hyesoo Yu <hyesoo.yu@samsung.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>, david@redhat.com,
-        iamjoonsoo.kim@lge.com, vbabka@suse.cz,
-        Suren Baghdasaryan <surenb@google.com>,
-        KyongHo Cho <pullip.cho@samsung.com>,
-        John Dias <joaodias@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: Re: [PATCH 4/4] dma-heap: Devicetree binding for chunk heap
-Message-ID: <X9KvruEuDsuuqlfA@google.com>
-References: <20201117181935.3613581-1-minchan@kernel.org>
- <20201117181935.3613581-5-minchan@kernel.org>
- <CGME20201118030110epcas2p1105a09711ea2c123f19f413b32372764@epcas2p1.samsung.com>
- <CALAqxLWqDLHpOHNEayvhDjJeXjEk_uneH2=d9fy8M87EjKfReA@mail.gmail.com>
- <20201119011431.GA136599@KEI>
- <CALAqxLV=r-V6u8hq2fTmxq855nT7QPkkjyAYdPeZRkYPBi_CKg@mail.gmail.com>
- <X9Fjd+eSStUJskOV@google.com>
- <CALAqxLWthd8bEDRMWmuOf8dOCW8=cFao9HBawKGuRhQZkdgXXw@mail.gmail.com>
- <X9JHjPTdxv6Z7lCW@google.com>
- <CALAqxLVz5bCYxehjVtCJ5eEJ-Wz81=fe30sqRtYtZpXWMkXZiw@mail.gmail.com>
+        Thu, 10 Dec 2020 15:32:49 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALAqxLVz5bCYxehjVtCJ5eEJ-Wz81=fe30sqRtYtZpXWMkXZiw@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAD=FV=WuQjKC6GHy8d2nuqS-fgsUfxYrJosg3eyC9JU1FPCcjw@mail.gmail.com>
+References: <20201203074459.13078-1-rojay@codeaurora.org> <CAD=FV=XKyXnjsM4iS-ydRWBnmYMojPOaYAdYhOkxkPTCQf0RLQ@mail.gmail.com> <160757022002.1580929.8656750350166301192@swboyd.mtv.corp.google.com> <CAD=FV=WtU3cnRe6pDKFMA9_0cnQFtSOyohY_bJwZObK+KrbhVQ@mail.gmail.com> <160764107797.1580929.14768824290834396298@swboyd.mtv.corp.google.com> <CAD=FV=WuQjKC6GHy8d2nuqS-fgsUfxYrJosg3eyC9JU1FPCcjw@mail.gmail.com>
+Subject: Re: [PATCH] spi: spi-geni-qcom: Fix NULL pointer access in geni_spi_isr
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+To:     Doug Anderson <dianders@chromium.org>
+Date:   Thu, 10 Dec 2020 15:32:48 -0800
+Message-ID: <160764316821.1580929.18177257779550490986@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 02:40:38PM -0800, John Stultz wrote:
-> On Thu, Dec 10, 2020 at 8:06 AM Minchan Kim <minchan@kernel.org> wrote:
-> > On Thu, Dec 10, 2020 at 12:15:15AM -0800, John Stultz wrote:
-> > > Well, while I agree that conceptually the dmabuf heaps allow for
-> > > allocations for multi-device pipelines, and thus are not tied to
-> > > specific devices. I do think that the memory types exposed are likely
-> > > to have specific devices/drivers in the pipeline that it matters most
-> > > to. So I don't see a big issue with the in-kernel driver registering a
-> > > specific CMA region as a dmabuf heap.
+Quoting Doug Anderson (2020-12-10 15:07:39)
+> Hi,
+>=20
+> On Thu, Dec 10, 2020 at 2:58 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> > right? It will only ensure that other irq handlers have completed, which
+> > may be a problem, but not the only one.
 > >
-> > Then, I am worry about that we spread out dma_heap_add_cma to too many
-> > drivers since kernel doesn't how userspace will use it.
-> > For example, system 1 could have device A-B-C pipeline so they added
-> > it A driver. After that, system 2 could have device B-C-D pipeline
-> > so they add dma_heap_add_cma into B device.
-> 
-> I'm not sure I see this as a major issue? If the drivers add it based
-> on the dt memory reference, those will be configured to not add
-> duplicate heaps (and even so the heap driver can also ensure we don't
-> try to add a heap twice).
+> > TL;DR: Peek at the irq status register in the timeout logic and skip it
+> > if the irq is pending?
+>=20
+> I don't have tons of experience with synchronize_irq(), but the
+> function comment seems to indicate that as long as the interrupt is
+> pending synchronize_irq() will do what we want even if the CPU that
+> should handle the interrupt is in an irqsoff section.  Digging a
+> little bit I guess it relies upon the interrupt controller being able
+> to read this state, but (hopefully) the GIC can?
 
-Sure, it doesn't have any problem to work but design ponint of view,
-it looks werid to me in that one of random driver in the specific
-scenario should have the heap registration and then we propagate
-the heap registeration logics to other drivers day by day. To avoid DT
-binding with dmabuf directy but it seems we have bad design.
-To me, it sounds like to toss DT with anonymous dmabuf binding problem
-to device drivers.
+I didn't read synchronize_irq() more than the single line summary. I
+thought it would only make sure other irq handlers have finished, which
+is beside the point of some long section of code that has disabled irqs
+on CPU0 with local_irq_disable(). And further more, presumably the irq
+handler could be threaded, and then we could put a sufficiently large
+msleep() at the start of geni_spi_isr() and see the same problem?
 
-> 
-> > > Yea, an un-upstreamable dummy driver is maybe what it devolves to in
-> > > the worst case. But I suspect it would be cleaner for a display or ISP
-> > > driver that benefits most from the heap type to add the reserved
-> > > memory reference to their DT node, and on init for them to register
-> > > the region with the dmabuf heap code.
-> >
-> > As I mentioned above, it could be a display at this moment but it could
-> > be different driver next time. If I miss your point, let me know.
-> >
-> 
-> I guess I just don't see potentially having the registration calls
-> added to multiple drivers as a big problem.
-> 
-> Ideally, yes, I'd probably rather see a DT node that would allow the
-> heap driver to register specified regions, but that's been NACKed
-> multiple times. Given that, having hooks in device drivers to export
-> the region seems to me like the next best approach, as it avoids DT
-> ABI ( if ends up its a bad approach, its not something we have to
-> keep).
-> 
-> The bigger problem right now is not that there are too many places the
-> registration call would be made from, but that there aren't upstream
-> drivers which I'm aware of where it would currently make sense to add
-> specific dma_heap_add_cma() registration hooks to.  We need an
-> upstream user of Kunihiko Hayashi's patch.
+>=20
+> If it doesn't work like I think it does, I'd be OK with peeking in the
+> IRQ status register, but we shouldn't _skip_ the logic IMO.  As long
+> as we believe that an interrupt could happen in the future we
+> shouldn't return from handle_fifo_timeout().  It's impossible to
+> reason about how future transfers would work if the pending interrupt
+> from the previous transfer could fire at any point.
 
-Hmm, if that's only way to proceed, Hyesoo, do you have any specifid
-driver in your mind to bind the CMA area?
+Right. I just meant skip the timeout handling logic. We'd have to go
+back to the timeout and keep waiting until the irq handler can run and
+complete the completion variable.
+
+I forgot that this is half handled in the spi core though. Peeking at
+m_irq doesn't look very easy to implement. It certainly seems like this
+means the timeout handler is busted and the diagram earlier could
+indicate that spi core is driving this logic from
+spi_transfer_one_message().
+
+So why don't we check for cur_xfer being NULL in the rx/tx handling
+paths too and bail out there? Does the FIFO need to be cleared out in
+such a situation that spi core thinks a timeout happened but there's RX
+data according to m_irq? Do we need to read it all and throw it away? Or
+does the abort/cancel clear out the RX fifo?
+
+----8<-----
+diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+index 25810a7eef10..651b1720401a 100644
+--- a/drivers/spi/spi-geni-qcom.c
++++ b/drivers/spi/spi-geni-qcom.c
+@@ -522,10 +522,12 @@ static irqreturn_t geni_spi_isr(int irq, void *data)
+ 	spin_lock(&mas->lock);
+=20
+ 	if ((m_irq & M_RX_FIFO_WATERMARK_EN) || (m_irq & M_RX_FIFO_LAST_EN))
+-		geni_spi_handle_rx(mas);
++		if (mas->cur_xfer)
++			geni_spi_handle_rx(mas);
+=20
+ 	if (m_irq & M_TX_FIFO_WATERMARK_EN)
+-		geni_spi_handle_tx(mas);
++		if (mas->cur_xfer)
++			geni_spi_handle_tx(mas);
+=20
+ 	if (m_irq & M_CMD_DONE_EN) {
+ 		if (mas->cur_xfer) {
