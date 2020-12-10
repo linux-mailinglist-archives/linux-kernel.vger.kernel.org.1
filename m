@@ -2,180 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0BE2D69DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED5E2D69E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 22:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405027AbgLJV27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 16:28:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41362 "EHLO
+        id S2394021AbgLJV3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 16:29:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405007AbgLJV2l (ORCPT
+        with ESMTP id S2404831AbgLJV2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 16:28:41 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3EFC0613D6
+        Thu, 10 Dec 2020 16:28:46 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17A1C06179C
         for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:28:01 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id c14so4944556qtn.0
+Received: by mail-pf1-x443.google.com with SMTP id f9so5345389pfc.11
         for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 13:28:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=znkhNnIS3r1tEBD7K4eIaXfiP9kPaMqnTLtmCTJQVyA=;
-        b=PqG+LASskQ3owEZLeU6mT8YTJBB81lSWuT3PwZDqx6TGDVF1FYlcBKPcZ2jgfwBfVG
-         kyeff85FKMojSTeh1iCuzkhuNGEvLtxGBkjJqx00l4wVMUEIcTzNneTYh4MMUTKULkZ9
-         MBVUziUkZfNJpNP5/TzxZitth4UsbM5vXVenjpRywqW8Kbtt/AVEK63VXcsEHeoxtuSg
-         yA9aiTq7KKkLKakubv4WexJtcqAcDiJkZY1u8+ddMTuK1DA7Q4Tum3ExFxqns+VrZAz/
-         ZnkvelZgK6vbLEpS7V12awUAlQVgvePWhc5jQvQFuv1P7jlvkm9erXiqtfRGLwaw7KTA
-         3W4Q==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FbWegn4ZcYaOlGOVRUV3EeXBEpEFCkkB7Ag5Ofeu968=;
+        b=SOzaztliM9aHIQCbuNc7tHYRK9V3tX/XLLl1LEJ4fIxE7wPsAS8CsdXJYlh0S13KWQ
+         8KisfIcHujOla0iGv0LAFHNCNwxM/Ws/De86QeLZGN+wucsFQgDLoIk3YHIm41TKmu0C
+         BqMiTBQsX7SKnFeqF+FcmlUUph401+ogRljFw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=znkhNnIS3r1tEBD7K4eIaXfiP9kPaMqnTLtmCTJQVyA=;
-        b=s+VBBKxpNjSH8M3XzrsBkygtJrFsmP3yt+wc9bS0h4aokowkTBiHQcOQbNXz6N0WKz
-         /z87IfcUHChCYNVLsIHhnqmH5kCNWuiq0+l5ZT9/hNvq2syFDmaoelqIUGe5BDN5UOCI
-         TiW3LJ/bFpMbkVqMrhyxqsJ9oPnS0Hm+cpP2frcKTSPDLtOki/q9n3GEChqXoX9ooGYT
-         gRUIuCVywBr+6x+Nuklxgh2nmJ+sL3F6d8r18UYy872ljZmaEx+yJfblgxJSxt5MnoUC
-         UHD59DXred7NnsmD+SYIGDlO0DZg/7zAC1iDKYbqYVhlrtyArr/CxwFygKsInRzA19Y4
-         JcRQ==
-X-Gm-Message-State: AOAM533WGJcr+2mx+QCBV2I9BahGy56rchPPo/jXrXEM9V2RgBfU2zp2
-        stqUrIPvu3dCJLaQuVDlcZ8=
-X-Google-Smtp-Source: ABdhPJwV+5sZsY/kbhi3J4upW9OpmlLm7uqlBkYrHVHuMOU5am+ZKcpV/bq80OyQnIabmvd/4N3E2w==
-X-Received: by 2002:ac8:24a1:: with SMTP id s30mr11847093qts.89.1607635680417;
-        Thu, 10 Dec 2020 13:28:00 -0800 (PST)
-Received: from localhost.localdomain ([2804:14c:482:a80:6086:6f67:ecaf:b184])
-        by smtp.gmail.com with ESMTPSA id a11sm4640096qtd.19.2020.12.10.13.27.58
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FbWegn4ZcYaOlGOVRUV3EeXBEpEFCkkB7Ag5Ofeu968=;
+        b=SOzFmJyiZ74QsubRTc30mbiS+IUBh8sew/khAgpA73Dc0hvofTIT4pcFJnDDl/QXmO
+         flPcLEPxrcMBdj9jLO6pfw/W4gEOaeeAMKW0/ybf4DFQf4Nk1xs2KrQ1MNTttWK9Y03u
+         y5eNv2TjA4s0DQLDwVI8kf5R4a1GzqF/Nzg71qfKSSAntftxWqKSc8ZMFSnGu0wO6WGL
+         rhOgAtj3xTdqmwCEDGspnpj5+v21YhRKzszim+gfdFZM4Lai4Pe7LLKYorE5C2kf7qjX
+         udEZ9F9qx4kRSZznRO0afLLbS0wj7bapjtBTJHCnVfV0tjAiqTZdVNBw9Io+NCBl7d4q
+         xMDw==
+X-Gm-Message-State: AOAM533xM6GZGHY8tnQr5CEZ1m7/9DZLbKqRNpIj68pXTDKmnAKjhTbV
+        WKBYKLg6P0g17Z5S8BmwcmpsDQ==
+X-Google-Smtp-Source: ABdhPJx0GJXBr9wuxbpn/W7p5P5fmbFCWAp+gJEv/NSPZ3pFUeZWY5JQNddQzAXwm6eheATdbJV2Jg==
+X-Received: by 2002:a17:90a:fb97:: with SMTP id cp23mr9796208pjb.215.1607635681045;
+        Thu, 10 Dec 2020 13:28:01 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id t19sm7901664pgk.86.2020.12.10.13.27.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 13:27:59 -0800 (PST)
-From:   Fabio Estevam <festevam@gmail.com>
-To:     broonie@kernel.org
-Cc:     yibin.gong@nxp.com, linux-kernel@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] regulator: pfuze100: Convert the driver to DT-only
-Date:   Thu, 10 Dec 2020 18:27:48 -0300
-Message-Id: <20201210212748.5849-1-festevam@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 10 Dec 2020 13:28:00 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Stephen Boyd <swboyd@chromium.org>, vbadigan@codeaurora.org,
+        Taniya Das <tdas@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+Subject: [PATCH v3] mmc: sdhci-msm: Warn about overclocking SD/MMC
+Date:   Thu, 10 Dec 2020 13:27:52 -0800
+Message-Id: <20201210132745.v3.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 5.10-rc1 i.MX is a devicetree-only platform, so simplify the code
-by removing the unused non-DT support.
+As talked about in commit 5e4b7e82d497 ("clk: qcom: gcc-sdm845: Use
+floor ops for sdcc clks"), most clocks handled by the Qualcomm clock
+drivers are rounded _up_ by default instead of down.  We should make
+sure SD/MMC clocks are always rounded down in the clock drivers.
+Let's add a warning in the Qualcomm SDHCI driver to help catch the
+problem.
 
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
+This would have saved a bunch of time [1].
+
+[1] http://lore.kernel.org/r/20201210102234.1.I096779f219625148900fc984dd0084ed1ba87c7f@changeid
+
+Suggested-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
- drivers/regulator/Kconfig              |  2 +-
- drivers/regulator/pfuze100-regulator.c | 34 +-------------------------
- include/linux/regulator/pfuze100.h     |  6 -----
- 3 files changed, 2 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index cffadf8b2c37..53fa84f4d1e1 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -830,7 +830,7 @@ config REGULATOR_PF8X00
+Changes in v3:
+- Proper printf format code.
+
+Changes in v2:
+- Store rate in unsigned long, not unsigned int.
+- Reuse the clk_get_rate() in the later print.
+
+ drivers/mmc/host/sdhci-msm.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index 3451eb325513..50beb407dbe9 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -353,6 +353,7 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
+ 	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
+ 	struct mmc_ios curr_ios = host->mmc->ios;
+ 	struct clk *core_clk = msm_host->bulk_clks[0].clk;
++	unsigned long achieved_rate;
+ 	int rc;
  
- config REGULATOR_PFUZE100
- 	tristate "Freescale PFUZE100/200/3000/3001 regulator driver"
--	depends on I2C
-+	depends on I2C && OF
- 	select REGMAP_I2C
- 	help
- 	  Say y here to support the regulators found on the Freescale
-diff --git a/drivers/regulator/pfuze100-regulator.c b/drivers/regulator/pfuze100-regulator.c
-index 01a12cfcea7c..d60d7d1b7fa2 100644
---- a/drivers/regulator/pfuze100-regulator.c
-+++ b/drivers/regulator/pfuze100-regulator.c
-@@ -105,15 +105,6 @@ static const int pfuze3000_sw2hi[] = {
- 	2500000, 2800000, 2850000, 3000000, 3100000, 3150000, 3200000, 3300000,
- };
- 
--static const struct i2c_device_id pfuze_device_id[] = {
--	{.name = "pfuze100", .driver_data = PFUZE100},
--	{.name = "pfuze200", .driver_data = PFUZE200},
--	{.name = "pfuze3000", .driver_data = PFUZE3000},
--	{.name = "pfuze3001", .driver_data = PFUZE3001},
--	{ }
--};
--MODULE_DEVICE_TABLE(i2c, pfuze_device_id);
--
- static const struct of_device_id pfuze_dt_ids[] = {
- 	{ .compatible = "fsl,pfuze100", .data = (void *)PFUZE100},
- 	{ .compatible = "fsl,pfuze200", .data = (void *)PFUZE200},
-@@ -440,7 +431,6 @@ static struct pfuze_regulator pfuze3001_regulators[] = {
- 	PFUZE100_VGEN_REG(PFUZE3001, VLDO4, PFUZE100_VGEN6VOL, 1800000, 3300000, 100000),
- };
- 
--#ifdef CONFIG_OF
- /* PFUZE100 */
- static struct of_regulator_match pfuze100_matches[] = {
- 	{ .name = "sw1ab",	},
-@@ -578,22 +568,6 @@ static inline struct device_node *match_of_node(int index)
- {
- 	return pfuze_matches[index].of_node;
- }
--#else
--static int pfuze_parse_regulators_dt(struct pfuze_chip *chip)
--{
--	return 0;
--}
--
--static inline struct regulator_init_data *match_init_data(int index)
--{
--	return NULL;
--}
--
--static inline struct device_node *match_of_node(int index)
--{
--	return NULL;
--}
--#endif
- 
- static struct pfuze_chip *syspm_pfuze_chip;
- 
-@@ -708,8 +682,6 @@ static int pfuze100_regulator_probe(struct i2c_client *client,
- 				    const struct i2c_device_id *id)
- {
- 	struct pfuze_chip *pfuze_chip;
--	struct pfuze_regulator_platform_data *pdata =
--	    dev_get_platdata(&client->dev);
- 	struct regulator_config config = { };
- 	int i, ret;
- 	const struct of_device_id *match;
-@@ -802,10 +774,7 @@ static int pfuze100_regulator_probe(struct i2c_client *client,
- 
- 		desc = &pfuze_chip->regulator_descs[i].desc;
- 
--		if (pdata)
--			init_data = pdata->init_data[i];
--		else
--			init_data = match_init_data(i);
-+		init_data = match_init_data(i);
- 
- 		/* SW2~SW4 high bit check and modify the voltage value table */
- 		if (i >= sw_check_start && i <= sw_check_end) {
-@@ -879,7 +848,6 @@ static int pfuze100_regulator_remove(struct i2c_client *client)
+ 	clock = msm_get_clock_rate_for_bus_mode(host, clock);
+@@ -363,10 +364,20 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
+ 		       curr_ios.timing);
+ 		return;
+ 	}
++
++	/*
++	 * Qualcomm clock drivers by default round clock _up_ if they can't
++	 * make the requested rate.  This is not good for SD.  Yell if we
++	 * encounter it.
++	 */
++	achieved_rate = clk_get_rate(core_clk);
++	if (achieved_rate > clock)
++		pr_warn("%s: Card appears overclocked; req %u Hz, actual %lu Hz\n",
++			mmc_hostname(host->mmc), clock, achieved_rate);
++
+ 	msm_host->clk_rate = clock;
+ 	pr_debug("%s: Setting clock at rate %lu at timing %d\n",
+-		 mmc_hostname(host->mmc), clk_get_rate(core_clk),
+-		 curr_ios.timing);
++		 mmc_hostname(host->mmc), achieved_rate, curr_ios.timing);
  }
  
- static struct i2c_driver pfuze_driver = {
--	.id_table = pfuze_device_id,
- 	.driver = {
- 		.name = "pfuze100-regulator",
- 		.of_match_table = pfuze_dt_ids,
-diff --git a/include/linux/regulator/pfuze100.h b/include/linux/regulator/pfuze100.h
-index d47e668d9ca8..c964fe8ab698 100644
---- a/include/linux/regulator/pfuze100.h
-+++ b/include/linux/regulator/pfuze100.h
-@@ -63,10 +63,4 @@
- #define PFUZE3001_VLDO3		8
- #define PFUZE3001_VLDO4		9
- 
--struct regulator_init_data;
--
--struct pfuze_regulator_platform_data {
--	struct regulator_init_data *init_data[PFUZE100_MAX_REGULATOR];
--};
--
- #endif /* __LINUX_REG_PFUZE100_H */
+ /* Platform specific tuning */
 -- 
-2.17.1
+2.29.2.576.ga3fc446d84-goog
 
