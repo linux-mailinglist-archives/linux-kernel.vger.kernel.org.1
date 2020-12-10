@@ -2,70 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6390E2D5EE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F172D5ED6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388408AbgLJPC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:02:59 -0500
-Received: from ms.lwn.net ([45.79.88.28]:35604 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391678AbgLJOt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:49:27 -0500
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 1CD882DC;
-        Thu, 10 Dec 2020 14:48:46 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1CD882DC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1607611726; bh=sC0Gf4Xe3WsWr5Sn8762hoEqMXZBZPx8IRseLLdaRe4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eGD8bPi3IZvW78p9sLQ/CMQfPnevkvjLq7lYzPj+vyFMORZvDyyHZ9s36nIct9qQ2
-         B2N1zDNil8y/Ubw4Yx0P1l3Ks7osVAqYoERF60MSzPgUcyZ0HAcnjrHiu9dBixVJXP
-         KrNj40SDABGRMk0ITi1sbQHz4LdjowhcQmpWQ8M5a6ectgriy9/LvWiUwwpgdnecSV
-         ncIz50MhXMzHALLSJFULC/AQTf32tv1hfsqp45HfaoS+LDXOfEQqgI/tW7y4KsGIa/
-         DvFMw9fpKiU7SQKYsPMVNurzqnsXFfzMWuHQZaRacR8uqiffU974G6P2RYmNdTI08S
-         IixhD3V9a0h6A==
-Date:   Thu, 10 Dec 2020 07:48:45 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/13] docs: conf.py: fix sphinx version detection for
- margin set
-Message-ID: <20201210074845.4eb67f22@lwn.net>
-In-Reply-To: <0e610cbb57e85864b23d2b8fffa65c6b137daaac.1607597287.git.mchehab+huawei@kernel.org>
-References: <cover.1607597287.git.mchehab+huawei@kernel.org>
-        <0e610cbb57e85864b23d2b8fffa65c6b137daaac.1607597287.git.mchehab+huawei@kernel.org>
-Organization: LWN.net
+        id S2388149AbgLJPBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:01:23 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:28279 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729979AbgLJPAx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:00:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1607612453; x=1639148453;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UqMkvKL7D8SiD3dwz7dJFaadhU8wN/9oUbsLA7y6BBs=;
+  b=h0ql8Y8Mr2FEnK6WNEwyVgedGxs3JutllsUqxQL4XHEz+RulKBJnwU79
+   ozE4anMARd5NGJ7p23KEL/phBZ4r0LmHhXbTmlNh7jUSL2+Gt8Xhswghk
+   N1+MvvSpzA4dXw7YrvDnrfDQa/ahgzvqY8gW6cD1vfdHtitZXxNa6GXOl
+   PGFgE5lGeQNnj+gDfLtmfkePlUjvhxT9lwOKiUS2+0y1DWDFcN2ACVtbq
+   Dn25wqvke324/6lr302F7r1Hosv/OV5vdO0PMC9lF8u2mlQPzmDCQh5Hf
+   tzXdZjdMTWXIVZSl5fBHJQJwCMq9rD5HcgAZhTNkgrDyEuoXvy1NGdgwN
+   A==;
+IronPort-SDR: R3MJaP3nvzHZiidlIW4RrQ7dWRWphe6WNKjns6lRGwVl67uDBH1GvIQ5YmIHTkqYmUfE0wRLDc
+ kInbCicGpSSFFjeHQxGlInx6cNvrsz64ClS3jGpWs25RVDGkvIJVBNPWsxq7rGt4S5GQW+RyiU
+ VdlKiwdO1k5LNzChrE6WPp2SPJcYlzMbGg2Qe2vc3GbnLUw2ZBEcwusVYF3KIF7I+UCn5dtLE8
+ iu08kAFZUgviptzKSklFTEpjOo8b7wZhgJpaf6T8Zbi+gazz1XPtmj1TPxkLZQMbImhyZaPD2A
+ T58=
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="96633051"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Dec 2020 07:59:37 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 10 Dec 2020 07:59:37 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 10 Dec 2020 07:59:36 -0700
+Date:   Thu, 10 Dec 2020 15:59:35 +0100
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v9 3/4] phy: Add Sparx5 ethernet serdes PHY driver
+Message-ID: <20201210145935.see4n6csnomsl2rx@mchp-dev-shegelun>
+References: <20201207121345.3818234-1-steen.hegelund@microchip.com>
+ <20201207121345.3818234-4-steen.hegelund@microchip.com>
+ <20201210021134.GD2638572@lunn.ch>
+ <20201210125706.saub7c2rarifhbx4@mchp-dev-shegelun>
+ <20201210141610.GG2638572@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201210141610.GG2638572@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 11:55:40 +0100
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+On 10.12.2020 15:16, Andrew Lunn wrote:
+>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>
+>> > So why are returning link up information?
+>>
+>> Yes that was a bit of a hijacking of the function.  I will remove that.
+>> I also removed the dependency on this behaviour in the client driver in the
+>> meantime.
+>>
+>> I think a status function on the generic phy would be useful, but I will
+>> take that as separate issue.
+>
+>In this context of an Ethernet SERDES, do you actually need it? You
+>would normally look at the PCS link status to determine if the link is
+>up.  But it is useful debug information. If the PCS is down, but the
+>PHY indicates up, you can guess you have a protocol misconfiguration.
 
-> The PDF generator has a logic to detect the proper way to
-> setup the page margins. By default, the page has about
-> 14.8 cm, which is too short to display some tables and literal
-> blocks. So, previous patches changed it to be around 17.5 cm,
-> but the logic only works with Sphinx version 1.x.x.
-> 
-> Fix it.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Yes - you are probably right about that.  I have been exposing this via
+a procfs interface during the development phase, and it was really
+useful to have, to track down the origin of the problem in certain situations.
 
-Acked-by: Jonathan Corbet <corbet@lwn.net>
+But on a system level, the PCS link would have the final say anyway.
+>
+>What exactly does link at this level mean? And thinking of the wider
+>uses of the PHY subsystem, what would link mean at this level for
+>SATA, PCIe, USB? Don't these all have some protocol level above
+>similar to Ethernet PCS which is the real determiner of link?
 
-Feel free to route this one with the rest of the set.
+Yes - I think this is really only a debug feature.  No need to force
+this on the other PHY categories.
 
-Someday it might be nice to isolate all of the latex stuff into
-conf-latex.py or some such so most of us don't have to look at it..:)
 
-Thanks,
+>
+>     Andrew
 
-jon
+Thanks for your comments, Andrew.
+
+BR
+Steen
+
+---------------------------------------
+Steen Hegelund
+steen.hegelund@microchip.com
