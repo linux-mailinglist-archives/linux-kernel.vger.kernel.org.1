@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3FE2D56C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF872D56D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388692AbgLJJSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:18:51 -0500
-Received: from ns2.baikalelectronics.com ([94.125.187.42]:36810 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731424AbgLJJSt (ORCPT
+        id S1729731AbgLJJTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:19:06 -0500
+Received: from mx.baikalchip.ru ([94.125.187.42]:36822 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731311AbgLJJS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:18:49 -0500
+        Thu, 10 Dec 2020 04:18:56 -0500
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>
-Subject: [PATCH v4 02/10] arm64: dts: amlogic: meson-g12: Set FL-adj property value
-Date:   Thu, 10 Dec 2020 12:17:47 +0300
-Message-ID: <20201210091756.18057-3-Sergey.Semin@baikalelectronics.ru>
+        <linux-snps-arc@lists.infradead.org>
+Subject: [PATCH v4 03/10] arc: dts: Harmonize EHCI/OHCI DT nodes name
+Date:   Thu, 10 Dec 2020 12:17:48 +0300
+Message-ID: <20201210091756.18057-4-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201210091756.18057-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201210091756.18057-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -41,33 +38,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In accordance with the DWC USB3 bindings the property is supposed to have
-uint32 type. It's erroneous from the DT schema and driver points of view
-to declare it as boolean. As Neil suggested set it to 0x20 so not break
-the platform and to make the dtbs checker happy.
+In accordance with the Generic EHCI/OHCI bindings the corresponding node
+name is suppose to comply with the Generic USB HCD DT schema, which
+requires the USB nodes to have the name acceptable by the regexp:
+"^usb(@.*)?" . Make sure the "generic-ehci" and "generic-ohci"-compatible
+nodes are correctly named.
 
-Link: https://lore.kernel.org/linux-usb/20201010224121.12672-16-Sergey.Semin@baikalelectronics.ru/
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Alexey Brodkin <abrodkin@synopsys.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arc/boot/dts/axc003.dtsi        | 4 ++--
+ arch/arc/boot/dts/axc003_idu.dtsi    | 4 ++--
+ arch/arc/boot/dts/axs10x_mb.dtsi     | 4 ++--
+ arch/arc/boot/dts/hsdk.dts           | 4 ++--
+ arch/arc/boot/dts/vdk_axs10x_mb.dtsi | 2 +-
+ 5 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-index 8514fe6a275a..a6127002573b 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-@@ -2384,7 +2384,7 @@ dwc3: usb@ff500000 {
- 				interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
- 				dr_mode = "host";
- 				snps,dis_u2_susphy_quirk;
--				snps,quirk-frame-length-adjustment;
-+				snps,quirk-frame-length-adjustment = <0x20>;
- 				snps,parkmode-disable-ss-quirk;
+diff --git a/arch/arc/boot/dts/axc003.dtsi b/arch/arc/boot/dts/axc003.dtsi
+index cd1edcf4f95e..3434c8131ecd 100644
+--- a/arch/arc/boot/dts/axc003.dtsi
++++ b/arch/arc/boot/dts/axc003.dtsi
+@@ -103,11 +103,11 @@ ethernet@18000 {
+ 			dma-coherent;
+ 		};
+ 
+-		ehci@40000 {
++		usb@40000 {
+ 			dma-coherent;
+ 		};
+ 
+-		ohci@60000 {
++		usb@60000 {
+ 			dma-coherent;
+ 		};
+ 
+diff --git a/arch/arc/boot/dts/axc003_idu.dtsi b/arch/arc/boot/dts/axc003_idu.dtsi
+index 70779386ca79..67556f4b7057 100644
+--- a/arch/arc/boot/dts/axc003_idu.dtsi
++++ b/arch/arc/boot/dts/axc003_idu.dtsi
+@@ -110,11 +110,11 @@ ethernet@18000 {
+ 			dma-coherent;
+ 		};
+ 
+-		ehci@40000 {
++		usb@40000 {
+ 			dma-coherent;
+ 		};
+ 
+-		ohci@60000 {
++		usb@60000 {
+ 			dma-coherent;
+ 		};
+ 
+diff --git a/arch/arc/boot/dts/axs10x_mb.dtsi b/arch/arc/boot/dts/axs10x_mb.dtsi
+index 99d3e7175bf7..b64435385304 100644
+--- a/arch/arc/boot/dts/axs10x_mb.dtsi
++++ b/arch/arc/boot/dts/axs10x_mb.dtsi
+@@ -87,13 +87,13 @@ gmac: ethernet@18000 {
+ 			mac-address = [00 00 00 00 00 00]; /* Filled in by U-Boot */
+ 		};
+ 
+-		ehci@40000 {
++		usb@40000 {
+ 			compatible = "generic-ehci";
+ 			reg = < 0x40000 0x100 >;
+ 			interrupts = < 8 >;
+ 		};
+ 
+-		ohci@60000 {
++		usb@60000 {
+ 			compatible = "generic-ohci";
+ 			reg = < 0x60000 0x100 >;
+ 			interrupts = < 8 >;
+diff --git a/arch/arc/boot/dts/hsdk.dts b/arch/arc/boot/dts/hsdk.dts
+index dcaa44e408ac..fdd4f7f635d3 100644
+--- a/arch/arc/boot/dts/hsdk.dts
++++ b/arch/arc/boot/dts/hsdk.dts
+@@ -234,7 +234,7 @@ phy0: ethernet-phy@0 { /* Micrel KSZ9031 */
  			};
  		};
+ 
+-		ohci@60000 {
++		usb@60000 {
+ 			compatible = "snps,hsdk-v1.0-ohci", "generic-ohci";
+ 			reg = <0x60000 0x100>;
+ 			interrupts = <15>;
+@@ -242,7 +242,7 @@ ohci@60000 {
+ 			dma-coherent;
+ 		};
+ 
+-		ehci@40000 {
++		usb@40000 {
+ 			compatible = "snps,hsdk-v1.0-ehci", "generic-ehci";
+ 			reg = <0x40000 0x100>;
+ 			interrupts = <15>;
+diff --git a/arch/arc/boot/dts/vdk_axs10x_mb.dtsi b/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
+index cbb179770293..90a412026e64 100644
+--- a/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
++++ b/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
+@@ -46,7 +46,7 @@ ethernet@18000 {
+ 			clock-names = "stmmaceth";
+ 		};
+ 
+-		ehci@40000 {
++		usb@40000 {
+ 			compatible = "generic-ehci";
+ 			reg = < 0x40000 0x100 >;
+ 			interrupts = < 8 >;
 -- 
 2.29.2
 
