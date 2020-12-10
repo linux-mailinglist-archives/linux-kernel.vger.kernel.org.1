@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776CF2D6208
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FF52D61E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403878AbgLJQDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:03:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:49990 "EHLO foss.arm.com"
+        id S2392217AbgLJQFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:05:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389812AbgLJQD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:03:29 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E2B51FB;
-        Thu, 10 Dec 2020 08:02:42 -0800 (PST)
-Received: from [10.57.1.60] (unknown [10.57.1.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E05B33F68F;
-        Thu, 10 Dec 2020 08:02:40 -0800 (PST)
-Subject: Re: [PATCH v2 3/4] thermal/core: Use precomputed jiffies for the
- polling
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rui.zhang@intel.com, amitk@kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20201207190902.30464-1-daniel.lezcano@linaro.org>
- <20201207190902.30464-3-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <76044831-8bdb-ad27-ccb4-73523cad757a@arm.com>
-Date:   Thu, 10 Dec 2020 16:02:39 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2387551AbgLJQEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 11:04:51 -0500
+Date:   Thu, 10 Dec 2020 17:03:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607616222;
+        bh=Mtl6RgPMNU4L2bclllW7GySGPqjLTPkI7O0IFKCuac0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RY9C0+WHegg0Xw+VWDfjqFJMVS+PrDkR6451btUWZxHGBiR9E/B6f0Xec0Mm1DSED
+         nMOVNThN+w0kL2/3hhv/PSXhTjDbRsFpJGNe14YUzzbIWeiIjsgDKmxM/Yi4V0iBuQ
+         mUPLvAAwy0ehR19CfUoEEkCWL9FMMIqgqCVZp7FeOmifXkq2NeU5fLi1p5mJ9Adr4a
+         nv+iVfPhVdXqRxrYd9i12a6P0mwxB7OVQHcJyUi6qzwFCZgz879pchoF82Ztzk8+bt
+         EQL8wElrpgk+mJ/yvokPIJXuZ87sgrfpAZiVD8lApgeV/E8jncfsRoKT2wI80JLXgL
+         6DqSUjxGCkNZA==
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/13] docs: conf.py: fix sphinx version detection for
+ margin set
+Message-ID: <20201210170336.7506766a@coco.lan>
+In-Reply-To: <20201210074845.4eb67f22@lwn.net>
+References: <cover.1607597287.git.mchehab+huawei@kernel.org>
+        <0e610cbb57e85864b23d2b8fffa65c6b137daaac.1607597287.git.mchehab+huawei@kernel.org>
+        <20201210074845.4eb67f22@lwn.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201207190902.30464-3-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Thu, 10 Dec 2020 07:48:45 -0700
+Jonathan Corbet <corbet@lwn.net> escreveu:
 
-
-On 12/7/20 7:09 PM, Daniel Lezcano wrote:
-> The delays are also stored in jiffies based unit. Use them instead of
-> the ms.
+> On Thu, 10 Dec 2020 11:55:40 +0100
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 > 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   drivers/thermal/thermal_core.c | 13 ++++---------
->   1 file changed, 4 insertions(+), 9 deletions(-)
+> > The PDF generator has a logic to detect the proper way to
+> > setup the page margins. By default, the page has about
+> > 14.8 cm, which is too short to display some tables and literal
+> > blocks. So, previous patches changed it to be around 17.5 cm,
+> > but the logic only works with Sphinx version 1.x.x.
+> > 
+> > Fix it.
+> > 
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
 > 
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 08c6e4e36896..16ef5d652d85 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -291,14 +291,9 @@ static int __init thermal_register_governors(void)
->   static void thermal_zone_device_set_polling(struct thermal_zone_device *tz,
->   					    int delay)
->   {
-> -	if (delay > 1000)
-> +	if (delay)
->   		mod_delayed_work(system_freezable_power_efficient_wq,
-> -				 &tz->poll_queue,
-> -				 round_jiffies(msecs_to_jiffies(delay)));
-> -	else if (delay)
-> -		mod_delayed_work(system_freezable_power_efficient_wq,
-> -				 &tz->poll_queue,
-> -				 msecs_to_jiffies(delay));
-> +				 &tz->poll_queue, delay);
->   	else
->   		cancel_delayed_work(&tz->poll_queue);
->   }
-> @@ -317,9 +312,9 @@ static void monitor_thermal_zone(struct thermal_zone_device *tz)
->   	mutex_lock(&tz->lock);
->   
->   	if (!stop && tz->passive)
-> -		thermal_zone_device_set_polling(tz, tz->passive_delay_ms);
-> +		thermal_zone_device_set_polling(tz, tz->passive_delay_jiffies);
->   	else if (!stop && tz->polling_delay_ms)
-> -		thermal_zone_device_set_polling(tz, tz->polling_delay_ms);
-> +		thermal_zone_device_set_polling(tz, tz->polling_delay_jiffies);
->   	else
->   		thermal_zone_device_set_polling(tz, 0);
->   
+> Acked-by: Jonathan Corbet <corbet@lwn.net>
 > 
+> Feel free to route this one with the rest of the set.
+> 
+> Someday it might be nice to isolate all of the latex stuff into
+> conf-latex.py or some such so most of us don't have to look at it..:)
+
+Yeah, makes sense.
+
+Btw, just gave another trial of rst2pdf (sent the RFC patch
+adding support for it)...
 
 
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Still doesn't work: lots of documents are produced with
+zero size :-(
+
+
+Thanks,
+Mauro
