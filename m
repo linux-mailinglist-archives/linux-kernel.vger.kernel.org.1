@@ -2,29 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBFF2D5E00
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD7B2D5E6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390990AbgLJOgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:36:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40368 "EHLO mail.kernel.org"
+        id S2389295AbgLJOrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:47:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390778AbgLJOdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:33:49 -0500
+        id S2391217AbgLJOjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:39:19 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 4.19 35/39] i2c: qup: Fix error return code in qup_i2c_bam_schedule_desc()
-Date:   Thu, 10 Dec 2020 15:27:14 +0100
-Message-Id: <20201210142604.013134984@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.9 50/75] dm: remove invalid sparse __acquires and __releases annotations
+Date:   Thu, 10 Dec 2020 15:27:15 +0100
+Message-Id: <20201210142608.530707638@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
-References: <20201210142602.272595094@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,35 +30,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Mike Snitzer <snitzer@redhat.com>
 
-commit e9acf0298c664f825e6f1158f2a97341bf9e03ca upstream.
+commit bde3808bc8c2741ad3d804f84720409aee0c2972 upstream.
 
-Fix to return the error code from qup_i2c_change_state()
-instaed of 0 in qup_i2c_bam_schedule_desc().
+Fixes sparse warnings:
+drivers/md/dm.c:508:12: warning: context imbalance in 'dm_prepare_ioctl' - wrong count at exit
+drivers/md/dm.c:543:13: warning: context imbalance in 'dm_unprepare_ioctl' - wrong count at exit
 
-Fixes: fbf9921f8b35d9b2 ("i2c: qup: Fix error handling")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: 971888c46993f ("dm: hold DM table for duration of ioctl rather than use blkdev_get")
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/i2c/busses/i2c-qup.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/md/dm.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/i2c/busses/i2c-qup.c
-+++ b/drivers/i2c/busses/i2c-qup.c
-@@ -806,7 +806,8 @@ static int qup_i2c_bam_schedule_desc(str
- 	if (ret || qup->bus_err || qup->qup_err) {
- 		reinit_completion(&qup->xfer);
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -524,7 +524,6 @@ out:
  
--		if (qup_i2c_change_state(qup, QUP_RUN_STATE)) {
-+		ret = qup_i2c_change_state(qup, QUP_RUN_STATE);
-+		if (ret) {
- 			dev_err(qup->dev, "change to run state timed out");
- 			goto desc_err;
- 		}
+ static int dm_prepare_ioctl(struct mapped_device *md, int *srcu_idx,
+ 			    struct block_device **bdev)
+-	__acquires(md->io_barrier)
+ {
+ 	struct dm_target *tgt;
+ 	struct dm_table *map;
+@@ -558,7 +557,6 @@ retry:
+ }
+ 
+ static void dm_unprepare_ioctl(struct mapped_device *md, int srcu_idx)
+-	__releases(md->io_barrier)
+ {
+ 	dm_put_live_table(md, srcu_idx);
+ }
 
 
