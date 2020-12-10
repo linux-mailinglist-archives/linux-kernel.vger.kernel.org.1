@@ -2,369 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EF52D6458
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E60D2D644E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392988AbgLJSCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:02:51 -0500
-Received: from mail-bn8nam11on2055.outbound.protection.outlook.com ([40.107.236.55]:12128
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2392598AbgLJRMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:12:25 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FY4srpZfhdtxeJ9XMI5AFsyICEceknNOhE1ILTOmLFXj5uZMKfYc/vqG2xbeQuPWwLdZkJLQ6hu7P8b8OPP+eCoZNY+qctEFuOcPBi+24dhT4Fho2CyyedkRt3iQtXYQmFbK4UgErEzV20/tegfOEhzEF0i0ejxAohySxhlXIkt0xkjeDwieDT1x05ODQY/BXDC0KxT2rzyiqeO1fV1v+qZwgUqmOe+I9BRgy/yECuSojYMjrkHgdHiwBuy8ASyN4TypPds97C4O6gozzwsbAdZM/bL+OASYJkVSvofBvSA1vrh8SUCmWuJUzFz/jF0wZxbr6lCC4GyXOh3hsXOyHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/x/KtVi8hPGFLO6vKOwtBAPv4dLHZ2GgBJEUvm+W/dI=;
- b=V/P4UqA7slGI2TElJoT72NyT3r4AGAtHxP1WipYMlLoZrYdFahXzxg3FwVE0Tnx1qoQw+rHJBGOVf0xvB2yW9vBOM59Kw3FZrSHv75/mbQY73TMcWfFSZV0sXmBzIULp961br0jVxdT/JH7yJr8CoRfsjH/SrCDsA5fUtqtX6oNQTc3YFShOeIA9zI4uJgRb5JCWihqL2JP0rMKTtQOBMcE2g7L72xAWn8qFmk0vhd+phk/tU2OsLIdLORIhuz5l7A2ZOAWKImLfXQyB1fKyvq+dSJ9MFmoZPSYO+/TMlGplyD28UIR/LLrnh/tD6ToL6QozLjg+pQtTvaug8ewK0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/x/KtVi8hPGFLO6vKOwtBAPv4dLHZ2GgBJEUvm+W/dI=;
- b=MFVPFf84bfBGeMJjKCIjRhs/kdutstkWNc+k2gU5lZjyiv15UXvtgdXriuIuZe6+A9knLrMdXTnQfmJwYP7gu81lyhSM8e63AklPXP7WyHS9WuZHVEcEQX3nM+HpGrOnCm0PLHldLqTKORunS/YjMbeLcFq7IvfISRaXi81cDZw=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from CY4PR12MB1352.namprd12.prod.outlook.com (2603:10b6:903:3a::13)
- by CY4PR1201MB0149.namprd12.prod.outlook.com (2603:10b6:910:1c::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Thu, 10 Dec
- 2020 17:11:20 +0000
-Received: from CY4PR12MB1352.namprd12.prod.outlook.com
- ([fe80::a10a:295e:908d:550d]) by CY4PR12MB1352.namprd12.prod.outlook.com
- ([fe80::a10a:295e:908d:550d%8]) with mapi id 15.20.3632.021; Thu, 10 Dec 2020
- 17:11:19 +0000
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH v5 07/34] KVM: SVM: Add required changes to support intercepts under SEV-ES
-Date:   Thu, 10 Dec 2020 11:09:42 -0600
-Message-Id: <eb73a31713e8ddc324b61c4d4425f27cbf5eae50.1607620209.git.thomas.lendacky@amd.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1607620209.git.thomas.lendacky@amd.com>
-References: <cover.1607620209.git.thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: CH2PR10CA0018.namprd10.prod.outlook.com
- (2603:10b6:610:4c::28) To CY4PR12MB1352.namprd12.prod.outlook.com
- (2603:10b6:903:3a::13)
+        id S2392970AbgLJSB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:01:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45476 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732206AbgLJSBN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 13:01:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607623186;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=miPlyEGKFxoGa24ryNqCASQdc5deGGtvievJU2IZNcA=;
+        b=BxKDikVgZbm3D+OjVbvURdNbPBl/6NmA6aDgD6tPv2pTlEf2J72cQytLZfxGNoIqrI/KxN
+        CvPYFs3cT9ovbFEcArUWSz9SO8hI7qeEPahRXy8xQ5QIBeVkfKwQKXwHISpR09WxDf30Nj
+        M6M+cFUcMeUwlTAp6REovEyNZcQ4UjA=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-yCGgErpqO1Oq_5WKStBKDQ-1; Thu, 10 Dec 2020 12:59:45 -0500
+X-MC-Unique: yCGgErpqO1Oq_5WKStBKDQ-1
+Received: by mail-qt1-f198.google.com with SMTP id i1so4529250qtw.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:59:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=miPlyEGKFxoGa24ryNqCASQdc5deGGtvievJU2IZNcA=;
+        b=aMONLaQbFDzvrjoKAJffgmclQ8nGwReR6Wsp+4PrpOaCXCGJjQ0QRvnAXc8edOMjD8
+         NWssY2XUe9Iemp8r8WjWnZoOD7Zm7tscWnifm0UHE+DY2KgNSJEd28c3xzfp5M1UUuBN
+         nBojdm9w3wtVqrySx0UgeiEsWZt1dN2k2XyxbSH40NYkb8em15csX76ltAh3V/NnY3GA
+         vFxvW0BQ26Ubs2F2O+BRRiUjmD8370jmHerz4NyQUm9Dz7Z3DyMEPZ3mDKGVrvd7WQdD
+         QvDlupdnUPldZaJMV93URP0cko/P3RdPS4ile4BpGYrEu0mW3Ud0AaEjhfQBs62qSHkf
+         qyiQ==
+X-Gm-Message-State: AOAM532nls1Gwp4tr7w9Dcj/Okwpdl7GXCSJ38NhdL1PfK0vv7CfT0s+
+        SGoEc293O3SdTgv3Ub/n55vxijuTDF3Q6NKC0IkyLmmAJDkc9kmTjtSmWpWVSe3+PAmNKbJNwuZ
+        b9RU+y306bGXzTxCdEbPCfdWN
+X-Received: by 2002:aed:3051:: with SMTP id 75mr10549146qte.64.1607623184850;
+        Thu, 10 Dec 2020 09:59:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxxejh2Gr5HYiB6KfMBmbtZVRZHA4dnV4LUHU7T3+dXsaBxb5lrxub5RIB9FoNV4l/s8tTX7w==
+X-Received: by 2002:aed:3051:: with SMTP id 75mr10549123qte.64.1607623184645;
+        Thu, 10 Dec 2020 09:59:44 -0800 (PST)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id z8sm3851407qti.22.2020.12.10.09.59.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 09:59:43 -0800 (PST)
+Message-ID: <c4726b0adb72bbc9f740f05c22af1c6b9401a8e1.camel@redhat.com>
+Subject: Re: [PATCH 2/7] Revert "ACPI / OSI: Add OEM _OSI string to enable
+ NVidia HDMI audio"
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     Karol Herbst <kherbst@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org
+Cc:     Alex Hung <alex.hung@canonical.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>
+Date:   Thu, 10 Dec 2020 12:59:42 -0500
+In-Reply-To: <20190814213118.28473-3-kherbst@redhat.com>
+References: <20190814213118.28473-1-kherbst@redhat.com>
+         <20190814213118.28473-3-kherbst@redhat.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from tlendack-t1.amd.com (165.204.77.1) by CH2PR10CA0018.namprd10.prod.outlook.com (2603:10b6:610:4c::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 10 Dec 2020 17:11:18 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: f75ace3c-09d8-4c71-b996-08d89d2e9cea
-X-MS-TrafficTypeDiagnostic: CY4PR1201MB0149:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR1201MB01497D1A333A6B1FE35078B1ECCB0@CY4PR1201MB0149.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Xyn/YV4gVTYDUP+7jQfjbau2tBnO7Tv9gLf0MgTfIGFekRjE4XGUPbj3QqlZQAVq7dWkV1nCiSYt5ItsUnGTDHX/6rS+uF/PWk0KbYiv3rDyiXfOQTnHHDUgNbDGRQGDPuhmQGkMsYdzH967yvn5rmNuauipxJxkX53eJvufT5B74Q3G3FLri2Lm4415spRtByswg9eKgFEDxUldEKsaGi+TzqW3RtnsTp1SqwQD9tkwU+hQlTEnwutIbiWQgMsSHBEn76V892Yblv76HQxM8AHCS4bOg8C/C0Plx+QEqW7ezoGwikA55WNRBFLNAbzP2rZjFXmF4HsFgWRjkOw2cv9cgZyHVXruq5Pr/UUtQ4lI00UnJNgYKNYmaGxiNn3H
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1352.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(2906002)(5660300002)(6666004)(26005)(52116002)(186003)(83380400001)(16526019)(54906003)(6486002)(956004)(2616005)(8936002)(7696005)(508600001)(66946007)(66476007)(36756003)(8676002)(86362001)(34490700003)(4326008)(7416002)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hefccWGge5E7BkZW4QsEAP6PBdLHHeC12fuebOC0t7a7wbdeGMiVKzcdw3ns?=
- =?us-ascii?Q?ytFWAUi/UeqLvIEesf1EvlTy14GRB9OOUuztEZs7ZTh/1osj5T0ag/st95oh?=
- =?us-ascii?Q?zJ5H5NkDuxIsodvjAt2a8BOcDa3bSj/nc57jKXU39dlLn888EZ2j/X+cvLPs?=
- =?us-ascii?Q?TslDj77nwt17gcEu+RRVkEiWdm8+xmkF4VwLsu9wYFf94arTznyS0caFRuDG?=
- =?us-ascii?Q?I8+UoCHtsDIARItlLxdsVrTq4v2bZ3c6qPq4AQPGl+Q75T1M56WhaO1W558t?=
- =?us-ascii?Q?Ox2ZJPcksX9RCGwwWjT64ciriKdW8speR3BxrIpAma4TC0CWyu/J9lvChHTG?=
- =?us-ascii?Q?mKn1dxoq/G0lZZLNSphsUbZB2QRjtB679RUTes3Z8cQllWMsCa9EzmcUXxTm?=
- =?us-ascii?Q?4bJ5JG6tVB308P/JOZyu66prEimASzWXMTGYaQt5kLiT3TqnxkjTppzF6Fun?=
- =?us-ascii?Q?aLKoGKHiukRg1W6v5lmPOTBHrJgdRej2YYdgcnUH+SNT+LJlN/3UlnmnsG97?=
- =?us-ascii?Q?FsxS4vkI95BYjBFSsIOoQrhnYTNEA/LpCccEhUcg9WH74ev/WfXjQBRtmJ2S?=
- =?us-ascii?Q?NkVRyi90XF5scoe32pGqglyGo3DG56HGRqAbm1ywfvIr5oTd0zDPcVHid/Z3?=
- =?us-ascii?Q?8noEEifeHvn0H3+rFDR9CnQBApsVDMqkOQaEiWg2AV6ZzdddaVJkmyFwTWvN?=
- =?us-ascii?Q?tpm085xKf/K7jW6OlOGKdu2Dmuqp2TatansRlWpJFWoA+8VhZCDF0j1sxUbS?=
- =?us-ascii?Q?+H5Buq7Sq/AbUwBqF3tP9+ZCqb9TfcHdWCm3pduvR6wHQ9SxtNhSZbWx9I4w?=
- =?us-ascii?Q?ez2v6q1V8pzykHcHOkzuWkLH6UHtcEwRfB8hN0WdT7Q7f0tFCfttfD63v5lY?=
- =?us-ascii?Q?Xq6RiwpWvcWzbE0nKNDnUlkLFslFLqJIKxmehecRjsSzEVvRHgFN5EUDzzQc?=
- =?us-ascii?Q?4EywFnYULuOVAWqUL2v8RiDwbDjAlB6QP0xwIPIG0hDVpFU5gyGEu7PESFWp?=
- =?us-ascii?Q?9Jh9?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1352.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2020 17:11:19.8130
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: f75ace3c-09d8-4c71-b996-08d89d2e9cea
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pV9gsyfVIreujRaC5BgPQKqQZfN1SFDA6npkKqrzRlZ7ZkukrhNf3LakOpQBR4XOgdqrmyfwdqCZgApp9svUuw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0149
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Lendacky <thomas.lendacky@amd.com>
+Hi, bumping the discussion again here because we just ran into this again, as we
+just had a laptop OEM try to fix another issue by adding an OSI check for these
+strings instead of helping us fix the issue in nouveau. Note as  well the issue
+I'm referring to is entirely independent of runtime D3, so we just got runtime
+D3 broken again because of these hacks.
 
-When a guest is running under SEV-ES, the hypervisor cannot access the
-guest register state. There are numerous places in the KVM code where
-certain registers are accessed that are not allowed to be accessed (e.g.
-RIP, CR0, etc). Add checks to prevent register accesses and add intercept
-update support at various points within the KVM code.
+Why hasn't this patch been accepted into the kernel? These were added without
+any sort of discussion with nouveau developers, and nouveau is the canonical
+nvidia driver in the Linux kernel. These strings shouldn't be here without
+discussion with the relevant driver maintainers, and need to be removed.
 
-Also, when handling a VMGEXIT, exceptions are passed back through the
-GHCB. Since the RDMSR/WRMSR intercepts (may) inject a #GP on error,
-update the SVM intercepts to handle this for SEV-ES guests.
+On Wed, 2019-08-14 at 23:31 +0200, Karol Herbst wrote:
+> This reverts commit 887532ca7ca59fcf0547a79211756791128030a3.
+> 
+> We have a better solution for this: b516ea586d717
+> 
+> And same as with the last commit: "NVidia Linux driver" that's Nouveau, any
+> out of tree driver does _not_ matter. And with Nouveau all of this works even
+> though it required a proper fix first, but we have that now.
+> 
+> Signed-off-by: Karol Herbst <kherbst@redhat.com>
+> CC: Alex Hung <alex.hung@canonical.com>
+> CC: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> CC: Dave Airlie <airlied@redhat.com>
+> CC: Lyude Paul <lyude@redhat.com>
+> CC: Ben Skeggs <bskeggs@redhat.com>
+> ---
+>  drivers/acpi/osi.c | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/drivers/acpi/osi.c b/drivers/acpi/osi.c
+> index 9b20ac4d79a0..56cc95b6b724 100644
+> --- a/drivers/acpi/osi.c
+> +++ b/drivers/acpi/osi.c
+> @@ -53,14 +53,6 @@ osi_setup_entries[OSI_STRING_ENTRIES_MAX] __initdata = {
+>          * be removed if both new and old graphics cards are supported.
+>          */
+>         {"Linux-Dell-Video", true},
+> -       /*
+> -        * Linux-Lenovo-NV-HDMI-Audio is used by BIOS to power on NVidia's
+> HDMI
+> -        * audio device which is turned off for power-saving in Windows OS.
+> -        * This power management feature observed on some Lenovo Thinkpad
+> -        * systems which will not be able to output audio via HDMI without
+> -        * a BIOS workaround.
+> -        */
+> -       {"Linux-Lenovo-NV-HDMI-Audio", true},
+>  };
+>  
+>  static u32 acpi_osi_handler(acpi_string interface, u32 supported)
 
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
----
- arch/x86/include/asm/svm.h |   3 +-
- arch/x86/kvm/svm/svm.c     | 111 +++++++++++++++++++++++++++++++++----
- arch/x86/kvm/x86.c         |   6 +-
- 3 files changed, 107 insertions(+), 13 deletions(-)
-
-diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-index 1edf24f51b53..bce28482d63d 100644
---- a/arch/x86/include/asm/svm.h
-+++ b/arch/x86/include/asm/svm.h
-@@ -178,7 +178,8 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
- #define LBR_CTL_ENABLE_MASK BIT_ULL(0)
- #define VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK BIT_ULL(1)
- 
--#define SVM_INTERRUPT_SHADOW_MASK 1
-+#define SVM_INTERRUPT_SHADOW_MASK	BIT_ULL(0)
-+#define SVM_GUEST_INTERRUPT_MASK	BIT_ULL(1)
- 
- #define SVM_IOIO_STR_SHIFT 2
- #define SVM_IOIO_REP_SHIFT 3
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index cd4c9884e5a8..857d0d3f2752 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -36,6 +36,7 @@
- #include <asm/mce.h>
- #include <asm/spec-ctrl.h>
- #include <asm/cpu_device_id.h>
-+#include <asm/traps.h>
- 
- #include <asm/virtext.h>
- #include "trace.h"
-@@ -340,6 +341,13 @@ static int skip_emulated_instruction(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 
-+	/*
-+	 * SEV-ES does not expose the next RIP. The RIP update is controlled by
-+	 * the type of exit and the #VC handler in the guest.
-+	 */
-+	if (sev_es_guest(vcpu->kvm))
-+		goto done;
-+
- 	if (nrips && svm->vmcb->control.next_rip != 0) {
- 		WARN_ON_ONCE(!static_cpu_has(X86_FEATURE_NRIPS));
- 		svm->next_rip = svm->vmcb->control.next_rip;
-@@ -351,6 +359,8 @@ static int skip_emulated_instruction(struct kvm_vcpu *vcpu)
- 	} else {
- 		kvm_rip_write(vcpu, svm->next_rip);
- 	}
-+
-+done:
- 	svm_set_interrupt_shadow(vcpu, 0);
- 
- 	return 1;
-@@ -1652,9 +1662,18 @@ static void svm_set_gdt(struct kvm_vcpu *vcpu, struct desc_ptr *dt)
- 
- static void update_cr0_intercept(struct vcpu_svm *svm)
- {
--	ulong gcr0 = svm->vcpu.arch.cr0;
--	u64 *hcr0 = &svm->vmcb->save.cr0;
-+	ulong gcr0;
-+	u64 *hcr0;
-+
-+	/*
-+	 * SEV-ES guests must always keep the CR intercepts cleared. CR
-+	 * tracking is done using the CR write traps.
-+	 */
-+	if (sev_es_guest(svm->vcpu.kvm))
-+		return;
- 
-+	gcr0 = svm->vcpu.arch.cr0;
-+	hcr0 = &svm->vmcb->save.cr0;
- 	*hcr0 = (*hcr0 & ~SVM_CR0_SELECTIVE_MASK)
- 		| (gcr0 & SVM_CR0_SELECTIVE_MASK);
- 
-@@ -1674,7 +1693,7 @@ void svm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 
- #ifdef CONFIG_X86_64
--	if (vcpu->arch.efer & EFER_LME) {
-+	if (vcpu->arch.efer & EFER_LME && !vcpu->arch.guest_state_protected) {
- 		if (!is_paging(vcpu) && (cr0 & X86_CR0_PG)) {
- 			vcpu->arch.efer |= EFER_LMA;
- 			svm->vmcb->save.efer |= EFER_LMA | EFER_LME;
-@@ -2608,7 +2627,29 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 
- static int rdmsr_interception(struct vcpu_svm *svm)
- {
--	return kvm_emulate_rdmsr(&svm->vcpu);
-+	u32 ecx;
-+	u64 data;
-+
-+	if (!sev_es_guest(svm->vcpu.kvm))
-+		return kvm_emulate_rdmsr(&svm->vcpu);
-+
-+	ecx = kvm_rcx_read(&svm->vcpu);
-+	if (kvm_get_msr(&svm->vcpu, ecx, &data)) {
-+		trace_kvm_msr_read_ex(ecx);
-+		ghcb_set_sw_exit_info_1(svm->ghcb, 1);
-+		ghcb_set_sw_exit_info_2(svm->ghcb,
-+					X86_TRAP_GP |
-+					SVM_EVTINJ_TYPE_EXEPT |
-+					SVM_EVTINJ_VALID);
-+		return 1;
-+	}
-+
-+	trace_kvm_msr_read(ecx, data);
-+
-+	kvm_rax_write(&svm->vcpu, data & -1u);
-+	kvm_rdx_write(&svm->vcpu, (data >> 32) & -1u);
-+
-+	return kvm_skip_emulated_instruction(&svm->vcpu);
- }
- 
- static int svm_set_vm_cr(struct kvm_vcpu *vcpu, u64 data)
-@@ -2797,7 +2838,27 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
- 
- static int wrmsr_interception(struct vcpu_svm *svm)
- {
--	return kvm_emulate_wrmsr(&svm->vcpu);
-+	u32 ecx;
-+	u64 data;
-+
-+	if (!sev_es_guest(svm->vcpu.kvm))
-+		return kvm_emulate_wrmsr(&svm->vcpu);
-+
-+	ecx = kvm_rcx_read(&svm->vcpu);
-+	data = kvm_read_edx_eax(&svm->vcpu);
-+	if (kvm_set_msr(&svm->vcpu, ecx, data)) {
-+		trace_kvm_msr_write_ex(ecx, data);
-+		ghcb_set_sw_exit_info_1(svm->ghcb, 1);
-+		ghcb_set_sw_exit_info_2(svm->ghcb,
-+					X86_TRAP_GP |
-+					SVM_EVTINJ_TYPE_EXEPT |
-+					SVM_EVTINJ_VALID);
-+		return 1;
-+	}
-+
-+	trace_kvm_msr_write(ecx, data);
-+
-+	return kvm_skip_emulated_instruction(&svm->vcpu);
- }
- 
- static int msr_interception(struct vcpu_svm *svm)
-@@ -2827,7 +2888,14 @@ static int interrupt_window_interception(struct vcpu_svm *svm)
- static int pause_interception(struct vcpu_svm *svm)
- {
- 	struct kvm_vcpu *vcpu = &svm->vcpu;
--	bool in_kernel = (svm_get_cpl(vcpu) == 0);
-+	bool in_kernel;
-+
-+	/*
-+	 * CPL is not made available for an SEV-ES guest, so just set in_kernel
-+	 * to true.
-+	 */
-+	in_kernel = (sev_es_guest(svm->vcpu.kvm)) ? true
-+						  : (svm_get_cpl(vcpu) == 0);
- 
- 	if (!kvm_pause_in_guest(vcpu->kvm))
- 		grow_ple_window(vcpu);
-@@ -3090,10 +3158,13 @@ static int handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
- 
- 	trace_kvm_exit(exit_code, vcpu, KVM_ISA_SVM);
- 
--	if (!svm_is_intercept(svm, INTERCEPT_CR0_WRITE))
--		vcpu->arch.cr0 = svm->vmcb->save.cr0;
--	if (npt_enabled)
--		vcpu->arch.cr3 = svm->vmcb->save.cr3;
-+	/* SEV-ES guests must use the CR write traps to track CR registers. */
-+	if (!sev_es_guest(vcpu->kvm)) {
-+		if (!svm_is_intercept(svm, INTERCEPT_CR0_WRITE))
-+			vcpu->arch.cr0 = svm->vmcb->save.cr0;
-+		if (npt_enabled)
-+			vcpu->arch.cr3 = svm->vmcb->save.cr3;
-+	}
- 
- 	if (is_guest_mode(vcpu)) {
- 		int vmexit;
-@@ -3205,6 +3276,13 @@ static void update_cr8_intercept(struct kvm_vcpu *vcpu, int tpr, int irr)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 
-+	/*
-+	 * SEV-ES guests must always keep the CR intercepts cleared. CR
-+	 * tracking is done using the CR write traps.
-+	 */
-+	if (sev_es_guest(vcpu->kvm))
-+		return;
-+
- 	if (nested_svm_virtualize_tpr(vcpu))
- 		return;
- 
-@@ -3273,6 +3351,13 @@ bool svm_interrupt_blocked(struct kvm_vcpu *vcpu)
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	struct vmcb *vmcb = svm->vmcb;
- 
-+	/*
-+	 * SEV-ES guests to not expose RFLAGS. Use the VMCB interrupt mask
-+	 * bit to determine the state of the IF flag.
-+	 */
-+	if (sev_es_guest(svm->vcpu.kvm))
-+		return !(vmcb->control.int_state & SVM_GUEST_INTERRUPT_MASK);
-+
- 	if (!gif_set(svm))
- 		return true;
- 
-@@ -3458,6 +3543,12 @@ static void svm_complete_interrupts(struct vcpu_svm *svm)
- 		svm->vcpu.arch.nmi_injected = true;
- 		break;
- 	case SVM_EXITINTINFO_TYPE_EXEPT:
-+		/*
-+		 * Never re-inject a #VC exception.
-+		 */
-+		if (vector == X86_TRAP_VC)
-+			break;
-+
- 		/*
- 		 * In case of software exceptions, do not reinject the vector,
- 		 * but re-execute the instruction instead. Rewind RIP first
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index a3fdc16cfd6f..b6809a2851d2 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4018,7 +4018,7 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
- {
- 	int idx;
- 
--	if (vcpu->preempted)
-+	if (vcpu->preempted && !vcpu->arch.guest_state_protected)
- 		vcpu->arch.preempted_in_kernel = !kvm_x86_ops.get_cpl(vcpu);
- 
- 	/*
-@@ -8161,7 +8161,9 @@ static void post_kvm_run_save(struct kvm_vcpu *vcpu)
- {
- 	struct kvm_run *kvm_run = vcpu->run;
- 
--	kvm_run->if_flag = (kvm_get_rflags(vcpu) & X86_EFLAGS_IF) != 0;
-+	kvm_run->if_flag = (vcpu->arch.guest_state_protected)
-+		? kvm_arch_interrupt_allowed(vcpu)
-+		: (kvm_get_rflags(vcpu) & X86_EFLAGS_IF) != 0;
- 	kvm_run->flags = is_smm(vcpu) ? KVM_RUN_X86_SMM : 0;
- 	kvm_run->cr8 = kvm_get_cr8(vcpu);
- 	kvm_run->apic_base = kvm_get_apic_base(vcpu);
 -- 
-2.28.0
+Sincerely,
+   Lyude Paul (she/her)
+   Software Engineer at Red Hat
+   
+Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
+asked me a question, are waiting for a review/merge on a patch, etc. and I
+haven't responded in a while, please feel free to send me another email to check
+on my status. I don't bite!
 
