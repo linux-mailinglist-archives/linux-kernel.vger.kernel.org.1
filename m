@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B3B2D5DD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 559772D5E2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390565AbgLJOc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:32:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38756 "EHLO mail.kernel.org"
+        id S2403775AbgLJOn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:43:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390451AbgLJOar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:30:47 -0500
+        id S2391028AbgLJOgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:36:50 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+e3f23ce40269a4c9053a@syzkaller.appspotmail.com,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 4.9 42/45] gfs2: check for empty rgrp tree in gfs2_ri_update
+        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Pavel Shilovsky <pshilov@microsoft.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.4 19/54] cifs: allow syscalls to be restarted in __smb_send_rqst()
 Date:   Thu, 10 Dec 2020 15:26:56 +0100
-Message-Id: <20201210142604.420347613@linuxfoundation.org>
+Message-Id: <20201210142602.986507213@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
-References: <20201210142602.361598591@linuxfoundation.org>
+In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
+References: <20201210142602.037095225@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,37 +33,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Paulo Alcantara <pc@cjr.nz>
 
-commit 778721510e84209f78e31e2ccb296ae36d623f5e upstream.
+commit 6988a619f5b79e4efadea6e19dcfe75fbcd350b5 upstream.
 
-If gfs2 tries to mount a (corrupt) file system that has no resource
-groups it still tries to set preferences on the first one, which causes
-a kernel null pointer dereference. This patch adds a check to function
-gfs2_ri_update so this condition is detected and reported back as an
-error.
+A customer has reported that several files in their multi-threaded app
+were left with size of 0 because most of the read(2) calls returned
+-EINTR and they assumed no bytes were read.  Obviously, they could
+have fixed it by simply retrying on -EINTR.
 
-Reported-by: syzbot+e3f23ce40269a4c9053a@syzkaller.appspotmail.com
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+We noticed that most of the -EINTR on read(2) were due to real-time
+signals sent by glibc to process wide credential changes (SIGRT_1),
+and its signal handler had been established with SA_RESTART, in which
+case those calls could have been automatically restarted by the
+kernel.
+
+Let the kernel decide to whether or not restart the syscalls when
+there is a signal pending in __smb_send_rqst() by returning
+-ERESTARTSYS.  If it can't, it will return -EINTR anyway.
+
+Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+CC: Stable <stable@vger.kernel.org>
+Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/gfs2/rgrp.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ fs/cifs/transport.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/gfs2/rgrp.c
-+++ b/fs/gfs2/rgrp.c
-@@ -1000,6 +1000,10 @@ static int gfs2_ri_update(struct gfs2_in
- 	if (error < 0)
- 		return error;
+--- a/fs/cifs/transport.c
++++ b/fs/cifs/transport.c
+@@ -340,8 +340,8 @@ __smb_send_rqst(struct TCP_Server_Info *
+ 		return -EAGAIN;
  
-+	if (RB_EMPTY_ROOT(&sdp->sd_rindex_tree)) {
-+		fs_err(sdp, "no resource groups found in the file system.\n");
-+		return -ENOENT;
-+	}
- 	set_rgrp_preferences(sdp);
+ 	if (signal_pending(current)) {
+-		cifs_dbg(FYI, "signal is pending before sending any data\n");
+-		return -EINTR;
++		cifs_dbg(FYI, "signal pending before send request\n");
++		return -ERESTARTSYS;
+ 	}
  
- 	sdp->sd_rindex_uptodate = 1;
+ 	/* cork the socket */
 
 
