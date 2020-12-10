@@ -2,27 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECCF2D5E54
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:47:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBFF2D5E00
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391658AbgLJOrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:47:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46900 "EHLO mail.kernel.org"
+        id S2390990AbgLJOgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:36:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387589AbgLJOjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:39:13 -0500
+        id S2390778AbgLJOdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:33:49 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergei Shtepa <sergei.shtepa@veeam.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.9 48/75] dm: fix bug with RCU locking in dm_blk_report_zones
-Date:   Thu, 10 Dec 2020 15:27:13 +0100
-Message-Id: <20201210142608.431693504@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 4.19 35/39] i2c: qup: Fix error return code in qup_i2c_bam_schedule_desc()
+Date:   Thu, 10 Dec 2020 15:27:14 +0100
+Message-Id: <20201210142604.013134984@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
-References: <20201210142606.074509102@linuxfoundation.org>
+In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
+References: <20201210142602.272595094@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,37 +33,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Shtepa <sergei.shtepa@veeam.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-commit 89478335718c98557f10470a9bc5c555b9261c4e upstream.
+commit e9acf0298c664f825e6f1158f2a97341bf9e03ca upstream.
 
-The dm_get_live_table() function makes RCU read lock so
-dm_put_live_table() must be called even if dm_table map is not found.
+Fix to return the error code from qup_i2c_change_state()
+instaed of 0 in qup_i2c_bam_schedule_desc().
 
-Fixes: e76239a3748c9 ("block: add a report_zones method")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Fixes: fbf9921f8b35d9b2 ("i2c: qup: Fix error handling")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-qup.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -491,8 +491,10 @@ static int dm_blk_report_zones(struct ge
- 		return -EAGAIN;
+--- a/drivers/i2c/busses/i2c-qup.c
++++ b/drivers/i2c/busses/i2c-qup.c
+@@ -806,7 +806,8 @@ static int qup_i2c_bam_schedule_desc(str
+ 	if (ret || qup->bus_err || qup->qup_err) {
+ 		reinit_completion(&qup->xfer);
  
- 	map = dm_get_live_table(md, &srcu_idx);
--	if (!map)
--		return -EIO;
-+	if (!map) {
-+		ret = -EIO;
-+		goto out;
-+	}
- 
- 	do {
- 		struct dm_target *tgt;
+-		if (qup_i2c_change_state(qup, QUP_RUN_STATE)) {
++		ret = qup_i2c_change_state(qup, QUP_RUN_STATE);
++		if (ret) {
+ 			dev_err(qup->dev, "change to run state timed out");
+ 			goto desc_err;
+ 		}
 
 
