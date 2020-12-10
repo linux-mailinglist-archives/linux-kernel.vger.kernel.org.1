@@ -2,158 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4AD2D5030
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 02:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 633C22D504B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 02:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732096AbgLJBVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 20:21:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731943AbgLJBVE (ORCPT
+        id S1732348AbgLJBYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 20:24:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23518 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732182AbgLJBXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 20:21:04 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DFB7C0613CF;
-        Wed,  9 Dec 2020 17:20:24 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id x12so1453421plr.10;
-        Wed, 09 Dec 2020 17:20:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TnX3YC7/PBJ67zZPtWlNRRmtdbF2hw55/iK7zw29u2k=;
-        b=TD5SIHwzSQLGB7lAF6oefAYoP+OjXSSz3BPbsADRIAQE5tA2T5NRH1b5bcPivQTM1L
-         uBnrwPsw+Xqh2JVdZu9UUvyOh5P1QfxYga1Z8DF7lp+Y0fPksBj9gfx2llBnKYBpolV/
-         sfoRRvgO/pv0N/G5+10WZYGuEqeD+QekMJBsgeysWqGzpkIRuDI5RMuhhinP5+SLFBY8
-         5Y8tJuilUgaVOLEenUWIf1vNzD4VSc2cZ2EC49E9tJnLyzmCtOGkEOSyrHb092MpPWb0
-         y+ob186mvmvwJtp7SQhEbEHDKWY0XM39YusyZq8Gyfgsx2UEdDTO3/lyWZ9zHiubmkKw
-         02pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TnX3YC7/PBJ67zZPtWlNRRmtdbF2hw55/iK7zw29u2k=;
-        b=LafmFtBPCH3ljsKiq4haK4YeB2AxIViCg5x6/s06DE2ukjdA+qc7M1SMrfDSmRh9DR
-         eUuUhTCSmYYNQxxjUY5Fw8evHpHFQw2bIPbNwCminzdA4VEvitIzRdd1G1bIYv+don0f
-         J+kdW/5jqMU9JsHvg5d2ngP+4xifALe5R5XV+lFPIt4kVBN0M4uZ+DiCNu7Pfbfe+zHG
-         aZo+t12fOl9UoiTsviGasJmETWYhY3Z5xYy2QunYTU6N4dYm2cfDq6OCoXR9yPutRBsS
-         G8UkXQ7GkF0E8CtpPhpTCBfjpwtRfR/BMebtSjIywR7kje4N64LRoK+cUR1Wd9wc0JF4
-         4tIQ==
-X-Gm-Message-State: AOAM533pcFEFLvD6n/mD2F/uJsfq76APZvdHOWc9fc6mZ6wQdwEjmCSH
-        Eolw67K+ePvfXpiRqiKTmEi+Qmq6EZ+qyv7x
-X-Google-Smtp-Source: ABdhPJwwoTXnpLyWpnVPwDtbP/gj+3zMTxqPgMhRyppERxMeuSE1mXICo6iae5qDwp7Q7Ew/ooxaqg==
-X-Received: by 2002:a17:902:bd8d:b029:da:fcd1:664 with SMTP id q13-20020a170902bd8db02900dafcd10664mr4626692pls.30.1607563223347;
-        Wed, 09 Dec 2020 17:20:23 -0800 (PST)
-Received: from zen.local ([71.212.189.78])
-        by smtp.gmail.com with ESMTPSA id i123sm4138118pfb.28.2020.12.09.17.20.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 17:20:22 -0800 (PST)
-From:   Trent Piepho <tpiepho@gmail.com>
-To:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Hilda Wu <hildawu@realtek.com>,
-        Sathish Narasimman <sathish.narasimman@intel.com>,
-        Chethan T N <chethan.tumkur.narayan@intel.com>,
-        Hsin-Yu Chao <hychao@chromium.org>,
-        Amit K Bag <amit.k.bag@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Trent Piepho <tpiepho@gmail.com>
-Subject: [PATCH] Bluetooth: btusb: Always fallback to alt 1 for WBS
-Date:   Wed,  9 Dec 2020 17:20:03 -0800
-Message-Id: <20201210012003.133000-1-tpiepho@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 9 Dec 2020 20:23:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607563323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ojN+XeCoiEoB/J+D0kmgirDZ9CDdv4WvqFp0tmu7rNM=;
+        b=V8uhFvN5RAT4DY1eDINOhhQuVAaMzI6p9zauCxclqlATi7Aam3qayi4qC+MxmCZPjie9Ow
+        JWztktGZKsA1L6vsQ0ZnXqEQqiPWpCAGJ1grTizc5cJivpAy2P85I72qu7NZqhXoZR2SmU
+        nObLsKQegsfWVXn/f0AKVcHJy47W9j8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-256-oNmuq1iXMHy-GGuBp3x0KQ-1; Wed, 09 Dec 2020 20:22:02 -0500
+X-MC-Unique: oNmuq1iXMHy-GGuBp3x0KQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7C62612A2;
+        Thu, 10 Dec 2020 01:21:59 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-113-246.rdu2.redhat.com [10.10.113.246])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D5A7510023B6;
+        Thu, 10 Dec 2020 01:21:57 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Dave Airlie <airlied@gmail.com>, greg.depoire@gmail.com,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RFC 1/5] drm/nouveau/kms/nv40-/backlight: Assign prop type once
+Date:   Wed,  9 Dec 2020 20:21:39 -0500
+Message-Id: <20201210012143.729402-2-lyude@redhat.com>
+In-Reply-To: <20201210012143.729402-1-lyude@redhat.com>
+References: <20201210012143.729402-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When alt mode 6 is not available, fallback to the kernel <= 5.7 behavior
-of always using alt mode 1.
-
-Prior to kernel 5.8, btusb would always use alt mode 1 for WBS (Wide
-Band Speech aka mSBC aka transparent SCO).  In commit baac6276c0a9
-("Bluetooth: btusb: handle mSBC audio over USB Endpoints") this
-was changed to use alt mode 6, which is the recommended mode in the
-Bluetooth spec (Specifications of the Bluetooth System, v5.0, Vol 4.B
-§2.2.1).  However, many if not most BT USB adapters do not support alt
-mode 6.  In fact, I have been unable to find any which do.
-
-In kernel 5.8, this was changed to use alt mode 6, and if not available,
-use alt mode 0.  But mode 0 has a zero byte max packet length and can
-not possibly work.  It is just there as a zero-bandwidth dummy mode to
-work around a USB flaw that would prevent device enumeration if
-insufficient bandwidth were available for the lowest isoc mode
-supported.
-
-In effect, WBS was broken for all USB-BT adapters that do not support
-alt 6, which appears to nearly all of them.
-
-Then in commit 461f95f04f19 ("Bluetooth: btusb: USB alternate setting 1 for
-WBS") the 5.7 behavior was restored, but only for Realtek adapters.
-
-I've tested a Broadcom BRCM20702A and CSR 8510 adapter, both work with
-the 5.7 behavior and do not with the 5.8.
-
-So get rid of the Realtek specific flag and use the 5.7 behavior for all
-adapters as a fallback when alt 6 is not available.  This was the
-kernel's behavior prior to 5.8 and I can find no adapters for which it
-is not correct.  And even if there is an adapter for which this does not
-work, the current behavior would be to fall back to alt 0, which can not
-possibly work either, and so is no better.
-
-Signed-off-by: Trent Piepho <tpiepho@gmail.com>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Cc: Jani Nikula <jani.nikula@intel.com>
+Cc: Dave Airlie <airlied@gmail.com>
+Cc: greg.depoire@gmail.com
 ---
- drivers/bluetooth/btusb.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_backlight.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 03b83aa91277..1b690164ab5b 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -506,7 +506,6 @@ static const struct dmi_system_id btusb_needs_reset_resume_table[] = {
- #define BTUSB_HW_RESET_ACTIVE	12
- #define BTUSB_TX_WAIT_VND_EVT	13
- #define BTUSB_WAKEUP_DISABLE	14
--#define BTUSB_USE_ALT1_FOR_WBS	15
+diff --git a/drivers/gpu/drm/nouveau/nouveau_backlight.c b/drivers/gpu/drm/nouveau/nouveau_backlight.c
+index c7a94c94dbf3..4acc5be5e9aa 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_backlight.c
++++ b/drivers/gpu/drm/nouveau/nouveau_backlight.c
+@@ -106,7 +106,6 @@ nv40_backlight_init(struct nouveau_encoder *encoder,
+ 	if (!(nvif_rd32(device, NV40_PMC_BACKLIGHT) & NV40_PMC_BACKLIGHT_MASK))
+ 		return -ENODEV;
  
- struct btusb_data {
- 	struct hci_dev       *hdev;
-@@ -1736,15 +1735,12 @@ static void btusb_work(struct work_struct *work)
- 				new_alts = data->sco_num;
- 			}
- 		} else if (data->air_mode == HCI_NOTIFY_ENABLE_SCO_TRANSP) {
--			/* Check if Alt 6 is supported for Transparent audio */
--			if (btusb_find_altsetting(data, 6)) {
--				data->usb_alt6_packet_flow = true;
--				new_alts = 6;
--			} else if (test_bit(BTUSB_USE_ALT1_FOR_WBS, &data->flags)) {
--				new_alts = 1;
--			} else {
--				bt_dev_err(hdev, "Device does not support ALT setting 6");
--			}
-+			/* Bluetooth USB spec recommends alt 6 (63 bytes), but
-+			 * many adapters do not support it.  Alt 1 appears to
-+			 * work for all adapters that do not have alt 6, and
-+			 * which work with WBS at all.
-+			 */
-+			new_alts = btusb_find_altsetting(data, 6) ? 6 : 1;
- 		}
+-	props->type = BACKLIGHT_RAW;
+ 	props->max_brightness = 31;
+ 	*ops = &nv40_bl_ops;
+ 	return 0;
+@@ -212,7 +211,6 @@ nv50_backlight_init(struct nouveau_encoder *nv_encoder,
+ 	else
+ 		*ops = &nva3_bl_ops;
  
- 		if (btusb_switch_alt_setting(hdev, new_alts) < 0)
-@@ -4548,10 +4544,6 @@ static int btusb_probe(struct usb_interface *intf,
- 		 * (DEVICE_REMOTE_WAKEUP)
- 		 */
- 		set_bit(BTUSB_WAKEUP_DISABLE, &data->flags);
--		if (btusb_find_altsetting(data, 1))
--			set_bit(BTUSB_USE_ALT1_FOR_WBS, &data->flags);
--		else
--			bt_dev_err(hdev, "Device does not support ALT setting 1");
- 	}
+-	props->type = BACKLIGHT_RAW;
+ 	props->max_brightness = 100;
  
- 	if (!reset)
+ 	return 0;
+@@ -226,7 +224,7 @@ nouveau_backlight_init(struct drm_connector *connector)
+ 	struct nouveau_encoder *nv_encoder = NULL;
+ 	struct nvif_device *device = &drm->client.device;
+ 	char backlight_name[BL_NAME_SIZE];
+-	struct backlight_properties props = {0};
++	struct backlight_properties props = { .type = BACKLIGHT_RAW, 0 };
+ 	const struct backlight_ops *ops;
+ 	int ret;
+ 
 -- 
-2.26.2
+2.28.0
 
