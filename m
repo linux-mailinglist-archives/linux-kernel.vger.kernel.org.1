@@ -2,90 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503DB2D6BFD
+	by mail.lfdr.de (Postfix) with ESMTP id BDAAC2D6BFE
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733117AbgLJXg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:36:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48480 "EHLO
+        id S2394381AbgLJXg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:36:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbgLJXgd (ORCPT
+        with ESMTP id S1729077AbgLJXgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:36:33 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBA7C0613CF;
-        Thu, 10 Dec 2020 15:35:53 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CsVfD67Sbz9sW8;
-        Fri, 11 Dec 2020 10:35:47 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607643349;
-        bh=wcU5q7qkwrj0LZoJbiU9O0AvuwJYA0jd92X0Q83Ui0w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XflqUoG6Se6l8I2NpyU/d1Ard59knHmK8JTekOEuiJr9VtJCKj9SgXqy64qWu+vo0
-         MSf3idFrsmXuaEGuaRzFSytJeY9e5apC1xGCxeGlM0w1EGlGG4lHM0yditSUbQb+2g
-         i1o4S8EmaYfFelWxx9pgoaLZvtLZmyzW1Ld0HHlwS4ikI6T7vkbIgdA9Dcb7rnFWK+
-         x0TeXJ/sABXEDwGQdjuAmwbJGjqpz/qXKigVQx3kIDDlC/Xhzsk7ifVxp8yHKDWJct
-         EjzxvamTHQ8w+NbI4eriVVCVhFeON28AnPyuvvl/fb8I5aaTHWHD13VdVoHYzk54Bz
-         ZAcihx1KKB8hg==
-Date:   Fri, 11 Dec 2020 10:35:44 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the uml tree
-Message-ID: <20201211103544.190e1bd5@canb.auug.org.au>
+        Thu, 10 Dec 2020 18:36:38 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF51EC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:35:58 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id e2so5796269pgi.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:35:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1zotw90XLqcDkM4QBjrD8+g+RUBTvH9SBYxyWQvLQNY=;
+        b=d7fqM8sMRj4Y2nHfTSo4avhmT+Z9sc2UnKRD/eMrieWyZ68hQVnz9TXCk5xq8YOY14
+         00pxd/qvw500C0++WshW8hXrTG7ChOiLyc+FuvVTU6ZJxsjPQXJ29oDbYPAiKfVZOofz
+         rnZvo4oSC8jwDFccE1ZeCrUCGrKmrO/dOQn31VdA33xFWnPN6VMNwRBqcom7v/9kwdOt
+         TYWkRZA/oTmLYkuQ5yHbYQ1EOKn/AwzEXVLbkfbMZqOi9BofM5ySw5Mu9wjw5K+gvNgc
+         9ugAJswB+sLo+hNVrbr4yFNE+b40lVrI3qeJqzFH58W8nQ21rfsECPoM2qxVIGzmwDFl
+         RdaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1zotw90XLqcDkM4QBjrD8+g+RUBTvH9SBYxyWQvLQNY=;
+        b=oAYUSMBN+sm+f7lX5nyVRQuhENwZRzvQ2vNzd/bxpFkOyBBRCCmnSexU9gGoGNT1VA
+         eTuqwv35y9O11uiQMFuyIcsqM7xuiwGYz/uNtkCFfafPQBEkU/5gOgaR5bwZqdIro8dv
+         prLlTmCtSHMUbzoS/lBiJKrU+elyVWbR42LyHYD4k65kmWK52jkm1PoFc5Qfq8y6mTGm
+         Gpstttsg4BbdlqkJYmB++KMkJiQhzkWYTDAxTtFdxA8HhFrlJap7dhboZ4Zl6nQuCGyz
+         pxDGzh5YVRtx1NaZV57R4VESobsf5GmAfOQxZ/mg9JMNXuvamOeLm7ZF1/jkyJPkJauf
+         ReEg==
+X-Gm-Message-State: AOAM531J50O8omCwwiMLdk/s5YEykOrnYQ/BWiX67pRUAxjH35DpRp44
+        JZvnCybnGqekpgOI8wMrFQB8TgPDrS1W95cTx1p5ksjtxtRQzQ==
+X-Google-Smtp-Source: ABdhPJxEdjKKAZ+bVgMtm0H8TmCVntHvk0RawKGJmR+5n7hNjZnY+AS5Da8zSrZn4O6N3h1j+TcIvBA1/03dhta5PKg=
+X-Received: by 2002:aa7:80c9:0:b029:197:6775:4a5b with SMTP id
+ a9-20020aa780c90000b029019767754a5bmr8905715pfn.36.1607643357664; Thu, 10 Dec
+ 2020 15:35:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/tBSr8f7PZbAcCuhHbDsAANc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <CAK8P3a20LXgEQkYSpbFFrJs1mdg19W72dp3pbebH9Pkpib2g-g@mail.gmail.com>
+In-Reply-To: <CAK8P3a20LXgEQkYSpbFFrJs1mdg19W72dp3pbebH9Pkpib2g-g@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 10 Dec 2020 15:35:45 -0800
+Message-ID: <CAKwvOdn79V-jaTH0mEtKyc-O+=Hj22bGtjKkZ1jriY2YABj-Lw@mail.gmail.com>
+Subject: Re: objtool crashes with some clang produced .o files
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/tBSr8f7PZbAcCuhHbDsAANc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Dec 3, 2020 at 5:56 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> I see occasional randconfig builds failing on x86 with clang-11
+> and clang-12 when objtool crashes with a segmentation fault.
+>
+> The simplest test case I managed to create is
+>
+> $ echo "__SCK__tp_func_cdev_update() { __SCT__tp_func_cdev_update(); }" > file.c
+> $ clang-12 -c file.c -O2 -fno-asynchronous-unwind-tables
+> $ ./tools/objtool/objtool orc generate  file.o
+> Segmentation fault (core dumped)
+> $ clang-12 -S file.c -O2 -fno-asynchronous-unwind-tables -o-
+> .text
+> .file "file.c"
+> .globl __SCK__tp_func_cdev_update      # -- Begin function
+> __SCK__tp_func_cdev_update
+> .p2align 4, 0x90
+> .type __SCK__tp_func_cdev_update,@function
+> __SCK__tp_func_cdev_update:             # @__SCK__tp_func_cdev_update
+> # %bb.0:
+> xorl %eax, %eax
+> jmp __SCT__tp_func_cdev_update      # TAILCALL
+> .Lfunc_end0:
+> .size __SCK__tp_func_cdev_update, .Lfunc_end0-__SCK__tp_func_cdev_update
+>                                         # -- End function
+> .ident "Ubuntu clang version
+> 12.0.0-++20201129052612+ce134da4b18-1~exp1~20201129163253.238"
+> .section ".note.GNU-stack","",@progbits
+> .addrsig
+>
+> The behavior seems to depend on the specific symbol names, and it only happens
+> for the integrated assembler, not the GNU assembler.
+>
+> Attaching both .o files for reference.
 
-Hi all,
+Thanks for the report.
 
-In commit
+(gdb) r orc generate file.o
+Starting program: /android0/linux-next/tools/objtool/objtool orc generate file.o
 
-  1aa1cfc19405 ("um: Remove use of asprinf in umid.c")
+Program received signal SIGSEGV, Segmentation fault.
+0x000000000040d7d3 in elf_rebuild_rela_reloc_section (sec=0xc24e30,
+nr=<optimized out>) at elf.c:880
+880                     relocs[idx].r_info =
+GELF_R_INFO(reloc->sym->idx, reloc->type);
+(gdb) bt
+#0  0x000000000040d7d3 in elf_rebuild_rela_reloc_section
+(sec=0xc24e30, nr=<optimized out>) at elf.c:880
+#1  elf_rebuild_reloc_section (elf=<optimized out>,
+sec=sec@entry=0xc24e30) at elf.c:901
+#2  0x00000000004049b6 in create_static_call_sections (file=0x41f478
+<file>) at check.c:520
+#3  check (file=0x41f478 <file>) at check.c:2918
+#4  0x000000000040b97c in cmd_orc (argc=<optimized out>,
+argv=0x7fffffffda98) at builtin-orc.c:47
+#5  0x000000000040dce9 in handle_internal_command (argc=argc@entry=3,
+argv=argv@entry=0x7fffffffda90) at objtool.c:128
+#6  0x000000000040dbff in main (argc=3, argv=0x7fffffffda90) at objtool.c:151
+(gdb) p reloc
+$1 = (struct reloc *) 0xc24fd0
+(gdb) p *reloc
+$2 = {list = {next = 0xc25070, prev = 0xc24eb8}, hash = {next = 0x0,
+pprev = 0xc25080}, {rela = {r_offset = 0, r_info = 0, r_addend = 0},
+rel = {r_offset = 0, r_info = 0}},
+  sec = 0xc24e30, sym = 0x0, offset = 0, type = 2, addend = 2, idx =
+0, jump_table_start = false}
 
-Fixes tag
+So reloc->sym was NULL.
 
-  Fixes: 492edce1306f (um: remove uses of variable length arrays)
+(gdb) p *sec
+$2 = {list = {next = 0x7ffff559e068, prev = 0xc23bf0}, hash = {next =
+0x0, pprev = 0x7ffff65d60d8}, name_hash = {next = 0x0, pprev =
+0x7ffff6dd6888}, sh = {sh_name = 147, sh_type = 4,
+    sh_flags = 64, sh_addr = 0, sh_offset = 0, sh_size = 48, sh_link =
+7, sh_info = 8, sh_addralign = 8, sh_entsize = 24}, symbol_tree =
+{rb_node = 0x0}, symbol_list = {next = 0xc24ea8,
+    prev = 0xc24ea8}, reloc_list = {next = 0xc24fd0, prev = 0xc25070},
+base = 0xc23bf0, reloc = 0x0, sym = 0x0, data = 0xc23db0, name =
+0xc24f60 ".rela.static_call_sites", idx = 9,
+  len = 0, changed = true, text = false, rodata = false, noinstr = false}
 
-has these problem(s):
+So .rela.static_call_sites was the problematic section.
 
-  - Target SHA1 does not exist
+(gdb) b tools/objtool/check.c:475
+(gdb) r orc generate file.o
+Breakpoint 1, create_static_call_sections (file=0x41f478 <file>) at check.c:475
+475                     reloc->sym = insn->sec->sym;
+(gdb) p insn->sec->sym
+$4 = (struct symbol *) 0x0
+(gdb) p insn->sec->name
+$5 = 0xc22d26 ".text"
 
-Maybe you meant:
-
-Fixes: 0d4e5ac7e780 ("um: remove uses of variable length arrays")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/tBSr8f7PZbAcCuhHbDsAANc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/SsNAACgkQAVBC80lX
-0GzbnAf1Gsjc10Hsg4MKtbmfjRnTZsF17XD/zYnRUGmahz25PigKlyWZw1ab3vTV
-rBYtgumcTJuNKg0Zh2xA9X0ek1ZNQC9H2gXXRoB8E3SbfvGlQQCqOfmJqiY+ffua
-GVZqB5KKZg3nHlzDNyfj0wH+I5l/2C9xcb6LGDgWjCRbvyodx6W5PqM27lP8jtZ1
-FMhfSjibSJDO7IiyZmiIJiqZo4kqvUqqt9Wk8JZF2lJt88K1R8lAaLoV+c83E2rW
-yI1gpuT1TS3cEh9jRDLnuip9aFWCZlkYQq7l4HWwJex6B0ABCOWcJT9FhfureZCY
-i3kDkVeDlflHien475n3G3/so2IO
-=L9Z3
------END PGP SIGNATURE-----
-
---Sig_/tBSr8f7PZbAcCuhHbDsAANc--
+So some instruction in .text that contained a relocation for, we could
+not determine a symbol for?  I'm curious why we're even in this loop
+though, since we didn't do anything related to static calls...is
+`file->static_call_list` not populated correctly? Is the final else
+case from `add_jump_destinations` perhaps being hit and adding nodes
+to file->static_call_list incorrectly?
+-- 
+Thanks,
+~Nick Desaulniers
