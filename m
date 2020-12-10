@@ -2,26 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B032D65E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:07:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A54BF2D65E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390921AbgLJTF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:05:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38582 "EHLO mail.kernel.org"
+        id S2388952AbgLJObT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:31:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390471AbgLJObK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:31:10 -0500
+        id S2390269AbgLJOaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:30:16 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 06/31] USB: serial: kl5kusb105: fix memleak on open
-Date:   Thu, 10 Dec 2020 15:26:43 +0100
-Message-Id: <20201210142602.413492610@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.9 32/45] ftrace: Fix updating FTRACE_FL_TRAMP
+Date:   Thu, 10 Dec 2020 15:26:46 +0100
+Message-Id: <20201210142603.939371096@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
-References: <20201210142602.099683598@linuxfoundation.org>
+In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
+References: <20201210142602.361598591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -30,48 +32,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
-commit 3f203f057edfcf6bd02c6b942799262bfcf31f73 upstream.
+commit 4c75b0ff4e4bf7a45b5aef9639799719c28d0073 upstream.
 
-Fix memory leak of control-message transfer buffer on successful open().
+On powerpc, kprobe-direct.tc triggered FTRACE_WARN_ON() in
+ftrace_get_addr_new() followed by the below message:
+  Bad trampoline accounting at: 000000004222522f (wake_up_process+0xc/0x20) (f0000001)
 
-Fixes: 6774d5f53271 ("USB: serial: kl5kusb105: fix open error path")
+The set of steps leading to this involved:
+- modprobe ftrace-direct-too
+- enable_probe
+- modprobe ftrace-direct
+- rmmod ftrace-direct <-- trigger
+
+The problem turned out to be that we were not updating flags in the
+ftrace record properly. From the above message about the trampoline
+accounting being bad, it can be seen that the ftrace record still has
+FTRACE_FL_TRAMP set though ftrace-direct module is going away. This
+happens because we are checking if any ftrace_ops has the
+FTRACE_FL_TRAMP flag set _before_ updating the filter hash.
+
+The fix for this is to look for any _other_ ftrace_ops that also needs
+FTRACE_FL_TRAMP.
+
+Link: https://lkml.kernel.org/r/56c113aa9c3e10c19144a36d9684c7882bf09af5.1606412433.git.naveen.n.rao@linux.vnet.ibm.com
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: a124692b698b0 ("ftrace: Enable trampoline when rec count returns back to one")
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/kl5kusb105.c |   10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ kernel/trace/ftrace.c |   22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/kl5kusb105.c
-+++ b/drivers/usb/serial/kl5kusb105.c
-@@ -281,12 +281,12 @@ static int  klsi_105_open(struct tty_str
- 	priv->cfg.unknown2 = cfg->unknown2;
- 	spin_unlock_irqrestore(&priv->lock, flags);
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -1634,6 +1634,8 @@ static bool test_rec_ops_needs_regs(stru
+ static struct ftrace_ops *
+ ftrace_find_tramp_ops_any(struct dyn_ftrace *rec);
+ static struct ftrace_ops *
++ftrace_find_tramp_ops_any_other(struct dyn_ftrace *rec, struct ftrace_ops *op_exclude);
++static struct ftrace_ops *
+ ftrace_find_tramp_ops_next(struct dyn_ftrace *rec, struct ftrace_ops *ops);
  
-+	kfree(cfg);
+ static bool __ftrace_hash_rec_update(struct ftrace_ops *ops,
+@@ -1771,7 +1773,7 @@ static bool __ftrace_hash_rec_update(str
+ 			 * to it.
+ 			 */
+ 			if (ftrace_rec_count(rec) == 1 &&
+-			    ftrace_find_tramp_ops_any(rec))
++			    ftrace_find_tramp_ops_any_other(rec, ops))
+ 				rec->flags |= FTRACE_FL_TRAMP;
+ 			else
+ 				rec->flags &= ~FTRACE_FL_TRAMP;
+@@ -2193,6 +2195,24 @@ ftrace_find_tramp_ops_any(struct dyn_ftr
+ 			continue;
+ 
+ 		if (hash_contains_ip(ip, op->func_hash))
++			return op;
++	} while_for_each_ftrace_op(op);
 +
- 	/* READ_ON and urb submission */
- 	rc = usb_serial_generic_open(tty, port);
--	if (rc) {
--		retval = rc;
--		goto err_free_cfg;
--	}
-+	if (rc)
-+		return rc;
++	return NULL;
++}
++
++static struct ftrace_ops *
++ftrace_find_tramp_ops_any_other(struct dyn_ftrace *rec, struct ftrace_ops *op_exclude)
++{
++	struct ftrace_ops *op;
++	unsigned long ip = rec->ip;
++
++	do_for_each_ftrace_op(op, ftrace_ops_list) {
++
++		if (op == op_exclude || !op->trampoline)
++			continue;
++
++		if (hash_contains_ip(ip, op->func_hash))
+ 			return op;
+ 	} while_for_each_ftrace_op(op);
  
- 	rc = usb_control_msg(port->serial->dev,
- 			     usb_sndctrlpipe(port->serial->dev, 0),
-@@ -329,8 +329,6 @@ err_disable_read:
- 			     KLSI_TIMEOUT);
- err_generic_close:
- 	usb_serial_generic_close(port);
--err_free_cfg:
--	kfree(cfg);
- 
- 	return retval;
- }
 
 
