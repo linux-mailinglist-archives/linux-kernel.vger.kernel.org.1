@@ -2,117 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448BB2D558D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C662D558C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388057AbgLJIj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 03:39:26 -0500
-Received: from relay4.mymailcheap.com ([137.74.80.154]:51184 "EHLO
-        relay4.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729351AbgLJIj0 (ORCPT
+        id S2388080AbgLJIib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 03:38:31 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:38856 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730288AbgLJIia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 03:39:26 -0500
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay4.mymailcheap.com (Postfix) with ESMTPS id 7A20F3F1CF;
-        Thu, 10 Dec 2020 09:37:52 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 974082A36D;
-        Thu, 10 Dec 2020 03:37:51 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1607589471;
-        bh=HrD7qhc1OoOzSJpP+kvA7JwyCtX8S/S3JfM3s9uS++M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=n3fOsxEoCY3nMwK5EsRCREZgB2vZOatYxTXlHpNYfoIg1fYrUsXrqJmmk4vfHEVqn
-         yrW7MaIH7D/KaMJTj/3nA4Eu1Rnv5IW6nBkg8f5fcgmBnThHZ/nUKLcNHZ8ZOPl9vq
-         Ux40iszzm5rLwS5kYUfCsrHBHvK+A0ksJcbVf7xk=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id y-zySdsHOGaz; Thu, 10 Dec 2020 03:37:50 -0500 (EST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Thu, 10 Dec 2020 03:37:50 -0500 (EST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 1236040AA1;
-        Thu, 10 Dec 2020 08:37:49 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="blumhc1d";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.161.121])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 539724119A;
-        Thu, 10 Dec 2020 08:37:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1607589463; bh=HrD7qhc1OoOzSJpP+kvA7JwyCtX8S/S3JfM3s9uS++M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=blumhc1dmI7Lp/XoWIpWvbr4oa+6uyYhG8y3CEA0ooYNcCYygcUYCdEv5/xrqZ6NX
-         oSw1gQTqBxpAejB25qlg1sx0ZwZl49+VBBx5fq4zpZQBlwZZtvGKWIfo9xMv1Oir2d
-         jNkENrgIAr4jX0/+fgJOr163tVPKRPddGJR3n58E=
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Ondrej Jirman <megous@megous.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: [PATCH 0/3] PineTab with new panel DT
-Date:   Thu, 10 Dec 2020 16:37:22 +0800
-Message-Id: <20201210083722.1912981-1-icenowy@aosc.io>
-X-Mailer: git-send-email 2.28.0
+        Thu, 10 Dec 2020 03:38:30 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BA8TSmX007419;
+        Thu, 10 Dec 2020 08:37:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=X0opqCi36nQXTFJ3zk4g4+dG85M7cdjq8HMky/7Chgs=;
+ b=pdESCnqzL7P9pFgJcNtYR+0oN49CxVeJ5J+ykvII2n165xnJhzNpNvmstWKJkjDzAi0p
+ HEBsbwC+lJV5tmouviqYD24DUBlQGksu7K/o+hoA7CuD71G5jlbEJ9ziuzcIGiJv5qvE
+ SnZGJrVi75KlKDGiBENRI1PTSqMVqnfnsK/5dCJX4UNpfOB7seBq84zcV0sHXniIImR1
+ VZajG2bd3yyauxxAs7LKSNMAMJk0w1P/omllSlC5+BnDTi2+TYazy7SI1WgGYU3R/7xO
+ 6MqBQLBDVfq1SouCnC8PhuODSl8ynWannay2GVekFRPeWbL1ZYd8m+/Iumc4jfc6xOT4 TQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 35825mc4ne-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Dec 2020 08:37:44 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BA8TnMm178153;
+        Thu, 10 Dec 2020 08:37:44 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 358m51v6t5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Dec 2020 08:37:43 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BA8bgP5017895;
+        Thu, 10 Dec 2020 08:37:42 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 10 Dec 2020 00:37:42 -0800
+Date:   Thu, 10 Dec 2020 11:37:35 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Elliot Berman <eberman@codeaurora.org>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [kbuild] drivers/firmware/qcom_scm.c:181:12: warning: Redundant
+ condition: cpus. '!cpus || (cpus && cpumask_empty(cpus))' is equivalent to
+ '!cpus || cpumask_empty(cpus)'
+Message-ID: <20201210083735.GK2789@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [6.40 / 20.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.121:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[dt];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         DMARC_NA(0.00)[aosc.io];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         MID_CONTAINS_FROM(1.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Queue-Id: 1236040AA1
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Message-ID-Hash: QEBKNI57QQTN5ROLDJMYCADR3DGYE4SI
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9830 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012100055
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9830 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 clxscore=1011 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012100055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As discussed on the mailing list, here introduces a new DT for new
-PineTabs.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+head:   a2f5ea9e314ba6778f885c805c921e9362ec0420
+commit: 57d3b816718c1cf832e2929a754da3564c6127cc firmware: qcom_scm: Remove thin wrappers
+compiler: aarch64-linux-gcc (GCC) 9.3.0
 
-Icenowy Zheng (3):
-  dt-bindings: arm: sunxi: add PineTab new panel DT binding
-  arm64: allwinner: dts: a64: add DT for PineTab with new LCD panel
-  dt-bindings: arm: sunxi: note that old PineTab compatible has old
-    panel
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
- .../devicetree/bindings/arm/sunxi.yaml        |  7 ++++-
- arch/arm64/boot/dts/allwinner/Makefile        |  1 +
- .../sun50i-a64-pinetab-new-panel.dts          | 26 +++++++++++++++++++
- 3 files changed, 33 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-new-panel.dts
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
 
--- 
-2.28.0
+>> drivers/firmware/qcom_scm.c:181:12: warning: Redundant condition: cpus. '!cpus || (cpus && cpumask_empty(cpus))' is equivalent to '!cpus || cpumask_empty(cpus)' [redundantCondition]
+    if (!cpus || (cpus && cpumask_empty(cpus)))
+              ^
+
+vim +181 drivers/firmware/qcom_scm.c
+
+65f0c90b7d4685 Elliot Berman 2020-01-07  164  int qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus)
+2ce76a6ad32fa0 Lina Iyer     2015-03-02  165  {
+57d3b816718c1c Elliot Berman 2020-01-07  166  	int flags = 0;
+57d3b816718c1c Elliot Berman 2020-01-07  167  	int cpu;
+57d3b816718c1c Elliot Berman 2020-01-07  168  	int scm_cb_flags[] = {
+57d3b816718c1c Elliot Berman 2020-01-07  169  		QCOM_SCM_FLAG_COLDBOOT_CPU0,
+57d3b816718c1c Elliot Berman 2020-01-07  170  		QCOM_SCM_FLAG_COLDBOOT_CPU1,
+57d3b816718c1c Elliot Berman 2020-01-07  171  		QCOM_SCM_FLAG_COLDBOOT_CPU2,
+57d3b816718c1c Elliot Berman 2020-01-07  172  		QCOM_SCM_FLAG_COLDBOOT_CPU3,
+57d3b816718c1c Elliot Berman 2020-01-07  173  	};
+57d3b816718c1c Elliot Berman 2020-01-07  174  	struct qcom_scm_desc desc = {
+57d3b816718c1c Elliot Berman 2020-01-07  175  		.svc = QCOM_SCM_SVC_BOOT,
+57d3b816718c1c Elliot Berman 2020-01-07  176  		.cmd = QCOM_SCM_BOOT_SET_ADDR,
+57d3b816718c1c Elliot Berman 2020-01-07  177  		.arginfo = QCOM_SCM_ARGS(2),
+57d3b816718c1c Elliot Berman 2020-01-07  178  		.owner = ARM_SMCCC_OWNER_SIP,
+57d3b816718c1c Elliot Berman 2020-01-07  179  	};
+57d3b816718c1c Elliot Berman 2020-01-07  180  
+57d3b816718c1c Elliot Berman 2020-01-07 @181  	if (!cpus || (cpus && cpumask_empty(cpus)))
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This could be written as:  if (!cpus || cpumask_empty(cpus))
+
+57d3b816718c1c Elliot Berman 2020-01-07  182  		return -EINVAL;
+57d3b816718c1c Elliot Berman 2020-01-07  183  
+57d3b816718c1c Elliot Berman 2020-01-07  184  	for_each_cpu(cpu, cpus) {
+57d3b816718c1c Elliot Berman 2020-01-07  185  		if (cpu < ARRAY_SIZE(scm_cb_flags))
+57d3b816718c1c Elliot Berman 2020-01-07  186  			flags |= scm_cb_flags[cpu];
+57d3b816718c1c Elliot Berman 2020-01-07  187  		else
+57d3b816718c1c Elliot Berman 2020-01-07  188  			set_cpu_present(cpu, false);
+57d3b816718c1c Elliot Berman 2020-01-07  189  	}
+57d3b816718c1c Elliot Berman 2020-01-07  190  
+57d3b816718c1c Elliot Berman 2020-01-07  191  	desc.args[0] = flags;
+57d3b816718c1c Elliot Berman 2020-01-07  192  	desc.args[1] = virt_to_phys(entry);
+57d3b816718c1c Elliot Berman 2020-01-07  193  
+57d3b816718c1c Elliot Berman 2020-01-07  194  	return qcom_scm_call_atomic(__scm ? __scm->dev : NULL, &desc, NULL);
+2ce76a6ad32fa0 Lina Iyer     2015-03-02  195  }
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
+_______________________________________________
+kbuild mailing list -- kbuild@lists.01.org
+To unsubscribe send an email to kbuild-leave@lists.01.org
