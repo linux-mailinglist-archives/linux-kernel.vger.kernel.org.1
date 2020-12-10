@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D592D667D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF442D6639
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390246AbgLJOaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:30:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36422 "EHLO mail.kernel.org"
+        id S2390411AbgLJOap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:30:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732395AbgLJO2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:28:22 -0500
+        id S2390229AbgLJO3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:29:47 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
-        Florian Westphal <fw@strlen.de>,
+        stable@vger.kernel.org, Matti Vuorela <matti.vuorela@bitfactor.fi>,
+        Yves-Alexis Perez <corsac@corsac.net>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 05/39] netfilter: bridge: reset skb->pkt_type after NF_INET_POST_ROUTING traversal
-Date:   Thu, 10 Dec 2020 15:26:16 +0100
-Message-Id: <20201210142601.155596416@linuxfoundation.org>
+Subject: [PATCH 4.9 03/45] usbnet: ipheth: fix connectivity with iOS 14
+Date:   Thu, 10 Dec 2020 15:26:17 +0100
+Message-Id: <20201210142602.528034081@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
-References: <20201210142600.887734129@linuxfoundation.org>
+In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
+References: <20201210142602.361598591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,84 +32,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Yves-Alexis Perez <corsac@corsac.net>
 
-[ Upstream commit 44f64f23bae2f0fad25503bc7ab86cd08d04cd47 ]
+[ Upstream commit f33d9e2b48a34e1558b67a473a1fc1d6e793f93c ]
 
-Netfilter changes PACKET_OTHERHOST to PACKET_HOST before invoking the
-hooks as, while it's an expected value for a bridge, routing expects
-PACKET_HOST. The change is undone later on after hook traversal. This
-can be seen with pairs of functions updating skb>pkt_type and then
-reverting it to its original value:
+Starting with iOS 14 released in September 2020, connectivity using the
+personal hotspot USB tethering function of iOS devices is broken.
 
-For hook NF_INET_PRE_ROUTING:
-  setup_pre_routing / br_nf_pre_routing_finish
+Communication between the host and the device (for example ICMP traffic
+or DNS resolution using the DNS service running in the device itself)
+works fine, but communication to endpoints further away doesn't work.
 
-For hook NF_INET_FORWARD:
-  br_nf_forward_ip / br_nf_forward_finish
+Investigation on the matter shows that no UDP and ICMP traffic from the
+tethered host is reaching the Internet at all. For TCP traffic there are
+exchanges between tethered host and server but packets are modified in
+transit leading to impossible communication.
 
-But the third case where netfilter does this, for hook
-NF_INET_POST_ROUTING, the packet type is changed in br_nf_post_routing
-but never reverted. A comment says:
+After some trials Matti Vuorela discovered that reducing the URB buffer
+size by two bytes restored the previous behavior. While a better
+solution might exist to fix the issue, since the protocol is not
+publicly documented and considering the small size of the fix, let's do
+that.
 
-  /* We assume any code from br_dev_queue_push_xmit onwards doesn't care
-   * about the value of skb->pkt_type. */
-
-But when having a tunnel (say vxlan) attached to a bridge we have the
-following call trace:
-
-  br_nf_pre_routing
-  br_nf_pre_routing_ipv6
-     br_nf_pre_routing_finish
-  br_nf_forward_ip
-     br_nf_forward_finish
-  br_nf_post_routing           <- pkt_type is updated to PACKET_HOST
-     br_nf_dev_queue_xmit      <- but not reverted to its original value
-  vxlan_xmit
-     vxlan_xmit_one
-        skb_tunnel_check_pmtu  <- a check on pkt_type is performed
-
-In this specific case, this creates issues such as when an ICMPv6 PTB
-should be sent back. When CONFIG_BRIDGE_NETFILTER is enabled, the PTB
-isn't sent (as skb_tunnel_check_pmtu checks if pkt_type is PACKET_HOST
-and returns early).
-
-If the comment is right and no one cares about the value of
-skb->pkt_type after br_dev_queue_push_xmit (which isn't true), resetting
-it to its original value should be safe.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Reviewed-by: Florian Westphal <fw@strlen.de>
-Link: https://lore.kernel.org/r/20201123174902.622102-1-atenart@kernel.org
+Tested-by: Matti Vuorela <matti.vuorela@bitfactor.fi>
+Signed-off-by: Yves-Alexis Perez <corsac@corsac.net>
+Link: https://lore.kernel.org/linux-usb/CAAn0qaXmysJ9vx3ZEMkViv_B19ju-_ExN8Yn_uSefxpjS6g4Lw@mail.gmail.com/
+Link: https://github.com/libimobiledevice/libimobiledevice/issues/1038
+Link: https://lore.kernel.org/r/20201119172439.94988-1-corsac@corsac.net
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bridge/br_netfilter_hooks.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/usb/ipheth.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/bridge/br_netfilter_hooks.c
-+++ b/net/bridge/br_netfilter_hooks.c
-@@ -711,6 +711,11 @@ static int br_nf_dev_queue_xmit(struct n
- 	mtu_reserved = nf_bridge_mtu_reduction(skb);
- 	mtu = skb->dev->mtu;
+--- a/drivers/net/usb/ipheth.c
++++ b/drivers/net/usb/ipheth.c
+@@ -70,7 +70,7 @@
+ #define IPHETH_USBINTF_SUBCLASS 253
+ #define IPHETH_USBINTF_PROTO    1
  
-+	if (nf_bridge->pkt_otherhost) {
-+		skb->pkt_type = PACKET_OTHERHOST;
-+		nf_bridge->pkt_otherhost = false;
-+	}
-+
- 	if (nf_bridge->frag_max_size && nf_bridge->frag_max_size < mtu)
- 		mtu = nf_bridge->frag_max_size;
+-#define IPHETH_BUF_SIZE         1516
++#define IPHETH_BUF_SIZE         1514
+ #define IPHETH_IP_ALIGN		2	/* padding at front of URB */
+ #define IPHETH_TX_TIMEOUT       (5 * HZ)
  
-@@ -804,8 +809,6 @@ static unsigned int br_nf_post_routing(v
- 	else
- 		return NF_ACCEPT;
- 
--	/* We assume any code from br_dev_queue_push_xmit onwards doesn't care
--	 * about the value of skb->pkt_type. */
- 	if (skb->pkt_type == PACKET_OTHERHOST) {
- 		skb->pkt_type = PACKET_HOST;
- 		nf_bridge->pkt_otherhost = true;
 
 
