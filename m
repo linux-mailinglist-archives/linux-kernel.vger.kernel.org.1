@@ -2,190 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA192D642B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9CE2D6445
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392919AbgLJR4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:56:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36446 "EHLO
+        id S2392437AbgLJR74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:59:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392977AbgLJR4C (ORCPT
+        with ESMTP id S2389278AbgLJR7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:56:02 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7DBC0613CF;
-        Thu, 10 Dec 2020 09:55:22 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id e2so4913929pgi.5;
-        Thu, 10 Dec 2020 09:55:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hrVQ7SVyCoaV1mjAfYlqW3Uy9TiAxEzQ/B4ofiIVHhQ=;
-        b=W8nZhFPOpQyWe0xWfiZWqiCgkc2gW68guoHYsVDHeAyMCEgyPRCRgLtKy6YZ8BILgE
-         wo05WAGEinVfSYssL1rP5IdDgxg1kDUsJnNkKVd73x1vTIGEyy4XtfSiJCToV4iw3TGh
-         g/7dljAlpKdU4KO8DE46IamX0ajc8IMABUru42Sd3kgtKbn22J9jHQZPzTf34c1qR8mi
-         T6WFAe4nkKCi4JT77gegip2CrxptUdbiWEZdzIehDXE+ftNwWU4SBSWtyOHFjxiaBHH0
-         gU7cYg7qDXoehvpkIDHtGWSg9o6GRJ62qydXw/ARodQUtwQtif8kTxWtjA41MCw8SzKd
-         axrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hrVQ7SVyCoaV1mjAfYlqW3Uy9TiAxEzQ/B4ofiIVHhQ=;
-        b=nAhCM3yoWw42veSxi3asbHkHx5/hYQFxHk6PiPZE0tWKY+AA9Gx07sXdDG/0ILcZxU
-         CEYgHKFih04RtSdSwZEdE/DGUJkcDFwTiTVhCg3NWvLPBEOjCpkkKnmfb5qITbQIktgK
-         LPof8rzXpeD8JrYfUmSjtXCM3fSK5lRuzh0MXjI6bzpyhH+YTFJ+nbSSDctIWck+ZgEb
-         h8IQt+cabPkQtYNG0jBEXE5bzqkfLheojoK85ZPkNqaXiDpNNfIvKFzthhES6jXRe9QQ
-         e4kMBsLHBUGTP8AJTiqRyhJWDdmmqsPpT4WzwMMIHyv04RWaIEVFQK426RCDXdlY8j4A
-         11eA==
-X-Gm-Message-State: AOAM5304Gz78gGfOTE/P6t82Q0xQ8te4ASkn/3Ei2Vn3LvqjeRQrCgGv
-        4oijNe43m3CWKYlc4/sLWuogEUiuz2A=
-X-Google-Smtp-Source: ABdhPJx/k5t3uIeCLO/BipkM+UFAvT+G5JAF7k94zNJ+MieGAcyrddPn8g/0JEGNm7Ng6/he+OTrBA==
-X-Received: by 2002:a63:b910:: with SMTP id z16mr7690969pge.358.1607622921713;
-        Thu, 10 Dec 2020 09:55:21 -0800 (PST)
-Received: from [10.230.29.166] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id p15sm6969707pgl.19.2020.12.10.09.55.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 09:55:21 -0800 (PST)
-Subject: Re: [PATCH] net/netconsole: Support VLAN for netconsole
-To:     Libing Zhou <libing.zhou@nokia-sbell.com>, davem@davemloft.net,
-        mingo@redhat.com, Vladimir Oltean <olteanv@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201210100742.8874-1-libing.zhou@nokia-sbell.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <40a77a26-9944-245e-cb16-6690221efbd0@gmail.com>
-Date:   Thu, 10 Dec 2020 09:55:16 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.1
+        Thu, 10 Dec 2020 12:59:33 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3793CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:58:53 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0d410017205789a0fcbfc3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4100:1720:5789:a0fc:bfc3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BC6941EC0266;
+        Thu, 10 Dec 2020 18:58:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607623131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MwyvOQBqxuMUG7KzYXJrCDdCJAVHNYnOubZCd9QHgEo=;
+        b=QAbiXUnnXNeeVEl8f1bWlVdTRkQaqyuO5GwcX57rzx5YgNGyAoPsKd8SiHoQhEKOL3cswb
+        xJFTBEQqrivdDf2SutMFerrTsDT8f2MUOi3bt/x+qDD+kGByiHPn6aZFFd6jQgbpBKA5EE
+        NQZ4t6DTvpVHfanMjclYCmWpEGp+G0c=
+Date:   Thu, 10 Dec 2020 18:58:46 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 07/12] x86: add new features for paravirt patching
+Message-ID: <20201210175846.GE26529@zn.tnic>
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120114630.13552-8-jgross@suse.com>
+ <20201208184315.GE27920@zn.tnic>
+ <2510752e-5d3d-f71c-8a4c-a5d2aae0075e@suse.com>
+ <20201209120307.GB18203@zn.tnic>
+ <9e989b07-84e8-b07b-ba6e-c2a3ed19d7b1@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20201210100742.8874-1-libing.zhou@nokia-sbell.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <9e989b07-84e8-b07b-ba6e-c2a3ed19d7b1@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/10/2020 2:07 AM, Libing Zhou wrote:
-> During kernel startup phase, current netconsole doesn’t support VLAN
-> since there is no VLAN interface setup already.
+On Wed, Dec 09, 2020 at 01:22:24PM +0100, Jürgen Groß wrote:
+> Lets take the spin_unlock() case. With patch 11 of the series this is
 > 
-> This patch provides VLAN ID and PCP as optional boot/module parameters
-> to support VLAN environment, thus kernel startup log can be retrieved
-> via VLAN.
+> PVOP_ALT_VCALLEE1(lock.queued_spin_unlock, lock,
+>                   "movb $0, (%%" _ASM_ARG1 ");",
+>                   X86_FEATURE_NO_PVUNLOCK);
 > 
-> Signed-off-by: Libing Zhou <libing.zhou@nokia-sbell.com>
-> ---
->  Documentation/networking/netconsole.rst | 10 ++++-
->  drivers/net/netconsole.c                |  3 +-
->  include/linux/netpoll.h                 |  3 ++
->  net/core/netpoll.c                      | 58 ++++++++++++++++++++++++-
->  4 files changed, 70 insertions(+), 4 deletions(-)
+> which boils down to ALTERNATIVE "call *lock.queued_spin_unlock"
+>                                 "movb $0,(%rdi)" X86_FEATURE_NO_PVUNLOCK
 > 
-> diff --git a/Documentation/networking/netconsole.rst b/Documentation/networking/netconsole.rst
-> index 1f5c4a04027c..a08387fcc3f0 100644
-> --- a/Documentation/networking/netconsole.rst
-> +++ b/Documentation/networking/netconsole.rst
-> @@ -13,6 +13,8 @@ IPv6 support by Cong Wang <xiyou.wangcong@gmail.com>, Jan 1 2013
->  
->  Extended console support by Tejun Heo <tj@kernel.org>, May 1 2015
->  
-> +VLAN support by Libing Zhou <libing.zhou@nokia-sbell.com>, Dec 8 2020
-> +
->  Please send bug reports to Matt Mackall <mpm@selenic.com>
->  Satyam Sharma <satyam.sharma@gmail.com>, and Cong Wang <xiyou.wangcong@gmail.com>
->  
-> @@ -34,7 +36,7 @@ Sender and receiver configuration:
->  It takes a string configuration parameter "netconsole" in the
->  following format::
->  
-> - netconsole=[+][src-port]@[src-ip]/[<dev>],[tgt-port]@<tgt-ip>/[tgt-macaddr]
-> + netconsole=[+][src-port]@[src-ip]/[<dev>],[tgt-port]@<tgt-ip>/[tgt-macaddr][-V<vid:pcp>]
->  
->     where
->  	+             if present, enable extended console support
-> @@ -44,11 +46,17 @@ following format::
->  	tgt-port      port for logging agent (6666)
->  	tgt-ip        IP address for logging agent
->  	tgt-macaddr   ethernet MAC address for logging agent (broadcast)
-> +	-V            if present, enable VLAN support
-> +	vid:pcp       VLAN identifier and priority code point
->  
->  Examples::
->  
->   linux netconsole=4444@10.0.0.1/eth1,9353@10.0.0.2/12:34:56:78:9a:bc
->  
-> +or using VLAN::
-> +
-> + linux netconsole=4444@10.0.0.1/eth1,9353@10.0.0.2/12:34:56:78:9a:bc-V100:1
-> +
->  or::
->  
->   insmod netconsole netconsole=@/,@10.0.0.2/
-> diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
-> index 92001f7af380..f0690cd6a744 100644
-> --- a/drivers/net/netconsole.c
-> +++ b/drivers/net/netconsole.c
-> @@ -36,7 +36,6 @@
->  #include <linux/inet.h>
->  #include <linux/configfs.h>
->  #include <linux/etherdevice.h>
-> -
->  MODULE_AUTHOR("Maintainer: Matt Mackall <mpm@selenic.com>");
->  MODULE_DESCRIPTION("Console driver for network interfaces");
->  MODULE_LICENSE("GPL");
-> @@ -46,7 +45,7 @@ MODULE_LICENSE("GPL");
->  
->  static char config[MAX_PARAM_LENGTH];
->  module_param_string(netconsole, config, MAX_PARAM_LENGTH, 0);
-> -MODULE_PARM_DESC(netconsole, " netconsole=[src-port]@[src-ip]/[dev],[tgt-port]@<tgt-ip>/[tgt-macaddr]");
-> +MODULE_PARM_DESC(netconsole, " netconsole=[src-port]@[src-ip]/[dev],[tgt-port]@<tgt-ip>/[tgt-macaddr][-V<vid:pcp>]");
->  
->  static bool oops_only = false;
->  module_param(oops_only, bool, 0600);
-> diff --git a/include/linux/netpoll.h b/include/linux/netpoll.h
-> index e6a2d72e0dc7..8ab3f25cadae 100644
-> --- a/include/linux/netpoll.h
-> +++ b/include/linux/netpoll.h
-> @@ -31,6 +31,9 @@ struct netpoll {
->  	bool ipv6;
->  	u16 local_port, remote_port;
->  	u8 remote_mac[ETH_ALEN];
-> +	bool vlan_present;
-> +	u16 vlan_id;
-> +	u8 pcp;
->  };
->  
->  struct netpoll_info {
-> diff --git a/net/core/netpoll.c b/net/core/netpoll.c
-> index 2338753e936b..077a7aec51ae 100644
-> --- a/net/core/netpoll.c
-> +++ b/net/core/netpoll.c
-> @@ -478,6 +478,14 @@ void netpoll_send_udp(struct netpoll *np, const char *msg, int len)
->  
->  	skb->dev = np->dev;
->  
-> +	if (np->vlan_present) {
-> +		skb->vlan_proto = htons(ETH_P_8021Q);
-> +
-> +		/* htons for tci is done in __vlan_insert_inner_tag, not here */
-> +		skb->vlan_tci = (np->pcp << VLAN_PRIO_SHIFT) + (np->vlan_id & VLAN_VID_MASK);
-> +		skb->vlan_present = 1;
-> +	}
+> The initial (paravirt) code is an indirect call in order to allow
+> spin_unlock() before paravirt/alternative patching takes place.
+> 
+> Paravirt patching will then replace the indirect call with a direct call
+> to the correct unlock function. Then alternative patching might replace
+> the direct call to the bare metal unlock with a plain "movb $0,(%rdi)"
+> in case pvlocks are not enabled.
 
-This does not seem to be the way to go around this, I would rather
-specifying eth0.<VID> on the netconsole parameters and automatically
-create a VLAN interface from that which would ensure that everything
-works properly and that the VLAN interface is linked to its lower device
-properly.
+Aha, that zeros the locking var on unlock, I see.
 
-If you prefer your current syntax, that is probably fine, too but you
-should consider registering a VLAN device when you parse appropriate
-options.
+> In case alternative patching would occur first, the indirect call might
+> be replaced with the "movb ...", and then paravirt patching would
+> clobber that with the direct call, resulting in the bare metal
+> optimization being removed again.
+
+Yeah, that explains the whole situation much better - thanks - and
+considering how complex the whole patching is, I wouldn't mind the gist
+of it as text in alternative_instructions() or in a comment above it so
+that we don't have to swap everything back in, months and years from
+now, when we optimize it yet again. :-}
+
+Thx.
+
 -- 
-Florian
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
