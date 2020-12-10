@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974722D64FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:30:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A04AC2D64E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390820AbgLJOej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:34:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40672 "EHLO mail.kernel.org"
+        id S2390868AbgLJOfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:35:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390580AbgLJOcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:32:48 -0500
+        id S1726307AbgLJOdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:33:19 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
@@ -18,12 +18,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
         Ronnie Sahlberg <lsahlber@redhat.com>,
         Steve French <stfrench@microsoft.com>
-Subject: [PATCH 4.14 17/31] cifs: fix potential use-after-free in cifs_echo_request()
-Date:   Thu, 10 Dec 2020 15:26:54 +0100
-Message-Id: <20201210142602.955829564@linuxfoundation.org>
+Subject: [PATCH 4.19 17/39] cifs: fix potential use-after-free in cifs_echo_request()
+Date:   Thu, 10 Dec 2020 15:26:56 +0100
+Message-Id: <20201210142603.126746113@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
-References: <20201210142602.099683598@linuxfoundation.org>
+In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
+References: <20201210142602.272595094@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -69,7 +69,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/fs/cifs/connect.c
 +++ b/fs/cifs/connect.c
-@@ -756,6 +756,8 @@ static void clean_demultiplex_info(struc
+@@ -777,6 +777,8 @@ static void clean_demultiplex_info(struc
  	list_del_init(&server->tcp_ses_list);
  	spin_unlock(&cifs_tcp_ses_lock);
  
