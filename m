@@ -2,139 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438D82D6021
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D8C2D601C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391891AbgLJPmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:42:22 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:51246 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391442AbgLJPmG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:42:06 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BAFeD31120985;
-        Thu, 10 Dec 2020 09:40:13 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607614813;
-        bh=XO9fpkCxzX/zoFu+ZhwYzR7BVeSXJTzwpURR5r4FuyY=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=FekUCvFIyna43CWWR4J1FEsApW/8X/X2wb55sCCZVc2HWKgJ6EbXb0Ej4bIRqzEIS
-         jQnrdPqGEIF6dBe46VoAZ8gTa0/ZXF+7NTPub6N05HlBLCr0PJgerKhBgLgOBi2v+L
-         6KYupciPMuf+UG/O3f/2O64yDZcaFhW4UcAj2afw=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BAFeDZ7079260
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Dec 2020 09:40:13 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
- Dec 2020 09:40:12 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 10 Dec 2020 09:40:12 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BAFe5A3042208;
-        Thu, 10 Dec 2020 09:40:07 -0600
-Subject: Re: [RFC PATCH] RFC: drivers: gpio: helper for generic pin IRQ
- handling
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        <joyce.ooi@intel.com>, Andrew Jeffery <andrew@aj.id.au>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>, <orsonzhai@gmail.com>,
-        <baolin.wang7@gmail.com>, <zhang.lyra@gmail.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>
-References: <20201208141429.8836-1-info@metux.net>
- <CAHp75VfMKmJ074R2-04be0Ag6OuKcY=_xhhbRKsL2D0H8hZZLg@mail.gmail.com>
- <CAHp75VfOjb4Rfo9yPmwEYUDbaPXNjfGs6goM27ZnLdAMtiU+jA@mail.gmail.com>
- <0c16ab33-f87f-b32d-53d0-a44a5fecd6dc@ti.com>
- <710efa0f-063e-8a9e-1c3f-49337506b044@metux.net>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <ff1dcd9a-eb83-2cb5-30d3-b25976a227ab@ti.com>
-Date:   Thu, 10 Dec 2020 17:40:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2403784AbgLJPll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:41:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391934AbgLJPlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:41:39 -0500
+X-Gm-Message-State: AOAM533WBjJCglQTAFmX3DJhBukCoVLZIISGRCX5T4jrUSk93emkXuUo
+        6Ylb+JVbudODLcN4LSD+Eu2AD+LQVoM6J8toKg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607614857;
+        bh=kLtdmt4oMcr69ZeEaGpqsEmfBzPYipCBB3bI8s06kKQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GVcosNOtUN4j/bxX47UVlveHVCGqW8i9QaQZ6HkPlxWC3uYI0yv+Gz8C/CmsFnuUh
+         VHH6yRauv30XoxLjQP5qjpc9eNzgSOp8wiOZEFUefda4NKkf4zSwZUnhmpq04/8qxC
+         32fwTWovPXPS9Zl/un6zRImWeQV8nhGgzN3F5iIYbeGf1eXyg6AGD8bzI0PSh1xxtT
+         9pvdLYb2YwC3PrITFjio+/qf16+/CeVjxca6hB5cvpEs7nUm2sAyern7NBYbJbdmYr
+         ITHCpGuWGMKHJQ91R/TmXQHkCPjo0M+0pbylEP5aNu4c0HmGWu90CNCtWfpWtSUrDu
+         wYrkLofnlRiIg==
+X-Google-Smtp-Source: ABdhPJx0j+Lqm6Jk4mCnuNpLmDuRmlHsWfRP57mzErtMeTRrN6xR9D9GsxcZ0189bugqUjaw7RdnSXryhX8yUPqWXoM=
+X-Received: by 2002:a17:906:a106:: with SMTP id t6mr7055105ejy.63.1607614855174;
+ Thu, 10 Dec 2020 07:40:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <710efa0f-063e-8a9e-1c3f-49337506b044@metux.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <1607591262-21736-1-git-send-email-yongqiang.niu@mediatek.com> <1607591262-21736-2-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1607591262-21736-2-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 10 Dec 2020 23:40:44 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-oL+NyzDKssCjyP=E8Py3oyEK6a6s=XoYvTFymZE9-zQ@mail.gmail.com>
+Message-ID: <CAAOTY_-oL+NyzDKssCjyP=E8Py3oyEK6a6s=XoYvTFymZE9-zQ@mail.gmail.com>
+Subject: Re: [PATCH v8, 1/6] dt-bindings: mediatek: add rdma_fifo_size
+ description for mt8183 display
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Yongqiang:
 
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B412=E6=9C=
+=8810=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=885:22=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> rdma fifo size may be different even in same SOC, add this
+> property to the corresponding rdma
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  .../bindings/display/mediatek/mediatek,disp.txt          | 16 ++++++++++=
+++++++
+>  1 file changed, 16 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp=
+.txt
+> index 1212207..64c64ee 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
+t
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
+t
+> @@ -66,6 +66,13 @@ Required properties (DMA function blocks):
+>    argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.t=
+xt
+>    for details.
+>
+> +Optional properties (RDMA function blocks):
+> +- mediatek,rdma_fifo_size: rdma fifo size may be different even in same =
+SOC, add this
+> +  property to the corresponding rdma
+> +  the value is the Max value which defined in hardware data sheet.
+> +  rdma_fifo_size of rdma0 in mt8183 is 5120
+> +  rdma_fifo_size of rdma1 in mt8183 is 2048
+> +
+>  Examples:
+>
+>  mmsys: clock-controller@14000000 {
+> @@ -207,3 +214,12 @@ od@14023000 {
+>         power-domains =3D <&scpsys MT8173_POWER_DOMAIN_MM>;
+>         clocks =3D <&mmsys CLK_MM_DISP_OD>;
+>  };
+> +
+> +rdma1: rdma@1400c000 {
+> +       compatible =3D "mediatek,mt8183-disp-rdma";
+> +       reg =3D <0 0x1400c000 0 0x1000>;
+> +       interrupts =3D <GIC_SPI 229 IRQ_TYPE_LEVEL_LOW>;
+> +       power-domains =3D <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +       clocks =3D <&mmsys CLK_MM_DISP_RDMA1>;
+> +       mediatek,rdma_fifo_size =3D <2048>;
+> +};
 
-On 09/12/2020 12:23, Enrico Weigelt, metux IT consult wrote:
-> On 08.12.20 17:18, Grygorii Strashko wrote:
-> 
->>>>> Having all GPIO drivers doing their IRQ management entirely through the
->>>>> GPIO subsystem (eg. never calling generic_handle_irq() and using the
->>>>> builtin
->>>>> IRQ handling) would also allow a more direct (eg. callback-based)
->>>>> pin change
->>>>> notification for GPIO consumers, that doesn't involve registering
->>>>> them as
->>>>> generic IRQ handlers.
->>
->> Above part makes me worry - why?
-> 
-> Why so ?
-> 
-> Little clarification, in case i've been a bit confusion - there're two
-> separate topics:
-> 
-> a) consolidating repeated patterns (eg. calling the actual irq handling)
->     into gpiolib, (and later possibly use more fields already existing in
->     struct gpio_chip for irq handling)
+In [1], Rob has suggest that not add example of rdma1, it's better to
+add mediatek,rdma_fifo_size in rdma0 for example.
 
-Even if there is some pattern It doesn't mean consolidation is always reasonable.
-one of the things to think about is compiler optimization and will/will not this change
-add additional
+[1] https://patchwork.kernel.org/project/linux-mediatek/patch/1596855231-57=
+82-2-git-send-email-yongqiang.niu@mediatek.com/
 
-> 
-> b) a direct consumer callback for change, where the consumer doesn't
->     have to care about IRQs at all (some drivers could even do polling,
->     when hw doesn't have IRQs). This is for consumers that don't use
->     GPIOs as interrupt source, but more more like a very raw serial port,
->     eg. bitbanging of other interfaces (maybe an gpio bus type ? ;-))
+Regards,
+Chun-Kuang.
 
-in his case they do polling, so what's the issue with this?
-
-or you want gpio-controller to do polling for you?
-
-Actually there are few types of consumers:
-- gpio users, no irq
-- irq users, no gpio
-- gpio users and irq users
-- and finally (only few) use the same gpio as gpio and as an irq,
-   including dynamic direction change.
-
-> 
-> The above paragraph just outlines that b) might be much easier to
-> implement, once the suggested refactoring is done and no driver would
-> call irq handlers directly anymore. But this hasn't much to do with
-> the proposal itself, just an idea for future use.
-> 
-> --mtx
-> 
-
--- 
-Best regards,
-grygorii
+> --
+> 1.8.1.1.dirty
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
