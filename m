@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FA42D58F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FA72D58F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:10:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732885AbgLJLI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:08:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728919AbgLJLI6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:08:58 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BA0C0613CF;
-        Thu, 10 Dec 2020 03:08:18 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id g15so4331793ybq.6;
-        Thu, 10 Dec 2020 03:08:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TMRZYbq3/YGGQqCtm0ztggAEksDLbdNXFqO3NqcBf7o=;
-        b=fHRJRDkrFJ0b2hAIm/OBhL4fExu4aI4qM5Q6YkBYURJVyCOQdxoHleTqdUmbO/ENwK
-         xG5XV5zl3c9gbSiBSt+wmBweD2R8feb8cMvRauhTQqYFnYT8MY2XZvB9TjY5cmVFUfVu
-         I37K5GA7tpUlZL7llHaZMl6Aaqmr7JRfBFItzdeGKcGrEyXNi5gNpuTr1iwsOUMMtvSo
-         n5u0VKRkb5wnZFFp3fduENxJdqZ+FR6W6rsePa88w08XGe61RXlkNIMqGP0mf+THKAnB
-         qQc+UhfjTnm8jabD+zOm58qaxRytBkpTHEqE2E3P4hiIKdIPq3fSCWniWWufRSC+GP23
-         1DmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TMRZYbq3/YGGQqCtm0ztggAEksDLbdNXFqO3NqcBf7o=;
-        b=i77QLUMZyWnLrvKMLkzYf+/HcQCBNPc9Sj44I/4ILuWpPfrKMd1BCr51eXW+H5mg1Z
-         mRj19B8P41+VAsg3+4RAGTwznxEKWvGeV47QV0gyNBIfh0xdRSZeZk6raFQcg27E1J0I
-         FM9JIzh3c/TxuYsCEfGhiGLjTMDmS4/xsXtzqHXZY6VvwjnV5l9ewT4By+6NEs2Tf1Qj
-         qTCslLZ+9SBd0Ac0NCvQ9BM7+fvon4k5PPhmnPV4WL3M5KCdPzADXpxbSrr3Eo214ust
-         TFdhyKpA0b43qHrkZG5G440gpSlReM5nSLRYh1kt4xSLg3Yao4oAaAfuI2I/IpmgE+aO
-         QvYA==
-X-Gm-Message-State: AOAM530iXuHUdNQG2BKwFP1G/Istew6ZE/KEpyo0t5Wn3CLCOZmSrevv
-        TozoZ9Cfr6Ny+WgAJOa2/Q+6DSLD+hxHIF5yVBU=
-X-Google-Smtp-Source: ABdhPJzhmyM1kStq1dHTTkK8Ne310hXwRuJi6G1CWZtXEXfrPVV1Y0OP/tZcsRT3RL7X8v5m/YbCiyBI4pK+a3ohHHk=
-X-Received: by 2002:a25:ec5:: with SMTP id 188mr11136242ybo.387.1607598497708;
- Thu, 10 Dec 2020 03:08:17 -0800 (PST)
+        id S1733200AbgLJLKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:10:02 -0500
+Received: from foss.arm.com ([217.140.110.172]:35616 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732271AbgLJLJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:09:54 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C5C630E;
+        Thu, 10 Dec 2020 03:09:08 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1ABE13F718;
+        Thu, 10 Dec 2020 03:09:08 -0800 (PST)
+Date:   Thu, 10 Dec 2020 11:09:06 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: topology: Avoid the
+ static_branch_{enable|disable} dance
+Message-ID: <20201210110906.GA5300@arm.com>
+References: <5594c7d6756a47b473ceb6f48cc217458db32ab0.1607584435.git.viresh.kumar@linaro.org>
+ <10396de8046ada347d681eb84ea4dc6ec27e1742.1607593250.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-References: <20201204085835.2406541-1-atish.patra@wdc.com> <20201204085835.2406541-6-atish.patra@wdc.com>
-In-Reply-To: <20201204085835.2406541-6-atish.patra@wdc.com>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Thu, 10 Dec 2020 19:08:06 +0800
-Message-ID: <CAEUhbmVZwW-KNcbTp-59wyu-0ia0v02cXy4vxFoYAUH2dbx4-Q@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] MAINTAINERS: add microchip polarfire soc support
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Bin Meng <bin.meng@windriver.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>, Ivan.Griffin@microchip.com,
-        Cyril.Jean@microchip.com,
-        Daire McNamara <daire.mcnamara@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10396de8046ada347d681eb84ea4dc6ec27e1742.1607593250.git.viresh.kumar@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 5:07 PM Atish Patra <atish.patra@wdc.com> wrote:
->
-> From: Conor Dooley <conor.dooley@microchip.com>
->
-> Add Cyril Jean and Lewis Hanly as maintainers for the Microchip SoC
-> directory
->
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+On Thursday 10 Dec 2020 at 15:12:25 (+0530), Viresh Kumar wrote:
+> Avoid the static_branch_enable() and static_branch_disable() dance by
+> redoing the code in a different way. We will be fully invariant here
+> only if amu_fie_cpus is set with all present CPUs, use that instead of
+> yet another call to topology_scale_freq_invariant().
+> 
+> This also avoids running rest of the routine if we enabled the static
+> branch, followed by a disable.
+> 
+> Also make the first call to topology_scale_freq_invariant() just when we
+> need it, instead of at the top of the routine. This makes it further
+> clear on why we need it, i.e. just around enabling AMUs use here.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  MAINTAINERS | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
+>  arch/arm64/kernel/topology.c | 21 +++++++++------------
+>  1 file changed, 9 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> index 7f7d8de325b6..6dedc6ee91cf 100644
+> --- a/arch/arm64/kernel/topology.c
+> +++ b/arch/arm64/kernel/topology.c
+> @@ -221,7 +221,7 @@ static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
+>  
+>  static int __init init_amu_fie(void)
+>  {
+> -	bool invariance_status = topology_scale_freq_invariant();
+> +	bool invariance_status;
+>  	cpumask_var_t valid_cpus;
+>  	int ret = 0;
+>  	int cpu;
+> @@ -255,18 +255,15 @@ static int __init init_amu_fie(void)
+>  	    cpumask_equal(valid_cpus, cpu_present_mask))
+>  		cpumask_copy(amu_fie_cpus, cpu_present_mask);
+>  
+> -	if (!cpumask_empty(amu_fie_cpus)) {
+> -		pr_info("CPUs[%*pbl]: counters will be used for FIE.",
+> -			cpumask_pr_args(amu_fie_cpus));
+> -		static_branch_enable(&amu_fie_key);
+> -	}
 
-Reviewed-by: Bin Meng <bin.meng@windriver.com>
+This check verifies if there are *any* CPUs for which AMUs can be used for
+FIE (!empty mask) -> enable static key.
+
+> +	/* Disallow partial use of counters for frequency invariance */
+> +	if (!cpumask_equal(amu_fie_cpus, cpu_present_mask))
+> +		goto free_valid_mask;
+>  
+
+The replacement verifies if *all* present CPUs support AMUs for FIE and
+only then it enables the static key.
+
+Ionela.
+
+> -	/*
+> -	 * If the system is not fully invariant after AMU init, disable
+> -	 * partial use of counters for frequency invariance.
+> -	 */
+> -	if (!topology_scale_freq_invariant())
+> -		static_branch_disable(&amu_fie_key);
+> +	pr_info("CPUs[%*pbl]: counters will be used for FIE.",
+> +		cpumask_pr_args(amu_fie_cpus));
+> +
+> +	invariance_status = topology_scale_freq_invariant();
+> +	static_branch_enable(&amu_fie_key);
+>  
+>  	/*
+>  	 * Task scheduler behavior depends on frequency invariance support,
+> -- 
+> 2.25.0.rc1.19.g042ed3e048af
+> 
