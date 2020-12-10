@@ -2,27 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0D62D62FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B53F82D62E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390947AbgLJRFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:05:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42936 "EHLO mail.kernel.org"
+        id S2392460AbgLJRBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:01:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390894AbgLJOfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:35:25 -0500
+        id S2390983AbgLJOgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:36:09 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Subject: [PATCH 5.4 32/54] x86/uprobes: Do not use prefixes.nbytes when looping over prefixes.bytes
-Date:   Thu, 10 Dec 2020 15:27:09 +0100
-Message-Id: <20201210142603.612759048@linuxfoundation.org>
+        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 5.4 38/54] i2c: imx: Check for I2SR_IAL after every byte
+Date:   Thu, 10 Dec 2020 15:27:15 +0100
+Message-Id: <20201210142603.908115809@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
 References: <20201210142602.037095225@linuxfoundation.org>
@@ -34,123 +33,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Christian Eggers <ceggers@arri.de>
 
-commit 4e9a5ae8df5b3365183150f6df49e49dece80d8c upstream.
+commit 1de67a3dee7a279ebe4d892b359fe3696938ec15 upstream.
 
-Since insn.prefixes.nbytes can be bigger than the size of
-insn.prefixes.bytes[] when a prefix is repeated, the proper check must
-be
+Arbitration Lost (IAL) can happen after every single byte transfer. If
+arbitration is lost, the I2C hardware will autonomously switch from
+master mode to slave. If a transfer is not aborted in this state,
+consecutive transfers will not be executed by the hardware and will
+timeout.
 
-  insn.prefixes.bytes[i] != 0 and i < 4
-
-instead of using insn.prefixes.nbytes.
-
-Introduce a for_each_insn_prefix() macro for this purpose. Debugged by
-Kees Cook <keescook@chromium.org>.
-
- [ bp: Massage commit message, sync with the respective header in tools/
-   and drop "we". ]
-
-Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install and remove uprobes breakpoints")
-Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Tested (not extensively) on Vybrid VF500 (Toradex VF50):
+Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/160697103739.3146288.7437620795200799020.stgit@devnote2
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/include/asm/insn.h       |   15 +++++++++++++++
- arch/x86/kernel/uprobes.c         |   10 ++++++----
- tools/arch/x86/include/asm/insn.h |   15 +++++++++++++++
- 3 files changed, 36 insertions(+), 4 deletions(-)
+ drivers/i2c/busses/i2c-imx.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/arch/x86/include/asm/insn.h
-+++ b/arch/x86/include/asm/insn.h
-@@ -195,6 +195,21 @@ static inline int insn_offset_immediate(
- 	return insn_offset_displacement(insn) + insn->displacement.nbytes;
- }
- 
-+/**
-+ * for_each_insn_prefix() -- Iterate prefixes in the instruction
-+ * @insn: Pointer to struct insn.
-+ * @idx:  Index storage.
-+ * @prefix: Prefix byte.
-+ *
-+ * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
-+ * and the index is stored in @idx (note that this @idx is just for a cursor,
-+ * do not change it.)
-+ * Since prefixes.nbytes can be bigger than 4 if some prefixes
-+ * are repeated, it cannot be used for looping over the prefixes.
-+ */
-+#define for_each_insn_prefix(insn, idx, prefix)	\
-+	for (idx = 0; idx < ARRAY_SIZE(insn->prefixes.bytes) && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
-+
- #define POP_SS_OPCODE 0x1f
- #define MOV_SREG_OPCODE 0x8e
- 
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -255,12 +255,13 @@ static volatile u32 good_2byte_insns[256
- 
- static bool is_prefix_bad(struct insn *insn)
- {
-+	insn_byte_t p;
- 	int i;
- 
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
-+	for_each_insn_prefix(insn, i, p) {
- 		insn_attr_t attr;
- 
--		attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
-+		attr = inat_get_opcode_attribute(p);
- 		switch (attr) {
- 		case INAT_MAKE_PREFIX(INAT_PFX_ES):
- 		case INAT_MAKE_PREFIX(INAT_PFX_CS):
-@@ -715,6 +716,7 @@ static const struct uprobe_xol_ops push_
- static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
- {
- 	u8 opc1 = OPCODE1(insn);
-+	insn_byte_t p;
- 	int i;
- 
- 	switch (opc1) {
-@@ -746,8 +748,8 @@ static int branch_setup_xol_ops(struct a
- 	 * Intel and AMD behavior differ in 64-bit mode: Intel ignores 66 prefix.
- 	 * No one uses these insns, reject any branch insns with such prefix.
- 	 */
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
--		if (insn->prefixes.bytes[i] == 0x66)
-+	for_each_insn_prefix(insn, i, p) {
-+		if (p == 0x66)
- 			return -ENOTSUPP;
+--- a/drivers/i2c/busses/i2c-imx.c
++++ b/drivers/i2c/busses/i2c-imx.c
+@@ -470,6 +470,16 @@ static int i2c_imx_trx_complete(struct i
+ 		dev_dbg(&i2c_imx->adapter.dev, "<%s> Timeout\n", __func__);
+ 		return -ETIMEDOUT;
  	}
- 
---- a/tools/arch/x86/include/asm/insn.h
-+++ b/tools/arch/x86/include/asm/insn.h
-@@ -195,6 +195,21 @@ static inline int insn_offset_immediate(
- 	return insn_offset_displacement(insn) + insn->displacement.nbytes;
- }
- 
-+/**
-+ * for_each_insn_prefix() -- Iterate prefixes in the instruction
-+ * @insn: Pointer to struct insn.
-+ * @idx:  Index storage.
-+ * @prefix: Prefix byte.
-+ *
-+ * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
-+ * and the index is stored in @idx (note that this @idx is just for a cursor,
-+ * do not change it.)
-+ * Since prefixes.nbytes can be bigger than 4 if some prefixes
-+ * are repeated, it cannot be used for looping over the prefixes.
-+ */
-+#define for_each_insn_prefix(insn, idx, prefix)	\
-+	for (idx = 0; idx < ARRAY_SIZE(insn->prefixes.bytes) && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
 +
- #define POP_SS_OPCODE 0x1f
- #define MOV_SREG_OPCODE 0x8e
- 
++	/* check for arbitration lost */
++	if (i2c_imx->i2csr & I2SR_IAL) {
++		dev_dbg(&i2c_imx->adapter.dev, "<%s> Arbitration lost\n", __func__);
++		i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
++
++		i2c_imx->i2csr = 0;
++		return -EAGAIN;
++	}
++
+ 	dev_dbg(&i2c_imx->adapter.dev, "<%s> TRX complete\n", __func__);
+ 	i2c_imx->i2csr = 0;
+ 	return 0;
 
 
