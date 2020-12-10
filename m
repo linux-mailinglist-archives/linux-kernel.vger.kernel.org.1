@@ -2,176 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339222D515A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4812D5161
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729750AbgLJD1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 22:27:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729542AbgLJD0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 22:26:54 -0500
-Date:   Wed, 9 Dec 2020 19:26:13 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607570773;
-        bh=GSag7vcBqRP+slnP9T4a82yz1+2EPhyx8X2XTIrjsyo=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eIKMTTyVy01m5WtEmcQmgMlDiLw1B/wkYZmBbKDgZcq+anhqUJEtmPib0vyDRfGnA
-         DAqDcXNvCJy8zXJHIKJYpgTX1DjE2hlNkUk2Y/b7qehD0CapQ9eTxk5lYpXlSZ+kZz
-         wdKyTXlAeBFvIrQpOBQIGGrvfuVQzWKHtrgAkJtMRxlM0MhoBZyigAfszXpaJemYj6
-         6dskYadsaQRJAEQC2TUKdHv1i/82b3093p3GAMRMHHW18hrMwQT3nNtBFuHg3k8RXy
-         3fGKRBWMAvEWhHv6xjbbtDzVeP3xOcwZLE59p84CeGXVOQjhjYcC9pP8vq23Gi9+B8
-         gZAjaH7sGzfTQ==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/2] rcu-tasks: move RCU-tasks initialization out of
- core_initcall()
-Message-ID: <20201210032613.GS2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201209202732.5896-1-urezki@gmail.com>
+        id S1729386AbgLJD2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:28:55 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:34079 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729094AbgLJD2y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 22:28:54 -0500
+Received: by mail-oi1-f193.google.com with SMTP id s75so4256468oih.1;
+        Wed, 09 Dec 2020 19:28:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VsFgwAlbOj5WSzj8d8eKnjYyws8ulCoX8NrIvbo902E=;
+        b=rkPibgT06f+Ow39Xwh5s1T/E5sMjFscdiRKiL1KPTT+nHck5n3h6lUXgdCWpKJNrUV
+         fTWkyuKehOC8HgjK9XQAD9zp4/tcAx9ASH4T0BPA1fEuvEAEsknNlgfF/79Nn7zrf50f
+         IMOss0nnQLiXwHcdueJ31JxHUlerXjJlxoQmYpNOeTM0oF+hfG4EGeNXgxDa1gIoQrqY
+         2jsIKe8ksicreeA2+VtSb7a+FCKKEGyMitTSw+P5blojpzfYJwXmPzRG0nU0CED40xEY
+         8uJfI/cfvOC5FKwUssUKUTQiE2bIrxzhMBVCDwNGvBhe17sAzQE4XPyMyepTz42XX/cF
+         fGfQ==
+X-Gm-Message-State: AOAM530NmiwNc6ka1H58qlgldboNB6hNFaLPIcueNGPxWMLKCPzPhH4k
+        7vwH0Y6jwYLNDruuBZbbAg==
+X-Google-Smtp-Source: ABdhPJzIYJcMNqkzFHWlXQQe0wA8CLXvVPMlv4wo8VSFWydNWiyuaAIaFMUHku0a5ruylWjVJmHbjw==
+X-Received: by 2002:aca:809:: with SMTP id 9mr4148182oii.13.1607570894130;
+        Wed, 09 Dec 2020 19:28:14 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v92sm820519otb.75.2020.12.09.19.28.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 19:28:13 -0800 (PST)
+Received: (nullmailer pid 1596034 invoked by uid 1000);
+        Thu, 10 Dec 2020 03:28:12 -0000
+Date:   Wed, 9 Dec 2020 21:28:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Nicola Di Lieto <nicola.dilieto@gmail.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] pwm: pwm-gpio: Add DT bindings
+Message-ID: <20201210032812.GA1595986@robh.at.kernel.org>
+References: <20201205214616.e4one25o3oz5dhrp@einstein.dilieto.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209202732.5896-1-urezki@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201205214616.e4one25o3oz5dhrp@einstein.dilieto.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 09:27:31PM +0100, Uladzislau Rezki (Sony) wrote:
-> Initialize the RCU-tasks earlier, before *_initcall() callbacks are
-> invoked. Do it after the workqueue subsytem is up and running. That
-> gives us a possibility to make use of synchronize_rcu_tasks*() wait
-> API in early_initcall() callbacks.
+On Sat, 05 Dec 2020 22:46:16 +0100, Nicola Di Lieto wrote:
+> Added Documentation/devicetree/bindings/pwm/pwm-gpio.yaml
 > 
-> Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-
-Thank you!  I have queued both with the usual editing, so please
-check and let me know if I messed something up.
-
-							Thanx, Paul
-
+> Signed-off-by: Nicola Di Lieto <nicola.dilieto@gmail.com>
 > ---
->  include/linux/rcupdate.h |  6 ++++++
->  init/main.c              |  1 +
->  kernel/rcu/tasks.h       | 26 ++++++++++++++++++++++----
->  3 files changed, 29 insertions(+), 4 deletions(-)
+>  .../devicetree/bindings/pwm/pwm-gpio.yaml          | 42 ++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-gpio.yaml
 > 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 3c3efa4d6ab5..340c7d5344a4 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -88,6 +88,12 @@ void rcu_sched_clock_irq(int user);
->  void rcu_report_dead(unsigned int cpu);
->  void rcutree_migrate_callbacks(int cpu);
->  
-> +#ifdef CONFIG_TASKS_RCU_GENERIC
-> +void rcu_init_tasks_generic(void);
-> +#else
-> +static inline void rcu_init_tasks_generic(void) { }
-> +#endif
-> +
->  #ifdef CONFIG_RCU_STALL_COMMON
->  void rcu_sysrq_start(void);
->  void rcu_sysrq_end(void);
-> diff --git a/init/main.c b/init/main.c
-> index 130376ec10ba..e253e87bdf58 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -1502,6 +1502,7 @@ static noinline void __init kernel_init_freeable(void)
->  
->  	init_mm_internals();
->  
-> +	rcu_init_tasks_generic();
->  	do_pre_smp_initcalls();
->  	lockup_detector_init();
->  
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 35bdcfd84d42..67a162949763 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -241,7 +241,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
->  	}
->  }
->  
-> -/* Spawn RCU-tasks grace-period kthread, e.g., at core_initcall() time. */
-> +/* Spawn RCU-tasks grace-period kthread. */
->  static void __init rcu_spawn_tasks_kthread_generic(struct rcu_tasks *rtp)
->  {
->  	struct task_struct *t;
-> @@ -564,7 +564,6 @@ static int __init rcu_spawn_tasks_kthread(void)
->  	rcu_spawn_tasks_kthread_generic(&rcu_tasks);
->  	return 0;
->  }
-> -core_initcall(rcu_spawn_tasks_kthread);
->  
->  #if !defined(CONFIG_TINY_RCU)
->  void show_rcu_tasks_classic_gp_kthread(void)
-> @@ -692,7 +691,6 @@ static int __init rcu_spawn_tasks_rude_kthread(void)
->  	rcu_spawn_tasks_kthread_generic(&rcu_tasks_rude);
->  	return 0;
->  }
-> -core_initcall(rcu_spawn_tasks_rude_kthread);
->  
->  #if !defined(CONFIG_TINY_RCU)
->  void show_rcu_tasks_rude_gp_kthread(void)
-> @@ -968,6 +966,12 @@ static void rcu_tasks_trace_pregp_step(void)
->  static void rcu_tasks_trace_pertask(struct task_struct *t,
->  				    struct list_head *hop)
->  {
-> +	// During early boot when there is only one boot-CPU,
-> +	// an idle_task is not set for other CPUs. In this case
-> +	// just revert.
-> +	if (unlikely(t == NULL))
-> +		return;
-> +
->  	WRITE_ONCE(t->trc_reader_special.b.need_qs, false);
->  	WRITE_ONCE(t->trc_reader_checked, false);
->  	t->trc_ipi_to_cpu = -1;
-> @@ -1193,7 +1197,6 @@ static int __init rcu_spawn_tasks_trace_kthread(void)
->  	rcu_spawn_tasks_kthread_generic(&rcu_tasks_trace);
->  	return 0;
->  }
-> -core_initcall(rcu_spawn_tasks_trace_kthread);
->  
->  #if !defined(CONFIG_TINY_RCU)
->  void show_rcu_tasks_trace_gp_kthread(void)
-> @@ -1222,6 +1225,21 @@ void show_rcu_tasks_gp_kthreads(void)
->  }
->  #endif /* #ifndef CONFIG_TINY_RCU */
->  
-> +void __init rcu_init_tasks_generic(void)
-> +{
-> +#ifdef CONFIG_TASKS_RCU
-> +	rcu_spawn_tasks_kthread();
-> +#endif
-> +
-> +#ifdef CONFIG_TASKS_RUDE_RCU
-> +	rcu_spawn_tasks_rude_kthread();
-> +#endif
-> +
-> +#ifdef CONFIG_TASKS_TRACE_RCU
-> +	rcu_spawn_tasks_trace_kthread();
-> +#endif
-> +}
-> +
->  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
->  static inline void rcu_tasks_bootup_oddness(void) {}
->  void show_rcu_tasks_gp_kthreads(void) {}
-> -- 
-> 2.20.1
-> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
