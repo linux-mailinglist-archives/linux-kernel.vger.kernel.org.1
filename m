@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426282D65A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1C82D653D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392377AbgLJSzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:55:08 -0500
-Received: from foss.arm.com ([217.140.110.172]:45258 "EHLO foss.arm.com"
+        id S2390692AbgLJOcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:32:54 -0500
+Received: from foss.arm.com ([217.140.110.172]:45260 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390517AbgLJObu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:31:50 -0500
+        id S2390518AbgLJObv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:31:51 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DE42C1396;
-        Thu, 10 Dec 2020 06:30:35 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CAA9139F;
+        Thu, 10 Dec 2020 06:30:39 -0800 (PST)
 Received: from e123648.arm.com (unknown [10.57.1.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C374A3F718;
-        Thu, 10 Dec 2020 06:30:32 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 457FA3F718;
+        Thu, 10 Dec 2020 06:30:36 -0800 (PST)
 From:   Lukasz Luba <lukasz.luba@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         dri-devel@lists.freedesktop.org
@@ -25,9 +25,9 @@ Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
         robh@kernel.org, alyssa.rosenzweig@collabora.com,
         steven.price@arm.com, airlied@linux.ie, daniel@ffwll.ch,
         ionela.voinescu@arm.com
-Subject: [PATCH v4 2/5] thermal: devfreq_cooling: use a copy of device status
-Date:   Thu, 10 Dec 2020 14:30:11 +0000
-Message-Id: <20201210143014.24685-3-lukasz.luba@arm.com>
+Subject: [PATCH v4 3/5] thermal: devfreq_cooling: add new registration functions with Energy Model
+Date:   Thu, 10 Dec 2020 14:30:12 +0000
+Message-Id: <20201210143014.24685-4-lukasz.luba@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201210143014.24685-1-lukasz.luba@arm.com>
 References: <20201210143014.24685-1-lukasz.luba@arm.com>
@@ -35,124 +35,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Devfreq cooling needs to now the correct status of the device in order
-to operate. Devfreq framework can change the device status in the
-background. To mitigate issues make a copy of the status structure and use
-it for internal calculations.
-
-In addition this patch adds normalization function, which also makes sure
-that whatever data comes from the device, the load will be in range from 1
-to 1024.
+The Energy Model (EM) framework supports devices such as Devfreq. Create
+new registration function which automatically register EM for the thermal
+devfreq_cooling devices. This patch prepares the code for coming changes
+which are going to replace old power model with the new EM.
 
 Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
 Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 ---
- drivers/thermal/devfreq_cooling.c | 47 ++++++++++++++++++++++++-------
- 1 file changed, 37 insertions(+), 10 deletions(-)
+ drivers/thermal/devfreq_cooling.c | 54 ++++++++++++++++++++++++++++++-
+ include/linux/devfreq_cooling.h   | 10 ++++++
+ 2 files changed, 63 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-index 659c0143c9f0..afcebadbad24 100644
+index afcebadbad24..6cea027d89a3 100644
 --- a/drivers/thermal/devfreq_cooling.c
 +++ b/drivers/thermal/devfreq_cooling.c
-@@ -227,20 +227,39 @@ static inline unsigned long get_total_power(struct devfreq_cooling_device *dfc,
- 							       voltage);
+@@ -12,6 +12,7 @@
+ 
+ #include <linux/devfreq.h>
+ #include <linux/devfreq_cooling.h>
++#include <linux/energy_model.h>
+ #include <linux/export.h>
+ #include <linux/idr.h>
+ #include <linux/slab.h>
+@@ -576,22 +577,73 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
+ }
+ EXPORT_SYMBOL_GPL(devfreq_cooling_register);
+ 
++/**
++ * devfreq_cooling_em_register_power() - Register devfreq cooling device with
++ *		power information and automatically register Energy Model (EM)
++ * @df:		Pointer to devfreq device.
++ * @dfc_power:	Pointer to devfreq_cooling_power.
++ *
++ * Register a devfreq cooling device and automatically register EM. The
++ * available OPPs must be registered for the device.
++ *
++ * If @dfc_power is provided, the cooling device is registered with the
++ * power extensions. It is using the simple Energy Model which requires
++ * "dynamic-power-coefficient" a devicetree property. To not break drivers
++ * which miss that DT property, the function won't bail out when the EM
++ * registration failed. The cooling device will be registered if everything
++ * else is OK.
++ */
++struct thermal_cooling_device *
++devfreq_cooling_em_register(struct devfreq *df,
++			    struct devfreq_cooling_power *dfc_power)
++{
++	struct thermal_cooling_device *cdev;
++	struct device *dev;
++	int ret;
++
++	if (IS_ERR_OR_NULL(df))
++		return ERR_PTR(-EINVAL);
++
++	dev = df->dev.parent;
++
++	ret = dev_pm_opp_of_register_em(dev, NULL);
++	if (ret)
++		dev_dbg(dev, "Unable to register EM for devfreq cooling device (%d)\n",
++			ret);
++
++	cdev = of_devfreq_cooling_register_power(dev->of_node, df, dfc_power);
++
++	if (IS_ERR_OR_NULL(cdev))
++		em_dev_unregister_perf_domain(dev);
++
++	return cdev;
++}
++EXPORT_SYMBOL_GPL(devfreq_cooling_em_register);
++
+ /**
+  * devfreq_cooling_unregister() - Unregister devfreq cooling device.
+  * @cdev: Pointer to devfreq cooling device to unregister.
++ *
++ * Unregisters devfreq cooling device and related Energy Model if it was
++ * present.
+  */
+ void devfreq_cooling_unregister(struct thermal_cooling_device *cdev)
+ {
+ 	struct devfreq_cooling_device *dfc;
++	struct device *dev;
+ 
+-	if (!cdev)
++	if (IS_ERR_OR_NULL(cdev))
+ 		return;
+ 
+ 	dfc = cdev->devdata;
++	dev = dfc->devfreq->dev.parent;
+ 
+ 	thermal_cooling_device_unregister(dfc->cdev);
+ 	ida_simple_remove(&devfreq_ida, dfc->id);
+ 	dev_pm_qos_remove_request(&dfc->req_max_freq);
++
++	em_dev_unregister_perf_domain(dev);
++
+ 	kfree(dfc->power_table);
+ 	kfree(dfc->freq_table);
+ 
+diff --git a/include/linux/devfreq_cooling.h b/include/linux/devfreq_cooling.h
+index 9df2dfca68dd..7a9fbcc7b265 100644
+--- a/include/linux/devfreq_cooling.h
++++ b/include/linux/devfreq_cooling.h
+@@ -65,6 +65,9 @@ struct thermal_cooling_device *
+ of_devfreq_cooling_register(struct device_node *np, struct devfreq *df);
+ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df);
+ void devfreq_cooling_unregister(struct thermal_cooling_device *dfc);
++struct thermal_cooling_device *
++devfreq_cooling_em_register(struct devfreq *df,
++			    struct devfreq_cooling_power *dfc_power);
+ 
+ #else /* !CONFIG_DEVFREQ_THERMAL */
+ 
+@@ -87,6 +90,13 @@ devfreq_cooling_register(struct devfreq *df)
+ 	return ERR_PTR(-EINVAL);
  }
  
-+static void _normalize_load(struct devfreq_dev_status *status)
++static inline struct thermal_cooling_device *
++devfreq_cooling_em_register(struct devfreq *df,
++			    struct devfreq_cooling_power *dfc_power)
 +{
-+	if (status->total_time > 0xfffff) {
-+		status->total_time >>= 10;
-+		status->busy_time >>= 10;
-+	}
-+
-+	status->busy_time <<= 10;
-+	status->busy_time /= status->total_time ? : 1;
-+
-+	status->busy_time = status->busy_time ? : 1;
-+	status->total_time = 1024;
++	return ERR_PTR(-EINVAL);
 +}
- 
- static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cdev,
- 					       u32 *power)
++
+ static inline void
+ devfreq_cooling_unregister(struct thermal_cooling_device *dfc)
  {
- 	struct devfreq_cooling_device *dfc = cdev->devdata;
- 	struct devfreq *df = dfc->devfreq;
--	struct devfreq_dev_status *status = &df->last_status;
-+	struct devfreq_dev_status status;
- 	unsigned long state;
--	unsigned long freq = status->current_frequency;
-+	unsigned long freq;
- 	unsigned long voltage;
- 	u32 dyn_power = 0;
- 	u32 static_power = 0;
- 	int res;
- 
-+	mutex_lock(&df->lock);
-+	status = df->last_status;
-+	mutex_unlock(&df->lock);
-+
-+	freq = status.current_frequency;
-+
- 	state = freq_get_state(dfc, freq);
- 	if (state == THERMAL_CSTATE_INVALID) {
- 		res = -EAGAIN;
-@@ -268,16 +287,18 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
- 	} else {
- 		dyn_power = dfc->power_table[state];
- 
-+		_normalize_load(&status);
-+
- 		/* Scale dynamic power for utilization */
--		dyn_power *= status->busy_time;
--		dyn_power /= status->total_time;
-+		dyn_power *= status.busy_time;
-+		dyn_power >>= 10;
- 		/* Get static power */
- 		static_power = get_static_power(dfc, freq);
- 
- 		*power = dyn_power + static_power;
- 	}
- 
--	trace_thermal_power_devfreq_get_power(cdev, status, freq, *power);
-+	trace_thermal_power_devfreq_get_power(cdev, &status, freq, *power);
- 
- 	return 0;
- fail:
-@@ -309,14 +330,19 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
- {
- 	struct devfreq_cooling_device *dfc = cdev->devdata;
- 	struct devfreq *df = dfc->devfreq;
--	struct devfreq_dev_status *status = &df->last_status;
--	unsigned long freq = status->current_frequency;
--	unsigned long busy_time;
-+	struct devfreq_dev_status status;
-+	unsigned long freq;
- 	s32 dyn_power;
- 	u32 static_power;
- 	s32 est_power;
- 	int i;
- 
-+	mutex_lock(&df->lock);
-+	status = df->last_status;
-+	mutex_unlock(&df->lock);
-+
-+	freq = status.current_frequency;
-+
- 	if (dfc->power_ops->get_real_power) {
- 		/* Scale for resource utilization */
- 		est_power = power * dfc->res_util;
-@@ -328,8 +354,9 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
- 		dyn_power = dyn_power > 0 ? dyn_power : 0;
- 
- 		/* Scale dynamic power for utilization */
--		busy_time = status->busy_time ?: 1;
--		est_power = (dyn_power * status->total_time) / busy_time;
-+		_normalize_load(&status);
-+		dyn_power <<= 10;
-+		est_power = dyn_power / status.busy_time;
- 	}
- 
- 	/*
 -- 
 2.17.1
 
