@@ -2,69 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8AB42D5FFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E75742D60A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391346AbgLJOkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:40:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40886 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390905AbgLJOfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:35:37 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EB46BAC6A;
-        Thu, 10 Dec 2020 14:34:55 +0000 (UTC)
-Message-ID: <ffeda0e13e9469414a9861a9f873a9c424aadd2a.camel@suse.de>
-Subject: Re: [PATCH -next] thermal: broadcom: simplify the return expression
- of bcm2711_thermal_probe()
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>, linux-pm@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date:   Thu, 10 Dec 2020 15:34:54 +0100
-In-Reply-To: <20201210135432.1249-1-zhengyongjun3@huawei.com>
-References: <20201210135432.1249-1-zhengyongjun3@huawei.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-gtoCt9I00z2tBY4meywD"
-User-Agent: Evolution 3.38.2 
+        id S2392128AbgLJP5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:57:17 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:48700 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389950AbgLJOiP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:38:15 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607611077; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=2UENAvr3UnfyT7Yes7BqMsH/lz30eJAtHLCVlaAJ4LM=; b=ExXaNhU4Fm7GbJB4GFa4KJb8xOAq/c3gzFtA3sGE+5mdyQBMs+UfLiKrhTHMXRVPhX60MWr+
+ iZ1OAbBo4NKLWGD3/dLcML0axdDRZlbiJTN2psOIw01Qnl4Hhg6tFogRK0h6DeUzDrkohqQV
+ KKU+5bYtxloH1xP8Yv++V+7W3es=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fd232a36752249c543cba32 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Dec 2020 14:37:23
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D03F6C43466; Thu, 10 Dec 2020 14:37:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C4A5C433CA;
+        Thu, 10 Dec 2020 14:37:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C4A5C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH wireless -next] wireless/ath10k: simplify the return expression of ath10k_ahb_chip_reset()
+References: <20201210140204.1774-1-zhengyongjun3@huawei.com>
+Date:   Thu, 10 Dec 2020 16:37:18 +0200
+In-Reply-To: <20201210140204.1774-1-zhengyongjun3@huawei.com> (Zheng Yongjun's
+        message of "Thu, 10 Dec 2020 22:02:04 +0800")
+Message-ID: <87mtyl4ti9.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Zheng Yongjun <zhengyongjun3@huawei.com> writes:
 
---=-gtoCt9I00z2tBY4meywD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2020-12-10 at 21:54 +0800, Zheng Yongjun wrote:
 > Simplify the return expression.
->=20
+>
 > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/ahb.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+> index 05a61975c83f..0ba31c0bbd24 100644
+> --- a/drivers/net/wireless/ath/ath10k/ahb.c
+> +++ b/drivers/net/wireless/ath/ath10k/ahb.c
+> @@ -598,16 +598,10 @@ static int ath10k_ahb_prepare_device(struct ath10k *ar)
+>  
+>  static int ath10k_ahb_chip_reset(struct ath10k *ar)
+>  {
+> -	int ret;
+> -
+>  	ath10k_ahb_halt_chip(ar);
+>  	ath10k_ahb_clock_disable(ar);
+>  
+> -	ret = ath10k_ahb_prepare_device(ar);
+> -	if (ret)
+> -		return ret;
+> -
+> -	return 0;
+> +	return ath10k_ahb_prepare_device(ar);
+>  }
+>  
+>  static int ath10k_ahb_wake_target_cpu(struct ath10k *ar)
 
-Reviewed-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+I prefer the original style, easier to add new code to the function.
 
-Regards,
-Nicolas
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-
---=-gtoCt9I00z2tBY4meywD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl/SMg4ACgkQlfZmHno8
-x/7cGAf9EoBpHapjbF9x/REMgp6jja82UzHDSxBQA7PfMaptdlHj90Bf9WO/719u
-V63jbZt3+kGcLZ3CzJvObmxIcE8P25V+s31wXij9p/RbrcxL0oHrYKtIKJHIQ9T/
-nkJ+C001Kh0Hljjo4uSBa2YXUobRQJLvChuS448I32elgvgTf2gLZ5nnOdvakeiL
-PP8D/CjvY580gg972Ty8bi1HgbdsKpfFhtP+p/STZfYEsaEpj35ovBjDksJlA+wZ
-CnVRQLyaI4uwLDiZImUjGUNp7HEua66jli8H9yaPBJNXeWDHiGgFtfe21N3QbGzG
-8x0/88gVf8FviCYQt4Ky78krkjit3Q==
-=9/IH
------END PGP SIGNATURE-----
-
---=-gtoCt9I00z2tBY4meywD--
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
