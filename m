@@ -2,134 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0DE72D53AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F360F2D53AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733153AbgLJGPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:15:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
+        id S1733172AbgLJGPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:15:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728264AbgLJGPN (ORCPT
+        with ESMTP id S1728264AbgLJGPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:15:13 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28C0C0613CF;
-        Wed,  9 Dec 2020 22:14:33 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id c12so3043434pfo.10;
-        Wed, 09 Dec 2020 22:14:33 -0800 (PST)
+        Thu, 10 Dec 2020 01:15:25 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80409C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 22:14:45 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id o4so3263450pgj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 22:14:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gny1Tk/NkzCkucCgjQAN08t8L5tKNABHVyy0fWYIoTE=;
-        b=Hc3wBayCQAuK3LKCJ98WVvLPf0kuUuIO2auwdmWliQLVAugrsQEPrD/JXcnzyQejC1
-         VGWR+8FGvgkI3W9gSoS660Osoinxc0YED93ImslSnY1j/KuyRqLuGfs8GV2hQ/J3aKN3
-         3heDHaSCRo8Yzw3P0SwGhuTUF5DzIOOL1xhw/fHd04HgDC6tXr6RUmAwSnBpvqZYwgBS
-         kyon6+uIcUXxk3IbEeM2yZSo0OXlrodwHqR4yqkaF3E8fu3rHeMhFUg0qav22AupaugU
-         tkFW32v+apowQkLZzAWMbtyZ0sNY7oKduEyRdVTyMzFiG11b4rKS6pcxy4uGF0htVjl/
-         bIVw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MqeM3I8rabKhAIEdk1wwGjmL1P9GZYH14bcbbNjM89o=;
+        b=Sm+XVhMiBcu2Y0owzP9+IkqVAcH3SQUqbeMaKb6I84kiDIZ9R3OpBHfVnJ6hR6IbMv
+         Mjbs0UyL4MZ8UUo7b1HcbmQXbcWg8dbSFESMae/pKh/9gF8DDqWCoDkHvrEfwQ3ScwR0
+         aI/YLTvUxu2gLWW1hOuI0XmWieZQiBD+Ybs9B62upawpUmtgxDGG9JGXCCHI9p6gV4Jl
+         qbPQSK9gMvtGnRD0j/+o/7b8GhHG+dlsak2IMQbCoYXgumDdv+hXt9VYhKwOdqtYAyRk
+         VTra7XtDnXbai55arYFn1qlzFHFZWQoj/VuVuRmq+SkY5LZHL82jzgFMjqTY4H47d09t
+         5Xkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gny1Tk/NkzCkucCgjQAN08t8L5tKNABHVyy0fWYIoTE=;
-        b=Sw26AjBwE/DsuQHPlhF6n/IXrKJ+W75ENJ8yKKP4vXfHQwyeYQeeE9LM6qertvAZOl
-         6pv8hl6xdLlr+e0lOqsvK3pKatkJMQulNpOO5M/aqpE1RodpgNDdFWJwLost6fGRSZBB
-         x8zmhEZ4PUKL31vjM8k0Pu0mrm1kMWJ0EfYJoD3kEbaN6VcNr0KEw0FuTHaVX7GE5hFc
-         dZXnopvhHA2/H4sEt415GhHGuQ+uJjCKVeO/84uxumBJOypRV0nM0HGvMB0nmjIK4gQV
-         rso8DP50f4tItydebvN5Zb87e8AP90eddj7YjaP9fwb5xLJKYMzub8Dkg3eGC6GLCQpn
-         1yRQ==
-X-Gm-Message-State: AOAM530BNtkasqQitfvhonKklZxcoGUbH+e6Kxj412+tLr0zuQeMC4qR
-        oKw+hsGI4JnTASUSsJJNS9I=
-X-Google-Smtp-Source: ABdhPJxAVkoQ3DkDktC5MbHG//Tj6qoVAxtoBbB1lyi8uqEp4AVoBEpUpobqjlK79YHzu08kZORvCQ==
-X-Received: by 2002:a17:90a:bf86:: with SMTP id d6mr5902040pjs.212.1607580873231;
-        Wed, 09 Dec 2020 22:14:33 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id iq3sm4495095pjb.57.2020.12.09.22.14.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MqeM3I8rabKhAIEdk1wwGjmL1P9GZYH14bcbbNjM89o=;
+        b=N6Cr/0weYrkL8J+nC0tjkXaeL3J+Wl3I36RbojqpdJ42qtbAr3D0z+NSzZkOR9e1Gu
+         L8dTOPhnS/YlL5MP/9LbkAJaRDErD2ZDYVucEJHVEp0czakRdaCc1qj8TCd7dx3yp+Sc
+         +b0FNDSUYkLoOiaIvVg3EeUckl4Ydjh0oBQ/Pgrdp9Lti0ykM9wK0ce1RJtRyNxtH+gW
+         FKlto2GT0MPHlxcxVbxcyGkaBn+scg/JY+DHwEgerejUNd0lzVgCVvFGTOV1t/fXYdWa
+         Ycbgpruo+ZtLKRSrNUJ6JxH1LdSY/P8UtKr7dQnMVyU4Fwxbbp/MbMm6v03xuUD+sd4a
+         W02w==
+X-Gm-Message-State: AOAM532DwVTQB2O9gg8oZGOYDQGF2FAbpjJZmIoNF9DUPlCAGabZfoQ2
+        ogVLGrZ0Jpf08Ht3t2Dt1sZ+
+X-Google-Smtp-Source: ABdhPJxuBIEiPbMTblacsQFD6iV9B6VDy2R38bS3mMhHr3l5GQl93NvJ0Wv9l96KG3TTwYPODwy2AQ==
+X-Received: by 2002:a62:de01:0:b029:19e:a3f6:8eef with SMTP id h1-20020a62de010000b029019ea3f68eefmr3919519pfg.48.1607580884833;
+        Wed, 09 Dec 2020 22:14:44 -0800 (PST)
+Received: from localhost.localdomain ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id e2sm4492694pjv.10.2020.12.09.22.14.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 22:14:32 -0800 (PST)
-Date:   Wed, 9 Dec 2020 22:14:29 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     "jingle.wu" <jingle.wu@emc.com.tw>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        phoenix@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw
-Subject: Re: [PATCH 1/2] Input: elan_i2c - Add new trackpoint report type
- 0x5F.
-Message-ID: <X9G8xUk/QvcxsNWi@google.com>
-References: <20201207090751.9076-1-jingle.wu@emc.com.tw>
+        Wed, 09 Dec 2020 22:14:44 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     jacek.anaszewski@gmail.com, pavel@ucw.cz, dmurphy@ti.com,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org, thunder.leizhen@huawei.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH] dt-bindings: leds: Document commonly used LED triggers
+Date:   Thu, 10 Dec 2020 11:44:31 +0530
+Message-Id: <20201210061431.23144-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207090751.9076-1-jingle.wu@emc.com.tw>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jingle,
+This commit documents the LED triggers used commonly in the SoCs. Not
+all triggers are documented as some of them are very application specific.
+Most of the triggers documented here are currently used in devicetrees
+of many SoCs.
 
-On Mon, Dec 07, 2020 at 05:07:51PM +0800, jingle.wu wrote:
-> The 0x5F is new trackpoint report type of some module.
-> 
-> Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
-> ---
->  drivers/input/mouse/elan_i2c_core.c  | 2 ++
->  drivers/input/mouse/elan_i2c_smbus.c | 3 ++-
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
-> index 61ed3f5ca219..8f0c4663167c 100644
-> --- a/drivers/input/mouse/elan_i2c_core.c
-> +++ b/drivers/input/mouse/elan_i2c_core.c
-> @@ -52,6 +52,7 @@
->  #define ETP_REPORT_ID		0x5D
->  #define ETP_REPORT_ID2		0x60	/* High precision report */
->  #define ETP_TP_REPORT_ID	0x5E
-> +#define ETP_TP_REPORT_ID2	0x5F
->  #define ETP_REPORT_ID_OFFSET	2
->  #define ETP_TOUCH_INFO_OFFSET	3
->  #define ETP_FINGER_DATA_OFFSET	4
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ .../devicetree/bindings/leds/common.yaml      | 72 ++++++++++++++-----
+ 1 file changed, 54 insertions(+), 18 deletions(-)
 
-I think we might need to move this into elan_i2c.h so that we can
-reference it from elan_i2c_smbus.c.
-
-> @@ -1076,6 +1077,7 @@ static irqreturn_t elan_isr(int irq, void *dev_id)
->  		elan_report_absolute(data, report, true);
->  		break;
->  	case ETP_TP_REPORT_ID:
-> +	case ETP_TP_REPORT_ID2:
->  		elan_report_trackpoint(data, report);
->  		break;
->  	default:
-> diff --git a/drivers/input/mouse/elan_i2c_smbus.c b/drivers/input/mouse/elan_i2c_smbus.c
-> index 1820f1cfc1dc..1226d47ec3cf 100644
-> --- a/drivers/input/mouse/elan_i2c_smbus.c
-> +++ b/drivers/input/mouse/elan_i2c_smbus.c
-> @@ -45,6 +45,7 @@
->  #define ETP_SMBUS_CALIBRATE_QUERY	0xC5
->  
->  #define ETP_SMBUS_REPORT_LEN		32
-> +#define ETP_SMBUS_REPORT_LEN2		7
->  #define ETP_SMBUS_REPORT_OFFSET		2
->  #define ETP_SMBUS_HELLOPACKET_LEN	5
->  #define ETP_SMBUS_IAP_PASSWORD		0x1234
-> @@ -497,7 +498,7 @@ static int elan_smbus_get_report(struct i2c_client *client,
->  		return len;
->  	}
->  
-> -	if (len != ETP_SMBUS_REPORT_LEN) {
-> +	if ((len != ETP_SMBUS_REPORT_LEN) && (len != ETP_SMBUS_REPORT_LEN2))  {
-
-I would prefer if we validated report length versus the packet type
-before accepting it.
-
->  		dev_err(&client->dev,
->  			"wrong report length (%d vs %d expected)\n",
->  			len, ETP_SMBUS_REPORT_LEN);
-> -- 
-> 2.17.1
-> 
-
-Thanks.
-
+diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
+index f1211e7045f1..eee4eb7a4535 100644
+--- a/Documentation/devicetree/bindings/leds/common.yaml
++++ b/Documentation/devicetree/bindings/leds/common.yaml
+@@ -79,24 +79,60 @@ properties:
+       the LED.
+     $ref: /schemas/types.yaml#definitions/string
+ 
+-    enum:
+-        # LED will act as a back-light, controlled by the framebuffer system
+-      - backlight
+-        # LED will turn on (but for leds-gpio see "default-state" property in
+-        # Documentation/devicetree/bindings/leds/leds-gpio.yaml)
+-      - default-on
+-        # LED "double" flashes at a load average based rate
+-      - heartbeat
+-        # LED indicates disk activity
+-      - disk-activity
+-        # LED indicates IDE disk activity (deprecated), in new implementations
+-        # use "disk-activity"
+-      - ide-disk
+-        # LED flashes at a fixed, configurable rate
+-      - timer
+-        # LED alters the brightness for the specified duration with one software
+-        # timer (requires "led-pattern" property)
+-      - pattern
++    oneOf:
++      - items:
++          - enum:
++                # LED will act as a back-light, controlled by the framebuffer system
++              - backlight
++                # LED will turn on (but for leds-gpio see "default-state" property in
++                # Documentation/devicetree/bindings/leds/leds-gpio.yaml)
++              - default-on
++                # LED "double" flashes at a load average based rate
++              - heartbeat
++                # LED indicates disk activity
++              - disk-activity
++                # LED indicates IDE disk activity (deprecated), in new implementations
++                # use "disk-activity"
++              - ide-disk
++                # LED flashes at a fixed, configurable rate
++              - timer
++                # LED alters the brightness for the specified duration with one software
++                # timer (requires "led-pattern" property)
++              - pattern
++                # LED indicates camera flash state
++              - flash
++                # LED indicates camera torch state
++              - torch
++                # LED indicates audio mute state
++              - audio-mute
++                # LED indicates mic mute state
++              - audio-micmute
++                # LED indicates bluetooth power state
++              - bluetooth-power
++                # LED indicates USB gadget activity
++              - usb-gadget
++                # LED indicates USB host activity
++              - usb-host
++                # LED indicates MTD memory activity
++              - mtd
++                # LED indicates NAND memory activity (deprecated),
++                # in new implementations use "mtd"
++              - nand-disk
++                # LED indicates disk read activity
++              - disk-read
++                # LED indicates disk write activity
++              - disk-write
++                # No trigger assigned to the LED. This is the default mode
++                # if trigger is absent
++              - none
++                # LED indicates activity of all CPUs
++              - cpu
++      - items:
++            # LED indicates activity of [N]th CPU
++          - pattern: "^cpu[0-9][0-9]$"
++      - items:
++            # LED indicates [N]th MMC storage activity
++          - pattern: '^mmc[0-9][0-9]$'
+ 
+   led-pattern:
+     description: |
 -- 
-Dmitry
+2.25.1
+
