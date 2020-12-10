@@ -2,31 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02572D65ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B28D2D6663
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404283AbgLJTGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:06:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38740 "EHLO mail.kernel.org"
+        id S2390297AbgLJOah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:30:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390470AbgLJObC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:31:02 -0500
+        id S1729124AbgLJO2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:28:41 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 03/31] vlan: consolidate VLAN parsing code and limit max parsing depth
-Date:   Thu, 10 Dec 2020 15:26:40 +0100
-Message-Id: <20201210142602.272144390@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.4 31/39] spi: Introduce device-managed SPI controller allocation
+Date:   Thu, 10 Dec 2020 15:26:42 +0100
+Message-Id: <20201210142602.433038422@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
-References: <20201210142602.099683598@linuxfoundation.org>
+In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
+References: <20201210142600.887734129@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -35,119 +31,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-[ Upstream commit 469aceddfa3ed16e17ee30533fae45e90f62efd8 ]
+[ Upstream commit 5e844cc37a5cbaa460e68f9a989d321d63088a89 ]
 
-Toshiaki pointed out that we now have two very similar functions to extract
-the L3 protocol number in the presence of VLAN tags. And Daniel pointed out
-that the unbounded parsing loop makes it possible for maliciously crafted
-packets to loop through potentially hundreds of tags.
+SPI driver probing currently comprises two steps, whereas removal
+comprises only one step:
 
-Fix both of these issues by consolidating the two parsing functions and
-limiting the VLAN tag parsing to a max depth of 8 tags. As part of this,
-switch over __vlan_get_protocol() to use skb_header_pointer() instead of
-pskb_may_pull(), to avoid the possible side effects of the latter and keep
-the skb pointer 'const' through all the parsing functions.
+    spi_alloc_master()
+    spi_register_master()
 
-v2:
-- Use limit of 8 tags instead of 32 (matching XMIT_RECURSION_LIMIT)
+    spi_unregister_master()
 
-Reported-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
-Reported-by: Daniel Borkmann <daniel@iogearbox.net>
-Fixes: d7bf2ebebc2b ("sched: consistently handle layer3 header accesses in the presence of VLANs")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+That's because spi_unregister_master() calls device_unregister()
+instead of device_del(), thereby releasing the reference on the
+spi_master which was obtained by spi_alloc_master().
+
+An SPI driver's private data is contained in the same memory allocation
+as the spi_master struct.  Thus, once spi_unregister_master() has been
+called, the private data is inaccessible.  But some drivers need to
+access it after spi_unregister_master() to perform further teardown
+steps.
+
+Introduce devm_spi_alloc_master(), which releases a reference on the
+spi_master struct only after the driver has unbound, thereby keeping the
+memory allocation accessible.  Change spi_unregister_master() to not
+release a reference if the spi_master was allocated by the new devm
+function.
+
+The present commit is small enough to be backportable to stable.
+It allows fixing drivers which use the private data in their ->remove()
+hook after it's been freed.  It also allows fixing drivers which neglect
+to release a reference on the spi_master in the probe error path.
+
+Long-term, most SPI drivers shall be moved over to the devm function
+introduced herein.  The few that can't shall be changed in a treewide
+commit to explicitly release the last reference on the master.
+That commit shall amend spi_unregister_master() to no longer release
+a reference, thereby completing the migration.
+
+As a result, the behaviour will be less surprising and more consistent
+with subsystems such as IIO, which also includes the private data in the
+allocation of the generic iio_dev struct, but calls device_del() in
+iio_device_unregister().
+
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Link: https://lore.kernel.org/r/272bae2ef08abd21388c98e23729886663d19192.1605121038.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/if_vlan.h | 29 ++++++++++++++++++++++-------
- include/net/inet_ecn.h  |  1 +
- 2 files changed, 23 insertions(+), 7 deletions(-)
+ drivers/spi/spi.c       |   54 +++++++++++++++++++++++++++++++++++++++++++++++-
+ include/linux/spi/spi.h |    2 +
+ 2 files changed, 55 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/if_vlan.h b/include/linux/if_vlan.h
-index 87b8c20d5b27c..af4f2a7f8e9a0 100644
---- a/include/linux/if_vlan.h
-+++ b/include/linux/if_vlan.h
-@@ -30,6 +30,8 @@
- #define VLAN_ETH_DATA_LEN	1500	/* Max. octets in payload	 */
- #define VLAN_ETH_FRAME_LEN	1518	/* Max. octets in frame sans FCS */
- 
-+#define VLAN_MAX_DEPTH	8		/* Max. number of nested VLAN tags parsed */
-+
- /*
-  * 	struct vlan_hdr - vlan header
-  * 	@h_vlan_TCI: priority and VLAN ID
-@@ -534,10 +536,10 @@ static inline int vlan_get_tag(const struct sk_buff *skb, u16 *vlan_tci)
-  * Returns the EtherType of the packet, regardless of whether it is
-  * vlan encapsulated (normal or hardware accelerated) or not.
-  */
--static inline __be16 __vlan_get_protocol(struct sk_buff *skb, __be16 type,
-+static inline __be16 __vlan_get_protocol(const struct sk_buff *skb, __be16 type,
- 					 int *depth)
- {
--	unsigned int vlan_depth = skb->mac_len;
-+	unsigned int vlan_depth = skb->mac_len, parse_depth = VLAN_MAX_DEPTH;
- 
- 	/* if type is 802.1Q/AD then the header should already be
- 	 * present at mac_len - VLAN_HLEN (if mac_len > 0), or at
-@@ -552,13 +554,12 @@ static inline __be16 __vlan_get_protocol(struct sk_buff *skb, __be16 type,
- 			vlan_depth = ETH_HLEN;
- 		}
- 		do {
--			struct vlan_hdr *vh;
-+			struct vlan_hdr vhdr, *vh;
- 
--			if (unlikely(!pskb_may_pull(skb,
--						    vlan_depth + VLAN_HLEN)))
-+			vh = skb_header_pointer(skb, vlan_depth, sizeof(vhdr), &vhdr);
-+			if (unlikely(!vh || !--parse_depth))
- 				return 0;
- 
--			vh = (struct vlan_hdr *)(skb->data + vlan_depth);
- 			type = vh->h_vlan_encapsulated_proto;
- 			vlan_depth += VLAN_HLEN;
- 		} while (eth_type_vlan(type));
-@@ -577,11 +578,25 @@ static inline __be16 __vlan_get_protocol(struct sk_buff *skb, __be16 type,
-  * Returns the EtherType of the packet, regardless of whether it is
-  * vlan encapsulated (normal or hardware accelerated) or not.
-  */
--static inline __be16 vlan_get_protocol(struct sk_buff *skb)
-+static inline __be16 vlan_get_protocol(const struct sk_buff *skb)
- {
- 	return __vlan_get_protocol(skb, skb->protocol, NULL);
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1720,6 +1720,46 @@ struct spi_master *spi_alloc_master(stru
  }
+ EXPORT_SYMBOL_GPL(spi_alloc_master);
  
-+/* A getter for the SKB protocol field which will handle VLAN tags consistently
-+ * whether VLAN acceleration is enabled or not.
-+ */
-+static inline __be16 skb_protocol(const struct sk_buff *skb, bool skip_vlan)
++static void devm_spi_release_master(struct device *dev, void *master)
 +{
-+	if (!skip_vlan)
-+		/* VLAN acceleration strips the VLAN header from the skb and
-+		 * moves it to skb->vlan_proto
-+		 */
-+		return skb_vlan_tag_present(skb) ? skb->vlan_proto : skb->protocol;
-+
-+	return vlan_get_protocol(skb);
++	spi_master_put(*(struct spi_master **)master);
 +}
 +
- static inline void vlan_set_encap_proto(struct sk_buff *skb,
- 					struct vlan_hdr *vhdr)
++/**
++ * devm_spi_alloc_master - resource-managed spi_alloc_master()
++ * @dev: physical device of SPI master
++ * @size: how much zeroed driver-private data to allocate
++ * Context: can sleep
++ *
++ * Allocate an SPI master and automatically release a reference on it
++ * when @dev is unbound from its driver.  Drivers are thus relieved from
++ * having to call spi_master_put().
++ *
++ * The arguments to this function are identical to spi_alloc_master().
++ *
++ * Return: the SPI master structure on success, else NULL.
++ */
++struct spi_master *devm_spi_alloc_master(struct device *dev, unsigned int size)
++{
++	struct spi_master **ptr, *master;
++
++	ptr = devres_alloc(devm_spi_release_master, sizeof(*ptr),
++			   GFP_KERNEL);
++	if (!ptr)
++		return NULL;
++
++	master = spi_alloc_master(dev, size);
++	if (master) {
++		*ptr = master;
++		devres_add(dev, ptr);
++	} else {
++		devres_free(ptr);
++	}
++
++	return master;
++}
++EXPORT_SYMBOL_GPL(devm_spi_alloc_master);
++
+ #ifdef CONFIG_OF
+ static int of_spi_register_master(struct spi_master *master)
  {
-diff --git a/include/net/inet_ecn.h b/include/net/inet_ecn.h
-index d30e4c869438c..09ed8a48b4548 100644
---- a/include/net/inet_ecn.h
-+++ b/include/net/inet_ecn.h
-@@ -4,6 +4,7 @@
+@@ -1899,6 +1939,11 @@ int devm_spi_register_master(struct devi
+ }
+ EXPORT_SYMBOL_GPL(devm_spi_register_master);
  
- #include <linux/ip.h>
- #include <linux/skbuff.h>
-+#include <linux/if_vlan.h>
++static int devm_spi_match_master(struct device *dev, void *res, void *master)
++{
++	return *(struct spi_master **)res == master;
++}
++
+ static int __unregister(struct device *dev, void *null)
+ {
+ 	spi_unregister_device(to_spi_device(dev));
+@@ -1928,7 +1973,14 @@ void spi_unregister_master(struct spi_ma
+ 	list_del(&master->list);
+ 	mutex_unlock(&board_lock);
  
- #include <net/inet_sock.h>
- #include <net/dsfield.h>
--- 
-2.27.0
-
+-	device_unregister(&master->dev);
++	device_del(&master->dev);
++
++	/* Release the last reference on the master if its driver
++	 * has not yet been converted to devm_spi_alloc_master().
++	 */
++	if (!devres_find(master->dev.parent, devm_spi_release_master,
++			 devm_spi_match_master, master))
++		put_device(&master->dev);
+ }
+ EXPORT_SYMBOL_GPL(spi_unregister_master);
+ 
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -568,6 +568,8 @@ extern void spi_finalize_current_transfe
+ /* the spi driver core manages memory for the spi_master classdev */
+ extern struct spi_master *
+ spi_alloc_master(struct device *host, unsigned size);
++extern struct spi_master *
++devm_spi_alloc_master(struct device *dev, unsigned int size);
+ 
+ extern int spi_register_master(struct spi_master *master);
+ extern int devm_spi_register_master(struct device *dev,
 
 
