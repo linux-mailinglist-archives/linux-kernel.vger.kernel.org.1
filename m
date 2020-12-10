@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACFD2D6598
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2337B2D65A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392241AbgLJSx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:53:56 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:46226 "EHLO
+        id S2393262AbgLJSzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 13:55:54 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:37464 "EHLO
         mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbgLJSxY (ORCPT
+        with ESMTP id S2393138AbgLJSz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 13:53:24 -0500
-Received: by mail-oi1-f193.google.com with SMTP id k2so6846899oic.13;
-        Thu, 10 Dec 2020 10:53:08 -0800 (PST)
+        Thu, 10 Dec 2020 13:55:26 -0500
+Received: by mail-oi1-f193.google.com with SMTP id l207so6904618oib.4;
+        Thu, 10 Dec 2020 10:55:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=X+VtpZS1e75YA7Ec0/B1orp2GIzvdOi0H1A+93dXCqY=;
-        b=tRr8WrvVVvuL6YzhO305G5qrOTb6CBRKZJI36qTRxcycgWF9IQeSsJoUEuda1LlxZT
-         Du8diJ48SPmvgLE2EvFE+id3btQ/VTL8LDbYhy1bHfRuRpvJC3yeS+sx+NO8XoOHJRoj
-         fTl3HC6nJ51tqPeStkCOMvr5bB3vsoZ5biBJcQyX1zTMo7PDsCMY5GSDhbEEUZ5HOpqZ
-         OWJLVn+Afc55lkQQBDR6Etp5EnKMiw8Ps4RyRQPjhpBfz23J7c//Qq5/ftywVCiV8/ej
-         1Ig5BCYB6j36WcEw8bUpWcIsTqv7zBhL++93BvAk+Zd+hI7bhakjbjCTT6ejrADR+Ihn
-         5xHw==
-X-Gm-Message-State: AOAM532/Udu5lohHw3Oj8Vzv6rYWESylKQ/EhSoAF29iMIHo2+rUFttu
-        Z8HnoDQivdByd4XOsYEr6KNgcZ4AL8fxfJW8wC5xRV37
-X-Google-Smtp-Source: ABdhPJwwCUyiGYofyWRLE6tTBc1GNLHpjFHWlhRODc6u/IqEwfkcbl7SVMuOUg/07s5pM138CMDNPZtLNeeOhfSnlic=
-X-Received: by 2002:aca:4b16:: with SMTP id y22mr6398880oia.148.1607626363574;
- Thu, 10 Dec 2020 10:52:43 -0800 (PST)
+        bh=twsPwbVO8yn8zyqZUdboWjPQ7cI0ykoSS/wwbkutNEI=;
+        b=WK5LbfxAs06m91B7c1sJE4alF1KAfiCPw/lwyICalBrZFPaPi64xZAT5qT2swj0dnX
+         UbO8tONF4nZVbiBp5r/86RmlA/sX9o/qFjllCbZNJVkyjGfPLpai9i+rD+6Nw1gflcm/
+         GeolyZ3crbw1nzo2wHZPD+wdJpq4FHmFel36Uw5tpZ4eXNL6uYZrxi25JFIxv/HVK0yy
+         ERqnLi3G9MfyZ8HmtwSJU/NGgAjRWCc+9cNAqAnHNvkt2xI6YiDovOX/E7mX4vybbqB9
+         6dsUZM71i/animyxqJuehdNf9nAHvxoG0F4waqTxBBC0Qn6e0uhZVkODXnVVUUgaimN4
+         /Kpg==
+X-Gm-Message-State: AOAM532NBKI2A8Q5omc3Q3OwahsT+TN9FkguZit3IJFl3Mhg0ZROK5+u
+        P0R7lIHe/CFsi7IZtEuPGpYctUifoY3igRumvzU=
+X-Google-Smtp-Source: ABdhPJxLClO2crsAIA3P40gP2Nb793PFJLMAKdyrDqX8zhIEkjenPnNDK1rWmD8vPcW48zPM+UzHKVaWiHz5yaKb0uc=
+X-Received: by 2002:aca:cf4a:: with SMTP id f71mr6681750oig.157.1607626485427;
+ Thu, 10 Dec 2020 10:54:45 -0800 (PST)
 MIME-Version: 1.0
-References: <X9JcUZCLh3WjV7Bw@manjaro>
-In-Reply-To: <X9JcUZCLh3WjV7Bw@manjaro>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 10 Dec 2020 19:52:32 +0100
-Message-ID: <CAMuHMdXbF_AVhx86xO9DJy1+MGwAHSJ3OpCn-DErj=+xAyxJUQ@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: remove empty lines in pinctrl subsystem
-To:     Zhaoyu Liu <zackary.liu.pro@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stefan Agner <stefan@agner.ch>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Patrice Chotard <patrice.chotard@st.com>,
-        Andy Gross <agross@kernel.org>,
-        =?UTF-8?Q?Bj=C3=B6rn_Andersson?= <bjorn.andersson@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+References: <20201210142139.20490-1-yousaf.kaukab@suse.com>
+ <CAJZ5v0hWxLrXCS+X15hnLZ2enBsSJ0aEfnxK2kL+n9k4gkg17Q@mail.gmail.com>
+ <20201210150417.GA24136@suse.de> <1916679.syIRshJoYJ@kreacher> <20201210172339.GA2828@arm.com>
+In-Reply-To: <20201210172339.GA2828@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 10 Dec 2020 19:54:34 +0100
+Message-ID: <CAJZ5v0hx46VUj+FueGKLDNtn-H9Mk9vFSa5RXv6KrpPwcsD=cg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] acpi: cppc: add cpufreq device
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Mian Yousaf Kaukab <ykaukab@suse.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mian Yousaf Kaukab <yousaf.kaukab@suse.com>,
+        Len Brown <lenb@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+        Linux PM <linux-pm@vger.kernel.org>,
+        Petr Cervinka <pcervinka@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 6:35 PM Zhaoyu Liu <zackary.liu.pro@gmail.com> wrote:
-> Remove all empty lines at the end of functions in pinctrl subsystem,
-> make the code neat.
-> Target files: grep -nwR -B1 ^} drivers/pinctrl/* | grep '[0-9]-$' | less
+On Thu, Dec 10, 2020 at 6:23 PM Ionela Voinescu <ionela.voinescu@arm.com> wrote:
 >
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
+> Hi Rafael,
+>
+> On Thursday 10 Dec 2020 at 17:55:56 (+0100), Rafael J. Wysocki wrote:
+> > On Thursday, December 10, 2020 4:04:40 PM CET Mian Yousaf Kaukab wrote:
+> > > On Thu, Dec 10, 2020 at 03:32:09PM +0100, Rafael J. Wysocki wrote:
+> > > > On Thu, Dec 10, 2020 at 3:23 PM Mian Yousaf Kaukab
+> > > > <yousaf.kaukab@suse.com> wrote:
+> > > > >
+> > > > > Convert cppc-cpufreq driver to a platform driver (done in a separate patch)
+> > > > > and add cppc-cpufreq device when acpi_cppc_processor_probe() succeeds.
+> > > >
+> > > > Honestly, I prefer to drop 28f06f770454 (along with its follower)
+> > > > instead of making this change.
+> > > >
+> > > Even if we revert 28f06f770454 there is still one more small issue that these
+> > > patches fix. Currently, ACPI_PROCESSOR_DEVICE_HID is used to load cppc-cpufreq
+> > > module. In case when CPPC is disabled, some cycles will be wasted in loading
+> > > cppc-cpufreq module. The module will return error from the init call though
+> > > so no memory is wasted.
+> > >
+> > > After converting to platform-driver, cppc-cpufreq module will only be loaded
+> > > when the platform-device is available.
+> >
+> > Even so, that issue is low-impact AFAICS and may be addressed later and I'd
+> > rather not let known breakage go into the mainline.
+> >
+> > I'm going to do drop the problematic commit now and please work with Ionela
+> > to produce a clean series of patches in the right order to avoid introducing
+> > issues between them.
+> >
+>
+> The following commit will be easy to drop:
+> a37afa60de38  cppc_cpufreq: optimise memory allocation for HW and NONE coordination (2 weeks ago)
+>
+> 28f06f770454  will be more difficult to drop as it's embedded in the
+> series, and removing that one will produce conflicts in the patches
+> that follow it:
+>
+> f9f5baa8b2a8  ACPI: processor: fix NONE coordination for domain mapping failure (3 weeks ago)
+> cdb4ae5de6f7  cppc_cpufreq: expose information on frequency domains (3 weeks ago)
+> c783a4d94848  cppc_cpufreq: clarify support for coordination types (3 weeks ago)
+> 3bd412fb2c7f  cppc_cpufreq: use policy->cpu as driver of frequency setting (3 weeks ago)
+> 28f06f770454  cppc_cpufreq: replace per-cpu structures with lists (3 weeks ago)
 
-Thanks for your patch!
+I dropped the commits above along with a37afa60de38 (and regenerated
+my pm-cpufreq branch).
 
->  drivers/pinctrl/renesas/pfc-r8a77950.c        | 1 -
->  drivers/pinctrl/renesas/pfc-r8a77951.c        | 3 ---
->  drivers/pinctrl/renesas/pfc-r8a7796.c         | 1 -
->  drivers/pinctrl/renesas/pfc-r8a77965.c        | 1 -
+> bb025fb6c276  cppc_cpufreq: simplify use of performance capabilities (3 weeks ago)
+> 48ad8dc94032  cppc_cpufreq: clean up cpu, cpu_num and cpunum variable use (3 weeks ago)
+> 63087265c288  cppc_cpufreq: fix misspelling, code style and readability issues (3 weeks ago)
+>
+> Let me know how you want to proceed and I can either send a replacement
+> series or reverts with conflicts fixed.
 
-Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Please feel free to resubmit with the issue at hand addressed.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks!
