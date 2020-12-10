@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95A02D6295
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED59F2D6252
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391974AbgLJQyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:54:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44164 "EHLO mail.kernel.org"
+        id S2391112AbgLJOhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:37:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391048AbgLJOg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:58 -0500
+        id S2390800AbgLJOeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:34:20 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Suganath Prabu S <suganath-prabu.subramani@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.4 25/54] scsi: mpt3sas: Fix ioctl timeout
-Date:   Thu, 10 Dec 2020 15:27:02 +0100
-Message-Id: <20201210142603.268852705@linuxfoundation.org>
+        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 4.19 26/39] i2c: imx: Check for I2SR_IAL after every byte
+Date:   Thu, 10 Dec 2020 15:27:05 +0100
+Message-Id: <20201210142603.562742819@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
+References: <20201210142602.272595094@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,42 +33,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suganath Prabu S <suganath-prabu.subramani@broadcom.com>
+From: Christian Eggers <ceggers@arri.de>
 
-commit 42f687038bcc34aa919e0e4c29b04e4cda3f6a79 upstream.
+commit 1de67a3dee7a279ebe4d892b359fe3696938ec15 upstream.
 
-Commit c1a6c5ac4278 ("scsi: mpt3sas: For NVME device, issue a protocol
-level reset") modified the ioctl path 'timeout' variable type to u8 from
-unsigned long, limiting the maximum timeout value that the driver can
-support to 255 seconds.
+Arbitration Lost (IAL) can happen after every single byte transfer. If
+arbitration is lost, the I2C hardware will autonomously switch from
+master mode to slave. If a transfer is not aborted in this state,
+consecutive transfers will not be executed by the hardware and will
+timeout.
 
-If the management application is requesting a higher value the resulting
-timeout will be zero. The operation times out immediately and the ioctl
-request fails.
-
-Change datatype back to unsigned long.
-
-Link: https://lore.kernel.org/r/20201125094838.4340-1-suganath-prabu.subramani@broadcom.com
-Fixes: c1a6c5ac4278 ("scsi: mpt3sas: For NVME device, issue a protocol level reset")
-Cc: <stable@vger.kernel.org> #v4.18+
-Signed-off-by: Suganath Prabu S <suganath-prabu.subramani@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Tested (not extensively) on Vybrid VF500 (Toradex VF50):
+Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: stable@vger.kernel.org
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/mpt3sas/mpt3sas_ctl.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-imx.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-@@ -650,7 +650,7 @@ _ctl_do_mpt_command(struct MPT3SAS_ADAPT
- 	Mpi26NVMeEncapsulatedRequest_t *nvme_encap_request = NULL;
- 	struct _pcie_device *pcie_device = NULL;
- 	u16 smid;
--	u8 timeout;
-+	unsigned long timeout;
- 	u8 issue_reset;
- 	u32 sz, sz_arg;
- 	void *psge;
+--- a/drivers/i2c/busses/i2c-imx.c
++++ b/drivers/i2c/busses/i2c-imx.c
+@@ -460,6 +460,16 @@ static int i2c_imx_trx_complete(struct i
+ 		dev_dbg(&i2c_imx->adapter.dev, "<%s> Timeout\n", __func__);
+ 		return -ETIMEDOUT;
+ 	}
++
++	/* check for arbitration lost */
++	if (i2c_imx->i2csr & I2SR_IAL) {
++		dev_dbg(&i2c_imx->adapter.dev, "<%s> Arbitration lost\n", __func__);
++		i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
++
++		i2c_imx->i2csr = 0;
++		return -EAGAIN;
++	}
++
+ 	dev_dbg(&i2c_imx->adapter.dev, "<%s> TRX complete\n", __func__);
+ 	i2c_imx->i2csr = 0;
+ 	return 0;
 
 
