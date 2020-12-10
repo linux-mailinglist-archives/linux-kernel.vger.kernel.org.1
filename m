@@ -2,27 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6722D6561
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6837C2D6571
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392814AbgLJSpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:45:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39602 "EHLO mail.kernel.org"
+        id S2390544AbgLJOcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:32:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390574AbgLJOcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:32:41 -0500
+        id S1733026AbgLJOaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:30:39 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 14/39] ALSA: hda/realtek - Add new codec supported for ALC897
-Date:   Thu, 10 Dec 2020 15:26:53 +0100
-Message-Id: <20201210142602.988483511@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Mark Brown <broonie@kernel.org>, Lukas Wunner <lukas@wunner.de>
+Subject: [PATCH 4.9 40/45] spi: bcm2835: Release the DMA channel if probe fails after dma_init
+Date:   Thu, 10 Dec 2020 15:26:54 +0100
+Message-Id: <20201210142604.326645697@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
-References: <20201210142602.272595094@linuxfoundation.org>
+In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
+References: <20201210142602.361598591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,39 +32,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kailang Yang <kailang@realtek.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-commit e5782a5d5054bf1e03cb7fbd87035037c2a22698 upstream.
+[ Upstream commit 666224b43b4bd4612ce3b758c038f9bc5c5e3fcb ]
 
-Enable new codec supported for ALC897.
+The DMA channel was not released if either devm_request_irq() or
+devm_spi_register_controller() failed.
 
-Signed-off-by: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/3b00520f304842aab8291eb8d9191bd8@realtek.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Reviewed-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Link: https://lore.kernel.org/r/20191212135550.4634-3-peter.ujfalusi@ti.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+[lukas: backport to 4.19-stable]
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- sound/pci/hda/patch_realtek.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/spi/spi-bcm2835.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -439,6 +439,7 @@ static void alc_fill_eapd_coef(struct hd
- 			alc_update_coef_idx(codec, 0x7, 1<<5, 0);
- 		break;
- 	case 0x10ec0892:
-+	case 0x10ec0897:
- 		alc_update_coef_idx(codec, 0x7, 1<<5, 0);
- 		break;
- 	case 0x10ec0899:
-@@ -9166,6 +9167,7 @@ static const struct hda_device_id snd_hd
- 	HDA_CODEC_ENTRY(0x10ec0888, "ALC888", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec0889, "ALC889", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec0892, "ALC892", patch_alc662),
-+	HDA_CODEC_ENTRY(0x10ec0897, "ALC897", patch_alc662),
- 	HDA_CODEC_ENTRY(0x10ec0899, "ALC898", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec0900, "ALC1150", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec0b00, "ALCS1200A", patch_alc882),
+--- a/drivers/spi/spi-bcm2835.c
++++ b/drivers/spi/spi-bcm2835.c
+@@ -787,18 +787,19 @@ static int bcm2835_spi_probe(struct plat
+ 			       dev_name(&pdev->dev), master);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "could not request IRQ: %d\n", err);
+-		goto out_clk_disable;
++		goto out_dma_release;
+ 	}
+ 
+ 	err = spi_register_master(master);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "could not register SPI master: %d\n", err);
+-		goto out_clk_disable;
++		goto out_dma_release;
+ 	}
+ 
+ 	return 0;
+ 
+-out_clk_disable:
++out_dma_release:
++	bcm2835_dma_release(master);
+ 	clk_disable_unprepare(bs->clk);
+ 	return err;
+ }
 
 
