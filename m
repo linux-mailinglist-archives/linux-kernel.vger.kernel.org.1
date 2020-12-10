@@ -2,125 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CA92D6796
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AFA2D679D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393587AbgLJTyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:54:15 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:54895 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390146AbgLJTxw (ORCPT
+        id S2393596AbgLJTyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:54:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393588AbgLJTyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:53:52 -0500
-Received: by mail-io1-f70.google.com with SMTP id w26so4733956iox.21
+        Thu, 10 Dec 2020 14:54:16 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8ACC0613CF
         for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:53:36 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id z188so6079783qke.9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:53:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kpO1u5hzYEH5V8S5yxIwbQt0kkL6XU1TzxqvExx1i4k=;
+        b=ERm45IL/CRSJ7ej7ihQMRlmsjMj0UWbObRchoUkR0DpqcN1AgUT6ViR0I1oNQJ5Ipf
+         arQEdra+dR99zB/dZ0VZr+dcYQOoSsSMsqpQ8FI+ASV731sV1V8AOHCjJvtL/dH8E7Z2
+         EobL420DahxpHvJGKsNk02RZZ6hY4OmJoTWl9DMWiPwjJBOu1AOzgs0G61yODm0gQV0k
+         VFlkHt12xfW9cChSwPfLwyAmK3zZxhWhiYs4u0khpM9FP00ebOcWPXpEiaoNWSRxh1B0
+         OkBWVT09oHA0N8N2hVsW4A6kiKkt01i5VfILKKYTcoVuaa9GI1p9XOdu1/SHFpkfo/tE
+         LdSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=XMRAja/ZoZsO+seiyLvnZ/1aFb6VeuDhCam8FD/lCas=;
-        b=rgVSmn42SvEkSqiQ/J1+Q9qWCze09fWaCnKWrrwBlQLroWQ1RMAdxiBUsI4X3l88Ah
-         oQ5VAlUNc4aqmudxr//ano+ooUdH1CEwuAp7wsb4d1q4CtG/Wcz/dbiF8bQJifkKaThn
-         9Td8vgl11YuWvG08FzccSf4pcaT8pdc/egENl9h0zRUH7L3l0F85hoWw4tiQrFM/WRla
-         2+4tPT+b83sudf/2Ov25uj8gIR55iZj3pHk6IadvkkQHfuUMvJqUyzvc/zcrLCxUsnYG
-         2kiJRrvO21UFG4lNKIZX+QOiPGP/IuEilaLXeCMg4/2fv9yOXoKn2R5GoXLAkSsFYUPD
-         L8nw==
-X-Gm-Message-State: AOAM531ia3wLnCyZrNJjLdzp7kuDUmMVgmV1kNK+W4dCXfxucldKfzWy
-        34ZWGMoYWdCw6Nbciog8I+gH0vPk9OF/xChnCKWIlRf6GM0j
-X-Google-Smtp-Source: ABdhPJzHihha2NRM9J5ANRC2LOgfdhkiZCLnzaIdYA4Tc5r1XSugDIzZX54V4zVLxW1xDMmSuHg2OW1tW/g7HUDec13P+cjXYg+J
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kpO1u5hzYEH5V8S5yxIwbQt0kkL6XU1TzxqvExx1i4k=;
+        b=i74Hc9PxYuSDzf7EpeezJBzN2vQnWBaxgCqO8XxM6aAfNpjo2qVxpf2NVkm5NnELqh
+         wZav5bv2+MNeF9MMgCugR9CQKNBWvh+H1wCDe6Nlew23+FcOOPg3iNamCUR5+mWflC+1
+         S45LAgjDY5ryuun1fREM54VA7R7XklILw0WJS80HqMzi0x9zAztNQzefl2HrYsy7j+FP
+         cbPQ85xSkYpIjzucbI31LwsJsp6JJ0fWDSfXRh5YilxZHlth0caL+IumgFlhl08ZDVpU
+         ZBgpwCd/azgMMxVSmml5M3nXO3DZrBBg8zJqf6Nku3xQ5hvhT9/v/sLkFgBVWSzAPy4N
+         1FGA==
+X-Gm-Message-State: AOAM532TZJPt6nFVPWToNLm9oDnqBet9u53lTQha7MWOhURmO9jf5K0A
+        musaun8n3dWC/eHjFzIvmcbZUg==
+X-Google-Smtp-Source: ABdhPJxNyjiKIJggTURqLKx/oQq4Q7Jmk8h6KRW1wT9DgA7r5fSDFq6gBpCKYRbs0tGzBN5Tgj8E9g==
+X-Received: by 2002:a05:620a:15ea:: with SMTP id p10mr11509186qkm.172.1607630015501;
+        Thu, 10 Dec 2020 11:53:35 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id b14sm4157697qti.97.2020.12.10.11.53.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 11:53:34 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1knS0L-008vyp-Ue; Thu, 10 Dec 2020 15:53:33 -0400
+Date:   Thu, 10 Dec 2020 15:53:33 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 3/8] mm/gup: make __gup_longterm_locked common
+Message-ID: <20201210195333.GZ5487@ziepe.ca>
+References: <20201210004335.64634-1-pasha.tatashin@soleen.com>
+ <20201210004335.64634-4-pasha.tatashin@soleen.com>
+ <20201210040618.GR1563847@iweiny-DESK2.sc.intel.com>
+ <CA+CK2bCVEnKKatQSxZcdcvNo+9rWNrGWXyLS3dnF-y7=5Ery7g@mail.gmail.com>
+ <20201210174431.GT1563847@iweiny-DESK2.sc.intel.com>
+ <CA+CK2bBbN9dxqD_ntAPACfjJmwahPEyP36cb7koVm212nzsuKw@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:ce2f:: with SMTP id v15mr10735095jar.44.1607629991299;
- Thu, 10 Dec 2020 11:53:11 -0800 (PST)
-Date:   Thu, 10 Dec 2020 11:53:11 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008fd03305b62186a7@google.com>
-Subject: INFO: task can't die in inet_twsk_purge
-From:   syzbot <syzbot+4c1b0c5364346e7beafa@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bBbN9dxqD_ntAPACfjJmwahPEyP36cb7koVm212nzsuKw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Dec 10, 2020 at 01:57:20PM -0500, Pavel Tatashin wrote:
 
-syzbot found the following issue on:
+> Thank you. Yes, this series should be backported, but I am not sure
+> what to do about Jason's patch. Perhaps, in the next version I will
+> send out this series together with his patch.
 
-HEAD commit:    a9e26cb5 Add linux-next specific files for 20201208
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=161a9613500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e259434a8eaf0206
-dashboard link: https://syzkaller.appspot.com/bug?extid=4c1b0c5364346e7beafa
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=109cf703500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1587c923500000
+You need to send out patches that can be applied on top of linux-next,
+at this point the window to go to rc kernels is done.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4c1b0c5364346e7beafa@syzkaller.appspotmail.com
+When you eventually want this back ported to stables then suggest they
+take my patch as a pre-requisite.
 
-INFO: task syz-executor343:8498 can't die for more than 143 seconds.
-task:syz-executor343 state:R  running task     stack:25920 pid: 8498 ppid:  8495 flags:0x00004006
-Call Trace:
- context_switch kernel/sched/core.c:4325 [inline]
- __schedule+0x8eb/0x21b0 kernel/sched/core.c:5076
- preempt_schedule_irq+0x4e/0x90 kernel/sched/core.c:5338
- rcu_read_unlock include/linux/rcupdate.h:694 [inline]
- inet_twsk_purge+0x57f/0x810 net/ipv4/inet_timewait_sock.c:299
-INFO: task syz-executor343:8743 can't die for more than 145 seconds.
-task:syz-executor343 state:R  running task     stack:25768 pid: 8743 ppid:  8494 flags:0x00004006
-Call Trace:
- context_switch kernel/sched/core.c:4325 [inline]
- __schedule+0x8eb/0x21b0 kernel/sched/core.c:5076
- preempt_schedule_notrace+0x5b/0xd0 kernel/sched/core.c:5309
-INFO: task syz-executor343:8744 can't die for more than 147 seconds.
-task:syz-executor343 state:R  running task     stack:25784 pid: 8744 ppid:  8490 flags:0x00004006
-Call Trace:
- context_switch kernel/sched/core.c:4325 [inline]
- __schedule+0x8eb/0x21b0 kernel/sched/core.c:5076
-INFO: task syz-executor343:8745 can't die for more than 148 seconds.
-task:syz-executor343 state:D stack:25864 pid: 8745 ppid:  8491 flags:0x00004006
-Call Trace:
- context_switch kernel/sched/core.c:4325 [inline]
- __schedule+0x8eb/0x21b0 kernel/sched/core.c:5076
- schedule+0xcf/0x270 kernel/sched/core.c:5155
- synchronize_rcu_expedited+0x458/0x620 kernel/rcu/tree_exp.h:852
- synchronize_rcu+0xee/0x190 kernel/rcu/tree.c:3729
- ops_exit_list+0x10d/0x160 net/core/net_namespace.c:190
- setup_net+0x508/0x850 net/core/net_namespace.c:365
- copy_net_ns+0x376/0x7b0 net/core/net_namespace.c:483
- create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
- unshare_nsproxy_namespaces+0xbd/0x230 kernel/nsproxy.c:231
- ksys_unshare+0x445/0x8e0 kernel/fork.c:2958
- __do_sys_unshare kernel/fork.c:3026 [inline]
- __se_sys_unshare kernel/fork.c:3024 [inline]
- __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3024
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4414a9
-RSP: 002b:00007ffd8be6e998 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004414a9
-RDX: 00000000004414a9 RSI: ffffffffffffffff RDI: 0000000040000000
-RBP: 000000000007851d R08: 00000000000000c2 R09: 00000000000000c2
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004021a0
-R13: 0000000000402230 R14: 0000000000000000 R15: 0000000000000000
-INFO: task syz-executor343:8748 can't die for more than 151 seconds.
-task:syz-executor343 state:R  running task     stack:25784 pid: 8748 ppid:  8493 flags:0x00004006
-Call Trace:
- context_switch kernel/sched/core.c:4325 [inline]
- __schedule+0x8eb/0x21b0 kernel/sched/core.c:5076
- native_restore_fl arch/x86/include/asm/irqflags.h:41 [inline]
- arch_local_irq_restore arch/x86/include/asm/irqflags.h:84 [inline]
- lock_is_held_type+0xc2/0x100 kernel/locking/lockdep.c:5478
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Jason
