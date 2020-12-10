@@ -2,26 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1612D6016
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388E12D605D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391295AbgLJOkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:40:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42710 "EHLO mail.kernel.org"
+        id S2392014AbgLJPst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:48:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390875AbgLJOfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:35:04 -0500
+        id S2391210AbgLJOjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:39:09 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 17/54] ALSA: hda/generic: Add option to enforce preferred_dacs pairs
+        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 5.9 29/75] i2c: imx: Fix reset of I2SR_IAL flag
 Date:   Thu, 10 Dec 2020 15:26:54 +0100
-Message-Id: <20201210142602.888457075@linuxfoundation.org>
+Message-Id: <20201210142607.490267087@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -30,70 +34,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Christian Eggers <ceggers@arri.de>
 
-commit 242d990c158d5b1dabd166516e21992baef5f26a upstream.
+commit 384a9565f70a876c2e78e58c5ca0bbf0547e4f6d upstream.
 
-The generic parser accepts the preferred_dacs[] pairs as a hint for
-assigning a DAC to each pin, but this hint doesn't work always
-effectively.  Currently it's merely a secondary choice after the trial
-with the path index failed.  This made sometimes it difficult to
-assign DACs without mimicking the connection list and/or the badness
-table.
+According to the "VFxxx Controller Reference Manual" (and the comment
+block starting at line 97), Vybrid requires writing a one for clearing
+an interrupt flag. Syncing the method for clearing I2SR_IIF in
+i2c_imx_isr().
 
-This patch adds a new flag, obey_preferred_dacs, that changes the
-behavior of the parser.  As its name stands, the parser obeys the
-given preferred_dacs[] pairs by skipping the path index matching and
-giving a high penalty if no DAC is assigned by the pairs.  This mode
-will help for assigning the fixed DACs forcibly from the codec
-driver.
-
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201127141104.11041-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Fixes: 4b775022f6fd ("i2c: imx: add struct to hold more configurable quirks")
+Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: stable@vger.kernel.org
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/hda_generic.c |   12 ++++++++----
- sound/pci/hda/hda_generic.h |    1 +
- 2 files changed, 9 insertions(+), 4 deletions(-)
+ drivers/i2c/busses/i2c-imx.c |   22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -1364,16 +1364,20 @@ static int try_assign_dacs(struct hda_co
- 		struct nid_path *path;
- 		hda_nid_t pin = pins[i];
+--- a/drivers/i2c/busses/i2c-imx.c
++++ b/drivers/i2c/busses/i2c-imx.c
+@@ -412,6 +412,19 @@ static void i2c_imx_dma_free(struct imx_
+ 	dma->chan_using = NULL;
+ }
  
--		path = snd_hda_get_path_from_idx(codec, path_idx[i]);
--		if (path) {
--			badness += assign_out_path_ctls(codec, path);
--			continue;
-+		if (!spec->obey_preferred_dacs) {
-+			path = snd_hda_get_path_from_idx(codec, path_idx[i]);
-+			if (path) {
-+				badness += assign_out_path_ctls(codec, path);
-+				continue;
-+			}
++static void i2c_imx_clear_irq(struct imx_i2c_struct *i2c_imx, unsigned int bits)
++{
++	unsigned int temp;
++
++	/*
++	 * i2sr_clr_opcode is the value to clear all interrupts. Here we want to
++	 * clear only <bits>, so we write ~i2sr_clr_opcode with just <bits>
++	 * toggled. This is required because i.MX needs W0C and Vybrid uses W1C.
++	 */
++	temp = ~i2c_imx->hwdata->i2sr_clr_opcode ^ bits;
++	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
++}
++
+ static int i2c_imx_bus_busy(struct imx_i2c_struct *i2c_imx, int for_busy, bool atomic)
+ {
+ 	unsigned long orig_jiffies = jiffies;
+@@ -424,8 +437,7 @@ static int i2c_imx_bus_busy(struct imx_i
+ 
+ 		/* check for arbitration lost */
+ 		if (temp & I2SR_IAL) {
+-			temp &= ~I2SR_IAL;
+-			imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
++			i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
+ 			return -EAGAIN;
  		}
  
- 		dacs[i] = get_preferred_dac(codec, pin);
- 		if (dacs[i]) {
- 			if (is_dac_already_used(codec, dacs[i]))
- 				badness += bad->shared_primary;
-+		} else if (spec->obey_preferred_dacs) {
-+			badness += BAD_NO_PRIMARY_DAC;
- 		}
- 
- 		if (!dacs[i])
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -236,6 +236,7 @@ struct hda_gen_spec {
- 	unsigned int power_down_unused:1; /* power down unused widgets */
- 	unsigned int dac_min_mute:1; /* minimal = mute for DACs */
- 	unsigned int suppress_vmaster:1; /* don't create vmaster kctls */
-+	unsigned int obey_preferred_dacs:1; /* obey preferred_dacs assignment */
- 
- 	/* other internal flags */
- 	unsigned int no_analog:1; /* digital I/O only */
+@@ -469,7 +481,7 @@ static int i2c_imx_trx_complete(struct i
+ 		 */
+ 		readb_poll_timeout_atomic(addr, regval, regval & I2SR_IIF, 5, 1000 + 100);
+ 		i2c_imx->i2csr = regval;
+-		imx_i2c_write_reg(0, i2c_imx, IMX_I2C_I2SR);
++		i2c_imx_clear_irq(i2c_imx, I2SR_IIF | I2SR_IAL);
+ 	} else {
+ 		wait_event_timeout(i2c_imx->queue, i2c_imx->i2csr & I2SR_IIF, HZ / 10);
+ 	}
+@@ -623,9 +635,7 @@ static irqreturn_t i2c_imx_isr(int irq,
+ 	if (temp & I2SR_IIF) {
+ 		/* save status register */
+ 		i2c_imx->i2csr = temp;
+-		temp &= ~I2SR_IIF;
+-		temp |= (i2c_imx->hwdata->i2sr_clr_opcode & I2SR_IIF);
+-		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
++		i2c_imx_clear_irq(i2c_imx, I2SR_IIF);
+ 		wake_up(&i2c_imx->queue);
+ 		return IRQ_HANDLED;
+ 	}
 
 
