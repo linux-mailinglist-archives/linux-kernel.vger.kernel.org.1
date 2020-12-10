@@ -2,112 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4AC2D6868
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9199A2D6873
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 21:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393728AbgLJUO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 15:14:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58022 "EHLO
+        id S2393810AbgLJUQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 15:16:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393661AbgLJUOO (ORCPT
+        with ESMTP id S2393785AbgLJUPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 15:14:14 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E12C0613D3;
-        Thu, 10 Dec 2020 12:13:33 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id a9so10080593lfh.2;
-        Thu, 10 Dec 2020 12:13:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cubcqPyiVtmFFdXlSvbS5gnpVAJDkak3mmW80ANq1nA=;
-        b=m++KLY50+Zb3kDjd7LHlPu9npriqD7Zo9p6ZkdeEmyVpVlGSA5wE8yjd6BRoBeJ8SO
-         eKVX43rqnD15JpNTjqC6SyGW8n+E7aHzYxZop1BSBvWo72F+m09Flem2OoVAsBsMoBDa
-         dCwYrX61EenFMZVdkiYVy/qIg+r19bnLWKmfC+Z9QZTcH6HmjrVHP3GNwDDaN2mh/vDO
-         wk8kPqpUt54nxfbUrBBKNLjIKVV9dsxmZmrz13gCy0Ln2iQRroX908cx68LsAebGCUmS
-         Q6JrocxCza5ZHzCutFVY7TDIuP9XYBVAJuq1X5uz5wP+7ci6TI5uh4hOu9S85Wqo5jbi
-         iLiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cubcqPyiVtmFFdXlSvbS5gnpVAJDkak3mmW80ANq1nA=;
-        b=tuj06iK/TPxFOdkFlLdZMrMGoYl/0Yfd8mdLS+i3NrHc+MJmpO7tugn0Mf2suJoNFD
-         Y36jqy/vW+iJx/Ea9v8nj32JFjzptLSGvn5XzeMVL2Jrj7ANwc22f21OKh7iAO2tz/oM
-         i//KjOLMEI2C8cajdStHqltvfXcI2FrYgE2LcJcdIJXVJZsoFN6XPJYYVV1G5U1keYwi
-         OvRwT0/xoJ0IJ287on/Z+jtzdfLasx2lEN+dol1JdUAwE0Fvw/J89PmQj99UNnhsmfph
-         9PpSpbaImbKPboLka8vZsdlmInO1rhXuB2Ofyo6be3a0cujTxTw6GAnEWZDuq6Czgul5
-         fVww==
-X-Gm-Message-State: AOAM530v0vEHXH+0RiCeVe2VM2ResNuC/sEt0EU+j1rel3r3XIhszGQv
-        w3mVxrb+iNy04JzZtAEochQLUEq2gVU=
-X-Google-Smtp-Source: ABdhPJzpWtIzRb85t6xHbQMz47MlDCrpDWCIaWe+v+ZY5Gp0X0rHdwH14Rcc8vyrFGrzHidhjqyViA==
-X-Received: by 2002:a19:8a46:: with SMTP id m67mr3270217lfd.515.1607631211714;
-        Thu, 10 Dec 2020 12:13:31 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-205.dynamic.spd-mgts.ru. [109.252.193.205])
-        by smtp.googlemail.com with ESMTPSA id w2sm635587lfk.51.2020.12.10.12.13.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 12:13:30 -0800 (PST)
-Subject: Re: [PATCH RESEND v8 0/4] input: elants: Support Asus TF300T and
- Nexus 7 touchscreens
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Johnny Chuang <johnny.chuang.emc@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Hutterer <peter.hutterer@who-t.net>
-References: <cover.1604942771.git.mirq-linux@rere.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <76f75e8f-1895-6f51-eb1d-7d212a7e917f@gmail.com>
-Date:   Thu, 10 Dec 2020 23:13:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Thu, 10 Dec 2020 15:15:48 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23647C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 12:15:07 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607631305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5fN5ChdPk6fH90ggZf7w1lWtyXdKRHqfW7WHc/pgsVs=;
+        b=ckiewzsMmQUlBqMXgP4UCM+Np8mVHkkyuYZ55dFWcuWlHfyz/tgDeQPN8gOJwL71KCuDFp
+        bTEV0UcVcW+THBv5y7dJyw0M+kQ1Riyvqn9OxQr3zwaLOv+uShsKUCjirolVbrlSa85oom
+        iI6uU+J4mWFPa2hGzIZEAOuKh5iN+4FzvPkGUwZRJzd2A30gZdT6pTvBYw/wj4wJvz45Q9
+        4xL68/ICbZjy5ErILON+zndUZYGmqVaFb9ADzRqHWrpdGoR4T6W0smF9rTYGSgd1QHwNu0
+        XdkbiN6hBQ7XZ7qyI/o8e/Rwir0XY//nkekRFelqXb/XKTsF4qfFyF4RODMkvA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607631305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5fN5ChdPk6fH90ggZf7w1lWtyXdKRHqfW7WHc/pgsVs=;
+        b=7Sv15HRz9k3S0goiNVwWDAqqbLafPJHvp7i7jT+K4bNnOThCzVhK/tC1gQGefAlx4Qus9O
+        sPKSDB0EOeG3wDBg==
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, luto@kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware\, Inc." <pv-drivers@vmware.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: x86/ioapic: Cleanup the timer_works() irqflags mess
+In-Reply-To: <20201210111008.GB88655@C02TD0UTHF1T.local>
+References: <20201120114630.13552-1-jgross@suse.com> <20201120114630.13552-6-jgross@suse.com> <20201120115943.GD3021@hirez.programming.kicks-ass.net> <20201209181514.GA14235@C02TD0UTHF1T.local> <87tusuzu71.fsf@nanos.tec.linutronix.de> <20201210111008.GB88655@C02TD0UTHF1T.local>
+Date:   Thu, 10 Dec 2020 21:15:04 +0100
+Message-ID: <87k0tpju47.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <cover.1604942771.git.mirq-linux@rere.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-09.11.2020 20:28, Michał Mirosław пишет:
-> This series cleans up the driver a bit and implements changes needed to
-> support EKTF3624-based touchscreen used in Asus TF300T, Google Nexus 7
-> and similar Tegra3-based tablets.
-> 
-> ---
-> v2: extended with Dmitry's patches (replaced v1 patches 3 and 4)
-> v3: rebased for v5.7-rc1
-> v4: rebased onto v5.7-rc2+ (current Linus' master)
->     update "remove unused axes" and "refactor
->       elants_i2c_execute_command()" patches after review
->     add David's patch converting DT binding to YAML
-> v5: rebased onto dtor/input/for-linus
-> v6: rebased onto newer dtor/input/for-linus
->     remove yet unused constants from patch 1
->     added a new drive-by cleanup (last patch)
-> v7: rebased onto current dtor/input/for-next
-> v8: rebased onto current dtor/input/for-linus
-> ---
-> 
-> Dmitry Osipenko (1):
->   input: elants: support 0x66 reply opcode for reporting touches
-> 
-> Michał Mirosław (3):
->   input: elants: document some registers and values
->   input: elants: support old touch report format
->   input: elants: read touchscreen size for EKTF3624
-> 
->  drivers/input/touchscreen/elants_i2c.c | 149 +++++++++++++++++++++----
->  1 file changed, 127 insertions(+), 22 deletions(-)
-> 
+Mark tripped over the creative irqflags handling in the IO-APIC timer
+delivery check which ends up doing:
 
-This patchset missed another kernel release cycle and touchscreen
-hardware remains unusable on Nexus 7 [1] and other Asus devices.
+        local_irq_save(flags);
+	local_irq_enable();
+        local_irq_restore(flags);
 
-[1]
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi?h=v5.10-rc7#n845
+which triggered a new consistency check he's working on required for
+replacing the POPF based restore with a conditional STI.
 
-Dmitry Torokhov, could you please take a look at the v8 and let us know
-whether it's good already or something needs to be improved?
+That code is a historical mess and none of this is needed. Make it
+straightforward use local_irq_disable()/enable() as that's all what is
+required. It is invoked from interrupt enabled code nowadays.
+
+Reported-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Mark Rutland <mark.rutland@arm.com>
+---
+ arch/x86/kernel/apic/io_apic.c |   22 ++++++----------------
+ 1 file changed, 6 insertions(+), 16 deletions(-)
+
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -1618,21 +1618,16 @@ static void __init delay_without_tsc(voi
+ static int __init timer_irq_works(void)
+ {
+ 	unsigned long t1 = jiffies;
+-	unsigned long flags;
+ 
+ 	if (no_timer_check)
+ 		return 1;
+ 
+-	local_save_flags(flags);
+ 	local_irq_enable();
+-
+ 	if (boot_cpu_has(X86_FEATURE_TSC))
+ 		delay_with_tsc();
+ 	else
+ 		delay_without_tsc();
+ 
+-	local_irq_restore(flags);
+-
+ 	/*
+ 	 * Expect a few ticks at least, to be sure some possible
+ 	 * glue logic does not lock up after one or two first
+@@ -1641,10 +1636,10 @@ static int __init timer_irq_works(void)
+ 	 * least one tick may be lost due to delays.
+ 	 */
+ 
+-	/* jiffies wrap? */
+-	if (time_after(jiffies, t1 + 4))
+-		return 1;
+-	return 0;
++	local_irq_disable();
++
++	/* Did jiffies advance? */
++	return time_after(jiffies, t1 + 4);
+ }
+ 
+ /*
+@@ -2117,13 +2112,12 @@ static inline void __init check_timer(vo
+ 	struct irq_cfg *cfg = irqd_cfg(irq_data);
+ 	int node = cpu_to_node(0);
+ 	int apic1, pin1, apic2, pin2;
+-	unsigned long flags;
+ 	int no_pin1 = 0;
+ 
+ 	if (!global_clock_event)
+ 		return;
+ 
+-	local_irq_save(flags);
++	local_irq_disable();
+ 
+ 	/*
+ 	 * get/set the timer IRQ vector:
+@@ -2191,7 +2185,6 @@ static inline void __init check_timer(vo
+ 			goto out;
+ 		}
+ 		panic_if_irq_remap("timer doesn't work through Interrupt-remapped IO-APIC");
+-		local_irq_disable();
+ 		clear_IO_APIC_pin(apic1, pin1);
+ 		if (!no_pin1)
+ 			apic_printk(APIC_QUIET, KERN_ERR "..MP-BIOS bug: "
+@@ -2215,7 +2208,6 @@ static inline void __init check_timer(vo
+ 		/*
+ 		 * Cleanup, just in case ...
+ 		 */
+-		local_irq_disable();
+ 		legacy_pic->mask(0);
+ 		clear_IO_APIC_pin(apic2, pin2);
+ 		apic_printk(APIC_QUIET, KERN_INFO "....... failed.\n");
+@@ -2232,7 +2224,6 @@ static inline void __init check_timer(vo
+ 		apic_printk(APIC_QUIET, KERN_INFO "..... works.\n");
+ 		goto out;
+ 	}
+-	local_irq_disable();
+ 	legacy_pic->mask(0);
+ 	apic_write(APIC_LVT0, APIC_LVT_MASKED | APIC_DM_FIXED | cfg->vector);
+ 	apic_printk(APIC_QUIET, KERN_INFO "..... failed.\n");
+@@ -2251,7 +2242,6 @@ static inline void __init check_timer(vo
+ 		apic_printk(APIC_QUIET, KERN_INFO "..... works.\n");
+ 		goto out;
+ 	}
+-	local_irq_disable();
+ 	apic_printk(APIC_QUIET, KERN_INFO "..... failed :(.\n");
+ 	if (apic_is_x2apic_enabled())
+ 		apic_printk(APIC_QUIET, KERN_INFO
+@@ -2260,7 +2250,7 @@ static inline void __init check_timer(vo
+ 	panic("IO-APIC + timer doesn't work!  Boot with apic=debug and send a "
+ 		"report.  Then try booting with the 'noapic' option.\n");
+ out:
+-	local_irq_restore(flags);
++	local_irq_enable();
+ }
+ 
+ /*
