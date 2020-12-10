@@ -2,99 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B3D2D5B60
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C93E2D5B55
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388650AbgLJNKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:10:53 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39754 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388999AbgLJNKI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:10:08 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BAD8TQD060576;
-        Thu, 10 Dec 2020 07:08:29 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607605709;
-        bh=v8DeDg+aSnj9XDWh6SjoEmvU220d2QLKrD8S48HIXT4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=X63AumFzKo7DEDenEv1hNc68+rT9i7yeNC5wA2fYE6d9kSfbpMiz0bB9ilIG/I/0t
-         jkHni3dCtn615zzulRMlBKuvcHTuQQBQZjkSAwbGr2d5K9Xc/VELHfji4F8DhXjzU8
-         vdDL252m/zRndxQ93JkbeptQG8fYgUMV/0UmDKfM=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BAD8TWP118676
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Dec 2020 07:08:29 -0600
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
- Dec 2020 07:08:28 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 10 Dec 2020 07:08:28 -0600
-Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BAD7ral098988;
-        Thu, 10 Dec 2020 07:08:26 -0600
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 6/6] arm64: dts: ti: k3-j7200-common-proc-board: Enable PCIe
-Date:   Thu, 10 Dec 2020 18:37:47 +0530
-Message-ID: <20201210130747.25436-7-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201210130747.25436-1-kishon@ti.com>
-References: <20201210130747.25436-1-kishon@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S2389169AbgLJNKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:10:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389075AbgLJNKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 08:10:24 -0500
+Date:   Thu, 10 Dec 2020 22:09:37 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607605782;
+        bh=QU8bjKFqVT1RzgpntxF1tzq2BNTBv/SlJQJIvS4AeiI=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s8qa+204R7Jza+CEdcCWaZgunjxNk4LljAm8RGZv7VLtHQDzjf7cH64wQ+q1iGnE4
+         Ue+mmk99gpVl45RbVh4rgaW08Riid/oXZgPf7emlDqR7y1lmyuhkN4JenFEOeVn5EH
+         QEPXG/9eIOEs3gYYtqWBk/mDhB1v6zFWBB4IJllSR4fNZtUKCzB4GXhDyG7/zdc8/K
+         v8Gr2ssnXuyaOhrtQxRfTkwesSHbysuv+Pdh9sGNMTqUxxCdlzzLDyZ69jgJcQeD3l
+         FK0Eh/yMNyClsxT6tbxBxcpP+SVZsgF/gvbI65pGL1hJ//ayf0H8+VFCdJcaTyV6GG
+         kSiMMgt0mS3zQ==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Adam Zabrocki <pi3@pi3.com.pl>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Solar Designer <solar@openwall.com>
+Subject: Re: KRETPROBES are broken since kernel 5.8
+Message-Id: <20201210220937.5232571bf5b03237e7018012@kernel.org>
+In-Reply-To: <20201210071742.GA14484@pi3.com.pl>
+References: <20201209215001.GA8593@pi3.com.pl>
+        <20201210102507.6bd47a08191852b9f8b5e3f0@kernel.org>
+        <20201210071742.GA14484@pi3.com.pl>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-x2 lane PCIe slot in the common processor board is enabled and connected to
-j7200 SOM. Add PCIe DT node in common processor board to reflect the
-same.
+Hi Adam,
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- .../boot/dts/ti/k3-j7200-common-proc-board.dts    | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+On Thu, 10 Dec 2020 08:17:42 +0100
+Adam Zabrocki <pi3@pi3.com.pl> wrote:
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-index def98f563336..4a7182abccf5 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-@@ -6,6 +6,7 @@
- /dts-v1/;
- 
- #include "k3-j7200-som-p0.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/net/ti-dp83867.h>
- #include <dt-bindings/mux/ti-serdes.h>
- #include <dt-bindings/phy/phy.h>
-@@ -241,3 +242,17 @@
- 		resets = <&serdes_wiz0 3>;
- 	};
- };
-+
-+&pcie1_rc {
-+	reset-gpios = <&exp1 2 GPIO_ACTIVE_HIGH>;
-+	phys = <&serdes0_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+};
-+
-+&pcie1_ep {
-+	phys = <&serdes0_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+	status = "disabled";
-+};
+> Hi,
+> 
+> On Thu, Dec 10, 2020 at 10:25:07AM +0900, Masami Hiramatsu wrote:
+> > Hi Adam,
+> > 
+> > Thank you for reporting and debugging, actually we had investigated this
+> > issue in Aug. Please read this thread.
+> > 
+> > https://lkml.kernel.org/r/8816bdbbc55c4d2397e0b02aad2825d3@trendmicro.com
+> > 
+> 
+> Thanks for the link. I've read the entire history of proposed fix - very 
+> informative :)
+> 
+> > We finally fixed this issue by commit e03b4a084ea6 ("kprobes: Remove NMI
+> > context check") and commit 645f224e7ba2 ("kprobes: Tell lockdep about
+> > kprobe nesting"). Yeah, it will be in the v5.10.
+> > 
+> > Could you try to test whether these commits can solve the issue?
+> 
+> I've applied these commits on the top of kernel 5.9.7 and verified that it 
+> works well. Non-optimized KRETPROBES are back to life.
+
+Good!
+
+> 
+> However, there might be another issue which I wanted to brought / discuss - 
+> problem with optimizer. Until kernel 5.9 KRETPROBE on e.g. 
+> 'ftrace_enable_sysctl' function was correctly optimized without any problems. 
+
+Did you check it on other functions? Did you see it only on the "ftrace_enable_sysctl"?
+
+> Since 5.9 it can't be optimized anynmore. I didn't see any changes in the 
+> sources regarding the optimizer, neither function itself.
+> When I looked at the generated vmlinux binary, I can see that GCC generated 
+> padding at the end of this function using INT3 opcode:
+> 
+> ...
+> ffffffff8130528b:       41 bd f0 ff ff ff       mov    $0xfffffff0,%r13d
+> ffffffff81305291:       e9 fe fe ff ff          jmpq   ffffffff81305194 <ftrace_enable_sysctl+0x114>
+> ffffffff81305296:       cc                      int3
+> ffffffff81305297:       cc                      int3
+> ffffffff81305298:       cc                      int3
+> ffffffff81305299:       cc                      int3
+> ffffffff8130529a:       cc                      int3
+> ffffffff8130529b:       cc                      int3
+> ffffffff8130529c:       cc                      int3
+> ffffffff8130529d:       cc                      int3
+> ffffffff8130529e:       cc                      int3
+> ffffffff8130529f:       cc                      int3
+
+So these int3 is generated by GCC for padding, right?
+
+> Such padding didn't exist in this function in generated images for older 
+> kernels. Nevertheless, such padding is not unusual and it's pretty common.
+> 
+> Optimizer logic fails here:
+> 
+> try_to_optimize_kprobe() -> alloc_aggr_kprobe() -> __prepare_optimized_kprobe()
+> -> arch_prepare_optimized_kprobe() -> can_optimize():
+> 
+>     /* Decode instructions */
+>     addr = paddr - offset;
+>     while (addr < paddr - offset + size) { /* Decode until function end */
+>         unsigned long recovered_insn;
+>         if (search_exception_tables(addr))
+>             /*
+>              * Since some fixup code will jumps into this function,
+>              * we can't optimize kprobe in this function.
+>              */
+>             return 0;
+>         recovered_insn = recover_probed_instruction(buf, addr);
+>         if (!recovered_insn)
+>             return 0;
+>         kernel_insn_init(&insn, (void *)recovered_insn, MAX_INSN_SIZE);
+>         insn_get_length(&insn);
+>         /* Another subsystem puts a breakpoint */
+>         if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
+>             return 0;
+>         /* Recover address */
+>         insn.kaddr = (void *)addr;
+>         insn.next_byte = (void *)(addr + insn.length);
+>         /* Check any instructions don't jump into target */
+>         if (insn_is_indirect_jump(&insn) ||
+>             insn_jump_into_range(&insn, paddr + INT3_INSN_SIZE,
+>                      DISP32_SIZE))
+>             return 0;
+>         addr += insn.length;
+>     }
+> 
+> One of the check tries to protect from the situation when another subsystem 
+> puts a breakpoint there as well:
+> 
+>         /* Another subsystem puts a breakpoint */
+>         if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
+>             return 0;
+
+Right.
+
+> 
+> However, that's not the case here. INT3_INSN_OPCODE is placed at the end of 
+> the function as padding (and protect from NOP-padding problems).
+> 
+> I wonder, if optimizer should take this special case into account? Is it worth 
+> to still optimize such functions when they are padded with INT3?
+
+Indeed. I expected int3 is used from other subsystems (e.g. kgdb) and,
+in that case the optimization can confuse them.
+But if the gcc uses int3 to pad the room between functions, it should be
+reconsidered. 
+
+Thank you,
+
+> 
+> > If it is OK, we should backport those to stable tree.
+> 
+> Agreed.
+> 
+> Thanks,
+> Adam
+> 
+> > Thank you,
+> > 
+> > On Wed, 9 Dec 2020 22:50:01 +0100
+> > Adam Zabrocki <pi3@pi3.com.pl> wrote:
+> > 
+> > > Hello,
+> > > 
+> > > Starting from kernel 5.8 all non-optimized kretprobes don't work. Until 5.8,
+> > > when #DB exception was raised, entry to the NMI was not fully performed. Among
+> > > others, the following logic was executed:
+> > > https://elixir.bootlin.com/linux/v5.7.19/source/arch/x86/kernel/traps.c#L589
+> > > 
+> > >     if (!user_mode(regs)) {
+> > >         rcu_nmi_enter();
+> > >         preempt_disable();
+> > >     }
+> > > 
+> > > In some older kernels function ist_enter() was called instead. Inside this
+> > > function we can see the following logic:
+> > > https://elixir.bootlin.com/linux/v5.7.19/source/arch/x86/kernel/traps.c#L91
+> > > 
+> > >     if (user_mode(regs)) {
+> > >         RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
+> > >     } else {
+> > >         /*
+> > >          * We might have interrupted pretty much anything.  In
+> > >          * fact, if we're a machine check, we can even interrupt
+> > >          * NMI processing.  We don't want in_nmi() to return true,
+> > >          * but we need to notify RCU.
+> > >          */
+> > >         rcu_nmi_enter();
+> > >     }
+> > > 
+> > >     preempt_disable();
+> > > 
+> > > As the comment says "We don't want in_nmi() to return true, but we need to
+> > > notify RCU.". However, since kernel 5.8 the logic of how interrupts are handled
+> > > was modified and currently we have this (function "exc_int3"):
+> > > https://elixir.bootlin.com/linux/v5.8/source/arch/x86/kernel/traps.c#L630
+> > > 
+> > >     /*
+> > >      * idtentry_enter_user() uses static_branch_{,un}likely() and therefore
+> > >      * can trigger INT3, hence poke_int3_handler() must be done
+> > >      * before. If the entry came from kernel mode, then use nmi_enter()
+> > >      * because the INT3 could have been hit in any context including
+> > >      * NMI.
+> > >      */
+> > >     if (user_mode(regs)) {
+> > >         idtentry_enter_user(regs);
+> > >         instrumentation_begin();
+> > >         do_int3_user(regs);
+> > >         instrumentation_end();
+> > >         idtentry_exit_user(regs);
+> > >     } else {
+> > >         nmi_enter();
+> > >         instrumentation_begin();
+> > >         trace_hardirqs_off_finish();
+> > >         if (!do_int3(regs))
+> > >             die("int3", regs, 0);
+> > >         if (regs->flags & X86_EFLAGS_IF)
+> > >             trace_hardirqs_on_prepare();
+> > >         instrumentation_end();
+> > >         nmi_exit();
+> > >     }
+> > > 
+> > > The root of unlucky change comes from this commit:
+> > > 
+> > > https://github.com/torvalds/linux/commit/0d00449c7a28a1514595630735df383dec606812#diff-51ce909c2f65ed9cc668bc36cc3c18528541d8a10e84287874cd37a5918abae5
+> > > 
+> > > which later was modified by this commit:
+> > > 
+> > > https://github.com/torvalds/linux/commit/8edd7e37aed8b9df938a63f0b0259c70569ce3d2
+> > > 
+> > > and this is what we currently have in all kernels since 5.8. Essentially,
+> > > KRETPROBES are not working since these commits. We have the following logic:
+> > > 
+> > > asm_exc_int3() -> exc_int3():
+> > >                     |
+> > >     ----------------|
+> > >     |
+> > >     v
+> > > ...
+> > > nmi_enter();
+> > > ...
+> > > if (!do_int3(regs))
+> > >        |
+> > >   -----|
+> > >   |
+> > >   v
+> > > do_int3() -> kprobe_int3_handler():
+> > >                     |
+> > >     ----------------|
+> > >     |
+> > >     v
+> > > ...
+> > > if (!p->pre_handler || !p->pre_handler(p, regs))
+> > >                              |
+> > >     -------------------------|
+> > >     |
+> > >     v
+> > > ...
+> > > pre_handler_kretprobe():
+> > > ...
+> > >     if (unlikely(in_nmi())) {
+> > >         rp->nmissed++;
+> > >         return 0;
+> > >     }
+> > > 
+> > > Essentially, exc_int3() calls nmi_enter(), and pre_handler_kretprobe() before
+> > > invoking any registered kprobe verifies if it is not in NMI via in_nmi() call.
+> > > 
+> > > This bug was masked by OPTIMIZER which was turning most of the KPROBES to be
+> > > FTRACE so essentially if someone registered KRETPROBE, buggy code was not
+> > > invoked (FTRACE code was executed instead). However, the optimizer was changed
+> > > and can't optimize as many functions anymore (probably another bug which might
+> > > be worth to investigate) and this bug is more visible.
+> > > 
+> > > Thanks,
+> > > Adam
+> > > 
+> > > -- 
+> > > pi3 (pi3ki31ny) - pi3 (at) itsec pl
+> > > http://pi3.com.pl
+> > > 
+> > 
+> > 
+> > -- 
+> > Masami Hiramatsu <mhiramat@kernel.org>
+> 
+> -- 
+> pi3 (pi3ki31ny) - pi3 (at) itsec pl
+> http://pi3.com.pl
+> 
+
+
 -- 
-2.17.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
