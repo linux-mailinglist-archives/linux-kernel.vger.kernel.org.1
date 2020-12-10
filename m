@@ -2,94 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C11E2D5723
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F74F2D5640
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732303AbgLJJ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:28:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726763AbgLJJ2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:28:35 -0500
-Date:   Thu, 10 Dec 2020 10:29:09 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607592474;
-        bh=9IBGE7YExpBUElirt6uWH7rWMH+57P9GaY6SS3rQU1k=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qY5DJbue3kOO4ieeWJO79wbG8Pr/Dlgx50r4S6Ki7OrXc/Drj0uHpOZfs1OEPsQjP
-         XVmgGZlyqPEnL1zxrDXgmYAvHsvC6VdJLofAa3tNB40G+FOlQTA8/k7r3o915Wr0FQ
-         Cw+5C1Jqhi5eFc4Tns+qeTWz0p0yS9AphA3iZiEM=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mm: fix initialization of struct page for holes
- in memory layout
-Message-ID: <X9HqZZsCalKVMkix@kroah.com>
-References: <20201209214304.6812-1-rppt@kernel.org>
- <20201209214304.6812-3-rppt@kernel.org>
+        id S2388392AbgLJJLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:11:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388220AbgLJJLR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 04:11:17 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D80C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 01:10:36 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id d3so3934972wmb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 01:10:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QpyrZoiER+zCyF8HpO4UqQSTTSh7Jr5N+k2TvNlAzgU=;
+        b=MdJK2mD0l5uJdJbu/Gswmd44hgf/kn4QbbPenS4LG2YlN0FZKzmobhEGnsvppCzkMe
+         JNif/+N1s8wdRobYG4fzbMU59eWsIvDcKEvusa6XrpaSss3VEU6SgEL3gJJe2VELmNod
+         Zyvvin3G/OZYABNwpkmkk/4c9Ab6kKccURqsllox09sOtyzkkcleFvV1wTrMhIapBCMR
+         vHQliQU/r58TM+8s0MOri49Iu3aRBD2EDJxMF0K+5aPJRHLeBXIwk52VMzGnkz8UqTNJ
+         delWzmILv001ksWWpNtbg9DANsL9TxKAG3QLCPDF3Br+C+D7j7qQsDgENkDZbFndw/Y3
+         GfQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QpyrZoiER+zCyF8HpO4UqQSTTSh7Jr5N+k2TvNlAzgU=;
+        b=PEMHZtFkUxBIchC2ngvFQ92rawjeneBbc+I8TIJlcUy6d+B2vb3xUNfSY9qk8MN1pB
+         fsT8w1PxJb4QC6nywrU5zFWA62GLFE3K+AEMHpR7ifr8H4MqVQMF7C0D7dGIXW7UTuNl
+         1J2llC/1w4hgBEjVpUVYLtz6yLH8lfW8FUB+BLbOU2bJ9KfnrLIuW8laDR9yuiJawtJm
+         9UzRwPI/ChMzn3Ib+3riumlVzm5IfgYRbdbVGLLr6RGLsznZ98qozvU+UXw2P/3NtDqQ
+         6QC6sjQJT+vP7ya6A9AuHTijx641oExEua8V9B35AAKtMNTxvraZSQNrDX97P+4NkYVu
+         +M6A==
+X-Gm-Message-State: AOAM533LKrpaO9sXgrL9kXx+iGWTmaQ4iVRCYLRu8O7FvI7hv9omIkb7
+        CrOXhwucefyGMLvVtTXzrow=
+X-Google-Smtp-Source: ABdhPJzMuh6P7mMx5+wD+cRni0VZSIG4oEfWDELzQSfTATTz8yGsl58hrQH76IYKHUA8L2bu2mwrMA==
+X-Received: by 2002:a7b:c841:: with SMTP id c1mr7270501wml.31.1607591435630;
+        Thu, 10 Dec 2020 01:10:35 -0800 (PST)
+Received: from localhost.localdomain (82-132-223-245.dab.02.net. [82.132.223.245])
+        by smtp.googlemail.com with ESMTPSA id r16sm9123935wrx.36.2020.12.10.01.10.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 01:10:35 -0800 (PST)
+From:   Chris Bloomfield <ginge264@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Chris Bloomfield <ginge264@gmail.com>
+Subject: [PATCH] Staging: ralink-gdma: ralink-gdma: Fix a blank line coding style issue
+Date:   Thu, 10 Dec 2020 10:06:57 +0000
+Message-Id: <20201210100657.22562-1-ginge264@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209214304.6812-3-rppt@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 11:43:04PM +0200, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> There could be struct pages that are not backed by actual physical memory.
-> This can happen when the actual memory bank is not a multiple of
-> SECTION_SIZE or when an architecture does not register memory holes
-> reserved by the firmware as memblock.memory.
-> 
-> Such pages are currently initialized using init_unavailable_mem() function
-> that iterated through PFNs in holes in memblock.memory and if there is a
-> struct page corresponding to a PFN, the fields if this page are set to
-> default values and it is marked as Reserved.
-> 
-> init_unavailable_mem() does not take into account zone and node the page
-> belongs to and sets both zone and node links in struct page to zero.
-> 
-> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
-> instance in a configuration below:
-> 
-> 	# grep -A1 E820 /proc/iomem
-> 	7a17b000-7a216fff : Unknown E820 type
-> 	7a217000-7bffffff : System RAM
-> 
-> unset zone link in struct page will trigger
-> 
-> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
-> 
-> because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link in
-> struct page) in the same pageblock.
-> 
-> Interleave initialization of pages that correspond to holes with the
-> initialization of memory map, so that zone and node information will be
-> properly set on such pages.
-> 
-> Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather
-> that check each PFN")
-> Reported-by: Andrea Arcangeli <aarcange@redhat.com>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  mm/page_alloc.c | 152 +++++++++++++++++++++---------------------------
->  1 file changed, 65 insertions(+), 87 deletions(-)
+Fix a coding style issue as identified by checkpatch.pl
 
+Signed-off-by: Chris Bloomfield <ginge264@gmail.com>
+---
+ drivers/staging/ralink-gdma/ralink-gdma.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-<formletter>
+diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
+index 655df317d0ee..a6181a167814 100644
+--- a/drivers/staging/ralink-gdma/ralink-gdma.c
++++ b/drivers/staging/ralink-gdma/ralink-gdma.c
+@@ -122,6 +122,7 @@ struct gdma_dma_dev {
+ 	struct gdma_data *data;
+ 	void __iomem *base;
+ 	struct tasklet_struct task;
++
+ 	volatile unsigned long chan_issued;
+ 	atomic_t cnt;
+ 
+-- 
+2.28.0
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
-
-</formletter>
