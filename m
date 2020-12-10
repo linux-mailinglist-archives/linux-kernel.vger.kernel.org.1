@@ -2,250 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0462D52FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:57:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8E52D5300
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 05:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732654AbgLJEz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 23:55:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
+        id S1732576AbgLJE64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 23:58:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732637AbgLJEzz (ORCPT
+        with ESMTP id S1729737AbgLJE64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 23:55:55 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3CCC0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 20:54:56 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id 15so4396701oix.8
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 20:54:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4qjrVl/8JKQEwNo9I+PzesbUYY8q4z4z4BolfiKEeqQ=;
-        b=kAQlNRpBFOo9izck5mhxIS0wvpkP+HEZ7nN2qH1Nh6zGZ0qMjohBRaqHryNQTnxj7L
-         dEHQhGKrF6CdwrurpH6a1w742RV+KATGRPDpwk3h8MFteY0ckKLlfJSifwKUizu8XIfJ
-         ybdnSU3aBeSzk8OVplplPEnvv5anv3Os4mOoCW+IQoDr1eFDZA7g17lPdaI75zDFSWVR
-         t09qafOJI5LVs7HDW8jS5+jCsE0exNXpmRqCcAD8S4xVJ+NmEIwWzEhA9co+brG84KLb
-         gpyTqZMfLWh62fecv5IDsZ1Fzeq3dD73l3yvCAiT+eTXsamt+NGQiqlcHzE08n0AqZAr
-         F4ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4qjrVl/8JKQEwNo9I+PzesbUYY8q4z4z4BolfiKEeqQ=;
-        b=XOF10DhErmzRuo1glpmHF5WqJjYZbG5gGd85ugtrYotKrNvVEE1XD1BofPH7IOpelO
-         zO4ttFdvE4yqlAWy4zcMG3JgPIFtbEUETRTKWmAgbqpgrUBbim4wJLA1t/JzUndRnhiD
-         ihp4bxNyfH/NPJrol7ASYJNuntOxS1v6jwOQR/zgoS+A4BozhTvoKwdTZwwIwkAYZY1r
-         +/cm/zGKt20zcvCDrg8mNEUmJL9xYX9jwcXs0LmhDgeCOWKjxcIxfl2Hi2QpdMxuxUuQ
-         nigXkNrGT1JpCSoy0RHt6KzQ6hfGi2E9DpRNTIDmMyJ6Zw/y0TV4AIUBz7n3YpLIaQwU
-         ZJ2Q==
-X-Gm-Message-State: AOAM530NlmStvwRi3VS06Sre+YHWOBtNqbm4fu+9dQG0ah+OKvLQil2k
-        exZ0lfibFek5/uAqczotlSuexw==
-X-Google-Smtp-Source: ABdhPJxoIYDZIFI1xkddCr166/on7Y3kLn+ZbaWtrRIXhrb28rZC0grJ7jTbgQK3rZ3/N9K1XxEXTQ==
-X-Received: by 2002:aca:bd0b:: with SMTP id n11mr4167270oif.11.1607576095826;
-        Wed, 09 Dec 2020 20:54:55 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id j73sm867370otj.37.2020.12.09.20.54.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 20:54:55 -0800 (PST)
-Date:   Wed, 9 Dec 2020 22:54:53 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl
- bindings
-Message-ID: <X9GqHeXRT44XMXFp@builder.lan>
-References: <20201208085748.3684670-1-vkoul@kernel.org>
+        Wed, 9 Dec 2020 23:58:56 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A93C0613CF;
+        Wed,  9 Dec 2020 20:58:16 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cs1rf62xxz9sW1;
+        Thu, 10 Dec 2020 15:58:10 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607576293;
+        bh=R/SbbL3PKfVpoDNPmfMdTZ9gkk+m3oENNeMf3Ers1qM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KENCHhu5j8z9pOMPeuayWKvEuS4FIK1rbEYBnh+8drh0zY/3lRtyWsC/e6XDe0QNg
+         bqoeRbGTVAG6VcG33nzS9e/exF22kwdTMCshOPi7i9048glMPnBsdYXqWZ9EwOiaKS
+         4L8jD6Qc4khIMnN+z/tfo5gEovYBnGEutEuq2jhjJmQiABlWmW/hF4pewJ+Mm7RFvg
+         FsIQESfit+UsReyFBbrijuMOLq1KAurgNxGdQl+TTGjV1+d2HspvYQhi2MhHeTYjms
+         g+V5GB1WO0N8/DdlE2XDEmf3UOipCrf+zpycK7o5kWzSj+49080wNBOF3KayGvyI+j
+         TbIJiOw5GHB4w==
+Date:   Thu, 10 Dec 2020 15:58:08 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Simek <monstr@monstr.eu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the tip tree with the microblaze tree
+Message-ID: <20201210155808.717a7257@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208085748.3684670-1-vkoul@kernel.org>
+Content-Type: multipart/signed; boundary="Sig_/0Px9Bv/_pfqEcRM/0cBgiQx";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 08 Dec 02:57 CST 2020, Vinod Koul wrote:
+--Sig_/0Px9Bv/_pfqEcRM/0cBgiQx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Add device tree binding Documentation details for Qualcomm SM8350
-> pinctrl driver.
-> 
+Hi all,
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Today's linux-next merge of the tip tree got conflicts in:
 
-Regards,
-Bjorn
+  arch/microblaze/Kconfig
+  arch/microblaze/mm/Makefile
 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
-> 
-> Changes since v1:
->   - Fix pins pattern
->   - Fix example indent
-> 
->  .../bindings/pinctrl/qcom,sm8350-pinctrl.yaml | 151 ++++++++++++++++++
->  1 file changed, 151 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
-> new file mode 100644
-> index 000000000000..8ddb347c43da
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
-> @@ -0,0 +1,151 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/qcom,sm8350-pinctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies, Inc. SM8350 TLMM block
-> +
-> +maintainers:
-> +  - Vinod Koul <vkoul@kernel.org>
-> +
-> +description: |
-> +  This binding describes the Top Level Mode Multiplexer block found in the
-> +  SM8350 platform.
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sm8350-pinctrl
-> +
-> +  reg:
-> +    description: Specifies the base address and size of the TLMM register space
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    description: Specifies the TLMM summary IRQ
-> +    maxItems: 1
-> +
-> +  interrupt-controller: true
-> +
-> +  '#interrupt-cells':
-> +    description: Specifies the PIN numbers and Flags, as defined in
-> +      include/dt-bindings/interrupt-controller/irq.h
-> +    const: 2
-> +
-> +  gpio-controller: true
-> +
-> +  '#gpio-cells':
-> +    description: Specifying the pin number and flags, as defined in
-> +      include/dt-bindings/gpio/gpio.h
-> +    const: 2
-> +
-> +  gpio-ranges:
-> +    maxItems: 1
-> +
-> +  gpio-reserved-ranges:
-> +    maxItems: 1
-> +
-> +#PIN CONFIGURATION NODES
-> +patternProperties:
-> +  '-pins$':
-> +    type: object
-> +    description:
-> +      Pinctrl node's client devices use subnodes for desired pin configuration.
-> +      Client device subnodes use below standard properties.
-> +    $ref: "/schemas/pinctrl/pincfg-node.yaml"
-> +
-> +    properties:
-> +      pins:
-> +        description:
-> +          List of gpio pins affected by the properties specified in this subnode.
-> +        items:
-> +          oneOf:
-> +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-9][0-9]|20[0-3])$"
-> +            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data ]
-> +        minItems: 1
-> +        maxItems: 36
-> +
-> +      function:
-> +        description:
-> +          Specify the alternative function to be configured for the specified
-> +          pins. Functions are only valid for gpio pins.
-> +        enum: [ atest_char, atest_usb, audio_ref, cam_mclk, cci_async,
-> +                cci_i2c, cci_timer, cmu_rng, coex_uart1, coex_uart2, cri_trng,
-> +                cri_trng0, cri_trng1, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1,
-> +                ddr_pxi2, ddr_pxi3, dp_hot, dp_lcd, gcc_gp1, gcc_gp2, gcc_gp3,
-> +                gpio, ibi_i3c, jitter_bist, lpass_slimbus, mdp_vsync, mdp_vsync0,
-> +                mdp_vsync1, mdp_vsync2, mdp_vsync3, mi2s0_data0, mi2s0_data1,
-> +                mi2s0_sck, mi2s0_ws, mi2s1_data0, mi2s1_data1, mi2s1_sck,
-> +                mi2s1_ws, mi2s2_data0, mi2s2_data1, mi2s2_sck, mi2s2_ws,
-> +                mss_grfc0, mss_grfc1, mss_grfc10, mss_grfc11, mss_grfc12,
-> +                mss_grfc2, mss_grfc3, mss_grfc4, mss_grfc5, mss_grfc6,
-> +                mss_grfc7, mss_grfc8, mss_grfc9, nav_gpio, pa_indicator,
-> +                pcie0_clkreqn, pcie1_clkreqn, phase_flag, pll_bist, pll_clk,
-> +                pri_mi2s, prng_rosc, qdss_cti, qdss_gpio, qlink0_enable,
-> +                qlink0_request, qlink0_wmss, qlink1_enable, qlink1_request,
-> +                qlink1_wmss, qlink2_enable, qlink2_request, qlink2_wmss, qspi0,
-> +                qspi1, qspi2, qspi3, qspi_clk, qspi_cs, qup0, qup1, qup10,
-> +                qup11, qup12, qup13, qup14, qup15, qup16, qup17, qup18, qup19,
-> +                qup2, qup3, qup4, qup5, qup6, qup7, qup8, qup9, qup_l4, qup_l5,
-> +                qup_l6, sd_write, sdc40, sdc41, sdc42, sdc43, sdc4_clk,
-> +                sdc4_cmd, sec_mi2s, tb_trig, tgu_ch0, tgu_ch1, tgu_ch2,
-> +                tgu_ch3, tsense_pwm1, tsense_pwm2, uim0_clk, uim0_data,
-> +                uim0_present, uim0_reset, uim1_clk, uim1_data, uim1_present,
-> +                uim1_reset, usb2phy_ac, usb_phy, vfr_0, vfr_1, vsense_trigger ]
-> +
-> +
-> +      drive-strength:
-> +        enum: [2, 4, 6, 8, 10, 12, 14, 16]
-> +        default: 2
-> +        description:
-> +          Selects the drive strength for the specified pins, in mA.
-> +
-> +      bias-pull-down: true
-> +
-> +      bias-pull-up: true
-> +
-> +      bias-disable: true
-> +
-> +      output-high: true
-> +
-> +      output-low: true
-> +
-> +    required:
-> +      - pins
-> +      - function
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupt-controller
-> +  - '#interrupt-cells'
-> +  - gpio-controller
-> +  - '#gpio-cells'
-> +  - gpio-ranges
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +        tlmm: pinctrl@f000000 {
-> +          compatible = "qcom,sm8350-pinctrl";
-> +          reg = <0x0f100000 0x300000>;
-> +          interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
-> +          gpio-controller;
-> +          #gpio-cells = <2>;
-> +          interrupt-controller;
-> +          #interrupt-cells = <2>;
-> +          gpio-ranges = <&tlmm 0 0 203>;
-> +          serial-pins {
-> +            pins = "gpio18", "gpio19";
-> +            function = "qup3";
-> +            drive-strength = <8>;
-> +            bias-disable;
-> +          };
-> +        };
-> +
-> +...
-> -- 
-> 2.26.2
-> 
+between commit:
+
+  05cdf457477d ("microblaze: Remove noMMU code")
+
+from the microblaze tree and commit:
+
+  7ac1b26b0a72 ("microblaze/mm/highmem: Switch to generic kmap atomic")
+
+from the tip tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/microblaze/Kconfig
+index 6acbb4571b0f,7f6ca0ab4f81..000000000000
+--- a/arch/microblaze/Kconfig
++++ b/arch/microblaze/Kconfig
+@@@ -139,8 -143,19 +139,9 @@@ config ADVANCED_OPTION
+  comment "Default settings for advanced configuration options are used"
+  	depends on !ADVANCED_OPTIONS
+ =20
+ -config XILINX_UNCACHED_SHADOW
+ -	bool "Are you using uncached shadow for RAM ?"
+ -	depends on ADVANCED_OPTIONS && !MMU
+ -	default n
+ -	help
+ -	  This is needed to be able to allocate uncachable memory regions.
+ -	  The feature requires the design to define the RAM memory controller
+ -	  window to be twice as large as the actual physical memory.
+ -
+  config HIGHMEM
+  	bool "High memory support"
+ -	depends on MMU
++ 	select KMAP_LOCAL
+  	help
+  	  The address space of Microblaze processors is only 4 Gigabytes large
+  	  and it has to accommodate user address space, kernel address
+diff --cc arch/microblaze/mm/Makefile
+index cd8a844bf29e,8ced71100047..000000000000
+--- a/arch/microblaze/mm/Makefile
++++ b/arch/microblaze/mm/Makefile
+@@@ -5,5 -5,4 +5,4 @@@
+ =20
+  obj-y :=3D consistent.o init.o
+ =20
+ -obj-$(CONFIG_MMU) +=3D pgtable.o mmu_context.o fault.o
+ +obj-y +=3D pgtable.o mmu_context.o fault.o
+- obj-$(CONFIG_HIGHMEM) +=3D highmem.o
+
+--Sig_/0Px9Bv/_pfqEcRM/0cBgiQx
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/RquEACgkQAVBC80lX
+0GwGKQgAknIQ1cKhiwukVfmkyHholoPB+hmqbxERg2Sa7XnmRmzZ9YE/x7y+hSON
+LpJbj3+JqJP4Uwr61OsRz+dyjszzbynJlIE8zp9Wn3lxVGvebPEHkLkheuyUzN45
+p3mScVTDz6FGoVJcX7v1JMFLwiv2j0IQFIb2ej6x5Bja3RJMClpKB5XY2tMZtnXU
+PzM4qVrM1CI57NR8VPiiNPzsA8F4wKrSHyH19w/Ao/gRSvKoBDrZSnxI5zuk+f8J
+6Utja/vnPNjtF6kLCI6mtjfEePFgFse7NKOyJvXDO9UA2MgbByJsaN2yBQuETm5N
+IEYXE8YfXR5JDphR0d5GM8pojsKfoA==
+=NHPY
+-----END PGP SIGNATURE-----
+
+--Sig_/0Px9Bv/_pfqEcRM/0cBgiQx--
