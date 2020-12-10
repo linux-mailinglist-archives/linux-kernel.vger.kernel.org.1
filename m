@@ -2,81 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE1D2D5731
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FC32D573A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:33:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727941AbgLJJbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:31:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58759 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725789AbgLJJbl (ORCPT
+        id S1730702AbgLJJbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 04:31:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728629AbgLJJbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:31:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607592615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OK/nInPQSL9jnVzhYq1NESDYlTBdG+vb/BJz0j219LU=;
-        b=ZGuEg1zOctzmuT05BxvWM/77JiVcilkDC3SHgP8ZoFEen+p0/RR1h31NcYf8NNzPJj4Gay
-        kA59Ilfzx0NkTEHMrMcl7bGeHV8RzvysHTu0XRFFQRHRoVP1FDg6bCkttZ9a8BkFHJygY2
-        PqNeAjnnOYeRQKkuisiPSSWEJya3qqc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-IMLI8mAlPmWOCOKk5j3ASg-1; Thu, 10 Dec 2020 04:30:13 -0500
-X-MC-Unique: IMLI8mAlPmWOCOKk5j3ASg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD8BE6D522;
-        Thu, 10 Dec 2020 09:30:11 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D3B775D6BA;
-        Thu, 10 Dec 2020 09:30:10 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20201209191204.GB1448831@erythro>
-References: <20201209191204.GB1448831@erythro> <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
-To:     Ben Boeckel <me@benboeckel.net>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH 00/18] keys: Miscellaneous fixes
+        Thu, 10 Dec 2020 04:31:45 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577BBC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 01:31:05 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id v29so3662873pgk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 01:31:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9lTbkG6qYnle+XI3+FSoMjubtfTJEmSz5CKlrBtvf6E=;
+        b=ktJdc72nQon+D8o3CN6amrYc+2R2Xe9NgVdEQLiUb+N9xnep1qCYhVISyvZMOpLcTd
+         gVKcOMINlUiv1HeoB7QpbtjW465deQhf0MyfTUbovVHcmnDKAeimXhqiOo+VjifX2GaQ
+         c7WyVGNhVp7mp8HHDLe1GzyXIfQeTOTul9CloydL2z1umdM+lCj6VJAx7YNamnea1t1K
+         sE3EaHIZzeEDYLy7zUPftlI9SbcNrB6bg40LBRK/muMZmDxlc27+ma7bPNXvK4fjQB1N
+         nYYHCSM+14iyW6EGFu/lhjpW7XD+wLBvgUuF0dAvELw9jqbp4ZauOGNHytfUb0wvpHFc
+         0ZRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9lTbkG6qYnle+XI3+FSoMjubtfTJEmSz5CKlrBtvf6E=;
+        b=eamPKLdSExLChGmfkokq8TD1GCysg1wuYWQtWd3PD8iqJD5Ig8N1LMweD7KPmCMeop
+         Eb+K9gFJ7mqhzkjDlMmIdNnBpffcuLHjPS8UI433XpTpLsatWvdJp0DaXY1dAzZhcAfn
+         w9c0hHfwx/sNJI8amNZtO+DiokTiThiM6B2ehtkUJlvAts7azZsU8v37ewFY3BlBkoqN
+         da88kLPgnB0cxdA4mgLijBRasqA9f90iMghusI47P+M0wzq+hKlP3TiToOp7pC/aM8CD
+         btZRo0Gu5Je6vpaOwNHk3UaBfZ6TswdfdfNE8Ivy8lSsx2FfXMfdxXvq5/9QOZhC+OAk
+         GuyQ==
+X-Gm-Message-State: AOAM532KAOw6uqGhYUkbqZtJ/UDbHqGIdag2UmzOjkmQgL8j1uqM37GT
+        wAX6+D/RUIbrZNATWShx6FCNqw==
+X-Google-Smtp-Source: ABdhPJxvSV2G/C+0G+bkx6xFvzSF4bUj0cMreoupZzb+ckqOtPlyhaJ3KcVb6ZDrOtuDHEhxT/vL3Q==
+X-Received: by 2002:aa7:8ac1:0:b029:19d:beff:4e0f with SMTP id b1-20020aa78ac10000b029019dbeff4e0fmr5893394pfd.0.1607592664959;
+        Thu, 10 Dec 2020 01:31:04 -0800 (PST)
+Received: from localhost ([61.120.150.75])
+        by smtp.gmail.com with ESMTPSA id l1sm5043385pju.48.2020.12.10.01.31.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 01:31:04 -0800 (PST)
+From:   John Wang <wangzhiqiang.bj@bytedance.com>
+To:     openbmc@lists.ozlabs.org, xuxiaohan@bytedance.com,
+        yulei.sh@bytedance.com
+Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/ASPEED MACHINE
+        SUPPORT),
+        linux-aspeed@lists.ozlabs.org (moderated list:ARM/ASPEED MACHINE
+        SUPPORT), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 3/3] ARM: dts: aspeed: Enable g220a uart route
+Date:   Thu, 10 Dec 2020 17:31:01 +0800
+Message-Id: <20201210093101.413-1-wangzhiqiang.bj@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1359154.1607592609.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 10 Dec 2020 09:30:09 +0000
-Message-ID: <1359155.1607592609@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ben Boeckel <me@benboeckel.net> wrote:
+Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
+---
+ arch/arm/boot/dts/aspeed-bmc-bytedance-g220a.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> > I've extended my collection of minor keyrings fixes for the next merge
-> > window.  Anything else I should add (or anything I should drop)?
-> > =
-
-> > The patches can be found on the following branch:
-> > =
-
-> > 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git=
-/log/?h=3Dkeys-fixes
-> =
-
-> 1-16 LGTM (modulo the typo in patch 7's commit message). 17 and 18 are
-> outside my knowledge right now.
-> =
-
-> Reviewed-by: Ben Boeckel <mathstuf@gmail.com>
-
-I've applied that to the first 16 patches, thanks.
-
-David
+diff --git a/arch/arm/boot/dts/aspeed-bmc-bytedance-g220a.dts b/arch/arm/boot/dts/aspeed-bmc-bytedance-g220a.dts
+index 89916a2eec18..e3a82679ed9c 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-bytedance-g220a.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-bytedance-g220a.dts
+@@ -929,3 +929,7 @@ &video {
+ &vhub {
+ 	status = "okay";
+ };
++
++&uart_routing {
++	status = "okay";
++};
+-- 
+2.25.1
 
