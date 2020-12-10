@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3DD12D5CAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7ED12D5CB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389858AbgLJOA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:00:56 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9506 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389850AbgLJOAq (ORCPT
+        id S2389877AbgLJOBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:01:38 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9156 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732619AbgLJOBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:00:46 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CsFsD6BBnzhpvs;
-        Thu, 10 Dec 2020 21:59:28 +0800 (CST)
+        Thu, 10 Dec 2020 09:01:25 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CsFt04LkMz15b8N;
+        Thu, 10 Dec 2020 22:00:08 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 10 Dec 2020 21:59:55 +0800
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 10 Dec 2020 22:00:35 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <dmitry.torokhov@gmail.com>, <linux-input@vger.kernel.org>,
+To:     <agk@redhat.com>, <snitzer@redhat.com>, <dm-devel@redhat.com>,
         <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] input/rmi4: simplify the return expression of rmi_driver_of_probe()
-Date:   Thu, 10 Dec 2020 22:00:24 +0800
-Message-ID: <20201210140024.1665-1-zhengyongjun3@huawei.com>
+Subject: [PATCH -next] drivers: md: simplify the return expression of load_mapping()
+Date:   Thu, 10 Dec 2020 22:01:03 +0800
+Message-ID: <20201210140103.1720-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,29 +39,34 @@ Simplify the return expression.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/input/rmi4/rmi_driver.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/md/dm-cache-target.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
-index 258d5fe3d395..eec5d926da25 100644
---- a/drivers/input/rmi4/rmi_driver.c
-+++ b/drivers/input/rmi4/rmi_driver.c
-@@ -991,14 +991,8 @@ static int rmi_driver_remove(struct device *dev)
- static int rmi_driver_of_probe(struct device *dev,
- 				struct rmi_device_platform_data *pdata)
+diff --git a/drivers/md/dm-cache-target.c b/drivers/md/dm-cache-target.c
+index 4bc453f5bbaa..541c45027cc8 100644
+--- a/drivers/md/dm-cache-target.c
++++ b/drivers/md/dm-cache-target.c
+@@ -2840,7 +2840,6 @@ static void cache_postsuspend(struct dm_target *ti)
+ static int load_mapping(void *context, dm_oblock_t oblock, dm_cblock_t cblock,
+ 			bool dirty, uint32_t hint, bool hint_valid)
  {
--	int retval;
--
--	retval = rmi_of_property_read_u32(dev, &pdata->reset_delay_ms,
-+	return rmi_of_property_read_u32(dev, &pdata->reset_delay_ms,
- 					"syna,reset-delay-ms", 1);
--	if (retval)
--		return retval;
+-	int r;
+ 	struct cache *cache = context;
+ 
+ 	if (dirty) {
+@@ -2849,11 +2848,7 @@ static int load_mapping(void *context, dm_oblock_t oblock, dm_cblock_t cblock,
+ 	} else
+ 		clear_bit(from_cblock(cblock), cache->dirty_bitset);
+ 
+-	r = policy_load_mapping(cache->policy, oblock, cblock, dirty, hint, hint_valid);
+-	if (r)
+-		return r;
 -
 -	return 0;
++	return policy_load_mapping(cache->policy, oblock, cblock, dirty, hint, hint_valid);
  }
- #else
- static inline int rmi_driver_of_probe(struct device *dev,
+ 
+ /*
 -- 
 2.22.0
 
