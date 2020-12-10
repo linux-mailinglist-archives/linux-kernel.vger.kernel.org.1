@@ -2,24 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7B22D6631
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3122D6601
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393277AbgLJTSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:18:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38740 "EHLO mail.kernel.org"
+        id S2393311AbgLJTJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:09:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388934AbgLJOap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:30:45 -0500
+        id S2390458AbgLJObA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:31:00 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.9 41/45] tracing: Fix userstacktrace option for instances
-Date:   Thu, 10 Dec 2020 15:26:55 +0100
-Message-Id: <20201210142604.370513568@linuxfoundation.org>
+        syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.9 45/45] x86/uprobes: Do not use prefixes.nbytes when looping over prefixes.bytes
+Date:   Thu, 10 Dec 2020 15:26:59 +0100
+Message-Id: <20201210142604.559310989@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
 References: <20201210142602.361598591@linuxfoundation.org>
@@ -31,73 +35,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit bcee5278958802b40ee8b26679155a6d9231783e upstream.
+commit 4e9a5ae8df5b3365183150f6df49e49dece80d8c upstream
 
-When the instances were able to use their own options, the userstacktrace
-option was left hardcoded for the top level. This made the instance
-userstacktrace option bascially into a nop, and will confuse users that set
-it, but nothing happens (I was confused when it happened to me!)
+Since insn.prefixes.nbytes can be bigger than the size of
+insn.prefixes.bytes[] when a prefix is repeated, the proper check must
+be
 
+  insn.prefixes.bytes[i] != 0 and i < 4
+
+instead of using insn.prefixes.nbytes.
+
+Introduce a for_each_insn_prefix() macro for this purpose. Debugged by
+Kees Cook <keescook@chromium.org>.
+
+ [ bp: Massage commit message, sync with the respective header in tools/
+   and drop "we". ]
+
+Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install and remove uprobes breakpoints")
+Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 Cc: stable@vger.kernel.org
-Fixes: 16270145ce6b ("tracing: Add trace options for core options to instances")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Link: https://lkml.kernel.org/r/160697103739.3146288.7437620795200799020.stgit@devnote2
+[sudip: adjust context, use old insn.h]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- kernel/trace/trace.c |    7 ++++---
- kernel/trace/trace.h |    6 ++++--
- 2 files changed, 8 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/insn.h               |   15 +++++++++++++++
+ arch/x86/kernel/uprobes.c                 |   10 ++++++----
+ tools/objtool/arch/x86/include/asm/insn.h |   15 +++++++++++++++
+ 3 files changed, 36 insertions(+), 4 deletions(-)
 
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2134,7 +2134,7 @@ void trace_buffer_unlock_commit_regs(str
- 	 * two. They are that meaningful.
+--- a/arch/x86/include/asm/insn.h
++++ b/arch/x86/include/asm/insn.h
+@@ -208,6 +208,21 @@ static inline int insn_offset_immediate(
+ 	return insn_offset_displacement(insn) + insn->displacement.nbytes;
+ }
+ 
++/**
++ * for_each_insn_prefix() -- Iterate prefixes in the instruction
++ * @insn: Pointer to struct insn.
++ * @idx:  Index storage.
++ * @prefix: Prefix byte.
++ *
++ * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
++ * and the index is stored in @idx (note that this @idx is just for a cursor,
++ * do not change it.)
++ * Since prefixes.nbytes can be bigger than 4 if some prefixes
++ * are repeated, it cannot be used for looping over the prefixes.
++ */
++#define for_each_insn_prefix(insn, idx, prefix)	\
++	for (idx = 0; idx < ARRAY_SIZE(insn->prefixes.bytes) && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
++
+ #define POP_SS_OPCODE 0x1f
+ #define MOV_SREG_OPCODE 0x8e
+ 
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -268,10 +268,11 @@ static volatile u32 good_2byte_insns[256
+ 
+ static bool is_prefix_bad(struct insn *insn)
+ {
++	insn_byte_t p;
+ 	int i;
+ 
+-	for (i = 0; i < insn->prefixes.nbytes; i++) {
+-		switch (insn->prefixes.bytes[i]) {
++	for_each_insn_prefix(insn, i, p) {
++		switch (p) {
+ 		case 0x26:	/* INAT_PFX_ES   */
+ 		case 0x2E:	/* INAT_PFX_CS   */
+ 		case 0x36:	/* INAT_PFX_DS   */
+@@ -711,6 +712,7 @@ static const struct uprobe_xol_ops branc
+ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+ {
+ 	u8 opc1 = OPCODE1(insn);
++	insn_byte_t p;
+ 	int i;
+ 
+ 	switch (opc1) {
+@@ -741,8 +743,8 @@ static int branch_setup_xol_ops(struct a
+ 	 * Intel and AMD behavior differ in 64-bit mode: Intel ignores 66 prefix.
+ 	 * No one uses these insns, reject any branch insns with such prefix.
  	 */
- 	ftrace_trace_stack(tr, buffer, flags, regs ? 0 : 4, pc, regs);
--	ftrace_trace_userstack(buffer, flags, pc);
-+	ftrace_trace_userstack(tr, buffer, flags, pc);
+-	for (i = 0; i < insn->prefixes.nbytes; i++) {
+-		if (insn->prefixes.bytes[i] == 0x66)
++	for_each_insn_prefix(insn, i, p) {
++		if (p == 0x66)
+ 			return -ENOTSUPP;
+ 	}
+ 
+--- a/tools/objtool/arch/x86/include/asm/insn.h
++++ b/tools/objtool/arch/x86/include/asm/insn.h
+@@ -208,4 +208,19 @@ static inline int insn_offset_immediate(
+ 	return insn_offset_displacement(insn) + insn->displacement.nbytes;
  }
  
- void
-@@ -2299,14 +2299,15 @@ void trace_dump_stack(int skip)
- static DEFINE_PER_CPU(int, user_stack_count);
- 
- void
--ftrace_trace_userstack(struct ring_buffer *buffer, unsigned long flags, int pc)
-+ftrace_trace_userstack(struct trace_array *tr,
-+		       struct ring_buffer *buffer, unsigned long flags, int pc)
- {
- 	struct trace_event_call *call = &event_user_stack;
- 	struct ring_buffer_event *event;
- 	struct userstack_entry *entry;
- 	struct stack_trace trace;
- 
--	if (!(global_trace.trace_flags & TRACE_ITER_USERSTACKTRACE))
-+	if (!(tr->trace_flags & TRACE_ITER_USERSTACKTRACE))
- 		return;
- 
- 	/*
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -689,13 +689,15 @@ void update_max_tr_single(struct trace_a
- #endif /* CONFIG_TRACER_MAX_TRACE */
- 
- #ifdef CONFIG_STACKTRACE
--void ftrace_trace_userstack(struct ring_buffer *buffer, unsigned long flags,
-+void ftrace_trace_userstack(struct trace_array *tr,
-+			    struct ring_buffer *buffer, unsigned long flags,
- 			    int pc);
- 
- void __trace_stack(struct trace_array *tr, unsigned long flags, int skip,
- 		   int pc);
- #else
--static inline void ftrace_trace_userstack(struct ring_buffer *buffer,
-+static inline void ftrace_trace_userstack(struct trace_array *tr,
-+					  struct ring_buffer *buffer,
- 					  unsigned long flags, int pc)
- {
- }
++/**
++ * for_each_insn_prefix() -- Iterate prefixes in the instruction
++ * @insn: Pointer to struct insn.
++ * @idx:  Index storage.
++ * @prefix: Prefix byte.
++ *
++ * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
++ * and the index is stored in @idx (note that this @idx is just for a cursor,
++ * do not change it.)
++ * Since prefixes.nbytes can be bigger than 4 if some prefixes
++ * are repeated, it cannot be used for looping over the prefixes.
++ */
++#define for_each_insn_prefix(insn, idx, prefix)        \
++	for (idx = 0; idx < ARRAY_SIZE(insn->prefixes.bytes) && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
++
+ #endif /* _ASM_X86_INSN_H */
 
 
