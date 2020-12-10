@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02E02D5B1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A962D5B22
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388856AbgLJNA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:00:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387551AbgLJNA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:00:56 -0500
-Date:   Thu, 10 Dec 2020 14:01:30 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607605215;
-        bh=rTo9eetkSdm+KSFjwedHWy4XZCWRCFqMFGM9FGLKmrE=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QnEyvwhkTC5cFbHjDbQDzFgWHNOL1OvdSIvNrK9YuQoXll0d3hsOpaK33Po70dhu8
-         TZAME3F6ZZEIQEPC6cWn/DzVA8o2expRaTTVCDsjY18ts6Bv1+GESpKpEfC12Vijk5
-         5wASxs3EHqWXPrGW3BsilrJWIDXx/zWZ8ka4M8nI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Maarten Brock <m.brock@vanmierlo.com>
-Cc:     Mychaela Falconia <mychaela.falconia@gmail.com>,
-        Johan Hovold <johan@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] tty: add flag to suppress ready signalling on open
-Message-ID: <X9IcKoofq+2iGZn7@kroah.com>
-References: <20201202113942.27024-1-johan@kernel.org>
- <X9Dficb8sQGRut+S@kroah.com>
- <CA+uuBqYTzXCHGY8QnP+OQ5nRNAbqx2rMNzLM7OKLM1_4AzzinQ@mail.gmail.com>
- <6b81cca21561305b55ba8f019b78da28@vanmierlo.com>
- <X9H9i98E1Gro+mDP@kroah.com>
- <3fc3097ce1d35ce1e45fa5a3c7173666@vanmierlo.com>
+        id S2388889AbgLJNCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:02:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387506AbgLJNCt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 08:02:49 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94BFC0613CF;
+        Thu, 10 Dec 2020 05:02:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8DNWVeAUd7OvyCVtE5PeUeZEuJerl3ZR6gz0ZKvmpyo=; b=QoPx6KFRU+xS+RaJr2y1Qphzjb
+        s+yXByA3V4D2JJjPNrqJEj1y++RZMQ2QrVSvDnGQqtmx8Lo3LdXjBPtz6vEngpYhMZ98DjG9GIJ9N
+        vXErudo8loKA59o3aKxKOwrOiETZnptD4jkclkS27O9+TI1oA9mUX0LhghbGIG1XS6WdyaqIC019R
+        eJRa7Pn/tHHTPljQtMtEZc+TQJWcFm0Ef/WN0X2mlbE2Ut6pZQmyaSKeiAdBskXfwa2uDiHcEnJuN
+        GdkBDPHqdcZlK7QNdKtrpU1zccUIpK/CQWvIM06IHs+Ak9gYHhzEXczcug14IEm8h+EtHPNMYGynU
+        jDQ0bHzQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knLZd-0004f1-BZ; Thu, 10 Dec 2020 13:01:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A3D693007CD;
+        Thu, 10 Dec 2020 14:01:31 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8C5B7209B20CB; Thu, 10 Dec 2020 14:01:31 +0100 (CET)
+Date:   Thu, 10 Dec 2020 14:01:31 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+Message-ID: <20201210130131.GP2414@hirez.programming.kicks-ass.net>
+References: <20201203171118.372391-1-mlevitsk@redhat.com>
+ <20201203171118.372391-2-mlevitsk@redhat.com>
+ <87a6uq9abf.fsf@nanos.tec.linutronix.de>
+ <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com>
+ <87im9dlpsw.fsf@vitty.brq.redhat.com>
+ <875z5d5x9m.fsf@nanos.tec.linutronix.de>
+ <b6e0656b-4e3f-cf47-5ec9-eead44b2f2e9@redhat.com>
+ <20201210121417.GN2414@hirez.programming.kicks-ass.net>
+ <fe3e4637-b74b-864a-9d2f-c4f2d9450f2e@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3fc3097ce1d35ce1e45fa5a3c7173666@vanmierlo.com>
+In-Reply-To: <fe3e4637-b74b-864a-9d2f-c4f2d9450f2e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 01:05:15PM +0100, Maarten Brock wrote:
-> On 2020-12-10 11:50, Greg Kroah-Hartman wrote:
-> > On Thu, Dec 10, 2020 at 11:41:24AM +0100, Maarten Brock wrote:
-> > > Hello Mychaela,
+On Thu, Dec 10, 2020 at 01:22:02PM +0100, Paolo Bonzini wrote:
+> On 10/12/20 13:14, Peter Zijlstra wrote:
+> > On Thu, Dec 10, 2020 at 12:42:36PM +0100, Paolo Bonzini wrote:
+> > > On 07/12/20 18:41, Thomas Gleixner wrote:
+> > > > Right this happens still occasionally, but for quite some time this is
+> > > > 100% firmware sillyness and not a fundamental property of the hardware
+> > > > anymore.
 > > > 
-> > > On 2020-12-09 23:49, Mychaela Falconia wrote:
-> > > > Greg K-H wrote:
-> > > >
-> > > > > I think we need more review for the rest of the series.  This does
-> > > > > change the way serial ports work in a non-traditional way (i.e. using
-> > > > > sysfs instead of terminal settings).
-> > > >
-> > > > But the problem is that the current status quo is fundamentally broken
-> > > > for those hardware devices in which DTR and/or RTS have been repurposed
-> > > > for something other than modem and flow control.  Right now whenever a
-> > > > "cold" (never previously opened) serial port is opened for the first
-> > > > time, that open action immediately and unstoppably asserts both DTR
-> > > > and RTS hardware outputs, without giving userspace any opportunity to
-> > > > say "no, please don't do it".  Yes, this behaviour is codified in a
-> > > > bunch of standards that ultimately trace back to 1970s Original UNIX,
-> > > > but just because it is a standard does not make it right - this
-> > > > Unix/POSIX/Linux "standard" serial port behaviour is a bug, not a
-> > > > feature.
-> > > 
-> > > I agree. And an application not configuring the required handshakes,
-> > > but
-> > > still relying on them is an equal bug.
-> > > 
-> > > > But if there exist some custom hw devices out there that are in the
-> > > > same predicament as my DUART28 adapter, but are different in that they
-> > > > are classic old-fashioned RS-232 rather than integrated USB-serial,
-> > > > with no place to assign a custom USB ID, *then* we need a non-USB-ID-
-> > > > dependent solution such as Johan's sysfs attribute or O_DIRECT.
-> > > 
-> > > Any device with a classic old-fashioned RS-232 has probably already
-> > > solved this in another way or is accepted as not working on Linux.
-> > > 
-> > > And then there is also the device tree (overlay?) through which a
-> > > quirk
-> > > like this can be communicated to the kernel driver. Not sure if this
-> > > could help for a plug-and-play device like on USB.
-> > > 
-> > > > > So I want to get a bunch of people
-> > > > > to agree that this is ok to do things this way now before taking this
-> > > > > new user-visible api.
-> > > 
-> > > Personally, I would prefer the VID:PID to enforce the quirk and an
-> > > O_DIRECT (or other) flag used on open() as general backup plan. To
-> > > me a sysfs solution seems illogical.
+> > > It's still a fundamental property of old hardware.  Last time I tried to
+> > > kill support for processors earlier than Core 2, I had to revert it. That's
+> > > older than Nehalem.
 > > 
-> > The "problem" of a vid:pid is that for usb-serial devices, that only
-> > describes the device that does the conversion itself, NOT the serial
-> > device the converter is plugged into that cares about these types of
-> > line-wiggling.
-> > 
-> > Just like you would not want to classify all devices that met the PCI
-> > serial class signature for this type of thing either, there is nothing
-> > special about USB here other than it happens to be a common transport
-> > for these signals these days.
-> > 
-> > thanks,
-> > 
-> > greg k-h
+> > Core2 doesn't use TSC for timekeeping anyway. KVM shouldn't either.
 > 
-> This is true for a generic USB-UART board or cable, but not for a
-> dedicated PCB where both the USB-UART chip and the special connection
-> are implemented and which has a dedicated VID:PID different from any
-> generic one. In this case the VID:PID describes the whole board.
+> On Core2, KVM guests pass TSC through kvmclock in order to get something
+> usable and not incredibly slow.
 
-Companies/devices lie about vid:pid all the time, wait until your
-specific vid:pid is repurposed for some other device and then what
-happens?  :)
-
-> If the line-wiggling requirement is created behind some sort of
-> connector (real RS-232 DB9/DB25 or CMOS pin header or whatever)
-> then the problem is the same as for an 8250 on any other bus. For
-> this situation I would prefer the O_DIRECT flag on open().
-
-O_DIRECT is an interesting hack, has anyone seen if it violates the
-posix rules for us to use it on a character device like this?
-
-thanks,
-
-greg k-h
+Which is incredibly wrong.
