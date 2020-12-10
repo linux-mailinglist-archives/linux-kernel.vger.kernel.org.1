@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B152D65CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A762D65E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393242AbgLJS5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:57:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:45100 "EHLO foss.arm.com"
+        id S2404256AbgLJTFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:05:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38560 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390495AbgLJOba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:31:30 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D999A1596;
-        Thu, 10 Dec 2020 06:30:46 -0800 (PST)
-Received: from e123648.arm.com (unknown [10.57.1.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B90A23F718;
-        Thu, 10 Dec 2020 06:30:43 -0800 (PST)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
-        daniel.lezcano@linaro.org, lukasz.luba@arm.com, orjan.eide@arm.com,
-        robh@kernel.org, alyssa.rosenzweig@collabora.com,
-        steven.price@arm.com, airlied@linux.ie, daniel@ffwll.ch,
-        ionela.voinescu@arm.com
-Subject: [PATCH v4 5/5] drm/panfrost: Register devfreq cooling and attempt to add Energy Model
-Date:   Thu, 10 Dec 2020 14:30:14 +0000
-Message-Id: <20201210143014.24685-6-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201210143014.24685-1-lukasz.luba@arm.com>
-References: <20201210143014.24685-1-lukasz.luba@arm.com>
+        id S2387409AbgLJTFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 14:05:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 175C3ACE0;
+        Thu, 10 Dec 2020 19:04:28 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 10:38:49 -0800
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Vasiliy Kulikov <segoon@openwall.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] perf: Break deadlock involving exec_update_mutex
+Message-ID: <20201210183849.fdgcagdn4pyghtfn@linux-p48b>
+References: <87ft4mbqen.fsf@x220.int.ebiederm.org>
+ <AM6PR03MB5170412C2B0318C40CED55E5E4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wi6inOF5yvQRwUFbqMt0zFJ8S8GhqE2M0judU7RiGru8Q@mail.gmail.com>
+ <875z5h4b7a.fsf@x220.int.ebiederm.org>
+ <CAHk-=wio3JXxf3fy8tRVzb69u1e5iUru8p-dw+Mnga6yAdz=HQ@mail.gmail.com>
+ <AM6PR03MB51704629E50F6280A52D9FAFE4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wgxe-KAqR_y2jP58GthOYKk0YG=6gNxKHxVUJbG7z2CoQ@mail.gmail.com>
+ <20201207090953.GF3040@hirez.programming.kicks-ass.net>
+ <CAHk-=wjgG=_-zONkBkKnkOv3uoVRy45hTxx8e-6Ks3j-3TVHKQ@mail.gmail.com>
+ <20201208083412.GR2414@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201208083412.GR2414@hirez.programming.kicks-ass.net>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register devfreq cooling device and attempt to register Energy Model. This
-will add the devfreq device to the Energy Model framework. It will create
-a dedicated and unified data structures used i.e. in thermal framework.
-It uses simplified Energy Model, created based on voltage, frequency
-and DT 'dynamic-power-coefficient'.
+On Tue, 08 Dec 2020, Peter Zijlstra wrote:
 
-Reviewed-by: Steven Price <steven.price@arm.com>
-Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
- drivers/gpu/drm/panfrost/panfrost_devfreq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>I suppose I'll queue the below into tip/perf/core for next merge window,
+>unless you want it in a hurry?
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-index 78e9d82f7318..f44d28fad085 100644
---- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-@@ -138,7 +138,7 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
- 	}
- 	pfdevfreq->devfreq = devfreq;
- 
--	cooling = of_devfreq_cooling_register(dev->of_node, devfreq);
-+	cooling = devfreq_cooling_em_register(devfreq, NULL);
- 	if (IS_ERR(cooling))
- 		DRM_DEV_INFO(dev, "Failed to register cooling device\n");
- 	else
--- 
-2.17.1
+I'm thinking we'd still want Eric's series on top of this for the reader
+benefits of the lock.
 
+Thanks,
+Davidlohr
