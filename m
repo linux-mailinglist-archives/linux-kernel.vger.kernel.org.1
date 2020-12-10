@@ -2,134 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268092D5CE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DCC2D5CB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389618AbgLJNxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:53:21 -0500
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:38417 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389342AbgLJNsx (ORCPT
+        id S2389887AbgLJOCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:02:17 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2089 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389750AbgLJN4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:48:53 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id E9AE6ECB;
-        Thu, 10 Dec 2020 08:47:09 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 10 Dec 2020 08:47:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=33oSiXdSZylYg
-        pfeTrEZ/L2Seb+RHHNfFg6qHXNR8Pk=; b=swk7Bi/P4wIR3VlSMdEv/9KS3rr4V
-        aq0v9ZpPbYSMmDq5AxKktSYa3PAGoqyeWzvu/h5dXmPeJ2lKnETbuSyVKolqW520
-        Qyfdiy8ox2lsaxuryW0yufCB+RFIg3pW+ElNlSHulWIFxqAEMbXKV+ZlEzZzZ08X
-        PcEKe7pwd6ZNL6423olam3aiFe6mEELvehMDkJqdLo7mSWlQUkf41EGEKdeI+Qyh
-        7g4WH9YhDyHN95cYMxRtILGAQKDXPQ4fQ3jXNtW5r/juPCfaV12HcnYOkBIbhKQm
-        vvCx7cQNe+9BiuKi0DujoMnX3G6psNuYvDNz4c0rIeVAdNS3tAJFMUtaA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=33oSiXdSZylYgpfeTrEZ/L2Seb+RHHNfFg6qHXNR8Pk=; b=XHheXdQB
-        6j/CQnuMdhrFYhCcbGlpXRn3IKOzI+vUPTHSstdi5oIx2Pw71rWt5FSKUby5FinS
-        xM/s57nXtFEyGeCVuj9jWzGyxVw8HO2J82KjwVLknKiD9askNNHxxFr/w6sbgaI+
-        1vCWLkQ8hYnwIE6RPJnE0wi/PEvNeutWWfTUynZ/5R/n5NcmW3pe3bXrzc+bWhvB
-        FfZ3K7N6p0W9FXnDZp9arWkjrHXOylaq5N+3NrDTsA4ZqOmB/MOoem+eWf7+fARD
-        UJ0+x4h1Pr50gqL+wwFjYXeW0XzJ+8RiOJld3vn8wQMUtKElnuipnCN+StIZ26p9
-        bom5bzNzItk52w==
-X-ME-Sender: <xms:3SbSX02saM-OZ7rau-hiS6q9JlleN-oxSilg-8VKD5SY3C0Cq2AtYw>
-    <xme:3SbSX5KVRJCbr1IezwmxG1rjmOVE-iAdmII-zuzSjYwE2YAY_SMS1qGJmDJER0DAn
-    ljAZD4cisQ6lfHt56s>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudektddgheeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepfeenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:3SbSXx0n15eoh-5_mO32jnYACWB-qNk-bLuBDuo-WTt8yjC6UIys-A>
-    <xmx:3SbSX1mYaaI99bClyRWzqckUvnZotM123AF54MfTpSa4KrUZ2KtFNQ>
-    <xmx:3SbSX0jHp0Mfa-eGAzVRxf5qZNy8QQ0yosmjf-ZFHu6STKM3OLHKeA>
-    <xmx:3SbSX8euGKauDykmwaWjhrex1jcbF1qMQP9DdaPaLDj0XENvihZ65cJGjbA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3E3CE108005B;
-        Thu, 10 Dec 2020 08:47:09 -0500 (EST)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>
-Cc:     Jason Cooper <jason@lakedaemon.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, linux-media@vger.kernel.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 14/15] ARM: dts: bcm2711: Add the BSC interrupt controller
-Date:   Thu, 10 Dec 2020 14:46:47 +0100
-Message-Id: <20201210134648.272857-15-maxime@cerno.tech>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201210134648.272857-1-maxime@cerno.tech>
-References: <20201210134648.272857-1-maxime@cerno.tech>
+        Thu, 10 Dec 2020 08:56:44 -0500
+Received: from dggeme753-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CsFm91zPlzVmqm;
+        Thu, 10 Dec 2020 21:55:05 +0800 (CST)
+Received: from [10.174.184.120] (10.174.184.120) by
+ dggeme753-chm.china.huawei.com (10.3.19.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 10 Dec 2020 21:56:00 +0800
+Subject: Re: [PATCH v2] vfio iommu type1: Improve vfio_iommu_type1_pin_pages
+ performance
+To:     Eric Farman <farman@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        <kwankhede@nvidia.com>, <wu.wubin@huawei.com>,
+        <maoming.maoming@huawei.com>, <xieyingtai@huawei.com>,
+        <lizhengui@huawei.com>, <wubinfeng@huawei.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+References: <60d22fc6-88d6-c7c2-90bd-1e8eccb1fdcc@huawei.com>
+ <4d58b74d-72bb-6473-9523-aeaa392a470e@huawei.com>
+ <20201209125450.3f5834ab.cohuck@redhat.com>
+ <9e37b8d9-3654-5b89-e3b4-5e6ede736320@linux.ibm.com>
+From:   "xuxiaoyang (C)" <xuxiaoyang2@huawei.com>
+Message-ID: <a585357e-6796-7bf4-ef37-185617e2a865@huawei.com>
+Date:   Thu, 10 Dec 2020 21:56:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
+In-Reply-To: <9e37b8d9-3654-5b89-e3b4-5e6ede736320@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.184.120]
+X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
+ dggeme753-chm.china.huawei.com (10.3.19.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BSC controllers used for the HDMI DDC have an interrupt controller
-shared between both instances. Let's add it to avoid polling.
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- arch/arm/boot/dts/bcm2711.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.dtsi
-index 4847dd305317..8bb46ae76a92 100644
---- a/arch/arm/boot/dts/bcm2711.dtsi
-+++ b/arch/arm/boot/dts/bcm2711.dtsi
-@@ -308,6 +308,14 @@ dvp: clock@7ef00000 {
- 			#reset-cells = <1>;
- 		};
- 
-+		bsc_intr: interrupt-controller@7ef00040 {
-+			compatible = "brcm,bcm2711-l2-intc", "brcm,l2-intc";
-+			reg = <0x7ef00040 0x30>;
-+			interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-controller;
-+			#interrupt-cells = <1>;
-+		};
-+
- 		hdmi0: hdmi@7ef00700 {
- 			compatible = "brcm,bcm2711-hdmi0";
- 			reg = <0x7ef00700 0x300>,
-@@ -341,6 +349,8 @@ ddc0: i2c@7ef04500 {
- 			reg = <0x7ef04500 0x100>, <0x7ef00b00 0x300>;
- 			reg-names = "bsc", "auto-i2c";
- 			clock-frequency = <97500>;
-+			interrupt-parent = <&bsc_intr>;
-+			interrupts = <0>;
- 			status = "disabled";
- 		};
- 
-@@ -377,6 +387,8 @@ ddc1: i2c@7ef09500 {
- 			reg = <0x7ef09500 0x100>, <0x7ef05b00 0x300>;
- 			reg-names = "bsc", "auto-i2c";
- 			clock-frequency = <97500>;
-+			interrupt-parent = <&bsc_intr>;
-+			interrupts = <1>;
- 			status = "disabled";
- 		};
- 	};
--- 
-2.28.0
+On 2020/12/9 22:42, Eric Farman wrote:
+> 
+> 
+> On 12/9/20 6:54 AM, Cornelia Huck wrote:
+>> On Tue, 8 Dec 2020 21:55:53 +0800
+>> "xuxiaoyang (C)" <xuxiaoyang2@huawei.com> wrote:
+>>
+>>> On 2020/11/21 15:58, xuxiaoyang (C) wrote:
+>>>> vfio_pin_pages() accepts an array of unrelated iova pfns and processes
+>>>> each to return the physical pfn.  When dealing with large arrays of
+>>>> contiguous iovas, vfio_iommu_type1_pin_pages is very inefficient because
+>>>> it is processed page by page.In this case, we can divide the iova pfn
+>>>> array into multiple continuous ranges and optimize them.  For example,
+>>>> when the iova pfn array is {1,5,6,7,9}, it will be divided into three
+>>>> groups {1}, {5,6,7}, {9} for processing.  When processing {5,6,7}, the
+>>>> number of calls to pin_user_pages_remote is reduced from 3 times to once.
+>>>> For single page or large array of discontinuous iovas, we still use
+>>>> vfio_pin_page_external to deal with it to reduce the performance loss
+>>>> caused by refactoring.
+>>>>
+>>>> Signed-off-by: Xiaoyang Xu <xuxiaoyang2@huawei.com>
+>>
+>> (...)
+>>
+>>>
+>>> hi Cornelia Huck, Eric Farman, Zhenyu Wang, Zhi Wang
+>>>
+>>> vfio_pin_pages() accepts an array of unrelated iova pfns and processes
+>>> each to return the physical pfn.  When dealing with large arrays of
+>>> contiguous iovas, vfio_iommu_type1_pin_pages is very inefficient because
+>>> it is processed page by page.  In this case, we can divide the iova pfn
+>>> array into multiple continuous ranges and optimize them.  I have a set
+>>> of performance test data for reference.
+>>>
+>>> The patch was not applied
+>>>                      1 page           512 pages
+>>> no huge pages：     1638ns           223651ns
+>>> THP：               1668ns           222330ns
+>>> HugeTLB：           1526ns           208151ns
+>>>
+>>> The patch was applied
+>>>                      1 page           512 pages
+>>> no huge pages       1735ns           167286ns
+>>> THP：               1934ns           126900ns
+>>> HugeTLB：           1713ns           102188ns
+>>>
+>>> As Alex Williamson said, this patch lacks proof that it works in the
+>>> real world. I think you will have some valuable opinions.
+>>
+>> Looking at this from the vfio-ccw angle, I'm not sure how much this
+>> would buy us, as we deal with IDAWs, which are designed so that they
+>> can be non-contiguous. I guess this depends a lot on what the guest
+>> does.
+> 
+> This would be my concern too, but I don't have data off the top of my head to say one way or another...
+> 
+>>
+>> Eric, any opinion? Do you maybe also happen to have a test setup that
+>> mimics workloads actually seen in the real world?
+>>
+> 
+> ...I do have some test setups, which I will try to get some data from in a couple days. At the moment I've broken most of those setups trying to implement some other stuff, and can't revert back at the moment. Will get back to this.
+> 
+> Eric
+> .
 
+Thank you for your reply. Looking forward to your test data.
+
+Regards,
+Xu
