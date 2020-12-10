@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8A82D5813
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:19:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 269682D581E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729337AbgLJKSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:18:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
+        id S1730417AbgLJKUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:20:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726489AbgLJKSA (ORCPT
+        with ESMTP id S1726078AbgLJKUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:18:00 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D5FC0613CF;
-        Thu, 10 Dec 2020 02:17:20 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id w6so3622869pfu.1;
-        Thu, 10 Dec 2020 02:17:20 -0800 (PST)
+        Thu, 10 Dec 2020 05:20:30 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135FFC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 02:19:50 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id 81so4902203ioc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 02:19:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=F1GNlk+sMt03zW3RJz1MQRTqkMVaVyhGe/dSlf7Cqn4=;
-        b=pIY+tLvtWWNfOAXPaSavrpTgFYmDboG6IC8Pppte6rzX0gQ8GPCAH4ZgKv5h5uBQYG
-         gvaEcy3wF9hdBPqwShxn/oORarKmYqVW7SeU73zjrLCnisgdJKUlNk+mxx8GhrUpXpkQ
-         3tqMjcvy15ECZImd81vCbh3OI7f7B5MibU+mUH2TvQsZ0orhfq+KTmNfvHOOA5IOphoV
-         UiBX74wWV2bKL3/z7hYKlXN+rrAQuvq3rV7z5oR05QJXKBb/jtYX2LIePEZkgqRgdEvR
-         D6V6LKPEp+f76yOYs/NuXKOogYLS6fHHy9NYBc7FelEMpup5invXi/hUFq77lKhYUX0q
-         73kw==
+        bh=I7cheIkDEebliEnqleliGM65RmyLAKIHcPYFYba+v48=;
+        b=kqRXushoFGjCoC3WlNBHCOqHTNHk2ZJmXoEOI7gIaq6FMfFUuCMO31ttku/zyXBEaB
+         5FZjPBMtIBucOIJXNvUN5cS0pjtWdOjqMmOO4ddDlirOqlBAwPYrbXLporW8lbq4R/gE
+         NcZe9LG5LiahywfcmMqoJwbcmq7mypE8+/LZ4A4IibAD3rb0jbskEtVI1U7O2FpowfNl
+         K43VQH0lAl3M4Q4HyIJtXP8aK6LXtNs5FTMVPTmhSonN4IKBNKuBY4SFCfXVaFqH5PrD
+         kPf7MXvaaO37W20FXVx7izW68jq81PRwRc9R5QqDrzfDZv8ZFXW+RPgkg+FmdP6moR9D
+         YhhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=F1GNlk+sMt03zW3RJz1MQRTqkMVaVyhGe/dSlf7Cqn4=;
-        b=Zfz7d1vFlu1chIjvJPhqTETmfQypBd3zc/BbYXcuI3OR/Bjt02LssXCSvQ57q/pire
-         jW6tHczZTq0pJ99Vmv+2rjfeDLvRdR8OFtF5pkVOi1VdLWYq3mF7XUiWVyApk2iqTKA/
-         701wZmC0+c83Gc2qJUb8SIC8KC/pZVvb3omyfu7ay7hGkX6XdBCS+tLXauGY74k2P/Uf
-         4qVwg4e+XqZj/cMCnsMsoR/VRqn7jFOmPsyC3tU6aQl7g8DS93dSsCTCwmCp3buEjHH4
-         Mg5VCvmcsHz3O6QJtqKCIN2QaYpOsDj3hBbx933FsZNLhj0/xZ4Q23I/coam+msUn6N2
-         Huig==
-X-Gm-Message-State: AOAM533HYUOEdFVV1wFfEpQy4YOZFiZr48VKxHMPod8OdW7D/XELfYVc
-        DI4Qu9k29g5DthnR2pUm7+Mxxftv/vxyn2oU2lQ=
-X-Google-Smtp-Source: ABdhPJz5VphjndpowVyThCko817PLagCO8ZMN3OGxx5tp7Ctt7Riay98gM8Rn6Q/PdQpQusBYvhFSLs1r97UgiL6WGQ=
-X-Received: by 2002:a63:d312:: with SMTP id b18mr6003383pgg.233.1607595440348;
- Thu, 10 Dec 2020 02:17:20 -0800 (PST)
+        bh=I7cheIkDEebliEnqleliGM65RmyLAKIHcPYFYba+v48=;
+        b=rCBI5tN/bRU4zcenHfy4ivtRdy0WS0AnADAUNQExPdPDeG03+0xqfqtig5AP9PUPTH
+         VWWPMViE4AHxKPJKGzZYlS5axnnaN7ouA/UMZzPz66MpsSQVr30tkPc4hcDeKPAxdZBN
+         Ca7y7xeHbY0So7Gj9hlSPn6+xZNUqLQn+Vy9mGdMPXef5MeZyVLYpENeLu05QICevAAu
+         lQxX3Xf7dmYTOIw9mnU0HwkqhX3Fo5bI5+m9bKfdmDLgPbK5+CqMB7AD22jYbLehYO/N
+         rlinzLNGg3RcgtDh1gr/PWOjCQH97FvLXzdIc8H9d8askLgSwvX91MXirpXXXXbT75T/
+         /Jbw==
+X-Gm-Message-State: AOAM531YehCMDJFL18Y+DcyKHgvt4xYFABZwfuuMgQRmMzmAlGlxMhg+
+        frJWSIpdW6nxavIKnSHd4ZbOM77TBvqr/JaLHR3xrA==
+X-Google-Smtp-Source: ABdhPJw1NBwZYJbQunI5QZ6uWeX/CNfx0OulhPPNAe5MkJHW44D7RHdm/OGjHMWUMBEDUDgVBOn1JsiUKC+IkVK4ZgM=
+X-Received: by 2002:a6b:d61a:: with SMTP id w26mr7839769ioa.117.1607595588821;
+ Thu, 10 Dec 2020 02:19:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20201209033346.83742-1-xie.he.0141@gmail.com> <801dc0320e484bf7a5048c0cddac12af@AcuMS.aculab.com>
- <CAJht_EMQFtR_-QH=QMHt9+cLcNO6LHBSy2fy=mgbic+=JUsR-Q@mail.gmail.com> <3e7fb08afd624399a7f689c2b507a01e@AcuMS.aculab.com>
-In-Reply-To: <3e7fb08afd624399a7f689c2b507a01e@AcuMS.aculab.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Thu, 10 Dec 2020 02:17:09 -0800
-Message-ID: <CAJht_EMqO8cS3BSnqHA=ROqbkpum8JB_FjzRgPuW=up+e4bO1w@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: x25: Remove unimplemented X.25-over-LLC
- code stubs
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+References: <1607592918-14356-1-git-send-email-yejune.deng@gmail.com>
+In-Reply-To: <1607592918-14356-1-git-send-email-yejune.deng@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 10 Dec 2020 11:19:36 +0100
+Message-ID: <CANn89iKW4cLMssB2zi8kvikddVHMXfQLDr9Gkg768Ou3H5VwiA@mail.gmail.com>
+Subject: Re: [PATCH] net: core: fix msleep() is not accurate
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        "linux-x25@vger.kernel.org" <linux-x25@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 1:14 AM David Laight <David.Laight@aculab.com> wrote:
+On Thu, Dec 10, 2020 at 10:35 AM Yejune Deng <yejune.deng@gmail.com> wrote:
 >
-> > To me, LLC1 and LLC2 are to Ethernet what UDP and TCP are to IP
-> > networks. I think we can use LLC1 and LLC2 wherever UDP and TCP can be
-> > used, as long as we are in the same LAN and are willing to use MAC
-> > addresses as the addresses.
+> See Documentation/timers/timers-howto.rst, msleep() is not
+> for (1ms - 20ms), There is a more advanced API is used.
 >
-> Except that you don't have any where near enough 'ports' so you need
-> something to demultiplex messages to different applications.
-
-Yes, LLC only has 256 "ports" compared to more than 60000 for UDP/TCP.
-
-> We (ICL) always ran class 4 transport (which does error recovery)
-> directly over LLC1 using MAC address (a NUL byte for the network layer).
-> This requires a bridged network and globally unique MAC addresses.
-> Sending out an LLC reflect packet to the broadcast MAC address used to
-> generate a couple of thousand responses (many would get discarded
-> because the bridges got overloaded).
-
-Wow, You have a really big LAN!
-
-> > X.25 layer 3 certainly can also run over LLC2.
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> ---
+>  net/core/dev.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> You don't need X.25 layer 3.
-> X.25 layer 2 does error recovery over a point-to-point link.
-> X.25 layer 3 does switching between machines.
-> Class 2 transport does multiplexing over a reliable lower layer.
-> So you normally need all three.
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index d33099f..6e83ee03 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -6726,9 +6726,9 @@ void napi_disable(struct napi_struct *n)
+>         set_bit(NAPI_STATE_DISABLE, &n->state);
+>
+>         while (test_and_set_bit(NAPI_STATE_SCHED, &n->state))
+> -               msleep(1);
+> +               fsleep(1000);
+>         while (test_and_set_bit(NAPI_STATE_NPSVC, &n->state))
+> -               msleep(1);
+> +               fsleep(1000);
+>
 
-Yes, I was just saying X.25 layer 3 can run over any reliable
-point-to-point links, including X.25 layer 2, LLC2 and TCP.
+I would prefer explicit usleep_range().
 
-> However LLC2 gives you a reliable connection between two machines
-> (selected by MAC address).
-> So you should be able to run Class 2 transport (well one of its
-> 4 variants!) directly over LL2.
+fsleep() is not common in the kernel, I had to go to its definition.
 
-Yes.
-
-> The advantage over Class 4 transport over LLC1 is that there is
-> only one set of retransmit buffers (etc) regardless of the number
-> of connections.
-
-Right. But nowadays we have big enough memories for many buffers, so
-it may be preferable to make connections operate independent of each
-other. This way one lost frame wouldn't affect all connections. This
-is also why HTTP3 moved to QUIC instead of using TCP.
-
-> But this is all 30 year old history...
-
-Haha, we are talking about really old technologies.
+I would argue that we should  use usleep_range(10, 200)  to have an
+opportunity to spend less time in napi_disable() in some cases.
