@@ -2,179 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7158E2D592C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8398D2D592E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389241AbgLJL0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:26:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgLJL0x (ORCPT
+        id S2389414AbgLJL1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:27:39 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:35502 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731999AbgLJL1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:26:53 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8941EC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 03:26:13 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id k2so5312571oic.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 03:26:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=26Ds+xjLYxlyiDrAw+q/Gft3jO8RNSIH1EaBVr3YRWw=;
-        b=lSdOxFmO/wAApZldtzGe+fP9ge2caZIKfgzOJZKuezeQuMaShUSlqonQqUJiHUnUuQ
-         4Kx9jXT1bYcD9HXyMyArkkW5rvBsAkOjIxoS/4sQzEt4lvQk9ORQMeRMN1UK9q7/z1RV
-         TlzumT2ceJkyprsJiui9j3FjdAk8Igcu+zSPQ=
+        Thu, 10 Dec 2020 06:27:39 -0500
+Received: by mail-wm1-f67.google.com with SMTP id e25so4931570wme.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 03:27:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=26Ds+xjLYxlyiDrAw+q/Gft3jO8RNSIH1EaBVr3YRWw=;
-        b=dcIcGV612GgAymGXO4I98MAUA3vIcZ5UnAWFrwEKx7SX7Rf9vKvpW+6qV3A7xUJZHq
-         VNue+WnaXhvwV+sW2KOrAG8IxYFwYfC6cGQZJN2GqiLLGFqbPRJj8r+Y5bE5qMfv/zQI
-         93woOQJXJQqYXiBMRey/dXgDowzNAAeoq+iGohsFoHlH5xNEwNm9SQw+HqhN/blajBxR
-         RcuzDGsHfjAjYhIaEeaYjpI36dWrhn8wOjWdz1CY9wNoIflR8B/3/qQ/tqGY6k5X4BPB
-         Z2AjYaxeIVRuWqsLHtPuRsO5ZQUWPkf25BkGFyJ2zrIU5aJNvwdnUHFM/xkDgIjXIemg
-         6EFQ==
-X-Gm-Message-State: AOAM533cwnLFRQbHAvV7t549vpEwBftg90bLQBF/YIHoglRagC9B2/3H
-        hDSyawpcAO0Wk2PfCRsBahJkDbdS17+/r4qwb5iRIg==
-X-Google-Smtp-Source: ABdhPJwbfyYDyl38Hj6hY63Lt/8OMxO1ziTnn78ExJw8HG0XQ5S0YP1OIT0YrNdt1q0dNRR7Pcbp1BfkD8VJOBGCCmQ=
-X-Received: by 2002:aca:4d08:: with SMTP id a8mr5091494oib.128.1607599572945;
- Thu, 10 Dec 2020 03:26:12 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=irDctQUnVMF9hDcxwUQ0T1CfjtHIbKWzLtaf8ORwrvw=;
+        b=UdpSWRyQB0Pc+Jr7AV4bkcQ1sFpsREtzwfO/rRrowwtIt6qf3CzaCqGO4I2x1ZqT20
+         Knh2jO+Uce0ffahlzT1C7XG5Sr1cOzqZHRYKrv/OVKccziwZ+0yG5KVS/k1RrPmx1+ph
+         usTx551vetH5yvNevQafZUzrMC4/7Ew2+Iei3FWtDUn/v9m4BIHgIA8k2Yg7XGONf2tH
+         pOhl7OCW9fDtJJPZWkj/njChbqn5BluzGNJOm0Kg/+wjabyvvFRV/3HHnOgYy4Ijz5RL
+         QeuXOj7oGs87cevQvqUZi9mFGct/NRNUSMaMpOlm5C53n4rf4awJ0fvD4EdabqMePCuw
+         jr5Q==
+X-Gm-Message-State: AOAM530IJuj4TRMhwpvZ0SlZWoughfQ237hIT03nhAPZhg92jaeOK9es
+        qK6tPgTNNAc1y9GJYWPEbfs=
+X-Google-Smtp-Source: ABdhPJxSUZwy2Inn/DRXjxqdWP6MuLgRBO40T92j/pQQ30UCYfLoNyCH5oTbEfl0RJVqd5kxLTgukg==
+X-Received: by 2002:a7b:c85a:: with SMTP id c26mr7452146wml.160.1607599617884;
+        Thu, 10 Dec 2020 03:26:57 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id m17sm9951189wrn.0.2020.12.10.03.26.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 03:26:56 -0800 (PST)
+Date:   Thu, 10 Dec 2020 12:26:55 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] regulator: max14577: Add proper module aliases strings
+Message-ID: <20201210112655.GA131701@kozik-lap>
+References: <CGME20201210112148eucas1p287afa49e63255e3320495d480eb06965@eucas1p2.samsung.com>
+ <20201210112139.5370-1-m.szyprowski@samsung.com>
 MIME-Version: 1.0
-References: <20201210044400.1080308-1-hridya@google.com> <b5adfe46-8615-5821-d092-2b93feed5b79@amd.com>
- <X9H0JREcdxDsMtLX@kroah.com> <20201210102727.GE401619@phenom.ffwll.local> <X9H+3AP1q39aMxeb@kroah.com>
-In-Reply-To: <X9H+3AP1q39aMxeb@kroah.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 10 Dec 2020 12:26:01 +0100
-Message-ID: <CAKMK7uFD3fE01Li3JOpHpzP7313OT3xpcjBwzSVjrCGAmab2Zg@mail.gmail.com>
-Subject: Re: [PATCH] dmabuf: Add the capability to expose DMA-BUF stats in sysfs
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201210112139.5370-1-m.szyprowski@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 11:55 AM Greg KH <gregkh@linuxfoundation.org> wrote=
-:
->
-> On Thu, Dec 10, 2020 at 11:27:27AM +0100, Daniel Vetter wrote:
-> > On Thu, Dec 10, 2020 at 11:10:45AM +0100, Greg KH wrote:
-> > > On Thu, Dec 10, 2020 at 10:58:50AM +0100, Christian K=C3=B6nig wrote:
-> > > > In general a good idea, but I have a few concern/comments here.
-> > > >
-> > > > Am 10.12.20 um 05:43 schrieb Hridya Valsaraju:
-> > > > > This patch allows statistics to be enabled for each DMA-BUF in
-> > > > > sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
-> > > > >
-> > > > > The following stats will be exposed by the interface:
-> > > > >
-> > > > > /sys/kernel/dmabuf/<inode_number>/exporter_name
-> > > > > /sys/kernel/dmabuf/<inode_number>/size
-> > > > > /sys/kernel/dmabuf/<inode_number>/dev_map_info
-> > > > >
-> > > > > The inode_number is unique for each DMA-BUF and was added earlier=
- [1]
-> > > > > in order to allow userspace to track DMA-BUF usage across differe=
-nt
-> > > > > processes.
-> > > > >
-> > > > > Currently, this information is exposed in
-> > > > > /sys/kernel/debug/dma_buf/bufinfo.
-> > > > > However, since debugfs is considered unsafe to be mounted in prod=
-uction,
-> > > > > it is being duplicated in sysfs.
-> > > >
-> > > > Mhm, this makes it part of the UAPI. What is the justification for =
-this?
-> > > >
-> > > > In other words do we really need those debug information in a produ=
-ction
-> > > > environment?
-> > >
-> > > Production environments seem to want to know who is using up memory :=
-)
-> >
-> > This only shows shared memory, so it does smell a lot like $specific_is=
-sue
-> > and we're designing a narrow solution for that and then have to carry i=
-t
-> > forever.
->
-> I think the "issue" is that this was a feature from ion that people
-> "missed" in the dmabuf move.  Taking away the ability to see what kind
-> of allocations were being made didn't make a lot of debugging tools
-> happy :(
+On Thu, Dec 10, 2020 at 12:21:39PM +0100, Marek Szyprowski wrote:
+> Add proper modalias structures to let this driver load automatically if
+> compiled as module, because max14577 MFD driver creates MFD cells with
+> such compatible strings.
+> 
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>  drivers/regulator/max14577-regulator.c | 2 ++
+>  1 file changed, 2 insertions(+)
 
-If this is just for dma-heaps then why don't we add the stuff back
-over there? It reinforces more that the android gpu stack and the
-non-android gpu stack on linux are fairly different in fundamental
-ways, but that's not really new.
--Daniel
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-> But Hridya knows more, she's been dealing with the transition for a long
-> time now.
->
-> > E.g. why is the list of attachments not a sysfs link? That's how we
-> > usually expose struct device * pointers in sysfs to userspace, not as a
-> > list of things.
->
-> These aren't struct devices, so I don't understand the objection here.
-> Where else could these go in sysfs?
->
-> > Furthermore we don't have the exporter device covered anywhere, how is
-> > that tracked? Yes Android just uses ion for all shared buffers, but tha=
-t's
-> > not how all of linux userspace works.
->
-> Do we have the exporter device link in the dmabuf interface?  If so,
-> great, let's use that, but for some reason I didn't think it was there.
->
-> > Then I guess there's the mmaps, you can fish them out of procfs. A tool
-> > which collects all that information might be useful, just as demonstrat=
-ion
-> > of how this is all supposed to be used.
->
-> There's a script somewhere that does this today, again, Hridya knows
-> more.
->
-> > There's also some things to make sure we're at least having thought abo=
-ut
-> > how other things fit in here. E.d. dma_resv attached to the dma-buf
-> > matters in general a lot. It doesn't matter on Android because
-> > everything's pinned all the time anyway.
-> >
-> > Also I thought sysfs was one value one file, dumping an entire list int=
-o
-> > dev_info_map with properties we'll need to extend (once you care about
-> > dma_resv you also want to know which attachments are dynamic) does not
-> > smell like sysfs design at all.
->
-> sysfs is one value per file, what is being exported that is larger than
-> that here?  Did I miss something on review?
->
-> thanks,
->
-> greg k-h
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-
-
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Best regards,
+Krzysztof
