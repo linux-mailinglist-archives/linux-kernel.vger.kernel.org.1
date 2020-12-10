@@ -2,25 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579972D666B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7B22D6631
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390429AbgLJT17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:27:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38456 "EHLO mail.kernel.org"
+        id S2393277AbgLJTSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:18:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727700AbgLJOa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:30:27 -0500
+        id S2388934AbgLJOap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:30:45 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jerry Snitselaar <jsnitsel@redhat.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 4.9 36/45] iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs
-Date:   Thu, 10 Dec 2020 15:26:50 +0100
-Message-Id: <20201210142604.134660122@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.9 41/45] tracing: Fix userstacktrace option for instances
+Date:   Thu, 10 Dec 2020 15:26:55 +0100
+Message-Id: <20201210142604.370513568@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
 References: <20201210142602.361598591@linuxfoundation.org>
@@ -32,36 +31,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 4165bf015ba9454f45beaad621d16c516d5c5afe upstream.
+commit bcee5278958802b40ee8b26679155a6d9231783e upstream.
 
-According to the AMD IOMMU spec, the commit 73db2fc595f3
-("iommu/amd: Increase interrupt remapping table limit to 512 entries")
-also requires the interrupt table length (IntTabLen) to be set to 9
-(power of 2) in the device table mapping entry (DTE).
+When the instances were able to use their own options, the userstacktrace
+option was left hardcoded for the top level. This made the instance
+userstacktrace option bascially into a nop, and will confuse users that set
+it, but nothing happens (I was confused when it happened to me!)
 
-Fixes: 73db2fc595f3 ("iommu/amd: Increase interrupt remapping table limit to 512 entries")
-Reported-by: Jerry Snitselaar <jsnitsel@redhat.com>
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
-Link: https://lore.kernel.org/r/20201207091920.3052-1-suravee.suthikulpanit@amd.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 16270145ce6b ("tracing: Add trace options for core options to instances")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/iommu/amd_iommu.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iommu/amd_iommu.c
-+++ b/drivers/iommu/amd_iommu.c
-@@ -3661,7 +3661,7 @@ static struct irq_chip amd_ir_chip;
+---
+ kernel/trace/trace.c |    7 ++++---
+ kernel/trace/trace.h |    6 ++++--
+ 2 files changed, 8 insertions(+), 5 deletions(-)
+
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2134,7 +2134,7 @@ void trace_buffer_unlock_commit_regs(str
+ 	 * two. They are that meaningful.
+ 	 */
+ 	ftrace_trace_stack(tr, buffer, flags, regs ? 0 : 4, pc, regs);
+-	ftrace_trace_userstack(buffer, flags, pc);
++	ftrace_trace_userstack(tr, buffer, flags, pc);
+ }
  
- #define DTE_IRQ_PHYS_ADDR_MASK	(((1ULL << 45)-1) << 6)
- #define DTE_IRQ_REMAP_INTCTL    (2ULL << 60)
--#define DTE_IRQ_TABLE_LEN       (8ULL << 1)
-+#define DTE_IRQ_TABLE_LEN       (9ULL << 1)
- #define DTE_IRQ_REMAP_ENABLE    1ULL
+ void
+@@ -2299,14 +2299,15 @@ void trace_dump_stack(int skip)
+ static DEFINE_PER_CPU(int, user_stack_count);
  
- static void set_dte_irq_entry(u16 devid, struct irq_remap_table *table)
+ void
+-ftrace_trace_userstack(struct ring_buffer *buffer, unsigned long flags, int pc)
++ftrace_trace_userstack(struct trace_array *tr,
++		       struct ring_buffer *buffer, unsigned long flags, int pc)
+ {
+ 	struct trace_event_call *call = &event_user_stack;
+ 	struct ring_buffer_event *event;
+ 	struct userstack_entry *entry;
+ 	struct stack_trace trace;
+ 
+-	if (!(global_trace.trace_flags & TRACE_ITER_USERSTACKTRACE))
++	if (!(tr->trace_flags & TRACE_ITER_USERSTACKTRACE))
+ 		return;
+ 
+ 	/*
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -689,13 +689,15 @@ void update_max_tr_single(struct trace_a
+ #endif /* CONFIG_TRACER_MAX_TRACE */
+ 
+ #ifdef CONFIG_STACKTRACE
+-void ftrace_trace_userstack(struct ring_buffer *buffer, unsigned long flags,
++void ftrace_trace_userstack(struct trace_array *tr,
++			    struct ring_buffer *buffer, unsigned long flags,
+ 			    int pc);
+ 
+ void __trace_stack(struct trace_array *tr, unsigned long flags, int skip,
+ 		   int pc);
+ #else
+-static inline void ftrace_trace_userstack(struct ring_buffer *buffer,
++static inline void ftrace_trace_userstack(struct trace_array *tr,
++					  struct ring_buffer *buffer,
+ 					  unsigned long flags, int pc)
+ {
+ }
 
 
