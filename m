@@ -2,23 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4602D5E29
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251142D5E2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391408AbgLJOlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:41:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43370 "EHLO mail.kernel.org"
+        id S2387551AbgLJOmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:42:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390965AbgLJOfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:35:46 -0500
+        id S2390970AbgLJOfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:35:52 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.4 31/54] dm: remove invalid sparse __acquires and __releases annotations
-Date:   Thu, 10 Dec 2020 15:27:08 +0100
-Message-Id: <20201210142603.565252708@linuxfoundation.org>
+        stable@vger.kernel.org, Menglong Dong <dong.menglong@zte.com.cn>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Wise <pabs3@bonedaddy.net>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jakub Wilk <jwilk@jwilk.net>
+Subject: [PATCH 5.4 33/54] coredump: fix core_pattern parse error
+Date:   Thu, 10 Dec 2020 15:27:10 +0100
+Message-Id: <20201210142603.662932100@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
 References: <20201210142602.037095225@linuxfoundation.org>
@@ -30,40 +35,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Snitzer <snitzer@redhat.com>
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-commit bde3808bc8c2741ad3d804f84720409aee0c2972 upstream.
+commit 2bf509d96d84c3336d08375e8af34d1b85ee71c8 upstream.
 
-Fixes sparse warnings:
-drivers/md/dm.c:508:12: warning: context imbalance in 'dm_prepare_ioctl' - wrong count at exit
-drivers/md/dm.c:543:13: warning: context imbalance in 'dm_unprepare_ioctl' - wrong count at exit
+'format_corename()' will splite 'core_pattern' on spaces when it is in
+pipe mode, and take helper_argv[0] as the path to usermode executable.
+It works fine in most cases.
 
-Fixes: 971888c46993f ("dm: hold DM table for duration of ioctl rather than use blkdev_get")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+However, if there is a space between '|' and '/file/path', such as
+'| /usr/lib/systemd/systemd-coredump %P %u %g', then helper_argv[0] will
+be parsed as '', and users will get a 'Core dump to | disabled'.
+
+It is not friendly to users, as the pattern above was valid previously.
+Fix this by ignoring the spaces between '|' and '/file/path'.
+
+Fixes: 315c69261dd3 ("coredump: split pipe command whitespace before expanding template")
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Paul Wise <pabs3@bonedaddy.net>
+Cc: Jakub Wilk <jwilk@jwilk.net> [https://bugs.debian.org/924398]
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/5fb62870.1c69fb81.8ef5d.af76@mx.google.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm.c |    2 --
- 1 file changed, 2 deletions(-)
+ fs/coredump.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -495,7 +495,6 @@ out:
- 
- static int dm_prepare_ioctl(struct mapped_device *md, int *srcu_idx,
- 			    struct block_device **bdev)
--	__acquires(md->io_barrier)
- {
- 	struct dm_target *tgt;
- 	struct dm_table *map;
-@@ -529,7 +528,6 @@ retry:
- }
- 
- static void dm_unprepare_ioctl(struct mapped_device *md, int srcu_idx)
--	__releases(md->io_barrier)
- {
- 	dm_put_live_table(md, srcu_idx);
- }
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -224,7 +224,8 @@ static int format_corename(struct core_n
+ 		 */
+ 		if (ispipe) {
+ 			if (isspace(*pat_ptr)) {
+-				was_space = true;
++				if (cn->used != 0)
++					was_space = true;
+ 				pat_ptr++;
+ 				continue;
+ 			} else if (was_space) {
 
 
