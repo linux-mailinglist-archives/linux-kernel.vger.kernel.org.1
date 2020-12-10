@@ -2,28 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FBB2D654C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 267322D6559
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390642AbgLJOcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:32:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39236 "EHLO mail.kernel.org"
+        id S2390603AbgLJOcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:32:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389158AbgLJObc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:31:32 -0500
+        id S2388798AbgLJObK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:31:10 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Vamsi Krishna Samavedam <vskrishn@codeaurora.org>,
-        Jack Pham <jackp@codeaurora.org>
-Subject: [PATCH 4.14 05/31] usb: gadget: f_fs: Use local copy of descriptors for userspace copy
+        stable@vger.kernel.org, stable@kernel.org,
+        Jann Horn <jannh@google.com>, Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH 4.9 28/45] tty: Fix ->pgrp locking in tiocspgrp()
 Date:   Thu, 10 Dec 2020 15:26:42 +0100
-Message-Id: <20201210142602.361301351@linuxfoundation.org>
+Message-Id: <20201210142603.739750087@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.099683598@linuxfoundation.org>
-References: <20201210142602.099683598@linuxfoundation.org>
+In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
+References: <20201210142602.361598591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,51 +31,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
+From: Jann Horn <jannh@google.com>
 
-commit a4b98a7512f18534ce33a7e98e49115af59ffa00 upstream.
+commit 54ffccbf053b5b6ca4f6e45094b942fab92a25fc upstream.
 
-The function may be unbound causing the ffs_ep and its descriptors
-to be freed while userspace is in the middle of an ioctl requesting
-the same descriptors. Avoid dangling pointer reference by first
-making a local copy of desctiptors before releasing the spinlock.
+tiocspgrp() takes two tty_struct pointers: One to the tty that userspace
+passed to ioctl() (`tty`) and one to the TTY being changed (`real_tty`).
+These pointers are different when ioctl() is called with a master fd.
 
-Fixes: c559a3534109 ("usb: gadget: f_fs: add ioctl returning ep descriptor")
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201130203453.28154-1-jackp@codeaurora.org
+To properly lock real_tty->pgrp, we must take real_tty->ctrl_lock.
+
+This bug makes it possible for racing ioctl(TIOCSPGRP, ...) calls on
+both sides of a PTY pair to corrupt the refcount of `struct pid`,
+leading to use-after-free errors.
+
+Fixes: 47f86834bbd4 ("redo locking of tty->pgrp")
+CC: stable@kernel.org
+Signed-off-by: Jann Horn <jannh@google.com>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/function/f_fs.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/tty/tty_io.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/gadget/function/f_fs.c
-+++ b/drivers/usb/gadget/function/f_fs.c
-@@ -1244,7 +1244,7 @@ static long ffs_epfile_ioctl(struct file
- 	case FUNCTIONFS_ENDPOINT_DESC:
- 	{
- 		int desc_idx;
--		struct usb_endpoint_descriptor *desc;
-+		struct usb_endpoint_descriptor desc1, *desc;
- 
- 		switch (epfile->ffs->gadget->speed) {
- 		case USB_SPEED_SUPER:
-@@ -1256,10 +1256,12 @@ static long ffs_epfile_ioctl(struct file
- 		default:
- 			desc_idx = 0;
- 		}
-+
- 		desc = epfile->ep->descs[desc_idx];
-+		memcpy(&desc1, desc, desc->bLength);
- 
- 		spin_unlock_irq(&epfile->ffs->eps_lock);
--		ret = copy_to_user((void *)value, desc, desc->bLength);
-+		ret = copy_to_user((void *)value, &desc1, desc1.bLength);
- 		if (ret)
- 			ret = -EFAULT;
- 		return ret;
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2645,10 +2645,10 @@ static int tiocspgrp(struct tty_struct *
+ 	if (session_of_pgrp(pgrp) != task_session(current))
+ 		goto out_unlock;
+ 	retval = 0;
+-	spin_lock_irq(&tty->ctrl_lock);
++	spin_lock_irq(&real_tty->ctrl_lock);
+ 	put_pid(real_tty->pgrp);
+ 	real_tty->pgrp = get_pid(pgrp);
+-	spin_unlock_irq(&tty->ctrl_lock);
++	spin_unlock_irq(&real_tty->ctrl_lock);
+ out_unlock:
+ 	rcu_read_unlock();
+ 	return retval;
 
 
