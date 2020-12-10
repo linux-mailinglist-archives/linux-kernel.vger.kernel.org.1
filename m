@@ -2,249 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5780C2D5F2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 761B02D5F2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728925AbgLJPK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:10:59 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:33015 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389421AbgLJPKk (ORCPT
+        id S2391731AbgLJPLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:11:43 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:47615 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732352AbgLJPLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:10:40 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607613012; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=bm/jdIgPw8SeutCoCBlGCa00QC7QCiTiDQT0ChE5bAw=; b=Pq/iRy4P6et7zItK7uh2sIkhK6j0HQstgL2bjCwKk9WX4rkvUdI5FkhsdILprD5GzwoydcsH
- EHqMpclsjmOCL+HMxvVc6+kPgFDbl2fAPafx+HpST3IBATq0qDt+yaWPIXnV5MYMv0cAKB7y
- 3I8mIEJJlOxLB/GA6FuPHD5UtK0=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5fd23a393a8ba2142a270790 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Dec 2020 15:09:45
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9CAB6C43464; Thu, 10 Dec 2020 15:09:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1CB4AC433CA;
-        Thu, 10 Dec 2020 15:09:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1CB4AC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
-From:   Rakesh Pillai <pillair@codeaurora.org>
-To:     ath10k@lists.infradead.org
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        briannorris@chromium.org, dianders@chromium.org,
-        kuabhs@chromium.org, youghand@codeaurora.org,
-        Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH] ath10k: Remove voltage regulator votes during wifi disable
-Date:   Thu, 10 Dec 2020 20:39:35 +0530
-Message-Id: <1607612975-5756-1-git-send-email-pillair@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Thu, 10 Dec 2020 10:11:19 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id E3ED01BF217;
+        Thu, 10 Dec 2020 15:10:35 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 16:10:35 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mmc: atmel-mci: =?utf-8?Q?Redu?=
+ =?utf-8?Q?ce_scope_for_the_variable_=E2=80=9Cslot?= =?utf-8?B?4oCd?= in
+ atmci_request_end()
+Message-ID: <20201210151035.GC1578121@piout.net>
+References: <466b4c6d-032f-fbcc-58ac-75f6f39d734f@web.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <466b4c6d-032f-fbcc-58ac-75f6f39d734f@web.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the wlan is disabled, i.e when all the interfaces are
-deleted, voltage regulator votes are not removed. This leads
-to more power consumption even when wlan is disabled.
+Hello,
 
-Move the adding/removing of voltage regulator votes as part
-of hif power on/off in SNOC targets, so that these voltage
-regulator votes are there only when wlan is enabled.
+On 10/12/2020 16:01:44+0100, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Thu, 10 Dec 2020 15:56:13 +0100
+> 
+> A local variable was used only within an if branch.
+> Thus move the definition for the variable “slot” into the corresponding
+> code block.
+> 
 
-Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+What is the improvement here?
 
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/snoc.c | 97 +++++++++++++++++-----------------
- 1 file changed, 49 insertions(+), 48 deletions(-)
+This makes the code harder to read.
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index fd41f25..a5443fb 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1003,6 +1003,39 @@ static int ath10k_snoc_wlan_enable(struct ath10k *ar,
- 				       NULL);
- }
- 
-+static int ath10k_hw_power_on(struct ath10k *ar)
-+{
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	int ret;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_SNOC, "soc power on\n");
-+
-+	ret = regulator_bulk_enable(ar_snoc->num_vregs, ar_snoc->vregs);
-+	if (ret)
-+		return ret;
-+
-+	ret = clk_bulk_prepare_enable(ar_snoc->num_clks, ar_snoc->clks);
-+	if (ret)
-+		goto vreg_off;
-+
-+	return ret;
-+
-+vreg_off:
-+	regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
-+	return ret;
-+}
-+
-+static int ath10k_hw_power_off(struct ath10k *ar)
-+{
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_SNOC, "soc power off\n");
-+
-+	clk_bulk_disable_unprepare(ar_snoc->num_clks, ar_snoc->clks);
-+
-+	return regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
-+}
-+
- static void ath10k_snoc_wlan_disable(struct ath10k *ar)
- {
- 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-@@ -1024,6 +1057,7 @@ static void ath10k_snoc_hif_power_down(struct ath10k *ar)
- 
- 	ath10k_snoc_wlan_disable(ar);
- 	ath10k_ce_free_rri(ar);
-+	ath10k_hw_power_off(ar);
- }
- 
- static int ath10k_snoc_hif_power_up(struct ath10k *ar,
-@@ -1034,10 +1068,16 @@ static int ath10k_snoc_hif_power_up(struct ath10k *ar,
- 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "%s:WCN3990 driver state = %d\n",
- 		   __func__, ar->state);
- 
-+	ret = ath10k_hw_power_on(ar);
-+	if (ret) {
-+		ath10k_err(ar, "failed to power on device: %d\n", ret);
-+		return ret;
-+	}
-+
- 	ret = ath10k_snoc_wlan_enable(ar, fw_mode);
- 	if (ret) {
- 		ath10k_err(ar, "failed to enable wcn3990: %d\n", ret);
--		return ret;
-+		goto err_hw_power_off;
- 	}
- 
- 	ath10k_ce_alloc_rri(ar);
-@@ -1045,14 +1085,18 @@ static int ath10k_snoc_hif_power_up(struct ath10k *ar,
- 	ret = ath10k_snoc_init_pipes(ar);
- 	if (ret) {
- 		ath10k_err(ar, "failed to initialize CE: %d\n", ret);
--		goto err_wlan_enable;
-+		goto err_free_rri;
- 	}
- 
- 	return 0;
- 
--err_wlan_enable:
-+err_free_rri:
-+	ath10k_ce_free_rri(ar);
- 	ath10k_snoc_wlan_disable(ar);
- 
-+err_hw_power_off:
-+	ath10k_hw_power_off(ar);
-+
- 	return ret;
- }
- 
-@@ -1369,39 +1413,6 @@ static void ath10k_snoc_release_resource(struct ath10k *ar)
- 		ath10k_ce_free_pipe(ar, i);
- }
- 
--static int ath10k_hw_power_on(struct ath10k *ar)
--{
--	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
--	int ret;
--
--	ath10k_dbg(ar, ATH10K_DBG_SNOC, "soc power on\n");
--
--	ret = regulator_bulk_enable(ar_snoc->num_vregs, ar_snoc->vregs);
--	if (ret)
--		return ret;
--
--	ret = clk_bulk_prepare_enable(ar_snoc->num_clks, ar_snoc->clks);
--	if (ret)
--		goto vreg_off;
--
--	return ret;
--
--vreg_off:
--	regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
--	return ret;
--}
--
--static int ath10k_hw_power_off(struct ath10k *ar)
--{
--	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
--
--	ath10k_dbg(ar, ATH10K_DBG_SNOC, "soc power off\n");
--
--	clk_bulk_disable_unprepare(ar_snoc->num_clks, ar_snoc->clks);
--
--	return regulator_bulk_disable(ar_snoc->num_vregs, ar_snoc->vregs);
--}
--
- static void ath10k_msa_dump_memory(struct ath10k *ar,
- 				   struct ath10k_fw_crash_data *crash_data)
- {
-@@ -1711,22 +1722,16 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_free_irq;
- 
--	ret = ath10k_hw_power_on(ar);
--	if (ret) {
--		ath10k_err(ar, "failed to power on device: %d\n", ret);
--		goto err_free_irq;
--	}
--
- 	ret = ath10k_setup_msa_resources(ar, msa_size);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to setup msa resources: %d\n", ret);
--		goto err_power_off;
-+		goto err_free_irq;
- 	}
- 
- 	ret = ath10k_fw_init(ar);
- 	if (ret) {
- 		ath10k_err(ar, "failed to initialize firmware: %d\n", ret);
--		goto err_power_off;
-+		goto err_free_irq;
- 	}
- 
- 	ret = ath10k_qmi_init(ar, msa_size);
-@@ -1742,9 +1747,6 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
- err_fw_deinit:
- 	ath10k_fw_deinit(ar);
- 
--err_power_off:
--	ath10k_hw_power_off(ar);
--
- err_free_irq:
- 	ath10k_snoc_free_irq(ar);
- 
-@@ -1772,7 +1774,6 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
- 	set_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
- 
- 	ath10k_core_unregister(ar);
--	ath10k_hw_power_off(ar);
- 	ath10k_fw_deinit(ar);
- 	ath10k_snoc_free_irq(ar);
- 	ath10k_snoc_release_resource(ar);
+> This issue was detected by using the Coccinelle software.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>  drivers/mmc/host/atmel-mci.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/atmel-mci.c b/drivers/mmc/host/atmel-mci.c
+> index 444bd3a0a922..6a0d999ee82e 100644
+> --- a/drivers/mmc/host/atmel-mci.c
+> +++ b/drivers/mmc/host/atmel-mci.c
+> @@ -1558,7 +1558,6 @@ static void atmci_request_end(struct atmel_mci *host, struct mmc_request *mrq)
+>  	__releases(&host->lock)
+>  	__acquires(&host->lock)
+>  {
+> -	struct atmel_mci_slot	*slot = NULL;
+>  	struct mmc_host		*prev_mmc = host->cur_slot->mmc;
+> 
+>  	WARN_ON(host->cmd || host->data);
+> @@ -1579,8 +1578,9 @@ static void atmci_request_end(struct atmel_mci *host, struct mmc_request *mrq)
+>  	host->cur_slot->mrq = NULL;
+>  	host->mrq = NULL;
+>  	if (!list_empty(&host->queue)) {
+> -		slot = list_entry(host->queue.next,
+> -				struct atmel_mci_slot, queue_node);
+> +		struct atmel_mci_slot *slot = list_entry(host->queue.next,
+> +							 struct atmel_mci_slot,
+> +							 queue_node);
+>  		list_del(&slot->queue_node);
+>  		dev_vdbg(&host->pdev->dev, "list not empty: %s is next\n",
+>  				mmc_hostname(slot->mmc));
+> --
+> 2.29.2
+> 
+
 -- 
-2.7.4
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
