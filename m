@@ -2,94 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904B22D63AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 959282D63B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392781AbgLJRfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:35:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
+        id S2392830AbgLJRfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:35:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391246AbgLJRep (ORCPT
+        with ESMTP id S2392789AbgLJRfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:34:45 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCA9C0613CF;
-        Thu, 10 Dec 2020 09:34:05 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id 131so4754174pfb.9;
-        Thu, 10 Dec 2020 09:34:05 -0800 (PST)
+        Thu, 10 Dec 2020 12:35:32 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159DFC0613CF;
+        Thu, 10 Dec 2020 09:34:52 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id c7so6402793edv.6;
+        Thu, 10 Dec 2020 09:34:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lNV+r0IppAZRJTMBGlPd7aQiGXuhonx9MT/VwxzjdOI=;
-        b=ViSLsucSzbhWox3QJJ8d+ac7h6BvoCeM0lqomCBd4vRbFl+CdXiFn0mDlGOlptmyYI
-         PPMPfTqfeT6WHQVekZw+odl+rTG6kg89jekdO/s5m++np+ENtoDqN5QujPzHYY13ImTX
-         bXlQWP6DPnjzgeeSdQwhfD8/KHEXXxuh175Bmi80EQQW5Hq1k8DyH78SiJRKjRoBImIa
-         5UpOnyoozg27bHEKkdci3fBSk0i9SV/40J6bF7M0PBPQZeT2BI3rlfCiwxcVfi9Q01LO
-         6NcMDeMYmsIpgy4feBzzwvBbDHGjRRbnIl2q2TLsqDx4ijjJPnocdKXZUjRjo8hILZwQ
-         UkCw==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=FEqXylzJnhyP5wm7scZDvKf6/krakNPXkfWkNPRzS5k=;
+        b=RZ6uskt9xr3e73phy2hVIm7xogs/sSJRj9aVgfwfKPhUQiuCuQxKV+lrv4qyAADMgN
+         e4KLOrS3fuIIbeKqYGrWJCpNoVVU/M5AkqA5Y3A6XbRcaP4cuHr9m7T2BVULH/Rw4KnP
+         9KADwlRA0XcyPhIbn54RJ1kN6vaq4n2111LKBqJPiKZI289JbjEWv7Dyq4y922uQqY8D
+         EDJO//nfZPUg7XFoAdGEXuNCq024czb7PBKhN9N1GowqxgE+4TG0KnExr240VdAl6noy
+         cnUCp+yOG6km+gLW3KWTFgSpBvvAJuaTRlrfmudTxaq0bt49kgNoba/08VTn4vXkXArO
+         mddQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lNV+r0IppAZRJTMBGlPd7aQiGXuhonx9MT/VwxzjdOI=;
-        b=LgzRbVD/RV25fQ/sqRZW/k2ZSE1t/0gJdyhj7viBsQefi0XFiT3rI4Xm7JXN8AlpEQ
-         Wk25eUNVFOKuZC4njXWxyX5EZF1N9RnQg3kOzMj2+ZaLBdfMv6aOoPrdkToO5DahhdB9
-         29Xi1q65FschvaDUwGx2kDOGj1VogD03LkLOAqIk/MXmp5Lcghu9T+/hD4N85CVwilfm
-         eom9mD3BkdguPzq/1b1lrv39pLTrVBNoPKkYNbd/gXb6BN9W55HMS4cnodzuJvrOukYm
-         vuSXDjlYJh7hSys4eIDMjXFJqv70XhbDmoEkDQWUuaGnkdmJTIGVaM6LqfOijefFWR7C
-         fWwA==
-X-Gm-Message-State: AOAM533iSe+p0+Ri/Q1LZ1BQR2qHVSw3FadmCXho3fCcGB0vNH71tk8u
-        wa/L+P74OaLhTDp8PdYGwpg=
-X-Google-Smtp-Source: ABdhPJwNZKeRKA6MI5jWS1XQbWp2xNRfwbC/lQQAa0pRweX0TNjTfHxDqrkpIiT0lSE76MavwUqu2w==
-X-Received: by 2002:a62:5f81:0:b029:19d:ccc0:9c42 with SMTP id t123-20020a625f810000b029019dccc09c42mr7786239pfb.61.1607621644944;
-        Thu, 10 Dec 2020 09:34:04 -0800 (PST)
-Received: from [10.230.29.166] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 136sm6796774pfx.112.2020.12.10.09.33.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 09:34:04 -0800 (PST)
-Subject: Re: [PATCH 01/15] irqchip: Allow to compile bcmstb on other platforms
-To:     Maxime Ripard <maxime@cerno.tech>, Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>
-Cc:     Jason Cooper <jason@lakedaemon.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, linux-media@vger.kernel.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-References: <20201210134648.272857-1-maxime@cerno.tech>
- <20201210134648.272857-2-maxime@cerno.tech>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f224bd8f-559d-0692-9025-4ee30d0d0846@gmail.com>
-Date:   Thu, 10 Dec 2020 09:33:52 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.1
-MIME-Version: 1.0
-In-Reply-To: <20201210134648.272857-2-maxime@cerno.tech>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=FEqXylzJnhyP5wm7scZDvKf6/krakNPXkfWkNPRzS5k=;
+        b=GELAmEGPgMZyF6wWykNrIiEICc5cHKtXOirOVDq8RYkE4+av2AbjbcT8RhLF+xmCAv
+         5lu5kX5NpFho5D9DPq/ANuiPNNNhb7JTY/JToOCgmedCIS1QR1f3My2TJyMMJA4WLIaG
+         6nC5Ak6axfI805PhHJtTxmFgz+k5w0zEupu30Isf41HQWFWOtRZGKryC5aQP2hMghc7i
+         gWIDzcLZfAeErj4EjQY1SWRFuqDQjYZxeQCMLArwBEoqVUsfEIAeVDPbo0Lts9Sf1WSZ
+         TfslMmOrYMnDrfoD/TNWz4SFsNc8InvSmhXnRWa0fxmtCRpfRG9ahaCbiuuqTNmlrUlT
+         sPIQ==
+X-Gm-Message-State: AOAM531kkBwSpCQxKhn0/Rx0BZb0CTwFB5OHc56qtFxj+I21RvdSBL1g
+        uC+2UvNrE0Rcih7KsIXKqmU=
+X-Google-Smtp-Source: ABdhPJzhqxHn3kSMYX44//PlBagQ9Lhsmdn9y9AGxfdDap1WzxVwB0J8uXiRwMNX4FaZW2VB0EXJNQ==
+X-Received: by 2002:a50:8741:: with SMTP id 1mr7971377edv.349.1607621690847;
+        Thu, 10 Dec 2020 09:34:50 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id 2sm4883388ejw.65.2020.12.10.09.34.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 10 Dec 2020 09:34:50 -0800 (PST)
+Message-ID: <a2338ef6da3d4ed4093547ba87e13e94d8dd2a45.camel@gmail.com>
+Subject: Re: [PATCH 1/2] scsi: ufs: Protect some contexts from unexpected
+ clock scaling
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Thu, 10 Dec 2020 18:34:49 +0100
+In-Reply-To: <1607520942-22254-2-git-send-email-cang@codeaurora.org>
+References: <1607520942-22254-1-git-send-email-cang@codeaurora.org>
+         <1607520942-22254-2-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Can
 
-
-On 12/10/2020 5:46 AM, Maxime Ripard wrote:
-> The BCM2711 uses a number of instances of the bcmstb-l2 controller in its
-> display engine. Let's allow the driver to be enabled through KConfig.
+On Wed, 2020-12-09 at 05:35 -0800, Can Guo wrote:
 > 
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+>  
+> @@ -1160,6 +1166,7 @@ static void
+> ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
+>  {
+>  	up_write(&hba->clk_scaling_lock);
+>  	ufshcd_scsi_unblock_requests(hba);
+> +	ufshcd_release(hba);
+>  }
+>  
+>  /**
+> @@ -1175,12 +1182,9 @@ static int ufshcd_devfreq_scale(struct ufs_hba
+> *hba, bool scale_up)
+>  {
+>  	int ret = 0;
+>  
+> -	/* let's not get into low power until clock scaling is
+> completed */
+> -	ufshcd_hold(hba, false);
+> -
+>  	ret = ufshcd_clock_scaling_prepare(hba);
+>  	if (ret)
+> -		goto out;
+> +		return ret;
+>  
+>  	/* scale down the gear before scaling down clocks */
+>  	if (!scale_up) {
+> @@ -1212,8 +1216,6 @@ static int ufshcd_devfreq_scale(struct ufs_hba
+> *hba, bool scale_up)
+>  
+>  out_unprepare:
+>  	ufshcd_clock_scaling_unprepare(hba);
+> -out:
+> -	ufshcd_release(hba);
+>  	return ret;
+>  }
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+I didn't understand why moving ufshcd_hold/ufshcd_release into
+ufshcd_clock_scaling_prepare()/ufshcd_clock_scaling_unprepare().
+
+
+>  
+> @@ -1294,15 +1296,8 @@ static int ufshcd_devfreq_target(struct device
+> *dev,
+>  	}
+>  	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
+>  
+> -	pm_runtime_get_noresume(hba->dev);
+> -	if (!pm_runtime_active(hba->dev)) {
+> -		pm_runtime_put_noidle(hba->dev);
+> -		ret = -EAGAIN;
+> -		goto out;
+> -	}
+>  	start = ktime_get();
+>  	ret = ufshcd_devfreq_scale(hba, scale_up);
+> -	pm_runtime_put(hba->dev);
+>  
+
+which branch are you working on?  I didn't see this part codes in the
+branch 5.11/scsi-queue and 5.11/scsi-staging.
+
+Bean
+
+
