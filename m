@@ -2,157 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C358F2D6BA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EF62D6BAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387781AbgLJXLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:11:53 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:35858 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389312AbgLJXL2 (ORCPT
+        id S2391536AbgLJXLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:11:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387943AbgLJXLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:11:28 -0500
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E447020B717A;
-        Thu, 10 Dec 2020 15:10:46 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E447020B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607641847;
-        bh=HD/Eb/nvd1N3loreEli1aDjX1T/BFtunMTmkh4/ZF9I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fJqTDE9woz58M75YJE5P6R/KI3RRTAP7jVY7xTi8OztwtzBfzPzXvA+FIWB3qCfoD
-         T4B74zQam133lOOP/KcW6Gjxa2XXh6NNbRsrPJ9Y1ILKP1gQI8GhV2AW0pNsjH+liz
-         jtDjvrlWBbrRUhFZFkag7FdlG/lb7hzANrZLme38=
-Date:   Thu, 10 Dec 2020 17:10:45 -0600
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
-        jmorris@namei.org, nramas@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Subject: Re: [PATCH v7 4/8] IMA: add policy rule to measure critical data
-Message-ID: <20201210231045.GI489768@sequoia>
-References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
- <20201209194212.5131-5-tusharsu@linux.microsoft.com>
+        Thu, 10 Dec 2020 18:11:36 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA8BC061793;
+        Thu, 10 Dec 2020 15:10:55 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knV5G-000QXp-4c; Thu, 10 Dec 2020 23:10:50 +0000
+Date:   Thu, 10 Dec 2020 23:10:50 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jann@thejh.net>
+Subject: Re: [PATCH] files: rcu free files_struct
+Message-ID: <20201210231050.GA101335@ZenIV.linux.org.uk>
+References: <20201209142359.GN3579531@ZenIV.linux.org.uk>
+ <87o8j2svnt.fsf_-_@x220.int.ebiederm.org>
+ <CAHk-=wiUMHBHmmDS3_Xqh1wfGFyd_rdDmpZzk0cODoj1i7_VOA@mail.gmail.com>
+ <20201209195033.GP3579531@ZenIV.linux.org.uk>
+ <87sg8er7gp.fsf@x220.int.ebiederm.org>
+ <20201210061304.GS3579531@ZenIV.linux.org.uk>
+ <87h7oto3ya.fsf@x220.int.ebiederm.org>
+ <20201210213624.GT3579531@ZenIV.linux.org.uk>
+ <20201210223024.hi2zlluqqxcdaod4@wittgenstein>
+ <20201210225405.GU3579531@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209194212.5131-5-tusharsu@linux.microsoft.com>
+In-Reply-To: <20201210225405.GU3579531@ZenIV.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09 11:42:08, Tushar Sugandhi wrote:
-> A new IMA policy rule is needed for the IMA hook
-> ima_measure_critical_data() and the corresponding func CRITICAL_DATA for
-> measuring the input buffer. The policy rule should ensure the buffer
-> would get measured only when the policy rule allows the action. The
-> policy rule should also support the necessary constraints (flags etc.)
-> for integrity critical buffer data measurements.
+On Thu, Dec 10, 2020 at 10:54:05PM +0000, Al Viro wrote:
+> On Thu, Dec 10, 2020 at 11:30:24PM +0100, Christian Brauner wrote:
+> > (requiring btf), i.e. security_file_open, then follow
+> > file->f_inode->i_sb->s_type->s_magic. If we change the say struct
+> > super_block I'd expect these bpf programs to break.
 > 
-> Add a policy rule to define the constraints for restricting integrity
-> critical data measurements.
-> 
-> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
-> ---
->  security/integrity/ima/ima_policy.c | 35 +++++++++++++++++++++++++----
->  1 file changed, 31 insertions(+), 4 deletions(-)
-> 
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index 2a0c0603626e..9a8ee80a3128 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
-> @@ -34,6 +34,7 @@
->  #define IMA_PCR		0x0100
->  #define IMA_FSNAME	0x0200
->  #define IMA_KEYRINGS	0x0400
-> +#define IMA_DATA_SOURCE	0x0800
+> To break they would need to have compiled in the first place;
+> ->s_type is struct file_system_type and it contains no ->s_magic
+> (nor would it be possible, really - ->s_magic can vary between
+> filesystems that *do* share ->s_type).
 
-You introduce data_source= in the next patch. This macro shouldn't be
-added until the next patch.
+Incidentally, a lot of things in e.g. struct dentry need care when
+accessing; the fields are there, but e.g. blind access to name or
+parent really can oops.  Moreover, blindly following a chain of
+->d_parent pointers without taking appropriate precautions might
+end up reading from arbitrary kernel address, including iomem ones.
+I don't see anything that would prevent that...
 
->  
->  #define UNKNOWN		0
->  #define MEASURE		0x0001	/* same as IMA_MEASURE */
-> @@ -85,6 +86,7 @@ struct ima_rule_entry {
->  	} lsm[MAX_LSM_RULES];
->  	char *fsname;
->  	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
-> +	struct ima_rule_opt_list *data_source; /* Measure data from this source */
->  	struct ima_template_desc *template;
->  };
->  
-> @@ -479,6 +481,12 @@ static bool ima_match_rule_data(struct ima_rule_entry *rule,
->  		else
->  			opt_list = rule->keyrings;
->  		break;
-> +	case CRITICAL_DATA:
-> +		if (!rule->data_source)
-> +			return true;
-> +		else
-> +			opt_list = rule->data_source;
-
-If you take my suggestions on patch #1, remove the else and simply
-assign opt_list here, too.
-
-> +		break;
->  	default:
->  		break;
->  	}
-> @@ -518,13 +526,19 @@ static bool ima_match_rules(struct ima_rule_entry *rule, struct inode *inode,
->  {
->  	int i;
->  
-> -	if (func == KEY_CHECK) {
-> -		return (rule->flags & IMA_FUNC) && (rule->func == func) &&
-> -			ima_match_rule_data(rule, func_data, cred);
-> -	}
->  	if ((rule->flags & IMA_FUNC) &&
->  	    (rule->func != func && func != POST_SETATTR))
->  		return false;
-> +
-> +	switch (func) {
-> +	case KEY_CHECK:
-> +	case CRITICAL_DATA:
-> +		return ((rule->func == func) &&
-> +			ima_match_rule_data(rule, func_data, cred));
-> +	default:
-> +		break;
-> +	}
-> +
->  	if ((rule->flags & IMA_MASK) &&
->  	    (rule->mask != mask && func != POST_SETATTR))
->  		return false;
-> @@ -1119,6 +1133,19 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
->  		if (ima_rule_contains_lsm_cond(entry))
->  			return false;
->  
-> +		break;
-> +	case CRITICAL_DATA:
-> +		if (entry->action & ~(MEASURE | DONT_MEASURE))
-> +			return false;
-> +
-> +		if (!(entry->flags & IMA_DATA_SOURCE) ||
-> +		    (entry->flags & ~(IMA_FUNC | IMA_UID | IMA_PCR |
-> +		    IMA_DATA_SOURCE)))
-
-IMA_DATA_SOURCE shouldn't exist in this patch. This isn't the right
-indentation, either. See how IMA_KEYRINGS is indented in the KEY_CHECK
-case above.
-
-Tyler
-
-> +			return false;
-> +
-> +		if (ima_rule_contains_lsm_cond(entry))
-> +			return false;
-> +
->  		break;
->  	default:
->  		return false;
-> -- 
-> 2.17.1
-> 
+TAINT_BPF would probably be too impractical, since there's a lot
+of boxen using it more reasonably on the networking side.  But
+it really looks like we *do* need annotations with their violation
+triggering a taint, so that BS bug reports could be discarded.
