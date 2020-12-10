@@ -2,138 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCDD2D673E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:48:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE1E2D677E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393625AbgLJTrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:47:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393619AbgLJTrn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:47:43 -0500
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E2FC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 11:46:55 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by michel.telenet-ops.be with bizsmtp
-        id 2jmq2400G4C55Sk06jmqLb; Thu, 10 Dec 2020 20:46:51 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1knRtq-009VCz-Ga; Thu, 10 Dec 2020 20:46:50 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1knRtp-00CAva-NM; Thu, 10 Dec 2020 20:46:49 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Magnus Damm <damm@opensource.se>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] clocksource/drivers/sh_cmt: Make sure channel clock supply is enabled
-Date:   Thu, 10 Dec 2020 20:46:48 +0100
-Message-Id: <20201210194648.2901899-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S2393636AbgLJTuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:50:25 -0500
+Received: from mga02.intel.com ([134.134.136.20]:36449 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390244AbgLJTuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 14:50:22 -0500
+IronPort-SDR: HRNuGsWQ6M8xwh46flU+d8/VQ0PKqgz+c0cf6S67IE/Oy4bOzBRO1paMazkipbly5LMYl5dip5
+ RUSw8zjSR8Iw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="161372918"
+X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
+   d="scan'208";a="161372918"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 11:48:35 -0800
+IronPort-SDR: Qef2UfSDuwyPiJ27NUpAFZLQLjXKYRK609+0x1abl5RvYR7KCkszp/IICW7DO8jsBWdQpq5EWc
+ XoQtIWeVTwmw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
+   d="scan'208";a="376070310"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga007.jf.intel.com with SMTP; 10 Dec 2020 11:48:24 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Thu, 10 Dec 2020 21:48:23 +0200
+Date:   Thu, 10 Dec 2020 21:48:23 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        dri-devel@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        netdev@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>, linux-s390@vger.kernel.org,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        xen-devel@lists.xenproject.org, Leon Romanovsky <leon@kernel.org>,
+        linux-rdma@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Helge Deller <deller@gmx.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-pci@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Juergen Gross <jgross@suse.com>,
+        intel-gfx@lists.freedesktop.org, linux-gpio@vger.kernel.org,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        David Airlie <airlied@linux.ie>, linux-parisc@vger.kernel.org,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>, Jon Mason <jdmason@kudzu.us>,
+        linux-ntb@googlegroups.com, Saeed Mahameed <saeedm@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [Intel-gfx] [patch 13/30] drm/i915/lpe_audio: Remove pointless
+ irq_to_desc() usage
+Message-ID: <X9J7h+myHaraeoKH@intel.com>
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194043.862572239@linutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201210194043.862572239@linutronix.de>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Renesas Compare Match Timer 0 and 1 (CMT0/1) variants have a
-register to control the clock supply to the individual channels.
-Currently the driver does not touch this register, and relies on the
-documented initial value, which has the clock supply enabled for all
-channels present.
+On Thu, Dec 10, 2020 at 08:25:49PM +0100, Thomas Gleixner wrote:
+> Nothing uses the result and nothing should ever use it in driver code.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
+> Cc: Chris Wilson <chris@chris-wilson.co.uk>
+> Cc: Wambui Karuga <wambui.karugax@gmail.com>
+> Cc: intel-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
 
-However, when Linux starts on the APE6-EVM development board, only the
-clock supply to the first CMT1 channel is enabled.  Hence the first
-channel (used as a clockevent) works, while the second channel (used as
-a clocksource) does not.  Note that the default system clocksource is
-the Cortex-A15 architectured timer, and the user needs to manually
-switch to the CMT1 clocksource to trigger the broken behavior.
+Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
-Fix this by removing the fragile dependency on implicit reset and/or
-boot loader state, and by enabling the clock supply explicitly for all
-channels used instead.  This requires postponing the clk_disable() call,
-else the timer's registers cannot be accessed in sh_cmt_setup_channel().
+> ---
+>  drivers/gpu/drm/i915/display/intel_lpe_audio.c |    4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> --- a/drivers/gpu/drm/i915/display/intel_lpe_audio.c
+> +++ b/drivers/gpu/drm/i915/display/intel_lpe_audio.c
+> @@ -297,13 +297,9 @@ int intel_lpe_audio_init(struct drm_i915
+>   */
+>  void intel_lpe_audio_teardown(struct drm_i915_private *dev_priv)
+>  {
+> -	struct irq_desc *desc;
+> -
+>  	if (!HAS_LPE_AUDIO(dev_priv))
+>  		return;
+>  
+> -	desc = irq_to_desc(dev_priv->lpe_audio.irq);
+> -
+>  	lpe_audio_platdev_destroy(dev_priv);
+>  
+>  	irq_free_desc(dev_priv->lpe_audio.irq);
+> 
+> _______________________________________________
+> Intel-gfx mailing list
+> Intel-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Tested on R-Mobile APE6, R-Car M2-W, and R-Car H3 ES2.0.
----
- drivers/clocksource/sh_cmt.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/clocksource/sh_cmt.c b/drivers/clocksource/sh_cmt.c
-index e258230d432c0002..c98f8851fd680454 100644
---- a/drivers/clocksource/sh_cmt.c
-+++ b/drivers/clocksource/sh_cmt.c
-@@ -235,6 +235,8 @@ static const struct sh_cmt_info sh_cmt_info[] = {
- #define CMCNT 1 /* channel register */
- #define CMCOR 2 /* channel register */
- 
-+#define CMCLKE	0x1000	/* CLK Enable Register (R-Car Gen2) */
-+
- static inline u32 sh_cmt_read_cmstr(struct sh_cmt_channel *ch)
- {
- 	if (ch->iostart)
-@@ -853,6 +855,7 @@ static int sh_cmt_setup_channel(struct sh_cmt_channel *ch, unsigned int index,
- 				unsigned int hwidx, bool clockevent,
- 				bool clocksource, struct sh_cmt_device *cmt)
- {
-+	u32 value;
- 	int ret;
- 
- 	/* Skip unused channels. */
-@@ -882,6 +885,11 @@ static int sh_cmt_setup_channel(struct sh_cmt_channel *ch, unsigned int index,
- 		ch->iostart = cmt->mapbase + ch->hwidx * 0x100;
- 		ch->ioctrl = ch->iostart + 0x10;
- 		ch->timer_bit = 0;
-+
-+		/* Enable the clock supply to the channel */
-+		value = ioread32(cmt->mapbase + CMCLKE);
-+		value |= BIT(hwidx);
-+		iowrite32(value, cmt->mapbase + CMCLKE);
- 		break;
- 	}
- 
-@@ -1014,12 +1022,10 @@ static int sh_cmt_setup(struct sh_cmt_device *cmt, struct platform_device *pdev)
- 	else
- 		cmt->rate = clk_get_rate(cmt->clk) / 8;
- 
--	clk_disable(cmt->clk);
--
- 	/* Map the memory resource(s). */
- 	ret = sh_cmt_map_memory(cmt);
- 	if (ret < 0)
--		goto err_clk_unprepare;
-+		goto err_clk_disable;
- 
- 	/* Allocate and setup the channels. */
- 	cmt->num_channels = hweight8(cmt->hw_channels);
-@@ -1047,6 +1053,8 @@ static int sh_cmt_setup(struct sh_cmt_device *cmt, struct platform_device *pdev)
- 		mask &= ~(1 << hwidx);
- 	}
- 
-+	clk_disable(cmt->clk);
-+
- 	platform_set_drvdata(pdev, cmt);
- 
- 	return 0;
-@@ -1054,6 +1062,8 @@ static int sh_cmt_setup(struct sh_cmt_device *cmt, struct platform_device *pdev)
- err_unmap:
- 	kfree(cmt->channels);
- 	iounmap(cmt->mapbase);
-+err_clk_disable:
-+	clk_disable(cmt->clk);
- err_clk_unprepare:
- 	clk_unprepare(cmt->clk);
- err_clk_put:
 -- 
-2.25.1
-
+Ville Syrjälä
+Intel
