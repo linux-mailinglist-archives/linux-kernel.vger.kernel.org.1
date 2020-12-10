@@ -2,143 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2E72D5C4B
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9B02D5C4A
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389593AbgLJNtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:49:52 -0500
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:49761 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389548AbgLJNtT (ORCPT
+        id S2389585AbgLJNto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:49:44 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8743 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728925AbgLJNtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:49:19 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id 49272F42;
-        Thu, 10 Dec 2020 08:47:11 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 10 Dec 2020 08:47:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=rAUgKgTCccYOY
-        3BDepQJV7aDV54fZfrGsRbvwVfnFJE=; b=aDOp4nHZnCjnSXWcHHFA3BR1mfw2f
-        rzQvMjZT5G4P2nFt+OwvijBX8CoabvoTGx3A6HLnOSWq4skjQBIWJ5qaCBGC3etg
-        XxDIxpScZ5MN3lpjPpVrdKq8AZjNpZB4CVS+SHeP75pGoPQ2KU45byGHlq0UJM2h
-        +dP6dNuh0oBgEjPdZWJ8cJtZH7LL+jA+lVdR3Ym/qLg6PoCrONZe+o5ilAmEnVgz
-        ERNdPtMXnZauM9bw8XzKMijsPRG6X5walOjAnpjaZMiOTkndjIj4nTdX3bB2Qn+y
-        a+2tNkHW9LvqY4I9HGPjzEcyrVCd0i9WPDfjE+GM46r10o/earPWCGwoQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=rAUgKgTCccYOY3BDepQJV7aDV54fZfrGsRbvwVfnFJE=; b=PDk8U9Uz
-        jr7owVxnCEcNdtGSj+M2Z+vw+QjYunz6Dlan07Hp8N6fuOYv8Z5VL4gLKKFE+jqQ
-        eo3DBbdDW818OSgdZtz65WOmi9jBRertM3xtMJ0FzIcTV2rN8gpxzqcpnoLmCWTy
-        IAd1duzJvldXwY5+Fol+kmZTmc2/m0HjZlZZdbdWcCphPnAvu6EedQJ8pYVsMrim
-        42Jqhx+9OT0fxlJXl8hdXaF/FEwuB5S8YKoecQsF59zun4wo0tEbBWW+cKsbT0eB
-        ZaOK3JI9moxAG1HeeSDJ0KTewRLMmu+KYQLYK9m539BvlMlBli/sMNbFAa76zl25
-        rPv33tQJxXClwQ==
-X-ME-Sender: <xms:3ibSX4naLq6rDUO64xErOOK0Hr1ziBkg7CY_WA-0CZV9WndY2Zv5Yw>
-    <xme:3ibSX3yjC--drR6kGtFUiRTEZzJjMM3SduhTid6PMCGVzueprnlT9fEkBahpESTUH
-    e16ztbLCh5ZLjWKan8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudektddgheeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepudenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:3ibSXzj5Shw-sSFpNCOmiHkoNJ2SI1Q30lxoockT6mkLafjVH5fpFA>
-    <xmx:3ibSX8VZH3lllN2HRgmcBScAG-Gu_6PoUx1rl9oEZPN_YwcX7uouzg>
-    <xmx:3ibSX11Am2P439ffMjPqJdANXZxHdseu2ZHitxl1ELjTo2HmVoLs5Q>
-    <xmx:3ibSXy7OqiXT5MX9t8Rd3EHYbMYGw8Lka3dWx1ITskceSFqA0HFctQMcAyg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 99AEF108005C;
-        Thu, 10 Dec 2020 08:47:10 -0500 (EST)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>
-Cc:     Jason Cooper <jason@lakedaemon.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, linux-media@vger.kernel.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 15/15] ARM: dts: bcm2711: Add the CEC interrupt controller
-Date:   Thu, 10 Dec 2020 14:46:48 +0100
-Message-Id: <20201210134648.272857-16-maxime@cerno.tech>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201210134648.272857-1-maxime@cerno.tech>
-References: <20201210134648.272857-1-maxime@cerno.tech>
+        Thu, 10 Dec 2020 08:49:03 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CsFbX4wFpzkmF9;
+        Thu, 10 Dec 2020 21:47:36 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 10 Dec 2020 21:48:08 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <mcoquelin.stm32@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next] net: stmmac: simplify the return tc_delete_knode()
+Date:   Thu, 10 Dec 2020 21:48:33 +0800
+Message-ID: <20201210134833.958-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CEC and hotplug interrupts go through an interrupt controller shared
-between the two HDMI controllers.
+Simplify the return expression.
 
-Let's add that interrupt controller and the interrupts for both HDMI
-controllers
-
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- arch/arm/boot/dts/bcm2711.dtsi | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.dtsi
-index 8bb46ae76a92..154cf6d35333 100644
---- a/arch/arm/boot/dts/bcm2711.dtsi
-+++ b/arch/arm/boot/dts/bcm2711.dtsi
-@@ -316,6 +316,14 @@ bsc_intr: interrupt-controller@7ef00040 {
- 			#interrupt-cells = <1>;
- 		};
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+index cc27d660a818..f5bed4d26e80 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+@@ -209,17 +209,11 @@ static int tc_config_knode(struct stmmac_priv *priv,
+ static int tc_delete_knode(struct stmmac_priv *priv,
+ 			   struct tc_cls_u32_offload *cls)
+ {
+-	int ret;
+-
+ 	/* Set entry and fragments as not used */
+ 	tc_unfill_entry(priv, cls);
  
-+		aon_intr: interrupt-controller@7ef00100 {
-+			compatible = "brcm,bcm2711-l2-intc", "brcm,l2-intc";
-+			reg = <0x7ef00100 0x30>;
-+			interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-controller;
-+			#interrupt-cells = <1>;
-+		};
-+
- 		hdmi0: hdmi@7ef00700 {
- 			compatible = "brcm,bcm2711-hdmi0";
- 			reg = <0x7ef00700 0x300>,
-@@ -338,6 +346,11 @@ hdmi0: hdmi@7ef00700 {
- 				    "hd";
- 			clock-names = "hdmi", "bvb", "audio", "cec";
- 			resets = <&dvp 0>;
-+			interrupt-parent = <&aon_intr>;
-+			interrupts = <0>, <1>, <2>,
-+				     <3>, <4>, <5>;
-+			interrupt-names = "cec-tx", "cec-rx", "cec-low",
-+					  "wakeup", "hpd-connected", "hpd-removed";
- 			ddc = <&ddc0>;
- 			dmas = <&dma 10>;
- 			dma-names = "audio-rx";
-@@ -377,6 +390,11 @@ hdmi1: hdmi@7ef05700 {
- 			ddc = <&ddc1>;
- 			clock-names = "hdmi", "bvb", "audio", "cec";
- 			resets = <&dvp 1>;
-+			interrupt-parent = <&aon_intr>;
-+			interrupts = <6>, <7>, <8>,
-+				     <9>, <10>, <11>;
-+			interrupt-names = "cec-tx", "cec-rx", "cec-low",
-+					  "wakeup", "hpd-connected", "hpd-removed";
- 			dmas = <&dma 17>;
- 			dma-names = "audio-rx";
- 			status = "disabled";
+-	ret = stmmac_rxp_config(priv, priv->hw->pcsr, priv->tc_entries,
+-			priv->tc_entries_max);
+-	if (ret)
+-		return ret;
+-
+-	return 0;
++	return stmmac_rxp_config(priv, priv->hw->pcsr, priv->tc_entries,
++				 priv->tc_entries_max);
+ }
+ 
+ static int tc_setup_cls_u32(struct stmmac_priv *priv,
 -- 
-2.28.0
+2.22.0
 
