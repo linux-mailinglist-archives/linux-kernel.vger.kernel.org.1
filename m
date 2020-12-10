@@ -2,30 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46C92D5E0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 009182D5E51
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391143AbgLJOiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:38:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42534 "EHLO mail.kernel.org"
+        id S2391588AbgLJOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:46:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389312AbgLJOee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:34:34 -0500
+        id S2391163AbgLJOig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:38:36 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.19 31/39] spi: bcm2835: Fix use-after-free on unbind
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Mahesh Salgaonkar <mahesh@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.9 45/75] powerpc/64s/powernv: Fix memory corruption when saving SLB entries on MCE
 Date:   Thu, 10 Dec 2020 15:27:10 +0100
-Message-Id: <20201210142603.814877076@linuxfoundation.org>
+Message-Id: <20201210142608.286098079@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
-References: <20201210142602.272595094@linuxfoundation.org>
+In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
+References: <20201210142606.074509102@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -34,79 +32,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit e1483ac030fb4c57734289742f1c1d38dca61e22 ]
+commit a1ee28117077c3bf24e5ab6324c835eaab629c45 upstream.
 
-bcm2835_spi_remove() accesses the driver's private data after calling
-spi_unregister_controller() even though that function releases the last
-reference on the spi_controller and thereby frees the private data.
+This can be hit by an HPT guest running on an HPT host and bring down
+the host, so it's quite important to fix.
 
-Fix by switching over to the new devm_spi_alloc_master() helper which
-keeps the private data accessible until the driver has unbound.
-
-Fixes: f8043872e796 ("spi: add driver for BCM2835")
-Reported-by: Sascha Hauer <s.hauer@pengutronix.de>
-Reported-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v3.10+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v3.10+
-Cc: Vladimir Oltean <olteanv@gmail.com>
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/ad66e0a0ad96feb848814842ecf5b6a4539ef35c.1605121038.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 7290f3b3d3e6 ("powerpc/64s/powernv: machine check dump SLB contents")
+Cc: stable@vger.kernel.org # v5.4+
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Acked-by: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201128070728.825934-2-npiggin@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/spi/spi-bcm2835.c |   15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
 
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -737,7 +737,7 @@ static int bcm2835_spi_probe(struct plat
- 	struct resource *res;
- 	int err;
+---
+ arch/powerpc/platforms/powernv/setup.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+--- a/arch/powerpc/platforms/powernv/setup.c
++++ b/arch/powerpc/platforms/powernv/setup.c
+@@ -186,11 +186,16 @@ static void __init pnv_init(void)
+ 		add_preferred_console("hvc", 0, NULL);
  
--	master = spi_alloc_master(&pdev->dev, sizeof(*bs));
-+	master = devm_spi_alloc_master(&pdev->dev, sizeof(*bs));
- 	if (!master) {
- 		dev_err(&pdev->dev, "spi_alloc_master() failed\n");
- 		return -ENOMEM;
-@@ -759,23 +759,20 @@ static int bcm2835_spi_probe(struct plat
+ 	if (!radix_enabled()) {
++		size_t size = sizeof(struct slb_entry) * mmu_slb_size;
+ 		int i;
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	bs->regs = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(bs->regs)) {
--		err = PTR_ERR(bs->regs);
--		goto out_master_put;
--	}
-+	if (IS_ERR(bs->regs))
-+		return PTR_ERR(bs->regs);
- 
- 	bs->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(bs->clk)) {
- 		err = PTR_ERR(bs->clk);
- 		dev_err(&pdev->dev, "could not get clk: %d\n", err);
--		goto out_master_put;
-+		return err;
+ 		/* Allocate per cpu area to save old slb contents during MCE */
+-		for_each_possible_cpu(i)
+-			paca_ptrs[i]->mce_faulty_slbs = memblock_alloc_node(mmu_slb_size, __alignof__(*paca_ptrs[i]->mce_faulty_slbs), cpu_to_node(i));
++		for_each_possible_cpu(i) {
++			paca_ptrs[i]->mce_faulty_slbs =
++					memblock_alloc_node(size,
++						__alignof__(struct slb_entry),
++						cpu_to_node(i));
++		}
  	}
- 
- 	bs->irq = platform_get_irq(pdev, 0);
- 	if (bs->irq <= 0) {
- 		dev_err(&pdev->dev, "could not get IRQ: %d\n", bs->irq);
--		err = bs->irq ? bs->irq : -ENODEV;
--		goto out_master_put;
-+		return bs->irq ? bs->irq : -ENODEV;
- 	}
- 
- 	clk_prepare_enable(bs->clk);
-@@ -803,8 +800,6 @@ static int bcm2835_spi_probe(struct plat
- 
- out_clk_disable:
- 	clk_disable_unprepare(bs->clk);
--out_master_put:
--	spi_master_put(master);
- 	return err;
  }
  
 
