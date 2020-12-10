@@ -2,234 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367842D4F74
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991ED2D4F79
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728100AbgLJA2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 19:28:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726615AbgLJA2D (ORCPT
+        id S1727325AbgLJAd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 19:33:27 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:59802 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726092AbgLJAd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 19:28:03 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB08C0613CF;
-        Wed,  9 Dec 2020 16:27:23 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id r4so1856046pls.11;
-        Wed, 09 Dec 2020 16:27:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Dx8/MX9747kjjLSB09pH76MWLAcOE3A6yZFxe87L9SM=;
-        b=C9MhbGwVeBeSs601GGhBX2puShQp+Lrhd/Efcp5u/RZLom2rJ2ZzMR+cD5T5xJaSiM
-         6kGZpw5G2E+KX4x5xka/+/wgyDb0QFQTBGryDn11BG1fHKFUPgg9Lx51HAxR2JrcBjtj
-         P8njHAb2F64PWoyS6g8k+xePTsKGTasxLx0LIFxPMw48PdRrV/S/4askJOdJYlNqAgid
-         jgsei5OoHnlm6lCWxJAUjtDJLpqqpXWYRI7gX1UPcVrT20DAbLz3PyVtrFgvKOMwp1XS
-         F7yKufx60kn/aUqA08HdFN0Lwl3996+IwomUzaSqVp8oRCuxETu0Y+3AkYIqmmWLjIyG
-         BVxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Dx8/MX9747kjjLSB09pH76MWLAcOE3A6yZFxe87L9SM=;
-        b=O2fdFl69+4rUBzr5Tz+50aJOxzsmDPayRl3BOXKR/NE5PlgB63gH63HKejO87sb4Sj
-         W+TVk7waDKRsyzkLtpT1vFpdlr17CTLBX3kNBIR/e5NYAms3oVS58HUk3BY2obNEmkQZ
-         DEW3MRUxYrC/8UQANGrHmE1lykMB8rucF9eXFV9Yo2ugOLmLlrCXCP/4U9noBy0ZAW8m
-         qPP8Cv9LhxgmGyNtA7NxrFU5rGW8+gTw/vgjMaS/BNOI5l4Ar+imG8ipZFe6O3x3ZDdF
-         63NQLmRbtSlIe9Hj8PM2Zlq8jhI+LNC4SfknBRPsehBh+zP8ynJU3MLzJyRWN98/Ffbl
-         LJPA==
-X-Gm-Message-State: AOAM532Ag6+gX1F75Y6/i0R7IYzGAf/gopQBgmPKjfQ+vXDRIR3Zyj7s
-        rfbK2f5cJ0d3KeZTj4ramKd1Cc7mvRs=
-X-Google-Smtp-Source: ABdhPJyn67VNQtkoexWpKvXquxkONo6wbPPm543I5DJC3TEESgPfJU1CYYURbP4Gc6lDjVGbFxUeVQ==
-X-Received: by 2002:a17:902:7689:b029:da:52:4586 with SMTP id m9-20020a1709027689b02900da00524586mr4121922pll.47.1607560042735;
-        Wed, 09 Dec 2020 16:27:22 -0800 (PST)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id ds24sm3362097pjb.30.2020.12.09.16.27.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 16:27:22 -0800 (PST)
-Subject: Re: [PATCH 1/2] dt-bindings: reset: document Broadcom's BCM4908 USB
- reset binding
-To:     Rob Herring <robh@kernel.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20201204093704.11359-1-zajec5@gmail.com>
- <0cc54a35-7d70-8a2f-0c1f-da124136a66d@gmail.com>
- <cb2c0545-a1f6-4b85-6f9f-15813f74e323@gmail.com>
- <20201209233533.GA1281321@robh.at.kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <12da55ac-2271-22bd-4f75-f63d2de9a84b@gmail.com>
-Date:   Wed, 9 Dec 2020 16:27:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201209233533.GA1281321@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
+        Wed, 9 Dec 2020 19:33:27 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BA0Qm0n012879;
+        Wed, 9 Dec 2020 16:32:37 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=nJclgvpvoVt5roFk+2xzfwWryrCXNUo/4uNcHujeYp8=;
+ b=hlOg4uNf5wBGrK0Od9ChoyMRKaUnlz0dtuaGGuojLbHdfepS9T3fHTlNXN2L2LuxOSfV
+ Q4N5DObhSxM0XuP1ijhK67Kv141n4iSxXAK2Pql40Nl3LEvxSsTFyVUTxeSLjuOPIPmy
+ qE/YvaTzkZA/e0JJkj5M3w8A5Bfv3DLOXYY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35afx8a990-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 09 Dec 2020 16:32:36 -0800
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 9 Dec 2020 16:32:35 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bf3Uom8nRskbRdEkY9977Ca2VJnBxM/EBdDQuxxCd4kJKYKZY9IL4bQO9PBD9SrrtIokV8uPF4fmaIgF5C3MPSSyJTu9JhS9tnUobLNNTIG0uxxyUWrAaT4PlVZ1A7ZcFkvAbp4yDR3wQd8ZLTfHRMo+ZLrRZzhYT4ObcPfmbhCnb2GwUn5rK88keQkAG9c9gOwVBH4gTzuwNt8LnTOFdT8I51hSzdk53pxA1FpqNv2VLdWAC5Br2Y7r7Qg+vDXOxJji5pIOfuLKvXu5XbvYB3Rn77x1KtA6IBqrp29ifd4merX4frUtvl/i3K0QvhZxcs/zTEonC+P+8YgEUC3PXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nJclgvpvoVt5roFk+2xzfwWryrCXNUo/4uNcHujeYp8=;
+ b=A9BdYjkASz4Fw7nJdO4adCWicvp9x8iyAnUId5AI3ZpM/MoUl5M50ecOCPDyHVIEGyZm2G1rRD08vMgYvaH4hT1ddaGjqC6fBwG27dOQvWCFJWXwW3xuNAFgcCaySRNMxAt3kRrdhwiURuUtI2vYxkfpA7OnqwuK0REPvkGz3wmR457i/cqfHldcINcyVcKDUAVnbm2yOZjZCk59WKK/gYtjSYL2Z2k+G/mGegqFhD8hBH7ceqxU/hCBKmdb+8hnTDSFGoRyjzHwhtsijAjK1YBwKWFjXPwpBsldN+2DbXOGswJAoWLM+b3FdFwrBm6dNdBBmBb9B3RNlzmMhe4Nsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nJclgvpvoVt5roFk+2xzfwWryrCXNUo/4uNcHujeYp8=;
+ b=YR5/q3uG+s1Fl61OtDUqMDE/ojztYoKs4NJHBVydk51VFDWAQB+0Y9BvMYOWYzymzrBnJfZc3Auj/HIbGQPcrxTK09vJK7f+bfj5sWy9BDZRLt+5Uc3v1KQvJgr27/KUH/ADTpT+LWKzyq4Bzw0Hjq3y3/3yUt/GYn4GMEV8Eus=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB4247.namprd15.prod.outlook.com (2603:10b6:a03:102::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19; Thu, 10 Dec
+ 2020 00:32:32 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::f49e:bdbb:8cd7:bf6b]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::f49e:bdbb:8cd7:bf6b%7]) with mapi id 15.20.3654.012; Thu, 10 Dec 2020
+ 00:32:32 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     lkml <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>
+Subject: Re: [PATCH v3 0/2] Introduce perf-stat -b for BPF programs
+Thread-Topic: [PATCH v3 0/2] Introduce perf-stat -b for BPF programs
+Thread-Index: AQHWzY5X7fYeXQ1n+0S4TM83rrVmUKnvCIOAgABjCYCAABE7gA==
+Date:   Thu, 10 Dec 2020 00:32:32 +0000
+Message-ID: <EBB4ECDC-C3CA-4474-A093-3A1FE41B29EF@fb.com>
+References: <20201208181646.3044417-1-songliubraving@fb.com>
+ <20201209173623.GA185686@kernel.org>
+ <DDA97AA1-E60E-4075-8569-73C65270E43B@fb.com>
+In-Reply-To: <DDA97AA1-E60E-4075-8569-73C65270E43B@fb.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:d023]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 516a9edc-e3e2-4846-d3e5-08d89ca3153f
+x-ms-traffictypediagnostic: BYAPR15MB4247:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB42477520A7F3DE95B9D76816B3CB0@BYAPR15MB4247.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: s9OEV7aBII3RAexIQB6+v5XyfEJbV+o8fnvX0veO6aesNCXbCHhxpBYnRtjgJxTV26dQ1qA4PaV1540AW8iGfxgvlUyQ+1DBnZl3Q7kXOp93JnaefABfjGbmdCwCh4ee/YxpI36uQ95kY51UnfWstiT5IyVSRKSXi5OTz4yfnjcX2zqJxW+RCR8Vl07xepu3JhPZnupEseSJXx27NwWmlhB7ZOO9ZQqKjpQEj7I8XhapOOVM4ATpxEwRUwYzZPtbdUsw3woZhd0db/D7tEQ/kLe0vCnsoehrpzG/mJLLdvkyRsFUnNWZsdusceFDqLawDRF/VYHwsF7BMApHcPdQaVYONq6JagLWODjA0s8z1Kx4jJCSRHN9+/JnSzIXUkgj
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(346002)(76116006)(8676002)(5660300002)(8936002)(508600001)(66446008)(66476007)(66946007)(6916009)(66556008)(64756008)(4326008)(6486002)(86362001)(4744005)(53546011)(6506007)(33656002)(186003)(6512007)(54906003)(2906002)(2616005)(36756003)(71200400001)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?x1hZAthwxcrhUZ/+cJ7pcY/LbCMBuTnhbbQe6SKiZ9LpPCPSxI6zkAfYrJBs?=
+ =?us-ascii?Q?yOLOs7cFc3D+L0mYkJZNtX5XWJygNr3YdaEdyJc9fKu47klbxwlEdCgdWKRZ?=
+ =?us-ascii?Q?LLuGIrVz2jiBw7sXm3ksAfwdmYw9f9yVcIOVokPhtDHaHLIqcLzyuZVH+jkf?=
+ =?us-ascii?Q?RZYqfXg9HENVYDqYl/uF3RTUtD9as7t6dw+tven/6xMXw/FmWKIySXC7SQCV?=
+ =?us-ascii?Q?a7TZWRAXYzaNeaiLhShMDBBqpLw3PyOJGbQ6jddklSVIYvqXpH3UO6I35HvX?=
+ =?us-ascii?Q?VGELYU1xUDh49sWRjGjixyT1z/DfTPigtjg4wUy39fK6ie54nSjqTzmLx9X0?=
+ =?us-ascii?Q?Q4D2sRXuuBVVbrZBDw0VU1yTjfdPy/dDxFTuQ7vKFq2ybtw3QzVCMItLN+IY?=
+ =?us-ascii?Q?c+5PiNSOjUytlvXvHGnlVZKp2bXcsVJsxEllPJ4kgpuXXfmjbGDVNlEZH23S?=
+ =?us-ascii?Q?/oO8vDrRBEtouSzcm7nuyvusGKJKsTf2wbr9FLgBF+nEt2J2si6b6zDW9/QA?=
+ =?us-ascii?Q?eLl94RVe/tY0qs1MaXbqkoikAlMwrHXVn+SE4JOp0iGqKHOXUrq8EmEXkJDz?=
+ =?us-ascii?Q?DoTobjrqPT3WXMNwPFO7eFIXFq0O82B5iGxGSNG30ZnfMz7Rr+VQHhiadLMc?=
+ =?us-ascii?Q?HRfwASitN0cm7jg6zUGICok8dcIWjBp8lykCiDQrD9W4xc98VkLT626hklgk?=
+ =?us-ascii?Q?TFKTDaia4J2ZQI7AwO1lXF9RK0NOnIlD8tiaGEdjwS1btPNmUMI7GIbtz0ES?=
+ =?us-ascii?Q?TY1gNUexDR2fe3a8oL2fw/L+QvPvzcMYv36HchHJs9MsNr+zNU6nJWfyEqQP?=
+ =?us-ascii?Q?fxiH22oTSUO6WK2Q8IQcBPoj1r2TvlGvfbZFs7vUFEQW9XdMjTfACb1lqoaV?=
+ =?us-ascii?Q?ykzcqOK2eMhTX3+6iVtrf8S+2TA4chuyqDYonXjSDmExQv+Cr6rqfFkYBlA5?=
+ =?us-ascii?Q?Ih76YQDXcSwB4uuIG4L9UwjE7JsqdUJwFI1NQqR8DVglqBaDBD2qGMfLg/d/?=
+ =?us-ascii?Q?9gwhzxv2kVvApdjMqd9DCGF2w/tHj1cNIqBWWpTbTmTJYw0=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <7207D2BBA1D8644EBCB8028598970158@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 516a9edc-e3e2-4846-d3e5-08d89ca3153f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2020 00:32:32.1582
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7CMTW7D9XnGkoCf9U90CkQgduo1HfCTxdTd+5nkEr2/Lcchxqih24BqkA7BG0htno1FbGdK88iV9dJMAA1sjSQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4247
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_19:2020-12-09,2020-12-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
+ spamscore=0 suspectscore=0 lowpriorityscore=0 mlxscore=0 clxscore=1015
+ mlxlogscore=999 malwarescore=0 impostorscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012100001
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/20 3:35 PM, Rob Herring wrote:
-> On Fri, Dec 04, 2020 at 05:39:14PM +0100, Rafał Miłecki wrote:
->> On 04.12.2020 17:32, Florian Fainelli wrote:
->>> On 12/4/2020 1:37 AM, Rafał Miłecki wrote:
->>>> From: Rafał Miłecki <rafal@milecki.pl>
->>>>
->>>> Document binding of block responsible for initializing USB controllers
->>>> (OHCI, EHCI, XHCI).
->>>>
->>>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->>>> ---
->>>>   .../reset/brcm,bcm4908-usb-reset.yaml         | 60 +++++++++++++++++++
->>>>   1 file changed, 60 insertions(+)
->>>>   create mode 100644 Documentation/devicetree/bindings/reset/brcm,bcm4908-usb-reset.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/reset/brcm,bcm4908-usb-reset.yaml b/Documentation/devicetree/bindings/reset/brcm,bcm4908-usb-reset.yaml
->>>> new file mode 100644
->>>> index 000000000000..31beb1c8f3cd
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/reset/brcm,bcm4908-usb-reset.yaml
->>>> @@ -0,0 +1,60 @@
->>>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/reset/brcm,bcm4908-usb-reset.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Broadcom BCM4908 USB host controller reset
->>>> +
->>>> +description: >
->>>> +  BCM4908 has a separated block controlling all USB controllers. It handles the
->>>> +  whole setup process and takes care of initializing PHYs at the right time
->>>> +  (state).
->>>> +
->>>> +maintainers:
->>>> +  - Rafał Miłecki <rafal@milecki.pl>
->>>> +
->>>> +properties:
->>>> +  compatible:
->>>> +    enum:
->>>> +      - brcm,bcm4908-usb-reset
->>>> +
->>>> +  reg:
->>>> +    maxItems: 1
->>>> +
->>>> +  resets:
->>>> +    $ref: /schemas/types.yaml#/definitions/phandle
->>>> +
->>>> +  phys:
->>>> +    minItems: 2
->>>> +    maxItems: 2
->>>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
->>>> +
->>>> +  phy-names:
->>>> +    items:
->>>> +      - const: usb2
->>>> +      - const: usb3
->>>> +
->>>> +  "#reset-cells":
->>>> +    const: 0
->>>> +
->>>> +required:
->>>> +  - compatible
->>>> +  - reg
->>>> +  - phys
->>>> +  - phy-names
->>>> +  - "#reset-cells"
->>>> +
->>>> +additionalProperties: true
->>>> +
->>>> +examples:
->>>> +  - |
->>>> +    reset-controller@8000c200 {
->>>> +        compatible = "brcm,bcm4908-usb-reset";
->>>> +        reg = <0x8000c200 0x100>;
->>>> +
->>>> +        phys = <&usb2_phy>, <&usb3_phy>;
->>>> +        phy-names = "usb2", "usb3";
->>>
->>> This looks quite unusual, usually the *HCI controllers would be
->>> consumers of the PHY and the PHY may be a consumer of the reset controller.
->>>
->>> (still going through my emails have not fully read your separate email
->>> on the topic, so pardon me if this is being discussed twice).
->>
->> I agree, it's the the best solution I found for this specific design.
->>
->> This specific hw block perform various operations before, in the middle and
->> after PHY initialization. That made me make reset controlller initialize PHYs.
->>
->> I'm happy to implement a more proper design if someone can just suggest how.
->> I don't have any better idea :(
-> 
-> So the reset controller block has more than just resets? I'd hide all 
-> this in the phy driver rather than hide the phy in the reset driver. So 
-> for DT provide the phy a phandle to the reset block to poke the 
-> registers directly.
 
-Rafal was pointed to drivers/phy/broadcom/phy-brcm-usb-init.c which
-should be a good starting point for driving the 4908 USB PHY. From there
-the USB PHY may optionally be a consumer of a reset controller if it
-needs to, not clear if that is necessary.
--- 
-Florian
+
+> On Dec 9, 2020, at 3:30 PM, Song Liu <songliubraving@fb.com> wrote:
+>=20
+>=20
+>=20
+>> On Dec 9, 2020, at 9:36 AM, Arnaldo Carvalho de Melo <acme@kernel.org> w=
+rote:
+>>=20
+>> Em Tue, Dec 08, 2020 at 10:16:44AM -0800, Song Liu escreveu:
+>>> This set introduces perf-stat -b option to count events for BPF program=
+s.
+>>> This is similar to bpftool-prog-profile. But perf-stat makes it much mo=
+re
+>>> flexible.
+>>>=20
+>>> Changes v2 =3D> v3:
+>>> 1. Small fixes in Makefile.perf and bpf_counter.c (Jiri)
+>>> 2. Rebased on top of bpf-next. This is because 1/2 conflicts with some
+>>>    patches in bpftool/Makefile.
+>>=20
+>> Can't you split that up so that I can process the perf part and the
+>> bpftool goes via the bpf-next tree?
+>=20
+> Actually, I can make it conflict-less, so we can route everything togethe=
+r.
+> I also put the change to bpftool/Makefile in a separate patch in v4.=20
+
+Well, it is a little tricky. bpf-next renamed the bootstrap version binary,=
+=20
+from bpftool-bootstrap to bootstrap/bpftool. So we will need a follow up=20
+patch after the two merge.=20
+
+Song
+
