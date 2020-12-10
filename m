@@ -2,135 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553BF2D5A75
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3362D5A7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 13:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728800AbgLJMZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 07:25:26 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9492 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729324AbgLJMZC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:25:02 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CsCkq4m5Xzhq7d;
-        Thu, 10 Dec 2020 20:23:47 +0800 (CST)
-Received: from [127.0.0.1] (10.74.149.191) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Dec 2020
- 20:24:12 +0800
-Subject: Re: [PATCH net-next 3/7] net: hns3: add support for forwarding packet
- to queues of specified TC when flow director rule hit
-To:     Saeed Mahameed <saeed@kernel.org>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kuba@kernel.org>, <huangdaode@huawei.com>,
-        Jian Shen <shenjian15@huawei.com>
-References: <1607571732-24219-1-git-send-email-tanhuazhong@huawei.com>
- <1607571732-24219-4-git-send-email-tanhuazhong@huawei.com>
- <5057047d659b337317d1ee8355a2659c78d3315f.camel@kernel.org>
-From:   tanhuazhong <tanhuazhong@huawei.com>
-Message-ID: <dc805355-9cb8-87f1-dc4b-f9cfed2a5764@huawei.com>
-Date:   Thu, 10 Dec 2020 20:24:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
-MIME-Version: 1.0
-In-Reply-To: <5057047d659b337317d1ee8355a2659c78d3315f.camel@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        id S1732941AbgLJMZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 07:25:46 -0500
+Received: from mail-eopbgr760051.outbound.protection.outlook.com ([40.107.76.51]:51194
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728013AbgLJMZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 07:25:37 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ghlvbhGqQ3/W9aVMg/5aE+f7VhlzyrXo1jtoYul/33jDPx5fc6mTCqm5BXoYe640ohNRKIG7Il97OLJ7Zt++jGa2S8OnKJVcNBQm7cGXXQ7HuJc6yT8FOnzHwp7UBzf2JAtxlKFMKdInjUYgixLX/NZCzoOkXEcCTOViwEY2P8OCSt0n3kCtHq6j5qshM+LlShhyGtqAqUygfhlJL+hnvwY2VzzfI9RSh5ZnOVuViVAT9FZCBPFqrOGipTFyNAFl309Mgjp4JyAsMJVx2U/DWH52avNYwrbZUrcwMwh7fBnlb+BuFEhFDYnVcU3jeK/X+gSPhVZdGlVXX+j289OHLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VR3ZLzjD8cIfGTzri+RkE4t1eaT/0eOvEYa+pd6AllQ=;
+ b=Xs2crY+TI6q7hyNi0hFQC/hlarh8aqWdOvCEVE+v2av9whpIFp6PUMNH72FkYiJqGNQ+Dhawzhx3PfvwrlOsGRK6gpakJaVKQeZWJPZUmrhkok7qVZD67e8wHE6MiBoJ4ytZ/D2g8mYTZAqEyYv893Sc7x7JbRA4Bm32r5gDqJp0oh30Zbhd/pwA7O3nGyhO2hyN+tahlEyPRstDfxKEM2QfDbXVbQPyZdLck3dUTotCek0xURl/WjL9g3lRUEIsh5DuAA3Fgj86jVfqDj2LUuLJjF4+dNppQCXr0RmAn0NMKsCIjQcEwvVLDtPw06yEbfl5B26R4Y7l/eTV6fyCdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VR3ZLzjD8cIfGTzri+RkE4t1eaT/0eOvEYa+pd6AllQ=;
+ b=AQ2a4YNaQV1kevptUdrZHGWc002XBsEzwyjcpgGhwcH5LePTsr5RUE9m+95RqUleKBcKsgM9MqU5PxOh8xCkvSZPbkgXAZ2s1psNQ1P6juYkHYBIx4S7SCDI3YHFGknatr22UzjUTM3kUKXIvIVRiq8BgVIZtqlJJPLp1DKi1OY=
+Authentication-Results: ffwll.ch; dkim=none (message not signed)
+ header.d=none;ffwll.ch; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4784.namprd12.prod.outlook.com (2603:10b6:208:39::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Thu, 10 Dec
+ 2020 12:24:50 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5%3]) with mapi id 15.20.3654.016; Thu, 10 Dec 2020
+ 12:24:49 +0000
+Subject: Re: [PATCH] drm/sched: Add missing structure comment
+To:     Luben Tuikov <luben.tuikov@amd.com>,
+        dri-devel@lists.freedesktop.org,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+References: <20201210092435.253b12aa@canb.auug.org.au>
+ <20201209223142.78296-1-luben.tuikov@amd.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <6f7c8af3-83e8-548c-3ab2-099501c41f10@amd.com>
+Date:   Thu, 10 Dec 2020 13:24:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201209223142.78296-1-luben.tuikov@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.149.191]
-X-CFilter-Loop: Reflected
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM0PR06CA0094.eurprd06.prod.outlook.com
+ (2603:10a6:208:fa::35) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR06CA0094.eurprd06.prod.outlook.com (2603:10a6:208:fa::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 10 Dec 2020 12:24:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1c7ee694-561b-40f0-8d4f-08d89d0696c4
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4784:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB47840990E8D0544EFAD5AD1183CB0@MN2PR12MB4784.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EbnA+sI2RS+OWhLzC2DUOIAup6p2It8sxO2Ip92+b+69fJqU2Qz5kB+Ev+3I3Sv47myAqLQIMiGbYWc/X4BmhUOXDmEAt6KaRXPsNgNUWqyvuiRHFQxdOLNNJNVHI4hiudk78g8Ljd9hdRoTrs5iUJouWsqiW3MDeqsNllBbYJ9IpfipEWO3DGtJxsJFNAs1/u5um6RBqE3pEBIwK8mtnE0t+n6Ccxolkas5qihHoihSN58f5im9XPAoZdG3QBhwRY9zQVDcJ7EKtF+qGk/R8r75eUtZLJpXJ2Q7BGI/8dwcyBE8UhkkdUZRlyWGm9Txzfp8AipCQMWeLNURTCTsYwoFTWFDhM+HoYFzw75VWAQ/wqTdsRuzo5XN8Kr9oe2cSrPcYqMRs2SUOLVpQ5jgvYhpvCR9s+P8lt2Zc4SRslPmfreF2ih+Xf0GX7ptrKX9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(83380400001)(66574015)(34490700003)(36756003)(6486002)(6666004)(2906002)(4326008)(508600001)(186003)(2616005)(31686004)(16526019)(86362001)(31696002)(8676002)(8936002)(54906003)(66946007)(66476007)(5660300002)(66556008)(52116002)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UElsWUFSNTEvZFlZWEk0MTZPb3REUzBDRjBwTXg1ZXFTc2xvMkhxM1cyRnZQ?=
+ =?utf-8?B?eHNoVmN6WDJkOXFFOWc2ZkZEeVE1ZE84RVFjVEJhaU9HTFV1UDJxSHdZMGZ0?=
+ =?utf-8?B?MjVjcWNMQzFzcHc3NGF2cDd4U2hrbDMxQnJPQjZjSHo3T1V0ZzVQMWhOS04x?=
+ =?utf-8?B?RUVxZGtobGcyTU1TenN1UUxyMzlkVUx1MHVxZW8rMnk3c0xKSVphVS8xVzRM?=
+ =?utf-8?B?RkVYa3BBWGsrSEp0RzhoZFlVaTdDZjVBM05WNUNrRWZzKzZyWWhlMThhWkhV?=
+ =?utf-8?B?aHB6VHFvYzNrc2lWc2RQQ1ViTCtGWmxBdWw1dEpVaFk1T29nWUVYdlJ4Q2NH?=
+ =?utf-8?B?N3plQ1ppSFUxS0RJeS9XZGViRmJwQ2s4bGJEdC91c2hLZzJIemlQYjN4b1NQ?=
+ =?utf-8?B?bExoQnBGU1ZUS1ZGZEN4dkwzNjdJVDNhWVZES2c0VUpMcU1ScGtzWlRSa1hr?=
+ =?utf-8?B?VXpZQ0pBbmdOMVBrYjhKbDB6UFVZN3djd2ZBWWVvby82Tm1RKzBDZmdtQTZh?=
+ =?utf-8?B?TlZ1R2c0RnVRdDZOVisxRmt3c1hHLzZVdnNTTUxHMWlsQ0t3ekNlYmI5NmpV?=
+ =?utf-8?B?OUpLY2JKVXJ5YWZ6QStzdUZUelJ1MjJ0d1cxUk1lYy96bytxcDRYSkduZHFK?=
+ =?utf-8?B?Z052cm5udFV6cTkzcHV0VlRXODIvaGl3ay9YM2lINGJkMlBMSUFrVitvMzdl?=
+ =?utf-8?B?ZmV2WmpZTHQrV21SR2VmUmRzYWRnbVRSeC9LbTVkbld6MDd5eklhTDZ5a0xl?=
+ =?utf-8?B?dW84MjRacnNPUENxRHVFSTY5cmhvMHVpR0M1d2hSWGRxbU9naERZejl3eDVn?=
+ =?utf-8?B?NHhZZGZ6UEZNejVXakwyTysrK25CdWZsbzR3b241Z2gwbjVoZTU1MmUwY2lo?=
+ =?utf-8?B?UVkzdzZ2cmsyYm50ek9NSkdrOEVSd296d0F2elFMOTZSSlN2OE9zWkhtRFF5?=
+ =?utf-8?B?WjhhNy9DR21MS1VtTVR6d1Z0Ynlzay9rTW9zOTNUaTJTUThPMWZITkx0L3Nq?=
+ =?utf-8?B?Zk96akFhclRFUC9ua3g3QW95V2tQV0hUL3l0UGdESGJCczZPbGR6TzlRWVlm?=
+ =?utf-8?B?WGd0d0pFMkJIZ0JTd3ZiaWpQWlVoY05ZcjQvVUxaZjVDbCt6ZVBmaWxJVkov?=
+ =?utf-8?B?b0kzOElhbC9Jc3FNcmRJYkZ3V0tVb3o1dk1CaWhKYnBqcTFwaU5UU0dDVGx2?=
+ =?utf-8?B?TFVlT3lmUDFTRjRpR3RQSDl5YWhiaWNTNElESFJTQ3VLQzJCelltdGNhUVhD?=
+ =?utf-8?B?YXRKa2ZZdXNwRXBncHcrajhpOWlTMnZ3OS9Lc29ac3M1VkI4MmU4QXlucnc1?=
+ =?utf-8?B?ZWtzOVZUVVVscFJBVWJkbmFINlVpVmtaTXU4UmRHTFBublFnNW1lVFc0Q3Zk?=
+ =?utf-8?B?T0xNbndEN2FlTmRUcGEvaXlTbFd5UG1PWm1NNzhqWHF1NVU5YmxmOXY3RkQv?=
+ =?utf-8?Q?+G3ikpSH?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2020 12:24:49.6873
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c7ee694-561b-40f0-8d4f-08d89d0696c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /ZWECbuvOqy3VCtLJLAJt6hQes/qFN48BtMevHWDopmZL2A45ZGD+zlbuGezU3zV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4784
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 09.12.20 um 23:31 schrieb Luben Tuikov:
+> Add a missing structure comment for the recently
+> added @list member.
+>
+> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Cc: Christian König <christian.koenig@amd.com>
+> Fixes:  8935ff00e3b1 ("drm/scheduler: "node" --> "list"")
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
 
+Reviewed and pushed to drm-misc-next.
 
-On 2020/12/10 13:40, Saeed Mahameed wrote:
-> On Thu, 2020-12-10 at 11:42 +0800, Huazhong Tan wrote:
->> From: Jian Shen <shenjian15@huawei.com>
->>
->> For some new device, it supports forwarding packet to queues
->> of specified TC when flow director rule hit. So extend the
->> command handle to support it.
->>
-> 
-> ...
-> 
->>   static int hclge_config_action(struct hclge_dev *hdev, u8 stage,
->>   			       struct hclge_fd_rule *rule)
->>   {
->> +	struct hclge_vport *vport = hdev->vport;
->> +	struct hnae3_knic_private_info *kinfo = &vport->nic.kinfo;
->>   	struct hclge_fd_ad_data ad_data;
->>   
->> +	memset(&ad_data, 0, sizeof(struct hclge_fd_ad_data));
->>   	ad_data.ad_id = rule->location;
->>   
->>   	if (rule->action == HCLGE_FD_ACTION_DROP_PACKET) {
->>   		ad_data.drop_packet = true;
->> -		ad_data.forward_to_direct_queue = false;
->> -		ad_data.queue_id = 0;
->> +	} else if (rule->action == HCLGE_FD_ACTION_SELECT_TC) {
->> +		ad_data.override_tc = true;
->> +		ad_data.queue_id =
->> +			kinfo->tc_info.tqp_offset[rule->tc];
->> +		ad_data.tc_size =
->> +			ilog2(kinfo->tc_info.tqp_count[rule->tc]);
-> 
-> In the previous patch you copied this info from mqprio, which is an
-> egress qdisc feature, this patch is clearly about rx flow director, I
-> think the patch is missing some context otherwise it doesn't make any
-> sense.
-> 
+Thanks,
+Christian.
 
-Since tx and rx are in the same tqp, what we do here is to make tx and 
-rx in the same tc when rule is hit.
-
->>   	} else {
->> -		ad_data.drop_packet = false;
->>   		ad_data.forward_to_direct_queue = true;
->>   		ad_data.queue_id = rule->queue_id;
->>   	}
->> @@ -5937,7 +5950,7 @@ static int hclge_add_fd_entry(struct
->> hnae3_handle *handle,
->>   			return -EINVAL;
->>   		}
->>   
->> -		action = HCLGE_FD_ACTION_ACCEPT_PACKET;
->> +		action = HCLGE_FD_ACTION_SELECT_QUEUE;
->>   		q_index = ring;
->>   	}
->>   
->> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
->> b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
->> index b3c1301..a481064 100644
->> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
->> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
->> @@ -572,8 +572,9 @@ enum HCLGE_FD_PACKET_TYPE {
->>   };
->>   
->>   enum HCLGE_FD_ACTION {
->> -	HCLGE_FD_ACTION_ACCEPT_PACKET,
->> +	HCLGE_FD_ACTION_SELECT_QUEUE,
->>   	HCLGE_FD_ACTION_DROP_PACKET,
->> +	HCLGE_FD_ACTION_SELECT_TC,
-> 
-> what is SELECT_TC ? you never actually write this value anywhere  in
-> this patch.
-> 
-
-HCLGE_FD_ACTION_SELECT_TC means that the packet will be forwarded into 
-the queue of specified TC when rule is hit.
-
-the assignment is in the next patch, maybe these two patch should be 
-merged for making it more readable.
-
-
-Thanks.
-Huazhong.
-
-> 
-> 
-> .
-> 
+> ---
+>   include/drm/gpu_scheduler.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
+> index 2e0c368e19f6..975e8a67947f 100644
+> --- a/include/drm/gpu_scheduler.h
+> +++ b/include/drm/gpu_scheduler.h
+> @@ -171,10 +171,10 @@ struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f);
+>    * struct drm_sched_job - A job to be run by an entity.
+>    *
+>    * @queue_node: used to append this struct to the queue of jobs in an entity.
+> + * @list: a job participates in a "pending" and "done" lists.
+>    * @sched: the scheduler instance on which this job is scheduled.
+>    * @s_fence: contains the fences for the scheduling of job.
+>    * @finish_cb: the callback for the finished fence.
+> - * @node: used to append this struct to the @drm_gpu_scheduler.pending_list.
+>    * @id: a unique id assigned to each job scheduled on the scheduler.
+>    * @karma: increment on every hang caused by this job. If this exceeds the hang
+>    *         limit of the scheduler then the job is marked guilty and will not
 
