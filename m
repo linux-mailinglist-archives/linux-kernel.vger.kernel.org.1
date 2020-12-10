@@ -2,137 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED842D574B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A12E2D5752
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 10:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732624AbgLJJeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 04:34:18 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:55315 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727190AbgLJJeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 04:34:13 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cs7yF6Lpxz9sVs;
-        Thu, 10 Dec 2020 20:33:25 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607592807;
-        bh=jjFWywpSc1VbnSW901BW08DNejRDb7vSQANKnNScfsc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Qo3ByDMsT3xTyDCAdT1mWJoxC5udR4miOTzkR4o8HDw1diIPwhrbuhj3ozHqAN6DC
-         wmd+3mNFncIlsZ8/+RochiSrqNjB6Xh1WcYoNylcso6S6xYgKSoXOhJy2J7yvQCC8D
-         bb+yuutYILWTTaHFfLBWLBjm7vvyABRmdnxSfaR4w824o3HNKU7z8RBqBz0E2L2O39
-         cyqogeMT/gggbuVPpZ0jzmnDt3kNDNJZI4qi4ufX4GLLiKHdpPbmihBb3iiZu1DTvj
-         /HFSpcqBN+WIXVXQVqe8AVJ9P+brkQDoBRUB1eyUfj7/dPSZcz1iaS1sHQyIyA8MCP
-         bWTbId/ObopWg==
-Date:   Thu, 10 Dec 2020 20:33:23 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm tree
-Message-ID: <20201210203323.5d53d41d@canb.auug.org.au>
+        id S1732682AbgLJJg1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Dec 2020 04:36:27 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:48991 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732639AbgLJJgX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 04:36:23 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-88-VZuhpelxODGJV8wFgwzj7w-1; Thu, 10 Dec 2020 09:34:38 +0000
+X-MC-Unique: VZuhpelxODGJV8wFgwzj7w-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 10 Dec 2020 09:34:37 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 10 Dec 2020 09:34:37 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+CC:     LKML <linux-kernel@vger.kernel.org>
+Subject: RE: checkpatch
+Thread-Topic: checkpatch
+Thread-Index: AQHWzrUw0a7UmS3NhEOklnWYktoEBKnwEOAg
+Date:   Thu, 10 Dec 2020 09:34:37 +0000
+Message-ID: <32a8677e1bcf4d69ba019bfcefc9ea59@AcuMS.aculab.com>
+References: <87zh2mzw3h.fsf@nanos.tec.linutronix.de>
+ <aea0efa93c17e431205eeb932a73efa7e21598a3.camel@perches.com>
+In-Reply-To: <aea0efa93c17e431205eeb932a73efa7e21598a3.camel@perches.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DVIE.9Szm4v9quGEdns5bS.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DVIE.9Szm4v9quGEdns5bS.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Joe Perches
+> Sent: 10 December 2020 05:26
+> 
+> On Wed, 2020-12-09 at 19:13 +0100, Thomas Gleixner wrote:
+> > Joe,
+> 
+> Hi Thomas.
+> 
+> > the below made it through my filters for some reason so I actually
+> > looked and immediately wondered why checkpatch.pl did not identify this
+> > as pure garbage.
+> >
+> >  Original mail is here: lore.kernel.org/r/69cb540a-09d5-4956-b062-071ccded7090@web.de
+> >
+> > Can you have a look please? Adding brackets in the middle of the code
+> > for absolutely no reason is wrong to begin with and then not indenting
+> > the enclosed code makes it even worse.
+> 
+> Well, maybe something like this, but there are probably some
+> drawbacks with initializations.
 
-Hi all,
+Isn't the other likely problem where an extra code block
+is being squeezed in after a case label without generating
+a double-indent.
 
-After merging the akpm tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+	David
 
-mm/kasan/quarantine.c: In function 'quarantine_put':
-mm/kasan/quarantine.c:198:3: error: 'return' with no value, in function ret=
-urning non-void [-Werror=3Dreturn-type]
-  198 |   return;
-      |   ^~~~~~
-mm/kasan/quarantine.c:171:6: note: declared here
-  171 | bool quarantine_put(struct kmem_cache *cache, void *object)
-      |      ^~~~~~~~~~~~~~
-mm/kasan/quarantine.c:200:16: error: 'info' undeclared (first use in this f=
-unction)
-  200 |  qlist_put(q, &info->quarantine_link, cache->size);
-      |                ^~~~
-mm/kasan/quarantine.c:200:16: note: each undeclared identifier is reported =
-only once for each function it appears in
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Caused by commits
-
-  d6e0eb793f88 ("kasan: rename get_alloc/free_info")
-  453989cf05d6 ("kasan: sanitize objects when metadata doesn't fit")
-
-interacting with commit
-
-  2ac05f7fcf5b ("kasan: fix object remaining in offline per-cpu quarantine")
-
-from the akmp-current tree.
-
-This goes on and on :-(
-
-I have applied the following patch:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 10 Dec 2020 20:24:01 +1100
-Subject: [PATCH] fixup for "kasan: rename get_alloc/free_info"
-
-and "kasan: sanitize objects when metadata doesn't fit"
-and "kasan: fix object remaining in offline per-cpu quarantine"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- mm/kasan/quarantine.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
-index c0331656f112..55783125a767 100644
---- a/mm/kasan/quarantine.c
-+++ b/mm/kasan/quarantine.c
-@@ -195,9 +195,9 @@ bool quarantine_put(struct kmem_cache *cache, void *obj=
-ect)
- 	q =3D this_cpu_ptr(&cpu_quarantine);
- 	if (q->offline) {
- 		local_irq_restore(flags);
--		return;
-+		return false;
- 	}
--	qlist_put(q, &info->quarantine_link, cache->size);
-+	qlist_put(q, &meta->quarantine_link, cache->size);
- 	if (unlikely(q->bytes > QUARANTINE_PERCPU_SIZE)) {
- 		qlist_move_all(q, &temp);
-=20
---=20
-2.29.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/DVIE.9Szm4v9quGEdns5bS.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/R62MACgkQAVBC80lX
-0GzIiggAhI+Qm/nJE5xEaVjhtp0rAL7xsXGLv1tCSCot7BJ2VdXcjhQw5zkOPJaZ
-0J5VxCoGsMzWodalI6JEjh3jIKRU28CC7FZO/rlrmq4VZuSwA0ig4H7obVFh3uyp
-OkQF4kCyPTaCdhAWjPCxcmhdWZKkj1dzfPTIQZlmcTK5eVA3q98pEUtuNOHz/pws
-UXoHMaAQ9lZtZmh4YAczcrFzSCesploZDaBnJKxBWxpZwBuX2/nrWjM+yjO1mD3X
-cEj9axp4Bi+U/gmmGixMmtYyyClUNx6mWg21C3FSEmdUCJJX3lvUgqpcnh+M1oW5
-r7D7847ffCGtP6QgSkvR+sMBb0b+Lg==
-=7KiL
------END PGP SIGNATURE-----
-
---Sig_/DVIE.9Szm4v9quGEdns5bS.--
