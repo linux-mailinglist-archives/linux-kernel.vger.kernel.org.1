@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FD22D551B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEF12D551E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 09:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387479AbgLJIDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 03:03:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgLJIDp (ORCPT
+        id S2387545AbgLJIFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 03:05:45 -0500
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:38380 "EHLO
+        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S2387512AbgLJIFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 03:03:45 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CFEC0613D6;
-        Thu, 10 Dec 2020 00:03:05 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id ce23so6005472ejb.8;
-        Thu, 10 Dec 2020 00:03:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eqp0TLP9fmB78aq35gkfoouvh12/fek+jUNn7x07RNA=;
-        b=jXuvABbfFu4UY72m6shzEm8K96p9T5JXJJWyJvgzK2nY9VFwTuQGq70DZYvMo6OAd+
-         YsifTTmFXqvOUkywIAh4zJt0hjXeJ80bfwIn5wIfLqFu38TBtJb4cDjxgxdsp3xrBzyE
-         O+c1EcWRi27edoBpGuyD2VuBsQZjiWxD40PF9hCTjPITXfB5EkXTjpm2SoIeimdmnAEU
-         DZ1QgEN+tLL4O75AerJo3dOyJ+1K6u81e7HgpGF5DokuhgKIX99qD7Hz2zRb+JrYqOCU
-         odG5IptaSrd7TilK0AJmzVdJbLcVM4Qqyaq9oyqJG6BlxeNHNF05ufwdwaUYLE7yRN+Z
-         umoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eqp0TLP9fmB78aq35gkfoouvh12/fek+jUNn7x07RNA=;
-        b=Z0bIz+GmDy1EmdM7CQ4hXjyz4OwBaQNGV/ogJarmoq0OHFXGRHcBJw35gTmVxfvLz1
-         ePZq//RfHnje2+kg8enIEUaLznpqratWwuu5XQ8vb1f0FFT4JY2Hc3rKTsHwUh5r4oRK
-         H7vlxxY6+wzZddprITD5+3ANsEia8dwNj9cnK6rzLIY5FSbeMFGsyuq5xSLpLzVFLIQC
-         6MO9WdoEZ80lHCzOsWRvpXjTTHAp3lmsf4C//pWBOMfAQvq+oKQVKnvelwanEj4Jue01
-         /UpVXBRBERPnVyDvkBNd1lKCx69ibZEFUox+BCwpJMhLQxtR751iyABKSBpnIhjNIOBk
-         WMKg==
-X-Gm-Message-State: AOAM531eWRtMUZAATE72xKgB7XPmCrJyAl2T2gydExMN1jvTYe2L/YAG
-        ajoYy/rC3aS05DpV6m/eJi4=
-X-Google-Smtp-Source: ABdhPJyJMGMuAQ+RkNWIMzk8Hn6V4DD/qJslO9XjE+ULkx8sg3gfG9J02N7++0NwOTpYX4PJ6G/N+Q==
-X-Received: by 2002:a17:906:af83:: with SMTP id mj3mr5167823ejb.243.1607587384082;
-        Thu, 10 Dec 2020 00:03:04 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id l14sm4117956edq.35.2020.12.10.00.03.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 00:03:02 -0800 (PST)
-Date:   Thu, 10 Dec 2020 09:03:00 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] clk: tegra: Fix duplicated SE clock entry
-Message-ID: <X9HWNLZKVRUJja9G@ulmo>
-References: <20201025224212.7790-1-digetx@gmail.com>
- <160756363099.1580929.2375956922093495697@swboyd.mtv.corp.google.com>
+        Thu, 10 Dec 2020 03:05:45 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id D08EF2290B46;
+        Thu, 10 Dec 2020 16:04:57 +0800 (HKT)
+X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
+Received: from mail.gtsys.com.hk ([127.0.0.1])
+        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id hmHa6fFH6lqd; Thu, 10 Dec 2020 16:04:57 +0800 (HKT)
+Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id AF0E82290B45;
+        Thu, 10 Dec 2020 16:04:57 +0800 (HKT)
+Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
+        by s01.gtsys.com.hk (Postfix) with ESMTP id A2428C01FB5;
+        Thu, 10 Dec 2020 16:04:57 +0800 (HKT)
+Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
+        id 5568D2000CF; Thu, 10 Dec 2020 16:04:57 +0800 (HKT)
+From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
+To:     linux-rockchip@lists.infradead.org
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Douglas Anderson <dianders@chromium.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Subject: [PATCH v3] phy: rockchip-emmc: emmc_phy_init() always return 0
+Date:   Thu, 10 Dec 2020 16:04:54 +0800
+Message-Id: <20201210080454.17379-1-chris.ruehl@gtsys.com.hk>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="czOzzkDnph9irEDt"
-Content-Disposition: inline
-In-Reply-To: <160756363099.1580929.2375956922093495697@swboyd.mtv.corp.google.com>
-User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+rockchip_emmc_phy_init() return variable is not set with the error value
+if clk_get() failed. 'emmcclk' is optional, thus use clk_get_optional()
+and if the return value != NULL make error processing and set the
+return code accordingly.
 
---czOzzkDnph9irEDt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 52c0624a10cce phy: rockchip-emmc: Set phyctrl_frqsel based on card clock
 
-On Wed, Dec 09, 2020 at 05:27:10PM -0800, Stephen Boyd wrote:
-> Quoting Dmitry Osipenko (2020-10-25 15:42:12)
-> > The periph_clks[] array contains duplicated entry for Security Engine
-> > clock which was meant to be defined for T210, but it wasn't added
-> > properly. This patch corrects the T210 SE entry and fixes the following
-> > error message on T114/T124: "Tegra clk 127: register failed with -17".
-> >=20
-> > Fixes: dc37fec48314 ("clk: tegra: periph: Add new periph clks and muxes=
- for Tegra210")
-> > Tested-by Nicolas Chauvet <kwizart@gmail.com>
-> > Reported-by Nicolas Chauvet <kwizart@gmail.com>
-> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > ---
->=20
-> Looks correct. Should I pick this up Thierry?
+Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+---
+v3 - IS_ERROR() already return false if rk_phy->emmcclk == NULL
+     add Reviewed tag
+v2 - use clk_get_optional
 
-Yes, please. Thanks for catching this, it had slipped through my filter.
+ drivers/phy/rockchip/phy-rockchip-emmc.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Thierry
+diff --git a/drivers/phy/rockchip/phy-rockchip-emmc.c b/drivers/phy/rockchip/phy-rockchip-emmc.c
+index 48e2d75b1004..9d8123f7fd07 100644
+--- a/drivers/phy/rockchip/phy-rockchip-emmc.c
++++ b/drivers/phy/rockchip/phy-rockchip-emmc.c
+@@ -245,15 +245,17 @@ static int rockchip_emmc_phy_init(struct phy *phy)
+ 	 * - SDHCI driver to get the PHY
+ 	 * - SDHCI driver to init the PHY
+ 	 *
+-	 * The clock is optional, so upon any error we just set to NULL.
++	 * The clock is optional, using clk_get_optional() to get the clock
++	 * and do error processing if the return value != NULL
+ 	 *
+ 	 * NOTE: we don't do anything special for EPROBE_DEFER here.  Given the
+ 	 * above expected use case, EPROBE_DEFER isn't sensible to expect, so
+ 	 * it's just like any other error.
+ 	 */
+-	rk_phy->emmcclk = clk_get(&phy->dev, "emmcclk");
++	rk_phy->emmcclk = clk_get_optional(&phy->dev, "emmcclk");
+ 	if (IS_ERR(rk_phy->emmcclk)) {
+-		dev_dbg(&phy->dev, "Error getting emmcclk: %d\n", ret);
++		ret = PTR_ERR(rk_phy->emmcclk);
++		dev_err(&phy->dev, "Error getting emmcclk: %d\n", ret);
+ 		rk_phy->emmcclk = NULL;
+ 	}
+ 
+-- 
+2.20.1
 
---czOzzkDnph9irEDt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/R1jQACgkQ3SOs138+
-s6EsGRAArVVvCcIg28g8uSHCsL/3LI+HZzLD19+M1TQS9YU1DDUk9M9lbs+Ehyyl
-AcwMOHGIYTKG2+efOFMVq31IOidY9L7s8mWWkzUn2qwoyuRHlbVMNyvcLpJi3E1/
-gOoppZ0ASfqxIKrXrh7MGfolWrm53EV42b1nFzAWj2rWkITLaKjCjhO8kU16JDyj
-Dtdcf0xZhW6SQqUAnCiq0926pAEsF8+kJTVMGYepVgteeyz10+LZ1HVNyohMxuiO
-PfAmjP4TI4aQ/ZxjUsFJvzbngmrCwmMIml/WGaGeBn67nHixovVaZCkynNWl6MM0
-8clPQ6wFoiHmMEJ3wdvCI1zeSLpiXdbtGNHDnW9uwilbZ3XU/cj7ibhR9yaIuHT5
-l/pcG1TrI+gQEUr9J9eq8uFTQRmQNjd7Nq+mzPIqyTFeYOp26XUZ2eUyq8zgnnYz
-eDqAWaUjGMWrq+49/jxOc8YU25qOYKl43OpnjECMWiYrKeAG38wTKdZgLOMb2/kS
-7fhjg2obFJZnulqp/7taYzvLaDHGLpvVpfp0goXq2/0MQ/NctgM/MqkhBlEL5pTe
-YU7bb6js0+L1K/tGTZDIYX1spzypHudn+wys5Ymi27JTShhvL2aZfn5Capmb5Sui
-ONBsnLj184nByfkXjwszd4kK97O89FeayvTuIsU653aXifh0uHM=
-=nkgJ
------END PGP SIGNATURE-----
-
---czOzzkDnph9irEDt--
