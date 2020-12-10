@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158292D5C38
+	by mail.lfdr.de (Postfix) with ESMTP id 82DA42D5C39
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388523AbgLJNrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:47:51 -0500
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:52439 "EHLO
+        id S2389288AbgLJNsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:48:31 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:53467 "EHLO
         wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726253AbgLJNrq (ORCPT
+        by vger.kernel.org with ESMTP id S2389162AbgLJNsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:47:46 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id E2BA3EC4;
-        Thu, 10 Dec 2020 08:46:53 -0500 (EST)
+        Thu, 10 Dec 2020 08:48:04 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id E20BDEAF;
+        Thu, 10 Dec 2020 08:46:56 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 10 Dec 2020 08:46:55 -0500
+  by compute4.internal (MEProxy); Thu, 10 Dec 2020 08:46:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=xUPcbQNT0o/CK
-        S0rMi5Iv5Xji1UkV8zkkBcQWdsfXpY=; b=JMm31KUvz7mbDQ0boB7bou0KEzH3Q
-        PgsQy9GAKfAQMD+NjNairgVlTogOqHJjnGqDBOwycXJ7uY5sttSrckTs/X1m6w0m
-        Df3KubKJmlXKlxphjOU34C2Vv/lCq+DLweNjThcArLH94cgu4rGOUAietZXV55kl
-        Sd9KtpIUfwTm1ZyzbESo0+0jaSXG6F0s5NISKjZUNntHJSut8wN72DBvF2Obtb0h
-        ktBRDQZ/7/TzLeINAqOn7j1nzC3HQnEPiXqVp9/35QYtc7bmUTXQj76qVdsrv25V
-        DLyhpMGiQiII+f5XKTQj6S+KhjL5PRuGbhFsfsQ8IdVqQQum1vUcyIqgQ==
+        :mime-version:content-transfer-encoding; s=fm1; bh=Y7jlyLm1g9BaE
+        j3fHOaKvtPJ6kyTLaLrMbDU13MaKU0=; b=rgbi72icGzpR4PywxXuAsvfWnfd5V
+        thxjQ+xVCQwQFxPe8+JU5FYEP/pDab6QnI3qTJbxXSNa1vheNojqwA7c7ddD1BdB
+        U5yPE9K9/tNzikSCqfgtNwNx9HYGR9O/6E3D3dFMjzbdHH5UGnhMMKzIjqQJ8K6I
+        388zx/7tHRg90Zp+FRKNZyBnHvhO2rz+EkVId2IBjQwdk+8vHyJlTplawsHHe6aZ
+        sYNiQ6qKyayk/NkS2AmWlfHcmvXMEMXkNfxpUtm2fnDinB3adY0oPzZk9rwjogAx
+        e0vsgMraxE/G4wd7zEfxpW5CWfIdYE5PcP89s5jM74fQum+e+aZim9KWA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=xUPcbQNT0o/CKS0rMi5Iv5Xji1UkV8zkkBcQWdsfXpY=; b=mSvmhvww
-        3jLyyDHXeLC9oECwRdgfJCfrQPh4XFSyFweQ5u9E+4alfGZBGGWh0NOvh2g7aqbi
-        xSKWqBDj1orLZkFlYcq6NFRqg3KsRImcfoer7V11VgM+wR3MT1qZTZcEZR8dKwA5
-        XM4sTo4EiscX1eYFw8HBqnA6BjmNd2DqNskCsFBhxuF/M7jDoToSaPSKsP40reEm
-        u2FrTQBBojEjhfTSMbmTdT2mhd0iLmm7BxHQYUECDEyPYyXOQWx5xOik64RJz/9B
-        wNW74ba0rZRMdUhes2hO2HyCGItWPY/1tU4pvkI0X7yjkGeFnHA70B4Nsii/+Iut
-        YRQCaQ5Tf4sASg==
-X-ME-Sender: <xms:yybSX_j0e4yGW2dtTLl_q73iv_z3BqtIl72BUAxELajiGGeTdpF4_A>
-    <xme:yybSX8A5dFvyR5vgcEmj5jqqTDWfTcy8ZktXSmZKIxObJlUpNWV7-wvfySnIQK5sD
-    2vtnXgOAUdlHyky-I0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudektddgheeiucetufdoteggodetrfdotf
+        fm1; bh=Y7jlyLm1g9BaEj3fHOaKvtPJ6kyTLaLrMbDU13MaKU0=; b=ix991TOT
+        r2ZyaYZezqxURG50cTAmfpFqOg21AD9ZKct8f6Sa2ASZMQIh8ZWp5ym3RNSrp6th
+        GRmXKHagSlhKHflzVFfGyrXkgD28fwDVkJFdQX2CMabSta7AXACoOY7lMPCU39HM
+        DvWa7MM7fLhLPtLK2jFdCauZPNasTDf/NpOfovNS7/OJCgvDXcMmAm9YE/EoNeYy
+        sUlE/qw1iYXmitN9IBQX4w5HQVNE7plJIicGTR82uQkV09wYMflMgJpSOzE34ikr
+        XR/WcPBE5cbtXmGTNnWzJgzdSiU8nMI14bn7YfZ6QdecYL6oCo9SMgnG+kAWvtnV
+        d5KZCHn/L8eVZQ==
+X-ME-Sender: <xms:zybSX4QKd1kizgccUcbQhx8nEUmE6lRn1UbDj5v58DvhLbea4kXGyQ>
+    <xme:zybSX1uTR50krfvEouCckwVCgAlnJob6tfCoeqBtzhEniWZFdIhbC33pWcnynRUcL
+    6RhcUO5V32rq_WgoaE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudektddgheehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
@@ -48,13 +48,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudektddgheeiucetufdoteggod
     htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
     hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
     frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:yybSX_FuvxD896r7flb3CVR6m2ytShP7CPii8l9wCUGyGz5dQbJVwA>
-    <xmx:yybSX8QuPqhLh74EJmLRXRSy41leD8sTULW-FHvcgbC91EGuBPVmuw>
-    <xmx:yybSX8zFcdFeTo-8DMTUjHmJoBMy4DscnTOqIxhLwB8xL2C2ZAa06A>
-    <xmx:zSbSX4DDaQpSR38Y6He26jGLlHI1ZUwdGvLSBl4nQ-n_U-Sfyqf1-UNNiOk>
+X-ME-Proxy: <xmx:zybSXyt15qj92xiGeTItMdXMl72XZobjpngPfExCiw0uZ1lp_J6ZtA>
+    <xmx:zybSXzxyswZoob1gGuNWqQ6GMgdH7Vd7Cqc_7aYAR6xlUux6HGy2rQ>
+    <xmx:zybSXwiVWHmEE8WPx3vdeas85jA4eXoMl53w4Id9dPJoPT4vODKcnQ>
+    <xmx:0CbSX6M8f7pnTGh5OZmSi65Rz-AA-FDoy1r0MvbOTo_dWeAbR3C_y3JDE1c>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 154541080059;
-        Thu, 10 Dec 2020 08:46:51 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 439911080059;
+        Thu, 10 Dec 2020 08:46:55 -0500 (EST)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Eric Anholt <eric@anholt.net>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -72,10 +72,10 @@ Cc:     Jason Cooper <jason@lakedaemon.net>,
         Thomas Gleixner <tglx@linutronix.de>,
         Dave Stevenson <dave.stevenson@raspberrypi.com>,
         linux-rpi-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 01/15] irqchip: Allow to compile bcmstb on other platforms
-Date:   Thu, 10 Dec 2020 14:46:34 +0100
-Message-Id: <20201210134648.272857-2-maxime@cerno.tech>
+        dri-devel@lists.freedesktop.org, Dom Cobley <popcornmix@gmail.com>
+Subject: [PATCH 04/15] drm/vc4: hdmi: Fix up CEC registers
+Date:   Thu, 10 Dec 2020 14:46:37 +0100
+Message-Id: <20201210134648.272857-5-maxime@cerno.tech>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201210134648.272857-1-maxime@cerno.tech>
 References: <20201210134648.272857-1-maxime@cerno.tech>
@@ -85,27 +85,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BCM2711 uses a number of instances of the bcmstb-l2 controller in its
-display engine. Let's allow the driver to be enabled through KConfig.
+From: Dom Cobley <popcornmix@gmail.com>
 
+The commit 311e305fdb4e ("drm/vc4: hdmi: Implement a register layout
+abstraction") forgot one CEC register, and made a copy and paste mistake
+for another one. Fix those mistakes.
+
+Fixes: 311e305fdb4e ("drm/vc4: hdmi: Implement a register layout abstraction")
+Signed-off-by: Dom Cobley <popcornmix@gmail.com>
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/irqchip/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vc4/vc4_hdmi_regs.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index c6098eee0c7c..f1e58de117dc 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -131,7 +131,7 @@ config BCM7120_L2_IRQ
- 	select IRQ_DOMAIN
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
+index 013fd57febd8..20a1438a72cb 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
++++ b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
+@@ -29,6 +29,7 @@ enum vc4_hdmi_field {
+ 	HDMI_CEC_CPU_MASK_SET,
+ 	HDMI_CEC_CPU_MASK_STATUS,
+ 	HDMI_CEC_CPU_STATUS,
++	HDMI_CEC_CPU_SET,
  
- config BRCMSTB_L2_IRQ
--	bool
-+	bool "Broadcom STB L2 Interrupt Controller"
- 	select GENERIC_IRQ_CHIP
- 	select IRQ_DOMAIN
- 
+ 	/*
+ 	 * Transmit data, first byte is low byte of the 32-bit reg.
+@@ -199,9 +200,10 @@ static const struct vc4_hdmi_register vc4_hdmi_fields[] = {
+ 	VC4_HDMI_REG(HDMI_TX_PHY_RESET_CTL, 0x02c0),
+ 	VC4_HDMI_REG(HDMI_TX_PHY_CTL_0, 0x02c4),
+ 	VC4_HDMI_REG(HDMI_CEC_CPU_STATUS, 0x0340),
++	VC4_HDMI_REG(HDMI_CEC_CPU_SET, 0x0344),
+ 	VC4_HDMI_REG(HDMI_CEC_CPU_CLEAR, 0x0348),
+ 	VC4_HDMI_REG(HDMI_CEC_CPU_MASK_STATUS, 0x034c),
+-	VC4_HDMI_REG(HDMI_CEC_CPU_MASK_SET, 0x034c),
++	VC4_HDMI_REG(HDMI_CEC_CPU_MASK_SET, 0x0350),
+ 	VC4_HDMI_REG(HDMI_CEC_CPU_MASK_CLEAR, 0x0354),
+ 	VC4_HDMI_REG(HDMI_RAM_PACKET_START, 0x0400),
+ };
 -- 
 2.28.0
 
