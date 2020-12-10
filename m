@@ -2,136 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD62D2D5EC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F10942D5EBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388492AbgLJO4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:56:17 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35558 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727249AbgLJO4K (ORCPT
+        id S2389857AbgLJOzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:55:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389817AbgLJOzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:56:10 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BAEZ7N7088316;
-        Thu, 10 Dec 2020 09:54:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=VsCisPySZHG4Vff0eAvJw4F76GzoTiGXaBqWHoCkKF0=;
- b=H/i0vBJaVrEsIxTNzzpSFA/FCskUwAue6ja+2YX99G5xdQAchy5YHz28mh0jiokEVJh3
- cVZVOQaOOGLQHSbKM9vb4OlkQS0lpZNLgdmAh8uifjptyOloMlsBkGmjAkOL/h1hmyzo
- 5ANkm8pODhkiJfDX7wP2kvW+FVbcpDzP7v9QbxASmDfzsNGCUl8QrHMs+c0AZVs4IHoc
- r9bYF0tv/FR5mng22P6Rrs6Qc283dFG5Jc4L9VdSpX8y9OHnYyDSwE27LhruKR4v7YxK
- zypN7M+fXF08EenWsawvPzSRb+wz9CHSdTqjHIRc4bmgMRRK7ZcttZS5CtfejBDyWve/ 3Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35bndu9187-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 09:54:09 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BAEWOAc069949;
-        Thu, 10 Dec 2020 09:54:08 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35bndu916u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 09:54:08 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BAEqWrN021791;
-        Thu, 10 Dec 2020 14:54:05 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 3581u8rpv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 14:54:05 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BAEs30S33030568
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Dec 2020 14:54:03 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1B3044C70D;
-        Thu, 10 Dec 2020 14:54:03 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0F63E4C70F;
-        Thu, 10 Dec 2020 14:54:02 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.88.139])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Dec 2020 14:54:01 +0000 (GMT)
-Subject: Re: [Patch v3 0/2] cgroup: KVM: New Encryption IDs cgroup controller
-To:     Tejun Heo <tj@kernel.org>, Vipin Sharma <vipinsh@google.com>
-Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        corbet@lwn.net, joro@8bytes.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201209205413.3391139-1-vipinsh@google.com>
- <X9E6eZaIFDhzrqWO@mtj.duckdns.org>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <4f7b9c3f-200e-6127-1d94-91dd9c917921@de.ibm.com>
-Date:   Thu, 10 Dec 2020 15:54:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 10 Dec 2020 09:55:22 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8792C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:54:41 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id y19so8567021lfa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 06:54:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O6ptu9+yUqmrrvRHBz+Ms5c7MJTZlfGGguaJ8+pJhRs=;
+        b=qxBha0sjMFxg78EJkra1StvHmiJuvX4oZdELZZHCiMYynG9+F2BGZs8Yaiw9qAKdi8
+         fxY7UzrkO85flZO+CSrbBvebiSEju746gwY/NF4sBcdMiwzhEFWDk16DGFly+nVSgIc1
+         LnJK7PLqlSTzXFJDHN7xtRWPo+m+1IsIwr43WWde3G8pDSP7KFg1I3Ie6gTsWrW0ncPr
+         XY9y4A2Hu8YsqjB4iZVfOgDMk62zejdDD+8h1zWB06jIcljpu0N3Pque8hVyd5QqcD6q
+         /5AbBTX81YZ/S2rW7rphnJ5dOCB0Y0uLvMMwbaYS/bGF7RUXBTOtwYp00VZfEvwEb/mc
+         Bh5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O6ptu9+yUqmrrvRHBz+Ms5c7MJTZlfGGguaJ8+pJhRs=;
+        b=XyxWl8OTY4gY2ohTA/N2lYW387Qsn3KG7GuCNaW4YjHSLd/gxaOx7xnYMQLx3Qk4Kc
+         f4FWxT4Krcy0Dh6FwN8eDrA8qbHn0ZuNjJoF9ixJwF4ckqCYiBvUC427zH6C6xQU96l8
+         Af3Kovomnyon8sRUpfOgOw5MuNr8bGsObZmoZlY7JPcMwfl61Ax1SjfUEQY2Cz8Eqj4V
+         Gu2I8ig7FTdBS3LJCRq1OJnqDysFS+Tnjn5/zZX+LHUJtYwaz5ogF3Ca9/wRPsYoL3b1
+         HoT6keQ9JbStZlJ1My7MxSmNTE56AZOx+ONDiDhj3ugRP1f73YvwXUGrx5nGkWCh5BQm
+         kTAQ==
+X-Gm-Message-State: AOAM53317S8h8BOBGuXRjEXSL4rRcoF1GEwcFtyhLucjPsxjfCSF4CGi
+        SVuIvlmb01GsFbJ2BWx3HWT+ndu5lYygrV3q3jATcPs5/HwEhnxd
+X-Google-Smtp-Source: ABdhPJx9BBe95t8VEi0zGcvOT3yVFSJe0tilLfooilcZm/UnWooZuHQA/ZBkhpu8dfmwgsQSCzqTTtmtUxFTJgle8F0=
+X-Received: by 2002:a19:5f06:: with SMTP id t6mr2921786lfb.117.1607612080214;
+ Thu, 10 Dec 2020 06:54:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X9E6eZaIFDhzrqWO@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-10_05:2020-12-09,2020-12-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 adultscore=0 malwarescore=0 impostorscore=0 mlxscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1011 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012100088
+References: <20201210141903.72327-1-dwaipayanray1@gmail.com> <97a20537627bb281745fee157713200830c3a7bb.camel@perches.com>
+In-Reply-To: <97a20537627bb281745fee157713200830c3a7bb.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Thu, 10 Dec 2020 20:24:15 +0530
+Message-ID: <CABJPP5Cjyh1QekK7LnTbxYEgmtLMO81Vdu77tGTRrNhjL_iEcg@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: add --fix option to IS_ENABLED_CONFIG check
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.12.20 21:58, Tejun Heo wrote:
-> Hello,
-> 
-> Rough take after skimming:
-> 
-> * I don't have an overall objection. In terms of behavior, the only thing
->   which stood out was input rejection depending on the current usage. The
->   preferred way of handling that is rejecting future allocations rather than
->   failing configuration as that makes it impossible e.g. to lower limit and
->   drain existing usages from outside the container.
-> 
-> * However, the boilerplate to usefulness ratio doesn't look too good and I
->   wonder whether what we should do is adding a generic "misc" controller
->   which can host this sort of static hierarchical counting. I'll think more
->   on it.
+> > checkpatch correspondingly has a check for IS_ENABLED() without
+> > CONFIG_<FOO>.
+> > Add a --fix option to the check to automatically correct the argument.
+> >
+> > Macros like:
+> >  #if IS_ENABLED(THERMAL)
+> >
+> > is corrected to:
+> >  #if IS_ENABLED(CONFIG_THERMAL)
+>
+> I think adding a --fix option here is not a good option.
+>
+> Look at the existing uses without CONFIG and tell me
+> the majority of them need to have CONFIG added.
+>
+> $ git grep -P '\bIS_ENABLED\s*\(\s*(?!CONFIG_)'
+> arch/arc/include/asm/asserts.h: chk_opt_strict(#opt_name, hw_exists, IS_ENABLED(opt_name));     \
+> arch/arc/include/asm/asserts.h: chk_opt_weak(#opt_name, hw_exists, IS_ENABLED(opt_name));       \
+> arch/arc/include/asm/setup.h:#define IS_USED_CFG(cfg)   IS_USED_RUN(IS_ENABLED(cfg))
+> arch/arm64/include/asm/alternative-macros.h:    __ALTERNATIVE_CFG(oldinstr, newinstr, feature, IS_ENABLED(cfg))
+> arch/arm64/include/asm/alternative-macros.h:    alternative_insn insn1, insn2, cap, IS_ENABLED(cfg)
+> arch/arm64/include/asm/cpufeature.h:    (IS_ENABLED(config) ? FTR_VISIBLE : FTR_HIDDEN)
+> arch/x86/mm/numa.c:     if (IS_ENABLED(NODE_NOT_IN_PAGE_FLAGS)) {
+> drivers/gpu/drm/exynos/exynos_drm_drv.c:#define DRV_PTR(drv, cond) (IS_ENABLED(cond) ? &drv : NULL)
+> drivers/gpu/drm/i915/i915_utils.h: * This is a lookalike for IS_ENABLED() that takes a kconfig value,
+> drivers/gpu/drm/i915/i915_utils.h: * Sadly IS_ENABLED() itself does not work with kconfig values.
+> drivers/gpu/drm/rockchip/rockchip_drm_drv.c:    if (IS_ENABLED(cond) && \
+> drivers/net/wireguard/allowedips.c:             WARN_ON(IS_ENABLED(DEBUG) && *len >= 128);
+> drivers/net/wireguard/allowedips.c:             WARN_ON(IS_ENABLED(DEBUG) && len >= 128);                      \
+> drivers/net/wireguard/noise.c:  WARN_ON(IS_ENABLED(DEBUG) &&
+> drivers/net/wireguard/selftest/allowedips.c:    if (IS_ENABLED(DEBUG_PRINT_TRIE_GRAPHVIZ)) {
+> drivers/net/wireguard/selftest/allowedips.c:    if (IS_ENABLED(DEBUG_PRINT_TRIE_GRAPHVIZ)) {
+> drivers/net/wireguard/selftest/allowedips.c:    if (IS_ENABLED(DEBUG_RANDOM_TRIE) && success)
+> drivers/phy/broadcom/phy-brcm-usb-init.h:       if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
+> drivers/phy/broadcom/phy-brcm-usb-init.h:       if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
+> include/asm-generic/vmlinux.lds.h:#define OF_TABLE(cfg, name)   __OF_TABLE(IS_ENABLED(cfg), name)
+> include/crypto/blake2s.h:       WARN_ON(IS_ENABLED(DEBUG) && (!outlen || outlen > BLAKE2S_HASH_SIZE ||
+> include/crypto/blake2s.h:       WARN_ON(IS_ENABLED(DEBUG) && ((!in && inlen > 0) || !out || !outlen ||
+> include/linux/init.h:   int var = IS_ENABLED(config);                                   \
+> include/linux/kconfig.h: * This is similar to IS_ENABLED(), but returns false when invoked from
+> include/linux/kconfig.h:#define IS_ENABLED(option) __or(IS_BUILTIN(option), IS_MODULE(option))
+> include/linux/page-flags-layout.h: * the IS_ENABLED() macro.
+> include/linux/raid/pq.h:#define IS_ENABLED(x) (x)
+> lib/crypto/blake2s-generic.c:   WARN_ON(IS_ENABLED(DEBUG) &&
+> lib/crypto/blake2s.c:   WARN_ON(IS_ENABLED(DEBUG) && !out);
+> lib/crypto/chacha20poly1305-selftest.c: for (total_len = POLY1305_DIGEST_SIZE; IS_ENABLED(DEBUG_CHACHA20POLY1305_SLOW_CHUNK_TEST)
+> lib/test_ubsan.c:                       #config, IS_ENABLED(config) ? "y" : "n");       \
+> scripts/checkpatch.pl:# check for IS_ENABLED() without CONFIG_<FOO> ($rawline for comments too)
+> scripts/checkpatch.pl:                       "IS_ENABLED($1) is normally used as IS_ENABLED(${CONFIG_}$1)\n" . $herecurr);
+> scripts/checkpatch.pl:                           "Prefer IS_ENABLED(<FOO>) to ${CONFIG_}<FOO> || ${CONFIG_}<FOO>_MODULE\n" . $herecurr) &&
+> scripts/checkpatch.pl:                          $fixed[$fixlinenr] = "\+#if IS_ENABLED($config)";
+> tools/testing/scatterlist/linux/mm.h:#define IS_ENABLED(x) (0)
+>
+>
 
-We first dicussed to have
-encryption_ids.stat
-encryption_ids.max
-encryption_ids.current
+That's true.
+The following looks okay to me:
 
-and we added the sev in later, so that we can also have tdx, seid, sgx or whatever.
-Maybe also 2 or more things at the same time.
+IS_ENABLED(DEBUG)
+IS_ENABLED(cfg)
+IS_ENABLED(opt_name)
+IS_ENABLED(option)
+IS_ENABLED(DEBUG_PRINT_TRIE_GRAPHVIZ)
+IS_ENABLED(config)
+IS_ENABLED(cond)
+IS_ENABLED(__BIG_ENDIAN)
+IS_ENABLED(x)
+IS_ENABLED(DEBUG_CHACHA20POLY1305_SLOW_CHUNK_TEST)
 
-Right now this code has
+Adding a CONFIG_ in these would be wrong I think.
+I will drop this patch.
 
-encryption_ids.sev.stat
-encryption_ids.sev.max
-encryption_ids.sev.current
-
-And it would be trivial to extend it to have
-encryption_ids.seid.stat
-encryption_ids.seid.max
-encryption_ids.seid.current
-on s390 instead (for our secure guests).
-
-So in the end this is almost already a misc controller, the only thing that we
-need to change is the capability to also define things other than encryption.*.*
-And of course we would need to avoid adding lots of random garbage to such a thing.
-
-But if you feel ok with the burden to keep things kind of organized a misc
-controller would certainly work for the encryption ID usecase as well. 
-So I would be fine with the thing as is or a misc controlĺer.
-
-Christian
+Thank you,
+Dwaipayan.
