@@ -2,115 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2242D60AC
+	by mail.lfdr.de (Postfix) with ESMTP id 9713E2D60AD
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391224AbgLJP6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:58:03 -0500
-Received: from mga01.intel.com ([192.55.52.88]:40076 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392075AbgLJP5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:57:34 -0500
-IronPort-SDR: DndN5pqvbd3zG+lfduwegh4JSuiBKEGDEHxe2HcAIoYnEpXvf9C4x7hHQ31v0QHh7jbPAyFyhE
- R5iyHKpnlsZg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="192599474"
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="192599474"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 07:55:45 -0800
-IronPort-SDR: 3nkhWLCpQ6dAgMT9lORwAd8Jj7LQTaOWfcJOil6sKfSm0P33XjP5LeJlZlfS624xA3+aUm+ZjR
- b2qpEZaQKnEQ==
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="319653427"
-Received: from mgorski-mobl.ger.corp.intel.com (HELO [10.213.11.242]) ([10.213.11.242])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 07:55:43 -0800
-Subject: Re: [PATCH] ASoC: Intel: Skylake: Check the kcontrol against NULL
-To:     Lukasz Majczak <lma@semihalf.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc:     Marcin Wojtas <mw@semihalf.com>,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Alex Levin <levinale@google.com>,
-        Guenter Roeck <groeck@google.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20201210121438.7718-1-lma@semihalf.com>
-From:   "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>
-Message-ID: <43ecc9e6-3a86-6e7c-bb88-f87fbce0f51d@linux.intel.com>
-Date:   Thu, 10 Dec 2020 16:55:41 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S2392046AbgLJP6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:58:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391956AbgLJP6i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:58:38 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159EAC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:57:58 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t37so4588217pga.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 07:57:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fnon7sDzka34R7LgC0De8tPIdaalVEeRV2dY0iPqfl8=;
+        b=GgNwNSHdatu+tNWPwIJEz9GCAzeb56lDlxA8kMpi4aHDozUFZ5Sv3Lw+uEOWSVGtjT
+         wI1Zn7rPAUosJLJx34F3dHvx8+ImP9VzS/i2vOXMsaD5sXMwTDygmfDuZhPeTcj7N3Js
+         q9zMVql+zspvvDxtgweapTbN1vy/kjQ3CVgAq2dP4x0Pnr2rKswaR+rvKlUNjFwFjKke
+         s/gM3raMy1TMT/t+GDJj7x4RRZKOtqPMsX39apcdidkcGjXIj4EFwSauxx4/FB3vyDsv
+         4une5ur5AR6djKj+qUUGozr5Nfi2yvWNNUcR6tG4Xe5nRbhd+oZGFJK9H5aDHPqkcwJk
+         hYrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fnon7sDzka34R7LgC0De8tPIdaalVEeRV2dY0iPqfl8=;
+        b=dH+f+dgDOEKh8uuDB2/bT7xJf1CWRaTgTTR795t/Bk8x1YLjdLxqCiXJom3RvYJ4zD
+         mPiP0vKwVSAOax23BVTVw+mW3+j+3SM1KiSUYG/LVgtryf2kphwiZUkxWv6BmpdVCsiO
+         zZajFd59nJyPbw/bg8hF2rVEXxTQvYlfC2Ve6naey6MCoOipW7QUnqVfd9zaQS9gyNyW
+         jtpGwV5hmNbBd+5rHq0hc51dtLneJNJaGAWxusJ4a4BtGpAU2VhUXBscqxOxxbS2jhcf
+         Iy3WPO2YUMQ8/LFYWaljXo7b1KeOE4zmwZShjBmviX2xnX0inzyJ/BJzYn89hgVQpUyb
+         PSNQ==
+X-Gm-Message-State: AOAM533Gb+iIXP1HWN0fJ3RLwpCC42Apa/Mfd+XEEIJ6OOJd7LBJHvg4
+        T0Ly5v17q90cHbWwEkprMlD4uFddzSYS5DWFDV/dVQ==
+X-Google-Smtp-Source: ABdhPJzqiQKGJsmus7zKhdtqlGPdLVV43tunbznKDaEHRk/DlgkMGu/McZ++C6DuhMpQ2zRSMZzvRSssSYYMEE1rsgQ=
+X-Received: by 2002:a63:cd14:: with SMTP id i20mr7217766pgg.31.1607615877450;
+ Thu, 10 Dec 2020 07:57:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201210121438.7718-1-lma@semihalf.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: pl
+References: <20201210035526.38938-1-songmuchun@bytedance.com>
+ <20201210035526.38938-5-songmuchun@bytedance.com> <20201210144256.GB8538@localhost.localdomain>
+In-Reply-To: <20201210144256.GB8538@localhost.localdomain>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 10 Dec 2020 23:57:21 +0800
+Message-ID: <CAMZfGtWs06zRQ5qXV3bNmWh1kptDAe8eyKKzGHsLMhVaoLUp7A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v8 04/12] mm/hugetlb: Free the vmemmap
+ pages associated with each HugeTLB page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> There is no check for the kcontrol against NULL and in some cases
-> it causes kernel to crash.
+On Thu, Dec 10, 2020 at 10:43 PM Oscar Salvador <osalvador@suse.de> wrote:
 >
-> Fixes: 2d744ecf2b984 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHLT")
-> Cc: <stable@vger.kernel.org> # 5.4+
-> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
-> ---
->   sound/soc/intel/skylake/skl-topology.c | 14 ++++++++++----
->   1 file changed, 10 insertions(+), 4 deletions(-)
+> On Thu, Dec 10, 2020 at 11:55:18AM +0800, Muchun Song wrote:
+> > The free_vmemmap_pages_per_hpage() which indicate that how many vmemmap
+> > pages associated with a HugeTLB page that can be freed to the buddy
+> > allocator just returns zero now, because all infrastructure is not
+> > ready. Once all the infrastructure is ready, we will rework this
+> > function to support the feature.
 >
-> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-> index ae466cd592922..c9abbe4ff0ba3 100644
-> --- a/sound/soc/intel/skylake/skl-topology.c
-> +++ b/sound/soc/intel/skylake/skl-topology.c
-> @@ -3618,12 +3618,18 @@ static void skl_tplg_complete(struct snd_soc_component *component)
->   	int i;
->   
->   	list_for_each_entry(dobj, &component->dobj_list, list) {
-> -		struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
-> -		struct soc_enum *se =
-> -			(struct soc_enum *)kcontrol->private_value;
-> -		char **texts = dobj->control.dtexts;
-> +		struct snd_kcontrol *kcontrol;
-> +		struct soc_enum *se;
-> +		char **texts;
->   		char chan_text[4];
->   
-> +		kcontrol = dobj->control.kcontrol;
-> +		if(!kcontrol)
-> +			continue;
-> +
-> +		se = (struct soc_enum *)kcontrol->private_value;
-> +		texts = dobj->control.dtexts;
-> +
->   		if (dobj->type != SND_SOC_DOBJ_ENUM ||
->   		    dobj->control.kcontrol->put !=
->   		    skl_tplg_multi_config_set_dmic)
+> I would reword the above to:
 >
-> base-commit: 69fe63aa100220c8fd1f451dd54dd0895df1441d
+> "free_vmemmap_pages_per_hpage(), which indicates how many vmemmap
+>  pages associated with a HugeTLB page can be freed, returns zero for
+>  now, which means the feature is disabled.
+>  We will enable it once all the infrastructure is there."
+
+Thanks for your suggestion.
+
+>
+>  Or something along those lines.
+>
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Overall this looks good to me, and it has seen a considerable
+> simplification, which is good.
+> Some nits/questions below:
+>
+>
+> > +#define vmemmap_hpage_addr_end(addr, end)                             \
+> > +({                                                                    \
+> > +     unsigned long __boundary;                                        \
+> > +     __boundary = ((addr) + VMEMMAP_HPAGE_SIZE) & VMEMMAP_HPAGE_MASK; \
+> > +     (__boundary - 1 < (end) - 1) ? __boundary : (end);               \
+> > +})
+>
+> Maybe add a little comment explaining what are you trying to get here.
+
+OK. Will do.
+
+>
+> > +/*
+> > + * Walk a vmemmap address to the pmd it maps.
+> > + */
+> > +static pmd_t *vmemmap_to_pmd(unsigned long addr)
+> > +{
+> > +     pgd_t *pgd;
+> > +     p4d_t *p4d;
+> > +     pud_t *pud;
+> > +     pmd_t *pmd;
+> > +
+> > +     pgd = pgd_offset_k(addr);
+> > +     if (pgd_none(*pgd))
+> > +             return NULL;
+> > +
+> > +     p4d = p4d_offset(pgd, addr);
+> > +     if (p4d_none(*p4d))
+> > +             return NULL;
+> > +
+> > +     pud = pud_offset(p4d, addr);
+> > +     if (pud_none(*pud))
+> > +             return NULL;
+> > +
+> > +     pmd = pmd_offset(pud, addr);
+> > +     if (pmd_none(*pmd))
+> > +             return NULL;
+> > +
+> > +     return pmd;
+> > +}
+>
+> I saw that some people suggested to put all the non-hugetlb vmemmap
+> functions under sparsemem-vmemmap.c, which makes some sense if some
+> feature is going to re-use this code somehow. (I am not sure if the
+> recent patches that take advantage of this feature for ZONE_DEVICE needs
+> something like this).
+>
+> I do not have a strong opinion on this though.
+
+Yeah, I also thought about this. I prefer moving the common code to
+the sparsemem-vmemmap.c. If more people agree with this, I can do
+this in the next version. :)
+
+>
+> > +static void vmemmap_reuse_pte_range(struct page *reuse, pte_t *pte,
+> > +                                 unsigned long start, unsigned long end,
+> > +                                 struct list_head *vmemmap_pages)
+> > +{
+> > +     /*
+> > +      * Make the tail pages are mapped with read-only to catch
+> > +      * illegal write operation to the tail pages.
+> > +      */
+> > +     pgprot_t pgprot = PAGE_KERNEL_RO;
+> > +     pte_t entry = mk_pte(reuse, pgprot);
+> > +     unsigned long addr;
+> > +
+> > +     for (addr = start; addr < end; addr += PAGE_SIZE, pte++) {
+> > +             struct page *page;
+> > +
+> > +             VM_BUG_ON(pte_none(*pte));
+>
+> If it is none, page will be NULL and we will crash in the list_add
+> below?
+
+Yeah, I think that here should be a BUG_ON.
+
+>
+> > +static void vmemmap_remap_range(unsigned long start, unsigned long end,
+> > +                             struct list_head *vmemmap_pages)
+> > +{
+> > +     pmd_t *pmd;
+> > +     unsigned long next, addr = start;
+> > +     struct page *reuse = NULL;
+> > +
+> > +     VM_BUG_ON(!IS_ALIGNED(start, PAGE_SIZE));
+> > +     VM_BUG_ON(!IS_ALIGNED(end, PAGE_SIZE));
+> > +     VM_BUG_ON((start >> PUD_SHIFT) != (end >> PUD_SHIFT));
+> This last VM_BUG_ON, is to see if both fall under the same PUD table?
+
+Right.
+
+>
+> > +
+> > +     pmd = vmemmap_to_pmd(addr);
+> > +     BUG_ON(!pmd);
+>
+> Which is the criteria you followed to make this BUG_ON and VM_BUG_ON
+> in the check from vmemmap_reuse_pte_range?
+
+Indeed, I am somewhat confused. Should be unified. I should use
+BUG_ON here and in vmemmap_reuse_pte_range.
+
+>
+> --
+> Oscar Salvador
+> SUSE L3
 
 
-Thanks for pointing out and fixing this. This check was obviously 
-missing there. I did a quick verification on few of our platforms, 
-encountered no issues, so:
 
-     Reviewed-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
-
-
-Also, could you please:
-
-- describe the affected configuration (used machine driver or audio card 
-name, device name),
-- share full dmesg logs from one of said crashes,
-- copy the output of "amixer -c0 controls" command executed on affected 
-device.
-
-These would be useful information for us to further improve our 
-validation and help us with debugging.
-
-
-Thanks,
-
-Mateusz
-
-
+-- 
+Yours,
+Muchun
