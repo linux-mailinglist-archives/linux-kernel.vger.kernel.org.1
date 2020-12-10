@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E39F2D5940
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC0F2D5937
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389483AbgLJLal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:30:41 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:52943 "EHLO ozlabs.org"
+        id S2389490AbgLJLam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:30:42 -0500
+Received: from ozlabs.org ([203.11.71.1]:35319 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389444AbgLJLa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2389446AbgLJLa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Dec 2020 06:30:27 -0500
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4CsBXS1KWSz9sWt; Thu, 10 Dec 2020 22:29:43 +1100 (AEDT)
+        id 4CsBXT0LmQz9sWx; Thu, 10 Dec 2020 22:29:44 +1100 (AEDT)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
 To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         Paul Mackerras <paulus@samba.org>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <18b357d68c4cde149f75c7a1031c850925cd8128.1605981539.git.christophe.leroy@csgroup.eu>
-References: <18b357d68c4cde149f75c7a1031c850925cd8128.1605981539.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc: inline iomap accessors
-Message-Id: <160756604708.1313423.2512500774127488232.b4-ty@ellerman.id.au>
-Date:   Thu, 10 Dec 2020 22:29:43 +1100 (AEDT)
+In-Reply-To: <829ae1aed1d2fc6b5fc5818362e573dee5d6ecde.1602489852.git.christophe.leroy@csgroup.eu>
+References: <829ae1aed1d2fc6b5fc5818362e573dee5d6ecde.1602489852.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/mm: Desintegrate MMU_FTR_PPCAS_ARCH_V2
+Message-Id: <160756607081.1313423.15871737991465948250.b4-ty@ellerman.id.au>
+Date:   Thu, 10 Dec 2020 22:29:44 +1100 (AEDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 21 Nov 2020 17:59:19 +0000 (UTC), Christophe Leroy wrote:
-> ioreadXX()/ioreadXXbe() accessors are equivalent to ppc
-> in_leXX()/in_be16() accessors but they are not inlined.
+On Mon, 12 Oct 2020 08:04:24 +0000 (UTC), Christophe Leroy wrote:
+> MMU_FTR_PPCAS_ARCH_V2 is defined in cpu_table.h
+> as MMU_FTR_TLBIEL | MMU_FTR_16M_PAGE.
 > 
-> Since commit 0eb573682872 ("powerpc/kerenl: Enable EEH for IO
-> accessors"), the 'le' versions are equivalent to the ones
-> defined in asm-generic/io.h, allthough the ones there are inlined.
+> MMU_FTR_TLBIEL and MMU_FTR_16M_PAGE are defined in mmu.h
+> 
+> MMU_FTR_PPCAS_ARCH_V2 is used only in mmu.h and it is used only once.
 > 
 > [...]
 
 Applied to powerpc/next.
 
-[1/1] powerpc: inline iomap accessors
-      https://git.kernel.org/powerpc/c/894fa235eb4ca0bfa692dbe4932c2f940cdc8c1e
+[1/1] powerpc/mm: Desintegrate MMU_FTR_PPCAS_ARCH_V2
+      https://git.kernel.org/powerpc/c/0e8ff4f8d2faa2e3381e774c9e2fb975e8b4598f
 
 cheers
