@@ -2,66 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03F32D6512
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFF02D654D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 19:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390848AbgLJSbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 13:31:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42258 "EHLO mail.kernel.org"
+        id S2390635AbgLJOcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:32:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:45086 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390793AbgLJOeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:34:09 -0500
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.19 36/39] dm writecache: remove BUG() and fail gracefully instead
-Date:   Thu, 10 Dec 2020 15:27:15 +0100
-Message-Id: <20201210142604.063339535@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
-References: <20201210142602.272595094@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S2390490AbgLJOb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:31:26 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 635C631B;
+        Thu, 10 Dec 2020 06:30:32 -0800 (PST)
+Received: from e123648.arm.com (unknown [10.57.1.60])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5D69E3F718;
+        Thu, 10 Dec 2020 06:30:29 -0800 (PST)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        daniel.lezcano@linaro.org, lukasz.luba@arm.com, orjan.eide@arm.com,
+        robh@kernel.org, alyssa.rosenzweig@collabora.com,
+        steven.price@arm.com, airlied@linux.ie, daniel@ffwll.ch,
+        ionela.voinescu@arm.com
+Subject: [PATCH v4 1/5] thermal: devfreq_cooling: change tracing function and arguments
+Date:   Thu, 10 Dec 2020 14:30:10 +0000
+Message-Id: <20201210143014.24685-2-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201210143014.24685-1-lukasz.luba@arm.com>
+References: <20201210143014.24685-1-lukasz.luba@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Snitzer <snitzer@redhat.com>
+Prepare for deleting the static and dynamic power calculation and clean
+the trace function. These two fields are going to be removed in the next
+changes.
 
-commit 857c4c0a8b2888d806f4308c58f59a6a81a1dee9 upstream.
-
-Building on arch/s390/ results in this build error:
-
-cc1: some warnings being treated as errors
-../drivers/md/dm-writecache.c: In function 'persistent_memory_claim':
-../drivers/md/dm-writecache.c:323:1: error: no return statement in function returning non-void [-Werror=return-type]
-
-Fix this by replacing the BUG() with an -EOPNOTSUPP return.
-
-Fixes: 48debafe4f2f ("dm: add writecache target")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org> # for tracing code
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 ---
- drivers/md/dm-writecache.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/thermal/devfreq_cooling.c |  3 +--
+ include/trace/events/thermal.h    | 19 +++++++++----------
+ 2 files changed, 10 insertions(+), 12 deletions(-)
 
---- a/drivers/md/dm-writecache.c
-+++ b/drivers/md/dm-writecache.c
-@@ -318,7 +318,7 @@ err1:
- #else
- static int persistent_memory_claim(struct dm_writecache *wc)
- {
--	BUG();
-+	return -EOPNOTSUPP;
- }
- #endif
+diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+index dfab49a67252..659c0143c9f0 100644
+--- a/drivers/thermal/devfreq_cooling.c
++++ b/drivers/thermal/devfreq_cooling.c
+@@ -277,8 +277,7 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
+ 		*power = dyn_power + static_power;
+ 	}
  
-
+-	trace_thermal_power_devfreq_get_power(cdev, status, freq, dyn_power,
+-					      static_power, *power);
++	trace_thermal_power_devfreq_get_power(cdev, status, freq, *power);
+ 
+ 	return 0;
+ fail:
+diff --git a/include/trace/events/thermal.h b/include/trace/events/thermal.h
+index 135e5421f003..8a5f04888abd 100644
+--- a/include/trace/events/thermal.h
++++ b/include/trace/events/thermal.h
+@@ -153,31 +153,30 @@ TRACE_EVENT(thermal_power_cpu_limit,
+ TRACE_EVENT(thermal_power_devfreq_get_power,
+ 	TP_PROTO(struct thermal_cooling_device *cdev,
+ 		 struct devfreq_dev_status *status, unsigned long freq,
+-		u32 dynamic_power, u32 static_power, u32 power),
++		u32 power),
+ 
+-	TP_ARGS(cdev, status,  freq, dynamic_power, static_power, power),
++	TP_ARGS(cdev, status,  freq, power),
+ 
+ 	TP_STRUCT__entry(
+ 		__string(type,         cdev->type    )
+ 		__field(unsigned long, freq          )
+-		__field(u32,           load          )
+-		__field(u32,           dynamic_power )
+-		__field(u32,           static_power  )
++		__field(u32,           busy_time)
++		__field(u32,           total_time)
+ 		__field(u32,           power)
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__assign_str(type, cdev->type);
+ 		__entry->freq = freq;
+-		__entry->load = (100 * status->busy_time) / status->total_time;
+-		__entry->dynamic_power = dynamic_power;
+-		__entry->static_power = static_power;
++		__entry->busy_time = status->busy_time;
++		__entry->total_time = status->total_time;
+ 		__entry->power = power;
+ 	),
+ 
+-	TP_printk("type=%s freq=%lu load=%u dynamic_power=%u static_power=%u power=%u",
++	TP_printk("type=%s freq=%lu load=%u power=%u",
+ 		__get_str(type), __entry->freq,
+-		__entry->load, __entry->dynamic_power, __entry->static_power,
++		__entry->total_time == 0 ? 0 :
++			(100 * __entry->busy_time) / __entry->total_time,
+ 		__entry->power)
+ );
+ 
+-- 
+2.17.1
 
