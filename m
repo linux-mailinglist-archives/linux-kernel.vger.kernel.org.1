@@ -2,140 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AB42D5925
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D95D2D5929
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388325AbgLJLZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:25:04 -0500
-Received: from smtp4-g21.free.fr ([212.27.42.4]:56064 "EHLO smtp4-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727306AbgLJLYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:24:17 -0500
-Received: from [IPv6:2a01:e34:ed2f:f020:4ea:d408:1aec:e109] (unknown [IPv6:2a01:e34:ed2f:f020:4ea:d408:1aec:e109])
-        (Authenticated sender: daniel.lezcano)
-        by smtp4-g21.free.fr (Postfix) with ESMTPA id 8A2EB19F4C8;
-        Thu, 10 Dec 2020 12:23:20 +0100 (CET)
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Dinh Nguyen <dinguyen@kernel.org>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   Daniel Lezcano <daniel.lezcano@free.fr>
-Subject: [GIT PULL] timers changes for v5.11 #2
-Autocrypt: addr=daniel.lezcano@free.fr; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <65d593c1-93a8-bd43-bfb5-891e7c2f4f2b@free.fr>
-Date:   Thu, 10 Dec 2020 12:23:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S2388495AbgLJLZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:25:24 -0500
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:10096 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388301AbgLJLZX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:25:23 -0500
+Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
+        by mx0b-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BABJUoQ020307;
+        Thu, 10 Dec 2020 03:24:14 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=lfQvnuV9/hET3e6h6dEP6kwexHQzECvSPFsQM0SjgWw=;
+ b=D9rY+AOPfNNBG86ZNf6cgtP3EDtdMhL7wvY3ym/FfuLbvGVW2cvG/Zesm1Ql7Xur6dSZ
+ THBhqQ5RBmzkPkKmcuLRyOLLh0spyWHVukFtO2JkKNF57fuCeguET5uX6h2vMneRvYXD
+ vxDWd7hxUITWThnXpqM4KTzwPLmBorXLcTw6MGQqsreTwYuTCF85Wg2LTZpf1/GVJZem
+ 5/5yYQubqojuz9WP99lsDCGx1UXy3mGRZ3hfwhJWmhwGbTvHSUanaBTtMZM520mkMdle
+ wvrPJbdqE8oUyXd7CiIB/ekCpSsJDK8NsH5atwZI2Hnju01BsrK5YRZDeg2ohA1zVEcm VA== 
+Received: from nam02-cy1-obe.outbound.protection.outlook.com (mail-cys01nam02lp2053.outbound.protection.outlook.com [104.47.37.53])
+        by mx0b-0014ca01.pphosted.com with ESMTP id 3586p49920-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Dec 2020 03:24:13 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=akRilzd6uyYDYlyGPvR/LDCR5bo/Aw4b8HQcdSU1DA+RmIbQNGv3ruj0DqXRiKObvnTUXHRnvvynrRdpgEKHM7mDqqAg4NSH34IJzvH3aoldeD6RJsetCml2zYYPByOfsoQtDIsaBOQeKxwGu7ki/vh8LFrMXNuGnKeo/xNQfaNTdYmXn8sewkhp1WrNt2l3Ir8Wn30xhjQHuVxtxEuZMI6pJlxkVDfGm/ONA5tUBf7sfyk+IQ5Zy3T3qCzYWRylGWnO3O76NmnDy0p+gerA6Q0vGjRysJVyrQMxwkPph6MWNOLnoCuXda+MbcnD2xoy6+l95ooDXL+Fz88XbpMFvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lfQvnuV9/hET3e6h6dEP6kwexHQzECvSPFsQM0SjgWw=;
+ b=AchJ9dTwInA+xe7SZ1rplN1BDUguMAtzq3hJ1aHymAby4Alppm6Ej84MKmksWgsu8mvLiAchUxg9/Zxrkw6PR7OOeSOeMMp2C/nIWzs989r0Df5KEaekHsOzACG9Xd+3qVUECqzUUSkWmwgZvoI8FBrti3f4yn/nByIHjN6NNM0WXTFk0BLYL+Bfp1Bv5qNhsRe16VGMof9Wm3edfOActgO8fs8C/xv49+Tzmm8YsK8fvNdORhx0i0Kk2JsDd+RDLzBQMApooaxwIBV5dhNkZSQfCu+disnPvqxWUiqPY2iScaizROCZRz4EcHKyWeUsQHxg5rcruNcE/Kj7coQzPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lfQvnuV9/hET3e6h6dEP6kwexHQzECvSPFsQM0SjgWw=;
+ b=SJwT+ZaF+RsQ5/itcJup1zS7nah8GDGmKcJU0jO86HtXJ8uEfAFyE81W1rczkFrrQ81XFczouWqxgcY4e7XvL2eBuoa4b1x0+l5Nwvtqb1/bkYuKQ7MOnK9Bd7lrZISDmikn+o82T8c33pwsu/jvKYNKvkxbOBWwdQVBBAwNfRQ=
+Received: from BYAPR07MB5381.namprd07.prod.outlook.com (2603:10b6:a03:6d::24)
+ by BY5PR07MB8149.namprd07.prod.outlook.com (2603:10b6:a03:1d9::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.15; Thu, 10 Dec
+ 2020 11:24:10 +0000
+Received: from BYAPR07MB5381.namprd07.prod.outlook.com
+ ([fe80::b09c:4a2d:608f:a0ab]) by BYAPR07MB5381.namprd07.prod.outlook.com
+ ([fe80::b09c:4a2d:608f:a0ab%3]) with mapi id 15.20.3632.023; Thu, 10 Dec 2020
+ 11:24:10 +0000
+From:   Pawel Laszczak <pawell@cadence.com>
+To:     Peter Chen <peter.chen@nxp.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: RE: linux-next: Tree for Dec 9 (usb/cdns3)
+Thread-Topic: linux-next: Tree for Dec 9 (usb/cdns3)
+Thread-Index: AQHWzo/azlCvSJB/Aky2bACp1E8uPqnwBkKAgAAQFvCAABVCAA==
+Date:   Thu, 10 Dec 2020 11:24:10 +0000
+Message-ID: <BYAPR07MB538137E487C30D74D5F9FB65DDCB0@BYAPR07MB5381.namprd07.prod.outlook.com>
+References: <20201209214447.3bfdeb87@canb.auug.org.au>
+ <7e4ff29c-9fa8-219c-a17d-e9be9a2a92ab@infradead.org>
+ <20201210085147.GB2388@b29397-desktop>
+ <BYAPR07MB5381DD2499ABD871C0E4B118DDCB0@BYAPR07MB5381.namprd07.prod.outlook.com>
+In-Reply-To: <BYAPR07MB5381DD2499ABD871C0E4B118DDCB0@BYAPR07MB5381.namprd07.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccGF3ZWxsXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctMzc5MDhjY2YtM2FkYS0xMWViLTg3NzUtYTQ0Y2M4MWIwYzU1XGFtZS10ZXN0XDM3OTA4Y2QwLTNhZGEtMTFlYi04Nzc1LWE0NGNjODFiMGM1NWJvZHkudHh0IiBzej0iMjgwNCIgdD0iMTMyNTIwNzMwNDg0OTEyNDUyIiBoPSJsODA4TGpwTEhGeE5WY1M4Z0ZaVjZORnhSRWs9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
+x-dg-rorf: true
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=cadence.com;
+x-originating-ip: [185.217.253.59]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d69aab3b-b380-4f52-3ecc-08d89cfe1d8c
+x-ms-traffictypediagnostic: BY5PR07MB8149:
+x-microsoft-antispam-prvs: <BY5PR07MB814953F5F1A0F8BDECCF6FD6DDCB0@BY5PR07MB8149.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: me2vVDFHoEqD1zkzcaf3tVDlYt7kMtRoz1mWgZ64R2SQxzXFKb3qmiw82diTq2Ag/YnOLCeQBOg01dQqNB6lP1cBQaZzijsI9Y9q+WM7LOoWhlp3C83XhxrsLtmdrnUO6kZxbQtH0W0OcOfo27TtyH0kfhewk0BMxqH4GYqa2/lDCcYMaAUGMjrCXpd2LBIScQMp9xySb5zkQa6GmT+PaD8e786iihpXS2Yk/QO2wzR0rjooSB3i28UNcBdUwPLuJtZ7U01SdP/Jt/Rxu9ZvJWBiYr/904Qu8aJEHjmAfWuPjiuD3HvjvL1pvIhLsyFcEq4DAqLayrgE5T70ZBy5qIIR9u4bvbXiSY1kHkdEqDIoywYmfpA3/iwndcNq6hfd
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR07MB5381.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(36092001)(33656002)(2940100002)(9686003)(55016002)(26005)(186003)(8676002)(508600001)(6506007)(53546011)(4326008)(8936002)(52536014)(66556008)(64756008)(66446008)(5660300002)(66946007)(86362001)(7696005)(66476007)(83380400001)(2906002)(71200400001)(54906003)(110136005)(76116006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?SAcGyFeJQyJ7J5jiAM7oo+HLDFlrgBR+r9kwvXZLofO7brlcMy4R1iQmKJaF?=
+ =?us-ascii?Q?2K83U9FC/RpRJxr01xoQ9DroXNa/9d9XnmHDEvHbB9+49iB2NzEcR7VcTwNP?=
+ =?us-ascii?Q?9T7fqBRywFwgpGujFBhSvcdvF4Ztr8Ypl4u7rz38DflQwVgOjTXUSa7DrlEX?=
+ =?us-ascii?Q?UpPYjUfD+NKARbWHiS+rDQD5Cqza+1NZRVpr5ygnhkQ7U8SiWc+bpEslXfsU?=
+ =?us-ascii?Q?Lk4pqC6UwdNko6qzPp5dVpodRFujf81Lcc5CdtcByTXbX5f+AQJY99+F01KX?=
+ =?us-ascii?Q?Kgxnyl3cXrdeXYlHowNgnLJxOpV0viN/w9QZl4YMAjNtlkD4jxJKrV0Ifa00?=
+ =?us-ascii?Q?5gCZ8OnfrAiLncqsy3vMby6VkS7JU7NMuF/JHai19DN4o0U4N1dA+Dn/dQzp?=
+ =?us-ascii?Q?D7+N3VymAZNDPtyUGymu064VYsV84UZl4NNDQIo1AW/Gg3zsAtUyX3TBQchr?=
+ =?us-ascii?Q?648R0u30SEhcTXRpc45LXsioojaV28kAqq1upYhkicsRyLRk8e381DJ98AmR?=
+ =?us-ascii?Q?mYJ2gnMN8U1WsZ5TbveWDtOhQqp4ReCiIkZa/a6RHq+AtJM2PGd9EB82oq83?=
+ =?us-ascii?Q?47WGRtfFjhtgt5D0pGTQWW4ihQ48SCVShYHqnmlvQqCaXM6jGoYulhB53Jeg?=
+ =?us-ascii?Q?vQkRLqPZpy/JYCeLH3fVi9uBPEh3Ia8L7+K8l87gbL1+P9Tqc+Te63Fx1gt5?=
+ =?us-ascii?Q?HuepQ+7Yjkgo89BQC92iBcvPq+tLA/l/oBs4yqyRJCXOs/8+6/D/cqw5ExzG?=
+ =?us-ascii?Q?u+BMcPTMEoOeD0PM4OrLJ4c7KWZxHA/HmscPPKIBsKVioa5uHgZBaHajdeb9?=
+ =?us-ascii?Q?lk04+Kvec5r+fD593Aui3TMO4RxyAnetpbg5C1iLHKDoqiUIJAnxq0vIvwMl?=
+ =?us-ascii?Q?xv5UFWmxICrmNThRZFCL54cccLtbe+P2yTvDpUFXJGOZ+FLXUOBuyKf5fwCB?=
+ =?us-ascii?Q?5I2RKfmwpiTco1OhL19xMIiRFCbcAofOgP2v0tcEVtM=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR07MB5381.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d69aab3b-b380-4f52-3ecc-08d89cfe1d8c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2020 11:24:10.3742
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bS6zUgGaDayWSAKbL3VjkBCow0iqOBohcoemxaBJStGHl/DWd3Iy62CESuzeUhq0QDHDC40d85lSAy0pioMXZAAeoRGYnt81PUVm/k0q1dM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR07MB8149
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-10_03:2020-12-09,2020-12-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 mlxscore=0
+ spamscore=0 phishscore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0
+ malwarescore=0 impostorscore=0 adultscore=0 priorityscore=1501
+ mlxlogscore=607 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012100076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Peter,
 
-Hi Thomas,
+>
+>>
+>>On 20-12-09 16:58:16, Randy Dunlap wrote:
+>>> On 12/9/20 2:44 AM, Stephen Rothwell wrote:
+>>> > Hi all,
+>>> >
+>>> > Changes since 20201208:
+>>> >
+>>>
+>>> (I don't know what to do about this one -- seeking help.)
+>>
+>>Add Pawel.
+>>
+>>Hi Pawel,
+>>
+>>Add old cdns3 logic, when the CONFIG_USB=3Dm
+>>If CONFIG_USB_CDNS3 is M, the host will be built as module
+>>If CONFIG_USB_CDNS3 is build-in, the host will not built due to
+>>USB=3Dm, so USB!=3D USB_CDNS3 at below dependency.
+>>
+>>config USB_CDNS3_HOST
+>>	bool "Cadence USB3 host controller"
+>>	depends on USB=3Dy || USB=3DUSB_CDNS3
+>>
+>>So, it has no such issue.
+>>
+>>But after adding CDNSSP support, the configuration relationship is
+>>much complicated, both CDNS3 and CDNSSP could choose host file,
+>>would you have a check for this issue?
+>
+>I can recreate this issue. I will try to resolve it.
 
-please consider pulling those 3 last changes which fixes some issues on
-the drivers.
+config USB_CDNS3_HOST
+        bool "Cadence USB3 host controller"
+-       depends on USB=3Dy || USB=3DUSB_CDNS3
++       depends on USB=3DUSB_CDNS3
+        select USB_CDNS_HOST
+        help
+          Say Y here to enable host controller functionality of the
+@@ -110,7 +110,7 @@ config USB_CDNSP_GADGET
 
-The following changes since commit fef92cd2bc04c64bb3743d40c0b4be47aedf9e23:
+ config USB_CDNSP_HOST
+        bool "Cadence CDNSP host controller"
+-       depends on USB=3Dy || USB=3DUSB_CDNSP_PCI
++       depends on USB=3DUSB_CDNSP_PCI
+        select USB_CDNS_HOST
+        help
+          Say Y here to enable host controller functionality of the
 
-  Merge tag 'timers-v5.11' of
-https://git.linaro.org/people/daniel.lezcano/linux into timers/core
-(2020-12-04 00:39:45 +0100)
+Peter, what about such change. It fix this issue but I need to check
+It with some other kernel configurations.=20
+At this moment it's the only solution which I've found but
+it's introduces some limitation in CDNS3/CDNSP configuration.
 
-are available in the Git repository at:
+>
+>>
+>>Peter
+>>
+>>>
+>>>
+>>> on x86_64:
+>>>
+>>> ld: drivers/usb/cdns3/host.o: in function `xhci_cdns3_suspend_quirk':
+>>> host.c:(.text+0x9): undefined reference to `usb_hcd_is_primary_hcd'
+>>>
+>>> This reference to 'usb_hdc_is_primary_hcd' is from hcd_to_xhci(),
+>>> which is being built as a loadable module:
+>>>
+>>> int xhci_cdns3_suspend_quirk(struct usb_hcd *hcd)
+>>> {
+>>> 	struct xhci_hcd	*xhci =3D hcd_to_xhci(hcd);
+>>>
+>>>
+>>>
+>>>
+>>> CONFIG_USB_GADGET=3Dy
+>>> CONFIG_USB_SUPPORT=3Dy
+>>> CONFIG_USB_COMMON=3Dy
+>>> # CONFIG_USB_CONN_GPIO is not set
+>>> CONFIG_USB_ARCH_HAS_HCD=3Dy
+>>> CONFIG_USB=3Dm
+>>>
+>>> CONFIG_USB_CDNS_SUPPORT=3Dy
+>>> CONFIG_USB_CDNS_HOST=3Dy
+>>> CONFIG_USB_CDNS3=3Dm
+>>> CONFIG_USB_CDNS3_GADGET=3Dy
+>>> CONFIG_USB_CDNS3_HOST=3Dy
+>>>
+>>> Problem is mostly that CONFIG_USB=3Dm and CONFIG_USB_GADGET=3Dy.
+>>>
+>>>
+>>> Full randconfig file is attached.
+>>>
+>>>
+>>> thanks.
+>>> --
+>>> ~Randy
+>>> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>>
+>>
+>>
+--
 
-  https://git.linaro.org/people/daniel.lezcano/linux.git tags/timers-v5.11-2
+Thanks
+Pawel Laszczak
 
-for you to fetch changes up to 8ae954caf49ac403c177d117fb8e05cbc866aa3c:
-
-  clocksource/drivers/sh_cmt: Fix potential deadlock when calling
-runtime PM (2020-12-07 20:10:05 +0100)
-
-----------------------------------------------------------------
-- Fix error handling if no clock is available on dw_apb_timer_of (Dinh
-Nguyen)
-
-- Fix overhead for erratum handling when the timer has no erratum and
-  fix fault programing for the event stream on the arm arch timer
-  (Keqian Zhu)
-
-- Fix potential deadlock when calling runtime PM on sh_cmt (Niklas
-  Söderlund)
-
-----------------------------------------------------------------
-Dinh Nguyen (1):
-      clocksource/drivers/dw_apb_timer_of: Add error handling if no
-clock available
-
-Keqian Zhu (2):
-      clocksource/drivers/arm_arch_timer: Use stable count reader in
-erratum sne
-      clocksource/drivers/arm_arch_timer: Correct fault programming of
-CNTKCTL_EL1.EVNTI
-
-Niklas Söderlund (1):
-      clocksource/drivers/sh_cmt: Fix potential deadlock when calling
-runtime PM
-
- drivers/clocksource/arm_arch_timer.c  | 27 ++++++++++++++++++---------
- drivers/clocksource/dw_apb_timer_of.c | 57
-+++++++++++++++++++++++++++++++++++++++------------------
- drivers/clocksource/sh_cmt.c          | 18 ++++++++++++++----
- 3 files changed, 71 insertions(+), 31 deletions(-)
