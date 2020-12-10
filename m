@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69192D58B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37552D58B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389191AbgLJK46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:56:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56190 "EHLO mail.kernel.org"
+        id S2389248AbgLJK5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:57:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389165AbgLJK4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:56:36 -0500
+        id S2389224AbgLJK5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 05:57:21 -0500
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     Linux Media Mailing List <linux-media@vger.kernel.org>
@@ -18,9 +18,9 @@ Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 07/13] media: ext-ctrls-codec.rst: simplify a few tables
-Date:   Thu, 10 Dec 2020 11:55:46 +0100
-Message-Id: <3979524f134cf28fea77c9795266eca447a5b8c3.1607597287.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 10/13] media: buffer.rst: fix a PDF output issue
+Date:   Thu, 10 Dec 2020 11:55:49 +0100
+Message-Id: <fbde561f4ee2157f882450c0b03254a73b113f42.1607597287.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1607597287.git.mchehab+huawei@kernel.org>
 References: <cover.1607597287.git.mchehab+huawei@kernel.org>
@@ -31,113 +31,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Those tables nicely fits on PDF output without any hack.
-Yet, they are using a very small font, and have tabularcolumns.
+Sphinx/LaTeX doesn't work well with literal blocks.
+Due to that, V4L2_BUF_FLAG_M2M_HOLD_CAPTURE_BUF ends
+being writing outside the table (and even outside the page).
 
-Clean it up, and convert it to an ASCII artwork, as it
-makes easier to see that no hacks are needed to display it ;-)
+We need to not only change the table size and font size, but
+also to change the message, in order to avoid this bug.
+
+So, improve the text a little bit, while ensuring that the
+literal will be written at the beginning of the second line.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../media/v4l/ext-ctrls-codec.rst             | 78 +++++--------------
- 1 file changed, 19 insertions(+), 59 deletions(-)
+ Documentation/userspace-api/media/v4l/buffer.rst | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index 08c317ae0910..abf64e5500e0 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -2762,47 +2762,21 @@ enum v4l2_mpeg_video_hevc_profile -
- enum v4l2_mpeg_video_hevc_level -
-     Selects the desired level for HEVC encoder.
+diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
+index 1b0fdc160533..4194ebac2d6a 100644
+--- a/Documentation/userspace-api/media/v4l/buffer.rst
++++ b/Documentation/userspace-api/media/v4l/buffer.rst
+@@ -452,16 +452,16 @@ Buffer Flags
  
--.. raw:: latex
--
--    \footnotesize
--
--.. tabularcolumns:: |p{9.0cm}|p{8.0cm}|
--
--.. flat-table::
--    :header-rows:  0
--    :stub-columns: 0
--
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_1``
--      - Level 1.0
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_2``
--      - Level 2.0
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_2_1``
--      - Level 2.1
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_3``
--      - Level 3.0
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_3_1``
--      - Level 3.1
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_4``
--      - Level 4.0
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_4_1``
--      - Level 4.1
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_5``
--      - Level 5.0
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_5_1``
--      - Level 5.1
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_5_2``
--      - Level 5.2
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_6``
--      - Level 6.0
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_6_1``
--      - Level 6.1
--    * - ``V4L2_MPEG_VIDEO_HEVC_LEVEL_6_2``
--      - Level 6.2
--
--.. raw:: latex
--
--    \normalsize
--
-+==================================	=========
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_1``	Level 1.0
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_2``	Level 2.0
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_2_1``	Level 2.1
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_3``	Level 3.0
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_3_1``	Level 3.1
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_4``	Level 4.0
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_4_1``	Level 4.1
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_5``	Level 5.0
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_5_1``	Level 5.1
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_5_2``	Level 5.2
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_6``	Level 6.0
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_6_1``	Level 6.1
-+``V4L2_MPEG_VIDEO_HEVC_LEVEL_6_2``	Level 6.2
-+==================================	=========
+ .. raw:: latex
  
- ``V4L2_CID_MPEG_VIDEO_HEVC_FRAME_RATE_RESOLUTION (integer)``
-     Indicates the number of evenly spaced subintervals, called ticks, within
-@@ -2821,24 +2795,10 @@ enum v4l2_mpeg_video_hevc_tier -
-     this flag to 1 indicates High tier. High tier is for applications requiring
-     high bit rates.
+-    \small
++    \footnotesize
  
--.. raw:: latex
--
--    \footnotesize
--
--.. tabularcolumns:: |p{9.0cm}|p{8.0cm}|
--
--.. flat-table::
--    :header-rows:  0
--    :stub-columns: 0
--
--    * - ``V4L2_MPEG_VIDEO_HEVC_TIER_MAIN``
--      - Main tier.
--    * - ``V4L2_MPEG_VIDEO_HEVC_TIER_HIGH``
--      - High tier.
--
--.. raw:: latex
--
--    \normalsize
-+==================================	==========
-+``V4L2_MPEG_VIDEO_HEVC_TIER_MAIN``	Main tier.
-+``V4L2_MPEG_VIDEO_HEVC_TIER_HIGH``	High tier.
-+==================================	==========
+-.. tabularcolumns:: |p{7.0cm}|p{2.1cm}|p{8.4cm}|
++.. tabularcolumns:: |p{6.5cm}|p{1.8cm}|p{9.0cm}|
  
+ .. cssclass:: longtable
  
- ``V4L2_CID_MPEG_VIDEO_HEVC_MAX_PARTITION_DEPTH (integer)``
+ .. flat-table::
+     :header-rows:  0
+     :stub-columns: 0
+-    :widths:       3 1 4
++    :widths:       65 18 70
+ 
+     * .. _`V4L2-BUF-FLAG-MAPPED`:
+ 
+@@ -585,7 +585,7 @@ Buffer Flags
+ 
+       - ``V4L2_BUF_FLAG_M2M_HOLD_CAPTURE_BUF``
+       - 0x00000200
+-      - Only valid if ``V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF`` is
++      - Only valid if :c:type:`struct v4l2_requestbuffers` flag ``V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF`` is
+ 	set. It is typically used with stateless decoders where multiple
+ 	output buffers each decode to a slice of the decoded frame.
+ 	Applications can set this flag when queueing the output buffer
 -- 
 2.29.2
 
