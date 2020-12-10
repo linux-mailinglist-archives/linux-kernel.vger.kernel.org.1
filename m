@@ -2,26 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9977A2D5ED2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 453D92D5EDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391728AbgLJOuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:50:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47878 "EHLO mail.kernel.org"
+        id S2391699AbgLJOuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:50:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391366AbgLJOki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:40:38 -0500
+        id S2391282AbgLJOkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:40:18 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Luo Meng <luomeng12@huawei.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.9 64/75] ASoC: wm_adsp: fix error return code in wm_adsp_load()
-Date:   Thu, 10 Dec 2020 15:27:29 +0100
-Message-Id: <20201210142609.195130809@linuxfoundation.org>
+        stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.9 72/75] netfilter: nf_tables: avoid false-postive lockdep splat
+Date:   Thu, 10 Dec 2020 15:27:37 +0100
+Message-Id: <20201210142609.571054502@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
 References: <20201210142606.074509102@linuxfoundation.org>
@@ -33,35 +32,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Meng <luomeng12@huawei.com>
+From: Florian Westphal <fw@strlen.de>
 
-commit 3fba05a2832f93b4d0cd4204f771fdae0d823114 upstream.
+commit c0700dfa2cae44c033ed97dade8a2679c7d22a9d upstream.
 
-Fix to return a negative error code from the error handling case
-instead of 0 in function wm_adsp_load(), as done elsewhere in this
-function.
+There are reports wrt lockdep splat in nftables, e.g.:
+------------[ cut here ]------------
+WARNING: CPU: 2 PID: 31416 at net/netfilter/nf_tables_api.c:622
+lockdep_nfnl_nft_mutex_not_held+0x28/0x38 [nf_tables]
+...
 
-Fixes: 170b1e123f38 ("ASoC: wm_adsp: Add support for new Halo core DSPs")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Luo Meng <luomeng12@huawei.com>
-Acked-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20201123133839.4073787-1-luomeng12@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+These are caused by an earlier, unrelated bug such as a n ABBA deadlock
+in a different subsystem.
+In such an event, lockdep is disabled and lockdep_is_held returns true
+unconditionally.  This then causes the WARN() in nf_tables.
+
+Make the WARN conditional on lockdep still active to avoid this.
+
+Fixes: f102d66b335a417 ("netfilter: nf_tables: use dedicated mutex to guard transactions")
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Link: https://lore.kernel.org/linux-kselftest/CA+G9fYvFUpODs+NkSYcnwKnXm62tmP=ksLeBPmB+KFrB2rvCtQ@mail.gmail.com/
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/codecs/wm_adsp.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/netfilter/nf_tables_api.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1937,6 +1937,7 @@ static int wm_adsp_load(struct wm_adsp *
- 			mem = wm_adsp_find_region(dsp, type);
- 			if (!mem) {
- 				adsp_err(dsp, "No region of type: %x\n", type);
-+				ret = -EINVAL;
- 				goto out_fw;
- 			}
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -619,7 +619,8 @@ static int nft_request_module(struct net
+ static void lockdep_nfnl_nft_mutex_not_held(void)
+ {
+ #ifdef CONFIG_PROVE_LOCKING
+-	WARN_ON_ONCE(lockdep_nfnl_is_held(NFNL_SUBSYS_NFTABLES));
++	if (debug_locks)
++		WARN_ON_ONCE(lockdep_nfnl_is_held(NFNL_SUBSYS_NFTABLES));
+ #endif
+ }
  
 
 
