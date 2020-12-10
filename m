@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B398D2D63DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2082D63E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392426AbgLJRnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:43:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
+        id S2404035AbgLJRoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:44:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391065AbgLJRmm (ORCPT
+        with ESMTP id S2392468AbgLJRm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:42:42 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FECAC0613CF;
-        Thu, 10 Dec 2020 09:42:02 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0d4100e4701ee3c8ed8bc5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4100:e470:1ee3:c8ed:8bc5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 125411EC054C;
-        Thu, 10 Dec 2020 18:42:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607622121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=DMxIl+sUswXky4hhx8cQNgi4k4soKTP3TjDz/GFCjaw=;
-        b=iNEHVi15kmRdMHYS4OMEd1JmZaUshnKRI5nbl3emQfzm4SnYizyFXY93PnbbSOvoLSYBQV
-        tWyfO3QpKd1baUIDBU1XePAbFK9WwLEWIw0dkN8xvaUtOrrcF5wgzsX1knpxXSRHRO79Ws
-        Ef3HwocPJpikX283wWeE1yYoYmvMiHQ=
-Date:   Thu, 10 Dec 2020 18:41:55 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thu, 10 Dec 2020 12:42:57 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279F1C061793;
+        Thu, 10 Dec 2020 09:42:17 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id j1so3143276pld.3;
+        Thu, 10 Dec 2020 09:42:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xhC+Epifyxy2M2mKUYAu18Eq66Rlf4culR13M+Jrfco=;
+        b=ZJ2ObQpYtkzEbRFv40oN+F65lAU6Ej9gKrE5tQPiv7ix/LuBkcvUf+qMUh+Yzoxr0g
+         CyVLZ1mG/UZfuxW/V3MMPsaTBSe2CWI0mDNMfEr7mKEWwiKc4c3ZI8/xXiy/OOpRRB/j
+         2IZpMCpurtGq6tzatn7TAJI7V3OuMaXrfCFpdbKTT1pfnFN4C5I4tNdDjJ+tPlKhyxqi
+         przoNGt/m24R6bKMKywSL6UEGQQjXmxvANoK31VrYtoQFG7CIFwswmQLapaXt4wK37sA
+         xHQJydZjUT4lKZk5SMNC/6y1kHtTG0Wl7+At0IEZBHpFHOPwp1+ijx3ZwuhElpY/pmj7
+         20Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xhC+Epifyxy2M2mKUYAu18Eq66Rlf4culR13M+Jrfco=;
+        b=rhCbL9CTI1ypUFL6GwNzUQlwHNW8dQuxDOvmr+R2hJiSBlhmf2VMpQJ9vJ2oQRdwxd
+         am675JNYibZZwkQVGfGDtd5nLpMbG5Nhd+2p7/YDUpfSOKLHKcPqoAVCHgw+aIh8begk
+         UgpNrKlb9nvTQXLxekL224iAxBhvETb9F2R0FADIuCkg3nUDg5MA6Mm9qa4E/EotdI+e
+         BILOiRttlB/7VtlKe6VEwdsiPg9ZcAY1DtTu+Ee9z+YQMlSkFbVPBiMTlKs8GWmKLMof
+         i+gaQ77mP1XlZeueq1iqBFkAgM79HqlWGAn3WfULU8PcQBP5F53YzeCZVQeE328aOrP3
+         d3mg==
+X-Gm-Message-State: AOAM530YvE/hGxDWFtNsQveW07P+afYfsqcev0u0AL1AdUlvYwPPX/lc
+        VCbmKfUiBhb+NU4nILDqIdc=
+X-Google-Smtp-Source: ABdhPJzIx+7sRPBlNWy2an1r0b10BKDTDvE4FtqZry01Hi8E5wwZE9KecaPEs1U2F02OehoELDCOeA==
+X-Received: by 2002:a17:902:8b8c:b029:d8:de6f:ed35 with SMTP id ay12-20020a1709028b8cb02900d8de6fed35mr7278561plb.36.1607622136734;
+        Thu, 10 Dec 2020 09:42:16 -0800 (PST)
+Received: from [10.230.29.166] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id x188sm6704941pfd.43.2020.12.10.09.42.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 09:42:16 -0800 (PST)
+Subject: Re: [PATCH 15/15] ARM: dts: bcm2711: Add the CEC interrupt controller
+To:     Maxime Ripard <maxime@cerno.tech>, Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>
+Cc:     Jason Cooper <jason@lakedaemon.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, linux-media@vger.kernel.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: Re: [PATCH v15 08/26] x86/mm: Introduce _PAGE_COW
-Message-ID: <20201210174155.GD26529@zn.tnic>
-References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
- <20201110162211.9207-9-yu-cheng.yu@intel.com>
- <20201208175014.GD27920@zn.tnic>
- <218503f6-eec1-94b0-8404-6f92c55799e3@intel.com>
- <20201208184727.GF27920@zn.tnic>
- <cddc2cc5-a04e-ce9c-6fdf-2e7a29346cf7@intel.com>
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+References: <20201210134648.272857-1-maxime@cerno.tech>
+ <20201210134648.272857-16-maxime@cerno.tech>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <bd2c5b93-2ee3-23ff-5852-e3537619e0ae@gmail.com>
+Date:   Thu, 10 Dec 2020 09:42:12 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.5.1
 MIME-Version: 1.0
+In-Reply-To: <20201210134648.272857-16-maxime@cerno.tech>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cddc2cc5-a04e-ce9c-6fdf-2e7a29346cf7@intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 11:24:16AM -0800, Yu, Yu-cheng wrote:
-> Case (a) is a normal writable data page that has gone through fork(). So it
 
-Writable?
 
-> has W=0, D=1.  But here, the software chooses not to use the D bit, and
+On 12/10/2020 5:46 AM, Maxime Ripard wrote:
+> The CEC and hotplug interrupts go through an interrupt controller shared
+> between the two HDMI controllers.
+> 
+> Let's add that interrupt controller and the interrupts for both HDMI
+> controllers
+> 
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-But it has W=0. So not writable?
-
-> instead, W=0, COW=1.
-
-So the "new" way of denoting that the page is modified is COW=1
-*when* on CET hw. The D=1 bit is still used on the rest thus the two
-_PAGE_DIRTY_BITS.
-
-Am I close?
-
-> Case (b) is a normal read-only data page.  Since it is read-only, fork()
-> won't affect it.  In __get_user_pages(), a copy of the read-only page is
-> needed, and the page is duplicated.  The software sets COW=1 for the new
-> copy.
-
-That makes more sense.
-
-> Thread-A is writing to a writable page, and the page's PTE is becoming W=1,
-> D=1.  In the middle of it, Thread-B is changing the PTE to W=0.
-
-Yah, add that to the explanation pls.
-
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Florian
