@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBB82D66B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CF42D66CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 20:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393472AbgLJThv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 14:37:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36554 "EHLO mail.kernel.org"
+        id S2393494AbgLJTlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 14:41:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390176AbgLJO2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:28:51 -0500
+        id S2390172AbgLJO2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:28:47 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        stable@vger.kernel.org, =?UTF-8?q?kiyin ?= <kiyin@tencent.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Martin Schiller <ms@dev.tdt.de>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 01/45] net/af_iucv: set correct sk_protocol for child sockets
-Date:   Thu, 10 Dec 2020 15:26:15 +0100
-Message-Id: <20201210142602.429421533@linuxfoundation.org>
+Subject: [PATCH 4.4 06/39] net/x25: prevent a couple of overflows
+Date:   Thu, 10 Dec 2020 15:26:17 +0100
+Message-Id: <20201210142601.203768202@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
-References: <20201210142602.361598591@linuxfoundation.org>
+In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
+References: <20201210142600.887734129@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -33,45 +33,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Wiedmann <jwi@linux.ibm.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit c5dab0941fcdc9664eb0ec0d4d51433216d91336 ]
+[ Upstream commit 6ee50c8e262a0f0693dad264c3c99e30e6442a56 ]
 
-Child sockets erroneously inherit their parent's sk_type (ie. SOCK_*),
-instead of the PF_IUCV protocol that the parent was created with in
-iucv_sock_create().
+The .x25_addr[] address comes from the user and is not necessarily
+NUL terminated.  This leads to a couple problems.  The first problem is
+that the strlen() in x25_bind() can read beyond the end of the buffer.
 
-We're currently not using sk->sk_protocol ourselves, so this shouldn't
-have much impact (except eg. getting the output in skb_dump() right).
+The second problem is more subtle and could result in memory corruption.
+The call tree is:
+  x25_connect()
+  --> x25_write_internal()
+      --> x25_addr_aton()
 
-Fixes: eac3731bd04c ("[S390]: Add AF_IUCV socket support")
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Link: https://lore.kernel.org/r/20201120100657.34407-1-jwi@linux.ibm.com
+The .x25_addr[] buffers are copied to the "addresses" buffer from
+x25_write_internal() so it will lead to stack corruption.
+
+Verify that the strings are NUL terminated and return -EINVAL if they
+are not.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: a9288525d2ae ("X25: Dont let x25_bind use addresses containing characters")
+Reported-by: "kiyin(尹亮)" <kiyin@tencent.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Martin Schiller <ms@dev.tdt.de>
+Link: https://lore.kernel.org/r/X8ZeAKm8FnFpN//B@mwanda
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/iucv/af_iucv.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/x25/af_x25.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/net/iucv/af_iucv.c
-+++ b/net/iucv/af_iucv.c
-@@ -1753,7 +1753,7 @@ static int iucv_callback_connreq(struct
- 	}
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -679,7 +679,8 @@ static int x25_bind(struct socket *sock,
+ 	int len, i, rc = 0;
  
- 	/* Create the new socket */
--	nsk = iucv_sock_alloc(NULL, sk->sk_type, GFP_ATOMIC, 0);
-+	nsk = iucv_sock_alloc(NULL, sk->sk_protocol, GFP_ATOMIC, 0);
- 	if (!nsk) {
- 		err = pr_iucv->path_sever(path, user_data);
- 		iucv_path_free(path);
-@@ -1963,7 +1963,7 @@ static int afiucv_hs_callback_syn(struct
+ 	if (addr_len != sizeof(struct sockaddr_x25) ||
+-	    addr->sx25_family != AF_X25) {
++	    addr->sx25_family != AF_X25 ||
++	    strnlen(addr->sx25_addr.x25_addr, X25_ADDR_LEN) == X25_ADDR_LEN) {
+ 		rc = -EINVAL;
  		goto out;
  	}
+@@ -773,7 +774,8 @@ static int x25_connect(struct socket *so
  
--	nsk = iucv_sock_alloc(NULL, sk->sk_type, GFP_ATOMIC, 0);
-+	nsk = iucv_sock_alloc(NULL, sk->sk_protocol, GFP_ATOMIC, 0);
- 	bh_lock_sock(sk);
- 	if ((sk->sk_state != IUCV_LISTEN) ||
- 	    sk_acceptq_is_full(sk) ||
+ 	rc = -EINVAL;
+ 	if (addr_len != sizeof(struct sockaddr_x25) ||
+-	    addr->sx25_family != AF_X25)
++	    addr->sx25_family != AF_X25 ||
++	    strnlen(addr->sx25_addr.x25_addr, X25_ADDR_LEN) == X25_ADDR_LEN)
+ 		goto out;
+ 
+ 	rc = -ENETUNREACH;
 
 
