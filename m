@@ -2,114 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685842D6B2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D43E32D6B99
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394232AbgLJWcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 17:32:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405146AbgLJW3A (ORCPT
+        id S2389362AbgLJXKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:10:38 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:54045 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387996AbgLJWbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:29:00 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277ACC0613CF;
-        Thu, 10 Dec 2020 14:28:20 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607639295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5JXJwtEkjhQ2j1nMo0rZ0tKIkox0eioh2DmsOZzS29k=;
-        b=K5XohMhBOgVh/+BhSecz9sGmDkaKhH1kIY4hAnFw8WZsbemLNcOLwUcZyuRRs76h2IKwGP
-        nXPwMApeFnAdIbshcAUreyO+LOaPo4bqxOZIKYIHwQpJMaKkiD8zR+/QNf8cZLwFo8rXQH
-        EGoU2UF1CuRZuWKrzxnbb1krHN5w0LLJURFOS9QELofDgOUNhDst12fWxFvDITFqTGGqbf
-        TD2BXjf1rcUT7B83dUk7JN3fTMu1wO5dDjeLGhPgoiCXpuFe1x8XMty6UGRpnShs34m1g1
-        OACbDwSQjbRPDrnCd+pf7erHCVnS8hwUszf2BlUfKVRp4AhOLDX9IK8FNNBLMg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607639295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5JXJwtEkjhQ2j1nMo0rZ0tKIkox0eioh2DmsOZzS29k=;
-        b=wosRE4ov71xbZGCc2alIw/KDqCUomK8F5wQDNSFm0uS5ZC0uucMj4H4Y3r2oE/i/eVxQXv
-        rpSewJInNFfbbtCA==
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-In-Reply-To: <CALCETrXXH5GoaSZwSPy-JFxJ6iMMCj0A=yFFPuyutBh+1imCsQ@mail.gmail.com>
-References: <9389c1198da174bcc9483d6ebf535405aa8bdb45.camel@redhat.com> <E4F263BE-6CAA-4152-8818-187D34D8D0FD@amacapital.net> <87360djqve.fsf@nanos.tec.linutronix.de> <CALCETrXXH5GoaSZwSPy-JFxJ6iMMCj0A=yFFPuyutBh+1imCsQ@mail.gmail.com>
-Date:   Thu, 10 Dec 2020 23:28:14 +0100
-Message-ID: <87v9d9i9dt.fsf@nanos.tec.linutronix.de>
+        Thu, 10 Dec 2020 17:31:16 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1knUS9-0002PV-EF; Thu, 10 Dec 2020 22:30:25 +0000
+Date:   Thu, 10 Dec 2020 23:30:24 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jann@thejh.net>
+Subject: Re: [PATCH] files: rcu free files_struct
+Message-ID: <20201210223024.hi2zlluqqxcdaod4@wittgenstein>
+References: <20201209040731.GK3579531@ZenIV.linux.org.uk>
+ <877dprtxly.fsf@x220.int.ebiederm.org>
+ <20201209142359.GN3579531@ZenIV.linux.org.uk>
+ <87o8j2svnt.fsf_-_@x220.int.ebiederm.org>
+ <CAHk-=wiUMHBHmmDS3_Xqh1wfGFyd_rdDmpZzk0cODoj1i7_VOA@mail.gmail.com>
+ <20201209195033.GP3579531@ZenIV.linux.org.uk>
+ <87sg8er7gp.fsf@x220.int.ebiederm.org>
+ <20201210061304.GS3579531@ZenIV.linux.org.uk>
+ <87h7oto3ya.fsf@x220.int.ebiederm.org>
+ <20201210213624.GT3579531@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201210213624.GT3579531@ZenIV.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10 2020 at 14:01, Andy Lutomirski wrote:
-> On Thu, Dec 10, 2020 at 1:25 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->> I'm still convinced that a notification about 'we take a nap' will be
->> more robust, less complex and more trivial to backport.
->
-> What do you have in mind?  Suppose the host kernel sends the guest an
-> interrupt on all vCPUs saying "I'm about to take a nap".  What happens
-> if the guest is busy with IRQs off for a little bit?  Does the host
-> guarantee the guest a certain about of time to try to get the
-> interrupt delivered before allowing the host to enter S3?  How about
-> if the host wants to reboot for a security fix -- how long is a guest
-> allowed to delay the process?
->
-> I'm sure this can all be made to work 99% of time, but I'm a bit
-> concerned about that last 1%.
+On Thu, Dec 10, 2020 at 09:36:24PM +0000, Al Viro wrote:
+> On Thu, Dec 10, 2020 at 01:29:01PM -0600, Eric W. Biederman wrote:
+> > Al Viro <viro@zeniv.linux.org.uk> writes:
+> 
+> > > What are the users of that thing and is there any chance to replace it
+> > > with something saner?  IOW, what *is* realistically called for each
+> > > struct file by the users of that iterator?
+> > 
+> > The bpf guys are no longer Cc'd and they can probably answer better than
+> > I.
+> > 
+> > In a previous conversation it was mentioned that task_iter was supposed
+> > to be a high performance interface for getting proc like data out of the
+> > kernel using bpf.
+> > 
+> > If so I think that handles the lifetime issues as bpf programs are
+> > supposed to be short-lived and can not pass references anywhere.
+> > 
+> > On the flip side it raises the question did the BPF guys just make the
+> > current layout of task_struct and struct file part of the linux kernel
+> > user space ABI?
+> 
+> An interesting question, that...  For the record: anybody coming to
 
-Seriously?
+Imho, they did. An example from the BPF LSM: a few weeks ago someone
+asked me whether it would be possible to use the BPF LSM to enforce you
+can't open files when they are on a given filesystem. Sine this bpf lsm
+allows to attach to lsm hooks, say security_file_open(), you can get at
+the superblock and check the filesyste type in a bpf program
+(requiring btf), i.e. security_file_open, then follow
+file->f_inode->i_sb->s_type->s_magic. If we change the say struct
+super_block I'd expect these bpf programs to break. I'm sure there's
+something clever that they came up with but it is nonetheless
+uncomfortably close to making internal kernel structures part of
+userspace ABI indeed.
 
-If the guest has interrupts disabled for ages, i.e. it went for out for
-lunch on its own, then surely the hypervisor can just pull the plug and
-wreckage it. It's like you hit the reset button or pull the powerplug of
-the machine which is not responding anymore.
+> complain about a removed/renamed/replaced with something else field
+> in struct file will be refered to Figure 1.
+> 
+> None of the VFS data structures has any layout stability warranties.
+> If BPF folks want access to something in that, they are welcome to come
+> and discuss the set of accessors; so far nothing of that sort has happened.
+> 
+> Direct access to any fields of any of those structures is subject to
+> being broken at zero notice.
+> 
+> IMO we need some notation for a structure being off-limits for BPF, tracing,
+> etc., along the lines of "don't access any field directly".
 
-Reboot waits already today for guests to shut down/hibernate/supsend or
-whatever they are supposed to do. systemd sits there and waits for
-minutes until it decides to kill them. Just crash a guest kernel and
-forget to reset or force power off the guest before you reboot the
-host. Twiddle thumbs for a while and watch the incomprehensible time
-display.
+Indeed. I would also like to see a list where changes need to be sent
+that are technically specific to a subsystem but will necessarily have
+kernel-wide impact prime example: a lot of bpf.
 
-If your security fix reboot is so urgent that it can't wait then just
-pull the plug and be done with it, i.e. kill the guest which makes it
-start from a known state which is a gazillion times better than bringing
-it into a state which it can't handle anymore.
-
-Again, that's not any different than hitting the reset button on the
-host or pulling and reinserting the host powerplug which you would do
-anyway in an emergency case.
-
-Can we please focus on real problems instead of making up new ones?
-
-Correctness of time is a real problem despite the believe of virt folks
-that it can be ignored or duct taped to death.
-
-Thanks,
-
-        tglx
+Christian
