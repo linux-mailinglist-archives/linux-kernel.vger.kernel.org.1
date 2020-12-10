@@ -2,146 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABC32D63AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 904B22D63AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392786AbgLJRfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:35:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
+        id S2392781AbgLJRfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:35:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391246AbgLJRfL (ORCPT
+        with ESMTP id S2391246AbgLJRep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:35:11 -0500
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5FAC06179C
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:34:31 -0800 (PST)
-Received: by mail-ua1-x944.google.com with SMTP id y26so1953591uan.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:34:31 -0800 (PST)
+        Thu, 10 Dec 2020 12:34:45 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCA9C0613CF;
+        Thu, 10 Dec 2020 09:34:05 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id 131so4754174pfb.9;
+        Thu, 10 Dec 2020 09:34:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UifUfr6kOgQo5Y5wCm4Em1W6gC2qoZMoZCVdpaPXzpE=;
-        b=mgMRY1IWntzpjrscduH7rnK98ND3B3dTbU5uQrvKokxXRN/B6Bt5vGaqSZ1KWpImnq
-         5Wc6OL8aefytvU1FGnN6aUiSpRW+Jqhx3nbsEOsj3DYQ2IZu4c/xm/3Qlh6RuQv2CDso
-         Qu6wy2L8Rgeaiq0G9AQzX2uEo1t8ojrWKWbY7X6lconxM7qy/tX3w4EjYI2cfZvO4PuS
-         95WdjpMmst+djcbUV4VQ/rNiPSD0vfkU1yI7Dz2veBowggDSpojMnSqpo1RpshMx6cOi
-         3MzTGuG8n2UvMVgmrUYqbdnEjehYXIkB1UCRiIknLX60cjORkzA3EQEYMz9XdzORfxQw
-         WjVA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lNV+r0IppAZRJTMBGlPd7aQiGXuhonx9MT/VwxzjdOI=;
+        b=ViSLsucSzbhWox3QJJ8d+ac7h6BvoCeM0lqomCBd4vRbFl+CdXiFn0mDlGOlptmyYI
+         PPMPfTqfeT6WHQVekZw+odl+rTG6kg89jekdO/s5m++np+ENtoDqN5QujPzHYY13ImTX
+         bXlQWP6DPnjzgeeSdQwhfD8/KHEXXxuh175Bmi80EQQW5Hq1k8DyH78SiJRKjRoBImIa
+         5UpOnyoozg27bHEKkdci3fBSk0i9SV/40J6bF7M0PBPQZeT2BI3rlfCiwxcVfi9Q01LO
+         6NcMDeMYmsIpgy4feBzzwvBbDHGjRRbnIl2q2TLsqDx4ijjJPnocdKXZUjRjo8hILZwQ
+         UkCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UifUfr6kOgQo5Y5wCm4Em1W6gC2qoZMoZCVdpaPXzpE=;
-        b=ZBDMffJu4e7NxwaKR4pl7W7V3YwJtTKoUfR0OjdcrhJ2Mv0t7Rh0ysv5Kr4cqZe70a
-         DGYhKP8UirU6Q3lpSC2/krfPkjavjSxHw/slhs1EAeQdbXjsCelh3Ma0172RmjOvyvpF
-         HZ8GIid128q1BGK+MKAJ9knWx177YdAkQEhRUx5vduYEEKtrwaG5JC2fVo6vJiwsX/49
-         8IibzpEqpuSN39SMFJukME414f06UIc1GO8u0VLE127z6F+69nVEwD12GR4IujrUKnuT
-         xVoNEyJ7X3WU1yFawRgoKrefZmvEJntMEg2DZP7l99r7vEQNcIq4cS1JQdWra0ntY4k/
-         sx5g==
-X-Gm-Message-State: AOAM5325HzB2SXECukiVW1RmnbgRFzXXq9R+8F5VJqykLYtdEfIgw/y8
-        gf1rVMoQRW2IGg2wHrjoUsw2TbyKZX3YcQ==
-X-Google-Smtp-Source: ABdhPJxa9h3OLKrZtY3Ub5eXPJo2Poru89enrFvXOzIgI8KnweYdk6jBzAdzOccUZkg5CZjboLXJGQ==
-X-Received: by 2002:ab0:3b0d:: with SMTP id n13mr9280847uaw.85.1607621669807;
-        Thu, 10 Dec 2020 09:34:29 -0800 (PST)
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
-        by smtp.gmail.com with ESMTPSA id 131sm597857vks.42.2020.12.10.09.34.27
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lNV+r0IppAZRJTMBGlPd7aQiGXuhonx9MT/VwxzjdOI=;
+        b=LgzRbVD/RV25fQ/sqRZW/k2ZSE1t/0gJdyhj7viBsQefi0XFiT3rI4Xm7JXN8AlpEQ
+         Wk25eUNVFOKuZC4njXWxyX5EZF1N9RnQg3kOzMj2+ZaLBdfMv6aOoPrdkToO5DahhdB9
+         29Xi1q65FschvaDUwGx2kDOGj1VogD03LkLOAqIk/MXmp5Lcghu9T+/hD4N85CVwilfm
+         eom9mD3BkdguPzq/1b1lrv39pLTrVBNoPKkYNbd/gXb6BN9W55HMS4cnodzuJvrOukYm
+         vuSXDjlYJh7hSys4eIDMjXFJqv70XhbDmoEkDQWUuaGnkdmJTIGVaM6LqfOijefFWR7C
+         fWwA==
+X-Gm-Message-State: AOAM533iSe+p0+Ri/Q1LZ1BQR2qHVSw3FadmCXho3fCcGB0vNH71tk8u
+        wa/L+P74OaLhTDp8PdYGwpg=
+X-Google-Smtp-Source: ABdhPJwNZKeRKA6MI5jWS1XQbWp2xNRfwbC/lQQAa0pRweX0TNjTfHxDqrkpIiT0lSE76MavwUqu2w==
+X-Received: by 2002:a62:5f81:0:b029:19d:ccc0:9c42 with SMTP id t123-20020a625f810000b029019dccc09c42mr7786239pfb.61.1607621644944;
+        Thu, 10 Dec 2020 09:34:04 -0800 (PST)
+Received: from [10.230.29.166] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 136sm6796774pfx.112.2020.12.10.09.33.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 09:34:28 -0800 (PST)
-Received: by mail-ua1-f54.google.com with SMTP id g3so1947058uae.7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:34:27 -0800 (PST)
-X-Received: by 2002:ab0:5e98:: with SMTP id y24mr9282081uag.108.1607621666644;
- Thu, 10 Dec 2020 09:34:26 -0800 (PST)
+        Thu, 10 Dec 2020 09:34:04 -0800 (PST)
+Subject: Re: [PATCH 01/15] irqchip: Allow to compile bcmstb on other platforms
+To:     Maxime Ripard <maxime@cerno.tech>, Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>
+Cc:     Jason Cooper <jason@lakedaemon.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, linux-media@vger.kernel.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+References: <20201210134648.272857-1-maxime@cerno.tech>
+ <20201210134648.272857-2-maxime@cerno.tech>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <f224bd8f-559d-0692-9025-4ee30d0d0846@gmail.com>
+Date:   Thu, 10 Dec 2020 09:33:52 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201118144617.986860-1-willemdebruijn.kernel@gmail.com>
- <20201118144617.986860-2-willemdebruijn.kernel@gmail.com> <20201118150041.GF29991@casper.infradead.org>
- <CA+FuTSdxNBvNMy341EHeiKOWZ19H++aw-tfr6Fx1mFmbg-z4zQ@mail.gmail.com>
- <CAK8P3a0t02o77+8QNZwXF2k1pY3Xrm5bydv8Vx1TW060P7BKqA@mail.gmail.com>
- <893e8ed21e544d048bff7933013332a0@AcuMS.aculab.com> <CAF=yD-+arBFuZCU3UDx0XKmUGaEz8P1EaDLPK0YFCz82MdwBcg@mail.gmail.com>
- <20201119143131.GG29991@casper.infradead.org> <CAK8P3a1SwQ=L_qA1BmeAt=Xc-Q9Mv4V+J5LFLB5R6rMDST8UiA@mail.gmail.com>
- <CAF=yD-Kd-6f9wAYLD=dP1pk4qncWim424Fu6Hgj=ZrnUtEPORA@mail.gmail.com>
- <CAK8P3a21JRFUJrz1+TYWcVL8s4uSfeSFyoMkGsqUPbV+F=r_yw@mail.gmail.com>
- <CAF=yD-Lzu9j6T4ubRjawF-EKOC3pkQTkpigg=PugWwybY-1ZyQ@mail.gmail.com>
- <CAK8P3a1cJf7+b5HCmFiLq+FdM+D+37rHYaftRgRYbhTyjwR6wg@mail.gmail.com>
- <CAF=yD-LdtCCY=Mg9CruZHdjBXV6VmEPydzwfcE2BHUC8z7Xgng@mail.gmail.com> <CAK8P3a2WifcGmmFzSLC4-0SKsv0RT231P6TVKpWm=j927ykmQg@mail.gmail.com>
-In-Reply-To: <CAK8P3a2WifcGmmFzSLC4-0SKsv0RT231P6TVKpWm=j927ykmQg@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 10 Dec 2020 12:33:51 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSdPir68M9PwhuCkd_Saz-Wi3xa_rNuwvbNmpAkMjOqhuA@mail.gmail.com>
-Message-ID: <CA+FuTSdPir68M9PwhuCkd_Saz-Wi3xa_rNuwvbNmpAkMjOqhuA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] epoll: add nsec timeout support with epoll_pwait2
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>,
-        linux-man <linux-man@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201210134648.272857-2-maxime@cerno.tech>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 4:27 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Fri, Nov 20, 2020 at 11:28 PM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> > On Fri, Nov 20, 2020 at 2:23 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > > On Fri, Nov 20, 2020 at 5:01 PM Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > I think it'll be better to split the patchsets:
-> >
-> > epoll: convert internal api to timespec64
-> > epoll: add syscall epoll_pwait2
-> > epoll: wire up syscall epoll_pwait2
-> > selftests/filesystems: expand epoll with epoll_pwait2
-> >
-> > and
-> >
-> > select: compute slack based on relative time
-> > epoll: compute slack based on relative time
-> >
-> > and judge the slack conversion on its own merit.
->
-> Yes, makes sense.
->
-> > I also would rather not tie this up with the compat deduplication.
-> > Happy to take a stab at that though. On that note, when combining
-> > functions like
-> >
-> >   int core_sys_select(int n, fd_set __user *inp, fd_set __user *outp,
-> >                            fd_set __user *exp, struct timespec64 *end_time,
-> >                            u64 slack)
-> >
-> > and
-> >
-> >   static int compat_core_sys_select(int n, compat_ulong_t __user *inp,
-> >         compat_ulong_t __user *outp, compat_ulong_t __user *exp,
-> >         struct timespec64 *end_time, u64 slack)
-> >
-> > by branching on in_compat_syscall() inside get_fd_set/set_fd_set and
-> > deprecating their compat_.. counterparts, what would the argument
-> > pointers look like? Or is that not the approach you have in mind?
->
-> In this case, the top-level entry points becomes unified, and you get
-> the prototype from core_sys_select() with the native arguments.
->
-> I would imagine this can be done like the way I proposed
-> for get_bitmap() in sys_migrate_pages:
->
-> https://lore.kernel.org/lkml/20201102123151.2860165-4-arnd@kernel.org/
 
-Coming back to this. Current patchset includes new select and poll
-selftests to verify the changes. I need to send a small kselftest
-patch for that first.
 
-Assuming there's no time pressure, I will finish up and send the main
-changes after the merge window, for the next release then.
+On 12/10/2020 5:46 AM, Maxime Ripard wrote:
+> The BCM2711 uses a number of instances of the bcmstb-l2 controller in its
+> display engine. Let's allow the driver to be enabled through KConfig.
+> 
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-Current state against linux-next at
-https://github.com/wdebruij/linux-next-mirror/tree/select-compat-1
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
