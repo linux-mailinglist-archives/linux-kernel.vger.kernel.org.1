@@ -2,126 +2,399 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E552D5081
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 02:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5622B2D507F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 02:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbgLJBw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 20:52:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27906 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726953AbgLJBws (ORCPT
+        id S1726931AbgLJBw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 20:52:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726570AbgLJBw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 20:52:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607565081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yatyL7brUpdT9nN7wHFOuWownO2RnkXmQv5daJIQu4Q=;
-        b=XVzTJ/SXYwfCgh5a1SsPqAbxQT7Uldn7LuyfUUwcDsQQbxnlCfEOlFbLsu8LhpZzZzQX35
-        4zO/s7P//vDmYwgMxoGjDR+QWLuFQwk/E2ViVpzZqbF2pczb8UzYqxuYkXAKf5H5/1ps+i
-        CFdfIU2eUdlT5u5HOydXA/xenlsYmgw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-420-4P76lbMNO3u9kQ0cf8ISTg-1; Wed, 09 Dec 2020 20:51:13 -0500
-X-MC-Unique: 4P76lbMNO3u9kQ0cf8ISTg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 928711934102;
-        Thu, 10 Dec 2020 01:51:09 +0000 (UTC)
-Received: from mail (ovpn-119-164.rdu2.redhat.com [10.10.119.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0EE055D6BA;
-        Thu, 10 Dec 2020 01:51:06 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 20:51:05 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Baoquan He <bhe@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mm: fix initialization of struct page for holes
- in memory layout
-Message-ID: <X9F/Cc946aKaA8gr@redhat.com>
-References: <20201209214304.6812-1-rppt@kernel.org>
- <20201209214304.6812-3-rppt@kernel.org>
+        Wed, 9 Dec 2020 20:52:27 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D736CC061793
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 17:51:46 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id 131so2524785pfb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 17:51:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=GqSDAgHKmBSSSDBPuxfcpZpLppjcHRC0OOR6fYwtWzA=;
+        b=JzBGiXKNsodJlLYKw4fRA2GAbu2s/1/BZm0ba23CDK9uVKecD9MM4xxfEq6sBZooGN
+         bcCJ72I3RbCzt/Aw627wYSX70atH1ZtjJDH5Z9yQXb++BYjs7Rr+piwHDjj1lUcr80Xa
+         Lpa+wbjkFWGx/qPcW/z5qKbw8aQ9Rmpmj6cLSwPVOQDOhoJVV2KUKsGzolylkdkiMnYd
+         SctMWkOe42PocLqU5GN2UIjc0vBusg97+wiG0xW1jHS0ilnasJT96R6XgZek8IrfLCnD
+         KQQ9NO/lc2nRZitUoXYC6R9Ms44qQkYnNNk+euq0HaXGmD0J1xst3bhDE4k5AntWgdP7
+         fPjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GqSDAgHKmBSSSDBPuxfcpZpLppjcHRC0OOR6fYwtWzA=;
+        b=EEcD0Q9OCqqDhuPwt4gzYIerh4LD5Wq+fuy4s2wRmXnPSTnFi+9rHru4JtZTCqi9tL
+         7I5KhHNyBWr1+bDwMWTWhlddVeTYwMSsfCaFrOanrk+NK+PiGQYxxhy5qsvoohOGF962
+         aOaTNZQabXAYZyJYBRkLJ8RGdmLWBEnGIwZvkwlL9cmT1B8440K0yN3+GqD17DXm5bwu
+         oED6N48wTzW0bowJ/YMh8AfErVca5BgOfTs++2zK2/S7Vw6IHSXxY91xpmH9gtfKU0I9
+         IGwa3rZ6ck8ZumiXaYi8eW37oLaSmMCk41sgIdc5NHVv9wvzV7NqDh/oPDv0WYag0XBZ
+         0QsA==
+X-Gm-Message-State: AOAM532mSB6edNwjvm1TaEAXdzD5E/Zjye3cbGNN/xza9EUZHOYxAFIn
+        kdhP1BD1l2jrhP0ERFZqWxH3Jg==
+X-Google-Smtp-Source: ABdhPJzS6uIxKbgnue11HAiHltLb/Txj7dtDQWM5/ir8DRiWJxnMVqL8zNlFR/peMRgXDDH6haVJHg==
+X-Received: by 2002:a17:90b:4c51:: with SMTP id np17mr4895316pjb.180.1607565105994;
+        Wed, 09 Dec 2020 17:51:45 -0800 (PST)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id c62sm347865pfa.116.2020.12.09.17.51.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 09 Dec 2020 17:51:45 -0800 (PST)
+Date:   Thu, 10 Dec 2020 09:51:37 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
+Message-ID: <20201210015136.GA18407@dragon>
+References: <20201208044022.972872-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209214304.6812-3-rppt@kernel.org>
-User-Agent: Mutt/2.0.2 (2020-11-20)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20201208044022.972872-1-bjorn.andersson@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Dec 07, 2020 at 10:40:22PM -0600, Bjorn Andersson wrote:
+> The SN65DSI86 provides the ability to supply a PWM signal on GPIO 4,
+> with the primary purpose of controlling the backlight of the attached
+> panel. Add an implementation that exposes this using the standard PWM
+> framework, to allow e.g. pwm-backlight to expose this to the user.
+> 
+> Special thanks to Doug Anderson for suggestions related to the involved
+> math.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 202 ++++++++++++++++++++++++++
+>  1 file changed, 202 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index f27306c51e4d..43c0acba57ab 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -4,6 +4,7 @@
+>   * datasheet: https://www.ti.com/lit/ds/symlink/sn65dsi86.pdf
+>   */
+>  
+> +#include <linux/atomic.h>
+>  #include <linux/bits.h>
+>  #include <linux/clk.h>
+>  #include <linux/debugfs.h>
+> @@ -14,6 +15,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of_graph.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/pwm.h>
+>  #include <linux/regmap.h>
+>  #include <linux/regulator/consumer.h>
+>  
+> @@ -89,6 +91,11 @@
+>  #define SN_ML_TX_MODE_REG			0x96
+>  #define  ML_TX_MAIN_LINK_OFF			0
+>  #define  ML_TX_NORMAL_MODE			BIT(0)
+> +#define SN_PWM_PRE_DIV_REG			0xA0
+> +#define SN_BACKLIGHT_SCALE_REG			0xA1
+> +#define  BACKLIGHT_SCALE_MAX			0xFFFF
+> +#define SN_BACKLIGHT_REG			0xA3
+> +#define SN_PWM_EN_INV_REG			0xA5
+>  #define SN_AUX_CMD_STATUS_REG			0xF4
+>  #define  AUX_IRQ_STATUS_AUX_RPLY_TOUT		BIT(3)
+>  #define  AUX_IRQ_STATUS_AUX_SHORT		BIT(5)
+> @@ -111,6 +118,8 @@
+>  
+>  #define SN_LINK_TRAINING_TRIES		10
+>  
+> +#define SN_PWM_GPIO			3
 
-On Wed, Dec 09, 2020 at 11:43:04PM +0200, Mike Rapoport wrote:
-> +void __init __weak memmap_init(unsigned long size, int nid,
-> +			       unsigned long zone,
-> +			       unsigned long range_start_pfn)
-> +{
-> +	unsigned long start_pfn, end_pfn, hole_start_pfn = 0;
->  	unsigned long range_end_pfn = range_start_pfn + size;
-> +	u64 pgcnt = 0;
->  	int i;
->  
->  	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
->  		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
->  		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
-> +		hole_start_pfn = clamp(hole_start_pfn, range_start_pfn,
-> +				       range_end_pfn);
->  
->  		if (end_pfn > start_pfn) {
->  			size = end_pfn - start_pfn;
->  			memmap_init_zone(size, nid, zone, start_pfn,
->  					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
->  		}
+So this maps to the GPIO4 described in sn65dsi86 datasheet.  I'm
+wondering if it's more readable to define the following SHIFT constants
+(your code), and use GPIO_MUX_GPIO4_SHIFT >> 2 where you need GPIO
+offset?
+
+#define  GPIO_MUX_GPIO1_SHIFT	0
+#define  GPIO_MUX_GPIO2_SHIFT	2
+#define  GPIO_MUX_GPIO3_SHIFT	4
+#define  GPIO_MUX_GPIO4_SHIFT	6
+
+If you agree, you may consider to integrate this patch beforehand:
+
+https://github.com/shawnguo2/linux/commit/7cde887ffb3b27a36e77a08bee3666d14968b586
+
+
+Shawn
+
 > +
-> +		if (hole_start_pfn < start_pfn)
-> +			pgcnt += init_unavailable_range(hole_start_pfn,
-> +							start_pfn, zone, nid);
-> +		hole_start_pfn = end_pfn;
+>  /**
+>   * struct ti_sn_bridge - Platform data for ti-sn65dsi86 driver.
+>   * @dev:          Pointer to our device.
+> @@ -162,6 +171,12 @@ struct ti_sn_bridge {
+>  	struct gpio_chip		gchip;
+>  	DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
+>  #endif
+> +#if defined(CONFIG_PWM)
+> +	struct pwm_chip			pchip;
+> +	bool				pwm_enabled;
+> +	unsigned int			pwm_refclk;
+> +	atomic_t			pwm_pin_busy;
+> +#endif
+>  };
+>  
+>  static const struct regmap_range ti_sn_bridge_volatile_ranges[] = {
+> @@ -499,6 +514,14 @@ static void ti_sn_bridge_set_refclk_freq(struct ti_sn_bridge *pdata)
+>  
+>  	regmap_update_bits(pdata->regmap, SN_DPPLL_SRC_REG, REFCLK_FREQ_MASK,
+>  			   REFCLK_FREQ(i));
+> +
+> +#if defined(CONFIG_PWM)
+> +	/*
+> +	 * The PWM refclk is based on the value written to SN_DPPLL_SRC_REG,
+> +	 * regardless of its actual sourcing.
+> +	 */
+> +	pdata->pwm_refclk = ti_sn_bridge_refclk_lut[i];
+> +#endif
+>  }
+>  
+>  static void ti_sn_bridge_set_dsi_rate(struct ti_sn_bridge *pdata)
+> @@ -981,6 +1004,161 @@ static int ti_sn_bridge_parse_dsi_host(struct ti_sn_bridge *pdata)
+>  	return 0;
+>  }
+>  
+> +#if defined(CONFIG_PWM)
+> +static int ti_sn_pwm_pin_request(struct ti_sn_bridge *pdata)
+> +{
+> +	return atomic_xchg(&pdata->pwm_pin_busy, 1) ? -EBUSY : 0;
+> +}
+> +
+> +static void ti_sn_pwm_pin_release(struct ti_sn_bridge *pdata)
+> +{
+> +	atomic_set(&pdata->pwm_pin_busy, 0);
+> +}
+> +
+> +static struct ti_sn_bridge *
+> +pwm_chip_to_ti_sn_bridge(struct pwm_chip *chip)
+> +{
+> +	return container_of(chip, struct ti_sn_bridge, pchip);
+> +}
+> +
+> +static int ti_sn_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
+> +{
+> +	struct ti_sn_bridge *pdata = pwm_chip_to_ti_sn_bridge(chip);
+> +
+> +	return ti_sn_pwm_pin_request(pdata);
+> +}
+> +
+> +static void ti_sn_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
+> +{
+> +	struct ti_sn_bridge *pdata = pwm_chip_to_ti_sn_bridge(chip);
+> +
+> +	ti_sn_pwm_pin_release(pdata);
+> +}
+> +
+> +static int ti_sn_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> +			   const struct pwm_state *state)
+> +{
+> +	struct ti_sn_bridge *pdata = pwm_chip_to_ti_sn_bridge(chip);
+> +	unsigned int pwm_en_inv;
+> +	unsigned int backlight;
+> +	unsigned int pwm_freq;
+> +	unsigned int pre_div;
+> +	unsigned int scale;
+> +	int ret;
+> +
+> +	if (!pdata->pwm_enabled) {
+> +		ret = pm_runtime_get_sync(pdata->dev);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		ret = regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
+> +					 SN_GPIO_MUX_MASK << (2 * SN_PWM_GPIO),
+> +					 SN_GPIO_MUX_SPECIAL << (2 * SN_PWM_GPIO));
+> +		if (ret) {
+> +			dev_err(pdata->dev, "failed to mux in PWM function\n");
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	if (state->enabled) {
+> +		/*
+> +		 * Per the datasheet the PWM frequency is given by:
+> +		 *
+> +		 * PWM_FREQ = REFCLK_FREQ / (PWM_PRE_DIV * BACKLIGHT_SCALE + 1)
+> +		 *
+> +		 * In order to find the PWM_FREQ that best suits the requested
+> +		 * state->period, the PWM_PRE_DIV is calculated with the
+> +		 * maximum possible number of steps (BACKLIGHT_SCALE_MAX). The
+> +		 * actual BACKLIGHT_SCALE is then adjusted down to match the
+> +		 * requested period.
+> +		 *
+> +		 * The BACKLIGHT value is then calculated against the
+> +		 * BACKLIGHT_SCALE, based on the requested duty_cycle and
+> +		 * period.
+> +		 */
+> +		pwm_freq = NSEC_PER_SEC / state->period;
+> +		pre_div = DIV_ROUND_UP(pdata->pwm_refclk / pwm_freq - 1, BACKLIGHT_SCALE_MAX);
+> +		scale = (pdata->pwm_refclk / pwm_freq - 1) / pre_div;
+> +
+> +		backlight = scale * state->duty_cycle / state->period;
+> +
+> +		ret = regmap_write(pdata->regmap, SN_PWM_PRE_DIV_REG, pre_div);
+> +		if (ret) {
+> +			dev_err(pdata->dev, "failed to update PWM_PRE_DIV\n");
+> +			goto out;
+> +		}
+> +
+> +		ti_sn_bridge_write_u16(pdata, SN_BACKLIGHT_SCALE_REG, scale);
+> +		ti_sn_bridge_write_u16(pdata, SN_BACKLIGHT_REG, backlight);
+> +	}
+> +
+> +	pwm_en_inv = FIELD_PREP(BIT(1), !!state->enabled) |
+> +		     FIELD_PREP(BIT(0), state->polarity == PWM_POLARITY_INVERSED);
+> +	ret = regmap_write(pdata->regmap, SN_PWM_EN_INV_REG, pwm_en_inv);
+> +	if (ret) {
+> +		dev_err(pdata->dev, "failed to update PWM_EN/PWM_INV\n");
+> +		goto out;
+> +	}
+> +
+> +	pdata->pwm_enabled = !!state->enabled;
+> +out:
+> +
+> +	if (!pdata->pwm_enabled)
+> +		pm_runtime_put_sync(pdata->dev);
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct pwm_ops ti_sn_pwm_ops = {
+> +	.request = ti_sn_pwm_request,
+> +	.free = ti_sn_pwm_free,
+> +	.apply = ti_sn_pwm_apply,
+> +	.owner = THIS_MODULE,
+> +};
+> +
+> +static struct pwm_device *ti_sn_pwm_of_xlate(struct pwm_chip *pc,
+> +					     const struct of_phandle_args *args)
+> +{
+> +	struct pwm_device *pwm;
+> +
+> +	if (args->args_count != 1)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	pwm = pwm_request_from_chip(pc, 0, NULL);
+> +	if (IS_ERR(pwm))
+> +		return pwm;
+> +
+> +	pwm->args.period = args->args[0];
+> +
+> +	return pwm;
+> +}
+> +
+> +static int ti_sn_setup_pwmchip(struct ti_sn_bridge *pdata)
+> +{
+> +	pdata->pchip.dev = pdata->dev;
+> +	pdata->pchip.ops = &ti_sn_pwm_ops;
+> +	pdata->pchip.base = -1;
+> +	pdata->pchip.npwm = 1;
+> +	pdata->pchip.of_xlate = ti_sn_pwm_of_xlate;
+> +	pdata->pchip.of_pwm_n_cells = 1;
+> +
+> +	return pwmchip_add(&pdata->pchip);
+> +}
+> +
+> +static void ti_sn_remove_pwmchip(struct ti_sn_bridge *pdata)
+> +{
+> +	pwmchip_remove(&pdata->pchip);
+> +
+> +	if (pdata->pwm_enabled)
+> +		pm_runtime_put_sync(pdata->dev);
+> +}
+> +#else
+> +static int ti_sn_pwm_pin_request(struct ti_sn_bridge *pdata) { return 0; }
+> +static void ti_sn_pwm_pin_release(struct ti_sn_bridge *pdata) {}
+> +static int ti_sn_setup_pwmchip(struct ti_sn_bridge *pdata) { return 0; }
+> +static void ti_sn_remove_pwmchip(struct ti_sn_bridge *pdata) {}
+> +#endif
+> +
+>  #if defined(CONFIG_OF_GPIO)
+>  
+>  static int tn_sn_bridge_of_xlate(struct gpio_chip *chip,
+> @@ -1113,10 +1291,25 @@ static int ti_sn_bridge_gpio_direction_output(struct gpio_chip *chip,
+>  	return ret;
+>  }
+>  
+> +static int ti_sn_bridge_gpio_request(struct gpio_chip *chip, unsigned int offset)
+> +{
+> +	struct ti_sn_bridge *pdata = gpiochip_get_data(chip);
+> +
+> +	if (offset == SN_PWM_GPIO)
+> +		return ti_sn_pwm_pin_request(pdata);
+> +
+> +	return 0;
+> +}
+> +
+>  static void ti_sn_bridge_gpio_free(struct gpio_chip *chip, unsigned int offset)
+>  {
+> +	struct ti_sn_bridge *pdata = gpiochip_get_data(chip);
+> +
+>  	/* We won't keep pm_runtime if we're input, so switch there on free */
+>  	ti_sn_bridge_gpio_direction_input(chip, offset);
+> +
+> +	if (offset == SN_PWM_GPIO)
+> +		ti_sn_pwm_pin_release(pdata);
+>  }
+>  
+>  static const char * const ti_sn_bridge_gpio_names[SN_NUM_GPIOS] = {
+> @@ -1136,6 +1329,7 @@ static int ti_sn_setup_gpio_controller(struct ti_sn_bridge *pdata)
+>  	pdata->gchip.owner = THIS_MODULE;
+>  	pdata->gchip.of_xlate = tn_sn_bridge_of_xlate;
+>  	pdata->gchip.of_gpio_n_cells = 2;
+> +	pdata->gchip.request = ti_sn_bridge_gpio_request;
+>  	pdata->gchip.free = ti_sn_bridge_gpio_free;
+>  	pdata->gchip.get_direction = ti_sn_bridge_gpio_get_direction;
+>  	pdata->gchip.direction_input = ti_sn_bridge_gpio_direction_input;
+> @@ -1282,6 +1476,12 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
+>  		return ret;
 >  	}
-
-After applying the new 1/2, the above loop seem to be functionally a
-noop compared to what was in -mm yesterday, so the above looks great
-as far as I'm concerned.
-
-Unlike the simple fix this will not loop over holes that aren't part
-of memblock.memory nor memblock.reserved and it drops the static
-variable which would have required ordering and serialization.
-
-By being functionally equivalent, it looks it also suffers from the
-same dependency on pfn 0 (and not just pfn 0) being reserved that you
-pointed out earlier.
-
-I suppose to drop that further dependency we need a further round down
-in this logic to the start of the pageblock_order or max-order like
-mentioned yesterday?
-
-If the first pfn of a pageblock (or maybe better a max-order block) is
-valid, but not in memblock.reserved nor memblock.memory and any other
-pages in such pageblock is freed to the buddy allocator, we should
-make sure the whole pageblock gets initialized (or at least the pages
-with a pfn lower than the one that was added to the buddy). So
-applying a round down in the above loop might just do the trick.
-
-Since the removal of that extra dependency was mostly orthogonal with
-the above, I guess it's actually cleaner to do it incrementally.
-
-I'd suggest to also document why we're doing it, in the code (not just
-commit header) of the incremental patch, by mentioning which are the
-specific VM invariants we're enforcing that the VM code always
-depended upon, that required the rundown etc...
-
-In the meantime I'll try to update all systems again with this
-implementation to test it.
-
-Thanks!
-Andrea
-
+>  
+> +	ret = ti_sn_setup_pwmchip(pdata);
+> +	if (ret)  {
+> +		pm_runtime_disable(pdata->dev);
+> +		return ret;
+> +	}
+> +
+>  	i2c_set_clientdata(client, pdata);
+>  
+>  	pdata->aux.name = "ti-sn65dsi86-aux";
+> @@ -1320,6 +1520,8 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
+>  
+>  	drm_bridge_remove(&pdata->bridge);
+>  
+> +	ti_sn_remove_pwmchip(pdata);
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.29.2
+> 
