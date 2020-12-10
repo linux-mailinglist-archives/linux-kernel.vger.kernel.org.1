@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8A42D541D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C89872D5422
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730208AbgLJGop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:44:45 -0500
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:2998 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726158AbgLJGop (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:44:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1607582684; x=1639118684;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=RewH6PKPJrv9ycvCUuWlbLXAaaNCiru+bhipcf9bnKU=;
-  b=cOMQpekKqnYA13ODct35hxslwWmtItTBKl5EfoyuJfkoKlmT8qUXli8+
-   /cmO2vROxdBXHvSBGkxL45Jk+L8/zRQbHKtDZLoM2Kx8tT6uUFBLF1kWc
-   NPIXoPfczxddwbSpd05EctZZTDAFWIyl0vMB7O+OHt8Ib6XRXnegZoIu4
-   E=;
-X-IronPort-AV: E=Sophos;i="5.78,407,1599523200"; 
-   d="scan'208";a="901952508"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9103.sea19.amazon.com with ESMTP; 10 Dec 2020 06:43:57 +0000
-Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id 75B33A1EAB;
-        Thu, 10 Dec 2020 06:43:55 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.211) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 10 Dec 2020 06:43:50 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     SeongJae Park <sjpark@amazon.com>, <davem@davemloft.net>,
-        SeongJae Park <sjpark@amazon.de>, <kuznet@ms2.inr.ac.ru>,
-        <paulmck@kernel.org>, <netdev@vger.kernel.org>,
-        <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] net/ipv4/inet_fragment: Batch fqdir destroy works
-Date:   Thu, 10 Dec 2020 07:43:29 +0100
-Message-ID: <20201210064329.6884-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201209151659.125b43da@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        id S1731941AbgLJGsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:48:08 -0500
+Received: from nautica.notk.org ([91.121.71.147]:58908 "EHLO nautica.notk.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726158AbgLJGsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 01:48:08 -0500
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id 2C95AC009; Thu, 10 Dec 2020 07:47:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1607582846; bh=CeXoCUKMON5YU5rHxPI+L+5A1EbCCf8M0F43PjWAz8Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X3TWBjHK4dE4RDjYtxHWJ/3/LGEiPaX+nS+SahytVl312G2LMxkMZQ+ygTusu21EI
+         IIDfhBOvFIz96VMlBOg3anlHGl+N5JVK3XpRL3a51NggI8LcBk1hIQIOz8zCjd2Mlf
+         1dbVGh8QTr6rm+gylBELiIJyt3MkmzNf6fAaP/XOj97SslE/fs9lwChh3yo4a0tjRz
+         IWRF9SUv7vlJaGShz9xmI7j5oJBnm6FKx62usvLpvuEhJz3HqVjrbSUav4dhTTLhHa
+         Gq7kohW4ar5Xqn0XrnzYOFyxTJG9Qpp5ZdlRvzE7FrfZy1uzDI0EGvcYh2N76IEqY+
+         B06UjBBnAEFKw==
+Date:   Thu, 10 Dec 2020 07:47:11 +0100
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the kbuild tree
+Message-ID: <20201210064711.GA10169@nautica>
+References: <20201209203029.7f2a8db2@canb.auug.org.au>
+ <20201209130130.GA15469@nautica>
+ <20201210075645.234a735d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.211]
-X-ClientProxiedBy: EX13D46UWB002.ant.amazon.com (10.43.161.70) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201210075645.234a735d@canb.auug.org.au>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Dec 2020 15:16:59 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
-
-> On Tue, 8 Dec 2020 10:45:29 +0100 SeongJae Park wrote:
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > In 'fqdir_exit()', a work for destruction of the 'fqdir' is enqueued.
-> > The work function, 'fqdir_work_fn()', calls 'rcu_barrier()'.  In case of
-> > intensive 'fqdir_exit()' (e.g., frequent 'unshare(CLONE_NEWNET)'
-> > systemcalls), this increased contention could result in unacceptably
-> > high latency of 'rcu_barrier()'.  This commit avoids such contention by
-> > doing the destruction in batched manner, as similar to that of
-> > 'cleanup_net()'.
-> > 
-> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Stephen Rothwell wrote on Thu, Dec 10, 2020:
+> On Wed, 9 Dec 2020 14:01:30 +0100 Dominique Martinet <asmadeus@codewreck.org> wrote:
+> >
+> > I guess it's possible to make kbuild check both sbin and PATH, would
+> > that be acceptable?
 > 
-> Looks fine to me, but you haven't CCed Florian or Eric who where the
-> last two people to touch this function. Please repost CCing them and
-> fixing the nit below, thanks!
+> I guess so.  But, have you actually found any setup where depmod is not
+> /sbin/depmod?  i.e. what problem are you trying to solve.  As far as I
+> can see all this change does is (ever so slightly) slow down the build
+> for no gain.
 
-Thank you for let me know that.  I will send the next version so.
+On nixos, depmod is in /run/current-system/sw/bin/depmod (as a link to
+/nix/store/r3r39rzsrikdsv68rvswn3hhank706gj-kmod-27/bin/depmod or
+wherever the current version wants to be).
+developers on guix probably face the same problem.
 
-> 
-> >  static void fqdir_work_fn(struct work_struct *work)
-> >  {
-> > -	struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
-> > -	struct inet_frags *f = fqdir->f;
-> > +	struct llist_node *kill_list;
-> > +	struct fqdir *fqdir;
-> > +	struct inet_frags *f;
-> 
-> nit: reorder fqdir and f to keep reverse xmas tree variable ordering.
+There is no sbin, the only things in /bin is sh, and in /usr/bin env as
+I think is mandated by posix.
 
-Hehe, ok, I will. :)
+For their official builds they just modify the build scripts in place
+before starting the build, but for dev as I keep rebasing it's annoying
+to keep a couple of local patches just for this.
+I could obviously manually create a link from /sbin/depmod to the
+current system's but that doesn't solve the problem for all other nixos
+users.
 
-
-Thanks,
-SeongJae Park
+I'll send an updated patch later today..
+-- 
+Dominique
