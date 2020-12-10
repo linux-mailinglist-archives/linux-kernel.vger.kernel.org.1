@@ -2,50 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1950D2D5196
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C12512D51A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 04:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730491AbgLJDlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 22:41:35 -0500
-Received: from shards.monkeyblade.net ([23.128.96.9]:34952 "EHLO
-        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730210AbgLJDlX (ORCPT
+        id S1730623AbgLJDmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 22:42:11 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:42598 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729808AbgLJDmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 22:41:23 -0500
-Received: from localhost (unknown [IPv6:2601:601:9f00:477:9e51:a893:b0fe:602a])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 11FDB4D259C21;
-        Wed,  9 Dec 2020 19:40:42 -0800 (PST)
-Date:   Wed, 09 Dec 2020 19:40:41 -0800 (PST)
-Message-Id: <20201209.194041.84161587477984240.davem@davemloft.net>
-To:     vee.khee.wong@intel.com
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, kuba@kernel.org, mcoquelin.stm32@gmail.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        boon.leong.ong@intel.com, weifeng.voon@intel.com
-Subject: Re: [PATCH v2 net-next 1/1] net: stmmac: allow stmmac to probe for
- C45 PHY devices
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20201209224700.30295-1-vee.khee.wong@intel.com>
-References: <20201209224700.30295-1-vee.khee.wong@intel.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Wed, 09 Dec 2020 19:40:42 -0800 (PST)
+        Wed, 9 Dec 2020 22:42:11 -0500
+Received: by mail-ot1-f65.google.com with SMTP id 11so3627954oty.9;
+        Wed, 09 Dec 2020 19:41:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oHT+bpTlXmEcpnDhxLPen0vIHtK4d63RKLxr2Jz+ZqE=;
+        b=MXXRF+SBaNM0wcXELbuuZvNz5VmO5t/9rWslzW8WAp54ldfyDjUGJ+o1RKg6kRpTmr
+         KOakSwvBtiMnOnZ9uc5DmWxLK0f3zYkcJtkb46nJlI2SL3QUmRBu2qTXZ65vLCeFHqoP
+         AG3gSAaXqXF6qAZUVJQNbXkS7bnv3YM0R7ESvrc2gJg4fVTzse/h04PwBk3DIpw41H0J
+         LnMVpI/DrPQD7g/AJfSlbi3LHdtavUjuEDcNhkV39Lxjv2idutljz+aIypkbCh1tDOQj
+         iw0m7ainHUXmRstblBESoVDOJnZsuOR/xK0IKI74RxtwKnIBtgbL0AuYR1ggPkbDZmUA
+         UpMg==
+X-Gm-Message-State: AOAM530qPlHhCy/2Go7DeanUSd9uu4Sw1N0R0H9P535RksT/vW8Bypwx
+        mEHD2x+Oi6FvDsx+CO8aj0ow4bhe/Q==
+X-Google-Smtp-Source: ABdhPJzpzWnBwKKImc0q9CG0zR2ZvstScdCgUPs86Y83ZnTGScsY/VaNWpQ4XF/7YdZht+RliCvBqA==
+X-Received: by 2002:a9d:7851:: with SMTP id c17mr4572752otm.255.1607571690280;
+        Wed, 09 Dec 2020 19:41:30 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h62sm802199oia.9.2020.12.09.19.41.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 19:41:29 -0800 (PST)
+Received: (nullmailer pid 1613254 invoked by uid 1000);
+        Thu, 10 Dec 2020 03:41:28 -0000
+Date:   Wed, 9 Dec 2020 21:41:28 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        airlied@linux.ie, heiko@sntech.de, daniel@ffwll.ch,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, hjc@rock-chips.com,
+        broonie@kernel.org, linux-rockchip@lists.infradead.org,
+        robh+dt@kernel.org, lgirdwood@gmail.com
+Subject: Re: [PATCH v6 1/5] dt-bindings: display: add #sound-dai-cells
+ property to rockchip rk3066 hdmi
+Message-ID: <20201210034128.GA1613204@robh.at.kernel.org>
+References: <20201206133355.16007-1-jbx6244@gmail.com>
+ <20201206133355.16007-2-jbx6244@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201206133355.16007-2-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wong Vee Khee <vee.khee.wong@intel.com>
-Date: Thu, 10 Dec 2020 06:47:00 +0800
-
-> Assign stmmac's mdio_bus probe capabilities to MDIOBUS_C22_C45.
-> This extended the probing of C45 PHY devices on the MDIO bus.
+On Sun, 06 Dec 2020 14:33:51 +0100, Johan Jonker wrote:
+> '#sound-dai-cells' is required to properly interpret
+> the list of DAI specified in the 'sound-dai' property.
+> Add it to rockchip,rk3066-hdmi.yaml to document that the
+> rk3066 HDMI TX also can be used to transmit some audio.
 > 
-> Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 > ---
-> v2 changelog:
-> - Added conditional check for gmac4.
+>  .../devicetree/bindings/display/rockchip/rockchip,rk3066-hdmi.yaml    | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
 
-Applied, thanks.
+Reviewed-by: Rob Herring <robh@kernel.org>
