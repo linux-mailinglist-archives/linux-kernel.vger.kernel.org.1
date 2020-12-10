@@ -2,65 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B052D5C78
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1892D5C79
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:55:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389709AbgLJNzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:55:23 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9864 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389696AbgLJNzB (ORCPT
+        id S2389739AbgLJNzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:55:37 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2088 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389696AbgLJNzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:55:01 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CsFkW2LVzz7C9w;
-        Thu, 10 Dec 2020 21:53:39 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 10 Dec 2020 21:54:04 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <nsaenzjulienne@suse.de>, <linux-pm@vger.kernel.org>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] thermal: broadcom: simplify the return expression of bcm2711_thermal_probe()
-Date:   Thu, 10 Dec 2020 21:54:32 +0800
-Message-ID: <20201210135432.1249-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Thu, 10 Dec 2020 08:55:32 -0500
+Received: from dggeme753-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CsFkf40FfzVnSn;
+        Thu, 10 Dec 2020 21:53:46 +0800 (CST)
+Received: from [10.174.184.120] (10.174.184.120) by
+ dggeme753-chm.china.huawei.com (10.3.19.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 10 Dec 2020 21:54:41 +0800
+Subject: Re: [PATCH v2] vfio iommu type1: Improve vfio_iommu_type1_pin_pages
+ performance
+To:     Cornelia Huck <cohuck@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>
+CC:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        <kwankhede@nvidia.com>, <wu.wubin@huawei.com>,
+        <maoming.maoming@huawei.com>, <xieyingtai@huawei.com>,
+        <lizhengui@huawei.com>, <wubinfeng@huawei.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+References: <60d22fc6-88d6-c7c2-90bd-1e8eccb1fdcc@huawei.com>
+ <4d58b74d-72bb-6473-9523-aeaa392a470e@huawei.com>
+ <20201209125450.3f5834ab.cohuck@redhat.com>
+From:   "xuxiaoyang (C)" <xuxiaoyang2@huawei.com>
+Message-ID: <bcba8a99-1e74-a042-2a3a-e07686c4c9ac@huawei.com>
+Date:   Thu, 10 Dec 2020 21:54:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
+In-Reply-To: <20201209125450.3f5834ab.cohuck@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.184.120]
+X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
+ dggeme753-chm.china.huawei.com (10.3.19.99)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/thermal/broadcom/bcm2711_thermal.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/thermal/broadcom/bcm2711_thermal.c b/drivers/thermal/broadcom/bcm2711_thermal.c
-index 67c2a737bc9d..1ec57d9ecf53 100644
---- a/drivers/thermal/broadcom/bcm2711_thermal.c
-+++ b/drivers/thermal/broadcom/bcm2711_thermal.c
-@@ -102,11 +102,7 @@ static int bcm2711_thermal_probe(struct platform_device *pdev)
- 	priv->thermal = thermal;
- 
- 	thermal->tzp->no_hwmon = false;
--	ret = thermal_add_hwmon_sysfs(thermal);
--	if (ret)
--		return ret;
--
--	return 0;
-+	return thermal_add_hwmon_sysfs(thermal);
- }
- 
- static struct platform_driver bcm2711_thermal_driver = {
--- 
-2.22.0
+On 2020/12/9 19:54, Cornelia Huck wrote:
+> On Tue, 8 Dec 2020 21:55:53 +0800
+> "xuxiaoyang (C)" <xuxiaoyang2@huawei.com> wrote:
+> 
+>> On 2020/11/21 15:58, xuxiaoyang (C) wrote:
+>>> vfio_pin_pages() accepts an array of unrelated iova pfns and processes
+>>> each to return the physical pfn.  When dealing with large arrays of
+>>> contiguous iovas, vfio_iommu_type1_pin_pages is very inefficient because
+>>> it is processed page by page.In this case, we can divide the iova pfn
+>>> array into multiple continuous ranges and optimize them.  For example,
+>>> when the iova pfn array is {1,5,6,7,9}, it will be divided into three
+>>> groups {1}, {5,6,7}, {9} for processing.  When processing {5,6,7}, the
+>>> number of calls to pin_user_pages_remote is reduced from 3 times to once.
+>>> For single page or large array of discontinuous iovas, we still use
+>>> vfio_pin_page_external to deal with it to reduce the performance loss
+>>> caused by refactoring.
+>>>
+>>> Signed-off-by: Xiaoyang Xu <xuxiaoyang2@huawei.com>
+> 
+> (...)
+> 
+>>
+>> hi Cornelia Huck, Eric Farman, Zhenyu Wang, Zhi Wang
+>>
+>> vfio_pin_pages() accepts an array of unrelated iova pfns and processes
+>> each to return the physical pfn.  When dealing with large arrays of
+>> contiguous iovas, vfio_iommu_type1_pin_pages is very inefficient because
+>> it is processed page by page.  In this case, we can divide the iova pfn
+>> array into multiple continuous ranges and optimize them.  I have a set
+>> of performance test data for reference.
+>>
+>> The patch was not applied
+>>                     1 page           512 pages
+>> no huge pages：     1638ns           223651ns
+>> THP：               1668ns           222330ns
+>> HugeTLB：           1526ns           208151ns
+>>
+>> The patch was applied
+>>                     1 page           512 pages
+>> no huge pages       1735ns           167286ns
+>> THP：               1934ns           126900ns
+>> HugeTLB：           1713ns           102188ns
+>>
+>> As Alex Williamson said, this patch lacks proof that it works in the
+>> real world. I think you will have some valuable opinions.
+> 
+> Looking at this from the vfio-ccw angle, I'm not sure how much this
+> would buy us, as we deal with IDAWs, which are designed so that they
+> can be non-contiguous. I guess this depends a lot on what the guest
+> does.
+> 
+> Eric, any opinion? Do you maybe also happen to have a test setup that
+> mimics workloads actually seen in the real world?
+> 
+> .
+> 
+Thank you for your reply. The iova array constructed using
+pfn_array_alloc is continuous, and I think there will be
+some performance improvements here.
 
+Regards,
+Xu
