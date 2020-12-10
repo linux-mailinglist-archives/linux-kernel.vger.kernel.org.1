@@ -2,138 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00182D5BD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A3C2D5BC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389353AbgLJNcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:32:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389231AbgLJNbV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2389245AbgLJNbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 10 Dec 2020 08:31:21 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8181CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 05:30:40 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id h16so5484026edt.7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 05:30:40 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389191AbgLJNa5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 08:30:57 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3205CC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 05:30:17 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id f24so6615239ljk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 05:30:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qIiXZlbTMuOjaSEMVqtFB6pB00HTPLen1qKXz/tc/w4=;
-        b=d/xbjFBJuPt09Moenjfm3UdGX4TVhWRqyMqX0ktZwR79L40k4GEKzIkKORO2Z0CINr
-         4T7jaqdKoxk5yuKKjHoECVhW8+UraRZYdD/PFnTDuUNn6gKFU2/t1QGEs3oyHNLZfP9s
-         f/RXGctRNpk3r1kQ5UUt/OfZfP36nQ0BXQBBw9fcPiWhKmxYhVcOBuZ5zoy82p9a2Mww
-         fI1y1QEiDQ1tXs1csraPkHWGPUh61JMtkYH7lstW8pdNCZ8iG3MId4ewJ55x1dGWx97f
-         q2wZxVdAGrBJhpwUSYgNBwIeWdz+5Jm9lpFOeZ9v6Tt7S6IKoQWy4f7SRpOk7A2y4Ls+
-         zXEA==
+         :cc:content-transfer-encoding;
+        bh=6Y1/pCcVVUBfv3HtE9L8Hpubgn3eVeV8xQvQ2V1/F7c=;
+        b=pZ+LO5QJlGoNVILFpKMp61lgJEapSo4Muukuh4BzipvJOvo7UPK7aH63a8QDnxRBRu
+         8gdyFlum+HyecIZxcXR/tVzeSeV2oVn0hHElChzBWdkeHvdlIW8Uqs2ZMtiXeLcKboNX
+         Y9pw53BAa+K9bojIdDQcBL5D0DZrr/6UGIexYlLoGWBd0WiRJ1UPLbUEQubEp1N4VijA
+         fsy8eWPZrsVKpwlQrvd2Ah28UmLWQzk3zf+OVAsCzO6vSxuhAZzJzNgXNiE6ul7N25ON
+         5JOB4ki6qLEC3XbQz5lvH87lt82jzoD3/ApNDoff3s3m+a8G9rVKIfRbbg3mk3mUz+CY
+         0fwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qIiXZlbTMuOjaSEMVqtFB6pB00HTPLen1qKXz/tc/w4=;
-        b=ieqXhD1zODoR4KxA10PLyDWemPvNP/7VHN57OAVIYKmIfayC+HfIblWxr1kG72yanF
-         VJDzYdwGltu8tulGh0QNq9v+3VqQYjJn/P4aebKL9kOJwvg869u8yW/r+a7fizORsJSP
-         Tt0ayl7nYJv/pvh6h4jQ9ZHT5htZWSn/UjcNlKFOMH7jTZfmrNh4ewTjDxKvl/NrnZQ2
-         KMHpZhZzwDe9sGl3O0fwDAfNm0RSffUqF8snn1FBncgPaeSto7XyDJy8b7bYPQ/5P8JX
-         gN7frqHxWGhgOy8MHUB1ljUZ98QwRpM4wT6yAwjE/NcFpxWuhdZA/cW58MStNue5p+7B
-         1Kuw==
-X-Gm-Message-State: AOAM530tdtzO781T1N4RvBxJuor/OplEFaegsRSprn44absXSwE8fxqc
-        kuuhdb45SyeghxWQDkI8a6AAdMh/o8mFf7tdZAGJrw==
-X-Google-Smtp-Source: ABdhPJzbv+0w87d8raPbwJYgG4lQqkPBXI5t6mWVFwqoR7W+om+Oee3IcTAbGBN3WSP8/XgWKhc5sKqsUR60nXXGBSs=
-X-Received: by 2002:a50:e00f:: with SMTP id e15mr7078798edl.210.1607607039197;
- Thu, 10 Dec 2020 05:30:39 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6Y1/pCcVVUBfv3HtE9L8Hpubgn3eVeV8xQvQ2V1/F7c=;
+        b=bFKxD3UVRJdkr1bNchNmhWtq0vYjPktst2xJNiNMxCNTqzfj74aERa7poHE0Z6XyCn
+         MfaFAs+3A/okmJXsNEY+N4n4smrRM619dxf6xyUjnUosfNUZh9NJIkdqcpSGqpbMhELe
+         A/p29Eq5gmymQjDParTu7J1stJBs0kl41p5Txc2DfGRT+kI5xS6HTFNPbRqYaZhnk2/P
+         /D0dlYTXr8ojOcOlO4vTdlw4ObNKmVF0+Z8tjJrQ7KmWQ5MkBYwsqECXbEvsVnJGV0Zx
+         SwaR23vkSwhv/XZYQ38VCYIrwkdSwSmgsFLUisUhPAu2m8Gu18/gPfQN9KQF8Sn7L1Ci
+         vQ7Q==
+X-Gm-Message-State: AOAM531k4oIzlf2Y+GeXJDoCproGCcsevvNVEKPoYmnLQ3jcM6SO8Fmk
+        hMMrrg0vevEd+RN08GKJBV10gsgjmORPTw65EU0=
+X-Google-Smtp-Source: ABdhPJz6/LInmyWBeicZXN1hFtBzjWA/tL2UzztmxE+KuDFoSVDLuD2xYTfWuigL789vYz9/QvF9K1XfZxYfUdtq60w=
+X-Received: by 2002:a2e:1657:: with SMTP id 23mr3024716ljw.12.1607607015736;
+ Thu, 10 Dec 2020 05:30:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20201210004335.64634-1-pasha.tatashin@soleen.com>
- <20201210004335.64634-4-pasha.tatashin@soleen.com> <20201210040618.GR1563847@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20201210040618.GR1563847@iweiny-DESK2.sc.intel.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 10 Dec 2020 08:30:03 -0500
-Message-ID: <CA+CK2bCVEnKKatQSxZcdcvNo+9rWNrGWXyLS3dnF-y7=5Ery7g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/8] mm/gup: make __gup_longterm_locked common
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+References: <20201207133024.16621-1-jgross@suse.com> <20201207133024.16621-3-jgross@suse.com>
+ <CAKf6xpuqdY=TctOjNsnTTexeBpkV+HMkOHFsAd4vxUudBpxizA@mail.gmail.com>
+ <72bc4417-076c-78f0-9c7e-5a9c95e79fb2@suse.com> <20201210111454.dxykvyktzwr3fjyk@Air-de-Roger>
+ <7425aed6-ff6f-873a-b629-b9c7058e9b13@suse.com>
+In-Reply-To: <7425aed6-ff6f-873a-b629-b9c7058e9b13@suse.com>
+From:   Jason Andryuk <jandryuk@gmail.com>
+Date:   Thu, 10 Dec 2020 08:30:04 -0500
+Message-ID: <CAKf6xpvxLiBfWKUecbbWW4DZr-gcPeo5PADtiYzwPft8NQ2aeA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] xen: don't use page->lru for ZONE_DEVICE memory
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Cc:     =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>,
+        xen-devel <xen-devel@lists.xenproject.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 11:06 PM Ira Weiny <ira.weiny@intel.com> wrote:
+On Thu, Dec 10, 2020 at 6:40 AM J=C3=BCrgen Gro=C3=9F <jgross@suse.com> wro=
+te:
 >
-> On Wed, Dec 09, 2020 at 07:43:30PM -0500, Pavel Tatashin wrote:
-> > __gup_longterm_locked() has CMA || FS_DAX version and a common stub
-> > version. In the preparation of prohibiting longterm pinning of pages from
-> > movable zone make the CMA || FS_DAX version common, and delete the stub
-> > version.
+> On 10.12.20 12:14, Roger Pau Monn=C3=A9 wrote:
+> > On Tue, Dec 08, 2020 at 07:45:00AM +0100, J=C3=BCrgen Gro=C3=9F wrote:
+> >> On 07.12.20 21:48, Jason Andryuk wrote:
+> >>> On Mon, Dec 7, 2020 at 8:30 AM Juergen Gross <jgross@suse.com> wrote:
+> >>>>
+> >>>> Commit 9e2369c06c8a18 ("xen: add helpers to allocate unpopulated
+> >>>> memory") introduced usage of ZONE_DEVICE memory for foreign memory
+> >>>> mappings.
+> >>>>
+> >>>> Unfortunately this collides with using page->lru for Xen backend
+> >>>> private page caches.
+> >>>>
+> >>>> Fix that by using page->zone_device_data instead.
+> >>>>
+> >>>> Fixes: 9e2369c06c8a18 ("xen: add helpers to allocate unpopulated mem=
+ory")
+> >>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+> >>>
+> >>> Would it make sense to add BUG_ON(is_zone_device_page(page)) and the
+> >>> opposite as appropriate to cache_enq?
+> >>
+> >> No, I don't think so. At least in the CONFIG_ZONE_DEVICE case the
+> >> initial list in a PV dom0 is populated from extra memory (basically
+> >> the same, but not marked as zone device memory explicitly).
+> >
+> > I assume it's fine for us to then use page->zone_device_data even if
+> > the page is not explicitly marked as ZONE_DEVICE memory?
 >
-> I thought Jason sent a patch which got rid of this as well?
+> I think so, yes, as we are owner of that page and we were fine to use
+> lru, too.
 
-Yes, this series applies on the mainline so it can be easily tested.
-The next version, I will sync with linux-next.
+I think memremap_pages or devm_memremap_pages (which calls
+memremap_pages) is how you mark memory as ZONE_DEVICE.  i.e. they are
+explicitly marked.
 
-Thank you,
-Pasha
+memremap_pages
+  memmap_init_zone_device (with ZONE_DEVICE)
+    __init_single_page
+      set_page_links
+        set_page_zone
 
->
-> Ira
->
-> >
-> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> > Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-> > ---
-> >  mm/gup.c | 13 -------------
-> >  1 file changed, 13 deletions(-)
-> >
-> > diff --git a/mm/gup.c b/mm/gup.c
-> > index 3a76c005a3e2..0e2de888a8b0 100644
-> > --- a/mm/gup.c
-> > +++ b/mm/gup.c
-> > @@ -1567,7 +1567,6 @@ struct page *get_dump_page(unsigned long addr)
-> >  }
-> >  #endif /* CONFIG_ELF_CORE */
-> >
-> > -#if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
-> >  #ifdef CONFIG_FS_DAX
-> >  static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
-> >  {
-> > @@ -1757,18 +1756,6 @@ static long __gup_longterm_locked(struct mm_struct *mm,
-> >               kfree(vmas_tmp);
-> >       return rc;
-> >  }
-> > -#else /* !CONFIG_FS_DAX && !CONFIG_CMA */
-> > -static __always_inline long __gup_longterm_locked(struct mm_struct *mm,
-> > -                                               unsigned long start,
-> > -                                               unsigned long nr_pages,
-> > -                                               struct page **pages,
-> > -                                               struct vm_area_struct **vmas,
-> > -                                               unsigned int flags)
-> > -{
-> > -     return __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
-> > -                                    NULL, flags);
-> > -}
-> > -#endif /* CONFIG_FS_DAX || CONFIG_CMA */
-> >
-> >  static bool is_valid_gup_flags(unsigned int gup_flags)
-> >  {
-> > --
-> > 2.25.1
-> >
-> >
+grep only finds a few uses of ZONE_DEVICE in the whole tree.
+
+Regards,
+Jason
