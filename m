@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207D12D5B6D
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9982D5B6E
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389082AbgLJNQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2388576AbgLJNQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 10 Dec 2020 08:16:37 -0500
-Received: from server.kenspensetc.com ([185.148.128.76]:51208 "EHLO
+Received: from server.kenspensetc.com ([185.148.128.76]:51174 "EHLO
         server.kenspensetc.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732921AbgLJNQh (ORCPT
+        with ESMTP id S1728925AbgLJNQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Dec 2020 08:16:37 -0500
-Received: from localhost ([127.0.0.1]:47936 helo=server.kenspensetc.com)
+Received: from localhost ([127.0.0.1]:48514 helo=server.kenspensetc.com)
         by server.kenspensetc.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <sender@ridecals.com>)
-        id 1knLn0-00029V-6J; Thu, 10 Dec 2020 08:15:22 -0500
+        id 1knLnA-0002CX-4B; Thu, 10 Dec 2020 08:15:32 -0500
 Received: from [70.32.0.46] ([70.32.0.46]) by ridecals.com (Horde Framework)
- with HTTPS; Thu, 10 Dec 2020 08:15:22 -0500
-Date:   Thu, 10 Dec 2020 08:15:22 -0500
-Message-ID: <20201210081522.Horde.GEA1j18D53oi4VTUxYWD_87@ridecals.com>
+ with HTTPS; Thu, 10 Dec 2020 08:15:32 -0500
+Date:   Thu, 10 Dec 2020 08:15:32 -0500
+Message-ID: <20201210081532.Horde.8qYOU3VVNsL5wjy1lylWpdy@ridecals.com>
 From:   Russell Branting <sender@ridecals.com>
 Subject: Vital
 Reply-to: Goodagent01@gmail.com
