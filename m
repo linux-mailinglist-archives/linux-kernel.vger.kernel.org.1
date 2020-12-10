@@ -2,219 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF632D616F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F64E2D6172
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728868AbgLJQPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729218AbgLJQPB (ORCPT
+        id S1733113AbgLJQPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:15:34 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57014 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727634AbgLJQPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:15:01 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A4AC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:14:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+n2txMGzirWDbYFlCh+HdMVVPIygYMcnaAzAxQDlW4A=; b=lt2ohKhbGs/2GXsAMGUTEhGD2b
-        EBEmjmP1UryZoTOg/AplnCb4L2NIxR9PIojCX9f3SAgIStqhga7w9YFsd4fKTNfVBOguCJRkiXZ+P
-        t6nuUcDjGgonSE5vVBN8Egtcwh+bUmRhh3O4muhEYM5XNDIfEPuFXMXaeVXa0c4eVsBgy5ruFjw+Z
-        GwAShlvhg7scyAnDmjyXwzMJV0nIZVGxWWpP4EbQb+cmG8d8w0MbUybOTGfUW1omsEd04gzbRIi6p
-        zL4LmVxLtwS8kv6Gfp1GsYmv5B1x1ZyOWs+FjvLXac03FZcSJJ5l+yrqFpl8F03NxfKPxY9cbA+s0
-        Sxm+9SyQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1knOa2-0002KH-9r; Thu, 10 Dec 2020 16:14:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6D2E83007CD;
-        Thu, 10 Dec 2020 17:14:08 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5664D20697DEC; Thu, 10 Dec 2020 17:14:08 +0100 (CET)
-Date:   Thu, 10 Dec 2020 17:14:08 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
-        feng.tang@intel.com, zhengjun.xing@intel.com,
-        aubrey.li@linux.intel.com, yu.c.chen@intel.com
-Subject: Re: [sched/hotplug]  2558aacff8:  will-it-scale.per_thread_ops -1.6%
- regression
-Message-ID: <20201210161408.GX3021@hirez.programming.kicks-ass.net>
-References: <20201210081859.GA19784@xsang-OptiPlex-9020>
+        Thu, 10 Dec 2020 11:15:13 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BAG51EW148111;
+        Thu, 10 Dec 2020 11:14:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=waTk1xAmEjkw3jppOUz7fkm+LfZEfmN5cJn3bG6OpZg=;
+ b=M2xKdSflawadlklOW9FAq8illFEvUC0f886JWXQxhcvGZCEaznPtR7KSL65muKkIPL65
+ E3Px8Oj6RLt6M+oi79V9mZVVEDTZH9VmHyjtH7UwZujOMyOtYZJnd0bo1RQ1B1Hc1Twy
+ LK5Xa6gnvyBMMKYB49eDKPvYtB8T1zkb3Ku4cEWxCoV7Qi4G1yqawUNIPWRrRvgPv0x0
+ mYsFzY/w5UvTyK4DADbp75+r6C3ITZqWlpfJ0jBJyb25hVDSf5go0x7u1lPr7MhLr4lZ
+ HNuqpfGUS9gsgQ49mdxHEHcBHN5Ck6mnGc7Kol/zuDHYqJ568bCDQ178Y2q86IaWlwyV ow== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35bnduby39-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Dec 2020 11:14:31 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BAG5U4A149833;
+        Thu, 10 Dec 2020 11:14:31 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35bnduby1g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Dec 2020 11:14:31 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BAGA3Es018181;
+        Thu, 10 Dec 2020 16:14:28 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 35958q26bf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Dec 2020 16:14:28 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BAGEPm57602682
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Dec 2020 16:14:25 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9381842054;
+        Thu, 10 Dec 2020 16:14:25 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1E89A42042;
+        Thu, 10 Dec 2020 16:14:25 +0000 (GMT)
+Received: from [9.171.6.187] (unknown [9.171.6.187])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Dec 2020 16:14:25 +0000 (GMT)
+Subject: Re: [RFC 0/4] vfio-pci/zdev: Fixing s390 vfio-pci ISM support
+To:     Matthew Rosato <mjrosato@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Cc:     alex.williamson@redhat.com, pmorel@linux.ibm.com,
+        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1607545670-1557-1-git-send-email-mjrosato@linux.ibm.com>
+ <20201210133306.70d1a556.cohuck@redhat.com>
+ <ce9d4ef2-2629-59b7-99ed-4c8212cb004f@linux.ibm.com>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <7bce88b2-8c7d-c0f4-89a0-b1e8f511ad0b@linux.ibm.com>
+Date:   Thu, 10 Dec 2020 17:14:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210081859.GA19784@xsang-OptiPlex-9020>
+In-Reply-To: <ce9d4ef2-2629-59b7-99ed-4c8212cb004f@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-10_06:2020-12-09,2020-12-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 adultscore=0 malwarescore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 phishscore=0 clxscore=1011 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012100099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 04:18:59PM +0800, kernel test robot wrote:
-> FYI, we noticed a -1.6% regression of will-it-scale.per_thread_ops due to commit:
-> commit: 2558aacff8586699bcd248b406febb28b0a25de2 ("sched/hotplug: Ensure only per-cpu kthreads run during hotplug")
 
-Mooo, weird but whatever. Does the below help at all?
 
----
- kernel/sched/core.c  | 40 +++++++++++++++-------------------------
- kernel/sched/sched.h | 13 +++++--------
- 2 files changed, 20 insertions(+), 33 deletions(-)
+On 12/10/20 4:51 PM, Matthew Rosato wrote:
+> On 12/10/20 7:33 AM, Cornelia Huck wrote:
+>> On Wed,  9 Dec 2020 15:27:46 -0500
+>> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+>>
+>>> Today, ISM devices are completely disallowed for vfio-pci passthrough as
+>>> QEMU will reject the device due to an (inappropriate) MSI-X check.
+>>> However, in an effort to enable ISM device passthrough, I realized that the
+>>> manner in which ISM performs block write operations is highly incompatible
+>>> with the way that QEMU s390 PCI instruction interception and
+>>> vfio_pci_bar_rw break up I/O operations into 8B and 4B operations -- ISM
+>>> devices have particular requirements in regards to the alignment, size and
+>>> order of writes performed.  Furthermore, they require that legacy/non-MIO
+>>> s390 PCI instructions are used, which is also not guaranteed when the I/O
+>>> is passed through the typical userspace channels.
+>>
+>> The part about the non-MIO instructions confuses me. How can MIO
+>> instructions be generated with the current code, and why does changing
+> 
+> So to be clear, they are not being generated at all in the guest as the necessary facility is reported as unavailable.
+> 
+> Let's talk about Linux in LPAR / the host kernel:  When hardware that supports MIO instructions is available, all userspace I/O traffic is going to be routed through the MIO variants of the s390 PCI instructions.  This is working well for other device types, but does not work for ISM which does not support these variants.  However, the ISM driver also does not invoke the userspace I/O routines for the kernel, it invokes the s390 PCI layer directly, which in turn ensures the proper PCI instructions are used -- This approach falls apart when the guest ISM driver invokes those routines in the guest -- we (qemu) pass those non-MIO instructions from the guest as memory operations through vfio-pci, traversing through the vfio I/O layer in the guest (vfio_pci_bar_rw and friends), where we then arrive in the host s390 PCI layer -- where the MIO variant is used because the facility is available.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 7af80c3fce12..f80245c7f903 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3985,15 +3985,20 @@ static void do_balance_callbacks(struct rq *rq, struct callback_head *head)
- 	}
- }
- 
-+static void balance_push(struct rq *rq);
-+
-+struct callback_head balance_push_callback = {
-+	.next = NULL,
-+	.func = (void (*)(struct callback_head *))balance_push,
-+};
-+
- static inline struct callback_head *splice_balance_callbacks(struct rq *rq)
- {
- 	struct callback_head *head = rq->balance_callback;
- 
- 	lockdep_assert_held(&rq->lock);
--	if (head) {
-+	if (head)
- 		rq->balance_callback = NULL;
--		rq->balance_flags &= ~BALANCE_WORK;
--	}
- 
- 	return head;
- }
-@@ -4014,21 +4019,6 @@ static inline void balance_callbacks(struct rq *rq, struct callback_head *head)
- 	}
- }
- 
--static void balance_push(struct rq *rq);
--
--static inline void balance_switch(struct rq *rq)
--{
--	if (likely(!rq->balance_flags))
--		return;
--
--	if (rq->balance_flags & BALANCE_PUSH) {
--		balance_push(rq);
--		return;
--	}
--
--	__balance_callbacks(rq);
--}
--
- #else
- 
- static inline void __balance_callbacks(struct rq *rq)
-@@ -4044,10 +4034,6 @@ static inline void balance_callbacks(struct rq *rq, struct callback_head *head)
- {
- }
- 
--static inline void balance_switch(struct rq *rq)
--{
--}
--
- #endif
- 
- static inline void
-@@ -4075,7 +4061,7 @@ static inline void finish_lock_switch(struct rq *rq)
- 	 * prev into current:
- 	 */
- 	spin_acquire(&rq->lock.dep_map, 0, 0, _THIS_IP_);
--	balance_switch(rq);
-+	__balance_callbacks(rq);
- 	raw_spin_unlock_irq(&rq->lock);
- }
- 
-@@ -7256,6 +7242,10 @@ static void balance_push(struct rq *rq)
- 
- 	lockdep_assert_held(&rq->lock);
- 	SCHED_WARN_ON(rq->cpu != smp_processor_id());
-+	/*
-+	 * Ensure the thing is persistent until balance_push_set(, on = false);
-+	 */
-+	rq->balance_callback = &balance_push_callback;
- 
- 	/*
- 	 * Both the cpu-hotplug and stop task are in this case and are
-@@ -7305,9 +7295,9 @@ static void balance_push_set(int cpu, bool on)
- 
- 	rq_lock_irqsave(rq, &rf);
- 	if (on)
--		rq->balance_flags |= BALANCE_PUSH;
-+		rq->balance_callback = &balance_push_callback;
- 	else
--		rq->balance_flags &= ~BALANCE_PUSH;
-+		rq->balance_callback = NULL;
- 	rq_unlock_irqrestore(rq, &rf);
- }
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index f5acb6c5ce49..12ada79d40f3 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -975,7 +975,6 @@ struct rq {
- 	unsigned long		cpu_capacity_orig;
- 
- 	struct callback_head	*balance_callback;
--	unsigned char		balance_flags;
- 
- 	unsigned char		nohz_idle_balance;
- 	unsigned char		idle_balance;
-@@ -1226,6 +1225,8 @@ struct rq_flags {
- #endif
- };
- 
-+extern struct callback_head balance_push_callback;
-+
- /*
-  * Lockdep annotation that avoids accidental unlocks; it's like a
-  * sticky/continuous lockdep_assert_held().
-@@ -1243,9 +1244,9 @@ static inline void rq_pin_lock(struct rq *rq, struct rq_flags *rf)
- #ifdef CONFIG_SCHED_DEBUG
- 	rq->clock_update_flags &= (RQCF_REQ_SKIP|RQCF_ACT_SKIP);
- 	rf->clock_update_flags = 0;
--#endif
- #ifdef CONFIG_SMP
--	SCHED_WARN_ON(rq->balance_callback);
-+	SCHED_WARN_ON(rq->balance_callback && rq->balance_callback != &balance_push_callback);
-+#endif
- #endif
- }
- 
-@@ -1408,9 +1409,6 @@ init_numa_balancing(unsigned long clone_flags, struct task_struct *p)
- 
- #ifdef CONFIG_SMP
- 
--#define BALANCE_WORK	0x01
--#define BALANCE_PUSH	0x02
--
- static inline void
- queue_balance_callback(struct rq *rq,
- 		       struct callback_head *head,
-@@ -1418,13 +1416,12 @@ queue_balance_callback(struct rq *rq,
- {
- 	lockdep_assert_held(&rq->lock);
- 
--	if (unlikely(head->next || (rq->balance_flags & BALANCE_PUSH)))
-+	if (unlikely(head->next || rq->balance_callback == &balance_push_callback))
- 		return;
- 
- 	head->func = (void (*)(struct callback_head *))func;
- 	head->next = rq->balance_callback;
- 	rq->balance_callback = head;
--	rq->balance_flags |= BALANCE_WORK;
- }
- 
- #define rcu_dereference_check_sched_domain(p) \
+Slight clarification since I think the word "userspace" is a bit overloaded as
+KVM folks often use it to talk about the guest even when that calls through vfio.
+Application userspace (i.e. things like DPDK) can use PCI MIO Load/Stores
+directly on mmap()ed/ioremap()ed memory these don't go through the Kernel at
+all.
+QEMU while also in userspace on the other hand goes through the vfio_bar_rw()
+region which uses the common code _Kernel_ ioread()/iowrite() API. This Kernel
+ioread()/iowrite() API uses PCI MIO Load/Stores by default on machines that
+support them (z15 currently).  The ISM driver, knowing that its device does not
+support MIO, goes around this API and directly calls zpci_store()/zpci_load().
+
+
+> 
+> Per conversations with Niklas (on CC), it's not trivial to decide by the time we reach the s390 PCI I/O layer to switch gears and use the non-MIO instruction set.
+
+Yes, we have some ideas about dynamically switching to legacy PCI stores in
+ioread()/iowrite() for devices that are set up for it but since that only gets
+an ioremap()ed address, a value and a size it would evolve such nasty things as
+looking at this virtual address to determine if it includes a ZPCI_ADDR()
+cookie that we use to get to the function handle needed for the legacy PCI
+Load/Stores, while MIO PCI Load/Stores directly work on virtual addresses.
+
+Now purely for the Kernel API we think this could work since that always
+allocates between VMALLOC_START and VMALLOC_END and we control where we put the
+ZPCI_ADDR() cookie but I'm very hesitant to add something like that.
+
+As for application userspace (DPDK) we do have a syscall
+(arch/s390/pci/pci_mmio.c) API that had a similar problem but we could make use
+of the fact that our Architecture is pretty nifty with address spaces and just
+execute the MIO PCI Load/Store in the syscall _as if_ by the calling userspace
+application.
+
+
+> 
+>> the write pattern help?
+> 
+... snip ...
