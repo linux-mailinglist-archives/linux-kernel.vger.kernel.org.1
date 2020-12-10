@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8532D5098
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 03:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CD82D50A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 03:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727730AbgLJCG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 21:06:29 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:43658 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727665AbgLJCG2 (ORCPT
+        id S1727772AbgLJCHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 21:07:32 -0500
+Received: from ale.deltatee.com ([204.191.154.188]:39192 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727126AbgLJCHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 21:06:28 -0500
-Received: by mail-oi1-f196.google.com with SMTP id q25so4036521oij.10;
-        Wed, 09 Dec 2020 18:06:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8GuGks7pjJoLfrOI5hpguNKWl0aw9SWAL6rU3/z+zUI=;
-        b=sc/Q9Z3DS+E4aiwJw9bgieomocnoqshZUrfpMf/Xk2BwU4zz3MoKsVJdO5BwVuSzhM
-         nNbRH3EcG4lfQGOi8KPml0JemV47gxA76qi6+2cHvXgS7zDO5dZ7ExDle0SEpnskH4C3
-         /Afu/IHUnaDFi8tCJ90yepOWZpgduCUFSoRe6uhsYzkMU0h33bkVwAcvcevORXXGTBcA
-         M8leD+3Ptclv6sRUZXd/10HgyITJ9ZzG11+8jyOPM8SL7djoTjpFUs3Qcf8UcYmPvX4/
-         Bs5WmOkAjs+uoMmDT56Z902Y1J+nbgGPc04NuIKbF8h7NXIES5cOR9MDGxgMCg72J88P
-         izDw==
-X-Gm-Message-State: AOAM530Ae5ORpLgGgqBcy94sCJXxZzXfqpW4aFhoBmD6XYvx0YCgfLsI
-        WukkAr8T1yJlBffQ0zBSEKIFkprs4w==
-X-Google-Smtp-Source: ABdhPJwoARnT512h9iJ5Js1SDMsBW69jc17uvbUNL4uUBpC574j9b0Ymjg3ke21CekdWBTrNzGIxEw==
-X-Received: by 2002:aca:4006:: with SMTP id n6mr3949480oia.22.1607565947425;
-        Wed, 09 Dec 2020 18:05:47 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o82sm693247oih.5.2020.12.09.18.05.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 18:05:46 -0800 (PST)
-Received: (nullmailer pid 1484610 invoked by uid 1000);
-        Thu, 10 Dec 2020 02:05:45 -0000
-Date:   Wed, 9 Dec 2020 20:05:45 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: add simple-audio-mux binding
-Message-ID: <20201210020545.GA1480364@robh.at.kernel.org>
-References: <20201205001508.346439-1-alexandre.belloni@bootlin.com>
+        Wed, 9 Dec 2020 21:07:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=Uml3Mld7EOkwqbJ9IqsKe3VTCWPV7AsDblFsW7V45yw=; b=q5k3ZedQmC5MXoHZ2KUQBWN2Oz
+        hquggxONMg9OTs9nTIGThURenvo42BA7KY08/toQkCBcNvHJmSs/mKRb5vQ9qzVX/OQgeho0G6WdO
+        9XxCBe11YKfR/VlCB41qkLCtIUS3xCIgIfqrgZQRZ2bxV+gFQp/JjVUm8FS1KWKPLt4w1vqalq2Y+
+        Y5a5In4k6tV2ekjPZBMOl4ZPDqqXRiRCqiRxzbFMyXp5HhBTRqxZK/1xsBeK1Vg84BAWQx1sItp/D
+        Jr5RGFJd+FK4oQ14PB9CQP62D+M45qewCwQT+yFwRJ9FzoW79zsE6chP5NWVZBjIKnO41O8XhIL9u
+        fFBxnSUA==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1knBLs-0005p7-VP; Wed, 09 Dec 2020 19:06:41 -0700
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        "open list:DMA MAPPING HELPERS" <iommu@lists.linux-foundation.org>,
+        Stephen Bates <sbates@raithlin.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+References: <20201106170036.18713-1-logang@deltatee.com>
+ <20201106170036.18713-5-logang@deltatee.com> <20201109091258.GB28918@lst.de>
+ <4e336c7e-207b-31fa-806e-c4e8028524a5@deltatee.com>
+ <CAPcyv4ifGcrdOtUt8qr7pmFhmecGHqGVre9G0RorGczCGVECQQ@mail.gmail.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <fba1022b-1425-bb79-9af8-fe68e6f2c56e@deltatee.com>
+Date:   Wed, 9 Dec 2020 19:06:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201205001508.346439-1-alexandre.belloni@bootlin.com>
+In-Reply-To: <CAPcyv4ifGcrdOtUt8qr7pmFhmecGHqGVre9G0RorGczCGVECQQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, jgg@ziepe.ca, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, hch@lst.de, dan.j.williams@intel.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [RFC PATCH 04/15] lib/scatterlist: Add flag for indicating P2PDMA
+ segments in an SGL
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 01:15:07AM +0100, Alexandre Belloni wrote:
-> Add devicetree documentation for simple audio multiplexers
-> 
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> ---
-> Cc: Rob Herring <robh+dt@kernel.org>
-> 
->  .../bindings/sound/simple-audio-mux.yaml      | 41 +++++++++++++++++++
->  1 file changed, 41 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/simple-audio-mux.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/simple-audio-mux.yaml b/Documentation/devicetree/bindings/sound/simple-audio-mux.yaml
-> new file mode 100644
-> index 000000000000..5986d1fcbb54
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/simple-audio-mux.yaml
-> @@ -0,0 +1,41 @@
-> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/simple-audio-mux.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Simple Audio Multiplexer
-> +
-> +maintainers:
-> +  - Alexandre Belloni <aleandre.belloni@bootlin.com>
 
-typo
 
-> +
-> +description: |
-> +  Simple audio multiplexers are driven using gpios, allowing to select which of
-> +  their input line is connected to the output line.
-
-What's wrong with the generic mux binding and driver(s)?
-
-> +
-> +properties:
-> +  compatible:
-> +    const: simple-audio-mux
-> +
-> +  mux-gpios:
-> +    description: |
-> +      GPIOs used to select the input line.
-> +
-> +  sound-name-prefix:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description:
-> +      Used as prefix for sink/source names of the component. Must be a
-> +      unique string among multiple instances of the same component.
-> +
-> +required:
-> +  - compatible
-> +  - mux-gpios
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    mux {
-> +        compatible = "simple-audio-mux";
-> +        mux-gpios = <&gpio 3 0>;
-> +    };
-> -- 
-> 2.28.0
+On 2020-12-09 6:22 p.m., Dan Williams wrote:
+> On Mon, Nov 9, 2020 at 8:47 AM Logan Gunthorpe <logang@deltatee.com> wrote:
+>>
+>>
+>>
+>> On 2020-11-09 2:12 a.m., Christoph Hellwig wrote:
+>>> On Fri, Nov 06, 2020 at 10:00:25AM -0700, Logan Gunthorpe wrote:
+>>>> We make use of the top bit of the dma_length to indicate a P2PDMA
+>>>> segment.
+>>>
+>>> I don't think "we" can.  There is nothing limiting the size of a SGL
+>>> segment.
+>>
+>> Yes, I expected this would be the unacceptable part. Any alternative ideas?
 > 
+> Why is the SG_P2PDMA_FLAG needed as compared to checking the SGL
+> segment-pages for is_pci_p2pdma_page()?
+
+Because the DMA and page segments in the SGL aren't necessarily aligned...
+
+The IOMMU implementations can coalesce multiple pages into fewer DMA
+address ranges, so the page pointed to by sg->page_link may not be the
+one that corresponds to the address in sg->dma_address for a given segment.
+
+If that makes sense -- it's not the easiest thing to explain.
+
+Logan
+
+
