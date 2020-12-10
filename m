@@ -2,137 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D342D61AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C829C2D61C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392228AbgLJQXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:23:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388407AbgLJQXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:23:38 -0500
-Date:   Thu, 10 Dec 2020 08:22:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607617378;
-        bh=IT1JhMouVay4d31+Gw+I77QyHRv1BMMQHowugQ1EGS8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Uo0NiqgPB/g8PXQKQB1ZRC1Telxr2qFG92011hQ3lHonyXSLgYaxJq158mhIWfKFZ
-         HicY16RuNTpihqbB3lhvS5B0lT793phbiG+v82xkBK1sIb8kLIzpluOrHO22KhaZP1
-         DMdphQ8Mw7oe9cn5SrVx0/YisG6MS7RKeVcA6cxHhknAWBvUgwYMcMYhr7oDZM0SgA
-         Y0ktr1nILe/+Q2OEkkH/dGG14TWxGtPvQiVAUXuoW90aD4J+x1xMWpI/d8feiMhHrd
-         Z2waf0JVIn1DUdrZv/Gp1EWiXCpAIigqyCyqM9EaGykgMQWUtnbwaZSFW6wO1QSxmw
-         hOG5IHCWpQ4Wg==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     =?utf-8?B?5b6Q55Ge5paM?= <robinh3123@gmail.com>
-Cc:     Chao Yu <yuchao0@huawei.com>,
-        linux-f2fs-devel@lists.sourceforge.net, chao@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH v3 2/3] f2fs-tools:sload.f2fs compression
- support
-Message-ID: <X9JLYADc4+lF53gG@google.com>
-References: <20201208081555.652932-1-robinh3123@gmail.com>
- <20201208081555.652932-3-robinh3123@gmail.com>
- <785e9f0a-c3d6-9cc5-f17a-a3cc58a43a0f@huawei.com>
- <CAKnFrsLmEROi+ZwVCmoC=W7u+rVoZfWGC9Lr9_y=oLMUZMw63Q@mail.gmail.com>
+        id S2392292AbgLJQ02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:26:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35305 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392281AbgLJQ0J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 11:26:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607617482;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MGEys4guit1Peg9rzsiLjWoGUjIF1t2qZa/JrqY7jw8=;
+        b=Ho4+GnQAcXSDX17oqNFygnfghjZNueO30V7jTTktg2sUGLa7TRrZZLi01rQj8R3Y9Ae+3y
+        tUf5z3/3Y7X5/LRTp7Z6UU5ZgqYfePsTGhlZx4tIHxt0WMzUZy1ykD4gSpnDE3w8rzH1Q5
+        mFRrf1wFtDxV9kJJEERAs3g/ZA3A/lg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-472-Ld0wTVVtPu2uaeR-Q1KW0Q-1; Thu, 10 Dec 2020 11:24:38 -0500
+X-MC-Unique: Ld0wTVVtPu2uaeR-Q1KW0Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA42A190A7A0;
+        Thu, 10 Dec 2020 16:24:34 +0000 (UTC)
+Received: from krava (unknown [10.40.192.193])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 785F86F965;
+        Thu, 10 Dec 2020 16:24:31 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 17:24:30 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Budankov <abudankov@huawei.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 2/3] perf tools: Allow to enable/disable events via
+ control file
+Message-ID: <20201210162430.GH69683@krava>
+References: <20201206170519.4010606-1-jolsa@kernel.org>
+ <20201206170519.4010606-3-jolsa@kernel.org>
+ <7bcde520-e933-c2d6-c960-3f8acdaf6047@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKnFrsLmEROi+ZwVCmoC=W7u+rVoZfWGC9Lr9_y=oLMUZMw63Q@mail.gmail.com>
+In-Reply-To: <7bcde520-e933-c2d6-c960-3f8acdaf6047@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10, 徐瑞斌 wrote:
-> Hi, Jaegeuk,
+On Mon, Dec 07, 2020 at 08:02:20PM +0300, Alexei Budankov wrote:
+> Hi,
 > 
-> I comment here the patch your provided (3 parts, since the patch contains 3
-> fixes):
-> 1.  +       dn->data_blkaddr = blkaddr;
->         ret = reserve_new_block(sbi, &dn->data_blkaddr, &sum, type, 0);
+> On 06.12.2020 20:05, Jiri Olsa wrote:
+> > Adding new control events to enable/disable specific event.
+> > The interface string for control file are:
+> > 
+> >   'enable-<EVENT NAME>'
+> >   'disable-<EVENT NAME>'
 > 
-> We cannot assign dn->data_blkaddr here.  The old one is to be used in
-> reserve_new_block() function.  Also, reserve_new_block() function actually
-> will set dn->data_blkaddr to blkaddr in the end.
+> <SNIP>
+> 
+> > 
+> > when received the command, perf will scan the current evlist
+> > for <EVENT NAME> and if found it's enabled/disabled.
+> 
+> <SNIP>
+> 
+> > diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> > index 70aff26612a9..05723227bebf 100644
+> > --- a/tools/perf/util/evlist.c
+> > +++ b/tools/perf/util/evlist.c
+> > @@ -1915,7 +1915,13 @@ static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
+> >  		 bytes_read == data_size ? "" : c == '\n' ? "\\n" : "\\0");
+> >  
+> >  	if (bytes_read > 0) {
+> > -		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
+> > +		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_EVSEL_TAG,
+> > +				    (sizeof(EVLIST_CTL_CMD_ENABLE_EVSEL_TAG)-1))) {
+> > +			*cmd = EVLIST_CTL_CMD_ENABLE_EVSEL;
+> > +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_EVSEL_TAG,
+> > +				    (sizeof(EVLIST_CTL_CMD_DISABLE_EVSEL_TAG)-1))) {
+> > +			*cmd = EVLIST_CTL_CMD_DISABLE_EVSEL;
+> > +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
+> >  			     (sizeof(EVLIST_CTL_CMD_ENABLE_TAG)-1))) {
+> >  			*cmd = EVLIST_CTL_CMD_ENABLE;
+> >  		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_TAG,
+> > @@ -1952,6 +1958,8 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+> >  	char cmd_data[EVLIST_CTL_CMD_MAX_LEN];
+> >  	int ctlfd_pos = evlist->ctl_fd.pos;
+> >  	struct pollfd *entries = evlist->core.pollfd.entries;
+> > +	struct evsel *evsel;
+> > +	char *evsel_name;
+> >  
+> >  	if (!evlist__ctlfd_initialized(evlist) || !entries[ctlfd_pos].revents)
+> >  		return 0;
+> > @@ -1967,6 +1975,26 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+> >  			case EVLIST_CTL_CMD_DISABLE:
+> >  				evlist__disable(evlist);
+> >  				break;
+> > +			case EVLIST_CTL_CMD_ENABLE_EVSEL:
+> > +				evsel_name = cmd_data + sizeof(EVLIST_CTL_CMD_ENABLE_EVSEL_TAG) - 1;
+> 
+> It makes sense to check that evsel_name still points
+> into cmd_data buffer after assigning to event name.
 
-This tries to avoid deleting the block address used in the previous offset.
-Otherwise, we'll see wrong i_blocks.
+right, will add that
 
-> 
-> 2.   Added condition "n < (1 << c.sldc_cc.log_cluster_size) * BLOCK_SZ"
-> 
-> The semantic meaning of the whole if statement is to say:
->    When the compression fail (ret  != 0) or the original read size is
-> smaller than the compressed size plus (the minimum block saved (specified
-> by the user) x block size), we will not do compression but just write the
-> data as is.
+thanks,
+jirka
 
-This is missing the last block having < 4Kb.
-
-> 
-> The right hand side (RHS) of your added condition is exactly the read size,
-> i.e. the cluster size.  That means the condition is always false except the
-> read of the last part of the file, when the file size is not exactly the
-> multiple of the cluster size.  That means we will never try to compress the
-> last part of the file (when the last part is not a multiple of the cluster
-> size)
-> 
-> IMHO, the original implementation should be correct.
-> 
-> 3.  node_blk->i.i_blocks += cpu_to_le64(cblocks);
-> 
-> I am not quite sure of the i_blocks count.  Did you mean that when the file
-> is mutable,   meaning that the file reserves some blocks for future write,
-> we will add count to i_blocks to mark the block as a used block by the
-> file, right?  I thought we only need to increment the allocated count...
-
-Should add it.
-
-> 
-> Regards,
-> Robin Hsu 徐瑞斌
-> 
-> 
-> On Thu, Dec 10, 2020 at 4:42 PM Chao Yu <yuchao0@huawei.com> wrote:
-> 
-> > On 2020/12/8 16:15, Robin Hsu wrote:
-> > > From: Robin Hsu <robinhsu@google.com>
-> > >
-> > > Add F2FS compression support for sload
-> > > * Support file extension filter, either default-accept or default-deny
-> > >    policy
-> > > * Support choice of compression algorithm, LZO (version 2) or LZ4
-> > >    (default)
-> > > * Support custom log of cluster size
-> > > * Support minimum number of compressed blocks per cluster (default 1).
-> > >    A cluster will not be compressed if the number can not be met.
-> > > * suuport -r (read-only) option
-> >
-> > Could you please update manual as well?
-> >
-> > > +
-> > > +     /* sldc: sload compression support */
-> >
-> > Personally, I don't like the naming method of adding "sldc_" prefix... :(
-> >
-> > > +     bool sldc_en;
-> > > +     bool sldc_use_allow_list;  /* default false to use the deny list */
-> > > +     struct compress_ctx sldc_cc;
-> > > +     u8 sldc_ca; /* compress algorithm: 0 = LZO, 1 = LZ4 */
-> > > +     compress_ops *sldc_compr;
-> > > +     enum filter_policy sldc_policy;
-> > > +     /* max_cppc can used to specify minimum compression rate */
-> > > +     unsigned int sldc_min_cbpc; /* min compressed pages per cluster */
-> > > +     bool sldc_got_opt;
-> > > +     bool sldc_immutable;
-> > > +     struct ext_tbl_op *sldc_ef; /* extension filter */
-> >
-> > The variables name like sldc_en, sldc_ca, min_cbpc, sldc_ef makes
-> > developers
-> > hard to understand w/o comments, and also there is no comments for several
-> > variable like sldc_en, sldc_cc...
-> >
-> > Could you please improve the naming like f2fs-tools style?
-> >
-> > Thanks,
-> >
