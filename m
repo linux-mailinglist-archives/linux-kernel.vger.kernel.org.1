@@ -2,114 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA642D5855
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 887C72D5870
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 11:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732589AbgLJKh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 05:37:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:34112 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726768AbgLJKh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:37:28 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 29C8731B;
-        Thu, 10 Dec 2020 02:36:42 -0800 (PST)
-Received: from [10.37.8.43] (unknown [10.37.8.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B78F3F718;
-        Thu, 10 Dec 2020 02:36:40 -0800 (PST)
-Subject: Re: [PATCH 1/2] ld-version: use /usr/bin/env awk for shebank
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Dominique Martinet' <asmadeus@codewreck.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-References: <1606828650-29841-1-git-send-email-asmadeus@codewreck.org>
- <69c82aee-59ec-f8d8-9546-b38f85bf08c0@arm.com>
- <20201209174252.GA27721@nautica>
- <5ca5c3bb23614af0a35f01f1e3a84ead@AcuMS.aculab.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <a68a09ce-f172-bfb4-6422-b1776d798f5f@arm.com>
-Date:   Thu, 10 Dec 2020 10:40:01 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387985AbgLJKm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 05:42:58 -0500
+Received: from fieber.vanmierlo.com ([84.243.197.177]:37512 "EHLO
+        kerio9.vanmierlo.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728865AbgLJKm5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 05:42:57 -0500
+X-Footer: dmFubWllcmxvLmNvbQ==
+Received: from roundcube.vanmierlo.com ([192.168.37.37])
+        (authenticated user m.brock@vanmierlo.com)
+        by kerio9.vanmierlo.com (Kerio Connect 9.3.0 patch 1) with ESMTPA;
+        Thu, 10 Dec 2020 11:41:24 +0100
 MIME-Version: 1.0
-In-Reply-To: <5ca5c3bb23614af0a35f01f1e3a84ead@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 10 Dec 2020 11:41:24 +0100
+From:   Maarten Brock <m.brock@vanmierlo.com>
+To:     Mychaela Falconia <mychaela.falconia@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/7] tty: add flag to suppress ready signalling on open
+In-Reply-To: <CA+uuBqYTzXCHGY8QnP+OQ5nRNAbqx2rMNzLM7OKLM1_4AzzinQ@mail.gmail.com>
+References: <20201202113942.27024-1-johan@kernel.org>
+ <X9Dficb8sQGRut+S@kroah.com>
+ <CA+uuBqYTzXCHGY8QnP+OQ5nRNAbqx2rMNzLM7OKLM1_4AzzinQ@mail.gmail.com>
+Message-ID: <6b81cca21561305b55ba8f019b78da28@vanmierlo.com>
+X-Sender: m.brock@vanmierlo.com
+User-Agent: Roundcube Webmail/1.3.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dominique and Dave,
+Hello Mychaela,
 
-On 12/9/20 10:03 PM, David Laight wrote:
-> From: Dominique Martinet
->> Sent: 09 December 2020 17:43
->>
->> I've suggested either just reverting this (I'll keep my local
->> workaround) or going through /bin/sh which is always safe like the
->> following patch -- leaving this to maintainers.
->>
->> Thanks!
->> -----
->> From d53ef3b4c55aa2ea5f9ae887b3e1ace368f30f66 Mon Sep 17 00:00:00 2001
->> From: Dominique Martinet <asmadeus@codewreck.org>
->> Date: Wed, 15 Jul 2020 16:00:13 +0200
->> Subject: [PATCH] ld-version: use /bin/sh then awk for shebank
->>
->> /usr/bin/awk is not garanteed to exist (and doesn't on e.g. nixos),
->> using /bin/sh and invoking awk to have it look in PATH is more robust.
->>
->> Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
->>
->> diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
->> index f2be0ff9a738..02dbad7b5613 100755
->> --- a/scripts/ld-version.sh
->> +++ b/scripts/ld-version.sh
->> @@ -1,11 +1,11 @@
->> -#!/usr/bin/awk -f
->> +#!/bin/sh
->>  # SPDX-License-Identifier: GPL-2.0
->>  # extract linker version number from stdin and turn into single number
->> -       {
->> +awk '{
->>         gsub(".*\\)", "");
->>         gsub(".*version ", "");
->>         gsub("-.*", "");
->>         split($1,a, ".");
->>         print a[1]*100000000 + a[2]*1000000 + a[3]*10000;
->>         exit
->> -       }
->> +}'
+On 2020-12-09 23:49, Mychaela Falconia wrote:
+> Greg K-H wrote:
 > 
-> Why bother with awk?
-> I think you can do it all in a shell function.
-> Something like:
-> 	read line
-> 	line=${line##*)}
-> 	line=${line##*version }
-> 	IFS='.-'
-> 	set $line
-> 	echo $(($1*100000000 + $2*1000000 + $3*10000))
+>> I think we need more review for the rest of the series.  This does
+>> change the way serial ports work in a non-traditional way (i.e. using
+>> sysfs instead of terminal settings).
 > 
-> That will work on any recent shell.
-> 
+> But the problem is that the current status quo is fundamentally broken
+> for those hardware devices in which DTR and/or RTS have been repurposed
+> for something other than modem and flow control.  Right now whenever a
+> "cold" (never previously opened) serial port is opened for the first
+> time, that open action immediately and unstoppably asserts both DTR
+> and RTS hardware outputs, without giving userspace any opportunity to
+> say "no, please don't do it".  Yes, this behaviour is codified in a
+> bunch of standards that ultimately trace back to 1970s Original UNIX,
+> but just because it is a standard does not make it right - this
+> Unix/POSIX/Linux "standard" serial port behaviour is a bug, not a
+> feature.
 
-I would suggest to revert the patch for now since we are close to the merge
-window and then maybe in -rc1 start discussing a better solution.
+I agree. And an application not configuring the required handshakes, but
+still relying on them is an equal bug.
 
-What do you think?
+> But if there exist some custom hw devices out there that are in the
+> same predicament as my DUART28 adapter, but are different in that they
+> are classic old-fashioned RS-232 rather than integrated USB-serial,
+> with no place to assign a custom USB ID, *then* we need a non-USB-ID-
+> dependent solution such as Johan's sysfs attribute or O_DIRECT.
 
-> 	David
+Any device with a classic old-fashioned RS-232 has probably already
+solved this in another way or is accepted as not working on Linux.
+
+And then there is also the device tree (overlay?) through which a quirk
+like this can be communicated to the kernel driver. Not sure if this
+could help for a plug-and-play device like on USB.
+
+>> So I want to get a bunch of people
+>> to agree that this is ok to do things this way now before taking this
+>> new user-visible api.
+
+Personally, I would prefer the VID:PID to enforce the quirk and an
+O_DIRECT (or other) flag used on open() as general backup plan. To
+me a sysfs solution seems illogical.
+
+> If the concern is with the new sysfs interface or the proposed O_DIRECT
+> alternative, how about deferring those while allowing specific USB ID
+> support to go in first?  Right now there already exists at least one
+> piece of hardware actively supported by its manufacturer (my gadget)
+> that has a custom USB ID and requires the quirk - what is wrong with
+> adding support for this existing specific hw?  How about merging
+> Johan's patch that defines the NORDY flag in tty_port, merging the
+> ftdi_sio driver patch setting this flag for my custom USB ID, allowing
+> other hardware engineers in the same boat to submit similar quirk
+> patches for their affected custom hw with custom USB IDs, while
+> deferring the sysfs patches until there is a more pressing need for
+> quirky devices that have no custom USB IDs?
 > 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
+> Sincerely,
+> Mychaela
 
--- 
-Regards,
-Vincenzo
+Again, I agree.
+
+Maarten
+
