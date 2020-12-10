@@ -2,121 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636852D5C21
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A10B52D5C1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 14:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389212AbgLJNlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 08:41:50 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:36555 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389334AbgLJNld (ORCPT
+        id S1733046AbgLJNkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 08:40:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgLJNkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:41:33 -0500
-Received: by mail-lj1-f196.google.com with SMTP id a1so6722942ljq.3;
-        Thu, 10 Dec 2020 05:41:16 -0800 (PST)
+        Thu, 10 Dec 2020 08:40:06 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4422C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 05:39:25 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id q22so4079822pfk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 05:39:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=aDZfbSsuL0RkR6YD4b5+euu2zPKCWyDVF5MVnIDTnTA=;
+        b=UrxHRjHHi8j542ElXtZA3eaX/J4DwxABMePsngyARhq2u+kKC8K67kbQB6wLtgvz1m
+         2Etn62hWs69j+H0c31VXEFDIOZc2Mwupu8V0pMXRuKzcYnQOiw3eTh70TkBF1v9iQDAF
+         A9PaZwd8fNspq97641oXlD2AHooBiasVPPXek=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kiSP+cd25rqwud22NUwfk87T32QJ2x2ypRDZHw8Hvtk=;
-        b=ZS77kjzKxxnUBPX/DKXIpygWfZAq6fFOMRRlQyeE3WZrOsYyOzHYPiIGvGNlN9Npc4
-         qp/giF4W8xmM8PC9t3WWUDGOFAofScM0+zCDRuP5uxi8apjKJWkzjdqmla2TBf5a1exe
-         /DymC9j+5FxjNSLGMCfOqH/DHxZLlLtgG5AqTEBj6xzTz+gpY114kC0uQcr1L+YTQifQ
-         GtZZmXsjfBZUVa1KAyw5WwsEFjiGi+/kVw5tLD7Nfh/emcgrIPk79uZsu/4hPlWjeqmx
-         1+K/2uES6JSEodJY5gGWfx0UzBCQYjrVyvJUahysI3nOo7wdc3JZxlTQnQmxgLo64pkC
-         1m2Q==
-X-Gm-Message-State: AOAM532LaGmA6NpjKATcCU99YxsX+kTGyLD9WuVi2ffDUCABala67fTG
-        i1TjSJdsEW2vgREugcGAcYM=
-X-Google-Smtp-Source: ABdhPJw8hWLWIA9s6ePNt8Fsujkuf2KBoX3VmmL1K+3/AIAwcRo27+g/pQ3PuDu5hqFiS9I1hPpXOQ==
-X-Received: by 2002:a2e:b4d3:: with SMTP id r19mr757735ljm.419.1607607650199;
-        Thu, 10 Dec 2020 05:40:50 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id q7sm603154ljp.77.2020.12.10.05.40.49
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=aDZfbSsuL0RkR6YD4b5+euu2zPKCWyDVF5MVnIDTnTA=;
+        b=nGwgy+vbft6qKjLsj8dPaQ2lBCbPjDYtiE87AjLOrYepj2nB5ugQhKxnjeu/uW9OYP
+         XEl4O+FhuXcsAUpUKbWFV99lTKNgvLFx6ft46TFBH+bW6MHMadXBIzuPTlTnKsfFcRT6
+         tp/fuWkaGjstn9P7SAOvVqP+/4xl+Ppvp1LxmF43NG6xNaVNyRgMy80ARBTJ099w0FfG
+         T/g64FhXwUfYJ3Zk9WZi8+FVggFfxhkEQyvYrZ06+A7hjXXCccLyeGtfo+MmJdSuF34b
+         cM0hVEsFoc5Cvj4Pj/4mcBij+qSRhegkvXllpWgATViy3iL3yI9UvFERzXmbQSPT5CcR
+         GHnA==
+X-Gm-Message-State: AOAM532XcqF1Uf2GS34/jCblOX2T2cW18Mza02UenXLkritj98DZjRps
+        ZBB8aAEmeZxk2TN8QnrRE8v2Wg==
+X-Google-Smtp-Source: ABdhPJzMi1Mtx1RdN304uFXFKR2KFpX1Rd0OAIow+uzRu2Qcp+vGrFPlEfVbbAaJ82UMgV+mkbxCMg==
+X-Received: by 2002:a63:ef15:: with SMTP id u21mr6745982pgh.56.1607607565338;
+        Thu, 10 Dec 2020 05:39:25 -0800 (PST)
+Received: from localhost (2001-44b8-111e-5c00-2524-f8fd-7a21-1504.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:2524:f8fd:7a21:1504])
+        by smtp.gmail.com with ESMTPSA id u12sm6019129pfn.88.2020.12.10.05.39.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 05:40:49 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@xi.terra>)
-        id 1knMCJ-00017W-95; Thu, 10 Dec 2020 14:41:31 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        Thu, 10 Dec 2020 05:39:24 -0800 (PST)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Uladzislau Rezki <urezki@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Jens Frederich <jfrederich@gmail.com>,
-        Jon Nettleton <jon.nettleton@gmail.com>,
-        Johan Hovold <johan@kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: [PATCH v2] x86/apic/of: Fix CPU devicetree-node lookups
-Date:   Thu, 10 Dec 2020 14:39:10 +0100
-Message-Id: <20201210133910.4229-1-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/2] rcu-tasks: move RCU-tasks initialization out of core_initcall()
+In-Reply-To: <20201209203728.GA5972@pc638.lan>
+References: <20201209202732.5896-1-urezki@gmail.com> <20201209203728.GA5972@pc638.lan>
+Date:   Fri, 11 Dec 2020 00:39:21 +1100
+Message-ID: <875z59hjau.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Architectures that describe the CPU topology in devicetree and that do
-not have an identity mapping between physical and logical CPU ids need
-to override the default implementation of arch_match_cpu_phys_id().
+Hi Vlad,
 
-Failing to do so breaks CPU devicetree-node lookups using
-of_get_cpu_node() and of_cpu_device_node_get() which several drivers
-rely on. It also causes the CPU struct devices exported through sysfs to
-point to the wrong devicetree nodes.
+>> Initialize the RCU-tasks earlier, before *_initcall() callbacks are
+>> invoked. Do it after the workqueue subsytem is up and running. That
+>> gives us a possibility to make use of synchronize_rcu_tasks*() wait
+>> API in early_initcall() callbacks.
+>> 
+>> Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
+>> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-On x86, CPUs are described in devicetree using their APIC ids and those
-do not generally coincide with the logical ids, even if CPU0 typically
-uses APIC id 0. Add the missing implementation of
-arch_match_cpu_phys_id() so that CPU-node lookups work also with SMP.
+Tested-by: Daniel Axtens <dja@axtens.net>
 
-Apart from fixing the broken sysfs devicetree-node links this likely do
-not affect users of mainline kernels as the above mentioned drivers are
-currently not used on x86 as far as I know.
+>> ---
+>>  include/linux/rcupdate.h |  6 ++++++
+>>  init/main.c              |  1 +
+>>  kernel/rcu/tasks.h       | 26 ++++++++++++++++++++++----
+>>  3 files changed, 29 insertions(+), 4 deletions(-)
+>> 
+> I still don't have a powerPC hw so far, even though i have sent a request
+> to the osuosl.org. It would be appreciated if Michael or Daniel could run
+> and verify it.
 
-Fixes: 4e07db9c8db8 ("x86/devicetree: Use CPU description from Device Tree")
-Cc: stable <stable@vger.kernel.org>     # 4.17
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
+Sorry it's taken me so long to get to this. Your patch fixes things for
+me. Thanks!
 
-Thomas,
+BTW, I'm happy to see you taking on the challenge of RCU after your good
+work on vmalloc - all the best with it!
 
-Hope this looks better to you.
+Kind regards,
+Daniel
 
-My use case for this is still out-of-tree, but since CPU-node lookup is
-generic functionality and with observable impact also for mainline users
-(sysfs) I added a stable tag.
-
-Johan
-
-
-
-Changes in v2
- - rewrite commit message
- - add Fixes tag
- - add stable tag for the benefit of out-of-tree users
-
-
- arch/x86/kernel/apic/apic.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index b3eef1d5c903..19c0119892dd 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2311,6 +2311,11 @@ static int cpuid_to_apicid[] = {
- 	[0 ... NR_CPUS - 1] = -1,
- };
- 
-+bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
-+{
-+	return phys_id == cpuid_to_apicid[cpu];
-+}
-+
- #ifdef CONFIG_SMP
- /**
-  * apic_id_is_primary_thread - Check whether APIC ID belongs to a primary thread
--- 
-2.26.2
-
+>
+> Thank you in advance!
+>
+> --
+> Vlad Rezki
