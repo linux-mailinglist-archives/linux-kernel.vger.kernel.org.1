@@ -2,93 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09652D6350
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0840D2D6380
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 18:28:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404212AbgLJRR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 12:17:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58512 "EHLO
+        id S2392755AbgLJR1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 12:27:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404130AbgLJRQw (ORCPT
+        with ESMTP id S2392712AbgLJRRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 12:16:52 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A3DC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:16:11 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id x16so6534211oic.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:16:11 -0800 (PST)
+        Thu, 10 Dec 2020 12:17:01 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40651C061793
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:16:21 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id j12so5568491ota.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 09:16:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=1DhGc1yNSVnvbflwjjTm6H7Ift8ftskK41SQF5YbY8M=;
-        b=mFuC2IViDM2sP6c1KSdjWfBMV/YHz8XR4kcAnOxpcRJ5lul3INm6pwWUmq/i04lIEm
-         FhGagnQNBno/U6t9cbBSCE4n9x+Mzyz5irGL0ULbD7vF/ZsJVbiKWxN6KfnJ54yLvpA5
-         vyJeopdI7LG4GS+ooRMqGh2/cMDRgVHD1hP3pCSGg1ftKbMhntcOMIhc3jWnmxuZEghh
-         SvCbkuLR5Y5ssLNjWETwQpUrAVbTN6cAFLXQ9xdJ9zpk+afv6Xgv6hS5OkTlAf4/MlM1
-         56UQ/0HGrlyL9vY9qtweiObH82RsHDndfGFWVdQWP3hl2AUXcmx5vW8kcs9gEQ4d2Jnn
-         iqFw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+raCjKpIVRC3ckpKE04FFg3Paj0t2Ny6Ep6v2MYPiMM=;
+        b=o3A4AwtYlW6bPDSRlI3lKl44/gTAYqaw73Z6IGfReAqL4SyeJCixVDyc0eortU+pks
+         mFYkfqhYfwJuN2bNHchU3TDgx+z/bUs8mlVOAwW1nCYr6q6e7a8dMlocILdkuwTjZbSo
+         CUr9rLTjAHw8y8zcAiFn9CUQzHCuoVSeJvkLCa6RMpLke2How3KX/eQe5gDAyLIIqBCk
+         L51whIp9xlIXDG7SUjdUb36DANdEG+Gaum8j3KHXYadUBvhG7GsHx7/FmchCOnMOZFy8
+         tujxLVZ9mTs4RWK9LQ/ZB90+/sov/HGCcDxWuzsYmnKv0qI1bYse/foM+/0KfIe0/yUB
+         g7TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=1DhGc1yNSVnvbflwjjTm6H7Ift8ftskK41SQF5YbY8M=;
-        b=Z53TAbEZMDeyCKr7XB5+HlDTI/ZmWXH+QbMfmftoRp0ukye4//6Ov9LDW6UeILARrw
-         KlOrq+IHDsZjB6xpYeRKMpRoJ/1+Aj/LJsgJ7xNMSjYteOvaiz5xxk7Cm0RKIFUVoGbv
-         bu+JRQlc20KtF7hrK2aOZJtGBsX1Lx8pU1S4U9Aru66xsT+sDwzyr7G0wn0fWtT2hlSZ
-         Cf5spPrdPZ3rCMLpJrH5JrXc3kZvzdpLYiIq6HKU9lPnffncwqDX5zNGIE9Ab1AkMnxE
-         tv6Ijp8rqldRELcbX+chwdY9BAdCLl8oWW8BscRJkiGRj53fue6y0DPWk7bRS1vSAjqK
-         rCJw==
-X-Gm-Message-State: AOAM5334xMqJoEEkaLbb6og+vWBJ6E+48x5sEHrseQnyuDsTYIXnJmAJ
-        KuTXPDVdYoiBpxon3PL9ntTdvDpnQwugIBGtmaw=
-X-Received: by 2002:aca:dfc2:: with SMTP id w185mt7112250oig.50.1607620571499;
- Thu, 10 Dec 2020 09:16:11 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+raCjKpIVRC3ckpKE04FFg3Paj0t2Ny6Ep6v2MYPiMM=;
+        b=KSl+y1VX4ZprwDj9wdWRbi5Ctl05IOU0iW2ThEzvKTuvelY8M30MQU1VCMWCn7C8ly
+         dOHMWCoYuAy67tDXI6YdnLdmeNe4Af3aN+2EQeZPAfBwmtIZF1hOchFr35z+h8BnmQIM
+         7wcyyj7lMRwfkSFcbJ2LSSGa82lW0LWWDpXi83gUQikk6fNvguJeItIFZc0zx0je1N8t
+         h6EClWUNv7WOeiZ6wjSZaEDwOugLc9NOuH1WFc6nSNxsy+W/FpNJ53xdgOrSETCNsJOm
+         W4VwXqupRyOuKeK21uIMbbPjU9IgzoDs2enxSd8xKkz7HMT1zhgVecVrmLMXu7dMjObF
+         ETJg==
+X-Gm-Message-State: AOAM533gWcWbQ+oIxqR0pBuHNwC7nIpBiz7Qg58BwWlWhkaA0yKOHVqL
+        udq0Efmok0D/knWrFn+UMLtFnQ==
+X-Google-Smtp-Source: ABdhPJzBYZeTDTKAR5za8xy1+HAnmnZJY9ploQ2X9GbJ4vF8FwlDDODAG/p2/i3CNd/aPyy/czMH/g==
+X-Received: by 2002:a9d:d4a:: with SMTP id 68mr6754095oti.101.1607620580521;
+        Thu, 10 Dec 2020 09:16:20 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id k23sm1122538oih.52.2020.12.10.09.16.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 09:16:19 -0800 (PST)
+Date:   Thu, 10 Dec 2020 11:16:18 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tsoni@codeaurora.org, psodagud@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v2 1/3] soc: qcom: Add tracepoints to mdt loader
+Message-ID: <X9JX4txhmr0PQ5pX@builder.lan>
+References: <1605563084-30385-1-git-send-email-rishabhb@codeaurora.org>
+ <1605563084-30385-2-git-send-email-rishabhb@codeaurora.org>
 MIME-Version: 1.0
-References: <20201208195223.424753-1-conmanx360@gmail.com> <20201208195223.424753-3-conmanx360@gmail.com>
-In-Reply-To: <20201208195223.424753-3-conmanx360@gmail.com>
-From:   Connor McAdams <conmanx360@gmail.com>
-Date:   Thu, 10 Dec 2020 12:16:00 -0500
-Message-ID: <CAM8Agx3ttO_RDgjQAxLYpVMVRhz+xgmg80f4iefXZNVrGcd0-g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] ALSA: hda/ca0132 - Unmute surround when speaker
- output is selected.
-Cc:     stable@kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        ALSA development <alsa-devel@alsa-project.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605563084-30385-2-git-send-email-rishabhb@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Woops, sent previous email on the first version of this patch.
+On Mon 16 Nov 15:44 CST 2020, Rishabh Bhatnagar wrote:
 
-This patch is a mistake. Not sure why I did this.
-
-On Tue, Dec 8, 2020 at 2:52 PM Connor McAdams <conmanx360@gmail.com> wrote:
->
-> Make sure GPIO pin for surround channel mute is set to 0 when speaker
-> output is selected.
->
-> Fixes: def3f0a5c7007 ("ALSA: hda/ca0132 - Add quirk output selection structures.")
-> Cc: <stable@kernel.org>
-> Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+> Add trace events to the mdt loader driver. These events
+> can help us trace the region where we are loading the
+> segments and the time it takes to initialize the image
+> and setup the memory region.
+> 
+> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
 > ---
->  sound/pci/hda/patch_ca0132.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-> index 793dc5d501a5..6d647d461eab 100644
-> --- a/sound/pci/hda/patch_ca0132.c
-> +++ b/sound/pci/hda/patch_ca0132.c
-> @@ -1390,7 +1390,7 @@ static const struct ca0132_alt_out_set_quirk_data quirk_out_set_data[] = {
->                   .has_hda_gpio     = false,
->                   .mmio_gpio_count  = 3,
->                   .mmio_gpio_pin    = { 2, 3, 5 },
-> -                 .mmio_gpio_set    = { 1, 1, 0 },
-> +                 .mmio_gpio_set    = { 1, 0, 0 },
->                   .scp_cmds_count   = 0,
->                   .has_chipio_write = false,
->                 },
-> --
-> 2.25.1
->
+>  drivers/soc/qcom/mdt_loader.c     |  7 +++++++
+>  include/trace/events/mdt_loader.h | 38 ++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 45 insertions(+)
+>  create mode 100644 include/trace/events/mdt_loader.h
+> 
+> diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
+> index 24cd193..96dc912 100644
+> --- a/drivers/soc/qcom/mdt_loader.c
+> +++ b/drivers/soc/qcom/mdt_loader.c
+> @@ -17,6 +17,9 @@
+>  #include <linux/slab.h>
+>  #include <linux/soc/qcom/mdt_loader.h>
+>  
+> +#define CREATE_TRACE_POINTS
+> +#include <trace/events/mdt_loader.h>
+> +
+>  static bool mdt_phdr_valid(const struct elf32_phdr *phdr)
+>  {
+>  	if (phdr->p_type != PT_LOAD)
+> @@ -198,6 +201,7 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw,
+>  		if (pas_init) {
+>  			ret = qcom_scm_pas_mem_setup(pas_id, mem_phys,
+>  						     max_addr - min_addr);
+> +
+
+This change is unnecessary.
+
+>  			if (ret) {
+>  				dev_err(dev, "unable to setup relocation\n");
+>  				goto out;
+> @@ -232,6 +236,7 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw,
+>  
+>  		ptr = mem_region + offset;
+>  
+> +
+
+Ditto.
+
+>  		if (phdr->p_filesz && phdr->p_offset < fw->size) {
+>  			/* Firmware is large enough to be non-split */
+>  			if (phdr->p_offset + phdr->p_filesz > fw->size) {
+> @@ -256,6 +261,8 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw,
+>  			release_firmware(seg_fw);
+>  		}
+>  
+> +		trace_qcom_mdt_load_segment(mem_phys + offset, phdr->p_filesz,
+> +					    fw_name);
+>  		if (phdr->p_memsz > phdr->p_filesz)
+>  			memset(ptr + phdr->p_filesz, 0, phdr->p_memsz - phdr->p_filesz);
+>  	}
+> diff --git a/include/trace/events/mdt_loader.h b/include/trace/events/mdt_loader.h
+> new file mode 100644
+> index 0000000..01c2461
+> --- /dev/null
+> +++ b/include/trace/events/mdt_loader.h
+> @@ -0,0 +1,38 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM mdt_loader
+> +
+> +#if !defined(_TRACE_MDT_LOADER_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_MDT_LOADER_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/tracepoint.h>
+> +
+> +TRACE_EVENT(qcom_mdt_load_segment,
+> +
+> +	TP_PROTO(phys_addr_t region_start, size_t region_size, const char *fw),
+> +
+> +	TP_ARGS(region_start, region_size, fw),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(phys_addr_t, region_start)
+> +		__field(size_t, region_size)
+> +		__string(fw, fw)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->region_start = region_start;
+> +		__entry->region_size = region_size;
+> +		__assign_str(fw, fw);
+> +	),
+> +
+> +	TP_printk("firmware:%s region start=%pa size=%zx",
+> +		  __get_str(fw), __entry->region_start, __entry->region_size)
+
+Doesn't this printk use the normal format specifiers, where %pa should
+be passed by reference? (I.e. shouldn't this be &__entry->region_start?)
+
+Regards,
+Bjorn
+
+> +);
+> +
+> +#endif
+> +#include <trace/define_trace.h>
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
