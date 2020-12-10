@@ -2,29 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1B22D5E92
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:50:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 209F52D5DEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389743AbgLJOtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:49:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47434 "EHLO mail.kernel.org"
+        id S2390851AbgLJOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:34:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391259AbgLJOjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:39:55 -0500
+        id S1730436AbgLJOdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:33:04 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: [PATCH 5.9 34/75] drm/omap: sdi: fix bridge enable/disable
-Date:   Thu, 10 Dec 2020 15:26:59 +0100
-Message-Id: <20201210142607.741521655@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.19 21/39] dm: remove invalid sparse __acquires and __releases annotations
+Date:   Thu, 10 Dec 2020 15:27:00 +0100
+Message-Id: <20201210142603.324330376@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
-References: <20201210142606.074509102@linuxfoundation.org>
+In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
+References: <20201210142602.272595094@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,66 +30,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+From: Mike Snitzer <snitzer@redhat.com>
 
-commit fd4e788e971ce763e50762d7b1a0048992949dd0 upstream.
+commit bde3808bc8c2741ad3d804f84720409aee0c2972 upstream.
 
-When the SDI output was converted to DRM bridge, the atomic versions of
-enable and disable funcs were used. This was not intended, as that would
-require implementing other atomic funcs too. This leads to:
+Fixes sparse warnings:
+drivers/md/dm.c:508:12: warning: context imbalance in 'dm_prepare_ioctl' - wrong count at exit
+drivers/md/dm.c:543:13: warning: context imbalance in 'dm_unprepare_ioctl' - wrong count at exit
 
-WARNING: CPU: 0 PID: 18 at drivers/gpu/drm/drm_bridge.c:708 drm_atomic_helper_commit_modeset_enables+0x134/0x268
-
-and display not working.
-
-Fix this by using the legacy enable/disable funcs.
-
-Fixes: 8bef8a6d5da81b909a190822b96805a47348146f ("drm/omap: sdi: Register a drm_bridge")
-Reported-by: Aaro Koskinen <aaro.koskinen@iki.fi>
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Tested-by: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-Tested-by: Aaro Koskinen <aaro.koskinen@iki.fi>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: stable@vger.kernel.org # v5.7+
-Link: https://patchwork.freedesktop.org/patch/msgid/20201127085241.848461-1-tomi.valkeinen@ti.com
+Fixes: 971888c46993f ("dm: hold DM table for duration of ioctl rather than use blkdev_get")
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/omapdrm/dss/sdi.c |   10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/md/dm.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/gpu/drm/omapdrm/dss/sdi.c
-+++ b/drivers/gpu/drm/omapdrm/dss/sdi.c
-@@ -195,8 +195,7 @@ static void sdi_bridge_mode_set(struct d
- 	sdi->pixelclock = adjusted_mode->clock * 1000;
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -462,7 +462,6 @@ static int dm_blk_getgeo(struct block_de
+ 
+ static int dm_prepare_ioctl(struct mapped_device *md, int *srcu_idx,
+ 			    struct block_device **bdev)
+-	__acquires(md->io_barrier)
+ {
+ 	struct dm_target *tgt;
+ 	struct dm_table *map;
+@@ -496,7 +495,6 @@ retry:
  }
  
--static void sdi_bridge_enable(struct drm_bridge *bridge,
--			      struct drm_bridge_state *bridge_state)
-+static void sdi_bridge_enable(struct drm_bridge *bridge)
+ static void dm_unprepare_ioctl(struct mapped_device *md, int srcu_idx)
+-	__releases(md->io_barrier)
  {
- 	struct sdi_device *sdi = drm_bridge_to_sdi(bridge);
- 	struct dispc_clock_info dispc_cinfo;
-@@ -259,8 +258,7 @@ err_get_dispc:
- 	regulator_disable(sdi->vdds_sdi_reg);
+ 	dm_put_live_table(md, srcu_idx);
  }
- 
--static void sdi_bridge_disable(struct drm_bridge *bridge,
--			       struct drm_bridge_state *bridge_state)
-+static void sdi_bridge_disable(struct drm_bridge *bridge)
- {
- 	struct sdi_device *sdi = drm_bridge_to_sdi(bridge);
- 
-@@ -278,8 +276,8 @@ static const struct drm_bridge_funcs sdi
- 	.mode_valid = sdi_bridge_mode_valid,
- 	.mode_fixup = sdi_bridge_mode_fixup,
- 	.mode_set = sdi_bridge_mode_set,
--	.atomic_enable = sdi_bridge_enable,
--	.atomic_disable = sdi_bridge_disable,
-+	.enable = sdi_bridge_enable,
-+	.disable = sdi_bridge_disable,
- };
- 
- static void sdi_bridge_init(struct sdi_device *sdi)
 
 
