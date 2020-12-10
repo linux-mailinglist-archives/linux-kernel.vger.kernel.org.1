@@ -2,101 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0794B2D5EFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 267332D5F00
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390017AbgLJPHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:07:02 -0500
-Received: from smtp37.cstnet.cn ([159.226.251.37]:33134 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389993AbgLJPGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:06:39 -0500
-Received: by ajax-webmail-APP-12 (Coremail) ; Thu, 10 Dec 2020 23:05:34
- +0800 (GMT+08:00)
-X-Originating-IP: [125.120.23.64]
-Date:   Thu, 10 Dec 2020 23:05:34 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   shaojie.dong@isrc.iscas.ac.cn
-To:     "Dan Carpenter" <dan.carpenter@oracle.com>
-Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] staging: rtl8712: check register_netdev() return
- value
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20201118(d3a44678)
- Copyright (c) 2002-2020 www.mailtech.cn cnic.cn
-In-Reply-To: <20201209174615.GI2767@kadam>
-References: <20201209150124.23446-1-shaojie.dong@isrc.iscas.ac.cn>
- <20201209174615.GI2767@kadam>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S2390003AbgLJPGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:06:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727766AbgLJPGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:06:22 -0500
+Date:   Fri, 11 Dec 2020 00:05:34 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607612741;
+        bh=rUc8kAAzgIPOPqDkqYodpVmwWA4T53QTUItA9JEQX1E=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BBRxezUJnM3zNgdAvq4O81fM22NGLO6WD4VT4KIBL45R0sAi6OJNS5aU0RPJuKDht
+         zzn76UtpaSkcsrialYwyBtsugPN0m2FGjEW6Bg3PEEputq613IEZ6C00i6HBRvQQTu
+         Xl8Q8m1RlIt6NIVK11t2rQ5d9D/dZ3ahieMLgTbQ5nquTo9T6DmbRQNLfVBR7yv3Wc
+         82UE48MhuNU8JLDo/FT4F6W3uGJ1mLrJPdnlmLE5TxuWxHjlhxNPNPZPkddcDd2G9e
+         /hi5QTxQoauLWg9L20PsRjHYiojVHlpsPchoTH/bhE0kIrYwLqaBJ9LbjaPLLsKoqZ
+         A8buRGoPAyJvg==
+From:   Keith Busch <kbusch@kernel.org>
+To:     Enzo Matsumiya <ematsumiya@suse.de>
+Cc:     linux-nvme@lists.infradead.org, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nvme: hwmon: fix crash on device teardown
+Message-ID: <20201210150534.GB3645@redsun51.ssa.fujisawa.hgst.com>
+References: <20201209213228.5044-1-ematsumiya@suse.de>
 MIME-Version: 1.0
-Message-ID: <30d377fa.20bd.1764d2f9aa8.Coremail.shaojie.dong@isrc.iscas.ac.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: tgCowADXpYE+OdJfGuECAA--.13404W
-X-CM-SenderInfo: pvkd0ytlhov01qj6x21ufox2xfdvhtffof0/1tbiCggGBVz4jNnmH
-        wABsI
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209213228.5044-1-ematsumiya@suse.de>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkKCiZndDsgCiZndDsgVGhpcyBmdW5jdGlvbiBzaG91bGQgbm90IGJlIGNhbGxpbmcgcmVnaXN0
-ZXJfbmV0ZGV2KCkuICBXaGF0IGRvZXMgdGhhdAomZ3Q7IGhhdmUgdG8gZG8gd2l0aCBmaXJtd2Fy
-ZT8gIEl0IHNob3VsZCBhbHNvIG5vdCBmcmVlX25ldGRldigpIGJlY2F1c2UKJmd0OyB0aGF0IHdp
-bGwganVzdCBsZWFkIHRvIGEgdXNlIGFmdGVyIGZyZWUgaW4gdGhlIGNhbGxlci4KJmd0OwoKLS0m
-Z3Q7IGNoZWNrIGNvZGUgaGlzdG9yeSBhdXRob3I8bGFycnkuZmluZ2VyQGx3ZmluZ2VyLm5ldD4g
-Y2hhbmdlZCBzeW5jaHJvbm91cyBmaXJtd2FyZSBsb2FkaW5nIHRvIGFzeW5jaHJvbm91cyBmaXJt
-d2FyZSBsb2FkaW5nCiAgICBiZWZvcmUgdGhpcyBjaGFuZ2UsIHJlZ2lzdGVyX25ldGRldigpIHdh
-cyBub3QgY2FsbGluZyBpbiBmaXJtd2FyZSByZWxhdGVkIGZ1bmN0aW9uLgogICAgRm9yIGFzeW5j
-aHJvbm91cyBsb2FkaW5nLCBtYXliZSByZWdpc3Rlcl9uZXRkZXYoKSBiZSBjYWxsaW5nIGluIHJ0
-bDg3MXhfbG9hZF9md19jYigpIGlzIHRvIGVuc3VyZSB0aGUgbmV0ZGV2IGJlIHJlZ2lzdGVyZWQg
-YWZ0ZXIgZmlybXdhcmUgbG9hZGluZyBjb21wbGV0ZWQKCi0tJmd0OyBmb3IgcG90ZW50aWFsIHVz
-ZSBhZnRlciBmcmVlIGlzc3VlCiAgICBDb3VsZCBJIG9ubHkgY2FsbCAiZnJlZV9pcnEoYWRhcHRl
-ci0mZ3Q7cG5ldGRldi0mZ3Q7aXJxLCBhZGFwdGVyLSZndDtwbmV0ZGV2KSIgd2hlbiByZWdpc3Rl
-cl9uZXRkZXYoKSBmYWlsZWQgPwogICAgSWYgbm8gbmVlZCB0byBjaGFuZ2UgZHJpdmVycy9zdGFn
-aW5nL3J0bDg3MTIvaGFsX2luaXQuYyBmaWxlLCBJIGNvdWxkIGdpdmUgdXAgbXkgcGF0Y2gsIHRo
-YW5rIHlvdSAhCgomZ3Q7IC0tLS0t5Y6f5aeL6YKu5Lu2LS0tLS0KJmd0OyDlj5Hku7bkuro6ICJE
-YW4gQ2FycGVudGVyIiA8ZGFuLmNhcnBlbnRlckBvcmFjbGUuY29tPgomZ3Q7IOWPkemAgeaXtumX
-tDogMjAyMC0xMi0xMCAwMTo0NjoxNSAo5pif5pyf5ZubKQomZ3Q7IOaUtuS7tuS6ujogc2hhb2pp
-ZS5kb25nQGlzcmMuaXNjYXMuYWMuY24KJmd0OyDmioTpgIE6IExhcnJ5LkZpbmdlckBsd2Zpbmdl
-ci5uZXQsIGZsb3JpYW4uYy5zY2hpbGhhYmVsQGdvb2dsZW1haWwuY29tLCBncmVna2hAbGludXhm
-b3VuZGF0aW9uLm9yZywgZGV2ZWxAZHJpdmVyZGV2Lm9zdW9zbC5vcmcsIGxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmcKJmd0OyDkuLvpopg6IFJlOiBbUEFUQ0hdIHN0YWdpbmc6IHJ0bDg3MTI6
-IGNoZWNrIHJlZ2lzdGVyX25ldGRldigpIHJldHVybiB2YWx1ZQomZ3Q7IAomZ3Q7IE9uIFdlZCwg
-RGVjIDA5LCAyMDIwIGF0IDExOjAxOjI0UE0gKzA4MDAsIHNoYW9qaWUuZG9uZ0Bpc3JjLmlzY2Fz
-LmFjLmNuIHdyb3RlOgomZ3Q7ICZndDsgRnJvbTogInNoYW9qaWUuZG9uZyIgPHNoYW9qaWUuZG9u
-Z0Bpc3JjLmlzY2FzLmFjLmNuPgomZ3Q7ICZndDsgCiZndDsgJmd0OyBGdW5jdGlvbiByZWdpc3Rl
-cl9uZXRkZXYoKSBjYW4gZmFpbCwgc28gd2Ugc2hvdWxkIGNoZWNrIGl0J3MgcmV0dXJuIHZhbHVl
-CiZndDsgJmd0OyAKJmd0OyAmZ3Q7IFNpZ25lZC1vZmYtYnk6IHNoYW9qaWUuZG9uZyA8c2hhb2pp
-ZS5kb25nQGlzcmMuaXNjYXMuYWMuY24+CiZndDsgJmd0OyAtLS0KJmd0OyAmZ3Q7ICBkcml2ZXJz
-L3N0YWdpbmcvcnRsODcxMi9oYWxfaW5pdC5jIHwgNSArKysrLQomZ3Q7ICZndDsgIDEgZmlsZSBj
-aGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKJmd0OyAmZ3Q7IAomZ3Q7ICZn
-dDsgZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3RhZ2luZy9ydGw4NzEyL2hhbF9pbml0LmMgYi9kcml2
-ZXJzL3N0YWdpbmcvcnRsODcxMi9oYWxfaW5pdC5jCiZndDsgJmd0OyBpbmRleCA3MTVmMWZlOGIu
-LjM4YTNlM2Q0NCAxMDA2NDQKJmd0OyAmZ3Q7IC0tLSBhL2RyaXZlcnMvc3RhZ2luZy9ydGw4NzEy
-L2hhbF9pbml0LmMKJmd0OyAmZ3Q7ICsrKyBiL2RyaXZlcnMvc3RhZ2luZy9ydGw4NzEyL2hhbF9p
-bml0LmMKJmd0OyAmZ3Q7IEBAIC00NSw3ICs0NSwxMCBAQCBzdGF0aWMgdm9pZCBydGw4NzF4X2xv
-YWRfZndfY2IoY29uc3Qgc3RydWN0IGZpcm13YXJlICpmaXJtd2FyZSwgdm9pZCAqY29udGV4dCkK
-Jmd0OyAmZ3Q7ICAJfQomZ3Q7ICZndDsgIAlhZGFwdGVyLSZndDtmdyA9IGZpcm13YXJlOwomZ3Q7
-ICZndDsgIAkvKiBmaXJtd2FyZSBhdmFpbGFibGUgLSBzdGFydCBuZXRkZXYgKi8KJmd0OyAmZ3Q7
-IC0JcmVnaXN0ZXJfbmV0ZGV2KGFkYXB0ZXItJmd0O3BuZXRkZXYpOwomZ3Q7ICZndDsgKwlpZiAo
-cmVnaXN0ZXJfbmV0ZGV2KGFkYXB0ZXItJmd0O3BuZXRkZXYpICE9IDApIHsKJmd0OyAmZ3Q7ICsJ
-CW5ldGRldl9lcnIoYWRhcHRlci0mZ3Q7cG5ldGRldiwgInJlZ2lzdGVyX25ldGRldigpIGZhaWxl
-ZFxuIik7CiZndDsgJmd0OyArCQlmcmVlX25ldGRldihhZGFwdGVyLSZndDtwbmV0ZGV2KTsKJmd0
-OyAmZ3Q7ICsJfQomZ3Q7IAomZ3Q7IFRoaXMgZnVuY3Rpb24gc2hvdWxkIG5vdCBiZSBjYWxsaW5n
-IHJlZ2lzdGVyX25ldGRldigpLiAgV2hhdCBkb2VzIHRoYXQKJmd0OyBoYXZlIHRvIGRvIHdpdGgg
-ZmlybXdhcmU/ICBJdCBzaG91bGQgYWxzbyBub3QgZnJlZV9uZXRkZXYoKSBiZWNhdXNlCiZndDsg
-dGhhdCB3aWxsIGp1c3QgbGVhZCB0byBhIHVzZSBhZnRlciBmcmVlIGluIHRoZSBjYWxsZXIuCiZn
-dDsgCiZndDsgcmVnYXJkcywKJmd0OyBkYW4gY2FycGVudGVyCiZndDsgCiZndDsgJmd0OyAgCWNv
-bXBsZXRlKCZhbXA7YWRhcHRlci0mZ3Q7cnRsODcxMl9md19yZWFkeSk7CiZndDsgJmd0OyAgfQom
-Z3Q7ICZndDsgIAomZ3Q7ICZndDsgLS0gCiZndDsgJmd0OyAyLjE3LjEKJmd0OyAmZ3Q7IAomZ3Q7
-ICZndDsgX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KJmd0
-OyAmZ3Q7IGRldmVsIG1haWxpbmcgbGlzdAomZ3Q7ICZndDsgZGV2ZWxAbGludXhkcml2ZXJwcm9q
-ZWN0Lm9yZwomZ3Q7ICZndDsgaHR0cDovL2RyaXZlcmRldi5saW51eGRyaXZlcnByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vZHJpdmVyZGV2LWRldmVsCjwvc2hhb2ppZS5kb25nQGlzcmMuaXNj
-YXMuYWMuY24+PC9zaGFvamllLmRvbmdAaXNyYy5pc2Nhcy5hYy5jbj48L2Rhbi5jYXJwZW50ZXJA
-b3JhY2xlLmNvbT48L2xhcnJ5LmZpbmdlckBsd2Zpbmdlci5uZXQ+
+On Wed, Dec 09, 2020 at 06:32:27PM -0300, Enzo Matsumiya wrote:
+> +void nvme_hwmon_exit(struct nvme_ctrl *ctrl)
+> +{
+> +	hwmon_device_unregister(ctrl->dev);
+> +}
+
+The hwmon registration uses the devm_ version, so don't we need to use
+the devm_hwmon_device_unregister() here?
