@@ -2,49 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C85E2D4F85
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F31ED2D4F84
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 01:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729199AbgLJAff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 19:35:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728740AbgLJAfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 19:35:00 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607560459;
-        bh=PDywoq0SwBaZtbjjJeN87FvqLAhtGk7Y1iBuXeV1lg0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=I5jC2RA+40BxWa8gmeoPm8B7DOfFRIf/Ly5ptY6OkJN97KizSv+NUV2+lwREqZsak
-         NkYESk+wgrJeqr8Wtr/7crfqwyVqKeGuueM3ruUMfhPh0QGFdGPCvL+fsQ8FbqbmiN
-         PY4aMX3SU0qMw33hS83dzbJgNwbWsD137Om/oRcJaY9eyBFZ33EfNvR257xSRGfgLn
-         a+B0tyYOr4vniUgFheg9wFNkDEc69b5rJQ4udDkmSiYKPFu32lQb7kNTbGXjsQQJ2c
-         njb6NmrqZFicOUan1/7IV+tZW5FOtOSsJvAcI+db+PmRUDKDBewjXIMEyLzdBpCxIz
-         0bZQypM8+AmDw==
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201126072844.35370-6-manivannan.sadhasivam@linaro.org>
-References: <20201126072844.35370-1-manivannan.sadhasivam@linaro.org> <20201126072844.35370-6-manivannan.sadhasivam@linaro.org>
-Subject: Re: [RESEND PATCH v4 5/6] dt-bindings: clock: Add GDSC in SDX55 GCC
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     bjorn.andersson@linaro.org, vkoul@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        mturquette@baylibre.com, robh+dt@kernel.org
-Date:   Wed, 09 Dec 2020 16:34:18 -0800
-Message-ID: <160756045835.1580929.1362529049352724788@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S1729124AbgLJAfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 19:35:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728864AbgLJAfC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 19:35:02 -0500
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE14C06179C;
+        Wed,  9 Dec 2020 16:34:22 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477:9e51:a893:b0fe:602a])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 20C334D259C19;
+        Wed,  9 Dec 2020 16:34:22 -0800 (PST)
+Date:   Wed, 09 Dec 2020 16:34:21 -0800 (PST)
+Message-Id: <20201209.163421.2064398689461933924.davem@davemloft.net>
+To:     zhengyongjun3@huawei.com
+Cc:     kuba@kernel.org, linux-afs@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next] net: mlx5: convert comma to semicolon
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20201209133441.1119-1-zhengyongjun3@huawei.com>
+References: <20201209133441.1119-1-zhengyongjun3@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Wed, 09 Dec 2020 16:34:22 -0800 (PST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Manivannan Sadhasivam (2020-11-25 23:28:43)
-> Add GDSC instances in SDX55 GCC block.
->=20
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
+From: Zheng Yongjun <zhengyongjun3@huawei.com>
+Date: Wed, 9 Dec 2020 21:34:41 +0800
 
-Applied to clk-next
+> Replace a comma between expression statements by a semicolon.
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+
+Applied.
