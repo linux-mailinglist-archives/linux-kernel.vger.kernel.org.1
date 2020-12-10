@@ -2,105 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C97DE2D5FCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4BD2D5FD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 16:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391795AbgLJPcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 10:32:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390792AbgLJPbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:31:44 -0500
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     stable@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Solar Designer <solar@openwall.com>, Eddy_Wu@trendmicro.com,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 1/2] kprobes: Remove NMI context check
-Date:   Fri, 11 Dec 2020 00:30:58 +0900
-Message-Id: <160761425763.3585575.15837172081484340228.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-User-Agent: StGit/0.19
+        id S2391804AbgLJPem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 10:34:42 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:59356 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391812AbgLJPeT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 10:34:19 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BAFXIAM110543;
+        Thu, 10 Dec 2020 09:33:18 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607614398;
+        bh=AeyQGxgu/DbIULyND/4supeqkzfg6gDhQeqZq4ZzO/w=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=npJW6fejpX1XkkxT8PhGAdoGgg6/U9RCGL7brBEyaSDpooeeqUIWacJWYNSJQXD1h
+         yaTOpODgZaf6YMrd/epYadpgu+D3x85gUDa50TweRctSwdNsevcvXSh36PLyz6pSAp
+         rT46cR0fOikp5ZNh8s2IEGMcKQbZC7FG5NyxVfko=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BAFXIcp080989
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Dec 2020 09:33:18 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
+ Dec 2020 09:30:58 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 10 Dec 2020 09:30:58 -0600
+Received: from [10.250.38.244] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BAFUwi2110524;
+        Thu, 10 Dec 2020 09:30:58 -0600
+Subject: Re: [PATCH v4 0/6] Add a PRU remoteproc driver
+To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
+        <mathieu.poirier@linaro.org>, <robh+dt@kernel.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <lee.jones@linaro.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <praneeth@ti.com>,
+        <rogerq@ti.com>
+References: <20201208141002.17777-1-grzegorz.jaszczyk@linaro.org>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <0dc797aa-b938-4a9a-b8cb-ec73508563fd@ti.com>
+Date:   Thu, 10 Dec 2020 09:30:58 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201208141002.17777-1-grzegorz.jaszczyk@linaro.org>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit e03b4a084ea6b0a18b0e874baec439e69090c168 upstream.
+Hi Bjorn,
 
-The in_nmi() check in pre_handler_kretprobe() is meant to avoid
-recursion, and blindly assumes that anything NMI is recursive.
+On 12/8/20 8:09 AM, Grzegorz Jaszczyk wrote:
+> Hi All,
+> 
+> The Programmable Real-Time Unit and Industrial Communication Subsystem
+> (PRU-ICSS or simply PRUSS) on various TI SoCs consists of dual 32-bit
+> RISC cores (Programmable Real-Time Units, or PRUs) for program execution.
+> 
+> The K3 AM65x and J721E SoCs have the next generation of the PRU-ICSS IP,
+> commonly called ICSSG. The ICSSG IP on AM65x SoCs has two PRU cores,
+> two auxiliary custom PRU cores called Real Time Units (RTUs). The K3
+> AM65x SR2.0 and J721E SoCs have a revised version of the ICSSG IP, and
+> include two additional custom auxiliary PRU cores called Transmit PRUs
+> (Tx_PRUs).
+> 
+> This series contains the PRUSS remoteproc driver together with relevant
+> dt-binding. This is the 3rd foundation component for PRUSS subsystem, the
+> previous two were already merged and can be found under:
+> 1) drivers/soc/ti/pruss.c
+>    Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+> 2) drivers/irqchip/irq-pruss-intc.c
+>    Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
+> 
+> The following is a v4 version of the series. There is only one change
+> from v3 [1]:
+> - Use sizeof(unsigned int) instead of sizeof(int) for kcalloc in
+> pru_handle_intrmap() in patch #3.
+> 
+> [1] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20201204201807.14716-1-grzegorz.jaszczyk@linaro.org/
+> 
+> Best regards,
+> Grzegorz
+> 
+> Grzegorz Jaszczyk (1):
+>   remoteproc: pru: Add support for PRU specific interrupt configuration
+> 
+> Suman Anna (5):
+>   dt-bindings: remoteproc: Add binding doc for PRU cores in the PRU-ICSS
+>   remoteproc: pru: Add a PRU remoteproc driver
+>   remoteproc: pru: Add pru-specific debugfs support
+>   remoteproc: pru: Add support for various PRU cores on K3 AM65x SoCs
+>   remoteproc: pru: Add support for various PRU cores on K3 J721E SoCs
 
-However, since commit:
+All patches in this series are Reviewed now and we have got the binding ack as
+well. Can you please pick this series up for 5.11 if it is not too late?
 
-  9b38cc704e84 ("kretprobe: Prevent triggering kretprobe from within kprobe_flush_task")
+Thank you,
+Suman
 
-there is a better way to detect and avoid actual recursion.
-
-By setting a dummy kprobe, any actual exceptions will terminate early
-(by trying to handle the dummy kprobe), and recursion will not happen.
-
-Employ this to avoid the kretprobe_table_lock() recursion, replacing
-the over-eager in_nmi() check.
-
-Cc: stable@vger.kernel.org # 5.9.x
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/159870615628.1229682.6087311596892125907.stgit@devnote2
----
- kernel/kprobes.c |   16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index e995541d277d..b885d884603d 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1359,7 +1359,8 @@ static void cleanup_rp_inst(struct kretprobe *rp)
- 	struct hlist_node *next;
- 	struct hlist_head *head;
- 
--	/* No race here */
-+	/* To avoid recursive kretprobe by NMI, set kprobe busy here */
-+	kprobe_busy_begin();
- 	for (hash = 0; hash < KPROBE_TABLE_SIZE; hash++) {
- 		kretprobe_table_lock(hash, &flags);
- 		head = &kretprobe_inst_table[hash];
-@@ -1369,6 +1370,8 @@ static void cleanup_rp_inst(struct kretprobe *rp)
- 		}
- 		kretprobe_table_unlock(hash, &flags);
- 	}
-+	kprobe_busy_end();
-+
- 	free_rp_inst(rp);
- }
- NOKPROBE_SYMBOL(cleanup_rp_inst);
-@@ -1937,17 +1940,6 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 	unsigned long hash, flags = 0;
- 	struct kretprobe_instance *ri;
- 
--	/*
--	 * To avoid deadlocks, prohibit return probing in NMI contexts,
--	 * just skip the probe and increase the (inexact) 'nmissed'
--	 * statistical counter, so that the user is informed that
--	 * something happened:
--	 */
--	if (unlikely(in_nmi())) {
--		rp->nmissed++;
--		return 0;
--	}
--
- 	/* TODO: consider to only swap the RA after the last pre_handler fired */
- 	hash = hash_ptr(current, KPROBE_HASH_BITS);
- 	raw_spin_lock_irqsave(&rp->lock, flags);
+> 
+>  .../bindings/remoteproc/ti,pru-rproc.yaml     | 214 +++++
+>  drivers/remoteproc/Kconfig                    |  12 +
+>  drivers/remoteproc/Makefile                   |   1 +
+>  drivers/remoteproc/pru_rproc.c                | 875 ++++++++++++++++++
+>  drivers/remoteproc/pru_rproc.h                |  46 +
+>  5 files changed, 1148 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+>  create mode 100644 drivers/remoteproc/pru_rproc.c
+>  create mode 100644 drivers/remoteproc/pru_rproc.h
+> 
 
