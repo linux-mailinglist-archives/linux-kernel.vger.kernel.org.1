@@ -2,66 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80EB2D5CC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:05:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D7B2D5D2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389905AbgLJOEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:04:36 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:37953 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389824AbgLJOEG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:04:06 -0500
-Received: by mail-oi1-f196.google.com with SMTP id o25so5811857oie.5;
-        Thu, 10 Dec 2020 06:03:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3MLLm+mEEjeqlhPqYeqwFttUlHw74kkq347oncGq1Gw=;
-        b=XOlKHm65DzjULTr5Z9/uMEPGvuhjLWdkGQqG6aGzELJwdPS8idPSYRSAcEztav6jXT
-         ivLQw+Ah4QG/e5TKNwZl4yMkKqy0BPSxWyP45lLPKUGzgEy3NM4e9MMo15QTadJISmCq
-         iBPt+AlSCasfcWroyinyKOsedhemYAwheXGDzzXXSVwbl1NLuZemXfGfDSyPnsQpkZfS
-         2Ojiwol7HbpxnFvCvf1Kh39Xb0Lz2hWuHPqUI84T073gtSWrrEpipXvitfir+EC88YsT
-         rRUQGSsTa4S6akUBTkhAj47Bh7K3olxy3ZJef++J/hRAmfBqP/eABIqcO3rPE93zHqWq
-         3nIg==
-X-Gm-Message-State: AOAM531EIQqzELhKw7qGGwZrXJqSE4qVI6TDk/eqWXB7V+0oyPQVklaI
-        sw5HUApiSSEGEQTYRnaK2elvXfocxg==
-X-Google-Smtp-Source: ABdhPJwG52D2wifZOqB6HTnMduClyCraQe186nghSc5IY6q8p1tskxYgGqkEMIu3RfTL+SAFDYXsYA==
-X-Received: by 2002:aca:5e57:: with SMTP id s84mr5396974oib.102.1607609005231;
-        Thu, 10 Dec 2020 06:03:25 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n16sm264268oov.23.2020.12.10.06.03.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 06:03:24 -0800 (PST)
-Received: (nullmailer pid 2425665 invoked by uid 1000);
-        Thu, 10 Dec 2020 14:03:23 -0000
-Date:   Thu, 10 Dec 2020 08:03:23 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Cristian Pop <cristian.pop@analog.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jic23@kernel.org, robh+dt@kernel.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] dt-bindings: iio: dac: AD5766 yaml documentation
-Message-ID: <20201210140323.GA2425635@robh.at.kernel.org>
-References: <20201208131957.34381-1-cristian.pop@analog.com>
+        id S2387552AbgLJOJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:09:13 -0500
+Received: from mga12.intel.com ([192.55.52.136]:32289 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726212AbgLJOJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:09:13 -0500
+IronPort-SDR: S6slQlhVza8c5Cp7R+68rs6+ENrIshVby0UnN9ylOmagXrgMK89pJf1M4nk8D03cAAlKbA1ju6
+ U31qQoJVQ33A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="153491310"
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="153491310"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 06:08:32 -0800
+IronPort-SDR: NXPLJtMYmT/CeJpidikNNJ75eG+BRyJpsWgmTIw2NV2U2KmqBDhIsDNGMAUU8PBv60H5aP4k6v
+ 4nCTk8aoQQLw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
+   d="scan'208";a="364666575"
+Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 10 Dec 2020 06:08:31 -0800
+Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1knMcQ-0000Jf-F3; Thu, 10 Dec 2020 14:08:30 +0000
+Date:   Thu, 10 Dec 2020 22:07:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.12.08d] BUILD SUCCESS
+ 99312ae06ad1265dbaa5bc9df63b3bc65bef61c4
+Message-ID: <5fd22ba3.V7y3P7jr7p1SEbOF%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208131957.34381-1-cristian.pop@analog.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Dec 2020 15:19:55 +0200, Cristian Pop wrote:
-> This adds device tree bindings for the AD5766 DAC.
-> 
-> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
-> ---
->  Changes in v3:
-> 	- Fix errors
->  .../bindings/iio/dac/adi,ad5766.yaml          | 58 +++++++++++++++++++
->  1 file changed, 58 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.12.08d
+branch HEAD: 99312ae06ad1265dbaa5bc9df63b3bc65bef61c4  rcu-tasks: Add RCU-tasks self tests
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+elapsed time: 722m
+
+configs tested: 150
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          kfr2r09_defconfig
+x86_64                           alldefconfig
+arm                     am200epdkit_defconfig
+arm                  colibri_pxa270_defconfig
+arm                          lpd270_defconfig
+m68k                       m5475evb_defconfig
+m68k                        m5407c3_defconfig
+sh                            titan_defconfig
+xtensa                generic_kc705_defconfig
+s390                             allyesconfig
+mips                         mpc30x_defconfig
+openrisc                 simple_smp_defconfig
+m68k                        stmark2_defconfig
+sh                           se7722_defconfig
+riscv                    nommu_virt_defconfig
+arm                          ep93xx_defconfig
+powerpc                         wii_defconfig
+xtensa                  cadence_csp_defconfig
+powerpc                      tqm8xx_defconfig
+arc                        vdk_hs38_defconfig
+powerpc                      walnut_defconfig
+ia64                         bigsur_defconfig
+m68k                         apollo_defconfig
+powerpc                     tqm8555_defconfig
+riscv                            allmodconfig
+m68k                        mvme16x_defconfig
+mips                        omega2p_defconfig
+ia64                        generic_defconfig
+um                             i386_defconfig
+mips                           gcw0_defconfig
+sh                           se7724_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                           viper_defconfig
+arm                    vt8500_v6_v7_defconfig
+sh                        edosk7760_defconfig
+arm                       imx_v6_v7_defconfig
+powerpc                 mpc85xx_cds_defconfig
+mips                         tb0219_defconfig
+mips                  maltasmvp_eva_defconfig
+mips                     cu1000-neo_defconfig
+powerpc                     rainier_defconfig
+arm                        spear6xx_defconfig
+arm                         s3c6400_defconfig
+mips                         db1xxx_defconfig
+mips                            ar7_defconfig
+arm                       versatile_defconfig
+powerpc                        icon_defconfig
+arm                           tegra_defconfig
+arm                        multi_v5_defconfig
+mips                          ath79_defconfig
+arc                              allyesconfig
+powerpc                     redwood_defconfig
+powerpc                 linkstation_defconfig
+mips                           mtx1_defconfig
+mips                          ath25_defconfig
+sh                             shx3_defconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                      pmac32_defconfig
+riscv                    nommu_k210_defconfig
+openrisc                            defconfig
+m68k                           sun3_defconfig
+arm                        multi_v7_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201209
+i386                 randconfig-a005-20201209
+i386                 randconfig-a001-20201209
+i386                 randconfig-a002-20201209
+i386                 randconfig-a006-20201209
+i386                 randconfig-a003-20201209
+i386                 randconfig-a001-20201210
+i386                 randconfig-a004-20201210
+i386                 randconfig-a003-20201210
+i386                 randconfig-a002-20201210
+i386                 randconfig-a005-20201210
+i386                 randconfig-a006-20201210
+x86_64               randconfig-a016-20201209
+x86_64               randconfig-a012-20201209
+x86_64               randconfig-a013-20201209
+x86_64               randconfig-a014-20201209
+x86_64               randconfig-a015-20201209
+x86_64               randconfig-a011-20201209
+i386                 randconfig-a013-20201209
+i386                 randconfig-a014-20201209
+i386                 randconfig-a011-20201209
+i386                 randconfig-a015-20201209
+i386                 randconfig-a012-20201209
+i386                 randconfig-a016-20201209
+i386                 randconfig-a014-20201210
+i386                 randconfig-a013-20201210
+i386                 randconfig-a012-20201210
+i386                 randconfig-a011-20201210
+i386                 randconfig-a016-20201210
+i386                 randconfig-a015-20201210
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201209
+x86_64               randconfig-a006-20201209
+x86_64               randconfig-a005-20201209
+x86_64               randconfig-a001-20201209
+x86_64               randconfig-a002-20201209
+x86_64               randconfig-a003-20201209
+x86_64               randconfig-a003-20201210
+x86_64               randconfig-a006-20201210
+x86_64               randconfig-a002-20201210
+x86_64               randconfig-a005-20201210
+x86_64               randconfig-a004-20201210
+x86_64               randconfig-a001-20201210
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
