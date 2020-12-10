@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957BD2D6C28
+	by mail.lfdr.de (Postfix) with ESMTP id 2986B2D6C27
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389399AbgLJXql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 18:46:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394464AbgLJXp7 (ORCPT
+        id S2390820AbgLJXqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 18:46:16 -0500
+Received: from gproxy7-pub.mail.unifiedlayer.com ([70.40.196.235]:46742 "EHLO
+        gproxy7-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2394460AbgLJXpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:45:59 -0500
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E88C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:45:19 -0800 (PST)
-Received: by mail-oo1-xc36.google.com with SMTP id s1so1722521oon.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 15:45:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
-        bh=CpA6gxKkHV08hJECSbbBwUFG46PBv1T6665ufiVVTc4=;
-        b=QQSvBiZnpJvWQUgf6zIz4KYO0MkAeosE304pZ3yR/dpj/IpD4AnjKWGvt4Spf0zlWY
-         e17ixx0vVAJ3c78ZVuBhL+qrGw/IXL5/B8vlcOIS14VqVUxj16mKN/sIBftFl7SdtVkK
-         IeEO4Tmyzx/ZQVBqU7emz3Z+JnX6AHZ9kqdQdtroUSElUppcC4lxvzd4NZZld+IgGW7W
-         i98abelo+JQ8C9EJqVA2Zb5ZAMb81KE1Od+vla1JAyNz/Ndhi5eqqPXPtfUwPfbMCrH9
-         rjDTqo9H8+YRW6PFm4A+pF/1r6B8veTEofV22oFVc4efY59vTJQHTowlmxQJCVgs5dOU
-         /W1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
-         :mime-version;
-        bh=CpA6gxKkHV08hJECSbbBwUFG46PBv1T6665ufiVVTc4=;
-        b=LCiTse2K1lzHROrwY+jS6RdLuSmmMk9BuPnI9t+LjsvfwjDTZuxGI/cnZhPRVrRzXq
-         fqt/B75YjrQ1sxgyzPYNGUXsnIIJQzq5l/yPWIqH/cDvpJjxNRWbIGHQvceUg72mhgiN
-         KgO51vTFeMKwID3mMYyv63ZU/nAqSXkh8wGbAEWhlpx984GKpFEMkGBw5L6vke2Fa/vo
-         0UrGw/QpzkRNo6PAKZwn4OVKpI6tgCYy5IQxBoVsnJpFvyVLcBLKJx8mqIwK9EfSkaOF
-         mL8p45Nv1LlQu/XU9mAHguLVQy2RkSc6d6TV3g3HM0bpSLFc3VBqMY3Q4nvX2BrThmF/
-         xo2w==
-X-Gm-Message-State: AOAM531ocg9cmuF0w+CFwavKdUnAm6AVkiLnSX3mP7xXd3gAbU5IC5h2
-        1YZM+Q5NdLcCDTUBh+Uq73COqQ==
-X-Google-Smtp-Source: ABdhPJwlPRRqLENGqR3DgtLwPuZKphMCcYTYi1x8TOvPghQemLsu2xmQNOpOKhtRMjNtVLUNKPVDGQ==
-X-Received: by 2002:a05:6820:41:: with SMTP id v1mr7903689oob.41.1607643918252;
-        Thu, 10 Dec 2020 15:45:18 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id h20sm1431541otj.57.2020.12.10.15.45.17
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 10 Dec 2020 15:45:17 -0800 (PST)
-Date:   Thu, 10 Dec 2020 15:44:57 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>
-cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: linux-next fsnotify mod breaks tail -f
-Message-ID: <alpine.LSU.2.11.2012101507080.1100@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Thu, 10 Dec 2020 18:45:46 -0500
+Received: from cmgw10.unifiedlayer.com (unknown [10.9.0.10])
+        by gproxy7.mail.unifiedlayer.com (Postfix) with ESMTP id 3FAAF218CB2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:45:04 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id nVcNk5AM2DlydnVcOkqrUf; Thu, 10 Dec 2020 16:45:04 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=G4sy7es5 c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=zTNgK-yGK50A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=_jlGtV7tAAAA:8
+ a=5ECQQv9YRw_6OKVbx6EA:9 a=CjuIK1q_8ugA:10:nop_charset_2
+ a=nlm17XC03S6CtCLSeiRr:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=GSR/XnumuC0eiaNQgNr+iai2QKutLw73HdkwvDda8TI=; b=eXSw73VB0oMVVSMVvj1hQ8e0pt
+        9M2BMMwgfBRnt2s3b5N2veFp43FmlRdyu4cvuem2VoYrEIY5yxfJ6FWXn35r/q7kz/koxB7hru4sI
+        LQSNuWEtW9exMmbiZk/3r5dlUHxN8NU8ak0epFxgczFS8KSjcc9WFo3tbmqZXM9J6AiybkHq5s7aj
+        T609h570dOndj5p11EypJMB706k6mK9x1YGaqQPzw8awrA0nXCJ0oHP+rXhv2Wj3qf02dtXh5QdxV
+        MIGepG5dGr4mnUb4KaJHzqLxojuv6jpO3WWdXjvyzPplESsGpHnldsSGM4XnZtE39YghDaCr0lkUi
+        9e+CRs8A==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:34634 helo=localhost)
+        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1knVcN-0044sI-Au; Thu, 10 Dec 2020 23:45:03 +0000
+Date:   Thu, 10 Dec 2020 15:45:02 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/54] 5.4.83-rc2 review
+Message-ID: <20201210234502.GD259082@roeck-us.net>
+References: <20201210164728.074574869@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210164728.074574869@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1knVcN-0044sI-Au
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:34634
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 36
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jan, Amir,
+On Thu, Dec 10, 2020 at 05:47:50PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.83 release.
+> There are 54 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 12 Dec 2020 16:47:12 +0000.
+> Anything received after that time might be too late.
+> 
 
-There's something wrong with linux-next commit ca7fbf0d29ab
-("fsnotify: fix events reported to watching parent and child").
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 426 pass: 426 fail: 0
 
-If I revert that commit, no problem;
-but here's a one-line script "tailed":
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-for i in 1 2 3 4 5; do date; sleep 1; done &
-
-Then if I run that (same result doing ./tailed after chmod a+x):
-
-sh tailed >log; tail -f log
-
-the "tail -f log" behaves in one of three ways:
-
-1) On a console, before graphical screen, no problem,
-   it shows the five lines coming from "date" as you would expect.
-2) From xterm or another tty, shows just the first line from date,
-   but after I wait and Ctrl-C out, "cat log" shows all five lines.
-3) From xterm or another tty, doesn't even show that first line.
-
-The before/after graphical screen thing seems particularly weird:
-I expect you'll end up with a simpler explanation for what's
-causing that difference.
-
-tailed and log are on ext4, if that's relevant;
-ah, I just tried on tmpfs, and saw no problem there.
-
-CONFIG_FSNOTIFY=y
-CONFIG_DNOTIFY=y
-CONFIG_INOTIFY_USER=y
-CONFIG_FANOTIFY=y
-
-Hugh
+Guenter
