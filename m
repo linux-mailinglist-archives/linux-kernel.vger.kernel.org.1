@@ -2,187 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D4E2D61FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CE62D620F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403902AbgLJQDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:03:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50222 "EHLO mx2.suse.de"
+        id S2392152AbgLJQCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:02:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391139AbgLJQCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:02:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607616059; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dm1VpRI0pRdWegL/4GNOSlgDQroovlVKC7NnZ6GivtY=;
-        b=fO+c/EN+MaW+rIe9e+8nfgH9DST+GbIkS7UN5qHjPj0MpoRtX9fqkY9oNNfoxb6Ns/gPNw
-        IELzhwrj0hpORl/Oln7eZEVaE74vigGb57QIOiooL22stEghpmFvQxGCcK6rBU3RfgSTNN
-        x2ulBNelQNinnVo058ENzkhT/kOtIDA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E0F65AF22;
-        Thu, 10 Dec 2020 16:00:58 +0000 (UTC)
-From:   Petr Mladek <pmladek@suse.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Laurence Oberman <loberman@redhat.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        Petr Mladek <pmladek@suse.com>
-Subject: [PATCH v2 6/7] watchdog: Cleanup handling of false positives
-Date:   Thu, 10 Dec 2020 17:00:37 +0100
-Message-Id: <20201210160038.31441-7-pmladek@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201210160038.31441-1-pmladek@suse.com>
-References: <20201210160038.31441-1-pmladek@suse.com>
+        id S2403876AbgLJQCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 11:02:05 -0500
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     "Jonathan Corbet" <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH RFC] docs: experimental: build PDF with rst2pdf
+Date:   Thu, 10 Dec 2020 17:01:19 +0100
+Message-Id: <a29b97f95cae490cb83da28410fade13d880f365.1607616056.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201210074845.4eb67f22@lwn.net>
+References: <20201210074845.4eb67f22@lwn.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit d6ad3e286d2c075 ("softlockup: Add sched_clock_tick() to avoid
-kernel warning on kgdb resume") introduced touch_softlockup_watchdog_sync().
+Add an experimental PDF builder using rst2pdf
 
-It solved a problem when the watchdog was touched in an atomic context,
-the timer callback was proceed right after releasing interrupts,
-and the local clock has not been updated yet. In this case,
-sched_clock_tick() was called in watchdog_timer_fn() before
-updating the timer.
-
-So far so good.
-
-Later the commit 5d1c0f4a80a6df73 ("watchdog: add check for suspended vm
-in softlockup detector") added two kvm_check_and_clear_guest_paused()
-calls. They touch the watchdog when the guest has been sleeping.
-
-The code makes my head spin around.
-
-Scenario 1:
-
-    + guest did sleep:
-	+ PVCLOCK_GUEST_STOPPED is set
-
-    + 1st watchdog_timer_fn() invocation:
-	+ the watchdog is not touched yet
-	+ is_softlockup() returns too big delay
-	+ kvm_check_and_clear_guest_paused():
-	   + clear PVCLOCK_GUEST_STOPPED
-	   + call touch_softlockup_watchdog_sync()
-		+ set SOFTLOCKUP_DELAY_REPORT
-		+ set softlockup_touch_sync
-	+ return from the timer callback
-
-      + 2nd watchdog_timer_fn() invocation:
-
-	+ call sched_clock_tick() even though it is not needed.
-	  The timer callback was invoked again only because the clock
-	  has already been updated in the meantime.
-
-	+ call kvm_check_and_clear_guest_paused() that does nothing
-	  because PVCLOCK_GUEST_STOPPED has been cleared already.
-
-	+ call update_report_ts() and return. This is fine. Except
-	  that sched_clock_tick() might allow to set it already
-	  during the 1st invocation.
-
-Scenario 2:
-
-	+ guest did sleep
-
-	+ 1st watchdog_timer_fn() invocation
-	    + same as in 1st scenario
-
-	+ guest did sleep again:
-	    + set PVCLOCK_GUEST_STOPPED again
-
-	+ 2nd watchdog_timer_fn() invocation
-	    + SOFTLOCKUP_DELAY_REPORT is set from 1st invocation
-	    + call sched_clock_tick()
-	    + call kvm_check_and_clear_guest_paused()
-		+ clear PVCLOCK_GUEST_STOPPED
-		+ call touch_softlockup_watchdog_sync()
-		    + set SOFTLOCKUP_DELAY_REPORT
-		    + set softlockup_touch_sync
-	    + call update_report_ts() (set real timestamp immediately)
-	    + return from the timer callback
-
-	+ 3rd watchdog_timer_fn() invocation
-	    + timestamp is set from 2nd invocation
-	    + softlockup_touch_sync is set but not checked because
-	      the real timestamp is already set
-
-Make the code more straightforward:
-
-1. Always call kvm_check_and_clear_guest_paused() at the very
-   beginning to handle PVCLOCK_GUEST_STOPPED. It touches the watchdog
-   when the quest did sleep.
-
-2. Handle the situation when the watchdog has been touched
-   (SOFTLOCKUP_DELAY_REPORT is set).
-
-   Call sched_clock_tick() when touch_*sync() variant was used. It makes
-   sure that the timestamp will be up to date even when it has been
-   touched in atomic context or quest did sleep.
-
-As a result, kvm_check_and_clear_guest_paused() is called on a single
-location. And the right timestamp is always set when returning from
-the timer callback.
-
-Signed-off-by: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- kernel/watchdog.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+ Documentation/Makefile                     |  5 +++++
+ Documentation/conf.py                      | 21 +++++++++++++++------
+ Documentation/userspace-api/media/Makefile |  1 +
+ Makefile                                   |  4 ++--
+ 4 files changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 6dc1f79e36aa..c050323fcd33 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -375,7 +375,14 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 	/* .. and repeat */
- 	hrtimer_forward_now(hrtimer, ns_to_ktime(sample_period));
+diff --git a/Documentation/Makefile b/Documentation/Makefile
+index 61a7310b49e0..c3c8fb10f94e 100644
+--- a/Documentation/Makefile
++++ b/Documentation/Makefile
+@@ -115,6 +115,10 @@ pdfdocs: latexdocs
  
--	/* Reset the interval when touched externally by a known slow code. */
-+	/*
-+	 * If a virtual machine is stopped by the host it can look to
-+	 * the watchdog like a soft lockup. Check to see if the host
-+	 * stopped the vm before we process the timestamps.
-+	 */
-+	kvm_check_and_clear_guest_paused();
+ endif # HAVE_PDFLATEX
+ 
++rst2pdf:
++	@$(srctree)/scripts/sphinx-pre-install --version-check
++	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,pdf,$(var),pdf,$(var)))
 +
-+	/* Reset the interval when touched by known problematic code. */
- 	if (period_ts == SOFTLOCKUP_DELAY_REPORT) {
- 		if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
- 			/*
-@@ -386,10 +393,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 			sched_clock_tick();
- 		}
+ epubdocs:
+ 	@$(srctree)/scripts/sphinx-pre-install --version-check
+ 	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,epub,$(var),epub,$(var)))
+@@ -140,6 +144,7 @@ dochelp:
+ 	@echo  '  htmldocs        - HTML'
+ 	@echo  '  latexdocs       - LaTeX'
+ 	@echo  '  pdfdocs         - PDF'
++	@echo  '  rst2pdf         - PDF, using experimental rst2pdf support'
+ 	@echo  '  epubdocs        - EPUB'
+ 	@echo  '  xmldocs         - XML'
+ 	@echo  '  linkcheckdocs   - check for broken external links'
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 66e121df59cd..6f2788aac81e 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -123,6 +123,12 @@ if (major == 1 and minor > 3) or (major > 1):
+ else:
+     extensions.append("sphinx.ext.pngmath")
  
--		/* Clear the guest paused flag on watchdog reset */
--		kvm_check_and_clear_guest_paused();
- 		update_report_ts();
--
- 		return HRTIMER_RESTART;
- 	}
++# Enable experimental rst2pdf, if available
++try:
++    extensions.append("rst2pdf.pdfbuilder")
++except:
++    sys.stderr.write('rst2pdf extension not available.\n')
++
+ # Add any paths that contain templates here, relative to this directory.
+ templates_path = ['_templates']
  
-@@ -401,14 +405,6 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 	 */
- 	duration = is_softlockup(touch_ts, period_ts);
- 	if (unlikely(duration)) {
--		/*
--		 * If a virtual machine is stopped by the host it can look to
--		 * the watchdog like a soft lockup, check to see if the host
--		 * stopped the vm before we issue the warning
--		 */
--		if (kvm_check_and_clear_guest_paused())
--			return HRTIMER_RESTART;
--
- 		/*
- 		 * Prevent multiple soft-lockup reports if one cpu is already
- 		 * engaged in dumping all cpu back traces.
+@@ -614,12 +620,15 @@ epub_exclude_files = ['search.html']
+ #
+ # See the Sphinx chapter of https://ralsina.me/static/manual.pdf
+ #
+-# FIXME: Do not add the index file here; the result will be too big. Adding
+-# multiple PDF files here actually tries to get the cross-referencing right
+-# *between* PDF files.
+-pdf_documents = [
+-    ('kernel-documentation', u'Kernel', u'Kernel', u'J. Random Bozo'),
+-]
++
++# Add all LaTeX files to PDF documents as well
++pdf_documents = []
++for l in latex_documents:
++    doc = l[0]
++    fn = l[1].replace(".tex", "")
++    name = l[2]
++    authors = l[3]
++    pdf_documents.append((doc, fn, name, authors))
+ 
+ # kernel-doc extension configuration for running Sphinx directly (e.g. by Read
+ # the Docs). In a normal build, these are supplied from the Makefile via command
+diff --git a/Documentation/userspace-api/media/Makefile b/Documentation/userspace-api/media/Makefile
+index 81a4a1a53bce..8c6b3ac4ecb0 100644
+--- a/Documentation/userspace-api/media/Makefile
++++ b/Documentation/userspace-api/media/Makefile
+@@ -59,6 +59,7 @@ all: $(IMGDOT) $(BUILDDIR) ${TARGETS}
+ html: all
+ epub: all
+ xml: all
++pdf: all
+ latex: $(IMGPDF) all
+ linkcheck:
+ 
+diff --git a/Makefile b/Makefile
+index 43ecedeb3f02..db4043578eec 100644
+--- a/Makefile
++++ b/Makefile
+@@ -264,7 +264,7 @@ no-dot-config-targets := $(clean-targets) \
+ 			 cscope gtags TAGS tags help% %docs check% coccicheck \
+ 			 $(version_h) headers headers_% archheaders archscripts \
+ 			 %asm-generic kernelversion %src-pkg dt_binding_check \
+-			 outputmakefile
++			 outputmakefile rst2pdf
+ no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease
+ single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
+ 
+@@ -1654,7 +1654,7 @@ $(help-board-dirs): help-%:
+ 
+ # Documentation targets
+ # ---------------------------------------------------------------------------
+-DOC_TARGETS := xmldocs latexdocs pdfdocs htmldocs epubdocs cleandocs \
++DOC_TARGETS := xmldocs latexdocs pdfdocs rst2pdf htmldocs epubdocs cleandocs \
+ 	       linkcheckdocs dochelp refcheckdocs
+ PHONY += $(DOC_TARGETS)
+ $(DOC_TARGETS):
 -- 
-2.26.2
+2.29.2
 
