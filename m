@@ -2,227 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5437C2D5468
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB94A2D5469
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 08:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387803AbgLJHSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 02:18:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387791AbgLJHSI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 02:18:08 -0500
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55661C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 23:17:28 -0800 (PST)
-Received: by mail-vs1-xe44.google.com with SMTP id j140so2341653vsd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 23:17:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TYrGtl0zgmQWmL60av2RB17570ZXsOx0vCKKTw9Dsrw=;
-        b=zS705Pp/561tKtN9X1ufVrLj6OTOLr+IrhRi1kauURiKdS8ar8F/n9hq5FOHiLTBcq
-         dyiIEkNbfR9W91qNnbhSdqVTfsaoR3B5dZyvFFSSghptZfEJfNcRjqJgDrPX2GgBGfQE
-         V1dzyoRvPBCF+wP8jLRZsjpDH0T7Se02L/y9LpIRoImC+pw5qFrBQk5c/gfWsUnZqHMM
-         Qrj7g0B8/OYcYzNWbstJ98PL/GGZa2YzH8WxFyEnwye3NUaXzcv3JZzGOKKX3WYKnZiP
-         lNKkLfQ5YMFRCz+9UTj8arPO5TuVC5uL8HcZkvAwiu5dpWm1eZWh9yYbskhBmwJpXQmr
-         0zNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TYrGtl0zgmQWmL60av2RB17570ZXsOx0vCKKTw9Dsrw=;
-        b=CWpsj5gOddipODfDn+OBGhCJGgvKxKrHAYCYJ+pIK3jQ167chh4R17iwl92u4kZXHF
-         2BG9BQF2rQQqn83PE//e4oLqGgLf93XxrYACgyEBfPzGz1SIWOYcIUaLgH7PanmdzxE4
-         kiAZmXznv/zwq4E7C3yr4GuPVDNe4KCGPHr5jBBLmuoqOT6eXDT8yeq0DG44/7x5QaNo
-         OCIxxhzkTrGIHlssyK7uNauDccKxikaApiIoo/Im+plunjt+QHVVu/YfvJogipDrV0Rr
-         4l597pE1E9JUPKuOXFSTYuhC1ksKWcqS5cLskHdyi2vcp+ICDlYZg0CYuYo5bELpnkyK
-         AqHw==
-X-Gm-Message-State: AOAM531VMgU0Szi8dLEknznpLbTzv7XW7dEqG3VdKDetSiM44t5GrG76
-        qeLlatAznWY2+nt/lS6U5My8cvVzde5EKYS5SWS/QQ==
-X-Google-Smtp-Source: ABdhPJwOEdMRhwz5a3/zyt5CWllJHt+nn5QXungtE2bUs7sUdRJO3pFIIlvw5kImbjdZ4vxf1EggnBGy4y4PgpnTUBQ=
-X-Received: by 2002:a67:8c44:: with SMTP id o65mr6184829vsd.55.1607584647349;
- Wed, 09 Dec 2020 23:17:27 -0800 (PST)
+        id S1730713AbgLJHSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 02:18:43 -0500
+Received: from pi3.com.pl ([185.238.74.129]:41404 "EHLO pi3.com.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725833AbgLJHSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 02:18:30 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by pi3.com.pl (Postfix) with ESMTP id 5CA604C001D;
+        Thu, 10 Dec 2020 08:17:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pi3.com.pl; s=default;
+        t=1607584665; bh=W8DRtMkyfmtnCmmWtbn3ndFhcP0+Ja5Nqbxe/Jc6LV4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IYyoM0aDEgV9ZIidHybkjEGs76wJlx0P7qhKWsDJ4/vVNECz+Hdd4qkwQOj5nuDoy
+         MROYU6T9l9O2Ht3PDrANHPtQlOIrECHW/zcOfuoh9UgWhliX/rd/H3AWQVD4YslD8O
+         pq7SpG8hTqJ6LyFszx0rAY09qbatM8zp14M1/OcNURY3qQm7fNAkSb1w8USpTSqsjJ
+         N+DlzFPtQfS0XZ6sTcXmsyP36KlrbiLpi08hdDWJZMiBP0Dndq3rVf/azKRqLr/NPn
+         Y4XyBqv4dbU0INMoRs+R6CpxDIZsBaaX7VmA+vxM6eVOesG4uDbQntQ7TnZxQUNrCw
+         uGefJEXO+zTGw==
+X-Virus-Scanned: Debian amavisd-new at pi3.com.pl
+Received: from pi3.com.pl ([127.0.0.1])
+        by localhost (pi3.com.pl [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id a_6tzo-d0Rk8; Thu, 10 Dec 2020 08:17:42 +0100 (CET)
+Received: by pi3.com.pl (Postfix, from userid 1000)
+        id 4F3524C14E9; Thu, 10 Dec 2020 08:17:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pi3.com.pl; s=default;
+        t=1607584662; bh=W8DRtMkyfmtnCmmWtbn3ndFhcP0+Ja5Nqbxe/Jc6LV4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aXBQsl7SystRFBWwT4U/AE8Q2xbjBemKZ5J3MC0RWJhI6ifAoXM6qOojh/PSETCc6
+         QP8aqoMVkp73h/tESPP2gsFiY3lwSxtVW1vImobwiw5UPX8CLGSSUMqdNKgvsGQkgR
+         JqvnmqwXi7pvxsXE5OwTn3t/7WN07LcsuQw8AJ2J6q3Vm6sHEZAO+OV0YoapHq898O
+         qiKOQQBwuVPotqY8yssK6SWjr61DnWEr4y6aVIaKsyIpNeN2YZj/jWopVQyOJ4Vl/J
+         GF2ZXEgtzjX62sVBJc7OiFCgfitjLNGGSQPyNfgOe9lk1PWwJFzf2lEiwAyvnKVzV3
+         rxKMLune0o0BA==
+Date:   Thu, 10 Dec 2020 08:17:42 +0100
+From:   Adam Zabrocki <pi3@pi3.com.pl>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Solar Designer <solar@openwall.com>
+Subject: Re: KRETPROBES are broken since kernel 5.8
+Message-ID: <20201210071742.GA14484@pi3.com.pl>
+References: <20201209215001.GA8593@pi3.com.pl>
+ <20201210102507.6bd47a08191852b9f8b5e3f0@kernel.org>
 MIME-Version: 1.0
-References: <20201208191955.2466057-1-tstrudel@google.com>
-In-Reply-To: <20201208191955.2466057-1-tstrudel@google.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 10 Dec 2020 08:16:49 +0100
-Message-ID: <CAPDyKFruq+TCSOEOFTZF+Q00SiqggRHqc1NMugDbpJ-71r6K3g@mail.gmail.com>
-Subject: Re: [PATCH v4] PM: domains: create debugfs nodes when adding power domains
-To:     Thierry Strudel <tstrudel@google.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201210102507.6bd47a08191852b9f8b5e3f0@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 at 20:20, Thierry Strudel <tstrudel@google.com> wrote:
->
-> debugfs nodes were created in genpd_debug_init alled in late_initcall
-> preventing power domains registered though loadable modules to have
-> a debugfs entry.
->
-> Create/remove debugfs nodes when the power domain is added/removed
-> to/from the internal gpd_list.
->
-> Signed-off-by: Thierry Strudel <tstrudel@google.com>
-> Change-Id: I8a2e0616746afe2a6bbd9c24bc3a0eaa84725a75
+Hi,
 
-Thierry, thanks for fixing this!
+On Thu, Dec 10, 2020 at 10:25:07AM +0900, Masami Hiramatsu wrote:
+> Hi Adam,
+> 
+> Thank you for reporting and debugging, actually we had investigated this
+> issue in Aug. Please read this thread.
+> 
+> https://lkml.kernel.org/r/8816bdbbc55c4d2397e0b02aad2825d3@trendmicro.com
+> 
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Thanks for the link. I've read the entire history of proposed fix - very 
+informative :)
 
-Kind regards
-Uffe
+> We finally fixed this issue by commit e03b4a084ea6 ("kprobes: Remove NMI
+> context check") and commit 645f224e7ba2 ("kprobes: Tell lockdep about
+> kprobe nesting"). Yeah, it will be in the v5.10.
+> 
+> Could you try to test whether these commits can solve the issue?
 
-> ---
-> v2: fix forward declaration and genpd_debugfs_dir being NULL - Ulf
-> v3: remove extra trailing char added by mistake in v2 - kernel test robot
-> v4: cleanup includes and regroup CONFIG_DEBUG_FS CPP blocks - Greg
->  drivers/base/power/domain.c | 73 +++++++++++++++++++++++--------------
->  1 file changed, 45 insertions(+), 28 deletions(-)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index 2cb5e04cf86c..49c87607cba7 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -21,6 +21,7 @@
->  #include <linux/suspend.h>
->  #include <linux/export.h>
->  #include <linux/cpu.h>
-> +#include <linux/debugfs.h>
->
->  #include "power.h"
->
-> @@ -210,6 +211,18 @@ static void genpd_sd_counter_inc(struct generic_pm_domain *genpd)
->  }
->
->  #ifdef CONFIG_DEBUG_FS
-> +static struct dentry *genpd_debugfs_dir;
-> +
-> +static void genpd_debug_add(struct generic_pm_domain *genpd);
-> +
-> +static void genpd_debug_remove(struct generic_pm_domain *genpd)
-> +{
-> +       struct dentry *d;
-> +
-> +       d = debugfs_lookup(genpd->name, genpd_debugfs_dir);
-> +       debugfs_remove(d);
-> +}
-> +
->  static void genpd_update_accounting(struct generic_pm_domain *genpd)
->  {
->         ktime_t delta, now;
-> @@ -234,6 +247,8 @@ static void genpd_update_accounting(struct generic_pm_domain *genpd)
->         genpd->accounting_time = now;
->  }
->  #else
-> +static inline void genpd_debug_add(struct generic_pm_domain *genpd) {}
-> +static inline void genpd_debug_remove(struct generic_pm_domain *genpd) {}
->  static inline void genpd_update_accounting(struct generic_pm_domain *genpd) {}
->  #endif
->
-> @@ -1827,6 +1842,7 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
->
->         mutex_lock(&gpd_list_lock);
->         list_add(&genpd->gpd_list_node, &gpd_list);
-> +       genpd_debug_add(genpd);
->         mutex_unlock(&gpd_list_lock);
->
->         return 0;
-> @@ -1860,6 +1876,7 @@ static int genpd_remove(struct generic_pm_domain *genpd)
->                 kfree(link);
->         }
->
-> +       genpd_debug_remove(genpd);
->         list_del(&genpd->gpd_list_node);
->         genpd_unlock(genpd);
->         cancel_work_sync(&genpd->power_off_work);
-> @@ -2764,14 +2781,6 @@ core_initcall(genpd_bus_init);
->  /***        debugfs support        ***/
->
->  #ifdef CONFIG_DEBUG_FS
-> -#include <linux/pm.h>
-> -#include <linux/device.h>
-> -#include <linux/debugfs.h>
-> -#include <linux/seq_file.h>
-> -#include <linux/init.h>
-> -#include <linux/kobject.h>
-> -static struct dentry *genpd_debugfs_dir;
-> -
->  /*
->   * TODO: This function is a slightly modified version of rtpm_status_show
->   * from sysfs.c, so generalize it.
-> @@ -3047,9 +3056,34 @@ DEFINE_SHOW_ATTRIBUTE(total_idle_time);
->  DEFINE_SHOW_ATTRIBUTE(devices);
->  DEFINE_SHOW_ATTRIBUTE(perf_state);
->
-> -static int __init genpd_debug_init(void)
-> +static void genpd_debug_add(struct generic_pm_domain *genpd)
->  {
->         struct dentry *d;
-> +
-> +       if (!genpd_debugfs_dir)
-> +               return;
-> +
-> +       d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
-> +
-> +       debugfs_create_file("current_state", 0444,
-> +                           d, genpd, &status_fops);
-> +       debugfs_create_file("sub_domains", 0444,
-> +                           d, genpd, &sub_domains_fops);
-> +       debugfs_create_file("idle_states", 0444,
-> +                           d, genpd, &idle_states_fops);
-> +       debugfs_create_file("active_time", 0444,
-> +                           d, genpd, &active_time_fops);
-> +       debugfs_create_file("total_idle_time", 0444,
-> +                           d, genpd, &total_idle_time_fops);
-> +       debugfs_create_file("devices", 0444,
-> +                           d, genpd, &devices_fops);
-> +       if (genpd->set_performance_state)
-> +               debugfs_create_file("perf_state", 0444,
-> +                                   d, genpd, &perf_state_fops);
-> +}
-> +
-> +static int __init genpd_debug_init(void)
-> +{
->         struct generic_pm_domain *genpd;
->
->         genpd_debugfs_dir = debugfs_create_dir("pm_genpd", NULL);
-> @@ -3057,25 +3091,8 @@ static int __init genpd_debug_init(void)
->         debugfs_create_file("pm_genpd_summary", S_IRUGO, genpd_debugfs_dir,
->                             NULL, &summary_fops);
->
-> -       list_for_each_entry(genpd, &gpd_list, gpd_list_node) {
-> -               d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
-> -
-> -               debugfs_create_file("current_state", 0444,
-> -                               d, genpd, &status_fops);
-> -               debugfs_create_file("sub_domains", 0444,
-> -                               d, genpd, &sub_domains_fops);
-> -               debugfs_create_file("idle_states", 0444,
-> -                               d, genpd, &idle_states_fops);
-> -               debugfs_create_file("active_time", 0444,
-> -                               d, genpd, &active_time_fops);
-> -               debugfs_create_file("total_idle_time", 0444,
-> -                               d, genpd, &total_idle_time_fops);
-> -               debugfs_create_file("devices", 0444,
-> -                               d, genpd, &devices_fops);
-> -               if (genpd->set_performance_state)
-> -                       debugfs_create_file("perf_state", 0444,
-> -                                           d, genpd, &perf_state_fops);
-> -       }
-> +       list_for_each_entry(genpd, &gpd_list, gpd_list_node)
-> +               genpd_debug_add(genpd);
->
->         return 0;
->  }
-> --
-> 2.29.2.576.ga3fc446d84-goog
->
+I've applied these commits on the top of kernel 5.9.7 and verified that it 
+works well. Non-optimized KRETPROBES are back to life.
+
+However, there might be another issue which I wanted to brought / discuss - 
+problem with optimizer. Until kernel 5.9 KRETPROBE on e.g. 
+'ftrace_enable_sysctl' function was correctly optimized without any problems. 
+Since 5.9 it can't be optimized anynmore. I didn't see any changes in the 
+sources regarding the optimizer, neither function itself.
+When I looked at the generated vmlinux binary, I can see that GCC generated 
+padding at the end of this function using INT3 opcode:
+
+...
+ffffffff8130528b:       41 bd f0 ff ff ff       mov    $0xfffffff0,%r13d
+ffffffff81305291:       e9 fe fe ff ff          jmpq   ffffffff81305194 <ftrace_enable_sysctl+0x114>
+ffffffff81305296:       cc                      int3
+ffffffff81305297:       cc                      int3
+ffffffff81305298:       cc                      int3
+ffffffff81305299:       cc                      int3
+ffffffff8130529a:       cc                      int3
+ffffffff8130529b:       cc                      int3
+ffffffff8130529c:       cc                      int3
+ffffffff8130529d:       cc                      int3
+ffffffff8130529e:       cc                      int3
+ffffffff8130529f:       cc                      int3
+
+Such padding didn't exist in this function in generated images for older 
+kernels. Nevertheless, such padding is not unusual and it's pretty common.
+
+Optimizer logic fails here:
+
+try_to_optimize_kprobe() -> alloc_aggr_kprobe() -> __prepare_optimized_kprobe()
+-> arch_prepare_optimized_kprobe() -> can_optimize():
+
+    /* Decode instructions */
+    addr = paddr - offset;
+    while (addr < paddr - offset + size) { /* Decode until function end */
+        unsigned long recovered_insn;
+        if (search_exception_tables(addr))
+            /*
+             * Since some fixup code will jumps into this function,
+             * we can't optimize kprobe in this function.
+             */
+            return 0;
+        recovered_insn = recover_probed_instruction(buf, addr);
+        if (!recovered_insn)
+            return 0;
+        kernel_insn_init(&insn, (void *)recovered_insn, MAX_INSN_SIZE);
+        insn_get_length(&insn);
+        /* Another subsystem puts a breakpoint */
+        if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
+            return 0;
+        /* Recover address */
+        insn.kaddr = (void *)addr;
+        insn.next_byte = (void *)(addr + insn.length);
+        /* Check any instructions don't jump into target */
+        if (insn_is_indirect_jump(&insn) ||
+            insn_jump_into_range(&insn, paddr + INT3_INSN_SIZE,
+                     DISP32_SIZE))
+            return 0;
+        addr += insn.length;
+    }
+
+One of the check tries to protect from the situation when another subsystem 
+puts a breakpoint there as well:
+
+        /* Another subsystem puts a breakpoint */
+        if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
+            return 0;
+
+However, that's not the case here. INT3_INSN_OPCODE is placed at the end of 
+the function as padding (and protect from NOP-padding problems).
+
+I wonder, if optimizer should take this special case into account? Is it worth 
+to still optimize such functions when they are padded with INT3?
+
+> If it is OK, we should backport those to stable tree.
+
+Agreed.
+
+Thanks,
+Adam
+
+> Thank you,
+> 
+> On Wed, 9 Dec 2020 22:50:01 +0100
+> Adam Zabrocki <pi3@pi3.com.pl> wrote:
+> 
+> > Hello,
+> > 
+> > Starting from kernel 5.8 all non-optimized kretprobes don't work. Until 5.8,
+> > when #DB exception was raised, entry to the NMI was not fully performed. Among
+> > others, the following logic was executed:
+> > https://elixir.bootlin.com/linux/v5.7.19/source/arch/x86/kernel/traps.c#L589
+> > 
+> >     if (!user_mode(regs)) {
+> >         rcu_nmi_enter();
+> >         preempt_disable();
+> >     }
+> > 
+> > In some older kernels function ist_enter() was called instead. Inside this
+> > function we can see the following logic:
+> > https://elixir.bootlin.com/linux/v5.7.19/source/arch/x86/kernel/traps.c#L91
+> > 
+> >     if (user_mode(regs)) {
+> >         RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
+> >     } else {
+> >         /*
+> >          * We might have interrupted pretty much anything.  In
+> >          * fact, if we're a machine check, we can even interrupt
+> >          * NMI processing.  We don't want in_nmi() to return true,
+> >          * but we need to notify RCU.
+> >          */
+> >         rcu_nmi_enter();
+> >     }
+> > 
+> >     preempt_disable();
+> > 
+> > As the comment says "We don't want in_nmi() to return true, but we need to
+> > notify RCU.". However, since kernel 5.8 the logic of how interrupts are handled
+> > was modified and currently we have this (function "exc_int3"):
+> > https://elixir.bootlin.com/linux/v5.8/source/arch/x86/kernel/traps.c#L630
+> > 
+> >     /*
+> >      * idtentry_enter_user() uses static_branch_{,un}likely() and therefore
+> >      * can trigger INT3, hence poke_int3_handler() must be done
+> >      * before. If the entry came from kernel mode, then use nmi_enter()
+> >      * because the INT3 could have been hit in any context including
+> >      * NMI.
+> >      */
+> >     if (user_mode(regs)) {
+> >         idtentry_enter_user(regs);
+> >         instrumentation_begin();
+> >         do_int3_user(regs);
+> >         instrumentation_end();
+> >         idtentry_exit_user(regs);
+> >     } else {
+> >         nmi_enter();
+> >         instrumentation_begin();
+> >         trace_hardirqs_off_finish();
+> >         if (!do_int3(regs))
+> >             die("int3", regs, 0);
+> >         if (regs->flags & X86_EFLAGS_IF)
+> >             trace_hardirqs_on_prepare();
+> >         instrumentation_end();
+> >         nmi_exit();
+> >     }
+> > 
+> > The root of unlucky change comes from this commit:
+> > 
+> > https://github.com/torvalds/linux/commit/0d00449c7a28a1514595630735df383dec606812#diff-51ce909c2f65ed9cc668bc36cc3c18528541d8a10e84287874cd37a5918abae5
+> > 
+> > which later was modified by this commit:
+> > 
+> > https://github.com/torvalds/linux/commit/8edd7e37aed8b9df938a63f0b0259c70569ce3d2
+> > 
+> > and this is what we currently have in all kernels since 5.8. Essentially,
+> > KRETPROBES are not working since these commits. We have the following logic:
+> > 
+> > asm_exc_int3() -> exc_int3():
+> >                     |
+> >     ----------------|
+> >     |
+> >     v
+> > ...
+> > nmi_enter();
+> > ...
+> > if (!do_int3(regs))
+> >        |
+> >   -----|
+> >   |
+> >   v
+> > do_int3() -> kprobe_int3_handler():
+> >                     |
+> >     ----------------|
+> >     |
+> >     v
+> > ...
+> > if (!p->pre_handler || !p->pre_handler(p, regs))
+> >                              |
+> >     -------------------------|
+> >     |
+> >     v
+> > ...
+> > pre_handler_kretprobe():
+> > ...
+> >     if (unlikely(in_nmi())) {
+> >         rp->nmissed++;
+> >         return 0;
+> >     }
+> > 
+> > Essentially, exc_int3() calls nmi_enter(), and pre_handler_kretprobe() before
+> > invoking any registered kprobe verifies if it is not in NMI via in_nmi() call.
+> > 
+> > This bug was masked by OPTIMIZER which was turning most of the KPROBES to be
+> > FTRACE so essentially if someone registered KRETPROBE, buggy code was not
+> > invoked (FTRACE code was executed instead). However, the optimizer was changed
+> > and can't optimize as many functions anymore (probably another bug which might
+> > be worth to investigate) and this bug is more visible.
+> > 
+> > Thanks,
+> > Adam
+> > 
+> > -- 
+> > pi3 (pi3ki31ny) - pi3 (at) itsec pl
+> > http://pi3.com.pl
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
+
+-- 
+pi3 (pi3ki31ny) - pi3 (at) itsec pl
+http://pi3.com.pl
+
