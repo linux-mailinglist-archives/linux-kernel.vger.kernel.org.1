@@ -2,137 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4C32D6B2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 685842D6B2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 00:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394220AbgLJWcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 17:32:01 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:39110 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405127AbgLJW0K (ORCPT
+        id S2394232AbgLJWcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 17:32:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405146AbgLJW3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:26:10 -0500
-Received: by mail-ed1-f65.google.com with SMTP id c7so7271007edv.6;
-        Thu, 10 Dec 2020 14:25:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DgwiQiINReqpRzkxPBOoj0Pj1hdtR6pe6rpIHW4GOsE=;
-        b=qOwo7R/dQdVStRi7CFUSia34sWh7p0MWiuMguSYwAhblnhHef7ZgSjUTKtVyKBpB+l
-         GljpOmZ6tHJ+D9aRf6Bj27D0ZvQMoGOq9c3Ql6tqKSxTuROrKkSed3VXhK9uPW+Ip1aw
-         k5J/KF+M294bLkbF+U5IqI7QzBxEyejLdNgUh/7NZLE2fdVhpZKBohFtOd2NLrEjXI0U
-         ByvJVTfr8JePELwrxSTrs6jJLprVhgN965dAkddEyOZqsG6fctN/8WV21KuqFjelEWbi
-         qGCnLF4WvHjS+rRllixagOqj7voxenAcGIT68WVbtULZPdCCpqTPWLvlLjaguhmIMCHS
-         JWQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DgwiQiINReqpRzkxPBOoj0Pj1hdtR6pe6rpIHW4GOsE=;
-        b=WI+mMCyCXCm1W1L5n2CYQofkzWwkOEQNUu59skFJy4QmiI7J93U9K7HvtLwHBHxZye
-         Bjpi+3LdquksuNQlKJG7BIZ9XqY3AgCQvC8YizxRulyEVxCwmXQISXHtVk2C6VU9qhTH
-         d+8YsZetvpRk96rqUUv4KPppRj2mHhYq90nNFTn52pgjG1xxpS7LvB83bb0oM3aFg578
-         GRps+eLwDUI4mRqqhwKLmvXGdCDuf86e2bujE6NTPBh78pTx7WuHcFVleOd+TOMADroV
-         F9s+yoRIJVYonyRYyEyGm4nzWqqNUTChCtyhPNzKMkupqK0fNaQzuFmtC0fEwllsJ7yJ
-         ix0A==
-X-Gm-Message-State: AOAM5306Zz7z0govK/WHfmcGjUMLM8Vt0lk3ujlM20AIbLoKbb+yjPqf
-        71n3n2d7U1EoiE+TH8yabiepaQ/vXYJn2x5ox6Y=
-X-Google-Smtp-Source: ABdhPJx0t8DQWf69ovL+FHwaCkKpf2+w+k1PIInOVaCXFi1pD+jNx4ETD4gVr0kpBfukXXZUNRKO5s09tkEy6V5Fppc=
-X-Received: by 2002:a05:6402:1714:: with SMTP id y20mr8783980edu.360.1607639068296;
- Thu, 10 Dec 2020 14:24:28 -0800 (PST)
+        Thu, 10 Dec 2020 17:29:00 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277ACC0613CF;
+        Thu, 10 Dec 2020 14:28:20 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607639295;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5JXJwtEkjhQ2j1nMo0rZ0tKIkox0eioh2DmsOZzS29k=;
+        b=K5XohMhBOgVh/+BhSecz9sGmDkaKhH1kIY4hAnFw8WZsbemLNcOLwUcZyuRRs76h2IKwGP
+        nXPwMApeFnAdIbshcAUreyO+LOaPo4bqxOZIKYIHwQpJMaKkiD8zR+/QNf8cZLwFo8rXQH
+        EGoU2UF1CuRZuWKrzxnbb1krHN5w0LLJURFOS9QELofDgOUNhDst12fWxFvDITFqTGGqbf
+        TD2BXjf1rcUT7B83dUk7JN3fTMu1wO5dDjeLGhPgoiCXpuFe1x8XMty6UGRpnShs34m1g1
+        OACbDwSQjbRPDrnCd+pf7erHCVnS8hwUszf2BlUfKVRp4AhOLDX9IK8FNNBLMg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607639295;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5JXJwtEkjhQ2j1nMo0rZ0tKIkox0eioh2DmsOZzS29k=;
+        b=wosRE4ov71xbZGCc2alIw/KDqCUomK8F5wQDNSFm0uS5ZC0uucMj4H4Y3r2oE/i/eVxQXv
+        rpSewJInNFfbbtCA==
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+In-Reply-To: <CALCETrXXH5GoaSZwSPy-JFxJ6iMMCj0A=yFFPuyutBh+1imCsQ@mail.gmail.com>
+References: <9389c1198da174bcc9483d6ebf535405aa8bdb45.camel@redhat.com> <E4F263BE-6CAA-4152-8818-187D34D8D0FD@amacapital.net> <87360djqve.fsf@nanos.tec.linutronix.de> <CALCETrXXH5GoaSZwSPy-JFxJ6iMMCj0A=yFFPuyutBh+1imCsQ@mail.gmail.com>
+Date:   Thu, 10 Dec 2020 23:28:14 +0100
+Message-ID: <87v9d9i9dt.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201206002629.12872-1-adrien.grassein@gmail.com> <20201207135551.GE5694@sirena.org.uk>
-In-Reply-To: <20201207135551.GE5694@sirena.org.uk>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Thu, 10 Dec 2020 23:24:17 +0100
-Message-ID: <CABkfQAF4AANtxptY+XB2cR6hpz2i2Km+F5U=R67J57zSfnoGMA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: regulator: Add pf8x00 regulator
-To:     Mark Brown <broonie@kernel.org>
-Cc:     lgirdwood@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
-        troy.kisky@boundarydevices.com,
-        Gary Bisson <gary.bisson@boundarydevices.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Dec 10 2020 at 14:01, Andy Lutomirski wrote:
+> On Thu, Dec 10, 2020 at 1:25 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>> I'm still convinced that a notification about 'we take a nap' will be
+>> more robust, less complex and more trivial to backport.
+>
+> What do you have in mind?  Suppose the host kernel sends the guest an
+> interrupt on all vCPUs saying "I'm about to take a nap".  What happens
+> if the guest is busy with IRQs off for a little bit?  Does the host
+> guarantee the guest a certain about of time to try to get the
+> interrupt delivered before allowing the host to enter S3?  How about
+> if the host wants to reboot for a security fix -- how long is a guest
+> allowed to delay the process?
+>
+> I'm sure this can all be made to work 99% of time, but I'm a bit
+> concerned about that last 1%.
 
-Thanks for reviewing my patches.
+Seriously?
 
-Le lun. 7 d=C3=A9c. 2020 =C3=A0 14:55, Mark Brown <broonie@kernel.org> a =
-=C3=A9crit :
->
-> On Sun, Dec 06, 2020 at 01:26:28AM +0100, Adrien Grassein wrote:
-> > Add dt-bindings for the pf8x00 driver.
->
-> Please submit patches using subject lines reflecting the style for the
-> subsystem, this makes it easier for people to identify relevant patches.
-> Look at what existing commits in the area you're changing are doing and
-> make sure your subject lines visually resemble what they're doing.
-> There's no need to resubmit to fix this alone.
->
+If the guest has interrupts disabled for ages, i.e. it went for out for
+lunch on its own, then surely the hypervisor can just pull the plug and
+wreckage it. It's like you hit the reset button or pull the powerplug of
+the machine which is not responding anymore.
 
-For v2 I just copy-paste another commit message to be sure to be conform.
+Reboot waits already today for guests to shut down/hibernate/supsend or
+whatever they are supposed to do. systemd sits there and waits for
+minutes until it decides to kill them. Just crash a guest kernel and
+forget to reset or force power off the guest before you reboot the
+host. Twiddle thumbs for a while and watch the incomprehensible time
+display.
 
-> > +  compatible:
-> > +    enum:
-> > +      - nxp,pf8x00
->
-> Compatible strings should be for specific devices not wildcards.
->
-> > +          nxp,hw-en:
-> > +            $ref: /schemas/types.yaml#definitions/flag
-> > +            description: |
-> > +              Only available for ldo2. Used to enable or disable ld02.
->
-> I don't understand what this is documenting - what is "hw-en" and how is
-> it used to enable or disable LDO2?
-I think I read better documentation for this point. Sorry, it was very uncl=
-ear.
->
-> > +          nxp,vselect-en:
-> > +            $ref: /schemas/types.yaml#definitions/flag
-> > +            description: |
-> > +              Only available for ldo2. When specified, use the VSELECT=
- pin
-> > +              of the chip to control the output voltage of the ldo02 r=
-egulator.
->
-> Shouldn't there be a GPIO specified somewhere or something so that the
-> VSELECT pin can be controlled?
+If your security fix reboot is so urgent that it can't wait then just
+pull the plug and be done with it, i.e. kill the guest which makes it
+start from a known state which is a gazillion times better than bringing
+it into a state which it can't handle anymore.
 
-I think I read better documentation for this point. Sorry, it was very uncl=
-ear.
-VSELECT is in fact an input pin of the chip. The configuration just enabled=
- it.
->
-> > +          nxp,ilim-ma:
-> > +            $ref: /schemas/types.yaml#definitions/uint32
-> > +            minimum: 2100
-> > +            maximum: 4500
-> > +            default: 2100
-> > +            enum: [ 2100, 2600, 3000, 4500 ]
-> > +            description: |
-> > +              Defines the maximum current delivered by the regulator (=
-in mA).
->
-> Is this not a fixed property of the regulator?
-It's not. It's configurable by software.
->
-> > +          nxp,quad-phase:
-> > +            $ref: /schemas/types.yaml#definitions/flag
-> > +            description: |
-> > +              This allow regulators  sw1 and sw2, or sw3 and sw4 or sw=
-4 and sw5
-> > +              to work together to deliver a maximum 10A current.
->
-> Presumably this must be set on both the regulators being grouped
-> together?
-Not. Only the sw1 configuration will be taken in account.
+Again, that's not any different than hitting the reset button on the
+host or pulling and reinserting the host powerplug which you would do
+anyway in an emergency case.
 
-Thanks again,
-Adrien
+Can we please focus on real problems instead of making up new ones?
+
+Correctness of time is a real problem despite the believe of virt folks
+that it can be ignored or duct taped to death.
+
+Thanks,
+
+        tglx
