@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C05F2D5DF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E742D5DC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:31:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390968AbgLJOfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:35:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41908 "EHLO mail.kernel.org"
+        id S2390341AbgLJOam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:30:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733022AbgLJOdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:33:49 -0500
+        id S2390174AbgLJO2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:28:48 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan-Niklas Burfeind <kernel@aiyionpri.me>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 05/39] USB: serial: ch341: add new Product ID for CH341A
-Date:   Thu, 10 Dec 2020 15:26:44 +0100
-Message-Id: <20201210142602.556428503@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.4 34/39] tracing: Fix userstacktrace option for instances
+Date:   Thu, 10 Dec 2020 15:26:45 +0100
+Message-Id: <20201210142602.565193935@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.272595094@linuxfoundation.org>
-References: <20201210142602.272595094@linuxfoundation.org>
+In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
+References: <20201210142600.887734129@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,35 +31,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan-Niklas Burfeind <kernel@aiyionpri.me>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 46ee4abb10a07bd8f8ce910ee6b4ae6a947d7f63 upstream.
+commit bcee5278958802b40ee8b26679155a6d9231783e upstream.
 
-Add PID for CH340 that's found on a ch341 based Programmer made by keeyees.
-The specific device that contains the serial converter is described
-here: http://www.keeyees.com/a/Products/ej/36.html
+When the instances were able to use their own options, the userstacktrace
+option was left hardcoded for the top level. This made the instance
+userstacktrace option bascially into a nop, and will confuse users that set
+it, but nothing happens (I was confused when it happened to me!)
 
-The driver works flawlessly as soon as the new PID (0x5512) is added to
-it.
-
-Signed-off-by: Jan-Niklas Burfeind <kernel@aiyionpri.me>
 Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: 16270145ce6b ("tracing: Add trace options for core options to instances")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/ch341.c |    1 +
- 1 file changed, 1 insertion(+)
+ kernel/trace/trace.c |    9 +++++----
+ kernel/trace/trace.h |    6 ++++--
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
---- a/drivers/usb/serial/ch341.c
-+++ b/drivers/usb/serial/ch341.c
-@@ -83,6 +83,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x4348, 0x5523) },
- 	{ USB_DEVICE(0x1a86, 0x7522) },
- 	{ USB_DEVICE(0x1a86, 0x7523) },
-+	{ USB_DEVICE(0x1a86, 0x5512) },
- 	{ USB_DEVICE(0x1a86, 0x5523) },
- 	{ },
- };
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -1706,7 +1706,7 @@ void trace_buffer_unlock_commit(struct t
+ 	__buffer_unlock_commit(buffer, event);
+ 
+ 	ftrace_trace_stack(tr, buffer, flags, 6, pc, NULL);
+-	ftrace_trace_userstack(buffer, flags, pc);
++	ftrace_trace_userstack(tr, buffer, flags, pc);
+ }
+ EXPORT_SYMBOL_GPL(trace_buffer_unlock_commit);
+ 
+@@ -1768,7 +1768,7 @@ void trace_buffer_unlock_commit_regs(str
+ 	 * two. They are that meaningful.
+ 	 */
+ 	ftrace_trace_stack(tr, buffer, flags, regs ? 0 : 4, pc, regs);
+-	ftrace_trace_userstack(buffer, flags, pc);
++	ftrace_trace_userstack(tr, buffer, flags, pc);
+ }
+ EXPORT_SYMBOL_GPL(trace_buffer_unlock_commit_regs);
+ 
+@@ -1941,14 +1941,15 @@ void trace_dump_stack(int skip)
+ static DEFINE_PER_CPU(int, user_stack_count);
+ 
+ void
+-ftrace_trace_userstack(struct ring_buffer *buffer, unsigned long flags, int pc)
++ftrace_trace_userstack(struct trace_array *tr,
++		       struct ring_buffer *buffer, unsigned long flags, int pc)
+ {
+ 	struct trace_event_call *call = &event_user_stack;
+ 	struct ring_buffer_event *event;
+ 	struct userstack_entry *entry;
+ 	struct stack_trace trace;
+ 
+-	if (!(global_trace.trace_flags & TRACE_ITER_USERSTACKTRACE))
++	if (!(tr->trace_flags & TRACE_ITER_USERSTACKTRACE))
+ 		return;
+ 
+ 	/*
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -656,13 +656,15 @@ void update_max_tr_single(struct trace_a
+ #endif /* CONFIG_TRACER_MAX_TRACE */
+ 
+ #ifdef CONFIG_STACKTRACE
+-void ftrace_trace_userstack(struct ring_buffer *buffer, unsigned long flags,
++void ftrace_trace_userstack(struct trace_array *tr,
++			    struct ring_buffer *buffer, unsigned long flags,
+ 			    int pc);
+ 
+ void __trace_stack(struct trace_array *tr, unsigned long flags, int skip,
+ 		   int pc);
+ #else
+-static inline void ftrace_trace_userstack(struct ring_buffer *buffer,
++static inline void ftrace_trace_userstack(struct trace_array *tr,
++					  struct ring_buffer *buffer,
+ 					  unsigned long flags, int pc)
+ {
+ }
 
 
