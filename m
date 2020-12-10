@@ -2,124 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE792D5419
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:42:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFA82D541B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 07:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387589AbgLJGmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 01:42:22 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9053 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726686AbgLJGmW (ORCPT
+        id S1730199AbgLJGna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 01:43:30 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:37165 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729230AbgLJGnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:42:22 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cs47Q2TDBzhq3p;
-        Thu, 10 Dec 2020 14:41:06 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 10 Dec 2020 14:41:31 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v3 5/5] f2fs: introduce sb_status sysfs node
-Date:   Thu, 10 Dec 2020 14:41:15 +0800
-Message-ID: <20201210064115.47351-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 10 Dec 2020 01:43:22 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1knFdr-0000oM-2R; Thu, 10 Dec 2020 07:41:31 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1knFdq-0000nx-0q; Thu, 10 Dec 2020 07:41:30 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 483F8240041;
+        Thu, 10 Dec 2020 07:41:29 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id C642C240040;
+        Thu, 10 Dec 2020 07:41:28 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 5611D202DE;
+        Thu, 10 Dec 2020 07:41:28 +0100 (CET)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 10 Dec 2020 07:41:28 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: lapbether: Consider it successful if
+ (dis)connecting when already (dis)connected
+Organization: TDT AG
+In-Reply-To: <20201208225044.5522-1-xie.he.0141@gmail.com>
+References: <20201208225044.5522-1-xie.he.0141@gmail.com>
+Message-ID: <15c1ad7b52562e2ca37d8084a90197d8@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.15
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-ID: 151534::1607582490-000013A4-C9E28885/0/0
+X-purgate: clean
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce /sys/fs/f2fs/<devname>/stat/sb_status to show superblock
-status in real time as a hexadecimal value.
+On 2020-12-08 23:50, Xie He wrote:
+> When the upper layer instruct us to connect (or disconnect), but we 
+> have
+> already connected (or disconnected), consider this operation successful
+> rather than failed.
+> 
+> This can help the upper layer to correct its record about whether we 
+> are
+> connected or not here in layer 2.
+> 
+> The upper layer may not have the correct information about whether we 
+> are
+> connected or not. This can happen if this driver has already been 
+> running
+> for some time when the "x25" module gets loaded.
+> 
+> Another X.25 driver (hdlc_x25) is already doing this, so we make this
+> driver do this, too.
 
-value           sb status macro                 description
+Looks good to me.
 
-0x1             SBI_IS_DIRTY,                   /* dirty flag for checkpoint */
-0x2             SBI_IS_CLOSE,                   /* specify unmounting */
-0x4             SBI_NEED_FSCK,                  /* need fsck.f2fs to fix */
-0x8             SBI_POR_DOING,                  /* recovery is doing or not */
-0x10            SBI_NEED_SB_WRITE,              /* need to recover superblock */
-0x20            SBI_NEED_CP,                    /* need to checkpoint */
-0x40            SBI_IS_SHUTDOWN,                /* shutdown by ioctl */
-0x80            SBI_IS_RECOVERED,               /* recovered orphan/data */
-0x100           SBI_CP_DISABLED,                /* CP was disabled last mount */
-0x200           SBI_CP_DISABLED_QUICK,          /* CP was disabled quickly */
-0x400           SBI_QUOTA_NEED_FLUSH,           /* need to flush quota info in CP */
-0x800           SBI_QUOTA_SKIP_FLUSH,           /* skip flushing quota in current CP */
-0x1000          SBI_QUOTA_NEED_REPAIR,          /* quota file may be corrupted */
-0x2000          SBI_IS_RESIZEFS,                /* resizefs is in process */
+Acked-by: Martin Schiller <ms@dev.tdt.de>
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v3:
-- just print one single value as output
- Documentation/ABI/testing/sysfs-fs-f2fs | 21 +++++++++++++++++++++
- fs/f2fs/sysfs.c                         |  8 ++++++++
- 2 files changed, 29 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 3dfee94e0618..9b2f93eda1f8 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -377,3 +377,24 @@ Description:	This gives a control to limit the bio size in f2fs.
- 		Default is zero, which will follow underlying block layer limit,
- 		whereas, if it has a certain bytes value, f2fs won't submit a
- 		bio larger than that size.
-+
-+What:		/sys/fs/f2fs/<disk>/stat/sb_status
-+Date:		December 2020
-+Contact:	"Chao Yu" <yuchao0@huawei.com>
-+Description:	Show status of f2fs superblock in real time.
-+
-+		value           sb status macro                 description
-+		0x1             SBI_IS_DIRTY,                   /* dirty flag for checkpoint */
-+		0x2             SBI_IS_CLOSE,                   /* specify unmounting */
-+		0x4             SBI_NEED_FSCK,                  /* need fsck.f2fs to fix */
-+		0x8             SBI_POR_DOING,                  /* recovery is doing or not */
-+		0x10            SBI_NEED_SB_WRITE,              /* need to recover superblock */
-+		0x20            SBI_NEED_CP,                    /* need to checkpoint */
-+		0x40            SBI_IS_SHUTDOWN,                /* shutdown by ioctl */
-+		0x80            SBI_IS_RECOVERED,               /* recovered orphan/data */
-+		0x100           SBI_CP_DISABLED,                /* CP was disabled last mount */
-+		0x200           SBI_CP_DISABLED_QUICK,          /* CP was disabled quickly */
-+		0x400           SBI_QUOTA_NEED_FLUSH,           /* need to flush quota info in CP */
-+		0x800           SBI_QUOTA_SKIP_FLUSH,           /* skip flushing quota in current CP */
-+		0x1000          SBI_QUOTA_NEED_REPAIR,          /* quota file may be corrupted */
-+		0x2000          SBI_IS_RESIZEFS,                /* resizefs is in process */
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index ebca0b4961e8..d5198689ab02 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -101,6 +101,12 @@ static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
- 				sbi->sectors_written_start) >> 1)));
- }
- 
-+static ssize_t sb_status_show(struct f2fs_attr *a,
-+		struct f2fs_sb_info *sbi, char *buf)
-+{
-+	return sprintf(buf, "%lx\n", sbi->s_flag);
-+}
-+
- static ssize_t features_show(struct f2fs_attr *a,
- 		struct f2fs_sb_info *sbi, char *buf)
- {
-@@ -711,7 +717,9 @@ static struct attribute *f2fs_feat_attrs[] = {
- };
- ATTRIBUTE_GROUPS(f2fs_feat);
- 
-+F2FS_GENERAL_RO_ATTR(sb_status);
- static struct attribute *f2fs_stat_attrs[] = {
-+	ATTR_LIST(sb_status),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(f2fs_stat);
--- 
-2.29.2
-
+> 
+> Cc: Martin Schiller <ms@dev.tdt.de>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+> ---
+>  drivers/net/wan/lapbether.c | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+> index b6be2454b8bd..605fe555e157 100644
+> --- a/drivers/net/wan/lapbether.c
+> +++ b/drivers/net/wan/lapbether.c
+> @@ -55,6 +55,9 @@ struct lapbethdev {
+> 
+>  static LIST_HEAD(lapbeth_devices);
+> 
+> +static void lapbeth_connected(struct net_device *dev, int reason);
+> +static void lapbeth_disconnected(struct net_device *dev, int reason);
+> +
+>  /* 
+> ------------------------------------------------------------------------ 
+> */
+> 
+>  /*
+> @@ -167,11 +170,17 @@ static netdev_tx_t lapbeth_xmit(struct sk_buff 
+> *skb,
+>  	case X25_IFACE_DATA:
+>  		break;
+>  	case X25_IFACE_CONNECT:
+> -		if ((err = lapb_connect_request(dev)) != LAPB_OK)
+> +		err = lapb_connect_request(dev);
+> +		if (err == LAPB_CONNECTED)
+> +			lapbeth_connected(dev, LAPB_OK);
+> +		else if (err != LAPB_OK)
+>  			pr_err("lapb_connect_request error: %d\n", err);
+>  		goto drop;
+>  	case X25_IFACE_DISCONNECT:
+> -		if ((err = lapb_disconnect_request(dev)) != LAPB_OK)
+> +		err = lapb_disconnect_request(dev);
+> +		if (err == LAPB_NOTCONNECTED)
+> +			lapbeth_disconnected(dev, LAPB_OK);
+> +		else if (err != LAPB_OK)
+>  			pr_err("lapb_disconnect_request err: %d\n", err);
+>  		fallthrough;
+>  	default:
