@@ -2,148 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB9B2D61DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BF42D61DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 17:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392064AbgLJQaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 11:30:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388107AbgLJQaO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:30:14 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FAF9C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:29:33 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id w5so3909149pgj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 08:29:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uW7jPDAJP0W04jlB4xyfWMLexo3zn7jvZAA+I5zJHp0=;
-        b=rfbCw2pDR9L3wrIjols0HhZZ+nbrQq7ayfwaLPo9A5f/YDf+wcNW0WMWhYomSw/2Y6
-         ije2M5566hxUfHBWNtc0KkEZBuS/NsJNJQHaAH0cW6hc7HqSGuStC2bG5xYcWJsIGV+b
-         jCwDNlChUCyc8g8LB9eoogC3eHhZYb51MpkbDYz6349H3OHfyBQBwyYqb2bzn50TLCQH
-         SHeGPvucXyyuiRaOa5FzQZ3Vn+kyraGVogTk7M0H6qHk63VWNFG/HtNXXY6MTkK7m2PR
-         4r6FrbAshrINB+COW8A9/15fPHoabOuEnNWcoaj6WykEg9eku9af2c7c3i7ApKrTSFGj
-         cyaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uW7jPDAJP0W04jlB4xyfWMLexo3zn7jvZAA+I5zJHp0=;
-        b=aX+VEbZgqiD4WJAnoj2nmGR8Y5JeY/TwyUCp114pQlgnI1MFR9Aosv1bG0J3nX7n7/
-         HK/eZYlvRFsZ53AC719nwpPhX4PqGHMT8FLuBFeG+3qSwFTi62bYnztQWryHJp7ROPly
-         RjqgDv6eHBtlErf8K0BIVfi3oZpdsOMNZQsGUuz73Fnth07bcEQ1tWAQCLSyY79Dtd2R
-         DTwnRshD9cQrsdpvfsR3srnHxWF7srPFO3KqYPspZcO6uZH964LXNF+UNdWC/wF7n0+5
-         3Bi9Ek46VZ+WJjEYacH035kfPDS8M6Ae9AVwgA7B6t06fyAkcCbUJYbVaxfV4KcDeVtT
-         ntow==
-X-Gm-Message-State: AOAM530oBjr6qbwwdK2YOyrLi6y73GjPsRnLztphknm9gRUk85Eoey6b
-        63iHMJHTCDm2DYqImhnNSPE8ug==
-X-Google-Smtp-Source: ABdhPJwtzzxEFMY808WWjp/6A+1rJeaDRULKBdPL3epPOOV5Xprf8FqEKOHkYblFqy8Y89ieyJgGAQ==
-X-Received: by 2002:a17:90a:a012:: with SMTP id q18mr8242051pjp.223.1607617772619;
-        Thu, 10 Dec 2020 08:29:32 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id x15sm6764754pfn.118.2020.12.10.08.29.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Dec 2020 08:29:31 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 1/2] arm64: topology: Avoid the have_policy check
-Date:   Thu, 10 Dec 2020 21:59:22 +0530
-Message-Id: <5f85c2ddf7aa094d7d2ebebe8426f84fad0a99b7.1607617625.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        id S2392319AbgLJQao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 11:30:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392278AbgLJQaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 11:30:24 -0500
+Date:   Thu, 10 Dec 2020 17:29:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607617783;
+        bh=wKoP18O5gMPLwquu/buxQ4EvFVAv2YOC8QSG6GaC+jQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Oh2ptG4ZVLCMhVKtFV4GX1Gr3/bKm6NIJvSboVEyeZe8uQ6hHt+N5rAoM6rTaduxl
+         HBY/f7WQvd8dGxp7rx23DFyZvq88hR0kzzYMIih8BJkGprPE1CD86gtYhYH89Fx1DJ
+         IMagpqVjLXGhdAvmefQ+Mt5yMPxbzdltgskX9uuEt4moX1l7Q4dJ6QpI+ZzCfGJoaz
+         UlHTa7aAni8ENe685aHLxDw1KIk+XFDpx/zx5jguM7xY8yo3ZZHPd/zmLN4z2+C7Z/
+         dZcf2NkEnqo8uLifUlVUC7moDPP4zQYh5J9ys9/4VC7Owhv/8l6YSuF/KxfzKku3ZU
+         /+zpsr0pxkbYg==
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "Jonathan Corbet" <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH RFC] docs: experimental: build PDF with rst2pdf
+Message-ID: <20201210172938.3b3086b6@coco.lan>
+In-Reply-To: <a29b97f95cae490cb83da28410fade13d880f365.1607616056.git.mchehab+huawei@kernel.org>
+References: <20201210074845.4eb67f22@lwn.net>
+        <a29b97f95cae490cb83da28410fade13d880f365.1607616056.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Every time I have stumbled upon this routine, I get confused with the
-way 'have_policy' is used and I have to dig in to understand why is it
-so. Here is an attempt to make it easier to understand, and hopefully it
-is an improvement.
+Em Thu, 10 Dec 2020 17:01:19 +0100
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
-The 'have_policy' check was just an optimization to avoid writing
-to amu_fie_cpus in case we don't have to, but that optimization itself
-is creating more confusion than the real work. Lets just do that if all
-the CPUs support AMUs. It is much cleaner that way.
+> Add an experimental PDF builder using rst2pdf
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
-V2:
-- Skip the have_policy check altogether
-- Updated subject and log
+I opened an issue at:
 
- arch/arm64/kernel/topology.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+https://github.com/rst2pdf/rst2pdf/issues/958
 
-diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index f6faa697e83e..ebadc73449f9 100644
---- a/arch/arm64/kernel/topology.c
-+++ b/arch/arm64/kernel/topology.c
-@@ -199,14 +199,14 @@ static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
- 	return 0;
- }
- 
--static inline bool
-+static inline void
- enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
- {
- 	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
- 
- 	if (!policy) {
- 		pr_debug("CPU%d: No cpufreq policy found.\n", cpu);
--		return false;
-+		return;
- 	}
- 
- 	if (cpumask_subset(policy->related_cpus, valid_cpus))
-@@ -214,8 +214,6 @@ enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
- 			   amu_fie_cpus);
- 
- 	cpufreq_cpu_put(policy);
--
--	return true;
- }
- 
- static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
-@@ -225,7 +223,6 @@ static int __init init_amu_fie(void)
- {
- 	bool invariance_status = topology_scale_freq_invariant();
- 	cpumask_var_t valid_cpus;
--	bool have_policy = false;
- 	int ret = 0;
- 	int cpu;
- 
-@@ -245,17 +242,12 @@ static int __init init_amu_fie(void)
- 			continue;
- 
- 		cpumask_set_cpu(cpu, valid_cpus);
--		have_policy |= enable_policy_freq_counters(cpu, valid_cpus);
-+		enable_policy_freq_counters(cpu, valid_cpus);
- 	}
- 
--	/*
--	 * If we are not restricted by cpufreq policies, we only enable
--	 * the use of the AMU feature for FIE if all CPUs support AMU.
--	 * Otherwise, enable_policy_freq_counters has already enabled
--	 * policy cpus.
--	 */
--	if (!have_policy && cpumask_equal(valid_cpus, cpu_present_mask))
--		cpumask_or(amu_fie_cpus, amu_fie_cpus, valid_cpus);
-+	/* Overwrite amu_fie_cpus if all CPUs support AMU */
-+	if (cpumask_equal(valid_cpus, cpu_present_mask))
-+		cpumask_copy(amu_fie_cpus, cpu_present_mask);
- 
- 	if (!cpumask_empty(amu_fie_cpus)) {
- 		pr_info("CPUs[%*pbl]: counters will be used for FIE.",
--- 
-2.25.0.rc1.19.g042ed3e048af
+Let's hope someone at rst2pdf could help fixing this ;-)
 
+Regards,
+Mauro
+
+
+> ---
+>  Documentation/Makefile                     |  5 +++++
+>  Documentation/conf.py                      | 21 +++++++++++++++------
+>  Documentation/userspace-api/media/Makefile |  1 +
+>  Makefile                                   |  4 ++--
+>  4 files changed, 23 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/Makefile b/Documentation/Makefile
+> index 61a7310b49e0..c3c8fb10f94e 100644
+> --- a/Documentation/Makefile
+> +++ b/Documentation/Makefile
+> @@ -115,6 +115,10 @@ pdfdocs: latexdocs
+>  
+>  endif # HAVE_PDFLATEX
+>  
+> +rst2pdf:
+> +	@$(srctree)/scripts/sphinx-pre-install --version-check
+> +	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,pdf,$(var),pdf,$(var)))
+> +
+>  epubdocs:
+>  	@$(srctree)/scripts/sphinx-pre-install --version-check
+>  	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,epub,$(var),epub,$(var)))
+> @@ -140,6 +144,7 @@ dochelp:
+>  	@echo  '  htmldocs        - HTML'
+>  	@echo  '  latexdocs       - LaTeX'
+>  	@echo  '  pdfdocs         - PDF'
+> +	@echo  '  rst2pdf         - PDF, using experimental rst2pdf support'
+>  	@echo  '  epubdocs        - EPUB'
+>  	@echo  '  xmldocs         - XML'
+>  	@echo  '  linkcheckdocs   - check for broken external links'
+> diff --git a/Documentation/conf.py b/Documentation/conf.py
+> index 66e121df59cd..6f2788aac81e 100644
+> --- a/Documentation/conf.py
+> +++ b/Documentation/conf.py
+> @@ -123,6 +123,12 @@ if (major == 1 and minor > 3) or (major > 1):
+>  else:
+>      extensions.append("sphinx.ext.pngmath")
+>  
+> +# Enable experimental rst2pdf, if available
+> +try:
+> +    extensions.append("rst2pdf.pdfbuilder")
+> +except:
+> +    sys.stderr.write('rst2pdf extension not available.\n')
+> +
+>  # Add any paths that contain templates here, relative to this directory.
+>  templates_path = ['_templates']
+>  
+> @@ -614,12 +620,15 @@ epub_exclude_files = ['search.html']
+>  #
+>  # See the Sphinx chapter of https://ralsina.me/static/manual.pdf
+>  #
+> -# FIXME: Do not add the index file here; the result will be too big. Adding
+> -# multiple PDF files here actually tries to get the cross-referencing right
+> -# *between* PDF files.
+> -pdf_documents = [
+> -    ('kernel-documentation', u'Kernel', u'Kernel', u'J. Random Bozo'),
+> -]
+> +
+> +# Add all LaTeX files to PDF documents as well
+> +pdf_documents = []
+> +for l in latex_documents:
+> +    doc = l[0]
+> +    fn = l[1].replace(".tex", "")
+> +    name = l[2]
+> +    authors = l[3]
+> +    pdf_documents.append((doc, fn, name, authors))
+>  
+>  # kernel-doc extension configuration for running Sphinx directly (e.g. by Read
+>  # the Docs). In a normal build, these are supplied from the Makefile via command
+> diff --git a/Documentation/userspace-api/media/Makefile b/Documentation/userspace-api/media/Makefile
+> index 81a4a1a53bce..8c6b3ac4ecb0 100644
+> --- a/Documentation/userspace-api/media/Makefile
+> +++ b/Documentation/userspace-api/media/Makefile
+> @@ -59,6 +59,7 @@ all: $(IMGDOT) $(BUILDDIR) ${TARGETS}
+>  html: all
+>  epub: all
+>  xml: all
+> +pdf: all
+>  latex: $(IMGPDF) all
+>  linkcheck:
+>  
+> diff --git a/Makefile b/Makefile
+> index 43ecedeb3f02..db4043578eec 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -264,7 +264,7 @@ no-dot-config-targets := $(clean-targets) \
+>  			 cscope gtags TAGS tags help% %docs check% coccicheck \
+>  			 $(version_h) headers headers_% archheaders archscripts \
+>  			 %asm-generic kernelversion %src-pkg dt_binding_check \
+> -			 outputmakefile
+> +			 outputmakefile rst2pdf
+>  no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease
+>  single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
+>  
+> @@ -1654,7 +1654,7 @@ $(help-board-dirs): help-%:
+>  
+>  # Documentation targets
+>  # ---------------------------------------------------------------------------
+> -DOC_TARGETS := xmldocs latexdocs pdfdocs htmldocs epubdocs cleandocs \
+> +DOC_TARGETS := xmldocs latexdocs pdfdocs rst2pdf htmldocs epubdocs cleandocs \
+>  	       linkcheckdocs dochelp refcheckdocs
+>  PHONY += $(DOC_TARGETS)
+>  $(DOC_TARGETS):
+
+
+
+Thanks,
+Mauro
