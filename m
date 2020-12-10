@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559772D5E2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 912FB2D5DD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 15:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403775AbgLJOn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 09:43:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43916 "EHLO mail.kernel.org"
+        id S2390577AbgLJOcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 09:32:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391028AbgLJOgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:36:50 -0500
+        id S2388474AbgLJOau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:30:50 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Pavel Shilovsky <pshilov@microsoft.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.4 19/54] cifs: allow syscalls to be restarted in __smb_send_rqst()
-Date:   Thu, 10 Dec 2020 15:26:56 +0100
-Message-Id: <20201210142602.986507213@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 4.9 43/45] i2c: qup: Fix error return code in qup_i2c_bam_schedule_desc()
+Date:   Thu, 10 Dec 2020 15:26:57 +0100
+Message-Id: <20201210142604.460327484@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210142602.037095225@linuxfoundation.org>
-References: <20201210142602.037095225@linuxfoundation.org>
+In-Reply-To: <20201210142602.361598591@linuxfoundation.org>
+References: <20201210142602.361598591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,48 +33,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paulo Alcantara <pc@cjr.nz>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-commit 6988a619f5b79e4efadea6e19dcfe75fbcd350b5 upstream.
+commit e9acf0298c664f825e6f1158f2a97341bf9e03ca upstream.
 
-A customer has reported that several files in their multi-threaded app
-were left with size of 0 because most of the read(2) calls returned
--EINTR and they assumed no bytes were read.  Obviously, they could
-have fixed it by simply retrying on -EINTR.
+Fix to return the error code from qup_i2c_change_state()
+instaed of 0 in qup_i2c_bam_schedule_desc().
 
-We noticed that most of the -EINTR on read(2) were due to real-time
-signals sent by glibc to process wide credential changes (SIGRT_1),
-and its signal handler had been established with SA_RESTART, in which
-case those calls could have been automatically restarted by the
-kernel.
-
-Let the kernel decide to whether or not restart the syscalls when
-there is a signal pending in __smb_send_rqst() by returning
--ERESTARTSYS.  If it can't, it will return -EINTR anyway.
-
-Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-CC: Stable <stable@vger.kernel.org>
-Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Fixes: fbf9921f8b35d9b2 ("i2c: qup: Fix error handling")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/transport.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-qup.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/cifs/transport.c
-+++ b/fs/cifs/transport.c
-@@ -340,8 +340,8 @@ __smb_send_rqst(struct TCP_Server_Info *
- 		return -EAGAIN;
+--- a/drivers/i2c/busses/i2c-qup.c
++++ b/drivers/i2c/busses/i2c-qup.c
+@@ -810,7 +810,8 @@ static int qup_i2c_bam_do_xfer(struct qu
+ 	if (ret || qup->bus_err || qup->qup_err) {
+ 		reinit_completion(&qup->xfer);
  
- 	if (signal_pending(current)) {
--		cifs_dbg(FYI, "signal is pending before sending any data\n");
--		return -EINTR;
-+		cifs_dbg(FYI, "signal pending before send request\n");
-+		return -ERESTARTSYS;
- 	}
- 
- 	/* cork the socket */
+-		if (qup_i2c_change_state(qup, QUP_RUN_STATE)) {
++		ret = qup_i2c_change_state(qup, QUP_RUN_STATE);
++		if (ret) {
+ 			dev_err(qup->dev, "change to run state timed out");
+ 			goto desc_err;
+ 		}
 
 
