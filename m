@@ -2,153 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8030D2D591B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B70A52D591E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 12:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389443AbgLJLQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 06:16:33 -0500
-Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:19909 "EHLO
-        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389124AbgLJLQP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:16:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1607598973;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=epAsmBLaUkoMUS/pHo0oHFDNdEoq5Gn12bK70AEVopU=;
-  b=PVmhYBIIKg2jUpRaB1WRG6BSfjJwGeadIn03aUJ9m0nDMJjWCk3nRwYf
-   kp0/YX2rBrHdVIhWd+d+7VKz42l9EUq7XOqVpC11bz8SEFFBs13Knsgyt
-   wa+iX1UmZQaOs8kvTQWSVgZH4kpDbXPPMRueZrzOkTzVRG1TlBYwcmFU1
-   s=;
-Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
-IronPort-SDR: 9NgqSnwd4VlKqjLuatlDB3zNY9y58s9JX+m1gdIyzt1Z4F6YRTSQCRsYyAHbjTkZtG76hqVagC
- tHmEy1NYG3xxcPiHjIqooTyWT5JDDm86wttexcVTTMejMsqZ1IO7uUJSGuBxAj45EaRG5IgbCQ
- STHEg55xiAZDGNGA8DO25BbfcFLDq84u4fvy1vsEuo8aQHLWiHEpTNDPESARIY8B4V5n4erfoI
- hX3E5enCurudunLrX94VL75V1UmmI5GnORznbgqjMMuApK5dKQAye30YpRrMSSctZd7S+tKORX
- Ctk=
-X-SBRS: 5.2
-X-MesageID: 32953073
-X-Ironport-Server: esa2.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.78,408,1599537600"; 
-   d="scan'208";a="32953073"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jGnlV+5W5OgzxF/zc/YtZt/dDlt6g/Hp1g71iYfvHHF/9SLrRYDjHehkicV6Vk67HuyenVR41wS0EFBDfn2ALUMN7E4DaMvUsA+n4NFxYmasWJ/S2cV1AadKqwunRXvdOQ7D8oGJ+Mn0okmjEpfwc+87Otmmf0JV9XStrhio8z1+JisfNl9Pi3Ibx6/5g8IamVxnBpxWX6FbkogKFetoD8VyFCYf+i+/ABdnYJYKRHL37nWWnY28dITJs7Z4No37t/B88LKLxsQHnkNJaQM98ykULUDYElE3gAHE430BiF3/+mba5Cbs55sYCHHXHf5rCAN8Kkk/jWx+1Rc86C9a9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CfbDngfGN+I8AVvETLYbDyAcVrmiGDTjBFcn0q3y5no=;
- b=R+wFTWeBNJRrWjHdVVpCZox/xz+Ng+fix4+4j35KMo8OP0EkZE23PJnAo4FLwZL14e/72NCfzYLjVG1yIuCtRBQmCaiGbSBpM+GANA6vI4cIo/XbF6FQyECVkdznjBQM/8201RrxakWu+01Qrkhqxc/YyNsihm97jEANbegNukvMrJQ1i67XATRvn8gF/R0JJpdTvXKG6dEiGdzUeHS3bBrESxJWnAv9wU1LZG/QK++RgjjjJdvBB3c9qgJnEth6u+larP4W8H+XHDzyqD+BRFC8Mf/DXTcb5cfApalWYQE1Vf89QkJRlJ6sB4ovGKziaWLsJtZZC9kz9HlF/fNGAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
- dkim=pass header.d=citrix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CfbDngfGN+I8AVvETLYbDyAcVrmiGDTjBFcn0q3y5no=;
- b=cxNE6KOI2HGmbCgECrVE7iiCKMmOqW5ogmlaQEo2GwZuHGbmKcGVZvqhTKEFh/uEzld9O5QbilWuAErp+4mBo4EuaV0fNwxdM5MHzO+TBCPFIUMFMNxIO8qtMtI5zg/ItwsCGjhJYfmcqVKHwGFWBD+iAAeVnZWD0JeTE+W1vjA=
-Date:   Thu, 10 Dec 2020 12:14:54 +0100
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-CC:     Jason Andryuk <jandryuk@gmail.com>,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: Re: [PATCH 2/2] xen: don't use page->lru for ZONE_DEVICE memory
-Message-ID: <20201210111454.dxykvyktzwr3fjyk@Air-de-Roger>
-References: <20201207133024.16621-1-jgross@suse.com>
- <20201207133024.16621-3-jgross@suse.com>
- <CAKf6xpuqdY=TctOjNsnTTexeBpkV+HMkOHFsAd4vxUudBpxizA@mail.gmail.com>
- <72bc4417-076c-78f0-9c7e-5a9c95e79fb2@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <72bc4417-076c-78f0-9c7e-5a9c95e79fb2@suse.com>
-X-ClientProxiedBy: MR2P264CA0132.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:500:30::24) To DS7PR03MB5608.namprd03.prod.outlook.com
- (2603:10b6:5:2c9::18)
+        id S2388269AbgLJLTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 06:19:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387474AbgLJLTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:19:08 -0500
+Date:   Thu, 10 Dec 2020 12:18:18 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607599103;
+        bh=BIAsCliAqIddZptYimb/AB3OuSMn8q2vbSsyrx5/zyE=;
+        h=From:To:Cc:Subject:From;
+        b=OX+b3TsJPuk7ntvycWom/n6ehtu1Kxh1R5bCcomRNtFadwdY/9GtLx9qCCDsCaP42
+         RxXS2mlamDMZwHlUHJBw+dY06q1PiED19P6d6XFVwlsT0W48TE/lYw90hjh35nKLR5
+         eZlRulg3YAG5PUK/IZF/yTBoPaONhwKgg2UJX1KuepOypC3MQYJjEM0vd9LN8Z7Cva
+         NAIz2dxyXOiGs5b1iPCK4QePaP8MNA+ppzFigO2m3lvdEH1w0xtCuHzrjAquvvuXzp
+         f//fqda26fdGBhsYkHVg/Mu5J8UHHFmMklNmfpgC5qqk32N+AzhGy4Gk3Zhzqs8iFX
+         ewkMPoujfH/DA==
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL for v5.10] media fixes
+Message-ID: <20201210121818.2d5c0353@coco.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5721cf22-e4be-41bf-f558-08d89cfcd5bc
-X-MS-TrafficTypeDiagnostic: DM6PR03MB4395:
-X-Microsoft-Antispam-PRVS: <DM6PR03MB43952ABCD326CE1FFF92B5568FCB0@DM6PR03MB4395.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wOr1DktL9gMYNhuPMeJnmgxEPdHG5X4HztUtKpGOE8x8gj0zRRUEzFROst3+GFPo6mmIDQ86b6Y+uSI/6MSa9j57OCZwWLiBj0hdnEW63oYyEPCB+929V1W0Eng3vNvOecDAJo8gMkij5gryYvHa+nDh9AozY/UP63o48mtWYHO2jDIgv6tji0dmyX7Mpel+4gpolzHkW2U/3tgFymmAmA1bJ5FZ8koVcVgfWjPh98gNWfpY7mIJklZ2FtSoLxsJLB0rfdSiAwIyzwcMfaw2C9Qe4UscMQDoqOZqCR9720WxXgLiBmm4RokWRY5e+KGvuSyEkP54DC8eHV7/1dv+Hw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(346002)(366004)(376002)(186003)(66946007)(508600001)(2906002)(86362001)(66556008)(8676002)(53546011)(8936002)(6486002)(1076003)(16526019)(6666004)(54906003)(9686003)(6916009)(4326008)(6496006)(956004)(33716001)(66476007)(85182001)(26005)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cGtidXVZOGpCZURUVi8xRndVSHZZcEJ2YS9IZjlRNEZkUGJjcHh0a0J3OXd6?=
- =?utf-8?B?TXFPdVowVS9wdnJWdUVkcTEzdlVqRXp4dkZqSmtlaGlVd0FyLzVqZFdPdVNz?=
- =?utf-8?B?SE13dzNmQU5MelljNy9CR2piZG5OMDdNQ0NiY3hKZFpEdFJ2NXFwTFlCSUsr?=
- =?utf-8?B?RFZJZkoxVGpyMjFjV1VqSTE5aW54Rm5UT2FwY2pEUHBvZFBwaHlZVFRMZGNq?=
- =?utf-8?B?MzRLc3F0UkxUZ1lVbEFJU3hCQi84OVVlU0txalpsVm10NEhmMmM0SmZnRHFB?=
- =?utf-8?B?TVlUUkRpdnJvOS9Ra1RkQnNDZ1pvZ0t2RnhmM3BIcU1TMFJKTmYxUDl5cnBi?=
- =?utf-8?B?Ty9aWU9wUkNKTTRkeW03MUdqQkI4dUtSbHFwTGt6bzFJS2Y5aFY3QnJLRXZs?=
- =?utf-8?B?M09iSGFsd2Rld2FTOU1aTTRCMkhyQnU2SWtHSk8wZVFqcHNJS3IyLzRuWGdN?=
- =?utf-8?B?U0pkbVNCZ2tZVUdpMzl6RFgra3FiRFFCZHRKV011RGk4bnIzSUZ3Q21lKzk5?=
- =?utf-8?B?VUFiSVZFYTdHV3krMXdJSUN4T05talYwZ1hCbUcxYk5mV0ZXNXkvbzVaU2I0?=
- =?utf-8?B?Z0JJcUkwekFmR3c0M2tTZ2IxaTdwQWU3cFh2OU44eVNrWW9sYVcySTNCZ3N5?=
- =?utf-8?B?VkVsMUw1UzBhWVAxejl0WkJnOG0xbVBRdUNlSVNzRU8vOWN6dGJIdGRnYVBI?=
- =?utf-8?B?OGZLUy9pOEJaK0FnMlZ4NndJeHFxaUVzajd5TnZpOCtrWE1UUFJ3V1NlM2t4?=
- =?utf-8?B?TXJGUmhLaG1BQ3M0TkV1Rjc3MzNROU1tVG5EVlRleGdJeGczbE1ibUtDZURQ?=
- =?utf-8?B?NUhFdG0zRzdJbU1tZEU3SGFPRE9sMWdWZS9QQlpKcVo0OFYyanVCR3RGOXJ5?=
- =?utf-8?B?dXBzdWdsdC83M05GTUlhWEdKS2dSdlNkRlduRGl2TW44QURqNVAzQVZIcDhR?=
- =?utf-8?B?SWZ2cGVWMnJRaks2dVBIWFZGZjBnVVdJazZmVDdrSWYweVlhamxNcld5dlN6?=
- =?utf-8?B?VTlxTVdPVk9pUWJJellqeFIya2V2UjIyV1Jna3Y5cUhZTitpNlBxc0ZiclVk?=
- =?utf-8?B?Zk9DNXdpaDQ4VUg5VFN3bFNkMit1V0d0RFdQS2RhMW5Wajl6REloaWJGazdX?=
- =?utf-8?B?SmxUL0M5N1pqL1BORlltekVyUy9VZzZ4TS9PYndpWnVMbTJMY3BBNEV0MlVw?=
- =?utf-8?B?K0d6cDJ6bm0zdDZHUFljWnZhZTAvSjM4RUt0dHgzWnoxNHYzRnpsV255S1Ev?=
- =?utf-8?B?OU52dVV6WG1TUWNUN0txTVRmY0hzMEFJaUhZRkFwMmdQY0ZjSVYzdEdXRjY4?=
- =?utf-8?Q?9UM9fdbaePq6A6h+lH+zj5eq51csHeITy0?=
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2020 11:15:00.3472
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5721cf22-e4be-41bf-f558-08d89cfcd5bc
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GAUnG4kLrGeB2LO9ZS/JGucIpj1uN+xtxn5atfgddSY2Zt0q4VfI7rXSB2TmQqoXYNeCshZWHjsBmxsBQ+DLTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4395
-X-OriginatorOrg: citrix.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 07:45:00AM +0100, Jürgen Groß wrote:
-> On 07.12.20 21:48, Jason Andryuk wrote:
-> > On Mon, Dec 7, 2020 at 8:30 AM Juergen Gross <jgross@suse.com> wrote:
-> > > 
-> > > Commit 9e2369c06c8a18 ("xen: add helpers to allocate unpopulated
-> > > memory") introduced usage of ZONE_DEVICE memory for foreign memory
-> > > mappings.
-> > > 
-> > > Unfortunately this collides with using page->lru for Xen backend
-> > > private page caches.
-> > > 
-> > > Fix that by using page->zone_device_data instead.
-> > > 
-> > > Fixes: 9e2369c06c8a18 ("xen: add helpers to allocate unpopulated memory")
-> > > Signed-off-by: Juergen Gross <jgross@suse.com>
-> > 
-> > Would it make sense to add BUG_ON(is_zone_device_page(page)) and the
-> > opposite as appropriate to cache_enq?
-> 
-> No, I don't think so. At least in the CONFIG_ZONE_DEVICE case the
-> initial list in a PV dom0 is populated from extra memory (basically
-> the same, but not marked as zone device memory explicitly).
+Hi Linus,
 
-I assume it's fine for us to then use page->zone_device_data even if
-the page is not explicitly marked as ZONE_DEVICE memory?
+Please pull from:
 
-If that's fine, add my:
+  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.10-4
 
-Acked-by: Roger Pau Monné <roger.pau@citrix.com>
+For a couple of fixes:
 
-To both patches, and thank you very much for fixing this!
+- videobuf2: fix a DMABUF bug, preventing it to properly handle
+  cache sync/flush;
+- vidtv: an usage after free and a few sparse/smatch warning fixes;
+- pulse8-cec: a duplicate free and a bug related to new firmware usage;
+- mtk-cir: fix a regression on a clock setting.
 
-Roger.
+Thanks,
+Mauro
+
+The following changes since commit 44f28934af141149959c4e6495bb60c1903bda32:
+
+  media: vidtv.rst: add kernel-doc markups (2020-11-26 08:05:24 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.10-4
+
+for you to fetch changes up to 3d1387b3b8f6cc1ccdbb5f0d7af24df02f4baef9:
+
+  media: vidtv: fix some warnings (2020-12-08 08:15:49 +0100)
+
+----------------------------------------------------------------
+media fixes for v5.10-rc8
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      media: [next] media: vidtv: fix a read from an object after it has been freed
+
+Hans Verkuil (2):
+      media: pulse8-cec: fix duplicate free at disconnect or probe error
+      media: pulse8-cec: add support for FW v10 and up
+
+Mauro Carvalho Chehab (2):
+      media: vidtv: fix kernel-doc markups
+      media: vidtv: fix some warnings
+
+Sean Young (1):
+      media: mtk-cir: fix calculation of chk period
+
+Sergey Senozhatsky (1):
+      media: vb2: set cache sync hints when init buffers
+
+ drivers/media/cec/usb/pulse8/pulse8-cec.c        | 52 ++++++++++++++++--------
+ drivers/media/common/videobuf2/videobuf2-core.c  | 11 +++++
+ drivers/media/rc/mtk-cir.c                       |  9 ++--
+ drivers/media/test-drivers/vidtv/vidtv_channel.c |  4 +-
+ drivers/media/test-drivers/vidtv/vidtv_psi.h     |  8 ++--
+ drivers/media/test-drivers/vidtv/vidtv_s302m.c   |  4 +-
+ drivers/media/test-drivers/vidtv/vidtv_ts.h      |  2 +-
+ 7 files changed, 58 insertions(+), 32 deletions(-)
+
