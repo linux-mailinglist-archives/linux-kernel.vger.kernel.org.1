@@ -2,165 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B722D8272
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D08062D8275
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407060AbgLKWyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:54:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37856 "EHLO
+        id S2407079AbgLKW4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 17:56:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394011AbgLKWyk (ORCPT
+        with ESMTP id S2407062AbgLKWz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:54:40 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4655CC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:54:00 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id g185so10012206wmf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:54:00 -0800 (PST)
+        Fri, 11 Dec 2020 17:55:58 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244DBC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:55:18 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id b64so6120034qkc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:55:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kHtjDDH7GvTHo4bSQkbyfDs6WmHuTRZuUmLBj4I09mM=;
-        b=ZOYpIIJhdkjIiQrCDklbAJoCGhqr2KCzTSQCU7kEVzQ2UEt0EEFBiz6tWBA4FGQQxV
-         zjLKwy1NJpfNzHOQ9525bmhx6NUFRRLkgJBxTvN9eOVo2OJ/5a7mvmpstAVjteuGu2TT
-         MKbbWwhIWHog9cQIiXzuei0HHyPDdARN994uPx0h4nQKujNwwlqM28TD7I4wbqC+pQPe
-         J3YFcJimPtUDOzfug20srnJ0J7LWGyqxGtOv9VUFOwQ5bs04TalKW4xynLxZjwuC2MiK
-         1L2HFvrimunl74Eo77FPdWNYpZo8phU+MlexnX4QMczOi0Gaym3eS5gnfvHCEo4BTJWt
-         C5yA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dRHr/uDawSIVOsWFHrSFkeCjCrKvMAqRmkxX5HLJ6pA=;
+        b=epnhOlCpUO40W9BG7w+rZSg+AU5U1lGqALVjfpJEPPQ0MsjW4ffyDec33UZNsilcWt
+         2yNhZz8mxTW6nTMEXYIFMOtnPlaobDgT+Q5ZrmhiFKdleYaoYSSmzIbGK0bz3B+KOs7p
+         Oa96Co1IVeqz4SmmyBJFLubcNXfW5tTFQ4i1pY90CDsQQKQ93dmTyObpSyNxNCQiOmf+
+         LHmyUhGxDMudScs77QQoftYWk3kzylaK/KRDBDRMn7fDlQHQ/WXwI5MgMYmbvkppQxUD
+         pOni+WrodpNCVILZeCCB6o83lq9En9vPDHan8nP4J6rwj4val8fbU0n4tCEdz5+0ovhQ
+         xGvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kHtjDDH7GvTHo4bSQkbyfDs6WmHuTRZuUmLBj4I09mM=;
-        b=AHUI/pPUkSicXfJr0qKZUqq6CdsyyF5+UwNj+XzJe9nSf1skA0PTNbO4MXmqydZye0
-         8pUreI3Sxsil6rjP1iieAv66g2ZED60Kvm+Imeh/dOE0sbOMZxZp2J++M4Otz4VzUwht
-         XEYIftWRNWis55xQYJs094+NAYkO/DtLDhzKlGjRv7A/yXMO0vLrfeXURcQ6v9xDM60o
-         Bj2VmwRmKszH0oKN02XGn1GaQip/2Fw4knkeJ+bOlKwgqoaNucReFnXU35QjqHidsOFI
-         shin3D8OJXgJApQRDLF6tzaEFthwTlBcUgFN7TX7Ak7JKZBMzCPo9n/TnX0MR/PYPmYc
-         WlgQ==
-X-Gm-Message-State: AOAM531OnQId9LyuTD4ugBa0jjoSlZt9I/GSAFmih0TFmlwixbqoq0Wx
-        l87/xj7j8xk/0zaJHm30feADXq/5SXJVr8gt4oKOmQ==
-X-Google-Smtp-Source: ABdhPJzmfhavlPB8w3bW91z4SUiuhRHo2kLdkst0HwLbm60FEwGaRoPhGOycsEHCfnGNhZfEe8bGK3l2A3oqsr+8a6k=
-X-Received: by 2002:a1c:40c:: with SMTP id 12mr15508379wme.40.1607727238734;
- Fri, 11 Dec 2020 14:53:58 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dRHr/uDawSIVOsWFHrSFkeCjCrKvMAqRmkxX5HLJ6pA=;
+        b=Hcr6T3RwcSk9DjFwwIhp+YzLNrmUKXqFeCG+dTaq8XN/YjPrJFUo6euVC0BukD8dWg
+         atSj3tzhNlMChx3c/hEb3MsUU/BXHeEvxLayWiH9m0KlZVjy0UXx7T3Ew0bzz7H9oZJW
+         5zGEYks8sclQJ6UmX7ekmr6M+UgMz6/PEI+jd9XEmwKjycZ2jp+1jB7W+9D/BmF+fV3h
+         RllWx5TcsT6QIfjtgnpRal3FIAtFl5ocRGUYYaPC/t5I0AkDs3MvZqBAgh7VonqgbPZP
+         cF+0OpaZ1JmA4WdvanwLABG4VyYiXdygQCmcJZU4OuIvPDGM6UZ4MTvgOPRs87Aa/iGu
+         Tl1g==
+X-Gm-Message-State: AOAM532cVlDAaWJr9qehKn4P1WBXzsr9k4w5xCds7+r7Ql5rIph35UQJ
+        58tv1iuorumCUPQD0DUJc6Y=
+X-Google-Smtp-Source: ABdhPJwiweyqLPsItY+4everWoJtpf1jkZeRMN0vKOmoFwwE44OHmed0+BGfVuCWrhdzflXaXAt3qw==
+X-Received: by 2002:a37:90c4:: with SMTP id s187mr19012010qkd.6.1607727317375;
+        Fri, 11 Dec 2020 14:55:17 -0800 (PST)
+Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com. [71.65.111.223])
+        by smtp.googlemail.com with ESMTPSA id i4sm7409594qti.78.2020.12.11.14.55.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 14:55:16 -0800 (PST)
+From:   Connor McAdams <conmanx360@gmail.com>
+Cc:     conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] ALSA: hda/ca0132 - Add 8051 PLL write helper functions.
+Date:   Fri, 11 Dec 2020 17:55:02 -0500
+Message-Id: <20201211225504.4508-1-conmanx360@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <160765171921.6905.7897898635812579754.stgit@localhost.localdomain>
- <CANn89iJ5HnJYv6eWb1jm6rK173DFkp2GRnfvi9vnYwXZPzE4LQ@mail.gmail.com>
- <CAKgT0Uf_q=FgMHd9_wq5Bx8rCC-kS0Qz563rE9dL2hpQ6Evppg@mail.gmail.com>
- <CANn89iJUT6aWm75ZpU_Ggmuqbb+cbLSGj0Bxysu9_wXRgNS8MQ@mail.gmail.com>
- <CAKgT0Uecuh3mcGRpDAZzzbnQtOusc++H4SXAv2Scd297Ha5AYQ@mail.gmail.com>
- <CANn89iKfqKpXgCv_Z4iSt5RpjxYUvkYSoZKF3FZs+Jgev3aDgw@mail.gmail.com> <CAKgT0Uc6gVOL5VWpsD54WiAvop9WQEudNsJNh9=Fr9PunJevWw@mail.gmail.com>
-In-Reply-To: <CAKgT0Uc6gVOL5VWpsD54WiAvop9WQEudNsJNh9=Fr9PunJevWw@mail.gmail.com>
-From:   Yuchung Cheng <ycheng@google.com>
-Date:   Fri, 11 Dec 2020 14:53:21 -0800
-Message-ID: <CAK6E8=cbxpKH1hoeV5MuO_DdrbMSPvo+97UM3FT57-4Y7PuTiA@mail.gmail.com>
-Subject: Re: [net PATCH] tcp: Mark fastopen SYN packet as lost when receiving ICMP_TOOBIG/ICMP_FRAG_NEEDED
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        kernel-team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 1:51 PM Alexander Duyck
-<alexander.duyck@gmail.com> wrote:
->
-> On Fri, Dec 11, 2020 at 11:18 AM Eric Dumazet <edumazet@google.com> wrote:
-> >
-> > On Fri, Dec 11, 2020 at 6:15 PM Alexander Duyck
-> > <alexander.duyck@gmail.com> wrote:
-> > >
-> > > On Fri, Dec 11, 2020 at 8:22 AM Eric Dumazet <edumazet@google.com> wrote:
-> > > >
-> > > > On Fri, Dec 11, 2020 at 5:03 PM Alexander Duyck
-> > > > <alexander.duyck@gmail.com> wrote:
-> > > >
-> > > > > That's fine. I can target this for net-next. I had just selected net
-> > > > > since I had considered it a fix, but I suppose it could be considered
-> > > > > a behavioral change.
-> > > >
-> > > > We are very late in the 5.10 cycle, and we never handled ICMP in this
-> > > > state, so net-next is definitely better.
-> > > >
-> > > > Note that RFC 7413 states in 4.1.3 :
-> > > >
-> > > >  The client MUST cache cookies from servers for later Fast Open
-> > > >    connections.  For a multihomed client, the cookies are dependent on
-> > > >    the client and server IP addresses.  Hence, the client should cache
-> > > >    at most one (most recently received) cookie per client and server IP
-> > > >    address pair.
-> > > >
-> > > >    When caching cookies, we recommend that the client also cache the
-> > > >    Maximum Segment Size (MSS) advertised by the server.  The client can
-> > > >    cache the MSS advertised by the server in order to determine the
-> > > >    maximum amount of data that the client can fit in the SYN packet in
-> > > >    subsequent TFO connections.  Caching the server MSS is useful
-> > > >    because, with Fast Open, a client sends data in the SYN packet before
-> > > >    the server announces its MSS in the SYN-ACK packet.  If the client
-> > > >    sends more data in the SYN packet than the server will accept, this
-> > > >    will likely require the client to retransmit some or all of the data.
-> > > >    Hence, caching the server MSS can enhance performance.
-> > > >
-> > > >    Without a cached server MSS, the amount of data in the SYN packet is
-> > > >    limited to the default MSS of 536 bytes for IPv4 [RFC1122] and 1220
-> > > >    bytes for IPv6 [RFC2460].  Even if the client complies with this
-> > > >    limit when sending the SYN, it is known that an IPv4 receiver
-> > > >    advertising an MSS less than 536 bytes can receive a segment larger
-> > > >    than it is expecting.
-> > > >
-> > > >    If the cached MSS is larger than the typical size (1460 bytes for
-> > > >    IPv4 or 1440 bytes for IPv6), then the excess data in the SYN packet
-> > > >    may cause problems that offset the performance benefit of Fast Open.
-> > > >    For example, the unusually large SYN may trigger IP fragmentation and
-> > > >    may confuse firewalls or middleboxes, causing SYN retransmission and
-> > > >    other side effects.  Therefore, the client MAY limit the cached MSS
-> > > >    to 1460 bytes for IPv4 or 1440 for IPv6.
-> > > >
-> > > >
-> > > > Relying on ICMP is fragile, since they can be filtered in some way.
-> > >
-> > > In this case I am not relying on the ICMP, but thought that since I
-> > > have it I should make use of it. WIthout the ICMP we would still just
-> > > be waiting on the retransmit timer.
-> > >
-> > > The problem case has a v6-in-v6 tunnel between the client and the
-> > > endpoint so both ends assume an MTU 1500 and advertise a 1440 MSS
-> > > which works fine until they actually go to send a large packet between
-> > > the two. At that point the tunnel is triggering an ICMP_TOOBIG and the
-> > > endpoint is stalling since the MSS is dropped to 1400, but the SYN and
-> > > data payload were already smaller than that so no retransmits are
-> > > being triggered. This results in TFO being 1s slower than non-TFO
-> > > because of the failure to trigger the retransmit for the frame that
-> > > violated the PMTU. The patch is meant to get the two back into
-> > > comparable times.
-> >
-> > Okay... Have you studied why tcp_v4_mtu_reduced() (and IPv6 equivalent)
-> > code does not yet handle the retransmit in TCP_SYN_SENT state ?
->
-> The problem lies in tcp_simple_retransmit(). Specifically the loop at
-> the start of the function goes to check the retransmit queue to see if
-> there are any packets larger than MSS and finds none since we don't
-> place the SYN w/ data in there and instead have a separate SYN and
-> data packet.
->
-> I'm debating if I should take an alternative approach and modify the
-> loop at the start of tcp_simple_transmit to add a check for a SYN
-> packet, tp->syn_data being set, and then comparing the next frame
-> length + MAX_TCP_HEADER_OPTIONS versus mss.
-Thanks for bringing up this tricky issue. The root cause seems to be
-the special arrangement of storing SYN-data as one-(pure)-SYN and one
-non-SYN data segment. Given tcp_simple_transmit probably is not called
-frequently, your alternative approach sounds more appealing to me.
+Add helper functions for the 8051 PLL PMU write verbs.
 
-Replacing that strange syn|data arrangement for TFO has been on my
-wish list for a long time... Ideally it's better to just store the
-SYN+data and just carve out the SYN for retransmit.
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+---
+ sound/pci/hda/patch_ca0132.c | 130 ++++++++++++++---------------------
+ 1 file changed, 50 insertions(+), 80 deletions(-)
+
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index e9019e840a4d..9b6b7601a881 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -1949,6 +1949,14 @@ static unsigned int chipio_8051_get_data(struct hda_codec *codec)
+ 				   VENDOR_CHIPIO_8051_DATA_READ, 0);
+ }
+ 
++/* PLL_PMU writes share the lower address register of the 8051 exram writes. */
++static void chipio_8051_set_data_pll(struct hda_codec *codec, unsigned int data)
++{
++	/* 8-bits of data. */
++	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
++			    VENDOR_CHIPIO_PLL_PMU_WRITE, data & 0xff);
++}
++
+ static void chipio_8051_write_exram(struct hda_codec *codec,
+ 		unsigned int addr, unsigned int data)
+ {
+@@ -1977,6 +1985,26 @@ static void chipio_8051_read_exram(struct hda_codec *codec,
+ 	*data = chipio_8051_get_data(codec);
+ }
+ 
++static void chipio_8051_write_pll_pmu(struct hda_codec *codec,
++		unsigned int addr, unsigned int data)
++{
++	struct ca0132_spec *spec = codec->spec;
++
++	mutex_lock(&spec->chipio_mutex);
++
++	chipio_8051_set_address(codec, addr & 0xff);
++	chipio_8051_set_data_pll(codec, data);
++
++	mutex_unlock(&spec->chipio_mutex);
++}
++
++static void chipio_8051_write_pll_pmu_no_mutex(struct hda_codec *codec,
++		unsigned int addr, unsigned int data)
++{
++	chipio_8051_set_address(codec, addr & 0xff);
++	chipio_8051_set_data_pll(codec, data);
++}
++
+ /*
+  * Enable clocks.
+  */
+@@ -1985,18 +2013,11 @@ static void chipio_enable_clocks(struct hda_codec *codec)
+ 	struct ca0132_spec *spec = codec->spec;
+ 
+ 	mutex_lock(&spec->chipio_mutex);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xff);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 5);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0x0b);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 6);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xff);
++
++	chipio_8051_write_pll_pmu_no_mutex(codec, 0x00, 0xff);
++	chipio_8051_write_pll_pmu_no_mutex(codec, 0x05, 0x0b);
++	chipio_8051_write_pll_pmu_no_mutex(codec, 0x06, 0xff);
++
+ 	mutex_unlock(&spec->chipio_mutex);
+ }
+ 
+@@ -7904,10 +7925,7 @@ static void ae5_post_dsp_register_set(struct hda_codec *codec)
+ 	struct ca0132_spec *spec = codec->spec;
+ 
+ 	chipio_8051_write_direct(codec, 0x93, 0x10);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x44);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc2);
++	chipio_8051_write_pll_pmu(codec, 0x44, 0xc2);
+ 
+ 	writeb(0xff, spec->mem_base + 0x304);
+ 	writeb(0xff, spec->mem_base + 0x304);
+@@ -7949,30 +7967,11 @@ static void ae5_post_dsp_param_setup(struct hda_codec *codec)
+ 
+ static void ae5_post_dsp_pll_setup(struct hda_codec *codec)
+ {
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x41);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc8);
+-
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x45);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xcc);
+-
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x40);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xcb);
+-
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x43);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc7);
+-
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x51);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0x8d);
++	chipio_8051_write_pll_pmu(codec, 0x41, 0xc8);
++	chipio_8051_write_pll_pmu(codec, 0x45, 0xcc);
++	chipio_8051_write_pll_pmu(codec, 0x40, 0xcb);
++	chipio_8051_write_pll_pmu(codec, 0x43, 0xc7);
++	chipio_8051_write_pll_pmu(codec, 0x51, 0x8d);
+ }
+ 
+ static void ae5_post_dsp_stream_setup(struct hda_codec *codec)
+@@ -7994,10 +7993,7 @@ static void ae5_post_dsp_stream_setup(struct hda_codec *codec)
+ 
+ 	chipio_set_control_param_no_mutex(codec, CONTROL_PARAM_ASI, 4);
+ 
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x43);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc7);
++	chipio_8051_write_pll_pmu_no_mutex(codec, 0x43, 0xc7);
+ 
+ 	ca0113_mmio_command_set(codec, 0x48, 0x01, 0x80);
+ 
+@@ -8090,12 +8086,8 @@ static void ae7_post_dsp_pll_setup(struct hda_codec *codec)
+ 	};
+ 	unsigned int i;
+ 
+-	for (i = 0; i < ARRAY_SIZE(addr); i++) {
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				    VENDOR_CHIPIO_8051_ADDRESS_LOW, addr[i]);
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				    VENDOR_CHIPIO_PLL_PMU_WRITE, data[i]);
+-	}
++	for (i = 0; i < ARRAY_SIZE(addr); i++)
++		chipio_8051_write_pll_pmu_no_mutex(codec, addr[i], data[i]);
+ }
+ 
+ static void ae7_post_dsp_asi_setup_ports(struct hda_codec *codec)
+@@ -8111,10 +8103,7 @@ static void ae7_post_dsp_asi_setup_ports(struct hda_codec *codec)
+ 
+ 	mutex_lock(&spec->chipio_mutex);
+ 
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x43);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc7);
++	chipio_8051_write_pll_pmu_no_mutex(codec, 0x43, 0xc7);
+ 
+ 	chipio_write_no_mutex(codec, 0x189000, 0x0001f101);
+ 	chipio_write_no_mutex(codec, 0x189004, 0x0001f101);
+@@ -8187,10 +8176,7 @@ static void ae7_post_dsp_asi_setup(struct hda_codec *codec)
+ {
+ 	chipio_8051_write_direct(codec, 0x93, 0x10);
+ 
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x44);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc2);
++	chipio_8051_write_pll_pmu(codec, 0x44, 0xc2);
+ 
+ 	ca0113_mmio_command_set_type2(codec, 0x48, 0x07, 0x83);
+ 	ca0113_mmio_command_set(codec, 0x30, 0x2e, 0x3f);
+@@ -8207,10 +8193,7 @@ static void ae7_post_dsp_asi_setup(struct hda_codec *codec)
+ 	ae7_post_dsp_pll_setup(codec);
+ 	ae7_post_dsp_asi_stream_setup(codec);
+ 
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x43);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc7);
++	chipio_8051_write_pll_pmu(codec, 0x43, 0xc7);
+ 
+ 	ae7_post_dsp_asi_setup_ports(codec);
+ }
+@@ -9367,18 +9350,11 @@ static void ae5_register_set(struct hda_codec *codec)
+ 	unsigned int i, cur_addr;
+ 	unsigned char tmp[3];
+ 
+-	if (ca0132_quirk(spec) == QUIRK_AE7) {
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x41);
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc8);
+-	}
++	if (ca0132_quirk(spec) == QUIRK_AE7)
++		chipio_8051_write_pll_pmu(codec, 0x41, 0xc8);
+ 
+ 	chipio_8051_write_direct(codec, 0x93, 0x10);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x44);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc2);
++	chipio_8051_write_pll_pmu(codec, 0x44, 0xc2);
+ 
+ 	if (ca0132_quirk(spec) == QUIRK_AE7) {
+ 		tmp[0] = 0x03;
+@@ -9454,10 +9430,7 @@ static void ca0132_alt_init(struct hda_codec *codec)
+ 		break;
+ 	case QUIRK_AE5:
+ 		ca0132_gpio_init(codec);
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x49);
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				VENDOR_CHIPIO_PLL_PMU_WRITE, 0x88);
++		chipio_8051_write_pll_pmu(codec, 0x49, 0x88);
+ 		chipio_write(codec, 0x18b030, 0x00000020);
+ 		snd_hda_sequence_write(codec, spec->chip_init_verbs);
+ 		snd_hda_sequence_write(codec, spec->desktop_init_verbs);
+@@ -9465,10 +9438,7 @@ static void ca0132_alt_init(struct hda_codec *codec)
+ 		break;
+ 	case QUIRK_AE7:
+ 		ca0132_gpio_init(codec);
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x49);
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				VENDOR_CHIPIO_PLL_PMU_WRITE, 0x88);
++		chipio_8051_write_pll_pmu(codec, 0x49, 0x88);
+ 		snd_hda_sequence_write(codec, spec->chip_init_verbs);
+ 		snd_hda_sequence_write(codec, spec->desktop_init_verbs);
+ 		chipio_write(codec, 0x18b008, 0x000000f8);
+-- 
+2.25.1
+
