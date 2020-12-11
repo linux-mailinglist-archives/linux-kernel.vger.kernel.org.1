@@ -2,112 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB502D7358
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFCC2D735D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404769AbgLKKE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:04:29 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:37795 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728068AbgLKKDv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:03:51 -0500
-Received: by mail-io1-f69.google.com with SMTP id l22so4893438iom.4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 02:03:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=uOC2+82+GbEMhFKOFJV1ZRw6jqNsv44LU405Nk29/vk=;
-        b=BPl2igU78dmdy4ySyk2mVVX24p8KgvJRvuASWSF158f/tgPOp+cPdvgwY87Vy0p4dJ
-         +4pY7KKGsuW7yTie7n2I0Jez+Gvdmc3P2snpG0tK0DZyQzBcwnH1JCcYyhJo6YPMtiPO
-         qQ0wHq4UuaYCA2V1sXuYPnGumKWl0qNkfJVEet7EXQ88E6K69rgilGXymbFH+gDm5IRx
-         XWJX5IhALLS7VidR9hBPVuZJsS74zjzb30aBvXewe7FIohGcSwCFjOt8h8JEyBDQL1R0
-         Gr12vytTj+RZY00RqrFT12/PHRlMOe80UT4se1VX1mIDI1Q5rR17Z83Q1ZQ70XHkXE/1
-         Kd2A==
-X-Gm-Message-State: AOAM531JVoffhRCqk4yKR5EjbYbL6HJasrUS1gIROXBGJipsUPVOlkbF
-        gyNcL3ZX9fUFl2qYi81k8RMazwPLSrzSGu0SW0KOEuqbRfYk
-X-Google-Smtp-Source: ABdhPJyS9DPn9X/pqrU8UkmwJ2EG8zRVVPeG0gsGgP4jnW3RkTWJeILitrISDAiZc4KnI2auNRcRwBuwBGR7H1fBTu+lcx2uvthc
+        id S2405762AbgLKKFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:05:25 -0500
+Received: from mga09.intel.com ([134.134.136.24]:38625 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405769AbgLKKEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:04:51 -0500
+IronPort-SDR: 8xd2TW6NQeUTr/mooj7C50Q6ajWPlyWLfWotz3Ou++OwMRT63vsLUJfxXNcUZWlAUKiPLJqR7I
+ S90k01I3yHcg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="174553420"
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="174553420"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 02:04:06 -0800
+IronPort-SDR: MGPO7BMUJJKRunpnB9L9RN5ho1+zBfSgF5FQYDvv3iU+VnVdOOCXSEyjaZC4jUfQTOVbcutq3L
+ NoARee+qzQTQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="365345885"
+Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 11 Dec 2020 02:04:05 -0800
+Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1knfHQ-0000pa-FJ; Fri, 11 Dec 2020 10:04:04 +0000
+Date:   Fri, 11 Dec 2020 18:03:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 190113b4c6531c8e09b31d5235f9b5175cbb0f72
+Message-ID: <5fd343ed.nb4Tcd7DeXEafXdo%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:5ab:: with SMTP id k11mr8236476ils.189.1607680990586;
- Fri, 11 Dec 2020 02:03:10 -0800 (PST)
-Date:   Fri, 11 Dec 2020 02:03:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005b303e05b62d6674@google.com>
-Subject: INFO: task can't die in corrupted (2)
-From:   syzbot <syzbot+61cb1d04bf13f0c631b1@syzkaller.appspotmail.com>
-To:     ast@kernel.org, christian.brauner@ubuntu.com, daniel@iogearbox.net,
-        davem@davemloft.net, gnault@redhat.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: 190113b4c6531c8e09b31d5235f9b5175cbb0f72  x86/apic/vector: Fix ordering in vector assignment
 
-syzbot found the following issue on:
+elapsed time: 721m
 
-HEAD commit:    0eedceaf Add linux-next specific files for 20201201
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12db3b4b500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=55aec7153b7827ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=61cb1d04bf13f0c631b1
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17985545500000
+configs tested: 118
+configs skipped: 67
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+61cb1d04bf13f0c631b1@syzkaller.appspotmail.com
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-INFO: task syz-executor.0:9776 can't die for more than 143 seconds.
-task:syz-executor.0  state:R  running task     stack:25800 pid: 9776 ppid:  8572 flags:0x00004006
-Call Trace:
- context_switch kernel/sched/core.c:4325 [inline]
- __schedule+0x8cd/0x2150 kernel/sched/core.c:5076
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                        vdk_hs38_defconfig
+sh                           sh2007_defconfig
+powerpc                     tqm8560_defconfig
+arm                           viper_defconfig
+arm                          collie_defconfig
+sh                 kfr2r09-romimage_defconfig
+um                             i386_defconfig
+arc                            hsdk_defconfig
+mips                    maltaup_xpa_defconfig
+arm                          ep93xx_defconfig
+xtensa                    xip_kc705_defconfig
+sh                          kfr2r09_defconfig
+sparc                            alldefconfig
+mips                        bcm47xx_defconfig
+microblaze                      mmu_defconfig
+arc                          axs103_defconfig
+mips                           gcw0_defconfig
+sparc                            allyesconfig
+powerpc                     asp8347_defconfig
+arm                          simpad_defconfig
+m68k                                defconfig
+alpha                            alldefconfig
+sh                         microdev_defconfig
+arm                           u8500_defconfig
+powerpc                        icon_defconfig
+c6x                                 defconfig
+mips                             allyesconfig
+mips                          rb532_defconfig
+sh                           se7343_defconfig
+arm                         shannon_defconfig
+sh                               j2_defconfig
+m68k                       m5249evb_defconfig
+arm                       versatile_defconfig
+sh                   rts7751r2dplus_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201209
+i386                 randconfig-a005-20201209
+i386                 randconfig-a001-20201209
+i386                 randconfig-a002-20201209
+i386                 randconfig-a006-20201209
+i386                 randconfig-a003-20201209
+i386                 randconfig-a001-20201210
+i386                 randconfig-a004-20201210
+i386                 randconfig-a003-20201210
+i386                 randconfig-a002-20201210
+i386                 randconfig-a005-20201210
+i386                 randconfig-a006-20201210
+x86_64               randconfig-a016-20201209
+x86_64               randconfig-a012-20201209
+x86_64               randconfig-a013-20201209
+x86_64               randconfig-a014-20201209
+x86_64               randconfig-a015-20201209
+x86_64               randconfig-a011-20201209
+i386                 randconfig-a013-20201209
+i386                 randconfig-a014-20201209
+i386                 randconfig-a011-20201209
+i386                 randconfig-a015-20201209
+i386                 randconfig-a012-20201209
+i386                 randconfig-a016-20201209
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Showing all locks held in the system:
-4 locks held by kworker/u4:4/359:
- #0: ffff8881407ab138 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8881407ab138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8881407ab138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8881407ab138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8881407ab138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8881407ab138 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x871/0x15f0 kernel/workqueue.c:2243
- #1: ffffc900014efda8 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15f0 kernel/workqueue.c:2247
- #2: ffffffff8c92ed90 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x9b/0xb10 net/core/net_namespace.c:566
- #3: ffffffff8c940f88 (rtnl_mutex){+.+.}-{3:3}, at: netdev_run_todo+0x90a/0xdd0 net/core/dev.c:10316
-1 lock held by khungtaskd/1663:
- #0: ffffffff8b33a7a0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6254
-1 lock held by in:imklog/8233:
- #0: ffff88801f67e370 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:923
-3 locks held by kworker/0:2/8537:
- #0: ffff888010062d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010062d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888010062d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888010062d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888010062d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888010062d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x871/0x15f0 kernel/workqueue.c:2243
- #1: ffffc9000c297da8 ((linkwatch_work).work){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15f0 kernel/workqueue.c:2247
- #2: ffffffff8c940f88 (rtnl_mutex){+.+.}-{3:3}, at: linkwatch_event+0xb/0x60 net/core/link_watch.c:250
-2 locks held by kworker/u4:3/9739:
-1 lock held by syz-executor.1/9765:
-1 lock held by syz-executor.0/9776:
-1 lock held by syz-executor.3/10296:
-1 lock held by syz-executor.5/10299:
-4 locks held by syz-executor.4/10323:
-4 locks held by syz-executor.2/10542:
-
-=============================================
-
-
+clang tested configs:
+x86_64               randconfig-a004-20201209
+x86_64               randconfig-a006-20201209
+x86_64               randconfig-a005-20201209
+x86_64               randconfig-a001-20201209
+x86_64               randconfig-a002-20201209
+x86_64               randconfig-a003-20201209
+x86_64               randconfig-a003-20201210
+x86_64               randconfig-a006-20201210
+x86_64               randconfig-a002-20201210
+x86_64               randconfig-a005-20201210
+x86_64               randconfig-a004-20201210
+x86_64               randconfig-a001-20201210
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
