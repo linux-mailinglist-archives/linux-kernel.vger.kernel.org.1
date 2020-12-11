@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D562D7248
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 543C32D7249
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392911AbgLKIwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:52:36 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9870 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437165AbgLKIvp (ORCPT
+        id S2392966AbgLKIwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:52:45 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9162 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392280AbgLKIwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:51:45 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CskyB0Rbvz7C81
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 16:50:26 +0800 (CST)
+        Fri, 11 Dec 2020 03:52:09 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cskyg1PgPz15bRJ;
+        Fri, 11 Dec 2020 16:50:51 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Dec 2020 16:50:49 +0800
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Dec 2020 16:51:16 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
+To:     <linux-raid@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] ti/phy-j721e-wiz: convert comma to semicolon
-Date:   Fri, 11 Dec 2020 16:51:19 +0800
-Message-ID: <20201211085119.2654-1-zhengyongjun3@huawei.com>
+Subject: [PATCH -next] md/raid10: convert comma to semicolon
+Date:   Fri, 11 Dec 2020 16:51:45 +0800
+Message-ID: <20201211085145.2708-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -38,24 +38,22 @@ Replace a comma between expression statements by a semicolon.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/phy/ti/phy-j721e-wiz.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/md/raid10.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
-index c9cfafe89cbf..73eb92b5817b 100644
---- a/drivers/phy/ti/phy-j721e-wiz.c
-+++ b/drivers/phy/ti/phy-j721e-wiz.c
-@@ -922,8 +922,8 @@ static int wiz_probe(struct platform_device *pdev)
+diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+index b7bca6703df8..acf4df3d971f 100644
+--- a/drivers/md/raid10.c
++++ b/drivers/md/raid10.c
+@@ -2459,7 +2459,7 @@ static void fix_recovery_read_error(struct r10bio *r10_bio)
+ 			s = PAGE_SIZE >> 9;
  
- 	phy_reset_dev = &wiz->wiz_phy_reset_dev;
- 	phy_reset_dev->dev = dev;
--	phy_reset_dev->ops = &wiz_phy_reset_ops,
--	phy_reset_dev->owner = THIS_MODULE,
-+	phy_reset_dev->ops = &wiz_phy_reset_ops;
-+	phy_reset_dev->owner = THIS_MODULE;
- 	phy_reset_dev->of_node = node;
- 	/* Reset for each of the lane and one for the entire SERDES */
- 	phy_reset_dev->nr_resets = num_lanes + 1;
+ 		rdev = conf->mirrors[dr].rdev;
+-		addr = r10_bio->devs[0].addr + sect,
++		addr = r10_bio->devs[0].addr + sect;
+ 		ok = sync_page_io(rdev,
+ 				  addr,
+ 				  s << 9,
 -- 
 2.22.0
 
