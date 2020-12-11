@@ -2,72 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3F32D6EDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5D02D6EDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:48:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405293AbgLKDrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 22:47:02 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:38893 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390347AbgLKDqW (ORCPT
+        id S2405307AbgLKDrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 22:47:35 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:36454 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395222AbgLKDqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 22:46:22 -0500
-Received: by mail-oi1-f195.google.com with SMTP id o25so8386007oie.5;
-        Thu, 10 Dec 2020 19:46:06 -0800 (PST)
+        Thu, 10 Dec 2020 22:46:37 -0500
+Received: by mail-lj1-f194.google.com with SMTP id a1so9341243ljq.3;
+        Thu, 10 Dec 2020 19:46:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xsOzNAdYOyw/VZpV4HjCVyfu36qNDBUH0JgMyFTiKVw=;
-        b=AGhXnFH+IAMX4ToD0Fa/vJYrMRbHCB4iXo0YlT5RtbmHs31Sg5886EDBKauGiiMbr2
-         Usm3jrA8G8osvNa4quP0IVjRFEO0Xrg9x3Cwgt1vVJIcQpFOB1zh+mbMXrv4mwnxIeTh
-         m53Xtp4hCBcTJ3T3Ujg1/P8zsSCl4KriZqXB26eGih3qadmpupmpg9k8c5FgmOwLh/1G
-         02Ng/8Dn3qJ0/6P7YeaXYjISJObvtTU42k2uH4pjBYLej/HJkPX24zEJZ7UNIbkBJU1b
-         LPXt1Ed2e0WQdf9Ix8CTpxOkAu6SOF1Xmy2prBV5LhLpGobosaT6nuqbZrNL2avdHJu1
-         PkuA==
-X-Gm-Message-State: AOAM5306yITa3kul3I1NAqfFySUoy6jlzRDTNAIrS+YcIsYiVCtp1J8U
-        NMHQynZeIYS5cuuqpRNruEtJMOpN1w==
-X-Google-Smtp-Source: ABdhPJyQTCEPjNY/kQ1/yjp0xHMabgSIYSkGQnlAc/e3YbbqgAYmAmyXIyemdmykEfRjLJvPM4XVtw==
-X-Received: by 2002:aca:e082:: with SMTP id x124mr7836201oig.3.1607658341156;
-        Thu, 10 Dec 2020 19:45:41 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e81sm1516934oia.30.2020.12.10.19.45.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 19:45:40 -0800 (PST)
-Received: (nullmailer pid 3601454 invoked by uid 1000);
-        Fri, 11 Dec 2020 03:45:39 -0000
-Date:   Thu, 10 Dec 2020 21:45:39 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        David Jander <david@protonic.nl>, devicetree@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v5 1/5] dt-bindings: vendor-prefixes: Add an entry for
- Kverneland Group
-Message-ID: <20201211034539.GA3601407@robh.at.kernel.org>
-References: <20201210091341.27110-1-o.rempel@pengutronix.de>
- <20201210091341.27110-2-o.rempel@pengutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yx2aynEdnPpbXULhzc3uagZjH2w4cvLYDS+eix+Evs8=;
+        b=JIcJBf5ILNgFU5P4DA4OuGxtJWfYlORUgtaukyNEtKI13OX0k2nIhrKV5OaDUyM4yA
+         cCUYer3q0Jdc2TKqyadi8wAZuqdqMEqy8JCs/GXuk3uj7h40xXjmcR3BfG1vsRAh1yG9
+         kqFkuHkYQxTxBfGnpFwQjSty9pvAKSKV6CvbYh8BN9rBycqDDdBWQpXE/vs6BZO6tHb8
+         AVavvpaExHcP7QB/w626MJpimQ0TZ4CN46UPVkVPD2m7IUDnv3AWjkkrfl6AD4zX9B99
+         QPYpyIqTujMqoNF/dJGEWMaS7inujr/peL1BrYj42P8exKpei4KW8256EK68O0QrFgGE
+         oLYQ==
+X-Gm-Message-State: AOAM532Z09KyJVN626+WnbUkoiGsGd924xVJbR3Fv+3cC7AlZ9s92jfY
+        YGbxFu6MtoM+0a4XvUNMda8BH8Krge7ntuGSRV4=
+X-Google-Smtp-Source: ABdhPJwVQfQg8u2BiFAZbc2HANtfVR/hJeKOf4Zup19O9RH33cj/Ho6GVUBDqwD9fgs81xmqrCswpAQD6Km9YVbam4c=
+X-Received: by 2002:a05:651c:301:: with SMTP id a1mr4092501ljp.275.1607658355260;
+ Thu, 10 Dec 2020 19:45:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210091341.27110-2-o.rempel@pengutronix.de>
+References: <20201210144844.72580-1-chanho61.park@samsung.com>
+In-Reply-To: <20201210144844.72580-1-chanho61.park@samsung.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 11 Dec 2020 12:45:44 +0900
+Message-ID: <CAM9d7cjeEgP68Xf3x0EJEQv+gtg_QD=8+bbTJ1vY7dyAC2NaTA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] fix perf tool build error on MUSL libc
+To:     Chanho Park <parkch98@gmail.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Chanho Park <chanho61.park@samsung.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, Khem Raj <raj.khem@gmail.com>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 10:13:37 +0100, Oleksij Rempel wrote:
-> Add "kvg" entry for Kverneland Group: https://ien.kvernelandgroup.com/
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+Adding people in the original patch + kbuild folks.
 
-Acked-by: Rob Herring <robh@kernel.org>
+On Thu, Dec 10, 2020 at 11:48 PM Chanho Park <parkch98@gmail.com> wrote:
+>
+> __always_inline can cause build error on musl libc because it's not
+> defined. We need to include <linux/stddef.h> before asm/byteorder.h.
+> tools/include/uapi/linux/perf_event.h is copied version from
+> include/uapi/linux/perf_event.h. To fix this, we need to apply this
+> change both header files.
+>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: John Garry <john.garry@huawei.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Khem Raj <raj.khem@gmail.com>
+>
+> Chanho Park (2):
+>   perf: fix build error on MUSL libc
+>   perf: tool: fix build error on MUSL libc
+>
+>  include/uapi/linux/perf_event.h       | 3 +++
+>  tools/include/uapi/linux/perf_event.h | 3 +++
+>  2 files changed, 6 insertions(+)
+>
+> --
+> 2.23.0
+>
