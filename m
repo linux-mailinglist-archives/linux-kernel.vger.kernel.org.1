@@ -2,184 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C132D762B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 688302D7683
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406076AbgLKM6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 07:58:47 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34750 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406014AbgLKM6d (ORCPT
+        id S2404738AbgLKN1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:27:55 -0500
+Received: from outbound-ip23b.ess.barracuda.com ([209.222.82.220]:48222 "EHLO
+        outbound-ip23b.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404840AbgLKN1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:58:33 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607691469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JI1elAtJ+5DtZ6K623jhzzi7pTI2yY5tK5xHv6JaNRg=;
-        b=IsUihC8x41gfVuZ56mJpZCBvWH6AGSSnlAtCqFu+Y6vHBUWXmKQx9YvU5B8lrG6utDrQMP
-        8canZDEEsNDVhNNdoKfnFOQzTFOpz9W+psXaARAvFsUFtyOebsqoT9kLX8kBnNz5EacFR5
-        rK53uTCJCAI+CQzV9BLaBuU/gNEQZy9UASonSM4NSF0ZsDg2qgrh9flw6frSO8WIrRyHsw
-        fF1cIAuhmb0wJbfH0peqshua47BZpnwfG0pDc4EWPJORiwGLQuagVjgVxqHnf+tQ9+0hUT
-        H0SNNDNOI9Tui6mw4dUpmVwGgPTgPo14TX1s4jNlbb7LIWdUurk9RmWQuaaNkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607691469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JI1elAtJ+5DtZ6K623jhzzi7pTI2yY5tK5xHv6JaNRg=;
-        b=9Ep94KYblAfQy2iSeDDH/NSIpD2gqoyh3N3s+6g4ZgyvdTP4pfDpIIp6ve3zDE8y9b1XGh
-        NoOqscBMvs3mS3Bw==
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci@vger.kernel.org,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
-In-Reply-To: <ad05af1a-5463-2a80-0887-7629721d6863@linux.intel.com>
-References: <20201210192536.118432146@linutronix.de> <20201210194043.957046529@linutronix.de> <ad05af1a-5463-2a80-0887-7629721d6863@linux.intel.com>
-Date:   Fri, 11 Dec 2020 13:57:49 +0100
-Message-ID: <87y2i4h54i.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
+        Fri, 11 Dec 2020 08:27:03 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104]) by mx9.us-east-2b.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Fri, 11 Dec 2020 13:24:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kL8WCyBmiXhehmQJCrtBs87ggKu5FyDj4zCN7Q4xhPuuR7QNch7RPvTf8qZ2x4utcg0ua3RzHGAkPlpGuv8yRk1FIW91yTVLae52JwZ0r81u/pwW1CaKGxAr4Pz9lC75i0uihG8dtBZcKeJ+jCTBEjrOBA/J+z2ijFwuz6blmEkZej9TWBjPa8m3pOYvRQWp1r8dVtOxpUf5Q6IVYqGBUPiQ6/gVWoG+ormdrYvgLymqUl7AHglbnjygm0ZblQFbHZSC37sjHluu+WcO56dln8NEeYj4ajPlp5G/3aM0/ocXztiUslq8yLsPaC6jwD+F7APIMckwuLlGEU6bjE/1nQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z3faP1DqIpZI/cJsldcWptIISD/Px2CLFUEujzoK5w4=;
+ b=aSGSkVkii28d6u0fvuMCOuQnnWoECO3Fk8MB865lwrnSI79AxIApy2O/8MtDhIzEsoTJdfwn5PHKvNK1Sis9BbGATJ+kb7ccSKdh5DwdHoI/X9kkz5yGmRpgpiITkS2UiKdZ3reb1BLUXnQCmnSphz/cnWBqK6rzsJexSinvDFsfDosz+C6KmexZm3mu329ubM1uvuMdAxzW9VW4miL06TMQBjRUr+YJARjLHuWyDg8s6m7ewuOG74k/1GJr/c+ZTXp5P/60hKX5Lgg9TXV/x5ABTXRJvyvGmTS+ZSrqxF/rABOTq/qKAdo6WzkMBwAWQxB6LXXGoK4N5HnLFGWHGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=digi.com; dmarc=pass action=none header.from=digi.com;
+ dkim=pass header.d=digi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digi.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z3faP1DqIpZI/cJsldcWptIISD/Px2CLFUEujzoK5w4=;
+ b=QS+v/jG+djQ++U4hU/XEUcVczbgQY0zjtRFPXGT1TGlF44SoXSj+jQt7nqzA5HLyO2ieZpJmO5F7VqQmU52dgc8De3TnGIWYpLYLIDjquE0+Ybj3AELCANUSkR688nvmT/4bs6tzzf6jHJx8OSNiwni471/w+K49IBADtG7XP90=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=digi.com;
+Received: from MN2PR10MB4174.namprd10.prod.outlook.com (2603:10b6:208:1dd::21)
+ by MN2PR10MB4384.namprd10.prod.outlook.com (2603:10b6:208:198::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Fri, 11 Dec
+ 2020 12:48:53 +0000
+Received: from MN2PR10MB4174.namprd10.prod.outlook.com
+ ([fe80::c8b6:2021:35a0:2365]) by MN2PR10MB4174.namprd10.prod.outlook.com
+ ([fe80::c8b6:2021:35a0:2365%9]) with mapi id 15.20.3654.019; Fri, 11 Dec 2020
+ 12:48:53 +0000
+From:   Pavana Sharma <pavana.sharma@digi.com>
+To:     kuba@kernel.org
+Cc:     andrew@lunn.ch, ashkan.boldaji@digi.com,
+        clang-built-linux@googlegroups.com, davem@davemloft.net,
+        devicetree@vger.kernel.org, f.fainelli@gmail.com,
+        gregkh@linuxfoundation.org, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, marek.behun@nic.cz,
+        netdev@vger.kernel.org, pavana.sharma@digi.com, robh+dt@kernel.org,
+        vivien.didelot@gmail.com
+Subject: [net-next PATCH v12 2/4] net: phy: Add 5GBASER interface mode
+Date:   Fri, 11 Dec 2020 22:46:44 +1000
+Message-Id: <5296c5dee3072ac0716de0042b3de344e7445d04.1607685097.git.pavana.sharma@digi.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1607685096.git.pavana.sharma@digi.com>
+References: <cover.1607685096.git.pavana.sharma@digi.com>
 Content-Type: text/plain
+X-Originating-IP: [220.244.12.163]
+X-ClientProxiedBy: SY3PR01CA0106.ausprd01.prod.outlook.com
+ (2603:10c6:0:1a::15) To MN2PR10MB4174.namprd10.prod.outlook.com
+ (2603:10b6:208:1dd::21)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (220.244.12.163) by SY3PR01CA0106.ausprd01.prod.outlook.com (2603:10c6:0:1a::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Fri, 11 Dec 2020 12:48:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ba1d3c49-7f5b-4cf9-fdcb-08d89dd31de7
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4384:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4384AE9598713466F636CFEB95CA0@MN2PR10MB4384.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:296;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3bBJ7y2u8lzZfP7VhudpR4rXWxnAZLt2Pp/gj/BuYp0g+XfYeG238I7KaByS+FMb+xQ+CZUCHe66ho77tWQRSWD5jrP8rVJ+9NWAApbqVAoOeGj4W8Gi2dqkdI0FsUJVbulm0CQWVe9NZUEyDgXt3Lpg1RLtBamiealRR4BLDDJE8RfGD5rxLcFkENjxOKGO2Nqoo8edJjOds2+/ZKeUmBrEq9sszBWd80u69XrVWte3TU8dHVzrU/c/Ndh6qZ3aG6zHLUU4WdyyQqSKMGXVr2a3dRDgKuoduQKOF5aQ81lV4eenFdAfg4lOYPzdGsx4/YiVTJnM1tmGB/wdpY5c0CLzjKiPekBYHFmEV+weQHB/9j8Uiw0RkMWebss0Q2psgPLEq9Js6grbYt/nd2GaL1bjL5qsDZuRgqNYxhyGtkU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4174.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(5660300002)(69590400008)(86362001)(508600001)(66556008)(4326008)(7416002)(8676002)(36756003)(956004)(26005)(52116002)(6916009)(16526019)(6486002)(186003)(6512007)(6506007)(44832011)(66476007)(8936002)(2616005)(34490700003)(2906002)(6666004)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?P0EnO0p60CaAgrjtlHVlwYCbN9Os1fZU81GlAjvoGLrQ2IOJx9w9nz6zsRaG?=
+ =?us-ascii?Q?vO6PYDJDnPZ5GfNA1zI9UPYYVnAeQC8iLrE0fu4r8deeeyNUYLILtzJ/VQqs?=
+ =?us-ascii?Q?Tnx0GIN+p3SENc3u6joFOWtffXQ4+i1iWLm/yOWj2CVYjxrX5tOo9LoEEFai?=
+ =?us-ascii?Q?mX+e+wmFCrvS+DmogtimD5IEQmtHCLfRuFKMclSqH7XOg9Dbq3AYNRmRXAmQ?=
+ =?us-ascii?Q?t6BLOQ614r1O5yrtZAiqE2v8TrHCHnYdvNnerFJOA/1ZGMgFjMUb1Qo3sf66?=
+ =?us-ascii?Q?LoTot+p/OHOTLPPUkie4HoO+wtcdcLQi9C5KyrLZpAQ62NnhwM+rqZq6EGYO?=
+ =?us-ascii?Q?PujA92AT3+rwlwIQh8q/SQeNTdVjubjybhsuxQY6mhyiGj6XNKkxvYMGqdXe?=
+ =?us-ascii?Q?AvC6UiA1h0xFeNszjpu3usRoYNVEipgf8YLbpaQT1G4LHyAP3s5NmyJwVfKl?=
+ =?us-ascii?Q?VTkf2+2pqtwLCL8++xWIBzoY9P3/lEMUq+rw0ohfdNkRg5BNF1N4rxUkgYJJ?=
+ =?us-ascii?Q?AGGZzDQj9G80SgDTf5cVEUV+56WHZclBymDNwItya7Y/arz5FqC2UAxOBqlq?=
+ =?us-ascii?Q?qpvrS470rmxVRN+5zBy2YRlxFpQkDIABygKO5HWL38IhWImO4LEVkxWqXSBr?=
+ =?us-ascii?Q?amdM0usf0HlZhggDHYtwrPiu8jNTtYvpJsvarKL9acMKiFmxsVR+mEvp/EP0?=
+ =?us-ascii?Q?5BqX86smsDH6r+lsGTVFA9Mnf64UONxYTjoNDQ0Ct0lhjsGT55sLuZz7Wcy0?=
+ =?us-ascii?Q?QZ8GFYRCw0iW9tm5un2JlVupUWwP3qynU3ZtSwoGoZ147kUuyd0dEmGDk/ht?=
+ =?us-ascii?Q?Hym0sf0iUk9OXp6N+Vt1+Xm2f1Wgdjhw1kk4C9YmtKob6Wr8pPnSgdXDPfyl?=
+ =?us-ascii?Q?SYc1cD+x0ljzYvbql7Ny/eA+ZMpdq5I4ptcqfcqCBDsfoO4Qr9ICABM1MJZL?=
+ =?us-ascii?Q?VTNDk6zdhT97TDCuCq+fnzTw/a6yhL4oiJ4cRsKbqZYd5lq7BK0a54PCZNJg?=
+ =?us-ascii?Q?ZZaY?=
+X-OriginatorOrg: digi.com
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4174.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2020 12:48:53.6516
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: abb4cdb7-1b7e-483e-a143-7ebfd1184b9e
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba1d3c49-7f5b-4cf9-fdcb-08d89dd31de7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Q8P6hGsqB0myLtvzKwpKbvvaGgnlkV2rmBtPipG9+sv51aiGFPlrhfzsRhx07Ca/enb2bDefFPICDJ8z+V2SZw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4384
+X-BESS-ID: 1607693090-893017-7653-5178-1
+X-BESS-VER: 2019.1_20201210.2155
+X-BESS-Apparent-Source-IP: 104.47.58.104
+X-BESS-Outbound-Spam-Score: 0.00
+X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.228761 [from 
+        cloudscan22-0.us-east-2b.ess.aws.cudaops.com]
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------
+        0.00 MSGID_FROM_MTA_HEADER  META: Message-Id was added by a relay 
+        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
+X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS112744 scores of KILL_LEVEL=7.0 tests=MSGID_FROM_MTA_HEADER, BSF_BESS_OUTBOUND
+X-BESS-BRTS-Status: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11 2020 at 10:13, Tvrtko Ursulin wrote:
-> On 10/12/2020 19:25, Thomas Gleixner wrote:
+Add 5GBASE-R phy interface mode
 
->> 
->> Aside of that the count is per interrupt line and therefore takes
->> interrupts from other devices into account which share the interrupt line
->> and are not handled by the graphics driver.
->> 
->> Replace it with a pmu private count which only counts interrupts which
->> originate from the graphics card.
->> 
->> To avoid atomics or heuristics of some sort make the counter field
->> 'unsigned long'. That limits the count to 4e9 on 32bit which is a lot and
->> postprocessing can easily deal with the occasional wraparound.
->
-> After my failed hasty sketch from last night I had a different one which 
-> was kind of heuristics based (re-reading the upper dword and retrying if 
-> it changed on 32-bit).
+Signed-off-by: Pavana Sharma <pavana.sharma@digi.com>
+---
+ include/linux/phy.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-The problem is that there will be two seperate modifications for the low
-and high word. Several ways how the compiler can translate this, but the
-problem is the same for all of them:
+diff --git a/include/linux/phy.h b/include/linux/phy.h
+index 381a95732b6a..868ee5cf7fce 100644
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -106,6 +106,7 @@ extern const int phy_10gbit_features_array[1];
+  * @PHY_INTERFACE_MODE_TRGMII: Turbo RGMII
+  * @PHY_INTERFACE_MODE_1000BASEX: 1000 BaseX
+  * @PHY_INTERFACE_MODE_2500BASEX: 2500 BaseX
++ * @PHY_INTERFACE_MODE_5GBASER: 5G BaseR
+  * @PHY_INTERFACE_MODE_RXAUI: Reduced XAUI
+  * @PHY_INTERFACE_MODE_XAUI: 10 Gigabit Attachment Unit Interface
+  * @PHY_INTERFACE_MODE_10GBASER: 10G BaseR
+@@ -137,6 +138,7 @@ typedef enum {
+ 	PHY_INTERFACE_MODE_TRGMII,
+ 	PHY_INTERFACE_MODE_1000BASEX,
+ 	PHY_INTERFACE_MODE_2500BASEX,
++	PHY_INTERFACE_MODE_5GBASER,
+ 	PHY_INTERFACE_MODE_RXAUI,
+ 	PHY_INTERFACE_MODE_XAUI,
+ 	/* 10GBASE-R, XFI, SFI - single lane 10G Serdes */
+@@ -207,6 +209,8 @@ static inline const char *phy_modes(phy_interface_t interface)
+ 		return "1000base-x";
+ 	case PHY_INTERFACE_MODE_2500BASEX:
+ 		return "2500base-x";
++	case PHY_INTERFACE_MODE_5GBASER:
++		return "5gbase-r";
+ 	case PHY_INTERFACE_MODE_RXAUI:
+ 		return "rxaui";
+ 	case PHY_INTERFACE_MODE_XAUI:
+-- 
+2.17.1
 
-CPU 0                           CPU 1
-        load low
-        load high
-        add  low, 1
-        addc high, 0            
-        store low               load high
---> NMI                         load low
-                                load high and compare
-        store high
-
-You can't catch that. If this really becomes an issue you need a
-sequence counter around it.
-      
-
-> But you are right - it is okay to at least start 
-> like this today and if later there is a need we can either do that or 
-> deal with wrap at PMU read time.
-
-Right.
-
->> +/*
->> + * Interrupt statistic for PMU. Increments the counter only if the
->> + * interrupt originated from the the GPU so interrupts from a device which
->> + * shares the interrupt line are not accounted.
->> + */
->> +static inline void pmu_irq_stats(struct drm_i915_private *priv,
->
-> We never use priv as a local name, it should be either i915 or
-> dev_priv.
-
-Sure, will fix.
-
->> +	/*
->> +	 * A clever compiler translates that into INC. A not so clever one
->> +	 * should at least prevent store tearing.
->> +	 */
->> +	WRITE_ONCE(priv->pmu.irq_count, priv->pmu.irq_count + 1);
->
-> Curious, probably more educational for me - given x86_32 and x86_64, and 
-> the context of it getting called, what is the difference from just doing 
-> irq_count++?
-
-Several reasons:
-
-    1) The compiler can pretty much do what it wants with cnt++
-       including tearing and whatever. https://lwn.net/Articles/816850/
-       for the full set of insanities.
-
-       Not really a problem here, but
-
-    2) It's annotating the reader and the writer side and documenting
-       that this is subject to concurrency
-
-    3) It will prevent KCSAN to complain about the data race,
-       i.e. concurrent modification while reading.
-
-Thanks,
-
-        tglx
-
->> --- a/drivers/gpu/drm/i915/i915_pmu.c
->> +++ b/drivers/gpu/drm/i915/i915_pmu.c
->> @@ -423,22 +423,6 @@ static enum hrtimer_restart i915_sample(
->>   	return HRTIMER_RESTART;
->>   }
->
-> In this file you can also drop the #include <linux/irq.h> line.
-
-Indeed.
-
-Thanks,
-
-        tglx
