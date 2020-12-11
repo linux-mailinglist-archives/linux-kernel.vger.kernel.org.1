@@ -2,215 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C1F2D8153
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3319F2D8154
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393101AbgLKVy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:54:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26922 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391893AbgLKVyc (ORCPT
+        id S2406661AbgLKVy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:54:57 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38974 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392950AbgLKVye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:54:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607723585;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2ofz0LLzLgTKfndVa7Y4jwNU81NgrxPa3g7jb7sTuuQ=;
-        b=Dpio/tDjuoOL1vX7rME93SogWBth3GWcxaTKYXmkMN8noQSaNUOK6Im8Q51mIaNlud2/Z5
-        KSQxkYbwjgNw5poB60UroYC9x0F+gI2OrjrB9PpergdqjT/L4Z6KcsSG3/kD8DzafWzqUs
-        b3OIGAbvfu5INYvG2C3d/lt062xf33s=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-119-it7P4bgoO2yXMV8AfUrFMw-1; Fri, 11 Dec 2020 16:53:03 -0500
-X-MC-Unique: it7P4bgoO2yXMV8AfUrFMw-1
-Received: by mail-wm1-f69.google.com with SMTP id s130so2928726wme.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:53:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=2ofz0LLzLgTKfndVa7Y4jwNU81NgrxPa3g7jb7sTuuQ=;
-        b=foJTHphzhymJaF8FVn5/54v20JIrpDiJHKAVd6h1Heb5ET4BKygYX7J2M78jvJJ7mi
-         FYLj4brRpVCiJaLYCWL3rwZUWvy28CSP/1YVuls9B9GTccUC0KJ3IUHooT2JUwtMLuqe
-         NunCZQha3YFsXhtv2sntrcSqtrYDc2N8ZYRAqDGQvWrwL8XV0GBaSUT5qGsYAuTCW+2S
-         4bajDwEe/9O3m2FzscPYZLO+ZbK0xQGi+Dw6UaS8ENMvllXbstg4nFDlxG4cP2Smd7EP
-         yk4Cwkihy9KkFVHoPKrbKybzodRYzgMB/ugLclLxxE00mXw7wZye/OYcYldhA+R17Cw8
-         Y2Aw==
-X-Gm-Message-State: AOAM532obK/xTHQVxAiRSZ+L4VVgezsg8bgwbT6mwV5wK5Liz7bLcRfz
-        XhASVO69dGFkII9VzXROt0t1oGDU1D3Uou332zw1MYxOrH2o3guJ0P+jxuWezK9DeXhFGb52IRd
-        uMwskDWvse7Suu8kN3aDcFbjH
-X-Received: by 2002:a1c:4156:: with SMTP id o83mr15520315wma.178.1607723582221;
-        Fri, 11 Dec 2020 13:53:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzuOyDw9r2Sh8TcUavdvb04N1iVX5oCiTO3s1ta5lfNv7sHb8KHPcSneccODYjUawYaEkanZQ==
-X-Received: by 2002:a1c:4156:: with SMTP id o83mr15520295wma.178.1607723582002;
-        Fri, 11 Dec 2020 13:53:02 -0800 (PST)
-Received: from [192.168.3.114] (p4ff23c7c.dip0.t-ipconnect.de. [79.242.60.124])
-        by smtp.gmail.com with ESMTPSA id z3sm17572565wrn.59.2020.12.11.13.53.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Dec 2020 13:53:01 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v3 5/6] mm/gup: migrate pinned pages out of movable zone
-Date:   Fri, 11 Dec 2020 22:53:00 +0100
-Message-Id: <447A41F3-EB94-4DA4-8B98-038B127774A5@redhat.com>
-References: <CA+CK2bCc9gk3Yy+ueaZVJs90MFE3fqukLsdb5R2kTUH4tWRbkA@mail.gmail.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
+        Fri, 11 Dec 2020 16:54:34 -0500
+Received: from [IPv6:2a00:5f00:102:0:58fa:14ff:fe5e:9be7] (unknown [IPv6:2a00:5f00:102:0:58fa:14ff:fe5e:9be7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: gtucker)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id EB78F1F46195;
+        Fri, 11 Dec 2020 21:53:48 +0000 (GMT)
+Subject: Re: kernelci/staging-next bisection: sleep.login on
+ rk3288-rock2-square #2286-staging
+To:     Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-In-Reply-To: <CA+CK2bCc9gk3Yy+ueaZVJs90MFE3fqukLsdb5R2kTUH4tWRbkA@mail.gmail.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-X-Mailer: iPhone Mail (18B92)
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        kernelci-results-staging@groups.io,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>
+References: <5fd3e5d9.1c69fb81.f9e69.5028@mx.google.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@kernel.org>, Baoquan He <bhe@redhat.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <127999c4-7d56-0c36-7f88-8e1a5c934cae@collabora.com>
+Date:   Fri, 11 Dec 2020 21:53:46 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
+MIME-Version: 1.0
+In-Reply-To: <5fd3e5d9.1c69fb81.f9e69.5028@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mike,
 
-> Am 11.12.2020 um 22:36 schrieb Pavel Tatashin <pasha.tatashin@soleen.com>:=
+Please see the bisection report below about a boot failure on
+rk3288 with next-20201210.
 
->=20
-> =EF=BB=BFOn Fri, Dec 11, 2020 at 4:29 PM David Hildenbrand <david@redhat.c=
-om> wrote:
->>=20
->>=20
->>>> Am 11.12.2020 um 22:09 schrieb Pavel Tatashin <pasha.tatashin@soleen.co=
-m>:
->>>=20
->>> =EF=BB=BFOn Fri, Dec 11, 2020 at 3:46 PM Jason Gunthorpe <jgg@ziepe.ca> w=
-rote:
->>>>=20
->>>>> On Fri, Dec 11, 2020 at 03:40:57PM -0500, Pavel Tatashin wrote:
->>>>> On Fri, Dec 11, 2020 at 3:23 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->>>>>>=20
->>>>>> On Fri, Dec 11, 2020 at 03:21:39PM -0500, Pavel Tatashin wrote:
->>>>>>> @@ -1593,7 +1592,7 @@ static long check_and_migrate_cma_pages(struct=
- mm_struct *mm,
->>>>>>>                             }
->>>>>>>=20
->>>>>>>                             if (!isolate_lru_page(head)) {
->>>>>>> -                                     list_add_tail(&head->lru, &cma=
-_page_list);
->>>>>>> +                                     list_add_tail(&head->lru, &mov=
-able_page_list);
->>>>>>>                                     mod_node_page_state(page_pgdat(h=
-ead),
->>>>>>>                                                         NR_ISOLATED_=
-ANON +
->>>>>>>                                                         page_is_file=
-_lru(head),
->>>>>>> @@ -1605,7 +1604,7 @@ static long check_and_migrate_cma_pages(struct=
- mm_struct *mm,
->>>>>>>             i +=3D step;
->>>>>>>     }
->>>>>>>=20
->>>>>>> -     if (!list_empty(&cma_page_list)) {
->>>>>>> +     if (!list_empty(&movable_page_list)) {
->>>>>>=20
->>>>>> You didn't answer my earlier question, is it OK that ZONE_MOVABLE
->>>>>> pages leak out here if ioslate_lru_page() fails but the
->>>>>> moval_page_list is empty?
->>>>>>=20
->>>>>> I think the answer is no, right?
->>>>> In my opinion it is OK. We are doing our best to not pin movable
->>>>> pages, but if isolate_lru_page() fails because pages are currently
->>>>> locked by someone else, we will end up long-term pinning them.
->>>>> See comment in this patch:
->>>>> +        * 1. Pinned pages: (long-term) pinning of movable pages is av=
-oided
->>>>> +        *    when pages are pinned and faulted, but it is still possi=
-ble that
->>>>> +        *    address space already has pages in ZONE_MOVABLE at the t=
-ime when
->>>>> +        *    pages are pinned (i.e. user has touches that memory befo=
-re
->>>>> +        *    pinning). In such case we try to migrate them to a diffe=
-rent zone,
->>>>> +        *    but if migration fails the pages can still end-up pinned=
- in
->>>>> +        *    ZONE_MOVABLE. In such case, memory offlining might retry=
- a long
->>>>> +        *    time and will only succeed once user application unpins p=
-ages.
->>>>=20
->>>> It is not "retry a long time" it is "might never complete" because
->>>> userspace will hold the DMA pin indefinitely.
->>>>=20
->>>> Confused what the point of all this is then ??
->>>>=20
->>>> I thought to goal here is to make memory unplug reliable, if you leave
->>>> a hole like this then any hostile userspace can block it forever.
->>>=20
->>> You are right, I used a wording from the previous comment, and it
->>> should be made clear that pin may be forever. Without these patches it
->>> is guaranteed that hot-remove will fail if there are pinned pages as
->>> ZONE_MOVABLE is actually the first to be searched. Now, it will fail
->>> only due to exceptions listed in ZONE_MOVABLE comment:
->>>=20
->>> 1. pin + migration/isolation failure
->>=20
->> Not sure what that really means. We have short-term pinnings (although we=
- might have a better term for =E2=80=9Epinning=E2=80=9C here) for example, w=
-hen a process dies (IIRC). There is a period where pages cannot get migrated=
- and offlining code has to retry (which might take a while). This still appl=
-ies after your change - are you referring to that?
->>=20
->>> 2. memblock allocation due to limited amount of space for kernelcore
->>> 3. memory holes
->>> 4. hwpoison
->>> 5. Unmovable PG_offline pages (? need to study why this is a scenario).
->>=20
->> Virtio-mem is the primary user in this context.
->>=20
->>> Do you think we should unconditionally unpin pages, and return error
->>> when isolation/migration fails?
->>=20
->> I=E2=80=98m not sure what you mean here. Who=E2=80=99s supposed to unpin w=
-hich pages?
->=20
-> Hi David,
->=20
-> When check_and_migrate_movable_pages() is called, the pages are
-> already pinned. If some of those pages are in movable zone, and we
-> fail to migrate or isolate them what should we do: proceed, and keep
-> it as exception of when movable zone can actually have pinned pages or
-> unpin all pages in the array, and return an error, or unpin only pages
-> in movable zone, and return an error?
->=20
+Reports aren't automatically sent to the public while we're
+trialing new bisection features on kernelci.org but this one
+looks valid.
 
-I guess revert what we did (unpin) and return an error. The interesting ques=
-tion is what can make migration/isolation fail
+There's nothing in the serial console log, probably because it's
+crashing too early during boot.  This was confirmed on two rk3288
+platforms on kernelci.org: rk3288-veyron-jaq and
+rk3288-rock2-square.  There's no clear sign about other platforms
+being impacted.
 
-a) out of memory: smells like a zone setup issue. Failures are acceptable I g=
-uess.
+If this looks like something you want to investigate but you
+don't have a platform at hand to reproduce it, please let us know
+if you would like the test to be re-run on kernelci.org with some
+debug config turned on, or if you have a fix to try.
 
-b) short term pinnings: process dying - not relevant I guess. Other cases? (=
-Fork?)
+Thanks,
+Guillaume
 
-c) ?
+On 11/12/2020 21:34, staging.kernelci.org bot wrote:
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> * This automated bisection report was sent to you on the basis  *
+> * that you may be involved with the breaking commit it has      *
+> * found.  No manual investigation has been done to verify it,   *
+> * and the root cause of the problem may be somewhere else.      *
+> *                                                               *
+> * If you do send a fix, please include this trailer:            *
+> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+> *                                                               *
+> * Hope this helps!                                              *
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> 
+> kernelci/staging-next bisection: sleep.login on rk3288-rock2-square #2286-staging
+> 
+> Summary:
+>   Start:      7f507faf2d85 staging-next-20201211.0
 
-Once we clarified that, we actually know how likely it will be to return an e=
-rror (and making vfio pinnings fail etc).
+This is really next-20201210...  The revision shown here is just
+an artifact of staging.kernelci.org which creates its own tags.
 
-> Pasha
+>   Plain log:  https://storage.staging.kernelci.org/kernelci/staging-next/staging-next-20201211.0/arm/multi_v7_defconfig/gcc-8/lab-collabora/sleep-rk3288-rock2-square.txt
+>   HTML log:   https://storage.staging.kernelci.org/kernelci/staging-next/staging-next-20201211.0/arm/multi_v7_defconfig/gcc-8/lab-collabora/sleep-rk3288-rock2-square.html
+>   Result:     950c37691925 mm: memblock: enforce overlap of memory.memblock and memory.reserved
+> 
+> Checks:
+>   revert:     PASS
+>   verify:     PASS
+> 
+> Parameters:
+>   Tree:       kernelci
+>   URL:        https://github.com/kernelci/linux.git
+>   Branch:     staging-next
+>   Target:     rk3288-rock2-square
+>   CPU arch:   arm
+>   Lab:        lab-collabora
+>   Compiler:   gcc-8
+>   Config:     multi_v7_defconfig
+>   Test case:  sleep.login
+> 
+> Breaking commit found:
+> 
+> -------------------------------------------------------------------------------
+> commit 950c3769192512118a87432dd42e71c5241dbd10
+> Author: Mike Rapoport <rppt@linux.ibm.com>
+> Date:   Thu Dec 10 15:40:51 2020 +1100
+> 
+>     mm: memblock: enforce overlap of memory.memblock and memory.reserved
+>     
+>     Patch series "mm: fix initialization of struct page for holes in  memory layout", v2.
+>     
+>     Commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
+>     rather that check each PFN") exposed several issues with the memory map
+>     initialization and these patches fix those issues.
+>     
+>     Initially there were crashes during compaction that Qian Cai reported back
+>     in April [1].  It seemed back then that the probelm was fixed, but a few
+>     weeks ago Andrea Arcangeli hit the same bug [2] and after a long
+>     discussion between us [3] I think these patches are the proper fix.
+>     
+>     [1] https://lore.kernel.org/lkml/8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw
+>     [2] https://lore.kernel.org/lkml/20201121194506.13464-1-aarcange@redhat.com
+>     [3] https://lore.kernel.org/mm-commits/20201206005401.qKuAVgOXr%akpm@linux-foundation.org
+>     
+>     This patch (of 2):
+>     
+>     memblock does not require that the reserved memory ranges will be a subset
+>     of memblock.memory.
+>     
+>     As a result there may be reserved pages that are not in the range of any
+>     zone or node because zone and node boundaries are detected based on
+>     memblock.memory and pages that only present in memblock.reserved are not
+>     taken into account during zone/node size detection.
+>     
+>     Make sure that all ranges in memblock.reserved are added to
+>     memblock.memory before calculating node and zone boundaries.
+>     
+>     Link: https://lkml.kernel.org/r/20201209214304.6812-1-rppt@kernel.org
+>     Link: https://lkml.kernel.org/r/20201209214304.6812-2-rppt@kernel.org
+>     Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
+>     Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+>     Reported-by: Andrea Arcangeli <aarcange@redhat.com>
+>     Cc: Baoquan He <bhe@redhat.com>
+>     Cc: David Hildenbrand <david@redhat.com>
+>     Cc: Mel Gorman <mgorman@suse.de>
+>     Cc: Michal Hocko <mhocko@kernel.org>
+>     Cc: Qian Cai <cai@lca.pw>
+>     Cc: Vlastimil Babka <vbabka@suse.cz>
+>     Cc: <stable@vger.kernel.org>
+>     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>     Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> 
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index ef131255cedc..e64dae2dd1ce 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -120,6 +120,7 @@ int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
+>  unsigned long memblock_free_all(void);
+>  void reset_node_managed_pages(pg_data_t *pgdat);
+>  void reset_all_zones_managed_pages(void);
+> +void memblock_enforce_memory_reserved_overlap(void);
+>  
+>  /* Low level functions */
+>  void __next_mem_range(u64 *idx, int nid, enum memblock_flags flags,
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index 049df4163a97..18432bc166f6 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -1857,6 +1857,30 @@ void __init_memblock memblock_trim_memory(phys_addr_t align)
+>  	}
+>  }
+>  
+> +/**
+> + * memblock_enforce_memory_reserved_overlap - make sure every range in
+> + * @memblock.reserved is covered by @memblock.memory
+> + *
+> + * The data in @memblock.memory is used to detect zone and node boundaries
+> + * during initialization of the memory map and the page allocator. Make
+> + * sure that every memory range present in @memblock.reserved is also added
+> + * to @memblock.memory even if the architecture specific memory
+> + * initialization failed to do so
+> + */
+> +void __init memblock_enforce_memory_reserved_overlap(void)
+> +{
+> +	phys_addr_t start, end;
+> +	int nid;
+> +	u64 i;
+> +
+> +	__for_each_mem_range(i, &memblock.reserved, &memblock.memory,
+> +			     NUMA_NO_NODE, MEMBLOCK_NONE, &start, &end, &nid) {
+> +		pr_warn("memblock: reserved range [%pa-%pa] is not in memory\n",
+> +			&start, &end);
+> +		memblock_add_node(start, (end - start), nid);
+> +	}
+> +}
+> +
+>  void __init_memblock memblock_set_current_limit(phys_addr_t limit)
+>  {
+>  	memblock.current_limit = limit;
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 7c8ead3da355..f117460d6223 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -7507,6 +7507,13 @@ void __init free_area_init(unsigned long *max_zone_pfn)
+>  	memset(arch_zone_highest_possible_pfn, 0,
+>  				sizeof(arch_zone_highest_possible_pfn));
+>  
+> +	/*
+> +	 * Some architectures (e.g. x86) have reserved pages outside of
+> +	 * memblock.memory. Make sure these pages are taken into account
+> +	 * when detecting zone and node boundaries
+> +	 */
+> +	memblock_enforce_memory_reserved_overlap();
+> +
+>  	start_pfn = find_min_pfn_with_active_regions();
+>  	descending = arch_has_descending_max_zone_pfns();
+> -------------------------------------------------------------------------------
+> 
+> 
+> Git bisection log:
+> 
+> -------------------------------------------------------------------------------
+> git bisect start
+> # good: [69fe24d1d80feac4289778582cf0a15256d59baf] firmware: xilinx: Mark pm_api_features_map with static keyword
+> git bisect good 69fe24d1d80feac4289778582cf0a15256d59baf
+> # bad: [7f507faf2d8592f0f4455728dd08986ec6cc7b0e] staging-next-20201211.0
+> git bisect bad 7f507faf2d8592f0f4455728dd08986ec6cc7b0e
+> # good: [4baeae4883ba51406bb4f06c886d61440628adb7] Merge remote-tracking branch 'crypto/master'
+> git bisect good 4baeae4883ba51406bb4f06c886d61440628adb7
+> # good: [593b02d9998c2ae111b2afd9205b5be094b1a69e] Merge remote-tracking branch 'spi/for-next'
+> git bisect good 593b02d9998c2ae111b2afd9205b5be094b1a69e
+> # good: [69f315daea3d7943175d7570576fd21bef3965c2] Merge remote-tracking branch 'staging/staging-next'
+> git bisect good 69f315daea3d7943175d7570576fd21bef3965c2
+> # good: [fce046ce7d0944b02fcd190b26d995ab2dd3c5fd] Merge remote-tracking branch 'userns/for-next'
+> git bisect good fce046ce7d0944b02fcd190b26d995ab2dd3c5fd
+> # bad: [df3f2557282cba0311b47d886032650cf45e449f] rapidio: remove unused rio_get_asm() and rio_get_device()
+> git bisect bad df3f2557282cba0311b47d886032650cf45e449f
+> # good: [176232b371b0ab0e970e80879f851fe529be8ef0] mm/page_alloc: clear all pages in post_alloc_hook() with init_on_alloc=1
+> git bisect good 176232b371b0ab0e970e80879f851fe529be8ef0
+> # bad: [e1a24938fc628aa51933262a0a4af3bd3085e4df] zram: break the strict dependency from lzo
+> git bisect bad e1a24938fc628aa51933262a0a4af3bd3085e4df
+> # bad: [23b1d94b7bd7db1903686c4f2364b942181db887] mm: make pagecache tagged lookups return only head pages
+> git bisect bad 23b1d94b7bd7db1903686c4f2364b942181db887
+> # good: [d9f9370b97e3b7b84e92870d12fa17b9a346bc44] mm/vmscan.c: remove the filename in the top of file comment
+> git bisect good d9f9370b97e3b7b84e92870d12fa17b9a346bc44
+> # bad: [0c675604b0b47efb3281ffa66ede56036bb674b7] mm-fix-initialization-of-struct-page-for-holes-in-memory-layout-checkpatch-fixes
+> git bisect bad 0c675604b0b47efb3281ffa66ede56036bb674b7
+> # good: [d6c1578855ee5805c673638648e5ded4364a2649] z3fold: remove preempt disabled sections for RT
+> git bisect good d6c1578855ee5805c673638648e5ded4364a2649
+> # good: [d9387865b7499bbd03e905c7170efba840ba6505] mm/compaction: make defer_compaction and compaction_deferred static
+> git bisect good d9387865b7499bbd03e905c7170efba840ba6505
+> # bad: [bdc54c457d8b2b5883b7223c52b5b451538a70a3] mm: fix initialization of struct page for holes in memory layout
+> git bisect bad bdc54c457d8b2b5883b7223c52b5b451538a70a3
+> # bad: [950c3769192512118a87432dd42e71c5241dbd10] mm: memblock: enforce overlap of memory.memblock and memory.reserved
+> git bisect bad 950c3769192512118a87432dd42e71c5241dbd10
+> # first bad commit: [950c3769192512118a87432dd42e71c5241dbd10] mm: memblock: enforce overlap of memory.memblock and memory.reserved
+> -------------------------------------------------------------------------------
+> 
+> 
+> -=-=-=-=-=-=-=-=-=-=-=-
+> Groups.io Links: You receive all messages sent to this group.
+> View/Reply Online (#3027): https://groups.io/g/kernelci-results-staging/message/3027
+> Mute This Topic: https://groups.io/mt/78889638/924702
+> Mute #2286-staging:https://groups.io/g/kernelci-results-staging/mutehashtag/2286-staging
+> Group Owner: kernelci-results-staging+owner@groups.io
+> Unsubscribe: https://groups.io/g/kernelci-results-staging/leave/8133414/1062240773/xyzzy [guillaume.tucker@collabora.com]
+> -=-=-=-=-=-=-=-=-=-=-=-
+> 
+> 
 
