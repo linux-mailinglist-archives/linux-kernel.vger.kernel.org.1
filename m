@@ -2,77 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5362D7405
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B122D7403
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389489AbgLKKgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:36:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388923AbgLKKfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:35:30 -0500
-Date:   Fri, 11 Dec 2020 12:34:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607682889;
-        bh=RxLguaip6eAFD602x8RxLNaRpnJiw4iK1s1yEniLyX4=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RdATM7AX03CEGeL4h5FRY7F6jbeVKs+pb3piPWc8ungFq5OrBiDRufdmUYnqpJtQo
-         GJ9yvChWDCDF6KpPS7alzs85WO5c3R5Ej0J4caUji6Tc0GzAqgSLAU6DaZ9PY4XZrH
-         1lIPMighTE97mpqOdG6ZyjrlmYMwZBgJlLeRrM3CPHyooHKoP4btBJbfDHf5nH+9l8
-         Qi3qnaAxxKri3ZXrwyCJaVAm6DmzlqgKmq2iDkOzF+UYh1E0ceAX/FskkIetYsmC0Z
-         Quit9VftK/AWdt1y6iiF3SwQ8TSAvfaZg9kYyWgGAvJAjHJTa9WJEJ1T8cCYkwZNqZ
-         qGk+Foexo9o6g==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     linux-integrity@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
-        kernel@collabora.com,
-        "dlaurie@chromium.org" <dlaurie@chromium.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: Re: [PATCH v6] char: tpm: add i2c driver for cr50
-Message-ID: <20201211103443.GA12091@kernel.org>
-References: <20201207142016.482122-1-adrian.ratiu@collabora.com>
- <20201208173906.GA58213@kernel.org>
- <87y2i7b186.fsf@collabora.com>
+        id S2391603AbgLKKgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:36:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390796AbgLKKfj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:35:39 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1ACC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 02:34:59 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1knflI-00062R-6r; Fri, 11 Dec 2020 11:34:56 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1knflH-0003Py-3Z; Fri, 11 Dec 2020 11:34:55 +0100
+Date:   Fri, 11 Dec 2020 11:34:54 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Clemens Gruber <clemens.gruber@pqgruber.com>,
+        linux-pwm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v4 1/4] pwm: pca9685: Switch to atomic API
+Message-ID: <20201211103454.tqcfzy3ayn2gz7k4@pengutronix.de>
+References: <X89RgpTb3sBBI++w@workstation.tuxnet>
+ <X8+DI7ZN7mXtsxv9@ulmo>
+ <CAGngYiXgVbEXj-yR=DTeA4pO-N3=WhiHjQhknFsbfXBeD_yRbw@mail.gmail.com>
+ <X8+waLH58pOaMI06@ulmo>
+ <20201208182637.hm5uzuw5ueelo26k@pengutronix.de>
+ <X9EDGHySNYb7CxcW@ulmo>
+ <20201210090124.rfswkrcttsg5gszp@pengutronix.de>
+ <X9JWlVPb9ZGdB4q9@ulmo>
+ <20201210203926.ouzrq3ff5k6zhlvt@pengutronix.de>
+ <X9Mu8zrJjFTe6fJq@ulmo>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="l2dlprvcn2mrcqzr"
 Content-Disposition: inline
-In-Reply-To: <87y2i7b186.fsf@collabora.com>
+In-Reply-To: <X9Mu8zrJjFTe6fJq@ulmo>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 02:41:45PM +0200, Adrian Ratiu wrote:
-> On Tue, 08 Dec 2020, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> > On Mon, Dec 07, 2020 at 04:20:16PM +0200, Adrian Ratiu wrote:
-> > > From: "dlaurie@chromium.org" <dlaurie@chromium.org>  Add TPM 2.0
-> > > compatible I2C interface for chips with cr50 firmware. The firmware
-> > > running on the currently supported H1 MCU requires a special driver
-> > > to handle its specific protocol, and this makes it unsuitable to use
-> > > tpm_tis_core_* and instead it must implement the underlying TPM
-> > > protocol similar to the other I2C TPM drivers.   - All 4 bytes of
-> > > status register must be read/written at once.  - FIFO and burst
-> > > count is limited to 63 and must be drained by AP.  - Provides an
-> > > interrupt to indicate when read response data is ready and when the
-> > > TPM is finished processing write data.   This driver is based on the
-> > > existing infineon I2C TPM driver, which most closely matches the
-> > > cr50 i2c protocol behavior.
-> > 
-> > Starts to look legit. Has anyone tested this?
-> 
-> I tested on an x86_64 Chromebook EVE (aka Google Pixelbook) by chainloading
-> in legacy mode and booting into a Yocto-based userspace (meta-chromebook)
-> where I used tpm2-tools to communicate with the chip and also built and
-> tested a ChromiumOS userspace in developer mode.
-> 
-> I do not have access to other HW which has this chip, so it is about as much
-> testing I can do to confirm the driver works on this HW.
-> 
-> Adrian
 
-So can you respond to this with tested-by. It's sufficient because
-collateral effects of driver failing are insignificant for the kernel
-as whole.
- 
- /Jarkko
+--l2dlprvcn2mrcqzr
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Thierry,
+
+On Fri, Dec 11, 2020 at 09:33:55AM +0100, Thierry Reding wrote:
+> On Thu, Dec 10, 2020 at 09:39:26PM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Thu, Dec 10, 2020 at 06:10:45PM +0100, Thierry Reding wrote:
+> > > Like I said, that's not what I was saying. I was merely saying that if
+> > > there aren't any use-cases that current users rely on that would be
+> > > broken by using this simpler implementation, then I'm okay with it, e=
+ven
+> > > if it's less flexible than a more complicated implementation. It shou=
+ld
+> > > be possible to determine what the current users are by inspecting dev=
+ice
+> > > trees present in the kernel. Anything outside the kernel isn't someth=
+ing
+> > > we need to consider, as usual.
+> >=20
+> > If "users in mainline" is the criteria that's a word.
+>=20
+> I didn't say "users in mainline", I said "use-cases". What I don't want
+> to happen is for this change under discussion to break any existing use-
+> cases of any existing users in the kernel. I said that we can determine
+> what the existing users are by looking at which device trees use the
+> compatible strings that the driver matches on.
+>=20
+> > So you agree we remove the following drivers?:
+> >=20
+> >  - pwm-hibvt.c
+> >    Last driver specific change in Feb 2019, no mainline user
+> >  - pwm-sprd.c
+> >    Last driver specific change in Aug 2019, no mainline user
+>=20
+> No, that's an extrapolation of what I was saying above. Drivers with no
+> apparent users are a separate topic, so don't conflate it with the issue
+> at hand.
+
+I cannot follow (and I think that's the problem between us and why those
+conflicts happen between us). For me it's a logic consequence of
+"Anything outside the kernel isn't something we need to consider, as
+usual." that drivers that are untouched for some period and have no
+mainline users can/should go away. (Is "extrapolation" as strong as
+"implication", or has it subjective interpretation added? My dictionary
+isn't accurate enough for that question.) But it seems there is
+something with my logic or you not saying exactly what you actually
+mean. (Did I miss any option? If yes it might be covered by a problem in
+my logic.)
+
+Having said that, even in the question at hand (i.e. what is the better
+compromise for mapping the inter-channel hardware limitations to
+software policy in the pac9685 driver) the idea "let's inspecting device
+trees present in the kernel" doesn't work, because for this driver there
+are none, too. (It might be used by a mainline machine via ACPI, but
+this is even less possible to consider for our judgements than a device
+tree with such a device and no user but the sysfs PWM interface.)
+
+> While it's certainly unfortunate that these don't seem to be used, I see
+> no reason why we should remove them. They don't create much of a
+> maintenance burden, so I'm fine with keeping them in the hopes that
+> users may still show up at some point.
+
+The problem I have with them is that I expect your voice of dissent when
+I find the time to improve the rounding behaviour of these drivers.
+My ultimate goal is to make the PWM framework a system where consumers
+can rely on a consistent behaviour of the API and a way to actually
+order what they need and get it. I'm not entirely sure we agree that
+we're not there yet.
+
+> > Most PWMs are added to cpu.dtsi files with status =3D "disabled", I won=
+der
+> > if it makes sense to check the machine.dts files if some of the PMWs are
+> > completely unused. Do you consider status =3D "okay" a use that we have=
+ to
+> > retain even if the node has no phandle?
+>=20
+> A PWM controller may be in use via sysfs even if it has no phandle.
+
+Yeah, I expected you will say that. (And I agree.)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--l2dlprvcn2mrcqzr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/TS0sACgkQwfwUeK3K
+7Ali8gf/Tnv62+6avDdh/1OSBXb4uU6N4giVgTORDd5Ueamuznw5f9JlyaVOqjee
+yelQRPkK58KF1KTurfD6uAcBfwbfZs+VCFnCP3PAbJP/w4ZqfBdIbmHKSnkqEYB0
+6hMzlGS9bKNppHWUHzjx05+SyJ+VmF1IP6vUsXYfpHj5QCj8kiTGv2yeZ6MgbFfl
+n3Qj47+CimLMUYutrDtUKVk8tJIKfn1Trb21V0uu3ozIE9xU7e1tOVDYw5u/Sii0
+a/CbP7c5X4Ll9kBvrqFh9b4il7YUac7Ui5QuaZbuPuWV+AtZ4xVj8XksT0/H/6mO
+5Fj2SnWWzPdOmD+7SZqJXrcMXe3PCQ==
+=LgIB
+-----END PGP SIGNATURE-----
+
+--l2dlprvcn2mrcqzr--
