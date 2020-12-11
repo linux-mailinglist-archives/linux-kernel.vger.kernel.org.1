@@ -2,211 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127BB2D6D57
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B630B2D6D89
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394862AbgLKBWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:22:35 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:52300 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394785AbgLKBWC (ORCPT
+        id S2387780AbgLKB3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:29:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727812AbgLKB2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:22:02 -0500
-Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 758CC20B717A;
-        Thu, 10 Dec 2020 17:21:20 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 758CC20B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607649680;
-        bh=jfK5YmIyW154f+fv5mC5+SCaJnTqVnwKm0qw/+vjB0c=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=elP+kCH/rc8kKu5ch4X0uDpuVIXJDoWYh0KgL07kH74COhUgCRXZruk3SaV93cWux
-         lNMctOt3XoKtnEuWBOlBIrIVFQ8uuoRDFfDB4cbL53Hkkw/lwKAQlMMTqrVquLT13T
-         cZm/yliRB45EoGbc/LAu9imeCDScSsNA4K0QPCc4=
-Subject: Re: [PATCH v7 2/8] IMA: add support to measure buffer data hash
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
-        jmorris@namei.org, nramas@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
- <20201209194212.5131-3-tusharsu@linux.microsoft.com>
- <20201210223854.GG489768@sequoia>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <09d42e5e-09bf-af6e-cc45-c2f9bc8b39de@linux.microsoft.com>
-Date:   Thu, 10 Dec 2020 17:21:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 10 Dec 2020 20:28:37 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880F6C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:27:56 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id q22so5923531pfk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:27:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fWr8U+kXnUtyCph460iKXgFKQR+fNvbC1nN6Nlkztp0=;
+        b=ZaNxqRR6SZMZjPpbyKQMlaMsfq4kbnQKu5FGUzfr/tnasU8gwihwQRX9wnLifpdL1p
+         ombS0U5LUkJwjZUht05LBHeIGje3niNFnIL7lQ9ZpeXGjEJkeWoKHpT0JMcvXCb83Y1s
+         IBzgauqRon7Bu/Qr79VsjCFHfgPkREz+6CVfOlMuaRP0fyyej+ERPszh3Srnv20ExIIO
+         DwOeWgCfzHTdNcZ75X/eSpV5dHEz1umHbASijwfWrmqFWulWziTZFCdrsX90Q/FGsCLR
+         uF60anQyUXslPTSJEw9Qi0SA1uqzfMFikLSSunQzOoIur44TlNbSdQUpr83/54kDGLk1
+         5sjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fWr8U+kXnUtyCph460iKXgFKQR+fNvbC1nN6Nlkztp0=;
+        b=bjQocel/hfCc1yDzbnbT2tOSEAAAaTSLLMKDJugDhidHlQz8zTqn0WK3tkVxSGvW0T
+         JuTKHjcwbjRjXcyaTYHVUR2+RhRELFT2hpqS20aRcdjnJFz79lRdaobmwDvQ8HQ/2lH2
+         veuQcYU7UqXoE5eE0+16tUNf0voR8ZxFsGpdtjjUvJj6c6DAhPVPSQJj43f5z10QC60t
+         LHv0Phjz7VvJ2C8uGVC6gXmUxvneotVogNcv1GXbq7k6pvKl4WBHNXKxnSmUiVnB3oHb
+         wYcpxjr5GYFHpG+q0ROTyyDPk2fMArYYDn/XYVXNM+gZVwTPLBRQeDSGDQeuXN/P0SnS
+         1MXw==
+X-Gm-Message-State: AOAM530ygzOZ592CiV5ynvV/PQk9WnnNn/nrw3NBoaAS4f49TX4JOev5
+        0egwBcvDAyBSnCQS8MsJ7oTvpA==
+X-Google-Smtp-Source: ABdhPJx+i1oAVoAOcuGDKv+cJFLCL/wYuUjwbeD1UVOF/7I/dRrQ8oXkRjiFg+ggxQx2FrmlgcuCsA==
+X-Received: by 2002:a17:90b:4b02:: with SMTP id lx2mr10823934pjb.49.1607650075946;
+        Thu, 10 Dec 2020 17:27:55 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id y19sm7657522pfp.211.2020.12.10.17.27.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 17:27:55 -0800 (PST)
+Date:   Thu, 10 Dec 2020 17:27:48 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Michael Roth <michael.roth@amd.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH] KVM: SVM: use vmsave/vmload for saving/restoring
+ additional host state
+Message-ID: <X9LLFMN5CNPIikSp@google.com>
+References: <20201210174814.1122585-1-michael.roth@amd.com>
+ <CALCETrXo+2LjUt_ObxV+6u6719gTVaMR4-KCrgsjQVRe=xPo+g@mail.gmail.com>
+ <160763562772.1125101.13951354991725886671@vm0>
+ <CALCETrV2-WwV+uz99r2RCJx6OADzwxaLxPUVW22wjHoAAN5cSQ@mail.gmail.com>
+ <160764771044.1223913.9946447556531152629@vm0>
+ <CALCETrVuCZ5itAN3Ns3D04qR1Z_eJiA9=UvyM95zLE076X=JEA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201210223854.GG489768@sequoia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrVuCZ5itAN3Ns3D04qR1Z_eJiA9=UvyM95zLE076X=JEA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Michael, please reply to all so that everyone can read along and so that the
+conversation gets recorded in the various mailing list archives.
 
+If you are replying all, then I think something funky is going on with AMD's
+mail servers, as I'm not getting your responses (I double checked SPAM), nor are
+they showing up on lore.
 
-On 2020-12-10 2:38 p.m., Tyler Hicks wrote:
-> On 2020-12-09 11:42:06, Tushar Sugandhi wrote:
->> The original IMA buffer data measurement sizes were small (e.g. boot
->> command line), but the new buffer data measurement use cases have data
->> sizes that are a lot larger.  Just as IMA measures the file data hash,
->> not the file data, IMA should similarly support the option for measuring
->> the hash of the buffer data.
->>
->> Measuring in-memory buffer-data/buffer-data-hash is different than
->> measuring file-data/file-data-hash. For the file, IMA stores the
->> measurements in both measurement log and the file's extended attribute -
->> which can later be used for appraisal as well. For buffer, the
->> measurements are only stored in the IMA log, since the buffer has no
->> extended attributes associated with it.
->>
->> Introduce a boolean parameter measure_buf_hash to support measuring
->> hash of a buffer, which would be much smaller, instead of the buffer
->> itself.
->>
->> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
->> ---
->>   security/integrity/ima/ima.h                 |  3 +-
->>   security/integrity/ima/ima_appraise.c        |  2 +-
->>   security/integrity/ima/ima_asymmetric_keys.c |  2 +-
->>   security/integrity/ima/ima_main.c            | 36 +++++++++++++++++---
->>   security/integrity/ima/ima_queue_keys.c      |  3 +-
->>   5 files changed, 38 insertions(+), 8 deletions(-)
->>
->> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
->> index e5622ce8cbb1..fa3044a7539f 100644
->> --- a/security/integrity/ima/ima.h
->> +++ b/security/integrity/ima/ima.h
->> @@ -268,7 +268,8 @@ void ima_store_measurement(struct integrity_iint_cache *iint, struct file *file,
->>   			   struct ima_template_desc *template_desc);
->>   void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->>   				const char *eventname, enum ima_hooks func,
->> -				int pcr, const char *func_data);
->> +				int pcr, const char *func_data,
->> +				bool measure_buf_hash);
->>   void ima_audit_measurement(struct integrity_iint_cache *iint,
->>   			   const unsigned char *filename);
->>   int ima_alloc_init_template(struct ima_event_data *event_data,
->> diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
->> index 8361941ee0a1..46ffa38bab12 100644
->> --- a/security/integrity/ima/ima_appraise.c
->> +++ b/security/integrity/ima/ima_appraise.c
->> @@ -352,7 +352,7 @@ int ima_check_blacklist(struct integrity_iint_cache *iint,
->>   		if ((rc == -EPERM) && (iint->flags & IMA_MEASURE))
->>   			process_buffer_measurement(NULL, digest, digestsize,
->>   						   "blacklisted-hash", NONE,
->> -						   pcr, NULL);
->> +						   pcr, NULL, false);
->>   	}
->>   
->>   	return rc;
->> diff --git a/security/integrity/ima/ima_asymmetric_keys.c b/security/integrity/ima/ima_asymmetric_keys.c
->> index 1c68c500c26f..a74095793936 100644
->> --- a/security/integrity/ima/ima_asymmetric_keys.c
->> +++ b/security/integrity/ima/ima_asymmetric_keys.c
->> @@ -60,5 +60,5 @@ void ima_post_key_create_or_update(struct key *keyring, struct key *key,
->>   	 */
->>   	process_buffer_measurement(NULL, payload, payload_len,
->>   				   keyring->description, KEY_CHECK, 0,
->> -				   keyring->description);
->> +				   keyring->description, false);
->>   }
->> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
->> index e76ef4bfd0f4..03aad13e9e70 100644
->> --- a/security/integrity/ima/ima_main.c
->> +++ b/security/integrity/ima/ima_main.c
->> @@ -779,7 +779,7 @@ int ima_post_load_data(char *buf, loff_t size,
->>   }
->>   
->>   /*
->> - * process_buffer_measurement - Measure the buffer to ima log.
->> + * process_buffer_measurement - Measure the buffer or the buffer data hash
->>    * @inode: inode associated with the object being measured (NULL for KEY_CHECK)
->>    * @buf: pointer to the buffer that needs to be added to the log.
->>    * @size: size of buffer(in bytes).
->> @@ -787,12 +787,23 @@ int ima_post_load_data(char *buf, loff_t size,
->>    * @func: IMA hook
->>    * @pcr: pcr to extend the measurement
->>    * @func_data: private data specific to @func, can be NULL.
->> + * @measure_buf_hash: measure buffer hash
->>    *
->> - * Based on policy, the buffer is measured into the ima log.
->> + * Measure the buffer into the IMA log, and extend the @pcr.
->> + *
->> + * Determine what buffers are allowed to be measured, based on the policy rules
->> + * and the IMA hook passed using @func.
->> + *
->> + * Use @func_data, if provided, to match against the measurement policy rule
->> + * data for @func.
->> + *
->> + * If @measure_buf_hash is set to true - measure hash of the buffer data,
->> + * else measure the buffer data itself.
->>    */
->>   void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->>   				const char *eventname, enum ima_hooks func,
->> -				int pcr, const char *func_data)
->> +				int pcr, const char *func_data,
->> +				bool measure_buf_hash)
->>   {
->>   	int ret = 0;
->>   	const char *audit_cause = "ENOMEM";
->> @@ -807,6 +818,8 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->>   		struct ima_digest_data hdr;
->>   		char digest[IMA_MAX_DIGEST_SIZE];
->>   	} hash = {};
->> +	char buf_hash[IMA_MAX_DIGEST_SIZE];
->> +	int buf_hash_len = hash_digest_size[ima_hash_algo];
->>   	int violation = 0;
->>   	int action = 0;
->>   	u32 secid;
->> @@ -849,6 +862,20 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->>   		goto out;
->>   	}
->>   
->> +	if (measure_buf_hash) {
->> +		memcpy(buf_hash, hash.hdr.digest, buf_hash_len);
->> +
->> +		ret = ima_calc_buffer_hash(buf_hash, buf_hash_len,
->> +					   iint.ima_hash);
->> +		if (ret < 0) {
->> +			audit_cause = "measure_buf_hash_error";
->> +			goto out;
->> +		}
->> +
->> +		event_data.buf = buf_hash;
->> +		event_data.buf_len = buf_hash_len;
->> +	}
->> +
->>   	ret = ima_alloc_init_template(&event_data, &entry, template);
->>   	if (ret < 0) {
->>   		audit_cause = "alloc_entry";
+On Thu, Dec 10, 2020, Andy Lutomirski wrote:
+> > On Dec 10, 2020, at 4:48 PM, Michael Roth <michael.roth@amd.com> wrote:
+> >
 > 
-> A few more lines below, not present in this context, is a call to
-> ima_store_template() with buf as the fourth parameter passed in. That
-> parameter eventually makes its way to integrity_audit_message() and ends
-> up as part of an audit message as the value of the "name=" field. This
-> is usually a filename, the name of a key, or a kexec cmdline. In the
-> case of measuring SELinux policy, do we want the entire buf to be
-> included in the audit message?
+> >> I think there are two reasonable ways to do this:
+> >>
+> >> 1. VMLOAD before STGI.  This is obviously correct, and it's quite simple.
+> >
+> > For the testing I ended up putting it immediately after __svm_vcpu_run()
+> > since that's where we restored GS base previously. Does that seem okay or did
+> > you have another place in mind?
 > 
-> Tyler
-> 
-Great catch.
-We obviously don't want to include the entire buf in the audit message,
-especially when the measure_buf_hash is set to true. (the buffer being
-measured is expected to be large in that case)
-
-How about the following? Does it look ok to you? Mimi?
-
-if (measure_buf_hash)
-     ret = ima_store_template(entry, violation, NULL, buf_hash, pcr);
-else
-     ret = ima_store_template(entry, violation, NULL, buf, pcr);
-
-~Tushar
+> Looks okay.  If we get an NMI or MCE with the wrong MSR_GS_BASE, then
+> we are toast, at least on Zen 2 and earlier.  But that spot has GI ==
+> 0, so this won't happen.
