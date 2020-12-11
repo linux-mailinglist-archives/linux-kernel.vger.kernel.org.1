@@ -2,82 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3912D7761
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 374142D7767
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406129AbgLKODe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:03:34 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:41852 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395045AbgLKOCW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:02:22 -0500
-Received: by mail-wr1-f67.google.com with SMTP id a12so9135176wrv.8;
-        Fri, 11 Dec 2020 06:02:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1hvkBnuTRFKVp4hIMELee8T2SRcywd+sthSvyux1z8M=;
-        b=hu263V2i2DT2JybAT5Mo8HH01HKuoiJvqQknviwfKGaj7V9drXbrzsL5sWCyzrO0M3
-         nxLIwh7IgnsXY9Rh3PL3nK7sbG6cHYAWDJqRy5wELqglUauDbZgj1qAk4x7GI/Y3PjyN
-         fXByk/yna+myR1U/wsdePUzG5wlpo/g774OpAtASBKL3eNjpdHDd0T8cTX0qiARUJ/+x
-         cXbq7zO7oXXAypcKV2O7HAWmSp0C1QmcC1BU5vSZr8BCyWgAVI3Iysul32+5zGqdhDna
-         95z1KwUJhOIgmlT5dm1mLGdk+wZ3LU/nNqLRprJ0xn/FA11Y3gPRflflPZKJkFEO7PKx
-         EcIQ==
-X-Gm-Message-State: AOAM531u6sSzRsABMknKS8AaiPldI4G1ozgpB5ImXWAuTAN5t8eNc2hM
-        gAJd6JX12gB7M7vtWUg+QsaAq9bYLZY=
-X-Google-Smtp-Source: ABdhPJy3O58hzjGzqK1POhoqM66qCWhxyO+Cg67sIdwBnZyQQiuOXv0wfTtuDF0ze3XcmxPKs1PIDw==
-X-Received: by 2002:adf:8b5a:: with SMTP id v26mr6360906wra.138.1607695300661;
-        Fri, 11 Dec 2020 06:01:40 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id c129sm14736891wma.31.2020.12.11.06.01.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 06:01:39 -0800 (PST)
-Date:   Fri, 11 Dec 2020 14:01:37 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH] Revert "scsi: storvsc: Validate length of incoming
- packet in storvsc_on_channel_callback()"
-Message-ID: <20201211140137.taqjndaqjjo25srj@liuwe-devbox-debian-v2>
-References: <20201211131404.21359-1-parri.andrea@gmail.com>
+        id S2405396AbgLKOF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:05:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404180AbgLKOFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 09:05:01 -0500
+Date:   Fri, 11 Dec 2020 14:04:13 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607695460;
+        bh=nwyG42Ft2fRxW+LZK8kLv0XFhrG3mqZsivQxBfVP6h8=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pdb2u+3AMtv4MolcAN6YGLvHgcYc/znWGUJgjS/rZqkz4gY1YaMEJdRMWHB4dIlhj
+         syCNoialhqgufd9B7wrseTGW1USEIXcR5SI6U+TH22TENv/tvltbXv+HQ5cSfCS+/5
+         doDvPaHjOQCemBK84741XHeiw08W2li7q0FAZgart4Fs4+UeGwkDUDHTZ3+oycez58
+         9qx2S9M8e/DVrYuURptnvrnmItxK4NwIddHW60CiHfmJn2EfenH0SUyKppv8Ntyq2J
+         lyysh2DGjACUYwGI6XM+zAMs2Weea4SFkKtlvDgAXzUTSNxH1hy0Rg4Al1L8TP28iD
+         hw6VgwNm/kxRg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     lgirdwood@gmail.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        troy.kisky@boundarydevices.com, gary.bisson@boundarydevices.com
+Subject: Re: [PATCH v2 1/2] dt-bindings: regulator: add pf8x00 PMIC
+Message-ID: <20201211140412.GD4929@sirena.org.uk>
+References: <20201206002629.12872-1-adrien.grassein@gmail.com>
+ <20201210221629.17312-1-adrien.grassein@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rz+pwK2yUstbofK6"
 Content-Disposition: inline
-In-Reply-To: <20201211131404.21359-1-parri.andrea@gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20201210221629.17312-1-adrien.grassein@gmail.com>
+X-Cookie: Nostalgia isn't what it used to be.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 02:14:04PM +0100, Andrea Parri (Microsoft) wrote:
-> This reverts commit 3b8c72d076c42bf27284cda7b2b2b522810686f8.
-> 
-> Dexuan reported a regression where StorVSC fails to probe a device (and
-> where, consequently, the VM may fail to boot).  The root-cause analysis
-> led to a long-standing race condition that is exposed by the validation
-> /commit in question.  Let's put the new validation aside until a proper
-> solution for that race condition is in place.
-> 
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> Cc: linux-scsi@vger.kernel.org
 
-Hi Martin
+--rz+pwK2yUstbofK6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Sorry for the last minute patch. We would very like this goes into 5.10
-if possible; otherwise Linux 5.10 is going to be broken on Hyper-V.  :-(
+On Thu, Dec 10, 2020 at 11:16:28PM +0100, Adrien Grassein wrote:
+> Add a devicetree binding documentation for the pf8x00 regulator driver.
 
-Wei.
+Please don't send new patches in reply to old threads, it makes it hard
+to keep track of what is going on.
+
+> +          regulator-name:
+> +            pattern: "^ldo[1-4]$"
+> +            description:
+> +              should be ldo1", ..., "ldo4"
+
+This is part of the generic regulator binding and since it's for board
+specific usage it should not be constrained by the chip binding.
+
+> +          nxp,vselect-en:
+> +            $ref: /schemas/types.yaml#definitions/flag
+> +            description:
+> +              Only available for ldo2. When specified, use the VSELECT
+> +              input pin of the chip to control the output voltage of the
+> +              ldo02 regulator. (3.3V if VSELECT is LOW, 1.8V if HIGH).
+
+How is VSELECT used without a binding specifying some mechanism for
+control?
+
+> +          nxp,ilim-microamp:
+> +            $ref: /schemas/types.yaml#definitions/uint32
+> +            minimum: 2100
+> +            maximum: 4500
+> +            default: 2100
+> +            enum: [ 2100, 2600, 3000, 4500 ]
+> +            description:
+> +              Defines the maximum current delivered by the regulator in microamp.
+
+Instead of implementing a custom property this should use the already
+existing properties for current limits, this is a common thing for
+hardware to have so we shouldn't have custom bindings.  We'll need to
+relax the check the code currently has for a non-zero minimum limit but
+otherwise everything should already be there.
+
+--rz+pwK2yUstbofK6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/TfFwACgkQJNaLcl1U
+h9DHmQf+J6eBS3ktnfdMA7vXj4vjK4zc06b/pJOkkkFUd9RlEBtYcAYUBX2Lr5Tg
+C/pRbwGf5xwcNKbC87vxoJh9SyhPWPUTgvK/LmTKKoUOov4PGvNd4toEZtCrs8hy
+OBSy4rrVgsEArZ698WJvoH83kbAurE9OOSU7jfgwPh+LpFyMSp2InRKk18vfPgxF
+kDad/QJAteAgFNC5CQf9iFdpjszDFOYzalddv6Xwta2gcT9Q0HEVFHPmloeZ4wrd
+IKD3iQhHFcHB6gjn4rADutEec1g7nmvm7HGNVWC5qCg543Fdqm5V6KmBBpoJXL8E
+ZLEfOz8aqoo+YZhjEzQQJfqVG51Vdg==
+=w27h
+-----END PGP SIGNATURE-----
+
+--rz+pwK2yUstbofK6--
