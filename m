@@ -2,113 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423452D6C70
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EB52D6C72
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393939AbgLKARk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 19:17:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727931AbgLKARE (ORCPT
+        id S1732636AbgLKAST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 19:18:19 -0500
+Received: from gproxy1-pub.mail.unifiedlayer.com ([69.89.25.95]:54914 "EHLO
+        gproxy1-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2393951AbgLKARl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 19:17:04 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50001C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:16:24 -0800 (PST)
+        Thu, 10 Dec 2020 19:17:41 -0500
+Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
+        by gproxy1.mail.unifiedlayer.com (Postfix) with ESMTP id 5816BC28D4223
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:17:01 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id nW7IkXbnJh41lnW7JkZBPa; Thu, 10 Dec 2020 17:17:01 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=JNUVTfCb c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=zTNgK-yGK50A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
+ a=n2IuXNhsAAAA:20 a=P60nflJvJZ1DZXJ0TTYA:9 a=CjuIK1q_8ugA:10:nop_charset_2
+ a=AjGcO6oz07-iQ99wixmX:22
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=zhRFYufpkBrZRCMawmqqQy0WY8+mPSSZi3Y1bXP28JM=; b=l99pZqygvPs47ErvwK40nv+yjO
-        nw+CCbvSmmVQ9SaPWJf0T+rIUPwS2nOTbXV0bznHjtvgkZC3q8BlOJH2xnqt0corwoBbuqkDeAF6u
-        7mPT+eYdeTZa4jpF0rRxaZBjsNQPKXhIANEVX15eptMne3qa1G/iFJnKWIfnQAcz8BkKc/sKmy1WJ
-        Jh5p/bYNdi9cGIxP8MDsTex/KIdL6kfdCvpzj8t800CjUbKRYTrAYSs7bfF/ohul8HMWHJ8Nt3BfH
-        DpCSF0AptfhzMkPFtNJ63OPoGDm+UOU6uoa7VmX2JYwEwKnFjvztzx43SqPImOWaf4pp49lpf7NdZ
-        dGT2uMRA==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1knW6f-0000Ba-NK; Fri, 11 Dec 2020 00:16:22 +0000
-Subject: Re: ERROR: "snd_soc_new_ac97_component" undefined!
-To:     kernel test robot <lkp@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-References: <202012070230.Vq6VRv8j-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ce6a995d-abb2-5599-cd42-bbf8143d3b35@infradead.org>
-Date:   Thu, 10 Dec 2020 16:16:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ekvtIws0SfA/x/tSI0N4ti3JHZLquQwZr2WPg4tHLII=; b=ZhbO5WDZSkgtDNNSaX3ypZU1iV
+        Qallfy5FvErAiyIoTgqXGgL/YKb9tnR362Ya5x6lmnaKtHoov+wTMU0xozrgdnIUfwdEr12Qfg/cI
+        moGmepGXnPveyoUIXr290qwrNs9cXLAMYxVAuC/0IHSn9yD/tYV3FYut/pR9Rn8fRzqcQXxu4c6Km
+        G0KQPtFC6n5fDRYNCIWUI1NIsiRMXFKw/J7mRhxt6LiDS3ybw61gY9KHJlw7wjrGAnvviPMMCHmW9
+        Zw6qujU+NRFIhaS4PZbRYffM4gdNQCoWT8w4HwcvFHuq+S+YlvfIZRX43wEZmr5yMNHHjmgdUnooI
+        z0EwU3yA==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:34752 helo=localhost)
+        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1knW7I-0000Nu-Ex; Fri, 11 Dec 2020 00:17:00 +0000
+Date:   Thu, 10 Dec 2020 16:16:59 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-watchdog@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] watchdog: coh901327: add COMMON_CLK dependency
+Message-ID: <20201211001659.GH259082@roeck-us.net>
+References: <20201203223358.1269372-1-arnd@kernel.org>
+ <CAKwvOd=i6DFLrPAe5KihT+ZK-nFZ+L7troC300q-9Jpa=i4Fqg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <202012070230.Vq6VRv8j-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=i6DFLrPAe5KihT+ZK-nFZ+L7troC300q-9Jpa=i4Fqg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1knW7I-0000Nu-Ex
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:34752
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 18
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/6/20 10:11 AM, kernel test robot wrote:
-> Hi Geert,
+On Thu, Dec 10, 2020 at 03:00:30PM -0800, Nick Desaulniers wrote:
+> On Thu, Dec 3, 2020 at 2:34 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > clang produces a build failure in configurations without COMMON_CLK
+> > when a timeout calculation goes wrong:
+> >
+> > arm-linux-gnueabi-ld: drivers/watchdog/coh901327_wdt.o: in function `coh901327_enable':
+> > coh901327_wdt.c:(.text+0x50): undefined reference to `__bad_udelay'
 > 
-> First bad commit (maybe != root cause):
+> Isn't a linkage failure against __bad_udelay supposed to be
+> interpreted as a value too large being passed to udelay()? IIRC, this
+> was an issue for someone building an Apple touchpad driver with Clang
+> at -O3...you sent a fix for that:
+> https://github.com/ClangBuiltLinux/linux/issues/678,
+> https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git/commit/?id=fff2d0f701e6753591609739f8ab9be1c8e80ebb.
+
+The problem is likely that clk_get_rate() returns a constant 0,
+which in the real world would end up in a divide by 0 crash.
+An alternative might be be to add
+
+	freq = clk_get_rate(clk);
+-->	if (freq == 0)
+-->		return;
+
+but I don't know if that would really be worth the effort.
+I prefer the current fix.
+
+Guenter
+
 > 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   7059c2c00a2196865c2139083cbef47cd18109b6
-> commit: ea00d95200d02ece71f5814d41b14f2eb16d598b ASoC: Use imply for SND_SOC_ALL_CODECS
-> date:   10 months ago
-> config: powerpc-randconfig-r012-20201207 (attached as .config)
-> compiler: powerpc-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ea00d95200d02ece71f5814d41b14f2eb16d598b
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout ea00d95200d02ece71f5814d41b14f2eb16d598b
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc 
+> >
+> > Add a Kconfig dependency to only do build testing when COMMON_CLK
+> > is enabled.
+> >
+> > Fixes: da2a68b3eb47 ("watchdog: Enable COMPILE_TEST where possible")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  drivers/watchdog/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> > index 8bdbd125821b..32fa6de7b820 100644
+> > --- a/drivers/watchdog/Kconfig
+> > +++ b/drivers/watchdog/Kconfig
+> > @@ -631,7 +631,7 @@ config SUNXI_WATCHDOG
+> >
+> >  config COH901327_WATCHDOG
+> >         bool "ST-Ericsson COH 901 327 watchdog"
+> > -       depends on ARCH_U300 || (ARM && COMPILE_TEST)
+> > +       depends on ARCH_U300 || (ARM && COMMON_CLK && COMPILE_TEST)
+> >         default y if MACH_U300
+> >         select WATCHDOG_CORE
+> >         help
+> > --
+> > 2.27.0
+> >
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> All errors (new ones prefixed by >>):
-> 
->    ERROR: "mpc5200_audio_dma_create" [sound/soc/fsl/mpc5200_psc_ac97.ko] undefined!
->    ERROR: "mpc5200_audio_dma_destroy" [sound/soc/fsl/mpc5200_psc_ac97.ko] undefined!
->>> ERROR: "snd_soc_new_ac97_component" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
->>> ERROR: "snd_soc_free_ac97_component" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
->    ERROR: "snd_soc_new_ac97_component" [sound/soc/codecs/snd-soc-ad1980.ko] undefined!
->    ERROR: "snd_soc_free_ac97_component" [sound/soc/codecs/snd-soc-ad1980.ko] undefined!
-
-
-I also see these:
-
-ERROR: modpost: "__regmap_init_ac97" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
-ERROR: modpost: "regmap_ac97_default_volatile" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
-
-and the (usual) missing Kconfig warnings:    :(
-
-WARNING: unmet direct dependencies detected for SND_SOC_MPC5200_AC97
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_MPC52xx [=y] && PPC_BESTCOMM [=n]
-  Selected by [m]:
-  - SND_MPC52xx_SOC_EFIKA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_EFIKA [=y]
-
-WARNING: unmet direct dependencies detected for SND_SOC_STAC9766
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_SOC_AC97_BUS [=n]
-  Selected by [m]:
-  - SND_MPC52xx_SOC_EFIKA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_EFIKA [=y]
-
-WARNING: unmet direct dependencies detected for HOTPLUG_CPU
-  Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
-  Selected by [y]:
-  - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=y] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
-
-
-
-Please begin including Kconfig warnings. I have asked previously but...
-
-thanks.
--- 
-~Randy
-
+> -- 
+> Thanks,
+> ~Nick Desaulniers
