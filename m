@@ -2,210 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFF12D79D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F342D79D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392907AbgLKPqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:46:50 -0500
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:53085 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392931AbgLKPp1 (ORCPT
+        id S2392945AbgLKPsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:48:14 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:41122 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387469AbgLKPrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:45:27 -0500
-X-Originating-IP: 93.29.109.196
-Received: from localhost.localdomain (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 9C55A20017;
-        Fri, 11 Dec 2020 15:44:42 +0000 (UTC)
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        kevin.lhopital@hotmail.com,
-        =?UTF-8?q?K=C3=A9vin=20L=27h=C3=B4pital?= 
-        <kevin.lhopital@bootlin.com>
-Subject: [PATCH NOT FOR MERGE v4 3/3] ARM: dts: sun8i: a83t: bananapi-m3: Enable MIPI CSI-2 with OV8865
-Date:   Fri, 11 Dec 2020 16:44:28 +0100
-Message-Id: <20201211154428.153762-4-paul.kocialkowski@bootlin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201211154428.153762-1-paul.kocialkowski@bootlin.com>
-References: <20201211154428.153762-1-paul.kocialkowski@bootlin.com>
+        Fri, 11 Dec 2020 10:47:35 -0500
+Received: by mail-oi1-f196.google.com with SMTP id 15so10264841oix.8;
+        Fri, 11 Dec 2020 07:47:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xDsLY5toXg//VxcXGzy5JqaCKZTPLtUIx6A9MNnFwrs=;
+        b=FaKOfvAspJyyxxnFpn471ObuyhZfSJauAnSRYzJ6qzFOdF0GshJOUjVA4urq0bGsY4
+         2t8UwEr2Uj72QQcXsCkHWkFBMqW2MYb7uOPUKmve6QtoFIj3HF1z4524TvZWH5yKVuwG
+         LfXKgN9sTlHvC49svUEoyfPqJQVZgdT45+FR3InXeZJ5UwBz8YJVWpRLtI1GN5nZZ9Yx
+         RIbASCFyKLqPJPTgrLyxRi1MqpX+MB4Fl+eDv3gDGHzn+RdCf+taTkGpZwA9XU86Ab9T
+         wkUYUF1m9a6Bn9iuGA/UdVretduPgEbKjV3uFWhzBsx9u0pLpovFg5EIoNY2L4K7vEv+
+         fEXw==
+X-Gm-Message-State: AOAM531VD+eOUZYwhCY1kjpfB6dh1SdAGHLoaB00HJf1jpxDJguFqDFP
+        MhL8gNAMQzpRyNiAzrkabw==
+X-Google-Smtp-Source: ABdhPJz9RSdLsVAV1MSmPfnRJf6AhUickmg/zkRj6FStNxymkRRK8pQiN0v/RAdWhEN7+yZ4Ns9+1Q==
+X-Received: by 2002:aca:d908:: with SMTP id q8mr9761566oig.161.1607701614041;
+        Fri, 11 Dec 2020 07:46:54 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y8sm1638720oix.43.2020.12.11.07.46.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 07:46:53 -0800 (PST)
+Received: (nullmailer pid 345121 invoked by uid 1000);
+        Fri, 11 Dec 2020 15:46:52 -0000
+Date:   Fri, 11 Dec 2020 09:46:52 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: fix use-after-free in pci_register_host_bridge
+Message-ID: <20201211154652.GA313883@robh.at.kernel.org>
+References: <20201120074848.31418-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120074848.31418-1-miaoqinglang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kévin L'hôpital <kevin.lhopital@bootlin.com>
+On Fri, Nov 20, 2020 at 03:48:48PM +0800, Qinglang Miao wrote:
+> When put_device(&bridge->dev) being called, kfree(bridge) is inside
+> of release function, so the following device_del would cause a
+> use-after-free bug.
+> 
+> Fixes: 37d6a0a6f470 ("PCI: Add pci_register_host_bridge() interface")
 
-The Bananapi M3 supports a camera module which includes an OV8865 sensor
-connected via the parallel CSI interface and an OV8865 sensor connected
-via MIPI CSI-2.
+That commit did have some problems, but this patch doesn't apply to that 
+commit. See commits 1b54ae8327a4 and 9885440b16b8.
 
-The I2C2 bus is shared by the two sensors as well as the (active-low)
-reset signal, but each sensor has it own shutdown line.
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  drivers/pci/probe.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 4289030b0..82292e87e 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -991,8 +991,8 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+>  	return 0;
+>  
+>  unregister:
+> -	put_device(&bridge->dev);
+>  	device_del(&bridge->dev);
+> +	put_device(&bridge->dev);
 
-Signed-off-by: Kévin L'hôpital <kevin.lhopital@bootlin.com>
-Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
----
- arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts | 102 +++++++++++++++++++
- 1 file changed, 102 insertions(+)
+I don't think this is right. 
 
-diff --git a/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts b/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
-index 431f70234d36..b437eaeb91e9 100644
---- a/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
-+++ b/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
-@@ -85,6 +85,30 @@ green {
- 		};
- 	};
- 
-+	reg_ov8865_avdd: ov8865-avdd {
-+		compatible = "regulator-fixed";
-+		regulator-name = "ov8865-avdd";
-+		regulator-min-microvolt = <2800000>;
-+		regulator-max-microvolt = <2800000>;
-+		vin-supply = <&reg_dldo4>;
-+	};
-+
-+	reg_ov8865_dovdd: ov8865-dovdd {
-+		compatible = "regulator-fixed";
-+		regulator-name = "ov8865-dovdd";
-+		regulator-min-microvolt = <2800000>;
-+		regulator-max-microvolt = <2800000>;
-+		vin-supply = <&reg_dldo4>;
-+	};
-+
-+	reg_ov8865_dvdd: ov8865-dvdd {
-+		compatible = "regulator-fixed";
-+		regulator-name = "ov8865-dvdd";
-+		regulator-min-microvolt = <1200000>;
-+		regulator-max-microvolt = <1200000>;
-+		vin-supply = <&reg_eldo1>;
-+	};
-+
- 	reg_usb1_vbus: reg-usb1-vbus {
- 		compatible = "regulator-fixed";
- 		regulator-name = "usb1-vbus";
-@@ -115,6 +139,23 @@ &cpu100 {
- 	cpu-supply = <&reg_dcdc3>;
- };
- 
-+&csi {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@1 {
-+			reg = <1>;
-+
-+			csi_in_mipi_csi2: endpoint {
-+				remote-endpoint = <&mipi_csi2_out_csi>;
-+			}
-+		};
-+	};
-+};
-+
- &de {
- 	status = "okay";
- };
-@@ -147,6 +188,36 @@ hdmi_out_con: endpoint {
- 	};
- };
- 
-+&i2c2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c2_pe_pins>;
-+	status = "okay";
-+
-+	ov8865: camera@36 {
-+		compatible = "ovti,ov8865";
-+		reg = <0x36>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&csi_mclk_pin>;
-+		clocks = <&ccu CLK_CSI_MCLK>;
-+		assigned-clocks = <&ccu CLK_CSI_MCLK>;
-+		assigned-clock-rates = <24000000>;
-+		avdd-supply = <&reg_ov8865_avdd>;
-+		dovdd-supply = <&reg_ov8865_dovdd>;
-+		dvdd-supply = <&reg_ov8865_dvdd>;
-+		powerdown-gpios = <&pio 4 17 GPIO_ACTIVE_LOW>; /* PE17 */
-+		reset-gpios = <&pio 4 16 GPIO_ACTIVE_LOW>; /* PE16 */
-+
-+		port {
-+			ov8865_out_mipi_csi2: endpoint {
-+				data-lanes = <1 2 3 4>;
-+				link-frequencies = /bits/ 64 <360000000>;
-+
-+				remote-endpoint = <&mipi_csi2_in_ov8865>;
-+			};
-+		};
-+	};
-+};
-+
- &mdio {
- 	rgmii_phy: ethernet-phy@1 {
- 		compatible = "ethernet-phy-ieee802.3-c22";
-@@ -154,6 +225,24 @@ rgmii_phy: ethernet-phy@1 {
- 	};
- };
- 
-+&mipi_csi2 {
-+	status = "okay";
-+};
-+
-+&mipi_csi2_in {
-+	mipi_csi2_in_ov8865: endpoint {
-+		data-lanes = <1 2 3 4>;
-+
-+		remote-endpoint = <&ov8865_out_mipi_csi2>;
-+	};
-+};
-+
-+&mipi_csi2_out {
-+	mipi_csi2_out_csi: endpoint {
-+		remote-endpoint = <&csi_in_mipi_csi2>;
-+	};
-+};
-+
- &mmc0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&mmc0_pins>;
-@@ -327,11 +416,24 @@ &reg_dldo3 {
- 	regulator-name = "vcc-pd";
- };
- 
-+&reg_dldo4 {
-+	regulator-always-on;
-+	regulator-min-microvolt = <2800000>;
-+	regulator-max-microvolt = <2800000>;
-+	regulator-name = "avdd-csi";
-+};
-+
- &reg_drivevbus {
- 	regulator-name = "usb0-vbus";
- 	status = "okay";
- };
- 
-+&reg_eldo1 {
-+	regulator-min-microvolt = <1200000>;
-+	regulator-max-microvolt = <1200000>;
-+	regulator-name = "dvdd-csi-r";
-+};
-+
- &reg_fldo1 {
- 	regulator-min-microvolt = <1080000>;
- 	regulator-max-microvolt = <1320000>;
--- 
-2.29.2
+Let's look at pci_register_host_bridge() with only the relevant 
+sections:
 
+static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+{
+	...
+
+	err = device_add(&bridge->dev);
+	if (err) {
+		put_device(&bridge->dev);
+		goto free;
+	}
+	bus->bridge = get_device(&bridge->dev);
+
+        ...
+	if (err)
+		goto unregister;
+	...
+
+	return 0;
+
+unregister:
+	put_device(&bridge->dev);
+	device_del(&bridge->dev);
+
+free:
+	kfree(bus);
+	return err;
+}
+
+The documentation for device_add says this:
+ * Rule of thumb is: if device_add() succeeds, you should call
+ * device_del() when you want to get rid of it. If device_add() has
+ * *not* succeeded, use *only* put_device() to drop the reference
+ * count.
+
+The put_device at the end is to balance the get_device after device_add. 
+It will *only* decrement the use count. Then we call device_del as the 
+documentation says.
+
+Rob
