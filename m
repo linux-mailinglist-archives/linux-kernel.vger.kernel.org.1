@@ -2,108 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D6C2D6CAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CEA2D6CDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393685AbgLKAqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 19:46:07 -0500
-Received: from mo-csw1515.securemx.jp ([210.130.202.154]:50822 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390106AbgLKApi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 19:45:38 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1515) id 0BB0hY8E006165; Fri, 11 Dec 2020 09:43:34 +0900
-X-Iguazu-Qid: 34trMRoISkACchRKde
-X-Iguazu-QSIG: v=2; s=0; t=1607647414; q=34trMRoISkACchRKde; m=tmCBBE/JMLe4wS1hi/XtcFrm8j5BY3+pNTVs07b8EC0=
-Received: from imx2.toshiba.co.jp (imx2.toshiba.co.jp [106.186.93.51])
-        by relay.securemx.jp (mx-mr1510) id 0BB0hXSb032364;
-        Fri, 11 Dec 2020 09:43:33 +0900
-Received: from enc01.toshiba.co.jp ([106.186.93.100])
-        by imx2.toshiba.co.jp  with ESMTP id 0BB0hXOp001509;
-        Fri, 11 Dec 2020 09:43:33 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 0BB0hWbW012066;
-        Fri, 11 Dec 2020 09:43:33 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH v4 4/4] arm: dts: visconti: Add DT support for Toshiba Visconti5 GPIO driver
-Date:   Fri, 11 Dec 2020 18:41:38 +0900
-X-TSB-HOP: ON
-Message-Id: <20201211094138.2863677-5-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201211094138.2863677-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-References: <20201211094138.2863677-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728687AbgLKBFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:05:07 -0500
+Received: from mga11.intel.com ([192.55.52.93]:26724 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732915AbgLKBE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 20:04:28 -0500
+IronPort-SDR: ppGQy51wMD5GvJSvfv9Xl+gUsOYqaOfOB+ZXzFAQsDlkxZkicZh4O/Of+xNTQ4XbO778H2NnZM
+ k37eFi6T+wqg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="170853964"
+X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
+   d="scan'208";a="170853964"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 17:03:42 -0800
+IronPort-SDR: +ZSr/sdgovKXZgkme0Th5QJ+xpYnONuUL0w0r9JFVcygB1QnJtaDj6xafvZVUbAd6K77aw5JCv
+ 8oW2+sxq28BA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
+   d="scan'208";a="320965634"
+Received: from jsia-hp-z620-workstation.png.intel.com ([10.221.118.135])
+  by fmsmga007.fm.intel.com with ESMTP; 10 Dec 2020 17:03:35 -0800
+From:   Sia Jee Heng <jee.heng.sia@intel.com>
+To:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com, robh+dt@kernel.org
+Cc:     andriy.shevchenko@linux.intel.com, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v6 00/16] dmaengine: dw-axi-dmac: support Intel KeemBay AxiDMA
+Date:   Fri, 11 Dec 2020 08:46:26 +0800
+Message-Id: <20201211004642.25393-1-jee.heng.sia@intel.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the GPIO node in Toshiba Visconti5 SoC-specific DT file.
-And enable the GPIO node in TMPV7708 RM main board's board-specific DT file.
+The below patch series are to support AxiDMA running on Intel KeemBay SoC.
+The base driver is dw-axi-dmac. This driver only support DMA memory copy
+transfers. Code refactoring is needed so that additional features can be
+supported.
+The features added in this patch series are:
+- Replacing Linked List with virtual descriptor management.
+- Remove unrelated hw desc stuff from dma memory pool.
+- Manage dma memory pool alloc/destroy based on channel activity.
+- Support dmaengine device_sync() callback.
+- Support dmaengine device_config().
+- Support dmaengine device_prep_slave_sg().
+- Support dmaengine device_prep_dma_cyclic().
+- Support of_dma_controller_register().
+- Support burst residue granularity.
+- Support Intel KeemBay AxiDMA registers.
+- Support Intel KeemBay AxiDMA device handshake.
+- Support Intel KeemBay AxiDMA BYTE and HALFWORD device operation.
+- Add constraint to Max segment size.
+- Virtually split the linked-list.
 
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Reviewed-by: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
----
- .../boot/dts/toshiba/tmpv7708-rm-mbrc.dts     |  4 +++
- arch/arm64/boot/dts/toshiba/tmpv7708.dtsi     | 27 +++++++++++++++++++
- 2 files changed, 31 insertions(+)
+This patch series are tested on Intel KeemBay platform.
 
-diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-index ed0bf7f13f54..950010a290f0 100644
---- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-+++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-@@ -41,3 +41,7 @@ &uart1 {
- 	clocks = <&uart_clk>;
- 	clock-names = "apb_pclk";
- };
-+
-+&gpio {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-index 242f25f4e12a..ac9bddb35b0a 100644
---- a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-+++ b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-@@ -157,6 +157,33 @@ pmux: pmux@24190000 {
- 			reg = <0 0x24190000 0 0x10000>;
- 		};
- 
-+		gpio: gpio@28020000 {
-+			compatible = "toshiba,gpio-tmpv7708";
-+			reg = <0 0x28020000 0 0x1000>;
-+			#gpio-cells = <0x2>;
-+			gpio-ranges = <&pmux 0 0 32>;
-+			gpio-controller;
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
-+			interrupts =
-+				<GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
-+		};
-+
- 		uart0: serial@28200000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0 0x28200000 0 0x1000>;
+v6:
+- Removed 'allOf' cases in DT binding.
+- Added '>' at the end of the email address.
+- Removed additional '|' at the start of description.
+- Fixed space indent.
+- Added proper constraint in DT binding.
+- Removed second example in DT binding.
+
+v5:
+- Added comment to the Apb registers used by Intel KeemBay Soc.
+- Renamed "hs_num" to "handshake_num".
+- Conditional check for the compatible property and return error
+  instead of printing warning.
+- Added patch 16th to virtually split the linked-list as per
+  request from ALSA team. 
+
+v4:
+- Fixed bot found errors running make_dt_binding_check.
+- Added minItems: 1 to the YAML schemas DT binding.
+- Updated "reg" field to the YAML schemas DT binding.
+
+v3:
+- Added additionalProperties: false to the YAML schemas DT binding.
+- Reordered patch sequence for patch 10th, 11th and 12th so that
+  DT binding come first, follow by adding Intel KeemBay SoC registers
+  and update .compatible field.
+- Checked txstate NULL condition.
+- Created helper function dw_axi_dma_set_hw_desc() to handle common code.
+
+v2:
+- Rebased to v5.10-rc1 kernel.
+- Added support for dmaengine device_config().
+- Added support for dmaengine device_prep_slave_sg().
+- Added support for dmaengine device_prep_dma_cyclic().
+- Added support for of_dma_controller_register().
+- Added support for burst residue granularity.
+- Added support for Intel KeemBay AxiDMA registers.
+- Added support for Intel KeemBay AxiDMA device handshake.
+- Added support for Intel KeemBay AxiDMA BYTE and HALFWORD device operation.
+- Added constraint to Max segment size.
+
+v1:
+- Initial version. Patch on top of dw-axi-dma driver. This version improve
+  the descriptor management by replacing Linked List Item (LLI) with
+  virtual descriptor management, only allocate hardware LLI memories from
+  DMA memory pool, manage DMA memory pool alloc/destroy based on channel
+  activity and to support device_sync callback.
+
+Sia Jee Heng (16):
+  dt-bindings: dma: Add YAML schemas for dw-axi-dmac
+  dmaengine: dw-axi-dmac: simplify descriptor management
+  dmaengine: dw-axi-dmac: move dma_pool_create() to
+    alloc_chan_resources()
+  dmaengine: dw-axi-dmac: Add device_synchronize() callback
+  dmaengine: dw-axi-dmac: Add device_config operation
+  dmaengine: dw-axi-dmac: Support device_prep_slave_sg
+  dmaegine: dw-axi-dmac: Support device_prep_dma_cyclic()
+  dmaengine: dw-axi-dmac: Support of_dma_controller_register()
+  dmaengine: dw-axi-dmac: Support burst residue granularity
+  dt-binding: dma: dw-axi-dmac: Add support for Intel KeemBay AxiDMA
+  dmaengine: dw-axi-dmac: Add Intel KeemBay DMA register fields
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA support
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA handshake
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA BYTE and HALFWORD
+    registers
+  dmaengine: dw-axi-dmac: Set constraint to the Max segment size
+  dmaengine: dw-axi-dmac: Virtually split the linked-list
+
+ .../bindings/dma/snps,dw-axi-dmac.txt         |  39 -
+ .../bindings/dma/snps,dw-axi-dmac.yaml        | 130 ++++
+ .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 710 +++++++++++++++---
+ drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |  34 +-
+ 4 files changed, 779 insertions(+), 134 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.txt
+ create mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+
+
+base-commit: 4cb682964706deffb4861f0a91329ab3a705039f
 -- 
-2.29.2
+2.18.0
 
