@@ -2,118 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840E72D82D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 400672D82D4
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394613AbgLKXiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 18:38:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
+        id S2407178AbgLKXmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 18:42:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392147AbgLKXhc (ORCPT
+        with ESMTP id S2390537AbgLKXmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 18:37:32 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A04FC0613D3;
-        Fri, 11 Dec 2020 15:36:52 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id f14so2966293pju.4;
-        Fri, 11 Dec 2020 15:36:52 -0800 (PST)
+        Fri, 11 Dec 2020 18:42:06 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64012C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:41:23 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id n4so11207971iow.12
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:41:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=JVHTTreEM2z5Jb4a2Pg0lMUiVLM2zzxERaeVoukhzjk=;
-        b=MbrhpZ0uIHXrtdroa40nBt7WQ6zvm981oT4fFYbJQ66l43weByvwokjuT2pLdPGOib
-         sE9yuKjLAqnF1NL0xuiqNN8DHtP+J+7XNryn03AwXLJGKrLHimjLFTtdvGVCOntDZeh2
-         TH5sOf2OiTWoP4mIiqXrbutGTZyrJnpohuonyOdF2KN/DHKlLXJkoyM3ZTg6jj+Xx/Jq
-         nvYiQIWYIbWKooi1X7SblpcP86eXpyIqeTmLEGS5Cq4y3WZFs33xbY7CKg3RL7IJysVS
-         pPtCYhr72ticU2x/RS6FmGDoEEejZ8iGparkTVBRaou8cIQKhUPVk/SCBlmgAN//4vg8
-         gW2Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M6jGKkVrIPAXEQEHBml1rXNq51AkrP2Irw7dxFu1vgU=;
+        b=FGMgBTmreoz1a3pKbfJC3FH3NqJzNebutZfrhI3Rd/MMGQAsWCBXHxiEnEgT+GNHy/
+         Up0Zaez7m65E+y1EmGthubXwyXTXnvfnAsAXxOEp36ahU9cG7exrHc6EdfLB/vsOPC5F
+         5/ENRz2yHL6V8+/T3BLCMLFtkVgFYMgj3y+k7rmkcedt7+WHV/94zjk5CnAf2z4EyuvP
+         rXmRlQI9ZjkBRZn5ps0ScNrZrFpYoEQ2TCHANxklsjKnf+5h+7r1njrGc7dekv5rQaCm
+         nUq6NljW2D2qgqQ6+xrWZJDOK02X06urcORvNzXfp6zpBm4AiuLZWlGqwuFAR2S7FqsA
+         ByiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=JVHTTreEM2z5Jb4a2Pg0lMUiVLM2zzxERaeVoukhzjk=;
-        b=s9dAy2r9KrvNBKw7/5BkCCcxD1pjDJQFdQ8R8gOVE9rge4aVAwcSopYDhMCzhc8Ont
-         dsT5PkCWOcA5CiFZ26ndzLYxzhB6o0scIMI7AYo8P3djLZRUogTdzdfqROaPwu6wi+KW
-         K+yTZsQefGaFJKJ4q3B2YJYVcOgfpBoxeCx0IX/TQ6vaAfOdw/j2m1piHz9f9+IQXHVV
-         n6LFez4yQ7AIXxdurkQ1hnkEhn+p9/HWlSaYPNHSyD1Oc13qBg5lWjUpCSlRMFA0ZbvF
-         fcu3MRy/WGVs7PLr+V91kErXuk3iLeDtdjzIoIecHrEMh/+9rBL/s/dLTBpgl5uZQCfu
-         iuxw==
-X-Gm-Message-State: AOAM532oFZqsCnJkVUD5ioTlpxu+i9ROe6jHIbmVdewiwDLAp0o5vMmZ
-        XZWpXRufW1Hu7uKqtxu4vXA=
-X-Google-Smtp-Source: ABdhPJzN4u6Wr+ypi9bODdcuQDcMwO+SZ18v3vpTjdDWY389q1Sfd4zEFiQlV/UW1yp18IP+01bLQA==
-X-Received: by 2002:a17:902:6a82:b029:da:fc41:bafe with SMTP id n2-20020a1709026a82b02900dafc41bafemr13117554plk.20.1607729811928;
-        Fri, 11 Dec 2020 15:36:51 -0800 (PST)
-Received: from localhost ([2405:6580:31a1:500:1ac0:4dff:fe39:5426])
-        by smtp.gmail.com with ESMTPSA id j10sm11725336pgc.85.2020.12.11.15.36.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 15:36:51 -0800 (PST)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Wei Huang <whuang2@amd.com>, rjw@rjwysocki.net, wei.huang2@amd.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [RFC PATCH 2/4] cpufreq: acpi-cpufreq: Add processor to the
- ignore PSD override list
-References: <20201125144847.3920-1-punitagrawal@gmail.com>
-        <20201125144847.3920-3-punitagrawal@gmail.com>
-        <cadb5d57-5aaf-79bc-e30e-502d5e522689@amd.com>
-        <20201207202610.GG20489@zn.tnic>
-        <e9b4ae11-1fe3-a660-bb65-d3ba55ffcc56@amd.com>
-        <20201207223057.GJ20489@zn.tnic> <87a6unq3xv.fsf@stealth>
-        <20201208233216.GH27920@zn.tnic>
-Date:   Sat, 12 Dec 2020 08:36:48 +0900
-In-Reply-To: <20201208233216.GH27920@zn.tnic> (Borislav Petkov's message of
-        "Wed, 9 Dec 2020 00:32:16 +0100")
-Message-ID: <871rfvoqy7.fsf@stealth>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M6jGKkVrIPAXEQEHBml1rXNq51AkrP2Irw7dxFu1vgU=;
+        b=m6VMaOODQmnc547JUXonRAO8Y4OjZsYDuaAoafQY5NrKNiCNpYinvUKYfAT16sbqpD
+         uNMBEAO3Zhtc4Epdbk/TLYEw1OAXvFbdu4zh1UlV5Va/XQaPmIUlRQke1le/GuwNSp3v
+         T/voxRIDLZQ+In/kLM1jEoTS8b6XYwlm2i0arE2xEyIm2rpKSv7MWmDHv3IQJ2T8O/32
+         ssto81OFrdEJ14pfYThSM2UjciLDDla118hUQPAKE+81Xdf2dlidzqQleaIEfjjqP3zO
+         4xtBpwgCFXbtC6G+HETDuOpIvE5tP/egFhrOXmtSM7nzxWBVIuubZwM1GpGswYnHAwEu
+         7bAA==
+X-Gm-Message-State: AOAM533+cbj2X1WIIlFSp43WKsReZbr0XZAfgyXZLdfHS5be2reaXQIM
+        +I1UzUVUjqKArIAMhvbk7K9PK0zUHvxWv5/2tou5eg==
+X-Google-Smtp-Source: ABdhPJwdqH04TMdtvZF/y/YqKq+5RcuWC4C8fM3QV8ZODt4RopmFbmy0vaJ2ma9doMThsCVTD1iPv1TrfzOulFbadig=
+X-Received: by 2002:a6b:6f07:: with SMTP id k7mr17892259ioc.48.1607730082345;
+ Fri, 11 Dec 2020 15:41:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201211072319.533803-1-davidgow@google.com>
+In-Reply-To: <20201211072319.533803-1-davidgow@google.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Fri, 11 Dec 2020 15:41:10 -0800
+Message-ID: <CAGS_qxoP=iPZMoGGdRQDNf3a+C3PEkH=qBMy_3pSQtXKv82OVw@mail.gmail.com>
+Subject: Re: [PATCH] kunit: Print test statistics on failure
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Borislav Petkov <bp@alien8.de> writes:
-
-> On Wed, Dec 09, 2020 at 08:21:48AM +0900, Punit Agrawal wrote:
->> According to the commit log, acd316248205 seems to be only targeted at
->> powernow-K8 -
+On Thu, Dec 10, 2020 at 11:23 PM David Gow <davidgow@google.com> wrote:
 >
-> No, it is not targeted at powernow-k8 - acpi-cpufreq.c is what is used
-> on AMD hw. He means to make acpi-cpufreq's behavior consistent with
-> powernow-k8.
-
-So "powernow-k8" is not a cpu but a cpufreq driver. That doesn't change
-the fact that the patch causes all AMD systems using acpi-cpufreq to
-ignore processor frequency groupings and treat each processor to be an
-in independent frequency domain from cpufreq's point of view.
-
->> But if that is not available, the only way we have is to include
->> systems that have been verified to not need the override
+> When a number of tests fail, it can be useful to get higher-level
+> statistics of how many tests are failing (or how many parameters are
+> failing in parameterised tests), and in what cases or suites. This is
+> already done by some non-KUnit tests, so add support for automatically
+> generating these for KUnit tests.
 >
-> You have verified exactly *one* system - yours. Or are you sure that
-> *all* family 0x17, model 0x60, stepping 0x1 machines don't need the
-> override?
+> This change adds a 'kunit_stats_enabled' switch which has three values:
+> - 0: No stats are printed (current behaviour)
+> - 1: Stats are printed only for tests/suites with more than one
+>      subtests, and at least one failure (new default)
+> - 2: Always print test statistics
 
-Unfortunately, I only have access to one system with that F/M/S.
+I personally prefer having less options here, if possible.
 
-Since posting the non-RFC patches, I was able to inspect the ACPI tables
-for more CPUs -
+a) I wonder if 0 can be dropped in favor of just using the default (1).
+I don't know that showing test counts on failures (ideally a rare
+occurrence) in the diagnostics would be enough of an annoyance that
+people would want to turn it off.
 
-Family: 0x17h, Model: 0x71h (Ryzen 3950X)
-Family: 0x17h, Model: 0x18h (Ryzen 3500u)
+b) And/or perhaps strike a compromise between 1/2.
+We print the test stats whenever there are >1 subtests, regardless of
+# of failures.
 
-To me it suggests, that there are likely more systems from the family
-that show the characteristic described below.
+If we take both suggestions, then we just have one way, which is
+appealing to me personally, but I don't know that people would like
+that.
 
-> Also, you still haven't explained what you're trying to fix here.
+>
+> For parameterised tests, the summary line looks as follows:
+> "    # inode_test_xtimestamp_decoding: 0 / 16 test parameters failed"
+> For test suites, it looks like this:
+> "# ext4_inode_test: (0 / 1) tests failed (0 / 16 test parameters)"
+>
+> kunit_tool is also updated to correctly ignore diagnostic lines, so that
+> these statistics do not prevent the result from parsing.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+>
+> This is largely a follow-up to the discussion here:
+>  https://lore.kernel.org/linux-kselftest/CABVgOSmy4n_LGwDS7yWfoLftcQzxv6S+iXx9Y=OPcgG2gu0z1w@mail.gmail.com/T/#t
+>
+> Does this seem like a sensible addition?
+>
+> Cheers,
+> -- David
+>
+>  lib/kunit/test.c                    | 71 +++++++++++++++++++++++++++++
+>  tools/testing/kunit/kunit_parser.py |  2 +-
+>  2 files changed, 72 insertions(+), 1 deletion(-)
+>
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index ec9494e914ef..711e269366a7 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -9,6 +9,7 @@
+>  #include <kunit/test.h>
+>  #include <linux/kernel.h>
+>  #include <linux/kref.h>
+> +#include <linux/moduleparam.h>
+>  #include <linux/sched/debug.h>
+>  #include <linux/sched.h>
+>
+> @@ -16,6 +17,40 @@
+>  #include "string-stream.h"
+>  #include "try-catch-impl.h"
+>
+> +/*
+> + * KUnit statistic mode:
+> + * 0 - disabled
+> + * 1 - only when there is at least one failure, and more than one subtest
+> + * 2 - enabled
+> + */
+> +static int kunit_stats_enabled = 1;
+> +core_param(kunit_stats_enabled, kunit_stats_enabled, int, 0644);
+> +
+> +static bool kunit_should_print_stats(int num_failures, int num_subtests)
+> +{
+> +       if (kunit_stats_enabled == 0)
+> +               return false;
+> +
+> +       if (kunit_stats_enabled == 2)
+> +               return true;
+> +
+> +       return (num_failures > 0 && num_subtests > 1);
+> +}
+> +
+> +static void kunit_print_test_stats(struct kunit *test,
+> +                                  size_t num_failures, size_t num_subtests)
+> +{
+> +       if (!kunit_should_print_stats(num_failures, num_subtests))
+> +               return;
+> +
+> +       kunit_log(KERN_INFO, test,
+> +                 KUNIT_SUBTEST_INDENT
+> +                 "# %s: %lu / %lu test parameters failed",
+> +                 test->name,
+> +                 num_failures,
+> +                 num_subtests);
+> +}
+> +
+>  /*
+>   * Append formatted message to log, size of which is limited to
+>   * KUNIT_LOG_SIZE bytes (including null terminating byte).
+> @@ -346,15 +381,37 @@ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
+>         test_case->success = test->success;
+>  }
+>
+> +static void kunit_print_suite_stats(struct kunit_suite *suite,
+> +                                   size_t num_failures,
+> +                                   size_t total_param_failures,
+> +                                   size_t total_params)
+> +{
+> +       size_t num_cases = kunit_suite_num_test_cases(suite);
+> +
+> +       if (!kunit_should_print_stats(num_failures, num_cases))
+> +               return;
+> +
+> +       kunit_log(KERN_INFO, suite,
+> +                 "# %s: (%lu / %lu) tests failed (%lu / %lu test parameters)",
+> +                 suite->name,
+> +                 num_failures,
+> +                 num_cases,
+> +                 total_param_failures,
+> +                 total_params);
+> +}
+> +
+>  int kunit_run_tests(struct kunit_suite *suite)
+>  {
+>         char param_desc[KUNIT_PARAM_DESC_SIZE];
+>         struct kunit_case *test_case;
+> +       size_t num_suite_failures = 0;
+> +       size_t total_param_failures = 0, total_params = 0;
+>
+>         kunit_print_subtest_start(suite);
+>
+>         kunit_suite_for_each_test_case(suite, test_case) {
+>                 struct kunit test = { .param_value = NULL, .param_index = 0 };
+> +               size_t num_params = 0, num_failures = 0;
+>                 bool test_success = true;
+>
+>                 if (test_case->generate_params) {
+> @@ -385,13 +442,27 @@ int kunit_run_tests(struct kunit_suite *suite)
+>                                 test.param_value = test_case->generate_params(test.param_value, param_desc);
+>                                 test.param_index++;
+>                         }
+> +
+> +                       if (!test.success)
+> +                               num_failures++;
 
-All the CPUs here are multi-threaded with 2 threads per core. The _PSD
-for the system describes the cores as having a coupling that consist of
-a frequency domain per core that contains both the threads. The firmware
-description makes sense and seems to accurately describe the hardware
-topology.
+Completely tangential: I'm glad we're counting failures now.
+As noted in previous discussions, we'd want to eventually do this anyways.
+It would be good if this func (and eventually `insmod`) could return a
+non-zero retcode on test failure so users don't have to necessarily
+parse KTAP output.
 
-In all these systems, the override causes this topology information to
-be ignored - treating each core to be a separate domain. The proposed
-patch removes the override so that _PSD is taken into account.
+> +                       num_params++;
+> +
+>                 } while (test.param_value);
+>
+> +               kunit_print_test_stats(&test, num_failures, num_params);
+> +
+>                 kunit_print_ok_not_ok(&test, true, test_success,
+>                                       kunit_test_case_num(suite, test_case),
+>                                       test_case->name);
+> +
+> +               if (!test_success)
+> +                       num_suite_failures++;
+> +               total_params += num_params;
+> +               total_param_failures += num_failures;
+>         }
+>
+> +       kunit_print_suite_stats(suite, num_suite_failures,
+> +                               total_param_failures, total_params);
+>         kunit_print_subtest_end(suite);
+>
+>         return 0;
+> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+> index 6614ec4d0898..88ee2b2668ad 100644
+> --- a/tools/testing/kunit/kunit_parser.py
+> +++ b/tools/testing/kunit/kunit_parser.py
+> @@ -95,7 +95,7 @@ def print_log(log):
+>         for m in log:
+>                 print_with_timestamp(m)
+>
+> -TAP_ENTRIES = re.compile(r'^(TAP|[\s]*ok|[\s]*not ok|[\s]*[0-9]+\.\.[0-9]+|[\s]*#).*$')
+> +TAP_ENTRIES = re.compile(r'^(TAP|[\s]*ok|[\s]*not ok|[\s]*[0-9]+\.\.[0-9]+|[\s]*# Subtest:).*$')
+>
+>  def consume_non_diagnositic(lines: List[str]) -> None:
+>         while lines and not TAP_ENTRIES.match(lines[0]):
+>
+> base-commit: 5f6b99d0287de2c2d0b5e7abcb0092d553ad804a
+> --
+> 2.29.2.576.ga3fc446d84-goog
+>
