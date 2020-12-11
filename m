@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7206B2D71E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC452D71F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405557AbgLKIiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:38:14 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9511 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392128AbgLKIhc (ORCPT
+        id S2436947AbgLKIjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:39:36 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:36474 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392142AbgLKIis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:37:32 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cskdn2MnHzhqj1;
-        Fri, 11 Dec 2020 16:36:13 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Dec 2020 16:36:38 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sagis@google.com>, <jonolson@google.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] gve: simplify the gve code return expression
-Date:   Fri, 11 Dec 2020 16:37:06 +0800
-Message-ID: <20201211083706.1565-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Fri, 11 Dec 2020 03:38:48 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BB8ZQuI131659;
+        Fri, 11 Dec 2020 08:37:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=IL/xX1pqQ+FwJTcRHs69J+NvLTwdwVVEJfd2g66opUA=;
+ b=cWYi/zQOoX8hJ8NF5ANNdNO4n4NWz6h0q2WRNeyYzsdnfRIrTBOdZryatjmZAQiMSZ8a
+ /+zALT5wCo4oucU4wYRmbNtjATArXvbYEQiGFDQp1EejblfUcBOTF6PqPrXjq6JWHige
+ Fc95vrPNp5etIzrVC0Ip+a8vxfluaWWM4zAL9ACjlH18zhMvQOIZ0iOPaRXTXPkq17TW
+ 9dD9tlCfPh2dRP7IenzC10kJZHxjhl/fY0L4L063k5MhgWx1o1WZ2VUuC7w97rLFf5Zo
+ ZhP4V1mZ3CtY7WaCJXvOCUM5fNUjQaA1nwdZ7BAsdH2kCnJeMzfGCJm/4psZMF24WQ29 0Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 35825mhc3k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Dec 2020 08:37:49 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BB8UdRL180916;
+        Fri, 11 Dec 2020 08:37:48 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 358m433uy5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Dec 2020 08:37:48 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BB8bdwV018287;
+        Fri, 11 Dec 2020 08:37:40 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 11 Dec 2020 00:37:39 -0800
+Date:   Fri, 11 Dec 2020 11:37:31 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Markus Elfring <Markus.Elfring@web.de>, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mmc: atmel-mci: =?utf-8?Q?Redu?=
+ =?utf-8?Q?ce_scope_for_the_variable_=E2=80=9Cslot?= =?utf-8?B?4oCd?= in
+ atmci_request_end()
+Message-ID: <20201211083731.GP2789@kadam>
+References: <466b4c6d-032f-fbcc-58ac-75f6f39d734f@web.de>
+ <20201210151035.GC1578121@piout.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210151035.GC1578121@piout.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=893
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012110054
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=923 clxscore=1011 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012110054
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression at diffrent gve_adminq.c file, simplify this all.
+Markus was banned from vger at the end of July after ignoring repeated
+warnings.  This makes it hard to review any patches or follow
+discussion...
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/net/ethernet/google/gve/gve_adminq.c | 21 +++-----------------
- 1 file changed, 3 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/net/ethernet/google/gve/gve_adminq.c b/drivers/net/ethernet/google/gve/gve_adminq.c
-index 24ae6a28a806..6719181afdfd 100644
---- a/drivers/net/ethernet/google/gve/gve_adminq.c
-+++ b/drivers/net/ethernet/google/gve/gve_adminq.c
-@@ -318,7 +318,6 @@ static int gve_adminq_create_tx_queue(struct gve_priv *priv, u32 queue_index)
- {
- 	struct gve_tx_ring *tx = &priv->tx[queue_index];
- 	union gve_adminq_command cmd;
--	int err;
- 
- 	memset(&cmd, 0, sizeof(cmd));
- 	cmd.opcode = cpu_to_be32(GVE_ADMINQ_CREATE_TX_QUEUE);
-@@ -332,11 +331,7 @@ static int gve_adminq_create_tx_queue(struct gve_priv *priv, u32 queue_index)
- 		.ntfy_id = cpu_to_be32(tx->ntfy_id),
- 	};
- 
--	err = gve_adminq_issue_cmd(priv, &cmd);
--	if (err)
--		return err;
--
--	return 0;
-+	return gve_adminq_issue_cmd(priv, &cmd);
- }
- 
- int gve_adminq_create_tx_queues(struct gve_priv *priv, u32 num_queues)
-@@ -357,7 +352,6 @@ static int gve_adminq_create_rx_queue(struct gve_priv *priv, u32 queue_index)
- {
- 	struct gve_rx_ring *rx = &priv->rx[queue_index];
- 	union gve_adminq_command cmd;
--	int err;
- 
- 	memset(&cmd, 0, sizeof(cmd));
- 	cmd.opcode = cpu_to_be32(GVE_ADMINQ_CREATE_RX_QUEUE);
-@@ -372,11 +366,7 @@ static int gve_adminq_create_rx_queue(struct gve_priv *priv, u32 queue_index)
- 		.queue_page_list_id = cpu_to_be32(rx->data.qpl->id),
- 	};
- 
--	err = gve_adminq_issue_cmd(priv, &cmd);
--	if (err)
--		return err;
--
--	return 0;
-+	return gve_adminq_issue_cmd(priv, &cmd);
- }
- 
- int gve_adminq_create_rx_queues(struct gve_priv *priv, u32 num_queues)
-@@ -396,7 +386,6 @@ int gve_adminq_create_rx_queues(struct gve_priv *priv, u32 num_queues)
- static int gve_adminq_destroy_tx_queue(struct gve_priv *priv, u32 queue_index)
- {
- 	union gve_adminq_command cmd;
--	int err;
- 
- 	memset(&cmd, 0, sizeof(cmd));
- 	cmd.opcode = cpu_to_be32(GVE_ADMINQ_DESTROY_TX_QUEUE);
-@@ -404,11 +393,7 @@ static int gve_adminq_destroy_tx_queue(struct gve_priv *priv, u32 queue_index)
- 		.queue_id = cpu_to_be32(queue_index),
- 	};
- 
--	err = gve_adminq_issue_cmd(priv, &cmd);
--	if (err)
--		return err;
--
--	return 0;
-+	return gve_adminq_issue_cmd(priv, &cmd);
- }
- 
- int gve_adminq_destroy_tx_queues(struct gve_priv *priv, u32 num_queues)
--- 
-2.22.0
+regards,
+dan carpenter
 
