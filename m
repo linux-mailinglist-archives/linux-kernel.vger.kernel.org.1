@@ -2,249 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142AD2D82CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 177482D82D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437300AbgLKXf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 18:35:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44064 "EHLO
+        id S2406904AbgLKXiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 18:38:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437382AbgLKXfF (ORCPT
+        with ESMTP id S2437309AbgLKXhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 18:35:05 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E7BC0617B0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:33:50 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id x20so7283710pfm.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:33:50 -0800 (PST)
+        Fri, 11 Dec 2020 18:37:22 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E29C0613CF;
+        Fri, 11 Dec 2020 15:36:42 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id hk16so3172179pjb.4;
+        Fri, 11 Dec 2020 15:36:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=C5GRxECZMSAf9dCnY0cH/nYiIjSrdOWOHdN7BXATNyw=;
-        b=Sx+p6f2+gq+Kdb4ohqFEnhQL+OWLM+Y3KCDTByYTlOqjisNR8gdz9Re64WWVyRflP/
-         QI9esAqrkUZz5a2XFGeX9HZf0mBeI3rsC0NdINzu/gmL3Kf3Xa7LIX2duwGZJGY0hGe2
-         LTj2aWm9XswFcXWR9pDLUVXzNnJbI2HKGrwrOQ5dmX8ztYwT3t4sNC/ZU1cJBFyjgBZ4
-         oNqYbSCjAkRc3naqdyX6wP6fDhKdYdEANMNgRwnUCHokS6dj8ZWzFhIWckfyLqGjWEDN
-         r1s2ZjN0FFCwmlxOHAq5q7fdh4VHCGa07wYME5cBikzFxhsUm200E/qpvCEGmH4Zvx6S
-         k6Lg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:in-reply-to:references:user-agent:date
+         :message-id:mime-version;
+        bh=MgWP9jxRB8amULVjgVJSqmEz5Q4ppHRiQaLzS/iT588=;
+        b=UR3MFTM4CQWCYCmvT32O1a+ZA7AG2qyLrJHwxP4ONPm9+MwSSztBnomol+J4gC/JzE
+         0TAFACUrFGfjA6R8nmIr2+mlekIjiQktrDWesC2QIZ8RFLUxFsQq/dAIkpV3rCwCfFCZ
+         6Zkinpqxdq5kLeX3pXVkxebQLM9S8MQdw5Mo6unIyvRyHhAu3GTVegNH6DvbcOB91put
+         LwrhCKaxMw60zNO+wdAT84rFrgV+cXcYWkvG/MHRpTGzhnH3hbYYuLYXcz1dXC5K9b/M
+         8snR0TwwKpZqN1MDYcon294WMrb2RHcGd88NxrEf4Rn7hvZM4xgKt+P3cDDviUKoomII
+         jZDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=C5GRxECZMSAf9dCnY0cH/nYiIjSrdOWOHdN7BXATNyw=;
-        b=bjDywe/ac/gGISkHyP4Fsft/EA2zjA0PpomKDWhOSE6uwjSErFqD3laK0rUCIPJg1m
-         N/vfg9KkMBTARHR01bREkS21qvhfG393EYp4dJIM7uK6r4Rqxz3VHM9Y28w9wsSPCcej
-         pf7A3E0UzXtF2k9RZ60C2ouoqSdLkk7qhjb7vqsLSlo6hTNXFVG0h89qt9zYQhxyVO7P
-         0J1lmPebYqNfp0QUZ38r5wGj+IzF/6CkSgT76lTUMCp0rTbYFGgMtnTe/FGe1KuiqzjU
-         3W75ILkMfZZA3g70E0LweGWxslUUPcNCUFfqPZAuqEZkiFommwMwHF6bdliw9gItuiXu
-         VPZg==
-X-Gm-Message-State: AOAM532HOX49+1mNziCK8Y6SHlqw5mAch/jIXPVTyu4Dkjj6Kthi1SFm
-        tD1xKLMCvsK+zUjCOFzOJXQZYsEW4n7K
-X-Google-Smtp-Source: ABdhPJxV3EV2QyfOizvoCaAO1ytJsY4LnegfD8I67yilNq9ECFb2TPZSL+tyC13s11HWJ58Qf+C0vGuC+Z7r
-Sender: "brianvv via sendgmr" <brianvv@brianvv.c.googlers.com>
-X-Received: from brianvv.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:348])
- (user=brianvv job=sendgmr) by 2002:a17:90a:8a82:: with SMTP id
- x2mr15080767pjn.107.1607729630321; Fri, 11 Dec 2020 15:33:50 -0800 (PST)
-Date:   Fri, 11 Dec 2020 23:33:40 +0000
-In-Reply-To: <20201211233340.1503242-1-brianvv@google.com>
-Message-Id: <20201211233340.1503242-5-brianvv@google.com>
-Mime-Version: 1.0
-References: <20201211233340.1503242-1-brianvv@google.com>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH net-next v2 4/4] net: indirect call helpers for ipv4/ipv6
- dst_check functions
-From:   Brian Vazquez <brianvv@google.com>
-To:     Brian Vazquez <brianvv.kernel@gmail.com>,
-        Brian Vazquez <brianvv@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references
+         :user-agent:date:message-id:mime-version;
+        bh=MgWP9jxRB8amULVjgVJSqmEz5Q4ppHRiQaLzS/iT588=;
+        b=LwkE7s6OKhgzhMcm7qxNN78d3cMTEnLNZbJX3tcUQCjY3iPjhJ+j+a8FVE4NsFnXeh
+         aB5HcdhlGHHc9Weud3xRsFJfh35sobr/e/TdaIh44r0yWhv97j1R4L3jbEouNtsyJojP
+         w00X+IP9U/bFZXt7ijwsX8AFriZKGi0HI2rRj1sBdidNFaw4incbgLCK8ajIIwWgMlcX
+         3wbI3CV6o4yYcVK2FFWzw6/RiZKbyJNhYUOVjmfmHh9IVUqyB7mADO+NXoxBUvnNecO+
+         6OlFuhhJSuu5bKMpwOrzqDdu/Tm7iaN7PtQrzXVijvHff7F2k4eNub4uNEOiQZjtArJO
+         DqLA==
+X-Gm-Message-State: AOAM532RYBEkfUwvLZ71QltUVodZi65cNgISeO7XRPDVrJuMcbWzX8AE
+        SSUYmToCL7KF8I0k1t5FWu68Q/jg1bPxeVNb
+X-Google-Smtp-Source: ABdhPJymF6gXu8+CqxK2LcoXOugpvcZ4EbDPbhweW2aRhLaxlkau3GwDXg6DnVHJOsKQUW352EPhfw==
+X-Received: by 2002:a17:902:22e:b029:d9:e591:7bd1 with SMTP id 43-20020a170902022eb02900d9e5917bd1mr13297768plc.50.1607729802347;
+        Fri, 11 Dec 2020 15:36:42 -0800 (PST)
+Received: from localhost ([2405:6580:31a1:500:1ac0:4dff:fe39:5426])
+        by smtp.gmail.com with ESMTPSA id m77sm12361409pfd.105.2020.12.11.15.36.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 15:36:41 -0800 (PST)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     rjw@rjwysocki.net, wei.huang2@amd.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 2/2] cpufreq: acpi-cpufreq: Add processor to the ignore
+ PSD override list
+In-Reply-To: <20201210230332.GH26529@zn.tnic> (Borislav Petkov's message of
+        "Fri, 11 Dec 2020 00:03:32 +0100")
+References: <20201210225640.317719-1-punitagrawal@gmail.com>
+        <20201210225640.317719-3-punitagrawal@gmail.com>
+        <20201210230332.GH26529@zn.tnic>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+Date:   Sat, 12 Dec 2020 08:36:38 +0900
+Message-ID: <87360boqyh.fsf@stealth>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: brianvv <brianvv@google.com>
+Borislav Petkov <bp@alien8.de> writes:
 
-This patch avoids the indirect call for the common case:
-ip6_dst_check and ipv4_dst_check
+> On Fri, Dec 11, 2020 at 07:56:40AM +0900, Punit Agrawal wrote:
+>> Booting Linux on a Zen2 based processor (family: 0x17, model: 0x60,
+>> stepping: 0x1) shows the following message in the logs -
+>> 
+>>     acpi_cpufreq: overriding BIOS provided _PSD data
+>> 
+>> Although commit 5368512abe08 ("acpi-cpufreq: Honor _PSD table setting
+>> on new AMD CPUs") indicates that the override is not required for Zen3
+>> onwards, it seems that domain information can be trusted even on
+>> certain earlier systems. Update the check, to skip the override for
+>> Zen2 processors known to work without the override.
+>> 
+>> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+>> Cc: Wei Huang <wei.huang2@amd.com>
+>> ---
+>>  drivers/cpufreq/acpi-cpufreq.c | 9 +++++++--
+>>  1 file changed, 7 insertions(+), 2 deletions(-)
+>
+> What about answers to those questions first?
+>
+> https://lkml.kernel.org/r/20201208233216.GH27920@zn.tnic
 
-Signed-off-by: brianvv <brianvv@google.com>
----
- include/net/dst.h   |  7 ++++++-
- net/core/sock.c     | 12 ++++++++++--
- net/ipv4/route.c    |  7 +++++--
- net/ipv4/tcp_ipv4.c |  5 ++++-
- net/ipv6/route.c    |  7 +++++--
- net/ipv6/tcp_ipv6.c |  5 ++++-
- 6 files changed, 34 insertions(+), 9 deletions(-)
-
-diff --git a/include/net/dst.h b/include/net/dst.h
-index 9f474a79ed7d..26f134ad3a25 100644
---- a/include/net/dst.h
-+++ b/include/net/dst.h
-@@ -459,10 +459,15 @@ static inline int dst_input(struct sk_buff *skb)
- 				  ip6_input, ip_local_deliver, skb);
- }
- 
-+INDIRECT_CALLABLE_DECLARE(struct dst_entry *ip6_dst_check(struct dst_entry *,
-+							  u32));
-+INDIRECT_CALLABLE_DECLARE(struct dst_entry *ipv4_dst_check(struct dst_entry *,
-+							   u32));
- static inline struct dst_entry *dst_check(struct dst_entry *dst, u32 cookie)
- {
- 	if (dst->obsolete)
--		dst = dst->ops->check(dst, cookie);
-+		dst = INDIRECT_CALL_INET(dst->ops->check, ip6_dst_check,
-+					 ipv4_dst_check, dst, cookie);
- 	return dst;
- }
- 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 4fd7e785f177..753b831a9d70 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -526,11 +526,17 @@ int __sk_receive_skb(struct sock *sk, struct sk_buff *skb,
- }
- EXPORT_SYMBOL(__sk_receive_skb);
- 
-+INDIRECT_CALLABLE_DECLARE(struct dst_entry *ip6_dst_check(struct dst_entry *,
-+							  u32));
-+INDIRECT_CALLABLE_DECLARE(struct dst_entry *ipv4_dst_check(struct dst_entry *,
-+							   u32));
- struct dst_entry *__sk_dst_check(struct sock *sk, u32 cookie)
- {
- 	struct dst_entry *dst = __sk_dst_get(sk);
- 
--	if (dst && dst->obsolete && dst->ops->check(dst, cookie) == NULL) {
-+	if (dst && dst->obsolete &&
-+	    INDIRECT_CALL_INET(dst->ops->check, ip6_dst_check, ipv4_dst_check,
-+			       dst, cookie) == NULL) {
- 		sk_tx_queue_clear(sk);
- 		sk->sk_dst_pending_confirm = 0;
- 		RCU_INIT_POINTER(sk->sk_dst_cache, NULL);
-@@ -546,7 +552,9 @@ struct dst_entry *sk_dst_check(struct sock *sk, u32 cookie)
- {
- 	struct dst_entry *dst = sk_dst_get(sk);
- 
--	if (dst && dst->obsolete && dst->ops->check(dst, cookie) == NULL) {
-+	if (dst && dst->obsolete &&
-+	    INDIRECT_CALL_INET(dst->ops->check, ip6_dst_check, ipv4_dst_check,
-+			       dst, cookie) == NULL) {
- 		sk_dst_reset(sk);
- 		dst_release(dst);
- 		return NULL;
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 4fac91f8bd6c..9e6537709794 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -133,7 +133,8 @@ static int ip_rt_gc_timeout __read_mostly	= RT_GC_TIMEOUT;
-  *	Interface to generic destination cache.
-  */
- 
--static struct dst_entry *ipv4_dst_check(struct dst_entry *dst, u32 cookie);
-+INDIRECT_CALLABLE_SCOPE
-+struct dst_entry	*ipv4_dst_check(struct dst_entry *dst, u32 cookie);
- static unsigned int	 ipv4_default_advmss(const struct dst_entry *dst);
- INDIRECT_CALLABLE_SCOPE
- unsigned int		ipv4_mtu(const struct dst_entry *dst);
-@@ -1188,7 +1189,8 @@ void ipv4_sk_redirect(struct sk_buff *skb, struct sock *sk)
- }
- EXPORT_SYMBOL_GPL(ipv4_sk_redirect);
- 
--static struct dst_entry *ipv4_dst_check(struct dst_entry *dst, u32 cookie)
-+INDIRECT_CALLABLE_SCOPE struct dst_entry *ipv4_dst_check(struct dst_entry *dst,
-+							 u32 cookie)
- {
- 	struct rtable *rt = (struct rtable *) dst;
- 
-@@ -1204,6 +1206,7 @@ static struct dst_entry *ipv4_dst_check(struct dst_entry *dst, u32 cookie)
- 		return NULL;
- 	return dst;
- }
-+EXPORT_SYMBOL(ipv4_dst_check);
- 
- static void ipv4_send_dest_unreach(struct sk_buff *skb)
- {
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index af2338294598..aba5061024c7 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -1646,6 +1646,8 @@ u16 tcp_v4_get_syncookie(struct sock *sk, struct iphdr *iph,
- 	return mss;
- }
- 
-+INDIRECT_CALLABLE_DECLARE(struct dst_entry *ipv4_dst_check(struct dst_entry *,
-+							   u32));
- /* The socket must have it's spinlock held when we get
-  * here, unless it is a TCP_LISTEN socket.
-  *
-@@ -1665,7 +1667,8 @@ int tcp_v4_do_rcv(struct sock *sk, struct sk_buff *skb)
- 		sk_mark_napi_id(sk, skb);
- 		if (dst) {
- 			if (inet_sk(sk)->rx_dst_ifindex != skb->skb_iif ||
--			    !dst->ops->check(dst, 0)) {
-+			    !INDIRECT_CALL_1(dst->ops->check, ipv4_dst_check,
-+					     dst, 0)) {
- 				dst_release(dst);
- 				sk->sk_rx_dst = NULL;
- 			}
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 22caee290b6c..e074fb5964e2 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -81,7 +81,8 @@ enum rt6_nud_state {
- 	RT6_NUD_SUCCEED = 1
- };
- 
--static struct dst_entry	*ip6_dst_check(struct dst_entry *dst, u32 cookie);
-+INDIRECT_CALLABLE_SCOPE
-+struct dst_entry	*ip6_dst_check(struct dst_entry *dst, u32 cookie);
- static unsigned int	 ip6_default_advmss(const struct dst_entry *dst);
- INDIRECT_CALLABLE_SCOPE
- unsigned int		ip6_mtu(const struct dst_entry *dst);
-@@ -2612,7 +2613,8 @@ static struct dst_entry *rt6_dst_from_check(struct rt6_info *rt,
- 		return NULL;
- }
- 
--static struct dst_entry *ip6_dst_check(struct dst_entry *dst, u32 cookie)
-+INDIRECT_CALLABLE_SCOPE struct dst_entry *ip6_dst_check(struct dst_entry *dst,
-+							u32 cookie)
- {
- 	struct dst_entry *dst_ret;
- 	struct fib6_info *from;
-@@ -2642,6 +2644,7 @@ static struct dst_entry *ip6_dst_check(struct dst_entry *dst, u32 cookie)
- 
- 	return dst_ret;
- }
-+EXPORT_SYMBOL(ip6_dst_check);
- 
- static struct dst_entry *ip6_negative_advice(struct dst_entry *dst)
- {
-diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-index 1a1510513739..9e61e4fda03e 100644
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -1417,6 +1417,8 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
- 	return NULL;
- }
- 
-+INDIRECT_CALLABLE_DECLARE(struct dst_entry *ipv4_dst_check(struct dst_entry *,
-+							   u32));
- /* The socket must have it's spinlock held when we get
-  * here, unless it is a TCP_LISTEN socket.
-  *
-@@ -1470,7 +1472,8 @@ static int tcp_v6_do_rcv(struct sock *sk, struct sk_buff *skb)
- 		sk_mark_napi_id(sk, skb);
- 		if (dst) {
- 			if (inet_sk(sk)->rx_dst_ifindex != skb->skb_iif ||
--			    dst->ops->check(dst, np->rx_dst_cookie) == NULL) {
-+			    INDIRECT_CALL_1(dst->ops->check, ip6_dst_check,
-+					    dst, np->rx_dst_cookie) == NULL) {
- 				dst_release(dst);
- 				sk->sk_rx_dst = NULL;
- 			}
--- 
-2.29.2.576.ga3fc446d84-goog
-
+Oh.. sorry I missed that mail for some reason. Let's continue
+there.
