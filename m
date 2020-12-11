@@ -2,144 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A252D78EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D778D2D7913
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437747AbgLKPPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:15:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437738AbgLKPOy (ORCPT
+        id S2437790AbgLKPTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:19:50 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:13540 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437682AbgLKPTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:14:54 -0500
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64CFC0613CF;
-        Fri, 11 Dec 2020 07:14:13 -0800 (PST)
-Received: by mail-oo1-xc42.google.com with SMTP id h10so2200486ooi.10;
-        Fri, 11 Dec 2020 07:14:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2MS75XuO2n8ZC0XE33ILQfM4neu02PG1B8RqMHSVhJA=;
-        b=HorjZl3nVPfFEtRraH2QSPj6+tFuQzjmHX5ZdH1hrhCxMS1bekQ/MQb64l7CtyezZW
-         oJ3zAvu8snz/j151dvHBPKaX6PjObCssD4PuI1usUtXWh6OYmkaw90SM+c4295Gj4TTA
-         y68IyiHiqXfaO2ig6fHxd7f7XYRYZuFat3x13VSnGko+XCbdM7ce6vFjanhJXbKFwY7+
-         IRLdjqBOizNgnhBnSVp2dQsKqLJVw+R20X4NpBl6iABB/S2c6QlVOPdFvtHMFbx/7dFE
-         fLVP3ga0h6r1DdXxQDYEEPanGo4OZZce2ZP5GQ5g2hRK+bFoBl2yXI9vuJQf5NSBffMS
-         kjEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=2MS75XuO2n8ZC0XE33ILQfM4neu02PG1B8RqMHSVhJA=;
-        b=FySh4DbdvjsNgS2Xa19D5KMGozApUleY59FPfeFPh5HjRQXGRsZlGPWmCMjtF8jVcN
-         0+tVjDIHZFNYuRVLIJ+YLVQGfMl/TlLwiKI7qV7fkfGsmK5Jqnr73D6thKLN9Sx6iudw
-         pgYyoE2UCo5xS/ivft5eNjIQK7QL70xyjkyPgbg9khHoQ01WYZVrwXr6QM0BYzCyVtq7
-         QfUaM+oOh3QKZQAu+UPhqqtxPqT+xuN7MAiktaHAUU1InaI5IEyU8DDTtj/cmYpQh6Jd
-         R9XtOiZ2LgwYff8J+BfBKWSfmmqinvLfs0DMXjZiDId+ACEkWql2NJcLGWmmhcQJfc/Q
-         4LVA==
-X-Gm-Message-State: AOAM532hi/fBVnbJAxWuQwiZBYHGa+PLgzq/KnvYfRxIv2A6MeoDauV1
-        AJDrCUSvaW5eVIKTDHdRA6ZCiMURKXg=
-X-Google-Smtp-Source: ABdhPJzahAgXV1STWvNBkQn9pF2bnpDx9wD4FvBkjZ1x1gTA8xwDv/s+az6I8aOdBCSmy0ioTTAKFQ==
-X-Received: by 2002:a4a:bc8d:: with SMTP id m13mr10517612oop.63.1607699652738;
-        Fri, 11 Dec 2020 07:14:12 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g5sm1875808otq.43.2020.12.11.07.14.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Dec 2020 07:14:11 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] usb: typec: tcpci: Enable bleed discharge when auto
- discharge is enabled
-To:     Badhri Jagan Sridharan <badhri@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201211071145.2199997-1-badhri@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <6ebf3e71-37e5-ece3-8946-5b8e5a62b4bf@roeck-us.net>
-Date:   Fri, 11 Dec 2020 07:14:10 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 11 Dec 2020 10:19:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1607699768;
+        s=strato-dkim-0002; d=fossekall.de;
+        h=Message-Id:Date:Subject:Cc:To:From:From:Subject:Sender;
+        bh=NCsW77FbQ1B3gPrsvuKFRFGs+rTfq3kJjuPpOkHykKY=;
+        b=gHyX06VEezUlEoSxYyFkmFgQUQHCJYgBv7j/3d7dVuMiUJEXXKKRutgaGZjt5zKls1
+        vQYmXRWZadJzAqym7HWtE01SoG9+ct8XuXK4do99Z3Z69EY6VxgWxF0DHDD2+7voHAbA
+        sRBiyr5pAd8dU78v1QoLjihWyugK0eYmUzXRro+a3jyszjG8tEVRkwSq9SUOy9lPr7c2
+        DPb2xnb6/SpprfzmthLkkgAwjULxreFzUKkBRnHXuqldzYzrl9KYgV6WFO9QRKB5fliQ
+        eq046dfsHCm+KHBDQ5e/3J7eZvyVPDIzVtYtHsWTsacsKDC1jptVH6my+tK4bJku6OGp
+        ZOVA==
+X-RZG-AUTH: ":O2kGeEG7b/pS1EzgE2y7nF0STYsSLflpbjNKxx7cGrBOdI6BL9pkS3QW19mO7I+/JwRspuzJFZuRzQ=="
+X-RZG-CLASS-ID: mo00
+Received: from aerfugl
+        by smtp.strato.de (RZmta 47.7.1 AUTH)
+        with ESMTPSA id L0a6acwBBFG61AH
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Fri, 11 Dec 2020 16:16:06 +0100 (CET)
+Received: from koltrast.a98shuttle.de ([192.168.1.27] helo=a98shuttle.de)
+        by aerfugl with smtp (Exim 4.89)
+        (envelope-from <michael@a98shuttle.de>)
+        id 1knk8G-0005RX-4w; Fri, 11 Dec 2020 16:14:56 +0100
+Received: (nullmailer pid 116008 invoked by uid 502);
+        Fri, 11 Dec 2020 15:14:56 -0000
+From:   Michael Klein <michael@fossekall.de>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Michael Klein <michael@fossekall.de>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v5 0/3] BPi M2 Zero poweroff support via new regulator-poweroff driver
+Date:   Fri, 11 Dec 2020 16:14:42 +0100
+Message-Id: <20201211151445.115943-1-michael@fossekall.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201211071145.2199997-1-badhri@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/20 11:11 PM, Badhri Jagan Sridharan wrote:
-> Auto discharge circuits kick in only when vbus decays and reaches
-> VBUS_SINK_DISCONNECT_THRESHOLD threshold. Enable bleed discharge to
-> discharge vbus to VBUS_SINK_DISCONNECT_THRESHOLD upon disconnect.
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+Changes in v2:
+  - rename DT node
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Changes in v3:
+  - add regulator-poweroff driver
+  - use regulator-poweroff driver instead of gpio-poweroff
 
-> ---
->  drivers/usb/typec/tcpm/tcpci.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-> index af5524338a63..f676abab044b 100644
-> --- a/drivers/usb/typec/tcpm/tcpci.c
-> +++ b/drivers/usb/typec/tcpm/tcpci.c
-> @@ -725,6 +725,8 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
->  		tcpci->tcpc.enable_auto_vbus_discharge = tcpci_enable_auto_vbus_discharge;
->  		tcpci->tcpc.set_auto_vbus_discharge_threshold =
->  			tcpci_set_auto_vbus_discharge_threshold;
-> +		regmap_update_bits(tcpci->regmap, TCPC_POWER_CTRL, TCPC_POWER_CTRL_BLEED_DISCHARGE,
-> +				   TCPC_POWER_CTRL_BLEED_DISCHARGE);
->  	}
->  
->  	if (tcpci->data->vbus_vsafe0v)
-> 
+Changes in v4:
+  - hardcode poweroff timeout to 3000ms, not configurable any more
+  - remove support for multiple regulators
+  - fix Documentation issues
+
+Changes in v5:
+  - rename DT property 'power-supply' -> 'cpu-supply'
+
+Michael Klein (3):
+  power: reset: new driver regulator-poweroff
+  Documentation: DT: binding documentation for regulator-poweroff
+  ARM: dts: sun8i-h2-plus-bananapi-m2-zero: add poweroff node
+
+ .../power/reset/regulator-poweroff.yaml       | 37 +++++++++
+ .../dts/sun8i-h2-plus-bananapi-m2-zero.dts    |  5 ++
+ drivers/power/reset/Kconfig                   |  7 ++
+ drivers/power/reset/Makefile                  |  1 +
+ drivers/power/reset/regulator-poweroff.c      | 82 +++++++++++++++++++
+ 5 files changed, 132 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/reset/regulator-poweroff.yaml
+ create mode 100644 drivers/power/reset/regulator-poweroff.c
+
+-- 
+2.29.2
 
