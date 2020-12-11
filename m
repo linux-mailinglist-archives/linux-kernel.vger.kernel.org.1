@@ -2,100 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBD12D7361
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCFE2D7360
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405795AbgLKKGQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Dec 2020 05:06:16 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:20158 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405764AbgLKKF2 (ORCPT
+        id S2405748AbgLKKGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:06:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405740AbgLKKFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:05:28 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-249-bCdh2ug7OF-rDdSrCZLxFQ-1; Fri, 11 Dec 2020 10:03:48 +0000
-X-MC-Unique: bCdh2ug7OF-rDdSrCZLxFQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 11 Dec 2020 10:03:47 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 11 Dec 2020 10:03:47 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Ioana Ciornei' <ioana.ciornei@nxp.com>
-CC:     'Daniel Thompson' <daniel.thompson@linaro.org>,
-        "linux-netdev@vger.kernel.org" <linux-netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH RESEND net-next 1/2] dpaa2-eth: send a scatter-gather FD
- instead of realloc-ing
-Thread-Topic: [PATCH RESEND net-next 1/2] dpaa2-eth: send a scatter-gather FD
- instead of realloc-ing
-Thread-Index: AQHWzxqS1niBehB/rU2uwbP/Q9O4LKnxoRyAgAADk4CAAATMgA==
-Date:   Fri, 11 Dec 2020 10:03:47 +0000
-Message-ID: <cc8ec04373a14e8880a6ca35da5c151d@AcuMS.aculab.com>
-References: <20200629184712.12449-2-ioana.ciornei () nxp ! com>
- <20201210173156.mbizovo6rxvkda73@holly.lan>
- <c4e033fe17674685b64a60055c68704e@AcuMS.aculab.com>
- <20201211093856.gj3do6ntnmxsqtzp@skbuf>
-In-Reply-To: <20201211093856.gj3do6ntnmxsqtzp@skbuf>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 11 Dec 2020 05:05:22 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B3CC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 02:04:41 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id r3so8419770wrt.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 02:04:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=1m1097L8Z65yNEwPVsqCFAhMTO7JcIQztqm0XMNCEPQ=;
+        b=QxFc8GC7E8T+U1gL6XJZvjeXxiWbuXfRqv6+3/ZJOEoQYn8YiRuOLDZAWueGTraddr
+         xPqz2bb/8UoAjcvd5vsoN8LW5Iq1Lp0AqSabcEPsXCi+l/VkgtRG+OzcSz2lDjE/Pdix
+         jshzcxstN+qosX02zQCGS+/I2FYEYzEAEBcOtJSJ1mr8h1MxoB17ALXOASyS2RwWORLD
+         sYyHzWywWpvht4yy3yfrgCqZgrWTC9ga2KkmmQ+oI2PP2v+Qn9n0ORXRDwcKBkqiCMKf
+         N0XznwYuSkPJfUeKcTzGZ2pjw4N1X+j5jdnHapfeS7fwZVeyxQTBUj+e7/XfSTgXR3Ap
+         ykzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=1m1097L8Z65yNEwPVsqCFAhMTO7JcIQztqm0XMNCEPQ=;
+        b=mQV8xsleRVRECSaXux73SMFrExh2pcJmGQfDw75Rg6Up1RVe9jc69toyznbHsdYHQR
+         wgWN+P3TH7HR7UnM0JxZgbeZRVWGQp26o9XyJaKJqkXimKxu62bO+IqjPPotAuEg/J2i
+         ez0CCBwbxCvL/bKsoJIsTrRWAcnqAGQ7COoUIgPBOmLEmlaS9ePXQuzonHndBiQE+Oh5
+         LrM+piwlYGvkRWLEHroSNW7sPKWv6G2qbR4Xwyje0RMBQoYZhXpVwysfpej0h/Dw8NMU
+         QS+nZF0LymGflGSiZlhZ7Hz3vEdDMhfWGwCsLX2JL5D3NipvNLliH2QEi5AkqCcX2HPK
+         hosA==
+X-Gm-Message-State: AOAM532LB5lat+8y10xs4dXq7TQeuTdwCEVx4U8nwfYVx/EAw0j5yhEh
+        JUh8Ob4OsjlFgNyaKcRBPhT5qQ==
+X-Google-Smtp-Source: ABdhPJwPXfTZPDeiEu60EOOVLfjPDebdQDfkcu30zCcF3k07tbHpbRDSiAPsDeGxO9u3bWjkQ8cNJw==
+X-Received: by 2002:a5d:6ccc:: with SMTP id c12mr13142414wrc.4.1607681080467;
+        Fri, 11 Dec 2020 02:04:40 -0800 (PST)
+Received: from dell ([91.110.221.240])
+        by smtp.gmail.com with ESMTPSA id 125sm14307876wmc.27.2020.12.11.02.04.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 02:04:39 -0800 (PST)
+Date:   Fri, 11 Dec 2020 10:04:36 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        linux-gpio@vger.kernel.org, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-pci@vger.kernel.org,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
+Subject: Re: [patch 16/30] mfd: ab8500-debugfs: Remove the racy fiddling with
+ irq_desc
+Message-ID: <20201211100436.GC5029@dell>
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194044.157283633@linutronix.de>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201210194044.157283633@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ioana Ciornei
-> Sent: 11 December 2020 09:39
+On Thu, 10 Dec 2020, Thomas Gleixner wrote:
+
+> First of all drivers have absolutely no business to dig into the internals
+> of an irq descriptor. That's core code and subject to change. All of this
+> information is readily available to /proc/interrupts in a safe and race
+> free way.
 > 
-> On Fri, Dec 11, 2020 at 09:30:43AM +0000, David Laight wrote:
-> > From: Daniel Thompson
-> > > Sent: 10 December 2020 17:32
-> > >
-> > > On Mon, Jun 29, 2020 at 06:47:11PM +0000, Ioana Ciornei wrote:
-> > > > Instead of realloc-ing the skb on the Tx path when the provided headroom
-> > > > is smaller than the HW requirements, create a Scatter/Gather frame
-> > > > descriptor with only one entry.
-> >
-> > Is it worth simplifying the code by permanently allocating (and dma-mapping)
-> > the extra structure for every ring entry.
-> > It is (probably) only one page and 1 iommu entry.
+> Remove the inspection code which is a blatant violation of subsystem
+> boundaries and racy against concurrent modifications of the interrupt
+> descriptor.
 > 
+> Print the irq line instead so the information can be looked up in a sane
+> way in /proc/interrupts.
 > 
-> That is exactly what I was thinking. At the moment the SGT structure is
-> pre-allocated but not pre-mapped.
-> 
-> I'll let you know how it goes.
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> ---
+>  drivers/mfd/ab8500-debugfs.c |   16 +++-------------
+>  1 file changed, 3 insertions(+), 13 deletions(-)
 
-How much does the dma-map actually cost?
-For short fragments it is probably worth copying into a pre-allocated
-pre-mapped transmit buffer area.
-You'd want to do aligned full-word copies and use separate cache lines
-for each frame.
-It does make tx setup more error prone - since you need the space in
-the tx buffer area as well as in the tx ring.
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
-For one OS (not sun's) on a sparc mbus+sbus system one of my colleagues
-measured a cutoff point of about 1k.
-
-The copy to tx buffer path also helps with the pathological skb that
-are 1500 bytes in 1 byte fragments.
-(Maybe skb can't get that bad, but I've seen that on other OS.)
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
