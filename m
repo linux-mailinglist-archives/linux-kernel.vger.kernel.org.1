@@ -2,168 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559192D7420
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0732D742D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392192AbgLKKnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:43:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393033AbgLKKnP (ORCPT
+        id S2393437AbgLKKsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:48:10 -0500
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:10753 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726623AbgLKKrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:43:15 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2878C0613CF;
-        Fri, 11 Dec 2020 02:42:34 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id w13so12676154lfd.5;
-        Fri, 11 Dec 2020 02:42:34 -0800 (PST)
+        Fri, 11 Dec 2020 05:47:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=U+y+tDZjJH7JyLjfyadetwPt0gf0m/ga9lELQW2CCaU=;
-        b=YOxctUmd6aySO+yRHhWybfiYYtjLN1kzmau+gTL9/ZdGZMThIXDohvlHfv1VmwWuIv
-         rp+BHIQr5ay3ohoc9P1JwvEZwl9ASIfo67kQtJ+/58qsBsTUaJGxY8P16a1QZaYzQTFO
-         ovuLVMxuSF0dN0aN3a8J4hKKfdtJ7Bgvpv6GP7Q0fCo+9HgX3AVwy5xD+K8cjvWo78gQ
-         xS+t041IkDwZ57KeEoIz9AqYHPaoeUp03SuYHHtMrE9hqAUehWV5Yp0V0WSaedF/JmTD
-         30KzH+No+omEquNDuaOh3RrR9YWBJBfofebHVr5p+BXxBpBFC+CH3xOUtbiXvW7N+WPy
-         6DFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=U+y+tDZjJH7JyLjfyadetwPt0gf0m/ga9lELQW2CCaU=;
-        b=ZZGJsl9gORynG+DP9gFrU0QeN6eal0WEu5r6+ImhOn1iynR3O+E3HfPEMZNoCJ55Q2
-         tiN5m5pGnXo8cxPQ0kWnm3/LLvrov1taukVG1dn8LIQNZjRVmooiyKv27PHdvts39KQj
-         72C0OqYr8NIFv7ETA/GJuC8KY84G0iq8L0xwJ4Z91+cH5SrO39a+9dorh51dysMtP0NH
-         DJiJuVDZL4r8dvyL7G0wBj7YSdJLQ4MYHS/QilAFxuT5j4b0SOy8JBzWdv/Hd/RyhTxo
-         yPllGUDIXLQZdzAOVp9BpalLEDE2LZtRDoQquJqeoQrzH0/IjOE8qEhk0ozdJm/4v3ff
-         m7+Q==
-X-Gm-Message-State: AOAM531RUtCrKs7oAUQtMZOqGYu7M3zTlNHKGJvW9xm14BsH4C/a1GRN
-        df5/z9Rg9uipChEC+D7QeP0VAPzfTh9rtiuQYRc=
-X-Google-Smtp-Source: ABdhPJy02b8KUSA9swQaEtY1e+kwg9ZkoRN8mN3nHzMCt8PaBh9BPzwL2n1a+Hj9OWh/Co07BciugzwaQoowkirrvEM=
-X-Received: by 2002:a19:747:: with SMTP id 68mr4107957lfh.408.1607683353004;
- Fri, 11 Dec 2020 02:42:33 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1607683651; x=1639219651;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=gfBur0GlhElbekxC9TYTBm7Z41iQ0G2i2uPqDPkx+K4=;
+  b=Au6AYjKi6idk1ZAJQMrWoZ898yq6P2H6OgQlP1h3e6uiAZxpcg9RPJrB
+   O8okVOKFX56Enq7ArxGTI2DssgkimvH8MXv+i8X3qKIXzZspb6VuJXmtk
+   7tlxVNjpFiuH8VodF8kX5FqI9QowNompBp1j6fJvX/x0A3ljswtTc7pKC
+   E=;
+X-IronPort-AV: E=Sophos;i="5.78,411,1599523200"; 
+   d="scan'208";a="68767749"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 11 Dec 2020 10:46:44 +0000
+Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id C423FA1E75;
+        Fri, 11 Dec 2020 10:46:41 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.185) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 11 Dec 2020 10:46:35 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Eric Dumazet <edumazet@google.com>
+CC:     SeongJae Park <sjpark@amazon.com>,
+        David Miller <davem@davemloft.net>,
+        SeongJae Park <sjpark@amazon.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Alexey Kuznetsov" <kuznet@ms2.inr.ac.ru>,
+        Florian Westphal <fw@strlen.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        netdev <netdev@vger.kernel.org>, <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] net/ipv4/inet_fragment: Batch fqdir destroy works
+Date:   Fri, 11 Dec 2020 11:46:22 +0100
+Message-ID: <20201211104622.23231-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CANn89i+P8d8Ok8k1o3_ADW4iWLKU=qikq+RAxmqkYbUn1wkWvQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <1607442886-13046-1-git-send-email-u0084500@gmail.com>
- <1607442886-13046-3-git-send-email-u0084500@gmail.com> <20201210151742.GB2518014@robh.at.kernel.org>
-In-Reply-To: <20201210151742.GB2518014@robh.at.kernel.org>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Fri, 11 Dec 2020 18:42:20 +0800
-Message-ID: <CADiBU3_Z7jPxGPxYpdq=fJyS1kwxx32F8FjjSw5L3_LK0VG28g@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] regulator: rt4831: Adds DT binding document for
- Richtek RT4831 DSV regulator
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, cy_huang <cy_huang@richtek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.185]
+X-ClientProxiedBy: EX13D01UWB002.ant.amazon.com (10.43.161.136) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob Herring <robh@kernel.org> =E6=96=BC 2020=E5=B9=B412=E6=9C=8810=E6=97=A5=
- =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8811:17=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Tue, Dec 08, 2020 at 11:54:45PM +0800, cy_huang wrote:
-> > From: ChiYuan Huang <cy_huang@richtek.com>
+On Fri, 11 Dec 2020 11:41:36 +0100 Eric Dumazet <edumazet@google.com> wrote:
+
+> On Fri, Dec 11, 2020 at 11:33 AM SeongJae Park <sjpark@amazon.com> wrote:
 > >
-> > Adds DT binding document for Richtek RT4831 DSV regulator.
+> > On Fri, 11 Dec 2020 09:43:41 +0100 Eric Dumazet <edumazet@google.com> wrote:
 > >
-> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > ---
-> > since v3
-> > - Add dual license tag in regulator binding document.
-> > - Left regulator dt-binding example only.
-> > ---
-> >  .../regulator/richtek,rt4831-regulator.yaml        | 57 ++++++++++++++=
-++++++++
-> >  1 file changed, 57 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/regulator/richtek=
-,rt4831-regulator.yaml
+> > > On Fri, Dec 11, 2020 at 9:21 AM SeongJae Park <sjpark@amazon.com> wrote:
+> > > >
+> > > > From: SeongJae Park <sjpark@amazon.de>
+> > > >
+> > > > For each 'fqdir_exit()' call, a work for destroy of the 'fqdir' is
+> > > > enqueued.  The work function, 'fqdir_work_fn()', internally calls
+> > > > 'rcu_barrier()'.  In case of intensive 'fqdir_exit()' (e.g., frequent
+> > > > 'unshare()' systemcalls), this increased contention could result in
+> > > > unacceptably high latency of 'rcu_barrier()'.  This commit avoids such
+> > > > contention by doing the 'rcu_barrier()' and subsequent lightweight works
+> > > > in a batched manner using a dedicated singlethread worker, as similar to
+> > > > that of 'cleanup_net()'.
+> > >
+> > >
+> > > Not sure why you submit a patch series with a single patch.
+> > >
+> > > Your cover letter contains interesting info that would better be
+> > > captured in this changelog IMO
 > >
-> > diff --git a/Documentation/devicetree/bindings/regulator/richtek,rt4831=
--regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rt483=
-1-regulator.yaml
-> > new file mode 100644
-> > index 00000000..c6741f2
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/regulator/richtek,rt4831-regula=
-tor.yaml
-> > @@ -0,0 +1,57 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/regulator/richtek,rt4831-regulator.=
-yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Richtek RT4831 Display Bias Voltage Regulator
-> > +
-> > +maintainers:
-> > +  - ChiYuan Huang <cy_huang@richtek.com>
-> > +
-> > +description: |
-> > +  RT4831 is a multifunctional device that can provide power to the LCD=
- display
-> > +  and LCD backlight.
-> > +
-> > +  For Display Bias Voltage DSVP and DSVN, the output range is about 4V=
- to 6.5V.
-> > +  It is sufficient to meet the current LCD power requirement.
-> > +
-> > +  DSVLCM is a boost regulator in IC internal as DSVP and DSVN input po=
-wer.
-> > +  Its voltage should be configured above 0.15V to 0.2V gap larger than=
- the
-> > +  voltage needed for DSVP and DSVN. Too much voltage gap could improve=
- the
-> > +  voltage drop from the heavy loading scenario. But it also make the p=
-ower
-> > +  efficiency worse. It's a trade-off.
-> > +
-> > +  Datasheet is available at
-> > +  https://www.richtek.com/assets/product_file/RT4831A/DS4831A-05.pdf
-> > +
-> > +patternProperties:
-> > +  "^DSV(LCM|P|N)$":
-> > +    type: object
-> > +    $ref: regulator.yaml#
-> > +    description:
-> > +      Properties for single Display Bias Voltage regulator.
->
-> Just put this into the MFD schema directly if you don't have any custom
-> properties to add.
->
-OK, I'll directly remove rt4831 regulator dt-binding and put the
-descriptions into mfd binding.
-Ack in next series of patch.
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    regulators {
-> > +      DSVLCM {
-> > +        regulator-min-microvolt =3D <4000000>;
-> > +        regulator-max-microvolt =3D <7150000>;
-> > +        regulator-allow-bypass;
-> > +      };
-> > +      DSVP {
-> > +        regulator-name =3D "rt4831-dsvp";
-> > +        regulator-min-microvolt =3D <4000000>;
-> > +        regulator-max-microvolt =3D <6500000>;
-> > +        regulator-boot-on;
-> > +      };
-> > +      DSVN {
-> > +        regulator-name =3D "rt4831-dsvn";
-> > +        regulator-min-microvolt =3D <4000000>;
-> > +        regulator-max-microvolt =3D <6500000>;
-> > +        regulator-boot-on;
-> > +      };
-> > +    };
-> > --
-> > 2.7.4
+> > I thought someone might think this is not a kernel issue but the reproducer is
+> > insane or 'rcu_barrier()' needs modification.  I wanted to do such discussion
+> > on the coverletter.  Seems I misjudged.  I will make this single patch and move
+> > the detailed information here from the next version.
 > >
+> > >
+> > > >
+> > > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > > > ---
+> > > >  include/net/inet_frag.h  |  1 +
+> > > >  net/ipv4/inet_fragment.c | 45 +++++++++++++++++++++++++++++++++-------
+> > > >  2 files changed, 39 insertions(+), 7 deletions(-)
+> > > >
+> > > > diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
+> > > > index bac79e817776..48cc5795ceda 100644
+> > > > --- a/include/net/inet_frag.h
+> > > > +++ b/include/net/inet_frag.h
+> > > > @@ -21,6 +21,7 @@ struct fqdir {
+> > > >         /* Keep atomic mem on separate cachelines in structs that include it */
+> > > >         atomic_long_t           mem ____cacheline_aligned_in_smp;
+> > > >         struct work_struct      destroy_work;
+> > > > +       struct llist_node       free_list;
+> > > >  };
+> > > >
+> > > >  /**
+> > > > diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
+> > > > index 10d31733297d..a6fc4afcc323 100644
+> > > > --- a/net/ipv4/inet_fragment.c
+> > > > +++ b/net/ipv4/inet_fragment.c
+> > > > @@ -145,12 +145,17 @@ static void inet_frags_free_cb(void *ptr, void *arg)
+> > > >                 inet_frag_destroy(fq);
+> > > >  }
+> > > >
+> > > > -static void fqdir_work_fn(struct work_struct *work)
+> > > > +static struct workqueue_struct *fqdir_wq;
+> > > > +static LLIST_HEAD(free_list);
+> > > > +
+> > > > +static void fqdir_free_fn(struct work_struct *work)
+> > > >  {
+> > > > -       struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
+> > > > -       struct inet_frags *f = fqdir->f;
+> > > > +       struct llist_node *kill_list;
+> > > > +       struct fqdir *fqdir, *tmp;
+> > > > +       struct inet_frags *f;
+> > > >
+> > > > -       rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
+> > > > +       /* Atomically snapshot the list of fqdirs to free */
+> > > > +       kill_list = llist_del_all(&free_list);
+> > > >
+> > > >         /* We need to make sure all ongoing call_rcu(..., inet_frag_destroy_rcu)
+> > > >          * have completed, since they need to dereference fqdir.
+> > > > @@ -158,12 +163,38 @@ static void fqdir_work_fn(struct work_struct *work)
+> > > >          */
+> > > >         rcu_barrier();
+> > > >
+> > > > -       if (refcount_dec_and_test(&f->refcnt))
+> > > > -               complete(&f->completion);
+> > > > +       llist_for_each_entry_safe(fqdir, tmp, kill_list, free_list) {
+> > > > +               f = fqdir->f;
+> > > > +               if (refcount_dec_and_test(&f->refcnt))
+> > > > +                       complete(&f->completion);
+> > > >
+> > > > -       kfree(fqdir);
+> > > > +               kfree(fqdir);
+> > > > +       }
+> > > >  }
+> > > >
+> > > > +static DECLARE_WORK(fqdir_free_work, fqdir_free_fn);
+> > > > +
+> > > > +static void fqdir_work_fn(struct work_struct *work)
+> > > > +{
+> > > > +       struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
+> > > > +
+> > > > +       rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
+> > > > +
+> > > > +       if (llist_add(&fqdir->free_list, &free_list))
+> > > > +               queue_work(fqdir_wq, &fqdir_free_work);
+> > >
+> > > I think you misunderstood me.
+> > >
+> > > Since this fqdir_free_work will have at most one instance, you can use
+> > > system_wq here, there is no risk of abuse.
+> > >
+> > > My suggestion was to not use system_wq for fqdir_exit(), to better
+> > > control the number
+> > >  of threads in rhashtable cleanups.
+> > >
+> > > void fqdir_exit(struct fqdir *fqdir)
+> > > {
+> > >         INIT_WORK(&fqdir->destroy_work, fqdir_work_fn);
+> > > -       queue_work(system_wq, &fqdir->destroy_work);
+> > > +      queue_work(fqdir_wq, &fqdir->destroy_work);
+> > > }
+> >
+> > Oh, got it.  I definitely misunderstood.  My fault, sorry.
+> >
+> > >
+> > >
+> > >
+> > > > +}
+> > > > +
+> > > > +static int __init fqdir_wq_init(void)
+> > > > +{
+> > > > +       fqdir_wq = create_singlethread_workqueue("fqdir");
+> > >
+> > >
+> > > And here, I suggest to use a non ordered work queue, allowing one
+> > > thread per cpu, to allow concurrent rhashtable cleanups
+> > >
+> > > Also "fqdir" name is rather vague, this is an implementation detail ?
+> > >
+> > > fqdir_wq =create_workqueue("inet_frag_wq");
+> >
+> > So, what you are suggesting is to use a dedicated non-ordered work queue
+> > (fqdir_wq) for rhashtable cleanup and do the remaining works with system_wq in
+> > the batched manner, right?  IOW, doing below change on top of this patch.
+> >
+> > --- a/net/ipv4/inet_fragment.c
+> > +++ b/net/ipv4/inet_fragment.c
+> > @@ -145,7 +145,7 @@ static void inet_frags_free_cb(void *ptr, void *arg)
+> >                 inet_frag_destroy(fq);
+> >  }
+> >
+> > -static struct workqueue_struct *fqdir_wq;
+> > +static struct workqueue_struct *inet_frag_wq;
+> >  static LLIST_HEAD(free_list);
+> 
+> Nit : Please prefix this free_list , like fqdir_free_list  to avoid
+> namespace pollution.
+
+Sure!
+
+> 
+> 
+> >
+> >  static void fqdir_free_fn(struct work_struct *work)
+> > @@ -181,14 +181,14 @@ static void fqdir_work_fn(struct work_struct *work)
+> >         rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
+> >
+> >         if (llist_add(&fqdir->free_list, &free_list))
+> > -               queue_work(fqdir_wq, &fqdir_free_work);
+> > +               queue_work(system_wq, &fqdir_free_work);
+> >  }
+> >
+> >  static int __init fqdir_wq_init(void)
+> >  {
+> > -       fqdir_wq = create_singlethread_workqueue("fqdir");
+> > -       if (!fqdir_wq)
+> > -               panic("Could not create fqdir workq");
+> > +       inet_frag_wq = create_workqueue("inet_frag_wq");
+> > +       if (!inet_frag_wq)
+> > +               panic("Could not create inet frag workq");
+> >         return 0;
+> >  }
+> >
+> > @@ -218,7 +218,7 @@ EXPORT_SYMBOL(fqdir_init);
+> >  void fqdir_exit(struct fqdir *fqdir)
+> >  {
+> >         INIT_WORK(&fqdir->destroy_work, fqdir_work_fn);
+> > -       queue_work(system_wq, &fqdir->destroy_work);
+> > +       queue_work(inet_frag_wq, &fqdir->destroy_work);
+> >  }
+> >  EXPORT_SYMBOL(fqdir_exit);
+> >
+> > If I'm still misunderstanding, please let me know.
+> >
+> 
+> I think that with the above changes, we should be good ;)
+
+Thank you for your quick and nice reply.  I will send the next version soon!
+
+
+Thanks,
+SeongJae Park
