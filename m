@@ -2,252 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171D22D7AF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 742AA2D7B01
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406786AbgLKQad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 11:30:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406784AbgLKQ37 (ORCPT
+        id S2406782AbgLKQdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 11:33:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36277 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406738AbgLKQcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 11:29:59 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C71C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:29:19 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id a11so1901303wrr.13
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:29:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=upnpTTVn3TTWnoBpvg+IxCXBj8DZMW4qDQhpIs6vKnQ=;
-        b=yqBXJKEs5arzaQbSaGUArBaahtoFHUiEQ15v93dp6DK4J99ZvNwBain8TbJqJc5uUF
-         UOtugLKuan7n88JB6JjhlZugxs4mQ9BCraPdTEilJjxeiIwt+Jhsw2zQWjovodejZ/xW
-         MkAKHYlJhLnoABpVH45p/4mNr+Oqi+aWuKrnCsUv9lBmyoR1sNYwaF4gr/TrX738Aznq
-         qDBw3/jqFzZb6Ei5P/ACaHHq12KOtMFxXpXKWmWyl86+ypZa0WFurz3huU3CeUBG2J51
-         WMJ3I0sAwr/9eLC6/nsK9343EWyNWJ1d5r5aniFs2y/+75fsaeK1VBGhIi+0Lf3Jw9g9
-         Em0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=upnpTTVn3TTWnoBpvg+IxCXBj8DZMW4qDQhpIs6vKnQ=;
-        b=hWn1j1Fg1ukWx8YWWLS9jGKhi1F9bWkPTOdnc1gTej7IlDkz9jyyzYvchCutTW5CoP
-         LWtnjKbeBv1+AhzZZQXyiUQH8M/us6t0lGfAkaV90mZFcuLwNQHKIJDxSrl8ck6jjVJ7
-         L527ZH56xIeOgCXNN38dcf5Iy7xYY7DgMspUEpEsT0FNyz4zy8scRKZkqbpwHA7O8KF4
-         lrcRowvAwkrqVUJ9I6u1x+tKQWWqkNkYR2FyAt5yBAGsELmcnrzZ44DmhGKTJHe7ukwG
-         v1mqWLElTdMRKSvjqHQTW6F9BdyjhcfuUK0J8Nzo5vwlxLanySeTxS1UgmGtPQAX28qp
-         CBVg==
-X-Gm-Message-State: AOAM5328ScATVsQAIv5yfhtjBz6hAFNGjx7gkS/GjaohmeUSgcIXG9BP
-        ZBu2bwtrct+6i6Jfx1Ikltk+VQ==
-X-Google-Smtp-Source: ABdhPJxXdCgHsceI7aeSJLKx3YVhbJyQ8+v+J6x5gbPn9vnHelX7UtD/uPKDshJ7T1SoW8bHewCe6Q==
-X-Received: by 2002:adf:da4f:: with SMTP id r15mr5016152wrl.364.1607704157985;
-        Fri, 11 Dec 2020 08:29:17 -0800 (PST)
-Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id k10sm13536716wrq.38.2020.12.11.08.29.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 08:29:16 -0800 (PST)
-Date:   Fri, 11 Dec 2020 16:29:14 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Ioana Ciornei <ioana.ciornei@nxp.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH RESEND net-next 1/2] dpaa2-eth: send a scatter-gather FD
- instead of realloc-ing
-Message-ID: <20201211162914.pa3eua4nerviysyy@holly.lan>
-References: <20200629184712.12449-2-ioana.ciornei () nxp ! com>
- <20201210173156.mbizovo6rxvkda73@holly.lan>
- <20201210180636.nsfwvzs5xxzpqt7n@skbuf>
- <20201211140126.25x4z2x6upctyin5@skbuf>
+        Fri, 11 Dec 2020 11:32:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607704265;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MIrMGB49Y+IuGsgowDuFSCvTmCjpxYfmCd/REiXjRZc=;
+        b=ZtWDGfs8rNDtaY7du8F9EpaBzsj7SpIFzkiQYWAkm6d9t4kXXoHuSxVxekoTcXgLw/sqR0
+        h4qe6NJUTR5PEdkSOdl2BgxBXrC6he4dv4VJ1osooHbFx7B7w/PRI0ghrsiCrQi7qHrH/F
+        xecgaoKzA52nkqF8CtiEFffKa8kctt0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-590-DcNLE8KpMqWaEhks8lAUgg-1; Fri, 11 Dec 2020 11:31:01 -0500
+X-MC-Unique: DcNLE8KpMqWaEhks8lAUgg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74D45800D53;
+        Fri, 11 Dec 2020 16:30:59 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 94D925D6A8;
+        Fri, 11 Dec 2020 16:30:50 +0000 (UTC)
+Date:   Fri, 11 Dec 2020 11:30:49 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Sergei Shtepa <sergei.shtepa@veeam.com>, axboe@kernel.dk,
+        hch@lst.de
+Cc:     "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "hare@suse.de" <hare@suse.de>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Pavel Tide <Pavel.TIde@veeam.com>, dm-devel@redhat.com
+Subject: Re: [PATCH 0/3] block: blk_interposer - Block Layer Interposer
+Message-ID: <20201211163049.GC16168@redhat.com>
+References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
+ <20201209135148.GA32720@redhat.com>
+ <20201210145814.GA31521@veeam.com>
+ <20201210163222.GB10239@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201211140126.25x4z2x6upctyin5@skbuf>
+In-Reply-To: <20201210163222.GB10239@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 02:01:28PM +0000, Ioana Ciornei wrote:
-> On Thu, Dec 10, 2020 at 08:06:36PM +0200, Ioana Ciornei wrote:
-> > [Added also the netdev mailing list, I haven't heard of linux-netdev
-> > before but kept it]
-> > 
-> > On Thu, Dec 10, 2020 at 05:31:56PM +0000, Daniel Thompson wrote:
-> > > Hi Ioana
-> > 
-> > Hi Daniel,
-> > 
+On Thu, Dec 10 2020 at 11:32am -0500,
+Mike Snitzer <snitzer@redhat.com> wrote:
+
+> On Thu, Dec 10 2020 at  9:58am -0500,
+> Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
+> 
+> > The 12/09/2020 16:51, Mike Snitzer wrote:
+> > > On Wed, Dec 09 2020 at  8:01am -0500,
+> > > Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
 > > > 
-> > > On Mon, Jun 29, 2020 at 06:47:11PM +0000, Ioana Ciornei wrote:
-> > > > Instead of realloc-ing the skb on the Tx path when the provided headroom
-> > > > is smaller than the HW requirements, create a Scatter/Gather frame
-> > > > descriptor with only one entry.
+> > > > Hi all.
 > > > > 
-> > > > Remove the '[drv] tx realloc frames' counter exposed previously through
-> > > > ethtool since it is no longer used.
+> > > > I try to suggest the Block Layer Interposer (blk_interposer) again.
+> > > > It`s allows to intercept bio requests, remap bio to another devices
+> > > > or add new bios.
 > > > > 
-> > > > Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
-> > > > ---
+> > > > Initially, blk_interposer was designed to be compatible with
+> > > > device mapper. Our (my and Hannes) previous attempt to offer
+> > > > blk_interposer integrated with device mapper did not receive
+> > > > any comments from the dm-devel team, and without their help
+> > > > I will not be able to make a full implementation. I hope later
+> > > > they will have time to support blk_interposer in device mapper.
 > > > 
-> > > I've been chasing down a networking regression on my LX2160A board
-> > > (Honeycomb LX2K based on CEx7 LX2160A COM) that first appeared in v5.9.
-> > > 
-> > > It makes the board unreliable opening outbound connections meaning
-> > > things like `apt update` or `git fetch` often can't open the connection.
-> > > It does not happen all the time but is sufficient to make the boards
-> > > built-in networking useless for workstation use.
-> > > 
-> > > The problem is strongly linked to warnings in the logs so I used the
-> > > warnings to bisect down to locate the cause of the regression and it
-> > > pinpointed this patch. I have confirmed that in both v5.9 and v5.10-rc7
-> > > that reverting this patch (and fixing up the merge issues) fixes the
-> > > regression and the warnings stop appearing.
-> > > 
-> > > A typical example of the warning is below (io-pgtable-arm.c:281 is an
-> > > error path that I guess would cause dma_map_page_attrs() to return
-> > > an error):
-> > > 
-> > > [  714.464927] WARNING: CPU: 13 PID: 0 at
-> > > drivers/iommu/io-pgtable-arm.c:281 __arm_lpae_map+0x2d4/0x30c
-> > > [  714.464930] Modules linked in: snd_seq_dummy(E) snd_hrtimer(E)
-> > > snd_seq(E) snd_seq_device(E) snd_timer(E) snd(E) soundcore(E) bridge(E)
-> > > stp(E) llc(E) rfkill(E) caam_jr(E) crypto_engine(E) rng_core(E)
-> > > joydev(E) evdev(E) dpaa2_caam(E) caamhash_desc(E) caamalg_desc(E)
-> > > authenc(E) libdes(E) dpaa2_console(E) ofpart(E) caam(E) sg(E) error(E)
-> > > lm90(E) at24(E) spi_nor(E) mtd(E) sbsa_gwdt(E) qoriq_thermal(E)
-> > > layerscape_edac_mod(E) qoriq_cpufreq(E) drm(E) fuse(E) configfs(E)
-> > > ip_tables(E) x_tables(E) autofs4(E) ext4(E) crc32c_generic(E) crc16(E)
-> > > mbcache(E) jbd2(E) hid_generic(E) usbhid(E) hid(E) dm_crypt(E) dm_mod(E)
-> > > sd_mod(E) fsl_dpaa2_ptp(E) ptp_qoriq(E) fsl_dpaa2_eth(E)
-> > > xhci_plat_hcd(E) xhci_hcd(E) usbcore(E) aes_ce_blk(E) crypto_simd(E)
-> > > cryptd(E) aes_ce_cipher(E) ghash_ce(E) gf128mul(E) at803x(E) libaes(E)
-> > > fsl_mc_dpio(E) pcs_lynx(E) rtc_pcf2127(E) sha2_ce(E) phylink(E)
-> > > xgmac_mdio(E) regmap_spi(E) of_mdio(E) sha256_arm64(E)
-> > > i2c_mux_pca954x(E) fixed_phy(E) i2c_mux(E) sha1_ce(E) ptp(E) libphy(E)
-> > > [  714.465131]  pps_core(E) ahci_qoriq(E) libahci_platform(E) nvme(E)
-> > > libahci(E) nvme_core(E) t10_pi(E) libata(E) crc_t10dif(E)
-> > > crct10dif_generic(E) crct10dif_common(E) dwc3(E) scsi_mod(E) udc_core(E)
-> > > roles(E) ulpi(E) sdhci_of_esdhc(E) sdhci_pltfm(E) sdhci(E)
-> > > spi_nxp_fspi(E) i2c_imx(E) fixed(E)
-> > > [  714.465192] CPU: 13 PID: 0 Comm: swapper/13 Tainted: G        W   E
-> > > 5.10.0-rc7-00001-gba98d13279ca #52
-> > > [  714.465196] Hardware name: SolidRun LX2160A Honeycomb (DT)
-> > > [  714.465202] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-> > > [  714.465207] pc : __arm_lpae_map+0x2d4/0x30c
-> > > [  714.465211] lr : __arm_lpae_map+0x114/0x30c
-> > > [  714.465215] sp : ffff80001006b340
-> > > [  714.465219] x29: ffff80001006b340 x28: 0000002086538003 
-> > > [  714.465227] x27: 0000000000000a20 x26: 0000000000001000 
-> > > [  714.465236] x25: 0000000000000f44 x24: 00000020adf8d000 
-> > > [  714.465245] x23: 0000000000000001 x22: 0000fffffaeca000 
-> > > [  714.465253] x21: 0000000000000003 x20: ffff19b60d64d200 
-> > > [  714.465261] x19: 00000000000000ca x18: 0000000000000000 
-> > > [  714.465270] x17: 0000000000000000 x16: ffffcccb7cf3ca20 
-> > > [  714.465278] x15: 0000000000000000 x14: 0000000000000000 
-> > > [  714.465286] x13: 0000000000000003 x12: 0000000000000010 
-> > > [  714.465294] x11: 0000000000000000 x10: 0000000000000002 
-> > > [  714.465302] x9 : ffffcccb7d5b6e78 x8 : 00000000000001ff 
-> > > [  714.465311] x7 : ffff19b606538650 x6 : ffff19b606538000 
-> > > [  714.465319] x5 : 0000000000000009 x4 : 0000000000000f44 
-> > > [  714.465327] x3 : 0000000000001000 x2 : 00000020adf8d000 
-> > > [  714.465335] x1 : 0000000000000002 x0 : 0000000000000003 
-> > > [  714.465343] Call trace:
-> > > [  714.465348]  __arm_lpae_map+0x2d4/0x30c
-> > > [  714.465353]  __arm_lpae_map+0x114/0x30c
-> > > [  714.465357]  __arm_lpae_map+0x114/0x30c
-> > > [  714.465362]  __arm_lpae_map+0x114/0x30c
-> > > [  714.465366]  arm_lpae_map+0xf4/0x180
-> > > [  714.465373]  arm_smmu_map+0x4c/0xc0
-> > > [  714.465379]  __iommu_map+0x100/0x2bc
-> > > [  714.465385]  iommu_map_atomic+0x20/0x30
-> > > [  714.465391]  __iommu_dma_map+0xb0/0x110
-> > > [  714.465397]  iommu_dma_map_page+0xb8/0x120
-> > > [  714.465404]  dma_map_page_attrs+0x1a8/0x210
-> > > [  714.465413]  __dpaa2_eth_tx+0x384/0xbd0 [fsl_dpaa2_eth]
-> > > [  714.465421]  dpaa2_eth_tx+0x84/0x134 [fsl_dpaa2_eth]
-> > > [  714.465427]  dev_hard_start_xmit+0x10c/0x2b0
-> > > [  714.465433]  sch_direct_xmit+0x1a0/0x550
-> > > [  714.465438]  __qdisc_run+0x140/0x670
-> > > [  714.465443]  __dev_queue_xmit+0x6c4/0xa74
-> > > [  714.465449]  dev_queue_xmit+0x20/0x2c
-> > > [  714.465463]  br_dev_queue_push_xmit+0xc4/0x1a0 [bridge]
-> > > [  714.465476]  br_forward_finish+0xdc/0xf0 [bridge]
-> > > [  714.465489]  __br_forward+0x160/0x1c0 [bridge]
-> > > [  714.465502]  br_forward+0x13c/0x160 [bridge]
-> > > [  714.465514]  br_dev_xmit+0x228/0x3b0 [bridge]
-> > > [  714.465520]  dev_hard_start_xmit+0x10c/0x2b0
-> > > [  714.465526]  __dev_queue_xmit+0x8f0/0xa74
-> > > [  714.465531]  dev_queue_xmit+0x20/0x2c
-> > > [  714.465538]  arp_xmit+0xc0/0xd0
-> > > [  714.465544]  arp_send_dst+0x78/0xa0
-> > > [  714.465550]  arp_solicit+0xf4/0x260
-> > > [  714.465554]  neigh_probe+0x64/0xb0
-> > > [  714.465560]  neigh_timer_handler+0x2f4/0x400
-> > > [  714.465566]  call_timer_fn+0x3c/0x184
-> > > [  714.465572]  __run_timers.part.0+0x2bc/0x370
-> > > [  714.465578]  run_timer_softirq+0x48/0x80
-> > > [  714.465583]  __do_softirq+0x120/0x36c
-> > > [  714.465589]  irq_exit+0xac/0x100
-> > > [  714.465596]  __handle_domain_irq+0x8c/0xf0
-> > > [  714.465600]  gic_handle_irq+0xcc/0x14c
-> > > [  714.465605]  el1_irq+0xc4/0x180
-> > > [  714.465610]  arch_cpu_idle+0x18/0x30
-> > > [  714.465617]  default_idle_call+0x4c/0x180
-> > > [  714.465623]  do_idle+0x238/0x2b0
-> > > [  714.465629]  cpu_startup_entry+0x30/0xa0
-> > > [  714.465636]  secondary_start_kernel+0x134/0x180
-> > > [  714.465640] ---[ end trace a84a7f61b559005f ]---
-> > > 
-> > > 
-> > > Given it is the iommu code that is provoking the warning I should
-> > > probably mention that the board I have requires
-> > > arm-smmu.disable_bypass=0 on the kernel command line in order to boot.
-> > > Also if it matters I am running the latest firmware from Solidrun
-> > > which is based on LSDK-20.04.
-> > > 
+> > > Excuse me?  I gave you quite a bit of early feedback!  I then went on
+> > > PTO for ~10 days, when I returned last week I had to deal with fixing
+> > > some 5.10 dm/block bio splitting regressions that only got resolved this
+> > > past Saturday in time for 5.10-rc7.
 > > 
-> > Hmmm, from what I remember I think I tested this with the smmu bypassed
-> > so that is why I didn't catch it.
+> > Mike,
 > > 
-> > > Is there any reason for this code not to be working for LX2160A?
+> > I would like to clarify some points that I've made, and also try 
+> > to repair the damage from the misunderstandings that I think have occured.
 > > 
-> > I wouldn't expect this to be LX2160A specific but rather a bug in the
-> > implementation.. sorry.
+> > First of all, I actually meant the feedback on Hannes's patch which was
+> > sent on the 19th of November:
+> > https://lore.kernel.org/linux-block/20201119164924.74401-1-hare@suse.de/
 > > 
-> > Let me reproduce it and see if I can get to the bottom of it and I will
-> > get back with some more info.
+> > Your feedback from the 18th of November ("[PATCH 4/4] dm_interposer - 
+> > Try to use blk_interpose in dm") is very valuable, but I am not sure that
+> > I am currently capable of implementing the proposed DM changes.
+> > The overall architecture of DM is still not clear to me, and I am studying
+> > it right now.
 > > 
+> > This new patch (the one that Hannes sent on the 19th of November) is also
+> > compatibile with DM and should not pose any problems - the architecture is
+> > the same. There are some changes that make blk_interposer simpler and better,
+> > plus the sample is added.
+> > 
+> > > 
+> > > blk_interposer was/is on my short list to review closer (Hannes' version
+> > > that refined yours a bit more).. primarily to see if I could avoid the
+> > > extra clone and endio hooking.
+> > 
+> > Glad to hear that! In order to avoid the additional copying one can only
+> > change an intercepted bio, which might be dangerous.
+> > 
+> > > 
+> > > The development window for 5.11 is past, so you pushing this without
+> > > using the approach discussed (in terms of DM) doesn't help your cause.
+> > > 
+> > > > And my blk-snap module requires an architecture change to
+> > > > support blk_interposer.
+> > > > 
+> > > > This time I offer it along with a sample.
+> > > > Despite the fact that blk_interposer is quite simple,
+> > > > there are a few non-obvious points that I would like to clarify.
+> > > > 
+> > > > However, I suggest the blk_interposer now so that people
+> > > > could discuss it and use it in their projects as soon as possible.
+> > > 
+> > > So you weren't willing to put the work in on something DM oriented
+> > > because you expected me to do the work for you?  And now you're looking
+> > > to side-step the consensus that was built because I didn't contribute
+> > > quick enough?  That's pretty messed up.
+> > 
+> > I just think that no one can implement integration of DM with
+> > blk_interposer better than dm-devel team. I will certainly try my best,
+> > but I am afraid that such efforts will only produce incongruous
+> > DM patches that will be a waste of time (yours and mine).
+> > 
+> > > 
+> > > In the time-scale that is Linux kernel development.. you've really
+> > > jumped the gun and undercut my enthusiasm to work through the details.
+> > > I'd rather not read into your actions more than I already have here, but
+> > > I'm not liking what you've done here.  Kind of left in dismay with how
+> > > you decided to go down this path without a followup note to me or others
+> > > (that I'm aware of).
+> > 
+> > I am very sorry that I undercut your enthusiasm, but, as you rightly
+> > pointed out, another development windows is closing, and my product
+> > is still not able to work on newer Linux versions starting from 5.8.
+> > That fact makes me particularly sad and forces me to search for different
+> > means to draw some attention to blk_interposer. I've seen an RHEL 8.4
+> > alpha recently, all looks very cool there but made me even more sad ...
 > 
-> Hi Daniel,
+> Made you more sad because you don't have a working solution for upstream
+> or RHEL 8.4?
 > 
-> It seems that the dma-unmapping on the SGT buffer was incorrectly done
-> with a zero size since on the Tx path I initialized the improper field.
+> I may have missed it in your past emails but how were you able to
+> provide blk-snap support for kernels prior to 5.8?
+
+I now clearly understand that the 5.8 block changes to do away with
+->make_request_fn in favor of a more optimized ->submit_bio (that isn't
+applicable for all devices) is why you're pursuing a "fix" so urgently.
+
+> > > But I'm still willing to make blk_interposer work as we all discussed
+> > > (in terms of DM).
+> > 
+> > I want it too. However, there is a certain difficulty with usage of DM
+> > for backup copying. For instance, there is no changed block tracking (CBT)
+> > and right now I don't have any clue how it could be implemented
+> > considering the existing architecture. I still hope that sometime
+> > in future I could be offer my blk-snap module which was specifically
+> > created for backup copying purposes.
+> > 
+> > I apologize for causing all that confusion and mess and making you upset.
+> > I hope that all of the above makes sense to you and you will not think
+> > that I was slacking and tried to offload all the work to your team.
 > 
-> Could you test the following diff and let me know if you can generate
-> the WARNINGs anymore?
-
-I fired this up and, with your change, I've not been able to trigger
-the warning with the tests that I used the drive my bisect.
-
-Thanks for the quick response.
-
-
-Daniel.
-
-
+> My primary concern is that blk_interposer be correct from the start.  To
+> validate its correctness it needs to be fully implemented and vetted in
+> terms on upstream Linux kernel code.  DM can easily serve as the primary
+> upstream consumer until if/when your blk-snap module is proposed for
+> upstream inclusion.
 > 
-> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-> @@ -878,7 +878,7 @@ static int dpaa2_eth_build_sg_fd_single_buf(struct dpaa2_eth_priv *priv,
->         swa = (struct dpaa2_eth_swa *)sgt_buf;
->         swa->type = DPAA2_ETH_SWA_SINGLE;
->         swa->single.skb = skb;
-> -       swa->sg.sgt_size = sgt_buf_size;
-> +       swa->single.sgt_size = sgt_buf_size;
->  
->         /* Separately map the SGT buffer */
->         sgt_addr = dma_map_single(dev, sgt_buf, sgt_buf_size, DMA_BIDIRECTIONAL);
-> 
-> 
-> Ioana
+> But short of having an actual upstream consumer of blk_interposer (not
+> just samples/ code) it cannot go upstream.  Otherwise there are too many
+> risks of misuse and problems in the longrun.  That and it'd be baggage
+> block core would need to carry for no upstream Linux benefit.
+
+As I shared in private: I have some urgent Red Hat business critical
+work I need to do and unfortunately cannot put my near-term focus to
+implementing a fully baked blk_interposer for DM.  But I can come back
+to it (sadly unlikely to do so until the new year though).
+
+While I still think there needs to be a proper _upstream_ consumer of
+blk_interposer as a condition of it going in.. I'll let others make the
+call.
+
+As such, I'll defer to Jens, Christoph and others on whether your
+minimalist blk_interposer hook is acceptable in the near-term.
+
+Mike
+
