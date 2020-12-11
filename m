@@ -2,155 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4B72D78C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6622D787B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406562AbgLKPFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:05:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34244 "EHLO mail.kernel.org"
+        id S2437475AbgLKPAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:00:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406548AbgLKPFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:05:14 -0500
-X-Gm-Message-State: AOAM5321Q88Ga4kOvROtWKwptfs7tu6P56B86qs8Hfjd0W4d8xc7o4vA
-        xMFM1yfYf1lC0Pc7TDMgniLCKmFGENaJgbHhyg==
+        id S2436895AbgLKPAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 10:00:22 -0500
+X-Gm-Message-State: AOAM532F1r2X6PpGL4uvgcTAAHdUcHB4fkR5alYvk07B9aAlWFgpTEly
+        CCmh/qXebHctqV5idHqLxB32GCi1QjBsktA84g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607698012;
-        bh=kMGlC86uydZtd+hqrVgic6SM+HBSXPFoclUBLRZV+W0=;
+        s=k20201202; t=1607698173;
+        bh=6DkU9ooSDWgagrJRUIYO/X3sDJ4hfhxHbpDrECTwLvQ=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oIyQEnHRnQVqjF3lPXkM2jdJZPuJrBRV4mjDmkyC7D2YkMytrKxvnLYtY/MuZ8U/Z
-         W2OUDIdIl5P5nA+Grcj7irhjVn0ALUSpEaB9xq3sTtFco4Ioc5EaORLgi+/Fx1x1B1
-         xuTzcH5vpNBd8jobFSsDlhuU/N6m6vTAlNmwOCa52uoTl+L+OKQeUIZBQMMDrnbCbl
-         aWGhg7987Lki9Xe3xfn+ju4MxOO01qIDqA7zvZYo8oun/gimaAkwCOmj43NF6l0pID
-         NrBJeFA4dAUjrbCc1WRzn31ZiyySttmX0+rmnlXaoevbPEZszXOPWO4MHLzSftdiW2
-         VV7HliYYfHt3g==
-X-Google-Smtp-Source: ABdhPJwAF2z+4ptZLYQgJaLTwt2m+q4kzvOhtU1ax7sWHg9DZiTR/rIDy9PKQk1Nfa6Qmwufx6w8ViJve1ZjDZ/qZUQ=
-X-Received: by 2002:a5d:6443:: with SMTP id d3mr14035794wrw.422.1607698005242;
- Fri, 11 Dec 2020 06:46:45 -0800 (PST)
+        b=kiaK+zGqvoYEXNx3YataqbgjDJZa9/RmAI/sdNtc4w68aS/w3e7TKOJ5LCC2YYYnb
+         8HHAfFXS343YtkM/9vvh8laXZ+Zfg9a9cTcHB/kQxvNaJjAoTkrgCv1pB/JWBP61lf
+         TSnbGrfDHJEUWmnP9E2gLFhDXyDpkNERsr4NH7mdK58ArU0gAmjxnMTrejLSxBSw3y
+         vB9UmMD6xt7Vu+nXEDD2RJJ35UjED9QsVjPw7PHxnr07oQo5dWt8NAgT6toowTtfK6
+         Tbuup4Y9DDg6PDFAca8hkAoCuQdvCv8e5herLXVbaO9hBMAZAIwl0rEaIoYmVXaEEm
+         zNlaxGJMm+agg==
+X-Google-Smtp-Source: ABdhPJwsBGHilePCX91/B+68HXzQwCke1MqxmJdd0ufB0PJoG0TAj7RNnkbSayd8FT/j3NwjznYhZmQUUCk3hgmztV8=
+X-Received: by 2002:a17:906:ae43:: with SMTP id lf3mr10466222ejb.130.1607698169358;
+ Fri, 11 Dec 2020 06:49:29 -0800 (PST)
 MIME-Version: 1.0
-References: <1607591262-21736-1-git-send-email-yongqiang.niu@mediatek.com>
- <1607591262-21736-2-git-send-email-yongqiang.niu@mediatek.com>
- <CAAOTY_-oL+NyzDKssCjyP=E8Py3oyEK6a6s=XoYvTFymZE9-zQ@mail.gmail.com> <1607647416.12750.3.camel@mhfsdcap03>
-In-Reply-To: <1607647416.12750.3.camel@mhfsdcap03>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 11 Dec 2020 22:46:34 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__y70tF2ORQDgZfk7RfeQm4fKraPnOQWMDnWsBb7HmZnQ@mail.gmail.com>
-Message-ID: <CAAOTY__y70tF2ORQDgZfk7RfeQm4fKraPnOQWMDnWsBb7HmZnQ@mail.gmail.com>
-Subject: Re: [PATCH v8, 1/6] dt-bindings: mediatek: add rdma_fifo_size
- description for mt8183 display
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        CK Hu <ck.hu@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20201124210228.GA589610@bjorn-Precision-5520> <42ebcbe2-7d24-558a-3c33-beb7818d5516@nvidia.com>
+ <49e3a6a4-9621-0734-99f1-b4f616dbcb7d@nvidia.com>
+In-Reply-To: <49e3a6a4-9621-0734-99f1-b4f616dbcb7d@nvidia.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 11 Dec 2020 08:49:16 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqK7EtRhGhd20P2raj1C4GLOoBQ55ngY+BvygRE-61E+9A@mail.gmail.com>
+Message-ID: <CAL_JsqK7EtRhGhd20P2raj1C4GLOoBQ55ngY+BvygRE-61E+9A@mail.gmail.com>
+Subject: Re: [PATCH V2] PCI: dwc: Add support to configure for ECRC
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
+        "treding@nvidia.com" <treding@nvidia.com>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kthota@nvidia.com" <kthota@nvidia.com>,
+        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
+        "sagar.tv@gmail.com" <sagar.tv@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+On Fri, Dec 11, 2020 at 7:58 AM Vidya Sagar <vidyas@nvidia.com> wrote:
+>
+> Hi Lorenzo,
+> Apologies to bug you, but wondering if you have any further comments on
+> this patch that I need to take care of?
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B412=E6=9C=
-=8811=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=888:43=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> On Thu, 2020-12-10 at 23:40 +0800, Chun-Kuang Hu wrote:
-> > Hi, Yongqiang:
-> >
-> > Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B412=E6=
-=9C=8810=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=885:22=E5=AF=AB=E9=81=
-=93=EF=BC=9A
-> > >
-> > > rdma fifo size may be different even in same SOC, add this
-> > > property to the corresponding rdma
-> > >
-> > > Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> > > ---
-> > >  .../bindings/display/mediatek/mediatek,disp.txt          | 16 ++++++=
-++++++++++
-> > >  1 file changed, 16 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/display/mediatek/media=
-tek,disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-disp.txt
-> > > index 1212207..64c64ee 100644
-> > > --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dis=
-p.txt
-> > > +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dis=
-p.txt
-> > > @@ -66,6 +66,13 @@ Required properties (DMA function blocks):
-> > >    argument, see Documentation/devicetree/bindings/iommu/mediatek,iom=
-mu.txt
-> > >    for details.
-> > >
-> > > +Optional properties (RDMA function blocks):
-> > > +- mediatek,rdma_fifo_size: rdma fifo size may be different even in s=
-ame SOC, add this
-> > > +  property to the corresponding rdma
-> > > +  the value is the Max value which defined in hardware data sheet.
-> > > +  rdma_fifo_size of rdma0 in mt8183 is 5120
-> > > +  rdma_fifo_size of rdma1 in mt8183 is 2048
-> > > +
-> > >  Examples:
-> > >
-> > >  mmsys: clock-controller@14000000 {
-> > > @@ -207,3 +214,12 @@ od@14023000 {
-> > >         power-domains =3D <&scpsys MT8173_POWER_DOMAIN_MM>;
-> > >         clocks =3D <&mmsys CLK_MM_DISP_OD>;
-> > >  };
-> > > +
-> > > +rdma1: rdma@1400c000 {
-> > > +       compatible =3D "mediatek,mt8183-disp-rdma";
-> > > +       reg =3D <0 0x1400c000 0 0x1000>;
-> > > +       interrupts =3D <GIC_SPI 229 IRQ_TYPE_LEVEL_LOW>;
-> > > +       power-domains =3D <&scpsys MT8183_POWER_DOMAIN_DISP>;
-> > > +       clocks =3D <&mmsys CLK_MM_DISP_RDMA1>;
-> > > +       mediatek,rdma_fifo_size =3D <2048>;
-> > > +};
-> >
-> > In [1], Rob has suggest that not add example of rdma1, it's better to
-> > add mediatek,rdma_fifo_size in rdma0 for example.
-> >
-> > [1] https://patchwork.kernel.org/project/linux-mediatek/patch/159685523=
-1-5782-2-git-send-email-yongqiang.niu@mediatek.com/
-> >
-> > Regards,
-> > Chun-Kuang.
->
-> the description of rdma0 is mt8173, and mt8173 rdma driver set the
-> correspond fifo size already ok like this:
-> static const struct mtk_disp_rdma_data mt8173_rdma_driver_data =3D {
->         .fifo_size =3D SZ_8K,
-> };
->
-> please double confirm shall we add this information into rdma0
-> description.
->
+You can check the status of your patches in Patchwork:
 
-Device tree is used to describe hardware. That means device tree
-description should not consider your driver's implementation.
-mediatek,rdma-fifo-size of mt8173-rdma0 is 8K, so I could write this
-information in device node because this hardware is.
+https://patchwork.kernel.org/project/linux-pci/patch/20201111121145.7015-1-vidyas@nvidia.com/
 
-Regards,
-Chun-Kuang.
+If it's in 'New' state and delegated to Lorenzo or Bjorn, it's in
+their queue. You can shorten the queue by reviewing stuff in front of
+you. :)
+
+Rob
 
 >
-> >
-> > > --
-> > > 1.8.1.1.dirty
-> > > _______________________________________________
-> > > Linux-mediatek mailing list
-> > > Linux-mediatek@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> Thanks,
+> Vidya Sagar
 >
+> On 12/3/2020 5:40 PM, Vidya Sagar wrote:
+> >
+> >
+> > On 11/25/2020 2:32 AM, Bjorn Helgaas wrote:
+> >> External email: Use caution opening links or attachments
+> >>
+> >>
+> >> On Tue, Nov 24, 2020 at 03:50:01PM +0530, Vidya Sagar wrote:
+> >>> Hi Bjorn,
+> >>> Please let me know if this patch needs any further modifications
+> >>
+> >> I'm fine with it, but of course Lorenzo will take care of it.
+> > Thanks Bjorn.
+> >
+> > Hi Lorenzo,
+> > Please let me know if you have any comments for this patch.
+> >
+> > Thanks,
+> > Vidya Sagar
+> >
+> >>
+> >>> On 11/12/2020 10:32 PM, Vidya Sagar wrote:
+> >>>> External email: Use caution opening links or attachments
+> >>>>
+> >>>>
+> >>>> On 11/12/2020 3:59 AM, Bjorn Helgaas wrote:
+> >>>>> External email: Use caution opening links or attachments
+> >>>>>
+> >>>>>
+> >>>>> On Wed, Nov 11, 2020 at 10:21:46PM +0530, Vidya Sagar wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>> On 11/11/2020 9:57 PM, Jingoo Han wrote:
+> >>>>>>> External email: Use caution opening links or attachments
+> >>>>>>>
+> >>>>>>>
+> >>>>>>> On 11/11/20, 7:12 AM, Vidya Sagar wrote:
+> >>>>>>>>
+> >>>>>>>> DesignWare core has a TLP digest (TD) override bit in
+> >>>>>>>> one of the control
+> >>>>>>>> registers of ATU. This bit also needs to be programmed for
+> >>>>>>>> proper ECRC
+> >>>>>>>> functionality. This is currently identified as an issue
+> >>>>>>>> with DesignWare
+> >>>>>>>> IP version 4.90a.
+> >>>>>>>>
+> >>>>>>>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> >>>>>>>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> >>>>>>>> ---
+> >>>>>>>> V2:
+> >>>>>>>> * Addressed Bjorn's comments
+> >>>>>>>>
+> >>>>>>>>     drivers/pci/controller/dwc/pcie-designware.c | 52
+> >>>>>>>> ++++++++++++++++++--
+> >>>>>>>>     drivers/pci/controller/dwc/pcie-designware.h |  1 +
+> >>>>>>>>     2 files changed, 49 insertions(+), 4 deletions(-)
+> >>>>>>>>
+> >>>>>>>> diff --git
+> >>>>>>>> a/drivers/pci/controller/dwc/pcie-designware.c
+> >>>>>>>> b/drivers/pci/controller/dwc/pcie-designware.c
+> >>>>>>>> index c2dea8fc97c8..ec0d13ab6bad 100644
+> >>>>>>>> --- a/drivers/pci/controller/dwc/pcie-designware.c
+> >>>>>>>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> >>>>>>>> @@ -225,6 +225,46 @@ static void
+> >>>>>>>> dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index,
+> >>>>>>>> u32 reg,
+> >>>>>>>>          dw_pcie_writel_atu(pci, offset + reg, val);
+> >>>>>>>>     }
+> >>>>>>>>
+> >>>>>>>> +static inline u32 dw_pcie_enable_ecrc(u32 val)
+> >>>>>>>
+> >>>>>>> What is the reason to use inline here?
+> >>>>>>
+> >>>>>> Actually, I wanted to move the programming part inside the
+> >>>>>> respective APIs
+> >>>>>> but then I wanted to give some details as well in comments so to
+> >>>>>> avoid
+> >>>>>> duplication, I came up with this function. But, I'm making it
+> >>>>>> inline for
+> >>>>>> better code optimization by compiler.
+> >>>>>
+> >>>>> I don't really care either way, but I'd be surprised if the compiler
+> >>>>> didn't inline this all by itself even without the explicit "inline".
+> >>>> I just checked it and you are right that compiler is indeed inlining it
+> >>>> without explicitly mentioning 'inline'.
+> >>>> I hope it is ok to leave it that way.
+> >>>>
+> >>>>>
+> >>>>>>>> +{
+> >>>>>>>> +     /*
+> >>>>>>>> +      * DesignWare core version 4.90A has this strange design
+> >>>>>>>> issue
+> >>>>>>>> +      * where the 'TD' bit in the Control register-1 of
+> >>>>>>>> the ATU outbound
+> >>>>>>>> +      * region acts like an override for the ECRC
+> >>>>>>>> setting i.e. the presence
+> >>>>>>>> +      * of TLP Digest(ECRC) in the outgoing TLPs is
+> >>>>>>>> solely determined by
+> >>>>>>>> +      * this bit. This is contrary to the PCIe spec
+> >>>>>>>> which says that the
+> >>>>>>>> +      * enablement of the ECRC is solely determined by
+> >>>>>>>> the AER registers.
+> >>>>>>>> +      *
+> >>>>>>>> +      * Because of this, even when the ECRC is enabled through AER
+> >>>>>>>> +      * registers, the transactions going through ATU
+> >>>>>>>> won't have TLP Digest
+> >>>>>>>> +      * as there is no way the AER sub-system could
+> >>>>>>>> program the TD bit which
+> >>>>>>>> +      * is specific to DesignWare core.
+> >>>>>>>> +      *
+> >>>>>>>> +      * The best way to handle this scenario is to program the
+> >>>>>>>> TD bit
+> >>>>>>>> +      * always. It affects only the traffic from root
+> >>>>>>>> port to downstream
+> >>>>>>>> +      * devices.
+> >>>>>>>> +      *
+> >>>>>>>> +      * At this point,
+> >>>>>>>> +      * When ECRC is enabled in AER registers,
+> >>>>>>>> everything works normally
+> >>>>>>>> +      * When ECRC is NOT enabled in AER registers, then,
+> >>>>>>>> +      * on Root Port:- TLP Digest (DWord size) gets
+> >>>>>>>> appended to each packet
+> >>>>>>>> +      *                even through it is not required.
+> >>>>>>>> Since downstream
+> >>>>>>>> +      *                TLPs are mostly for
+> >>>>>>>> configuration accesses and BAR
+> >>>>>>>> +      *                accesses, they are not in
+> >>>>>>>> critical path and won't
+> >>>>>>>> +      *                have much negative effect on the
+> >>>>>>>> performance.
+> >>>>>>>> +      * on End Point:- TLP Digest is received for
+> >>>>>>>> some/all the packets coming
+> >>>>>>>> +      *                from the root port. TLP Digest
+> >>>>>>>> is ignored because,
+> >>>>>>>> +      *                as per the PCIe Spec r5.0 v1.0 section
+> >>>>>>>> 2.2.3
+> >>>>>>>> +      *                "TLP Digest Rules", when an
+> >>>>>>>> endpoint receives TLP
+> >>>>>>>> +      *                Digest when its ECRC check
+> >>>>>>>> functionality is disabled
+> >>>>>>>> +      *                in AER registers, received TLP
+> >>>>>>>> Digest is just ignored.
+> >>>>>>>> +      * Since there is no issue or error reported
+> >>>>>>>> either side, best way to
+> >>>>>>>> +      * handle the scenario is to program TD bit by default.
+> >>>>>>>> +      */
+> >>>>>>>> +
+> >>>>>>>> +     return val | PCIE_ATU_TD;
+> >>>>>>>> +}
