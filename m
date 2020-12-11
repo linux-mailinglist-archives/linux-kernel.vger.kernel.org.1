@@ -2,92 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C23842D70F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B23312D70FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405419AbgLKHan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 02:30:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727822AbgLKHaY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 02:30:24 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CB5C0613CF;
-        Thu, 10 Dec 2020 23:29:43 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id s2so4159689plr.9;
-        Thu, 10 Dec 2020 23:29:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=UB6efhDsS9xRat1NQFQJw/q7UT13nhmz/jWhy+1Kerw=;
-        b=m51MMZMi5v0oWw+nqIu2K2MvwAqxDjDNe7nZg63upYUf+gsKhj5VGUBq/uPEL0hYnt
-         I5lI08eCjeV14XVZtujRJCq/qSTFwDkf/jEHuMrQQGsUOph+US2EK9KHMjjnCUodxC+U
-         Z/xBWgQwUpqGBDMY5tZQfMUoCsNShudJmTs8Lg4gsfIuoKYV1PaKz9WC8kYLr7Cb1ueh
-         7xMOIL/U3uYKKk/hKKmVZ5dYiOkJfK8afwRXvt5H+vsuKtltd78p3J/NzcOlf0BIJzDe
-         4KmuDS15041sB6GZIRdMM6bMd+0Wktu8PzSdGiwF5Y7l1J+sMwZxAYLdNeTqoeqTXRky
-         1dKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UB6efhDsS9xRat1NQFQJw/q7UT13nhmz/jWhy+1Kerw=;
-        b=W/ItoIqBimS8jS5InjvYHm695v+BNFVdQZAFX353BvLjtX4OLe3zL/05JxtUhYZv6X
-         FxJDoihtZNaz7s4d1TbAuzT13mZwsBp4nmZlRlF+LZhonSr79AYrIrWTcSj1Prshb2If
-         bJZv9HZG7ZNJSbWDrvYz85K6+ISguYp01/y1QaL6pYLnJ9EqegKmb/jU/xupkyZj7Dsc
-         V4s60M+vIZV0LetXkTe0NI+L+v0Bocjcd63Wxvrq5qBODy14Zdd1HakSB7cuBIZ7dbZK
-         hZz16M6Z5lnCGouQo2jb6zep6la/usi+BxhvAm2KrgZH+xeHOBi0uahJu/nMBAoN2Ogt
-         vEGg==
-X-Gm-Message-State: AOAM532EoHQHsUVMopooVG1uWjn62n4hJb0tdFAw7GzsieO3pVZSa+ls
-        1qiIOnQL0CXSWQ2LIBEcFh0=
-X-Google-Smtp-Source: ABdhPJww0lVvwcDROgiFy9IevptvjXn99SpP/2DczQTwKLS7EsqAJzyg1DvUf7IjuB8o2jTWSJdWfA==
-X-Received: by 2002:a17:902:b616:b029:da:fcfd:7568 with SMTP id b22-20020a170902b616b02900dafcfd7568mr10006158pls.35.1607671783390;
-        Thu, 10 Dec 2020 23:29:43 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id h123sm3640023pfg.37.2020.12.10.23.29.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 23:29:42 -0800 (PST)
-Date:   Thu, 10 Dec 2020 23:29:40 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Johnny Chuang <johnny.chuang.emc@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v8 2/4] input: elants: support old touch report
- format
-Message-ID: <X9Mf5G6yvIEAoh2C@google.com>
-References: <cover.1607669375.git.mirq-linux@rere.qmqm.pl>
- <a5c0b6b300fadf9425781285351b46c6dbb4f618.1607669375.git.mirq-linux@rere.qmqm.pl>
+        id S2390967AbgLKHeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 02:34:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728847AbgLKHeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 02:34:04 -0500
+Date:   Fri, 11 Dec 2020 08:33:17 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607672002;
+        bh=C8A7lKlaEcMlasQ5K4ENi5tH/KgPVDYUVtTHnQ2KQVU=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H75eimhCTbJ3XrWyiOpWwcwsF+mJaCaFtfGTDRWlZOxjiv6PffoLY7KPChDRhTq6j
+         5ZSzDTVAwCx3g72CRIDqZGZBLjSBfgxpQ7jVKYSHl6807hk+HEmxfZ1ta69gC1Gb1w
+         irY1GKujRkTsguvXg5I4gqaJefoOAN1y9naCsmPI=
+From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
+Message-ID: <X9MgvZ7bWX7HMNir@kroah.com>
+References: <20201210170443.GA17304@dincontrollerdev>
+ <X9Jw+srprdT8tquZ@kroah.com>
+ <20201210194625.GA17516@dincontrollerdev>
+ <X9MIwqJBG69M5uHq@kroah.com>
+ <20201211060943.GA1065@dincontrollerdev>
+ <X9MPuX1x4MezwkEj@kroah.com>
+ <20201211063752.GB1065@dincontrollerdev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a5c0b6b300fadf9425781285351b46c6dbb4f618.1607669375.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <20201211063752.GB1065@dincontrollerdev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi MichaÅ‚,
-On Fri, Dec 11, 2020 at 07:53:56AM +0100, MichaÅ‚ MirosÅ‚aw wrote:
-> @@ -998,17 +1011,18 @@ static irqreturn_t elants_i2c_irq(int irq, void *_dev)
->  			}
->  
->  			report_len = ts->buf[FW_HDR_LENGTH] / report_count;
-> -			if (report_len != PACKET_SIZE) {
-> +			if (report_len != PACKET_SIZE &&
-> +			    report_len != PACKET_SIZE_OLD) {
->  				dev_err(&client->dev,
-> -					"mismatching report length: %*ph\n",
-> +					"unsupported report length: %*ph\n",
->  					HEADER_SIZE, ts->buf);
+On Fri, Dec 11, 2020 at 06:37:52AM +0000, József Horváth wrote:
+> On Fri, Dec 11, 2020 at 07:20:41AM +0100, 'Greg Kroah-Hartman' wrote:
+> > On Fri, Dec 11, 2020 at 06:09:43AM +0000, József Horváth wrote:
+> > > On Fri, Dec 11, 2020 at 06:50:58AM +0100, 'Greg Kroah-Hartman' wrote:
+> > > > On Thu, Dec 10, 2020 at 07:46:25PM +0000, József Horváth wrote:
+> > > > > On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
+> > > > > > On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
+> > > > > > > This is a serial port driver for
+> > > > > > > Silicon Labs Si4455 Sub-GHz transciver.
+> > > > > > > +
+> > > > > > > +#define BASE_TTYIOC_PRIVATE		0xA0
+> > > > > > > +/* Set EZConfig.
+> > > > > > > + * After this ioctl call, the driver restarts the si4455,
+> > > > > > > + * then apply the new configuration and patch.
+> > > > > > > + */
+> > > > > > > +#define SI4455_IOC_SEZC		_IOW('T', \
+> > > > > > > +				     BASE_TTYIOC_PRIVATE + 0x01, \
+> > > > > > > +				     struct si4455_iocbuff)
+> > > > > > 
+> > > > > > Why does a serial driver have private ioctls?  Please no, don't do that.
+> > > > > 
+> > > > > I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
+> > > > > In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
+> > > > 
+> > > > My point is, a serial driver should NOT have any custom ioctls.
+> > > > 
+> > > > > I can change it to BASE_TTYIOC or SI4455_IOC_BASE
+> > > > > 
+> > > > > > Implement the basic serial driver first, and then we can talk about
+> > > > > > "custom" configurations and the like, using the correct apis.
+> > > > > 
+> > > > > Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
+> > > > > The cofiguration for interface is provided by user for application.
+> > > > 
+> > > > That is what a device tree is for, to configure the device to have the
+> > > > correct system configuration, why can't that be the same here?
+> > > > 
+> > > > > It contains the base frequency, channel spacing, modulation, and a lot
+> > > > > of more stuff, and generated by Silicon Labs Wireless Development
+> > > > > Suite.
+> > > > > The generated configuration is in a non public(compressed,
+> > > > > encrypted...who knows) format, so without this the driver can't
+> > > > > provide configuration parameters to Si4455.
+> > > > 
+> > > > So we have to take a "custom" userspace blob and send it to the device
+> > > > to configure it properly?  Like Jiri said, sounds like firmware, so just
+> > > > use that interface instead.
+> > > 
+> > > I checked Jiri's suggestion, and it is a good solution to replace SI4455_IOC_SEZC(configuration) and SI4455_IOC_SEZP(firmware patch).
+> > > I can move SI4455_IOC_SSIZ(package size) to device tree property.
+> > > 
+> > > Maybe you have good suggestion for the following:
+> > > SI4455_IOC_STXC -> Radio transmit channel index. It is a real use case to control this parameter by user at runtime.
+> > > SI4455_IOC_SRXC -> Radio receive channel index. It is a real use case to control this parameter by user at runtime.
+> > 
+> > These are not serial port things, why would a serial port care about
+> > these?
+> 
+> You are right, these are not regular serial port things, but this device is not a regular uart, it is a sub-GHz transciever, digital radio.
+> This driver tries to represent it as a serial port to user.
 
-Do I understand this correctly that the old packets are only observed on
-EKTF3624? If so can we expand the check so that we only accept packets
-with "old" size when we know we are dealing with this device?
+Is that the correct representation to be using here?  Why not act like a
+proper radio device instead?  That way you get to use the normal kernel
+apis for radio devices.
 
-Thanks.
+> > > SI4455_IOC_GRSSI -> Last measured RSSI, when packet received. This is a useful information.
+> > > (Currently I'm the only one user, and I need this :) )
+> > 
+> > What is "RSSI"?
+> > 
+> > And why not debugfs if it's only debugging stuff?
+> 
+> Received signal strength indication, and not only debugging. It is an information for the end user.
 
--- 
-Dmitry
+How do other radio devices (like wifi controllers) export this
+information to userspace?  Don't create custom apis for only a single
+device when the goal of a kernel is to make hardware interfaces all work
+the same as far as userspace is concerned.
+
+thanks,
+
+greg k-h
