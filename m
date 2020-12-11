@@ -2,112 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81662D7565
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79882D7560
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405913AbgLKMPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 07:15:40 -0500
-Received: from foss.arm.com ([217.140.110.172]:53508 "EHLO foss.arm.com"
+        id S2405405AbgLKMN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 07:13:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395393AbgLKMOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:14:55 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F7F11FB;
-        Fri, 11 Dec 2020 04:14:09 -0800 (PST)
-Received: from bogus (unknown [10.57.54.168])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0A2613F68F;
-        Fri, 11 Dec 2020 04:14:07 -0800 (PST)
-Date:   Fri, 11 Dec 2020 12:14:05 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: Re: [PATCH] drivers: soc: atmel: Avoid calling at91_soc_init on non
- AT91 SoCs
-Message-ID: <20201211121405.xhk7kz3khbut7uuw@bogus>
-References: <20201211103143.1332302-1-sudeep.holla@arm.com>
- <20201211114515.GF1781038@piout.net>
- <20201211115055.acoezgrwh45hw6is@bogus>
- <20201211115800.GG1781038@piout.net>
+        id S2389830AbgLKMNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 07:13:36 -0500
+Date:   Fri, 11 Dec 2020 13:14:08 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607688776;
+        bh=265jhaKYi5ZUC7l3KnGWfOCzdtuq4U4HaVxv8zpsB1I=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S7QGyIxQcpNHf4QqxrhJkWnsEPMLaU9VTr4pRQEiYf54ialMhnwcHtwnlzUWulnYL
+         e8m+k1pdw+jLU8dFD7BLo6Q+4tUFHOL7hnrrbClNj4r0yl0sMl7k76MTN/8hQkgnLk
+         nlHfkyezpa56+09VXxfVZCTgmNzL6OwqmybY1lts=
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Kelly, Seamus" <seamus.kelly@intel.com>
+Cc:     Joe Perches <joe@perches.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "markgross@kernel.org" <markgross@kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>, "bp@suse.de" <bp@suse.de>,
+        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "leonard.crestez@nxp.com" <leonard.crestez@nxp.com>,
+        "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "peng.fan@nxp.com" <peng.fan@nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Ryan Carnaghi <ryan.r.carnaghi@intel.com>
+Subject: Re: [PATCH 16/22] xlink-ipc: Add xlink ipc driver
+Message-ID: <X9NikKO55TEBODJP@kroah.com>
+References: <20201201223511.65542-1-mgross@linux.intel.com>
+ <20201201223511.65542-17-mgross@linux.intel.com>
+ <d33f6b90d50feb6c05bd45ffdedf3fb6d5ceb5ee.camel@perches.com>
+ <BYAPR11MB37839DDCA13DC55E594F5D108ACA0@BYAPR11MB3783.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201211115800.GG1781038@piout.net>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <BYAPR11MB37839DDCA13DC55E594F5D108ACA0@BYAPR11MB3783.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 12:58:00PM +0100, Alexandre Belloni wrote:
-> On 11/12/2020 11:50:55+0000, Sudeep Holla wrote:
-> > On Fri, Dec 11, 2020 at 12:45:15PM +0100, Alexandre Belloni wrote:
-> > > Hello,
-> > > 
-> > > On 11/12/2020 10:31:43+0000, Sudeep Holla wrote:
-> > > > Since at91_soc_init is called unconditionally from atmel_soc_device_init,
-> > > > we get the following warning on all non AT91 SoCs:
-> > > > 	" AT91: Could not find identification node"
-> > > > 
-> > > > Fix the same by filtering with allowed AT91 SoC list.
-> > > > 
-> > > > Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-> > > > Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> > > > Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> > > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > > > ---
-> > > >  drivers/soc/atmel/soc.c | 11 +++++++++++
-> > > >  1 file changed, 11 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
-> > > > index c4472b68b7c2..ba9fc07cd91c 100644
-> > > > --- a/drivers/soc/atmel/soc.c
-> > > > +++ b/drivers/soc/atmel/soc.c
-> > > > @@ -271,8 +271,19 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
-> > > >  	return soc_dev;
-> > > >  }
-> > > >  
-> > > > +static const struct of_device_id at91_soc_allowed_list[] __initconst = {
-> > > > +	{ .compatible = "atmel,at91rm9200", },
-> > > > +	{ .compatible = "atmel,at91sam9260", },
-> > > > +	{ .compatible = "atmel,sama5d2", },
-> > > 
-> > > This is a very small subset of the supported SoCs. a proper list would
-> > > be:
-> > > 
-> > > atmel,at91rm9200
-> > > atmel,at91sam9
-> > > atmel,sama5
-> > > atmel,samv7
-> > > 
-> > 
-> > Sure I can update it but the existing functions at91_get_cidr_exid_from_chipid
-> > and at91_get_cidr_exid_from_dbgu check for following 3 compatibles and bail
-> > out if not found:
-> > "atmel,at91rm9200-dbgu"
-> > "atmel,at91sam9260-dbgu"
-> > "atmel,sama5d2-chipid"
-> > 
-> > Quick check on DTS upstream suggested only 3 platforms, hence the choice.
-> > 
-> 
-> No, atmel,at91sam9260-dbgu is used on most platforms:
-> $ git grep atmel,at91sam9260-dbgu arch/arm/boot/dts/
-> arch/arm/boot/dts/at91sam9260.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-> arch/arm/boot/dts/at91sam9261.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-> arch/arm/boot/dts/at91sam9263.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-> arch/arm/boot/dts/at91sam9g45.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-> arch/arm/boot/dts/at91sam9n12.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-> arch/arm/boot/dts/at91sam9rl.dtsi:                              compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-> arch/arm/boot/dts/at91sam9x5.dtsi:                              compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-> arch/arm/boot/dts/sam9x60.dtsi:                         compatible = "microchip,sam9x60-dbgu", "microchip,sam9x60-usart", "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-> arch/arm/boot/dts/sama5d3.dtsi:                         compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-> arch/arm/boot/dts/sama5d4.dtsi:                         compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-> 
+On Fri, Dec 11, 2020 at 11:33:02AM +0000, Kelly, Seamus wrote:
+> This e-mail and any attachments may contain confidential material for the sole
+> use of the intended recipient(s). Any review or distribution by others is
+> strictly prohibited. If you are not the intended recipient, please contact the
+> sender and delete all copies.
 
-Ah, I must have messed up my grep then for sure. Also not familiar with
-AT91 series of platforms. I will respin with the list you suggested. Thanks!
+Now deleted!
 
---
-Regards,
-Sudeep
+This footer is incompatible with Linux kernel development, please remove
+it in order for us to read your emails and do anything with them.
+
+I can't believe that Intel still has this problem, after all of these
+years...
+
+greg k-h
