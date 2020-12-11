@@ -2,51 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA102D79B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EDF2D79BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404172AbgLKPot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:44:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392647AbgLKPoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:44:01 -0500
-Date:   Fri, 11 Dec 2020 21:13:16 +0530
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607701401;
-        bh=FRBMjCg3FCwVVASnJpRiHWLuuSl0y2YodCYJbNsoGdU=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L0DrGVs/u68kbw5sOCkD0vCmo/IVJESNaporahpgBslAFXbA6t2u3Ra+pYUAHqbq2
-         P10xkJrsBev1j4A760lWxp6j96Lfz98k75rIu28Nz7U38MJDeEfOQ0qL8gtdHvtm67
-         chAwtqoNhfYBPmc/JcN++wDybvNy8scRamNAeur1TSOINFn+F74MC3DT1HWeImkYDM
-         1gt7taHHbwszM1bk6pKsmyb/ad03pwugBgXXrCzyd8FrA7mtGiHSwdSUNUhqLnku8n
-         G01np4tE1lEx03JuNQra94FixpWAnoCHd+GDZg4fUKDQysXOI4vhoTUgaAijU7nJBg
-         Dd2ChKc5Q7u4g==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Amelie Delaunay <amelie.delaunay@st.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        dmaengine@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>
-Subject: Re: [PATCH 0/4] Bunch of improvements for STM32 DMA controllers
-Message-ID: <20201211154316.GY8403@vkoul-mobl>
-References: <20201120143320.30367-1-amelie.delaunay@st.com>
+        id S2404590AbgLKPqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:46:01 -0500
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:57817 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392900AbgLKPpV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 10:45:21 -0500
+X-Originating-IP: 93.29.109.196
+Received: from localhost.localdomain (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 2F8FC20007;
+        Fri, 11 Dec 2020 15:44:36 +0000 (UTC)
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com
+Subject: [PATCH v4 0/3] media: i2c: OV8865 image sensor support
+Date:   Fri, 11 Dec 2020 16:44:25 +0100
+Message-Id: <20201211154428.153762-1-paul.kocialkowski@bootlin.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120143320.30367-1-amelie.delaunay@st.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-11-20, 15:33, Amelie Delaunay wrote:
-> This series brings 3 patches for STM32 DMA and 1 for STM32 MDMA.
-> They increase the reliability and the efficiency of the transfers.
+This series adds support for the OV8865 image sensor, as a V4L2 subdev
+driver. Although an initial series was submitted by Kévin L'hôpital some
+weeks ago, this version is significantly new and should be considered a
+new series.
 
-Applied, thanks
+The final patch (not for merge) shows how to enable the OV8865 on the
+Banana Pi Camera Board v2 with the Banana Pi M3.
+
+Changes since v3:
+- Removed debug read in write helper;
+- Squashed tailing function calls in return;
+- Added Kconfig depend on PM since it's not optional;
+- Reordered runtime PM in init;
+- Reworked runtime PM order and added ctrls handler free in exit.
+
+Changes since v2:
+- Added link-frequencies endpoint property support;
+- Marked avdd-supply as non-optional (no internal regulator);
+- Used NULL ctrl ops for pixel rate and link freq;
+- Extra cosmetic changes.
+
+Changes since v1:
+- Used runtime pm;
+- Used assigned-clock-rate;
+- Removed clock name;
+- Returned closest size in set_fmt;
+- Removed unneeded references to v4l2 controls;
+- Removed unneeded structure packing attribute;
+- Removed i2c device table;
+- Dual-licensed bindings;
+- Used SPDX tags.
+
+Kévin L'hôpital (1):
+  ARM: dts: sun8i: a83t: bananapi-m3: Enable MIPI CSI-2 with OV8865
+
+Paul Kocialkowski (2):
+  dt-bindings: media: i2c: Add OV8865 bindings documentation
+  media: i2c: Add support for the OV8865 image sensor
+
+ .../bindings/media/i2c/ovti,ov8865.yaml       |  124 +
+ arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts  |  102 +
+ drivers/media/i2c/Kconfig                     |   13 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/ov8865.c                    | 2981 +++++++++++++++++
+ 5 files changed, 3221 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
+ create mode 100644 drivers/media/i2c/ov8865.c
 
 -- 
-~Vinod
+2.29.2
+
