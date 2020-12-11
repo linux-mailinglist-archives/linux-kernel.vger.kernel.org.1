@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AF22D7C58
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C602D7C59
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394411AbgLKRFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:05:50 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:20319 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405405AbgLKREk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:04:40 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Csxvf5KKwz4y;
-        Fri, 11 Dec 2020 18:03:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1607706238; bh=/RTK8d7aFtrnlkxPSCm6jcCEYYZlXwcQe86IYM1xhmE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WMjrtunVKMsEs8j/7ClRuEuSSod/L91fPKYtNqIXMALWvY739Dz/85mTwkFEhmp+G
-         g6XlW6GukJ4FzsGoj3IbQRmlpMSWJim/ziBVrWdMHmfOJPCLCCDABvr2kqAfoTOkA7
-         iGd7YHI3tlDriJZ8Oxd0Y/qnEZQ6wk4Ajz8vM37gaJ2tvhSQzV8kHtc5MfG68qXbj3
-         DS3+gM2Jm11P1hhg7O1/reY5iHM+Jj+STAOFHQ1FC0luayKWWDuoLVhk4nUSTdFSeP
-         5Ugi1a2EruTu5Wx0ZSQ9Nh+Mal7lVk6iThV4o4Q9ns+aOz071fLJTGA21vBe+GqPUS
-         oqRRN0XK2/KSA==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Fri, 11 Dec 2020 18:04:01 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Johnny Chuang <johnny.chuang.emc@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v8 2/4] input: elants: support old touch report
- format
-Message-ID: <20201211170401.GA31605@qmqm.qmqm.pl>
-References: <cover.1607669375.git.mirq-linux@rere.qmqm.pl>
- <a5c0b6b300fadf9425781285351b46c6dbb4f618.1607669375.git.mirq-linux@rere.qmqm.pl>
- <X9Mf5G6yvIEAoh2C@google.com>
- <20201211160917.GA23095@qmqm.qmqm.pl>
- <3d872d19-a0b2-ed83-4b08-5c9a4755c2fe@gmail.com>
+        id S2394459AbgLKRFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:05:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394119AbgLKRFD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 12:05:03 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC5CC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:04:23 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id t8so10154682iov.8
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:04:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ahs5t1jZns6ylc9n/wQ8MrZRCY05NSLjV+Xm6qlZmLQ=;
+        b=zPUAnFNXEnwQtHYNq+I7qPfUoI8EVGgTxP0/iGLSHfDmyInG2LDbhs9r/EkIbIws8g
+         +tc+4J+wYoGyhR1T3pCXIh4maa5l4C52jjlDdLbaVVHq3k4x3JekcVriET2qfzY5Ct6o
+         5eudLBLQnDHdpGb6II17x7Z/TowpBxtnkBEK5NkIHTONdXo8LtzXX72g0MXkGnICc1F0
+         ryqSKSST6ElCPelyX8AoSk1qKB7v0TD0VjwpEup15c+sBO6UDOxBmXUKfNNJXu0+V5Zi
+         K37EIHat/mC2110jJLvc4JcZfLPBlSajSv/WFZh0KqABiOK2ZqtugGsAnF6SA8snmDtk
+         eDZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ahs5t1jZns6ylc9n/wQ8MrZRCY05NSLjV+Xm6qlZmLQ=;
+        b=h9vlhiIUrR2Nxzm/bfn68uxKoeihwGUBKLsgdZ19ALUlWVK7yNfk/YsJ/t+W97zgin
+         bhVsv28SkggESaISUz8QThU7MA4cSHMRWGzPZveKhCiOL+LUUWYF05pbpvkGr7vSu5gW
+         KZ/ZmF14nZm+/S3jQ9wUvr6pBSWEXZXtPScwUReKL2v1nE/3NVoYTKf0kSQg9ftvpRAn
+         n27LwMv5+3nt0pNshvEk5mHqc3nlkEw3ICsVPFpDd3bLAabzVFzjDWgQD/tSJSCnvNEW
+         ShVxRUjvSF8OKsY76/PZO/oQg1ZqoIiDmMB/OFbtARsODg14wHRGInX4Thd/r95P+3j6
+         HYww==
+X-Gm-Message-State: AOAM531xr9ABEH8SkNLANAaLwdrdt/wYTr//uxHgngdCeW4sR6I9S4St
+        dmiPS+wThaBegfqKayh3QCvD8A==
+X-Google-Smtp-Source: ABdhPJwvy2YLEploQHFEOTRB0QTKfSZuVTASwHRyClJtYVNu+IyG0KHrsLyQREi4mMQkK0EoS7AyTQ==
+X-Received: by 2002:a6b:920b:: with SMTP id u11mr16128922iod.191.1607706262460;
+        Fri, 11 Dec 2020 09:04:22 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id g6sm5597052ilc.85.2020.12.11.09.04.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Dec 2020 09:04:21 -0800 (PST)
+Subject: Re: [PATCH 0/3] block: blk_interposer - Block Layer Interposer
+To:     Hannes Reinecke <hare@suse.de>, Mike Snitzer <snitzer@redhat.com>,
+        Sergei Shtepa <sergei.shtepa@veeam.com>, hch@lst.de
+Cc:     "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Pavel Tide <Pavel.TIde@veeam.com>, dm-devel@redhat.com
+References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
+ <20201209135148.GA32720@redhat.com> <20201210145814.GA31521@veeam.com>
+ <20201210163222.GB10239@redhat.com> <20201211163049.GC16168@redhat.com>
+ <1ee7652e-b77f-6fa4-634c-ff6639037321@kernel.dk>
+ <208edf35-ecdc-2d73-4c48-0424943a78c0@suse.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <06b4a10d-5ea5-27e1-af0d-83d5c714996f@kernel.dk>
+Date:   Fri, 11 Dec 2020 10:04:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <208edf35-ecdc-2d73-4c48-0424943a78c0@suse.de>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3d872d19-a0b2-ed83-4b08-5c9a4755c2fe@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 07:39:33PM +0300, Dmitry Osipenko wrote:
-> 11.12.2020 19:09, Michał Mirosław пишет:
-> > On Thu, Dec 10, 2020 at 11:29:40PM -0800, Dmitry Torokhov wrote:
-> >> Hi Michał,
-> >> On Fri, Dec 11, 2020 at 07:53:56AM +0100, Michał Mirosław wrote:
-> >>> @@ -998,17 +1011,18 @@ static irqreturn_t elants_i2c_irq(int irq, void *_dev)
-> >>>  			}
-> >>>  
-> >>>  			report_len = ts->buf[FW_HDR_LENGTH] / report_count;
-> >>> -			if (report_len != PACKET_SIZE) {
-> >>> +			if (report_len != PACKET_SIZE &&
-> >>> +			    report_len != PACKET_SIZE_OLD) {
-> >>>  				dev_err(&client->dev,
-> >>> -					"mismatching report length: %*ph\n",
-> >>> +					"unsupported report length: %*ph\n",
-> >>>  					HEADER_SIZE, ts->buf);
-> >> Do I understand this correctly that the old packets are only observed on
-> >> EKTF3624? If so can we expand the check so that we only accept packets
-> >> with "old" size when we know we are dealing with this device?
-> > 
-> > We only have EKTF3624 and can't be sure there are no other chips needing this.
+On 12/11/20 9:56 AM, Hannes Reinecke wrote:
+> On 12/11/20 5:33 PM, Jens Axboe wrote:
+>> On 12/11/20 9:30 AM, Mike Snitzer wrote:
+>>> While I still think there needs to be a proper _upstream_ consumer of
+>>> blk_interposer as a condition of it going in.. I'll let others make the
+>>> call.
+>>
+>> That's an unequivocal rule.
+>>
+>>> As such, I'll defer to Jens, Christoph and others on whether your
+>>> minimalist blk_interposer hook is acceptable in the near-term.
+>>
+>> I don't think so, we don't do short term bandaids just to plan on
+>> ripping that out when the real functionality is there. IMHO, the dm
+>> approach is the way to go - it provides exactly the functionality that
+>> is needed in an appropriate way, instead of hacking some "interposer"
+>> into the core block layer.
+>>
+> Which is my plan, too.
 > 
-> In practice this older packet format should be seen only on 3624, but
-> nevertheless we could make it more explicit by adding the extra chip_id
-> checks.
-> 
-> It won't be difficult to change it in the future if will be needed.
-> 
-> I think the main point that Dmitry Torokhov conveys here is that we
-> should minimize the possible impact on the current EKT3500 code since we
-> don't have definitive answers regarding the firmware differences among
-> the hardware variants.
+> I'll be working with the Veeam folks to present a joint patchset 
+> (including the DM bits) for the next round.
 
-The only possible impact here is that older firmware instead of breaking
-would suddenly work. Maybe we can accept such a risk?
+Just to be clear, core block additions for something that dm will
+consume is obviously fine. Adding this as block layer functionality than
+then exposes an application API for setting it up, tearing down, etc -
+that is definitely NOT
 
-Best Regards
-Michał Mirosław
+-- 
+Jens Axboe
+
