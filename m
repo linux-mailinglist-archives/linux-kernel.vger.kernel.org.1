@@ -2,32 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25AA02D7257
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F2D2D725B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437141AbgLKIyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:54:22 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9187 "EHLO
+        id S2437214AbgLKIzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:55:11 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9164 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403956AbgLKIx7 (ORCPT
+        with ESMTP id S2437143AbgLKIyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:53:59 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Csl0d2jmxzkmT9;
-        Fri, 11 Dec 2020 16:52:33 +0800 (CST)
+        Fri, 11 Dec 2020 03:54:49 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Csl1m5K8cz15bBF;
+        Fri, 11 Dec 2020 16:53:32 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Dec 2020 16:53:10 +0800
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Dec 2020 16:53:59 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <nbd@nbd.name>, <lorenzo.bianconi83@gmail.com>,
-        <kvalo@codeaurora.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <matthias.bgg@gmail.com>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH wireless -next] wireless: mt76: mt7915: convert comma to semicolon
-Date:   Fri, 11 Dec 2020 16:53:38 +0800
-Message-ID: <20201211085338.2817-1-zhengyongjun3@huawei.com>
+To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
+        <linux-usb@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] usb: phy: convert comma to semicolon
+Date:   Fri, 11 Dec 2020 16:54:28 +0800
+Message-ID: <20201211085428.2871-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -42,22 +40,32 @@ Replace a comma between expression statements by a semicolon.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/phy/phy-isp1301-omap.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index 0fd3a16f736a..a2c655c4021f 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -1676,7 +1676,7 @@ mt7915_mcu_wtbl_ht_tlv(struct sk_buff *skb, struct ieee80211_sta *sta,
- 		tlv = mt7915_mcu_add_nested_tlv(skb, WTBL_VHT, sizeof(*vht),
- 						wtbl_tlv, sta_wtbl);
- 		vht = (struct wtbl_vht *)tlv;
--		vht->ldpc = sta->vht_cap.cap & IEEE80211_VHT_CAP_RXLDPC,
-+		vht->ldpc = sta->vht_cap.cap & IEEE80211_VHT_CAP_RXLDPC;
- 		vht->vht = true;
+diff --git a/drivers/usb/phy/phy-isp1301-omap.c b/drivers/usb/phy/phy-isp1301-omap.c
+index 4a6462c92ef2..6f4f74e6ba51 100644
+--- a/drivers/usb/phy/phy-isp1301-omap.c
++++ b/drivers/usb/phy/phy-isp1301-omap.c
+@@ -1566,13 +1566,13 @@ isp1301_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
  
- 		af = FIELD_GET(IEEE80211_VHT_CAP_MAX_A_MPDU_LENGTH_EXPONENT_MASK,
+ 	isp->phy.dev = &i2c->dev;
+ 	isp->phy.label = DRIVER_NAME;
+-	isp->phy.set_power = isp1301_set_power,
++	isp->phy.set_power = isp1301_set_power;
+ 
+ 	isp->phy.otg->usb_phy = &isp->phy;
+-	isp->phy.otg->set_host = isp1301_set_host,
+-	isp->phy.otg->set_peripheral = isp1301_set_peripheral,
+-	isp->phy.otg->start_srp = isp1301_start_srp,
+-	isp->phy.otg->start_hnp = isp1301_start_hnp,
++	isp->phy.otg->set_host = isp1301_set_host;
++	isp->phy.otg->set_peripheral = isp1301_set_peripheral;
++	isp->phy.otg->start_srp = isp1301_start_srp;
++	isp->phy.otg->start_hnp = isp1301_start_hnp;
+ 
+ 	enable_vbus_draw(isp, 0);
+ 	power_down(isp);
 -- 
 2.22.0
 
