@@ -2,178 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA722D71D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA9A2D71DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403911AbgLKIei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:34:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391068AbgLKIeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:34:19 -0500
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: [PATCH RFC v2] docs: experimental: build PDF with rst2pdf
-Date:   Fri, 11 Dec 2020 09:33:32 +0100
-Message-Id: <b73c93c6946ab324443608fac62333b7e327a7e4.1607675494.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210172938.3b3086b6@coco.lan>
-References: <20201210172938.3b3086b6@coco.lan>
+        id S2405543AbgLKIfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:35:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391068AbgLKIel (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:34:41 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CF9C0613CF;
+        Fri, 11 Dec 2020 00:34:00 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id a12so8119008wrv.8;
+        Fri, 11 Dec 2020 00:34:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9wVsVXIb8fDr6eSEsD4+RYpMLWOVulxTaFgMno8M5zM=;
+        b=KFH5c70WyCbUPoZz4frHjSgHFrqvAt9Oa4oZI8sjvay91vkGiIT1+fo4jY/cFsxydX
+         er5j8OAFLs8Q8yH6MYbQTfjwp8SZaN9ZAhtB7y5OPk1jqhtvx+z8g0HDFzY4MU1sRSBc
+         x2b9XYE9xAy4BijYvDUYqEhPpdm8eSIkRFHGoiEtIiJ3qB/nfmZSostv1Ev654V9LsJo
+         ryfM/tZwxO3PPwikn5nilrFYBcwOZT4qs9SNqhNmEsPXOZyOECo8UsMueJTtjYFZJ++f
+         8D1XI0jczlDXt0hhOAB7G/nUQmWBualUdijslP724QNmcnsHollBVx8R+51cLS0/ZNI0
+         Cd7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9wVsVXIb8fDr6eSEsD4+RYpMLWOVulxTaFgMno8M5zM=;
+        b=YT7dBJ/S6TvE00MNHCq0tstjENQ0CrFRKtqfFUmJMLSFsvUJnvhj98sIcJ8CqPu7HY
+         fBavHCdRMtWmCEvV3lWkGRwlyUWxa4remKgJpS1X/pFZHMwLnc5M4ypj+3PAmtEnoQUJ
+         AktFFpEuhR+OGf/khb65URpnrg/2p+QHnFum/XXzBIvdCRpSWcPCiETnEOsiQcyKHnco
+         nqmLXKM5RDj1jiotVcyVt4PhQRbLStvMXGgnLWgx1pKLjG8A8Kl9RVs4V8JqUUpcIydc
+         6oHWlbf1PLKxMaTR0tazZI4pCI3MiuS4Xj8UV+vKaJt8fIFPV0JmOTsUJNV+rDldzeGr
+         UW8A==
+X-Gm-Message-State: AOAM5300zvHWGluS4sW+bzht/XF2JdUel+SC+LPSxJY3HLoIVb4/QNS2
+        HKIuxxW4IAvXTa0yfehIM04=
+X-Google-Smtp-Source: ABdhPJzCHRHbxg9IB9AwOKw10nWYsskXXsOjjvTRCKZTCyw1YoZiC+LWJCbQVh8n//+055s8TpPvJg==
+X-Received: by 2002:adf:82c5:: with SMTP id 63mr12704763wrc.38.1607675639647;
+        Fri, 11 Dec 2020 00:33:59 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id b4sm13313790wrr.30.2020.12.11.00.33.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 00:33:56 -0800 (PST)
+Date:   Fri, 11 Dec 2020 09:33:55 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Clemens Gruber <clemens.gruber@pqgruber.com>,
+        linux-pwm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v4 1/4] pwm: pca9685: Switch to atomic API
+Message-ID: <X9Mu8zrJjFTe6fJq@ulmo>
+References: <20201208091033.bxzrlad7mjbe3dsp@pengutronix.de>
+ <X89RgpTb3sBBI++w@workstation.tuxnet>
+ <X8+DI7ZN7mXtsxv9@ulmo>
+ <CAGngYiXgVbEXj-yR=DTeA4pO-N3=WhiHjQhknFsbfXBeD_yRbw@mail.gmail.com>
+ <X8+waLH58pOaMI06@ulmo>
+ <20201208182637.hm5uzuw5ueelo26k@pengutronix.de>
+ <X9EDGHySNYb7CxcW@ulmo>
+ <20201210090124.rfswkrcttsg5gszp@pengutronix.de>
+ <X9JWlVPb9ZGdB4q9@ulmo>
+ <20201210203926.ouzrq3ff5k6zhlvt@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="hmzyeSm2KOFrlm0S"
+Content-Disposition: inline
+In-Reply-To: <20201210203926.ouzrq3ff5k6zhlvt@pengutronix.de>
+User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an experimental PDF builder using rst2pdf
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
+--hmzyeSm2KOFrlm0S
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please notice that 18 documents (of a total of 71) won't build with 
-rst2pdf. There's an opened issue about that at:
+On Thu, Dec 10, 2020 at 09:39:26PM +0100, Uwe Kleine-K=C3=B6nig wrote:
+> Hello Thierry,
+>=20
+> On Thu, Dec 10, 2020 at 06:10:45PM +0100, Thierry Reding wrote:
+> > Like I said, that's not what I was saying. I was merely saying that if
+> > there aren't any use-cases that current users rely on that would be
+> > broken by using this simpler implementation, then I'm okay with it, even
+> > if it's less flexible than a more complicated implementation. It should
+> > be possible to determine what the current users are by inspecting device
+> > trees present in the kernel. Anything outside the kernel isn't something
+> > we need to consider, as usual.
+>=20
+> If "users in mainline" is the criteria that's a word.
 
-    https://github.com/rst2pdf/rst2pdf/issues/958
+I didn't say "users in mainline", I said "use-cases". What I don't want
+to happen is for this change under discussion to break any existing use-
+cases of any existing users in the kernel. I said that we can determine
+what the existing users are by looking at which device trees use the
+compatible strings that the driver matches on.
 
-v2: usage of SPHINXDIRS was fixed.
+> So you agree we remove the following drivers?:
+>=20
+>  - pwm-hibvt.c
+>    Last driver specific change in Feb 2019, no mainline user
+>  - pwm-sprd.c
+>    Last driver specific change in Aug 2019, no mainline user
 
+No, that's an extrapolation of what I was saying above. Drivers with no
+apparent users are a separate topic, so don't conflate it with the issue
+at hand.
 
- Documentation/Makefile                     |  5 +++++
- Documentation/conf.py                      | 21 +++++++++++++++------
- Documentation/sphinx/load_config.py        | 12 ++++++++++++
- Documentation/userspace-api/media/Makefile |  1 +
- Makefile                                   |  4 ++--
- 5 files changed, 35 insertions(+), 8 deletions(-)
+While it's certainly unfortunate that these don't seem to be used, I see
+no reason why we should remove them. They don't create much of a
+maintenance burden, so I'm fine with keeping them in the hopes that
+users may still show up at some point.
 
-diff --git a/Documentation/Makefile b/Documentation/Makefile
-index 61a7310b49e0..c3c8fb10f94e 100644
---- a/Documentation/Makefile
-+++ b/Documentation/Makefile
-@@ -115,6 +115,10 @@ pdfdocs: latexdocs
- 
- endif # HAVE_PDFLATEX
- 
-+rst2pdf:
-+	@$(srctree)/scripts/sphinx-pre-install --version-check
-+	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,pdf,$(var),pdf,$(var)))
-+
- epubdocs:
- 	@$(srctree)/scripts/sphinx-pre-install --version-check
- 	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,epub,$(var),epub,$(var)))
-@@ -140,6 +144,7 @@ dochelp:
- 	@echo  '  htmldocs        - HTML'
- 	@echo  '  latexdocs       - LaTeX'
- 	@echo  '  pdfdocs         - PDF'
-+	@echo  '  rst2pdf         - PDF, using experimental rst2pdf support'
- 	@echo  '  epubdocs        - EPUB'
- 	@echo  '  xmldocs         - XML'
- 	@echo  '  linkcheckdocs   - check for broken external links'
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 66e121df59cd..6f2788aac81e 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -123,6 +123,12 @@ if (major == 1 and minor > 3) or (major > 1):
- else:
-     extensions.append("sphinx.ext.pngmath")
- 
-+# Enable experimental rst2pdf, if available
-+try:
-+    extensions.append("rst2pdf.pdfbuilder")
-+except:
-+    sys.stderr.write('rst2pdf extension not available.\n')
-+
- # Add any paths that contain templates here, relative to this directory.
- templates_path = ['_templates']
- 
-@@ -614,12 +620,15 @@ epub_exclude_files = ['search.html']
- #
- # See the Sphinx chapter of https://ralsina.me/static/manual.pdf
- #
--# FIXME: Do not add the index file here; the result will be too big. Adding
--# multiple PDF files here actually tries to get the cross-referencing right
--# *between* PDF files.
--pdf_documents = [
--    ('kernel-documentation', u'Kernel', u'Kernel', u'J. Random Bozo'),
--]
-+
-+# Add all LaTeX files to PDF documents as well
-+pdf_documents = []
-+for l in latex_documents:
-+    doc = l[0]
-+    fn = l[1].replace(".tex", "")
-+    name = l[2]
-+    authors = l[3]
-+    pdf_documents.append((doc, fn, name, authors))
- 
- # kernel-doc extension configuration for running Sphinx directly (e.g. by Read
- # the Docs). In a normal build, these are supplied from the Makefile via command
-diff --git a/Documentation/sphinx/load_config.py b/Documentation/sphinx/load_config.py
-index eeb394b39e2c..8266afd438aa 100644
---- a/Documentation/sphinx/load_config.py
-+++ b/Documentation/sphinx/load_config.py
-@@ -43,6 +43,18 @@ def loadConfig(namespace):
- 
-             namespace['latex_documents'] = new_latex_docs
- 
-+            new_pdf_docs = []
-+            pdf_documents = namespace['pdf_documents']
-+
-+            for l in pdf_documents:
-+                if l[0].find(dir + '/') == 0:
-+                    has = True
-+                    fn = l[0][len(dir) + 1:]
-+                    new_pdf_docs.append((fn, l[1], l[2], l[3]))
-+                    break
-+
-+            namespace['pdf_documents'] = new_pdf_docs
-+
-         # If there is an extra conf.py file, load it
-         if os.path.isfile(config_file):
-             sys.stdout.write("load additional sphinx-config: %s\n" % config_file)
-diff --git a/Documentation/userspace-api/media/Makefile b/Documentation/userspace-api/media/Makefile
-index 81a4a1a53bce..8c6b3ac4ecb0 100644
---- a/Documentation/userspace-api/media/Makefile
-+++ b/Documentation/userspace-api/media/Makefile
-@@ -59,6 +59,7 @@ all: $(IMGDOT) $(BUILDDIR) ${TARGETS}
- html: all
- epub: all
- xml: all
-+pdf: all
- latex: $(IMGPDF) all
- linkcheck:
- 
-diff --git a/Makefile b/Makefile
-index 43ecedeb3f02..db4043578eec 100644
---- a/Makefile
-+++ b/Makefile
-@@ -264,7 +264,7 @@ no-dot-config-targets := $(clean-targets) \
- 			 cscope gtags TAGS tags help% %docs check% coccicheck \
- 			 $(version_h) headers headers_% archheaders archscripts \
- 			 %asm-generic kernelversion %src-pkg dt_binding_check \
--			 outputmakefile
-+			 outputmakefile rst2pdf
- no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease
- single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
- 
-@@ -1654,7 +1654,7 @@ $(help-board-dirs): help-%:
- 
- # Documentation targets
- # ---------------------------------------------------------------------------
--DOC_TARGETS := xmldocs latexdocs pdfdocs htmldocs epubdocs cleandocs \
-+DOC_TARGETS := xmldocs latexdocs pdfdocs rst2pdf htmldocs epubdocs cleandocs \
- 	       linkcheckdocs dochelp refcheckdocs
- PHONY += $(DOC_TARGETS)
- $(DOC_TARGETS):
--- 
-2.29.2
+> Most PWMs are added to cpu.dtsi files with status =3D "disabled", I wonder
+> if it makes sense to check the machine.dts files if some of the PMWs are
+> completely unused. Do you consider status =3D "okay" a use that we have to
+> retain even if the node has no phandle?
 
+A PWM controller may be in use via sysfs even if it has no phandle.
 
+Thierry
+
+--hmzyeSm2KOFrlm0S
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/TLvAACgkQ3SOs138+
+s6GvGA//Sr5JVDPGWermBKcZG8UUNpYyW2wQ0zas64dDUSOU/pW7gvSU/e6G8Gdz
+d/CD5y6g8JGl/scTt+vprgkRSaYbuK/uXcQF3qz+6sTILzwfCYpKsx6Ko0JV6Efc
+ymNV3yn3ejAbHoF6Fr3wBIV02MrKU00p3OcWY+9TfjE7Ato7D/bFxi3G7KP6z4PE
+BU9zyYMaSDpzvECDpssG+o6VFbQIbES2RRhmc3114w1Qn+lAWvgAyCX0hp7SY7Qj
+91j6AbyV1BpaqCptEfs9tGoQFXMLOqw/S3J8tCMc2oAtH1evSJDozdVSJwQV0FDk
+ifOyBWIoLV74OuuTirayN9GibzFNF2G7VsS5jKd033tCN+EMKgXGxLPA4NAvXhoX
+3+HmnBG9i0XYeXCyO/To26Jj4C0XV2amFII1kd8f6cbEx522T+QrRIA33r2eA+YE
+7tiygRFucDwQPHMKtAxTsTwYmjGF8eNXYBhv0/xldHDzt8eF6jj/SOOxzVYV92PO
+gQJyO9Huy7wWuVbt3A2xLxsqOvHWT3hERCvDUDQNwbWyOxyd+HCB41Cu9vjbyAd2
+fKwGSLvq3rqya8euA1qPzYjBq5gKyvnn8lKOlLjrlQq9bs/grgfoss9+lRjYZiLN
+AjGRiBIY6VJNT8b+DCb6wou6/f1/RvzldDbGIIjXqzBPYu5mEOE=
+=W/qR
+-----END PGP SIGNATURE-----
+
+--hmzyeSm2KOFrlm0S--
