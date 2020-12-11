@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D6D2D70B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:13:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6512D70AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436750AbgLKHNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2436757AbgLKHNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 11 Dec 2020 02:13:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436728AbgLKHMb (ORCPT
+        with ESMTP id S2436733AbgLKHMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 02:12:31 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6C3C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 23:11:51 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id z83so9936349ybz.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 23:11:51 -0800 (PST)
+        Fri, 11 Dec 2020 02:12:35 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C5CC0613D6;
+        Thu, 10 Dec 2020 23:11:55 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id f14so1755597pju.4;
+        Thu, 10 Dec 2020 23:11:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=S/8U8Wqnz8DEcGGiOqsnrJd03FjrqIJ6MV2RgXvfHHw=;
-        b=bHFK7rVtg7vjW5mqAuGF6w/HJr0MS15XcdG9l9J/NwPma77Y3WMVsmb6VppS+CoNzR
-         KvP9mHQsBvTfcfn+lAY8cc+F2bFvgI5FKWm1kbJ7ZxpC3RLsRReZcwuVWcNjLwf5mPPZ
-         Z5wiC4JHuHePQzWhflnd+rFLMYuRwnXKnavSlDwRFRfCEqEwT5a0lzkwygPz9XFhgpY6
-         2Z+bhgYs3Tv9NRwjbroy7Sivgf8ygE9bpaNWGiWQuwJK1w6NQRBBDK/CNlxWTu6/by8s
-         6KqfaUVS1CXysjPSRRw0miUqB++goVb1AvlRYwbwUbjCd6YNDcJwgWKAliSUlPM4Srqa
-         3efQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=efLbYUeekGKex6uq04Br8z1ZKcX96OKU455zVROIQk8=;
+        b=Gd6W0AFQXx21+YqhwUPjyzDs97zajJeOLfAwl7SgLkVHB8EjI0gwn2+wle3JG/dV2U
+         xSoKNMXem2pK1ZQP8miHDtlrDpQwA6z9e7n8Mrj6LquV7NONcHLGRnvGmWiF5HV2OCm+
+         qeXrQrjkd7GNS2McTDr+l/hwYGrMHCbAl8NcIrKRdUoVXnN4qDeN5SMzFpFP4QAwZc55
+         3+2yJKzmLxerMtJ8FmSdNZmKqjuKC3aD1CZSjemXJtbyobcY45go6EHaNy4Iuw3XZd7S
+         V5j9BUSe2nYh8T0oF5gAnUwvlg/1WIrkcdH1zv+lGRRuA75YrUD0ZdDexjR9YSm6T+iC
+         OZcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=S/8U8Wqnz8DEcGGiOqsnrJd03FjrqIJ6MV2RgXvfHHw=;
-        b=WNmzGzEVvSYD+jw/Div77olUbDUy/vLuD6ZtzN7f6p2v5Oq0tQMePEa7wENA28Nrb6
-         AONL1pI+u7U0c+NHbE17henj5iuPDwRgjturATjv6dRbCYy6bSaPczW4VZq5UTVSkOFx
-         oWVy0NAHQxjoThJLKvp8f4+RUgZhnJBZjg0Ot9/PCwX6Uef3ycMBXTQ3mPYDNc71nAlT
-         xYoCsb+E0Oqf41OvMZQ0P3WCHRHp2jH1RB49hQu71UnlCVFgfhMVC/BYenrLfip30i0m
-         wH0OLrYfvKW8MQseM3d51OpIToXF9vtYVj8N6dGquPq0N1Rz2iZ3iALLijYMx67vy0kK
-         sxfQ==
-X-Gm-Message-State: AOAM531SKUBbSAjtTfjizu//o2IXRaneuY4fmGDfi+H3+bLhz40HhKHi
-        ttxinyuvQNAQ50/iSvaWJJdZrgiU7xc=
-X-Google-Smtp-Source: ABdhPJwRTQiqAJ5JI/0c+gXsHXlIYhxacBL2hWJrIemL9wBvY5jVOnTWKtM6UvkqYafnPR4cbDFWgKdmw7k=
-Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:a25:4155:: with SMTP id o82mr17218335yba.206.1607670710264;
- Thu, 10 Dec 2020 23:11:50 -0800 (PST)
-Date:   Thu, 10 Dec 2020 23:11:45 -0800
-Message-Id: <20201211071145.2199997-1-badhri@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH] usb: typec: tcpci: Enable bleed discharge when auto discharge
- is enabled
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=efLbYUeekGKex6uq04Br8z1ZKcX96OKU455zVROIQk8=;
+        b=S9xKerQG7EnBTRpzGqe4N9M8esYqyNfq7nX4m48rRYKf1CyyVIZnVnt7fqBftSJslb
+         w0UONgY6XKGg5CCNT4pai//a34vgS4d8Bf/tNhPT3rB+xmMNTsLCjbAWgwflN2TFS6jx
+         Z+87G2kaRSO//iNry6ARDOha7hKW8romK1HnfHmaMAFGhIHBvj2mXDBN0CtVJX4SLpP5
+         +6xqP+6pDKQ8Wt5cYufryPWW8G/91bnC1iHr9tqcIu7cz5FXrdDakfnJj3RaGe8ofIIP
+         sRQiCls57VNTqM7WCj3om3VcyyjpnC4OCq2srpUBjqfXCGo6wjWeVxhGjrV5F+t+sqwp
+         0p3g==
+X-Gm-Message-State: AOAM533hTr1yhy2kGj0ZEOcasW2MX7/xYdmol3auCLdjU+DctpBsWZH/
+        yb/XXxwv8YzQoH7t/Hm+KZq/t6TT7T4=
+X-Google-Smtp-Source: ABdhPJxubw74bxkf5NglFwgXDGmn6ERWmEza5R8PSLLCE9wRuzmku/7pmYGFawC5AHX0hXgen47uCA==
+X-Received: by 2002:a17:90b:3741:: with SMTP id ne1mr11836053pjb.119.1607670715196;
+        Thu, 10 Dec 2020 23:11:55 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id y21sm9576271pfr.90.2020.12.10.23.11.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 23:11:54 -0800 (PST)
+Date:   Thu, 10 Dec 2020 23:11:52 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Johnny Chuang <johnny.chuang.emc@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v8 1/4] input: elants: document some registers and
+ values
+Message-ID: <X9MbuB3pvwJCJwQu@google.com>
+References: <cover.1607669375.git.mirq-linux@rere.qmqm.pl>
+ <728fff020bc92be10d84cc2a7ea8af6fd99af96c.1607669375.git.mirq-linux@rere.qmqm.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <728fff020bc92be10d84cc2a7ea8af6fd99af96c.1607669375.git.mirq-linux@rere.qmqm.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Auto discharge circuits kick in only when vbus decays and reaches
-VBUS_SINK_DISCONNECT_THRESHOLD threshold. Enable bleed discharge to
-discharge vbus to VBUS_SINK_DISCONNECT_THRESHOLD upon disconnect.
+On Fri, Dec 11, 2020 at 07:53:56AM +0100, Michał Mirosław wrote:
+> Add information found in downstream kernels, to make the code less
+> magic.
+> 
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+> Tested-by: Dmitry Osipenko <digetx@gmail.com>
 
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
- drivers/usb/typec/tcpm/tcpci.c | 2 ++
- 1 file changed, 2 insertions(+)
+Applied, thank you.
 
-diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-index af5524338a63..f676abab044b 100644
---- a/drivers/usb/typec/tcpm/tcpci.c
-+++ b/drivers/usb/typec/tcpm/tcpci.c
-@@ -725,6 +725,8 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
- 		tcpci->tcpc.enable_auto_vbus_discharge = tcpci_enable_auto_vbus_discharge;
- 		tcpci->tcpc.set_auto_vbus_discharge_threshold =
- 			tcpci_set_auto_vbus_discharge_threshold;
-+		regmap_update_bits(tcpci->regmap, TCPC_POWER_CTRL, TCPC_POWER_CTRL_BLEED_DISCHARGE,
-+				   TCPC_POWER_CTRL_BLEED_DISCHARGE);
- 	}
- 
- 	if (tcpci->data->vbus_vsafe0v)
 -- 
-2.29.2.576.ga3fc446d84-goog
-
+Dmitry
