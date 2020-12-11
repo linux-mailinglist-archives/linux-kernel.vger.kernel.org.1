@@ -2,128 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ACE2D76E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7709A2D76DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393728AbgLKNrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 08:47:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389284AbgLKNrs (ORCPT
+        id S2393257AbgLKNrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:47:52 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40254 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732192AbgLKNrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:47:48 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E2DC061793
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:47:08 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id r24so4779025vsg.10
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:47:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FfZ8Hbqg5JOVMCVU7zFQQsVHbxKEp1AAS0eJ5Y7LnV4=;
-        b=nsFbhL9mAsmWp/jt5PSJgGDYNEwHYlwEVqGJ2AEAoidm6SBverb74n1+1qnawRF61O
-         Wm+qq9KhtiBet5cXimLfrtOXbxmTAyvRuSuQZy0kcPtlrwbi3lIRlWdfw1zmv6XkCY/j
-         O1XqtKw+zE1Cx3aKWQInx+KTqEbBV5/8SGFirjTVzHbJbJNVA7UDHc5cLC3q19uA87BI
-         2ElrfG/qvsWy1DnGU3q95X7jPcct1+GoMPD59/ywMAvpXBbbeb76Sf1lQMmTo+67i8k5
-         VNnDEp19Jc9RMHkO2NN7lve4ZSyAdBE7ZDM8gJ2URSETW7xq0+1PvRuOMjQ7H6Rzg8jk
-         S5FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FfZ8Hbqg5JOVMCVU7zFQQsVHbxKEp1AAS0eJ5Y7LnV4=;
-        b=pTPvL3zjhyzJBSlb48T4pRSKWB23m72lXskfHePrH7E/4DKUUHJTQZQGcsRaPn1+nX
-         7WJ9eQGD+EJ8u8+0FVdFoF20vlQflA2z2DEoZlMHYlhc03ZZc1VEvKz2+ipV2ydHv9uE
-         I2NOF6IO/deF4veTvgiCIXTFfCZDXUtLPVW5CQhZPCotRdxNXoTzkIWLckWmr4cb5NO8
-         g1xo4z9CsSehEGk+cjHW+mgIyvW/aX19xjgUfROanpJzz95Sco2yVWZ3nj6rBe+qzMn2
-         ijZ5DvS9j07S8ZdHDKqshmYKUQC0g+7wbM9lN8sRpqFIKYcyjysXrd1PTKEFMNEGoMxk
-         GJcw==
-X-Gm-Message-State: AOAM531S1AKealLZ/i4KTexT82sp9WoFGMNCa+gd1uULjapZJH8uCdJZ
-        GK5fsxMZhWEpbJF60l7JSTxtd9RgiPBuVSdcoIs9tw==
-X-Google-Smtp-Source: ABdhPJylD1P8t8sm/PPT2AIOH0OZEU0uw5g6BFwZEtaYiQ6BCREPd64WU7PMO3pXVotWlSLhn2H07FbQkf+hp2l5rd4=
-X-Received: by 2002:a05:6102:2127:: with SMTP id f7mr13236500vsg.48.1607694427887;
- Fri, 11 Dec 2020 05:47:07 -0800 (PST)
+        Fri, 11 Dec 2020 08:47:24 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BBDjdTv072408;
+        Fri, 11 Dec 2020 07:45:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607694339;
+        bh=PtbbpmNeH8mroCFh+s1SgSbfVtmFKVFgxh2cmWfEC6c=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=bTB7BB+8EmjuzpTeot2iHsmMi1ajJjBwGI9GezK1bH1UxAfc8UA7w5vVCUSH1bbPr
+         xiFXEm51pDW5BWXDeJnJieiD71FO/aFeCu4dzLl9BE8A7L/xlD8rcRqDHIuMi/F4gd
+         NvM8HoAtl2J2Y8sNQ5gvgOi26iGfna9MpmhAwouo=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BBDjdxu094975
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Dec 2020 07:45:39 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 11
+ Dec 2020 07:45:39 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 11 Dec 2020 07:45:38 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BBDjama033193;
+        Fri, 11 Dec 2020 07:45:36 -0600
+Subject: Re: [PATCH v3 16/20] soc: ti: k3-ringacc: add AM64 DMA rings support.
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <vkoul@kernel.org>, <nm@ti.com>, <ssantosh@kernel.org>,
+        <robh+dt@kernel.org>
+CC:     <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <vigneshr@ti.com>,
+        <grygorii.strashko@ti.com>
+References: <20201208090440.31792-1-peter.ujfalusi@ti.com>
+ <20201208090440.31792-17-peter.ujfalusi@ti.com>
+Message-ID: <a1f83b16-c1ce-630e-3410-738b80a92741@ti.com>
+Date:   Fri, 11 Dec 2020 15:46:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201207032626.1445-1-thunder.leizhen@huawei.com> <20201207032626.1445-2-thunder.leizhen@huawei.com>
-In-Reply-To: <20201207032626.1445-2-thunder.leizhen@huawei.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 11 Dec 2020 14:46:31 +0100
-Message-ID: <CAPDyKFqJrb5SQ0o4cc9=Yv=GAZ3chjQoDRrKjPUUnUi__g7iiw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] dt-bindings: mmc: eliminate yamllint warnings
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201208090440.31792-17-peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020 at 04:27, Zhen Lei <thunder.leizhen@huawei.com> wrote:
->
-> Eliminate the following yamllint warnings:
-> ./Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> :20:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-> :30:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-> :33:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
->
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-
-Applied for next, thanks!
-
-Kind regards
-Uffe
 
 
+On 08/12/2020 11.04, Peter Ujfalusi wrote:
+> From: Grygorii Strashko <grygorii.strashko@ti.com>
+> 
+> The DMAs in AM64 have built in rings compared to AM654/J721e/J7200 where a
+> separate and generic ringacc is used.
+> 
+> The ring SW interface is similar to ringacc with some major architectural
+> differences, like
+> 
+> They are part of the DMA (BCDMA or PKTDMA).
+> 
+> They are dual mode rings are modeled as pair of Rings objects which has
+> common configuration and memory buffer, but separate real-time control
+> register sets for each direction mem2dev (forward) and dev2mem (reverse).
+> 
+> The ringacc driver must be initialized for DMA rings use with
+> k3_ringacc_dmarings_init() as it is not an independent device as ringacc
+> is.
+> 
+> AM64 rings must be requested only using k3_ringacc_request_rings_pair(),
+> and forward ring must always be initialized/configured. After this any
+> other Ringacc APIs can be used without any callers changes.
+> 
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 > ---
->  Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 26 +++++++++++------------
->  1 file changed, 13 insertions(+), 13 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> index 030e3fdce49293a..01630b0ecea773e 100644
-> --- a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> @@ -17,21 +17,21 @@ properties:
->    compatible:
->      oneOf:
->        - enum:
-> -        - mediatek,mt2701-mmc
-> -        - mediatek,mt2712-mmc
-> -        - mediatek,mt6779-mmc
-> -        - mediatek,mt7620-mmc
-> -        - mediatek,mt7622-mmc
-> -        - mediatek,mt8135-mmc
-> -        - mediatek,mt8173-mmc
-> -        - mediatek,mt8183-mmc
-> -        - mediatek,mt8516-mmc
-> +          - mediatek,mt2701-mmc
-> +          - mediatek,mt2712-mmc
-> +          - mediatek,mt6779-mmc
-> +          - mediatek,mt7620-mmc
-> +          - mediatek,mt7622-mmc
-> +          - mediatek,mt8135-mmc
-> +          - mediatek,mt8173-mmc
-> +          - mediatek,mt8183-mmc
-> +          - mediatek,mt8516-mmc
->        - items:
-> -        - const: mediatek,mt7623-mmc
-> -        - const: mediatek,mt2701-mmc
-> +          - const: mediatek,mt7623-mmc
-> +          - const: mediatek,mt2701-mmc
->        - items:
-> -        - const: mediatek,mt8192-mmc
-> -        - const: mediatek,mt8183-mmc
-> +          - const: mediatek,mt8192-mmc
-> +          - const: mediatek,mt8183-mmc
->
->    clocks:
->      description:
-> --
-> 1.8.3
->
->
+>  drivers/soc/ti/k3-ringacc.c       | 325 +++++++++++++++++++++++++++++-
+>  include/linux/soc/ti/k3-ringacc.h |  17 ++
+>  2 files changed, 335 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/soc/ti/k3-ringacc.c b/drivers/soc/ti/k3-ringacc.c
+> index 119164abcb41..c88c305ba367 100644
+> --- a/drivers/soc/ti/k3-ringacc.c
+> +++ b/drivers/soc/ti/k3-ringacc.c
+
+...
+
+> +struct k3_ringacc *k3_ringacc_dmarings_init(struct platform_device *pdev,
+> +					    struct k3_ringacc_init_data *data)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct k3_ringacc *ringacc;
+> +	void __iomem *base_rt;
+> +	struct resource *res;
+> +	int i;
+> +
+> +	ringacc = devm_kzalloc(dev, sizeof(*ringacc), GFP_KERNEL);
+> +	if (!ringacc)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	ringacc->dev = dev;
+> +	ringacc->dma_rings = true;
+> +	ringacc->num_rings = data->num_rings;
+> +	ringacc->tisci = data->tisci;
+> +	ringacc->tisci_dev_id = data->tisci_dev_id;
+> +
+> +	mutex_init(&ringacc->req_lock);
+> +
+> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ringrt");
+> +	base_rt = devm_ioremap_resource(dev, res);
+> +	if (IS_ERR(base_rt))
+> +		return base_rt;
+
+this must have been:
+	return ERR_CAST(base_rt);
+
+> +
+> +	ringacc->rings = devm_kzalloc(dev,
+> +				      sizeof(*ringacc->rings) *
+> +				      ringacc->num_rings * 2,
+> +				      GFP_KERNEL);
+> +	ringacc->rings_inuse = devm_kcalloc(dev,
+> +					    BITS_TO_LONGS(ringacc->num_rings),
+> +					    sizeof(unsigned long), GFP_KERNEL);
+> +
+> +	if (!ringacc->rings || !ringacc->rings_inuse)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	for (i = 0; i < ringacc->num_rings; i++) {
+> +		struct k3_ring *ring = &ringacc->rings[i];
+> +
+> +		ring->rt = base_rt + K3_DMARING_RT_REGS_STEP * i;
+> +		ring->parent = ringacc;
+> +		ring->ring_id = i;
+> +		ring->proxy_id = K3_RINGACC_PROXY_NOT_USED;
+> +
+> +		ring = &ringacc->rings[ringacc->num_rings + i];
+> +		ring->rt = base_rt + K3_DMARING_RT_REGS_STEP * i +
+> +			   K3_DMARING_RT_REGS_REVERSE_OFS;
+> +		ring->parent = ringacc;
+> +		ring->ring_id = i;
+> +		ring->proxy_id = K3_RINGACC_PROXY_NOT_USED;
+> +		ring->flags = K3_RING_FLAG_REVERSE;
+> +	}
+> +
+> +	ringacc->tisci_ring_ops = &ringacc->tisci->ops.rm_ring_ops;
+> +
+> +	dev_info(dev, "Number of rings: %u\n", ringacc->num_rings);
+> +
+> +	return ringacc;
+> +}
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
