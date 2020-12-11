@@ -2,108 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552AF2D7020
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C7C2D7024
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393589AbgLKGVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 01:21:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393433AbgLKGV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 01:21:26 -0500
-Date:   Fri, 11 Dec 2020 07:20:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607667645;
-        bh=7GVu996ac6scL6x4didGHcWx4HfngbrGckxrrWVAL2w=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FvQwsvLkO3AJ+GzfUj7cuqaLlYFg0mQbDWHjzFegs/ZVXT6c3mxET+p+GoX8SER78
-         ZiyyfDj4Cx69egaH/zR2EzyReoyAQmZdxXRxoM2XL8kYAwJuqOQT7eyZPkOGaq42PM
-         jxkyLJ+aC96U88JlOS2i5C0ihHIkKWgqP7KMOiRg=
-From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
-Message-ID: <X9MPuX1x4MezwkEj@kroah.com>
-References: <20201210170443.GA17304@dincontrollerdev>
- <X9Jw+srprdT8tquZ@kroah.com>
- <20201210194625.GA17516@dincontrollerdev>
- <X9MIwqJBG69M5uHq@kroah.com>
- <20201211060943.GA1065@dincontrollerdev>
+        id S2391223AbgLKGZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 01:25:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391292AbgLKGZT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 01:25:19 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC0AC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 22:24:39 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id b8so7710032ila.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 22:24:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R2nu+evV2RiqlMwq+jAP2JmdldTYUhryc5/wfbY/nC4=;
+        b=OSuxAgWyRLfNHDFi4Mn2mD2SzQBYRjIA/jPZa+b+zQh0bBZxvj1NaXT1kBXv71Huju
+         +DZFt1vawTYZBoy7XTuJDfUrqDSOWiimjxGIOtBmDb0/SGE35+8CzVzYP9zdS2fsyfy1
+         pMg311bA9HuotVrE4hYkWw8hbEuF7Ls6YHzMCAEqz8Y7+gg+DAS8KapSieJBgivwYnQx
+         2bhFRgEJ91rfmlaQymGlTKaKkiPpMV5JO+HuvAwIrYXjzmlsPE5vbqpz9nyVFzGykH+8
+         2EeXoAyRGup17oUlzVR/uubntugUC7SCLOfi9kZFUM4swri7Wff0rtQrctncbCQbQF4S
+         JsOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R2nu+evV2RiqlMwq+jAP2JmdldTYUhryc5/wfbY/nC4=;
+        b=dpmeg2rUHbWvJkWiM62mCCpPurS57f5szh1zS3mek1Eaj41CFBv9okt2Ld0ukjLjSg
+         uAOobWqV6+4QOYXyyy8BHrLLqrn3hZFn56HiHRxwGjoaEx4IFjzJB/ltzqp6KbR2y/cd
+         EazQ9yiAXtFuQIonV78IwIfgP1NoAXaFNcxH3Pfzu07OgTfKfEBFiALFMRFSaHUUiLjS
+         tQiWYW1TDVZXFyTc5PSX4uySKfyAigVM7GW5AmSRkF43eLqbJBgSafnOeFFmG6OVU6Ev
+         oU8Iu5wfmEisHeffuI6lbIh+yvp4KvRzKDDOkfLIPLvf5RGwze7XBdns5z29ZeUfD4YY
+         r5+Q==
+X-Gm-Message-State: AOAM533hz23jAyycfvfG8z/2lzyMtZAQYKXgSTjtawEMInPucgglt/Wd
+        J9wgxRy6Uvhwth7GV6js8FwwJiPKNL2eQKQtf9w3mQ==
+X-Google-Smtp-Source: ABdhPJw750jTsaFhagrZFnuvTxKa/l62yhXEhpVEN2/d1mxUqNtSlZ3KCEKEJ6kVvn7MOpbF7YZQYIJHXwYvVajfNDA=
+X-Received: by 2002:a92:358e:: with SMTP id c14mr13382285ilf.69.1607667878507;
+ Thu, 10 Dec 2020 22:24:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201211060943.GA1065@dincontrollerdev>
+References: <160765171921.6905.7897898635812579754.stgit@localhost.localdomain>
+In-Reply-To: <160765171921.6905.7897898635812579754.stgit@localhost.localdomain>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 11 Dec 2020 07:24:27 +0100
+Message-ID: <CANn89iJ5HnJYv6eWb1jm6rK173DFkp2GRnfvi9vnYwXZPzE4LQ@mail.gmail.com>
+Subject: Re: [net PATCH] tcp: Mark fastopen SYN packet as lost when receiving ICMP_TOOBIG/ICMP_FRAG_NEEDED
+To:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Yuchung Cheng <ycheng@google.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        kernel-team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 06:09:43AM +0000, József Horváth wrote:
-> On Fri, Dec 11, 2020 at 06:50:58AM +0100, 'Greg Kroah-Hartman' wrote:
-> > On Thu, Dec 10, 2020 at 07:46:25PM +0000, József Horváth wrote:
-> > > On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
-> > > > On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
-> > > > > This is a serial port driver for
-> > > > > Silicon Labs Si4455 Sub-GHz transciver.
-> > > > > +
-> > > > > +#define BASE_TTYIOC_PRIVATE		0xA0
-> > > > > +/* Set EZConfig.
-> > > > > + * After this ioctl call, the driver restarts the si4455,
-> > > > > + * then apply the new configuration and patch.
-> > > > > + */
-> > > > > +#define SI4455_IOC_SEZC		_IOW('T', \
-> > > > > +				     BASE_TTYIOC_PRIVATE + 0x01, \
-> > > > > +				     struct si4455_iocbuff)
-> > > > 
-> > > > Why does a serial driver have private ioctls?  Please no, don't do that.
-> > > 
-> > > I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
-> > > In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
-> > 
-> > My point is, a serial driver should NOT have any custom ioctls.
-> > 
-> > > I can change it to BASE_TTYIOC or SI4455_IOC_BASE
-> > > 
-> > > > Implement the basic serial driver first, and then we can talk about
-> > > > "custom" configurations and the like, using the correct apis.
-> > > 
-> > > Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
-> > > The cofiguration for interface is provided by user for application.
-> > 
-> > That is what a device tree is for, to configure the device to have the
-> > correct system configuration, why can't that be the same here?
-> > 
-> > > It contains the base frequency, channel spacing, modulation, and a lot
-> > > of more stuff, and generated by Silicon Labs Wireless Development
-> > > Suite.
-> > > The generated configuration is in a non public(compressed,
-> > > encrypted...who knows) format, so without this the driver can't
-> > > provide configuration parameters to Si4455.
-> > 
-> > So we have to take a "custom" userspace blob and send it to the device
-> > to configure it properly?  Like Jiri said, sounds like firmware, so just
-> > use that interface instead.
-> 
-> I checked Jiri's suggestion, and it is a good solution to replace SI4455_IOC_SEZC(configuration) and SI4455_IOC_SEZP(firmware patch).
-> I can move SI4455_IOC_SSIZ(package size) to device tree property.
-> 
-> Maybe you have good suggestion for the following:
-> SI4455_IOC_STXC -> Radio transmit channel index. It is a real use case to control this parameter by user at runtime.
-> SI4455_IOC_SRXC -> Radio receive channel index. It is a real use case to control this parameter by user at runtime.
+On Fri, Dec 11, 2020 at 2:55 AM Alexander Duyck
+<alexander.duyck@gmail.com> wrote:
+>
+> From: Alexander Duyck <alexanderduyck@fb.com>
+>
+> In the case of a fastopen SYN there are cases where it may trigger either a
+> ICMP_TOOBIG message in the case of IPv6 or a fragmentation request in the
+> case of IPv4. This results in the socket stalling for a second or more as
+> it does not respond to the message by retransmitting the SYN frame.
+>
+> Normally a SYN frame should not be able to trigger a ICMP_TOOBIG or
+> ICMP_FRAG_NEEDED however in the case of fastopen we can have a frame that
+> makes use of the entire MTU. In the case of fastopen it does, and an
+> additional complication is that the retransmit queue doesn't contain the
+> original frames. As a result when tcp_simple_retransmit is called and
+> walks the list of frames in the queue it may not mark the frames as lost
+> because both the SYN and the data packet each individually are smaller than
+> the MSS size after the adjustment. This results in the socket being stalled
+> until the retransmit timer kicks in and forces the SYN frame out again
+> without the data attached.
+>
+> In order to resolve this we need to mark the SYN frame as lost if it is the
+> first packet in the queue. Doing this allows the socket to recover much
+> more quickly without the retransmit timeout stall.
+>
+> Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
 
-These are not serial port things, why would a serial port care about
-these?
 
-> SI4455_IOC_GRSSI -> Last measured RSSI, when packet received. This is a useful information.
-> (Currently I'm the only one user, and I need this :) )
+I do not think it is net candidate, but net-next
 
-What is "RSSI"?
+Yuchung might correct me, but I think TCP Fastopen standard was very
+conservative about payload len in the SYN packet
 
-And why not debugfs if it's only debugging stuff?
+So receiving an ICMP was never considered.
 
-thanks,
+> ---
+>  include/net/tcp.h    |    1 +
+>  net/ipv4/tcp_input.c |    8 ++++++++
+>  net/ipv4/tcp_ipv4.c  |    6 ++++++
+>  net/ipv6/tcp_ipv6.c  |    4 ++++
+>  4 files changed, 19 insertions(+)
+>
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index d4ef5bf94168..6181ad98727a 100644
+> --- a/include/net/tcp.h
 
-greg k-h
+
+> +++ b/net/ipv4/tcp_ipv4.c
+> @@ -546,6 +546,12 @@ int tcp_v4_err(struct sk_buff *skb, u32 info)
+>                         if (sk->sk_state == TCP_LISTEN)
+>                                 goto out;
+>
+> +                       /* fastopen SYN may have triggered the fragmentation
+> +                        * request. Mark the SYN or SYN/ACK as lost.
+> +                        */
+> +                       if (sk->sk_state == TCP_SYN_SENT)
+> +                               tcp_mark_syn_lost(sk);
+
+This is going to crash in some cases, you do not know if you own the socket.
+(Look a few lines below)
+
+> +
+>                         tp->mtu_info = info;
+>                         if (!sock_owned_by_user(sk)) {
+>                                 tcp_v4_mtu_reduced(sk);
+> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+> index 992cbf3eb9e3..d7b1346863e3 100644
+> --- a/net/ipv6/tcp_ipv6.c
+> +++ b/net/ipv6/tcp_ipv6.c
+> @@ -443,6 +443,10 @@ static int tcp_v6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
+>                 if (!ip6_sk_accept_pmtu(sk))
+>                         goto out;
+>
+> +               /* fastopen SYN may have triggered TOOBIG, mark it lost. */
+> +               if (sk->sk_state == TCP_SYN_SENT)
+> +                       tcp_mark_syn_lost(sk);
+
+
+Same issue here.
+
+> +
+>                 tp->mtu_info = ntohl(info);
+>                 if (!sock_owned_by_user(sk))
+>                         tcp_v6_mtu_reduced(sk);
+>
+>
