@@ -2,325 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459A82D6F7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 06:04:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 418A92D6F84
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 06:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgLKFEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 00:04:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53310 "EHLO mail.kernel.org"
+        id S1728198AbgLKFMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 00:12:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50688 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725275AbgLKFDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 00:03:44 -0500
-Date:   Fri, 11 Dec 2020 10:32:57 +0530
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607662982;
-        bh=QQIKlaSHAzzlCNnlzReVIWgF9fD4C+w50tUdyG7AbEA=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qMCSDaoSi0F006LA5/sc9mlXEOQR27i80+JL4JtBxEFf376GChmHzc3FRriiKWKEL
-         9Xy55+FJa0369IW3/LxWK2RmB5h2kaVFlDn/hoV8DR10f07Hfc8/IY0g26wXSmp4qJ
-         FTnkihXpo8xfVM8vEJw7M5XWdJpBitGKhxi96iHc/PTBkWY2Sw6kX+BM34WA2YZxHt
-         g9Lirw6MUPdKyHKwUdfdFYPcTj1KxfDO7zoiUAUXnD0M+pwsZr26g3uJANyTvns8GJ
-         pap24CPktKm+ymgqBPZhYWSBDe4NIRRR/ZMpUuLUpI7gnEKWg9DLCe3wjIDpN487Gb
-         CuWsDReqe1gZg==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vivek Aknurwar <viveka@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeevan Shriram <jshriram@codeaurora.org>
-Subject: Re: [PATCH v2 4/5] clk: qcom: clk-alpha-pll: Add support for Lucid
- 5LPE PLL
-Message-ID: <20201211050257.GR8403@vkoul-mobl>
-References: <20201208064702.3654324-1-vkoul@kernel.org>
- <20201208064702.3654324-5-vkoul@kernel.org>
- <160763259636.1580929.12912274485007017282@swboyd.mtv.corp.google.com>
+        id S1726464AbgLKFLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 00:11:30 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607663443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tw8WaYEedOoP6uhdqQDj4FZ0EAnAR9qHZSp5wafjsIg=;
+        b=RSe3GVINPA6mwnWqpxRj8C9UTL+BPcbllw0Jd3tlnuM7c4kwSeqEQEIxImNXBlC8vx+2u1
+        lA6EJ0XwdoFW1xEM2TtixXyMKKnxqwvVltg4iWOvd6RBHTgkMnSUT7RGpYUltKe435KCOq
+        6Dor5nBpZV8g2Lp2ly+q87J7HUENxLQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 89C2DAB91;
+        Fri, 11 Dec 2020 05:10:43 +0000 (UTC)
+Subject: Re: x86/ioapic: Cleanup the timer_works() irqflags mess
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, luto@kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120114630.13552-6-jgross@suse.com>
+ <20201120115943.GD3021@hirez.programming.kicks-ass.net>
+ <20201209181514.GA14235@C02TD0UTHF1T.local>
+ <87tusuzu71.fsf@nanos.tec.linutronix.de>
+ <20201210111008.GB88655@C02TD0UTHF1T.local>
+ <87k0tpju47.fsf@nanos.tec.linutronix.de>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <0a90cfff-05d6-1475-43f8-e41b5af24281@suse.com>
+Date:   Fri, 11 Dec 2020 06:10:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <160763259636.1580929.12912274485007017282@swboyd.mtv.corp.google.com>
+In-Reply-To: <87k0tpju47.fsf@nanos.tec.linutronix.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ut1CfDbO7XZTjsKp0jfE35exNGTBAXJ4U"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-12-20, 12:36, Stephen Boyd wrote:
-> Quoting Vinod Koul (2020-12-07 22:47:01)
-> > diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-> > index 564431130a76..6a399663d564 100644
-> > --- a/drivers/clk/qcom/clk-alpha-pll.c
-> > +++ b/drivers/clk/qcom/clk-alpha-pll.c
-> > @@ -146,6 +146,12 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
-> >  /* LUCID PLL specific settings and offsets */
-> >  #define LUCID_PCAL_DONE                BIT(27)
-> >  
-> > +/* LUCID 5LPE PLL specific settings and offsets */
-> > +#define LUCID_5LPE_PCAL_DONE           BIT(11)
-> > +#define LUCID_5LPE_ENABLE_VOTE_RUN     BIT(21)
-> > +#define LUCID_5LPE_PLL_LATCH_INPUT     BIT(14)
-> > +#define LUCID_5LPE_ALPHA_PLL_ACK_LATCH BIT(13)
-> 
-> Sort these by bit or define name?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ut1CfDbO7XZTjsKp0jfE35exNGTBAXJ4U
+Content-Type: multipart/mixed; boundary="FClLxLK0RQjd7JNbzYVWLfCZWmbD9gnXP";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, xen-devel@lists.xenproject.org,
+ x86@kernel.org, linux-kernel@vger.kernel.org,
+ virtualization@lists.linux-foundation.org, luto@kernel.org,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
+ "VMware, Inc." <pv-drivers@vmware.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>
+Message-ID: <0a90cfff-05d6-1475-43f8-e41b5af24281@suse.com>
+Subject: Re: x86/ioapic: Cleanup the timer_works() irqflags mess
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120114630.13552-6-jgross@suse.com>
+ <20201120115943.GD3021@hirez.programming.kicks-ass.net>
+ <20201209181514.GA14235@C02TD0UTHF1T.local>
+ <87tusuzu71.fsf@nanos.tec.linutronix.de>
+ <20201210111008.GB88655@C02TD0UTHF1T.local>
+ <87k0tpju47.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87k0tpju47.fsf@nanos.tec.linutronix.de>
 
-Okay will sort by bit
+--FClLxLK0RQjd7JNbzYVWLfCZWmbD9gnXP
+Content-Type: multipart/mixed;
+ boundary="------------3B73900FA14EEF59C60EECEC"
+Content-Language: en-US
 
-> 
-> > +
-> >  #define pll_alpha_width(p)                                     \
-> >                 ((PLL_ALPHA_VAL_U(p) - PLL_ALPHA_VAL(p) == 4) ? \
-> >                                  ALPHA_REG_BITWIDTH : ALPHA_REG_16BIT_WIDTH)
-> > @@ -1561,3 +1567,220 @@ const struct clk_ops clk_alpha_pll_postdiv_lucid_ops = {
-> >         .set_rate = clk_alpha_pll_postdiv_fabia_set_rate,
-> >  };
-> >  EXPORT_SYMBOL_GPL(clk_alpha_pll_postdiv_lucid_ops);
-> > +
-> > +static int alpha_pll_lucid_5lpe_enable(struct clk_hw *hw)
-> > +{
-> > +       struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> > +       u32 val;
-> > +       int ret;
-> > +
-> > +       ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       /* If in FSM mode, just vote for it */
-> > +       if (val & LUCID_5LPE_ENABLE_VOTE_RUN) {
-> > +               ret = clk_enable_regmap(hw);
-> > +               if (ret)
-> > +                       return ret;
-> > +               return wait_for_pll_enable_lock(pll);
-> > +       }
-> > +
-> > +       /* Check if PLL is already enabled */
-> 
-> Yeah that's obvious, but then what?
+This is a multi-part message in MIME format.
+--------------3B73900FA14EEF59C60EECEC
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-then dont proceed :) will update
+On 10.12.20 21:15, Thomas Gleixner wrote:
+> Mark tripped over the creative irqflags handling in the IO-APIC timer
+> delivery check which ends up doing:
+>=20
+>          local_irq_save(flags);
+> 	local_irq_enable();
+>          local_irq_restore(flags);
+>=20
+> which triggered a new consistency check he's working on required for
+> replacing the POPF based restore with a conditional STI.
+>=20
+> That code is a historical mess and none of this is needed. Make it
+> straightforward use local_irq_disable()/enable() as that's all what is
+> required. It is invoked from interrupt enabled code nowadays.
+>=20
+> Reported-by: Mark Rutland <mark.rutland@arm.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Tested-by: Mark Rutland <mark.rutland@arm.com>
 
-> > +       ret = trion_pll_is_enabled(pll, pll->clkr.regmap);
-> > +       if (ret < 0)
-> > +               return ret;
-> > +
-> > +       ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       /* Set operation mode to RUN */
-> 
-> This comment is worthless.
+Reviewed-by: Juergen Gross <jgross@suse.com>
 
-Will drop
 
-> 
-> > +       regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_RUN);
-> > +
-> > +       ret = wait_for_pll_enable_lock(pll);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       /* Enable the PLL outputs */
-> > +       ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, PLL_OUT_MASK);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       /* Enable the global PLL outputs */
-> > +       ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_OUTCTRL, PLL_OUTCTRL);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       /* Ensure that the write above goes through before returning. */
-> > +       mb();
-> 
-> Regmap has a memory barrier in writel. Drop this.
+Juergen
 
-yes
+--------------3B73900FA14EEF59C60EECEC
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-> 
-> > +       return ret;
-> > +}
-> > +
-> > +static void alpha_pll_lucid_5lpe_disable(struct clk_hw *hw)
-> > +{
-> > +       struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> > +       u32 val;
-> > +       int ret;
-> > +
-> > +       ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
-> > +       if (ret)
-> > +               return;
-> > +
-> > +       /* If in FSM mode, just unvote it */
-> > +       if (val & LUCID_5LPE_ENABLE_VOTE_RUN) {
-> > +               clk_disable_regmap(hw);
-> > +               return;
-> > +       }
-> > +
-> > +       /* Disable the global PLL output */
-> > +       ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_OUTCTRL, 0);
-> > +       if (ret)
-> > +               return;
-> > +
-> > +       /* Disable the PLL outputs */
-> > +       ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, 0);
-> > +       if (ret)
-> > +               return;
-> > +
-> > +       /* Place the PLL mode in STANDBY */
-> > +       regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_STANDBY);
-> > +}
-> > +
-> > +/*
-> > + * The Lucid 5LPE PLL requires a power-on self-calibration which happens
-> > + * when the PLL comes out of reset. Calibrate in case it is not completed.
-> > + */
-> > +static int alpha_pll_lucid_5lpe_prepare(struct clk_hw *hw)
-> > +{
-> > +       struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> > +       struct clk_hw *p;
-> > +       u32 regval;
-> 
-> Can you use u32 val? And also include a patch to replace the couple
-> times where there is 'regval' in this file. The former is shorter and
-> used far more in qcom clk code.
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-Will do
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
-> 
-> > +       int ret;
-> > +
-> > +       /* Return early if calibration is not needed. */
-> > +       regmap_read(pll->clkr.regmap, PLL_MODE(pll), &regval);
-> > +       if (regval & LUCID_5LPE_PCAL_DONE)
-> > +               return 0;
-> > +
-> > +       p = clk_hw_get_parent(hw);
-> > +       if (!p)
-> > +               return -EINVAL;
-> > +
-> > +       ret = alpha_pll_lucid_5lpe_enable(hw);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       alpha_pll_lucid_5lpe_disable(hw);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int alpha_pll_lucid_5lpe_set_rate(struct clk_hw *hw, unsigned long rate,
-> > +                                        unsigned long prate)
-> > +{
-> > +       struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> > +       unsigned long rrate;
-> > +       u32 regval, l;
-> > +       u64 a;
-> > +       int ret;
-> > +
-> > +       rrate = alpha_pll_round_rate(rate, prate, &l, &a, ALPHA_REG_16BIT_WIDTH);
-> > +
-> > +       /*
-> > +        * Due to a limited number of bits for fractional rate programming, the
-> > +        * rounded up rate could be marginally higher than the requested rate.
-> > +        */
-> > +       if (rrate > (rate + PLL_RATE_MARGIN) || rrate < rate) {
-> > +               pr_err("Call set rate on the PLL with rounded rates!\n");
-> > +               return -EINVAL;
-> > +       }
-> 
-> Can we use alpha_pll_check_rate_margin()?
+--------------3B73900FA14EEF59C60EECEC--
 
-Ah a shiny new helper, looking at it yes we should
+--FClLxLK0RQjd7JNbzYVWLfCZWmbD9gnXP--
 
-> 
-> > +
-> > +       regmap_write(pll->clkr.regmap, PLL_L_VAL(pll), l);
-> > +       regmap_write(pll->clkr.regmap, PLL_ALPHA_VAL(pll), a);
-> > +
-> > +       /* Latch the PLL input */
-> > +       ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll),
-> > +                                LUCID_5LPE_PLL_LATCH_INPUT, LUCID_5LPE_PLL_LATCH_INPUT);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       /* Wait for 2 reference cycles before checking the ACK bit. */
-> > +       udelay(1);
-> > +       regmap_read(pll->clkr.regmap, PLL_MODE(pll), &regval);
-> > +       if (!(regval & LUCID_5LPE_ALPHA_PLL_ACK_LATCH)) {
-> > +               pr_err("Lucid 5LPE PLL latch failed. Output may be unstable!\n");
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       /* Return the latch input to 0 */
-> > +       ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), LUCID_5LPE_PLL_LATCH_INPUT, 0);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       if (clk_hw_is_enabled(hw)) {
-> > +               ret = wait_for_pll_enable_lock(pll);
-> > +               if (ret)
-> > +                       return ret;
-> > +       }
-> > +
-> > +       /* Wait for PLL output to stabilize */
-> > +       udelay(100);
-> > +       return 0;
-> > +}
-> > +
-> > +static int clk_lucid_5lpe_pll_postdiv_set_rate(struct clk_hw *hw, unsigned long rate,
-> > +                                              unsigned long parent_rate)
-> > +{
-> > +       struct clk_alpha_pll_postdiv *pll = to_clk_alpha_pll_postdiv(hw);
-> > +       int i, val = 0, div, ret;
-> > +
-> > +       /*
-> > +        * If the PLL is in FSM mode, then treat set_rate callback as a
-> > +        * no-operation.
-> > +        */
-> > +       ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       if (val & LUCID_5LPE_ENABLE_VOTE_RUN)
-> > +               return 0;
-> > +
-> > +       if (!pll->post_div_table) {
-> > +               pr_err("Missing the post_div_table for the PLL\n");
-> 
-> Can this be rolled into the loop below?
+--ut1CfDbO7XZTjsKp0jfE35exNGTBAXJ4U
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-Yep
+-----BEGIN PGP SIGNATURE-----
 
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       div = DIV_ROUND_UP_ULL((u64)parent_rate, rate);
-> > +       for (i = 0; i < pll->num_post_div; i++) {
-> 
-> So that this finds nothing.
-> 
-> > +               if (pll->post_div_table[i].div == div) {
-> > +                       val = pll->post_div_table[i].val;
-> > +                       break;
-> > +               }
-> > +       }
-> 
-> and then if val == -1 we return -EINVAL?
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/S/1IFAwAAAAAACgkQsN6d1ii/Ey8w
+Zwf9FLP8Fj1JNG2NYn58CzNrRiyr6YDBpKBiJh+uBmcJAAc34XAwkzDVUYbbaFsr12h2bICSlnJ8
+jEN0pu4X53sJVw2xxOEfx2HlGI/ksGGRhrAFARK/h8staI70tGsbSOHJQNJCbmZKHOn55OkNQR0H
+yA4TBnoai2gnYd1Tc96EnKJ40Pch1hg2X3C+9sWGqwd31dbv0wsnLeMOiORzwikM8mIVKrzutkCC
+p8AySw3U0kMObQPydcJO3Ub4msqzkccfByYDWWOCsEi+1kfIEYqv28eTTfRW5FMYpQF0VCRSkQec
+oU3arD7srQaZGLOwwClaEpgS3z5yk8VDOxX++d8Eiw==
+=eb6p
+-----END PGP SIGNATURE-----
 
-Correct, will update
-
-> > +
-> > +       return regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll),
-> > +                               (BIT(pll->width) - 1) << pll->post_div_shift,
-> 
-> Use GENMASK?
-
-Looks like this can be:
-                GENMASK(pll->width + pll->post_div_shift - 1, pll->post_div_shift)
-
-Not sure which one you like :)
-
--- 
-~Vinod
+--ut1CfDbO7XZTjsKp0jfE35exNGTBAXJ4U--
