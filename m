@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D2B2D7FF7
+	by mail.lfdr.de (Postfix) with ESMTP id DFA442D7FF8
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404738AbgLKUYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 15:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42844 "EHLO
+        id S2394559AbgLKUZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 15:25:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391314AbgLKUYF (ORCPT
+        with ESMTP id S2394479AbgLKUYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 15:24:05 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C76AC0613CF;
-        Fri, 11 Dec 2020 12:23:25 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id d3so8557438wmb.4;
-        Fri, 11 Dec 2020 12:23:25 -0800 (PST)
+        Fri, 11 Dec 2020 15:24:37 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A985FC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:23:56 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id j26so7293849qtq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:23:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9nnnWY6Cv1HMP5rItObgN0uMtCD8ZN5Mm5DFgwbY0m8=;
-        b=d4blJ14dKzGvpdne61L4L3j5c8V29B/Eay1MN8TFIbJ/tu1cINAqdVrhHyAt1Sb7+O
-         fT/nKJheUPwLlyG6O5fblU/joCKchKjoF1RKcsq5eXBn3TqcHa/dcHNv657lzX4i1GFm
-         cIgI0s2krlK0QHbuj6fyE+FMyJQH7R7xyUYdkcetCC5I8GJ9Mlr8bonIhXKx7MTJAFr5
-         VUQ5ZIA60PwjjiI5KVhtiRLTW8MVj4nefP6ohusqt1UobVBTJU3gQRIQvXW2OpWiiSCM
-         UBdSjYZ8Ru7au4poS6Al/0ao9HJCwHGSuUx6XpzM04GG8eOdEM9YJIO0fPRlXh4g+7nO
-         hOzQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ELqdRXlB+MjwvvNKBuEm7rQwzLSIQMH5YM/Dpnj0Am0=;
+        b=BxCjNUzeRilpLNFa++B1NsYrYbCN9twqCH3qY3QELZYysTlTjgXGfyhr447n9wmYfO
+         5aaPIRP7vqa3uynlTB2ZW9HaNgMq/linzUslEIxqMf8IhIwA7rXgncZ7ENiyoJu2c1w0
+         K8Q+HjqPk4VjfOvFV0RfQcgntEggt9NeEYdn9EH96zhyjMygI3vlV+9PWsTyIHCWJj4j
+         n4I+4Rq6P4/92l064bPU7e+VARtuNHVCE8dt8Biwr3NZtrCka9wwZ5EhrzePVhMqSbg9
+         CtvRX98LxYchtQNkYXxces3ryzg325UrqmKpOz+2+N+/RQ1uuB9YcH/b6WRZYqSYcCFI
+         dx4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9nnnWY6Cv1HMP5rItObgN0uMtCD8ZN5Mm5DFgwbY0m8=;
-        b=g+qgl7On0KHrSdN0XXpYjFEei2q6zcLlXDbJ4vm4eLetkh+Uc0MyKN3BZGE5G1mTbC
-         Qksa8DdwiAwQ+R0tb8OXPNnMKc2a8BMAl1Gv9HdbW5BFtM+SbGWDVoNGsvFu34twQSfj
-         Zn/qT+8qGQfKxCIBxRllymIvt+G4fba70jCf4er/P0/LDiCr0UXUuWbjUJjz/xugWQEh
-         85LgaODQ84NS+OFnC9nGz7ncUt8dxgO/b7tyzg4PzxiksjtuYthZgVLdkjy+HkqyUjQn
-         H0o+VtLIF8wRCU3f72TD8/NHhHpG69CXLyUJjM3IeSrQAZesjroinek+V9oOPc8t3frb
-         kJqw==
-X-Gm-Message-State: AOAM532td2VIf7rW5vRbInIwQdC725fmxA+UW4ctNtQovjs+ofyr2ajP
-        iFQGbPIhipP54dGnkhUuYuPfvtOqdXo=
-X-Google-Smtp-Source: ABdhPJyWY27SrDWF63KiE/7gZ1K0CX5oa+VZAp+79eWVc/0LL3tsZ1rbtqaN0mKuU3ELXYFaWQ/grg==
-X-Received: by 2002:a1c:7217:: with SMTP id n23mr14926639wmc.167.1607718203903;
-        Fri, 11 Dec 2020 12:23:23 -0800 (PST)
-Received: from [192.168.2.202] (pd9e5a2a8.dip0.t-ipconnect.de. [217.229.162.168])
-        by smtp.gmail.com with ESMTPSA id a62sm17251743wmh.40.2020.12.11.12.23.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Dec 2020 12:23:22 -0800 (PST)
-Subject: Re: [PATCH -next] platform: surface: fix non-PM_SLEEP build warnings
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        platform-driver-x86@vger.kernel.org
-References: <20201211190335.16501-1-rdunlap@infradead.org>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <3705938f-6f82-88ef-455b-e0f7459989e3@gmail.com>
-Date:   Fri, 11 Dec 2020 21:23:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ELqdRXlB+MjwvvNKBuEm7rQwzLSIQMH5YM/Dpnj0Am0=;
+        b=WXQcI7kMUWihLA/Q02tCe09LadqMLFknYBxOJ9/2+gBBWybWP4jwhBMrz1DEeWrHwY
+         uSrUabW3oCGnTJJz+iA8EbpaXKdJTRsQj1/45bB/MNJ4yb/E2PKg5U0VLh2+QoASSX8O
+         25GCDx0ACVUWJq3DLR7R1wjlv8obP9KDEZe0vHHErK0y7797+erOfx2894EqvwnnWFJA
+         rwWWjipq4yfPEBv43vtDsMfSTw/rAZZ9anMeLIZqsqGgFZEcGyMlO3+On4Zix/NxSGbx
+         1kOmhazlmetMVMaxMdFuSQ2adk8893vrcNOyrkowaaRNaf6dhEwnjvVq1jQpd2yx8sYT
+         pWeg==
+X-Gm-Message-State: AOAM532qDG7FPQEIoynxHvX+BqDCcScMPzjA7YMLnlf7Qf4GNNZX6rdW
+        xwFDjUodh9JUEjPbW8HdupBclw==
+X-Google-Smtp-Source: ABdhPJy9rue36Wb0wJHhBUETw/119DrBaQGbguszUb9eoNfHAzOrBGwR8fu58hiomMY5ZuNPWOmxWw==
+X-Received: by 2002:ac8:3ac5:: with SMTP id x63mr17550095qte.376.1607718235945;
+        Fri, 11 Dec 2020 12:23:55 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id 187sm8409820qki.38.2020.12.11.12.23.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 12:23:55 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1knoxG-009L1i-FW; Fri, 11 Dec 2020 16:23:54 -0400
+Date:   Fri, 11 Dec 2020 16:23:54 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
+        david@redhat.com, osalvador@suse.de, dan.j.williams@intel.com,
+        sashal@kernel.org, tyhicks@linux.microsoft.com,
+        iamjoonsoo.kim@lge.com, mike.kravetz@oracle.com,
+        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
+        mgorman@suse.de, willy@infradead.org, rientjes@google.com,
+        jhubbard@nvidia.com, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] mm/gup: migrate pinned pages out of movable zone
+Message-ID: <20201211202354.GA2225686@ziepe.ca>
+References: <20201211202140.396852-1-pasha.tatashin@soleen.com>
+ <20201211202140.396852-6-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
-In-Reply-To: <20201211190335.16501-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211202140.396852-6-pasha.tatashin@soleen.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/20 8:03 PM, Randy Dunlap wrote:
-> Fix build warnings when CONFIG_PM_SLEEP is not enabled and these
-> functions are not used:
-> 
-> ../drivers/platform/surface/surface_gpe.c:189:12: warning: ‘surface_gpe_resume’ defined but not used [-Wunused-function]
->   static int surface_gpe_resume(struct device *dev)
->              ^~~~~~~~~~~~~~~~~~
-> ../drivers/platform/surface/surface_gpe.c:184:12: warning: ‘surface_gpe_suspend’ defined but not used [-Wunused-function]
->   static int surface_gpe_suspend(struct device *dev)
->              ^~~~~~~~~~~~~~~~~~~
-> 
-> Fixes: 274335f1c557 ("platform/surface: Add Driver to set up lid GPEs on MS Surface device")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Maximilian Luz <luzmaximilian@gmail.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: platform-driver-x86@vger.kernel.org
-> ---
->   drivers/platform/surface/surface_gpe.c |    2 ++
->   1 file changed, 2 insertions(+)
-> 
-> --- linux-next-20201210.orig/drivers/platform/surface/surface_gpe.c
-> +++ linux-next-20201210/drivers/platform/surface/surface_gpe.c
-> @@ -181,6 +181,7 @@ static int surface_lid_enable_wakeup(str
->   	return 0;
->   }
->   
-> +#ifdef CONFIG_PM_SLEEP
->   static int surface_gpe_suspend(struct device *dev)
->   {
->   	return surface_lid_enable_wakeup(dev, true);
-> @@ -190,6 +191,7 @@ static int surface_gpe_resume(struct dev
->   {
->   	return surface_lid_enable_wakeup(dev, false);
->   }
-> +#endif
->   
->   static SIMPLE_DEV_PM_OPS(surface_gpe_pm, surface_gpe_suspend, surface_gpe_resume);
->   
-> 
+On Fri, Dec 11, 2020 at 03:21:39PM -0500, Pavel Tatashin wrote:
+> @@ -1593,7 +1592,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+>  				}
+>  
+>  				if (!isolate_lru_page(head)) {
+> -					list_add_tail(&head->lru, &cma_page_list);
+> +					list_add_tail(&head->lru, &movable_page_list);
+>  					mod_node_page_state(page_pgdat(head),
+>  							    NR_ISOLATED_ANON +
+>  							    page_is_file_lru(head),
+> @@ -1605,7 +1604,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+>  		i += step;
+>  	}
+>  
+> -	if (!list_empty(&cma_page_list)) {
+> +	if (!list_empty(&movable_page_list)) {
 
-Right, thanks.
+You didn't answer my earlier question, is it OK that ZONE_MOVABLE
+pages leak out here if ioslate_lru_page() fails but the
+moval_page_list is empty? 
 
-I assume this covers all instances of this warning in platform/surface?
-Otherwise, a "platform: surface: gpe: ..." subject would make more sense.
+I think the answer is no, right?
 
-As for the rest:
-
-Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
-
-Regards,
-Max
+Jason
