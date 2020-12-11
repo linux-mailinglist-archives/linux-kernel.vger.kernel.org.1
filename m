@@ -2,101 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77302D7630
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 473CA2D7633
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406079AbgLKNCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 08:02:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
+        id S2436577AbgLKND3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:03:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391594AbgLKNCD (ORCPT
+        with ESMTP id S2436548AbgLKNC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:02:03 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDAAC0613CF;
-        Fri, 11 Dec 2020 05:01:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rMzTkRBHUwuuyWZIHH9a6s635U0L90G4G36xFMgcyhQ=; b=SOQLHFFA+ehnBJ6pZS21QAMZ2c
-        +GapFcfuB5gMQaGWgZxgCIOLVTNEN0MLdahOuJ433N4ftNOGaGGzrkTGK3YWXWHbD191JZV/+5+5y
-        EmM31xnO2wyysHgltCGQfzZOMH8iVQ/skAxfvmBa6Z9OZf2PLXJzLlu0+Jy1WzG0XndSoYXHS3Btb
-        Pn4HGZo+fw94dSBKWO8puOxBHnbFTzNt69RleROZ7grLB6i7OaiRVistU90KytjQL4ryLqC91URkH
-        KSukG70kZhkCzEG67gLomMPn+ZZTdoJxGtLsDNBsYwGayHKM0DRLf7ues3fIG1C4gBWdBTMy4q2Z5
-        tA+ymCXw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kni2g-00036R-5c; Fri, 11 Dec 2020 13:01:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B43883003E5;
-        Fri, 11 Dec 2020 14:00:58 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9D8D221BE8D82; Fri, 11 Dec 2020 14:00:58 +0100 (CET)
-Date:   Fri, 11 Dec 2020 14:00:58 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, TimGuo-oc@zhaoxin.com,
-        CooperYan@zhaoxin.com, QiyuanWang@zhaoxin.com,
-        HerryYang@zhaoxin.com, CobeChen@zhaoxin.com,
-        SilviaZhao@zhaoxin.com, thomas.lendacky@amd.com
-Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
-Message-ID: <20201211130058.GZ2414@hirez.programming.kicks-ass.net>
-References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+        Fri, 11 Dec 2020 08:02:58 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B81C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:02:17 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id bj5so4555804plb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:02:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1D/vNhY1Kjir7/4yg4dLbO4XK686OPxm5jp3OAIgbr8=;
+        b=AWawLQUCOwrBbZjG6DCx/CFU1PMdE3Nz/CbFeHJOjYhctFibE5w8pITqDlux9YqPap
+         HMEvI1eBfhOAZB3WkdP800zq4y4ptAbHO0d70OA23/FSfrEarsZFNNva6VWU9EG8qYFJ
+         Bbm5DSlBBXltUxw44fQ2IXKNo+8i+vEfUR6yDLIcGzZCS9YD3PCAxM2IZrtllDVX+9iC
+         kE4S3+p4fLSiAiXortmEjfRzR8lp5zawK0GSKJe5beoajfRlrT2Kv9x+HKrttc3n7sHc
+         aK+up31FuwNld0+2j7B4qxhfEvIbdNWKlMkLop7Y3pxYWb4PQFQJ1KN8dySgu3/ciGu5
+         zyHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1D/vNhY1Kjir7/4yg4dLbO4XK686OPxm5jp3OAIgbr8=;
+        b=FiLNanxes7o4B355/R1Z6Gy2zlMpusdWB8/+4QT/ed4Rq3eD8vLfadywHD8ZraQKh6
+         /gbFLubhwNLu2F24c8nVmrhsgMxHo0pcKF71gkSgHsVrdQSQMYK5rjoEOw8uS0lF9YCo
+         CIbSjg0L08/T8fx7Z9iwpC6MKN2EXwBbRI7PfaJ2nyT0yRTpc5FT2nRLd2c/MB8eq0gh
+         qAdCeTnoFGsLmCrsgEFlvwFhbTxy65wfdb1dFwPjt/q3ZEj1NtIhNjfBkMHfppvQ2/OH
+         r9wFI4lmfAdnjs5/n8BOIKn9dZtR5cuiJLBkTsRstkn4FZLrNuwgmnokh/vstAmZQpEH
+         Bruw==
+X-Gm-Message-State: AOAM530nX3ZgfrzdBGk1kBirP+BdBGtC7XKSYj/r/68z6sgCK73d4/Nk
+        uphaDvGoz0vcXsonV62Nlr3+TdBfFzqrCTnDZXX3pw==
+X-Google-Smtp-Source: ABdhPJyrkHW1jJ+y4/0xKMaA/QItNsnKqbDwvPlm6ZAwyXs/lLyssO3a2x19vc3Yn8Q2Bv7j1M8leRQeebyI6fqjGK4=
+X-Received: by 2002:a17:902:76c8:b029:d9:d6c3:357d with SMTP id
+ j8-20020a17090276c8b02900d9d6c3357dmr10794766plt.34.1607691736785; Fri, 11
+ Dec 2020 05:02:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+References: <20201210035526.38938-1-songmuchun@bytedance.com>
+ <20201210035526.38938-7-songmuchun@bytedance.com> <20201211093517.GA22210@linux>
+In-Reply-To: <20201211093517.GA22210@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 11 Dec 2020 21:01:40 +0800
+Message-ID: <CAMZfGtX4EF+4V+XQvDdiLXq0L8Q5p7aacK+T0sCc-Kddvg52fA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v8 06/12] mm/hugetlb: Allocate the vmemmap
+ pages associated with each HugeTLB page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
-> The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
-> On platforms with Zhaoxin CPUs supporting this X86 feature, When
-> crc32c-intel and crc32c-generic are both registered, system will
-> use crc32c-intel because its .cra_priority is greater than
-> crc32c-generic. This case expect to use crc32c-generic driver for
-> some Zhaoxin CPUs to get performance gain, So remove these Zhaoxin
-> CPUs support from crc32c-intel.
-> 
-> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-> ---
->  arch/x86/crypto/crc32c-intel_glue.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/x86/crypto/crc32c-intel_glue.c b/arch/x86/crypto/crc32c-intel_glue.c
-> index feccb52..6dafdae 100644
-> --- a/arch/x86/crypto/crc32c-intel_glue.c
-> +++ b/arch/x86/crypto/crc32c-intel_glue.c
-> @@ -222,8 +222,16 @@ MODULE_DEVICE_TABLE(x86cpu, crc32c_cpu_id);
->  
->  static int __init crc32c_intel_mod_init(void)
->  {
-> +	struct cpuinfo_x86 *c = &boot_cpu_data;
-> +
->  	if (!x86_match_cpu(crc32c_cpu_id))
->  		return -ENODEV;
-> +
-> +	if (c->x86_vendor == X86_VENDOR_ZHAOXIN || c->x86_vendor == X86_VENDOR_CENTAUR) {
-> +		if (c->x86 == 0x6 || (c->x86 == 0x7 && c->x86_model <= 0x3b))
-> +			return -ENODEV;
-> +	}
+On Fri, Dec 11, 2020 at 5:35 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Thu, Dec 10, 2020 at 11:55:20AM +0800, Muchun Song wrote:
+> > When we free a HugeTLB page to the buddy allocator, we should allocate the
+> > vmemmap pages associated with it. We can do that in the __free_hugepage()
+> "vmemmap pages that describe the range" would look better to me, but it is ok.
 
-Egads, why can't you use that x86_match_cpu() above, and also this
-really wants a comment on why you're excluding these chips. Also, since
-(IIRC) ZHAOXIN is basically AND, shouldn't they also be listed?
+Thanks.
 
-That is; write it like:
+>
+> > +#define GFP_VMEMMAP_PAGE             \
+> > +     (GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_HIGH | __GFP_NOWARN)
+> >
+> >  #ifndef VMEMMAP_HPAGE_SHIFT
+> >  #define VMEMMAP_HPAGE_SHIFT          HPAGE_SHIFT
+> > @@ -197,6 +200,11 @@
+> >       (__boundary - 1 < (end) - 1) ? __boundary : (end);               \
+> >  })
+> >
+> > +typedef void (*vmemmap_remap_pte_func_t)(struct page *reuse, pte_t *pte,
+> > +                                      unsigned long start, unsigned long end,
+> > +                                      void *priv);
+>
+> Any reason to not have defined GFP_VMEMMAP_PAGE and the new typedef into
+> hugetlb_vmemmap.h?
 
-	m = x86_match_cpu(crc32_cpu_id);
-	if (!m || !m->data)
-		return -ENODEV;
+Because they can only be used in this hugetlb_vmemmap.c.
 
-That way you can have positive and negative matches in the array
-(obviously the existing FEATURE test would need data=1 and be last).
+>
+>
+> > +static void vmemmap_restore_pte_range(struct page *reuse, pte_t *pte,
+> > +                                   unsigned long start, unsigned long end,
+> > +                                   void *priv)
+> > +{
+> > +     pgprot_t pgprot = PAGE_KERNEL;
+> > +     void *from = page_to_virt(reuse);
+> > +     unsigned long addr;
+> > +     struct list_head *pages = priv;
+> [...]
+> > +
+> > +             /*
+> > +              * Make sure that any data that writes to the @to is made
+> > +              * visible to the physical page.
+> > +              */
+> > +             flush_kernel_vmap_range(to, PAGE_SIZE);
+>
+> Correct me if I am wrong, but flush_kernel_vmap_range is a NOOP under arches which
+> do not have ARCH_HAS_FLUSH_KERNEL_DCACHE_PAGE.
+> Since we only enable support for x86_64, and x86_64 is one of those arches,
+> could we remove this, and introduced later on in case we enable this feature
+> on an arch that needs it?
+
+OK. Will remove.
+
+>
+> I am not sure if you need to flush the range somehow, as you did in
+> vmemmap_remap_range.
+>
+> > +retry:
+> > +             page = alloc_page(GFP_VMEMMAP_PAGE);
+> > +             if (unlikely(!page)) {
+> > +                     msleep(100);
+> > +                     /*
+> > +                      * We should retry infinitely, because we cannot
+> > +                      * handle allocation failures. Once we allocate
+> > +                      * vmemmap pages successfully, then we can free
+> > +                      * a HugeTLB page.
+> > +                      */
+> > +                     goto retry;
+>
+> I think this is the trickiest part.
+> With 2MB HugeTLB pages we only need 6 pages, but with 1GB, the number of pages
+> we need to allocate increases significantly (4088 pages IIRC).
+> And you are using __GFP_HIGH, which will allow us to use more memory (by
+> cutting down the watermark), but it might lead to putting the system
+> on its knees wrt. memory.
+> And yes, I know that once we allocate the 4088 pages, 1GB gets freed, but
+> still.
+
+Yeah, it is a problem. How about removing __GFP_HIGH only for
+1GB HugeTLB page?
+
+>
+> I would like to hear Michal's thoughts on this one, but I wonder if it makes
+> sense to not let 1GB-HugeTLB pages be freed.
+>
+> --
+> Oscar Salvador
+> SUSE L3
+
+
+
+-- 
+Yours,
+Muchun
