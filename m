@@ -2,139 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFBD2D6DF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7D62D6DF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391703AbgLKCDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 21:03:09 -0500
-Received: from ozlabs.org ([203.11.71.1]:56947 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391759AbgLKCC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 21:02:57 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CsYv70tpFz9sVs;
-        Fri, 11 Dec 2020 13:02:10 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607652133;
-        bh=wjYqlDAkuG8LXNrKeTQCqmsEtgrJXUrgEJ5IEwFWQ5M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Z/G2RYJ+raEIxyNt/lAj6hu6dFdTyDuLLBl+4cwruDsQzyEdTjqsIJgRTT3+1LzBy
-         mHmouXg5o6/2cHSASYwiQZyd49SxnrJQBnWTTRX/8kvFYVz6cAgri5QLkgb7/BPun0
-         KeI0Ecnze7goCjSQQ6Njs1Awbkn4uLMtNdPKZSzsGuZ44vSZJy+duzNdnMJIYBvVdI
-         hooz391rx/qpk3NIPHOdQn3qGdg+cyjRVssiSm2zYtVLAHodagkeTgUVw3MN5yzJZ9
-         M7ysaHQWJ5H+Hi5NlH/b9Sp1um4+Eatp0NMcXKePvKWPVC7UwL4dp8SRomXFUlJ3Jr
-         eJrkZyFJDECVg==
-Date:   Fri, 11 Dec 2020 13:02:08 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Ashish Kalra <ashish.kalra@amd.com>, Borislav Petkov <bp@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the swiotlb tree
-Message-ID: <20201211130208.2cf1e813@canb.auug.org.au>
+        id S2388647AbgLKCHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 21:07:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387840AbgLKCG5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 21:06:57 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0012EC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 18:06:16 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id d189so8130629oig.11
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 18:06:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=f9RSyWHl3Z1A9igwbyiPb+HKfrL5RmW/7S10//clEIc=;
+        b=e2yI+Iplee0/vctTdk8XUsTgKJ7vxYwhrkV2a5JcjCHSrCc2JRRAb64vCVfsV7yo78
+         B0ZNIum9QeuLW3JNwUuaZG2g3bxfLuTUkStSp4GcrnHR6b8aD2Qmu4beiT2tlp1Xk2uj
+         i85VZRIc2PPfL0mUEg+9jE+n36rrkc2HX6ZuTgjxVFN0X4I11Z8HwAa/kA9GZWqcHwBk
+         l77av4ppjbBvFERMzXJyIApvE62pju92vDXmohXXDF5Vqi+KkqV8HH8t8qdhWjlxmMJS
+         D8KLMcTacHU/v/6HJSMsAdX8qKruqZqekPjW2AfUob9e1Imxo4+qvUVHofsCjxYLg1PQ
+         9mEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=f9RSyWHl3Z1A9igwbyiPb+HKfrL5RmW/7S10//clEIc=;
+        b=BXrgR7gJ392nryfdTMKq5oWapmVLNYMKRYiZQO6UEeVgGRAHw/dtQiA7Du0b5RleBp
+         VLwxEESkeMDLqXiwKkSu+qPuWTeozzzo6TVSLItiNrqLRK2d4OajngZEivmRcpANEGvz
+         p23zhcDUnY7WgK9/Nl7lIEfqYexx8+KjF7oQflxVHMIa0WJ4cnBbEW6rUcDPTqV+y1m5
+         0iJ0Pxu3cC7fLTTItKd+6BRKfpLJqH9a++kzgc6AUZU9MMXY8t4EoDSyV674RmO9Naji
+         f+n8UBIVlAFY0dG+N1knoAWP4KvSB0uZiwSc5451lhSFeoW4Ng1rxFc58EYp5TGNveEu
+         rlpA==
+X-Gm-Message-State: AOAM532FDMr39tM64XGmo6m3ACfm7t0PGAvdBflDgnr2AfkNZ3XbmXgD
+        6e4MBm8c8ISgjKhImoNOAUydYDqUUFYZYNgznTrrEQ==
+X-Google-Smtp-Source: ABdhPJzs0/lE6TSq5HnlKNF+j99NifDWVBECFpzx5ngO00Z+i5z0ERHOjWxD76IkEiusio5CVOYgPLUR+7AXcIsYuE0=
+X-Received: by 2002:aca:5e03:: with SMTP id s3mr7651344oib.125.1607652376343;
+ Thu, 10 Dec 2020 18:06:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+zBfjzr_7SvHQi3rLsGL0s_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201210092853.303-1-wangzhiqiang.bj@bytedance.com>
+ <X9HtwHo8s6e2UsAT@kroah.com> <CAH0XSJt3=XJ_gQb2rTvbUcbyow2k7E4jfuKGKAKdi+nwdfauVw@mail.gmail.com>
+ <X9H4r3XZynGtSDw0@kroah.com> <CABoTLcSiCsASu_prfxH_sZrm-njcYzkcvrrpS1envj7QvxYtNA@mail.gmail.com>
+In-Reply-To: <CABoTLcSiCsASu_prfxH_sZrm-njcYzkcvrrpS1envj7QvxYtNA@mail.gmail.com>
+From:   Lei Yu <yulei.sh@bytedance.com>
+Date:   Fri, 11 Dec 2020 10:06:05 +0800
+Message-ID: <CAGm54UFJt2PHJThigVYLrgKqBz7rNF-vWYFJ5wykBx+GPjzihw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 1/3] misc: aspeed: Add Aspeed UART routing
+ control driver.
+To:     Oskar Senft <osk@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Wang <wangzhiqiang.bj@bytedance.com>,
+        Lotus Xu <xuxiaohan@bytedance.com>,
+        Yong Li <yong.b.li@linux.intel.com>,
+        Vernon Mauery <vernon.mauery@linux.intel.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+zBfjzr_7SvHQi3rLsGL0s_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Dec 10, 2020 at 8:33 PM Oskar Senft <osk@google.com> wrote:
+>
+> The purpose of this driver is to allow manipulation of the UART routing a=
+t runtime. Setting the routing in the DTS would obviously not allow that.
+>
+> From what I remember, I used am existing unrelated driver as template. Ap=
+ologies for using the wrong APIs - I literally just followed what I had see=
+n elsewhere.
+>
+> Since posting this driver, we found that while it solved our initial use =
+case, that use case has evolved. We're now using Aspeed's VUART where bytes=
+ are routed "manually" (i.e. copied between devices) rather than in hardwar=
+e. So I don't need this driver anymore.
+>
+> If it's still useful to anyone, please take ownership and modify it as ne=
+eded to be able to submit it. I'm still happy to keep an eye on it and help=
+ explain its purpose.
+>
 
-Hi all,
+The driver is useful for our system, and it's used in intel-openbmc as well=
+.
+We (John and I work for the same employer) have the chance to use
+Andrew Jefery's ["bmc-misc" driver][1] to configure the various
+registers in dts to setup the UART routing, but that driver was not
+accepted by upstream.
 
-After merging the swiotlb tree, today's linux-next build (arm
-multi_v7_defconfig) produced this warning:
+So we end up sending this patch here for upstream's comment.
+If it's considered not a good option, we will have to keep it downstream.
 
-In file included from arch/arm/mm/init.c:24:
-include/linux/swiotlb.h:108:13: warning: 'swiotlb_adjust_size' defined but =
-not used [-Wunused-function]
-  108 | static void swiotlb_adjust_size(unsigned long new_size)
-      |             ^~~~~~~~~~~~~~~~~~~
-In file included from include/linux/dma-direct.h:13,
-                 from arch/arm/mm/dma-mapping.c:17:
-include/linux/swiotlb.h:108:13: warning: 'swiotlb_adjust_size' defined but =
-not used [-Wunused-function]
-  108 | static void swiotlb_adjust_size(unsigned long new_size)
-      |             ^~~~~~~~~~~~~~~~~~~
-In file included from include/linux/dma-direct.h:13,
-                 from kernel/dma/direct.h:10,
-                 from kernel/dma/mapping.c:17:
-include/linux/swiotlb.h:108:13: warning: 'swiotlb_adjust_size' defined but =
-not used [-Wunused-function]
-  108 | static void swiotlb_adjust_size(unsigned long new_size)
-      |             ^~~~~~~~~~~~~~~~~~~
-In file included from include/linux/dma-direct.h:13,
-                 from kernel/dma/coherent.c:10:
-include/linux/swiotlb.h:108:13: warning: 'swiotlb_adjust_size' defined but =
-not used [-Wunused-function]
-  108 | static void swiotlb_adjust_size(unsigned long new_size)
-      |             ^~~~~~~~~~~~~~~~~~~
-In file included from include/linux/dma-direct.h:13,
-                 from kernel/dma/direct.h:10,
-                 from kernel/dma/direct.c:16:
-include/linux/swiotlb.h:108:13: warning: 'swiotlb_adjust_size' defined but =
-not used [-Wunused-function]
-  108 | static void swiotlb_adjust_size(unsigned long new_size)
-      |             ^~~~~~~~~~~~~~~~~~~
-In file included from include/linux/dma-direct.h:13,
-                 from drivers/of/device.c:8:
-include/linux/swiotlb.h:108:13: warning: 'swiotlb_adjust_size' defined but =
-not used [-Wunused-function]
-  108 | static void swiotlb_adjust_size(unsigned long new_size)
-      |             ^~~~~~~~~~~~~~~~~~~
-In file included from include/linux/dma-direct.h:13,
-                 from drivers/remoteproc/remoteproc_core.c:27:
-include/linux/swiotlb.h:108:13: warning: 'swiotlb_adjust_size' defined but =
-not used [-Wunused-function]
-  108 | static void swiotlb_adjust_size(unsigned long new_size)
-      |             ^~~~~~~~~~~~~~~~~~~
-In file included from include/linux/dma-direct.h:13,
-                 from drivers/of/address.c:16:
-include/linux/swiotlb.h:108:13: warning: 'swiotlb_adjust_size' defined but =
-not used [-Wunused-function]
-  108 | static void swiotlb_adjust_size(unsigned long new_size)
-      |             ^~~~~~~~~~~~~~~~~~~
-In file included from drivers/mmc/host/sdhci.c:23:
-include/linux/swiotlb.h:108:13: warning: 'swiotlb_adjust_size' defined but =
-not used [-Wunused-function]
-  108 | static void swiotlb_adjust_size(unsigned long new_size)
-      |             ^~~~~~~~~~~~~~~~~~~
-In file included from drivers/gpu/drm/nouveau/nouveau_bo.c:31:
-include/linux/swiotlb.h:108:13: warning: 'swiotlb_adjust_size' defined but =
-not used [-Wunused-function]
-  108 | static void swiotlb_adjust_size(unsigned long new_size)
-      |             ^~~~~~~~~~~~~~~~~~~
+[1] https://lore.kernel.org/openbmc/20180711053122.30773-1-andrew@aj.id.au/
 
-Introduced by commit
-
-  79f748d1bdb6 ("x86,swiotlb: Adjust SWIOTLB bounce buffer size for SEV gue=
-sts")
-
-Forgot the "inline" :-(
 --=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+zBfjzr_7SvHQi3rLsGL0s_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/S0yAACgkQAVBC80lX
-0GySkQf/Tu3dLK1kX5hY3AO67nLShwAUnw64WxmKcXcW0G+MGisLk4vddvWQFiN1
-WJTySNbf9s1krDuGi6P53IsFEAWdBl2LUubeS32iccf7CBLVx8cNG4/AJcv4Ptu/
-mqnV5IaIaEKyojUgG9dkTU/4O2qM0cT8NVPsr5w6NfdxP5N3ziI5OAQsPv9hvZf9
-9qRBuE8NTuNWapPfMDCdIeakJpZHFMczATaeDGhMPM6jP363jhjWnpB8pY217eZR
-5AKB4Iz94pZ9R4cezeQp/iPdMrH1Iz6rsE8Haqehp46LyEEBRumWPI8/sZA2dQbj
-CJCdQ7za14MODh1+NFxEV/6q4NydYA==
-=VWhY
------END PGP SIGNATURE-----
-
---Sig_/+zBfjzr_7SvHQi3rLsGL0s_--
+BRs,
+Lei YU
