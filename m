@@ -2,348 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC932D71B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 737202D7140
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436925AbgLKIZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:25:51 -0500
-Received: from mout01.posteo.de ([185.67.36.65]:57369 "EHLO mout01.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732102AbgLKIZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:25:17 -0500
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 2DA5816006F
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:24:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1607675058; bh=vOdH7nn2L8IZqwOqthlIoQm6pGHhCPAlREbpPPFcQf8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=SAhPNDpuaqaioc+r1Xv63XKxgqcSBXNgvGjFFjmCzFjcI7dlww/XOpnzUDn0Jh2yN
-         mv62aAjWXM/Oc0fTdmRMQn7VwKz1hrszfLRLYbC89pZJlHBNDKIC2izVKELtLPfVY+
-         wbfipKjdfeCml8z27CXmVePx+ThTbnBoYHTtvo5iEynHnti9kdLGPkoL2sxo4mKtJA
-         jSyVgF5BXSJZN278qypFyfLaW08yX43HMw/V538LxxQ+VcZntCAWKL+Kn7Gxo2XUOe
-         yM+fg/JwCXuxcTEnfJelm4UCdD2NOP3y+K5n6cXcG0D1oRV9zyPFjRnc2SErEXg+1S
-         mWQ5VU0sXk8Aw==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4CskN04F9Hz6tmX;
-        Fri, 11 Dec 2020 09:24:16 +0100 (CET)
-Date:   Fri, 11 Dec 2020 09:24:15 +0100
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: [PATCH v4 2/2] hwspinlock: add sun8i hardware spinlock support
-Message-ID: <e374bc4212fa316a68b88bd17f5722387f88f332.1607674518.git.wilken.gottwalt@posteo.net>
-References: <cover.1607674518.git.wilken.gottwalt@posteo.net>
+        id S2405472AbgLKINu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:13:50 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:43161 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387443AbgLKIN3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:13:29 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201211081246epoutp021462d0c348fb27c7df0b858bba25ab47~Pm1GU8smc3149331493epoutp02h
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:12:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201211081246epoutp021462d0c348fb27c7df0b858bba25ab47~Pm1GU8smc3149331493epoutp02h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1607674366;
+        bh=gTJUVMBEIH68T9kTKdpH3Os5f51ggZiY41qPyBbWEmI=;
+        h=To:Cc:From:Subject:Date:References:From;
+        b=gPGaWCsce+YNkOjGtavj+oGCTt9HfbauHsDgPwPHgAVjw3ENcucU1cC4j0uxjtd1v
+         dQyEbtVm8Eprd7l9DJ8xgPnv0574GCEUxi08kCml8mGiKqyBYHQ0Uk7iUTPBBbRBTt
+         oVSOGHrTjReqm9mN3qcirD0akICaNcw3iN3kvZ00=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201211081246epcas1p195d5a8bee271abc01e64bdb98807bbcb~Pm1FyXyEG1366413664epcas1p1B;
+        Fri, 11 Dec 2020 08:12:46 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.152]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4Csk6c3JLhzMqYkd; Fri, 11 Dec
+        2020 08:12:40 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B6.2F.02418.8F923DF5; Fri, 11 Dec 2020 17:12:40 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20201211081239epcas1p4809436b16fc6d6595ea8ce4e2343aecb~Pm0-3wxKc0570505705epcas1p49;
+        Fri, 11 Dec 2020 08:12:39 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201211081239epsmtrp149c01bac8a0094dcda87ef7da726b773~Pm0-3Lh0V0495704957epsmtrp1Q;
+        Fri, 11 Dec 2020 08:12:39 +0000 (GMT)
+X-AuditID: b6c32a35-c0dff70000010972-98-5fd329f8d552
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3F.7B.13470.7F923DF5; Fri, 11 Dec 2020 17:12:39 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201211081239epsmtip215d93611764f2b6124bdb8fa7cb4af44~Pm0-rn9Hy3032130321epsmtip2r;
+        Fri, 11 Dec 2020 08:12:39 +0000 (GMT)
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Chanwoo Choi (samsung.com)" <cw00.choi@samsung.com>,
+        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
+        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Subject: [GIT PULL] extcon next for v5.11
+Organization: Samsung Electronics
+Message-ID: <ad016689-0ffd-e398-1ce0-a3c20dd030ee@samsung.com>
+Date:   Fri, 11 Dec 2020 17:27:24 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1607674518.git.wilken.gottwalt@posteo.net>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnk+LIzCtJLcpLzFFi42LZdlhTX/eH5uV4gylfxC0m3rjCYnH9y3NW
+        i+bF69ksLu+aw2Zxu3EFmwOrx6ZVnWwe++euYffo27KK0ePzJrkAlqhsm4zUxJTUIoXUvOT8
+        lMy8dFsl7+B453hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygvUoKZYk5pUChgMTiYiV9O5ui
+        /NKSVIWM/OISW6XUgpScAssCveLE3OLSvHS95PxcK0MDAyNToMKE7Iw/z/YzFhwVqrj1fz9T
+        A+NDvi5GTg4JAROJCzuPsHQxcnEICexglJh7YTMbSEJI4BOjxI17dRCJb4wSPW9/McF0HO6e
+        ywSR2MsocWLrYTYI5z2jxJWJF5lBqkQENCReHr0FNpdZ4A2jxL7PnawgCTYBLYn9L26A7RAW
+        0JToOfqVBcTmF1CUuPrjMSOIzStgJ7Fw+g/2LkYODhYBVYmumRYgYVGBMImT21qgSgQlTs58
+        AtbKLCAucevJfCYIW15i+9s5zBCXfmSXWLCHA2SMhICLxMlWbYiwsMSr41vYIWwpiZf9bVB2
+        tcTKk0fAfpEQ6GCU2LL/AitEwlhi/9LJTCBzmIFOXr9LHyKsKLHz91xGiLV8Eu++9rBCrOKV
+        6GgTgihRlrj84C403CQlFrd3skHYHhJbn+5mnMCoOAvJM7OQPDMLyTOzEBYvYGRZxSiWWlCc
+        m55abFhgiBzXmxjBKVLLdAfjxLcf9A4xMnEwHmKU4GBWEuGVZbkUL8SbklhZlVqUH19UmpNa
+        fIjRFBi6E5mlRJPzgUk6ryTe0NTI2NjYwsTQzNTQUEmc9492R7yQQHpiSWp2ampBahFMHxMH
+        p1QDU7wbn/jpvUrWm7f4vtNPW1Z0fOb3mXPc3vHcYnqYLWC9apXYY8tDcfPzFh3sP9Qe7rrE
+        6OzuB8ypxpEJ3kXmvTMLT0dM/nXxVPL0h3+mnt37W3Gn5pydnlcXbcw+tVHgUPNEw0qzhPKi
+        +Uqu92fbLfrPsXeraIfEvTMyCXpT/loKpEcGL//B4xnUefXJfalKZ9kkxbg63+vL2wRPrzAy
+        W1SdZT6/99x61mnl1mGWJ89+F76x69bWes8pH+16Yl9w5en/7lB1XxnOwlDSX90XMXuC2YK1
+        O6qVRflWi9x7P8u8ZGXOtGCdPV8e/3r3cOGs1PUCaxte++h+atGM/PD7uEnbyl1/uOvk10ZM
+        3qG40U6JpTgj0VCLuag4EQD8cXFCGgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFLMWRmVeSWpSXmKPExsWy7bCSvO53zcvxBt++alhMvHGFxeL6l+es
+        Fs2L17NZXN41h83iduMKNgdWj02rOtk89s9dw+7Rt2UVo8fnTXIBLFFcNimpOZllqUX6dglc
+        GX+e7WcsOCpUcev/fqYGxod8XYycHBICJhKHu+cydTFycQgJ7GaUmPl1EStEQlJi2sWjzF2M
+        HEC2sMThw8UgYSGBt4wS/bPyQWwRAQ2Jl0dvsYD0Mgu8AYqv2cIOkmAT0JLY/+IGG4gtLKAp
+        0XP0KwuIzS+gKHH1x2NGEJtXwE5i4fQf7CDzWQRUJbpmWoCERQXCJHYuecwEUSIocXLmE7BW
+        ZgF1iT/zLjFD2OISt57MZ4Kw5SW2v53DPIFRcBaSlllIWmYhaZmFpGUBI8sqRsnUguLc9Nxi
+        wwLDvNRyveLE3OLSvHS95PzcTYzg4NfS3MG4fdUHvUOMTByMhxglOJiVRHhlWS7FC/GmJFZW
+        pRblxxeV5qQWH2KU5mBREue90HUyXkggPbEkNTs1tSC1CCbLxMEp1cC0XFOSdzbLkpVuy2ao
+        r3xq7X4iJekRg8Uyrl36vxdur7zNqnPVzPWt8/RtJ247ZEecfyVtfMXb6pDdnZc7xUyjZO4u
+        7bvwL1LQaoKTv5WoW1TOw/32GRdvTDt22upp0rQHBQbL3nD9nHxlcqhcj/jleQbbelYvefFu
+        9p4adV4flZwu62XlX9/PVip25EupSXsjbnZyVfuZGo99Zkt+lltzJr9cKHdm4naPmxkLgtgn
+        zks/ve7KRKbaft+c2/dKHwte/7BTINfodjmHf3R+lJ2amrWrRV3/jWmG7Qy/jNYZW11XzTrk
+        qiP+OU0sh6/9RZl1OfP5H0xxR/R3bvousXKZ/YGHYgVv3y/UtwkxK7mhxFKckWioxVxUnAgA
+        l4375O0CAAA=
+X-CMS-MailID: 20201211081239epcas1p4809436b16fc6d6595ea8ce4e2343aecb
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201211081239epcas1p4809436b16fc6d6595ea8ce4e2343aecb
+References: <CGME20201211081239epcas1p4809436b16fc6d6595ea8ce4e2343aecb@epcas1p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds the sun8i_hwspinlock driver for the hardware spinlock unit found in
-most of the sun8i compatible SoCs.
+Dear Greg,
 
-This unit provides at least 32 spinlocks in hardware. The implementation
-supports 32, 64, 128 or 256 32bit registers. A lock can be taken by
-reading a register and released by writing a 0 to it. This driver
-supports all 4 spinlock setups, but for now only the first setup (32
-locks) seem to exist in available devices. This spinlock unit is shared
-between all ARM cores and the embedded OpenRisc AR100 core. All of them
-can take/release a lock with a single cycle operation. It can be used to
-sync access to devices shared by the ARM cores and the OpenRisc core.
+This is extcon-next pull request for v5.11. I add detailed description of
+this pull request on below. Please pull extcon with following updates.
 
-There are two ways to check if a lock is taken. The first way is to read
-a lock. If a 0 is returned, the lock was free and is taken now. If an 1
-is returned, the caller has to try again. Which means the lock is taken.
-The second way is to read a 32bit wide status register where every bit
-represents one of the 32 first locks. According to the datasheets this
-status register supports only the 32 first locks. This is the reason the
-first way (lock read/write) approach is used to be able to cover all 256
-locks in future devices. The driver also reports the amount of supported
-locks via debugfs.
+Best Regards,
+Chanwoo Choi
 
-Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
----
-Changes in v4:
-  - further simplified driver
-  - fixed an add_action_and_reset_ function issue
-  - changed bindings from sun8i-hwspinlock to sun8i-a33-hwspinlock
 
-Changes in v3:
-  - moved test description to cover letter
-  - changed name and symbols from sunxi to sun8i
-  - improved driver description
-  - further simplified driver
-  - fully switched to devm_* and devm_add_action_* functions
+The following changes since commit 0477e92881850d44910a7e94fc2c46f96faa131f:
 
-Changes in v2:
-  - added suggestions from Bjorn Andersson and Maxime Ripard
-  - provided better driver and test description
----
- MAINTAINERS                           |   6 +
- drivers/hwspinlock/Kconfig            |   9 ++
- drivers/hwspinlock/Makefile           |   1 +
- drivers/hwspinlock/sun8i_hwspinlock.c | 197 ++++++++++++++++++++++++++
- 4 files changed, 213 insertions(+)
- create mode 100644 drivers/hwspinlock/sun8i_hwspinlock.c
+  Linux 5.10-rc7 (2020-12-06 14:25:12 -0800)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ebe4829cdd4d..46846113f1eb 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -722,6 +722,12 @@ L:	linux-crypto@vger.kernel.org
- S:	Maintained
- F:	drivers/crypto/allwinner/
- 
-+ALLWINNER HARDWARE SPINLOCK SUPPORT
-+M:	Wilken Gottwalt <wilken.gottwalt@posteo.net>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml
-+F:	drivers/hwspinlock/sun8i_hwspinlock.c
-+
- ALLWINNER THERMAL DRIVER
- M:	Vasily Khoruzhick <anarsoul@gmail.com>
- M:	Yangtao Li <tiny.windzz@gmail.com>
-diff --git a/drivers/hwspinlock/Kconfig b/drivers/hwspinlock/Kconfig
-index 32cd26352f38..b03fd99aab32 100644
---- a/drivers/hwspinlock/Kconfig
-+++ b/drivers/hwspinlock/Kconfig
-@@ -55,6 +55,15 @@ config HWSPINLOCK_STM32
- 
- 	  If unsure, say N.
- 
-+config HWSPINLOCK_SUN8I
-+	tristate "SUN8I Hardware Spinlock device"
-+	depends on ARCH_SUNXI || COMPILE_TEST
-+	help
-+	  Say y here to support the SUN8I Hardware Spinlock device which can be
-+	  found in most of the sun8i compatible Allwinner SoCs.
-+
-+	  If unsure, say N.
-+
- config HSEM_U8500
- 	tristate "STE Hardware Semaphore functionality"
- 	depends on ARCH_U8500 || COMPILE_TEST
-diff --git a/drivers/hwspinlock/Makefile b/drivers/hwspinlock/Makefile
-index ed053e3f02be..3496648d9257 100644
---- a/drivers/hwspinlock/Makefile
-+++ b/drivers/hwspinlock/Makefile
-@@ -9,4 +9,5 @@ obj-$(CONFIG_HWSPINLOCK_QCOM)		+= qcom_hwspinlock.o
- obj-$(CONFIG_HWSPINLOCK_SIRF)		+= sirf_hwspinlock.o
- obj-$(CONFIG_HWSPINLOCK_SPRD)		+= sprd_hwspinlock.o
- obj-$(CONFIG_HWSPINLOCK_STM32)		+= stm32_hwspinlock.o
-+obj-$(CONFIG_HWSPINLOCK_SUN8I)		+= sun8i_hwspinlock.o
- obj-$(CONFIG_HSEM_U8500)		+= u8500_hsem.o
-diff --git a/drivers/hwspinlock/sun8i_hwspinlock.c b/drivers/hwspinlock/sun8i_hwspinlock.c
-new file mode 100644
-index 000000000000..878dae6f1763
---- /dev/null
-+++ b/drivers/hwspinlock/sun8i_hwspinlock.c
-@@ -0,0 +1,197 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * sun8i_hwspinlock.c - hardware spinlock driver for sun8i compatible Allwinner SoCs
-+ * Copyright (C) 2020 Wilken Gottwalt <wilken.gottwalt@posteo.net>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/debugfs.h>
-+#include <linux/errno.h>
-+#include <linux/hwspinlock.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/reset.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
-+#include <linux/types.h>
-+
-+#include "hwspinlock_internal.h"
-+
-+#define DRIVER_NAME		"sun8i_hwspinlock"
-+
-+#define SPINLOCK_BASE_ID	0 /* there is only one hwspinlock device per SoC */
-+#define SPINLOCK_SYSSTATUS_REG	0x0000
-+#define SPINLOCK_LOCK_REGN	0x0100
-+#define SPINLOCK_NOTTAKEN	0
-+
-+struct sun8i_hwspinlock_data {
-+	struct hwspinlock_device *bank;
-+	struct reset_control *reset;
-+	struct clk *ahb_clk;
-+	struct dentry *debugfs;
-+	int nlocks;
-+};
-+
-+#ifdef CONFIG_DEBUG_FS
-+
-+static int hwlocks_supported_show(struct seq_file *seqf, void *unused)
-+{
-+	struct sun8i_hwspinlock_data *priv = seqf->private;
-+
-+	seq_printf(seqf, "%d\n", priv->nlocks);
-+
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(hwlocks_supported);
-+
-+static void sun8i_hwspinlock_debugfs_init(struct sun8i_hwspinlock_data *priv)
-+{
-+	priv->debugfs = debugfs_create_dir(DRIVER_NAME, NULL);
-+	debugfs_create_file("supported", 0444, priv->debugfs, priv, &hwlocks_supported_fops);
-+}
-+
-+#else
-+
-+static void sun8i_hwspinlock_debugfs_init(struct sun8i_hwspinlock_data *priv)
-+{
-+}
-+
-+#endif
-+
-+static int sun8i_hwspinlock_trylock(struct hwspinlock *lock)
-+{
-+	void __iomem *lock_addr = lock->priv;
-+
-+	return (readl(lock_addr) == SPINLOCK_NOTTAKEN);
-+}
-+
-+static void sun8i_hwspinlock_unlock(struct hwspinlock *lock)
-+{
-+	void __iomem *lock_addr = lock->priv;
-+
-+	writel(SPINLOCK_NOTTAKEN, lock_addr);
-+}
-+
-+static const struct hwspinlock_ops sun8i_hwspinlock_ops = {
-+	.trylock	= sun8i_hwspinlock_trylock,
-+	.unlock		= sun8i_hwspinlock_unlock,
-+};
-+
-+static void sun8i_hwspinlock_disable(void *data)
-+{
-+	struct sun8i_hwspinlock_data *priv = data;
-+
-+	debugfs_remove_recursive(priv->debugfs);
-+	reset_control_assert(priv->reset);
-+	clk_disable_unprepare(priv->ahb_clk);
-+}
-+
-+static int sun8i_hwspinlock_probe(struct platform_device *pdev)
-+{
-+	struct sun8i_hwspinlock_data *priv;
-+	struct hwspinlock *hwlock;
-+	void __iomem *io_base;
-+	u32 num_banks;
-+	int err, i;
-+
-+	io_base = devm_platform_ioremap_resource(pdev, SPINLOCK_BASE_ID);
-+	if (IS_ERR(io_base))
-+		return PTR_ERR(io_base);
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->ahb_clk = devm_clk_get(&pdev->dev, "ahb");
-+	if (IS_ERR(priv->ahb_clk)) {
-+		err = PTR_ERR(priv->ahb_clk);
-+		dev_err(&pdev->dev, "unable to get AHB clock (%d)\n", err);
-+		return err;
-+	}
-+
-+	priv->reset = devm_reset_control_get(&pdev->dev, "ahb");
-+	if (IS_ERR(priv->reset))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(priv->reset),
-+				     "unable to get reset control\n");
-+
-+	err = reset_control_deassert(priv->reset);
-+	if (err) {
-+		dev_err(&pdev->dev, "deassert reset control failure (%d)\n", err);
-+		return err;
-+	}
-+
-+	err = clk_prepare_enable(priv->ahb_clk);
-+	if (err) {
-+		dev_err(&pdev->dev, "unable to prepare AHB clk (%d)\n", err);
-+		return err;
-+	}
-+
-+	sun8i_hwspinlock_debugfs_init(priv);
-+
-+	err = devm_add_action_or_reset(&pdev->dev, sun8i_hwspinlock_disable, priv);
-+	if (err) {
-+		dev_err(&pdev->dev, "unable to add disable action\n");
-+		return err;
-+	}
-+
-+	/*
-+	 * bit 28 and 29 represents the hwspinlock setup
-+	 *
-+	 * every datasheet (A64, A80, A83T, H3, H5, H6 ...) says the default value is 0x1 and 0x1
-+	 * to 0x4 represent 32, 64, 128 and 256 locks
-+	 * but later datasheets (H5, H6) say 00, 01, 10, 11 represent 32, 64, 128 and 256 locks,
-+	 * but that would mean H5 and H6 have 64 locks, while their datasheets talk about 32 locks
-+	 * all the time, not a single mentioning of 64 locks
-+	 * the 0x4 value is also not representable by 2 bits alone, so some datasheets are not
-+	 * correct
-+	 * one thing have all in common, default value of the sysstatus register is 0x10000000,
-+	 * which results in bit 28 being set
-+	 * this is the reason 0x1 is considered being 32 locks and bit 30 is taken into account
-+	 * verified on H2+ (datasheet 0x1 = 32 locks) and H5 (datasheet 01 = 64 locks)
-+	 */
-+	num_banks = readl(io_base + SPINLOCK_SYSSTATUS_REG) >> 28;
-+	switch (num_banks) {
-+	case 1 ... 4:
-+		priv->nlocks = 1 << (4 + num_banks);
-+		break;
-+	default:
-+		dev_err(&pdev->dev, "unsupported hwspinlock setup (%d)\n", num_banks);
-+		return -EINVAL;
-+	}
-+
-+	priv->bank = devm_kzalloc(&pdev->dev, struct_size(priv->bank, lock, priv->nlocks),
-+				  GFP_KERNEL);
-+	if (!priv->bank)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < priv->nlocks; ++i) {
-+		hwlock = &priv->bank->lock[i];
-+		hwlock->priv = io_base + SPINLOCK_LOCK_REGN + sizeof(u32) * i;
-+	}
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	return devm_hwspin_lock_register(&pdev->dev, priv->bank, &sun8i_hwspinlock_ops,
-+					 SPINLOCK_BASE_ID, priv->nlocks);
-+}
-+
-+static const struct of_device_id sun8i_hwspinlock_ids[] = {
-+	{ .compatible = "allwinner,sun8i-a33-hwspinlock", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, sun8i_hwspinlock_ids);
-+
-+static struct platform_driver sun8i_hwspinlock_driver = {
-+	.probe	= sun8i_hwspinlock_probe,
-+	.driver	= {
-+		.name		= DRIVER_NAME,
-+		.of_match_table	= sun8i_hwspinlock_ids,
-+	},
-+};
-+module_platform_driver(sun8i_hwspinlock_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("SUN8I hardware spinlock driver");
-+MODULE_AUTHOR("Wilken Gottwalt <wilken.gottwalt@posteo.net>");
--- 
-2.29.2
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/extcon.git tags/extcon-next-for-5.11
+
+for you to fetch changes up to e1efdb604f5c9903a5d92ef42244009d3c04880f:
+
+  extcon: max77693: Fix modalias string (2020-12-11 17:18:10 +0900)
+
+----------------------------------------------------------------
+
+Update for extcon-next v5.11
+
+1. Add new TI TUSB320 USB-C extcon driver
+- The extcon-usbc-tusb320.c driver for the TI TUSB320 USB Type-C device
+support the USB Type C connector detection.
+
+2. Rewrite binding document in yaml for extcon-fsa9480.c
+and add new compatible name of TI TSU6111 device.
+
+3. Fix moalias string of extcon-max77693.c to fix the automated module
+loading when this driver is compiled as a module.
+
+----------------------------------------------------------------
+Linus Walleij (2):
+      extcon: fsa9480: Rewrite bindings in YAML and extend
+      extcon: fsa9480: Support TI TSU6111 variant
+
+Marek Szyprowski (1):
+      extcon: max77693: Fix modalias string
+
+Michael Auchter (2):
+      extcon: Add driver for TI TUSB320
+      dt-bindings: extcon: add binding for TUSB320
+
+ .../devicetree/bindings/extcon/extcon-fsa9480.txt  |  21 ---
+ .../bindings/extcon/extcon-usbc-tusb320.yaml       |  41 +++++
+ .../devicetree/bindings/extcon/fcs,fsa880.yaml     |  52 ++++++
+ drivers/extcon/Kconfig                             |   8 +
+ drivers/extcon/Makefile                            |   1 +
+ drivers/extcon/extcon-fsa9480.c                    |   1 +
+ drivers/extcon/extcon-max77693.c                   |   2 +-
+ drivers/extcon/extcon-usbc-tusb320.c               | 184 +++++++++++++++++++++
+ 8 files changed, 288 insertions(+), 22 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/extcon/extcon-fsa9480.txt
+ create mode 100644 Documentation/devicetree/bindings/extcon/extcon-usbc-tusb320.yaml
+ create mode 100644 Documentation/devicetree/bindings/extcon/fcs,fsa880.yaml
+ create mode 100644 drivers/extcon/extcon-usbc-tusb320.c
