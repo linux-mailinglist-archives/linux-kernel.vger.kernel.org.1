@@ -2,103 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEED72D760C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 642612D760F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:53:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405988AbgLKMvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 07:51:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
+        id S2405975AbgLKMw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 07:52:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405984AbgLKMu7 (ORCPT
+        with ESMTP id S2406012AbgLKMwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:50:59 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977A5C0613D3;
-        Fri, 11 Dec 2020 04:50:18 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 3so8467927wmg.4;
-        Fri, 11 Dec 2020 04:50:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=AZh6epnblgNjcXj9Q6TirIVCDf8ojkkWKD1ZT1IFbo0=;
-        b=fRw+t1yi2q/quJMj2mDcdMy+/97ElCT0SlqAm5aKMjksPJbaGms4IregiyJZ4e/DG0
-         NzC47Cnxk7JyZ9sfOhWjGgkMswia6smaPDIE/+rDk1ByqOuFSSP8qNp+U8Yf6201XQgA
-         IEaa0V4sNPW79OnqmRHln+3kLnfyI63CPiY43HLI7Uhn3wgHnl3ZMBdgW8rcrqEpnXdZ
-         2joYMd4XY5OYgaiv6mPZjoSdMo6U2GW1VNMF6YtmM6dq4so5PevVNh0ehXf4l1d68EjG
-         /D50qf9zD0DEQnWjCyouwlpxcA+hcHNy7xit/7A+Dtp59jW4x08HaL3spQCSO1khRzWd
-         TCdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=AZh6epnblgNjcXj9Q6TirIVCDf8ojkkWKD1ZT1IFbo0=;
-        b=ELuygU/2BNnVwzj28dU7XlcUCWmAofzLjV2UJeK7aj0cj2nfPXTeOK6pHSvwg8skTy
-         kJf5BcKpmHuqPeKTNnRCLC6CGCNXqsHXx8ZbeOxKq+pNxefBr1Njewf6FLl2WT1g9kSh
-         LmHiCGfI6r7oH/uMpXz2mA+/BKe1AKk+AXnQ5jqr+7qmoe0Yw2tRevJlCamUA6o3TJci
-         RMO7vyNzuTCOU9EU4Z/xI1AgMmBIRgpwlf8wAqN9wk0VWdwvbdLs5OoWRwsjHhkMR7Hl
-         Fm8Pt1IiT/MJRpIPi1U4ecq/XIMxrewLKMx70FsgujZjctZ+kh0vzt5KrhDXJSM7rnFW
-         D2sw==
-X-Gm-Message-State: AOAM531zqW0wWaat2uEj7wdFrQ8bjqDDlbZmnXWIzwWwBmPHiEqORxN7
-        6p89+1fKS59WpPdwJvrMLHnCoLVye4WEqQ==
-X-Google-Smtp-Source: ABdhPJxfeKFOVFYxXf3fCLC0eSEHMZvdo4ET217m6cm8UQepZ1sLNQa6uYIQWey1QwThcu699AOEuA==
-X-Received: by 2002:a1c:67c2:: with SMTP id b185mr13102888wmc.119.1607691017088;
-        Fri, 11 Dec 2020 04:50:17 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f06:5500:c83a:dffd:2622:7172? (p200300ea8f065500c83adffd26227172.dip0.t-ipconnect.de. [2003:ea:8f06:5500:c83a:dffd:2622:7172])
-        by smtp.googlemail.com with ESMTPSA id c1sm13698555wml.8.2020.12.11.04.50.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Dec 2020 04:50:16 -0800 (PST)
-Subject: Re: [PATCH net v2] lan743x: fix rx_napi_poll/interrupt ping-pong
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201210035540.32530-1-TheSven73@gmail.com>
- <5ff5fd64-2bf0-cbf7-642f-67be198cba05@gmail.com>
- <CAGngYiXsyRH=5UYwaCkVDDGkRX6m_Cw9iam+nSRZwA1=ZNPnOQ@mail.gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <f462a419-aa6f-38f7-573e-c48c2a859f55@gmail.com>
-Date:   Fri, 11 Dec 2020 13:50:12 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Fri, 11 Dec 2020 07:52:00 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F43C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 04:51:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AtrqjaBhwhhm+g6TOXOtlBu/O/X4VKdXfAX1UBzn9+4=; b=r42Qrr0gdwEaZUG11FH7PyquBw
+        181t6QHqYSsF8uQiCJZsKPT6iyz/91GMYs/dHf3SBp3+udnqMU9qa3G5C4cWepM0eCRP9R+Xn8XoH
+        kYHOtodat/J8eItF/ol2AKc2LvRRTMrQ9WGdLyKeaSXBbkHLLasCQcCplOJCRMA/nkeYkTw2+eNOe
+        J4DsXNHXlvSrhiPBW6IDpKRblJcEzlnwl5fkzfWJ3WsfXEGycbwsKRMSHvE3HN7F5NctKocnQfNok
+        Xq8LLry+v4yLD/2OWAXx+89vtAJoyZnskstw9vZXUOGG4sAsMr3F03fwT8oZe7ay3fWfuq5EwQqXP
+        Zpw4GDDg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knht1-0002a4-FW; Fri, 11 Dec 2020 12:51:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DB4923007CD;
+        Fri, 11 Dec 2020 13:51:01 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9F92C200EC4EA; Fri, 11 Dec 2020 13:51:01 +0100 (CET)
+Date:   Fri, 11 Dec 2020 13:51:01 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, Qian Cai <cai@redhat.com>,
+        tglx@linutronix.de, mingo@kernel.org, bigeasy@linutronix.de,
+        qais.yousef@arm.com, swood@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, tj@kernel.org, ouwen210@hotmail.com
+Subject: Re: [PATCH 2/2] workqueue: Fix affinity of kworkers attached during
+ late hotplug
+Message-ID: <20201211125101.GX2414@hirez.programming.kicks-ass.net>
+References: <20201210163830.21514-1-valentin.schneider@arm.com>
+ <20201210163830.21514-3-valentin.schneider@arm.com>
+ <20201211113920.GA75974@e120877-lin.cambridge.arm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAGngYiXsyRH=5UYwaCkVDDGkRX6m_Cw9iam+nSRZwA1=ZNPnOQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211113920.GA75974@e120877-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 11.12.2020 um 13:43 schrieb Sven Van Asbroeck:
-> Hi Heiner,
+On Fri, Dec 11, 2020 at 11:39:21AM +0000, Vincent Donnefort wrote:
+> On Thu, Dec 10, 2020 at 04:38:30PM +0000, Valentin Schneider wrote:
+> > +	if (pool->flags & POOL_DISASSOCIATED) {
+> >  		worker->flags |= WORKER_UNBOUND;
+> > +		set_cpus_allowed_ptr(worker->task, cpu_active_mask);
+> > +	} else {
+> > +		/*
+> > +		 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
+> > +		 * online CPUs. It'll be re-applied when any of the CPUs come up.
+> > +		 */
 > 
-> On Thu, Dec 10, 2020 at 2:32 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->>
->>
->> In addition you could play with sysfs attributes
->> /sys/class/net/<if>/gro_flush_timeout
->> /sys/class/net/<if>/napi_defer_hard_irqs
-> 
-> Interesting, I will look into that.
-> 
-I run a 1Gbit chip with gro_flush_timeout = 20000 and napi_defer_hard_irqs = 1.
-This helped to reduce interrupt load significantly under iperf3
-(w/o interrupt coalescing at chip level)
+> Does this comment still stand ? IIUC, we should always be in the
+> POOL_DISASSOCIATED case if the CPU from cpumask is offline. Unless a
+> pool->attrs->cpumask can have several CPUs. In that case maybe we should check
+> for the cpu_active_mask here too ?
 
->>> @@ -2407,7 +2409,7 @@ static int lan743x_rx_open(struct lan743x_rx *rx)
->>>
->>>       netif_napi_add(adapter->netdev,
->>>                      &rx->napi, lan743x_rx_napi_poll,
->>> -                    rx->ring_size - 1);
->>> +                    64);
->>
->> This value isn't completely arbitrary.
->> Better use constant NAPI_POLL_WEIGHT.
->>
-> 
-> Thank you, I will change it in the next patch version.
-> 
+IIUC it can be a numa mask, and would still be valid in that case.
 
+> > +		set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
+> > +	}
