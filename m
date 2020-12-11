@@ -2,198 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33AB2D6E22
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 274342D6E25
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:33:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391558AbgLKC1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 21:27:04 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9157 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732286AbgLKC0V (ORCPT
+        id S2391774AbgLKCa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 21:30:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391620AbgLKCar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 21:26:21 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CsZPW1ZHRz15YbM;
-        Fri, 11 Dec 2020 10:25:03 +0800 (CST)
-Received: from [10.67.76.251] (10.67.76.251) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Dec 2020
- 10:25:27 +0800
-Subject: Re: [PATCH v7] lib: optimize cpumask_local_spread()
-To:     Dave Hansen <dave.hansen@intel.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Yuqi Jin <jinyuqi@huawei.com>,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Paul Burton <paul.burton@mips.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "Anshuman Khandual" <anshuman.khandual@arm.com>
-References: <1605668072-44780-1-git-send-email-zhangshaokun@hisilicon.com>
- <6a6e6d37-a3dc-94ed-bc8c-62c50ea1dff5@intel.com>
- <a3b8ab12-604b-1efe-f091-de782c3c8ed5@hisilicon.com>
- <b3122c82-e0fc-5bb8-82ec-43ae785f381f@intel.com>
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-Message-ID: <2ff20d00-119b-836f-1112-186f45adf6b2@hisilicon.com>
-Date:   Fri, 11 Dec 2020 10:25:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Thu, 10 Dec 2020 21:30:47 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7F7C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 18:30:07 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id z5so7903026iob.11
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 18:30:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P47W7MLz0njFiEj74PlWxQvywR8mwLfhMl+8nLtmBmY=;
+        b=JfhbAkFDNCVtYk2MSguky4VVaDBAL307ynUpPenayxU6vK1u6Ex/zSAgHYaFj4jgQy
+         rujyJO5/aQTtvHkzBpJlpA2hOhcrdCF2gyc8+YRnzNkIT7pROZKC3XqWivq6v98bDuQt
+         lrmHPyQcflVARUfa2FzyJFbhB1s8wkCkiHQsXOHcT5AcwNOkbTj+1pUdokUcsurKXJwg
+         tW0s3Es+ecB9fH6SAoQFWbmRr1gLap9zWJ1+QeAGv0EUZd5XfTQ672aB09YzLAamFUfu
+         LQpjedX5QwtVk+w6tnWtpWM9RIfr8zMwxPNfxTsTImVYrmKcX2WZ4i5VtxMi2LVvMnbA
+         Jh8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P47W7MLz0njFiEj74PlWxQvywR8mwLfhMl+8nLtmBmY=;
+        b=oTROj3dJIt6UcbrL5HaQiVR/m3cMCJBChU6jBKZ+wbmPpBjg/EOYppvtxrlhTFFr6g
+         aBrS/bCCIZL1L/vfyw50uWg2UyMnEBbSusiyPgroudVZfiFY2hD3nOUuhc5ePE7V8fdJ
+         Y6d3peJ2ski+2EAG+W0MYLbDsdO12JhSK/WsY4DKG4M8bl6pdtQgiK3FTc0JCq/EaB+1
+         r44V1nVOnOu2ux3VPo+qjsuDOet+VpFbBhH3KLbh9lDMRdxxv/kePFR1dwoDoMLJYns+
+         DjvDK16RrxqDu29WyM+p8nxU1CbaFAx7KSkY2h/CEbScbS7oFMQn8TutDcVgDw5Re+S0
+         aqbQ==
+X-Gm-Message-State: AOAM531AGz4Oo+Gyhc/bUZfOUGVE7WovZ1yY3NQGAXB0L3yrXhD1Dt45
+        gGOAewS23CU4rkE/7bh4AgoW0hV4QvW3JiaZCQ8=
+X-Google-Smtp-Source: ABdhPJxeETWCrqVCfuOB5gAPIF+qCe4hlFe1Ma9v2vP3RgkhEoj4admqIdDnCSo8/irQVL9xFyuEwAtGfzJ5W6+F5M8=
+X-Received: by 2002:a05:6638:a9b:: with SMTP id 27mr12635431jas.137.1607653806906;
+ Thu, 10 Dec 2020 18:30:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <b3122c82-e0fc-5bb8-82ec-43ae785f381f@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.76.251]
-X-CFilter-Loop: Reflected
+References: <20201209083426.2866-1-hdanton@sina.com>
+In-Reply-To: <20201209083426.2866-1-hdanton@sina.com>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Fri, 11 Dec 2020 10:29:55 +0800
+Message-ID: <CAJhGHyAbjbpzp_+eLEEVVgUUCh6aJjUYbEigVwTrM1_Gx1Jf1w@mail.gmail.com>
+Subject: Re: [RFC PATCH] workqueue: handle CPU hotplug without updating worker
+ pool's attrs
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, NeilBrown <neilb@suse.de>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+On Wed, Dec 9, 2020 at 4:34 PM Hillf Danton <hdanton@sina.com> wrote:
+>
+> This makes the cpumask intact for worker pools of unbound workqueues
+> when CPUs go offline because we need to rebind workers to the original
+> cpumask(of the original pool) when they come back, as represented by
+> the cpu check in restore_unbound_workers_cpumask().
+>
+> Note this is now only for comments.
+>
+> Signed-off-by: Hillf Danton <hdanton@sina.com>
+> ---
+>
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -4117,6 +4117,32 @@ static void wq_update_unbound_numa(struc
+>         copy_workqueue_attrs(target_attrs, wq->unbound_attrs);
+>         pwq = unbound_pwq_by_node(wq, node);
+>
+> +       cpumask = pwq->pool->attrs->cpumask;
+> +       if (!online || !cpumask_test_cpu(cpu, cpumask))
+> +               return;
+> +       do {
+> +               struct worker *worker;
+> +               int i;
+> +
+> +               for_each_cpu_and(i, cpu_online_mask, cpumask) {
+> +                       if (i != cpu)
+> +                               return;
+> +               }
+> +
+> +               /*
+> +                * rebind workers only when the first CPU in
+> +                * pool's attrs cpumask comes back because scheduler
+> +                * may have unbound them when the last CPU went offline
+> +                */
+> +               mutex_lock(&wq_pool_attach_mutex);
+> +
+> +               for_each_pool_worker(worker, pwq->pool)
+> +                       set_cpus_allowed_ptr(worker->task, cpumask);
+> +
 
-Apologies for the late reply.
+There might be multiple pwqs that share the same pool, this line of
+code might update the same pool multiple times.
 
-在 2020/12/1 1:08, Dave Hansen 写道:
->>>>  {
->>>> -	int cpu, hk_flags;
->>>> +	static DEFINE_SPINLOCK(spread_lock);
->>>> +	static bool used[MAX_NUMNODES];
->>>
->>> I thought I mentioned this last time.  How large is this array?  How
->>> large would it be if it were a nodemask_t?  Would this be less code if
->>
->> Apologies that I forgot to do it.
->>
->>> you just dynamically allocated and freed the node mask instead of having
->>> a spinlock and a memset?
->>
->> Ok, but I think the spinlock is also needed, do I miss something?
-> 
-> There was no spinlock there before your patch.  You just need it to
-> protect the structures you declared static.  If you didn't have static
-> structures, you wouldn't need a lock.
+Please keep the logic in restore_unbound_workers_cpumask().
 
-Got it, I will allocate it dynamically.
+> +               mutex_unlock(&wq_pool_attach_mutex);
+> +               return;
+> +       } while (0);
+> +
+>         /*
+>          * Let's determine what needs to be done.  If the target cpumask is
+>          * different from the default pwq's, we need to compare it to @pwq's
+> @@ -5004,34 +5030,6 @@ static void rebind_workers(struct worker
+>         raw_spin_unlock_irq(&pool->lock);
+>  }
+>
+> -/**
+> - * restore_unbound_workers_cpumask - restore cpumask of unbound workers
+> - * @pool: unbound pool of interest
+> - * @cpu: the CPU which is coming up
+> - *
+> - * An unbound pool may end up with a cpumask which doesn't have any online
+> - * CPUs.  When a worker of such pool get scheduled, the scheduler resets
+> - * its cpus_allowed.  If @cpu is in @pool's cpumask which didn't have any
+> - * online CPU before, cpus_allowed of all its workers should be restored.
+> - */
+> -static void restore_unbound_workers_cpumask(struct worker_pool *pool, int cpu)
+> -{
+> -       static cpumask_t cpumask;
+> -       struct worker *worker;
+> -
+> -       lockdep_assert_held(&wq_pool_attach_mutex);
+> -
+> -       /* is @cpu allowed for @pool? */
+> -       if (!cpumask_test_cpu(cpu, pool->attrs->cpumask))
+> -               return;
+> -
+> -       cpumask_and(&cpumask, pool->attrs->cpumask, cpu_online_mask);
 
-> 
->>>> +	unsigned long flags;
->>>> +	int cpu, hk_flags, j, id;
->>>>  	const struct cpumask *mask;
->>>>  
->>>>  	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ;
->>>> @@ -352,20 +379,27 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
->>>>  				return cpu;
->>>>  		}
->>>>  	} else {
->>>> -		/* NUMA first. */
->>>> -		for_each_cpu_and(cpu, cpumask_of_node(node), mask) {
->>>> -			if (i-- == 0)
->>>> -				return cpu;
->>>> +		spin_lock_irqsave(&spread_lock, flags);
->>>> +		memset(used, 0, nr_node_ids * sizeof(bool));
->>>> +		/* select node according to the distance from local node */
->>>> +		for (j = 0; j < nr_node_ids; j++) {
->>>> +			id = find_nearest_node(node, used);
->>>> +			if (id < 0)
->>>> +				break;
->>>
->>> There's presumably an outer loop in a driver which is trying to bind a
->>> bunch of interrupts to a bunch of CPUs.  We know there are on the order
->>> of dozens of these interrupts.
->>>
->>> 	for_each_interrupt() // in the driver
->>> 		for (j=0;j<nr_node_ids;j++) // cpumask_local_spread()
->>> 			// find_nearest_node():
->>> 			for (i = 0; i < nr_node_ids; i++) {
->>> 			for (i = 0; i < nr_node_ids; i++) {
->>>
->>> Does this worry anybody else?  It thought our upper limits on the number
->>> of NUMA nodes was 1024.  Doesn't that make our loop O(N^3) where the
->>> worst case is hundreds of millions of loops?
->>
->> If the NUMA nodes is 1024 in real system, it is more worthy to find the
->> earest node, rather than choose a random one, And it is only called in
->> I/O device initialization. Comments also are given to this interface.
-> 
-> This doesn't really make me feel better.  An end user booting this on a
+Good catch of the problem.
+But please fix it where the problem is found (here!)
+Like this:
 
-My bad, I only want to explain the issue.
++        /* only restore the cpumask of the pool's workers when @cpu is
++           the first online cpu in @pool's cpumask */
++        if (cpumask_weight(cpumask) > 1)
++                return;
 
-> big system with a bunch of cards could see a minutes-long delay.  I can
+        /* as we're called from CPU_ONLINE, the following shouldn't fail */
+        for_each_pool_worker(worker, pool)
+-                WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, &cpumask) < 0);
++                WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
+pool->attrs->cpumask) < 0);
 
-Indeed.
-
-> also see funky stuff happening like if we have a ton of NUMA nodes and
-> few CPUs.
-> 
->>> I don't want to prematurely optimize this, but that seems like something
->>> that might just fall over on bigger systems.
->>>
->>> This also seems really wasteful if we have a bunch of memory-only nodes.
->>>  Each of those will be found via find_nearest_node(), but then this loop:
->>
->> Got it, all effort is used to choose the nearest node for performance. If
->> we don't it, I think some one will also debug this in future.
-> 
-> If we're going to kick the can down the road for some poor sod to debug,
-> can we at least help them out with a warning?
-> 
-> Maybe we WARN_ONCE() after we fall back for more than 2 or 3 nodes.
-> 
-
-Ok,
-
-> But, I still don't think you've addressed my main concern: This is
-> horrifically inefficient searching for CPUs inside nodes that are known
-> to have no CPUs.
-
-How about optimizing as follows:
-+		for (j = 0; j < nr_node_ids; j++) {
-+			id = find_nearest_node(node, nodes);
-+			if (id < 0)
-+				break;
-+			nmask = cpumask_of_node(id);
-+			cpumask_and(&node_possible_mask, &mask, & nmask);
-+			cpu_of_node = cpumask_weight(node_possible_mask);
-+ 			if (cpu_index > cpu_of_node) {
-+				cpu_index -= cpu_of_node;
-+				node_set(id, nodes);
-+				continue;
-+			}
-+
-+			for_each_cpu(cpu, node_possible_mask)
-+				if (cpu_index-- == 0)
-+					return cpu;
-+
-+			node_set(id, nodes);
- 		}
-
-> 
->>>> +			for_each_cpu_and(cpu, cpumask_of_node(id), mask)
->>>> +				if (i-- == 0) {
->>>> +					spin_unlock_irqrestore(&spread_lock,
->>>> +							       flags);
->>>> +					return cpu;
->>>> +				}
->>>> +			used[id] = true;
->>>>  		}
->>>
->>> Will just exit immediately because cpumask_of_node() is empty.
->>
->> Yes, and this node used[id] became true.
->>
->>>
->>> 'used', for instance, should start by setting 'true' for all nodes which
->>> are not in N_CPUS.
->>
->> No, because I used 'nr_node_ids' which is possible node ids to check.
-> 
-> I'm saying that it's wasteful to loop over and search in all the nodes.
-
-If you are happy the mentioned code, it also will solve the issue.
-
-Thanks,
-Shaokun
-
-> .
-> 
+> -
+> -       /* as we're called from CPU_ONLINE, the following shouldn't fail */
+> -       for_each_pool_worker(worker, pool)
+> -               WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, &cpumask) < 0);
+> -}
+> -
+>  int workqueue_prepare_cpu(unsigned int cpu)
+>  {
+>         struct worker_pool *pool;
+> @@ -5058,8 +5056,6 @@ int workqueue_online_cpu(unsigned int cp
+>
+>                 if (pool->cpu == cpu)
+>                         rebind_workers(pool);
+> -               else if (pool->cpu < 0)
+> -                       restore_unbound_workers_cpumask(pool, cpu);
+>
+>                 mutex_unlock(&wq_pool_attach_mutex);
+>         }
