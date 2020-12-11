@@ -2,71 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD9E2D72FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B543D2D7306
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393729AbgLKJlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 04:41:21 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:20834 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726086AbgLKJlH (ORCPT
+        id S2405649AbgLKJrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 04:47:14 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:59335 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2393824AbgLKJqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 04:41:07 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BB9WkZC027941;
-        Fri, 11 Dec 2020 03:40:16 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=ewFevuZlpvGDvvGAKG9Hx5GCnbrFYf1gOE/LOfzTYJg=;
- b=F42ZKZIrrVXd2Fc6HVHJTs7N4Va537tNvcq5FH7H3yBnvMEa3zfI5LP36D2g5lon0wZm
- LbhyAQQ4MKAy/lrsl7j0Un8ZJPqGjfjEusMXjq4TqnrO6jldkvbbxmmsmcMWreum0YUC
- QoCfwMa+SWrBYf50Kxa8jD42ykkpmWbXmlUBAyt2DL8x8x2k8Ldl0+Sa40Cz/e3EEj3j
- h8stQV1IxhmUZDprlykVFcAoZdYpVEixHDQmxHPz+kObh48WsO+vuRFpQeyXdNKTYvzx
- TTLlXWj7cr8CB7KZH/E0nATduCm89s5WBFCbDs61S+LxPClCpqY43m67A93WASG4lKxg 6g== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3587gtqxd7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 11 Dec 2020 03:40:16 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 11 Dec
- 2020 09:40:14 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 11 Dec 2020 09:40:14 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8770F11CB;
-        Fri, 11 Dec 2020 09:40:14 +0000 (UTC)
-Date:   Fri, 11 Dec 2020 09:40:14 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-CC:     <lgirdwood@gmail.com>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] regulator: wm831x-isink: convert comma to semicolon
-Message-ID: <20201211094014.GA9673@ediswmail.ad.cirrus.com>
-References: <20201211084440.2210-1-zhengyongjun3@huawei.com>
+        Fri, 11 Dec 2020 04:46:55 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-252-AgPfXOr8MiC6RNWXAg0nGg-1; Fri, 11 Dec 2020 09:45:16 +0000
+X-MC-Unique: AgPfXOr8MiC6RNWXAg0nGg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 11 Dec 2020 09:45:15 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 11 Dec 2020 09:45:15 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arvind Sankar' <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>
+CC:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        "laniel_francis@privacyrequired.com" 
+        <laniel_francis@privacyrequired.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC PATCH v1 07/12] efi: Replace strstarts() by
+ str_has_prefix().
+Thread-Topic: [RFC PATCH v1 07/12] efi: Replace strstarts() by
+ str_has_prefix().
+Thread-Index: AQHWzyB/+YxwkDE2h0210TLWUlhJ1qnxoqgg
+Date:   Fri, 11 Dec 2020 09:45:15 +0000
+Message-ID: <4c251bcaf8234dd19ca0ecd0a756cf7f@AcuMS.aculab.com>
+References: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
+ <20201204170319.20383-8-laniel_francis@privacyrequired.com>
+ <CAMj1kXEQhT_LF5FDBO3-S7pBn55wG59bQUVr2q58A4FhqodY8Q@mail.gmail.com>
+ <ab769a5188394cd3379cc627d14a0222050a1367.camel@HansenPartnership.com>
+ <CAMj1kXFvCZKH-Bbvu-V5-GxcTun8yz98igeFxRc1tTswbttM0w@mail.gmail.com>
+ <X9Jlfqiu/vCOAm3U@rani.riverdale.lan>
+In-Reply-To: <X9Jlfqiu/vCOAm3U@rani.riverdale.lan>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201211084440.2210-1-zhengyongjun3@huawei.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
- suspectscore=0 spamscore=0 adultscore=0 priorityscore=1501 mlxlogscore=853
- lowpriorityscore=0 phishscore=0 mlxscore=0 impostorscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012110059
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 04:44:40PM +0800, Zheng Yongjun wrote:
-> Replace a comma between expression statements by a semicolon.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
+RnJvbTogQXJ2aW5kIFNhbmthcg0KPiBTZW50OiAxMCBEZWNlbWJlciAyMDIwIDE4OjE0DQouLi4N
+Cj4gSSB3YXNuJ3QgYXdhcmUgb2Ygc3RyX2hhc19wcmVmaXgoKSBhdCB0aGUgdGltZS4gSXQgZG9l
+cyBzZWVtIHVzZWZ1bCB0bw0KPiBlbGltaW5hdGUgdGhlIGR1cGxpY2F0aW9uIG9mIHRoZSBzdHJp
+bmcgbGl0ZXJhbCwgSSBsaWtlIHRoZQ0KPiBza2lwX3ByZWZpeCgpIEFQSSBzdWdnZXN0aW9uLCBt
+YXliZSBldmVuDQo+IA0KPiAJYm9vbCBzdHJfc2tpcF9wcmVmaXgoY29uc3QgY2hhciAqKnMsIGNv
+bnN0IGNoYXIgKnBmeCkNCj4gCXsNCj4gCQlzaXplX3QgbGVuID0gc3RyX2hhc19wcmVmaXgoKnMs
+IHBmeCk7DQo+IAkJKnMgKz0gbGVuOw0KPiAJCXJldHVybiAhIWxlbjsNCj4gCX0NCj4gCS4uLg0K
+PiAJaWYgKHN0cl9za2lwX3ByZWZpeCgmb3B0aW9uLCBwcmVmaXgpKSB7IC4uLiB9DQo+IA0KPiB0
+byBhdm9pZCB0aGUgaW50ZXJtZWRpYXRlIHZhcmlhYmxlLg0KDQpUaGF0J2xsIGdlbmVyYXRlIGhv
+cnJpZCBjb2RlIC0gdGhlICdvcHRpb24nIHZhcmlhYmxlIGhhcyB0byBiZQ0KcmVwZWF0ZWRseSBy
+ZWxvYWRlZCBmcm9tIG1lbW9yeSAodW5sZXNzIGl0IGlzIGFsbCBpbmxpbmVkKS4NCg0KUGVyaGFw
+cyB0aGUgI2RlZmluZQ0KDQojZGVmaW5lIHN0cl9za2lwX3ByZWZpeChzdHIsIHByZWZpeCkgXA0K
+eyggXA0KCXNpemVfdCBfcGZ4X2xlbiA9IHN0cmxlbihwcmVmaXgpKTsgXA0KCW1lbWNtcChzdHIs
+IHBmeCwgX3BmeF9sZW4pID8gMCA6ICgoc3RyKSArPSBfcGZ4X2xlbiwgMSk7IFwNCil9DQoNClRo
+ZXJlJ3MgcHJvYmFibHkgc29tZXRoaW5nIHRoYXQnbGwgbGV0IHlvdSB1c2Ugc2l6ZW9mKCkgaW5z
+dGVhZA0Kb2Ygc3RybGVuKCkgZm9yIHF1b3RlZCBzdHJpbmdzIChpZiBvbmx5IHNpemVvZiBwZngg
+IT0gc2l6ZW9mIChjaGFyICopKS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBM
+YWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBU
+LCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks,
-Charles
