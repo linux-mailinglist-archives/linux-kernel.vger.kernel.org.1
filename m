@@ -2,78 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A052D8057
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E753B2D805C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:04:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394812AbgLKVBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:01:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394751AbgLKVAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:00:50 -0500
-X-Gm-Message-State: AOAM5322j4ttJklW+DSxqy+Hd8WKQNQcckFq0lP19zt92d1S1z6A6tUY
-        CdMXowuzH33z9b53iHi2nwhvjj4a5uYg9L0n7js=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607720409;
-        bh=0OdAfHXVSmV4upgVK23rC2WbpmA/myKVM+LFlH0XlSQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mpJYb+gNtdzZ6IlU8NXxiQGR6E4QaG75tYJQYVxDdFkWZw7S9r5DWhbVKQZJkN/wA
-         Qmrbem+xtwznOPgGAYj0/HzaCuOUhs3rSSf6pAT/BY8yGk1/wqEelrw+DavY9DW0hR
-         Ado57lSq5dCML+gxu+NYkcQQ0+341nPwL3TPT+0vHYjnvwOizrEM7jpeBLBkSwzJVu
-         f9uArj5QA9M1PLW89R1FC3qvmpD68DxNrPdCPiC9E2OMIxV+8Gm+sTYkayQrKdNxWE
-         x2xxxFFBb2K8+TaejDLAd+LIrmte6l/tfX/602H6grBPTJHfdaqL7zDaURzt85n/uw
-         PfiEF+8ekQjDA==
-X-Google-Smtp-Source: ABdhPJwiJpzQkQ22vcNutFE60niWIjCFOoaLOg3iwr+QhczmEN98RjDpRUwCX/UyGEjItEc0onPxtrvuVAJDsEytYT4=
-X-Received: by 2002:aca:418b:: with SMTP id o133mr10373990oia.67.1607720408751;
- Fri, 11 Dec 2020 13:00:08 -0800 (PST)
+        id S2404019AbgLKVCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:02:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731470AbgLKVCP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 16:02:15 -0500
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209D7C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:01:35 -0800 (PST)
+Received: by mail-oo1-xc43.google.com with SMTP id j8so2479706oon.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:01:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6i90QejRWkmIAtoo2m52V+3cpqqI+x/pjz3yRdPtZpM=;
+        b=hpKUqu/Ei3mZQTjZ91rz/kKo3nKpA0AKeWbNDuUaE9evS19WtP+NAumpYEfWIGuQqk
+         bWFeDC/SuID+CEZ+2NmcHMrgJjVoHwYzajS8lCvBAp4h9V39Mo73Nqj09TKEjbXOafnf
+         +qUnX2oA5/GHJIpjW3BOXLQAt/P5UoxkmCz6o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6i90QejRWkmIAtoo2m52V+3cpqqI+x/pjz3yRdPtZpM=;
+        b=ITUMHupFRnLfX3C75xLVsLUSJyswfdAJNqMLK+db2JTpcivDDfbCdI3dszkF/fbHIg
+         CY6i9eBbcDMeppiN52LgS5DkoVbJVvaHYgfc0j06ex9AZu6OuzsX8YtQccXntnONc1xU
+         9TwEXqG/LoPEYxo5qXom1YaXzvx4hIYQuMSpdDoZMbN6HnDebWf7tldMBqdrQ7NCsJgp
+         rym89mYfYqtdjDjQLU3RcPGv4a9/1/fJFTo0q0UvEFdCXYO7fdyeBXgrMbOCemX1ouhY
+         UkA21ikjZNcRyPAAlrrp2XQ2ZP3DkeSwLxiXOF2w9dGlG9Lj/UjjQUsH0GtIG4ejaRQ6
+         9aDA==
+X-Gm-Message-State: AOAM531VDZGkURFn4kw4AzLZMd9CGwOezk0Igz09gYhlSoTt99uxumRc
+        ny6njN//mxHvf7dZPWG9MXl208sRJ2RHXQ==
+X-Google-Smtp-Source: ABdhPJzprHr280jEdeYR/TIgRKI5hM2Gk9E1RVeKZ+F5jQ1SU4KqBkXl2qMu5acHepNcrQCiVBFO7A==
+X-Received: by 2002:a4a:4e87:: with SMTP id r129mr11591975ooa.4.1607720493492;
+        Fri, 11 Dec 2020 13:01:33 -0800 (PST)
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com. [209.85.210.43])
+        by smtp.gmail.com with ESMTPSA id w8sm2067963oos.37.2020.12.11.13.01.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Dec 2020 13:01:31 -0800 (PST)
+Received: by mail-ot1-f43.google.com with SMTP id 11so9499441oty.9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:01:31 -0800 (PST)
+X-Received: by 2002:a9d:4c8d:: with SMTP id m13mr9095089otf.229.1607720490665;
+ Fri, 11 Dec 2020 13:01:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20201211163749.31956-1-yonatanlinik@gmail.com> <20201211163749.31956-2-yonatanlinik@gmail.com>
-In-Reply-To: <20201211163749.31956-2-yonatanlinik@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 11 Dec 2020 21:59:51 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0_AwRxTsYuK4p-vv61H34ERDp7od3C2c45u+0QyR+uhQ@mail.gmail.com>
-Message-ID: <CAK8P3a0_AwRxTsYuK4p-vv61H34ERDp7od3C2c45u+0QyR+uhQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] net: Fix use of proc_fs
-To:     Yonatan Linik <yonatanlinik@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Willem de Bruijn <willemb@google.com>,
-        john.ogness@linutronix.de, Arnd Bergmann <arnd@arndb.de>,
-        Mao Wenan <maowenan@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        orcohen@paloaltonetworks.com, Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+References: <1607713210-18320-1-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1607713210-18320-1-git-send-email-pillair@codeaurora.org>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Fri, 11 Dec 2020 13:00:00 -0800
+X-Gmail-Original-Message-ID: <CA+ASDXN5UF0KM=xV9e8jTa4XxZ5Tu-yb4yvoaw+56GHx8hf8=A@mail.gmail.com>
+Message-ID: <CA+ASDXN5UF0KM=xV9e8jTa4XxZ5Tu-yb4yvoaw+56GHx8hf8=A@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Fix error handling in case of CE pipe init failure
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     ath10k <ath10k@lists.infradead.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Doug Anderson <dianders@chromium.org>, kuabhs@chromium.org,
+        Youghandhar Chintala <youghand@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 5:37 PM Yonatan Linik <yonatanlinik@gmail.com> wrote:
-
-> index 2b33e977a905..031f2b593720 100644
-> --- a/net/packet/af_packet.c
-> +++ b/net/packet/af_packet.c
-> @@ -4612,9 +4612,11 @@ static int __net_init packet_net_init(struct net *net)
->         mutex_init(&net->packet.sklist_lock);
->         INIT_HLIST_HEAD(&net->packet.sklist);
+On Fri, Dec 11, 2020 at 11:00 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
 >
-> +#ifdef CONFIG_PROC_FS
->         if (!proc_create_net("packet", 0, net->proc_net, &packet_seq_ops,
->                         sizeof(struct seq_net_private)))
->                 return -ENOMEM;
-> +#endif /* CONFIG_PROC_FS */
+> Currently if the copy engine pipe init fails for snoc based
+> chipsets, the rri is not freed.
 >
+> Fix this error handling for copy engine pipe init
+> failure.
+>
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+>
+> Fixes: 4945af5b264f ("ath10k: enable SRRI/DRRI support on ddr for WCN3990")
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 
-Another option would be to just ignore the return code here
-and continue without a procfs file, regardless of whether procfs
-is enabled or not.
-
-       Arnd
+Reviewed-by: Brian Norris <briannorris@chromium.org>
