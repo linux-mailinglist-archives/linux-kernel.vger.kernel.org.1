@@ -2,79 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CBB2D7745
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1622D7750
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395011AbgLKOAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:00:24 -0500
-Received: from foss.arm.com ([217.140.110.172]:58832 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394306AbgLKN7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:59:48 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E50D41FB;
-        Fri, 11 Dec 2020 05:58:59 -0800 (PST)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0B4343F68F;
-        Fri, 11 Dec 2020 05:58:58 -0800 (PST)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: [PATCH v2] drivers: soc: atmel: Avoid calling at91_soc_init on non AT91 SoCs
-Date:   Fri, 11 Dec 2020 13:58:46 +0000
-Message-Id: <20201211135846.1334322-1-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S2404251AbgLKOBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:01:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395095AbgLKOB1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 09:01:27 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE24CC0613D6;
+        Fri, 11 Dec 2020 06:00:46 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id u19so9455468edx.2;
+        Fri, 11 Dec 2020 06:00:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=72cACysZDLkGnBT4ag2igYzkfQSf/FBKFU7gwyj+muA=;
+        b=Buj+BU84hTkSyt/2MvqYt6Ms9JH0uylV1kJFLt4Ta6U1SGvXZPZP9cew5P6/DzZLnP
+         zI+cgen/gDzAl08XU1/f2IuiPY6UuA49/U7PJGvDyZL+CC8STCW2aF0m4JHmOczhiLBm
+         +ZeKH8nfT/QwlngxM1aIOiqNw7L8ZOdnnpfHIFWeZ+3O6+MsJEwf2jP+XK2KRTO5ftjG
+         Q4F8doeOxHxzILLQl9I6DoIuVsYWpSoZxG/HutOBiZtXAy7OnX61TtDgKwMkzbc4W7la
+         eLsM6Vc99vpSxoT3PLwtYpYJw890Jij3Td8jrTapJybh8Ev6g3J0sle59yfgB9kW9n7f
+         pMDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=72cACysZDLkGnBT4ag2igYzkfQSf/FBKFU7gwyj+muA=;
+        b=sOx42qyU02wczQN7o9rMUwcKK5qEdwpQkJnfEiAw0PmsNGPW14zIwjCbHotg5Jpjcc
+         BySG5uW6mth7ZmaW7afS7IGWZWB+hMd5KoRQJcUwtYpiZmZUMJzmu9ol9mHArRV/fkRE
+         MKtEJmrKBxrt0LO76u2g2OZloERgrPb0tVTuai6hvp4N57XbcZl/p1Y06bcIhmWbD+Eh
+         1q5082/pd1WVtVMMrDywxsrY5WCFegWGEMYMj4peb3kUqnhQXRp08qghM0G8/4zsH7JB
+         TtRs2cy3riFPSIoq7feaMc6qjIG/BA+d/4MIAHD446l7Zo3f7Ic2KTLo0b/xLx5GMxJH
+         Rqbw==
+X-Gm-Message-State: AOAM533QPgBxt4VJ33nZENDeoHw9NIWz4MZWq1iZQIalXP4dJhHInlJR
+        OapfzicU5sZVHz2HGz0Tqaw=
+X-Google-Smtp-Source: ABdhPJwPJPujKQGyoKUcLcI9Fax4dxFU9y+tuK3AeK7EKaHQg/RMTYRvo030GoTdKlZFMU2sFEaLoQ==
+X-Received: by 2002:a50:d5c1:: with SMTP id g1mr12266359edj.299.1607695245435;
+        Fri, 11 Dec 2020 06:00:45 -0800 (PST)
+Received: from localhost.localdomain (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.gmail.com with ESMTPSA id z24sm7797818edr.9.2020.12.11.06.00.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 06:00:44 -0800 (PST)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/6] Several changes for UFS WriteBooster
+Date:   Fri, 11 Dec 2020 15:00:29 +0100
+Message-Id: <20201211140035.20016-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since at91_soc_init is called unconditionally from atmel_soc_device_init,
-we get the following warning on all non AT91 SoCs:
-	" AT91: Could not find identification node"
+From: Bean Huo <beanhuo@micron.com>
 
-Fix the same by filtering with allowed AT91 SoC list.
+Changelog:
+v3--v4:
+  1. Rebase patch on 5.11/scsi-staging
+  2. Add WB cleanup patches 3/6, 4/6 adn 5/6
 
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
- drivers/soc/atmel/soc.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+v2--v3:
+  1. Change multi-line comments style in patch 1/3 (Can Guo)
 
-v1->v2:
-	- Updated the allowed list as suggested by Alexandre
+v1--v2:
+  1. Take is_hibern8_wb_flush checkup out from function
+     ufshcd_wb_need_flush() in patch 2/3
+  2. Add UFSHCD_CAP_CLK_SCALING checkup in patch 1/3. that means
+     only for the platform, which doesn't support UFSHCD_CAP_CLK_SCALING,
+     can control WB through "wb_on".
 
-diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
-index 55a1f57a4d8c..2dc86728b132 100644
---- a/drivers/soc/atmel/soc.c
-+++ b/drivers/soc/atmel/soc.c
-@@ -265,8 +265,20 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
- 	return soc_dev;
- }
+Bean Huo (6):
+  scsi: ufs: Add "wb_on" sysfs node to control WB on/off
+  scsi: ufs: Changes comment in the function ufshcd_wb_probe()
+  scsi: ufs: Group UFS WB related flags to struct ufs_dev_info
+  scsi: ufs: Remove d_wb_alloc_units from struct ufs_dev_info
+  scsi: ufs: Cleanup WB buffer flush toggle implementation
+  scsi: ufs: Keep device active mode only
+    fWriteBoosterBufferFlushDuringHibernate == 1
 
-+static const struct of_device_id at91_soc_allowed_list[] __initconst = {
-+	{ .compatible = "atmel,at91rm9200", },
-+	{ .compatible = "atmel,at91sam9", },
-+	{ .compatible = "atmel,sama5", },
-+	{ .compatible = "atmel,samv7", }
-+};
-+
- static int __init atmel_soc_device_init(void)
- {
-+	struct device_node *np = of_find_node_by_path("/");
-+
-+	if (!of_match_node(at91_soc_allowed_list, np))
-+		return 0;
-+
- 	at91_soc_init(socs);
+ drivers/scsi/ufs/ufs-sysfs.c |  41 +++++++++++++
+ drivers/scsi/ufs/ufs.h       |  33 +++++-----
+ drivers/scsi/ufs/ufshcd.c    | 114 +++++++++++++++--------------------
+ drivers/scsi/ufs/ufshcd.h    |   4 +-
+ 4 files changed, 112 insertions(+), 80 deletions(-)
 
- 	return 0;
---
-2.25.1
+-- 
+2.17.1
 
