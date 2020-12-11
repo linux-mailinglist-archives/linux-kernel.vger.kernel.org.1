@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBC42D7236
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 262262D723C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392889AbgLKItu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:49:50 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9597 "EHLO
+        id S2392390AbgLKIu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:50:58 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9517 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392462AbgLKItY (ORCPT
+        with ESMTP id S2392566AbgLKIuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:49:24 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CskvL3D5SzLxYg;
-        Fri, 11 Dec 2020 16:47:58 +0800 (CST)
+        Fri, 11 Dec 2020 03:50:20 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cskwc5RXvzhqgM;
+        Fri, 11 Dec 2020 16:49:04 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Dec 2020 16:48:33 +0800
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Dec 2020 16:49:28 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linus.walleij@linaro.org>
+To:     <dmitry.torokhov@gmail.com>, <linux-input@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] ti/pinctrl-ti-iodelay: convert comma to semicolon
-Date:   Fri, 11 Dec 2020 16:49:02 +0800
-Message-ID: <20201211084902.2480-1-zhengyongjun3@huawei.com>
+Subject: [PATCH -next] input: serio: convert comma to semicolon
+Date:   Fri, 11 Dec 2020 16:49:57 +0800
+Message-ID: <20201211084957.2540-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,22 +39,22 @@ Replace a comma between expression statements by a semicolon.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/pinctrl/ti/pinctrl-ti-iodelay.c | 2 +-
+ drivers/input/serio/parkbd.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/ti/pinctrl-ti-iodelay.c b/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
-index cfb924228d87..ae91559bd4a1 100644
---- a/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
-+++ b/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
-@@ -704,7 +704,7 @@ static void ti_iodelay_pinconf_group_dbg_show(struct pinctrl_dev *pctldev,
- 		u32 reg = 0;
- 
- 		cfg = &group->cfg[i];
--		regmap_read(iod->regmap, cfg->offset, &reg),
-+		regmap_read(iod->regmap, cfg->offset, &reg);
- 			seq_printf(s, "\n\t0x%08x = 0x%08x (%3d, %3d)",
- 				   cfg->offset, reg, cfg->a_delay,
- 				   cfg->g_delay);
+diff --git a/drivers/input/serio/parkbd.c b/drivers/input/serio/parkbd.c
+index ddbbd4afb4a2..3ac57a91ede4 100644
+--- a/drivers/input/serio/parkbd.c
++++ b/drivers/input/serio/parkbd.c
+@@ -168,7 +168,7 @@ static struct serio *parkbd_allocate_serio(void)
+ 	serio = kzalloc(sizeof(struct serio), GFP_KERNEL);
+ 	if (serio) {
+ 		serio->id.type = parkbd_mode;
+-		serio->write = parkbd_write,
++		serio->write = parkbd_write;
+ 		strlcpy(serio->name, "PARKBD AT/XT keyboard adapter", sizeof(serio->name));
+ 		snprintf(serio->phys, sizeof(serio->phys), "%s/serio0", parkbd_dev->port->name);
+ 	}
 -- 
 2.22.0
 
