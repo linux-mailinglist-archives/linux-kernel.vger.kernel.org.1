@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B821A2D7EEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 073F62D7EF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733207AbgLKS5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 13:57:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
+        id S1733306AbgLKS7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 13:59:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729004AbgLKS4l (ORCPT
+        with ESMTP id S1732084AbgLKS7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 13:56:41 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B32C0613D3;
-        Fri, 11 Dec 2020 10:56:01 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id g1so9739142ilk.7;
-        Fri, 11 Dec 2020 10:56:01 -0800 (PST)
+        Fri, 11 Dec 2020 13:59:11 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07A9C0613CF;
+        Fri, 11 Dec 2020 10:58:31 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id c79so7550017pfc.2;
+        Fri, 11 Dec 2020 10:58:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=C3JIqd3VgqewKlHZM6tzMlpEMTcnPyfODQAc8wyzPew=;
-        b=DLQ5nY8COzu/4PrdsvhACosOqtuecoDrWLZTt9oj5rueoZQFtvUyCvArbjw9renmHH
-         xAOHRgwFX1JOJruJxHLR4ylqgd8qEy85p3lxt3yw6fbjGyXS1ZiNOVKcjxw5TDhserfD
-         XQmaqXEYG5DErm60nDwZC5x1JQ0iLcH4fbszoZ64c8VQ5Lf1SqnouocxMdKPYbqSRHBG
-         3Jnd1ucmKT12s40PTkPV+pejiGvytHsMln7fmCRNomhbL08BC95Lu6mTV8xSdU8aEM1h
-         0jjnQ+dYI1zEFFD720oYBMBOV8KDMIV43oc4chlB0ZxitENBgw+DWlGLDoZLY2nGzoHW
-         klmg==
+        bh=320RebTR8RNqiiBYn8ZtKuZFxrkRlPQWBrl9GpDvUvM=;
+        b=LKJt41PIAvjRtKddIbd2BmReM4x7NmVbbEQ2eAMRf7f07yw0fYlUf1748jdc/SAVAK
+         TpXdkvk8yekQjxPzQJnkVouWqv0c+ChuAA41eeLgyoiiFWLjOv+n3d9FTQjjAKUW6uvH
+         0X/ZMuckLfEjo3m+X6S3H8/wDjSYAy8y5YbR3ifxdAkW24iQHeCUL8A3JAQHzcbNgvtm
+         S5al5sx0D1BNPeNDozCOOCno+ltgZBlUw6HiRpdQfTQl1gjSOLpU/kYp7Zi8YU6+Qucv
+         ipwAvtyusSgjihMaEcMB9LZVQnAJEbpj1iAThLWROg1hXGlQNwExfsH14KRRLCES3CG1
+         GCVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=C3JIqd3VgqewKlHZM6tzMlpEMTcnPyfODQAc8wyzPew=;
-        b=k+Lz1fpVC1trjsd6QIvHYmomlJ9j+yQbkox8Kth9/tRj/j1HX0KTngoEdJOtTpuae4
-         Fbr69lYT22sozXMYx9rOFqiReGvk08KG1AlZA6Jv/ZphsMuLcApHcjBPoJuCDoh/CPR5
-         RjqG/P6pg3RU1KU48AshHNFd2xxaelooN3j7M9fDK9b6+xIeHtTK5K31b9Q6eypu7HN/
-         b+wSVpwh/1G4YElfZ4Yo/FhYEt+rS7nUNUOac1qR7x15528RL5BKCRh2pPhSPXnkyQSP
-         t1Rk+7a2DChAN/dr602hjKz02tMEWpwm5jdhRJWNOAHskYa2ZAYMke/S39X6eozckfyD
-         8r5A==
-X-Gm-Message-State: AOAM530+6CsB5lBlupCtrIwWErYf6niF97qWQmwR0Ie8D0HL+YV9WiIH
-        wFwbQC/iIjoBhbna8E8t3D2ISw3uaqkQtW0KdJU=
-X-Google-Smtp-Source: ABdhPJywYmd6DB/U6CuCiry05M7A8s458wz4gy74dtYaFHpwLWBUVh9RTtSO2d/YB2sNPjyrlQBf0t8SbYHNiV+L1uw=
-X-Received: by 2002:a92:cd8c:: with SMTP id r12mr16786086ilb.221.1607712960988;
- Fri, 11 Dec 2020 10:56:00 -0800 (PST)
+        bh=320RebTR8RNqiiBYn8ZtKuZFxrkRlPQWBrl9GpDvUvM=;
+        b=tDLbHv4a59nYtF2MHioqm5rn6f4xsf8RU4X6fmScmCs0AtHQS9Mqnx+wMmcqLGWlR3
+         wlzSaHw3Z6Spxqh1e2StEIMWOkKly3jXcNLuPeSDVJ6Ko6t2tQjo3hmP/CjfDVonFyE/
+         3s4QIBVhjKzOaiZy31yISWai1cQwVnTW1FHIlk1HgxTIRnLQTUNuvLm8/qP6yUNkUUca
+         1qQ7L9h6Fyre88GlmsgFcPi8972HIZH9w1c1tr8UlkxzZyyR+4TpNAPGUPZyjEA0IYXQ
+         EoLf31Kv+P8fOm53LjRtLnj1kSTwmUDuVoiXhBjlB6LcAT8zjUHzQQfUsDeME2KCyS9X
+         fxnQ==
+X-Gm-Message-State: AOAM5310IK2fr7SgbLitl2KoV4uiUhMhcqUGSROv9OIbqFOksz4clsLl
+        jQZZdjyESVAvq/oByUQaOzBUg+R8Lt5xse+Fxfk=
+X-Google-Smtp-Source: ABdhPJzCwaH9RtljsVUgVllZ8IxAE73P9W7PrK5XYEhFoEd6uPSxaOLS8UXO/eps772X8J4EBsfcIjtMm5H0Z3jQYws=
+X-Received: by 2002:a63:c04b:: with SMTP id z11mr12389891pgi.74.1607713111220;
+ Fri, 11 Dec 2020 10:58:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20201207124141.21859-1-lukas.bulwahn@gmail.com> <20201211184715.GE25974@zn.tnic>
-In-Reply-To: <20201211184715.GE25974@zn.tnic>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Fri, 11 Dec 2020 19:55:50 +0100
-Message-ID: <CAKXUXMzZ7ejn1JrznDP6d7dk8tSsTznBO+423NAwf_nYsix=_w@mail.gmail.com>
-Subject: Re: [PATCH] x86: ia32_setup_rt_frame(): propagate __user annotations properly
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1607659581-15764-1-git-send-email-lennychen@tencent.com>
+In-Reply-To: <1607659581-15764-1-git-send-email-lennychen@tencent.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 11 Dec 2020 20:58:15 +0200
+Message-ID: <CAHp75VdmC2QyVYz_QcbgpdMwkJ5VndUwp=rmk=b0KSZcwZrqkg@mail.gmail.com>
+Subject: Re: [PATCH] driver: pinctrl: fix unused variable warning
+To:     chenlei0x@gmail.com
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lei Chen <lennychen@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 7:47 PM Borislav Petkov <bp@alien8.de> wrote:
+On Fri, Dec 11, 2020 at 1:46 PM <chenlei0x@gmail.com> wrote:
 >
-> On Mon, Dec 07, 2020 at 01:41:41PM +0100, Lukas Bulwahn wrote:
-> > Thomas, Ingo, Boris, please pick this minor non-urgent clean-up patch.
+> From: Lei Chen <lennychen@tencent.com>
 >
-> Why?
->
-> Isn't it obvious that when you send a patch to us, the final goal is for
-> it to be applied. Eventually.
+> In pinctrl_pins_show, range, gpio_num and chip variables are not used if
+> CONFIG_GPIOLIB is not defined. Use this macro to wrap them.
 >
 
-Yes, agree. Other maintainers noted that I should point out that the
-patch is only a minor clean-up and it is not urgent to be considered.
+https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/commit/drivers/pinctrl/core.c?h=for-next&id=b507cb92477ad85902783a183c5ce01d16296687
 
-So, I add this remark to make clear that it is not top priority to
-apply just that the maintainers know.
+Rule of thumb: base your patches on the latest subsystem tree snapshot.
 
-You will sure review it eventually, and hopefully accept it then.
-
-If that comment disturbs you, please ignore it.
-
-Lukas
+-- 
+With Best Regards,
+Andy Shevchenko
