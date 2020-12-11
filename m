@@ -2,123 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DFF2D778D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E052D7798
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405537AbgLKOOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:14:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60610 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405421AbgLKONg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:13:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7D0D9AC10;
-        Fri, 11 Dec 2020 14:12:54 +0000 (UTC)
-Subject: Re: [PATCH] nvme: hwmon: fix crash on device teardown
-To:     Enzo Matsumiya <ematsumiya@suse.de>, linux-nvme@lists.infradead.org
-Cc:     Sagi Grimberg <sagi@grimberg.me>, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20201209213228.5044-1-ematsumiya@suse.de>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <4ebb1b8c-4bb0-6ebf-3417-d4aee1bdd3a8@suse.de>
-Date:   Fri, 11 Dec 2020 15:12:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2405920AbgLKOQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:16:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405899AbgLKOPj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 09:15:39 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8476FC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:14:59 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id p21so1871527pjv.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:14:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5f1oHmcol2mHx6bC5gFH8ezh95GR9pifCliLgoZXiHI=;
+        b=Bzgx3oPWqgw2n1k0AK1q+w30PZWgSi1dqKV5jw4NTUlxXSt/Em/bVVrqnzOIlv2DBr
+         fjVuO3tsgvvmQZXK8pbVfZGMi5nU1uZGf1M1er6k2a0orAK6Q5bUSNTN7OkFM7LX8abp
+         qcAPpTeDQaBnKIIg7RisfNNKMSBGR05hlFYUQeX4Lrrzo7olSSxraRJiRhPjAlTwwle6
+         GkPMDER0cf/tv5691W+YJs5CjQVWbTBgYzNJTYFqgH0KFlQro1pPQAw1eB47CptCcgsn
+         5zvRtWb/qbSs9IZWA4zUdMkPOK9ReXwzcO6X9zb51a0t10AV6YQYrW+R5nCR/WVstc2O
+         ixuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5f1oHmcol2mHx6bC5gFH8ezh95GR9pifCliLgoZXiHI=;
+        b=t3Bz/4mpgwSC7jLCuKXuIycOnk8RQhVHVLn7ajGuXvjHX9BJ24JkSQvhJWLarN0jul
+         UuSlZJgo/vYbsS8b6r/WJhxMUf3B/nAO4IA1kA3nNuBFxN3H3BwbJOUyY+5wr1pLEXCU
+         zCqLBvrQGIfBCbSo8lF9yS8Ndt7AGQ7sHHEfEIIocomx0kSc8BCt0gOwbdlnP9BlRM0L
+         gOFazSt7Vypgsxqt5SByerciuJYGZwgaG7Gs87R4s9eV4UX8OKzFvmUOLfW706pFih9D
+         7c6QLTZ2NMoXH1Awgq+EltMlFSUqFB3OBJGiSkmPnabFl8bzhVH2/gNGvzTCpK0Mmcjw
+         dUkg==
+X-Gm-Message-State: AOAM532/doMGPWNGLI7jsJtih+GsDIKLBBBYtr8McjkInRfk8vsd4AUv
+        e6GXSPqIwqoFL32OOzScDNNXCyxINR+6MZLfKtoF5w==
+X-Google-Smtp-Source: ABdhPJzFtHnSD7yguh0R/UPqyIWabyj8rwu4adQbmM5SUJFG7UlQpVcwg63WOndZqN2uDqjudVC4YaWLzSNwdIGIi84=
+X-Received: by 2002:a17:902:bb92:b029:d9:e9bf:b775 with SMTP id
+ m18-20020a170902bb92b02900d9e9bfb775mr11319858pls.24.1607696099031; Fri, 11
+ Dec 2020 06:14:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201209213228.5044-1-ematsumiya@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201211041954.79543-1-songmuchun@bytedance.com>
+ <20201211041954.79543-4-songmuchun@bytedance.com> <20201211135737.GA2443@casper.infradead.org>
+In-Reply-To: <20201211135737.GA2443@casper.infradead.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 11 Dec 2020 22:14:22 +0800
+Message-ID: <CAMZfGtVYkkoQc+VsMPj-_FWAZmQOhme4QD0vJ9cDZNMsTg2jPw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v4 3/7] mm: memcontrol: convert
+ NR_FILE_THPS account to pages
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Feng Tang <feng.tang@intel.com>, Neil Brown <neilb@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/20 10:32 PM, Enzo Matsumiya wrote:
-> Fix a possible NULL pointer dereference when trying to read
-> hwmon sysfs entries associated to NVMe-oF devices that were
-> hot-removed or disconnected.
-> 
-> Unregister the NVMe hwmon device upon controller teardown
-> (nvme_stop_ctrl()).
-> 
-> Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
-> ---
->   drivers/nvme/host/core.c  | 1 +
->   drivers/nvme/host/hwmon.c | 8 ++++++++
->   drivers/nvme/host/nvme.h  | 2 ++
->   3 files changed, 11 insertions(+)
-> 
-> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> index 9a270e49df17..becc80a0c3b8 100644
-> --- a/drivers/nvme/host/core.c
-> +++ b/drivers/nvme/host/core.c
-> @@ -4344,6 +4344,7 @@ EXPORT_SYMBOL_GPL(nvme_complete_async_event);
->   
->   void nvme_stop_ctrl(struct nvme_ctrl *ctrl)
->   {
-> +	nvme_hwmon_exit(ctrl);
->   	nvme_mpath_stop(ctrl);
->   	nvme_stop_keep_alive(ctrl);
->   	flush_work(&ctrl->async_event_work);
-> diff --git a/drivers/nvme/host/hwmon.c b/drivers/nvme/host/hwmon.c
-> index 552dbc04567b..7f62cca4c577 100644
-> --- a/drivers/nvme/host/hwmon.c
-> +++ b/drivers/nvme/host/hwmon.c
-> @@ -71,6 +71,9 @@ static int nvme_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
->   	int temp;
->   	int err;
->   
-> +	if (data->ctrl->state != NVME_CTRL_LIVE)
-> +		return -EAGAIN;
-> +
->   	/*
->   	 * First handle attributes which don't require us to read
->   	 * the smart log.
-> @@ -253,3 +256,8 @@ int nvme_hwmon_init(struct nvme_ctrl *ctrl)
->   
->   	return 0;
->   }
-> +
-> +void nvme_hwmon_exit(struct nvme_ctrl *ctrl)
-> +{
-> +	hwmon_device_unregister(ctrl->dev);
-> +}
-> diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-> index 567f7ad18a91..621e9b1575f6 100644
-> --- a/drivers/nvme/host/nvme.h
-> +++ b/drivers/nvme/host/nvme.h
-> @@ -807,11 +807,13 @@ static inline struct nvme_ns *nvme_get_ns_from_dev(struct device *dev)
->   
->   #ifdef CONFIG_NVME_HWMON
->   int nvme_hwmon_init(struct nvme_ctrl *ctrl);
-> +void nvme_hwmon_exit(struct nvme_ctrl *ctrl);
->   #else
->   static inline int nvme_hwmon_init(struct nvme_ctrl *ctrl)
->   {
->   	return 0;
->   }
-> +static inline void nvme_hwmon_exit(struct nvme_ctrl *ctrl) { }
->   #endif
->   
->   u32 nvme_command_effects(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
-> 
-Something's fishy here.
-The hwmon attributes should have been created only once for the lifetime 
-of the controller (creation is protected by '!initialized').
-And the hwmon lifetime should've been controlled by the lifetime of the 
-controller (which to my knowledge was the idea behind the devm_* thingies).
-So why do we have to deallocate the hwmon attributes?
-And why on reset? And who's re-creating them after reset, seeing that 
-'initialized' should be true?
-Hmm?
+On Fri, Dec 11, 2020 at 9:57 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Fri, Dec 11, 2020 at 12:19:50PM +0800, Muchun Song wrote:
+> > +++ b/mm/filemap.c
+> > @@ -207,7 +207,7 @@ static void unaccount_page_cache_page(struct address_space *mapping,
+> >               if (PageTransHuge(page))
+> >                       __dec_lruvec_page_state(page, NR_SHMEM_THPS);
+> >       } else if (PageTransHuge(page)) {
+> > -             __dec_lruvec_page_state(page, NR_FILE_THPS);
+> > +             __mod_lruvec_page_state(page, NR_FILE_THPS, -HPAGE_PMD_NR);
+>
+> +               __mod_lruvec_page_state(page, NR_FILE_THPS, -nr);
 
-Cheers,
+Thank you.
 
-Hannes
+>
+> > +++ b/mm/huge_memory.c
+> > @@ -2748,7 +2748,8 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+> >                       if (PageSwapBacked(head))
+> >                               __dec_lruvec_page_state(head, NR_SHMEM_THPS);
+> >                       else
+> > -                             __dec_lruvec_page_state(head, NR_FILE_THPS);
+> > +                             __mod_lruvec_page_state(head, NR_FILE_THPS,
+> > +                                                     -HPAGE_PMD_NR);
+>
+> +                               __mod_lruvec_page_state(head, NR_FILE_THPS,
+> +                                               -thp_nr_pages(head));
+>
+
+Thanks.
+
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+Yours,
+Muchun
