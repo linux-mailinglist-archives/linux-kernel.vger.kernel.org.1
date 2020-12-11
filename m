@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EB72D6D67
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E87A2D6D6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394755AbgLKBYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:24:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:49798 "EHLO foss.arm.com"
+        id S2394922AbgLKBYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:24:07 -0500
+Received: from foss.arm.com ([217.140.110.172]:49800 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394746AbgLKBVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2394745AbgLKBVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Dec 2020 20:21:35 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 029861478;
-        Thu, 10 Dec 2020 17:20:16 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 359DE147A;
+        Thu, 10 Dec 2020 17:20:18 -0800 (PST)
 Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CE55A3F66B;
-        Thu, 10 Dec 2020 17:20:13 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A3223F66B;
+        Thu, 10 Dec 2020 17:20:16 -0800 (PST)
 From:   Andre Przywara <andre.przywara@arm.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@siol.net>
@@ -27,11 +27,10 @@ Cc:     Icenowy Zheng <icenowy@aosc.xyz>,
         Shuosheng Huang <huangshuosheng@allwinnertech.com>,
         Yangtao Li <tiny.windzz@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org
-Subject: [PATCH v2 09/21] mmc: sunxi: add support for A100 mmc controller
-Date:   Fri, 11 Dec 2020 01:19:22 +0000
-Message-Id: <20201211011934.6171-10-andre.przywara@arm.com>
+        linux-sunxi@googlegroups.com, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH v2 10/21] mfd: axp20x: Allow AXP chips without interrupt lines
+Date:   Fri, 11 Dec 2020 01:19:23 +0000
+Message-Id: <20201211011934.6171-11-andre.przywara@arm.com>
 X-Mailer: git-send-email 2.14.1
 In-Reply-To: <20201211011934.6171-1-andre.przywara@arm.com>
 References: <20201211011934.6171-1-andre.przywara@arm.com>
@@ -39,84 +38,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangtao Li <frank@allwinnertech.com>
+Currently the AXP chip requires to have its IRQ line connected to some
+interrupt controller, and will fail probing when this is not the case.
 
-This patch adds support for A100 MMC controller, which use word address
-for internal dma.
+On a new Allwinner SoC (H616) there is no NMI pin anymore, so the
+interrupt functionality of the AXP chip is simply not available.
 
-Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+Check whether the DT describes the AXP chip as an interrupt controller
+before trying to register the irqchip, to avoid probe failures on
+setups without an interrupt.
+
 Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 ---
- drivers/mmc/host/sunxi-mmc.c | 28 +++++++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
+ drivers/mfd/axp20x.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mmc/host/sunxi-mmc.c b/drivers/mmc/host/sunxi-mmc.c
-index fc62773602ec..1518b64112b7 100644
---- a/drivers/mmc/host/sunxi-mmc.c
-+++ b/drivers/mmc/host/sunxi-mmc.c
-@@ -244,6 +244,7 @@ struct sunxi_idma_des {
- 
- struct sunxi_mmc_cfg {
- 	u32 idma_des_size_bits;
-+	u32 idma_des_shift;
- 	const struct sunxi_mmc_clk_delay *clk_delays;
- 
- 	/* does the IP block support autocalibration? */
-@@ -343,7 +344,7 @@ static int sunxi_mmc_init_host(struct sunxi_mmc_host *host)
- 	/* Enable CEATA support */
- 	mmc_writel(host, REG_FUNS, SDXC_CEATA_ON);
- 	/* Set DMA descriptor list base address */
--	mmc_writel(host, REG_DLBA, host->sg_dma);
-+	mmc_writel(host, REG_DLBA, host->sg_dma >> host->cfg->idma_des_shift);
- 
- 	rval = mmc_readl(host, REG_GCTRL);
- 	rval |= SDXC_INTERRUPT_ENABLE_BIT;
-@@ -373,8 +374,10 @@ static void sunxi_mmc_init_idma_des(struct sunxi_mmc_host *host,
- 
- 		next_desc += sizeof(struct sunxi_idma_des);
- 		pdes[i].buf_addr_ptr1 =
--			cpu_to_le32(sg_dma_address(&data->sg[i]));
--		pdes[i].buf_addr_ptr2 = cpu_to_le32((u32)next_desc);
-+			cpu_to_le32(sg_dma_address(&data->sg[i]) >>
-+				    host->cfg->idma_des_shift);
-+		pdes[i].buf_addr_ptr2 = cpu_to_le32((u32)next_desc >>
-+						    host->cfg->idma_des_shift);
+diff --git a/drivers/mfd/axp20x.c b/drivers/mfd/axp20x.c
+index aa59496e4376..a52595c49d40 100644
+--- a/drivers/mfd/axp20x.c
++++ b/drivers/mfd/axp20x.c
+@@ -959,12 +959,17 @@ int axp20x_device_probe(struct axp20x_dev *axp20x)
+ 				     AXP806_REG_ADDR_EXT_ADDR_SLAVE_MODE);
  	}
  
- 	pdes[0].config |= cpu_to_le32(SDXC_IDMAC_DES0_FD);
-@@ -1178,6 +1181,23 @@ static const struct sunxi_mmc_cfg sun50i_a64_emmc_cfg = {
- 	.needs_new_timings = true,
- };
+-	ret = regmap_add_irq_chip(axp20x->regmap, axp20x->irq,
+-			  IRQF_ONESHOT | IRQF_SHARED | axp20x->irq_flags,
+-			   -1, axp20x->regmap_irq_chip, &axp20x->regmap_irqc);
+-	if (ret) {
+-		dev_err(axp20x->dev, "failed to add irq chip: %d\n", ret);
+-		return ret;
++	if (!axp20x->dev->of_node ||
++	    of_property_read_bool(axp20x->dev->of_node, "interrupt-controller")) {
++		ret = regmap_add_irq_chip(axp20x->regmap, axp20x->irq,
++				IRQF_ONESHOT | IRQF_SHARED | axp20x->irq_flags,
++				-1, axp20x->regmap_irq_chip,
++				&axp20x->regmap_irqc);
++		if (ret) {
++			dev_err(axp20x->dev, "failed to add irq chip: %d\n",
++				ret);
++			return ret;
++		}
+ 	}
  
-+static const struct sunxi_mmc_cfg sun50i_a100_cfg = {
-+	.idma_des_size_bits = 16,
-+	.idma_des_shift = 2,
-+	.clk_delays = NULL,
-+	.can_calibrate = true,
-+	.mask_data0 = true,
-+	.needs_new_timings = true,
-+};
-+
-+static const struct sunxi_mmc_cfg sun50i_a100_emmc_cfg = {
-+	.idma_des_size_bits = 13,
-+	.idma_des_shift = 2,
-+	.clk_delays = NULL,
-+	.can_calibrate = true,
-+	.needs_new_timings = true,
-+};
-+
- static const struct of_device_id sunxi_mmc_of_match[] = {
- 	{ .compatible = "allwinner,sun4i-a10-mmc", .data = &sun4i_a10_cfg },
- 	{ .compatible = "allwinner,sun5i-a13-mmc", .data = &sun5i_a13_cfg },
-@@ -1186,6 +1206,8 @@ static const struct of_device_id sunxi_mmc_of_match[] = {
- 	{ .compatible = "allwinner,sun9i-a80-mmc", .data = &sun9i_a80_cfg },
- 	{ .compatible = "allwinner,sun50i-a64-mmc", .data = &sun50i_a64_cfg },
- 	{ .compatible = "allwinner,sun50i-a64-emmc", .data = &sun50i_a64_emmc_cfg },
-+	{ .compatible = "allwinner,sun50i-a100-mmc", .data = &sun50i_a100_cfg },
-+	{ .compatible = "allwinner,sun50i-a100-emmc", .data = &sun50i_a100_emmc_cfg },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, sunxi_mmc_of_match);
+ 	ret = mfd_add_devices(axp20x->dev, -1, axp20x->cells,
 -- 
 2.17.5
 
