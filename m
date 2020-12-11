@@ -2,174 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CE22D7078
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD2E2D7080
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436654AbgLKG5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 01:57:15 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9185 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436622AbgLKG4N (ORCPT
+        id S2391792AbgLKHAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 02:00:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729300AbgLKG7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 01:56:13 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CshNc2YtzzkmqS;
-        Fri, 11 Dec 2020 14:54:40 +0800 (CST)
-Received: from [127.0.0.1] (10.74.149.191) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Dec 2020
- 14:55:16 +0800
-Subject: Re: [PATCH net-next 2/7] net: hns3: add support for tc mqprio offload
-To:     Saeed Mahameed <saeed@kernel.org>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kuba@kernel.org>, <huangdaode@huawei.com>,
-        Jian Shen <shenjian15@huawei.com>
-References: <1607571732-24219-1-git-send-email-tanhuazhong@huawei.com>
- <1607571732-24219-3-git-send-email-tanhuazhong@huawei.com>
- <80b7502b700df43df7f66fa79fb9893399d0abd1.camel@kernel.org>
- <42c9fd63-3e51-543e-bbbd-01e7face7c9c@huawei.com>
- <d2c14bd14daabcd7f589e17b14b2ffeebc0d8a15.camel@kernel.org>
-From:   tanhuazhong <tanhuazhong@huawei.com>
-Message-ID: <891cac41-4a56-e173-5521-364a93fe6a69@huawei.com>
-Date:   Fri, 11 Dec 2020 14:55:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+        Fri, 11 Dec 2020 01:59:40 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E599CC0613D6;
+        Thu, 10 Dec 2020 22:58:59 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id j13so1859516pjz.3;
+        Thu, 10 Dec 2020 22:58:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=X2z1OwRPORTsgcZvnqGISSv4h6wK7dEp/2HbkPrGQG0=;
+        b=ub+CvGZTile3AyOOyE/qzEUxhUZWtjRs+LLeA2VZhA4w/Rn/PAcjz9IDOYT55syfl3
+         usVrbmBEfW6u94edAXP20+RZP5PWOfiOgEqK6M49GPeweKXDTQkrrpCjsUkbunIVcbeG
+         ZrCoAoRtj5acqA1UV6ejwjkRjuebWtNC0b3OMB28KErKFrKzWByq4UhG/okN3Cf5oGHX
+         b3lheVupOBQbRiZfYbYxd02hc4jlcCMsDGAYF1q6tdEJzR8h3rx9H/8FyttB4gSRrBaI
+         J2sa6ekpqSG12IQ8hsCidfoSsVHW9JTcI9fXxoCMgqzbj511TsvjEyKd2IIxTJrcilaI
+         Z95A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=X2z1OwRPORTsgcZvnqGISSv4h6wK7dEp/2HbkPrGQG0=;
+        b=s8nR4Ttk8pSviWB24i3NcKEsq+mLhe6MdxQzGObdEjupEd34rR14K857Z1kK1l5S4x
+         ZCtfURACRdGgCocebBVcLkDNYj/8a3ZqCee7v6YY6sS+Hz6ZOhP7f8Pt5KpPfJw7RnKZ
+         7CK2oQgxCAU0hCSCV8G5J19OpHnvKRiRf/gk5waZJd8H/1duwPPGHTl2pOgQmngbCZwX
+         AUfzfIX6t71yF4pnVVKX+XI+hnQ71mOxvwNEjDkJBjpz/u8+OrVa6ZwlIa9gfQ8QwJTS
+         U5N/DiUahPWgCGeyTiiCnCWrhc0L3GsAjIMZ0yssP0Z9Ng4/86dvqOxPxvnivMbdndI8
+         Eknw==
+X-Gm-Message-State: AOAM530yXO/C0KvbFgGyv1e0X5YQsZKQ8QFYPUDPeQX/BubSXODkc27f
+        uW8PsKqtNdNcY3Z/Kh2Lfbnl8eVktIlugw==
+X-Google-Smtp-Source: ABdhPJyOg822jqzFkAiCwQ5VVT1rRAxBZ7c5+euPYPmSSpNcaP3LSZhtJuHR43OcbBWbxrqaUG6QaQ==
+X-Received: by 2002:a17:90a:1bc7:: with SMTP id r7mr12152120pjr.33.1607669939492;
+        Thu, 10 Dec 2020 22:58:59 -0800 (PST)
+Received: from js1304-desktop ([114.206.198.176])
+        by smtp.gmail.com with ESMTPSA id mz1sm8922830pjb.33.2020.12.10.22.58.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Dec 2020 22:58:59 -0800 (PST)
+Date:   Fri, 11 Dec 2020 15:58:51 +0900
+From:   Joonsoo Kim <js1304@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        andrii@kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
+Subject: Re: [PATCH v3 sl-b 1/6] mm: Add mem_dump_obj() to print source of
+ memory block
+Message-ID: <20201211065850.GB587@js1304-desktop>
+References: <20201211011907.GA16110@paulmck-ThinkPad-P72>
+ <20201211012003.16473-1-paulmck@kernel.org>
+ <20201211022205.GA11631@js1304-desktop>
+ <20201211033359.GD2657@paulmck-ThinkPad-P72>
+ <20201211034226.GA2116@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <d2c14bd14daabcd7f589e17b14b2ffeebc0d8a15.camel@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.149.191]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211034226.GA2116@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 10, 2020 at 07:42:27PM -0800, Paul E. McKenney wrote:
+> On Thu, Dec 10, 2020 at 07:33:59PM -0800, Paul E. McKenney wrote:
+> > On Fri, Dec 11, 2020 at 11:22:10AM +0900, Joonsoo Kim wrote:
+> > > On Thu, Dec 10, 2020 at 05:19:58PM -0800, paulmck@kernel.org wrote:
+> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> [ . . . ]
+> 
+> > > We can get some infos even if CONFIG_SLUB_DEBUG isn't defined.
+> > > Please move them out.
+> > 
+> > I guess since I worry about CONFIG_MMU=n it only makes sense to also
+> > worry about CONFIG_SLUB_DEBUG=n.  Fix update.
+> 
+> Like this?  (Patch on top of the series, to be folded into the first one.)
 
+Yes!
 
-On 2020/12/11 4:24, Saeed Mahameed wrote:
-> On Thu, 2020-12-10 at 20:27 +0800, tanhuazhong wrote:
->>
->> On 2020/12/10 12:50, Saeed Mahameed wrote:
->>> On Thu, 2020-12-10 at 11:42 +0800, Huazhong Tan wrote:
->>>> From: Jian Shen <shenjian15@huawei.com>
->>>>
->>>> Currently, the HNS3 driver only supports offload for tc number
->>>> and prio_tc. This patch adds support for other qopts, including
->>>> queues count and offset for each tc.
->>>>
->>>> When enable tc mqprio offload, it's not allowed to change
->>>> queue numbers by ethtool. For hardware limitation, the queue
->>>> number of each tc should be power of 2.
->>>>
->>>> For the queues is not assigned to each tc by average, so it's
->>>> should return vport->alloc_tqps for hclge_get_max_channels().
->>>>
->>>
->>> The commit message needs some improvements, it is not really clear
->>> what
->>> the last two sentences are about.
->>>
->>
->> The hclge_get_max_channels() returns the max queue number of each TC
->> for
->> user can set by command ethool -L. In previous implement, the queues
->> are
->> assigned to each TC by average, so we return it by vport-:
->> alloc_tqps / num_tc. And now we can assign differrent queue number
->> for
->> each TC, so it shouldn't be divided by num_tc.
-> 
-> What do you mean by "queues assigned to each tc by average" ?
-> 
-
-In previous implement the number of queue in each TC is same, now, we
-allow that the number of queue in each TC is different.
-
-> [...]
-> 
->>    
->>>> +	}
->>>> +	if (hdev->vport[0].alloc_tqps < queue_sum) {
->>>
->>> can't you just allocate new tqps according to the new mqprio input
->>> like
->>> other drivers do ? how the user allocates those tqps ?
->>>
->>
->> maybe the name of 'alloc_tqps' is a little bit misleading, the
->> meaning
->> of this field is the total number of the available tqps in this
->> vport.
->>
-> 
-> from your driver code it seems alloc_tqps is number of rings allocated
-> via ethool -L.
-> 
-> My point is, it seems like in this patch you demand for the queues to
-> be preallocated, but what other drivers do on setup tc, they just
-> duplicate what ever number of queues was configured prior to setup tc,
-> num_tc times.
-> 
-
-The maximum number of queues is defined by 'alloc_tqps', not 
-preallocated queues. The behavior on setup tc of HNS3 is same as other 
-driver.
-
-'alloc_tqps' in HNS3 has the same means as 'num_queue_pairs' in i40e below
-if (vsi->num_queue_pairs <
-	    (mqprio_qopt->qopt.offset[i] + mqprio_qopt->qopt.count[i])) {
-		return -EINVAL;
-}
-
->>>> +		dev_err(&hdev->pdev->dev,
->>>> +			"qopt queue count sum should be less than
->>>> %u\n",
->>>> +			hdev->vport[0].alloc_tqps);
->>>> +		return -EINVAL;
->>>> +	}
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +
->>>> +static void hclge_sync_mqprio_qopt(struct hnae3_tc_info
->>>> *tc_info,
->>>> +				   struct tc_mqprio_qopt_offload
->>>> *mqprio_qopt)
->>>> +{
->>>> +	int i;
->>>> +
->>>> +	memset(tc_info, 0, sizeof(*tc_info));
->>>> +	tc_info->num_tc = mqprio_qopt->qopt.num_tc;
->>>> +	memcpy(tc_info->prio_tc, mqprio_qopt->qopt.prio_tc_map,
->>>> +	       sizeof_field(struct hnae3_tc_info, prio_tc));
->>>> +	memcpy(tc_info->tqp_count, mqprio_qopt->qopt.count,
->>>> +	       sizeof_field(struct hnae3_tc_info, tqp_count));
->>>> +	memcpy(tc_info->tqp_offset, mqprio_qopt->qopt.offset,
->>>> +	       sizeof_field(struct hnae3_tc_info, tqp_offset));
->>>> +
->>>
->>> isn't it much easier to just store a copy of tc_mqprio_qopt in you
->>> tc_info and then just:
->>> tc_info->qopt = mqprio->qopt;
->>>
->>> [...]
->>
->> The tc_mqprio_qopt_offload still contains a lot of opt hns3 driver
->> does
->> not use yet, even if the hns3 use all the opt, I still think it is
->> better to create our own struct, if struct tc_mqprio_qopt_offload
->> changes in the future, we can limit the change to the
->> tc_mqprio_qopt_offload convertion.
->>
-> 
-> ok.
-> 
+Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
 Thanks.
-Huazhong.
-
-> 
-> 
-> .
-> 
-
