@@ -2,85 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 714D32D6FE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 06:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 532AF2D6FEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 06:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395295AbgLKF45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 00:56:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387579AbgLKF4n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 00:56:43 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E2CC0613CF;
-        Thu, 10 Dec 2020 21:56:03 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id h7so1326515pjk.1;
-        Thu, 10 Dec 2020 21:56:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JP+OlX4QCRKEvekK9QO03D9Ia1suW4TL/USrqq3OnmI=;
-        b=Q7+jBqXm/JKkZ27XFHty5hs101AHm3MV59rDcadmeAsPu+L/DsL4xkoqsy0Q+PcnCg
-         iUxJLkKe2bbDxYx6fnpJebzKSWSTKxEAL5cFCyW2nw00rBFF2Br73gZNy8zQR5rDpkXZ
-         QdK0bFJ8qg6tSash6VAxDHjZsFyumrSxW/ReIDOKpAxkqrrhPNaERPHVXLwBV6IkeiIs
-         PZhOSw7Z7NeW3P+EDY8JU1uFQvxB8dHKVnK3ZW2wwbNibxHgwWwKkkOXryHrbnvl2Lo2
-         yNjOnNxom4kyuWz8oZq1VjJ2xI0sv7vlCNz8tVle8njlMlqT8+ZwPkeEVzDFLQ8Xkj36
-         1+VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JP+OlX4QCRKEvekK9QO03D9Ia1suW4TL/USrqq3OnmI=;
-        b=FGupSoW5amVvwyKjq2CcqNGnJKXvHT5BGiZ51Sr9p5oag59LHkud0036kngc32JJx7
-         hRte+Fi9sDpQkPDwO8XBwlQllqIegPYHDjSwZB9yLuhTRH+iK+LBHGN94NO8Xjq4n4Np
-         a1s4PwlEU9Yp67atYtwe8mErQ/9gCkgCq1E728USdqsw9Ijr5TDWPA7+umB/F69+ZY9j
-         zFBy2cRXexZo0l3qSu7A2xb8HE5GtGdkDql868RrMhXQ1oLrx832r58LH2N5+2S516Rp
-         83FGXkOgpTjpOysBsfernAmkl4GtaMR3hTxYtnovMmPypl91mCFQp9eBaQBUKt6vCPxz
-         HCwg==
-X-Gm-Message-State: AOAM531heI/MVVTH08D/WX7NAqgJsfjynpf27RKXnrUzbNYxbeO9bFqM
-        xXAlhlyUEa8swtJCpKYu1LY=
-X-Google-Smtp-Source: ABdhPJxdvHjyW1S6IJu4lKEm4wCrkvW18Is9Q5lv7Ud1JBPw7HJsExv0RfZ2fXsCJaCXIvmLK6wIrQ==
-X-Received: by 2002:a17:90b:33d1:: with SMTP id lk17mr11864501pjb.174.1607666162740;
-        Thu, 10 Dec 2020 21:56:02 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id u12sm8079376pfn.88.2020.12.10.21.56.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 21:56:01 -0800 (PST)
-Date:   Thu, 10 Dec 2020 21:55:58 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        michael.hennerich@analog.com
-Subject: Re: [PATCH v2] input: touchscreen: ad7877: Use new structure for SPI
- transfer delays
-Message-ID: <X9MJ7gu67h/rcCfP@google.com>
-References: <20200227130619.28142-1-sergiu.cuciurean@analog.com>
- <20200228104508.15564-1-sergiu.cuciurean@analog.com>
+        id S2395432AbgLKF5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 00:57:41 -0500
+Received: from mga01.intel.com ([192.55.52.88]:14361 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388912AbgLKF5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 00:57:01 -0500
+IronPort-SDR: 37HFe2CfUNk+JbQ5n4T78ZwxpTQhJloq2TLBkx6U5/4MXk2hf8pCQdFdYWEl2rdgM4mCdPz2r0
+ QvjkaQ3sttfw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="192719718"
+X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
+   d="scan'208";a="192719718"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 21:56:20 -0800
+IronPort-SDR: XeuqIRz9Woncf1RrMdNvjoMW/1Sn1Z8LQBzIQJlsAP1CW2l+x6QjRiHfo6PArtOnv3jBsVu9QB
+ UvrBAP2rYUPg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
+   d="scan'208";a="409008570"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by orsmga001.jf.intel.com with ESMTP; 10 Dec 2020 21:56:16 -0800
+Subject: Re: [PATCH v3] mmc: sdhci-msm: Warn about overclocking SD/MMC
+To:     Douglas Anderson <dianders@chromium.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>, vbadigan@codeaurora.org,
+        Taniya Das <tdas@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+References: <20201210132745.v3.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <757616c0-8111-c7db-893b-31931a9d4ed0@intel.com>
+Date:   Fri, 11 Dec 2020 07:56:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200228104508.15564-1-sergiu.cuciurean@analog.com>
+In-Reply-To: <20201210132745.v3.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 28, 2020 at 12:45:08PM +0200, Sergiu Cuciurean wrote:
-> In a recent change to the SPI subsystem [1], a new `delay` struct was added
-> to replace the `delay_usecs`. This change replaces the current
-> `delay_usecs` with `delay` for this driver.
+On 10/12/20 11:27 pm, Douglas Anderson wrote:
+> As talked about in commit 5e4b7e82d497 ("clk: qcom: gcc-sdm845: Use
+> floor ops for sdcc clks"), most clocks handled by the Qualcomm clock
+> drivers are rounded _up_ by default instead of down.  We should make
+> sure SD/MMC clocks are always rounded down in the clock drivers.
+> Let's add a warning in the Qualcomm SDHCI driver to help catch the
+> problem.
 > 
-> The `spi_transfer_delay_exec()` function [in the SPI framework] makes sure
-> that both `delay_usecs` & `delay` are used (in this order to preserve
-> backwards compatibility).
+> This would have saved a bunch of time [1].
 > 
-> [1] commit bebcfd272df6 ("spi: introduce `delay` field for
-> `spi_transfer` + spi_transfer_delay_exec()")
+> [1] http://lore.kernel.org/r/20201210102234.1.I096779f219625148900fc984dd0084ed1ba87c7f@changeid
 > 
-> Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+> Suggested-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> Changes in v3:
+> - Proper printf format code.
+> 
+> Changes in v2:
+> - Store rate in unsigned long, not unsigned int.
+> - Reuse the clk_get_rate() in the later print.
+> 
+>  drivers/mmc/host/sdhci-msm.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+> index 3451eb325513..50beb407dbe9 100644
+> --- a/drivers/mmc/host/sdhci-msm.c
+> +++ b/drivers/mmc/host/sdhci-msm.c
+> @@ -353,6 +353,7 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
+>  	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
+>  	struct mmc_ios curr_ios = host->mmc->ios;
+>  	struct clk *core_clk = msm_host->bulk_clks[0].clk;
+> +	unsigned long achieved_rate;
+>  	int rc;
+>  
+>  	clock = msm_get_clock_rate_for_bus_mode(host, clock);
+> @@ -363,10 +364,20 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
+>  		       curr_ios.timing);
+>  		return;
+>  	}
+> +
+> +	/*
+> +	 * Qualcomm clock drivers by default round clock _up_ if they can't
+> +	 * make the requested rate.  This is not good for SD.  Yell if we
+> +	 * encounter it.
+> +	 */
+> +	achieved_rate = clk_get_rate(core_clk);
+> +	if (achieved_rate > clock)
+> +		pr_warn("%s: Card appears overclocked; req %u Hz, actual %lu Hz\n",
+> +			mmc_hostname(host->mmc), clock, achieved_rate);
 
-Applied, thank you.
+How does a warning help?
 
--- 
-Dmitry
+Also, did you consider setting host->mmc->actual_clock
+
+> +
+>  	msm_host->clk_rate = clock;
+>  	pr_debug("%s: Setting clock at rate %lu at timing %d\n",
+> -		 mmc_hostname(host->mmc), clk_get_rate(core_clk),
+> -		 curr_ios.timing);
+> +		 mmc_hostname(host->mmc), achieved_rate, curr_ios.timing);
+>  }
+>  
+>  /* Platform specific tuning */
+> 
+
