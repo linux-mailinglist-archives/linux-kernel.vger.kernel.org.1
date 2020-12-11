@@ -2,102 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13CC2D7FF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3BA2D7FEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:24:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392273AbgLKUYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 15:24:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
+        id S2394454AbgLKUY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 15:24:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394336AbgLKUXH (ORCPT
+        with ESMTP id S2394385AbgLKUXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Dec 2020 15:23:07 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA2AC061257
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:21:53 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id d11so4811586qvo.11
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:21:53 -0800 (PST)
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A07EC0611C5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:21:56 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id m13so12332278ljo.11
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:21:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=UPZkOOUAvu9r4fFw8TJVvFyTq3W2R2uLYiLCZknh/L8=;
-        b=hVQRD1LlUsoJuOAc051CXjk2/dVUpiNlMuxbw4uUGEPOPZ3HmFNU0C98MsLBWna3fM
-         p2zQdMiimm2nS4zvqoYJbPMy3rDxOJTx+XQe+y6m6d4mTjkKSUZjQirRZOm4isp54fjB
-         X6CTaymXFF+7Ab3fjNVul9yMWMIr6kRN1WcvxhcDpRFriU2mnSogEiO/p7rHtb8o1e0Z
-         L7tevjlfqdvtjcRWrrp6QhbaEbwsiOoN0WTHrj8A/pAGwo4Y1Q7ppmtkQ8u6+vB3antE
-         r/eK9monwWuehW5yDmeo3LUI2/qDhI+A97EIyXjbpi78G47yubvPzdmnhSdSRYH6MhL7
-         KBLg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lMZxDCK3EHPV415eTfAWmt24gOYNu8m5s7i1OWUhO90=;
+        b=zZbDT1KGkvTMeQKEnAfTOSZjzsYrkD4Tgz8brLNeq6Lh4awBtr+xmRlRiafzhVoJIR
+         rqZvyx3xlXzyBSSyeI8F5oswzPW8NDb/y8mCdCiO+2PVQmZ1VYdPdg9ovC+UpKmBL3b2
+         2APVlSMD+d0xwnH0u4wSXvQUH52WMhUtGXxFcyJ/ULZoBF0Bma5GMAbrADaEHVKdC+vs
+         yuYscH4GMdsTvkz8FK+ogTr6Cvov9VDoJ8KnU6qqK+4jvwheJG61Rjb45YA5Kdeoq61A
+         mE+xnJEqqQ/d1F9pCzWkPAJmQaI8EDY71YJp4QmUKzSAz+va4cy/SYHk1S1JqX08YyIZ
+         lebA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UPZkOOUAvu9r4fFw8TJVvFyTq3W2R2uLYiLCZknh/L8=;
-        b=epTLdfILbpyV5Kocc/SkJXgvaI526iZ/yyeASqc2KGSDbsu6iCGzgH80k4ftmbYydx
-         N78wH/Y5JOfToybuVdlSl0qZryo9T8MvK9q9MBuGEdR5Miu05CrkSThoYEI6KxLlLYmc
-         kRegS4SAaGUHd2OUmL7OuCfodiKdTuJx+fmQXi4vH9z09wT05lD3khk/s1qsA/l7mhar
-         uYiO//V+AtOIWPj75sGzR+ly5x5jXVnA6ktZRDxIVEzwrZDlgwfRjd4T57e5sB9WVqSm
-         kAY2BYP/CqbDnPPPL6AK6+YoENB6J4CNWYTzF6rO3/IvRb30cbK0e9yS2OMwKAca+hJS
-         7krg==
-X-Gm-Message-State: AOAM53163TRapcuVK/43UUK6QuMO3VGcR5NV2QPjQ3vjk48K/77um1Lv
-        bTmSX7j3Oq7w5ub4dxmCXeeQKw==
-X-Google-Smtp-Source: ABdhPJzzBA0IO1zEvNvTSi56jO8MgXCjXqx/kMRSbq6P0sQl3EDuH9tzpjNq07vwblX5aH/exG15Yg==
-X-Received: by 2002:a0c:f005:: with SMTP id z5mr18789770qvk.9.1607718112802;
-        Fri, 11 Dec 2020 12:21:52 -0800 (PST)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id y192sm8514455qkb.12.2020.12.11.12.21.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 12:21:52 -0800 (PST)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
-        mhocko@suse.com, david@redhat.com, osalvador@suse.de,
-        dan.j.williams@intel.com, sashal@kernel.org,
-        tyhicks@linux.microsoft.com, iamjoonsoo.kim@lge.com,
-        mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
-        jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
-        willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
-        linux-doc@vger.kernel.org
-Subject: [PATCH v3 6/6] memory-hotplug.rst: add a note about ZONE_MOVABLE and page pinning
-Date:   Fri, 11 Dec 2020 15:21:40 -0500
-Message-Id: <20201211202140.396852-7-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201211202140.396852-1-pasha.tatashin@soleen.com>
-References: <20201211202140.396852-1-pasha.tatashin@soleen.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lMZxDCK3EHPV415eTfAWmt24gOYNu8m5s7i1OWUhO90=;
+        b=XJ2Pyxap4lZcrJXUSKs6mZlPCcgdxDVHmStxh3NTYUN1+kcV6RcvZKLASv/0C0VbUc
+         6+4bMPdLHbJZkzZOzG01zZeR7WWNfVeyhwMqkTQZ06Nj3WuZ1pby7RQlS8yb3L3xqDGF
+         0YJB+DhTDYEJAxht3AfaH6ubdrn0tOEBLN3ObPqq0a3BFcY0YkN3iPJRTufdNJ/FC8Vx
+         vSWP1T9YxmEjDr4qWtvaUvOE44Z2mFMz/M2l+OX8pZmO3ey0Kha8cZ5TP72VveJc20Fd
+         YvGbrWWuNIoeVsz7XsCb+9DxhQNG4jsbjs4v+U4R0qRNuk41ckwub2l4ImslWDbMNHpZ
+         eyrw==
+X-Gm-Message-State: AOAM532IhQykCfVEI67+aVpW9oEKBqv9+DP7db+M6zBTP34vHX3NUsCI
+        u4FJkJ40tVaNpYGT0DWkfFPt5EpinQGtFzAmkEhybQ==
+X-Google-Smtp-Source: ABdhPJxICfsPv5gZgl9FHRPwfpWkwc/udxsFzWzWt2wOYhJdXcGUw9M3QJjshG3dpf6olNAdPGyY3xr3ppjhjL1s6XM=
+X-Received: by 2002:a05:651c:286:: with SMTP id b6mr5684677ljo.232.1607718114626;
+ Fri, 11 Dec 2020 12:21:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201210044400.1080308-1-hridya@google.com> <b5adfe46-8615-5821-d092-2b93feed5b79@amd.com>
+ <X9H0JREcdxDsMtLX@kroah.com> <20201210102727.GE401619@phenom.ffwll.local>
+ <X9H+3AP1q39aMxeb@kroah.com> <CAKMK7uFD3fE01Li3JOpHpzP7313OT3xpcjBwzSVjrCGAmab2Zg@mail.gmail.com>
+ <X9IPhEkcZO+Ut5RH@kroah.com> <CAKMK7uEM636NjEcxLfsKJa9H71i0mkQ3dsT3yWwHTcVFk4r+Sg@mail.gmail.com>
+In-Reply-To: <CAKMK7uEM636NjEcxLfsKJa9H71i0mkQ3dsT3yWwHTcVFk4r+Sg@mail.gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Fri, 11 Dec 2020 12:21:43 -0800
+Message-ID: <CALAqxLWr7NgVszBMxTV=_LXKC3a24YzwXKjSdXuLdP5xKGue1w@mail.gmail.com>
+Subject: Re: [PATCH] dmabuf: Add the capability to expose DMA-BUF stats in sysfs
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the special handling of page pinning when ZONE_MOVABLE present.
+On Thu, Dec 10, 2020 at 5:10 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> On Thu, Dec 10, 2020 at 1:06 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > On Thu, Dec 10, 2020 at 12:26:01PM +0100, Daniel Vetter wrote:
+> > > On Thu, Dec 10, 2020 at 11:55 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > On Thu, Dec 10, 2020 at 11:27:27AM +0100, Daniel Vetter wrote:
+> > > > > This only shows shared memory, so it does smell a lot like $specific_issue
+> > > > > and we're designing a narrow solution for that and then have to carry it
+> > > > > forever.
+> > > >
+> > > > I think the "issue" is that this was a feature from ion that people
+> > > > "missed" in the dmabuf move.  Taking away the ability to see what kind
+> > > > of allocations were being made didn't make a lot of debugging tools
+> > > > happy :(
+> > >
+> > > If this is just for dma-heaps then why don't we add the stuff back
+> > > over there? It reinforces more that the android gpu stack and the
+> > > non-android gpu stack on linux are fairly different in fundamental
+> > > ways, but that's not really new.
+> >
+> > Back "over where"?
+> >
+> > dma-bufs are not only used for the graphics stack on android from what I
+> > can tell, so this shouldn't be a gpu-specific issue.
+>
+> dma-buf heaps exist because android, mostly because google mandates
+> it.
 
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Suggested-by: David Hildenbrand <david@redhat.com>
----
- Documentation/admin-guide/mm/memory-hotplug.rst | 9 +++++++++
- 1 file changed, 9 insertions(+)
+So, I don't think that's fair.
 
-diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
-index 5c4432c96c4b..c6618f99f765 100644
---- a/Documentation/admin-guide/mm/memory-hotplug.rst
-+++ b/Documentation/admin-guide/mm/memory-hotplug.rst
-@@ -357,6 +357,15 @@ creates ZONE_MOVABLE as following.
-    Unfortunately, there is no information to show which memory block belongs
-    to ZONE_MOVABLE. This is TBD.
- 
-+.. note::
-+   Techniques that rely on long-term pinnings of memory (especially, RDMA and
-+   vfio) are fundamentally problematic with ZONE_MOVABLE and, therefore, memory
-+   hot remove. Pinned pages cannot reside on ZONE_MOVABLE, to guarantee that
-+   memory can still get hot removed - be aware that pinning can fail even if
-+   there is plenty of free memory in ZONE_MOVABLE. In addition, using
-+   ZONE_MOVABLE might make page pinning more expensive, because pages have to be
-+   migrated off that zone first.
-+
- .. _memory_hotplug_how_to_offline_memory:
- 
- How to offline memory
--- 
-2.25.1
+dma-buf heaps and ION before exist because it solves a problem they
+have for allocating shared buffers for multiple complicated
+multi-device pipelines where the various devices have constraints.
+It's not strictly required[1], as your next point makes clear (along
+with ChromeOS's Android not using it).
 
+> There's not a whole lot (meaning zero) of actually open gpu stacks
+> around that run on android and use dma-buf heaps like approved google
+> systems, largely because the gralloc implementation in mesa just
+> doesnt.
+
+So yes, db845c currently uses the gbm_gralloc, which doesn't use
+dmabuf heaps or ION.
+
+That said, the resulting system still uses quite a number of dmabufs,
+as Hridya's patch shows:
+==> /sys/kernel/dmabuf/28435/exporter_name <==
+drm
+==> /sys/kernel/dmabuf/28435/dev_map_info <==
+==> /sys/kernel/dmabuf/28435/size <==
+16384
+==> /sys/kernel/dmabuf/28161/exporter_name <==
+drm
+==> /sys/kernel/dmabuf/28161/dev_map_info <==
+==> /sys/kernel/dmabuf/28161/size <==
+524288
+==> /sys/kernel/dmabuf/30924/exporter_name <==
+drm
+==> /sys/kernel/dmabuf/30924/dev_map_info <==
+==> /sys/kernel/dmabuf/30924/size <==
+8192
+==> /sys/kernel/dmabuf/26880/exporter_name <==
+drm
+==> /sys/kernel/dmabuf/26880/dev_map_info <==
+==> /sys/kernel/dmabuf/26880/size <==
+262144
+...
+
+So even when devices are not using dma-buf heaps (which I get, you
+have an axe to grind with :), having some way to collect useful stats
+for dmabufs in use can be valuable.
+
+(Also one might note, the db845c also doesn't have many constrained
+devices, and we've not yet enabled hw codec support or camera
+pipelines, so it avoids much of the complexity that ION/dma-buf heaps
+was created to solve)
+
+> So if android needs some quick debug output in sysfs, we can just add
+> that in dma-buf heaps, for android only, problem solved. And much less
+> annoying review to make sure it actually fits into the wider ecosystem
+> because as-is (and I'm not seeing that chance anytime soon), dma-buf
+> heaps is for android only. dma-buf at large isn't, so merging a debug
+> output sysfs api that's just for android but misses a ton of the more
+> generic features and semantics of dma-buf is not great.
+
+The intent behind this patch is *not* to create more Android-specific
+logic, but to provide useful information generically.  Indeed, Android
+does use dmabufs heavily for passing buffers around, and your point
+that not all systems handle graphics buffers that way is valid, and
+it's important we don't bake any Android-isms into the interface. But
+being able to collect data about the active dmabufs in a system is
+useful, regardless of how regardless of how the dma-buf was allocated.
+
+So I'd much rather see your feedback on how we expose other aspects of
+dmabufs (dma_resv, exporter devices, attachment links) integrated,
+rather then trying to ghettoize it as android-only and limit it to the
+dmabuf heaps, where I don't think it makes as much sense to add.
+
+thanks
+-john
+
+[1] Out of the box, the codec2 code added a few years back does
+directly call to ION (and now dmabuf heaps) for system buffers, but it
+can be configured differently as it's used in ChromeOS's Android too.
