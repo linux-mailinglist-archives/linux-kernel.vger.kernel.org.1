@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85E82D6E5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 455EB2D6E60
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405129AbgLKDLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 22:11:02 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:38126 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729331AbgLKDKv (ORCPT
+        id S2405142AbgLKDLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 22:11:47 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:46630 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405134AbgLKDLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 22:10:51 -0500
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1AA7920B717A;
-        Thu, 10 Dec 2020 19:10:10 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1AA7920B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607656210;
-        bh=UjXdwP2ZHKFxPJkmlk76kE+9RzmPBF3Xf8HNjv05RPE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iZFK29ut36BwHBbKNBpcvUPr32umM+0qxOCVISeIxhi6k7fwPq+62tCU8Gwl5W5pm
-         4YhdwUVPbyrQP39Wq9uhsPJcZsLYwJASDupHYEkW6gywDAJqD0U67kwwkSt1aysqwc
-         lWL6VcuecrDcXM5Um1L7FU/qizWs6Gg5YQteOUMI=
-Date:   Thu, 10 Dec 2020 21:10:08 -0600
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Maurizio Drocco <maurizio.drocco@ibm.com>,
-        Bruno Meneguele <bmeneg@redhat.com>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with kernel
- measurements
-Message-ID: <20201211031008.GN489768@sequoia>
-References: <20200708154116.3199728-1-sashal@kernel.org>
- <20200708154116.3199728-3-sashal@kernel.org>
- <1594224793.23056.251.camel@linux.ibm.com>
- <20200709012735.GX2722994@sasha-vm>
- <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
+        Thu, 10 Dec 2020 22:11:31 -0500
+Received: by mail-oi1-f196.google.com with SMTP id k2so8274294oic.13;
+        Thu, 10 Dec 2020 19:11:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Tu067TpaB9PCMyvvrsvX5fcmi9Ir5wjw+1Sw+k4PlDM=;
+        b=lwwqZ7MNcc+yCtTk4E5hsfVEtF/1BP8N+oacDDNtnsmO95cRGoddSXHpjDXKHuuaux
+         7l2GDvUIstvqNmAVNT0QCurG4mSBFbTlm7LuaGVQaRrz/FEl8QOk1yHPl8uSiWdkI6UE
+         kqqBfQtawY2dwiqA3bd+AyEDBf8mBla4puP339CN7ZR/u+sVxqq2PHs6RjGn3HdM2BWl
+         iopEeAYtvd2eSTrpzQsNLgwizGlw8Oz5WsMmCJCVDcqRIHDPQGDOHEVOn+ZaBTpgB9/r
+         iSLcQpHel+VwYmObNJ7fKo7358lpcQ5THIArLCIcyIxsgE7KYi8KTxuNYYtTyIahZYng
+         +EUw==
+X-Gm-Message-State: AOAM531NWlp8YE1i6ABieOxHX02+lfV/wUfNfTUMAwe6dzwR4M+Mug02
+        xCCYrjuPlJCYOAE9ZSSr5w==
+X-Google-Smtp-Source: ABdhPJz404yyWZCLnZ4Y4Y4ugQeU+Af7ANyg/ZU7p0kKnrLfiv+qFcECo4jhUAQPk7gqzbgT8JDXyA==
+X-Received: by 2002:aca:470e:: with SMTP id u14mr7602980oia.172.1607656250804;
+        Thu, 10 Dec 2020 19:10:50 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 109sm1565698otj.12.2020.12.10.19.10.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 19:10:49 -0800 (PST)
+Received: (nullmailer pid 3553226 invoked by uid 1000);
+        Fri, 11 Dec 2020 03:10:48 -0000
+Date:   Thu, 10 Dec 2020 21:10:48 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        richard@nod.at, vigneshr@ti.com, bjorn.andersson@linaro.org,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] Add support for Qcom SMEM based NAND parser
+Message-ID: <20201211031048.GA3552046@robh.at.kernel.org>
+References: <20201119071308.9292-1-manivannan.sadhasivam@linaro.org>
+ <20201210040942.GD6466@thinkpad>
+ <20201210222447.63f5dbcf@xps13>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
+In-Reply-To: <20201210222447.63f5dbcf@xps13>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-29 08:17:38, Mimi Zohar wrote:
-> Hi Sasha,
+On Thu, Dec 10, 2020 at 10:24:47PM +0100, Miquel Raynal wrote:
+> Hi Manivannan,
 > 
-> On Wed, 2020-07-08 at 21:27 -0400, Sasha Levin wrote:
-> > On Wed, Jul 08, 2020 at 12:13:13PM -0400, Mimi Zohar wrote:
-> > >Hi Sasha,
-> > >
-> > >On Wed, 2020-07-08 at 11:40 -0400, Sasha Levin wrote:
-> > >> From: Maurizio Drocco <maurizio.drocco@ibm.com>
-> > >>
-> > >> [ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c ]
-> > >>
-> > >> Registers 8-9 are used to store measurements of the kernel and its
-> > >> command line (e.g., grub2 bootloader with tpm module enabled). IMA
-> > >> should include them in the boot aggregate. Registers 8-9 should be
-> > >> only included in non-SHA1 digests to avoid ambiguity.
-> > >
-> > >Prior to Linux 5.8, the SHA1 template data hashes were padded before
-> > >being extended into the TPM.  Support for calculating and extending
-> > >the per TPM bank template data digests is only being upstreamed in
-> > >Linux 5.8.
-> > >
-> > >How will attestation servers know whether to include PCRs 8 & 9 in the
-> > >the boot_aggregate calculation?  Now, there is a direct relationship
-> > >between the template data SHA1 padded digest not including PCRs 8 & 9,
-> > >and the new per TPM bank template data digest including them.
+> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Thu,
+> 10 Dec 2020 09:39:42 +0530:
+> 
+> > Hi,
 > > 
-> > Got it, I'll drop it then, thank you!
+> > On Thu, Nov 19, 2020 at 12:43:04PM +0530, Manivannan Sadhasivam wrote:
+> > > Hello,
+> > > 
+> > > This series adds support for parsing the partitions defined in Shared
+> > > Memory (SMEM) of the Qualcomm platforms supporting NAND interface.
+> > > Current parser only supports V3 and V4 of the partition tables.
+> > > 
+> > > This series has been tested on SDX55 MTP board which has an onboard NAND
+> > > device.
+> > >   
+> > 
+> > Any update on this series?
 > 
-> After re-thinking this over, I realized that the attestation server can
-> verify the "boot_aggregate" based on the quoted PCRs without knowing
-> whether padded SHA1 hashes or per TPM bank hash values were extended
-> into the TPM[1], but non-SHA1 boot aggregate values [2] should always
-> include PCRs 8 & 9.
+> Patches lgtm, I think Rob's Ack is still missing, let's wait for his
+> review.
 
-I'm still not clear on how an attestation server would know to include
-PCRs 8 and 9 after this change came through a stable kernel update. It
-doesn't seem like something appropriate for stable since it requires
-code changes to attestation servers to handle the change.
+Perhaps answer my reply on Dec 7.
 
-I know this has already been released in some stable releases, so I'm
-too late, but perhaps I'm missing something.
-
-Tyler
-
-> 
-> Any place commit 6f1a1d103b48 was backported [2], this commit
-> 20c59ce010f8 ("ima: extend boot_aggregate with kernel measurements")
-> should be backported as well.
-> 
-> thanks,
-> 
-> Mimi
-> 
-> [1] commit 1ea973df6e21 ("ima: Calculate and extend PCR with digests in ima_template_entry")
-> [2] commit 6f1a1d103b48 ("ima: Switch to ima_hash_algo for boot aggregate")
-> 
+Rob
