@@ -2,232 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA6F2D6DBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3992D6DC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390888AbgLKBt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:49:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
+        id S2391000AbgLKBxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:53:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390683AbgLKBtb (ORCPT
+        with ESMTP id S2390982AbgLKBws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:49:31 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD78C0613CF;
-        Thu, 10 Dec 2020 17:48:50 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id c5so3795727wrp.6;
-        Thu, 10 Dec 2020 17:48:50 -0800 (PST)
+        Thu, 10 Dec 2020 20:52:48 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54232C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:52:08 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id h6so3979841vsr.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:52:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gtc0kHWzrRlSB8aT+/XpYP8rVdKPHzRZO/BZxBMxcwA=;
-        b=sqA3Pug/pV6iNV59C7qwfBIkGGSZSa42arFYfd3zOr2k+oNCz/ivGVH4XmP09CeYtP
-         fJwBfZTnV4bpplex2t1r9BO64xvSjVrE2EE/vUqwre++1IGCzqed9/lHhF7eBzc6/sIr
-         uV85Gle3i0e7SmgUBEMQuVghID5sDddf2NJnOQVI+09ybKPS6RyzW2M2vJ6Qi1UQ9/DH
-         FC5x80fYH1KOcE5luLPoBxKuRng1xfZj2SKJiYcO5liCfMKNWGQtEx47Rt0LW8sAcK6E
-         ZEFWb3l8oYCQPQP9AyXqthbOOENHJMl3ZB5PI3V0TtirBU+SPd9h+wphH6VqjBOVt6xn
-         Q7LA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tmocuTlFkdrvz3dSgRAckP0PaP8a7z+1zm1gMKMoKF4=;
+        b=GcBDxMDo90j9A7h0fSdxICMBTnOcZBbZMW3UYjwASf9i+VeD3cu9Xe7aYOZhu3sa3s
+         bZG1aSEw7WRdYQfbPOgVRXZ/h2De7AYllbhGxBEbRfuoObfkPYD+dxwofolcw324jfa0
+         8HD2185S9AE4Qme/uWqnEqEbt9sIA39nrHhI0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gtc0kHWzrRlSB8aT+/XpYP8rVdKPHzRZO/BZxBMxcwA=;
-        b=jzbjG3qBq9e4906I5yGIwTaw835XeNvcPo2srBwb5ad8vg+Kb8T2OirSygvXpOYjP1
-         ipcjmY/jO4pdK27iJ32JWu0jBNST9sF8Ob/lr6cxAiIyTl85InFhXbibcxPbyKY+BUBd
-         X1BdObvsoywvxz1yNiclAv9vShmJvNkqqm2zxoToC/fwXDneVqIz3DVDu0rz27aNooa+
-         sRg2OkfZQ9iurny1HhnbHOMqFfbLT3kwAYi6J6lqm+v5HRxauaMWMe53xNUMudkr+KRn
-         w5flFFhuq/P+3HNiUH+MfUIwmEoui9NOdP3H9J+PKcPXhsGYsBM8GVBAdAKxK/fMbso7
-         4CYA==
-X-Gm-Message-State: AOAM531JCNEvAJHUWUaLKmF+6BunvaXlPqfP+aJ190w8IZ3P+1lTp5nY
-        3akaRa3gE2pD+3vqhpI1/KE=
-X-Google-Smtp-Source: ABdhPJwXdyMDyr4GwTpTrg436FM4u2K3wPQqYywaSlUdZFHvi5f3uvjqWpp0RsHDRItvkdNWNB0RMA==
-X-Received: by 2002:adf:9e4c:: with SMTP id v12mr10886907wre.22.1607651329398;
-        Thu, 10 Dec 2020 17:48:49 -0800 (PST)
-Received: from localhost ([41.45.127.175])
-        by smtp.gmail.com with ESMTPSA id s4sm12990582wra.91.2020.12.10.17.48.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 17:48:48 -0800 (PST)
-From:   Abanoub Sameh <abanoubsameh8@gmail.com>
-X-Google-Original-From: Abanoub Sameh <abanoubsameh@protonmail.com>
-To:     pavel@ucw.cz
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abanoub Sameh <abanoubsameh@protonmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] leds: led-core: Get rid of enum led_brightness
-Date:   Fri, 11 Dec 2020 03:48:40 +0200
-Message-Id: <20201211014840.1554095-1-abanoubsameh@protonmail.com>
-X-Mailer: git-send-email 2.28.0.rc0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tmocuTlFkdrvz3dSgRAckP0PaP8a7z+1zm1gMKMoKF4=;
+        b=ub5LAIwncAU2Ztun2B1HNYYxOEN74jvrukRq6RJ5OUIvWbrFnNkJpwbGi5L8i8bbu3
+         PDE2xSv5bLr5mHmd2YRwbsRXBRuYVSChJWghOcuHIH2CUwzamaVQuVR0PSbxt7+3jLN/
+         ze/nH0nzZiNr80HBhL1Ihi+vfE6UETscdSNIoIYVQ9MADUZbKdNvVrpoWKsUmXZAnYPg
+         6VL0EoW54/8XOy5KD5JKRssXyTVZRFY5hioKR9mN4CCqkwaanYIY37PnmCwgAdsvVjSC
+         uyq9gROLOjxM7hT9cruSK6pxEcxZ8qyQMrWMD0/Wilp690p8hGKWVDd1IQhQsuOVBC71
+         IDiw==
+X-Gm-Message-State: AOAM532yAjpm3OzzwOE2PpeeqRU5zvw3vTynU2oJeQ9PVX5V0Pb1poor
+        L1ZatC/sYZ4H+D9X9vAIhq52VC/4cllU3Q==
+X-Google-Smtp-Source: ABdhPJw55yqcVIjhMbt5I/vnlYoLsKrhZPTnIsBkkyZlXDfbTdyYZ4FBRiKRY1qu030BtaScgQiT6Q==
+X-Received: by 2002:a67:e185:: with SMTP id e5mr11095978vsl.22.1607651527035;
+        Thu, 10 Dec 2020 17:52:07 -0800 (PST)
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com. [209.85.217.45])
+        by smtp.gmail.com with ESMTPSA id n2sm664177uae.12.2020.12.10.17.52.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 17:52:06 -0800 (PST)
+Received: by mail-vs1-f45.google.com with SMTP id e15so2485783vsa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:52:06 -0800 (PST)
+X-Received: by 2002:a67:4242:: with SMTP id p63mr11018057vsa.34.1607651525656;
+ Thu, 10 Dec 2020 17:52:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201203074459.13078-1-rojay@codeaurora.org> <CAD=FV=WtU3cnRe6pDKFMA9_0cnQFtSOyohY_bJwZObK+KrbhVQ@mail.gmail.com>
+ <160764107797.1580929.14768824290834396298@swboyd.mtv.corp.google.com>
+ <CAD=FV=WuQjKC6GHy8d2nuqS-fgsUfxYrJosg3eyC9JU1FPCcjw@mail.gmail.com>
+ <160764316821.1580929.18177257779550490986@swboyd.mtv.corp.google.com>
+ <CAD=FV=WvG085orLqnvg9WUobL7iyxwgoxh-8RvOaRdi9rLeDUg@mail.gmail.com>
+ <160764785500.1580929.4255309510717807485@swboyd.mtv.corp.google.com>
+ <CAD=FV=VD78fmSRciFf38AbZG=EFPzDiT_e7QkEC08zA9iL1vTw@mail.gmail.com>
+ <160764967649.1580929.3992720095789306793@swboyd.mtv.corp.google.com>
+ <CAD=FV=Xgw+33pCycHyaMPsk64Qs+oh8e-RtJaM1yn0F27qZRVQ@mail.gmail.com> <160765077856.1580929.643282739071441296@swboyd.mtv.corp.google.com>
+In-Reply-To: <160765077856.1580929.643282739071441296@swboyd.mtv.corp.google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 10 Dec 2020 17:51:53 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WuyuF-PL2PMnLjWCyWGzOqn8beTVP3ZXWvfLdLhPh8=A@mail.gmail.com>
+Message-ID: <CAD=FV=WuyuF-PL2PMnLjWCyWGzOqn8beTVP3ZXWvfLdLhPh8=A@mail.gmail.com>
+Subject: Re: [PATCH] spi: spi-geni-qcom: Fix NULL pointer access in geni_spi_isr
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This gets rid of enum led_brightness in the main led files,
-because it is deprecated, and an int can be used instead,
-or maybe even a uint8_t since it only goes up to 255.
-Next we can also patch the other files to get rid of it completely.
+Hi,
 
-Signed-off-by: Abanoub Sameh <abanoubsameh@protonmail.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- drivers/leds/led-class.c |  3 +--
- drivers/leds/led-core.c  | 20 +++++++-------------
- drivers/leds/leds.h      |  6 ++----
- include/linux/leds.h     | 12 +++++-------
- 4 files changed, 15 insertions(+), 26 deletions(-)
+On Thu, Dec 10, 2020 at 5:39 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Doug Anderson (2020-12-10 17:30:17)
+> > On Thu, Dec 10, 2020 at 5:21 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> > >
+> > > Yeah and so if it comes way later because it timed out then what's the
+> > > point of calling synchronize_irq() again? To make the completion
+> > > variable set when it won't be tested again until it is reinitialized?
+> >
+> > Presumably the idea is to try to recover to a somewhat usable state
+> > again?  We're not rebooting the machine so, even though this transfer
+> > failed, we will undoubtedly do another transfer later.  If that
+> > "abort" interrupt comes way later while we're setting up the next
+> > transfer we'll really confuse ourselves.
+>
+> The interrupt handler just sets a completion variable. What does that
+> confuse?
 
-diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
-index 131ca83f5fb3..51497c187967 100644
---- a/drivers/leds/led-class.c
-+++ b/drivers/leds/led-class.c
-@@ -145,8 +145,7 @@ static void led_remove_brightness_hw_changed(struct led_classdev *led_cdev)
- 	device_remove_file(led_cdev->dev, &dev_attr_brightness_hw_changed);
- }
- 
--void led_classdev_notify_brightness_hw_changed(struct led_classdev *led_cdev,
--					       enum led_brightness brightness)
-+void led_classdev_notify_brightness_hw_changed(struct led_classdev *led_cdev, int brightness)
- {
- 	if (WARN_ON(!led_cdev->brightness_hw_changed_kn))
- 		return;
-diff --git a/drivers/leds/led-core.c b/drivers/leds/led-core.c
-index c4e780bdb385..f024efb31853 100644
---- a/drivers/leds/led-core.c
-+++ b/drivers/leds/led-core.c
-@@ -39,8 +39,7 @@ const char * const led_colors[LED_COLOR_ID_MAX] = {
- };
- EXPORT_SYMBOL_GPL(led_colors);
- 
--static int __led_set_brightness(struct led_classdev *led_cdev,
--				enum led_brightness value)
-+static int __led_set_brightness(struct led_classdev *led_cdev, int value)
- {
- 	if (!led_cdev->brightness_set)
- 		return -ENOTSUPP;
-@@ -50,8 +49,7 @@ static int __led_set_brightness(struct led_classdev *led_cdev,
- 	return 0;
- }
- 
--static int __led_set_brightness_blocking(struct led_classdev *led_cdev,
--					 enum led_brightness value)
-+static int __led_set_brightness_blocking(struct led_classdev *led_cdev, int value)
- {
- 	if (!led_cdev->brightness_set_blocking)
- 		return -ENOTSUPP;
-@@ -240,8 +238,7 @@ void led_stop_software_blink(struct led_classdev *led_cdev)
- }
- EXPORT_SYMBOL_GPL(led_stop_software_blink);
- 
--void led_set_brightness(struct led_classdev *led_cdev,
--			enum led_brightness brightness)
-+void led_set_brightness(struct led_classdev *led_cdev, int brightness)
- {
- 	/*
- 	 * If software blink is active, delay brightness setting
-@@ -253,7 +250,7 @@ void led_set_brightness(struct led_classdev *led_cdev,
- 		 * work queue task to avoid problems in case we are called
- 		 * from hard irq context.
- 		 */
--		if (brightness == LED_OFF) {
-+		if (!brightness) {
- 			set_bit(LED_BLINK_DISABLE, &led_cdev->work_flags);
- 			schedule_work(&led_cdev->set_brightness_work);
- 		} else {
-@@ -268,8 +265,7 @@ void led_set_brightness(struct led_classdev *led_cdev,
- }
- EXPORT_SYMBOL_GPL(led_set_brightness);
- 
--void led_set_brightness_nopm(struct led_classdev *led_cdev,
--			      enum led_brightness value)
-+void led_set_brightness_nopm(struct led_classdev *led_cdev, int value)
- {
- 	/* Use brightness_set op if available, it is guaranteed not to sleep */
- 	if (!__led_set_brightness(led_cdev, value))
-@@ -281,8 +277,7 @@ void led_set_brightness_nopm(struct led_classdev *led_cdev,
- }
- EXPORT_SYMBOL_GPL(led_set_brightness_nopm);
- 
--void led_set_brightness_nosleep(struct led_classdev *led_cdev,
--				enum led_brightness value)
-+void led_set_brightness_nosleep(struct led_classdev *led_cdev, int value)
- {
- 	led_cdev->brightness = min(value, led_cdev->max_brightness);
- 
-@@ -293,8 +288,7 @@ void led_set_brightness_nosleep(struct led_classdev *led_cdev,
- }
- EXPORT_SYMBOL_GPL(led_set_brightness_nosleep);
- 
--int led_set_brightness_sync(struct led_classdev *led_cdev,
--			    enum led_brightness value)
-+int led_set_brightness_sync(struct led_classdev *led_cdev, int value)
- {
- 	if (led_cdev->blink_delay_on || led_cdev->blink_delay_off)
- 		return -EBUSY;
-diff --git a/drivers/leds/leds.h b/drivers/leds/leds.h
-index 2d9eb48bbed9..08925d8adcb0 100644
---- a/drivers/leds/leds.h
-+++ b/drivers/leds/leds.h
-@@ -19,10 +19,8 @@ static inline int led_get_brightness(struct led_classdev *led_cdev)
- 
- void led_init_core(struct led_classdev *led_cdev);
- void led_stop_software_blink(struct led_classdev *led_cdev);
--void led_set_brightness_nopm(struct led_classdev *led_cdev,
--				enum led_brightness value);
--void led_set_brightness_nosleep(struct led_classdev *led_cdev,
--				enum led_brightness value);
-+void led_set_brightness_nopm(struct led_classdev *led_cdev, int value);
-+void led_set_brightness_nosleep(struct led_classdev *led_cdev, int value);
- ssize_t led_trigger_read(struct file *filp, struct kobject *kobj,
- 			struct bin_attribute *attr, char *buf,
- 			loff_t pos, size_t count);
-diff --git a/include/linux/leds.h b/include/linux/leds.h
-index 6a8d6409c993..392d43ff793b 100644
---- a/include/linux/leds.h
-+++ b/include/linux/leds.h
-@@ -63,8 +63,8 @@ struct led_hw_trigger_type {
- 
- struct led_classdev {
- 	const char		*name;
--	enum led_brightness	 brightness;
--	enum led_brightness	 max_brightness;
-+    int brightness;
-+    int max_brightness;
- 	int			 flags;
- 
- 	/* Lower 16 bits reflect status */
-@@ -253,8 +253,7 @@ void led_blink_set_oneshot(struct led_classdev *led_cdev,
-  * software blink timer that implements blinking when the
-  * hardware doesn't. This function is guaranteed not to sleep.
-  */
--void led_set_brightness(struct led_classdev *led_cdev,
--			enum led_brightness brightness);
-+void led_set_brightness(struct led_classdev *led_cdev, int brightness);
- 
- /**
-  * led_set_brightness_sync - set LED brightness synchronously
-@@ -267,8 +266,7 @@ void led_set_brightness(struct led_classdev *led_cdev,
-  *
-  * Returns: 0 on success or negative error value on failure
-  */
--int led_set_brightness_sync(struct led_classdev *led_cdev,
--			    enum led_brightness value);
-+int led_set_brightness_sync(struct led_classdev *led_cdev, int value);
- 
- /**
-  * led_update_brightness - update LED brightness
-@@ -565,7 +563,7 @@ static inline void ledtrig_cpu(enum cpu_led_event evt)
- 
- #ifdef CONFIG_LEDS_BRIGHTNESS_HW_CHANGED
- void led_classdev_notify_brightness_hw_changed(
--	struct led_classdev *led_cdev, enum led_brightness brightness);
-+	struct led_classdev *led_cdev, int brightness);
- #else
- static inline void led_classdev_notify_brightness_hw_changed(
- 	struct led_classdev *led_cdev, enum led_brightness brightness) { }
+The interrupt handler sees a "DONE" interrupt.  If we've made it far
+enough into setting up the next transfer that "cur_xfer" has been set
+then it might do more, no?
 
-base-commit: 9fca90cf28920c6d0723d7efd1eae0b0fb90309c
--- 
-2.28.0.rc0
 
+> > I guess you could go the route of adding a synchronize_irq() at the
+> > start of the next transfer, but I'd rather add the overhead in the
+> > exceptional case (the timeout) than the normal case.  In the normal
+> > case we don't need to worry about random IRQs from the past transfer
+> > suddenly showing up.
+> >
+>
+> How does adding synchronize_irq() at the end guarantee that the abort is
+> cleared out of the hardware though? It seems to assume that the abort is
+> pending at the GIC when it could still be running through the hardware
+> and not executed yet. It seems like a synchronize_irq() for that is
+> wishful thinking that the irq is merely pending even though it timed
+> out and possibly never ran. Maybe it's stuck in a write buffer in the
+> CPU?
+
+I guess I'm asserting that if a full second passed (because we timed
+out) and after that full second no interrupts are pending then the
+interrupt will never come.  That seems a reasonable assumption to me.
+It seems hard to believe it'd be stuck in a write buffer for a full
+second?
+
+-Doug
