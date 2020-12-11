@@ -2,210 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55BD2D81D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1339F2D81DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406821AbgLKWSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:18:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
+        id S2388750AbgLKWUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 17:20:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406797AbgLKWRJ (ORCPT
+        with ESMTP id S1728668AbgLKWUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:17:09 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274ECC061248
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:15:49 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id g20so4460250plo.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:15:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=y7sUikV/F7gNe5Jy42I6mRR8y7okTjvOyaqlUQve9s8=;
-        b=EYiob21Rk2nzqjeDbvTDWyfCsA5lwPGIN4WkDcg9WvyrIj+NdQqgSUBvcFUeMIaojD
-         Qreh8bkGQrrrOE40m5XF9N4P8r0PR6Cvk+j5LTDKEfe7GA9uwRzUwZFKxnBIpsgEP7l9
-         6SPjZnja/FHUJJmDxX+CKRlXiqeTiJFh4QCq4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=y7sUikV/F7gNe5Jy42I6mRR8y7okTjvOyaqlUQve9s8=;
-        b=ehA/jI6LRVmqI9xEy1hWMVs8F4FDBGmJovvI56MY7hlCz+uEkBGRYuu8EVNbw2D5VP
-         F68dFrqs4W4sE6PyQ/1Y25NcVXeXf9fpRtb/qLQMoMe/qW4v9NbpAs41W0V2QK9B5eEh
-         SJ6FEhKwEwMfi/2I8eqSH5tImpLBj2EZpPD0lYAtS+rskKwKaLS1ZpcBySI53ocFQhNG
-         imzjOf86+BGUJevB2DdNoePKWOrw31S1xvluu1YXdfFFyTBVm9nllL+mKb3J4rJC48SH
-         o0tFY3tFnkoXdQIb9Dmli11zegAC4AfQe+NpTTfb4JkmZKKIF8Vwy3KowNTBPI9STEMk
-         yG6Q==
-X-Gm-Message-State: AOAM533VkCoaBYm+l3+ywN0DwX4NCqRA+NUqv2CUD5MJK9jWpiZ6hTyl
-        SH/DMvtza6B8jXcOPsQaYjBcLA==
-X-Google-Smtp-Source: ABdhPJwQaEII/ZFOuv5w3ZNFYFqtSx7WMh6WT8IlI/wAmhJhldG2bz6rBTVow8GDJR+cKB3eYQkmrw==
-X-Received: by 2002:a17:902:5581:b029:da:a817:1753 with SMTP id g1-20020a1709025581b02900daa8171753mr12637716pli.76.1607724948477;
-        Fri, 11 Dec 2020 14:15:48 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id s21sm11832981pgk.52.2020.12.11.14.15.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 14:15:48 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        linux-gpio@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 4/4] pinctrl: qcom: Clear possible pending parent irq when remuxing GPIOs
-Date:   Fri, 11 Dec 2020 14:15:38 -0800
-Message-Id: <20201211141514.v4.4.I771b6594b2a4d5b7fe7e12a991a6640f46386e8d@changeid>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-In-Reply-To: <20201211141514.v4.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
-References: <20201211141514.v4.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+        Fri, 11 Dec 2020 17:20:10 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F30DC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:19:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kP3/BqmKRqUCbIsMUPGHxHnJMu6Z51pTgfmbZ0jtzd0=; b=tpnPd7y4ubktUC/WbeXvaN/ndC
+        RmPy4mVBc7myv3DXleUDq3w720VbfirLQJuWMfiMWAC4x2/wTQoHZNLZcHQ1JjwSNhfOIYMjbWcvR
+        +jIhNXX0VSn73CNrwurZ+tGxdaxzs4Pr0GU3D2NfZNCiu9UOfDhbA5OP2D1tupMCoThzeQnWG0KzY
+        Y0/tLZFQT38598HZMQ2bDR79K/WWA0fI2e5hTdC0hsg/3afXSnyFwCa92cV1g0rdZmtI2RvTf6+TH
+        7m9lIdviXAZXrgftcjgeeI0MQmVGChdS3ZFVfiyw7oiJ7KivppPlQsw0wKTukVhf4TeJxWJzVllNu
+        8xW6eSDg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knqkm-0002Hn-PC; Fri, 11 Dec 2020 22:19:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9C316305815;
+        Fri, 11 Dec 2020 23:19:05 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8A6CE20819150; Fri, 11 Dec 2020 23:19:05 +0100 (CET)
+Date:   Fri, 11 Dec 2020 23:19:05 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        valentin.schneider@arm.com, qais.yousef@arm.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
+        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC PATCH v7] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+Message-ID: <20201211221905.GV3040@hirez.programming.kicks-ass.net>
+References: <20201209062404.175565-1-aubrey.li@linux.intel.com>
+ <20201209143510.GO3371@techsingularity.net>
+ <3802e27a-56ed-9495-21b9-7c4277065155@linux.intel.com>
+ <20201210113441.GS3371@techsingularity.net>
+ <31308700-aa28-b1f7-398e-ee76772b6b87@linux.intel.com>
+ <20201210125833.GT3371@techsingularity.net>
+ <20201211174442.GU3040@hirez.programming.kicks-ass.net>
+ <20201211204337.GX3371@techsingularity.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211204337.GX3371@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 71266d9d3936 ("pinctrl: qcom: Move clearing pending IRQ to
-.irq_request_resources callback") we tried to make it so that the
-"enable" didn't clear pending interrupts for interrupts that were
-handled by our parent (the PDC).  Unfortunately that regressed things.
-After that patch we found that sc7180-trogdor based devices could no
-longer enter suspend.
+On Fri, Dec 11, 2020 at 08:43:37PM +0000, Mel Gorman wrote:
+> One bug is in __select_idle_core() though. It's scanning the SMT mask,
+> not select_idle_mask so it can return an idle candidate that is not in
+> p->cpus_ptr.
 
-Specifically in sc7180-trogdor.dtsi we configure the uart3 to have two
-pinctrl states, sleep and default, and mux between the two during
-runtime PM and system suspend (see geni_se_resources_{on,off}() for
-more details). The difference between the sleep and default state is
-that the RX pin is muxed to a GPIO during sleep and muxed to the UART
-otherwise.
+D'0h.. luckily the benchmarks don't hit that :-)
 
-As per Qualcomm, when we mux the pin over to the UART function the PDC
-is still watching it / latching edges.  These edges don't cause
-interrupts because the current code masks the interrupt unless we're
-entering suspend.  However, as soon as we enter suspend we unmask the
-interrupt and it's counted as a wakeup.
+> There are some other potential caveats.
+> 
+> This is a single pass so when test_idle_cores() is true, __select_idle_core
+> is used to to check all the siblings even if the core is not idle. That
+> could have been cut short if __select_idle_core checked *idle_cpu ==
+> 1 and terminated the SMT scan if an idle candidate had already been found.
 
-Let's deal with the problem like this:
-* When we mux away, we'll mask our parent.  This isn't necessary in
-  the above case since the parent already masked us, but it's a good
-  idea in general.
-* When we mux back will clear any interrupts and unmask our parent if
-  needed.
+So I did that on purpose, so as to track the last/most-recent idle cpu,
+with the thinking that that cpu has the higher chance of still being
+idle vs one we checked earlier/longer-ago.
 
-Fixes: 71266d9d3936 ("pinctrl: qcom: Move clearing pending IRQ to .irq_request_resources callback")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-This patch depends on #2/#3 in the series, but not #1.  #1 can land on
-its own and then #2/#3/#4 can land together even without #1.  The only
-reason patch #1 and #2/#3/#4 are together in one series is because
-they address similar issues.
+I suppose we benchmark both and see which is liked best.
 
-I have done most of this patch testing on the Chrome OS 5.4 kernel
-tree (with many backports) but have sanity checked it on mainline.
+> Second downside is related. If test_idle_cpus() was true but no idle
+> CPU is found then __select_idle_core has been called enough to scan
+> the entire domain. In this corner case, the new code does *more* work
+> because the old code would have failed select_idle_core() quickly and
+> then select_idle_cpu() would be throttled by SIS_PROP. I think this will
+> only be noticable in the heavily overloaded case but if the corner case
+> hits enough then the new code will be slower than the old code for the
+> over-saturated case (i.e. hackbench with lots of groups).
 
-This patch definitely needs more testing / discussion, so please don't
-land without Qualcomm confirming that it looks OK in all the cases
-they are aware of.
+Right, due to scanning siblings, even if the first inspected thread is
+not idle, we scan more.
 
-Changes in v4:
-- Totally rewrote again with my new understanding of the world.
-- Split non-PDC fix and PDC fix in two.
+> The third potential downside is that the SMT sibling is not guaranteed to
+> be checked due to SIS_PROP throttling but in the old code, that would have
+> been checked by select_idle_smt(). That might result in premature stacking
+> of runnable tasks on the same CPU. Similarly, as __select_idle_core may
+> find multiple idle candidates, it will not pick the targets SMT sibling
+> if it is idle like select_idle_smt would have.
+> 
+> That said, I am skeptical that select_idle_smt() matters all that often.
 
-Changes in v3:
-- Fixed bug in msm_gpio_direction_output() (s/oldval =/oldval = val =/)
-- Add back "if !skip_wake_irqs" test in msm_gpio_irq_enable()
-- For non-PDC, clear 1st interrupt in msm_gpio_irq_set_type()
+This, I didn't really believe in it either.
 
-Changes in v2:
-- 0 => false
-- If skip_wake_irqs, don't need to clear normal intr.
-- Add comment about glitches in both output and input.
 
- drivers/pinctrl/qcom/pinctrl-msm.c | 42 +++++++++++++++++++++---------
- 1 file changed, 29 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-index f785646d1df7..37fa95c5805c 100644
---- a/drivers/pinctrl/qcom/pinctrl-msm.c
-+++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-@@ -171,7 +171,12 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
- 			      unsigned group)
- {
- 	struct msm_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
-+	struct gpio_chip *gc = &pctrl->chip;
-+	unsigned int irq = irq_find_mapping(gc->irq.domain, group);
-+	struct irq_data *d = irq_get_irq_data(irq);
-+	unsigned int gpio_func = pctrl->soc->gpio_func;
- 	const struct msm_pingroup *g;
-+	bool should_manage_parent;
- 	unsigned long flags;
- 	u32 val, mask;
- 	int i;
-@@ -187,6 +192,23 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
- 	if (WARN_ON(i == g->nfuncs))
- 		return -EINVAL;
- 
-+	/*
-+	 * If an GPIO interrupt is setup on this pin and those interrupts are
-+	 * handled by our parent we need special handling.  Specifically the
-+	 * parent will still see the pin twiddle even when we're muxed away.
-+	 *
-+	 * If our GPIO was unmasked before muxing away from GPIO we need to
-+	 * mask our parent before switching so it doesn't see the twiddling.
-+	 *
-+	 * When we switch back we might need to clear any interrupts that were
-+	 * latched while were muxed away.
-+	 */
-+	should_manage_parent = d && d->parent_data &&
-+			       test_bit(d->hwirq, pctrl->skip_wake_irqs);
-+
-+	if (i != gpio_func && should_manage_parent && !irqd_irq_masked(d))
-+		irq_chip_mask_parent(d);
-+
- 	raw_spin_lock_irqsave(&pctrl->lock, flags);
- 
- 	val = msm_readl_ctl(pctrl, g);
-@@ -196,6 +218,13 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
- 
- 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
- 
-+	if (i == gpio_func && should_manage_parent) {
-+		irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, false);
-+
-+		if (!irqd_irq_masked(d))
-+			irq_chip_unmask_parent(d);
-+	}
-+
- 	return 0;
- }
- 
-@@ -1093,19 +1122,6 @@ static int msm_gpio_irq_reqres(struct irq_data *d)
- 		ret = -EINVAL;
- 		goto out;
- 	}
--
--	/*
--	 * Clear the interrupt that may be pending before we enable
--	 * the line.
--	 * This is especially a problem with the GPIOs routed to the
--	 * PDC. These GPIOs are direct-connect interrupts to the GIC.
--	 * Disabling the interrupt line at the PDC does not prevent
--	 * the interrupt from being latched at the GIC. The state at
--	 * GIC needs to be cleared before enabling.
--	 */
--	if (d->parent_data && test_bit(d->hwirq, pctrl->skip_wake_irqs))
--		irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, 0);
--
- 	return 0;
- out:
- 	module_put(gc->owner);
--- 
-2.29.2.576.ga3fc446d84-goog
-
+The benchmarks I started are mostly noise, with a few wins for
+TCP_STREAM and UDP_RR around the 50% mark. Although I should run
+longer variants to make sure.
