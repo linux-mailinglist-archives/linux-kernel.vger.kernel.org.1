@@ -2,411 +2,672 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA772D7987
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F24B2D798F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389613AbgLKPhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:37:13 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:47176 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728773AbgLKPhL (ORCPT
+        id S2389576AbgLKPig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:38:36 -0500
+Received: from gproxy10-pub.mail.unifiedlayer.com ([69.89.20.226]:59853 "EHLO
+        gproxy10-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387441AbgLKPiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:37:11 -0500
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id BACDD20B717A;
-        Fri, 11 Dec 2020 07:36:27 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BACDD20B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607700988;
-        bh=kcTyBg/zDy3n5jV/1H1ohE/aFYKH7L5A5APL39V2yWs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RInygby0NZquGdGNdy2OqK8HoxATxAkmdTuQL0ZAV0z8aqwUI5qF0qO18vTur+gJC
-         8uC6tUGxHySC5i0hqZMT2WWluWt4eJM3wqMLm+U+vSEJQBRR9vG06PPwfwsHU/t1dd
-         dIQXbD36bCpA65oHwzmHwhvq59n0ITNrGcoNUQ8g=
-Date:   Fri, 11 Dec 2020 09:36:18 -0600
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
-        jmorris@namei.org, nramas@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Subject: Re: [PATCH v7 8/8] selinux: include a consumer of the new IMA
- critical data hook
-Message-ID: <20201211153618.GA4951@sequoia>
-References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
- <20201209194212.5131-9-tusharsu@linux.microsoft.com>
+        Fri, 11 Dec 2020 10:38:04 -0500
+Received: from cmgw14.unifiedlayer.com (unknown [10.9.0.14])
+        by gproxy10.mail.unifiedlayer.com (Postfix) with ESMTP id 741D5140488
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:37:22 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id nkTxks9oawNNlnkTyk2mtn; Fri, 11 Dec 2020 08:37:22 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=f49m+t6M c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=zTNgK-yGK50A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=iyzGlLGqAAAA:8
+ a=h0ABR8M4AAAA:8 a=VRxwKO7oXhEiKGQQdPEA:9 a=CjuIK1q_8ugA:10:nop_charset_2
+ a=KUY6m_o_WN0hX3XauQzx:22 a=IAbmOp1NCR458IescZAd:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=51JAZHqZfUErKQnVyxcrQ1QSEnoOZmWg1EffbOa0Ukg=; b=XjYQwoGcJJD1Nbr6oL97f9kvyl
+        jM6Bi5TyG/oPwGWvqb7IkAeD8h82+Xr8jL4ui9nDmS5G/j11PeMbPGTdtPXVkX28wWa+KBB05La37
+        1yosbSFPoc4CL5Zwxe6B2JD0VCa5kPiFBRIjsrpI/gcTtU3XTV15fAH40YptNohFMaSSLXonP1rub
+        wrPRfrm4C3NZI1oOlQ57v6USf4qM0TpFdYFXbHXm6GQnXzszHY00mEy2AoVKA+fR7XfgUnhk1xuc9
+        gpTLsKY/UIb2NzFTIFM+Jb8FJQt3wSSE54zg9/BwporJzbz0gI1y2Lwir8GUz8D5Sjcz0RlSuX/go
+        j6H551oA==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:41748 helo=localhost)
+        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1knkTx-003aF2-Bn; Fri, 11 Dec 2020 15:37:21 +0000
+Date:   Fri, 11 Dec 2020 07:37:20 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "xiao.ma" <max701@126.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xiao.mx.ma@deltaww.com,
+        jiajia.feng@deltaww.com
+Subject: Re: [PATCH v11] hwmon:Driver for Delta power supplies Q54SJ108A2
+Message-ID: <20201211153720.GA211180@roeck-us.net>
+References: <20201209072750.1251-1-max701@126.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209194212.5131-9-tusharsu@linux.microsoft.com>
+In-Reply-To: <20201209072750.1251-1-max701@126.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1knkTx-003aF2-Bn
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:41748
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 15
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09 11:42:12, Tushar Sugandhi wrote:
-> From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+On Tue, Dec 08, 2020 at 09:27:50PM -1000, xiao.ma wrote:
+> From: "xiao.ma" <xiao.mx.ma@deltaww.com>
 > 
-> IMA measures files and buffer data such as keys, command line arguments
-> passed to the kernel on kexec system call, etc. While these measurements
-> enable monitoring and validating the integrity of the system, it is not
-> sufficient. Various data structures, policies and states stored in kernel
-> memory also impact the integrity of the system. Updates to these data
-> structures would have an impact on the security functionalities.
-
-This is repetitive when looking at the entire series. I think it can be
-dropped.
-
-> For example, SELinux stores the active policy in memory. Changes to this
-
-Start here and drop the "For example, ":
-
- SELinux stores the active policy in memory and changes to this data ...
-
-> data at runtime would have an impact on the security guarantees provided
-> by SELinux. Measuring such in-memory data structures through IMA
-> subsystem provides a secure way for a remote attestation service to
-> know the state of the system and also the runtime changes in the state
-> of the system.
+> The driver supports Q54SJ108A2 series modules of Delta.
+> Standard attributes are in sysfs, and other attributes are in debugfs.
 > 
-> SELinux policy is a critical data for this security module that needs
-
- SELinux policy is critical data and should be measured. This measurement ...
-
-> to be measured. This measurement can be used by an attestation service,
-> for instance, to verify if the policy has been setup correctly and that
-> it hasn't been tampered at run-time.
-> 
-> Measure the hash of the loaded policy by calling the IMA hook
-> ima_measure_critical_data(). Since the size of the loaded policy can
-> be large (several MB), measure the hash of the policy instead of
-> the entire policy to avoid bloating the IMA log entry.
-> 
-> Add "selinux" to the list of supported data sources maintained by IMA
-> to enable measuring SELinux data.
-> 
-> To enable SELinux data measurement, the following steps are required:
-> 
-> 1, Add "ima_policy=critical_data" to the kernel command line arguments
->    to enable measuring SELinux data at boot time.
-> For example,
->   BOOT_IMAGE=/boot/vmlinuz-5.10.0-rc1+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
-> 
-> 2, Add the following rule to /etc/ima/ima-policy
->    measure func=CRITICAL_DATA data_source=selinux
-> 
-> Sample measurement of the hash of SELinux policy:
-> 
-> To verify the measured data with the current SELinux policy run
-> the following commands and verify the output hash values match.
-> 
->   sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
-> 
->   grep "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6
-> 
-> Note that the actual verification of SELinux policy would require loading
-> the expected policy into an identical kernel on a pristine/known-safe
-> system and run the sha256sum /sys/kernel/selinux/policy there to get
-> the expected hash.
-> 
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> Signed-off-by: xiao.ma <xiao.mx.ma@deltaww.com>
 > ---
->  Documentation/ABI/testing/ima_policy |  3 +-
->  security/selinux/Makefile            |  2 +
->  security/selinux/include/security.h  | 11 +++-
->  security/selinux/measure.c           | 86 ++++++++++++++++++++++++++++
->  security/selinux/ss/services.c       | 71 ++++++++++++++++++++---
->  5 files changed, 162 insertions(+), 11 deletions(-)
->  create mode 100644 security/selinux/measure.c
 > 
-> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
-> index 0f4ee9e0a455..7c7023f7986b 100644
-> --- a/Documentation/ABI/testing/ima_policy
-> +++ b/Documentation/ABI/testing/ima_policy
-> @@ -52,8 +52,9 @@ Description:
->  			template:= name of a defined IMA template type
->  			(eg, ima-ng). Only valid when action is "measure".
->  			pcr:= decimal value
-> -			data_source:= [label]
-> +			data_source:= [selinux]|[label]
->  			label:= a unique string used for grouping and limiting critical data.
-> +			For example, "selinux" to measure critical data for SELinux.
->  
->  		  default policy:
->  			# PROC_SUPER_MAGIC
-> diff --git a/security/selinux/Makefile b/security/selinux/Makefile
-> index 4d8e0e8adf0b..83d512116341 100644
-> --- a/security/selinux/Makefile
-> +++ b/security/selinux/Makefile
-> @@ -16,6 +16,8 @@ selinux-$(CONFIG_NETLABEL) += netlabel.o
->  
->  selinux-$(CONFIG_SECURITY_INFINIBAND) += ibpkey.o
->  
-> +selinux-$(CONFIG_IMA) += measure.o
-> +
->  ccflags-y := -I$(srctree)/security/selinux -I$(srctree)/security/selinux/include
->  
->  $(addprefix $(obj)/,$(selinux-y)): $(obj)/flask.h
-> diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
-> index 3cc8bab31ea8..18ee65c98446 100644
-> --- a/security/selinux/include/security.h
-> +++ b/security/selinux/include/security.h
-> @@ -229,7 +229,8 @@ void selinux_policy_cancel(struct selinux_state *state,
->  			struct selinux_policy *policy);
->  int security_read_policy(struct selinux_state *state,
->  			 void **data, size_t *len);
-> -
-> +int security_read_policy_kernel(struct selinux_state *state,
-> +				void **data, size_t *len);
->  int security_policycap_supported(struct selinux_state *state,
->  				 unsigned int req_cap);
->  
-> @@ -446,4 +447,12 @@ extern void ebitmap_cache_init(void);
->  extern void hashtab_cache_init(void);
->  extern int security_sidtab_hash_stats(struct selinux_state *state, char *page);
->  
-> +#ifdef CONFIG_IMA
-> +extern void selinux_measure_state(struct selinux_state *selinux_state);
-> +#else
-> +static inline void selinux_measure_state(struct selinux_state *selinux_state)
-> +{
-> +}
-> +#endif
-> +
->  #endif /* _SELINUX_SECURITY_H_ */
-> diff --git a/security/selinux/measure.c b/security/selinux/measure.c
+> Notes:
+>     Patch v2 changelog:
+>     	Add delta.rst in Documentation/hwmon.
+>     	Tristate "DELTA" in Kconfig is changed to "DELTA_POWER_SUPPLIED".
+>     	Modify code: drop the excessive empty lines, correct the comment content, adjust indent, remove extra brackets.
+>     Patch v3 changelog:
+>     	Add delta.rst to Documentation/hwmon/index.rst.
+>     	Tristate "DELTA_POWER_SUPPLIES" in Kconfig is changed to "Delta Power Supplies".
+>     Patch v4 changelog:
+>     	Correct the spelling "Temperature" in the delta.rst.
+>     	Add Write_protect when write command VOUT_OV_RESPONSE and IOUT_OC_FAULT_RESPONSE.
+>     Patch v5 changelog:
+>     	Add some non-standard attributes in sysfs system.
+>     Patch v6 changelog:
+>     	delta.c and delta.rst are renamed to q54sj108a2.c and q54sj108a2.rst.
+>     	Add q54sj108a2 to index.rst.
+>     	Tristate in Kconfig is changed to "Delta Power Supplies Q54SJ108A2".
+>     	The non-standard attributes are added to debugfs.
+>     Patch v7 changelog:
+>     	Use standard fuctions bin2hex and hex2bin.
+>     	The return of debugfs write is changed to count.
+>     	Drop the error checking of debugfs fuctions.
+>     	Use probe_new fuction.
+>     	Remove the .remove fuction.
+>     Patch v8 changelog:
+>     	Use kstrtou8_from_user instead of hex2bin.
+>     	Remove included head files which are not used.
+>     	Done label in debugfs_read fuction is deleted.
+>     	Change email to send the patch.
+>     Patch v9 changelog:
+>     	Fix the compile errors and warnings.
+>     Patch v10 changelog:
+>     	Fix the reports from checkpatch.
+>     	Name of driver is changed to "q54sj108a2".
+>     Patch v11 changelog:
+>     	Extend title underline in q54sj108a2.rst.
+
+I already applied the driver, and the fix for this problem
+in a separate patch.
+
+Guenter
+
+> 
+>  Documentation/hwmon/index.rst      |   1 +
+>  Documentation/hwmon/q54sj108a2.rst |  54 ++++
+>  drivers/hwmon/pmbus/Kconfig        |   9 +
+>  drivers/hwmon/pmbus/Makefile       |   1 +
+>  drivers/hwmon/pmbus/q54sj108a2.c   | 422 +++++++++++++++++++++++++++++
+>  5 files changed, 487 insertions(+)
+>  create mode 100644 Documentation/hwmon/q54sj108a2.rst
+>  create mode 100644 drivers/hwmon/pmbus/q54sj108a2.c
+> 
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index b797db738225..4bb680b3c7ea 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -148,6 +148,7 @@ Hardware Monitoring Kernel Drivers
+>     powr1220
+>     pxe1610
+>     pwm-fan
+> +   q54sj108a2
+>     raspberrypi-hwmon
+>     sch5627
+>     sch5636
+> diff --git a/Documentation/hwmon/q54sj108a2.rst b/Documentation/hwmon/q54sj108a2.rst
 > new file mode 100644
-> index 000000000000..c409ada6ea39
+> index 000000000000..f95d81382a9f
 > --- /dev/null
-> +++ b/security/selinux/measure.c
-> @@ -0,0 +1,86 @@
+> +++ b/Documentation/hwmon/q54sj108a2.rst
+> @@ -0,0 +1,54 @@
+> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +Kernel driver q54sj108a2
+> +========================
+> +
+> +Supported chips:
+> +
+> +  * DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH, Q54SJ108A2NCPG, Q54SJ108A2NCPH
+> +
+> +    Prefix: 'q54sj108a2'
+> +
+> +    Addresses scanned: -
+> +
+> +    Datasheet: https://filecenter.delta-china.com.cn/products/download/01/0102/datasheet/DS_Q54SJ108A2.pdf
+> +
+> +Authors:
+> +    Xiao.ma <xiao.mx.ma@deltaww.com>
+> +
+> +
+> +Description
+> +-----------
+> +
+> +This driver implements support for DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH,
+> +Q54SJ108A2NCPG, and Q54SJ108A2NCPH 1/4 Brick DC/DC Regulated Power Module
+> +with PMBus support.
+> +
+> +The driver is a client driver to the core PMBus driver.
+> +Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
+> +
+> +
+> +Usage Notes
+> +-----------
+> +
+> +This driver does not auto-detect devices. You will have to instantiate the
+> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
+> +details.
+> +
+> +
+> +Sysfs entries
+> +-------------
+> +
+> +===================== ===== ==================================================
+> +curr1_alarm           RO    Output current alarm
+> +curr1_input           RO    Output current
+> +curr1_label           RO    'iout1'
+> +in1_alarm             RO    Input voltage alarm
+> +in1_input             RO    Input voltage
+> +in1_label             RO    'vin'
+> +in2_alarm             RO    Output voltage alarm
+> +in2_input             RO    Output voltage
+> +in2_label             RO    'vout1'
+> +temp1_alarm           RO    Temperature alarm
+> +temp1_input           RO    Chip temperature
+> +===================== ===== ==================================================
+> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+> index a25faf69fce3..01de280820ee 100644
+> --- a/drivers/hwmon/pmbus/Kconfig
+> +++ b/drivers/hwmon/pmbus/Kconfig
+> @@ -229,6 +229,15 @@ config SENSORS_PXE1610
+>  	  This driver can also be built as a module. If so, the module will
+>  	  be called pxe1610.
+>  
+> +config SENSORS_Q54SJ108A2
+> +	tristate "Delta Power Supplies Q54SJ108A2"
+> +	help
+> +	  If you say yes here you get hardware monitoring support for Delta
+> +	  Q54SJ108A2 series Power Supplies.
+> +
+> +	  This driver can also be built as a module. If so, the module will
+> +	  be called q54sj108a2.
+> +
+>  config SENSORS_TPS40422
+>  	tristate "TI TPS40422"
+>  	help
+> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+> index 4c97ad0bd791..a50122cd455b 100644
+> --- a/drivers/hwmon/pmbus/Makefile
+> +++ b/drivers/hwmon/pmbus/Makefile
+> @@ -26,6 +26,7 @@ obj-$(CONFIG_SENSORS_MAX34440)	+= max34440.o
+>  obj-$(CONFIG_SENSORS_MAX8688)	+= max8688.o
+>  obj-$(CONFIG_SENSORS_MP2975)	+= mp2975.o
+>  obj-$(CONFIG_SENSORS_PXE1610)	+= pxe1610.o
+> +obj-$(CONFIG_SENSORS_Q54SJ108A2)	+= q54sj108a2.o
+>  obj-$(CONFIG_SENSORS_TPS40422)	+= tps40422.o
+>  obj-$(CONFIG_SENSORS_TPS53679)	+= tps53679.o
+>  obj-$(CONFIG_SENSORS_UCD9000)	+= ucd9000.o
+> diff --git a/drivers/hwmon/pmbus/q54sj108a2.c b/drivers/hwmon/pmbus/q54sj108a2.c
+> new file mode 100644
+> index 000000000000..cbeb1b1ea60c
+> --- /dev/null
+> +++ b/drivers/hwmon/pmbus/q54sj108a2.c
+> @@ -0,0 +1,422 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
 > +/*
-> + * Measure SELinux state using IMA subsystem.
+> + * Driver for Delta modules, Q54SJ108A2 series 1/4 Brick DC/DC
+> + * Regulated Power Module
+> + *
+> + * Copyright 2020 Delta LLC.
 > + */
-> +#include <linux/vmalloc.h>
-> +#include <linux/ktime.h>
-> +#include <linux/ima.h>
-> +#include "security.h"
 > +
-> +/*
-> + * This function creates a unique name by appending the timestamp to
-> + * the given string. This string is passed as "event_name" to the IMA
-> + * hook to measure the given SELinux data.
-> + *
-> + * The data provided by SELinux to the IMA subsystem for measuring may have
-> + * already been measured (for instance the same state existed earlier).
-> + * But for SELinux the current data represents a state change and hence
-> + * needs to be measured again. To enable this, pass a unique "event_name"
-> + * to the IMA hook so that IMA subsystem will always measure the given data.
-> + *
-> + * For example,
-> + * At time T0 SELinux data to be measured is "foo". IMA measures it.
-> + * At time T1 the data is changed to "bar". IMA measures it.
-> + * At time T2 the data is changed to "foo" again. IMA will not measure it
-> + * (since it was already measured) unless the event_name, for instance,
-> + * is different in this call.
-> + */
-> +static char *selinux_event_name(const char *name_prefix)
-> +{
-> +	char *event_name = NULL;
-> +	struct timespec64 cur_time;
+> +#include <linux/debugfs.h>
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include "pmbus.h"
 > +
-> +	ktime_get_real_ts64(&cur_time);
-> +	event_name = kasprintf(GFP_KERNEL, "%s-%lld:%09ld", name_prefix,
-> +			       cur_time.tv_sec, cur_time.tv_nsec);
-> +	if (!event_name) {
-> +		pr_err("%s: event name not allocated.\n", __func__);
-> +		return NULL;
-> +	}
+> +#define STORE_DEFAULT_ALL         0x11
+> +#define ERASE_BLACKBOX_DATA       0xD1
+> +#define READ_HISTORY_EVENT_NUMBER 0xD2
+> +#define READ_HISTORY_EVENTS       0xE0
+> +#define SET_HISTORY_EVENT_OFFSET  0xE1
+> +#define PMBUS_FLASH_KEY_WRITE     0xEC
 > +
-> +	return event_name;
-> +}
+> +enum chips {
+> +	q54sj108a2
+> +};
 > +
-> +/*
-> + * selinux_measure_state - Measure hash of the SELinux policy
-> + *
-> + * @state: selinux state struct
-> + *
-> + * NOTE: This function must be called with policy_mutex held.
-> + */
-> +void selinux_measure_state(struct selinux_state *state)
-> +{
-> +	void *policy = NULL;
-> +	char *policy_event_name = NULL;
-> +	size_t policy_len;
-> +	int rc = 0;
-> +	bool initialized = selinux_initialized(state);
+> +enum {
+> +	Q54SJ108A2_DEBUGFS_OPERATION = 0,
+> +	Q54SJ108A2_DEBUGFS_CLEARFAULT,
+> +	Q54SJ108A2_DEBUGFS_WRITEPROTECT,
+> +	Q54SJ108A2_DEBUGFS_STOREDEFAULT,
+> +	Q54SJ108A2_DEBUGFS_VOOV_RESPONSE,
+> +	Q54SJ108A2_DEBUGFS_IOOC_RESPONSE,
+> +	Q54SJ108A2_DEBUGFS_PMBUS_VERSION,
+> +	Q54SJ108A2_DEBUGFS_MFR_ID,
+> +	Q54SJ108A2_DEBUGFS_MFR_MODEL,
+> +	Q54SJ108A2_DEBUGFS_MFR_REVISION,
+> +	Q54SJ108A2_DEBUGFS_MFR_LOCATION,
+> +	Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE,
+> +	Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET,
+> +	Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET,
+> +	Q54SJ108A2_DEBUGFS_BLACKBOX_READ,
+> +	Q54SJ108A2_DEBUGFS_FLASH_KEY,
+> +	Q54SJ108A2_DEBUGFS_NUM_ENTRIES
+> +};
 > +
-> +	/*
-> +	 * Measure SELinux policy only after initialization is completed.
-> +	 */
-> +	if (!initialized)
-> +		goto out;
+> +struct q54sj108a2_data {
+> +	enum chips chip;
+> +	struct i2c_client *client;
 > +
-> +	policy_event_name = selinux_event_name("selinux-policy-hash");
-> +	if (!policy_event_name) {
-> +		pr_err("%s: Event name for policy not allocated.\n",
-> +		       __func__);
-
-If the kasprintf() in selinux_event_name() fails, we'll get two similar
-error messages saying that the event name could not be allocated. One of
-these error messages can be removed.
-
-> +		rc = -ENOMEM;
-> +		goto out;
-> +	}
+> +	int debugfs_entries[Q54SJ108A2_DEBUGFS_NUM_ENTRIES];
+> +};
 > +
-> +	rc = security_read_policy_kernel(state, &policy, &policy_len);
-> +	if (rc) {
-> +		pr_err("%s: Failed to read policy %d.\n", __func__, rc);
-
-The calls to pr_err() in this aren't quite following the style of the
-other error SELinux error messages.
-
- $ git grep pr_err security/selinux
- security/selinux/hooks.c:               pr_err("SELinux:  out of range capability %d\n", cap);
- security/selinux/hooks.c:               pr_err("SELinux:  unable to map context to SID"
- security/selinux/netlink.c:     pr_err("SELinux:  OOM in %s\n", __func__);
- security/selinux/selinuxfs.c:   pr_err("SELinux:  Runtime disable is deprecated, use selinux=0 on the kernel cmdline.\n");
- security/selinux/selinuxfs.c:           pr_err("SELinux: failed to load policy booleans\n");
- security/selinux/selinuxfs.c:           pr_err("SELinux: failed to load policy classes\n");
- ...
- security/selinux/ss/services.c:         pr_err("SELinux: %s:  unrecognized SID %d\n",
- security/selinux/ss/services.c:         pr_err("SELinux: %s:  unrecognized SID %d\n",
- security/selinux/ss/services.c:         pr_err("SELinux: %s:  unrecognized SID %d\n",
- security/selinux/ss/services.c:         pr_err("SELinux: %s:  unrecognized SID %d\n",
- security/selinux/ss/services.c:         pr_err("SELinux: %s:  unrecognized class %s\n",
-
-Prepending your error message strings with "SELinux: " and lowercasing the
-first character after "%s: " ought to do it.
-
-
-All the other code changes in this patch look correct to me.
-
-Tyler
-
-
-> +		goto out;
-> +	}
+> +#define to_psu(x, y) container_of((x), struct q54sj108a2_data, debugfs_entries[(y)])
 > +
-> +	ima_measure_critical_data("selinux", policy_event_name,
-> +				  policy, policy_len, true);
+> +static struct pmbus_driver_info q54sj108a2_info[] = {
+> +	[q54sj108a2] = {
+> +		.pages = 1,
 > +
-> +	vfree(policy);
+> +		/* Source : Delta Q54SJ108A2 */
+> +		.format[PSC_TEMPERATURE] = linear,
+> +		.format[PSC_VOLTAGE_IN] = linear,
+> +		.format[PSC_CURRENT_OUT] = linear,
 > +
-> +out:
-> +	kfree(policy_event_name);
-> +}
-> diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
-> index 9704c8a32303..dfa2e00894ae 100644
-> --- a/security/selinux/ss/services.c
-> +++ b/security/selinux/ss/services.c
-> @@ -2180,6 +2180,7 @@ static void selinux_notify_policy_change(struct selinux_state *state,
->  	selinux_status_update_policyload(state, seqno);
->  	selinux_netlbl_cache_invalidate();
->  	selinux_xfrm_notify_policyload();
-> +	selinux_measure_state(state);
->  }
->  
->  void selinux_policy_commit(struct selinux_state *state,
-> @@ -3875,8 +3876,33 @@ int security_netlbl_sid_to_secattr(struct selinux_state *state,
->  }
->  #endif /* CONFIG_NETLABEL */
->  
-> +/**
-> + * security_read_selinux_policy - read the policy.
-> + * @policy: SELinux policy
-> + * @data: binary policy data
-> + * @len: length of data in bytes
-> + *
-> + */
-> +static int security_read_selinux_policy(struct selinux_policy *policy,
-> +					void *data, size_t *len)
+> +		.func[0] = PMBUS_HAVE_VIN |
+> +		PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
+> +		PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
+> +		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP |
+> +		PMBUS_HAVE_STATUS_INPUT,
+> +	},
+> +};
+> +
+> +static ssize_t  q54sj108a2_debugfs_read(struct file *file, char __user *buf,
+> +					size_t count, loff_t *ppos)
 > +{
 > +	int rc;
-> +	struct policy_file fp;
+> +	int *idxp = file->private_data;
+> +	int idx = *idxp;
+> +	struct q54sj108a2_data *psu = to_psu(idxp, idx);
+> +	char data[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
+> +	char data_char[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
+> +	char *res;
 > +
-> +	fp.data = data;
-> +	fp.len = *len;
+> +	switch (idx) {
+> +	case Q54SJ108A2_DEBUGFS_OPERATION:
+> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_OPERATION);
+> +		if (rc < 0)
+> +			return rc;
 > +
-> +	rc = policydb_write(&policy->policydb, &fp);
+> +		rc = snprintf(data, 3, "%02x", rc);
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_WRITEPROTECT:
+> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_WRITE_PROTECT);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = snprintf(data, 3, "%02x", rc);
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
+> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_VOUT_OV_FAULT_RESPONSE);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = snprintf(data, 3, "%02x", rc);
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
+> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_IOUT_OC_FAULT_RESPONSE);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = snprintf(data, 3, "%02x", rc);
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_PMBUS_VERSION:
+> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_REVISION);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = snprintf(data, 3, "%02x", rc);
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_MFR_ID:
+> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_ID, data);
+> +		if (rc < 0)
+> +			return rc;
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_MFR_MODEL:
+> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_MODEL, data);
+> +		if (rc < 0)
+> +			return rc;
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_MFR_REVISION:
+> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_REVISION, data);
+> +		if (rc < 0)
+> +			return rc;
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_MFR_LOCATION:
+> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_LOCATION, data);
+> +		if (rc < 0)
+> +			return rc;
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET:
+> +		rc = i2c_smbus_read_byte_data(psu->client, READ_HISTORY_EVENT_NUMBER);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = snprintf(data, 3, "%02x", rc);
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_READ:
+> +		rc = i2c_smbus_read_block_data(psu->client, READ_HISTORY_EVENTS, data);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		res = bin2hex(data, data_char, 32);
+> +		rc = res - data;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_FLASH_KEY:
+> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_FLASH_KEY_WRITE, data);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		res = bin2hex(data, data_char, 4);
+> +		rc = res - data;
+> +
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	data[rc] = '\n';
+> +	rc += 2;
+> +
+> +	return simple_read_from_buffer(buf, count, ppos, data, rc);
+> +}
+> +
+> +static ssize_t q54sj108a2_debugfs_write(struct file *file, const char __user *buf,
+> +					size_t count, loff_t *ppos)
+> +{
+> +	u8 flash_key[4];
+> +	u8 dst_data;
+> +	ssize_t rc;
+> +	int *idxp = file->private_data;
+> +	int idx = *idxp;
+> +	struct q54sj108a2_data *psu = to_psu(idxp, idx);
+> +
+> +	rc = i2c_smbus_write_byte_data(psu->client, PMBUS_WRITE_PROTECT, 0);
 > +	if (rc)
 > +		return rc;
 > +
-> +	*len = (unsigned long)fp.data - (unsigned long)data;
+> +	switch (idx) {
+> +	case Q54SJ108A2_DEBUGFS_OPERATION:
+> +		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_OPERATION, dst_data);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_CLEARFAULT:
+> +		rc = i2c_smbus_write_byte(psu->client, PMBUS_CLEAR_FAULTS);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_STOREDEFAULT:
+> +		flash_key[0] = 0x7E;
+> +		flash_key[1] = 0x15;
+> +		flash_key[2] = 0xDC;
+> +		flash_key[3] = 0x42;
+> +		rc = i2c_smbus_write_block_data(psu->client, PMBUS_FLASH_KEY_WRITE, 4, flash_key);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = i2c_smbus_write_byte(psu->client, STORE_DEFAULT_ALL);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
+> +		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_VOUT_OV_FAULT_RESPONSE, dst_data);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
+> +		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_IOUT_OC_FAULT_RESPONSE, dst_data);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE:
+> +		rc = i2c_smbus_write_byte(psu->client, ERASE_BLACKBOX_DATA);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		break;
+> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET:
+> +		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		rc = i2c_smbus_write_byte_data(psu->client, SET_HISTORY_EVENT_OFFSET, dst_data);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return count;
+> +}
+> +
+> +static const struct file_operations q54sj108a2_fops = {
+> +	.llseek = noop_llseek,
+> +	.read = q54sj108a2_debugfs_read,
+> +	.write = q54sj108a2_debugfs_write,
+> +	.open = simple_open,
+> +};
+> +
+> +static const struct i2c_device_id q54sj108a2_id[] = {
+> +	{ "q54sj108a2", q54sj108a2 },
+> +	{ },
+> +};
+> +
+> +MODULE_DEVICE_TABLE(i2c, q54sj108a2_id);
+> +
+> +static int q54sj108a2_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
+> +	enum chips chip_id;
+> +	int ret, i;
+> +	struct dentry *debugfs;
+> +	struct dentry *q54sj108a2_dir;
+> +	struct q54sj108a2_data *psu;
+> +
+> +	if (!i2c_check_functionality(client->adapter,
+> +				     I2C_FUNC_SMBUS_BYTE_DATA |
+> +				     I2C_FUNC_SMBUS_WORD_DATA |
+> +				     I2C_FUNC_SMBUS_BLOCK_DATA))
+> +		return -ENODEV;
+> +
+> +	if (client->dev.of_node)
+> +		chip_id = (enum chips)(unsigned long)of_device_get_match_data(dev);
+> +	else
+> +		chip_id = i2c_match_id(q54sj108a2_id, client)->driver_data;
+> +
+> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
+> +	if (ret < 0) {
+> +		dev_err(&client->dev, "Failed to read Manufacturer ID\n");
+> +		return ret;
+> +	}
+> +	if (ret != 5 || strncmp(buf, "DELTA", 5)) {
+> +		buf[ret] = '\0';
+> +		dev_err(dev, "Unsupported Manufacturer ID '%s'\n", buf);
+> +		return -ENODEV;
+> +	}
+> +
+> +	/*
+> +	 * The chips support reading PMBUS_MFR_MODEL.
+> +	 */
+> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to read Manufacturer Model\n");
+> +		return ret;
+> +	}
+> +	if (ret != 14 || strncmp(buf, "Q54SJ108A2", 10)) {
+> +		buf[ret] = '\0';
+> +		dev_err(dev, "Unsupported Manufacturer Model '%s'\n", buf);
+> +		return -ENODEV;
+> +	}
+> +
+> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_REVISION, buf);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to read Manufacturer Revision\n");
+> +		return ret;
+> +	}
+> +	if (ret != 4 || buf[0] != 'S') {
+> +		buf[ret] = '\0';
+> +		dev_err(dev, "Unsupported Manufacturer Revision '%s'\n", buf);
+> +		return -ENODEV;
+> +	}
+> +
+> +	ret = pmbus_do_probe(client, &q54sj108a2_info[chip_id]);
+> +	if (ret)
+> +		return ret;
+> +
+> +	psu = devm_kzalloc(&client->dev, sizeof(*psu), GFP_KERNEL);
+> +	if (!psu)
+> +		return 0;
+> +
+> +	psu->client = client;
+> +
+> +	debugfs = pmbus_get_debugfs_dir(client);
+> +
+> +	q54sj108a2_dir = debugfs_create_dir(client->name, debugfs);
+> +
+> +	for (i = 0; i < Q54SJ108A2_DEBUGFS_NUM_ENTRIES; ++i)
+> +		psu->debugfs_entries[i] = i;
+> +
+> +	debugfs_create_file("operation", 0644, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_OPERATION],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("clear_fault", 0200, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_CLEARFAULT],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("write_protect", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_WRITEPROTECT],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("store_default", 0200, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_STOREDEFAULT],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("vo_ov_response", 0644, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_VOOV_RESPONSE],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("io_oc_response", 0644, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_IOOC_RESPONSE],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("pmbus_revision", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_PMBUS_VERSION],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("mfr_id", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_ID],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("mfr_model", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_MODEL],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("mfr_revision", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_REVISION],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("mfr_location", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_LOCATION],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("blackbox_erase", 0200, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("blackbox_read_offset", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("blackbox_set_offset", 0200, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("blackbox_read", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_READ],
+> +			    &q54sj108a2_fops);
+> +	debugfs_create_file("flash_key", 0444, q54sj108a2_dir,
+> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_FLASH_KEY],
+> +			    &q54sj108a2_fops);
+> +
 > +	return 0;
 > +}
 > +
->  /**
->   * security_read_policy - read the policy.
-> + * @state: selinux_state
->   * @data: binary policy data
->   * @len: length of data in bytes
->   *
-> @@ -3885,8 +3911,6 @@ int security_read_policy(struct selinux_state *state,
->  			 void **data, size_t *len)
->  {
->  	struct selinux_policy *policy;
-> -	int rc;
-> -	struct policy_file fp;
->  
->  	policy = rcu_dereference_protected(
->  			state->policy, lockdep_is_held(&state->policy_mutex));
-> @@ -3898,14 +3922,43 @@ int security_read_policy(struct selinux_state *state,
->  	if (!*data)
->  		return -ENOMEM;
->  
-> -	fp.data = *data;
-> -	fp.len = *len;
-> +	return security_read_selinux_policy(policy, *data, len);
-> +}
->  
-> -	rc = policydb_write(&policy->policydb, &fp);
-> -	if (rc)
-> -		return rc;
-> +/**
-> + * security_read_policy_kernel - read the policy.
-> + * @state: selinux_state
-> + * @data: binary policy data
-> + * @len: length of data in bytes
-> + *
-> + * Allocates kernel memory for reading SELinux policy.
-> + * This function is for internal use only and should not
-> + * be used for returning data to user space.
-> + *
-> + * This function must be called with policy_mutex held.
-> + */
-> +int security_read_policy_kernel(struct selinux_state *state,
-> +				void **data, size_t *len)
-> +{
-> +	struct selinux_policy *policy;
-> +	int rc = 0;
->  
-> -	*len = (unsigned long)fp.data - (unsigned long)*data;
-> -	return 0;
-> +	policy = rcu_dereference_protected(
-> +			state->policy, lockdep_is_held(&state->policy_mutex));
-> +	if (!policy) {
-> +		rc = -EINVAL;
-> +		goto out;
-> +	}
+> +static const struct of_device_id q54sj108a2_of_match[] = {
+> +	{ .compatible = "delta,q54sj108a2", .data = (void *)q54sj108a2 },
+> +	{ },
+> +};
 > +
-> +	*len = policy->policydb.len;
-> +	*data = vmalloc(*len);
-> +	if (!*data) {
-> +		rc = -ENOMEM;
-> +		goto out;
-> +	}
->  
-> +	rc = security_read_selinux_policy(policy, *data, len);
+> +MODULE_DEVICE_TABLE(of, q54sj108a2_of_match);
 > +
-> +out:
-> +	return rc;
->  }
-> -- 
-> 2.17.1
-> 
+> +static struct i2c_driver q54sj108a2_driver = {
+> +	.driver = {
+> +		.name = "q54sj108a2",
+> +		.of_match_table = q54sj108a2_of_match,
+> +	},
+> +	.probe_new = q54sj108a2_probe,
+> +	.id_table = q54sj108a2_id,
+> +};
+> +
+> +module_i2c_driver(q54sj108a2_driver);
+> +
+> +MODULE_AUTHOR("Xiao.Ma <xiao.mx.ma@deltaww.com>");
+> +MODULE_DESCRIPTION("PMBus driver for Delta Q54SJ108A2 series modules");
+> +MODULE_LICENSE("GPL");
