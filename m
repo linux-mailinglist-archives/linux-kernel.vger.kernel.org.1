@@ -2,195 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E512D82BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B552D82C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436935AbgLKXax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 18:30:53 -0500
-Received: from aposti.net ([89.234.176.197]:56430 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407132AbgLKXaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 18:30:09 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Zhou Yanjie <zhouyanjie@zoho.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 2/2] pinctrl: ingenic: Rename registers from JZ4760_GPIO_* to JZ4770_GPIO_*
-Date:   Fri, 11 Dec 2020 23:28:10 +0000
-Message-Id: <20201211232810.261565-2-paul@crapouillou.net>
-In-Reply-To: <20201211232810.261565-1-paul@crapouillou.net>
-References: <20201211232810.261565-1-paul@crapouillou.net>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S2437277AbgLKXet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 18:34:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729817AbgLKXeY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 18:34:24 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398B0C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:33:44 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id g26so19302qkk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:33:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=mnk0yNaQYUtc+OGm2Ej0P6u5h1xpL6GiZ/YPBHS5LOU=;
+        b=c+eM5eQdQ+qiykEDoQ248iehOkFTnTi6bmZz/d+E0j8CJX7QCxjk8V3hpPsNuhBx7d
+         2R8hJlVesC97oveCy4PMWfKfVWBOc7fk0umYrduba7carksZmqhlcbKjR4r1d1iRS08W
+         /jvqX2Tr/4aHyAlhGUoDL5KEbqvaz3F363kf9i/w19D2vjmlN4KFowdkfgZj2VwMJXoh
+         +sR49VR0qb7yNqjKfXqgPBMH9zWTKLmG/ipOsIp5wlM8l8JMeR/GTHcW4scrW7qj8Syq
+         QEz5N0bmmL/3UifOOfG+XHMFi/gqGMmC6lR4LQPfXLiwZirO2XmO7raIUj2nv6eGWlEn
+         iZvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=mnk0yNaQYUtc+OGm2Ej0P6u5h1xpL6GiZ/YPBHS5LOU=;
+        b=lkyBCjPCy9S+Y4gnE6fuS0/sDMkKalchSHlSWrMhgLPAY1Sgik4ZSwau7Cow+v2ygP
+         60Qgbuz87j7X28kE5DOqxDL//mPEaPTjpk/XcI0aq8MDK4B9wOFThB3y8eZqS5kgPoh/
+         sjjie9TSlxkF14ZIxAsf8NnGzgVt/1vso3rSbnKnTGG86LJK2sxcE7NUt8QI1TwGWDsX
+         cIgfXEMVwx0XoDAVSXrGazN3BlecYSPR9ZDKTwcA6ww0uNK8xa9Hw1G/MzFsjh6nfmlM
+         oQGerimxeEzAN0K4Rw6M6G160YwTUQFPVpQDv8HaI8HGtyYJBkzer6h27DKDDyDxHdE6
+         uQDw==
+X-Gm-Message-State: AOAM531QHiUfSnTzOuuN9+XBW7KYCPh+0B2T+OaTXeOav4wu+VVMUuPm
+        M8W0BaWoyBMzP7j59dOXqZoyRGuGUgOC
+X-Google-Smtp-Source: ABdhPJw3rUExUwP8KkOPYO+NmCn8TOjKgcr1TfCSFfKJW1sOnzBlf40ElWIivAz7FlsIR8bHwBIXPS8NZ156
+Sender: "brianvv via sendgmr" <brianvv@brianvv.c.googlers.com>
+X-Received: from brianvv.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:348])
+ (user=brianvv job=sendgmr) by 2002:a0c:f283:: with SMTP id
+ k3mr13068839qvl.48.1607729623384; Fri, 11 Dec 2020 15:33:43 -0800 (PST)
+Date:   Fri, 11 Dec 2020 23:33:36 +0000
+Message-Id: <20201211233340.1503242-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH net-next v2 0/4] net: avoid indirect calls in dst functions
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that JZ4760 support has been fixed, it looks wrong to have
-JZ4760_GPIO_* registers being written if the SoC is a JZ4770 or later.
+From: brianvv <brianvv@google.com>
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/pinctrl/pinctrl-ingenic.c | 54 +++++++++++++++----------------
- 1 file changed, 27 insertions(+), 27 deletions(-)
+Use of the indirect call wrappers in some dst related functions for the
+ipv6/ipv4 case. This is a small improvent for CONFIG_RETPOLINE=y
 
-diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
-index a7804feb58c7..8b259c67d930 100644
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -38,11 +38,11 @@
- #define JZ4740_GPIO_TRIG	0x70
- #define JZ4740_GPIO_FLAG	0x80
- 
--#define JZ4760_GPIO_INT		0x10
--#define JZ4760_GPIO_PAT1	0x30
--#define JZ4760_GPIO_PAT0	0x40
--#define JZ4760_GPIO_FLAG	0x50
--#define JZ4760_GPIO_PEN		0x70
-+#define JZ4770_GPIO_INT		0x10
-+#define JZ4770_GPIO_PAT1	0x30
-+#define JZ4770_GPIO_PAT0	0x40
-+#define JZ4770_GPIO_FLAG	0x50
-+#define JZ4770_GPIO_PEN		0x70
- 
- #define X1830_GPIO_PEL			0x110
- #define X1830_GPIO_PEH			0x120
-@@ -1690,7 +1690,7 @@ static void ingenic_gpio_set_value(struct ingenic_gpio_chip *jzgc,
- 				   u8 offset, int value)
- {
- 	if (jzgc->jzpc->info->version >= ID_JZ4770)
--		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_PAT0, offset, !!value);
-+		ingenic_gpio_set_bit(jzgc, JZ4770_GPIO_PAT0, offset, !!value);
- 	else
- 		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_DATA, offset, !!value);
- }
-@@ -1720,8 +1720,8 @@ static void irq_set_type(struct ingenic_gpio_chip *jzgc,
- 	}
- 
- 	if (jzgc->jzpc->info->version >= ID_JZ4770) {
--		reg1 = JZ4760_GPIO_PAT1;
--		reg2 = JZ4760_GPIO_PAT0;
-+		reg1 = JZ4770_GPIO_PAT1;
-+		reg2 = JZ4770_GPIO_PAT0;
- 	} else {
- 		reg1 = JZ4740_GPIO_TRIG;
- 		reg2 = JZ4740_GPIO_DIR;
-@@ -1760,7 +1760,7 @@ static void ingenic_gpio_irq_enable(struct irq_data *irqd)
- 	int irq = irqd->hwirq;
- 
- 	if (jzgc->jzpc->info->version >= ID_JZ4770)
--		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_INT, irq, true);
-+		ingenic_gpio_set_bit(jzgc, JZ4770_GPIO_INT, irq, true);
- 	else
- 		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_SELECT, irq, true);
- 
-@@ -1776,7 +1776,7 @@ static void ingenic_gpio_irq_disable(struct irq_data *irqd)
- 	ingenic_gpio_irq_mask(irqd);
- 
- 	if (jzgc->jzpc->info->version >= ID_JZ4770)
--		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_INT, irq, false);
-+		ingenic_gpio_set_bit(jzgc, JZ4770_GPIO_INT, irq, false);
- 	else
- 		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_SELECT, irq, false);
- }
-@@ -1801,7 +1801,7 @@ static void ingenic_gpio_irq_ack(struct irq_data *irqd)
- 	}
- 
- 	if (jzgc->jzpc->info->version >= ID_JZ4770)
--		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_FLAG, irq, false);
-+		ingenic_gpio_set_bit(jzgc, JZ4770_GPIO_FLAG, irq, false);
- 	else
- 		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_DATA, irq, true);
- }
-@@ -1858,7 +1858,7 @@ static void ingenic_gpio_irq_handler(struct irq_desc *desc)
- 	chained_irq_enter(irq_chip, desc);
- 
- 	if (jzgc->jzpc->info->version >= ID_JZ4770)
--		flag = ingenic_gpio_read_reg(jzgc, JZ4760_GPIO_FLAG);
-+		flag = ingenic_gpio_read_reg(jzgc, JZ4770_GPIO_FLAG);
- 	else
- 		flag = ingenic_gpio_read_reg(jzgc, JZ4740_GPIO_FLAG);
- 
-@@ -1940,8 +1940,8 @@ static int ingenic_gpio_get_direction(struct gpio_chip *gc, unsigned int offset)
- 	unsigned int pin = gc->base + offset;
- 
- 	if (jzpc->info->version >= ID_JZ4770) {
--		if (ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_INT) ||
--		    ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_PAT1))
-+		if (ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_INT) ||
-+		    ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PAT1))
- 			return GPIO_LINE_DIRECTION_IN;
- 		return GPIO_LINE_DIRECTION_OUT;
- 	}
-@@ -1992,16 +1992,16 @@ static int ingenic_pinmux_set_pin_fn(struct ingenic_pinctrl *jzpc,
- 			'A' + offt, idx, func);
- 
- 	if (jzpc->info->version >= ID_X1000) {
--		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_INT, false);
-+		ingenic_shadow_config_pin(jzpc, pin, JZ4770_GPIO_INT, false);
- 		ingenic_shadow_config_pin(jzpc, pin, GPIO_MSK, false);
--		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, func & 0x2);
--		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_PAT0, func & 0x1);
-+		ingenic_shadow_config_pin(jzpc, pin, JZ4770_GPIO_PAT1, func & 0x2);
-+		ingenic_shadow_config_pin(jzpc, pin, JZ4770_GPIO_PAT0, func & 0x1);
- 		ingenic_shadow_config_pin_load(jzpc, pin);
- 	} else if (jzpc->info->version >= ID_JZ4770) {
--		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_INT, false);
-+		ingenic_config_pin(jzpc, pin, JZ4770_GPIO_INT, false);
- 		ingenic_config_pin(jzpc, pin, GPIO_MSK, false);
--		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, func & 0x2);
--		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PAT0, func & 0x1);
-+		ingenic_config_pin(jzpc, pin, JZ4770_GPIO_PAT1, func & 0x2);
-+		ingenic_config_pin(jzpc, pin, JZ4770_GPIO_PAT0, func & 0x1);
- 	} else {
- 		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_FUNC, true);
- 		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_TRIG, func & 0x2);
-@@ -2058,14 +2058,14 @@ static int ingenic_pinmux_gpio_set_direction(struct pinctrl_dev *pctldev,
- 			'A' + offt, idx, input ? "in" : "out");
- 
- 	if (jzpc->info->version >= ID_X1000) {
--		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_INT, false);
-+		ingenic_shadow_config_pin(jzpc, pin, JZ4770_GPIO_INT, false);
- 		ingenic_shadow_config_pin(jzpc, pin, GPIO_MSK, true);
--		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, input);
-+		ingenic_shadow_config_pin(jzpc, pin, JZ4770_GPIO_PAT1, input);
- 		ingenic_shadow_config_pin_load(jzpc, pin);
- 	} else if (jzpc->info->version >= ID_JZ4770) {
--		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_INT, false);
-+		ingenic_config_pin(jzpc, pin, JZ4770_GPIO_INT, false);
- 		ingenic_config_pin(jzpc, pin, GPIO_MSK, true);
--		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, input);
-+		ingenic_config_pin(jzpc, pin, JZ4770_GPIO_PAT1, input);
- 	} else {
- 		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_SELECT, false);
- 		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_DIR, !input);
-@@ -2093,7 +2093,7 @@ static int ingenic_pinconf_get(struct pinctrl_dev *pctldev,
- 	bool pull;
- 
- 	if (jzpc->info->version >= ID_JZ4770)
--		pull = !ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_PEN);
-+		pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
- 	else
- 		pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
- 
-@@ -2143,7 +2143,7 @@ static void ingenic_set_bias(struct ingenic_pinctrl *jzpc,
- 		}
- 
- 	} else if (jzpc->info->version >= ID_JZ4770) {
--		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PEN, !bias);
-+		ingenic_config_pin(jzpc, pin, JZ4770_GPIO_PEN, !bias);
- 	} else {
- 		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_PULL_DIS, !bias);
- 	}
-@@ -2153,7 +2153,7 @@ static void ingenic_set_output_level(struct ingenic_pinctrl *jzpc,
- 				     unsigned int pin, bool high)
- {
- 	if (jzpc->info->version >= ID_JZ4770)
--		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PAT0, high);
-+		ingenic_config_pin(jzpc, pin, JZ4770_GPIO_PAT0, high);
- 	else
- 		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_DATA, high);
- }
+Changed in v2:
+-fix build issues reported by kernel test robot
+
+brianvv (4):
+  net: use indirect call helpers for dst_input
+  net: use indirect call helpers for dst_output
+  net: use indirect call helpers for dst_mtu
+  net: indirect call helpers for ipv4/ipv6 dst_check functions
+
+ include/net/dst.h     | 25 +++++++++++++++++++++----
+ net/core/sock.c       | 12 ++++++++++--
+ net/ipv4/ip_input.c   |  1 +
+ net/ipv4/ip_output.c  |  1 +
+ net/ipv4/route.c      | 13 +++++++++----
+ net/ipv4/tcp_ipv4.c   |  5 ++++-
+ net/ipv6/ip6_output.c |  1 +
+ net/ipv6/route.c      | 13 +++++++++----
+ net/ipv6/tcp_ipv6.c   |  5 ++++-
+ 9 files changed, 60 insertions(+), 16 deletions(-)
+
 -- 
-2.29.2
+2.29.2.576.ga3fc446d84-goog
 
