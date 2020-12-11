@@ -2,137 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCDE52D7DCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:14:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B43F12D7DD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393089AbgLKSNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 13:13:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50890 "EHLO
+        id S1732084AbgLKSNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 13:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390729AbgLKSNE (ORCPT
+        with ESMTP id S2388079AbgLKSNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 13:13:04 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68517C0613CF;
-        Fri, 11 Dec 2020 10:12:24 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id s21so7450492pfu.13;
-        Fri, 11 Dec 2020 10:12:24 -0800 (PST)
+        Fri, 11 Dec 2020 13:13:25 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D58C0613D3;
+        Fri, 11 Dec 2020 10:12:45 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id g20so13624085ejb.1;
+        Fri, 11 Dec 2020 10:12:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q/1zdMH3DpxGtZ8QgtITmolgonObU/7AjOPUuWKrWNo=;
-        b=Pm8buLXst2LcV9x4pk4vIxyybuwSbvL97o6tQP/6i0ZC0zOJ6xhhPvOmmJHnVFkhgw
-         sQfgcxJImHA+DnVZbZxb64zhatDbthp68cZ4iRaEqM/K8XSe9UZnfE94uYtkDbOOpabu
-         L1rj/JPmJET4DAk/lcrawpEkrx9i3ul2i6qGlaQuFoK2UkPf+SMWdOeOPPS8QAdKSG2Q
-         g24KIZVw1nm3kfJCayecl50J7bltlRshvQcWiGMUSmazoa8KfAW/iwqyejRvRxGzsh3A
-         q/OBzRHzggVvK36H+lQNs9ICk+Z16dfzwLBUVGvlOwEUqmBMnCQtHV8wDQuwIxn+Jo8v
-         0Yfw==
+        h=from:to:cc:subject:date:message-id;
+        bh=jXNCL1l6e/6115GRYXv1hRB54orJ1B3shh8vugN/3Pw=;
+        b=qhyj3EQJNwQ/3D6OUfCWA4D2e62t7pnzDMZYS3v3pJMMV+ReNqh0iUKz6A6fsA5GT4
+         U7dcXm/JNUkQlfLn3CLN62x2t+nNurtUe6+s/lHvddDAuS3+6vKbsxpmqu8cSh3bHAl+
+         5Pg6DcPR/8eR1U3R/Q1fyswYLvoU7EiWR5XEAYdEvw5SUP+DJ/yD5Ttr9lajJ3zQt7mK
+         VZFwspepb98fxekOgZnPzFzzQ1pl9GGZO1YLqDuxLB7N6PKdCK4jL7RSeDlHBwDR/woS
+         ofbLQp/Ox2N2KiSyFR10Mzjmx5yrKH/ll0S0cMeLtrpB3XrNHQk8kQRSEFHd6wlgZZWx
+         74Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q/1zdMH3DpxGtZ8QgtITmolgonObU/7AjOPUuWKrWNo=;
-        b=EUUxuVDwUWkj1VArEtjSBAzqeN4Wr6zM05G+Q3mhyiAFFwoot0Tjkm3KXPYozOD/xr
-         86NeIsAM8IDCmetb9oFwO7zyiphFE5DUt4+ORhznegIu4TRh0WU0TlpNEK+cgdNJNkmI
-         B1zK7w2FH1XQwMIOHWK4VsMbpXa803wM+hRRf0Y8QGQpHZOT8svJNXzrm+UDXHM/4gLw
-         UMMLOsnR1opUvQ27r5JYsBE09ElPEDJej9h2Rtb7vEP07p40Ol0yHrsfc/+JTjfU4Xpo
-         zSsGg2zHm4ifwozvvG1U+BS9+++ABI5xWdVi7CuzGpqAZyBB7erM/tgI3wpkUwrJiynZ
-         72Ng==
-X-Gm-Message-State: AOAM530wzfZyvYP8kvZQqBiDlVHVmCQaNvNQShgjEYbz+ZgL6ANmMuCa
-        6AQKarhTbx0Jga4itoXmo5MQmDtx31BldQk7wZeN5o4nx2lt2mU9
-X-Google-Smtp-Source: ABdhPJzPNFm8swDHOmLl35eT5h+YQB676NTtT2BWFgfALxfYZ8r2UnWa+iJwNQSLiKZOMQcPIak2nNSo7eC4Ue1vtXA=
-X-Received: by 2002:a63:4002:: with SMTP id n2mr13054398pga.4.1607710343875;
- Fri, 11 Dec 2020 10:12:23 -0800 (PST)
-MIME-Version: 1.0
-References: <20201210192536.118432146@linutronix.de> <20201210194044.157283633@linutronix.de>
-In-Reply-To: <20201210194044.157283633@linutronix.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 11 Dec 2020 20:12:07 +0200
-Message-ID: <CAHp75Veo9aQLCp9ZuCcoexPLHM=R_PEu6uhP_P2bSpsVzyUaNQ@mail.gmail.com>
-Subject: Re: [patch 16/30] mfd: ab8500-debugfs: Remove the racy fiddling with irq_desc
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=jXNCL1l6e/6115GRYXv1hRB54orJ1B3shh8vugN/3Pw=;
+        b=hVqrZrHOML2ZthgSARlWDIISxSEK1qZxe7rCDNwHM2oWeUI1BHqnGavPQVBVQDm4Vg
+         S05OBFiRkhH3kLqqUvZDnM6ea1rfRKWNCmNnJoh3YBSa/JJ/IAcj2UZNLRNXC2Xx/zyy
+         XBxk1Ja2niCTDH1ca9tdkFCa0fsc2Ac8VXzJ9BxN/vObhpa4+DS1t0N/NpSihDxs4pSR
+         1AgBHsPpRGTdcZN44GtyEp/WZnFUPTk4jWIdSx7o7ncxVXp1kXPqwM/e1YgkQt89DAmQ
+         sief7m2Vb3/AF1m7GPzlozpGueb9TF9hsb0Hr6kgwVGyDmIJHzpZhLSmRe7DtKWKkzwS
+         uSNA==
+X-Gm-Message-State: AOAM530EbdSkx/kT+shu/vp3vv+nAlFdIkM9BI8LkHX8Q8Az4l3CnKRp
+        MhnXCK1/H9NWrwEmLRoSbVU=
+X-Google-Smtp-Source: ABdhPJyx+onXAuuShWmy6955djm1AEHtWv491E16bAkjwZvMrUAywnC+LKDsAlkf4s11EFqOsjOc2g==
+X-Received: by 2002:a17:906:6b88:: with SMTP id l8mr12186390ejr.482.1607710363877;
+        Fri, 11 Dec 2020 10:12:43 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d8e:cf00:1134:a93b:bd3b:5cd6])
+        by smtp.gmail.com with ESMTPSA id ho12sm6914344ejc.45.2020.12.11.10.12.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 10:12:42 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org
+Cc:     Hannes Reinecke <hare@suse.de>, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] block: drop dead assignments in loop_init()
+Date:   Fri, 11 Dec 2020 19:12:36 +0100
+Message-Id: <20201211181236.25755-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 9:57 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> First of all drivers have absolutely no business to dig into the internals
-> of an irq descriptor. That's core code and subject to change. All of this
-> information is readily available to /proc/interrupts in a safe and race
-> free way.
->
-> Remove the inspection code which is a blatant violation of subsystem
-> boundaries and racy against concurrent modifications of the interrupt
-> descriptor.
->
-> Print the irq line instead so the information can be looked up in a sane
-> way in /proc/interrupts.
+Commit 8410d38c2552 ("loop: use __register_blkdev to allocate devices on
+demand") simplified loop_init(); so computing the range of the block region
+is not required anymore and can be dropped.
 
-...
+Drop dead assignments in loop_init().
 
-> -               seq_printf(s, "%3i:  %6i %4i",
-> +               seq_printf(s, "%3i:  %6i %4i %4i\n",
+As compilers will detect these unneeded assignments and optimize this,
+the resulting object code is identical before and after this change.
 
-Seems different specifiers, I think the intention was something like
-               seq_printf(s, "%3i:  %4i %6i %4i\n",
+No functional change. No change in object code.
 
->                            line,
-> +                          line + irq_first,
->                            num_interrupts[line],
->                            num_wake_interrupts[line]);
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Christoph, please ack.
 
+Jens, please pick this minor non-urgent clean-up patch on your
+block -next tree on top of Christoph's commit above.
 
+ drivers/block/loop.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index d2ce1ddc192d..eed4bc5ef5c5 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -2304,7 +2304,6 @@ MODULE_ALIAS("devname:loop-control");
+ static int __init loop_init(void)
+ {
+ 	int i, nr;
+-	unsigned long range;
+ 	struct loop_device *lo;
+ 	int err;
+ 
+@@ -2343,10 +2342,8 @@ static int __init loop_init(void)
+ 	 */
+ 	if (max_loop) {
+ 		nr = max_loop;
+-		range = max_loop << part_shift;
+ 	} else {
+ 		nr = CONFIG_BLK_DEV_LOOP_MIN_COUNT;
+-		range = 1UL << MINORBITS;
+ 	}
+ 
+ 	err = misc_register(&loop_misc);
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
