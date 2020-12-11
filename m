@@ -2,208 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CD42D754C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:08:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C83502D7555
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395104AbgLKMIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 07:08:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391403AbgLKMHh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:07:37 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F87CC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 04:06:57 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id dk8so9115133edb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 04:06:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=oXxORYWlJeTJ6foPxfuUrfc27BGi4BJpM/a57Gv3x/Q=;
-        b=OtulTNkb9jUEHUWYERO314Xq3VcnpUxkSZ27ReRfNqzilKFzEQM4u7gU6zXyePxAiP
-         6Kijhg5cn0EEogincBwMpPq6yP0ZhPxlQuNw5zWtBd6ayKOIRW4Qdo9UD6ajQHtmBKMm
-         g3Y/n8K1otP7EfX1rLCeJa2zcITGlSQYJS1QCdL/jSt6vKoOdUxc4oSC/HENrNxVK7A4
-         15HAmBzH7g1xtynALWCnSyubvWUd5ocR6/E8A0bORLTW++Uy5wJ47gX7kEglPdXajb0A
-         WtipOvrTrpeWDjSTLgFb54iQZkzkynvRHXRWUSkodu55dqyG/dEX4ej/JwuaM3wPs+pc
-         5Z0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=oXxORYWlJeTJ6foPxfuUrfc27BGi4BJpM/a57Gv3x/Q=;
-        b=TJNNiNYpUqjBWGW1YEw1waCPD/fXvoB/jgmm5PfzRAlC/JYVPxn20vHGplTQh9O+8s
-         1ksAjdXc/qRbFZwELLlndhhsxuSBsHQCP+afzvRCuu8+XjL11fiYXg58v0zXVXyQEgpI
-         e/vX2RA2mrsvnE+YqO1QQKEh0gEgURVM+nZcq+7IGyOuPlfhOw+N1nAxu1ltHdjyG1gv
-         5mJ5NRvemhqS0fMvDi6u1QvNjCG3YhYCnCx7CHaJuUlKlaakE89T9+WGDTcSgIhHKooG
-         lOQCLtGmC5cDX3MZFkB5bbg5ACFlSvmKMwScjiz4Tfk28pLeD6XDPX0HZp5VHPBuBZsX
-         GMcg==
-X-Gm-Message-State: AOAM532HE4CQr02Hj8578fC2j2DE1FnBRL2LJdQ7Ht4fX2mPTjmyKorA
-        +uV7rFEipWxF1vONjMP2SBQxBK0agcIEkjgldfWo0g==
-X-Google-Smtp-Source: ABdhPJw2UZxXj04msNF7iASVrNltc93EVvXNIASzKCjfhmaWhXIAkSLAPw43p06JR23HXeJmtOX5Cpf5WITV4A57uYU=
-X-Received: by 2002:a05:6402:3074:: with SMTP id bs20mr11440278edb.365.1607688415899;
- Fri, 11 Dec 2020 04:06:55 -0800 (PST)
+        id S2391830AbgLKMJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 07:09:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389342AbgLKMJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 07:09:05 -0500
+Date:   Fri, 11 Dec 2020 13:09:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607688503;
+        bh=41rS8U52qZEUqZ7Xg2L67KOIODeUL5vsHKWqEJrq3PY=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aHNI8D5uOwfHjKS+cWBLwZ0CjZq9PhyzDYeD/RKhSB8O2yaSz6s7CWRprq6HDrIpW
+         Y/LGtZrskpkFmtyZmHNjERogoKuUR0fTZvICbxeWa297qH/ZHEZW32TNbugsC76gTP
+         IEoWW4J62N7D8fqqEANDZScrAj6PO1FhFTvaLvyU=
+From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
+Message-ID: <X9NhfyEuPTxezHt9@kroah.com>
+References: <X9Jw+srprdT8tquZ@kroah.com>
+ <20201210194625.GA17516@dincontrollerdev>
+ <X9MIwqJBG69M5uHq@kroah.com>
+ <20201211060943.GA1065@dincontrollerdev>
+ <X9MPuX1x4MezwkEj@kroah.com>
+ <20201211063752.GB1065@dincontrollerdev>
+ <X9MgvZ7bWX7HMNir@kroah.com>
+ <20201211081634.GC1065@dincontrollerdev>
+ <X9MxM+aEKIAHqd4G@kroah.com>
+ <20201211091823.GD1065@dincontrollerdev>
 MIME-Version: 1.0
-References: <20201210142600.887734129@linuxfoundation.org>
-In-Reply-To: <20201210142600.887734129@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 11 Dec 2020 17:36:44 +0530
-Message-ID: <CA+G9fYs_5xr_yzQ-ny9-x_e-+x+sNmWAbU9BbmtnswVzuZDuxg@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/39] 4.4.248-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201211091823.GD1065@dincontrollerdev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 at 19:58, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.248 release.
-> There are 39 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 12 Dec 2020 14:25:47 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.248-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Fri, Dec 11, 2020 at 09:18:24AM +0000, József Horváth wrote:
+> On Fri, Dec 11, 2020 at 09:43:31AM +0100, 'Greg Kroah-Hartman' wrote:
+> > On Fri, Dec 11, 2020 at 08:16:34AM +0000, József Horváth wrote:
+> > > On Fri, Dec 11, 2020 at 08:33:17AM +0100, 'Greg Kroah-Hartman' wrote:
+> > > > On Fri, Dec 11, 2020 at 06:37:52AM +0000, József Horváth wrote:
+> > > > > On Fri, Dec 11, 2020 at 07:20:41AM +0100, 'Greg Kroah-Hartman' wrote:
+> > > > > > On Fri, Dec 11, 2020 at 06:09:43AM +0000, József Horváth wrote:
+> > > > > > > On Fri, Dec 11, 2020 at 06:50:58AM +0100, 'Greg Kroah-Hartman' wrote:
+> > > > > > > > On Thu, Dec 10, 2020 at 07:46:25PM +0000, József Horváth wrote:
+> > > > > > > > > On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
+> > > > > > > > > > On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
+> > > > > > > > > > > This is a serial port driver for
+> > > > > > > > > > > Silicon Labs Si4455 Sub-GHz transciver.
+> > > > > > > > > > > +
+> > > > > > > > > > > +#define BASE_TTYIOC_PRIVATE		0xA0
+> > > > > > > > > > > +/* Set EZConfig.
+> > > > > > > > > > > + * After this ioctl call, the driver restarts the si4455,
+> > > > > > > > > > > + * then apply the new configuration and patch.
+> > > > > > > > > > > + */
+> > > > > > > > > > > +#define SI4455_IOC_SEZC		_IOW('T', \
+> > > > > > > > > > > +				     BASE_TTYIOC_PRIVATE + 0x01, \
+> > > > > > > > > > > +				     struct si4455_iocbuff)
+> > > > > > > > > > 
+> > > > > > > > > > Why does a serial driver have private ioctls?  Please no, don't do that.
+> > > > > > > > > 
+> > > > > > > > > I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
+> > > > > > > > > In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
+> > > > > > > > 
+> > > > > > > > My point is, a serial driver should NOT have any custom ioctls.
+> > > > > > > > 
+> > > > > > > > > I can change it to BASE_TTYIOC or SI4455_IOC_BASE
+> > > > > > > > > 
+> > > > > > > > > > Implement the basic serial driver first, and then we can talk about
+> > > > > > > > > > "custom" configurations and the like, using the correct apis.
+> > > > > > > > > 
+> > > > > > > > > Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
+> > > > > > > > > The cofiguration for interface is provided by user for application.
+> > > > > > > > 
+> > > > > > > > That is what a device tree is for, to configure the device to have the
+> > > > > > > > correct system configuration, why can't that be the same here?
+> > > > > > > > 
+> > > > > > > > > It contains the base frequency, channel spacing, modulation, and a lot
+> > > > > > > > > of more stuff, and generated by Silicon Labs Wireless Development
+> > > > > > > > > Suite.
+> > > > > > > > > The generated configuration is in a non public(compressed,
+> > > > > > > > > encrypted...who knows) format, so without this the driver can't
+> > > > > > > > > provide configuration parameters to Si4455.
+> > > > > > > > 
+> > > > > > > > So we have to take a "custom" userspace blob and send it to the device
+> > > > > > > > to configure it properly?  Like Jiri said, sounds like firmware, so just
+> > > > > > > > use that interface instead.
+> > > > > > > 
+> > > > > > > I checked Jiri's suggestion, and it is a good solution to replace SI4455_IOC_SEZC(configuration) and SI4455_IOC_SEZP(firmware patch).
+> > > > > > > I can move SI4455_IOC_SSIZ(package size) to device tree property.
+> > > > > > > 
+> > > > > > > Maybe you have good suggestion for the following:
+> > > > > > > SI4455_IOC_STXC -> Radio transmit channel index. It is a real use case to control this parameter by user at runtime.
+> > > > > > > SI4455_IOC_SRXC -> Radio receive channel index. It is a real use case to control this parameter by user at runtime.
+> > > > > > 
+> > > > > > These are not serial port things, why would a serial port care about
+> > > > > > these?
+> > > > > 
+> > > > > You are right, these are not regular serial port things, but this device is not a regular uart, it is a sub-GHz transciever, digital radio.
+> > > > > This driver tries to represent it as a serial port to user.
+> > > > 
+> > > > Is that the correct representation to be using here?  Why not act like a
+> > > > proper radio device instead?  That way you get to use the normal kernel
+> > > > apis for radio devices.
+> > > 
+> > > In my mind it is absolute a serial device by the application.
+> > 
+> > What is the application?  Traditionally serial ports don't need radio signals :)
+> 
+> The application is connecting newly developed sensors(with only rf interface) and legacy sensors(with regular serial communication over rs-485 with modbus) keeping the legacy user software.
+> 
+> User sw [Java]
+> 	<-> /dev/ttyXXX
+> 		<-> si4455[driver]
+> 			<-> si4455[hardware]
+> 				<---air---> new device[si4455+ARM Cortex-M0] 1
+> 					+-> new device[si4455+ARM Cortex-M0] 2
+> 					+-> new device[si4455+ARM Cortex-M0] n
+> 					+-> gateway[si4455+ARM Cortex-M0]<---RS485--> Legacy device 1
+> 										  +-> Legacy device 2
+> 										  +-> Legacy device n
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+If these are "sensors", why are you using a tty interface at all, and
+not just using the correct iio interface for them?
 
-Summary
-------------------------------------------------------------------------
+thanks,
 
-kernel: 4.4.248-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: 6564de77497b736985693950cf537add679bfa21
-git describe: v4.4.247-39-g6564de77497b
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
-y/build/v4.4.247-39-g6564de77497b
-
-No regressions (compared to build v4.4.247)
-
-No fixes (compared to build v4.4.247)
-
-Ran 12094 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- i386
-- juno-r2 - arm64
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-controllers-tests
-* ltp-tracing-tests
-* libhugetlbfs
-* v4l2-compliance
-* install-android-platform-tools-r2600
-* network-basic-tests
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.248-rc1
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git branch: 4.4.248-rc1-hikey-20201210-875
-git commit: 16dc859ce8a7a0d97f1a9f71ecb185b4d5cf574b
-git describe: 4.4.248-rc1-hikey-20201210-875
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.248-rc1-hikey-20201210-875
-
-No regressions (compared to build 4.4.248-rc1-hikey-20201209-872)
-
-No fixes (compared to build 4.4.248-rc1-hikey-20201209-872)
-
-Ran 433 total tests in the following environments and test suites.
-
-Environments
---------------
-- hi6220-hikey - arm64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* spectre-meltdown-checker-test
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+greg k-h
