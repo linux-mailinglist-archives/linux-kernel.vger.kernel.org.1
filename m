@@ -2,114 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CCD2D7217
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1AB2D720B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437118AbgLKIpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:45:45 -0500
-Received: from mga02.intel.com ([134.134.136.20]:62644 "EHLO mga02.intel.com"
+        id S2437012AbgLKInb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:43:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437082AbgLKIpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:45:06 -0500
-IronPort-SDR: M9mKBsFJojaXv7/dWkFtmzzmzGG3Sp3sEO2+W3RSmv702udVQR8tzVy9ak++Qsxd+4XRkVKiYX
- kJgCZYLjc5GA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="161451223"
-X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
-   d="scan'208";a="161451223"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 00:43:15 -0800
-IronPort-SDR: NZWOoAWh8L8FANn9o6CzLYmtpSgJl5ks86uX4joqPN/B3wgis9y1xmOkqUfdNrMq7Pb07kH/I4
- P3eS6x9mn4gA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
-   d="scan'208";a="440617236"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 11 Dec 2020 00:43:13 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 11 Dec 2020 10:43:12 +0200
-Date:   Fri, 11 Dec 2020 10:43:12 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] usb: typec: tcpm: Update vbus_vsafe0v on init
-Message-ID: <20201211084312.GG1594451@kuha.fi.intel.com>
-References: <20201211071911.2205197-1-badhri@google.com>
+        id S1730095AbgLKInA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:43:00 -0500
+Date:   Fri, 11 Dec 2020 09:43:31 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607676139;
+        bh=EhRpln3hFA6ZsGGfSaHMENiE5WlmKDmn4JFe4GfWzrI=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ml0J+KcSp+oPAv9p0m+yfLeIVrtRpa9w9no8zXlTj2MYDxqrk8QelFgkoxHrYlm56
+         fnHpqreXqiUTY3E4VWgRXIFc+tgJEBokwRq55zmAlpsvaB/I5O2QaX6iXS9BOMTptv
+         Nm0AW6rzFQIovFe2xNOvzQVfsOSvAuAON8K2LNXA=
+From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
+Message-ID: <X9MxM+aEKIAHqd4G@kroah.com>
+References: <20201210170443.GA17304@dincontrollerdev>
+ <X9Jw+srprdT8tquZ@kroah.com>
+ <20201210194625.GA17516@dincontrollerdev>
+ <X9MIwqJBG69M5uHq@kroah.com>
+ <20201211060943.GA1065@dincontrollerdev>
+ <X9MPuX1x4MezwkEj@kroah.com>
+ <20201211063752.GB1065@dincontrollerdev>
+ <X9MgvZ7bWX7HMNir@kroah.com>
+ <20201211081634.GC1065@dincontrollerdev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201211071911.2205197-1-badhri@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201211081634.GC1065@dincontrollerdev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 11:19:11PM -0800, Badhri Jagan Sridharan wrote:
-> During init, vbus_vsafe0v does not get updated till the first
-> connect as a sink. This causes TCPM to be stuck in SRC_ATTACH_WAIT
-> state while booting with a sink (For instance: a headset) connected.
+On Fri, Dec 11, 2020 at 08:16:34AM +0000, József Horváth wrote:
+> On Fri, Dec 11, 2020 at 08:33:17AM +0100, 'Greg Kroah-Hartman' wrote:
+> > On Fri, Dec 11, 2020 at 06:37:52AM +0000, József Horváth wrote:
+> > > On Fri, Dec 11, 2020 at 07:20:41AM +0100, 'Greg Kroah-Hartman' wrote:
+> > > > On Fri, Dec 11, 2020 at 06:09:43AM +0000, József Horváth wrote:
+> > > > > On Fri, Dec 11, 2020 at 06:50:58AM +0100, 'Greg Kroah-Hartman' wrote:
+> > > > > > On Thu, Dec 10, 2020 at 07:46:25PM +0000, József Horváth wrote:
+> > > > > > > On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
+> > > > > > > > On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
+> > > > > > > > > This is a serial port driver for
+> > > > > > > > > Silicon Labs Si4455 Sub-GHz transciver.
+> > > > > > > > > +
+> > > > > > > > > +#define BASE_TTYIOC_PRIVATE		0xA0
+> > > > > > > > > +/* Set EZConfig.
+> > > > > > > > > + * After this ioctl call, the driver restarts the si4455,
+> > > > > > > > > + * then apply the new configuration and patch.
+> > > > > > > > > + */
+> > > > > > > > > +#define SI4455_IOC_SEZC		_IOW('T', \
+> > > > > > > > > +				     BASE_TTYIOC_PRIVATE + 0x01, \
+> > > > > > > > > +				     struct si4455_iocbuff)
+> > > > > > > > 
+> > > > > > > > Why does a serial driver have private ioctls?  Please no, don't do that.
+> > > > > > > 
+> > > > > > > I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
+> > > > > > > In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
+> > > > > > 
+> > > > > > My point is, a serial driver should NOT have any custom ioctls.
+> > > > > > 
+> > > > > > > I can change it to BASE_TTYIOC or SI4455_IOC_BASE
+> > > > > > > 
+> > > > > > > > Implement the basic serial driver first, and then we can talk about
+> > > > > > > > "custom" configurations and the like, using the correct apis.
+> > > > > > > 
+> > > > > > > Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
+> > > > > > > The cofiguration for interface is provided by user for application.
+> > > > > > 
+> > > > > > That is what a device tree is for, to configure the device to have the
+> > > > > > correct system configuration, why can't that be the same here?
+> > > > > > 
+> > > > > > > It contains the base frequency, channel spacing, modulation, and a lot
+> > > > > > > of more stuff, and generated by Silicon Labs Wireless Development
+> > > > > > > Suite.
+> > > > > > > The generated configuration is in a non public(compressed,
+> > > > > > > encrypted...who knows) format, so without this the driver can't
+> > > > > > > provide configuration parameters to Si4455.
+> > > > > > 
+> > > > > > So we have to take a "custom" userspace blob and send it to the device
+> > > > > > to configure it properly?  Like Jiri said, sounds like firmware, so just
+> > > > > > use that interface instead.
+> > > > > 
+> > > > > I checked Jiri's suggestion, and it is a good solution to replace SI4455_IOC_SEZC(configuration) and SI4455_IOC_SEZP(firmware patch).
+> > > > > I can move SI4455_IOC_SSIZ(package size) to device tree property.
+> > > > > 
+> > > > > Maybe you have good suggestion for the following:
+> > > > > SI4455_IOC_STXC -> Radio transmit channel index. It is a real use case to control this parameter by user at runtime.
+> > > > > SI4455_IOC_SRXC -> Radio receive channel index. It is a real use case to control this parameter by user at runtime.
+> > > > 
+> > > > These are not serial port things, why would a serial port care about
+> > > > these?
+> > > 
+> > > You are right, these are not regular serial port things, but this device is not a regular uart, it is a sub-GHz transciever, digital radio.
+> > > This driver tries to represent it as a serial port to user.
+> > 
+> > Is that the correct representation to be using here?  Why not act like a
+> > proper radio device instead?  That way you get to use the normal kernel
+> > apis for radio devices.
 > 
-> [    1.429168] Start toggling
-> [    1.439907] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
-> [    1.445242] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
-> [   53.358528] CC1: 0 -> 0, CC2: 0 -> 2 [state TOGGLING, polarity 0, connected]
-> [   53.358564] state change TOGGLING -> SRC_ATTACH_WAIT [rev1 NONE_AMS]
+> In my mind it is absolute a serial device by the application.
+
+What is the application?  Traditionally serial ports don't need radio signals :)
+
+> > > > > SI4455_IOC_GRSSI -> Last measured RSSI, when packet received. This is a useful information.
+> > > > > (Currently I'm the only one user, and I need this :) )
+> > > > 
+> > > > What is "RSSI"?
+> > > > 
+> > > > And why not debugfs if it's only debugging stuff?
+> > > 
+> > > Received signal strength indication, and not only debugging. It is an information for the end user.
+> > 
+> > How do other radio devices (like wifi controllers) export this
+> > information to userspace?  Don't create custom apis for only a single
+> > device when the goal of a kernel is to make hardware interfaces all work
+> > the same as far as userspace is concerned.
 > 
-> Fix this by updating vbus_vsafe0v based on vbus_present status
-> on boot.
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> I move the package size, tx/rx channel properties to dt as device
+> parameter, and the user could control these properties in sysfs and
+> get rssi too. Finally I can remove all custom ioctl commands.
+> What do you think?
 
-One nitpick bellow, but it's so minor that you can ignore it if you
-like. FWIW:
-
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index cedc6cf82d61..58a6302c549f 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -4794,6 +4794,24 @@ static void tcpm_init(struct tcpm_port *port)
->  	if (port->vbus_present)
->  		port->vbus_never_low = true;
->  
-> +	/*
-> +	 * 1. When vbus_present is true, voltage on VBUS is already at VSAFE5V.
-> +	 * So implicitly vbus_vsafe0v = false.
-> +	 *
-> +	 * 2. When vbus_present is false and TCPC does NOT support querying
-> +	 * vsafe0v status, then, it's best to assume vbus is at VSAFE0V i.e.
-> +	 * vbus_vsafe0v is true.
-> +	 *
-> +	 * 3. When vbus_present is false and TCPC does support querying vsafe0v,
-> +	 * then, query tcpc for vsafe0v status.
-> +	 */
-> +	if (port->vbus_present)
-> +		port->vbus_vsafe0v = false;
-> +	else if (!port->tcpc->is_vbus_vsafe0v)
-> +		port->vbus_vsafe0v = true;
-> +	else
-> +		port->vbus_vsafe0v = port->tcpc->is_vbus_vsafe0v(port->tcpc);
-
-Couldn't that be the other way around?
-
-        ...
-	else if (port->tcpc->is_vbus_vsafe0v)
-		port->vbus_vsafe0v = port->tcpc->is_vbus_vsafe0v(port->tcpc);
-	else
-		port->vbus_vsafe0v = true;
-        ...
-
->  	tcpm_set_state(port, tcpm_default_state(port), 0);
->  
->  	if (port->tcpc->get_cc(port->tcpc, &cc1, &cc2) == 0)
-> -- 
-> 2.29.2.576.ga3fc446d84-goog
+I do not know, sorry, please try it and see.
 
 thanks,
 
--- 
-heikki
+greg k-h
