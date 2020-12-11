@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66952D7889
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A84CB2D789E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437203AbgLKPAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:00:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
+        id S2436997AbgLKPA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:00:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406433AbgLKO7c (ORCPT
+        with ESMTP id S2436744AbgLKPAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:59:32 -0500
+        Fri, 11 Dec 2020 10:00:16 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F94C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:58:44 -0800 (PST)
-Date:   Fri, 11 Dec 2020 14:58:42 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE69C06179C
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:58:46 -0800 (PST)
+Date:   Fri, 11 Dec 2020 14:58:43 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607698722;
+        s=2020; t=1607698723;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ic+vfqlE4580v59PU3PsT3KhDic4omGc8OtQDmN+gNI=;
-        b=fuZsFgRb9kLXZzIUXGePfuKRvWDARRS+O5SnRbuFdcv54zLLa9y4QybDarje1d/VSmVbwy
-        bzaVO3g6s3IUxWRMBsX2KRpevc62m0F/OPRvyQMnDcX5e9pCUmMTDg2SxbKgwu+aegGFsR
-        bKsoZcw4QYci//Mm0+zUrmTE1wO/UyMiFoPjDq8bdjO/JWxPyH/xoNm2DuO0bRJQ7PxRw/
-        uxLp99twhbDnGonzaWCxyeGyTN9Mh3H9iNkeTLgTldff68CVdncKWGLMo5NW9LMjfZzlZ9
-        9iHqbu0cUESPyIB191hISAJrv2tOsg1GGBT4bQu2Xflkh12smuf92ZMBRJPgiQ==
+        bh=HNikn8TCkMxjxjhIjrW1BHago/f7/Hd86y7ugtlQ9tY=;
+        b=D9TNCecy0kG0JF1zA9CmE6cYdz8fffAZOhC3wB4A2dHE9Y86sEKuAznzeLERabVRNuwqBn
+        sk11KoOZnQoofJWboqBzHNePTkgMt40pqx8dB5y+OmHBvwxMn5+7m5eErjGtMwiHLHjYzL
+        VBI9Zx/i2CrMw+7GhdIsuKpTXJvARcOyfoiKCXZFaNdRNdETquNN0blBuSmib4v3FVbFuS
+        YJWuzfmwQtuIjbeuWhkkpN6+5RfBm5DI85p0oGEje2RcmtHKef5zqH5L5YOhVs6s28ie7p
+        DDctCkYenQsS2/YxtmyVg9ixfhs7zbQTjcwee8v54WsqaL48t42k0u1LL35PHQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607698722;
+        s=2020e; t=1607698723;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ic+vfqlE4580v59PU3PsT3KhDic4omGc8OtQDmN+gNI=;
-        b=vZhmV35MW7WGL7G16C+DhNN9n11sRGnOQu1caSEDV4JyAjilKG1v3e7V3dH0r9npv7oGKS
-        DxMeWUsIDcVNy6DA==
-From:   "irqchip-bot for John Garry" <tip-bot2@linutronix.de>
+        bh=HNikn8TCkMxjxjhIjrW1BHago/f7/Hd86y7ugtlQ9tY=;
+        b=2tDLBFCzeUJoW0/Z/uAOcJLEm1E0AcoGqcEpRFnWhMZjJK+endinvKyDHG3h1tBxzpwgxe
+        0SxqR7buOiOlb8AQ==
+From:   "irqchip-bot for Vineet Gupta" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] genirq/affinity: Add irq_update_affinity_desc()
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        John Garry <john.garry@huawei.com>,
-        Marc Zyngier <maz@kernel.org>
-In-Reply-To: <1606905417-183214-2-git-send-email-john.garry@huawei.com>
-References: <1606905417-183214-2-git-send-email-john.garry@huawei.com>
+Subject: [irqchip: irq/irqchip-next] drivers/irqchip: Remove EZChip NPS
+ interrupt controller
+Cc:     Vineet Gupta <vgupta@synopsys.com>, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201105212210.1891598-3-vgupta@synopsys.com>
+References: <20201105212210.1891598-3-vgupta@synopsys.com>
 MIME-Version: 1.0
-Message-ID: <160769872232.3364.18187314736977838346.tip-bot2@tip-bot2>
+Message-ID: <160769872331.3364.1587336659453711321.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,141 +64,230 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     1d3aec89286254487df7641c30f1b14ad1d127a5
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/1d3aec89286254487df7641c30f1b14ad1d127a5
-Author:        John Garry <john.garry@huawei.com>
-AuthorDate:    Wed, 02 Dec 2020 18:36:53 +08:00
+Commit-ID:     04e7f423f4a96ad492fd51bf2234b8982400ab5f
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/04e7f423f4a96ad492fd51bf2234b8982400ab5f
+Author:        Vineet Gupta <Vineet.Gupta1@synopsys.com>
+AuthorDate:    Thu, 05 Nov 2020 13:22:09 -08:00
 Committer:     Marc Zyngier <maz@kernel.org>
 CommitterDate: Fri, 11 Dec 2020 14:47:50 
 
-genirq/affinity: Add irq_update_affinity_desc()
+drivers/irqchip: Remove EZChip NPS interrupt controller
 
-Add a function to allow the affinity of an interrupt be switched to
-managed, such that interrupts allocated for platform devices may be
-managed.
+NPS platform has been removed from ARC port and there are no in-tree
+users of it now. So RIP !
 
-This new interface has certain limitations, and attempts to use it in the
-following circumstances will fail:
-- For when the kernel is configured for generic IRQ reservation mode (in
-  config GENERIC_IRQ_RESERVATION_MODE). The reason being that it could
-  conflict with managed vs. non-managed interrupt accounting.
-- The interrupt is already started, which should not be the case during
-  init
-- The interrupt is already configured as managed, which means double init
-
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/1606905417-183214-2-git-send-email-john.garry@huawei.com
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Link: https://lore.kernel.org/r/20201105212210.1891598-3-vgupta@synopsys.com
 ---
- include/linux/interrupt.h |  8 ++++-
- kernel/irq/manage.c       | 70 ++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 78 insertions(+)
+ drivers/irqchip/Kconfig     |   7 +-
+ drivers/irqchip/Makefile    |   1 +-
+ drivers/irqchip/irq-eznps.c | 165 +-----------------------------------
+ 3 files changed, 173 deletions(-)
+ delete mode 100644 drivers/irqchip/irq-eznps.c
 
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index ee8299e..870b325 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -352,6 +352,8 @@ extern int irq_can_set_affinity(unsigned int irq);
- extern int irq_select_affinity(unsigned int irq);
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 2aa79c3..94920a5 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -387,13 +387,6 @@ config LS_SCFG_MSI
+ config PARTITION_PERCPU
+ 	bool
  
- extern int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m);
-+extern int irq_update_affinity_desc(unsigned int irq,
-+				    struct irq_affinity_desc *affinity);
- 
- extern int
- irq_set_affinity_notifier(unsigned int irq, struct irq_affinity_notify *notify);
-@@ -387,6 +389,12 @@ static inline int irq_set_affinity_hint(unsigned int irq,
- 	return -EINVAL;
- }
- 
-+static inline int irq_update_affinity_desc(unsigned int irq,
-+					   struct irq_affinity_desc *affinity)
-+{
-+	return -EINVAL;
-+}
-+
- static inline int
- irq_set_affinity_notifier(unsigned int irq, struct irq_affinity_notify *notify)
- {
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index c460e04..c826ba4 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -371,6 +371,76 @@ int irq_set_affinity_locked(struct irq_data *data, const struct cpumask *mask,
- 	return ret;
- }
- 
-+/**
-+ * irq_update_affinity_desc - Update affinity management for an interrupt
-+ * @irq:	The interrupt number to update
-+ * @affinity:	Pointer to the affinity descriptor
-+ *
-+ * This interface can be used to configure the affinity management of
-+ * interrupts which have been allocated already.
-+ *
-+ * There are certain limitations on when it may be used - attempts to use it
-+ * for when the kernel is configured for generic IRQ reservation mode (in
-+ * config GENERIC_IRQ_RESERVATION_MODE) will fail, as it may conflict with
-+ * managed/non-managed interrupt accounting. In addition, attempts to use it on
-+ * an interrupt which is already started or which has already been configured
-+ * as managed will also fail, as these mean invalid init state or double init.
-+ */
-+int irq_update_affinity_desc(unsigned int irq,
-+			     struct irq_affinity_desc *affinity)
-+{
-+	struct irq_desc *desc;
-+	unsigned long flags;
-+	bool activated;
-+	int ret = 0;
-+
-+	/*
-+	 * Supporting this with the reservation scheme used by x86 needs
-+	 * some more thought. Fail it for now.
-+	 */
-+	if (IS_ENABLED(CONFIG_GENERIC_IRQ_RESERVATION_MODE))
-+		return -EOPNOTSUPP;
-+
-+	desc = irq_get_desc_buslock(irq, &flags, 0);
-+	if (!desc)
-+		return -EINVAL;
-+
-+	/* Requires the interrupt to be shut down */
-+	if (irqd_is_started(&desc->irq_data)) {
-+		ret = -EBUSY;
-+		goto out_unlock;
-+	}
-+
-+	/* Interrupts which are already managed cannot be modified */
-+	if (irqd_affinity_is_managed(&desc->irq_data)) {
-+		ret = -EBUSY;
-+		goto out_unlock;
-+	}
-+
-+	/*
-+	 * Deactivate the interrupt. That's required to undo
-+	 * anything an earlier activation has established.
-+	 */
-+	activated = irqd_is_activated(&desc->irq_data);
-+	if (activated)
-+		irq_domain_deactivate_irq(&desc->irq_data);
-+
-+	if (affinity->is_managed) {
-+		irqd_set(&desc->irq_data, IRQD_AFFINITY_MANAGED);
-+		irqd_set(&desc->irq_data, IRQD_MANAGED_SHUTDOWN);
-+	}
-+
-+	cpumask_copy(desc->irq_common_data.affinity, &affinity->mask);
-+
-+	/* Restore the activation state */
-+	if (activated)
-+		irq_domain_activate_irq(&desc->irq_data, false);
-+
-+out_unlock:
-+	irq_put_desc_busunlock(desc, flags);
-+	return ret;
-+}
-+
- int __irq_set_affinity(unsigned int irq, const struct cpumask *mask, bool force)
- {
- 	struct irq_desc *desc = irq_to_desc(irq);
+-config EZNPS_GIC
+-	bool "NPS400 Global Interrupt Manager (GIM)"
+-	depends on ARC || (COMPILE_TEST && !64BIT)
+-	select IRQ_DOMAIN
+-	help
+-	  Support the EZchip NPS400 global interrupt controller
+-
+ config STM32_EXTI
+ 	bool
+ 	select IRQ_DOMAIN
+diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+index 94c2885..0ac93bf 100644
+--- a/drivers/irqchip/Makefile
++++ b/drivers/irqchip/Makefile
+@@ -86,7 +86,6 @@ obj-$(CONFIG_MVEBU_PIC)			+= irq-mvebu-pic.o
+ obj-$(CONFIG_MVEBU_SEI)			+= irq-mvebu-sei.o
+ obj-$(CONFIG_LS_EXTIRQ)			+= irq-ls-extirq.o
+ obj-$(CONFIG_LS_SCFG_MSI)		+= irq-ls-scfg-msi.o
+-obj-$(CONFIG_EZNPS_GIC)			+= irq-eznps.o
+ obj-$(CONFIG_ARCH_ASPEED)		+= irq-aspeed-vic.o irq-aspeed-i2c-ic.o irq-aspeed-scu-ic.o
+ obj-$(CONFIG_STM32_EXTI) 		+= irq-stm32-exti.o
+ obj-$(CONFIG_QCOM_IRQ_COMBINER)		+= qcom-irq-combiner.o
+diff --git a/drivers/irqchip/irq-eznps.c b/drivers/irqchip/irq-eznps.c
+deleted file mode 100644
+index 2a7a388..0000000
+--- a/drivers/irqchip/irq-eznps.c
++++ /dev/null
+@@ -1,165 +0,0 @@
+-/*
+- * Copyright (c) 2016, Mellanox Technologies. All rights reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and/or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+- */
+-
+-#include <linux/interrupt.h>
+-#include <linux/module.h>
+-#include <linux/of.h>
+-#include <linux/irq.h>
+-#include <linux/irqdomain.h>
+-#include <linux/irqchip.h>
+-#include <soc/nps/common.h>
+-
+-#define NPS_NR_CPU_IRQS 8  /* number of interrupt lines of NPS400 CPU */
+-#define NPS_TIMER0_IRQ  3
+-
+-/*
+- * NPS400 core includes an Interrupt Controller (IC) support.
+- * All cores can deactivate level irqs at first level control
+- * at cores mesh layer called MTM.
+- * For devices out side chip e.g. uart, network there is another
+- * level called Global Interrupt Manager (GIM).
+- * This second level can control level and edge interrupt.
+- *
+- * NOTE: AUX_IENABLE and CTOP_AUX_IACK are auxiliary registers
+- * with private HW copy per CPU.
+- */
+-
+-static void nps400_irq_mask(struct irq_data *irqd)
+-{
+-	unsigned int ienb;
+-	unsigned int irq = irqd_to_hwirq(irqd);
+-
+-	ienb = read_aux_reg(AUX_IENABLE);
+-	ienb &= ~(1 << irq);
+-	write_aux_reg(AUX_IENABLE, ienb);
+-}
+-
+-static void nps400_irq_unmask(struct irq_data *irqd)
+-{
+-	unsigned int ienb;
+-	unsigned int irq = irqd_to_hwirq(irqd);
+-
+-	ienb = read_aux_reg(AUX_IENABLE);
+-	ienb |= (1 << irq);
+-	write_aux_reg(AUX_IENABLE, ienb);
+-}
+-
+-static void nps400_irq_eoi_global(struct irq_data *irqd)
+-{
+-	unsigned int __maybe_unused irq = irqd_to_hwirq(irqd);
+-
+-	write_aux_reg(CTOP_AUX_IACK, 1 << irq);
+-
+-	/* Don't ack GIC before all device access attempts are done */
+-	mb();
+-
+-	nps_ack_gic();
+-}
+-
+-static void nps400_irq_ack(struct irq_data *irqd)
+-{
+-	unsigned int __maybe_unused irq = irqd_to_hwirq(irqd);
+-
+-	write_aux_reg(CTOP_AUX_IACK, 1 << irq);
+-}
+-
+-static struct irq_chip nps400_irq_chip_fasteoi = {
+-	.name		= "NPS400 IC Global",
+-	.irq_mask	= nps400_irq_mask,
+-	.irq_unmask	= nps400_irq_unmask,
+-	.irq_eoi	= nps400_irq_eoi_global,
+-};
+-
+-static struct irq_chip nps400_irq_chip_percpu = {
+-	.name		= "NPS400 IC",
+-	.irq_mask	= nps400_irq_mask,
+-	.irq_unmask	= nps400_irq_unmask,
+-	.irq_ack	= nps400_irq_ack,
+-};
+-
+-static int nps400_irq_map(struct irq_domain *d, unsigned int virq,
+-			  irq_hw_number_t hw)
+-{
+-	switch (hw) {
+-	case NPS_TIMER0_IRQ:
+-#ifdef CONFIG_SMP
+-	case NPS_IPI_IRQ:
+-#endif
+-		irq_set_percpu_devid(virq);
+-		irq_set_chip_and_handler(virq, &nps400_irq_chip_percpu,
+-					 handle_percpu_devid_irq);
+-		break;
+-	default:
+-		irq_set_chip_and_handler(virq, &nps400_irq_chip_fasteoi,
+-					 handle_fasteoi_irq);
+-		break;
+-	}
+-
+-	return 0;
+-}
+-
+-static const struct irq_domain_ops nps400_irq_ops = {
+-	.xlate = irq_domain_xlate_onecell,
+-	.map = nps400_irq_map,
+-};
+-
+-static int __init nps400_of_init(struct device_node *node,
+-				 struct device_node *parent)
+-{
+-	struct irq_domain *nps400_root_domain;
+-
+-	if (parent) {
+-		pr_err("DeviceTree incore ic not a root irq controller\n");
+-		return -EINVAL;
+-	}
+-
+-	nps400_root_domain = irq_domain_add_linear(node, NPS_NR_CPU_IRQS,
+-						   &nps400_irq_ops, NULL);
+-
+-	if (!nps400_root_domain) {
+-		pr_err("nps400 root irq domain not avail\n");
+-		return -ENOMEM;
+-	}
+-
+-	/*
+-	 * Needed for primary domain lookup to succeed
+-	 * This is a primary irqchip, and can never have a parent
+-	 */
+-	irq_set_default_host(nps400_root_domain);
+-
+-#ifdef CONFIG_SMP
+-	irq_create_mapping(nps400_root_domain, NPS_IPI_IRQ);
+-#endif
+-
+-	return 0;
+-}
+-IRQCHIP_DECLARE(ezchip_nps400_ic, "ezchip,nps400-ic", nps400_of_init);
