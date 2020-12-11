@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5502D7682
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F44F2D768E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:29:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406157AbgLKN1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 08:27:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732317AbgLKN0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:26:38 -0500
-Date:   Fri, 11 Dec 2020 13:25:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607693157;
-        bh=zV0+PJVqq/6Ty7VyrOTPWj/asMAFtHbEdvX2cea7ICA=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m7kf59SLpcwsLqDjWeoPIsvlkD68M1JT0CT59E3SfYcmFdr2ZnfOOywgjdOEWZ67O
-         2J2yqocrm6CqM6y5DYek3RASwjzbx2pIP3WznUVLABMnWXfdrzLkKWUp6ebXDGBQc0
-         YY55J9AQIuupy//VHBoTIpIZ7Di6R9P5T+1NS5bAdwytQTGiwA2h/Rb+JcXUi68ac+
-         EUl4XjjHUZvk88VYqCH3Z0Qw8cgjno9NMYP6EJZpB6XBC3EuO0OHuLgQdvqhnbQpVh
-         SHS98Rsg93FIYxtNJbrJs3H5WYjEJ10MG+iPioBfNoAfkt5/tiLN9eTQjKdlSdylE+
-         2YHqB3Ubx/UcQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     lgirdwood@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
-        troy.kisky@boundarydevices.com,
-        Gary Bisson <gary.bisson@boundarydevices.com>
-Subject: Re: [PATCH 1/2] dt-bindings: regulator: Add pf8x00 regulator
-Message-ID: <20201211132549.GC4929@sirena.org.uk>
-References: <20201206002629.12872-1-adrien.grassein@gmail.com>
- <20201207135551.GE5694@sirena.org.uk>
- <CABkfQAF4AANtxptY+XB2cR6hpz2i2Km+F5U=R67J57zSfnoGMA@mail.gmail.com>
+        id S2405696AbgLKN2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:28:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393478AbgLKN1k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 08:27:40 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32FAC0613D6;
+        Fri, 11 Dec 2020 05:26:59 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id w18so4744647vsk.12;
+        Fri, 11 Dec 2020 05:26:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=1/RspAKjZgyPjqvePnfLw/JLs7QZEV6y3qM4NdpChZ8=;
+        b=WqK4tQVyHKPUX2vS1/6FjQxh3lZUX+ammHgyCkeObQqzs74XsIxyvcMgrtCPiUbhM7
+         ZYixP4rVFjL7xNKHYpp8IKrxJW7QtwxCRI8IUuXwPlxqiAzjalM+6s4mwyhD4stcG6oy
+         N5ZkTqIAyqX1Wby2/WD01NvuI7xCQVWVaBZ4LP+2dDh5AizDM4+VElLHTN/TEDi14oOt
+         bLXtZQ5VLyWmgHRZLp9gE330Y/Z6TPUpXgUmgxTmt88+hlgVbHtjNGHDPX0J5bjEm1L6
+         YLjYWUlMG0c7OFCcPsWV8fnD0/4ycAMQ0mP7PmgW5j6fERHrQKsxjjvqBA+hrQgNY1y4
+         R60Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=1/RspAKjZgyPjqvePnfLw/JLs7QZEV6y3qM4NdpChZ8=;
+        b=H4Pm6eLLqy4SF1rVGDh0ognC5MxB+/VOtpES2TLkbFRt56GoTmBn3Q3w1EVIadREr3
+         k59SgEnmPAUmr4Fsa9aZFlUH/dikAMpVmKviEMDtpriEnDmlqteFjFUTg2SVV7z4wRcg
+         tybBKgchT2KDK6b6xNFeyeQfGHWIWVPD9qTutF+3qQwXUl+e+m3/y8Jul9o0q/VfDeWj
+         c2VRnCb1ujzgSL3yrGBvThsnX4Yqhs+B+qfFAaY7HkrRRr8PXZuiNh49tp5DmIqmlott
+         HRAUYII0SrHKhQIjQ88XusOH0LWfcKJw4t7SM3pl9vXmHAPG1ZZiiZFjAbpc5o2S1TsA
+         sTZA==
+X-Gm-Message-State: AOAM531AgmBI04e9IRJ1dSpk9X0OjFJusJKmYDzXvTZNj7YubWCdkEnh
+        /Uue7azW8rATGuQbKUUdEPHrmRJk4q/i8jRyIQIuh3rxAMM=
+X-Google-Smtp-Source: ABdhPJwG/LTrHfT2E3+VpuHwgiyea0jypRuNZsUmI2noUo2EC6Jjo9106ePLKYBEIJh1Q2Lfrfrik5hiZtp17Y74Wi0=
+X-Received: by 2002:a67:d319:: with SMTP id a25mr12316519vsj.57.1607693218640;
+ Fri, 11 Dec 2020 05:26:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LwW0XdcUbUexiWVK"
-Content-Disposition: inline
-In-Reply-To: <CABkfQAF4AANtxptY+XB2cR6hpz2i2Km+F5U=R67J57zSfnoGMA@mail.gmail.com>
-X-Cookie: Nostalgia isn't what it used to be.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <3bed61807fff6268789e7d411412fbc5cd6ffe2a.1607507863.git.hns@goldelico.com>
+ <CAGngYiVKHoXPGxmScCnb-R6xoo9GNw5pG8V8Cpyk3meoJbskiw@mail.gmail.com> <20201211131810.GB4929@sirena.org.uk>
+In-Reply-To: <20201211131810.GB4929@sirena.org.uk>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Fri, 11 Dec 2020 08:26:46 -0500
+Message-ID: <CAGngYiXOkbQNgPcw9dk33VJiTe4jEjBUEC83vwVds+2Gd_O5Hg@mail.gmail.com>
+Subject: Re: [PATCH] spi: dt-bindings: clarify CS behavior for spi-cs-high and
+ gpio descriptors
+To:     Sven Van Asbroeck <thesven73@gmail.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andreas Kemnade <andreas@kemnade.info>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 11, 2020 at 8:18 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> Yeah, it'd definitely be easier to read and clearer what people should
+> actually do.
 
---LwW0XdcUbUexiWVK
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think it would be beneficial if this consisted of two very clearly
+separated parts:
 
-On Thu, Dec 10, 2020 at 11:24:17PM +0100, Adrien Grassein wrote:
-> Le lun. 7 d=E9c. 2020 =E0 14:55, Mark Brown <broonie@kernel.org> a =E9cri=
-t :
-> > On Sun, Dec 06, 2020 at 01:26:28AM +0100, Adrien Grassein wrote:
+1. the actual recommended binding - so people writing new
+devicetrees know what to do
 
-> > > Add dt-bindings for the pf8x00 driver.
+2. the legacy bindings which "also work", which is important
+to know when working with legacy devicetrees
 
-> > Please submit patches using subject lines reflecting the style for the
-> > subsystem, this makes it easier for people to identify relevant patches.
-> > Look at what existing commits in the area you're changing are doing and
-> > make sure your subject lines visually resemble what they're doing.
-> > There's no need to resubmit to fix this alone.
-
-> For v2 I just copy-paste another commit message to be sure to be conform.
-
-For patches for a given subsystem you should use the prefix the
-subsystem uses, for regulator that's "regulator: ".
-
-> > > +            $ref: /schemas/types.yaml#definitions/flag
-> > > +            description: |
-> > > +              Only available for ldo2. When specified, use the VSELE=
-CT pin
-> > > +              of the chip to control the output voltage of the ldo02=
- regulator.
-
-> > Shouldn't there be a GPIO specified somewhere or something so that the
-> > VSELECT pin can be controlled?
-
-> I think I read better documentation for this point. Sorry, it was very un=
-clear.
-> VSELECT is in fact an input pin of the chip. The configuration just enabl=
-ed it.
-
-Then presumably you need some binding to specify how to control this
-input too?
-
-> > > +          nxp,quad-phase:
-> > > +            $ref: /schemas/types.yaml#definitions/flag
-> > > +            description: |
-> > > +              This allow regulators  sw1 and sw2, or sw3 and sw4 or =
-sw4 and sw5
-> > > +              to work together to deliver a maximum 10A current.
-
-> > Presumably this must be set on both the regulators being grouped
-> > together?
-
-> Not. Only the sw1 configuration will be taken in account.
-
-That needs to be documented then.
-
---LwW0XdcUbUexiWVK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/Tc10ACgkQJNaLcl1U
-h9CUHQf9GdhzT1l0bJ8ieJTDzGxj4ZTRet9hmpKDkIQ2sf7tccI6LR2cVXIXu5UC
-vn31RxDC0hVhjaYiQEjsd14iZgHevqGDXbeiOHgkNKJHAjneYh6CP2KqqHhCcXki
-wWcR4cr0nkEzEpVImPL5Viwl8Kni+0W+BORW99WN3XaDXuUH+A3JgLMkk05Mktht
-k0RyjlziY8tFChrgfeoJkvDxdlausoH6GIj/NkjmKnN1MbcHS4f19OhIIMmZIn4j
-X5BP2GKyzB+VtNixJHnqmyomm+nzNHNQLco5le8nZkrvGErwaK4FyQ1vnLhG5l4g
-c/EONq9oC6OKLzmxf9BEph4oi4Y+KA==
-=FEnr
------END PGP SIGNATURE-----
-
---LwW0XdcUbUexiWVK--
+At least, that's what I would want if I put myself in a user's
+shoes.
