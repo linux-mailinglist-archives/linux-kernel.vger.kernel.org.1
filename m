@@ -2,103 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463232D6EC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:41:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA1D2D6EC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395172AbgLKDis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 22:38:48 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:42249 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391319AbgLKDiU (ORCPT
+        id S1733151AbgLKDkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 22:40:24 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:41919 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388990AbgLKDkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 22:38:20 -0500
-Received: by mail-oi1-f194.google.com with SMTP id l200so8348682oig.9;
-        Thu, 10 Dec 2020 19:38:05 -0800 (PST)
+        Thu, 10 Dec 2020 22:40:20 -0500
+Received: by mail-ot1-f68.google.com with SMTP id x13so7081732oto.8;
+        Thu, 10 Dec 2020 19:40:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Kj9TRow5ixi6n52trMSsYRJlPAgtK6fpG4a/kDC7DG4=;
-        b=I/1ABVM5LnM24wcLWoWqKuQM5zDwZ49GlOCg/L4pohE+0tci4crl1mXCpSXtFVnEMh
-         PRfUQR9PCt4sXXnPgytddgG8Xu9ZIntbcbR2YRBhcQ4S3CbLh5U8Amq/JTr0T32UyO2p
-         y7B4+Miv11vzmF2n0ex8RRqFjbD7pzCWs49f/kBa1paDPOKHweGs3oTTJHGn0Q+4ysEn
-         StGyvgNmI8Wk6XVz/9t2aJjhU/lQgAZwuoJgOTxSyyJcv1mt/YyHmjV/WZN93X5Frhnp
-         6MW5bPQ5Z7ItthzR4lB3ddjmfRO+29C7fTRNv0lgIUy049Lk0DdNKQ1kjkftdktOipXR
-         5BHg==
-X-Gm-Message-State: AOAM533EanJUtvdKXPSRh7VyTKtMK0dx0pj8kJdsqnzRXOU1kiJ/8Tws
-        WDrmndM3kZhsMqI45ZbsFb3xRo4WqA==
-X-Google-Smtp-Source: ABdhPJzRSKyyTI9lwb9FSOjw2V0rwsEbdCl+o53S7KFXJHRRiMskVIjUijZZ/SmgCOdPueog7xxpMA==
-X-Received: by 2002:aca:4257:: with SMTP id p84mr7638245oia.68.1607657859814;
-        Thu, 10 Dec 2020 19:37:39 -0800 (PST)
+        bh=LOjNdqCDIPCW9nzt1/d/vtXHN7EsbrrpKY6lZwmye5s=;
+        b=VI54F/DOdtLEdsy0rw9LAYcctJiWahRbhjAdZqxOqa7K4+Y2leSidKjNCmnl8TjspY
+         Vwu3IiwAmM78eS5Bzul5j+epKO8N+8imqpUoQhqOBHkZkoj2SDMHVOt6GRLS+Qw36Xrz
+         d1kofm0hKeIr3AF3gBHfibRFEYVUjch2bepfd/JBI5YQ7jMiumY0n9Zu+uM+b/Ky5JJx
+         FGbHKKEnhZIVgbwvE3Dw1UqSBPvM7NoepZOKj9h96tAIPEn52tRfA4pMciY+BfkHPOYX
+         EDXx7FGcb/SVqnMD+rMTN7OnH5wXVGIzTuUcdABcdFBX8vpd2i5ghE03Bf/adqv/AO1T
+         dFHg==
+X-Gm-Message-State: AOAM533zmg66OAljhe5pTMVSmOTZeqLC3KruD8d3OqOVyjxNjoeiPJv9
+        u9cIZYyMnIW8UCsFSHmdUQ==
+X-Google-Smtp-Source: ABdhPJxQbrJG789lq6XonvOFgsDfT/Dn1oRgxe+n9Wg4IUeU7dSxVYB5J/YK/AKOllcqq0DI08tVxg==
+X-Received: by 2002:a05:6830:210f:: with SMTP id i15mr8172762otc.43.1607657979774;
+        Thu, 10 Dec 2020 19:39:39 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o135sm1469382ooo.38.2020.12.10.19.37.38
+        by smtp.gmail.com with ESMTPSA id t26sm920601otm.17.2020.12.10.19.39.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 19:37:39 -0800 (PST)
-Received: (nullmailer pid 3590416 invoked by uid 1000);
-        Fri, 11 Dec 2020 03:37:38 -0000
-Date:   Thu, 10 Dec 2020 21:37:38 -0600
+        Thu, 10 Dec 2020 19:39:38 -0800 (PST)
+Received: (nullmailer pid 3593171 invoked by uid 1000);
+        Fri, 11 Dec 2020 03:39:37 -0000
+Date:   Thu, 10 Dec 2020 21:39:37 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Roger Quadros <rogerq@ti.com>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] dt-bindings: usb: Add new compatible string for AM64
- SoC
-Message-ID: <20201211033726.GA3588782@robh.at.kernel.org>
-References: <20201210065450.16663-1-a-govindraju@ti.com>
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Chen-Yu Tsai <wens@csie.org>,
+        Ondrej Jirman <megous@megous.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 1/3] dt-bindings: arm: sunxi: add PineTab new panel DT
+ binding
+Message-ID: <20201211033937.GA3593126@robh.at.kernel.org>
+References: <20201210083722.1912981-1-icenowy@aosc.io>
+ <20201210084232.1913871-1-icenowy@aosc.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201210065450.16663-1-a-govindraju@ti.com>
+In-Reply-To: <20201210084232.1913871-1-icenowy@aosc.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 12:24:50PM +0530, Aswath Govindraju wrote:
-> Add compatible string in j721e-usb binding file as the same USB subsystem
-> is present in AM64.
+On Thu, 10 Dec 2020 16:42:32 +0800, Icenowy Zheng wrote:
+> Early adopters' PineTabs (and all further releases) will have a new LCD
+> panel different with the one that is used when in development (because
+> the old panel's supply discontinued).
 > 
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> Acked-by: Roger Quadros <rogerq@ti.com>
+> Add a new DT compatible for it.
+> 
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 > ---
+>  Documentation/devicetree/bindings/arm/sunxi.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> Changes since v2:
-> - added changes done over the versions
-> 
-> Changes since v1:
-> - replaced the '\t' at the beginning of the lines with spaces as it was
->   causing the dt_binding_check to fail
-> 
-> 
->  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> index 388245b91a55..453587f6d304 100644
-> --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> @@ -11,8 +11,11 @@ maintainers:
->  
->  properties:
->    compatible:
-> -    items:
-> -      - const: ti,j721e-usb
-> +    anyOf:
-> +      - items:
-> +          - const: ti,j721e-usb
-> +      - items:
-> +          - const: ti,am64-usb
 
-compatible:
-  enum:
-    - ti,j721e-usb
-    - ti,am64-usb
-
->  
->    reg:
->      description: module registers
-> -- 
-> 2.17.1
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
