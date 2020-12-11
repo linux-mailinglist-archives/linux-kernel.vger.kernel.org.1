@@ -2,257 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D25A2D741C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 079582D741D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392795AbgLKKmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:42:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390233AbgLKKm3 (ORCPT
+        id S2389428AbgLKKnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:43:17 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:34080 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390487AbgLKKmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:42:29 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17135C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 02:41:49 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id o8so9032830ioh.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 02:41:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3gLNjygVT9zPDI8y5SVkCNef9e9uyFYeqq082/T6qSo=;
-        b=vo4TER9Wk1zb4HozmOtFaX1mB/6GU89rzzMknrhE1fUvT55aKrum/HowDHvhwzT5gF
-         m9YTfAu2YJs+0RgPfG2uC0pkO0omXIUNn6P4YAWdGP6l/aBF+8IL6PIGh2nX2ANMs3LK
-         mESvLtfKBkEGiPaWkJ+h0xswwFIh01vdJscyfuln/SklZ2iipnts8RP4JCDvSZsiHJ9z
-         +/n1TpYLWuO8aKH3SmHTketSjLF2VScEWVI8ATH7eGNXcOWIX3fLbeaGOmrSISNV2g+Z
-         ujYBHjojECTTU6IwMa5Cr1rVESF0jFSX9AdT988iwqNb9xyL9OpBab+gKCuW6rGq/nir
-         BwWQ==
+        Fri, 11 Dec 2020 05:42:32 -0500
+Received: by mail-lf1-f65.google.com with SMTP id m19so12709329lfb.1;
+        Fri, 11 Dec 2020 02:42:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3gLNjygVT9zPDI8y5SVkCNef9e9uyFYeqq082/T6qSo=;
-        b=IwJrfzp4TvkD5CH6UGcB32ilK/Pc1qAqokus7WHso01qT7y6S0wEUcx0DmT1U08kR5
-         y7ndJORMzriBmKtIX2s+f3nxt7Obo/g9COcVZhdhFBqs8StLswDbBKLQLp4B2XongtUc
-         HWCdmky8cBXdSHyeOurLuL4UkoJJne6TIc0JzyKe51mIBmgTyVgA6dcF0Dyzev73bWT6
-         46zL9T5mJtsFobOHLjAOCAeP2+snTPDMSn7DQ6/O2NP/v5shW4MeOjvvFpvMc8Msk86F
-         4iC5Kanw07C4O1FEigkWplTVEpOBiLNSFsEPbfin4rjVaBzj1pGr6DIoyjYsUyHbRSeq
-         bmiQ==
-X-Gm-Message-State: AOAM533RGsCVmIyNN3vOa6HKW3QiD4yu/6cMxKEnPQZQvU92vMTr1uJp
-        GMbIVfpjYiMXN8eZjNWZ49aF27RqzBOrOO5HHjJeiA==
-X-Google-Smtp-Source: ABdhPJw7kmPMx80LhKU5P2hNwPxm/NOdLPxRYPyvGZEDy99ZRj/BB875tL9m5B73g1xqYEyLrVaHqnZANoweZ8vil/g=
-X-Received: by 2002:a02:7821:: with SMTP id p33mr15231786jac.53.1607683308007;
- Fri, 11 Dec 2020 02:41:48 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=onb0vWvYKVgv9jIlAPZEnDCvyKGaQ1qrw8/SN9or3bY=;
+        b=nGXM0zml1ETlqZT5hZN5HNpGFKOts8TOnvd9C1joR0hhyccROwmiL/oGM9GQ2wSgs2
+         6pBxKyT54+lJ4EA6vUXm8LnkYw/bWtS7irb0l5apE0/OskykQ2WgXKzEDcrgTIo/NQyL
+         Dqt2dGNa8/mMSI4mxbGmauPscSZHnA2I+4smr7vS9xFTfemCpammSA/S+OsGiEZdwrWd
+         Zwfw+csv6sirqYvfKUxudShfIDzpokWw26JLz95PfuU976KDEMNST4gKZhNq8oIA0YN+
+         2IoTVoiR91MR5xCbefLk0bD1//tD8nYhkJge0F8StHOji/fPprzUoncyXc/HKYSn0jQ9
+         ymjw==
+X-Gm-Message-State: AOAM533dPYohZRCLnYanEl5+v3fkOHbOarU8aVf94L+/Sgmhc/g9e37B
+        i5oattw9ThPWBR/I7sl5kjw=
+X-Google-Smtp-Source: ABdhPJzXe0Kl27LGVfLRrK9PR3df/6wUXauPSa4kk+l/Q/TOc12B00Sq6AQUxUNXAIXKnjkpgC5F5w==
+X-Received: by 2002:ac2:4307:: with SMTP id l7mr4093684lfh.304.1607683309183;
+        Fri, 11 Dec 2020 02:41:49 -0800 (PST)
+Received: from xi.terra (c-d2ade455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.173.210])
+        by smtp.gmail.com with ESMTPSA id i9sm953906lja.56.2020.12.11.02.41.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 02:41:48 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1knfru-0000tU-OJ; Fri, 11 Dec 2020 11:41:47 +0100
+Date:   Fri, 11 Dec 2020 11:41:46 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Maarten Brock <m.brock@vanmierlo.com>
+Cc:     Mychaela Falconia <mychaela.falconia@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/7] tty: add flag to suppress ready signalling on open
+Message-ID: <X9NM6i5mRTUTFKr9@localhost>
+References: <20201202113942.27024-1-johan@kernel.org>
+ <X9Dficb8sQGRut+S@kroah.com>
+ <CA+uuBqYTzXCHGY8QnP+OQ5nRNAbqx2rMNzLM7OKLM1_4AzzinQ@mail.gmail.com>
+ <6b81cca21561305b55ba8f019b78da28@vanmierlo.com>
 MIME-Version: 1.0
-References: <CANn89iJdPa-2FQS18p3d_YjZx_5OD=eZr_3+a6LPiAxpj=fowA@mail.gmail.com>
- <20201211102844.13120-1-sjpark@amazon.com>
-In-Reply-To: <20201211102844.13120-1-sjpark@amazon.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 11 Dec 2020 11:41:36 +0100
-Message-ID: <CANn89i+P8d8Ok8k1o3_ADW4iWLKU=qikq+RAxmqkYbUn1wkWvQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] net/ipv4/inet_fragment: Batch fqdir destroy works
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     David Miller <davem@davemloft.net>,
-        SeongJae Park <sjpark@amazon.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Florian Westphal <fw@strlen.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        netdev <netdev@vger.kernel.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6b81cca21561305b55ba8f019b78da28@vanmierlo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 11:33 AM SeongJae Park <sjpark@amazon.com> wrote:
->
-> On Fri, 11 Dec 2020 09:43:41 +0100 Eric Dumazet <edumazet@google.com> wrote:
->
-> > On Fri, Dec 11, 2020 at 9:21 AM SeongJae Park <sjpark@amazon.com> wrote:
-> > >
-> > > From: SeongJae Park <sjpark@amazon.de>
-> > >
-> > > For each 'fqdir_exit()' call, a work for destroy of the 'fqdir' is
-> > > enqueued.  The work function, 'fqdir_work_fn()', internally calls
-> > > 'rcu_barrier()'.  In case of intensive 'fqdir_exit()' (e.g., frequent
-> > > 'unshare()' systemcalls), this increased contention could result in
-> > > unacceptably high latency of 'rcu_barrier()'.  This commit avoids such
-> > > contention by doing the 'rcu_barrier()' and subsequent lightweight works
-> > > in a batched manner using a dedicated singlethread worker, as similar to
-> > > that of 'cleanup_net()'.
-> >
-> >
-> > Not sure why you submit a patch series with a single patch.
-> >
-> > Your cover letter contains interesting info that would better be
-> > captured in this changelog IMO
->
-> I thought someone might think this is not a kernel issue but the reproducer is
-> insane or 'rcu_barrier()' needs modification.  I wanted to do such discussion
-> on the coverletter.  Seems I misjudged.  I will make this single patch and move
-> the detailed information here from the next version.
->
-> >
-> > >
-> > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > > ---
-> > >  include/net/inet_frag.h  |  1 +
-> > >  net/ipv4/inet_fragment.c | 45 +++++++++++++++++++++++++++++++++-------
-> > >  2 files changed, 39 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
-> > > index bac79e817776..48cc5795ceda 100644
-> > > --- a/include/net/inet_frag.h
-> > > +++ b/include/net/inet_frag.h
-> > > @@ -21,6 +21,7 @@ struct fqdir {
-> > >         /* Keep atomic mem on separate cachelines in structs that include it */
-> > >         atomic_long_t           mem ____cacheline_aligned_in_smp;
-> > >         struct work_struct      destroy_work;
-> > > +       struct llist_node       free_list;
-> > >  };
-> > >
-> > >  /**
-> > > diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
-> > > index 10d31733297d..a6fc4afcc323 100644
-> > > --- a/net/ipv4/inet_fragment.c
-> > > +++ b/net/ipv4/inet_fragment.c
-> > > @@ -145,12 +145,17 @@ static void inet_frags_free_cb(void *ptr, void *arg)
-> > >                 inet_frag_destroy(fq);
-> > >  }
-> > >
-> > > -static void fqdir_work_fn(struct work_struct *work)
-> > > +static struct workqueue_struct *fqdir_wq;
-> > > +static LLIST_HEAD(free_list);
-> > > +
-> > > +static void fqdir_free_fn(struct work_struct *work)
-> > >  {
-> > > -       struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
-> > > -       struct inet_frags *f = fqdir->f;
-> > > +       struct llist_node *kill_list;
-> > > +       struct fqdir *fqdir, *tmp;
-> > > +       struct inet_frags *f;
-> > >
-> > > -       rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
-> > > +       /* Atomically snapshot the list of fqdirs to free */
-> > > +       kill_list = llist_del_all(&free_list);
-> > >
-> > >         /* We need to make sure all ongoing call_rcu(..., inet_frag_destroy_rcu)
-> > >          * have completed, since they need to dereference fqdir.
-> > > @@ -158,12 +163,38 @@ static void fqdir_work_fn(struct work_struct *work)
-> > >          */
-> > >         rcu_barrier();
-> > >
-> > > -       if (refcount_dec_and_test(&f->refcnt))
-> > > -               complete(&f->completion);
-> > > +       llist_for_each_entry_safe(fqdir, tmp, kill_list, free_list) {
-> > > +               f = fqdir->f;
-> > > +               if (refcount_dec_and_test(&f->refcnt))
-> > > +                       complete(&f->completion);
-> > >
-> > > -       kfree(fqdir);
-> > > +               kfree(fqdir);
-> > > +       }
-> > >  }
-> > >
-> > > +static DECLARE_WORK(fqdir_free_work, fqdir_free_fn);
-> > > +
-> > > +static void fqdir_work_fn(struct work_struct *work)
-> > > +{
-> > > +       struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
-> > > +
-> > > +       rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
-> > > +
-> > > +       if (llist_add(&fqdir->free_list, &free_list))
-> > > +               queue_work(fqdir_wq, &fqdir_free_work);
-> >
-> > I think you misunderstood me.
-> >
-> > Since this fqdir_free_work will have at most one instance, you can use
-> > system_wq here, there is no risk of abuse.
-> >
-> > My suggestion was to not use system_wq for fqdir_exit(), to better
-> > control the number
-> >  of threads in rhashtable cleanups.
-> >
-> > void fqdir_exit(struct fqdir *fqdir)
-> > {
-> >         INIT_WORK(&fqdir->destroy_work, fqdir_work_fn);
-> > -       queue_work(system_wq, &fqdir->destroy_work);
-> > +      queue_work(fqdir_wq, &fqdir->destroy_work);
-> > }
->
-> Oh, got it.  I definitely misunderstood.  My fault, sorry.
->
-> >
-> >
-> >
-> > > +}
-> > > +
-> > > +static int __init fqdir_wq_init(void)
-> > > +{
-> > > +       fqdir_wq = create_singlethread_workqueue("fqdir");
-> >
-> >
-> > And here, I suggest to use a non ordered work queue, allowing one
-> > thread per cpu, to allow concurrent rhashtable cleanups
-> >
-> > Also "fqdir" name is rather vague, this is an implementation detail ?
-> >
-> > fqdir_wq =create_workqueue("inet_frag_wq");
->
-> So, what you are suggesting is to use a dedicated non-ordered work queue
-> (fqdir_wq) for rhashtable cleanup and do the remaining works with system_wq in
-> the batched manner, right?  IOW, doing below change on top of this patch.
->
-> --- a/net/ipv4/inet_fragment.c
-> +++ b/net/ipv4/inet_fragment.c
-> @@ -145,7 +145,7 @@ static void inet_frags_free_cb(void *ptr, void *arg)
->                 inet_frag_destroy(fq);
->  }
->
-> -static struct workqueue_struct *fqdir_wq;
-> +static struct workqueue_struct *inet_frag_wq;
->  static LLIST_HEAD(free_list);
+On Thu, Dec 10, 2020 at 11:41:24AM +0100, Maarten Brock wrote:
+> Hello Mychaela,
+> 
+> On 2020-12-09 23:49, Mychaela Falconia wrote:
 
-Nit : Please prefix this free_list , like fqdir_free_list  to avoid
-namespace pollution.
+> > But the problem is that the current status quo is fundamentally broken
+> > for those hardware devices in which DTR and/or RTS have been repurposed
+> > for something other than modem and flow control.  Right now whenever a
+> > "cold" (never previously opened) serial port is opened for the first
+> > time, that open action immediately and unstoppably asserts both DTR
+> > and RTS hardware outputs, without giving userspace any opportunity to
+> > say "no, please don't do it".  Yes, this behaviour is codified in a
+> > bunch of standards that ultimately trace back to 1970s Original UNIX,
+> > but just because it is a standard does not make it right - this
+> > Unix/POSIX/Linux "standard" serial port behaviour is a bug, not a
+> > feature.
+> 
+> I agree. And an application not configuring the required handshakes, but
+> still relying on them is an equal bug.
 
+Ehh, don't be silly. Relying on having Linux assert DTR/RTS on open is
+in no way a bug; it's the standard behaviour that we must continue to
+support unless explicitly overridden. Period.
 
->
->  static void fqdir_free_fn(struct work_struct *work)
-> @@ -181,14 +181,14 @@ static void fqdir_work_fn(struct work_struct *work)
->         rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
->
->         if (llist_add(&fqdir->free_list, &free_list))
-> -               queue_work(fqdir_wq, &fqdir_free_work);
-> +               queue_work(system_wq, &fqdir_free_work);
->  }
->
->  static int __init fqdir_wq_init(void)
->  {
-> -       fqdir_wq = create_singlethread_workqueue("fqdir");
-> -       if (!fqdir_wq)
-> -               panic("Could not create fqdir workq");
-> +       inet_frag_wq = create_workqueue("inet_frag_wq");
-> +       if (!inet_frag_wq)
-> +               panic("Could not create inet frag workq");
->         return 0;
->  }
->
-> @@ -218,7 +218,7 @@ EXPORT_SYMBOL(fqdir_init);
->  void fqdir_exit(struct fqdir *fqdir)
->  {
->         INIT_WORK(&fqdir->destroy_work, fqdir_work_fn);
-> -       queue_work(system_wq, &fqdir->destroy_work);
-> +       queue_work(inet_frag_wq, &fqdir->destroy_work);
->  }
->  EXPORT_SYMBOL(fqdir_exit);
->
-> If I'm still misunderstanding, please let me know.
->
+> > But if there exist some custom hw devices out there that are in the
+> > same predicament as my DUART28 adapter, but are different in that they
+> > are classic old-fashioned RS-232 rather than integrated USB-serial,
+> > with no place to assign a custom USB ID, *then* we need a non-USB-ID-
+> > dependent solution such as Johan's sysfs attribute or O_DIRECT.
+> 
+> Any device with a classic old-fashioned RS-232 has probably already
+> solved this in another way or is accepted as not working on Linux.
+> 
+> And then there is also the device tree (overlay?) through which a quirk
+> like this can be communicated to the kernel driver. Not sure if this
+> could help for a plug-and-play device like on USB.
 
-I think that with the above changes, we should be good ;)
+Not every system use devicetree and no, it doesn't help with
+hotpluggable buses either.
 
-Thanks !
+Johan
