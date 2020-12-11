@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756792D73E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA4E2D73EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390870AbgLKKZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:25:48 -0500
-Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:34059 "EHLO
-        outbound-smtp37.blacknight.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728893AbgLKKZB (ORCPT
+        id S2391314AbgLKK0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:26:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390692AbgLKKZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:25:01 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id 874AB19F6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 10:23:59 +0000 (GMT)
-Received: (qmail 11456 invoked from network); 11 Dec 2020 10:23:59 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Dec 2020 10:23:59 -0000
-Date:   Fri, 11 Dec 2020 10:23:57 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Ziljstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 0/4] Reduce scanning of runqueues in select_idle_sibling
-Message-ID: <20201211102357.GW3371@techsingularity.net>
-References: <20201208153501.1467-1-mgorman@techsingularity.net>
- <20201209143748.GP3371@techsingularity.net>
- <CAKfTPtCToad1ZwMRi28iC=MQ2D+vnTBLKBU+UOBanTWnuQQzRA@mail.gmail.com>
- <CAKfTPtBigdckTCpYyVD9R0U9Mm+ENX7BJ3gqrTkPW3m64iPCVA@mail.gmail.com>
- <20201210110424.GR3371@techsingularity.net>
- <CAKfTPtCoTD84kWhj5S-2LokcTLanewX8BvjHCN1qucutDOTuzg@mail.gmail.com>
+        Fri, 11 Dec 2020 05:25:37 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2234C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 02:24:56 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id l11so12663052lfg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 02:24:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WBQx9xO5u4u8XZlcf1cIHxx3BPtxa/Dl6Ow9KmNUplg=;
+        b=byCsg5/DRR2oVGR5EtRAAIVieBYmVgCOoM8iJ8p0Xx1izAgoLC44AHtuUArms1oJdI
+         wGRDU+StYpSlEgLC24C28dPMxINpXkIHM/fqJ9ZDx5vM0fk6xO9Z68K2oNBN//7SyZ+0
+         M+2mjjvpTHcRRwZfS3HNZzhp+WZs19H97tu6zd3mOL2o397fCOM08Iak6gizN+s7BQEf
+         YgVahUw2R6TP3IIXQnem4jhNLxSiRSJHbew8U/9gb6TiOhevyU6utl1gc8YOFdg7aKgC
+         c5wbfOtoMLZsM67HFg4VB919KnKPU1NAIooegJZpuzuVFlNe1Df57Q8gDbzIj2QKGxjz
+         BXRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WBQx9xO5u4u8XZlcf1cIHxx3BPtxa/Dl6Ow9KmNUplg=;
+        b=JdPTueVUC1J2SzhZx6EVEJYScXWseJeGuLgfxm4/9G/f3zKqAlD3rTzf4MLkmkyOGM
+         xaFLG90X5AQCr1T2Cl+HI56s3KiWNOHYOrf/Y2yMrJgdl+bLLuur+Zc4CwlapH/7hwT/
+         OJsBzB88xeenJ6Q9j1IWBIEzpaU1le9M/r44vn8+9S+RPeiGdkjPYc9bFMmb1OhIPDd8
+         XuilBOfikMB5wU2ViYZuN07FLi0k2NG/vyHYJkRZRzMX/5yn/cbjV3aYv/feP71p2toK
+         DegBEXj7PBDdZiEGZQwIC86sceNSjgvpxh29jKhRZkbixVQWc4yxN/vAEZ7yB5KbtK9B
+         179Q==
+X-Gm-Message-State: AOAM532Xrvj7HEk5G8uSIVLcYOcldcvlHTcbPcUam19O0ReDUpaQ4IJg
+        /OSxQp6H+jYV5VS04Yfx8Xfskw==
+X-Google-Smtp-Source: ABdhPJxKo/aDKyPAHBZ/SABdawDsZbvwiCVst9dJY5+hC6OBbOkAXC7OOX+Z0neGmL3AriKiTZG7xg==
+X-Received: by 2002:a19:48e:: with SMTP id 136mr1997511lfe.357.1607682295088;
+        Fri, 11 Dec 2020 02:24:55 -0800 (PST)
+Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
+        by smtp.gmail.com with ESMTPSA id j1sm826622lfg.225.2020.12.11.02.24.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 02:24:54 -0800 (PST)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     tsbogend@alpha.franken.de, natechancellor@gmail.com,
+        ndesaulniers@google.com
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH v2] mips: lib: uncached: fix non-standard usage of variable 'sp'
+Date:   Fri, 11 Dec 2020 11:24:37 +0100
+Message-Id: <20201211102437.3929348-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtCoTD84kWhj5S-2LokcTLanewX8BvjHCN1qucutDOTuzg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 10:51:17AM +0100, Vincent Guittot wrote:
-> On Thu, 10 Dec 2020 at 12:04, Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > On Thu, Dec 10, 2020 at 10:38:37AM +0100, Vincent Guittot wrote:
-> > > > while testing your patchset and Aubrey one on top of tip, I'm facing
-> > > > some perf regression on my arm64 numa system on hackbench and reaim.
-> > > > The regression seems to comes from your patchset but i don't know
-> > > > which patch in particular yet
-> > > >
-> > > > hackbench -l 256000 -g 1
-> > > >
-> > > > v5.10-rc7 + tip/sched/core 13,255(+/- 3.22%)
-> > > > with your patchset         15.368(+/- 2.74)  -15.9%
-> > > >
-> > > > I'm also seeing perf regression on reaim but this one needs more
-> > > > investigation before confirming
-> > > >
-> > > > TBH, I was not expecting regressions. I'm running more test to find
-> > > > which patch is the culprit
-> > >
-> > > The regression comes from patch 3: sched/fair: Do not replace
-> > > recent_used_cpu with the new target
-> > >
-> >
-> > That's not entirely surprising. The intent of the patch is to increase the
-> > hit rate of p->recent_used_cpu but it's not a guaranteed win due to two
-> > corner cases. If multiple tasks have the same p->recent_used_cpu, they can
-> > race to use that CPU and stack as a result instead of searching the domain.
-> > If SMT is enabled then p->recent_used_cpu can point to an idle CPU that has
-> > a busy sibling which the search would have avoided in select_idle_core().
-> >
-> > I think you are using processes and sockets for hackbench but as you'll
-> > see later, hackbench can be used both to show losses and gains.
-> 
-> I run more hackbench tests with pipe and socket and both show
-> regression with patch 3 whereas this is significant improvement with
-> other patches and Aubrey's one
-> 
+When building mips tinyconfig with clang the following warning show up:
 
-Is SMT enabled on your test machine? If not, then patch 4 should make no
-difference but if SMT is enabled, I wonder how this untested version of
-patch 3 behaves for you. The main difference is that the recent used cpu
-is used as a search target so that it would still check if it's an idle
-core and if not, fall through so it's used as an idle CPU after checking
-it's allowed by p->cpus_ptr.
+arch/mips/lib/uncached.c:45:6: warning: variable 'sp' is uninitialized when used here [-Wuninitialized]
+        if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+            ^~
+arch/mips/lib/uncached.c:40:18: note: initialize the variable 'sp' to silence this warning
+        register long sp __asm__("$sp");
+                        ^
+                         = 0
+1 warning generated.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 5c41875aec23..63980bcf6e70 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6275,21 +6275,14 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 		return prev;
- 	}
- 
--	/* Check a recently used CPU as a potential idle candidate: */
-+	/* Check a recently used CPU as a search target: */
- 	recent_used_cpu = p->recent_used_cpu;
-+	p->recent_used_cpu = prev;
- 	if (recent_used_cpu != prev &&
- 	    recent_used_cpu != target &&
- 	    cpus_share_cache(recent_used_cpu, target) &&
--	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
--	    cpumask_test_cpu(p->recent_used_cpu, p->cpus_ptr) &&
--	    asym_fits_capacity(task_util, recent_used_cpu)) {
--		/*
--		 * Replace recent_used_cpu with prev as it is a potential
--		 * candidate for the next wake:
--		 */
--		p->recent_used_cpu = prev;
--		return recent_used_cpu;
--	}
-+	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)))
-+		target = recent_used_cpu;
- 
- 	/*
- 	 * For asymmetric CPU capacity systems, our domain of interest is
-@@ -6768,9 +6761,6 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
- 	} else if (wake_flags & WF_TTWU) { /* XXX always ? */
- 		/* Fast path */
- 		new_cpu = select_idle_sibling(p, prev_cpu, new_cpu);
--
--		if (want_affine)
--			current->recent_used_cpu = cpu;
- 	}
- 	rcu_read_unlock();
- 
+Rework to make an explicit inline move, instead of the non-standard use
+of specifying registers for local variables. This is what's written
+from the gcc-10 manual [1] about specifying registers for local
+variables:
 
+"6.47.5.2 Specifying Registers for Local Variables
+.................................................
+[...]
+
+"The only supported use for this feature is to specify registers for
+input and output operands when calling Extended 'asm' (*note Extended
+Asm::).  [...]".
+
+[1] https://docs.w3cub.com/gcc~10/local-register-variables
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ arch/mips/lib/uncached.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/mips/lib/uncached.c b/arch/mips/lib/uncached.c
+index 09d5deea747f..f80a67c092b6 100644
+--- a/arch/mips/lib/uncached.c
++++ b/arch/mips/lib/uncached.c
+@@ -37,10 +37,12 @@
+  */
+ unsigned long run_uncached(void *func)
+ {
+-	register long sp __asm__("$sp");
+ 	register long ret __asm__("$2");
+ 	long lfunc = (long)func, ufunc;
+ 	long usp;
++	long sp;
++
++	__asm__("move %0, $sp" : "=r" (sp));
+ 
+ 	if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+ 		usp = CKSEG1ADDR(sp);
 -- 
-Mel Gorman
-SUSE Labs
+2.29.2
+
