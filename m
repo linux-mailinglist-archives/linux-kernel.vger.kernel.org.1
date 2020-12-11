@@ -2,216 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4552D812C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0722D8130
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404761AbgLKVcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:32:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53370 "EHLO
+        id S2391347AbgLKVhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:37:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391317AbgLKVcY (ORCPT
+        with ESMTP id S2391970AbgLKVhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:32:24 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F51C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:31:44 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id n1so5290494pge.8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:31:44 -0800 (PST)
+        Fri, 11 Dec 2020 16:37:17 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA100C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:36:27 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id g20so14345202ejb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:36:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wOwudKi3c/sJJmdZte/owFpzWQE+oWQgZXymuZLUvFE=;
-        b=fJ8vb9k5d5ih0Ew/8e6GpgyPz/qH+VxR4hoto6jF1IdyGvPy2r048XRP1tEl+SprVO
-         RCfnP8Jq6xwT27xKmqPOhXzMEmutB4HMgxUlrtf00O1vO693bdvHnZIl2mJp8K65IYpD
-         J/9eDXt9AKmEC4h3CPQX2e9FnsZufUcslge4k9M1vwQNoM41E28Ydt4377hdqJ9Mp0IC
-         IjXmdm8QWgfabGs5QtZnb1p65jsdrXwUdvU5gYbj3+QbvcZ1b4Q9xsGXSzDc+aWeL/Uk
-         jdb0RnaGO4VKNeSUdY5wTq+DEi1eplaeeItyr8WJQ9wbgd4YkjCEsz/nN6iMTXRXdToI
-         894g==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YDCN24FrCRx5laL0ft+PuPUsmVSKnGqRS3+zbkukcGs=;
+        b=b5kbkhPhvaw7foJtxfHYAzD4UJWKsxhJk/upexzoNGu32t+GxGxzsDExBMFrA6aiHz
+         kiE3+ssj0Z1Uufp6NmYeoxvvFh1//aLSypJHZtlfoZSEER3TdL2EpepN89z58jfxlEdF
+         mzKzq+lbZ3s8T30F12mCoHibxpmVvahQ6+VVjEGrwbrNAtsynfe3k5gWUVLLiTQ4N0OG
+         E3Nw8pqvFmzvA1okIjq/di9tgSjZWwF7ONSwczGSiKL2CBT58VhXVrfdzeeX8w9eUuyZ
+         UYxpbkTrntlvcEc8k8Y87uXsbmIiHEeieI122bLb4g9N6g7FDymsPUSGopffyWubJU/w
+         aYRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wOwudKi3c/sJJmdZte/owFpzWQE+oWQgZXymuZLUvFE=;
-        b=ucu5CgGTFxnoeyXQO6KxtyV04xv+3hlSmJ5q3AymnORp/K7iHp3dgR4YH1b5KUvpij
-         677hfZZu5t9wgXdAlRSCYq3udSHmWvvE7pHGtXdKSt4acZDZHz2xsAcy+Ua7WXpesMEd
-         MCjuIpdafF0Mh+85s4kQk4miYblmGTnnd1IqrztjGM+/s78g3dOXupr7gF+X9tgMcl55
-         8VLu8jObrDFaj5h8axKPurvo7P9KvjX7mIfbBnLSGYq1AEdzBK7LCS0WRJapdLS8+3If
-         eNATNAuNVcqeZ/lgXp1ZaWCLrD+OeS0H5Inz7FolEFV5xfbkA6N4awTl4kXoWb2Dq9op
-         X7CA==
-X-Gm-Message-State: AOAM531eTo3XlUyURTsMHUzrI5WKkNvBEl+5it3gk3i2ssmzHg6Fir4S
-        qe1UQze9sFeGCSKCM79zNue5wg==
-X-Google-Smtp-Source: ABdhPJzJU2ztbjBhJlS4dJPQ3mPqooHfOZ+TprKJpG+UBUYRmhLms2GXHxkjbUYWo3Yz6kMa+EfEfg==
-X-Received: by 2002:a62:1a56:0:b029:19d:b6eb:291a with SMTP id a83-20020a621a560000b029019db6eb291amr13615938pfa.10.1607722303664;
-        Fri, 11 Dec 2020 13:31:43 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id a141sm11447988pfa.189.2020.12.11.13.31.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 13:31:42 -0800 (PST)
-Date:   Fri, 11 Dec 2020 14:31:41 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org
-Subject: Re: [RFC 10/11] coresgith: etm-perf: Connect TRBE sink with ETE
- source
-Message-ID: <20201211213141.GB1921322@xps15>
-References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
- <1605012309-24812-11-git-send-email-anshuman.khandual@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YDCN24FrCRx5laL0ft+PuPUsmVSKnGqRS3+zbkukcGs=;
+        b=C9MyAI5REaB0qjzY79AZc7rV3o6Vm1QEEAhE59GyoX2XH/lNxFKkmOfehYsbt9aEqJ
+         7BVkkS7LqML3dHl5jY4O5fwiskUVKl7m8OhjZTot4clrSlepMEDl0E8gTb2JC1jZN6HO
+         rsPMEdOBO62lvsMCOnthj667d3Lbc6tevQxOx0/a03I3lEntUmWRl30xxjeUMMHALPLV
+         eBG7Fa9e3vRiFCzt8Bo6tZgs0Eh5BEIEx+VxasW8QkBRswkC2lhaw4ZczI9B3XgZwQ6u
+         8843SD8FlQrFN/TCl66lsuZL1mKEU3ZdCflRWOqQtVG+Zhjq7luhuv5QXbxOghors/sk
+         WwRQ==
+X-Gm-Message-State: AOAM5305OyZNtFjR+Te7ZUjyUFUXBGV4d9I2Xac/E9581xgvLzdR1wat
+        eD5G7jIaNIJr1ZdKGsECJzC1x6BifU9B4In2U3Jg2A==
+X-Google-Smtp-Source: ABdhPJxo6RVmBht/M/c4z6MjVIdAjJITyJGjQx4OgVsXVYMyeIvbY66yPlaSrfLWFCIEXCj8M9PS1CYUDfm8x+g+SPY=
+X-Received: by 2002:a17:906:7d98:: with SMTP id v24mr12888138ejo.129.1607722586264;
+ Fri, 11 Dec 2020 13:36:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605012309-24812-11-git-send-email-anshuman.khandual@arm.com>
+References: <CA+CK2bC6u4wnHX53ZhfPtQBLTDbD3t4V9Zuhj=HwD3gEyL4Puw@mail.gmail.com>
+ <10F682D5-0654-4C42-9989-F999D4434295@redhat.com>
+In-Reply-To: <10F682D5-0654-4C42-9989-F999D4434295@redhat.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 11 Dec 2020 16:35:50 -0500
+Message-ID: <CA+CK2bCc9gk3Yy+ueaZVJs90MFE3fqukLsdb5R2kTUH4tWRbkA@mail.gmail.com>
+Subject: Re: [PATCH v3 5/6] mm/gup: migrate pinned pages out of movable zone
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 06:15:08PM +0530, Anshuman Khandual wrote:
-> Unlike traditional sink devices, individual TRBE instances are not detected
-> via DT or ACPI nodes. Instead TRBE instances are detected during CPU online
-> process. Hence a path connecting ETE and TRBE on a given CPU would not have
-> been established until then. This adds two coresight helpers that will help
-> modify outward connections from a source device to establish and terminate
-> path to a given sink device. But this method might not be optimal and would
-> be reworked later.
-> 
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-etm-perf.c | 30 ++++++++++++++++++++++++
->  drivers/hwtracing/coresight/coresight-etm-perf.h |  4 ++++
->  drivers/hwtracing/coresight/coresight-platform.c |  3 ++-
->  drivers/hwtracing/coresight/coresight-trbe.c     |  2 ++
->  include/linux/coresight.h                        |  2 ++
->  5 files changed, 40 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> index 1a37991..b4ab1d4 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> @@ -664,3 +664,33 @@ void __exit etm_perf_exit(void)
->  {
->  	perf_pmu_unregister(&etm_pmu);
->  }
-> +
-> +#ifdef CONFIG_CORESIGHT_TRBE
-> +void coresight_trbe_connect_ete(struct coresight_device *csdev_trbe, int cpu)
-> +{
-> +	struct coresight_device *csdev_ete = per_cpu(csdev_src, cpu);
+On Fri, Dec 11, 2020 at 4:29 PM David Hildenbrand <david@redhat.com> wrote:
+>
+>
+> > Am 11.12.2020 um 22:09 schrieb Pavel Tatashin <pasha.tatashin@soleen.co=
+m>:
+> >
+> > =EF=BB=BFOn Fri, Dec 11, 2020 at 3:46 PM Jason Gunthorpe <jgg@ziepe.ca>=
+ wrote:
+> >>
+> >>> On Fri, Dec 11, 2020 at 03:40:57PM -0500, Pavel Tatashin wrote:
+> >>> On Fri, Dec 11, 2020 at 3:23 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >>>>
+> >>>> On Fri, Dec 11, 2020 at 03:21:39PM -0500, Pavel Tatashin wrote:
+> >>>>> @@ -1593,7 +1592,7 @@ static long check_and_migrate_cma_pages(struc=
+t mm_struct *mm,
+> >>>>>                              }
+> >>>>>
+> >>>>>                              if (!isolate_lru_page(head)) {
+> >>>>> -                                     list_add_tail(&head->lru, &cm=
+a_page_list);
+> >>>>> +                                     list_add_tail(&head->lru, &mo=
+vable_page_list);
+> >>>>>                                      mod_node_page_state(page_pgdat=
+(head),
+> >>>>>                                                          NR_ISOLATE=
+D_ANON +
+> >>>>>                                                          page_is_fi=
+le_lru(head),
+> >>>>> @@ -1605,7 +1604,7 @@ static long check_and_migrate_cma_pages(struc=
+t mm_struct *mm,
+> >>>>>              i +=3D step;
+> >>>>>      }
+> >>>>>
+> >>>>> -     if (!list_empty(&cma_page_list)) {
+> >>>>> +     if (!list_empty(&movable_page_list)) {
+> >>>>
+> >>>> You didn't answer my earlier question, is it OK that ZONE_MOVABLE
+> >>>> pages leak out here if ioslate_lru_page() fails but the
+> >>>> moval_page_list is empty?
+> >>>>
+> >>>> I think the answer is no, right?
+> >>> In my opinion it is OK. We are doing our best to not pin movable
+> >>> pages, but if isolate_lru_page() fails because pages are currently
+> >>> locked by someone else, we will end up long-term pinning them.
+> >>> See comment in this patch:
+> >>> +        * 1. Pinned pages: (long-term) pinning of movable pages is a=
+voided
+> >>> +        *    when pages are pinned and faulted, but it is still poss=
+ible that
+> >>> +        *    address space already has pages in ZONE_MOVABLE at the =
+time when
+> >>> +        *    pages are pinned (i.e. user has touches that memory bef=
+ore
+> >>> +        *    pinning). In such case we try to migrate them to a diff=
+erent zone,
+> >>> +        *    but if migration fails the pages can still end-up pinne=
+d in
+> >>> +        *    ZONE_MOVABLE. In such case, memory offlining might retr=
+y a long
+> >>> +        *    time and will only succeed once user application unpins=
+ pages.
+> >>
+> >> It is not "retry a long time" it is "might never complete" because
+> >> userspace will hold the DMA pin indefinitely.
+> >>
+> >> Confused what the point of all this is then ??
+> >>
+> >> I thought to goal here is to make memory unplug reliable, if you leave
+> >> a hole like this then any hostile userspace can block it forever.
+> >
+> > You are right, I used a wording from the previous comment, and it
+> > should be made clear that pin may be forever. Without these patches it
+> > is guaranteed that hot-remove will fail if there are pinned pages as
+> > ZONE_MOVABLE is actually the first to be searched. Now, it will fail
+> > only due to exceptions listed in ZONE_MOVABLE comment:
+> >
+> > 1. pin + migration/isolation failure
+>
+> Not sure what that really means. We have short-term pinnings (although we=
+ might have a better term for =E2=80=9Epinning=E2=80=9C here) for example, =
+when a process dies (IIRC). There is a period where pages cannot get migrat=
+ed and offlining code has to retry (which might take a while). This still a=
+pplies after your change - are you referring to that?
+>
+> > 2. memblock allocation due to limited amount of space for kernelcore
+> > 3. memory holes
+> > 4. hwpoison
+> > 5. Unmovable PG_offline pages (? need to study why this is a scenario).
+>
+> Virtio-mem is the primary user in this context.
+>
+> > Do you think we should unconditionally unpin pages, and return error
+> > when isolation/migration fails?
+>
+> I=E2=80=98m not sure what you mean here. Who=E2=80=99s supposed to unpin =
+which pages?
 
-As Suzuki pointed out that won't work if the TRBE gets probed before the
-ETMv4-ETE.  I also agree with Suzuki this situation should be better handled
-with a per csdev_trbe that should be declared in the coresight-core.c file.
-That way both sysfs and perf have access to it.  
+Hi David,
 
-> +
-> +	if (!csdev_ete) {
-> +		pr_err("Corresponding ETE device not present on cpu %d\n", cpu);
-> +		return;
-> +	}
-> +	csdev_ete->def_sink = csdev_trbe;
+When check_and_migrate_movable_pages() is called, the pages are
+already pinned. If some of those pages are in movable zone, and we
+fail to migrate or isolate them what should we do: proceed, and keep
+it as exception of when movable zone can actually have pinned pages or
+unpin all pages in the array, and return an error, or unpin only pages
+in movable zone, and return an error?
 
-That should be done in function coresight_find_default_sink().  If
-per_cpu(csdev_trbe, cpu) exists then that's the what we pick.  If not then move
-along with coresight_find_sink().
+Pasha
 
-
-> +	csdev_ete->pdata->nr_outport++;
-> +	if (!csdev_ete->pdata->conns)
-> +		coresight_alloc_conns(&csdev_ete->dev, csdev_ete->pdata);
-> +	csdev_ete->pdata->conns[csdev_ete->pdata->nr_outport - 1].child_dev = csdev_trbe;
-
-I don't think we have to go through all that dance since the TRBE is directly
-connected to the ETE.  With the above about coresight_find_default_sink() in
-mind, all we need to do is fix coresight_build_path() to check if the sink
-parameter is the same as csdev->def_sink.  If so then just add the sink to the
-patch, no need to follow ports as we do for other classic components.
-
-Thanks,
-Mathieu
-
-> +}
-> +
-> +void coresight_trbe_remove_ete(struct coresight_device *csdev_trbe, int cpu)
-> +{
-> +	struct coresight_device *csdev_ete = per_cpu(csdev_src, cpu);
-> +
-> +	if (!csdev_ete) {
-> +		pr_err("Corresponding ETE device not present on cpu %d\n", cpu);
-> +		return;
-> +	}
-> +	csdev_ete->pdata->conns[csdev_ete->pdata->nr_outport - 1].child_dev = NULL;
-> +	csdev_ete->def_sink = NULL;
-> +	csdev_ete->pdata->nr_outport--;
-> +}
-> +#endif
-> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.h b/drivers/hwtracing/coresight/coresight-etm-perf.h
-> index 3e4f2ad..20386cf 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm-perf.h
-> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.h
-> @@ -85,4 +85,8 @@ static inline void *etm_perf_sink_config(struct perf_output_handle *handle)
->  int __init etm_perf_init(void);
->  void __exit etm_perf_exit(void);
->  
-> +#ifdef CONFIG_CORESIGHT_TRBE
-> +void coresight_trbe_connect_ete(struct coresight_device *csdev, int cpu);
-> +void coresight_trbe_remove_ete(struct coresight_device *csdev, int cpu);
-> +#endif
->  #endif
-> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
-> index c594f45..8fa7406 100644
-> --- a/drivers/hwtracing/coresight/coresight-platform.c
-> +++ b/drivers/hwtracing/coresight/coresight-platform.c
-> @@ -23,7 +23,7 @@
->   * coresight_alloc_conns: Allocate connections record for each output
->   * port from the device.
->   */
-> -static int coresight_alloc_conns(struct device *dev,
-> +int coresight_alloc_conns(struct device *dev,
->  				 struct coresight_platform_data *pdata)
->  {
->  	if (pdata->nr_outport) {
-> @@ -35,6 +35,7 @@ static int coresight_alloc_conns(struct device *dev,
->  
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(coresight_alloc_conns);
->  
->  static struct device *
->  coresight_find_device_by_fwnode(struct fwnode_handle *fwnode)
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index 48a8ec3..afd1a1c 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -507,6 +507,7 @@ static void arm_trbe_probe_coresight_cpu(void *info)
->  	if (IS_ERR(cpudata->csdev))
->  		goto cpu_clear;
->  
-> +	coresight_trbe_connect_ete(cpudata->csdev, cpudata->cpu);
->  	dev_set_drvdata(&cpudata->csdev->dev, cpudata);
->  	cpudata->trbe_dbm = get_trbe_flag_update();
->  	cpudata->trbe_align = 1ULL << get_trbe_address_align();
-> @@ -586,6 +587,7 @@ static int arm_trbe_cpu_teardown(unsigned int cpu, struct hlist_node *node)
->  
->  	if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
->  		cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
-> +		coresight_trbe_remove_ete(cpudata->csdev, cpu);
->  		if (cpudata->csdev) {
->  			coresight_unregister(cpudata->csdev);
->  			cpudata->drvdata = NULL;
-> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> index c2d0a2a..c657813 100644
-> --- a/include/linux/coresight.h
-> +++ b/include/linux/coresight.h
-> @@ -496,6 +496,8 @@ void coresight_relaxed_write64(struct coresight_device *csdev,
->  			       u64 val, u32 offset);
->  void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset);
->  
-> +int coresight_alloc_conns(struct device *dev,
-> +			  struct coresight_platform_data *pdata);
->  
->  #else
->  static inline struct coresight_device *
-> -- 
-> 2.7.4
-> 
+>
+> >
+> > Pasha
+> >
+> >>
+> >> Jason
+> >
+>
