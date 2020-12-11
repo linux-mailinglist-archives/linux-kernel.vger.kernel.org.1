@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768FC2D7FE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EA52D7FE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390751AbgLKUWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 15:22:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
+        id S2393384AbgLKUWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 15:22:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388074AbgLKUWY (ORCPT
+        with ESMTP id S2388109AbgLKUWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 15:22:24 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E93C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:21:43 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id 143so9711956qke.10
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:21:43 -0800 (PST)
+        Fri, 11 Dec 2020 15:22:25 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45621C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:21:45 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id j26so7288567qtq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:21:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=wM4+TgIt1qy5AvzR8HLrxu1ifc40asavzOXqjbFYbkc=;
-        b=a+HUIRjFLUUSLUo/2eD3kC7hFtY5Bysj1lxaE1P9nNU7WySBlKU6F5bM6LJ092gq47
-         32bs1F3kv6sENBJYz15baCNRpolOJxZvPHEJFpI5vqiHQ7boZvH/QxxbcGx8/5WXzDz+
-         CfO9VZqtWSEqbdEHcdWejcBmlSokyaY/IyUMCYOvFkWyZ5hR4EfdFAP0zPPvwo76pjh/
-         oON8wnJjKT/DpkN6h+rcKfHpKMawPW4oUxsf4C/lBgdRQGCq58R+R0SEtTxEHtUCqsj4
-         R0t5mgFcsorQ4fE7e0CjM6fzZyduhmhQIdahWZEotEDkLhsGmTqbDCklsrAAY9cEQt9l
-         JfAg==
+        bh=g6NOhJ3w3XRzsqZuC7ga0SKkBBZ5s5oSTRUPFdoho3o=;
+        b=QIPBzIB9YCwxjTmgunmw4D66koVC14iWgJ5vMT9WKGGdO/jqIVhcL4FXyOkLjiIgwx
+         2w/qGjWQFjXJd2w3pkSca+bt5aVw5jUgxXMbVac7h+DpJ83Br/D9jE82VTAkwBlT1Rmw
+         3FXxFGz7ak389EY2W1/R4dmSgNKt09Q1a6FiIcYKEOvzB8dkwEHbpVZYJZo88vtsdrm4
+         eUKzO1mPeGf02VF+u6ekNdjnRupaeN7zwPbY8uT52XeDZfExtvGWr9yGlBik8X9lBxN8
+         g5ROSqOruM869dzTToz2XzCgs6b1DakksWvGy7bAPZAbdHwqfkT2n/zDJ6CHexwINi3p
+         lTKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wM4+TgIt1qy5AvzR8HLrxu1ifc40asavzOXqjbFYbkc=;
-        b=U9pbkjXcG2o3buVcQobAVaPaiUJjT0zOHr8/ny3XUsmGDhi0DRfKUiC0ie51/sv8Nt
-         AKYwESCCSFhkZFjf+D6EdgExM+F8rgK7byfkkJHHHQ+1tvMZAZqIMtM52X1Nu29zergl
-         SCC/XM4t0yGfLdZcA0mraTEJjb+kWhvdTJC/yW4qOGHPCe2GmPR1WoSF6K6kxekLNTkC
-         2vBi0zIKPrDW2P6UrtcbaoBNh3R4RxSyQiTJ7L3a+2pEHdHBC+rUqs1fTMZnXJR+kun9
-         RlFRXH145k8qOVJ5uAiFRFqyiTMXsu2jCSHqpGXIvS/EjXcREQ2nrV36JxiFWQwi+UqF
-         gsqw==
-X-Gm-Message-State: AOAM530OEvLgXj1MIpR2wdaNc6Bn+m+0y2IC0BFFsTGwIFM+aXXNWokx
-        o2KLCC5/Jt/JjeyxjcJ0oQUzRQ==
-X-Google-Smtp-Source: ABdhPJzzCzj6oHF3QRqCvSpSB6dKhWo2UctCD2kOxs9Qj/VWokauP0nHxQ0nsHRcKAhVoBwKFfrazw==
-X-Received: by 2002:a37:6c03:: with SMTP id h3mr18224198qkc.219.1607718102987;
-        Fri, 11 Dec 2020 12:21:42 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=g6NOhJ3w3XRzsqZuC7ga0SKkBBZ5s5oSTRUPFdoho3o=;
+        b=diONQ2AmHglUBlP1ol5+EtX/u85WC/iU5ShyoGqSqTxE0a1k1c8aambcCkXztommLC
+         NhXHt0TPDYydrKXeIlt9juMzt9Yi4gaAs4Rovzh1G45OevFnJf1JzEz5uaUCn1ahQuHn
+         AGQvnhCBlWXjtQmgTbEppYst4J4DSC70EodHt2F9eoD02Iv42DQBlvvMSq6mq8KZfzX0
+         zs3r7xh8vNcZeEh27uAqhZd9tPBvXn2fvi5G5GH5a7CQcSGYRLseTSafCDmhiERcuDT5
+         weFpgELFpDX5Jr4ak+pvQ14MZThmKwNTvAeckrySXjipvNpCdRRpp7Aw/2Kq6yXsLdx0
+         cJ0g==
+X-Gm-Message-State: AOAM530PE7zQ+IYzQUON1a0fKEPo8wKFrT+BPCWTPTTyuTsEj2QxpJ1h
+        eeVD3lOv44zolYStHWQJTvxr0w==
+X-Google-Smtp-Source: ABdhPJzZqhcqsCxmzzgOEDVNGFUk9Dt2CNmfQPAeukFqgySkrYTp9H2Ov8uq/5CM5Fj9kDUmv8+bLg==
+X-Received: by 2002:aed:2ba5:: with SMTP id e34mr18349348qtd.146.1607718104558;
+        Fri, 11 Dec 2020 12:21:44 -0800 (PST)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id y192sm8514455qkb.12.2020.12.11.12.21.41
+        by smtp.gmail.com with ESMTPSA id y192sm8514455qkb.12.2020.12.11.12.21.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 12:21:42 -0800 (PST)
+        Fri, 11 Dec 2020 12:21:43 -0800 (PST)
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
@@ -58,80 +58,45 @@ To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
         willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
         linux-doc@vger.kernel.org
-Subject: [PATCH v3 0/6] prohibit pinning pages in ZONE_MOVABLE
-Date:   Fri, 11 Dec 2020 15:21:34 -0500
-Message-Id: <20201211202140.396852-1-pasha.tatashin@soleen.com>
+Subject: [PATCH v3 1/6] mm/gup: don't pin migrated cma pages in movable zone
+Date:   Fri, 11 Dec 2020 15:21:35 -0500
+Message-Id: <20201211202140.396852-2-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201211202140.396852-1-pasha.tatashin@soleen.com>
+References: <20201211202140.396852-1-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changelog
----------
-v3
-- Merged with linux-next, which contains clean-up patch from Jason,
-  therefore this series is reduced by two patches which did the same
-  thing.
-v2
-- Addressed all review comments
-- Added Reviewed-by's.
-- Renamed PF_MEMALLOC_NOMOVABLE to PF_MEMALLOC_PIN
-- Added is_pinnable_page() to check if page can be longterm pinned
-- Fixed gup fast path by checking is_in_pinnable_zone()
-- rename cma_page_list to movable_page_list
-- add a admin-guide note about handling pinned pages in ZONE_MOVABLE,
-  updated caveat about pinned pages from linux/mmzone.h
-- Move current_gfp_context() to fast-path
+In order not to fragment CMA the pinned pages are migrated. However,
+they are migrated to ZONE_MOVABLE, which also should not have pinned pages.
 
----------
-When page is pinned it cannot be moved and its physical address stays
-the same until pages is unpinned.
+Remove __GFP_MOVABLE, so pages can be migrated to zones where pinning
+is allowed.
 
-This is useful functionality to allows userland to implementation DMA
-access. For example, it is used by vfio in vfio_pin_pages().
+Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+---
+ mm/gup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-However, this functionality breaks memory hotplug/hotremove assumptions
-that pages in ZONE_MOVABLE can always be migrated.
-
-This patch series fixes this issue by forcing new allocations during
-page pinning to omit ZONE_MOVABLE, and also to migrate any existing
-pages from ZONE_MOVABLE during pinning.
-
-It uses the same scheme logic that is currently used by CMA, and extends
-the functionality for all allocations.
-
-For more information read the discussion [1] about this problem.
-[1] https://lore.kernel.org/lkml/CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com
-
-Previous versions:
-v1
-https://lore.kernel.org/lkml/20201202052330.474592-1-pasha.tatashin@soleen.com
-v2
-https://lore.kernel.org/lkml/20201210004335.64634-1-pasha.tatashin@soleen.com
-
-Pavel Tatashin (6):
-  mm/gup: don't pin migrated cma pages in movable zone
-  mm cma: rename PF_MEMALLOC_NOCMA to PF_MEMALLOC_PIN
-  mm: apply per-task gfp constraints in fast path
-  mm: honor PF_MEMALLOC_PIN for all movable pages
-  mm/gup: migrate pinned pages out of movable zone
-  memory-hotplug.rst: add a note about ZONE_MOVABLE and page pinning
-
- .../admin-guide/mm/memory-hotplug.rst         |  9 +++
- include/linux/migrate.h                       |  1 +
- include/linux/mm.h                            | 11 +++
- include/linux/mmzone.h                        | 11 ++-
- include/linux/sched.h                         |  2 +-
- include/linux/sched/mm.h                      | 27 +++----
- include/trace/events/migrate.h                |  3 +-
- mm/gup.c                                      | 72 ++++++++-----------
- mm/hugetlb.c                                  |  4 +-
- mm/page_alloc.c                               | 32 ++++-----
- mm/vmscan.c                                   | 10 +--
- 11 files changed, 95 insertions(+), 87 deletions(-)
-
+diff --git a/mm/gup.c b/mm/gup.c
+index 0c866af5d96f..87452fcad048 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1565,7 +1565,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 	long ret = nr_pages;
+ 	struct migration_target_control mtc = {
+ 		.nid = NUMA_NO_NODE,
+-		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_NOWARN,
++		.gfp_mask = GFP_USER | __GFP_NOWARN,
+ 	};
+ 
+ check_again:
 -- 
 2.25.1
 
