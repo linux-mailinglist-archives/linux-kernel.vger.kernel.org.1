@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D42A2D79AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E552D79B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390628AbgLKPnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:43:05 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:47878 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389818AbgLKPmk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:42:40 -0500
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4623120B717A;
-        Fri, 11 Dec 2020 07:41:58 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4623120B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607701319;
-        bh=Z/5G5fthLzonRDLWBgNgSdlHyzkpMnlXBp85Z/JmUyg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nf5TLx3vn1lcKB1DA4lTJX2EqfcTb6cgQo7D/Gl5k2AbejMIWpYMlh/0gcUtFSJLE
-         cc8/kh1eKFDzZRxST7ClYDExhCA5K51LpSo2SatfJDL0ah2nStK27gGg8RH+rJ/88P
-         PyFkmr4/3vPKg1Dn+H9dwS1PT53uCJ7n4SAKGADg=
-Date:   Fri, 11 Dec 2020 09:41:56 -0600
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
-        jmorris@namei.org, nramas@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Subject: Re: [PATCH v7 8/8] selinux: include a consumer of the new IMA
- critical data hook
-Message-ID: <20201211154156.GB4951@sequoia>
-References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
- <20201209194212.5131-9-tusharsu@linux.microsoft.com>
- <20201211153618.GA4951@sequoia>
+        id S2392780AbgLKPoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:44:17 -0500
+Received: from mga07.intel.com ([134.134.136.100]:26085 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390648AbgLKPn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 10:43:57 -0500
+IronPort-SDR: jDDsCdwTJdmLxXFKw8BMZS+10WCBLwT3GkjoqRR2XIKibx88TzpjP1hoNW0Dg89045G18LYCBQ
+ NiXLMGK7pFtg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9832"; a="238557330"
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="238557330"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 07:42:10 -0800
+IronPort-SDR: 8GcczHJRgPBSbn8VAs1UX0mK6shOPulvVbZXGtRkUx2zpw+u2LOGZr/EjJIldtVope8EorfnUR
+ SifaBcA/1b3Q==
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="349521183"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.249.144.44]) ([10.249.144.44])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 07:42:07 -0800
+Subject: Re: [PATCH] ASoC: Intel: Skylake: Check the kcontrol against NULL
+To:     Lukasz Majczak <lma@semihalf.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Mateusz Gorski <mateusz.gorski@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, Guenter Roeck <groeck@google.com>,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>
+References: <20201210121438.7718-1-lma@semihalf.com>
+From:   =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>
+Message-ID: <669da93a-2ef2-fa08-6c7f-be2e6b5ac363@linux.intel.com>
+Date:   Fri, 11 Dec 2020 16:42:04 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211153618.GA4951@sequoia>
+In-Reply-To: <20201210121438.7718-1-lma@semihalf.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-11 09:36:30, Tyler Hicks wrote:
-> The calls to pr_err() in this aren't quite following the style of the
-> other error SELinux error messages.
+On 12/10/2020 1:14 PM, Lukasz Majczak wrote:
+> +		kcontrol = dobj->control.kcontrol;
+> +		if(!kcontrol)
+> +			continue;
 
-Sorry, I left out a word. I meant to say that the calls to pr_err() in
-this *file* aren't quite following the right style. Please adjust all of
-them.
+Small nitpick, there should be space between if and opening parenthesis 
+as recommended by coding style.
 
-Thanks!
-
-Tyler
+Thanks,
+Amadeusz
