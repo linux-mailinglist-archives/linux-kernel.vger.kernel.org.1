@@ -2,194 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211902D7329
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFF42D7335
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405729AbgLKJyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 04:54:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34608 "EHLO mail.kernel.org"
+        id S2437508AbgLKJzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 04:55:45 -0500
+Received: from mga01.intel.com ([192.55.52.88]:29168 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404840AbgLKJyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 04:54:25 -0500
-Date:   Fri, 11 Dec 2020 09:53:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607680424;
-        bh=QsIVnJ8CGRl70yVewj8Ed9nYo9b0SK7ijo6uVqyomD0=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S6841Py29DfCupVk+JTMy1wYlPbw+kneOmgnZxgAehUaZQzhYedmBD300AxCeSe3h
-         lm4Jb9lK2IX2eEhGWL7Nrf9uiZ846OTXTxtIbb/+QqL5R6BKnJwlb+renKMjJpmbfl
-         SdLiw5v75hCqBsBxQbqbyi8R8G9SMTNaYuisHYpJsFaQvXH24Jl/4/q6WzlVWcOtsZ
-         f76YdRRa/Y3zj643s3F3uFjZ0GBwEnUjRBdMgFJnHSGHyGQlQ3PgGPZiczArzszw6a
-         7hVBb3hlHPVgcBSwFeWcmxL5wKTkGa8sn6wINCyzfExJ+xhkad8DyaLoMamrD//Deu
-         d84P2IgaFzYXg==
-From:   Will Deacon <will@kernel.org>
-To:     Yanan Wang <wangyanan55@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S2404840AbgLKJzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 04:55:08 -0500
+IronPort-SDR: wIo9AojRuqoUiRNs7KOzp09jCzx/ZsrAkiJVs1C/5xoIyNNGyySDPWhK2HyLN4qqaxXH7SICDS
+ T4/vLsO2nLOg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="192746911"
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="192746911"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 01:54:23 -0800
+IronPort-SDR: /ufv3vGNGQifQf4WI2wmyr1gYEo9JLcct/eEa85fh974wAfL2ugGQDoLz9o6bLFhFYPLXeOH+B
+ J5isAR9V2pBA==
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="333982962"
+Received: from dkreft-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.158.206])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 01:54:06 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Marc Zyngier <maz@kernel.org>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
-        zhukeqian1@huawei.com, yuzenghui@huawei.com,
-        jiangkunkun@huawei.com, wangjingyi11@huawei.com,
-        lushenming@huawei.com
-Subject: Re: [RFC PATCH] KVM: arm64: Add prejudgement for relaxing
- permissions only case in stage2 translation fault handler
-Message-ID: <20201211095337.GA11280@willie-the-truck>
-References: <20201211080115.21460-1-wangyanan55@huawei.com>
- <20201211080115.21460-2-wangyanan55@huawei.com>
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-pci@vger.kernel.org,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
+Subject: Re: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
+In-Reply-To: <20201210194043.957046529@linutronix.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20201210192536.118432146@linutronix.de> <20201210194043.957046529@linutronix.de>
+Date:   Fri, 11 Dec 2020 11:54:03 +0200
+Message-ID: <87wnxo7jno.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211080115.21460-2-wangyanan55@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yanan,
+On Thu, 10 Dec 2020, Thomas Gleixner <tglx@linutronix.de> wrote:
+> Driver code has no business with the internals of the irq descriptor.
+>
+> Aside of that the count is per interrupt line and therefore takes
+> interrupts from other devices into account which share the interrupt line
+> and are not handled by the graphics driver.
+>
+> Replace it with a pmu private count which only counts interrupts which
+> originate from the graphics card.
+>
+> To avoid atomics or heuristics of some sort make the counter field
+> 'unsigned long'. That limits the count to 4e9 on 32bit which is a lot and
+> postprocessing can easily deal with the occasional wraparound.
 
-On Fri, Dec 11, 2020 at 04:01:15PM +0800, Yanan Wang wrote:
-> In dirty-logging, or dirty-logging-stopped time, even normal running
-> time of a guest configed with huge mappings and numbers of vCPUs,
-> translation faults by different vCPUs on the same GPA could occur
-> successively almost at the same time. There are two reasons for it.
-> 
-> (1) If there are some vCPUs accessing the same GPA at the same time
-> and the leaf PTE is not set yet, then they will all cause translation
-> faults and the first vCPU holding mmu_lock will set valid leaf PTE,
-> and the others will later choose to update the leaf PTE or not.
-> 
-> (2) When changing a leaf entry or a table entry with break-before-make,
-> if there are some vCPUs accessing the same GPA just catch the moment
-> when the target PTE is set invalid in a BBM procedure coincidentally,
-> they will all cause translation faults and will later choose to update
-> the leaf PTE or not.
-> 
-> The worst case can be like this: some vCPUs cause translation faults
-> on the same GPA with different prots, they will fight each other by
-> changing back access permissions of the PTE with break-before-make.
-> And the BBM-invalid moment might trigger more unnecessary translation
-> faults. As a result, some useless small loops will occur, which could
-> lead to vCPU stuck.
-> 
-> To avoid unnecessary update and small loops, add prejudgement in the
-> translation fault handler: Skip updating the valid leaf PTE if we are
-> trying to recreate exactly the same mapping or to reduce access
-> permissions only(such as RW-->RO). And update the valid leaf PTE without
-> break-before-make if we are trying to add more permissions only.
-> 
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+I'll let Tvrtko and Chris review the substance here, but assuming they
+don't object,
+
+Acked-by: Jani Nikula <jani.nikula@intel.com>
+
+for merging via whichever tree makes most sense.
+
+>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: intel-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
 > ---
->  arch/arm64/kvm/hyp/pgtable.c | 73 +++++++++++++++++++++++++-----------
->  1 file changed, 52 insertions(+), 21 deletions(-)
-
-Cheers for this. Given that this patch is solving a few different problems,
-do you think you could split it up please? That would certainly make it much
-easier to review, as there's quite a lot going on here. A chunk of the
-changes seem to be the diff I posted previously:
-
-https://lore.kernel.org/r/20201201141632.GC26973@willie-the-truck
-
-so maybe that could be its own patch?
-
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index 23a01dfcb27a..f8b3248cef1c 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -45,6 +45,8 @@
+>  drivers/gpu/drm/i915/i915_irq.c |   34 ++++++++++++++++++++++++++++++++++
+>  drivers/gpu/drm/i915/i915_pmu.c |   18 +-----------------
+>  drivers/gpu/drm/i915/i915_pmu.h |    8 ++++++++
+>  3 files changed, 43 insertions(+), 17 deletions(-)
+>
+> --- a/drivers/gpu/drm/i915/i915_irq.c
+> +++ b/drivers/gpu/drm/i915/i915_irq.c
+> @@ -60,6 +60,24 @@
+>   * and related files, but that will be described in separate chapters.
+>   */
 >  
->  #define KVM_PTE_LEAF_ATTR_HI_S2_XN	BIT(54)
->  
-> +#define KVM_PTE_LEAF_ATTR_PERMS	(GENMASK(7, 6) | BIT(54))
-
-You only use this on the S2 path, so how about:
-
-#define KVM_PTE_LEAF_ATTR_S2_PERMS	KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R | \
-					KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W | \
-					KVM_PTE_LEAF_ATTR_HI_S2_XN
-
-or something like that?
-
->  struct kvm_pgtable_walk_data {
->  	struct kvm_pgtable		*pgt;
->  	struct kvm_pgtable_walker	*walker;
-> @@ -170,10 +172,9 @@ static void kvm_set_table_pte(kvm_pte_t *ptep, kvm_pte_t *childp)
->  	smp_store_release(ptep, pte);
->  }
->  
-> -static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
-> -				   u32 level)
-> +static kvm_pte_t kvm_init_valid_leaf_pte(u64 pa, kvm_pte_t attr, u32 level)
->  {
-> -	kvm_pte_t old = *ptep, pte = kvm_phys_to_pte(pa);
-> +	kvm_pte_t pte = kvm_phys_to_pte(pa);
->  	u64 type = (level == KVM_PGTABLE_MAX_LEVELS - 1) ? KVM_PTE_TYPE_PAGE :
->  							   KVM_PTE_TYPE_BLOCK;
->  
-> @@ -181,12 +182,7 @@ static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
->  	pte |= FIELD_PREP(KVM_PTE_TYPE, type);
->  	pte |= KVM_PTE_VALID;
->  
-> -	/* Tolerate KVM recreating the exact same mapping. */
-> -	if (kvm_pte_valid(old))
-> -		return old == pte;
-> -
-> -	smp_store_release(ptep, pte);
-> -	return true;
-> +	return pte;
->  }
->  
->  static int kvm_pgtable_visitor_cb(struct kvm_pgtable_walk_data *data, u64 addr,
-> @@ -341,12 +337,17 @@ static int hyp_map_set_prot_attr(enum kvm_pgtable_prot prot,
->  static bool hyp_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->  				    kvm_pte_t *ptep, struct hyp_map_data *data)
->  {
-> +	kvm_pte_t new, old = *ptep;
->  	u64 granule = kvm_granule_size(level), phys = data->phys;
->  
->  	if (!kvm_block_mapping_supported(addr, end, phys, level))
->  		return false;
->  
-> -	WARN_ON(!kvm_set_valid_leaf_pte(ptep, phys, data->attr, level));
-> +	/* Tolerate KVM recreating the exact same mapping. */
-> +	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
-> +	if (old != new && !WARN_ON(kvm_pte_valid(old)))
-> +		smp_store_release(ptep, new);
-> +
->  	data->phys += granule;
->  	return true;
->  }
-> @@ -461,25 +462,56 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
->  	return 0;
->  }
->  
-> +static bool stage2_set_valid_leaf_pte_pre(u64 addr, u32 level,
-> +					  kvm_pte_t *ptep, kvm_pte_t new,
-> +					  struct stage2_map_data *data)
+> +/*
+> + * Interrupt statistic for PMU. Increments the counter only if the
+> + * interrupt originated from the the GPU so interrupts from a device which
+> + * shares the interrupt line are not accounted.
+> + */
+> +static inline void pmu_irq_stats(struct drm_i915_private *priv,
+> +				 irqreturn_t res)
 > +{
-> +	kvm_pte_t old = *ptep, old_attr, new_attr;
-> +
-> +	if ((old ^ new) & (~KVM_PTE_LEAF_ATTR_PERMS))
-> +		return false;
+> +	if (unlikely(res != IRQ_HANDLED))
+> +		return;
 > +
 > +	/*
-> +	 * Skip updating if we are trying to recreate exactly the same mapping
-> +	 * or to reduce the access permissions only. And update the valid leaf
-> +	 * PTE without break-before-make if we are trying to add more access
-> +	 * permissions only.
+> +	 * A clever compiler translates that into INC. A not so clever one
+> +	 * should at least prevent store tearing.
 > +	 */
-> +	old_attr = (old & KVM_PTE_LEAF_ATTR_PERMS) ^ KVM_PTE_LEAF_ATTR_HI_S2_XN;
-> +	new_attr = (new & KVM_PTE_LEAF_ATTR_PERMS) ^ KVM_PTE_LEAF_ATTR_HI_S2_XN;
-> +	if (new_attr <= old_attr)
-> +		return true;
+> +	WRITE_ONCE(priv->pmu.irq_count, priv->pmu.irq_count + 1);
+> +}
+> +
+>  typedef bool (*long_pulse_detect_func)(enum hpd_pin pin, u32 val);
+>  
+>  static const u32 hpd_ilk[HPD_NUM_PINS] = {
+> @@ -1599,6 +1617,8 @@ static irqreturn_t valleyview_irq_handle
+>  		valleyview_pipestat_irq_handler(dev_priv, pipe_stats);
+>  	} while (0);
+>  
+> +	pmu_irq_stats(dev_priv, ret);
+> +
+>  	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
+>  
+>  	return ret;
+> @@ -1676,6 +1696,8 @@ static irqreturn_t cherryview_irq_handle
+>  		valleyview_pipestat_irq_handler(dev_priv, pipe_stats);
+>  	} while (0);
+>  
+> +	pmu_irq_stats(dev_priv, ret);
+> +
+>  	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
+>  
+>  	return ret;
+> @@ -2103,6 +2125,8 @@ static irqreturn_t ilk_irq_handler(int i
+>  	if (sde_ier)
+>  		raw_reg_write(regs, SDEIER, sde_ier);
+>  
+> +	pmu_irq_stats(i915, ret);
+> +
+>  	/* IRQs are synced during runtime_suspend, we don't require a wakeref */
+>  	enable_rpm_wakeref_asserts(&i915->runtime_pm);
+>  
+> @@ -2419,6 +2443,8 @@ static irqreturn_t gen8_irq_handler(int
+>  
+>  	gen8_master_intr_enable(regs);
+>  
+> +	pmu_irq_stats(dev_priv, IRQ_HANDLED);
+> +
+>  	return IRQ_HANDLED;
+>  }
+>  
+> @@ -2514,6 +2540,8 @@ static __always_inline irqreturn_t
+>  
+>  	gen11_gu_misc_irq_handler(gt, gu_misc_iir);
+>  
+> +	pmu_irq_stats(i915, IRQ_HANDLED);
+> +
+>  	return IRQ_HANDLED;
+>  }
+>  
+> @@ -3688,6 +3716,8 @@ static irqreturn_t i8xx_irq_handler(int
+>  		i8xx_pipestat_irq_handler(dev_priv, iir, pipe_stats);
+>  	} while (0);
+>  
+> +	pmu_irq_stats(dev_priv, ret);
+> +
+>  	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
+>  
+>  	return ret;
+> @@ -3796,6 +3826,8 @@ static irqreturn_t i915_irq_handler(int
+>  		i915_pipestat_irq_handler(dev_priv, iir, pipe_stats);
+>  	} while (0);
+>  
+> +	pmu_irq_stats(dev_priv, ret);
+> +
+>  	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
+>  
+>  	return ret;
+> @@ -3941,6 +3973,8 @@ static irqreturn_t i965_irq_handler(int
+>  		i965_pipestat_irq_handler(dev_priv, iir, pipe_stats);
+>  	} while (0);
+>  
+> +	pmu_irq_stats(dev_priv, IRQ_HANDLED);
+> +
+>  	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
+>  
+>  	return ret;
+> --- a/drivers/gpu/drm/i915/i915_pmu.c
+> +++ b/drivers/gpu/drm/i915/i915_pmu.c
+> @@ -423,22 +423,6 @@ static enum hrtimer_restart i915_sample(
+>  	return HRTIMER_RESTART;
+>  }
+>  
+> -static u64 count_interrupts(struct drm_i915_private *i915)
+> -{
+> -	/* open-coded kstat_irqs() */
+> -	struct irq_desc *desc = irq_to_desc(i915->drm.pdev->irq);
+> -	u64 sum = 0;
+> -	int cpu;
+> -
+> -	if (!desc || !desc->kstat_irqs)
+> -		return 0;
+> -
+> -	for_each_possible_cpu(cpu)
+> -		sum += *per_cpu_ptr(desc->kstat_irqs, cpu);
+> -
+> -	return sum;
+> -}
+> -
+>  static void i915_pmu_event_destroy(struct perf_event *event)
+>  {
+>  	struct drm_i915_private *i915 =
+> @@ -581,7 +565,7 @@ static u64 __i915_pmu_event_read(struct
+>  				   USEC_PER_SEC /* to MHz */);
+>  			break;
+>  		case I915_PMU_INTERRUPTS:
+> -			val = count_interrupts(i915);
+> +			val = READ_ONCE(pmu->irq_count);
+>  			break;
+>  		case I915_PMU_RC6_RESIDENCY:
+>  			val = get_rc6(&i915->gt);
+> --- a/drivers/gpu/drm/i915/i915_pmu.h
+> +++ b/drivers/gpu/drm/i915/i915_pmu.h
+> @@ -108,6 +108,14 @@ struct i915_pmu {
+>  	 */
+>  	ktime_t sleep_last;
+>  	/**
+> +	 * @irq_count: Number of interrupts
+> +	 *
+> +	 * Intentionally unsigned long to avoid atomics or heuristics on 32bit.
+> +	 * 4e9 interrupts are a lot and postprocessing can really deal with an
+> +	 * occasional wraparound easily. It's 32bit after all.
+> +	 */
+> +	unsigned long irq_count;
+> +	/**
+>  	 * @events_attr_group: Device events attribute group.
+>  	 */
+>  	struct attribute_group events_attr_group;
+>
 
-I think this is a significant change in behaviour for
-kvm_pgtable_stage2_map() and I worry that it could catch somebody out in the
-future. Please can you update the kerneldoc in kvm_pgtable.h with a note
-about this?
-
-Will
+-- 
+Jani Nikula, Intel Open Source Graphics Center
