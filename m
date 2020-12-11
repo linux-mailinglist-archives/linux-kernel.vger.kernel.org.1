@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430BF2D7269
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 794812D7270
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437244AbgLKI5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:57:33 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9188 "EHLO
+        id S2437165AbgLKI7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:59:09 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9166 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393127AbgLKI5X (ORCPT
+        with ESMTP id S2437267AbgLKI6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:57:23 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Csl4X248hzkpPN;
-        Fri, 11 Dec 2020 16:55:56 +0800 (CST)
+        Fri, 11 Dec 2020 03:58:50 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Csl5h27xpz15YSc;
+        Fri, 11 Dec 2020 16:56:56 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
  DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Dec 2020 16:56:32 +0800
+ 14.3.487.0; Fri, 11 Dec 2020 16:57:22 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <tduszyns@gmail.com>, <jic23@kernel.org>, <lars@metafoo.de>
-CC:     <pmeerw@pmeerw.net>, <linux-iio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] iio: chemical: pms7003: convert comma to semicolon
-Date:   Fri, 11 Dec 2020 16:57:00 +0800
-Message-ID: <20201211085700.3037-1-zhengyongjun3@huawei.com>
+To:     <linux-graphics-maintainer@vmware.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] gpu: drm: vmwgfx: convert comma to semicolon
+Date:   Fri, 11 Dec 2020 16:57:51 +0800
+Message-ID: <20201211085751.3089-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -40,22 +40,22 @@ Replace a comma between expression statements by a semicolon.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/iio/chemical/pms7003.c | 2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/chemical/pms7003.c b/drivers/iio/chemical/pms7003.c
-index e9d4405654bc..e9857d93b307 100644
---- a/drivers/iio/chemical/pms7003.c
-+++ b/drivers/iio/chemical/pms7003.c
-@@ -282,7 +282,7 @@ static int pms7003_probe(struct serdev_device *serdev)
- 	state->serdev = serdev;
- 	indio_dev->info = &pms7003_info;
- 	indio_dev->name = PMS7003_DRIVER_NAME;
--	indio_dev->channels = pms7003_channels,
-+	indio_dev->channels = pms7003_channels;
- 	indio_dev->num_channels = ARRAY_SIZE(pms7003_channels);
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 	indio_dev->available_scan_masks = pms7003_scan_masks;
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
+index e67e2e8f6e6f..537c48eff197 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
+@@ -2509,7 +2509,7 @@ static int vmw_cmd_dx_set_so_targets(struct vmw_private *dev_priv,
+ 
+ 		binding.bi.ctx = ctx_node->ctx;
+ 		binding.bi.res = res;
+-		binding.bi.bt = vmw_ctx_binding_so_target,
++		binding.bi.bt = vmw_ctx_binding_so_target;
+ 		binding.offset = cmd->targets[i].offset;
+ 		binding.size = cmd->targets[i].sizeInBytes;
+ 		binding.slot = i;
 -- 
 2.22.0
 
