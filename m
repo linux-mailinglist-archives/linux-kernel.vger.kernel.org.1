@@ -2,206 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663D72D7D42
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B96D92D7D37
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405724AbgLKRso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:48:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54453 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405633AbgLKRr5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:47:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607708789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FzP6paV2OVK1R/7FuD7jU8vd9PKyeesd/swefA4DzN8=;
-        b=OU988ktpNvBfpTQ1Nyi2FO9kO839nfWVdikLJ1v/3cl8+6FTHrbV+fV8sK4+cYtvJD2Rwg
-        L52Z4pA3bUAdJkssU7frMzJFVQnhX3Y680oDGN4lCFv7il1ZgcnUepBraq3ei54qyJpNUj
-        NfShYR6l6pxqddi5W/rwmHNWL7xKT5g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-ky9U20HmPFyLH8tA_rrRjg-1; Fri, 11 Dec 2020 12:46:20 -0500
-X-MC-Unique: ky9U20HmPFyLH8tA_rrRjg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B38F81E24B;
-        Fri, 11 Dec 2020 17:46:18 +0000 (UTC)
-Received: from treble (ovpn-115-21.rdu2.redhat.com [10.10.115.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6574710021AA;
-        Fri, 11 Dec 2020 17:46:17 +0000 (UTC)
-Date:   Fri, 11 Dec 2020 11:46:10 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: objtool crashes with some clang produced .o files
-Message-ID: <20201211174610.2bfprpvrrlg66awd@treble>
-References: <CAK8P3a20LXgEQkYSpbFFrJs1mdg19W72dp3pbebH9Pkpib2g-g@mail.gmail.com>
- <CAKwvOdn79V-jaTH0mEtKyc-O+=Hj22bGtjKkZ1jriY2YABj-Lw@mail.gmail.com>
- <20201211093205.GU2414@hirez.programming.kicks-ass.net>
- <20201211163748.b37gashl6an6misu@treble>
- <20201211164915.GA2414@hirez.programming.kicks-ass.net>
+        id S2405601AbgLKRrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:47:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395540AbgLKRrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 12:47:01 -0500
+Date:   Fri, 11 Dec 2020 17:46:16 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
+Cc:     libc-alpha@sourceware.org, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        kernel-hardening@lists.openwall.com,
+        Topi Miettinen <toiwoton@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/6] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
+ #26831]
+Message-ID: <20201211174615.GB17458@gaia>
+References: <cover.1606319495.git.szabolcs.nagy@arm.com>
+ <20201203173006.GH2830@gaia>
+ <20201207200338.GB24625@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201211164915.GA2414@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20201207200338.GB24625@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 05:49:15PM +0100, Peter Zijlstra wrote:
-> Do we want to capture all that gunk in something like
-> elf_reloc_to_insn(reloc, insn) instead of duplicating the magic?
+On Mon, Dec 07, 2020 at 08:03:38PM +0000, Szabolcs Nagy wrote:
+> The 12/03/2020 17:30, Catalin Marinas wrote:
+> > On Fri, Nov 27, 2020 at 01:19:16PM +0000, Szabolcs Nagy wrote:
+> > > This is v2 of
+> > > https://sourceware.org/pipermail/libc-alpha/2020-November/119305.html
+> > > 
+> > > To enable BTI support, re-mmap executable segments instead of
+> > > mprotecting them in case mprotect is seccomp filtered.
+> > > 
+> > > I would like linux to change to map the main exe with PROT_BTI when
+> > > that is marked as BTI compatible. From the linux side i heard the
+> > > following concerns about this:
+> > > - it's an ABI change so requires some ABI bump. (this is fine with
+> > >   me, i think glibc does not care about backward compat as nothing
+> > >   can reasonably rely on the current behaviour, but if we have a
+> > >   new bit in auxv or similar then we can save one mprotect call.)
+> > 
+> > I'm not concerned about the ABI change but there are workarounds like a
+> > new auxv bit.
+> > 
+> > > - in case we discover compatibility issues with user binaries it's
+> > >   better if userspace can easily disable BTI (e.g. removing the
+> > >   mprotect based on some env var, but if kernel adds PROT_BTI and
+> > >   mprotect is filtered then we have no reliable way to remove that
+> > >   from executables. this problem already exists for static linked
+> > >   exes, although admittedly those are less of a compat concern.)
+> > 
+> > This is our main concern. For static binaries, the linker could detect,
+> > in theory, potential issues when linking and not set the corresponding
+> > ELF information.
+> > 
+> > At runtime, a dynamic linker could detect issues and avoid enabling BTI.
+> > In both cases, it's a (static or dynamic) linker decision that belongs
+> > in user-space.
+> 
+> note that the marking is tied to an elf module: if the static
+> linker can be trusted to produce correct marking then both the
+> static and dynamic linking cases work, otherwise neither works.
+> (the dynamic linker cannot detect bti issues, just apply user
+> supplied policy.)
 
-Yup, here's an actual patch
+My assumption is that the dynamic linker may become smarter and detect
+BTI issues, if necessary.
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH] objtool: Support Clang non-section symbols in static call generation
+Let's say we link together multiple objects, some of them with BTI
+instructions, others without. Does the static linker generate a
+.note.gnu.property section with GNU_PROPERTY_AARCH64_FEATURE_1_BTI? I
+guess not, otherwise the .text section would have a mixture of functions
+with and without landing pads.
 
-The Clang assembler likes to strip section symbols, which means you
-can't reference some text code by its section.  This confuses objtool
-greatly, causing it to seg fault.
+In the dynamic linker case, if there are multiple shared objects where
+some are missing BTI, I guess the dynamic linker currently invokes
+mprotect(PROT_BTI) (or mmap()) on all objects with the corresponding
+GNU_PROPERTY.
 
-The fix is similar to what was done before, for ORC reloc generation:
+While I don't immediately see an issue with the dynamic loader always
+turning on PROT_BTI based solely on the shared object it is linking in,
+the static linker takes a more conservative approach. The dynamic linker
+may not have a similar choice in the future if the kernel forced
+PROT_BTI on the main executable. In both cases it was a user choice.
 
-  e81e07244325 ("objtool: Support Clang non-section symbols in ORC generation")
+The dynamic loader itself is statically linked, so any potential
+mismatch would have been detected at build time and the corresponding
+GNU_PROPERTY unset.
 
-Factor out that code into a common helper and use it for static call
-reloc generation as well.
+> 1) if we consider bti part of the semantics of a marked module
+> then it should be always on if the system supports it and
+> ideally the loader of the module should deal with PROT_BTI.
+> (and if the marking is wrong then the binary is wrong.)
+> 
+> 2) if we consider the marking to be a compatibility indicator
+> and let userspace policy to decide what to do with it then the
+> static exe and vdso cases should be handled by that policy too.
 
-Reported-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- tools/objtool/check.c   | 11 +++++++++--
- tools/objtool/elf.c     | 26 ++++++++++++++++++++++++++
- tools/objtool/elf.h     |  2 ++
- tools/objtool/orc_gen.c | 29 +++++------------------------
- 4 files changed, 42 insertions(+), 26 deletions(-)
+For static exe, we assume that the compatibility was checked at link
+time. However, you are right on the vdso, we always turn BTI on. So it
+can indeed be argued that the kernel already made the decision for (some
+of) the user modules.
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index c6ab44543c92..5f8d3eed78a1 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -467,13 +467,20 @@ static int create_static_call_sections(struct objtool_file *file)
- 
- 		/* populate reloc for 'addr' */
- 		reloc = malloc(sizeof(*reloc));
-+
- 		if (!reloc) {
- 			perror("malloc");
- 			return -1;
- 		}
- 		memset(reloc, 0, sizeof(*reloc));
--		reloc->sym = insn->sec->sym;
--		reloc->addend = insn->offset;
-+
-+		insn_to_reloc_sym_addend(insn->sec, insn->offset, reloc);
-+		if (!reloc->sym) {
-+			WARN_FUNC("static call tramp: missing containing symbol",
-+				  insn->sec, insn->offset);
-+			return -1;
-+		}
-+
- 		reloc->type = R_X86_64_PC32;
- 		reloc->offset = idx * sizeof(struct static_call_site);
- 		reloc->sec = reloc_sec;
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 4e1d7460574b..be89c741ba9a 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -262,6 +262,32 @@ struct reloc *find_reloc_by_dest(const struct elf *elf, struct section *sec, uns
- 	return find_reloc_by_dest_range(elf, sec, offset, 1);
- }
- 
-+void insn_to_reloc_sym_addend(struct section *sec, unsigned long offset,
-+			      struct reloc *reloc)
-+{
-+	if (sec->sym) {
-+		reloc->sym = sec->sym;
-+		reloc->addend = offset;
-+		return;
-+	}
-+
-+	/*
-+	 * The Clang assembler strips section symbols, so we have to reference
-+	 * the function symbol instead:
-+	 */
-+	reloc->sym = find_symbol_containing(sec, offset);
-+	if (!reloc->sym) {
-+		/*
-+		 * Hack alert.  This happens when we need to reference the NOP
-+		 * pad insn immediately after the function.
-+		 */
-+		reloc->sym = find_symbol_containing(sec, offset - 1);
-+	}
-+
-+	if (reloc->sym)
-+		reloc->addend = offset - reloc->sym->offset;
-+}
-+
- static int read_sections(struct elf *elf)
- {
- 	Elf_Scn *s = NULL;
-diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
-index 807f8c670097..e6890cc70a25 100644
---- a/tools/objtool/elf.h
-+++ b/tools/objtool/elf.h
-@@ -140,6 +140,8 @@ struct reloc *find_reloc_by_dest(const struct elf *elf, struct section *sec, uns
- struct reloc *find_reloc_by_dest_range(const struct elf *elf, struct section *sec,
- 				     unsigned long offset, unsigned int len);
- struct symbol *find_func_containing(struct section *sec, unsigned long offset);
-+void insn_to_reloc_sym_addend(struct section *sec, unsigned long offset,
-+			      struct reloc *reloc);
- int elf_rebuild_reloc_section(struct elf *elf, struct section *sec);
- 
- #define for_each_sec(file, sec)						\
-diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-index 235663b96adc..9ce68b385a1b 100644
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -105,30 +105,11 @@ static int create_orc_entry(struct elf *elf, struct section *u_sec, struct secti
- 	}
- 	memset(reloc, 0, sizeof(*reloc));
- 
--	if (insn_sec->sym) {
--		reloc->sym = insn_sec->sym;
--		reloc->addend = insn_off;
--	} else {
--		/*
--		 * The Clang assembler doesn't produce section symbols, so we
--		 * have to reference the function symbol instead:
--		 */
--		reloc->sym = find_symbol_containing(insn_sec, insn_off);
--		if (!reloc->sym) {
--			/*
--			 * Hack alert.  This happens when we need to reference
--			 * the NOP pad insn immediately after the function.
--			 */
--			reloc->sym = find_symbol_containing(insn_sec,
--							   insn_off - 1);
--		}
--		if (!reloc->sym) {
--			WARN("missing symbol for insn at offset 0x%lx\n",
--			     insn_off);
--			return -1;
--		}
--
--		reloc->addend = insn_off - reloc->sym->offset;
-+	insn_to_reloc_sym_addend(insn_sec, insn_off, reloc);
-+	if (!reloc->sym) {
-+		WARN("missing symbol for insn at offset 0x%lx",
-+		     insn_off);
-+		return -1;
- 	}
- 
- 	reloc->type = R_X86_64_PC32;
+> (this makes sense if we expect that there are reasons to turn
+> bti off for a process independently of markings. this requires
+> the static linking startup code to do the policy decision and
+> self-apply PROT_BTI early.)
+
+We currently left this policy decision to the dynamic loader (mostly,
+apart from vdso).
+
+> the current code does not fit either case well, but i was
+> planning to do (1). and ideally PROT_BTI would be added
+> reliably, but a best effort only PROT_BTI works too, however
+> it limits our ability to report real mprotect failures.
+
+If we (kernel people) agree to set PROT_BTI on for the main executable,
+we can expose a bit (in AT_FLAGS or somewhere) to tell the dynamic
+loader that PROT_BTI is already on. I presume subsequent objects will be
+mapped with mmap().
+
+> > > - ideally PROT_BTI would be added via a new syscall that does not
+> > >   interfere with PROT_EXEC filtering. (this does not conflict with
+> > >   the current patches: even with a new syscall we need a fallback.)
+> > 
+> > This can be discussed as a long term solution.
+> > 
+> > > - solve it in systemd (e.g. turn off the filter, use better filter):
+> > >   i would prefer not to have aarch64 (or BTI) specific policy in
+> > >   user code. and there was no satisfying way to do this portably.
+> > 
+> > I agree. I think the best for now (as a back-portable glibc fix) is to
+> > ignore the mprotect(PROT_EXEC|PROT_BTI) error that the dynamic loader
+> > gets. BTI will be disabled if MDWX is enabled.
+> 
+> ok.
+> 
+> we got back to the original proposal: silently ignore mprotect
+> failures. i'm still considering the mmap solution for libraries
+> only: at least then libraries are handled reliably on current
+> setups, but i will have to think about whether attack targets
+> are mainly in libraries like libc or in executables.
+
+I think ignoring the mprotect() error is the best we can do now. If we
+add a kernel patch to turn PROT_BTI on together with an AT_FLAGS bit,
+the user mprotect() would no longer be necessary.
+
+In the absence of an AT_FLAGS bit, we could add PROT_BTI on the main exe
+and backport the fix to when we first added BTI support. This way the
+dynamic loader may just ignore the mprotect() altogether on the main
+exe, assuming that people run latest stable kernels.
+
+> > In the meantime, we should start (continue) looking at a solution that
+> > works for both systemd and the kernel and be generic enough for other
+> > architectures. The stateless nature of the current SECCOMP approach is
+> > not suitable for this W^X policy. Kees had some suggestions here but the
+> > thread seems to have died:
+> >
+> > https://lore.kernel.org/kernel-hardening/202010221256.A4F95FD11@keescook/
+> 
+> it sounded like better W^X enforcement won't happen any time soon.
+
+Unfortunately, I think you are right here.
+
+Anyway, looking for any other input from the kernel and systemd people.
+If not, I'll post a patch at 5.11-rc1 turning PROT_BTI on for the main
+exe and take it from there. I think such discussion shouldn't disrupt
+the glibc fixes/improvements.
+
 -- 
-2.25.4
-
+Catalin
