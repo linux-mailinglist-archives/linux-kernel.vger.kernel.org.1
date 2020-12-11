@@ -2,308 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3819D2D767A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6D32D765D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406145AbgLKNZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 08:25:28 -0500
-Received: from vmicros1.altlinux.org ([194.107.17.57]:58782 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727476AbgLKNZL (ORCPT
+        id S2405603AbgLKNPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:15:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404463AbgLKNPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:25:11 -0500
-X-Greylist: delayed 638 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Dec 2020 08:25:09 EST
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id D09F672C8B1;
-        Fri, 11 Dec 2020 16:13:49 +0300 (MSK)
-Received: from altlinux.org (sole.flsd.net [185.75.180.6])
-        by imap.altlinux.org (Postfix) with ESMTPSA id A44284A470A;
-        Fri, 11 Dec 2020 16:13:49 +0300 (MSK)
-Date:   Fri, 11 Dec 2020 16:13:49 +0300
-From:   Vitaly Chikunov <vt@altlinux.org>
-To:     Meng Yu <yumeng18@huawei.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
-        wangzhou1@hisilicon.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/5] crypto: expose elliptic curve parameters as
- Crypto APIs
-Message-ID: <20201211131349.pe6i5wafg2kq2w35@altlinux.org>
-References: <1607668234-46130-1-git-send-email-yumeng18@huawei.com>
- <1607668234-46130-4-git-send-email-yumeng18@huawei.com>
+        Fri, 11 Dec 2020 08:15:19 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF36DC0613CF;
+        Fri, 11 Dec 2020 05:14:38 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id ce23so12264179ejb.8;
+        Fri, 11 Dec 2020 05:14:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P/PXvREWzGnG1B3AGlYhNPwfEngYC/155XNt7j1HiY4=;
+        b=b3304GJZrl9gVbA/sa3d6SWrH4NvzgrNYBmYaRGdyqUoL2ulxRsciA/4d6vAouT3eD
+         W2NqWIIqDGCP7snYR96h/JvkMEMiHgMd+QsoufPqExebWtPgXS4DoJ6RGuTifvOuqotN
+         ohDpT+IqeIh7VajSCXiZn8db/A/TxqHQrqnmfwqNnMyDOnjsQ8omXVSP5qCYGaAR5Zil
+         4vDZt+6GrKKinx6I4U90uiMbg5hISQxQ9urHHCaSRNjYHMnFdXvDnB2Qw0J2HS9zpp7o
+         YSUxjRD42DMSpzF2II+rBjLOW7Iga45bL22ZLdcNiF3i89jx6Z4JM93suv/mnPXnfp2j
+         y5sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P/PXvREWzGnG1B3AGlYhNPwfEngYC/155XNt7j1HiY4=;
+        b=SWogXB/ygXFsKBd50FoscsrrmUK11gMufGNjYNT5BYOaVPTL6TuO2NOfpapUadwv0T
+         joLeIXF5l8LMMjIh+9HTU6K2hSpuA/d0HWeC/u22KSARBMqeAxHb5KLinq9vcuyrEmNZ
+         9X7zxCxaHMQPWveGQaVpldwQhJXLQ75ZBlC7Kdwq7Xf1bc3xMZBi9aT9krDQLNFLAMRF
+         6GPHx8tM+5Checu9tD4BLUif1VzQQ+AUmbgDhrINiN+fU2vc6zF7YleAA9UyLNrmxlNM
+         FE2y8avtvqZsbXBx6+fycsZqJRzpWyncJUGdsNjVSzro8ZEnZj84xnfnBG0GNT+MXq8q
+         SwJw==
+X-Gm-Message-State: AOAM533HNow44kuleVP0yYYisVuh8i1uepPIdVZqr2nVCExyigby729R
+        huhN+CxSGU3+1Ps1ViDj8U7YTChpbQFIbtSm
+X-Google-Smtp-Source: ABdhPJzKJpaE09o03THDnC19Asrnu/XTbMrmi++Zv98q7dqWeyBoZH2oupdV0JwYvS6clQ+CGnJMaA==
+X-Received: by 2002:a17:906:7f10:: with SMTP id d16mr10835685ejr.104.1607692477085;
+        Fri, 11 Dec 2020 05:14:37 -0800 (PST)
+Received: from localhost.localdomain (host-95-239-64-30.retail.telecomitalia.it. [95.239.64.30])
+        by smtp.gmail.com with ESMTPSA id v18sm7474948edx.30.2020.12.11.05.14.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 05:14:35 -0800 (PST)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH] Revert "scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()"
+Date:   Fri, 11 Dec 2020 14:14:04 +0100
+Message-Id: <20201211131404.21359-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <1607668234-46130-4-git-send-email-yumeng18@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Meng,
+This reverts commit 3b8c72d076c42bf27284cda7b2b2b522810686f8.
 
-It looks like not just definitions but some static data is moved to
-includes. Why?
+Dexuan reported a regression where StorVSC fails to probe a device (and
+where, consequently, the VM may fail to boot).  The root-cause analysis
+led to a long-standing race condition that is exposed by the validation
+/commit in question.  Let's put the new validation aside until a proper
+solution for that race condition is in place.
 
-Thanks,
+Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+Cc: Dexuan Cui <decui@microsoft.com>
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: linux-scsi@vger.kernel.org
+---
+ drivers/scsi/storvsc_drv.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-On Fri, Dec 11, 2020 at 02:30:32PM +0800, Meng Yu wrote:
-> Move elliptic curves definition to 'include/crypto/ecc_curve_defs.h',
-> so all can use it,
-> 
-> Signed-off-by: Meng Yu <yumeng18@huawei.com>
-> Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
-> ---
->  crypto/ecc.c                    |  1 -
->  crypto/ecc.h                    | 37 +----------------
->  crypto/ecc_curve_defs.h         | 57 -------------------------
->  crypto/ecrdsa_defs.h            |  2 +-
->  include/crypto/ecc_curve_defs.h | 92 +++++++++++++++++++++++++++++++++++++++++
->  5 files changed, 95 insertions(+), 94 deletions(-)
->  delete mode 100644 crypto/ecc_curve_defs.h
->  create mode 100644 include/crypto/ecc_curve_defs.h
-> 
-> diff --git a/crypto/ecc.c b/crypto/ecc.c
-> index c80aa25..f23efdd 100644
-> --- a/crypto/ecc.c
-> +++ b/crypto/ecc.c
-> @@ -35,7 +35,6 @@
->  #include <linux/ratelimit.h>
->  
->  #include "ecc.h"
-> -#include "ecc_curve_defs.h"
->  
->  typedef struct {
->  	u64 m_low;
-> diff --git a/crypto/ecc.h b/crypto/ecc.h
-> index d4e546b..e5afaf3 100644
-> --- a/crypto/ecc.h
-> +++ b/crypto/ecc.h
-> @@ -26,6 +26,8 @@
->  #ifndef _CRYPTO_ECC_H
->  #define _CRYPTO_ECC_H
->  
-> +#include <crypto/ecc_curve_defs.h>
-> +
->  /* One digit is u64 qword. */
->  #define ECC_CURVE_NIST_P192_DIGITS  3
->  #define ECC_CURVE_NIST_P256_DIGITS  4
-> @@ -33,44 +35,9 @@
->  
->  #define ECC_DIGITS_TO_BYTES_SHIFT 3
->  
-> -/**
-> - * struct ecc_point - elliptic curve point in affine coordinates
-> - *
-> - * @x:		X coordinate in vli form.
-> - * @y:		Y coordinate in vli form.
-> - * @ndigits:	Length of vlis in u64 qwords.
-> - */
-> -struct ecc_point {
-> -	u64 *x;
-> -	u64 *y;
-> -	u8 ndigits;
-> -};
-> -
->  #define ECC_POINT_INIT(x, y, ndigits)	(struct ecc_point) { x, y, ndigits }
->  
->  /**
-> - * struct ecc_curve - definition of elliptic curve
-> - *
-> - * @name:	Short name of the curve.
-> - * @g:		Generator point of the curve.
-> - * @p:		Prime number, if Barrett's reduction is used for this curve
-> - *		pre-calculated value 'mu' is appended to the @p after ndigits.
-> - *		Use of Barrett's reduction is heuristically determined in
-> - *		vli_mmod_fast().
-> - * @n:		Order of the curve group.
-> - * @a:		Curve parameter a.
-> - * @b:		Curve parameter b.
-> - */
-> -struct ecc_curve {
-> -	char *name;
-> -	struct ecc_point g;
-> -	u64 *p;
-> -	u64 *n;
-> -	u64 *a;
-> -	u64 *b;
-> -};
-> -
-> -/**
->   * ecc_is_key_valid() - Validate a given ECDH private key
->   *
->   * @curve_id:		id representing the curve to use
-> diff --git a/crypto/ecc_curve_defs.h b/crypto/ecc_curve_defs.h
-> deleted file mode 100644
-> index 69be6c7..0000000
-> --- a/crypto/ecc_curve_defs.h
-> +++ /dev/null
-> @@ -1,57 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> -#ifndef _CRYTO_ECC_CURVE_DEFS_H
-> -#define _CRYTO_ECC_CURVE_DEFS_H
-> -
-> -/* NIST P-192: a = p - 3 */
-> -static u64 nist_p192_g_x[] = { 0xF4FF0AFD82FF1012ull, 0x7CBF20EB43A18800ull,
-> -				0x188DA80EB03090F6ull };
-> -static u64 nist_p192_g_y[] = { 0x73F977A11E794811ull, 0x631011ED6B24CDD5ull,
-> -				0x07192B95FFC8DA78ull };
-> -static u64 nist_p192_p[] = { 0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFFFFFFFFFEull,
-> -				0xFFFFFFFFFFFFFFFFull };
-> -static u64 nist_p192_n[] = { 0x146BC9B1B4D22831ull, 0xFFFFFFFF99DEF836ull,
-> -				0xFFFFFFFFFFFFFFFFull };
-> -static u64 nist_p192_a[] = { 0xFFFFFFFFFFFFFFFCull, 0xFFFFFFFFFFFFFFFEull,
-> -				0xFFFFFFFFFFFFFFFFull };
-> -static u64 nist_p192_b[] = { 0xFEB8DEECC146B9B1ull, 0x0FA7E9AB72243049ull,
-> -				0x64210519E59C80E7ull };
-> -static struct ecc_curve nist_p192 = {
-> -	.name = "nist_192",
-> -	.g = {
-> -		.x = nist_p192_g_x,
-> -		.y = nist_p192_g_y,
-> -		.ndigits = 3,
-> -	},
-> -	.p = nist_p192_p,
-> -	.n = nist_p192_n,
-> -	.a = nist_p192_a,
-> -	.b = nist_p192_b
-> -};
-> -
-> -/* NIST P-256: a = p - 3 */
-> -static u64 nist_p256_g_x[] = { 0xF4A13945D898C296ull, 0x77037D812DEB33A0ull,
-> -				0xF8BCE6E563A440F2ull, 0x6B17D1F2E12C4247ull };
-> -static u64 nist_p256_g_y[] = { 0xCBB6406837BF51F5ull, 0x2BCE33576B315ECEull,
-> -				0x8EE7EB4A7C0F9E16ull, 0x4FE342E2FE1A7F9Bull };
-> -static u64 nist_p256_p[] = { 0xFFFFFFFFFFFFFFFFull, 0x00000000FFFFFFFFull,
-> -				0x0000000000000000ull, 0xFFFFFFFF00000001ull };
-> -static u64 nist_p256_n[] = { 0xF3B9CAC2FC632551ull, 0xBCE6FAADA7179E84ull,
-> -				0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFF00000000ull };
-> -static u64 nist_p256_a[] = { 0xFFFFFFFFFFFFFFFCull, 0x00000000FFFFFFFFull,
-> -				0x0000000000000000ull, 0xFFFFFFFF00000001ull };
-> -static u64 nist_p256_b[] = { 0x3BCE3C3E27D2604Bull, 0x651D06B0CC53B0F6ull,
-> -				0xB3EBBD55769886BCull, 0x5AC635D8AA3A93E7ull };
-> -static struct ecc_curve nist_p256 = {
-> -	.name = "nist_256",
-> -	.g = {
-> -		.x = nist_p256_g_x,
-> -		.y = nist_p256_g_y,
-> -		.ndigits = 4,
-> -	},
-> -	.p = nist_p256_p,
-> -	.n = nist_p256_n,
-> -	.a = nist_p256_a,
-> -	.b = nist_p256_b
-> -};
-> -
-> -#endif
-> diff --git a/crypto/ecrdsa_defs.h b/crypto/ecrdsa_defs.h
-> index 170baf0..2074099 100644
-> --- a/crypto/ecrdsa_defs.h
-> +++ b/crypto/ecrdsa_defs.h
-> @@ -13,7 +13,7 @@
->  #ifndef _CRYTO_ECRDSA_DEFS_H
->  #define _CRYTO_ECRDSA_DEFS_H
->  
-> -#include "ecc.h"
-> +#include <crypto/ecc_curve_defs.h>
->  
->  #define ECRDSA_MAX_SIG_SIZE (2 * 512 / 8)
->  #define ECRDSA_MAX_DIGITS (512 / 64)
-> diff --git a/include/crypto/ecc_curve_defs.h b/include/crypto/ecc_curve_defs.h
-> new file mode 100644
-> index 0000000..1080766
-> --- /dev/null
-> +++ b/include/crypto/ecc_curve_defs.h
-> @@ -0,0 +1,92 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _CRYTO_ECC_CURVE_DEFS_H
-> +#define _CRYTO_ECC_CURVE_DEFS_H
-> +
-> +/**
-> + * struct ecc_point - elliptic curve point in affine coordinates
-> + *
-> + * @x:		X coordinate in vli form.
-> + * @y:		Y coordinate in vli form.
-> + * @ndigits:	Length of vlis in u64 qwords.
-> + */
-> +struct ecc_point {
-> +	u64 *x;
-> +	u64 *y;
-> +	u8 ndigits;
-> +};
-> +
-> +/**
-> + * struct ecc_curve - definition of elliptic curve
-> + *
-> + * @name:	Short name of the curve.
-> + * @g:		Generator point of the curve.
-> + * @p:		Prime number, if Barrett's reduction is used for this curve
-> + *		pre-calculated value 'mu' is appended to the @p after ndigits.
-> + *		Use of Barrett's reduction is heuristically determined in
-> + *		vli_mmod_fast().
-> + * @n:		Order of the curve group.
-> + * @a:		Curve parameter a.
-> + * @b:		Curve parameter b.
-> + */
-> +struct ecc_curve {
-> +	char *name;
-> +	struct ecc_point g;
-> +	u64 *p;
-> +	u64 *n;
-> +	u64 *a;
-> +	u64 *b;
-> +};
-> +
-> +/* NIST P-192: a = p - 3 */
-> +static u64 nist_p192_g_x[] = { 0xF4FF0AFD82FF1012ull, 0x7CBF20EB43A18800ull,
-> +				0x188DA80EB03090F6ull };
-> +static u64 nist_p192_g_y[] = { 0x73F977A11E794811ull, 0x631011ED6B24CDD5ull,
-> +				0x07192B95FFC8DA78ull };
-> +static u64 nist_p192_p[] = { 0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFFFFFFFFFEull,
-> +				0xFFFFFFFFFFFFFFFFull };
-> +static u64 nist_p192_n[] = { 0x146BC9B1B4D22831ull, 0xFFFFFFFF99DEF836ull,
-> +				0xFFFFFFFFFFFFFFFFull };
-> +static u64 nist_p192_a[] = { 0xFFFFFFFFFFFFFFFCull, 0xFFFFFFFFFFFFFFFEull,
-> +				0xFFFFFFFFFFFFFFFFull };
-> +static u64 nist_p192_b[] = { 0xFEB8DEECC146B9B1ull, 0x0FA7E9AB72243049ull,
-> +				0x64210519E59C80E7ull };
-> +static struct ecc_curve nist_p192 = {
-> +	.name = "nist_192",
-> +	.g = {
-> +		.x = nist_p192_g_x,
-> +		.y = nist_p192_g_y,
-> +		.ndigits = 3,
-> +	},
-> +	.p = nist_p192_p,
-> +	.n = nist_p192_n,
-> +	.a = nist_p192_a,
-> +	.b = nist_p192_b
-> +};
-> +
-> +/* NIST P-256: a = p - 3 */
-> +static u64 nist_p256_g_x[] = { 0xF4A13945D898C296ull, 0x77037D812DEB33A0ull,
-> +				0xF8BCE6E563A440F2ull, 0x6B17D1F2E12C4247ull };
-> +static u64 nist_p256_g_y[] = { 0xCBB6406837BF51F5ull, 0x2BCE33576B315ECEull,
-> +				0x8EE7EB4A7C0F9E16ull, 0x4FE342E2FE1A7F9Bull };
-> +static u64 nist_p256_p[] = { 0xFFFFFFFFFFFFFFFFull, 0x00000000FFFFFFFFull,
-> +				0x0000000000000000ull, 0xFFFFFFFF00000001ull };
-> +static u64 nist_p256_n[] = { 0xF3B9CAC2FC632551ull, 0xBCE6FAADA7179E84ull,
-> +				0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFF00000000ull };
-> +static u64 nist_p256_a[] = { 0xFFFFFFFFFFFFFFFCull, 0x00000000FFFFFFFFull,
-> +				0x0000000000000000ull, 0xFFFFFFFF00000001ull };
-> +static u64 nist_p256_b[] = { 0x3BCE3C3E27D2604Bull, 0x651D06B0CC53B0F6ull,
-> +				0xB3EBBD55769886BCull, 0x5AC635D8AA3A93E7ull };
-> +static struct ecc_curve nist_p256 = {
-> +	.name = "nist_256",
-> +	.g = {
-> +		.x = nist_p256_g_x,
-> +		.y = nist_p256_g_y,
-> +		.ndigits = 4,
-> +	},
-> +	.p = nist_p256_p,
-> +	.n = nist_p256_n,
-> +	.a = nist_p256_a,
-> +	.b = nist_p256_b
-> +};
-> +
-> +#endif
-> -- 
-> 2.8.1
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index 99c8ff81de746..ded00a89bfc4e 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -1246,11 +1246,6 @@ static void storvsc_on_channel_callback(void *context)
+ 		request = (struct storvsc_cmd_request *)
+ 			((unsigned long)desc->trans_id);
+ 
+-		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) - vmscsi_size_delta) {
+-			dev_err(&device->device, "Invalid packet len\n");
+-			continue;
+-		}
+-
+ 		if (request == &stor_device->init_request ||
+ 		    request == &stor_device->reset_request) {
+ 			memcpy(&request->vstor_packet, packet,
+-- 
+2.25.1
+
