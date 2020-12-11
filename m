@@ -2,139 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83502D7555
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C842D7558
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391830AbgLKMJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 07:09:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51180 "EHLO mail.kernel.org"
+        id S2405240AbgLKMLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 07:11:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48198 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389342AbgLKMJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:09:05 -0500
-Date:   Fri, 11 Dec 2020 13:09:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607688503;
-        bh=41rS8U52qZEUqZ7Xg2L67KOIODeUL5vsHKWqEJrq3PY=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aHNI8D5uOwfHjKS+cWBLwZ0CjZq9PhyzDYeD/RKhSB8O2yaSz6s7CWRprq6HDrIpW
-         Y/LGtZrskpkFmtyZmHNjERogoKuUR0fTZvICbxeWa297qH/ZHEZW32TNbugsC76gTP
-         IEoWW4J62N7D8fqqEANDZScrAj6PO1FhFTvaLvyU=
-From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
-Message-ID: <X9NhfyEuPTxezHt9@kroah.com>
-References: <X9Jw+srprdT8tquZ@kroah.com>
- <20201210194625.GA17516@dincontrollerdev>
- <X9MIwqJBG69M5uHq@kroah.com>
- <20201211060943.GA1065@dincontrollerdev>
- <X9MPuX1x4MezwkEj@kroah.com>
- <20201211063752.GB1065@dincontrollerdev>
- <X9MgvZ7bWX7HMNir@kroah.com>
- <20201211081634.GC1065@dincontrollerdev>
- <X9MxM+aEKIAHqd4G@kroah.com>
- <20201211091823.GD1065@dincontrollerdev>
+        id S2391389AbgLKMLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 07:11:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607688646; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aJZQMJEqjqCeKHnTDA0IPhE5vARBQoDmh6z4taBza3s=;
+        b=P1ENv6ghYnMSOzdKwSZDHOniw7i+gHM9SWvjsPS+nXcpf4uhfjZJjCfiznixdHS7UHUGUl
+        a34b0cvwxyIOGXHl1JLWLzB64bZDoXsOpneHkxjbVOOIAwHRwzjzh7nkMxX9MEEiCvDvNr
+        htx20xTSyXpVilz7Cd7mz1QsfdAQFf8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 41E96AE87;
+        Fri, 11 Dec 2020 12:10:46 +0000 (UTC)
+Subject: Re: [patch 27/30] xen/events: Only force affinity mask for percpu
+ interrupts
+To:     boris.ostrovsky@oracle.com, Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-pci@vger.kernel.org,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194045.250321315@linutronix.de>
+ <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <2164a0ce-0e0d-c7dc-ac97-87c8f384ad82@suse.com>
+Date:   Fri, 11 Dec 2020 13:10:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201211091823.GD1065@dincontrollerdev>
+In-Reply-To: <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="qMVMfsvlAyIOVuhurM0AhbsuX1abhQOZS"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 09:18:24AM +0000, József Horváth wrote:
-> On Fri, Dec 11, 2020 at 09:43:31AM +0100, 'Greg Kroah-Hartman' wrote:
-> > On Fri, Dec 11, 2020 at 08:16:34AM +0000, József Horváth wrote:
-> > > On Fri, Dec 11, 2020 at 08:33:17AM +0100, 'Greg Kroah-Hartman' wrote:
-> > > > On Fri, Dec 11, 2020 at 06:37:52AM +0000, József Horváth wrote:
-> > > > > On Fri, Dec 11, 2020 at 07:20:41AM +0100, 'Greg Kroah-Hartman' wrote:
-> > > > > > On Fri, Dec 11, 2020 at 06:09:43AM +0000, József Horváth wrote:
-> > > > > > > On Fri, Dec 11, 2020 at 06:50:58AM +0100, 'Greg Kroah-Hartman' wrote:
-> > > > > > > > On Thu, Dec 10, 2020 at 07:46:25PM +0000, József Horváth wrote:
-> > > > > > > > > On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
-> > > > > > > > > > On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
-> > > > > > > > > > > This is a serial port driver for
-> > > > > > > > > > > Silicon Labs Si4455 Sub-GHz transciver.
-> > > > > > > > > > > +
-> > > > > > > > > > > +#define BASE_TTYIOC_PRIVATE		0xA0
-> > > > > > > > > > > +/* Set EZConfig.
-> > > > > > > > > > > + * After this ioctl call, the driver restarts the si4455,
-> > > > > > > > > > > + * then apply the new configuration and patch.
-> > > > > > > > > > > + */
-> > > > > > > > > > > +#define SI4455_IOC_SEZC		_IOW('T', \
-> > > > > > > > > > > +				     BASE_TTYIOC_PRIVATE + 0x01, \
-> > > > > > > > > > > +				     struct si4455_iocbuff)
-> > > > > > > > > > 
-> > > > > > > > > > Why does a serial driver have private ioctls?  Please no, don't do that.
-> > > > > > > > > 
-> > > > > > > > > I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
-> > > > > > > > > In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
-> > > > > > > > 
-> > > > > > > > My point is, a serial driver should NOT have any custom ioctls.
-> > > > > > > > 
-> > > > > > > > > I can change it to BASE_TTYIOC or SI4455_IOC_BASE
-> > > > > > > > > 
-> > > > > > > > > > Implement the basic serial driver first, and then we can talk about
-> > > > > > > > > > "custom" configurations and the like, using the correct apis.
-> > > > > > > > > 
-> > > > > > > > > Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
-> > > > > > > > > The cofiguration for interface is provided by user for application.
-> > > > > > > > 
-> > > > > > > > That is what a device tree is for, to configure the device to have the
-> > > > > > > > correct system configuration, why can't that be the same here?
-> > > > > > > > 
-> > > > > > > > > It contains the base frequency, channel spacing, modulation, and a lot
-> > > > > > > > > of more stuff, and generated by Silicon Labs Wireless Development
-> > > > > > > > > Suite.
-> > > > > > > > > The generated configuration is in a non public(compressed,
-> > > > > > > > > encrypted...who knows) format, so without this the driver can't
-> > > > > > > > > provide configuration parameters to Si4455.
-> > > > > > > > 
-> > > > > > > > So we have to take a "custom" userspace blob and send it to the device
-> > > > > > > > to configure it properly?  Like Jiri said, sounds like firmware, so just
-> > > > > > > > use that interface instead.
-> > > > > > > 
-> > > > > > > I checked Jiri's suggestion, and it is a good solution to replace SI4455_IOC_SEZC(configuration) and SI4455_IOC_SEZP(firmware patch).
-> > > > > > > I can move SI4455_IOC_SSIZ(package size) to device tree property.
-> > > > > > > 
-> > > > > > > Maybe you have good suggestion for the following:
-> > > > > > > SI4455_IOC_STXC -> Radio transmit channel index. It is a real use case to control this parameter by user at runtime.
-> > > > > > > SI4455_IOC_SRXC -> Radio receive channel index. It is a real use case to control this parameter by user at runtime.
-> > > > > > 
-> > > > > > These are not serial port things, why would a serial port care about
-> > > > > > these?
-> > > > > 
-> > > > > You are right, these are not regular serial port things, but this device is not a regular uart, it is a sub-GHz transciever, digital radio.
-> > > > > This driver tries to represent it as a serial port to user.
-> > > > 
-> > > > Is that the correct representation to be using here?  Why not act like a
-> > > > proper radio device instead?  That way you get to use the normal kernel
-> > > > apis for radio devices.
-> > > 
-> > > In my mind it is absolute a serial device by the application.
-> > 
-> > What is the application?  Traditionally serial ports don't need radio signals :)
-> 
-> The application is connecting newly developed sensors(with only rf interface) and legacy sensors(with regular serial communication over rs-485 with modbus) keeping the legacy user software.
-> 
-> User sw [Java]
-> 	<-> /dev/ttyXXX
-> 		<-> si4455[driver]
-> 			<-> si4455[hardware]
-> 				<---air---> new device[si4455+ARM Cortex-M0] 1
-> 					+-> new device[si4455+ARM Cortex-M0] 2
-> 					+-> new device[si4455+ARM Cortex-M0] n
-> 					+-> gateway[si4455+ARM Cortex-M0]<---RS485--> Legacy device 1
-> 										  +-> Legacy device 2
-> 										  +-> Legacy device n
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--qMVMfsvlAyIOVuhurM0AhbsuX1abhQOZS
+Content-Type: multipart/mixed; boundary="1SKmisPo0wwQx0jet3HDKXRMk6SQ4aMth";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: boris.ostrovsky@oracle.com, Thomas Gleixner <tglx@linutronix.de>,
+ LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Marc Zyngier <maz@kernel.org>,
+ Stefano Stabellini <sstabellini@kernel.org>, xen-devel@lists.xenproject.org,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, afzal mohammed <afzal.mohd.ma@gmail.com>,
+ linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Christian Borntraeger <borntraeger@de.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+ Chris Wilson <chris@chris-wilson.co.uk>,
+ Wambui Karuga <wambui.karugax@gmail.com>, intel-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org,
+ Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org,
+ Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
+ Dave Jiang <dave.jiang@intel.com>, Allen Hubbe <allenbh@gmail.com>,
+ linux-ntb@googlegroups.com, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Michal Simek <michal.simek@xilinx.com>, linux-pci@vger.kernel.org,
+ Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+ Hou Zhiqiang <Zhiqiang.Hou@nxp.com>, Tariq Toukan <tariqt@nvidia.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>
+Message-ID: <2164a0ce-0e0d-c7dc-ac97-87c8f384ad82@suse.com>
+Subject: Re: [patch 27/30] xen/events: Only force affinity mask for percpu
+ interrupts
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194045.250321315@linutronix.de>
+ <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com>
+In-Reply-To: <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com>
 
-If these are "sensors", why are you using a tty interface at all, and
-not just using the correct iio interface for them?
+--1SKmisPo0wwQx0jet3HDKXRMk6SQ4aMth
+Content-Type: multipart/mixed;
+ boundary="------------8ECAEB8E864B85BAB060713C"
+Content-Language: en-US
 
-thanks,
+This is a multi-part message in MIME format.
+--------------8ECAEB8E864B85BAB060713C
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-greg k-h
+On 11.12.20 00:20, boris.ostrovsky@oracle.com wrote:
+>=20
+> On 12/10/20 2:26 PM, Thomas Gleixner wrote:
+>> All event channel setups bind the interrupt on CPU0 or the target CPU =
+for
+>> percpu interrupts and overwrite the affinity mask with the correspondi=
+ng
+>> cpumask. That does not make sense.
+>>
+>> The XEN implementation of irqchip::irq_set_affinity() already picks a
+>> single target CPU out of the affinity mask and the actual target is st=
+ored
+>> in the effective CPU mask, so destroying the user chosen affinity mask=
+
+>> which might contain more than one CPU is wrong.
+>>
+>> Change the implementation so that the channel is bound to CPU0 at the =
+XEN
+>> level and leave the affinity mask alone. At startup of the interrupt
+>> affinity will be assigned out of the affinity mask and the XEN binding=
+ will
+>> be updated.
+>=20
+>=20
+> If that's the case then I wonder whether we need this call at all and i=
+nstead bind at startup time.
+
+After some discussion with Thomas on IRC and xen-devel archaeology the
+result is: this will be needed especially for systems running on a
+single vcpu (e.g. small guests), as the .irq_set_affinity() callback
+won't be called in this case when starting the irq.
+
+
+Juergen
+
+--------------8ECAEB8E864B85BAB060713C
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------8ECAEB8E864B85BAB060713C--
+
+--1SKmisPo0wwQx0jet3HDKXRMk6SQ4aMth--
+
+--qMVMfsvlAyIOVuhurM0AhbsuX1abhQOZS
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/TYcMFAwAAAAAACgkQsN6d1ii/Ey+q
+kwgAhqGwSjkPCHuD6iXs+izA0i+SRbhYcA5DS/prsjTsYrIr31Nv0iAWAuq87gH+Uo5StBRXaRlR
+Vh9HiOFFv8ScTgdoiZDUycGN07TFuj9NJGJp/TvD+OZN17OQt2w1Pw1JeRI5RNsVTm22OMUH4Om8
+D5t0xrU0zymXmndnx8OZEQ/j0W+hCRjIoNpmjegRa1p8q12pzI9FJByuAhVVTqmcfucWD2sIXlFk
+ZYAwwiA5sMnSj7UYTiR6lkIWMPv4D0FJYC1GwAMI6EONFeO6SBjMqZsWhymL1P1AU1WoSAe19C/e
+DRzPDV1x+jKSYVArD4THJwjqoa7QDXngm7UxnYCYdg==
+=Bajp
+-----END PGP SIGNATURE-----
+
+--qMVMfsvlAyIOVuhurM0AhbsuX1abhQOZS--
