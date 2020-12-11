@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D804A2D7B88
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 048FE2D7BA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391400AbgLKQuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 11:50:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
+        id S2390525AbgLKQxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 11:53:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391013AbgLKQuH (ORCPT
+        with ESMTP id S2390353AbgLKQxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 11:50:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C3AC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:49:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7+tL5lcFLpDv6gWJyhR8469+Mw9E43J1weoLYydVaO0=; b=QvKZKplAkUrX6wkf6X5/eqTXkT
-        XecIIgi77PGSPoRNM+P+CM6TDkUjnaM9o99ISv2jRIoW1t+1oaVVIUXg+IGN5/wEhabz83fyNVER5
-        w1Y/IMuGRnDysXQ8x/HiW31MT7PZsAXImSNY1Hz6gYALg9cPKIEg7+GqCnZGm7pX1xPdQp8Bw7Bk9
-        SURGGupwbc9BVnif4v51nAosafcpPkiChHhT6e3rPuOj//8K+m/2zMFVGPYhnZwb/4YublcUSYmkv
-        BRXYjgLim4gMV4WpgbwXBEtvU0xmSL2+RaugEDmC3lDGBBWDAgdqsTFaM/tjWqftD735bAzTeJR5n
-        /qlJVNmw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1knlba-0001pI-Dk; Fri, 11 Dec 2020 16:49:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7DB6F3003E5;
-        Fri, 11 Dec 2020 17:49:15 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 67DA620270BBA; Fri, 11 Dec 2020 17:49:15 +0100 (CET)
-Date:   Fri, 11 Dec 2020 17:49:15 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: objtool crashes with some clang produced .o files
-Message-ID: <20201211164915.GA2414@hirez.programming.kicks-ass.net>
-References: <CAK8P3a20LXgEQkYSpbFFrJs1mdg19W72dp3pbebH9Pkpib2g-g@mail.gmail.com>
- <CAKwvOdn79V-jaTH0mEtKyc-O+=Hj22bGtjKkZ1jriY2YABj-Lw@mail.gmail.com>
- <20201211093205.GU2414@hirez.programming.kicks-ass.net>
- <20201211163748.b37gashl6an6misu@treble>
+        Fri, 11 Dec 2020 11:53:12 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E1AC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:52:31 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id a1so11670144ljq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:52:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gcYa6L8/Uvmo8K/EulzmKdbBwrm2l0qNtAQPuKYVhqY=;
+        b=U/7El6pBOXXYoZfPWWJm/jWo8/q8rucNE5gS5ABbrNaANd2ktZGueaG/SQqFTqvo0R
+         1n1TDNAKdmoZ0xLNmerGdfW4HizQYpSO7zqmiPbA4HKhlXOdwhP4AVBboErVf0/81ZTG
+         CieavYHs9d9joPYucrh2vPIDFPgfyFw/2YAdBe6mQVzQ8FQuqQDKYKtBQOecHWEDv3r/
+         DSdOYBCAmS9TdegDPmj3TVUzLyuDHxEJjgxwuqYCq9I2zccXiA0pMr2LjalHQqvxIEOP
+         5o6okyl4fcKV5ACoDUpNgyh/lh/MXxdtkyvibrEApC5s2My39S9c1Hu7NTz+/F04XFWe
+         sb0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gcYa6L8/Uvmo8K/EulzmKdbBwrm2l0qNtAQPuKYVhqY=;
+        b=fNlpMfvV2TIJ54x1HP5RUJlRk2yfaDJjaYKlqsujYnm6hAjZsozE1u8nOEClDvNrY8
+         u2yBzjrLGWsJ62VTNwTQan3Apm9robmbUjNHiagqo69JscoKa/2b+ARVyPHxwgO8qPnB
+         L1nrGpuiBf1HmXLTGTwDxwFsJ/i6N9UYa/Kbr3QshXY3hFFJmmwgwCs/EjYekiz+qk5z
+         NekvvZMinaz1AoM6igZZ4EWPoqw+U2eblwdIsuNCehRxlyyDdK1Hpobwqskce1HJ7jAh
+         2QOJgn2RCX9hGP+7KaOisD2fR4w2XH7fmyeDq6AiSkN3Xw9qMAkJi7b4cirY8rLx5670
+         gnRw==
+X-Gm-Message-State: AOAM533Tk/CnfVmx8MKPCt5Jq4KzD+H6vvyaVDE4tkW0rcgRWfb51EFk
+        JdqsQ3wwNXRufAMylkU2XDdFaAaOrNTubELS
+X-Google-Smtp-Source: ABdhPJye9T5ssjW8E4P4GjH7FfhvM4AF2Z7qy2IXAxEr3xcVcZvzwNt1lx/ahswXlmOuVwPVDngHew==
+X-Received: by 2002:a05:651c:2da:: with SMTP id f26mr5829320ljo.134.1607705549818;
+        Fri, 11 Dec 2020 08:52:29 -0800 (PST)
+Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
+        by smtp.gmail.com with ESMTPSA id h23sm860741lfc.246.2020.12.11.08.52.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 11 Dec 2020 08:52:29 -0800 (PST)
+From:   Marcin Wojtas <mw@semihalf.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
+        mcroce@microsoft.com, sven.auhagen@voleatech.de, andrew@lunn.ch,
+        Marcin Wojtas <mw@semihalf.com>
+Subject: [PATCH v2] MAINTAINERS: add mvpp2 driver entry
+Date:   Fri, 11 Dec 2020 17:51:14 +0100
+Message-Id: <20201211165114.26290-1-mw@semihalf.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211163748.b37gashl6an6misu@treble>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 10:37:48AM -0600, Josh Poimboeuf wrote:
-> On Fri, Dec 11, 2020 at 10:32:05AM +0100, Peter Zijlstra wrote:
-> > Looking at elf.c, it seems we're missing an STT_SECTION symbol for
-> > .text.
-> > 
-> > And indeed, when I add -fno-asynchronous-unwind-tables to clang-11, that
-> > goes missing from the readelf .symtab listing. Help ?!
-> 
-> I had a similar problem with ORC relocations:
-> 
->   e81e07244325 ("objtool: Support Clang non-section symbols in ORC generation")
-> 
-> If Clang strips the section symbol then we have to find the function
-> symbol instead.
+Since its creation Marvell NIC driver for Armada 375/7k8k and
+CN913x SoC families mvpp2 has been lacking an entry in MAINTAINERS,
+which sometimes lead to unhandled bugs that persisted
+across several kernel releases.
 
-Argh, I knew I'd seen something like that before, but I couldn't find it :-/
+Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+---
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-> index c6ab44543c92..9bc18864154f 100644
-> --- a/tools/objtool/check.c
-> +++ b/tools/objtool/check.c
-> @@ -472,8 +472,25 @@ static int create_static_call_sections(struct objtool_file *file)
->  			return -1;
->  		}
->  		memset(reloc, 0, sizeof(*reloc));
-> -		reloc->sym = insn->sec->sym;
-> -		reloc->addend = insn->offset;
-> +
-> +		if (insn->sec->sym) {
-> +			reloc->sym = insn->sec->sym;
-> +			reloc->addend = insn->offset;
-> +		} else {
-> +			reloc->sym = find_symbol_containing(insn->sec, insn->offset);
-> +			if (!reloc->sym) {
-> +				WARN_FUNC("can't create static call: missing containing symbol",
-> +					  insn->sec, insn->offset);
-> +				return -1;
-> +			}
-> +
-> +			reloc->addend = insn->offset - reloc->sym->offset;
-> +		}
-> +
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6f474153dbec..975f24409b35 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10513,6 +10513,14 @@ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/ethernet/marvell/mvneta.*
+ 
++MARVELL MVPP2 ETHERNET DRIVER
++M:	Marcin Wojtas <mw@semihalf.com>
++M:	Russell King <linux@armlinux.org.uk>
++L:	netdev@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/net/marvell-pp2.txt
++F:	drivers/net/ethernet/marvell/mvpp2/
++
+ MARVELL MWIFIEX WIRELESS DRIVER
+ M:	Amitkumar Karwar <amitkarwar@gmail.com>
+ M:	Ganapathi Bhat <ganapathi.bhat@nxp.com>
+-- 
+2.29.0
 
-Do we want to capture all that gunk in something like
-elf_reloc_to_insn(reloc, insn) instead of duplicating the magic?
