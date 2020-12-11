@@ -2,155 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5122D8257
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:52:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D35BC2D825D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407030AbgLKWt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:49:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394011AbgLKWtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:49:19 -0500
-X-Gm-Message-State: AOAM5313Hs3LDR3j5REIZ+4NC3zAsehRiuOC+DdrzIFEyNrZCwNm4uoP
-        5tngIEUWy52Jt9j6UGbGB5cLqsey+TH8qfUwqg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607726919;
-        bh=9kZNymVdIQdokRAKswxv73AN4tdhSwyYcUymBCQ55Ic=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hfxGOydcbMt0JjYq6ERbodgzYugBbj5r6D8hPDOOyYvDnnQPOGwQXYqduJbwHc1Rt
-         8Eh4MdG8RgJwHYa1stna5N/rHLQE+bN32BJK6ic1Pu86SB9Jkz/K7qSz8kht1pLKMc
-         r2bm6vIJyIDi6IspadzII6gUbYNrpQKyVoHmdpcmcZtYJVbp6oSTWXDPA3gsE+wXbg
-         wLIXS5s9VJ3OltUs04v6uzu9XjbwNlR4umrcJMhSI3PI1On/t1o66Yypqx11KYwYQT
-         2JPV1Z/4bATMscD9WUVU95VkXJzEjhlPe07PuEvh9J1WHCL+T68QSjQMcf11oDa8sT
-         sNyaC7aTJAMmA==
-X-Google-Smtp-Source: ABdhPJwK8ZorGU0TFVJZH5c/4e3AauDieEoMVL2guTtxGD4PK2qnMlMawIC4UeCIoBz67Lan/AhY/UipOcj6bzR90cw=
-X-Received: by 2002:a17:906:c20f:: with SMTP id d15mr12958728ejz.341.1607726917615;
- Fri, 11 Dec 2020 14:48:37 -0800 (PST)
+        id S2436858AbgLKWvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 17:51:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436803AbgLKWuc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 17:50:32 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCEAC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:49:52 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id f24so12692159ljk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:49:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k4y03X5if1XIhZgssDAUjs/+vQ6RWHpZk2UmwYGGdtw=;
+        b=Lgz9+bDaROIZRHfMTHXdH02ksShuIHLBdWEE3m7Z3+nTP5vQlCvWN5lTi4R5sjYGKE
+         5OeA8pmSioO7Lf5GNsQ6IkY4uhk51xMqgr39ddarToj/0XCF1IPQqQpsWZn0jEgP4LTy
+         fOhXNMdtRMyAn+Prb4z7l2fwhKKNM8B5w6Y8e4nzRUVE6du9II6n1Ibi2o3CkPMUB6Cl
+         KCD36GL9lzsks/yIqOOCjM1W7EE7QP+OBrpRTH83ZNFOSnptwoRF3gEMtHO/mvD0FtKF
+         3kydZvQ7+UJgks5LYFrkBCAKH7I9eFS9DtTusR0z11e1EGaK8B0w8akPkOXe2VuaIkt4
+         gSTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k4y03X5if1XIhZgssDAUjs/+vQ6RWHpZk2UmwYGGdtw=;
+        b=PFXAFPt8CKlZha1FIRsQn2PGc8xsPqCosG/icKNIP0Ogj7s9ERhrF/O2rgnyFvdWTL
+         dg/ogTeF+vGonVQ9t2AuXpwKAiZACFWg7t8VLdl+YducjUXWu9nRszy6Ki+hgc8AXC87
+         jpKc14ZKpWXF2EmWS0GXYa+E2HcUS7OxrkWbNW9lagLNX97xeZc39tJeL+3paUr/HZ7e
+         AuZW8mch64hLFPcZ7XWyykiPU5JP0nO7kgR03+TYXX4Z71rQzQyBsJLrp+GGPdfydhux
+         NhzJYU7dONt+YTIPMnnhaVf4tlVQqlYcX28/KNAD/M2xDoDJw3YjZbRiE0n5x+lzXLNG
+         9ysw==
+X-Gm-Message-State: AOAM533WSVVNgLt+RSt6wUOxoOsvCjHz3uzQZ4sEUtzCQLyvMMy3PrdE
+        RX/5u0cyg735MIGaTq2wYSaYDKacA3KehyUyJwV/aA==
+X-Google-Smtp-Source: ABdhPJwvQlk1LfRYHBQK/V3z9TruFoj0zaAqvk14ypJwqq38BGYXnruTZTxjTe+mYtSUw9CH1Lkgjsiz3s/GG/feFdU=
+X-Received: by 2002:a2e:586:: with SMTP id 128mr6141673ljf.273.1607726990605;
+ Fri, 11 Dec 2020 14:49:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20201211060429.20027-1-a-govindraju@ti.com> <062c861a-b35e-06cd-2bda-a2d3f5034290@ti.com>
-In-Reply-To: <062c861a-b35e-06cd-2bda-a2d3f5034290@ti.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 11 Dec 2020 16:48:25 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJoq20v7wj0x9Nzp2dFeeEunEmschF+VTXMtPdLwg1izA@mail.gmail.com>
-Message-ID: <CAL_JsqJoq20v7wj0x9Nzp2dFeeEunEmschF+VTXMtPdLwg1izA@mail.gmail.com>
-Subject: Re: [PATCH v4] dt-bindings: usb: Add new compatible string for AM64 SoC
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201209142753.683208-1-lars.povlsen@microchip.com> <20201209142753.683208-2-lars.povlsen@microchip.com>
+In-Reply-To: <20201209142753.683208-2-lars.povlsen@microchip.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 11 Dec 2020 23:49:39 +0100
+Message-ID: <CACRpkda2_BFDaGZxyHaOkRj2eAGku3xHoW9wmKuTxQf15hzXgw@mail.gmail.com>
+Subject: Re: [PATCH -next 1/3] pinctrl: pinctrl-microchip-sgpio: Add irq
+ support (for sparx5)
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 6:04 AM Aswath Govindraju <a-govindraju@ti.com> wrote:
->
-> Hi,
-> On 11/12/20 11:34 am, Aswath Govindraju wrote:
-> > Add compatible string in j721e-usb binding file as the same USB subsystem
-> > is present in AM64.
-> >
-> > Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> > ---
-> >
-> > Changes since v3:
-> > - used enum instead of anyOf.
-> >
-> > Changes since v2:
-> > - added changes done over the versions.
-> >
-> > Changes since v1:
-> > - replaced the '\t' at the beginning of the lines with spaces as it was
-> >   causing the dt_binding_check to fail.
-> >
-> >  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > index 388245b91a55..1a5c7bbb40d1 100644
-> > --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > @@ -11,8 +11,9 @@ maintainers:
-> >
-> >  properties:
-> >    compatible:
-> > -    items:
-> > -      - const: ti,j721e-usb
-> > +    enum:
-> > +      - ti,j721e-usb
-> > +      - ti,am64-usb
-> >
->
-> I am trying to use the compatible strings in the following manner
->
-> ```
-> compatible = "ti,am64-usb", "ti,j721e-usb";
->
-> ```
-> If I use above patch I am getting an error while doing a dtbs check.
->
-> ```
-> /home/gsaswath/src/ti-linux-kernel/arch/arm64/boot/dts/ti/k3-am642-evm.dt.yaml:
-> cdns-usb@f900000: compatible: Additional items are not allowed
-> ('ti,j721e-usb' was unexpected)
->         From schema:
-> /home/gsaswath/src/ti-linux-kernel/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> /home/gsaswath/src/ti-linux-kernel/arch/arm64/boot/dts/ti/k3-am642-evm.dt.yaml:
-> cdns-usb@f900000: compatible: ['ti,am64-usb', 'ti,j721e-usb'] is too long
->         From schema:
-> /home/gsaswath/src/ti-linux-kernel/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
->
-> ```
->
->
-> I have looked around for examples but I am unable to find a similar
-> case. I tried using anyOf in the following manner
+On Wed, Dec 9, 2020 at 3:28 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
 
-You didn't look hard enough. There are lots.
+> This adds 'interrupt-controller' features for the signals available on
+> the Microchip SGPIO controller, however only for controller versions
+> on the Sparx5 platform (or later).
+>
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
 
-> ```
-> compatible:
->      anyOf:
->         - const: ti,am64-usb
->         - const: ti,j721e-usb
+Patch applied, adding
+select GPIOLIB_IRQCHIP
+to Kconfig in the process.
+Because you're using that.
 
-This is really no different than a single 'enum' with the 2 values.
-'anyOf' means one or more in the list are true, but more than 1 is
-impossible here.
-
-If you have different possible lengths of values, then you need
-'oneOf' for each case and then 'items' when you have a value with
-multiple entries:
-
-oneOf:
-  - const: ti,j721e-usb
-  - items:
-      - const: ti,am64-usb
-      - const: ti,j721e-usb
-
-> ```
->
-> But I am getting an error
->
-> ```
-> /home/gsaswath/src/ti-linux-kernel/Documentation/devicetree/bindings/usb/ti,j721e-usb.example.dt.yaml:
-> cdns_usb@4104000: compatible: 'anyOf' conditional failed, one must be fixed:
->         Additional items are not allowed ('ti,j721e-usb' was unexpected)
->         ['ti,am64-usb', 'ti,j721e-usb'] is too long
->         'ti,j721e-usb' was expected
-> ```
->
-> Doesn't anyof mean that the compatible strings can be used in any
-> combination ??
->
-> Thanks,
-> Aswath
->
-> >    reg:
-> >      description: module registers
-> >
->
+Yours,
+Linus Walleij
