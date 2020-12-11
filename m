@@ -2,160 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2243F2D6D15
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CB52D6D18
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:14:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394512AbgLKBKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:10:51 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:23116 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404626AbgLKBKP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:10:15 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607648986; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=5OIYJ3uXHXxzJqoTw8pJXM/ntIwLGHjE60wjSAyHtS0=;
- b=HleQBOc7/cvYDJaadjanC+aMomnIKP+Wax+teDxFnKIbiRQqjc57msvDa6SJj09lHWpsr1Xu
- wveeEU6UsYJUWMUEc8OjEWKqW3ZTYD6l91nV+q2BTWjkeOBZDoHhvdPFGBIXsGu3nVhQtNRb
- mTjAgOAwc0HYjlY+7moOIJ1weO0=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5fd2c6c195aeb115f38c0b03 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Dec 2020 01:09:21
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 736C3C43466; Fri, 11 Dec 2020 01:09:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 66D62C433CA;
-        Fri, 11 Dec 2020 01:09:18 +0000 (UTC)
+        id S2394514AbgLKBMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:12:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388019AbgLKBLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 20:11:49 -0500
+X-Gm-Message-State: AOAM531KVg6HGKP1tW4GWz6fAh94SCxnIffBOkxndRxn9GQY6R8ilN+6
+        nB0mcjHQSN66RfBuPZbAjDvdq+RwC8KN1EC2hJ1ehg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607649068;
+        bh=dAcBURZEJNez6Uk/ZZK9Cg+yi5MqljnzqZbmRnh7ezo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=n13ek404jsm1IEYttjLpJ6sobRP+dNeooI7cSS6Y077ssx/4YZNxG5aQsZhQBh4Sk
+         K39SOBWZwWVnP7FAMZ13Hz/w4ydoNuvrLzpG5XRiBK3Iz83NPZTMJZc+PNPvYcGJdc
+         z06hmdYMK4mX8g5qtAj6nO3bMzRzAQwW5qgMATRYk1MlVMrDVqMhNFoJU/NaRqFK6U
+         +iC1DMazE+fAj7BLNnLo8RXMbjnnQNiI0h66fTnmBhxs7azL31RM/sYQQcjTGYRiWM
+         aQmo0siwUuIMW9sZ+a7S7fn9RAr/E53vYZ7rIhRMVMDUeO3+qqiOgxvbJmm+CZneMW
+         3ygYg2pfTomqA==
+X-Google-Smtp-Source: ABdhPJxWJqJ7tVadfBvzh8vfSzhT5Ybzv4bEbMb0o6k7sCWgTk3XOc2rB4HsoPsz7pXrFMY85LqzxjqHA2TKWuDsy38=
+X-Received: by 2002:adf:e64b:: with SMTP id b11mr10905473wrn.257.1607649066305;
+ Thu, 10 Dec 2020 17:11:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 11 Dec 2020 09:09:18 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] scsi: ufs: Protect some contexts from unexpected
- clock scaling
-In-Reply-To: <a2338ef6da3d4ed4093547ba87e13e94d8dd2a45.camel@gmail.com>
-References: <1607520942-22254-1-git-send-email-cang@codeaurora.org>
- <1607520942-22254-2-git-send-email-cang@codeaurora.org>
- <a2338ef6da3d4ed4093547ba87e13e94d8dd2a45.camel@gmail.com>
-Message-ID: <75b3b8496bb0a41cad1fe09f93a4ca10@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20201210174814.1122585-1-michael.roth@amd.com>
+ <CALCETrXo+2LjUt_ObxV+6u6719gTVaMR4-KCrgsjQVRe=xPo+g@mail.gmail.com>
+ <160763562772.1125101.13951354991725886671@vm0> <CALCETrV2-WwV+uz99r2RCJx6OADzwxaLxPUVW22wjHoAAN5cSQ@mail.gmail.com>
+ <160764771044.1223913.9946447556531152629@vm0>
+In-Reply-To: <160764771044.1223913.9946447556531152629@vm0>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 10 Dec 2020 17:10:53 -0800
+X-Gmail-Original-Message-ID: <CALCETrVuCZ5itAN3Ns3D04qR1Z_eJiA9=UvyM95zLE076X=JEA@mail.gmail.com>
+Message-ID: <CALCETrVuCZ5itAN3Ns3D04qR1Z_eJiA9=UvyM95zLE076X=JEA@mail.gmail.com>
+Subject: Re: [PATCH] KVM: SVM: use vmsave/vmload for saving/restoring
+ additional host state
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-11 01:34, Bean Huo wrote:
-> Hi Can
-> 
-> On Wed, 2020-12-09 at 05:35 -0800, Can Guo wrote:
->> 
->> 
->> @@ -1160,6 +1166,7 @@ static void
->> ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
->>  {
->>  	up_write(&hba->clk_scaling_lock);
->>  	ufshcd_scsi_unblock_requests(hba);
->> +	ufshcd_release(hba);
->>  }
->> 
->>  /**
->> @@ -1175,12 +1182,9 @@ static int ufshcd_devfreq_scale(struct ufs_hba
->> *hba, bool scale_up)
->>  {
->>  	int ret = 0;
->> 
->> -	/* let's not get into low power until clock scaling is
->> completed */
->> -	ufshcd_hold(hba, false);
->> -
->>  	ret = ufshcd_clock_scaling_prepare(hba);
->>  	if (ret)
->> -		goto out;
->> +		return ret;
->> 
->>  	/* scale down the gear before scaling down clocks */
->>  	if (!scale_up) {
->> @@ -1212,8 +1216,6 @@ static int ufshcd_devfreq_scale(struct ufs_hba
->> *hba, bool scale_up)
->> 
->>  out_unprepare:
->>  	ufshcd_clock_scaling_unprepare(hba);
->> -out:
->> -	ufshcd_release(hba);
->>  	return ret;
->>  }
-> 
-> I didn't understand why moving ufshcd_hold/ufshcd_release into
-> ufshcd_clock_scaling_prepare()/ufshcd_clock_scaling_unprepare().
-> 
+> On Dec 10, 2020, at 4:48 PM, Michael Roth <michael.roth@amd.com> wrote:
+>
 
-Say you change devfreq's governor to performance after UFS host
-has entered runtime suspend.
+>> I think there are two reasonable ways to do this:
+>>
+>> 1. VMLOAD before STGI.  This is obviously correct, and it's quite simple=
+.
+>
+> For the testing I ended up putting it immediately after __svm_vcpu_run()
+> since that's where we restored GS base previously. Does that seem okay or=
+ did
+> you have another place in mind?
 
-governor_store
-  devfreq_performance_handler
-   update_devfreq
-    devfreq_set_target
-     ufshcd_devfreq_target
-      ufshcd_devfreq_scale
+Looks okay.  If we get an NMI or MCE with the wrong MSR_GS_BASE, then
+we are toast, at least on Zen 2 and earlier.  But that spot has GI =3D=3D
+0, so this won't happen.
 
-When ufshcd_devfreq_scale() calls ufshcd_hold() when host is already
-runtime suspended, guess what, NoC issues. So clk_scaling.is_allowed
-should be checked first.
+>
+>>
+>> 2. Save cpu_kernelmode_gs_base(cpu) before VM entry, and restore that
+>> value to MSR_GS_BASE using code like this (or its asm equivalent)
+>> before STGI:
+>>
+>> if (static_cpu_has(X86_FEATURE_FSGSBASE))
+>>  wrgsbase(base);
+>> else
+>>  wrmsr...
+>>
+>> and then VMLOAD in the vcpu_put() path.
+>>
+>> I can't think of any reason to use loadsegment(), load_gs_index(), or
+>> savesegment() at all, nor can I think of any reason to touch
+>> MSR_KERNEL_GS_BASE or MSR_FS_BASE.
+>
+> I'm sort of lumping MSR_GS_BASE restoration in with everything else since=
+ I
+> don't fully understand what the original was code doing either and was co=
+ntent
+> to leave it be if we couldn't use VMLOAD to handle it without a performan=
+ce
+> regression, but since it looks like we can use VMLOAD here instead I agre=
+e
+> we should just drop it all.
 
-Regards,
+The original code is entirely bogus. Don=E2=80=99t try to hard to understan=
+d
+how it=E2=80=99s correct =E2=80=94 I=E2=80=99m pretty sure it=E2=80=99s not=
+. In fact, I was planning
+to write a patch a lot like yours, but I don=E2=80=99t have an SVM-capable =
+CPU
+to test on.  In general, I suspect that you could delete all these
+fields from the structs, see what fails to compile, and fix it pretty
+easily.
 
-Can Guo.
-
-> 
->> 
->> @@ -1294,15 +1296,8 @@ static int ufshcd_devfreq_target(struct device
->> *dev,
->>  	}
->>  	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
->> 
->> -	pm_runtime_get_noresume(hba->dev);
->> -	if (!pm_runtime_active(hba->dev)) {
->> -		pm_runtime_put_noidle(hba->dev);
->> -		ret = -EAGAIN;
->> -		goto out;
->> -	}
->>  	start = ktime_get();
->>  	ret = ufshcd_devfreq_scale(hba, scale_up);
->> -	pm_runtime_put(hba->dev);
->> 
-> 
-> which branch are you working on?  I didn't see this part codes in the
-> branch 5.11/scsi-queue and 5.11/scsi-staging.
-> 
-> Bean
+MSR_GS_BASE is kernel state. (On 32-bit, fs and maybe gs are kernel
+state.). Everything else is host *user* state and isn=E2=80=99t touched by
+normal kernel code.
