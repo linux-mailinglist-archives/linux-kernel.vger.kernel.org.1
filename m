@@ -2,207 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742AA2D7B01
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C8B2D7AFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406782AbgLKQdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 11:33:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36277 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406738AbgLKQcb (ORCPT
+        id S2406765AbgLKQcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 11:32:50 -0500
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:45874 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2395361AbgLKQcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 11:32:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607704265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MIrMGB49Y+IuGsgowDuFSCvTmCjpxYfmCd/REiXjRZc=;
-        b=ZtWDGfs8rNDtaY7du8F9EpaBzsj7SpIFzkiQYWAkm6d9t4kXXoHuSxVxekoTcXgLw/sqR0
-        h4qe6NJUTR5PEdkSOdl2BgxBXrC6he4dv4VJ1osooHbFx7B7w/PRI0ghrsiCrQi7qHrH/F
-        xecgaoKzA52nkqF8CtiEFffKa8kctt0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-DcNLE8KpMqWaEhks8lAUgg-1; Fri, 11 Dec 2020 11:31:01 -0500
-X-MC-Unique: DcNLE8KpMqWaEhks8lAUgg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74D45800D53;
-        Fri, 11 Dec 2020 16:30:59 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 94D925D6A8;
-        Fri, 11 Dec 2020 16:30:50 +0000 (UTC)
-Date:   Fri, 11 Dec 2020 11:30:49 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>, axboe@kernel.dk,
-        hch@lst.de
-Cc:     "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "hare@suse.de" <hare@suse.de>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Fri, 11 Dec 2020 11:32:08 -0500
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id CDD8D822F5;
+        Fri, 11 Dec 2020 19:31:18 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1607704278;
+        bh=A8AVjziyGS9mvqPp+KoDokVlgdokqfXgWn3YrrPSS3E=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=Prq+kumYRKebBLRY61bLbcEznawpNKYk5DRV0dMef2+dZrwCZc3k0TNElbmosHkNs
+         fT4y9O9rU8ZI94+8Cxvs+liwhhT3FHXjcOCWnrOA9TDkaHCnz2rYf+0hgetHrEeLwG
+         pgu0qjvDtQ4+/6o2ouaznqff2jIi4keYMd8xi8eE=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 11 Dec 2020 19:31:18 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.1847.003; Fri, 11 Dec 2020 19:31:18 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pavel Tide <Pavel.TIde@veeam.com>, dm-devel@redhat.com
-Subject: Re: [PATCH 0/3] block: blk_interposer - Block Layer Interposer
-Message-ID: <20201211163049.GC16168@redhat.com>
-References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
- <20201209135148.GA32720@redhat.com>
- <20201210145814.GA31521@veeam.com>
- <20201210163222.GB10239@redhat.com>
+        "pali@kernel.org" <pali@kernel.org>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "aaptel@suse.com" <aaptel@suse.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "joe@perches.com" <joe@perches.com>,
+        "mark@harmstone.com" <mark@harmstone.com>,
+        "nborisov@suse.com" <nborisov@suse.com>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "anton@tuxera.com" <anton@tuxera.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "hch@lst.de" <hch@lst.de>
+Subject: RE: [PATCH v14 04/10] fs/ntfs3: Add file operations and
+ implementation
+Thread-Topic: [PATCH v14 04/10] fs/ntfs3: Add file operations and
+ implementation
+Thread-Index: AQHWylTc0sqKo6zsN0SFUheHXUqDgannEzcAgAsNYqA=
+Date:   Fri, 11 Dec 2020 16:31:18 +0000
+Message-ID: <229c4a26f2834f8dabf566823936d3e4@paragon-software.com>
+References: <20201204154600.1546096-1-almaz.alexandrovich@paragon-software.com>
+ <20201204154600.1546096-5-almaz.alexandrovich@paragon-software.com>
+ <X8qC3NaNv1kmCO4c@sol.localdomain>
+In-Reply-To: <X8qC3NaNv1kmCO4c@sol.localdomain>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.8.36]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210163222.GB10239@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10 2020 at 11:32am -0500,
-Mike Snitzer <snitzer@redhat.com> wrote:
+From: Eric Biggers <ebiggers@kernel.org>
+Sent: Friday, December 4, 2020 9:42 PM
+> To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> Cc: linux-fsdevel@vger.kernel.org; viro@zeniv.linux.org.uk; linux-kernel@=
+vger.kernel.org; pali@kernel.org; dsterba@suse.cz;
+> aaptel@suse.com; willy@infradead.org; rdunlap@infradead.org; joe@perches.=
+com; mark@harmstone.com; nborisov@suse.com;
+> linux-ntfs-dev@lists.sourceforge.net; anton@tuxera.com; dan.carpenter@ora=
+cle.com; hch@lst.de
+> Subject: Re: [PATCH v14 04/10] fs/ntfs3: Add file operations and implemen=
+tation
+>=20
+> On Fri, Dec 04, 2020 at 06:45:54PM +0300, Konstantin Komarov wrote:
+> > +/* external compression lzx/xpress */
+> > +static int decompress_lzx_xpress(struct ntfs_sb_info *sbi, const char =
+*cmpr,
+> > +				 size_t cmpr_size, void *unc, size_t unc_size,
+> > +				 u32 frame_size)
+> > +{
+> > +	int err;
+> > +	void *ctx;
+> > +
+> > +	if (cmpr_size =3D=3D unc_size) {
+> > +		/* frame not compressed */
+> > +		memcpy(unc, cmpr, unc_size);
+> > +		return 0;
+> > +	}
+> > +
+> > +	err =3D 0;
+> > +	ctx =3D NULL;
+> > +	spin_lock(&sbi->compress.lock);
+> > +	if (frame_size =3D=3D 0x8000) {
+> > +		/* LZX: frame compressed */
+> > +		if (!sbi->compress.lzx) {
+> > +			/* Lazy initialize lzx decompress context */
+> > +			spin_unlock(&sbi->compress.lock);
+> > +			ctx =3D lzx_allocate_decompressor(0x8000);
+> > +			if (!ctx)
+> > +				return -ENOMEM;
+> > +			if (IS_ERR(ctx)) {
+> > +				/* should never failed */
+> > +				err =3D PTR_ERR(ctx);
+> > +				goto out;
+> > +			}
+> > +
+> > +			spin_lock(&sbi->compress.lock);
+> > +			if (!sbi->compress.lzx) {
+> > +				sbi->compress.lzx =3D ctx;
+> > +				ctx =3D NULL;
+> > +			}
+> > +		}
+> > +
+> > +		if (lzx_decompress(sbi->compress.lzx, cmpr, cmpr_size, unc,
+> > +				   unc_size)) {
+> > +			err =3D -EINVAL;
+> > +		}
+> > +	} else {
+> > +		/* XPRESS: frame compressed */
+> > +		if (!sbi->compress.xpress) {
+> > +			/* Lazy initialize xpress decompress context */
+> > +			spin_unlock(&sbi->compress.lock);
+> > +			ctx =3D xpress_allocate_decompressor();
+> > +			if (!ctx)
+> > +				return -ENOMEM;
+> > +
+> > +			spin_lock(&sbi->compress.lock);
+> > +			if (!sbi->compress.xpress) {
+> > +				sbi->compress.xpress =3D ctx;
+> > +				ctx =3D NULL;
+> > +			}
+> > +		}
+> > +
+> > +		if (xpress_decompress(sbi->compress.xpress, cmpr, cmpr_size,
+> > +				      unc, unc_size)) {
+> > +			err =3D -EINVAL;
+> > +		}
+> > +	}
+> > +	spin_unlock(&sbi->compress.lock);
+> > +out:
+> > +	ntfs_free(ctx);
+> > +	return err;
+> > +}
+>=20
+> Decompression is a somewhat heavyweight operation.  Not the type of thing=
+ that
+> should be done while holding a spin lock.
+>=20
+> - Eric
 
-> On Thu, Dec 10 2020 at  9:58am -0500,
-> Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
-> 
-> > The 12/09/2020 16:51, Mike Snitzer wrote:
-> > > On Wed, Dec 09 2020 at  8:01am -0500,
-> > > Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
-> > > 
-> > > > Hi all.
-> > > > 
-> > > > I try to suggest the Block Layer Interposer (blk_interposer) again.
-> > > > It`s allows to intercept bio requests, remap bio to another devices
-> > > > or add new bios.
-> > > > 
-> > > > Initially, blk_interposer was designed to be compatible with
-> > > > device mapper. Our (my and Hannes) previous attempt to offer
-> > > > blk_interposer integrated with device mapper did not receive
-> > > > any comments from the dm-devel team, and without their help
-> > > > I will not be able to make a full implementation. I hope later
-> > > > they will have time to support blk_interposer in device mapper.
-> > > 
-> > > Excuse me?  I gave you quite a bit of early feedback!  I then went on
-> > > PTO for ~10 days, when I returned last week I had to deal with fixing
-> > > some 5.10 dm/block bio splitting regressions that only got resolved this
-> > > past Saturday in time for 5.10-rc7.
-> > 
-> > Mike,
-> > 
-> > I would like to clarify some points that I've made, and also try 
-> > to repair the damage from the misunderstandings that I think have occured.
-> > 
-> > First of all, I actually meant the feedback on Hannes's patch which was
-> > sent on the 19th of November:
-> > https://lore.kernel.org/linux-block/20201119164924.74401-1-hare@suse.de/
-> > 
-> > Your feedback from the 18th of November ("[PATCH 4/4] dm_interposer - 
-> > Try to use blk_interpose in dm") is very valuable, but I am not sure that
-> > I am currently capable of implementing the proposed DM changes.
-> > The overall architecture of DM is still not clear to me, and I am studying
-> > it right now.
-> > 
-> > This new patch (the one that Hannes sent on the 19th of November) is also
-> > compatibile with DM and should not pose any problems - the architecture is
-> > the same. There are some changes that make blk_interposer simpler and better,
-> > plus the sample is added.
-> > 
-> > > 
-> > > blk_interposer was/is on my short list to review closer (Hannes' version
-> > > that refined yours a bit more).. primarily to see if I could avoid the
-> > > extra clone and endio hooking.
-> > 
-> > Glad to hear that! In order to avoid the additional copying one can only
-> > change an intercepted bio, which might be dangerous.
-> > 
-> > > 
-> > > The development window for 5.11 is past, so you pushing this without
-> > > using the approach discussed (in terms of DM) doesn't help your cause.
-> > > 
-> > > > And my blk-snap module requires an architecture change to
-> > > > support blk_interposer.
-> > > > 
-> > > > This time I offer it along with a sample.
-> > > > Despite the fact that blk_interposer is quite simple,
-> > > > there are a few non-obvious points that I would like to clarify.
-> > > > 
-> > > > However, I suggest the blk_interposer now so that people
-> > > > could discuss it and use it in their projects as soon as possible.
-> > > 
-> > > So you weren't willing to put the work in on something DM oriented
-> > > because you expected me to do the work for you?  And now you're looking
-> > > to side-step the consensus that was built because I didn't contribute
-> > > quick enough?  That's pretty messed up.
-> > 
-> > I just think that no one can implement integration of DM with
-> > blk_interposer better than dm-devel team. I will certainly try my best,
-> > but I am afraid that such efforts will only produce incongruous
-> > DM patches that will be a waste of time (yours and mine).
-> > 
-> > > 
-> > > In the time-scale that is Linux kernel development.. you've really
-> > > jumped the gun and undercut my enthusiasm to work through the details.
-> > > I'd rather not read into your actions more than I already have here, but
-> > > I'm not liking what you've done here.  Kind of left in dismay with how
-> > > you decided to go down this path without a followup note to me or others
-> > > (that I'm aware of).
-> > 
-> > I am very sorry that I undercut your enthusiasm, but, as you rightly
-> > pointed out, another development windows is closing, and my product
-> > is still not able to work on newer Linux versions starting from 5.8.
-> > That fact makes me particularly sad and forces me to search for different
-> > means to draw some attention to blk_interposer. I've seen an RHEL 8.4
-> > alpha recently, all looks very cool there but made me even more sad ...
-> 
-> Made you more sad because you don't have a working solution for upstream
-> or RHEL 8.4?
-> 
-> I may have missed it in your past emails but how were you able to
-> provide blk-snap support for kernels prior to 5.8?
+Hi Eric! We plan to swap spinlock to mutex in the next version.
 
-I now clearly understand that the 5.8 block changes to do away with
-->make_request_fn in favor of a more optimized ->submit_bio (that isn't
-applicable for all devices) is why you're pursuing a "fix" so urgently.
-
-> > > But I'm still willing to make blk_interposer work as we all discussed
-> > > (in terms of DM).
-> > 
-> > I want it too. However, there is a certain difficulty with usage of DM
-> > for backup copying. For instance, there is no changed block tracking (CBT)
-> > and right now I don't have any clue how it could be implemented
-> > considering the existing architecture. I still hope that sometime
-> > in future I could be offer my blk-snap module which was specifically
-> > created for backup copying purposes.
-> > 
-> > I apologize for causing all that confusion and mess and making you upset.
-> > I hope that all of the above makes sense to you and you will not think
-> > that I was slacking and tried to offload all the work to your team.
-> 
-> My primary concern is that blk_interposer be correct from the start.  To
-> validate its correctness it needs to be fully implemented and vetted in
-> terms on upstream Linux kernel code.  DM can easily serve as the primary
-> upstream consumer until if/when your blk-snap module is proposed for
-> upstream inclusion.
-> 
-> But short of having an actual upstream consumer of blk_interposer (not
-> just samples/ code) it cannot go upstream.  Otherwise there are too many
-> risks of misuse and problems in the longrun.  That and it'd be baggage
-> block core would need to carry for no upstream Linux benefit.
-
-As I shared in private: I have some urgent Red Hat business critical
-work I need to do and unfortunately cannot put my near-term focus to
-implementing a fully baked blk_interposer for DM.  But I can come back
-to it (sadly unlikely to do so until the new year though).
-
-While I still think there needs to be a proper _upstream_ consumer of
-blk_interposer as a condition of it going in.. I'll let others make the
-call.
-
-As such, I'll defer to Jens, Christoph and others on whether your
-minimalist blk_interposer hook is acceptable in the near-term.
-
-Mike
-
+Best regards!
