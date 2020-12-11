@@ -2,138 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450442D7473
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFE92D7476
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393299AbgLKLC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 06:02:56 -0500
-Received: from mail-eopbgr1320118.outbound.protection.outlook.com ([40.107.132.118]:9120
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389237AbgLKLCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:02:25 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bP1JlbArtkkU5NLjLfI53jSdbmVBTijtPwxBHtJas5+X4zz4yg9DeBO1QlfIvo6bdFVTYOaLcHDAHZiIlfs+Ui90GkztjfAT9YBALV3gnFd9tq0paqXnLah1xzAWvL4QK/NDBAKYc7Vvb4Lt4cumQtCdAHI626UKUfnn0Ogi0GOQMuYGFuDiLrlmm44AlUkXD69Yd9XkQ/Is14JDj0EHtSn7+N5vH8fo2G1RSt40k3XDcAEOwePqjcf+NSElwBRV+yJI4tdRpvyZUPZSeILAUZKwWF38nubrS6MkzdALiZRtFvTl37AmaZ6IOsqnZ+BEwQ+PHhLgYseJpmCzV8vXHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=THlelBhT3hH8Flr6mh54KQAGrwhizbWxJo/7OHOxm9I=;
- b=Uk0RRHYBgmYI9bLr2pZ0+iyGGNM0HV5CupOGGKYawg+yJqUAB34UMdIik3m0sMCcG9fvXVYt5wsY3t0Hy7KdvuwWR1rmmtm6+aCtnv/W5xyb4FTSKR7SFbhFz+8u8Nj0MlqUprQh45riCUtMGpLTUg7bxA2fRncAxGVnwBMTTQ0nWWTcTxV2JFE9Hr5IRYNXJVwYFByb6Uu1tATKyF2VUh8+jqWnr67LttBLXQ1MKabYoqvLNXhV/Aq38kj6gY0VXHXmMf1yhnn0dAzmTIl4X+w9xX48F6h69ROfn38j6KmAv0fQkSxUz+eK73Ehc/Hb8ovzgWF1zy6se/WBvLlc8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from PU1PR06MB2167.apcprd06.prod.outlook.com (2603:1096:803:39::19)
- by PSAPR06MB4072.apcprd06.prod.outlook.com (2603:1096:301:31::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Fri, 11 Dec
- 2020 11:00:49 +0000
-Received: from PU1PR06MB2167.apcprd06.prod.outlook.com
- ([fe80::f1f9:3e07:1f9f:9d31]) by PU1PR06MB2167.apcprd06.prod.outlook.com
- ([fe80::f1f9:3e07:1f9f:9d31%5]) with mapi id 15.20.3632.027; Fri, 11 Dec 2020
- 11:00:48 +0000
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     Joel Stanley <joel@jms.id.au>
-CC:     Andrew Jeffery <andrew@aj.id.au>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Subject: Re: [PATCH] driver: aspeed: g6: Fix PWMG0 pinctrl setting
-Thread-Topic: [PATCH] driver: aspeed: g6: Fix PWMG0 pinctrl setting
-Thread-Index: AQHWz2wy281n4pCZxkmLwBG4hQfTFKnxuWSAgACHmQA=
-Date:   Fri, 11 Dec 2020 11:00:48 +0000
-Message-ID: <D9745FBC-BEA7-421E-B56C-21EA9AAE094E@aspeedtech.com>
-References: <20201211031741.23711-1-billy_tsai@aspeedtech.com>
- <CACPK8XdDn7GfGKAwZnoZrFc5wZW4p=xMuLmCcHvEyyNJZ8rGvw@mail.gmail.com>
-In-Reply-To: <CACPK8XdDn7GfGKAwZnoZrFc5wZW4p=xMuLmCcHvEyyNJZ8rGvw@mail.gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: jms.id.au; dkim=none (message not signed)
- header.d=none;jms.id.au; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b4fbd20f-4565-478f-9a4c-08d89dc4049f
-x-ms-traffictypediagnostic: PSAPR06MB4072:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PSAPR06MB4072080AA695C3B4628B97F68BCA0@PSAPR06MB4072.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kt1Adk9tHbqmir61ysM8jzMzN+PAcgtkOu/yRvgK/C9EUm6A68GS1kDKi2NIxowh2Wb1tlb4Pj2/CSRW1c/f9GCDgBrOMSa7J+kQQKKDDLVMgJJTO5IeOyXCHJBA0GWX+NtPIQ91p3yaxK4D/YJf0BzKgO4EVhcrgxcSrpt6giGyBxbcpssv0E7yuYbQuxpUbK+leatMYGEkBpLJoLPM8Z4SdD9A6A8vE4snuEB4TLp4kqmpsnme1XLpknx6XikX2+c0ovQEn/e3So0Vc8k08BzpsKCLuiiPNsXZLSDgprgh0JaZnbTtnqwkjPx4Q34XLH85KXuw2Q90Lbsd39DHyMGUwpxmrSFk+i5HAIYgvPoUhLwIVlpj+J4dQUGKnnxB
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PU1PR06MB2167.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(396003)(376002)(346002)(366004)(136003)(26005)(478600001)(76116006)(316002)(86362001)(91956017)(6512007)(6486002)(66556008)(83380400001)(8936002)(8676002)(2906002)(54906003)(66476007)(66946007)(66446008)(33656002)(36756003)(55236004)(186003)(107886003)(71200400001)(64756008)(6916009)(5660300002)(2616005)(6506007)(4326008)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?Y0w0ZnZ0aXZnMWRzeXZZSUJ0VkRYRkNpTml2aTdhTEk2QU1WbklOWnFXVmxy?=
- =?utf-8?B?VEhxZ084NXcyRUZabVdNV3RhVHRrZGpUdld2dElVSks3bDluVDRJY3NoRkxt?=
- =?utf-8?B?UkxXK3pQZG5UbGp3bGFSRExvb2ZLM0RjUS9xUzFaVGwzU2JhZmtYNysvK21D?=
- =?utf-8?B?QjZPS0ZScDdxSTFodkdSVDVDSVFERHppUDJ4Wk9ZbjYzMEUvQTFQWW9yTnRP?=
- =?utf-8?B?Sjd5ajlRWjlHVnBkYW5WT1R3VUEyQncwZGpHbWVPZ1g4TmZjSzJicksxY0Qw?=
- =?utf-8?B?R2F0QmVRdGp1dGhKS3UxeS95cEM5V3h5ZkdsaW9GeW9HTnQvRVhqb3JYQlFL?=
- =?utf-8?B?MDhCM281UlRQMHc5MUJjNEhqY0d6LzlIWHdKcks0VmhSM2pTTmUxeHgzT0dL?=
- =?utf-8?B?K1pXblIxR3Y0Nkw4WGxsQzNCc0szeUJXNjg5cGU5TFE3K25qQ0ZXamRmcGRV?=
- =?utf-8?B?Zk1oNlpqcHNoVkJwYXdUTGNmUEt4TTA0QmtYQ0c2Z2R6dzA0R3hLWHNUQ2FC?=
- =?utf-8?B?VkVjRmRTbTY2Z0FiUS9GYkxXM3VIN0Y3ZVhvUnpTUFkzNEJ6K1cyOW8wVzJ6?=
- =?utf-8?B?aThUV3pqcEVWUlVuNWNDWVNQNUN5OSs3UlpUMUw3aGM1VUQrcTBoNktJb3JN?=
- =?utf-8?B?UHFXTlFHUnZjNiszZmo2QmJIcXkyMU1QaDl6K1EzWU9JNVhNNmMzU09YeElN?=
- =?utf-8?B?VDN3L1hPS216enlESEhvUVh5dGNaMk1yRGpYOTRtdEo4aHk3clRLRUNHYkpt?=
- =?utf-8?B?RmJGT1djYUFCSVNab2l0T0dMTXppUHBCYzFEaCtOek03M1EyQitnanNUa2VY?=
- =?utf-8?B?RjhsOVZFQWhLUXpyYVFjQmVPcmhYemtwSHpPdWo3TFJpZzlHcHp2WlMzaGtT?=
- =?utf-8?B?emIyb0RxNHhvTVJNUDFQdHVBSFRqUWdhTGg4NFBhc2FSK0JCYWFkellnMFUv?=
- =?utf-8?B?aWJkb0t6ZjlQMG9HSmlRdkw0bUE0bnBUYTdqWmNQbUZBdW42ZE1qMmZIMkU3?=
- =?utf-8?B?S3lqZjYwMWFiTUlwWlJFKzBIT0Q3allZQjFkL1FuaXlhWTdVZG5YNGZ5OENm?=
- =?utf-8?B?SUwyMXVkekN3UVNQbVArNE5FSGNML3pqQmd3YU05RDh3dkl5ZXNjN3pZNnV0?=
- =?utf-8?B?Ty9icnB6NEJ6YUdrMW1NZkFoM3I5MDBWMzNhNzIrWDMyYnJyREp4R0JDTHVV?=
- =?utf-8?B?YXdjNnBmYWNtNURWVjZxdlZ3R09XNFdrRE83eDhxMmJoYTdZa3hWZFcrdTNN?=
- =?utf-8?B?MnRwb2ZwRUdNZjBGMlJTYWNpQ3JNajVHT2RHN1VhOW5YWGJPK3RVd1prUkR1?=
- =?utf-8?Q?sj9OSKHbo0wDI2sOU6OxgV/v5guUbchgBd?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A1A2014CC522844E85AC11528F88D24A@apcprd06.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PU1PR06MB2167.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4fbd20f-4565-478f-9a4c-08d89dc4049f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2020 11:00:48.8525
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kB1x0gl4p2UJuLGL/Bhallo56uvMPlfs9BXh/ZjyVlWA7Ucv1iQej1J5TxowEIDxWdSktsnq1/vj8o7kXI91rQ6u68IOgxpNG5HvRs04130=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR06MB4072
+        id S2393641AbgLKLC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 06:02:57 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29542 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389198AbgLKLCz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 06:02:55 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BBB1uHl044220;
+        Fri, 11 Dec 2020 06:02:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=2UWdtsIqmeTCpDTpXt5VueVpDBTzEi7aN1IYg6RDpdA=;
+ b=ZOKHrGBDbNvIl0Sa1klVruC7a0MCf9kjMh++99ZBZ5L5XfT6V3K4F2QSU+nWWSMlDSr7
+ ZWIyZjtshjuWtdXdbU+j+nXCq03eGQyfA2y0Ur10nKSEiPduD4td3TP1peYZEUUT9CkX
+ DCD9B41g4oOcUxO4gMj8HEM9HCZBZga0esQirtU6fswHlUpOfe999SQmQu+qxREC71mG
+ GbUIs9KjI5pjCBWGT+2t93Vm+clsjvkOZyHz73TgaWASR378gdV6yonj6br6G7dWZs3l
+ c8ys5y5sYEVhuL3sfOFxES0xQGCIi7qiRcONlCIki/iolfTSsk6TRZmvmd8Ucks/9ifH Lw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35c6ka9mhx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Dec 2020 06:02:12 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BBB2ALL045416;
+        Fri, 11 Dec 2020 06:02:10 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35c6ka9mbx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Dec 2020 06:02:10 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BBAvTb2000783;
+        Fri, 11 Dec 2020 11:01:59 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 3581u86wx6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Dec 2020 11:01:59 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BBB1vvD29950354
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Dec 2020 11:01:57 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E07B4A4062;
+        Fri, 11 Dec 2020 11:01:56 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4EE6DA4054;
+        Fri, 11 Dec 2020 11:01:55 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.117.114])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 11 Dec 2020 11:01:55 +0000 (GMT)
+Message-ID: <659c09673affe9637a5d1391c12af3aa710ba78a.camel@linux.ibm.com>
+Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with
+ kernel measurements
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Maurizio Drocco <maurizio.drocco@ibm.com>,
+        Bruno Meneguele <bmeneg@redhat.com>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Date:   Fri, 11 Dec 2020 06:01:54 -0500
+In-Reply-To: <20201211031008.GN489768@sequoia>
+References: <20200708154116.3199728-1-sashal@kernel.org>
+         <20200708154116.3199728-3-sashal@kernel.org>
+         <1594224793.23056.251.camel@linux.ibm.com>
+         <20200709012735.GX2722994@sasha-vm>
+         <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
+         <20201211031008.GN489768@sequoia>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-11_01:2020-12-09,2020-12-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ clxscore=1031 impostorscore=0 bulkscore=0 priorityscore=1501
+ lowpriorityscore=0 spamscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012110066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSm9lbCwNCg0K77u/T24gMjAyMC8xMi8xMSwgNjo1NSBQTSwgSm9lbCBTdGFubGV5IHdyb3Rl
-Og0KDQogICAgT24gRnJpLCAxMSBEZWMgMjAyMCBhdCAwMzoxOCwgQmlsbHkgVHNhaSA8YmlsbHlf
-dHNhaUBhc3BlZWR0ZWNoLmNvbT4gd3JvdGU6DQogICAgPg0KICAgID4gVGhlIFNDVSBvZmZzZXQg
-Zm9yIHNpZ25hbCBQV004IGluIGdyb3VwIFBXTThHMCBpcyB3cm9uZywgZml4IGl0IGZyb20NCiAg
-ICA+IFNDVTQxNCB0byBTQ1U0QjQuDQogICAgPiBCZXNpZGVzIHRoYXQsIFdoZW4gUFdNOH4xNSBv
-ZiBQV01HMCBzZXQgaXQgbmVlZHMgdG8gY2xlYXIgU0NVNDE0IGJpdHMgYXQNCiAgICA+IHRoZSBz
-YW1lIHRpbWUuDQogICAgPg0KICAgID4gRml4ZXM6IDJlZGExY2RlYzQ5ZiAoInBpbmN0cmw6IGFz
-cGVlZDogQWRkIEFTVDI2MDAgcGlubXV4IHN1cHBvcnQiKQ0KICAgID4NCiAgICA+IFNpZ25lZC1v
-ZmYtYnk6IEJpbGx5IFRzYWkgPGJpbGx5X3RzYWlAYXNwZWVkdGVjaC5jb20+DQogICAgPiAtLS0N
-CiAgICA+ICBkcml2ZXJzL3BpbmN0cmwvYXNwZWVkL3BpbmN0cmwtYXNwZWVkLWc2LmMgfCAyNiAr
-KysrKysrKysrKysrKy0tLS0tLS0tDQogICAgPiAgMSBmaWxlIGNoYW5nZWQsIDE3IGluc2VydGlv
-bnMoKyksIDkgZGVsZXRpb25zKC0pDQogICAgPg0KICAgID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-cGluY3RybC9hc3BlZWQvcGluY3RybC1hc3BlZWQtZzYuYyBiL2RyaXZlcnMvcGluY3RybC9hc3Bl
-ZWQvcGluY3RybC1hc3BlZWQtZzYuYw0KICAgID4gaW5kZXggMzQ4MDNhNmM3NjY0Li42ZTYxZjA0
-NTkzNmYgMTAwNjQ0DQogICAgPiAtLS0gYS9kcml2ZXJzL3BpbmN0cmwvYXNwZWVkL3BpbmN0cmwt
-YXNwZWVkLWc2LmMNCiAgICA+ICsrKyBiL2RyaXZlcnMvcGluY3RybC9hc3BlZWQvcGluY3RybC1h
-c3BlZWQtZzYuYw0KICAgID4gQEAgLTM0Niw1MCArMzQ2LDU4IEBAIEZVTkNfR1JPVVBfREVDTChS
-R01JSTQsIEYyNCwgRTIzLCBFMjQsIEUyNSwgRDI2LCBEMjQsIEMyNSwgQzI2LCBDMjQsIEIyNiwg
-QjI1LA0KICAgID4gIEZVTkNfR1JPVVBfREVDTChSTUlJNCwgRjI0LCBFMjMsIEUyNCwgRTI1LCBD
-MjUsIEMyNCwgQjI2LCBCMjUsIEIyNCk7DQogICAgPg0KICAgID4gICNkZWZpbmUgRDIyIDQwDQog
-ICAgPiAtU0lHX0VYUFJfTElTVF9ERUNMX1NFU0coRDIyLCBTRDFDTEssIFNEMSwgU0lHX0RFU0Nf
-U0VUKFNDVTQxNCwgOCkpOw0KICAgID4gLVNJR19FWFBSX0xJU1RfREVDTF9TRU1HKEQyMiwgUFdN
-OCwgUFdNOEcwLCBQV004LCBTSUdfREVTQ19TRVQoU0NVNDE0LCA4KSk7DQogICAgPiArU0lHX0VY
-UFJfTElTVF9ERUNMX1NFU0coRDIyLCBTRDFDTEssIFNEMSwgU0lHX0RFU0NfU0VUKFNDVTQxNCwg
-OCkpDQogICAgDQogICAgSXMgdGhpcyBtaXNzaW5nIGEgc2VtaWNvbG9uPw0KDQpZZXMsIHRoYW5r
-cyBmb3IgeW91ciBjaGVjay4gSSB3aWxsIHNlbmQgdjIgdG8gZml4IGl0Lg0KICAgIA0KICAgID4g
-K1NJR19FWFBSX0xJU1RfREVDTF9TRU1HKEQyMiwgUFdNOCwgUFdNOEcwLCBQV004LCBTSUdfREVT
-Q19TRVQoU0NVNEI0LCA4KSwNCiAgICA+ICsgICAgICAgICAgICAgICAgICAgICAgIFNJR19ERVND
-X0NMRUFSKFNDVTQxNCwgOCkpOw0KICAgIA0KDQo=
+On Thu, 2020-12-10 at 21:10 -0600, Tyler Hicks wrote:
+> On 2020-11-29 08:17:38, Mimi Zohar wrote:
+> > Hi Sasha,
+> > 
+> > On Wed, 2020-07-08 at 21:27 -0400, Sasha Levin wrote:
+> > > On Wed, Jul 08, 2020 at 12:13:13PM -0400, Mimi Zohar wrote:
+> > > >Hi Sasha,
+> > > >
+> > > >On Wed, 2020-07-08 at 11:40 -0400, Sasha Levin wrote:
+> > > >> From: Maurizio Drocco <maurizio.drocco@ibm.com>
+> > > >>
+> > > >> [ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c ]
+> > > >>
+> > > >> Registers 8-9 are used to store measurements of the kernel and its
+> > > >> command line (e.g., grub2 bootloader with tpm module enabled). IMA
+> > > >> should include them in the boot aggregate. Registers 8-9 should be
+> > > >> only included in non-SHA1 digests to avoid ambiguity.
+> > > >
+> > > >Prior to Linux 5.8, the SHA1 template data hashes were padded before
+> > > >being extended into the TPM.  Support for calculating and extending
+> > > >the per TPM bank template data digests is only being upstreamed in
+> > > >Linux 5.8.
+> > > >
+> > > >How will attestation servers know whether to include PCRs 8 & 9 in the
+> > > >the boot_aggregate calculation?  Now, there is a direct relationship
+> > > >between the template data SHA1 padded digest not including PCRs 8 & 9,
+> > > >and the new per TPM bank template data digest including them.
+> > > 
+> > > Got it, I'll drop it then, thank you!
+> > 
+> > After re-thinking this over, I realized that the attestation server can
+> > verify the "boot_aggregate" based on the quoted PCRs without knowing
+> > whether padded SHA1 hashes or per TPM bank hash values were extended
+> > into the TPM[1], but non-SHA1 boot aggregate values [2] should always
+> > include PCRs 8 & 9.
+> 
+> I'm still not clear on how an attestation server would know to include
+> PCRs 8 and 9 after this change came through a stable kernel update. It
+> doesn't seem like something appropriate for stable since it requires
+> code changes to attestation servers to handle the change.
+> 
+> I know this has already been released in some stable releases, so I'm
+> too late, but perhaps I'm missing something.
+
+The point of adding PCRs 8 & 9 only to non-SHA1 boot_aggregate values
+was to avoid affecting existing attestation servers.  The intention was
+when attestation servers added support for the non-sha1 boot_aggregate
+values, they'd also include PCRs 8 & 9.  The existing SHA1
+boot_aggregate value remains PCRs 0 - 7.
+
+To prevent this or something similar from happening again, what should
+have been the proper way of including PCRs 8 & 9?
+
+thanks,
+
+Mimi
+
