@@ -2,101 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85DFE2D6FFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 451852D7002
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395454AbgLKGJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 01:09:47 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9592 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390573AbgLKGJZ (ORCPT
+        id S2395467AbgLKGLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 01:11:23 -0500
+Received: from bmail1.ministro.hu ([5.249.150.236]:34642 "EHLO
+        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390863AbgLKGLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 01:09:25 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CsgLl6zK3zM2wt;
-        Fri, 11 Dec 2020 14:07:59 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 11 Dec
- 2020 14:08:37 +0800
-Subject: Re: [PATCH RFC] f2fs: compress: add compress_flag in struct
- f2fs_comp_option
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20201210092020.66245-1-yuchao0@huawei.com>
- <X9JZn2ELSZISEQpU@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <bfe87060-7e47-a9c8-897f-17352d0fc623@huawei.com>
-Date:   Fri, 11 Dec 2020 14:08:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Fri, 11 Dec 2020 01:11:07 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTP id 3D420123B16;
+        Fri, 11 Dec 2020 07:10:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1607667016;
+        bh=6kS5gL6N73YvYSzIt+4DLpz4DbOxzlgqvdiiuCRDJys=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=52hxKpCgXch9EL+X9cy06GynYK5wmNLbo4EMlaBsv6iE/4gW+D/WBme3PxCCqOWXB
+         8TsNPThLJd8EmfekExTSnKggR2KN7qgmkFu6eWwSWJaOvtEsSN8+u53WtyI0tb7KZ8
+         kP6gK2fCxfoKLvdFDq29CwlFPv3KHOsq5KbDBbpA2EE7bBW32fC0C1TVFr7iAM28Pd
+         VGQvxzd7eIQ61irqIZFTf9Vrd+2eLfv/lspIcoY3DgRCMflC86yhQoIcWgwsy+GE55
+         Il3ZIC3MT2ZZSDcWRgipakYdn001M8DblqAF8cH25iYO2kM+GzT5yINfym6q8dYufB
+         kur0UtmOqJmGw==
+X-Virus-Scanned: Debian amavisd-new at ministro.hu
+Received: from bmail1.ministro.hu ([127.0.0.1])
+        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HMmVd6l5MS9K; Fri, 11 Dec 2020 07:09:46 +0100 (CET)
+Received: from dincontrollerdev (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTPSA id C262D123B08;
+        Fri, 11 Dec 2020 07:09:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1607666986;
+        bh=6kS5gL6N73YvYSzIt+4DLpz4DbOxzlgqvdiiuCRDJys=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bQNZB+sKFfbKuGIzeuoMTSxf3vcGWrtLfNMRu7EYturDr3IhQSd+NY4Z9UX7FvQWB
+         wGLAONj/86q2LVl8lnyl0i8KysE5lTf51S1RHi7xVTQFkzF+uL4qeyvUSqiq9BG1pI
+         uBJRikugFxdGrBJdTgsZu65SQDCF7c7DO3lIseyR2qPIbiOmTKU5mhwsb2wuUuqk9E
+         SwcZPNzwoIEpeWyUICYTjZOfBM2oxwJjvff37E9lKzR0oQUPNWVG8KACu0BwYLlMOD
+         zeWfzsvsdFsCtc9F8i2mH2nE74J/PkqS7awh+U8b0soqgPwH9Eob6QaMQjY/UtajNJ
+         bjE7tK03ZFVvQ==
+Date:   Fri, 11 Dec 2020 06:09:43 +0000
+From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
+Message-ID: <20201211060943.GA1065@dincontrollerdev>
+References: <20201210170443.GA17304@dincontrollerdev>
+ <X9Jw+srprdT8tquZ@kroah.com>
+ <20201210194625.GA17516@dincontrollerdev>
+ <X9MIwqJBG69M5uHq@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <X9JZn2ELSZISEQpU@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <X9MIwqJBG69M5uHq@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/11 1:23, Jaegeuk Kim wrote:
-> On 12/10, Chao Yu wrote:
->> Add a extra field compress_flag to get/set more compress option from/to
->> compressed inode.
->>
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->>
->> Daeho, Jaegeuk,
->>
->> Could you please check whether we could add this new field to struct
->> f2fs_comp_option? so we can expand to allow user to query/config more
->> options of compressed inode via new ioctl.
->>
->> It needs to consider before original patches goes to merge window, let
->> me know you have other concerns.
+On Fri, Dec 11, 2020 at 06:50:58AM +0100, 'Greg Kroah-Hartman' wrote:
+> On Thu, Dec 10, 2020 at 07:46:25PM +0000, József Horváth wrote:
+> > On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
+> > > On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
+> > > > This is a serial port driver for
+> > > > Silicon Labs Si4455 Sub-GHz transciver.
+> > > > +
+> > > > +#define BASE_TTYIOC_PRIVATE		0xA0
+> > > > +/* Set EZConfig.
+> > > > + * After this ioctl call, the driver restarts the si4455,
+> > > > + * then apply the new configuration and patch.
+> > > > + */
+> > > > +#define SI4455_IOC_SEZC		_IOW('T', \
+> > > > +				     BASE_TTYIOC_PRIVATE + 0x01, \
+> > > > +				     struct si4455_iocbuff)
+> > > 
+> > > Why does a serial driver have private ioctls?  Please no, don't do that.
+> > 
+> > I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
+> > In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
 > 
-> Chao, I think it'd hard to add this at time point, unless there's critical
-> info that we need to set very urgently.
+> My point is, a serial driver should NOT have any custom ioctls.
+> 
+> > I can change it to BASE_TTYIOC or SI4455_IOC_BASE
+> > 
+> > > Implement the basic serial driver first, and then we can talk about
+> > > "custom" configurations and the like, using the correct apis.
+> > 
+> > Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
+> > The cofiguration for interface is provided by user for application.
+> 
+> That is what a device tree is for, to configure the device to have the
+> correct system configuration, why can't that be the same here?
+> 
+> > It contains the base frequency, channel spacing, modulation, and a lot
+> > of more stuff, and generated by Silicon Labs Wireless Development
+> > Suite.
+> > The generated configuration is in a non public(compressed,
+> > encrypted...who knows) format, so without this the driver can't
+> > provide configuration parameters to Si4455.
+> 
+> So we have to take a "custom" userspace blob and send it to the device
+> to configure it properly?  Like Jiri said, sounds like firmware, so just
+> use that interface instead.
 
-Oops, so it needs extra ioctl interface to get/set newly added chksum and
-compress_level configs...
+I checked Jiri's suggestion, and it is a good solution to replace SI4455_IOC_SEZC(configuration) and SI4455_IOC_SEZP(firmware patch).
+I can move SI4455_IOC_SSIZ(package size) to device tree property.
 
-Thanks,
+Maybe you have good suggestion for the following:
+SI4455_IOC_STXC -> Radio transmit channel index. It is a real use case to control this parameter by user at runtime.
+SI4455_IOC_SRXC -> Radio receive channel index. It is a real use case to control this parameter by user at runtime.
+SI4455_IOC_GRSSI -> Last measured RSSI, when packet received. This is a useful information.
+(Currently I'm the only one user, and I need this :) )
 
 > 
->>
->>   fs/f2fs/file.c            | 1 +
->>   include/uapi/linux/f2fs.h | 1 +
->>   2 files changed, 2 insertions(+)
->>
->> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->> index 16ea10f2bcf5..fbf06311c88d 100644
->> --- a/fs/f2fs/file.c
->> +++ b/fs/f2fs/file.c
->> @@ -3965,6 +3965,7 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
->>   
->>   	option.algorithm = F2FS_I(inode)->i_compress_algorithm;
->>   	option.log_cluster_size = F2FS_I(inode)->i_log_cluster_size;
->> +	option.compress_flag = F2FS_I(inode)->i_compress_flag;
->>   
->>   	inode_unlock_shared(inode);
->>   
->> diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
->> index 352a822d4370..2b9c4c99ceee 100644
->> --- a/include/uapi/linux/f2fs.h
->> +++ b/include/uapi/linux/f2fs.h
->> @@ -93,6 +93,7 @@ struct f2fs_sectrim_range {
->>   struct f2fs_comp_option {
->>   	__u8 algorithm;
->>   	__u8 log_cluster_size;
->> +	__u16 compress_flag;
->>   };
->>   
->>   #endif /* _UAPI_LINUX_F2FS_H */
->> -- 
->> 2.29.2
-> .
+> thanks,
 > 
+> greg k-h
+
+Üdvözlettel / Best regards:
+József Horváth
+
+
