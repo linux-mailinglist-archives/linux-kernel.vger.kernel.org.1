@@ -2,124 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B342D6D60
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98ABD2D6D72
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394877AbgLKBWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:22:37 -0500
-Received: from twhmllg4.macronix.com ([122.147.135.202]:61509 "EHLO
-        TWHMLLG4.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394788AbgLKBWO (ORCPT
+        id S2389806AbgLKBYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:24:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394781AbgLKBV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:22:14 -0500
-Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
-        by TWHMLLG4.macronix.com with ESMTP id 0BB1KmVG015719;
-        Fri, 11 Dec 2020 09:20:48 +0800 (GMT-8)
-        (envelope-from ycllin@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
-        by Forcepoint Email with ESMTP id 9E34BAEED14616A66FEC;
-        Fri, 11 Dec 2020 09:20:48 +0800 (CST)
-In-Reply-To: <20201210223333.204062b1@xps13>
-References: <1607570529-22341-1-git-send-email-ycllin@mxic.com.tw>      <1607570529-22341-2-git-send-email-ycllin@mxic.com.tw> <20201210223333.204062b1@xps13>
-To:     "Miquel Raynal" <miquel.raynal@bootlin.com>
-Cc:     juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, vigneshr@ti.com
-Subject: Re: [PATCH 1/2] mtd: nand: ecc-bch: Fix the size of calc_buf/code_buf of
- the BCH
+        Thu, 10 Dec 2020 20:21:59 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2956C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:21:18 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 125so558118pgf.10
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:21:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=pfg1nfMsIxARt4cwJhUSe5jtXr5SrSeoRAuxALV7fQQ=;
+        b=NNYsZSDZGrBuMC0K/HpZkM3vu59Oj3VjPBXGQd0fc7yf+4fWn2sxER2+M3U1MRl0RE
+         8PDdKapc1s31lYi+cjafM+0mK2GZ5GByBsoFUvSKlTKU+UUZPZ0cHVr54Q3D/T3Iae+Z
+         Uk53MAYJuYELYIYyJeY773zQNxsXWsTzXzN4c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=pfg1nfMsIxARt4cwJhUSe5jtXr5SrSeoRAuxALV7fQQ=;
+        b=S141KtPl2eCtIqWLZS1IRw8ETlJ4wr9zc9nC3fyoHdzyTLVb3NRz0LAKQAltDYbAC5
+         AWVO6aTJJSLk8keUPR9AyZYr/Cg14IuclYw1TxnHbk4CYALulCtmJD9DkP+5geootW+1
+         F4VcHaMoHo451yEm9oCaS1tK/UxrWQKUinQgvGZu3HB0j+btg7dFcBnODOwMRcT/lg7d
+         uj8It+2wweFJIXcPTwF4yiWfeIbmN2/kVzKUyJZXBPpmEMkXpH3fzJD9VZWIbg4RKF8n
+         pweGbBM199AjBN8l65k78KyVwvkkpOK++Zn9roiu3869QosZYG5IpyL9mBMCUcoQCN1T
+         ZXkA==
+X-Gm-Message-State: AOAM531iCdc0t1QbIuN06F3pVzQ18fkhUk5cnNgsssA58ohKkKlXLVkE
+        sorkV9IWQMYsHTzc9xohA7dKDA==
+X-Google-Smtp-Source: ABdhPJxlHxsj/7g9NiPVSrAWsGu/6WNe9PqKSzLrBe0ctu2F0WDHqXUsou4UhuaK5E8pSAl29l8qEQ==
+X-Received: by 2002:a63:f443:: with SMTP id p3mr9174462pgk.40.1607649678434;
+        Thu, 10 Dec 2020 17:21:18 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id h8sm7668604pfk.71.2020.12.10.17.21.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 17:21:17 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-KeepSent: CD61AB38:41A2EFE7-4825863B:0006C241;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OFCD61AB38.41A2EFE7-ON4825863B.0006C241-4825863B.000765F3@mxic.com.tw>
-From:   ycllin@mxic.com.tw
-Date:   Fri, 11 Dec 2020 09:20:48 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
- 2020/12/11 AM 09:20:48,
-        Serialize complete at 2020/12/11 AM 09:20:48
-Content-Type: text/plain; charset="US-ASCII"
-X-MAIL: TWHMLLG4.macronix.com 0BB1KmVG015719
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAD=FV=VD78fmSRciFf38AbZG=EFPzDiT_e7QkEC08zA9iL1vTw@mail.gmail.com>
+References: <20201203074459.13078-1-rojay@codeaurora.org> <CAD=FV=XKyXnjsM4iS-ydRWBnmYMojPOaYAdYhOkxkPTCQf0RLQ@mail.gmail.com> <160757022002.1580929.8656750350166301192@swboyd.mtv.corp.google.com> <CAD=FV=WtU3cnRe6pDKFMA9_0cnQFtSOyohY_bJwZObK+KrbhVQ@mail.gmail.com> <160764107797.1580929.14768824290834396298@swboyd.mtv.corp.google.com> <CAD=FV=WuQjKC6GHy8d2nuqS-fgsUfxYrJosg3eyC9JU1FPCcjw@mail.gmail.com> <160764316821.1580929.18177257779550490986@swboyd.mtv.corp.google.com> <CAD=FV=WvG085orLqnvg9WUobL7iyxwgoxh-8RvOaRdi9rLeDUg@mail.gmail.com> <160764785500.1580929.4255309510717807485@swboyd.mtv.corp.google.com> <CAD=FV=VD78fmSRciFf38AbZG=EFPzDiT_e7QkEC08zA9iL1vTw@mail.gmail.com>
+Subject: Re: [PATCH] spi: spi-geni-qcom: Fix NULL pointer access in geni_spi_isr
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+To:     Doug Anderson <dianders@chromium.org>
+Date:   Thu, 10 Dec 2020 17:21:16 -0800
+Message-ID: <160764967649.1580929.3992720095789306793@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Doug Anderson (2020-12-10 17:04:06)
+> On Thu, Dec 10, 2020 at 4:51 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> >
+> > I'm worried about the buffer disappearing if spi core calls handle_err()
+> > but the geni_spi_isr() handler runs both an rx and a cancel/abort
+> > routine. That doesn't seem to be the case though so it looks all fine.
+>=20
+> It would be pretty racy if that was the case.  Until it calls
+> handle_timeout() we're still free to write to that buffer, right?
 
-Hi Miquel,
-> "Miquel Raynal" <miquel.raynal@bootlin.com> 
-> 
-> Re: [PATCH 1/2] mtd: nand: ecc-bch: Fix the size of calc_buf/code_buf of 
-the BCH
-> 
-> Hi YouChing,
-> 
-> YouChing Lin <ycllin@mxic.com.tw> wrote on Thu, 10 Dec 2020 11:22:08
-> +0800:
-> 
-(deleted)
-> > The root cause is that the size of calc_buf/code_buf is limited to 64
-> > bytes, although sizeof(mtd->oobsize) returns 4, kzalloc() will 
-allocate
-> > 64 bytes (cache size alignment).
-> > 
-> > So we correct the size of calc_buf/code_buf to mtd->oobsize.
-> > 
-> > Signed-off-by: YouChing Lin <ycllin@mxic.com.tw>
-> > ---
-> >  drivers/mtd/nand/ecc-sw-bch.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/ecc-sw-bch.c 
-b/drivers/mtd/nand/ecc-sw-bch.c
-> > index 4d8a979..0a0ac11 100644
-> > --- a/drivers/mtd/nand/ecc-sw-bch.c
-> > +++ b/drivers/mtd/nand/ecc-sw-bch.c
-> > @@ -237,8 +237,8 @@ int nand_ecc_sw_bch_init_ctx(struct nand_device 
-*nand)
-> > 
-> >     engine_conf->code_size = code_size;
-> >     engine_conf->nsteps = nsteps;
-> > -   engine_conf->calc_buf = kzalloc(sizeof(mtd->oobsize), GFP_KERNEL);
-> > -   engine_conf->code_buf = kzalloc(sizeof(mtd->oobsize), GFP_KERNEL);
-> > +   engine_conf->calc_buf = kzalloc(mtd->oobsize, GFP_KERNEL);
-> > +   engine_conf->code_buf = kzalloc(mtd->oobsize, GFP_KERNEL);
-> 
-> Very nice catch! If you don't mind I will merge this fix with the
-> faulty commit (still in next) and I will also bring the fix to Hamming
-> which will suffer from the same error.
-> 
-> Then I will apply the second patch.
- 
-No problem, thank you for your help.
+Right I don't see any badness here.
 
+>=20
+>=20
+> > > If we want to try to do better, we can do timeout handling ourselves.
+> > > The SPI core allows for that.
+> > >
+> > >
+> > > > So why don't we check for cur_xfer being NULL in the rx/tx handling
+> > > > paths too and bail out there? Does the FIFO need to be cleared out =
+in
+> > > > such a situation that spi core thinks a timeout happened but there'=
+s RX
+> > > > data according to m_irq? Do we need to read it all and throw it awa=
+y? Or
+> > > > does the abort/cancel clear out the RX fifo?
+> > >
+> > > I don't know for sure, but IMO it's safest to read anything that's in
+> > > the FIFO.  It's also important to adjust the watermark in the TX case.
+> > > The suggestions I provided in my original reply (#2 and #3) handle
+> > > this and are plenty simple.
+> > >
+> > > As per my original reply, though, anything we do in the ISR doesn't
+> > > replace the changes we need to make to handle_fifo_timeout().  It is
+> > > very important that when handle_fifo_timeout() finishes that no future
+> > > interrupts for old transfers will fire.
+> > >
+> >
+> > Alright. With a proper diagram in the commit text I think doing all of
+> > the points, 1 through 3, would be good and required to leave the
+> > hardware in a sane state for all the scenarios. Why do we need to call
+> > synchronize_irq() at the start and end of handle_fifo_timeout() though?
+> > Presumably having it at the start would make sure the long delayed irq
+> > runs and handles any rx/tx by throwing it away. Sounds great, but having
+> > it at the end leaves me confused. We want to make sure the cancel really
+> > went through?  Don't we know that because the completion variable for
+> > cancel succeeded?
+>=20
+> I want it to handle the case where the "abort" command timed out!  :-)
+>  If the "abort" command timed out then it's still pending and we could
+> get an interrupt for it at some future point in time.
 
-Thanks,
-Youching.
+Sure but who cares? We set a completion variable if abort comes in
+later. We'll put a message in the log indicating that it "Failed" but
+otherwise handle_fifo_timeout() can't return an error so we have to give
+up eventually.
 
+>=20
+>=20
+> > I guess I'm not convinced that the hardware is so bad that it cancels
+> > and aborts the sequencer, raises an irq for that, and then raises an irq
+> > for the earlier rx/tx that the sequencer canceled out. Is that
+> > happening? It's called a sequencer because presumably it runs a sequence
+> > of operations like tx, rx, cs change, cancel, and abort. Hopefully it
+> > doesn't run them out of order. If they run at the same time it's fine,
+> > the irq handler will see all of them and throw away reads, etc.
+>=20
+> Maybe answered by me explaining that I'm worried about the case where
+> "abort" times out (and thus the "done" from the abort is still
+> pending).
+>=20
+> NOTE: I will also assert that if we send the "abort" then it seems
+> like it has a high likelihood of timing out.  Why do I say that?  In
+> order to even get to sending the "abort", it means:
+>=20
+> a) The original transfer timed out
+>=20
+> b) The "cancel" timed out.  As you can see, if the "cancel" doesn't
+> time out we don't even send the "abort"
+>=20
+> ...so two things timed out, one of which we _just_ sent.  The "abort"
+> feels like a last ditch effort.  Might as well try it, but things were
+> in pretty sorry shape to start with by the time we tried it.
+>=20
 
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+Yeah and so if it comes way later because it timed out then what's the
+point of calling synchronize_irq() again? To make the completion
+variable set when it won't be tested again until it is reinitialized?
