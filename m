@@ -2,94 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3442D8020
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181D42D8023
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392040AbgLKUm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 15:42:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
+        id S2404010AbgLKUno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 15:43:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388009AbgLKUl5 (ORCPT
+        with ESMTP id S1726648AbgLKUm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 15:41:57 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD28C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:41:16 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id 2so10013221ilg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:41:16 -0800 (PST)
+        Fri, 11 Dec 2020 15:42:58 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C6FC0613CF;
+        Fri, 11 Dec 2020 12:42:18 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id a11so2583523wrr.13;
+        Fri, 11 Dec 2020 12:42:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=bJD8TQXY9Iw0B4aOZnAz/J6NLF+5HmQSrMearbDOB3o=;
-        b=XlevVis0OmZcsGnbpxHrh2lxwMquktZ7RxjnYXtkV0o44N4mJXhJIwfNfe48f+0Don
-         V5Z+N23XBRKTWkKEe9pG3jd/qFm7yI2jnI+s7YBm01qEwnp6UzZuNJd1z0plDSUlErTK
-         XpQsi6GlECmIuGLEoofK6L1Se52JqC0q4sfNw=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r3VRngt9K4ZtslP1jN8Q2ri8EtjrwqmDuse2f8eMq7I=;
+        b=Ae2CQLV3STiRi/b8cmUurvVkFdF4xIv/n4qlPiJXSh1oiUyB68y9PJEBvJc0I+z3pG
+         LYEsUlEiqfMZrrwr+xCVKA+j/fLvDxuT9Eul6SUjHNwv+FvfNrwsyv9LAfPjq3NQ5zth
+         El/X0oU7XmQrCaPIN4AQwaOmwbtEYc6FPcDGNjyDD9uxwQ3LDzPPFh43njk8bmBPMTgg
+         YntzBaueDqiW4HC+PudTlBqrpaXoneZGTp5K7qCfpWTcP7cl8EAHe2U9fDzcDYnxv1KQ
+         qxn3KqIvCV0QeaRwqgqpR3RW8voCBskTgZTOPn497P1vTpRALRCbT/lff6wLwJrmvdhX
+         tvIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=bJD8TQXY9Iw0B4aOZnAz/J6NLF+5HmQSrMearbDOB3o=;
-        b=JHa4zYEZHqFeM+h9VcgL51ycR/sogA2H1JyoDKSym7QkmX2Jcv6N1YH6jIJeQzmHwL
-         BpqnLu+UXt9FRtz6D+n9tIuqcUGNbtZFY+J6FCCx1OAgf6dZp7Q1wtVVBY4h2Q3nZYar
-         XKjSQ7BvA8pNQmjg7exjPYwpSkpgvjMpzZHWYBdQM0vDAh2CgNZk6b4+LrsYKrbU7OB9
-         OrqEuOSgzKO1H/DTfR9a3fc8ObVlHeSHI1WBszzfPVXzpXR0jNUAbZB8NF7wqo80FRCI
-         53avH28X4wcjM1+1Tt9SPBV9wARz9JzH08hvJT2ife1PflH5lnFjwkFCXd/aiuLBpC1D
-         AooQ==
-X-Gm-Message-State: AOAM5328rXOBYAp/tSGCZz80rKUReMrPmTZqGKz3QntU+aXP1l7eMuNg
-        NIMNUYcDed9V5ng14ahLIGC/CS/TjVAXAA==
-X-Google-Smtp-Source: ABdhPJzJCBvlvLUFiXmhYME3cg+v8p7NOO0WyaJihB8LW/qazex2lfZa9+bS5D5jGcT935fuX/OjvQ==
-X-Received: by 2002:a92:155b:: with SMTP id v88mr17506371ilk.303.1607719276099;
-        Fri, 11 Dec 2020 12:41:16 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id f6sm4807940ioh.2.2020.12.11.12.41.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Dec 2020 12:41:14 -0800 (PST)
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: common_interrupt: No irq handler for vector
-Message-ID: <9741d93c-3cd1-c4ef-74bb-7f635231c778@linuxfoundation.org>
-Date:   Fri, 11 Dec 2020 13:41:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r3VRngt9K4ZtslP1jN8Q2ri8EtjrwqmDuse2f8eMq7I=;
+        b=WR/TBx1sIxY7O5fTY/GJAYcjsJPdz9HgIpEwhkOVdmk2DZLtWkqrlLSRU6Z/rNTgOv
+         8x/XGlBp0Otgwpmzs3c28XdWZ+qUcVmAPERFmvL1X2IoMGIlyvIdMcXTGA2CGdOnRFRn
+         /lTbUVsVX48hX6ZtqOYJBiFPrhfaV1rIWj2C32OhDCTvzw8aXYKs7qTlTmrc8mMzyZ8a
+         KWzsYjLx29qPNSpKm2LETZtKboCZdutxOVXdUIFPPG2EkcdO47SBSewUYPm/G9OT8g1w
+         UBJf1uJwuSAPk0k/pQmyhiZLGrg7aRxdyPJ0WAbHWtr0uNo0sjPc+gsebiygMpWbbAJ/
+         nSgQ==
+X-Gm-Message-State: AOAM533TgAX1AvoKyhyo8VctrDyLmDeVNa3bhRiOxNPJAK4wpnr8CsS7
+        mSlg0cGWRmOAvBt1JHAgDSg/8bdCIvg5NA==
+X-Google-Smtp-Source: ABdhPJzXV3ZlVH74DV5cLi5CQrkUzDIwxT4bTuzv0OPU9LEX/WHTZgnaj+stjwRgMpNVTN8L4AocaA==
+X-Received: by 2002:adf:fd0c:: with SMTP id e12mr14234726wrr.61.1607719336792;
+        Fri, 11 Dec 2020 12:42:16 -0800 (PST)
+Received: from localhost ([41.45.127.175])
+        by smtp.gmail.com with ESMTPSA id v1sm1484687wre.62.2020.12.11.12.42.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 12:42:16 -0800 (PST)
+From:   Abanoub Sameh <abanoubsameh8@gmail.com>
+X-Google-Original-From: Abanoub Sameh <abanoubsameh@protonmail.com>
+To:     pavel@ucw.cz
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abanoub Sameh <abanoubsameh@protonmail.com>
+Subject: [PATCH] leds: led-core: Get rid of enum led_brightness
+Date:   Fri, 11 Dec 2020 22:42:08 +0200
+Message-Id: <20201211204208.179981-1-abanoubsameh@protonmail.com>
+X-Mailer: git-send-email 2.28.0.rc0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am debugging __common_interrupt: 1.55 No irq handler for vector
-messages and noticed comments and code don't agree:
+This gets rid of enum led_brightness in the main led files,
+because it is deprecated, and an unsigned int can be used instead.
 
-arch/x86/kernel/apic/msi.c: msi_set_affinity() says:
+We can get rid of led_brightness completely and
+patches can also be supplied for the other drivers' files.
 
+Signed-off-by: Abanoub Sameh <abanoubsameh@protonmail.com>
+---
+ drivers/leds/led-class.c |  3 +--
+ drivers/leds/led-core.c  | 20 +++++++-------------
+ drivers/leds/leds.h      |  6 ++----
+ include/linux/leds.h     | 12 +++++-------
+ 4 files changed, 15 insertions(+), 26 deletions(-)
 
-  * If the vector is in use then the installed device handler will
-  * denote it as spurious which is no harm as this is a rare event
-  * and interrupt handlers have to cope with spurious interrupts
-  * anyway. If the vector is unused, then it is marked so it won't
-  * trigger the 'No irq handler for vector' warning in
-  * common_interrupt().
+diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
+index 131ca83f5fb3..2e495ff67856 100644
+--- a/drivers/leds/led-class.c
++++ b/drivers/leds/led-class.c
+@@ -145,8 +145,7 @@ static void led_remove_brightness_hw_changed(struct led_classdev *led_cdev)
+ 	device_remove_file(led_cdev->dev, &dev_attr_brightness_hw_changed);
+ }
+ 
+-void led_classdev_notify_brightness_hw_changed(struct led_classdev *led_cdev,
+-					       enum led_brightness brightness)
++void led_classdev_notify_brightness_hw_changed(struct led_classdev *led_cdev, unsigned int brightness)
+ {
+ 	if (WARN_ON(!led_cdev->brightness_hw_changed_kn))
+ 		return;
+diff --git a/drivers/leds/led-core.c b/drivers/leds/led-core.c
+index c4e780bdb385..8eb8054ef9c6 100644
+--- a/drivers/leds/led-core.c
++++ b/drivers/leds/led-core.c
+@@ -39,8 +39,7 @@ const char * const led_colors[LED_COLOR_ID_MAX] = {
+ };
+ EXPORT_SYMBOL_GPL(led_colors);
+ 
+-static int __led_set_brightness(struct led_classdev *led_cdev,
+-				enum led_brightness value)
++static int __led_set_brightness(struct led_classdev *led_cdev, unsigned int value)
+ {
+ 	if (!led_cdev->brightness_set)
+ 		return -ENOTSUPP;
+@@ -50,8 +49,7 @@ static int __led_set_brightness(struct led_classdev *led_cdev,
+ 	return 0;
+ }
+ 
+-static int __led_set_brightness_blocking(struct led_classdev *led_cdev,
+-					 enum led_brightness value)
++static int __led_set_brightness_blocking(struct led_classdev *led_cdev, unsigned int value)
+ {
+ 	if (!led_cdev->brightness_set_blocking)
+ 		return -ENOTSUPP;
+@@ -240,8 +238,7 @@ void led_stop_software_blink(struct led_classdev *led_cdev)
+ }
+ EXPORT_SYMBOL_GPL(led_stop_software_blink);
+ 
+-void led_set_brightness(struct led_classdev *led_cdev,
+-			enum led_brightness brightness)
++void led_set_brightness(struct led_classdev *led_cdev, unsigned int brightness)
+ {
+ 	/*
+ 	 * If software blink is active, delay brightness setting
+@@ -253,7 +250,7 @@ void led_set_brightness(struct led_classdev *led_cdev,
+ 		 * work queue task to avoid problems in case we are called
+ 		 * from hard irq context.
+ 		 */
+-		if (brightness == LED_OFF) {
++		if (!brightness) {
+ 			set_bit(LED_BLINK_DISABLE, &led_cdev->work_flags);
+ 			schedule_work(&led_cdev->set_brightness_work);
+ 		} else {
+@@ -268,8 +265,7 @@ void led_set_brightness(struct led_classdev *led_cdev,
+ }
+ EXPORT_SYMBOL_GPL(led_set_brightness);
+ 
+-void led_set_brightness_nopm(struct led_classdev *led_cdev,
+-			      enum led_brightness value)
++void led_set_brightness_nopm(struct led_classdev *led_cdev, unsigned int value)
+ {
+ 	/* Use brightness_set op if available, it is guaranteed not to sleep */
+ 	if (!__led_set_brightness(led_cdev, value))
+@@ -281,8 +277,7 @@ void led_set_brightness_nopm(struct led_classdev *led_cdev,
+ }
+ EXPORT_SYMBOL_GPL(led_set_brightness_nopm);
+ 
+-void led_set_brightness_nosleep(struct led_classdev *led_cdev,
+-				enum led_brightness value)
++void led_set_brightness_nosleep(struct led_classdev *led_cdev, unsigned int value)
+ {
+ 	led_cdev->brightness = min(value, led_cdev->max_brightness);
+ 
+@@ -293,8 +288,7 @@ void led_set_brightness_nosleep(struct led_classdev *led_cdev,
+ }
+ EXPORT_SYMBOL_GPL(led_set_brightness_nosleep);
+ 
+-int led_set_brightness_sync(struct led_classdev *led_cdev,
+-			    enum led_brightness value)
++int led_set_brightness_sync(struct led_classdev *led_cdev, unsigned int value)
+ {
+ 	if (led_cdev->blink_delay_on || led_cdev->blink_delay_off)
+ 		return -EBUSY;
+diff --git a/drivers/leds/leds.h b/drivers/leds/leds.h
+index 2d9eb48bbed9..345062ccabda 100644
+--- a/drivers/leds/leds.h
++++ b/drivers/leds/leds.h
+@@ -19,10 +19,8 @@ static inline int led_get_brightness(struct led_classdev *led_cdev)
+ 
+ void led_init_core(struct led_classdev *led_cdev);
+ void led_stop_software_blink(struct led_classdev *led_cdev);
+-void led_set_brightness_nopm(struct led_classdev *led_cdev,
+-				enum led_brightness value);
+-void led_set_brightness_nosleep(struct led_classdev *led_cdev,
+-				enum led_brightness value);
++void led_set_brightness_nopm(struct led_classdev *led_cdev, unsigned int value);
++void led_set_brightness_nosleep(struct led_classdev *led_cdev, unsigned int value);
+ ssize_t led_trigger_read(struct file *filp, struct kobject *kobj,
+ 			struct bin_attribute *attr, char *buf,
+ 			loff_t pos, size_t count);
+diff --git a/include/linux/leds.h b/include/linux/leds.h
+index 6a8d6409c993..329fd914cf24 100644
+--- a/include/linux/leds.h
++++ b/include/linux/leds.h
+@@ -63,8 +63,8 @@ struct led_hw_trigger_type {
+ 
+ struct led_classdev {
+ 	const char		*name;
+-	enum led_brightness	 brightness;
+-	enum led_brightness	 max_brightness;
++	unsigned int brightness;
++	unsigned int max_brightness;
+ 	int			 flags;
+ 
+ 	/* Lower 16 bits reflect status */
+@@ -253,8 +253,7 @@ void led_blink_set_oneshot(struct led_classdev *led_cdev,
+  * software blink timer that implements blinking when the
+  * hardware doesn't. This function is guaranteed not to sleep.
+  */
+-void led_set_brightness(struct led_classdev *led_cdev,
+-			enum led_brightness brightness);
++void led_set_brightness(struct led_classdev *led_cdev, unsigned int brightness);
+ 
+ /**
+  * led_set_brightness_sync - set LED brightness synchronously
+@@ -267,8 +266,7 @@ void led_set_brightness(struct led_classdev *led_cdev,
+  *
+  * Returns: 0 on success or negative error value on failure
+  */
+-int led_set_brightness_sync(struct led_classdev *led_cdev,
+-			    enum led_brightness value);
++int led_set_brightness_sync(struct led_classdev *led_cdev, unsigned int value);
+ 
+ /**
+  * led_update_brightness - update LED brightness
+@@ -565,7 +563,7 @@ static inline void ledtrig_cpu(enum cpu_led_event evt)
+ 
+ #ifdef CONFIG_LEDS_BRIGHTNESS_HW_CHANGED
+ void led_classdev_notify_brightness_hw_changed(
+-	struct led_classdev *led_cdev, enum led_brightness brightness);
++	struct led_classdev *led_cdev, unsigned int brightness);
+ #else
+ static inline void led_classdev_notify_brightness_hw_changed(
+ 	struct led_classdev *led_cdev, enum led_brightness brightness) { }
 
-common_interrupt() prints message if vector is unused: VECTOR_UNUSED
-
-ack_APIC_irq();
-
-if (desc == VECTOR_UNUSED) {
-     pr_emerg_ratelimited("%s: %d.%u No irq handler for vector\n",
-                           __func__, smp_processor_id(), vector);
-}
-
-Something wrong here?
-
-thanks,
--- Shuah
-
+base-commit: 33dc9614dc208291d0c4bcdeb5d30d481dcd2c4c
+-- 
+2.28.0.rc0
 
