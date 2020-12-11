@@ -2,82 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219F22D6D9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9580F2D6DA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389638AbgLKBc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389890AbgLKBbn (ORCPT
+        id S2390005AbgLKBhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:37:32 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:31037 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389896AbgLKBh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:31:43 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE565C0613D6;
-        Thu, 10 Dec 2020 17:31:03 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1knXGn-000SL0-2o; Fri, 11 Dec 2020 01:30:53 +0000
-Date:   Fri, 11 Dec 2020 01:30:53 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/29] iov_iter: Switch to using a table of operations
-Message-ID: <20201211013053.GA107834@ZenIV.linux.org.uk>
-References: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
- <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
- <CAHk-=wjttbQzVUR-jSW-Q42iOUJtu4zCxYe9HO3ovLGOQ_3jSA@mail.gmail.com>
+        Thu, 10 Dec 2020 20:37:28 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607650640; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=erGP85vPnx/33AtB9CxsMeeaBBxhhifeDpOU4ZgSoBM=;
+ b=o4ME+4jvMuCPs0VM/VkGxggSiA02hUHWNJ55Yx1DUGgon7SPMCwIrH9rFVv2BHk4Km7Sd89D
+ 59/bXFUNP94VxTyUvmufZHAyY+aPGVnpOXKF2NwVbb5FCF78CeCHh+zWi6xFVQpmuisS0034
+ XzlZGql/8sUyGE8wg8fjW2a4Cgw=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5fd2cd2965f116f287535052 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Dec 2020 01:36:41
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 899E9C43466; Fri, 11 Dec 2020 01:36:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A7827C433CA;
+        Fri, 11 Dec 2020 01:36:40 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjttbQzVUR-jSW-Q42iOUJtu4zCxYe9HO3ovLGOQ_3jSA@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 11 Dec 2020 09:36:40 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] scsi: ufs: Protect some contexts from unexpected
+ clock scaling
+In-Reply-To: <a2338ef6da3d4ed4093547ba87e13e94d8dd2a45.camel@gmail.com>
+References: <1607520942-22254-1-git-send-email-cang@codeaurora.org>
+ <1607520942-22254-2-git-send-email-cang@codeaurora.org>
+ <a2338ef6da3d4ed4093547ba87e13e94d8dd2a45.camel@gmail.com>
+Message-ID: <48363aee8a746a43440f86f620d9d2e0@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 10:21:17AM -0800, Linus Torvalds wrote:
-> So I think conceptually this is the right thing to do, but I have a
-> couple of worries:
+On 2020-12-11 01:34, Bean Huo wrote:
+> Hi Can
 > 
->  - do we really need all those different versions? I'm thinking
-> "iter_full" versions in particular. They I think the iter_full version
-> could just be wrappers that call the regular iter thing and verify the
-> end result is full (and revert if not). No?
-
-Umm...  Not sure - iov_iter_revert() is not exactly light.  OTOH, it's
-on a slow path...  Other variants:
-	* save local copy, run of normal variant on iter, then copy
-the saved back on failure
-	* make a local copy, run the normal variant in _that_, then
-copy it back on success.
-
-Note that the entire thing is 5 words, and we end up reading all of
-them anyway, so I wouldn't bet which variant ends up being faster -
-that would need testing to compare.
-
-I would certainly like to get rid of the duplication there, especially
-if we are going to add copy_to_iter_full() and friends (there are
-use cases for those).
-
->  - I worry a bit about the indirect call overhead and spectre v2.
+> On Wed, 2020-12-09 at 05:35 -0800, Can Guo wrote:
+>> 
+>> 
+>> @@ -1160,6 +1166,7 @@ static void
+>> ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
+>>  {
+>>  	up_write(&hba->clk_scaling_lock);
+>>  	ufshcd_scsi_unblock_requests(hba);
+>> +	ufshcd_release(hba);
+>>  }
+>> 
+>>  /**
+>> @@ -1175,12 +1182,9 @@ static int ufshcd_devfreq_scale(struct ufs_hba
+>> *hba, bool scale_up)
+>>  {
+>>  	int ret = 0;
+>> 
+>> -	/* let's not get into low power until clock scaling is
+>> completed */
+>> -	ufshcd_hold(hba, false);
+>> -
+>>  	ret = ufshcd_clock_scaling_prepare(hba);
+>>  	if (ret)
+>> -		goto out;
+>> +		return ret;
+>> 
+>>  	/* scale down the gear before scaling down clocks */
+>>  	if (!scale_up) {
+>> @@ -1212,8 +1216,6 @@ static int ufshcd_devfreq_scale(struct ufs_hba
+>> *hba, bool scale_up)
+>> 
+>>  out_unprepare:
+>>  	ufshcd_clock_scaling_unprepare(hba);
+>> -out:
+>> -	ufshcd_release(hba);
+>>  	return ret;
+>>  }
 > 
->    So yeah, it would be good to have benchmarks to make sure this
-> doesn't regress for some simple case.
+> I didn't understand why moving ufshcd_hold/ufshcd_release into
+> ufshcd_clock_scaling_prepare()/ufshcd_clock_scaling_unprepare().
 > 
-> Other than those things, my initial reaction is "this does seem cleaner".
+> 
+>> 
+>> @@ -1294,15 +1296,8 @@ static int ufshcd_devfreq_target(struct device
+>> *dev,
+>>  	}
+>>  	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
+>> 
+>> -	pm_runtime_get_noresume(hba->dev);
+>> -	if (!pm_runtime_active(hba->dev)) {
+>> -		pm_runtime_put_noidle(hba->dev);
+>> -		ret = -EAGAIN;
+>> -		goto out;
+>> -	}
+>>  	start = ktime_get();
+>>  	ret = ufshcd_devfreq_scale(hba, scale_up);
+>> -	pm_runtime_put(hba->dev);
+>> 
+> 
+> which branch are you working on?  I didn't see this part codes in the
+> branch 5.11/scsi-queue and 5.11/scsi-staging.
+> 
+> Bean
 
-It does seem cleaner, all right, but that stuff is on fairly hot paths.
-And I didn't want to mix the overhead of indirect calls into the picture,
-so it turned into cascades of ifs with rather vile macros to keep the
-size down.
+As I mentioned in my cover-letter, this is based on 5.11/scsi-fixes.
+These codes came from one of my earlier changes, but since this change
+can cover the old change's functionality, so I removed the codes.
 
-It looks like the cost of indirects is noticable.  OTOH, there are
-other iov_iter patches floating around, hopefully getting better
-code generation.  Let's see how much do those give and if they win
-considerably more than those several percents, revisit this series.
+Can Guo.
