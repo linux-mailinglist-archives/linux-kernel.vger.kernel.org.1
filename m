@@ -2,184 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33A82D7C70
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0D02D7C6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389882AbgLKRHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:07:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40694 "EHLO
+        id S2394501AbgLKRHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:07:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405563AbgLKRGn (ORCPT
+        with ESMTP id S1732146AbgLKRHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:06:43 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F43DC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:06:03 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id t4so9719494wrr.12
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:06:03 -0800 (PST)
+        Fri, 11 Dec 2020 12:07:13 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB43C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:06:32 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id r7so9755187wrc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:06:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q0kRT9Y/VRKtCl21czUvzutK8NrVOINaPhwQCeEQl8Q=;
-        b=KKDKtv9T4wVQJLmhyVWyJ9efMZ7CJ1aUECqZHyeIsCfK++CuhnFvKh59a0VV8AdpfA
-         jUzQubJKR2J5tq3+aXGmaCDu0JCSny3fe0QLJlDBIvoiT8+9pgqDd6w6DwZsqgTbFfRn
-         xbkrBUzK5VPTDjoVqIHZwnk+0lm9VVcoHd/3WUlslMnskVpNq0W2ElmSA7FlvEJ2Mant
-         wCkcF0gULaJhbYEsn7wy8gLof4hYYlL8G4VUlFpvySXG9n+fNK+Bx0vGqcU45jTkqcMj
-         N/SlzN/mrD5K8hWr5O6AT5VenBGyHGOd1+F8KTOLI83WuaBGuMUX7bYChXS5Yj+9AcYn
-         G+fQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g8zX5fIH9uKJS0RZzLnoP4TzFB+P9VHxAQFkUoP/67o=;
+        b=QPdgAmqayhSJPmy887Ad16AJkqcIS/QoRc1rogbiRUibbD7IewVil7Fbq0GrqbKdsM
+         PfomXTQRE678qiS0L3z3u8hW33MVPEN5uwT0FR9Oo/je/6HVEuf/lh3VNMnfK7S62lEF
+         7xgRmfSXLJPEEDiHxDplLx8DDAtjH6LOds3+w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q0kRT9Y/VRKtCl21czUvzutK8NrVOINaPhwQCeEQl8Q=;
-        b=UEJLnLB7/kULXwkF5l0dX5I0CsgcRB0dCFd33AtM/Fhl+THXGB3RhZIyyLMsFsLriT
-         brihClcAioVxsnWxGUbHvzMTxL6bSCe+Oy0Sl1ET6OgKbGvPkDI6f+fh2YZ/Uh1Dp4dM
-         uBOF1oGzs1OqPqRijoOtn7LD9m2h7FnmizOQU24s9viklvonEYlLmY748kJ6ktjTPeFq
-         RTu2MuMr4uAhYZRByYyFrLZYteicG433r5CDrBfqHyDaqjDlQHfztuHeu/6qYI7R0NjD
-         H9VzCp3xX0ww/UICjcozKGV+4BX0iyIynuSCdMx+yttwmjzod9lCII2Lj4Mhlmnzsnhv
-         8gXQ==
-X-Gm-Message-State: AOAM533ngmel42XRteiU8C3EKwAm9RqlRNknOF47ncur/QpoZJhPndNz
-        N7Zu1wC9s+UBDcW//nDvn43ikA==
-X-Google-Smtp-Source: ABdhPJzQNI4hmPzAuQB/ioaujFWQ5mJDHpVNwXekyexc/tGTv6g4qUK/XB00sT2peYlJ4nli9zYsug==
-X-Received: by 2002:adf:f344:: with SMTP id e4mr13878740wrp.25.1607706361860;
-        Fri, 11 Dec 2020 09:06:01 -0800 (PST)
-Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id n3sm16433080wrw.61.2020.12.11.09.05.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g8zX5fIH9uKJS0RZzLnoP4TzFB+P9VHxAQFkUoP/67o=;
+        b=FACixEtFj8DWJqidyDOKxI5uVFMVJnr8XKUM3/H2v2qdV3eOn/2p3OcXiT0a+REXbn
+         KF4QFXhU4NELz+0o/ENdhOpB8tI+M6MfQlofPmxpZ+Kyc2oIOoQok3YptE5sF4Yco72J
+         G658Tea2049P8xeUTLj5KBLWzxG+tfWmhsDEccYSlKdHcEf0H20gEo5gULh/vEse8Ck/
+         697+l1z7Kq0BorczsI+cJl2CvQONMRBTeWGBgvBYaEJjO2QGZthrOFoQivyQ9b9mnQf9
+         zvLLOawD5NFlEhE7eYSrjcGQ9XZ8tShwC4p+EBQPRkOOrNkvoYoGQlMbtIF10uNUA4b4
+         n7mQ==
+X-Gm-Message-State: AOAM5332KQaEu3yEkF1/udVwY+PXe1BazyUYsZUcNm3AF1iao1nXHX2e
+        bF/SBzW/jCgOMgWMiRbKtKv/37mBpiIu6w==
+X-Google-Smtp-Source: ABdhPJyiv3j7K0H57fwiqhv5UkIV7W1Xa/63zhYkYCDfy2XnWY6xMQhBE6ef4VHZ7yxsWz1RrF49Sw==
+X-Received: by 2002:adf:81a2:: with SMTP id 31mr14851609wra.381.1607706391726;
+        Fri, 11 Dec 2020 09:06:31 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id h98sm17797100wrh.69.2020.12.11.09.06.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 09:06:00 -0800 (PST)
-Date:   Fri, 11 Dec 2020 17:05:58 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linaro Patches <patches@linaro.org>
-Subject: Re: [RFC HACK PATCH] PCI: dwc: layerscape: Hack around enumeration
- problems with Honeycomb LX2K
-Message-ID: <20201211170558.clfazgoetmery6u3@holly.lan>
-References: <20201211121507.28166-1-daniel.thompson@linaro.org>
- <CAL_JsqKQxFvkFtph1BZD2LKdZjboxhMTWkZe_AWS-vMD9y0pMw@mail.gmail.com>
+        Fri, 11 Dec 2020 09:06:31 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Mateusz Gorski <mateusz.gorski@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH] ASoC: Intel: Skylake: skl-topology: Fix OOPs ib skl_tplg_complete
+Date:   Fri, 11 Dec 2020 18:06:29 +0100
+Message-Id: <20201211170629.871085-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqKQxFvkFtph1BZD2LKdZjboxhMTWkZe_AWS-vMD9y0pMw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 08:37:40AM -0600, Rob Herring wrote:
-> On Fri, Dec 11, 2020 at 6:15 AM Daniel Thompson
-> <daniel.thompson@linaro.org> wrote:
-> >
-> > I have been chasing down a problem enumerating an NVMe drive on a
-> > Honeycomb LX2K (NXP LX2160A). Specifically the drive can only enumerate
-> > successfully if the we are emitting lots of console messages via a UART.
-> > If the system is booted with `quiet` set then enumeration fails.
-> 
-> We really need to get away from work-arounds for device X on host Y. I
-> suspect they are not limited to that combination only...
+If dobj->control is not initialized we end up in an OOPs during
+skl_tplg_complete:
 
-No objection on that. This patch was essentially sharing the result of
-an investigation where I got stuck at the "now fix it properly" stage!
+[   26.553358] BUG: kernel NULL pointer dereference, address:
+0000000000000078
+[   26.561151] #PF: supervisor read access in kernel mode
+[   26.566897] #PF: error_code(0x0000) - not-present page
+[   26.572642] PGD 0 P4D 0
+[   26.575479] Oops: 0000 [#1] PREEMPT SMP PTI
+[   26.580158] CPU: 2 PID: 2082 Comm: udevd Tainted: G         C
+5.4.81 #4
+[   26.588232] Hardware name: HP Soraka/Soraka, BIOS
+Google_Soraka.10431.106.0 12/03/2019
+[   26.597082] RIP: 0010:skl_tplg_complete+0x70/0x144 [snd_soc_skl]
 
+Fixes: 2d744ecf2b98 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHL")
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+ sound/soc/intel/skylake/skl-topology.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-> How exactly does it fail to enumerate? There's a (racy) linkup check
-> on config accesses, is it reporting link down and skipping config
-> accesses?
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 40bee10b0c65..0955cbb4e918 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -3619,19 +3619,20 @@ static void skl_tplg_complete(struct snd_soc_component *component)
+ 
+ 	list_for_each_entry(dobj, &component->dobj_list, list) {
+ 		struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
+-		struct soc_enum *se =
+-			(struct soc_enum *)kcontrol->private_value;
+-		char **texts = dobj->control.dtexts;
++		struct soc_enum *se;
++		char **texts;
+ 		char chan_text[4];
+ 
+-		if (dobj->type != SND_SOC_DOBJ_ENUM ||
+-		    dobj->control.kcontrol->put !=
+-		    skl_tplg_multi_config_set_dmic)
++		if (dobj->type != SND_SOC_DOBJ_ENUM || !kcontrol ||
++		    kcontrol->put != skl_tplg_multi_config_set_dmic)
+ 			continue;
++
++		se = (struct soc_enum *)kcontrol->private_value;
++		texts = dobj->control.dtexts;
+ 		sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
+ 
+ 		for (i = 0; i < se->items; i++) {
+-			struct snd_ctl_elem_value val;
++			struct snd_ctl_elem_value val = {};
+ 
+ 			if (strstr(texts[i], chan_text)) {
+ 				val.value.enumerated.item[0] = i;
+-- 
+2.29.2.576.ga3fc446d84-goog
 
-In dmesg terms it looked like this:
-
---- nvme_borked_gpu_working.linted.dmesg	2020-11-18 15:28:35.544118213 +0000
-+++ nvme_working_gpu_working.linted.dmesg	2020-11-18 15:28:56.180076946 +0000
-@@ -241,11 +241,19 @@
- pci 0000:00:00.0: reg 0x38: [mem 0x9048000000-0x9048ffffff pref]
- pci 0000:00:00.0: supports D1 D2
- pci 0000:00:00.0: PME# supported from D0 D1 D2 D3hot
-+pci 0000:01:00.0: [15b7:5009] type 00 class 0x010802
-+pci 0000:01:00.0: reg 0x10: [mem 0x9049000000-0x9049003fff 64bit]
-+pci 0000:01:00.0: reg 0x20: [mem 0x9049004000-0x90490040ff 64bit]
- pci 0000:00:00.0: BAR 1: assigned [mem 0x9040000000-0x9043ffffff]
- pci 0000:00:00.0: BAR 0: assigned [mem 0x9044000000-0x9044ffffff]
- pci 0000:00:00.0: BAR 6: assigned [mem 0x9045000000-0x9045ffffff pref]
-+pci 0000:00:00.0: BAR 14: assigned [mem 0x9046000000-0x90460fffff]
-+pci 0000:01:00.0: BAR 0: assigned [mem 0x9046000000-0x9046003fff 64bit]
-+pci 0000:01:00.0: BAR 4: assigned [mem 0x9046004000-0x90460040ff 64bit]
- pci 0000:00:00.0: PCI bridge to [bus 01-ff]
-+pci 0000:00:00.0:   bridge window [mem 0x9046000000-0x90460fffff]
- pci 0000:00:00.0: Max Payload Size set to  256/ 256 (was  128), Max Read Rq  256
-+pci 0000:01:00.0: Max Payload Size set to  256/ 512 (was  128), Max Read Rq  256
- layerscape-pcie 3800000.pcie: host bridge /soc/pcie@3800000 ranges:
- layerscape-pcie 3800000.pcie:      MEM 0xa040000000..0xa07fffffff -> 0x0040000000
- layerscape-pcie 3800000.pcie: PCI host bridge to bus 0001:00
-
-... and be aware that the last three lines here are another PCIe
-controller coming up just fine and it is about to detect the GPU
-(which like the NVMe is also gen3) just fine whether or not we
-add a short delay.
-
-
-> > I guessed this would be due to the timing impact of printk-to-UART and
-> > tried to find out where a delay could be added to provoke a successful
-> > enumeration.
-> >
-> > This patch contains the results. The delay length (1ms) was selected by
-> > binary searching downwards until the delay was not effective for these
-> > devices (Honeycomb LX2K and a Western Digital WD Blue SN550).
-> >
-> > I have also included the workaround twice (conditionally compiled). The
-> > first change is the *latest* possible code path that we can deploy a
-> > delay whilst the second is the earliest place I could find.
-> >
-> > The summary is that the critical window were we are currently relying on
-> > a call to the console UART code can "mend" the driver runs from calling
-> > dw_pcie_setup_rc() in host init to just before we read the state in the
-> > link up callback.
-> >
-> > Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-> > ---
-> >
-> > Notes:
-> >     This patch is RFC (and HACK) because I don't have much clue *why* this
-> >     patch works... merely that this is the smallest possible change I need
-> >     to replicate the current accidental printk() workaround.  Perhaps one
-> >     could argue that RFC here stands for request-for-clue.  All my
-> >     observations and changes here are empirical and I don't know how best to
-> >     turn them into something that is not a hack!
-> >
-> >     BTW I noticed many other pcie-designware drivers take advantage
-> >     of a function called dw_pcie_wait_for_link() in their init paths...
-> >     but my naive attempts to add it to the layerscape driver results
-> >     in non-booting systems so I haven't embarrassed myself by including
-> >     that in the patch!
-> 
-> You need to look at what's pending for v5.11, because I reworked this
-> to be more unified. The ordering of init is also possibly changed. The
-> sequence is now like this:
-> 
->         dw_pcie_setup_rc(pp);
->         dw_pcie_msi_init(pp);
-> 
->         if (!dw_pcie_link_up(pci) && pci->ops->start_link) {
->                 ret = pci->ops->start_link(pci);
->                 if (ret)
->                         goto err_free_msi;
->         }
-> 
->         /* Ignore errors, the link may come up later */
->         dw_pcie_wait_for_link(pci);
-
-Thanks. That looks likely to fix it since IIUC dw_pcie_wait_for_link()
-will end up waiting somewhat like the double check I added to
-ls_pcie_link_up().
-
-I'll take a look at let you know.
-
-
-Daniel.
