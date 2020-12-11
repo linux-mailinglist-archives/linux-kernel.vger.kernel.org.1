@@ -2,73 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6DA12D6E58
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E85E82D6E5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404992AbgLKDJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 22:09:46 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:33605 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733046AbgLKDJC (ORCPT
+        id S2405129AbgLKDLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 22:11:02 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:38126 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729331AbgLKDKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 22:09:02 -0500
-Received: by mail-oi1-f194.google.com with SMTP id d27so8318885oic.0;
-        Thu, 10 Dec 2020 19:08:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Kzi4C+7lbCELmX5Fwm3nDaczRxcqLIwFpq+sCs/l4qM=;
-        b=qInERl4Q3xuxw2AgGu3R5QfNwIsd2VIImr71GCabPnbJL6GfZKj0Xz+FT+vFHwfWaS
-         dfid7Lmd2iypCglcAXIw2jVJXXLX0KphE7PUJrWdcF8or9a/ZaLV6pN26PYZP3VQMw2F
-         tjn9Q9uBC4hsMy9sef4UvJo+nGBMngxu0bs263OBD/D/n662HpYUpDI0HWJQD5RsiVge
-         hwrVwwgYNejjxBYpkZjd7TAhHAegwFQ+WkXt+EPjFzRL4dxY4ua5eBT9VUqKdBhoS0PW
-         fFfEpRkSUgXCWBApn0g1mCOcxGOWzCIpeUFvGVdvfu6U7i8Pdr8XZew9WNhyVl/ke4Hx
-         CGbw==
-X-Gm-Message-State: AOAM533OXVVdNW2FSzEMH7a1tjUGQxm8xmHmzAIBtM7cPpHWwKOn6DCA
-        1GK+hASU9n1UeodvHkGHb+QbMPdyCA==
-X-Google-Smtp-Source: ABdhPJypoInSvEeWtGXMHGezQP39HxETrQ5TYmDAug3sm72ZjaPzLKAyDG/UAn0XJVLKeKyjpZhKMA==
-X-Received: by 2002:aca:418b:: with SMTP id o133mr7531930oia.67.1607656101281;
-        Thu, 10 Dec 2020 19:08:21 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z14sm1559328otk.70.2020.12.10.19.08.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 19:08:20 -0800 (PST)
-Received: (nullmailer pid 3548617 invoked by uid 1000);
-        Fri, 11 Dec 2020 03:08:19 -0000
-Date:   Thu, 10 Dec 2020 21:08:19 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        David Jander <david@protonic.nl>,
-        Fabio Estevam <festevam@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 2/5] dt-bindings: arm: fsl: add Kverneland UT1, UT1Q
- and UI1P boards
-Message-ID: <20201211030819.GA3548287@robh.at.kernel.org>
-References: <20201201072449.28600-1-o.rempel@pengutronix.de>
- <20201201072449.28600-3-o.rempel@pengutronix.de>
+        Thu, 10 Dec 2020 22:10:51 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 1AA7920B717A;
+        Thu, 10 Dec 2020 19:10:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1AA7920B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607656210;
+        bh=UjXdwP2ZHKFxPJkmlk76kE+9RzmPBF3Xf8HNjv05RPE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iZFK29ut36BwHBbKNBpcvUPr32umM+0qxOCVISeIxhi6k7fwPq+62tCU8Gwl5W5pm
+         4YhdwUVPbyrQP39Wq9uhsPJcZsLYwJASDupHYEkW6gywDAJqD0U67kwwkSt1aysqwc
+         lWL6VcuecrDcXM5Um1L7FU/qizWs6Gg5YQteOUMI=
+Date:   Thu, 10 Dec 2020 21:10:08 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Maurizio Drocco <maurizio.drocco@ibm.com>,
+        Bruno Meneguele <bmeneg@redhat.com>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with kernel
+ measurements
+Message-ID: <20201211031008.GN489768@sequoia>
+References: <20200708154116.3199728-1-sashal@kernel.org>
+ <20200708154116.3199728-3-sashal@kernel.org>
+ <1594224793.23056.251.camel@linux.ibm.com>
+ <20200709012735.GX2722994@sasha-vm>
+ <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201072449.28600-3-o.rempel@pengutronix.de>
+In-Reply-To: <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 01 Dec 2020 08:24:45 +0100, Oleksij Rempel wrote:
-> Add Kverneland UT1 (imx6dl), UT1Q (imx6q) and UT1P (imx6dp) based boards
+On 2020-11-29 08:17:38, Mimi Zohar wrote:
+> Hi Sasha,
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 3 +++
->  1 file changed, 3 insertions(+)
+> On Wed, 2020-07-08 at 21:27 -0400, Sasha Levin wrote:
+> > On Wed, Jul 08, 2020 at 12:13:13PM -0400, Mimi Zohar wrote:
+> > >Hi Sasha,
+> > >
+> > >On Wed, 2020-07-08 at 11:40 -0400, Sasha Levin wrote:
+> > >> From: Maurizio Drocco <maurizio.drocco@ibm.com>
+> > >>
+> > >> [ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c ]
+> > >>
+> > >> Registers 8-9 are used to store measurements of the kernel and its
+> > >> command line (e.g., grub2 bootloader with tpm module enabled). IMA
+> > >> should include them in the boot aggregate. Registers 8-9 should be
+> > >> only included in non-SHA1 digests to avoid ambiguity.
+> > >
+> > >Prior to Linux 5.8, the SHA1 template data hashes were padded before
+> > >being extended into the TPM.  Support for calculating and extending
+> > >the per TPM bank template data digests is only being upstreamed in
+> > >Linux 5.8.
+> > >
+> > >How will attestation servers know whether to include PCRs 8 & 9 in the
+> > >the boot_aggregate calculation?  Now, there is a direct relationship
+> > >between the template data SHA1 padded digest not including PCRs 8 & 9,
+> > >and the new per TPM bank template data digest including them.
+> > 
+> > Got it, I'll drop it then, thank you!
 > 
+> After re-thinking this over, I realized that the attestation server can
+> verify the "boot_aggregate" based on the quoted PCRs without knowing
+> whether padded SHA1 hashes or per TPM bank hash values were extended
+> into the TPM[1], but non-SHA1 boot aggregate values [2] should always
+> include PCRs 8 & 9.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I'm still not clear on how an attestation server would know to include
+PCRs 8 and 9 after this change came through a stable kernel update. It
+doesn't seem like something appropriate for stable since it requires
+code changes to attestation servers to handle the change.
+
+I know this has already been released in some stable releases, so I'm
+too late, but perhaps I'm missing something.
+
+Tyler
+
+> 
+> Any place commit 6f1a1d103b48 was backported [2], this commit
+> 20c59ce010f8 ("ima: extend boot_aggregate with kernel measurements")
+> should be backported as well.
+> 
+> thanks,
+> 
+> Mimi
+> 
+> [1] commit 1ea973df6e21 ("ima: Calculate and extend PCR with digests in ima_template_entry")
+> [2] commit 6f1a1d103b48 ("ima: Switch to ima_hash_algo for boot aggregate")
+> 
