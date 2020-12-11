@@ -2,149 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79BD92D7D95
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3CD2D7D96
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392254AbgLKSEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2392521AbgLKSEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 11 Dec 2020 13:04:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40490 "EHLO mail.kernel.org"
+Received: from mx2.suse.de ([195.135.220.15]:45346 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390547AbgLKSEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 13:04:08 -0500
-Date:   Fri, 11 Dec 2020 10:03:26 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607709807;
-        bh=vIMyhl7sd6mVx4IlRszltySzPw7tdhmA7dkJ2CxtvMU=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ouStJnNQZOafvHqGTmZr9kEnnNbatY34bjiiiKFzqWz3TKTEjo9B5c8NS6H/x6hdf
-         fJ35kkigO50qem8eOztJGxAY4qK4m+ihZYW6a4t5nu56WDoLDCk+V8lleP7a4G+JOH
-         2tPBoJhF01QJ+TzNOZK2hHzUa0g7sWYekn47/QYh3+hHnlPE9+swqtnHDwpvusxSbU
-         jDb1vLJCxwumg20yfezAjfTsUtbC1HvKE3SRFGbEtGHWK/go/td8zIgAeGJwtT9UO+
-         DymEYZ+W5DSvG+fFroPxHgOfA8uJhLmxOymwkhS5MD/Bbr87iUxjFr+fzcBEIKfXCc
-         5qNZpWvp80xBA==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Suleiman Souhlal <suleiman@google.com>,
-        linux-fscrypt@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [stable] ext4 fscrypt_get_encryption_info() circular locking
- dependency
-Message-ID: <X9O0brQ7junfZTfI@sol.localdomain>
-References: <20201211033657.GE1667627@google.com>
- <X9LsDPsXdLNv0+va@sol.localdomain>
- <20201211040807.GF1667627@google.com>
+        id S2390628AbgLKSET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 13:04:19 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C087DAE4A;
+        Fri, 11 Dec 2020 18:03:37 +0000 (UTC)
+Subject: Re: [PATCH 0/3] block: blk_interposer - Block Layer Interposer
+To:     Jens Axboe <axboe@kernel.dk>, Mike Snitzer <snitzer@redhat.com>,
+        Sergei Shtepa <sergei.shtepa@veeam.com>, hch@lst.de
+Cc:     "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Pavel Tide <Pavel.TIde@veeam.com>, dm-devel@redhat.com
+References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
+ <20201209135148.GA32720@redhat.com> <20201210145814.GA31521@veeam.com>
+ <20201210163222.GB10239@redhat.com> <20201211163049.GC16168@redhat.com>
+ <1ee7652e-b77f-6fa4-634c-ff6639037321@kernel.dk>
+ <208edf35-ecdc-2d73-4c48-0424943a78c0@suse.de>
+ <06b4a10d-5ea5-27e1-af0d-83d5c714996f@kernel.dk>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <b4f3ee74-58fd-52c8-ae60-f352758fb42a@suse.de>
+Date:   Fri, 11 Dec 2020 19:03:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211040807.GF1667627@google.com>
+In-Reply-To: <06b4a10d-5ea5-27e1-af0d-83d5c714996f@kernel.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 01:08:07PM +0900, Sergey Senozhatsky wrote:
-> On (20/12/10 19:48), Eric Biggers wrote:
-> > > 
-> > > [  133.454836] Chain exists of:
-> > >                  jbd2_handle --> fscrypt_init_mutex --> fs_reclaim
-> > > 
-> > > [  133.454840]  Possible unsafe locking scenario:
-> > > 
-> > > [  133.454841]        CPU0                    CPU1
-> > > [  133.454843]        ----                    ----
-> > > [  133.454844]   lock(fs_reclaim);
-> > > [  133.454846]                                lock(fscrypt_init_mutex);
-> > > [  133.454848]                                lock(fs_reclaim);
-> > > [  133.454850]   lock(jbd2_handle);
-> > > [  133.454851] 
-> > 
-> > This actually got fixed by the patch series
-> > https://lkml.kernel.org/linux-fscrypt/20200913083620.170627-1-ebiggers@kernel.org/
-> > which went into 5.10.  The more recent patch to remove ext4_dir_open() isn't
-> > related.
-> > 
-> > It's a hard patch series to backport.  Backporting it to 5.4 would be somewhat
-> > feasible, while 4.19 would be very difficult as there have been a lot of other
-> > fscrypt commits which would heavily conflict with cherry-picks.
-> > 
-> > How interested are you in having this fixed?  Did you encounter an actual
-> > deadlock or just the lockdep report?
+On 12/11/20 6:04 PM, Jens Axboe wrote:
+> On 12/11/20 9:56 AM, Hannes Reinecke wrote:
+>> On 12/11/20 5:33 PM, Jens Axboe wrote:
+>>> On 12/11/20 9:30 AM, Mike Snitzer wrote:
+>>>> While I still think there needs to be a proper _upstream_ consumer of
+>>>> blk_interposer as a condition of it going in.. I'll let others make the
+>>>> call.
+>>>
+>>> That's an unequivocal rule.
+>>>
+>>>> As such, I'll defer to Jens, Christoph and others on whether your
+>>>> minimalist blk_interposer hook is acceptable in the near-term.
+>>>
+>>> I don't think so, we don't do short term bandaids just to plan on
+>>> ripping that out when the real functionality is there. IMHO, the dm
+>>> approach is the way to go - it provides exactly the functionality that
+>>> is needed in an appropriate way, instead of hacking some "interposer"
+>>> into the core block layer.
+>>>
+>> Which is my plan, too.
+>>
+>> I'll be working with the Veeam folks to present a joint patchset
+>> (including the DM bits) for the next round.
 > 
-> Difficult to say. On one hand 'yes' I see lockups on my devices (4.19
-> kernel); I can't tell at the moment what's the root cause. So on the
-> other hand 'no' I can't say that it's because of ext4_dir_open().
+> Just to be clear, core block additions for something that dm will
+> consume is obviously fine. Adding this as block layer functionality than
+> then exposes an application API for setting it up, tearing down, etc -
+> that is definitely NOT
 > 
-> What I saw so far involved ext4, kswapd, khugepaged and lots of other things.
-> 
-> [ 1598.655901] INFO: task khugepaged:66 blocked for more than 122 seconds.
-> [ 1598.655914] Call Trace:
-> [ 1598.655920]  __schedule+0x506/0x1240
-> [ 1598.655924]  ? kvm_zap_rmapp+0x52/0x69
-> [ 1598.655927]  schedule+0x3f/0x78
-> [ 1598.655929]  __rwsem_down_read_failed_common+0x186/0x201
-> [ 1598.655933]  call_rwsem_down_read_failed+0x14/0x30
-> [ 1598.655936]  down_read+0x2e/0x45
-> [ 1598.655939]  rmap_walk_file+0x73/0x1ce
-> [ 1598.655941]  page_referenced+0x10d/0x154
-> [ 1598.655948]  shrink_active_list+0x1d4/0x475
-> 
-> [..]
-> 
-> [ 1598.655986] INFO: task kswapd0:79 blocked for more than 122 seconds.
-> [ 1598.655993] Call Trace:
-> [ 1598.655995]  __schedule+0x506/0x1240
-> [ 1598.655998]  schedule+0x3f/0x78
-> [ 1598.656000]  __rwsem_down_read_failed_common+0x186/0x201
-> [ 1598.656003]  call_rwsem_down_read_failed+0x14/0x30
-> [ 1598.656006]  down_read+0x2e/0x45
-> [ 1598.656008]  rmap_walk_file+0x73/0x1ce
-> [ 1598.656010]  page_referenced+0x10d/0x154
-> [ 1598.656015]  shrink_active_list+0x1d4/0x475
-> 
-> [..]
-> 
-> [ 1598.658233]  __rwsem_down_read_failed_common+0x186/0x201
-> [ 1598.658235]  call_rwsem_down_read_failed+0x14/0x30
-> [ 1598.658238]  down_read+0x2e/0x45
-> [ 1598.658240]  rmap_walk_file+0x73/0x1ce
-> [ 1598.658242]  page_referenced+0x10d/0x154
-> [ 1598.658247]  shrink_active_list+0x1d4/0x475
-> [ 1598.658250]  shrink_node+0x27e/0x661
-> [ 1598.658254]  try_to_free_pages+0x425/0x7ec
-> [ 1598.658258]  __alloc_pages_nodemask+0x80b/0x1514
-> [ 1598.658279]  __do_page_cache_readahead+0xd4/0x1a9
-> [ 1598.658282]  filemap_fault+0x346/0x573
-> [ 1598.658287]  ext4_filemap_fault+0x31/0x44
+That was never my intention.
+Any consumers of this thing would need to be in-kernel.
+If that was your concern.
 
-Could you provide some more information about what is causing these actual
-lockups for you?  Are there more stack traces?
+Cheers,
 
-I'd be surprised if it's related to the fscrypt-related lockdep reports you're
-getting, as the fscrypt bug seemed unlikely to cause deadlocks in practice, as
-most of the time fscrypt_get_encryption_info() does *not* do or wait for a
-GFP_KERNEL allocation.  It's only in certain causes (generally, when things are
-being initialized as opposed to already running) that it could.
-
-See e.g. how the lockdep reports assume GFP_KERNEL done under
-fscrypt_init_mutex, but that only happens the first time an encrypted directory
-is accessed after boot.  So that path can't cause a deadlock after that.
-
-This was also a 5 years old bug, so it's unclear why it would suddenly be
-causing problems just now...
-
-Maybe something changed that exposed the bug more.  I don't know what it would
-be, though.
-
-As I said, the fix would be difficult to backport.  It required a redesign of
-how encrypted files get created, as there were lots of different ways in which
-fscrypt_get_encryption_info() could be called during a filesystem transaction.
-There's a nontrivial risk of regressions by backporting it.  (In fact I already
-found and fixed two regressions in it upstream...)
-
-So it would be helpful to know if this is important enough to you that you would
-be willing to accept a risk of regressions above that of a typical stable
-backport in order to get the re-design that fixes this issue backported.
-
-- Eric
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
