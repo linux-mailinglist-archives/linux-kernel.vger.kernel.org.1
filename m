@@ -2,105 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB642D8227
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:33:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDCC2D822B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:35:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406951AbgLKWcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:32:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406925AbgLKWci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:32:38 -0500
-Date:   Fri, 11 Dec 2020 23:31:55 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607725917;
-        bh=cQDvNDfLPRHr8ml7+eYmQf2xrnCF8Fjs9k+mB8nUpQw=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eKhSc8azfx35osizM4x+tSP4ZCMPGjlK3VLs2BfwSgvErgLRVsdT3x9fT8IsF6o1Z
-         jmHf5NB7j5ZysdkHicqI4CnR2Ykl2Hp1dembS8EKTPh0pGpOK43KQvMz3xt6gI50L+
-         ka5bD+8FzOpPSz10mf64sysWxHTy8ndL++t3q+HbcXkc4ZSdjZW5gaHNS8HLMKStHh
-         I4bjZtsrfi0KjMwyltp0QcDrHyUiUV0wL7b3iO6O2G06Cc2p+EYQqorgZKSIeaibk6
-         EwMulj0Q8cj00tZvxPz1aZ9OT2R55ZReUdDdtOj9CM9W9U5hf2i9qxaE8O9U34utUV
-         5mY44F3CxOQAw==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Marco Elver <elver@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [patch 1/3] tick: Remove pointless cpu valid check in hotplug
- code
-Message-ID: <20201211223155.GC595642@lothringen>
-References: <20201206211253.919834182@linutronix.de>
- <20201206212002.582579516@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201206212002.582579516@linutronix.de>
+        id S2388643AbgLKWds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 17:33:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406925AbgLKWdU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 17:33:20 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9121AC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:32:40 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id z62so12430808yba.23
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:32:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=EIHB+uodINauSQ/HRZMZjP79w222qFqt1odt9Kn0EeA=;
+        b=kBEsvZPSXTy/bwTZCH9sqc/qjaNjuJFEnZKMdDARAYR+AkHMWHQCp2nZA4tmAcbuDe
+         Bkp0hf1v8S8KNXwXUbr4jop2W04ZzEDcVdHQ3SPU7BrTfhqxf0BB60Cm8S8x0OIJVIzi
+         ZCk+8a3EXXXRYno9fd2DlBNrf9iQuXXaFykSRiJD5+NyludQWG+f+gTr6+KrYJhPql1s
+         1n3NMzbPeWIUKoT3oWT+XkHrAnAnNVW6yWzmgzTW8ggY9N5QN+JHmZaHyA2NUvmB9KZy
+         /3uUjJKA5H0DVHnIfl3W7nXv3wnZ/nxTILbUJ7D2UvoT6OXPQSLzTFn+hNtRd+Qzr63N
+         dSSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=EIHB+uodINauSQ/HRZMZjP79w222qFqt1odt9Kn0EeA=;
+        b=pR4WtqkDu3bkZA0cr/XbnmvWxlnrF6c10xfzmsoVSTfJoUqqzs1+XgZMr1JYl4vqaq
+         3uY0f6zCkSgm1MTPogEgN2l+gDjLQ8KuLK30HAEaQLtk0RrvqEWG4xDfvsUh+GX6r13y
+         94rxPqsZsm0Zdz3gRlf2kaMN3N9gt6bNys9Xf9XTFf80TnUTs2CfoMfjFm4zgiGDb6rW
+         xfoYd2kBz6HHKTx5TsFKG1FpF/vd8SLcdzQmtExkiC+invXFMJGamBlx+mQG6pK8P2DB
+         ccKv5slXAxvfdSImQEHix24jsoCMUmKeGkdRrA/01u2pgTVtVZfjOpIW7bOLdFK1nqjg
+         O/Kg==
+X-Gm-Message-State: AOAM531HLHX7GMqTIFsponfFI+/RATWMoAnxKYwZpVmnOlc6agkpasdG
+        6jw1hmsIzwx44z+zVSABPGKJfNUNLu3WQQ==
+X-Google-Smtp-Source: ABdhPJyAqNJ9NMXtkjBJlscyDSkug86/wdhzgRgZrnHVThKlGW6lZLbdikkHDiSLUrzB9fMpPrL0nc2HGNqEVg==
+Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
+ (user=davidgow job=sendgmr) by 2002:a25:8283:: with SMTP id
+ r3mr21992356ybk.66.1607725959837; Fri, 11 Dec 2020 14:32:39 -0800 (PST)
+Date:   Fri, 11 Dec 2020 14:32:32 -0800
+Message-Id: <20201211223232.697679-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH] kunit: tool: Fix spelling of "diagnostic" in kunit_parser
+From:   David Gow <davidgow@google.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 10:12:54PM +0100, Thomas Gleixner wrote:
-> tick_handover_do_timer() which is invoked when a CPU is unplugged has a
-> check for cpumask_first(cpu_online_mask) when it tries to hand over the
-> tick update duty.
-> 
-> Checking the result of cpumask_first() there is pointless because if the
-> online mask is empty at this point, then this would be the last CPU in the
-> system going offline, which is impossible. There is always at least one CPU
-> remaining. If online mask would be really empty then the timer duty would
-> be the least of the resulting problems.
-> 
-> Remove the well meant check simply because it is pointless and confusing.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  kernel/time/tick-common.c |   10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> --- a/kernel/time/tick-common.c
-> +++ b/kernel/time/tick-common.c
-> @@ -407,17 +407,13 @@ EXPORT_SYMBOL_GPL(tick_broadcast_oneshot
->  /*
->   * Transfer the do_timer job away from a dying cpu.
->   *
-> - * Called with interrupts disabled. Not locking required. If
-> + * Called with interrupts disabled. No locking required. If
->   * tick_do_timer_cpu is owned by this cpu, nothing can change it.
->   */
->  void tick_handover_do_timer(void)
->  {
-> -	if (tick_do_timer_cpu == smp_processor_id()) {
-> -		int cpu = cpumask_first(cpu_online_mask);
-> -
-> -		tick_do_timer_cpu = (cpu < nr_cpu_ids) ? cpu :
-> -			TICK_DO_TIMER_NONE;
-> -	}
-> +	if (tick_do_timer_cpu == smp_processor_id())
-> +		tick_do_timer_cpu = cpumask_first(cpu_online_mask);
->  }
+Various helper functions were misspelling "diagnostic" in their names.
+It finally got annoying, so fix it.
 
-BTW since we have that, why do we need:
+Signed-off-by: David Gow <davidgow@google.com>
+---
+ tools/testing/kunit/kunit_parser.py | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
-{
-	/*
-	 * If this CPU is offline and it is the one which updates
-	 * jiffies, then give up the assignment and let it be taken by
-	 * the CPU which runs the tick timer next. If we don't drop
-	 * this here the jiffies might be stale and do_timer() never
-	 * invoked.
-	 */
-	if (unlikely(!cpu_online(cpu))) {
-		if (cpu == tick_do_timer_cpu)
-			tick_do_timer_cpu = TICK_DO_TIMER_NONE;
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index 6614ec4d0898..1a1e1d13f1d3 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -97,11 +97,11 @@ def print_log(log):
+ 
+ TAP_ENTRIES = re.compile(r'^(TAP|[\s]*ok|[\s]*not ok|[\s]*[0-9]+\.\.[0-9]+|[\s]*#).*$')
+ 
+-def consume_non_diagnositic(lines: List[str]) -> None:
++def consume_non_diagnostic(lines: List[str]) -> None:
+ 	while lines and not TAP_ENTRIES.match(lines[0]):
+ 		lines.pop(0)
+ 
+-def save_non_diagnositic(lines: List[str], test_case: TestCase) -> None:
++def save_non_diagnostic(lines: List[str], test_case: TestCase) -> None:
+ 	while lines and not TAP_ENTRIES.match(lines[0]):
+ 		test_case.log.append(lines[0])
+ 		lines.pop(0)
+@@ -113,7 +113,7 @@ OK_NOT_OK_SUBTEST = re.compile(r'^[\s]+(ok|not ok) [0-9]+ - (.*)$')
+ OK_NOT_OK_MODULE = re.compile(r'^(ok|not ok) ([0-9]+) - (.*)$')
+ 
+ def parse_ok_not_ok_test_case(lines: List[str], test_case: TestCase) -> bool:
+-	save_non_diagnositic(lines, test_case)
++	save_non_diagnostic(lines, test_case)
+ 	if not lines:
+ 		test_case.status = TestStatus.TEST_CRASHED
+ 		return True
+@@ -139,7 +139,7 @@ SUBTEST_DIAGNOSTIC = re.compile(r'^[\s]+# (.*)$')
+ DIAGNOSTIC_CRASH_MESSAGE = re.compile(r'^[\s]+# .*?: kunit test case crashed!$')
+ 
+ def parse_diagnostic(lines: List[str], test_case: TestCase) -> bool:
+-	save_non_diagnositic(lines, test_case)
++	save_non_diagnostic(lines, test_case)
+ 	if not lines:
+ 		return False
+ 	line = lines[0]
+@@ -155,7 +155,7 @@ def parse_diagnostic(lines: List[str], test_case: TestCase) -> bool:
+ 
+ def parse_test_case(lines: List[str]) -> Optional[TestCase]:
+ 	test_case = TestCase()
+-	save_non_diagnositic(lines, test_case)
++	save_non_diagnostic(lines, test_case)
+ 	while parse_diagnostic(lines, test_case):
+ 		pass
+ 	if parse_ok_not_ok_test_case(lines, test_case):
+@@ -166,7 +166,7 @@ def parse_test_case(lines: List[str]) -> Optional[TestCase]:
+ SUBTEST_HEADER = re.compile(r'^[\s]+# Subtest: (.*)$')
+ 
+ def parse_subtest_header(lines: List[str]) -> Optional[str]:
+-	consume_non_diagnositic(lines)
++	consume_non_diagnostic(lines)
+ 	if not lines:
+ 		return None
+ 	match = SUBTEST_HEADER.match(lines[0])
+@@ -179,7 +179,7 @@ def parse_subtest_header(lines: List[str]) -> Optional[str]:
+ SUBTEST_PLAN = re.compile(r'[\s]+[0-9]+\.\.([0-9]+)')
+ 
+ def parse_subtest_plan(lines: List[str]) -> Optional[int]:
+-	consume_non_diagnositic(lines)
++	consume_non_diagnostic(lines)
+ 	match = SUBTEST_PLAN.match(lines[0])
+ 	if match:
+ 		lines.pop(0)
+@@ -202,7 +202,7 @@ def max_status(left: TestStatus, right: TestStatus) -> TestStatus:
+ def parse_ok_not_ok_test_suite(lines: List[str],
+ 			       test_suite: TestSuite,
+ 			       expected_suite_index: int) -> bool:
+-	consume_non_diagnositic(lines)
++	consume_non_diagnostic(lines)
+ 	if not lines:
+ 		test_suite.status = TestStatus.TEST_CRASHED
+ 		return False
+@@ -235,7 +235,7 @@ def bubble_up_test_case_errors(test_suite: TestSuite) -> TestStatus:
+ def parse_test_suite(lines: List[str], expected_suite_index: int) -> Optional[TestSuite]:
+ 	if not lines:
+ 		return None
+-	consume_non_diagnositic(lines)
++	consume_non_diagnostic(lines)
+ 	test_suite = TestSuite()
+ 	test_suite.status = TestStatus.SUCCESS
+ 	name = parse_subtest_header(lines)
+@@ -264,7 +264,7 @@ def parse_test_suite(lines: List[str], expected_suite_index: int) -> Optional[Te
+ TAP_HEADER = re.compile(r'^TAP version 14$')
+ 
+ def parse_tap_header(lines: List[str]) -> bool:
+-	consume_non_diagnositic(lines)
++	consume_non_diagnostic(lines)
+ 	if TAP_HEADER.match(lines[0]):
+ 		lines.pop(0)
+ 		return True
+@@ -274,7 +274,7 @@ def parse_tap_header(lines: List[str]) -> bool:
+ TEST_PLAN = re.compile(r'[0-9]+\.\.([0-9]+)')
+ 
+ def parse_test_plan(lines: List[str]) -> Optional[int]:
+-	consume_non_diagnositic(lines)
++	consume_non_diagnostic(lines)
+ 	match = TEST_PLAN.match(lines[0])
+ 	if match:
+ 		lines.pop(0)
+@@ -286,7 +286,7 @@ def bubble_up_suite_errors(test_suite_list: List[TestSuite]) -> TestStatus:
+ 	return bubble_up_errors(lambda x: x.status, test_suite_list)
+ 
+ def parse_test_result(lines: List[str]) -> TestResult:
+-	consume_non_diagnositic(lines)
++	consume_non_diagnostic(lines)
+ 	if not lines or not parse_tap_header(lines):
+ 		return TestResult(TestStatus.NO_TESTS, [], lines)
+ 	expected_test_suite_num = parse_test_plan(lines)
 
+base-commit: 5f6b99d0287de2c2d0b5e7abcb0092d553ad804a
+-- 
+2.29.2.576.ga3fc446d84-goog
 
-We should only enter idle with an offline CPU after calling
-tick_handover_do_timer() so (cpu == tick_do_timer_cpu) shouldn't be possible.
-
-Or am I missing something?
