@@ -2,129 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8568D2D7FC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1918C2D7FCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393948AbgLKUFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 15:05:53 -0500
-Received: from pi3.com.pl ([185.238.74.129]:45886 "EHLO pi3.com.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392341AbgLKUFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 15:05:19 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by pi3.com.pl (Postfix) with ESMTP id 7373F4C13BE;
-        Fri, 11 Dec 2020 21:04:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pi3.com.pl; s=default;
-        t=1607717076; bh=5Ce/dDH+T2OHXDPjdTSKgi1NR++ZTjSPGIeQWJLQVrQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sItC7k4OkrEzH9WMgMsWnBkAoQrGBNijei1+5gysuG4WItCIKqo9U1RulUbXHLDPv
-         JzGrjrsy5Tw/92w8YdV1zyC0P85kf21E9zB5/V2ZBWku/dcOc+g0m/OY5P7D4ErGJQ
-         hL+3FhogTi9issWQUDEupyZrPUoLPJ8b4Mk3c1JngdTCpgswxDRk9icmx8OvHWnUQs
-         VbCbHwMnfJ9czE7RjiW8Cg6ydwHVaS5TdgjYzw55nLz9ikN5G2jYLXYUQSbgPTdHfK
-         KxPnJazoJsX/1Hj/X93g8M+qkPiIxg+Dbn1VUJuSvVkF1nBgII9AYwqTW+q7RppvAr
-         L2OT10FLXKWNw==
-X-Virus-Scanned: Debian amavisd-new at pi3.com.pl
-Received: from pi3.com.pl ([127.0.0.1])
-        by localhost (pi3.com.pl [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id uZOmmTq_daaR; Fri, 11 Dec 2020 21:04:33 +0100 (CET)
-Received: by pi3.com.pl (Postfix, from userid 1000)
-        id 879BE4C14E9; Fri, 11 Dec 2020 21:04:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pi3.com.pl; s=default;
-        t=1607717073; bh=5Ce/dDH+T2OHXDPjdTSKgi1NR++ZTjSPGIeQWJLQVrQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zn7p1P4gd8Ryu3XI2+XDNmEfNt1GbVUbFhrPj8Q6h1dVXy8HxKRLX+ongwIVUghq3
-         V+a/77aUxWJfV3NpPOqVPVnqUkpkThAXS4ngTEOsjHhIhv6jo394cA0UeTGzfe7cwA
-         8HS14BHbSgbUTVDfoTL6Ve27pxsUfURf1X+izDJpiLnKlH4Ckl8S8yrYiwcD0rdIcW
-         wMn6WkXRDe/2y1Gci/TiJigc23AmMpOKvJdFumIWfYtNEP8Cpr61ZKZ56uZqNbQiw/
-         l6mlwU0qBykTbCqeNgZ6JczknfonEf+uNVrH25umWLPdpIo4nELyfbsfbcKPeNCwMU
-         CzkBHEkXSdYQg==
-Date:   Fri, 11 Dec 2020 21:04:33 +0100
-From:   Adam Zabrocki <pi3@pi3.com.pl>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Solar Designer <solar@openwall.com>
-Subject: Re: [PATCH] x86/kprobes: Fix optprobe to detect padding int3
- correctly
-Message-ID: <20201211200433.GA4773@pi3.com.pl>
-References: <160767025681.3880685.16021570341428835411.stgit@devnote2>
- <202012111139.948F2ECF1@keescook>
+        id S2390751AbgLKUL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 15:11:58 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:56612 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389501AbgLKULw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 15:11:52 -0500
+Received: by mail-il1-f197.google.com with SMTP id r20so8086938ilh.23
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:11:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=GVX9/CI9tqNteYCMCXCHoxN97w4Mon0uddpJWLCYX+I=;
+        b=FO7KhLxmPk1PYZYm70dusDnuZ1i51GbIBA/vPnKlAnJyBv3e8LC0mYli5w8stMbcje
+         PR7AXEZK8U9OHDXwOKtnRPpNFxVeIqCYP5GcQbJHxxqNZrlvyp4luZdpv3doFd6Q4fed
+         CajPEsP77sZM47sJfB3kMM2zHjnAFVtT64fm/ipMntr1aAciCMR8LKPj1o9/JQ6vgS7y
+         pYmq/MT0od0o5N1zRK20F1EefVePO1sq/gKiJrSrJ+RI9nJY8jdhzaTwZtk00rzmVB2z
+         m+7ns51rmMp4pYXqM9vPsKX8ijoUQkSa3N24/yiDrNHOUQ/jhkpOkxzuPsczjHpIhZOi
+         SMpw==
+X-Gm-Message-State: AOAM533bVN1b5E5Cf04+8x0d98fKYWrtzK5N5mgTPPLQNbM8xU+EJ79t
+        7oHpg8swJ2fLrMlyRPHL/YAEPgeJ19SHi6/2CKcY5mgU/okR
+X-Google-Smtp-Source: ABdhPJwXNSJv0Y70GjITxLk1OWWjifb3kjnuZjeSFNwQ923sGU+t9wnYNMf+SDVllS6HdZw0W/vkXQ4Ruz8LOaa4xr6x15QjyLuF
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202012111139.948F2ECF1@keescook>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Received: by 2002:a02:ce8a:: with SMTP id y10mr17286758jaq.102.1607717471175;
+ Fri, 11 Dec 2020 12:11:11 -0800 (PST)
+Date:   Fri, 11 Dec 2020 12:11:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c4ccad05b635e468@google.com>
+Subject: KASAN: slab-out-of-bounds Read in rtl_fw_do_work
+From:   syzbot <syzbot+7b774a105bad5f282322@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, davem@davemloft.net, kuba@kernel.org,
+        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, pkshih@realtek.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-I've applied this patch on the top of kernel 5.9.7 and verified it works 
-fine:
+syzbot found the following issue on:
 
-ffffffff813050e0 <ftrace_enable_sysctl>:
-...
-...
-ffffffff813052f1:       e9 fe fe ff ff          jmpq   ffffffff813051f4 <ftrace_enable_sysctl+0x114>
-ffffffff813052f6:       cc                      int3
-ffffffff813052f7:       cc                      int3
-ffffffff813052f8:       cc                      int3
-ffffffff813052f9:       cc                      int3
-ffffffff813052fa:       cc                      int3
-ffffffff813052fb:       cc                      int3
-ffffffff813052fc:       cc                      int3
-ffffffff813052fd:       cc                      int3
-ffffffff813052fe:       cc                      int3
-ffffffff813052ff:       cc                      int3
+HEAD commit:    3db4c21c usb: typec: tcpm: Update vbus_vsafe0v on init
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=179809f3500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d24ee9ecd7ce968e
+dashboard link: https://syzkaller.appspot.com/bug?extid=7b774a105bad5f282322
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-When I install KRETPROBE on this function, it is correctly optimized:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-root@pi3:~/off-debug/git/lkrg# cat /sys/kernel/debug/kprobes/list|grep ftrace_enable_sysctl
-ffffffff813050e0  r  ftrace_enable_sysctl+0x0    [OPTIMIZED]
-root@pi3:~/off-debug/git/lkrg# 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7b774a105bad5f282322@syzkaller.appspotmail.com
 
-gef➤  x/2i ftrace_enable_sysctl
-   0xffffffff813050e0 <ftrace_enable_sysctl>:   jmp    0xffffffffc062807a
-   0xffffffff813050e5 <ftrace_enable_sysctl+5>: push   r14
+usb 1-1: Direct firmware load for rtlwifi/rtl8192cufw.bin failed with error -2
+==================================================================
+BUG: KASAN: slab-out-of-bounds in rtl_fw_do_work+0x407/0x430 drivers/net/wireless/realtek/rtlwifi/core.c:87
+Read of size 8 at addr ffff888142b2ff58 by task kworker/0:6/7385
 
-Thanks,
-Adam
+CPU: 0 PID: 7385 Comm: kworker/0:6 Not tainted 5.10.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events request_firmware_work_func
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ rtl_fw_do_work+0x407/0x430 drivers/net/wireless/realtek/rtlwifi/core.c:87
+ request_firmware_work_func+0x12c/0x230 drivers/base/firmware_loader/main.c:1079
+ process_one_work+0x933/0x1520 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x38c/0x460 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-On Fri, Dec 11, 2020 at 11:39:15AM -0800, Kees Cook wrote:
-> On Fri, Dec 11, 2020 at 04:04:17PM +0900, Masami Hiramatsu wrote:
-> > Fix optprobe to detect padding int3 correctly.
-> > 
-> > Since commit 7705dc855797 ("x86/vmlinux: Use INT3 instead of NOP
-> > for linker fill bytes") changed the padding bytes between functions
-> > from nop to int3, when optprobe decodes a target function it finds
-> > int3 and gives up the jump optimization.
-> > 
-> > Instead of giving up any int3 detection, this checks whether the
-> > rest of bytes to the end of the function are int3 or not. If all
-> > of those are int3, those come from the linker. In that case,
-> > optprobe continues jump optimization.
-> > 
-> > Fixes: 7705dc855797 ("x86/vmlinux: Use INT3 instead of NOP for linker fill bytes")
-> > Cc: stable@vger.kernel.org
-> > Reported-by: Adam Zabrocki <pi3@pi3.com.pl>
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
-> -- 
-> Kees Cook
+Allocated by task 16159:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ kmalloc include/linux/slab.h:557 [inline]
+ tomoyo_realpath_from_path+0xc3/0x620 security/tomoyo/realpath.c:254
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_number_perm+0x1d5/0x590 security/tomoyo/file.c:723
+ security_file_ioctl+0x50/0xb0 security/security.c:1481
+ __do_sys_ioctl fs/ioctl.c:747 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0xb3/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
--- 
-pi3 (pi3ki31ny) - pi3 (at) itsec pl
-http://pi3.com.pl
+Freed by task 16159:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kfree+0xe5/0x5e0 mm/slub.c:4124
+ tomoyo_realpath_from_path+0x191/0x620 security/tomoyo/realpath.c:291
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_number_perm+0x1d5/0x590 security/tomoyo/file.c:723
+ security_file_ioctl+0x50/0xb0 security/security.c:1481
+ __do_sys_ioctl fs/ioctl.c:747 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0xb3/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
+The buggy address belongs to the object at ffff888142b2e000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 3928 bytes to the right of
+ 4096-byte region [ffff888142b2e000, ffff888142b2f000)
+The buggy address belongs to the page:
+page:00000000104f6cd2 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x142b28
+head:00000000104f6cd2 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x200000000010200(slab|head)
+raw: 0200000000010200 dead000000000100 dead000000000122 ffff888100042140
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888142b2fe00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888142b2fe80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888142b2ff00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                                                    ^
+ ffff888142b2ff80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888142b30000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
