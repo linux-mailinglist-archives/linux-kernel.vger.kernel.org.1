@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B38C2D7F90
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C22022D7F9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394149AbgLKTlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 14:41:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36258 "EHLO
+        id S2392395AbgLKTps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 14:45:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394065AbgLKTlP (ORCPT
+        with ESMTP id S1728090AbgLKTpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 14:41:15 -0500
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C508C061793
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:40:35 -0800 (PST)
-Received: by mail-vs1-xe44.google.com with SMTP id z16so5408506vsp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:40:35 -0800 (PST)
+        Fri, 11 Dec 2020 14:45:33 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0FCC0613CF;
+        Fri, 11 Dec 2020 11:44:52 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id o144so8583949ybc.0;
+        Fri, 11 Dec 2020 11:44:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1nS5LJe0V9gmSV6AI/CjiJWRU085g+HSabHeZYnNbME=;
-        b=qsqg3dEZdz6yTY0b8lWmwlvvFlCl6x/6RcbpcNM5RjlQi43vCEWHYEvpvNFMgtwSJf
-         92LLLXxQ2DMnh4n9P483SaIxEmprkCDc/K+JgapPX/ZZKy6aK5r4eyyfdBCtEQJhwn4x
-         ouvYwbD1s6MDLHCs5KHgP2Xw3/OELzfJnu8FvoDrq3GDDw87fJYBXVbaSaOYc+0Nu1UD
-         fiQbuk0q8gz7/5IDoWj0ON2iPNs+pAeF9Qty6DbvjfFV/8Wzmt8DsLQLeqTz1ozLVtyQ
-         R0+WXz2Fbj8SqfTG7PiaJGfy0Ipx3UtxFa3GxMJFuDwuXo9nyWaQPdc+rxYInzhIXbQ8
-         nCbg==
+        bh=yRGKqHf4iwEt3TjWcP3Q5MjQ/uQIJtJpPWbQ5Zk+e3U=;
+        b=JFqOGf6SQscn2ezlxm00wlKE1LUC8Ho53aY0g5ius2ClR0F+x67cL4JIXSPxFnqmIs
+         I6PG9C97V2v6613KjntyK5gpTGJ/il1VtQ4uPEIcLGlK7rtiqHYTt/33jfSMzCgzprtq
+         WPX6VN3OblFtiMk/LzKFpcXEmuzb0tEcyin0R8i6rGN+X60uSBPjXYTg8Bx1kwGEU1rT
+         FndOT82FdgZjF575WQc8qBjGk2iI2eUWIQ3+H1bFiVAb7OOwCYYMb8m6rv7ZqgrEOz/u
+         m8xKAeQlKZkFtBTLEG49bC7JRUbahhpcq3EWatA3k+gwASizOir+ZIuIhsaHtYtBzpi6
+         tfhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1nS5LJe0V9gmSV6AI/CjiJWRU085g+HSabHeZYnNbME=;
-        b=ndBYzWbfsh9MLRqh0CGEmogiuOsUHghczKiGsXeCTKAWi7G9eEJEu8HccXIeSwZ9b7
-         LoOcd3PDhnX+2JwycZXlmlkxhklxxJWMIUoZC5mBlov6EJj0Uo82YLVzAx0Fas0AnIBs
-         DPxrztT6pezLZnFqS9hf/1s5zrrfIs8rMl3f8NoAn5XePNzseq2aXesIDlwQc8PWX1lu
-         8zRYwcQn0zmADEFWEMGh0l/Ppo4tw5LQpQ/LSJbP3iU97Kg2NJ4Cbt7hm3CVB7VmXUP4
-         +1IrK7NFW8dzS1uVmaeU+dcmBZfxwZlGs9m1oBvJuSGdg+hJMvuXobxF74nCMH37ijR1
-         0+gg==
-X-Gm-Message-State: AOAM533rY3cDWGA1alVTSm6OttXxdK4JztBWDis8ggGqswuKaFfB98YD
-        2JqZm2kDFu9x2bBhqqqYJUUohvopntpBa1AzA2TEbA==
-X-Google-Smtp-Source: ABdhPJwTNai3fHjKtb9PFnSMalWQiVwNiqLsoEASGl1SfmNeaqyA+50KfMn1XqggqOylimJDfCS3u1qZ+Mz6kJGjBMs=
-X-Received: by 2002:a67:80c8:: with SMTP id b191mr15432571vsd.36.1607715634310;
- Fri, 11 Dec 2020 11:40:34 -0800 (PST)
+        bh=yRGKqHf4iwEt3TjWcP3Q5MjQ/uQIJtJpPWbQ5Zk+e3U=;
+        b=lxwuh40E2DFWTQhE0ax+XqqGw8M2mA1gOg14XQLZbJSHH6PjNPSeNcbSoYGWGVp0mV
+         UcJkXirEHtZEDd2gzN5ntEYNLRWHzL5geBHUfK/smuLPeV/nUk/iXsvzhAFGWagN0d5J
+         LMWV4zxdPZzVI+qszR8dFqapFX2iJQ/tRllBEV9VndUhsSySjC/7tcqSL/EcjC+6Q4ZF
+         o6vv/x4HK9/j8q2weB6HvanudS0/fJ6lnJo2QYXdiEt+BGpV2GoeobnTwfVvhMGN6cfU
+         KIMNto4Q9YHAaJDMGAt1H85vKaP3AsUBPXT7Ib09NxePjNvK5ISyjxwWJl3TaYe8ypTC
+         k04g==
+X-Gm-Message-State: AOAM530sqSAvyonkq0mxNFpofpIw7MzBAg9ClMdH+8AlFi9Fmx/k2l9Y
+        ZteP2/fzrWc97jTQt8Wcclzyb0FMMAsVFFAi504=
+X-Google-Smtp-Source: ABdhPJxwvcEJcelyxuFUxO+BI18Zh0JiV26i4TkDuxA5WPLVl0xo8sYeQy5x9aHmISaF/Te5piET0tFBru5CsS/vDWQ=
+X-Received: by 2002:a25:c089:: with SMTP id c131mr20240415ybf.510.1607715892173;
+ Fri, 11 Dec 2020 11:44:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20201211184633.3213045-1-samitolvanen@google.com>
- <20201211184633.3213045-7-samitolvanen@google.com> <202012111131.E41AFFCDB@keescook>
-In-Reply-To: <202012111131.E41AFFCDB@keescook>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Fri, 11 Dec 2020 11:40:23 -0800
-Message-ID: <CABCJKueCJhwRL1T1k6EYpUy_-Rj85K98iz5FO6K+dZLY25z8_Q@mail.gmail.com>
-Subject: Re: [PATCH v9 06/16] kbuild: lto: add a default list of used symbols
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
+References: <20201211172409.1918341-1-jackmanb@google.com>
+In-Reply-To: <20201211172409.1918341-1-jackmanb@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 11 Dec 2020 11:44:41 -0800
+Message-ID: <CAEf4BzYTKQR9cPHaiPe6DMSpUo+_LKa2qmGMZX+V7Mhf5UzT5w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Expose libbpf ringbufer epoll_fd
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 11:32 AM Kees Cook <keescook@chromium.org> wrote:
+On Fri, Dec 11, 2020 at 10:58 AM Brendan Jackman <jackmanb@google.com> wrote:
 >
-> On Fri, Dec 11, 2020 at 10:46:23AM -0800, Sami Tolvanen wrote:
-> > With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a
-> > binary when the .mod files are generated, which means they don't yet
-> > contain references to certain symbols that will be present in the final
-> > binaries. This includes intrinsic functions, such as memcpy, memmove,
-> > and memset [1], and stack protector symbols [2]. This change adds a
-> > default symbol list to use with CONFIG_TRIM_UNUSED_KSYMS when Clang's
-> > LTO is used.
-> >
-> > [1] https://llvm.org/docs/LangRef.html#standard-c-c-library-intrinsics
-> > [2] https://llvm.org/docs/LangRef.html#llvm-stackprotector-intrinsic
-> >
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> This allows the user to do their own manual polling in more
+> complicated setups.
 >
-> Reviewed-by: Kees Cook <keescook@chromium.org>
->
-> > ---
-> >  init/Kconfig                | 1 +
-> >  scripts/lto-used-symbollist | 5 +++++
-> >  2 files changed, 6 insertions(+)
-> >  create mode 100644 scripts/lto-used-symbollist
-> >
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index 0872a5a2e759..e88c919c1bf1 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -2297,6 +2297,7 @@ config TRIM_UNUSED_KSYMS
-> >  config UNUSED_KSYMS_WHITELIST
-> >       string "Whitelist of symbols to keep in ksymtab"
-> >       depends on TRIM_UNUSED_KSYMS
-> > +     default "scripts/lto-used-symbollist" if LTO_CLANG
-> >       help
-> >         By default, all unused exported symbols will be un-exported from the
-> >         build when TRIM_UNUSED_KSYMS is selected.
-> > diff --git a/scripts/lto-used-symbollist b/scripts/lto-used-symbollist
-> > new file mode 100644
-> > index 000000000000..38e7bb9ebaae
-> > --- /dev/null
-> > +++ b/scripts/lto-used-symbollist
-> > @@ -0,0 +1,5 @@
-> > +memcpy
-> > +memmove
-> > +memset
-> > +__stack_chk_fail
-> > +__stack_chk_guard
-> > --
-> > 2.29.2.576.ga3fc446d84-goog
-> >
->
-> bikeshed: Should this filename use some kind of extension, like
-> lto-user-symbols.txt or .list, to make it more human-friendly?
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
 
-Sure, I can rename this in the next version. Does anyone have strong
-opinions about the name and/or extension?
+perf_buffer has it, so it's good for consistency. In practice, though,
+I'd expect anyone who needs more complicated polling to use ring buf's
+map FD directly on their instance of epoll. Doesn't that work for you?
 
-Sami
+Regardless, though, you need to add the API into libbpf.map file first.
+
+
+>  tools/lib/bpf/libbpf.h  | 1 +
+>  tools/lib/bpf/ringbuf.c | 6 ++++++
+>  2 files changed, 7 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 6909ee81113a..cde07f64771e 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -536,6 +536,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
+>                                 ring_buffer_sample_fn sample_cb, void *ctx);
+>  LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
+>  LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
+> +LIBBPF_API int ring_buffer__epoll_fd(struct ring_buffer *rb);
+>
+>  /* Perf buffer APIs */
+>  struct perf_buffer;
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index 5c6522c89af1..45a36648b403 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -282,3 +282,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
+>         }
+>         return cnt < 0 ? -errno : res;
+>  }
+> +
+> +/* Get an fd that can be used to sleep until data is available in the ring(s) */
+> +int ring_buffer__epoll_fd(struct ring_buffer *rb)
+> +{
+> +       return rb->epoll_fd;
+> +}
+>
+> base-commit: b4fe9fec51ef48011f11c2da4099f0b530449c92
+> --
+> 2.29.2.576.ga3fc446d84-goog
+>
