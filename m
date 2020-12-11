@@ -2,184 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264682D71AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 556F72D71A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436867AbgLKIYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:24:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58676 "EHLO mail.kernel.org"
+        id S2436945AbgLKIY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:24:59 -0500
+Received: from mout01.posteo.de ([185.67.36.65]:39517 "EHLO mout01.posteo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436843AbgLKIXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:23:38 -0500
-Date:   Fri, 11 Dec 2020 09:22:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607674977;
-        bh=cEG2dsj6Lc6hGoLQ5vnXHriRwLps+wvQMuWoBGz3oZY=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dZ0T/585KVykK2BUWWeG+N6Tr1DG3CJKUYjAs5HVaCvebo6n7ZHc0cSoBucF7nWmp
-         AudiBgBvkQ9wWOvIZSMSyPsODkSsZdAxtmJJWDSvdB0TjWcZQnabz2yF4Cmd5Qh5Nz
-         rY0LiDByWBSJQfU42ph8bLcH/CywUnNIZD0saO5U=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-Cc:     Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, christian.koenig@amd.com
-Subject: Re: [PATCH 03/22] keembay-ipc: Add Keem Bay IPC module
-Message-ID: <X9MsXRDcdoftq8ZC@kroah.com>
-References: <20201201223511.65542-1-mgross@linux.intel.com>
- <20201201223511.65542-4-mgross@linux.intel.com>
- <X8cyA1qKCwrayEOp@kroah.com>
- <bcf8bad08a5f586093a151126aba2127eee44c02.camel@linux.intel.com>
- <X8/YceIsM/Akt/E/@kroah.com>
- <a5a13b6b399745f1f8b369334b0e626ee16d532a.camel@linux.intel.com>
+        id S2436879AbgLKIYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:24:21 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 12253160063
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:23:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1607675000; bh=zmFUMMH6d/UrVwTnxwekchr/5Inhbi+gBZ8MpkCM2nQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cg7GbcfIyscg42arM2talvWcVKL9b/XxwIGQaj1cIPze/UmzKgfDE8MAOPuJj0o5I
+         P8J6sPAs3UkU9LsVltpSfPFX5JCVndr19gjDSn5lqtnFMbT1JUYW5hFGUMOPw+pV4y
+         NsX5oDm8wsGpZ2F9wDq8lL9YQ08sfp9++EaFcVdKYkRK5SkZEFQ9+SGjLvFydRMPPO
+         U6LXsfGgkrhWD1/cs/ujmHeaCv8HpCq1slWSaSrxCr1oQzaBvkcStEtvGwPLJ2i80w
+         T3csQPGlIVStCh1V8YMW06m9WS97h2z7LPEkpUGbTPJWm4B41T9e5h4yERvhL7lPmB
+         MndURXN5MHUsA==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4CskLt3QKWz9rxR;
+        Fri, 11 Dec 2020 09:23:18 +0100 (CET)
+Date:   Fri, 11 Dec 2020 09:23:17 +0100
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: [PATCH v4 0/2] hwspinlock: add sun8i hardware spinlock support
+Message-ID: <cover.1607674518.git.wilken.gottwalt@posteo.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a5a13b6b399745f1f8b369334b0e626ee16d532a.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 06:38:24PM +0000, Daniele Alessandrelli wrote:
-> On Tue, 2020-12-08 at 20:48 +0100, Greg KH wrote:
-> > On Tue, Dec 08, 2020 at 06:59:09PM +0000, Daniele Alessandrelli wrote:
-> > > Hi Greg,
-> > > 
-> > > Thanks for your feedback.
-> > > 
-> > > On Wed, 2020-12-02 at 07:19 +0100, Greg KH wrote:
-> > > > On Tue, Dec 01, 2020 at 02:34:52PM -0800, mgross@linux.intel.com wrote:
-> > > > > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> > > > > 
-> > > > > On the Intel Movidius SoC code named Keem Bay, communication between the
-> > > > > Computing Sub-System (CSS), i.e., the CPU, and the Multimedia Sub-System
-> > > > > (MSS), i.e., the VPU is enabled by the Keem Bay Inter-Processor
-> > > > > Communication (IPC) mechanism.
-> > > > > 
-> > > > > Add the driver for using Keem Bay IPC from within the Linux Kernel.
-> > > > > 
-> > > > > Keem Bay IPC uses the following terminology:
-> > > > > 
-> > > > > - Node:    A processing entity that can use the IPC to communicate;
-> > > > > 	   currently, we just have two nodes, CPU (CSS) and VPU (MSS).
-> > > > > 
-> > > > > - Link:    Two nodes that can communicate over IPC form an IPC link
-> > > > > 	   (currently, we just have one link, the one between the CPU
-> > > > > 	   and VPU).
-> > > > > 
-> > > > > - Channel: An IPC link can provide multiple IPC channels. IPC channels
-> > > > > 	   allow communication multiplexing, i.e., the same IPC link can
-> > > > > 	   be used by different applications for different
-> > > > > 	   communications. Each channel is identified by a channel ID,
-> > > > > 	   which must be unique within a single IPC link. Channels are
-> > > > > 	   divided in two categories, High-Speed (HS) channels and
-> > > > > 	   General-Purpose (GP) channels. HS channels have higher
-> > > > > 	   priority over GP channels.
-> > > > > 
-> > > > > Keem Bay IPC mechanism is based on shared memory and hardware FIFOs.
-> > > > > Both the CPU and the VPU have their own hardware FIFO. When the CPU
-> > > > > wants to send an IPC message to the VPU, it writes to the VPU FIFO (MSS
-> > > > > FIFO); similarly, when MSS wants to send an IPC message to the CPU, it
-> > > > > writes to the CPU FIFO (CSS FIFO).
-> > > > > 
-> > > > > A FIFO entry is simply a pointer to an IPC buffer (aka IPC header)
-> > > > > stored in a portion of memory shared between the CPU and the VPU.
-> > > > > Specifically, the FIFO entry contains the (VPU) physical address of the
-> > > > > IPC buffer being transferred.
-> > > > > 
-> > > > > In turn, the IPC buffer contains the (VPU) physical address of the
-> > > > > payload (which must be located in shared memory too) as well as other
-> > > > > information (payload size, IPC channel ID, etc.).
-> > > > > 
-> > > > > Each IPC node instantiates a pool of IPC buffers from its own IPC buffer
-> > > > > memory region. When instantiated, IPC buffers are marked as free. When
-> > > > > the node needs to send an IPC message, it gets the first free buffer it
-> > > > > finds (from its own pool), marks it as allocated (used), and puts its
-> > > > > physical address into the IPC FIFO of the destination node. The
-> > > > > destination node (which is notified by an interrupt when there are
-> > > > > entries pending in its FIFO) extract the physical address from the FIFO
-> > > > > and process the IPC buffer, marking it as free once done (so that the
-> > > > > sender can reuse the buffer).
-> > > > 
-> > > > Any reason you can't use the dmabuf interface for these memory buffers
-> > > > you are creating and having to manage "by hand"?  I thought that was
-> > > > what the kernel was wanting to unify on such that individual
-> > > > drivers/subsystems didn't have to do this on their own.
-> > > 
-> > > My understanding is that the dmabuf interface is used to share DMA
-> > > buffers across different drivers, while these buffers are used only
-> > > internally to the IPC driver (and exchanged only with the VPU
-> > > firmware). They basically are packet headers that are sent to the VPU.
-> > 
-> > There's no reason you couldn't use these to share your buffers
-> > "internally" as well, because you have the same lifetime rules and
-> > accounting and all other sorts of things you have to handle, right?  Why
-> > rewrite something like this when you should take advantage of common
-> > code instead?
-> 
-> I looked at dma-buf again, but I'm still failing to see how we can use
-> it in this driver :/
-> 
-> The problem I'm not able to solve is exactly how to match the lifetime
-> of this IPC packets (IPC buffers is probably a misleading name, my bad
-> for using it in the code) with the dma-buf lifetime rules.
-> 
-> Basically, these IPC packets are cache-aligned (64 bytes) and have the
-> following fixed structure:
->  
->    struct kmb_ipc_buf {
->           u32 data_addr;
->           u32 data_size;
->           u16 channel;
->           u8  src_node;
->           u8  dst_node;
->           u8  status;
->    } __packed __aligned(KMB_IPC_ALIGNMENT);
+Most of the Allwinner sun8i compatible devices contain a spinlock unit
+which can be used to sync access to devices shared between the ARM cores
+and the embedded OpenRisc AR100 core. According to the datasheets at
+least 32 spinlocks are supported. The implementation supports 32, 64,
+128 and 256 spinlock setups, but there is no known SoC yet, which
+implements more than 32 spinlocks.
 
-If that is shared out of the kernel, please use the proper data types
-for it.
+This driver adds support for this hardware spinlock unit to Linux
+including all 4 possible setups. The driver reports the found setup via
+debugfs. It can be build as a builtin and normal module by using the
+HWSPINLOCK_SUN8I symbol.
 
-And it isn't properly padded out?  That feels like a hardware design
-mistake somewhere, anyway...
+This driver is the first step to enable hwspinlock support in Linux, but
+also requires support in the firmware of the OpenRisc core. This patch
+provides the driver and binding documentation but is not yet included
+into the sun8i and sun50i dtsi files. Also not every sun8i or sun50i SoC
+seem to have support for this hardware. For example the H616 is missing
+the whole spinlock section in the datasheets.
 
-> Now, let's ignore the first 5 fields and focus on the last one that
-> controls the lifetime of the packet. The status field can be either
-> FREE or ALLOCATED (perhaps should be renamed to IN_USE).
->  
-> Basically, during probe, the driver allocates an array (pool) of these
-> packets from its 'local' reserved memory region. This is done using
-> dma_alloc_coherent(). This array remains allocated until remove() is
-> called.
->  
-> At run-time, every time the driver sends a message to the VPU, the
-> following happens:
-> 
->    1. The IPC driver loops through the array of 'local' packets to find
->       the first one marked as FREE
->    2. The IPC driver marks the packet as IN_USE and shares it with the VPU
->       by putting its physical address into the VPU HW FIFO.
->    3. The VPU Firmware processes the packet and, when done with it, it
->       marks it as FREE again so that the IPC driver can use it again.
+The spinlock hardware has two ways to figure out if a lock is taken. The
+lock can simply be read or bits of a 32bit wide status register can be
+checked. The status register only supports the first 32 locks and may
+not cover bigger spinlock setups. Therefore reading/writing a specific
+spinlock for checking is used in the driver.
 
-How does the firmware "mark it as free"?
+The status register is now free for debugging/testing purposes and can
+completely bypass the Linux hwspinlock ABI. This status register will be
+used in some additional kernel modules to test the hwspinlock driver.
 
-> Please note that the IPC driver is not notified by the VPU when the
-> packet is marked as free (there is no IRQ or other async mechanism to
-> do that). The driver will simply find the message free the next time it
-> loops over the message pool again (i.e., when it is trying to send a
-> new message).
->  
-> Given that the free operation is silently done by the VPU, I'm failing
-> to see how I can use dmabuf (or gen_pool or dma_pool). Is there
-> anything that I'm missing?
 
-So maybe this isn't set up to use the dma buffers, but it still feels
-really odd.  I recommend getting a review by the dmabuf authors before
-declaring that you really should be rolling your own buffer management
-logic here, as you can see that it feels like you are doing much the
-same thing, sharing memory outside of the kernel to something else.
 
-thanks,
+Testing the driver.
 
-greg k-h
+To run all tests it is necessary to take locks on the OpenRisc core and
+show on the Linux side that the locks were taken by an external event.
+This can be achived by using the crust firmware. For this the crust
+firmware needs to be changed to take and release spinlocks (a simple
+MMIO operation on the hwlock registers), which is currently not
+supported by the current crust firmware. The necessary crust fork can
+be found here https://github.com/wgottwalt/crust (hwspinlock branch).
+It is also necessary to build u-boot with support for this crust/SCP
+firmware. This u-boot fork can be found here
+https://github.com/crust-firmware/u-boot (crust branch).
+
+For testing this driver it is also necessary to pick a device that is
+fully supported by the crust firmware. For this the H5 based Friendlyarm
+NanoPi NEO2 was used, which is fully supported by u-boot (and the fork),
+the curst firmware (via H5 target) and current Linux kernels. In the
+crust fork it is necessary to go into debug menu of "make nconfig" and
+select the hwspinlock test loop. This debug option enables a loop that
+goes through the first 32 spinlocks. It takes/releases a lock one after
+another using the timeout functions (and hw timers) of the crust
+firmware. A timeout can be set in the debug menu.
+
+Test 1:
+
+This test was done using a mainline u-boot and a crust enabled u-boot.
+For this a simple second kernel module was used, which can be found here
+https://github.com/wgottwalt/sunxi_hwspinlock/tree/main/test.
+
+Using mainline u-boot it shows that the Linux side correctly takes a
+lock, tries to recursively take a lock again (which does not happen) and
+releases a lock. This is done for all 32 locks several times.
+
+[   50.332836] [init]--- SUN8I HWSPINLOCK DRIVER TEST ---
+[   50.338155] [run ]--- testing locks 0 to 31 ---
+[   50.342725] [test] testing lock 0
+[   50.346075] [test]+++ attempt #0 succeded
+[   50.350103] [test]+++ attempt #1 succeded
+[   50.354127] [test]+++ attempt #2 succeded
+[   50.358154] [test] testing lock 1
+[   50.361474] [test]+++ attempt #0 succeded
+[   50.365496] [test]+++ attempt #1 succeded
+[   50.369509] [test]+++ attempt #2 succeded
+...
+[   50.819369] [test] testing lock 31
+[   50.822777] [test]+++ attempt #0 succeded
+[   50.826796] [test]+++ attempt #1 succeded
+[   50.830816] [test]+++ attempt #2 succeded
+
+If the same test is done with the hwspinlock loop enabled crust firmware
+and the crust enabled u-boot fork, the Linux test kernel module hits the
+one lock taken by the crust firmware.
+
+[  198.232316] [init]--- SUN8I HWSPINLOCK DRIVER TEST ---
+[  198.237616] [run ]--- testing locks 0 to 31 ---
+[  198.242170] [test] testing lock 0
+[  198.245493] [test]+++ attempt #0 succeded
+[  198.249514] [test]+++ attempt #1 succeded
+[  198.253528] [test]+++ attempt #2 succeded
+...
+[  198.550564] [test] testing lock 20
+[  198.553972] [test]+++ attempt #0 succeded
+[  198.557983] [test]+++ attempt #1 succeded
+[  198.561998] [test]+++ attempt #2 succeded
+[  198.566018] [test] testing lock 21
+[  198.569432] [test] taking lock attempt #0 failed (-16)
+[  198.574580] [run ]--- testing specific lock 21 failed (-14) ---
+[  198.580505] [test] testing lock 22
+[  198.583918] [test]+++ attempt #0 succeded
+[  198.587935] [test]+++ attempt #1 succeded
+[  198.591954] [test]+++ attempt #2 succeded
+...
+[  198.719650] [test] testing lock 31
+[  198.723065] [test]+++ attempt #0 succeded
+[  198.727088] [test]+++ attempt #1 succeded
+[  198.731099] [test]+++ attempt #2 succeded
+
+
+
+Test 2:
+
+This is a more complex test which uses the status register to bypass the
+Linux hwspinlock ABI. For this to work a slightly modified driver is
+used, which can be found here
+https://github.com/wgottwalt/sunxi_hwspinlock/tree/main/modified.
+This modified driver splits the 4K memory range into two and leaves the
+status register untouched, so that it can be used by another test kernel
+modulei, which can be found here
+https://github.com/wgottwalt/sunxi_hwspinlock/tree/main/test2.
+It is also necessary to change the device tree entries to get both
+kernel modules working in parallel.
+
+hwspinlock-mod@1c18000 {
+        compatible = "allwinner,sun8i-hwspinlock-mod";
+        reg = <0x01c18000 0x4 0x01c18100 0x400>;
+        clocks = <&ccu CLK_BUS_SPINLOCK>;
+        clock-names = "ahb";
+        resets = <&ccu RST_BUS_SPINLOCK>;
+        reset-names = "ahb";
+        status = "okay";
+};
+
+hwspinlock-stat@1c18010 {
+        compatible = "allwinner,sun8i-hwspinlock-stat";
+        reg = <0x01c18010 0x4>;
+        status = "okay";
+};
+
+The extended test kernel module supports four different modes to test
+the hwspinlocks. Two of them are sufficient to show the spinlock
+mechanism working.
+
+Test 2 Mode 1:
+
+This test reads and prints the status register continuously. The crust
+firmware and the test are set to a hwspinlock timeout of one second. The
+test kernel module code runs a bit slower because of more code executed
+and all the printing. Because of that you can see how one lock is missed
+completely between entry 8 and 9.
+
+# modprobe sun8i_hwspinlock_test2 mode=1 loops=10
+[  182.685525] [init]--- SUN8I HWSPINLOCK DRIVER ENHANCED TEST ---
+[  182.691882] [sreg] 00000100_00000000_00000000_00000000
+[  183.715763] [sreg] 00000010_00000000_00000000_00000000
+[  184.739777] [sreg] 00000001_00000000_00000000_00000000
+[  185.763761] [sreg] 00000000_10000000_00000000_00000000
+[  186.787760] [sreg] 00000000_01000000_00000000_00000000
+[  187.811761] [sreg] 00000000_00100000_00000000_00000000
+[  188.835763] [sreg] 00000000_00010000_00000000_00000000
+[  189.859761] [sreg] 00000000_00001000_00000000_00000000
+[  190.883760] [sreg] 00000000_00000010_00000000_00000000
+[  191.907760] [sreg] 00000000_00000001_00000000_00000000
+
+Test 2 Mode 3:
+
+This test combines the Linux hwspinlock ABI approach from the first test
+and the status register access. The "after" reads show the locks taken
+by both sides until the Linux hwspinlock driver tries to take the lock
+taken by the crust firmware.
+
+[  315.452080] [test]+++ attempt #0 succeded
+[  315.456106] [sreg] before take 00000000_00000100_00000000_00000000
+[  315.462292] [sreg] after take 00000000_00001100_00000000_00000000
+[  315.468399] [sreg] after recursive take 00000000_00001100_00000000_00000000
+[  315.475368] [sreg] after untake 00000000_00000100_00000000_00000000
+[  315.481643] [test]+++ attempt #1 succeded
+[  315.485664] [sreg] before take 00000000_00000100_00000000_00000000
+[  315.491856] [sreg] after take 00000000_00001100_00000000_00000000
+[  315.497958] [sreg] after recursive take 00000000_00001100_00000000_00000000
+[  315.504938] [sreg] after untake 00000000_00000100_00000000_00000000
+[  315.511205] [test]+++ attempt #2 succeded
+[  315.515225] [test] testing lock 13
+[  315.518642] [sreg] before take 00000000_00000100_00000000_00000000
+[  315.524830] [test] taking lock attempt #0 failed (-16)
+[  315.529972] [run ]--- testing specific lock 13 failed (-14) ---
+[  315.535898] [test] testing lock 14
+[  315.539305] [sreg] before take 00000000_00000100_00000000_00000000
+[  315.545498] [sreg] after take 00000000_00000110_00000000_00000000
+[  315.551599] [sreg] after recursive take 00000000_00000110_00000000_00000000
+[  315.558573] [sreg] after untake 00000000_00000100_00000000_00000000
+[  315.564844] [test]+++ attempt #0 succeded
+[  315.568870] [sreg] before take 00000000_00000100_00000000_00000000
+[  315.575058] [sreg] after take 00000000_00000110_00000000_00000000
+[  315.581169] [sreg] after recursive take 00000000_00000110_00000000_00000000
+[  315.588138] [sreg] after untake 00000000_00000100_00000000_00000000
+[  315.594409] [test]+++ attempt #1 succeded
+
+
+
+This patch adds:
+- hwspinlock driver suni8i_hwspinlock
+- updates makefiles
+- hwspinlock dt bindings documentation
+- updates MAINTAINERS
+
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+
+Changes in v4:
+  - changed binding from sun8i-hwspinlock to sun8i-a33-hwspinlock
+  - fixed several issues in the dt documentation
+  - further simplified driver
+  - fixed an add_action_and_reset_* function issue
+  - fixed some typos
+
+Changes in v3:
+  - moved test description to cover letter
+  - changed name and symbols from sunxi to sun8i
+  - improved driver description
+  - further simplified driver
+  - fully switched to devm_* and devm_add_action_* functions
+
+Changes in v2:
+  - redone coverletter
+  - fixed ranges in the device tree description
+  - added suggestions from Bjorn Andersson and Maxime Ripard to the driver
+  - provided better driver and test description
+
+Wilken Gottwalt (2):
+  dt-bindings: hwlock: add sun8i_hwspinlock
+  hwspinlock: add sun8i hardware spinlock support
+
+ .../bindings/hwlock/sun8i-hwspinlock.yaml     |  56 +++++
+ MAINTAINERS                                   |   6 +
+ drivers/hwspinlock/Kconfig                    |   9 +
+ drivers/hwspinlock/Makefile                   |   1 +
+ drivers/hwspinlock/sun8i_hwspinlock.c         | 197 ++++++++++++++++++
+ 5 files changed, 269 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml
+ create mode 100644 drivers/hwspinlock/sun8i_hwspinlock.c
+
+-- 
+2.29.2
+
