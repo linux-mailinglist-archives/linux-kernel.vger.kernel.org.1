@@ -2,257 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0732D742D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 894292D7428
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393437AbgLKKsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:48:10 -0500
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:10753 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726623AbgLKKrc (ORCPT
+        id S2393160AbgLKKr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:47:27 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:42496 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728980AbgLKKrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:47:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1607683651; x=1639219651;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=gfBur0GlhElbekxC9TYTBm7Z41iQ0G2i2uPqDPkx+K4=;
-  b=Au6AYjKi6idk1ZAJQMrWoZ898yq6P2H6OgQlP1h3e6uiAZxpcg9RPJrB
-   O8okVOKFX56Enq7ArxGTI2DssgkimvH8MXv+i8X3qKIXzZspb6VuJXmtk
-   7tlxVNjpFiuH8VodF8kX5FqI9QowNompBp1j6fJvX/x0A3ljswtTc7pKC
-   E=;
-X-IronPort-AV: E=Sophos;i="5.78,411,1599523200"; 
-   d="scan'208";a="68767749"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 11 Dec 2020 10:46:44 +0000
-Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id C423FA1E75;
-        Fri, 11 Dec 2020 10:46:41 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.185) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 11 Dec 2020 10:46:35 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Eric Dumazet <edumazet@google.com>
-CC:     SeongJae Park <sjpark@amazon.com>,
-        David Miller <davem@davemloft.net>,
-        SeongJae Park <sjpark@amazon.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Alexey Kuznetsov" <kuznet@ms2.inr.ac.ru>,
-        Florian Westphal <fw@strlen.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        netdev <netdev@vger.kernel.org>, <rcu@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/1] net/ipv4/inet_fragment: Batch fqdir destroy works
-Date:   Fri, 11 Dec 2020 11:46:22 +0100
-Message-ID: <20201211104622.23231-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CANn89i+P8d8Ok8k1o3_ADW4iWLKU=qikq+RAxmqkYbUn1wkWvQ@mail.gmail.com>
+        Fri, 11 Dec 2020 05:47:10 -0500
+Received: by mail-lj1-f195.google.com with SMTP id y22so10330435ljn.9;
+        Fri, 11 Dec 2020 02:46:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dRa8+8T0/doCyxO8jlNrqWF9bR8w4xPSvOc8mqFfidI=;
+        b=GkRjOyByop67mPZU4KBxErD+xT3KiaTuGG7uCIK0ryjWFi9hPqCQ7Pvh9tNv9lP1Bw
+         nMFUqpKle557p+AUjs0HNXh4kDwuRwJj5R+XSRj0P56znTQpZggEMKAhdZ99eIKzqSpF
+         copzuAbs7km5xmG1yiZMAef4WKdOfE67qZr/9UphfJoHGtBhNdeRjZM6Hk8g9lmmovnl
+         qS0aWH+v0hRjeinpFQKgvRUh8C0an8C8HEhKI0ZYyHuUrltpzJkmL/Gpvj6h8NSs8Mss
+         W/EeL8M0bTLxGJk3Q+B/2PTZhaO7tMY6pFeiD3GLNc+xpjjUZKzpGZyU/ynAYBuvHzR5
+         p45A==
+X-Gm-Message-State: AOAM532oXhB2COuR9g+txsdXjI7bHtGJo1MljXivmGQTL+DkPJq/Ebn4
+        HBg6KBWBBaUBPinfqIV7rqM=
+X-Google-Smtp-Source: ABdhPJx0eK75XvUevDCsmqYfr+BPwS23tljwjADb07jfuaNvnTNuvi5wcgR9UGvhacHo3upAiIqEgw==
+X-Received: by 2002:a05:651c:1199:: with SMTP id w25mr4642238ljo.165.1607683588903;
+        Fri, 11 Dec 2020 02:46:28 -0800 (PST)
+Received: from xi.terra (c-d2ade455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.173.210])
+        by smtp.gmail.com with ESMTPSA id o8sm841166lft.101.2020.12.11.02.46.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 02:46:28 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1knfwR-0000u7-Eq; Fri, 11 Dec 2020 11:46:27 +0100
+Date:   Fri, 11 Dec 2020 11:46:27 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Maarten Brock <m.brock@vanmierlo.com>,
+        Mychaela Falconia <mychaela.falconia@gmail.com>,
+        Johan Hovold <johan@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/7] tty: add flag to suppress ready signalling on open
+Message-ID: <X9NOAypxyiS5M3Ze@localhost>
+References: <20201202113942.27024-1-johan@kernel.org>
+ <X9Dficb8sQGRut+S@kroah.com>
+ <CA+uuBqYTzXCHGY8QnP+OQ5nRNAbqx2rMNzLM7OKLM1_4AzzinQ@mail.gmail.com>
+ <6b81cca21561305b55ba8f019b78da28@vanmierlo.com>
+ <X9H9i98E1Gro+mDP@kroah.com>
+ <3fc3097ce1d35ce1e45fa5a3c7173666@vanmierlo.com>
+ <X9IcKoofq+2iGZn7@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.185]
-X-ClientProxiedBy: EX13D01UWB002.ant.amazon.com (10.43.161.136) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X9IcKoofq+2iGZn7@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 11:41:36 +0100 Eric Dumazet <edumazet@google.com> wrote:
+On Thu, Dec 10, 2020 at 02:01:30PM +0100, Greg Kroah-Hartman wrote:
+> O_DIRECT is an interesting hack, has anyone seen if it violates the
+> posix rules for us to use it on a character device like this?
 
-> On Fri, Dec 11, 2020 at 11:33 AM SeongJae Park <sjpark@amazon.com> wrote:
-> >
-> > On Fri, 11 Dec 2020 09:43:41 +0100 Eric Dumazet <edumazet@google.com> wrote:
-> >
-> > > On Fri, Dec 11, 2020 at 9:21 AM SeongJae Park <sjpark@amazon.com> wrote:
-> > > >
-> > > > From: SeongJae Park <sjpark@amazon.de>
-> > > >
-> > > > For each 'fqdir_exit()' call, a work for destroy of the 'fqdir' is
-> > > > enqueued.  The work function, 'fqdir_work_fn()', internally calls
-> > > > 'rcu_barrier()'.  In case of intensive 'fqdir_exit()' (e.g., frequent
-> > > > 'unshare()' systemcalls), this increased contention could result in
-> > > > unacceptably high latency of 'rcu_barrier()'.  This commit avoids such
-> > > > contention by doing the 'rcu_barrier()' and subsequent lightweight works
-> > > > in a batched manner using a dedicated singlethread worker, as similar to
-> > > > that of 'cleanup_net()'.
-> > >
-> > >
-> > > Not sure why you submit a patch series with a single patch.
-> > >
-> > > Your cover letter contains interesting info that would better be
-> > > captured in this changelog IMO
-> >
-> > I thought someone might think this is not a kernel issue but the reproducer is
-> > insane or 'rcu_barrier()' needs modification.  I wanted to do such discussion
-> > on the coverletter.  Seems I misjudged.  I will make this single patch and move
-> > the detailed information here from the next version.
-> >
-> > >
-> > > >
-> > > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > > > ---
-> > > >  include/net/inet_frag.h  |  1 +
-> > > >  net/ipv4/inet_fragment.c | 45 +++++++++++++++++++++++++++++++++-------
-> > > >  2 files changed, 39 insertions(+), 7 deletions(-)
-> > > >
-> > > > diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
-> > > > index bac79e817776..48cc5795ceda 100644
-> > > > --- a/include/net/inet_frag.h
-> > > > +++ b/include/net/inet_frag.h
-> > > > @@ -21,6 +21,7 @@ struct fqdir {
-> > > >         /* Keep atomic mem on separate cachelines in structs that include it */
-> > > >         atomic_long_t           mem ____cacheline_aligned_in_smp;
-> > > >         struct work_struct      destroy_work;
-> > > > +       struct llist_node       free_list;
-> > > >  };
-> > > >
-> > > >  /**
-> > > > diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
-> > > > index 10d31733297d..a6fc4afcc323 100644
-> > > > --- a/net/ipv4/inet_fragment.c
-> > > > +++ b/net/ipv4/inet_fragment.c
-> > > > @@ -145,12 +145,17 @@ static void inet_frags_free_cb(void *ptr, void *arg)
-> > > >                 inet_frag_destroy(fq);
-> > > >  }
-> > > >
-> > > > -static void fqdir_work_fn(struct work_struct *work)
-> > > > +static struct workqueue_struct *fqdir_wq;
-> > > > +static LLIST_HEAD(free_list);
-> > > > +
-> > > > +static void fqdir_free_fn(struct work_struct *work)
-> > > >  {
-> > > > -       struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
-> > > > -       struct inet_frags *f = fqdir->f;
-> > > > +       struct llist_node *kill_list;
-> > > > +       struct fqdir *fqdir, *tmp;
-> > > > +       struct inet_frags *f;
-> > > >
-> > > > -       rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
-> > > > +       /* Atomically snapshot the list of fqdirs to free */
-> > > > +       kill_list = llist_del_all(&free_list);
-> > > >
-> > > >         /* We need to make sure all ongoing call_rcu(..., inet_frag_destroy_rcu)
-> > > >          * have completed, since they need to dereference fqdir.
-> > > > @@ -158,12 +163,38 @@ static void fqdir_work_fn(struct work_struct *work)
-> > > >          */
-> > > >         rcu_barrier();
-> > > >
-> > > > -       if (refcount_dec_and_test(&f->refcnt))
-> > > > -               complete(&f->completion);
-> > > > +       llist_for_each_entry_safe(fqdir, tmp, kill_list, free_list) {
-> > > > +               f = fqdir->f;
-> > > > +               if (refcount_dec_and_test(&f->refcnt))
-> > > > +                       complete(&f->completion);
-> > > >
-> > > > -       kfree(fqdir);
-> > > > +               kfree(fqdir);
-> > > > +       }
-> > > >  }
-> > > >
-> > > > +static DECLARE_WORK(fqdir_free_work, fqdir_free_fn);
-> > > > +
-> > > > +static void fqdir_work_fn(struct work_struct *work)
-> > > > +{
-> > > > +       struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
-> > > > +
-> > > > +       rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
-> > > > +
-> > > > +       if (llist_add(&fqdir->free_list, &free_list))
-> > > > +               queue_work(fqdir_wq, &fqdir_free_work);
-> > >
-> > > I think you misunderstood me.
-> > >
-> > > Since this fqdir_free_work will have at most one instance, you can use
-> > > system_wq here, there is no risk of abuse.
-> > >
-> > > My suggestion was to not use system_wq for fqdir_exit(), to better
-> > > control the number
-> > >  of threads in rhashtable cleanups.
-> > >
-> > > void fqdir_exit(struct fqdir *fqdir)
-> > > {
-> > >         INIT_WORK(&fqdir->destroy_work, fqdir_work_fn);
-> > > -       queue_work(system_wq, &fqdir->destroy_work);
-> > > +      queue_work(fqdir_wq, &fqdir->destroy_work);
-> > > }
-> >
-> > Oh, got it.  I definitely misunderstood.  My fault, sorry.
-> >
-> > >
-> > >
-> > >
-> > > > +}
-> > > > +
-> > > > +static int __init fqdir_wq_init(void)
-> > > > +{
-> > > > +       fqdir_wq = create_singlethread_workqueue("fqdir");
-> > >
-> > >
-> > > And here, I suggest to use a non ordered work queue, allowing one
-> > > thread per cpu, to allow concurrent rhashtable cleanups
-> > >
-> > > Also "fqdir" name is rather vague, this is an implementation detail ?
-> > >
-> > > fqdir_wq =create_workqueue("inet_frag_wq");
-> >
-> > So, what you are suggesting is to use a dedicated non-ordered work queue
-> > (fqdir_wq) for rhashtable cleanup and do the remaining works with system_wq in
-> > the batched manner, right?  IOW, doing below change on top of this patch.
-> >
-> > --- a/net/ipv4/inet_fragment.c
-> > +++ b/net/ipv4/inet_fragment.c
-> > @@ -145,7 +145,7 @@ static void inet_frags_free_cb(void *ptr, void *arg)
-> >                 inet_frag_destroy(fq);
-> >  }
-> >
-> > -static struct workqueue_struct *fqdir_wq;
-> > +static struct workqueue_struct *inet_frag_wq;
-> >  static LLIST_HEAD(free_list);
-> 
-> Nit : Please prefix this free_list , like fqdir_free_list  to avoid
-> namespace pollution.
+Jiri only mentioned O_DIRECT as an example of a flag which we might be
+able to repurpose/abuse for this. O_DIRECT is linux-specific, not in
+POSIX, so we'd still end up with a Linux-specific interface if we were
+to take this route.
 
-Sure!
-
-> 
-> 
-> >
-> >  static void fqdir_free_fn(struct work_struct *work)
-> > @@ -181,14 +181,14 @@ static void fqdir_work_fn(struct work_struct *work)
-> >         rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
-> >
-> >         if (llist_add(&fqdir->free_list, &free_list))
-> > -               queue_work(fqdir_wq, &fqdir_free_work);
-> > +               queue_work(system_wq, &fqdir_free_work);
-> >  }
-> >
-> >  static int __init fqdir_wq_init(void)
-> >  {
-> > -       fqdir_wq = create_singlethread_workqueue("fqdir");
-> > -       if (!fqdir_wq)
-> > -               panic("Could not create fqdir workq");
-> > +       inet_frag_wq = create_workqueue("inet_frag_wq");
-> > +       if (!inet_frag_wq)
-> > +               panic("Could not create inet frag workq");
-> >         return 0;
-> >  }
-> >
-> > @@ -218,7 +218,7 @@ EXPORT_SYMBOL(fqdir_init);
-> >  void fqdir_exit(struct fqdir *fqdir)
-> >  {
-> >         INIT_WORK(&fqdir->destroy_work, fqdir_work_fn);
-> > -       queue_work(system_wq, &fqdir->destroy_work);
-> > +       queue_work(inet_frag_wq, &fqdir->destroy_work);
-> >  }
-> >  EXPORT_SYMBOL(fqdir_exit);
-> >
-> > If I'm still misunderstanding, please let me know.
-> >
-> 
-> I think that with the above changes, we should be good ;)
-
-Thank you for your quick and nice reply.  I will send the next version soon!
-
-
-Thanks,
-SeongJae Park
+Johan
