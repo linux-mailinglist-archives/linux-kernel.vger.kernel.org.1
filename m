@@ -2,71 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66502D80A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B782D80DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405358AbgLKVNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:13:37 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:37452 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392323AbgLKVNH (ORCPT
+        id S2395419AbgLKVO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:14:28 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:42075 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395061AbgLKVNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:13:07 -0500
-Received: by mail-oi1-f193.google.com with SMTP id l207so11436780oib.4;
-        Fri, 11 Dec 2020 13:12:51 -0800 (PST)
+        Fri, 11 Dec 2020 16:13:49 -0500
+Received: by mail-ot1-f65.google.com with SMTP id 11so9529589oty.9;
+        Fri, 11 Dec 2020 13:13:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=kDEarIT6QtyZ9leo9UW3n9PcaYOZGBRD8Q7A2EVH/bk=;
-        b=AE+wjKpAgFX4dk/uPSFnGjZGddJlbd35kt/n5WsuqY0x/lgVMLnAZrDkB7wgnUC0f6
-         sD/WsRTORcFsUu/uSk6A0AS2ZctjO4oLJvW9j3jLxsLXUVVo7IbT398CaBvHN74lKJqX
-         Z6guxEKXOBi/0scocf3DuLrIHvgWoNWyjpYBl/OWHN9sorrcv8eyDg8yc8vluQT6aoFQ
-         BZSB3Bd1OrUVrY1R0pOiJCCc8kVWbcvKxOmaGJDR7lSJxxqjGZt6E5Hzjpbu7n3wum16
-         EnIiUggwXYHhysebAmyKzkWYcnjWy+Z/2t4QrfoY8fPB49m5DkzLALfyj8kV+u2Ukv5Q
-         my1g==
-X-Gm-Message-State: AOAM531Ffr72aAz9mjqYquyZMpZmRw4txkIXOtVpTBJfhtwX7DC0OwFv
-        1q4CA2CTiaNs5jEBJMjvRg==
-X-Google-Smtp-Source: ABdhPJzqwk8wLvsKy9ZMUr39mu3rcViIH1BQblnHU+cgFQ7mmj3SP4h6lGTWuefOzrIYXDGsgZrdPQ==
-X-Received: by 2002:a05:6808:96:: with SMTP id s22mr3204268oic.153.1607721146017;
-        Fri, 11 Dec 2020 13:12:26 -0800 (PST)
+        bh=qT7CCI1tZEGzvS2A0x9Rs75/poGHPdnJSJtxrhXJMz4=;
+        b=ipqkB5YtdkHg/J9QeIrmitRz6ldTuOc08YVbCTJ5bIa0/WQArmoNnJmo1aYusrwP9l
+         WsPNz6Lk+xZB4qhgdzxOL4yyJy3mQwpmCky1rjcHZXMffcYOAY1Mwg0SRomTY8KZzXaj
+         BMIqQ69F1zybEeMAjec/QwQkrm5Cf3xvtE44OshKy+Ys1oBPTzt1DG+9q1ziIN5iPGLf
+         /f9Ldd7zSCrGPs8P+Q5qYUZ7SwxkeAtSuLkg7oMNYn3EDewexMdO+0suVO+8qWBEqYj1
+         99TIkZhP9NuIvL3OtRa3sXbEO/eAVttRXGJj9OwuLCIPPD5lXYvTBQjNLeXRYUOpjNTQ
+         Bg4A==
+X-Gm-Message-State: AOAM530x6eCk4CZbo2f4vAaWSXuW3U7i3zfHDWSCpB8JS/5ylWM0JEIj
+        tecBjwm5rQMGQ6fZIeUAfAyxCIqhOA==
+X-Google-Smtp-Source: ABdhPJzadab1s51cOEGqHNNoMqzstzxiaT6kBUcKFKOA9xfhw3HsL7xzFL4OlizXiHn+skrGzvBcLQ==
+X-Received: by 2002:a9d:4c8d:: with SMTP id m13mr9135456otf.229.1607721187996;
+        Fri, 11 Dec 2020 13:13:07 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 8sm2193586oii.45.2020.12.11.13.12.24
+        by smtp.gmail.com with ESMTPSA id c18sm2090517oib.31.2020.12.11.13.13.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 13:12:24 -0800 (PST)
-Received: (nullmailer pid 953910 invoked by uid 1000);
-        Fri, 11 Dec 2020 21:12:23 -0000
-Date:   Fri, 11 Dec 2020 15:12:23 -0600
+        Fri, 11 Dec 2020 13:13:06 -0800 (PST)
+Received: (nullmailer pid 957502 invoked by uid 1000);
+        Fri, 11 Dec 2020 21:13:05 -0000
+Date:   Fri, 11 Dec 2020 15:13:05 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Michael Klein <michael@fossekall.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 2/3] Documentation: DT: binding documentation for
- regulator-poweroff
-Message-ID: <20201211211223.GA953171@robh.at.kernel.org>
-References: <20201211151445.115943-1-michael@fossekall.de>
- <20201211151445.115943-3-michael@fossekall.de>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        bjorn.andersson@linaro.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] dt-bindings: mtd: partitions: Add binding for
+ Qcom SMEM parser
+Message-ID: <20201211211305.GA955193@robh.at.kernel.org>
+References: <20201119071308.9292-1-manivannan.sadhasivam@linaro.org>
+ <20201119071308.9292-2-manivannan.sadhasivam@linaro.org>
+ <20201207215236.GB892840@robh.at.kernel.org>
+ <20201211033140.GA4222@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201211151445.115943-3-michael@fossekall.de>
+In-Reply-To: <20201211033140.GA4222@work>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 16:14:44 +0100, Michael Klein wrote:
-> Add devicetree binding documentation for regulator-poweroff driver.
+On Fri, Dec 11, 2020 at 09:01:40AM +0530, Manivannan Sadhasivam wrote:
+> On Mon, Dec 07, 2020 at 03:52:36PM -0600, Rob Herring wrote:
+> > On Thu, Nov 19, 2020 at 12:43:05PM +0530, Manivannan Sadhasivam wrote:
+> > > Add YAML binding for Qualcomm Shared Memory (SMEM) Flash partition
+> > > parser.
+> > > 
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > ---
+> > >  .../mtd/partitions/qcom,smem-part.yaml        | 33 +++++++++++++++++++
+> > >  1 file changed, 33 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+> > > new file mode 100644
+> > > index 000000000000..cf3f8c1e035d
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+> > > @@ -0,0 +1,33 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/mtd/partitions/qcom,smem-part.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Qualcomm SMEM NAND flash partition parser binding
+> > > +
+> > > +maintainers:
+> > > +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > +
+> > > +description: |
+> > > +  The Qualcomm SoCs supporting the NAND controller interface features a Shared
+> > > +  Memory (SMEM) based partition table scheme. The maximum partitions supported
+> > > +  varies between partition table revisions. V3 supports maximum 16 partitions
+> > > +  and V4 supports 48 partitions.
+> > 
+> > V3 vs. V4 (and any other version for that matter) is discoverable?
+> > 
 > 
-> Signed-off-by: Michael Klein <michael@fossekall.de>
-> ---
->  .../power/reset/regulator-poweroff.yaml       | 37 +++++++++++++++++++
->  1 file changed, 37 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/reset/regulator-poweroff.yaml
-> 
+> Yes, it is discoverable based on the partition header and we do that in
+> the parser.
+
+Okay,
 
 Reviewed-by: Rob Herring <robh@kernel.org>
+
+> 
+> Thanks,
+> Mani
+> 
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: qcom,smem-part
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    flash {
+> > > +        partitions {
+> > > +            compatible = "qcom,smem-part";
+> > > +        };
+> > > +    };
+> > > -- 
+> > > 2.17.1
+> > > 
