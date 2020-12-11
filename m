@@ -2,204 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1002D8060
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB412D806A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394839AbgLKVFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:05:52 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:37518 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392579AbgLKVFl (ORCPT
+        id S2394916AbgLKVH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:07:28 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6867 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394863AbgLKVHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:05:41 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607720693;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0fiMhIgezjMm4j4B451ig1YSH6sP5DgP4ssfWySwTGs=;
-        b=AQYRNJvcxXd/HlimRdNjo1jnET0BBogqtVB+Ri+UcW9mLEHO290gRs/+90RaLXritQJb2i
-        CODTbdo6SmBCi63OMkXnOeeSd6Ws1yDR9yzDddkR8t/LP9l/LrQ4eZdQbDRveb3SSL5aKZ
-        066p2LnvLEsWNLyOe8sbOqVESUlrFFr5ku8/BNydTbz3w03wsxadl/EE4B/8tC8lNDQK8y
-        8i8H3Q+qOVu9x95DBC9Gp2kUoNiFFchFz9UsxlV2K2vCIzKWSIQWz0MPjea6aJzZGUP4Aj
-        gtoARwkvi5g5dT/9gWudhqt23Y5P6qjwjW5+42mKJkZUDRZGfzljBwounMc6XA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607720693;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0fiMhIgezjMm4j4B451ig1YSH6sP5DgP4ssfWySwTGs=;
-        b=7iQ5hCbTFwAguKL6g6/ZBi2aTwaGL2TT/9TwwH+bT3LyWirf3PdhADoyPYz5c4Tpsay7uw
-        r0JJjUFQ04wBM6AA==
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-In-Reply-To: <20201211141822.GA67764@fuller.cnet>
-References: <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com> <87sg8g2sn4.fsf@nanos.tec.linutronix.de> <20201208181107.GA31442@fuller.cnet> <875z5c2db8.fsf@nanos.tec.linutronix.de> <20201209163434.GA22851@fuller.cnet> <87r1nyzogg.fsf@nanos.tec.linutronix.de> <20201210152618.GB23951@fuller.cnet> <87zh2lib8l.fsf@nanos.tec.linutronix.de> <20201211002703.GA47016@fuller.cnet> <87v9d8h3lx.fsf@nanos.tec.linutronix.de> <20201211141822.GA67764@fuller.cnet>
-Date:   Fri, 11 Dec 2020 22:04:52 +0100
-Message-ID: <87k0togikr.fsf@nanos.tec.linutronix.de>
+        Fri, 11 Dec 2020 16:07:17 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fd3df5a0000>; Fri, 11 Dec 2020 13:06:34 -0800
+Received: from [10.2.60.59] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 11 Dec
+ 2020 21:06:30 +0000
+Subject: Re: [PATCH v2 5/9] spi: spi-mem: Allow masters to transfer dummy
+ cycles directly by hardware
+To:     Mark Brown <broonie@kernel.org>
+CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <robh+dt@kernel.org>, <lukas@wunner.de>,
+        <linux-spi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+References: <1607706088-1437-1-git-send-email-skomatineni@nvidia.com>
+ <1607706088-1437-8-git-send-email-skomatineni@nvidia.com>
+ <20201211183320.GH4929@sirena.org.uk>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <2af1ff76-9777-2f8c-4e69-16fd8efcdcc0@nvidia.com>
+Date:   Fri, 11 Dec 2020 13:06:29 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201211183320.GH4929@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607720794; bh=NdMvXT6GLEua2PDhvhLaSJgxe9zBQCQl5ivJsSvOKHU=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=QkZZd6qoM4WFIZr0RPOR18LQptTmkK9Tn9/HXliC4uAPXoEnFvNd2WQNIC7m/AHXS
+         NxYnwwiPhcbTzapIOumOOGSEeEmKDuY2zJXUOGE4m48hHcbjMfg1KqDCi8lXaQG1Yp
+         wu7Xzd0jEmchAFRqyKbdmFhXVSy6dbq+h04LPFqRfUmdfRLlvD9xCbl/8BgdEzQjw7
+         GY01PmXsVGOvF2hGrzdckIzovhtIMJOdmlcoHf/vnCxcm08gNHvE/9AI5Q5nUwDXyF
+         mazd+2kSuejngNdorgaGcG2miM8ovRG5KIjLsQVH2BC8HZ2a77THO+SZP2TnPVuiVl
+         WHWn5JYeMGwDA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11 2020 at 11:18, Marcelo Tosatti wrote:
-> On Fri, Dec 11, 2020 at 02:30:34PM +0100, Thomas Gleixner wrote:
-> Unless you notify applications to invalidate their time reads,
-> i can't see a way to fix this.
+Sorry mark mixed patches went out.
 
-This is just wrong. Suspend/resume handles that fine and the system is
-guaranteed to come back with time which is very close to the reality.
+Will resend v2 and will add other people you have CC'd as well
 
-And for suspend/resume everything from kernel to userspace can have a
-notification before suspend and post resume. So applications or those
-parts of the kernel which are e.g. time sensitive can prepare upfront
-for the disruption and mop up on resume.
-
-> Therefore if you use VM migration in the first place, a certain amount of
-> timestamp accuracy error must be tolerated.
-
-That's just because it was never designed in the right way. And you
-simply declared that all applications have to deal with that.
-
-Again, where is this documented? VMs are subject to migration whether
-the customer who pays for it wants it or not. None of the virt tool docs
-mentions that pausing a VM for a long time makes timekeeping go
-south.
-
-I still have no sensible explanation WHY time should not advance accross
-a migration. All you told me is that customers complained. Which
-customers? The ones running the hosts or the ones paying for the VM?
-
-It's all just decided by some folks to "fix" a problem with the pause/
-migration mechanism they designed instead of fixing the design fail.
-
->> How can you even assume that this is correct?
+On 12/11/20 10:33 AM, Mark Brown wrote:
+> On Fri, Dec 11, 2020 at 09:01:24AM -0800, Sowjanya Komatineni wrote:
+>> This patch adds a flag SPI_MASTER_USES_HW_DUMMY_CYCLES for the controllers
+>> that support transfer of dummy cycles by the hardware directly.
+>>
+>> For controller with this flag set, spi-mem driver will skip dummy bytes
+>> transfer in the spi message.
+>>
+>> Controller drivers can get the number of dummy cycles from spi_message.
+> Copying more people who've worked on spi-mem for their review - I've not
+> got such a good perspective on controller features.
 >
-> As noted above, even without a window of unsynchronized time (due to
-> delay for NTP to sync time), time reads can be stale.
-
-So with suspend/resume we have:
-
-app:
-   t = clock_gettime()
-        <---------------- tsuspend
-        <-----------------tresume
-        So t is now behind reality by tresume - tsuspend
-
-  packet -> check timestamp .... ooops recheck
-  t = clock_gettime()
-  and t and timestamp are in the same ballpark again
-
-Now with your thing:
-
-app:
-   t = clock_gettime()
-        <---------------- tpause
-        <-----------------tresume
-        So t is now behind reality by tresume - tpause
-
-  packet -> check timestamp .... ooops recheck
-  t = clock_gettime()
-  and t and timestamp are still apart by ~ (tresume - tpause)
-
-this persists until NTP kicks in, if and only if NTP is running.
-
-Can you spot the difference?
-
->> It is exactly the same problem as we had many years ago with hardware
->> clocks suddenly stopping to tick which caused quite some stuff to go
->> belly up.
->
-> Customers complained when it was 5 seconds off, now its 0.1ms (and
-> people seem happy).
-
-And because customers complained you decided to create a scenario which
-is completely different to all other scenarios and from a time keeping
-POV not making any sense at all.
-
->> In a proper suspend/resume scenario CLOCK_REALTIME/TAI are advanced
->> (with a certain degree of accuracy) to compensate for the sleep time, so
->> the other end of a communication is at least in the same ballpark, but
->> not 50 seconds off.
->
-> Its 100ms off with migration, and can be reduced further (customers
-> complained about 5 seconds but seem happy with 0.1ms).
-
-What is 100ms? Guaranteed maximum migration time?
-
-CLOCK_REALTIME and CLOCK_TAI are off by the time the VM is paused and
-this state persists up to the point where NTP corrects it with a time
-jump.
-
-So if migration takes 5 seconds then CLOCK_REALTIME is not off by 100ms
-it's off by 5 seconds.
-
-CLOCK_MONOTONIC/BOOTTIME might be off by 100ms between pause and resume.
-
-> OK, makes sense, then reducing the 0.1ms window even further
-> is a useful thing to do. What would be an acceptable 
-> CLOCK_REALTIME accuracy error, on migration?
-
-Can you please explain how you can achive 0.1ms accuracy when migration
-time is more than that and guest TSC is just restored to the value at
-which it was stopped?
-
-Then ALL clocks including CLOCK_REALTIME and CLOCK_TAI continue from the
-point at which they were stopped. Ergo:
-
-      t(CLOCK_REALTIME) = t(REALITY) - t(STOPPED)
-
-CLOCK_REALTIME and CLOCK_TAI are global clocks and they have rules which
-have to be respected in order to make stuff work.
-
-CLOCK_MONOTONIC and CLOCK_BOOTTIME are local to a system (host, guests).
-So manipulating them is a completely different story albeit the kernel
-has explicit guarantees for the relationship between CLOCK_MONOTONIC,
-CLOCK_BOOTTIME and CLOCK_REALTIME/TAI
-
-If you could guarantee t(STOPPED) < 100ms and therefore
-
-   t(REALITY) - t(CLOCK_REALTIME) < 100ms
-
-under _all_ circumstances then we would not even have that discussion.
-
-Even < 1000ms might be acceptable. That's the margin of error which is
-also happening accross bare metal suspend/resume in the case that the
-sleep time has to be read from the RTC when TSC stops accross suspend.
-
-But suspend/resume is still substantially different because everything
-from kernel to userspace can have a notification before suspend. So
-applications or those parts of the kernel which are e.g. time sensitive
-can prepare upfront for the disruption. In your case, not at all. They
-just have to cope with the fallout. Brilliant.
-
-Your design or the lack of it just decides that everything has to cope
-with what you decided is the right thing to do and for how long it
-takes.
-
-Yes it "works" by some definition of works, but that does not mean it
-works correctly.
-
-Thanks,
-
-        tglx
+>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>> ---
+>>   drivers/spi/spi-mem.c   | 18 +++++++++++-------
+>>   include/linux/spi/spi.h |  8 ++++++++
+>>   2 files changed, 19 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+>> index f3a3f19..38a523b 100644
+>> --- a/drivers/spi/spi-mem.c
+>> +++ b/drivers/spi/spi-mem.c
+>> @@ -350,13 +350,17 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+>>   	}
+>>   
+>>   	if (op->dummy.nbytes) {
+>> -		memset(tmpbuf + op->addr.nbytes + 1, 0xff, op->dummy.nbytes);
+>> -		xfers[xferpos].tx_buf = tmpbuf + op->addr.nbytes + 1;
+>> -		xfers[xferpos].len = op->dummy.nbytes;
+>> -		xfers[xferpos].tx_nbits = op->dummy.buswidth;
+>> -		spi_message_add_tail(&xfers[xferpos], &msg);
+>> -		xferpos++;
+>> -		totalxferlen += op->dummy.nbytes;
+>> +		if (ctlr->flags & SPI_MASTER_USES_HW_DUMMY_CYCLES) {
+>> +			msg.dummy_cycles = (op->dummy.nbytes * 8) / op->dummy.buswidth;
+>> +		} else {
+>> +			memset(tmpbuf + op->addr.nbytes + 1, 0xff, op->dummy.nbytes);
+>> +			xfers[xferpos].tx_buf = tmpbuf + op->addr.nbytes + 1;
+>> +			xfers[xferpos].len = op->dummy.nbytes;
+>> +			xfers[xferpos].tx_nbits = op->dummy.buswidth;
+>> +			spi_message_add_tail(&xfers[xferpos], &msg);
+>> +			xferpos++;
+>> +			totalxferlen += op->dummy.nbytes;
+>> +		}
+>>   	}
+>>   
+>>   	if (op->data.nbytes) {
+>> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+>> index aa09fdc..2024149 100644
+>> --- a/include/linux/spi/spi.h
+>> +++ b/include/linux/spi/spi.h
+>> @@ -512,6 +512,8 @@ struct spi_controller {
+>>   
+>>   #define SPI_MASTER_GPIO_SS		BIT(5)	/* GPIO CS must select slave */
+>>   
+>> +#define SPI_MASTER_USES_HW_DUMMY_CYCLES	BIT(6)	/* HW dummy bytes transfer */
+>> +
+>>   	/* flag indicating this is an SPI slave controller */
+>>   	bool			slave;
+>>   
+>> @@ -1022,6 +1024,12 @@ struct spi_message {
+>>   	unsigned		actual_length;
+>>   	int			status;
+>>   
+>> +	/*
+>> +	 * dummy cycles in the message transfer. This is used by the controller
+>> +	 * drivers supports transfer of dummy cycles directly by the hardware.
+>> +	 */
+>> +	u8			dummy_cycles;
+>> +
+>>   	/* for optional use by whatever driver currently owns the
+>>   	 * spi_message ...  between calls to spi_async and then later
+>>   	 * complete(), that's the spi_controller controller driver.
+>> -- 
+>> 2.7.4
