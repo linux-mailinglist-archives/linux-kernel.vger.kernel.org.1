@@ -2,147 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9580F2D6DA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F9C2D6DA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390005AbgLKBhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:37:32 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:31037 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389896AbgLKBh2 (ORCPT
+        id S2390394AbgLKBkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:40:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390336AbgLKBkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:37:28 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607650640; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=erGP85vPnx/33AtB9CxsMeeaBBxhhifeDpOU4ZgSoBM=;
- b=o4ME+4jvMuCPs0VM/VkGxggSiA02hUHWNJ55Yx1DUGgon7SPMCwIrH9rFVv2BHk4Km7Sd89D
- 59/bXFUNP94VxTyUvmufZHAyY+aPGVnpOXKF2NwVbb5FCF78CeCHh+zWi6xFVQpmuisS0034
- XzlZGql/8sUyGE8wg8fjW2a4Cgw=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5fd2cd2965f116f287535052 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Dec 2020 01:36:41
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 899E9C43466; Fri, 11 Dec 2020 01:36:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A7827C433CA;
-        Fri, 11 Dec 2020 01:36:40 +0000 (UTC)
+        Thu, 10 Dec 2020 20:40:21 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E16C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:39:41 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id c12so5574480pgm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:39:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=H3bNyqjYE3P3FE+pJdfbGUHM/wRVgfwC3WmKBMLEr7M=;
+        b=dEgyJPXv0kmdJSrcSv+bLlHu62vF3ra95gSKtR8K44I6/dpazQExwhUkTuKh1Hmru3
+         dfprGYiB08/idrTanAYAC5/AZjQgID2vscE07va0W1FWTcSRxybjyvdZhWob7e2BVT3p
+         IhtpwI3muN6WlQz1pNmKtGJQdIYD1Z/zYB36Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=H3bNyqjYE3P3FE+pJdfbGUHM/wRVgfwC3WmKBMLEr7M=;
+        b=Mb+00qoMmN2sV/ck8ad6xtcKd3Usr+IphxwbIjejq1iPO0sGt3CtPNq8ubb716eHG1
+         KZogScFewbCPJZDfzwEjis+/xo3HUSA/UknH5tAs3r41ZI0muY6kLg3HF3JeOtO7TQhy
+         1P+2hJ1qxeZ9gzZmj8N4IK4xcAppWXaKsm4+CD+zNOg8ix2/ALr4QQvCSEA/G+V/iAyO
+         efn5+mNxASYrhtNZiIjc2dXIfuz5UMDlnh/yhrPRcs1EIvn+QrI7kAbnvBUtrLOAZAPR
+         L7LOVp1/CpkH3YYe4Ea0b9YE6wLb5xx0DAIAi82jSzSYAytXk65HdHWj/crYPTCQHGgt
+         Peng==
+X-Gm-Message-State: AOAM533OFNH9GdiTH0Wq/paJ8ekErvxtqtvG60Tdjiv9nny2XhErIEcS
+        uUD+X10Ym79yAjVK6x2mwd1hew==
+X-Google-Smtp-Source: ABdhPJwS2eEsNkdSg9gzpVa3oDaAxMF5jsW+xoVUW5TxVlsMAiakjkBodXM2xbhz+QHjt9vWSMi7Hw==
+X-Received: by 2002:a17:90a:fa0c:: with SMTP id cm12mr10705104pjb.87.1607650780522;
+        Thu, 10 Dec 2020 17:39:40 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id s189sm7542837pfb.60.2020.12.10.17.39.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 17:39:40 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 11 Dec 2020 09:36:40 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] scsi: ufs: Protect some contexts from unexpected
- clock scaling
-In-Reply-To: <a2338ef6da3d4ed4093547ba87e13e94d8dd2a45.camel@gmail.com>
-References: <1607520942-22254-1-git-send-email-cang@codeaurora.org>
- <1607520942-22254-2-git-send-email-cang@codeaurora.org>
- <a2338ef6da3d4ed4093547ba87e13e94d8dd2a45.camel@gmail.com>
-Message-ID: <48363aee8a746a43440f86f620d9d2e0@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAD=FV=Xgw+33pCycHyaMPsk64Qs+oh8e-RtJaM1yn0F27qZRVQ@mail.gmail.com>
+References: <20201203074459.13078-1-rojay@codeaurora.org> <CAD=FV=WtU3cnRe6pDKFMA9_0cnQFtSOyohY_bJwZObK+KrbhVQ@mail.gmail.com> <160764107797.1580929.14768824290834396298@swboyd.mtv.corp.google.com> <CAD=FV=WuQjKC6GHy8d2nuqS-fgsUfxYrJosg3eyC9JU1FPCcjw@mail.gmail.com> <160764316821.1580929.18177257779550490986@swboyd.mtv.corp.google.com> <CAD=FV=WvG085orLqnvg9WUobL7iyxwgoxh-8RvOaRdi9rLeDUg@mail.gmail.com> <160764785500.1580929.4255309510717807485@swboyd.mtv.corp.google.com> <CAD=FV=VD78fmSRciFf38AbZG=EFPzDiT_e7QkEC08zA9iL1vTw@mail.gmail.com> <160764967649.1580929.3992720095789306793@swboyd.mtv.corp.google.com> <CAD=FV=Xgw+33pCycHyaMPsk64Qs+oh8e-RtJaM1yn0F27qZRVQ@mail.gmail.com>
+Subject: Re: [PATCH] spi: spi-geni-qcom: Fix NULL pointer access in geni_spi_isr
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+To:     Doug Anderson <dianders@chromium.org>
+Date:   Thu, 10 Dec 2020 17:39:38 -0800
+Message-ID: <160765077856.1580929.643282739071441296@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-11 01:34, Bean Huo wrote:
-> Hi Can
-> 
-> On Wed, 2020-12-09 at 05:35 -0800, Can Guo wrote:
->> 
->> 
->> @@ -1160,6 +1166,7 @@ static void
->> ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
->>  {
->>  	up_write(&hba->clk_scaling_lock);
->>  	ufshcd_scsi_unblock_requests(hba);
->> +	ufshcd_release(hba);
->>  }
->> 
->>  /**
->> @@ -1175,12 +1182,9 @@ static int ufshcd_devfreq_scale(struct ufs_hba
->> *hba, bool scale_up)
->>  {
->>  	int ret = 0;
->> 
->> -	/* let's not get into low power until clock scaling is
->> completed */
->> -	ufshcd_hold(hba, false);
->> -
->>  	ret = ufshcd_clock_scaling_prepare(hba);
->>  	if (ret)
->> -		goto out;
->> +		return ret;
->> 
->>  	/* scale down the gear before scaling down clocks */
->>  	if (!scale_up) {
->> @@ -1212,8 +1216,6 @@ static int ufshcd_devfreq_scale(struct ufs_hba
->> *hba, bool scale_up)
->> 
->>  out_unprepare:
->>  	ufshcd_clock_scaling_unprepare(hba);
->> -out:
->> -	ufshcd_release(hba);
->>  	return ret;
->>  }
-> 
-> I didn't understand why moving ufshcd_hold/ufshcd_release into
-> ufshcd_clock_scaling_prepare()/ufshcd_clock_scaling_unprepare().
-> 
-> 
->> 
->> @@ -1294,15 +1296,8 @@ static int ufshcd_devfreq_target(struct device
->> *dev,
->>  	}
->>  	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
->> 
->> -	pm_runtime_get_noresume(hba->dev);
->> -	if (!pm_runtime_active(hba->dev)) {
->> -		pm_runtime_put_noidle(hba->dev);
->> -		ret = -EAGAIN;
->> -		goto out;
->> -	}
->>  	start = ktime_get();
->>  	ret = ufshcd_devfreq_scale(hba, scale_up);
->> -	pm_runtime_put(hba->dev);
->> 
-> 
-> which branch are you working on?  I didn't see this part codes in the
-> branch 5.11/scsi-queue and 5.11/scsi-staging.
-> 
-> Bean
+Quoting Doug Anderson (2020-12-10 17:30:17)
+> On Thu, Dec 10, 2020 at 5:21 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> >
+> > Yeah and so if it comes way later because it timed out then what's the
+> > point of calling synchronize_irq() again? To make the completion
+> > variable set when it won't be tested again until it is reinitialized?
+>=20
+> Presumably the idea is to try to recover to a somewhat usable state
+> again?  We're not rebooting the machine so, even though this transfer
+> failed, we will undoubtedly do another transfer later.  If that
+> "abort" interrupt comes way later while we're setting up the next
+> transfer we'll really confuse ourselves.
 
-As I mentioned in my cover-letter, this is based on 5.11/scsi-fixes.
-These codes came from one of my earlier changes, but since this change
-can cover the old change's functionality, so I removed the codes.
+The interrupt handler just sets a completion variable. What does that
+confuse?
 
-Can Guo.
+>=20
+> I guess you could go the route of adding a synchronize_irq() at the
+> start of the next transfer, but I'd rather add the overhead in the
+> exceptional case (the timeout) than the normal case.  In the normal
+> case we don't need to worry about random IRQs from the past transfer
+> suddenly showing up.
+>=20
+
+How does adding synchronize_irq() at the end guarantee that the abort is
+cleared out of the hardware though? It seems to assume that the abort is
+pending at the GIC when it could still be running through the hardware
+and not executed yet. It seems like a synchronize_irq() for that is
+wishful thinking that the irq is merely pending even though it timed
+out and possibly never ran. Maybe it's stuck in a write buffer in the
+CPU?
