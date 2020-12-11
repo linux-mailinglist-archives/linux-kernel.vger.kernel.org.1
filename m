@@ -2,84 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584AF2D739D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A483E2D7389
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393276AbgLKKLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:11:54 -0500
-Received: from mga04.intel.com ([192.55.52.120]:25115 "EHLO mga04.intel.com"
+        id S1732253AbgLKKLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:11:11 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:33372 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389094AbgLKKL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:11:27 -0500
-IronPort-SDR: mXJdiqE18RTlPvPyN+jMpjPqIpBYVQgvvIcrLj88ROyc7TdkoD84NLIn07hO9Yl6ZDIgYQjmun
- +lyUGWHaEM/w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="171845135"
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="171845135"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 02:09:42 -0800
-IronPort-SDR: 1lPGU/+yZedtJ4rAR+753scyFR+NhlvPw02xOi+HdAvKHZATcWiPI6r+6olWZ+Ni3v2niY/pfB
- zUFp4GKdOBkQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="440813553"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 11 Dec 2020 02:09:39 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 11 Dec 2020 12:09:39 +0200
-Date:   Fri, 11 Dec 2020 12:09:39 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] tcpm: Fix possible buffer overflows in tcpm_queue_vdm
-Message-ID: <20201211100939.GJ1594451@kuha.fi.intel.com>
-References: <20201209030716.3764-1-ruc_zhangxiaohui@163.com>
+        id S1731557AbgLKKKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:10:42 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1knfMu-0004qD-WF; Fri, 11 Dec 2020 21:09:46 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 11 Dec 2020 21:09:45 +1100
+Date:   Fri, 11 Dec 2020 21:09:45 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
+Cc:     "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+Subject: Re: [PATCH 0/5] crypto: caam - avoid allocating memory at crypto
+ request runtime
+Message-ID: <20201211100944.GA1133@gondor.apana.org.au>
+References: <20201203013524.30495-1-iuliana.prodan@oss.nxp.com>
+ <d454a0da-395d-3893-9ae1-f52236bcdde8@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201209030716.3764-1-ruc_zhangxiaohui@163.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d454a0da-395d-3893-9ae1-f52236bcdde8@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Dec 09, 2020 at 11:07:16AM +0800, Xiaohui Zhang wrote:
-> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+On Thu, Dec 10, 2020 at 10:28:35AM +0200, Horia Geantă wrote:
+>
+> Moving the memory allocations from caam driver into the generic crypto API
+> has the side effect of dropping the GFP_DMA allocation flag.
 > 
-> tcpm_queue_vdm() calls memcpy() without checking the destination
-> size may trigger a buffer overflower.
-
-Thanks for the patch, but I didn't actually see any place where that
-could happen. I think the idea is that the callers make sure the count
-does not exceed VDO_MAX_SIZE before calling the function.
-
-> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> For cases when caam device is limited to 32-bit address space and
+> there's no IOMMU, this could lead to DMA API using bounce buffering.
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 55535c4f6..fcd331f33 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1045,7 +1045,7 @@ static void tcpm_queue_vdm(struct tcpm_port *port, const u32 header,
->  
->  	port->vdo_count = cnt + 1;
+> We need to measure the performance impact of this change before deciding
+> what we should do next.
 
-That should have been fixed as well, no?
+This only applies to the control data, right? The actual data
+being operated on surely is the most important factor.
 
->  	port->vdo_data[0] = header;
-> -	memcpy(&port->vdo_data[1], data, sizeof(u32) * cnt);
-> +	memcpy(&port->vdo_data[1], data, min_t(int, sizeof(u32) * cnt, VDO_MAX_SIZE - 1));
->  	/* Set ready, vdm state machine will actually send */
->  	port->vdm_retries = 0;
->  	port->vdm_state = VDM_STATE_READY;
+In any case, did you respond to Ard's concern about potentially
+exhausting DMA memory?
 
-Unless I'm missing something, I don't think this patch is needed.
-
-thanks,
-
+Cheers,
 -- 
-heikki
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
