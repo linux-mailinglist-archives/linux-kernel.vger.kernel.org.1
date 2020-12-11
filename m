@@ -2,120 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2672D7489
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D33222D7490
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391450AbgLKLT3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Dec 2020 06:19:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390046AbgLKLTS (ORCPT
+        id S2394397AbgLKLZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 06:25:22 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:22843 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393663AbgLKLZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:19:18 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E96CC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 03:18:38 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kngRO-0002gK-Bp; Fri, 11 Dec 2020 12:18:26 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kngRL-0001Zt-OF; Fri, 11 Dec 2020 12:18:23 +0100
-Date:   Fri, 11 Dec 2020 12:18:23 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] i2c: imx: fix reference leak when
- pm_runtime_get_sync fails
-Message-ID: <20201211111823.otsogwtwfzow627z@pengutronix.de>
-References: <20201201092924.112461-1-miaoqinglang@huawei.com>
- <20201201093141.113135-1-miaoqinglang@huawei.com>
+        Fri, 11 Dec 2020 06:25:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1607685915; x=1639221915;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=2f3dn1hwKCkqns8Fdr3/RSg8UuzWOBEWtTcr6IUp4ok=;
+  b=uW0+wS+jdFTY45Kof4Ng0uAUm3pJg0xGUPIDjdxmCmykYgB9un9p1OF+
+   +UFtMiGIvSlDx+1llQL0W/GtiZOCHYKnkudQ9hJZhXwkd1+0wVgVmzg6I
+   MsL2Mw0uupm+GPS34DphPN1OhUvsqbCLUiU6V+YAx6meJcXRJxbNp5vHy
+   s=;
+X-IronPort-AV: E=Sophos;i="5.78,411,1599523200"; 
+   d="scan'208";a="68514954"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 11 Dec 2020 11:24:28 +0000
+Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (Postfix) with ESMTPS id DB17114152C;
+        Fri, 11 Dec 2020 11:24:24 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.144) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 11 Dec 2020 11:24:19 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <davem@davemloft.net>
+CC:     SeongJae Park <sjpark@amazon.de>, <kuba@kernel.org>,
+        <kuznet@ms2.inr.ac.ru>, <edumazet@google.com>, <fw@strlen.de>,
+        <paulmck@kernel.org>, <netdev@vger.kernel.org>,
+        <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4] net/ipv4/inet_fragment: Batch fqdir destroy works
+Date:   Fri, 11 Dec 2020 12:24:05 +0100
+Message-ID: <20201211112405.31158-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201201093141.113135-1-miaoqinglang@huawei.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 12:14:46 up 9 days,  1:21, 24 users,  load average: 0.00, 0.05, 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.144]
+X-ClientProxiedBy: EX13D16UWC004.ant.amazon.com (10.43.162.72) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 05:31:41PM +0800, Qinglang Miao wrote:
-> In i2c_imx_xfer() and i2c_imx_remove(), the pm reference count
-> is not expected to be incremented on return.
-> 
-> However, pm_runtime_get_sync will increment pm reference count
-> even failed. Forgetting to putting operation will result in a
-> reference leak here.
-> 
-> Replace it with pm_runtime_resume_and_get to keep usage
-> counter balanced.
-> 
-> Fixes: 3a5ee18d2a32 ("i2c: imx: implement master_xfer_atomic callback")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+From: SeongJae Park <sjpark@amazon.de>
 
-Thank you!
+On a few of our systems, I found frequent 'unshare(CLONE_NEWNET)' calls
+make the number of active slab objects including 'sock_inode_cache' type
+rapidly and continuously increase.  As a result, memory pressure occurs.
 
-Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+In more detail, I made an artificial reproducer that resembles the
+workload that we found the problem and reproduce the problem faster.  It
+merely repeats 'unshare(CLONE_NEWNET)' 50,000 times in a loop.  It takes
+about 2 minutes.  On 40 CPU cores / 70GB DRAM machine, the available
+memory continuously reduced in a fast speed (about 120MB per second,
+15GB in total within the 2 minutes).  Note that the issue don't
+reproduce on every machine.  On my 6 CPU cores machine, the problem
+didn't reproduce.
 
-> ---
->  drivers/i2c/busses/i2c-imx.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-> index c98529c76..93d2069da 100644
-> --- a/drivers/i2c/busses/i2c-imx.c
-> +++ b/drivers/i2c/busses/i2c-imx.c
-> @@ -1008,7 +1008,7 @@ static int i2c_imx_xfer(struct i2c_adapter *adapter,
->  	struct imx_i2c_struct *i2c_imx = i2c_get_adapdata(adapter);
->  	int result;
->  
-> -	result = pm_runtime_get_sync(i2c_imx->adapter.dev.parent);
-> +	result = pm_runtime_resume_and_get(i2c_imx->adapter.dev.parent);
->  	if (result < 0)
->  		return result;
->  
-> @@ -1252,7 +1252,7 @@ static int i2c_imx_remove(struct platform_device *pdev)
->  	struct imx_i2c_struct *i2c_imx = platform_get_drvdata(pdev);
->  	int irq, ret;
->  
-> -	ret = pm_runtime_get_sync(&pdev->dev);
-> +	ret = pm_runtime_resume_and_get(&pdev->dev);
->  	if (ret < 0)
->  		return ret;
->  
-> -- 
-> 2.23.0
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+'cleanup_net()' and 'fqdir_work_fn()' are functions that deallocate the
+relevant memory objects.  They are asynchronously invoked by the work
+queues and internally use 'rcu_barrier()' to ensure safe destructions.
+'cleanup_net()' works in a batched maneer in a single thread worker,
+while 'fqdir_work_fn()' works for each 'fqdir_exit()' call in the
+'system_wq'.  Therefore, 'fqdir_work_fn()' called frequently under the
+workload and made the contention for 'rcu_barrier()' high.  In more
+detail, the global mutex, 'rcu_state.barrier_mutex' became the
+bottleneck.
 
+This commit avoids such contention by doing the 'rcu_barrier()' and
+subsequent lightweight works in a batched manner, as similar to that of
+'cleanup_net()'.  The fqdir hashtable destruction, which is done before
+the 'rcu_barrier()', is still allowed to run in parallel for fast
+processing, but this commit makes it to use a dedicated work queue
+instead of the 'system_wq', to make sure that the number of threads is
+bounded.
+
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+
+Changes from v3
+(https://lore.kernel.org/lkml/20201211082032.26965-1-sjpark@amazon.com/)
+- Use system_wq for the batched works and a dedicated non-ordered work
+  queue for rhashtable destruction (Eric Dumazet)
+
+Changes from v2
+(https://lore.kernel.org/lkml/20201210080844.23741-1-sjpark@amazon.com/)
+- Add numbers after the patch (Eric Dumazet)
+- Make only 'rcu_barrier()' and subsequent lightweight works serialized
+  (Eric Dumazet)
+
+Changes from v1
+(https://lore.kernel.org/netdev/20201208094529.23266-1-sjpark@amazon.com/)
+- Keep xmas tree variable ordering (Jakub Kicinski)
+- Add more numbers (Eric Dumazet)
+- Use 'llist_for_each_entry_safe()' (Eric Dumazet)
+
+---
+ include/net/inet_frag.h  |  1 +
+ net/ipv4/inet_fragment.c | 47 +++++++++++++++++++++++++++++++++-------
+ 2 files changed, 40 insertions(+), 8 deletions(-)
+
+diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
+index bac79e817776..48cc5795ceda 100644
+--- a/include/net/inet_frag.h
++++ b/include/net/inet_frag.h
+@@ -21,6 +21,7 @@ struct fqdir {
+ 	/* Keep atomic mem on separate cachelines in structs that include it */
+ 	atomic_long_t		mem ____cacheline_aligned_in_smp;
+ 	struct work_struct	destroy_work;
++	struct llist_node	free_list;
+ };
+ 
+ /**
+diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
+index 10d31733297d..05cd198d7a6b 100644
+--- a/net/ipv4/inet_fragment.c
++++ b/net/ipv4/inet_fragment.c
+@@ -145,12 +145,16 @@ static void inet_frags_free_cb(void *ptr, void *arg)
+ 		inet_frag_destroy(fq);
+ }
+ 
+-static void fqdir_work_fn(struct work_struct *work)
++static LLIST_HEAD(fqdir_free_list);
++
++static void fqdir_free_fn(struct work_struct *work)
+ {
+-	struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
+-	struct inet_frags *f = fqdir->f;
++	struct llist_node *kill_list;
++	struct fqdir *fqdir, *tmp;
++	struct inet_frags *f;
+ 
+-	rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
++	/* Atomically snapshot the list of fqdirs to free */
++	kill_list = llist_del_all(&fqdir_free_list);
+ 
+ 	/* We need to make sure all ongoing call_rcu(..., inet_frag_destroy_rcu)
+ 	 * have completed, since they need to dereference fqdir.
+@@ -158,10 +162,25 @@ static void fqdir_work_fn(struct work_struct *work)
+ 	 */
+ 	rcu_barrier();
+ 
+-	if (refcount_dec_and_test(&f->refcnt))
+-		complete(&f->completion);
++	llist_for_each_entry_safe(fqdir, tmp, kill_list, free_list) {
++		f = fqdir->f;
++		if (refcount_dec_and_test(&f->refcnt))
++			complete(&f->completion);
+ 
+-	kfree(fqdir);
++		kfree(fqdir);
++	}
++}
++
++static DECLARE_WORK(fqdir_free_work, fqdir_free_fn);
++
++static void fqdir_work_fn(struct work_struct *work)
++{
++	struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
++
++	rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
++
++	if (llist_add(&fqdir->free_list, &fqdir_free_list))
++		queue_work(system_wq, &fqdir_free_work);
+ }
+ 
+ int fqdir_init(struct fqdir **fqdirp, struct inet_frags *f, struct net *net)
+@@ -184,10 +203,22 @@ int fqdir_init(struct fqdir **fqdirp, struct inet_frags *f, struct net *net)
+ }
+ EXPORT_SYMBOL(fqdir_init);
+ 
++static struct workqueue_struct *inet_frag_wq;
++
++static int __init inet_frag_wq_init(void)
++{
++	inet_frag_wq = create_workqueue("inet_frag_wq");
++	if (!inet_frag_wq)
++		panic("Could not create inet frag workq");
++	return 0;
++}
++
++pure_initcall(inet_frag_wq_init);
++
+ void fqdir_exit(struct fqdir *fqdir)
+ {
+ 	INIT_WORK(&fqdir->destroy_work, fqdir_work_fn);
+-	queue_work(system_wq, &fqdir->destroy_work);
++	queue_work(inet_frag_wq, &fqdir->destroy_work);
+ }
+ EXPORT_SYMBOL(fqdir_exit);
+ 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.17.1
+
