@@ -2,56 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93D42D6CCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C33762D6CCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394672AbgLKA6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 19:58:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388572AbgLKA5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 19:57:54 -0500
-Subject: Re: [GIT PULL] ktest.pl: Fix incorrect reboot for grub2bls
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607648234;
-        bh=xFdoZjrjkAebVxXQZob0SQmpD+X7z9Syzq1L7HwxjM0=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=I1HM+Sh+7dAEFFXMd0lRiykvpVrQp6XuBITv5s1iXELCy04EROTQlJoZ16VaB2FIn
-         seiGYIId2t79sszCmcFlOyNd6MqJnuyqWn69Q68oeEzICKO8kntqHwk/8BwmYPp31O
-         il7zwK5LcofBP+Q16jaWNVQ9fWP+iF9bcboRJGRsMjdxwVrzpW82qnm3x+3swwY39L
-         Z8r7ivprtleVDuckNjbtDM3vctrffWsN9KBTO9pAi99UYky2dewMoBfny1sz7VYVxc
-         s4gijETYWguUPeAELJalj3zcUQj3r9VAsKh1mLT1Gm+jbY9UJRNsBDbyDUD5Q4DEtc
-         bhP9EmjhnDxiw==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201210195009.2a06b3ef@oasis.local.home>
-References: <20201210195009.2a06b3ef@oasis.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201210195009.2a06b3ef@oasis.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-ktest.git ktest-v5.10-rc6
-X-PR-Tracked-Commit-Id: 271e0c9dce1b02a825b3cc1a7aa1fab7c381d44b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 33dc9614dc208291d0c4bcdeb5d30d481dcd2c4c
-Message-Id: <160764823446.8380.14481283386760228941.pr-tracker-bot@kernel.org>
-Date:   Fri, 11 Dec 2020 00:57:14 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Libo Chen <libo.chen@oracle.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>
+        id S2394706AbgLKA6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 19:58:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394682AbgLKA60 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 19:58:26 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2C9C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:57:46 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id d2so5879044pfq.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:57:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MTuxwf9KusT/ntlnVCF0gMBlWlskbWARxkaUDrHOkdo=;
+        b=ra/WyZQoH+AGVlTrKDauhvPdiS00/pxJvs9pj4d37efoZQNZVc+YC1W+GtSV7wDQMv
+         3Mvpwy7tvnA3/aqi6p8jyeGn0RiTWUQzE26nqhAEyR6TfToOa6tfqR/WnOi+SIx2rSjl
+         /Ps0Va+qa275/zgoJ4ATYKXWrjKpbYdpMxcm7iLqoC+1WKuYLh4B3j95Cz1dvR3hEXEw
+         AqPD+8q9+w7dwHS9riwHOjGYOsr05T3IFKZkynpELZtrlObf0jCMlMw/2M4ICCJQGYxr
+         d5hGfjj7Q2LHqEf0FebkxA0WQ+JAXOeSrNEh8ZScYqFJn8LIUmGoyRRvZHSe6LWnB/dn
+         EVnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MTuxwf9KusT/ntlnVCF0gMBlWlskbWARxkaUDrHOkdo=;
+        b=hbzKrVJlSiv0X2PBkuwUsi+uHGbk1ix3f97csxbEs9zG4BuQcrlfkQh344e7tQL6Ht
+         diShJ2MD7T0LAAed+qkW2ABo4NZGlkGuFBro3xF7qMPoI8GqjNXw5XvtV6nmq9QRK6Na
+         ExswiXcmIh/mXA6Iewy/IEtcSF7Nwyzzv8LxZtn13bglvuAS30dCexSMLT1SVgliSUar
+         drKoc85AyU3AhE+OfJtJ3FvuGt+e+0R7CEdlQrh17nmap2QMCR31guU5sXdCHskaFnPf
+         /wVBTj9iJvSQ+QtqQ0QkKzF7cyd8tVjhIpHdNMJhCSwftKSVoPB5V7NktZEPz+8fhZFl
+         IVmw==
+X-Gm-Message-State: AOAM533ziKKjsRG75qHtnUxgZbtj96Z551QMngg1yfGWYta8ue13F5Ej
+        558d+8L1CodIRVEBjh7Rj3B0SUeKwWzH/Myt
+X-Google-Smtp-Source: ABdhPJzfz9YK0z5xQjgX+uIRBOh+PmftuTdjF5WTgFEIpGyktmdOqbLubqsI53pFf5YA0q7+42Rq2g==
+X-Received: by 2002:a65:518a:: with SMTP id h10mr9153953pgq.340.1607648265788;
+        Thu, 10 Dec 2020 16:57:45 -0800 (PST)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id x6sm6829532pgr.20.2020.12.10.16.57.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 16:57:45 -0800 (PST)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     linux-serial@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Amlogic Meson
+        SoC support),
+        linux-amlogic@lists.infradead.org (open list:ARM/Amlogic Meson SoC
+        support)
+Subject: [PATCH] tty: serial: meson: enable console as module
+Date:   Thu, 10 Dec 2020 16:57:44 -0800
+Message-Id: <20201211005744.12855-1-khilman@baylibre.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 10 Dec 2020 19:50:09 -0500:
+Enable serial driver to be built as a module.  To do so, init the
+console support on driver/module load instead of using
+console_initcall().
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-ktest.git ktest-v5.10-rc6
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+---
+Yes, I'm well aware that having the serial console as a module makes
+devices hard to debug, so I'm not changing any default behavior.  The
+goal is just to enable building as a module for environments where
+serial debug is not available or needed.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/33dc9614dc208291d0c4bcdeb5d30d481dcd2c4c
+ drivers/tty/serial/Kconfig      | 2 +-
+ drivers/tty/serial/meson_uart.c | 8 +++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-Thank you!
-
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index 1044fc387691..c3fa78e63357 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -206,7 +206,7 @@ config SERIAL_MESON
+ 
+ config SERIAL_MESON_CONSOLE
+ 	bool "Support for console on meson"
+-	depends on SERIAL_MESON=y
++	depends on SERIAL_MESON
+ 	select SERIAL_CORE_CONSOLE
+ 	select SERIAL_EARLYCON
+ 	help
+diff --git a/drivers/tty/serial/meson_uart.c b/drivers/tty/serial/meson_uart.c
+index d2c08b760f83..69eeef9edfa5 100644
+--- a/drivers/tty/serial/meson_uart.c
++++ b/drivers/tty/serial/meson_uart.c
+@@ -604,7 +604,6 @@ static int __init meson_serial_console_init(void)
+ 	register_console(&meson_serial_console);
+ 	return 0;
+ }
+-console_initcall(meson_serial_console_init);
+ 
+ static void meson_serial_early_console_write(struct console *co,
+ 					     const char *s,
+@@ -634,6 +633,9 @@ OF_EARLYCON_DECLARE(meson, "amlogic,meson-ao-uart",
+ 
+ #define MESON_SERIAL_CONSOLE	(&meson_serial_console)
+ #else
++static int __init meson_serial_console_init(void) {
++	return 0;
++}
+ #define MESON_SERIAL_CONSOLE	NULL
+ #endif
+ 
+@@ -824,6 +826,10 @@ static int __init meson_uart_init(void)
+ {
+ 	int ret;
+ 
++	ret = meson_serial_console_init();
++	if (ret)
++		return ret;
++	
+ 	ret = uart_register_driver(&meson_uart_driver);
+ 	if (ret)
+ 		return ret;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.29.2
+
