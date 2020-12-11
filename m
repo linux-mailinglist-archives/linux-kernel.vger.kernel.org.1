@@ -2,108 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F3E2D7C5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98AF22D7C58
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405215AbgLKRFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:05:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46600 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2394277AbgLKRF3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:05:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607706242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W7UY2I3GoBLSPd0Ton2Uhm7zhxW0pOwaS+4enBrxYLY=;
-        b=NYnYmm6pmtEOi0Kpf1bwisd00v1XQX5XDi8bCJfhm7836MZvCKKguUuXvrG0OJVJWSP9hX
-        EqK7StfGMVU0p3TCI81TerKLcAJe3ldJIA/vitzs4ZkYURUzd2Zl6StHI+hyieECNQw7vP
-        K/+ySA+xg4M85i3QPPGbQ6PPnXx6+aU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-234-y-RRIHHHPgqy5o9pGaoSLA-1; Fri, 11 Dec 2020 12:03:58 -0500
-X-MC-Unique: y-RRIHHHPgqy5o9pGaoSLA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DDC031934102;
-        Fri, 11 Dec 2020 17:03:55 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 77E0F60BD9;
-        Fri, 11 Dec 2020 17:03:55 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 0BBH3t1k028577;
-        Fri, 11 Dec 2020 12:03:55 -0500
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 0BBH3q7E028573;
-        Fri, 11 Dec 2020 12:03:52 -0500
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Fri, 11 Dec 2020 12:03:52 -0500 (EST)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-cc:     SelvaKumar S <selvakuma.s1@samsung.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "hare@suse.de" <hare@suse.de>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "selvajove@gmail.com" <selvajove@gmail.com>,
-        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
-        "joshi.k@samsung.com" <joshi.k@samsung.com>,
-        "javier.gonz@samsung.com" <javier.gonz@samsung.com>
-Subject: Re: [RFC PATCH v3 1/2] block: add simple copy support
-In-Reply-To: <SN4PR0401MB359867B95139ACD1ACFF0E709BCA0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-Message-ID: <alpine.LRH.2.02.2012111200490.27753@file01.intranet.prod.int.rdu2.redhat.com>
-References: <20201211135139.49232-1-selvakuma.s1@samsung.com> <CGME20201211135200epcas5p217eaa00b35a59b3468c198d85309fd7d@epcas5p2.samsung.com> <20201211135139.49232-2-selvakuma.s1@samsung.com>
- <SN4PR0401MB359867B95139ACD1ACFF0E709BCA0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        id S2394411AbgLKRFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:05:50 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:20319 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405405AbgLKREk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 12:04:40 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Csxvf5KKwz4y;
+        Fri, 11 Dec 2020 18:03:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1607706238; bh=/RTK8d7aFtrnlkxPSCm6jcCEYYZlXwcQe86IYM1xhmE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WMjrtunVKMsEs8j/7ClRuEuSSod/L91fPKYtNqIXMALWvY739Dz/85mTwkFEhmp+G
+         g6XlW6GukJ4FzsGoj3IbQRmlpMSWJim/ziBVrWdMHmfOJPCLCCDABvr2kqAfoTOkA7
+         iGd7YHI3tlDriJZ8Oxd0Y/qnEZQ6wk4Ajz8vM37gaJ2tvhSQzV8kHtc5MfG68qXbj3
+         DS3+gM2Jm11P1hhg7O1/reY5iHM+Jj+STAOFHQ1FC0luayKWWDuoLVhk4nUSTdFSeP
+         5Ugi1a2EruTu5Wx0ZSQ9Nh+Mal7lVk6iThV4o4Q9ns+aOz071fLJTGA21vBe+GqPUS
+         oqRRN0XK2/KSA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Fri, 11 Dec 2020 18:04:01 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Johnny Chuang <johnny.chuang.emc@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v8 2/4] input: elants: support old touch report
+ format
+Message-ID: <20201211170401.GA31605@qmqm.qmqm.pl>
+References: <cover.1607669375.git.mirq-linux@rere.qmqm.pl>
+ <a5c0b6b300fadf9425781285351b46c6dbb4f618.1607669375.git.mirq-linux@rere.qmqm.pl>
+ <X9Mf5G6yvIEAoh2C@google.com>
+ <20201211160917.GA23095@qmqm.qmqm.pl>
+ <3d872d19-a0b2-ed83-4b08-5c9a4755c2fe@gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3d872d19-a0b2-ed83-4b08-5c9a4755c2fe@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Fri, 11 Dec 2020, Johannes Thumshirn wrote:
-
-> On 11/12/2020 15:57, SelvaKumar S wrote:
-> [...] 
-> > +int blk_copy_emulate(struct block_device *bdev, struct blk_copy_payload *payload,
-> > +		gfp_t gfp_mask)
-> > +{
-> > +	struct request_queue *q = bdev_get_queue(bdev);
-> > +	struct bio *bio;
-> > +	void *buf = NULL;
-> > +	int i, nr_srcs, max_range_len, ret, cur_dest, cur_size;
-> > +
-> > +	nr_srcs = payload->copy_range;
-> > +	max_range_len = q->limits.max_copy_range_sectors << SECTOR_SHIFT;
-> > +	cur_dest = payload->dest;
-> > +	buf = kvmalloc(max_range_len, GFP_ATOMIC);
+On Fri, Dec 11, 2020 at 07:39:33PM +0300, Dmitry Osipenko wrote:
+> 11.12.2020 19:09, Michał Mirosław пишет:
+> > On Thu, Dec 10, 2020 at 11:29:40PM -0800, Dmitry Torokhov wrote:
+> >> Hi Michał,
+> >> On Fri, Dec 11, 2020 at 07:53:56AM +0100, Michał Mirosław wrote:
+> >>> @@ -998,17 +1011,18 @@ static irqreturn_t elants_i2c_irq(int irq, void *_dev)
+> >>>  			}
+> >>>  
+> >>>  			report_len = ts->buf[FW_HDR_LENGTH] / report_count;
+> >>> -			if (report_len != PACKET_SIZE) {
+> >>> +			if (report_len != PACKET_SIZE &&
+> >>> +			    report_len != PACKET_SIZE_OLD) {
+> >>>  				dev_err(&client->dev,
+> >>> -					"mismatching report length: %*ph\n",
+> >>> +					"unsupported report length: %*ph\n",
+> >>>  					HEADER_SIZE, ts->buf);
+> >> Do I understand this correctly that the old packets are only observed on
+> >> EKTF3624? If so can we expand the check so that we only accept packets
+> >> with "old" size when we know we are dealing with this device?
+> > 
+> > We only have EKTF3624 and can't be sure there are no other chips needing this.
 > 
-> Why GFP_ATOMIC and not the passed in gfp_mask? Especially as this is a kvmalloc()
-> which has the potential to grow quite big.
+> In practice this older packet format should be seen only on 3624, but
+> nevertheless we could make it more explicit by adding the extra chip_id
+> checks.
+> 
+> It won't be difficult to change it in the future if will be needed.
+> 
+> I think the main point that Dmitry Torokhov conveys here is that we
+> should minimize the possible impact on the current EKT3500 code since we
+> don't have definitive answers regarding the firmware differences among
+> the hardware variants.
 
-You are right, this is confusing.
+The only possible impact here is that older firmware instead of breaking
+would suddenly work. Maybe we can accept such a risk?
 
-There's this piece of code at the top of kvmalloc_node:
-        if ((flags & GFP_KERNEL) != GFP_KERNEL)
-                return kmalloc_node(size, flags, node);
-
-So, when you use GFP_ATOMIC flag, it will always fall back to kmalloc.
-
-Mikulas
-
+Best Regards
+Michał Mirosław
