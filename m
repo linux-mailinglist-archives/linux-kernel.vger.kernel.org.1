@@ -2,133 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EEC2D824B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:44:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5122D8257
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407023AbgLKWnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:43:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58040 "EHLO mail.kernel.org"
+        id S2407030AbgLKWt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 17:49:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394011AbgLKWmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:42:33 -0500
-Date:   Fri, 11 Dec 2020 16:41:51 -0600
+        id S2394011AbgLKWtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 17:49:19 -0500
+X-Gm-Message-State: AOAM5313Hs3LDR3j5REIZ+4NC3zAsehRiuOC+DdrzIFEyNrZCwNm4uoP
+        5tngIEUWy52Jt9j6UGbGB5cLqsey+TH8qfUwqg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607726513;
-        bh=CzOhIDGkl3UprOKXbtfomhvXwhcIdMbufejZI4QCbOI=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=ZFJCMTLuLlQz3Px+TgUwer07fyqbCEKPMDPMx2MokebsxVTi4bd6TFbvNmieUjyrM
-         jLL6OgK1ntbMJNBUZwAuDJ+jQQnym4wJyhg4xPeJys3JmxrgzNqRIHFUABE3ya8nP2
-         BjKog7nX/Z2rrH/gplwleDAlg+f8StpzCnTA2kMfyuoj/ECWj5MyGUBcq/NrO2tX+s
-         TJeRhY9q0lfujyHiAu8e3wJlCxhz3YaxTxDw1HwMSIyWxm/2fC7Dkq5dt9H89AxYkr
-         mlOcOjlaFTPnzSeKRh/DIo7+KQ7Wut12X2A9nXdYUxH/rtL2vOPUBCiDJMYkOQwUfo
-         hg/EHPU+8Mm5Q==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-Cc:     Puranjay Mohan <puranjay12@gmail.com>,
-        "bjorn@helgaas.com" <bjorn@helgaas.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drivers: block: skd: remove skd_pci_info()
-Message-ID: <20201211224151.GA113093@bjorn-Precision-5520>
+        s=k20201202; t=1607726919;
+        bh=9kZNymVdIQdokRAKswxv73AN4tdhSwyYcUymBCQ55Ic=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hfxGOydcbMt0JjYq6ERbodgzYugBbj5r6D8hPDOOyYvDnnQPOGwQXYqduJbwHc1Rt
+         8Eh4MdG8RgJwHYa1stna5N/rHLQE+bN32BJK6ic1Pu86SB9Jkz/K7qSz8kht1pLKMc
+         r2bm6vIJyIDi6IspadzII6gUbYNrpQKyVoHmdpcmcZtYJVbp6oSTWXDPA3gsE+wXbg
+         wLIXS5s9VJ3OltUs04v6uzu9XjbwNlR4umrcJMhSI3PI1On/t1o66Yypqx11KYwYQT
+         2JPV1Z/4bATMscD9WUVU95VkXJzEjhlPe07PuEvh9J1WHCL+T68QSjQMcf11oDa8sT
+         sNyaC7aTJAMmA==
+X-Google-Smtp-Source: ABdhPJwK8ZorGU0TFVJZH5c/4e3AauDieEoMVL2guTtxGD4PK2qnMlMawIC4UeCIoBz67Lan/AhY/UipOcj6bzR90cw=
+X-Received: by 2002:a17:906:c20f:: with SMTP id d15mr12958728ejz.341.1607726917615;
+ Fri, 11 Dec 2020 14:48:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR04MB496513CB49E42A3467427BF686CA0@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <20201211060429.20027-1-a-govindraju@ti.com> <062c861a-b35e-06cd-2bda-a2d3f5034290@ti.com>
+In-Reply-To: <062c861a-b35e-06cd-2bda-a2d3f5034290@ti.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 11 Dec 2020 16:48:25 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJoq20v7wj0x9Nzp2dFeeEunEmschF+VTXMtPdLwg1izA@mail.gmail.com>
+Message-ID: <CAL_JsqJoq20v7wj0x9Nzp2dFeeEunEmschF+VTXMtPdLwg1izA@mail.gmail.com>
+Subject: Re: [PATCH v4] dt-bindings: usb: Add new compatible string for AM64 SoC
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 09:50:52PM +0000, Chaitanya Kulkarni wrote:
-> On 12/11/20 08:45, Puranjay Mohan wrote:
-> > PCI core calls __pcie_print_link_status() for every device, it prints
-> > both the link width and the link speed. skd_pci_info() does the same
-> > thing again, hence it can be removed.
+On Fri, Dec 11, 2020 at 6:04 AM Aswath Govindraju <a-govindraju@ti.com> wrote:
+>
+> Hi,
+> On 11/12/20 11:34 am, Aswath Govindraju wrote:
+> > Add compatible string in j721e-usb binding file as the same USB subsystem
+> > is present in AM64.
 > >
-> > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> > Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
 > > ---
-> >  drivers/block/skd_main.c | 31 -------------------------------
-> >  1 file changed, 31 deletions(-)
 > >
-> > diff --git a/drivers/block/skd_main.c b/drivers/block/skd_main.c
-> > index a962b4551bed..da7aac5335d9 100644
-> > --- a/drivers/block/skd_main.c
-> > +++ b/drivers/block/skd_main.c
-> > @@ -3134,40 +3134,11 @@ static const struct pci_device_id skd_pci_tbl[] = {
-> >  
-> >  MODULE_DEVICE_TABLE(pci, skd_pci_tbl);
-> >  
-> > -static char *skd_pci_info(struct skd_device *skdev, char *str)
-> > -{
-> > -	int pcie_reg;
-> > -
-> > -	strcpy(str, "PCIe (");
-> > -	pcie_reg = pci_find_capability(skdev->pdev, PCI_CAP_ID_EXP);
-> > -
-> > -	if (pcie_reg) {
-> > -
-> > -		char lwstr[6];
-> > -		uint16_t pcie_lstat, lspeed, lwidth;
-> > -
-> > -		pcie_reg += 0x12;
-> > -		pci_read_config_word(skdev->pdev, pcie_reg, &pcie_lstat);
-> > -		lspeed = pcie_lstat & (0xF);
-> > -		lwidth = (pcie_lstat & 0x3F0) >> 4;
-> > -
-> > -		if (lspeed == 1)
-> > -			strcat(str, "2.5GT/s ");
-> > -		else if (lspeed == 2)
-> > -			strcat(str, "5.0GT/s ");
-> > -		else
-> > -			strcat(str, "<unknown> ");
-> The skd driver prints unknown if the speed is not "2.5GT/s" or "5.0GT/s".
-> __pcie_print_link_status()  prints "unknown" only if speed
-> value >= ARRAY_SIZE(speed_strings).
-> 
-> If a buggy skd card returns value that is not != ("2.5GT/s" or "5.0GT/s")
-> && value < ARRAY_SIZE(speed_strings) then it will not print the unknown but
-> the value from speed string array.
-> 
-> Which breaks the current behavior. Please correct me if I'm wrong.
+> > Changes since v3:
+> > - used enum instead of anyOf.
+> >
+> > Changes since v2:
+> > - added changes done over the versions.
+> >
+> > Changes since v1:
+> > - replaced the '\t' at the beginning of the lines with spaces as it was
+> >   causing the dt_binding_check to fail.
+> >
+> >  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> > index 388245b91a55..1a5c7bbb40d1 100644
+> > --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> > +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> > @@ -11,8 +11,9 @@ maintainers:
+> >
+> >  properties:
+> >    compatible:
+> > -    items:
+> > -      - const: ti,j721e-usb
+> > +    enum:
+> > +      - ti,j721e-usb
+> > +      - ti,am64-usb
+> >
+>
+> I am trying to use the compatible strings in the following manner
+>
+> ```
+> compatible = "ti,am64-usb", "ti,j721e-usb";
+>
+> ```
+> If I use above patch I am getting an error while doing a dtbs check.
+>
+> ```
+> /home/gsaswath/src/ti-linux-kernel/arch/arm64/boot/dts/ti/k3-am642-evm.dt.yaml:
+> cdns-usb@f900000: compatible: Additional items are not allowed
+> ('ti,j721e-usb' was unexpected)
+>         From schema:
+> /home/gsaswath/src/ti-linux-kernel/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> /home/gsaswath/src/ti-linux-kernel/arch/arm64/boot/dts/ti/k3-am642-evm.dt.yaml:
+> cdns-usb@f900000: compatible: ['ti,am64-usb', 'ti,j721e-usb'] is too long
+>         From schema:
+> /home/gsaswath/src/ti-linux-kernel/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+>
+> ```
+>
+>
+> I have looked around for examples but I am unable to find a similar
+> case. I tried using anyOf in the following manner
 
-I think you're right, but I don't think it actually *breaks* anything.
+You didn't look hard enough. There are lots.
 
-For skd devices that work correctly, there should be no problem, and
-if there ever were an skd device that operated at a speed greater than
-5GT/s, the PCI core would print that speed correctly instead of having
-the driver print "<unknown>".
+> ```
+> compatible:
+>      anyOf:
+>         - const: ti,am64-usb
+>         - const: ti,j721e-usb
 
-I don't think it's a good idea to have a driver artificially constrain
-the speed a device operates at.  And the existing code doesn't
-actually constrain anything; it only prints "<unknown>" if it doesn't
-recognize it.  The probe still succeeds.  I don't see much value in
-that "<unknown>".
+This is really no different than a single 'enum' with the 2 values.
+'anyOf' means one or more in the list are true, but more than 1 is
+impossible here.
 
-Or am I missing an actual problem this patch causes?
+If you have different possible lengths of values, then you need
+'oneOf' for each case and then 'items' when you have a value with
+multiple entries:
 
-> > -		snprintf(lwstr, sizeof(lwstr), "%dX)", lwidth);
-> > -		strcat(str, lwstr);
-> > -	}
-> > -	return str;
-> > -}
-> >  
-> >  static int skd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >  {
-> >  	int i;
-> >  	int rc = 0;
-> > -	char pci_str[32];
-> >  	struct skd_device *skdev;
-> >  
-> >  	dev_dbg(&pdev->dev, "vendor=%04X device=%04x\n", pdev->vendor,
-> > @@ -3201,8 +3172,6 @@ static int skd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >  		goto err_out_regions;
-> >  	}
-> >  
-> > -	skd_pci_info(skdev, pci_str);
-> > -	dev_info(&pdev->dev, "%s 64bit\n", pci_str);
-> >  
-> >  	pci_set_master(pdev);
-> >  	rc = pci_enable_pcie_error_reporting(pdev);
-> 
+oneOf:
+  - const: ti,j721e-usb
+  - items:
+      - const: ti,am64-usb
+      - const: ti,j721e-usb
+
+> ```
+>
+> But I am getting an error
+>
+> ```
+> /home/gsaswath/src/ti-linux-kernel/Documentation/devicetree/bindings/usb/ti,j721e-usb.example.dt.yaml:
+> cdns_usb@4104000: compatible: 'anyOf' conditional failed, one must be fixed:
+>         Additional items are not allowed ('ti,j721e-usb' was unexpected)
+>         ['ti,am64-usb', 'ti,j721e-usb'] is too long
+>         'ti,j721e-usb' was expected
+> ```
+>
+> Doesn't anyof mean that the compatible strings can be used in any
+> combination ??
+>
+> Thanks,
+> Aswath
+>
+> >    reg:
+> >      description: module registers
+> >
+>
