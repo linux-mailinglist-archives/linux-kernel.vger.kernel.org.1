@@ -2,94 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA942D77AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:20:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 057E42D77B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406020AbgLKOTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:19:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405940AbgLKOSf (ORCPT
+        id S2406186AbgLKOU6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Dec 2020 09:20:58 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:56429 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406087AbgLKOUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:18:35 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136F8C061793;
-        Fri, 11 Dec 2020 06:17:55 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id r5so9496054eda.12;
-        Fri, 11 Dec 2020 06:17:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+NgxUEH5uFqT7GDJPbuM1Ogf8MzS8XSgNJtKE+wwyRM=;
-        b=eH3w6NcIrC4xR4v4M3keq2M/BL0t2cwI16kEboijRZfq6Z/BTQ+ESL3w5hoKKkEOXT
-         SLBYPbGknhUXI16fYN9cYVb8fLhLhfvs6R9mrEutwyx7Leat26hRcjZuKVPppQnZ+vK+
-         sN87DmWq2PAz8rYhe2QDmSf8szPzK3boRvTQbTKcHfYziRcji01nlYxnPhd+asjkO9ps
-         FSbyVfVTGUtBUm1ijk6YSRiCdEMDJ8O1yx5ATtbTYGAP95CY9uXt4+gh3Oyby42kzViW
-         5h9VDu+eDbtUek/2d0uKETiIWxaMDwuy1GT9rLoHSM7/8Uwrm+S4S2lq7GI6M/klKKSc
-         duHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+NgxUEH5uFqT7GDJPbuM1Ogf8MzS8XSgNJtKE+wwyRM=;
-        b=YRxjb5mXaEvdxRfI/sBZQDRJ5NviS+gbGFmKMank8/GqAl2Y58+mz61mUWy7Sq3M7/
-         MvCjQ7VeRxret0kBsH1GezX1mKJR8AnfxY7ewsaCoE2XfYGFE0ZWc814JltyFy0xFbUe
-         3tyQbq+Zf65L2HBR8vMUjYecDUF94YAiwkIhMfNI6/IXuASFw5a+T25/ml9rEGinZ2Og
-         2C8bPVPZk/25Ptggpix1TjQBGiH35ozgA+ZvC/lErKuSRXnPCqglS5mqAYiXmIwvGy5b
-         TMms+dxIGSA/gaxhwaI2IStI6estS0xGvU4qd1K5AIoUQnQzkwO2MYKWN9QmQ3iGUcXc
-         jfMQ==
-X-Gm-Message-State: AOAM5304AKAeH9ZM2RzSKcNjuk1zrv3rjCeyHOjzel+Q7beow/brN/hy
-        LMde0pvT4UOTR8PoyfLXSOI=
-X-Google-Smtp-Source: ABdhPJyCV4eEUT00ElKYzI3O1FRpkgysz4KnZm/C8ZHCZfpvl64Ch2HD0rRzWxhHGWhbIETRq831mQ==
-X-Received: by 2002:a05:6402:388:: with SMTP id o8mr11821809edv.359.1607696273795;
-        Fri, 11 Dec 2020 06:17:53 -0800 (PST)
-Received: from ubuntu2004 ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id o11sm6865675ejh.55.2020.12.11.06.17.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 06:17:53 -0800 (PST)
-Date:   Fri, 11 Dec 2020 16:17:51 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        linux-input@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-pm@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        linux-actions@lists.infradead.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>
-Subject: Re: [PATCH v3 2/7] dt-bindings: mfd: Add Actions Semi ATC260x PMIC
- binding
-Message-ID: <20201211141751.GA360406@ubuntu2004>
-References: <cover.1607216141.git.cristian.ciocaltea@gmail.com>
- <fe0ab8ef20813a2623cd1e543b16bb21c5b63367.1607216141.git.cristian.ciocaltea@gmail.com>
- <20201211031743.GA3562977@robh.at.kernel.org>
+        Fri, 11 Dec 2020 09:20:48 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-53-s0AncPC_O7qxZEyLU7X13A-1; Fri, 11 Dec 2020 14:19:07 +0000
+X-MC-Unique: s0AncPC_O7qxZEyLU7X13A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 11 Dec 2020 14:19:05 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 11 Dec 2020 14:19:05 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Thomas Gleixner' <tglx@linutronix.de>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Michal Simek" <michal.simek@xilinx.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        "Tariq Toukan" <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+Subject: RE: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
+Thread-Topic: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
+Thread-Index: AQHWz72qwjNpP0n0UkWT70W8RrLS8qnx7xrw
+Date:   Fri, 11 Dec 2020 14:19:05 +0000
+Message-ID: <d6cbfa118490459bb0671394f00323fc@AcuMS.aculab.com>
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194043.957046529@linutronix.de>
+ <ad05af1a-5463-2a80-0887-7629721d6863@linux.intel.com>
+ <87y2i4h54i.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87y2i4h54i.fsf@nanos.tec.linutronix.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211031743.GA3562977@robh.at.kernel.org>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 09:17:43PM -0600, Rob Herring wrote:
-> On Sun, 06 Dec 2020 03:27:02 +0200, Cristian Ciocaltea wrote:
-> > Add devicetree binding for Actions Semi ATC260x PMICs.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > ---
-> > Changes in v3 (according to Rob's review):
-> >  - Dropped the 'pwrc' and 'onkey' nodes
-> >  - Used a common 'reset-time-sec' property
-> > 
-> >  .../bindings/mfd/actions,atc260x.yaml         | 181 ++++++++++++++++++
-> >  1 file changed, 181 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
-> > 
+From: Thomas Gleixner
+> Sent: 11 December 2020 12:58
+..
+> > After my failed hasty sketch from last night I had a different one which
+> > was kind of heuristics based (re-reading the upper dword and retrying if
+> > it changed on 32-bit).
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> The problem is that there will be two seperate modifications for the low
+> and high word. Several ways how the compiler can translate this, but the
+> problem is the same for all of them:
+> 
+> CPU 0                           CPU 1
+>         load low
+>         load high
+>         add  low, 1
+>         addc high, 0
+>         store low               load high
+> --> NMI                         load low
+>                                 load high and compare
+>         store high
+> 
+> You can't catch that. If this really becomes an issue you need a
+> sequence counter around it.
 
-Thanks for reviewing,
-Cristi
+Or just two copies of the high word.
+Provided the accesses are sequenced:
+writer:
+	load high:low
+	add small_value,high:low
+	store high
+	store low
+	store high_copy
+reader:
+	load high_copy
+	load low
+	load high
+	if (high != high_copy)
+		low = 0;
+
+The read value is always stale, so it probably doesn't
+matter that the value you have is one that is between the
+value when you started and that when you finished.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
