@@ -2,91 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C3C2D71F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD002D71F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404033AbgLKIjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:39:06 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9427 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388615AbgLKIi0 (ORCPT
+        id S2436948AbgLKIkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:40:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405479AbgLKIjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:38:26 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cskg1144NzhqZS;
-        Fri, 11 Dec 2020 16:37:17 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Dec 2020 16:37:32 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sagis@google.com>, <jonolson@google.com>, <nbd@nbd.name>,
-        <john@phrozen.org>, <sean.wang@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] net/mediatek: simplify the mediatek code return expression
-Date:   Fri, 11 Dec 2020 16:38:01 +0800
-Message-ID: <20201211083801.1632-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Fri, 11 Dec 2020 03:39:16 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CACAC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 00:38:36 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id h19so12206568lfc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 00:38:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Q7ZgrovpCBzqgAGbqdv4/9NdqxY6s59Bi3Lq1+DyvvE=;
+        b=DiA14UryjHTwv+yV74bKyHmrMzG63/6bNbW1EaOU23ijUD094ojY3TbBvG3QUWqIgq
+         loaZEDj4iHuxMTDj5iNv0xUMegMlMfpDkorj4HbOHHWepadBB3m8dIA6U8/MwSa7xTTp
+         pzWTM/TD7FtBRS/o+FRTWppBgxYRMdmSjwpukk+JiXWHhbMXGY9DiJ6y8A5iPnwAMe3/
+         NHwOz/tBrY/o6tqyWtQhlfpQBP0UI38/OALeiMW6EvcmrFM8F2eUVd85sT2+Ps5oaFvN
+         /PHGsQ0IWFLs4DhenCw3g+onWLrjV5+MymNk+nQPeXD5jz3NJDQjusR4buE/v2Ld2Lad
+         kkHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Q7ZgrovpCBzqgAGbqdv4/9NdqxY6s59Bi3Lq1+DyvvE=;
+        b=E1tgZhkV46X78Svcu4Lyt34Rc6292wVfsPOh+LumQUH6Lz9k3eFDOQPXVOvk6Z/gND
+         oGyZ442YrzrrgQop08mGovEJgb20+ONOuS8iCDjmNMi7Dc4UoNlc+PBN8kf9tqPgRNGO
+         BBZcHNsuP8wqGz5bIDrm5Q+rSH55U4ReDRJ/7Ahhlxu2OYac1lTvwBu0BeUYs7QP/f3p
+         IwT3t4z0qxGn5qZWnY5RiEKhVsDRUjDHVnQqEOBb8QDOh46JLRCFplh7kgz6o49axDmF
+         dG81fJJJSlWc0iQTmj98x1UjuJZlE5wpDunhygkq44B/+jxVylgiy2CVoDlOoAVVJzmI
+         FmEw==
+X-Gm-Message-State: AOAM533X/eippYaInf5OcIQc/8kQWCw+QCyRXdegK5nh5R9T1zImMqBN
+        DF43Iko3YOa9HCsswSDhbz2vDNnpkb53/9U78JoLaQ==
+X-Google-Smtp-Source: ABdhPJwDM0owtGgUOGZECwePcDEoL1uCg8+/OjpChYLm33vdjTX0brE6ZTcJxzIqrFgUay8kxGWTUSLjebk0MhYbMuQ=
+X-Received: by 2002:a05:6512:3238:: with SMTP id f24mr4442461lfe.29.1607675914891;
+ Fri, 11 Dec 2020 00:38:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 11 Dec 2020 09:38:23 +0100
+Message-ID: <CACRpkdbVVZPFs-=pyDO-HpR4yY-f2nyYRgTTwNbA3nMzXaYSNQ@mail.gmail.com>
+Subject: [GIT PULL] Late GPIO fixes for v5.10
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression at mtk_eth_path.c file, simplify this all.
+Hi Linus,
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/net/ethernet/mediatek/mtk_eth_path.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+these are hopefully the last GPIO fixes for this cycle. All are driver
+fixes except a small resource leak for pin ranges in the gpiolib.
+Two are PM related, which is nice because when developers start
+to find PM bugs it is usually because they have smoked out the
+bugs of more severe nature.
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_path.c b/drivers/net/ethernet/mediatek/mtk_eth_path.c
-index 6bc9f2487384..72648535a14d 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_path.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_path.c
-@@ -252,7 +252,7 @@ int mtk_gmac_sgmii_path_setup(struct mtk_eth *eth, int mac_id)
- 
- int mtk_gmac_gephy_path_setup(struct mtk_eth *eth, int mac_id)
- {
--	int err, path = 0;
-+	int path = 0;
- 
- 	if (mac_id == 1)
- 		path = MTK_ETH_PATH_GMAC2_GEPHY;
-@@ -261,25 +261,17 @@ int mtk_gmac_gephy_path_setup(struct mtk_eth *eth, int mac_id)
- 		return -EINVAL;
- 
- 	/* Setup proper MUXes along the path */
--	err = mtk_eth_mux_setup(eth, path);
--	if (err)
--		return err;
--
--	return 0;
-+	return mtk_eth_mux_setup(eth, path);
- }
- 
- int mtk_gmac_rgmii_path_setup(struct mtk_eth *eth, int mac_id)
- {
--	int err, path;
-+	int path;
- 
- 	path = (mac_id == 0) ?  MTK_ETH_PATH_GMAC1_RGMII :
- 				MTK_ETH_PATH_GMAC2_RGMII;
- 
- 	/* Setup proper MUXes along the path */
--	err = mtk_eth_mux_setup(eth, path);
--	if (err)
--		return err;
--
--	return 0;
-+	return mtk_eth_mux_setup(eth, path);
- }
- 
--- 
-2.22.0
+Please pull it in!
 
+Yours,
+Linus Walleij
+
+The following changes since commit b65054597872ce3aefbc6a666385eabdf9e288da:
+
+  Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
+tags/v5.10-3
+
+for you to fetch changes up to 263ade7166a2e589c5b605272690c155c0637dcb:
+
+  gpio: eic-sprd: break loop when getting NULL device resource
+(2020-12-09 09:41:49 +0100)
+
+----------------------------------------------------------------
+GPIO fixes for the v5.10 kernel series:
+
+- Fix runtime PM balancing on the errorpath of the Arizona driver.
+- Fix a suspend NULL pointer reference in the dwapb driver.
+- Balance free:ing in gpiochip_generic_free()
+- Fix runtime PM balancing on the errorpath of the zynq driver.
+- Fix irqdomain use-after-free in the mvebu driver.
+- Break an eternal loop in the spreadtrum EIC driver.
+
+----------------------------------------------------------------
+Baruch Siach (1):
+      gpio: mvebu: fix potential user-after-free on probe
+
+Chunyan Zhang (1):
+      gpio: eic-sprd: break loop when getting NULL device resource
+
+Edmond Chung (1):
+      gpiolib: Don't free if pin ranges are not defined
+
+Linus Walleij (1):
+      Merge tag 'gpio-fixes-for-v5.10-rc7' of
+git://git.kernel.org/.../brgl/linux into fixes
+
+Luo Jiaxing (1):
+      gpio: dwapb: fix NULL pointer dereference at dwapb_gpio_suspend()
+
+Qinglang Miao (1):
+      gpio: zynq: fix reference leak in zynq_gpio functions
+
+Zheng Liang (1):
+      gpio: arizona: disable pm_runtime in case of failure
+
+ drivers/gpio/gpio-arizona.c  |  1 +
+ drivers/gpio/gpio-dwapb.c    |  2 ++
+ drivers/gpio/gpio-eic-sprd.c |  2 +-
+ drivers/gpio/gpio-mvebu.c    | 16 +++++++++++-----
+ drivers/gpio/gpio-zynq.c     |  4 ++--
+ drivers/gpio/gpiolib.c       |  5 +++++
+ 6 files changed, 22 insertions(+), 8 deletions(-)
