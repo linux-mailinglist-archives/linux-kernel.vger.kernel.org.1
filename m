@@ -2,145 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C642D7921
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E079F2D7923
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437795AbgLKPYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:24:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34373 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2437837AbgLKPXc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:23:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607700125;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2kjpk2RbhIA1YYkgV9aHcKnu44Ila9jeMA1cZc9PaxI=;
-        b=cMsflJUvE+JQSt+QzA+ZI6kyb2Wwi4D2895vtE+C0X0g/lx+503+BdblK0IptTOVP6Y20Z
-        DzVvbJyNOjEcA4sqYlhjhP2pKMPPECn5fO7dw5+gt7oYGZhjgqhmGBNkJXtnqPAUFfoGiI
-        TPiEhkwLpEgVHApQZcFtpfh4bfr3K0s=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-392-2w6x2JorN9u9EKsnJYYIFg-1; Fri, 11 Dec 2020 10:22:03 -0500
-X-MC-Unique: 2w6x2JorN9u9EKsnJYYIFg-1
-Received: by mail-wm1-f72.google.com with SMTP id a134so1731063wmd.8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 07:22:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2kjpk2RbhIA1YYkgV9aHcKnu44Ila9jeMA1cZc9PaxI=;
-        b=adQFcp5jP48fDlvUxgsTIhKAxeFSN3eWSepZQaPOsfNc7fUpiVP+RPYfsAi2jSgH21
-         +gWZD3z4SbOqC2l5/TO6+f8nVPqX1ejEU8W13+QASq3auQV85XYgZryacs5JUfozPSch
-         4k+/s6SVdlhn+XysRsfuTJ5Mj4nTh0qMNhBZZEnp/3hzZYkGCCYNrwLjJqQTLnBsJ35N
-         PRXd2Z8yy27rM48wnVWZ1v5B8uf7FbFhrk8itb/sirbBuLd/7NVi8p770QYZj4VFl+QU
-         Bz3LNuqbev7qswEU714AJ29npIzu61xOrqGbe3B9ITvGtdoj8VZAJXfS/BP/LZZW3cyi
-         Kikg==
-X-Gm-Message-State: AOAM531l4k0rZr9nl35Isus4U7FQTRfZpnOGwy1rBJMTSzoCtkLqnDaV
-        OOiqz2k9sD2SbuQRsoEcXgnfU6juReKszWrT1CCso8dr6dVS0Gt/11cznFE+fEwfxnG2VFt0Xf1
-        0OVzhB3PdRQGS4BTaWNSfzODE
-X-Received: by 2002:a5d:620e:: with SMTP id y14mr15016565wru.111.1607700122647;
-        Fri, 11 Dec 2020 07:22:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy2/c4amUxO6yiVGaE6UpZHCLxu+13pZQkjX7jCgTLw7r3kRk4v6rC3eMS0oH2I4Jy+g+zPzg==
-X-Received: by 2002:a5d:620e:: with SMTP id y14mr15016543wru.111.1607700122480;
-        Fri, 11 Dec 2020 07:22:02 -0800 (PST)
-Received: from steredhat (host-79-24-227-66.retail.telecomitalia.it. [79.24.227.66])
-        by smtp.gmail.com with ESMTPSA id a21sm14267289wmb.38.2020.12.11.07.22.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 07:22:01 -0800 (PST)
-Date:   Fri, 11 Dec 2020 16:21:59 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Andra Paraschiv <andraprs@amazon.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH net-next v3 2/4] vm_sockets: Add VMADDR_FLAG_TO_HOST
- vsock flag
-Message-ID: <20201211152159.lndvshjrr5zqzzdt@steredhat>
-References: <20201211103241.17751-1-andraprs@amazon.com>
- <20201211103241.17751-3-andraprs@amazon.com>
+        id S2437850AbgLKPYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:24:41 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:58147 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437820AbgLKPXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 10:23:43 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Csvg12GJLz9v0BR;
+        Fri, 11 Dec 2020 16:22:53 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id wd5pGtPFX2xY; Fri, 11 Dec 2020 16:22:53 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Csvg11DsHz9v0BQ;
+        Fri, 11 Dec 2020 16:22:53 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id AD5E68B86D;
+        Fri, 11 Dec 2020 16:22:54 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id lPuwoqgJFjrM; Fri, 11 Dec 2020 16:22:54 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0EE778B869;
+        Fri, 11 Dec 2020 16:22:54 +0100 (CET)
+Subject: Re: [PATCH] net: ethernet: fs-enet: remove casting dma_alloc_coherent
+To:     Xu Wang <vulab@iscas.ac.cn>, pantelis.antoniou@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20201211085212.85457-1-vulab@iscas.ac.cn>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <34548188-67f4-d3ef-c2e3-871fc520e838@csgroup.eu>
+Date:   Fri, 11 Dec 2020 16:22:23 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201211103241.17751-3-andraprs@amazon.com>
+In-Reply-To: <20201211085212.85457-1-vulab@iscas.ac.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 12:32:39PM +0200, Andra Paraschiv wrote:
->Add VMADDR_FLAG_TO_HOST vsock flag that is used to setup a vsock
->connection where all the packets are forwarded to the host.
->
->Then, using this type of vsock channel, vsock communication between
->sibling VMs can be built on top of it.
->
->Changelog
->
->v2 -> v3
->
->* Update comments to mention when the flag is set in the connect and
->  listen paths.
->
->v1 -> v2
->
->* New patch in v2, it was split from the first patch in the series.
->* Remove the default value for the vsock flags field.
->* Update the naming for the vsock flag to "VMADDR_FLAG_TO_HOST".
->
->Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
->---
-> include/uapi/linux/vm_sockets.h | 20 ++++++++++++++++++++
-> 1 file changed, 20 insertions(+)
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
->
->diff --git a/include/uapi/linux/vm_sockets.h b/include/uapi/linux/vm_sockets.h
->index 619f8e9d55ca4..c99ed29602345 100644
->--- a/include/uapi/linux/vm_sockets.h
->+++ b/include/uapi/linux/vm_sockets.h
->@@ -114,6 +114,26 @@
->
-> #define VMADDR_CID_HOST 2
->
->+/* The current default use case for the vsock channel is the following:
->+ * local vsock communication between guest and host and nested VMs setup.
->+ * In addition to this, implicitly, the vsock packets are forwarded to the host
->+ * if no host->guest vsock transport is set.
->+ *
->+ * Set this flag value in the sockaddr_vm corresponding field if the vsock
->+ * packets need to be always forwarded to the host. Using this behavior,
->+ * vsock communication between sibling VMs can be setup.
->+ *
->+ * This way can explicitly distinguish between vsock channels created for
->+ * different use cases, such as nested VMs (or local communication between
->+ * guest and host) and sibling VMs.
->+ *
->+ * The flag can be set in the connect logic in the user space application flow.
->+ * In the listen logic (from kernel space) the flag is set on the remote peer
->+ * address. This happens for an incoming connection when it is routed from the
->+ * host and comes from the guest (local CID and remote CID > VMADDR_CID_HOST).
->+ */
->+#define VMADDR_FLAG_TO_HOST 0x0001
->+
-> /* Invalid vSockets version. */
->
-> #define VM_SOCKETS_INVALID_VERSION -1U
->-- 
->2.20.1 (Apple Git-117)
->
->
->
->
->Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
->
+Le 11/12/2020 à 09:52, Xu Wang a écrit :
+> Remove casting the values returned by dma_alloc_coherent.
 
+Can you explain more in the commit log ?
+
+As far as I can see, dma_alloc_coherent() doesn't return __iomem, and ring_base member is __iomem
+
+Christophe
+
+> 
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> ---
+>   drivers/net/ethernet/freescale/fs_enet/mac-fec.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/freescale/fs_enet/mac-fec.c b/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
+> index 99fe2c210d0f..3ae345676e50 100644
+> --- a/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
+> +++ b/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
+> @@ -131,7 +131,7 @@ static int allocate_bd(struct net_device *dev)
+>   	struct fs_enet_private *fep = netdev_priv(dev);
+>   	const struct fs_platform_info *fpi = fep->fpi;
+>   
+> -	fep->ring_base = (void __force __iomem *)dma_alloc_coherent(fep->dev,
+> +	fep->ring_base = dma_alloc_coherent(fep->dev,
+>   					    (fpi->tx_ring + fpi->rx_ring) *
+>   					    sizeof(cbd_t), &fep->ring_mem_addr,
+>   					    GFP_KERNEL);
+> 
