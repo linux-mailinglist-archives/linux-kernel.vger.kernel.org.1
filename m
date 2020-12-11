@@ -2,194 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C732D7055
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B29482D7056
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395545AbgLKGqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 01:46:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
+        id S2436520AbgLKGtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 01:49:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgLKGqF (ORCPT
+        with ESMTP id S2390670AbgLKGte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 01:46:05 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1264CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 22:45:25 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id h16so8190030edt.7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 22:45:24 -0800 (PST)
+        Fri, 11 Dec 2020 01:49:34 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E4DC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 22:48:54 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id x12so3650616plr.10
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 22:48:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rkmUKD4zE8vnW3hndEyuS8Cvauahdnys8FMcfYlDkUs=;
-        b=vRkk2IgEDLtwRg/ld1xXF64VQKvgD+5K/c6iB2zyQGrw2SWVrzruO58S1u/6BzJGz1
-         xcJMvmHo36kMkUPBvgaavcWC2nedBC9lW+nY3FfLr7TQA2JHFOQkjkVprLIuSbWFi1I5
-         aYgKJM8GBxOuMT0ThJ1lBltxIXsSRTVDQa8j1REqQ83MaOUW001d88u57qqUIIIf5Rog
-         4Yerk6fmw5D5QHtbf9s+WefkGrFPX/pylH9bb8He87UTUVqpP8TgYrgwcT9Rs9+ehHsg
-         kTjWqyP8MOP8L2wOZCSYC0JV7FDo4yb6HI2A7fDFQSgypMUsKJrNieqaojLD2wwyIj1D
-         nBPQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6sBOEH48LyHr+qjsw0kos3f6YjDEBYmti7I8QWsLHXE=;
+        b=DOVIPDbDt7/sS0WYIOhD1X4/7JBBD2I1MSjHbdcdcv/6y8YLuV1k8zI1YhczMGAXSJ
+         xsyGHqZ/tF1DskN+TY2L0okEUjdtcz5g7NTfxznbQz4Z85yJ1A5hZFryNjRq8X2ZfsfT
+         QU1xEv+3I2q6AXtx88ReLIW9GrgEKEP0IItfV3fMxGl1vItQrx2C+pDPgQX/JeYBC6VU
+         8EFHSbsEU4QS6ST1RGODrCrNCwjr2zOAL6FIMgzsyH7mk6szmYJ49scu+gVI7PHBoEsd
+         /SjwOpDcbEwV7yHozh6GtwXm0nNvcX2UQQhcO2LDSx/Kdo1phUywzlY/RngWbZDD7Zcn
+         wmYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rkmUKD4zE8vnW3hndEyuS8Cvauahdnys8FMcfYlDkUs=;
-        b=Z8jAcBnlTmuWJLCp98JY8aRPDqHp06F2acfVqyvlzEwQU3FV/+tDpdA8nMpoOdzGeC
-         1oOpTv2h1OirE/cClBNRdqgwtYDroqmKgpiVuxogjA1yFb55H0TGFxA/9wMt5emhc3CG
-         52u/8N59K5wtqB6cSEbjGcGTBTJzUI/WpE6CbtBcOuXWs9W20/lhuCgtfrnpW3+KtJVl
-         ccDGPC4QMTns8m1dxZJrjXLm8o3rzJdo1zQGTqyv0RVqitHwf1Cml98sZCklC0sfD6YP
-         iecITuzaxWykGUfR+rm/whEHaopBK3s6ivsvTfOr4cO8aQjzMmTF/5pq53m3jzOU0+Oe
-         EPPA==
-X-Gm-Message-State: AOAM533akpNM0LAyP1kM+VvNJVhmq6V5c1cC87NutezeXS/hHjb3RsJF
-        HUUNhZBZXqoJSJiJI8JtrGv0MGYDpJ+VCIwYOoGH7A==
-X-Google-Smtp-Source: ABdhPJwTuLIA6Fr7s8l9v02utbihTcJB+ua+9gNvK7iwvnd1KbHm63wG+y7gkF7uqbtc3kLmsON9pSiuEb6bNf+3vnM=
-X-Received: by 2002:aa7:d74d:: with SMTP id a13mr10437750eds.78.1607669123531;
- Thu, 10 Dec 2020 22:45:23 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6sBOEH48LyHr+qjsw0kos3f6YjDEBYmti7I8QWsLHXE=;
+        b=WLVNM8uRTyUBQ6fh19uZwYKQKVi5us077DJlBeKUaqjZ1Y9AliSXqte7dTvT7bNhhs
+         +7etlgAAJRJVd4zZ6cxeynNZzGA1W9SIFXUbPBiZwVEsToikSarNs9KoUiNPtjs1EmHp
+         0z8QCuHwJPUivAgRGCmeOY3OU3AzGmFZI3UChK1074nP/EMqOe/tmP3l/Z7HymQfpTcc
+         ilTPRmkFCUv7PQsHPJAoJ+881mSI5sVzdoC7Py5/GogjRESJ/Hv2vz3dD78oMCNqmPzY
+         x0AfmRP4R7hM3tNP+xKLVp1gArEcyTY7f8HGSqhAjOhHNVPpk1nK/7aDxmHVF9rrxtO8
+         EyAQ==
+X-Gm-Message-State: AOAM531pa2iHpWJRt0+g3+Ivf1AV/vphXrZ7rtrt6G63jAzXq+U5mt76
+        ArFNLZWRWESGivoHdd7DQiFZcA==
+X-Google-Smtp-Source: ABdhPJxzCgCYAlMSewsnX3/fWz1wKniCNCI5w6xQof6FLJCJFhCsBSQyJSSfxeIIYTn0WcdP7VsOvA==
+X-Received: by 2002:a17:902:ed44:b029:da:91e5:e09 with SMTP id y4-20020a170902ed44b02900da91e50e09mr9668543plb.24.1607669334085;
+        Thu, 10 Dec 2020 22:48:54 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id v126sm8610154pfb.137.2020.12.10.22.48.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Dec 2020 22:48:53 -0800 (PST)
+Date:   Fri, 11 Dec 2020 12:18:50 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: topology: Drop the useless update to per-cpu
+ cycles
+Message-ID: <20201211064850.gsqsszwhxx5lzqgw@vireshk-i7>
+References: <7a171f710cdc0f808a2bfbd7db839c0d265527e7.1607579234.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-References: <20201210164728.074574869@linuxfoundation.org>
-In-Reply-To: <20201210164728.074574869@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 11 Dec 2020 12:15:12 +0530
-Message-ID: <CA+G9fYsKfYeL9-ofbNgevndXWAi65OvwgvebXauFOURaUM=2RA@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/54] 5.4.83-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7a171f710cdc0f808a2bfbd7db839c0d265527e7.1607579234.git.viresh.kumar@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 at 22:17, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.83 release.
-> There are 54 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 12 Dec 2020 16:47:12 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.83-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 10-12-20, 11:17, Viresh Kumar wrote:
+> The previous call to update_freq_counters_refs() has already updated the
+> per-cpu variables, don't overwrite them with the same value again.
+> 
+> Fixes: 4b9cf23c179a ("arm64: wrap and generalise counter read functions")
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  arch/arm64/kernel/topology.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> index c8308befdb1e..f6faa697e83e 100644
+> --- a/arch/arm64/kernel/topology.c
+> +++ b/arch/arm64/kernel/topology.c
+> @@ -314,7 +314,7 @@ void topology_scale_freq_tick(void)
+>  
+>  	if (unlikely(core_cnt <= prev_core_cnt ||
+>  		     const_cnt <= prev_const_cnt))
+> -		goto store_and_exit;
+> +		return;
+>  
+>  	/*
+>  	 *	    /\core    arch_max_freq_scale
+> @@ -331,10 +331,6 @@ void topology_scale_freq_tick(void)
+>  
+>  	scale = min_t(unsigned long, scale, SCHED_CAPACITY_SCALE);
+>  	this_cpu_write(freq_scale, (unsigned long)scale);
+> -
+> -store_and_exit:
+> -	this_cpu_write(arch_core_cycles_prev, core_cnt);
+> -	this_cpu_write(arch_const_cycles_prev, const_cnt);
+>  }
+>  
+>  #ifdef CONFIG_ACPI_CPPC_LIB
 
+Catalin: Can you please pick this up for 5.11-rc1, the earlier patch
+(from fixes) is already in your tree. Thanks.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.83-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: fc1de0dc4276cf610646922e65df5ad81151ac1e
-git describe: v5.4.82-55-gfc1de0dc4276
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.82-55-gfc1de0dc4276
-
-No regressions (compared to build v5.4.82)
-
-No fixes (compared to build v5.4.82)
-
-Ran 53098 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* kselftest
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-tracing-tests
-* network-basic-tests
-* v4l2-compliance
-* ltp-containers-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* rcutorture
-* fwts
-* kselftest-vsyscall-mode-native
-* timesync-off
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+viresh
