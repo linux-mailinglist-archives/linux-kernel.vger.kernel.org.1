@@ -2,126 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6FE2D6C9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FA82D6C9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389829AbgLKAaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 19:30:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
+        id S1732504AbgLKAc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 19:32:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730504AbgLKAaG (ORCPT
+        with ESMTP id S1730504AbgLKAch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 19:30:06 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349A0C0613CF;
-        Thu, 10 Dec 2020 16:29:14 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id b9so5288183qtr.2;
-        Thu, 10 Dec 2020 16:29:14 -0800 (PST)
+        Thu, 10 Dec 2020 19:32:37 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9007AC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:31:57 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id g1so7189017ilk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:31:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rmf7XBQbFrTt9I7PMZkiNuKnWeN4JeUQNc3H8Tyzf/U=;
-        b=JS2eCDheJmAIEiKWoMPrlBYMlF4uI6GfILrKJhp5qEkVz7WR8fk9fDCcD66wJbwEho
-         dSn8vCEzr59Ks/qKJZrMsYK38ZLe8wLeP5+PtzuBKPZ5YQCc35ZoIpDvX5xx38wx4CJw
-         LvGc8ovG1GDmjthfRFCavlMMbxE/Wm3Etx6N/nYgmW9JEaPC6Lm6pcBcCjWIPpPqVFZx
-         pX/DZQf3NuIbGRzTrC9G5gM3qPBGwaDzCMwQwwt6J3/0Bj7IaQ1lRNbndxpqm95j2hQH
-         DZEJFFormfcKujczKC4B/0J5krQmSULUMHAeE6NJooB5ApUdgU6ZEHg18JNt6hOF1mXu
-         tJTg==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yiQdoMf12SNG+ZW2M45uraLJUUvpcbUlT/pdENldQuk=;
+        b=NOzXytw9rV0o+nt1jsY54EeUYWKilyIEweWh0TG7nJUVx6LuHfXmVkFK5WZcZyXjeM
+         i1cochq1LtAR7f9NkETZYT8+nJy1/SE9/J1/0XLincXyxaAbeD1GXSW8loHW3xEjk2I5
+         MDcOHGfsEkX4d7b/mt+dj0lk8Wyf7d6WF3Elk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Rmf7XBQbFrTt9I7PMZkiNuKnWeN4JeUQNc3H8Tyzf/U=;
-        b=XOybh65Wb3C2ybWIcTWvkLUs+gAM0tOPbp/pdz8oNlrSgiYBR34zHD80/fouAmQrLv
-         CMLNN75Nc9KaJ4OzznotzJ12+KyvOp9aAYMEPr5/+5YhtMUWwJRXUOAb2WE9wvQiB0hS
-         aT4QZkUrIOxwN699TZRNezM4DrnPZIpTylGPcvG1HuwinWTfmsia5CZ3GDwEbSMX9eyf
-         S6bxGhCmKwfRqFI3J/KPt32mr0P1ItN6D1F15SblKlog+kD/c64r4JJDaEMqM+YboSnU
-         8sR40dmd+hPppUmXsE+Tg6kZod+AfCHyy0inxR8Bv0WOilNPOlBSC3UXPjLUKT2T+HNE
-         Pwbw==
-X-Gm-Message-State: AOAM530IKRq5eFA4buM8l6eUPsNBXKKnNyAjvS0RumS3VlMI2lKl/iBW
-        F98FdEOB0CnTdDw/dwjWuzo=
-X-Google-Smtp-Source: ABdhPJxlVnHQcyltUBp1hIXfbZzTL8eN/sJknHOx44slguNjI07wFsWVrcRVE1HLjTDvH4Paonwxjw==
-X-Received: by 2002:aed:3025:: with SMTP id 34mr12349937qte.39.1607646553220;
-        Thu, 10 Dec 2020 16:29:13 -0800 (PST)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id 187sm5646082qki.38.2020.12.10.16.29.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 16:29:12 -0800 (PST)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Thu, 10 Dec 2020 19:29:10 -0500
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yiQdoMf12SNG+ZW2M45uraLJUUvpcbUlT/pdENldQuk=;
+        b=LYA/0ya3Q8SbV4+xN0A9eiGmIL5TxRPLAOcmJk8IOIubwNpi+ULK8eJ025rpQj5yb3
+         ROHEtVi6gADpjV96bAomHZ8bd4KOIjcMLp5gn1J0aZpbLguJK4Fti9NJyitdOk3QweDc
+         oHriH9jl4FbMgxKDOm3hjk4Ya3Ks0jxvZFv/qw/wd6x5YWm2n5iOBX74alpVLjNLoy/e
+         OrizFrHNru/NmrFHTJVDGwx5eMvRW/21GWeyV7B33lFkwvYnkjns6Ai6YELjWrVHsKMj
+         rzQlb5/VuYT7pvxS7BwcJ2xsixK8D84iqZye06XGAvzfuqf7U3GZ+oWnLwbhB9C1HdCr
+         Jrgw==
+X-Gm-Message-State: AOAM533MS/NVJSowbJxhgjarm8zoeLgC+YzvyfN/66NO6TZfXs+1+wgG
+        mA+MoIUGaQydu/b4rRMzRJEbLw==
+X-Google-Smtp-Source: ABdhPJx1/3vmncVRCjAKW3J2bHnvwcYzuWOZKTReo1KJXIzw1iQP1d06zqWGJA7p/oQJdblmqtgvTA==
+X-Received: by 2002:a05:6e02:1b8a:: with SMTP id h10mr12793622ili.266.1607646716914;
+        Thu, 10 Dec 2020 16:31:56 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id d5sm4007163ilf.33.2020.12.10.16.31.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 16:31:56 -0800 (PST)
+Subject: Re: [PATCH] selftests: propagate CC to selftest submakes
+To:     Andrew Delgadillo <adelg@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
         Nathan Chancellor <natechancellor@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Alistair Delva <adelva@google.com>
-Subject: Re: [PATCH v2 4/4] Kbuild: implement support for DWARF v5
-Message-ID: <X9K9VrHkcgMhG4zc@rani.riverdale.lan>
-References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
- <20201104005343.4192504-1-ndesaulniers@google.com>
- <20201104005343.4192504-5-ndesaulniers@google.com>
- <20201124172836.GA346213@rani.riverdale.lan>
- <CAKwvOdkGvLrPr4pHi4LKCF5t74+wencdy7r38d3k_4pC9pQYwQ@mail.gmail.com>
- <CAKwvOdmEVM67v8PqPWHP-VyGTkQpkWv8FdOTbxQ-7ebvSummMA@mail.gmail.com>
- <X8psgMuL4jMjP/Oy@rani.riverdale.lan>
- <CAKwvOd=SbbJptBbv3y39_ZCeTbO0vb_fa5ZbQQ2LUquegzLycg@mail.gmail.com>
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201203221005.2813159-1-adelg@google.com>
+ <CAKwvOdk6=TgL+f2-WvE7tsK0rN1XQ+NdXmeJfDkLsa8xPmgipA@mail.gmail.com>
+ <CAEHm+vHtMQtMThgE_BwpiBS5v0a61L_TW9vgKLaFTtcgg9HSgA@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <e78c3b86-78ab-2b2e-d8be-e9118d7d2392@linuxfoundation.org>
+Date:   Thu, 10 Dec 2020 17:31:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKwvOd=SbbJptBbv3y39_ZCeTbO0vb_fa5ZbQQ2LUquegzLycg@mail.gmail.com>
+In-Reply-To: <CAEHm+vHtMQtMThgE_BwpiBS5v0a61L_TW9vgKLaFTtcgg9HSgA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 03:18:45PM -0800, Nick Desaulniers wrote:
-> On Fri, Dec 4, 2020 at 9:06 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> >
-> > Why? Does this actually cause any problems?
-> >
-> > It seems like the options for gcc can actually be very straightforward:
-> > you just need a cc-option check, and then add -gdwarf-N to both CFLAGS
-> > and AFLAGS and you're done.  Adding the -Wa flag is superfluous and
-> > carries the risk of interfering with what the compiler driver does. Just
-> > let the gcc driver handle the details.
-> >
-> > Clang/IAS is almost as straightforward, with the only additional edge
-> > case being that for assembler files, DWARF 2 doesn't work, so the CFLAGS
-> > is the same -gdwarf-N, but AFLAGS gets -gdwarf-N only if N > 2.
-> >
-> > The messy case is only Clang/IAS=0, which needs to check the support
-> > from the external assembler, and needs CFLAGS of -gdwarf-N and AFLAGS of
-> > -Wa,--gdwarf-N, because Clang doesn't pass that option on to an external
-> > assembler. This is why I was asking if the assembler support check can
-> > be restricted to CC_IS_CLANG: nothing but Clang/IAS=0 actually requires
-> > that check.
+On 12/10/20 5:10 PM, Andrew Delgadillo wrote:
+> On Thu, Dec 10, 2020 at 3:08 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+>>
+>> On Thu, Dec 3, 2020 at 2:10 PM Andrew Delgadillo <adelg@google.com> wrote:
+>>>
+>>> lib.mk defaults to gcc when CC is not set. When building selftests
+>>> as part of a kernel compilation, MAKEFLAGS is cleared to allow implicit
+>>> build rules to be used. This has the side-effect of clearing the CC
+>>> variable, which will cause selftests to be built with gcc regardless of
+>>> if we are using gcc or clang. To remedy this, propagate the CC variable
+>>> when clearing makeflags to ensure the correct compiler is used.
+>>>
+>>> Signed-off-by: Andrew Delgadillo <adelg@google.com>
+>>
+>> Hi Andrew, thanks for the patch. Can you walk me through how to build
+>> the selftests?
+>>
+>> Documentation/dev-tools/kselftest.rst says:
+>> $ make -C tools/testing/selftests
+>>
+>> And if I do:
+>> $ make CC=clang defconfig
+>> $ make CC=clang -C tools/testing/selftests -j
+>>
+>> I observe a spew of errors.  If I apply your patch and rerun the
+>> above, I see what looks like the same spew of errors.  Am I "holding
+>> it wrong" or could the docs use a refresh?
+>>
 > 
-> Oh, I see. Yeah, that might be a nicer approach.  What should we do in
-> the case of gcc < 7 though, where -gdwarf-5 won't produce DWARF v5?
-> Maybe that's ok, but the intent behind the Kconfig check was to
-> prevent the option from being selectable if the tools do not support
-> it.  Maybe it's more flexible to pass the arguments along, and hope
-> for the best?
+> Hi Nick, sure thing!
 > 
-> As a gcc-5 user, I might be surprised if I chose
-> CONFIG_DEBUG_INFO_DWARF5 if what I got was not actually DWARF v5; it
-> does violate the principle of least surprise.  Maybe that doesn't
-> matter though?
+> I also see a slew of errors when building with make -C
+> tools/testing/selftests. However, that is not the problem I am trying
+> to solve. I believe we are seeing errors building that way because it
+> is missing some make variables that are normally set up when building
+> from the kernel's top level makefile.
+> 
 
-Even the current gcc documentation still says "DWARF Version 5 is only
-experimental".  If the user wants to try it out, I think it's fine to
-let them get whatever subset their tool chain produces, as long as it's
-not completely broken. Your latest help text does say that gcc 7+ is
-required, maybe add another sentence saying that gcc 5+ only has partial
-support for some draft DWARF 5 features?
+Both options are supported and should work.
 
-Thanks.
+make -C tools/testing/selftests
+make kselftest
+
+That being said, I use gcc. Can you send the errors you are seeing?
+It is possible, a few tests aren't building and need to be fixed
+for clang and gcc.
+
+thanks,
+-- Shuah
+
