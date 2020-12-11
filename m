@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643E72D6E2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF792D6E31
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391881AbgLKCjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 21:39:33 -0500
-Received: from emcscan.emc.com.tw ([192.72.220.5]:14789 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391165AbgLKCjH (ORCPT
+        id S1731217AbgLKCoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 21:44:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391211AbgLKCos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 21:39:07 -0500
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="38544289"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 11 Dec 2020 10:38:25 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(2869:0:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Fri, 11 Dec 2020 10:38:24 +0800 (CST)
-Received: from 192.168.33.11
-        by webmail.emc.com.tw with Mail2000 ESMTP Server V7.00(106420:1:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Fri, 11 Dec 2020 10:38:22 +0800 (CST)
-From:   "jingle" <jingle.wu@emc.com.tw>
-To:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        <phoenix@emc.com.tw>, <josh.chen@emc.com.tw>,
-        <dave.wang@emc.com.tw>
-References: <20201207090751.9076-1-jingle.wu@emc.com.tw> <X9G8xUk/QvcxsNWi@google.com>
-In-Reply-To: <X9G8xUk/QvcxsNWi@google.com>
-Subject: RE: [PATCH 1/2] Input: elan_i2c - Add new trackpoint report type 0x5F.
-Date:   Fri, 11 Dec 2020 10:38:22 +0800
-Message-ID: <004b01d6cf66$b1a8c590$14fa50b0$@emc.com.tw>
+        Thu, 10 Dec 2020 21:44:48 -0500
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C00C0613D3;
+        Thu, 10 Dec 2020 18:44:08 -0800 (PST)
+Received: by mail-ua1-x941.google.com with SMTP id g3so2405245uae.7;
+        Thu, 10 Dec 2020 18:44:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=J8P6F/MPRjXhmhfFtWhPhGD5sWaokR/6E1g8IVrlW+s=;
+        b=kKDsJfqoP4lCYTd9mGSPprIvcgP8+Ivmik1WhwzOXvRzK+QJd1JrfRexmaQGDW3+tQ
+         BYVw6CttsSTYRv3umN2I9VJrd78/somUxDt46XTi8P4BYVZNo4wruJONZ3scaLEPLdbs
+         09XgHyf1DE8zUw+xeUadADViNQE5WK9jaMmVKyy+5OwIZ7U2XF0qrq69r/KKvqHU3gie
+         ZehdYdZCO5/yI3yxFu5JE3BRY4Zir8n/zgPM9Spy9g0KjZvYeYT1tdBfLqvTmFnvNwfZ
+         IfNlU4FzpQ877jyjQKU00wq7Vh2i6ywDgdHI0IMNFtW04z6hQJBR7z2YX52v4PtKwP+q
+         jcXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=J8P6F/MPRjXhmhfFtWhPhGD5sWaokR/6E1g8IVrlW+s=;
+        b=Q9vEODlQxxdpni5SYC7VVsPPlPW06ApsIL3ZJZzwRLEZSwuJ7ym3CQNL2TuvX6hN5U
+         M47Dqo0VynKsSgtI7CS5t8YErgnUFwoFhuI/2WKO/RLLPj6SlnZw8bB+pAI7GtF5eymW
+         qH0LLrVRJe2WG6ZJnsFGkH7jSN23pxxlpDTEHvDE6Sn4srkNaRx647VmRebX33XRoc/G
+         RJE9O3FdeZPDuWkcTYh+yzWstkFnQUiwjcSjH9/8JMhhQW5pcHNJR1gpPOXW353C3HqZ
+         IcWpS1hXSgsVjhBN386El2IBwBXPh1Jdss28y+O2sHxQ8rstadxXSTG0oNco9XNoILx3
+         aI4g==
+X-Gm-Message-State: AOAM533mKyMYKr2uVsKxvDSM8+MblSf++TimEkXSg4JGKytbK5+cpxt5
+        DnBlZR0u3zSuk+goa1h5mc80nS6KQIah0Q4EFvs=
+X-Google-Smtp-Source: ABdhPJwmlbEuvXWwR3Os36WHrzXQXhn7Crjyzf9LXQgzOh3pHwA8UOR7Uw4y5RVnPBlsft7YPHhjdsWa2t4FcYZlXEA=
+X-Received: by 2002:ab0:6aa:: with SMTP id g39mr11277392uag.71.1607654647395;
+ Thu, 10 Dec 2020 18:44:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 14.0
-Thread-Index: AQJnCFa5POgkA0Msoaon23+TYxT29AGcL9WIqMPaTJA=
-Content-Language: zh-tw
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDYwMTFcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy1lZjJlZjI0ZS0zYjU5LTExZWItYjhhNy1mMDc5NTk2OWU3NWVcYW1lLXRlc3RcZWYyZWYyNTAtM2I1OS0xMWViLWI4YTctZjA3OTU5NjllNzVlYm9keS50eHQiIHN6PSIyOTY1IiB0PSIxMzI1MjEyNzkwMjYwNDc1MzUiIGg9InhhdkI0WEp6QWF6V2lEc2xuY3oyZy80VDRGST0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
-x-dg-rorf: true
+References: <1607592918-14356-1-git-send-email-yejune.deng@gmail.com> <CANn89iKW4cLMssB2zi8kvikddVHMXfQLDr9Gkg768Ou3H5VwiA@mail.gmail.com>
+In-Reply-To: <CANn89iKW4cLMssB2zi8kvikddVHMXfQLDr9Gkg768Ou3H5VwiA@mail.gmail.com>
+From:   Yejune Deng <yejune.deng@gmail.com>
+Date:   Fri, 11 Dec 2020 10:43:54 +0800
+Message-ID: <CABWKuGVvh93zNYky_Lj2Hyenoerm+PBj38ocfYcw0k0_en=7Lg@mail.gmail.com>
+Subject: Re: [PATCH] net: core: fix msleep() is not accurate
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Dmitry:
+Does anyone else have a different opinion? If not=EF=BC=8CI will adopt it a=
+nd resubmit.
 
-I would prefer if we validated report length versus the packet type before
-accepting it.
-
--> If the tracking point report is 0x5F, the report length is 7, but the
-touchpad report length is 32.
--> So, report length will be different with this module.
-
-THANKS
-JINGLE
-
-
------Original Message-----
-From: Dmitry Torokhov [mailto:dmitry.torokhov@gmail.com] 
-Sent: Thursday, December 10, 2020 2:14 PM
-To: jingle.wu
-Cc: linux-kernel@vger.kernel.org; linux-input@vger.kernel.org;
-phoenix@emc.com.tw; josh.chen@emc.com.tw; dave.wang@emc.com.tw
-Subject: Re: [PATCH 1/2] Input: elan_i2c - Add new trackpoint report type
-0x5F.
-
-Hi Jingle,
-
-On Mon, Dec 07, 2020 at 05:07:51PM +0800, jingle.wu wrote:
-> The 0x5F is new trackpoint report type of some module.
-> 
-> Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
-> ---
->  drivers/input/mouse/elan_i2c_core.c  | 2 ++  
-> drivers/input/mouse/elan_i2c_smbus.c | 3 ++-
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/mouse/elan_i2c_core.c 
-> b/drivers/input/mouse/elan_i2c_core.c
-> index 61ed3f5ca219..8f0c4663167c 100644
-> --- a/drivers/input/mouse/elan_i2c_core.c
-> +++ b/drivers/input/mouse/elan_i2c_core.c
-> @@ -52,6 +52,7 @@
->  #define ETP_REPORT_ID		0x5D
->  #define ETP_REPORT_ID2		0x60	/* High precision report */
->  #define ETP_TP_REPORT_ID	0x5E
-> +#define ETP_TP_REPORT_ID2	0x5F
->  #define ETP_REPORT_ID_OFFSET	2
->  #define ETP_TOUCH_INFO_OFFSET	3
->  #define ETP_FINGER_DATA_OFFSET	4
-
-I think we might need to move this into elan_i2c.h so that we can reference
-it from elan_i2c_smbus.c.
-
-> @@ -1076,6 +1077,7 @@ static irqreturn_t elan_isr(int irq, void *dev_id)
->  		elan_report_absolute(data, report, true);
->  		break;
->  	case ETP_TP_REPORT_ID:
-> +	case ETP_TP_REPORT_ID2:
->  		elan_report_trackpoint(data, report);
->  		break;
->  	default:
-> diff --git a/drivers/input/mouse/elan_i2c_smbus.c 
-> b/drivers/input/mouse/elan_i2c_smbus.c
-> index 1820f1cfc1dc..1226d47ec3cf 100644
-> --- a/drivers/input/mouse/elan_i2c_smbus.c
-> +++ b/drivers/input/mouse/elan_i2c_smbus.c
-> @@ -45,6 +45,7 @@
->  #define ETP_SMBUS_CALIBRATE_QUERY	0xC5
->  
->  #define ETP_SMBUS_REPORT_LEN		32
-> +#define ETP_SMBUS_REPORT_LEN2		7
->  #define ETP_SMBUS_REPORT_OFFSET		2
->  #define ETP_SMBUS_HELLOPACKET_LEN	5
->  #define ETP_SMBUS_IAP_PASSWORD		0x1234
-> @@ -497,7 +498,7 @@ static int elan_smbus_get_report(struct i2c_client
-*client,
->  		return len;
->  	}
->  
-> -	if (len != ETP_SMBUS_REPORT_LEN) {
-> +	if ((len != ETP_SMBUS_REPORT_LEN) && (len != ETP_SMBUS_REPORT_LEN2))
-
-> +{
-
-I would prefer if we validated report length versus the packet type before
-accepting it.
-
->  		dev_err(&client->dev,
->  			"wrong report length (%d vs %d expected)\n",
->  			len, ETP_SMBUS_REPORT_LEN);
-> --
-> 2.17.1
-> 
-
-Thanks.
-
--- 
-Dmitry
-
+On Thu, Dec 10, 2020 at 6:19 PM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Thu, Dec 10, 2020 at 10:35 AM Yejune Deng <yejune.deng@gmail.com> wrot=
+e:
+> >
+> > See Documentation/timers/timers-howto.rst, msleep() is not
+> > for (1ms - 20ms), There is a more advanced API is used.
+> >
+> > Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> > ---
+> >  net/core/dev.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index d33099f..6e83ee03 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -6726,9 +6726,9 @@ void napi_disable(struct napi_struct *n)
+> >         set_bit(NAPI_STATE_DISABLE, &n->state);
+> >
+> >         while (test_and_set_bit(NAPI_STATE_SCHED, &n->state))
+> > -               msleep(1);
+> > +               fsleep(1000);
+> >         while (test_and_set_bit(NAPI_STATE_NPSVC, &n->state))
+> > -               msleep(1);
+> > +               fsleep(1000);
+> >
+>
+> I would prefer explicit usleep_range().
+>
+> fsleep() is not common in the kernel, I had to go to its definition.
+>
+> I would argue that we should  use usleep_range(10, 200)  to have an
+> opportunity to spend less time in napi_disable() in some cases.
