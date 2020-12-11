@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56282D7E03
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C062D7E09
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404779AbgLKSX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 13:23:59 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:63300 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403965AbgLKSWo (ORCPT
+        id S2405205AbgLKSYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 13:24:50 -0500
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:64967
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404841AbgLKSYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 13:22:44 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607710941; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=APDP/xwk/rddrkFIAg8jpNKu7AWbc5PJ0qr13hZE6E8=;
- b=RA/2qfanSt9UUbEtRDopdCGhfM2t6rUDquVlFgk51+hZqZujsOdmCJK22b+WTFlHXdKWtT2z
- xxUN8HCA76zEtNGJR2U6BYnNzGR/3zIyI19CM7wxdF5PngSADQ6kKZ3QJI78cuWQ7T5EUHdm
- x9fElw44hkgfEv0ZEfvUs/ak7YQ=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fd3b8d3f81e894c55a1e9bc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Dec 2020 18:22:11
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8A4A1C43463; Fri, 11 Dec 2020 18:22:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8FAC4C433C6;
-        Fri, 11 Dec 2020 18:22:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8FAC4C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Fri, 11 Dec 2020 13:24:17 -0500
+X-IronPort-AV: E=Sophos;i="5.78,412,1599516000"; 
+   d="scan'208";a="367393133"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 19:23:32 +0100
+Date:   Fri, 11 Dec 2020 19:23:32 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] block: drop dead assignments in loop_init()
+In-Reply-To: <20201211181236.25755-1-lukas.bulwahn@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2012111923020.2669@hadrien>
+References: <20201211181236.25755-1-lukas.bulwahn@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 091/141] iwlwifi: iwl-drv: Fix fall-through warnings for
- Clang
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <edd98d194bfc98b4be93a9bdc303630b719c0e66.1605896060.git.gustavoars@kernel.org>
-References: <edd98d194bfc98b4be93a9bdc303630b719c0e66.1605896060.git.gustavoars@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201211182210.8A4A1C43463@smtp.codeaurora.org>
-Date:   Fri, 11 Dec 2020 18:22:10 +0000 (UTC)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a
-> warning by replacing a /* fall through */ comment with the new
-> pseudo-keyword macro fallthrough; instead of letting the code fall
-> through to the next case.
-> 
-> Notice that Clang doesn't recognize /* fall through */ comments as
-> implicit fall-through markings.
-> 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Patch applied to wireless-drivers-next.git, thanks.
+On Fri, 11 Dec 2020, Lukas Bulwahn wrote:
 
-10a0472d1850 iwlwifi: iwl-drv: Fix fall-through warnings for Clang
+> Commit 8410d38c2552 ("loop: use __register_blkdev to allocate devices on
+> demand") simplified loop_init(); so computing the range of the block region
+> is not required anymore and can be dropped.
+>
+> Drop dead assignments in loop_init().
+>
+> As compilers will detect these unneeded assignments and optimize this,
+> the resulting object code is identical before and after this change.
+>
+> No functional change. No change in object code.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/edd98d194bfc98b4be93a9bdc303630b719c0e66.1605896060.git.gustavoars@kernel.org/
+It looks like some braces should be dropped too?
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+julia
 
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> Christoph, please ack.
+>
+> Jens, please pick this minor non-urgent clean-up patch on your
+> block -next tree on top of Christoph's commit above.
+>
+>  drivers/block/loop.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> index d2ce1ddc192d..eed4bc5ef5c5 100644
+> --- a/drivers/block/loop.c
+> +++ b/drivers/block/loop.c
+> @@ -2304,7 +2304,6 @@ MODULE_ALIAS("devname:loop-control");
+>  static int __init loop_init(void)
+>  {
+>  	int i, nr;
+> -	unsigned long range;
+>  	struct loop_device *lo;
+>  	int err;
+>
+> @@ -2343,10 +2342,8 @@ static int __init loop_init(void)
+>  	 */
+>  	if (max_loop) {
+>  		nr = max_loop;
+> -		range = max_loop << part_shift;
+>  	} else {
+>  		nr = CONFIG_BLK_DEV_LOOP_MIN_COUNT;
+> -		range = 1UL << MINORBITS;
+>  	}
+>
+>  	err = misc_register(&loop_misc);
+> --
+> 2.17.1
+>
+>
