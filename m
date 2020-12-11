@@ -2,128 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596B72D75C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 423482D75EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:46:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436491AbgLKMh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 07:37:58 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34578 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392131AbgLKMhx (ORCPT
+        id S2436627AbgLKMph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 07:45:37 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9195 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436543AbgLKMpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:37:53 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607690230;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xeKMIUUY7UN7nseclqb6capkWQKCLYLlFPvEsM/avAA=;
-        b=3520JJ+cuub+0iUSOK2WXjhkvCbFqeJNnWTo2fJ47aLTUyErKzNfEkULJPsX3Qa7RkBVwA
-        4q6jw5fcFuYyZr/ciqFHaAnQVfC1Alp3kCIzCyANWRIH5wkikSXOxsM9LH0a3lH+xiAa45
-        f0/UcyAfqGDvjb7eJDdGBHj9hJNdTg1RDGpqvbSImr23oJWz9hqAB7upD/U8t27689mDeg
-        F/Tz1FEjoqnkk1C0t4mKGVaykVWwH0Pu53ShxAoYAYxl3sBd5Q86Au5G3wKiLThho8mDJo
-        PrspxrgGCxFQ2+rt5HHBAUWr3eImu1NL/lsNiVCRl0iT/SNo3u6jwsn7CYROBw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607690230;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xeKMIUUY7UN7nseclqb6capkWQKCLYLlFPvEsM/avAA=;
-        b=BclOyliY9++BXeKdFZCu5z1BEMLnNc8fqr8CcstXRZSRH4lrLjensrS/wg9nxh2q1FTvD5
-        HDIGPJaNNIgQp/DQ==
-To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        boris.ostrovsky@oracle.com, LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci@vger.kernel.org,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-Subject: Re: [patch 27/30] xen/events: Only force affinity mask for percpu interrupts
-In-Reply-To: <2164a0ce-0e0d-c7dc-ac97-87c8f384ad82@suse.com>
-References: <20201210192536.118432146@linutronix.de> <20201210194045.250321315@linutronix.de> <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com> <2164a0ce-0e0d-c7dc-ac97-87c8f384ad82@suse.com>
-Date:   Fri, 11 Dec 2020 13:37:10 +0100
-Message-ID: <871rfwiknd.fsf@nanos.tec.linutronix.de>
+        Fri, 11 Dec 2020 07:45:00 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Csr6C488Dzkk54;
+        Fri, 11 Dec 2020 20:42:43 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.9) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Dec 2020 20:43:17 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Wolfram Sang <wsa@kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] dt-bindings: i2c: dw: don't set "#address-cells" and "#size-cells" as required
+Date:   Fri, 11 Dec 2020 20:39:38 +0800
+Message-ID: <20201211123938.2020-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11 2020 at 13:10, J=C3=BCrgen Gro=C3=9F wrote:
-> On 11.12.20 00:20, boris.ostrovsky@oracle.com wrote:
->>=20
->> On 12/10/20 2:26 PM, Thomas Gleixner wrote:
->>> All event channel setups bind the interrupt on CPU0 or the target CPU f=
-or
->>> percpu interrupts and overwrite the affinity mask with the corresponding
->>> cpumask. That does not make sense.
->>>
->>> The XEN implementation of irqchip::irq_set_affinity() already picks a
->>> single target CPU out of the affinity mask and the actual target is sto=
-red
->>> in the effective CPU mask, so destroying the user chosen affinity mask
->>> which might contain more than one CPU is wrong.
->>>
->>> Change the implementation so that the channel is bound to CPU0 at the X=
-EN
->>> level and leave the affinity mask alone. At startup of the interrupt
->>> affinity will be assigned out of the affinity mask and the XEN binding =
-will
->>> be updated.
->>=20
->>=20
->> If that's the case then I wonder whether we need this call at all and in=
-stead bind at startup time.
->
-> After some discussion with Thomas on IRC and xen-devel archaeology the
-> result is: this will be needed especially for systems running on a
-> single vcpu (e.g. small guests), as the .irq_set_affinity() callback
-> won't be called in this case when starting the irq.
+"#address-cells" and "#size-cells" is required only when the I2C
+controller has subnodes. Of the four examples given in this document, only
+the third has a child node "eeprom@64".
 
-That's right, but not limited to ARM. The same problem exists on x86 UP.
-So yes, the call makes sense, but the changelog is not really useful.
-Let me add a comment to this.
+Ohterwise, false positives similar to the following are reported:
+/root/linux-next/arch/arm64/boot/dts/hisilicon/hi6220-hikey.dt.yaml: \
+i2c@f7100000: '#address-cells' is a required property
+/root/linux-next/arch/arm64/boot/dts/hisilicon/hi6220-hikey.dt.yaml: \
+i2c@f7100000: '#size-cells' is a required property
 
-Thanks,
+In fact, the predecessor of this document: i2c-designware.txt, does not
+list "#address-cells" and "#size-cells" as "Required properties" also.
 
-        tglx
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml b/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+index 4f746bef23742e9..c22b66b6219eaa3 100644
+--- a/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
++++ b/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+@@ -101,8 +101,6 @@ unevaluatedProperties: false
+ required:
+   - compatible
+   - reg
+-  - "#address-cells"
+-  - "#size-cells"
+   - interrupts
+ 
+ examples:
+@@ -110,8 +108,6 @@ examples:
+     i2c@f0000 {
+       compatible = "snps,designware-i2c";
+       reg = <0xf0000 0x1000>;
+-      #address-cells = <1>;
+-      #size-cells = <0>;
+       interrupts = <11>;
+       clock-frequency = <400000>;
+     };
+@@ -119,8 +115,6 @@ examples:
+     i2c@1120000 {
+       compatible = "snps,designware-i2c";
+       reg = <0x1120000 0x1000>;
+-      #address-cells = <1>;
+-      #size-cells = <0>;
+       interrupts = <12 1>;
+       clock-frequency = <400000>;
+       i2c-sda-hold-time-ns = <300>;
+@@ -148,8 +142,6 @@ examples:
+       reg = <0x100400 0x100>, <0x198 0x8>;
+       pinctrl-0 = <&i2c_pins>;
+       pinctrl-names = "default";
+-      #address-cells = <1>;
+-      #size-cells = <0>;
+       interrupts = <8>;
+       clocks = <&ahb_clk>;
+     };
+-- 
+1.8.3
+
+
