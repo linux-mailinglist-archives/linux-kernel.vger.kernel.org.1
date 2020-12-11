@@ -2,103 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE06E2D76D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBC72D76E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391589AbgLKNok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 08:44:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
+        id S2393393AbgLKNrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:47:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731818AbgLKNoW (ORCPT
+        with ESMTP id S2388605AbgLKNrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:44:22 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CA1C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:43:41 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id c5so5450721wrp.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:43:41 -0800 (PST)
+        Fri, 11 Dec 2020 08:47:43 -0500
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A1EC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:47:02 -0800 (PST)
+Received: by mail-ua1-x942.google.com with SMTP id t19so2864977uaq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:47:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=PuVM1PLYiwpp0lLPJd/iWAVvKsSsyjEYjPBnVrj9k0U=;
-        b=wMD6kVpytcLH++f6sDjmXRdlTO8XSZw+X4pXOHG1KprjYYrcjEVEq64tHhrSvccplB
-         BHDoRr7GLCauDzQzPbA8oxoc7SwsgdqFeKL2z90AQ0tHWzLOMhK1qqDhMvFjuzUGBEA1
-         f0o3OJ3aLLX//U+Qlznt1BqDdTgSdG1h+3slE=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zQ6vQHJKZTiZ2neB0QETD39X3O36ySzuaJhj1IGyfyc=;
+        b=NJB4v2zz4yNRj0vxmnECFk3OO77v0K7MHZWPaAIeYOxrBDXqv5IfPx/9Y8aIYybanK
+         2uOjtOhwUklDbSdSSpy2FOHbgt7NJAlsSrHa2XQF4H8RENznWvDf9yuJNXhY5u7AEbNi
+         54jgqJHb9Z/Ld3eYJ5z6pTvvh39IoGWTJu8oJsglxH3uWRG5gTewymRSKuje1/3aQC/W
+         T5BmxG/SsNSUELu0V7b/oIx4sCj3kGXfJ2CgdH7E4a69S86SklCWHO7NRIaOowKQUpWw
+         4jaNg8CSvE0AcI3DzSjbDr6kG3LhK+3Fkybda/eZHN7P5QNFA1kBSc7PBlRH9470AINW
+         4C+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=PuVM1PLYiwpp0lLPJd/iWAVvKsSsyjEYjPBnVrj9k0U=;
-        b=e8Vg2LV2qXYU4atMrKwNR1wB7tzc3NvCXPiHSUn+Lv2Npd89Z6LqesBY6rECiaCEfd
-         SvOnZR9teiNgC9uuSpZMcJAsWnRVcjxdvcp/ArzIVd3cKeH2PMM6Q/aNgyt04Se+7B4L
-         tUUDO4Np9snzD9QwMjpRHD/37AFQBY+lmFzYUaqwsn1dwXXqmgrv9EpMyuNXwGxX5+nG
-         z9io18fOXkbS5HC+RccaOmMYFrY1sk9oiioe9/TsjZmxtfqq8NMLmQvOCSCmgqTzFKNs
-         /Y7YvJOAaThBy/11t0V9kjmUys5SWzCPnlFAwUY28ZNsR92/vtIx007l1j9l8GqoTGaK
-         tb3w==
-X-Gm-Message-State: AOAM533Tm7Zm60a/T82HqJUkMIH/xfvZgqzYM9Ptd0rAOxUEOld90+0E
-        ICc1Xv+h7qNvSXRcuPK8pA4apg==
-X-Google-Smtp-Source: ABdhPJzaF0Q/PL60zEr7ojj8DmyjE9UbD9tmjKkEpN7TWlOGZh1ZW3syyfIZNJb3wPTH5bpcN0AQ4g==
-X-Received: by 2002:adf:a551:: with SMTP id j17mr13894617wrb.217.1607694220431;
-        Fri, 11 Dec 2020 05:43:40 -0800 (PST)
-Received: from localhost ([2a01:4b00:8432:8a00:fa59:71ff:fe7e:8d21])
-        by smtp.gmail.com with ESMTPSA id r13sm14435415wrs.6.2020.12.11.05.43.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 05:43:40 -0800 (PST)
-Date:   Fri, 11 Dec 2020 13:43:39 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        "qiang.zhang@windriver.com" <qiang.zhang@windriver.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "aryabinin@virtuozzo.com" <aryabinin@virtuozzo.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "andreyknvl@google.com" <andreyknvl@google.com>,
-        "qcai@redhat.com" <qcai@redhat.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        walter-zh.wu@mediatek.com
-Subject: Re: [PATCH] kasan: fix slab double free when cpu-hotplug
-Message-ID: <X9N3i+EwydXFc4HW@chrisdown.name>
-References: <20201204102206.20237-1-qiang.zhang@windriver.com>
- <1607083295.22062.15.camel@mtksdccf07>
- <20201204172521.ed9f77164ff9f9fc91f35ee0@linux-foundation.org>
- <1607185035.22062.42.camel@mtksdccf07>
- <20201205170914.e380173074b2deded2ade3d3@linux-foundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zQ6vQHJKZTiZ2neB0QETD39X3O36ySzuaJhj1IGyfyc=;
+        b=fYTAeQz0SGIDK4oXFOCgUhzn+9LouTxgN//kvyPqUlvNYCYWPW1+npLzrJB2mQM6F8
+         L343o1GAKq1Txd/eL3YGtxNR6377TdB/UL3x4Kp9+8AapeClisDNT/AGmvdCk2BZugnl
+         BYvCj5rkwHFOINMjy6Ma9LCW7JA1OmoMNOTIJxH4nSMhJmA6ayHDjwQA2+WqtbHdBW5H
+         gljlq4ygmLVxFvuVrR6FmkyXxJgusjghc/nd18QwBfcPZq2xSksJsmREtl4eMBckovXo
+         EtyIsET2sHFguoGjdX7J3Op9qLi3w55yXV+dm9BTTTUPuQmJzo6HT9TTr7+qXl39knSB
+         tIwQ==
+X-Gm-Message-State: AOAM533AxrU75+/qbzpX98Y8Le/e/Ey4DDp2I1URXD5CwgeLe8nJeKzW
+        t79hrX/AcnulX3W92SZzCsG04iGu8UnpID6I7rRaEA==
+X-Google-Smtp-Source: ABdhPJyMcAJGiEh2yGNmjbTir7D0bwRrjvDUGQ4zl8dEGa8gcjgCh3wN7tnbZ4EWFh80oTSdtLpxMiGwzhuE8yVJKCU=
+X-Received: by 2002:a9f:2213:: with SMTP id 19mr12418198uad.15.1607694421515;
+ Fri, 11 Dec 2020 05:47:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201205170914.e380173074b2deded2ade3d3@linux-foundation.org>
-User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
+References: <20201204171626.10935-1-mw@semihalf.com>
+In-Reply-To: <20201204171626.10935-1-mw@semihalf.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 11 Dec 2020 14:46:24 +0100
+Message-ID: <CAPDyKFooRuitBjVr7FoMbty3rmM3eOsLKqwF5=ZQ=Aj6r29h+A@mail.gmail.com>
+Subject: Re: [PATCH v4 0/4] sdhci-xenon ACPI support
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Ziji Hu <huziji@marvell.com>,
+        Adrian Hunter <adrian.hunter@intel.com>, jaz@semihalf.com,
+        tn@semihalf.com, ard.biesheuvel@arm.com,
+        Kostya Porotchkin <kostap@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
-
-Andrew Morton writes:
->@@ -188,6 +190,10 @@ void quarantine_put(struct kasan_free_me
-> 	local_irq_save(flags);
+On Fri, 4 Dec 2020 at 18:17, Marcin Wojtas <mw@semihalf.com> wrote:
 >
-> 	q = this_cpu_ptr(&cpu_quarantine);
->+	if (q->offline) {
->+		local_irq_restore(flags);
->+		return;
->+	}
-> 	qlist_put(q, &info->quarantine_link, cache->size);
-> 	if (unlikely(q->bytes > QUARANTINE_PERCPU_SIZE)) {
-> 		qlist_move_all(q, &temp);
+> Hi,
+>
+> The fourth version of the sdhci-xenon ACPI support
+> addresses a comment regarding clk handling in xenon_runtime_resume.
+>
+> The MacchiatoBin firmware for testing can be obtained from:
+> https://drive.google.com/file/d/1Y8BhyaCrksQgT_GPfpqqiYHpQ41kP8Kp
+>
+> Changelog:
+> v3->v4
+>   * [3/4] Call clk_prepare_enable unconditionally in xenon_runtime_resume.
+>   * Add Adrian's Acked-by to all patches.
+>
+> v2->v3
+>   * [3/4] Call clk_disable_unprepare unconditionally.
+>   * Add Adrian's Acked-by to all patches.
+>
+> v1->v2
+>   * Split single commit to 4
+>   * Use device_match_data and dedicated ACPI ID's per controller
+>     variant
+>
+> Marcin Wojtas (4):
+>   mmc: sdhci-xenon: use match data for controllers variants
+>   mmc: sdhci-xenon: switch to device_* API
+>   mmc: sdhci-xenon: use clk only with DT
+>   mmc: sdhci-xenon: introduce ACPI support
+>
+>  drivers/mmc/host/sdhci-xenon.h     | 12 ++-
+>  drivers/mmc/host/sdhci-xenon-phy.c | 40 +++++----
+>  drivers/mmc/host/sdhci-xenon.c     | 91 +++++++++++++-------
+>  3 files changed, 91 insertions(+), 52 deletions(-)
+>
 
-I'm afraid as well as the issues already identified, this also fails, because 
-`quarantine_put` now returns a bool after "kasan: sanitize objects when 
-metadata doesn't fit":
+Applied for next, thanks!
 
-     mm/kasan/quarantine.c: In function ‘quarantine_put’:
-     mm/kasan/quarantine.c:198:3: error: ‘return’ with no value, in function returning non-void [-Werror=return-type]
-       198 |   return;
-           |   ^~~~~~
-     mm/kasan/quarantine.c:171:6: note: declared here
-       171 | bool quarantine_put(struct kmem_cache *cache, void *object)
+Kind regards
+Uffe
