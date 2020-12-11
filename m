@@ -2,108 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34D82D6FD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 06:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DF32D6FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 06:53:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395267AbgLKFqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 00:46:46 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:13705 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390420AbgLKFql (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 00:46:41 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607665576; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Sender; bh=j+DfFGxWs7c2CmyMKyBUPlymDbEjwgO5qYBJpQVMWy0=; b=D2Z84005HPA/74XtTqzL/8rM0uT015SjmzTRaHsaB778O7fWjAh3oPnwkhSj4upldWT+qewq
- gZjBJrOKAi6rsYD/wrPCpHrp/9bSpCkgcCwjw0sc3Sq9CIlLu9045rRsn2o3Y8RKI89d9XO0
- KYD3dxyw0YsBzn/1mAh4S+wB4+0=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5fd3078e3a8ba2142a769f6b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Dec 2020 05:45:50
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5E241C43462; Fri, 11 Dec 2020 05:45:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from Pillair (unknown [49.205.247.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7FB96C433C6;
-        Fri, 11 Dec 2020 05:45:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7FB96C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
-From:   "Rakesh Pillai" <pillair@codeaurora.org>
-To:     "'Brian Norris'" <briannorris@chromium.org>
-Cc:     "'ath10k'" <ath10k@lists.infradead.org>,
-        "'linux-wireless'" <linux-wireless@vger.kernel.org>,
-        "'Linux Kernel'" <linux-kernel@vger.kernel.org>,
-        "'Doug Anderson'" <dianders@chromium.org>, <kuabhs@chromium.org>,
-        "'Youghandhar Chintala'" <youghand@codeaurora.org>
-References: <1607612975-5756-1-git-send-email-pillair@codeaurora.org> <CA+ASDXN4uLsbo7uuO7WPaUBY+mqHQRfdMHJ4R9KBqqmiVQJUcA@mail.gmail.com>
-In-Reply-To: <CA+ASDXN4uLsbo7uuO7WPaUBY+mqHQRfdMHJ4R9KBqqmiVQJUcA@mail.gmail.com>
-Subject: RE: [PATCH] ath10k: Remove voltage regulator votes during wifi disable
-Date:   Fri, 11 Dec 2020 11:15:42 +0530
-Message-ID: <000301d6cf80$e0c44150$a24cc3f0$@codeaurora.org>
+        id S2395286AbgLKFwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 00:52:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388912AbgLKFvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 00:51:44 -0500
+Date:   Fri, 11 Dec 2020 06:50:58 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607665863;
+        bh=cp6+pYtXaACthxB1XxfyhkIFCLqavljHyzRg1qjaSoY=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kE5bqkU5UDmezhRr0m/f7HYr4Ms9XJCb/ILK3RBEq5hswZ7Uwh37F//LFY+ieEtw2
+         hgEVJsMXdzWWC/azR1PRcJHuezRx5hJeqJOFSbJjEhfnh2bwfncQ/Mgws8cr1x9Kra
+         lZ1LjpV45i3H1c2ESgp3wkibYqWxeCk0CwqudIrg=
+From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
+Message-ID: <X9MIwqJBG69M5uHq@kroah.com>
+References: <20201210170443.GA17304@dincontrollerdev>
+ <X9Jw+srprdT8tquZ@kroah.com>
+ <20201210194625.GA17516@dincontrollerdev>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHPTk2hLG94YXWqoxGOXZeMCAI2cwD5rb8pqfiXg6A=
-Content-Language: en-us
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201210194625.GA17516@dincontrollerdev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 10, 2020 at 07:46:25PM +0000, József Horváth wrote:
+> On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
+> > On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
+> > > This is a serial port driver for
+> > > Silicon Labs Si4455 Sub-GHz transciver.
+> > > 
+> > > Signed-off-by: József Horváth <info@ministro.hu>
+> > > ---
+> > >  .../bindings/serial/silabs,si4455.yaml        |   53 +
+> > >  MAINTAINERS                                   |    7 +
+> > >  drivers/tty/serial/Kconfig                    |    8 +
+> > >  drivers/tty/serial/Makefile                   |    1 +
+> > >  drivers/tty/serial/si4455.c                   | 1235 +++++++++++++++++
+> > >  drivers/tty/serial/si4455_api.h               |   56 +
+> > 
+> > First thing, a single .c file should not need a .h file.
+> > 
+> > But then I looked at the .h file and see:
+> > 
+> > > --- /dev/null
+> > > +++ b/drivers/tty/serial/si4455_api.h
+> > > @@ -0,0 +1,56 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0
+> > > + *
+> > > + * Copyright (C) 2020 József Horváth <info@ministro.hu>
+> > > + *
+> > > + */
+> > > +#ifndef SI4455_API_H_
+> > > +#define SI4455_API_H_
+> > > +
+> > > +struct si4455_iocbuff {
+> > > +	uint32_t length;
+> > > +	uint8_t	data[4096];
+> > 
+> > If you do have an ioctl, use proper data types.  These are not the
+> > correct ones (hint, __u32 and __u8).
+> > 
+> > > +};
+> > > +
+> > > +#define BASE_TTYIOC_PRIVATE		0xA0
+> > > +/* Set EZConfig.
+> > > + * After this ioctl call, the driver restarts the si4455,
+> > > + * then apply the new configuration and patch.
+> > > + */
+> > > +#define SI4455_IOC_SEZC		_IOW('T', \
+> > > +				     BASE_TTYIOC_PRIVATE + 0x01, \
+> > > +				     struct si4455_iocbuff)
+> > 
+> > Why does a serial driver have private ioctls?  Please no, don't do that.
+> 
+> I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
+> In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
 
+My point is, a serial driver should NOT have any custom ioctls.
 
-> -----Original Message-----
-> From: Brian Norris <briannorris@chromium.org>
-> Sent: Thursday, December 10, 2020 11:44 PM
-> To: Rakesh Pillai <pillair@codeaurora.org>
-> Cc: ath10k <ath10k@lists.infradead.org>; linux-wireless <linux-
-> wireless@vger.kernel.org>; Linux Kernel =
-<linux-kernel@vger.kernel.org>;
-> Doug Anderson <dianders@chromium.org>; kuabhs@chromium.org;
-> Youghandhar Chintala <youghand@codeaurora.org>
-> Subject: Re: [PATCH] ath10k: Remove voltage regulator votes during =
-wifi
-> disable
->=20
-> On Thu, Dec 10, 2020 at 7:09 AM Rakesh Pillai <pillair@codeaurora.org>
-> wrote:
-> > --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> > +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> > @@ -1045,14 +1085,18 @@ static int ath10k_snoc_hif_power_up(struct
-> ath10k *ar,
-> >         ret =3D ath10k_snoc_init_pipes(ar);
-> >         if (ret) {
-> >                 ath10k_err(ar, "failed to initialize CE: %d\n", =
-ret);
-> > -               goto err_wlan_enable;
-> > +               goto err_free_rri;
-> >         }
-> >
-> >         return 0;
-> >
-> > -err_wlan_enable:
-> > +err_free_rri:
-> > +       ath10k_ce_free_rri(ar);
->=20
-> This change in the error path seems to be an unrelated (but correct)
-> fix. It deserves its own patch, I think.
+> I can change it to BASE_TTYIOC or SI4455_IOC_BASE
+> 
+> > Implement the basic serial driver first, and then we can talk about
+> > "custom" configurations and the like, using the correct apis.
+> 
+> Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
+> The cofiguration for interface is provided by user for application.
 
-Sure Brian. I will post this error handling fix as a separate patch, and =
-also post a v2 for this patchset.
+That is what a device tree is for, to configure the device to have the
+correct system configuration, why can't that be the same here?
 
+> It contains the base frequency, channel spacing, modulation, and a lot
+> of more stuff, and generated by Silicon Labs Wireless Development
+> Suite.
+> The generated configuration is in a non public(compressed,
+> encrypted...who knows) format, so without this the driver can't
+> provide configuration parameters to Si4455.
+
+So we have to take a "custom" userspace blob and send it to the device
+to configure it properly?  Like Jiri said, sounds like firmware, so just
+use that interface instead.
+
+thanks,
+
+greg k-h
