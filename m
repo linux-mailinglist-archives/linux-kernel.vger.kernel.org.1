@@ -2,202 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C6E2D7B0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9EE2D7B09
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732642AbgLKQev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 11:34:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35750 "EHLO
+        id S1731018AbgLKQeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 11:34:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727325AbgLKQel (ORCPT
+        with ESMTP id S1726763AbgLKQeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 11:34:41 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D37BC061794;
-        Fri, 11 Dec 2020 08:34:01 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id r4so4835281pls.11;
-        Fri, 11 Dec 2020 08:34:01 -0800 (PST)
+        Fri, 11 Dec 2020 11:34:36 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D78C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:33:56 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id n4so10050299iow.12
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:33:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=e6ooUHIBWtAm3UIq07HSxYs4FQkH1MMECJPgWu1xGQ8=;
-        b=eXheUVTgbGUGETs9OXCgV6XxrcCtnY+eEa2Giq+CK720JdGxLctzEE11Vr9xKXHWO0
-         qO8x3Ek3wgC7LQdPTZhTS7EXgVjVXyfSpGjUTsrn3cCo5tD9KcEHlBzE67U45lE49wrn
-         TiK01Fa2aOyCBwW4e/T6RPh2DW1P7qZJByUI0+c5zYrmmcbEFK9gSiXSrk60F8+htRZ5
-         65ikaBlANwvVCpNI0kfzF7cZ9q5fvAuP5gvaxRmbvEb9RAgdeIqbnMZi+17+oJA8Z3Ds
-         +vkNJ1OGK/ra4nbIhEIjUCCqk77Czz+6yMKaQb/22oWD2K+d5qqFxuQ8IaYGe6X45qcM
-         l+GA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FAw6hXoyT6uM9vzPmYIpKukJwESiYRXuzPIlQPsLuXA=;
+        b=GgmBkl44Ns0gn6fknyLrsvDLce3lNfA8/ZC1mXAsFWrphIf18X2YFWw+jfWGedUrD0
+         fcf5KOopk5B7ysjly8U/Vo9AD+OiBji8WXC+UiPRhtP/RXzH/bsz+QvIaM8aABYHpax6
+         +0xKwSz463HwLAERIZROHqMt9W+1jDX7L7ofGx2ajd/iOypqt/QpiE0FmsWleAiZC/qf
+         Y8jE7kcIt56n+wVzQa1KrIuWdkXQ29P/lCOheovVXjiXRG1blgtm9MqT1S4AexDNMVU4
+         Da2nvlUbduTWTMRx3aclzQhF3G0Hpz+SiFDWx9ZoI/D5JAFTTDN2SUE5zVNybuynlvcB
+         CLYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=e6ooUHIBWtAm3UIq07HSxYs4FQkH1MMECJPgWu1xGQ8=;
-        b=ODCrm7UbuYtt6ZiFC68VxR65hvsw8bM0uQJlfNIpY5kTtT7YPHlMBVtMqcq+yC9e/4
-         AtEsXPXKBgpuvHyXFVG24wQGEYKhrJby2QmbParQk4I+q3RSjkJ50M+yKxg2DSIFd2Qu
-         cKnzS86bgZSGgLAZcxJkxJzKeAaF8/aRM41mYtQCm2f6Eojb+IFxn6IWvoFpnLO2Dw5k
-         XSw5EBtjtVXuCd5/rDOf4zdAW5bpplmIe6dbd7IJfikza8vR3x8t52p6eViASrBHQl7I
-         6Zm8hnEJdc17q3QEkep97q+RuQlhbgU1DoStFKtZzL3iIW3WhAeKOp3BoL8SOM2HJcJE
-         kD+A==
-X-Gm-Message-State: AOAM531gsm4Wi3lzszOgQITQoeHcI1JEbhdh1DCh+NZJhg6TtPrpDXbY
-        b+FSnQg3iQyrnuevZQH9GDg=
-X-Google-Smtp-Source: ABdhPJzdbBpsvkbYttF4oxUb6DX657RdZ7NwqJyhGKT6vhVK5oGp1Y7fO25EMVVIHnM2qujfn8+lGA==
-X-Received: by 2002:a17:902:fe02:b029:db:c7fd:3c2c with SMTP id g2-20020a170902fe02b02900dbc7fd3c2cmr11740513plj.31.1607704440790;
-        Fri, 11 Dec 2020 08:34:00 -0800 (PST)
-Received: from localhost.localdomain (1-171-10-206.dynamic-ip.hinet.net. [1.171.10.206])
-        by smtp.gmail.com with ESMTPSA id gm18sm7987947pjb.55.2020.12.11.08.33.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Dec 2020 08:34:00 -0800 (PST)
-From:   cy_huang <u0084500@gmail.com>
-To:     lee.jones@linaro.org, robh+dt@kernel.org
-Cc:     cy_huang@richtek.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v4 3/3] mfd: rt4831: Adds DT binding document for Richtek RT4831 MFD core
-Date:   Sat, 12 Dec 2020 00:33:44 +0800
-Message-Id: <1607704424-16223-3-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607704424-16223-1-git-send-email-u0084500@gmail.com>
-References: <1607704424-16223-1-git-send-email-u0084500@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FAw6hXoyT6uM9vzPmYIpKukJwESiYRXuzPIlQPsLuXA=;
+        b=PL86QuwLFjAzC87kSVCGCWyCQyIKEJP+iF7XiHKuId5L+wV5PzhKZGYlCM8Yduay9s
+         M0RDf7ai5SyYYDbsxeHqK9mwLVE9+EYAM41XELy0kIKtNDzBhF7f7E92yM20U/rFXAaj
+         1bTtEDlXSwpXdD9K5v4Awk3BCCHAe+5S09OsyOUyEsPmGTumzQD78uHTHSDRQ+3SO/z6
+         dQB8xPVYPAEOpkmagAk+N1Bbo/FYHRq57m6srmFHP4gBbBP/f8N9m/LJCpH/axv6F0rD
+         VJgjCGIoDJHrJGEUtbgT6+blEQ4yJ989YmgBzsNCbdhDTyHuOskule4I1TtkKxQi+Cv5
+         20vA==
+X-Gm-Message-State: AOAM531x1xYuYLZLXvbCZPGLAeJPya667JoCh1xrPzaTfw0xRmgKcGIu
+        8DRH+f6w/ACv0rTDDYHkyz8/PQ==
+X-Google-Smtp-Source: ABdhPJza4ydPg5ScWsbhL87xQLWUOu18OVel48dEocpMnw6mZJsUxBpB5MtgvueLlNUMfiiYS7gltg==
+X-Received: by 2002:a6b:3788:: with SMTP id e130mr16099681ioa.23.1607704435255;
+        Fri, 11 Dec 2020 08:33:55 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id f2sm4657901iop.6.2020.12.11.08.33.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Dec 2020 08:33:54 -0800 (PST)
+Subject: Re: [PATCH 0/3] block: blk_interposer - Block Layer Interposer
+To:     Mike Snitzer <snitzer@redhat.com>,
+        Sergei Shtepa <sergei.shtepa@veeam.com>, hch@lst.de
+Cc:     "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "hare@suse.de" <hare@suse.de>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Pavel Tide <Pavel.TIde@veeam.com>, dm-devel@redhat.com
+References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
+ <20201209135148.GA32720@redhat.com> <20201210145814.GA31521@veeam.com>
+ <20201210163222.GB10239@redhat.com> <20201211163049.GC16168@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <1ee7652e-b77f-6fa4-634c-ff6639037321@kernel.dk>
+Date:   Fri, 11 Dec 2020 09:33:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201211163049.GC16168@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On 12/11/20 9:30 AM, Mike Snitzer wrote:
+> While I still think there needs to be a proper _upstream_ consumer of
+> blk_interposer as a condition of it going in.. I'll let others make the
+> call.
 
-Adds DT binding document for Richtek RT4831 MFD core.
+That's an unequivocal rule.
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
-This patch depends on
- "backlight: rt4831: Adds DT binding document for Richtek RT4831 backlight".
+> As such, I'll defer to Jens, Christoph and others on whether your
+> minimalist blk_interposer hook is acceptable in the near-term.
 
-since v4
-- remove v3 regulator binding patch, directly merge it into mfd binding.
+I don't think so, we don't do short term bandaids just to plan on
+ripping that out when the real functionality is there. IMHO, the dm
+approach is the way to go - it provides exactly the functionality that
+is needed in an appropriate way, instead of hacking some "interposer"
+into the core block layer.
 
-since v3
-- Move include/dt-bindings/leds/rt4831-backlight.h to patch 0002.
-- Add dual license tag in mfd binding document.
-
-since v2
-- Add regulator-allow-bypass flag in DSVLCM.
----
- .../devicetree/bindings/mfd/richtek,rt4831.yaml    | 108 +++++++++++++++++++++
- 1 file changed, 108 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/richtek,rt4831.yaml
-
-diff --git a/Documentation/devicetree/bindings/mfd/richtek,rt4831.yaml b/Documentation/devicetree/bindings/mfd/richtek,rt4831.yaml
-new file mode 100644
-index 00000000..9de7c4a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/richtek,rt4831.yaml
-@@ -0,0 +1,108 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mfd/richtek,rt4831.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Richtek RT4831 DSV and Backlight Integrated IC
-+
-+maintainers:
-+  - ChiYuan Huang <cy_huang@richtek.com>
-+
-+description: |
-+  RT4831 is a multifunctional device that can provide power to the LCD display
-+  and LCD backlight.
-+
-+  For Display Bias Voltage DSVP and DSVN, the output range is about 4V to 6.5V.
-+  It's sufficient to meet the current LCD power requirement.
-+
-+  DSVLCM is a boost regulator in IC internal as DSVP and DSVN input power.
-+  Its voltage should be configured above 0.15V to 0.2V gap larger than the
-+  voltage needed for DSVP and DSVN. Too much voltage gap could improve the
-+  voltage drop from the heavy loading scenario. But it also make the power
-+  efficiency worse. It's a trade-off.
-+
-+  For the LCD backlight, it can provide four channel WLED driving capability.
-+  Each channel driving current is up to 30mA
-+
-+  Datasheet is available at
-+  https://www.richtek.com/assets/product_file/RT4831A/DS4831A-05.pdf
-+
-+properties:
-+  compatible:
-+    const: richtek,rt4831
-+
-+  reg:
-+    description: I2C device address.
-+    maxItems: 1
-+
-+  enable-gpios:
-+    description: |
-+      GPIO to enable/disable the chip. It is optional.
-+      Some usage directly tied this pin to follow VIO 1.8V power on sequence.
-+    maxItems: 1
-+
-+  regulators:
-+    type: object
-+
-+    patternProperties:
-+      "^DSV(LCM|P|N)$":
-+        type: object
-+        $ref: /schemas/regulator/regulator.yaml#
-+
-+    required:
-+      - DSVLCM
-+      - DSVP
-+      - DSVN
-+
-+    additionalProperties: false
-+
-+  backlight:
-+    $ref: ../leds/backlight/richtek,rt4831-backlight.yaml
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/leds/rt4831-backlight.h>
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      rt4831@11 {
-+        compatible = "richtek,rt4831";
-+        reg = <0x11>;
-+
-+        regulators {
-+          DSVLCM {
-+            regulator-min-microvolt = <4000000>;
-+            regulator-max-microvolt = <7150000>;
-+            regulator-allow-bypass;
-+          };
-+          DSVP {
-+            regulator-name = "rt4831-dsvp";
-+            regulator-min-microvolt = <4000000>;
-+            regulator-max-microvolt = <6500000>;
-+            regulator-boot-on;
-+          };
-+          DSVN {
-+            regulator-name = "rt4831-dsvn";
-+            regulator-min-microvolt = <4000000>;
-+            regulator-max-microvolt = <6500000>;
-+            regulator-boot-on;
-+          };
-+        };
-+
-+        backlight {
-+          compatible = "richtek,rt4831-backlight";
-+          default-brightness = <1024>;
-+          max-brightness = <2048>;
-+          richtek,bled-ovp-sel = /bits/ 8 <RT4831_BLOVPLVL_21V>;
-+          richtek,channel-use = /bits/ 8 <RT4831_BLED_ALLCHEN>;
-+        };
-+      };
-+    };
 -- 
-2.7.4
+Jens Axboe
 
