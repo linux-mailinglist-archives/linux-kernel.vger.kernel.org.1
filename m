@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3978C2D71CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 420EF2D71C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:33:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389616AbgLKIcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:32:52 -0500
-Received: from mga03.intel.com ([134.134.136.65]:38041 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728423AbgLKIb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:31:59 -0500
-IronPort-SDR: lIdgQnJfSbpQzP1/JtTAhX/4jzgerDrg3cLh36y8y/+hqewv6LHRL97uijPQcpffYMIF0mrRI4
- 1VQdW/NXV2fA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="174512474"
-X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
-   d="scan'208";a="174512474"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 00:30:13 -0800
-IronPort-SDR: G5RwN+FFiBea78Y2IEu5sILRHZkIKbkvln2oXvkSH3AuD+pm6ieaEvEgMgPCgnM19yFhj1jJSZ
- YCLsL+EvbUuQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
-   d="scan'208";a="440613917"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 11 Dec 2020 00:30:10 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 11 Dec 2020 10:30:10 +0200
-Date:   Fri, 11 Dec 2020 10:30:10 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Badhri Jagan Sridharan <badhri@google.com>
-Cc:     linux@roeck-us.net, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kyle Tso <kyletso@google.com>,
-        Will McVicker <willmcvicker@google.com>
-Subject: Re: [PATCH 0/5] USB: typec: various patches
-Message-ID: <20201211083010.GD1594451@kuha.fi.intel.com>
-References: <20201210160521.3417426-1-gregkh@linuxfoundation.org>
+        id S1731470AbgLKIb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:31:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728423AbgLKIbx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:31:53 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47A8C0613CF;
+        Fri, 11 Dec 2020 00:31:12 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id l23so1971103pjg.1;
+        Fri, 11 Dec 2020 00:31:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BvXfqmrNJagCH+GbSgfFYVoOHFPlLGvLrR6QFrYlfo0=;
+        b=JREI7iGfFOa9A7qYLjV/3iCghgcy2ZGlfv2kndOL5KF3YExuqirtUbwP6dIyZgoGDW
+         xEdsHJM4m3lLOOBBuyHeHmzJfeahQV8aU79qiUBmyh/XfunEzandeK5G3NUESt3AWFcD
+         a3ezSMUd+nR4hOuPGZpjmPcOjFQCEE5g7xRh9Kp4CGmPYMDh8XXvH5YQcT1Lhcai3Y+4
+         E7IoAbLXCh+ZKqcc2Am5URYpCPMSQWDUJBpD+lZwnbO4zZD1nwmlUqkP8kWFWCvZ/jcp
+         2kyerygUYyukX490yhTeGKq7bs+4TmFxr4PYUBV7gvSe6zrBY93YjH+CHkmkZhhtPNf3
+         TeeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BvXfqmrNJagCH+GbSgfFYVoOHFPlLGvLrR6QFrYlfo0=;
+        b=Suc5Qbo8Aner/rRZhx+qPI/RmHZCX2luVjUILGpnijHnegkj6c5jTkHn4Ze55H/HwV
+         eY2jXN9TUMHiX3PalvkjfLXEL7MmWVHINO6nR/MIokkXBPo0gCQ+KUtV92tu2NBcZwR7
+         rCmKv3DXn6yZRkpnBJp3EAZOCkOu7ce+W2rlEtWHNRfhSgEhN+j/JtIb70ntqe0f+A8V
+         cVFfNgdA1Bw9acuVmlv8KD0YxhOzJFqjTgLASeEror2L6Ikvshwqt7vIM9wxkEKqSF3f
+         ByRMUb7G5aLIMgjDqrp+p60r27SgjwLr3Jm/kejc7DN5MtWCZeASNOaCYlztTwj8GdFh
+         HARA==
+X-Gm-Message-State: AOAM533aKt+WgWYoS1/IJHkeYBzrbtWlg/IbZ66n6i1d4hIFni8bIKj5
+        5zYPDfo50DjfC6sDL8JT2A==
+X-Google-Smtp-Source: ABdhPJyOOAIrp8s+Q92SAtzPfWarGNJC7la9Thn+Qb4fkzGaURu9ZwsTmXIzBVaRMZF+WNorDPs2Fw==
+X-Received: by 2002:a17:90b:8d8:: with SMTP id ds24mr11800440pjb.134.1607675472478;
+        Fri, 11 Dec 2020 00:31:12 -0800 (PST)
+Received: from localhost.localdomain (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
+        by smtp.gmail.com with ESMTPSA id l66sm8885410pgl.24.2020.12.11.00.31.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 00:31:11 -0800 (PST)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sean Young <sean@mess.org>, Brad Love <brad@nextdimension.cc>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH] media: dvbdev: Fix memory leak in dvb_media_device_free()
+Date:   Fri, 11 Dec 2020 03:30:39 -0500
+Message-Id: <20201211083039.521617-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210160521.3417426-1-gregkh@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 05:05:16PM +0100, Greg Kroah-Hartman wrote:
-> In digging through a large set of proposed typec patches for the Android
-> common kernel, I've picked out 5 "easy" patches that should all go
-> upstream (they all should go upstream, just will take a while to clean
-> them up it seems...)
+dvb_media_device_free() is leaking memory. Free `dvbdev->adapter->conn`
+before setting it to NULL, as documented in include/media/media-device.h:
+"The media_entity instance itself must be freed explicitly by the driver
+if required."
 
-Cool. Is there already support for the new Enter_USB message? Badhri,
-maybe you know more about this, if somebody is working on that or not?
+Cc: stable@vger.kernel.org
+Fixes: 0230d60e4661 ("[media] dvbdev: Add RF connector if needed")
+Reported-by: syzbot+7f09440acc069a0d38ac@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?id=9bbe4b842c98f0ed05c5eed77a226e9de33bf298
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+ drivers/media/dvb-core/dvbdev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-FWIW, for all except the first patch 1/5:
-
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> Badhri Jagan Sridharan (2):
->   USB: typec: tcpm: Prevent log overflow by removing old entries
->   USB: typec: tcpci: Add Bleed discharge to POWER_CONTROL definition
-> 
-> Kyle Tso (2):
->   USB: typec: tcpm: Fix PR_SWAP error handling
->   USB: typec: tcpm: Add a 30ms room for tPSSourceOn in PR_SWAP
-> 
-> pumahsu (1):
->   USB: typec: tcpm: Hard Reset after not receiving a Request
-> 
->  drivers/usb/typec/tcpm/tcpci.h |  1 +
->  drivers/usb/typec/tcpm/tcpm.c  | 30 +++++++++++++++---------------
->  include/linux/usb/pd.h         |  1 +
->  3 files changed, 17 insertions(+), 15 deletions(-)
-> 
-> -- 
-> 2.29.2
-
-thanks,
-
+diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
+index 959fa2820259..ec9ebff28552 100644
+--- a/drivers/media/dvb-core/dvbdev.c
++++ b/drivers/media/dvb-core/dvbdev.c
+@@ -241,6 +241,7 @@ static void dvb_media_device_free(struct dvb_device *dvbdev)
+ 
+ 	if (dvbdev->adapter->conn) {
+ 		media_device_unregister_entity(dvbdev->adapter->conn);
++		kfree(dvbdev->adapter->conn);
+ 		dvbdev->adapter->conn = NULL;
+ 		kfree(dvbdev->adapter->conn_pads);
+ 		dvbdev->adapter->conn_pads = NULL;
 -- 
-heikki
+2.25.1
+
