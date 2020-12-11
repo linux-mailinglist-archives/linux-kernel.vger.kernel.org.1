@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837C22D7B31
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A222D7B3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389428AbgLKQoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 11:44:11 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:54299 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389370AbgLKQnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 11:43:46 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CsxRT3xzLzB09b7;
-        Fri, 11 Dec 2020 17:43:01 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id C73GqEBCrzBF; Fri, 11 Dec 2020 17:43:01 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CsxRT2BQczB09Zs;
-        Fri, 11 Dec 2020 17:43:01 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4ECDF8B86D;
-        Fri, 11 Dec 2020 17:43:02 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id GfDfkE2H2mL7; Fri, 11 Dec 2020 17:43:01 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D11DF8B869;
-        Fri, 11 Dec 2020 17:42:57 +0100 (CET)
-Subject: Re: [PATCH] net: ethernet: fs-enet: remove casting dma_alloc_coherent
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Xu Wang <vulab@iscas.ac.cn>,
-        "pantelis.antoniou@gmail.com" <pantelis.antoniou@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201211085212.85457-1-vulab@iscas.ac.cn>
- <34548188-67f4-d3ef-c2e3-871fc520e838@csgroup.eu>
- <6fc4b62ee7754d78b8f7b9c2275bc47e@AcuMS.aculab.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <4a1c2852-781f-e125-afcb-69387660b6af@csgroup.eu>
-Date:   Fri, 11 Dec 2020 17:42:56 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S2389638AbgLKQo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 11:44:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389635AbgLKQox (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 11:44:53 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E0BC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:44:13 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id c14so6876239qtn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:44:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JaCgIaxZt5qGiuVOU9D6xIGTlUYaqtMCwE3txKP7awU=;
+        b=td3eW1+SgAsfcCxGtw/z/Kl+GI4TOIvOqYxNWmPDwi4LYU54CMGPPIlvuzaLVPk1qH
+         f4xmHG0sYHBrTxYxl73m0R+mKExrRtdc5Ug0F+EP99MT2xk83Po6s4+mvr3rDEto6Cgd
+         HlKyDxrSD/fHGERgDvnQ7F4jZNN+upheF6qXME+/UlJS4bQbdm13e+3BBpd88uHzuTGX
+         qkgXoKBjsKJPdHVOpGVAR/CbVy3xFommSpShuroaWqbLy9lTMkC3sW6HXKFhQNNbT+ew
+         x5O7ZzQdgRIAtPbgxq6DJ3u8a2rPUL7ukvBfuZfEkAhQ/R+FJL1nbO8opBcn7dZvlYwn
+         7/rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JaCgIaxZt5qGiuVOU9D6xIGTlUYaqtMCwE3txKP7awU=;
+        b=r+2zRshIuyNYG4s2cdJAI9+2c2Ht/Q/Adtsm4JAXxOvDr18D8swY7JhHFDFINoN3mi
+         /HT81aVj+VoEosSk6Y11EW/n+jPZZ+2umvbHbfDjzJ9Z/NbKElzia7JopTAearimTSAx
+         TLqUlwof3U9/faJEOvY+EO/4/fQ1XTK1GYXa7Y05AF0H5skLfjM+o5ID8cifBLER9Qfa
+         /hi8XuCMNnt4EHgWqzV7UoVHIhVJQLEj8MuQG9g+y8W4z792cTbZJOCyd2G6kQuHnwrR
+         ZaWg8qQOM1/syjxwqIIHow2OYW8t7rDzev8jegvwnpSr6sdvtUUiDx4U206NxEqtaLp9
+         FoOQ==
+X-Gm-Message-State: AOAM53115wmdCMC3g68GuKtI2XbY7FrLz3cd/ugW4Pk/5sNu75+A1cZQ
+        9xfrNjLNqo9GxK6It5kv4UApNAS2VdR0EiEhuRUa21yvN7UV3wJy
+X-Google-Smtp-Source: ABdhPJwdA+iwF8gspJxjbGsMDqg1oWn5W//aN4MqVnoabtKDGdbelz2puvx5OvnuprZKKrWiYvlZcbWqeFAIYf5e2eE=
+X-Received: by 2002:a05:622a:18d:: with SMTP id s13mr16777768qtw.306.1607705052628;
+ Fri, 11 Dec 2020 08:44:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <6fc4b62ee7754d78b8f7b9c2275bc47e@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20201211144147.26023-1-mw@semihalf.com> <20201211154220.GX1551@shell.armlinux.org.uk>
+In-Reply-To: <20201211154220.GX1551@shell.armlinux.org.uk>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Fri, 11 Dec 2020 17:44:01 +0100
+Message-ID: <CAPv3WKePL4sR=RCgzcOmn8hy8mC7pqVnRWsVWCXL_SEm1mhEQQ@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: add mvpp2 driver entry
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, mcroce@microsoft.com,
+        Sven Auhagen <sven.auhagen@voleatech.de>,
+        Andrew Lunn <andrew@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+pt., 11 gru 2020 o 16:42 Russell King - ARM Linux admin
+<linux@armlinux.org.uk> napisa=C5=82(a):
+>
+> On Fri, Dec 11, 2020 at 03:41:47PM +0100, Marcin Wojtas wrote:
+> > Since its creation Marvell NIC driver for Armada 375/7k8k and
+> > CN913x SoC families mvpp2 has been lacking an entry in MAINTAINERS,
+> > which sometimes lead to unhandled bugs that persisted
+> > across several kernel releases.
+>
+> Can you add me for this driver as well please?
+> Thanks.
 
+Sure, I'll repost with this addition.
 
-Le 11/12/2020 à 17:07, David Laight a écrit :
-> From: Christophe Leroy
->> Sent: 11 December 2020 15:22
->>
->> Le 11/12/2020 à 09:52, Xu Wang a écrit :
->>> Remove casting the values returned by dma_alloc_coherent.
->>
->> Can you explain more in the commit log ?
->>
->> As far as I can see, dma_alloc_coherent() doesn't return __iomem, and ring_base member is __iomem
-> 
-> Which is probably wrong - that is the kernel address of kernel memory.
-> So it shouldn't have the __iomem marker.
+Marcin
 
-That's where the buffer descriptors are, the driver accesses to the content of the buffer 
-descriptors using the IO accessors in_be16()/out_be16(). Is it not correct ?
-
-Christophe
-
-> 
-> I wonder what else is wrong....
-> 
-> 	David
-> 
->>
->> Christophe
->>
->>>
->>> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
->>> ---
->>>    drivers/net/ethernet/freescale/fs_enet/mac-fec.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
->> b/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
->>> index 99fe2c210d0f..3ae345676e50 100644
->>> --- a/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
->>> +++ b/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
->>> @@ -131,7 +131,7 @@ static int allocate_bd(struct net_device *dev)
->>>    	struct fs_enet_private *fep = netdev_priv(dev);
->>>    	const struct fs_platform_info *fpi = fep->fpi;
->>>
->>> -	fep->ring_base = (void __force __iomem *)dma_alloc_coherent(fep->dev,
->>> +	fep->ring_base = dma_alloc_coherent(fep->dev,
->>>    					    (fpi->tx_ring + fpi->rx_ring) *
->>>    					    sizeof(cbd_t), &fep->ring_mem_addr,
->>>    					    GFP_KERNEL);
->>>
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
+>
+> >
+> > Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+> > ---
+> >  MAINTAINERS | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 6f474153dbec..db88abf11db2 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -10513,6 +10513,13 @@ L:   netdev@vger.kernel.org
+> >  S:   Maintained
+> >  F:   drivers/net/ethernet/marvell/mvneta.*
+> >
+> > +MARVELL MVPP2 ETHERNET DRIVER
+> > +M:   Marcin Wojtas <mw@semihalf.com>
+> > +L:   netdev@vger.kernel.org
+> > +S:   Maintained
+> > +F:   Documentation/devicetree/bindings/net/marvell-pp2.txt
+> > +F:   drivers/net/ethernet/marvell/mvpp2/
+> > +
+> >  MARVELL MWIFIEX WIRELESS DRIVER
+> >  M:   Amitkumar Karwar <amitkarwar@gmail.com>
+> >  M:   Ganapathi Bhat <ganapathi.bhat@nxp.com>
+> > --
+> > 2.29.0
+> >
+> >
+>
+> --
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
