@@ -2,194 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527692D6FC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 06:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B4F2D6FC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 06:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395419AbgLKFcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 00:32:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390256AbgLKFcY (ORCPT
+        id S2395427AbgLKFea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 00:34:30 -0500
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:43496 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390256AbgLKFd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 00:32:24 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A81C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 21:31:43 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id dk8so8083221edb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 21:31:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hImzJTG1TeCVrpQ/62s06BDvZxebz7cWjIsblYCekcY=;
-        b=D2OVUxOTYW2vrneBuP16BMRldWA7mGoJaSofbOud/EqKktRwaJO+1AWlsI29F5h7t4
-         QTJRG6kD3Rn+LJyBkwKMYSnKVObjAoZcULI22ck/thIo90946vmbAnVTcU843s0g6+Gp
-         s0onylD8cyJJmU20ZEzeyUGY+oq0k+/LX9JkquwCqanTk7msoWie+S0Mo1XVw/8GuMzj
-         E1f2hc9dDUudqOlHaPr4SkiyILOzYfDC+evktHOZcl3r+fkWKH6E8+sZLssicu9j+m9F
-         cax1M/FGIY0PZfJGLpRgIGUCFTra5O25mLVXBLjcxSvB48tAZxxWyhkdQacJtX2/4MAs
-         MDUQ==
+        Fri, 11 Dec 2020 00:33:58 -0500
+Received: by mail-ej1-f65.google.com with SMTP id jx16so10671493ejb.10;
+        Thu, 10 Dec 2020 21:33:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hImzJTG1TeCVrpQ/62s06BDvZxebz7cWjIsblYCekcY=;
-        b=EAqjVXoJe2+4Jx4IKFJLswvwegeCZPT2SbCwa5xE9Pmx7CRgoATA5OzB+BZlde7qfK
-         1xuYFLELw4niF/GnKjQHn2OjGWFzVYn/KqZpEHFArhUkU5GJj0c3BOTN6t3b8yg6WVhW
-         i8BaLezwoEnQPzyJ9gXX5FDIbipHjzx6yEaX8+jKN6y5mXzaZUteEDZdPtbB04/92S4O
-         ZEa0gcghhkC9B1RH1DbRRw33bDALXwKrX8/v7Q6ky+OZjhviApPWbDtC3jnZhjxeU2Um
-         aG7vO/iqWsshkzJt2ScB06oWE97qbVj15bPiqbEcxn9VOPC1feNcIN/Gp4GjI2mchuPi
-         lwkg==
-X-Gm-Message-State: AOAM530uJi7pStypBMNfu6tY9H37+efe/nTpKS2FbaVtngWj79UPt+2R
-        XfWiBEdPJ7JgxZyVsh2eSD/95xFH0hVNgDiXqatpUgrQehemVbqN
-X-Google-Smtp-Source: ABdhPJxjZHloKSP+HbWEKPjm0y4AaYXmEIOng4aiKxjXCoQpfuuKGyGgTt1fkbhXviGjAQzfofQgNHpbAHPgdKTDzKE=
-X-Received: by 2002:aa7:cdc3:: with SMTP id h3mr10045293edw.52.1607664702500;
- Thu, 10 Dec 2020 21:31:42 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AOQaiFtMXhXlCxvoe+bHrEq240u8BXAvyz40fgGFAGc=;
+        b=B20QEmRHvh2M5kzaMYLjHc9bGvvG9dj9JdN1r2iFGmXUMMiFF5XpsPYYgD4XYRW3Gr
+         9EpicrImawj+jrGlK0Uhha+116397Moz6GZzUZi3/SyeVsiMlFyp7IYhPYh4Q3WOXU48
+         oui5LjAVUqGu30pH9HVchaTtsGmdlHm2LHuUaS4ytjDryIXk9BvtzicA11z3rKM+UpvT
+         BbpUNeJ/3okXdj5UzF7e4VdgsQNJdKsJ6HCBiYIAcFVjrt0fpKBnDmuAsKihjICo6puO
+         40IxBr0MPWwG0D2IElktkg2VppWqwUD9ndbbXQIS4v9McIHXIE/MxeaP5tI23lcvNu7y
+         EIpA==
+X-Gm-Message-State: AOAM532d0N38+eALI2+Hsf/XXYuYIA1fKVZMrtj27QYePF4WyySiuPs4
+        CGOdJHLHER5fs3jW1TIkmGhFznRLCnSYXg==
+X-Google-Smtp-Source: ABdhPJzHdvDDZiYKs2N5fI5jbJZiMwT3dOKqtEwWqQnF0eKb9tpeelrLtFMfkIsDKpjSPBk+wCSGPA==
+X-Received: by 2002:a17:906:3b5b:: with SMTP id h27mr9379685ejf.450.1607664795601;
+        Thu, 10 Dec 2020 21:33:15 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id p3sm939215ejx.0.2020.12.10.21.33.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 21:33:14 -0800 (PST)
+Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
+To:     =?UTF-8?Q?J=c3=b3zsef_Horv=c3=a1th?= <info@ministro.hu>,
+        'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+Cc:     'Rob Herring' <robh+dt@kernel.org>, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201210170443.GA17304@dincontrollerdev>
+ <X9Jw+srprdT8tquZ@kroah.com> <20201210194625.GA17516@dincontrollerdev>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <9615854e-3012-f22d-07bf-901a5bc7a410@kernel.org>
+Date:   Fri, 11 Dec 2020 06:33:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20201210142606.074509102@linuxfoundation.org>
-In-Reply-To: <20201210142606.074509102@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 11 Dec 2020 11:01:31 +0530
-Message-ID: <CA+G9fYv-gar22WM8sdTSTmnda8+4ysyR2Lbdk0vFBwk2Hp2qGg@mail.gmail.com>
-Subject: Re: [PATCH 5.9 00/75] 5.9.14-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201210194625.GA17516@dincontrollerdev>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 at 20:08, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.9.14 release.
-> There are 75 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 12 Dec 2020 14:25:47 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.9.14-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 10. 12. 20, 20:46, József Horváth wrote:
+>> Implement the basic serial driver first, and then we can talk about
+>> "custom" configurations and the like, using the correct apis.
+> 
+> Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
+> The cofiguration for interface is provided by user for application.
+> It contains the base frequency, channel spacing, modulation, and a lot of more stuff, and generated by Silicon Labs Wireless Development Suite.
+> The generated configuration is in a non public(compressed, encrypted...who knows) format, so without this the driver can't provide configuration parameters to Si4455.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+request_firmware() comes to my mind then.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.9.14-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.9.y
-git commit: 81beabff31a7c60d2065f5711ffda6d97776a728
-git describe: v5.9.13-77-g81beabff31a7
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.=
-y/build/v5.9.13-77-g81beabff31a7
-
-No regressions (compared to build v5.9.13)
-
-No fixes (compared to build v5.9.13)
-
-Ran 57691 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* perf
-* v4l2-compliance
-* kvm-unit-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-tracing-tests
-* network-basic-tests
-* ltp-controllers-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-fcntl-locktests-tests
-* kunit
-* rcutorture
-* fwts
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+thanks,
+-- 
+js
+suse labs
