@@ -2,229 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E04E2D712B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DECE52D712F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405449AbgLKICg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:02:36 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9510 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733064AbgLKICM (ORCPT
+        id S2392196AbgLKIEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:04:12 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:52553 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389056AbgLKIDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:02:12 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Csjs42rxpzhqh6;
-        Fri, 11 Dec 2020 16:00:56 +0800 (CST)
-Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Dec 2020 16:01:19 +0800
-From:   Yanan Wang <wangyanan55@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        "Julien Thierry" <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>
-CC:     <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
-        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
-        <lushenming@huawei.com>, Yanan Wang <wangyanan55@huawei.com>
-Subject: [RFC PATCH] KVM: arm64: Add prejudgement for relaxing permissions only case in stage2 translation fault handler
-Date:   Fri, 11 Dec 2020 16:01:15 +0800
-Message-ID: <20201211080115.21460-2-wangyanan55@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20201211080115.21460-1-wangyanan55@huawei.com>
-References: <20201211080115.21460-1-wangyanan55@huawei.com>
+        Fri, 11 Dec 2020 03:03:46 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 86C791BF205;
+        Fri, 11 Dec 2020 08:03:01 +0000 (UTC)
+Date:   Fri, 11 Dec 2020 09:03:01 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: mmc: atmel-mci: Reduce =?utf-8?Q?scope?=
+ =?utf-8?Q?_for_the_variable_=E2=80=9Cslot=E2=80=9D?= in atmci_request_end()
+Message-ID: <20201211080301.GC1781038@piout.net>
+References: <466b4c6d-032f-fbcc-58ac-75f6f39d734f@web.de>
+ <20201210151035.GC1578121@piout.net>
+ <ec71d7b8-a36b-04f5-77a8-22874ac241e1@web.de>
+ <20201210170723.GD1578121@piout.net>
+ <2667790c-fad2-aaa9-36e8-6be66949ac8d@web.de>
+ <20201210182150.GE1578121@piout.net>
+ <4c0d8efe-de25-f168-8b8d-b7f1ede6c6b1@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.128]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4c0d8efe-de25-f168-8b8d-b7f1ede6c6b1@web.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In dirty-logging, or dirty-logging-stopped time, even normal running
-time of a guest configed with huge mappings and numbers of vCPUs,
-translation faults by different vCPUs on the same GPA could occur
-successively almost at the same time. There are two reasons for it.
+On 11/12/2020 07:34:41+0100, Markus Elfring wrote:
+> >> How do you think about a patch like “staging: speakup: remove redundant initialization
+> >> of pointer p_key” for comparison?
+> >> https://lore.kernel.org/patchwork/patch/1199128/
+> >> https://lore.kernel.org/driverdev-devel/20200223153954.420731-1-colin.king@canonical.com/
+> >>
+> >> Would you tolerate to omit the initialisation for the variable “slot”?
+> >
+> > If you were able to provide one good technical reason.
+> 
+> I find that the positions of variable definitions (and similar assignments) influence
+> the generation of executable code.
+> 
 
-(1) If there are some vCPUs accessing the same GPA at the same time
-and the leaf PTE is not set yet, then they will all cause translation
-faults and the first vCPU holding mmu_lock will set valid leaf PTE,
-and the others will later choose to update the leaf PTE or not.
+And you are wrong, it doesn't. Before:
 
-(2) When changing a leaf entry or a table entry with break-before-make,
-if there are some vCPUs accessing the same GPA just catch the moment
-when the target PTE is set invalid in a BBM procedure coincidentally,
-they will all cause translation faults and will later choose to update
-the leaf PTE or not.
+c044a0f0 <atmci_request_end>:
+{
+c044a0f0:	e92d4070 	push	{r4, r5, r6, lr}
+c044a0f4:	e1a04000 	mov	r4, r0
+	WARN_ON(host->cmd || host->data);
+c044a0f8:	e5902024 	ldr	r2, [r0, #36]	; 0x24
+{
+c044a0fc:	e1a06001 	mov	r6, r1
+	struct mmc_host		*prev_mmc = host->cur_slot->mmc;
+c044a100:	e590301c 	ldr	r3, [r0, #28]
+	WARN_ON(host->cmd || host->data);
+c044a104:	e3520000 	cmp	r2, #0
+	struct mmc_host		*prev_mmc = host->cur_slot->mmc;
+c044a108:	e5935000 	ldr	r5, [r3]
+	WARN_ON(host->cmd || host->data);
+c044a10c:	0a00002d 	beq	c044a1c8 <atmci_request_end+0xd8>
+c044a110:	e3000000 	movw	r0, #0
+			c044a110: R_ARM_MOVW_ABS_NC	.LC0
+c044a114:	e3a03000 	mov	r3, #0
+c044a118:	e3400000 	movt	r0, #0
+			c044a118: R_ARM_MOVT_ABS	.LC0
+c044a11c:	e3a02009 	mov	r2, #9
+c044a120:	e300161c 	movw	r1, #1564	; 0x61c
+c044a124:	ebfffffe 	bl	0 <warn_slowpath_fmt>
+			c044a124: R_ARM_CALL	warn_slowpath_fmt
+	del_timer(&host->timer);
+c044a128:	e28400a4 	add	r0, r4, #164	; 0xa4
+c044a12c:	ebfffffe 	bl	0 <del_timer>
+			c044a12c: R_ARM_CALL	del_timer
+	if (host->need_clock_update) {
+c044a130:	e5d430a0 	ldrb	r3, [r4, #160]	; 0xa0
+c044a134:	e3530000 	cmp	r3, #0
+c044a138:	0a000005 	beq	c044a154 <atmci_request_end+0x64>
+		atmci_writel(host, ATMCI_MR, host->mode_reg);
+c044a13c:	e59420b8 	ldr	r2, [r4, #184]	; 0xb8
+c044a140:	e5943000 	ldr	r3, [r4]
+	asm volatile("str %1, %0"
+c044a144:	e5832004 	str	r2, [r3, #4]
+		if (host->caps.has_cfg_reg)
+c044a148:	e5d420da 	ldrb	r2, [r4, #218]	; 0xda
+c044a14c:	e3520000 	cmp	r2, #0
+c044a150:	1a000019 	bne	c044a1bc <atmci_request_end+0xcc>
+	host->cur_slot->mrq = NULL;
+c044a154:	e594101c 	ldr	r1, [r4, #28]
+	return READ_ONCE(head->next) == head;
+c044a158:	e1a03004 	mov	r3, r4
+c044a15c:	e3a02000 	mov	r2, #0
+c044a160:	e5812010 	str	r2, [r1, #16]
+	host->mrq = NULL;
+c044a164:	e5842020 	str	r2, [r4, #32]
+c044a168:	e5b31098 	ldr	r1, [r3, #152]!	; 0x98
+	if (!list_empty(&host->queue)) {
+c044a16c:	e1510003 	cmp	r1, r3
+		host->state = STATE_IDLE;
+c044a170:	05842094 	streq	r2, [r4, #148]	; 0x94
+	if (!list_empty(&host->queue)) {
+c044a174:	0a00000c 	beq	c044a1ac <atmci_request_end+0xbc>
+		slot = list_entry(host->queue.next,
+c044a178:	e5943098 	ldr	r3, [r4, #152]	; 0x98
 
-The worst case can be like this: some vCPUs cause translation faults
-on the same GPA with different prots, they will fight each other by
-changing back access permissions of the PTE with break-before-make.
-And the BBM-invalid moment might trigger more unnecessary translation
-faults. As a result, some useless small loops will occur, which could
-lead to vCPU stuck.
 
-To avoid unnecessary update and small loops, add prejudgement in the
-translation fault handler: Skip updating the valid leaf PTE if we are
-trying to recreate exactly the same mapping or to reduce access
-permissions only(such as RW-->RO). And update the valid leaf PTE without
-break-before-make if we are trying to add more permissions only.
+After:
 
-Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
----
- arch/arm64/kvm/hyp/pgtable.c | 73 +++++++++++++++++++++++++-----------
- 1 file changed, 52 insertions(+), 21 deletions(-)
+c044a0f0 <atmci_request_end>:
+{
+c044a0f0:	e92d4070 	push	{r4, r5, r6, lr}
+c044a0f4:	e1a04000 	mov	r4, r0
+	WARN_ON(host->cmd || host->data);
+c044a0f8:	e5902024 	ldr	r2, [r0, #36]	; 0x24
+{
+c044a0fc:	e1a06001 	mov	r6, r1
+	struct mmc_host		*prev_mmc = host->cur_slot->mmc;
+c044a100:	e590301c 	ldr	r3, [r0, #28]
+	WARN_ON(host->cmd || host->data);
+c044a104:	e3520000 	cmp	r2, #0
+	struct mmc_host		*prev_mmc = host->cur_slot->mmc;
+c044a108:	e5935000 	ldr	r5, [r3]
+	WARN_ON(host->cmd || host->data);
+c044a10c:	0a00002d 	beq	c044a1c8 <atmci_request_end+0xd8>
+c044a110:	e3000000 	movw	r0, #0
+			c044a110: R_ARM_MOVW_ABS_NC	.LC0
+c044a114:	e3a03000 	mov	r3, #0
+c044a118:	e3400000 	movt	r0, #0
+			c044a118: R_ARM_MOVT_ABS	.LC0
+c044a11c:	e3a02009 	mov	r2, #9
+c044a120:	e300161b 	movw	r1, #1563	; 0x61b
+c044a124:	ebfffffe 	bl	0 <warn_slowpath_fmt>
+			c044a124: R_ARM_CALL	warn_slowpath_fmt
+	del_timer(&host->timer);
+c044a128:	e28400a4 	add	r0, r4, #164	; 0xa4
+c044a12c:	ebfffffe 	bl	0 <del_timer>
+			c044a12c: R_ARM_CALL	del_timer
+	if (host->need_clock_update) {
+c044a130:	e5d430a0 	ldrb	r3, [r4, #160]	; 0xa0
+c044a134:	e3530000 	cmp	r3, #0
+c044a138:	0a000005 	beq	c044a154 <atmci_request_end+0x64>
+		atmci_writel(host, ATMCI_MR, host->mode_reg);
+c044a13c:	e59420b8 	ldr	r2, [r4, #184]	; 0xb8
+c044a140:	e5943000 	ldr	r3, [r4]
+	asm volatile("str %1, %0"
+c044a144:	e5832004 	str	r2, [r3, #4]
+		if (host->caps.has_cfg_reg)
+c044a148:	e5d420da 	ldrb	r2, [r4, #218]	; 0xda
+c044a14c:	e3520000 	cmp	r2, #0
+c044a150:	1a000019 	bne	c044a1bc <atmci_request_end+0xcc>
+	host->cur_slot->mrq = NULL;
+c044a154:	e594101c 	ldr	r1, [r4, #28]
+	return READ_ONCE(head->next) == head;
+c044a158:	e1a03004 	mov	r3, r4
+c044a15c:	e3a02000 	mov	r2, #0
+c044a160:	e5812010 	str	r2, [r1, #16]
+	host->mrq = NULL;
+c044a164:	e5842020 	str	r2, [r4, #32]
+c044a168:	e5b31098 	ldr	r1, [r3, #152]!	; 0x98
+	if (!list_empty(&host->queue)) {
+c044a16c:	e1510003 	cmp	r1, r3
+		host->state = STATE_IDLE;
+c044a170:	05842094 	streq	r2, [r4, #148]	; 0x94
+	if (!list_empty(&host->queue)) {
+c044a174:	0a00000c 	beq	c044a1ac <atmci_request_end+0xbc>
+		struct atmel_mci_slot *slot = list_entry(host->queue.next,
+c044a178:	e5943098 	ldr	r3, [r4, #152]	; 0x98
 
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index 23a01dfcb27a..f8b3248cef1c 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -45,6 +45,8 @@
- 
- #define KVM_PTE_LEAF_ATTR_HI_S2_XN	BIT(54)
- 
-+#define KVM_PTE_LEAF_ATTR_PERMS	(GENMASK(7, 6) | BIT(54))
-+
- struct kvm_pgtable_walk_data {
- 	struct kvm_pgtable		*pgt;
- 	struct kvm_pgtable_walker	*walker;
-@@ -170,10 +172,9 @@ static void kvm_set_table_pte(kvm_pte_t *ptep, kvm_pte_t *childp)
- 	smp_store_release(ptep, pte);
- }
- 
--static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
--				   u32 level)
-+static kvm_pte_t kvm_init_valid_leaf_pte(u64 pa, kvm_pte_t attr, u32 level)
- {
--	kvm_pte_t old = *ptep, pte = kvm_phys_to_pte(pa);
-+	kvm_pte_t pte = kvm_phys_to_pte(pa);
- 	u64 type = (level == KVM_PGTABLE_MAX_LEVELS - 1) ? KVM_PTE_TYPE_PAGE :
- 							   KVM_PTE_TYPE_BLOCK;
- 
-@@ -181,12 +182,7 @@ static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
- 	pte |= FIELD_PREP(KVM_PTE_TYPE, type);
- 	pte |= KVM_PTE_VALID;
- 
--	/* Tolerate KVM recreating the exact same mapping. */
--	if (kvm_pte_valid(old))
--		return old == pte;
--
--	smp_store_release(ptep, pte);
--	return true;
-+	return pte;
- }
- 
- static int kvm_pgtable_visitor_cb(struct kvm_pgtable_walk_data *data, u64 addr,
-@@ -341,12 +337,17 @@ static int hyp_map_set_prot_attr(enum kvm_pgtable_prot prot,
- static bool hyp_map_walker_try_leaf(u64 addr, u64 end, u32 level,
- 				    kvm_pte_t *ptep, struct hyp_map_data *data)
- {
-+	kvm_pte_t new, old = *ptep;
- 	u64 granule = kvm_granule_size(level), phys = data->phys;
- 
- 	if (!kvm_block_mapping_supported(addr, end, phys, level))
- 		return false;
- 
--	WARN_ON(!kvm_set_valid_leaf_pte(ptep, phys, data->attr, level));
-+	/* Tolerate KVM recreating the exact same mapping. */
-+	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
-+	if (old != new && !WARN_ON(kvm_pte_valid(old)))
-+		smp_store_release(ptep, new);
-+
- 	data->phys += granule;
- 	return true;
- }
-@@ -461,25 +462,56 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
- 	return 0;
- }
- 
-+static bool stage2_set_valid_leaf_pte_pre(u64 addr, u32 level,
-+					  kvm_pte_t *ptep, kvm_pte_t new,
-+					  struct stage2_map_data *data)
-+{
-+	kvm_pte_t old = *ptep, old_attr, new_attr;
-+
-+	if ((old ^ new) & (~KVM_PTE_LEAF_ATTR_PERMS))
-+		return false;
-+
-+	/*
-+	 * Skip updating if we are trying to recreate exactly the same mapping
-+	 * or to reduce the access permissions only. And update the valid leaf
-+	 * PTE without break-before-make if we are trying to add more access
-+	 * permissions only.
-+	 */
-+	old_attr = (old & KVM_PTE_LEAF_ATTR_PERMS) ^ KVM_PTE_LEAF_ATTR_HI_S2_XN;
-+	new_attr = (new & KVM_PTE_LEAF_ATTR_PERMS) ^ KVM_PTE_LEAF_ATTR_HI_S2_XN;
-+	if (new_attr <= old_attr)
-+		return true;
-+
-+	WRITE_ONCE(*ptep, new);
-+	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
-+
-+	return true;
-+}
-+
- static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
- 				       kvm_pte_t *ptep,
- 				       struct stage2_map_data *data)
- {
-+	kvm_pte_t new, old = *ptep;
- 	u64 granule = kvm_granule_size(level), phys = data->phys;
-+	struct page *page = virt_to_page(ptep);
- 
- 	if (!kvm_block_mapping_supported(addr, end, phys, level))
- 		return false;
- 
--	if (kvm_pte_valid(*ptep))
--		put_page(virt_to_page(ptep));
-+	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
-+	if (kvm_pte_valid(old)) {
-+		if (stage2_set_valid_leaf_pte_pre(addr, level, ptep, new, data))
-+			goto out;
- 
--	if (kvm_set_valid_leaf_pte(ptep, phys, data->attr, level))
--		goto out;
-+		/* Update the PTE with break-before-make if it's necessary. */
-+		kvm_set_invalid_pte(ptep);
-+		kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
-+		put_page(page);
-+	}
- 
--	/* There's an existing valid leaf entry, so perform break-before-make */
--	kvm_set_invalid_pte(ptep);
--	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
--	kvm_set_valid_leaf_pte(ptep, phys, data->attr, level);
-+	smp_store_release(ptep, new);
-+	get_page(page);
- out:
- 	data->phys += granule;
- 	return true;
-@@ -521,7 +553,7 @@ static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
- 	}
- 
- 	if (stage2_map_walker_try_leaf(addr, end, level, ptep, data))
--		goto out_get_page;
-+		return 0;
- 
- 	if (WARN_ON(level == KVM_PGTABLE_MAX_LEVELS - 1))
- 		return -EINVAL;
-@@ -545,9 +577,8 @@ static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
- 	}
- 
- 	kvm_set_table_pte(ptep, childp);
--
--out_get_page:
- 	get_page(page);
-+
- 	return 0;
- }
- 
+
+Do you realize your patch is just unnecessary churn now?
+
+Is it too difficult for you to actually compile the driver and look
+at the changes before submitting patches?
+
+
 -- 
-2.19.1
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
