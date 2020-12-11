@@ -2,141 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DFE2D80E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D052D80E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395313AbgLKVPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:15:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
+        id S2393269AbgLKVRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:17:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390615AbgLKVPQ (ORCPT
+        with ESMTP id S1727234AbgLKVQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:15:16 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594E6C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:14:34 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id p7so5561846vsf.8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:14:34 -0800 (PST)
+        Fri, 11 Dec 2020 16:16:19 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7A0C0613D3;
+        Fri, 11 Dec 2020 13:15:39 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id t6so5228607plq.1;
+        Fri, 11 Dec 2020 13:15:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=txHS+fz8k2KCZchJH18l2B/VJee2wpafojXlxjFkEbg=;
-        b=otkvC/jwZ6/TwBEwk8oFLDidR9riZ9p5DgsQkEY3PN512N5dW2pSmXvH/2N7I2vxfE
-         8hrJlwATglONGcw7U9+YNlWby6XrsVNAUrJcoMNeSqks0ep3SVuf5QAGkZpxc0NvAqGs
-         TA2xVTwilegZknQ/fogGir5d+Fz25s0R5fcYSSXNTOXA93R/Upxy/TZiKmITWpLx0ez0
-         14ME01ASVtVMrUz/sDeqBSodRBDowO1Lyp1wi6TifzWPEHt7tbvJvLUlxRebS2+e+5ww
-         V+yP0s3Wq6w96sl1UgCMEXrUB2p5HUr0MCPKdavJGFM40pOfqHpvGl4jd+vXry+VCkAz
-         FXnQ==
+        bh=ZAqTN7N4s0ZVaTdEPOvyAv38va5XxW6WW67wTQBqGtA=;
+        b=fh8vsjetqBmGgt2HnPCppc+aTWU9zdYuewDF62lfABoiTULIOgkY7VcNDHtzOc+yPu
+         X0+TbboHlf1+YHJu26LbOsmZoKwLD1Jdmo0lAwe1mvggIuxHgO2gB5IuzVg0D9OGtoJk
+         299rjy1oz5tCux8CmbrEQe7EkVd4bpUgmyUrepKTw+D3tZo/LDpvD0Tb0ZPh1Um7BM2W
+         XL3WJl0o4axyesDjSDopkI+l6UK9bZWpCmA+L2Poo3lde3ty4aNXu9IYgrujxcq7Nd65
+         P7hluddTs9WxONybduqmdr/93uvpDsEhyh7tzNBg6eJTydOyajsAJIDtgQeXiI5hC8vO
+         xLug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=txHS+fz8k2KCZchJH18l2B/VJee2wpafojXlxjFkEbg=;
-        b=dIr87CL9CpiJ6PvQQT8omwG4WFgGCk8qi+ueEbfjPS+7qy/YcO0C6DfECczaEmn2b0
-         eWI4R6I4aWfJVh5BJYHy/8y/1Wn+C4z8AeVB8WGFldjpXu95YNFFx8kR1zs+OxJCzO7I
-         yFkyzBH2k7o9KJxh79R4TBa4ee/VT5VxAvcuWqMA6ldFJId9DU4HgmSMdUI+lD0CKmVm
-         4bA2qQKILQfygCHVUjZnpp4LUBMI/pi/uuNXlkfaU+NyVRRO7uSSQ8yymKVzTJERISM1
-         grXDJrAeWBXf4pLp3Cqxg1w3Dd6CO9K/LlmAAJ6FTIMPzhqVWbva8yUYdbFnqoDZmxJE
-         PuwA==
-X-Gm-Message-State: AOAM53112oXyjWR36QIEvz/Nc97diukwn6NxOiPx0AIFzMELfYCnU6AM
-        g/VSVo7l0ghlT9VFn86zLcyQuxfkar0D+/tl5l2e16fu6LrLJHfu
-X-Google-Smtp-Source: ABdhPJxo2FKH409N1kD1rgcfWzlRx8HLzrM1OluGECInBFfXh1oOzQaZdd9NzAeVfCXlNd9u1KtZ/e5R5s9rCd06iqk=
-X-Received: by 2002:a67:32d4:: with SMTP id y203mr14611389vsy.30.1607721272917;
- Fri, 11 Dec 2020 13:14:32 -0800 (PST)
+        bh=ZAqTN7N4s0ZVaTdEPOvyAv38va5XxW6WW67wTQBqGtA=;
+        b=c331EQZ20PMkZYROoVepXVyxmOjU66gwTPa3bkQ8LZiTUOg9EyZKUwiq1BWdRLC7P8
+         cedC9tKxMxRUU0+9k/nNUmHo4j9eKqNBZ/tCUg0eKaH5uPU6kdSskAe3WqB44kGqKf3v
+         9+aXthHqfYMgKgL1DKbd0KYSQG+ljjqt/DmyoeomtqlbC0thXzjQP9Aba/z+4EZyRvNz
+         fn8YopsnurPm3RAVTVznnhTab2h3TMpY8wxlX7NtRrq+EKata8zz2Kg/j62jANPRowDT
+         NuVMNE0/gniFfQfrwFgfhWAmyHD57e1xIGeaROzxkO01UhJOPcFcThqxrbo1jXLWfY+l
+         /PSQ==
+X-Gm-Message-State: AOAM532qxEYzIUzEp9noda0P+EQ4z8jeRWoURV+ENs/njolPQavopcrQ
+        FuBuN5naBhih32nZ0Y51JRiPeEnAxroMe00PUbc=
+X-Google-Smtp-Source: ABdhPJzmmKzahJ/XvSBVJsfd4c4acl75rWY0X7yiaQtx6soKBC6UxakhXag9pzCfAtRhiQk+Ji8Qn7i52iMN8ndGB9Y=
+X-Received: by 2002:a17:902:e98c:b029:da:cb88:f11d with SMTP id
+ f12-20020a170902e98cb02900dacb88f11dmr12535178plb.17.1607721339002; Fri, 11
+ Dec 2020 13:15:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20201211142421.15389-1-semen.protsenko@linaro.org> <20201211144936.GT4077@smile.fi.intel.com>
-In-Reply-To: <20201211144936.GT4077@smile.fi.intel.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Fri, 11 Dec 2020 23:14:21 +0200
-Message-ID: <CAPLW+4nBeWAmgzUU7dvEYiGBN6=GxZ4+nFZQ3+jaM=OPrDDyTw@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: drd: Avoid error when extcon is missing
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Stultz <john.stultz@linaro.org>
+References: <20201211042625.129255-1-drew@beagleboard.org>
+In-Reply-To: <20201211042625.129255-1-drew@beagleboard.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 11 Dec 2020 23:15:21 +0200
+Message-ID: <CAHp75VcAbdrSnb_ag9Rc0tny3Vtqjs1if+ahk7U36V2eaKMpSw@mail.gmail.com>
+Subject: Re: [RFC PATCH] pinctrl: add helper to expose pinctrl state in debugfs
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pantelis Antoniou <panto@antoniou-consulting.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 at 16:48, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Fri, Dec 11, 2020 at 1:54 PM Drew Fustini <drew@beagleboard.org> wrote:
 >
-> On Fri, Dec 11, 2020 at 04:24:21PM +0200, Sam Protsenko wrote:
-> > If "port" node is missing in PHY controller node, dwc3_get_extcon()
-> > isn't able to find extcon device. This is perfectly fine in case when
-> > "usb-role-switch" or OTG is used, but next misleading error message is
-> > printed in that case, from of_graph_get_remote_node():
-> >
-> >     OF: graph: no port node found in /phy@1234abcd
-> >
-> > Avoid printing that message by checking if port node exists in PHY node
-> > before calling of_graph_get_remote_node().
->
-> So, this has to be v2...
-> Anyway, see below.
->
-> ...
->
-> >  static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
-> >  {
-> >       struct device *dev = dwc->dev;
-> > -     struct device_node *np_phy, *np_conn;
-> > -     struct extcon_dev *edev;
-> > +     struct device_node *np_phy;
-> > +     struct extcon_dev *edev = NULL;
-> >       const char *name;
-> >
-> >       if (device_property_read_bool(dev, "extcon"))
-> > @@ -462,15 +462,22 @@ static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
-> >               return edev;
-> >       }
-> >
-> > +     /*
-> > +      * Try to get extcon device from USB PHY controller's "port" node.
-> > +      * Check if it has the "port" node first, to avoid printing the error
-> > +      * message from underlying code, as it's a valid case: extcon device
-> > +      * (and "port" node) may be missing in case of "usb-role-switch" or OTG
-> > +      * mode.
-> > +      */
-> >       np_phy = of_parse_phandle(dev->of_node, "phys", 0);
-> > -     np_conn = of_graph_get_remote_node(np_phy, -1, -1);
-> > +     if (of_graph_is_present(np_phy)) {
-> > +             struct device_node *np_conn;
-> >
-> > -     if (np_conn)
-> > -             edev = extcon_find_edev_by_node(np_conn);
-> > -     else
-> > -             edev = NULL;
-> > -
-> > -     of_node_put(np_conn);
-> > +             np_conn = of_graph_get_remote_node(np_phy, -1, -1);
-> > +             if (np_conn)
-> > +                     edev = extcon_find_edev_by_node(np_conn);
-> > +             of_node_put(np_conn);
-> > +     }
-> >       of_node_put(np_phy);
-> >
-> >       return edev;
->
->
-> Why not do it slightly different, i.e.
->
-> -       np_conn = of_graph_get_remote_node(np_phy, -1, -1);
-> +       if (of_graph_is_present(np_phy))
-> +               np_conn = of_graph_get_remote_node(np_phy, -1, -1);
-> +       else
-> +               np_conn = NULL;
->
-> ?
->
+> BeagleBoard.org [0] currently uses an out-of-tree driver called
+> bone-pinmux-helper [1] developed by Pantelis Antoniou [2] back in 2013.
 
-Thanks for the review, Andy! I'll address this in v3.
+And it looks like it's still using APIs from 2013.
+Needs quite a clean up.
 
-> --
-> With Best Regards,
-> Andy Shevchenko
+> The driver assists users of our BeagleBone and PocketBeagle boards in
+> rapid prototyping by allowing them to change at run-time between defined
+> set of pinctrl states [3] for each pin on the expansion connectors [4].
+> This is achieved by exposing a 'state' file in sysfs for each pin which
+> is used by our 'config-pin' utility [5].
 >
+> Our goal is to eliminate all out-of-tree drivers for BeagleBoard.org
+> boards and thus I have been working to replace bone-pinmux-helper with a
+> new driver that could be acceptable upstream. My understanding is that
+> debugfs, unlike sysfs, could be the appropriate mechanism to expose such
+> functionality.
+
+Yeah, for debugfs we don't require too much and esp. there is no
+requirement to keep backward compatibility thru interface.
+I.o.w. it's *not* an ABI.
+
+...
+
+> I used the compatible string "pinctrl,state-helper" but would appreciate
+> advice on how to best name this. Should I create a new vendor prefix?
+
+Since it's BB specific, it should have file name and compatible string
+accordingly.
+But I'm wondering, why it requires this kind of thing and can't be
+simply always part of the kernel based on configuration option?
+
+> The P9_14_pinmux entry would cause pinctrl-state-helper to be probed.
+> The driver would create the corresponding pinctrl state file in debugfs
+> for the pin.  Here is an example of how the state can be read and
+> written from userspace:
 >
+> root@beaglebone:~# cat /sys/kernel/debug/ocp\:P9_14_pinmux/state
+> default
+> root@beaglebone:~# echo pwm > /sys/kernel/debug/ocp\:P9_14_pinmux/state
+> root@beaglebone:~# cat /sys/kernel/debug/ocp\:P9_14_pinmux/state
+> pwm
+
+Shouldn't it be rather a part of a certain pin control folder:
+debug/pinctrl/.../mux/...
+?
+
+> I would very much appreciate feedback on both this general concept, and
+> also specific areas in which the code should be changed to be acceptable
+> upstream.
+
+I will give time for more discussion about concepts and so, because
+code (as stated above) is quite old and requires a lot of cleaning up.
+
+-- 
+With Best Regards,
+Andy Shevchenko
