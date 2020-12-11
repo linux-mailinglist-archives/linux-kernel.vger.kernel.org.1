@@ -2,69 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E602D70A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D6D2D70B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436633AbgLKHLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 02:11:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390203AbgLKHLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 02:11:10 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607670630;
-        bh=MGUXROce7wJw4hhD3KZgPZmZ4OzT5bDJNT+Pgi9c7SY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=awr7f6t6dc5jBE/GCZuvqFO0r83Pv0kF/xc49jBYWAss5UHpOU2OrhOON37mzUAnb
-         cnD6THNBI1fSAI8JdE/jA/t7KpYDTMk4PbP+fpAUS8uxHHO/WDX/GcOOX81u5kP3Zr
-         JDzby1YBEdoJXuqAjkwRN7ZSSKSQ4k5uHA7df4/LRotGrV0hjLq7/vbBgg4UJshN29
-         OygonCS83i7+FwFxsoHHnWgsg8FbvIqDoGkYFSEomQZl/OxgqP7KXSslHkdVBYfakX
-         6LRpZ9h3xqokwyDjhP2PrIRnHXnzj7XW9o7qE86Tdd6fQNC5hMtIKOIyPIECBhseVB
-         yjoYiiyvd75ZQ==
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201211054349.GS8403@vkoul-mobl>
-References: <20201208064702.3654324-1-vkoul@kernel.org> <20201208064702.3654324-6-vkoul@kernel.org> <160763302790.1580929.10258660966995584297@swboyd.mtv.corp.google.com> <20201211054349.GS8403@vkoul-mobl>
-Subject: Re: [PATCH v2 5/5] clk: qcom: gcc: Add clock driver for SM8350
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vivek Aknurwar <viveka@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeevan Shriram <jshriram@codeaurora.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Date:   Thu, 10 Dec 2020 23:10:28 -0800
-Message-ID: <160767062876.1580929.14564723998233527816@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S2436750AbgLKHNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 02:13:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436728AbgLKHMb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 02:12:31 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6C3C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 23:11:51 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id z83so9936349ybz.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 23:11:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=S/8U8Wqnz8DEcGGiOqsnrJd03FjrqIJ6MV2RgXvfHHw=;
+        b=bHFK7rVtg7vjW5mqAuGF6w/HJr0MS15XcdG9l9J/NwPma77Y3WMVsmb6VppS+CoNzR
+         KvP9mHQsBvTfcfn+lAY8cc+F2bFvgI5FKWm1kbJ7ZxpC3RLsRReZcwuVWcNjLwf5mPPZ
+         Z5wiC4JHuHePQzWhflnd+rFLMYuRwnXKnavSlDwRFRfCEqEwT5a0lzkwygPz9XFhgpY6
+         2Z+bhgYs3Tv9NRwjbroy7Sivgf8ygE9bpaNWGiWQuwJK1w6NQRBBDK/CNlxWTu6/by8s
+         6KqfaUVS1CXysjPSRRw0miUqB++goVb1AvlRYwbwUbjCd6YNDcJwgWKAliSUlPM4Srqa
+         3efQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=S/8U8Wqnz8DEcGGiOqsnrJd03FjrqIJ6MV2RgXvfHHw=;
+        b=WNmzGzEVvSYD+jw/Div77olUbDUy/vLuD6ZtzN7f6p2v5Oq0tQMePEa7wENA28Nrb6
+         AONL1pI+u7U0c+NHbE17henj5iuPDwRgjturATjv6dRbCYy6bSaPczW4VZq5UTVSkOFx
+         oWVy0NAHQxjoThJLKvp8f4+RUgZhnJBZjg0Ot9/PCwX6Uef3ycMBXTQ3mPYDNc71nAlT
+         xYoCsb+E0Oqf41OvMZQ0P3WCHRHp2jH1RB49hQu71UnlCVFgfhMVC/BYenrLfip30i0m
+         wH0OLrYfvKW8MQseM3d51OpIToXF9vtYVj8N6dGquPq0N1Rz2iZ3iALLijYMx67vy0kK
+         sxfQ==
+X-Gm-Message-State: AOAM531SKUBbSAjtTfjizu//o2IXRaneuY4fmGDfi+H3+bLhz40HhKHi
+        ttxinyuvQNAQ50/iSvaWJJdZrgiU7xc=
+X-Google-Smtp-Source: ABdhPJwRTQiqAJ5JI/0c+gXsHXlIYhxacBL2hWJrIemL9wBvY5jVOnTWKtM6UvkqYafnPR4cbDFWgKdmw7k=
+Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
+X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:f292:1cff:fee0:66cf])
+ (user=badhri job=sendgmr) by 2002:a25:4155:: with SMTP id o82mr17218335yba.206.1607670710264;
+ Thu, 10 Dec 2020 23:11:50 -0800 (PST)
+Date:   Thu, 10 Dec 2020 23:11:45 -0800
+Message-Id: <20201211071145.2199997-1-badhri@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH] usb: typec: tcpci: Enable bleed discharge when auto discharge
+ is enabled
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Vinod Koul (2020-12-10 21:43:49)
-> On 10-12-20, 12:43, Stephen Boyd wrote:
-> > > +static struct clk_branch gcc_camera_ahb_clk =3D {
-> > > +       .halt_reg =3D 0x26004,
-> > > +       .halt_check =3D BRANCH_HALT_DELAY,
-> > > +       .hwcg_reg =3D 0x26004,
-> > > +       .hwcg_bit =3D 1,
-> > > +       .clkr =3D {
-> > > +               .enable_reg =3D 0x26004,
-> > > +               .enable_mask =3D BIT(0),
-> > > +               .hw.init =3D &(struct clk_init_data){
-> > > +                       .name =3D "gcc_camera_ahb_clk",
-> > > +                       .flags =3D CLK_IS_CRITICAL,
-> >=20
-> > Why is it critical? Can we just enable it in driver probe and stop
-> > modeling it as a clk?
->=20
-> it does not have a parent we control, yeah it would make sense to do
-> that. Tanya do you folks agree ..?
->=20
+Auto discharge circuits kick in only when vbus decays and reaches
+VBUS_SINK_DISCONNECT_THRESHOLD threshold. Enable bleed discharge to
+discharge vbus to VBUS_SINK_DISCONNECT_THRESHOLD upon disconnect.
 
-Maybe it is needed for camera clk controller? Have to check other SoCs
-and see if they're using it.
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+---
+ drivers/usb/typec/tcpm/tcpci.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+index af5524338a63..f676abab044b 100644
+--- a/drivers/usb/typec/tcpm/tcpci.c
++++ b/drivers/usb/typec/tcpm/tcpci.c
+@@ -725,6 +725,8 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
+ 		tcpci->tcpc.enable_auto_vbus_discharge = tcpci_enable_auto_vbus_discharge;
+ 		tcpci->tcpc.set_auto_vbus_discharge_threshold =
+ 			tcpci_set_auto_vbus_discharge_threshold;
++		regmap_update_bits(tcpci->regmap, TCPC_POWER_CTRL, TCPC_POWER_CTRL_BLEED_DISCHARGE,
++				   TCPC_POWER_CTRL_BLEED_DISCHARGE);
+ 	}
+ 
+ 	if (tcpci->data->vbus_vsafe0v)
+-- 
+2.29.2.576.ga3fc446d84-goog
+
