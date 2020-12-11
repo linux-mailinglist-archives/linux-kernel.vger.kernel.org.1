@@ -2,73 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF172D8063
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:06:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1002D8060
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392903AbgLKVEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:04:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392579AbgLKVEX (ORCPT
+        id S2394839AbgLKVFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:05:52 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37518 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392579AbgLKVFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:04:23 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757FCC0613CF;
-        Fri, 11 Dec 2020 13:03:43 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id l23so2983843pjg.1;
-        Fri, 11 Dec 2020 13:03:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FW3Jn0vqNZtYaAqeCBfAsxmpQC1nOxPoiNqMyp0VCcs=;
-        b=h9z8GJs6P2P3VQUWznM6j7otNaSj7HAot0lyTD90cbzVAi57jiRIlOojZQcHn1iayM
-         1OHGc/iY0xG+1nQFYjYr1yf/lRh1wHYKIjpwqBxUIe2ZhKQ2mASYRmnBRCcIeo+k81rw
-         CFrYuHeUtgs3XT+5SNX/deoVsrcz2KCvQQH1dfufGWf9MkYAjo3hhXqMXDDI0P3TRNjI
-         U+9u5oKu99yDnQXI/rwoFCPD5tbHnXL40mqlEj5V5sNiiq3S6Ax2Bw4rjs5KA5KabMuJ
-         pwiYm9MXNxKYMbVAobDczXL/sOY3EUuw1FOuhGuZ93Bv+nztXuw+cpq6eUnmtSzcUenO
-         gmRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FW3Jn0vqNZtYaAqeCBfAsxmpQC1nOxPoiNqMyp0VCcs=;
-        b=PBkjz1CxBSpiCZz33GxbX3ge98uP74c4dATXU8S1XWzKMZP0lkAFYngLClImzd1fZZ
-         NMwirzRWnWBr/+q0Nkiu7+AYcPUjM4xH55qoVwHa0bB1ASTfYqFOC62Jj1ABDruOSKCY
-         FvGBE/GmKU6Q/8EFmKGWUWXuusEdkVIpuljZKCuEK0xrale9rwQcOm7pTCwYhQFr/PWt
-         hOZKXHxyqZMYxuPeZK+tyDHJ3fqZWj53UgNuNoMHkY+vS3xH5d+Sk57Uz3tLKeH4o7LC
-         z2WzdcMKGyzfp0ZOS/1UWrIRdS6nsoQ0S8bBzt886Hqkhblax5Wa+JwHQVDNuDKmPKUm
-         b26w==
-X-Gm-Message-State: AOAM532ZkULlh0qYFDUHf9zrv69TAhbSl/sldoyF6KZ2gG9DZR47nCIY
-        A0A6hAqNbPFEa+EIhlpSi7M=
-X-Google-Smtp-Source: ABdhPJyrxifeDm2990qMQnXO6+v7Nj5kUmMlMgaW+YQ+osT28QA1eyMNI3OMchn6asNbFUmt35mPAw==
-X-Received: by 2002:a17:902:7c0a:b029:da:62c8:90cb with SMTP id x10-20020a1709027c0ab02900da62c890cbmr12724872pll.59.1607720622974;
-        Fri, 11 Dec 2020 13:03:42 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id s7sm11831632pfh.207.2020.12.11.13.03.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 13:03:42 -0800 (PST)
-Date:   Fri, 11 Dec 2020 13:03:40 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] input: misc: convert comma to semicolon
-Message-ID: <X9PerOno8j+Dk4js@google.com>
-References: <20201211085032.2598-1-zhengyongjun3@huawei.com>
+        Fri, 11 Dec 2020 16:05:41 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607720693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0fiMhIgezjMm4j4B451ig1YSH6sP5DgP4ssfWySwTGs=;
+        b=AQYRNJvcxXd/HlimRdNjo1jnET0BBogqtVB+Ri+UcW9mLEHO290gRs/+90RaLXritQJb2i
+        CODTbdo6SmBCi63OMkXnOeeSd6Ws1yDR9yzDddkR8t/LP9l/LrQ4eZdQbDRveb3SSL5aKZ
+        066p2LnvLEsWNLyOe8sbOqVESUlrFFr5ku8/BNydTbz3w03wsxadl/EE4B/8tC8lNDQK8y
+        8i8H3Q+qOVu9x95DBC9Gp2kUoNiFFchFz9UsxlV2K2vCIzKWSIQWz0MPjea6aJzZGUP4Aj
+        gtoARwkvi5g5dT/9gWudhqt23Y5P6qjwjW5+42mKJkZUDRZGfzljBwounMc6XA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607720693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0fiMhIgezjMm4j4B451ig1YSH6sP5DgP4ssfWySwTGs=;
+        b=7iQ5hCbTFwAguKL6g6/ZBi2aTwaGL2TT/9TwwH+bT3LyWirf3PdhADoyPYz5c4Tpsay7uw
+        r0JJjUFQ04wBM6AA==
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+In-Reply-To: <20201211141822.GA67764@fuller.cnet>
+References: <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com> <87sg8g2sn4.fsf@nanos.tec.linutronix.de> <20201208181107.GA31442@fuller.cnet> <875z5c2db8.fsf@nanos.tec.linutronix.de> <20201209163434.GA22851@fuller.cnet> <87r1nyzogg.fsf@nanos.tec.linutronix.de> <20201210152618.GB23951@fuller.cnet> <87zh2lib8l.fsf@nanos.tec.linutronix.de> <20201211002703.GA47016@fuller.cnet> <87v9d8h3lx.fsf@nanos.tec.linutronix.de> <20201211141822.GA67764@fuller.cnet>
+Date:   Fri, 11 Dec 2020 22:04:52 +0100
+Message-ID: <87k0togikr.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211085032.2598-1-zhengyongjun3@huawei.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 04:50:32PM +0800, Zheng Yongjun wrote:
-> Replace a comma between expression statements by a semicolon.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+On Fri, Dec 11 2020 at 11:18, Marcelo Tosatti wrote:
+> On Fri, Dec 11, 2020 at 02:30:34PM +0100, Thomas Gleixner wrote:
+> Unless you notify applications to invalidate their time reads,
+> i can't see a way to fix this.
 
-Applied, thank you.
+This is just wrong. Suspend/resume handles that fine and the system is
+guaranteed to come back with time which is very close to the reality.
 
--- 
-Dmitry
+And for suspend/resume everything from kernel to userspace can have a
+notification before suspend and post resume. So applications or those
+parts of the kernel which are e.g. time sensitive can prepare upfront
+for the disruption and mop up on resume.
+
+> Therefore if you use VM migration in the first place, a certain amount of
+> timestamp accuracy error must be tolerated.
+
+That's just because it was never designed in the right way. And you
+simply declared that all applications have to deal with that.
+
+Again, where is this documented? VMs are subject to migration whether
+the customer who pays for it wants it or not. None of the virt tool docs
+mentions that pausing a VM for a long time makes timekeeping go
+south.
+
+I still have no sensible explanation WHY time should not advance accross
+a migration. All you told me is that customers complained. Which
+customers? The ones running the hosts or the ones paying for the VM?
+
+It's all just decided by some folks to "fix" a problem with the pause/
+migration mechanism they designed instead of fixing the design fail.
+
+>> How can you even assume that this is correct?
+>
+> As noted above, even without a window of unsynchronized time (due to
+> delay for NTP to sync time), time reads can be stale.
+
+So with suspend/resume we have:
+
+app:
+   t = clock_gettime()
+        <---------------- tsuspend
+        <-----------------tresume
+        So t is now behind reality by tresume - tsuspend
+
+  packet -> check timestamp .... ooops recheck
+  t = clock_gettime()
+  and t and timestamp are in the same ballpark again
+
+Now with your thing:
+
+app:
+   t = clock_gettime()
+        <---------------- tpause
+        <-----------------tresume
+        So t is now behind reality by tresume - tpause
+
+  packet -> check timestamp .... ooops recheck
+  t = clock_gettime()
+  and t and timestamp are still apart by ~ (tresume - tpause)
+
+this persists until NTP kicks in, if and only if NTP is running.
+
+Can you spot the difference?
+
+>> It is exactly the same problem as we had many years ago with hardware
+>> clocks suddenly stopping to tick which caused quite some stuff to go
+>> belly up.
+>
+> Customers complained when it was 5 seconds off, now its 0.1ms (and
+> people seem happy).
+
+And because customers complained you decided to create a scenario which
+is completely different to all other scenarios and from a time keeping
+POV not making any sense at all.
+
+>> In a proper suspend/resume scenario CLOCK_REALTIME/TAI are advanced
+>> (with a certain degree of accuracy) to compensate for the sleep time, so
+>> the other end of a communication is at least in the same ballpark, but
+>> not 50 seconds off.
+>
+> Its 100ms off with migration, and can be reduced further (customers
+> complained about 5 seconds but seem happy with 0.1ms).
+
+What is 100ms? Guaranteed maximum migration time?
+
+CLOCK_REALTIME and CLOCK_TAI are off by the time the VM is paused and
+this state persists up to the point where NTP corrects it with a time
+jump.
+
+So if migration takes 5 seconds then CLOCK_REALTIME is not off by 100ms
+it's off by 5 seconds.
+
+CLOCK_MONOTONIC/BOOTTIME might be off by 100ms between pause and resume.
+
+> OK, makes sense, then reducing the 0.1ms window even further
+> is a useful thing to do. What would be an acceptable 
+> CLOCK_REALTIME accuracy error, on migration?
+
+Can you please explain how you can achive 0.1ms accuracy when migration
+time is more than that and guest TSC is just restored to the value at
+which it was stopped?
+
+Then ALL clocks including CLOCK_REALTIME and CLOCK_TAI continue from the
+point at which they were stopped. Ergo:
+
+      t(CLOCK_REALTIME) = t(REALITY) - t(STOPPED)
+
+CLOCK_REALTIME and CLOCK_TAI are global clocks and they have rules which
+have to be respected in order to make stuff work.
+
+CLOCK_MONOTONIC and CLOCK_BOOTTIME are local to a system (host, guests).
+So manipulating them is a completely different story albeit the kernel
+has explicit guarantees for the relationship between CLOCK_MONOTONIC,
+CLOCK_BOOTTIME and CLOCK_REALTIME/TAI
+
+If you could guarantee t(STOPPED) < 100ms and therefore
+
+   t(REALITY) - t(CLOCK_REALTIME) < 100ms
+
+under _all_ circumstances then we would not even have that discussion.
+
+Even < 1000ms might be acceptable. That's the margin of error which is
+also happening accross bare metal suspend/resume in the case that the
+sleep time has to be read from the RTC when TSC stops accross suspend.
+
+But suspend/resume is still substantially different because everything
+from kernel to userspace can have a notification before suspend. So
+applications or those parts of the kernel which are e.g. time sensitive
+can prepare upfront for the disruption. In your case, not at all. They
+just have to cope with the fallout. Brilliant.
+
+Your design or the lack of it just decides that everything has to cope
+with what you decided is the right thing to do and for how long it
+takes.
+
+Yes it "works" by some definition of works, but that does not mean it
+works correctly.
+
+Thanks,
+
+        tglx
