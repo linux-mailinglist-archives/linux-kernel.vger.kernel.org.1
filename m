@@ -2,184 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96D92D7D37
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C722D7D3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405601AbgLKRrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:47:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395540AbgLKRrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:47:01 -0500
-Date:   Fri, 11 Dec 2020 17:46:16 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
-Cc:     libc-alpha@sourceware.org, Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        kernel-hardening@lists.openwall.com,
-        Topi Miettinen <toiwoton@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/6] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
- #26831]
-Message-ID: <20201211174615.GB17458@gaia>
-References: <cover.1606319495.git.szabolcs.nagy@arm.com>
- <20201203173006.GH2830@gaia>
- <20201207200338.GB24625@arm.com>
+        id S2405691AbgLKRrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:47:55 -0500
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:59906 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405633AbgLKRrS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 12:47:18 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id A4A201280195;
+        Fri, 11 Dec 2020 09:46:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1607708796;
+        bh=eES7dkAWAETGlrB/U5ZcYdxiZYF5ERyWxz5zpk5XS54=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=aSCTaU08AIo2KulFz0YKW5uDbOoeqsKWNO8rT5OQkooKfvQgZoFprGW9Hij4XfqTn
+         U6PBJKECnnVooKjlRbbwv/O+OMIQxkgFYOrYx4KGngF+2bMuaHYc7bQbSrXlhucPGg
+         1E0wiTJzYVG7ZyXVanYziUzjN9e8C++KrjAVm4iI=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id wC4SYAMM1k4E; Fri, 11 Dec 2020 09:46:36 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 114BA1280193;
+        Fri, 11 Dec 2020 09:46:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1607708796;
+        bh=eES7dkAWAETGlrB/U5ZcYdxiZYF5ERyWxz5zpk5XS54=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=aSCTaU08AIo2KulFz0YKW5uDbOoeqsKWNO8rT5OQkooKfvQgZoFprGW9Hij4XfqTn
+         U6PBJKECnnVooKjlRbbwv/O+OMIQxkgFYOrYx4KGngF+2bMuaHYc7bQbSrXlhucPGg
+         1E0wiTJzYVG7ZyXVanYziUzjN9e8C++KrjAVm4iI=
+Message-ID: <76710d8ec58c440ed7a7b446696b8659f694d0db.camel@HansenPartnership.com>
+Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with
+ kernel measurements
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Maurizio Drocco <maurizio.drocco@ibm.com>,
+        Bruno Meneguele <bmeneg@redhat.com>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Date:   Fri, 11 Dec 2020 09:46:35 -0800
+In-Reply-To: <659c09673affe9637a5d1391c12af3aa710ba78a.camel@linux.ibm.com>
+References: <20200708154116.3199728-1-sashal@kernel.org>
+         <20200708154116.3199728-3-sashal@kernel.org>
+         <1594224793.23056.251.camel@linux.ibm.com>
+         <20200709012735.GX2722994@sasha-vm>
+         <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
+         <20201211031008.GN489768@sequoia>
+         <659c09673affe9637a5d1391c12af3aa710ba78a.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207200338.GB24625@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 08:03:38PM +0000, Szabolcs Nagy wrote:
-> The 12/03/2020 17:30, Catalin Marinas wrote:
-> > On Fri, Nov 27, 2020 at 01:19:16PM +0000, Szabolcs Nagy wrote:
-> > > This is v2 of
-> > > https://sourceware.org/pipermail/libc-alpha/2020-November/119305.html
+On Fri, 2020-12-11 at 06:01 -0500, Mimi Zohar wrote:
+> On Thu, 2020-12-10 at 21:10 -0600, Tyler Hicks wrote:
+> > On 2020-11-29 08:17:38, Mimi Zohar wrote:
+> > > Hi Sasha,
 > > > 
-> > > To enable BTI support, re-mmap executable segments instead of
-> > > mprotecting them in case mprotect is seccomp filtered.
+> > > On Wed, 2020-07-08 at 21:27 -0400, Sasha Levin wrote:
+> > > > On Wed, Jul 08, 2020 at 12:13:13PM -0400, Mimi Zohar wrote:
+> > > > > Hi Sasha,
+> > > > > 
+> > > > > On Wed, 2020-07-08 at 11:40 -0400, Sasha Levin wrote:
+> > > > > > From: Maurizio Drocco <maurizio.drocco@ibm.com>
+> > > > > > 
+> > > > > > [ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c
+> > > > > > ]
+> > > > > > 
+> > > > > > Registers 8-9 are used to store measurements of the kernel
+> > > > > > and its command line (e.g., grub2 bootloader with tpm
+> > > > > > module enabled). IMA should include them in the boot
+> > > > > > aggregate. Registers 8-9 should be only included in non-
+> > > > > > SHA1 digests to avoid ambiguity.
+> > > > > 
+> > > > > Prior to Linux 5.8, the SHA1 template data hashes were padded
+> > > > > before being extended into the TPM.  Support for calculating
+> > > > > and extending the per TPM bank template data digests is only
+> > > > > being upstreamed in Linux 5.8.
+> > > > > 
+> > > > > How will attestation servers know whether to include PCRs 8 &
+> > > > > 9 in the the boot_aggregate calculation?  Now, there is a
+> > > > > direct relationship between the template data SHA1 padded
+> > > > > digest not including PCRs 8 & 9, and the new per TPM bank
+> > > > > template data digest including them.
+> > > > 
+> > > > Got it, I'll drop it then, thank you!
 > > > 
-> > > I would like linux to change to map the main exe with PROT_BTI when
-> > > that is marked as BTI compatible. From the linux side i heard the
-> > > following concerns about this:
-> > > - it's an ABI change so requires some ABI bump. (this is fine with
-> > >   me, i think glibc does not care about backward compat as nothing
-> > >   can reasonably rely on the current behaviour, but if we have a
-> > >   new bit in auxv or similar then we can save one mprotect call.)
+> > > After re-thinking this over, I realized that the attestation
+> > > server can verify the "boot_aggregate" based on the quoted PCRs
+> > > without knowing whether padded SHA1 hashes or per TPM bank hash
+> > > values were extended into the TPM[1], but non-SHA1 boot aggregate
+> > > values [2] should always include PCRs 8 & 9.
 > > 
-> > I'm not concerned about the ABI change but there are workarounds like a
-> > new auxv bit.
+> > I'm still not clear on how an attestation server would know to
+> > include PCRs 8 and 9 after this change came through a stable kernel
+> > update. It doesn't seem like something appropriate for stable since
+> > it requires code changes to attestation servers to handle the
+> > change.
 > > 
-> > > - in case we discover compatibility issues with user binaries it's
-> > >   better if userspace can easily disable BTI (e.g. removing the
-> > >   mprotect based on some env var, but if kernel adds PROT_BTI and
-> > >   mprotect is filtered then we have no reliable way to remove that
-> > >   from executables. this problem already exists for static linked
-> > >   exes, although admittedly those are less of a compat concern.)
-> > 
-> > This is our main concern. For static binaries, the linker could detect,
-> > in theory, potential issues when linking and not set the corresponding
-> > ELF information.
-> > 
-> > At runtime, a dynamic linker could detect issues and avoid enabling BTI.
-> > In both cases, it's a (static or dynamic) linker decision that belongs
-> > in user-space.
+> > I know this has already been released in some stable releases, so
+> > I'm too late, but perhaps I'm missing something.
 > 
-> note that the marking is tied to an elf module: if the static
-> linker can be trusted to produce correct marking then both the
-> static and dynamic linking cases work, otherwise neither works.
-> (the dynamic linker cannot detect bti issues, just apply user
-> supplied policy.)
-
-My assumption is that the dynamic linker may become smarter and detect
-BTI issues, if necessary.
-
-Let's say we link together multiple objects, some of them with BTI
-instructions, others without. Does the static linker generate a
-.note.gnu.property section with GNU_PROPERTY_AARCH64_FEATURE_1_BTI? I
-guess not, otherwise the .text section would have a mixture of functions
-with and without landing pads.
-
-In the dynamic linker case, if there are multiple shared objects where
-some are missing BTI, I guess the dynamic linker currently invokes
-mprotect(PROT_BTI) (or mmap()) on all objects with the corresponding
-GNU_PROPERTY.
-
-While I don't immediately see an issue with the dynamic loader always
-turning on PROT_BTI based solely on the shared object it is linking in,
-the static linker takes a more conservative approach. The dynamic linker
-may not have a similar choice in the future if the kernel forced
-PROT_BTI on the main executable. In both cases it was a user choice.
-
-The dynamic loader itself is statically linked, so any potential
-mismatch would have been detected at build time and the corresponding
-GNU_PROPERTY unset.
-
-> 1) if we consider bti part of the semantics of a marked module
-> then it should be always on if the system supports it and
-> ideally the loader of the module should deal with PROT_BTI.
-> (and if the marking is wrong then the binary is wrong.)
+> The point of adding PCRs 8 & 9 only to non-SHA1 boot_aggregate values
+> was to avoid affecting existing attestation servers.  The intention
+> was when attestation servers added support for the non-sha1
+> boot_aggregate values, they'd also include PCRs 8 & 9.  The existing
+> SHA1 boot_aggregate value remains PCRs 0 - 7.
 > 
-> 2) if we consider the marking to be a compatibility indicator
-> and let userspace policy to decide what to do with it then the
-> static exe and vdso cases should be handled by that policy too.
+> To prevent this or something similar from happening again, what
+> should have been the proper way of including PCRs 8 & 9?
 
-For static exe, we assume that the compatibility was checked at link
-time. However, you are right on the vdso, we always turn BTI on. So it
-can indeed be argued that the kernel already made the decision for (some
-of) the user modules.
+Just to be pragmatic: this is going to happen again.  Shim is already
+measuring the Mok variables through PCR 14, so if we want an accurate
+boot aggregate, we're going to have to include PCR 14 as well (or
+persuade shim to measure through a PCR we're already including, which
+isn't impossible since I think shim should be measuring the Mok
+variables using the EV_EFI_VARIABLE_DRIVER_CONFIG event and, since it
+affects secure boot policy, that does argue it should be measured
+through PCR 7).
 
-> (this makes sense if we expect that there are reasons to turn
-> bti off for a process independently of markings. this requires
-> the static linking startup code to do the policy decision and
-> self-apply PROT_BTI early.)
+James
 
-We currently left this policy decision to the dynamic loader (mostly,
-apart from vdso).
 
-> the current code does not fit either case well, but i was
-> planning to do (1). and ideally PROT_BTI would be added
-> reliably, but a best effort only PROT_BTI works too, however
-> it limits our ability to report real mprotect failures.
-
-If we (kernel people) agree to set PROT_BTI on for the main executable,
-we can expose a bit (in AT_FLAGS or somewhere) to tell the dynamic
-loader that PROT_BTI is already on. I presume subsequent objects will be
-mapped with mmap().
-
-> > > - ideally PROT_BTI would be added via a new syscall that does not
-> > >   interfere with PROT_EXEC filtering. (this does not conflict with
-> > >   the current patches: even with a new syscall we need a fallback.)
-> > 
-> > This can be discussed as a long term solution.
-> > 
-> > > - solve it in systemd (e.g. turn off the filter, use better filter):
-> > >   i would prefer not to have aarch64 (or BTI) specific policy in
-> > >   user code. and there was no satisfying way to do this portably.
-> > 
-> > I agree. I think the best for now (as a back-portable glibc fix) is to
-> > ignore the mprotect(PROT_EXEC|PROT_BTI) error that the dynamic loader
-> > gets. BTI will be disabled if MDWX is enabled.
-> 
-> ok.
-> 
-> we got back to the original proposal: silently ignore mprotect
-> failures. i'm still considering the mmap solution for libraries
-> only: at least then libraries are handled reliably on current
-> setups, but i will have to think about whether attack targets
-> are mainly in libraries like libc or in executables.
-
-I think ignoring the mprotect() error is the best we can do now. If we
-add a kernel patch to turn PROT_BTI on together with an AT_FLAGS bit,
-the user mprotect() would no longer be necessary.
-
-In the absence of an AT_FLAGS bit, we could add PROT_BTI on the main exe
-and backport the fix to when we first added BTI support. This way the
-dynamic loader may just ignore the mprotect() altogether on the main
-exe, assuming that people run latest stable kernels.
-
-> > In the meantime, we should start (continue) looking at a solution that
-> > works for both systemd and the kernel and be generic enough for other
-> > architectures. The stateless nature of the current SECCOMP approach is
-> > not suitable for this W^X policy. Kees had some suggestions here but the
-> > thread seems to have died:
-> >
-> > https://lore.kernel.org/kernel-hardening/202010221256.A4F95FD11@keescook/
-> 
-> it sounded like better W^X enforcement won't happen any time soon.
-
-Unfortunately, I think you are right here.
-
-Anyway, looking for any other input from the kernel and systemd people.
-If not, I'll post a patch at 5.11-rc1 turning PROT_BTI on for the main
-exe and take it from there. I think such discussion shouldn't disrupt
-the glibc fixes/improvements.
-
--- 
-Catalin
