@@ -2,59 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 418C62D7E88
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C04A2D7EBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406202AbgLKSsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 13:48:39 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:40746 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389463AbgLKSsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 13:48:03 -0500
-Received: from zn.tnic (p200300ec2f124300da799288a8bc7530.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:4300:da79:9288:a8bc:7530])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8C1EE1EC038E;
-        Fri, 11 Dec 2020 19:47:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607712441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=n+nVQjIL9a/TTwRThg50YCcK8aGzmm3tICUXOfYFAAk=;
-        b=i2FZ88Dj215UkdDZvbDavPDGDyaVGSKstBVZZP0uaXADOQYrNVgkWOEq7MRtYJ9+z606Tk
-        n/R6E2+xUNstUyVLkUZI6LlQwqtT8Gv6oQf6oe5bwM8xxrUfvWiK6cgyMaddzyHfiqDlrG
-        CXf9LvV0VW6d8e5I0EQqY24hu/Zr2iI=
-Date:   Fri, 11 Dec 2020 19:47:15 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86: ia32_setup_rt_frame(): propagate __user annotations
- properly
-Message-ID: <20201211184715.GE25974@zn.tnic>
-References: <20201207124141.21859-1-lukas.bulwahn@gmail.com>
+        id S2437066AbgLKSu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 13:50:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436729AbgLKStD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 13:49:03 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E28C061794
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 10:48:31 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id m25so14673906lfc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 10:48:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wMhTDsg70Yk7T7X6CYibQwNaCnRI/oxGvYkjMkZKbJ8=;
+        b=DaV9D4/FqG17M7EXWFR471nJTqUGOj/F0eo2+aMEbbmv7/mnjFvgixtxEqLl/b23d4
+         O2IlW6ZhoQONLWTJ8k1wOY4zK65HJtMseKh1kpVibf717YL8HbFlzKSBf0mlTxAp7RKK
+         EzZ5hj46G8ji1+RXN1oxW2x4RBZ/X7Lbram9oczoFknjgoC6StoYT2WWzN6183uHYx4s
+         LLpTW284FQweuL5ejqIV1ySICnkIQijrk69ZOO4afvjn5IU95dVXmTDYThprbkPjXM9u
+         vJgYWx7t547yjdC8cczuR/+UUGudsCut2rvADOZqlO3HLsYLA0SBgFbIy6pVMGIrOPPF
+         YT1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wMhTDsg70Yk7T7X6CYibQwNaCnRI/oxGvYkjMkZKbJ8=;
+        b=U4R6AOxg2x0l+WXI3973jKPNdLs7lrOK1GOQJ0Kv6ChkphdPTnhj/vIhAJA9hahuhs
+         SqgMNvu9xy3nAdXZCQlBJCwy0T0F77r4fklEwHZZHTynX7juOAHD5LSiEcp+8d61MDxf
+         XF/tjq+dnhvtva1XKudaocWs2A4RY+4Ew1jZQ/1YTPtvYOMnKXudIZPzAfCmj1EtS8Be
+         tfrCJtzUJ0UbenFqkYBud+Ytr3nnfEblQwCLwy+tXW4qo1/D7etx/zXwyqfYfh6lfbfn
+         bTsrD2kioNSWhdCleIZeW6EtgnnehYVsvb7BNj926nvOlY8fAR+oKMxXn2p2QnnexRvJ
+         icrw==
+X-Gm-Message-State: AOAM531tL4appkCpaklGQ1vs0nZVAsHbjficXKuSrhVP76WxDyk2vWwK
+        TwJrc8OXkpJeyiz5tV94MlwBUg==
+X-Google-Smtp-Source: ABdhPJyXFvqmtAUTFC39BmGoE8MlvIHW8Q/xrmxlfynKVkXQdXT50P0xShNduRwJpeJYrg/XhQxZsg==
+X-Received: by 2002:ac2:4ecd:: with SMTP id p13mr5541265lfr.430.1607712509514;
+        Fri, 11 Dec 2020 10:48:29 -0800 (PST)
+Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
+        by smtp.gmail.com with ESMTPSA id b12sm903316lfb.139.2020.12.11.10.48.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 11 Dec 2020 10:48:28 -0800 (PST)
+From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+To:     ssantosh@kernel.org, s-anna@ti.com
+Cc:     grzegorz.jaszczyk@linaro.org, santosh.shilimkar@oracle.com,
+        lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        praneeth@ti.com, tony@atomide.com,
+        linux-remoteproc@vger.kernel.org, mathieu.poirier@linaro.org
+Subject: [PATCH 0/6] Introduce PRU platform consumer API
+Date:   Fri, 11 Dec 2020 19:48:05 +0100
+Message-Id: <20201211184811.6490-1-grzegorz.jaszczyk@linaro.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201207124141.21859-1-lukas.bulwahn@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 01:41:41PM +0100, Lukas Bulwahn wrote:
-> Thomas, Ingo, Boris, please pick this minor non-urgent clean-up patch.
+Hi All,
 
-Why?
+The Programmable Real-Time Unit and Industrial Communication Subsystem (PRU-ICSS
+or simply PRUSS) on various TI SoCs consists of dual 32-bit RISC cores
+(Programmable Real-Time Units, or PRUs) for program execution.
 
-Isn't it obvious that when you send a patch to us, the final goal is for
-it to be applied. Eventually.
+There are 3 foundation components for TI PRUSS subsystem: the PRUSS platform
+driver, the PRUSS INTC driver and the PRUSS remoteproc driver. Two first were
+already merged and can be found under:
+1) drivers/soc/ti/pruss.c
+   Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+2) drivers/irqchip/irq-pruss-intc.c
+   Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
+
+The third one [1] was accepted and applied to andersson/remoteproc.git
+(refs/heads/for-next): [2] but is not merged yet.
+
+The programmable nature of the PRUs provide flexibility to implement custom
+peripheral interfaces, fast real-time responses, or specialized data handling.
+Example of a PRU consumer drivers will be:
+  - Software UART over PRUSS
+  - PRU-ICSS Ethernet EMAC
+
+In order to make usage of common PRU resources and allow the consumer drivers to
+configure the PRU hardware for specific usage the PRU API is introduced.
+
+This patch set depends on "Introduce PRU remoteproc consumer API" set [3], which
+is complementary to this one but goes for different, remoteproc sub-system.
+
+[1] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20201208141002.17777-1-grzegorz.jaszczyk@linaro.org/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git/commit/?h=for-next&id=b44786c9bdc46eac8388843f0a6116369cb18bca
+[3] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20201211142933.25784-1-grzegorz.jaszczyk@linaro.org/
+
+Best regards,
+Grzegorz
+
+Andrew F. Davis (1):
+  soc: ti: pruss: Add pruss_{request,release}_mem_region() API
+
+Suman Anna (3):
+  soc: ti: pruss: Add pruss_cfg_read()/update() API
+  soc: ti: pruss: Add helper functions to set GPI mode, MII_RT_event and
+    XFR
+  soc: ti: pruss: Add helper function to enable OCP master ports
+
+Tero Kristo (2):
+  soc: ti: pruss: Add pruss_get()/put() API
+  soc: ti: pruss: Add helper functions to get/set PRUSS_CFG_GPMUX
+
+ drivers/soc/ti/pruss.c       | 257 ++++++++++++++++++++++++++++++++++-
+ include/linux/pruss.h        | 221 ++++++++++++++++++++++++++++++
+ include/linux/pruss_driver.h |  72 +++++++---
+ 3 files changed, 526 insertions(+), 24 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.29.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
