@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140A82D80A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:14:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E66502D80A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405267AbgLKVNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:13:18 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:43199 "EHLO
+        id S2405358AbgLKVNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:13:37 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:37452 "EHLO
         mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395275AbgLKVMX (ORCPT
+        with ESMTP id S2392323AbgLKVNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:12:23 -0500
-Received: by mail-oi1-f193.google.com with SMTP id q25so11394628oij.10;
-        Fri, 11 Dec 2020 13:12:06 -0800 (PST)
+        Fri, 11 Dec 2020 16:13:07 -0500
+Received: by mail-oi1-f193.google.com with SMTP id l207so11436780oib.4;
+        Fri, 11 Dec 2020 13:12:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+QcwYARcq+TOO4C9gXJwXmDec1Cs70baMFzxTjYLSAY=;
-        b=U+4QHP999YI64snf9HElpfWw43vUrBUCIPzJ9anptk1rtxR+fV7rhqqgs7ioahVS2Y
-         mU41ZprUX9J/9l5cfLWLHCfz0tE0aUY0jsRYoFNZVtPpVP/obe9V+O6ypOcigpdSv3rN
-         PqerKmMgr0KaC+ieol4cKcPaKMIcUVUdydXfst++TvP2WMrqJJwiX53K6evBhuLFmMQ+
-         xmgQUMTGYD77+xKXp04NTX87YSXLesaIcujWYzk7oWa3kTxCsdx98kBh5IGvAFhL8BRm
-         qsIeS0/UcYFgBon6c2Du3l6syVWaEEzY1EFHuyjPnkIyLQYt4oZcbO3vBD3OqrCXTJ/6
-         PxbA==
-X-Gm-Message-State: AOAM530nNJ+K90pY08MZqyh7vF95FZ/PuN99wvzaeYJSUgsm3YmC4n5W
-        KZKvwS4/QcBjep6Zp/0b/sa9nsZo5w==
-X-Google-Smtp-Source: ABdhPJwsNO3Sd0i4xG8R+1DDF1vPbIPz9yVwmkoU/5YeM2BQv7rSfZvpzd/Fdc8BXMhpv+Jn0EGnCQ==
-X-Received: by 2002:a05:6808:3bc:: with SMTP id n28mr10918843oie.118.1607721101287;
-        Fri, 11 Dec 2020 13:11:41 -0800 (PST)
+         :mime-version:content-disposition:in-reply-to;
+        bh=kDEarIT6QtyZ9leo9UW3n9PcaYOZGBRD8Q7A2EVH/bk=;
+        b=AE+wjKpAgFX4dk/uPSFnGjZGddJlbd35kt/n5WsuqY0x/lgVMLnAZrDkB7wgnUC0f6
+         sD/WsRTORcFsUu/uSk6A0AS2ZctjO4oLJvW9j3jLxsLXUVVo7IbT398CaBvHN74lKJqX
+         Z6guxEKXOBi/0scocf3DuLrIHvgWoNWyjpYBl/OWHN9sorrcv8eyDg8yc8vluQT6aoFQ
+         BZSB3Bd1OrUVrY1R0pOiJCCc8kVWbcvKxOmaGJDR7lSJxxqjGZt6E5Hzjpbu7n3wum16
+         EnIiUggwXYHhysebAmyKzkWYcnjWy+Z/2t4QrfoY8fPB49m5DkzLALfyj8kV+u2Ukv5Q
+         my1g==
+X-Gm-Message-State: AOAM531Ffr72aAz9mjqYquyZMpZmRw4txkIXOtVpTBJfhtwX7DC0OwFv
+        1q4CA2CTiaNs5jEBJMjvRg==
+X-Google-Smtp-Source: ABdhPJzqwk8wLvsKy9ZMUr39mu3rcViIH1BQblnHU+cgFQ7mmj3SP4h6lGTWuefOzrIYXDGsgZrdPQ==
+X-Received: by 2002:a05:6808:96:: with SMTP id s22mr3204268oic.153.1607721146017;
+        Fri, 11 Dec 2020 13:12:26 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w40sm1636821ooi.41.2020.12.11.13.11.37
+        by smtp.gmail.com with ESMTPSA id 8sm2193586oii.45.2020.12.11.13.12.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 13:11:38 -0800 (PST)
-Received: (nullmailer pid 947560 invoked by uid 1000);
-        Fri, 11 Dec 2020 21:11:37 -0000
-Date:   Fri, 11 Dec 2020 15:11:37 -0600
+        Fri, 11 Dec 2020 13:12:24 -0800 (PST)
+Received: (nullmailer pid 953910 invoked by uid 1000);
+        Fri, 11 Dec 2020 21:12:23 -0000
+Date:   Fri, 11 Dec 2020 15:12:23 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        martin.kepplinger@puri.sm, Laurent.pinchart@ideasonboard.com,
-        jernej.skrabec@siol.net, vkoul@kernel.org, jonas@kwiboo.se,
-        narmstrong@baylibre.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kishon@ti.com, kernel@pengutronix.de,
-        linux-imx@nxp.com, dri-devel@lists.freedesktop.org,
-        robert.chiras@nxp.com, a.hajda@samsung.com, airlied@linux.ie,
-        agx@sigxcpu.org
-Subject: Re: [PATCH v3 4/5] dt-bindings: phy: mixel: mipi-dsi-phy: Add Mixel
- combo PHY support for i.MX8qxp
-Message-ID: <20201211211137.GA946445@robh.at.kernel.org>
-References: <1607651182-12307-1-git-send-email-victor.liu@nxp.com>
- <1607651182-12307-5-git-send-email-victor.liu@nxp.com>
+To:     Michael Klein <michael@fossekall.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v5 2/3] Documentation: DT: binding documentation for
+ regulator-poweroff
+Message-ID: <20201211211223.GA953171@robh.at.kernel.org>
+References: <20201211151445.115943-1-michael@fossekall.de>
+ <20201211151445.115943-3-michael@fossekall.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1607651182-12307-5-git-send-email-victor.liu@nxp.com>
+In-Reply-To: <20201211151445.115943-3-michael@fossekall.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 09:46:21 +0800, Liu Ying wrote:
-> Add support for Mixel MIPI DPHY + LVDS PHY combo IP
-> as found on Freescale i.MX8qxp SoC.
+On Fri, 11 Dec 2020 16:14:44 +0100, Michael Klein wrote:
+> Add devicetree binding documentation for regulator-poweroff driver.
 > 
-> Cc: Guido Günther <agx@sigxcpu.org>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: NXP Linux Team <linux-imx@nxp.com>
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> Signed-off-by: Michael Klein <michael@fossekall.de>
 > ---
-> v2->v3:
-> * No change.
-> 
-> v1->v2:
-> * Add the binding for i.MX8qxp Mixel combo PHY based on the converted binding.
->   (Guido)
-> 
->  .../bindings/phy/mixel,mipi-dsi-phy.yaml           | 41 ++++++++++++++++++++--
->  1 file changed, 38 insertions(+), 3 deletions(-)
+>  .../power/reset/regulator-poweroff.yaml       | 37 +++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/power/reset/regulator-poweroff.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
