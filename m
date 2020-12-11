@@ -2,125 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2572D776A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:07:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA7C2D7777
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404180AbgLKOGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:06:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391755AbgLKOFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:05:32 -0500
-X-Gm-Message-State: AOAM533Nq+G+LoQgWpd280agdzhOWB2FpDIUgk68rXPa4rhmSfydoB7g
-        RLa4dhzFSRnDoWEP306IAYBBdflF+7Wc3zKpsw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607695491;
-        bh=es6fVWW1Xi0bIgwukRYW6eN8WCU8aY4WzaCmTH11tlM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Cmj8IDjnQExrgq6HqlljhAClfXwNIVIPq+rP2vQkvDiIsh3n0Ao/f79F3NUs3qjJv
-         LQt7oPodOq18l0z7InPUWFBEe2dY3oAoF877KDkncLXExOC7ZzgfnPkhJNziHWDcbf
-         d+g7AcJeaGVrjogmfWvOT6VQ99OYX52wvmFtlNi7Ui/9MNzlv8FE21f6i8CmH84OIt
-         CG9GpTIpsYnxiUtp1ZIekfq0K8PfmgJKrO9lAyxr56DwYu4EjUiIXre3d5VZXxK+Q5
-         h8fRXzk7i5W5D4C4EuFuIRhQIvz/dW5EyUfj9udChv9EJkPh4QmJAlPggMxamx7ARN
-         9QGeOAPTwp+EQ==
-X-Google-Smtp-Source: ABdhPJw5D3l7fxlDhHH3ICdRLnDzMkC5Nxb+eP5iE8M2onyZxtW9cChVThBS7p1VgDwSG8vMR0IP/s6Yg7dy61rQB1Y=
-X-Received: by 2002:a05:6402:845:: with SMTP id b5mr12134678edz.38.1607695489475;
- Fri, 11 Dec 2020 06:04:49 -0800 (PST)
+        id S2391777AbgLKOJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:09:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390916AbgLKOJh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 09:09:37 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E11C061793
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:08:56 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id a16so12506882ejj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:08:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aF3Mh+MA2q+ZpkL8xg5nd4+KjM1FTv7S2GkjkszOwBM=;
+        b=i6YXb/kx1K+ZBNheDvASX0oKCecbflSu+fyZ2fjKhwHBwFR4vTEmwXKgPT0qc764hc
+         qewaFUeRaEtQMg4y/IoQVBFWvYZgkKHgyPd0hX4njbbbc7ZIqLfu5zOpaeWkQf9WL/YY
+         gK4YXTSVzLt6ykV4YXpOlzQE2kLyT/GEE8ZicFgOtOByVhSdmNRn25qGctI7sVs67bMM
+         g71vZ5z1eKErNtAJkJsFWO6CAtctbdgFlqO3i2yYIu2B89QgS0bwMVUcc7u83MGSWI/p
+         irIp0IQm6+JQBAc2JE7Gcyj+oiIYQTctJxugvD6aHDhN70KKyCr4Vg/HLjfLLlUIbrcR
+         cO5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aF3Mh+MA2q+ZpkL8xg5nd4+KjM1FTv7S2GkjkszOwBM=;
+        b=I6j8YmnW2gpJzR1mHxbSNdYYR3VY0jheBp2RsihpEoCwBTeX+fI9Cw1rBcE0VuuNdV
+         x4rK8aVnF/F8+cz2ODZzuKtyLsxikEJKj+rE3v8CKz76tYTRBNqiY/L3SIxfvYhP23tT
+         muwjjnPuG1bDYSbhNogBfDgrVQKufDPNA+JxhcdUN6WgBan2XlPWRPcIq8OKSH50GUyI
+         /su8FaTtJZEGABSjI9rry2W+iUiQ3CsBrwEkaIFBd8f3sYdYBlYwpeO59cOxWX6K7lKx
+         OLLOSR15j3GNMZ1dIjZp7EOaK2p9sYfV36JXxhXSLvp9iIAXENC0CKyXluBWL6J2bsbB
+         TQ6A==
+X-Gm-Message-State: AOAM5334j5C7U6oGW5Ttu9YawX1l0RjwsySygd0z9qVAH5KxchXH54kH
+        jFYjK7SjrBPwfUDY7FQ9mOe5iQ==
+X-Google-Smtp-Source: ABdhPJyMudGT3oM0ZWZIivI28u4XfQD8nzeth0kSRM1OzeZjoSv9S67hiN2S0oEkgM7dAVinTklXtQ==
+X-Received: by 2002:a17:906:a244:: with SMTP id bi4mr11127201ejb.59.1607695735452;
+        Fri, 11 Dec 2020 06:08:55 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::5:ee7a])
+        by smtp.gmail.com with ESMTPSA id rs27sm7106637ejb.21.2020.12.11.06.08.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 06:08:38 -0800 (PST)
+Date:   Fri, 11 Dec 2020 15:06:22 +0100
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH 2/2] block: no-copy bvec for direct IO
+Message-ID: <20201211140622.GA286014@cmpxchg.org>
+References: <cover.1607477897.git.asml.silence@gmail.com>
+ <51905c4fcb222e14a1d5cb676364c1b4f177f582.1607477897.git.asml.silence@gmail.com>
+ <20201209084005.GC21968@infradead.org>
 MIME-Version: 1.0
-References: <20201203082445.1342763-1-hsinyi@chromium.org>
-In-Reply-To: <20201203082445.1342763-1-hsinyi@chromium.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 11 Dec 2020 22:04:38 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__+FHHd6Coa9HDvS_e7Q7dD3gZm7FBbhymOR2w2-i8i4w@mail.gmail.com>
-Message-ID: <CAAOTY__+FHHd6Coa9HDvS_e7Q7dD3gZm7FBbhymOR2w2-i8i4w@mail.gmail.com>
-Subject: Re: [PATCH] drm/mediatek: mtk_dpi: Create connector for bridges
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209084005.GC21968@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Hsin-Yi:
+On Wed, Dec 09, 2020 at 08:40:05AM +0000, Christoph Hellwig wrote:
+> > +	/*
+> > +	 * In practice groups of pages tend to be accessed/reclaimed/refaulted
+> > +	 * together. To not go over bvec for those who didn't set BIO_WORKINGSET
+> > +	 * approximate it by looking at the first page and inducing it to the
+> > +	 * whole bio
+> > +	 */
+> > +	if (unlikely(PageWorkingset(iter->bvec->bv_page)))
+> > +		bio_set_flag(bio, BIO_WORKINGSET);
+> 
+> IIRC the feedback was that we do not need to deal with BIO_WORKINGSET
+> at all for direct I/O.
 
-Hsin-Yi Wang <hsinyi@chromium.org> =E6=96=BC 2020=E5=B9=B412=E6=9C=883=E6=
-=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=884:24=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Similar to a9d9fea74be2 ("drm/mediatek: mtk_dsi: Create connector for bri=
-dges"):
->
-> Use the drm_bridge_connector helper to create a connector for pipelines
-> that use drm_bridge. This allows splitting connector operations across
-> multiple bridges when necessary, instead of having the last bridge in
-> the chain creating the connector and handling all connector operations
-> internally.
+Yes, this hunk is incorrect. We must not use this flag for direct IO.
+It's only for paging IO, when you bring in the data at page->mapping +
+page->index. Otherwise you tell the pressure accounting code that you
+are paging in a thrashing page, when really you're just reading new
+data into a page frame that happens to be hot.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  drivers/gpu/drm/mediatek/mtk_dpi.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediate=
-k/mtk_dpi.c
-> index 52f11a63a330..189377e342fa 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> @@ -20,6 +20,7 @@
->
->  #include <drm/drm_atomic_helper.h>
->  #include <drm/drm_bridge.h>
-> +#include <drm/drm_bridge_connector.h>
->  #include <drm/drm_crtc.h>
->  #include <drm/drm_of.h>
->  #include <drm/drm_simple_kms_helper.h>
-> @@ -66,6 +67,7 @@ struct mtk_dpi {
->         struct drm_encoder encoder;
->         struct drm_bridge bridge;
->         struct drm_bridge *next_bridge;
-> +       struct drm_connector *connector;
->         void __iomem *regs;
->         struct device *dev;
->         struct clk *engine_clk;
-> @@ -603,12 +605,21 @@ static int mtk_dpi_bind(struct device *dev, struct =
-device *master, void *data)
->
->         dpi->encoder.possible_crtcs =3D mtk_drm_find_possible_crtc_by_com=
-p(drm_dev, dpi->ddp_comp);
->
-> -       ret =3D drm_bridge_attach(&dpi->encoder, &dpi->bridge, NULL, 0);
-> +       ret =3D drm_bridge_attach(&dpi->encoder, &dpi->bridge, NULL,
-> +                               DRM_BRIDGE_ATTACH_NO_CONNECTOR);
->         if (ret) {
->                 dev_err(dev, "Failed to attach bridge: %d\n", ret);
->                 goto err_cleanup;
->         }
->
-> +       dpi->connector =3D drm_bridge_connector_init(drm_dev, &dpi->encod=
-er);
-> +       if (IS_ERR(dpi->connector)) {
-> +               dev_err(dev, "Unable to create bridge connector\n");
-> +               ret =3D PTR_ERR(dpi->connector);
-> +               goto err_cleanup;
-> +       }
-> +       drm_connector_attach_encoder(dpi->connector, &dpi->encoder);
-> +
->         dpi->bit_num =3D MTK_DPI_OUT_BIT_NUM_8BITS;
->         dpi->channel_swap =3D MTK_DPI_OUT_CHANNEL_SWAP_RGB;
->         dpi->yc_map =3D MTK_DPI_OUT_YC_MAP_RGB;
-> --
-> 2.29.2.576.ga3fc446d84-goog
->
+(As per the other thread, bio_add_page() currently makes that same
+mistake for direct IO. I'm fixing that.)
