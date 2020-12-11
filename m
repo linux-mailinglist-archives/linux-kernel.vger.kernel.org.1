@@ -2,151 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7758F2D7562
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E81662D7565
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:16:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405403AbgLKMOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 07:14:40 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:39600 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405411AbgLKMN6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:13:58 -0500
-Received: by mail-il1-f197.google.com with SMTP id f2so6896407ils.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 04:13:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=trAsHS3H3DwMvQCSOWs0SnFO00Wxs6W+MX8Qz0q0h0Y=;
-        b=MOep3fkfriHHRbbm6mn4W7ZYTPMed7XllD5fXQ0k7Fnz0596AdY07VddQbqXZI/CbO
-         az6Ytf8oz49QwAPr9uFTH7bM6/b50nxO/W74KvCiOG6/OnKu0BgWYOz5HOE0joeDQtHj
-         3Tq6g9a1IpmB7U4oNPyA8dVdpke2wEZHeqgbjI67jhxvaG33AtWdrw7AZ9mKuDq6kgOg
-         aV8vZGVcAvh78CCcWs8Lwr/7+sKV5izT4ALJkzWDXZZ4i9SDY/ijiMv4XYWHT8YjnFUz
-         rTVPYjH8Ivo3GNN6UtBEtQnJ+eBa/nRjKANsZpPlPe1yL1GbApvERXaPeJtNCl5JcUSd
-         6o8w==
-X-Gm-Message-State: AOAM530v104DJHQqpeS92TM8enpuckvdMo7aBVSigdT0bxHZUI3VH3cG
-        S+25syaOqQyRaY+3yxG+zzutW1yQXvm1phBM4PZDBiFyy+tl
-X-Google-Smtp-Source: ABdhPJw103nl5XZexMP/Dze6TbQjtTSh4v5ad2agj7aF7mBg8DKEPUECmme1q/0fnJVh1b+js7kUYzVzfymqz/pnetkd6cKyywK0
+        id S2405913AbgLKMPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 07:15:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:53508 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395393AbgLKMOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 07:14:55 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F7F11FB;
+        Fri, 11 Dec 2020 04:14:09 -0800 (PST)
+Received: from bogus (unknown [10.57.54.168])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0A2613F68F;
+        Fri, 11 Dec 2020 04:14:07 -0800 (PST)
+Date:   Fri, 11 Dec 2020 12:14:05 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: Re: [PATCH] drivers: soc: atmel: Avoid calling at91_soc_init on non
+ AT91 SoCs
+Message-ID: <20201211121405.xhk7kz3khbut7uuw@bogus>
+References: <20201211103143.1332302-1-sudeep.holla@arm.com>
+ <20201211114515.GF1781038@piout.net>
+ <20201211115055.acoezgrwh45hw6is@bogus>
+ <20201211115800.GG1781038@piout.net>
 MIME-Version: 1.0
-X-Received: by 2002:a02:23ce:: with SMTP id u197mr15323145jau.113.1607688797893;
- Fri, 11 Dec 2020 04:13:17 -0800 (PST)
-Date:   Fri, 11 Dec 2020 04:13:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b53deb05b62f3777@google.com>
-Subject: linux-next boot error: KASAN: global-out-of-bounds Read in fs_validate_description
-From:   syzbot <syzbot+37dba74686ae4898e969@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211115800.GG1781038@piout.net>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Dec 11, 2020 at 12:58:00PM +0100, Alexandre Belloni wrote:
+> On 11/12/2020 11:50:55+0000, Sudeep Holla wrote:
+> > On Fri, Dec 11, 2020 at 12:45:15PM +0100, Alexandre Belloni wrote:
+> > > Hello,
+> > > 
+> > > On 11/12/2020 10:31:43+0000, Sudeep Holla wrote:
+> > > > Since at91_soc_init is called unconditionally from atmel_soc_device_init,
+> > > > we get the following warning on all non AT91 SoCs:
+> > > > 	" AT91: Could not find identification node"
+> > > > 
+> > > > Fix the same by filtering with allowed AT91 SoC list.
+> > > > 
+> > > > Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+> > > > Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > > > Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+> > > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > > > ---
+> > > >  drivers/soc/atmel/soc.c | 11 +++++++++++
+> > > >  1 file changed, 11 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
+> > > > index c4472b68b7c2..ba9fc07cd91c 100644
+> > > > --- a/drivers/soc/atmel/soc.c
+> > > > +++ b/drivers/soc/atmel/soc.c
+> > > > @@ -271,8 +271,19 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
+> > > >  	return soc_dev;
+> > > >  }
+> > > >  
+> > > > +static const struct of_device_id at91_soc_allowed_list[] __initconst = {
+> > > > +	{ .compatible = "atmel,at91rm9200", },
+> > > > +	{ .compatible = "atmel,at91sam9260", },
+> > > > +	{ .compatible = "atmel,sama5d2", },
+> > > 
+> > > This is a very small subset of the supported SoCs. a proper list would
+> > > be:
+> > > 
+> > > atmel,at91rm9200
+> > > atmel,at91sam9
+> > > atmel,sama5
+> > > atmel,samv7
+> > > 
+> > 
+> > Sure I can update it but the existing functions at91_get_cidr_exid_from_chipid
+> > and at91_get_cidr_exid_from_dbgu check for following 3 compatibles and bail
+> > out if not found:
+> > "atmel,at91rm9200-dbgu"
+> > "atmel,at91sam9260-dbgu"
+> > "atmel,sama5d2-chipid"
+> > 
+> > Quick check on DTS upstream suggested only 3 platforms, hence the choice.
+> > 
+> 
+> No, atmel,at91sam9260-dbgu is used on most platforms:
+> $ git grep atmel,at91sam9260-dbgu arch/arm/boot/dts/
+> arch/arm/boot/dts/at91sam9260.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+> arch/arm/boot/dts/at91sam9261.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+> arch/arm/boot/dts/at91sam9263.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+> arch/arm/boot/dts/at91sam9g45.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+> arch/arm/boot/dts/at91sam9n12.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+> arch/arm/boot/dts/at91sam9rl.dtsi:                              compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+> arch/arm/boot/dts/at91sam9x5.dtsi:                              compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+> arch/arm/boot/dts/sam9x60.dtsi:                         compatible = "microchip,sam9x60-dbgu", "microchip,sam9x60-usart", "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+> arch/arm/boot/dts/sama5d3.dtsi:                         compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+> arch/arm/boot/dts/sama5d4.dtsi:                         compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+> 
 
-syzbot found the following issue on:
+Ah, I must have messed up my grep then for sure. Also not familiar with
+AT91 series of platforms. I will respin with the list you suggested. Thanks!
 
-HEAD commit:    3cc2bd44 Add linux-next specific files for 20201211
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11627b13500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6dbe20fdaa5aaebe
-dashboard link: https://syzkaller.appspot.com/bug?extid=37dba74686ae4898e969
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+37dba74686ae4898e969@syzkaller.appspotmail.com
-
-FS-Cache: Loaded
-CacheFiles: Loaded
-TOMOYO: 2.6.0
-Mandatory Access Control activated.
-AppArmor: AppArmor Filesystem Enabled
-pnp: PnP ACPI init
-pnp: PnP ACPI: found 7 devices
-clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, max_idle_ns: 2085701024 ns
-NET: Registered protocol family 2
-tcp_listen_portaddr_hash hash table entries: 4096 (order: 6, 327680 bytes, vmalloc)
-TCP established hash table entries: 65536 (order: 7, 524288 bytes, vmalloc)
-TCP bind hash table entries: 65536 (order: 10, 4718592 bytes, vmalloc)
-TCP: Hash tables configured (established 65536 bind 65536)
-MPTCP token hash table entries: 8192 (order: 7, 720896 bytes, vmalloc)
-UDP hash table entries: 4096 (order: 7, 655360 bytes, vmalloc)
-UDP-Lite hash table entries: 4096 (order: 7, 655360 bytes, vmalloc)
-NET: Registered protocol family 1
-RPC: Registered named UNIX socket transport module.
-RPC: Registered udp transport module.
-RPC: Registered tcp transport module.
-RPC: Registered tcp NFSv4.1 backchannel transport module.
-NET: Registered protocol family 44
-pci_bus 0000:00: resource 4 [io  0x0000-0x0cf7 window]
-pci_bus 0000:00: resource 5 [io  0x0d00-0xffff window]
-pci_bus 0000:00: resource 6 [mem 0x000a0000-0x000bffff window]
-pci_bus 0000:00: resource 7 [mem 0xc0000000-0xfebfefff window]
-pci 0000:00:00.0: Limiting direct PCI/PCI transfers
-pci 0000:00:05.0: Video device with shadowed ROM at [mem 0x000c0000-0x000dffff]
-PCI: CLS 0 bytes, default 64
-PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
-software IO TLB: mapped [mem 0x00000000b5c00000-0x00000000b9c00000] (64MB)
-RAPL PMU: API unit is 2^-32 Joules, 0 fixed counters, 10737418240 ms ovfl timer
-kvm: already loaded the other module
-clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x212735223b2, max_idle_ns: 440795277976 ns
-clocksource: Switched to clocksource tsc
-Initialise system trusted keyrings
-workingset: timestamp_bits=40 max_order=21 bucket_order=0
-zbud: loaded
-DLM installed
-squashfs: version 4.0 (2009/01/31) Phillip Lougher
-FS-Cache: Netfs 'nfs' registered for caching
-NFS: Registering the id_resolver key type
-Key type id_resolver registered
-Key type id_legacy registered
-nfs4filelayout_init: NFSv4 File Layout Driver Registering...
-Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
-FS-Cache: Netfs 'cifs' registered for caching
-Key type cifs.spnego registered
-Key type cifs.idmap registered
-==================================================================
-BUG: KASAN: global-out-of-bounds in fs_validate_description+0x1a5/0x1d0 fs/fs_parser.c:371
-Read of size 8 at addr ffffffff899b8320 by task swapper/0/1
-
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc7-next-20201211-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
- fs_validate_description+0x1a5/0x1d0 fs/fs_parser.c:371
- register_filesystem+0x78/0x320 fs/filesystems.c:78
- init_cifs+0x7a4/0x8cf fs/cifs/cifsfs.c:1609
- do_one_initcall+0x103/0x690 init/main.c:1220
- do_initcall_level init/main.c:1293 [inline]
- do_initcalls init/main.c:1309 [inline]
- do_basic_setup init/main.c:1329 [inline]
- kernel_init_freeable+0x600/0x684 init/main.c:1535
- kernel_init+0xe/0x1e0 init/main.c:1418
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-The buggy address belongs to the variable:
- smb3_fs_parameters+0xc60/0xf40
-
-Memory state around the buggy address:
- ffffffff899b8200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffffff899b8280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffffffff899b8300: 00 00 00 00 f9 f9 f9 f9 05 f9 f9 f9 f9 f9 f9 f9
-                               ^
- ffffffff899b8380: 06 f9 f9 f9 f9 f9 f9 f9 06 f9 f9 f9 f9 f9 f9 f9
- ffffffff899b8400: 00 01 f9 f9 f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+--
+Regards,
+Sudeep
