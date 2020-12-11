@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C332F2D7879
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4455C2D787F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406522AbgLKPAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:00:42 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35742 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406450AbgLKO7h (ORCPT
+        id S2437531AbgLKPAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:00:47 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:37892 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436901AbgLKPAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:59:37 -0500
-Date:   Fri, 11 Dec 2020 14:58:46 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607698726;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vBOX/oetrrP8TyfMeSRZY+c6fpCLV+V6WjEzSnXYeuE=;
-        b=Y2GMbsjVbBFs6ZMdukbFroANi+NPG/eF7z6sx0yVQdvDZ6SCWfIg6HXmogsA/JR2hz7bG4
-        8Hhyzqo2Uph/eXyYXn590DIRfTc44KNqSF8yV/6gHWgoO/GMML9UM6jo1i1OxBhp/XrMV8
-        2GAKeu67LNBkm8DnBjABNh9DHwwgOoV1qozzli0sz0tzCLN9tYJNrqqzTILYigC3CqYv7+
-        bL0LzYYb0Vm+h95ESD3FMeclnAELHz8P7tuF1pXhx7aagUOiUTqThzuKxGdviQpecf0uFJ
-        52IQwS/qx2Z/2Snb1ENUgwG2Ipf7OKbH9f0/kybPV6C6XW61ERsOoI1fkKyxnw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607698726;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vBOX/oetrrP8TyfMeSRZY+c6fpCLV+V6WjEzSnXYeuE=;
-        b=46hjXrllhyJll/C6WSZd8BN2CRaMMfbmW5OwdnPjiKDz/ZHsQpRBbhxVBeGKuN13AQ82jV
-        KsQ5Tqv3SIsyQoBg==
-From:   "irqchip-bot for Geert Uytterhoeven" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/gic: Spelling s/REturn/Return/
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20201209101504.2206941-1-geert+renesas@glider.be>
-References: <20201209101504.2206941-1-geert+renesas@glider.be>
+        Fri, 11 Dec 2020 10:00:24 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BBEuMWA181636;
+        Fri, 11 Dec 2020 14:59:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=4rzbePKaXv5WgRAgbzQku9hQ+epeAIFDKl+N4EYfs6s=;
+ b=yffXGhp/UZT1Ftpwe/s8TJjVHf1lcAt431cAc/ts1wRWPzpnX9HIqlj9QNaSbmtD0saa
+ fCQA10O+wRAlf4oBtPF0iqWbLItb7HB66v6YsOicwemrktTtOfv/2F6zZ7k8CuHJBJ/K
+ u1IaYz3Kw8iFGPn89SymngTy8kVp88rI3jjJ1++0ghIrdy96jXeob0det81eBtZB8UzP
+ uujGEFzjTd603dM3B3eemcQ4wSEcXDjktrtQDHmrj3+hUEDp5d46/fmiKVzJ4uynOYG7
+ bwFOrxxM6uHjvkzQCJLSxDgdBe8cxYQXAg2ch3scHQZIDsvc97NISAyvc6ogpflwsRV7 bw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 357yqcb3ks-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Dec 2020 14:59:38 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BBEsv0D151835;
+        Fri, 11 Dec 2020 14:59:38 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 358kstgdag-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Dec 2020 14:59:38 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BBExbhh028238;
+        Fri, 11 Dec 2020 14:59:37 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 11 Dec 2020 06:59:37 -0800
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH] Revert "scsi: storvsc: Validate length of incoming
+ packet in storvsc_on_channel_callback()"
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1pn3go0ft.fsf@ca-mkp.ca.oracle.com>
+References: <20201211131404.21359-1-parri.andrea@gmail.com>
+        <20201211140137.taqjndaqjjo25srj@liuwe-devbox-debian-v2>
+Date:   Fri, 11 Dec 2020 09:59:34 -0500
+In-Reply-To: <20201211140137.taqjndaqjjo25srj@liuwe-devbox-debian-v2> (Wei
+        Liu's message of "Fri, 11 Dec 2020 14:01:37 +0000")
 MIME-Version: 1.0
-Message-ID: <160769872632.3364.14907130895082869275.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam: Yes
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=1
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012110098
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=999
+ clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012110098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     42a590b0fdf72498ebf47b01ddf006ee92cbfc70
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/42a590b0fdf72498ebf47b01ddf006ee92cbfc70
-Author:        Geert Uytterhoeven <geert+renesas@glider.be>
-AuthorDate:    Wed, 09 Dec 2020 11:15:04 +01:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Fri, 11 Dec 2020 14:40:17 
+Wei,
 
-irqchip/gic: Spelling s/REturn/Return/
+> Sorry for the last minute patch. We would very like this goes into
+> 5.10 if possible; otherwise Linux 5.10 is going to be broken on
+> Hyper-V.  :-(
 
-Fix a capitalization typo.
+Applied to 5.10/scsi-fixes.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20201209101504.2206941-1-geert+renesas@glider.be
----
- drivers/irqchip/irq-gic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
-index 6053245..a3c2f18 100644
---- a/drivers/irqchip/irq-gic.c
-+++ b/drivers/irqchip/irq-gic.c
-@@ -973,7 +973,7 @@ void gic_migrate_target(unsigned int new_cpu_id)
- /*
-  * gic_get_sgir_physaddr - get the physical address for the SGI register
-  *
-- * REturn the physical address of the SGI register to be used
-+ * Return the physical address of the SGI register to be used
-  * by some early assembly code when the kernel is not yet available.
-  */
- static unsigned long gic_dist_physaddr;
+-- 
+Martin K. Petersen	Oracle Linux Engineering
