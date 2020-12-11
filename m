@@ -2,239 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3452D7669
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:19:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4942D766B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406100AbgLKNSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 08:18:45 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:56781 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404965AbgLKNS1 (ORCPT
+        id S2406111AbgLKNTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:19:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406097AbgLKNSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:18:27 -0500
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 6058260009;
-        Fri, 11 Dec 2020 13:17:41 +0000 (UTC)
-Date:   Fri, 11 Dec 2020 14:17:40 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v7 2/3] drm: Add support for the LogiCVC display
- controller
-Message-ID: <X9NxdLtIsGxbDmfL@aptenodytes>
-References: <20201102155308.142691-1-paul.kocialkowski@bootlin.com>
- <20201102155308.142691-3-paul.kocialkowski@bootlin.com>
- <20201103094659.56sdcerwwzqu2gdy@gilmour.lan>
- <X8e7kBx/OYpN2HqB@aptenodytes>
- <20201207104231.ipa5dccnxxro3xxc@gilmour>
+        Fri, 11 Dec 2020 08:18:39 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950D7C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:17:58 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id r14so9007406wrn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:17:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pTsb6QBizLruQ4SvEPGcUMH+feyQGOx2SNhiTZ6A7sk=;
+        b=BzU7C30N+YcYwkp2ex51D28fxZp48WXRt3da/89karVc7nkPSQhS8XlV/xSa4Fez4e
+         4eu4B9UkufaXX/oOfYsACQi4bB6874NUMWJu8PFGXjGBtp9hTn13U0Yh3n2hAfXMJDyG
+         ZSEyAuJptY3InH5ff3BJ1OqS9iVmbDkVyuw4VxJs/PQg/LVRK4kFVRcIWv2jykzy3YCK
+         5ZoW8oBLsOVZKgU15idzMl1WXoZdqosYOY7ZhQJbVE0oOxN2Pcgtg/Xg1yPChXXZFbgy
+         07LZxXMRdpbjb+ufmcPFdZ/obsyEwOnonOFY5GZ9ZO11Kiw8x8luQ0PXSBBW1lAi9APT
+         HTaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pTsb6QBizLruQ4SvEPGcUMH+feyQGOx2SNhiTZ6A7sk=;
+        b=ksB1KneclNMxc/CyaxsOb5vBu9TSyeGBBdEal0q9V8stHcdasnpwHbq2bxr1NyoB3e
+         jmd8yDYuktg9+J+pODjuaJ4LCtwTWJ3/NCBA2PUQT3nDj5jrYMBZZ/ibMEo8jNfSdED7
+         g8RnuEEbiKQmVXIwG6lAWeWD383eP8w8vqBriKpBSEA9M+isE37iAZp9cbuNJxriVXBW
+         7RC8pomkJFvMceqP2R9qb5gw7EePlzAJ6io4Yf6cWTFFzbfPzoCxGNlVkDgG1FnrI6Eb
+         OO2Mz1dPq1PeVURoJo7VubGW3BJyUojKolwobYbyGSYLao6GSKOdvAghnliT9oDxNfyi
+         GZ/w==
+X-Gm-Message-State: AOAM53299tCdtUteMUPoAgC72kzBMBdZMQuiiZZuhyjZeIWqNMLBcK8F
+        GC9F0spkTmNJVaw0bfODkUEWng==
+X-Google-Smtp-Source: ABdhPJwZSQdwUi/HyQh/NNTpkHJs9H+AQNSI8zWb+io8+EqtMHVKyqk1cgo2bflY2HyA/k9j6o+A9g==
+X-Received: by 2002:adf:f101:: with SMTP id r1mr1891369wro.112.1607692677022;
+        Fri, 11 Dec 2020 05:17:57 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:fc92:290c:960a:52ef? ([2a01:e34:ed2f:f020:fc92:290c:960a:52ef])
+        by smtp.googlemail.com with ESMTPSA id e16sm16318909wra.94.2020.12.11.05.17.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Dec 2020 05:17:56 -0800 (PST)
+Subject: Re: [PATCH] thermal/core: Make 'forced_passive' as obsolete candidate
+To:     rui.zhang@intel.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        amitk@kernel.org, Matthew Garrett <mjg59@srcf.ucam.org>
+References: <20201208153046.297456-1-daniel.lezcano@linaro.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <cc2085ca-ada9-d616-eed5-3496889da3bb@linaro.org>
+Date:   Fri, 11 Dec 2020 14:17:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="r7jeyoHvsI0TyI2X"
-Content-Disposition: inline
-In-Reply-To: <20201207104231.ipa5dccnxxro3xxc@gilmour>
+In-Reply-To: <20201208153046.297456-1-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 08/12/2020 16:30, Daniel Lezcano wrote:
+> The passive file in sysfs forces the usage of a passive trip point set
+> by the userspace when a broken BIOS does not provide the mitigation
+> temperature for such thermal zone. The hardware evolved a lot since
+> 2008 as a good thermal management is no longer an option.
+> 
+> Linux on the other side also provides now a way to load fixed ACPI
+> table via the option ACPI_TABLE_UPGRADE, so additionnal trip point
+> could be added there.
+> 
+> Set the option obsolete and plan to remove it, so the corresponding
+> code can be removed from the core code and allow more cleanups the
+> thermal framework deserves.
+> 
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
 
---r7jeyoHvsI0TyI2X
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Is there any concern about this change ?
 
-Hi,
+>  Documentation/ABI/obsolete/sysfs-thermal-passive | 13 +++++++++++++
+>  drivers/thermal/thermal_sysfs.c                  |  2 ++
+>  2 files changed, 15 insertions(+)
+>  create mode 100644 Documentation/ABI/obsolete/sysfs-thermal-passive
+> 
+> diff --git a/Documentation/ABI/obsolete/sysfs-thermal-passive b/Documentation/ABI/obsolete/sysfs-thermal-passive
+> new file mode 100644
+> index 000000000000..2510724cc165
+> --- /dev/null
+> +++ b/Documentation/ABI/obsolete/sysfs-thermal-passive
+> @@ -0,0 +1,13 @@
+> +What:		/sys/class/thermal/thermal_zone*/passive
+> +Date:		December 2008
+> +KernelVersion:	2.6.28
+> +Contact:	Daniel Lezcano <daniel.lezcano@linaro.org>
+> +Description:
+> +
+> +  The passive file in sysfs forces the usage of a passive trip point
+> +  set by the userspace when a broken BIOS does not provide the
+> +  mitigation temperature for such thermal zone. However, the Linux
+> +  kernel evolved a lot since 2008 as well as the hardware and it is
+> +  able to manage correctly the thermal envelope. It does also provide
+> +  a way to load fixed ACPI table via the option ACPI_TABLE_UPGRADE, so
+> +  additionnal trip point could be added there.
+> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+> index 0866e949339b..578099b520b1 100644
+> --- a/drivers/thermal/thermal_sysfs.c
+> +++ b/drivers/thermal/thermal_sysfs.c
+> @@ -232,6 +232,8 @@ passive_store(struct device *dev, struct device_attribute *attr,
+>  	if (state && state < 1000)
+>  		return -EINVAL;
+>  
+> +	pr_warn("%s: Consider the 'passive' option obsolete\n", tz->type);
+> +
+>  	if (state && !tz->forced_passive) {
+>  		if (!tz->passive_delay)
+>  			tz->passive_delay = 1000;
+> 
 
-On Mon 07 Dec 20, 11:42, Maxime Ripard wrote:
-> On Wed, Dec 02, 2020 at 05:06:40PM +0100, Paul Kocialkowski wrote:
-> > > > +static void logicvc_crtc_atomic_begin(struct drm_crtc *drm_crtc,
-> > > > +				      struct drm_atomic_state *state)
-> > > > +{
-> > > > +	struct logicvc_crtc *crtc =3D logicvc_crtc(drm_crtc);
-> > > > +	struct drm_crtc_state *crtc_state =3D
-> > > > +		drm_atomic_get_old_crtc_state(state, drm_crtc);
-> > > > +	struct drm_device *drm_dev =3D drm_crtc->dev;
-> > > > +	unsigned long flags;
-> > > > +
-> > > > +	/* Register pending event, only if vblank is already on. */
-> > > > +	if (drm_crtc->state->event && crtc_state->active) {
-> > > > +		spin_lock_irqsave(&drm_dev->event_lock, flags);
-> > > > +		WARN_ON(drm_crtc_vblank_get(drm_crtc) !=3D 0);
-> > > > +
-> > > > +		crtc->event =3D drm_crtc->state->event;
-> > > > +		drm_crtc->state->event =3D NULL;
-> > > > +
-> > > > +		spin_unlock_irqrestore(&drm_dev->event_lock, flags);
-> > > > +	}
-> > > > +}
-> > >=20
-> > > That's unusual to do it in atomic_begin, why do you need it?
-> >=20
-> > This is to cover the case where we need to send a page flip event but t=
-he
-> > crtc is already on. In that case, neither atomic_enable nor atomic_disa=
-ble
-> > will be called so we need to rely on atomic_begin to grab that event.
-> > This happens for example when a single plane is updated.
-> >=20
-> > The same thing is done in e.g. sun4i-drm.
->=20
-> Yeah, but I'm not sure why that's needed in the first place on sun4i-drm
-> either. This looks to me as either something that should be handled by
-> the helpers, or isn't needed at all. Just like the other times you
-> fiddle with the vblank in your driver.
 
-I didn't really question myself about whether this could be done in helpers,
-but it looks like the philosophy now is that the driver grabs the page flip
-done event when it can and serves the event in the IRQ routine.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-So nothing unusual about this driver in particular.
-
-> I looked around and the only drivers that have that logic seem to be ARM
-> HDLCD, Atmel HCLDC, Meson, Tegra. This looks like it might be some cargo
-> cult.
->=20
-> Daniel, do you know why that would be needed?
-
-As far as I understand, this could work just as well with a helper in my
-case (and sun4i-drm's case as well). But in any case, what this patch imple=
-ments
-is the current philosophy and I guess that reworking it through helpers is
-way out of the scope of this series ;)
-
-> > > > +static void logicvc_version_print(struct logicvc_drm *logicvc)
-> > > > +{
-> > > > +	u32 version;
-> > > > +
-> > > > +	regmap_read(logicvc->regmap, LOGICVC_IP_VERSION_REG, &version);
-> > > > +
-> > > > +	DRM_INFO("LogiCVC version %d.%02d.%c\n",
-> > > > +		 (int)LOGICVC_FIELD_GET(LOGICVC_IP_VERSION_MAJOR, version),
-> > > > +		 (int)LOGICVC_FIELD_GET(LOGICVC_IP_VERSION_MINOR, version),
-> > > > +		 (char)LOGICVC_FIELD_GET(LOGICVC_IP_VERSION_LEVEL, version) +
-> > > > +		 'a');
-> > >=20
-> > > DRM_DEV_INFO?
-> >=20
-> > Okay but now according to Sam, "DRM_DEV_ERROR() and friends are depreca=
-ted"
-> > so I wonder which is the right one to use at this point.
->=20
-> AFAIU, it's drm_info / drm_err
-
-Thanks!
-
-> > > > +static void logicvc_encoder_enable(struct drm_encoder *drm_encoder)
-> > > > +{
-> > > > +	struct logicvc_drm *logicvc =3D logicvc_drm(drm_encoder->dev);
-> > > > +	struct logicvc_interface *interface =3D
-> > > > +		logicvc_interface_from_drm_encoder(drm_encoder);
-> > > > +
-> > > > +	regmap_update_bits(logicvc->regmap, LOGICVC_POWER_CTRL_REG,
-> > > > +			   LOGICVC_POWER_CTRL_VIDEO_ENABLE,
-> > > > +			   LOGICVC_POWER_CTRL_VIDEO_ENABLE);
-> > > > +
-> > > > +	if (interface->drm_panel) {
-> > > > +		drm_panel_prepare(interface->drm_panel);
-> > > > +
-> > > > +		/* Encoder enable is too early to enable the panel and a white
-> > > > +		 * screen will be seen if the panel gets enabled before the
-> > > > +		 * first page flip is done (and no other framebuffer
-> > > > +		 * configuration remains from the boot software). */
-> > > > +		interface->drm_panel_enabled =3D false;
-> > > > +	}
-> > > > +}
-> > >=20
-> > > That's fishy (and the similar stuff in commit_tail). Is it because you
-> > > need to have the CRTC powered before the encoder?
-> > >=20
-> > > If so, you should try the commit_tail_rpm variant, it makes sure the
-> > > CRTC is powered on before making a commit.
-> >=20
-> > No, this is unrelated to CRTC vs encoder enable order. Instead, it's ab=
-out
-> > panel enable order: I don't want to enable the panel before a buffer was
-> > flipped on the CRTC otherwise a blank/white/garbage screen will be show=
-n.
->=20
-> Well, since the encoder will enable the panel, it's kind of related
-> though?
-
-Right, I meant that it's not related to the CRTC in particular.
-
-> > This is why this drm_panel_enabled variable is used to make sure we don=
-'t
-> > enable the panel before.
-> >=20
-> > This is nothing specific to my hardware, but a general concern that pro=
-bably
-> > exists in every DRM driver. Nobody really seems to care about it but I'=
-ve
-> > decided that I would in this driver. Now if you think this is too exoti=
-c,
-> > I don't mind removing it.
->=20
-> If this is a concern of yours and affects multiple drivers, then it
-> should be fixed in the core, not in one particular driver.
-
-So I suppose this should be fixed by having the core enable the encoder at =
-first
-page flip and not before then, right?
-
-In that case the change should indeed be separate from this series and my d=
-river
-should still enable the panel at encoder enable time.
-
-In spite of that, I agree this implementation is not very appropriate so I'=
-ll
-get rid of it in the next revision.
-
-> > > > +static void logicvc_connector_destroy(struct drm_connector *drm_co=
-nnector)
-> > > > +{
-> > > > +	drm_connector_cleanup(drm_connector);
-> > > > +}
-> > >=20
-> > > I guess you don't need that intermediate function?
-> >=20
-> > I would need to check if that call is necessary or if some implied mech=
-anism
-> > calls it for me already.
->=20
-> What I meant is that you don't need logicvc_connector_destroy, you can
-> directly set the atomic_destroy_state to drm_connector_cleanup.
-
-Oh right, I hadn't really noticed that the prototypes are 100% the same :)
-
-Thanks for the review,
-
-Paul
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---r7jeyoHvsI0TyI2X
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/TcXQACgkQ3cLmz3+f
-v9Gfagf/Xb0Nda8hOPL/6tNcqLhoI2vWfpZWazSwV7vjr4O8Ok6yFYZwub+38qA7
-DhJAvQChTQl18uUXaPsaHAy7lVlIQsfh/AOeSK4DPDxNV0wDmoKkI//hvXnyGXj2
-CJxwM0+aoG2/rai19cT99euMbBGw9bK8a84P59hVs5YoWa25/Xgbwk5zllBRNYlo
-Faiq/crIzGWOA5iyAUrE9JuFZjmBhvZUvCTsAE/k1B6pTIY7Z3OydeemrWhW9caD
-yE3+4EQTAsg4WAyWaqZ3rNT0VcKwA8E9NV/FK+P7jr7K/+SXrsdinC8QuNHq8V9Q
-7TdKcSDc9PEi5l4GdfXsv2Qit0BhvA==
-=uJ66
------END PGP SIGNATURE-----
-
---r7jeyoHvsI0TyI2X--
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
