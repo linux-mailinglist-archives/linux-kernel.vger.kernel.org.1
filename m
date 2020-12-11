@@ -2,153 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA862D7D3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 663D72D7D42
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405676AbgLKRrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:47:55 -0500
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:52673 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405623AbgLKRrQ (ORCPT
+        id S2405724AbgLKRso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:48:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54453 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405633AbgLKRr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:47:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1607708834; x=1639244834;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=uwv8ALfTPluQvriix7JixDzU0bTqOriiEkFwz/OA4QM=;
-  b=RTC5ixgh4/JoiCWrSa58KtLi0dBVaKesNrJBXvkx6W76+SoIvAC3SYWB
-   aA4lYO8r1JXz2QsJhmuz/1Mr28sq/bkr5SdVX7TSwsnDRgOgUjjtdPzNg
-   Crao3Pc+m57ceCOdHK6SLqW94YuCERBEl1zSMmEk3aKnchoGWH+QQeI4c
-   o=;
-X-IronPort-AV: E=Sophos;i="5.78,412,1599523200"; 
-   d="scan'208";a="902357220"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9103.sea19.amazon.com with ESMTP; 11 Dec 2020 17:46:26 +0000
-Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com (Postfix) with ESMTPS id 59D19C067A;
-        Fri, 11 Dec 2020 17:46:24 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.146) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 11 Dec 2020 17:46:19 +0000
-Subject: Re: [PATCH net-next v3 0/4] vsock: Add flags field in the vsock
- address
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-References: <20201211103241.17751-1-andraprs@amazon.com>
- <20201211152413.iezrw6qswzhpfa3j@steredhat>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <2a6711c7-e165-6358-8659-6cd49ec5788c@amazon.com>
-Date:   Fri, 11 Dec 2020 19:46:10 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        Fri, 11 Dec 2020 12:47:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607708789;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FzP6paV2OVK1R/7FuD7jU8vd9PKyeesd/swefA4DzN8=;
+        b=OU988ktpNvBfpTQ1Nyi2FO9kO839nfWVdikLJ1v/3cl8+6FTHrbV+fV8sK4+cYtvJD2Rwg
+        L52Z4pA3bUAdJkssU7frMzJFVQnhX3Y680oDGN4lCFv7il1ZgcnUepBraq3ei54qyJpNUj
+        NfShYR6l6pxqddi5W/rwmHNWL7xKT5g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-ky9U20HmPFyLH8tA_rrRjg-1; Fri, 11 Dec 2020 12:46:20 -0500
+X-MC-Unique: ky9U20HmPFyLH8tA_rrRjg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B38F81E24B;
+        Fri, 11 Dec 2020 17:46:18 +0000 (UTC)
+Received: from treble (ovpn-115-21.rdu2.redhat.com [10.10.115.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6574710021AA;
+        Fri, 11 Dec 2020 17:46:17 +0000 (UTC)
+Date:   Fri, 11 Dec 2020 11:46:10 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: objtool crashes with some clang produced .o files
+Message-ID: <20201211174610.2bfprpvrrlg66awd@treble>
+References: <CAK8P3a20LXgEQkYSpbFFrJs1mdg19W72dp3pbebH9Pkpib2g-g@mail.gmail.com>
+ <CAKwvOdn79V-jaTH0mEtKyc-O+=Hj22bGtjKkZ1jriY2YABj-Lw@mail.gmail.com>
+ <20201211093205.GU2414@hirez.programming.kicks-ass.net>
+ <20201211163748.b37gashl6an6misu@treble>
+ <20201211164915.GA2414@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20201211152413.iezrw6qswzhpfa3j@steredhat>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.146]
-X-ClientProxiedBy: EX13D24UWB001.ant.amazon.com (10.43.161.93) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201211164915.GA2414@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAxMS8xMi8yMDIwIDE3OjI0LCBTdGVmYW5vIEdhcnphcmVsbGEgd3JvdGU6Cj4KPiBIaSBB
-bmRyYSwKPgo+IE9uIEZyaSwgRGVjIDExLCAyMDIwIGF0IDEyOjMyOjM3UE0gKzAyMDAsIEFuZHJh
-IFBhcmFzY2hpdiB3cm90ZToKPj4gdnNvY2sgZW5hYmxlcyBjb21tdW5pY2F0aW9uIGJldHdlZW4g
-dmlydHVhbCBtYWNoaW5lcyBhbmQgdGhlIGhvc3QgCj4+IHRoZXkgYXJlCj4+IHJ1bm5pbmcgb24u
-IE5lc3RlZCBWTXMgY2FuIGJlIHNldHVwIHRvIHVzZSB2c29jayBjaGFubmVscywgYXMgdGhlIG11
-bHRpCj4+IHRyYW5zcG9ydCBzdXBwb3J0IGhhcyBiZWVuIGF2YWlsYWJsZSBpbiB0aGUgbWFpbmxp
-bmUgc2luY2UgdGhlIHY1LjUgCj4+IExpbnV4IGtlcm5lbAo+PiBoYXMgYmVlbiByZWxlYXNlZC4K
-Pj4KPj4gSW1wbGljaXRseSwgaWYgbm8gaG9zdC0+Z3Vlc3QgdnNvY2sgdHJhbnNwb3J0IGlzIGxv
-YWRlZCwgYWxsIHRoZSAKPj4gdnNvY2sgcGFja2V0cwo+PiBhcmUgZm9yd2FyZGVkIHRvIHRoZSBo
-b3N0LiBUaGlzIGJlaGF2aW9yIGNhbiBiZSB1c2VkIHRvIHNldHVwIAo+PiBjb21tdW5pY2F0aW9u
-Cj4+IGNoYW5uZWxzIGJldHdlZW4gc2libGluZyBWTXMgdGhhdCBhcmUgcnVubmluZyBvbiB0aGUg
-c2FtZSBob3N0LiBPbmUgCj4+IGV4YW1wbGUgY2FuCj4+IGJlIHRoZSB2c29jayBjaGFubmVscyB0
-aGF0IGNhbiBiZSBlc3RhYmxpc2hlZCB3aXRoaW4gQVdTIE5pdHJvIEVuY2xhdmVzCj4+IChzZWUg
-RG9jdW1lbnRhdGlvbi92aXJ0L25lX292ZXJ2aWV3LnJzdCkuCj4+Cj4+IFRvIGJlIGFibGUgdG8g
-ZXhwbGljaXRseSBtYXJrIGEgY29ubmVjdGlvbiBhcyBiZWluZyB1c2VkIGZvciBhIAo+PiBjZXJ0
-YWluIHVzZSBjYXNlLAo+PiBhZGQgYSBmbGFncyBmaWVsZCBpbiB0aGUgdnNvY2sgYWRkcmVzcyBk
-YXRhIHN0cnVjdHVyZS4gVGhlIHZhbHVlIG9mIAo+PiB0aGUgZmxhZ3MKPj4gZmllbGQgaXMgdGFr
-ZW4gaW50byBjb25zaWRlcmF0aW9uIHdoZW4gdGhlIHZzb2NrIHRyYW5zcG9ydCBpcyAKPj4gYXNz
-aWduZWQuIFRoaXMgd2F5Cj4+IGNhbiBkaXN0aW5ndWlzaCBiZXR3ZWVuIGRpZmZlcmVudCB1c2Ug
-Y2FzZXMsIHN1Y2ggYXMgbmVzdGVkIFZNcyAvIGxvY2FsCj4+IGNvbW11bmljYXRpb24gYW5kIHNp
-YmxpbmcgVk1zLgo+Pgo+PiBUaGUgZmxhZ3MgZmllbGQgY2FuIGJlIHNldCBpbiB0aGUgdXNlciBz
-cGFjZSBhcHBsaWNhdGlvbiBjb25uZWN0IAo+PiBsb2dpYy4gT24gdGhlCj4+IGxpc3RlbiBwYXRo
-LCB0aGUgZmllbGQgY2FuIGJlIHNldCBpbiB0aGUga2VybmVsIHNwYWNlIGxvZ2ljLgo+Pgo+Cj4g
-SSByZXZpZXdlZCBhbGwgdGhlIHBhdGNoZXMgYW5kIHRoZXkgYXJlIGluIGEgZ29vZCBzaGFwZSEK
-CkhpIFN0ZWZhbm8sCgpUaGFua3MgZm9yIHRoZSBvdmVyYWxsIHJldmlldyBhbmQgZm9yIHRoZSBy
-ZWNvbmZpcm1hdGlvbiBvZiB0aGUgUmIgZm9yIAp0aGUgdnNvY2sgYWRkcmVzcyBkYXRhIHN0cnVj
-dHVyZSBjaGFuZ2VzLgoKPgo+IE1heWJlIHRoZSBsYXN0IHRoaW5nIHRvIGFkZCBpcyBhIGZsYWdz
-IGNoZWNrIGluIHRoZQo+IHZzb2NrX2FkZHJfdmFsaWRhdGUoKSwgdG8gYXZvaWQgdGhhdCBmbGFn
-cyB0aGF0IHdlIGRvbid0IGtub3cgaG93IHRvCj4gaGFuZGxlIGFyZSBzcGVjaWZpZWQuCgpJIGNh
-biBhZGQgdGhpcyB2YWxpZGF0aW9uIGFzIGEgbmV3IHBhdGNoIGluIHRoZSBzZXJpZXMsIG5leHQg
-cmV2aXNpb24uCgpUaGFua3MsCkFuZHJhCgo+Cj4gRm9yIGV4YW1wbGUgaWYgaW4gdGhlIGZ1dHVy
-ZSB3ZSBhZGQgbmV3IGZsYWdzIHRoYXQgdGhpcyB2ZXJzaW9uIG9mIHRoZQo+IGtlcm5lbCBpcyBu
-b3QgYWJsZSB0byBzYXRpc2Z5LCB3ZSBzaG91bGQgcmV0dXJuIGFuIGVycm9yIHRvIHRoZQo+IGFw
-cGxpY2F0aW9uLgo+Cj4gSSBtZWFuIHNvbWV0aGluZyBsaWtlIHRoaXM6Cj4KPiDCoMKgwqAgZGlm
-ZiAtLWdpdCBhL25ldC92bXdfdnNvY2svdnNvY2tfYWRkci5jIGIvbmV0L3Ztd192c29jay92c29j
-a19hZGRyLmMKPiDCoMKgwqAgaW5kZXggOTA5ZGUyNmNiMGU3Li43M2JiMWQyZmE1MjYgMTAwNjQ0
-Cj4gwqDCoMKgIC0tLSBhL25ldC92bXdfdnNvY2svdnNvY2tfYWRkci5jCj4gwqDCoMKgICsrKyBi
-L25ldC92bXdfdnNvY2svdnNvY2tfYWRkci5jCj4gwqDCoMKgIEBAIC0yMiw2ICsyMiw4IEBAIEVY
-UE9SVF9TWU1CT0xfR1BMKHZzb2NrX2FkZHJfaW5pdCk7Cj4KPiDCoMKgwqDCoCBpbnQgdnNvY2tf
-YWRkcl92YWxpZGF0ZShjb25zdCBzdHJ1Y3Qgc29ja2FkZHJfdm0gKmFkZHIpCj4gwqDCoMKgwqAg
-ewo+IMKgwqDCoCArwqDCoMKgwqDCoMKgIHVuc2lnbmVkIHNob3J0IHN2bV92YWxpZF9mbGFncyA9
-IFZNQUREUl9GTEFHX1RPX0hPU1Q7Cj4gwqDCoMKgICsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IGlmICghYWRkcikKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1
-cm4gLUVGQVVMVDsKPgo+IMKgwqDCoCBAQCAtMzEsNiArMzMsOSBAQCBpbnQgdnNvY2tfYWRkcl92
-YWxpZGF0ZShjb25zdCBzdHJ1Y3Qgc29ja2FkZHJfdm0gCj4gKmFkZHIpCj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCBpZiAoYWRkci0+c3ZtX3plcm9bMF0gIT0gMCkKPiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVJTlZBTDsKPgo+IMKgwqDCoCArwqDCoMKg
-wqDCoMKgIGlmIChhZGRyLT5zdm1fZmxhZ3MgJiB+c3ZtX3ZhbGlkX2ZsYWdzKQo+IMKgwqDCoCAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVJTlZBTDsKPiDCoMKgwqAgKwo+
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIDA7Cj4gwqDCoMKgwqAgfQo+IMKgwqDCoMKg
-IEVYUE9SVF9TWU1CT0xfR1BMKHZzb2NrX2FkZHJfdmFsaWRhdGUpOwo+Cj4KPiBUaGFua3MsCj4g
-U3RlZmFubwo+Cj4+IFRoYW5rIHlvdS4KPj4KPj4gQW5kcmEKPj4KPj4gLS0tCj4+Cj4+IFBhdGNo
-IFNlcmllcyBDaGFuZ2Vsb2cKPj4KPj4gVGhlIHBhdGNoIHNlcmllcyBpcyBidWlsdCBvbiB0b3Ag
-b2YgdjUuMTAtcmM3Lgo+Pgo+PiBHaXRIdWIgcmVwbyBicmFuY2ggZm9yIHRoZSBsYXRlc3QgdmVy
-c2lvbiBvZiB0aGUgcGF0Y2ggc2VyaWVzOgo+Pgo+PiAqIGh0dHBzOi8vZ2l0aHViLmNvbS9hbmRy
-YXBycy9saW51eC90cmVlL3Zzb2NrLWZsYWctc2libGluZy1jb21tLXYzCj4+Cj4+IHYyIC0+IHYz
-Cj4+Cj4+ICogUmViYXNlIG9uIHRvcCBvZiB2NS4xMC1yYzcuCj4+ICogQWRkICJzdm1fZmxhZ3Mi
-IGFzIGEgbmV3IGZpZWxkLCBub3QgcmV1c2luZyAic3ZtX3Jlc2VydmVkMSIuCj4+ICogVXBkYXRl
-IGNvbW1lbnRzIHRvIG1lbnRpb24gd2hlbiB0aGUgIlZNQUREUl9GTEFHX1RPX0hPU1QiIGZsYWcg
-aXMgCj4+IHNldCBpbiB0aGUKPj4gwqBjb25uZWN0IGFuZCBsaXN0ZW4gcGF0aHMuCj4+ICogVXBk
-YXRlIGJpdHdpc2UgY2hlY2sgbG9naWMgdG8gbm90IGNvbXBhcmUgcmVzdWx0IHRvIHRoZSBmbGFn
-IHZhbHVlLgo+PiAqIHYyOiAKPj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8yMDIwMTIw
-NDE3MDIzNS44NDM4Ny0xLWFuZHJhcHJzQGFtYXpvbi5jb20vCj4+Cj4+IHYxIC0+IHYyCj4+Cj4+
-ICogVXBkYXRlIHRoZSB2c29jayBmbGFnIG5hbWluZyB0byAiVk1BRERSX0ZMQUdfVE9fSE9TVCIu
-Cj4+ICogVXNlIGJpdHdpc2Ugb3BlcmF0b3JzIHRvIHNldHVwIGFuZCBjaGVjayB0aGUgdnNvY2sg
-ZmxhZy4KPj4gKiBTZXQgdGhlIHZzb2NrIGZsYWcgb24gdGhlIHJlY2VpdmUgcGF0aCBpbiB0aGUg
-dnNvY2sgdHJhbnNwb3J0IAo+PiBhc3NpZ25tZW50Cj4+IMKgbG9naWMuCj4+ICogTWVyZ2UgdGhl
-IGNoZWNrcyBmb3IgdGhlIGcyaCB0cmFuc3BvcnQgYXNzaWdubWVudCBpbiBvbmUgImlmIiBibG9j
-ay4KPj4gKiB2MTogCj4+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMDEyMDExNTI1
-MDUuMTk0NDUtMS1hbmRyYXByc0BhbWF6b24uY29tLwo+Pgo+PiAtLS0KPj4KPj4gQW5kcmEgUGFy
-YXNjaGl2ICg0KToKPj4gwqB2bV9zb2NrZXRzOiBBZGQgZmxhZ3MgZmllbGQgaW4gdGhlIHZzb2Nr
-IGFkZHJlc3MgZGF0YSBzdHJ1Y3R1cmUKPj4gwqB2bV9zb2NrZXRzOiBBZGQgVk1BRERSX0ZMQUdf
-VE9fSE9TVCB2c29jayBmbGFnCj4+IMKgYWZfdnNvY2s6IFNldCBWTUFERFJfRkxBR19UT19IT1NU
-IGZsYWcgb24gdGhlIHJlY2VpdmUgcGF0aAo+PiDCoGFmX3Zzb2NrOiBBc3NpZ24gdGhlIHZzb2Nr
-IHRyYW5zcG9ydCBjb25zaWRlcmluZyB0aGUgdnNvY2sgYWRkcmVzcwo+PiDCoMKgIGZsYWdzCj4+
-Cj4+IGluY2x1ZGUvdWFwaS9saW51eC92bV9zb2NrZXRzLmggfCAyNSArKysrKysrKysrKysrKysr
-KysrKysrKystCj4+IG5ldC92bXdfdnNvY2svYWZfdnNvY2suY8KgwqDCoMKgwqDCoMKgIHwgMjEg
-KysrKysrKysrKysrKysrKysrKy0tCj4+IDIgZmlsZXMgY2hhbmdlZCwgNDMgaW5zZXJ0aW9ucygr
-KSwgMyBkZWxldGlvbnMoLSkKPj4KPj4gLS0gCj4+IDIuMjAuMSAoQXBwbGUgR2l0LTExNykKPj4K
-Pj4KPj4KPj4KPj4gQW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9tYW5pYSkgUy5SLkwuIHJl
-Z2lzdGVyZWQgb2ZmaWNlOiAyN0EgU2YuIAo+PiBMYXphciBTdHJlZXQsIFVCQzUsIGZsb29yIDIs
-IElhc2ksIElhc2kgQ291bnR5LCA3MDAwNDUsIFJvbWFuaWEuIAo+PiBSZWdpc3RlcmVkIGluIFJv
-bWFuaWEuIFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIyLzI2MjEvMjAwNS4KPj4KPgoKCgoKQW1hem9u
-IERldmVsb3BtZW50IENlbnRlciAoUm9tYW5pYSkgUy5SLkwuIHJlZ2lzdGVyZWQgb2ZmaWNlOiAy
-N0EgU2YuIExhemFyIFN0cmVldCwgVUJDNSwgZmxvb3IgMiwgSWFzaSwgSWFzaSBDb3VudHksIDcw
-MDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJlZCBpbiBSb21hbmlhLiBSZWdpc3RyYXRpb24gbnVtYmVy
-IEoyMi8yNjIxLzIwMDUuCg==
+On Fri, Dec 11, 2020 at 05:49:15PM +0100, Peter Zijlstra wrote:
+> Do we want to capture all that gunk in something like
+> elf_reloc_to_insn(reloc, insn) instead of duplicating the magic?
+
+Yup, here's an actual patch
+
+From: Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH] objtool: Support Clang non-section symbols in static call generation
+
+The Clang assembler likes to strip section symbols, which means you
+can't reference some text code by its section.  This confuses objtool
+greatly, causing it to seg fault.
+
+The fix is similar to what was done before, for ORC reloc generation:
+
+  e81e07244325 ("objtool: Support Clang non-section symbols in ORC generation")
+
+Factor out that code into a common helper and use it for static call
+reloc generation as well.
+
+Reported-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ tools/objtool/check.c   | 11 +++++++++--
+ tools/objtool/elf.c     | 26 ++++++++++++++++++++++++++
+ tools/objtool/elf.h     |  2 ++
+ tools/objtool/orc_gen.c | 29 +++++------------------------
+ 4 files changed, 42 insertions(+), 26 deletions(-)
+
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index c6ab44543c92..5f8d3eed78a1 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -467,13 +467,20 @@ static int create_static_call_sections(struct objtool_file *file)
+ 
+ 		/* populate reloc for 'addr' */
+ 		reloc = malloc(sizeof(*reloc));
++
+ 		if (!reloc) {
+ 			perror("malloc");
+ 			return -1;
+ 		}
+ 		memset(reloc, 0, sizeof(*reloc));
+-		reloc->sym = insn->sec->sym;
+-		reloc->addend = insn->offset;
++
++		insn_to_reloc_sym_addend(insn->sec, insn->offset, reloc);
++		if (!reloc->sym) {
++			WARN_FUNC("static call tramp: missing containing symbol",
++				  insn->sec, insn->offset);
++			return -1;
++		}
++
+ 		reloc->type = R_X86_64_PC32;
+ 		reloc->offset = idx * sizeof(struct static_call_site);
+ 		reloc->sec = reloc_sec;
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index 4e1d7460574b..be89c741ba9a 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -262,6 +262,32 @@ struct reloc *find_reloc_by_dest(const struct elf *elf, struct section *sec, uns
+ 	return find_reloc_by_dest_range(elf, sec, offset, 1);
+ }
+ 
++void insn_to_reloc_sym_addend(struct section *sec, unsigned long offset,
++			      struct reloc *reloc)
++{
++	if (sec->sym) {
++		reloc->sym = sec->sym;
++		reloc->addend = offset;
++		return;
++	}
++
++	/*
++	 * The Clang assembler strips section symbols, so we have to reference
++	 * the function symbol instead:
++	 */
++	reloc->sym = find_symbol_containing(sec, offset);
++	if (!reloc->sym) {
++		/*
++		 * Hack alert.  This happens when we need to reference the NOP
++		 * pad insn immediately after the function.
++		 */
++		reloc->sym = find_symbol_containing(sec, offset - 1);
++	}
++
++	if (reloc->sym)
++		reloc->addend = offset - reloc->sym->offset;
++}
++
+ static int read_sections(struct elf *elf)
+ {
+ 	Elf_Scn *s = NULL;
+diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
+index 807f8c670097..e6890cc70a25 100644
+--- a/tools/objtool/elf.h
++++ b/tools/objtool/elf.h
+@@ -140,6 +140,8 @@ struct reloc *find_reloc_by_dest(const struct elf *elf, struct section *sec, uns
+ struct reloc *find_reloc_by_dest_range(const struct elf *elf, struct section *sec,
+ 				     unsigned long offset, unsigned int len);
+ struct symbol *find_func_containing(struct section *sec, unsigned long offset);
++void insn_to_reloc_sym_addend(struct section *sec, unsigned long offset,
++			      struct reloc *reloc);
+ int elf_rebuild_reloc_section(struct elf *elf, struct section *sec);
+ 
+ #define for_each_sec(file, sec)						\
+diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
+index 235663b96adc..9ce68b385a1b 100644
+--- a/tools/objtool/orc_gen.c
++++ b/tools/objtool/orc_gen.c
+@@ -105,30 +105,11 @@ static int create_orc_entry(struct elf *elf, struct section *u_sec, struct secti
+ 	}
+ 	memset(reloc, 0, sizeof(*reloc));
+ 
+-	if (insn_sec->sym) {
+-		reloc->sym = insn_sec->sym;
+-		reloc->addend = insn_off;
+-	} else {
+-		/*
+-		 * The Clang assembler doesn't produce section symbols, so we
+-		 * have to reference the function symbol instead:
+-		 */
+-		reloc->sym = find_symbol_containing(insn_sec, insn_off);
+-		if (!reloc->sym) {
+-			/*
+-			 * Hack alert.  This happens when we need to reference
+-			 * the NOP pad insn immediately after the function.
+-			 */
+-			reloc->sym = find_symbol_containing(insn_sec,
+-							   insn_off - 1);
+-		}
+-		if (!reloc->sym) {
+-			WARN("missing symbol for insn at offset 0x%lx\n",
+-			     insn_off);
+-			return -1;
+-		}
+-
+-		reloc->addend = insn_off - reloc->sym->offset;
++	insn_to_reloc_sym_addend(insn_sec, insn_off, reloc);
++	if (!reloc->sym) {
++		WARN("missing symbol for insn at offset 0x%lx",
++		     insn_off);
++		return -1;
+ 	}
+ 
+ 	reloc->type = R_X86_64_PC32;
+-- 
+2.25.4
 
