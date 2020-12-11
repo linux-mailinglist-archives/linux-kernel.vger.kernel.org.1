@@ -2,131 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 103762D7320
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A78F62D7328
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437501AbgLKJxG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Dec 2020 04:53:06 -0500
-Received: from mga06.intel.com ([134.134.136.31]:34410 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394039AbgLKJw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 04:52:56 -0500
-IronPort-SDR: 44vVqCSzTldSRf3mcw6itLM+sODRFCKzg0H1VqoYllviQshHf/NT89iCOWes5DlH6UyAIoRjdo
- Lu6fqZnnBWqg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="236002886"
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="236002886"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 01:52:14 -0800
-IronPort-SDR: PVl8OU8ROdRYNRcuuI1cwHnm0Pahwqqsf4O0coU6GZWsYYiN/hRTouvAiYE5Ccs0+xvEJJqBLa
- InJ3eAdxnHfQ==
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="440808660"
-Received: from dkreft-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.158.206])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 01:52:00 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        dri-devel@lists.freedesktop.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Russell King <linux@armlinux.org.uk>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Rob Herring <robh@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>, Helge Deller <deller@gmx.de>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-pci@vger.kernel.org, xen-devel@lists.xenproject.org,
-        intel-gfx@lists.freedesktop.org,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Allen Hubbe <allenbh@gmail.com>, Will Deacon <will@kernel.org>,
-        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        linux-gpio@vger.kernel.org,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Juergen Gross <jgross@suse.com>,
-        David Airlie <airlied@linux.ie>, linux-parisc@vger.kernel.org,
-        netdev@vger.kernel.org, Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>, Jon Mason <jdmason@kudzu.us>,
-        linux-ntb@googlegroups.com, Saeed Mahameed <saeedm@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [Intel-gfx] [patch 13/30] drm/i915/lpe_audio: Remove pointless irq_to_desc() usage
-In-Reply-To: <X9J7h+myHaraeoKH@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20201210192536.118432146@linutronix.de> <20201210194043.862572239@linutronix.de> <X9J7h+myHaraeoKH@intel.com>
-Date:   Fri, 11 Dec 2020 11:51:57 +0200
-Message-ID: <87zh2k7jr6.fsf@intel.com>
+        id S2405669AbgLKJyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 04:54:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404866AbgLKJxy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 04:53:54 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C467CC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 01:53:13 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1knf6o-00012u-QY; Fri, 11 Dec 2020 10:53:06 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1knf6n-0000Xa-9i; Fri, 11 Dec 2020 10:53:05 +0100
+Date:   Fri, 11 Dec 2020 10:53:05 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
+        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
+        sean@mess.org, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] pwm: bcm2835: Support apply function for atomic
+ configuration
+Message-ID: <20201211095305.vsin3mkrytylqm47@pengutronix.de>
+References: <1607464905-16630-1-git-send-email-LinoSanfilippo@gmx.de>
+ <20201210114330.6pgtome3aq3hj55t@pengutronix.de>
+ <trinity-8db15ca3-e42e-497d-8718-b4928fa76a3c-1607678915350@3c-app-gmx-bs43>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yawg4bsslfkpxhbx"
+Content-Disposition: inline
+In-Reply-To: <trinity-8db15ca3-e42e-497d-8718-b4928fa76a3c-1607678915350@3c-app-gmx-bs43>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020, Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
-> On Thu, Dec 10, 2020 at 08:25:49PM +0100, Thomas Gleixner wrote:
->> Nothing uses the result and nothing should ever use it in driver code.
->> 
->> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Jani Nikula <jani.nikula@linux.intel.com>
->> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
->> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
->> Cc: David Airlie <airlied@linux.ie>
->> Cc: Daniel Vetter <daniel@ffwll.ch>
->> Cc: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
->> Cc: Chris Wilson <chris@chris-wilson.co.uk>
->> Cc: Wambui Karuga <wambui.karugax@gmail.com>
->> Cc: intel-gfx@lists.freedesktop.org
->> Cc: dri-devel@lists.freedesktop.org
->
-> Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
-Thomas, I presume you want to merge this series as a whole.
+--yawg4bsslfkpxhbx
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Jani Nikula <jani.nikula@intel.com>
+On Fri, Dec 11, 2020 at 10:28:35AM +0100, Lino Sanfilippo wrote:
+> Hi Uwe,
+>=20
+> > Gesendet: Donnerstag, 10. Dezember 2020 um 12:43 Uhr
+> > Von: "Uwe Kleine-K=F6nig" <u.kleine-koenig@pengutronix.de>
+> > An: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>
+> > Cc: thierry.reding@gmail.com, lee.jones@linaro.org, nsaenzjulienne@suse=
+=2Ede, f.fainelli@gmail.com, rjui@broadcom.com, sean@mess.org, sbranden@bro=
+adcom.com, bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org=
+, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.or=
+g, linux-kernel@vger.kernel.org
+> > Betreff: Re: [PATCH v3] pwm: bcm2835: Support apply function for atomic=
+ configuration
+>=20
+> >=20
+> > Side note: I'm a bit surprised about the output of
+> >=20
+> > 	b4 diff 1607464905-16630-1-git-send-email-LinoSanfilippo@gmx.de
+> >=20
+> > This is probably due to the fact that compared to v3 you also rebased.
+> > Still the diff is quite big.
+>=20
+> You are right, I made a rebase before I created the last patch, sorry for=
+ the confusion this caused.
+> Anyway, thanks for the review(s)!
 
-for merging via whichever tree makes most sense. Please let us know if
-you want us to pick this up via drm-intel instead.
+You did everything good enough. (To further improve, you could use
+git-format-patch's --base option and mention a rebase in the series'
+changelog; note this is quite high level critic.)
 
->
->> ---
->>  drivers/gpu/drm/i915/display/intel_lpe_audio.c |    4 ----
->>  1 file changed, 4 deletions(-)
->> 
->> --- a/drivers/gpu/drm/i915/display/intel_lpe_audio.c
->> +++ b/drivers/gpu/drm/i915/display/intel_lpe_audio.c
->> @@ -297,13 +297,9 @@ int intel_lpe_audio_init(struct drm_i915
->>   */
->>  void intel_lpe_audio_teardown(struct drm_i915_private *dev_priv)
->>  {
->> -	struct irq_desc *desc;
->> -
->>  	if (!HAS_LPE_AUDIO(dev_priv))
->>  		return;
->>  
->> -	desc = irq_to_desc(dev_priv->lpe_audio.irq);
->> -
->>  	lpe_audio_platdev_destroy(dev_priv);
->>  
->>  	irq_free_desc(dev_priv->lpe_audio.irq);
->> 
->> _______________________________________________
->> Intel-gfx mailing list
->> Intel-gfx@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+This was more me wondering the output is not easier to use. (And note I
+also showed the wrong commandline, but that doesn't resolve the issue.
+The right command is:
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+	b4 diff 1607546905-20549-1-git-send-email-LinoSanfilippo@gmx.de
+
+=2E)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--yawg4bsslfkpxhbx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/TQX0ACgkQwfwUeK3K
+7Aka/Af8CjQ2WfsAEJfbFBaqoTFA4yvsqB8cByYbEadvOmSj1RJM8akVF57xwDeo
+IszM8P8uATRyClekzicdewDrd91KmqCfweRjawMY6NiSU1h0ckrP00+PPAkTC9H5
+WhV2BtRbQxqgbX4s+BQVDeK+djYvn16QW78Ulm4YGz72N8+G+ISPGqEMhpaa05DT
+LZywtiuhVEf3DhmD+9xgvSvQ7uZ0GAm2sibmZid5Img5/G1uw51jmjcThsOyNneu
+15U2VRfcNN6GmX2HYMVYgZXjcXSLqVcXvYf0UotCjMdEPGCc/7lV/dT6//BE1QXR
+kBcpBNLdunxUM5hcfotGYvstbKWsGA==
+=rHZV
+-----END PGP SIGNATURE-----
+
+--yawg4bsslfkpxhbx--
