@@ -2,91 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C652D6CBD
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0992D6CBE
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387702AbgLKAsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 19:48:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394608AbgLKArT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 19:47:19 -0500
-Date:   Thu, 10 Dec 2020 16:46:38 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607647598;
-        bh=zSD6AlytTTCGnjh6kob/TyxvUexBv5DIkhcmJdWVlPk=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Bo5GphLDYM4NpaGDx8HbMpgM+QN3V3kuWMj15JShYWieQvFFbPwXo9sVN94gc1TDx
-         c3E+yy17kuhXs6BH4/X1q+NGq1ksx1c2TY/i8hTehHkTbsUSjsfHUQcB/YggDxMYV7
-         SM8zQBAdl33vtMs4bQRYRJZ7tXwdJ+Bjn7LRHtrqLM0b5zombOoXnsxvRqrnXVVt9i
-         0ifD3pRPmb+6kzYWsOnAgdGyT04m8L3Knxdydv+AEnVvvimrKtIQArDR0ZkF8biJdF
-         cpjapVy5mCP8RGEQzK1wFqSge/0aAeNINBQ6quBXZ/s9kgvxznqz6xQkKrEVq4WB4F
-         P6gEmF6XVq8Rg==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: NOHZ tick-stop error: Non-RCU local softirq work is pending
-Message-ID: <20201211004638.GB2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201118175218.GA16039@paulmck-ThinkPad-P72>
- <20201210145637.GA164661@lothringen>
- <20201210211756.GZ2657@paulmck-ThinkPad-P72>
- <20201211001515.GA580714@lothringen>
+        id S2389405AbgLKAs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 19:48:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389200AbgLKAsc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 19:48:32 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039DAC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:47:52 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id w16so5939518pga.9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:47:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qtlZ0DEPLlgnakZuegRLLP1pu6eYE/7+9AbraWd6Nl4=;
+        b=DV0aRUCL7xoEuNHuX09WvmYZV82z8THJlzxFil5QBevlOpCiike574SS8SEzmsjdii
+         C/YvxmeCmQ6m4TNLQVJp6E1gCWFXNvrHhuE5GjK37WPZESjVUbqj1YdDtt7dGmyGM7H6
+         +eqxHo29ONRuSxlM6byLmlS2rCWIRjYO9b8hE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qtlZ0DEPLlgnakZuegRLLP1pu6eYE/7+9AbraWd6Nl4=;
+        b=G120XTOvrdRvtw/JCj5gj1/yuoDLJZrbfSIywPMjMd6FbPp1wnho8uxl8IJ4HCbzaD
+         z7HVxxytGNle1OqinxTT83mXcO7QXG+GR1EgF2odddD4/7ukyW7CpWgvXWFcg5ki4z/2
+         faN6pstTN7/4FbRO7062APtjuPjtkFckmMICXZE5wnrBhsGtiHOO9o4TMftn/wW1CwAw
+         nFHFJ7zsn/QOOPGz9WkWyihy5cGnTyGt0myIdWvPOn0spQJ2cK4ExO79FlholkgkyVok
+         aXe7en6gJ+ycvga8xy65X12dcg/YmB1f+ajO2vNH2j2cViiXa+Eu/s051tFMJuDdggKK
+         OSHQ==
+X-Gm-Message-State: AOAM532R/65MYn3q7gWKyUL1lP+AW/5sEni9OYnPhSmxFjGn0U7EA40t
+        ycKUhWmNUS1b9m7JNc5hPEzhgQ==
+X-Google-Smtp-Source: ABdhPJwy06NJ82y1R0JkNr4/7Xd2sMhx6dprma8t7JLUDcd27jZCARpXlKy63Wmpq5GpneprnuZY9g==
+X-Received: by 2002:a65:5547:: with SMTP id t7mr9104969pgr.50.1607647671565;
+        Thu, 10 Dec 2020 16:47:51 -0800 (PST)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id w2sm7882452pfj.110.2020.12.10.16.47.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 16:47:51 -0800 (PST)
+Date:   Thu, 10 Dec 2020 16:47:49 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH v4 3/5] usb: dwc3: qcom: Configure wakeup interrupts and
+ set genpd active wakeup flag
+Message-ID: <X9LBtQd60Aa+bfI1@google.com>
+References: <1603831083-2025-1-git-send-email-sanm@codeaurora.org>
+ <1603831083-2025-4-git-send-email-sanm@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201211001515.GA580714@lothringen>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1603831083-2025-4-git-send-email-sanm@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 01:15:15AM +0100, Frederic Weisbecker wrote:
-> On Thu, Dec 10, 2020 at 01:17:56PM -0800, Paul E. McKenney wrote:
-> > And please see attached.  Lots of output, in fact, enough that it
-> > was still dumping when the second instance happened.
+On Wed, Oct 28, 2020 at 02:08:01AM +0530, Sandeep Maheswaram wrote:
+> Configure interrupts based on hs_phy_mode to avoid triggering of
+> interrupts during system suspend and suspends successfully.
+> Set genpd active wakeup flag for usb gdsc if wakeup capable devices
+> are connected so that wake up happens without reenumeration.
+> Add helper functions to enable,disable wake irqs.
 > 
-> Thanks!
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> ---
+>  drivers/usb/dwc3/dwc3-qcom.c | 82 ++++++++++++++++++++++++++++----------------
+>  1 file changed, 52 insertions(+), 30 deletions(-)
 > 
-> So the issue is that ksoftirqd is parked on CPU down with vectors
-> still pending. Either:
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index c703d55..c93f7bb 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -17,9 +17,11 @@
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/phy/phy.h>
+> +#include <linux/pm_domain.h>
+>  #include <linux/usb/of.h>
+>  #include <linux/reset.h>
+>  #include <linux/iopoll.h>
+> +#include <linux/usb/hcd.h>
+>  
+>  #include "core.h"
+>  
+> @@ -291,60 +293,75 @@ static void dwc3_qcom_interconnect_exit(struct dwc3_qcom *qcom)
+>  	icc_put(qcom->icc_path_apps);
+>  }
+>  
+> -static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
+> +static void dwc3_qcom_enable_wakeup_irq(int wake_irq)
+
+super-nit: from the name of the function it's evident that this is a
+wakeup irq, you could omit the 'wake_' prefix.
+
+>  {
+> -	if (qcom->hs_phy_irq) {
+> -		disable_irq_wake(qcom->hs_phy_irq);
+> -		disable_irq_nosync(qcom->hs_phy_irq);
+> +	if (wake_irq) {
+> +		enable_irq(wake_irq);
+> +		enable_irq_wake(wake_irq);
+>  	}
+
+nit: the following would be a more common structure:
+
+	if (!wake_irq)
+		return;
+
+	enable_irq(wake_irq);
+	enable_irq_wake(wake_irq);
+
+> +}
+>  
+> -	if (qcom->dp_hs_phy_irq) {
+> -		disable_irq_wake(qcom->dp_hs_phy_irq);
+> -		disable_irq_nosync(qcom->dp_hs_phy_irq);
+> +static void dwc3_qcom_disable_wakeup_irq(int wake_irq)
+
+same as above
+
+> +{
+> +	if (wake_irq) {
+> +		disable_irq_wake(wake_irq);
+> +		disable_irq_nosync(wake_irq);
+>  	}
+
+same as above
+
+> +}
+>  
+> -	if (qcom->dm_hs_phy_irq) {
+> -		disable_irq_wake(qcom->dm_hs_phy_irq);
+> -		disable_irq_nosync(qcom->dm_hs_phy_irq);
+> -	}
+> +static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
+> +{
+> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
+> +
+> +	dwc3_qcom_disable_wakeup_irq(qcom->hs_phy_irq);
+>  
+> -	if (qcom->ss_phy_irq) {
+> -		disable_irq_wake(qcom->ss_phy_irq);
+> -		disable_irq_nosync(qcom->ss_phy_irq);
+> +	if (dwc->hs_phy_mode & PHY_MODE_USB_HOST_LS)
+> +		dwc3_qcom_disable_wakeup_irq(qcom->dp_hs_phy_irq);
+> +	else if (dwc->hs_phy_mode & PHY_MODE_USB_HOST_HS)
+> +		dwc3_qcom_disable_wakeup_irq(qcom->dm_hs_phy_irq);
+> +	else {
+> +		dwc3_qcom_disable_wakeup_irq(qcom->dp_hs_phy_irq);
+> +		dwc3_qcom_disable_wakeup_irq(qcom->dm_hs_phy_irq);
+>  	}
+
+The following would be clearer IMO:
+
+	if (dwc->hs_phy_mode & (PHY_MODE_USB_HOST_LS | PHY_MODE_USB_HOST_SS))
+		dwc3_qcom_disable_wakeup_irq(qcom->dp_hs_phy_irq);
+    	if (dwc->hs_phy_mode & (PHY_MODE_USB_HOST_HS | PHY_MODE_USB_HOST_SS))
+		dwc3_qcom_disable_wakeup_irq(qcom->dm_hs_phy_irq);
+
+> +
+> +	dwc3_qcom_disable_wakeup_irq(qcom->ss_phy_irq);
+
+Why isn't this conditional on 'dwc->hs_phy_mode & PHY_MODE_USB_HOST_SS'?
+
+>  }
+>  
+>  static void dwc3_qcom_enable_interrupts(struct dwc3_qcom *qcom)
+>  {
+> -	if (qcom->hs_phy_irq) {
+> -		enable_irq(qcom->hs_phy_irq);
+> -		enable_irq_wake(qcom->hs_phy_irq);
+> -	}
+> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
+>  
+> -	if (qcom->dp_hs_phy_irq) {
+> -		enable_irq(qcom->dp_hs_phy_irq);
+> -		enable_irq_wake(qcom->dp_hs_phy_irq);
+> -	}
+> +	dwc3_qcom_enable_wakeup_irq(qcom->hs_phy_irq);
+>  
+> -	if (qcom->dm_hs_phy_irq) {
+> -		enable_irq(qcom->dm_hs_phy_irq);
+> -		enable_irq_wake(qcom->dm_hs_phy_irq);
+> +	if (dwc->hs_phy_mode & PHY_MODE_USB_HOST_LS)
+> +		dwc3_qcom_enable_wakeup_irq(qcom->dp_hs_phy_irq);
+> +	else if (dwc->hs_phy_mode & PHY_MODE_USB_HOST_HS)
+> +		dwc3_qcom_enable_wakeup_irq(qcom->dm_hs_phy_irq);
+> +	else {
+> +		dwc3_qcom_enable_wakeup_irq(qcom->dp_hs_phy_irq);
+> +		dwc3_qcom_enable_wakeup_irq(qcom->dm_hs_phy_irq);
+>  	}
+>  
+> -	if (qcom->ss_phy_irq) {
+> -		enable_irq(qcom->ss_phy_irq);
+> -		enable_irq_wake(qcom->ss_phy_irq);
+> -	}
+> +	dwc3_qcom_enable_wakeup_irq(qcom->ss_phy_irq);
+
+same comments as for dwc3_qcom_disable_interrupts()
+
+>  }
+>  
+>  static int dwc3_qcom_suspend(struct dwc3_qcom *qcom)
+>  {
+>  	u32 val;
+>  	int i, ret;
+> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
+> +	struct usb_hcd  *hcd;
+
+nit: remove one blank
+
+> +	struct generic_pm_domain *genpd = pd_to_genpd(qcom->dev->pm_domain);
+>  
+>  	if (qcom->is_suspended)
+>  		return 0;
+>  
+> +	if (dwc->xhci) {
+> +		hcd = platform_get_drvdata(dwc->xhci);
+> +		if (usb_wakeup_enabled_descendants(hcd->self.root_hub))
+> +			genpd->flags |= GENPD_FLAG_ACTIVE_WAKEUP;
+
+Shouldn't this only be done when wakeup is enabled?
+
+> +	}
+> +
+>  	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
+>  	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
+>  		dev_err(qcom->dev, "HS-PHY not in L2\n");
+> @@ -366,10 +383,15 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom)
+>  {
+>  	int ret;
+>  	int i;
+> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
+> +	struct generic_pm_domain *genpd = pd_to_genpd(qcom->dev->pm_domain);
+>  
+>  	if (!qcom->is_suspended)
+>  		return 0;
+>  
+> +	if (dwc->xhci)
+> +		genpd->flags &= ~GENPD_FLAG_ACTIVE_WAKEUP;
+
+Could also depend on wakeup being enabled, but less important.
+
+> +
+>  	dwc3_qcom_disable_interrupts(qcom);
+>  
+>  	for (i = 0; i < qcom->num_clocks; i++) {
+> @@ -764,7 +786,7 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto interconnect_exit;
+>  
+> -	device_init_wakeup(&pdev->dev, 1);
+> +	device_init_wakeup(&pdev->dev, of_property_read_bool(np, "wakeup-source"));
+>  	qcom->is_suspended = false;
+>  	pm_runtime_set_active(dev);
+>  	pm_runtime_enable(dev);
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
 > 
-> 1) Ksoftirqd has exited because it has too many to process and it has
->    exceeded the time limit, but then it parks, leaving the rest unhandled.
-> 
-> 2) Ksoftirqd has completed its work but something has raised a softirq
->    after it got parked.
-> 
-> Can you run the following (on top of the previous patch and boot options)
-> so that we see if (and what) it still triggers (in which case we should be in 2)  ).
-
-Thank you!  I have started it up.
-
-> diff --git a/kernel/softirq.c b/kernel/softirq.c
-> index 09229ad82209..7d558cb7a037 100644
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -650,7 +650,9 @@ static void run_ksoftirqd(unsigned int cpu)
->  		 * We can safely run softirq on inline stack, as we are not deep
->  		 * in the task stack here.
->  		 */
-> -		__do_softirq();
-> +		do {
-> +			__do_softirq();
-> +		} while (kthread_should_park() && local_softirq_pending());
->  		local_irq_enable();
->  		cond_resched();
->  		return;
-
-Huh.  I guess that self-propagating timers, RCU callbacks, and the
-like are non-problems because they cannot retrigger while interrupts
-are disabled?  But can these things reappear just after the
-local_irq_enable()?
-
-In the case of RCU, softirq would need to run on this CPU, which it won't,
-so we are good in that case.  (Any stranded callbacks will be requeued
-onto some other CPU later in the CPU-hotplug offline processing.)
-
-							Thanx, Paul
-
-> Thanks!
