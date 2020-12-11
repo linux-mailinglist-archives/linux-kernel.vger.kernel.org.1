@@ -2,124 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0D02D7C6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9295B2D7C7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:11:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394501AbgLKRHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732146AbgLKRHN (ORCPT
+        id S2394282AbgLKRJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:09:30 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2251 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391393AbgLKRJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:07:13 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB43C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:06:32 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id r7so9755187wrc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:06:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g8zX5fIH9uKJS0RZzLnoP4TzFB+P9VHxAQFkUoP/67o=;
-        b=QPdgAmqayhSJPmy887Ad16AJkqcIS/QoRc1rogbiRUibbD7IewVil7Fbq0GrqbKdsM
-         PfomXTQRE678qiS0L3z3u8hW33MVPEN5uwT0FR9Oo/je/6HVEuf/lh3VNMnfK7S62lEF
-         7xgRmfSXLJPEEDiHxDplLx8DDAtjH6LOds3+w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g8zX5fIH9uKJS0RZzLnoP4TzFB+P9VHxAQFkUoP/67o=;
-        b=FACixEtFj8DWJqidyDOKxI5uVFMVJnr8XKUM3/H2v2qdV3eOn/2p3OcXiT0a+REXbn
-         KF4QFXhU4NELz+0o/ENdhOpB8tI+M6MfQlofPmxpZ+Kyc2oIOoQok3YptE5sF4Yco72J
-         G658Tea2049P8xeUTLj5KBLWzxG+tfWmhsDEccYSlKdHcEf0H20gEo5gULh/vEse8Ck/
-         697+l1z7Kq0BorczsI+cJl2CvQONMRBTeWGBgvBYaEJjO2QGZthrOFoQivyQ9b9mnQf9
-         zvLLOawD5NFlEhE7eYSrjcGQ9XZ8tShwC4p+EBQPRkOOrNkvoYoGQlMbtIF10uNUA4b4
-         n7mQ==
-X-Gm-Message-State: AOAM5332KQaEu3yEkF1/udVwY+PXe1BazyUYsZUcNm3AF1iao1nXHX2e
-        bF/SBzW/jCgOMgWMiRbKtKv/37mBpiIu6w==
-X-Google-Smtp-Source: ABdhPJyiv3j7K0H57fwiqhv5UkIV7W1Xa/63zhYkYCDfy2XnWY6xMQhBE6ef4VHZ7yxsWz1RrF49Sw==
-X-Received: by 2002:adf:81a2:: with SMTP id 31mr14851609wra.381.1607706391726;
-        Fri, 11 Dec 2020 09:06:31 -0800 (PST)
-Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id h98sm17797100wrh.69.2020.12.11.09.06.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 09:06:31 -0800 (PST)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Mateusz Gorski <mateusz.gorski@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH] ASoC: Intel: Skylake: skl-topology: Fix OOPs ib skl_tplg_complete
-Date:   Fri, 11 Dec 2020 18:06:29 +0100
-Message-Id: <20201211170629.871085-1-ribalda@chromium.org>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+        Fri, 11 Dec 2020 12:09:05 -0500
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Csxwm34HJz67MVt;
+        Sat, 12 Dec 2020 01:04:56 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 11 Dec 2020 18:08:22 +0100
+Received: from [10.47.11.239] (10.47.11.239) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 11 Dec
+ 2020 17:08:22 +0000
+Subject: Re: [PATCH 2/3] blk-mq: update arg in comment of blk_mq_map_queue
+To:     Minwoo Im <minwoo.im.dev@gmail.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jens Axboe <axboe@kernel.dk>
+References: <20201204152055.31605-1-minwoo.im.dev@gmail.com>
+ <20201204152055.31605-3-minwoo.im.dev@gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <263b184d-2ffc-5a85-0f44-42b29bc7c295@huawei.com>
+Date:   Fri, 11 Dec 2020 17:07:45 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201204152055.31605-3-minwoo.im.dev@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.11.239]
+X-ClientProxiedBy: lhreml722-chm.china.huawei.com (10.201.108.73) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If dobj->control is not initialized we end up in an OOPs during
-skl_tplg_complete:
+On 04/12/2020 15:20, Minwoo Im wrote:
+> Update mis-named argument description of blk_mq_map_queue().  This patch
+> also updates description that argument to software queue percpu context.
+> 
+> Signed-off-by: Minwoo Im<minwoo.im.dev@gmail.com>
 
-[   26.553358] BUG: kernel NULL pointer dereference, address:
-0000000000000078
-[   26.561151] #PF: supervisor read access in kernel mode
-[   26.566897] #PF: error_code(0x0000) - not-present page
-[   26.572642] PGD 0 P4D 0
-[   26.575479] Oops: 0000 [#1] PREEMPT SMP PTI
-[   26.580158] CPU: 2 PID: 2082 Comm: udevd Tainted: G         C
-5.4.81 #4
-[   26.588232] Hardware name: HP Soraka/Soraka, BIOS
-Google_Soraka.10431.106.0 12/03/2019
-[   26.597082] RIP: 0010:skl_tplg_complete+0x70/0x144 [snd_soc_skl]
+Reviewed-by: John Garry <john.garry@huawei.com>
 
-Fixes: 2d744ecf2b98 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHL")
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- sound/soc/intel/skylake/skl-topology.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 40bee10b0c65..0955cbb4e918 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3619,19 +3619,20 @@ static void skl_tplg_complete(struct snd_soc_component *component)
- 
- 	list_for_each_entry(dobj, &component->dobj_list, list) {
- 		struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
--		struct soc_enum *se =
--			(struct soc_enum *)kcontrol->private_value;
--		char **texts = dobj->control.dtexts;
-+		struct soc_enum *se;
-+		char **texts;
- 		char chan_text[4];
- 
--		if (dobj->type != SND_SOC_DOBJ_ENUM ||
--		    dobj->control.kcontrol->put !=
--		    skl_tplg_multi_config_set_dmic)
-+		if (dobj->type != SND_SOC_DOBJ_ENUM || !kcontrol ||
-+		    kcontrol->put != skl_tplg_multi_config_set_dmic)
- 			continue;
-+
-+		se = (struct soc_enum *)kcontrol->private_value;
-+		texts = dobj->control.dtexts;
- 		sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
- 
- 		for (i = 0; i < se->items; i++) {
--			struct snd_ctl_elem_value val;
-+			struct snd_ctl_elem_value val = {};
- 
- 			if (strstr(texts[i], chan_text)) {
- 				val.value.enumerated.item[0] = i;
--- 
-2.29.2.576.ga3fc446d84-goog
-
+> ---
+>   block/blk-mq.h | 2 +-
