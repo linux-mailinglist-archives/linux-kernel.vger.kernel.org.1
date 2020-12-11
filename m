@@ -2,128 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35992D77C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310392D77FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406191AbgLKOYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:24:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405703AbgLKOX5 (ORCPT
+        id S2406247AbgLKOdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:33:16 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:44700 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406261AbgLKOcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:23:57 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA425C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:23:16 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id m13so11048601ljo.11
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:23:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pa/fm99iryRnuTvK4YNJZzODKVc6xYBM6NTI2XpGVhs=;
-        b=lD6VhF+fvXgWE0Gnwlp9urtW35R2rCf3C0CtDbKE4hO/wPYTwWL4efibV8JQuyevcY
-         lAij6XqTCN9Tq4EOQr41flBjaXWZiRP1g1futK+174+dE1nCJaNbjlVj3mTDHsLGfCLG
-         3M2eEjCQulf7L+6vEB0NdyDlqYMD9QrxsRPb6LjcU3AGxBQJ09IVbgB9TfXkmvkCsFJK
-         aJwriADEJPehX4I7NvUTkbK+JvWYFUaU1aT2PLl7dETNER0LeOndcRHniBrB7NzP9Dnw
-         GdCrAAP7qVETAT6kAv2M+R2b+iSt32s1fInudcAVgQXFYn1TZHK9abyjDUd1mkVFtKGQ
-         Mjow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pa/fm99iryRnuTvK4YNJZzODKVc6xYBM6NTI2XpGVhs=;
-        b=Q/pju3zBzbJaH4yePfezQ5WaVtGgVyHGR2O99yMwlljNLE3XEOr9za61gk01EVJ6bX
-         9QN42rkyTPTOYIKXHfh7xJdcSwLzraUMlQGimqpqvqd28z0tvcrHo05vDOq9EfBtATv9
-         jNclnyfkPQzYl0TXBgZc6SsqOU9sbYgNjyEOVrs7pN/qhJoMVSvPENOldZ5k1Gf2gnd3
-         rkvcZQLFnl6hRVFvZROEfGWajA6kz6Q0IHDQJ72qqMQ8oj3Wumw8pWFR4BnqwB3Q3cEW
-         Xd5sEKmfOugVFTiAjIKr3gGoDMH5sMEqwbc8Y0LxJLXI0zQXg4k9k5YdjW4pfkJBOA6X
-         hg8Q==
-X-Gm-Message-State: AOAM5303Fi3O4P7S3DESQjSSSqEIZxUOpzal/ObTh4uo9z44Yu/wJiwD
-        uCi8HKsCp/agA1L2J/jdXrZBdeD1wR1YfpuMyFE=
-X-Google-Smtp-Source: ABdhPJwwL8LO3ZRdckr4onuGIoqembgDEjAuLbfvijPAlfmQ3CK/ku37eLNcaJHcJE05gUjaUDYarQ==
-X-Received: by 2002:a2e:94d:: with SMTP id 74mr4981137ljj.104.1607696595420;
-        Fri, 11 Dec 2020 06:23:15 -0800 (PST)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id v11sm251264ljg.128.2020.12.11.06.23.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 06:23:14 -0800 (PST)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH] usb: dwc3: drd: Avoid error when extcon is missing
-Date:   Fri, 11 Dec 2020 16:24:21 +0200
-Message-Id: <20201211142421.15389-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Fri, 11 Dec 2020 09:32:33 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BBEK3q4153543;
+        Fri, 11 Dec 2020 14:29:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=XwmNJXsce0biO7XLe+zGaIsjtrmRfK/vTz0mYn6nQBU=;
+ b=bR7yH4+1kTFS/uaRb9qwsHTyFm2EoNVmWnQB/6uOrO708u+eqNtBobFpmn1ttrRdH1ys
+ eWZmcv+9rBDGS0S9dxVH7WJEjVIq3kan/8A2J+2JEfl4cmi6SdTHDxhFZ9FOjgghK0i/
+ gSlqjyBs3FtwP3+ZAOMx//Xrh2s4GGZVNmZZvw8Dg7A8ucgqyFuZ1jZz6HYR0R/QX3KB
+ jq1go8jZfLC3JdZILS9AqGFwicAYPALMmwsEwRd+5bZO9goG03a6o19lTH5pgGTEdXEs
+ I4ECgSmCCiTYqeMDSavCaEpGT9QkWsYwEp7lVPsTzWiLDfHkK38lg3Q5ATAnYCJ8Q3TZ zQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 3581mratkd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Dec 2020 14:29:21 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BBEPIII069767;
+        Fri, 11 Dec 2020 14:29:20 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 358kstfcjw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Dec 2020 14:29:20 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BBETD7i006093;
+        Fri, 11 Dec 2020 14:29:13 GMT
+Received: from [10.39.222.144] (/10.39.222.144)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 11 Dec 2020 06:29:13 -0800
+Subject: Re: [patch 27/30] xen/events: Only force affinity mask for percpu
+ interrupts
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-pci@vger.kernel.org,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194045.250321315@linutronix.de>
+ <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com>
+ <2164a0ce-0e0d-c7dc-ac97-87c8f384ad82@suse.com>
+ <871rfwiknd.fsf@nanos.tec.linutronix.de>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <9806692f-24a3-4b6f-ae55-86bd66481271@oracle.com>
+Date:   Fri, 11 Dec 2020 09:29:09 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
+In-Reply-To: <871rfwiknd.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012110094
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012110093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If "port" node is missing in PHY controller node, dwc3_get_extcon()
-isn't able to find extcon device. This is perfectly fine in case when
-"usb-role-switch" or OTG is used, but next misleading error message is
-printed in that case, from of_graph_get_remote_node():
 
-    OF: graph: no port node found in /phy@1234abcd
+On 12/11/20 7:37 AM, Thomas Gleixner wrote:
+> On Fri, Dec 11 2020 at 13:10, Jürgen Groß wrote:
+>> On 11.12.20 00:20, boris.ostrovsky@oracle.com wrote:
+>>> On 12/10/20 2:26 PM, Thomas Gleixner wrote:
+>>>> All event channel setups bind the interrupt on CPU0 or the target CPU for
+>>>> percpu interrupts and overwrite the affinity mask with the corresponding
+>>>> cpumask. That does not make sense.
+>>>>
+>>>> The XEN implementation of irqchip::irq_set_affinity() already picks a
+>>>> single target CPU out of the affinity mask and the actual target is stored
+>>>> in the effective CPU mask, so destroying the user chosen affinity mask
+>>>> which might contain more than one CPU is wrong.
+>>>>
+>>>> Change the implementation so that the channel is bound to CPU0 at the XEN
+>>>> level and leave the affinity mask alone. At startup of the interrupt
+>>>> affinity will be assigned out of the affinity mask and the XEN binding will
+>>>> be updated.
+>>>
+>>> If that's the case then I wonder whether we need this call at all and instead bind at startup time.
+>> After some discussion with Thomas on IRC and xen-devel archaeology the
+>> result is: this will be needed especially for systems running on a
+>> single vcpu (e.g. small guests), as the .irq_set_affinity() callback
+>> won't be called in this case when starting the irq.
 
-Avoid printing that message by checking if port node exists in PHY node
-before calling of_graph_get_remote_node().
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
- drivers/usb/dwc3/drd.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+On UP are we not then going to end up with an empty affinity mask? Or are we guaranteed to have it set to 1 by interrupt generic code?
 
-diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
-index 3e1c1aacf002..eaf389d3f3c5 100644
---- a/drivers/usb/dwc3/drd.c
-+++ b/drivers/usb/dwc3/drd.c
-@@ -441,8 +441,8 @@ static int dwc3_drd_notifier(struct notifier_block *nb,
- static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
- {
- 	struct device *dev = dwc->dev;
--	struct device_node *np_phy, *np_conn;
--	struct extcon_dev *edev;
-+	struct device_node *np_phy;
-+	struct extcon_dev *edev = NULL;
- 	const char *name;
- 
- 	if (device_property_read_bool(dev, "extcon"))
-@@ -462,15 +462,22 @@ static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
- 		return edev;
- 	}
- 
-+	/*
-+	 * Try to get extcon device from USB PHY controller's "port" node.
-+	 * Check if it has the "port" node first, to avoid printing the error
-+	 * message from underlying code, as it's a valid case: extcon device
-+	 * (and "port" node) may be missing in case of "usb-role-switch" or OTG
-+	 * mode.
-+	 */
- 	np_phy = of_parse_phandle(dev->of_node, "phys", 0);
--	np_conn = of_graph_get_remote_node(np_phy, -1, -1);
-+	if (of_graph_is_present(np_phy)) {
-+		struct device_node *np_conn;
- 
--	if (np_conn)
--		edev = extcon_find_edev_by_node(np_conn);
--	else
--		edev = NULL;
--
--	of_node_put(np_conn);
-+		np_conn = of_graph_get_remote_node(np_phy, -1, -1);
-+		if (np_conn)
-+			edev = extcon_find_edev_by_node(np_conn);
-+		of_node_put(np_conn);
-+	}
- 	of_node_put(np_phy);
- 
- 	return edev;
--- 
-2.29.2
 
+This is actually why I brought this up in the first place --- a potential mismatch between the affinity mask and Xen-specific data (e.g. info->cpu and then protocol-specific data in event channel code). Even if they are re-synchronized later, at startup time (for SMP).
+
+
+I don't see anything that would cause a problem right now but I worry that this inconsistency may come up at some point.
+
+
+-boris
+
+
+> That's right, but not limited to ARM. The same problem exists on x86 UP.
+> So yes, the call makes sense, but the changelog is not really useful.
+> Let me add a comment to this.
+>
+> Thanks,
+>
+>         tglx
+>
