@@ -2,129 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32E82D7D6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAB62D7D72
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392443AbgLKRx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:53:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
+        id S2436827AbgLKRyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:54:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405735AbgLKRxg (ORCPT
+        with ESMTP id S2392465AbgLKRyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:53:36 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F41AC0613CF;
-        Fri, 11 Dec 2020 09:52:56 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id bo9so13474263ejb.13;
-        Fri, 11 Dec 2020 09:52:56 -0800 (PST)
+        Fri, 11 Dec 2020 12:54:15 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E59C0613D3;
+        Fri, 11 Dec 2020 09:53:35 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id p21so2119768pjv.0;
+        Fri, 11 Dec 2020 09:53:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=t7GrN+vF3F8/1mfjNA8maGpiuiIYyPy43Sa2g8ExXyg=;
-        b=N5V1Zt+5aVOO8IHTL4NHoHVqBfRv45HDkG1w4HbUIXIdyaMhMlNwjglAMLHv6MJRu2
-         CtsZBwxTWK85pVxSx5IrwPyx+bHQ6hHWfg8lrDQ16EmOBqW7n9TNeeYhGzKbVxYUh7rt
-         r0TtOlzduqhUCHRx825xdV8BAttMjUrVC318C2qCgPeEkbx9a5jYlGxv00baUg0jfEAO
-         TX5zyIqvKTWT+IgkVr2GhSNb1uskKxl3AkWrNDpgC9+XUI2dxDo4ryaUZIpeiIXUWb8g
-         8CBCTNUq1qoYD6vB7h3CFk8kj+V+2fCw1udyxXtB4zAJfcBiW0R4mvurCQ4Aspix9VXO
-         5SxA==
+        bh=qJMuReBBloytY5lBy9ILiGRjMb37kF5Bm1u/sykMtGI=;
+        b=pbcP9ZyMd8cecm/Ac29HxHof8LYE8oIxJsfNxtiP4g+O1ufaXL9wqRka/RSo4Tovrl
+         0+y5AKL9oCVabUsoTOFqz/Yq9QfdTj0Typ4F+2X8XEQKxDDPDKl8NptHh9zo30qru18d
+         QGlaxM7GEPdID0olwlCiRofo+G16Jl5uy1wTEIGaTXATmtYB0SKJ7RfAvwDsjDcWrkzF
+         kKjuZM4tWxnD1BBGBwlxpereCqs+GnyIsKzQ1aCY79/NwQxDiafuQ2m4U5xGO28vG9vA
+         fsrh/72iZb6gHAJp4ifwj1MfQl9QfYGQYjUntoAEcq5P8hce+uphA5O/Y7Ku0HiAUL7i
+         H9Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=t7GrN+vF3F8/1mfjNA8maGpiuiIYyPy43Sa2g8ExXyg=;
-        b=t2AGsLKYe8nG4PiEiSr9Mb+/Mg2CgVj4geGcpJmHgEtPVW8+fzavYBjUcb7ePTGmUH
-         jIdNeDpKlERZTUio0NqGiWD/kCy7RCvsRwS2TF+PqzhKT9ZBQtPEEM7j/5AA7+UL9Nmo
-         us6ogFeNWT3GP5LpcJhcpRNrP8aLEzPJ+fat4Dg7VdbrptujpyJRXqdAtyV/5B58s4IR
-         HHrA1V0sxwWdY826nVUobnyD9JiJRiGxKdHnS/oT486oxg2nsl7cwc4YlrfsVYviGbVi
-         0VZx+a4UZQB2rY22zA0o2Jucuyew0IWc8o/qUIQrR0X34We3HLI3m85O5kfRUN6/HJWz
-         LOig==
-X-Gm-Message-State: AOAM5310x7leAMkvSXFMzEd9Z0ND4Yij0P1ORi3lPCm/QNDd59cCH0Df
-        sVbKcWKuL9/iENxWaAgI1M8Os+sw1JDiF0BfoLA=
-X-Google-Smtp-Source: ABdhPJwozfWoy777gbDNB3uqsNJHEJbZ/86HWYbed0b/GrVyJtTHjSdpc60O+eJbO4bNaFpHXbhPl3E3pY10gLSXCpQ=
-X-Received: by 2002:a17:906:6a45:: with SMTP id n5mr12287655ejs.514.1607709174880;
- Fri, 11 Dec 2020 09:52:54 -0800 (PST)
+        bh=qJMuReBBloytY5lBy9ILiGRjMb37kF5Bm1u/sykMtGI=;
+        b=OfMGmrKWTdgRG3fArWX/z+zJgrEqHuNbCVUjyKZauzrb61nvgkCzaSBwqD0hhTU4sa
+         musaRuA8qShew7YQwxfm9hN/sjxDsf4QBHsNvgKgkFe/SjDgk+cr13+zVX65VxJ6AJPI
+         AvWJqwrUZn713AeD7kHAvehQ17hZOtT5gh/KzDF1i6e8n6bSrFKRTBjYev5iLaEULPds
+         qQ3Zf8SJ9weCihTpe3u+cRYq9ErPF6hKgAQ3ZHApJaRCDTYQFvFyow8myyEs0ZuSqQUG
+         7kBqZFd87C/CgRPxMWNHcNkhZv3oGKTJ8GjOnBdS/G/J54/+9xVWuczkCtFnfrEyI//A
+         8Z3g==
+X-Gm-Message-State: AOAM531x0VBWbdZvVmI85ny79uEVbY7VVrasorSRIC/XdQbFK9xrmP3D
+        Lj5xb0wJ8fTSDM6pb8BJNDtud2C+7sdwcN01MeY=
+X-Google-Smtp-Source: ABdhPJzHUDKz30vqqKYAobJsngcYE8DjK4RijmUtwtDAm93E/clqz0VBoWDrwvzZzwrJPWtEJfA5ahq579HFtI6a1+g=
+X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr14313128pjf.181.1607709215341;
+ Fri, 11 Dec 2020 09:53:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20201202182725.265020-1-shy828301@gmail.com> <20201202182725.265020-6-shy828301@gmail.com>
- <20201210153356.GE264602@cmpxchg.org> <CAHbLzkoSSQ_4aY1cNmJGZyL+r6yO3L41KWHi8ZQnDhFTNi-v_Q@mail.gmail.com>
-In-Reply-To: <CAHbLzkoSSQ_4aY1cNmJGZyL+r6yO3L41KWHi8ZQnDhFTNi-v_Q@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 11 Dec 2020 09:52:42 -0800
-Message-ID: <CAHbLzkpwAANd_Nci5Krcek+NmexJCZVVQqSsJF6=xfLVsMK34Q@mail.gmail.com>
-Subject: Re: [PATCH 5/9] mm: memcontrol: add per memcg shrinker nr_deferred
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201210192536.118432146@linutronix.de> <20201210194042.860029489@linutronix.de>
+In-Reply-To: <20201210194042.860029489@linutronix.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 11 Dec 2020 19:53:07 +0200
+Message-ID: <CAHp75Vc-2OjE2uwvNRiyLMQ8GSN3P7SehKD-yf229_7ocaktiw@mail.gmail.com>
+Subject: Re: [patch 03/30] genirq: Move irq_set_lockdep_class() to core
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 11:12 AM Yang Shi <shy828301@gmail.com> wrote:
+On Thu, Dec 10, 2020 at 10:14 PM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> On Thu, Dec 10, 2020 at 7:36 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Wed, Dec 02, 2020 at 10:27:21AM -0800, Yang Shi wrote:
-> > > @@ -504,6 +577,34 @@ int memcg_expand_shrinker_maps(int new_id)
-> > >       return ret;
-> > >  }
-> > >
-> > > +int memcg_expand_shrinker_deferred(int new_id)
-> > > +{
-> > > +     int size, old_size, ret = 0;
-> > > +     struct mem_cgroup *memcg;
-> > > +
-> > > +     size = (new_id + 1) * sizeof(atomic_long_t);
-> > > +     old_size = memcg_shrinker_deferred_size;
-> > > +     if (size <= old_size)
-> > > +             return 0;
-> > > +
-> > > +     mutex_lock(&memcg_shrinker_mutex);
-> >
-> > The locking is somewhat confusing. I was wondering why we first read
-> > memcg_shrinker_deferred_size "locklessly", then change it while
-> > holding the &memcg_shrinker_mutex.
-> >
-> > memcg_shrinker_deferred_size only changes under shrinker_rwsem(write),
-> > correct? This should be documented in a comment, IMO.
->
-> Yes, it is correct.
->
-> >
-> > memcg_shrinker_mutex looks superfluous then. The memcg allocation path
-> > is the read-side of memcg_shrinker_deferred_size, and so simply needs
-> > to take shrinker_rwsem(read) to lock out shrinker (de)registration.
->
-> I see you point. Yes, it seems shrinker_{maps|deferred} allocation
-> could be synchronized with shrinker registration by shrinker_rwsem.
->
-> memcg_shrinker_mutex is just renamed from memcg_shrinker_map_mutex
-> which was introduced by shrinker_maps patchset. I'm not quite sure why
-> this mutex was introduced at the first place, I guess the main purpose
-> is to *not* exacerbate the contention of shrinker_rwsem?
->
-> If that contention is not a concern, we could remove that dedicated mutex.
+> irq_set_lockdep_class() is used from modules and requires irq_to_desc() to
+> be exported. Move it into the core code which lifts another requirement for
+> the export.
 
-It seems using shrinker_rwsem instead of dedicated mutex should not
-exacerbate the contention since we just add one read critical section.
-Will do it in v2.
+...
+
+> +       if (IS_ENABLED(CONFIG_LOCKDEP))
+> +               __irq_set_lockdep_class(irq, lock_class, request_class);
+
+Maybe I missed something, but even if the compiler does not warn the
+use of if IS_ENABLED() with complimentary #ifdef seems inconsistent.
+
+> +#ifdef CONFIG_LOCKDEP
+...
+> +EXPORT_SYMBOL_GPL(irq_set_lockdep_class);
+> +#endif
 
 
->
-> >
-> > Also, isn't memcg_shrinker_deferred_size just shrinker_nr_max? And
->
-> No, it is variable. It is nr * sizeof(atomit_long_t). The nr is the
-> current last shrinker ID. If a new shrinker is registered, the nr may
-> grow.
->
-> > memcg_expand_shrinker_deferred() is only called when size >= old_size
-> > in the first place (because id >= shrinker_nr_max)?
->
-> Yes.
+-- 
+With Best Regards,
+Andy Shevchenko
