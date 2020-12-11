@@ -2,84 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2C02D7806
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EC82D7808
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405303AbgLKOiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:38:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732507AbgLKOht (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:37:49 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3A3C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:37:05 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id 2so8964243ilg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:37:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gJlHhFY7YpGSb/NWgpsHkRiym//oc/n7oGp6xC0++YI=;
-        b=ATt6n2xzRSCOBPYNJqnfDPSM1w4dkDEyGpz0yU3WQaPHQ36ZuuiOgYy+6B1QSHYSMy
-         RN7ABuPhtbt6d2A28l20fAe+to7TJeiI62SH0imBVhoY6/MENzMuX0Dmyp4vL3LujZa3
-         vreiQVmlFgK9/2Iefib9XM/v4uGWXKeihehkvxaNkRk54q6j8LtDeTrmgbn6hF1m7UfW
-         pKE8uexzTVU4NHqlD4os1Okz57gjFQGeDZ/R11DDvOAvPiHbGUooxzCWzAzt1dkzOeV5
-         2O8FsY8bUvj6xKhoUc5t/Gloa4oepDTfkGsn9ko+8eJ6r/Zfxx4sVfrBP24K5SKHxFcj
-         z1iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gJlHhFY7YpGSb/NWgpsHkRiym//oc/n7oGp6xC0++YI=;
-        b=KvCPO3J9zpUwSgbM/wI0JiXhMSkbU8t1ZAd1aFz/gf1TfntDjSoevDjsaxK4prYj5e
-         9n/S6jueaKdQUr31nLUYWqG/jM1XipnSjNBQkNXrCswvSRXq8/5H+GDYNW4ER3sXhhOb
-         AMCGdqRBy+0JocqDY6J7VjwFSuAPrMhS9QbytjSsQOLsy+kb8QWm6iBAFpJMV7ee5fCK
-         IEJya51ew50IJStYgm8fzXz+Gx36uBU+TK0VYMnjlKCos764XAczZtd3FLzQTtcCxjCY
-         HimNbyDUWbgTTq5f3WmnTQN8sh8ws1az4vrACQHNlETGqZogUP1j8GA+nxejO7sIMpRa
-         Bb5g==
-X-Gm-Message-State: AOAM533atmchN+Ql2ploEmkjdQxyC0cYURbe9rUxETuv9+HmpRJLp8lb
-        xyK0cPltnli25wh6ztEnc6koh5JnnsXxs5nI3cIxGQ==
-X-Google-Smtp-Source: ABdhPJx4GDSLnE6X++8HaLygIbU7GOWkPLUEzAx6L7q7vDvDs7fa7NOTg9AzBA5eFeY1//1BiEyEqUEd2Wv5v7CuQYY=
-X-Received: by 2002:a92:d0ca:: with SMTP id y10mr16813330ila.68.1607697424987;
- Fri, 11 Dec 2020 06:37:04 -0800 (PST)
+        id S2406308AbgLKOio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:38:44 -0500
+Received: from mga07.intel.com ([134.134.136.100]:20182 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391980AbgLKOiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 09:38:13 -0500
+IronPort-SDR: myzDJyZm+6hgniYpYwPA7YxXP1/GV4+fSbWLM7KWdwWbRURxkkuDRqDlS4laRHFXIDkmw+0Buj
+ 4YbPAEDwyyHA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="238543982"
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="238543982"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 06:36:27 -0800
+IronPort-SDR: MqTNuqq+3L6eu16x8ue2Wf0ste6ZbJR0iuoHT6mArdvDhJlQ8NtID3uAuAkIZb2RULjYmA1jVa
+ aPwX6f0ajr1Q==
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="441205225"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 06:36:25 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1knjXz-00Dg3K-8E; Fri, 11 Dec 2020 16:37:27 +0200
+Date:   Fri, 11 Dec 2020 16:37:27 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: Re: drivers/media/pci/intel/ipu3/ipu3-cio2.c:163:56: warning:
+ implicit conversion from 'unsigned long' to 'u16' (aka 'unsigned short')
+ changes value from 524288 to 0
+Message-ID: <20201211143727.GS4077@smile.fi.intel.com>
+References: <202012112151.6XlgQJKM-lkp@intel.com>
 MIME-Version: 1.0
-References: <20201211112405.31158-1-sjpark@amazon.com>
-In-Reply-To: <20201211112405.31158-1-sjpark@amazon.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 11 Dec 2020 15:36:53 +0100
-Message-ID: <CANn89iKGU6_OusKfXeoT0hQN2kto2RF_RpL3GNBeB54iqvqvXw@mail.gmail.com>
-Subject: Re: [PATCH v4] net/ipv4/inet_fragment: Batch fqdir destroy works
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     David Miller <davem@davemloft.net>,
-        SeongJae Park <sjpark@amazon.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Florian Westphal <fw@strlen.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        netdev <netdev@vger.kernel.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202012112151.6XlgQJKM-lkp@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 12:24 PM SeongJae Park <sjpark@amazon.com> wrote:
->
-> From: SeongJae Park <sjpark@amazon.de>
->
-> On a few of our systems, I found frequent 'unshare(CLONE_NEWNET)' calls
-> make the number of active slab objects including 'sock_inode_cache' type
-> rapidly and continuously increase.  As a result, memory pressure occurs.
->
+On Fri, Dec 11, 2020 at 09:20:55PM +0800, kernel test robot wrote:
+> Hi Andy,
+> 
+> FYI, the error/warning still remains.
 
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> ---
->
+Already commented on previous message with Message-ID:
+<202011211600.bZyprrVg-lkp@intel.com>
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Jakub or David might change the patch title, no need to resend.
 
-Thanks for this nice improvement.
