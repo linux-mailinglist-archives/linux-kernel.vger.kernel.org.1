@@ -2,152 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057E42D77B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8051D2D77C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406186AbgLKOU6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Dec 2020 09:20:58 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:56429 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406087AbgLKOUs (ORCPT
+        id S2406196AbgLKOYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:24:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406071AbgLKOYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:20:48 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-53-s0AncPC_O7qxZEyLU7X13A-1; Fri, 11 Dec 2020 14:19:07 +0000
-X-MC-Unique: s0AncPC_O7qxZEyLU7X13A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 11 Dec 2020 14:19:05 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 11 Dec 2020 14:19:05 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Thomas Gleixner' <tglx@linutronix.de>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Michal Simek" <michal.simek@xilinx.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        "Tariq Toukan" <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        "Leon Romanovsky" <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-Subject: RE: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
-Thread-Topic: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
-Thread-Index: AQHWz72qwjNpP0n0UkWT70W8RrLS8qnx7xrw
-Date:   Fri, 11 Dec 2020 14:19:05 +0000
-Message-ID: <d6cbfa118490459bb0671394f00323fc@AcuMS.aculab.com>
-References: <20201210192536.118432146@linutronix.de>
- <20201210194043.957046529@linutronix.de>
- <ad05af1a-5463-2a80-0887-7629721d6863@linux.intel.com>
- <87y2i4h54i.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87y2i4h54i.fsf@nanos.tec.linutronix.de>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 11 Dec 2020 09:24:11 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7325C0613D6;
+        Fri, 11 Dec 2020 06:23:30 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id g185so8755629wmf.3;
+        Fri, 11 Dec 2020 06:23:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=B1UbzRBoNF2xRidzwVWqUFo9sauVQ+nWdev5G/0Ii8k=;
+        b=II00RboARgNppCaKmmz9sWOjMMjIPAAWzKwgZuPCiWdq1QTZO/YOocIEhn3mcrWp6Y
+         C4vaD5ovWq/NlnZnSOPTPv2pRxWm9n78FQWBNf8UEPzUwx/l+hzxNN6/gdlnasf0sQYD
+         YWuBYOO07zmtZStMrFvnHjx8VM7d61AXZb2hXCaSW2nv1cNHuC0ZEhoKxF1dy9bHACSq
+         8oorg5Mui+QoYqrg8apdblHqq2V8o5Ful/vaQDv8vBs98rmu+IOTuKUkYIAxpkqpCtwk
+         mPLigGvVgY0SgWwyaw+pdM5o3rkCJz2YlMeLSw/0tNAIY+LhiFntDnjYsIFAsBuGAOQa
+         q5MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=B1UbzRBoNF2xRidzwVWqUFo9sauVQ+nWdev5G/0Ii8k=;
+        b=aVRlcF7QRPuGydahB1SCaYF7r21KAJbPfUQWY47KiW+hrxWDSwrEbAgbBhPTr7m6tW
+         7NT+DCeCX0B4PDunX9UOhztR4K6HZ0o9sq/AyRKNcx9urav3zP0uaDZHiG7umsr6JM/B
+         pMbU5bvkIbSStWVUe5jAbUuoCXN8AiLrWT6snqjMGXVWj9jTjqdmwL0AQLsD8tl8muB9
+         mvc6kBmUsFPWAzGRtF0t/vSOGAVwGLX3aEvmM/Ff0C8paFqJv0nvqsXFLJv1kNdjcVCS
+         /KhsNL+twZ3S3oZ5xKag8WvCXN5x+nq9lg10coSCKM92DaZ9ShuIA5k6z+SB0xeFMRvp
+         oTDw==
+X-Gm-Message-State: AOAM531b4gxE3pkJgiMj99jPWuTL/1lV63InvrYCfBYhiHOwj/v6aGa3
+        vaygdrt9/+24M8ok6gFbAzlTZXJumtsjaw==
+X-Google-Smtp-Source: ABdhPJz1gnjwc1B8MBAXKnPwfnB8Tdq2HRjM9Or5+/Xj9//hiJ8gDku0rH5GcKBtAE4gdt8w/KphBQ==
+X-Received: by 2002:a7b:cbd0:: with SMTP id n16mr14003472wmi.162.1607696609544;
+        Fri, 11 Dec 2020 06:23:29 -0800 (PST)
+Received: from [192.168.8.123] ([85.255.234.121])
+        by smtp.gmail.com with ESMTPSA id j9sm10330192wrm.14.2020.12.11.06.23.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Dec 2020 06:23:29 -0800 (PST)
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+References: <cover.1607477897.git.asml.silence@gmail.com>
+ <51905c4fcb222e14a1d5cb676364c1b4f177f582.1607477897.git.asml.silence@gmail.com>
+ <20201209084005.GC21968@infradead.org> <20201211140622.GA286014@cmpxchg.org>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ mQINBFmKBOQBEAC76ZFxLAKpDw0bKQ8CEiYJRGn8MHTUhURL02/7n1t0HkKQx2K1fCXClbps
+ bdwSHrhOWdW61pmfMbDYbTj6ZvGRvhoLWfGkzujB2wjNcbNTXIoOzJEGISHaPf6E2IQx1ik9
+ 6uqVkK1OMb7qRvKH0i7HYP4WJzYbEWVyLiAxUj611mC9tgd73oqZ2pLYzGTqF2j6a/obaqha
+ +hXuWTvpDQXqcOZJXIW43atprH03G1tQs7VwR21Q1eq6Yvy2ESLdc38EqCszBfQRMmKy+cfp
+ W3U9Mb1w0L680pXrONcnlDBCN7/sghGeMHjGKfNANjPc+0hzz3rApPxpoE7HC1uRiwC4et83
+ CKnncH1l7zgeBT9Oa3qEiBlaa1ZCBqrA4dY+z5fWJYjMpwI1SNp37RtF8fKXbKQg+JuUjAa9
+ Y6oXeyEvDHMyJYMcinl6xCqCBAXPHnHmawkMMgjr3BBRzODmMr+CPVvnYe7BFYfoajzqzq+h
+ EyXSl3aBf0IDPTqSUrhbmjj5OEOYgRW5p+mdYtY1cXeK8copmd+fd/eTkghok5li58AojCba
+ jRjp7zVOLOjDlpxxiKhuFmpV4yWNh5JJaTbwCRSd04sCcDNlJj+TehTr+o1QiORzc2t+N5iJ
+ NbILft19Izdn8U39T5oWiynqa1qCLgbuFtnYx1HlUq/HvAm+kwARAQABtDFQYXZlbCBCZWd1
+ bmtvdiAoc2lsZW5jZSkgPGFzbWwuc2lsZW5jZUBnbWFpbC5jb20+iQJOBBMBCAA4FiEE+6Ju
+ PTjTbx479o3OWt5b1Glr+6UFAlmKBOQCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQ
+ Wt5b1Glr+6WxZA//QueaKHzgdnOikJ7NA/Vq8FmhRlwgtP0+E+w93kL+ZGLzS/cUCIjn2f4Q
+ Mcutj2Neg0CcYPX3b2nJiKr5Vn0rjJ/suiaOa1h1KzyNTOmxnsqE5fmxOf6C6x+NKE18I5Jy
+ xzLQoktbdDVA7JfB1itt6iWSNoOTVcvFyvfe5ggy6FSCcP+m1RlR58XxVLH+qlAvxxOeEr/e
+ aQfUzrs7gqdSd9zQGEZo0jtuBiB7k98t9y0oC9Jz0PJdvaj1NZUgtXG9pEtww3LdeXP/TkFl
+ HBSxVflzeoFaj4UAuy8+uve7ya/ECNCc8kk0VYaEjoVrzJcYdKP583iRhOLlZA6HEmn/+Gh9
+ 4orG67HNiJlbFiW3whxGizWsrtFNLsSP1YrEReYk9j1SoUHHzsu+ZtNfKuHIhK0sU07G1OPN
+ 2rDLlzUWR9Jc22INAkhVHOogOcc5ajMGhgWcBJMLCoi219HlX69LIDu3Y34uIg9QPZIC2jwr
+ 24W0kxmK6avJr7+n4o8m6sOJvhlumSp5TSNhRiKvAHB1I2JB8Q1yZCIPzx+w1ALxuoWiCdwV
+ M/azguU42R17IuBzK0S3hPjXpEi2sK/k4pEPnHVUv9Cu09HCNnd6BRfFGjo8M9kZvw360gC1
+ reeMdqGjwQ68o9x0R7NBRrtUOh48TDLXCANAg97wjPoy37dQE7e5Ag0EWYoE5AEQAMWS+aBV
+ IJtCjwtfCOV98NamFpDEjBMrCAfLm7wZlmXy5I6o7nzzCxEw06P2rhzp1hIqkaab1kHySU7g
+ dkpjmQ7Jjlrf6KdMP87mC/Hx4+zgVCkTQCKkIxNE76Ff3O9uTvkWCspSh9J0qPYyCaVta2D1
+ Sq5HZ8WFcap71iVO1f2/FEHKJNz/YTSOS/W7dxJdXl2eoj3gYX2UZNfoaVv8OXKaWslZlgqN
+ jSg9wsTv1K73AnQKt4fFhscN9YFxhtgD/SQuOldE5Ws4UlJoaFX/yCoJL3ky2kC0WFngzwRF
+ Yo6u/KON/o28yyP+alYRMBrN0Dm60FuVSIFafSqXoJTIjSZ6olbEoT0u17Rag8BxnxryMrgR
+ dkccq272MaSS0eOC9K2rtvxzddohRFPcy/8bkX+t2iukTDz75KSTKO+chce62Xxdg62dpkZX
+ xK+HeDCZ7gRNZvAbDETr6XI63hPKi891GeZqvqQVYR8e+V2725w+H1iv3THiB1tx4L2bXZDI
+ DtMKQ5D2RvCHNdPNcZeldEoJwKoA60yg6tuUquvsLvfCwtrmVI2rL2djYxRfGNmFMrUDN1Xq
+ F3xozA91q3iZd9OYi9G+M/OA01husBdcIzj1hu0aL+MGg4Gqk6XwjoSxVd4YT41kTU7Kk+/I
+ 5/Nf+i88ULt6HanBYcY/+Daeo/XFABEBAAGJAjYEGAEIACAWIQT7om49ONNvHjv2jc5a3lvU
+ aWv7pQUCWYoE5AIbDAAKCRBa3lvUaWv7pfmcEACKTRQ28b1y5ztKuLdLr79+T+LwZKHjX++P
+ 4wKjEOECCcB6KCv3hP+J2GCXDOPZvdg/ZYZafqP68Yy8AZqkfa4qPYHmIdpODtRzZSL48kM8
+ LRzV8Rl7J3ItvzdBRxf4T/Zseu5U6ELiQdCUkPGsJcPIJkgPjO2ROG/ZtYa9DvnShNWPlp+R
+ uPwPccEQPWO/NP4fJl2zwC6byjljZhW5kxYswGMLBwb5cDUZAisIukyAa8Xshdan6C2RZcNs
+ rB3L7vsg/R8UCehxOH0C+NypG2GqjVejNZsc7bgV49EOVltS+GmGyY+moIzxsuLmT93rqyII
+ 5rSbbcTLe6KBYcs24XEoo49Zm9oDA3jYvNpeYD8rDcnNbuZh9kTgBwFN41JHOPv0W2FEEWqe
+ JsCwQdcOQ56rtezdCJUYmRAt3BsfjN3Jn3N6rpodi4Dkdli8HylM5iq4ooeb5VkQ7UZxbCWt
+ UVMKkOCdFhutRmYp0mbv2e87IK4erwNHQRkHUkzbsuym8RVpAZbLzLPIYK/J3RTErL6Z99N2
+ m3J6pjwSJY/zNwuFPs9zGEnRO4g0BUbwGdbuvDzaq6/3OJLKohr5eLXNU3JkT+3HezydWm3W
+ OPhauth7W0db74Qd49HXK0xe/aPrK+Cp+kU1HRactyNtF8jZQbhMCC8vMGukZtWaAwpjWiiH bA==
+Subject: Re: [PATCH 2/2] block: no-copy bvec for direct IO
+Message-ID: <2404b68a-1569-ce25-c9c4-00d7e42f9e06@gmail.com>
+Date:   Fri, 11 Dec 2020 14:20:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20201211140622.GA286014@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner
-> Sent: 11 December 2020 12:58
-..
-> > After my failed hasty sketch from last night I had a different one which
-> > was kind of heuristics based (re-reading the upper dword and retrying if
-> > it changed on 32-bit).
+On 11/12/2020 14:06, Johannes Weiner wrote:
+> On Wed, Dec 09, 2020 at 08:40:05AM +0000, Christoph Hellwig wrote:
+>>> +	/*
+>>> +	 * In practice groups of pages tend to be accessed/reclaimed/refaulted
+>>> +	 * together. To not go over bvec for those who didn't set BIO_WORKINGSET
+>>> +	 * approximate it by looking at the first page and inducing it to the
+>>> +	 * whole bio
+>>> +	 */
+>>> +	if (unlikely(PageWorkingset(iter->bvec->bv_page)))
+>>> +		bio_set_flag(bio, BIO_WORKINGSET);
+>>
+>> IIRC the feedback was that we do not need to deal with BIO_WORKINGSET
+>> at all for direct I/O.
 > 
-> The problem is that there will be two seperate modifications for the low
-> and high word. Several ways how the compiler can translate this, but the
-> problem is the same for all of them:
+> Yes, this hunk is incorrect. We must not use this flag for direct IO.
+> It's only for paging IO, when you bring in the data at page->mapping +
+> page->index. Otherwise you tell the pressure accounting code that you
+> are paging in a thrashing page, when really you're just reading new
+> data into a page frame that happens to be hot.
 > 
-> CPU 0                           CPU 1
->         load low
->         load high
->         add  low, 1
->         addc high, 0
->         store low               load high
-> --> NMI                         load low
->                                 load high and compare
->         store high
-> 
-> You can't catch that. If this really becomes an issue you need a
-> sequence counter around it.
+> (As per the other thread, bio_add_page() currently makes that same
+> mistake for direct IO. I'm fixing that.)
 
-Or just two copies of the high word.
-Provided the accesses are sequenced:
-writer:
-	load high:low
-	add small_value,high:low
-	store high
-	store low
-	store high_copy
-reader:
-	load high_copy
-	load low
-	load high
-	if (high != high_copy)
-		low = 0;
+I have that stuff fixed, it just didn't go into the RFC. That's basically
+removing replacing add_page() with its version without BIO_WORKINGSET
+in bio_iov_iter_get_pages() and all __bio_iov_*_{add,get}_pages() +
+fix up ./fs/direct-io.c. Should cover all direct cases if I didn't miss
+some.
 
-The read value is always stale, so it probably doesn't
-matter that the value you have is one that is between the
-value when you started and that when you finished.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+Pavel Begunkov
