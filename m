@@ -2,171 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7709A2D76DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E941C2D76F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393257AbgLKNrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 08:47:52 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40254 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732192AbgLKNrY (ORCPT
+        id S2394352AbgLKNwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:52:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59285 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390535AbgLKNv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:47:24 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BBDjdTv072408;
-        Fri, 11 Dec 2020 07:45:39 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607694339;
-        bh=PtbbpmNeH8mroCFh+s1SgSbfVtmFKVFgxh2cmWfEC6c=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=bTB7BB+8EmjuzpTeot2iHsmMi1ajJjBwGI9GezK1bH1UxAfc8UA7w5vVCUSH1bbPr
-         xiFXEm51pDW5BWXDeJnJieiD71FO/aFeCu4dzLl9BE8A7L/xlD8rcRqDHIuMi/F4gd
-         NvM8HoAtl2J2Y8sNQ5gvgOi26iGfna9MpmhAwouo=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BBDjdxu094975
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Dec 2020 07:45:39 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 11
- Dec 2020 07:45:39 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 11 Dec 2020 07:45:38 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BBDjama033193;
-        Fri, 11 Dec 2020 07:45:36 -0600
-Subject: Re: [PATCH v3 16/20] soc: ti: k3-ringacc: add AM64 DMA rings support.
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <vkoul@kernel.org>, <nm@ti.com>, <ssantosh@kernel.org>,
-        <robh+dt@kernel.org>
-CC:     <dan.j.williams@intel.com>, <t-kristo@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <vigneshr@ti.com>,
-        <grygorii.strashko@ti.com>
-References: <20201208090440.31792-1-peter.ujfalusi@ti.com>
- <20201208090440.31792-17-peter.ujfalusi@ti.com>
-Message-ID: <a1f83b16-c1ce-630e-3410-738b80a92741@ti.com>
-Date:   Fri, 11 Dec 2020 15:46:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Fri, 11 Dec 2020 08:51:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607694630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gM69V9onbZaSEKvDodMrLsWMXGl6YnsxHFzlmXcxA9Y=;
+        b=BOUz6eYFebWwm3dxwUlW9piR8Q3OOd0OZbgZLqM2y5HE1r5h50Hi7O5LeafjjfLuQr3HfF
+        Wnv5jb+A1Do9Xt/yEBpkGHiHWMlx3KE1ouSgbRf75kMI2PAykwhZdt37wO+FDVaquo9iJy
+        tB256ic8+kijnG9xgj52U+ZN8YCW/Mw=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-BOMVnZ8XMbeFvnhz6OgDAg-1; Fri, 11 Dec 2020 08:50:28 -0500
+X-MC-Unique: BOMVnZ8XMbeFvnhz6OgDAg-1
+Received: by mail-qv1-f72.google.com with SMTP id j24so6465804qvg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:50:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gM69V9onbZaSEKvDodMrLsWMXGl6YnsxHFzlmXcxA9Y=;
+        b=r5AFwgjyYvxf6C+faLjxUaKy9eEmoU5+rcJrXWoqw/3Im6Q85GgAhkckB15fTFqvUT
+         HxhSoFLTsBzArHqOgdE8FdiQMamESaCii83PXWKn4mQ5ADMoYt4frmJ91bCVsQrr4ud/
+         X4NYYTZLdOBusY+cASqJS3DVyOnltfRYlQeoJbgYEfdyvl5GOAnMLAAktvGK5HgBdCEX
+         cwYS1pf7Rsh4U5vHO6rCtmvwDWD29TPQJ2eDnWBkIbiOTyQZCFbfbIRllCKv6Gzsug2/
+         e68zs5T6+z9hiyFi18n9dWV54WOTPBQZ0VGtie2DscNHCGV7U8LOsRb/oy6ouEMgKMF3
+         VRMw==
+X-Gm-Message-State: AOAM530Ht8IIxzkYYQp9iJNq5B4xw+QpJPwK3LNDEvD0Mr0+vn5wjS6H
+        i+KJj+Re3ANnC9nGeutoHLcIBzlaopYJbuf4w5lDtRtEf/l931BijW+NPG8uw4JAt3WsY6Yi7NQ
+        PitXoFEt6101WtaT5M/ZzBUBG
+X-Received: by 2002:a0c:ee87:: with SMTP id u7mr15458749qvr.21.1607694628097;
+        Fri, 11 Dec 2020 05:50:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxl8FSTDwklqSsBVOMAAYsYIzfEsbWjJ+ZJlgoVDvZa7GQsXoAv7CwhM/KGXYESSDZX/aBR6g==
+X-Received: by 2002:a0c:ee87:: with SMTP id u7mr15458721qvr.21.1607694627847;
+        Fri, 11 Dec 2020 05:50:27 -0800 (PST)
+Received: from xz-x1 ([142.126.83.202])
+        by smtp.gmail.com with ESMTPSA id u26sm7092520qke.57.2020.12.11.05.50.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 05:50:27 -0800 (PST)
+Date:   Fri, 11 Dec 2020 08:50:25 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Ming Lei <ming.lei@redhat.com>
+Subject: Re: [PATCH] x86/apic/vector: Fix ordering in vector assignment
+Message-ID: <20201211135025.GA6520@xz-x1>
+References: <87ft4djtyp.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201208090440.31792-17-peter.ujfalusi@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87ft4djtyp.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 08/12/2020 11.04, Peter Ujfalusi wrote:
-> From: Grygorii Strashko <grygorii.strashko@ti.com>
+On Thu, Dec 10, 2020 at 09:18:22PM +0100, Thomas Gleixner wrote:
+> Prarit reported that depending on the affinity setting the
 > 
-> The DMAs in AM64 have built in rings compared to AM654/J721e/J7200 where a
-> separate and generic ringacc is used.
+>  ' irq $N: Affinity broken due to vector space exhaustion.'
 > 
-> The ring SW interface is similar to ringacc with some major architectural
-> differences, like
+> message is showing up in dmesg, but the vector space on the CPUs in the
+> affinity mask is definitely not exhausted.
 > 
-> They are part of the DMA (BCDMA or PKTDMA).
+> Shung-Hsi provided traces and analysis which pinpoints the problem:
 > 
-> They are dual mode rings are modeled as pair of Rings objects which has
-> common configuration and memory buffer, but separate real-time control
-> register sets for each direction mem2dev (forward) and dev2mem (reverse).
+> The ordering of trying to assign an interrupt vector in
+> assign_irq_vector_any_locked() is simply wrong if the interrupt data has a
+> valid node assigned. It does:
 > 
-> The ringacc driver must be initialized for DMA rings use with
-> k3_ringacc_dmarings_init() as it is not an independent device as ringacc
-> is.
+>  1) Try the intersection of affinity mask and node mask
+>  2) Try the node mask
+>  3) Try the full affinity mask
+>  4) Try the full online mask
 > 
-> AM64 rings must be requested only using k3_ringacc_request_rings_pair(),
-> and forward ring must always be initialized/configured. After this any
-> other Ringacc APIs can be used without any callers changes.
+> Obviously #2 and #3 are in the wrong order as the requested affinity
+> mask has to take precedence.
 > 
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  drivers/soc/ti/k3-ringacc.c       | 325 +++++++++++++++++++++++++++++-
->  include/linux/soc/ti/k3-ringacc.h |  17 ++
->  2 files changed, 335 insertions(+), 7 deletions(-)
+> In the observed cases #1 failed because the affinity mask did not contain
+> CPUs from node 0. That made it allocate a vector from node 0, thereby
+> breaking affinity and emitting the misleading message.
 > 
-> diff --git a/drivers/soc/ti/k3-ringacc.c b/drivers/soc/ti/k3-ringacc.c
-> index 119164abcb41..c88c305ba367 100644
-> --- a/drivers/soc/ti/k3-ringacc.c
-> +++ b/drivers/soc/ti/k3-ringacc.c
+> Revert the order of #2 and #3 so the full affinity mask without the node
+> intersection is tried before actually affinity is broken.
+> 
+> If no node is assigned then only the full affinity mask and if that fails
+> the full online mask is tried.
+> 
+> Fixes: d6ffc6ac83b1 ("x86/vector: Respect affinity mask in irq descriptor")
+> Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> Reported-by: Prarit Bhargava <prarit@redhat.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Tested-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> Cc: stable@vger.kernel.org
 
-...
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
-> +struct k3_ringacc *k3_ringacc_dmarings_init(struct platform_device *pdev,
-> +					    struct k3_ringacc_init_data *data)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct k3_ringacc *ringacc;
-> +	void __iomem *base_rt;
-> +	struct resource *res;
-> +	int i;
-> +
-> +	ringacc = devm_kzalloc(dev, sizeof(*ringacc), GFP_KERNEL);
-> +	if (!ringacc)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	ringacc->dev = dev;
-> +	ringacc->dma_rings = true;
-> +	ringacc->num_rings = data->num_rings;
-> +	ringacc->tisci = data->tisci;
-> +	ringacc->tisci_dev_id = data->tisci_dev_id;
-> +
-> +	mutex_init(&ringacc->req_lock);
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ringrt");
-> +	base_rt = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(base_rt))
-> +		return base_rt;
+-- 
+Peter Xu
 
-this must have been:
-	return ERR_CAST(base_rt);
-
-> +
-> +	ringacc->rings = devm_kzalloc(dev,
-> +				      sizeof(*ringacc->rings) *
-> +				      ringacc->num_rings * 2,
-> +				      GFP_KERNEL);
-> +	ringacc->rings_inuse = devm_kcalloc(dev,
-> +					    BITS_TO_LONGS(ringacc->num_rings),
-> +					    sizeof(unsigned long), GFP_KERNEL);
-> +
-> +	if (!ringacc->rings || !ringacc->rings_inuse)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	for (i = 0; i < ringacc->num_rings; i++) {
-> +		struct k3_ring *ring = &ringacc->rings[i];
-> +
-> +		ring->rt = base_rt + K3_DMARING_RT_REGS_STEP * i;
-> +		ring->parent = ringacc;
-> +		ring->ring_id = i;
-> +		ring->proxy_id = K3_RINGACC_PROXY_NOT_USED;
-> +
-> +		ring = &ringacc->rings[ringacc->num_rings + i];
-> +		ring->rt = base_rt + K3_DMARING_RT_REGS_STEP * i +
-> +			   K3_DMARING_RT_REGS_REVERSE_OFS;
-> +		ring->parent = ringacc;
-> +		ring->ring_id = i;
-> +		ring->proxy_id = K3_RINGACC_PROXY_NOT_USED;
-> +		ring->flags = K3_RING_FLAG_REVERSE;
-> +	}
-> +
-> +	ringacc->tisci_ring_ops = &ringacc->tisci->ops.rm_ring_ops;
-> +
-> +	dev_info(dev, "Number of rings: %u\n", ringacc->num_rings);
-> +
-> +	return ringacc;
-> +}
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
