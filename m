@@ -2,58 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C882D8233
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE0E2D823A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436700AbgLKWgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:36:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727605AbgLKWfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:35:54 -0500
-Subject: Re: [GIT PULL] mtd: Changes for 5.10 final
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607726114;
-        bh=5mQx4kuCD393D6xaTGljqcDcepxu79OzrjUZlOH6PyQ=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=SucQX2u+VNOwsj5lp04Kyoj/Tsay0WGE/rqDAxl24WVwfUo+CCMKSJdJtYFbiW8Dg
-         e22V8VcU9ZswO/l6hcrvC1jL0QhFY+/ETs5E6lDJS4ETABt+XnhgFRPfKUcWI+hAoJ
-         EjIZOqOV5III4XJ00cGLU9w+8f2XAPgJ/gmyxJX1pNxHfBdXsSmpeL+Tj4iJXQUYip
-         yO/IAOVXogY6UNEjoo/DSs8onu7K+g0FyTbr0PpUTQENdoEx9JATUC8zfUWNSWLbyn
-         2vRb8eHNNkuA2WiH42jUsqfzzKxyJh70MpHmc0TtAku36Eo6fuNbQbv2ddu3Ixj2Ds
-         uxTGeu8QCiJLg==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201211201356.62c54b3f@xps13>
-References: <20201211201356.62c54b3f@xps13>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201211201356.62c54b3f@xps13>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-5.10-rc8
-X-PR-Tracked-Commit-Id: 33d974e76e21e9da8a36b14d2dce6394c36c3e30
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7f376f1917d7461e05b648983e8d2aea9d0712b2
-Message-Id: <160772611424.9549.3478486283482241544.pr-tracker-bot@kernel.org>
-Date:   Fri, 11 Dec 2020 22:35:14 +0000
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        linux-kernel@vger.kernel.org
+        id S2406963AbgLKWhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 17:37:53 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:42288 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436812AbgLKWg7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 17:36:59 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 408C11C0BC2; Fri, 11 Dec 2020 23:35:57 +0100 (CET)
+Date:   Fri, 11 Dec 2020 23:35:56 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>,
+        Luo Meng <luomeng12@huawei.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH 4.19 37/39] Input: i8042 - fix error return code in
+ i8042_setup_aux()
+Message-ID: <20201211223556.GA18452@amd>
+References: <20201210142602.272595094@linuxfoundation.org>
+ <20201210142604.116728762@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
+Content-Disposition: inline
+In-Reply-To: <20201210142604.116728762@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 11 Dec 2020 20:13:56 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-5.10-rc8
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7f376f1917d7461e05b648983e8d2aea9d0712b2
+Hi!
 
-Thank you!
+> From: Luo Meng <luomeng12@huawei.com>
+>=20
+> commit 855b69857830f8d918d715014f05e59a3f7491a0 upstream.
+>=20
+> Fix to return a negative error code from the error handling case
+> instead of 0 in function i8042_setup_aux(), as done elsewhere in this
+> function.
+>=20
+> Fixes: f81134163fc7 ("Input: i8042 - use platform_driver_probe")
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+I'd recommend not taking this. It is not known to fix
+end-user-visible-bug, i8042 is normally quite fragile, and the patch
+is less then month old so did not get adequate testing.
+
+Yes, code looks cleaner after the fix. With i8042, that does not mean
+much.
+
+Best regards,
+								Pavel
+
+
+> --- a/drivers/input/serio/i8042.c
+> +++ b/drivers/input/serio/i8042.c
+> @@ -1472,7 +1472,8 @@ static int __init i8042_setup_aux(void)
+>  	if (error)
+>  		goto err_free_ports;
+> =20
+> -	if (aux_enable())
+> +	error =3D aux_enable();
+> +	if (error)
+>  		goto err_free_irq;
+> =20
+>  	i8042_aux_irq_registered =3D true;
+>=20
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--YiEDa0DAkWCtVeE4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl/T9EwACgkQMOfwapXb+vIOrgCgkleQhHVlJ1+qKo3j36KSD2wp
+LVoAn3a8CM3snysTQMMiT45RcjNmKw7J
+=tIwr
+-----END PGP SIGNATURE-----
+
+--YiEDa0DAkWCtVeE4--
