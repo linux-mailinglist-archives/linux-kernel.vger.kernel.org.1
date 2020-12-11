@@ -2,29 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6EE2D7204
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A61162D7207
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436952AbgLKImV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:42:21 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9513 "EHLO
+        id S2437005AbgLKIm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:42:56 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9593 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436982AbgLKIld (ORCPT
+        with ESMTP id S2436949AbgLKImS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:41:33 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CskkT2nTYzhn8F;
-        Fri, 11 Dec 2020 16:40:17 +0800 (CST)
+        Fri, 11 Dec 2020 03:42:18 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cskl93X2QzM3Qd;
+        Fri, 11 Dec 2020 16:40:53 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Dec 2020 16:40:45 +0800
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Dec 2020 16:41:29 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <linux-xfs@vger.kernel.org>, <darrick.wong@oracle.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] fs/xfs: convert comma to semicolon
-Date:   Fri, 11 Dec 2020 16:41:12 +0800
-Message-ID: <20201211084112.1931-1-zhengyongjun3@huawei.com>
+To:     <trond.myklebust@hammerspace.com>, <anna.schumaker@netapp.com>,
+        <bfields@fieldses.org>
+CC:     <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] fs/lockd: convert comma to semicolon
+Date:   Fri, 11 Dec 2020 16:41:58 +0800
+Message-ID: <20201211084158.1984-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,22 +40,22 @@ Replace a comma between expression statements by a semicolon.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- fs/xfs/libxfs/xfs_btree.c | 2 +-
+ fs/lockd/host.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/xfs/libxfs/xfs_btree.c b/fs/xfs/libxfs/xfs_btree.c
-index 2d25bab68764..51dbff9b0908 100644
---- a/fs/xfs/libxfs/xfs_btree.c
-+++ b/fs/xfs/libxfs/xfs_btree.c
-@@ -4070,7 +4070,7 @@ xfs_btree_delrec(
- 	 * surviving block, and log it.
- 	 */
- 	xfs_btree_set_numrecs(left, lrecs + rrecs);
--	xfs_btree_get_sibling(cur, right, &cptr, XFS_BB_RIGHTSIB),
-+	xfs_btree_get_sibling(cur, right, &cptr, XFS_BB_RIGHTSIB);
- 	xfs_btree_set_sibling(cur, left, &cptr, XFS_BB_RIGHTSIB);
- 	xfs_btree_log_block(cur, lbp, XFS_BB_NUMRECS | XFS_BB_RIGHTSIB);
+diff --git a/fs/lockd/host.c b/fs/lockd/host.c
+index 0afb6d59bad0..497520bc00a7 100644
+--- a/fs/lockd/host.c
++++ b/fs/lockd/host.c
+@@ -163,7 +163,7 @@ static struct nlm_host *nlm_alloc_host(struct nlm_lookup_host_info *ni,
+ 	host->h_nsmhandle  = nsm;
+ 	host->h_addrbuf    = nsm->sm_addrbuf;
+ 	host->net	   = ni->net;
+-	host->h_cred	   = get_cred(ni->cred),
++	host->h_cred	   = get_cred(ni->cred);
+ 	strlcpy(host->nodename, utsname()->nodename, sizeof(host->nodename));
  
+ out:
 -- 
 2.22.0
 
