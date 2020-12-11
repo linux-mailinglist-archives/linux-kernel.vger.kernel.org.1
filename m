@@ -2,139 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50492D7F4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 731662D7F4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729958AbgLKTTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 14:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
+        id S2393663AbgLKTVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 14:21:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728058AbgLKTSl (ORCPT
+        with ESMTP id S1726267AbgLKTVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 14:18:41 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A956EC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:18:01 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id i18so10591841ioa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:18:01 -0800 (PST)
+        Fri, 11 Dec 2020 14:21:13 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFCFC0613CF;
+        Fri, 11 Dec 2020 11:20:32 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id q8so12125735ljc.12;
+        Fri, 11 Dec 2020 11:20:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TpL5j0wxilEj0YGcq7bQWSNpU6rX05pPXbA7fekSIe4=;
-        b=JwcbZr45xttGYQbhMTptTMZ/07mDTeri6lf9x9Lk3mqfsgwwv5uS8VaIm5S24E0vat
-         zMdC+58pwzqMqUOo4njYD/apdJIgxTKMC//071b1m9fJvSxhgChEVR7YxzK2KCwAuFBo
-         PvVaXZ7MadRfhzSsTVDHHzxvcWiJVSXYZMbdJgEfP54thgDOrm43X9pNx1zAHd6uNy4k
-         1hswuxH2mSlJNG97ty3W0YyDe/Ink+NTgIXHZUswniaFADSoJkd53aSG6/Qe26aX9/yG
-         WVuUzg6xjxrGLbeqD7tTCaiJhJ/Hrhi7pn9jbfhkqHQ/gwfDUrXq4mHWStp1Pqj3nug5
-         LNMQ==
+         :cc:content-transfer-encoding;
+        bh=lEGfJXljVJQVDFGapn/ihQVDl58e1Lo7WB4ovbMgJhY=;
+        b=SJCqMVKN8LJ4lYCYfW9l2jF51GJox8OeV9lqspXx0jlpBDkFxzp0eJHgWUvtYm4G+Q
+         u2mBuDV/1nQVNfDLD8+eZoCHrf4arG+GW8TWMtlEfKVuEEa5PZjPs2fBUI8UM5tSZHrc
+         E3PHBxMc9xeRDnJToUAerqephAG77XYIZ9rurTpYczP3kXCIXamBj0FFcvbpOcky3MC2
+         TOW/pQM/+Rd9X8CquN/a9gxJgJvbJNfyZRMjMEwiS31g72kux4ih7BJSk1BqB4179aGC
+         Na911b4MKhH+xNkUgUCN7D8q1I7u2oDsRunI/FEzwpPcHsjKx4ZUavqa7totLIDR0Yv/
+         zpog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TpL5j0wxilEj0YGcq7bQWSNpU6rX05pPXbA7fekSIe4=;
-        b=U1/nPjTcIvb5R/Vt3bnqIIQFzC3RW5PMnz29OGF/LdQPc+fJ/lfnOjo1h/TtBDYpiD
-         HQ/zrYQOmx0XEHv352uqAzptykYTTc518SBKXZw56jQcBzSJ45w6N9leTduTl+o9VQGK
-         ZrKiekE7GhijGKoPQYKLw6BjzA+kRRo5JDKb0tUcJQneU0BmW4//v5TCOw4Q88xwLKFy
-         v07aMvtYi8eafNsNE3/N1X6HnMKpnj3kqAhMZ0+hPyTVt/Ke0Vt/qZh5KdYdiuBC/Qgw
-         FD4hwjBv/JJjGOpUuYGHzcerks1zpX39v5avCwhMJdIOANR7oJxlAHoH4BCgPWnt+Vx0
-         cKIw==
-X-Gm-Message-State: AOAM530L3ywW96cYX2wSXihrvFMNPVilyWjl+/jUBGiiFeGcyGZdF0KE
-        JlwbYF4kXYEuFqjsFJm4hxikTRh0OzOoTaC1QAXTaw==
-X-Google-Smtp-Source: ABdhPJyk7FPEmO/BcL5iIjH1kz1vOVayt3gx5OkWA/XVR/G+5GtrE0NZrh3oznOuRXfKQrU9aATi3hMCQt9+FvV+HuY=
-X-Received: by 2002:a6b:d61a:: with SMTP id w26mr16643357ioa.117.1607714280769;
- Fri, 11 Dec 2020 11:18:00 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lEGfJXljVJQVDFGapn/ihQVDl58e1Lo7WB4ovbMgJhY=;
+        b=TbkmErTR+q8aVXEGRRG+CC7NbhwPGTw0BmTYQrIUUpy9ZJ4xUt9A88pAc6FY/3MUmK
+         KyCk7qFEC/nTl24YTfWtM940X7z0UU7gN086vXj53tg09QWuaxWI/QT4Fk+x8ING8B+f
+         IGpYzw0rBn/Id3wyJmmPsqO/SvlstKJ6igtCNMIp/eHrEqp3e8sromk4jpXT5VOVsJYq
+         5Yh9saKJyowy0oMEEtrVkXAOy9iSDxrpwmTImkqT4kSzZZMyykwqVrpJtMFneCdOXO3E
+         jjGmFgGrWnCQXvoypvmCugICcUNN5Lb2kBiGS5lVgbl63sQijYeBu54nDO3kFPRTm1p0
+         A42Q==
+X-Gm-Message-State: AOAM5321cUqzG1wtR8DbyvUT/51yqHzgKR1ryhAXCy/VRKbDIfYQYG45
+        vsUEEyqhdaw0G0qgJuHRc2cogywdHmX3Qz0M1X+svVnrixE=
+X-Google-Smtp-Source: ABdhPJzb/hWU3/g5CvkMNDfdOVM5h2DtE0XxPTPg3z3CmqHPjeXluN9CzNtbBMmLlm6CDuybBz5q1d20bQsC+rOaltA=
+X-Received: by 2002:a2e:874c:: with SMTP id q12mr5431858ljj.424.1607714431449;
+ Fri, 11 Dec 2020 11:20:31 -0800 (PST)
 MIME-Version: 1.0
-References: <160765171921.6905.7897898635812579754.stgit@localhost.localdomain>
- <CANn89iJ5HnJYv6eWb1jm6rK173DFkp2GRnfvi9vnYwXZPzE4LQ@mail.gmail.com>
- <CAKgT0Uf_q=FgMHd9_wq5Bx8rCC-kS0Qz563rE9dL2hpQ6Evppg@mail.gmail.com>
- <CANn89iJUT6aWm75ZpU_Ggmuqbb+cbLSGj0Bxysu9_wXRgNS8MQ@mail.gmail.com> <CAKgT0Uecuh3mcGRpDAZzzbnQtOusc++H4SXAv2Scd297Ha5AYQ@mail.gmail.com>
-In-Reply-To: <CAKgT0Uecuh3mcGRpDAZzzbnQtOusc++H4SXAv2Scd297Ha5AYQ@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 11 Dec 2020 20:17:49 +0100
-Message-ID: <CANn89iKfqKpXgCv_Z4iSt5RpjxYUvkYSoZKF3FZs+Jgev3aDgw@mail.gmail.com>
-Subject: Re: [net PATCH] tcp: Mark fastopen SYN packet as lost when receiving ICMP_TOOBIG/ICMP_FRAG_NEEDED
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Yuchung Cheng <ycheng@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        kernel-team <kernel-team@fb.com>
+References: <20201202182725.265020-1-shy828301@gmail.com> <20201202182725.265020-3-shy828301@gmail.com>
+ <550518d6-fd50-72be-7c84-71153b470cfd@hisilicon.com>
+In-Reply-To: <550518d6-fd50-72be-7c84-71153b470cfd@hisilicon.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 11 Dec 2020 11:20:19 -0800
+Message-ID: <CAHbLzkr16gAYRpLceusLRtJQxx50Wxq1f3fUoGaYHC5-6U1K5g@mail.gmail.com>
+Subject: Re: [PATCH 2/9] mm: vmscan: use nid from shrink_control for tracepoint
+To:     "Xiaqing (A)" <saberlily.xia@hisilicon.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Liu Yi <daniel.liuyi@hisilicon.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 6:15 PM Alexander Duyck
-<alexander.duyck@gmail.com> wrote:
+On Wed, Dec 2, 2020 at 7:13 PM Xiaqing (A) <saberlily.xia@hisilicon.com> wr=
+ote:
 >
-> On Fri, Dec 11, 2020 at 8:22 AM Eric Dumazet <edumazet@google.com> wrote:
-> >
-> > On Fri, Dec 11, 2020 at 5:03 PM Alexander Duyck
-> > <alexander.duyck@gmail.com> wrote:
-> >
-> > > That's fine. I can target this for net-next. I had just selected net
-> > > since I had considered it a fix, but I suppose it could be considered
-> > > a behavioral change.
-> >
-> > We are very late in the 5.10 cycle, and we never handled ICMP in this
-> > state, so net-next is definitely better.
-> >
-> > Note that RFC 7413 states in 4.1.3 :
-> >
-> >  The client MUST cache cookies from servers for later Fast Open
-> >    connections.  For a multihomed client, the cookies are dependent on
-> >    the client and server IP addresses.  Hence, the client should cache
-> >    at most one (most recently received) cookie per client and server IP
-> >    address pair.
-> >
-> >    When caching cookies, we recommend that the client also cache the
-> >    Maximum Segment Size (MSS) advertised by the server.  The client can
-> >    cache the MSS advertised by the server in order to determine the
-> >    maximum amount of data that the client can fit in the SYN packet in
-> >    subsequent TFO connections.  Caching the server MSS is useful
-> >    because, with Fast Open, a client sends data in the SYN packet before
-> >    the server announces its MSS in the SYN-ACK packet.  If the client
-> >    sends more data in the SYN packet than the server will accept, this
-> >    will likely require the client to retransmit some or all of the data.
-> >    Hence, caching the server MSS can enhance performance.
-> >
-> >    Without a cached server MSS, the amount of data in the SYN packet is
-> >    limited to the default MSS of 536 bytes for IPv4 [RFC1122] and 1220
-> >    bytes for IPv6 [RFC2460].  Even if the client complies with this
-> >    limit when sending the SYN, it is known that an IPv4 receiver
-> >    advertising an MSS less than 536 bytes can receive a segment larger
-> >    than it is expecting.
-> >
-> >    If the cached MSS is larger than the typical size (1460 bytes for
-> >    IPv4 or 1440 bytes for IPv6), then the excess data in the SYN packet
-> >    may cause problems that offset the performance benefit of Fast Open.
-> >    For example, the unusually large SYN may trigger IP fragmentation and
-> >    may confuse firewalls or middleboxes, causing SYN retransmission and
-> >    other side effects.  Therefore, the client MAY limit the cached MSS
-> >    to 1460 bytes for IPv4 or 1440 for IPv6.
-> >
-> >
-> > Relying on ICMP is fragile, since they can be filtered in some way.
 >
-> In this case I am not relying on the ICMP, but thought that since I
-> have it I should make use of it. WIthout the ICMP we would still just
-> be waiting on the retransmit timer.
 >
-> The problem case has a v6-in-v6 tunnel between the client and the
-> endpoint so both ends assume an MTU 1500 and advertise a 1440 MSS
-> which works fine until they actually go to send a large packet between
-> the two. At that point the tunnel is triggering an ICMP_TOOBIG and the
-> endpoint is stalling since the MSS is dropped to 1400, but the SYN and
-> data payload were already smaller than that so no retransmits are
-> being triggered. This results in TFO being 1s slower than non-TFO
-> because of the failure to trigger the retransmit for the frame that
-> violated the PMTU. The patch is meant to get the two back into
-> comparable times.
+> On 2020/12/3 2:27, Yang Shi wrote:
+> > The tracepoint's nid should show what node the shrink happens on, the s=
+tart tracepoint
+> > uses nid from shrinkctl, but the nid might be set to 0 before end trace=
+point if the
+> > shrinker is not NUMA aware, so the traceing log may show the shrink hap=
+pens on one
+> > node but end up on the other node.  It seems confusing.  And the follow=
+ing patch
+> > will remove using nid directly in do_shrink_slab(), this patch also hel=
+ps cleanup
+> > the code.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >   mm/vmscan.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 7d6186a07daf..457ce04eebf2 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -533,7 +533,7 @@ static unsigned long do_shrink_slab(struct shrink_c=
+ontrol *shrinkctl,
+> >       new_nr =3D atomic_long_add_return(next_deferred,
+> >                                       &shrinker->nr_deferred[nid]);
+> >
+> > -     trace_mm_shrink_slab_end(shrinker, nid, freed, nr, new_nr, total_=
+scan);
+> > +     trace_mm_shrink_slab_end(shrinker, shrinkctl->nid, freed, nr, new=
+_nr, total_scan);
+>
+> Hi=EF=BC=8C Yang
+>
+> When I read this patch, I wondered why you modified it so much until I re=
+ad patch6. Could you merge
+> this patch into patch6?
 
-Okay... Have you studied why tcp_v4_mtu_reduced() (and IPv6 equivalent)
-code does not yet handle the retransmit in TCP_SYN_SENT state ?
+Sorry for the late reply. It could be, but I was inclined to think
+this is a bug and we might need backport it to stable, so I leave it
+as a standalone patch.
+
+>
+> Thanks!
+>
+> >       return freed;
+> >   }
+> >
+>
