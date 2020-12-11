@@ -2,170 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD1A2D75B4
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7032D75B3
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:36:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436498AbgLKMfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 07:35:50 -0500
-Received: from mail-eopbgr140079.outbound.protection.outlook.com ([40.107.14.79]:45059
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388615AbgLKMfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:35:17 -0500
+        id S2436511AbgLKMfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 07:35:51 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1423 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387487AbgLKMf3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 07:35:29 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fd367690000>; Fri, 11 Dec 2020 04:34:49 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 11 Dec
+ 2020 12:34:45 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.104)
+ by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 11 Dec 2020 12:34:45 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a3nyi5iYu2zMwcYms9sQF2PXm91wkwglrrSsZBPTKlDnTV3XyjgJ7HuISYakuDAl9EHswpYfPx/VIw7C5XWI3x1j+KPpAA5aelQW1dwOXaVQd1q40w3tawzLYyT1cPmiq0NoImVMAFk8z1DkXiXZdy1RBy/vx1h7TJAfJMqQhF9nAo1tkEJ0zoXgZi1rjE3IUfRIa+1KPfvUojt2KDxZlxK1SBNQP2JNmvIJsfms3RLIJufRbAwVcLZniwdKwaAUAG1EE+qwbrZKKnvWoOsiEYOAgfehnuy/UMvrrkqplA8VehwdA2PUHYzP6OdwdNrknozhebVxbrDvR41XSGCVSg==
+ b=oVG+2A29GTy2I/X7D0G82G39HgArE99YJGYEl40znXOJ22SXgf3c6t54IAWGtxaJDvhlBTgFvfrV0htpQT6+xYEesvZyriQ20apqPUswUjG0Q3YKoepQV6tHLbwHCWO5gtD1xrkVYYIrHBjNgcgsVyO1OGXnWVUP62cff6pmaYFB5SJdaiaXNyITxi/GjuUnH51IArFbNbkCUcJiwbllOi7EMMCR9ZwHS1YB/t1rSp23gCErssYh/xQ+tJwb2HkCKKpZLr+wXpSL4UJS/iTMWxFBFk7dJxYxz9OOZeOC5rs5026SG88PWNd7bPIVrS2GApC4HQ0vMZrj1q7Mi0JEqg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cwMeqSxtR1ZfxoQ8pVmhqevQTwcCe0BWywghoHqNY7I=;
- b=e1KVxMucZLDb0BLBXt5Eco+IrLyXxZKAsjhQwkaAa2QqVgh1wUMO8Qo5BrRFt+UDNz6vPWAu8PVL2Y83hv6LUO8caw7sBpPqH1T1N6u/djcmIIf92BLfYCP1Fg5JelLr1rYJDa0ewGApYCH4wZbPDTvnVidT/ghxChKUfoiN7WCyK0aJtoovstLx072GkqVp6NtwSw9dV5Ns7MWGgcLs9YKFp1Hkx3ItFOFteqUGip+Cpz8UZPgWgs20I+mwShUXA6HyW+WtWrgd3SP/IKGvKLRuBUQIHSSdnB1vSvFwmE3m4ssUe1eakn8hSQyymXsMS+8rfeF1wLQozDD2giwybA==
+ bh=a4dDkkvVeV8U82GM+m61Hub3z40BxGAHtYxTCYbI0/c=;
+ b=f9CFAObqnh946u2XpHd7jRGSmo/gIVaRDrdtsC/WYgQPvsB24KmAWekX/bu0huqbThJkIB/qwIhNPl7u6ak8+cnmzb2bcypU3clXqpig4hv1FdIXeTs3jbjJuFleGk29w4mEpgeZVlsU2cJPmweWWenW0lBIK+KQQoU88bMgiuDHgoAKOwWRrNjYqGY1SV9o4z4WdiCtKQa7O8YctqtfWy0i4w46gQZTSwVMM6h9wFQbO3YVj2GrEzlALaPYKKK4FowRFsV1BTQ+t12u/J8wCoO4Ock5eLi7AICrjQfz16COq0siOUOcJCO2FwxsPLXCn3bs9+nKNX0MBYM27d2jqA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
- header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rohmsemiconductoreurope.onmicrosoft.com;
- s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cwMeqSxtR1ZfxoQ8pVmhqevQTwcCe0BWywghoHqNY7I=;
- b=o91gM14ZWTeQPc38SyGqF8jaNror7ijKrvTQXZxYqbxJX07s/Qkezsx93ei37PKRCDINw6fM/m7svmqMaBBdkRudp0Zxmg7o8lbPlXk5VhLsyAlaHHoprlhd8kRjgl1Xb3L9Ql13iEzSwvVO/pAxc2dOWgv8lH9ljApRYltrxiA=
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
- HE1PR03MB2987.eurprd03.prod.outlook.com (2603:10a6:7:5b::23) with Microsoft
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM5PR12MB1356.namprd12.prod.outlook.com (2603:10b6:3:74::18) by
+ DM6PR12MB4926.namprd12.prod.outlook.com (2603:10b6:5:1bb::15) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3632.23; Fri, 11 Dec 2020 12:34:27 +0000
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::f1f1:eb1d:2bf5:eb87]) by HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::f1f1:eb1d:2bf5:eb87%6]) with mapi id 15.20.3632.023; Fri, 11 Dec 2020
- 12:34:27 +0000
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "marek.vasut+renesas@gmail.com" <marek.vasut+renesas@gmail.com>,
-        "yoshihiro.shimoda.uh@renesas.com" <yoshihiro.shimoda.uh@renesas.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>
-CC:     linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "khiem.nguyen.xt@renesas.com" <khiem.nguyen.xt@renesas.com>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 04/10] regulator: bd9571mwv: Add BD9574MWF support
-Thread-Topic: [PATCH v2 04/10] regulator: bd9571mwv: Add BD9574MWF support
-Thread-Index: AQHWz7CwEl0Fmld+qk2IHLLNWBbVIqnx1IeA
-Date:   Fri, 11 Dec 2020 12:34:27 +0000
-Message-ID: <ab27db32a8da1486e14722831da947d37bbdcf7d.camel@fi.rohmeurope.com>
-References: <1607686060-17448-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-         <1607686060-17448-5-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-In-Reply-To: <1607686060-17448-5-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Accept-Language: fi-FI, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none
- header.from=fi.rohmeurope.com;
-x-originating-ip: [62.78.225.252]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d035aff8-20e3-4599-b45f-08d89dd1199f
-x-ms-traffictypediagnostic: HE1PR03MB2987:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR03MB29876BA8C1815A925E66B8A2ADCA0@HE1PR03MB2987.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:820;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WswSmLnom7kkcE8B1w5TRMg6fYIyYRnGuo2oNuKmOeIQon1nvQi3Y5nYekSp6IyUcvFKDdnVURs0ChYXnU/aJf4RN41JkfpAtJVT69zjVyNbx1JSY0Wj+8cc6JO6npOiXHoe1MDpdDLC3mklBJv1krXjrdthvKum4HwSjxKuFBT9Zr63XghEoKWM4bfK576x5m1CbrEGXAg87MNFYyBeMiny7drxu1twK7hJ2hHbS5aZY0jvMqErCYC56uYVW5dv9+jXpO2xxZwyDf6w/z+jfJIMUxFuupx+UhhmC3Wd82xa6DZeFYuykwG6Y3iCloisV87z5jefmfOvVnO1RW8Xxg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(396003)(346002)(39830400003)(478600001)(64756008)(8676002)(2616005)(8936002)(83380400001)(6486002)(86362001)(66446008)(54906003)(110136005)(4326008)(2906002)(26005)(5660300002)(71200400001)(66946007)(6512007)(7416002)(76116006)(6506007)(186003)(66556008)(3450700001)(316002)(4001150100001)(66476007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?TE9VTU9JMkpDSUNCQllRbm1sdzB1YjV5WE5wRWJlNzMrVzhZVWk2cUJZa1E2?=
- =?utf-8?B?SWcycTZSbVI1REt0bElPTHhyVGlHbDlGWWJzL2d0V2x5bHNaNnFkdEUxYm9o?=
- =?utf-8?B?aEZta2QvOTJKakMrN216RnFSSnA3TzNEL2FoZExwSXkyMmg4dHlWU25iZlBS?=
- =?utf-8?B?M3pKUUtrVHVPUkMrTC9kbVZtVEdoTGt4THU2eERQWVM2VWlUc29QN3E1TW9p?=
- =?utf-8?B?ajRTTFNISWRiMUpWejl2Z2JlWlJIUDZwWldxZktNLzVFM3ptVkZUeUpDd3NL?=
- =?utf-8?B?b0laV1QvMk1YdmRhZTkrVlc4RXd4MmJyYlk4Smdmc3gvMzhPaUVRRTNWeE5k?=
- =?utf-8?B?MDErb2FFRjlNN0ZhTkowZmNIdC8xK0cxbUFzUTJFOWxQMis1VW52THpEOXcw?=
- =?utf-8?B?eXpJd0FUR3RaS29GWFlQZ3ZZZXcrMGJoNGVCcGgvTlVuTkxUOWNCUFE5b3g2?=
- =?utf-8?B?dGl4OXVmMHVFb1pGb2Z2MXpPMjBzVCs2RHZwNWxJMld2TDdGcndIOGJ6QVJX?=
- =?utf-8?B?YjVldVhRQ1hsUHlUaGF0UG5PcWtOL0hqQUhmd1ZiWUxhMHljQkF3c3ZsbzdL?=
- =?utf-8?B?azVQcWxmN2hERnJQbW9zZ0RRSDl4SytaYzdsdlBBSlNFNnNsajNtaWxONFZM?=
- =?utf-8?B?bEl2Rm14V04wajhqVzc3WEJNcVRFZ0RIV1gvQzBQMk1hRGkxa29FMWxEU1Bt?=
- =?utf-8?B?SHYrb0kxcHRTemhtUmpDNmtZNUg3aFJ1Um84TzMrbDlEWGFDa2gralA1d0pC?=
- =?utf-8?B?NlhhT0ZXQW0xVmg3Vk15RkJxNGtta3dJTWFib0tnU0tVTnE2NVJ6YkdiWnZk?=
- =?utf-8?B?blprdUg0d1VpNTF6dTBNemtET1ZhTXBtY3pzcWhzSi9PTUJzek9hUXA5TEIz?=
- =?utf-8?B?N0cxY2VRc210RGhoaGRsTHk3ZWJUS0pzNXEzRGUvTUlHcFAydzlvSDl6Rk5F?=
- =?utf-8?B?YlVaN1RKWWMybEd1TWdrclV0TGNVNkZxc0tvVWZEUk1DM1BTK1BUZlRpRW1Y?=
- =?utf-8?B?ZzdoRi9DNm9wYUVYTU1CckpORFpPT0I1SlFJdW5rYWswenZvVnB5VGt4U0dT?=
- =?utf-8?B?QWpkSlFFc2FlZG5TM1M4bGhORW8yc012dWIvbVhKRE5EeTlOWUJLNkpOTEVP?=
- =?utf-8?B?dDZlV0R0c293bm5hY2ZwcTZVT3VJK0NWQTdoendWUlRiVUhTOHgrMFFYRGUy?=
- =?utf-8?B?anE3bE96NFpSUzdLSWdmUk40eXFacXZUTm9iNXo4UW05dVBQZFJ6UUdMWjJu?=
- =?utf-8?B?THVvUVdXWFlIdzJRYnZZNFhhaDMyMWVWSkpsWE9JUG9DblQ2QUJsTmZERFAx?=
- =?utf-8?Q?HSIO4phXZqyv1OKbEOYVVeFwLd3tByYyhP?=
+ 15.20.3632.17; Fri, 11 Dec 2020 12:34:42 +0000
+Received: from DM5PR12MB1356.namprd12.prod.outlook.com
+ ([fe80::3cc2:a2d6:2919:6a5a]) by DM5PR12MB1356.namprd12.prod.outlook.com
+ ([fe80::3cc2:a2d6:2919:6a5a%6]) with mapi id 15.20.3654.015; Fri, 11 Dec 2020
+ 12:34:42 +0000
+Subject: Re: [PATCH v2] net: bridge: Fix a warning when del bridge sysfs
+To:     Wang Hai <wanghai38@huawei.com>, <kuba@kernel.org>,
+        <davem@davemloft.net>, <roopa@nvidia.com>
+CC:     <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201211122921.40386-1-wanghai38@huawei.com>
+From:   Nikolay Aleksandrov <nikolay@nvidia.com>
+Message-ID: <ca27bd77-a679-b410-386e-f7cbd4fe1960@nvidia.com>
+Date:   Fri, 11 Dec 2020 14:34:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+In-Reply-To: <20201211122921.40386-1-wanghai38@huawei.com>
 Content-Type: text/plain; charset="utf-8"
-Content-ID: <06B9B68BF5E1564F82071620991CEBA7@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [213.179.129.39]
+X-ClientProxiedBy: ZR0P278CA0065.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:21::16) To DM5PR12MB1356.namprd12.prod.outlook.com
+ (2603:10b6:3:74::18)
 MIME-Version: 1.0
-X-OriginatorOrg: fi.rohmeurope.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.21.241.216] (213.179.129.39) by ZR0P278CA0065.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:21::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Fri, 11 Dec 2020 12:34:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 410a998b-b700-41de-cff3-08d89dd12246
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4926:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB492651168FC190A05EF806B1DFCA0@DM6PR12MB4926.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OX+frAQAF7VOGmU4wcOTza191yaU/gBf+Euuo3GDJ62g+yyFJM+cG5WTkKQBXl/g5QIYEsp/YbIHBa9hSkFd9FcDFbgYlJ0ZAurJwIJeoynmWAj1zLLhhZRwuuqgGcz8Se64Uor+gMnf7Fw5QC8vyAae1tJtQo8NwXUsMADXNNrXy5efHoAq752+ftM5XsIErnNXGJy4AIubj2nSBqdiSWmAv2KoHxlr3WtcroqnZvtkgH09viLsyDTBKsUT9UxTsSuACLDPeEOhXL06Pf2DUUxFB6Bglh/vKLjlKqSa+WztqGt4Ah/Nxq76roLfHX7dU7Unz03mY3ftmLA3erkQR17KpA2rLEwtW+K1/mfsNq5jfFKcV5rZUppwmoDB2GY99orie87LnflKtQj/6hPvR7CPUAS/ZBL79u2JjEHbjt8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1356.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(346002)(5660300002)(66556008)(66476007)(6666004)(31696002)(16576012)(83380400001)(36756003)(6486002)(66946007)(2906002)(53546011)(508600001)(26005)(2616005)(6636002)(4326008)(45080400002)(86362001)(8676002)(31686004)(186003)(16526019)(956004)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V1duSCtqMlR1bC9yb1RKcU5qLzhpdFNtUmVLcFFJUFk1T1NpaGZ0dVVQcExC?=
+ =?utf-8?B?cWZ0OFZKc3lEVkJTUXNlK3U1RVMzalF5OXR6Z2E5d1V3UGUxVVJ6WUxsdHph?=
+ =?utf-8?B?R1RoS05xTzJjYlBsNnJxTXpDdUw4eXlnUms3RFB2bE5YVEx5aVo0N2l6OU5p?=
+ =?utf-8?B?ZDlIMXBXa0U2bi9aQmtsQlhFdWN5WlFrbUgwRmN6cDE4WkJrUjUwUFhPd3Rn?=
+ =?utf-8?B?NHdmSFN1RERZd1E3dEMrbWRzK1FVeXlXS3R2dmJFd2lpQytFVlp5NlgwUWEx?=
+ =?utf-8?B?eHBWSVNKN29NbDFCWExJSy9QTFA1M2pTMjN1YldKRG9pdCtFWWw1R2Y1VXJs?=
+ =?utf-8?B?WGxwM1gvb1QvbmJoRTQvbDNoeEloblY5UWdNbEIvRUI0dEFMcGt1WGhKMXZ6?=
+ =?utf-8?B?TjJRd2FKb2tPY2doV2ZRMG45Qms5ZVRQQzlNQWVvTHc1YmgxbURwU0pjOXhG?=
+ =?utf-8?B?L0lvRzJhZUl2bUphMkt6bkd1V2VsQU8vOFVWdEJVQ292UnRVY0Z5V3JBWXFT?=
+ =?utf-8?B?R05ucW9WVENlMDkxbzBlSHJzRFdRQ3pCOHc1VWxzajloV1ZWN2l5ZFMvZGxF?=
+ =?utf-8?B?OTZBcE1qNzE5MEZPMVFrZzFuQTV4WUZHSjRHL0JXeHJVTDVRZnUrQVhoaHYr?=
+ =?utf-8?B?TU55S1hpeVRwd1ZpNURxMFc3RWlxK3ZFWElZSmJSWW8zcy9yYjFYeHZiU3NH?=
+ =?utf-8?B?YnRsMFJqRUJXem1SbXc5bmdZU2VhVm1kaXlyYkVMYVVvRjV3TzBENzQ1OWRa?=
+ =?utf-8?B?empsNExLRk12S3RSOEthaTdGUWNqTFJHQXpXU0JHdDdyU2wyY0ZiYis4Qk96?=
+ =?utf-8?B?dGF6cEhxQ0lWVHBHTnpBMTdHbWZONTZoVGowaEpLRGYxdGxIMEszWW8zeEI1?=
+ =?utf-8?B?ZzErMVEvdDhhdWhmN0dYS2RaY1czclFEcGZvaEowQ21uM1QvS1FDZ0RkVDlW?=
+ =?utf-8?B?dTJkaDJybTFaaUc1OUlpTERFaXBBZzFBWVNuMExzUGJLQjA4VW5xVTY5OHZl?=
+ =?utf-8?B?YnR4MzAxUTlhbUhiU3orRktrLzFlYlAyemlleHZWREtQOS9YVDE2NFFRc2Jn?=
+ =?utf-8?B?TlJ5TjdNZ2ZLYUF5ZEFOK2p6T1lScGNyNVR6QWg5bXZnSzYrM08rT21wYVU5?=
+ =?utf-8?B?U0xYMXdubVNzM3RlQUdCOHVZMmxnM1UwaDRDNVpZZHhuK2NoR2tuQWJWSWY2?=
+ =?utf-8?B?dkFiTFdDTDJoaTdGSkxsOVMyMm0vYm5rSXVWRWFZY01VblBpTUcvdTcrZk1V?=
+ =?utf-8?B?NFhPNk1QL0x6RFBWYkZGRXZybXF1anRTQVVxLzJtUzFuRDNCWkpYMEUxRW5I?=
+ =?utf-8?Q?daZmAd9E6wvbFoUtGkWLjb/EWiGviB8QYQ?=
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1356.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d035aff8-20e3-4599-b45f-08d89dd1199f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2020 12:34:27.5778
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2020 12:34:42.0727
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ONGQ6HEjzisGc1bqRnZ1aSnfnQz5iZeN7M1xy6UemWeTg36dXnT1P6Ew3aDtgwg4iHyoj7yrAmTxGE0rjqKfP+959d8A8/4zzOhpqm3eGnWtOJ3mUg4okCeZCTJb0rHU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR03MB2987
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 410a998b-b700-41de-cff3-08d89dd12246
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bTH1qtjAzITBRWzLYOrc5zLjRqpSMX9JWmhGk4XiKLHHurB6ARdo2jNPbxzYv4esMxrlhj2HOHnwpzmFxXZrqA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4926
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607690089; bh=a4dDkkvVeV8U82GM+m61Hub3z40BxGAHtYxTCYbI0/c=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:
+         Authentication-Results:Subject:To:CC:References:From:Message-ID:
+         Date:User-Agent:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy:
+         MIME-Version:X-MS-Exchange-MessageSentRepresentingType:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
+         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
+         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=n6VFr8g0caEeltIArqEojWcJHQ9DGQH4cUKWakIcFXTK5jQAmZx6Yf4zhA7qMaQx6
+         4PXMRxWlcpgtz1aNDbOazszzwc5ZsQbRBYOIHHiGMRZd8FsihwnbVzbVShsbVO2JE/
+         O3tMX791HcYB5kkenUVmanof6cg9o5nRKrIwhkhqxTRKnHg2W2ZfO6xrvKR29fMWiD
+         G4DWC9SlQrCayInJbPlzWr+0vsGyzIHN7hv96tWDAUDMTfVy3Dz5Iq6reywoUzOJ1B
+         cOdMhVTRYuzt4yakmEkUYd9ubQyTByn3CFj7ieX1Ea61/uNfbSSQ/vl7QwcZQxSOAP
+         LshxdtCPm9R6w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gYWdhaW4gU2hpbWFkYS1zYW4sDQoNCk9uIEZyaSwgMjAyMC0xMi0xMSBhdCAyMDoyNyAr
-MDkwMCwgWW9zaGloaXJvIFNoaW1vZGEgd3JvdGU6DQo+IEFkZCBzdXBwb3J0IGZvciBCRDk1NzRN
-V0Ygd2hpY2ggaXMgc2lsaW1hciBjaGlwIHdpdGggQkQ5NTcxTVdWLg0KPiBOb3RlIHRoYXQgQkQ5
-NTc0TVdGIGRvZXNuJ3Qgc3VwcG9ydCBBVlMgYW5kIFZJRC4NCg0KSSdkIGxpa2UgdG8gdW5kZXJz
-dGFuZCB3aGF0IGlzIFZJRD8NCg0KPiANCj4gU2lnbmVkLW9mZi1ieTogWW9zaGloaXJvIFNoaW1v
-ZGEgPHlvc2hpaGlyby5zaGltb2RhLnVoQHJlbmVzYXMuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMv
-cmVndWxhdG9yL2JkOTU3MW13di1yZWd1bGF0b3IuYyB8IDEwICsrKysrKysrLS0NCj4gIDEgZmls
-ZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9yZWd1bGF0b3IvYmQ5NTcxbXd2LXJlZ3VsYXRvci5jDQo+IGIvZHJpdmVy
-cy9yZWd1bGF0b3IvYmQ5NTcxbXd2LXJlZ3VsYXRvci5jDQo+IGluZGV4IDAyMTIwYjAuLjA0MTMz
-OWIgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvcmVndWxhdG9yL2JkOTU3MW13di1yZWd1bGF0b3Iu
-Yw0KPiArKysgYi9kcml2ZXJzL3JlZ3VsYXRvci9iZDk1NzFtd3YtcmVndWxhdG9yLmMNCj4gQEAg
-LTEsNiArMSw2IEBADQo+ICAvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KPiAg
-LyoNCj4gLSAqIFJPSE0gQkQ5NTcxTVdWLU0gcmVndWxhdG9yIGRyaXZlcg0KPiArICogUk9ITSBC
-RDk1NzFNV1YtTSBhbmQgQkQ5NTc0TVdGLU0gcmVndWxhdG9yIGRyaXZlcg0KPiAgICoNCj4gICAq
-IENvcHlyaWdodCAoQykgMjAxNyBNYXJlayBWYXN1dCA8bWFyZWsudmFzdXQrcmVuZXNhc0BnbWFp
-bC5jb20+DQo+ICAgKg0KPiBAQCAtOSw2ICs5LDcgQEANCj4gICAqIE5PVEU6IFZEMDkgaXMgbWlz
-c2luZw0KPiAgICovDQo+ICANCj4gKyNpbmNsdWRlIDxsaW51eC9tZmQvcm9obS1nZW5lcmljLmg+
-DQo+ICAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+DQo+ICAjaW5jbHVkZSA8bGludXgvb2YuaD4N
-Cj4gICNpbmNsdWRlIDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4NCj4gQEAgLTI3Nyw2ICsyNzgs
-NyBAQCBzdGF0aWMgaW50IGJkOTU3MW13dl9yZWd1bGF0b3JfcHJvYmUoc3RydWN0DQo+IHBsYXRm
-b3JtX2RldmljZSAqcGRldikNCj4gIAlzdHJ1Y3QgcmVndWxhdG9yX2RldiAqcmRldjsNCj4gIAl1
-bnNpZ25lZCBpbnQgdmFsOw0KPiAgCWludCBpOw0KPiArCWVudW0gcm9obV9jaGlwX3R5cGUgY2hp
-cCA9IHBsYXRmb3JtX2dldF9kZXZpY2VfaWQocGRldiktDQo+ID5kcml2ZXJfZGF0YTsNCj4gIA0K
-PiAgCWJkcmVnID0gZGV2bV9remFsbG9jKCZwZGV2LT5kZXYsIHNpemVvZigqYmRyZWcpLCBHRlBf
-S0VSTkVMKTsNCj4gIAlpZiAoIWJkcmVnKQ0KPiBAQCAtMjkyLDYgKzI5NCw5IEBAIHN0YXRpYyBp
-bnQgYmQ5NTcxbXd2X3JlZ3VsYXRvcl9wcm9iZShzdHJ1Y3QNCj4gcGxhdGZvcm1fZGV2aWNlICpw
-ZGV2KQ0KPiAgCWNvbmZpZy5yZWdtYXAgPSBiZHJlZy0+cmVnbWFwOw0KPiAgDQo+ICAJZm9yIChp
-ID0gMDsgaSA8IEFSUkFZX1NJWkUocmVndWxhdG9ycyk7IGkrKykgew0KPiArCQkvKiBCRDk1NzRN
-V0Ygc3VwcG9ydHMgRFZGUyBvbmx5ICovDQo+ICsJCWlmIChjaGlwID09IFJPSE1fQ0hJUF9UWVBF
-X0JEOTU3NCAmJiByZWd1bGF0b3JzW2ldLmlkDQo+ICE9IERWRlMpDQo+ICsJCQljb250aW51ZTsN
-Cg0KRG9lcyB0aGlzIG1lYW4gdGhhdCByZWFkaW5nIFZEMDkgdm9sdGFnZSBpcyBub3Qgc3VwcG9y
-dGVkIGJ5IGRyaXZlcj8gKEkNCmFzc3VtZWQgVkQwOSBpbml0aWFsIHZvbHRhZ2UgY2FuIGJlIHNl
-dCBmcm9tIGVlcHJvbSg/KSBhbmQgcmVhZCBieQ0KZHJpdmVyIC0gSSBtYXkgYmUgd3JvbmcgdGhv
-dWdoKS4gUGVyaGFwcyBpdCBpcyB3b3J0aCBtZW50aW9uaW5nIGluIHRoZQ0KY29tbWl0IG1lc3Nh
-Z2UgYXMgYSBkcml2ZXIgcmVzdHJpY3Rpb24/DQoNCkFuZCBqdXN0IGFza2luZyBvdXQgb2YgdGhl
-IGN1cmlvc2l0eSAtIGFyZSB0aGUgb3RoZXIgdm9sdGFnZSByYWlscw0KbGlzdGVkIGluIGRhdGEt
-c2hlZXQgKFZEMTgsIEREUjAsIFZEMzMsIFZEMDkgYW5kIExETzEsLi4uLExETzQpIHNldC11cA0K
-ZnJvbSBEVCBhcyBmaXhlZC1yZWd1bGF0b3JzPyBBbnkgcmVhc29uIHdoeSB0aGV5IGFyZSBub3Qg
-c2V0LXVwIGhlcmU/DQoNCj4gIAkJcmRldiA9IGRldm1fcmVndWxhdG9yX3JlZ2lzdGVyKCZwZGV2
-LT5kZXYsDQo+ICZyZWd1bGF0b3JzW2ldLA0KPiAgCQkJCQkgICAgICAgJmNvbmZpZyk7DQo+ICAJ
-CWlmIChJU19FUlIocmRldikpIHsNCj4gQEAgLTMzOSw3ICszNDQsOCBAQCBzdGF0aWMgaW50IGJk
-OTU3MW13dl9yZWd1bGF0b3JfcHJvYmUoc3RydWN0DQo+IHBsYXRmb3JtX2RldmljZSAqcGRldikN
-Cj4gIH0NCj4gIA0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2VfaWQNCj4g
-YmQ5NTcxbXd2X3JlZ3VsYXRvcl9pZF90YWJsZVtdID0gew0KPiAtCXsgImJkOTU3MW13di1yZWd1
-bGF0b3IiLCB9LA0KPiArCXsgImJkOTU3MW13di1yZWd1bGF0b3IiLCBST0hNX0NISVBfVFlQRV9C
-RDk1NzEgfSwNCj4gKwl7ICJiZDk1NzRtd2YtcmVndWxhdG9yIiwgUk9ITV9DSElQX1RZUEVfQkQ5
-NTc0IH0sDQo+ICAJeyAvKiBzZW50aW5lbCAqLyB9DQo+ICB9Ow0KPiAgTU9EVUxFX0RFVklDRV9U
-QUJMRShwbGF0Zm9ybSwgYmQ5NTcxbXd2X3JlZ3VsYXRvcl9pZF90YWJsZSk7DQoNCg==
+On 11/12/2020 14:29, Wang Hai wrote:
+> I got a warining report:
+> 
+> br_sysfs_addbr: can't create group bridge4/bridge
+> ------------[ cut here ]------------
+> sysfs group 'bridge' not found for kobject 'bridge4'
+> WARNING: CPU: 2 PID: 9004 at fs/sysfs/group.c:279 sysfs_remove_group fs/sysfs/group.c:279 [inline]
+> WARNING: CPU: 2 PID: 9004 at fs/sysfs/group.c:279 sysfs_remove_group+0x153/0x1b0 fs/sysfs/group.c:270
+> Modules linked in: iptable_nat
+> ...
+> Call Trace:
+>   br_dev_delete+0x112/0x190 net/bridge/br_if.c:384
+>   br_dev_newlink net/bridge/br_netlink.c:1381 [inline]
+>   br_dev_newlink+0xdb/0x100 net/bridge/br_netlink.c:1362
+>   __rtnl_newlink+0xe11/0x13f0 net/core/rtnetlink.c:3441
+>   rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3500
+>   rtnetlink_rcv_msg+0x385/0x980 net/core/rtnetlink.c:5562
+>   netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2494
+>   netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+>   netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1330
+>   netlink_sendmsg+0x793/0xc80 net/netlink/af_netlink.c:1919
+>   sock_sendmsg_nosec net/socket.c:651 [inline]
+>   sock_sendmsg+0x139/0x170 net/socket.c:671
+>   ____sys_sendmsg+0x658/0x7d0 net/socket.c:2353
+>   ___sys_sendmsg+0xf8/0x170 net/socket.c:2407
+>   __sys_sendmsg+0xd3/0x190 net/socket.c:2440
+>   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> In br_device_event(), if the bridge sysfs fails to be added,
+> br_device_event() should return error. This can prevent warining
+> when removing bridge sysfs that do not exist.
+> 
+> Fixes: bb900b27a2f4 ("bridge: allow creating bridge devices with netlink")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> ---
+> v1->v2: Fix this by check br_sysfs_addbr() return value as Nik's suggestion
+>  net/bridge/br.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/bridge/br.c b/net/bridge/br.c
+> index 401eeb9142eb..1b169f8e7491 100644
+> --- a/net/bridge/br.c
+> +++ b/net/bridge/br.c
+> @@ -43,7 +43,10 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
+>  
+>  		if (event == NETDEV_REGISTER) {
+>  			/* register of bridge completed, add sysfs entries */
+> -			br_sysfs_addbr(dev);
+> +			err = br_sysfs_addbr(dev);
+> +			if (err)
+> +				return notifier_from_errno(err);
+> +
+>  			return NOTIFY_DONE;
+>  		}
+>  	}
+> 
+
+Patch looks good, I also tested it with a notifier error injecting.
+Tested-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
