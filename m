@@ -2,86 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740DD2D813A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B48B62D8146
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406383AbgLKVnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:43:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
+        id S2392679AbgLKVtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:49:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392509AbgLKVmZ (ORCPT
+        with ESMTP id S2390546AbgLKVt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:42:25 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F8BC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:41:45 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id p6so5244671plr.7
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:41:45 -0800 (PST)
+        Fri, 11 Dec 2020 16:49:27 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C45C0613D6;
+        Fri, 11 Dec 2020 13:48:47 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id t3so8021150pgi.11;
+        Fri, 11 Dec 2020 13:48:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:cc:from:to:message-id;
-        bh=OqjIcjsaSVYgyvXXV3i2mpONbBYJYWxTgql2pHHuIgk=;
-        b=uIrN2MGJP0BtkwPzQ73wbsoyKLwaQ21sAZy/zPeBXzOSytiRI9k5Y9Bmbs5iRJyYil
-         8buLeAu/qp5cIPxjE1Y81AQ+tFE/jJYaLz6lTerCZWu6pZuGpF2KUynnAycyiFVdcBZ6
-         rgh2dd9DzrJHZYp1QIcV/EEgghQrPzMRETA//9FV9f9ylThijp8ThYKmF5QYOFrOpE6o
-         Zdndu3j84YSnGAie9EWquGMYQJKq8zhyiAymikpcOgo0LOz/0PmsiWLJMaGJfaOBWUKC
-         LWfVbWTo5oBO2XQEiaPApt0sGA7WPb/k3rB3bQjjYUX25HqQMdsf0t7mbINkgi1rfMan
-         8gcg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pHpWKSn31l43f2H1717TfLOC7MUZHKw7FosgRYUrlrc=;
+        b=oCcvSqoJfTdJZ3YkzPODs1BQRZ99UkyrPviVnc2vBbFT1OkGN0AA+lkxWd/cBtc3tU
+         UHnk0AdUgmhjiZ2wWWFEqhLwV3eg1A9bHyIIVj3Nc37ae6aok6FQQ+y6maxWtD5KtPP4
+         D4b/iErr+7Oq0q0w3L07faaW5mSuMUfYlCHYh6aL/9kwmzH7qlTXOTktyPBKmCRK07yx
+         z0FAS25WgZxwTVOTpSagskhCjIlKT2fiDulqI0nJIZ6LKkPJY9anJg18G+76+bk0w6Bl
+         AbDJuJjVpmwZaWjwQsBca2FgrgLJQXYapsfsNsWMfxM9ODkBR42OXU6pYVzSk/NEtIOW
+         IjbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=OqjIcjsaSVYgyvXXV3i2mpONbBYJYWxTgql2pHHuIgk=;
-        b=RR/Rf7C5bZAotETNIL59n16rA2fkSJyu2QmdlYFFvlGH1RFq1Sp1YMqC8g+hiN6aId
-         kPQJq+HslxJKmMA2z1rbGobafRKyaqlRhpPchshEVGQXhyuOdcACAox0KUAsuoPF9jSa
-         //ovtJmUmqz121f8nqsIPjo+tTZgx1fVcvKzh3B9N3ITGhBOaYz+3Pnv5zM1PLfY5Ftn
-         yM7K1sXRZJ9YxdRjfrpOzD2exPQQ2e+mJHezaHkqVAwpLem6xlDC+kz0xH0ZFVlBl6Qj
-         P20xJloDZz0m01igsJ1caS7wA8vm/+tW/NXiNb+NKA1ApWTwqAsqeFVF+Aw0HODShezU
-         5kDQ==
-X-Gm-Message-State: AOAM5328rOgrSoQIW8uItf2lQUIm9Mk9E70jHRMUN5lwrmjce37AOjDA
-        xSWUtxZpNPCN5KNttCwkjZDvr2ny7J1Bi7IHxlc=
-X-Google-Smtp-Source: ABdhPJwQu1ifve1Ve6v4KZb1RslVL+vY0LZn8c4Gq3ZfjULHarWsue0KMY8MhO/9J8gGbC+FIeEu2A==
-X-Received: by 2002:a17:90a:8a82:: with SMTP id x2mr14772502pjn.107.1607722904525;
-        Fri, 11 Dec 2020 13:41:44 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id b10sm12121192pgh.15.2020.12.11.13.41.43
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pHpWKSn31l43f2H1717TfLOC7MUZHKw7FosgRYUrlrc=;
+        b=m9wV3a+T8uNzqZBNjjj1dTsmVyGZvVrMqtEV5miyPi5HJbERS540k3ePFNKLqeUY0f
+         8AJPtusE2053rPz0hC2fgMBtgUQnGyQc1GEhx0vBcDhRZin229sSjc1TsR2TF0YtmYDK
+         hmMxoP8oV5p3bw+BQ5GGO9GxYcyeLyU+ZJlXiCatPvz0he8GJG1oEm3pnatrc/FCdptg
+         Ptp3JfnIDevCJeTHqqMnaRNbDbMP8UDH+cgMczSfE6Ni3kGxArt6RvHDiFT8rCwFnhKg
+         BX9ehl+SuH8elYGHU1d5SVtZYcT1R2ZTVuqpMdtoIg5rQcTICunh677+zBHN6hQ5k97s
+         cDBw==
+X-Gm-Message-State: AOAM530nKbr3JQwTfoFpaUQuoJ0UPPvZtDGAvAQKM6mW6lD//FBvSOBT
+        w2AkqDrwN/vB7KD3iJh+pv8=
+X-Google-Smtp-Source: ABdhPJznz3tmOkmUqAYL6KS4gGcW2zJLa62nv7tdxVTopFcCtPoxLxIodwqJ4RHd5MpQ+NchlPf3dA==
+X-Received: by 2002:a63:2e05:: with SMTP id u5mr7562182pgu.239.1607723326476;
+        Fri, 11 Dec 2020 13:48:46 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id r67sm11672581pfc.82.2020.12.11.13.48.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 13:41:44 -0800 (PST)
-Date:   Fri, 11 Dec 2020 13:41:44 -0800 (PST)
-X-Google-Original-Date: Fri, 11 Dec 2020 13:41:41 PST (-0800)
-Subject: [GIT PULL] RISC-V Fixes for 5.10 (unless there's an rc8)
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-5e629583-5ff4-4523-bfdf-c4254276d95e@palmerdabbelt-glaptop1>
+        Fri, 11 Dec 2020 13:48:45 -0800 (PST)
+Date:   Fri, 11 Dec 2020 13:48:41 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     "jingle.wu" <jingle.wu@emc.com.tw>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        phoenix@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw
+Subject: Re: [PATCH 1/2] Input: elan_i2c - Add new trackpoint report type
+ 0x5F.
+Message-ID: <X9PpOaN8KBwkOr1e@google.com>
+References: <20201211071511.32349-1-jingle.wu@emc.com.tw>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211071511.32349-1-jingle.wu@emc.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 30aca1bacb398dec6c1ed5eeca33f355bd7b6203:
+On Fri, Dec 11, 2020 at 03:15:11PM +0800, jingle.wu wrote:
+> The 0x5F is new trackpoint report type of some module.
+> 
+> Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
 
-  RISC-V: fix barrier() use in <vdso/processor.h> (2020-11-25 09:44:27 -0800)
+Applied with few minor edits.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.10-rc8
-
-for you to fetch changes up to ccbbfd1cbf365b38d014351d1482fedd26282041:
-
-  RISC-V: Define get_cycles64() regardless of M-mode (2020-12-10 17:39:43 -0800)
-
-----------------------------------------------------------------
-RISC-V Fixes for 5.10 (unless there's an rc8)
-
-I've just got one fix.  It's nothing critical, just a randconfig that
-wasn't building.  That said, it does seem pretty safe and is technically
-a regression so I'm sending it along for 5.10:
-
-* Define get_cycles64() all the time, as it's used by most
-  configurations.
-
-----------------------------------------------------------------
-Palmer Dabbelt (1):
-      RISC-V: Define get_cycles64() regardless of M-mode
-
- arch/riscv/include/asm/timex.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+-- 
+Dmitry
