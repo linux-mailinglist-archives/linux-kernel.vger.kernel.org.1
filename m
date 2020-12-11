@@ -2,125 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E059C2D808E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 289602D80AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395253AbgLKVLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:11:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395159AbgLKVLT (ORCPT
+        id S1728108AbgLKVMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:12:38 -0500
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:43785 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395157AbgLKVLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:11:19 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF0DC0613D3;
-        Fri, 11 Dec 2020 13:10:38 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607721037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mo2pAYuz+fdW3SgRq/XPKjojssrrAkt+Ucf5porPagA=;
-        b=Jwq6ijv1GHVoieraIz9ydp2q4O6t/9GUc1eMMejV0w+8HMZFh2MudG98dd8dHkmBbtcY23
-        rWBcv8bjhS74ccS+ED0Y2Ffx6+AE3ILOJic4uDyRWA5WOr4daMkBthSaLo/d+kCRNbQOx4
-        /u1tQekXWSXK+tnBOy8SnybwPlOHVa58yu83Wz/vzB6Q7kN2A+/PUNns70l+Y5AN2H5xGf
-        7iGU6k2Q0hE5HprbYz1Eu3KcHibChvhCzqBaZRj/WCHuBdSDA1VHcJDgDidwq1qqERl/TB
-        s9Q8j4pTrdZ9IKgusBRQ2bAa+V0Lruumrto07aTzrOd30AjJDgps945/dnu+DQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607721037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mo2pAYuz+fdW3SgRq/XPKjojssrrAkt+Ucf5porPagA=;
-        b=6/ko850V23KEuDS4nOrh7BVWq2Ew0gOANx75sF2cdzYDioAkFAZKWg5jsxMNTHTfHBIf/A
-        ckLpFAtkm+PHw5Bw==
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "intel-gfx\@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "dri-devel\@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        "linux-parisc\@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "linux-arm-kernel\@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "linux-s390\@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-gpio\@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        "linux-ntb\@googlegroups.com" <linux-ntb@googlegroups.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma\@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "xen-devel\@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-Subject: RE: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
-In-Reply-To: <d6cbfa118490459bb0671394f00323fc@AcuMS.aculab.com>
-References: <20201210192536.118432146@linutronix.de> <20201210194043.957046529@linutronix.de> <ad05af1a-5463-2a80-0887-7629721d6863@linux.intel.com> <87y2i4h54i.fsf@nanos.tec.linutronix.de> <d6cbfa118490459bb0671394f00323fc@AcuMS.aculab.com>
-Date:   Fri, 11 Dec 2020 22:10:36 +0100
-Message-ID: <87eejwgib7.fsf@nanos.tec.linutronix.de>
+        Fri, 11 Dec 2020 16:11:48 -0500
+Received: by mail-oo1-f67.google.com with SMTP id h10so2478094ooi.10;
+        Fri, 11 Dec 2020 13:11:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4NTTHHr7mOEfXkNGuntp7FwEGD1KvufY8eCqfkNsfa0=;
+        b=JJmGq2fE7wSiJfD/mY48V0vyBsxw1eQNsdYlJKgieJjQXAnloHIqWNsL8xTKQA+thN
+         ivS3PVBR0iKCoH+AzOBDS0eKn4YtoLFcF18+gSFjXt661iSUgq3pEj/QGJPi6tuGq1nU
+         PziQhMjtOGOh+mn7MbsHRsnzM6DzLW7lC6vuEwqEYhzTSfeWtHdzrjd1xaFH0sfnjLq6
+         GkC4Z7gpRDHoXjst2/LCesLuoFAzn/6LTdkMqgBxbh9pMtAtPnNAZVt1J6xgVsiQMszJ
+         nwL5ISTHTTyxH90L2dtqvQZPlgEsVhTzPijKN5Be4qShZjsnOLsXW3HgWiVRbUkoa/eU
+         5GFQ==
+X-Gm-Message-State: AOAM530FPiZLUbTpQ+WZz5EbsFDTgV/OD9FDhN9SmZQgnpr90CVZivfT
+        Li5ekGhEMpAZn6wV+DsQ/5j15sGX+w==
+X-Google-Smtp-Source: ABdhPJwphA/KS8Koyk+lG6TgLm2qa0Xhv6kCYJOy86qcVxZjNNgyYmG8jsym2vhi/WQbA/2+Hm/s0A==
+X-Received: by 2002:a4a:6f01:: with SMTP id h1mr9883394ooc.88.1607721067665;
+        Fri, 11 Dec 2020 13:11:07 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f201sm1888766oig.21.2020.12.11.13.11.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 13:11:06 -0800 (PST)
+Received: (nullmailer pid 942618 invoked by uid 1000);
+        Fri, 11 Dec 2020 21:11:05 -0000
+Date:   Fri, 11 Dec 2020 15:11:05 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     Laurent.pinchart@ideasonboard.com, devicetree@vger.kernel.org,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        agx@sigxcpu.org, vkoul@kernel.org, shawnguo@kernel.org,
+        linux-imx@nxp.com, jonas@kwiboo.se, kishon@ti.com,
+        martin.kepplinger@puri.sm, s.hauer@pengutronix.de,
+        robert.chiras@nxp.com, robh+dt@kernel.org,
+        dri-devel@lists.freedesktop.org, narmstrong@baylibre.com,
+        linux-arm-kernel@lists.infradead.org, airlied@linux.ie,
+        a.hajda@samsung.com, jernej.skrabec@siol.net
+Subject: Re: [PATCH v3 3/5] dt-bindings: phy: Convert mixel, mipi-dsi-phy to
+ json-schema
+Message-ID: <20201211211105.GA942315@robh.at.kernel.org>
+References: <1607651182-12307-1-git-send-email-victor.liu@nxp.com>
+ <1607651182-12307-4-git-send-email-victor.liu@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1607651182-12307-4-git-send-email-victor.liu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11 2020 at 14:19, David Laight wrote:
-> From: Thomas Gleixner
->> You can't catch that. If this really becomes an issue you need a
->> sequence counter around it.
->
-> Or just two copies of the high word.
-> Provided the accesses are sequenced:
-> writer:
-> 	load high:low
-> 	add small_value,high:low
-> 	store high
-> 	store low
-> 	store high_copy
-> reader:
-> 	load high_copy
-> 	load low
-> 	load high
-> 	if (high != high_copy)
-> 		low = 0;
+On Fri, 11 Dec 2020 09:46:20 +0800, Liu Ying wrote:
+> This patch converts the mixel,mipi-dsi-phy binding to
+> DT schema format using json-schema.
+> 
+> Comparing to the plain text version, the new binding adds
+> the 'assigned-clocks', 'assigned-clock-parents' and
+> 'assigned-clock-rates' properites, otherwise 'make dtbs_check'
+> would complain that there are mis-matches.  Also, the new
+> binding requires the 'power-domains' property since all potential
+> SoCs that embed this PHY would provide a power domain for it.
+> The example of the new binding takes reference to the latest
+> dphy node in imx8mq.dtsi.
+> 
+> Cc: Guido Günther <agx@sigxcpu.org>
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: NXP Linux Team <linux-imx@nxp.com>
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> ---
+> v2->v3:
+> * Improve the 'clock-names' property by dropping 'items:'.
+> 
+> v1->v2:
+> * Newly introduced in v2.  (Guido)
+> 
+>  .../devicetree/bindings/phy/mixel,mipi-dsi-phy.txt | 29 ---------
+>  .../bindings/phy/mixel,mipi-dsi-phy.yaml           | 72 ++++++++++++++++++++++
+>  2 files changed, 72 insertions(+), 29 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt
+>  create mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
+> 
 
-And low = 0 is solving what? You need to loop back and retry until it's
-consistent and then it's nothing else than an open coded sequence count.
-
-Thanks,
-
-        tglx
+Reviewed-by: Rob Herring <robh@kernel.org>
