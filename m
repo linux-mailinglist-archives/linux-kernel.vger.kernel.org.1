@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121A02D6E4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68EF82D6E51
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405032AbgLKDDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 22:03:34 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:42072 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404992AbgLKDDP (ORCPT
+        id S2392006AbgLKDGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 22:06:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387768AbgLKDFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 22:03:15 -0500
-Received: by mail-oi1-f195.google.com with SMTP id l200so8266999oig.9;
-        Thu, 10 Dec 2020 19:03:00 -0800 (PST)
+        Thu, 10 Dec 2020 22:05:42 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21E4C0613CF;
+        Thu, 10 Dec 2020 19:05:02 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id v1so1482237pjr.2;
+        Thu, 10 Dec 2020 19:05:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NiJXm49bb0+mRAzm+9WCX1DuxepspdwYot+zYnU24TY=;
+        b=jJPI7KpYIdeRq+Ht1nNATy9GMpr7rNTGQv9dtKarJg0Hsqynb7sHB6oDtdwESBhzdm
+         Ekx2kfMZlSigOc8fdmxpoJBV8eIsSzv1ImGdXwXH+y3BDs8+p7Q5aDNfCbe0Re0ukC6o
+         +JpXcg38mTFWdRmdZX6upzmWq35JgOoRimkqLiKmNUM+U7JqYrDh2FJvE4RHtcdsNDQJ
+         PqYFqcKkq1JlhOSHWB5vlcAFoLr/Uq9b4Kcp7NqWgw+Kuc8kMIaDhGCEP0Tu9EfSjxAx
+         7bODazyuaybB/0MTArv3zTOFuB7bEero8vvioAeixXzBNuZytqZrab2w+Vrw/DKd1Ahb
+         /wXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=rVA3v//5uFeyzZYgKjyJny/vDnQO/EJzRhd8D8iaejQ=;
-        b=tGHxxURFceUNIWu+1IexjktNuzHGJ8/ZKcPo48mNyobobUiXZ9ua6f3K4u5kXDiHoF
-         B7vL14EggvIKbkiK7117i6QYWFoskVRsrQGFN+0r42a9nUNGf7+Nhxca/Bb9lAiCAf2p
-         qh5ckmeeOrIx15jHEaGTC43iM415nrhwoRfO3dDPHTYAhDdxZLgMYdKdaxZdoWZXE6At
-         JTkCnnxTq7R/EQJEZNiC8qPQxBa6LbK2kayml8mJQpdo0FzkUTPyaJMzlnS3UinScMza
-         P1RaDkpBDyzVX2DViij+vwBFmWIIFa1T4Pa96mS7mRg+16d6kqycnh4zmfer1UAbRh24
-         z1Cw==
-X-Gm-Message-State: AOAM5334Nm+NNt3mWatV1HLR7jxn5oovi9iN49C489VGt0qX2qYUz/iw
-        B874CiLIO1Gq3xhX1dYbHg==
-X-Google-Smtp-Source: ABdhPJwCIQonnSCIfxwOgO8gPt+2/0oE5Zl3IUpntY7Xd98njTzBqZsLFZWiIrcsrQosIMcr8S04Rw==
-X-Received: by 2002:aca:dd09:: with SMTP id u9mr7177668oig.73.1607655755070;
-        Thu, 10 Dec 2020 19:02:35 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h20sm1546911otj.57.2020.12.10.19.02.33
+         :mime-version:content-disposition:in-reply-to;
+        bh=NiJXm49bb0+mRAzm+9WCX1DuxepspdwYot+zYnU24TY=;
+        b=fbrJHG1dgTIkzSQOs++wsLthlYyLktXhjsyahH8sMT+K6EKf/+lz0rFsP86LYduapR
+         ESnyvcqQHKrDoTkUPsXnJBue6w5dbLxF0MreF1rBjfZcm9KO9D7fP9PwZFqAFLxoobOr
+         CoICCED3pg01cCZq2GpdTt1mwbJcS+pO0YkmhT8tT1c1W8ZgTALiDTpSvPVhlh3O+UjF
+         9CKu6t6qMR8/c4z06A+qZ+k9ror937WVdcVBup1LnzQqm/cGxTl4PKJdr1UCACx09ZO1
+         FP2cDEIDAjOB61Q2IXzBOVTeqU+BeT6wusPIId+VGCGJ7ccZNYpNIxvTD7Mc+9E3oXbY
+         QChQ==
+X-Gm-Message-State: AOAM531I7527nI68gCb+zoJZmR3WtJqYtxA8vKKY+tfNbf3RNkBbFH7l
+        kxI17rRH5yMJip12YQSdOZY=
+X-Google-Smtp-Source: ABdhPJxyTt2+80BKgtYiWsQjqy+tE+647/gV6Wi1HcqlFJsoikOjpRwGoBRiCdr+YoEevZ1Rt+xXVQ==
+X-Received: by 2002:a17:902:8e8a:b029:db:de2a:2e58 with SMTP id bg10-20020a1709028e8ab02900dbde2a2e58mr1508616plb.39.1607655902193;
+        Thu, 10 Dec 2020 19:05:02 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id l23sm7745673pff.194.2020.12.10.19.05.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 19:02:34 -0800 (PST)
-Received: (nullmailer pid 3538020 invoked by uid 1000);
-        Fri, 11 Dec 2020 03:02:33 -0000
-Date:   Thu, 10 Dec 2020 21:02:33 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-Cc:     devicetree@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, 'Rob Herring' <robh+dt@kernel.org>,
-        'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v1 2/2] Staging: silabs si4455 serial driver: docs device
- tree binding
-Message-ID: <20201211030233.GA3536340@robh.at.kernel.org>
-References: <20201210122154.GA31799@dincontrollerdev>
+        Thu, 10 Dec 2020 19:05:00 -0800 (PST)
+Date:   Thu, 10 Dec 2020 19:04:58 -0800
+From:   'Dmitry Torokhov' <dmitry.torokhov@gmail.com>
+To:     jingle <jingle.wu@emc.com.tw>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        phoenix@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw
+Subject: Re: [PATCH 1/2] Input: elan_i2c - Add new trackpoint report type
+ 0x5F.
+Message-ID: <X9Lh2n42om+SNEFx@google.com>
+References: <20201207090751.9076-1-jingle.wu@emc.com.tw>
+ <X9G8xUk/QvcxsNWi@google.com>
+ <004b01d6cf66$b1a8c590$14fa50b0$@emc.com.tw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201210122154.GA31799@dincontrollerdev>
+In-Reply-To: <004b01d6cf66$b1a8c590$14fa50b0$@emc.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 12:21:56 +0000, József Horváth wrote:
-> add: device tree binding schema
+Hi Jingle,
+
+On Fri, Dec 11, 2020 at 10:38:22AM +0800, jingle wrote:
+> HI Dmitry:
+
+Please do not top post on the kernel mailing lists.
+
 > 
-> Signed-off-by: József Horváth <info@ministro.hu>
-> ---
->  .../bindings/serial/silabs,si4455.yaml        | 53 +++++++++++++++++++
->  MAINTAINERS                                   |  2 +-
->  2 files changed, 54 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/serial/silabs,si4455.yaml
+> I would prefer if we validated report length versus the packet type before
+> accepting it.
 > 
+> -> If the tracking point report is 0x5F, the report length is 7, but the
+> touchpad report length is 32.
+> -> So, report length will be different with this module.
 
+Right, but we could check the report type when we receive the data and
+refuse it if length does not match what is expected for the report type
+received. This can happen before we pass the data on to the
+elan_i2c_core.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Thanks.
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/serial/silabs,si4455.example.dts:19.9-14 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/serial/silabs,si4455.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1364: dt_binding_check] Error 2
-
-
-See https://patchwork.ozlabs.org/patch/1414082
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+-- 
+Dmitry
