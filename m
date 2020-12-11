@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0982B2D7601
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEED72D760C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405965AbgLKMsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 07:48:43 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2003 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405906AbgLKMsJ (ORCPT
+        id S2405988AbgLKMvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 07:51:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405984AbgLKMu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:48:09 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fd36a600004>; Fri, 11 Dec 2020 04:47:28 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 11 Dec
- 2020 12:47:28 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.108)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 11 Dec 2020 12:47:28 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ajjlhPC2dYJtzy8+dn81WytJrgl6Rb8sdoPpqXZ2jxsN/8Zf1Pl+d727B9L+kraojLymBRVKv1xkgtVxUHmYYl5fDZjXCZziNJateh0k8IhKLYkjXcl1Pr2jzrBGa/zhyV5O7rYMzXkRn/jkie350CnFgJ5wYB38zND5FLl48rkq/qkm/RqYuEz4TM7BcMCmqWYd7CY7Fplu55N6Lotwu23BgPLIQ0nUmLKiFte3rbMQoIxcWa3yq1zZU1E/rOdyVM1r9K0Yut4qQr8YM06B2JfdZvzGCogk+QKGSHdIYX59dnmKXLixaOcKwE6wJ/ZGGhML6iLPXbGcqBzxfUEl/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K3Pc2+gxrqDcz1bXwXDCnkbOeGEz9hf2MsDqKcLqN3c=;
- b=jSAoKLJ6J6FKrzUwRRHCLJQA1KGiP5gDGOzBHvo2zT6SdqBSJWNZWMLtOWz0xem91gXNL/0YM9DhSsPzYsFmf9udmDoSBTFDhtR8kosyOYyc3AtGw/hLUDawHBttRCbKcyPvN2gYbVYw1HQ/8YXUjUeevPkcLnbYKQf9EbVb+s/ekgLt/gxjdRel75JjsOJ8yR0+jM4BCIztGnY6VkjxQATjzw2eMTi9kF00GYkcV2yTinW2M/WPgdqGfyhN00d6kkLjH75G6UKJ6GgZY1gFVLFDkMc/IN0E0ztNOVpwEoVWl2L4I3t8ypVVU3HCKvzi2CbFifztvctK/I5zel+IWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3737.namprd12.prod.outlook.com (2603:10b6:5:1c5::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Fri, 11 Dec
- 2020 12:47:27 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3654.018; Fri, 11 Dec 2020
- 12:47:27 +0000
-Date:   Fri, 11 Dec 2020 08:47:25 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the tip
- tree
-Message-ID: <20201211124725.GD552508@nvidia.com>
-References: <20201211195654.6b414f90@canb.auug.org.au>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201211195654.6b414f90@canb.auug.org.au>
-X-ClientProxiedBy: BL1PR13CA0079.namprd13.prod.outlook.com
- (2603:10b6:208:2b8::24) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Fri, 11 Dec 2020 07:50:59 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977A5C0613D3;
+        Fri, 11 Dec 2020 04:50:18 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 3so8467927wmg.4;
+        Fri, 11 Dec 2020 04:50:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=AZh6epnblgNjcXj9Q6TirIVCDf8ojkkWKD1ZT1IFbo0=;
+        b=fRw+t1yi2q/quJMj2mDcdMy+/97ElCT0SlqAm5aKMjksPJbaGms4IregiyJZ4e/DG0
+         NzC47Cnxk7JyZ9sfOhWjGgkMswia6smaPDIE/+rDk1ByqOuFSSP8qNp+U8Yf6201XQgA
+         IEaa0V4sNPW79OnqmRHln+3kLnfyI63CPiY43HLI7Uhn3wgHnl3ZMBdgW8rcrqEpnXdZ
+         2joYMd4XY5OYgaiv6mPZjoSdMo6U2GW1VNMF6YtmM6dq4so5PevVNh0ehXf4l1d68EjG
+         /D50qf9zD0DEQnWjCyouwlpxcA+hcHNy7xit/7A+Dtp59jW4x08HaL3spQCSO1khRzWd
+         TCdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=AZh6epnblgNjcXj9Q6TirIVCDf8ojkkWKD1ZT1IFbo0=;
+        b=ELuygU/2BNnVwzj28dU7XlcUCWmAofzLjV2UJeK7aj0cj2nfPXTeOK6pHSvwg8skTy
+         kJf5BcKpmHuqPeKTNnRCLC6CGCNXqsHXx8ZbeOxKq+pNxefBr1Njewf6FLl2WT1g9kSh
+         LmHiCGfI6r7oH/uMpXz2mA+/BKe1AKk+AXnQ5jqr+7qmoe0Yw2tRevJlCamUA6o3TJci
+         RMO7vyNzuTCOU9EU4Z/xI1AgMmBIRgpwlf8wAqN9wk0VWdwvbdLs5OoWRwsjHhkMR7Hl
+         Fm8Pt1IiT/MJRpIPi1U4ecq/XIMxrewLKMx70FsgujZjctZ+kh0vzt5KrhDXJSM7rnFW
+         D2sw==
+X-Gm-Message-State: AOAM531zqW0wWaat2uEj7wdFrQ8bjqDDlbZmnXWIzwWwBmPHiEqORxN7
+        6p89+1fKS59WpPdwJvrMLHnCoLVye4WEqQ==
+X-Google-Smtp-Source: ABdhPJxfeKFOVFYxXf3fCLC0eSEHMZvdo4ET217m6cm8UQepZ1sLNQa6uYIQWey1QwThcu699AOEuA==
+X-Received: by 2002:a1c:67c2:: with SMTP id b185mr13102888wmc.119.1607691017088;
+        Fri, 11 Dec 2020 04:50:17 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f06:5500:c83a:dffd:2622:7172? (p200300ea8f065500c83adffd26227172.dip0.t-ipconnect.de. [2003:ea:8f06:5500:c83a:dffd:2622:7172])
+        by smtp.googlemail.com with ESMTPSA id c1sm13698555wml.8.2020.12.11.04.50.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Dec 2020 04:50:16 -0800 (PST)
+Subject: Re: [PATCH net v2] lan743x: fix rx_napi_poll/interrupt ping-pong
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201210035540.32530-1-TheSven73@gmail.com>
+ <5ff5fd64-2bf0-cbf7-642f-67be198cba05@gmail.com>
+ <CAGngYiXsyRH=5UYwaCkVDDGkRX6m_Cw9iam+nSRZwA1=ZNPnOQ@mail.gmail.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <f462a419-aa6f-38f7-573e-c48c2a859f55@gmail.com>
+Date:   Fri, 11 Dec 2020 13:50:12 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0079.namprd13.prod.outlook.com (2603:10b6:208:2b8::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Fri, 11 Dec 2020 12:47:26 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1knhpV-009CG6-9i; Fri, 11 Dec 2020 08:47:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607690848; bh=K3Pc2+gxrqDcz1bXwXDCnkbOeGEz9hf2MsDqKcLqN3c=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=qv+fA6yK3+ZRVLGVX+s78OOKoli/mvLkptoTsP71IUZTc4R/Ce2ymqf4p08lnjJjj
-         FyJBv/N/XSOi1fzwqCWA4l9K8HdpAdWv/IIfDdfhThOMJoWwxROD49M+Amlp7+3+/v
-         oHSYmUgpW/sKJE2sYwrc/fXswx0ERp3NDV5w34l8WmCPdJlDSkYQvwvCy/Wm5of4vG
-         10LIGC03WUjr0gLBO4yF5MuTRCKp6Nhy+ciUpEb8MoXcPdFh4GTNuVtJIMbwMxCV76
-         vaqEu2DIT+vBVMVA60w5whTvyeiuCjzYDUF8bR7niLoREspRKu2/Swrl1eUsSiwKnH
-         VxQEv+SmsfB8g==
+In-Reply-To: <CAGngYiXsyRH=5UYwaCkVDDGkRX6m_Cw9iam+nSRZwA1=ZNPnOQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 07:56:54PM +1100, Stephen Rothwell wrote:
-> Hi all,
+Am 11.12.2020 um 13:43 schrieb Sven Van Asbroeck:
+> Hi Heiner,
 > 
-> Today's linux-next merge of the akpm-current tree got a conflict in:
+> On Thu, Dec 10, 2020 at 2:32 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>>
+>>
+>> In addition you could play with sysfs attributes
+>> /sys/class/net/<if>/gro_flush_timeout
+>> /sys/class/net/<if>/napi_defer_hard_irqs
 > 
->   mm/gup.c
+> Interesting, I will look into that.
 > 
-> between commit:
-> 
->   2a4a06da8a4b ("mm/gup: Provide gup_get_pte() more generic")
-> 
-> from the tip tree and commit:
-> 
->   1eb2fe862a51 ("mm/gup: combine put_compound_head() and unpin_user_page()")
-> 
-> from the akpm-current tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+I run a 1Gbit chip with gro_flush_timeout = 20000 and napi_defer_hard_irqs = 1.
+This helped to reduce interrupt load significantly under iperf3
+(w/o interrupt coalescing at chip level)
 
-Looks OK
-
-Thanks,
-Jason
- 
-
+>>> @@ -2407,7 +2409,7 @@ static int lan743x_rx_open(struct lan743x_rx *rx)
+>>>
+>>>       netif_napi_add(adapter->netdev,
+>>>                      &rx->napi, lan743x_rx_napi_poll,
+>>> -                    rx->ring_size - 1);
+>>> +                    64);
+>>
+>> This value isn't completely arbitrary.
+>> Better use constant NAPI_POLL_WEIGHT.
+>>
+> 
+> Thank you, I will change it in the next patch version.
+> 
 
