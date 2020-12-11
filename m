@@ -2,168 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F062D750F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC662D7527
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395334AbgLKL5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 06:57:12 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:25309 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395244AbgLKL42 (ORCPT
+        id S2395307AbgLKL7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 06:59:22 -0500
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:42671 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgLKL6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:56:28 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607687768; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=LbzVKyGNu6jrpSMBFsyu/k8NnfRGSOIzaxBOw2v4+d4=; b=iVZwA5uqkn68GC9QxcdCg3ldunMiWp9jcQaEtV3qsUKJp1wzkfv9rd50vhRs/jAMfACKb+F2
- bIyoY3aFfA00xy50s4FGvqSGhfKfd0ktEZtyJs+BBkrWcCggX7GJBF6P1/nik6gI/laZd8Q4
- XDzdl1hhEXvUU9GkEj+yPAQz9Zo=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 5fd35e3a42c0400026098076 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Dec 2020 11:55:38
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5DF05C43462; Fri, 11 Dec 2020 11:55:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.3] (unknown [117.210.189.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2D217C43462;
-        Fri, 11 Dec 2020 11:55:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2D217C43462
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH v3 2/2] arm: dts: sc7180: Add support for gpu fuse
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-To:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, dri-devel@freedesktop.org
-References: <1607337728-11398-1-git-send-email-akhilpo@codeaurora.org>
- <1607337728-11398-2-git-send-email-akhilpo@codeaurora.org>
-Message-ID: <ca0f14be-83cd-157c-8773-939fbb63bdf0@codeaurora.org>
-Date:   Fri, 11 Dec 2020 17:25:31 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Fri, 11 Dec 2020 06:58:47 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id A947CC000D;
+        Fri, 11 Dec 2020 11:58:01 +0000 (UTC)
+Date:   Fri, 11 Dec 2020 12:58:00 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: Re: [PATCH] drivers: soc: atmel: Avoid calling at91_soc_init on non
+ AT91 SoCs
+Message-ID: <20201211115800.GG1781038@piout.net>
+References: <20201211103143.1332302-1-sudeep.holla@arm.com>
+ <20201211114515.GF1781038@piout.net>
+ <20201211115055.acoezgrwh45hw6is@bogus>
 MIME-Version: 1.0
-In-Reply-To: <1607337728-11398-2-git-send-email-akhilpo@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211115055.acoezgrwh45hw6is@bogus>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/2020 4:12 PM, Akhil P Oommen wrote:
-> Add support for gpu fuse to help identify the supported opps.
+On 11/12/2020 11:50:55+0000, Sudeep Holla wrote:
+> On Fri, Dec 11, 2020 at 12:45:15PM +0100, Alexandre Belloni wrote:
+> > Hello,
+> > 
+> > On 11/12/2020 10:31:43+0000, Sudeep Holla wrote:
+> > > Since at91_soc_init is called unconditionally from atmel_soc_device_init,
+> > > we get the following warning on all non AT91 SoCs:
+> > > 	" AT91: Could not find identification node"
+> > > 
+> > > Fix the same by filtering with allowed AT91 SoC list.
+> > > 
+> > > Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+> > > Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > > Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+> > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > > ---
+> > >  drivers/soc/atmel/soc.c | 11 +++++++++++
+> > >  1 file changed, 11 insertions(+)
+> > > 
+> > > diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
+> > > index c4472b68b7c2..ba9fc07cd91c 100644
+> > > --- a/drivers/soc/atmel/soc.c
+> > > +++ b/drivers/soc/atmel/soc.c
+> > > @@ -271,8 +271,19 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
+> > >  	return soc_dev;
+> > >  }
+> > >  
+> > > +static const struct of_device_id at91_soc_allowed_list[] __initconst = {
+> > > +	{ .compatible = "atmel,at91rm9200", },
+> > > +	{ .compatible = "atmel,at91sam9260", },
+> > > +	{ .compatible = "atmel,sama5d2", },
+> > 
+> > This is a very small subset of the supported SoCs. a proper list would
+> > be:
+> > 
+> > atmel,at91rm9200
+> > atmel,at91sam9
+> > atmel,sama5
+> > atmel,samv7
+> > 
 > 
-> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> ---
->   arch/arm64/boot/dts/qcom/sc7180.dtsi | 22 ++++++++++++++++++++++
->   1 file changed, 22 insertions(+)
+> Sure I can update it but the existing functions at91_get_cidr_exid_from_chipid
+> and at91_get_cidr_exid_from_dbgu check for following 3 compatibles and bail
+> out if not found:
+> "atmel,at91rm9200-dbgu"
+> "atmel,at91sam9260-dbgu"
+> "atmel,sama5d2-chipid"
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> index 6678f1e..8cae3eb 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> @@ -675,6 +675,11 @@
->   				reg = <0x25b 0x1>;
->   				bits = <1 3>;
->   			};
-> +
-> +			gpu_speed_bin: gpu_speed_bin@1d2 {
-> +				reg = <0x1d2 0x2>;
-> +				bits = <5 8>;
-> +			};
->   		};
->   
->   		sdhc_1: sdhci@7c4000 {
-> @@ -1907,52 +1912,69 @@
->   			operating-points-v2 = <&gpu_opp_table>;
->   			qcom,gmu = <&gmu>;
->   
-> +			nvmem-cells = <&gpu_speed_bin>;
-> +			nvmem-cell-names = "speed_bin";
-> +
->   			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
->   			interconnect-names = "gfx-mem";
->   
->   			gpu_opp_table: opp-table {
->   				compatible = "operating-points-v2";
->   
-> +				opp-825000000 {
-> +					opp-hz = /bits/ 64 <825000000>;
-> +					opp-level = <RPMH_REGULATOR_LEVEL_TURBO_L1>;
-> +					opp-peak-kBps = <8532000>;
-> +					opp-supported-hw = <0x04>;
-> +				};
-> +
->   				opp-800000000 {
->   					opp-hz = /bits/ 64 <800000000>;
->   					opp-level = <RPMH_REGULATOR_LEVEL_TURBO>;
->   					opp-peak-kBps = <8532000>;
-> +					opp-supported-hw = <0x07>;
->   				};
->   
->   				opp-650000000 {
->   					opp-hz = /bits/ 64 <650000000>;
->   					opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
->   					opp-peak-kBps = <7216000>;
-> +					opp-supported-hw = <0x07>;
->   				};
->   
->   				opp-565000000 {
->   					opp-hz = /bits/ 64 <565000000>;
->   					opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
->   					opp-peak-kBps = <5412000>;
-> +					opp-supported-hw = <0x07>;
->   				};
->   
->   				opp-430000000 {
->   					opp-hz = /bits/ 64 <430000000>;
->   					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
->   					opp-peak-kBps = <5412000>;
-> +					opp-supported-hw = <0x07>;
->   				};
->   
->   				opp-355000000 {
->   					opp-hz = /bits/ 64 <355000000>;
->   					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
->   					opp-peak-kBps = <3072000>;
-> +					opp-supported-hw = <0x07>;
->   				};
->   
->   				opp-267000000 {
->   					opp-hz = /bits/ 64 <267000000>;
->   					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->   					opp-peak-kBps = <3072000>;
-> +					opp-supported-hw = <0x07>;
->   				};
->   
->   				opp-180000000 {
->   					opp-hz = /bits/ 64 <180000000>;
->   					opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
->   					opp-peak-kBps = <1804000>;
-> +					opp-supported-hw = <0x07>;
->   				};
->   			};
->   		};
+> Quick check on DTS upstream suggested only 3 platforms, hence the choice.
 > 
 
-A gentle ping.
+No, atmel,at91sam9260-dbgu is used on most platforms:
+$ git grep atmel,at91sam9260-dbgu arch/arm/boot/dts/
+arch/arm/boot/dts/at91sam9260.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+arch/arm/boot/dts/at91sam9261.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+arch/arm/boot/dts/at91sam9263.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+arch/arm/boot/dts/at91sam9g45.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+arch/arm/boot/dts/at91sam9n12.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+arch/arm/boot/dts/at91sam9rl.dtsi:                              compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+arch/arm/boot/dts/at91sam9x5.dtsi:                              compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+arch/arm/boot/dts/sam9x60.dtsi:                         compatible = "microchip,sam9x60-dbgu", "microchip,sam9x60-usart", "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+arch/arm/boot/dts/sama5d3.dtsi:                         compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+arch/arm/boot/dts/sama5d4.dtsi:                         compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
 
--Akhil.
 
+> -- 
+> Regards,
+> Sudeep
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
