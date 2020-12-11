@@ -2,64 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926CB2D7258
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63C92D7226
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437050AbgLKIyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:54:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60424 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392926AbgLKIx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:53:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607676790; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=W1if7SktlQyaw0k06QJfTAiDbXDHkI8vZQRt4T89FBQ=;
-        b=I64aHuRUrWqVzr2kNc9mF1V9MEivQ/+7hRCyNHqCCt7QbNWKcQc5CHwWJdwu3l19JdHdZ1
-        nrqyLMLMHhs4FIO7BZt8lnmKNPRGFQCnJ9pVe7q2aO1vnbuBLtfDiD09z6n1v5+2CkMa2y
-        RAGw+7KCkQ5qaLQx8RfMSuTJKyQnnqA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 36BC8ACBD;
-        Fri, 11 Dec 2020 08:53:10 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        boris.ostrovsky@oracle.com
-Subject: [GIT PULL] xen: branch for v5.10-rc8
-Date:   Fri, 11 Dec 2020 09:53:09 +0100
-Message-Id: <20201211085309.8128-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id S2437067AbgLKIr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:47:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392434AbgLKIrX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:47:23 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DABC061793
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 00:46:43 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id ga15so11250456ejb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 00:46:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sDdfQvMZJazL55A92kQ/VzvBdB6WU0HCnW0vsuFnegU=;
+        b=XcXLc6NJhH7B/QDM8WKeCcU5W8Hmi1uswSnml+BVR+dijzpEOb0RGCFuN2OvZLJ2o8
+         R3r/tcU6AevS0ttHcmsB+IIHTR291ZvTOReyU0u4HOwgLNKjgTAlPaEGWO5sqEXB62bP
+         FYOYp9S8WsPYbvBV0koO+4aAThvsrODyEuah+dhZx42IkefQwMJbLWtL/fjGz+97offe
+         p7PGZ8nh/msibYgl4fHYD2GGLf+AY5nCvHc86lZZcbddJ9+ysNrBgKns/BcFXkeR4hhv
+         X2Cy4NiBUKtlXn+HrEl4yrHWQg/F8L7/vV4sx6/dPSGdj4igAvV6OINgaLdncIxI9ozL
+         9fQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sDdfQvMZJazL55A92kQ/VzvBdB6WU0HCnW0vsuFnegU=;
+        b=g6t692g9K+SGa2HAmY1exf7La5XdJaSIc9yWJIT3EbijA5ufsMjr2nMAUIKSxCnliv
+         tJFfXiGwacApsi8r74IykjOEC/2EISnJa6i4THv5XO+kSpy57t5yor3xaH+/VjvuImIg
+         R/XZmm/b3CW4EhO9li7NXqZJqEnQH++PjhVAhu/uVxKNrzu2Tw259esP8g9kVfs51zDp
+         f+Vj065uiJie83RqEp3nTOyMaIPE60TkuqOVYQ47AJ7gDWbSvbXLUbHT0aCSYWwWmK0Y
+         84523VF0a4JV4LFeqjLh+nCzRyxyl+mcbnPAK1AZgPdgF39ZJ9DjAOeIjqxzYy/yKfKF
+         KRwg==
+X-Gm-Message-State: AOAM531PvrD4DxqLOeO51RZNRh+6nJgNOMSzWMNrJrx2DvDWxcCGc1VR
+        Js44i2DoP8I6T5ujTzwP8M02qcuOUbk9sZ1YYD5CGA==
+X-Google-Smtp-Source: ABdhPJwBcrWFMCBWLOQ2YDvVQUyai6oD/poEHkhd2GUPENNzm23TU68nI/28thF+plLvRXlQI1bvYsCNqQbPsS+b23U=
+X-Received: by 2002:a17:906:40c1:: with SMTP id a1mr9852038ejk.520.1607676402010;
+ Fri, 11 Dec 2020 00:46:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1607670251-31733-1-git-send-email-hemantk@codeaurora.org>
+ <1607670251-31733-4-git-send-email-hemantk@codeaurora.org> <X9MjXWABgdJIpyIw@kroah.com>
+In-Reply-To: <X9MjXWABgdJIpyIw@kroah.com>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Fri, 11 Dec 2020 09:53:14 +0100
+Message-ID: <CAMZdPi8-_G+k1RvGOOte2MFFPQQiB=41wx86OkW+KDu13gRGUg@mail.gmail.com>
+Subject: Re: [PATCH v17 3/3] bus: mhi: Add userspace client interface driver
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Hemant Kumar <hemantk@codeaurora.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Fri, 11 Dec 2020 at 08:44, Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Dec 10, 2020 at 11:04:11PM -0800, Hemant Kumar wrote:
+> > This MHI client driver allows userspace clients to transfer
+> > raw data between MHI device and host using standard file operations.
+> > Driver instantiates UCI device object which is associated to device
+> > file node. UCI device object instantiates UCI channel object when device
+> > file node is opened. UCI channel object is used to manage MHI channels
+> > by calling MHI core APIs for read and write operations. MHI channels
+> > are started as part of device open(). MHI channels remain in start
+> > state until last release() is called on UCI device file node. Device
+> > file node is created with format
+> >
+> > /dev/<mhi_device_name>
+> >
+> > Currently it supports QMI channel. libqmi is userspace MHI client which
+> > communicates to a QMI service using QMI channel. libqmi is a glib-based
+> > library for talking to WWAN modems and devices which speaks QMI protocol.
+> > For more information about libqmi please refer
+> > https://www.freedesktop.org/wiki/Software/libqmi/
+>
+> This says _what_ this is doing, but not _why_.
+>
+> Why do you want to circumvent the normal user/kernel apis for this type
+> of device and move the normal network handling logic out to userspace?
+> What does that help with?  What does the current in-kernel api lack that
+> this userspace interface is going to solve, and why can't the in-kernel
+> api solve it instead?
+>
+> You are pushing a common user/kernel api out of the kernel here, to
+> become very device-specific, with no apparent justification as to why
+> this is happening.
 
-Please git pull the following tag:
+That would probably deserve re-wording indeed. This interface offers
+access to the modem control channel(s), which can be QMI (added in
+this patch), MBIM, or the old known AT protocol. Because there is no
+WWAN subsystem, these control pipes are directly exposed to userspace
+and accessed by tools like libqmi, ModemManager, minicom (for AT)
+etc... However, the data path, transporting the network payload (IP)
+is well routed to the Linux network via the mhi-net driver.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.10c-rc8-tag
-
-xen: branch for v5.10-rc8
-
-It contains a short series fixing a regression introduced in 5.9 for
-running as Xen dom0 on a system with NVMe backed storage.
-
-Thanks.
-
-Juergen
-
- drivers/block/xen-blkback/blkback.c |  89 +++++---------------------
- drivers/block/xen-blkback/common.h  |   4 +-
- drivers/block/xen-blkback/xenbus.c  |   6 +-
- drivers/xen/grant-table.c           | 123 ++++++++++++++++++++++++++++++++++++
- drivers/xen/unpopulated-alloc.c     |  20 +++---
- drivers/xen/xen-scsiback.c          |  60 ++++--------------
- include/xen/grant_table.h           |  17 +++++
- 7 files changed, 182 insertions(+), 137 deletions(-)
-
-Juergen Gross (2):
-      xen: add helpers for caching grant mapping pages
-      xen: don't use page->lru for ZONE_DEVICE memory
+>
+> Also, because you are going around the existing network api, I will need
+> the networking maintainers to ack this type of patch.
