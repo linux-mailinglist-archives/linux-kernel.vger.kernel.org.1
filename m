@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023452D7875
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F192D7868
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437261AbgLKPAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:00:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406402AbgLKO7c (ORCPT
+        id S2406464AbgLKPAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:00:00 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:35590 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405385AbgLKO71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:59:32 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B6DC061793
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:58:44 -0800 (PST)
+        Fri, 11 Dec 2020 09:59:27 -0500
 Date:   Fri, 11 Dec 2020 14:58:42 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607698723;
+        s=2020; t=1607698722;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lbCPyRP6ce6sQFOLWTVg+XQPTCDxCL62hdbB02SSOTg=;
-        b=yRXb10e713J/MQ/zZCWzuwLbCPU2Yhh5pvTrvHRLC+zQdr9m/iwgQj93RGcEGzJgq3i4rF
-        HJXn0UeyClOWuK5xyRvWXPb+K4l7yXMLCkueXzj3NF+6fVaGWxJNVXSFnbWXbQ8dr26sec
-        K8JB+77dnZvcimw9Lv77fuLgyaR9n6v+ZHjYJGUPbkzaFFkIqhfEregGj3Hw61j8dnt0tq
-        rbVVpiLRR0kTkk85tIdpvuQk75Z2E3rOaxim74q0k3AR5L6J+e0NiGmtP/wbRrT2cKsgmg
-        2J4DcPUmTaWHelo6aHYTiiVnOupuRMPN0ln7qITz2FDjgXKxTYZBg0kzYH1D1w==
+        bh=k8ncxYu+LcgOgQlBTC2mTy2zun3cadnzshLvN5xtE/A=;
+        b=mHBr6qINZse/W5rKy+nZPgiX/GMhPDYTujgRND2IXhjp5j5YAp3M0sH/os8Qhikxg1wqhR
+        p57uXkAqlBx5cvxLGvjZCYR4hR+D6/7TmwBEkH6tlMnBFsVjcnatGcoYVt7Jq1J7QZsOQ2
+        qXwnaaGjfKKczpho+VvCGlFmAOJ4YiT0oDRgTiIsvDbA75qDam+cdfO0LmzNBPdBkXc/zB
+        YdvfldEVjX2wuyMaGKWWqRS+UN2uZTUYk0UCqjthnZvccKetqgl/yppVBk3wGTXrZHpxqg
+        lw/87+agKdXHrWtY44Xfml5kAEQ88tBkxgrEP2SfizhjFk/hFWCu6Qdfae6naQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607698723;
+        s=2020e; t=1607698722;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lbCPyRP6ce6sQFOLWTVg+XQPTCDxCL62hdbB02SSOTg=;
-        b=GGTi4S9mGLsFjnOumaSYOBwE5QYutMgV7gfwPEGh0umQstSu5VMpL30yED7lunZpJIYgow
-        NERnnVXmejv1X/Bg==
+        bh=k8ncxYu+LcgOgQlBTC2mTy2zun3cadnzshLvN5xtE/A=;
+        b=JB4geLCYVBpdBao76KQHcYCzXCadGLJjDHLWVMkkUyMDQgXLNs2z/FISPT7jekDRERKxfd
+        rnqWTO46CQtwvhAA==
 From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] platform-msi: Track shared domain allocation
+Subject: [irqchip: irq/irqchip-next] irqchip/gic-v3-its: Flag device
+ allocation as proxied if behind a PCI bridge
 Cc:     Marc Zyngier <maz@kernel.org>, John Garry <john.garry@huawei.com>,
         tglx@linutronix.de
-In-Reply-To: <20201129135208.680293-2-maz@kernel.org>
-References: <20201129135208.680293-2-maz@kernel.org>
+In-Reply-To: <20201129135208.680293-4-maz@kernel.org>
+References: <20201129135208.680293-4-maz@kernel.org>
 MIME-Version: 1.0
-Message-ID: <160769872273.3364.3717006232182382204.tip-bot2@tip-bot2>
+Message-ID: <160769872245.3364.12465233915684170533.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,87 +59,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     91f90daa4fb2b77db7aa25ef2e0206f2e3962665
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/91f90daa4fb2b77db7aa25ef2e0206f2e3962665
+Commit-ID:     34dd263fce3114147f21698f8e55e05b9e8185bd
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/34dd263fce3114147f21698f8e55e05b9e8185bd
 Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Sun, 29 Nov 2020 13:52:06 
+AuthorDate:    Sun, 29 Nov 2020 13:52:08 
 Committer:     Marc Zyngier <maz@kernel.org>
 CommitterDate: Fri, 11 Dec 2020 14:47:50 
 
-platform-msi: Track shared domain allocation
+irqchip/gic-v3-its: Flag device allocation as proxied if behind a PCI bridge
 
-We have two flavours of platform-MSI:
-
-- MSIs generated by devices for themselves (the usual case)
-
-- MSIs generated on behalf of other devices, as the generating
-  device is some form of bridge (either a wire-to-MSI bridge,
-  or even a non-transparent PCI bridge that repaints the PCI
-  requester ID).
-
-In the latter case, the underlying interrupt architecture may need
-to track this in order to keep the mapping alive even when no MSI
-are currently being generated.
-
-Add a set of flags to the generic msi_alloc_info_t structure, as
-well as the MSI_ALLOC_FLAGS_PROXY_DEVICE flag that will get
-advertized by the platform-MSI code when allocating an irqdomain
-for a device.
+An aliasing PCI bridge is another case where we should flag the
+corresponding allocation as "proxied", as MSIs are coming with
+the bridge's RID, and not the originating device's.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 Tested-by: John Garry <john.garry@huawei.com>
-Link: https://lore.kernel.org/r/20201129135208.680293-2-maz@kernel.org
+Link: https://lore.kernel.org/r/20201129135208.680293-4-maz@kernel.org
 ---
- drivers/base/platform-msi.c | 7 +++++++
- include/asm-generic/msi.h   | 4 ++++
- 2 files changed, 11 insertions(+)
+ drivers/irqchip/irq-gic-v3-its-pci-msi.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/base/platform-msi.c b/drivers/base/platform-msi.c
-index c4a17e5..2c1e2e0 100644
---- a/drivers/base/platform-msi.c
-+++ b/drivers/base/platform-msi.c
-@@ -59,9 +59,15 @@ static int platform_msi_init(struct irq_domain *domain,
- 	return irq_domain_set_hwirq_and_chip(domain, virq, hwirq,
- 					     info->chip, info->chip_data);
- }
-+
-+static void platform_msi_set_proxy_dev(msi_alloc_info_t *arg)
-+{
-+	arg->flags |= MSI_ALLOC_FLAGS_PROXY_DEVICE;
-+}
- #else
- #define platform_msi_set_desc		NULL
- #define platform_msi_init		NULL
-+#define platform_msi_set_proxy_dev(x)	do {} while(0)
- #endif
+diff --git a/drivers/irqchip/irq-gic-v3-its-pci-msi.c b/drivers/irqchip/irq-gic-v3-its-pci-msi.c
+index 87711e0..ad2810c 100644
+--- a/drivers/irqchip/irq-gic-v3-its-pci-msi.c
++++ b/drivers/irqchip/irq-gic-v3-its-pci-msi.c
+@@ -67,11 +67,16 @@ static int its_pci_msi_prepare(struct irq_domain *domain, struct device *dev,
+ 	/*
+ 	 * If pdev is downstream of any aliasing bridges, take an upper
+ 	 * bound of how many other vectors could map to the same DevID.
++	 * Also tell the ITS that the signalling will come from a proxy
++	 * device, and that special allocation rules apply.
+ 	 */
+ 	pci_for_each_dma_alias(pdev, its_get_pci_alias, &alias_dev);
+-	if (alias_dev != pdev && alias_dev->subordinate)
+-		pci_walk_bus(alias_dev->subordinate, its_pci_msi_vec_count,
+-			     &alias_count);
++	if (alias_dev != pdev) {
++		if (alias_dev->subordinate)
++			pci_walk_bus(alias_dev->subordinate,
++				     its_pci_msi_vec_count, &alias_count);
++		info->flags |= MSI_ALLOC_FLAGS_PROXY_DEVICE;
++	}
  
- static void platform_msi_update_dom_ops(struct msi_domain_info *info)
-@@ -343,6 +349,7 @@ __platform_msi_create_device_domain(struct device *dev,
- 	if (!domain)
- 		goto free_priv;
- 
-+	platform_msi_set_proxy_dev(&data->arg);
- 	err = msi_domain_prepare_irqs(domain->parent, dev, nvec, &data->arg);
- 	if (err)
- 		goto free_domain;
-diff --git a/include/asm-generic/msi.h b/include/asm-generic/msi.h
-index e6795f0..1010e74 100644
---- a/include/asm-generic/msi.h
-+++ b/include/asm-generic/msi.h
-@@ -22,12 +22,16 @@ struct msi_desc;
- typedef struct msi_alloc_info {
- 	struct msi_desc			*desc;
- 	irq_hw_number_t			hwirq;
-+	unsigned long			flags;
- 	union {
- 		unsigned long		ul;
- 		void			*ptr;
- 	} scratchpad[NUM_MSI_ALLOC_SCRATCHPAD_REGS];
- } msi_alloc_info_t;
- 
-+/* Device generating MSIs is proxying for another device */
-+#define MSI_ALLOC_FLAGS_PROXY_DEVICE	(1UL << 0)
-+
- #define GENERIC_MSI_DOMAIN_OPS		1
- 
- #endif
+ 	/* ITS specific DeviceID, as the core ITS ignores dev. */
+ 	info->scratchpad[0].ul = pci_msi_domain_get_msi_rid(domain, pdev);
