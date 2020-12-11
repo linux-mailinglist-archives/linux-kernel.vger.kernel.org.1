@@ -2,129 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451852D7002
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C005E2D7008
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395467AbgLKGLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 01:11:23 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:34642 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390863AbgLKGLH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 01:11:07 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id 3D420123B16;
-        Fri, 11 Dec 2020 07:10:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607667016;
-        bh=6kS5gL6N73YvYSzIt+4DLpz4DbOxzlgqvdiiuCRDJys=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=52hxKpCgXch9EL+X9cy06GynYK5wmNLbo4EMlaBsv6iE/4gW+D/WBme3PxCCqOWXB
-         8TsNPThLJd8EmfekExTSnKggR2KN7qgmkFu6eWwSWJaOvtEsSN8+u53WtyI0tb7KZ8
-         kP6gK2fCxfoKLvdFDq29CwlFPv3KHOsq5KbDBbpA2EE7bBW32fC0C1TVFr7iAM28Pd
-         VGQvxzd7eIQ61irqIZFTf9Vrd+2eLfv/lspIcoY3DgRCMflC86yhQoIcWgwsy+GE55
-         Il3ZIC3MT2ZZSDcWRgipakYdn001M8DblqAF8cH25iYO2kM+GzT5yINfym6q8dYufB
-         kur0UtmOqJmGw==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id HMmVd6l5MS9K; Fri, 11 Dec 2020 07:09:46 +0100 (CET)
-Received: from dincontrollerdev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id C262D123B08;
-        Fri, 11 Dec 2020 07:09:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607666986;
-        bh=6kS5gL6N73YvYSzIt+4DLpz4DbOxzlgqvdiiuCRDJys=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bQNZB+sKFfbKuGIzeuoMTSxf3vcGWrtLfNMRu7EYturDr3IhQSd+NY4Z9UX7FvQWB
-         wGLAONj/86q2LVl8lnyl0i8KysE5lTf51S1RHi7xVTQFkzF+uL4qeyvUSqiq9BG1pI
-         uBJRikugFxdGrBJdTgsZu65SQDCF7c7DO3lIseyR2qPIbiOmTKU5mhwsb2wuUuqk9E
-         SwcZPNzwoIEpeWyUICYTjZOfBM2oxwJjvff37E9lKzR0oQUPNWVG8KACu0BwYLlMOD
-         zeWfzsvsdFsCtc9F8i2mH2nE74J/PkqS7awh+U8b0soqgPwH9Eob6QaMQjY/UtajNJ
-         bjE7tK03ZFVvQ==
-Date:   Fri, 11 Dec 2020 06:09:43 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
-Message-ID: <20201211060943.GA1065@dincontrollerdev>
-References: <20201210170443.GA17304@dincontrollerdev>
- <X9Jw+srprdT8tquZ@kroah.com>
- <20201210194625.GA17516@dincontrollerdev>
- <X9MIwqJBG69M5uHq@kroah.com>
+        id S2395462AbgLKGMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 01:12:10 -0500
+Received: from mga03.intel.com ([134.134.136.65]:52836 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389524AbgLKGLY (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 01:11:24 -0500
+IronPort-SDR: +npOG2itrmh9u3edOxObPHlzkWn4qKIuSW9SSK+hYfMa4c3TTp/2TUcmYaawO0fNjXoCt9eORW
+ SjKHrZuMsYew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="174499956"
+X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
+   d="scan'208";a="174499956"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 22:10:42 -0800
+IronPort-SDR: lmIRnu2HZnjGNgHD743NMRlrVHozvDlTHCUPKxYImRWjb8dVtqd4XBM1lBA2BvsJj/eaKoss6C
+ tseFUHQb4r0Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
+   d="scan'208";a="544940183"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by fmsmga005.fm.intel.com with ESMTP; 10 Dec 2020 22:10:40 -0800
+Subject: Re: [PATCH v2] perf script: Fix overrun issue for
+ dynamically-allocated pmu type number
+To:     Jin Yao <yao.jin@linux.intel.com>, acme@kernel.org,
+        jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20201209005828.21302-1-yao.jin@linux.intel.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <3fcdc860-d858-0166-de23-34fc6fe5c1cd@intel.com>
+Date:   Fri, 11 Dec 2020 08:10:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <X9MIwqJBG69M5uHq@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201209005828.21302-1-yao.jin@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 06:50:58AM +0100, 'Greg Kroah-Hartman' wrote:
-> On Thu, Dec 10, 2020 at 07:46:25PM +0000, József Horváth wrote:
-> > On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
-> > > On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
-> > > > This is a serial port driver for
-> > > > Silicon Labs Si4455 Sub-GHz transciver.
-> > > > +
-> > > > +#define BASE_TTYIOC_PRIVATE		0xA0
-> > > > +/* Set EZConfig.
-> > > > + * After this ioctl call, the driver restarts the si4455,
-> > > > + * then apply the new configuration and patch.
-> > > > + */
-> > > > +#define SI4455_IOC_SEZC		_IOW('T', \
-> > > > +				     BASE_TTYIOC_PRIVATE + 0x01, \
-> > > > +				     struct si4455_iocbuff)
-> > > 
-> > > Why does a serial driver have private ioctls?  Please no, don't do that.
-> > 
-> > I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
-> > In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
+On 9/12/20 2:58 am, Jin Yao wrote:
+> When unpacking the event which is from dynamic pmu, the array
+> output[OUTPUT_TYPE_MAX] may be overrun. For example, type number of
+> SKL uncore_imc is 10, but OUTPUT_TYPE_MAX is 7 now (OUTPUT_TYPE_MAX =
+> PERF_TYPE_MAX + 1).
 > 
-> My point is, a serial driver should NOT have any custom ioctls.
+> /* In builtin-script.c */
+> process_event()
+> {
+>         unsigned int type = output_type(attr->type);
 > 
-> > I can change it to BASE_TTYIOC or SI4455_IOC_BASE
-> > 
-> > > Implement the basic serial driver first, and then we can talk about
-> > > "custom" configurations and the like, using the correct apis.
-> > 
-> > Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
-> > The cofiguration for interface is provided by user for application.
+>         if (output[type].fields == 0)
+>                 return;
+> }
 > 
-> That is what a device tree is for, to configure the device to have the
-> correct system configuration, why can't that be the same here?
+> output[10] is overrun.
 > 
-> > It contains the base frequency, channel spacing, modulation, and a lot
-> > of more stuff, and generated by Silicon Labs Wireless Development
-> > Suite.
-> > The generated configuration is in a non public(compressed,
-> > encrypted...who knows) format, so without this the driver can't
-> > provide configuration parameters to Si4455.
+> Create a type OUTPUT_TYPE_OTHER for dynamic pmu events, then
+> output_type(attr->type) will return OUTPUT_TYPE_OTHER here.
 > 
-> So we have to take a "custom" userspace blob and send it to the device
-> to configure it properly?  Like Jiri said, sounds like firmware, so just
-> use that interface instead.
+> Note that if PERF_TYPE_MAX ever changed, then there would be a conflict
+> between old perf.data files that had a dynamicaliy allocated PMU number
+> that would then be the same as a fixed PERF_TYPE.
+> 
+> Example:
+> 
+> perf record --switch-events -C 0 -e "{cpu-clock,uncore_imc/data_reads/,uncore_imc/data_writes/}:SD" -a -- sleep 1
+> perf script
+> 
+> Before:
+>          swapper     0 [000] 1479253.987551:     277766               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.987797:     246709               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.988127:     329883               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.988273:     146393               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.988523:     249977               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.988877:     354090               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.989023:     145940               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.989383:     359856               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.989523:     140082               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+> 
+> After:
+>          swapper     0 [000] 1397040.402011:     272384               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1397040.402011:       5396  uncore_imc/data_reads/:
+>          swapper     0 [000] 1397040.402011:        967 uncore_imc/data_writes/:
+>          swapper     0 [000] 1397040.402259:     249153               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1397040.402259:       7231  uncore_imc/data_reads/:
+>          swapper     0 [000] 1397040.402259:       1297 uncore_imc/data_writes/:
+>          swapper     0 [000] 1397040.402508:     249108               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1397040.402508:       5333  uncore_imc/data_reads/:
+>          swapper     0 [000] 1397040.402508:       1008 uncore_imc/data_writes/:
+> 
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 
-I checked Jiri's suggestion, and it is a good solution to replace SI4455_IOC_SEZC(configuration) and SI4455_IOC_SEZP(firmware patch).
-I can move SI4455_IOC_SSIZ(package size) to device tree property.
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Maybe you have good suggestion for the following:
-SI4455_IOC_STXC -> Radio transmit channel index. It is a real use case to control this parameter by user at runtime.
-SI4455_IOC_SRXC -> Radio receive channel index. It is a real use case to control this parameter by user at runtime.
-SI4455_IOC_GRSSI -> Last measured RSSI, when packet received. This is a useful information.
-(Currently I'm the only one user, and I need this :) )
-
+> ---
+> v2:
+>   Remove Fixes tag because this issue has always been here, not caused by
+>   1405720d4f26 ("perf script: Add 'synth' event type for synthesized events").
+>   No functional change in v2. 
+>  
+>  tools/perf/builtin-script.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
 > 
-> thanks,
+> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> index 1c322c129185..5d8a64836228 100644
+> --- a/tools/perf/builtin-script.c
+> +++ b/tools/perf/builtin-script.c
+> @@ -183,6 +183,7 @@ struct output_option {
+>  
+>  enum {
+>  	OUTPUT_TYPE_SYNTH = PERF_TYPE_MAX,
+> +	OUTPUT_TYPE_OTHER,
+>  	OUTPUT_TYPE_MAX
+>  };
+>  
+> @@ -279,6 +280,18 @@ static struct {
+>  
+>  		.invalid_fields = PERF_OUTPUT_TRACE | PERF_OUTPUT_BPF_OUTPUT,
+>  	},
+> +
+> +	[OUTPUT_TYPE_OTHER] = {
+> +		.user_set = false,
+> +
+> +		.fields = PERF_OUTPUT_COMM | PERF_OUTPUT_TID |
+> +			      PERF_OUTPUT_CPU | PERF_OUTPUT_TIME |
+> +			      PERF_OUTPUT_EVNAME | PERF_OUTPUT_IP |
+> +			      PERF_OUTPUT_SYM | PERF_OUTPUT_SYMOFFSET |
+> +			      PERF_OUTPUT_DSO | PERF_OUTPUT_PERIOD,
+> +
+> +		.invalid_fields = PERF_OUTPUT_TRACE | PERF_OUTPUT_BPF_OUTPUT,
+> +	},
+>  };
+>  
+>  struct evsel_script {
+> @@ -339,8 +352,11 @@ static inline int output_type(unsigned int type)
+>  	case PERF_TYPE_SYNTH:
+>  		return OUTPUT_TYPE_SYNTH;
+>  	default:
+> -		return type;
+> +		if (type < PERF_TYPE_MAX)
+> +			return type;
+>  	}
+> +
+> +	return OUTPUT_TYPE_OTHER;
+>  }
+>  
+>  static inline unsigned int attr_type(unsigned int type)
 > 
-> greg k-h
-
-Üdvözlettel / Best regards:
-József Horváth
-
 
