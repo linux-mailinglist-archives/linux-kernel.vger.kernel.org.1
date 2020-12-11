@@ -2,121 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC8A2D7B2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EAB2D7B1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389290AbgLKQli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 11:41:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388382AbgLKQkl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 11:40:41 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE30C061793;
-        Fri, 11 Dec 2020 08:40:00 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id 3so9171581wmg.4;
-        Fri, 11 Dec 2020 08:40:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=11vbsMQ7mLuZm/TRWwxVBUaF2+2DPCNUSTFQEQ07Mfw=;
-        b=RgzvpQ6QzXLPW6snhe8VmyU2qa7KDQiUzaWB/NQ/wXl8/uA75QVUICRZVglL3aYCQX
-         ++4R/RA5n6n+F82k2IJ8K1SNAewF/deS/raR4RWYHufgPWqWJGSCJjQA/MRwPzE7dT1J
-         fVVBOTZE7J8PNyQ66+QQOjhkOtXcB4BaeJunIE/vPHmzMXOtGQfNiJtDHPuedvOwUtyt
-         6plXC98eR/BqaRVFSa7atYhKsm6nJlMT4NzJT8Dy2Sk+0TqFALAr9d3kc1VMHTCcxkDQ
-         oK/og+DxxAqCJdMEV9ZwcO4VCVhcLEKKsL1hJHFvmD2lwSeoId9uXLhUVPIjLPI4t1ZQ
-         Yyxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=11vbsMQ7mLuZm/TRWwxVBUaF2+2DPCNUSTFQEQ07Mfw=;
-        b=EK9xjn4D8gMMglvW++x6ENB0bQs36i8Bj8IMwkbcoiFeQaPH2c22UbyV+99N90nAJR
-         tvhw8d4kin+t77HX/oYP8GDy7ePe12XmZ+d0gHbO0v6rNUuEqXaNYkEo8/aN7jW3T29K
-         IKd73aXKHFWax0FUlyH2vVspTwCKTL7hOrXQqkZ5lZOsRYiNqJHRrjQedW3iVZuD4Oq8
-         tspSCtGiz3/wj7n3Xt4fY/ihskmKK0RT4ZrT1JmulVS67muk08wc+iDO0jeHPYJIk6J4
-         QfEWTc7oj7V5da/RS93JTUz0o3jbTAvgtbW1VAOUJ0BKB5h/MFFJnjlti5P0wod8GohI
-         nfgA==
-X-Gm-Message-State: AOAM533Dt+4Eaw1HYJb4FOqkZgoT29cXbUVDdYdau9fee3/vTBPlHKXW
-        x6Xjoqaeg9rvZLSLDtjF6/4=
-X-Google-Smtp-Source: ABdhPJwQ8K+Tyzvi6gCN3r/dzr8esKC9hmz/SpNVFINOctiCuawyesI++ulYLGhRZHDmLDgCAsTOIg==
-X-Received: by 2002:a7b:c8da:: with SMTP id f26mr14835318wml.155.1607704799292;
-        Fri, 11 Dec 2020 08:39:59 -0800 (PST)
-Received: from localhost.localdomain ([77.137.145.246])
-        by smtp.gmail.com with ESMTPSA id r20sm16061016wrg.66.2020.12.11.08.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 08:39:58 -0800 (PST)
-From:   Yonatan Linik <yonatanlinik@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, willemb@google.com,
-        john.ogness@linutronix.de, arnd@arndb.de, maowenan@huawei.com,
-        colin.king@canonical.com, orcohen@paloaltonetworks.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Yonatan Linik <yonatanlinik@gmail.com>
-Subject: [PATCH 1/1] net: Fix use of proc_fs
-Date:   Fri, 11 Dec 2020 18:37:49 +0200
-Message-Id: <20201211163749.31956-2-yonatanlinik@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201211163749.31956-1-yonatanlinik@gmail.com>
-References: <20201211163749.31956-1-yonatanlinik@gmail.com>
+        id S1728156AbgLKQjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 11:39:17 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:55951 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726627AbgLKQim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 11:38:42 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CsxKh6N6Yz4y;
+        Fri, 11 Dec 2020 17:38:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1607704680; bh=wlzJNkez6J2t9nu5m8NwLeYJOsOC0Tc9BcqWs937qi0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xk19hsbOjTCz+ctO0H6kL/b0C9dOzMO4AViv7NBzTOx+GWKQt38MeR9m8lByUdyL5
+         46rlyc/eLS6ORO13YH8RA2IolJH6ZsDHz0cVHUZQGsv40TNgt71Kze+0wgorcjd+Ti
+         FjQ1PE71LpP1KuqFPadSW13Aw/K3l4vCfyh9xejmKX39AN5XPzmHogdZPjfqV8ulNE
+         ypjlqI1Ma6t7Rh9MBVnqVnLpRGN2d+yenqj7DpNSRdFo8GURW5XdwmqKt3xdIcYjKp
+         zAGepEQyfhe9lcyuRYWsUHBCU67xbOkfSt65ZbIcy3lm4Kiab+lLVNjty1JUY4Q8R7
+         9PsukAsIQ/1Fg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Fri, 11 Dec 2020 17:38:01 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Johnny Chuang <johnny.chuang.emc@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v8 3/4] input: elants: read touchscreen size for
+ EKTF3624
+Message-ID: <20201211163801.GB23095@qmqm.qmqm.pl>
+References: <cover.1607669375.git.mirq-linux@rere.qmqm.pl>
+ <fa6a0e3f95803d6eab39cd0e3ba188842274a1e0.1607669375.git.mirq-linux@rere.qmqm.pl>
+ <X9MeISZqBcvcnYXe@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <X9MeISZqBcvcnYXe@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-proc_fs was used, in af_packet, without a surrounding #ifdef,
-although there is no hard dependency on proc_fs.
-That caused the initialization of the af_packet module to fail
-when CONFIG_PROC_FS=n.
+On Thu, Dec 10, 2020 at 11:22:09PM -0800, Dmitry Torokhov wrote:
+> Hi Micha³,
+> 
+> On Fri, Dec 11, 2020 at 07:53:56AM +0100, Micha³ Miros³aw wrote:
+> > +
+> > +	if (!phy_x || !phy_y) {
+> > +		dev_warn(&client->dev,
+> > +			 "invalid size data: %d x %d mm\n",
+> > +			 phy_x, phy_y);
+> > +		return 0;
+> 
+> Given we are not treating this as hard error mind dropping this "return"
+> and making the below an "else" branch?
 
-Specifically, proc_create_net() was used in af_packet.c,
-and when it fails, packet_net_init() returns -ENOMEM.
-It will always fail when the kernel is compiled without proc_fs,
-because, proc_create_net() for example always returns NULL.
+It is an error, still, and saves a bit of indentation in the following
+normal-path code. But I see that there is already a similar code with
+an 'else' branch.
 
-The calling order that starts in af_packet.c is as follows:
-packet_init()
-register_pernet_subsys()
-register_pernet_operations()
-__register_pernet_operations()
-ops_init()
-ops->init() (packet_net_ops.init=packet_net_init())
-proc_create_net()
-
-It worked in the past because register_pernet_subsys()'s return value
-wasn't checked before this Commit 36096f2f4fa0 ("packet: Fix error path in
-packet_init.").
-It always returned an error, but was not checked before, so everything
-was working even when CONFIG_PROC_FS=n.
-
-The fix here is simply to add the necessary #ifdef.
-
-Signed-off-by: Yonatan Linik <yonatanlinik@gmail.com>
----
- net/packet/af_packet.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 2b33e977a905..031f2b593720 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -4612,9 +4612,11 @@ static int __net_init packet_net_init(struct net *net)
- 	mutex_init(&net->packet.sklist_lock);
- 	INIT_HLIST_HEAD(&net->packet.sklist);
- 
-+#ifdef CONFIG_PROC_FS
- 	if (!proc_create_net("packet", 0, net->proc_net, &packet_seq_ops,
- 			sizeof(struct seq_net_private)))
- 		return -ENOMEM;
-+#endif /* CONFIG_PROC_FS */
- 
- 	return 0;
- }
--- 
-2.25.1
-
+Best Regards,
+Micha³ Miros³aw
