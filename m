@@ -2,59 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E61F42D721E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CCD2D7217
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392397AbgLKInr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:43:47 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9514 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436980AbgLKInT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:43:19 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CskmR6KXczhpld;
-        Fri, 11 Dec 2020 16:41:59 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Dec 2020 16:42:25 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <paul@paul-moore.com>, <linux-audit@redhat.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] kernel/audit: convert comma to semicolon
-Date:   Fri, 11 Dec 2020 16:42:54 +0800
-Message-ID: <20201211084254.2038-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S2437118AbgLKIpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:45:45 -0500
+Received: from mga02.intel.com ([134.134.136.20]:62644 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437082AbgLKIpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:45:06 -0500
+IronPort-SDR: M9mKBsFJojaXv7/dWkFtmzzmzGG3Sp3sEO2+W3RSmv702udVQR8tzVy9ak++Qsxd+4XRkVKiYX
+ kJgCZYLjc5GA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="161451223"
+X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
+   d="scan'208";a="161451223"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 00:43:15 -0800
+IronPort-SDR: NZWOoAWh8L8FANn9o6CzLYmtpSgJl5ks86uX4joqPN/B3wgis9y1xmOkqUfdNrMq7Pb07kH/I4
+ P3eS6x9mn4gA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
+   d="scan'208";a="440617236"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 11 Dec 2020 00:43:13 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 11 Dec 2020 10:43:12 +0200
+Date:   Fri, 11 Dec 2020 10:43:12 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] usb: typec: tcpm: Update vbus_vsafe0v on init
+Message-ID: <20201211084312.GG1594451@kuha.fi.intel.com>
+References: <20201211071911.2205197-1-badhri@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211071911.2205197-1-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace a comma between expression statements by a semicolon.
+On Thu, Dec 10, 2020 at 11:19:11PM -0800, Badhri Jagan Sridharan wrote:
+> During init, vbus_vsafe0v does not get updated till the first
+> connect as a sink. This causes TCPM to be stuck in SRC_ATTACH_WAIT
+> state while booting with a sink (For instance: a headset) connected.
+> 
+> [    1.429168] Start toggling
+> [    1.439907] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+> [    1.445242] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+> [   53.358528] CC1: 0 -> 0, CC2: 0 -> 2 [state TOGGLING, polarity 0, connected]
+> [   53.358564] state change TOGGLING -> SRC_ATTACH_WAIT [rev1 NONE_AMS]
+> 
+> Fix this by updating vbus_vsafe0v based on vbus_present status
+> on boot.
+> 
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- kernel/audit.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+One nitpick bellow, but it's so minor that you can ignore it if you
+like. FWIW:
 
-diff --git a/kernel/audit.c b/kernel/audit.c
-index 68cee3bc8cfe..c8497115be35 100644
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -2282,7 +2282,7 @@ static void audit_log_set_loginuid(kuid_t koldloginuid, kuid_t kloginuid,
- 
- 	uid = from_kuid(&init_user_ns, task_uid(current));
- 	oldloginuid = from_kuid(&init_user_ns, koldloginuid);
--	loginuid = from_kuid(&init_user_ns, kloginuid),
-+	loginuid = from_kuid(&init_user_ns, kloginuid);
- 	tty = audit_get_tty();
- 
- 	audit_log_format(ab, "pid=%d uid=%u", task_tgid_nr(current), uid);
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index cedc6cf82d61..58a6302c549f 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -4794,6 +4794,24 @@ static void tcpm_init(struct tcpm_port *port)
+>  	if (port->vbus_present)
+>  		port->vbus_never_low = true;
+>  
+> +	/*
+> +	 * 1. When vbus_present is true, voltage on VBUS is already at VSAFE5V.
+> +	 * So implicitly vbus_vsafe0v = false.
+> +	 *
+> +	 * 2. When vbus_present is false and TCPC does NOT support querying
+> +	 * vsafe0v status, then, it's best to assume vbus is at VSAFE0V i.e.
+> +	 * vbus_vsafe0v is true.
+> +	 *
+> +	 * 3. When vbus_present is false and TCPC does support querying vsafe0v,
+> +	 * then, query tcpc for vsafe0v status.
+> +	 */
+> +	if (port->vbus_present)
+> +		port->vbus_vsafe0v = false;
+> +	else if (!port->tcpc->is_vbus_vsafe0v)
+> +		port->vbus_vsafe0v = true;
+> +	else
+> +		port->vbus_vsafe0v = port->tcpc->is_vbus_vsafe0v(port->tcpc);
+
+Couldn't that be the other way around?
+
+        ...
+	else if (port->tcpc->is_vbus_vsafe0v)
+		port->vbus_vsafe0v = port->tcpc->is_vbus_vsafe0v(port->tcpc);
+	else
+		port->vbus_vsafe0v = true;
+        ...
+
+>  	tcpm_set_state(port, tcpm_default_state(port), 0);
+>  
+>  	if (port->tcpc->get_cc(port->tcpc, &cc1, &cc2) == 0)
+> -- 
+> 2.29.2.576.ga3fc446d84-goog
+
+thanks,
+
 -- 
-2.22.0
-
+heikki
