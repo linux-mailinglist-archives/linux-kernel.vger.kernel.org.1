@@ -2,58 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9295B2D7C7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:11:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F5D2D7C83
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394282AbgLKRJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:09:30 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2251 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391393AbgLKRJF (ORCPT
+        id S2390220AbgLKRKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:10:36 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:36448 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394888AbgLKRJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:09:05 -0500
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Csxwm34HJz67MVt;
-        Sat, 12 Dec 2020 01:04:56 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 11 Dec 2020 18:08:22 +0100
-Received: from [10.47.11.239] (10.47.11.239) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 11 Dec
- 2020 17:08:22 +0000
-Subject: Re: [PATCH 2/3] blk-mq: update arg in comment of blk_mq_map_queue
-To:     Minwoo Im <minwoo.im.dev@gmail.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jens Axboe <axboe@kernel.dk>
-References: <20201204152055.31605-1-minwoo.im.dev@gmail.com>
- <20201204152055.31605-3-minwoo.im.dev@gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <263b184d-2ffc-5a85-0f44-42b29bc7c295@huawei.com>
-Date:   Fri, 11 Dec 2020 17:07:45 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Fri, 11 Dec 2020 12:09:58 -0500
+Date:   Fri, 11 Dec 2020 18:09:15 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607706556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XEPcSsvC9fYuECCjhf6t+mlOYTaraVj1DDsWYpglnac=;
+        b=CgZm+xezQmrEaWVNUh1EKPb1pSkUYm0XZuvU68LmW3+ZYD7ofmslf2wURxvTCwyB3P40nT
+        UwIJ/gfHqkWR+8jUY37rZfjpjeZ0P3r1KIX9uNCe175UCvDjtBhRayN3sLm0hLMNii2eZ6
+        /HS9oTn/vabzVW4+ZC8NYyajgtRQdzw+cwnXyrZs2aVjfCwM7w8KY/WnFCXgD1UgFz8C5g
+        s+oMwXueWQaCf8f9wO6IhfeBnxbjrDvz/FEco+6uBYZE9xoi2zIGtBUxi4+4hZbx2LAQH3
+        6OJrm70n49dw11Re6rO3JUnTLb6yArP+WcbaPkPJXAIA434Oy1yOEGcBeX5OjA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607706556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XEPcSsvC9fYuECCjhf6t+mlOYTaraVj1DDsWYpglnac=;
+        b=1fA13v3OmFQtgMHvHfuWAlGfbNIrYVn6jyzl/W1gc8TWOrNdsmzk7sXcRp7O2yCfjO2lTa
+        GskvFAEX8fhLcCBw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Ahmed S . Darwish" <a.darwish@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 3/3] sr: Remove in_interrupt() usage in sr_init_command().
+Message-ID: <20201211170915.4bs2huyptnsmlwvf@linutronix.de>
+References: <20201204164803.ovwurzs3257em2rp@linutronix.de>
+ <20201204164850.2343359-1-bigeasy@linutronix.de>
+ <20201204164850.2343359-3-bigeasy@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201204152055.31605-3-minwoo.im.dev@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.11.239]
-X-ClientProxiedBy: lhreml722-chm.china.huawei.com (10.201.108.73) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201204164850.2343359-3-bigeasy@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2020 15:20, Minwoo Im wrote:
-> Update mis-named argument description of blk_mq_map_queue().  This patch
-> also updates description that argument to software queue percpu context.
+On 2020-12-04 17:48:50 [+0100], To linux-scsi@vger.kernel.org wrote:
+> The in_interrupt() check in sr_init_command() is a leftover from the
+> past, pre v2.3.16 era to be exact. Back then the ioctl() was served by
+> `sr' itself and sector size changes by CDROMREADMODE2 (as noted in the
+> comment) were accounted within sr's data structures which allowed a
+> "lazy" reset so it could be skipped on the next request and reset back
+> to the default value once the device node was closed or before a command
+> from the blockqueue was issued.
 > 
-> Signed-off-by: Minwoo Im<minwoo.im.dev@gmail.com>
+> This does not work like that anymore. The CDROMREADMODE2 is served by
+> cdrom's mmc_ioctl() function which may change the sector size but the
+> `sr' driver does not learn about it and so its ->sector_size is not
+> updated.
+> The ioctl() resets the changed sector size back to 2048.
+> sr_read_sector() also resets the sector size back to the default once it
+> is done.
+> 
+> Remove the conditional sector size update from sr_init_command() and
+> sr_release() because it is not needed.
+> 
+> Link: https://lkml.kernel.org/r/20201204164803.ovwurzs3257em2rp@linutronix.de
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Reviewed-by: John Garry <john.garry@huawei.com>
+Any chance to get this reviewed/merged?
 
-> ---
->   block/blk-mq.h | 2 +-
+Sebastian
