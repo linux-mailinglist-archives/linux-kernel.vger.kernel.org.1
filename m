@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531CB2D782E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2C02D7806
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406378AbgLKOqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:46:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
+        id S2405303AbgLKOiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:38:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406203AbgLKOqF (ORCPT
+        with ESMTP id S1732507AbgLKOht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:46:05 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE0AC061794
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:25 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607697924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FzGg7LxXohhH6b7FeHSZ2e3oXZj5TWyywquXxDIeY1M=;
-        b=TcScHttli3W8taGeoA9zHAznrk9LTMO/StHtuW9xPLA6X5biRfbRQHd/r9EC0Or9jcb5ST
-        fOhEdJraSi/swR/c5QB92LfshAUqmFDaCc7CK2EvwqhDIcTRml3UIDVTZGhtj1l62Vzyn2
-        yAKXvwcrAc2hZ9+Jkv96oDriHTaACGRr0pyR13nREqbTgwM7vKua9BdopKyHCx9HAsc7V+
-        ucDVRy1Fx2dR3D5TjDSdXPm/SAcAKeeSSAHleBpaBF7SIIVAmD1gD6glE7MCcSYXzquqXe
-        xG2t4GgTvo9SjAE+lLzbu75JkiVyjdelevYX3H6rP7YdC/RP/L8XUEU9/tvvHw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607697924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FzGg7LxXohhH6b7FeHSZ2e3oXZj5TWyywquXxDIeY1M=;
-        b=dtMYNoRh0UbMelk024uyoT9VJhAxI0jFDX7q98J8NU9Vxlch875rtb9WdTzXX0SYGOMA2j
-        jqQx34zxwq3IOfBg==
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Marco Elver <elver@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: Re: timers: Move clearing of base::timer_running under base::lock
-In-Reply-To: <20201208085049.vnhudd6qwcsbdepl@linutronix.de>
-References: <87lfea7gw8.fsf@nanos.tec.linutronix.de> <20201207130753.kpxf2ydroccjzrge@linutronix.de> <87a6up7kpt.fsf@nanos.tec.linutronix.de> <20201207152533.rybefuzd57kxxv57@linutronix.de> <20201207160648.GF2657@paulmck-ThinkPad-P72> <20201208085049.vnhudd6qwcsbdepl@linutronix.de>
-Date:   Fri, 11 Dec 2020 15:36:27 +0100
-Message-ID: <87sg8ch0k4.fsf@nanos.tec.linutronix.de>
+        Fri, 11 Dec 2020 09:37:49 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3A3C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:37:05 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id 2so8964243ilg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:37:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gJlHhFY7YpGSb/NWgpsHkRiym//oc/n7oGp6xC0++YI=;
+        b=ATt6n2xzRSCOBPYNJqnfDPSM1w4dkDEyGpz0yU3WQaPHQ36ZuuiOgYy+6B1QSHYSMy
+         RN7ABuPhtbt6d2A28l20fAe+to7TJeiI62SH0imBVhoY6/MENzMuX0Dmyp4vL3LujZa3
+         vreiQVmlFgK9/2Iefib9XM/v4uGWXKeihehkvxaNkRk54q6j8LtDeTrmgbn6hF1m7UfW
+         pKE8uexzTVU4NHqlD4os1Okz57gjFQGeDZ/R11DDvOAvPiHbGUooxzCWzAzt1dkzOeV5
+         2O8FsY8bUvj6xKhoUc5t/Gloa4oepDTfkGsn9ko+8eJ6r/Zfxx4sVfrBP24K5SKHxFcj
+         z1iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gJlHhFY7YpGSb/NWgpsHkRiym//oc/n7oGp6xC0++YI=;
+        b=KvCPO3J9zpUwSgbM/wI0JiXhMSkbU8t1ZAd1aFz/gf1TfntDjSoevDjsaxK4prYj5e
+         9n/S6jueaKdQUr31nLUYWqG/jM1XipnSjNBQkNXrCswvSRXq8/5H+GDYNW4ER3sXhhOb
+         AMCGdqRBy+0JocqDY6J7VjwFSuAPrMhS9QbytjSsQOLsy+kb8QWm6iBAFpJMV7ee5fCK
+         IEJya51ew50IJStYgm8fzXz+Gx36uBU+TK0VYMnjlKCos764XAczZtd3FLzQTtcCxjCY
+         HimNbyDUWbgTTq5f3WmnTQN8sh8ws1az4vrACQHNlETGqZogUP1j8GA+nxejO7sIMpRa
+         Bb5g==
+X-Gm-Message-State: AOAM533atmchN+Ql2ploEmkjdQxyC0cYURbe9rUxETuv9+HmpRJLp8lb
+        xyK0cPltnli25wh6ztEnc6koh5JnnsXxs5nI3cIxGQ==
+X-Google-Smtp-Source: ABdhPJx4GDSLnE6X++8HaLygIbU7GOWkPLUEzAx6L7q7vDvDs7fa7NOTg9AzBA5eFeY1//1BiEyEqUEd2Wv5v7CuQYY=
+X-Received: by 2002:a92:d0ca:: with SMTP id y10mr16813330ila.68.1607697424987;
+ Fri, 11 Dec 2020 06:37:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201211112405.31158-1-sjpark@amazon.com>
+In-Reply-To: <20201211112405.31158-1-sjpark@amazon.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 11 Dec 2020 15:36:53 +0100
+Message-ID: <CANn89iKGU6_OusKfXeoT0hQN2kto2RF_RpL3GNBeB54iqvqvXw@mail.gmail.com>
+Subject: Re: [PATCH v4] net/ipv4/inet_fragment: Batch fqdir destroy works
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     David Miller <davem@davemloft.net>,
+        SeongJae Park <sjpark@amazon.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Florian Westphal <fw@strlen.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        netdev <netdev@vger.kernel.org>, rcu@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08 2020 at 09:50, Sebastian Andrzej Siewior wrote:
-> On 2020-12-07 08:06:48 [-0800], Paul E. McKenney wrote:
->> > Yes, but it triggers frequently. Like `rcuc' is somehow is aligned with
->> > the timeout.
->> 
->> Given that a lot of RCU processing is event-driven based on timers,
->> and given that the scheduling-clock interrupts are synchronized for
->> energy-efficiency reasons on many configs, maybe this alignment is
->> expected behavior?
+On Fri, Dec 11, 2020 at 12:24 PM SeongJae Park <sjpark@amazon.com> wrote:
 >
-> No, it is the fact that rcu_preempt has a higher priority than
-> ksoftirqd. So immediately after the wakeup (of rcu_preempt) there is a
-> context switch and expire_timers() has this:
+> From: SeongJae Park <sjpark@amazon.de>
 >
-> |   raw_spin_unlock_irq(&base->lock);
-> |   call_timer_fn(timer, fn, baseclk);
-> |   raw_spin_lock_irq(&base->lock);
-> |   base->running_timer = NULL;
-> |   timer_sync_wait_running(base);
+> On a few of our systems, I found frequent 'unshare(CLONE_NEWNET)' calls
+> make the number of active slab objects including 'sock_inode_cache' type
+> rapidly and continuously increase.  As a result, memory pressure occurs.
 >
-> So ->running_timer isn't reset and try_to_del_timer_sync() (that
-> del_timer_sync() from schedule_timeout()) returns -1 and then the corner
-> case is handled where `expiry_lock' is acquired. So everything goes as
-> expected.
 
-Well, but even without that change you have the same situation:
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>
 
-      timer_fn()
-        wakeup()
-          -->preemption
-                        del_timer_sync()
-                          if (running)
-                             wait_for_running()
-                               lock(expiry)
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-     running = NULL
-     sync_wait_running()
-       unlock(expiry)
-         wakeup_lock()
-          -->preemption
-                             ...
+Jakub or David might change the patch title, no need to resend.
 
-    lock(base)
-     
-So the change at hand does not make things worse, right?
-
-Thanks,
-
-        tglx
+Thanks for this nice improvement.
