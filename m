@@ -2,82 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6729C2D6E90
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBBA2D6E94
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395087AbgLKD1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 22:27:53 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:35865 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395079AbgLKD1c (ORCPT
+        id S2405221AbgLKD2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 22:28:25 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:40252 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395077AbgLKD1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 22:27:32 -0500
-Received: by mail-oi1-f194.google.com with SMTP id 9so1208390oiq.3;
-        Thu, 10 Dec 2020 19:27:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4pSkh7E1xr7wTWhVvXeOpIs5QlUy2hJdM1nCPWkeLMQ=;
-        b=BWDcQf+3G7U7JkDNhLUmMpXpgeWyAWoUDTZa9qG9SgcwZja8mPvl6TIODhY1bgrLEb
-         JjtipBlrESDeTyAchF6sNgjV52jRBd+Ead0LJw04WgG5g17X7u8rDKLtLB8sQ/I/lXGM
-         RL/XZ5Dw1k8t3ScT3t5glehsFuO87VsMgLDtLkxP51IvjLwnk86OMzgnRWump31HJyDD
-         DuxcsScmk91B8vBqkCT4DTP8TUwCHgSv357pZi4/yJSfC2DgwnJYLBq5Hn4UP3uhd5VU
-         7xObYBPJKDaCgdxFCc+Z1UTSghLnrkYrPMpqic//T1ujgxmFYaGHpjWIgGoR5X7uo60I
-         ob3Q==
-X-Gm-Message-State: AOAM531nMsU06dJ5bkDUbRdk2+6ANvvx5Sd8lnbeF1BoldoOmbSsaVn0
-        Un3TQEJbdnaPo0+sf2I9Rw==
-X-Google-Smtp-Source: ABdhPJx5205LO26MqKp6Ub/kuVoybUxxhoy/4Vq3DLkmE1Wtdx0C35k3JVlobELwVo+TakeaqYmHyg==
-X-Received: by 2002:aca:5204:: with SMTP id g4mr7858444oib.91.1607657211132;
-        Thu, 10 Dec 2020 19:26:51 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q18sm1473097ood.35.2020.12.10.19.26.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 19:26:50 -0800 (PST)
-Received: (nullmailer pid 3575040 invoked by uid 1000);
-        Fri, 11 Dec 2020 03:26:48 -0000
-Date:   Thu, 10 Dec 2020 21:26:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        youlin.pei@mediatek.com, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, anan.sun@mediatek.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        srv_heupstream@mediatek.com, Tomasz Figa <tfiga@google.com>,
-        chao.hao@mediatek.com, Will Deacon <will@kernel.org>,
-        linux-mediatek@lists.infradead.org, Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        Evan Green <evgreen@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Subject: Re: [PATCH v5 05/27] dt-bindings: memory: mediatek: Rename header
- guard for SMI header file
-Message-ID: <20201211032648.GA3575010@robh.at.kernel.org>
-References: <20201209080102.26626-1-yong.wu@mediatek.com>
- <20201209080102.26626-6-yong.wu@mediatek.com>
+        Thu, 10 Dec 2020 22:27:38 -0500
+Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id AA7E420B717A;
+        Thu, 10 Dec 2020 19:26:56 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AA7E420B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607657217;
+        bh=/e0c0n3IE2pXtjcTFX4BNwIA8+eocPqJr0iF9IzcPzc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=KY7ejHqr2TeGr8ZvPkCaO5kLZZUk2bSWooDafV60aqH2Fg00L1e8QOCFicvLz9v38
+         SRfvbPlH7I8d/satn7O5d5XCEJAjQOsHPjCJsk8y7YHxFWzHLO+hxCdM3Zdbu0ywmS
+         UgCbgJYGbiCErntJpwaW8oTMKXTLuK8E9+zS/1sI=
+Subject: Re: [PATCH v7 3/8] IMA: define a hook to measure kernel integrity
+ critical data
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
+        jmorris@namei.org, nramas@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
+ <20201209194212.5131-4-tusharsu@linux.microsoft.com>
+ <20201210230218.GH489768@sequoia>
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Message-ID: <492dd4a8-1edd-211f-42d5-59c24731ddbb@linux.microsoft.com>
+Date:   Thu, 10 Dec 2020 19:26:56 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209080102.26626-6-yong.wu@mediatek.com>
+In-Reply-To: <20201210230218.GH489768@sequoia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Dec 2020 16:00:40 +0800, Yong Wu wrote:
-> Only rename the header guard for all the SoC larb port header file.
-> No funtional change.
-> 
-> Suggested-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->  include/dt-bindings/memory/mt2701-larb-port.h | 4 ++--
->  include/dt-bindings/memory/mt2712-larb-port.h | 4 ++--
->  include/dt-bindings/memory/mt6779-larb-port.h | 4 ++--
->  include/dt-bindings/memory/mt8167-larb-port.h | 4 ++--
->  include/dt-bindings/memory/mt8173-larb-port.h | 4 ++--
->  include/dt-bindings/memory/mt8183-larb-port.h | 4 ++--
->  6 files changed, 12 insertions(+), 12 deletions(-)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+
+On 2020-12-10 3:02 p.m., Tyler Hicks wrote:
+> On 2020-12-09 11:42:07, Tushar Sugandhi wrote:
+>> IMA provides capabilities to measure file data, and in-memory buffer
+>> data. However, various data structures, policies, and states
+>> stored in kernel memory also impact the integrity of the system.
+>> Several kernel subsystems contain such integrity critical data. These
+>> kernel subsystems help protect the integrity of a device. Currently,
+>> IMA does not provide a generic function for kernel subsystems to measure
+>> their integrity critical data.
+>>   
+>> Define a new IMA hook - ima_measure_critical_data to measure kernel
+>> integrity critical data.
+>>
+>> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+>> ---
+>>   Documentation/ABI/testing/ima_policy |  2 +-
+>>   include/linux/ima.h                  |  6 +++++
+>>   security/integrity/ima/ima.h         |  1 +
+>>   security/integrity/ima/ima_api.c     |  2 +-
+>>   security/integrity/ima/ima_main.c    | 36 ++++++++++++++++++++++++++++
+>>   security/integrity/ima/ima_policy.c  |  2 ++
+>>   6 files changed, 47 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+>> index e35263f97fc1..6ec7daa87cba 100644
+>> --- a/Documentation/ABI/testing/ima_policy
+>> +++ b/Documentation/ABI/testing/ima_policy
+>> @@ -32,7 +32,7 @@ Description:
+>>   			func:= [BPRM_CHECK][MMAP_CHECK][CREDS_CHECK][FILE_CHECK]MODULE_CHECK]
+>>   			        [FIRMWARE_CHECK]
+>>   				[KEXEC_KERNEL_CHECK] [KEXEC_INITRAMFS_CHECK]
+>> -				[KEXEC_CMDLINE] [KEY_CHECK]
+>> +				[KEXEC_CMDLINE] [KEY_CHECK] [CRITICAL_DATA]
+>>   			mask:= [[^]MAY_READ] [[^]MAY_WRITE] [[^]MAY_APPEND]
+>>   			       [[^]MAY_EXEC]
+>>   			fsmagic:= hex value
+>> diff --git a/include/linux/ima.h b/include/linux/ima.h
+>> index ac3d82f962f2..675f54db6264 100644
+>> --- a/include/linux/ima.h
+>> +++ b/include/linux/ima.h
+>> @@ -30,6 +30,9 @@ extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
+>>   extern void ima_post_path_mknod(struct dentry *dentry);
+>>   extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
+>>   extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+>> +extern void ima_measure_critical_data(const char *event_name,
+>> +				      const void *buf, int buf_len,
+>> +				      bool measure_buf_hash);
+>>   
+>>   #ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
+>>   extern void ima_appraise_parse_cmdline(void);
+>> @@ -122,6 +125,9 @@ static inline int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+>>   }
+>>   
+>>   static inline void ima_kexec_cmdline(int kernel_fd, const void *buf, int size) {}
+>> +static inline void ima_measure_critical_data(const char *event_name,
+>> +					     const void *buf, int buf_len,
+>> +					     bool measure_buf_hash) {}
+>>   #endif /* CONFIG_IMA */
+>>   
+>>   #ifndef CONFIG_IMA_KEXEC
+>> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+>> index fa3044a7539f..7d9deda6a8b3 100644
+>> --- a/security/integrity/ima/ima.h
+>> +++ b/security/integrity/ima/ima.h
+>> @@ -201,6 +201,7 @@ static inline unsigned int ima_hash_key(u8 *digest)
+>>   	hook(POLICY_CHECK, policy)			\
+>>   	hook(KEXEC_CMDLINE, kexec_cmdline)		\
+>>   	hook(KEY_CHECK, key)				\
+>> +	hook(CRITICAL_DATA, critical_data)		\
+>>   	hook(MAX_CHECK, none)
+>>   
+>>   #define __ima_hook_enumify(ENUM, str)	ENUM,
+>> diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
+>> index af218babd198..9917e1730cb6 100644
+>> --- a/security/integrity/ima/ima_api.c
+>> +++ b/security/integrity/ima/ima_api.c
+>> @@ -176,7 +176,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
+>>    *		subj=, obj=, type=, func=, mask=, fsmagic=
+>>    *	subj,obj, and type: are LSM specific.
+>>    *	func: FILE_CHECK | BPRM_CHECK | CREDS_CHECK | MMAP_CHECK | MODULE_CHECK
+>> - *	| KEXEC_CMDLINE | KEY_CHECK
+>> + *	| KEXEC_CMDLINE | KEY_CHECK | CRITICAL_DATA
+>>    *	mask: contains the permission mask
+>>    *	fsmagic: hex value
+>>    *
+>> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+>> index 03aad13e9e70..ae59f4a4dd70 100644
+>> --- a/security/integrity/ima/ima_main.c
+>> +++ b/security/integrity/ima/ima_main.c
+>> @@ -922,6 +922,42 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
+>>   	fdput(f);
+>>   }
+>>   
+>> +/**
+>> + * ima_measure_critical_data - measure kernel integrity critical data
+>> + * @event_name: event name to be used for the buffer entry
+>> + * @buf: pointer to buffer containing data to measure
+>> + * @buf_len: length of buffer(in bytes)
+>> + * @measure_buf_hash: measure buffer hash
+>> + *
+>> + * Measure the kernel subsystem data, critical to the integrity of the kernel,
+>> + * into the IMA log and extend the @pcr.
+>> + *
+>> + * Use @event_name to describe the state/buffer data change.
+>> + * Examples of critical data (buf) could be kernel in-memory r/o structures,
+>                                   ^
+> 				 @buf
+> 
+Will do.
+>> + * hash of the memory structures, or data that represents subsystem state
+>> + * change.
+>> + *
+>> + * If @measure_buf_hash is set to true - measure hash of the buffer data,
+>> + * else measure the buffer data itself.
+>> + * measure_buf_hash can be used to save space, if the data being measured
+>        ^
+>        @measure_buf_hash
+> 
+>> + * is too large.
+>> + *
+>> + * The data (buf) can only be measured, not appraised.
+>                  ^
+> 		@buf
+> 
+Will do.
+>> + */
+>> +void ima_measure_critical_data(const char *event_name,
+>> +			       const void *buf, int buf_len,
+>> +			       bool measure_buf_hash)
+>> +{
+>> +	if (!event_name || !buf || !buf_len) {
+>> +		pr_err("Invalid arguments passed to %s().\n", __func__);
+> 
+> This is a problem for the developer making use of the
+> ima_measure_critical_data() API and shouldn't be logged, IMO, because a
+> user/admin can do nothing about it. I think the error message should be
+> dropped.
+> 
+>> +		return;
+>> +	}
+>> +
+>> +	process_buffer_measurement(NULL, buf, buf_len, event_name,
+>> +				   CRITICAL_DATA, 0, NULL,
+>> +				   measure_buf_hash);
+>> +}
+>> +
+>>   static int __init init_ima(void)
+>>   {
+>>   	int error;
+>> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+>> index 25419c7ff50b..2a0c0603626e 100644
+>> --- a/security/integrity/ima/ima_policy.c
+>> +++ b/security/integrity/ima/ima_policy.c
+>> @@ -1251,6 +1251,8 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+>>   			else if (IS_ENABLED(CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS) &&
+>>   				 strcmp(args[0].from, "KEY_CHECK") == 0)
+>>   				entry->func = KEY_CHECK;
+>> +			else if (strcmp(args[0].from, "CRITICAL_DATA") == 0)
+>> +				entry->func = CRITICAL_DATA;
+>>   			else
+>>   				result = -EINVAL;
+>>   			if (!result)
+> 
+> This hunk and the above change to Documentation/ABI/testing/ima_policy
+> need to be moved to the next patch when you introduce the policy
+> changes.
+> 
+Will do.
+~Tushar
+> Tyler
+> 
+>> -- 
+>> 2.17.1
+>>
