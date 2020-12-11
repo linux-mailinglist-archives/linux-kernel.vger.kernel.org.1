@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FA02D7D5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3682D7D5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405738AbgLKRwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:52:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60506 "EHLO mail.kernel.org"
+        id S2436617AbgLKRwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:52:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436587AbgLKRvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:51:40 -0500
+        id S2436596AbgLKRvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 12:51:45 -0500
 From:   Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org,
-        Zheng Yongjun <zhengyongjun3@huawei.com>, lgirdwood@gmail.com
-In-Reply-To: <20201211084510.2264-1-zhengyongjun3@huawei.com>
-References: <20201211084510.2264-1-zhengyongjun3@huawei.com>
-Subject: Re: [PATCH -next] regulator: mc13892-regulator: convert comma to semicolon
-Message-Id: <160770905319.26551.8107152219828894616.b4-ty@kernel.org>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, yibin.gong@nxp.com
+In-Reply-To: <20201210212748.5849-1-festevam@gmail.com>
+References: <20201210212748.5849-1-festevam@gmail.com>
+Subject: Re: [PATCH] regulator: pfuze100: Convert the driver to DT-only
+Message-Id: <160770905319.26551.10102759259179036024.b4-ty@kernel.org>
 Date:   Fri, 11 Dec 2020 17:50:53 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -27,8 +27,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 16:45:10 +0800, Zheng Yongjun wrote:
-> Replace a comma between expression statements by a semicolon.
+On Thu, 10 Dec 2020 18:27:48 -0300, Fabio Estevam wrote:
+> Since 5.10-rc1 i.MX is a devicetree-only platform, so simplify the code
+> by removing the unused non-DT support.
 
 Applied to
 
@@ -36,8 +37,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: mc13892-regulator: convert comma to semicolon
-      commit: 2819569147cb6e79730f2907d3ab3dfe75fe8478
+[1/1] regulator: pfuze100: Convert the driver to DT-only
+      commit: 6a6939d5f588b40db32b82ebcec20ee5189c8376
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
