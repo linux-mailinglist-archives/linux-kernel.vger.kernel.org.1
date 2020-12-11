@@ -2,85 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174DF2D7836
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB202D783C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406407AbgLKOsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:48:17 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:50485 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406329AbgLKOrN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:47:13 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 639DC5801CB;
-        Fri, 11 Dec 2020 09:46:26 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 11 Dec 2020 09:46:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=+Am/okroNzJr1TmU7haAv6uyZZI
-        Q6jWmqnrSti6GXho=; b=Rmzl45noxIYEjFtsgOkZQmwHKHn3tIfMedDbmqeBxij
-        NKFPx9nyuEMFD1SOkZZEiltRmZioluy0zCtTAO/kivENkAv782RrkBUxIg/rvZPI
-        UnYvfuxcLXglqg6+F5feTsWMgR11JZWo+uBoJ3zknGpuwBNH6mG0/jYVuvX+3LL3
-        35KQ2Imf5StXYTeBXK9y+FZV2BK/8ApRCFfup+RrVL+TvR5OmaX/vmmJMxFBbGCQ
-        6zXUv6uhKMvFWjWPgOuj0Nj3p8fl2stnEKHRM3vjrOVE0K9j8SB8jojdBhvNzQhe
-        rl0Kl6lvTSAIXM9UUkh7zk26qTGasI46o88QL2BgGmw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=+Am/ok
-        roNzJr1TmU7haAv6uyZZIQ6jWmqnrSti6GXho=; b=OClxJ5zI0Kc6sUzw2FFl0o
-        n2mc8LIOe9QRBJWVfS6e5krsJwizD0dtzxBJBMwdJJzgHohngFR9VqDmDht4kliQ
-        iCQ6TbXKzZ64N+FPx75VZ5dOG1S8KWy7N22qfqYimgJTFbbfRpbxxVgQZawzPcnd
-        b9DtxHAvrAZNUwoxwKtUFAywW76ky1DdxfTKzE+O+HNh5eM2+EmrXMQzOD21rHU9
-        0Fo6Z4OpuR8Lezl/bbaeOrdkfLuf1rTDfaPGSWl6DyT+AGv9TP0QyE/VQKo1jR7R
-        w6sFSo0dhmLnpvbuaC4Kpt3wEkQ5GGUvTltn7caxE0u3gAs7UerzdQWCpjcMjp5Q
-        ==
-X-ME-Sender: <xms:PobTX_ELpSGjATysjlZnFEAG1P-yJRZJa3sds_SrcY3XApc15RLcLQ>
-    <xme:PobTX8W3IuQH87ezyvIqJ_V4dQLXGxKOPM4vtz_moXBquNSzhDDElNbdYNnR7FM8m
-    zNBaFNpooQwOQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekvddgieekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:PobTXxKV34px7PpLEdB5UrtiIpCtRRiRTKaHDxyRhwUL8rU6jB8Ugg>
-    <xmx:PobTX9EQnE7IyPk1rUO0Ek_-oCPP8DM9UiTNmQr5Cg3OykiAodGuhQ>
-    <xmx:PobTX1WzfqpP211WLZ9t87e8I7Y4g01NbWqG9KeJTEI5hwaeu4pkUA>
-    <xmx:QobTXwPPxU-Tr1Kt4vjiPki-wZoCNdlOUoqNfGA1YUXNhfC-O4Sw2w>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7278E240062;
-        Fri, 11 Dec 2020 09:46:22 -0500 (EST)
-Date:   Fri, 11 Dec 2020 15:47:35 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Solar Designer <solar@openwall.com>, Eddy_Wu@trendmicro.com,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 1/2] kprobes: Remove NMI context check
-Message-ID: <X9OGh2QRZQrX/gM9@kroah.com>
-References: <160761425763.3585575.15837172081484340228.stgit@devnote2>
+        id S2406204AbgLKOuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:50:50 -0500
+Received: from mga03.intel.com ([134.134.136.65]:33051 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394973AbgLKOuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 09:50:22 -0500
+IronPort-SDR: gYubNMEdbaRQ/tjpL+XKHpViixGj97qppBsGzuN6eP/PiT+BoMQQzebAML2ezybcTjSXg5hnaG
+ FICYQuDvIZGA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="174552381"
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="174552381"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 06:48:35 -0800
+IronPort-SDR: kF44CLvInam9OUaqikp9p6kTmX/p8WfrnkSqsX+BOQGBuTTL0poIKuAyEH/dz85NhS6d7lIjy2
+ pYQu6J05xRwA==
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="441224857"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 06:48:34 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1knjjk-00Dg9a-5E; Fri, 11 Dec 2020 16:49:36 +0200
+Date:   Fri, 11 Dec 2020 16:49:36 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>
+Subject: Re: [PATCH] usb: dwc3: drd: Avoid error when extcon is missing
+Message-ID: <20201211144936.GT4077@smile.fi.intel.com>
+References: <20201211142421.15389-1-semen.protsenko@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <160761425763.3585575.15837172081484340228.stgit@devnote2>
+In-Reply-To: <20201211142421.15389-1-semen.protsenko@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 12:30:58AM +0900, Masami Hiramatsu wrote:
-> commit e03b4a084ea6b0a18b0e874baec439e69090c168 upstream.
+On Fri, Dec 11, 2020 at 04:24:21PM +0200, Sam Protsenko wrote:
+> If "port" node is missing in PHY controller node, dwc3_get_extcon()
+> isn't able to find extcon device. This is perfectly fine in case when
+> "usb-role-switch" or OTG is used, but next misleading error message is
+> printed in that case, from of_graph_get_remote_node():
+> 
+>     OF: graph: no port node found in /phy@1234abcd
+> 
+> Avoid printing that message by checking if port node exists in PHY node
+> before calling of_graph_get_remote_node().
 
-Both patches now queued up, thanks.
+So, this has to be v2...
+Anyway, see below.
 
-greg k-h
+...
+
+>  static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
+>  {
+>  	struct device *dev = dwc->dev;
+> -	struct device_node *np_phy, *np_conn;
+> -	struct extcon_dev *edev;
+> +	struct device_node *np_phy;
+> +	struct extcon_dev *edev = NULL;
+>  	const char *name;
+>  
+>  	if (device_property_read_bool(dev, "extcon"))
+> @@ -462,15 +462,22 @@ static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
+>  		return edev;
+>  	}
+>  
+> +	/*
+> +	 * Try to get extcon device from USB PHY controller's "port" node.
+> +	 * Check if it has the "port" node first, to avoid printing the error
+> +	 * message from underlying code, as it's a valid case: extcon device
+> +	 * (and "port" node) may be missing in case of "usb-role-switch" or OTG
+> +	 * mode.
+> +	 */
+>  	np_phy = of_parse_phandle(dev->of_node, "phys", 0);
+> -	np_conn = of_graph_get_remote_node(np_phy, -1, -1);
+> +	if (of_graph_is_present(np_phy)) {
+> +		struct device_node *np_conn;
+>  
+> -	if (np_conn)
+> -		edev = extcon_find_edev_by_node(np_conn);
+> -	else
+> -		edev = NULL;
+> -
+> -	of_node_put(np_conn);
+> +		np_conn = of_graph_get_remote_node(np_phy, -1, -1);
+> +		if (np_conn)
+> +			edev = extcon_find_edev_by_node(np_conn);
+> +		of_node_put(np_conn);
+> +	}
+>  	of_node_put(np_phy);
+>  
+>  	return edev;
+
+
+Why not do it slightly different, i.e.
+
+-	np_conn = of_graph_get_remote_node(np_phy, -1, -1);
++	if (of_graph_is_present(np_phy))
++		np_conn = of_graph_get_remote_node(np_phy, -1, -1);
++	else
++		np_conn = NULL;
+
+?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
