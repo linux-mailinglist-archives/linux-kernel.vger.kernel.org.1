@@ -2,225 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B402D7902
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D27F32D7915
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437722AbgLKPRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:17:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:34676 "EHLO foss.arm.com"
+        id S2437815AbgLKPVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:21:14 -0500
+Received: from mga14.intel.com ([192.55.52.115]:46480 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406587AbgLKPQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:16:48 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AF3F931B;
-        Fri, 11 Dec 2020 07:16:02 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E88F73F66B;
-        Fri, 11 Dec 2020 07:16:00 -0800 (PST)
-Date:   Fri, 11 Dec 2020 15:15:54 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Vidya Sagar <vidyas@nvidia.com>, Jingoo Han <jingoohan1@gmail.com>,
-        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
-        "treding@nvidia.com" <treding@nvidia.com>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kthota@nvidia.com" <kthota@nvidia.com>,
-        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
-        "sagar.tv@gmail.com" <sagar.tv@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [PATCH V2] PCI: dwc: Add support to configure for ECRC
-Message-ID: <20201211151554.GA18318@e121166-lin.cambridge.arm.com>
-References: <20201124210228.GA589610@bjorn-Precision-5520>
- <42ebcbe2-7d24-558a-3c33-beb7818d5516@nvidia.com>
- <49e3a6a4-9621-0734-99f1-b4f616dbcb7d@nvidia.com>
- <CAL_JsqK7EtRhGhd20P2raj1C4GLOoBQ55ngY+BvygRE-61E+9A@mail.gmail.com>
+        id S2390756AbgLKPUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 10:20:46 -0500
+IronPort-SDR: GTdti3LGpGAHkKm8Ivv3OyWAwmfD3zCAZ/AX7Ad5uBCUM90Iljzdf5k0GJTD43I0xg0fcm5QLi
+ HjIa842av6aQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9832"; a="173678092"
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="173678092"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 07:18:59 -0800
+IronPort-SDR: qEYWF8woMW301nmdpN9VMBb5KrIKS4/MOhAVQjvTVu+BRSnTwbW+imJouu6WEfq0gwPq+KicEZ
+ gcN0ZchPmP9A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="371649959"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by fmsmga004.fm.intel.com with ESMTP; 11 Dec 2020 07:18:56 -0800
+Subject: Re: [RFC PATCH v8] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
+References: <20201210014359.183771-1-aubrey.li@linux.intel.com>
+ <CAKfTPtAVC-ZJYexcYvVdO5gOJ2aXKzRpjLC797xoh5n4TWGU=Q@mail.gmail.com>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <26c69935-e53d-32dc-0366-a1fb7f3c3d56@linux.intel.com>
+Date:   Fri, 11 Dec 2020 23:18:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqK7EtRhGhd20P2raj1C4GLOoBQ55ngY+BvygRE-61E+9A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAKfTPtAVC-ZJYexcYvVdO5gOJ2aXKzRpjLC797xoh5n4TWGU=Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 08:49:16AM -0600, Rob Herring wrote:
-> On Fri, Dec 11, 2020 at 7:58 AM Vidya Sagar <vidyas@nvidia.com> wrote:
-> >
-> > Hi Lorenzo,
-> > Apologies to bug you, but wondering if you have any further comments on
-> > this patch that I need to take care of?
+On 2020/12/11 23:07, Vincent Guittot wrote:
+> On Thu, 10 Dec 2020 at 02:44, Aubrey Li <aubrey.li@linux.intel.com> wrote:
+>>
+>> Add idle cpumask to track idle cpus in sched domain. Every time
+>> a CPU enters idle, the CPU is set in idle cpumask to be a wakeup
+>> target. And if the CPU is not in idle, the CPU is cleared in idle
+>> cpumask during scheduler tick to ratelimit idle cpumask update.
+>>
+>> When a task wakes up to select an idle cpu, scanning idle cpumask
+>> has lower cost than scanning all the cpus in last level cache domain,
+>> especially when the system is heavily loaded.
+>>
+>> Benchmarks including hackbench, schbench, uperf, sysbench mysql and
+>> kbuild have been tested on a x86 4 socket system with 24 cores per
+>> socket and 2 hyperthreads per core, total 192 CPUs, no regression
+>> found.
+>>
+>> v7->v8:
+>> - refine update_idle_cpumask, no functionality change
+>> - fix a suspicious RCU usage warning with CONFIG_PROVE_RCU=y
+>>
+>> v6->v7:
+>> - place the whole idle cpumask mechanism under CONFIG_SMP
+>>
+>> v5->v6:
+>> - decouple idle cpumask update from stop_tick signal, set idle CPU
+>>   in idle cpumask every time the CPU enters idle
+>>
+>> v4->v5:
+>> - add update_idle_cpumask for s2idle case
+>> - keep the same ordering of tick_nohz_idle_stop_tick() and update_
+>>   idle_cpumask() everywhere
+>>
+>> v3->v4:
+>> - change setting idle cpumask from every idle entry to tickless idle
+>>   if cpu driver is available
+>> - move clearing idle cpumask to scheduler_tick to decouple nohz mode
+>>
+>> v2->v3:
+>> - change setting idle cpumask to every idle entry, otherwise schbench
+>>   has a regression of 99th percentile latency
+>> - change clearing idle cpumask to nohz_balancer_kick(), so updating
+>>   idle cpumask is ratelimited in the idle exiting path
+>> - set SCHED_IDLE cpu in idle cpumask to allow it as a wakeup target
+>>
+>> v1->v2:
+>> - idle cpumask is updated in the nohz routines, by initializing idle
+>>   cpumask with sched_domain_span(sd), nohz=off case remains the original
+>>   behavior
+>>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Mel Gorman <mgorman@suse.de>
+>> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+>> Cc: Qais Yousef <qais.yousef@arm.com>
+>> Cc: Valentin Schneider <valentin.schneider@arm.com>
+>> Cc: Jiang Biao <benbjiang@gmail.com>
+>> Cc: Tim Chen <tim.c.chen@linux.intel.com>
+>> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
 > 
-> You can check the status of your patches in Patchwork:
-> 
-> https://patchwork.kernel.org/project/linux-pci/patch/20201111121145.7015-1-vidyas@nvidia.com/
-> 
-> If it's in 'New' state and delegated to Lorenzo or Bjorn, it's in
-> their queue. You can shorten the queue by reviewing stuff in front of
-> you. :)
+> This version looks good to me. I don't see regressions of v5 anymore
+> and see some improvements on heavy cases
 
-Yes that's right. There are a couple of patches pending ahead, if this
-one can be rebased against my pci/dwc branch and resent I can apply it.
-
-Thanks,
-Lorenzo
+v5 or v8?
 
 > 
-> Rob
+> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 > 
-> >
-> > Thanks,
-> > Vidya Sagar
-> >
-> > On 12/3/2020 5:40 PM, Vidya Sagar wrote:
-> > >
-> > >
-> > > On 11/25/2020 2:32 AM, Bjorn Helgaas wrote:
-> > >> External email: Use caution opening links or attachments
-> > >>
-> > >>
-> > >> On Tue, Nov 24, 2020 at 03:50:01PM +0530, Vidya Sagar wrote:
-> > >>> Hi Bjorn,
-> > >>> Please let me know if this patch needs any further modifications
-> > >>
-> > >> I'm fine with it, but of course Lorenzo will take care of it.
-> > > Thanks Bjorn.
-> > >
-> > > Hi Lorenzo,
-> > > Please let me know if you have any comments for this patch.
-> > >
-> > > Thanks,
-> > > Vidya Sagar
-> > >
-> > >>
-> > >>> On 11/12/2020 10:32 PM, Vidya Sagar wrote:
-> > >>>> External email: Use caution opening links or attachments
-> > >>>>
-> > >>>>
-> > >>>> On 11/12/2020 3:59 AM, Bjorn Helgaas wrote:
-> > >>>>> External email: Use caution opening links or attachments
-> > >>>>>
-> > >>>>>
-> > >>>>> On Wed, Nov 11, 2020 at 10:21:46PM +0530, Vidya Sagar wrote:
-> > >>>>>>
-> > >>>>>>
-> > >>>>>> On 11/11/2020 9:57 PM, Jingoo Han wrote:
-> > >>>>>>> External email: Use caution opening links or attachments
-> > >>>>>>>
-> > >>>>>>>
-> > >>>>>>> On 11/11/20, 7:12 AM, Vidya Sagar wrote:
-> > >>>>>>>>
-> > >>>>>>>> DesignWare core has a TLP digest (TD) override bit in
-> > >>>>>>>> one of the control
-> > >>>>>>>> registers of ATU. This bit also needs to be programmed for
-> > >>>>>>>> proper ECRC
-> > >>>>>>>> functionality. This is currently identified as an issue
-> > >>>>>>>> with DesignWare
-> > >>>>>>>> IP version 4.90a.
-> > >>>>>>>>
-> > >>>>>>>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> > >>>>>>>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > >>>>>>>> ---
-> > >>>>>>>> V2:
-> > >>>>>>>> * Addressed Bjorn's comments
-> > >>>>>>>>
-> > >>>>>>>>     drivers/pci/controller/dwc/pcie-designware.c | 52
-> > >>>>>>>> ++++++++++++++++++--
-> > >>>>>>>>     drivers/pci/controller/dwc/pcie-designware.h |  1 +
-> > >>>>>>>>     2 files changed, 49 insertions(+), 4 deletions(-)
-> > >>>>>>>>
-> > >>>>>>>> diff --git
-> > >>>>>>>> a/drivers/pci/controller/dwc/pcie-designware.c
-> > >>>>>>>> b/drivers/pci/controller/dwc/pcie-designware.c
-> > >>>>>>>> index c2dea8fc97c8..ec0d13ab6bad 100644
-> > >>>>>>>> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> > >>>>>>>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> > >>>>>>>> @@ -225,6 +225,46 @@ static void
-> > >>>>>>>> dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index,
-> > >>>>>>>> u32 reg,
-> > >>>>>>>>          dw_pcie_writel_atu(pci, offset + reg, val);
-> > >>>>>>>>     }
-> > >>>>>>>>
-> > >>>>>>>> +static inline u32 dw_pcie_enable_ecrc(u32 val)
-> > >>>>>>>
-> > >>>>>>> What is the reason to use inline here?
-> > >>>>>>
-> > >>>>>> Actually, I wanted to move the programming part inside the
-> > >>>>>> respective APIs
-> > >>>>>> but then I wanted to give some details as well in comments so to
-> > >>>>>> avoid
-> > >>>>>> duplication, I came up with this function. But, I'm making it
-> > >>>>>> inline for
-> > >>>>>> better code optimization by compiler.
-> > >>>>>
-> > >>>>> I don't really care either way, but I'd be surprised if the compiler
-> > >>>>> didn't inline this all by itself even without the explicit "inline".
-> > >>>> I just checked it and you are right that compiler is indeed inlining it
-> > >>>> without explicitly mentioning 'inline'.
-> > >>>> I hope it is ok to leave it that way.
-> > >>>>
-> > >>>>>
-> > >>>>>>>> +{
-> > >>>>>>>> +     /*
-> > >>>>>>>> +      * DesignWare core version 4.90A has this strange design
-> > >>>>>>>> issue
-> > >>>>>>>> +      * where the 'TD' bit in the Control register-1 of
-> > >>>>>>>> the ATU outbound
-> > >>>>>>>> +      * region acts like an override for the ECRC
-> > >>>>>>>> setting i.e. the presence
-> > >>>>>>>> +      * of TLP Digest(ECRC) in the outgoing TLPs is
-> > >>>>>>>> solely determined by
-> > >>>>>>>> +      * this bit. This is contrary to the PCIe spec
-> > >>>>>>>> which says that the
-> > >>>>>>>> +      * enablement of the ECRC is solely determined by
-> > >>>>>>>> the AER registers.
-> > >>>>>>>> +      *
-> > >>>>>>>> +      * Because of this, even when the ECRC is enabled through AER
-> > >>>>>>>> +      * registers, the transactions going through ATU
-> > >>>>>>>> won't have TLP Digest
-> > >>>>>>>> +      * as there is no way the AER sub-system could
-> > >>>>>>>> program the TD bit which
-> > >>>>>>>> +      * is specific to DesignWare core.
-> > >>>>>>>> +      *
-> > >>>>>>>> +      * The best way to handle this scenario is to program the
-> > >>>>>>>> TD bit
-> > >>>>>>>> +      * always. It affects only the traffic from root
-> > >>>>>>>> port to downstream
-> > >>>>>>>> +      * devices.
-> > >>>>>>>> +      *
-> > >>>>>>>> +      * At this point,
-> > >>>>>>>> +      * When ECRC is enabled in AER registers,
-> > >>>>>>>> everything works normally
-> > >>>>>>>> +      * When ECRC is NOT enabled in AER registers, then,
-> > >>>>>>>> +      * on Root Port:- TLP Digest (DWord size) gets
-> > >>>>>>>> appended to each packet
-> > >>>>>>>> +      *                even through it is not required.
-> > >>>>>>>> Since downstream
-> > >>>>>>>> +      *                TLPs are mostly for
-> > >>>>>>>> configuration accesses and BAR
-> > >>>>>>>> +      *                accesses, they are not in
-> > >>>>>>>> critical path and won't
-> > >>>>>>>> +      *                have much negative effect on the
-> > >>>>>>>> performance.
-> > >>>>>>>> +      * on End Point:- TLP Digest is received for
-> > >>>>>>>> some/all the packets coming
-> > >>>>>>>> +      *                from the root port. TLP Digest
-> > >>>>>>>> is ignored because,
-> > >>>>>>>> +      *                as per the PCIe Spec r5.0 v1.0 section
-> > >>>>>>>> 2.2.3
-> > >>>>>>>> +      *                "TLP Digest Rules", when an
-> > >>>>>>>> endpoint receives TLP
-> > >>>>>>>> +      *                Digest when its ECRC check
-> > >>>>>>>> functionality is disabled
-> > >>>>>>>> +      *                in AER registers, received TLP
-> > >>>>>>>> Digest is just ignored.
-> > >>>>>>>> +      * Since there is no issue or error reported
-> > >>>>>>>> either side, best way to
-> > >>>>>>>> +      * handle the scenario is to program TD bit by default.
-> > >>>>>>>> +      */
-> > >>>>>>>> +
-> > >>>>>>>> +     return val | PCIE_ATU_TD;
-> > >>>>>>>> +}
+>> ---
+>>  include/linux/sched/topology.h | 13 ++++++++++
+>>  kernel/sched/core.c            |  2 ++
+>>  kernel/sched/fair.c            | 45 +++++++++++++++++++++++++++++++++-
+>>  kernel/sched/idle.c            |  5 ++++
+>>  kernel/sched/sched.h           |  4 +++
+>>  kernel/sched/topology.c        |  3 ++-
+>>  6 files changed, 70 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+>> index 820511289857..b47b85163607 100644
+>> --- a/include/linux/sched/topology.h
+>> +++ b/include/linux/sched/topology.h
+>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
+>>         atomic_t        ref;
+>>         atomic_t        nr_busy_cpus;
+>>         int             has_idle_cores;
+>> +       /*
+>> +        * Span of all idle CPUs in this domain.
+>> +        *
+>> +        * NOTE: this field is variable length. (Allocated dynamically
+>> +        * by attaching extra space to the end of the structure,
+>> +        * depending on how many CPUs the kernel has booted up with)
+>> +        */
+>> +       unsigned long   idle_cpus_span[];
+>>  };
+>>
+>> +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
+>> +{
+>> +       return to_cpumask(sds->idle_cpus_span);
+>> +}
+>> +
+>>  struct sched_domain {
+>>         /* These fields must be setup */
+>>         struct sched_domain __rcu *parent;      /* top domain must be null terminated */
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index c4da7e17b906..b136e2440ea4 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -4011,6 +4011,7 @@ void scheduler_tick(void)
+>>
+>>  #ifdef CONFIG_SMP
+>>         rq->idle_balance = idle_cpu(cpu);
+>> +       update_idle_cpumask(cpu, rq->idle_balance);
+>>         trigger_load_balance(rq);
+>>  #endif
+>>  }
+>> @@ -7186,6 +7187,7 @@ void __init sched_init(void)
+>>                 rq->idle_stamp = 0;
+>>                 rq->avg_idle = 2*sysctl_sched_migration_cost;
+>>                 rq->max_idle_balance_cost = sysctl_sched_migration_cost;
+>> +               rq->last_idle_state = 1;
+>>
+>>                 INIT_LIST_HEAD(&rq->cfs_tasks);
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index c0c4d9ad7da8..25f36ecfee54 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -6146,7 +6146,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>>
+>>         time = cpu_clock(this);
+>>
+>> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+>> +       /*
+>> +        * sched_domain_shared is set only at shared cache level,
+>> +        * this works only because select_idle_cpu is called with
+>> +        * sd_llc.
+>> +        */
+>> +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
+>>
+>>         for_each_cpu_wrap(cpu, cpus, target) {
+>>                 if (!--nr)
+>> @@ -6806,6 +6811,44 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>>
+>>         return newidle_balance(rq, rf) != 0;
+>>  }
+>> +
+>> +/*
+>> + * Update cpu idle state and record this information
+>> + * in sd_llc_shared->idle_cpus_span.
+>> + *
+>> + * This function is called with interrupts disabled.
+>> + */
+>> +void update_idle_cpumask(int cpu, bool idle)
+>> +{
+>> +       struct sched_domain *sd;
+>> +       struct rq *rq = cpu_rq(cpu);
+>> +       int idle_state;
+>> +
+>> +       /*
+>> +        * Also set SCHED_IDLE cpu in idle cpumask to
+>> +        * allow SCHED_IDLE cpu as a wakeup target.
+>> +        */
+>> +       idle_state = idle || sched_idle_cpu(cpu);
+>> +       /*
+>> +        * No need to update idle cpumask if the state
+>> +        * does not change.
+>> +        */
+>> +       if (rq->last_idle_state == idle_state)
+>> +               return;
+>> +       /*
+>> +        * Called with irq disabled, rcu protection is not needed.
+>> +        */
+>> +       sd = per_cpu(sd_llc, cpu);
+>> +       if (unlikely(!sd))
+>> +               return;
+>> +
+>> +       if (idle_state)
+>> +               cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
+>> +       else
+>> +               cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
+>> +
+>> +       rq->last_idle_state = idle_state;
+>> +}
+>>  #endif /* CONFIG_SMP */
+>>
+>>  static unsigned long wakeup_gran(struct sched_entity *se)
+>> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+>> index f324dc36fc43..2c517d6a061a 100644
+>> --- a/kernel/sched/idle.c
+>> +++ b/kernel/sched/idle.c
+>> @@ -257,6 +257,11 @@ static void do_idle(void)
+>>                         cpuhp_report_idle_dead();
+>>                         arch_cpu_idle_dead();
+>>                 }
+>> +               /*
+>> +                * The CPU is about to go idle, set it in idle cpumask
+>> +                * to be a wake up target.
+>> +                */
+>> +               update_idle_cpumask(cpu, true);
+>>
+>>                 arch_cpu_idle_enter();
+>>
+>> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+>> index 8d1ca65db3b0..4041d5a10de5 100644
+>> --- a/kernel/sched/sched.h
+>> +++ b/kernel/sched/sched.h
+>> @@ -976,6 +976,7 @@ struct rq {
+>>
+>>         unsigned char           nohz_idle_balance;
+>>         unsigned char           idle_balance;
+>> +       unsigned char           last_idle_state;
+>>
+>>         unsigned long           misfit_task_load;
+>>
+>> @@ -1516,6 +1517,8 @@ static inline unsigned int group_first_cpu(struct sched_group *group)
+>>
+>>  extern int group_balance_cpu(struct sched_group *sg);
+>>
+>> +void update_idle_cpumask(int cpu, bool idle);
+>> +
+>>  #if defined(CONFIG_SCHED_DEBUG) && defined(CONFIG_SYSCTL)
+>>  void register_sched_domain_sysctl(void);
+>>  void dirty_sched_domain_sysctl(int cpu);
+>> @@ -1536,6 +1539,7 @@ extern void flush_smp_call_function_from_idle(void);
+>>
+>>  #else /* !CONFIG_SMP: */
+>>  static inline void flush_smp_call_function_from_idle(void) { }
+>> +static inline void update_idle_cpumask(int cpu, bool idle) { }
+>>  #endif
+>>
+>>  #include "stats.h"
+>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>> index 1bd7e3af904f..541bd3a7de4d 100644
+>> --- a/kernel/sched/topology.c
+>> +++ b/kernel/sched/topology.c
+>> @@ -1407,6 +1407,7 @@ sd_init(struct sched_domain_topology_level *tl,
+>>                 sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
+>>                 atomic_inc(&sd->shared->ref);
+>>                 atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
+>> +               cpumask_copy(sds_idle_cpus(sd->shared), sched_domain_span(sd));
+>>         }
+>>
+>>         sd->private = sdd;
+>> @@ -1769,7 +1770,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
+>>
+>>                         *per_cpu_ptr(sdd->sd, j) = sd;
+>>
+>> -                       sds = kzalloc_node(sizeof(struct sched_domain_shared),
+>> +                       sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
+>>                                         GFP_KERNEL, cpu_to_node(j));
+>>                         if (!sds)
+>>                                 return -ENOMEM;
+>> --
+>> 2.25.1
+>>
+
