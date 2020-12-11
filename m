@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3572D74DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6FD2D74E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395047AbgLKLoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 06:44:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30356 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391022AbgLKLnf (ORCPT
+        id S2395180AbgLKLqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 06:46:15 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:18723 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389984AbgLKLp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:43:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607686928;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ry4QLCFBuVcgRrGECJpsR3PjwcufaE79G5/vr18zuM0=;
-        b=iXlSGoI5cJLyqwZbnsO1dlJqWi3vgdRGlVaq88LvU+NHZ65jXBA5PJB1HmTs1YNKR9ArcP
-        /llOGy5sTtVX4mOCUq47cUHHzV5/dh/vVliha91f53fL72CiIWr6FPtfX+uivvH1cyGmRm
-        4c8gmxVzqRjVHxokq93R3c4AM2QyXCo=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-35-u6hswRUJPNKXmLy8j9TXpQ-1; Fri, 11 Dec 2020 06:42:06 -0500
-X-MC-Unique: u6hswRUJPNKXmLy8j9TXpQ-1
-Received: by mail-wm1-f72.google.com with SMTP id r1so3157322wmn.8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 03:42:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ry4QLCFBuVcgRrGECJpsR3PjwcufaE79G5/vr18zuM0=;
-        b=B7+EtqB8JClPSYpMa670zw9RiyDg4rA04ymmRKf69fzw+qYODQDi0yggFSLFnLbkxX
-         lRHcYEh5fvVZXrG9yhUoV+sahzxaz5f2r4GqjIPJTGiDBXoK2deGg/DSLNtyZBlUaQbr
-         vzFZ3+1FxVUG611ID78HD9M3O6Nb6WbKyNvui1l3CE2PgJBVKin/XG/WVII1UPd1pcP/
-         0SWbHrbG/xuI7RNPiPqwLhd95u5DbAGXlVr9qNpeyBIMg5ihZ9sTaVtQf7BEJtWNzP22
-         d1uftplXRRWmzeD4MR6MyvUr5Etnto5/NUhMIIKOm3u5jSoTFFBbOxFZj5g/s9/5ZnfO
-         pk6Q==
-X-Gm-Message-State: AOAM533/iLaSf9RrJ9RttwkRDrQXi9aVAV2abmZf9QJsbdspD7QY4GBa
-        bYt3yjoG+1UmTGu4duc8pFhiNnBRrUSjAVTJ1RJ872AO674mgP9DLCc5PAOpZuQBXLrEWawUCce
-        JrCWMYqwiZ+3WPrdWRhv/CXhV
-X-Received: by 2002:adf:8185:: with SMTP id 5mr13009130wra.44.1607686925140;
-        Fri, 11 Dec 2020 03:42:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyXgc91RMaWJBoQmaitT2etxSTZvic/O2Map1BC8Kl98FhLjU4l6ovbObXtEGhr9cTTmfJCSA==
-X-Received: by 2002:adf:8185:: with SMTP id 5mr13009097wra.44.1607686924922;
-        Fri, 11 Dec 2020 03:42:04 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id c129sm14174329wma.31.2020.12.11.03.42.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Dec 2020 03:42:03 -0800 (PST)
-Subject: Re: [PATCH] KVM: SVM: use vmsave/vmload for saving/restoring
- additional host state
-To:     Sean Christopherson <seanjc@google.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Michael Roth <michael.roth@amd.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-References: <20201210174814.1122585-1-michael.roth@amd.com>
- <CALCETrXo+2LjUt_ObxV+6u6719gTVaMR4-KCrgsjQVRe=xPo+g@mail.gmail.com>
- <160763562772.1125101.13951354991725886671@vm0>
- <CALCETrV2-WwV+uz99r2RCJx6OADzwxaLxPUVW22wjHoAAN5cSQ@mail.gmail.com>
- <160764771044.1223913.9946447556531152629@vm0>
- <CALCETrVuCZ5itAN3Ns3D04qR1Z_eJiA9=UvyM95zLE076X=JEA@mail.gmail.com>
- <X9LLFMN5CNPIikSp@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5083c2dd-5aed-f7a9-4267-04cfca92032b@redhat.com>
-Date:   Fri, 11 Dec 2020 12:42:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 11 Dec 2020 06:45:57 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 83978240006;
+        Fri, 11 Dec 2020 11:45:15 +0000 (UTC)
+Date:   Fri, 11 Dec 2020 12:45:15 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: Re: [PATCH] drivers: soc: atmel: Avoid calling at91_soc_init on non
+ AT91 SoCs
+Message-ID: <20201211114515.GF1781038@piout.net>
+References: <20201211103143.1332302-1-sudeep.holla@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <X9LLFMN5CNPIikSp@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211103143.1332302-1-sudeep.holla@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 02:27, Sean Christopherson wrote:
-> Michael, please reply to all so that everyone can read along and so that the
-> conversation gets recorded in the various mailing list archives.
+Hello,
+
+On 11/12/2020 10:31:43+0000, Sudeep Holla wrote:
+> Since at91_soc_init is called unconditionally from atmel_soc_device_init,
+> we get the following warning on all non AT91 SoCs:
+> 	" AT91: Could not find identification node"
 > 
-> If you are replying all, then I think something funky is going on with AMD's
-> mail servers, as I'm not getting your responses (I double checked SPAM), nor are
-> they showing up on lore.
+> Fix the same by filtering with allowed AT91 SoC list.
+> 
+> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  drivers/soc/atmel/soc.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
+> index c4472b68b7c2..ba9fc07cd91c 100644
+> --- a/drivers/soc/atmel/soc.c
+> +++ b/drivers/soc/atmel/soc.c
+> @@ -271,8 +271,19 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
+>  	return soc_dev;
+>  }
+>  
+> +static const struct of_device_id at91_soc_allowed_list[] __initconst = {
+> +	{ .compatible = "atmel,at91rm9200", },
+> +	{ .compatible = "atmel,at91sam9260", },
+> +	{ .compatible = "atmel,sama5d2", },
 
-I think somebody else reported similar issues with AMD's mail servers.
+This is a very small subset of the supported SoCs. a proper list would
+be:
 
-Paolo
+atmel,at91rm9200
+atmel,at91sam9
+atmel,sama5
+atmel,samv7
 
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
