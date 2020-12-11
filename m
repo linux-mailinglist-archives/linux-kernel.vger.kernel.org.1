@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B552D82C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C542D82C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437277AbgLKXet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 18:34:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43944 "EHLO
+        id S2437361AbgLKXev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 18:34:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729817AbgLKXeY (ORCPT
+        with ESMTP id S2389857AbgLKXe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 18:34:24 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398B0C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:33:44 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id g26so19302qkk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:33:44 -0800 (PST)
+        Fri, 11 Dec 2020 18:34:26 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F204BC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:33:45 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id kk4so3242085pjb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:33:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=mnk0yNaQYUtc+OGm2Ej0P6u5h1xpL6GiZ/YPBHS5LOU=;
-        b=c+eM5eQdQ+qiykEDoQ248iehOkFTnTi6bmZz/d+E0j8CJX7QCxjk8V3hpPsNuhBx7d
-         2R8hJlVesC97oveCy4PMWfKfVWBOc7fk0umYrduba7carksZmqhlcbKjR4r1d1iRS08W
-         /jvqX2Tr/4aHyAlhGUoDL5KEbqvaz3F363kf9i/w19D2vjmlN4KFowdkfgZj2VwMJXoh
-         +sR49VR0qb7yNqjKfXqgPBMH9zWTKLmG/ipOsIp5wlM8l8JMeR/GTHcW4scrW7qj8Syq
-         QEz5N0bmmL/3UifOOfG+XHMFi/gqGMmC6lR4LQPfXLiwZirO2XmO7raIUj2nv6eGWlEn
-         iZvg==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=Iu352o38cH38gPmg4WLLZRhgJxjvxf30w/1vSczLt9o=;
+        b=ZqeVMFcucNwA/18frxZWmorIH7IpIJqIFs1kUdtDd2c1o/05p+P/F07P9Mms6Y5Mrh
+         U8j7TY+LKlWAIzaCyAkyFm+lRRU8exknvw/w7dcxCIZD5AbzxeEDkFcX7zTZfFpm2o+g
+         NYA3eBlRI+//e58fPiZx8J0vVptjUDFK26+Nx0tRVktZogDPaSDHkYLKoe9SF79vjVOP
+         YkPYVre6yPcBcNtfJGSVGVyY0W+J4uzdtTby2G3wGhQuJT8SRlZzHIoxAcehtmYtPmqT
+         L9gwgXpAly+8k+P8YUsKvz9ic+Ks6Ef6RiTjHnohAlJCSVCB1K0s/Yee1ZwTNmAZeLcH
+         0YEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=mnk0yNaQYUtc+OGm2Ej0P6u5h1xpL6GiZ/YPBHS5LOU=;
-        b=lkyBCjPCy9S+Y4gnE6fuS0/sDMkKalchSHlSWrMhgLPAY1Sgik4ZSwau7Cow+v2ygP
-         60Qgbuz87j7X28kE5DOqxDL//mPEaPTjpk/XcI0aq8MDK4B9wOFThB3y8eZqS5kgPoh/
-         sjjie9TSlxkF14ZIxAsf8NnGzgVt/1vso3rSbnKnTGG86LJK2sxcE7NUt8QI1TwGWDsX
-         cIgfXEMVwx0XoDAVSXrGazN3BlecYSPR9ZDKTwcA6ww0uNK8xa9Hw1G/MzFsjh6nfmlM
-         oQGerimxeEzAN0K4Rw6M6G160YwTUQFPVpQDv8HaI8HGtyYJBkzer6h27DKDDyDxHdE6
-         uQDw==
-X-Gm-Message-State: AOAM531QHiUfSnTzOuuN9+XBW7KYCPh+0B2T+OaTXeOav4wu+VVMUuPm
-        M8W0BaWoyBMzP7j59dOXqZoyRGuGUgOC
-X-Google-Smtp-Source: ABdhPJw3rUExUwP8KkOPYO+NmCn8TOjKgcr1TfCSFfKJW1sOnzBlf40ElWIivAz7FlsIR8bHwBIXPS8NZ156
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Iu352o38cH38gPmg4WLLZRhgJxjvxf30w/1vSczLt9o=;
+        b=LMwKC7YtSCjSbqCx9Wj70WhreJegdLjcD5UFp+7qoEGDL+czXRwn6TyKH5v4hEioD3
+         /cNPi6yyY2t7ByiavB4GC7mj5ns2IjqU2P78CZubDdFgTNiKa1ekE4ggXS7USaKsUBbT
+         IoYzZUJ1mtfvVHw6KudHH0bTtX678M+jfWXSklGu3RO6uPOg8df+eXwweoSRoLYqaakb
+         XNbNgUXVYX3kzrPErSlIU1JypmBczObxjLH4V2jR3VgshClWI99EXpipCSjw4qfj1AhC
+         o+SoI7l++4DVaxoIICxn3EVxmGyGjyxIaCyme151UfiBiJMK4j+DSW9CyWKjEjr9NKm8
+         tPpA==
+X-Gm-Message-State: AOAM530Ed6XjmFXSqyFTaRJcJ+LnXlG1PJQOVTGuONoUhaT/7nWyCX8Z
+        uvPE4QrzdZ6bqCUViGuOmEwKyl8mMB73
+X-Google-Smtp-Source: ABdhPJxuuiHUKuvUPeFysBTT6sPHLW5xDIymKoiDTgbWM+xZzuHcMxdZ2etEf3M6DNpwvFjzorP6I4Dq22jh
 Sender: "brianvv via sendgmr" <brianvv@brianvv.c.googlers.com>
 X-Received: from brianvv.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:348])
- (user=brianvv job=sendgmr) by 2002:a0c:f283:: with SMTP id
- k3mr13068839qvl.48.1607729623384; Fri, 11 Dec 2020 15:33:43 -0800 (PST)
-Date:   Fri, 11 Dec 2020 23:33:36 +0000
-Message-Id: <20201211233340.1503242-1-brianvv@google.com>
+ (user=brianvv job=sendgmr) by 2002:a17:90a:17a4:: with SMTP id
+ q33mr1469702pja.0.1607729624998; Fri, 11 Dec 2020 15:33:44 -0800 (PST)
+Date:   Fri, 11 Dec 2020 23:33:37 +0000
+In-Reply-To: <20201211233340.1503242-1-brianvv@google.com>
+Message-Id: <20201211233340.1503242-2-brianvv@google.com>
 Mime-Version: 1.0
+References: <20201211233340.1503242-1-brianvv@google.com>
 X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH net-next v2 0/4] net: avoid indirect calls in dst functions
+Subject: [PATCH net-next v2 1/4] net: use indirect call helpers for dst_input
 From:   Brian Vazquez <brianvv@google.com>
 To:     Brian Vazquez <brianvv.kernel@gmail.com>,
         Brian Vazquez <brianvv@google.com>,
@@ -63,29 +66,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: brianvv <brianvv@google.com>
 
-Use of the indirect call wrappers in some dst related functions for the
-ipv6/ipv4 case. This is a small improvent for CONFIG_RETPOLINE=y
+This patch avoids the indirect call for the common case:
+ip_local_deliver and ip6_input
 
-Changed in v2:
--fix build issues reported by kernel test robot
+Signed-off-by: brianvv <brianvv@google.com>
+---
+ include/net/dst.h   | 6 +++++-
+ net/ipv4/ip_input.c | 1 +
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-brianvv (4):
-  net: use indirect call helpers for dst_input
-  net: use indirect call helpers for dst_output
-  net: use indirect call helpers for dst_mtu
-  net: indirect call helpers for ipv4/ipv6 dst_check functions
-
- include/net/dst.h     | 25 +++++++++++++++++++++----
- net/core/sock.c       | 12 ++++++++++--
- net/ipv4/ip_input.c   |  1 +
- net/ipv4/ip_output.c  |  1 +
- net/ipv4/route.c      | 13 +++++++++----
- net/ipv4/tcp_ipv4.c   |  5 ++++-
- net/ipv6/ip6_output.c |  1 +
- net/ipv6/route.c      | 13 +++++++++----
- net/ipv6/tcp_ipv6.c   |  5 ++++-
- 9 files changed, 60 insertions(+), 16 deletions(-)
-
+diff --git a/include/net/dst.h b/include/net/dst.h
+index 10f0a8399867..98cf6e8c06c4 100644
+--- a/include/net/dst.h
++++ b/include/net/dst.h
+@@ -18,6 +18,7 @@
+ #include <linux/refcount.h>
+ #include <net/neighbour.h>
+ #include <asm/processor.h>
++#include <linux/indirect_call_wrapper.h>
+ 
+ struct sk_buff;
+ 
+@@ -441,10 +442,13 @@ static inline int dst_output(struct net *net, struct sock *sk, struct sk_buff *s
+ 	return skb_dst(skb)->output(net, sk, skb);
+ }
+ 
++INDIRECT_CALLABLE_DECLARE(int ip6_input(struct sk_buff *));
++INDIRECT_CALLABLE_DECLARE(int ip_local_deliver(struct sk_buff *));
+ /* Input packet from network to transport.  */
+ static inline int dst_input(struct sk_buff *skb)
+ {
+-	return skb_dst(skb)->input(skb);
++	return INDIRECT_CALL_INET(skb_dst(skb)->input,
++				  ip6_input, ip_local_deliver, skb);
+ }
+ 
+ static inline struct dst_entry *dst_check(struct dst_entry *dst, u32 cookie)
+diff --git a/net/ipv4/ip_input.c b/net/ipv4/ip_input.c
+index b0c244af1e4d..3a025c011971 100644
+--- a/net/ipv4/ip_input.c
++++ b/net/ipv4/ip_input.c
+@@ -253,6 +253,7 @@ int ip_local_deliver(struct sk_buff *skb)
+ 		       net, NULL, skb, skb->dev, NULL,
+ 		       ip_local_deliver_finish);
+ }
++EXPORT_SYMBOL(ip_local_deliver);
+ 
+ static inline bool ip_rcv_options(struct sk_buff *skb, struct net_device *dev)
+ {
 -- 
 2.29.2.576.ga3fc446d84-goog
 
