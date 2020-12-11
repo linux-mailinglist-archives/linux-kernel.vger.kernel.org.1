@@ -2,67 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943E32D7F45
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:19:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 264DE2D7F48
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392760AbgLKTRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 14:17:08 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:40700 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392722AbgLKTQq (ORCPT
+        id S2393089AbgLKTSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 14:18:04 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35682 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392722AbgLKTRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 14:16:46 -0500
-Received: by mail-ot1-f65.google.com with SMTP id j12so9214009ota.7;
-        Fri, 11 Dec 2020 11:16:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/xb5kc10vkM8dae1+GQbeQe8Yxiquajq/zv40ysf09E=;
-        b=ODJcj02Sj32x6hXbgLFmm0J67l3vXWF8DTOZLH9mynvidEfBjO26K571owfnW8AJ/1
-         6HBKi2FSPXBLUPtrFUiQgm0iif0kX4chGE6FmP8gvgj9mzGXM73kWuJs5QFheGq5UPw3
-         ZJwQ3E9rFkBCxq8+i5xVzQTZVw2LTQpjtE0U5bcGgnb8fIASP24cLbktIWvvPzXF4s2S
-         xc4nwHTRj/QwhlG2Ic8wjAIenJJNmStRvD4XWS+lvonkEHd/EM9eJDck4syE4eAnq5tc
-         xPAreOlzArgqJ/fFyIruYgcRiyemKUNNHQiqG3GPQWschVaGWK/NwgBUXKT/qWOhY7qJ
-         Z/xw==
-X-Gm-Message-State: AOAM532nyy/njTx4cYddee8C6rswk6i5GhvNusn6wd5OkLixbSHmKicI
-        jwyxekY/ypYGi/ITH0ZhjFuIEdV4jV6choorQew=
-X-Google-Smtp-Source: ABdhPJzRDR6GG3eZV2qJ1AJS21py7Hw4lkBANMjZcns4OwLpfEx7tM60fIIZ2oMaPhpOXxAR29Z/OEYTHKMjtO9wNfs=
-X-Received: by 2002:a9d:208a:: with SMTP id x10mr9220961ota.260.1607714165855;
- Fri, 11 Dec 2020 11:16:05 -0800 (PST)
+        Fri, 11 Dec 2020 14:17:33 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BBJFjTH049246;
+        Fri, 11 Dec 2020 13:15:45 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607714145;
+        bh=VoPG7rc/Kd2EXL9UY66g2TL//ET0Aft2NFdPswHgQtw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Vld0pl3wEDxvaqCAJ+U+33X4GWHMc/htWDJAVZljyVOQ6dMw5VZ6Zrq5c6ObtXPPk
+         0/GcwEqyH4p/GwSRKohHoMSJigRWmocMeJdW+cHNRDx17rGS0UDrFzw0UUchDYxvIM
+         IVWjB4v0K6+PPbL6fLYyr0QUGWTJ69CnKtx/+5r0=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BBJFjeW122640
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Dec 2020 13:15:45 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 11
+ Dec 2020 13:15:45 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 11 Dec 2020 13:15:45 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BBJFg6W089717;
+        Fri, 11 Dec 2020 13:15:43 -0600
+Subject: Re: [PATCH v3 00/20] dmaengine/soc: k3-udma: Add support for BCDMA
+ and PKTDMA
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <nm@ti.com>, <ssantosh@kernel.org>, <robh+dt@kernel.org>,
+        <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <vigneshr@ti.com>,
+        <grygorii.strashko@ti.com>
+References: <20201208090440.31792-1-peter.ujfalusi@ti.com>
+ <20201211162400.GZ8403@vkoul-mobl>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <8df78a7a-abc8-e0e3-6b60-a0832be74aa5@ti.com>
+Date:   Fri, 11 Dec 2020 21:16:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201208164145.19493-1-daniel.lezcano@linaro.org> <ba9c6f75-3964-3ee9-c849-17db5ae51501@linaro.org>
-In-Reply-To: <ba9c6f75-3964-3ee9-c849-17db5ae51501@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 11 Dec 2020 20:15:54 +0100
-Message-ID: <CAJZ5v0infKumCmn77nzAN80G4bmF+_ZzgGkdaeMvczC_VyjyGg@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] powercap/dtpm: Add the DTPM framework
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201211162400.GZ8403@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 11:41 AM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
->
-> Hi Rafael,
->
-> I believe I took into account all the comments, do you think it is
-> possible to merge this series ?
+Hi Vinod,
 
-It should be, unless more changes are requested.
+On 11/12/2020 18.24, Vinod Koul wrote:
+> On 08-12-20, 11:04, Peter Ujfalusi wrote:
+>> Hi,
+>>
+>> The series have build dependency on ti_sci/soc series (v2):
+>> https://lore.kernel.org/lkml/20201008115224.1591-1-peter.ujfalusi@ti.com/
+>>
+>> Santosh kindly provided immutable branch and tag holding the series:
+>> git://git.kernel.org/pub/scm/linux/kernel/git/ssantosh/linux-keystone.git tags/drivers_soc_for_5.11 
+> 
+> I have picked this and then merged this and pushed to test branch. If
+> everything is okay, it will be next on monday
 
-I will be taking care of it next week and, if all goes well, it should
-be possible to push it during the second half of the merge window.
+Thank you!
 
-Thanks!
+this might cause a sparse warning:
+https://lore.kernel.org/lkml/a1f83b16-c1ce-630e-3410-738b80a92741@ti.com/
+
+I can send an incremental patch or resend the whole series with this
+correction?
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
