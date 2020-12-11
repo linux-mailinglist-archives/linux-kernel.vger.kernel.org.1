@@ -2,106 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812402D793A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E852D7954
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437922AbgLKP1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:27:45 -0500
-Received: from gproxy3-pub.mail.unifiedlayer.com ([69.89.30.42]:45335 "EHLO
-        gproxy3-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2437923AbgLKP1c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:27:32 -0500
-Received: from CMGW (unknown [10.9.0.13])
-        by gproxy3.mail.unifiedlayer.com (Postfix) with ESMTP id D8CBC40185
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:26:47 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id nkJjkJ73Ni1lMnkJjkFi0o; Fri, 11 Dec 2020 08:26:47 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.2 cv=dourMxo4 c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10
- a=evQFzbml-YQA:10 a=RQaXqXe8MhkW5YeBRGoA:9 a=CjuIK1q_8ugA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=01PhC2q+jlB/js2aczNBJqVgU/vdIoCNeZuEMcfKJHw=; b=swCvbnUCwIcGJuzvKxZnsg73jq
-        bdjBroMQ3dAmMaL02C8xWwu1HqWVN+2FVAXDeOIpRGsMVNyArpF4zwD5ZW96+aZWvn34HOGRlzHYr
-        eLSodUtypBEoUDNNdg/JwClZXnZ30DmyLmljyF9V8dH6pKjUjGEgel32t2s/ryo799pe4b4qnX0tJ
-        0ek0W+GZafqKPWEQgJUjs+beRumbGvr9sXt3lyQpbIrYqgypLlmdBVrKlGRr1hiF+OS2FGXVwdi0S
-        VDj5ORKdpprig34RLx53xkhcju8oAH76lc+ej/7q4Ul/fXp4GP86qqABUx1VpfgnuGYCBG/HBkzrv
-        bRYBSD4w==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:41678 helo=localhost)
-        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1knkJi-003W8f-Vt; Fri, 11 Dec 2020 15:26:47 +0000
-Date:   Fri, 11 Dec 2020 07:26:46 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (iio_hwmon) Drop bogus __refdata annotation
-Message-ID: <20201211152646.GA39888@roeck-us.net>
-References: <20201211133512.2969952-1-geert+renesas@glider.be>
+        id S2391745AbgLKPau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:30:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389590AbgLKP32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 10:29:28 -0500
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.248
+Date:   Fri, 11 Dec 2020 15:12:42 +0100
+Message-Id: <1607695961254222@kroah.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211133512.2969952-1-geert+renesas@glider.be>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1knkJi-003W8f-Vt
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:41678
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 5
-X-Org:  HG=direseller_whb_net_legacy;ORG=directi;
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 02:35:12PM +0100, Geert Uytterhoeven wrote:
-> As the IIO hardware monitoring driver does not have any code or data
-> located in initmem, there is no need to annotate the iio_hwmon_driver
-> structure with __refdata.  Drop the annotation, to avoid suppressing
-> future section warnings.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+I'm announcing the release of the 4.4.248 kernel.
 
-Applied.
+All users of the 4.4 kernel series must upgrade.
 
-Thanks,
-Guenter
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-> ---
->  drivers/hwmon/iio_hwmon.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwmon/iio_hwmon.c b/drivers/hwmon/iio_hwmon.c
-> index b85a125dd86f46a2..580a7d125b88667b 100644
-> --- a/drivers/hwmon/iio_hwmon.c
-> +++ b/drivers/hwmon/iio_hwmon.c
-> @@ -169,7 +169,7 @@ static const struct of_device_id iio_hwmon_of_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, iio_hwmon_of_match);
->  
-> -static struct platform_driver __refdata iio_hwmon_driver = {
-> +static struct platform_driver iio_hwmon_driver = {
->  	.driver = {
->  		.name = "iio_hwmon",
->  		.of_match_table = iio_hwmon_of_match,
+thanks,
+
+greg k-h
+
+------------
+
+ Documentation/devicetree/bindings/net/nfc/nxp-nci.txt |    2 
+ Documentation/devicetree/bindings/net/nfc/pn544.txt   |    2 
+ Makefile                                              |    2 
+ arch/arm64/include/asm/assembler.h                    |   36 +++++++---
+ arch/arm64/kernel/head.S                              |    3 
+ arch/powerpc/lib/ppc_ksyms.c                          |    1 
+ arch/x86/include/asm/insn.h                           |   15 ++++
+ arch/x86/kernel/uprobes.c                             |   10 +-
+ drivers/i2c/busses/i2c-imx.c                          |   30 +++++++-
+ drivers/input/joystick/xpad.c                         |    2 
+ drivers/input/serio/i8042-x86ia64io.h                 |    4 +
+ drivers/input/serio/i8042.c                           |    3 
+ drivers/iommu/amd_iommu.c                             |    2 
+ drivers/net/bonding/bond_main.c                       |   61 ++++++++++++------
+ drivers/net/bonding/bond_sysfs_slave.c                |   18 -----
+ drivers/net/ethernet/chelsio/cxgb3/sge.c              |    1 
+ drivers/net/ethernet/pasemi/pasemi_mac.c              |    8 +-
+ drivers/net/usb/ipheth.c                              |    2 
+ drivers/spi/spi-bcm2835.c                             |   22 ++----
+ drivers/spi/spi.c                                     |   54 +++++++++++++++
+ drivers/tty/tty_io.c                                  |   51 ++++++++++-----
+ drivers/usb/gadget/function/f_fs.c                    |    6 +
+ drivers/usb/serial/ch341.c                            |    5 -
+ drivers/usb/serial/kl5kusb105.c                       |   10 +-
+ drivers/usb/serial/option.c                           |    5 +
+ fs/btrfs/ctree.c                                      |    6 +
+ fs/btrfs/volumes.c                                    |    7 +-
+ fs/cifs/connect.c                                     |    2 
+ fs/gfs2/rgrp.c                                        |    4 +
+ include/linux/if_vlan.h                               |   29 ++++++--
+ include/linux/spi/spi.h                               |    2 
+ include/linux/tty.h                                   |    4 +
+ include/net/bonding.h                                 |    8 ++
+ include/net/inet_ecn.h                                |    1 
+ kernel/trace/trace.c                                  |    9 +-
+ kernel/trace/trace.h                                  |    6 +
+ mm/huge_memory.c                                      |    8 --
+ net/bridge/br_netfilter_hooks.c                       |    7 +-
+ net/iucv/af_iucv.c                                    |    4 -
+ net/rose/rose_loopback.c                              |   17 +++--
+ net/x25/af_x25.c                                      |    6 +
+ sound/pci/hda/hda_generic.c                           |   12 ++-
+ sound/pci/hda/hda_generic.h                           |    1 
+ sound/pci/hda/patch_realtek.c                         |    2 
+ 44 files changed, 353 insertions(+), 137 deletions(-)
+
+Anmol Karn (1):
+      rose: Fix Null pointer dereference in rose_send_frame()
+
+Antoine Tenart (1):
+      netfilter: bridge: reset skb->pkt_type after NF_INET_POST_ROUTING traversal
+
+Ard Biesheuvel (1):
+      arm64: assembler: make adr_l work in modules under KASLR
+
+Bob Peterson (1):
+      gfs2: check for empty rgrp tree in gfs2_ri_update
+
+Christian Eggers (2):
+      i2c: imx: Fix reset of I2SR_IAL flag
+      i2c: imx: Check for I2SR_IAL after every byte
+
+Dan Carpenter (1):
+      net/x25: prevent a couple of overflows
+
+Gerald Schaefer (1):
+      mm/userfaultfd: do not access vma->vm_mm after calling handle_userfault()
+
+Giacinto Cifelli (1):
+      USB: serial: option: add support for Thales Cinterion EXS82
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.248
+
+Jamie Iles (1):
+      bonding: wait for sysfs kobject destruction before freeing struct slave
+
+Jan-Niklas Burfeind (1):
+      USB: serial: ch341: add new Product ID for CH341A
+
+Jann Horn (2):
+      tty: Fix ->pgrp locking in tiocspgrp()
+      tty: Fix ->session locking
+
+Johan Hovold (2):
+      USB: serial: kl5kusb105: fix memleak on open
+      USB: serial: ch341: sort device-id entries
+
+Josef Bacik (2):
+      btrfs: sysfs: init devices outside of the chunk_mutex
+      btrfs: cleanup cow block on error
+
+Julian Wiedmann (1):
+      net/af_iucv: set correct sk_protocol for child sockets
+
+Kailang Yang (1):
+      ALSA: hda/realtek - Add new codec supported for ALC897
+
+Krzysztof Kozlowski (1):
+      dt-bindings: net: correct interrupt flags in examples
+
+Lukas Wunner (2):
+      spi: Introduce device-managed SPI controller allocation
+      spi: bcm2835: Fix use-after-free on unbind
+
+Luo Meng (1):
+      Input: i8042 - fix error return code in i8042_setup_aux()
+
+Masami Hiramatsu (1):
+      x86/uprobes: Do not use prefixes.nbytes when looping over prefixes.bytes
+
+Michal Suchanek (1):
+      powerpc: Stop exporting __clear_user which is now inlined.
+
+Paulo Alcantara (1):
+      cifs: fix potential use-after-free in cifs_echo_request()
+
+Peter Ujfalusi (1):
+      spi: bcm2835: Release the DMA channel if probe fails after dma_init
+
+Po-Hsu Lin (1):
+      Input: i8042 - add ByteSpeed touchpad to noloop table
+
+Sanjay Govind (1):
+      Input: xpad - support Ardwiino Controllers
+
+Steven Rostedt (VMware) (1):
+      tracing: Fix userstacktrace option for instances
+
+Suravee Suthikulpanit (1):
+      iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs
+
+Takashi Iwai (1):
+      ALSA: hda/generic: Add option to enforce preferred_dacs pairs
+
+Toke Høiland-Jørgensen (1):
+      vlan: consolidate VLAN parsing code and limit max parsing depth
+
+Vamsi Krishna Samavedam (1):
+      usb: gadget: f_fs: Use local copy of descriptors for userspace copy
+
+Vincent Palatin (1):
+      USB: serial: option: add Fibocom NL668 variants
+
+Yves-Alexis Perez (1):
+      usbnet: ipheth: fix connectivity with iOS 14
+
+Zhang Changzhong (2):
+      cxgb3: fix error return code in t3_sge_alloc_qset()
+      net: pasemi: fix error return code in pasemi_mac_open()
+
