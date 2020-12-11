@@ -2,75 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF7D2D73F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BEA2D73F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729907AbgLKKdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:33:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:48276 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726642AbgLKKci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:32:38 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0ADB330E;
-        Fri, 11 Dec 2020 02:31:53 -0800 (PST)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 18ECF3F68F;
-        Fri, 11 Dec 2020 02:31:51 -0800 (PST)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: [PATCH] drivers: soc: atmel: Avoid calling at91_soc_init on non AT91 SoCs
-Date:   Fri, 11 Dec 2020 10:31:43 +0000
-Message-Id: <20201211103143.1332302-1-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S1732394AbgLKKeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:34:21 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:6741 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730371AbgLKKdn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:33:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1607682822; x=1639218822;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=j4NRgZojjuVoTis4wtE3EfKychGNsxJPD7DMZKvp3SE=;
+  b=tBB/w9RoPGwtEE/sSNmTi7NHLxIAKk9iY6uSlg/b9Fp7R9FLkZh5oqN0
+   eWBzGpBDZDppNId9GnLTZazFisC6udBdl0f48ph0x+DwdfUgTFCK10Xs3
+   0cg2quEXITsExc8DsKLVCGBJcUdjgM+AnxGMMzqbyKjNajDzHmwjqtmuo
+   c=;
+X-IronPort-AV: E=Sophos;i="5.78,411,1599523200"; 
+   d="scan'208";a="68507701"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 11 Dec 2020 10:32:54 +0000
+Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com (Postfix) with ESMTPS id B710EC063F;
+        Fri, 11 Dec 2020 10:32:53 +0000 (UTC)
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.252) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 11 Dec 2020 10:32:47 +0000
+From:   Andra Paraschiv <andraprs@amazon.com>
+To:     netdev <netdev@vger.kernel.org>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andra Paraschiv <andraprs@amazon.com>
+Subject: [PATCH net-next v3 0/4] vsock: Add flags field in the vsock address
+Date:   Fri, 11 Dec 2020 12:32:37 +0200
+Message-ID: <20201211103241.17751-1-andraprs@amazon.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.162.252]
+X-ClientProxiedBy: EX13D28UWB003.ant.amazon.com (10.43.161.60) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since at91_soc_init is called unconditionally from atmel_soc_device_init,
-we get the following warning on all non AT91 SoCs:
-	" AT91: Could not find identification node"
+vsock enables communication between virtual machines and the host they are
+running on. Nested VMs can be setup to use vsock channels, as the multi
+transport support has been available in the mainline since the v5.5 Linux kernel
+has been released.
 
-Fix the same by filtering with allowed AT91 SoC list.
+Implicitly, if no host->guest vsock transport is loaded, all the vsock packets
+are forwarded to the host. This behavior can be used to setup communication
+channels between sibling VMs that are running on the same host. One example can
+be the vsock channels that can be established within AWS Nitro Enclaves
+(see Documentation/virt/ne_overview.rst).
 
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+To be able to explicitly mark a connection as being used for a certain use case,
+add a flags field in the vsock address data structure. The value of the flags
+field is taken into consideration when the vsock transport is assigned. This way
+can distinguish between different use cases, such as nested VMs / local
+communication and sibling VMs.
+
+The flags field can be set in the user space application connect logic. On the
+listen path, the field can be set in the kernel space logic.
+
+Thank you.
+
+Andra
+
 ---
- drivers/soc/atmel/soc.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
-index c4472b68b7c2..ba9fc07cd91c 100644
---- a/drivers/soc/atmel/soc.c
-+++ b/drivers/soc/atmel/soc.c
-@@ -271,8 +271,19 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
- 	return soc_dev;
- }
- 
-+static const struct of_device_id at91_soc_allowed_list[] __initconst = {
-+	{ .compatible = "atmel,at91rm9200", },
-+	{ .compatible = "atmel,at91sam9260", },
-+	{ .compatible = "atmel,sama5d2", },
-+};
-+
- static int __init atmel_soc_device_init(void)
- {
-+	struct device_node *np = of_find_node_by_path("/");
-+
-+	if (!of_match_node(at91_soc_allowed_list, np))
-+		return 0;
-+
- 	at91_soc_init(socs);
- 
- 	return 0;
+Patch Series Changelog
+
+The patch series is built on top of v5.10-rc7.
+
+GitHub repo branch for the latest version of the patch series:
+
+* https://github.com/andraprs/linux/tree/vsock-flag-sibling-comm-v3
+
+v2 -> v3
+
+* Rebase on top of v5.10-rc7.
+* Add "svm_flags" as a new field, not reusing "svm_reserved1".
+* Update comments to mention when the "VMADDR_FLAG_TO_HOST" flag is set in the
+  connect and listen paths.
+* Update bitwise check logic to not compare result to the flag value.
+* v2: https://lore.kernel.org/lkml/20201204170235.84387-1-andraprs@amazon.com/
+
+v1 -> v2
+
+* Update the vsock flag naming to "VMADDR_FLAG_TO_HOST".
+* Use bitwise operators to setup and check the vsock flag.
+* Set the vsock flag on the receive path in the vsock transport assignment
+  logic.
+* Merge the checks for the g2h transport assignment in one "if" block.
+* v1: https://lore.kernel.org/lkml/20201201152505.19445-1-andraprs@amazon.com/
+
+---
+
+Andra Paraschiv (4):
+  vm_sockets: Add flags field in the vsock address data structure
+  vm_sockets: Add VMADDR_FLAG_TO_HOST vsock flag
+  af_vsock: Set VMADDR_FLAG_TO_HOST flag on the receive path
+  af_vsock: Assign the vsock transport considering the vsock address
+    flags
+
+ include/uapi/linux/vm_sockets.h | 25 ++++++++++++++++++++++++-
+ net/vmw_vsock/af_vsock.c        | 21 +++++++++++++++++++--
+ 2 files changed, 43 insertions(+), 3 deletions(-)
+
 -- 
-2.25.1
+2.20.1 (Apple Git-117)
+
+
+
+
+Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
 
