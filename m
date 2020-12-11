@@ -2,85 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC452D71F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C3C2D71F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436947AbgLKIjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:39:36 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:36474 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392142AbgLKIis (ORCPT
+        id S2404033AbgLKIjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:39:06 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9427 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388615AbgLKIi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:38:48 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BB8ZQuI131659;
-        Fri, 11 Dec 2020 08:37:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=IL/xX1pqQ+FwJTcRHs69J+NvLTwdwVVEJfd2g66opUA=;
- b=cWYi/zQOoX8hJ8NF5ANNdNO4n4NWz6h0q2WRNeyYzsdnfRIrTBOdZryatjmZAQiMSZ8a
- /+zALT5wCo4oucU4wYRmbNtjATArXvbYEQiGFDQp1EejblfUcBOTF6PqPrXjq6JWHige
- Fc95vrPNp5etIzrVC0Ip+a8vxfluaWWM4zAL9ACjlH18zhMvQOIZ0iOPaRXTXPkq17TW
- 9dD9tlCfPh2dRP7IenzC10kJZHxjhl/fY0L4L063k5MhgWx1o1WZ2VUuC7w97rLFf5Zo
- ZhP4V1mZ3CtY7WaCJXvOCUM5fNUjQaA1nwdZ7BAsdH2kCnJeMzfGCJm/4psZMF24WQ29 0Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 35825mhc3k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Dec 2020 08:37:49 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BB8UdRL180916;
-        Fri, 11 Dec 2020 08:37:48 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 358m433uy5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Dec 2020 08:37:48 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BB8bdwV018287;
-        Fri, 11 Dec 2020 08:37:40 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 11 Dec 2020 00:37:39 -0800
-Date:   Fri, 11 Dec 2020 11:37:31 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Markus Elfring <Markus.Elfring@web.de>, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mmc: atmel-mci: =?utf-8?Q?Redu?=
- =?utf-8?Q?ce_scope_for_the_variable_=E2=80=9Cslot?= =?utf-8?B?4oCd?= in
- atmci_request_end()
-Message-ID: <20201211083731.GP2789@kadam>
-References: <466b4c6d-032f-fbcc-58ac-75f6f39d734f@web.de>
- <20201210151035.GC1578121@piout.net>
+        Fri, 11 Dec 2020 03:38:26 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cskg1144NzhqZS;
+        Fri, 11 Dec 2020 16:37:17 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Dec 2020 16:37:32 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sagis@google.com>, <jonolson@google.com>, <nbd@nbd.name>,
+        <john@phrozen.org>, <sean.wang@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next] net/mediatek: simplify the mediatek code return expression
+Date:   Fri, 11 Dec 2020 16:38:01 +0800
+Message-ID: <20201211083801.1632-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210151035.GC1578121@piout.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=893
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012110054
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=923 clxscore=1011 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012110054
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Markus was banned from vger at the end of July after ignoring repeated
-warnings.  This makes it hard to review any patches or follow
-discussion...
+Simplify the return expression at mtk_eth_path.c file, simplify this all.
 
-regards,
-dan carpenter
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/net/ethernet/mediatek/mtk_eth_path.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_path.c b/drivers/net/ethernet/mediatek/mtk_eth_path.c
+index 6bc9f2487384..72648535a14d 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_path.c
++++ b/drivers/net/ethernet/mediatek/mtk_eth_path.c
+@@ -252,7 +252,7 @@ int mtk_gmac_sgmii_path_setup(struct mtk_eth *eth, int mac_id)
+ 
+ int mtk_gmac_gephy_path_setup(struct mtk_eth *eth, int mac_id)
+ {
+-	int err, path = 0;
++	int path = 0;
+ 
+ 	if (mac_id == 1)
+ 		path = MTK_ETH_PATH_GMAC2_GEPHY;
+@@ -261,25 +261,17 @@ int mtk_gmac_gephy_path_setup(struct mtk_eth *eth, int mac_id)
+ 		return -EINVAL;
+ 
+ 	/* Setup proper MUXes along the path */
+-	err = mtk_eth_mux_setup(eth, path);
+-	if (err)
+-		return err;
+-
+-	return 0;
++	return mtk_eth_mux_setup(eth, path);
+ }
+ 
+ int mtk_gmac_rgmii_path_setup(struct mtk_eth *eth, int mac_id)
+ {
+-	int err, path;
++	int path;
+ 
+ 	path = (mac_id == 0) ?  MTK_ETH_PATH_GMAC1_RGMII :
+ 				MTK_ETH_PATH_GMAC2_RGMII;
+ 
+ 	/* Setup proper MUXes along the path */
+-	err = mtk_eth_mux_setup(eth, path);
+-	if (err)
+-		return err;
+-
+-	return 0;
++	return mtk_eth_mux_setup(eth, path);
+ }
+ 
+-- 
+2.22.0
 
