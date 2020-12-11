@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFCE2D7A54
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9F72D7A56
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406353AbgLKP7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:59:43 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:35771 "EHLO
+        id S2406652AbgLKP7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:59:51 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:56347 "EHLO
         relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393883AbgLKP6r (ORCPT
+        with ESMTP id S2394748AbgLKP6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:58:47 -0500
+        Fri, 11 Dec 2020 10:58:49 -0500
 X-Originating-IP: 93.29.109.196
 Received: from localhost.localdomain (196.109.29.93.rev.sfr.net [93.29.109.196])
         (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id C8F3260017;
-        Fri, 11 Dec 2020 15:57:44 +0000 (UTC)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 2FF2D60019;
+        Fri, 11 Dec 2020 15:57:59 +0000 (UTC)
 From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -40,9 +40,9 @@ Cc:     Yong Deng <yong.deng@magewell.com>,
         Hans Verkuil <hans.verkuil@cisco.com>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         kevin.lhopital@hotmail.com
-Subject: [PATCH v3 10/15] ARM: dts: sun8i: v3s: Add nodes for MIPI CSI-2 support
-Date:   Fri, 11 Dec 2020 16:57:03 +0100
-Message-Id: <20201211155708.154710-11-paul.kocialkowski@bootlin.com>
+Subject: [PATCH v3 15/15] MAINTAINERS: Add entry for the Allwinner A83T MIPI CSI-2 bridge
+Date:   Fri, 11 Dec 2020 16:57:08 +0100
+Message-Id: <20201211155708.154710-16-paul.kocialkowski@bootlin.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201211155708.154710-1-paul.kocialkowski@bootlin.com>
 References: <20201211155708.154710-1-paul.kocialkowski@bootlin.com>
@@ -52,110 +52,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MIPI CSI-2 is supported on the V3s with an A31-based MIPI CSI-2 bridge
-controller. The controller uses a separate D-PHY, which is the same
-that is otherwise used for MIPI DSI, but used in Rx mode.
-
-On the V3s, the CSI0 controller is dedicated to MIPI CSI-2 as it does
-not have access to any parallel interface pins.
-
-Add all the necessary nodes (CSI0, MIPI CSI-2 bridge and D-PHY) to
-support the MIPI CSI-2 interface.
-
-Note that a fwnode graph link is created between CSI0 and MIPI CSI-2
-even when no sensor is connected. This will result in a probe failure
-for the controller as long as no sensor is connected but this is fine
-since no other interface is available.
+Add myself as maintainer of the A83T MIPI CSI-2 bridge media driver.
 
 Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 ---
- arch/arm/boot/dts/sun8i-v3s.dtsi | 67 ++++++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
-index 7b2d684aeb97..b7f2bcd25c86 100644
---- a/arch/arm/boot/dts/sun8i-v3s.dtsi
-+++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
-@@ -530,6 +530,31 @@ spi0: spi@1c68000 {
- 			#size-cells = <0>;
- 		};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a1352171778b..3b48612657b6 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -717,6 +717,14 @@ T:	git git://linuxtv.org/media_tree.git
+ F:	Documentation/devicetree/bindings/media/allwinner,sun6i-a31-mipi-csi2.yaml
+ F:	drivers/media/platform/sunxi/sun6i-mipi-csi2/
  
-+		csi0: camera@1cb0000 {
-+			compatible = "allwinner,sun8i-v3s-csi";
-+			reg = <0x01cb0000 0x1000>;
-+			interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CSI>,
-+				 <&ccu CLK_CSI1_SCLK>,
-+				 <&ccu CLK_DRAM_CSI>;
-+			clock-names = "bus", "mod", "ram";
-+			resets = <&ccu RST_BUS_CSI>;
-+			status = "disabled";
++ALLWINNER A83T MIPI CSI-2 BRIDGE
++M:	Paul Kocialkowski <paul.kocialkowski@bootlin.com>
++L:	linux-media@vger.kernel.org
++S:	Maintained
++T:	git git://linuxtv.org/media_tree.git
++F:	Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-mipi-csi2.yaml
++F:	drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/
 +
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@1 {
-+					reg = <1>;
-+
-+					csi0_in_mipi_csi2: endpoint {
-+						remote-endpoint = <&mipi_csi2_out_csi0>;
-+					};
-+				};
-+			};
-+		};
-+
- 		csi1: camera@1cb4000 {
- 			compatible = "allwinner,sun8i-v3s-csi";
- 			reg = <0x01cb4000 0x3000>;
-@@ -552,5 +577,47 @@ gic: interrupt-controller@1c81000 {
- 			#interrupt-cells = <3>;
- 			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
- 		};
-+
-+		mipi_csi2: csi@1cb1000 {
-+			compatible = "allwinner,sun8i-v3s-mipi-csi2",
-+				     "allwinner,sun6i-a31-mipi-csi2";
-+			reg = <0x01cb1000 0x1000>;
-+			interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CSI>,
-+				 <&ccu CLK_CSI1_SCLK>;
-+			clock-names = "bus", "mod";
-+			resets = <&ccu RST_BUS_CSI>;
-+			status = "disabled";
-+
-+			phys = <&dphy>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				mipi_csi2_in: port@0 {
-+					reg = <0>;
-+				};
-+
-+				mipi_csi2_out: port@1 {
-+					reg = <1>;
-+
-+					mipi_csi2_out_csi0: endpoint {
-+						remote-endpoint = <&csi0_in_mipi_csi2>;
-+					};
-+				};
-+			};
-+		};
-+
-+		dphy: d-phy@1cb2000 {
-+			compatible = "allwinner,sun6i-a31-mipi-dphy";
-+			reg = <0x01cb2000 0x1000>;
-+			clocks = <&ccu CLK_BUS_CSI>,
-+				 <&ccu CLK_MIPI_CSI>;
-+			clock-names = "bus", "mod";
-+			resets = <&ccu RST_BUS_CSI>;
-+			status = "disabled";
-+			#phy-cells = <0>;
-+		};
- 	};
- };
+ ALLWINNER CPUFREQ DRIVER
+ M:	Yangtao Li <tiny.windzz@gmail.com>
+ L:	linux-pm@vger.kernel.org
 -- 
 2.29.2
 
