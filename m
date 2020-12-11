@@ -2,138 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98632D815E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E9C2D816B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392481AbgLKV4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:56:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406666AbgLKVz4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:55:56 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA24CC061282
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:54:41 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id r1so5377325pgm.13
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 13:54:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=Rd2S5ERIdpxDDi+uhK9cbjd0vF+3SVBwWriC0JcpU0w=;
-        b=gcJ3yqiJW+gv6J7pXNellIYo6U1XVjhUnAoDf0KYKfq8Z48dh+sC5vdboDhaA2v7dc
-         TKPgf+FFKcXPFTbfqrq3TZp01YbZ147AAU0vwFHu8SfF2JhCRMLpGdxGICdULZXprzIq
-         IMZL836rPQhkRoipkuUo31PvlOYVa8pUzX+n9sl6YngFpIAVx79gvPRp4Lx5FSu5AJmG
-         sCq5Ip77METDR0YTxE6GT9fvcLTLai4M7/mZdFkFyMW1SD+19yBv+BYHks232/kn5p9D
-         SMKLWXUc3ZgueHEpv2jAFW16BYFIAtV2wa0G1NykSQM9veoT26ODprUixchAnkEjKgEj
-         j/ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Rd2S5ERIdpxDDi+uhK9cbjd0vF+3SVBwWriC0JcpU0w=;
-        b=AbsBxBIGdtfvgw9BWSU7BdUNH1E8iCInq+vfeiC1BS1vXDucehvZI9G1koid4EGtB+
-         RuDItUoA8NZ1dF4xQ53nigffG5aup1VPX+nREM3y9PIOfzIGYfErmm+2QQ4L/JxxFX8U
-         szvnMeTCb7YMRSGT2sxekwoxFhYtEePjDL0oxoa6AZCLqejZpN3yugGkgFlLg53ehF2L
-         RR+v3YgCPud7vZYjTmCGrwS2a7fDDnhVjCdg0Hnb2+s7tBgAT7kr05ZXhWkyLMrDpapp
-         fEvw05xNvSV2HzksXUC8NN+BmWc+ua++L+Bwjtu+fzupp+GNNty4Z8qOdeOJhkKm+zbz
-         8Feg==
-X-Gm-Message-State: AOAM531102Pp6czmRelBohF6Y+0kZ8DIDGzHdVLK4UqTtmRBZCSuu3XI
-        W0y/5bsC1tURUJ4iMfj0Ok+mgw9OZQ==
-X-Google-Smtp-Source: ABdhPJxUhEx4SmtYdScxsFigf7h0fO4fVDEuEiEtJX/93EAJekijNmsU2fzEHRMav02QofkK1LRhvKb0Gw==
-Sender: "kunyi via sendgmr" <kunyi@kunyi0.svl.corp.google.com>
-X-Received: from kunyi0.svl.corp.google.com ([2620:15c:2c5:3:9657:a5ff:fef2:53bd])
- (user=kunyi job=sendgmr) by 2002:a17:90a:4dcd:: with SMTP id
- r13mr14803802pjl.74.1607723681302; Fri, 11 Dec 2020 13:54:41 -0800 (PST)
-Date:   Fri, 11 Dec 2020 13:54:27 -0800
-In-Reply-To: <20201211215427.3281681-1-kunyi@google.com>
-Message-Id: <20201211215427.3281681-4-kunyi@google.com>
-Mime-Version: 1.0
-References: <20201211215427.3281681-1-kunyi@google.com>
-X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-Subject: [PATCH linux hwmon-next v5 3/3] dt-bindings: (hwmon/sbtsi_tmep) Add
- SB-TSI hwmon driver bindings
-From:   Kun Yi <kunyi@google.com>
-To:     jdelvare@suse.com, linux@roeck-us.net, robh+dt@kernel.org,
-        mark.rutland@arm.com, supreeth.venkatesh@amd.com
-Cc:     Kun Yi <kunyi@google.com>, openbmc@lists.ozlabs.org,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S2394203AbgLKV5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:57:54 -0500
+Received: from mail-am6eur05on2117.outbound.protection.outlook.com ([40.107.22.117]:12449
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390485AbgLKV5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 16:57:09 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SQ3CI+YNN+t9mDvs4iTX+W/7NsGoSMx3Gn5W+EUSo+SywqWHEWmrV+KTkaYgRAtmf8I7fRTbWlOsNbyT7I3FV8iJKaW1rVdiIhODNnDXbnm5wQumHqrih+h4XXBw5E0IYTkxzwIZ17Avq+9ieXLckl2MRgKWNZS+RM5+yYpu//qjng2ZZWZaJ5XOcjuMbUmecaMHhdhOIRM2TMa47pqm+A2txhBAT/h4cNU8xUV1xwT4Mb0bQ4QuuTMAjpk0VXd7IA0i5WtUO55NbxdGlsh1sZAnSLGTqbqxLow1MYSFaCKUpUIE7Ubn6FBixfQ9eMmKC5Md5AIQe3ikZA7nwp7HxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UWXEPWZAKBTBsFsDi583sb5okJops5VMJ2QVwvpfrEc=;
+ b=EsG4RtNPi90SITJUO3u2Bp0YfQZHLdRFnQ/xDlmNFTGvicFufyEbub9uVBKXB7tdfa0Xi03fDyk2NhWOd77hui3vj/v1PbnjHsImBn/dC5bJQs0vss84xrrCHDMSbavBizyzBzNkvFMrIAampLs4MJL5HmxY6/mrp1v4FkfFQ3YMhQNViYTghDrxr6GQSVFMjb6npdbVXsq7FJHZSdFl0OHUsQDMKoHcXUQi124DxA+cxzWQ+Hg6qa/bXRNOCqmKypyNt0pQC5jGnfSNpYGcWrF/EsMxI8PxpKBbFfR8uxRhujgEDNixFMTgv9+7WzBj4UX77bux3e51BE4sJQNkyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UWXEPWZAKBTBsFsDi583sb5okJops5VMJ2QVwvpfrEc=;
+ b=YcJPM4RtIuO1WL18Ygm6kT2i5NXEl9ScTJH9RzXUeE/HKOgljEEo7/a1zIUuBtRjuMliP51XoZJXmp1LVr4J9vp86WxApUBUCJ4HgKJHYJzVC8sLma8OiBk02DVCXvOTcRsoCu9Tm5hv1OVlrX381caAbhK+p1imcUoiOp1ebYo=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=prevas.dk;
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
+ by AM0PR10MB2867.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.22; Fri, 11 Dec
+ 2020 21:56:20 +0000
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3632.026; Fri, 11 Dec 2020
+ 21:56:20 +0000
+From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+To:     linux-rtc@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Qiang Zhao <qiang.zhao@nxp.com>,
+        Bruno Thomsen <bruno.thomsen@gmail.com>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Subject: [PATCH v2 0/3] add reset-source RTC binding, update pcf2127 driver
+Date:   Fri, 11 Dec 2020 22:56:08 +0100
+Message-Id: <20201211215611.24392-1-rasmus.villemoes@prevas.dk>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20201204092752.GE74177@piout.net>
+References: <20201204092752.GE74177@piout.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [5.186.115.188]
+X-ClientProxiedBy: AM6P192CA0068.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:209:82::45) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:3f::10)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from prevas-ravi.prevas.se (5.186.115.188) by AM6P192CA0068.EURP192.PROD.OUTLOOK.COM (2603:10a6:209:82::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Fri, 11 Dec 2020 21:56:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cdea7115-e9c7-40b1-a06e-08d89e1f9821
+X-MS-TrafficTypeDiagnostic: AM0PR10MB2867:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR10MB2867CE5B27A840B5F1F2409993CA0@AM0PR10MB2867.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2089;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I9WXhOdG2GWsP6XRjJUk/kfvmensCsPKyS6ftTIdViixCMtTNJBgwhvZyOldObSFUQZxrtM0e0ARO9zcPptEMxbzfvuCSfeafPh+esCU1HKQai8WszS375wl25wtNS40hJD+9+Yk9sfoiRGN/Ff8D2pOa2rMdZfHiJ6w8mQnsL+MPBpAvOBTOsxuJ/3h/Hji8POUrGx6uUO+FWz8MKnNwL6bVoHRFsnD+FJsVoLjepS77qt9sDhQ9326zMBrCZ+Cx9V8it/QV5CGtnW6nxMfjnU7lmuuxQDWHw1A9wp1s0gtPCpl/fywAFJPCAQV45gS
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(366004)(346002)(136003)(376002)(39840400004)(6666004)(83380400001)(8976002)(66556008)(6916009)(2616005)(4326008)(186003)(107886003)(8936002)(52116002)(66476007)(36756003)(6506007)(54906003)(16526019)(66574015)(8676002)(478600001)(5660300002)(86362001)(66946007)(44832011)(2906002)(6486002)(6512007)(26005)(956004)(1076003)(316002)(4744005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?T3dtV1BIQ3gxNGJyZXBuOGtSWlcybXd2NEVDemNYWC81WVE2OHYvZ1RWYkJU?=
+ =?utf-8?B?VkVPZ0JpcmhwMVBXTlhNbUN1TGt2K28vZmoxWGdtK2k3SnBRRXFzRmxqSHk4?=
+ =?utf-8?B?VEVmQ3RDMzFKdm5UZ3F0VkRQWjZXaUVuS3ZjcjhLTzl6UmpLUGtvOTZYeHI2?=
+ =?utf-8?B?UmMreWd4UnJuYnNEelgyZXpxWVpIVEphN2x3bXNqSGdJU0Z0RHRoRzZFaUw2?=
+ =?utf-8?B?b2lDcFcxSjJOK05ROURMMUFoeThXcVo3Qnc5OHJmWWd1ZzNlUlprYXo0bHZi?=
+ =?utf-8?B?WmJhVitPbi9DVGlOOTkzd1BQRHNFR3hDMVVQWGo3eDFJRTYxVEdKUmVQOTJv?=
+ =?utf-8?B?NkNjUC9hUE03Q2VVUzRRLzBZVEpEWWg0UGNDV0pCNkR0ZzFYRTF4L3dRZHlK?=
+ =?utf-8?B?ZVJCVmlzZ0pwQ1dXZE01WFRhU0h2UFNPOWpXYW92OUp2TTVHQXBOVmZtYkI5?=
+ =?utf-8?B?N3RPYWNpRkxkYUR0UG96T0UvV3dlZEdzb0dGWi9pdm00RFVEeWk3UEszSnI1?=
+ =?utf-8?B?ZUw4dnR4bjkrRkxGU0lPazVTZkUxczdFZGpaZC9hK0tqS1R5TGFQc1ZUQUVk?=
+ =?utf-8?B?VGtZMW5XNVBvY21qdytOUzZLRGhmKzRXa3pGMGF0VmVDdFc2ZXB3QnhuQVlm?=
+ =?utf-8?B?aVlxaE1Ia0ZWOFlMeUY4NTg3cUlnb0NTSFg2cWE4b3J6dFZPYnNUcW9taHE0?=
+ =?utf-8?B?Zko1MXE2QmRvZEtuRnRtT3FLR1pHS3VmRkFlMjFlM0R3U1Ewd1Q5ZzMwN09O?=
+ =?utf-8?B?eWNFVUJtWldvYkF0S0lpZjhCRTRrTHJZUjlEdXNWeDliT1JIRjZkR0VEamtu?=
+ =?utf-8?B?aG1TNi9Ob3ZwZEJxTTI5Sk1MaGZkaXFmeXF3OGFCUENRVGQvaDlmQkZ3L1NU?=
+ =?utf-8?B?ekFOTldQVHdDM2lTbHM1TkxlYlBYTHF0TWFoRUlMODBldzdORTZ6djg4OGIw?=
+ =?utf-8?B?TWFpUlFMMmIrRXR6YkdpVlJhM01SbDBzb1EzSXh3Y3A1YmpjanFwU3pHKy9t?=
+ =?utf-8?B?Qzc1ZlZJNFFRMWQxLzRyTzhNNzl4bGxOVFY5SnBBZ0dwc3RtaVRod2VrcVND?=
+ =?utf-8?B?dTRncEFQQTZ6OGQwWUN1QWRNbUl5YURpQlBkYUk1Z3JNOVVkaTA0dFk1TE55?=
+ =?utf-8?B?dnBoTFBPMkYxa2JuVDZ1ZFlhUVBscllKK3UzbmdoZS9XQ3VZR3BaYjVhS1Jh?=
+ =?utf-8?B?RmpmeVZaOXBHL2pJcU5SR3paOG52RllrdkNQQXNJWm9ONEI2RU0vdTZwWktJ?=
+ =?utf-8?B?M1p2ak5SQVpOQ1Vua3RWeHB3WmRDWElHMU0wb1lzUkM3MXRtOFJBWmVZaFdi?=
+ =?utf-8?Q?1DnGaOVFaf6XHUgdtgiQd0u+jF2ZhvPxBP?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2020 21:56:20.5511
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-Network-Message-Id: cdea7115-e9c7-40b1-a06e-08d89e1f9821
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oqFzbW3iK9kTGyJdUZzP2tNroh+CoEQlhMdZ2pRr/YCwOqYufGOsm/vS1GkTxeQR/YMGdJmBrqu1prIPWmRXy02hd4x9MeLX+bmEJqsIGjI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB2867
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document device tree bindings for AMD SB-TSI emulated temperature
-sensor.
+This is a resend of Uwe's pcf2127 patches, prepended by a dt-binding
+patch adding a reset-source property, as suggested by Alexandre.
 
-Signed-off-by: Kun Yi <kunyi@google.com>
----
- .../devicetree/bindings/hwmon/amd,sbtsi.yaml  | 54 +++++++++++++++++++
- 1 file changed, 54 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml
+Rasmus Villemoes (1):
+  dt-bindings: rtc: add reset-source property
 
-diff --git a/Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml b/Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml
-new file mode 100644
-index 000000000000..446b09f1ce94
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml
-@@ -0,0 +1,54 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/hwmon/amd,sbtsi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: >
-+  Sideband interface Temperature Sensor Interface (SB-TSI) compliant
-+  AMD SoC temperature device
-+
-+maintainers:
-+  - Kun Yi <kunyi@google.com>
-+  - Supreeth Venkatesh <supreeth.venkatesh@amd.com>
-+
-+description: |
-+  SB Temperature Sensor Interface (SB-TSI) is an SMBus compatible
-+  interface that reports AMD SoC's Ttcl (normalized temperature),
-+  and resembles a typical 8-pin remote temperature sensor's I2C interface
-+  to BMC. The emulated thermal sensor can report temperatures in increments
-+  of 0.125 degrees, ranging from 0 to 255.875.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - amd,sbtsi
-+
-+  reg:
-+    maxItems: 1
-+    description: |
-+      I2C bus address of the device as specified in Section 6.3.1 of the
-+      SoC register reference. The SB-TSI address is normally 98h for socket
-+      0 and 90h for socket 1, but it could vary based on hardware address
-+      select pins.
-+      \[open source SoC register reference\]
-+        https://www.amd.com/system/files/TechDocs/56255_OSRR.pdf
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        sbtsi@4c {
-+                compatible = "amd,sbtsi";
-+                reg = <0x4c>;
-+        };
-+    };
-+...
+Uwe Kleine-König (2):
+  rtc: pcf2127: move watchdog initialisation to a separate function
+  rtc: pcf2127: only use watchdog when explicitly available
+
+ .../devicetree/bindings/rtc/rtc.yaml          |  5 ++
+ drivers/rtc/rtc-pcf2127.c                     | 55 +++++++++++--------
+ 2 files changed, 37 insertions(+), 23 deletions(-)
+
 -- 
-2.29.2.684.gfbc64c5ab5-goog
+2.23.0
 
