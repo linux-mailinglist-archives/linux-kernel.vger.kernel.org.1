@@ -2,182 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDCC2D822B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE0F2D8231
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388643AbgLKWds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:33:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406925AbgLKWdU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:33:20 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9121AC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:32:40 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id z62so12430808yba.23
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:32:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=EIHB+uodINauSQ/HRZMZjP79w222qFqt1odt9Kn0EeA=;
-        b=kBEsvZPSXTy/bwTZCH9sqc/qjaNjuJFEnZKMdDARAYR+AkHMWHQCp2nZA4tmAcbuDe
-         Bkp0hf1v8S8KNXwXUbr4jop2W04ZzEDcVdHQ3SPU7BrTfhqxf0BB60Cm8S8x0OIJVIzi
-         ZCk+8a3EXXXRYno9fd2DlBNrf9iQuXXaFykSRiJD5+NyludQWG+f+gTr6+KrYJhPql1s
-         1n3NMzbPeWIUKoT3oWT+XkHrAnAnNVW6yWzmgzTW8ggY9N5QN+JHmZaHyA2NUvmB9KZy
-         /3uUjJKA5H0DVHnIfl3W7nXv3wnZ/nxTILbUJ7D2UvoT6OXPQSLzTFn+hNtRd+Qzr63N
-         dSSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=EIHB+uodINauSQ/HRZMZjP79w222qFqt1odt9Kn0EeA=;
-        b=pR4WtqkDu3bkZA0cr/XbnmvWxlnrF6c10xfzmsoVSTfJoUqqzs1+XgZMr1JYl4vqaq
-         3uY0f6zCkSgm1MTPogEgN2l+gDjLQ8KuLK30HAEaQLtk0RrvqEWG4xDfvsUh+GX6r13y
-         94rxPqsZsm0Zdz3gRlf2kaMN3N9gt6bNys9Xf9XTFf80TnUTs2CfoMfjFm4zgiGDb6rW
-         xfoYd2kBz6HHKTx5TsFKG1FpF/vd8SLcdzQmtExkiC+invXFMJGamBlx+mQG6pK8P2DB
-         ccKv5slXAxvfdSImQEHix24jsoCMUmKeGkdRrA/01u2pgTVtVZfjOpIW7bOLdFK1nqjg
-         O/Kg==
-X-Gm-Message-State: AOAM531HLHX7GMqTIFsponfFI+/RATWMoAnxKYwZpVmnOlc6agkpasdG
-        6jw1hmsIzwx44z+zVSABPGKJfNUNLu3WQQ==
-X-Google-Smtp-Source: ABdhPJyAqNJ9NMXtkjBJlscyDSkug86/wdhzgRgZrnHVThKlGW6lZLbdikkHDiSLUrzB9fMpPrL0nc2HGNqEVg==
-Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
- (user=davidgow job=sendgmr) by 2002:a25:8283:: with SMTP id
- r3mr21992356ybk.66.1607725959837; Fri, 11 Dec 2020 14:32:39 -0800 (PST)
-Date:   Fri, 11 Dec 2020 14:32:32 -0800
-Message-Id: <20201211223232.697679-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH] kunit: tool: Fix spelling of "diagnostic" in kunit_parser
-From:   David Gow <davidgow@google.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2436661AbgLKWgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 17:36:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436617AbgLKWfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 17:35:51 -0500
+Subject: Re: [GIT PULL] MMC fixes for v5.10-rc8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607726110;
+        bh=I+b6H3ztr/C7QIZ76TJNdcmY0i4oLSsod3bA1QMJ4uw=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=oCYefyOT5glWBgtHSgA8Ig0ckvYe75ZIUF2nsQ9aKWP/WQoB68WC8dedM3r74FjD5
+         Bhf0BFU0bq00G7FkoIS0E3LoQRVCQbzvjzj5ggFpjUdlNtRJY9d+qaDNpmGXLO9/tk
+         3m2QsC+7PALy3YAoAif9FLNDYmZX27rnBCGlilzKrZsgU+uAo8bexay/+DowDSqgp+
+         UbuOKkcvTEc0g15ozvZdKOYFUGN7KjW2y7A0tj6M7DTbkvMxTIpuqGmP+knbYrZkC3
+         bqXkhZniwrU+Sm/j7r4xNPo4MnqI7YJ9qegt08+cP6s8qAB8o3gfXkGhqa2Kd+NPBu
+         1fCNH+FRXFPPA==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201211085640.234657-1-ulf.hansson@linaro.org>
+References: <20201211085640.234657-1-ulf.hansson@linaro.org>
+X-PR-Tracked-List-Id: <linux-mmc.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201211085640.234657-1-ulf.hansson@linaro.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.10-rc4-2
+X-PR-Tracked-Commit-Id: c0d638a03bc5dfdb08fb95d0a79ecada25f40da8
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 1de5d12b769017f7354e7151ce1c26eb1d9ba2e4
+Message-Id: <160772611051.9549.6561815923583066128.pr-tracker-bot@kernel.org>
+Date:   Fri, 11 Dec 2020 22:35:10 +0000
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Various helper functions were misspelling "diagnostic" in their names.
-It finally got annoying, so fix it.
+The pull request you sent on Fri, 11 Dec 2020 09:56:40 +0100:
 
-Signed-off-by: David Gow <davidgow@google.com>
----
- tools/testing/kunit/kunit_parser.py | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.10-rc4-2
 
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index 6614ec4d0898..1a1e1d13f1d3 100644
---- a/tools/testing/kunit/kunit_parser.py
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -97,11 +97,11 @@ def print_log(log):
- 
- TAP_ENTRIES = re.compile(r'^(TAP|[\s]*ok|[\s]*not ok|[\s]*[0-9]+\.\.[0-9]+|[\s]*#).*$')
- 
--def consume_non_diagnositic(lines: List[str]) -> None:
-+def consume_non_diagnostic(lines: List[str]) -> None:
- 	while lines and not TAP_ENTRIES.match(lines[0]):
- 		lines.pop(0)
- 
--def save_non_diagnositic(lines: List[str], test_case: TestCase) -> None:
-+def save_non_diagnostic(lines: List[str], test_case: TestCase) -> None:
- 	while lines and not TAP_ENTRIES.match(lines[0]):
- 		test_case.log.append(lines[0])
- 		lines.pop(0)
-@@ -113,7 +113,7 @@ OK_NOT_OK_SUBTEST = re.compile(r'^[\s]+(ok|not ok) [0-9]+ - (.*)$')
- OK_NOT_OK_MODULE = re.compile(r'^(ok|not ok) ([0-9]+) - (.*)$')
- 
- def parse_ok_not_ok_test_case(lines: List[str], test_case: TestCase) -> bool:
--	save_non_diagnositic(lines, test_case)
-+	save_non_diagnostic(lines, test_case)
- 	if not lines:
- 		test_case.status = TestStatus.TEST_CRASHED
- 		return True
-@@ -139,7 +139,7 @@ SUBTEST_DIAGNOSTIC = re.compile(r'^[\s]+# (.*)$')
- DIAGNOSTIC_CRASH_MESSAGE = re.compile(r'^[\s]+# .*?: kunit test case crashed!$')
- 
- def parse_diagnostic(lines: List[str], test_case: TestCase) -> bool:
--	save_non_diagnositic(lines, test_case)
-+	save_non_diagnostic(lines, test_case)
- 	if not lines:
- 		return False
- 	line = lines[0]
-@@ -155,7 +155,7 @@ def parse_diagnostic(lines: List[str], test_case: TestCase) -> bool:
- 
- def parse_test_case(lines: List[str]) -> Optional[TestCase]:
- 	test_case = TestCase()
--	save_non_diagnositic(lines, test_case)
-+	save_non_diagnostic(lines, test_case)
- 	while parse_diagnostic(lines, test_case):
- 		pass
- 	if parse_ok_not_ok_test_case(lines, test_case):
-@@ -166,7 +166,7 @@ def parse_test_case(lines: List[str]) -> Optional[TestCase]:
- SUBTEST_HEADER = re.compile(r'^[\s]+# Subtest: (.*)$')
- 
- def parse_subtest_header(lines: List[str]) -> Optional[str]:
--	consume_non_diagnositic(lines)
-+	consume_non_diagnostic(lines)
- 	if not lines:
- 		return None
- 	match = SUBTEST_HEADER.match(lines[0])
-@@ -179,7 +179,7 @@ def parse_subtest_header(lines: List[str]) -> Optional[str]:
- SUBTEST_PLAN = re.compile(r'[\s]+[0-9]+\.\.([0-9]+)')
- 
- def parse_subtest_plan(lines: List[str]) -> Optional[int]:
--	consume_non_diagnositic(lines)
-+	consume_non_diagnostic(lines)
- 	match = SUBTEST_PLAN.match(lines[0])
- 	if match:
- 		lines.pop(0)
-@@ -202,7 +202,7 @@ def max_status(left: TestStatus, right: TestStatus) -> TestStatus:
- def parse_ok_not_ok_test_suite(lines: List[str],
- 			       test_suite: TestSuite,
- 			       expected_suite_index: int) -> bool:
--	consume_non_diagnositic(lines)
-+	consume_non_diagnostic(lines)
- 	if not lines:
- 		test_suite.status = TestStatus.TEST_CRASHED
- 		return False
-@@ -235,7 +235,7 @@ def bubble_up_test_case_errors(test_suite: TestSuite) -> TestStatus:
- def parse_test_suite(lines: List[str], expected_suite_index: int) -> Optional[TestSuite]:
- 	if not lines:
- 		return None
--	consume_non_diagnositic(lines)
-+	consume_non_diagnostic(lines)
- 	test_suite = TestSuite()
- 	test_suite.status = TestStatus.SUCCESS
- 	name = parse_subtest_header(lines)
-@@ -264,7 +264,7 @@ def parse_test_suite(lines: List[str], expected_suite_index: int) -> Optional[Te
- TAP_HEADER = re.compile(r'^TAP version 14$')
- 
- def parse_tap_header(lines: List[str]) -> bool:
--	consume_non_diagnositic(lines)
-+	consume_non_diagnostic(lines)
- 	if TAP_HEADER.match(lines[0]):
- 		lines.pop(0)
- 		return True
-@@ -274,7 +274,7 @@ def parse_tap_header(lines: List[str]) -> bool:
- TEST_PLAN = re.compile(r'[0-9]+\.\.([0-9]+)')
- 
- def parse_test_plan(lines: List[str]) -> Optional[int]:
--	consume_non_diagnositic(lines)
-+	consume_non_diagnostic(lines)
- 	match = TEST_PLAN.match(lines[0])
- 	if match:
- 		lines.pop(0)
-@@ -286,7 +286,7 @@ def bubble_up_suite_errors(test_suite_list: List[TestSuite]) -> TestStatus:
- 	return bubble_up_errors(lambda x: x.status, test_suite_list)
- 
- def parse_test_result(lines: List[str]) -> TestResult:
--	consume_non_diagnositic(lines)
-+	consume_non_diagnostic(lines)
- 	if not lines or not parse_tap_header(lines):
- 		return TestResult(TestStatus.NO_TESTS, [], lines)
- 	expected_test_suite_num = parse_test_plan(lines)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/1de5d12b769017f7354e7151ce1c26eb1d9ba2e4
 
-base-commit: 5f6b99d0287de2c2d0b5e7abcb0092d553ad804a
+Thank you!
+
 -- 
-2.29.2.576.ga3fc446d84-goog
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
