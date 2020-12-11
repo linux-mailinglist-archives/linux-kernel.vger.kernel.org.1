@@ -2,75 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EEF2D6C6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 423452D6C70
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731017AbgLKAQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 19:16:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393878AbgLKAP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 19:15:58 -0500
-Date:   Fri, 11 Dec 2020 01:15:15 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607645718;
-        bh=UBItv+yRdo3An2fGlIGNYACswolHdx9zRGlb/m597Dc=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CEP2idGgWfYXrmA29pZHNssI/D76M4tyPalW1D3y92iESN7iLi9kXpuFlm0IetWcK
-         9NpQKTKyANXEwcGvB666MdovfbAfrWbCt182k79oZI3rCRB1WaWmCz62gqx/kSqLeo
-         5DOJXcfZCia9TPDetaUy6JgHMNQIy5JyuvGw8XP6b5Sa5drNTaVZbckoWrvhV7O/6D
-         Fam9j0IBiWjUkol9G1kfBVYBAni5/3SbMtJzo73P6x1J1sGn4YR5AIVT93NqvQd1yH
-         aQKCs7viz7LfRkpidR07EIWfAHWowhzuiGRkTL0yymej7+iH5U9RmlopNysDWhngIb
-         DUWA5Og6vmsAw==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: NOHZ tick-stop error: Non-RCU local softirq work is pending
-Message-ID: <20201211001515.GA580714@lothringen>
-References: <20201118175218.GA16039@paulmck-ThinkPad-P72>
- <20201210145637.GA164661@lothringen>
- <20201210211756.GZ2657@paulmck-ThinkPad-P72>
+        id S2393939AbgLKARk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 19:17:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727931AbgLKARE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 19:17:04 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50001C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:16:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=zhRFYufpkBrZRCMawmqqQy0WY8+mPSSZi3Y1bXP28JM=; b=l99pZqygvPs47ErvwK40nv+yjO
+        nw+CCbvSmmVQ9SaPWJf0T+rIUPwS2nOTbXV0bznHjtvgkZC3q8BlOJH2xnqt0corwoBbuqkDeAF6u
+        7mPT+eYdeTZa4jpF0rRxaZBjsNQPKXhIANEVX15eptMne3qa1G/iFJnKWIfnQAcz8BkKc/sKmy1WJ
+        Jh5p/bYNdi9cGIxP8MDsTex/KIdL6kfdCvpzj8t800CjUbKRYTrAYSs7bfF/ohul8HMWHJ8Nt3BfH
+        DpCSF0AptfhzMkPFtNJ63OPoGDm+UOU6uoa7VmX2JYwEwKnFjvztzx43SqPImOWaf4pp49lpf7NdZ
+        dGT2uMRA==;
+Received: from [2601:1c0:6280:3f0::1494]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knW6f-0000Ba-NK; Fri, 11 Dec 2020 00:16:22 +0000
+Subject: Re: ERROR: "snd_soc_new_ac97_component" undefined!
+To:     kernel test robot <lkp@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+References: <202012070230.Vq6VRv8j-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ce6a995d-abb2-5599-cd42-bbf8143d3b35@infradead.org>
+Date:   Thu, 10 Dec 2020 16:16:17 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210211756.GZ2657@paulmck-ThinkPad-P72>
+In-Reply-To: <202012070230.Vq6VRv8j-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 01:17:56PM -0800, Paul E. McKenney wrote:
-> And please see attached.  Lots of output, in fact, enough that it
-> was still dumping when the second instance happened.
+On 12/6/20 10:11 AM, kernel test robot wrote:
+> Hi Geert,
+> 
+> First bad commit (maybe != root cause):
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   7059c2c00a2196865c2139083cbef47cd18109b6
+> commit: ea00d95200d02ece71f5814d41b14f2eb16d598b ASoC: Use imply for SND_SOC_ALL_CODECS
+> date:   10 months ago
+> config: powerpc-randconfig-r012-20201207 (attached as .config)
+> compiler: powerpc-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ea00d95200d02ece71f5814d41b14f2eb16d598b
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout ea00d95200d02ece71f5814d41b14f2eb16d598b
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    ERROR: "mpc5200_audio_dma_create" [sound/soc/fsl/mpc5200_psc_ac97.ko] undefined!
+>    ERROR: "mpc5200_audio_dma_destroy" [sound/soc/fsl/mpc5200_psc_ac97.ko] undefined!
+>>> ERROR: "snd_soc_new_ac97_component" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
+>>> ERROR: "snd_soc_free_ac97_component" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
+>    ERROR: "snd_soc_new_ac97_component" [sound/soc/codecs/snd-soc-ad1980.ko] undefined!
+>    ERROR: "snd_soc_free_ac97_component" [sound/soc/codecs/snd-soc-ad1980.ko] undefined!
 
-Thanks!
 
-So the issue is that ksoftirqd is parked on CPU down with vectors
-still pending. Either:
+I also see these:
 
-1) Ksoftirqd has exited because it has too many to process and it has
-   exceeded the time limit, but then it parks, leaving the rest unhandled.
+ERROR: modpost: "__regmap_init_ac97" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
+ERROR: modpost: "regmap_ac97_default_volatile" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
 
-2) Ksoftirqd has completed its work but something has raised a softirq
-   after it got parked.
+and the (usual) missing Kconfig warnings:    :(
 
-Can you run the following (on top of the previous patch and boot options)
-so that we see if (and what) it still triggers (in which case we should be in 2)  ).
+WARNING: unmet direct dependencies detected for SND_SOC_MPC5200_AC97
+  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_MPC52xx [=y] && PPC_BESTCOMM [=n]
+  Selected by [m]:
+  - SND_MPC52xx_SOC_EFIKA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_EFIKA [=y]
 
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index 09229ad82209..7d558cb7a037 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -650,7 +650,9 @@ static void run_ksoftirqd(unsigned int cpu)
- 		 * We can safely run softirq on inline stack, as we are not deep
- 		 * in the task stack here.
- 		 */
--		__do_softirq();
-+		do {
-+			__do_softirq();
-+		} while (kthread_should_park() && local_softirq_pending());
- 		local_irq_enable();
- 		cond_resched();
- 		return;
+WARNING: unmet direct dependencies detected for SND_SOC_STAC9766
+  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_SOC_AC97_BUS [=n]
+  Selected by [m]:
+  - SND_MPC52xx_SOC_EFIKA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_EFIKA [=y]
+
+WARNING: unmet direct dependencies detected for HOTPLUG_CPU
+  Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
+  Selected by [y]:
+  - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=y] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
 
 
-Thanks!
+
+Please begin including Kconfig warnings. I have asked previously but...
+
+thanks.
+-- 
+~Randy
+
