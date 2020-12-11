@@ -2,143 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B19F2D758C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8522D7582
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:26:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405437AbgLKM1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 07:27:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39574 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390375AbgLKM0V (ORCPT
+        id S2405518AbgLKMZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 07:25:16 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9169 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391658AbgLKMYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:26:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607689494;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dJl5hEzN0y59Vtw87cxNPpF86WC4d2s1wMxA3PvngTY=;
-        b=QkF7/TAu+9MaJ57Au/MC5dEtDIBw42E1JkMSJiNI4vLDIwlZ3CMYngEE0E8TN9d8E41v48
-        M6xwVzaPA9WVYU0gbhfUMu/5m7ELiqt6oQzgGYmwOOKbspAJCgFzTIdmaGy4cCjsJGUpbf
-        WACDgdz+r0aiqL0cQlhPKKjb13UnApU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-174-N81QwZVPP1C0LtTBqbC3nw-1; Fri, 11 Dec 2020 07:24:52 -0500
-X-MC-Unique: N81QwZVPP1C0LtTBqbC3nw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4683E10082EE;
-        Fri, 11 Dec 2020 12:24:51 +0000 (UTC)
-Received: from prarit.bos.redhat.com (prarit-guest.7a2m.lab.eng.bos.redhat.com [10.16.222.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A9A1C5F9A6;
-        Fri, 11 Dec 2020 12:24:50 +0000 (UTC)
-Subject: Re: [PATCH] x86/apic/vector: Fix ordering in vector assignment
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Ming Lei <ming.lei@redhat.com>, Peter Xu <peterx@redhat.com>
-References: <87ft4djtyp.fsf@nanos.tec.linutronix.de>
-From:   Prarit Bhargava <prarit@redhat.com>
-Message-ID: <c5bb2239-dd40-03b2-d9d7-dace7499172d@redhat.com>
-Date:   Fri, 11 Dec 2020 07:24:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Fri, 11 Dec 2020 07:24:41 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Csqgv0w1fz15ZR7;
+        Fri, 11 Dec 2020 20:23:23 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Dec 2020
+ 20:23:52 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <kuba@kernel.org>, <nikolay@nvidia.com>, <davem@davemloft.net>,
+        <roopa@nvidia.com>
+CC:     <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] net: bridge: Fix a warning when del bridge sysfs
+Date:   Fri, 11 Dec 2020 20:29:21 +0800
+Message-ID: <20201211122921.40386-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <87ft4djtyp.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I got a warining report:
 
+br_sysfs_addbr: can't create group bridge4/bridge
+------------[ cut here ]------------
+sysfs group 'bridge' not found for kobject 'bridge4'
+WARNING: CPU: 2 PID: 9004 at fs/sysfs/group.c:279 sysfs_remove_group fs/sysfs/group.c:279 [inline]
+WARNING: CPU: 2 PID: 9004 at fs/sysfs/group.c:279 sysfs_remove_group+0x153/0x1b0 fs/sysfs/group.c:270
+Modules linked in: iptable_nat
+...
+Call Trace:
+  br_dev_delete+0x112/0x190 net/bridge/br_if.c:384
+  br_dev_newlink net/bridge/br_netlink.c:1381 [inline]
+  br_dev_newlink+0xdb/0x100 net/bridge/br_netlink.c:1362
+  __rtnl_newlink+0xe11/0x13f0 net/core/rtnetlink.c:3441
+  rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3500
+  rtnetlink_rcv_msg+0x385/0x980 net/core/rtnetlink.c:5562
+  netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2494
+  netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+  netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1330
+  netlink_sendmsg+0x793/0xc80 net/netlink/af_netlink.c:1919
+  sock_sendmsg_nosec net/socket.c:651 [inline]
+  sock_sendmsg+0x139/0x170 net/socket.c:671
+  ____sys_sendmsg+0x658/0x7d0 net/socket.c:2353
+  ___sys_sendmsg+0xf8/0x170 net/socket.c:2407
+  __sys_sendmsg+0xd3/0x190 net/socket.c:2440
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-On 12/10/20 3:18 PM, Thomas Gleixner wrote:
-> Prarit reported that depending on the affinity setting the
-> 
->  ' irq $N: Affinity broken due to vector space exhaustion.'
-> 
-> message is showing up in dmesg, but the vector space on the CPUs in the
-> affinity mask is definitely not exhausted.
-> 
-> Shung-Hsi provided traces and analysis which pinpoints the problem:
-> 
-> The ordering of trying to assign an interrupt vector in
-> assign_irq_vector_any_locked() is simply wrong if the interrupt data has a
-> valid node assigned. It does:
-> 
->  1) Try the intersection of affinity mask and node mask
->  2) Try the node mask
->  3) Try the full affinity mask
->  4) Try the full online mask
-> 
-> Obviously #2 and #3 are in the wrong order as the requested affinity
-> mask has to take precedence.
-> 
-> In the observed cases #1 failed because the affinity mask did not contain
-> CPUs from node 0. That made it allocate a vector from node 0, thereby
-> breaking affinity and emitting the misleading message.
-> 
-> Revert the order of #2 and #3 so the full affinity mask without the node
-> intersection is tried before actually affinity is broken.
-> 
-> If no node is assigned then only the full affinity mask and if that fails
-> the full online mask is tried.
-> 
-> Fixes: d6ffc6ac83b1 ("x86/vector: Respect affinity mask in irq descriptor")
-> Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-> Reported-by: Prarit Bhargava <prarit@redhat.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Tested-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-> Cc: stable@vger.kernel.org
-> ---
->  arch/x86/kernel/apic/vector.c |   24 ++++++++++++++----------
->  1 file changed, 14 insertions(+), 10 deletions(-)
-> 
-> --- a/arch/x86/kernel/apic/vector.c
-> +++ b/arch/x86/kernel/apic/vector.c
-> @@ -273,20 +273,24 @@ static int assign_irq_vector_any_locked(
->  	const struct cpumask *affmsk = irq_data_get_affinity_mask(irqd);
->  	int node = irq_data_get_node(irqd);
->  
-> -	if (node == NUMA_NO_NODE)
-> -		goto all;
-> -	/* Try the intersection of @affmsk and node mask */
-> -	cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
-> -	if (!assign_vector_locked(irqd, vector_searchmask))
-> -		return 0;
-> -	/* Try the node mask */
-> -	if (!assign_vector_locked(irqd, cpumask_of_node(node)))
-> -		return 0;
-> -all:
-> +	if (node != NUMA_NO_NODE) {
-> +		/* Try the intersection of @affmsk and node mask */
-> +		cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
-> +		if (!assign_vector_locked(irqd, vector_searchmask))
-> +			return 0;
-> +	}
-> +
->  	/* Try the full affinity mask */
->  	cpumask_and(vector_searchmask, affmsk, cpu_online_mask);
->  	if (!assign_vector_locked(irqd, vector_searchmask))
->  		return 0;
-> +
-> +	if (node != NUMA_NO_NODE) {
-> +		/* Try the node mask */
-> +		if (!assign_vector_locked(irqd, cpumask_of_node(node)))
-> +			return 0;
-> +	}
-> +
->  	/* Try the full online mask */
->  	return assign_vector_locked(irqd, cpu_online_mask);
->  }
-> 
+In br_device_event(), if the bridge sysfs fails to be added,
+br_device_event() should return error. This can prevent warining
+when removing bridge sysfs that do not exist.
 
-Tested-and-Reviewed-by: Prarit Bhargava <prarit@redhat.com>
+Fixes: bb900b27a2f4 ("bridge: allow creating bridge devices with netlink")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+v1->v2: Fix this by check br_sysfs_addbr() return value as Nik's suggestion
+ net/bridge/br.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-P.
+diff --git a/net/bridge/br.c b/net/bridge/br.c
+index 401eeb9142eb..1b169f8e7491 100644
+--- a/net/bridge/br.c
++++ b/net/bridge/br.c
+@@ -43,7 +43,10 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
+ 
+ 		if (event == NETDEV_REGISTER) {
+ 			/* register of bridge completed, add sysfs entries */
+-			br_sysfs_addbr(dev);
++			err = br_sysfs_addbr(dev);
++			if (err)
++				return notifier_from_errno(err);
++
+ 			return NOTIFY_DONE;
+ 		}
+ 	}
+-- 
+2.17.1
 
