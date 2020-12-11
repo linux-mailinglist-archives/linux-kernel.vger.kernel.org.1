@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8D22D6F18
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 05:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7995F2D6F3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 05:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395318AbgLKEWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 23:22:39 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:60992 "EHLO
+        id S2405321AbgLKE0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 23:26:00 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:32805 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731917AbgLKEWY (ORCPT
+        with ESMTP id S2405320AbgLKEZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 23:22:24 -0500
-Received: from mail-pg1-f197.google.com ([209.85.215.197])
+        Thu, 10 Dec 2020 23:25:10 -0500
+Received: from mail-pg1-f198.google.com ([209.85.215.198])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <po-hsu.lin@canonical.com>)
-        id 1knZw6-0001Ih-Hg
-        for linux-kernel@vger.kernel.org; Fri, 11 Dec 2020 04:21:42 +0000
-Received: by mail-pg1-f197.google.com with SMTP id f6so5652855pgh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 20:21:42 -0800 (PST)
+        id 1knZym-0001Qs-3z
+        for linux-kernel@vger.kernel.org; Fri, 11 Dec 2020 04:24:28 +0000
+Received: by mail-pg1-f198.google.com with SMTP id g24so5613734pgh.14
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 20:24:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
         bh=tPXZ+7QAQmRj9Gg0uL9q/qwGUoI81azIs/Hz+gXLnNo=;
-        b=D4Pyhr8rSu0NvGsMhgyecBmVK5yro4IFGmHpWVrWGZVlQ7d40ZorCRDoZJnRppgGhC
-         C2lzmTVONVX4H5oYMkLDqT45cJFtFmt0BceljW0iIQGUoXi/CDFRo517xHj/CyEm0BO5
-         2SyyWj/u85jmwjWmph9PJs9ag56z8EM3/MaB54vG+11SWgpqE9k16JGuJ/hE4TWsGd8u
-         eHRS9Bsk+WJCH8z7EXjjSD2Y0ctAfNti+OxlKqZemCioRBG6VSpQP9JdCXnlin8cK5vV
-         QCGt4aExpdVmQQY0Cn+LFYYXYc4T2hUKUhOYNKpzRt/8Dvro8Z6J7xVqM4rERju5A6i+
-         bisw==
-X-Gm-Message-State: AOAM530mLODXLY07wpnIbXxY5j7UvjqCjjDEAoOLH8az6E8rg8TztyIx
-        byS1si+Nzl8P/sQGkDcdSAren0LN6uaYzI7GxOThILRm1fyt6gUA2zwefiwdYACJBc3QH4Nr8GG
-        FzJ5DbQT0tliycgRXk8VxbR/VRQjZzlPW7T9kcOH4
-X-Received: by 2002:a17:902:223:b029:da:af1e:b112 with SMTP id 32-20020a1709020223b02900daaf1eb112mr9425935plc.83.1607660501006;
-        Thu, 10 Dec 2020 20:21:41 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJype2EWauSJ/rx0SVVALS+cwITbpDlYYVLnWabUpk/ByumEOCyFR74u9czeUWiq9nZo/Apb0g==
-X-Received: by 2002:a17:902:223:b029:da:af1e:b112 with SMTP id 32-20020a1709020223b02900daaf1eb112mr9425912plc.83.1607660500584;
-        Thu, 10 Dec 2020 20:21:40 -0800 (PST)
+        b=q/h4MAl9WyLygIkJBn9tIER5z1fd3T0hDu77aNM4kgs9msydQn69e1i/WgWbJZuLBh
+         o9UxZP2RmSC5btHWQYDxAeYu8jZ1J/e40Th3zV2cjSVtelWo3u7PbNrXTs5ElPw8VDnA
+         NKPAdNarQueJa0uRZgWO7LmJhtNG81LVxC/gX1NORxpFcNxE901q/rznLo5GMD7GFqNw
+         bDmiAggSiUq/b+ytSSMDOIesVUNPIrNb/vTns82GVOzaESUsvZdVplfo4QZHC3O9xeL0
+         tJ8bGEj6NW0T5MoeLpZKLf63A0vEonmXXDsXECQg8ctHMRQBEBOvub+4D/elf+lmqGYq
+         8Y3w==
+X-Gm-Message-State: AOAM533eWZF/PMm8rK4iIRzWV1YnUyBYljl/kCor6v+3y1j6klYpg9Wt
+        gIMIHNVP8CNQlZnlOOCJrcBB6y9y2lT1pvzQtIQrbz/1qNxFfHWP10uiM9hoF/7pjd0Eg+IfV4t
+        WPV/W0vxQq1wxvT7nrRAs36481kDThC6XAZZ2zKKT
+X-Received: by 2002:a63:eb4b:: with SMTP id b11mr9849637pgk.351.1607660666845;
+        Thu, 10 Dec 2020 20:24:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyITTeGHkWP6edOaQgLt1ofgM+1Ufy7TeSzXSBK85/VCt82D1wcKgDJYTgmykOnGtzogKj/Sg==
+X-Received: by 2002:a63:eb4b:: with SMTP id b11mr9849621pgk.351.1607660666556;
+        Thu, 10 Dec 2020 20:24:26 -0800 (PST)
 Received: from Leggiero.taipei.internal (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
-        by smtp.gmail.com with ESMTPSA id f33sm7936424pgl.83.2020.12.10.20.21.38
+        by smtp.gmail.com with ESMTPSA id m26sm8241810pfo.123.2020.12.10.20.24.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 20:21:39 -0800 (PST)
+        Thu, 10 Dec 2020 20:24:25 -0800 (PST)
 From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
 To:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     davem@davemloft.net, po-hsu.lin@canonical.com, kuba@kernel.org,
         shuah@kernel.org
-Subject: [PATCH] selftests: test_vxlan_under_vrf: mute uncessary error message
-Date:   Fri, 11 Dec 2020 12:21:30 +0800
-Message-Id: <20201211042130.16202-1-po-hsu.lin@canonical.com>
+Subject: [PATCHv2] selftests: test_vxlan_under_vrf: mute unnecessary error message
+Date:   Fri, 11 Dec 2020 12:24:20 +0800
+Message-Id: <20201211042420.16411-1-po-hsu.lin@canonical.com>
 X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
