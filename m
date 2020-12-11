@@ -2,55 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503922D7E38
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E284D2D7E41
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:44:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406064AbgLKShY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 13:37:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405913AbgLKSfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 13:35:55 -0500
-Subject: Re: [GIT PULL] clk fixes for v5.10-rc7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607711715;
-        bh=/OZm+QEPlwOOOmEsuW7hHCVMH19PJDZZRNHByaV75lM=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ei3USVG4VUEYWAY+AQDyOhklGfJ4DgrlvrWmaTj/A6AaVFyPPEZXrcHbREqfSNnBD
-         l/Vr/NsCeKJCJeowaGPGsxl2tg9uRbgA1qQLoQd0mIGLU7q4T8ps1H3RRdfM1KJcSN
-         4137BRWcdlVuPCWj7WAHzoGji0thYs0elVKu5VOBCG6Hyb1LOv3Have5q2GECQpplX
-         GikAOcIbhUoGWqMBO7ahNXxf28eRNutjMNMnsDkVUSnLKpE79ePUZHnOl7aAaxGwxe
-         7feSdvUYce2CTsViNZKmWDrKq9S2uaprrNvl9YmMdI21yn8X7aDYYbR5TthUqdubhO
-         YK/JK1FcMrjFw==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201211071207.3828638-1-sboyd@kernel.org>
-References: <20201211071207.3828638-1-sboyd@kernel.org>
-X-PR-Tracked-List-Id: <linux-clk.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201211071207.3828638-1-sboyd@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
-X-PR-Tracked-Commit-Id: ceabbf94c317c6175dee6e91805fca4a6353745a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c1cea11227cb57f1ab0f111b3f6e8a250b85cfdb
-Message-Id: <160771171528.31675.3929122448435560181.pr-tracker-bot@kernel.org>
-Date:   Fri, 11 Dec 2020 18:35:15 +0000
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1732836AbgLKSlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 13:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728198AbgLKSlX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 13:41:23 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA21EC0613CF;
+        Fri, 11 Dec 2020 10:40:42 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id d9so10482045iob.6;
+        Fri, 11 Dec 2020 10:40:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MRVPUYlxS/fdaO/lelSMT47zpvZj2vTgUngdVgjDGwA=;
+        b=Ir5gHcc7zNOlMmrJ0q+Xj0tTlGHhECw3YZTd4v5JxzdqrTUGAMhJ43ddLAfMkyFXEV
+         FDDAVgFJVI9GO1qtKJ9Lxh9Y9W6XGTd2X/rl/zE+Y1mtZODcpzfLXJwXLgF+SAKXuefo
+         fgYHtgokNAmzphxUY4DIu4KducGEHUK4T6nACi9NBozJLRIMTc9x5CotOMm7RyR2djj9
+         6ATJW6LGJ/m0GBrn8aLUEYVWYf+RHNRLRcsI+7A8sKlSBBfh47/4Iv9U6vIb81He0Mr5
+         zVyN53UWgp4iNofTfdpArWax4m1qtwrPiidWOhSqVVtniDzU8A+Bo9ariDjolWTOzNog
+         4Row==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MRVPUYlxS/fdaO/lelSMT47zpvZj2vTgUngdVgjDGwA=;
+        b=pjsImLRAAn0Ybm2JfjWrH57Pyfjx4N7k5NoDyPwQHfg9ewHIgePUSPCB6cGJCpSMbc
+         VMIHxOM54EwdOtOAFZcuG4aND+G7qADW7XvPaicZFJptMVkUfTgm8rsERBrFUnygMNW1
+         4v6+p399D3AaFJMo0UG4jJMZ3abUBNQjpx5gvIcgCbCj1QrTq4k92mT8YtFxnoh3fTMo
+         weBFtFiOwGue10W8gPvkbIAuHR2vlw2TDF11NGv9leu8s4LPCmAnVEELqm6ztpYOaPtC
+         8ZIS5BybUx/RIMPBhM999pvCT6cUA0PZpmW6xjrefW6RrE02Lm1E4wiIumzNNllMjkg3
+         MZ4w==
+X-Gm-Message-State: AOAM531raXHokeOtLHONganO3PIh7VsyEVBPi+oswW//INJeyNv/rqJO
+        /Y4Zm7+rxCULTQB+HQjWOIkZV6jzs5sWUjnZ0PA=
+X-Google-Smtp-Source: ABdhPJyXdoBPNBzhpCLxZitOL92KJPCNn9fJyOqUhYwSq8qVgiIH0rlsOK7m3GDl08B/H4f0R7SdvyNP8QSpde6tWYQ=
+X-Received: by 2002:a05:6638:bc1:: with SMTP id g1mr17132579jad.27.1607712042045;
+ Fri, 11 Dec 2020 10:40:42 -0800 (PST)
+MIME-Version: 1.0
+References: <20201211181236.25755-1-lukas.bulwahn@gmail.com> <alpine.DEB.2.22.394.2012111923020.2669@hadrien>
+In-Reply-To: <alpine.DEB.2.22.394.2012111923020.2669@hadrien>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Fri, 11 Dec 2020 19:40:31 +0100
+Message-ID: <CAKXUXMxjtv5B4ekC58=Ww8R4Ju2MvT0pXbPi7XH+OU7JuYnP3w@mail.gmail.com>
+Subject: Re: [PATCH] block: drop dead assignments in loop_init()
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 10 Dec 2020 23:12:07 -0800:
+On Fri, Dec 11, 2020 at 7:23 PM Julia Lawall <julia.lawall@inria.fr> wrote:
+>
+>
+>
+> On Fri, 11 Dec 2020, Lukas Bulwahn wrote:
+>
+> > Commit 8410d38c2552 ("loop: use __register_blkdev to allocate devices on
+> > demand") simplified loop_init(); so computing the range of the block region
+> > is not required anymore and can be dropped.
+> >
+> > Drop dead assignments in loop_init().
+> >
+> > As compilers will detect these unneeded assignments and optimize this,
+> > the resulting object code is identical before and after this change.
+> >
+> > No functional change. No change in object code.
+>
+> It looks like some braces should be dropped too?
+>
+> julia
+>
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
+Julia, you are right; I just rewrote it to:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c1cea11227cb57f1ab0f111b3f6e8a250b85cfdb
+nr = max_loop ? max_loop : CONFIG_BLK_DEV_LOOP_MIN_COUNT;
 
-Thank you!
+v2 will follow in a moment.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Lukas
+
+> >
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > ---
+> > Christoph, please ack.
+> >
+> > Jens, please pick this minor non-urgent clean-up patch on your
+> > block -next tree on top of Christoph's commit above.
+> >
+> >  drivers/block/loop.c | 3 ---
+> >  1 file changed, 3 deletions(-)
+> >
+> > diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> > index d2ce1ddc192d..eed4bc5ef5c5 100644
+> > --- a/drivers/block/loop.c
+> > +++ b/drivers/block/loop.c
+> > @@ -2304,7 +2304,6 @@ MODULE_ALIAS("devname:loop-control");
+> >  static int __init loop_init(void)
+> >  {
+> >       int i, nr;
+> > -     unsigned long range;
+> >       struct loop_device *lo;
+> >       int err;
+> >
+> > @@ -2343,10 +2342,8 @@ static int __init loop_init(void)
+> >        */
+> >       if (max_loop) {
+> >               nr = max_loop;
+> > -             range = max_loop << part_shift;
+> >       } else {
+> >               nr = CONFIG_BLK_DEV_LOOP_MIN_COUNT;
+> > -             range = 1UL << MINORBITS;
+> >       }
+> >
+> >       err = misc_register(&loop_misc);
+> > --
+> > 2.17.1
+> >
+> >
