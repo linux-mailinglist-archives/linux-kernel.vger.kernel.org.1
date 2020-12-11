@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB59F2D72A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBAE2D72A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437373AbgLKJHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 04:07:49 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:56619 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437282AbgLKJHZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 04:07:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1607677645; x=1639213645;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HYvqfDOJAQzsbDFrol1vkz2s/fsDFmkTjeSVK52uWyE=;
-  b=qDrGXeD0bZyVWW1ys/dFbxjk6N5DeA4zyaCvzJQLEbJRzZfwZjQjqaOX
-   zqJMdhzAEVjM7RRFAJ+EmqW2CEEzJuI5Yse3UlelMKWEZAOjRgEVoajd8
-   dnxL5jnlxSenf4kOYOC3oaFq+TlCn6tVo+wM6IuZzDb5YzJq11GNFHLV0
-   V6ldJT9zzbctzDj5i0pKaKgx2Hy127r5lr/ehaqxWQbZQ3lEMa8fHnVx9
-   Colp5bS4rgsNpZU34wivDQ80uZrpM+RyJRkJ5bVne6U3l+Bj0I7i4UGqx
-   gsqOvRUERIFiYPKxLkw/hjw/KOaEJLx59huD60Ez6swwknoJLi5ojVK2K
-   A==;
-IronPort-SDR: zExYFzteI6nza7LKzwnjn7xQqO2+xKBxXc0Y2wmz+e18mkvyh08CI6zbKhCVo5u19YgryNg//M
- yZTPblmedXCZ1Nffm0O+SWwvAM4W6iBMYXHBEJTdjRxDUP+wFxCle3PMvG3Q2dwZV7++/FF/jl
- pdYWdTGxIQ1juiQIdkW6GnuSlOrsiQXC4ke6rjJ3cVVkLc/uGNgdTOUhThTKrl7YLNBPTukF7R
- 3/9Py6iMQL//kwsj9chnJz221IAert2F+O7G3wTcZI/s1ABCj1c6tTuGQKLJbQPdWL3Qousxxf
- 1vI=
+        id S2437321AbgLKJJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 04:09:22 -0500
+Received: from mga05.intel.com ([192.55.52.43]:51339 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437181AbgLKJJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 04:09:00 -0500
+IronPort-SDR: baVjBVjxQNU1PIPXnMBNqX5T3t4wFsWmfUc+gFA0IW2W8hM6gih2A/WozncznzLSIqoQ8wSlPQ
+ Cpz63QYxtBDg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="259118787"
 X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
-   d="scan'208";a="99484087"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Dec 2020 02:06:05 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 11 Dec 2020 02:06:04 -0700
-Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 11 Dec 2020 02:06:02 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v10 4/4] arm64: dts: sparx5: Add Sparx5 serdes driver node
-Date:   Fri, 11 Dec 2020 10:05:41 +0100
-Message-ID: <20201211090541.157926-5-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201211090541.157926-1-steen.hegelund@microchip.com>
-References: <20201211090541.157926-1-steen.hegelund@microchip.com>
+   d="scan'208";a="259118787"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 01:07:14 -0800
+IronPort-SDR: wlouibNHW3+Of0jRa8i2kIbqHU1E4EEsEoyDMr3CJZ9+PmPljnWtHK90is7VdRORYZHK9nwbb4
+ qcvvc7DveReA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
+   d="scan'208";a="440791163"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 11 Dec 2020 01:07:12 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 11 Dec 2020 11:07:11 +0200
+Date:   Fri, 11 Dec 2020 11:07:11 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] usb: typec: tcpm: convert comma to semicolon
+Message-ID: <20201211090711.GH1594451@kuha.fi.intel.com>
+References: <20201211085553.2982-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211085553.2982-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Sparx5 serdes driver node, and enable it generally for all
-reference boards.
+On Fri, Dec 11, 2020 at 04:55:53PM +0800, Zheng Yongjun wrote:
+> Replace a comma between expression statements by a semicolon.
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 8e7724d413fb..797601a9d542 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -287,5 +287,13 @@ tmon0: tmon@610508110 {
- 			#thermal-sensor-cells = <0>;
- 			clocks = <&ahb_clk>;
- 		};
-+
-+		serdes: serdes@10808000 {
-+			compatible = "microchip,sparx5-serdes";
-+			#phy-cells = <1>;
-+			clocks = <&sys_clk>;
-+			reg = <0x6 0x10808000 0x5d0000>;
-+		};
-+
- 	};
- };
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index a6fae1f86505..4451507d600c 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -5024,14 +5024,14 @@ static int devm_tcpm_psy_register(struct tcpm_port *port)
+>  	snprintf(psy_name, psy_name_len, "%s%s", tcpm_psy_name_prefix,
+>  		 port_dev_name);
+>  	port->psy_desc.name = psy_name;
+> -	port->psy_desc.type = POWER_SUPPLY_TYPE_USB,
+> +	port->psy_desc.type = POWER_SUPPLY_TYPE_USB;
+>  	port->psy_desc.usb_types = tcpm_psy_usb_types;
+>  	port->psy_desc.num_usb_types = ARRAY_SIZE(tcpm_psy_usb_types);
+> -	port->psy_desc.properties = tcpm_psy_props,
+> -	port->psy_desc.num_properties = ARRAY_SIZE(tcpm_psy_props),
+> -	port->psy_desc.get_property = tcpm_psy_get_prop,
+> -	port->psy_desc.set_property = tcpm_psy_set_prop,
+> -	port->psy_desc.property_is_writeable = tcpm_psy_prop_writeable,
+> +	port->psy_desc.properties = tcpm_psy_props;
+> +	port->psy_desc.num_properties = ARRAY_SIZE(tcpm_psy_props);
+> +	port->psy_desc.get_property = tcpm_psy_get_prop;
+> +	port->psy_desc.set_property = tcpm_psy_set_prop;
+> +	port->psy_desc.property_is_writeable = tcpm_psy_prop_writeable;
+>  
+>  	port->usb_type = POWER_SUPPLY_USB_TYPE_C;
+>  
+> -- 
+> 2.22.0
+
+thanks,
+
 -- 
-2.29.2
-
+heikki
