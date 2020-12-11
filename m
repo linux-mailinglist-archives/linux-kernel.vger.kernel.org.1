@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5190E2D6DE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6437C2D6DE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391282AbgLKCAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 21:00:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42488 "EHLO
+        id S2395009AbgLKCAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 21:00:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391596AbgLKB7u (ORCPT
+        with ESMTP id S2391607AbgLKB7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Dec 2020 20:59:50 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D11CC06179C
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:58:33 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id q4so5431967pgn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:58:33 -0800 (PST)
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F1EC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:58:35 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id t127so5394906qkf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:58:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=JZuBMUjdVVVxh6WnK4CWaG8XFlwg5qneM5nzLNIVeag=;
-        b=ko6IbsPShEqsmfAfsfV9qvC127/jPkMqeofdfguKVDhv4nl4PDHYX0VMp3YLRGQHpd
-         M9FIEZPyHzEjhCzMvJS1Q3kmPNYL88oBazzPo+UWk5Bj9slbUNmN+z7RIEwVb7od+GtU
-         sW1+wy9m4H3MrISFx6vRt3pCu3UUUrpSQsw1Cv3EOAXbhNBzj+hFbcT72q90susNYJuM
-         2g3YmJtYWRQnDygT5FJIG5GfVA7FvANcKmFVmI1MtfOzZ2Rv2CsQLe7zpQ3sMnV+zzs+
-         j7rSlK/ixBtETx6kq03jHXYo2XnRMuM4/XE1PAsbJ1WtZBuErSpMuVfVKX3cUoY1yn0T
-         JHyA==
+        bh=thwvCtn6LNG/FDpSFGyZ6Wmg72wk3C6bCvqdBXCPvKo=;
+        b=a8/DNSDqSFYuM4vlu1Nh8GoAoU/a0wAqBG4bORngP+gURnE0AIhr6hxeKYy6LArvlv
+         ngaB6UXYn8N24qxxq/ph04+wGnd9v1eLX+q+K8p2B2WDfXPexQ5H2ZmUmov+o2DfryuW
+         0WWg1W7ZjOEiJDkjl2gCn/iZk98tXAGcAZet5pHYZrFa9+PT0XA4e6Eu2Ecl9trOJ12G
+         NpypZ/VaR82IQg8Mg1NlyoW4qaKry964GMsxWjwpDXslPje6NNyeCnMIEjwHSyCJlOD4
+         eNAN6xxSAPl1078mCOnMpBLF3/T00FMtkQJsx6Kho6h9249YPNfu+k2D9P/cxccqzJVj
+         y15w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=JZuBMUjdVVVxh6WnK4CWaG8XFlwg5qneM5nzLNIVeag=;
-        b=rdPxbSCJQcFXjKS1EccvszXGYNOeBeKV+jyNcgTA5AWlA9AkDBmsTBk7pop/XxUcRC
-         h5eQRNyjdKkuTc0haSawadumKCsKjrZGR5aVoVgs4wBt9kcVPfiJUPRAeoKCYBl4U3ee
-         Sgq7vpk/q9P8cGr9NleQ9R3bz5ZU9l4u8/3xARp2SxoWXRAV+zvHKPaULJwpRxwlVsiL
-         gr5nrfgEYNyarhPGIv4XFrarf6ue9aqojkjBe9LXhuUoXH1ngD6bOJvZnfFZKq99cVvE
-         212L990/ZaD2e7B1vPx5oV69tkiRWJ7B9Mc0VbX6Vugt2cCIyPe+vOdy5i60CeBd262X
-         S5Cg==
-X-Gm-Message-State: AOAM531kNHhv4Rv4bPBdIA3feEiJevQafUZCgNRgzAOrgZCTCkuXgcJt
-        4HYPIHL8MGs+vTO7VmFsUAhEjt5Umw96
-X-Google-Smtp-Source: ABdhPJx/ZdLB8Kbh0dsoZNXoyjhao5SR68H1LrrwYVUeY7aVjpBjpUw3heJ5jdAZ1rEM4Qyww7Y4lrqeEZ5q
+        bh=thwvCtn6LNG/FDpSFGyZ6Wmg72wk3C6bCvqdBXCPvKo=;
+        b=H4cbzx02Xr6Y9vMYCQJ2Y2F0F2+nkPty3l7ZLPj7Vdzf41I61HRdAeHtW62Bf6dUwc
+         cA/N1DHvUABMILTyuag4LK6UzCwtRdIEYjftHeo2HomBRmwRfeM8jVTWZ1OA3k1BA/R2
+         +6HxEFSgYBSI0L4YI+1LsELNFDruFcHFnlm65vTgCQ7iz5prd4lrWHuY1hExyUstM0u0
+         t0OjFs+eRTTlel8Q8wp7V++TbIudIOV1MbdpmWYyu8VinF+JZO3ps8IeM/SCX14h9Qgh
+         RxSbZe3Adu49RqU7xt37FHGle0fzbmbL+cmW2KOCsW8FiZZUBLmfz/SKwj/wSaJs/7fA
+         aH6g==
+X-Gm-Message-State: AOAM533/T00pnXcFsa/9ehCTuCjU9FKGiy2ZcH8CE5VzD70eATiaNuVb
+        eXp/4IcIiyDkntsgBL5SXYavftTx6JGx
+X-Google-Smtp-Source: ABdhPJx7gsbztHObw/y4GRJUsg39iVn+hJbBAH5jUIDp67itH5xGkV2prSgrsFigpVawrfizaleNQH+GKtaq
 Sender: "brianvv via sendgmr" <brianvv@brianvv.c.googlers.com>
 X-Received: from brianvv.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:348])
- (user=brianvv job=sendgmr) by 2002:a17:90b:50a:: with SMTP id
- r10mr10755699pjz.103.1607651912600; Thu, 10 Dec 2020 17:58:32 -0800 (PST)
-Date:   Fri, 11 Dec 2020 01:58:21 +0000
+ (user=brianvv job=sendgmr) by 2002:a0c:f20f:: with SMTP id
+ h15mr12835454qvk.54.1607651914229; Thu, 10 Dec 2020 17:58:34 -0800 (PST)
+Date:   Fri, 11 Dec 2020 01:58:22 +0000
 In-Reply-To: <20201211015823.1079574-1-brianvv@google.com>
-Message-Id: <20201211015823.1079574-3-brianvv@google.com>
+Message-Id: <20201211015823.1079574-4-brianvv@google.com>
 Mime-Version: 1.0
 References: <20201211015823.1079574-1-brianvv@google.com>
 X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH net-next 2/4] net: use indirect call helpers for dst_output
+Subject: [PATCH net-next 3/4] net: use indirect call helpers for dst_mtu
 From:   Brian Vazquez <brianvv@google.com>
 To:     Brian Vazquez <brianvv.kernel@gmail.com>,
         Brian Vazquez <brianvv@google.com>,
@@ -67,35 +67,94 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 From: brianvv <brianvv@google.com>
 
 This patch avoids the indirect call for the common case:
-ip6_output and ip_output
+ip6_mtu and ipv4_mtu
 
 Signed-off-by: brianvv <brianvv@google.com>
 ---
- include/net/dst.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ include/net/dst.h | 4 +++-
+ net/ipv4/route.c  | 6 ++++--
+ net/ipv6/route.c  | 6 ++++--
+ 3 files changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/include/net/dst.h b/include/net/dst.h
-index 98cf6e8c06c4..3932e9931f08 100644
+index 3932e9931f08..9f474a79ed7d 100644
 --- a/include/net/dst.h
 +++ b/include/net/dst.h
-@@ -436,10 +436,16 @@ static inline void dst_set_expires(struct dst_entry *dst, int timeout)
- 		dst->expires = expires;
+@@ -194,9 +194,11 @@ dst_feature(const struct dst_entry *dst, u32 feature)
+ 	return dst_metric(dst, RTAX_FEATURES) & feature;
  }
  
-+INDIRECT_CALLABLE_DECLARE(int ip6_output(struct net *, struct sock *,
-+					 struct sk_buff *));
-+INDIRECT_CALLABLE_DECLARE(int ip_output(struct net *, struct sock *,
-+					 struct sk_buff *));
- /* Output packet to network from transport.  */
- static inline int dst_output(struct net *net, struct sock *sk, struct sk_buff *skb)
++INDIRECT_CALLABLE_DECLARE(unsigned int ip6_mtu(const struct dst_entry *));
++INDIRECT_CALLABLE_DECLARE(unsigned int ipv4_mtu(const struct dst_entry *));
+ static inline u32 dst_mtu(const struct dst_entry *dst)
  {
--	return skb_dst(skb)->output(net, sk, skb);
-+	return INDIRECT_CALL_INET(skb_dst(skb)->output,
-+				  ip6_output, ip_output,
-+				  net, sk, skb);
+-	return dst->ops->mtu(dst);
++	return INDIRECT_CALL_INET(dst->ops->mtu, ip6_mtu, ipv4_mtu, dst);
  }
  
- INDIRECT_CALLABLE_DECLARE(int ip6_input(struct sk_buff *));
+ /* RTT metrics are stored in milliseconds for user ABI, but used as jiffies */
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index e26652ff7059..4fac91f8bd6c 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -135,7 +135,8 @@ static int ip_rt_gc_timeout __read_mostly	= RT_GC_TIMEOUT;
+ 
+ static struct dst_entry *ipv4_dst_check(struct dst_entry *dst, u32 cookie);
+ static unsigned int	 ipv4_default_advmss(const struct dst_entry *dst);
+-static unsigned int	 ipv4_mtu(const struct dst_entry *dst);
++INDIRECT_CALLABLE_SCOPE
++unsigned int		ipv4_mtu(const struct dst_entry *dst);
+ static struct dst_entry *ipv4_negative_advice(struct dst_entry *dst);
+ static void		 ipv4_link_failure(struct sk_buff *skb);
+ static void		 ip_rt_update_pmtu(struct dst_entry *dst, struct sock *sk,
+@@ -1311,7 +1312,7 @@ static unsigned int ipv4_default_advmss(const struct dst_entry *dst)
+ 	return min(advmss, IPV4_MAX_PMTU - header_size);
+ }
+ 
+-static unsigned int ipv4_mtu(const struct dst_entry *dst)
++INDIRECT_CALLABLE_SCOPE unsigned int ipv4_mtu(const struct dst_entry *dst)
+ {
+ 	const struct rtable *rt = (const struct rtable *)dst;
+ 	unsigned int mtu = rt->rt_pmtu;
+@@ -1333,6 +1334,7 @@ static unsigned int ipv4_mtu(const struct dst_entry *dst)
+ 
+ 	return mtu - lwtunnel_headroom(dst->lwtstate, mtu);
+ }
++EXPORT_SYMBOL(ipv4_mtu);
+ 
+ static void ip_del_fnhe(struct fib_nh_common *nhc, __be32 daddr)
+ {
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 188e114b29b4..22caee290b6c 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -83,7 +83,8 @@ enum rt6_nud_state {
+ 
+ static struct dst_entry	*ip6_dst_check(struct dst_entry *dst, u32 cookie);
+ static unsigned int	 ip6_default_advmss(const struct dst_entry *dst);
+-static unsigned int	 ip6_mtu(const struct dst_entry *dst);
++INDIRECT_CALLABLE_SCOPE
++unsigned int		ip6_mtu(const struct dst_entry *dst);
+ static struct dst_entry *ip6_negative_advice(struct dst_entry *);
+ static void		ip6_dst_destroy(struct dst_entry *);
+ static void		ip6_dst_ifdown(struct dst_entry *,
+@@ -3089,7 +3090,7 @@ static unsigned int ip6_default_advmss(const struct dst_entry *dst)
+ 	return mtu;
+ }
+ 
+-static unsigned int ip6_mtu(const struct dst_entry *dst)
++INDIRECT_CALLABLE_SCOPE unsigned int ip6_mtu(const struct dst_entry *dst)
+ {
+ 	struct inet6_dev *idev;
+ 	unsigned int mtu;
+@@ -3111,6 +3112,7 @@ static unsigned int ip6_mtu(const struct dst_entry *dst)
+ 
+ 	return mtu - lwtunnel_headroom(dst->lwtstate, mtu);
+ }
++EXPORT_SYMBOL(ip6_mtu);
+ 
+ /* MTU selection:
+  * 1. mtu on route is locked - use it
 -- 
 2.29.2.576.ga3fc446d84-goog
 
