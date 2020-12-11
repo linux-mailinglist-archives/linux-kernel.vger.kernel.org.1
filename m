@@ -2,98 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD1B2D777D
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEE22D777C
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:11:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395393AbgLKOLS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Dec 2020 09:11:18 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:58719 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390120AbgLKOKX (ORCPT
+        id S2389524AbgLKOLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:11:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729979AbgLKOKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:10:23 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-275-kWrRaaEqM2GA87qFJEGMYA-1; Fri, 11 Dec 2020 14:08:44 +0000
-X-MC-Unique: kWrRaaEqM2GA87qFJEGMYA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 11 Dec 2020 14:08:43 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 11 Dec 2020 14:08:43 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Marek Behun' <marek.behun@nic.cz>,
-        Abanoub Sameh <abanoubsameh8@gmail.com>
-CC:     "pavel@ucw.cz" <pavel@ucw.cz>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Abanoub Sameh <abanoubsameh@protonmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: RE: [PATCH] leds: led-core: Get rid of enum led_brightness
-Thread-Topic: [PATCH] leds: led-core: Get rid of enum led_brightness
-Thread-Index: AQHWz72dXrZzdGUzlUiXyjL6e22ikqnx7D2g
-Date:   Fri, 11 Dec 2020 14:08:43 +0000
-Message-ID: <2ae41868b2604a489927b5903529afb4@AcuMS.aculab.com>
-References: <20201211014840.1554095-1-abanoubsameh@protonmail.com>
- <20201211135628.1fe1af79@nic.cz>
-In-Reply-To: <20201211135628.1fe1af79@nic.cz>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 11 Dec 2020 09:10:17 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49789C06179C
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:09:20 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id j1so4648811pld.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:09:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SJUsAyZid8ZpUCO1A6kJYtQfMdu1p6LphB094f0w3bg=;
+        b=Aj8ew0Hu3yHmTNKkdhjZ+X6b43SrHaczF4qZhuusrFL6cDfM/7VhTojRP/QDHzTBgT
+         iDuj+C/tHmdYwmm3ovc+i3N17HKVh7cYSnCelcgWY6O35mMi2Hu2VjqHvqEp96zhjev4
+         bZF/f0upjqsusL81IM5qMfVkpPR8mmnU4STGZxHf6Lw68FsEjUq+PRoTZ1HtyxQysEyG
+         fsawhedIjAPMW9279hsd3DFuGCQ+oKgIdwYrTdcM3PcFdVjVktEb/zZXpIwfIbkWAYOh
+         ErnmdqTBkSBXpel99roVOLdClBLUeF3AUteTb4o7wLJdhlLKA+6IYVvPF3py6NLkTwBB
+         5WEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SJUsAyZid8ZpUCO1A6kJYtQfMdu1p6LphB094f0w3bg=;
+        b=YXmT7ahuwJ7uDHThjcpwQ2KhYh5XQjuRjSfWQCyN3NdNh5PPad01iYW2ZKvcF1tO8V
+         jUVOgzm3BIfLfY/k4KXjDZAh17jVlMiIrUrK5L+1FfvZy3l8857BhBXAoPewUcCeJskK
+         dgHyS+Dl1vjWLb8NQDx4zsI6Eh5ZA40MaYK6w0K1qFzD3VnpEfXOWDErcWcjC9B6DFYz
+         8me6FwNPahym4H1e22IgJ7ZwTDoLO7OiqMH1hDOA+Xnc3n1o3Ahs5Vy0z/ZmkuzupzQO
+         xbhyW5CRRkOjdlnQtJgOjnwMSui2UbH5Mj0AKZen4gh97m6E4YUGkvfA+6/CJezJBXhM
+         c9yQ==
+X-Gm-Message-State: AOAM531z9mkhby9zBEzgKP8zX6p/pGSW75F8UpZ/CKuwRpQ4yMP3T6uD
+        bhpWf+DPl2cFIBDunee1WzpECqVuVyRxZK4z8REG0w==
+X-Google-Smtp-Source: ABdhPJwrLNBJOldmJmyWaGlf9L4YnEd4a4zJ98KF8M3D+Gy0rq+4D6xov12z8j4f0zvZiLabKSGqTiyYXwKPUSSjrQM=
+X-Received: by 2002:a17:902:76c8:b029:d9:d6c3:357d with SMTP id
+ j8-20020a17090276c8b02900d9d6c3357dmr11055737plt.34.1607695759816; Fri, 11
+ Dec 2020 06:09:19 -0800 (PST)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20201210035526.38938-1-songmuchun@bytedance.com>
+ <20201210035526.38938-8-songmuchun@bytedance.com> <20201211133624.GA27050@linux>
+In-Reply-To: <20201211133624.GA27050@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 11 Dec 2020 22:08:43 +0800
+Message-ID: <CAMZfGtXFtzJBifOrB2XdCrpazGP5MDuU3mp1Uag+TGLE3w49yw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v8 07/12] mm/hugetlb: Set the PageHWPoison
+ to the raw error page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behun
-> Sent: 11 December 2020 12:56
-> 
-> On Fri, 11 Dec 2020 03:48:40 +0200
-> Abanoub Sameh <abanoubsameh8@gmail.com> wrote:
-> 
-> > This gets rid of enum led_brightness in the main led files,
-> > because it is deprecated, and an int can be used instead,
-> > or maybe even a uint8_t since it only goes up to 255.
-> > Next we can also patch the other files to get rid of it completely.
-> 
-> 1. unsigned int should be used IMO
->   - using int may force all implementers to check for negative value
->     and return -EINVAL, which is stupid
->   - some LED controllers may offer more than 8bit brightness value, so
->     no uint8_t
+On Fri, Dec 11, 2020 at 9:36 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Thu, Dec 10, 2020 at 11:55:21AM +0800, Muchun Song wrote:
+> > +static inline void subpage_hwpoison_deliver(struct hstate *h, struct page *head)
+> > +{
+> > +     struct page *page = head;
+> > +
+> > +     if (!free_vmemmap_pages_per_hpage(h))
+> > +             return;
+> > +
+> > +     if (PageHWPoison(head))
+> > +             page = head + page_private(head + 4);
+> > +
+> > +     /*
+> > +      * Move PageHWPoison flag from head page to the raw error page,
+> > +      * which makes any subpages rather than the error page reusable.
+> > +      */
+> > +     if (page != head) {
+> > +             SetPageHWPoison(page);
+> > +             ClearPageHWPoison(head);
+> > +     }
+> > +}
+>
+> I would make the names coherent.
+> I am not definitely goot at names, but something like:
+> hwpoison_subpage_{foo,bar} looks better.
 
-More than 8 bits would be good.
-While not really relevant for actual 'brightness' it allows
-for 'strange' things be encoded in the brightness field.
+It's better than mine. Thank you.
 
-For instance we have some hardware that has RGB leds on it.
-They are a single device so it really needs a colour property.
-But it is more complex than that, between the driver and LED
-there is an FPGA - so it can modulate the LED output in many ways.
-As well as using PWM to change the brightness and (eg) 1/2HZ flashing
-it is possible to alternate between red and green to get a reasonable
-orange (works better than driving both at the same time!).
+>
+> Also, could not subpage_hwpoison_deliver be rewritten like:
+>
+>   static inline void subpage_hwpoison_deliver(struct hstate *h, struct page *head)
+>   {
+>        struct page *page;
+>
+>        if (!PageHWPoison(head) || !free_vmemmap_pages_per_hpage(h))
+>                return;
+>
+>        page = head + page_private(head + 4);
+>        /*
+>         * Move PageHWPoison flag from head page to the raw error page,
+>         * which makes any subpages rather than the error page reusable.
+>         */
+>        if (page != head) {
+>                SetPageHWPoison(page);
+>                ClearPageHWPoison(head);
+>        }
+>   }
+>
+> I think it is better code-wise.
 
-There is also the option of making the led follow some internal
-signal rather then be directly driven by the driver.
+Will do. Thank you.
 
-While extra parameters could be added, they are only really usable
-by code that knows they are present.
-So encoding in the 'brightness' sort of makes sense.
+>
+> > +      * Move PageHWPoison flag from head page to the raw error page,
+> > +      * which makes any subpages rather than the error page reusable.
+> > +      */
+> > +     if (page != head) {
+> > +             SetPageHWPoison(page);
+> > +             ClearPageHWPoison(head);
+> > +     }
+>
+> I would put this in an else-if above:
+>
+>         if (free_vmemmap_pages_per_hpage(h)) {
+>                 set_page_private(head + 4, page - head);
+>                 return;
+>         } else if (page != head) {
+>                 SetPageHWPoison(page);
+>                 ClearPageHWPoison(head);
+>         }
+>
+> or will we lose the optimization in case free_vmemmap_pages_per_hpage gets compiled out?
+>
 
-	David
+Either is OK. The compiler will help us optimize the code when
+free_vmemmap_pages_per_hpage always returns false.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Thanks for your suggestions. :-)
 
+>
+> --
+> Oscar Salvador
+> SUSE L3
+
+
+
+-- 
+Yours,
+Muchun
