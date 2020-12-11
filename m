@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B543D2D7306
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C6F2D7304
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405649AbgLKJrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 04:47:14 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:59335 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2393824AbgLKJqz (ORCPT
+        id S2393947AbgLKJqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 04:46:39 -0500
+Received: from outbound-smtp35.blacknight.com ([46.22.139.218]:48731 "EHLO
+        outbound-smtp35.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726086AbgLKJqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 04:46:55 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-252-AgPfXOr8MiC6RNWXAg0nGg-1; Fri, 11 Dec 2020 09:45:16 +0000
-X-MC-Unique: AgPfXOr8MiC6RNWXAg0nGg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 11 Dec 2020 09:45:15 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 11 Dec 2020 09:45:15 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arvind Sankar' <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>
-CC:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        "laniel_francis@privacyrequired.com" 
-        <laniel_francis@privacyrequired.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC PATCH v1 07/12] efi: Replace strstarts() by
- str_has_prefix().
-Thread-Topic: [RFC PATCH v1 07/12] efi: Replace strstarts() by
- str_has_prefix().
-Thread-Index: AQHWzyB/+YxwkDE2h0210TLWUlhJ1qnxoqgg
-Date:   Fri, 11 Dec 2020 09:45:15 +0000
-Message-ID: <4c251bcaf8234dd19ca0ecd0a756cf7f@AcuMS.aculab.com>
-References: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
- <20201204170319.20383-8-laniel_francis@privacyrequired.com>
- <CAMj1kXEQhT_LF5FDBO3-S7pBn55wG59bQUVr2q58A4FhqodY8Q@mail.gmail.com>
- <ab769a5188394cd3379cc627d14a0222050a1367.camel@HansenPartnership.com>
- <CAMj1kXFvCZKH-Bbvu-V5-GxcTun8yz98igeFxRc1tTswbttM0w@mail.gmail.com>
- <X9Jlfqiu/vCOAm3U@rani.riverdale.lan>
-In-Reply-To: <X9Jlfqiu/vCOAm3U@rani.riverdale.lan>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 11 Dec 2020 04:46:34 -0500
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp35.blacknight.com (Postfix) with ESMTPS id 20D2F1A3D
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:45:42 +0000 (GMT)
+Received: (qmail 8265 invoked from network); 11 Dec 2020 09:45:41 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Dec 2020 09:45:41 -0000
+Date:   Fri, 11 Dec 2020 09:45:40 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 3/4] sched/fair: Do not replace recent_used_cpu with the
+ new target
+Message-ID: <20201211094540.GV3371@techsingularity.net>
+References: <20201208153501.1467-1-mgorman@techsingularity.net>
+ <20201211062542.3082-1-hdanton@sina.com>
+ <20201211093443.3259-1-hdanton@sina.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201211093443.3259-1-hdanton@sina.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJ2aW5kIFNhbmthcg0KPiBTZW50OiAxMCBEZWNlbWJlciAyMDIwIDE4OjE0DQouLi4N
-Cj4gSSB3YXNuJ3QgYXdhcmUgb2Ygc3RyX2hhc19wcmVmaXgoKSBhdCB0aGUgdGltZS4gSXQgZG9l
-cyBzZWVtIHVzZWZ1bCB0bw0KPiBlbGltaW5hdGUgdGhlIGR1cGxpY2F0aW9uIG9mIHRoZSBzdHJp
-bmcgbGl0ZXJhbCwgSSBsaWtlIHRoZQ0KPiBza2lwX3ByZWZpeCgpIEFQSSBzdWdnZXN0aW9uLCBt
-YXliZSBldmVuDQo+IA0KPiAJYm9vbCBzdHJfc2tpcF9wcmVmaXgoY29uc3QgY2hhciAqKnMsIGNv
-bnN0IGNoYXIgKnBmeCkNCj4gCXsNCj4gCQlzaXplX3QgbGVuID0gc3RyX2hhc19wcmVmaXgoKnMs
-IHBmeCk7DQo+IAkJKnMgKz0gbGVuOw0KPiAJCXJldHVybiAhIWxlbjsNCj4gCX0NCj4gCS4uLg0K
-PiAJaWYgKHN0cl9za2lwX3ByZWZpeCgmb3B0aW9uLCBwcmVmaXgpKSB7IC4uLiB9DQo+IA0KPiB0
-byBhdm9pZCB0aGUgaW50ZXJtZWRpYXRlIHZhcmlhYmxlLg0KDQpUaGF0J2xsIGdlbmVyYXRlIGhv
-cnJpZCBjb2RlIC0gdGhlICdvcHRpb24nIHZhcmlhYmxlIGhhcyB0byBiZQ0KcmVwZWF0ZWRseSBy
-ZWxvYWRlZCBmcm9tIG1lbW9yeSAodW5sZXNzIGl0IGlzIGFsbCBpbmxpbmVkKS4NCg0KUGVyaGFw
-cyB0aGUgI2RlZmluZQ0KDQojZGVmaW5lIHN0cl9za2lwX3ByZWZpeChzdHIsIHByZWZpeCkgXA0K
-eyggXA0KCXNpemVfdCBfcGZ4X2xlbiA9IHN0cmxlbihwcmVmaXgpKTsgXA0KCW1lbWNtcChzdHIs
-IHBmeCwgX3BmeF9sZW4pID8gMCA6ICgoc3RyKSArPSBfcGZ4X2xlbiwgMSk7IFwNCil9DQoNClRo
-ZXJlJ3MgcHJvYmFibHkgc29tZXRoaW5nIHRoYXQnbGwgbGV0IHlvdSB1c2Ugc2l6ZW9mKCkgaW5z
-dGVhZA0Kb2Ygc3RybGVuKCkgZm9yIHF1b3RlZCBzdHJpbmdzIChpZiBvbmx5IHNpemVvZiBwZngg
-IT0gc2l6ZW9mIChjaGFyICopKS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBM
-YWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBU
-LCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Fri, Dec 11, 2020 at 05:34:43PM +0800, Hillf Danton wrote:
+> On Fri, 11 Dec 2020 09:02:28 +0000 Mel Gorman wrote:
+> >On Fri, Dec 11, 2020 at 02:25:42PM +0800, Hillf Danton wrote:
+> >> On Tue,  8 Dec 2020 15:35:00 +0000 Mel Gorman wrote:
+> >> > @@ -6277,17 +6277,13 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+> >> >  
+> >> >  	/* Check a recently used CPU as a potential idle candidate: */
+> >> >  	recent_used_cpu = p->recent_used_cpu;
+> >> > +	p->recent_used_cpu = prev;
+> >> >  	if (recent_used_cpu != prev &&
+> >> >  	    recent_used_cpu != target &&
+> >> >  	    cpus_share_cache(recent_used_cpu, target) &&
+> >> >  	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
+> >> >  	    cpumask_test_cpu(p->recent_used_cpu, p->cpus_ptr) &&
+> >> 
+> >> Typo? Fix it in spin if so.
+> >> 
+> >
+> >What typo?
+> 
+> After your change it is prev that we check against p->cpus_ptr instead of
+> the recent CPU. Wonder the point to do such a check for returning the
+> recent one.
 
+Ah... yes, this is indeed wrong. It wouldn't affect Vincent's case
+that showed a problem with a hackbench configuration (which I'm still
+disappointed about as it's a trade-off depending on machine and workload)
+but it allows a task to run on the wrong cpu if sched_setscheduler()
+was called between wakeup events.
+
+-- 
+Mel Gorman
+SUSE Labs
