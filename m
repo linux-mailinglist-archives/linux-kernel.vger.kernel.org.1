@@ -2,172 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85EB82D7B21
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3534F2D7AF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387661AbgLKQji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 11:39:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24855 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728093AbgLKQjO (ORCPT
+        id S2406747AbgLKQ3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 11:29:34 -0500
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:53838 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2395169AbgLKQ26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 11:39:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607704667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cdTuLvtPwt3VYNUDiFde6cWBAI4tq1wL3wORhmXo5h0=;
-        b=eOVWDi18UCCHek/wHvPInM5ig886ub0XaQWG9ie/x4Xpii+9u0bgyqaojZj8qgb5O08NzR
-        ZxphlpxGNzsAKLZyS6VPIMdblKXxPxriXo9Y0kzOajY7byToNnIn9vWOPNx2pZIfxs439R
-        /6OyHVq7L/Dm4jzIn7a9XNU5txGjrhI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-kd-9L3KwMaOHzx_xia9-HA-1; Fri, 11 Dec 2020 11:37:43 -0500
-X-MC-Unique: kd-9L3KwMaOHzx_xia9-HA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCE66100C66F;
-        Fri, 11 Dec 2020 16:37:39 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-7.gru2.redhat.com [10.97.112.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AD82C19C78;
-        Fri, 11 Dec 2020 16:37:38 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 1DF444172ED8; Fri, 11 Dec 2020 11:18:22 -0300 (-03)
-Date:   Fri, 11 Dec 2020 11:18:22 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-Message-ID: <20201211141822.GA67764@fuller.cnet>
-References: <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com>
- <87sg8g2sn4.fsf@nanos.tec.linutronix.de>
- <20201208181107.GA31442@fuller.cnet>
- <875z5c2db8.fsf@nanos.tec.linutronix.de>
- <20201209163434.GA22851@fuller.cnet>
- <87r1nyzogg.fsf@nanos.tec.linutronix.de>
- <20201210152618.GB23951@fuller.cnet>
- <87zh2lib8l.fsf@nanos.tec.linutronix.de>
- <20201211002703.GA47016@fuller.cnet>
- <87v9d8h3lx.fsf@nanos.tec.linutronix.de>
+        Fri, 11 Dec 2020 11:28:58 -0500
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id CF3E91CC;
+        Fri, 11 Dec 2020 19:28:15 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1607704095;
+        bh=gaJXBhrA6SVgI+3Xva2LJf27yCKYkaztXkIgb/m62UE=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=gfsbqWdBz205WU5aFgkDWM/z1yDKf0m8O6Dysa4s5rl7+OMd2vn64tjqMmKaygUIT
+         z+4i09kAqZ5m9IGzea7Og6IHkqLDw0nDKcmElqdVfZ2dwAG96M7RO4/ELWkgupuVQG
+         BRBrCiPCAEreTkYlMqkSIbxQnGSev4qaQzGHLWJk=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 11 Dec 2020 19:28:15 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.1847.003; Fri, 11 Dec 2020 19:28:15 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "aaptel@suse.com" <aaptel@suse.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "joe@perches.com" <joe@perches.com>,
+        "mark@harmstone.com" <mark@harmstone.com>,
+        "nborisov@suse.com" <nborisov@suse.com>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "anton@tuxera.com" <anton@tuxera.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "hch@lst.de" <hch@lst.de>
+Subject: RE: [PATCH v14 06/10] fs/ntfs3: Add compression
+Thread-Topic: [PATCH v14 06/10] fs/ntfs3: Add compression
+Thread-Index: AQHWylTdIpZR6rup4EqAA/Bg1BTo06nnEmaAgAsMS3A=
+Date:   Fri, 11 Dec 2020 16:28:15 +0000
+Message-ID: <d5b485fa9ced4923a47704c9ec19552e@paragon-software.com>
+References: <20201204154600.1546096-1-almaz.alexandrovich@paragon-software.com>
+ <20201204154600.1546096-7-almaz.alexandrovich@paragon-software.com>
+ <X8qCLXJOit0M+4X7@sol.localdomain>
+In-Reply-To: <X8qCLXJOit0M+4X7@sol.localdomain>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.8.36]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v9d8h3lx.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 02:30:34PM +0100, Thomas Gleixner wrote:
-> On Thu, Dec 10 2020 at 21:27, Marcelo Tosatti wrote:
-> > On Thu, Dec 10, 2020 at 10:48:10PM +0100, Thomas Gleixner wrote:
-> >> You really all live in a seperate universe creating your own rules how
-> >> things which other people work hard on to get it correct can be screwed
-> >> over.
+From: Eric Biggers <ebiggers@kernel.org>
+Sent: Friday, December 4, 2020 9:39 PM
+> To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> Cc: linux-fsdevel@vger.kernel.org; viro@zeniv.linux.org.uk; linux-kernel@=
+vger.kernel.org; pali@kernel.org; dsterba@suse.cz;
+> aaptel@suse.com; willy@infradead.org; rdunlap@infradead.org; joe@perches.=
+com; mark@harmstone.com; nborisov@suse.com;
+> linux-ntfs-dev@lists.sourceforge.net; anton@tuxera.com; dan.carpenter@ora=
+cle.com; hch@lst.de
+> Subject: Re: [PATCH v14 06/10] fs/ntfs3: Add compression
+>=20
+> On Fri, Dec 04, 2020 at 06:45:56PM +0300, Konstantin Komarov wrote:
+> > This adds compression
 > >
-> > 	1. T = read timestamp.
-> > 	2. migrate (VM stops for a certain period).
-> > 	3. use timestamp T.
-> 
-> This is exactly the problem. Time stops at pause and continues where it
-> stopped on resume.
-> 
-> But CLOCK_REALTIME and CLOCK_TAI advanced in reality. So up to the point
-> where NTP fixes this - if there is NTP at all - the guest CLOCK_REALTIME
-> and CLOCK_TAI are off by tpause.
-> 
-> Now the application gets a packet from the outside world with a
-> CLOCK_REALTIME timestamp which is suddenly ahead of the value it reads
-> from clock_gettime(CLOCK_REALTIME) by tpause. So what is it supposed to
-> do with that? Make stupid assumptions that the other end screwed up
-> timekeeping, throw an error that the system it is running on screwed up
-> timekeeping? And a second later when NTP catched up it gets the next
-> surprise because the systems CLOCK_REALTIME jumped forward unexpectedly
-> or if there is no NTP it's confused forever.
+> > Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software=
+.com>
+> > ---
+> >  fs/ntfs3/lib/common_defs.h       | 196 +++++++++++
+> >  fs/ntfs3/lib/decompress_common.c | 314 +++++++++++++++++
+> >  fs/ntfs3/lib/decompress_common.h | 558 +++++++++++++++++++++++++++++++
+> >  fs/ntfs3/lib/lzx_common.c        | 204 +++++++++++
+> >  fs/ntfs3/lib/lzx_common.h        |  31 ++
+> >  fs/ntfs3/lib/lzx_constants.h     | 113 +++++++
+> >  fs/ntfs3/lib/lzx_decompress.c    | 553 ++++++++++++++++++++++++++++++
+> >  fs/ntfs3/lib/xpress_constants.h  |  23 ++
+> >  fs/ntfs3/lib/xpress_decompress.c | 165 +++++++++
+> >  fs/ntfs3/lznt.c                  | 452 +++++++++++++++++++++++++
+> >  10 files changed, 2609 insertions(+)
+> >  create mode 100644 fs/ntfs3/lib/common_defs.h
+> >  create mode 100644 fs/ntfs3/lib/decompress_common.c
+> >  create mode 100644 fs/ntfs3/lib/decompress_common.h
+> >  create mode 100644 fs/ntfs3/lib/lzx_common.c
+> >  create mode 100644 fs/ntfs3/lib/lzx_common.h
+> >  create mode 100644 fs/ntfs3/lib/lzx_constants.h
+> >  create mode 100644 fs/ntfs3/lib/lzx_decompress.c
+> >  create mode 100644 fs/ntfs3/lib/xpress_constants.h
+> >  create mode 100644 fs/ntfs3/lib/xpress_decompress.c
+> >  create mode 100644 fs/ntfs3/lznt.c
+>=20
+> This really could use a much better commit message.  Including mentioning=
+ where
+> the LZX and XPRESS decompression code came from
+> (https://github.com/ebiggers/ntfs-3g-system-compression).
+>=20
 
-This can happen even with a "perfect" solution that syncs time
-instantly on the migration destination. See steps 1,2,3.
+Hi Eric! Fixed in V15!
 
-Unless you notify applications to invalidate their time reads,
-i can't see a way to fix this.
+> Also note you've marked the files as "SPDX-License-Identifier: GPL-2.0",
+> but they really are "SPDX-License-Identifier: GPL-2.0-or-later".
+>=20
 
-Therefore if you use VM migration in the first place, a certain amount of
-timestamp accuracy error must be tolerated.
+Thanks, fixed as well.
 
-> How can you even assume that this is correct?
+> Also I still think you should consider using the simpler version from
+> ntfs-3g-system-compression commit 3ddd227ee8e3, which I had originally in=
+tended
+> to be included in NTFS-3G itself.  That version was fewer lines of code a=
+nd
+> fewer files, as it was simplified for decompression-only.  The latest ver=
+sion
+> (the one you're using) is shared with a project that also implements comp=
+ression
+> (so that I can more easily maintain both projects), so it's more complex =
+than
+> needed for decompression-only support.  But in the kernel context it may =
+make
+> sense to go with a simpler version.  There are a few performance optimiza=
+tions
+> you'd miss by going with the older version, but they weren't too signific=
+ant,
+> and probably you don't need to squeeze out every bit of performance possi=
+ble
+> when reading XPRESS and LZX-compressed files in this context?
+>=20
+> - Eric
 
-As noted above, even without a window of unsynchronized time (due to
-delay for NTP to sync time), time reads can be stale.
+We used the newest code initially. Looking at the commit you've pointed out=
+, but it will
+take some time as needs to pass full set of tests with new code. On the dif=
+ferences you've
+mentioned between the first and latest code in ntfs-3g system compression: =
+we've removed
+the optimizations (needed to go into kernel), also the reparse points stuff=
+ is being parsed by
+ntfs3 driver itself. Given this, doesn't seems there are many differences r=
+emain.
+Also, we'll follow your recommendations, if you highly recommend to stick t=
+o the commit
+you've mentioned (but at this moment it seems "newer=3Dbetter" formula stil=
+l valid).
 
-> It is exactly the same problem as we had many years ago with hardware
-> clocks suddenly stopping to tick which caused quite some stuff to go
-> belly up.
-
-Customers complained when it was 5 seconds off, now its 0.1ms (and
-people seem happy).
-
-> In a proper suspend/resume scenario CLOCK_REALTIME/TAI are advanced
-> (with a certain degree of accuracy) to compensate for the sleep time, so
-> the other end of a communication is at least in the same ballpark, but
-> not 50 seconds off.
-
-Its 100ms off with migration, and can be reduced further (customers
-complained about 5 seconds but seem happy with 0.1ms).
-
-> >> This features first, correctness later frenzy is insane and it better
-> >> stops now before you pile even more crap on the existing steaming pile
-> >> of insanities.
-> >
-> > Sure.
-> 
-> I wish that would be true. OS people - you should know that - are
-> fighting forever with hardware people over feature madness and the
-> attitude of 'we can fix that in software' which turns often enough out
-> to be wrong.
-> 
-> Now sadly enough people who suffered from that madness work on
-> virtualization and instead of trying to avoid the same problem they go
-> off and make it even worse.
-
-So you think its important to reduce the 100ms offset? 
-
-> It's the same problem again as with hardware people. Not talking to the
-> other people _before_ making uninformed assumptions and decisions.
-> 
-> We did it that way because big customer asked for it is not a
-> justification for inflicting this on everybody else and thereby
-> violating correctness. Works for me and my big customer is not a proof
-> of correctness either.
-> 
-> It's another proof that this industry just "works" by chance.
-> 
-> Thanks,
-> 
->         tglx
-
-OK, makes sense, then reducing the 0.1ms window even further
-is a useful thing to do. What would be an acceptable 
-CLOCK_REALTIME accuracy error, on migration?
-
-
-
+Thanks!
