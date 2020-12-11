@@ -2,198 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490492D81F2
+	by mail.lfdr.de (Postfix) with ESMTP id B68A82D81F3
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406711AbgLKWXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:23:47 -0500
-Received: from esa3.hc3370-68.iphmx.com ([216.71.145.155]:11568 "EHLO
-        esa3.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728668AbgLKWXY (ORCPT
+        id S2406840AbgLKWXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 17:23:48 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19576 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387557AbgLKWXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:23:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1607725403;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=SlMSeRdV/lwxDX3djLyqBMWP9qBV06XtN2qLgsx2f6c=;
-  b=cCc1OO5JVR9LeyU7rT2cTybUoZgVTzakAzrSKneOGbGM/dkv+YqCi5Iq
-   dizeIKNGYX8PY1SaQydg7kH8sS81Cjjfy/hcOHBNbUP1w1opYtZgkU4xq
-   8sIGXv15Kt1EjOZbPYaISiZqUpzA1HQNxoYkftfeakFsyijuYUjAGOHPp
-   A=;
-Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: zxKa8rgyFeg2y8fCG3oi7VnW2gUpr9OYlkvCF/sBtRwerKcGUj3U846xesB6P0sd8TbXpQL30D
- M+yqnl9FyOSn4AVTQICd1n20O7aUuBZJHO1hO49Y7WMuixViLEiIv7JOWQDh2eVZ9soCVAFoQW
- vfrc7AECE95KCs5m0z0M9zvfWWGUs6ClwL+l6kwP1ibvxZE1mGugR63NagsSn+AjDypKzJbLJy
- 9z6mlpc3fKmjPgHdEEba0IFcfG0cgQo5L6XZQsW65QXYXuCPJHzmXpVX8QCySh2BtbtSv6z0yL
- eso=
-X-SBRS: 5.2
-X-MesageID: 33047865
-X-Ironport-Server: esa3.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.78,412,1599537600"; 
-   d="scan'208";a="33047865"
-Subject: Re: [patch 27/30] xen/events: Only force affinity mask for percpu
- interrupts
-To:     Thomas Gleixner <tglx@linutronix.de>, <boris.ostrovsky@oracle.com>,
-        =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        <xen-devel@lists.xenproject.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "afzal mohammed" <afzal.mohd.ma@gmail.com>,
-        <linux-parisc@vger.kernel.org>,
-        "Russell King" <linux@armlinux.org.uk>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        <linux-s390@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        <intel-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>,
-        "Tvrtko Ursulin" <tvrtko.ursulin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        <linux-gpio@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, <linux-ntb@googlegroups.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Michal Simek" <michal.simek@xilinx.com>,
-        <linux-pci@vger.kernel.org>,
-        "Karthikeyan Mitran" <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
-        "Leon Romanovsky" <leon@kernel.org>
-References: <20201210192536.118432146@linutronix.de>
- <20201210194045.250321315@linutronix.de>
- <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com>
- <2164a0ce-0e0d-c7dc-ac97-87c8f384ad82@suse.com>
- <871rfwiknd.fsf@nanos.tec.linutronix.de>
- <9806692f-24a3-4b6f-ae55-86bd66481271@oracle.com>
- <877dpoghio.fsf@nanos.tec.linutronix.de>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <edbedd7a-4463-d934-73c9-fa046c19cf6d@citrix.com>
-Date:   Fri, 11 Dec 2020 22:21:19 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 11 Dec 2020 17:23:23 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BBM297J064781;
+        Fri, 11 Dec 2020 17:22:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=8SHFA+w9P/czyxvX214l3fdhHSK2bnKXKI2MqKjCnig=;
+ b=SwlT1K/0e7uItl5MywCR1cp3wcXFGW1Tr+qfKR/u01WLK4AAQITB8+6Ii4GaOpV3K1Aj
+ AQXMYwrjTbcVExawC8MeD5DWKp2qUvNfNehk1keQ36YKIJ1JcMi9HLGDLTwTP7XXDh0e
+ pjoso7PHsTtfZtw+2hJubEyXzI1z8YB9B2L4V58Gzzc1+xFBNXLDfsUt8Yp4lGI5RB0c
+ ruhyzQ/btaJQAlZc5pwwelnq8hmmCtH5V3eqW80suyIPlu4N4Z/TVdAJTWhaSBRL6Rqi
+ MBF+7J8PawCBum9eNTyLVOZ917RXmXgUejj6yBRzsvgucz39giRW4jOMhO8cYqJ6RtAm +Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35cgx0gsa3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Dec 2020 17:22:23 -0500
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BBM6ZUG103733;
+        Fri, 11 Dec 2020 17:22:23 -0500
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35cgx0gs9r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Dec 2020 17:22:22 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BBMLmL9028635;
+        Fri, 11 Dec 2020 22:22:21 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma03wdc.us.ibm.com with ESMTP id 3581u9tvqs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Dec 2020 22:22:21 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BBMMKh223265704
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Dec 2020 22:22:20 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 55472C605B;
+        Fri, 11 Dec 2020 22:22:20 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E7524C6057;
+        Fri, 11 Dec 2020 22:22:18 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com.com (unknown [9.85.193.150])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 11 Dec 2020 22:22:18 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org, gregkh@linuxfoundation.org,
+        sashal@kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
+        kwankhede@nvidia.com, pbonzini@redhat.com,
+        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com,
+        Tony Krowiak <akrowiak@linux.ibm.com>
+Subject: [PATCH v2 0/2] Clean up vfio_ap resources when KVM pointer invalidated
+Date:   Fri, 11 Dec 2020 17:22:09 -0500
+Message-Id: <20201211222211.20869-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-In-Reply-To: <877dpoghio.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- FTLPEX02CL03.citrite.net (10.13.108.165)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-11_06:2020-12-11,2020-12-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 mlxscore=0 adultscore=0 suspectscore=3
+ clxscore=1011 priorityscore=1501 mlxlogscore=999 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012110142
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2020 21:27, Thomas Gleixner wrote:
-> On Fri, Dec 11 2020 at 09:29, boris ostrovsky wrote:
->
->> On 12/11/20 7:37 AM, Thomas Gleixner wrote:
->>> On Fri, Dec 11 2020 at 13:10, Jürgen Groß wrote:
->>>> On 11.12.20 00:20, boris.ostrovsky@oracle.com wrote:
->>>>> On 12/10/20 2:26 PM, Thomas Gleixner wrote:
->>>>>> Change the implementation so that the channel is bound to CPU0 at the XEN
->>>>>> level and leave the affinity mask alone. At startup of the interrupt
->>>>>> affinity will be assigned out of the affinity mask and the XEN binding will
->>>>>> be updated.
->>>>> If that's the case then I wonder whether we need this call at all and instead bind at startup time.
->>>> After some discussion with Thomas on IRC and xen-devel archaeology the
->>>> result is: this will be needed especially for systems running on a
->>>> single vcpu (e.g. small guests), as the .irq_set_affinity() callback
->>>> won't be called in this case when starting the irq.
->> On UP are we not then going to end up with an empty affinity mask? Or
->> are we guaranteed to have it set to 1 by interrupt generic code?
-> An UP kernel does not ever look on the affinity mask. The
-> chip::irq_set_affinity() callback is not invoked so the mask is
-> irrelevant.
->
-> A SMP kernel on a UP machine sets CPU0 in the mask so all is good.
->
->> This is actually why I brought this up in the first place --- a
->> potential mismatch between the affinity mask and Xen-specific data
->> (e.g. info->cpu and then protocol-specific data in event channel
->> code). Even if they are re-synchronized later, at startup time (for
->> SMP).
-> Which is not a problem either. The affinity mask is only relevant for
-> setting the affinity, but it's not relevant for delivery and never can
-> be.
->
->> I don't see anything that would cause a problem right now but I worry
->> that this inconsistency may come up at some point.
-> As long as the affinity mask becomes not part of the event channel magic
-> this should never matter.
->
-> Look at it from hardware:
->
-> interrupt is affine to CPU0
->
->      CPU0 runs:
->      
->      set_affinity(CPU0 -> CPU1)
->         local_irq_disable()
->         
->  --> interrupt is raised in hardware and pending on CPU0
->
->         irq hardware is reconfigured to be affine to CPU1
->
->         local_irq_enable()
->
->  --> interrupt is handled on CPU0
->
-> the next interrupt will be raised on CPU1
->
-> So info->cpu which is registered via the hypercall binds the 'hardware
-> delivery' and whenever the new affinity is written it is rebound to some
-> other CPU and the next interrupt is then raised on this other CPU.
->
-> It's not any different from the hardware example at least not as far as
-> I understood the code.
+The vfio_ap device driver registers a group notifier with VFIO when the
+file descriptor for a VFIO mediated device attached to a KVM guest is
+opened. The group notifier is registered to receive notification that the
+KVM pointer for the guest is set (VFIO_GROUP_NOTIFY_SET_KVM event). When
+the KVM pointer is set to a non-NULL value, the vfio_ap driver takes the
+following actions:
+1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
+   of the mediated device.
+2. Calls the kvm_get_kvm() function to increment its reference counter.
+3. Sets the function pointer to the function that handles interception of
+   the instruction that enables/disables interrupt processing for the
+   KVM guest.
+4. Plugs the AP devices assigned to the mediated device into the KVM
+   guest.
 
-Xen's event channels do have a couple of quirks.
+These actions are reversed by the release callback which is invoked when
+userspace closes the mediated device's file descriptor. In this case, the
+group notifier does not get called to invalidate the KVM pointer because
+the notifier is unregistered by the release callback; however, there are no
+guarantees that userspace will do the right thing before shutting down.
+To ensure that there are no resource leaks should the group notifier get
+called to set the KVM pointer to NULL, the notifier should also reverse
+the actions taken when it was called to set the pointer. This patch series
+ensures proper clean up is done via the group notifier.
 
-Binding an event channel always results in one spurious event being
-delivered.  This is to cover notifications which can get lost during the
-bidirectional setup, or re-setups in certain configurations.
+Tony Krowiak (2):
+  s390/vfio-ap: No need to disable IRQ after queue reset
+  s390/vfio-ap: reverse group notifier actions when KVM pointer
+    invalidated
 
-Binding an interdomain or pirq event channel always defaults to vCPU0. 
-There is no way to atomically set the affinity while binding.  I believe
-the API predates SMP guest support in Xen, and noone has fixed it up since.
+ drivers/s390/crypto/vfio_ap_drv.c     |  1 -
+ drivers/s390/crypto/vfio_ap_ops.c     | 80 +++++++++++++++++----------
+ drivers/s390/crypto/vfio_ap_private.h |  1 -
+ 3 files changed, 50 insertions(+), 32 deletions(-)
 
-As a consequence, the guest will observe the event raised on vCPU0 as
-part of setting up the event, even if it attempts to set a different
-affinity immediately afterwards.  A little bit of care needs to be taken
-when binding an event channel on vCPUs other than 0, to ensure that the
-callback is safe with respect to any remaining state needing initialisation.
+-- 
+2.21.1
 
-Beyond this, there is nothing magic I'm aware of.
-
-We have seen soft lockups before in certain scenarios, simply due to the
-quantity of events hitting vCPU0 before irqbalance gets around to
-spreading the load.  This is why there is an attempt to round-robin the
-userspace event channel affinities by default, but I still don't see why
-this would need custom affinity logic itself.
-
-Thanks,
-
-~Andrew
