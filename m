@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD632D7216
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C5D2D7218
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437111AbgLKIpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:45:41 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9186 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437081AbgLKIpF (ORCPT
+        id S2437125AbgLKIqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:46:12 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9595 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437101AbgLKIpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:45:05 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CskpM5yyyzkpNr;
-        Fri, 11 Dec 2020 16:43:39 +0800 (CST)
+        Fri, 11 Dec 2020 03:45:41 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cskps6PRjzM2kx;
+        Fri, 11 Dec 2020 16:44:05 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Dec 2020 16:44:12 +0800
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Dec 2020 16:44:40 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <lgirdwood@gmail.com>, <patches@opensource.cirrus.com>,
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] regulator: wm831x-isink: convert comma to semicolon
-Date:   Fri, 11 Dec 2020 16:44:40 +0800
-Message-ID: <20201211084440.2210-1-zhengyongjun3@huawei.com>
+Subject: [PATCH -next] regulator: mc13892-regulator: convert comma to semicolon
+Date:   Fri, 11 Dec 2020 16:45:10 +0800
+Message-ID: <20201211084510.2264-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,28 +39,24 @@ Replace a comma between expression statements by a semicolon.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/regulator/wm831x-isink.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/regulator/mc13892-regulator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/regulator/wm831x-isink.c b/drivers/regulator/wm831x-isink.c
-index eade3ae3e333..76d9b0434c70 100644
---- a/drivers/regulator/wm831x-isink.c
-+++ b/drivers/regulator/wm831x-isink.c
-@@ -146,10 +146,10 @@ static int wm831x_isink_probe(struct platform_device *pdev)
- 	isink->desc.ops = &wm831x_isink_ops;
- 	isink->desc.type = REGULATOR_CURRENT;
- 	isink->desc.owner = THIS_MODULE;
--	isink->desc.curr_table = wm831x_isinkv_values,
--	isink->desc.n_current_limits = ARRAY_SIZE(wm831x_isinkv_values),
--	isink->desc.csel_reg = isink->reg,
--	isink->desc.csel_mask = WM831X_CS1_ISEL_MASK,
-+	isink->desc.curr_table = wm831x_isinkv_values;
-+	isink->desc.n_current_limits = ARRAY_SIZE(wm831x_isinkv_values);
-+	isink->desc.csel_reg = isink->reg;
-+	isink->desc.csel_mask = WM831X_CS1_ISEL_MASK;
+diff --git a/drivers/regulator/mc13892-regulator.c b/drivers/regulator/mc13892-regulator.c
+index a731e826a037..5221f7a9df91 100644
+--- a/drivers/regulator/mc13892-regulator.c
++++ b/drivers/regulator/mc13892-regulator.c
+@@ -582,8 +582,8 @@ static int mc13892_regulator_probe(struct platform_device *pdev)
+ 	/* update mc13892_vcam ops */
+ 	memcpy(&mc13892_vcam_ops, mc13892_regulators[MC13892_VCAM].desc.ops,
+ 						sizeof(struct regulator_ops));
+-	mc13892_vcam_ops.set_mode = mc13892_vcam_set_mode,
+-	mc13892_vcam_ops.get_mode = mc13892_vcam_get_mode,
++	mc13892_vcam_ops.set_mode = mc13892_vcam_set_mode;
++	mc13892_vcam_ops.get_mode = mc13892_vcam_get_mode;
+ 	mc13892_regulators[MC13892_VCAM].desc.ops = &mc13892_vcam_ops;
  
- 	config.dev = pdev->dev.parent;
- 	config.init_data = pdata->isink[id];
+ 	mc13xxx_data = mc13xxx_parse_regulators_dt(pdev, mc13892_regulators,
 -- 
 2.22.0
 
