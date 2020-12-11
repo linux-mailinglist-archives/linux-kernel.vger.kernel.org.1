@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C412D78DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:15:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A252D78EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437542AbgLKPOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:14:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
+        id S2437747AbgLKPPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:15:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392751AbgLKPNW (ORCPT
+        with ESMTP id S2437738AbgLKPOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:13:22 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9FDC0613CF;
-        Fri, 11 Dec 2020 07:12:42 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id s75so10165611oih.1;
-        Fri, 11 Dec 2020 07:12:42 -0800 (PST)
+        Fri, 11 Dec 2020 10:14:54 -0500
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64CFC0613CF;
+        Fri, 11 Dec 2020 07:14:13 -0800 (PST)
+Received: by mail-oo1-xc42.google.com with SMTP id h10so2200486ooi.10;
+        Fri, 11 Dec 2020 07:14:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:subject:to:cc:references:from:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=s3h0dLytB1IDZ/ht7+weWbdt57gQOut6q6WDYmaaLv0=;
-        b=E4gfO7L4+OhLkz6Rnbhq6LER0jHIrx8jOk3SqPhamN4jMQAGBx2ducH+NXHaqR94U8
-         EPaqUtHqfTtHjKjKWjBhCTHCFw7c771gmC64tUVZq0pdAq8pUTszAz+uXqd6CfNRMUZV
-         jFOkicHOkrIR1oIQpnhxAJpwVYAY00uf2SXwDu/UPf65gURzMhIHghDkzaojMaaBLMMH
-         mDk/yr14hYXh2VXqniowARmlv5l0NXFEp3Xm/OyVflWJBoiyvcXnShzhNG2TdoP3dUq8
-         I+ifaIFjRAB+PjaA4SBwxE5IrzaEha2LT9sSrFKlfNO2fMWuolO+uTVOps9eouiyZSYS
-         1Yzw==
+        bh=2MS75XuO2n8ZC0XE33ILQfM4neu02PG1B8RqMHSVhJA=;
+        b=HorjZl3nVPfFEtRraH2QSPj6+tFuQzjmHX5ZdH1hrhCxMS1bekQ/MQb64l7CtyezZW
+         oJ3zAvu8snz/j151dvHBPKaX6PjObCssD4PuI1usUtXWh6OYmkaw90SM+c4295Gj4TTA
+         y68IyiHiqXfaO2ig6fHxd7f7XYRYZuFat3x13VSnGko+XCbdM7ce6vFjanhJXbKFwY7+
+         IRLdjqBOizNgnhBnSVp2dQsKqLJVw+R20X4NpBl6iABB/S2c6QlVOPdFvtHMFbx/7dFE
+         fLVP3ga0h6r1DdXxQDYEEPanGo4OZZce2ZP5GQ5g2hRK+bFoBl2yXI9vuJQf5NSBffMS
+         kjEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=s3h0dLytB1IDZ/ht7+weWbdt57gQOut6q6WDYmaaLv0=;
-        b=dJZbV9Jac+fJ0hYuCVfpnXKBQgSaiKiKKGaiFz6h3ST75v556luRTBJaGTY/8DyNkC
-         ROCYpyzDSUWCKYgP/TvMh51l7orADHTPrEBng8jR/TERHi6QSBi7HwP3ivjS8EbfHwGM
-         kbwkCqircwWvI7xfoJcDKzdE2NUUU7yG8Ssf7hHkSpbhPDszGq+fgtL9Lna+M55BxaxL
-         NCrhFbANvCZ8+8GWPMPNIFlSg/K99VbbTBmo1f04nxiP0NquMmJ5TAfVH46goLodPdXq
-         AyDEdXdTiq0wJqpAj8qfziBze04wVLOvHjkiAFtSczJ2pwwyVz7BP6OsBISilRpS3PL5
-         sqsg==
-X-Gm-Message-State: AOAM531h7SX9hEx1hOfaO6pbYvVi/6XOjzHduR2rEkTEvPzu/KM7evwL
-        ek//hRFf/zp0qm/djGCTyC5jp2kfd2M=
-X-Google-Smtp-Source: ABdhPJzoxYTpnNI6Rd/RVnNHEf7xucs63UT7z6bdcq0WptEEI+8VFRKKj8HK6KURE45i4pUPefawTw==
-X-Received: by 2002:aca:f44f:: with SMTP id s76mr7428046oih.120.1607699561767;
-        Fri, 11 Dec 2020 07:12:41 -0800 (PST)
+        bh=2MS75XuO2n8ZC0XE33ILQfM4neu02PG1B8RqMHSVhJA=;
+        b=FySh4DbdvjsNgS2Xa19D5KMGozApUleY59FPfeFPh5HjRQXGRsZlGPWmCMjtF8jVcN
+         0+tVjDIHZFNYuRVLIJ+YLVQGfMl/TlLwiKI7qV7fkfGsmK5Jqnr73D6thKLN9Sx6iudw
+         pgYyoE2UCo5xS/ivft5eNjIQK7QL70xyjkyPgbg9khHoQ01WYZVrwXr6QM0BYzCyVtq7
+         QfUaM+oOh3QKZQAu+UPhqqtxPqT+xuN7MAiktaHAUU1InaI5IEyU8DDTtj/cmYpQh6Jd
+         R9XtOiZ2LgwYff8J+BfBKWSfmmqinvLfs0DMXjZiDId+ACEkWql2NJcLGWmmhcQJfc/Q
+         4LVA==
+X-Gm-Message-State: AOAM532hi/fBVnbJAxWuQwiZBYHGa+PLgzq/KnvYfRxIv2A6MeoDauV1
+        AJDrCUSvaW5eVIKTDHdRA6ZCiMURKXg=
+X-Google-Smtp-Source: ABdhPJzahAgXV1STWvNBkQn9pF2bnpDx9wD4FvBkjZ1x1gTA8xwDv/s+az6I8aOdBCSmy0ioTTAKFQ==
+X-Received: by 2002:a4a:bc8d:: with SMTP id m13mr10517612oop.63.1607699652738;
+        Fri, 11 Dec 2020 07:14:12 -0800 (PST)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s23sm1876986otr.59.2020.12.11.07.12.40
+        by smtp.gmail.com with ESMTPSA id g5sm1875808otq.43.2020.12.11.07.14.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Dec 2020 07:12:41 -0800 (PST)
+        Fri, 11 Dec 2020 07:14:11 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 1/1] tcpm: Fix possible buffer overflows in tcpm_queue_vdm
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Xiaohui Zhang <ruc_zhangxiaohui@163.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201209030716.3764-1-ruc_zhangxiaohui@163.com>
- <20201211100939.GJ1594451@kuha.fi.intel.com>
+Subject: Re: [PATCH] usb: typec: tcpci: Enable bleed discharge when auto
+ discharge is enabled
+To:     Badhri Jagan Sridharan <badhri@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201211071145.2199997-1-badhri@google.com>
 From:   Guenter Roeck <linux@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
  xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
@@ -102,12 +102,12 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
  HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
  mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <71be94d7-24f0-46d7-ba74-e61572007721@roeck-us.net>
-Date:   Fri, 11 Dec 2020 07:12:39 -0800
+Message-ID: <6ebf3e71-37e5-ece3-8946-5b8e5a62b4bf@roeck-us.net>
+Date:   Fri, 11 Dec 2020 07:14:10 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201211100939.GJ1594451@kuha.fi.intel.com>
+In-Reply-To: <20201211071145.2199997-1-badhri@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -115,50 +115,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/20 2:09 AM, Heikki Krogerus wrote:
-> Hi,
+On 12/10/20 11:11 PM, Badhri Jagan Sridharan wrote:
+> Auto discharge circuits kick in only when vbus decays and reaches
+> VBUS_SINK_DISCONNECT_THRESHOLD threshold. Enable bleed discharge to
+> discharge vbus to VBUS_SINK_DISCONNECT_THRESHOLD upon disconnect.
 > 
-> On Wed, Dec 09, 2020 at 11:07:16AM +0800, Xiaohui Zhang wrote:
->> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
->>
->> tcpm_queue_vdm() calls memcpy() without checking the destination
->> size may trigger a buffer overflower.
-> 
-> Thanks for the patch, but I didn't actually see any place where that
-> could happen. I think the idea is that the callers make sure the count
-> does not exceed VDO_MAX_SIZE before calling the function.
-> 
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-Yes, when I wrote the code I made sure that this is the case.
-If that is no longer true, we have various other problems because
-the count is assumed to be in range pretty much everywhere.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Guenter
-
->> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
->> ---
->>  drivers/usb/typec/tcpm/tcpm.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
->> index 55535c4f6..fcd331f33 100644
->> --- a/drivers/usb/typec/tcpm/tcpm.c
->> +++ b/drivers/usb/typec/tcpm/tcpm.c
->> @@ -1045,7 +1045,7 @@ static void tcpm_queue_vdm(struct tcpm_port *port, const u32 header,
->>  
->>  	port->vdo_count = cnt + 1;
+> ---
+>  drivers/usb/typec/tcpm/tcpci.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> That should have been fixed as well, no?
-> 
->>  	port->vdo_data[0] = header;
->> -	memcpy(&port->vdo_data[1], data, sizeof(u32) * cnt);
->> +	memcpy(&port->vdo_data[1], data, min_t(int, sizeof(u32) * cnt, VDO_MAX_SIZE - 1));
->>  	/* Set ready, vdm state machine will actually send */
->>  	port->vdm_retries = 0;
->>  	port->vdm_state = VDM_STATE_READY;
-> 
-> Unless I'm missing something, I don't think this patch is needed.
-> 
-> thanks,
+> diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+> index af5524338a63..f676abab044b 100644
+> --- a/drivers/usb/typec/tcpm/tcpci.c
+> +++ b/drivers/usb/typec/tcpm/tcpci.c
+> @@ -725,6 +725,8 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
+>  		tcpci->tcpc.enable_auto_vbus_discharge = tcpci_enable_auto_vbus_discharge;
+>  		tcpci->tcpc.set_auto_vbus_discharge_threshold =
+>  			tcpci_set_auto_vbus_discharge_threshold;
+> +		regmap_update_bits(tcpci->regmap, TCPC_POWER_CTRL, TCPC_POWER_CTRL_BLEED_DISCHARGE,
+> +				   TCPC_POWER_CTRL_BLEED_DISCHARGE);
+>  	}
+>  
+>  	if (tcpci->data->vbus_vsafe0v)
 > 
 
