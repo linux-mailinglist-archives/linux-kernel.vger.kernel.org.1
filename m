@@ -2,207 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253812D7834
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC542D782F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406279AbgLKOrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:47:13 -0500
-Received: from mga01.intel.com ([192.55.52.88]:15413 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406074AbgLKOqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:46:34 -0500
-IronPort-SDR: zOVECRDaKAeHQlRkRm/P/bi7dN4ITIfGoROfIdBolRRsETIoZabdZzAfXqHFB9l5Ps+qF+2rWB
- yorw5sfxBJKw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="192779955"
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="192779955"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 06:45:52 -0800
-IronPort-SDR: /ngbSrQ1+06qBTxvwHX9Thh+w4yDJG/z1kiOeT2okMe9ZBLH0GEj1D6wvmfD0IQxVHIA+423xX
- GiKwfX8YMVJw==
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="349481698"
-Received: from dkreft-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.158.206])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 06:45:45 -0800
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org
-Cc:     Dave Airlie <airlied@gmail.com>, greg.depoire@gmail.com,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Imre Deak <imre.deak@intel.com>,
-        =?utf-8?Q?Jos=C3=A9?= Roberto de Souza <jose.souza@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
-        Dave Airlie <airlied@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC 3/5] drm/i915/dp: Remove redundant AUX backlight frequency calculations
-In-Reply-To: <20201210012143.729402-4-lyude@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20201210012143.729402-1-lyude@redhat.com> <20201210012143.729402-4-lyude@redhat.com>
-Date:   Fri, 11 Dec 2020 16:45:41 +0200
-Message-ID: <87eejw765m.fsf@intel.com>
+        id S2406397AbgLKOrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:47:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406205AbgLKOqw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 09:46:52 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5EBC0617B0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:56 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id w5so5555251wrm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+GGr76mXiTZ/QdlXY/YlotYgldQW3f2YpHTXa0H3v2Q=;
+        b=Px+k+o9e/02NpP4knUhSv6h5yAfbn4/4bRz3QK1d84j4yuqQ7zvb9MirX9ORZVNS7n
+         7fUg2vQIdo3EMSivLaZ09DE16E3Aei8lKsgYuMf+Cp6KkttKMcFW9d6rME9yOO8tbjCc
+         DIychwzuCFABBGKO3h9SEOMi5pzTdDW1FOLsNDqTIM/MpIbJRLbsyeqMdZezFjEzEyqS
+         WunBBe4v28BYYz0yVv4Q0/rxvhfcGrCzqtNnWbA2h/oB23Hd3zaPtp5svkmAwG3aFGF9
+         nebO0ALALjuWiyrlms7WrNKd0yB0Yc8lGSmzFZYTmbsvOnEDFXuc42ag5CZkA6dHn8rN
+         iI2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+GGr76mXiTZ/QdlXY/YlotYgldQW3f2YpHTXa0H3v2Q=;
+        b=Vy9mssoVluZutuYsmx+5I2+Xe+loFp+NGixwSnoTNT/NVtABu9SsuCXnsWceW7v/Na
+         vjT/3w9qsMlvQTsMG/m5qw5HPUfXmyLm7xBi4VAbBgw1zXH/ZNvygEWjomLeI/fbWtUO
+         ivyABSz5NTelXY2K9Pc84+yt56leDWWo932/XrTwoonXOltj7QutheNiz70MfZTurF8H
+         F//RFFHWzo89Bj+lyq/uKtuMgGMgByNMOtSaC94v762kJaYNq+ribqdGCBhvJGRqQzTX
+         a2lSVBw6w9aaeJthOHaL7upkRFih8WKuobxhfW7eeZIAED90634H/PBhBEHO0n1xXYZ0
+         vb+g==
+X-Gm-Message-State: AOAM531P2FqIUHrxj847sAQkFWQyo+T+OM6fUu+mwYHXn5NlLaOBPbJy
+        OJQTDFxb+eOigGFjx6rU67eLTQ==
+X-Google-Smtp-Source: ABdhPJzmUIoojBskohRb1a/KLsk+qrsTFltTB0dTrZrdFkZC7BF8K14BTbt9f0O7aj7+bLzMQhZvEw==
+X-Received: by 2002:a5d:6ccb:: with SMTP id c11mr14413709wrc.224.1607697955466;
+        Fri, 11 Dec 2020 06:45:55 -0800 (PST)
+Received: from dell ([91.110.221.240])
+        by smtp.gmail.com with ESMTPSA id i18sm12109720wrp.74.2020.12.11.06.45.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 06:45:54 -0800 (PST)
+Date:   Fri, 11 Dec 2020 14:45:53 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: bikeshed: [PATCH -next] mfd: rave-sp: convert comma to semicolon
+Message-ID: <20201211144553.GF5029@dell>
+References: <7416de308a9b41d3ac881210ab114159@AcuMS.aculab.com>
+ <20201211131049.GE5029@dell>
+ <10351cc41c244d9a8cfa6a8fb8f502c3@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <10351cc41c244d9a8cfa6a8fb8f502c3@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Dec 2020, Lyude Paul <lyude@redhat.com> wrote:
-> Noticed this while moving all of the VESA backlight code in i915 over to
-> DRM helpers: it would appear that we calculate the frequency value we want
-> to write to DP_EDP_BACKLIGHT_FREQ_SET twice even though this value never
-> actually changes during runtime. So, let's simplify things by just caching
-> this value in intel_panel.backlight, and re-writing it as-needed.
+On Fri, 11 Dec 2020, David Laight wrote:
 
-This isn't a full review, just something I spotted so far. Please see
-inline.
+> From: Lee Jones
+> > Sent: 11 December 2020 13:11
+> ...
+> > > Nowt wrong with commas.
+> > 
+> > Well you learn something new every day!
+> > 
+> > > Why not go the other way.
+> > > Convert almost all the ; to , and delete most of the { } in
+> > > if and for statements (etc).
+> > 
+> > Sorry, I don't understand.  Please elaborate/provide an example.
+> 
+> You can (largely) replace:
+> 	if (...) {
+> 		xxx;
+> 		yyy;
+> 	}
+> 	zzz;
+> With
+> 	if (...)
+> 		xxx,
+> 		yyy;
+> 	zzz;
+> 
+> Saves a vertical line....
+> You may need to replace some 'if' by ?: to avoid the terminating ;
 
-BR,
-Jani.
+No, please don't do any of that.
 
-
->
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Cc: Jani Nikula <jani.nikula@intel.com>
-> Cc: Dave Airlie <airlied@gmail.com>
-> Cc: greg.depoire@gmail.com
-> ---
->  .../drm/i915/display/intel_display_types.h    |  1 +
->  .../drm/i915/display/intel_dp_aux_backlight.c | 64 ++++++-------------
->  2 files changed, 19 insertions(+), 46 deletions(-)
->
-> diff --git a/drivers/gpu/drm/i915/display/intel_display_types.h b/drivers/gpu/drm/i915/display/intel_display_types.h
-> index 5bc5bfbc4551..133c9cb742a7 100644
-> --- a/drivers/gpu/drm/i915/display/intel_display_types.h
-> +++ b/drivers/gpu/drm/i915/display/intel_display_types.h
-> @@ -259,6 +259,7 @@ struct intel_panel {
->  
->  		/* DPCD backlight */
->  		u8 pwmgen_bit_count;
-> +		u8 pwm_freq_pre_divider;
->  
->  		struct backlight_device *device;
->  
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> index 4fd536801b14..94ce5ca1affa 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> @@ -129,50 +129,6 @@ intel_dp_aux_set_backlight(const struct drm_connector_state *conn_state, u32 lev
->  	}
->  }
->  
-> -/*
-> - * Set PWM Frequency divider to match desired frequency in vbt.
-> - * The PWM Frequency is calculated as 27Mhz / (F x P).
-> - * - Where F = PWM Frequency Pre-Divider value programmed by field 7:0 of the
-> - *             EDP_BACKLIGHT_FREQ_SET register (DPCD Address 00728h)
-> - * - Where P = 2^Pn, where Pn is the value programmed by field 4:0 of the
-> - *             EDP_PWMGEN_BIT_COUNT register (DPCD Address 00724h)
-> - */
-> -static bool intel_dp_aux_set_pwm_freq(struct intel_connector *connector)
-> -{
-> -	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
-> -	struct intel_dp *intel_dp = intel_attached_dp(connector);
-> -	const u8 pn = connector->panel.backlight.pwmgen_bit_count;
-> -	int freq, fxp, f, fxp_actual, fxp_min, fxp_max;
-> -
-> -	freq = dev_priv->vbt.backlight.pwm_freq_hz;
-> -	if (!freq) {
-> -		drm_dbg_kms(&dev_priv->drm,
-> -			    "Use panel default backlight frequency\n");
-> -		return false;
-> -	}
-> -
-> -	fxp = DIV_ROUND_CLOSEST(KHz(DP_EDP_BACKLIGHT_FREQ_BASE_KHZ), freq);
-> -	f = clamp(DIV_ROUND_CLOSEST(fxp, 1 << pn), 1, 255);
-> -	fxp_actual = f << pn;
-> -
-> -	/* Ensure frequency is within 25% of desired value */
-> -	fxp_min = DIV_ROUND_CLOSEST(fxp * 3, 4);
-> -	fxp_max = DIV_ROUND_CLOSEST(fxp * 5, 4);
-> -
-> -	if (fxp_min > fxp_actual || fxp_actual > fxp_max) {
-> -		drm_dbg_kms(&dev_priv->drm, "Actual frequency out of range\n");
-> -		return false;
-> -	}
-> -
-> -	if (drm_dp_dpcd_writeb(&intel_dp->aux,
-> -			       DP_EDP_BACKLIGHT_FREQ_SET, (u8) f) < 0) {
-> -		drm_dbg_kms(&dev_priv->drm,
-> -			    "Failed to write aux backlight freq\n");
-> -		return false;
-> -	}
-> -	return true;
-> -}
-> -
->  static void intel_dp_aux_enable_backlight(const struct intel_crtc_state *crtc_state,
->  					  const struct drm_connector_state *conn_state)
->  {
-> @@ -213,9 +169,13 @@ static void intel_dp_aux_enable_backlight(const struct intel_crtc_state *crtc_st
->  		break;
->  	}
->  
-> -	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_FREQ_AUX_SET_CAP)
-> -		if (intel_dp_aux_set_pwm_freq(connector))
-> +	if (panel->backlight.pwm_freq_pre_divider) {
-> +		if (drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_BACKLIGHT_FREQ_SET,
-> +				       panel->backlight.pwm_freq_pre_divider) == 1)
->  			new_dpcd_buf |= DP_EDP_BACKLIGHT_FREQ_AUX_SET_ENABLE;
-> +		else
-> +			drm_dbg_kms(&i915->drm, "Failed to write aux backlight frequency\n");
-> +	}
->  
->  	if (new_dpcd_buf != dpcd_buf) {
->  		if (drm_dp_dpcd_writeb(&intel_dp->aux,
-> @@ -236,6 +196,14 @@ static void intel_dp_aux_disable_backlight(const struct drm_connector_state *old
->  				 false);
->  }
->  
-> +/*
-> + * Compute PWM frequency divider value based off the frequency provided to us by the vbt.
-> + * The PWM Frequency is calculated as 27Mhz / (F x P).
-> + * - Where F = PWM Frequency Pre-Divider value programmed by field 7:0 of the
-> + *             EDP_BACKLIGHT_FREQ_SET register (DPCD Address 00728h)
-> + * - Where P = 2^Pn, where Pn is the value programmed by field 4:0 of the
-> + *             EDP_PWMGEN_BIT_COUNT register (DPCD Address 00724h)
-> + */
->  static u32 intel_dp_aux_calc_max_backlight(struct intel_connector *connector)
->  {
->  	struct drm_i915_private *i915 = to_i915(connector->base.dev);
-> @@ -287,8 +255,10 @@ static u32 intel_dp_aux_calc_max_backlight(struct intel_connector *connector)
->  	pn_min &= DP_EDP_PWMGEN_BIT_COUNT_MASK;
->  	pn_max &= DP_EDP_PWMGEN_BIT_COUNT_MASK;
->  
-> +	/* Ensure frequency is within 25% of desired value */
->  	fxp_min = DIV_ROUND_CLOSEST(fxp * 3, 4);
->  	fxp_max = DIV_ROUND_CLOSEST(fxp * 5, 4);
-> +
->  	if (fxp_min < (1 << pn_min) || (255 << pn_max) < fxp_max) {
->  		drm_dbg_kms(&i915->drm,
->  			    "VBT defined backlight frequency out of range\n");
-> @@ -309,7 +279,9 @@ static u32 intel_dp_aux_calc_max_backlight(struct intel_connector *connector)
->  			    "Failed to write aux pwmgen bit count\n");
->  		return max_backlight;
->  	}
-> +
->  	panel->backlight.pwmgen_bit_count = pn;
-> +	panel->backlight.pwm_freq_pre_divider = f;
-
-This should be wrapped in
-
-	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_FREQ_AUX_SET_CAP)
-
-but you do it in the next patch, so this patch is a bit broken.
-
-
->  
->  	max_backlight = (1 << pn) - 1;
+The current patch is fine.
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
