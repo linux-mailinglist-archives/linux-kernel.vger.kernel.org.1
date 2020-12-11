@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4C12D786B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8FE2D788B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436618AbgLKPAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:00:02 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35738 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406453AbgLKO7i (ORCPT
+        id S2437132AbgLKPAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:00:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436801AbgLKPAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:59:38 -0500
+        Fri, 11 Dec 2020 10:00:16 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78832C061282
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:58:49 -0800 (PST)
 Date:   Fri, 11 Dec 2020 14:58:45 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607698726;
+        s=2020; t=1607698725;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6djCgbLXaMD9v6HbNJK3oD3FE5gTLY/JW285Yb5L6SY=;
-        b=wPaJ0Lgibx/2i2b7bxDs66YX/8nHVmLd5jBsGaDLrVRa+n506vyxjGaUeHNi4H6z4JkY1i
-        fIhX3wTtNANouGffP5w3mTu9rRKxSeVFpg+PqrZmuOrOn9p9LQrDQo2sVKayovTRIUy1NS
-        vUgIXNAK7dpBGXNT3+aJ5FYOORUW7qFJEzC0iftRbcyC+AdCk8Hf7IsSTbmcBJWeyk8S/d
-        8gRfUd4lsNqS+xtQCtxI25plAmoDws8aKTmJmoDRRiuuG/ZUX5O3TVcoI63qbi5hA86Z6H
-        yfJQQ4Fv5QuoermT1p/zTlEOTzsCoWuoMoopdFSziTbTrtkU4MRjOXMN2/ry8Q==
+        bh=VRidoR0CBI7e0J3J9oePrS23G09flEif4i1ptGPFkSw=;
+        b=19zxv1kSjC+J5ujR/baRZzNtDhI+ERewmUPfnlH/dTjarkb6LwxYy12ifOXKtpt4eof5oj
+        pED+0Lx4kKa4976q+qfPmEIhcebEdAlU1SMLJDHp5j/q8iNqikxx5skdBziir700d0iSNs
+        D9IMj5Q6bamIk89BCFgT8bN8O3JFlwfd0FkYkRqgity28OEGcWsG3usxPOt8nApIsadd5C
+        fiRyYFsfcBjKfK/HnkY1DuCQxiGUfP5P39iMOY3s6/GBVasbCxL0LfHJIBk6A+yrA4OiKv
+        HB77ZCpMaxI/1zjfH/KKRUvYd116fW6K1l159x+k73lQTMtlQmnOFYdPcWukqg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607698726;
+        s=2020e; t=1607698725;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6djCgbLXaMD9v6HbNJK3oD3FE5gTLY/JW285Yb5L6SY=;
-        b=wnvlb7FnAr/42LkxlJ1dtZTfmr/qt3XKmibApvvDy/xL1GUkTyBNrucfh48WGFr166jvLh
-        cvXR0YAK+cyNDfAA==
-From:   "irqchip-bot for Biwen Li" <tip-bot2@linutronix.de>
+        bh=VRidoR0CBI7e0J3J9oePrS23G09flEif4i1ptGPFkSw=;
+        b=IuqO7kDqT4feB4IvRU7ibVSc80LmiJIgMb/PUgPJrClBcCVFmCx9U3NhVS6Xd6w8fhTz7q
+        i86o4u2pUewpftCw==
+From:   "irqchip-bot for Gregory CLEMENT" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] dt-bindings: interrupt-controller: update
- bindings for supporting more SoCs
-Cc:     Biwen Li <biwen.li@nxp.com>, Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20201130101515.27431-11-biwen.li@oss.nxp.com>
-References: <20201130101515.27431-11-biwen.li@oss.nxp.com>
+Subject: [irqchip: irq/irqchip-next] dt-bindings: interrupt-controller: Add
+ binding for few Microsemi interrupt controllers
+Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        tglx@linutronix.de
+In-Reply-To: <20201125103206.136498-3-gregory.clement@bootlin.com>
+References: <20201125103206.136498-3-gregory.clement@bootlin.com>
 MIME-Version: 1.0
-Message-ID: <160769872582.3364.4412521407126046603.tip-bot2@tip-bot2>
+Message-ID: <160769872510.3364.3492349576431923814.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,54 +63,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     9898a59358d7cb925f63bb77bd40224d1bc4857e
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/9898a59358d7cb925f63bb77bd40224d1bc4857e
-Author:        Biwen Li <biwen.li@nxp.com>
-AuthorDate:    Mon, 30 Nov 2020 18:15:15 +08:00
+Commit-ID:     b307ee828f61bc65d918e820a93b5c547a73dda3
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/b307ee828f61bc65d918e820a93b5c547a73dda3
+Author:        Gregory CLEMENT <gregory.clement@bootlin.com>
+AuthorDate:    Wed, 25 Nov 2020 11:32:02 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Fri, 11 Dec 2020 14:45:21 
+CommitterDate: Fri, 11 Dec 2020 14:47:49 
 
-dt-bindings: interrupt-controller: update bindings for supporting more SoCs
+dt-bindings: interrupt-controller: Add binding for few Microsemi interrupt controllers
 
-Update bindings for Layerscape external irqs,
-support more SoCs(LS1043A, LS1046A, LS1088A,
-LS208xA, LX216xA)
+Add the Device Tree binding documentation for the Microsemi Jaguar2,
+Luton and Serval interrupt controller that is part of the ICPU. It is
+connected directly to the MIPS core interrupt controller.
 
-Signed-off-by: Biwen Li <biwen.li@nxp.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20201130101515.27431-11-biwen.li@oss.nxp.com
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/20201125103206.136498-3-gregory.clement@bootlin.com
 ---
- Documentation/devicetree/bindings/interrupt-controller/fsl,ls-extirq.txt | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,ls-extirq.txt b/Documentation/devicetree/bindings/interrupt-controller/fsl,ls-extirq.txt
-index f0ad780..4d47df1 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/fsl,ls-extirq.txt
-+++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,ls-extirq.txt
-@@ -1,6 +1,7 @@
- * Freescale Layerscape external IRQs
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml b/Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml
+index be82920..27b798b 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml
+@@ -21,7 +21,11 @@ properties:
+   compatible:
+     items:
+       - enum:
++          - mscc,jaguar2-icpu-intr
++          - mscc,luton-icpu-intr
+           - mscc,ocelot-icpu-intr
++          - mscc,serval-icpu-intr
++
  
--Some Layerscape SOCs (LS1021A, LS1043A, LS1046A) support inverting
-+Some Layerscape SOCs (LS1021A, LS1043A, LS1046A
-+LS1088A, LS208xA, LX216xA) support inverting
- the polarity of certain external interrupt lines.
- 
- The device node must be a child of the node representing the
-@@ -8,12 +9,15 @@ Supplemental Configuration Unit (SCFG).
- 
- Required properties:
- - compatible: should be "fsl,<soc-name>-extirq", e.g. "fsl,ls1021a-extirq".
-+  "fsl,ls1043a-extirq": for LS1043A, LS1046A.
-+  "fsl,ls1088a-extirq": for LS1088A, LS208xA, LX216xA.
- - #interrupt-cells: Must be 2. The first element is the index of the
-   external interrupt line. The second element is the trigger type.
- - #address-cells: Must be 0.
- - interrupt-controller: Identifies the node as an interrupt controller
- - reg: Specifies the Interrupt Polarity Control Register (INTPCR) in
--  the SCFG.
-+  the SCFG or the External Interrupt Control Register (IRQCR) in
-+  the ISC.
- - interrupt-map: Specifies the mapping from external interrupts to GIC
-   interrupts.
- - interrupt-map-mask: Must be <0xffffffff 0>.
+   '#interrupt-cells':
+     const: 1
