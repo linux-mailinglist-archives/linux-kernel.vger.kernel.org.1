@@ -2,109 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA3C2D82F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A98222D8315
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 01:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407226AbgLKXzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 18:55:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404297AbgLKXzb (ORCPT
+        id S2437470AbgLKX7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 18:59:24 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:54714 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407228AbgLKX7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 18:55:31 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB3BC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:54:51 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id i3so7988719pfd.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:54:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dgacDrS0riydujVAJCVqJGSgZiFbA+7xuih1JNG67KA=;
-        b=ogJjeDtFdyKbay4CVyxPAK1DClalm9TQ3pZvATeoyQBL4yVCa/NtNJVKV3LOrREjDm
-         eaCteR0knx/MB1jbJ1YVOFj4HPuoCzJzTIgHsd4IEljnXekDVnM/7HODNplhiaDX0Wd0
-         V/rDpKmHP9E0VFrhIHigP81ITLtUzn1Vf15m+WENzyhyQsgx3011qDNSzZnr4gekRkkn
-         C0gVWBDKJSc8tFtUtrRyIjRzVeOV6VeyGxRTaJ2nmliqLvnI5W1knpMlbNNw3pdTFOhV
-         jLLNdRM4wrixerfhFzwxXyxUVTUJuEQTbu3w6s3gNnM+QATkCe9xpRHsTdCT1RGjjdBg
-         Z/YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dgacDrS0riydujVAJCVqJGSgZiFbA+7xuih1JNG67KA=;
-        b=eBIK0Il2AadcdxBhL16qfAqbGQk8xPEsyHpahQFRb84PScXB8342OYCdlyiUF4qfu+
-         qWy9GPSYY28xe1GrST2CD6+TZHfy0wFty7WHJdvLffvaNumJY+CwMIGCACquYXT9S6sg
-         ZpK3iL5NuwIpWvja2kbNTv6CCk8IS4oNcS8lu4PfY973dIN6zMihp9gVlCcvc83Ir5qe
-         kGkWhFYi6cSDpj1tt8kVRdCW9/feYTKxlq4pKYYNpPf6KFmBmCwLffACBq5L+lxqa5bV
-         0BUQRurmz1Cl2Y8dvhUn5bz49gP+TUihVPW17Xu9I78JxJkOQZZFDOaQ2IyxeptXu0c6
-         pQ+A==
-X-Gm-Message-State: AOAM531AQjeyQM2DoTOGkteWrav7VIFi43hgB618w3bPAy8zzhgmtfsm
-        mwR/pHwhh09kjAKTZD84x7WeAw==
-X-Google-Smtp-Source: ABdhPJy/fiexxBBx/YBRcBfudE/6zZgOs9/EoqjkH/B6NjG9OXsA47gcwRhp6LNiYZonAaxHPGvSLQ==
-X-Received: by 2002:a65:468d:: with SMTP id h13mr13277740pgr.55.1607730890470;
-        Fri, 11 Dec 2020 15:54:50 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id z9sm11393330pji.48.2020.12.11.15.54.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 15:54:49 -0800 (PST)
-Date:   Fri, 11 Dec 2020 15:54:43 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
-        stable@nongnu.org
-Subject: Re: [PATCH v3] KVM: mmu: Fix SPTE encoding of MMIO generation upper
- half
-Message-ID: <X9QGw9vJfzCrFNzd@google.com>
-References: <20201211234532.686593-1-pbonzini@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211234532.686593-1-pbonzini@redhat.com>
+        Fri, 11 Dec 2020 18:59:01 -0500
+Received: from tusharsu-Ubuntu.lan (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id EF86920B717A;
+        Fri, 11 Dec 2020 15:58:18 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EF86920B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607731099;
+        bh=B+rxgnWxxN983tdB2USvYpvsAwLZIwfzBOfZa3HZQnc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NP8XZiAA+jNhBNRMldjVFbwBJNs2QUZKDEvN6VZJkWASNpUD+HwjlnMMKRKU4XD0I
+         +pY78xNbQ/ejFMoLxspggicHfDfeYHg5UOthkxyQMrqdB/kAaGJb6yzz0/RbFo1rvK
+         yExf0jWY+Dfjv3YM60ipkktIOTdpQMT7wxh+UbCU=
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+To:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Subject: [PATCH v8 0/8] IMA: support for measuring kernel integrity critical data
+Date:   Fri, 11 Dec 2020 15:57:59 -0800
+Message-Id: <20201211235807.30815-1-tusharsu@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020, Paolo Bonzini wrote:
-> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-> 
-> Commit cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
-> cleaned up the computation of MMIO generation SPTE masks, however it
-> introduced a bug how the upper part was encoded:
-> SPTE bits 52-61 were supposed to contain bits 10-19 of the current
-> generation number, however a missing shift encoded bits 1-10 there instead
-> (mostly duplicating the lower part of the encoded generation number that
-> then consisted of bits 1-9).
-> 
-> In the meantime, the upper part was shrunk by one bit and moved by
-> subsequent commits to become an upper half of the encoded generation number
-> (bits 9-17 of bits 0-17 encoded in a SPTE).
-> 
-> In addition to the above, commit 56871d444bc4 ("KVM: x86: fix overlap between SPTE_MMIO_MASK and generation")
-> has changed the SPTE bit range assigned to encode the generation number and
-> the total number of bits encoded but did not update them in the comment
-> attached to their defines, nor in the KVM MMU doc.
-> Let's do it here, too, since it is too trivial thing to warrant a separate
-> commit.
-> 
-> Fixes: cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
-> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> Message-Id: <156700708db2a5296c5ed7a8b9ac71f1e9765c85.1607129096.git.maciej.szmigiero@oracle.com>
-> Cc: stable@nongnu.org
+IMA measures files and buffer data such as keys, command-line arguments
+passed to the kernel on kexec system call, etc. While these measurements
+are necessary for monitoring and validating the integrity of the system,
+they are not sufficient. Various data structures, policies, and states
+stored in kernel memory also impact the integrity of the system.
+Several kernel subsystems contain such integrity critical data -
+e.g. LSMs like SELinux, AppArmor etc. or device-mapper targets like
+dm-crypt, dm-verity, dm-integrity etc. These kernel subsystems help
+protect the integrity of a device. Their integrity critical data is not
+expected to change frequently during run-time. Some of these structures
+cannot be defined as __ro_after_init, because they are initialized later.
 
-I assume you want stable@vger.kernel.org?
+For a given device, various external services/infrastructure tools
+(including the attestation service) interact with it - both during the
+setup and during rest of the device run-time. They share sensitive data
+and/or execute critical workload on that device. The external services
+may want to verify the current run-time state of the relevant kernel
+subsystems before fully trusting the device with business critical
+data/workload. For instance, verifying that SELinux is in "enforce" mode
+along with the expected policy, disks are encrypted with a certain
+configuration, secure boot is enabled etc.
 
-> [Reorganize macros so that everything is computed from the bit ranges. - Paolo]
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
-> 	Compared to v2 by Maciej, I chose to keep GEN_MASK's argument calculated,
+This series provides the necessary IMA functionality for kernel
+subsystems to ensure their configuration can be measured:
+  - by kernel subsystems themselves,
+  - in a tamper resistant way,
+  - and re-measured - triggered on state/configuration change.
 
-Booooo.  :-D
+This patch set:
+  - defines a new IMA hook ima_measure_critical_data() to measure
+    integrity critical data,
+  - limits the critical data being measured based on a label,
+  - defines a builtin critical data measurement policy,
+  - and includes an SELinux consumer of the new IMA critical data hook.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+This series is based on the following repo/branch:
+
+ repo: https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+ branch: next-integrity
+ commit 207cdd565dfc ("ima: Don't modify file descriptor mode on the fly")
+
+Change Log v8:
+Incorporated feedback from Tyler on v7 of this series.
+ - Removed unnecessary 'else' clauses in ima_match_rule_data().
+ - Fixed ima_store_template() to pass the buffer hash in case the
+   buffer is large.
+ - fixed function description for ima_measure_critical_data().
+ - Moved some usage of CRITICAL_DATA from Patch #3 to Patch #4.
+ - Moved IMA_DATA_SOURCE from Patch #4 to Patch #5.
+ - Removed unnecessary pr_err() from ima_measure_critical_data()
+   and selinux_event_name().
+ - Fixed log formatting in selinux_measure_state() to be consistent
+   with other messages in that file.
+
+Change Log v7:
+Incorporated feedback from Mimi on v6 of this series.
+ - Updated cover letter and patch descriptions as per Mimi's feedback.
+ - Changed references to variable names and policy documentation from
+   plural "data_sources" to singular "data_source".
+ - Updated SELinux patch to measure only policy, instead of policy and
+   state. The state measurement will be upstreamed through a separate
+   patch.
+ - Updated admin-guide/kernel-parameters.txt to document support for
+   critical_data in builtin policy.
+
+Change Log v6:
+Incorporated feedback from Mimi on v5 of this series.
+ - Got rid of patch 5 from the v5 of the series.(the allow list for data
+   sources)
+ - Updated function descriptions, changed variable names etc.
+ - Moved the input param event_data_source in ima_measure_critical_data()
+   to a new patch. (patch 6/8 of this series)
+ - Split patch 4 from v5 of the series into two patches (patch 4/8 and 
+   patch 5/8)
+ - Updated cover letter and patch descriptions as per feedback.
+
+Change Log v5:
+(1) Incorporated feedback from Stephen on the last SeLinux patch.
+ SeLinux Patch: https://patchwork.kernel.org/patch/11801585/
+ - Freed memory in the reverse order of allocation in 
+   selinux_measure_state().
+ - Used scnprintf() instead of snprintf() to create the string for
+   selinux state.
+ - Allocated event name passed to ima_measure_critical_data() before
+   gathering selinux state and policy information for measuring.
+
+(2) Incorporated feedback from Mimi on v4 of this series.
+ V4 of this Series: https://patchwork.kernel.org/project/linux-integrity/list/?series=354437
+
+ - Removed patch "[v4,2/6] IMA: conditionally allow empty rule data"
+ - Reversed the order of following patches.
+      [v4,4/6] IMA: add policy to measure critical data from kernel components
+      [v4,5/6] IMA: add hook to measure critical data from kernel components
+   and renamed them to remove "from kernel components"
+ - Added a new patch to this series - 
+       IMA: add critical_data to built-in policy rules
+
+ - Added the next version of SeLinux patch (mentioned above) to this
+   series 
+       selinux: measure state and hash of the policy using IMA
+
+ - Updated cover-letter description to give broader perspective of the
+   feature, rearranging paragraphs, removing unnecessary info, clarifying
+   terms etc.
+ - Got rid of opt_list param from ima_match_rule_data().
+ - Updated the documentation to remove sources that don't yet exist.
+ - detailed IMA hook description added to ima_measure_critical_data(),
+   as well as elaborating terms event_name, event_data_source. 
+ - "data_sources:=" is not a mandatory policy option for 
+   func=CRITICAL_DATA anymore. If not present, all the data sources
+   specified in __ima_supported_kernel_data_sources will be measured.
 
 
-> 	but assert on the number of bits in the low and high parts.  This is
-> 	because any change on those numbers will have to be reflected in the
-> 	comment, and essentially we're asserting that the comment is up-to-date.
+Lakshmi Ramasubramanian (2):
+  IMA: define a builtin critical data measurement policy
+  selinux: include a consumer of the new IMA critical data hook
+
+Tushar Sugandhi (6):
+  IMA: generalize keyring specific measurement constructs
+  IMA: add support to measure buffer data hash
+  IMA: define a hook to measure kernel integrity critical data
+  IMA: add policy rule to measure critical data
+  IMA: limit critical data measurement based on a label
+  IMA: extend critical data hook to limit the measurement based on a
+    label
+
+ Documentation/ABI/testing/ima_policy          |   5 +-
+ .../admin-guide/kernel-parameters.txt         |   5 +-
+ include/linux/ima.h                           |   8 ++
+ security/integrity/ima/ima.h                  |   8 +-
+ security/integrity/ima/ima_api.c              |   8 +-
+ security/integrity/ima/ima_appraise.c         |   2 +-
+ security/integrity/ima/ima_asymmetric_keys.c  |   2 +-
+ security/integrity/ima/ima_main.c             |  81 ++++++++++--
+ security/integrity/ima/ima_policy.c           | 118 ++++++++++++++----
+ security/integrity/ima/ima_queue_keys.c       |   3 +-
+ security/selinux/Makefile                     |   2 +
+ security/selinux/include/security.h           |  11 +-
+ security/selinux/measure.c                    |  81 ++++++++++++
+ security/selinux/ss/services.c                |  71 +++++++++--
+ 14 files changed, 354 insertions(+), 51 deletions(-)
+ create mode 100644 security/selinux/measure.c
+
+-- 
+2.17.1
+
