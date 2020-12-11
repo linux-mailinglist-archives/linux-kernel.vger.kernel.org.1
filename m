@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616A72D7234
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBC42D7236
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392832AbgLKItH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:49:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392462AbgLKIsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:48:24 -0500
-Date:   Fri, 11 Dec 2020 09:48:42 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607676463;
-        bh=xOCT7y4SwVssF613mOM0wzoGAp4GHbR6vud7FlNin/o=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s8d0u1RBofu3LgQ4J5qdGneaEFHm8NQT7cM+nx+x2MHVE9Amrxmx6UMaWe6w7zebW
-         S6MjQ3YgX18+tPu5hwoqTuLQl9gZMoBlRemsVLFP2uiEedYaiVPAk0htxWOkOxFCx/
-         AxohsO3q7WcpoxKrQp0HiiioFWDXMnJ7GtyzJkvk=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
-        =?utf-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>
-Subject: Re: [GIT PULL] extcon next for v5.11
-Message-ID: <X9Myatv1BiWgZ8Uk@kroah.com>
-References: <CGME20201211081239epcas1p4809436b16fc6d6595ea8ce4e2343aecb@epcas1p4.samsung.com>
- <ad016689-0ffd-e398-1ce0-a3c20dd030ee@samsung.com>
+        id S2392889AbgLKItu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:49:50 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9597 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392462AbgLKItY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:49:24 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CskvL3D5SzLxYg;
+        Fri, 11 Dec 2020 16:47:58 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Dec 2020 16:48:33 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linus.walleij@linaro.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] ti/pinctrl-ti-iodelay: convert comma to semicolon
+Date:   Fri, 11 Dec 2020 16:49:02 +0800
+Message-ID: <20201211084902.2480-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad016689-0ffd-e398-1ce0-a3c20dd030ee@samsung.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 05:27:24PM +0900, Chanwoo Choi wrote:
-> Dear Greg,
-> 
-> This is extcon-next pull request for v5.11. I add detailed description of
-> this pull request on below. Please pull extcon with following updates.
-> 
-> Best Regards,
-> Chanwoo Choi
-> 
-> 
-> The following changes since commit 0477e92881850d44910a7e94fc2c46f96faa131f:
-> 
->   Linux 5.10-rc7 (2020-12-06 14:25:12 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/extcon.git tags/extcon-next-for-5.11
+Replace a comma between expression statements by a semicolon.
 
-Pulled and pushed out, thanks.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/pinctrl/ti/pinctrl-ti-iodelay.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/drivers/pinctrl/ti/pinctrl-ti-iodelay.c b/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
+index cfb924228d87..ae91559bd4a1 100644
+--- a/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
++++ b/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
+@@ -704,7 +704,7 @@ static void ti_iodelay_pinconf_group_dbg_show(struct pinctrl_dev *pctldev,
+ 		u32 reg = 0;
+ 
+ 		cfg = &group->cfg[i];
+-		regmap_read(iod->regmap, cfg->offset, &reg),
++		regmap_read(iod->regmap, cfg->offset, &reg);
+ 			seq_printf(s, "\n\t0x%08x = 0x%08x (%3d, %3d)",
+ 				   cfg->offset, reg, cfg->a_delay,
+ 				   cfg->g_delay);
+-- 
+2.22.0
+
