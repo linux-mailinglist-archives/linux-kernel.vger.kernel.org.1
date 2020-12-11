@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9582D8031
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A35632D802D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394122AbgLKUr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 15:47:58 -0500
-Received: from foss.arm.com ([217.140.110.172]:51820 "EHLO foss.arm.com"
+        id S2393644AbgLKUrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 15:47:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390401AbgLKUrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 15:47:17 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 134DC1042;
-        Fri, 11 Dec 2020 12:46:32 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 377123F68F;
-        Fri, 11 Dec 2020 12:46:30 -0800 (PST)
-References: <cover.1607036601.git.reinette.chatre@intel.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
-        tony.luck@intel.com, kuo-lang.tseng@intel.com, shakeelb@google.com,
-        mingo@redhat.com, babu.moger@amd.com, james.morse@arm.com,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] x86/resctrl: Fix a few issues in moving a task to a resource group
-In-reply-to: <cover.1607036601.git.reinette.chatre@intel.com>
-Date:   Fri, 11 Dec 2020 20:46:27 +0000
-Message-ID: <jhjk0tot6jg.mognet@arm.com>
+        id S2391288AbgLKUrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 15:47:09 -0500
+Date:   Fri, 11 Dec 2020 12:46:27 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607719589;
+        bh=W3XvV2FN8bnGn+0PE+UG66OnmrvBWes/FNmdjqojzaE=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pVpvQXxdGH6hT8/deIH1b8KzzSU0P9l0Wa7k98mQrV/z/baUAEWISNvcHPkvyfwV4
+         sIKtbNz6vlZEAmuqi6eWbIT6dppb13Sry8pkgZaGYdgxYQ8QxQysi6kBQR7mZbtj9R
+         9KMnIGngOCJ90nfdMXaoRPljwwqfIkIhisA/+G2BPUz/kMzAqAKruFlXn6o08dWEJd
+         G5AC3fFNB4WZ6YwBq7bCJJg4CvAoaJAk3Asel0VMBP428Oyj1UAQeMKVZPmB/njDev
+         Cr2PQqRB6nX5zWogRC5Axyx7nGR2t4KWjqtUAs0Bec5P7BikHL1Zj3Kc8zgS5P12Up
+         1DGs5ovOXtf5w==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, cang@codeaurora.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com
+Subject: Re: [PATCH] scsi: ufs: fix memory boundary check for UFS 3.0
+Message-ID: <X9Pao72HrNrVB5Fn@google.com>
+References: <20201211193814.1709484-1-jaegeuk@kernel.org>
+ <X9PaCUbaIFhsKgc7@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X9PaCUbaIFhsKgc7@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/11, Eric Biggers wrote:
+> On Fri, Dec 11, 2020 at 11:38:14AM -0800, Jaegeuk Kim wrote:
+> > From: Jaegeuk Kim <jaegeuk@google.com>
+> > 
+> > If param_offset is greater than what UFS supports, it'll give kernel panic.
+> > 
+> > Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+> > Change-Id: I48ea6f3f3074bd42abf4ecf8be87806732f3e6a3
+> > ---
+> >  drivers/scsi/ufs/ufshcd.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> > index d6a3a0ba6960..04687661d0df 100644
+> > --- a/drivers/scsi/ufs/ufshcd.c
+> > +++ b/drivers/scsi/ufs/ufshcd.c
+> > @@ -3194,6 +3194,9 @@ int ufshcd_read_desc_param(struct ufs_hba *hba,
+> >  		return -EINVAL;
+> >  	}
+> >  
+> > +	if (param_offset > buff_len)
+> > +		return -EINVAL;
+> > +
+> >  	/* Check whether we need temp memory */
+> >  	if (param_offset != 0 || param_size < buff_len) {
+> >  		desc_buf = kmalloc(buff_len, GFP_KERNEL);
+> > -- 
+> 
+> Didn't this already get fixed by:
+> 
+> 	commit 1699f980d87fb678a669490462cf0b9517c1fb47
+> 	Author: Can Guo <cang@codeaurora.org>
+> 	Date:   Wed Oct 21 22:59:00 2020 -0700
+> 
+> 	    scsi: ufs: Fix unexpected values from ufshcd_read_desc_param()
 
-Hi Reinette,
+Oh, cool. Yes, please ignore this.
 
-On 03/12/20 23:25, Reinette Chatre wrote:
-> Valentin's series in [2] ends by adding memory barriers to support the
-> updating of the task_struct from one CPU and the usage of the task_struct data
-> from another CPU. This work is still needed and as discussed with Valentin in
-> that thread the work would be re-evaluated by him after seeing how this series
-> turns out.
->
-
-So the "problematic" pattern is still there: a context switch can happen
-concurrently with a write to the switching-to-tasks's {closid, rmid}.
-Accesses to these fields would thus need to be wrapped by READ_ONCE() &
-WRITE_ONCE().
-
-Thinking a bit more (too much?) about it, we could limit ourselves to
-wrapping only reads not protected by the rdtgroup_mutex: the only two
-task_struct {closid, rmid} writers are
-- rdtgroup_move_task()
-- rdt_move_group_tasks()
-and they are both invoked while holding said mutex. Thus, a reader holding
-the mutex cannot race with a write, so load tearing ought to be safe.
-
-> [1]: https://lore.kernel.org/lkml/CALvZod7E9zzHwenzf7objzGKsdBmVwTgEJ0nPgs0LUFU3SN5Pw@mail.gmail.com/
-> [2]: https://lore.kernel.org/lkml/20201123022433.17905-1-valentin.schneider@arm.com
->
-> Fenghua Yu (3):
->   x86/resctrl: Move setting task's active CPU in a mask into helpers
->   x86/resctrl: Update PQR_ASSOC MSR synchronously when moving task to
->     resource group
->   x86/resctrl: Don't move a task to the same resource group
->
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 159 +++++++++++++------------
->  1 file changed, 82 insertions(+), 77 deletions(-)
->
->
-> base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
+Thanks,
