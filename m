@@ -2,132 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538482D82FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA3C2D82F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407220AbgLKXzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2407226AbgLKXzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 11 Dec 2020 18:55:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404293AbgLKXzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 18:55:21 -0500
-Date:   Sat, 12 Dec 2020 00:54:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607730881;
-        bh=SCz8bzPsELDUq0lGSB7IHwi2nUf6eCFNm8SUjmyOLOI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZEHV91Um2wvOW33SMCUsi/9yIfdGDU2ugjj4kQyE0l1pnHF7WaR1ez/vGMvlRgJ5U
-         LPn2ZHoZoSy951pnGE/4G9Rm6bCvVm/ebLXFcxHfWdjVjW/8/xG1hLQyNwWY5Ij0Da
-         TIlEnlVIK7bsecL32JA/kUUv7nr1+8vehp6qPReUnWkSio5fgBAWHvGCRvp/WbKY61
-         viCkMcHkeJvxHU7i2XIuZoqhOXJTLNYu7LoSMxKaXk22mOnN9lnijwJ0cW7h/WC9zo
-         J4kg+jZVQQ2NeeODD88csRTTjIc+u3JzP/c2ORoBKaXEJrJuEN4Vaf6vNLD00mbuzR
-         TE5gTw5Hm1rRA==
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH RFC v2] docs: experimental: build PDF with rst2pdf
-Message-ID: <20201212005435.0e1a0871@coco.lan>
-In-Reply-To: <20201211134859.5ab8e0c2@lwn.net>
-References: <20201210172938.3b3086b6@coco.lan>
-        <b73c93c6946ab324443608fac62333b7e327a7e4.1607675494.git.mchehab+huawei@kernel.org>
-        <20201211134859.5ab8e0c2@lwn.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404297AbgLKXzb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 18:55:31 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB3BC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:54:51 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id i3so7988719pfd.6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:54:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dgacDrS0riydujVAJCVqJGSgZiFbA+7xuih1JNG67KA=;
+        b=ogJjeDtFdyKbay4CVyxPAK1DClalm9TQ3pZvATeoyQBL4yVCa/NtNJVKV3LOrREjDm
+         eaCteR0knx/MB1jbJ1YVOFj4HPuoCzJzTIgHsd4IEljnXekDVnM/7HODNplhiaDX0Wd0
+         V/rDpKmHP9E0VFrhIHigP81ITLtUzn1Vf15m+WENzyhyQsgx3011qDNSzZnr4gekRkkn
+         C0gVWBDKJSc8tFtUtrRyIjRzVeOV6VeyGxRTaJ2nmliqLvnI5W1knpMlbNNw3pdTFOhV
+         jLLNdRM4wrixerfhFzwxXyxUVTUJuEQTbu3w6s3gNnM+QATkCe9xpRHsTdCT1RGjjdBg
+         Z/YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dgacDrS0riydujVAJCVqJGSgZiFbA+7xuih1JNG67KA=;
+        b=eBIK0Il2AadcdxBhL16qfAqbGQk8xPEsyHpahQFRb84PScXB8342OYCdlyiUF4qfu+
+         qWy9GPSYY28xe1GrST2CD6+TZHfy0wFty7WHJdvLffvaNumJY+CwMIGCACquYXT9S6sg
+         ZpK3iL5NuwIpWvja2kbNTv6CCk8IS4oNcS8lu4PfY973dIN6zMihp9gVlCcvc83Ir5qe
+         kGkWhFYi6cSDpj1tt8kVRdCW9/feYTKxlq4pKYYNpPf6KFmBmCwLffACBq5L+lxqa5bV
+         0BUQRurmz1Cl2Y8dvhUn5bz49gP+TUihVPW17Xu9I78JxJkOQZZFDOaQ2IyxeptXu0c6
+         pQ+A==
+X-Gm-Message-State: AOAM531AQjeyQM2DoTOGkteWrav7VIFi43hgB618w3bPAy8zzhgmtfsm
+        mwR/pHwhh09kjAKTZD84x7WeAw==
+X-Google-Smtp-Source: ABdhPJy/fiexxBBx/YBRcBfudE/6zZgOs9/EoqjkH/B6NjG9OXsA47gcwRhp6LNiYZonAaxHPGvSLQ==
+X-Received: by 2002:a65:468d:: with SMTP id h13mr13277740pgr.55.1607730890470;
+        Fri, 11 Dec 2020 15:54:50 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id z9sm11393330pji.48.2020.12.11.15.54.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 15:54:49 -0800 (PST)
+Date:   Fri, 11 Dec 2020 15:54:43 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
+        stable@nongnu.org
+Subject: Re: [PATCH v3] KVM: mmu: Fix SPTE encoding of MMIO generation upper
+ half
+Message-ID: <X9QGw9vJfzCrFNzd@google.com>
+References: <20201211234532.686593-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211234532.686593-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 11 Dec 2020 13:48:59 -0700
-Jonathan Corbet <corbet@lwn.net> escreveu:
-
-> On Fri, 11 Dec 2020 09:33:32 +0100
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+On Fri, Dec 11, 2020, Paolo Bonzini wrote:
+> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 > 
-> > Add an experimental PDF builder using rst2pdf
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> > 
-> > Please notice that 18 documents (of a total of 71) won't build with 
-> > rst2pdf. There's an opened issue about that at:
-> > 
-> >     https://github.com/rst2pdf/rst2pdf/issues/958
-> > 
-> > v2: usage of SPHINXDIRS was fixed.
-> > 
-> > 
-> >  Documentation/Makefile                     |  5 +++++
-> >  Documentation/conf.py                      | 21 +++++++++++++++------
-> >  Documentation/sphinx/load_config.py        | 12 ++++++++++++
-> >  Documentation/userspace-api/media/Makefile |  1 +
-> >  Makefile                                   |  4 ++--
-> >  5 files changed, 35 insertions(+), 8 deletions(-)  
+> Commit cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
+> cleaned up the computation of MMIO generation SPTE masks, however it
+> introduced a bug how the upper part was encoded:
+> SPTE bits 52-61 were supposed to contain bits 10-19 of the current
+> generation number, however a missing shift encoded bits 1-10 there instead
+> (mostly duplicating the lower part of the encoded generation number that
+> then consisted of bits 1-9).
 > 
-> So I would dearly love to have rst2pdf working.
+> In the meantime, the upper part was shrunk by one bit and moved by
+> subsequent commits to become an upper half of the encoded generation number
+> (bits 9-17 of bits 0-17 encoded in a SPTE).
 > 
-> I applied this, then tried to see what would happen if I ran a build
-> without having rst2pdf installed:
+> In addition to the above, commit 56871d444bc4 ("KVM: x86: fix overlap between SPTE_MMIO_MASK and generation")
+> has changed the SPTE bit range assigned to encode the generation number and
+> the total number of bits encoded but did not update them in the comment
+> attached to their defines, nor in the KVM MMU doc.
+> Let's do it here, too, since it is too trivial thing to warrant a separate
+> commit.
 > 
-> > 1108 meer kernel: make htmldocs
-> >   SPHINX  htmldocs --> file:///stuff/k/git/kernel/Documentation/output
-> > make[2]: Nothing to be done for 'html'.
-> > WARNING: The kernel documentation build process
-> >         support for Sphinx v3.0 and above is brand new. Be prepared for
-> >         possible issues in the generated output.
-> >         enabling CJK for LaTeX builder
-> > 
-> > Extension error:
-> > Could not import extension rst2pdf.pdfbuilder (exception: No module named 'rst2pdf')
-> > make[1]: *** [Documentation/Makefile:91: htmldocs] Error 2
-> > make: *** [Makefile:1663: htmldocs] Error 2  
-> 
-> Methinks it's perhaps not quite ready for linux-next yet :)
+> Fixes: cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
+> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+> Message-Id: <156700708db2a5296c5ed7a8b9ac71f1e9765c85.1607129096.git.maciej.szmigiero@oracle.com>
+> Cc: stable@nongnu.org
 
-Well, I haven't test this.
+I assume you want stable@vger.kernel.org?
 
-I'm not an usual python programmer, so, don't know much about its 
-specifics... Yet, I would be expecting that something like this:
+> [Reorganize macros so that everything is computed from the bit ranges. - Paolo]
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+> 	Compared to v2 by Maciej, I chose to keep GEN_MASK's argument calculated,
 
-	try:
-	    extensions.append("rst2pdf.pdfbuilder")
-	except:
-	    sys.stderr.write('rst2pdf extension not available.\n')
-	
+Booooo.  :-D
 
-Would avoid it to crash, if the extension is not available.
-Silly me :-)
-
-Still, I suspect that it should not be hard to modify the above to
-avoid the crash. 
-
-I shouldn't be doing much development those days, as I'm taking
-some vacations, after sending media stuff for 5.11. 
-
-So, if you have a better idea about how to optionally probe an
-extension, feel free to modify my patch.
+Reviewed-by: Sean Christopherson <seanjc@google.com>
 
 
-> With rst2pdf installed I get a bunch of zero-length files, as promised.
-> Pretty much none of the larger "books" make it through.  
-
-Yeah. I guess one of the issues is with tables that don't fit into
-a single page.
-
-Yet, devicetree book is empty. That sounds really weird, as there are
-few files on it, and I didn't see anything uncommon on the rst files.
-
-> It's a start,
-> though.  I'll happily apply this as a step forward once it doesn't break
-> the docs build if rst2pdf is missing.
-
-Sounds like a plan.
-
-Thanks,
-Mauro
+> 	but assert on the number of bits in the low and high parts.  This is
+> 	because any change on those numbers will have to be reflected in the
+> 	comment, and essentially we're asserting that the comment is up-to-date.
