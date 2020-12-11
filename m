@@ -2,142 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2132D75F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A252D75F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:48:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405904AbgLKMrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 07:47:17 -0500
-Received: from outbound-ip24b.ess.barracuda.com ([209.222.82.221]:60240 "EHLO
-        outbound-ip24b.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2436638AbgLKMqZ (ORCPT
+        id S2436653AbgLKMqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 07:46:37 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:35458 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436642AbgLKMqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:46:25 -0500
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (mail-bl2nam02lp2059.outbound.protection.outlook.com [104.47.38.59]) by mx6.us-east-2b.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Fri, 11 Dec 2020 12:45:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fs1TpwVSeaLpGab+XO+EtjRAqy2lk0ycwo5WPHqapWu85SuVkJ7DCHoR9K1CptIM0TjzOaEq8coXcXXf76m57hpHuHG15Q6lA3lgMEajtNEYg0pHBhlPTxvP6+0FshuarsKTf2Zv6Cg3gPM3mN4gnL06o/MX4FxsPmIy8ks/OKbRe0a4DwTuQfvtzOzgZtrdQruEcgVRY+F0YVGlBqHnXWIplGWK+bzZ1mBusN/3+vMYGF3iYthotUOr9pDoq0tzglCmfLW6lqQSMgML4SpKWqcqaR6PP4v7lIjc2iQODhLnl8bcofAmfQf2LRZG05Cv8CJ1ldLXg976IV2IQxjdSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2VYc8RI1s8NXb6rHexLS6lq5tfKCHIrIhh6hpGekGhU=;
- b=dTdYded6uWsr2bqoS888lyFz1GuBE0XRrvDS5llVX0ijejdfn+7wxHevTANPsmG4nBzL4lafIXBe+Fb4sTZyo918TCxXhLs4txYvKhLf53CxG6AfwMDWUIwePcRbKlga5FeQmatd96K4wfGT7UBVacO+1fT+XEGhKZ8uQsRxPVzmlpMplaREgRCxPLhsJcbnunT/v/Q1DFSXtf5lc8xVdp9PZb2I/9+2IH4THO7nbIAG3nypsrX0Vp1Slz+Q+HXpE0BLV/ZVKhJnDIzDp/pOa9RT2MRUSI2FKWQ7RFhPpn3KI4IlQ1zuChYd+WV8E7mqcM9WyusAbZOijSYdtkDzIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=digi.com; dmarc=pass action=none header.from=digi.com;
- dkim=pass header.d=digi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digi.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2VYc8RI1s8NXb6rHexLS6lq5tfKCHIrIhh6hpGekGhU=;
- b=hT8CA+upOPTvraiHpu0ZYXF5FDnfqdXpSPH3dulBG7lzFBxIbLMmo/cJXsc9RFlNtZvfWyfWEsyYoYtcCYlF1WGLZGrDfnttMuOtxbxYHQP5JjIdlUd4BvbsUDIoNecTffebhXmx4CWD6EGsO9VZ3dYi/GzTWBPKOv3wUCc7JNU=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=digi.com;
-Received: from MN2PR10MB4174.namprd10.prod.outlook.com (2603:10b6:208:1dd::21)
- by MN2PR10MB4384.namprd10.prod.outlook.com (2603:10b6:208:198::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Fri, 11 Dec
- 2020 12:45:02 +0000
-Received: from MN2PR10MB4174.namprd10.prod.outlook.com
- ([fe80::c8b6:2021:35a0:2365]) by MN2PR10MB4174.namprd10.prod.outlook.com
- ([fe80::c8b6:2021:35a0:2365%9]) with mapi id 15.20.3654.019; Fri, 11 Dec 2020
- 12:45:01 +0000
-From:   Pavana Sharma <pavana.sharma@digi.com>
-To:     kuba@kernel.org
-Cc:     andrew@lunn.ch, ashkan.boldaji@digi.com,
-        clang-built-linux@googlegroups.com, davem@davemloft.net,
-        devicetree@vger.kernel.org, f.fainelli@gmail.com,
-        gregkh@linuxfoundation.org, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com, marek.behun@nic.cz,
-        netdev@vger.kernel.org, pavana.sharma@digi.com, robh+dt@kernel.org,
-        vivien.didelot@gmail.com
-Subject: [net-next PATCH v12 0/4] Add support for mv88e6393x family of Marvell
-Date:   Fri, 11 Dec 2020 22:44:36 +1000
-Message-Id: <cover.1607685096.git.pavana.sharma@digi.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201209113727.1b4bd319@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-References: <20201209113727.1b4bd319@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-Content-Type: text/plain
-X-Originating-IP: [220.244.12.163]
-X-ClientProxiedBy: SY6PR01CA0016.ausprd01.prod.outlook.com
- (2603:10c6:10:e8::21) To MN2PR10MB4174.namprd10.prod.outlook.com
- (2603:10b6:208:1dd::21)
+        Fri, 11 Dec 2020 07:46:15 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607690751; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=dZVo64QQUTxl+VP4u66SOpvgukGNks/uvE7Zhi3iIzE=; b=cWp+YPKaL6z3/yVKz0JP2DY/v+gwT80LhdhQ0YwUwtr7EF/0u23SxmrzaZT2nWW69SeNP9iQ
+ gLZOHAh9zHb6TU2iyD14aJ5F8/HjxcDBShY4tYDKf9RmRg/ihIE8I2HDvHN28YNilvlhkj1M
+ etRnZuTYAWp9Rgdf2k5DlOetXKs=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fd369db53d7c5ba609f55fb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Dec 2020 12:45:15
+ GMT
+Sender: vjitta=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A1BFFC43462; Fri, 11 Dec 2020 12:45:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.105] (unknown [182.18.191.139])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vjitta)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BC4C7C433CA;
+        Fri, 11 Dec 2020 12:45:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BC4C7C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
+Subject: Re: [PATCH v3] lib: stackdepot: Add support to configure
+ STACK_HASH_SIZE
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        dan.j.williams@intel.com, broonie@kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>, qcai@redhat.com,
+        ylal@codeaurora.org, vinmenon@codeaurora.org
+References: <1607576401-25609-1-git-send-email-vjitta@codeaurora.org>
+ <CAG_fn=VKsrYx+YOGPnZw_Q5t6Fx7B59FSUuphj7Ou+DDFKQ+8Q@mail.gmail.com>
+From:   Vijayanand Jitta <vjitta@codeaurora.org>
+Message-ID: <77e98f0b-c9c3-9380-9a57-ff1cd4022502@codeaurora.org>
+Date:   Fri, 11 Dec 2020 18:15:02 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (220.244.12.163) by SY6PR01CA0016.ausprd01.prod.outlook.com (2603:10c6:10:e8::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Fri, 11 Dec 2020 12:44:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 58d6b36d-8af8-4611-01f6-08d89dd29386
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4384:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR10MB438463CAB86D48AEBCFD7E9395CA0@MN2PR10MB4384.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SLptp7FDPnwRigwRRzM5rmQTj4rk1LKI5vMWY72PhrFlebZ0qO0bEvfLzQ/GjtcRkvKPhfOlyAkLqwY+kIBFfultN4OqLJQB2njRPyM6/DJIE5KATkrn8nUyHqbFeUriNwxIeg+ftxrYXpC+tyJ3Gf828KEZg4O44OPQ8V1bp7YMhbVCBCJYz4REBgmDf7Ve4y4MMUFS3AoTOkOntd+1gkOHuQhrnfmHc5I1S5rOmXobzACZp8HovBWZcrDhzZPTB3t5V8LH2e9byk8CPu+PoUGa0TTALKpJ3CVsRjUV0Ej4Mo+7SjwMPtbxv7mX4f1jtBMT9KR/O94GJ5eqFEs+pNG5A/ku+khQdLXAu9D9OsmYmdOmOnD2/GZSlDxkfasU3OQfAOre3EfGy9A9Uej2J0wc/G/BI1G1VFeN/11dERk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4174.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(5660300002)(69590400008)(86362001)(508600001)(83380400001)(66556008)(4326008)(7416002)(8676002)(36756003)(956004)(26005)(52116002)(6916009)(16526019)(6486002)(186003)(6512007)(6506007)(44832011)(66476007)(8936002)(2616005)(4744005)(34490700003)(2906002)(6666004)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?nUsOB0XLMV2+vgn2LD20fOYpjU+yRUNmx2VE1YrQs+WuwFBkHbAiF5eWbtGt?=
- =?us-ascii?Q?bonoGrCVRkmH8/qIPBNN98DCwg2dPPcPc1FlCs7ne/tbrzOzn/MKRCbdkyP5?=
- =?us-ascii?Q?p6MAd7ZdsxwOEIHCE1f/4wKh+xROav4MOa8JEK9Eli1NJyvKXnxp+W0R00ik?=
- =?us-ascii?Q?3GYd6+dVtsFfdaiSULs0jCi14oQuN8fcbGjHq5c9exel26o7a1pKjt+xfHzn?=
- =?us-ascii?Q?zdrqto9C1FOV6bp1Vhe2/MQ1pUMAkjRzo83I7xMT91sKn0Ozexa4qHc17k2i?=
- =?us-ascii?Q?CYDoBJYjPWsOE66RwynYXB62OtnyWmK+XgQS9mkK3IZBLaHfMkMdF5DNroVE?=
- =?us-ascii?Q?dMk73rr9mILbejm0f0wcaCE6Du1h6K3inN1WqlsCTf5YGH0yniDK5dAO6PkL?=
- =?us-ascii?Q?I3Zo65tmZ7lnK9PbvzRPkm4kOSY5xjERn+YPqDEHfnVsf5uMMWDfCxLDjjN4?=
- =?us-ascii?Q?85TdtRvEYa4vTLO/DwcUv56yq4sHNMQx8A7y1DlH7lkniNrWi1MAv5nIuI47?=
- =?us-ascii?Q?TGa3CJ5efZCH1m/YGX6btNJKfxIME5apkyxInwRCmNk5SNdF/2upfFoxeS0w?=
- =?us-ascii?Q?Kl7k7TYZu9O88IAWFDHtbl43T3xMCaoLaONxIoY6okCfZfQvfLb+oRKN0kYE?=
- =?us-ascii?Q?bKkKoi7NREYTeiJNbRMK2Y1p90J+Rm/bL9bVDowxZA0ewVa4mDQWo17+f95a?=
- =?us-ascii?Q?GYHPBZgRvOQ5DbjY0XXXQ75rah22g/bF+iJyn3grZfccJOuXkzmQFhxJnbkT?=
- =?us-ascii?Q?oXVY/Ce/inEyngkuC7HoWZFRAGEolw+Chee2OunbnvqLg4AUf2LKB3hSJb+i?=
- =?us-ascii?Q?00bwJ0wf0iVB286BU85vC4rBB5bGSAWdDKxfHAfg2slT7+jp+VtRaOq/Fx0s?=
- =?us-ascii?Q?MGT+f9ci9O0+NXRVqnBKSttS6NmQ9F6zTuQjt7K5+qkIbaKeapiOIrNZwpYj?=
- =?us-ascii?Q?lh+Q8Pt+GMm/Ks8QuZDoShXwnyt158np5EnJcRtYFqBGTBLHX2aZls4auIPT?=
- =?us-ascii?Q?RYMv?=
-X-OriginatorOrg: digi.com
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4174.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2020 12:45:01.3883
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: abb4cdb7-1b7e-483e-a143-7ebfd1184b9e
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58d6b36d-8af8-4611-01f6-08d89dd29386
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Iwbx9OdY0j1mhx6fLK0nrT7X0vT2eItuChQICD0gwxTTGzRlas+YH5mr+KMh1DjTRiUx9rpOqi7MznujiHSMoA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4384
-X-BESS-ID: 1607690704-893011-7238-10841-1
-X-BESS-VER: 2019.1_20201210.2155
-X-BESS-Apparent-Source-IP: 104.47.38.59
-X-BESS-Outbound-Spam-Score: 0.00
-X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.228760 [from 
-        cloudscan14-79.us-east-2a.ess.aws.cudaops.com]
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------
-        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
-        0.00 MSGID_FROM_MTA_HEADER  META: Message-Id was added by a relay 
-X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS112744 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND, MSGID_FROM_MTA_HEADER
-X-BESS-BRTS-Status: 1
+In-Reply-To: <CAG_fn=VKsrYx+YOGPnZw_Q5t6Fx7B59FSUuphj7Ou+DDFKQ+8Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Updated patchset after rebasing and incorporating feedback.
 
-Pavana Sharma (4):
-  dt-bindings: net: Add 5GBASER phy interface mode
-  net: phy: Add 5GBASER interface mode
-  net: dsa: mv88e6xxx: Change serdes lane parameter type  from u8 type
-    to int
-  net: dsa: mv88e6xxx: Add support for mv88e6393x  family of Marvell
 
- .../bindings/net/ethernet-controller.yaml     |   1 +
- drivers/net/dsa/mv88e6xxx/chip.c              | 164 +++++++++-
- drivers/net/dsa/mv88e6xxx/chip.h              |  20 +-
- drivers/net/dsa/mv88e6xxx/global1.h           |   2 +
- drivers/net/dsa/mv88e6xxx/global2.h           |   8 +
- drivers/net/dsa/mv88e6xxx/port.c              | 238 +++++++++++++-
- drivers/net/dsa/mv88e6xxx/port.h              |  43 ++-
- drivers/net/dsa/mv88e6xxx/serdes.c            | 309 +++++++++++++++---
- drivers/net/dsa/mv88e6xxx/serdes.h            | 103 ++++--
- include/linux/phy.h                           |   4 +
- 10 files changed, 791 insertions(+), 101 deletions(-)
+On 12/11/2020 2:06 PM, Alexander Potapenko wrote:
+> On Thu, Dec 10, 2020 at 6:01 AM <vjitta@codeaurora.org> wrote:
+>>
+>> From: Yogesh Lal <ylal@codeaurora.org>
+>>
+>> Add a kernel parameter stack_hash_order to configure STACK_HASH_SIZE.
+>>
+>> Aim is to have configurable value for STACK_HASH_SIZE, so that one
+>> can configure it depending on usecase there by reducing the static
+>> memory overhead.
+>>
+>> One example is of Page Owner, default value of STACK_HASH_SIZE lead
+>> stack depot to consume 8MB of static memory. Making it configurable
+>> and use lower value helps to enable features like CONFIG_PAGE_OWNER
+>> without any significant overhead.
+> 
+> Can we go with a static CONFIG_ parameter instead?
+> Guess most users won't bother changing the default anyway, and for
+> CONFIG_PAGE_OWNER users changing the size at boot time is not strictly
+> needed.
+> 
+Thanks for review.
+
+One advantage of having run time parameter is we can simply set it to a
+lower value at runtime if page_owner=off thereby reducing the memory
+usage or use default value if we want to use page owner so, we have some
+some flexibility here. This is not possible with static parameter as we
+have to have some predefined value.
+
+>> -static struct stack_record *stack_table[STACK_HASH_SIZE] = {
+>> -       [0 ...  STACK_HASH_SIZE - 1] = NULL
+>> +static unsigned int stack_hash_order = 20;
+> 
+> Please initialize with MAX_STACK_HASH_ORDER instead.
+> 
+
+Sure, will update this.
+
+>> +static struct stack_record *stack_table_def[MAX_STACK_HASH_SIZE] __initdata = {
+>> +       [0 ...  MAX_STACK_HASH_SIZE - 1] = NULL
+>>  };
+>> +static struct stack_record **stack_table __refdata = stack_table_def;
+>> +
+>> +static int __init setup_stack_hash_order(char *str)
+>> +{
+>> +       kstrtouint(str, 0, &stack_hash_order);
+>> +       if (stack_hash_order > MAX_STACK_HASH_ORDER)
+>> +               stack_hash_order = MAX_STACK_HASH_ORDER;
+>> +       return 0;
+>> +}
+>> +early_param("stack_hash_order", setup_stack_hash_order);
+>> +
+>> +static int __init init_stackdepot(void)
+>> +{
+>> +       size_t size = (STACK_HASH_SIZE * sizeof(struct stack_record *));
+>> +
+>> +       stack_table = vmalloc(size);
+>> +       memcpy(stack_table, stack_table_def, size);
+> 
+> Looks like you are assuming stack_table_def already contains some data
+> by this point.
+> But if STACK_HASH_SIZE shrinks this memcpy() above will just copy some
+> part of the table, whereas the rest will be lost.
+> We'll need to:
+> - either explicitly decide we can afford losing this data (no idea how
+> bad this can potentially be),
+> - or disallow storing anything prior to full stackdepot initialization
+> (then we don't need stack_table_def),
+> - or carefully move all entries to the first part of the table.
+> 
+> Alex
+> 
+
+The hash for stack_table_def is computed using the run time parameter
+stack_hash_order, though stack_table_def is a bigger array it will only
+use the entries that are with in the run time configured STACK_HASH_SIZE
+range. so, there will be no data loss during copy.
+
+Thanks,
+Vijay
 
 -- 
-2.17.1
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of Code Aurora Forum, hosted by The Linux Foundation
