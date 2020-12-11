@@ -2,157 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32762D7482
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703A82D7487
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389771AbgLKLOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 06:14:32 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:45724 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727637AbgLKLNy (ORCPT
+        id S2391400AbgLKLQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 06:16:47 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:33877 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390718AbgLKLQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:13:54 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607685210; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=PBY8aqnlVgCM7hbrorF7TMQ4B0ULW8YavEYCyNWzl3k=;
- b=OKnFUNmVPW2kg3j3FQYyGJSJCmY/h4mD6f3fA7osOxpJbtQ1ARwN2sPjosX97s7NQlQfWzuz
- 1GqEs4WkE0j4qq8zthOO6HV2JU1yCuH1vE0egHQW9FqUiAa7n6xGz5aEZYncYBYaLtYZPO9x
- 2XqHCKr/ayRNmbbcXbEBgIkw2PA=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5fd3543f35a25d1b16a4ec42 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Dec 2020 11:13:03
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 618B4C43464; Fri, 11 Dec 2020 11:13:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 86718C433CA;
-        Fri, 11 Dec 2020 11:13:01 +0000 (UTC)
+        Fri, 11 Dec 2020 06:16:22 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-175-LoSaEKzrOx2bK29PQ33dAQ-1; Fri, 11 Dec 2020 11:14:43 +0000
+X-MC-Unique: LoSaEKzrOx2bK29PQ33dAQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 11 Dec 2020 11:14:43 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 11 Dec 2020 11:14:43 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Lee Jones' <lee.jones@linaro.org>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: bikeshed: [PATCH -next] mfd: rave-sp: convert comma to semicolon
+Thread-Topic: bikeshed: [PATCH -next] mfd: rave-sp: convert comma to semicolon
+Thread-Index: AdbPrprvUTsF4VOLTpOnxS9AV5J8lA==
+Date:   Fri, 11 Dec 2020 11:14:43 +0000
+Message-ID: <7416de308a9b41d3ac881210ab114159@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 11 Dec 2020 19:13:01 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] scsi: ufs: Protect some contexts from unexpected
- clock scaling
-In-Reply-To: <48363aee8a746a43440f86f620d9d2e0@codeaurora.org>
-References: <1607520942-22254-1-git-send-email-cang@codeaurora.org>
- <1607520942-22254-2-git-send-email-cang@codeaurora.org>
- <a2338ef6da3d4ed4093547ba87e13e94d8dd2a45.camel@gmail.com>
- <48363aee8a746a43440f86f620d9d2e0@codeaurora.org>
-Message-ID: <cecf35ca445e175aacb1c2942a74951e@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-11 09:36, Can Guo wrote:
-> On 2020-12-11 01:34, Bean Huo wrote:
->> Hi Can
->> 
->> On Wed, 2020-12-09 at 05:35 -0800, Can Guo wrote:
->>> 
->>> 
->>> @@ -1160,6 +1166,7 @@ static void
->>> ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
->>>  {
->>>  	up_write(&hba->clk_scaling_lock);
->>>  	ufshcd_scsi_unblock_requests(hba);
->>> +	ufshcd_release(hba);
->>>  }
->>> 
->>>  /**
->>> @@ -1175,12 +1182,9 @@ static int ufshcd_devfreq_scale(struct ufs_hba
->>> *hba, bool scale_up)
->>>  {
->>>  	int ret = 0;
->>> 
->>> -	/* let's not get into low power until clock scaling is
->>> completed */
->>> -	ufshcd_hold(hba, false);
->>> -
->>>  	ret = ufshcd_clock_scaling_prepare(hba);
->>>  	if (ret)
->>> -		goto out;
->>> +		return ret;
->>> 
->>>  	/* scale down the gear before scaling down clocks */
->>>  	if (!scale_up) {
->>> @@ -1212,8 +1216,6 @@ static int ufshcd_devfreq_scale(struct ufs_hba
->>> *hba, bool scale_up)
->>> 
->>>  out_unprepare:
->>>  	ufshcd_clock_scaling_unprepare(hba);
->>> -out:
->>> -	ufshcd_release(hba);
->>>  	return ret;
->>>  }
->> 
->> I didn't understand why moving ufshcd_hold/ufshcd_release into
->> ufshcd_clock_scaling_prepare()/ufshcd_clock_scaling_unprepare().
->> 
->> 
->>> 
->>> @@ -1294,15 +1296,8 @@ static int ufshcd_devfreq_target(struct device
->>> *dev,
->>>  	}
->>>  	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
->>> 
->>> -	pm_runtime_get_noresume(hba->dev);
->>> -	if (!pm_runtime_active(hba->dev)) {
->>> -		pm_runtime_put_noidle(hba->dev);
->>> -		ret = -EAGAIN;
->>> -		goto out;
->>> -	}
->>>  	start = ktime_get();
->>>  	ret = ufshcd_devfreq_scale(hba, scale_up);
->>> -	pm_runtime_put(hba->dev);
->>> 
->> 
->> which branch are you working on?  I didn't see this part codes in the
->> branch 5.11/scsi-queue and 5.11/scsi-staging.
->> 
->> Bean
-> 
-> As I mentioned in my cover-letter, this is based on 5.11/scsi-fixes.
-> These codes came from one of my earlier changes, but since this change
-> can cover the old change's functionality, so I removed the codes.
-> 
-> Can Guo.
+RnJvbTogTGVlIEpvbmVzDQo+IFNlbnQ6IDExIERlY2VtYmVyIDIwMjAgMTA6MDYNCj4gDQo+IE9u
+IEZyaSwgMTEgRGVjIDIwMjAsIFpoZW5nIFlvbmdqdW4gd3JvdGU6DQo+IA0KPiA+IFJlcGxhY2Ug
+YSBjb21tYSBiZXR3ZWVuIGV4cHJlc3Npb24gc3RhdGVtZW50cyBieSBhIHNlbWljb2xvbi4NCj4g
+Pg0KPiA+IFNpZ25lZC1vZmYtYnk6IFpoZW5nIFlvbmdqdW4gPHpoZW5neW9uZ2p1bjNAaHVhd2Vp
+LmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9tZmQvcmF2ZS1zcC5jIHwgMiArLQ0KPiA+ICAx
+IGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gPg0KPiA+IGRp
+ZmYgLS1naXQgYS9kcml2ZXJzL21mZC9yYXZlLXNwLmMgYi9kcml2ZXJzL21mZC9yYXZlLXNwLmMN
+Cj4gPiBpbmRleCA1NDUxOTZjODViNWMuLmFiYjljYmRhYmFhOSAxMDA2NDQNCj4gPiAtLS0gYS9k
+cml2ZXJzL21mZC9yYXZlLXNwLmMNCj4gPiArKysgYi9kcml2ZXJzL21mZC9yYXZlLXNwLmMNCj4g
+PiBAQCAtMzU4LDcgKzM1OCw3IEBAIGludCByYXZlX3NwX2V4ZWMoc3RydWN0IHJhdmVfc3AgKnNw
+LA0KPiA+DQo+ID4gIAlhY2tpZCAgICAgICA9IGF0b21pY19pbmNfcmV0dXJuKCZzcC0+YWNraWQp
+Ow0KPiA+ICAJcmVwbHkuYWNraWQgPSBhY2tpZDsNCj4gPiAtCXJlcGx5LmNvZGUgID0gcmF2ZV9z
+cF9yZXBseV9jb2RlKCh1OCljb21tYW5kKSwNCj4gPiArCXJlcGx5LmNvZGUgID0gcmF2ZV9zcF9y
+ZXBseV9jb2RlKCh1OCljb21tYW5kKTsNCj4gDQo+IEhvdyBkaWQgdGhlIG9yaWdpbmFsIGNvZGUg
+bm90IGNyZWF0ZSBhIGJ1aWxkIGVycm9yPw0KDQpOb3d0IHdyb25nIHdpdGggY29tbWFzLg0KDQpX
+aHkgbm90IGdvIHRoZSBvdGhlciB3YXkuDQpDb252ZXJ0IGFsbW9zdCBhbGwgdGhlIDsgdG8gLCBh
+bmQgZGVsZXRlIG1vc3Qgb2YgdGhlIHsgfSBpbg0KaWYgYW5kIGZvciBzdGF0ZW1lbnRzIChldGMp
+Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJv
+YWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24g
+Tm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Hi Bean,
-
-Sorry for the typo, it is branch 5.10/scsi-fixes.
-
-Thanks,
-
-Can Guo.
