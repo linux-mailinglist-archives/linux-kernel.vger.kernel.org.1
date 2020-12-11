@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E912D7D49
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B142D7D5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436551AbgLKRvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:51:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60304 "EHLO mail.kernel.org"
+        id S2436633AbgLKRwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:52:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436544AbgLKRu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:50:56 -0500
+        id S2436544AbgLKRvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 12:51:50 -0500
 From:   Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Sameer Pujar <spujar@nvidia.com>, robh+dt@kernel.org,
-        thierry.reding@gmail.com
-Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sharadg@nvidia.com,
-        jonathanh@nvidia.com, alsa-devel@alsa-project.org
-In-Reply-To: <1607006202-4078-1-git-send-email-spujar@nvidia.com>
-References: <1607006202-4078-1-git-send-email-spujar@nvidia.com>
-Subject: Re: [RESEND PATCH 0/2] Convert Tegra HDA doc to json-schema
-Message-Id: <160770898108.26354.183397284224263445.b4-ty@kernel.org>
-Date:   Fri, 11 Dec 2020 17:49:41 +0000
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <20201210112139.5370-1-m.szyprowski@samsung.com>
+References: <CGME20201210112148eucas1p287afa49e63255e3320495d480eb06965@eucas1p2.samsung.com> <20201210112139.5370-1-m.szyprowski@samsung.com>
+Subject: Re: [PATCH] regulator: max14577: Add proper module aliases strings
+Message-Id: <160770905319.26551.656531758861390620.b4-ty@kernel.org>
+Date:   Fri, 11 Dec 2020 17:50:53 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -30,29 +30,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 20:06:40 +0530, Sameer Pujar wrote:
-> Convert Tegra HDA doc to YAML format. Ran binding validation checks to
-> ensure there are no warnings/errors for HDA.
-> 
-> Patch "arm64: tegra: Fix Tegra194 HDA {clock,reset}-names ordering" is
-> already merged and hence not included here.
-> 
-> Sameer Pujar (2):
->   dt-bindings: tegra: Convert HDA doc to json-schema
->   dt-bindings: tegra: Add missing HDA properties
-> 
-> [...]
+On Thu, 10 Dec 2020 12:21:39 +0100, Marek Szyprowski wrote:
+> Add proper modalias structures to let this driver load automatically if
+> compiled as module, because max14577 MFD driver creates MFD cells with
+> such compatible strings.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/2] dt-bindings: tegra: Convert HDA doc to json-schema
-      commit: 2d8f8955fe02c1f5d41c283f48d8c6a2a02ae17f
-[2/2] dt-bindings: tegra: Add missing HDA properties
-      commit: 3759d5edc07598d55124d87bd292a95f79f47997
+[1/1] regulator: max14577: Add proper module aliases strings
+      commit: 0da6736ecd10b45e535b100acd58df2db4c099d8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
