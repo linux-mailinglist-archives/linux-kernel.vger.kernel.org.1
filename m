@@ -2,180 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFCC2D735D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBD12D7361
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405762AbgLKKFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:05:25 -0500
-Received: from mga09.intel.com ([134.134.136.24]:38625 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405769AbgLKKEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:04:51 -0500
-IronPort-SDR: 8xd2TW6NQeUTr/mooj7C50Q6ajWPlyWLfWotz3Ou++OwMRT63vsLUJfxXNcUZWlAUKiPLJqR7I
- S90k01I3yHcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="174553420"
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="174553420"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 02:04:06 -0800
-IronPort-SDR: MGPO7BMUJJKRunpnB9L9RN5ho1+zBfSgF5FQYDvv3iU+VnVdOOCXSEyjaZC4jUfQTOVbcutq3L
- NoARee+qzQTQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="365345885"
-Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 11 Dec 2020 02:04:05 -0800
-Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1knfHQ-0000pa-FJ; Fri, 11 Dec 2020 10:04:04 +0000
-Date:   Fri, 11 Dec 2020 18:03:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 190113b4c6531c8e09b31d5235f9b5175cbb0f72
-Message-ID: <5fd343ed.nb4Tcd7DeXEafXdo%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2405795AbgLKKGQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Dec 2020 05:06:16 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:20158 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405764AbgLKKF2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:05:28 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-249-bCdh2ug7OF-rDdSrCZLxFQ-1; Fri, 11 Dec 2020 10:03:48 +0000
+X-MC-Unique: bCdh2ug7OF-rDdSrCZLxFQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 11 Dec 2020 10:03:47 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 11 Dec 2020 10:03:47 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Ioana Ciornei' <ioana.ciornei@nxp.com>
+CC:     'Daniel Thompson' <daniel.thompson@linaro.org>,
+        "linux-netdev@vger.kernel.org" <linux-netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH RESEND net-next 1/2] dpaa2-eth: send a scatter-gather FD
+ instead of realloc-ing
+Thread-Topic: [PATCH RESEND net-next 1/2] dpaa2-eth: send a scatter-gather FD
+ instead of realloc-ing
+Thread-Index: AQHWzxqS1niBehB/rU2uwbP/Q9O4LKnxoRyAgAADk4CAAATMgA==
+Date:   Fri, 11 Dec 2020 10:03:47 +0000
+Message-ID: <cc8ec04373a14e8880a6ca35da5c151d@AcuMS.aculab.com>
+References: <20200629184712.12449-2-ioana.ciornei () nxp ! com>
+ <20201210173156.mbizovo6rxvkda73@holly.lan>
+ <c4e033fe17674685b64a60055c68704e@AcuMS.aculab.com>
+ <20201211093856.gj3do6ntnmxsqtzp@skbuf>
+In-Reply-To: <20201211093856.gj3do6ntnmxsqtzp@skbuf>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
-branch HEAD: 190113b4c6531c8e09b31d5235f9b5175cbb0f72  x86/apic/vector: Fix ordering in vector assignment
+From: Ioana Ciornei
+> Sent: 11 December 2020 09:39
+> 
+> On Fri, Dec 11, 2020 at 09:30:43AM +0000, David Laight wrote:
+> > From: Daniel Thompson
+> > > Sent: 10 December 2020 17:32
+> > >
+> > > On Mon, Jun 29, 2020 at 06:47:11PM +0000, Ioana Ciornei wrote:
+> > > > Instead of realloc-ing the skb on the Tx path when the provided headroom
+> > > > is smaller than the HW requirements, create a Scatter/Gather frame
+> > > > descriptor with only one entry.
+> >
+> > Is it worth simplifying the code by permanently allocating (and dma-mapping)
+> > the extra structure for every ring entry.
+> > It is (probably) only one page and 1 iommu entry.
+> 
+> 
+> That is exactly what I was thinking. At the moment the SGT structure is
+> pre-allocated but not pre-mapped.
+> 
+> I'll let you know how it goes.
 
-elapsed time: 721m
+How much does the dma-map actually cost?
+For short fragments it is probably worth copying into a pre-allocated
+pre-mapped transmit buffer area.
+You'd want to do aligned full-word copies and use separate cache lines
+for each frame.
+It does make tx setup more error prone - since you need the space in
+the tx buffer area as well as in the tx ring.
 
-configs tested: 118
-configs skipped: 67
+For one OS (not sun's) on a sparc mbus+sbus system one of my colleagues
+measured a cutoff point of about 1k.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The copy to tx buffer path also helps with the pathological skb that
+are 1500 bytes in 1 byte fragments.
+(Maybe skb can't get that bad, but I've seen that on other OS.)
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                        vdk_hs38_defconfig
-sh                           sh2007_defconfig
-powerpc                     tqm8560_defconfig
-arm                           viper_defconfig
-arm                          collie_defconfig
-sh                 kfr2r09-romimage_defconfig
-um                             i386_defconfig
-arc                            hsdk_defconfig
-mips                    maltaup_xpa_defconfig
-arm                          ep93xx_defconfig
-xtensa                    xip_kc705_defconfig
-sh                          kfr2r09_defconfig
-sparc                            alldefconfig
-mips                        bcm47xx_defconfig
-microblaze                      mmu_defconfig
-arc                          axs103_defconfig
-mips                           gcw0_defconfig
-sparc                            allyesconfig
-powerpc                     asp8347_defconfig
-arm                          simpad_defconfig
-m68k                                defconfig
-alpha                            alldefconfig
-sh                         microdev_defconfig
-arm                           u8500_defconfig
-powerpc                        icon_defconfig
-c6x                                 defconfig
-mips                             allyesconfig
-mips                          rb532_defconfig
-sh                           se7343_defconfig
-arm                         shannon_defconfig
-sh                               j2_defconfig
-m68k                       m5249evb_defconfig
-arm                       versatile_defconfig
-sh                   rts7751r2dplus_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201209
-i386                 randconfig-a005-20201209
-i386                 randconfig-a001-20201209
-i386                 randconfig-a002-20201209
-i386                 randconfig-a006-20201209
-i386                 randconfig-a003-20201209
-i386                 randconfig-a001-20201210
-i386                 randconfig-a004-20201210
-i386                 randconfig-a003-20201210
-i386                 randconfig-a002-20201210
-i386                 randconfig-a005-20201210
-i386                 randconfig-a006-20201210
-x86_64               randconfig-a016-20201209
-x86_64               randconfig-a012-20201209
-x86_64               randconfig-a013-20201209
-x86_64               randconfig-a014-20201209
-x86_64               randconfig-a015-20201209
-x86_64               randconfig-a011-20201209
-i386                 randconfig-a013-20201209
-i386                 randconfig-a014-20201209
-i386                 randconfig-a011-20201209
-i386                 randconfig-a015-20201209
-i386                 randconfig-a012-20201209
-i386                 randconfig-a016-20201209
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+	David
 
-clang tested configs:
-x86_64               randconfig-a004-20201209
-x86_64               randconfig-a006-20201209
-x86_64               randconfig-a005-20201209
-x86_64               randconfig-a001-20201209
-x86_64               randconfig-a002-20201209
-x86_64               randconfig-a003-20201209
-x86_64               randconfig-a003-20201210
-x86_64               randconfig-a006-20201210
-x86_64               randconfig-a002-20201210
-x86_64               randconfig-a005-20201210
-x86_64               randconfig-a004-20201210
-x86_64               randconfig-a001-20201210
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
