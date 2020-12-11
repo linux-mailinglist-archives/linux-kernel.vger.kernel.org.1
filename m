@@ -2,330 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6BB2D6E1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C63172D6E20
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390078AbgLKCX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 21:23:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732286AbgLKCW7 (ORCPT
+        id S2390294AbgLKC0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 21:26:13 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:40464 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390158AbgLKCZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 21:22:59 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA3DC0613CF;
-        Thu, 10 Dec 2020 18:22:19 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id hk16so1533745pjb.4;
-        Thu, 10 Dec 2020 18:22:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1UCYlEZsL7Xd8eqLfGV/OrwzMVa1p0uuWjkGcite2p0=;
-        b=W80hiWeEYGrPdIjcZETnr/yd71a4RCCEoXESffDicVazZU8A+NGnzXfJKSEH993r2O
-         4VIwKrqAErU/dugzWimfBGsQF8jlbCS/tgqVdhSYCvV3qxIiHv9bU/5KLtB7PD8KRT3v
-         v6nQp4KA4fEMI2P5a2kxx8WBXXmiEGLQe1jFCkzckUm0rv1O4YFQ3dnZmBKY9lgH7CWi
-         JoR4FHLEvEBTBKC6+SWrmwMk4GedWyyFnpw5VHaQwdkCvHrCoX41YhPtPRLb5xlOBSTh
-         +9KV2sm9SYReslFOG4NsKIq2j1hPr1muj9uBKQKxbiLoD9IQnNIK/A5L+YC5RfIhEuWR
-         fo6w==
+        Thu, 10 Dec 2020 21:25:53 -0500
+Received: by mail-io1-f70.google.com with SMTP id l18so5470219iok.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 18:25:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1UCYlEZsL7Xd8eqLfGV/OrwzMVa1p0uuWjkGcite2p0=;
-        b=nJJclsH/kvx42BEve2t4R/r7GSTA20HdotSomFOR+p/BC9SSPkprYSm7Vf5EYp+790
-         XWQdoGu4VPZwj+xeGgFFN0rbrfD4tay4zC8K30CoPRgvFG1GldgapdnbgvHYjT3Z5s0/
-         pfO2nIjszqtZRnYk9HsMuq2ssBulpbz2zlPtMqAaDalo7DWS3hkhTUoUsDj2NGJFQj5B
-         3k4jwbPJKGy90rWg9ooz2icqS10a/uEi2wK5YqWrH83E6hi40zHX4XHA7aind8b+Crxj
-         tF9/JDwZ3YykcAo6MID5IB1sZv0fk0y8WQgcW1wEIyycuACOTP+Mpnq5AYMdHPWhK0nk
-         bf0A==
-X-Gm-Message-State: AOAM530xpGKT8wSmzXP8FJ3nz672so/qPX7XP4kyug0of+CrEQYynJj0
-        Nvp+eDfhdp2ZkGB+KaJRCfs=
-X-Google-Smtp-Source: ABdhPJw7+qTu0l80JJ50DFA5MpKioH+K1qmRAX8DyhEsaFe0xlAFszg7nbWa2N7TvAHPBXzTlzDlhw==
-X-Received: by 2002:a17:90a:902:: with SMTP id n2mr10811937pjn.126.1607653338956;
-        Thu, 10 Dec 2020 18:22:18 -0800 (PST)
-Received: from js1304-desktop ([114.206.198.176])
-        by smtp.gmail.com with ESMTPSA id 77sm8025802pfv.16.2020.12.10.18.22.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Dec 2020 18:22:18 -0800 (PST)
-Date:   Fri, 11 Dec 2020 11:22:10 +0900
-From:   Joonsoo Kim <js1304@gmail.com>
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        andrii@kernel.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
-Subject: Re: [PATCH v3 sl-b 1/6] mm: Add mem_dump_obj() to print source of
- memory block
-Message-ID: <20201211022205.GA11631@js1304-desktop>
-References: <20201211011907.GA16110@paulmck-ThinkPad-P72>
- <20201211012003.16473-1-paulmck@kernel.org>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ss5rnVicPosSBdYzSy+UMj22SrH9QgFUN/iCK5u2C0s=;
+        b=eCTYgOkja2u5uIAMqB4aNez8VyP6eC8pik6JOj9q8EI09fYsNDLxOI+TuQc1OrTgeT
+         OzAsHhvNHWXnuISmMwKpbUdycaGrfkJIGqRCbzpFBuKJK8jkjigDY4Bx2uGplfqJ+3L4
+         QSUA1V3LpY0WiNb9UsWhhlEY0GReX5WwLAaHA/9pPgIWY+KDflOKn53U03p0+dxO4red
+         2oxDAUJcAFaJJvcZmQKqVtP3lPd9zjzwvnyxk6LKjRTgKlvAdW8FKCzAW1lyzNnVYQOt
+         JGbdQQo2TOGTY+3zzFxF785ze5RZjTZoeip+JUDoNLMJA9s1cV5XyBdKoauZHXIRMt7H
+         pQkw==
+X-Gm-Message-State: AOAM5334dlA3d9f/xklpWXJ0F0cO7w10vw+UtIyH8uiPPjZkgybrg1Tb
+        vP1prHo4DPi5fRPe+nESNmmWBl9KiyrW446701zCjKgJfa5C
+X-Google-Smtp-Source: ABdhPJyoM4NXcBUADfRqaRwmtaqAdriQJrYdwsszXSuOCYC9wjE/Wv3OGgRMh23YriJgyw59FTOf7iTj/vDAJj/WjcChZPwxsW2D
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211012003.16473-1-paulmck@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Received: by 2002:a5e:9612:: with SMTP id a18mr12033491ioq.13.1607653511707;
+ Thu, 10 Dec 2020 18:25:11 -0800 (PST)
+Date:   Thu, 10 Dec 2020 18:25:11 -0800
+In-Reply-To: <0000000000001779fd05a46b001f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007cc08305b62700a3@google.com>
+Subject: Re: INFO: task hung in linkwatch_event (2)
+From:   syzbot <syzbot+96ff6cfc4551fcc29342@syzkaller.appspotmail.com>
+To:     allison@lohutok.net, andrew@lunn.ch, aviad.krawczyk@huawei.com,
+        axboe@kernel.dk, davem@davemloft.net, gregkh@linuxfoundation.org,
+        hdanton@sina.com, io-uring@vger.kernel.org, kuba@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linyunsheng@huawei.com, luobin9@huawei.com, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        viro@zeniv.linux.org.uk, xiaoguang.wang@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 05:19:58PM -0800, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
-> 
-> There are kernel facilities such as per-CPU reference counts that give
-> error messages in generic handlers or callbacks, whose messages are
-> unenlightening.  In the case of per-CPU reference-count underflow, this
-> is not a problem when creating a new use of this facility because in that
-> case the bug is almost certainly in the code implementing that new use.
-> However, trouble arises when deploying across many systems, which might
-> exercise corner cases that were not seen during development and testing.
-> Here, it would be really nice to get some kind of hint as to which of
-> several uses the underflow was caused by.
-> 
-> This commit therefore exposes a mem_dump_obj() function that takes
-> a pointer to memory (which must still be allocated if it has been
-> dynamically allocated) and prints available information on where that
-> memory came from.  This pointer can reference the middle of the block as
-> well as the beginning of the block, as needed by things like RCU callback
-> functions and timer handlers that might not know where the beginning of
-> the memory block is.  These functions and handlers can use mem_dump_obj()
-> to print out better hints as to where the problem might lie.
-> 
-> The information printed can depend on kernel configuration.  For example,
-> the allocation return address can be printed only for slab and slub,
-> and even then only when the necessary debug has been enabled.  For slab,
-> build with CONFIG_DEBUG_SLAB=y, and either use sizes with ample space
-> to the next power of two or use the SLAB_STORE_USER when creating the
-> kmem_cache structure.  For slub, build with CONFIG_SLUB_DEBUG=y and
-> boot with slub_debug=U, or pass SLAB_STORE_USER to kmem_cache_create()
-> if more focused use is desired.  Also for slub, use CONFIG_STACKTRACE
-> to enable printing of the allocation-time stack trace.
-> 
-> Cc: Christoph Lameter <cl@linux.com>
-> Cc: Pekka Enberg <penberg@kernel.org>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: <linux-mm@kvack.org>
-> Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> [ paulmck: Convert to printing and change names per Joonsoo Kim. ]
-> [ paulmck: Move slab definition per Stephen Rothwell and kbuild test robot. ]
-> [ paulmck: Handle CONFIG_MMU=n case where vmalloc() is kmalloc(). ]
-> [ paulmck: Apply Vlastimil Babka feedback on slab.c kmem_provenance(). ]
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  include/linux/mm.h   |  2 ++
->  include/linux/slab.h |  2 ++
->  mm/slab.c            | 20 ++++++++++++++
->  mm/slab.h            | 12 +++++++++
->  mm/slab_common.c     | 74 ++++++++++++++++++++++++++++++++++++++++++++++++++++
->  mm/slob.c            |  6 +++++
->  mm/slub.c            | 36 +++++++++++++++++++++++++
->  mm/util.c            | 24 +++++++++++++++++
->  8 files changed, 176 insertions(+)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index ef360fe..1eea266 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -3153,5 +3153,7 @@ unsigned long wp_shared_mapping_range(struct address_space *mapping,
->  
->  extern int sysctl_nr_trim_pages;
->  
-> +void mem_dump_obj(void *object);
-> +
->  #endif /* __KERNEL__ */
->  #endif /* _LINUX_MM_H */
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index dd6897f..169b511 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -186,6 +186,8 @@ void kfree(const void *);
->  void kfree_sensitive(const void *);
->  size_t __ksize(const void *);
->  size_t ksize(const void *);
-> +bool kmem_valid_obj(void *object);
-> +void kmem_dump_obj(void *object);
->  
->  #ifdef CONFIG_HAVE_HARDENED_USERCOPY_ALLOCATOR
->  void __check_heap_object(const void *ptr, unsigned long n, struct page *page,
-> diff --git a/mm/slab.c b/mm/slab.c
-> index b111356..66f00ad 100644
-> --- a/mm/slab.c
-> +++ b/mm/slab.c
-> @@ -3633,6 +3633,26 @@ void *__kmalloc_node_track_caller(size_t size, gfp_t flags,
->  EXPORT_SYMBOL(__kmalloc_node_track_caller);
->  #endif /* CONFIG_NUMA */
->  
-> +void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct page *page)
-> +{
-> +	struct kmem_cache *cachep;
-> +	unsigned int objnr;
-> +	void *objp;
-> +
-> +	kpp->kp_ptr = object;
-> +	kpp->kp_page = page;
-> +	cachep = page->slab_cache;
-> +	kpp->kp_slab_cache = cachep;
-> +	objp = object - obj_offset(cachep);
-> +	kpp->kp_data_offset = obj_offset(cachep);
-> +	page = virt_to_head_page(objp);
-> +	objnr = obj_to_index(cachep, page, objp);
-> +	objp = index_to_obj(cachep, page, objnr);
-> +	kpp->kp_objp = objp;
-> +	if (DEBUG && cachep->flags & SLAB_STORE_USER)
-> +		kpp->kp_ret = *dbg_userword(cachep, objp);
-> +}
-> +
->  /**
->   * __do_kmalloc - allocate memory
->   * @size: how many bytes of memory are required.
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 6d7c6a5..0dc705b 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -630,4 +630,16 @@ static inline bool slab_want_init_on_free(struct kmem_cache *c)
->  	return false;
->  }
->  
-> +#define KS_ADDRS_COUNT 16
-> +struct kmem_obj_info {
-> +	void *kp_ptr;
-> +	struct page *kp_page;
-> +	void *kp_objp;
-> +	unsigned long kp_data_offset;
-> +	struct kmem_cache *kp_slab_cache;
-> +	void *kp_ret;
-> +	void *kp_stack[KS_ADDRS_COUNT];
-> +};
-> +void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct page *page);
-> +
->  #endif /* MM_SLAB_H */
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index f9ccd5d..df2e203 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -536,6 +536,80 @@ bool slab_is_available(void)
->  	return slab_state >= UP;
->  }
->  
-> +/**
-> + * kmem_valid_obj - does the pointer reference a valid slab object?
-> + * @object: pointer to query.
-> + *
-> + * Return: %true if the pointer is to a not-yet-freed object from
-> + * kmalloc() or kmem_cache_alloc(), either %true or %false if the pointer
-> + * is to an already-freed object, and %false otherwise.
-> + */
-> +bool kmem_valid_obj(void *object)
-> +{
-> +	struct page *page;
-> +
-> +	if (!virt_addr_valid(object))
-> +		return false;
-> +	page = virt_to_head_page(object);
-> +	return PageSlab(page);
-> +}
-> +
-> +/**
-> + * kmem_dump_obj - Print available slab provenance information
-> + * @object: slab object for which to find provenance information.
-> + *
-> + * This function uses pr_cont(), so that the caller is expected to have
-> + * printed out whatever preamble is appropriate.  The provenance information
-> + * depends on the type of object and on how much debugging is enabled.
-> + * For a slab-cache object, the fact that it is a slab object is printed,
-> + * and, if available, the slab name, return address, and stack trace from
-> + * the allocation of that object.
-> + *
-> + * This function will splat if passed a pointer to a non-slab object.
-> + * If you are not sure what type of object you have, you should instead
-> + * use mem_dump_obj().
-> + */
-> +void kmem_dump_obj(void *object)
-> +{
-> +	char *cp = IS_ENABLED(CONFIG_MMU) ? "" : "/vmalloc";
-> +	int i;
-> +	struct page *page;
-> +	unsigned long ptroffset;
-> +	struct kmem_obj_info kp = { };
-> +
-> +	if (WARN_ON_ONCE(!virt_addr_valid(object)))
-> +		return;
-> +	page = virt_to_head_page(object);
-> +	if (WARN_ON_ONCE(!PageSlab(page))) {
-> +		pr_cont(" non-slab memory.\n");
-> +		return;
-> +	}
-> +	kmem_obj_info(&kp, object, page);
-> +	if (kp.kp_slab_cache)
-> +		pr_cont(" slab%s %s", cp, kp.kp_slab_cache->name);
-> +	else
-> +		pr_cont(" slab%s", cp);
-> +	if (kp.kp_objp)
-> +		pr_cont(" start %px", kp.kp_objp);
-> +	if (kp.kp_data_offset)
-> +		pr_cont(" data offset %lu", kp.kp_data_offset);
+syzbot has found a reproducer for the following issue on:
 
-I don't check the code deeply but kp_data_offset could be 0 in normal
-situation. Is it intentional not to print a message in this case?
+HEAD commit:    a7105e34 Merge branch 'hns3-next'
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=155af80f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2ac2dabe250b3a58
+dashboard link: https://syzkaller.appspot.com/bug?extid=96ff6cfc4551fcc29342
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11bc7b13500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1674046b500000
 
-> +	if (kp.kp_objp) {
-> +		ptroffset = ((char *)object - (char *)kp.kp_objp) - kp.kp_data_offset;
-> +		pr_cont(" pointer offset %lu", ptroffset);
-> +	}
-> +	if (kp.kp_slab_cache && kp.kp_slab_cache->usersize)
-> +		pr_cont(" size %u", kp.kp_slab_cache->usersize);
-> +	if (kp.kp_ret)
-> +		pr_cont(" allocated at %pS\n", kp.kp_ret);
-> +	else
-> +		pr_cont("\n");
-> +	for (i = 0; i < ARRAY_SIZE(kp.kp_stack); i++) {
-> +		if (!kp.kp_stack[i])
-> +			break;
-> +		pr_info("    %pS\n", kp.kp_stack[i]);
-> +	}
-> +}
-> +
->  #ifndef CONFIG_SLOB
->  /* Create a cache during boot when no slab services are available yet */
->  void __init create_boot_cache(struct kmem_cache *s, const char *name,
-> diff --git a/mm/slob.c b/mm/slob.c
-> index 7cc9805..2ed1de2 100644
-> --- a/mm/slob.c
-> +++ b/mm/slob.c
-> @@ -461,6 +461,12 @@ static void slob_free(void *block, int size)
->  	spin_unlock_irqrestore(&slob_lock, flags);
->  }
->  
-> +void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct page *page)
-> +{
-> +	kpp->kp_ptr = object;
-> +	kpp->kp_page = page;
-> +}
-> +
->  /*
->   * End of slob allocator proper. Begin kmem_cache_alloc and kmalloc frontend.
->   */
-> diff --git a/mm/slub.c b/mm/slub.c
-> index b30be23..0459d2a 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3918,6 +3918,42 @@ int __kmem_cache_shutdown(struct kmem_cache *s)
->  	return 0;
->  }
->  
-> +void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct page *page)
-> +{
-> +#ifdef CONFIG_SLUB_DEBUG
+The issue was bisected to:
 
-We can get some infos even if CONFIG_SLUB_DEBUG isn't defined.
-Please move them out.
+commit 386d4716fd91869e07c731657f2cde5a33086516
+Author: Luo bin <luobin9@huawei.com>
+Date:   Thu Feb 27 06:34:44 2020 +0000
 
-Thanks.
- 
+    hinic: fix a bug of rss configuration
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16626fcfe00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15626fcfe00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11626fcfe00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+96ff6cfc4551fcc29342@syzkaller.appspotmail.com
+Fixes: 386d4716fd91 ("hinic: fix a bug of rss configuration")
+
+INFO: task kworker/0:2:3004 blocked for more than 143 seconds.
+      Not tainted 5.10.0-rc6-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:2     state:D stack:28448 pid: 3004 ppid:     2 flags:0x00004000
+Workqueue: events linkwatch_event
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x893/0x2130 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4665
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
+ linkwatch_event+0xb/0x60 net/core/link_watch.c:250
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+INFO: task kworker/0:0:8837 blocked for more than 143 seconds.
+      Not tainted 5.10.0-rc6-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:0     state:D stack:29768 pid: 8837 ppid:     2 flags:0x00004000
+Workqueue: ipv6_addrconf addrconf_verify_work
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x893/0x2130 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4665
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
+ addrconf_verify_work+0xa/0x20 net/ipv6/addrconf.c:4569
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/1655:
+ #0: ffffffff8b337a20 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6254
+3 locks held by kworker/0:2/3004:
+ #0: ffff888010064d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010064d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888010064d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010064d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888010064d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888010064d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc90001dafda8 ((linkwatch_work).work){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffffffff8c92d448 (rtnl_mutex){+.+.}-{3:3}, at: linkwatch_event+0xb/0x60 net/core/link_watch.c:250
+1 lock held by in:imklog/8186:
+ #0: ffff888017c900f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+2 locks held by syz-executor047/8830:
+3 locks held by kworker/0:0/8837:
+ #0: ffff888147499138 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888147499138 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888147499138 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888147499138 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888147499138 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888147499138 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc90001aefda8 ((addr_chk_work).work){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffffffff8c92d448 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_verify_work+0xa/0x20 net/ipv6/addrconf.c:4569
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 1655 Comm: khungtaskd Not tainted 5.10.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+ watchdog+0xd43/0xfa0 kernel/hung_task.c:294
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 8830 Comm: syz-executor047 Not tainted 5.10.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__this_cpu_preempt_check+0x0/0x20 lib/smp_processor_id.c:64
+Code: 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 c7 c6 00 ae 9d 89 48 c7 c7 40 ae 9d 89 e9 b8 fe ff ff 0f 1f 84 00 00 00 00 00 <55> 48 89 fd 0f 1f 44 00 00 48 89 ee 5d 48 c7 c7 80 ae 9d 89 e9 97
+RSP: 0018:ffffc90001a2eb50 EFLAGS: 00000082
+RAX: 0000000000000001 RBX: 1ffff92000345d6d RCX: 0000000000000001
+RDX: 1ffff11002f507b2 RSI: 0000000000000008 RDI: ffffffff894b60c0
+RBP: 0000000000000001 R08: 0000000000000000 R09: ffffffff8ebb6727
+R10: fffffbfff1d76ce4 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88801433fa68 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007fc7c7ab9700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc7c7a97e78 CR3: 000000001292b000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ lockdep_recursion_finish kernel/locking/lockdep.c:437 [inline]
+ lock_acquire kernel/locking/lockdep.c:5439 [inline]
+ lock_acquire+0x2ad/0x740 kernel/locking/lockdep.c:5402
+ __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+ __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
+ tcf_idr_check_alloc+0x78/0x3b0 net/sched/act_api.c:549
+ tcf_police_init+0x347/0x13a0 net/sched/act_police.c:81
+ tcf_action_init_1+0x1a3/0x990 net/sched/act_api.c:1013
+ tcf_exts_validate+0x138/0x420 net/sched/cls_api.c:3046
+ cls_bpf_set_parms net/sched/cls_bpf.c:422 [inline]
+ cls_bpf_change+0x60b/0x1b80 net/sched/cls_bpf.c:506
+ tc_new_tfilter+0x1394/0x2120 net/sched/cls_api.c:2127
+ rtnetlink_rcv_msg+0x80e/0xad0 net/core/rtnetlink.c:5553
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x331/0x810 net/socket.c:2331
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2385
+ __sys_sendmmsg+0x195/0x470 net/socket.c:2475
+ __do_sys_sendmmsg net/socket.c:2504 [inline]
+ __se_sys_sendmmsg net/socket.c:2501 [inline]
+ __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2501
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x447219
+Code: e8 bc b4 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b 08 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fc7c7ab8d98 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00000000006dcc88 RCX: 0000000000447219
+RDX: 010efe10675dec16 RSI: 0000000020000200 RDI: 0000000000000004
+RBP: 00000000006dcc80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dcc8c
+R13: 0000000000000000 R14: 0000000000000000 R15: 0507002400000074
+
